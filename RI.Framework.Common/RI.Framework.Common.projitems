@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>0de0d41d-b3c7-4eb5-a76e-62fc4ca9cb30</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>RI.Framework</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Comparison\CollectionComparer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Comparison\CollectionComparerFlags.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Comparison\_NamespaceDoc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Generic\IWarehouse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Generic\Warehouse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Generic\_NamespaceDoc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\HashSetExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\ICollectionExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\IDictionaryExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\IEnumerableExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\IListExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\LinkedListExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\ObjectModel\IPool.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\ObjectModel\IPoolAware.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\ObjectModel\IPoolExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\ObjectModel\ITreeNode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\ObjectModel\ITreeNodeExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\ObjectModel\Pool.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\ObjectModel\PoolBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\ObjectModel\TreeNode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\ObjectModel\TreeNodeBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\ObjectModel\_NamespaceDoc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\QueueExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Specialized\ClonePool.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Specialized\_NamespaceDoc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\StackExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\_NamespaceDoc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\Catalogs\AssemblyCatalog.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\Catalogs\DirectoryCatalog.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\Catalogs\InstanceCatalog.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\Catalogs\TypeCatalog.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\Catalogs\_NamespaceDoc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\CompositionBatch.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\CompositionCatalog.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\CompositionCatalogItem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\CompositionContainer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\CompositionException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\CompositionFlags.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\Model\ExportAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\Model\ExportConstructorAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\Model\ExportCreatorAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\Model\IExporting.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\Model\IImporting.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\Model\Import.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\Model\ImportExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\Model\ImportPropertyAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\Model\_NamespaceDoc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\_NamespaceDoc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\INI\_NamespaceDoc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\Paths\DirectoryPath.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\Paths\FilePath.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\Paths\PathError.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\Paths\PathProperties.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\Paths\PathString.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\Paths\PathType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\Paths\_NamespaceDoc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\_NamespaceDoc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\LogLocator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\DirectoryLogWriter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\ILogService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\ILogWriter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\LogLevel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\LogService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\_NamespaceDoc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Modularization\IModule.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Modularization\IModuleService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Modularization\Module.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Modularization\ModuleService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Modularization\_NamespaceDoc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\IBootstrapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\ServiceLocator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\_NamespaceDoc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Comparison\EqualityComparison.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Comparison\OrderComparison.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Comparison\_NamespaceDoc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\DateTimeExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\DoubleExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\ExceptionExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Exceptions\EmptyStringArgumentException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Exceptions\InvalidPathArgumentException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Exceptions\InvalidTypeArgumentException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Exceptions\NotAnEnumerationArgumentException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Exceptions\NotFiniteArgumentException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Exceptions\NotReadableStreamArgumentException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Exceptions\NotSeekableStreamArgumentException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Exceptions\NotWriteableStreamArgumentException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Exceptions\_NamespaceDoc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\FloatExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObjectModel\ICloneable.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObjectModel\_NamespaceDoc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\RandomExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Reflection\AssemblyExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Reflection\TypeExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Reflection\_NamespaceDoc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\StringExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\StringSplitPredicate.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Text\CommandLine.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Text\IndentedTextWriter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Text\_NamespaceDoc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\TimeSpanExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\_NamespaceDoc.cs" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,7 @@
+﻿ - No usage of LINQ
+ - No default(T)
+ - No value types for dictionary key
+
+ - Reduce reflection usage
+ - Reduce generic usage
+ - Avoid generics with interfaces, abstracts, virtuals

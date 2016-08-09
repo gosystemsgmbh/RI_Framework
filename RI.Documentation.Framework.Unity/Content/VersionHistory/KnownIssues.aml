@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<topic id="b49f5d80-bfd9-4c08-be8c-c8ff2d97a3cb" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <autoOutline />
+      <para>
+        The following issues and limitations are known:
+      </para>
+    </introduction>
+
+    <section address="Composition">
+      <title>Composition</title>
+      <content>
+        <list class="bullet">
+          <listItem>
+            <para>An update to a CompositionCatalog (by changing its Items property) after it has been added to a CompositionContainer has no effect.</para>
+          </listItem>
+          <listItem>
+            <para>The state of a CompositionContainer is undefined when a CompositionException is thrown.</para>
+          </listItem>
+        </list>
+      </content>
+    </section>
+
+  </developerConceptualDocument>
+</topic>

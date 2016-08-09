@@ -1,0 +1,127 @@
+﻿
+Utilities
+---------
+
+ - RandomExtensions: NextBytes with max and min/max overload
+ - RandomExtensions: FillStream with max and min/max overload
+
+ - (Unity) Screenshot
+
+
+Collections
+-----------
+
+ - IEnumerableExtensions: Merge
+ - IEnumerableExtensions: IsEmpty
+ - IEnumerableExtensions: Shuffle
+ - IEnumerableExtensions: CopyTo
+ - IEnumerableExtensions: Repeat
+ - IEnumerableExtensions: Concat with separator element
+ - IEnumerableExtensions: IsSubsetOf, IsProperSubsetOf, Overlaps
+ - IEnumerableExtensions: OrderBy, GroupBy
+ - IEnumerableExtensions: FirstIndex, LastIndex, Indices
+ - IEnumerableExtensions: FirstIndexOf, LastIndexOf, IndicesOf
+ - IEnumerableExtensions: Single, SingleOrDefault
+ - IEnumerableExtensions: TakeTail, TakeTailWhere
+ - IEnumerableExtensions: SkipTail, SkipTailWhere
+ - IEnumerableExtensions: EndsWithCount
+ - IEnumerableExtensions: StartsWithCount
+
+ - IListExtensions: Backward enumerator
+ - IListEnumerator: GetIndexOrDefault
+
+ - IDictionaryExtensions: RemoveValue, RemoveValues
+ - IDictionaryExtensions: AddOrReplaceRange
+ - IDictionaryExtensions: TryAddRange
+ - IDictionaryExtensions: Swap
+ - IDictionaryExtensions: ContainsKey with predicate
+ - IDictionaryExtensions: ContainsValue with predicate
+
+ - ITreeNodeExtensions: ClearChildren
+ - ITreeNodeExtensions: ContainsChild
+ - ITreeNodeExtensions: ContainsChildRecursive
+ - ITreeNodeExtensions: AddChild
+ - ITreeNodeExtensions: AddChildRange
+ - ITreeNodeExtensions: Path building and deflating
+
+ - WatchableList
+ - ObservableList
+
+ - PriorityQueue
+ - RingBuffer
+ - SortedQueue
+ - InheritingTreeNode
+
+
+I/O
+---
+
+ - File and directory path (use in: DirectoryCatalog, DirectoryLogWriter, WpfBootstrapper)
+ - PathProperties: ChangeType
+
+ - RandomStream
+ - StreamExtensions
+
+ - INI reader, writer, document
+ - CSV reader, writer, document
+ - ZIP reader, writer, document
+
+ - (Unity) OBJ mesh loader
+ - (Unity) JSON mesh loader (babylon.JS)
+
+
+Composition
+---------
+
+ - AggregateCatalog
+ - Add container to container
+
+
+Services
+--------
+
+ - (.NET) Logging: LogWriter
+
+ - (.NET) Settings (WpfSettingService, C:FileSettingStorage, C:SettingConverter)
+ - (.NET) Resources (WpfResourceService, DirectoryResourceSource)
+ - (.NET) Regions (WpfRegionAdapter, RegionService)
+
+ - (.NET) Backup
+ - (.NET) Licensing
+
+ - (Unity) Dispatcher: Pool for dispatcher operations?
+ - (Unity) Dispatcher: Timeout for operations
+ - (Unity) Dispatcher: Cancel all operations
+ - (Unity) Dispatcher: Process (process item in background thread, then broadcast processed item)
+
+ - (Unity) Settings (UnitySettingService, PlayerPrefsSettingStorage)
+ - (Unity) Resources (UnityResourceService, DirectoryResourceSource)
+ - (Unity) Packaging
+
+ - (Unity) Input
+ - (Unity) Audio
+ - (Unity) User interface
+
+
+Math
+----
+
+ - AsDouble
+ - AsFloat
+ - Aggregate extensions for numerical types (byte, short, int, long, double, float), including statistics (min, max, sum, average, median, RMS, count)
+
+ - PID controller
+
+ - Bezier/Spline curves
+
+
+State machines
+--------------
+
+ - State machines
+
+
+Behaviours
+----------
+
+ - (Unity) Splash screen

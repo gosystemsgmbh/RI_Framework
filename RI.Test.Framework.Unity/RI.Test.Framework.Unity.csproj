@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{32368735-BA73-45B2-9F24-ABA7F6099508}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>RI.Test.Framework</RootNamespace>
+    <AssemblyName>RI.Test.Framework.Unity</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;PLATFORM_UNITY</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;PLATFORM_UNITY</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="UnityEngine">
+      <HintPath>C:\Program Files\Unity\Editor\Data\Managed\UnityEngine.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Cases\Collections\Comparison\Test_CollectionComparer.cs" />
+    <Compile Include="Cases\Collections\Generic\Test_Warehouse.cs" />
+    <Compile Include="Cases\Collections\ObjectModel\Test_IPoolExtensions.cs" />
+    <Compile Include="Cases\Collections\ObjectModel\Test_ITreeNodeExtensions.cs" />
+    <Compile Include="Cases\Collections\ObjectModel\Test_Pool.cs" />
+    <Compile Include="Cases\Collections\ObjectModel\Test_TreeNode.cs" />
+    <Compile Include="Cases\Collections\Specialized\Test_ClonePool.cs" />
+    <Compile Include="Cases\Collections\Specialized\Test_PrefabPool.cs" />
+    <Compile Include="Cases\Collections\Test_HashSetExtensions.cs" />
+    <Compile Include="Cases\Collections\Test_ICollectionExtensions.cs" />
+    <Compile Include="Cases\Collections\Test_IDictionaryExtensions.cs" />
+    <Compile Include="Cases\Collections\Test_IEnumerableExtensions.cs" />
+    <Compile Include="Cases\Collections\Test_IListExtensions.cs" />
+    <Compile Include="Cases\Collections\Test_LinkedListExtensions.cs" />
+    <Compile Include="Cases\Collections\Test_QueueExtensions.cs" />
+    <Compile Include="Cases\Collections\Test_StackExtensions.cs" />
+    <Compile Include="Cases\Utilities\Comparison\Test_EqualityComparison.cs" />
+    <Compile Include="Cases\Utilities\Comparison\Test_OrderComparison.cs" />
+    <Compile Include="Cases\Utilities\Reflection\Test_TypeExtensions.cs" />
+    <Compile Include="Cases\Utilities\Test_DateTimeExtensions.cs" />
+    <Compile Include="Cases\Utilities\Test_StringExtensions.cs" />
+    <Compile Include="Cases\Utilities\Test_TimeSpanExtensions.cs" />
+    <Compile Include="Mocks\RENP.cs" />
+    <Compile Include="Mocks\VENP.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestAssertionException.cs" />
+    <Compile Include="TestMethodAttribute.cs" />
+    <Compile Include="TestModule.cs" />
+    <Compile Include="TestRunner.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RI.Framework.Unity\RI.Framework.Unity.csproj">
+      <Project>{36e8eb66-9a69-41ea-a7f8-45ba5299a03f}</Project>
+      <Name>RI.Framework.Unity</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="..\RI.Test.Framework.Common\RI.Test.Framework.Common.projitems" Label="Shared" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>@md "$(SolutionDir)_Test"
+
+@copy "$(TargetDir)$(TargetName).*" "$(SolutionDir)_Test\*.*"</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>@"$(SolutionDir)_Input\RI.Tools.VersionUpdater.exe" "$(ProjectDir)Properties" "nr" "file" "$(SolutionDir)RI.Framework.Property.Version.txt" "$(SolutionDir)RI.Framework.Property.Company.txt" "$(SolutionDir)RI.Framework.Property.Copyright.txt"</PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

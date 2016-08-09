@@ -1,0 +1,1944 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
+
+using RI.Framework.Collections;
+using RI.Framework.Utilities.Exceptions;
+
+
+
+
+namespace RI.Framework.Utilities
+{
+	/// <summary>
+	///     Provides utility/extension methods for the <see cref="string" /> type.
+	/// </summary>
+	/// <remarks>
+	///     <para>
+	///         Note that some of the functionality provided by this class is rather specialized and intended to be used for certain string parsing/processing purposes.
+	///     </para>
+	/// </remarks>
+	public static class StringExtensions
+	{
+		#region Constants
+
+		private static readonly string[] BooleanFalseValues =
+		{
+			"false", "no", "0", "off",
+		};
+
+		private static readonly string[] BooleanTrueValues =
+		{
+			"true", "yes", "1", "on",
+		};
+
+		#endregion
+
+
+
+
+		#region Static Methods
+
+		/// <summary>
+		///     Determines whether a specified string occurs in a string.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <param name="value"> The string to find in the string. </param>
+		/// <param name="comparisonType"> The string comparison used to find the string. </param>
+		/// <returns>
+		///     true if <paramref name="value" /> is an empty string or it occurs at least once in the string, false otherwise.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> or <paramref name="value" /> is null. </exception>
+		public static bool Contains (this string str, string value, StringComparison comparisonType)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			if (value == null)
+			{
+				throw new ArgumentNullException(nameof(value));
+			}
+
+			return str.IndexOf(value, comparisonType) != -1;
+		}
+
+		/// <summary>
+		///     Determines whether a specified string contains any whitespace characters.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     true if the string contains any whistespace characters, false otherwise.
+		///     If the string has a length of zero, false is returned.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static bool ContainsWhitespace (this string str)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			for (int i1 = 0; i1 < str.Length; i1++)
+			{
+				if (char.IsWhiteSpace(str[i1]))
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		/// <summary>
+		///     Doubles each occurence of a specified character in a string.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <param name="chr"> The character of which each occurence is doubled. </param>
+		/// <returns>
+		///     The resulting string with each specified character occurence doubled.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         Doubling occurrences is done on a per-character basis and case-sensitive.
+		///     </para>
+		///     <para>
+		///         For example, when doubling the occurence for 'A', the string "" results in "", "A" in "AA", "AA" in "AAAA", "ABC" in "AABC", etc.
+		///     </para>
+		///     <para>
+		///         This is the same as using <see cref="StringExtensions.ModifyOccurrence" /> with a factor of 2.0 and offset of 0.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static string DoubleOccurrence (this string str, char chr)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			return str.ModifyOccurrence(chr, 2.0, 0);
+		}
+
+		/// <summary>
+		///     Counts how many times a string ends with a specified character.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <param name="value"> The character to count when occuring at the end of the string. </param>
+		/// <param name="comparisonType"> The string comparison used to find the character. </param>
+		/// <returns>
+		///     The number of times the specified character appears in succession at the end of the string.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static int EndsWithCount (this string str, char value, StringComparison comparisonType)
+		{
+			return str.EndsWithCount(new string(value, 1), comparisonType);
+		}
+
+		/// <summary>
+		///     Counts how many times a string ends with a specified string.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <param name="value"> The string to count when occuring at the end of the string. </param>
+		/// <param name="comparisonType"> The string comparison used to find the string. </param>
+		/// <returns>
+		///     The number of times the specified string appears in succession at the end of the string.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> or <paramref name="value" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="value" /> is a string with zero length. </exception>
+		public static int EndsWithCount (this string str, string value, StringComparison comparisonType)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			if (value == null)
+			{
+				throw new ArgumentNullException(nameof(value));
+			}
+
+			if (value.Length == 0)
+			{
+				throw new EmptyStringArgumentException(nameof(value));
+			}
+
+			int count = 0;
+			int index = str.Length - value.Length;
+
+			while (true)
+			{
+				if (index < 0)
+				{
+					break;
+				}
+
+				string comparedPiece = str.Substring(index, value.Length);
+
+				if (string.Equals(value, comparedPiece, comparisonType))
+				{
+					count++;
+					index -= value.Length;
+				}
+				else
+				{
+					break;
+				}
+			}
+
+			return count;
+		}
+
+		/// <summary>
+		///     Converts a string into another string where certain special characters are converted to escape sequences.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     The resulting string with special characters converted to escape sequences.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         An escape sequence always starts with \ followed by a single character specifying the escape sequence, e.g. \n for new-line.
+		///     </para>
+		///     <para>
+		///         The following special characters are escaped: \a, \b, \f, \n, \r, \t, \v, \, ', ".
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static string Escape (this string str)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			if (str.Length == 0)
+			{
+				return string.Empty;
+			}
+
+			StringBuilder sb = new StringBuilder(str.Length * 2);
+
+			char current = '\0';
+			string replacement = null;
+
+			for (int i1 = 0; i1 < str.Length; i1++)
+			{
+				current = str[i1];
+				replacement = null;
+
+				if (current == '\a')
+				{
+					replacement = "\\a";
+				}
+				else if (current == '\b')
+				{
+					replacement = "\\b";
+				}
+				else if (current == '\f')
+				{
+					replacement = "\\f";
+				}
+				else if (current == '\n')
+				{
+					replacement = "\\n";
+				}
+				else if (current == '\r')
+				{
+					replacement = "\\r";
+				}
+				else if (current == '\t')
+				{
+					replacement = "\\t";
+				}
+				else if (current == '\v')
+				{
+					replacement = "\\v";
+				}
+				else if (current == '\\')
+				{
+					replacement = "\\\\";
+				}
+				else if (current == '\'')
+				{
+					replacement = "\\\'";
+				}
+				else if (current == '\"')
+				{
+					replacement = "\\\"";
+				}
+
+				if (replacement != null)
+				{
+					sb.Append(replacement);
+				}
+				else
+				{
+					sb.Append(current);
+				}
+			}
+
+			return sb.ToString();
+		}
+
+		/// <summary>
+		///     Halves each occurence of a specified character in a string.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <param name="chr"> The character of which each occurence is halved. </param>
+		/// <returns>
+		///     The resulting string with each specified character occurrence halved.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         Halving occurrences is done on a per-character basis and case-sensitive.
+		///     </para>
+		///     <para>
+		///         For example, when halving the occurence for 'A', the string "" results in "", "A" in "", "AA" results in "A", "AAA" in "A", "AAAA" in "AA", "ABC" in "BC", etc.
+		///     </para>
+		///     <para>
+		///         This is the same as using <see cref="StringExtensions.ModifyOccurrence" /> with a factor of 0.5 and offset of 0.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static string HalveOccurrence (this string str, char chr)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			return str.ModifyOccurrence(chr, 0.5, 0);
+		}
+
+		/// <summary>
+		///     Determines whether a string is empty.
+		/// </summary>
+		/// <param name="str"> The string </param>
+		/// <returns>
+		///     true if the string is empty, false otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         A string is considered empty if has a length of zero or contains only whitespaces.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static bool IsEmpty (this string str)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			if (str.Length == 0)
+			{
+				return true;
+			}
+
+			for (int i1 = 0; i1 < str.Length; i1++)
+			{
+				if (!char.IsWhiteSpace(str[i1]))
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		/// <summary>
+		///     Joins a sequence of strings together into one string without a separator between each string element.
+		/// </summary>
+		/// <param name="values"> The sequence of strings to join together </param>
+		/// <returns>
+		///     The resulting string with each string element concatenated to the next.
+		///     The resulting string has a length of zero if the sequence contains no string elements or only string elements of zero length.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         <paramref name="values" /> is enumerated exactly once.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static string Join (this IEnumerable<string> values)
+		{
+			return values.Join(string.Empty);
+		}
+
+		/// <summary>
+		///     Joins a sequence of strings together into one string with a specified separator character between each string element.
+		/// </summary>
+		/// <param name="values"> The sequence of strings to join together </param>
+		/// <param name="separator"> The used separator character. </param>
+		/// <returns>
+		///     The resulting string with each string element concatenated to the next, separated by the specified separator character.
+		///     The resulting string has a length of zero if the sequence contains no string elements or only string elements of zero length.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         <paramref name="values" /> is enumerated exactly once.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static string Join (this IEnumerable<string> values, char separator)
+		{
+			return values.Join(new string(separator, 1));
+		}
+
+		/// <summary>
+		///     Joins a sequence of strings together into one string with a specified separator string between each string element.
+		/// </summary>
+		/// <param name="values"> The sequence of strings to join together </param>
+		/// <param name="separator"> The used separator string. Can be null or <see cref="string" />.<see cref="string.Empty" /> if no separator should be used. </param>
+		/// <returns>
+		///     The resulting string with each string element concatenated to the next, separated by the specified separator string.
+		///     The resulting string has a length of zero if the sequence contains no string elements or only string elements of zero length.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         <paramref name="values" /> is enumerated exactly once.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static string Join (this IEnumerable<string> values, string separator)
+		{
+			if (values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			return string.Join(separator ?? string.Empty, values.ToArray());
+		}
+
+		/// <summary>
+		///     Modifies each occurence of a specified character in a string by a specified factor and/or offset.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <param name="chr"> The character of which each occurence is modified. </param>
+		/// <param name="factor"> The factor used by which each occurence is modified. </param>
+		/// <param name="offset"> The offset used by which each occurence is modified. </param>
+		/// <returns>
+		///     The resulting string with each specified character occurence modified.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         Modifying occurrences is done on a per-character basis and case-sensitive.
+		///     </para>
+		///     <para>
+		///         Example with <paramref name="factor" /> of 3.0 and <paramref name="offset" /> of 0 for the character 'A': "" -> "", "A" -> "AAA", "AA" -> "AAAAAA", "AAA" -> "AAAAAAAAA", "ABC" -> "AAABC", etc.
+		///         Example with <paramref name="factor" /> of 0.0 and <paramref name="offset" /> of 1 for the character 'A': "" -> "", "A" -> "AA", "AA" -> "AAA", "AAAA" -> "AAAAA",  "ABC" -> "AABC", etc.
+		///     </para>
+		///     <para>
+		///         If <paramref name="factor" /> both and <paramref name="offset" /> are used (<paramref name="factor" /> not 1.0 and <paramref name="offset" /> not 0), the resulting character count is ((original count * <paramref name="factor" />) + <paramref name="offset" />).
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		/// <exception cref="NotFiniteArgumentException"> <paramref name="factor" /> is "NaN"/"Not-a-Number" or infinity (either positive or negative). </exception>
+		public static string ModifyOccurrence (this string str, char chr, double factor, int offset)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			if (factor.IsNanOrInfinity())
+			{
+				throw new NotFiniteArgumentException(nameof(factor));
+			}
+
+			if (str.Length == 0)
+			{
+				return string.Empty;
+			}
+
+			char next = '\0';
+			double count = 0.0;
+
+			StringBuilder newStr = new StringBuilder((int)( str.Length * 1.1 ));
+
+			for (int i1 = 0; i1 < str.Length; i1++)
+			{
+				if (str[i1] == chr)
+				{
+					next = i1 >= ( str.Length - 1 ) ? '\0' : str[i1 + 1];
+					count += 1.0;
+
+					if (next != chr)
+					{
+						newStr.Append(new string(chr, (int)( Math.Max(0.0, ( count * factor ) + offset) )));
+						count = 0.0;
+					}
+				}
+				else
+				{
+					newStr.Append(str[i1]);
+					count = 0.0;
+				}
+			}
+
+			return ( newStr.ToString() );
+		}
+
+		/// <summary>
+		///     Repeats a character a specified number of times without a separator between each character.
+		/// </summary>
+		/// <param name="chr"> The character. </param>
+		/// <param name="count"> The number of times the character is repeated. </param>
+		/// <returns>
+		///     The resulting string with the repeated character.
+		///     If <paramref name="count" /> is zero, the resulting string has a length of zero.
+		///     If <paramref name="count" /> is one, the resulting string consists only of the specified character.
+		/// </returns>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="count" /> is less than zero. </exception>
+		public static string Repeat (this char chr, int count)
+		{
+			return chr.Repeat(count, null);
+		}
+
+		/// <summary>
+		///     Repeats a character a specified number of times with a specified separator between each character.
+		/// </summary>
+		/// <param name="chr"> The character. </param>
+		/// <param name="count"> The number of times the character is repeated. </param>
+		/// <param name="separator"> The used separator. </param>
+		/// <returns>
+		///     The resulting string with the repeated character.
+		///     If <paramref name="count" /> is zero, the resulting string has a length of zero.
+		///     If <paramref name="count" /> is one, the resulting string consists only of the specified character.
+		/// </returns>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="count" /> is less than zero. </exception>
+		public static string Repeat (this char chr, int count, char separator)
+		{
+			return chr.Repeat(count, new string(separator, 1));
+		}
+
+		/// <summary>
+		///     Repeats a character a specified number of times with a specified separator between each character.
+		/// </summary>
+		/// <param name="chr"> The character. </param>
+		/// <param name="count"> The number of times the character is repeated. </param>
+		/// <param name="separator"> The used separator. Can be null or <see cref="string" />.<see cref="string.Empty" /> if no separator should be used. </param>
+		/// <returns>
+		///     The resulting string with the repeated character.
+		///     If <paramref name="count" /> is zero, the resulting string has a length of zero.
+		///     If <paramref name="count" /> is one, the resulting string consists only of the specified character.
+		/// </returns>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="count" /> is less than zero. </exception>
+		public static string Repeat (this char chr, int count, string separator)
+		{
+			return ( new string(chr, 1) ).Repeat(count, separator);
+		}
+
+		/// <summary>
+		///     Repeats a string a specified number of times without a separator between each string.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <param name="count"> The number of times the string is repeated. </param>
+		/// <returns>
+		///     The resulting string with the repeated string.
+		///     If <paramref name="count" /> is zero, the resulting string has a length of zero.
+		///     If <paramref name="count" /> is one, the resulting string consists only of the specified string.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="count" /> is less than zero. </exception>
+		public static string Repeat (this string str, int count)
+		{
+			return str.Repeat(count, null);
+		}
+
+		/// <summary>
+		///     Repeats a string a specified number of times with a specified separator between each string.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <param name="count"> The number of times the string is repeated. </param>
+		/// <param name="separator"> The used separator. </param>
+		/// <returns>
+		///     The resulting string with the repeated string.
+		///     If <paramref name="count" /> is zero, the resulting string has a length of zero.
+		///     If <paramref name="count" /> is one, the resulting string consists only of the specified string.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="count" /> is less than zero. </exception>
+		public static string Repeat (this string str, int count, char separator)
+		{
+			return str.Repeat(count, new string(separator, 1));
+		}
+
+		/// <summary>
+		///     Repeats a string a specified number of times with a specified separator between each string.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <param name="count"> The number of times the string is repeated. </param>
+		/// <param name="separator"> The used separator. Can be null or <see cref="string" />.<see cref="string.Empty" /> if no separator should be used. </param>
+		/// <returns>
+		///     The resulting string with the repeated string.
+		///     If <paramref name="count" /> is zero, the resulting string has a length of zero.
+		///     If <paramref name="count" /> is one, the resulting string consists only of the specified string.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="count" /> is less than zero. </exception>
+		public static string Repeat (this string str, int count, string separator)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			if (count < 0)
+			{
+				throw new ArgumentOutOfRangeException(nameof(count));
+			}
+
+			if (count == 0)
+			{
+				return string.Empty;
+			}
+
+			if (count == 1)
+			{
+				return str;
+			}
+
+			separator = separator ?? string.Empty;
+
+			StringBuilder sb = new StringBuilder(( str.Length * count ) + ( separator.Length * ( count - 1 ) ) + 1);
+			for (int i1 = 0; i1 < count; i1++)
+			{
+				sb.Append(str);
+				if (i1 != 0)
+				{
+					sb.Append(separator);
+				}
+			}
+			return sb.ToString();
+		}
+
+		/// <summary>
+		///     Searchs a specified token in a string and replaces its occurence with a specified replacement, but only if the last character in the string, before a found token begins, is not the same as the first character of the specified token.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <param name="token"> The token to find and replace. </param>
+		/// <param name="replacement"> The replacement for each found token. </param>
+		/// <param name="comparisonType"> The string comparison used to find the token. </param>
+		/// <returns>
+		///     The resulting string where each token is replaced by the replacement.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         The replacement only happens if the character before a found token is not the same as the first character of the token.
+		///         For example, when using "|x" as token and "X" as replacement, the string "ab|xcd" becomes "abXcd" but the string "ab||xcd" remains unchanged.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" />, <paramref name="token" />, or <paramref name="replacement" /> is null. </exception>
+		public static string ReplaceSingleStart (this string str, string token, string replacement, StringComparison comparisonType)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			if (token == null)
+			{
+				throw new ArgumentNullException(nameof(token));
+			}
+
+			if (replacement == null)
+			{
+				throw new ArgumentNullException(nameof(replacement));
+			}
+
+			if (token.Length == 0)
+			{
+				return str;
+			}
+
+			int index = -1;
+
+			while (true)
+			{
+				index++;
+
+				if (index >= str.Length)
+				{
+					break;
+				}
+
+				index = str.IndexOf(token, index, comparisonType);
+
+				if (index == -1)
+				{
+					break;
+				}
+
+				bool replace = true;
+
+				if (index >= 1)
+				{
+					if (str[index - 1] == token[0])
+					{
+						replace = false;
+					}
+				}
+
+				if (replace)
+				{
+					str = str.Substring(0, index) + replacement + str.Substring(index + token.Length);
+				}
+			}
+
+			return str;
+		}
+
+		/// <summary>
+		///     Splits a string into pieces at each of the specified characters, excluding the characters from the resulting pieces.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <param name="options"> The splitting options. </param>
+		/// <param name="separator"> Zero, one, or more characters at which the string is split. </param>
+		/// <returns>
+		///     The array of string pieces.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static string[] Split (this string str, StringSplitOptions options, params char[] separator)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			return str.Split(separator, options);
+		}
+
+		/// <summary>
+		///     Splits a string into pieces at each of the specified strings, excluding the strings from the resulting pieces.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <param name="separator"> Zero, one, or more strings at which the string is split. </param>
+		/// <returns>
+		///     The array of string pieces.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static string[] Split (this string str, params string[] separator)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			return str.Split(separator, StringSplitOptions.None);
+		}
+
+		/// <summary>
+		///     Splits a string into pieces at each of the specified strings, excluding the strings from the resulting pieces.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <param name="options"> The splitting options. </param>
+		/// <param name="separator"> Zero, one, or more strings at which the string is split. </param>
+		/// <returns>
+		///     The array of string pieces.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static string[] Split (this string str, StringSplitOptions options, params string[] separator)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			return str.Split(separator, options);
+		}
+
+		/// <summary>
+		///     Splits a string into an array of strings at each line break.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     The array of strings containing each line of the original string as a separate element.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         Both CRLF and LF or \r\n and \n respectively are considered line breaks.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static string[] SplitLines (this string str)
+		{
+			return str.SplitLines(StringSplitOptions.None);
+		}
+
+		/// <summary>
+		///     Splits a string into an array of strings at each line break.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <param name="options"> The splitting options. </param>
+		/// <returns>
+		///     The array of strings containing each line of the original string as a separate element.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         Both CRLF and LF or \r\n and \n respectively are considered line breaks.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static string[] SplitLines (this string str, StringSplitOptions options)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			return str.Replace("\r", string.Empty).Split(options, '\n');
+		}
+
+		/// <summary>
+		///     Splits a string into pieces at positions determined by a specified predicate function.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <param name="predicate"> The function which determines at which positions a string is splitted. </param>
+		/// <returns>
+		///     The array of string pieces.
+		///     If the specified predicate function never indicates a split position (never returns true), the array has only one element, equal to <paramref name="str" />.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         For more details about how to use the predicate function, see <see cref="StringSplitPredicate" />.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> or <paramref name="predicate" /> is null. </exception>
+		public static string[] SplitWhere (this string str, StringSplitPredicate predicate)
+		{
+			return str.SplitWhere(StringSplitOptions.None, predicate);
+		}
+
+		/// <summary>
+		///     Splits a string into pieces at positions determined by a specified predicate function.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <param name="options"> The splitting options. </param>
+		/// <param name="predicate"> The function which determines at which positions a string is splitted. </param>
+		/// <returns>
+		///     The array of string pieces.
+		///     If the specified predicate function never indicates a split position (never returns true), the array has only one element, equal to <paramref name="str" />.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         For more details about how to use the predicate function, see <see cref="StringSplitPredicate" />.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> or <paramref name="predicate" /> is null. </exception>
+		public static string[] SplitWhere (this string str, StringSplitOptions options, StringSplitPredicate predicate)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			if (predicate == null)
+			{
+				throw new ArgumentNullException(nameof(predicate));
+			}
+
+			List<string> pieces = new List<string>();
+			StringBuilder piece = new StringBuilder();
+
+			for (int i1 = 0; i1 <= str.Length; i1++)
+			{
+				if (predicate(str, piece.ToString(), i1 - 1, i1))
+				{
+					pieces.Add(piece.ToString());
+					piece = new StringBuilder();
+				}
+
+				if (i1 <= ( str.Length - 1 ))
+				{
+					piece.Append(str[i1]);
+				}
+			}
+
+			pieces.Add(piece.ToString());
+
+			if (( options & StringSplitOptions.RemoveEmptyEntries ) == StringSplitOptions.RemoveEmptyEntries)
+			{
+				pieces.RemoveWhere(x => x.IsEmpty());
+			}
+
+			return pieces.ToArray();
+		}
+
+		/// <summary>
+		///     Counts how many times a string starts with a specified character.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <param name="value"> The character to count when occuring at the start of the string. </param>
+		/// <param name="comparisonType"> The string comparison used to find the character. </param>
+		/// <returns>
+		///     The number of times the specified character appears in succession at the start of the string.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static int StartsWithCount (this string str, char value, StringComparison comparisonType)
+		{
+			return str.StartsWithCount(new string(value, 1), comparisonType);
+		}
+
+		/// <summary>
+		///     Counts how many times a string starts with a specified string.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <param name="value"> The string to count when occuring at the start of the string. </param>
+		/// <param name="comparisonType"> The string comparison used to find the string. </param>
+		/// <returns>
+		///     The number of times the specified string appears in succession at the start of the string.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> or <paramref name="value" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="value" /> is a string with zero length. </exception>
+		public static int StartsWithCount (this string str, string value, StringComparison comparisonType)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			if (value == null)
+			{
+				throw new ArgumentNullException(nameof(value));
+			}
+
+			if (value.Length == 0)
+			{
+				throw new EmptyStringArgumentException(nameof(value));
+			}
+
+			int count = 0;
+			int index = 0;
+
+			while (true)
+			{
+				if (( index + value.Length ) > str.Length)
+				{
+					break;
+				}
+
+				string comparedPiece = str.Substring(index, value.Length);
+
+				if (string.Equals(value, comparedPiece, comparisonType))
+				{
+					count++;
+					index += value.Length;
+				}
+				else
+				{
+					break;
+				}
+			}
+
+			return count;
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into a boolean.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     The boolean value represented by the string (true or false) if the string can be converted into a boolean, null otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         The following strings will return true: &quot;true&quot;, &quot;yes&quot;, &quot;1&quot;, &quot;on&quot;.
+		///     </para>
+		///     <para>
+		///         The following strings will return false: &quot;false&quot;, &quot;no&quot;, &quot;0&quot;, &quot;off&quot;.
+		///     </para>
+		///     <para>
+		///         Any other string will return null.
+		///     </para>
+		///     <para>
+		///         The conversion is case-insensitive. Whitespace is not ignored and must be trimmed before if necessary (e.g. using <see cref="string.Trim()" />).
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static bool? ToBoolean (this string str)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			str = str.ToLowerInvariant();
+
+			bool value = false;
+			if (bool.TryParse(str, out value))
+			{
+				return value;
+			}
+
+			foreach (string booleanFalseValue in StringExtensions.BooleanFalseValues)
+			{
+				if (string.Equals(booleanFalseValue, str, StringComparison.InvariantCultureIgnoreCase))
+				{
+					return false;
+				}
+			}
+
+			foreach (string booleanTrueValue in StringExtensions.BooleanTrueValues)
+			{
+				if (string.Equals(booleanTrueValue, str, StringComparison.InvariantCultureIgnoreCase))
+				{
+					return true;
+				}
+			}
+
+			return null;
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into an unsigned byte value.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     The unsigned byte value represented by the string if the string can be converted into an unsigned byte, null otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         <see cref="NumberStyles" />.<see cref="NumberStyles.Any" /> and <see cref="CultureInfo" />.<see cref="CultureInfo.CurrentCulture" /> are used for parsing.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static byte? ToByte (this string str)
+		{
+			return str.ToByte(NumberStyles.Any, CultureInfo.CurrentCulture);
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into an unsigned byte value.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <param name="style"> The number styles which are to be expected in the string. </param>
+		/// <param name="provider"> An object that supplies culture-specific formatting information for parsing the string. Can be null to use the current threads culture. </param>
+		/// <returns>
+		///     The unsigned byte value represented by the string if the string can be converted into an unsigned byte, null otherwise.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static byte? ToByte (this string str, NumberStyles style, IFormatProvider provider)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			byte value = 0;
+			if (byte.TryParse(str, style, provider, out value))
+			{
+				return value;
+			}
+
+			return null;
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into an unsigned byte value.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     The unsigned byte value represented by the string if the string can be converted into an unsigned byte, null otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         <see cref="NumberStyles" />.<see cref="NumberStyles.Any" /> and <see cref="CultureInfo" />.<see cref="CultureInfo.InvariantCulture" /> are used for parsing.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static byte? ToByteInvariant (this string str)
+		{
+			return str.ToByte(NumberStyles.Any, CultureInfo.InvariantCulture);
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into a date and time.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     The date and time represented by the string if the string is a date and time as produced by <see cref="DateTimeExtensions.ToSortableString(DateTime)" />, null otherwise.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static DateTime? ToDateTimeFromSortable (this string str)
+		{
+			return str.ToDateTimeFromSortable(null);
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into a date and time.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <param name="separator"> The expected separator between each unit of the date and time. </param>
+		/// <returns>
+		///     The date and time represented by the string if the string is a date and time as produced by <see cref="DateTimeExtensions.ToSortableString(DateTime,char)" />, null otherwise.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static DateTime? ToDateTimeFromSortable (this string str, char separator)
+		{
+			return str.ToDateTimeFromSortable(new string(separator, 1));
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into a date and time.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <param name="separator"> The expected separator between each unit of the date and time. </param>
+		/// <returns>
+		///     The date and time represented by the string if the string is a date and time as produced by <see cref="DateTimeExtensions.ToSortableString(DateTime,string)" />, null otherwise.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static DateTime? ToDateTimeFromSortable (this string str, string separator)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			StringBuilder format = new StringBuilder(35);
+
+			format.Append("yyyy");
+			if (separator != null)
+			{
+				format.Append("'");
+				format.Append(separator);
+				format.Append("'");
+			}
+			format.Append("MM");
+			if (separator != null)
+			{
+				format.Append("'");
+				format.Append(separator);
+				format.Append("'");
+			}
+			format.Append("dd");
+			if (separator != null)
+			{
+				format.Append("'");
+				format.Append(separator);
+				format.Append("'");
+			}
+			format.Append("HH");
+			if (separator != null)
+			{
+				format.Append("'");
+				format.Append(separator);
+				format.Append("'");
+			}
+			format.Append("mm");
+			if (separator != null)
+			{
+				format.Append("'");
+				format.Append(separator);
+				format.Append("'");
+			}
+			format.Append("ss");
+			if (separator != null)
+			{
+				format.Append("'");
+				format.Append(separator);
+				format.Append("'");
+			}
+			format.Append("fff");
+			if (separator != null)
+			{
+				format.Append("'");
+				format.Append(separator);
+				format.Append("'");
+			}
+
+			DateTime timestamp;
+			if (DateTime.TryParseExact(str, format.ToString(), CultureInfo.InvariantCulture, DateTimeStyles.None, out timestamp))
+			{
+				return timestamp;
+			}
+
+			return null;
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into double precision floating point value.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     The double precision floating point value represented by the string if the string can be converted into a floating point, null otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         <see cref="NumberStyles" />.<see cref="NumberStyles.Any" /> and <see cref="CultureInfo" />.<see cref="CultureInfo.CurrentCulture" /> are used for parsing.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static double? ToDouble (this string str)
+		{
+			return str.ToDouble(NumberStyles.Any, CultureInfo.CurrentCulture);
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into double precision floating point value.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <param name="style"> The number styles which are to be expected in the string. </param>
+		/// <param name="provider"> An object that supplies culture-specific formatting information for parsing the string. Can be null to use the current threads culture. </param>
+		/// <returns>
+		///     The double precision floating point value represented by the string if the string can be converted into a floating point, null otherwise.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static double? ToDouble (this string str, NumberStyles style, IFormatProvider provider)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			double value = 0;
+			if (double.TryParse(str, style, provider, out value))
+			{
+				return value;
+			}
+
+			return null;
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into double precision floating point value.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     The double precision floating point value represented by the string if the string can be converted into a floating point, null otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         <see cref="NumberStyles" />.<see cref="NumberStyles.Any" /> and <see cref="CultureInfo" />.<see cref="CultureInfo.InvariantCulture" /> are used for parsing.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static double? ToDoubleInvariant (this string str)
+		{
+			return str.ToDouble(NumberStyles.Any, CultureInfo.InvariantCulture);
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into a specified enumeration type.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <param name="enumType"> The enumeration type. </param>
+		/// <returns>
+		///     The enumeration value represented by the string if the string can be converted into the specified enumeration type, null otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <note type="note">
+		///         This method is considered very slow.
+		///     </note>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> or <paramref name="enumType" /> is null. </exception>
+		/// <exception cref="NotAnEnumerationArgumentException"> <paramref name="enumType" /> is not an enumeration type. </exception>
+		public static object ToEnum (this string str, Type enumType)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			if (enumType == null)
+			{
+				throw new ArgumentNullException(nameof(enumType));
+			}
+
+			if (!enumType.IsEnum)
+			{
+				throw new NotAnEnumerationArgumentException(nameof(enumType));
+			}
+
+			try
+			{
+				return Enum.Parse(enumType, str, true);
+			}
+			catch
+			{
+				return null;
+			}
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into a specified enumeration type.
+		/// </summary>
+		/// <typeparam name="T"> The enumeration type. </typeparam>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     The enumeration value represented by the string if the string can be converted into the specified enumeration type, null otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <note type="note">
+		///         This method is considered very slow.
+		///     </note>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		/// <exception cref="NotAnEnumerationArgumentException"> <typeparamref name="T" /> is not an enumeration type. </exception>
+		public static T? ToEnum <T> (this string str) where T : struct
+		{
+			return (T?)str.ToEnum(typeof(T));
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into single precision floating point value.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     The single precision floating point value represented by the string if the string can be converted into a floating point, null otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         <see cref="NumberStyles" />.<see cref="NumberStyles.Any" /> and <see cref="CultureInfo" />.<see cref="CultureInfo.CurrentCulture" /> are used for parsing.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static float? ToFloat (this string str)
+		{
+			return str.ToFloat(NumberStyles.Any, CultureInfo.CurrentCulture);
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into single precision floating point value.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <param name="style"> The number styles which are to be expected in the string. </param>
+		/// <param name="provider"> An object that supplies culture-specific formatting information for parsing the string. Can be null to use the current threads culture. </param>
+		/// <returns>
+		///     The single precision floating point value represented by the string if the string can be converted into a floating point, null otherwise.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static float? ToFloat (this string str, NumberStyles style, IFormatProvider provider)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			float value = 0;
+			if (float.TryParse(str, style, provider, out value))
+			{
+				return value;
+			}
+
+			return null;
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into single precision floating point value.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     The single precision floating point value represented by the string if the string can be converted into a floating point, null otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         <see cref="NumberStyles" />.<see cref="NumberStyles.Any" /> and <see cref="CultureInfo" />.<see cref="CultureInfo.InvariantCulture" /> are used for parsing.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static float? ToFloatInvariant (this string str)
+		{
+			return str.ToFloat(NumberStyles.Any, CultureInfo.InvariantCulture);
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into a <see cref="Guid" /> value.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     The <see cref="Guid" /> value represented by the string if the string can be converted into a <see cref="Guid" />, null otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <note type="note">
+		///         This method is considered very slow.
+		///     </note>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static Guid? ToGuid (this string str)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			try
+			{
+				return new Guid(str);
+			}
+			catch
+			{
+				return null;
+			}
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into a signed short.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     The signed short value represented by the string if the string can be converted into a signed short, null otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         <see cref="NumberStyles" />.<see cref="NumberStyles.Any" /> and <see cref="CultureInfo" />.<see cref="CultureInfo.CurrentCulture" /> are used for parsing.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static short? ToInt16 (this string str)
+		{
+			return str.ToInt16(NumberStyles.Any, CultureInfo.CurrentCulture);
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into a signed short.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <param name="style"> The number styles which are to be expected in the string. </param>
+		/// <param name="provider"> An object that supplies culture-specific formatting information for parsing the string. Can be null to use the current threads culture. </param>
+		/// <returns>
+		///     The signed short value represented by the string if the string can be converted into a signed short, null otherwise.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static short? ToInt16 (this string str, NumberStyles style, IFormatProvider provider)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			short value = 0;
+			if (short.TryParse(str, style, provider, out value))
+			{
+				return value;
+			}
+
+			return null;
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into a signed short.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     The signed short value represented by the string if the string can be converted into a signed short, null otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         <see cref="NumberStyles" />.<see cref="NumberStyles.Any" /> and <see cref="CultureInfo" />.<see cref="CultureInfo.InvariantCulture" /> are used for parsing.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static short? ToInt16Invariant (this string str)
+		{
+			return str.ToInt16(NumberStyles.Any, CultureInfo.InvariantCulture);
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into a signed int.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     The signed int value represented by the string if the string can be converted into a signed int, null otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         <see cref="NumberStyles" />.<see cref="NumberStyles.Any" /> and <see cref="CultureInfo" />.<see cref="CultureInfo.CurrentCulture" /> are used for parsing.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static int? ToInt32 (this string str)
+		{
+			return str.ToInt32(NumberStyles.Any, CultureInfo.CurrentCulture);
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into a signed int.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <param name="style"> The number styles which are to be expected in the string. </param>
+		/// <param name="provider"> An object that supplies culture-specific formatting information for parsing the string. Can be null to use the current threads culture. </param>
+		/// <returns>
+		///     The signed int value represented by the string if the string can be converted into a signed int, null otherwise.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static int? ToInt32 (this string str, NumberStyles style, IFormatProvider provider)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			int value = 0;
+			if (int.TryParse(str, style, provider, out value))
+			{
+				return value;
+			}
+
+			return null;
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into a signed int.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     The signed int value represented by the string if the string can be converted into a signed int, null otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         <see cref="NumberStyles" />.<see cref="NumberStyles.Any" /> and <see cref="CultureInfo" />.<see cref="CultureInfo.InvariantCulture" /> are used for parsing.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static int? ToInt32Invariant (this string str)
+		{
+			return str.ToInt32(NumberStyles.Any, CultureInfo.InvariantCulture);
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into a signed long.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     The signed long value represented by the string if the string can be converted into a signed long, null otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         <see cref="NumberStyles" />.<see cref="NumberStyles.Any" /> and <see cref="CultureInfo" />.<see cref="CultureInfo.CurrentCulture" /> are used for parsing.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static long? ToInt64 (this string str)
+		{
+			return str.ToInt64(NumberStyles.Any, CultureInfo.CurrentCulture);
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into a signed long.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <param name="style"> The number styles which are to be expected in the string. </param>
+		/// <param name="provider"> An object that supplies culture-specific formatting information for parsing the string. Can be null to use the current threads culture. </param>
+		/// <returns>
+		///     The signed long value represented by the string if the string can be converted into a signed long, null otherwise.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static long? ToInt64 (this string str, NumberStyles style, IFormatProvider provider)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			long value = 0;
+			if (long.TryParse(str, style, provider, out value))
+			{
+				return value;
+			}
+
+			return null;
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into a signed long.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     The signed long value represented by the string if the string can be converted into a signed long, null otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <see cref="NumberStyles" />.<see cref="NumberStyles.Any" /> and <see cref="CultureInfo" />.<see cref="CultureInfo.InvariantCulture" /> are used for parsing.
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static long? ToInt64Invariant (this string str)
+		{
+			return str.ToInt64(NumberStyles.Any, CultureInfo.InvariantCulture);
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into a signed byte value.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     The signed byte value represented by the string if the string can be converted into a signed byte, null otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         <see cref="NumberStyles" />.<see cref="NumberStyles.Any" /> and <see cref="CultureInfo" />.<see cref="CultureInfo.CurrentCulture" /> are used for parsing.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static sbyte? ToSByte (this string str)
+		{
+			return str.ToSByte(NumberStyles.Any, CultureInfo.CurrentCulture);
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into a signed byte value.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <param name="style"> The number styles which are to be expected in the string. </param>
+		/// <param name="provider"> An object that supplies culture-specific formatting information for parsing the string. Can be null to use the current threads culture. </param>
+		/// <returns>
+		///     The signed byte value represented by the string if the string can be converted into a signed byte, null otherwise.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static sbyte? ToSByte (this string str, NumberStyles style, IFormatProvider provider)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			sbyte value = 0;
+			if (sbyte.TryParse(str, style, provider, out value))
+			{
+				return value;
+			}
+
+			return null;
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into a signed byte value.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     The signed byte value represented by the string if the string can be converted into a signed byte, null otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         <see cref="NumberStyles" />.<see cref="NumberStyles.Any" /> and <see cref="CultureInfo" />.<see cref="CultureInfo.InvariantCulture" /> are used for parsing.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static sbyte? ToSByteInvariant (this string str)
+		{
+			return str.ToSByte(NumberStyles.Any, CultureInfo.InvariantCulture);
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into an unsigned short.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     The unsigned short value represented by the string if the string can be converted into an unsigned short, null otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         <see cref="NumberStyles" />.<see cref="NumberStyles.Any" /> and <see cref="CultureInfo" />.<see cref="CultureInfo.CurrentCulture" /> are used for parsing.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static ushort? ToUInt16 (this string str)
+		{
+			return str.ToUInt16(NumberStyles.Any, CultureInfo.CurrentCulture);
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into an unsigned short.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <param name="style"> The number styles which are to be expected in the string. </param>
+		/// <param name="provider"> An object that supplies culture-specific formatting information for parsing the string. Can be null to use the current threads culture. </param>
+		/// <returns>
+		///     The unsigned short value represented by the string if the string can be converted into an unsigned short, null otherwise.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static ushort? ToUInt16 (this string str, NumberStyles style, IFormatProvider provider)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			ushort value = 0;
+			if (ushort.TryParse(str, style, provider, out value))
+			{
+				return value;
+			}
+
+			return null;
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into an unsigned short.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     The unsigned short value represented by the string if the string can be converted into an unsigned short, null otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         <see cref="NumberStyles" />.<see cref="NumberStyles.Any" /> and <see cref="CultureInfo" />.<see cref="CultureInfo.InvariantCulture" /> are used for parsing.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static ushort? ToUInt16Invariant (this string str)
+		{
+			return str.ToUInt16(NumberStyles.Any, CultureInfo.InvariantCulture);
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into an unsigned int.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     The unsigned int value represented by the string if the string can be converted into an unsigned int, null otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         <see cref="NumberStyles" />.<see cref="NumberStyles.Any" /> and <see cref="CultureInfo" />.<see cref="CultureInfo.CurrentCulture" /> are used for parsing.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static uint? ToUInt32 (this string str)
+		{
+			return str.ToUInt32(NumberStyles.Any, CultureInfo.CurrentCulture);
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into an unsigned int.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <param name="style"> The number styles which are to be expected in the string. </param>
+		/// <param name="provider"> An object that supplies culture-specific formatting information for parsing the string. Can be null to use the current threads culture. </param>
+		/// <returns>
+		///     The unsigned int value represented by the string if the string can be converted into an unsigned int, null otherwise.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static uint? ToUInt32 (this string str, NumberStyles style, IFormatProvider provider)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			uint value = 0;
+			if (uint.TryParse(str, style, provider, out value))
+			{
+				return value;
+			}
+
+			return null;
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into an unsigned int.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     The unsigned int value represented by the string if the string can be converted into an unsigned int, null otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         <see cref="NumberStyles" />.<see cref="NumberStyles.Any" /> and <see cref="CultureInfo" />.<see cref="CultureInfo.InvariantCulture" /> are used for parsing.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static uint? ToUInt32Invariant (this string str)
+		{
+			return str.ToUInt32(NumberStyles.Any, CultureInfo.InvariantCulture);
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into an unsigned long.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     The unsigned long value represented by the string if the string can be converted into an unsigned long, null otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         <see cref="NumberStyles" />.<see cref="NumberStyles.Any" /> and <see cref="CultureInfo" />.<see cref="CultureInfo.CurrentCulture" /> are used for parsing.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static ulong? ToUInt64 (this string str)
+		{
+			return str.ToUInt64(NumberStyles.Any, CultureInfo.CurrentCulture);
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into an unsigned long.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <param name="style"> The number styles which are to be expected in the string. </param>
+		/// <param name="provider"> An object that supplies culture-specific formatting information for parsing the string. Can be null to use the current threads culture. </param>
+		/// <returns>
+		///     The unsigned long value represented by the string if the string can be converted into an unsigned long, null otherwise.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static ulong? ToUInt64 (this string str, NumberStyles style, IFormatProvider provider)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			ulong value = 0;
+			if (ulong.TryParse(str, style, provider, out value))
+			{
+				return value;
+			}
+
+			return null;
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into an unsigned long.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     The unsigned long value represented by the string if the string can be converted into an unsigned long, null otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         <see cref="NumberStyles" />.<see cref="NumberStyles.Any" /> and <see cref="CultureInfo" />.<see cref="CultureInfo.InvariantCulture" /> are used for parsing.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static ulong? ToUInt64Invariant (this string str)
+		{
+			return str.ToUInt64(NumberStyles.Any, CultureInfo.InvariantCulture);
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into a <see cref="Version" /> value.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     The <see cref="Version" /> value represented by the string if the string can be converted into a <see cref="Version" />, null otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <note type="note">
+		///         This method is considered very slow.
+		///     </note>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static Version ToVersion (this string str)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			try
+			{
+				return new Version(str);
+			}
+			catch
+			{
+				return null;
+			}
+		}
+
+		/// <summary>
+		///     Converts a string into another string where escape sequences are converted back to certain special characters.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     The resulting string with escape sequences converted back to special characters.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         An escape sequence always starts with \ followed by a single character specifying the escape sequence, e.g. \n for new-line.
+		///     </para>
+		///     <para>
+		///         The following special characters are un-escaped: \a, \b, \f, \n, \r, \t, \v, \, ', ".
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static string Unescape (this string str)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			if (str.Length == 0)
+			{
+				return string.Empty;
+			}
+
+			StringBuilder sb = new StringBuilder(str.Length);
+
+			char current = '\0';
+			char next = '\0';
+			char? replacement = null;
+
+			for (int i1 = 0; i1 < str.Length; i1++)
+			{
+				current = str[i1];
+				if (( current == '\\' ) && ( i1 < ( str.Length - 1 ) ))
+				{
+					next = str[i1 + 1];
+					replacement = null;
+
+					if (next == 'a')
+					{
+						replacement = '\a';
+					}
+					else if (next == 'b')
+					{
+						replacement = '\b';
+					}
+					else if (next == 'f')
+					{
+						replacement = '\f';
+					}
+					else if (next == 'n')
+					{
+						replacement = '\n';
+					}
+					else if (next == 'r')
+					{
+						replacement = '\r';
+					}
+					else if (next == 't')
+					{
+						replacement = '\t';
+					}
+					else if (next == 'v')
+					{
+						replacement = '\v';
+					}
+					else if (next == '\\')
+					{
+						replacement = '\\';
+					}
+					else if (next == '\'')
+					{
+						replacement = '\'';
+					}
+					else if (next == '\"')
+					{
+						replacement = '\"';
+					}
+
+					if (replacement.HasValue)
+					{
+						sb.Append(replacement.Value);
+						i1++;
+					}
+					else
+					{
+						sb.Append(current);
+					}
+				}
+				else
+				{
+					sb.Append(current);
+				}
+			}
+
+			return sb.ToString();
+		}
+
+		#endregion
+	}
+}

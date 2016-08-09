@@ -1,0 +1,15 @@
+﻿Modularization:
+
+Composition:
+
+Collections:
+
+Utilities:
+
+Desktop and Mobile: Works on desktop and mobile. Tested with Windows, MacOS, Android, iOS.
+
+Well documented: All classes, methods, properties, etc. are documented. Concepts are explained and demonstrated using simple code snippets.
+
+For everyone: Editor centric? Utilities and collections make scripting easier! Code centric? Improve structure and maintainability using Modularization and Composition!
+
+Non-intrusive: Functionalities are independent of each other (except Modularization) so you only deal with what you need.

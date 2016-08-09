@@ -1,0 +1,24 @@
+﻿
+ - Add ".NET" documentation
+
+ - Examples
+ - Type and member descriptions
+ - TODOs
+
+ - Analyze "Magic thread"
+
+ - Check exception throwing (messages, parameter names)
+ - Remove SuppressMessage attributes where possible
+ - Check all classes for Suggestions, Warnings, Errors
+ 
+ - Split testing also into "Common" and ".NET"
+ - Complete tests
+ - Test runs (Windows, MacOS, iOS, Android)
+
+ - Change naming of "standalone"
+ - Conceptional documentation
+ - Cleanup artifacts
+
+ - Promotional material
+ - Website
+ - Asset store

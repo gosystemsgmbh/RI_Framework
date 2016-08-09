@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<topic id="b20d1e13-cad9-4f24-a151-aeec2c3efb92"
+       revisionNumber="1">
+  <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+                               xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <autoOutline />
+      <para>
+        The following roadmap and wishlist gives an outlook to the planned features and upcoming releases. This does of course not include bugfix releases which will always happen as soon as reasonable possible.
+      </para>
+      <para>
+        The roadmap and wishlist might change before and after each release and planned features might be dropped without prior notice.
+      </para>
+      <para>
+        If you think an item has the wrong priority or if you miss a feature, do not hesitate to <link xlink:href="e666ce46-f739-4f98-81cc-e1646ce5bb62">share your opinion</link>.
+      </para>
+    </introduction>
+
+    <section address="V_1_1">
+      <title>Version 1.1</title>
+      <content>
+        <list class="bullet">
+          <listItem>
+            <para>Collections: Additional utility/extension methods</para>
+          </listItem>
+          <listItem>
+            <para>Collections: Sorted queue</para>
+          </listItem>
+          <listItem>
+            <para>Collections: Priority queue</para>
+          </listItem>
+          <listItem>
+            <para>Collections: Ring buffer</para>
+          </listItem>
+          <listItem>
+            <para>Collections: Inheriting tree node</para>
+          </listItem>
+          <listItem>
+            <para>Composition: Allow composition catalog updates</para>
+          </listItem>
+          <listItem>
+            <para>Math: Aggregate and statistics extensions</para>
+          </listItem>
+          <listItem>
+            <para>Math: PID controller</para>
+          </listItem>
+          <listItem>
+            <para>Behaviour: Splash screen</para>
+          </listItem>
+          <listItem>
+            <para>I/O: Random stream</para>
+          </listItem>
+        </list>
+      </content>
+    </section>
+
+    <section address="V_1_2">
+      <title>Version 1.2</title>
+      <content>
+        <list class="bullet">
+          <listItem>
+            <para>State machines</para>
+          </listItem>
+          <listItem>
+            <para>Utilities: Screenshot</para>
+          </listItem>
+          <listItem>
+            <para>Math: Bezier/Spline curves</para>
+          </listItem>
+          <listItem>
+            <para>I/O: File and directory path utilities</para>
+          </listItem>
+          <listItem>
+            <para>I/O: Stream extensions</para>
+          </listItem>
+          <listItem>
+            <para>Dispatcher service: Add timeout capability (for use with Background and Idle priorities)</para>
+          </listItem>
+        </list>
+      </content>
+    </section>
+
+    <section address="V_1_3">
+      <title>Version 1.3</title>
+      <content>
+        <list class="bullet">
+          <listItem>
+            <para>I/O: INI file reader, writer, document</para>
+          </listItem>
+          <listItem>
+            <para>I/O: CSV file reader, writer, document</para>
+          </listItem>
+          <listItem>
+            <para>Services: Settings</para>
+          </listItem>
+          <listItem>
+            <para>Services: Resources</para>
+          </listItem>
+          <listItem>
+            <para>Services: Packaging (&quot;Mods&quot;)</para>
+          </listItem>
+        </list>
+      </content>
+    </section>
+
+    <section address="Unspecified">
+      <title>Unspecified</title>
+      <content>
+        <list class="bullet">
+          <listItem>
+            <para>I/O: OBJ mesh loader</para>
+          </listItem>
+          <listItem>
+            <para>I/O: JSON mesh loader (babylon.JS)</para>
+          </listItem>
+          <listItem>
+            <para>I/O: ZIP file reader</para>
+          </listItem>
+          <listItem>
+            <para>Services: Input</para>
+          </listItem>
+          <listItem>
+            <para>Services: Audio</para>
+          </listItem>
+          <listItem>
+            <para>Services: User interface</para>
+          </listItem>
+        </list>
+      </content>
+    </section>
+
+  </developerConceptualDocument>
+</topic>

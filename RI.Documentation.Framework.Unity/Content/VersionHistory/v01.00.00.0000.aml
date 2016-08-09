@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<topic id="5301703f-80a0-4d39-972f-3d2950ddf998"
+       revisionNumber="1">
+  <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+                               xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>Release date: [TODO]</para>
+      <autoOutline />
+    </introduction>
+
+    <section address="Enhancements">
+      <title>Enhancements</title>
+      <content>
+        <para>(first version)</para>
+      </content>
+    </section>
+
+    <section address="Changes">
+      <title>Changes</title>
+      <content>
+        <para>(first version)</para>
+      </content>
+    </section>
+
+    <section address="Fixes">
+      <title>Fixes</title>
+      <content>
+        <para>(first version)</para>
+      </content>
+    </section>
+
+  </developerConceptualDocument>
+</topic>
