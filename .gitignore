@@ -250,6 +250,7 @@ paket-files/
 # JetBrains Rider
 .idea/
 *.sln.iml
+
 /_Output
 /_Test
 /_Input
