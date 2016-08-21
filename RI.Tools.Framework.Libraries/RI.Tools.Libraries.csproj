@@ -7,8 +7,8 @@
     <ProjectGuid>{59451CBF-33C9-4247-8446-B2E3D4105FDE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RI.Tools.Libraries</RootNamespace>
-    <AssemblyName>RI.Tools.Libraries</AssemblyName>
+    <RootNamespace>RI.Tools.Framework.Libraries</RootNamespace>
+    <AssemblyName>RI.Tools.Framework.Libraries</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
