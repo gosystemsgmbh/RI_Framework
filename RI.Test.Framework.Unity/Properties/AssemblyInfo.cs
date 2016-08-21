@@ -4,8 +4,8 @@ using System.Reflection;
 
 
 
-[assembly: AssemblyTitle ("RI.Test.Unity")]
-[assembly: AssemblyDescription ("RI.Test.Unity")]
+[assembly: AssemblyTitle ("RI.Test.Framework.Unity")]
+[assembly: AssemblyDescription ("RI.Test.Framework.Unity")]
 [assembly: AssemblyProduct ("Utility Framework")]
 [assembly: AssemblyCompany ("Roten Informatik")]
 [assembly: AssemblyCopyright ("Copyright (c) 2015-2016 Roten Informatik")]
