@@ -6,6 +6,7 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Solution", "_Solution", "{237458F2-03F8-4EE2-B506-A6F935736306}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		README.md = README.md
 		RI.Framework.Property.Company.txt = RI.Framework.Property.Company.txt
 		RI.Framework.Property.Copyright.txt = RI.Framework.Property.Copyright.txt
 		RI.Framework.Property.Version.txt = RI.Framework.Property.Version.txt
