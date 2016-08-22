@@ -31,5 +31,6 @@
 ## Second release
 
 - [ ] Features
+  - [ ] Path extensions
 - [ ] Documentation
   - [ ] .NET documentation
