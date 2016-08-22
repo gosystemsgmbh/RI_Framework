@@ -50,6 +50,8 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="IO\Paths\DirectoryPathExtensions.cs" />
+    <None Include="IO\Paths\FilePathExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Regions\IRegionAdapter.cs" />
     <Compile Include="Services\Regions\IRegionContainer.cs" />

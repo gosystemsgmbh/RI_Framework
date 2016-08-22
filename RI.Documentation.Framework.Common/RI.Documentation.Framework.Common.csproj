@@ -33,7 +33,6 @@
     <Content Include="Documents\Advertising.txt" />
     <Content Include="Documents\AOT compatibility.txt" />
     <Content Include="Documents\Nomenclature.txt" />
-    <Content Include="Documents\Todo.txt" />
     <Content Include="Documents\Wishlist.txt" />
   </ItemGroup>
   <ItemGroup>

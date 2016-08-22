@@ -56,13 +56,13 @@ Collections
 I/O
 ---
 
- - File and directory path (use in: DirectoryCatalog, DirectoryLogWriter, WpfBootstrapper)
- - PathProperties: ChangeType
+ + File and directory path (use in: DirectoryCatalog, DirectoryLogWriter, WpfBootstrapper)
+ + PathProperties: ChangeType
 
  - RandomStream
  - StreamExtensions
 
- - INI reader, writer, document
+ + INI reader, writer, document
  - CSV reader, writer, document
  - ZIP reader, writer, document
 
@@ -89,10 +89,10 @@ Services
  - (.NET) Backup
  - (.NET) Licensing
 
- - (Unity) Dispatcher: Pool for dispatcher operations?
- - (Unity) Dispatcher: Timeout for operations
- - (Unity) Dispatcher: Cancel all operations
- - (Unity) Dispatcher: Process (process item in background thread, then broadcast processed item)
+ + (Unity) Dispatcher: Pool for dispatcher operations?
+ + (Unity) Dispatcher: Timeout for operations
+ + (Unity) Dispatcher: Cancel all operations
+ + (Unity) Dispatcher: Process (process item in background thread, then broadcast processed item)
 
  - (Unity) Settings (UnitySettingService, PlayerPrefsSettingStorage)
  - (Unity) Resources (UnityResourceService, DirectoryResourceSource)

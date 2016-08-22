@@ -334,7 +334,7 @@ namespace RI.Framework.IO.Paths
 		/// <returns>
 		///     The clone of this <see cref="PathString" /> instance.
 		/// </returns>
-		protected abstract PathString Clone ();
+		protected abstract PathString CloneInternal ();
 
 		#endregion
 
@@ -371,7 +371,7 @@ namespace RI.Framework.IO.Paths
 		/// <inheritdoc />
 		object ICloneable.Clone ()
 		{
-			return this.Clone();
+			return this.CloneInternal();
 		}
 
 		#endregion
@@ -384,7 +384,7 @@ namespace RI.Framework.IO.Paths
 		/// <inheritdoc />
 		PathString ICloneable<PathString>.Clone ()
 		{
-			return this.Clone();
+			return this.CloneInternal();
 		}
 
 		#endregion
