@@ -634,8 +634,23 @@ namespace RI.Framework.IO.Paths
 			return PathProperties.FromPath(allLinkPath, root.AllowWildcards || path.AllowWildcards, root.AllowRelatives || path.AllowRelatives, root.Type);
 		}
 
-		private static string CreatePath (List<string> parts, PathType type, bool isRooted)
+		/// <summary>
+		///     Creates a path string from multiple path parts.
+		/// </summary>
+		/// <param name="parts"> The parts which build the path string. </param>
+		/// <param name="type"> The type of path to build. </param>
+		/// <param name="isRooted"> Specifies whether the path is rooted or not. </param>
+		/// <returns>
+		///     The created path or null if <paramref name="type" /> is <see cref="PathType.Invalid" />.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="parts" /> is null. </exception>
+		internal static string CreatePath (List<string> parts, PathType type, bool isRooted)
 		{
+			if (parts == null)
+			{
+				throw new ArgumentNullException(nameof(parts));
+			}
+
 			if (type == PathType.Invalid)
 			{
 				return null;

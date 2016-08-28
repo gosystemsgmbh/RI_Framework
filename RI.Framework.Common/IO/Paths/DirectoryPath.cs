@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 
+using RI.Framework.Collections;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.ObjectModel;
 
@@ -122,26 +124,67 @@ namespace RI.Framework.IO.Paths
 
 		#region Instance Methods
 
+		/// <summary>
+		///     Creates a new directory path by appending one or more additional directory paths.
+		/// </summary>
+		/// <param name="directories"> A sequence with one or more directory paths to append. </param>
+		/// <returns>
+		///     The new directory path with all appended directories.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         If <paramref name="directories" /> is an empty sequence, the same instance as this directory path is returned without any changes.
+		///     </para>
+		///     <para>
+		///         <paramref name="directories" /> is only enumerated once.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="directories" /> is null. </exception>
+		/// <exception cref="InvalidPathArgumentException"> <paramref name="directories" /> contains at least one <see cref="DirectoryPath" /> which is rooted. </exception>
+		public DirectoryPath Append (IEnumerable<DirectoryPath> directories)
+		{
+			if (directories == null)
+			{
+				throw new ArgumentNullException(nameof(directories));
+			}
+
+			return this.Append(directories.ToArray());
+		}
+
+		/// <summary>
+		///     Creates a new directory path by appending one or more additional directory paths.
+		/// </summary>
+		/// <param name="directories"> An array with one or more directory paths to append. </param>
+		/// <returns>
+		///     The new directory path with all appended directories.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         If <paramref name="directories" /> is an empty array, the same instance as this directory path is returned without any changes.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="directories" /> is null. </exception>
+		/// <exception cref="InvalidPathArgumentException"> <paramref name="directories" /> contains at least one <see cref="DirectoryPath" /> which is rooted. </exception>
 		public DirectoryPath Append (params DirectoryPath[] directories)
 		{
-			directories = directories ?? new DirectoryPath[0];
-
-			for (int i1 = 0; i1 < directories.Length; i1++)
+			if (directories == null)
 			{
-				if (directories[i1].IsAbsolute)
+				throw new ArgumentNullException(nameof(directories));
+			}
+
+			List<string> parts = new List<string>();
+			parts.Add(this.PathNormalized);
+			foreach (DirectoryPath directory in directories)
+			{
+				if (directory.IsRooted)
 				{
-					throw ( new PathNotRelativeArgumentException(nameof(directories)) );
+					throw new InvalidPathArgumentException(nameof(directories));
 				}
+				parts.Add(directory.PathNormalized);
 			}
 
-			string path = this.Path;
-
-			for (int i1 = 0; i1 < directories.Length; i1++)
-			{
-				path = Path.Combine(path, directories[i1].Path);
-			}
-
-			return ( new DirectoryPath(path) );
+			string path = PathProperties.CreatePath(parts, this.Type, this.IsRooted);
+			return new DirectoryPath(path, this.PathInternal.AllowWildcards, this.PathInternal.AllowRelatives, this.Type);
 		}
 
 		public FilePath Append (FilePath file)

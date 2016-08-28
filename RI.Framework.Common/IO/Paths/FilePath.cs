@@ -167,59 +167,106 @@ namespace RI.Framework.IO.Paths
 
 		#region Instance Methods
 
+		/// <summary>
+		///     Creates a new file path with this file name but another directory.
+		/// </summary>
+		/// <param name="directory"> The new directory path. </param>
+		/// <returns>
+		///     The new file path.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="directory" /> is null. </exception>
 		public FilePath ChangeDirectory (DirectoryPath directory)
 		{
 			if (directory == null)
 			{
-				throw ( new ArgumentNullException(nameof(directory)) );
+				throw new ArgumentNullException(nameof(directory));
 			}
 
-			return ( new FilePath(Path.Combine(directory.Path, this.FileName)) );
+			return directory.Append(new FilePath(this.FileName, this.PathInternal.AllowWildcards, this.PathInternal.AllowRelatives, this.Type));
 		}
 
+		/// <summary>
+		///     Creates a new file path with this file name and directory but another extension.
+		/// </summary>
+		/// <param name="extension"> The new extension. </param>
+		/// <returns>
+		///     The new file path.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="extension" /> is null. </exception>
+		/// <exception cref="InvalidPathArgumentException"> The existing file name (without extension) plus <paramref name="extension" /> do not form a valid new file name. </exception>
 		public FilePath ChangeExtension (string extension)
 		{
 			if (extension == null)
 			{
-				throw ( new ArgumentNullException(nameof(extension)) );
+				throw new ArgumentNullException(nameof(extension));
 			}
 
-			if (!FilePath.IsFileExtension(extension, false))
+			FilePath newFile = null;
+			try
 			{
-				throw ( new InvalidPathArgumentException(nameof(extension)) );
+				newFile = new FilePath(this.FileNameWithoutExtension + PathProperties.FileExtensionSeparator + extension, this.PathInternal.AllowWildcards, this.PathInternal.AllowRelatives, this.Type);
 			}
-
-			return ( new FilePath(Path.ChangeExtension(this.Path, extension)) );
+			catch (Exception exception)
+			{
+				throw new InvalidPathArgumentException(exception.Message, exception);
+			}
+			return this.Directory.Append(newFile);
 		}
 
+		/// <summary>
+		///     Creates a new file path with this directory but another file name (including extension).
+		/// </summary>
+		/// <param name="fileName"> The new file name including its extension. </param>
+		/// <returns>
+		///     The new file path.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="fileName" /> is null. </exception>
+		/// <exception cref="InvalidPathArgumentException"> <paramref name="fileName" /> is not a valid new file name. </exception>
 		public FilePath ChangeFileName (string fileName)
 		{
 			if (fileName == null)
 			{
-				throw ( new ArgumentNullException(nameof(fileName)) );
+				throw new ArgumentNullException(nameof(fileName));
 			}
 
-			if (!FilePath.IsFilePath(fileName, false))
+			FilePath newFile = null;
+			try
 			{
-				throw ( new InvalidPathArgumentException(nameof(fileName)) );
+				newFile = new FilePath(fileName, this.PathInternal.AllowWildcards, this.PathInternal.AllowRelatives, this.Type);
 			}
-
-			return ( new FilePath(Path.Combine(this.Directory.Path, fileName)) );
+			catch (Exception exception)
+			{
+				throw new InvalidPathArgumentException(exception.Message, exception);
+			}
+			return this.Directory.Append(newFile);
 		}
 
+		/// <summary>
+		///     Creates a new file path with this directory but another file name (keeping this extension).
+		/// </summary>
+		/// <param name="fileNameWithoutExtension"> The new file name without its extension. </param>
+		/// <returns>
+		///     The new file path.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="fileNameWithoutExtension" /> is null. </exception>
+		/// <exception cref="InvalidPathArgumentException"> <paramref name="fileNameWithoutExtension" /> plus the existing extension do not form a valid new file name. </exception>
 		public FilePath ChangeFileNameWithoutExtension (string fileNameWithoutExtension)
 		{
 			if (fileNameWithoutExtension == null)
 			{
-				throw ( new ArgumentNullException(nameof(fileNameWithoutExtension)) );
+				throw new ArgumentNullException(nameof(fileNameWithoutExtension));
 			}
 
-			if (!FilePath.IsFilePath(fileNameWithoutExtension, false))
+			FilePath newFile = null;
+			try
 			{
-				throw ( new InvalidPathArgumentException(nameof(fileNameWithoutExtension)) );
+				newFile = new FilePath(fileNameWithoutExtension + PathProperties.FileExtensionSeparator + this.ExtensionWithoutDot, this.PathInternal.AllowWildcards, this.PathInternal.AllowRelatives, this.Type);
 			}
-
-			return ( new FilePath(Path.Combine(this.Directory.Path, fileNameWithoutExtension + ( this.Extension ?? string.Empty ))) );
+			catch (Exception exception)
+			{
+				throw new InvalidPathArgumentException(exception.Message, exception);
+			}
+			return this.Directory.Append(newFile);
 		}
 
 		public FilePath ToAbsolutePath (DirectoryPath root)
