@@ -21,7 +21,7 @@ namespace RI.Framework.IO.Paths
 	///     </para>
 	///     <para>
 	///         <see cref="DirectoryPath" /> provides more directory path specific functionalities compared to <see cref="string" /> and offers a more consistent way of working with paths than <see cref="Path" />.
-	///         It is supported by this library where directory paths are used and can also be implicitly converted to a <see cref="string" /> to work with other libraries and the Base Class Library.
+	///         It can be implicitly converted to a <see cref="string" /> to work seamless with APIs using <see cref="string" /> for paths.
 	///     </para>
 	///     <para>
 	///         See <see cref="FilePath" /> for an example how to use <see cref="DirectoryPath" /> and <see cref="FilePath" />.

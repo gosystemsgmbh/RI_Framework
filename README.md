@@ -3,7 +3,7 @@
 ## First release
 
 - [ ] Features
-  - [ ] File and directory path
+  - [X] File and directory path
   - [ ] INI handling
   - [ ] Additional dispatcher Features
   - [ ] Analyze and implement magic thread
