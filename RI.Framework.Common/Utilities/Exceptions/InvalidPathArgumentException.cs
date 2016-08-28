@@ -2,6 +2,8 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
 
+using RI.Framework.IO.Paths;
+
 
 
 
@@ -17,7 +19,9 @@ namespace RI.Framework.Utilities.Exceptions
 	{
 		#region Constants
 
-		private const string ExceptionMessage = "The path argument is invalid.";
+		private const string ExceptionMessageWithError = "The path argument is invalid (path error: {0}).";
+
+		private const string ExceptionMessageWithoutError = "The path argument is invalid.";
 
 		#endregion
 
@@ -30,7 +34,7 @@ namespace RI.Framework.Utilities.Exceptions
 		///     Creates a new instance of <see cref="InvalidPathArgumentException" />.
 		/// </summary>
 		public InvalidPathArgumentException ()
-				: base(InvalidPathArgumentException.ExceptionMessage)
+			: base(InvalidPathArgumentException.ExceptionMessageWithoutError)
 		{
 		}
 
@@ -39,7 +43,17 @@ namespace RI.Framework.Utilities.Exceptions
 		/// </summary>
 		/// <param name="paramName"> The parameter whose type is invalid. </param>
 		public InvalidPathArgumentException (string paramName)
-				: base(InvalidPathArgumentException.ExceptionMessage, paramName)
+			: base(InvalidPathArgumentException.ExceptionMessageWithoutError, paramName)
+		{
+		}
+
+		/// <summary>
+		///     Creates a new instance of <see cref="InvalidPathArgumentException" />.
+		/// </summary>
+		/// <param name="paramName"> The parameter whose type is invalid. </param>
+		/// <param name="error"> The path error as analyzed by <see cref="PathProperties" />. </param>
+		public InvalidPathArgumentException (string paramName, PathError error)
+			: base(string.Format(InvalidPathArgumentException.ExceptionMessageWithError, error), paramName)
 		{
 		}
 
@@ -49,7 +63,7 @@ namespace RI.Framework.Utilities.Exceptions
 		/// <param name="paramName"> The parameter whose type is invalid. </param>
 		/// <param name="message"> The message which describes the exception. </param>
 		public InvalidPathArgumentException (string paramName, string message)
-				: base(message, paramName)
+			: base(message, paramName)
 		{
 		}
 
@@ -59,7 +73,7 @@ namespace RI.Framework.Utilities.Exceptions
 		/// <param name="message"> The message which describes the exception. </param>
 		/// <param name="innerException"> The exception which triggered this exception. </param>
 		public InvalidPathArgumentException (string message, Exception innerException)
-				: base(message, innerException)
+			: base(message, innerException)
 		{
 		}
 
@@ -69,7 +83,7 @@ namespace RI.Framework.Utilities.Exceptions
 		/// <param name="info"> The serialization data. </param>
 		/// <param name="context"> The type of the source of the serialization data. </param>
 		protected InvalidPathArgumentException (SerializationInfo info, StreamingContext context)
-				: base(info, context)
+			: base(info, context)
 		{
 		}
 

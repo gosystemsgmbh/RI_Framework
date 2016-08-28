@@ -116,6 +116,20 @@ namespace RI.Framework.IO.Paths
 		}
 
 		/// <summary>
+		///     Implicit conversion of a <see cref="PathString" /> to <see cref="string" />.
+		/// </summary>
+		/// <param name="path"> The path to convert to a string. </param>
+		public static implicit operator string (PathString path)
+		{
+			if (path == null)
+			{
+				return null;
+			}
+
+			return path.PathResolved;
+		}
+
+		/// <summary>
 		///     Compares two <see cref="PathString" />s for equality.
 		/// </summary>
 		/// <param name="x"> The first <see cref="PathString" />. </param>
@@ -173,7 +187,7 @@ namespace RI.Framework.IO.Paths
 
 			if (!path.IsValid)
 			{
-				throw ( new InvalidPathArgumentException(nameof(path)) );
+				throw new InvalidPathArgumentException(nameof(path), path.Error);
 			}
 
 			this.PathInternal = path;
@@ -267,7 +281,7 @@ namespace RI.Framework.IO.Paths
 			}
 		}
 
-		protected PathProperties PathInternal { get; private set; }
+		internal PathProperties PathInternal { get; private set; }
 
 		#endregion
 

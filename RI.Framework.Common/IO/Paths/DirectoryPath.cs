@@ -31,6 +31,27 @@ namespace RI.Framework.IO.Paths
 	public sealed class DirectoryPath : PathString,
 	                                    ICloneable<DirectoryPath>
 	{
+		#region Static Methods
+
+		/// <summary>
+		///     Implicit conversion of a <see cref="string" /> to <see cref="DirectoryPath" />.
+		/// </summary>
+		/// <param name="path"> The path to convert to a directory path. </param>
+		public static implicit operator DirectoryPath (string path)
+		{
+			if (path == null)
+			{
+				return null;
+			}
+
+			return new DirectoryPath(path);
+		}
+
+		#endregion
+
+
+
+
 		#region Instance Constructor/Destructor
 
 		/// <summary>
@@ -187,94 +208,145 @@ namespace RI.Framework.IO.Paths
 			return new DirectoryPath(path, this.PathInternal.AllowWildcards, this.PathInternal.AllowRelatives, this.Type);
 		}
 
+		/// <summary>
+		///     Creates a new file path by appending an existing relative file path to this directory.
+		/// </summary>
+		/// <param name="file"> The file path to append. </param>
+		/// <returns>
+		///     The new file path with this directory and the appended file path.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="file" /> is null. </exception>
+		/// <exception cref="InvalidPathArgumentException"> <paramref name="file" /> is a rooted file path. </exception>
 		public FilePath Append (FilePath file)
 		{
 			if (file == null)
 			{
-				throw ( new ArgumentNullException(nameof(file)) );
+				throw new ArgumentNullException(nameof(file));
 			}
 
-			if (file.IsAbsolute)
+			if (file.IsRooted)
 			{
-				throw ( new PathNotRelativeArgumentException(nameof(file)) );
+				throw new InvalidPathArgumentException(nameof(file));
 			}
 
-			return ( new FilePath(Path.Combine(this.Path, file.Path)) );
+			List<string> parts = new List<string>(2);
+			parts.Add(this.PathNormalized);
+			parts.Add(file.PathNormalized);
+
+			string path = PathProperties.CreatePath(parts, this.Type, this.IsRooted);
+			return new FilePath(path, this.PathInternal.AllowWildcards, this.PathInternal.AllowRelatives, this.Type);
 		}
 
+		/// <summary>
+		///     Creates a new directory path with this directories parent directory but another directory name.
+		/// </summary>
+		/// <param name="directoryName"> The new directory name. </param>
+		/// <returns>
+		///     The new directory path.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="directoryName" /> is null. </exception>
+		/// <exception cref="InvalidPathArgumentException"> <paramref name="directoryName" /> is not a valid new directory name. </exception>
 		public DirectoryPath ChangeDirectoryName (string directoryName)
 		{
 			if (directoryName == null)
 			{
-				throw ( new ArgumentNullException(nameof(directoryName)) );
+				throw new ArgumentNullException(nameof(directoryName));
 			}
 
-			if (!DirectoryPath.IsDirectoryPath(directoryName, false))
+			try
 			{
-				throw ( new InvalidPathArgumentException(nameof(directoryName)) );
+				return this.Parent.Append(new DirectoryPath(directoryName, this.PathInternal.AllowWildcards, this.PathInternal.AllowRelatives, this.Type));
 			}
-
-			if (this.IsRoot)
+			catch (InvalidPathArgumentException exception)
 			{
-				return ( new DirectoryPath(directoryName + ":") );
+				throw new InvalidPathArgumentException(nameof(directoryName), exception.Message);
 			}
-
-			return ( new DirectoryPath(Path.Combine(this.Parent.Path, directoryName)) );
 		}
 
+		/// <summary>
+		///     Creates a new directory path with this directory name but another parent directory.
+		/// </summary>
+		/// <param name="newParent"> The new parent directory. </param>
+		/// <returns>
+		///     The new directory path.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="newParent" /> is null. </exception>
 		public DirectoryPath ChangeParent (DirectoryPath newParent)
 		{
 			if (newParent == null)
 			{
-				throw ( new ArgumentNullException(nameof(newParent)) );
+				throw new ArgumentNullException(nameof(newParent));
 			}
 
-			return ( newParent.Append(new DirectoryPath(this.DirectoryName)) );
+			return newParent.Append(new DirectoryPath(this.DirectoryName));
 		}
 
+		/// <summary>
+		///     Creates an absolute directory path out of this directory path relative to a specified root path.
+		/// </summary>
+		/// <param name="root"> The root path. </param>
+		/// <returns>
+		///     The absolute directory path using <paramref name="root" />.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         If this directory path is already absolute, nothing is done and the same directory path is returned.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="root" /> is null. </exception>
+		/// <exception cref="InvalidPathArgumentException"> <paramref name="root" /> is not a rooted path. </exception>
 		public DirectoryPath ToAbsolutePath (DirectoryPath root)
 		{
 			if (root == null)
 			{
-				throw ( new ArgumentNullException(nameof(root)) );
+				throw new ArgumentNullException(nameof(root));
 			}
 
-			if (!root.IsAbsolute)
+			if (!root.IsRooted)
 			{
-				throw ( new PathNotAbsoluteArgumentException(nameof(root)) );
+				throw new InvalidPathArgumentException(nameof(root));
 			}
 
-			return ( new DirectoryPath(PathString.ToAbsolutePath(this, root)) );
+			if (this.IsRooted)
+			{
+				return this;
+			}
+
+			return new DirectoryPath(PathProperties.MakeAbsolute(root.PathInternal, this.PathInternal));
 		}
 
+		/// <summary>
+		///     Creates a relative directory path out of this directory path relative to a specified root path.
+		/// </summary>
+		/// <param name="root"> The root path. </param>
+		/// <returns>
+		///     The relative directory path relative to <paramref name="root" />.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         If this directory path is already relative, nothing is done and the same directory path is returned.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="root" /> is null. </exception>
+		/// <exception cref="InvalidPathArgumentException"> <paramref name="root" /> is not a rooted path. </exception>
 		public DirectoryPath ToRelativePath (DirectoryPath root)
 		{
 			if (root == null)
 			{
-				throw ( new ArgumentNullException(nameof(root)) );
+				throw new ArgumentNullException(nameof(root));
 			}
 
-			if (!root.IsAbsolute)
+			if (!root.IsRooted)
 			{
-				throw ( new PathNotAbsoluteArgumentException(nameof(root)) );
+				throw new InvalidPathArgumentException(nameof(root));
 			}
 
-			return ( new DirectoryPath(PathString.ToRelativePath(this, root)) );
-		}
-
-		public DirectoryPath ToRelativePath (DirectoryPath root, bool includeCurrentSpecifier)
-		{
-			if (root == null)
+			if (!this.IsRooted)
 			{
-				throw ( new ArgumentNullException(nameof(root)) );
+				return this;
 			}
 
-			if (!root.IsAbsolute)
-			{
-				throw ( new PathNotAbsoluteArgumentException(nameof(root)) );
-			}
-
-			return ( new DirectoryPath(PathString.ToRelativePath(this, root, includeCurrentSpecifier)) );
+			return new DirectoryPath(PathProperties.MakeRelative(root.PathInternal, this.PathInternal));
 		}
 
 		#endregion

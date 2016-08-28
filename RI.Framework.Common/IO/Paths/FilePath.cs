@@ -29,6 +29,27 @@ namespace RI.Framework.IO.Paths
 	public sealed class FilePath : PathString,
 	                               ICloneable<FilePath>
 	{
+		#region Static Methods
+
+		/// <summary>
+		///     Implicit conversion of a <see cref="string" /> to <see cref="FilePath" />.
+		/// </summary>
+		/// <param name="path"> The path to convert to a file path. </param>
+		public static implicit operator FilePath (string path)
+		{
+			if (path == null)
+			{
+				return null;
+			}
+
+			return new FilePath(path);
+		}
+
+		#endregion
+
+
+
+
 		#region Instance Constructor/Destructor
 
 		/// <summary>
@@ -201,16 +222,14 @@ namespace RI.Framework.IO.Paths
 				throw new ArgumentNullException(nameof(extension));
 			}
 
-			FilePath newFile = null;
 			try
 			{
-				newFile = new FilePath(this.FileNameWithoutExtension + PathProperties.FileExtensionSeparator + extension, this.PathInternal.AllowWildcards, this.PathInternal.AllowRelatives, this.Type);
+				return this.Directory.Append(new FilePath(this.FileNameWithoutExtension + PathProperties.FileExtensionSeparator + extension, this.PathInternal.AllowWildcards, this.PathInternal.AllowRelatives, this.Type));
 			}
-			catch (Exception exception)
+			catch (InvalidPathArgumentException exception)
 			{
-				throw new InvalidPathArgumentException(exception.Message, exception);
+				throw new InvalidPathArgumentException(nameof(extension), exception.Message);
 			}
-			return this.Directory.Append(newFile);
 		}
 
 		/// <summary>
@@ -229,16 +248,14 @@ namespace RI.Framework.IO.Paths
 				throw new ArgumentNullException(nameof(fileName));
 			}
 
-			FilePath newFile = null;
 			try
 			{
-				newFile = new FilePath(fileName, this.PathInternal.AllowWildcards, this.PathInternal.AllowRelatives, this.Type);
+				return this.Directory.Append(new FilePath(fileName, this.PathInternal.AllowWildcards, this.PathInternal.AllowRelatives, this.Type));
 			}
-			catch (Exception exception)
+			catch (InvalidPathArgumentException exception)
 			{
-				throw new InvalidPathArgumentException(exception.Message, exception);
+				throw new InvalidPathArgumentException(nameof(fileName), exception.Message);
 			}
-			return this.Directory.Append(newFile);
 		}
 
 		/// <summary>
@@ -257,61 +274,82 @@ namespace RI.Framework.IO.Paths
 				throw new ArgumentNullException(nameof(fileNameWithoutExtension));
 			}
 
-			FilePath newFile = null;
 			try
 			{
-				newFile = new FilePath(fileNameWithoutExtension + PathProperties.FileExtensionSeparator + this.ExtensionWithoutDot, this.PathInternal.AllowWildcards, this.PathInternal.AllowRelatives, this.Type);
+				return this.Directory.Append(new FilePath(fileNameWithoutExtension + PathProperties.FileExtensionSeparator + this.ExtensionWithoutDot, this.PathInternal.AllowWildcards, this.PathInternal.AllowRelatives, this.Type));
 			}
-			catch (Exception exception)
+			catch (InvalidPathArgumentException exception)
 			{
-				throw new InvalidPathArgumentException(exception.Message, exception);
+				throw new InvalidPathArgumentException(nameof(fileNameWithoutExtension), exception.Message);
 			}
-			return this.Directory.Append(newFile);
 		}
 
+		/// <summary>
+		///     Creates an absolute file path out of this file path relative to a specified root path.
+		/// </summary>
+		/// <param name="root"> The root path. </param>
+		/// <returns>
+		///     The absolute file path using <paramref name="root" />.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         If this file path is already absolute, nothing is done and the same file path is returned.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="root" /> is null. </exception>
+		/// <exception cref="InvalidPathArgumentException"> <paramref name="root" /> is not a rooted path. </exception>
 		public FilePath ToAbsolutePath (DirectoryPath root)
 		{
 			if (root == null)
 			{
-				throw ( new ArgumentNullException(nameof(root)) );
+				throw new ArgumentNullException(nameof(root));
 			}
 
-			if (!root.IsAbsolute)
+			if (!root.IsRooted)
 			{
-				throw ( new PathNotAbsoluteArgumentException(nameof(root)) );
+				throw new InvalidPathArgumentException(nameof(root));
 			}
 
-			return ( new FilePath(PathString.ToAbsolutePath(this, root)) );
+			if (this.IsRooted)
+			{
+				return this;
+			}
+
+			return new FilePath(PathProperties.MakeAbsolute(root.PathInternal, this.PathInternal));
 		}
 
+		/// <summary>
+		///     Creates a relative file path out of this file path relative to a specified root path.
+		/// </summary>
+		/// <param name="root"> The root path. </param>
+		/// <returns>
+		///     The relative file path relative to <paramref name="root" />.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         If this file path is already relative, nothing is done and the same file path is returned.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="root" /> is null. </exception>
+		/// <exception cref="InvalidPathArgumentException"> <paramref name="root" /> is not a rooted path. </exception>
 		public FilePath ToRelativePath (DirectoryPath root)
 		{
 			if (root == null)
 			{
-				throw ( new ArgumentNullException(nameof(root)) );
+				throw new ArgumentNullException(nameof(root));
 			}
 
-			if (!root.IsAbsolute)
+			if (!root.IsRooted)
 			{
-				throw ( new PathNotAbsoluteArgumentException(nameof(root)) );
+				throw new InvalidPathArgumentException(nameof(root));
 			}
 
-			return ( new FilePath(PathString.ToRelativePath(this, root)) );
-		}
-
-		public FilePath ToRelativePath (DirectoryPath root, bool includeCurrentSpecifier)
-		{
-			if (root == null)
+			if (!this.IsRooted)
 			{
-				throw ( new ArgumentNullException(nameof(root)) );
+				return this;
 			}
 
-			if (!root.IsAbsolute)
-			{
-				throw ( new PathNotAbsoluteArgumentException(nameof(root)) );
-			}
-
-			return ( new FilePath(PathString.ToRelativePath(this, root, includeCurrentSpecifier)) );
+			return new FilePath(PathProperties.MakeRelative(root.PathInternal, this.PathInternal));
 		}
 
 		#endregion
