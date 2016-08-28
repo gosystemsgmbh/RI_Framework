@@ -9,7 +9,7 @@ using RI.Framework.Utilities.ObjectModel;
 namespace RI.Framework.IO.Paths
 {
 	/// <summary>
-	///     Base class for specialized path strings (<see cref="FilePath" />, <see cref="DirectoryPath" />).
+	///     Base class for specialized path objects (<see cref="FilePath" />, <see cref="DirectoryPath" />).
 	/// </summary>
 	[Serializable]
 	public abstract class PathString : IEquatable<PathString>,
@@ -267,7 +267,7 @@ namespace RI.Framework.IO.Paths
 			}
 		}
 
-		private PathProperties PathInternal { get; set; }
+		protected PathProperties PathInternal { get; private set; }
 
 		#endregion
 

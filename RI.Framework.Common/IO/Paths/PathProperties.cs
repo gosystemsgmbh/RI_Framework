@@ -34,6 +34,11 @@ namespace RI.Framework.IO.Paths
 		#region Constants
 
 		/// <summary>
+		///     The separator character between a file name and its extension.
+		/// </summary>
+		public const char FileExtensionSeparator = '.';
+
+		/// <summary>
 		///     The string which can be used as a relative directory name to indicate the same level or current directory.
 		/// </summary>
 		public const string RelativeSame = ".";
@@ -387,13 +392,30 @@ namespace RI.Framework.IO.Paths
 				if (isRooted)
 				{
 					root = PathProperties.CreatePath(new List<string>
-					{
-						partsNormalized[0]
-					}, type.Value, true);
+					                                 {
+						                                 partsNormalized[0]
+					                                 }, type.Value, true);
 				}
 			}
 
 			bool isRoot = string.Equals(pathNormalized, root, comparison);
+
+			string parent = null;
+
+			if (type != PathType.Invalid)
+			{
+				if (( !isRoot ) && ( partsNormalized.Count > 1 ))
+				{
+					parent = PathProperties.CreatePath(partsNormalized.ToList(0, partsNormalized.Count - 1), type.Value, isRooted);
+				}
+			}
+
+			string name = null;
+
+			if (type != PathType.Invalid)
+			{
+				name = partsNormalized[partsNormalized.Count - 1];
+			}
 
 			int hashcode = 0;
 
@@ -420,6 +442,8 @@ namespace RI.Framework.IO.Paths
 			pathProperties.IsRooted = isRooted;
 			pathProperties.IsRoot = isRoot;
 			pathProperties.Root = root;
+			pathProperties.Parent = parent;
+			pathProperties.Name = name;
 			pathProperties.HasWildcards = hasWildcards;
 			pathProperties.HasRelatives = hasRelatives;
 			pathProperties.AllowWildcards = allowWildcards;
@@ -678,6 +702,10 @@ namespace RI.Framework.IO.Paths
 			this.PartsNormalized = null;
 			this.PartsResolved = null;
 			this.IsRooted = false;
+			this.IsRoot = false;
+			this.Root = null;
+			this.Parent = null;
+			this.Name = null;
 			this.HasWildcards = false;
 			this.HasRelatives = false;
 		}
@@ -743,6 +771,27 @@ namespace RI.Framework.IO.Paths
 				return this.Type != PathType.Invalid;
 			}
 		}
+
+		/// <summary>
+		///     Gets the name of the path.
+		/// </summary>
+		/// <value>
+		///     The name of the path.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         The name of a path is the last element in the path, e.g. the file name of a file path or the directory name of a directory path.
+		///     </para>
+		/// </remarks>
+		public string Name { get; private set; }
+
+		/// <summary>
+		///     Gets the parent of the path.
+		/// </summary>
+		/// <value>
+		///     The parent of the path or null if the path is a root or does not have a parent.
+		/// </value>
+		public string Parent { get; private set; }
 
 		/// <summary>
 		///     Gets the array with all normalized (but still unresolved) parts of the path.

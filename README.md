@@ -8,7 +8,7 @@
   - [ ] Additional dispatcher Features
   - [ ] Analyze and implement magic thread
   - [ ] TODOs
-- Documentation
+- [ ] Documentation
   - [ ] Examples
   - [ ] Type and member descriptions
   - [ ] Conceptional documentation
