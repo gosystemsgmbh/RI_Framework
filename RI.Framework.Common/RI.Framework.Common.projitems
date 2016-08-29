@@ -57,6 +57,17 @@
     <Compile Include="$(MSBuildThisFileDirectory)Composition\Model\ImportPropertyAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Composition\Model\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Composition\_NamespaceDoc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\INI\Elements\CommentIniElement.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\INI\Elements\SectionIniElement.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\INI\Elements\TextIniElement.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\INI\Elements\ValueIniElement.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\INI\IniDocument.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\INI\IniElement.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\INI\IniReader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\INI\IniReaderSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\INI\IniSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\INI\IniWriter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\INI\IniWriterSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\INI\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\Paths\DirectoryPath.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\Paths\FilePath.cs" />

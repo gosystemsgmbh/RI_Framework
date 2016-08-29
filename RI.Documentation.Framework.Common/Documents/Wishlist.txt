@@ -60,6 +60,7 @@ I/O
  + PathProperties: ChangeType
 
  - RandomStream
+ - UncloseableStream
  - StreamExtensions
 
  + INI reader, writer, document

@@ -483,6 +483,34 @@ namespace RI.Framework.Utilities
 		}
 
 		/// <summary>
+		///     Normalizes all line breaks in a string.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     The string with all its line breaks normalized.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         Normalizing line breaks means that all <c> CRLF </c>, <c> CR </c>, and <c> LF </c> are replaced with the value of <see cref="Environment.NewLine" />.
+		///     </para>
+		///     <note type="important">
+		///         Be aware that normalization of line breaks destroys all carriage returns (<c> CR </c>) which are not part of a line break!
+		///     </note>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static string NormalizeLineBreaks (this string str)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			str = str.Replace("\r", string.Empty);
+			str = str.Replace("\n", Environment.NewLine);
+			return str;
+		}
+
+		/// <summary>
 		///     Repeats a character a specified number of times without a separator between each character.
 		/// </summary>
 		/// <param name="chr"> The character. </param>
