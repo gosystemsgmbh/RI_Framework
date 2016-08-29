@@ -120,90 +120,6 @@ namespace RI.Framework.IO.INI
 		}
 
 		/// <summary>
-		/// Loads INI elements from a dictionary.
-		/// </summary>
-		/// <param name="data">The dictionary which contains the data to load.</param>
-		/// <remarks>
-		///     <para>
-		///         All existing INI elements will be discarded before the new elements are loaded.
-		///     </para>
-		/// <para>
-		/// This method assumes that each section appears only once and within a section each name-value-pair exists only once.
-		/// </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="data" /> is null. </exception>
-		public void Load (IDictionary<string, IDictionary<string, string>> data)
-		{
-			if (data == null)
-			{
-				throw new ArgumentNullException(nameof(data));
-			}
-		}
-
-		/// <summary>
-		/// Loads INI elements from a dictionary.
-		/// </summary>
-		/// <param name="data">The dictionary which contains the data to load.</param>
-		/// <remarks>
-		///     <para>
-		///         All existing INI elements will be discarded before the new elements are loaded.
-		///     </para>
-		/// <para>
-		/// This method assumes that each section appears only once and within a section each name-value-pair can exist multiple times.
-		/// </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="data" /> is null. </exception>
-		public void Load(IDictionary<string, IDictionary<string, IList<string>>> data)
-		{
-			if (data == null)
-			{
-				throw new ArgumentNullException(nameof(data));
-			}
-		}
-
-		/// <summary>
-		/// Loads INI elements from a dictionary.
-		/// </summary>
-		/// <param name="data">The dictionary which contains the data to load.</param>
-		/// <remarks>
-		///     <para>
-		///         All existing INI elements will be discarded before the new elements are loaded.
-		///     </para>
-		/// <para>
-		/// This method assumes that each section can appear multiple times and within a section each name-value-pair exists only once.
-		/// </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="data" /> is null. </exception>
-		public void Load(IDictionary<string, IList<IDictionary<string, string>>> data)
-		{
-			if (data == null)
-			{
-				throw new ArgumentNullException(nameof(data));
-			}
-		}
-
-		/// <summary>
-		/// Loads INI elements from a dictionary.
-		/// </summary>
-		/// <param name="data">The dictionary which contains the data to load.</param>
-		/// <remarks>
-		///     <para>
-		///         All existing INI elements will be discarded before the new elements are loaded.
-		///     </para>
-		/// <para>
-		/// This method assumes that each section can appear multiple times and within a section each name-value-pair can exist multiple times.
-		/// </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="data" /> is null. </exception>
-		public void Load(IDictionary<string, IList<IDictionary<string, IList<string>>>> data)
-		{
-			if (data == null)
-			{
-				throw new ArgumentNullException(nameof(data));
-			}
-		}
-
-		/// <summary>
 		///     Loads INI elements from an existing INI file.
 		/// </summary>
 		/// <param name="file"> The path of the INI file to load. </param>
@@ -214,7 +130,7 @@ namespace RI.Framework.IO.INI
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="file" /> or <paramref name="encoding" /> is null. </exception>
-		public void Load (string file, Encoding encoding)
+		public void Load(string file, Encoding encoding)
 		{
 			if (file == null)
 			{
@@ -241,7 +157,7 @@ namespace RI.Framework.IO.INI
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="file" /> or <paramref name="encoding" /> is null. </exception>
-		public void Load (string file, Encoding encoding, IniReaderSettings settings)
+		public void Load(string file, Encoding encoding, IniReaderSettings settings)
 		{
 			if (file == null)
 			{
@@ -259,6 +175,134 @@ namespace RI.Framework.IO.INI
 				{
 					this.Load(ir);
 				}
+			}
+		}
+
+		/// <summary>
+		/// Loads INI elements from a dictionary.
+		/// </summary>
+		/// <param name="data">The dictionary which contains the data to load.</param>
+		/// <remarks>
+		///     <para>
+		///         All existing INI elements will be discarded before the new elements are loaded.
+		///     </para>
+		/// <para>
+		/// This method does not support sections, all name-value-pairs will be outside a section.
+		/// It is assumed that each name-value-pair exists only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="data" /> is null. </exception>
+		public void Load(IDictionary<string, string> data)
+		{
+			if (data == null)
+			{
+				throw new ArgumentNullException(nameof(data));
+			}
+		}
+
+		/// <summary>
+		/// Loads INI elements from a dictionary.
+		/// </summary>
+		/// <param name="data">The dictionary which contains the data to load.</param>
+		/// <remarks>
+		///     <para>
+		///         All existing INI elements will be discarded before the new elements are loaded.
+		///     </para>
+		/// <para>
+		/// This method does not support sections, all name-value-pairs will be outside a section.
+		/// It is assumed that each name-value-pair can exist multiple times.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="data" /> is null. </exception>
+		public void Load(IDictionary<string, IList<string>> data)
+		{
+			if (data == null)
+			{
+				throw new ArgumentNullException(nameof(data));
+			}
+		}
+
+		/// <summary>
+		/// Loads INI elements from a dictionary.
+		/// </summary>
+		/// <param name="data">The dictionary which contains the data to load.</param>
+		/// <remarks>
+		///     <para>
+		///         All existing INI elements will be discarded before the new elements are loaded.
+		///     </para>
+		/// <para>
+		/// This method assumes that each section appears only once and within a section, each name-value-pair exists only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="data" /> is null. </exception>
+		public void Load (IDictionary<string, IDictionary<string, string>> data)
+		{
+			if (data == null)
+			{
+				throw new ArgumentNullException(nameof(data));
+			}
+		}
+
+		/// <summary>
+		/// Loads INI elements from a dictionary.
+		/// </summary>
+		/// <param name="data">The dictionary which contains the data to load.</param>
+		/// <remarks>
+		///     <para>
+		///         All existing INI elements will be discarded before the new elements are loaded.
+		///     </para>
+		/// <para>
+		/// This method assumes that each section appears only once and within a section, each name-value-pair can exist multiple times.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="data" /> is null. </exception>
+		public void Load(IDictionary<string, IDictionary<string, IList<string>>> data)
+		{
+			if (data == null)
+			{
+				throw new ArgumentNullException(nameof(data));
+			}
+		}
+
+		/// <summary>
+		/// Loads INI elements from a dictionary.
+		/// </summary>
+		/// <param name="data">The dictionary which contains the data to load.</param>
+		/// <remarks>
+		///     <para>
+		///         All existing INI elements will be discarded before the new elements are loaded.
+		///     </para>
+		/// <para>
+		/// This method assumes that each section can appear multiple times and within a section, each name-value-pair exists only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="data" /> is null. </exception>
+		public void Load(IDictionary<string, IList<IDictionary<string, string>>> data)
+		{
+			if (data == null)
+			{
+				throw new ArgumentNullException(nameof(data));
+			}
+		}
+
+		/// <summary>
+		/// Loads INI elements from a dictionary.
+		/// </summary>
+		/// <param name="data">The dictionary which contains the data to load.</param>
+		/// <remarks>
+		///     <para>
+		///         All existing INI elements will be discarded before the new elements are loaded.
+		///     </para>
+		/// <para>
+		/// This method assumes that each section can appear multiple times and within a section, each name-value-pair can exist multiple times.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="data" /> is null. </exception>
+		public void Load(IDictionary<string, IList<IDictionary<string, IList<string>>>> data)
+		{
+			if (data == null)
+			{
+				throw new ArgumentNullException(nameof(data));
 			}
 		}
 
