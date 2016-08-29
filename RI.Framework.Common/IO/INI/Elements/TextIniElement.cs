@@ -15,6 +15,10 @@
 	{
 		#region Instance Constructor/Destructor
 
+		/// <summary>
+		///     Creates a new instance of <see cref="TextIniElement" />.
+		/// </summary>
+		/// <param name="text"> The arbitrary text. </param>
 		public TextIniElement (string text)
 		{
 			this.Text = text;
@@ -36,6 +40,18 @@
 
 		#region Instance Properties/Indexer
 
+		/// <summary>
+		///     Gets or sets the arbitrary text.
+		/// </summary>
+		/// <value>
+		///     The arbitrary text.
+		/// </value>
+		/// <remarks>
+		///     <note type="note">
+		///         The value returned by this property is never null.
+		///         If null is set, it is replaced with <see cref="string.Empty" />.
+		///     </note>
+		/// </remarks>
 		public string Text
 		{
 			get

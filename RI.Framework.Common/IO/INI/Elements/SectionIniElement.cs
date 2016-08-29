@@ -20,6 +20,12 @@ namespace RI.Framework.IO.INI.Elements
 	{
 		#region Instance Constructor/Destructor
 
+		/// <summary>
+		///     Creates a new instance of <see cref="SectionIniElement" />.
+		/// </summary>
+		/// <param name="sectionName"> The section name. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="sectionName" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="sectionName" /> is an empty string. </exception>
 		public SectionIniElement (string sectionName)
 		{
 			if (sectionName == null)
@@ -51,6 +57,14 @@ namespace RI.Framework.IO.INI.Elements
 
 		#region Instance Properties/Indexer
 
+		/// <summary>
+		///     Gets or sets the section name.
+		/// </summary>
+		/// <value>
+		///     The section name.
+		/// </value>
+		/// <exception cref="ArgumentNullException"> <paramref name="value" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="value" /> is an empty string. </exception>
 		public string SectionName
 		{
 			get

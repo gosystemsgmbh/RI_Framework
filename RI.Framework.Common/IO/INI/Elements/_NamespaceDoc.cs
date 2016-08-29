@@ -4,10 +4,10 @@ using System.Runtime.CompilerServices;
 
 
 
-namespace RI.Framework.IO.INI
+namespace RI.Framework.IO.INI.Elements
 {
 	/// <summary>
-	///     Contains types to process INI data.
+	///     Contains INI element types which represent INI data elements.
 	/// </summary>
 	[CompilerGenerated]
 	[SuppressMessage ("ReSharper", "UnusedMember.Global")]
