@@ -17,7 +17,7 @@ namespace RI.Framework.IO.INI
 	///         See <see cref="IniDocument" /> for more general and detailed information about working with INI data.
 	///     </para>
 	/// </remarks>
-	public sealed class IniReader
+	public sealed class IniReader : IDisposable
 	{
 		#region Instance Constructor/Destructor
 
@@ -54,6 +54,14 @@ namespace RI.Framework.IO.INI
 
 			this.CurrentElement = null;
 			this.Buffer = null;
+		}
+
+		/// <summary>
+		///     Garbage collects this instance of <see cref="IniReader" />.
+		/// </summary>
+		~IniReader ()
+		{
+			this.Close();
 		}
 
 		#endregion
@@ -97,6 +105,14 @@ namespace RI.Framework.IO.INI
 
 
 		#region Instance Methods
+
+		/// <summary>
+		///     Closes this INI writer and its underlying <see cref="TextReader" /> (<see cref="BaseReader" />).
+		/// </summary>
+		public void Close ()
+		{
+			this.BaseReader?.Close();
+		}
 
 		/// <summary>
 		///     Reads the next INI element from the INI data.
@@ -225,6 +241,19 @@ namespace RI.Framework.IO.INI
 			}
 
 			return this.BaseReader.ReadLine();
+		}
+
+		#endregion
+
+
+
+
+		#region Interface: IDisposable
+
+		/// <inheritdoc />
+		void IDisposable.Dispose ()
+		{
+			this.Close();
 		}
 
 		#endregion

@@ -18,7 +18,7 @@ namespace RI.Framework.IO.INI
 	///         See <see cref="IniDocument" /> for more general and detailed information about working with INI data.
 	///     </para>
 	/// </remarks>
-	public sealed class IniWriter
+	public sealed class IniWriter : IDisposable
 	{
 		#region Instance Constructor/Destructor
 
@@ -56,6 +56,14 @@ namespace RI.Framework.IO.INI
 			this.Written = false;
 		}
 
+		/// <summary>
+		///     Garbage collects this instance of <see cref="IniWriter" />.
+		/// </summary>
+		~IniWriter ()
+		{
+			this.Close();
+		}
+
 		#endregion
 
 
@@ -81,6 +89,23 @@ namespace RI.Framework.IO.INI
 
 
 		#region Instance Methods
+
+		/// <summary>
+		///     Closes this INI writer and its underlying <see cref="TextWriter" /> (<see cref="BaseWriter" />).
+		/// </summary>
+		public void Close ()
+		{
+			this.BaseWriter?.Flush();
+			this.BaseWriter?.Close();
+		}
+
+		/// <summary>
+		///     Flushes all written data to the underlying <see cref="TextWriter" /> (<see cref="BaseWriter" />).
+		/// </summary>
+		public void Flush ()
+		{
+			this.BaseWriter.Flush();
+		}
 
 		/// <summary>
 		///     Writes a comment.
@@ -280,6 +305,19 @@ namespace RI.Framework.IO.INI
 			{
 				this.BaseWriter.WriteLine();
 			}
+		}
+
+		#endregion
+
+
+
+
+		#region Interface: IDisposable
+
+		/// <inheritdoc />
+		void IDisposable.Dispose ()
+		{
+			this.Close();
 		}
 
 		#endregion
