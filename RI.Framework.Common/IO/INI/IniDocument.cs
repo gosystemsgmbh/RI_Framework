@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
+using RI.Framework.IO.INI.Elements;
+
 
 
 
@@ -17,13 +19,61 @@ namespace RI.Framework.IO.INI
 		/// </summary>
 		/// <remarks>
 		///     <para>
-		///         After creation, the INI document does not contain any elements.
+		///         <see cref="StringComparer.InvariantCultureIgnoreCase"/> is used for name comparison of section names and name-value-pairs.
 		///     </para>
 		/// </remarks>
 		public IniDocument ()
+			: this(null)
+		{
+		}
+
+		/// <summary>
+		/// Creates a new instance of <see cref="IniDocument" />.
+		/// </summary>
+		/// <param name="nameComparer">The comparer used to compare section names and names of name-value-pairs.</param>
+		/// <remarks>
+		///     <para>
+		///         <see cref="StringComparer.InvariantCultureIgnoreCase"/> is used if <paramref name="nameComparer"/> is null.
+		///     </para>
+		/// </remarks>
+		public IniDocument (IEqualityComparer<string> nameComparer)
+			: this(nameComparer, nameComparer)
+		{
+		}
+
+		/// <summary>
+		/// Creates a new instance of <see cref="IniDocument" />.
+		/// </summary>
+		/// <param name="sectionNameComparer">The comparer used to compare section names.</param>
+		/// <param name="valueNameComparer">The comparer used to compare names of name-value-pairs.</param>
+		/// <remarks>
+		///     <para>
+		///         <see cref="StringComparer.InvariantCultureIgnoreCase"/> is used if <paramref name="sectionNameComparer"/> or <paramref name="valueNameComparer"/> is null.
+		///     </para>
+		/// </remarks>
+		public IniDocument (IEqualityComparer<string> sectionNameComparer, IEqualityComparer<string> valueNameComparer)
 		{
 			this.Elements = new List<IniElement>();
+
+			this.SectionNameComparer = sectionNameComparer ?? StringComparer.InvariantCultureIgnoreCase;
+			this.ValueNameComparer = valueNameComparer ?? StringComparer.InvariantCultureIgnoreCase;
 		}
+
+		/// <summary>
+		/// Gets the comparer used to compare section names.
+		/// </summary>
+		/// <value>
+		/// The comparer used to compare section names.
+		/// </value>
+		public IEqualityComparer<string> SectionNameComparer { get; private set; }
+
+		/// <summary>
+		/// Gets the comparer used to compare names of name-value-pairs.
+		/// </summary>
+		/// <value>
+		/// The comparer used to compare names of name-value-pairs.
+		/// </value>
+		public IEqualityComparer<string> ValueNameComparer { get; private set; }
 
 		#endregion
 
@@ -66,6 +116,90 @@ namespace RI.Framework.IO.INI
 			while (reader.ReadNext())
 			{
 				this.Elements.Add(reader.CurrentElement);
+			}
+		}
+
+		/// <summary>
+		/// Loads INI elements from a dictionary.
+		/// </summary>
+		/// <param name="data">The dictionary which contains the data to load.</param>
+		/// <remarks>
+		///     <para>
+		///         All existing INI elements will be discarded before the new elements are loaded.
+		///     </para>
+		/// <para>
+		/// This method assumes that each section appears only once and within a section each name-value-pair exists only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="data" /> is null. </exception>
+		public void Load (IDictionary<string, IDictionary<string, string>> data)
+		{
+			if (data == null)
+			{
+				throw new ArgumentNullException(nameof(data));
+			}
+		}
+
+		/// <summary>
+		/// Loads INI elements from a dictionary.
+		/// </summary>
+		/// <param name="data">The dictionary which contains the data to load.</param>
+		/// <remarks>
+		///     <para>
+		///         All existing INI elements will be discarded before the new elements are loaded.
+		///     </para>
+		/// <para>
+		/// This method assumes that each section appears only once and within a section each name-value-pair can exist multiple times.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="data" /> is null. </exception>
+		public void Load(IDictionary<string, IDictionary<string, IList<string>>> data)
+		{
+			if (data == null)
+			{
+				throw new ArgumentNullException(nameof(data));
+			}
+		}
+
+		/// <summary>
+		/// Loads INI elements from a dictionary.
+		/// </summary>
+		/// <param name="data">The dictionary which contains the data to load.</param>
+		/// <remarks>
+		///     <para>
+		///         All existing INI elements will be discarded before the new elements are loaded.
+		///     </para>
+		/// <para>
+		/// This method assumes that each section can appear multiple times and within a section each name-value-pair exists only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="data" /> is null. </exception>
+		public void Load(IDictionary<string, IList<IDictionary<string, string>>> data)
+		{
+			if (data == null)
+			{
+				throw new ArgumentNullException(nameof(data));
+			}
+		}
+
+		/// <summary>
+		/// Loads INI elements from a dictionary.
+		/// </summary>
+		/// <param name="data">The dictionary which contains the data to load.</param>
+		/// <remarks>
+		///     <para>
+		///         All existing INI elements will be discarded before the new elements are loaded.
+		///     </para>
+		/// <para>
+		/// This method assumes that each section can appear multiple times and within a section each name-value-pair can exist multiple times.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="data" /> is null. </exception>
+		public void Load(IDictionary<string, IList<IDictionary<string, IList<string>>>> data)
+		{
+			if (data == null)
+			{
+				throw new ArgumentNullException(nameof(data));
 			}
 		}
 
