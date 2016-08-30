@@ -179,134 +179,6 @@ namespace RI.Framework.IO.INI
 		}
 
 		/// <summary>
-		/// Loads INI elements from a dictionary.
-		/// </summary>
-		/// <param name="data">The dictionary which contains the data to load.</param>
-		/// <remarks>
-		///     <para>
-		///         All existing INI elements will be discarded before the new elements are loaded.
-		///     </para>
-		/// <para>
-		/// This method does not support sections, all name-value-pairs will be outside a section.
-		/// It is assumed that each name-value-pair exists only once.
-		/// </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="data" /> is null. </exception>
-		public void Load(IDictionary<string, string> data)
-		{
-			if (data == null)
-			{
-				throw new ArgumentNullException(nameof(data));
-			}
-		}
-
-		/// <summary>
-		/// Loads INI elements from a dictionary.
-		/// </summary>
-		/// <param name="data">The dictionary which contains the data to load.</param>
-		/// <remarks>
-		///     <para>
-		///         All existing INI elements will be discarded before the new elements are loaded.
-		///     </para>
-		/// <para>
-		/// This method does not support sections, all name-value-pairs will be outside a section.
-		/// It is assumed that each name-value-pair can exist multiple times.
-		/// </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="data" /> is null. </exception>
-		public void Load(IDictionary<string, IList<string>> data)
-		{
-			if (data == null)
-			{
-				throw new ArgumentNullException(nameof(data));
-			}
-		}
-
-		/// <summary>
-		/// Loads INI elements from a dictionary.
-		/// </summary>
-		/// <param name="data">The dictionary which contains the data to load.</param>
-		/// <remarks>
-		///     <para>
-		///         All existing INI elements will be discarded before the new elements are loaded.
-		///     </para>
-		/// <para>
-		/// This method assumes that each section appears only once and within a section, each name-value-pair exists only once.
-		/// </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="data" /> is null. </exception>
-		public void Load (IDictionary<string, IDictionary<string, string>> data)
-		{
-			if (data == null)
-			{
-				throw new ArgumentNullException(nameof(data));
-			}
-		}
-
-		/// <summary>
-		/// Loads INI elements from a dictionary.
-		/// </summary>
-		/// <param name="data">The dictionary which contains the data to load.</param>
-		/// <remarks>
-		///     <para>
-		///         All existing INI elements will be discarded before the new elements are loaded.
-		///     </para>
-		/// <para>
-		/// This method assumes that each section appears only once and within a section, each name-value-pair can exist multiple times.
-		/// </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="data" /> is null. </exception>
-		public void Load(IDictionary<string, IDictionary<string, IList<string>>> data)
-		{
-			if (data == null)
-			{
-				throw new ArgumentNullException(nameof(data));
-			}
-		}
-
-		/// <summary>
-		/// Loads INI elements from a dictionary.
-		/// </summary>
-		/// <param name="data">The dictionary which contains the data to load.</param>
-		/// <remarks>
-		///     <para>
-		///         All existing INI elements will be discarded before the new elements are loaded.
-		///     </para>
-		/// <para>
-		/// This method assumes that each section can appear multiple times and within a section, each name-value-pair exists only once.
-		/// </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="data" /> is null. </exception>
-		public void Load(IDictionary<string, IList<IDictionary<string, string>>> data)
-		{
-			if (data == null)
-			{
-				throw new ArgumentNullException(nameof(data));
-			}
-		}
-
-		/// <summary>
-		/// Loads INI elements from a dictionary.
-		/// </summary>
-		/// <param name="data">The dictionary which contains the data to load.</param>
-		/// <remarks>
-		///     <para>
-		///         All existing INI elements will be discarded before the new elements are loaded.
-		///     </para>
-		/// <para>
-		/// This method assumes that each section can appear multiple times and within a section, each name-value-pair can exist multiple times.
-		/// </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="data" /> is null. </exception>
-		public void Load(IDictionary<string, IList<IDictionary<string, IList<string>>>> data)
-		{
-			if (data == null)
-			{
-				throw new ArgumentNullException(nameof(data));
-			}
-		}
-
-		/// <summary>
 		///     Saves all INI elements of this INI document to an existing INI writer.
 		/// </summary>
 		/// <param name="writer"> The INI writer to which the elements are saved. </param>
@@ -380,6 +252,80 @@ namespace RI.Framework.IO.INI
 				{
 					this.Save(iw);
 				}
+			}
+		}
+
+		public void AddSection (string sectionName, IDictionary<string, string> values)
+		{
+		}
+
+		public void AddSection(string sectionName, IDictionary<string, IList<string>> values)
+		{
+		}
+
+		public bool RemoveSection (string sectionName)
+		{
+			return false;
+		}
+
+		public HashSet<string> GetSectionNames ()
+		{
+			return null;
+		}
+
+		public Dictionary<string, string> GetSectionFirst(string sectionName)
+		{
+			return null;
+		}
+
+		public Dictionary<string, List<string>> GetSectionAll (string sectionName)
+		{
+			return null;
+		}
+
+		public List<Dictionary<string, string>> GetSectionsFirst(string sectionName)
+		{
+			return null;
+		}
+
+		public List<Dictionary<string, List<string>>> GetSectionsAll(string sectionName)
+		{
+			return null;
+		}
+
+		public Dictionary<string, Dictionary<string, string>> GetValues ()
+		{
+			return null;
+		}
+
+		public void SetValues(Dictionary<string, Dictionary<string, string>> values)
+		{
+		}
+
+		public string GetValue (string section, string name)
+		{
+			return null;
+		}
+
+		public bool SetValue (string section, string name, string value)
+		{
+			return false;
+		}
+
+		public bool DeleteValue (string section, string name)
+		{
+			return false;
+		}
+
+		public void Clear ()
+		{
+		}
+
+		public int Count
+		{
+			get
+			{
+				return this.Elements.Count;
 			}
 		}
 

@@ -17,6 +17,7 @@ namespace RI.Framework.IO.INI
 	///         See <see cref="IniDocument" /> for more general and detailed information about working with INI data.
 	///     </para>
 	/// </remarks>
+	//TODO: Verify not closed
 	public sealed class IniReader : IDisposable
 	{
 		#region Instance Constructor/Destructor
