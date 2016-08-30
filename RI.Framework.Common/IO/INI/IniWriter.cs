@@ -18,7 +18,6 @@ namespace RI.Framework.IO.INI
 	///         See <see cref="IniDocument" /> for more general and detailed information about working with INI data.
 	///     </para>
 	/// </remarks>
-	//TODO: Verify not closed
 	public sealed class IniWriter : IDisposable
 	{
 		#region Instance Constructor/Destructor
@@ -55,6 +54,7 @@ namespace RI.Framework.IO.INI
 			this.Settings = settings ?? new IniWriterSettings();
 
 			this.Written = false;
+			this.Closed = false;
 		}
 
 		/// <summary>
@@ -82,6 +82,8 @@ namespace RI.Framework.IO.INI
 		/// </summary>
 		public IniWriterSettings Settings { get; private set; }
 
+		private bool Closed { get; set; }
+
 		private bool Written { get; set; }
 
 		#endregion
@@ -103,8 +105,11 @@ namespace RI.Framework.IO.INI
 		/// <summary>
 		///     Flushes all written data to the underlying <see cref="TextWriter" /> (<see cref="BaseWriter" />).
 		/// </summary>
+		/// <exception cref="InvalidOperationException"> The INI writer has been closed/disposed. </exception>
 		public void Flush ()
 		{
+			this.VerifyNotClosed();
+
 			this.BaseWriter.Flush();
 		}
 
@@ -120,8 +125,11 @@ namespace RI.Framework.IO.INI
 		///         If <paramref name="comment" /> is null or an empty string, an empty string is written as comment.
 		///     </para>
 		/// </remarks>
+		/// <exception cref="InvalidOperationException"> The INI writer has been closed/disposed. </exception>
 		public void WriteComment (string comment)
 		{
+			this.VerifyNotClosed();
+
 			string[] lines = ( comment ?? string.Empty ).SplitLines();
 			foreach (string line in lines)
 			{
@@ -136,12 +144,15 @@ namespace RI.Framework.IO.INI
 		/// </summary>
 		/// <param name="element"> The element to write. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="element" /> is null. </exception>
+		/// <exception cref="InvalidOperationException"> The INI writer has been closed/disposed. </exception>
 		public void WriteElement (IniElement element)
 		{
 			if (element == null)
 			{
 				throw new ArgumentNullException(nameof(element));
 			}
+
+			this.VerifyNotClosed();
 
 			if (element is SectionIniElement)
 			{
@@ -177,6 +188,7 @@ namespace RI.Framework.IO.INI
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="sectionName" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="sectionName" /> is an empty string. </exception>
+		/// <exception cref="InvalidOperationException"> The INI writer has been closed/disposed. </exception>
 		public void WriteSection (string sectionName)
 		{
 			if (sectionName == null)
@@ -188,6 +200,8 @@ namespace RI.Framework.IO.INI
 			{
 				throw new EmptyStringArgumentException(nameof(sectionName));
 			}
+
+			this.VerifyNotClosed();
 
 			sectionName = this.EncodeSectionName(sectionName);
 
@@ -209,8 +223,11 @@ namespace RI.Framework.IO.INI
 		///         If <paramref name="text" /> is null or an empty string, an empty string is written as text.
 		///     </para>
 		/// </remarks>
+		/// <exception cref="InvalidOperationException"> The INI writer has been closed/disposed. </exception>
 		public void WriteText (string text)
 		{
+			this.VerifyNotClosed();
+
 			string[] lines = ( text ?? string.Empty ).SplitLines();
 			foreach (string line in lines)
 			{
@@ -235,6 +252,7 @@ namespace RI.Framework.IO.INI
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="name" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
+		/// <exception cref="InvalidOperationException"> The INI writer has been closed/disposed. </exception>
 		public void WriteValue (string name, string value)
 		{
 			if (name == null)
@@ -246,6 +264,8 @@ namespace RI.Framework.IO.INI
 			{
 				throw new EmptyStringArgumentException(nameof(name));
 			}
+
+			this.VerifyNotClosed();
 
 			name = this.EncodeName(name);
 			value = this.EncodeValue(value ?? string.Empty);
@@ -286,6 +306,14 @@ namespace RI.Framework.IO.INI
 		{
 			value = this.EncodeGeneral(value);
 			return value;
+		}
+
+		private void VerifyNotClosed ()
+		{
+			if (this.Closed)
+			{
+				throw new InvalidOperationException();
+			}
 		}
 
 		private void WriteInternal (char value)

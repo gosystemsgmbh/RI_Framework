@@ -17,7 +17,7 @@ namespace RI.Framework.IO.INI
 	///         See <see cref="IniDocument" /> for more general and detailed information about working with INI data.
 	///     </para>
 	/// </remarks>
-	//TODO: Verify not closed
+	//TODO: Current error
 	public sealed class IniReader : IDisposable
 	{
 		#region Instance Constructor/Destructor
@@ -55,6 +55,7 @@ namespace RI.Framework.IO.INI
 
 			this.CurrentElement = null;
 			this.Buffer = null;
+			this.Closed = false;
 		}
 
 		/// <summary>
@@ -100,6 +101,8 @@ namespace RI.Framework.IO.INI
 
 		private string Buffer { get; set; }
 
+		private bool Closed { get; set; }
+
 		#endregion
 
 
@@ -127,8 +130,11 @@ namespace RI.Framework.IO.INI
 		///         Multiple consecutive comment or text lines are combined into a single comment or text line.
 		///     </note>
 		/// </remarks>
+		/// <exception cref="InvalidOperationException"> The INI reader has been closed/disposed. </exception>
 		public bool ReadNext ()
 		{
+			this.VerifyNotClosed();
+
 			string line = this.ReadLine();
 			IniElement element = this.ProcessLine(line);
 			if (element == null)
@@ -242,6 +248,14 @@ namespace RI.Framework.IO.INI
 			}
 
 			return this.BaseReader.ReadLine();
+		}
+
+		private void VerifyNotClosed ()
+		{
+			if (this.Closed)
+			{
+				throw new InvalidOperationException();
+			}
 		}
 
 		#endregion

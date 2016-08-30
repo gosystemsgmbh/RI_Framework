@@ -13,5 +13,6 @@
 	/// </remarks>
 	public sealed class IniWriterSettings : IniSettings
 	{
+		//TODO: Write new line before section header
 	}
 }
