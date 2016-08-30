@@ -205,6 +205,11 @@ namespace RI.Framework.IO.INI
 
 			sectionName = this.EncodeSectionName(sectionName);
 
+			if (this.Settings.EmptyLineBeforeSectionHeader)
+			{
+				this.WriteNewLineIfNecessary();
+			}
+
 			this.WriteNewLineIfNecessary();
 			this.WriteInternal(this.Settings.SectionStart);
 			this.WriteInternal(sectionName);

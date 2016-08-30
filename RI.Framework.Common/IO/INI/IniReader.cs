@@ -17,7 +17,6 @@ namespace RI.Framework.IO.INI
 	///         See <see cref="IniDocument" /> for more general and detailed information about working with INI data.
 	///     </para>
 	/// </remarks>
-	//TODO: Current error
 	public sealed class IniReader : IDisposable
 	{
 		#region Instance Constructor/Destructor
@@ -53,7 +52,9 @@ namespace RI.Framework.IO.INI
 			this.BaseReader = reader;
 			this.Settings = settings ?? new IniReaderSettings();
 
+			this.CurrentLineNumber = 0;
 			this.CurrentElement = null;
+			this.CurrentError = IniReaderError.None;
 			this.Buffer = null;
 			this.Closed = false;
 		}
@@ -82,7 +83,7 @@ namespace RI.Framework.IO.INI
 		///     Gets the current INI element which was read during the last call to <see cref="ReadNext" />.
 		/// </summary>
 		/// <value>
-		///     The current INI element.
+		///     The current INI element or null if last call to <see cref="ReadNext" /> created an error (<see cref="CurrentError" />).
 		/// </value>
 		/// <remarks>
 		///     <para>
@@ -93,6 +94,38 @@ namespace RI.Framework.IO.INI
 		///     </para>
 		/// </remarks>
 		public IniElement CurrentElement { get; private set; }
+
+		/// <summary>
+		///     Gets the current error which ocurred during the last call to <see cref="ReadNext" />.
+		/// </summary>
+		/// <value>
+		///     The current error.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         Before the first call to <see cref="ReadNext" />, this property is <see cref="IniReaderError.None" />.
+		///     </para>
+		///     <para>
+		///         This property keeps its last value even if <see cref="ReadNext" /> returns false.
+		///     </para>
+		/// </remarks>
+		public IniReaderError CurrentError { get; private set; }
+
+		/// <summary>
+		///     Gets the current line number in the INI data to which <see cref="CurrentElement" /> or <see cref="CurrentError" /> corresponds to.
+		/// </summary>
+		/// <value>
+		///     The current line number.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         Before the first call to <see cref="ReadNext" />, this property is zero.
+		///     </para>
+		///     <para>
+		///         This property keeps its last value even if <see cref="ReadNext" /> returns false.
+		///     </para>
+		/// </remarks>
+		public int CurrentLineNumber { get; private set; }
 
 		/// <summary>
 		///     Gets the used reader settings for this INI reader.
@@ -142,7 +175,16 @@ namespace RI.Framework.IO.INI
 				return false;
 			}
 
-			this.CurrentElement = element;
+			if (element is ErrorElement)
+			{
+				this.CurrentElement = null;
+				this.CurrentError = ( (ErrorElement)element ).Error;
+			}
+			else
+			{
+				this.CurrentElement = element;
+				this.CurrentError = IniReaderError.None;
+			}
 
 			if (element is TextIniElement)
 			{
@@ -211,16 +253,23 @@ namespace RI.Framework.IO.INI
 				return null;
 			}
 
-			string trimmedLine = line.TrimStart();
-			if (trimmedLine.StartsWith(this.Settings.SectionStart.ToString(), StringComparison.Ordinal))
+			string trimmedStart = line.TrimStart();
+			if (trimmedStart.StartsWith(this.Settings.SectionStart.ToString(), StringComparison.Ordinal) && line.TrimEnd().EndsWith(this.Settings.SectionEnd.ToString(), StringComparison.Ordinal))
 			{
-				string sectionName = trimmedLine.Trim().TrimStart(this.Settings.SectionStart).TrimEnd(this.Settings.SectionEnd);
+				string sectionName = line.Trim().TrimStart(this.Settings.SectionStart).TrimEnd(this.Settings.SectionEnd);
 				sectionName = this.Decode(sectionName);
-				return new SectionIniElement(sectionName);
+				try
+				{
+					return new SectionIniElement(sectionName);
+				}
+				catch
+				{
+					return new ErrorElement(IniReaderError.InvalidSectionName);
+				}
 			}
-			else if (trimmedLine.StartsWith(this.Settings.CommentStart.ToString(), StringComparison.Ordinal))
+			else if (trimmedStart.StartsWith(this.Settings.CommentStart.ToString(), StringComparison.Ordinal))
 			{
-				string comment = trimmedLine.Substring(1);
+				string comment = trimmedStart.Substring(1);
 				return new CommentIniElement(comment);
 			}
 			else
@@ -234,12 +283,21 @@ namespace RI.Framework.IO.INI
 				name = this.Decode(name);
 				string value = line.Substring(separatorIndex + 1);
 				value = this.Decode(value);
-				return new ValueIniElement(name, value);
+				try
+				{
+					return new ValueIniElement(name, value);
+				}
+				catch
+				{
+					return new ErrorElement(IniReaderError.InvalidValueName);
+				}
 			}
 		}
 
 		private string ReadLine ()
 		{
+			this.CurrentLineNumber++;
+
 			if (this.Buffer != null)
 			{
 				string line = this.Buffer;
@@ -269,6 +327,34 @@ namespace RI.Framework.IO.INI
 		void IDisposable.Dispose ()
 		{
 			this.Close();
+		}
+
+		#endregion
+
+
+
+
+		#region Type: ErrorElement
+
+		private sealed class ErrorElement : IniElement
+		{
+			#region Instance Constructor/Destructor
+
+			public ErrorElement (IniReaderError error)
+			{
+				this.Error = error;
+			}
+
+			#endregion
+
+
+
+
+			#region Instance Properties/Indexer
+
+			public IniReaderError Error { get; private set; }
+
+			#endregion
 		}
 
 		#endregion

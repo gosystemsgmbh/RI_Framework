@@ -13,6 +13,38 @@
 	/// </remarks>
 	public sealed class IniWriterSettings : IniSettings
 	{
-		//TODO: Write new line before section header
+		#region Constants
+
+		/// <summary>
+		///     The default whether an additional new line is written before a section header.
+		/// </summary>
+		/// <remarks>
+		///     <para>
+		///         The default value is true.
+		///     </para>
+		/// </remarks>
+		public const bool DefaultEmptyLineBeforeSectionHeader = true;
+
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
+
+		/// <summary>
+		///     Gets or sets whether an additional new line is written before a section header.
+		/// </summary>
+		/// <value>
+		///     true if an additional new line is written before a section header, false otherwise.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         The default value is <see cref="DefaultEmptyLineBeforeSectionHeader" />.
+		///     </para>
+		/// </remarks>
+		public bool EmptyLineBeforeSectionHeader { get; set; } = IniWriterSettings.DefaultEmptyLineBeforeSectionHeader;
+
+		#endregion
 	}
 }
