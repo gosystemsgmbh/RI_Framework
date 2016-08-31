@@ -18,6 +18,68 @@ namespace RI.Framework.IO.INI
 	//TODO: MergeSections()
 	//TODO: SortSections()
 	//TODO: SortElements()
+	/// <summary>
+	/// Contains and manages structured INI data.
+	/// </summary>
+	/// <remarks>
+	/// <para>
+	/// <b>GENERAL</b>
+	/// </para>
+	/// <para>
+	/// INI data in an <see cref="IniDocument"/> is stored in the <see cref="Elements"/> property.
+	/// <see cref="Elements"/> is always kept up to date and all actions performed on an <see cref="IniDocument"/> directly read from or modify <see cref="Elements"/>.
+	/// </para>
+	/// <para>
+	/// <see cref="Elements"/> is a list which contains all the INI elements of the INI data in a sequential order (e.g. as they would appear in an INI file).
+	/// The INI elements are all of the abstract base type <see cref="IniElement"/>, the concrete type depending on the type of the element (<see cref="SectionIniElement"/>, <see cref="ValueIniElement"/>, <see cref="CommentIniElement"/>, <see cref="TextIniElement"/>).
+	/// </para>
+	/// <para>
+	/// <see cref="Elements"/> can be modified arbitrarily by either using methods of <see cref="IniDocument"/> or by modifying the list itself.
+	/// The list can contain or be modified to contain any sequence of the four types of INI elements mentioned above.
+	/// Any sequence of INI elements will be valid as each instance of a derivate of <see cref="IniElement"/> is independent to any other type of INI element.
+	/// </para>
+	/// <note type="important">
+	/// Be aware that although each INI element is independent of each other, the sequence of elements has semantical meaning, depending of the data and its context stored in the INI data.
+	/// For example, a <see cref="SectionIniElement"/> is technically independent from its following <see cref="ValueIniElement"/>s, but when processed the <see cref="SectionIniElement"/> defines the section to which the following <see cref="ValueIniElement"/> belong.
+	/// </note>
+	/// <para>
+	/// <b>ANATOMY OF INI DATA &amp; ELEMENTS</b>
+	/// </para>
+	/// <para>
+	/// INI data outside an <see cref="IniDocument"/> is organized as text line-by-line (e.g. a string or *.ini file containing the data).
+	/// Inside an <see cref="IniDocument"/>, the INI data represented by <see cref="IniElement"/>s, stored in <see cref="Elements"/>, is on a technical abstraction (reflecting the line-by-line organization), not a semantical abstraction.
+	/// This means that basically each line of INI data is represented by a seperate <see cref="IniElement"/>, depending on the type of line.
+	/// </para>
+	/// <para>
+	/// There are four types of lines in INI data, each represented with their own derivate of <see cref="IniElement"/>:
+	/// Sections (<see cref="SectionIniElement"/>), Name-Value-Pairs (<see cref="ValueIniElement"/>), Comments (<see cref="CommentIniElement"/>), and Text (<see cref="TextIniElement"/>).
+	/// Any possible line in a set of INI data will fit into exactly one of those types.
+	/// </para>
+	/// <para>
+	/// Sections: TODO
+	/// </para>
+	/// <para>
+	/// Name-Value-Pairs: TODO
+	/// </para>
+	/// <para>
+	/// Comments: TODO
+	/// </para>
+	/// <para>
+	/// Text: TODO
+	/// </para>
+	/// <para>
+	/// <b>SECTIONS SPECIALITIES</b>
+	/// </para>
+	/// <para>
+	/// TODO
+	/// </para>
+	/// <para>
+	/// <b>DESTRUCTIVE ACTIONS</b>
+	/// </para>
+	/// <para>
+	/// TODO
+	/// </para>
+	/// </remarks>
 	public sealed class IniDocument : ICloneable,
 	                                  ICloneable<IniDocument>
 	{
