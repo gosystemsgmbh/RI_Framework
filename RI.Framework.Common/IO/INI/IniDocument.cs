@@ -7,6 +7,7 @@ using RI.Framework.Collections;
 using RI.Framework.IO.INI.Elements;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
+using RI.Framework.Utilities.ObjectModel;
 
 
 
@@ -14,12 +15,9 @@ using RI.Framework.Utilities.Exceptions;
 namespace RI.Framework.IO.INI
 {
 	//TODO: Documentation
-	//TODO: Cloneable
-	//TODO: RemoveComments()
-	//TODO: RemoveText()
-	//TODO: RemoveEmptySections()
 	//TODO: Normalize()
-	public sealed class IniDocument
+	public sealed class IniDocument : ICloneable,
+	                                  ICloneable<IniDocument>
 	{
 		#region Instance Constructor/Destructor
 
@@ -689,6 +687,7 @@ namespace RI.Framework.IO.INI
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="reader" /> is null. </exception>
+		/// <exception cref="IniParsingException"> The INI data read by <paramref name="reader" /> contains invalid elements. </exception>
 		public void Load (IniReader reader)
 		{
 			if (reader == null)
@@ -696,13 +695,66 @@ namespace RI.Framework.IO.INI
 				throw new ArgumentNullException(nameof(reader));
 			}
 
-			this.Elements.Clear();
-
+			List<IniElement> elements = new List<IniElement>();
 			while (reader.ReadNext())
 			{
-				//TODO: Consistency
-				//TODO: Process current error
-				this.Elements.Add(reader.CurrentElement);
+				if (reader.CurrentError != IniReaderError.None)
+				{
+					throw new IniParsingException(reader.CurrentLineNumber, reader.CurrentError);
+				}
+				elements.Add(reader.CurrentElement);
+			}
+
+			this.Elements.Clear();
+			this.Elements.AddRange(elements);
+		}
+
+		/// <summary>
+		///     Loads INI elements from a string.
+		/// </summary>
+		/// <param name="data"> The INI data to load. </param>
+		/// <remarks>
+		///     <para>
+		///         All existing INI elements will be discarded before the new elements are loaded.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="data" /> is null. </exception>
+		/// <exception cref="IniParsingException"> The INI data read from <paramref name="data" /> contains invalid elements. </exception>
+		public void Load (string data)
+		{
+			if (data == null)
+			{
+				throw new ArgumentNullException(nameof(data));
+			}
+
+			this.Load(data, (IniReaderSettings)null);
+		}
+
+		/// <summary>
+		///     Loads INI elements from a string.
+		/// </summary>
+		/// <param name="data"> The INI data to load. </param>
+		/// <param name="settings"> The used INI reader settings or null if default values should be used. </param>
+		/// <remarks>
+		///     <para>
+		///         All existing INI elements will be discarded before the new elements are loaded.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="data" /> is null. </exception>
+		/// <exception cref="IniParsingException"> The INI data read from <paramref name="data" /> contains invalid elements. </exception>
+		public void Load (string data, IniReaderSettings settings)
+		{
+			if (data == null)
+			{
+				throw new ArgumentNullException(nameof(data));
+			}
+
+			using (StringReader sr = new StringReader(data))
+			{
+				using (IniReader ir = new IniReader(sr, settings))
+				{
+					this.Load(ir);
+				}
 			}
 		}
 
@@ -717,6 +769,7 @@ namespace RI.Framework.IO.INI
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="file" /> or <paramref name="encoding" /> is null. </exception>
+		/// <exception cref="IniParsingException"> The INI data read from <paramref name="file" /> contains invalid elements. </exception>
 		public void Load (string file, Encoding encoding)
 		{
 			if (file == null)
@@ -744,6 +797,7 @@ namespace RI.Framework.IO.INI
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="file" /> or <paramref name="encoding" /> is null. </exception>
+		/// <exception cref="IniParsingException"> The INI data read from <paramref name="file" /> contains invalid elements. </exception>
 		public void Load (string file, Encoding encoding, IniReaderSettings settings)
 		{
 			if (file == null)
@@ -763,6 +817,115 @@ namespace RI.Framework.IO.INI
 					this.Load(ir);
 				}
 			}
+		}
+
+		/// <summary>
+		///     Removes all comment INI elements from this document.
+		/// </summary>
+		/// <returns>
+		///     true if any comment INI elements were removed, false otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         This removes all <see cref="CommentIniElement" />s from all sections.
+		///     </para>
+		/// </remarks>
+		public bool RemoveComments ()
+		{
+			return this.Elements.RemoveWhere(x => x is CommentIniElement).Count > 0;
+		}
+
+		/// <summary>
+		///     Removes all sections which do not have any name-value-pairs.
+		/// </summary>
+		/// <returns>
+		///     A set of section names which were removed.
+		///     An empty set is returned if no sections were removed.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         The returned set uses <see cref="SectionNameComparer" />.
+		///     </para>
+		///     <para>
+		///         If a section only contains text or comment INI elements, the section is considered empty and is removed.
+		///         Use <see cref="RemoveEmptySections(bool, bool)" /> if such elements should count as not-empty.
+		///     </para>
+		/// </remarks>
+		public HashSet<string> RemoveEmptySections ()
+		{
+			return this.RemoveEmptySections(false, false);
+		}
+
+		/// <summary>
+		///     Removes all sections which are empty.
+		/// </summary>
+		/// <param name="keepIfText"> Specifies whether sections with text INI elements (<see cref="TextIniElement" />) are considered not empty. </param>
+		/// <param name="keepIfComments"> Specifies whether sections with comment INI elements (<see cref="CommentIniElement" />) are considered not empty. </param>
+		/// <returns>
+		///     A set of section names which were removed.
+		///     An empty set is returned if no sections were removed.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         The returned set uses <see cref="SectionNameComparer" />.
+		///     </para>
+		/// </remarks>
+		public HashSet<string> RemoveEmptySections (bool keepIfText, bool keepIfComments)
+		{
+			List<List<IniElement>> elements = new List<List<IniElement>>();
+			List<string> names = new List<string>();
+
+			List<IniElement> currentElements = new List<IniElement>();
+			elements.Add(currentElements);
+			names.Add(null);
+
+			foreach (IniElement element in this.Elements)
+			{
+				if (element is SectionIniElement)
+				{
+					SectionIniElement sectionElement = (SectionIniElement)element;
+					currentElements = new List<IniElement>();
+					elements.Add(currentElements);
+					names.Add(sectionElement.SectionName);
+				}
+				currentElements.Add(element);
+			}
+
+			List<IniElement> elementsToRemove = new List<IniElement>();
+			HashSet<string> result = new HashSet<string>(this.SectionNameComparer);
+
+			for (int i1 = 0; i1 < elements.Count; i1++)
+			{
+				int count = elements[i1].Count(x =>
+				                               {
+					                               if (( x is SectionIniElement ) || ( x is ValueIniElement ))
+					                               {
+						                               return true;
+					                               }
+
+					                               if (x is TextIniElement)
+					                               {
+						                               return keepIfText;
+					                               }
+
+					                               if (x is CommentIniElement)
+					                               {
+						                               return keepIfComments;
+					                               }
+
+					                               return false;
+				                               });
+
+				if (count == 0)
+				{
+					elementsToRemove.AddRange(elements[i1]);
+					result.Add(names[i1]);
+				}
+			}
+
+			this.Elements.RemoveRange(elementsToRemove);
+
+			return result;
 		}
 
 		/// <summary>
@@ -809,6 +972,47 @@ namespace RI.Framework.IO.INI
 			this.Elements.RemoveRange(elements);
 
 			return elements;
+		}
+
+		/// <summary>
+		///     Removes all text INI elements from this document.
+		/// </summary>
+		/// <returns>
+		///     true if any text INI elements were removed, false otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         This removes all <see cref="TextIniElement" />s from all sections.
+		///     </para>
+		/// </remarks>
+		public bool RemoveText ()
+		{
+			return this.Elements.RemoveWhere(x => x is TextIniElement).Count > 0;
+		}
+
+		/// <summary>
+		///     Removes all text and comment INI elements from this document.
+		/// </summary>
+		/// <returns>
+		///     true if any text or comment INI elements were removed, false otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         This removes all <see cref="TextIniElement" />s and <see cref="CommentIniElement" />s from all sections.
+		///     </para>
+		/// </remarks>
+		public bool RemoveTextAndComments ()
+		{
+			bool result = false;
+			if (this.RemoveText())
+			{
+				result = true;
+			}
+			if (this.RemoveComments())
+			{
+				result = true;
+			}
+			return result;
 		}
 
 		/// <summary>
@@ -1068,6 +1272,34 @@ namespace RI.Framework.IO.INI
 			}
 
 			return lastMatchingIndex;
+		}
+
+		#endregion
+
+
+
+
+		#region Interface: ICloneable
+
+		/// <inheritdoc />
+		object ICloneable.Clone ()
+		{
+			return this.Clone();
+		}
+
+		#endregion
+
+
+
+
+		#region Interface: ICloneable<IniDocument>
+
+		/// <inheritdoc />
+		public IniDocument Clone ()
+		{
+			IniDocument clone = new IniDocument(this.SectionNameComparer, this.SectionNameComparer);
+			clone.Load(this.AsString());
+			return clone;
 		}
 
 		#endregion

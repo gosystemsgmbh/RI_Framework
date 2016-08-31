@@ -64,6 +64,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)IO\INI\Elements\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\INI\IniDocument.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\INI\IniElement.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\INI\IniParsingException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\INI\IniReader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\INI\IniReaderError.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\INI\IniReaderSettings.cs" />
