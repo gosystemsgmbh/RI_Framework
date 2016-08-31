@@ -56,8 +56,7 @@ Collections
 I/O
 ---
 
- + File and directory path (use in: DirectoryCatalog, DirectoryLogWriter, WpfBootstrapper)
- + PathProperties: ChangeType
+ - PathProperties: ChangeType
 
  - RandomStream
  - UncloseableStream

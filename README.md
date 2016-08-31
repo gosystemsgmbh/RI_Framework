@@ -31,6 +31,8 @@
 ## Second release
 
 - [ ] Features
+  - [ ] Stream extensions
   - [ ] Path extensions
+  - [ ] ChangeType() for PathProperties
 - [ ] Documentation
   - [ ] .NET documentation

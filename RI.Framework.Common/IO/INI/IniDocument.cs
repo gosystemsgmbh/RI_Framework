@@ -15,7 +15,10 @@ using RI.Framework.Utilities.ObjectModel;
 namespace RI.Framework.IO.INI
 {
 	//TODO: Documentation
-	//TODO: Normalize()
+	//TODO: MergeSections()
+	//TODO: SortSections()
+	//TODO: SortElements()
+	//TODO: element ToString() overloads
 	public sealed class IniDocument : ICloneable,
 	                                  ICloneable<IniDocument>
 	{
