@@ -62,5 +62,18 @@
 		}
 
 		#endregion
+
+
+
+
+		#region Overrides
+
+		/// <inheritdoc />
+		public override string ToString ()
+		{
+			return IniSettings.DefaultCommentStart + this.Comment;
+		}
+
+		#endregion
 	}
 }

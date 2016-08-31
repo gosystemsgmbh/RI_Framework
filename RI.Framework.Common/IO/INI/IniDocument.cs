@@ -18,7 +18,6 @@ namespace RI.Framework.IO.INI
 	//TODO: MergeSections()
 	//TODO: SortSections()
 	//TODO: SortElements()
-	//TODO: element ToString() overloads
 	public sealed class IniDocument : ICloneable,
 	                                  ICloneable<IniDocument>
 	{

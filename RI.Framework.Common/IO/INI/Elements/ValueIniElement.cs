@@ -116,5 +116,18 @@ namespace RI.Framework.IO.INI.Elements
 		}
 
 		#endregion
+
+
+
+
+		#region Overrides
+
+		/// <inheritdoc />
+		public override string ToString ()
+		{
+			return this.Name + IniSettings.DefaultNameValueSeparator + this.Value;
+		}
+
+		#endregion
 	}
 }

@@ -65,5 +65,18 @@
 		}
 
 		#endregion
+
+
+
+
+		#region Overrides
+
+		/// <inheritdoc />
+		public override string ToString ()
+		{
+			return this.Text;
+		}
+
+		#endregion
 	}
 }

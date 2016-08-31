@@ -88,5 +88,18 @@ namespace RI.Framework.IO.INI.Elements
 		}
 
 		#endregion
+
+
+
+
+		#region Overrides
+
+		/// <inheritdoc />
+		public override string ToString ()
+		{
+			return IniSettings.DefaultSectionStart + this.SectionName + IniSettings.DefaultSectionEnd;
+		}
+
+		#endregion
 	}
 }
