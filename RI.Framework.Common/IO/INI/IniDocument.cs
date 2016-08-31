@@ -6,6 +6,7 @@ using System.Text;
 using RI.Framework.Collections;
 using RI.Framework.IO.INI.Elements;
 using RI.Framework.Utilities;
+using RI.Framework.Utilities.Comparison;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.ObjectModel;
 
@@ -14,72 +15,108 @@ using RI.Framework.Utilities.ObjectModel;
 
 namespace RI.Framework.IO.INI
 {
-	//TODO: Documentation
-	//TODO: MergeSections()
-	//TODO: SortSections()
-	//TODO: SortElements()
 	/// <summary>
-	/// Contains and manages structured INI data.
+	///     Contains and manages structured INI data.
 	/// </summary>
 	/// <remarks>
-	/// <para>
-	/// <b>GENERAL</b>
-	/// </para>
-	/// <para>
-	/// INI data in an <see cref="IniDocument"/> is stored in the <see cref="Elements"/> property.
-	/// <see cref="Elements"/> is always kept up to date and all actions performed on an <see cref="IniDocument"/> directly read from or modify <see cref="Elements"/>.
-	/// </para>
-	/// <para>
-	/// <see cref="Elements"/> is a list which contains all the INI elements of the INI data in a sequential order (e.g. as they would appear in an INI file).
-	/// The INI elements are all of the abstract base type <see cref="IniElement"/>, the concrete type depending on the type of the element (<see cref="SectionIniElement"/>, <see cref="ValueIniElement"/>, <see cref="CommentIniElement"/>, <see cref="TextIniElement"/>).
-	/// </para>
-	/// <para>
-	/// <see cref="Elements"/> can be modified arbitrarily by either using methods of <see cref="IniDocument"/> or by modifying the list itself.
-	/// The list can contain or be modified to contain any sequence of the four types of INI elements mentioned above.
-	/// Any sequence of INI elements will be valid as each instance of a derivate of <see cref="IniElement"/> is independent to any other type of INI element.
-	/// </para>
-	/// <note type="important">
-	/// Be aware that although each INI element is independent of each other, the sequence of elements has semantical meaning, depending of the data and its context stored in the INI data.
-	/// For example, a <see cref="SectionIniElement"/> is technically independent from its following <see cref="ValueIniElement"/>s, but when processed the <see cref="SectionIniElement"/> defines the section to which the following <see cref="ValueIniElement"/> belong.
-	/// </note>
-	/// <para>
-	/// <b>ANATOMY OF INI DATA &amp; ELEMENTS</b>
-	/// </para>
-	/// <para>
-	/// INI data outside an <see cref="IniDocument"/> is organized as text line-by-line (e.g. a string or *.ini file containing the data).
-	/// Inside an <see cref="IniDocument"/>, the INI data represented by <see cref="IniElement"/>s, stored in <see cref="Elements"/>, is on a technical abstraction (reflecting the line-by-line organization), not a semantical abstraction.
-	/// This means that basically each line of INI data is represented by a seperate <see cref="IniElement"/>, depending on the type of line.
-	/// </para>
-	/// <para>
-	/// There are four types of lines in INI data, each represented with their own derivate of <see cref="IniElement"/>:
-	/// Sections (<see cref="SectionIniElement"/>), Name-Value-Pairs (<see cref="ValueIniElement"/>), Comments (<see cref="CommentIniElement"/>), and Text (<see cref="TextIniElement"/>).
-	/// Any possible line in a set of INI data will fit into exactly one of those types.
-	/// </para>
-	/// <para>
-	/// Sections: TODO
-	/// </para>
-	/// <para>
-	/// Name-Value-Pairs: TODO
-	/// </para>
-	/// <para>
-	/// Comments: TODO
-	/// </para>
-	/// <para>
-	/// Text: TODO
-	/// </para>
-	/// <para>
-	/// <b>SECTIONS SPECIALITIES</b>
-	/// </para>
-	/// <para>
-	/// TODO
-	/// </para>
-	/// <para>
-	/// <b>DESTRUCTIVE ACTIONS</b>
-	/// </para>
-	/// <para>
-	/// TODO
-	/// </para>
+	///     <para>
+	///         <b> GENERAL </b>
+	///     </para>
+	///     <para>
+	///         INI data in an <see cref="IniDocument" /> is stored in the <see cref="Elements" /> property.
+	///         <see cref="Elements" /> is always kept up to date and all actions performed on an <see cref="IniDocument" /> directly read from or modify <see cref="Elements" />.
+	///     </para>
+	///     <para>
+	///         <see cref="Elements" /> is a list which contains all the INI elements of the INI data in a sequential order (e.g. as they would appear in an INI file).
+	///         The INI elements are all of the abstract base type <see cref="IniElement" />, the concrete type depending on the type of the element (<see cref="SectionIniElement" />, <see cref="ValueIniElement" />, <see cref="CommentIniElement" />, <see cref="TextIniElement" />).
+	///     </para>
+	///     <para>
+	///         <see cref="Elements" /> can be modified arbitrarily by either using methods of <see cref="IniDocument" /> or by modifying the list itself.
+	///         The list can contain or be modified to contain any sequence of the four types of INI elements mentioned above.
+	///         Any sequence of INI elements will be valid as each instance of a derivate of <see cref="IniElement" /> is independent to any other type of INI element.
+	///     </para>
+	///     <note type="important">
+	///         Be aware that although each INI element is independent of each other, the sequence of INI elements has semantical meaning, depending of the data and its context stored in the INI data.
+	///         For example, a <see cref="SectionIniElement" /> is technically independent from its following <see cref="ValueIniElement" />s, but when processed the <see cref="SectionIniElement" /> defines the section to which the following <see cref="ValueIniElement" /> belong.
+	///     </note>
+	///     <note type="important">
+	///         Be careful when performing actions which insert, remove, or reorder INI elements as this might change the semantical meaning of one or several sections!
+	///     </note>
+	///     <para>
+	///         <b> ANATOMY OF INI DATA &amp; ELEMENTS </b>
+	///     </para>
+	///     <para>
+	///         INI data outside an <see cref="IniDocument" /> is organized as text line-by-line (e.g. a string or *.ini file containing the INI data).
+	///         Inside an <see cref="IniDocument" />, the INI data represented by <see cref="IniElement" />s, stored in <see cref="Elements" />, is on a technical abstraction (reflecting the line-by-line organization), not a semantical abstraction.
+	///         This means that basically each line of INI data is represented by a seperate <see cref="IniElement" />, depending on the type of line.
+	///     </para>
+	///     <para>
+	///         There are four types of lines in INI data, each represented with their own derivate of <see cref="IniElement" />:
+	///         Sections (<see cref="SectionIniElement" />), Name-Value-Pairs (<see cref="ValueIniElement" />), Comments (<see cref="CommentIniElement" />), and Text (<see cref="TextIniElement" />).
+	///         Any possible line in a set of INI data will fit into exactly one of those types.
+	///     </para>
+	///     <para>
+	///         <b> Sections: </b>
+	///         A section is started by a section header.
+	///         The section header contains the name of the section.
+	///         All elements following the section header belong to that section until the next section header appears.
+	///         So a section includes its section header and all elements following the section header.
+	///         A section header is a single line, in the form <c> [name of the section] </c>, and is represented using <see cref="SectionIniElement" />.
+	///         When INI data is parsed, leading and trailing whitespace of a line is ignored for section headers and the section name must be enclosed in <c> [ </c> and <c> ] </c>.
+	///         Leading and trailing whitespace of the section name itself is not ignored.
+	///         There can be multiple sections which have the same name.
+	///     </para>
+	///     <para>
+	///         <b> Name-Value-Pairs: </b>
+	///         Name-value-pairs are the actual data intended to be stored and transported by INI data.
+	///         A name-value-pair is a single line, in the form of <c> name=value </c>, and is represented using <see cref="ValueIniElement" />.
+	///         When INI data is parsed, leading and trailing whitespace of both the name and the value is not ignored.
+	///         There can be multiple name-value-pairs inside the same (or another) section which have the same name.
+	///     </para>
+	///     <para>
+	///         <b> Comments: </b>
+	///         A comment is a text which is explicitly marked as a comment and is only intended for annotating the INI data when viewed directly (e.g. opening an *.ini file in a text editor).
+	///         Comments are not processed by <see cref="IniDocument" /> besides loading/saving them to/from <see cref="Elements" />.
+	///         A comment is in the form <c> ;comment </c> and represented using <see cref="CommentIniElement" />.
+	///         Note that consecutive comment lines will be combined into a single <see cref="CommentIniElement" />.
+	///         When INI data is parsed, leading whitespace of a comment is ignored, up to <c> ; </c>, but not ignored in the comment itself.
+	///     </para>
+	///     <para>
+	///         <b> Text: </b>
+	///         A text is everything else which is not a section header, name-value-pair, or comment, and is represented using <see cref="TextIniElement" />
+	///         Therefore, technically speaking, text elements are actually invalid sections and should not be used in any processing.
+	///         Text is not processed by <see cref="IniDocument" /> besides loading/saving them to/from <see cref="Elements" />.
+	///         Note that consecutive text lines will be combined into a single <see cref="TextIniElement" />.
+	///     </para>
+	///     <note type="note">
+	///         Note that elements always belong to a section.
+	///         This is either the section started by the last section header or the default section if no section header appeared before the element.
+	///         When &quot;outside a section&quot; is mentioned in the description of <see cref="IniDocument" />, that default section is meant.
+	///     </note>
+	///     <para>
+	///         <b> ESCAPING </b>
+	///     </para>
+	///     <para>
+	///         INI data uses characters with special meanings to structure elements: <c> [ </c>, <c> ] </c>, <c> = </c>, <c> ; </c>, and <c> CRLF </c> or <c> LF </c> respectively (depending on the used line-ending-style).
+	///         This means that those special characters cannot appear as-is within section names, names of name-value-pairs, or values of name-value-pairs.
+	///         Therefore, if such special characters are used in such a way, they need to be escaped (similar to escape sequences such as <c> \r\n </c>).
+	///     </para>
+	///     <para>
+	///         Another special character is used to start an escape sequence: <c> | </c>.
+	///         This means that the character after <c> | </c> defines which one of the special characters is to be represented by the escape sequence.
+	///         The following escape sequences are possible: <c> |[ </c>, <c> |] </c>, <c> |= </c>, <c> |; </c>, <c> |r </c>, <c> |n </c>, <c> || </c>.
+	///         <c> |r </c> is carriage-return (CR), <c> |n </c> new-line or line-feed (LF), and <c> || </c> is used to represent <c> | </c> itself.
+	///     </para>
+	///     <para>
+	///         This escaping mechanism makes it possible to have any text, including multi-line text, for names and values.
+	///         When INI data is read or written by <see cref="IniDocument" />, <see cref="IniReader" />, <see cref="IniWriter" />, the encoding and decoding of those escape sequences is performed automatically.
+	///     </para>
+	///     <para>
+	///         The <c> | </c> character was choosen to start escape sequences instead of the <c> \ </c> character so that name-value-pairs, which contain windows file or directory paths as their values, are more human-readable.
+	///         The used escape sequence character can be changed using <see cref="IniSettings.EscapeCharacter" />.
+	///     </para>
 	/// </remarks>
+	/// TODO: Example
 	public sealed class IniDocument : ICloneable,
 	                                  ICloneable<IniDocument>
 	{
@@ -747,7 +784,7 @@ namespace RI.Framework.IO.INI
 		/// <param name="reader"> The INI reader from which the elements are loaded. </param>
 		/// <remarks>
 		///     <para>
-		///         All existing INI elements will be discarded before the new elements are loaded.
+		///         All existing INI elements will be discarded before the new sections are loaded.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="reader" /> is null. </exception>
@@ -779,7 +816,7 @@ namespace RI.Framework.IO.INI
 		/// <param name="data"> The INI data to load. </param>
 		/// <remarks>
 		///     <para>
-		///         All existing INI elements will be discarded before the new elements are loaded.
+		///         All existing INI elements will be discarded before the new sections are loaded.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="data" /> is null. </exception>
@@ -801,7 +838,7 @@ namespace RI.Framework.IO.INI
 		/// <param name="settings"> The used INI reader settings or null if default values should be used. </param>
 		/// <remarks>
 		///     <para>
-		///         All existing INI elements will be discarded before the new elements are loaded.
+		///         All existing INI elements will be discarded before the new sections are loaded.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="data" /> is null. </exception>
@@ -829,7 +866,7 @@ namespace RI.Framework.IO.INI
 		/// <param name="encoding"> The encoding for reading the INI file. </param>
 		/// <remarks>
 		///     <para>
-		///         All existing INI elements will be discarded before the new elements are loaded.
+		///         All existing INI elements will be discarded before the new sections are loaded.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="file" /> or <paramref name="encoding" /> is null. </exception>
@@ -857,7 +894,7 @@ namespace RI.Framework.IO.INI
 		/// <param name="settings"> The used INI reader settings or null if default values should be used. </param>
 		/// <remarks>
 		///     <para>
-		///         All existing INI elements will be discarded before the new elements are loaded.
+		///         All existing INI elements will be discarded before the new sections are loaded.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="file" /> or <paramref name="encoding" /> is null. </exception>
@@ -880,6 +917,36 @@ namespace RI.Framework.IO.INI
 				{
 					this.Load(ir);
 				}
+			}
+		}
+
+		/// <summary>
+		///     Merges all sections with the same name into one section.
+		/// </summary>
+		/// <remarks>
+		///     <para>
+		///         <see cref="SectionNameComparer" /> is used for comparison.
+		///     </para>
+		/// </remarks>
+		public void MergeSections ()
+		{
+			List<KeyValuePair<string, List<IniElement>>> sections = null;
+			this.DecomposeSections(out sections);
+
+			Dictionary<string, List<IniElement>> result = new Dictionary<string, List<IniElement>>(this.SectionNameComparer);
+			foreach (KeyValuePair<string, List<IniElement>> section in sections)
+			{
+				if (!result.ContainsKey(section.Key))
+				{
+					result.Add(section.Key, new List<IniElement>());
+				}
+				result[section.Key].AddRange(section.Value.Skip(section.Key == null ? 0 : 1));
+			}
+
+			this.Elements.Clear();
+			foreach (KeyValuePair<string, List<IniElement>> section in result)
+			{
+				this.Elements.AddRange(section.Value);
 			}
 		}
 
@@ -936,54 +1003,38 @@ namespace RI.Framework.IO.INI
 		/// </remarks>
 		public HashSet<string> RemoveEmptySections (bool keepIfText, bool keepIfComments)
 		{
-			List<List<IniElement>> elements = new List<List<IniElement>>();
-			List<string> names = new List<string>();
-
-			List<IniElement> currentElements = new List<IniElement>();
-			elements.Add(currentElements);
-			names.Add(null);
-
-			foreach (IniElement element in this.Elements)
-			{
-				if (element is SectionIniElement)
-				{
-					SectionIniElement sectionElement = (SectionIniElement)element;
-					currentElements = new List<IniElement>();
-					elements.Add(currentElements);
-					names.Add(sectionElement.SectionName);
-				}
-				currentElements.Add(element);
-			}
+			List<KeyValuePair<string, List<IniElement>>> sections = null;
+			this.DecomposeSections(out sections);
 
 			List<IniElement> elementsToRemove = new List<IniElement>();
 			HashSet<string> result = new HashSet<string>(this.SectionNameComparer);
 
-			for (int i1 = 0; i1 < elements.Count; i1++)
+			for (int i1 = 0; i1 < sections.Count; i1++)
 			{
-				int count = elements[i1].Count(x =>
-				                               {
-					                               if (( x is SectionIniElement ) || ( x is ValueIniElement ))
-					                               {
-						                               return true;
-					                               }
+				int count = sections[i1].Value.Count(x =>
+				                                     {
+					                                     if (( x is SectionIniElement ) || ( x is ValueIniElement ))
+					                                     {
+						                                     return true;
+					                                     }
 
-					                               if (x is TextIniElement)
-					                               {
-						                               return keepIfText;
-					                               }
+					                                     if (x is TextIniElement)
+					                                     {
+						                                     return keepIfText;
+					                                     }
 
-					                               if (x is CommentIniElement)
-					                               {
-						                               return keepIfComments;
-					                               }
+					                                     if (x is CommentIniElement)
+					                                     {
+						                                     return keepIfComments;
+					                                     }
 
-					                               return false;
-				                               });
+					                                     return false;
+				                                     });
 
 				if (count == 0)
 				{
-					elementsToRemove.AddRange(elements[i1]);
-					result.Add(names[i1]);
+					elementsToRemove.AddRange(sections[i1].Value);
+					result.Add(sections[i1].Key);
 				}
 			}
 
@@ -1289,6 +1340,143 @@ namespace RI.Framework.IO.INI
 					this.Elements.Clear();
 					this.Elements.AddRange(backup);
 				}
+			}
+		}
+
+		/// <summary>
+		///     Sorts the INI elements in all sections based on their names.
+		/// </summary>
+		/// <remarks>
+		///     <para>
+		///         <see cref="StringComparer.InvariantCultureIgnoreCase" /> is used for comparison.
+		///     </para>
+		///     <note type="important">
+		///         Sorting of INI elements in a section does only work reliable if a section only contains <see cref="ValueIniElement" />s.
+		///     </note>
+		/// </remarks>
+		public void SortElements ()
+		{
+			this.SortElements(StringComparer.InvariantCultureIgnoreCase);
+		}
+
+		/// <summary>
+		///     Sorts the INI elements in all sections based on their names.
+		/// </summary>
+		/// <param name="comparer"> The comparer used to compare the names of name-value-pairs. </param>
+		/// <remarks>
+		///     <note type="important">
+		///         Sorting of INI elements in a section does only work reliable if a section only contains <see cref="ValueIniElement" />s.
+		///     </note>
+		/// </remarks>
+		public void SortElements (IComparer<string> comparer)
+		{
+			if (comparer == null)
+			{
+				throw new ArgumentNullException(nameof(comparer));
+			}
+
+			this.SortElements(new OrderComparison<IniElement>((x, y) =>
+			                                                  {
+				                                                  if (( !( x is ValueIniElement ) ) || ( !( y is ValueIniElement ) ))
+				                                                  {
+					                                                  return 0;
+				                                                  }
+				                                                  return comparer.Compare(( (ValueIniElement)x ).Name, ( (ValueIniElement)y ).Name);
+			                                                  }));
+		}
+
+		/// <summary>
+		///     Sorts the INI elements in all sections.
+		/// </summary>
+		/// <param name="comparer"> The comparer used to compare INI elements. </param>
+		public void SortElements (IComparer<IniElement> comparer)
+		{
+			if (comparer == null)
+			{
+				throw new ArgumentNullException(nameof(comparer));
+			}
+
+			List<KeyValuePair<string, List<IniElement>>> sections = null;
+			this.DecomposeSections(out sections);
+
+			if (sections.Count == 0)
+			{
+				return;
+			}
+
+			foreach (KeyValuePair<string, List<IniElement>> section in sections)
+			{
+				int startIndex = section.Key == null ? 0 : 1;
+				section.Value.Sort(startIndex, section.Value.Count - startIndex, comparer);
+			}
+
+			this.Elements.Clear();
+			foreach (KeyValuePair<string, List<IniElement>> section in sections)
+			{
+				this.Elements.AddRange(section.Value);
+			}
+		}
+
+		/// <summary>
+		///     Sorts the regions based on their names.
+		/// </summary>
+		/// <remarks>
+		///     <para>
+		///         <see cref="StringComparer.InvariantCultureIgnoreCase" /> is used for comparison.
+		///     </para>
+		/// </remarks>
+		public void SortRegions ()
+		{
+			this.SortRegions(StringComparer.InvariantCultureIgnoreCase);
+		}
+
+		/// <summary>
+		///     Sorts the regions based on their names.
+		/// </summary>
+		/// <param name="comparer"> The comparer used to compare the region names. </param>
+		public void SortRegions (IComparer<string> comparer)
+		{
+			if (comparer == null)
+			{
+				throw new ArgumentNullException(nameof(comparer));
+			}
+
+			List<KeyValuePair<string, List<IniElement>>> sections = null;
+			this.DecomposeSections(out sections);
+
+			if (sections.Count == 0)
+			{
+				return;
+			}
+
+			OrderComparison<KeyValuePair<string, List<IniElement>>> sectionComparer = new OrderComparison<KeyValuePair<string, List<IniElement>>>((x, y) => comparer.Compare(x.Key, y.Key));
+
+			int startIndex = sections[0].Key == null ? 1 : 0;
+			sections.Sort(startIndex, sections.Count - startIndex, sectionComparer);
+
+			this.Elements.Clear();
+			foreach (KeyValuePair<string, List<IniElement>> section in sections)
+			{
+				this.Elements.AddRange(section.Value);
+			}
+		}
+
+		private void DecomposeSections (out List<KeyValuePair<string, List<IniElement>>> sections)
+		{
+			sections = new List<KeyValuePair<string, List<IniElement>>>();
+
+			List<IniElement> currentElements = new List<IniElement>();
+			sections.Add(new KeyValuePair<string, List<IniElement>>(null, currentElements));
+
+			foreach (IniElement element in this.Elements)
+			{
+				if (element is SectionIniElement)
+				{
+					SectionIniElement sectionElement = (SectionIniElement)element;
+					currentElements = new List<IniElement>();
+					sections.Add(new KeyValuePair<string, List<IniElement>>(sectionElement.SectionName, currentElements));
+				}
+				currentElements.Add(element);
 			}
 		}
 

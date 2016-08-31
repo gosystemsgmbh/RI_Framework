@@ -4,7 +4,7 @@
 
 - [ ] Features
   - [X] File and directory path
-  - [ ] INI handling
+  - [X] INI handling
   - [ ] Additional dispatcher Features
   - [ ] Analyze and implement magic thread
   - [ ] TODOs
