@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 using RI.Framework.Collections;
 using RI.Framework.Collections.Comparison;
@@ -12,8 +11,6 @@ using RI.Test.Framework.Mocks;
 
 namespace RI.Test.Framework.Cases.Collections.Comparison
 {
-	[SuppressMessage ("ReSharper", "InconsistentNaming")]
-	[SuppressMessage ("ReSharper", "UnusedMember.Global")]
 	public sealed class Test_CollectionComparer : TestModule
 	{
 		#region Instance Methods

@@ -1,14 +1,10 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-using RI.Framework.Collections.Generic;
+﻿using RI.Framework.Collections.Generic;
 
 
 
 
 namespace RI.Test.Framework.Cases.Collections.Generic
 {
-	[SuppressMessage ("ReSharper", "InconsistentNaming")]
-	[SuppressMessage ("ReSharper", "UnusedMember.Global")]
 	public sealed class Test_Warehouse : TestModule
 	{
 		#region Instance Methods

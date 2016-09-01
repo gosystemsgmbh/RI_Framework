@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 using RI.Framework.Utilities.Reflection;
 
@@ -9,8 +8,6 @@ using RI.Framework.Utilities.Reflection;
 
 namespace RI.Test.Framework.Cases.Utilities.Reflection
 {
-	[SuppressMessage ("ReSharper", "InconsistentNaming")]
-	[SuppressMessage ("ReSharper", "UnusedMember.Global")]
 	public sealed class Test_TypeExtensions : TestModule
 	{
 		#region Instance Methods

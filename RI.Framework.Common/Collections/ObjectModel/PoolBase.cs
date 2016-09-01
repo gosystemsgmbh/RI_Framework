@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 
 
@@ -15,7 +14,6 @@ namespace RI.Framework.Collections.ObjectModel
 	///     All pools derived from <see cref="PoolBase{T}" /> support the <see cref="IPoolAware" /> interface.
 	///     See <see cref="IPoolAware" /> for more details about support of <see cref="IPoolAware" />.
 	/// </remarks>
-	[SuppressMessage ("ReSharper", "CompareNonConstrainedGenericWithNull")]
 	public abstract class PoolBase <T> : IPool<T>
 	{
 		#region Instance Constructor/Destructor

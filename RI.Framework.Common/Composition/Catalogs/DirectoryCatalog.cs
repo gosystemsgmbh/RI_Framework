@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Reflection;
 
@@ -33,7 +32,6 @@ namespace RI.Framework.Composition.Catalogs
 	///         Similarly, assembly which failed to load will not be attempted to be loaded again.
 	///     </note>
 	/// </remarks>
-	[SuppressMessage ("ReSharper", "UnusedMember.Global")]
 	public sealed class DirectoryCatalog : CompositionCatalog
 	{
 		#region Constants
@@ -65,7 +63,7 @@ namespace RI.Framework.Composition.Catalogs
 		///     </para>
 		/// </remarks>
 		public DirectoryCatalog (string directoryPath)
-				: this(directoryPath, DirectoryCatalog.DefaultFilePattern, false)
+			: this(directoryPath, DirectoryCatalog.DefaultFilePattern, false)
 		{
 		}
 

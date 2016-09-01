@@ -45,7 +45,7 @@ namespace RI.Framework.Utilities.Comparison
 		/// <param name="comparer"> The function which is used to compare two objects of type <typeparamref name="T" />. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="comparer" /> is null. </exception>
 		public OrderComparison (Func<T, T, int> comparer)
-				: this(false, comparer)
+			: this(false, comparer)
 		{
 		}
 

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 
 using RI.Framework.Collections.ObjectModel;
 using RI.Framework.Utilities.ObjectModel;
@@ -26,7 +25,6 @@ namespace RI.Framework.Collections.Specialized
 	///         See <see cref="PoolBase{T}" /> for more details.
 	///     </para>
 	/// </remarks>
-	[SuppressMessage ("ReSharper", "CompareNonConstrainedGenericWithNull")]
 	public sealed class ClonePool <T> : PoolBase<T>
 			where T : ICloneable
 	{
@@ -55,7 +53,7 @@ namespace RI.Framework.Collections.Specialized
 		/// <exception cref="ArgumentNullException"> <paramref name="prototype" /> is null. </exception>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="count" /> is less than zero. </exception>
 		public ClonePool (T prototype, int count)
-				: base(count)
+			: base(count)
 		{
 			if (prototype == null)
 			{

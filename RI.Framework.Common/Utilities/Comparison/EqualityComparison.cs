@@ -65,7 +65,7 @@ namespace RI.Framework.Utilities.Comparison
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="comparer" /> is null. </exception>
 		public EqualityComparison (Func<T, T, bool> comparer)
-				: this(comparer, null)
+			: this(comparer, null)
 		{
 		}
 

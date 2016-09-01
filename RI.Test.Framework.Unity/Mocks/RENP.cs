@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
 
@@ -7,7 +6,6 @@ using System.Globalization;
 
 namespace RI.Test.Framework.Mocks
 {
-	[SuppressMessage ("ReSharper", "InconsistentNaming")]
 	public sealed class RENP : IEquatable<RENP>
 	{
 		#region Static Methods
@@ -45,13 +43,13 @@ namespace RI.Test.Framework.Mocks
 		}
 
 		public RENP (string value)
-				: this()
+			: this()
 		{
 			this.Value = value;
 		}
 
 		public RENP (int number)
-				: this()
+			: this()
 		{
 			this.Number = number;
 		}
@@ -89,7 +87,6 @@ namespace RI.Test.Framework.Mocks
 			return object.ReferenceEquals(this, obj);
 		}
 
-		[SuppressMessage ("ReSharper", "BaseObjectGetHashCodeCallInGetHashCode")]
 		public override int GetHashCode ()
 		{
 			return base.GetHashCode();

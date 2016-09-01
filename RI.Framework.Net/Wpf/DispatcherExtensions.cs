@@ -47,8 +47,8 @@ namespace RI.Framework.Wpf
 			}
 
 			dispatcher.Invoke(() =>
-			{
-			}, priority);
+			                  {
+			                  }, priority);
 		}
 
 		#endregion

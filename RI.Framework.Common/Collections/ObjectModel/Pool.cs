@@ -67,7 +67,7 @@ namespace RI.Framework.Collections.ObjectModel
 		/// </remarks>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="capacity" /> is less than zero. </exception>
 		public Pool (int capacity)
-				: base(capacity)
+			: base(capacity)
 		{
 		}
 

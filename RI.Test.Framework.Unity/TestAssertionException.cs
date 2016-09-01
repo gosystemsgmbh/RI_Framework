@@ -12,17 +12,17 @@ namespace RI.Test.Framework
 		#region Instance Constructor/Destructor
 
 		public TestAssertionException ()
-				: base("Test failed.")
+			: base("Test failed.")
 		{
 		}
 
 		public TestAssertionException (string failure)
-				: base(failure)
+			: base(failure)
 		{
 		}
 
 		private TestAssertionException (SerializationInfo info, StreamingContext context)
-				: base(info, context)
+			: base(info, context)
 		{
 		}
 

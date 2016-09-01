@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
 
 using RI.Framework.IO.Paths;
@@ -13,8 +12,6 @@ namespace RI.Framework.Utilities.Exceptions
 	///     The <see cref="InvalidPathArgumentException" /> is thrown when an argument is not a valid path or a path of an unexpected type.
 	/// </summary>
 	[Serializable]
-	[SuppressMessage ("ReSharper", "ClassCanBeSealed.Global")]
-	[SuppressMessage ("ReSharper", "UnusedMember.Global")]
 	public class InvalidPathArgumentException : ArgumentException
 	{
 		#region Constants

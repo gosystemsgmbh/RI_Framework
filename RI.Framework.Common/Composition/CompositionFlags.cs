@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 
 using RI.Framework.Composition.Model;
 
@@ -13,7 +12,6 @@ namespace RI.Framework.Composition
 	/// </summary>
 	[Serializable]
 	[Flags]
-	[SuppressMessage ("ReSharper", "UnusedMember.Global")]
 	public enum CompositionFlags
 	{
 		/// <summary>

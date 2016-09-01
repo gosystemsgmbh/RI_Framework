@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
@@ -18,9 +17,6 @@ namespace RI.Framework.Composition.Model
 	///     </para>
 	/// </remarks>
 	[AttributeUsage (AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = true, Inherited = false)]
-	[SuppressMessage ("ReSharper", "MemberCanBeInternal")]
-	[SuppressMessage ("ReSharper", "UnusedMember.Global")]
-	[SuppressMessage ("ReSharper", "MemberCanBePrivate.Global")]
 	public sealed class ExportAttribute : Attribute
 	{
 		#region Instance Constructor/Destructor
@@ -50,7 +46,7 @@ namespace RI.Framework.Composition.Model
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="type" /> is null. </exception>
 		public ExportAttribute (Type type)
-				: this()
+			: this()
 		{
 			if (type == null)
 			{
@@ -67,7 +63,7 @@ namespace RI.Framework.Composition.Model
 		/// <exception cref="ArgumentNullException"> <paramref name="name" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
 		public ExportAttribute (string name)
-				: this()
+			: this()
 		{
 			if (name == null)
 			{

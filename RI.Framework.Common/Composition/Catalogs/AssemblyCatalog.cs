@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 
@@ -19,7 +18,6 @@ namespace RI.Framework.Composition.Catalogs
 	///         See <see cref="CompositionCatalog" /> for more details about composition catalogs.
 	///     </para>
 	/// </remarks>
-	[SuppressMessage ("ReSharper", "UnusedMember.Global")]
 	public class AssemblyCatalog : TypeCatalog
 	{
 		#region Static Methods
@@ -59,7 +57,7 @@ namespace RI.Framework.Composition.Catalogs
 		///     </para>
 		/// </remarks>
 		public AssemblyCatalog (IEnumerable<Assembly> assemblies)
-				: base(AssemblyCatalog.GetAssemblyTypes(assemblies))
+			: base(AssemblyCatalog.GetAssemblyTypes(assemblies))
 		{
 		}
 
@@ -68,7 +66,7 @@ namespace RI.Framework.Composition.Catalogs
 		/// </summary>
 		/// <param name="assemblies"> The array of assemblies whose types are used for composition. </param>
 		public AssemblyCatalog (params Assembly[] assemblies)
-				: base(AssemblyCatalog.GetAssemblyTypes(assemblies))
+			: base(AssemblyCatalog.GetAssemblyTypes(assemblies))
 		{
 		}
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 using RI.Framework.Collections;
 using RI.Framework.Collections.Comparison;
@@ -12,9 +11,6 @@ using RI.Test.Framework.Mocks;
 
 namespace RI.Test.Framework.Cases.Collections
 {
-	[SuppressMessage ("ReSharper", "InconsistentNaming")]
-	[SuppressMessage ("ReSharper", "UnusedMember.Global")]
-	[SuppressMessage ("ReSharper", "CollectionNeverUpdated.Local")]
 	public sealed class Test_IEnumerableExtensions : TestModule
 	{
 		#region Instance Methods

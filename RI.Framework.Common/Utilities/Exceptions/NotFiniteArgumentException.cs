@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
 
 
@@ -11,8 +10,6 @@ namespace RI.Framework.Utilities.Exceptions
 	///     The <see cref="NotFiniteArgumentException" /> is thrown when a floating point argument is not a finite number (means: it is "NaN"/"Not-a-Number" or infinity (either positive or negative)), when it should not be.
 	/// </summary>
 	[Serializable]
-	[SuppressMessage ("ReSharper", "ClassCanBeSealed.Global")]
-	[SuppressMessage ("ReSharper", "UnusedMember.Global")]
 	public class NotFiniteArgumentException : ArgumentException
 	{
 		#region Constants
@@ -30,7 +27,7 @@ namespace RI.Framework.Utilities.Exceptions
 		///     Creates a new instance of <see cref="NotFiniteArgumentException" />.
 		/// </summary>
 		public NotFiniteArgumentException ()
-				: base(NotFiniteArgumentException.ExceptionMessage)
+			: base(NotFiniteArgumentException.ExceptionMessage)
 		{
 		}
 
@@ -39,7 +36,7 @@ namespace RI.Framework.Utilities.Exceptions
 		/// </summary>
 		/// <param name="paramName"> The parameter which has a not-finite number. </param>
 		public NotFiniteArgumentException (string paramName)
-				: base(NotFiniteArgumentException.ExceptionMessage, paramName)
+			: base(NotFiniteArgumentException.ExceptionMessage, paramName)
 		{
 		}
 
@@ -49,7 +46,7 @@ namespace RI.Framework.Utilities.Exceptions
 		/// <param name="paramName"> The parameter which has a not-finite number. </param>
 		/// <param name="message"> The message which describes the exception. </param>
 		public NotFiniteArgumentException (string paramName, string message)
-				: base(message, paramName)
+			: base(message, paramName)
 		{
 		}
 
@@ -59,7 +56,7 @@ namespace RI.Framework.Utilities.Exceptions
 		/// <param name="message"> The message which describes the exception. </param>
 		/// <param name="innerException"> The exception which triggered this exception. </param>
 		public NotFiniteArgumentException (string message, Exception innerException)
-				: base(message, innerException)
+			: base(message, innerException)
 		{
 		}
 
@@ -69,7 +66,7 @@ namespace RI.Framework.Utilities.Exceptions
 		/// <param name="info"> The serialization data. </param>
 		/// <param name="context"> The type of the source of the serialization data. </param>
 		protected NotFiniteArgumentException (SerializationInfo info, StreamingContext context)
-				: base(info, context)
+			: base(info, context)
 		{
 		}
 

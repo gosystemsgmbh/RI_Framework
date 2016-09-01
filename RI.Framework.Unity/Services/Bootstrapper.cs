@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 
 using RI.Framework.Composition;
 using RI.Framework.Composition.Catalogs;
@@ -124,7 +123,6 @@ namespace RI.Framework.Services
 	///     </note>
 	/// </remarks>
 	[Export]
-	[SuppressMessage ("ReSharper", "UnusedParameter.Global")]
 	public class Bootstrapper : MonoBehaviour,
 	                            IBootstrapper
 	{

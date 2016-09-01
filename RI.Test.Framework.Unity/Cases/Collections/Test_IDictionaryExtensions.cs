@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 using RI.Framework.Collections;
 using RI.Framework.Utilities;
@@ -11,8 +10,6 @@ using RI.Framework.Utilities.Comparison;
 
 namespace RI.Test.Framework.Cases.Collections
 {
-	[SuppressMessage ("ReSharper", "InconsistentNaming")]
-	[SuppressMessage ("ReSharper", "UnusedMember.Global")]
 	public sealed class Test_IDictionaryExtensions : TestModule
 	{
 		#region Instance Methods
@@ -257,9 +254,9 @@ namespace RI.Test.Framework.Cases.Collections
 			IDictionary<string, int> test = dict.AsDictionary();
 
 			if (test.RemoveRange(new[]
-			{
-				"1", "2"
-			}) != 0)
+			                     {
+				                     "1", "2"
+			                     }) != 0)
 			{
 				throw new TestAssertionException();
 			}
@@ -272,9 +269,9 @@ namespace RI.Test.Framework.Cases.Collections
 			dict.Add("c", 6);
 
 			if (test.RemoveRange(new[]
-			{
-				"1", "2"
-			}) != 2)
+			                     {
+				                     "1", "2"
+			                     }) != 2)
 			{
 				throw new TestAssertionException();
 			}

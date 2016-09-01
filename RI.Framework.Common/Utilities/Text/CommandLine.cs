@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 using RI.Framework.Collections;
@@ -270,7 +269,7 @@ namespace RI.Framework.Utilities.Text
 		///     </para>
 		/// </remarks>
 		public CommandLine ()
-				: this(null)
+			: this(null)
 		{
 		}
 
@@ -505,7 +504,6 @@ namespace RI.Framework.Utilities.Text
 		///         The <see cref="ParameterNameComparer" /> of the cloned command line is also cloned if it implements <see cref="ICloneable{T}" /> or <see cref="ICloneable" />.
 		///     </para>
 		/// </remarks>
-		[SuppressMessage ("ReSharper", "SuspiciousTypeConversion.Global")]
 		public CommandLine Clone ()
 		{
 			IEqualityComparer<string> parameterNameComparer = null;

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 using RI.Framework.Collections.ObjectModel;
 
@@ -8,8 +7,6 @@ using RI.Framework.Collections.ObjectModel;
 
 namespace RI.Test.Framework.Cases.Collections.ObjectModel
 {
-	[SuppressMessage ("ReSharper", "InconsistentNaming")]
-	[SuppressMessage ("ReSharper", "UnusedMember.Global")]
 	public sealed class Test_IPoolExtensions : TestModule
 	{
 		#region Instance Methods
@@ -73,9 +70,9 @@ namespace RI.Test.Framework.Cases.Collections.ObjectModel
 			IPool<int> test = pool;
 
 			if (test.ReturnRange(new[]
-			{
-				1, 2, 3
-			}) != 3)
+			                     {
+				                     1, 2, 3
+			                     }) != 3)
 			{
 				throw new TestAssertionException();
 			}
@@ -101,9 +98,9 @@ namespace RI.Test.Framework.Cases.Collections.ObjectModel
 			}
 
 			if (test.ReturnRange((IList<int>)new[]
-			{
-				1, 2, 3
-			}) != 3)
+			                     {
+				                     1, 2, 3
+			                     }) != 3)
 			{
 				throw new TestAssertionException();
 			}
@@ -129,9 +126,9 @@ namespace RI.Test.Framework.Cases.Collections.ObjectModel
 			}
 
 			if (test.ReturnRange((IEnumerable<int>)new[]
-			{
-				1, 2, 3
-			}) != 3)
+			                     {
+				                     1, 2, 3
+			                     }) != 3)
 			{
 				throw new TestAssertionException();
 			}

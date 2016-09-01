@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
@@ -21,8 +20,6 @@ namespace RI.Framework.Composition
 	///         See <see cref="CompositionContainer" /> for details about managing exports and performing composition.
 	///     </para>
 	/// </remarks>
-	[SuppressMessage ("ReSharper", "UnusedMember.Global")]
-	[SuppressMessage ("ReSharper", "MemberCanBePrivate.Global")]
 	public sealed class CompositionBatch
 	{
 		#region Instance Constructor/Destructor

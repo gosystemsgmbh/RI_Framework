@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 using RI.Framework.Collections;
 using RI.Framework.Collections.Comparison;
@@ -11,8 +10,6 @@ using RI.Framework.Utilities.Comparison;
 
 namespace RI.Test.Framework.Cases.Collections
 {
-	[SuppressMessage ("ReSharper", "InconsistentNaming")]
-	[SuppressMessage ("ReSharper", "UnusedMember.Global")]
 	public sealed class Test_IListExtensions : TestModule
 	{
 		#region Instance Methods
@@ -24,9 +21,9 @@ namespace RI.Test.Framework.Cases.Collections
 			IList<int> test = list.AsList();
 
 			if (test.InsertRange(0, new[]
-			{
-				1, 3
-			}) != 2)
+			                     {
+				                     1, 3
+			                     }) != 2)
 			{
 				throw new TestAssertionException();
 			}
@@ -47,9 +44,9 @@ namespace RI.Test.Framework.Cases.Collections
 			}
 
 			if (test.InsertRange(1, new[]
-			{
-				2, 2, 2
-			}) != 3)
+			                     {
+				                     2, 2, 2
+			                     }) != 3)
 			{
 				throw new TestAssertionException();
 			}
@@ -141,9 +138,9 @@ namespace RI.Test.Framework.Cases.Collections
 			list.Add(5);
 
 			if (test.RemoveAtRange(new[]
-			{
-				1, 3, 3, 1
-			}) != 2)
+			                       {
+				                       1, 3, 3, 1
+			                       }) != 2)
 			{
 				throw new TestAssertionException();
 			}

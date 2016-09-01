@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 using RI.Framework.Collections;
 using RI.Framework.Collections.ObjectModel;
@@ -9,8 +8,6 @@ using RI.Framework.Collections.ObjectModel;
 
 namespace RI.Test.Framework.Cases.Collections.ObjectModel
 {
-	[SuppressMessage ("ReSharper", "InconsistentNaming")]
-	[SuppressMessage ("ReSharper", "UnusedMember.Global")]
 	public sealed class Test_Pool : TestModule
 	{
 		#region Instance Methods

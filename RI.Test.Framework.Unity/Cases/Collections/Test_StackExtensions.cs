@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 using RI.Framework.Collections;
 
@@ -8,8 +7,6 @@ using RI.Framework.Collections;
 
 namespace RI.Test.Framework.Cases.Collections
 {
-	[SuppressMessage ("ReSharper", "InconsistentNaming")]
-	[SuppressMessage ("ReSharper", "UnusedMember.Global")]
 	public sealed class Test_StackExtensions : TestModule
 	{
 		#region Instance Methods
@@ -82,9 +79,9 @@ namespace RI.Test.Framework.Cases.Collections
 			Stack<int> test = new Stack<int>();
 
 			if (test.PushRange(new[]
-			{
-				1, 2, 3
-			}) != 3)
+			                   {
+				                   1, 2, 3
+			                   }) != 3)
 			{
 				throw new TestAssertionException();
 			}

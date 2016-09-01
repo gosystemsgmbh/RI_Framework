@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 using RI.Framework.Collections.ObjectModel;
 
@@ -8,8 +7,6 @@ using RI.Framework.Collections.ObjectModel;
 
 namespace RI.Test.Framework.Cases.Collections.ObjectModel
 {
-	[SuppressMessage ("ReSharper", "InconsistentNaming")]
-	[SuppressMessage ("ReSharper", "UnusedMember.Global")]
 	public sealed class Test_ITreeNodeExtensions : TestModule
 	{
 		#region Instance Methods
@@ -559,17 +556,17 @@ namespace RI.Test.Framework.Cases.Collections.ObjectModel
 			n12.Children.Add(n23);
 
 			if (root.RemoveChildren(new[]
-			{
-				n21, n22, n23
-			}) != 0)
+			                        {
+				                        n21, n22, n23
+			                        }) != 0)
 			{
 				throw new TestAssertionException();
 			}
 
 			if (n12.RemoveChildren(new[]
-			{
-				n21, n22, root
-			}) != 2)
+			                       {
+				                       n21, n22, root
+			                       }) != 2)
 			{
 				throw new TestAssertionException();
 			}
@@ -595,25 +592,25 @@ namespace RI.Test.Framework.Cases.Collections.ObjectModel
 			n12.Children.Add(n23);
 
 			if (n11.RemoveChildrenRecursive(new[]
-			{
-				n21, n22, n23
-			}) != 0)
+			                                {
+				                                n21, n22, n23
+			                                }) != 0)
 			{
 				throw new TestAssertionException();
 			}
 
 			if (n12.RemoveChildrenRecursive(new[]
-			{
-				n21, n22, root
-			}) != 2)
+			                                {
+				                                n21, n22, root
+			                                }) != 2)
 			{
 				throw new TestAssertionException();
 			}
 
 			if (root.RemoveChildrenRecursive(new[]
-			{
-				n23, n11, root
-			}) != 2)
+			                                 {
+				                                 n23, n11, root
+			                                 }) != 2)
 			{
 				throw new TestAssertionException();
 			}

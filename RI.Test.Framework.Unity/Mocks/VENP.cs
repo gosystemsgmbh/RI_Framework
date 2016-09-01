@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
 
@@ -7,7 +6,6 @@ using System.Globalization;
 
 namespace RI.Test.Framework.Mocks
 {
-	[SuppressMessage ("ReSharper", "InconsistentNaming")]
 	public sealed class VENP : IEquatable<VENP>
 	{
 		#region Static Methods
@@ -55,13 +53,13 @@ namespace RI.Test.Framework.Mocks
 		}
 
 		public VENP (string value)
-				: this()
+			: this()
 		{
 			this.Value = value;
 		}
 
 		public VENP (int number)
-				: this()
+			: this()
 		{
 			this.Number = number;
 		}
@@ -99,7 +97,6 @@ namespace RI.Test.Framework.Mocks
 			return this.Equals(obj as VENP);
 		}
 
-		[SuppressMessage ("ReSharper", "NonReadonlyMemberInGetHashCode")]
 		public override int GetHashCode ()
 		{
 			if (this.Value == null)

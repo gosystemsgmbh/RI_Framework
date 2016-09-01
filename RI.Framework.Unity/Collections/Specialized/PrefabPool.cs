@@ -55,7 +55,7 @@ namespace RI.Framework.Collections.Specialized
 		/// <exception cref="ArgumentNullException"> <paramref name="prefab" /> is null. </exception>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="count" /> is less than zero. </exception>
 		public PrefabPool (GameObject prefab, int count)
-				: base(count)
+			: base(count)
 		{
 			if (prefab == null)
 			{

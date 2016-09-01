@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 using RI.Framework.Collections.Comparison;
 using RI.Framework.Utilities.Comparison;
@@ -24,8 +23,6 @@ namespace RI.Framework.Collections
 	///         </note>
 	///     </para>
 	/// </remarks>
-	[SuppressMessage ("ReSharper", "InconsistentNaming")]
-	[SuppressMessage ("ReSharper", "UnusedVariable")]
 	public static class IEnumerableExtensions
 	{
 		#region Static Methods

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 using RI.Framework.Collections;
 
@@ -8,8 +7,6 @@ using RI.Framework.Collections;
 
 namespace RI.Test.Framework.Cases.Collections
 {
-	[SuppressMessage ("ReSharper", "InconsistentNaming")]
-	[SuppressMessage ("ReSharper", "UnusedMember.Global")]
 	public sealed class Test_LinkedListExtensions : TestModule
 	{
 		#region Instance Methods

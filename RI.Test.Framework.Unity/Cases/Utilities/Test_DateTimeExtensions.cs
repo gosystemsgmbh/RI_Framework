@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 
 using RI.Framework.Utilities;
 
@@ -8,8 +7,6 @@ using RI.Framework.Utilities;
 
 namespace RI.Test.Framework.Cases.Utilities
 {
-	[SuppressMessage ("ReSharper", "InconsistentNaming")]
-	[SuppressMessage ("ReSharper", "UnusedMember.Global")]
 	public sealed class Test_DateTimeExtensions : TestModule
 	{
 		#region Instance Methods

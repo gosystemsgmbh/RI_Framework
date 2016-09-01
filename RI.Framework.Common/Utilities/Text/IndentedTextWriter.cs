@@ -56,7 +56,7 @@ namespace RI.Framework.Utilities.Text
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="writer" /> is null. </exception>
 		public IndentedTextWriter (TextWriter writer)
-				: this(writer, false)
+			: this(writer, false)
 		{
 		}
 

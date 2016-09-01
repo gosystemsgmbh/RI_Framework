@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
 
 
@@ -11,8 +10,6 @@ namespace RI.Framework.Utilities.Exceptions
 	///     The <see cref="NotAnEnumerationArgumentException" /> is thrown when an argument is not of an enumeration type when it should be.
 	/// </summary>
 	[Serializable]
-	[SuppressMessage ("ReSharper", "ClassCanBeSealed.Global")]
-	[SuppressMessage ("ReSharper", "UnusedMember.Global")]
 	public class NotAnEnumerationArgumentException : ArgumentException
 	{
 		#region Constants
@@ -30,7 +27,7 @@ namespace RI.Framework.Utilities.Exceptions
 		///     Creates a new instance of <see cref="NotAnEnumerationArgumentException" />.
 		/// </summary>
 		public NotAnEnumerationArgumentException ()
-				: base(NotAnEnumerationArgumentException.ExceptionMessage)
+			: base(NotAnEnumerationArgumentException.ExceptionMessage)
 		{
 		}
 
@@ -39,7 +36,7 @@ namespace RI.Framework.Utilities.Exceptions
 		/// </summary>
 		/// <param name="paramName"> The parameter which is not an enumeration. </param>
 		public NotAnEnumerationArgumentException (string paramName)
-				: base(NotAnEnumerationArgumentException.ExceptionMessage, paramName)
+			: base(NotAnEnumerationArgumentException.ExceptionMessage, paramName)
 		{
 		}
 
@@ -49,7 +46,7 @@ namespace RI.Framework.Utilities.Exceptions
 		/// <param name="paramName"> The parameter which is not an enumeration. </param>
 		/// <param name="message"> The message which describes the exception. </param>
 		public NotAnEnumerationArgumentException (string paramName, string message)
-				: base(message, paramName)
+			: base(message, paramName)
 		{
 		}
 
@@ -59,7 +56,7 @@ namespace RI.Framework.Utilities.Exceptions
 		/// <param name="message"> The message which describes the exception. </param>
 		/// <param name="innerException"> The exception which triggered this exception. </param>
 		public NotAnEnumerationArgumentException (string message, Exception innerException)
-				: base(message, innerException)
+			: base(message, innerException)
 		{
 		}
 
@@ -69,7 +66,7 @@ namespace RI.Framework.Utilities.Exceptions
 		/// <param name="info"> The serialization data. </param>
 		/// <param name="context"> The type of the source of the serialization data. </param>
 		protected NotAnEnumerationArgumentException (SerializationInfo info, StreamingContext context)
-				: base(info, context)
+			: base(info, context)
 		{
 		}
 

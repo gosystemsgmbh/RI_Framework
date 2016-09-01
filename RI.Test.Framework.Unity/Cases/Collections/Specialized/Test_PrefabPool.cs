@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-using RI.Framework.Collections.Specialized;
+﻿using RI.Framework.Collections.Specialized;
 
 using UnityEngine;
 
@@ -9,8 +7,6 @@ using UnityEngine;
 
 namespace RI.Test.Framework.Cases.Collections.Specialized
 {
-	[SuppressMessage ("ReSharper", "InconsistentNaming")]
-	[SuppressMessage ("ReSharper", "UnusedMember.Global")]
 	public sealed class Test_PrefabPool : TestModule
 	{
 		#region Instance Methods

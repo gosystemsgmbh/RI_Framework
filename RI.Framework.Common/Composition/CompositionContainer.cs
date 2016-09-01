@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 using RI.Framework.Collections;
@@ -238,9 +237,6 @@ namespace RI.Framework.Composition
 	/// ]]>
 	/// </code>
 	/// </example>
-	[SuppressMessage ("ReSharper", "UnusedMember.Global")]
-	[SuppressMessage ("ReSharper", "MemberCanBePrivate.Global")]
-	[SuppressMessage ("ReSharper", "UnusedMethodReturnValue.Global")]
 	[Export]
 	public sealed class CompositionContainer : IDisposable
 	{
@@ -1225,9 +1221,9 @@ namespace RI.Framework.Composition
 							this.Log("Updating import ({0}): {1} @ {2}", composition, property.Name, obj.GetType().FullName);
 
 							property.GetSetMethod(true).Invoke(obj, new[]
-							{
-								newValue
-							});
+							                                   {
+								                                   newValue
+							                                   });
 						}
 
 						if (currentComposed)
@@ -1565,23 +1561,23 @@ namespace RI.Framework.Composition
 			foreach (KeyValuePair<string, CompositionItem> compositionItem in this.Composition)
 			{
 				IListExtensions.RemoveWhere(compositionItem.Value.Instances, x => !x.Checked).ForEach(x =>
-				{
-					this.Log("Instance removed from container: {0} / {1}", compositionItem.Key, x.Instance.GetType().FullName);
-					( x.Instance as IExporting )?.RemovedFromContainer(compositionItem.Key, this);
-					if (this.AutoDispose)
-					{
-						( x.Instance as IDisposable )?.Dispose();
-					}
-				});
+				                                                                                      {
+					                                                                                      this.Log("Instance removed from container: {0} / {1}", compositionItem.Key, x.Instance.GetType().FullName);
+					                                                                                      ( x.Instance as IExporting )?.RemovedFromContainer(compositionItem.Key, this);
+					                                                                                      if (this.AutoDispose)
+					                                                                                      {
+						                                                                                      ( x.Instance as IDisposable )?.Dispose();
+					                                                                                      }
+				                                                                                      });
 				IListExtensions.RemoveWhere(compositionItem.Value.Types, x => !x.Checked).ForEach(x =>
-				{
-					this.Log("Type removed from container: {0} / {1}", compositionItem.Key, x.Instance.GetType().FullName);
-					( x.Instance as IExporting )?.RemovedFromContainer(compositionItem.Key, this);
-					if (this.AutoDispose)
-					{
-						( x.Instance as IDisposable )?.Dispose();
-					}
-				});
+				                                                                                  {
+					                                                                                  this.Log("Type removed from container: {0} / {1}", compositionItem.Key, x.Instance.GetType().FullName);
+					                                                                                  ( x.Instance as IExporting )?.RemovedFromContainer(compositionItem.Key, this);
+					                                                                                  if (this.AutoDispose)
+					                                                                                  {
+						                                                                                  ( x.Instance as IDisposable )?.Dispose();
+					                                                                                  }
+				                                                                                  });
 				compositionItem.Value.ResetChecked();
 			}
 

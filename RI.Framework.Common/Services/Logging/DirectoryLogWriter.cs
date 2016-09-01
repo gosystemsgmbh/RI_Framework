@@ -71,7 +71,7 @@ namespace RI.Framework.Services.Logging
 		///     </para>
 		/// </remarks>
 		public DirectoryLogWriter (string directory)
-				: this(directory, null, null, DateTime.Now)
+			: this(directory, null, null, DateTime.Now)
 		{
 		}
 

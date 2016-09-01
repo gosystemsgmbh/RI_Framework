@@ -17,10 +17,10 @@ namespace RI.Test.Framework
 			List<MethodInfo> testMethods = new List<MethodInfo>(this.GetType().GetMethods(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public));
 
 			testMethods.RemoveWhere(x =>
-			{
-				object[] attributes = x.GetCustomAttributes(typeof(TestMethodAttribute), false);
-				return attributes.Length == 0;
-			});
+			                        {
+				                        object[] attributes = x.GetCustomAttributes(typeof(TestMethodAttribute), false);
+				                        return attributes.Length == 0;
+			                        });
 
 			return testMethods;
 		}

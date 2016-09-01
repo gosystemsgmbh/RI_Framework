@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 
 
@@ -12,8 +11,6 @@ namespace RI.Framework.Collections.ObjectModel
 	///     Implements a base class which can be used for <see cref="ITreeNode{T}" /> implementations.
 	/// </summary>
 	/// <typeparam name="TNode"> The type of the tree nodes in the tree. This is usually the type itself which inherits from <see cref="TreeNodeBase{TNode}" />, e.g. <c> public class MyNode : TreeNodeBase&lt;MyNode&gt; { } </c>. </typeparam>
-	[SuppressMessage ("ReSharper", "UnusedParameter.Global")]
-	[SuppressMessage ("ReSharper", "VirtualMemberNeverOverriden.Global")]
 	public abstract class TreeNodeBase <TNode> : ITreeNode<TNode>
 			where TNode : TreeNodeBase<TNode>
 	{
@@ -39,7 +36,7 @@ namespace RI.Framework.Collections.ObjectModel
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="children" /> is null. </exception>
 		protected TreeNodeBase (IEnumerable<TNode> children)
-				: this()
+			: this()
 		{
 			if (children == null)
 			{
@@ -158,7 +155,6 @@ namespace RI.Framework.Collections.ObjectModel
 
 			#region Instance Methods
 
-			[SuppressMessage ("ReSharper", "SwitchStatementMissingSomeCases")]
 			private void SetItem (int index, TreeNodeOperation operation, T item)
 			{
 				T oldItem = ( operation == TreeNodeOperation.Insert ) ? null : this.Children[index];

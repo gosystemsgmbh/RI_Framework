@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 using RI.Framework.Collections;
 
@@ -8,8 +7,6 @@ using RI.Framework.Collections;
 
 namespace RI.Test.Framework.Cases.Collections
 {
-	[SuppressMessage ("ReSharper", "InconsistentNaming")]
-	[SuppressMessage ("ReSharper", "UnusedMember.Global")]
 	public sealed class Test_QueueExtensions : TestModule
 	{
 		#region Instance Methods
@@ -51,9 +48,9 @@ namespace RI.Test.Framework.Cases.Collections
 			Queue<int> test = new Queue<int>();
 
 			if (test.EnqueueRange(new[]
-			{
-				1, 2, 3
-			}) != 3)
+			                      {
+				                      1, 2, 3
+			                      }) != 3)
 			{
 				throw new TestAssertionException();
 			}

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
 
 
@@ -17,8 +16,6 @@ namespace RI.Framework.Composition
 	///     </note>
 	/// </remarks>
 	[Serializable]
-	[SuppressMessage ("ReSharper", "UnusedMember.Global")]
-	[SuppressMessage ("ReSharper", "MemberCanBeInternal")]
 	public sealed class CompositionException : InvalidOperationException
 	{
 		#region Constants
@@ -38,7 +35,7 @@ namespace RI.Framework.Composition
 		///     Creates a new instance of <see cref="CompositionException" />.
 		/// </summary>
 		public CompositionException ()
-				: base(CompositionException.GenericExceptionMessage)
+			: base(CompositionException.GenericExceptionMessage)
 		{
 		}
 
@@ -47,7 +44,7 @@ namespace RI.Framework.Composition
 		/// </summary>
 		/// <param name="message"> The message which describes the exception. </param>
 		public CompositionException (string message)
-				: base(string.Format(CompositionException.SpecificExceptionMessage, message))
+			: base(string.Format(CompositionException.SpecificExceptionMessage, message))
 		{
 		}
 
@@ -57,7 +54,7 @@ namespace RI.Framework.Composition
 		/// <param name="message"> The message which describes the exception. </param>
 		/// <param name="innerException"> The exception which triggered this exception. </param>
 		public CompositionException (string message, Exception innerException)
-				: base(string.Format(CompositionException.SpecificExceptionMessage, message), innerException)
+			: base(string.Format(CompositionException.SpecificExceptionMessage, message), innerException)
 		{
 		}
 
@@ -67,7 +64,7 @@ namespace RI.Framework.Composition
 		/// <param name="info"> The serialization data. </param>
 		/// <param name="context"> The type of the source of the serialization data. </param>
 		private CompositionException (SerializationInfo info, StreamingContext context)
-				: base(info, context)
+			: base(info, context)
 		{
 		}
 

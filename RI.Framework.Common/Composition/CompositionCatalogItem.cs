@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
@@ -18,7 +17,6 @@ namespace RI.Framework.Composition
 	///         Which one is used depends on the <see cref="CompositionCatalog" /> which is managing the export.
 	///     </para>
 	/// </remarks>
-	[SuppressMessage ("ReSharper", "MemberCanBeInternal")]
 	public sealed class CompositionCatalogItem
 	{
 		#region Instance Constructor/Destructor

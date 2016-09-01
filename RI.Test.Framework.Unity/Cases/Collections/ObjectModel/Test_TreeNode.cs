@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-using RI.Framework.Collections;
+﻿using RI.Framework.Collections;
 using RI.Framework.Collections.ObjectModel;
 
 
@@ -8,8 +6,6 @@ using RI.Framework.Collections.ObjectModel;
 
 namespace RI.Test.Framework.Cases.Collections.ObjectModel
 {
-	[SuppressMessage ("ReSharper", "InconsistentNaming")]
-	[SuppressMessage ("ReSharper", "UnusedMember.Global")]
 	public sealed class Test_TreeNode : TestModule
 	{
 		#region Instance Methods
@@ -104,9 +100,9 @@ namespace RI.Test.Framework.Cases.Collections.ObjectModel
 			}
 
 			if (!root.Children.AsEnumerable().SequenceEqual(new[]
-			{
-				n11, n12, n13
-			}))
+			                                                {
+				                                                n11, n12, n13
+			                                                }))
 			{
 				throw new TestAssertionException();
 			}
@@ -131,9 +127,9 @@ namespace RI.Test.Framework.Cases.Collections.ObjectModel
 			}
 
 			root = new TreeNode<int>(new[]
-			{
-				new TreeNode<int>()
-			});
+			                         {
+				                         new TreeNode<int>()
+			                         });
 
 			if (root.Children.Count != 1)
 			{
@@ -141,9 +137,9 @@ namespace RI.Test.Framework.Cases.Collections.ObjectModel
 			}
 
 			root = new TreeNode<int>(99, new[]
-			{
-				new TreeNode<int>(), new TreeNode<int>()
-			});
+			                         {
+				                         new TreeNode<int>(), new TreeNode<int>()
+			                         });
 
 			if (root.Value != 99)
 			{
@@ -220,16 +216,16 @@ namespace RI.Test.Framework.Cases.Collections.ObjectModel
 			root.Children.Clear();
 
 			if (root.AddChildren(new int[]
-			{
-			}).Count != 0)
+			                     {
+			                     }).Count != 0)
 			{
 				throw new TestAssertionException();
 			}
 
 			if (root.AddChildren(new[]
-			{
-				1, 2, 3, 4, 5
-			}).Count != 5)
+			                     {
+				                     1, 2, 3, 4, 5
+			                     }).Count != 5)
 			{
 				throw new TestAssertionException();
 			}

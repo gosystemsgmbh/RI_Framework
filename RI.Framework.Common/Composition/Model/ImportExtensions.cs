@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 using RI.Framework.Collections;
 
@@ -19,8 +18,6 @@ namespace RI.Framework.Composition.Model
 	///         For high-performance access to imported values, it is recommended to retrieve them into an array (using the <see cref="ToArray{T}" /> method) by utilizing the <see cref="IImporting" /> interface to get informed after imports have been resolved or updated.
 	///     </para>
 	/// </remarks>
-	[SuppressMessage ("ReSharper", "UnusedMember.Global")]
-	[SuppressMessage ("ReSharper", "MemberCanBePrivate.Global")]
 	public static class ImportExtensions
 	{
 		#region Static Methods

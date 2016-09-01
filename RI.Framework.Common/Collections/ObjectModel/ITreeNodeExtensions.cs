@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 
 
@@ -10,7 +9,6 @@ namespace RI.Framework.Collections.ObjectModel
 	/// <summary>
 	///     Provides utility/extension methods for the <see cref="ITreeNode{T}" /> type and its implementations.
 	/// </summary>
-	[SuppressMessage ("ReSharper", "InconsistentNaming")]
 	public static class ITreeNodeExtensions
 	{
 		#region Static Methods

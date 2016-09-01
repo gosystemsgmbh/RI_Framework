@@ -43,7 +43,7 @@ namespace RI.Framework.Collections.ObjectModel
 		///     Creates a new instance of <see cref="TreeNodeBase{TNode}" />.
 		/// </summary>
 		public TreeNode ()
-				: this(default(TValue))
+			: this(default(TValue))
 		{
 		}
 
@@ -67,7 +67,7 @@ namespace RI.Framework.Collections.ObjectModel
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="children" /> is null. </exception>
 		public TreeNode (IEnumerable<TreeNode<TValue>> children)
-				: this(default(TValue), children)
+			: this(default(TValue), children)
 		{
 		}
 
@@ -83,7 +83,7 @@ namespace RI.Framework.Collections.ObjectModel
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="children" /> is null. </exception>
 		public TreeNode (TValue value, IEnumerable<TreeNode<TValue>> children)
-				: base(children)
+			: base(children)
 		{
 			this.Value = value;
 		}

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.Serialization;
 
@@ -12,8 +11,6 @@ namespace RI.Framework.Utilities.Exceptions
 	///     The <see cref="NotReadableStreamArgumentException" /> is thrown when a <see cref="Stream" /> argument cannot be read when it should be.
 	/// </summary>
 	[Serializable]
-	[SuppressMessage ("ReSharper", "ClassCanBeSealed.Global")]
-	[SuppressMessage ("ReSharper", "UnusedMember.Global")]
 	public class NotReadableStreamArgumentException : ArgumentException
 	{
 		#region Constants
@@ -31,7 +28,7 @@ namespace RI.Framework.Utilities.Exceptions
 		///     Creates a new instance of <see cref="NotReadableStreamArgumentException" />.
 		/// </summary>
 		public NotReadableStreamArgumentException ()
-				: base(NotReadableStreamArgumentException.ExceptionMessage)
+			: base(NotReadableStreamArgumentException.ExceptionMessage)
 		{
 		}
 
@@ -40,7 +37,7 @@ namespace RI.Framework.Utilities.Exceptions
 		/// </summary>
 		/// <param name="paramName"> The parameter which is a not readable <see cref="Stream" />. </param>
 		public NotReadableStreamArgumentException (string paramName)
-				: base(NotReadableStreamArgumentException.ExceptionMessage, paramName)
+			: base(NotReadableStreamArgumentException.ExceptionMessage, paramName)
 		{
 		}
 
@@ -50,7 +47,7 @@ namespace RI.Framework.Utilities.Exceptions
 		/// <param name="paramName"> The parameter which is a not readable <see cref="Stream" />. </param>
 		/// <param name="message"> The message which describes the exception. </param>
 		public NotReadableStreamArgumentException (string paramName, string message)
-				: base(message, paramName)
+			: base(message, paramName)
 		{
 		}
 
@@ -60,7 +57,7 @@ namespace RI.Framework.Utilities.Exceptions
 		/// <param name="message"> The message which describes the exception. </param>
 		/// <param name="innerException"> The exception which triggered this exception. </param>
 		public NotReadableStreamArgumentException (string message, Exception innerException)
-				: base(message, innerException)
+			: base(message, innerException)
 		{
 		}
 
@@ -70,7 +67,7 @@ namespace RI.Framework.Utilities.Exceptions
 		/// <param name="info"> The serialization data. </param>
 		/// <param name="context"> The type of the source of the serialization data. </param>
 		protected NotReadableStreamArgumentException (SerializationInfo info, StreamingContext context)
-				: base(info, context)
+			: base(info, context)
 		{
 		}
 

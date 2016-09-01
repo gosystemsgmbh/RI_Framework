@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 
 
 
@@ -10,7 +9,6 @@ namespace RI.Framework.Collections
 	///     Contains utilities for working with collections in general.
 	/// </summary>
 	[CompilerGenerated]
-	[SuppressMessage ("ReSharper", "UnusedMember.Global")]
 	public sealed class NamespaceDoc
 	{
 	}

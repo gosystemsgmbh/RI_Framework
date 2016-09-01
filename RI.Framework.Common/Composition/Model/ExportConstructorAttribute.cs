@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 
 
 
@@ -21,7 +20,6 @@ namespace RI.Framework.Composition.Model
 	///     </para>
 	/// </remarks>
 	[AttributeUsage (AttributeTargets.Constructor)]
-	[SuppressMessage ("ReSharper", "MemberCanBeInternal")]
 	public sealed class ExportConstructorAttribute : Attribute
 	{
 	}

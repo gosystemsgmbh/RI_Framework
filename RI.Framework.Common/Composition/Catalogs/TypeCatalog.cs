@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 using RI.Framework.Collections;
 
@@ -20,7 +19,6 @@ namespace RI.Framework.Composition.Catalogs
 	///         See <see cref="CompositionCatalog" /> for more details about composition catalogs.
 	///     </para>
 	/// </remarks>
-	[SuppressMessage ("ReSharper", "UnusedMember.Global")]
 	public class TypeCatalog : CompositionCatalog
 	{
 		#region Instance Constructor/Destructor
@@ -68,7 +66,7 @@ namespace RI.Framework.Composition.Catalogs
 		/// </summary>
 		/// <param name="types"> The array of types which are used for composition. </param>
 		public TypeCatalog (params Type[] types)
-				: this((IEnumerable<Type>)types)
+			: this((IEnumerable<Type>)types)
 		{
 		}
 

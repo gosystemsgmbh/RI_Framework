@@ -1,14 +1,10 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-using RI.Framework.Utilities.Comparison;
+﻿using RI.Framework.Utilities.Comparison;
 
 
 
 
 namespace RI.Test.Framework.Cases.Utilities.Comparison
 {
-	[SuppressMessage ("ReSharper", "InconsistentNaming")]
-	[SuppressMessage ("ReSharper", "UnusedMember.Global")]
 	public sealed class Test_OrderComparison : TestModule
 	{
 		#region Instance Methods

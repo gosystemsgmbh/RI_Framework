@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 
 
@@ -10,7 +9,6 @@ namespace RI.Framework.Collections
 	/// <summary>
 	///     Provides utility/extension methods for the <see cref="IDictionary{TKey,TValue}" /> type and its implementations.
 	/// </summary>
-	[SuppressMessage ("ReSharper", "InconsistentNaming")]
 	public static class IDictionaryExtensions
 	{
 		#region Static Methods

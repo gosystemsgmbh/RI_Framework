@@ -1,11 +1,12 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
+
 using RI.Framework.Utilities;
+
+
+
 
 namespace RI.Test.Framework.Cases.Utilities
 {
-	[SuppressMessage ("ReSharper", "InconsistentNaming")]
-	[SuppressMessage ("ReSharper", "UnusedMember.Global")]
 	public sealed class Test_StringExtensions : TestModule
 	{
 		#region Instance Methods
@@ -388,94 +389,94 @@ namespace RI.Test.Framework.Cases.Utilities
 		public void Join_Test ()
 		{
 			if (( new string[]
-			{
-			} ).Join() != string.Empty)
-			{
-				throw new TestAssertionException();
-			}
-
-			if (( new string[]
-			{
-			} ).Join('@') != string.Empty)
+				    {
+				    } ).Join() != string.Empty)
 			{
 				throw new TestAssertionException();
 			}
 
 			if (( new string[]
+				    {
+				    } ).Join('@') != string.Empty)
 			{
-			} ).Join("..") != string.Empty)
+				throw new TestAssertionException();
+			}
+
+			if (( new string[]
+				    {
+				    } ).Join("..") != string.Empty)
 			{
 				throw new TestAssertionException();
 			}
 
 			if (( new[]
-			{
-				"A"
-			} ).Join() != "A")
-			{
-				throw new TestAssertionException();
-			}
-
-			if (( new[]
-			{
-				"A"
-			} ).Join('@') != "A")
+				    {
+					    "A"
+				    } ).Join() != "A")
 			{
 				throw new TestAssertionException();
 			}
 
 			if (( new[]
-			{
-				"A"
-			} ).Join("..") != "A")
-			{
-				throw new TestAssertionException();
-			}
-
-			if (( new[]
-			{
-				"A", "B"
-			} ).Join() != "AB")
+				    {
+					    "A"
+				    } ).Join('@') != "A")
 			{
 				throw new TestAssertionException();
 			}
 
 			if (( new[]
-			{
-				"A", "B"
-			} ).Join('@') != "A@B")
-			{
-				throw new TestAssertionException();
-			}
-
-			if (( new[]
-			{
-				"A", "B"
-			} ).Join("..") != "A..B")
+				    {
+					    "A"
+				    } ).Join("..") != "A")
 			{
 				throw new TestAssertionException();
 			}
 
 			if (( new[]
-			{
-				"A", "B", "CD"
-			} ).Join() != "ABCD")
-			{
-				throw new TestAssertionException();
-			}
-
-			if (( new[]
-			{
-				"A", "B", "CD"
-			} ).Join('@') != "A@B@CD")
+				    {
+					    "A", "B"
+				    } ).Join() != "AB")
 			{
 				throw new TestAssertionException();
 			}
 
 			if (( new[]
+				    {
+					    "A", "B"
+				    } ).Join('@') != "A@B")
 			{
-				"A", "B", "CD"
-			} ).Join("..") != "A..B..CD")
+				throw new TestAssertionException();
+			}
+
+			if (( new[]
+				    {
+					    "A", "B"
+				    } ).Join("..") != "A..B")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (( new[]
+				    {
+					    "A", "B", "CD"
+				    } ).Join() != "ABCD")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (( new[]
+				    {
+					    "A", "B", "CD"
+				    } ).Join('@') != "A@B@CD")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (( new[]
+				    {
+					    "A", "B", "CD"
+				    } ).Join("..") != "A..B..CD")
 			{
 				throw new TestAssertionException();
 			}

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 using RI.Framework.Collections;
 
@@ -8,8 +7,6 @@ using RI.Framework.Collections;
 
 namespace RI.Test.Framework.Cases.Collections
 {
-	[SuppressMessage ("ReSharper", "InconsistentNaming")]
-	[SuppressMessage ("ReSharper", "UnusedMember.Global")]
 	public sealed class Test_ICollectionExtensions : TestModule
 	{
 		#region Instance Methods
@@ -21,9 +18,9 @@ namespace RI.Test.Framework.Cases.Collections
 			ICollection<int> test = list.AsCollection();
 
 			if (test.AddRange(new[]
-			{
-				1, 2, 30, 40, 500, 600
-			}) != 6)
+			                  {
+				                  1, 2, 30, 40, 500, 600
+			                  }) != 6)
 			{
 				throw new TestAssertionException();
 			}
@@ -95,9 +92,9 @@ namespace RI.Test.Framework.Cases.Collections
 			ICollection<int> test = list.AsCollection();
 
 			if (test.RemoveAllRange(new[]
-			{
-				1, 2, 30, 40, 500, 600
-			}) != 2)
+			                        {
+				                        1, 2, 30, 40, 500, 600
+			                        }) != 2)
 			{
 				throw new TestAssertionException();
 			}
@@ -132,9 +129,9 @@ namespace RI.Test.Framework.Cases.Collections
 			ICollection<int> test = list.AsCollection();
 
 			if (test.RemoveRange(new[]
-			{
-				1, 2, 30, 40, 500, 600
-			}) != 2)
+			                     {
+				                     1, 2, 30, 40, 500, 600
+			                     }) != 2)
 			{
 				throw new TestAssertionException();
 			}

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 using RI.Framework.Utilities.Comparison;
 
@@ -12,7 +11,6 @@ namespace RI.Framework.Collections
 	/// <summary>
 	///     Provides utility/extension methods for the <see cref="IList{T}" /> type and its implementations.
 	/// </summary>
-	[SuppressMessage ("ReSharper", "InconsistentNaming")]
 	public static class IListExtensions
 	{
 		#region Static Methods
