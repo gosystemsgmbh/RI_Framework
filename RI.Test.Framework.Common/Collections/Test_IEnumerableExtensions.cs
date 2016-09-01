@@ -6,12 +6,20 @@ using RI.Framework.Collections.Comparison;
 using RI.Framework.Utilities.Comparison;
 using RI.Test.Framework.Mocks;
 
+#if PLATFORM_NET
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+#endif
+#if PLATFORM_UNITY
+using RI.Test.Framework;
+#endif
 
 
 
-namespace RI.Test.Framework.Cases.Collections
+
+namespace RI.Test.Framework.Collections
 {
-	public sealed class Test_IEnumerableExtensions : TestModule
+	[TestClass]
+	public sealed class Test_IEnumerableExtensions
 	{
 		#region Instance Methods
 

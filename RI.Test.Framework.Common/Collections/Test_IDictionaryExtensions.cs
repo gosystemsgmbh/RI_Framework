@@ -5,12 +5,20 @@ using RI.Framework.Collections;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Comparison;
 
+#if PLATFORM_NET
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+#endif
+#if PLATFORM_UNITY
+using RI.Test.Framework;
+#endif
 
 
 
-namespace RI.Test.Framework.Cases.Collections
+
+namespace RI.Test.Framework.Collections
 {
-	public sealed class Test_IDictionaryExtensions : TestModule
+	[TestClass]
+	public sealed class Test_IDictionaryExtensions
 	{
 		#region Instance Methods
 

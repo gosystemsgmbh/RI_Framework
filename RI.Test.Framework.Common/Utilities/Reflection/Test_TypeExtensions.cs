@@ -3,12 +3,20 @@ using System.Collections.Generic;
 
 using RI.Framework.Utilities.Reflection;
 
+#if PLATFORM_NET
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+#endif
+#if PLATFORM_UNITY
+using RI.Test.Framework;
+#endif
 
 
 
-namespace RI.Test.Framework.Cases.Utilities.Reflection
+
+namespace RI.Test.Framework.Utilities.Reflection
 {
-	public sealed class Test_TypeExtensions : TestModule
+	[TestClass]
+	public sealed class Test_TypeExtensions
 	{
 		#region Instance Methods
 

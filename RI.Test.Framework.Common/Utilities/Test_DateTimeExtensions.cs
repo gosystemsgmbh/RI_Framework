@@ -2,12 +2,20 @@
 
 using RI.Framework.Utilities;
 
+#if PLATFORM_NET
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+#endif
+#if PLATFORM_UNITY
+using RI.Test.Framework;
+#endif
 
 
 
-namespace RI.Test.Framework.Cases.Utilities
+
+namespace RI.Test.Framework.Utilities
 {
-	public sealed class Test_DateTimeExtensions : TestModule
+	[TestClass]
+	public sealed class Test_DateTimeExtensions
 	{
 		#region Instance Methods
 

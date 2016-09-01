@@ -1,11 +1,19 @@
 ﻿using RI.Framework.Collections.Generic;
 
+#if PLATFORM_NET
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+#endif
+#if PLATFORM_UNITY
+using RI.Test.Framework;
+#endif
 
 
 
-namespace RI.Test.Framework.Cases.Collections.Generic
+
+namespace RI.Test.Framework.Collections.Generic
 {
-	public sealed class Test_Warehouse : TestModule
+	[TestClass]
+	public sealed class Test_Warehouse
 	{
 		#region Instance Methods
 

@@ -9,5 +9,29 @@
     <Import_RootNamespace>RI.Test.Framework</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Comparison\Test_CollectionComparer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Generic\Test_Warehouse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\ObjectModel\Test_IPoolExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\ObjectModel\Test_ITreeNodeExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\ObjectModel\Test_Pool.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\ObjectModel\Test_TreeNode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Specialized\Test_ClonePool.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Test_HashSetExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Test_ICollectionExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Test_IDictionaryExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Test_IEnumerableExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Test_IListExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Test_LinkedListExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Test_QueueExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Test_StackExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Mocks\RENP.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Mocks\VENP.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TestAssertionException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Comparison\Test_EqualityComparison.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Comparison\Test_OrderComparison.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Reflection\Test_TypeExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Test_DateTimeExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Test_StringExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Test_TimeSpanExtensions.cs" />
   </ItemGroup>
 </Project>

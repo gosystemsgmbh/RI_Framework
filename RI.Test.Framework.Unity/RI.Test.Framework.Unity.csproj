@@ -38,32 +38,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Cases\Collections\Comparison\Test_CollectionComparer.cs" />
-    <Compile Include="Cases\Collections\Generic\Test_Warehouse.cs" />
-    <Compile Include="Cases\Collections\ObjectModel\Test_IPoolExtensions.cs" />
-    <Compile Include="Cases\Collections\ObjectModel\Test_ITreeNodeExtensions.cs" />
-    <Compile Include="Cases\Collections\ObjectModel\Test_Pool.cs" />
-    <Compile Include="Cases\Collections\ObjectModel\Test_TreeNode.cs" />
-    <Compile Include="Cases\Collections\Specialized\Test_ClonePool.cs" />
     <Compile Include="Cases\Collections\Specialized\Test_PrefabPool.cs" />
-    <Compile Include="Cases\Collections\Test_HashSetExtensions.cs" />
-    <Compile Include="Cases\Collections\Test_ICollectionExtensions.cs" />
-    <Compile Include="Cases\Collections\Test_IDictionaryExtensions.cs" />
-    <Compile Include="Cases\Collections\Test_IEnumerableExtensions.cs" />
-    <Compile Include="Cases\Collections\Test_IListExtensions.cs" />
-    <Compile Include="Cases\Collections\Test_LinkedListExtensions.cs" />
-    <Compile Include="Cases\Collections\Test_QueueExtensions.cs" />
-    <Compile Include="Cases\Collections\Test_StackExtensions.cs" />
-    <Compile Include="Cases\Utilities\Comparison\Test_EqualityComparison.cs" />
-    <Compile Include="Cases\Utilities\Comparison\Test_OrderComparison.cs" />
-    <Compile Include="Cases\Utilities\Reflection\Test_TypeExtensions.cs" />
-    <Compile Include="Cases\Utilities\Test_DateTimeExtensions.cs" />
-    <Compile Include="Cases\Utilities\Test_StringExtensions.cs" />
-    <Compile Include="Cases\Utilities\Test_TimeSpanExtensions.cs" />
-    <Compile Include="Mocks\RENP.cs" />
-    <Compile Include="Mocks\VENP.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestAssertionException.cs" />
+    <Compile Include="TestClassAttribute.cs" />
+    <Compile Include="TestContext.cs" />
     <Compile Include="TestMethodAttribute.cs" />
     <Compile Include="TestModule.cs" />
     <Compile Include="TestRunner.cs" />

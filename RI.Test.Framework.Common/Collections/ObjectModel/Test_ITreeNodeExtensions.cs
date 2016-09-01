@@ -2,12 +2,20 @@
 
 using RI.Framework.Collections.ObjectModel;
 
+#if PLATFORM_NET
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+#endif
+#if PLATFORM_UNITY
+using RI.Test.Framework;
+#endif
 
 
 
-namespace RI.Test.Framework.Cases.Collections.ObjectModel
+
+namespace RI.Test.Framework.Collections.ObjectModel
 {
-	public sealed class Test_ITreeNodeExtensions : TestModule
+	[TestClass]
+	public sealed class Test_ITreeNodeExtensions
 	{
 		#region Instance Methods
 

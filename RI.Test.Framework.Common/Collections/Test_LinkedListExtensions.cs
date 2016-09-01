@@ -2,12 +2,20 @@
 
 using RI.Framework.Collections;
 
+#if PLATFORM_NET
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+#endif
+#if PLATFORM_UNITY
+using RI.Test.Framework;
+#endif
 
 
 
-namespace RI.Test.Framework.Cases.Collections
+
+namespace RI.Test.Framework.Collections
 {
-	public sealed class Test_LinkedListExtensions : TestModule
+	[TestClass]
+	public sealed class Test_LinkedListExtensions
 	{
 		#region Instance Methods
 

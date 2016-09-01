@@ -2,12 +2,20 @@
 
 using RI.Framework.Collections.Specialized;
 
+#if PLATFORM_NET
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+#endif
+#if PLATFORM_UNITY
+using RI.Test.Framework;
+#endif
 
 
 
-namespace RI.Test.Framework.Cases.Collections.Specialized
+
+namespace RI.Test.Framework.Collections.Specialized
 {
-	public sealed class Test_ClonePool : TestModule
+	[TestClass]
+	public sealed class Test_ClonePool
 	{
 		#region Instance Methods
 

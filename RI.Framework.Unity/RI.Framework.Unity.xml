@@ -4540,11 +4540,6 @@
                 </para>
             </remarks>
         </member>
-        <member name="M:RI.Framework.Composition.Catalogs.ScriptingCatalog.#ctor">
-            <summary>
-                Creates a new instance of <see cref="T:RI.Framework.Composition.Catalogs.ScriptingCatalog" />.
-            </summary>
-        </member>
         <member name="M:RI.Framework.Composition.Catalogs.ScriptingCatalog.Reload">
             <summary>
                 Ensures that all the types in the Unity projects scripting assemblies are loaded.

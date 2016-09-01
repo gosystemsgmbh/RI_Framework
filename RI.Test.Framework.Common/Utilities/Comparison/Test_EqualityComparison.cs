@@ -1,11 +1,18 @@
 ﻿using RI.Framework.Utilities.Comparison;
 
+#if PLATFORM_NET
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+#endif
+#if PLATFORM_UNITY
+#endif
 
 
 
-namespace RI.Test.Framework.Cases.Utilities.Comparison
+
+namespace RI.Test.Framework.Utilities.Comparison
 {
-	public sealed class Test_EqualityComparison : TestModule
+	[TestClass]
+	public sealed class Test_EqualityComparison
 	{
 		#region Instance Methods
 
