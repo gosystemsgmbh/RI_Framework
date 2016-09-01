@@ -7,7 +7,7 @@
   - [X] INI handling
   - [ ] Additional dispatcher Features
   - [ ] Analyze and implement magic thread
-  - [ ] TODOs
+  - [X] TODOs
 - [ ] Documentation
   - [ ] Examples
   - [ ] Type and member descriptions
@@ -15,8 +15,8 @@
   - [ ] TODOs
 - [ ] Cleanup
   - [ ] Exception throwing (messages, parameter names)
-  - [ ] Remove SuppressMessage attributes
-  - [ ] ReSharper configuration, cleanup, and review
+  - [X] Remove SuppressMessage attributes
+  - [X] ReSharper configuration, cleanup, and review
   - [ ] Cleanup artifacts
 - [ ] Testing
   - [ ] Split testing into "Unity" and ".NET"
