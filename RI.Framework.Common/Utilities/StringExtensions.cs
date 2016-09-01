@@ -221,13 +221,10 @@ namespace RI.Framework.Utilities
 
 			StringBuilder sb = new StringBuilder(str.Length * 2);
 
-			char current = '\0';
-			string replacement = null;
-
 			for (int i1 = 0; i1 < str.Length; i1++)
 			{
-				current = str[i1];
-				replacement = null;
+				char current = str[i1];
+				string replacement = null;
 
 				if (current == '\a')
 				{
@@ -454,7 +451,6 @@ namespace RI.Framework.Utilities
 				return string.Empty;
 			}
 
-			char next = '\0';
 			double count = 0.0;
 
 			StringBuilder newStr = new StringBuilder((int)( str.Length * 1.1 ));
@@ -463,7 +459,7 @@ namespace RI.Framework.Utilities
 			{
 				if (str[i1] == chr)
 				{
-					next = i1 >= ( str.Length - 1 ) ? '\0' : str[i1 + 1];
+					char next = i1 >= ( str.Length - 1 ) ? '\0' : str[i1 + 1];
 					count += 1.0;
 
 					if (next != chr)
@@ -1895,17 +1891,13 @@ namespace RI.Framework.Utilities
 
 			StringBuilder sb = new StringBuilder(str.Length);
 
-			char current = '\0';
-			char next = '\0';
-			char? replacement = null;
-
 			for (int i1 = 0; i1 < str.Length; i1++)
 			{
-				current = str[i1];
+				char current = str[i1];
 				if (( current == '\\' ) && ( i1 < ( str.Length - 1 ) ))
 				{
-					next = str[i1 + 1];
-					replacement = null;
+					char next = str[i1 + 1];
+					char? replacement = null;
 
 					if (next == 'a')
 					{

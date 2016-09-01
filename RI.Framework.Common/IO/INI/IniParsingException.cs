@@ -33,7 +33,7 @@ namespace RI.Framework.IO.INI
 		/// <param name="lineNumber"> The line number where the parsing error ocurred. </param>
 		/// <param name="readerError"> The parsing error which ocurred. </param>
 		public IniParsingException (int lineNumber, IniReaderError readerError)
-			: base(string.Format(IniParsingException.SpecificExceptionMessage, lineNumber, readerError.ToString()))
+			: base(string.Format(IniParsingException.ErrorExceptionMessage, lineNumber, readerError))
 		{
 		}
 

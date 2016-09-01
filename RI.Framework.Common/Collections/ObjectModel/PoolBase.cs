@@ -176,7 +176,7 @@ namespace RI.Framework.Collections.ObjectModel
 		{
 			get
 			{
-				return this.FreeItems;
+				return this.FreeItemsInternal;
 			}
 		}
 

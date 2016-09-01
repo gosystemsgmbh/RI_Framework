@@ -35,20 +35,6 @@ namespace RI.Framework.Composition.Catalogs
 
 
 
-		#region Instance Constructor/Destructor
-
-		/// <summary>
-		///     Creates a new instance of <see cref="ScriptingCatalog" />.
-		/// </summary>
-		public ScriptingCatalog ()
-		{
-		}
-
-		#endregion
-
-
-
-
 		#region Instance Methods
 
 		/// <summary>

@@ -1333,8 +1333,6 @@ namespace RI.Framework.Composition
 			foreach (Type type in types)
 			{
 				object newInstance = null;
-
-				if (newInstance == null)
 				{
 					MethodInfo[] allMethods = type.GetMethods(BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.FlattenHierarchy);
 					List<MethodInfo> methods = IEnumerableExtensions.Where(allMethods, x => ( x.GetCustomAttributes(typeof(ExportCreatorAttribute), true).Length > 0 ) && ( x.ReturnType != typeof(void) ) && ( x.GetParameters().Length >= 1 ) && ( x.GetParameters()[0].ParameterType == typeof(Type) ));

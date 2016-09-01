@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 
 
@@ -155,6 +156,7 @@ namespace RI.Framework.Collections.ObjectModel
 
 			#region Instance Methods
 
+			[SuppressMessage ("ReSharper", "PossibleNullReferenceException")]
 			private void SetItem (int index, TreeNodeOperation operation, T item)
 			{
 				T oldItem = ( operation == TreeNodeOperation.Insert ) ? null : this.Children[index];

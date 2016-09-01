@@ -123,9 +123,6 @@ namespace RI.Framework.Utilities.Text
 			bool eos = false;
 			for (int i1 = 0; i1 < commandLine.Length; i1++)
 			{
-				string parameterKeyToAdd = null;
-				string parameterValueToAdd = null;
-
 				if (!char.IsWhiteSpace(commandLine[i1]))
 				{
 					if (commandLine[i1] == '-')
@@ -146,6 +143,9 @@ namespace RI.Framework.Utilities.Text
 							{
 								key = CommandLine.ReadUntil(commandLine, ref i1, out eos, (v, p) => ( ( v[p] == '=' ) || ( char.IsWhiteSpace(v[p]) ) ));
 							}
+
+							string parameterKeyToAdd = null;
+							string parameterValueToAdd = null;
 
 							if (eos || ( key == null ))
 							{
@@ -384,11 +384,19 @@ namespace RI.Framework.Utilities.Text
 			{
 				parameters = null;
 			}
+			else
+			{
+				parameters = this.Parameters;
+			}
 
 			List<string> literals = null;
 			if (this.Literals.Count == 0)
 			{
 				literals = null;
+			}
+			else
+			{
+				literals = this.Literals;
 			}
 
 			StringBuilder commandLine = new StringBuilder();

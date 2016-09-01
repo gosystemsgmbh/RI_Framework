@@ -281,7 +281,7 @@ namespace RI.Framework.IO.Paths
 			}
 		}
 
-		internal PathProperties PathInternal { get; private set; }
+		internal PathProperties PathInternal { get; }
 
 		#endregion
 

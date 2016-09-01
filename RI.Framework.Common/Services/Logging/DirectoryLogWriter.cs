@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -178,6 +179,7 @@ namespace RI.Framework.Services.Logging
 
 		#region Instance Methods
 
+		[SuppressMessage ("ReSharper", "UnusedParameter.Local")]
 		private void Dispose (bool disposing)
 		{
 			lock (this.SyncRoot)

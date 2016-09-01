@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 using RI.Framework.Collections;
@@ -581,21 +582,21 @@ namespace RI.Framework.IO.Paths
 				}
 			}
 
-			List<string> trailingMatch = new List<string>();
-			for (int i1 = 0; i1 < Math.Min(rootParts.Length, pathParts.Length); i1++)
-			{
-				int rootIndex = rootParts.Length - ( 1 + i1 );
-				int pathIndex = pathParts.Length - ( 1 + i1 );
+			//List<string> trailingMatch = new List<string>();
+			//for (int i1 = 0; i1 < Math.Min(rootParts.Length, pathParts.Length); i1++)
+			//{
+			//	int rootIndex = rootParts.Length - ( 1 + i1 );
+			//	int pathIndex = pathParts.Length - ( 1 + i1 );
 
-				if (string.Equals(rootParts[rootIndex], pathParts[pathIndex], root.Comparison))
-				{
-					trailingMatch.Add(rootParts[rootIndex]);
-				}
-				else
-				{
-					break;
-				}
-			}
+			//	if (string.Equals(rootParts[rootIndex], pathParts[pathIndex], root.Comparison))
+			//	{
+			//		trailingMatch.Add(rootParts[rootIndex]);
+			//	}
+			//	else
+			//	{
+			//		break;
+			//	}
+			//}
 
 			if (leadingMatch.Count == 0)
 			{
@@ -614,10 +615,6 @@ namespace RI.Framework.IO.Paths
 				downLinks.Add(pathParts[i1]);
 			}
 
-			List<string> allLinks = new List<string>();
-			allLinks.AddRange(upLinks);
-			allLinks.AddRange(downLinks);
-
 			if (rootParts.Length == leadingMatch.Count)
 			{
 				string downLinkPath = PathProperties.CreatePath(downLinks, root.Type, false);
@@ -629,6 +626,10 @@ namespace RI.Framework.IO.Paths
 				string upLinkPath = PathProperties.CreatePath(upLinks, root.Type, false);
 				return PathProperties.FromPath(upLinkPath, root.AllowWildcards || path.AllowWildcards, root.AllowRelatives || path.AllowRelatives, root.Type);
 			}
+
+			List<string> allLinks = new List<string>();
+			allLinks.AddRange(upLinks);
+			allLinks.AddRange(downLinks);
 
 			string allLinkPath = PathProperties.CreatePath(allLinks, root.Type, false);
 			return PathProperties.FromPath(allLinkPath, root.AllowWildcards || path.AllowWildcards, root.AllowRelatives || path.AllowRelatives, root.Type);
@@ -671,7 +672,7 @@ namespace RI.Framework.IO.Paths
 			{
 				if (i1 > 0)
 				{
-					builder.Append((char)( type == PathType.Unix ? PathProperties.UnixDirectorySeparator : PathProperties.WindowsDirectorySeparator ));
+					builder.Append(type == PathType.Unix ? PathProperties.UnixDirectorySeparator : PathProperties.WindowsDirectorySeparator);
 				}
 				builder.Append(parts[i1]);
 			}
@@ -904,6 +905,7 @@ namespace RI.Framework.IO.Paths
 		}
 
 		/// <inheritdoc />
+		[SuppressMessage ("ReSharper", "NonReadonlyMemberInGetHashCode")]
 		public override int GetHashCode ()
 		{
 			return this.Hashcode;

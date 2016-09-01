@@ -32,12 +32,12 @@ namespace RI.Framework.Services.Dispatcher
 				this.PendingOperations.Add(new LinkedList<DispatcherOperation>());
 			}
 
-			this.DispatcherServiceObject = new GameObject(this.GetType().Name);
-			this.DispatcherServiceObject.SetActive(true);
-			Object.DontDestroyOnLoad(this.DispatcherServiceObject);
+			GameObject dispatcherServiceObject = new GameObject(this.GetType().Name);
+			dispatcherServiceObject.SetActive(true);
+			Object.DontDestroyOnLoad(dispatcherServiceObject);
 
-			this.DispatcherServiceListener = this.DispatcherServiceObject.AddComponent<DispatcherListener>();
-			this.DispatcherServiceListener.DispatcherService = this;
+			DispatcherListener dispatcherServiceListener = dispatcherServiceObject.AddComponent<DispatcherListener>();
+			dispatcherServiceListener.DispatcherService = this;
 
 			this.RegisterReceiver<DispatcherBroadcast>(this.HandleDispatcherBroadcast);
 		}
@@ -49,15 +49,11 @@ namespace RI.Framework.Services.Dispatcher
 
 		#region Instance Fields
 
-		private DispatcherListener DispatcherServiceListener = null;
+		private int FramesWithoutOperations;
 
-		private GameObject DispatcherServiceObject = null;
+		private long NowTicks;
 
-		private int FramesWithoutOperations = 0;
-
-		private long NowTicks = 0;
-
-		private List<LinkedList<DispatcherOperation>> PendingOperations = null;
+		private readonly List<LinkedList<DispatcherOperation>> PendingOperations;
 
 		#endregion
 
@@ -446,7 +442,7 @@ namespace RI.Framework.Services.Dispatcher
 		{
 			#region Instance Fields
 
-			public Action Action = null;
+			public Action Action;
 
 			#endregion
 
@@ -470,9 +466,9 @@ namespace RI.Framework.Services.Dispatcher
 		{
 			#region Instance Fields
 
-			public Action<T> Action = null;
+			public Action<T> Action;
 
-			public T Arg = default(T);
+			public T Arg;
 
 			#endregion
 
@@ -496,11 +492,11 @@ namespace RI.Framework.Services.Dispatcher
 		{
 			#region Instance Fields
 
-			public Action<T1, T2> Action = null;
+			public Action<T1, T2> Action;
 
-			public T1 Arg1 = default(T1);
+			public T1 Arg1;
 
-			public T2 Arg2 = default(T2);
+			public T2 Arg2;
 
 			#endregion
 
@@ -524,13 +520,13 @@ namespace RI.Framework.Services.Dispatcher
 		{
 			#region Instance Fields
 
-			public Action<T1, T2, T3> Action = null;
+			public Action<T1, T2, T3> Action;
 
-			public T1 Arg1 = default(T1);
+			public T1 Arg1;
 
-			public T2 Arg2 = default(T2);
+			public T2 Arg2;
 
-			public T3 Arg3 = default(T3);
+			public T3 Arg3;
 
 			#endregion
 
@@ -554,15 +550,15 @@ namespace RI.Framework.Services.Dispatcher
 		{
 			#region Instance Fields
 
-			public Action<T1, T2, T3, T4> Action = null;
+			public Action<T1, T2, T3, T4> Action;
 
-			public T1 Arg1 = default(T1);
+			public T1 Arg1;
 
-			public T2 Arg2 = default(T2);
+			public T2 Arg2;
 
-			public T3 Arg3 = default(T3);
+			public T3 Arg3;
 
-			public T4 Arg4 = default(T4);
+			public T4 Arg4;
 
 			#endregion
 
@@ -590,7 +586,7 @@ namespace RI.Framework.Services.Dispatcher
 		{
 			#region Instance Fields
 
-			public DispatcherOperation Operation = null;
+			public DispatcherOperation Operation;
 
 			#endregion
 
@@ -615,7 +611,7 @@ namespace RI.Framework.Services.Dispatcher
 		{
 			#region Instance Fields
 
-			public Func<TResult> Func = null;
+			public Func<TResult> Func;
 
 			#endregion
 
@@ -639,9 +635,9 @@ namespace RI.Framework.Services.Dispatcher
 		{
 			#region Instance Fields
 
-			public T Arg = default(T);
+			public T Arg;
 
-			public Func<T, TResult> Func = null;
+			public Func<T, TResult> Func;
 
 			#endregion
 
@@ -665,11 +661,11 @@ namespace RI.Framework.Services.Dispatcher
 		{
 			#region Instance Fields
 
-			public T1 Arg1 = default(T1);
+			public T1 Arg1;
 
-			public T2 Arg2 = default(T2);
+			public T2 Arg2;
 
-			public Func<T1, T2, TResult> Func = null;
+			public Func<T1, T2, TResult> Func;
 
 			#endregion
 
@@ -693,13 +689,13 @@ namespace RI.Framework.Services.Dispatcher
 		{
 			#region Instance Fields
 
-			public T1 Arg1 = default(T1);
+			public T1 Arg1;
 
-			public T2 Arg2 = default(T2);
+			public T2 Arg2;
 
-			public T3 Arg3 = default(T3);
+			public T3 Arg3;
 
-			public Func<T1, T2, T3, TResult> Func = null;
+			public Func<T1, T2, T3, TResult> Func;
 
 			#endregion
 
@@ -723,15 +719,15 @@ namespace RI.Framework.Services.Dispatcher
 		{
 			#region Instance Fields
 
-			public T1 Arg1 = default(T1);
+			public T1 Arg1;
 
-			public T2 Arg2 = default(T2);
+			public T2 Arg2;
 
-			public T3 Arg3 = default(T3);
+			public T3 Arg3;
 
-			public T4 Arg4 = default(T4);
+			public T4 Arg4;
 
-			public Func<T1, T2, T3, T4, TResult> Func = null;
+			public Func<T1, T2, T3, T4, TResult> Func;
 
 			#endregion
 
@@ -759,7 +755,7 @@ namespace RI.Framework.Services.Dispatcher
 		{
 			#region Instance Fields
 
-			public DispatcherService DispatcherService = null;
+			public DispatcherService DispatcherService;
 
 			#endregion
 
@@ -793,19 +789,19 @@ namespace RI.Framework.Services.Dispatcher
 		{
 			#region Instance Fields
 
-			public object Broadcast = null;
+			public object Broadcast;
 
-			public DispatcherService Dispatcher = null;
+			public DispatcherService Dispatcher;
 
-			public Action<object> Invoker = null;
+			public Action<object> Invoker;
 
 			public DispatcherPriority Priority = DispatcherPriority.Now;
 
-			public object ResultInternal = null;
+			public object ResultInternal;
 
 			public DispatcherStatus StatusInternal = DispatcherStatus.Queued;
 
-			public long? TickTrigger = null;
+			public long? TickTrigger;
 
 			#endregion
 
@@ -860,9 +856,9 @@ namespace RI.Framework.Services.Dispatcher
 		{
 			#region Constants
 
-			private static List<Action<T>> Receivers = null;
+			private static List<Action<T>> Receivers;
 
-			private static Action<T>[] ReceiversSafe = null;
+			private static Action<T>[] ReceiversSafe;
 
 			public static readonly Action<object> Invoker = DispatcherSlots<T>.Invoke;
 

@@ -142,7 +142,7 @@ namespace RI.Framework.Services.Resources
 		///         Loading an already loaded resource set can be used to reload a specific set.
 		///     </para>
 		///     <para>
-		///         Lazy loading means that the actual value of a resource is only loaded into memory and converted to the appropriate type when <see cref="GetValue" /> is called for it.
+		///         Lazy loading means that the actual value of a resource is only loaded into memory and converted to the appropriate type when <see cref="GetRawValue" /> is called for it.
 		///     </para>
 		/// </remarks>
 		bool Load (bool lazyLoad);

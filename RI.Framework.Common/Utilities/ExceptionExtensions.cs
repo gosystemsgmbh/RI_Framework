@@ -85,7 +85,7 @@ namespace RI.Framework.Utilities
 					writer.IndentString = indentString;
 
 					writer.Write("Message:     ");
-					writer.WriteLine(exception.Message == null ? ExceptionExtensions.NullString : exception.Message.Trim());
+					writer.WriteLine(exception.Message.Trim());
 
 					writer.Write("Type:        ");
 					writer.WriteLine(exception.GetType().AssemblyQualifiedName);
@@ -100,9 +100,9 @@ namespace RI.Framework.Utilities
 					}
 					else
 					{
-						writer.Write(exception.TargetSite.DeclaringType == null ? ExceptionExtensions.NullString : exception.TargetSite.DeclaringType.AssemblyQualifiedName.Trim());
+						writer.Write(exception.TargetSite?.DeclaringType?.AssemblyQualifiedName?.Trim() ?? ExceptionExtensions.NullString);
 						writer.Write(ExceptionExtensions.TargetSiteSeparator);
-						writer.WriteLine(exception.TargetSite.Name == null ? ExceptionExtensions.NullString : exception.TargetSite.Name.Trim());
+						writer.WriteLine(exception.TargetSite.Name.Trim());
 					}
 
 					writer.Write("Help link:   ");

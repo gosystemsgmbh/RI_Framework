@@ -204,7 +204,7 @@ namespace RI.Framework.Collections.ObjectModel
 				value = cloneable1.Clone();
 			}
 
-			if (value is TValue)
+			if (value != null)
 			{
 				return (TValue)value;
 			}

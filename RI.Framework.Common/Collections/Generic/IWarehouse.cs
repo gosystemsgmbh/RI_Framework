@@ -25,7 +25,7 @@ namespace RI.Framework.Collections.Generic
 	///         It also allows to provide a very efficient way to allocate and deallocate storage for items.
 	///     </para>
 	/// </remarks>
-	public interface IWarehouse <T>
+	public interface IWarehouse <out T>
 	{
 		/// <summary>
 		///     Gets the amount of free bays.

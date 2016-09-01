@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 using RI.Framework.Collections.Comparison;
 using RI.Framework.Utilities.Comparison;
@@ -219,6 +220,7 @@ namespace RI.Framework.Collections
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="enumerable" /> is null. </exception>
+		[SuppressMessage ("ReSharper", "UnusedVariable")]
 		public static bool Any <T> (this IEnumerable<T> enumerable)
 		{
 			if (enumerable == null)
@@ -317,6 +319,7 @@ namespace RI.Framework.Collections
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="enumerable" /> is null. </exception>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="index" /> is less than zero. </exception>
+		[SuppressMessage ("ReSharper", "UnusedVariable")]
 		public static bool Any <T> (this IEnumerable<T> enumerable, int index)
 		{
 			if (enumerable == null)
@@ -568,6 +571,7 @@ namespace RI.Framework.Collections
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="enumerable" /> is null. </exception>
+		[SuppressMessage ("ReSharper", "UnusedVariable")]
 		public static int Count <T> (this IEnumerable<T> enumerable)
 		{
 			if (enumerable == null)
@@ -669,6 +673,7 @@ namespace RI.Framework.Collections
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="enumerable" /> is null. </exception>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="index" /> is less than zero. </exception>
+		[SuppressMessage ("ReSharper", "UnusedVariable")]
 		public static int Count <T> (this IEnumerable<T> enumerable, int index)
 		{
 			if (enumerable == null)
@@ -1566,8 +1571,6 @@ namespace RI.Framework.Collections
 			{
 				throw new ArgumentNullException(nameof(comparer));
 			}
-
-			EqualityComparison<T> comparison = new EqualityComparison<T>(comparer);
 
 			HashSet<T> result = new HashSet<T>(first, new EqualityComparison<T>(comparer));
 			result.IntersectWith(second);

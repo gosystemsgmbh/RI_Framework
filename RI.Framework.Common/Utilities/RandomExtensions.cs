@@ -26,7 +26,7 @@ namespace RI.Framework.Utilities
 
 		#region Static Properties/Indexer
 
-		private static List<string> LoremIpsumWords { get; set; } = null;
+		private static List<string> LoremIpsumWords { get; set; }
 
 		#endregion
 

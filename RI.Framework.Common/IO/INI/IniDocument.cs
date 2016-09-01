@@ -640,8 +640,10 @@ namespace RI.Framework.IO.INI
 			}
 
 			List<Dictionary<string, List<string>>> result = new List<Dictionary<string, List<string>>>();
-			Dictionary<string, List<string>> dict = null;
 			bool found = false;
+
+			Dictionary<string, List<string>> dict = new Dictionary<string, List<string>>(this.ValueNameComparer);
+			result.Add(dict);
 
 			bool isMatchingSection = sectionName == null;
 			foreach (IniElement element in this.Elements)
