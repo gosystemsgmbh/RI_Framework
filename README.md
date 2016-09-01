@@ -19,7 +19,7 @@
   - [X] ReSharper configuration, cleanup, and review
   - [ ] Cleanup artifacts
 - [ ] Testing
-  - [ ] Split testing into "Unity" and ".NET"
+  - [X] Split testing into "Unity" and ".NET"
   - [ ] Complete tests
   - [ ] Run tests in Unity
   - [ ] Run tests in .NET

@@ -637,7 +637,7 @@ namespace RI.Test.Framework.Utilities
 				throw new TestAssertionException();
 			}
 
-			if (string.Empty.Repeat(3, '@') != "")
+			if (string.Empty.Repeat(3, '@') != "@@")
 			{
 				throw new TestAssertionException();
 			}
@@ -652,7 +652,7 @@ namespace RI.Test.Framework.Utilities
 				throw new TestAssertionException();
 			}
 
-			if (string.Empty.Repeat(3, "..") != "")
+			if (string.Empty.Repeat(3, "..") != "....")
 			{
 				throw new TestAssertionException();
 			}

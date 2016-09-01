@@ -66,7 +66,7 @@ namespace RI.Tools.VersionUpdater
 
 			foreach (string file in files)
 			{
-				string extension = Path.GetExtension(file).ToUpperInvariant();
+				string extension = Path.GetExtension(file)?.ToUpperInvariant();
 				string templateExtension = "." + VersionUpdater.TemplateExtension + extension;
 				if (file.EndsWith(templateExtension, StringComparison.InvariantCultureIgnoreCase))
 				{
@@ -119,8 +119,8 @@ namespace RI.Tools.VersionUpdater
 
 		private static void ProcessFileRegex (string file, Version newVersion, string newCompany, string newCopyright)
 		{
-			string extension = Path.GetExtension(file).ToUpperInvariant();
-			string fileName = Path.GetFileName(file).ToUpperInvariant();
+			string extension = Path.GetExtension(file)?.ToUpperInvariant();
+			string fileName = Path.GetFileName(file)?.ToUpperInvariant();
 
 			string newVersionComma = newVersion.ToString(4).Replace('.', ',');
 			string newVersionDot = newVersion.ToString(4);
@@ -430,9 +430,6 @@ namespace RI.Tools.VersionUpdater
 
 			string newVersionDot = newVersion.ToString(4);
 
-			string search = null;
-			string replacement = null;
-
 			bool processed = false;
 
 			switch (extension)
@@ -440,8 +437,9 @@ namespace RI.Tools.VersionUpdater
 				case ".HTML":
 				case ".HTM":
 				{
-					search = @"($version$)";
-					replacement = newVersionDot;
+					string search = @"($version$)";
+					string replacement = newVersionDot;
+
 					VersionUpdater.PerformReplacementToken(outFile, search, replacement, Encoding.UTF8);
 
 					search = @"($company$)";

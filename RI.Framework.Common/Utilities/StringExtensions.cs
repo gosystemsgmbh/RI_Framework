@@ -631,11 +631,11 @@ namespace RI.Framework.Utilities
 			StringBuilder sb = new StringBuilder(( str.Length * count ) + ( separator.Length * ( count - 1 ) ) + 1);
 			for (int i1 = 0; i1 < count; i1++)
 			{
-				sb.Append(str);
 				if (i1 != 0)
 				{
 					sb.Append(separator);
 				}
+				sb.Append(str);
 			}
 			return sb.ToString();
 		}
