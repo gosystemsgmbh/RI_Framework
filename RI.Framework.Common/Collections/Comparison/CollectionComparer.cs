@@ -319,14 +319,19 @@ namespace RI.Framework.Collections.Comparison
 				for (int i1 = 0; i1 < xList.Count; i1++)
 				{
 					T xValue = xList[i1];
+					bool found = false;
 					for (int i2 = 0; i2 < yList.Count; i2++)
 					{
 						T yValue = yList[i2];
-
-						if (!this.Comparer(xValue, yValue))
+						if (this.Comparer(xValue, yValue))
 						{
-							return false;
+							found = true;
+							break;
 						}
+					}
+					if (!found)
+					{
+						return false;
 					}
 				}
 			}

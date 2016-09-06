@@ -23,6 +23,7 @@ namespace RI.Test.Framework.Collections.Comparison
 	{
 		#region Instance Methods
 
+		[TestMethod]
 		public void Test ()
 		{
 			Func<List<VENP>> creator1 = () => new List<VENP>
@@ -149,6 +150,8 @@ namespace RI.Test.Framework.Collections.Comparison
 				new ComparisonCase<VENP>(514, new CollectionComparer<VENP>((x, y) => x.Number == y.Number), filled, filled_diffref_difforder, false),
 				new ComparisonCase<VENP>(515, new CollectionComparer<VENP>(CollectionComparerFlags.IgnoreOrder, new EqualityComparison<VENP>((x, y) => x.Number == y.Number)), filled, filled_diffref_difforder, true),
 				new ComparisonCase<VENP>(516, new CollectionComparer<VENP>(CollectionComparerFlags.IgnoreOrder, (x, y) => x.Number == y.Number), filled, filled_diffref_difforder, true),
+				new ComparisonCase<VENP>(611, CollectionComparer<VENP>.Default, null, null, true),
+				new ComparisonCase<VENP>(612, CollectionComparer<VENP>.Default, filled, null, false),
 			};
 
 			foreach (ComparisonCase<VENP> compCase in cases)

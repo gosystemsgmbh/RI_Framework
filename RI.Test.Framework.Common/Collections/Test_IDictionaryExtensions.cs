@@ -354,7 +354,7 @@ namespace RI.Test.Framework.Collections
 			dict.Add("b", 5);
 			dict.Add("c", 6);
 
-			if (test.Transform(x => x.Value * 10) != 0)
+			if (test.Transform(x => x.Value * 10) != 6)
 			{
 				throw new TestAssertionException();
 			}

@@ -387,7 +387,7 @@ namespace RI.Framework.Collections
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="enumerable" /> is null. </exception>
-		/// <exception cref="InvalidOperationException"> At least one element cannot be casted into <typeparamref name="T" />. </exception>
+		/// <exception cref="InvalidCastException"> At least one element cannot be casted into <typeparamref name="T" />. </exception>
 		public static List<T> Cast <T> (this IEnumerable enumerable)
 		{
 			if (enumerable == null)
@@ -398,14 +398,7 @@ namespace RI.Framework.Collections
 			List<T> items = new List<T>();
 			foreach (object item in enumerable)
 			{
-				try
-				{
-					items.Add((T)item);
-				}
-				catch (InvalidCastException)
-				{
-					throw new InvalidOperationException();
-				}
+				items.Add((T)item);
 			}
 			return items;
 		}

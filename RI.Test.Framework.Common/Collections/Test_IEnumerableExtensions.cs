@@ -99,14 +99,14 @@ namespace RI.Test.Framework.Collections
 
 			//Without index
 
-			if (!test.All(x => x.Number > 0))
+			if (test.All(x => x.Number > 0))
 			{
 				throw new TestAssertionException();
 			}
 
 			//With index
 
-			if (!test.All((x, y) => y.Number > 0))
+			if (test.All((x, y) => y.Number > 0))
 			{
 				throw new TestAssertionException();
 			}
@@ -308,12 +308,7 @@ namespace RI.Test.Framework.Collections
 				throw new TestAssertionException();
 			}
 
-			if (test.Cast<int>()[0] != 1)
-			{
-				throw new TestAssertionException();
-			}
-
-			if (test.Cast<string>()[2] != "3")
+			if (test.Cast<IEquatable<VENP>>()[0] == null)
 			{
 				throw new TestAssertionException();
 			}
@@ -1428,17 +1423,17 @@ namespace RI.Test.Framework.Collections
 				throw new TestAssertionException();
 			}
 
-			if (list[0] != 2)
+			if (list[0].Number != 2)
 			{
 				throw new TestAssertionException();
 			}
 
-			if (list[1] != 10)
+			if (list[1].Number != 10)
 			{
 				throw new TestAssertionException();
 			}
 
-			if (list[2] != 11)
+			if (list[2].Number != 11)
 			{
 				throw new TestAssertionException();
 			}
@@ -1450,17 +1445,17 @@ namespace RI.Test.Framework.Collections
 				throw new TestAssertionException();
 			}
 
-			if (list[0] != 0)
+			if (list[0].Number != 0)
 			{
 				throw new TestAssertionException();
 			}
 
-			if (list[1] != 1)
+			if (list[1].Number != 1)
 			{
 				throw new TestAssertionException();
 			}
 
-			if (list[2] != 2)
+			if (list[2].Number != 2)
 			{
 				throw new TestAssertionException();
 			}
@@ -1827,12 +1822,12 @@ namespace RI.Test.Framework.Collections
 				throw new TestAssertionException();
 			}
 
-			if (test.OfType<int>()[0] != 1)
+			if (test.OfType<IEquatable<VENP>>()[0] == null)
 			{
 				throw new TestAssertionException();
 			}
 
-			if (test.OfType<int>()[3] != 4)
+			if (test.OfType<IEquatable<RENP>>()[0] == null)
 			{
 				throw new TestAssertionException();
 			}
@@ -2060,7 +2055,7 @@ namespace RI.Test.Framework.Collections
 				throw new TestAssertionException();
 			}
 
-			if (test3.Same(v2, new EqualityComparison<VENP>(object.ReferenceEquals)) != 1)
+			if (test3.Same(v2, new EqualityComparison<VENP>(object.ReferenceEquals)) != 0)
 			{
 				throw new TestAssertionException();
 			}
@@ -2072,7 +2067,7 @@ namespace RI.Test.Framework.Collections
 				throw new TestAssertionException();
 			}
 
-			if (test3.Same(v2, object.ReferenceEquals) != 1)
+			if (test3.Same(v2, object.ReferenceEquals) != 0)
 			{
 				throw new TestAssertionException();
 			}
@@ -2696,7 +2691,7 @@ namespace RI.Test.Framework.Collections
 				throw new TestAssertionException();
 			}
 
-			if (test1.SequenceEqual(test1, CollectionComparerFlags.None))
+			if (!test1.SequenceEqual(test1, CollectionComparerFlags.None))
 			{
 				throw new TestAssertionException();
 			}
@@ -2728,7 +2723,7 @@ namespace RI.Test.Framework.Collections
 
 			//Custom comparer
 
-			if (test1.SequenceEqual(test1, CollectionComparerFlags.None, new EqualityComparison<VENP>((x, y) => x == y)))
+			if (!test1.SequenceEqual(test1, CollectionComparerFlags.None, new EqualityComparison<VENP>((x, y) => x == y)))
 			{
 				throw new TestAssertionException();
 			}
@@ -2760,7 +2755,7 @@ namespace RI.Test.Framework.Collections
 
 			//Custom function
 
-			if (test1.SequenceEqual(test1, CollectionComparerFlags.None, (x, y) => x == y))
+			if (!test1.SequenceEqual(test1, CollectionComparerFlags.None, (x, y) => x == y))
 			{
 				throw new TestAssertionException();
 			}
@@ -2803,7 +2798,7 @@ namespace RI.Test.Framework.Collections
 
 			//With flags
 
-			if (test1.SequenceEqual(test1, CollectionComparerFlags.IgnoreOrder))
+			if (!test1.SequenceEqual(test1, CollectionComparerFlags.IgnoreOrder))
 			{
 				throw new TestAssertionException();
 			}
@@ -2818,7 +2813,7 @@ namespace RI.Test.Framework.Collections
 				throw new TestAssertionException();
 			}
 
-			if (test1.SequenceEqual(test1, CollectionComparerFlags.None))
+			if (!test1.SequenceEqual(test1, CollectionComparerFlags.None))
 			{
 				throw new TestAssertionException();
 			}
@@ -2833,7 +2828,7 @@ namespace RI.Test.Framework.Collections
 				throw new TestAssertionException();
 			}
 
-			if (test1.SequenceEqual(test1, CollectionComparerFlags.ReferenceEquality | CollectionComparerFlags.IgnoreOrder))
+			if (!test1.SequenceEqual(test1, CollectionComparerFlags.ReferenceEquality | CollectionComparerFlags.IgnoreOrder))
 			{
 				throw new TestAssertionException();
 			}
@@ -2850,7 +2845,7 @@ namespace RI.Test.Framework.Collections
 
 			//Custom comparer
 
-			if (test1.SequenceEqual(test1, CollectionComparerFlags.None, new EqualityComparison<VENP>((x, y) => x == y)))
+			if (!test1.SequenceEqual(test1, CollectionComparerFlags.None, new EqualityComparison<VENP>((x, y) => x == y)))
 			{
 				throw new TestAssertionException();
 			}
@@ -2865,7 +2860,7 @@ namespace RI.Test.Framework.Collections
 				throw new TestAssertionException();
 			}
 
-			if (test1.SequenceEqual(test1, CollectionComparerFlags.IgnoreOrder, new EqualityComparison<VENP>((x, y) => x == y)))
+			if (!test1.SequenceEqual(test1, CollectionComparerFlags.IgnoreOrder, new EqualityComparison<VENP>((x, y) => x == y)))
 			{
 				throw new TestAssertionException();
 			}
@@ -2882,7 +2877,7 @@ namespace RI.Test.Framework.Collections
 
 			//Custom function
 
-			if (test1.SequenceEqual(test1, CollectionComparerFlags.None, (x, y) => x == y))
+			if (!test1.SequenceEqual(test1, CollectionComparerFlags.None, (x, y) => x == y))
 			{
 				throw new TestAssertionException();
 			}
@@ -2897,7 +2892,7 @@ namespace RI.Test.Framework.Collections
 				throw new TestAssertionException();
 			}
 
-			if (test1.SequenceEqual(test1, CollectionComparerFlags.IgnoreOrder, (x, y) => x == y))
+			if (!test1.SequenceEqual(test1, CollectionComparerFlags.IgnoreOrder, (x, y) => x == y))
 			{
 				throw new TestAssertionException();
 			}
@@ -3690,11 +3685,6 @@ namespace RI.Test.Framework.Collections
 
 			result = test.ToDictionary(StringComparer.InvariantCultureIgnoreCase, ( x => new KeyValuePair<string, int>(( x / 10 ).ToString(), x) ));
 
-			if (result.Count != 0)
-			{
-				throw new TestAssertionException();
-			}
-
 			if (result.Count != 6)
 			{
 				throw new TestAssertionException();
@@ -3819,11 +3809,6 @@ namespace RI.Test.Framework.Collections
 
 			result = test.ToDictionaryList(StringComparer.InvariantCultureIgnoreCase, ( x => new KeyValuePair<string, int>(( x / 10 ).ToString(), x) ));
 
-			if (result.Count != 0)
-			{
-				throw new TestAssertionException();
-			}
-
 			if (result.Count != 3)
 			{
 				throw new TestAssertionException();
@@ -3926,7 +3911,7 @@ namespace RI.Test.Framework.Collections
 				throw new TestAssertionException();
 			}
 
-			if (result["1"].ElementAt(1) != 13)
+			if (result["1"].ElementAt(1) != 12)
 			{
 				throw new TestAssertionException();
 			}
@@ -3975,7 +3960,7 @@ namespace RI.Test.Framework.Collections
 				throw new TestAssertionException();
 			}
 
-			if (result["1"].ElementAt(1) != 13)
+			if (result["1"].ElementAt(1) != 12)
 			{
 				throw new TestAssertionException();
 			}
@@ -4303,12 +4288,12 @@ namespace RI.Test.Framework.Collections
 				throw new TestAssertionException();
 			}
 
-			if (test.Where(x => x > 2)[0] != 4)
+			if (test.Where((x, y) => x > 2)[0] != 4)
 			{
 				throw new TestAssertionException();
 			}
 
-			if (test.Where(x => x > 2)[1] != 5)
+			if (test.Where((x, y) => x > 2)[1] != 5)
 			{
 				throw new TestAssertionException();
 			}

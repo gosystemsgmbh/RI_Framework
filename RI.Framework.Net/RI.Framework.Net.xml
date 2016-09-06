@@ -3406,7 +3406,7 @@
                 </para>
             </remarks>
             <exception cref="T:System.ArgumentNullException"> <paramref name="enumerable" /> is null. </exception>
-            <exception cref="T:System.InvalidOperationException"> At least one element cannot be casted into <typeparamref name="T" />. </exception>
+            <exception cref="T:System.InvalidCastException"> At least one element cannot be casted into <typeparamref name="T" />. </exception>
         </member>
         <member name="M:RI.Framework.Collections.IEnumerableExtensions.Concat``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0})">
             <summary>

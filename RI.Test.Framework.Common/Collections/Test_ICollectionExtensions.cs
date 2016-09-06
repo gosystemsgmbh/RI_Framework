@@ -102,7 +102,7 @@ namespace RI.Test.Framework.Collections
 			if (test.RemoveAllRange(new[]
 			                        {
 				                        1, 2, 30, 40, 500, 600
-			                        }) != 2)
+			                        }) != 5)
 			{
 				throw new TestAssertionException();
 			}
