@@ -24,11 +24,11 @@ namespace RI.Test.Framework.Collections.ObjectModel
 		{
 			TreeNode<int> root = new TreeNode<int>();
 			TreeNode<int> n11 = new TreeNode<int>(11);
-			TreeNode<int> n12 = new TreeNode<int>(11);
-			TreeNode<int> n13 = new TreeNode<int>(11);
+			TreeNode<int> n12 = new TreeNode<int>(12);
+			TreeNode<int> n13 = new TreeNode<int>(13);
 			TreeNode<int> n21 = new TreeNode<int>(21);
-			TreeNode<int> n22 = new TreeNode<int>(21);
-			TreeNode<int> n23 = new TreeNode<int>(21);
+			TreeNode<int> n22 = new TreeNode<int>(22);
+			TreeNode<int> n23 = new TreeNode<int>(23);
 
 			root.Children.Add(n11);
 			root.Children.Add(n12);
@@ -93,11 +93,11 @@ namespace RI.Test.Framework.Collections.ObjectModel
 		{
 			TreeNode<int> root = new TreeNode<int>();
 			TreeNode<int> n11 = new TreeNode<int>(11);
-			TreeNode<int> n12 = new TreeNode<int>(11);
-			TreeNode<int> n13 = new TreeNode<int>(11);
+			TreeNode<int> n12 = new TreeNode<int>(12);
+			TreeNode<int> n13 = new TreeNode<int>(13);
 			TreeNode<int> n21 = new TreeNode<int>(21);
-			TreeNode<int> n22 = new TreeNode<int>(21);
-			TreeNode<int> n23 = new TreeNode<int>(21);
+			TreeNode<int> n22 = new TreeNode<int>(22);
+			TreeNode<int> n23 = new TreeNode<int>(23);
 
 			root.Children.Add(n11);
 			root.Children.Add(n12);
@@ -119,12 +119,17 @@ namespace RI.Test.Framework.Collections.ObjectModel
 				throw new TestAssertionException();
 			}
 
-			if (result[4].Value != 23)
+			if (result[2].Value != 13)
 			{
 				throw new TestAssertionException();
 			}
 
-			if (result[5].Value != 13)
+			if (result[3].Value != 21)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (result[5].Value != 23)
 			{
 				throw new TestAssertionException();
 			}
@@ -146,12 +151,7 @@ namespace RI.Test.Framework.Collections.ObjectModel
 				throw new TestAssertionException();
 			}
 
-			if (result[5].Value != 23)
-			{
-				throw new TestAssertionException();
-			}
-
-			if (result[6].Value != 13)
+			if (result[6].Value != 23)
 			{
 				throw new TestAssertionException();
 			}
@@ -162,11 +162,11 @@ namespace RI.Test.Framework.Collections.ObjectModel
 		{
 			TreeNode<int> root = new TreeNode<int>();
 			TreeNode<int> n11 = new TreeNode<int>(11);
-			TreeNode<int> n12 = new TreeNode<int>(11);
-			TreeNode<int> n13 = new TreeNode<int>(11);
+			TreeNode<int> n12 = new TreeNode<int>(12);
+			TreeNode<int> n13 = new TreeNode<int>(13);
 			TreeNode<int> n21 = new TreeNode<int>(21);
-			TreeNode<int> n22 = new TreeNode<int>(21);
-			TreeNode<int> n23 = new TreeNode<int>(21);
+			TreeNode<int> n22 = new TreeNode<int>(22);
+			TreeNode<int> n23 = new TreeNode<int>(23);
 
 			root.Children.Add(n11);
 			root.Children.Add(n12);
@@ -199,11 +199,11 @@ namespace RI.Test.Framework.Collections.ObjectModel
 		{
 			TreeNode<int> root = new TreeNode<int>();
 			TreeNode<int> n11 = new TreeNode<int>(11);
-			TreeNode<int> n12 = new TreeNode<int>(11);
-			TreeNode<int> n13 = new TreeNode<int>(11);
+			TreeNode<int> n12 = new TreeNode<int>(12);
+			TreeNode<int> n13 = new TreeNode<int>(13);
 			TreeNode<int> n21 = new TreeNode<int>(21);
-			TreeNode<int> n22 = new TreeNode<int>(21);
-			TreeNode<int> n23 = new TreeNode<int>(21);
+			TreeNode<int> n22 = new TreeNode<int>(22);
+			TreeNode<int> n23 = new TreeNode<int>(23);
 
 			root.Children.Add(n11);
 			root.Children.Add(n12);
@@ -241,11 +241,11 @@ namespace RI.Test.Framework.Collections.ObjectModel
 		{
 			TreeNode<int> root = new TreeNode<int>();
 			TreeNode<int> n11 = new TreeNode<int>(11);
-			TreeNode<int> n12 = new TreeNode<int>(11);
-			TreeNode<int> n13 = new TreeNode<int>(11);
+			TreeNode<int> n12 = new TreeNode<int>(12);
+			TreeNode<int> n13 = new TreeNode<int>(13);
 			TreeNode<int> n21 = new TreeNode<int>(21);
-			TreeNode<int> n22 = new TreeNode<int>(21);
-			TreeNode<int> n23 = new TreeNode<int>(21);
+			TreeNode<int> n22 = new TreeNode<int>(22);
+			TreeNode<int> n23 = new TreeNode<int>(23);
 
 			root.Children.Add(n11);
 			root.Children.Add(n12);
@@ -300,11 +300,11 @@ namespace RI.Test.Framework.Collections.ObjectModel
 		{
 			TreeNode<int> root = new TreeNode<int>();
 			TreeNode<int> n11 = new TreeNode<int>(11);
-			TreeNode<int> n12 = new TreeNode<int>(11);
-			TreeNode<int> n13 = new TreeNode<int>(11);
+			TreeNode<int> n12 = new TreeNode<int>(12);
+			TreeNode<int> n13 = new TreeNode<int>(13);
 			TreeNode<int> n21 = new TreeNode<int>(21);
-			TreeNode<int> n22 = new TreeNode<int>(21);
-			TreeNode<int> n23 = new TreeNode<int>(21);
+			TreeNode<int> n22 = new TreeNode<int>(22);
+			TreeNode<int> n23 = new TreeNode<int>(23);
 
 			root.Children.Add(n11);
 			root.Children.Add(n12);
@@ -359,11 +359,11 @@ namespace RI.Test.Framework.Collections.ObjectModel
 		{
 			TreeNode<int> root = new TreeNode<int>();
 			TreeNode<int> n11 = new TreeNode<int>(11);
-			TreeNode<int> n12 = new TreeNode<int>(11);
-			TreeNode<int> n13 = new TreeNode<int>(11);
+			TreeNode<int> n12 = new TreeNode<int>(12);
+			TreeNode<int> n13 = new TreeNode<int>(13);
 			TreeNode<int> n21 = new TreeNode<int>(21);
-			TreeNode<int> n22 = new TreeNode<int>(21);
-			TreeNode<int> n23 = new TreeNode<int>(21);
+			TreeNode<int> n22 = new TreeNode<int>(22);
+			TreeNode<int> n23 = new TreeNode<int>(23);
 
 			root.Children.Add(n11);
 			root.Children.Add(n12);
@@ -484,11 +484,11 @@ namespace RI.Test.Framework.Collections.ObjectModel
 		{
 			TreeNode<int> root = new TreeNode<int>();
 			TreeNode<int> n11 = new TreeNode<int>(11);
-			TreeNode<int> n12 = new TreeNode<int>(11);
-			TreeNode<int> n13 = new TreeNode<int>(11);
+			TreeNode<int> n12 = new TreeNode<int>(12);
+			TreeNode<int> n13 = new TreeNode<int>(13);
 			TreeNode<int> n21 = new TreeNode<int>(21);
-			TreeNode<int> n22 = new TreeNode<int>(21);
-			TreeNode<int> n23 = new TreeNode<int>(21);
+			TreeNode<int> n22 = new TreeNode<int>(22);
+			TreeNode<int> n23 = new TreeNode<int>(23);
 
 			root.Children.Add(n11);
 			root.Children.Add(n12);
@@ -514,11 +514,11 @@ namespace RI.Test.Framework.Collections.ObjectModel
 		{
 			TreeNode<int> root = new TreeNode<int>();
 			TreeNode<int> n11 = new TreeNode<int>(11);
-			TreeNode<int> n12 = new TreeNode<int>(11);
-			TreeNode<int> n13 = new TreeNode<int>(11);
+			TreeNode<int> n12 = new TreeNode<int>(12);
+			TreeNode<int> n13 = new TreeNode<int>(13);
 			TreeNode<int> n21 = new TreeNode<int>(21);
-			TreeNode<int> n22 = new TreeNode<int>(21);
-			TreeNode<int> n23 = new TreeNode<int>(21);
+			TreeNode<int> n22 = new TreeNode<int>(22);
+			TreeNode<int> n23 = new TreeNode<int>(23);
 
 			root.Children.Add(n11);
 			root.Children.Add(n12);
@@ -549,11 +549,11 @@ namespace RI.Test.Framework.Collections.ObjectModel
 		{
 			TreeNode<int> root = new TreeNode<int>();
 			TreeNode<int> n11 = new TreeNode<int>(11);
-			TreeNode<int> n12 = new TreeNode<int>(11);
-			TreeNode<int> n13 = new TreeNode<int>(11);
+			TreeNode<int> n12 = new TreeNode<int>(12);
+			TreeNode<int> n13 = new TreeNode<int>(13);
 			TreeNode<int> n21 = new TreeNode<int>(21);
-			TreeNode<int> n22 = new TreeNode<int>(21);
-			TreeNode<int> n23 = new TreeNode<int>(21);
+			TreeNode<int> n22 = new TreeNode<int>(22);
+			TreeNode<int> n23 = new TreeNode<int>(23);
 
 			root.Children.Add(n11);
 			root.Children.Add(n12);
@@ -585,11 +585,11 @@ namespace RI.Test.Framework.Collections.ObjectModel
 		{
 			TreeNode<int> root = new TreeNode<int>();
 			TreeNode<int> n11 = new TreeNode<int>(11);
-			TreeNode<int> n12 = new TreeNode<int>(11);
-			TreeNode<int> n13 = new TreeNode<int>(11);
+			TreeNode<int> n12 = new TreeNode<int>(12);
+			TreeNode<int> n13 = new TreeNode<int>(13);
 			TreeNode<int> n21 = new TreeNode<int>(21);
-			TreeNode<int> n22 = new TreeNode<int>(21);
-			TreeNode<int> n23 = new TreeNode<int>(21);
+			TreeNode<int> n22 = new TreeNode<int>(22);
+			TreeNode<int> n23 = new TreeNode<int>(23);
 
 			root.Children.Add(n11);
 			root.Children.Add(n12);
@@ -663,11 +663,11 @@ namespace RI.Test.Framework.Collections.ObjectModel
 		{
 			TreeNode<int> root = new TreeNode<int>();
 			TreeNode<int> n11 = new TreeNode<int>(11);
-			TreeNode<int> n12 = new TreeNode<int>(11);
-			TreeNode<int> n13 = new TreeNode<int>(11);
+			TreeNode<int> n12 = new TreeNode<int>(12);
+			TreeNode<int> n13 = new TreeNode<int>(13);
 			TreeNode<int> n21 = new TreeNode<int>(21);
-			TreeNode<int> n22 = new TreeNode<int>(21);
-			TreeNode<int> n23 = new TreeNode<int>(21);
+			TreeNode<int> n22 = new TreeNode<int>(22);
+			TreeNode<int> n23 = new TreeNode<int>(23);
 
 			root.Children.Add(n11);
 			root.Children.Add(n12);

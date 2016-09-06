@@ -90,7 +90,7 @@ namespace RI.Test.Framework.Collections.ObjectModel
 				throw new TestAssertionException();
 			}
 
-			if (test.Take() != 1)
+			if (test.Take() != 3)
 			{
 				throw new TestAssertionException();
 			}
@@ -100,7 +100,7 @@ namespace RI.Test.Framework.Collections.ObjectModel
 				throw new TestAssertionException();
 			}
 
-			if (test.Take() != 3)
+			if (test.Take() != 1)
 			{
 				throw new TestAssertionException();
 			}
@@ -118,7 +118,7 @@ namespace RI.Test.Framework.Collections.ObjectModel
 				throw new TestAssertionException();
 			}
 
-			if (test.Take() != 1)
+			if (test.Take() != 3)
 			{
 				throw new TestAssertionException();
 			}
@@ -128,7 +128,7 @@ namespace RI.Test.Framework.Collections.ObjectModel
 				throw new TestAssertionException();
 			}
 
-			if (test.Take() != 3)
+			if (test.Take() != 1)
 			{
 				throw new TestAssertionException();
 			}
@@ -146,7 +146,7 @@ namespace RI.Test.Framework.Collections.ObjectModel
 				throw new TestAssertionException();
 			}
 
-			if (test.Take() != 1)
+			if (test.Take() != 3)
 			{
 				throw new TestAssertionException();
 			}
@@ -156,7 +156,7 @@ namespace RI.Test.Framework.Collections.ObjectModel
 				throw new TestAssertionException();
 			}
 
-			if (test.Take() != 3)
+			if (test.Take() != 1)
 			{
 				throw new TestAssertionException();
 			}
@@ -184,7 +184,7 @@ namespace RI.Test.Framework.Collections.ObjectModel
 				throw new TestAssertionException();
 			}
 
-			if (result[0] != 1)
+			if (result[0] != 3)
 			{
 				throw new TestAssertionException();
 			}
@@ -194,7 +194,7 @@ namespace RI.Test.Framework.Collections.ObjectModel
 				throw new TestAssertionException();
 			}
 
-			if (result[2] != 3)
+			if (result[2] != 1)
 			{
 				throw new TestAssertionException();
 			}

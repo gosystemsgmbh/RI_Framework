@@ -75,12 +75,12 @@ namespace RI.Test.Framework.Collections.ObjectModel
 				throw new TestAssertionException();
 			}
 
-			if (pool.Take() != 1)
+			if (pool.Take() != 2)
 			{
 				throw new TestAssertionException();
 			}
 
-			if (pool.Take() != 2)
+			if (pool.Take() != 1)
 			{
 				throw new TestAssertionException();
 			}
@@ -161,6 +161,8 @@ namespace RI.Test.Framework.Collections.ObjectModel
 			{
 				throw new TestAssertionException();
 			}
+
+			pool.Clear();
 
 			int indicator = 0;
 

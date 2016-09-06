@@ -23,11 +23,11 @@ namespace RI.Test.Framework.Collections.ObjectModel
 		{
 			TreeNode<int> root = new TreeNode<int>();
 			TreeNode<int> n11 = new TreeNode<int>(11);
-			TreeNode<int> n12 = new TreeNode<int>(11);
-			TreeNode<int> n13 = new TreeNode<int>(11);
+			TreeNode<int> n12 = new TreeNode<int>(12);
+			TreeNode<int> n13 = new TreeNode<int>(13);
 			TreeNode<int> n21 = new TreeNode<int>(21);
-			TreeNode<int> n22 = new TreeNode<int>(21);
-			TreeNode<int> n23 = new TreeNode<int>(21);
+			TreeNode<int> n22 = new TreeNode<int>(22);
+			TreeNode<int> n23 = new TreeNode<int>(23);
 
 			if (root.Value != 0)
 			{
@@ -68,6 +68,25 @@ namespace RI.Test.Framework.Collections.ObjectModel
 			}
 
 			if (n22.Children.Count != 0)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (root.Children[0] != n11)
+			{
+				throw new TestAssertionException();
+			}
+
+			root.Children[0] = new TreeNode<int>(999);
+
+			if (root.Children[0].Value != 999)
+			{
+				throw new TestAssertionException();
+			}
+
+			root.Children[0] = n11;
+
+			if (root.Children[0] != n11)
 			{
 				throw new TestAssertionException();
 			}

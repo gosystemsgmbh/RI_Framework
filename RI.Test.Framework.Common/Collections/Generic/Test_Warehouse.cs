@@ -37,7 +37,7 @@ namespace RI.Test.Framework.Collections.Generic
 				throw new TestAssertionException();
 			}
 
-			if (warehouse.Reserve() != 10)
+			if (warehouse.Reserve() != 1)
 			{
 				throw new TestAssertionException();
 			}
@@ -57,7 +57,7 @@ namespace RI.Test.Framework.Collections.Generic
 				throw new TestAssertionException();
 			}
 
-			if (warehouse.Reserve() != 9)
+			if (warehouse.Reserve() != 2)
 			{
 				throw new TestAssertionException();
 			}
@@ -77,7 +77,7 @@ namespace RI.Test.Framework.Collections.Generic
 				throw new TestAssertionException();
 			}
 
-			warehouse.Release(10);
+			warehouse.Release(1);
 
 			if (warehouse.Size != 10)
 			{
@@ -94,7 +94,7 @@ namespace RI.Test.Framework.Collections.Generic
 				throw new TestAssertionException();
 			}
 
-			warehouse.Release(9);
+			warehouse.Release(2);
 
 			if (warehouse.Size != 10)
 			{
@@ -111,12 +111,24 @@ namespace RI.Test.Framework.Collections.Generic
 				throw new TestAssertionException();
 			}
 
-			if (warehouse.Reserve() != 9)
+			if (warehouse.Reserve() != 2)
 			{
 				throw new TestAssertionException();
 			}
 
-			if (warehouse.Reserve() != 10)
+			if (warehouse.Reserve() != 1)
+			{
+				throw new TestAssertionException();
+			}
+
+			warehouse = new Warehouse<int>(1);
+
+			if (warehouse.Reserve() != 1)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (warehouse.Reserve() != 0)
 			{
 				throw new TestAssertionException();
 			}
