@@ -117,7 +117,7 @@ namespace RI.Test.Framework.Collections
 				throw new TestAssertionException();
 			}
 
-			if (test.RemoveAtRange(2, 2) != 0)
+			if (test.RemoveAtRange(2, 2) != 2)
 			{
 				throw new TestAssertionException();
 			}
@@ -554,6 +554,7 @@ namespace RI.Test.Framework.Collections
 				1,
 				2,
 				3,
+				4,
 				4
 			};
 			IList<int> test = list.AsList();
@@ -591,6 +592,8 @@ namespace RI.Test.Framework.Collections
 			{
 				throw new TestAssertionException();
 			}
+
+			test.SwapDefault(3, 3);
 		}
 
 		[TestMethod]
@@ -601,6 +604,7 @@ namespace RI.Test.Framework.Collections
 				1,
 				2,
 				3,
+				4,
 				4
 			};
 			IList<int> test = list.AsList();
@@ -626,6 +630,8 @@ namespace RI.Test.Framework.Collections
 			{
 				throw new TestAssertionException();
 			}
+
+			test.SwapInPlace(3, 3);
 		}
 
 		[TestMethod]
@@ -636,6 +642,7 @@ namespace RI.Test.Framework.Collections
 				1,
 				2,
 				3,
+				4,
 				4
 			};
 			IList<int> test = list.AsList();
@@ -661,6 +668,8 @@ namespace RI.Test.Framework.Collections
 			{
 				throw new TestAssertionException();
 			}
+
+			test.SwapInsert(3, 3);
 		}
 
 		[TestMethod]

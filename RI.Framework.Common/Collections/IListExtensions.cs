@@ -106,7 +106,7 @@ namespace RI.Framework.Collections
 				throw new ArgumentNullException(nameof(list));
 			}
 
-			if (( index < 0 ) || ( index >= list.Count ))
+			if (( index < 0 ) || (index > list.Count))
 			{
 				throw new ArgumentOutOfRangeException(nameof(index));
 			}
@@ -467,7 +467,7 @@ namespace RI.Framework.Collections
 			}
 
 			List<T> sorted = new List<T>(list);
-			sorted.Sort(new OrderComparison<T>(ascending, comparer));
+			sorted.Sort(new OrderComparison<T>(!ascending, comparer));
 			list.Clear();
 			list.AddRange(sorted);
 			return list.Count;
