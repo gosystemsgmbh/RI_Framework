@@ -119,6 +119,7 @@ namespace RI.Framework.Utilities.Text
 
 			Dictionary<string, List<string>> parameterDictionary = new Dictionary<string, List<string>>(parameterNameComparer);
 			List<string> literalList = new List<string>();
+			bool firstIsLiteral = false;
 
 			bool eos = false;
 			for (int i1 = 0; i1 < commandLine.Length; i1++)
@@ -130,37 +131,39 @@ namespace RI.Framework.Utilities.Text
 						i1++;
 						if (i1 < commandLine.Length)
 						{
+							bool hasValue = false;
 							string key = null;
+
 							if (commandLine[i1] == '\"')
 							{
 								i1++;
 								if (i1 < commandLine.Length)
 								{
-									key = CommandLine.ReadUntil(commandLine, ref i1, out eos, (v, p) => ( ( v[p] == '=' ) && ( v[p - 1] != '\"' ) && ( v[p - 2] != '\\' ) ));
+									key = CommandLine.ReadUntil(commandLine, ref i1, out eos, (v, p) => ( ( v[p] == '=' ) && ( v[p - 1] == '\"' ) && ( v[p - 2] != '\\' ) ) || (char.IsWhiteSpace(v[p]) && (v[p - 1] == '\"') && (v[p - 2] != '\\')));
+									if (!eos)
+									{
+										key = key.Substring(0, key.Length - 1);
+									}
 								}
 							}
 							else
 							{
 								key = CommandLine.ReadUntil(commandLine, ref i1, out eos, (v, p) => ( ( v[p] == '=' ) || ( char.IsWhiteSpace(v[p]) ) ));
+								key = key.Trim();
 							}
 
-							string parameterKeyToAdd = null;
-							string parameterValueToAdd = null;
-
-							if (eos || ( key == null ))
-							{
-								parameterKeyToAdd = key;
-								parameterValueToAdd = null;
-							}
-							else
+							if (commandLine[i1] == '=')
 							{
 								i1++;
-								if (i1 >= commandLine.Length)
-								{
-									parameterKeyToAdd = key;
-									parameterValueToAdd = null;
-								}
-								else
+								hasValue = true;
+							}
+
+							string parameterKeyToAdd = key;
+							string parameterValueToAdd = null;
+
+							if(hasValue && (!eos) || (key == null))
+							{
+								if (i1 < commandLine.Length)
 								{
 									string value = null;
 									if (commandLine[i1] == '\"')
@@ -174,24 +177,23 @@ namespace RI.Framework.Utilities.Text
 									else
 									{
 										value = CommandLine.ReadUntil(commandLine, ref i1, out eos, (v, p) => ( char.IsWhiteSpace(v[p]) ));
+										value = value.Trim();
 									}
 
-									parameterKeyToAdd = key;
 									parameterValueToAdd = value;
 								}
 							}
 
 							if (parameterKeyToAdd != null)
 							{
+								parameterKeyToAdd = parameterKeyToAdd.Unescape();
 								if (!parameterDictionary.ContainsKey(parameterKeyToAdd))
 								{
 									parameterDictionary.Add(parameterKeyToAdd, new List<string>());
 								}
 
-								if (parameterValueToAdd != null)
-								{
-									parameterDictionary[parameterKeyToAdd].Add(parameterValueToAdd);
-								}
+								parameterValueToAdd = parameterValueToAdd == null ? string.Empty : parameterValueToAdd.Unescape();
+								parameterDictionary[parameterKeyToAdd].Add(parameterValueToAdd);
 							}
 						}
 					}
@@ -201,7 +203,12 @@ namespace RI.Framework.Utilities.Text
 						if (i1 < commandLine.Length)
 						{
 							string literal = CommandLine.ReadUntil(commandLine, ref i1, out eos, (v, p) => ( ( v[p] == '\"' ) && ( v[p - 1] != '\\' ) ));
-							literalList.Add(literal);
+							literalList.Add(literal.Unescape());
+
+							if (parameterDictionary.Count == 0)
+							{
+								firstIsLiteral = true;
+							}
 						}
 					}
 					else
@@ -209,14 +216,19 @@ namespace RI.Framework.Utilities.Text
 						string literal = CommandLine.ReadUntil(commandLine, ref i1, out eos, (v, p) => ( char.IsWhiteSpace(v[p]) ));
 						if (!literal.IsEmpty())
 						{
-							literalList.Add(literal.Trim());
+							literalList.Add(literal.Unescape().Trim());
+
+							if (parameterDictionary.Count == 0)
+							{
+								firstIsLiteral = true;
+							}
 						}
 					}
 				}
 			}
 
 			string executable = null;
-			if (startsWithExecutable)
+			if (startsWithExecutable && firstIsLiteral && (literalList.Count > 0))
 			{
 				executable = literalList[0];
 				literalList.RemoveAt(0);

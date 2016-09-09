@@ -2234,7 +2234,7 @@
             </returns>
             <remarks>
                 <note type="implement">
-                    The default implementation uses <see cref="!:AssemblyExtensions.GetVersion" /> on <see cref="P:RI.Framework.Wpf.Services.WpfBootstrapper.ApplicationAssembly" />.
+                    The default implementation uses <see cref="M:RI.Framework.Utilities.Reflection.AssemblyExtensions.GetAssemblyVersion(System.Reflection.Assembly)" />, <see cref="M:RI.Framework.Utilities.Reflection.AssemblyExtensions.GetFileVersion(System.Reflection.Assembly)" />, and <see cref="M:RI.Framework.Utilities.Reflection.AssemblyExtensions.GetInformationalVersion(System.Reflection.Assembly)" /> on <see cref="P:RI.Framework.Wpf.Services.WpfBootstrapper.ApplicationAssembly" /> (in that order, whichever returns a valid version first).
                 </note>
             </remarks>
         </member>

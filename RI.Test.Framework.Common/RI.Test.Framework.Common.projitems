@@ -34,8 +34,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Test_DateTimeExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Test_StringExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Test_TimeSpanExtensions.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)Utilities\Text\" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Text\Test_CommandLine.cs" />
   </ItemGroup>
 </Project>
