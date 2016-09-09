@@ -422,9 +422,9 @@ namespace RI.Framework.Utilities.Text
 			{
 				foreach (KeyValuePair<string, List<string>> parameter in parameters)
 				{
-					List<string> values = parameter.Value.Where(x => x != null);
+					List<string> values = parameter.Value?.Where(x => x != null);
 
-					if (values.Count == 0)
+					if ((values == null) || (values.Count == 0))
 					{
 						if (commandLine.Length > 0)
 						{

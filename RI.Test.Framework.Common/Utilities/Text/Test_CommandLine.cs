@@ -685,6 +685,18 @@ namespace RI.Test.Framework.Utilities.Text
 
 			test = new CommandLine();
 
+			test.Executable = null;
+			if (test.ToString() != "")
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Executable = "";
+			if (test.ToString() != "")
+			{
+				throw new TestAssertionException();
+			}
+
 			test.Executable = "test.exe";
 			if (test.ToString() != "test.exe")
 			{
@@ -788,6 +800,74 @@ namespace RI.Test.Framework.Utilities.Text
 			//-----------------------
 			// Special parameter list
 			//-----------------------
+
+			test = new CommandLine();
+			test.Parameters.Add("n1", null);
+			if (test.ToString() != "-n1")
+			{
+				throw new TestAssertionException();
+			}
+
+			test = new CommandLine();
+			test.Parameters.Add("n1", new List<string>());
+			if (test.ToString() != "-n1")
+			{
+				throw new TestAssertionException();
+			}
+
+			test = new CommandLine();
+			test.Parameters.Add("n1", new List<string> { null });
+			if (test.ToString() != "-n1")
+			{
+				throw new TestAssertionException();
+			}
+
+			test = new CommandLine();
+			test.Parameters.Add("n1", new List<string> { "" });
+			if (test.ToString() != "-n1=\"\"")
+			{
+				throw new TestAssertionException();
+			}
+
+			test = new CommandLine();
+			test.Parameters.Add("n1", new List<string> { " " });
+			if (test.ToString() != "-n1=\" \"")
+			{
+				throw new TestAssertionException();
+			}
+
+			test = new CommandLine();
+			test.Parameters.Add("n1", null);
+			test.Parameters.Add("n2", null);
+			if (test.ToString() != "-n1 -n2")
+			{
+				throw new TestAssertionException();
+			}
+
+			//---------------------
+			// Special literal list
+			//---------------------
+
+			test = new CommandLine();
+			test.Literals.Add(null);
+			if (test.ToString() != "")
+			{
+				throw new TestAssertionException();
+			}
+
+			test = new CommandLine();
+			test.Literals.Add("");
+			if (test.ToString() != "\"\"")
+			{
+				throw new TestAssertionException();
+			}
+
+			test = new CommandLine();
+			test.Literals.Add(" ");
+			if (test.ToString() != "\" \"")
+			{
+				throw new TestAssertionException();
+			}
 		}
 
 		#endregion

@@ -1,5 +1,4 @@
 using System;
-using System.Globalization;
 using System.IO;
 using System.Text;
 
@@ -122,7 +121,7 @@ namespace RI.Framework.Utilities.Text
 		{
 			get
 			{
-				return ( this._indentLevel );
+				return this._indentLevel;
 			}
 			set
 			{
@@ -153,7 +152,7 @@ namespace RI.Framework.Utilities.Text
 		{
 			get
 			{
-				return ( this._indentString );
+				return this._indentString;
 			}
 			set
 			{
@@ -245,7 +244,7 @@ namespace RI.Framework.Utilities.Text
 			{
 				this.VerifyNotClosed();
 
-				return ( this.BaseWriter.Encoding );
+				return this.BaseWriter.Encoding;
 			}
 		}
 
@@ -256,7 +255,7 @@ namespace RI.Framework.Utilities.Text
 			{
 				this.VerifyNotClosed();
 
-				return ( this.BaseWriter.FormatProvider );
+				return this.BaseWriter.FormatProvider;
 			}
 		}
 
@@ -267,7 +266,7 @@ namespace RI.Framework.Utilities.Text
 			{
 				this.VerifyNotClosed();
 
-				return ( this.BaseWriter.NewLine );
+				return this.BaseWriter.NewLine;
 			}
 			set
 			{
@@ -406,7 +405,7 @@ namespace RI.Framework.Utilities.Text
 		{
 			this.VerifyNotClosed();
 
-			string str = string.Format(CultureInfo.InvariantCulture, format, arg0);
+			string str = string.Format(this.FormatProvider, format, arg0);
 
 			this.Write(str);
 		}
@@ -416,7 +415,7 @@ namespace RI.Framework.Utilities.Text
 		{
 			this.VerifyNotClosed();
 
-			string str = string.Format(CultureInfo.InvariantCulture, format, arg0, arg1);
+			string str = string.Format(this.FormatProvider, format, arg0, arg1);
 
 			this.Write(str);
 		}
@@ -426,7 +425,7 @@ namespace RI.Framework.Utilities.Text
 		{
 			this.VerifyNotClosed();
 
-			string str = string.Format(CultureInfo.InvariantCulture, format, arg0, arg1, arg2);
+			string str = string.Format(this.FormatProvider, format, arg0, arg1, arg2);
 
 			this.Write(str);
 		}
@@ -436,7 +435,7 @@ namespace RI.Framework.Utilities.Text
 		{
 			this.VerifyNotClosed();
 
-			string str = string.Format(CultureInfo.InvariantCulture, format, arg);
+			string str = string.Format(this.FormatProvider, format, arg);
 
 			this.Write(str);
 		}
@@ -634,7 +633,7 @@ namespace RI.Framework.Utilities.Text
 		{
 			this.VerifyNotClosed();
 
-			string str = string.Format(CultureInfo.InvariantCulture, format, arg0);
+			string str = string.Format(this.FormatProvider, format, arg0);
 
 			this.WriteLine(str);
 		}
@@ -644,7 +643,7 @@ namespace RI.Framework.Utilities.Text
 		{
 			this.VerifyNotClosed();
 
-			string str = string.Format(CultureInfo.InvariantCulture, format, arg0, arg1);
+			string str = string.Format(this.FormatProvider, format, arg0, arg1);
 
 			this.WriteLine(str);
 		}
@@ -654,7 +653,7 @@ namespace RI.Framework.Utilities.Text
 		{
 			this.VerifyNotClosed();
 
-			string str = string.Format(format, arg0, arg1, arg2);
+			string str = string.Format(this.FormatProvider, format, arg0, arg1, arg2);
 
 			this.WriteLine(str);
 		}
@@ -664,7 +663,7 @@ namespace RI.Framework.Utilities.Text
 		{
 			this.VerifyNotClosed();
 
-			string str = string.Format(CultureInfo.InvariantCulture, format, arg);
+			string str = string.Format(this.FormatProvider, format, arg);
 
 			this.WriteLine(str);
 		}
