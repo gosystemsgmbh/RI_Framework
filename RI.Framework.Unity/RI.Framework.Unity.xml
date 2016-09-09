@@ -10862,17 +10862,17 @@
                 Gets a GUID associated with an assembly.
             </summary>
             <param name="assembly"> The assembly. </param>
-            <param name="tryGuidAttribute"> Specifies whether <see cref="T:System.Runtime.InteropServices.GuidAttribute" /> is considered for determining the GUID of the assembly. </param>
+            <param name="ignoreGuidAttribute"> Specifies whether <see cref="T:System.Runtime.InteropServices.GuidAttribute" /> is ignored for determining the GUID of the assembly. </param>
             <param name="ignoreVersion"> Specifies whether the assemblies version should be ignored for determining the GUID of the assembly. </param>
             <returns>
                 The GUID of the assembly.
             </returns>
             <remarks>
                 <para>
-                    If <paramref name="tryGuidAttribute" /> is true and the assembly has a <see cref="T:System.Runtime.InteropServices.GuidAttribute" />, the GUID from that attribute is returned.
+                    If <paramref name="ignoreGuidAttribute" /> is false and the assembly has a <see cref="T:System.Runtime.InteropServices.GuidAttribute" />, the GUID from that attribute is returned.
                 </para>
                 <para>
-                    If <paramref name="tryGuidAttribute" /> is false or <see cref="T:System.Runtime.InteropServices.GuidAttribute" /> is not defined, the following is used to calculate a GUID:
+                    If <paramref name="ignoreGuidAttribute" /> is true or <see cref="T:System.Runtime.InteropServices.GuidAttribute" /> is not defined, the following is used to calculate a GUID:
                     <see cref="P:System.Reflection.AssemblyName.Name" /> when <paramref name="ignoreVersion" /> is true, <see cref="P:System.Reflection.AssemblyName.FullName" /> otherwise.
                 </para>
             </remarks>
@@ -10908,17 +10908,47 @@
             </remarks>
             <exception cref="T:System.ArgumentNullException"> <paramref name="assembly" /> is null. </exception>
         </member>
-        <member name="M:RI.Framework.Utilities.Reflection.AssemblyExtensions.GetVersion(System.Reflection.Assembly)">
+        <member name="M:RI.Framework.Utilities.Reflection.AssemblyExtensions.GetAssemblyVersion(System.Reflection.Assembly)">
             <summary>
-                Gets the version of an assembly.
+                Gets the assembly version of an assembly.
             </summary>
             <param name="assembly"> The assembly. </param>
             <returns>
-                The version of the assembly or null if the version could not be determined.
+                The assembly version of the assembly or null if the version could not be determined.
             </returns>
             <remarks>
                 <para>
-                    One of the assembly versioning attributes is used in the following order (the first found is used) to determine the version of an assembly: <see cref="T:System.Reflection.AssemblyVersionAttribute" />, <see cref="T:System.Reflection.AssemblyFileVersionAttribute" />, <see cref="T:System.Reflection.AssemblyInformationalVersionAttribute" />.
+                    The <see cref="T:System.Reflection.AssemblyVersionAttribute" /> is used to determine the assembly version of an assembly.
+                </para>
+            </remarks>
+            <exception cref="T:System.ArgumentNullException"> <paramref name="assembly" /> is null. </exception>
+        </member>
+        <member name="M:RI.Framework.Utilities.Reflection.AssemblyExtensions.GetFileVersion(System.Reflection.Assembly)">
+            <summary>
+                Gets the file version of an assembly.
+            </summary>
+            <param name="assembly"> The assembly. </param>
+            <returns>
+                The file version of the assembly or null if the version could not be determined.
+            </returns>
+            <remarks>
+                <para>
+                    The <see cref="T:System.Reflection.AssemblyFileVersionAttribute" /> is used to determine the file version of an assembly.
+                </para>
+            </remarks>
+            <exception cref="T:System.ArgumentNullException"> <paramref name="assembly" /> is null. </exception>
+        </member>
+        <member name="M:RI.Framework.Utilities.Reflection.AssemblyExtensions.GetInformationalVersion(System.Reflection.Assembly)">
+            <summary>
+                Gets the informational version of an assembly.
+            </summary>
+            <param name="assembly"> The assembly. </param>
+            <returns>
+                The informational version of the assembly or null if the version could not be determined.
+            </returns>
+            <remarks>
+                <para>
+                    The <see cref="T:System.Reflection.AssemblyInformationalVersionAttribute" /> is used to determine the informational version of an assembly.
                 </para>
             </remarks>
             <exception cref="T:System.ArgumentNullException"> <paramref name="assembly" /> is null. </exception>

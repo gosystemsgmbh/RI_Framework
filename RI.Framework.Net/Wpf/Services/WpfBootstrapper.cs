@@ -684,12 +684,12 @@ namespace RI.Framework.Wpf.Services
 		/// </returns>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation uses <see cref="AssemblyExtensions.GetVersion" /> on <see cref="ApplicationAssembly" />.
+		///         The default implementation uses <see cref="AssemblyExtensions.GetAssemblyVersion" />, <see cref="AssemblyExtensions.GetFileVersion" />, and <see cref="AssemblyExtensions.GetInformationalVersion" /> on <see cref="ApplicationAssembly" /> (in that order, whichever returns a valid version first).
 		///     </note>
 		/// </remarks>
 		protected virtual Version DetermineApplicationVersion ()
 		{
-			return this.ApplicationAssembly.GetVersion();
+			return (this.ApplicationAssembly.GetAssemblyVersion() ?? this.ApplicationAssembly.GetFileVersion()) ?? this.ApplicationAssembly.GetInformationalVersion();
 		}
 
 		/// <summary>

@@ -150,22 +150,22 @@ namespace RI.Framework.Utilities.Reflection
 		///     Gets a GUID associated with an assembly.
 		/// </summary>
 		/// <param name="assembly"> The assembly. </param>
-		/// <param name="tryGuidAttribute"> Specifies whether <see cref="GuidAttribute" /> is considered for determining the GUID of the assembly. </param>
+		/// <param name="ignoreGuidAttribute"> Specifies whether <see cref="GuidAttribute" /> is ignored for determining the GUID of the assembly. </param>
 		/// <param name="ignoreVersion"> Specifies whether the assemblies version should be ignored for determining the GUID of the assembly. </param>
 		/// <returns>
 		///     The GUID of the assembly.
 		/// </returns>
 		/// <remarks>
 		///     <para>
-		///         If <paramref name="tryGuidAttribute" /> is true and the assembly has a <see cref="GuidAttribute" />, the GUID from that attribute is returned.
+		///         If <paramref name="ignoreGuidAttribute" /> is false and the assembly has a <see cref="GuidAttribute" />, the GUID from that attribute is returned.
 		///     </para>
 		///     <para>
-		///         If <paramref name="tryGuidAttribute" /> is false or <see cref="GuidAttribute" /> is not defined, the following is used to calculate a GUID:
+		///         If <paramref name="ignoreGuidAttribute" /> is true or <see cref="GuidAttribute" /> is not defined, the following is used to calculate a GUID:
 		///         <see cref="AssemblyName.Name" /> when <paramref name="ignoreVersion" /> is true, <see cref="AssemblyName.FullName" /> otherwise.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="assembly" /> is null. </exception>
-		public static Guid GetGuid (this Assembly assembly, bool tryGuidAttribute, bool ignoreVersion)
+		public static Guid GetGuid (this Assembly assembly, bool ignoreGuidAttribute, bool ignoreVersion)
 		{
 			if (assembly == null)
 			{
@@ -174,7 +174,7 @@ namespace RI.Framework.Utilities.Reflection
 
 			object[] attributes = assembly.GetCustomAttributes(typeof(GuidAttribute), true);
 
-			if (( attributes.Length > 0 ) && tryGuidAttribute)
+			if (( attributes.Length > 0 ) && (!ignoreGuidAttribute))
 			{
 				Guid? guidCandidate = ( (GuidAttribute)attributes[0] ).Value.ToGuid();
 				if (guidCandidate.HasValue)
@@ -260,45 +260,86 @@ namespace RI.Framework.Utilities.Reflection
 		}
 
 		/// <summary>
-		///     Gets the version of an assembly.
+		///     Gets the assembly version of an assembly.
 		/// </summary>
 		/// <param name="assembly"> The assembly. </param>
 		/// <returns>
-		///     The version of the assembly or null if the version could not be determined.
+		///     The assembly version of the assembly or null if the version could not be determined.
 		/// </returns>
 		/// <remarks>
 		///     <para>
-		///         One of the assembly versioning attributes is used in the following order (the first found is used) to determine the version of an assembly: <see cref="AssemblyVersionAttribute" />, <see cref="AssemblyFileVersionAttribute" />, <see cref="AssemblyInformationalVersionAttribute" />.
+		///         The <see cref="AssemblyVersionAttribute" /> is used to determine the assembly version of an assembly.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="assembly" /> is null. </exception>
-		public static Version GetVersion (this Assembly assembly)
+		public static Version GetAssemblyVersion(this Assembly assembly)
 		{
 			if (assembly == null)
 			{
-				throw ( new ArgumentNullException(nameof(assembly)) );
+				throw new ArgumentNullException(nameof(assembly));
 			}
 
-			object[] attributes1 = assembly.GetCustomAttributes(typeof(AssemblyVersionAttribute), true);
-			object[] attributes2 = assembly.GetCustomAttributes(typeof(AssemblyFileVersionAttribute), true);
-			object[] attributes3 = assembly.GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute), true);
+			return assembly.GetName().Version;
+		}
 
-			if (attributes1.Length > 0)
+		/// <summary>
+		///     Gets the file version of an assembly.
+		/// </summary>
+		/// <param name="assembly"> The assembly. </param>
+		/// <returns>
+		///     The file version of the assembly or null if the version could not be determined.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         The <see cref="AssemblyFileVersionAttribute" /> is used to determine the file version of an assembly.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="assembly" /> is null. </exception>
+		public static Version GetFileVersion(this Assembly assembly)
+		{
+			if (assembly == null)
 			{
-				return new Version(( (AssemblyVersionAttribute)attributes1[0] ).Version);
+				throw new ArgumentNullException(nameof(assembly));
 			}
 
-			if (attributes2.Length > 0)
+			object[] attributes = assembly.GetCustomAttributes(typeof(AssemblyFileVersionAttribute), true);
+
+			if (attributes.Length == 0)
 			{
-				return new Version(( (AssemblyFileVersionAttribute)attributes2[0] ).Version);
+				return null;
 			}
 
-			if (attributes3.Length > 0)
+			return ((AssemblyFileVersionAttribute)attributes[0]).Version.ToVersion();
+		}
+
+		/// <summary>
+		///     Gets the informational version of an assembly.
+		/// </summary>
+		/// <param name="assembly"> The assembly. </param>
+		/// <returns>
+		///     The informational version of the assembly or null if the version could not be determined.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         The <see cref="AssemblyInformationalVersionAttribute" /> is used to determine the informational version of an assembly.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="assembly" /> is null. </exception>
+		public static Version GetInformationalVersion(this Assembly assembly)
+		{
+			if (assembly == null)
 			{
-				return new Version(( (AssemblyInformationalVersionAttribute)attributes3[0] ).InformationalVersion);
+				throw new ArgumentNullException(nameof(assembly));
 			}
 
-			return null;
+			object[] attributes = assembly.GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute), true);
+
+			if (attributes.Length == 0)
+			{
+				return null;
+			}
+
+			return ((AssemblyInformationalVersionAttribute)attributes[0]).InformationalVersion.ToVersion();
 		}
 
 		#endregion
