@@ -1,10 +1,6 @@
 ﻿using RI.Framework.Utilities.Comparison;
 
-#if PLATFORM_NET
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-#endif
-#if PLATFORM_UNITY
-#endif
 
 
 

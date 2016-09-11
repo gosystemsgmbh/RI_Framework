@@ -41,7 +41,6 @@
     <Compile Include="Cases\Collections\Specialized\Test_PrefabPool.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestClassAttribute.cs" />
-    <Compile Include="TestContext.cs" />
     <Compile Include="TestMethodAttribute.cs" />
     <Compile Include="TestModule.cs" />
     <Compile Include="TestRunner.cs" />

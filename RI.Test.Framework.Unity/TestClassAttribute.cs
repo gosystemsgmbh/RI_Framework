@@ -3,7 +3,7 @@
 
 
 
-namespace RI.Test.Framework
+namespace Microsoft.VisualStudio.TestTools.UnitTesting
 {
 	[AttributeUsage(AttributeTargets.Class)]
 	public sealed class TestClassAttribute : Attribute

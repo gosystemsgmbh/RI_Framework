@@ -14,6 +14,9 @@ namespace RI.Framework.Utilities.Text
 	///     <para>
 	///         Auto-indentation means that each line written to the encapsulated <see cref="TextWriter" /> starts with a defined indentation.
 	///     </para>
+	/// <note type="important">
+	/// <see cref="IndentedTextWriter"/> only works reliable with new line strings of LF or CRLF (see <see cref="TextWriter.NewLine"/>). 
+	/// </note>
 	/// </remarks>
 	/// TODO: Example
 	public sealed class IndentedTextWriter : TextWriter
@@ -39,7 +42,7 @@ namespace RI.Framework.Utilities.Text
 			this.IndentLevel = 0;
 			this.IndentString = string.Empty;
 
-			this.IndentPending = false;
+			this.IndentPending = true;
 
 			this.DoNotOwnWriter = doNotOwnWriter;
 		}
@@ -230,6 +233,25 @@ namespace RI.Framework.Utilities.Text
 			this.IndentPending = false;
 		}
 
+		private void WriteLineIndent()
+		{
+			if (this.IndentPending && this.IndentEmptyLines)
+			{
+				for (int i1 = 0; i1 < this.IndentLevel; i1++)
+				{
+					this.BaseWriter.Write(this.IndentString);
+				}
+			}
+
+			this.IndentPending = false;
+		}
+
+		public void Reset ()
+		{
+			this.IndentLevel = 0;
+			this.IndentPending = true;
+		}
+
 		#endregion
 
 
@@ -305,12 +327,20 @@ namespace RI.Framework.Utilities.Text
 		{
 			this.VerifyNotClosed();
 
-			this.WriteIndent();
-			this.BaseWriter.Write(value);
-
-			if (value == '\n')
+			if (value == '\r')
 			{
-				this.IndentPending = true;
+				return;
+			}
+
+			if ((value == '\n') || (value == this.NewLine[0]))
+			{
+				this.WriteLine();
+			}
+			else
+			{
+				this.WriteIndent();
+
+				this.BaseWriter.Write(value);
 			}
 		}
 
@@ -321,6 +351,8 @@ namespace RI.Framework.Utilities.Text
 			{
 				throw ( new ArgumentNullException(nameof(buffer)) );
 			}
+
+			this.VerifyNotClosed();
 
 			foreach (char chr in buffer)
 			{
@@ -345,6 +377,8 @@ namespace RI.Framework.Utilities.Text
 			{
 				throw ( new ArgumentOutOfRangeException(nameof(count)) );
 			}
+
+			this.VerifyNotClosed();
 
 			for (int i1 = 0; i1 < count; i1++)
 			{
@@ -396,8 +430,10 @@ namespace RI.Framework.Utilities.Text
 		public override void Write (object value)
 		{
 			this.VerifyNotClosed();
-			this.WriteIndent();
-			this.Write(this.CreateObjectString(value));
+
+			string str = this.CreateObjectString(value);
+
+			this.Write(str);
 		}
 
 		/// <inheritdoc />
@@ -445,24 +481,14 @@ namespace RI.Framework.Utilities.Text
 		{
 			if (value == null)
 			{
-				throw ( new ArgumentNullException(nameof(value)) );
+				throw (new ArgumentNullException(nameof(value)));
 			}
 
 			this.VerifyNotClosed();
 
-			string[] lines = value.SplitLines(StringSplitOptions.None);
-
-			for (int i1 = 0; i1 < lines.Length; i1++)
+			for (int i1 = 0; i1 < value.Length; i1++)
 			{
-				if (i1 >= ( lines.Length - 1 ))
-				{
-					this.WriteIndent();
-					this.BaseWriter.Write(lines[i1]);
-				}
-				else
-				{
-					this.WriteLine(lines[i1]);
-				}
+				this.Write(value[i1]);
 			}
 		}
 
@@ -489,12 +515,10 @@ namespace RI.Framework.Utilities.Text
 		{
 			this.VerifyNotClosed();
 
-			if (this.IndentEmptyLines)
-			{
-				this.WriteIndent();
-			}
+			this.WriteLineIndent();
 
 			this.BaseWriter.WriteLine();
+
 			this.IndentPending = true;
 		}
 
@@ -512,24 +536,9 @@ namespace RI.Framework.Utilities.Text
 		{
 			this.VerifyNotClosed();
 
-			this.WriteIndent();
-			this.BaseWriter.WriteLine(value);
+			this.Write(value);
 
-			if (value == '\n')
-			{
-				this.BaseWriter.Write(value);
-
-				this.IndentPending = true;
-				this.WriteIndent();
-
-				this.BaseWriter.WriteLine();
-			}
-			else
-			{
-				this.BaseWriter.WriteLine(value);
-			}
-
-			this.IndentPending = true;
+			this.WriteLine();
 		}
 
 		/// <inheritdoc />
@@ -540,9 +549,11 @@ namespace RI.Framework.Utilities.Text
 				throw ( new ArgumentNullException(nameof(buffer)) );
 			}
 
-			foreach (char chr in buffer)
+			this.VerifyNotClosed();
+
+			for (int i1 = 0; i1 < buffer.Length; i1++)
 			{
-				this.Write(chr);
+				this.Write(buffer[i1]);
 			}
 
 			this.WriteLine();
@@ -565,6 +576,8 @@ namespace RI.Framework.Utilities.Text
 			{
 				throw ( new ArgumentOutOfRangeException(nameof(count)) );
 			}
+
+			this.VerifyNotClosed();
 
 			for (int i1 = 0; i1 < count; i1++)
 			{
@@ -623,9 +636,10 @@ namespace RI.Framework.Utilities.Text
 		public override void WriteLine (object value)
 		{
 			this.VerifyNotClosed();
-			this.WriteIndent();
-			this.WriteLine(this.CreateObjectString(value));
-			this.IndentPending = true;
+
+			string str = this.CreateObjectString(value);
+
+			this.WriteLine(str);
 		}
 
 		/// <inheritdoc />
@@ -678,26 +692,12 @@ namespace RI.Framework.Utilities.Text
 
 			this.VerifyNotClosed();
 
-			string[] lines = value.SplitLines(StringSplitOptions.None);
-
-			for (int i1 = 0; i1 < lines.Length; i1++)
+			for (int i1 = 0; i1 < value.Length; i1++)
 			{
-				if (i1 >= ( lines.Length - 1 ))
-				{
-					if (this.IndentEmptyLines || ( lines[i1].Length > 0 ))
-					{
-						this.WriteIndent();
-					}
-
-					this.BaseWriter.WriteLine(lines[i1]);
-
-					this.IndentPending = true;
-				}
-				else
-				{
-					this.WriteLine(lines[i1]);
-				}
+				this.Write(value[i1]);
 			}
+
+			this.WriteLine();
 		}
 
 		/// <inheritdoc />

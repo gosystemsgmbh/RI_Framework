@@ -12220,6 +12220,9 @@
                 <para>
                     Auto-indentation means that each line written to the encapsulated <see cref="T:System.IO.TextWriter" /> starts with a defined indentation.
                 </para>
+            <note type="important">
+            <see cref="T:RI.Framework.Utilities.Text.IndentedTextWriter"/> only works reliable with new line strings of LF or CRLF (see <see cref="P:System.IO.TextWriter.NewLine"/>). 
+            </note>
             </remarks>
             TODO: Example
         </member>
