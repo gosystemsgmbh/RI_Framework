@@ -1,8 +1,8 @@
 ﻿using System;
 
-using RI.Framework.Utilities;
-
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+using RI.Framework.Utilities;
 
 
 

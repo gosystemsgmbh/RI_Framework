@@ -1,6 +1,6 @@
-﻿using RI.Framework.Utilities.Comparison;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using RI.Framework.Utilities.Comparison;
 
 
 

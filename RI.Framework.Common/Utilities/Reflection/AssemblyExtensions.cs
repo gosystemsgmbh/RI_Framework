@@ -16,6 +16,29 @@ namespace RI.Framework.Utilities.Reflection
 		#region Static Methods
 
 		/// <summary>
+		///     Gets the assembly version of an assembly.
+		/// </summary>
+		/// <param name="assembly"> The assembly. </param>
+		/// <returns>
+		///     The assembly version of the assembly or null if the version could not be determined.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         The <see cref="AssemblyVersionAttribute" /> is used to determine the assembly version of an assembly.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="assembly" /> is null. </exception>
+		public static Version GetAssemblyVersion (this Assembly assembly)
+		{
+			if (assembly == null)
+			{
+				throw new ArgumentNullException(nameof(assembly));
+			}
+
+			return assembly.GetName().Version;
+		}
+
+		/// <summary>
 		///     Gets the company of an assembly.
 		/// </summary>
 		/// <param name="assembly"> The assembly. </param>
@@ -147,6 +170,36 @@ namespace RI.Framework.Utilities.Reflection
 		}
 
 		/// <summary>
+		///     Gets the file version of an assembly.
+		/// </summary>
+		/// <param name="assembly"> The assembly. </param>
+		/// <returns>
+		///     The file version of the assembly or null if the version could not be determined.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         The <see cref="AssemblyFileVersionAttribute" /> is used to determine the file version of an assembly.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="assembly" /> is null. </exception>
+		public static Version GetFileVersion (this Assembly assembly)
+		{
+			if (assembly == null)
+			{
+				throw new ArgumentNullException(nameof(assembly));
+			}
+
+			object[] attributes = assembly.GetCustomAttributes(typeof(AssemblyFileVersionAttribute), true);
+
+			if (attributes.Length == 0)
+			{
+				return null;
+			}
+
+			return ( (AssemblyFileVersionAttribute)attributes[0] ).Version.ToVersion();
+		}
+
+		/// <summary>
 		///     Gets a GUID associated with an assembly.
 		/// </summary>
 		/// <param name="assembly"> The assembly. </param>
@@ -174,7 +227,7 @@ namespace RI.Framework.Utilities.Reflection
 
 			object[] attributes = assembly.GetCustomAttributes(typeof(GuidAttribute), true);
 
-			if (( attributes.Length > 0 ) && (!ignoreGuidAttribute))
+			if (( attributes.Length > 0 ) && ( !ignoreGuidAttribute ))
 			{
 				Guid? guidCandidate = ( (GuidAttribute)attributes[0] ).Value.ToGuid();
 				if (guidCandidate.HasValue)
@@ -197,6 +250,36 @@ namespace RI.Framework.Utilities.Reflection
 
 			Guid guid = new Guid(guidBytes);
 			return guid;
+		}
+
+		/// <summary>
+		///     Gets the informational version of an assembly.
+		/// </summary>
+		/// <param name="assembly"> The assembly. </param>
+		/// <returns>
+		///     The informational version of the assembly or null if the version could not be determined.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         The <see cref="AssemblyInformationalVersionAttribute" /> is used to determine the informational version of an assembly.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="assembly" /> is null. </exception>
+		public static Version GetInformationalVersion (this Assembly assembly)
+		{
+			if (assembly == null)
+			{
+				throw new ArgumentNullException(nameof(assembly));
+			}
+
+			object[] attributes = assembly.GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute), true);
+
+			if (attributes.Length == 0)
+			{
+				return null;
+			}
+
+			return ( (AssemblyInformationalVersionAttribute)attributes[0] ).InformationalVersion.ToVersion();
 		}
 
 		/// <summary>
@@ -257,89 +340,6 @@ namespace RI.Framework.Utilities.Reflection
 			}
 
 			return ( (AssemblyTitleAttribute)attributes[0] ).Title;
-		}
-
-		/// <summary>
-		///     Gets the assembly version of an assembly.
-		/// </summary>
-		/// <param name="assembly"> The assembly. </param>
-		/// <returns>
-		///     The assembly version of the assembly or null if the version could not be determined.
-		/// </returns>
-		/// <remarks>
-		///     <para>
-		///         The <see cref="AssemblyVersionAttribute" /> is used to determine the assembly version of an assembly.
-		///     </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="assembly" /> is null. </exception>
-		public static Version GetAssemblyVersion(this Assembly assembly)
-		{
-			if (assembly == null)
-			{
-				throw new ArgumentNullException(nameof(assembly));
-			}
-
-			return assembly.GetName().Version;
-		}
-
-		/// <summary>
-		///     Gets the file version of an assembly.
-		/// </summary>
-		/// <param name="assembly"> The assembly. </param>
-		/// <returns>
-		///     The file version of the assembly or null if the version could not be determined.
-		/// </returns>
-		/// <remarks>
-		///     <para>
-		///         The <see cref="AssemblyFileVersionAttribute" /> is used to determine the file version of an assembly.
-		///     </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="assembly" /> is null. </exception>
-		public static Version GetFileVersion(this Assembly assembly)
-		{
-			if (assembly == null)
-			{
-				throw new ArgumentNullException(nameof(assembly));
-			}
-
-			object[] attributes = assembly.GetCustomAttributes(typeof(AssemblyFileVersionAttribute), true);
-
-			if (attributes.Length == 0)
-			{
-				return null;
-			}
-
-			return ((AssemblyFileVersionAttribute)attributes[0]).Version.ToVersion();
-		}
-
-		/// <summary>
-		///     Gets the informational version of an assembly.
-		/// </summary>
-		/// <param name="assembly"> The assembly. </param>
-		/// <returns>
-		///     The informational version of the assembly or null if the version could not be determined.
-		/// </returns>
-		/// <remarks>
-		///     <para>
-		///         The <see cref="AssemblyInformationalVersionAttribute" /> is used to determine the informational version of an assembly.
-		///     </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="assembly" /> is null. </exception>
-		public static Version GetInformationalVersion(this Assembly assembly)
-		{
-			if (assembly == null)
-			{
-				throw new ArgumentNullException(nameof(assembly));
-			}
-
-			object[] attributes = assembly.GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute), true);
-
-			if (attributes.Length == 0)
-			{
-				return null;
-			}
-
-			return ((AssemblyInformationalVersionAttribute)attributes[0]).InformationalVersion.ToVersion();
 		}
 
 		#endregion

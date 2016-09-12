@@ -139,7 +139,7 @@ namespace RI.Framework.Utilities.Text
 								i1++;
 								if (i1 < commandLine.Length)
 								{
-									key = CommandLine.ReadUntil(commandLine, ref i1, out eos, (v, p) => ( ( v[p] == '=' ) && ( v[p - 1] == '\"' ) && ( v[p - 2] != '\\' ) ) || (char.IsWhiteSpace(v[p]) && (v[p - 1] == '\"') && (v[p - 2] != '\\')));
+									key = CommandLine.ReadUntil(commandLine, ref i1, out eos, (v, p) => ( ( v[p] == '=' ) && ( v[p - 1] == '\"' ) && ( v[p - 2] != '\\' ) ) || ( char.IsWhiteSpace(v[p]) && ( v[p - 1] == '\"' ) && ( v[p - 2] != '\\' ) ));
 									if (!eos)
 									{
 										key = key.Substring(0, key.Length - 1);
@@ -161,7 +161,7 @@ namespace RI.Framework.Utilities.Text
 							string parameterKeyToAdd = key;
 							string parameterValueToAdd = null;
 
-							if(hasValue && (!eos) || (key == null))
+							if (hasValue && ( !eos ) || ( key == null ))
 							{
 								if (i1 < commandLine.Length)
 								{
@@ -228,7 +228,7 @@ namespace RI.Framework.Utilities.Text
 			}
 
 			string executable = null;
-			if (startsWithExecutable && firstIsLiteral && (literalList.Count > 0))
+			if (startsWithExecutable && firstIsLiteral && ( literalList.Count > 0 ))
 			{
 				executable = literalList[0];
 				literalList.RemoveAt(0);
@@ -424,7 +424,7 @@ namespace RI.Framework.Utilities.Text
 				{
 					List<string> values = parameter.Value?.Where(x => x != null);
 
-					if ((values == null) || (values.Count == 0))
+					if (( values == null ) || ( values.Count == 0 ))
 					{
 						if (commandLine.Length > 0)
 						{

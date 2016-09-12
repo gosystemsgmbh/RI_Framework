@@ -106,7 +106,7 @@ namespace RI.Framework.Collections
 				throw new ArgumentNullException(nameof(list));
 			}
 
-			if (( index < 0 ) || (index > list.Count))
+			if (( index < 0 ) || ( index > list.Count ))
 			{
 				throw new ArgumentOutOfRangeException(nameof(index));
 			}

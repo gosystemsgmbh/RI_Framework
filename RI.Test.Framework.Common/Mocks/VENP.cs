@@ -107,6 +107,11 @@ namespace RI.Test.Framework.Mocks
 			return this.Value.GetHashCode();
 		}
 
+		public override string ToString ()
+		{
+			return this.Value;
+		}
+
 		#endregion
 
 

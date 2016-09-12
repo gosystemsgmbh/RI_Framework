@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Reflection;
-using System.Collections.Generic;
-
-using RI.Framework.Utilities.Reflection;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+using RI.Framework.Utilities.Reflection;
 
 
 
@@ -17,7 +16,7 @@ namespace RI.Test.Framework.Utilities.Reflection
 		#region Instance Methods
 
 		[TestMethod]
-		public void GetCompany_Test()
+		public void GetCompany_Test ()
 		{
 			Assembly assembly = Assembly.GetExecutingAssembly();
 
@@ -28,7 +27,7 @@ namespace RI.Test.Framework.Utilities.Reflection
 		}
 
 		[TestMethod]
-		public void GetCopyright_Test()
+		public void GetCopyright_Test ()
 		{
 			Assembly assembly = Assembly.GetExecutingAssembly();
 
@@ -39,7 +38,7 @@ namespace RI.Test.Framework.Utilities.Reflection
 		}
 
 		[TestMethod]
-		public void GetDescription_Test()
+		public void GetDescription_Test ()
 		{
 			Assembly assembly = Assembly.GetExecutingAssembly();
 
@@ -50,7 +49,7 @@ namespace RI.Test.Framework.Utilities.Reflection
 		}
 
 		[TestMethod]
-		public void GetFile_Test()
+		public void GetFile_Test ()
 		{
 			Assembly assembly = Assembly.GetExecutingAssembly();
 
@@ -61,45 +60,7 @@ namespace RI.Test.Framework.Utilities.Reflection
 		}
 
 		[TestMethod]
-		public void GetProduct_Test()
-		{
-			Assembly assembly = Assembly.GetExecutingAssembly();
-
-			if (assembly.GetProduct() != "Utility Framework")
-			{
-				throw new TestAssertionException();
-			}
-		}
-
-		[TestMethod]
-		public void GetTitle_Test()
-		{
-			Assembly assembly = Assembly.GetExecutingAssembly();
-
-			if (!assembly.GetTitle().StartsWith("RI.Test.Framework."))
-			{
-				throw new TestAssertionException();
-			}
-		}
-
-		[TestMethod]
-		public void GetVersion_Test()
-		{
-			Assembly assembly = Assembly.GetExecutingAssembly();
-
-			if (assembly.GetAssemblyVersion() != assembly.GetFileVersion())
-			{
-				throw new TestAssertionException();
-			}
-
-			if (assembly.GetAssemblyVersion() != assembly.GetInformationalVersion())
-			{
-				throw new TestAssertionException();
-			}
-		}
-
-		[TestMethod]
-		public void GetGuid_Test()
+		public void GetGuid_Test ()
 		{
 			Assembly assembly = Assembly.GetExecutingAssembly();
 			Guid testGuid = new Guid("92AD84FB-E1BE-4908-9D1E-77D02DFF5A5B");
@@ -125,6 +86,44 @@ namespace RI.Test.Framework.Utilities.Reflection
 			}
 
 			if (assembly.GetGuid(true, true) == testGuid)
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void GetProduct_Test ()
+		{
+			Assembly assembly = Assembly.GetExecutingAssembly();
+
+			if (assembly.GetProduct() != "Utility Framework")
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void GetTitle_Test ()
+		{
+			Assembly assembly = Assembly.GetExecutingAssembly();
+
+			if (!assembly.GetTitle().StartsWith("RI.Test.Framework."))
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void GetVersion_Test ()
+		{
+			Assembly assembly = Assembly.GetExecutingAssembly();
+
+			if (assembly.GetAssemblyVersion() != assembly.GetFileVersion())
+			{
+				throw new TestAssertionException();
+			}
+
+			if (assembly.GetAssemblyVersion() != assembly.GetInformationalVersion())
 			{
 				throw new TestAssertionException();
 			}

@@ -501,7 +501,7 @@ namespace RI.Framework.Utilities
 				throw new ArgumentNullException(nameof(str));
 			}
 
-			str = str.Replace("\r", string.Empty);
+			str = str.Replace("\r\n", "\n");
 			str = str.Replace("\n", Environment.NewLine);
 			return str;
 		}
@@ -814,7 +814,7 @@ namespace RI.Framework.Utilities
 				throw new ArgumentNullException(nameof(str));
 			}
 
-			return str.Replace("\r", string.Empty).Split(options, '\n');
+			return str.Replace("\r\n", "\n").Split(options, '\n');
 		}
 
 		/// <summary>
@@ -1947,7 +1947,8 @@ namespace RI.Framework.Utilities
 					}
 					else
 					{
-						sb.Append(current);
+						sb.Append(next);
+						i1++;
 					}
 				}
 				else

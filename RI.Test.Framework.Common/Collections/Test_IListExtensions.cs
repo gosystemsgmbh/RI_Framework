@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 using RI.Framework.Collections;
 using RI.Framework.Collections.Comparison;
 using RI.Framework.Utilities.Comparison;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 
 

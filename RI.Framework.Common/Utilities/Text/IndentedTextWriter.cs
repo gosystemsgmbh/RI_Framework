@@ -14,9 +14,9 @@ namespace RI.Framework.Utilities.Text
 	///     <para>
 	///         Auto-indentation means that each line written to the encapsulated <see cref="TextWriter" /> starts with a defined indentation.
 	///     </para>
-	/// <note type="important">
-	/// <see cref="IndentedTextWriter"/> only works reliable with new line strings of LF or CRLF (see <see cref="TextWriter.NewLine"/>). 
-	/// </note>
+	///     <note type="important">
+	///         <see cref="IndentedTextWriter" /> only works reliable with new line strings of LF or CRLF (see <see cref="TextWriter.NewLine" />).
+	///     </note>
 	/// </remarks>
 	/// TODO: Example
 	public sealed class IndentedTextWriter : TextWriter
@@ -233,7 +233,7 @@ namespace RI.Framework.Utilities.Text
 			this.IndentPending = false;
 		}
 
-		private void WriteLineIndent()
+		private void WriteLineIndent ()
 		{
 			if (this.IndentPending && this.IndentEmptyLines)
 			{
@@ -244,12 +244,6 @@ namespace RI.Framework.Utilities.Text
 			}
 
 			this.IndentPending = false;
-		}
-
-		public void Reset ()
-		{
-			this.IndentLevel = 0;
-			this.IndentPending = true;
 		}
 
 		#endregion
@@ -332,7 +326,7 @@ namespace RI.Framework.Utilities.Text
 				return;
 			}
 
-			if ((value == '\n') || (value == this.NewLine[0]))
+			if (( value == '\n' ) || ( value == this.NewLine[0] ))
 			{
 				this.WriteLine();
 			}
@@ -481,7 +475,7 @@ namespace RI.Framework.Utilities.Text
 		{
 			if (value == null)
 			{
-				throw (new ArgumentNullException(nameof(value)));
+				throw ( new ArgumentNullException(nameof(value)) );
 			}
 
 			this.VerifyNotClosed();

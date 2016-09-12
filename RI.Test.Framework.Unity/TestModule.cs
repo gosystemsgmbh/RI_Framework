@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
 
-using RI.Framework.Collections;
-
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+using RI.Framework.Collections;
 
 
 

@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-
-using RI.Framework.Utilities.Text;
+﻿using System.Collections.Generic;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+using RI.Framework.Utilities.Text;
 
 
 
@@ -16,7 +15,225 @@ namespace RI.Test.Framework.Utilities.Text
 		#region Instance Methods
 
 		[TestMethod]
-		public void Parse_Test()
+		public void Build_Test ()
+		{
+			//--------
+			// Nothing
+			//--------
+
+			CommandLine test = new CommandLine();
+
+			if (test.ToString() != "")
+			{
+				throw new TestAssertionException();
+			}
+
+			//----------------
+			// Executable only
+			//----------------
+
+			test = new CommandLine();
+
+			test.Executable = null;
+			if (test.ToString() != "")
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Executable = "";
+			if (test.ToString() != "")
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Executable = "test.exe";
+			if (test.ToString() != "test.exe")
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Executable = "test exe";
+			if (test.ToString() != "\"test exe\"")
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Executable = "test\"exe";
+			if (test.ToString() != "\"test\\\"exe\"")
+			{
+				throw new TestAssertionException();
+			}
+
+			//----------------
+			// Parameters only
+			//----------------
+
+			test = new CommandLine();
+
+			test.Parameters.Add("n1", new List<string>
+			                    {
+				                    "v1",
+				                    "v2"
+			                    });
+			if (test.ToString() != "-n1=v1 -n1=v2")
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Parameters.Add("n 1", new List<string>
+			                    {
+				                    "v 1",
+				                    "v 2"
+			                    });
+			if (test.ToString() != "-n1=v1 -n1=v2 -\"n 1\"=\"v 1\" -\"n 1\"=\"v 2\"")
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Parameters.Add("n\"1", new List<string>
+			                    {
+				                    "v\"1",
+				                    "v\"2"
+			                    });
+			if (test.ToString() != "-n1=v1 -n1=v2 -\"n 1\"=\"v 1\" -\"n 1\"=\"v 2\" -\"n\\\"1\"=\"v\\\"1\" -\"n\\\"1\"=\"v\\\"2\"")
+			{
+				throw new TestAssertionException();
+			}
+
+			//--------------
+			// Literals only
+			//--------------
+
+			test = new CommandLine();
+
+			test.Literals.Add("literal1");
+			if (test.ToString() != "literal1")
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Literals.Add("literal 1");
+			if (test.ToString() != "literal1 \"literal 1\"")
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Literals.Add("literal\"1");
+			if (test.ToString() != "literal1 \"literal 1\" \"literal\\\"1\"")
+			{
+				throw new TestAssertionException();
+			}
+
+			//-----------
+			// Everything
+			//-----------
+
+			test = new CommandLine();
+
+			test.Executable = "test.exe";
+
+			test.Literals.Add("literal 1");
+
+			test.Parameters.Add("n1", new List<string>
+			                    {
+				                    "v1",
+				                    "v2"
+			                    });
+
+			test.Parameters.Add("n2", new List<string>
+			                    {
+				                    "v3"
+			                    });
+
+			if (test.ToString() != "test.exe -n1=v1 -n1=v2 -n2=v3 \"literal 1\"")
+			{
+				throw new TestAssertionException();
+			}
+
+			//-----------------------
+			// Special parameter list
+			//-----------------------
+
+			test = new CommandLine();
+			test.Parameters.Add("n1", null);
+			if (test.ToString() != "-n1")
+			{
+				throw new TestAssertionException();
+			}
+
+			test = new CommandLine();
+			test.Parameters.Add("n1", new List<string>());
+			if (test.ToString() != "-n1")
+			{
+				throw new TestAssertionException();
+			}
+
+			test = new CommandLine();
+			test.Parameters.Add("n1", new List<string>
+			                    {
+				                    null
+			                    });
+			if (test.ToString() != "-n1")
+			{
+				throw new TestAssertionException();
+			}
+
+			test = new CommandLine();
+			test.Parameters.Add("n1", new List<string>
+			                    {
+				                    ""
+			                    });
+			if (test.ToString() != "-n1=\"\"")
+			{
+				throw new TestAssertionException();
+			}
+
+			test = new CommandLine();
+			test.Parameters.Add("n1", new List<string>
+			                    {
+				                    " "
+			                    });
+			if (test.ToString() != "-n1=\" \"")
+			{
+				throw new TestAssertionException();
+			}
+
+			test = new CommandLine();
+			test.Parameters.Add("n1", null);
+			test.Parameters.Add("n2", null);
+			if (test.ToString() != "-n1 -n2")
+			{
+				throw new TestAssertionException();
+			}
+
+			//---------------------
+			// Special literal list
+			//---------------------
+
+			test = new CommandLine();
+			test.Literals.Add(null);
+			if (test.ToString() != "")
+			{
+				throw new TestAssertionException();
+			}
+
+			test = new CommandLine();
+			test.Literals.Add("");
+			if (test.ToString() != "\"\"")
+			{
+				throw new TestAssertionException();
+			}
+
+			test = new CommandLine();
+			test.Literals.Add(" ");
+			if (test.ToString() != "\" \"")
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void Parse_Test ()
 		{
 			//--------
 			// Nothing
@@ -231,7 +448,7 @@ namespace RI.Test.Framework.Utilities.Text
 			{
 				throw new TestAssertionException();
 			}
-			
+
 			//------------------------------
 			// Mixed parameters and literals
 			//------------------------------
@@ -655,211 +872,6 @@ namespace RI.Test.Framework.Utilities.Text
 			}
 
 			if (test.Literals[0] != "literal1")
-			{
-				throw new TestAssertionException();
-			}
-		}
-
-		[TestMethod]
-		public void Build_Test ()
-		{
-			//--------
-			// Nothing
-			//--------
-
-			CommandLine test = new CommandLine();
-
-			if (test.ToString() != "")
-			{
-				throw new TestAssertionException();
-			}
-
-			//----------------
-			// Executable only
-			//----------------
-
-			test = new CommandLine();
-
-			test.Executable = null;
-			if (test.ToString() != "")
-			{
-				throw new TestAssertionException();
-			}
-
-			test.Executable = "";
-			if (test.ToString() != "")
-			{
-				throw new TestAssertionException();
-			}
-
-			test.Executable = "test.exe";
-			if (test.ToString() != "test.exe")
-			{
-				throw new TestAssertionException();
-			}
-
-			test.Executable = "test exe";
-			if (test.ToString() != "\"test exe\"")
-			{
-				throw new TestAssertionException();
-			}
-
-			test.Executable = "test\"exe";
-			if (test.ToString() != "\"test\\\"exe\"")
-			{
-				throw new TestAssertionException();
-			}
-
-			//----------------
-			// Parameters only
-			//----------------
-
-			test = new CommandLine();
-
-			test.Parameters.Add("n1", new List<string>
-			                    {
-				                    "v1", "v2"
-			                    });
-			if (test.ToString() != "-n1=v1 -n1=v2")
-			{
-				throw new TestAssertionException();
-			}
-
-			test.Parameters.Add("n 1", new List<string>
-								{
-									"v 1", "v 2"
-								});
-			if (test.ToString() != "-n1=v1 -n1=v2 -\"n 1\"=\"v 1\" -\"n 1\"=\"v 2\"")
-			{
-				throw new TestAssertionException();
-			}
-
-			test.Parameters.Add("n\"1", new List<string>
-								{
-									"v\"1", "v\"2"
-								});
-			if (test.ToString() != "-n1=v1 -n1=v2 -\"n 1\"=\"v 1\" -\"n 1\"=\"v 2\" -\"n\\\"1\"=\"v\\\"1\" -\"n\\\"1\"=\"v\\\"2\"")
-			{
-				throw new TestAssertionException();
-			}
-
-			//--------------
-			// Literals only
-			//--------------
-
-			test = new CommandLine();
-
-			test.Literals.Add("literal1");
-			if (test.ToString() != "literal1")
-			{
-				throw new TestAssertionException();
-			}
-
-			test.Literals.Add("literal 1");
-			if (test.ToString() != "literal1 \"literal 1\"")
-			{
-				throw new TestAssertionException();
-			}
-
-			test.Literals.Add("literal\"1");
-			if (test.ToString() != "literal1 \"literal 1\" \"literal\\\"1\"")
-			{
-				throw new TestAssertionException();
-			}
-
-			//-----------
-			// Everything
-			//-----------
-
-			test = new CommandLine();
-
-			test.Executable = "test.exe";
-
-			test.Literals.Add("literal 1");
-
-			test.Parameters.Add("n1", new List<string>
-								{
-									"v1", "v2"
-								});
-
-			test.Parameters.Add("n2", new List<string>
-								{
-									"v3"
-								});
-
-			if (test.ToString() != "test.exe -n1=v1 -n1=v2 -n2=v3 \"literal 1\"")
-			{
-				throw new TestAssertionException();
-			}
-
-			//-----------------------
-			// Special parameter list
-			//-----------------------
-
-			test = new CommandLine();
-			test.Parameters.Add("n1", null);
-			if (test.ToString() != "-n1")
-			{
-				throw new TestAssertionException();
-			}
-
-			test = new CommandLine();
-			test.Parameters.Add("n1", new List<string>());
-			if (test.ToString() != "-n1")
-			{
-				throw new TestAssertionException();
-			}
-
-			test = new CommandLine();
-			test.Parameters.Add("n1", new List<string> { null });
-			if (test.ToString() != "-n1")
-			{
-				throw new TestAssertionException();
-			}
-
-			test = new CommandLine();
-			test.Parameters.Add("n1", new List<string> { "" });
-			if (test.ToString() != "-n1=\"\"")
-			{
-				throw new TestAssertionException();
-			}
-
-			test = new CommandLine();
-			test.Parameters.Add("n1", new List<string> { " " });
-			if (test.ToString() != "-n1=\" \"")
-			{
-				throw new TestAssertionException();
-			}
-
-			test = new CommandLine();
-			test.Parameters.Add("n1", null);
-			test.Parameters.Add("n2", null);
-			if (test.ToString() != "-n1 -n2")
-			{
-				throw new TestAssertionException();
-			}
-
-			//---------------------
-			// Special literal list
-			//---------------------
-
-			test = new CommandLine();
-			test.Literals.Add(null);
-			if (test.ToString() != "")
-			{
-				throw new TestAssertionException();
-			}
-
-			test = new CommandLine();
-			test.Literals.Add("");
-			if (test.ToString() != "\"\"")
-			{
-				throw new TestAssertionException();
-			}
-
-			test = new CommandLine();
-			test.Literals.Add(" ");
-			if (test.ToString() != "\" \"")
 			{
 				throw new TestAssertionException();
 			}

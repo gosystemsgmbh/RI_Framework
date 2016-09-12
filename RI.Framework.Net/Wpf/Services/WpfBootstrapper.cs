@@ -689,7 +689,7 @@ namespace RI.Framework.Wpf.Services
 		/// </remarks>
 		protected virtual Version DetermineApplicationVersion ()
 		{
-			return (this.ApplicationAssembly.GetAssemblyVersion() ?? this.ApplicationAssembly.GetFileVersion()) ?? this.ApplicationAssembly.GetInformationalVersion();
+			return ( this.ApplicationAssembly.GetAssemblyVersion() ?? this.ApplicationAssembly.GetFileVersion() ) ?? this.ApplicationAssembly.GetInformationalVersion();
 		}
 
 		/// <summary>

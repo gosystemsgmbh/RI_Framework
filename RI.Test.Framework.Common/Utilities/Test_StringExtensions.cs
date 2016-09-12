@@ -1,8 +1,8 @@
 ﻿using System;
 
-using RI.Framework.Utilities;
-
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+using RI.Framework.Utilities;
 
 
 
@@ -83,6 +83,50 @@ namespace RI.Test.Framework.Utilities
 			}
 
 			if (!"Test1".Contains("test", StringComparison.OrdinalIgnoreCase))
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void ContainsWhitespace_Test ()
+		{
+			if ("".ContainsWhitespace())
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("a".ContainsWhitespace())
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("abc".ContainsWhitespace())
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!" ".ContainsWhitespace())
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"\r".ContainsWhitespace())
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"\n".ContainsWhitespace())
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"\t".ContainsWhitespace())
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!" abcd ".ContainsWhitespace())
 			{
 				throw new TestAssertionException();
 			}
@@ -746,6 +790,11 @@ namespace RI.Test.Framework.Utilities
 		[TestMethod]
 		public void ReplaceSingleStart_Test ()
 		{
+			if ("abcd".ReplaceSingleStart("", "", StringComparison.Ordinal) != "abcd")
+			{
+				throw new TestAssertionException();
+			}
+
 			if ("abxcd".ReplaceSingleStart("|X", "@", StringComparison.Ordinal) != "abxcd")
 			{
 				throw new TestAssertionException();
@@ -787,6 +836,21 @@ namespace RI.Test.Framework.Utilities
 			}
 
 			if ("ab|||xcd".ReplaceSingleStart("|X", "@", StringComparison.OrdinalIgnoreCase) != "ab|||xcd")
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("abc".ReplaceSingleStart("c", "x", StringComparison.OrdinalIgnoreCase) != "abx")
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("abcd".ReplaceSingleStart("c", "x", StringComparison.OrdinalIgnoreCase) != "abxd")
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("abcd".ReplaceSingleStart("c", "", StringComparison.OrdinalIgnoreCase) != "abd")
 			{
 				throw new TestAssertionException();
 			}
@@ -1015,6 +1079,11 @@ namespace RI.Test.Framework.Utilities
 			}
 
 			if ("AB\\\\CD".Unescape() != "AB\\CD")
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("1\\x2".Unescape() != "1x2")
 			{
 				throw new TestAssertionException();
 			}
