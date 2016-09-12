@@ -11623,6 +11623,21 @@
                 Provides utility/extension methods for the <see cref="T:System.Reflection.Assembly" /> type.
             </summary>
         </member>
+        <member name="M:RI.Framework.Utilities.Reflection.AssemblyExtensions.GetAssemblyVersion(System.Reflection.Assembly)">
+            <summary>
+                Gets the assembly version of an assembly.
+            </summary>
+            <param name="assembly"> The assembly. </param>
+            <returns>
+                The assembly version of the assembly or null if the version could not be determined.
+            </returns>
+            <remarks>
+                <para>
+                    The <see cref="T:System.Reflection.AssemblyVersionAttribute" /> is used to determine the assembly version of an assembly.
+                </para>
+            </remarks>
+            <exception cref="T:System.ArgumentNullException"> <paramref name="assembly" /> is null. </exception>
+        </member>
         <member name="M:RI.Framework.Utilities.Reflection.AssemblyExtensions.GetCompany(System.Reflection.Assembly)">
             <summary>
                 Gets the company of an assembly.
@@ -11678,6 +11693,21 @@
             </returns>
             <exception cref="T:System.ArgumentNullException"> <paramref name="assembly" /> is null. </exception>
         </member>
+        <member name="M:RI.Framework.Utilities.Reflection.AssemblyExtensions.GetFileVersion(System.Reflection.Assembly)">
+            <summary>
+                Gets the file version of an assembly.
+            </summary>
+            <param name="assembly"> The assembly. </param>
+            <returns>
+                The file version of the assembly or null if the version could not be determined.
+            </returns>
+            <remarks>
+                <para>
+                    The <see cref="T:System.Reflection.AssemblyFileVersionAttribute" /> is used to determine the file version of an assembly.
+                </para>
+            </remarks>
+            <exception cref="T:System.ArgumentNullException"> <paramref name="assembly" /> is null. </exception>
+        </member>
         <member name="M:RI.Framework.Utilities.Reflection.AssemblyExtensions.GetGuid(System.Reflection.Assembly,System.Boolean,System.Boolean)">
             <summary>
                 Gets a GUID associated with an assembly.
@@ -11695,6 +11725,21 @@
                 <para>
                     If <paramref name="ignoreGuidAttribute" /> is true or <see cref="T:System.Runtime.InteropServices.GuidAttribute" /> is not defined, the following is used to calculate a GUID:
                     <see cref="P:System.Reflection.AssemblyName.Name" /> when <paramref name="ignoreVersion" /> is true, <see cref="P:System.Reflection.AssemblyName.FullName" /> otherwise.
+                </para>
+            </remarks>
+            <exception cref="T:System.ArgumentNullException"> <paramref name="assembly" /> is null. </exception>
+        </member>
+        <member name="M:RI.Framework.Utilities.Reflection.AssemblyExtensions.GetInformationalVersion(System.Reflection.Assembly)">
+            <summary>
+                Gets the informational version of an assembly.
+            </summary>
+            <param name="assembly"> The assembly. </param>
+            <returns>
+                The informational version of the assembly or null if the version could not be determined.
+            </returns>
+            <remarks>
+                <para>
+                    The <see cref="T:System.Reflection.AssemblyInformationalVersionAttribute" /> is used to determine the informational version of an assembly.
                 </para>
             </remarks>
             <exception cref="T:System.ArgumentNullException"> <paramref name="assembly" /> is null. </exception>
@@ -11725,51 +11770,6 @@
             <remarks>
                 <para>
                     The <see cref="T:System.Reflection.AssemblyTitleAttribute" /> is used to determine the title of an assembly.
-                </para>
-            </remarks>
-            <exception cref="T:System.ArgumentNullException"> <paramref name="assembly" /> is null. </exception>
-        </member>
-        <member name="M:RI.Framework.Utilities.Reflection.AssemblyExtensions.GetAssemblyVersion(System.Reflection.Assembly)">
-            <summary>
-                Gets the assembly version of an assembly.
-            </summary>
-            <param name="assembly"> The assembly. </param>
-            <returns>
-                The assembly version of the assembly or null if the version could not be determined.
-            </returns>
-            <remarks>
-                <para>
-                    The <see cref="T:System.Reflection.AssemblyVersionAttribute" /> is used to determine the assembly version of an assembly.
-                </para>
-            </remarks>
-            <exception cref="T:System.ArgumentNullException"> <paramref name="assembly" /> is null. </exception>
-        </member>
-        <member name="M:RI.Framework.Utilities.Reflection.AssemblyExtensions.GetFileVersion(System.Reflection.Assembly)">
-            <summary>
-                Gets the file version of an assembly.
-            </summary>
-            <param name="assembly"> The assembly. </param>
-            <returns>
-                The file version of the assembly or null if the version could not be determined.
-            </returns>
-            <remarks>
-                <para>
-                    The <see cref="T:System.Reflection.AssemblyFileVersionAttribute" /> is used to determine the file version of an assembly.
-                </para>
-            </remarks>
-            <exception cref="T:System.ArgumentNullException"> <paramref name="assembly" /> is null. </exception>
-        </member>
-        <member name="M:RI.Framework.Utilities.Reflection.AssemblyExtensions.GetInformationalVersion(System.Reflection.Assembly)">
-            <summary>
-                Gets the informational version of an assembly.
-            </summary>
-            <param name="assembly"> The assembly. </param>
-            <returns>
-                The informational version of the assembly or null if the version could not be determined.
-            </returns>
-            <remarks>
-                <para>
-                    The <see cref="T:System.Reflection.AssemblyInformationalVersionAttribute" /> is used to determine the informational version of an assembly.
                 </para>
             </remarks>
             <exception cref="T:System.ArgumentNullException"> <paramref name="assembly" /> is null. </exception>
@@ -13041,9 +13041,9 @@
                 <para>
                     Auto-indentation means that each line written to the encapsulated <see cref="T:System.IO.TextWriter" /> starts with a defined indentation.
                 </para>
-            <note type="important">
-            <see cref="T:RI.Framework.Utilities.Text.IndentedTextWriter"/> only works reliable with new line strings of LF or CRLF (see <see cref="P:System.IO.TextWriter.NewLine"/>). 
-            </note>
+                <note type="important">
+                    <see cref="T:RI.Framework.Utilities.Text.IndentedTextWriter" /> only works reliable with new line strings of LF or CRLF (see <see cref="P:System.IO.TextWriter.NewLine" />).
+                </note>
             </remarks>
             TODO: Example
         </member>

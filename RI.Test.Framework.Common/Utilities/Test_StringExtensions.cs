@@ -649,6 +649,20 @@ namespace RI.Test.Framework.Utilities
 		}
 
 		[TestMethod]
+		public void NormalizeLineBreaks_Test ()
+		{
+			if ("\r\r\n\n".NormalizeLineBreaks() != "\r" + Environment.NewLine + Environment.NewLine)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("\r\r\nabc\n123".NormalizeLineBreaks() != "\r" + Environment.NewLine + "abc" + Environment.NewLine + "123")
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
 		public void Repeat_Test ()
 		{
 			if (string.Empty.Repeat(0) != "")
@@ -851,6 +865,141 @@ namespace RI.Test.Framework.Utilities
 			}
 
 			if ("abcd".ReplaceSingleStart("c", "", StringComparison.OrdinalIgnoreCase) != "abd")
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void SplitLines_Test ()
+		{
+			string[] test = null;
+
+			//----------------
+			// Without options
+			//----------------
+
+			test = "".SplitLines();
+
+			if (test.Length != 1)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (test[0] != "")
+			{
+				throw new TestAssertionException();
+			}
+
+			test = " ".SplitLines();
+
+			if (test.Length != 1)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (test[0] != " ")
+			{
+				throw new TestAssertionException();
+			}
+
+			test = "\r\r\n\n".SplitLines();
+
+			if (test.Length != 3)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (test[0] != "\r")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (test[1] != "")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (test[2] != "")
+			{
+				throw new TestAssertionException();
+			}
+
+			test = "\r\r\nabc\n123".SplitLines();
+
+			if (test.Length != 3)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (test[0] != "\r")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (test[1] != "abc")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (test[2] != "123")
+			{
+				throw new TestAssertionException();
+			}
+
+			//-------------
+			// With options
+			//-------------
+
+			test = "".SplitLines(StringSplitOptions.RemoveEmptyEntries);
+
+			if (test.Length != 0)
+			{
+				throw new TestAssertionException();
+			}
+
+			test = " ".SplitLines();
+
+			if (test.Length != 1)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (test[0] != " ")
+			{
+				throw new TestAssertionException();
+			}
+
+			test = "\r\r\n\n".SplitLines(StringSplitOptions.RemoveEmptyEntries);
+
+			if (test.Length != 1)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (test[0] != "\r")
+			{
+				throw new TestAssertionException();
+			}
+
+			test = "\r\r\nabc\n123".SplitLines(StringSplitOptions.RemoveEmptyEntries);
+
+			if (test.Length != 3)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (test[0] != "\r")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (test[1] != "abc")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (test[2] != "123")
 			{
 				throw new TestAssertionException();
 			}
