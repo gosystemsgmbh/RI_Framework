@@ -58,6 +58,15 @@ I/O
 
  - PathProperties: ChangeType
 
+ - DirectoryPath: GetFiles
+ - DirectoryPath: FindFiles
+
+ - FilePath: AppendText
+ - FilePath: AppendBytes
+ - FilePath: Size
+ 
+ - PathString: IsCompatible
+
  - RandomStream
  - UncloseableStream
  - StreamExtensions

@@ -24,6 +24,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Collections\Test_LinkedListExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\Test_QueueExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\Test_StackExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\INI\Test_IniDocument.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mocks\RENP.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mocks\VENP.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TestAssertionException.cs" />

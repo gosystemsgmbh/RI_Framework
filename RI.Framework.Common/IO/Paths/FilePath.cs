@@ -1,5 +1,7 @@
 using System;
 using System.IO;
+using System.Security;
+using System.Text;
 
 using RI.Framework.Collections;
 using RI.Framework.Utilities;
@@ -30,6 +32,17 @@ namespace RI.Framework.IO.Paths
 	                               ICloneable<FilePath>
 	{
 		#region Static Methods
+
+		/// <summary>
+		///     Creates a temporary zero-byte file and returns its path.
+		/// </summary>
+		/// <returns>
+		///     The path to the newly created temporary file.
+		/// </returns>
+		public static FilePath GetTemporaryFile ()
+		{
+			return new FilePath(Path.GetTempFileName(), false, false, null);
+		}
 
 		/// <summary>
 		///     Implicit conversion of a <see cref="string" /> to <see cref="FilePath" />.
@@ -134,6 +147,33 @@ namespace RI.Framework.IO.Paths
 					return null;
 				}
 				return new DirectoryPath(parent, this.PathInternal.AllowWildcards, this.PathInternal.AllowRelatives, this.Type);
+			}
+		}
+
+		/// <summary>
+		///     Gets whether the file exists.
+		/// </summary>
+		/// <value>
+		///     true if the file exists, false otherwise.
+		/// </value>
+		/// <remarks>
+		///     <note type="note"> <see cref="Exists" /> does not throw exceptions besides <see cref="InvalidOperationException" />. For example, if the file exists but the user does not have access permissions, the file is not of a compatible path type used on the current system, etc., false is returned. </note>
+		/// </remarks>
+		/// <exception cref="InvalidOperationException"> The file contains wildcards. </exception>
+		public bool Exists
+		{
+			get
+			{
+				this.VerifyRealFile();
+
+				try
+				{
+					return File.Exists(this);
+				}
+				catch
+				{
+					return false;
+				}
 			}
 		}
 
@@ -285,6 +325,141 @@ namespace RI.Framework.IO.Paths
 		}
 
 		/// <summary>
+		///     Creates the file if it does not exist or overwrites an existing file with a new file of zero length.
+		/// </summary>
+		/// <returns>
+		///     true if the file was newly created, false if the file already existed and was reset to zero length.
+		/// </returns>
+		/// <exception cref="InvalidOperationException"> The file contains wildcards. </exception>
+		/// <exception cref="IOException"> The file is in use. </exception>
+		/// <exception cref="UnauthorizedAccessException"> The user does not have the required permissions, the file is read-only, or the file is an executable which is in use. </exception>
+		/// <exception cref="PathTooLongException"> Although being a valid file path, the file path is too long for the current system to be used. </exception>
+		/// <exception cref="DirectoryNotFoundException"> The files directory does not exist or is not available. </exception>
+		/// <exception cref="NotSupportedException"> The file is not of a compatible path type used on the current system. </exception>
+		public bool Create ()
+		{
+			this.VerifyRealFile();
+			bool result = !this.Exists;
+			File.Create(this);
+			return result;
+		}
+
+		/// <summary>
+		///     Deletes the file.
+		/// </summary>
+		/// <returns>
+		///     true if the file existed and was deleted, false otherwise.
+		/// </returns>
+		/// <exception cref="InvalidOperationException"> The file contains wildcards. </exception>
+		/// <exception cref="IOException"> The file is in use. </exception>
+		/// <exception cref="UnauthorizedAccessException"> The user does not have the required permissions, the file is read-only, or the file is an executable which is in use. </exception>
+		/// <exception cref="PathTooLongException"> Although being a valid file path, the file path is too long for the current system to be used. </exception>
+		public bool Delete ()
+		{
+			this.VerifyRealFile();
+
+			if (!this.Exists)
+			{
+				return false;
+			}
+
+			File.Delete(this);
+			return true;
+		}
+
+		/// <summary>
+		///     Reads all binary data from the file.
+		/// </summary>
+		/// <returns>
+		///     All binary data from the file or null if the file does not exist.
+		/// </returns>
+		/// <exception cref="InvalidOperationException"> The file contains wildcards. </exception>
+		/// <exception cref="IOException"> The file is in use. </exception>
+		/// <exception cref="UnauthorizedAccessException"> The user does not have the required permissions or the file is an executable which is in use. </exception>
+		/// <exception cref="PathTooLongException"> Although being a valid file path, the file path is too long for the current system to be used. </exception>
+		public byte[] ReadBytes ()
+		{
+			this.VerifyRealFile();
+
+			if (!this.Exists)
+			{
+				return null;
+			}
+
+			try
+			{
+				return File.ReadAllBytes(this);
+			}
+			catch (SecurityException exception)
+			{
+				throw new UnauthorizedAccessException(exception.Message, exception);
+			}
+			catch (FileNotFoundException)
+			{
+				return null;
+			}
+		}
+
+		/// <summary>
+		///     Reads all text from the file.
+		/// </summary>
+		/// <returns>
+		///     All text from the file or null if the file does not exist.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         The current systems default encoding (<see cref="Encoding.Default" />) is used.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="InvalidOperationException"> The file contains wildcards. </exception>
+		/// <exception cref="IOException"> The file is in use. </exception>
+		/// <exception cref="UnauthorizedAccessException"> The user does not have the required permissions or the file is an executable which is in use. </exception>
+		/// <exception cref="PathTooLongException"> Although being a valid file path, the file path is too long for the current system to be used. </exception>
+		public string ReadText ()
+		{
+			return this.ReadText(null);
+		}
+
+		/// <summary>
+		///     Reads all text from the file.
+		/// </summary>
+		/// <param name="encoding"> The encoding used to read the file. </param>
+		/// <returns>
+		///     All text from the file or null if the file does not exist.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         The current systems default encoding (<see cref="Encoding.Default" />) is used if <paramref name="encoding" /> is null.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="InvalidOperationException"> The file contains wildcards. </exception>
+		/// <exception cref="IOException"> The file is in use. </exception>
+		/// <exception cref="UnauthorizedAccessException"> The user does not have the required permissions or the file is an executable which is in use. </exception>
+		/// <exception cref="PathTooLongException"> Although being a valid file path, the file path is too long for the current system to be used. </exception>
+		public string ReadText (Encoding encoding)
+		{
+			this.VerifyRealFile();
+
+			if (!this.Exists)
+			{
+				return null;
+			}
+
+			try
+			{
+				return File.ReadAllText(this, encoding ?? Encoding.Default);
+			}
+			catch (SecurityException exception)
+			{
+				throw new UnauthorizedAccessException(exception.Message, exception);
+			}
+			catch (FileNotFoundException)
+			{
+				return null;
+			}
+		}
+
+		/// <summary>
 		///     Creates an absolute file path out of this file path relative to a specified root path.
 		/// </summary>
 		/// <param name="root"> The root path. </param>
@@ -350,6 +525,119 @@ namespace RI.Framework.IO.Paths
 			}
 
 			return new FilePath(PathProperties.MakeRelative(root.PathInternal, this.PathInternal));
+		}
+
+		/// <summary>
+		///     Writes binary data to the file.
+		/// </summary>
+		/// <param name="data"> The data to write (can be null to write zero bytes). </param>
+		/// <returns>
+		///     true if the file was newly created, false if it already existed and was overwritten with the specified data.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         The file is created if it does not already exist.
+		///         If it already exists, the fille is overwritten with a new file.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="InvalidOperationException"> The file contains wildcards. </exception>
+		/// <exception cref="IOException"> The file is in use. </exception>
+		/// <exception cref="UnauthorizedAccessException"> The user does not have the required permissions, the file is read-only, or the file is an executable which is in use. </exception>
+		/// <exception cref="PathTooLongException"> Although being a valid file path, the file path is too long for the current system to be used. </exception>
+		/// <exception cref="DirectoryNotFoundException"> The files directory does not exist or is not available. </exception>
+		/// <exception cref="NotSupportedException"> The file is not of a compatible path type used on the current system. </exception>
+		public bool WriteBytes (byte[] data)
+		{
+			this.VerifyRealFile();
+
+			bool result = !this.Exists;
+
+			try
+			{
+				File.WriteAllBytes(this, data ?? new byte[0]);
+			}
+			catch (SecurityException exception)
+			{
+				throw new UnauthorizedAccessException(exception.Message, exception);
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		///     Writes text to the file.
+		/// </summary>
+		/// <param name="text"> The text to write. </param>
+		/// <returns>
+		///     true if the file was newly created, false if it already existed and was overwritten with the specified text.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         The current systems default encoding (<see cref="Encoding.Default" />) is used.
+		///     </para>
+		///     <para>
+		///         The file is created if it does not already exist.
+		///         If it already exists, the fille is overwritten with a new file.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="InvalidOperationException"> The file contains wildcards. </exception>
+		/// <exception cref="IOException"> The file is in use. </exception>
+		/// <exception cref="UnauthorizedAccessException"> The user does not have the required permissions, the file is read-only, or the file is an executable which is in use. </exception>
+		/// <exception cref="PathTooLongException"> Although being a valid file path, the file path is too long for the current system to be used. </exception>
+		/// <exception cref="DirectoryNotFoundException"> The files directory does not exist or is not available. </exception>
+		/// <exception cref="NotSupportedException"> The file is not of a compatible path type used on the current system. </exception>
+		public bool WriteText (string text)
+		{
+			return this.WriteText(text, null);
+		}
+
+		/// <summary>
+		///     Writes text to the file.
+		/// </summary>
+		/// <param name="text"> The text to write (can be null to write an empty string). </param>
+		/// <param name="encoding"> The encoding used to write the file. </param>
+		/// <returns>
+		///     true if the file was newly created, false if it already existed and was overwritten with the specified text.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         The current systems default encoding (<see cref="Encoding.Default" />) is used if <paramref name="encoding" /> is null.
+		///     </para>
+		///     <para>
+		///         The file is created if it does not already exist.
+		///         If it already exists, the fille is overwritten with a new file.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="InvalidOperationException"> The file contains wildcards. </exception>
+		/// <exception cref="IOException"> The file is in use. </exception>
+		/// <exception cref="UnauthorizedAccessException"> The user does not have the required permissions, the file is read-only, or the file is an executable which is in use. </exception>
+		/// <exception cref="PathTooLongException"> Although being a valid file path, the file path is too long for the current system to be used. </exception>
+		/// <exception cref="DirectoryNotFoundException"> The files directory does not exist or is not available. </exception>
+		/// <exception cref="NotSupportedException"> The file is not of a compatible path type used on the current system. </exception>
+		public bool WriteText (string text, Encoding encoding)
+		{
+			this.VerifyRealFile();
+
+			bool result = !this.Exists;
+
+			try
+			{
+				File.WriteAllText(this, text ?? string.Empty, encoding ?? Encoding.Default);
+			}
+			catch (SecurityException exception)
+			{
+				throw new UnauthorizedAccessException(exception.Message, exception);
+			}
+
+			return result;
+		}
+
+		private void VerifyRealFile ()
+		{
+			if (this.HasWildcards)
+			{
+				throw new InvalidOperationException();
+			}
 		}
 
 		#endregion

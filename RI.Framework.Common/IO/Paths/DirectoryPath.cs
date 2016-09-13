@@ -34,6 +34,28 @@ namespace RI.Framework.IO.Paths
 		#region Static Methods
 
 		/// <summary>
+		///     Gets the path to the current working directory.
+		/// </summary>
+		/// <returns>
+		///     The path to the current working directory.
+		/// </returns>
+		public static DirectoryPath GetCurrentDirectory ()
+		{
+			return new DirectoryPath(Environment.CurrentDirectory);
+		}
+
+		/// <summary>
+		///     Gets the path to the current temporary directory.
+		/// </summary>
+		/// <returns>
+		///     The path to the current temporary directory.
+		/// </returns>
+		public static DirectoryPath GetTempDirectory ()
+		{
+			return new DirectoryPath(Path.GetTempPath());
+		}
+
+		/// <summary>
 		///     Implicit conversion of a <see cref="string" /> to <see cref="DirectoryPath" />.
 		/// </summary>
 		/// <param name="path"> The path to convert to a directory path. </param>
@@ -116,6 +138,33 @@ namespace RI.Framework.IO.Paths
 			get
 			{
 				return this.PathInternal.Name;
+			}
+		}
+
+		/// <summary>
+		///     Gets whether the directory exists.
+		/// </summary>
+		/// <value>
+		///     true if the directory exists, false otherwise.
+		/// </value>
+		/// <remarks>
+		///     <note type="note"> <see cref="Exists" /> does not throw exceptions besides <see cref="InvalidOperationException" />. For example, if the directory exists but the user does not have access permissions, the directory is not of a compatible path type used on the current system, etc., false is returned. </note>
+		/// </remarks>
+		/// <exception cref="InvalidOperationException"> The directory contains wildcards. </exception>
+		public bool Exists
+		{
+			get
+			{
+				this.VerifyRealDirectory();
+
+				try
+				{
+					return Directory.Exists(this);
+				}
+				catch
+				{
+					return false;
+				}
 			}
 		}
 
@@ -282,6 +331,61 @@ namespace RI.Framework.IO.Paths
 		}
 
 		/// <summary>
+		///     Creates the directory if it does not exists or leaves an existing directory unchanged.
+		/// </summary>
+		/// <returns>
+		///     true if the directory was newly created, false if the directory already existed.
+		/// </returns>
+		/// <exception cref="InvalidOperationException"> The directory contains wildcards. </exception>
+		/// <exception cref="IOException"> The directory path is actually an existing file or a part of its parent is not available. </exception>
+		/// <exception cref="UnauthorizedAccessException"> The user does not have the required permissions. </exception>
+		/// <exception cref="PathTooLongException"> Although being a valid directory path, the directory path is too long for the current system to be used. </exception>
+		/// <exception cref="NotSupportedException"> The directory is not of a compatible path type used on the current system. </exception>
+		public bool Create ()
+		{
+			this.VerifyRealDirectory();
+
+			if (this.Exists)
+			{
+				return false;
+			}
+
+			try
+			{
+				Directory.CreateDirectory(this);
+			}
+			catch (DirectoryNotFoundException exception)
+			{
+				throw new IOException(exception.Message, exception);
+			}
+
+			return true;
+		}
+
+		/// <summary>
+		///     Deletes the directory and all its files and subdirectories.
+		/// </summary>
+		/// <returns>
+		///     true if the directory existed and was deleted, false otherwise.
+		/// </returns>
+		/// <exception cref="InvalidOperationException"> The directory contains wildcards. </exception>
+		/// <exception cref="IOException"> The directory path is actually an existing file, the directory is read-only, the directory is the current working directory, the directory contains files which cannot be deleted, or the directory is in use. </exception>
+		/// <exception cref="UnauthorizedAccessException"> The user does not have the required permissions. </exception>
+		/// <exception cref="PathTooLongException"> Although being a valid directory path, the directory path is too long for the current system to be used. </exception>
+		public bool Delete ()
+		{
+			this.VerifyRealDirectory();
+
+			if (!this.Exists)
+			{
+				return false;
+			}
+
+			Directory.Delete(this, true);
+			return true;
+		}
+
+		/// <summary>
 		///     Creates an absolute directory path out of this directory path relative to a specified root path.
 		/// </summary>
 		/// <param name="root"> The root path. </param>
@@ -347,6 +451,14 @@ namespace RI.Framework.IO.Paths
 			}
 
 			return new DirectoryPath(PathProperties.MakeRelative(root.PathInternal, this.PathInternal));
+		}
+
+		private void VerifyRealDirectory ()
+		{
+			if (this.HasWildcards)
+			{
+				throw new InvalidOperationException();
+			}
 		}
 
 		#endregion
