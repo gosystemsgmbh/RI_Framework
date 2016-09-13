@@ -118,13 +118,18 @@ namespace RI.Framework.IO.Paths
 		///         If <paramref name="assumedType" /> is not null and the path type determined through analysis of <paramref name="path" /> does not match with <paramref name="assumedType" />, the path is considered invalid and <see cref="Error" /> is set to <see cref="PathError.WrongType" />.
 		///     </para>
 		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="path" /> is null. </exception>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="assumedType" /> is <see cref="PathType.Invalid" />. </exception>
 		public static PathProperties FromPath (string path, bool allowWildcards, bool allowRelatives, PathType? assumedType)
 		{
-			if (path == null)
+			if (assumedType.HasValue)
 			{
-				throw new ArgumentNullException(nameof(path));
+				if (assumedType.Value == PathType.Invalid)
+				{
+					throw new ArgumentOutOfRangeException(nameof(assumedType));
+				}
 			}
+
+			path = path ?? string.Empty;
 
 			PathType? type = null;
 			PathError error = PathError.None;
@@ -170,9 +175,9 @@ namespace RI.Framework.IO.Paths
 
 					if (( chr == PathProperties.WildcardOne ) || ( chr == PathProperties.WildcardMore ))
 					{
+						hasWildcards = true;
 						if (allowWildcards)
 						{
-							hasWildcards = true;
 							continue;
 						}
 						else
@@ -254,7 +259,7 @@ namespace RI.Framework.IO.Paths
 			{
 				if (assumedType.HasValue)
 				{
-					if (type.Value != assumedType.Value)
+					if (( type.Value != assumedType.Value ) && ( type.Value != PathType.Invalid ))
 					{
 						type = PathType.Invalid;
 						error = PathError.WrongType;
@@ -302,11 +307,8 @@ namespace RI.Framework.IO.Paths
 
 					if (string.Equals(trimmed, PathProperties.RelativeSame, StringComparison.Ordinal) || string.Equals(trimmed, PathProperties.RelativeUp, StringComparison.Ordinal))
 					{
-						if (allowRelatives)
-						{
-							hasRelatives = true;
-						}
-						else
+						hasRelatives = true;
+						if (!allowRelatives)
 						{
 							type = PathType.Invalid;
 							error = PathError.RelativesNotAllowed;
@@ -348,12 +350,20 @@ namespace RI.Framework.IO.Paths
 
 						if (partsResolved.Count > 0)
 						{
-							partsResolved.RemoveAt(partsResolved.Count - 1);
-							continue;
+							if (!string.Equals(partsResolved[partsResolved.Count - 1], PathProperties.RelativeUp, StringComparison.Ordinal))
+							{
+								partsResolved.RemoveAt(partsResolved.Count - 1);
+								continue;
+							}
 						}
 					}
 
 					partsResolved.Add(part);
+				}
+
+				if (partsResolved.Count == 0)
+				{
+					partsResolved.Add(PathProperties.RelativeSame);
 				}
 			}
 
@@ -639,7 +649,7 @@ namespace RI.Framework.IO.Paths
 		{
 			if (parts == null)
 			{
-				throw new ArgumentNullException(nameof(parts));
+				return null;
 			}
 
 			if (type == PathType.Invalid)

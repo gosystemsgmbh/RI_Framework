@@ -17,7 +17,7 @@ namespace RI.Framework.IO.Paths
 		None = 0,
 
 		/// <summary>
-		///     The path is empty.
+		///     The path is empty or null.
 		/// </summary>
 		Empty = 1,
 

@@ -217,6 +217,20 @@ namespace RI.Framework.IO.INI
 		#region Instance Methods
 
 		/// <summary>
+		///     Adds a comment at the end of all elements.
+		/// </summary>
+		/// <param name="comment"> The comment. </param>
+		/// <returns>
+		///     The added comment element.
+		/// </returns>
+		public CommentIniElement AddComment (string comment)
+		{
+			CommentIniElement element = new CommentIniElement(comment);
+			this.Elements.Add(element);
+			return element;
+		}
+
+		/// <summary>
 		///     Adds the values of a dictionary as a new section.
 		/// </summary>
 		/// <param name="sectionName"> The name of the new section (can be null). </param>
@@ -351,6 +365,73 @@ namespace RI.Framework.IO.INI
 			this.Elements.InsertRange(insertIndex, elements);
 
 			return elements;
+		}
+
+		/// <summary>
+		///     Adds a section header at the end of all elements.
+		/// </summary>
+		/// <param name="sectionName"> The section name. </param>
+		/// <returns>
+		///     The added section header element.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="sectionName" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="sectionName" /> is an empty string. </exception>
+		public SectionIniElement AddSectionHeader (string sectionName)
+		{
+			if (sectionName == null)
+			{
+				throw new ArgumentNullException(nameof(sectionName));
+			}
+
+			if (sectionName.IsEmpty())
+			{
+				throw new EmptyStringArgumentException(nameof(sectionName));
+			}
+
+			SectionIniElement element = new SectionIniElement(sectionName);
+			this.Elements.Add(element);
+			return element;
+		}
+
+		/// <summary>
+		///     Adds a text at the end of all elements.
+		/// </summary>
+		/// <param name="text"> The text. </param>
+		/// <returns>
+		///     The added text element.
+		/// </returns>
+		public TextIniElement AddText (string text)
+		{
+			TextIniElement element = new TextIniElement(text);
+			this.Elements.Add(element);
+			return element;
+		}
+
+		/// <summary>
+		///     Adds a name-value-pair at the end of all elements.
+		/// </summary>
+		/// <param name="name"> The name. </param>
+		/// <param name="value"> The value. </param>
+		/// <returns>
+		///     The added name-value-pair element.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="name" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
+		public ValueIniElement AddValue (string name, string value)
+		{
+			if (name == null)
+			{
+				throw new ArgumentNullException(nameof(name));
+			}
+
+			if (name.IsEmpty())
+			{
+				throw new EmptyStringArgumentException(nameof(name));
+			}
+
+			ValueIniElement element = new ValueIniElement(name, value);
+			this.Elements.Add(element);
+			return element;
 		}
 
 		/// <summary>
