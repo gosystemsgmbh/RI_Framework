@@ -10372,7 +10372,7 @@
                     If <paramref name="assumedType" /> is not null and the path type determined through analysis of <paramref name="path" /> does not match with <paramref name="assumedType" />, the path is considered invalid and <see cref="P:RI.Framework.IO.Paths.PathProperties.Error" /> is set to <see cref="F:RI.Framework.IO.Paths.PathError.WrongType" />.
                 </para>
             </remarks>
-            <exception cref="T:System.ArgumentOutOfRangeException"> <paramref name="assumedType" /> is <see cref="F:RI.Framework.IO.Paths.PathType.Invalid"/>. </exception>
+            <exception cref="T:System.ArgumentOutOfRangeException"> <paramref name="assumedType" /> is <see cref="F:RI.Framework.IO.Paths.PathType.Invalid" />. </exception>
         </member>
         <member name="M:RI.Framework.IO.Paths.PathProperties.MakeAbsolute(RI.Framework.IO.Paths.PathProperties,RI.Framework.IO.Paths.PathProperties)">
             <summary>

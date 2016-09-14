@@ -165,6 +165,15 @@ namespace RI.Framework.IO.Paths
 				}
 			}
 
+			if (assumedType.HasValue && type.HasValue)
+			{
+				if ((type.Value != assumedType.Value) && (type.Value != PathType.Invalid))
+				{
+					type = PathType.Invalid;
+					error = PathError.WrongType;
+				}
+			}
+
 			bool hasWildcards = false;
 
 			if (type != PathType.Invalid)
@@ -230,7 +239,19 @@ namespace RI.Framework.IO.Paths
 							break;
 						}
 
-						type = PathType.Windows;
+						if (assumedType.HasValue && ( ( assumedType.Value == PathType.Windows ) || ( assumedType.Value == PathType.Unc ) ))
+						{
+							type = assumedType.Value;
+						}
+						else if (type.HasValue && ((type.Value == PathType.Windows) || (type.Value == PathType.Unc)))
+						{
+							type = type.Value;
+						}
+						else
+						{
+							type = PathType.Windows;
+						}
+
 						continue;
 					}
 
@@ -292,6 +313,10 @@ namespace RI.Framework.IO.Paths
 					{
 						continue;
 					}
+					if ((type == PathType.Unc) && (i1 <= 0) && (!isRooted) && (part.Length == 0))
+					{
+						continue;
+					}
 					if (( i1 == ( parts.Count - 1 ) ) && ( part.Length == 0 ))
 					{
 						continue;
@@ -341,7 +366,7 @@ namespace RI.Framework.IO.Paths
 
 					if (string.Equals(part, PathProperties.RelativeUp, StringComparison.Ordinal))
 					{
-						if (isRooted && ( ( partsResolved.Count == 0 ) || ( ( type == PathType.Windows ) && ( partsResolved.Count <= 1 ) ) ))
+						if (isRooted && (partsResolved.Count <= 1))
 						{
 							type = PathType.Invalid;
 							error = PathError.RelativeGoesBeyondRoot;
@@ -511,7 +536,7 @@ namespace RI.Framework.IO.Paths
 
 			if (path.IsRooted)
 			{
-				return path.Clone();
+				return path.GetResolved();
 			}
 
 			List<string> parts = new List<string>();
@@ -519,7 +544,7 @@ namespace RI.Framework.IO.Paths
 			parts.AddRange(path.PartsResolved);
 
 			string resultPath = PathProperties.CreatePath(parts, root.Type, true);
-			PathProperties result = PathProperties.FromPath(resultPath, root.AllowWildcards || path.AllowWildcards, root.AllowRelatives || path.AllowRelatives, null);
+			PathProperties result = PathProperties.FromPath(resultPath, root.AllowWildcards || path.AllowWildcards, root.AllowRelatives || path.AllowRelatives, null).GetResolved();
 
 			return result;
 		}
@@ -573,7 +598,7 @@ namespace RI.Framework.IO.Paths
 
 			if (!path.IsRooted)
 			{
-				return path.Clone();
+				return path.GetResolved();
 			}
 
 			string[] rootParts = root.PartsResolved;
@@ -610,7 +635,7 @@ namespace RI.Framework.IO.Paths
 
 			if (leadingMatch.Count == 0)
 			{
-				return path.Clone();
+				return path.GetResolved();
 			}
 
 			List<string> upLinks = new List<string>();
@@ -627,14 +652,19 @@ namespace RI.Framework.IO.Paths
 
 			if (rootParts.Length == leadingMatch.Count)
 			{
+				if (downLinks.Count == 0)
+				{
+					return PathProperties.FromPath(PathProperties.RelativeSame, root.AllowWildcards || path.AllowWildcards, root.AllowRelatives || path.AllowRelatives, root.Type).GetResolved();
+				}
+
 				string downLinkPath = PathProperties.CreatePath(downLinks, root.Type, false);
-				return PathProperties.FromPath(downLinkPath, root.AllowWildcards || path.AllowWildcards, root.AllowRelatives || path.AllowRelatives, root.Type);
+				return PathProperties.FromPath(downLinkPath, root.AllowWildcards || path.AllowWildcards, root.AllowRelatives || path.AllowRelatives, root.Type).GetResolved();
 			}
 
 			if (pathParts.Length == leadingMatch.Count)
 			{
 				string upLinkPath = PathProperties.CreatePath(upLinks, root.Type, false);
-				return PathProperties.FromPath(upLinkPath, root.AllowWildcards || path.AllowWildcards, root.AllowRelatives || path.AllowRelatives, root.Type);
+				return PathProperties.FromPath(upLinkPath, root.AllowWildcards || path.AllowWildcards, root.AllowRelatives || path.AllowRelatives, root.Type).GetResolved();
 			}
 
 			List<string> allLinks = new List<string>();
@@ -642,7 +672,7 @@ namespace RI.Framework.IO.Paths
 			allLinks.AddRange(downLinks);
 
 			string allLinkPath = PathProperties.CreatePath(allLinks, root.Type, false);
-			return PathProperties.FromPath(allLinkPath, root.AllowWildcards || path.AllowWildcards, root.AllowRelatives || path.AllowRelatives, root.Type);
+			return PathProperties.FromPath(allLinkPath, root.AllowWildcards || path.AllowWildcards, root.AllowRelatives || path.AllowRelatives, root.Type).GetResolved();
 		}
 
 		internal static string CreatePath (List<string> parts, PathType type, bool isRooted)
@@ -699,6 +729,11 @@ namespace RI.Framework.IO.Paths
 		private static string Trim (string part)
 		{
 			return part.TrimEnd('\t', '\n', '\v', '\f', '\r', (char)0x20, (char)0x85, (char)0xA0);
+		}
+
+		private PathProperties GetResolved ()
+		{
+			return PathProperties.FromPath(this.PathResolved, this.AllowWildcards, this.AllowRelatives, this.Type);
 		}
 
 		#endregion
