@@ -82,12 +82,12 @@ namespace RI.Framework.IO.Paths
 		/// <param name="path"> The path. </param>
 		/// <remarks>
 		///     <para>
-		///         Using this constructor, wildcards and relative paths are not allowed and the type of the path must be clearly determinable.
+		///         Using this constructor, wildcards and relative paths are allowed and the type of the path is assumed to be of the same type as used on the current system.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="path" /> is null. </exception>
 		public DirectoryPath (string path)
-			: this(PathProperties.FromPath(path, false, false, null))
+			: this(PathProperties.FromPath(path, true, true, PathString.GetSystemType()))
 		{
 		}
 

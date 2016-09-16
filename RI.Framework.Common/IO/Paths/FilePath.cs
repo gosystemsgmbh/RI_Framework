@@ -71,12 +71,12 @@ namespace RI.Framework.IO.Paths
 		/// <param name="path"> The path. </param>
 		/// <remarks>
 		///     <para>
-		///         Using this constructor, wildcards and relative paths are not allowed and the type of the path must be clearly determinable.
+		///         Using this constructor, wildcards and relative paths are allowed and the type of the path is assumed to be of the same type as used on the current system
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="path" /> is null. </exception>
 		public FilePath (string path)
-			: this(PathProperties.FromPath(path, false, false, null))
+			: this(PathProperties.FromPath(path, true, true, PathString.GetSystemType()))
 		{
 		}
 
@@ -249,10 +249,15 @@ namespace RI.Framework.IO.Paths
 		/// <summary>
 		///     Creates a new file path with this file name and directory but another extension.
 		/// </summary>
-		/// <param name="extension"> The new extension. </param>
+		/// <param name="extension"> The new extension (with or without leading dot). </param>
 		/// <returns>
 		///     The new file path.
 		/// </returns>
+		/// <remarks>
+		/// <note type="note">
+		/// All leading dots will be trimmed to a single leading dot when combined with the rest of the file name.
+		/// </note>
+		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="extension" /> is null. </exception>
 		/// <exception cref="InvalidPathArgumentException"> The existing file name (without extension) plus <paramref name="extension" /> do not form a valid new file name. </exception>
 		public FilePath ChangeExtension (string extension)
@@ -261,6 +266,9 @@ namespace RI.Framework.IO.Paths
 			{
 				throw new ArgumentNullException(nameof(extension));
 			}
+
+			extension = extension.TrimStart();
+			extension = extension.TrimStart(PathProperties.FileExtensionSeparator);
 
 			try
 			{
@@ -340,8 +348,10 @@ namespace RI.Framework.IO.Paths
 		{
 			this.VerifyRealFile();
 			bool result = !this.Exists;
-			File.Create(this);
-			return result;
+			using (File.Create(this))
+			{
+				return result;
+			}
 		}
 
 		/// <summary>
