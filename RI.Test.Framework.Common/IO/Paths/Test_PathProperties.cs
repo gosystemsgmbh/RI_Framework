@@ -324,6 +324,20 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
+			test = PathProperties.FromPath(@"test\abcd", false, false, PathType.Unix);
+			if (test.Type != PathType.Invalid)
+			{
+				throw new TestAssertionException();
+			}
+			if (test.Error != PathError.WrongType)
+			{
+				throw new TestAssertionException();
+			}
+			if (test.IsValid)
+			{
+				throw new TestAssertionException();
+			}
+
 			//----------
 			// Wildcards
 			//----------
@@ -2154,6 +2168,20 @@ namespace RI.Test.Framework.IO.Paths
 			}
 
 			test = PathProperties.FromPath(@"\\server\test", false, false, PathType.Windows);
+			if (test.Type != PathType.Invalid)
+			{
+				throw new TestAssertionException();
+			}
+			if (test.Error != PathError.WrongType)
+			{
+				throw new TestAssertionException();
+			}
+			if (test.IsValid)
+			{
+				throw new TestAssertionException();
+			}
+
+			test = PathProperties.FromPath(@"test\abcd", false, false, PathType.Unix);
 			if (test.Type != PathType.Invalid)
 			{
 				throw new TestAssertionException();
@@ -4010,6 +4038,20 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
+			test = PathProperties.FromPath(@"test/abcd", false, false, PathType.Windows);
+			if (test.Type != PathType.Invalid)
+			{
+				throw new TestAssertionException();
+			}
+			if (test.Error != PathError.WrongType)
+			{
+				throw new TestAssertionException();
+			}
+			if (test.IsValid)
+			{
+				throw new TestAssertionException();
+			}
+
 			//----------
 			// Wildcards
 			//----------
@@ -5508,27 +5550,27 @@ namespace RI.Test.Framework.IO.Paths
 			// Equality
 			//---------
 
-			if (PathProperties.FromPath(@"\\server\test", false, false, null).Equals(1234))
+			if (PathProperties.FromPath(@"/server/test", false, false, null).Equals(1234))
 			{
 				throw new TestAssertionException();
 			}
 
-			if (PathProperties.FromPath(@"\\server\test", false, false, null).Equals(PathProperties.FromPath(@"\\server\test\abcd", false, false, null)))
+			if (PathProperties.FromPath(@"/server/test", false, false, null).Equals(PathProperties.FromPath(@"/server/test/abcd", false, false, null)))
 			{
 				throw new TestAssertionException();
 			}
 
-			if (!PathProperties.FromPath(@"\\server\test", false, false, null).Equals(PathProperties.FromPath(@"\\server\test\", false, false, null)))
+			if (!PathProperties.FromPath(@"/server/test", false, false, null).Equals(PathProperties.FromPath(@"/server/test/", false, false, null)))
 			{
 				throw new TestAssertionException();
 			}
 
-			if (!PathProperties.FromPath(@"\\server\test", false, false, null).Equals(PathProperties.FromPath(@"\\server\TEST", false, false, null)))
+			if (PathProperties.FromPath(@"/server/test", false, false, null).Equals(PathProperties.FromPath(@"/server/TEST", false, false, null)))
 			{
 				throw new TestAssertionException();
 			}
 
-			if (!PathProperties.FromPath(@"\\server\test", false, false, null).Equals(PathProperties.FromPath(@"\\SERVER\TEST\", false, false, null)))
+			if (PathProperties.FromPath(@"/server/test", false, false, null).Equals(PathProperties.FromPath(@"/SERVER/TEST/", false, false, null)))
 			{
 				throw new TestAssertionException();
 			}
@@ -5537,22 +5579,22 @@ namespace RI.Test.Framework.IO.Paths
 			// Hashcode
 			//---------
 
-			if (PathProperties.FromPath(@"\\server\test", false, false, null).GetHashCode() == PathProperties.FromPath(@"\\server\test\abcd", false, false, null).GetHashCode())
+			if (PathProperties.FromPath(@"/server/test", false, false, null).GetHashCode() == PathProperties.FromPath(@"/server/test/abcd", false, false, null).GetHashCode())
 			{
 				throw new TestAssertionException();
 			}
 
-			if (PathProperties.FromPath(@"\\server\test", false, false, null).GetHashCode() != PathProperties.FromPath(@"\\server\test\", false, false, null).GetHashCode())
+			if (PathProperties.FromPath(@"/server/test", false, false, null).GetHashCode() != PathProperties.FromPath(@"/server/test/", false, false, null).GetHashCode())
 			{
 				throw new TestAssertionException();
 			}
 
-			if (PathProperties.FromPath(@"\\server\test", false, false, null).GetHashCode() != PathProperties.FromPath(@"\\server\TEST", false, false, null).GetHashCode())
+			if (PathProperties.FromPath(@"/server/test", false, false, null).GetHashCode() == PathProperties.FromPath(@"/server/TEST", false, false, null).GetHashCode())
 			{
 				throw new TestAssertionException();
 			}
 
-			if (PathProperties.FromPath(@"\\server\test", false, false, null).GetHashCode() != PathProperties.FromPath(@"\\SERVER\TEST\", false, false, null).GetHashCode())
+			if (PathProperties.FromPath(@"/server/test", false, false, null).GetHashCode() == PathProperties.FromPath(@"/SERVER\TEST/", false, false, null).GetHashCode())
 			{
 				throw new TestAssertionException();
 			}
@@ -5561,32 +5603,32 @@ namespace RI.Test.Framework.IO.Paths
 			// Comparison
 			//-----------
 
-			if (PathProperties.FromPath(@"\\server\test", false, false, null).CompareTo(1234) != -1)
+			if (PathProperties.FromPath(@"/server/test", false, false, null).CompareTo(1234) != -1)
 			{
 				throw new TestAssertionException();
 			}
 
-			if (PathProperties.FromPath(@"\\server\test", false, false, null).CompareTo(PathProperties.FromPath(@"\\server\test\abcd", false, false, null)) >= 0)
+			if (PathProperties.FromPath(@"/server/test", false, false, null).CompareTo(PathProperties.FromPath(@"/server/test/abcd", false, false, null)) >= 0)
 			{
 				throw new TestAssertionException();
 			}
 
-			if (PathProperties.FromPath(@"\\server\test\abcd", false, false, null).CompareTo(PathProperties.FromPath(@"\\server\test", false, false, null)) <= 0)
+			if (PathProperties.FromPath(@"/server/test/abcd", false, false, null).CompareTo(PathProperties.FromPath(@"/server/test", false, false, null)) <= 0)
 			{
 				throw new TestAssertionException();
 			}
 
-			if (PathProperties.FromPath(@"\\server\test", false, false, null).CompareTo(PathProperties.FromPath(@"\\server\test\", false, false, null)) != 0)
+			if (PathProperties.FromPath(@"/server/test", false, false, null).CompareTo(PathProperties.FromPath(@"/server/test/", false, false, null)) != 0)
 			{
 				throw new TestAssertionException();
 			}
 
-			if (PathProperties.FromPath(@"\\server\test", false, false, null).CompareTo(PathProperties.FromPath(@"\\server\TEST", false, false, null)) != 0)
+			if (PathProperties.FromPath(@"/server/test", false, false, null).CompareTo(PathProperties.FromPath(@"/server/TEST", false, false, null)) == 0)
 			{
 				throw new TestAssertionException();
 			}
 
-			if (PathProperties.FromPath(@"\\server\test", false, false, null).CompareTo(PathProperties.FromPath(@"\\SERVER\TEST\", false, false, null)) != 0)
+			if (PathProperties.FromPath(@"/server/test", false, false, null).CompareTo(PathProperties.FromPath(@"/SERVER/TEST/", false, false, null)) == 0)
 			{
 				throw new TestAssertionException();
 			}
@@ -5595,7 +5637,7 @@ namespace RI.Test.Framework.IO.Paths
 			// Make relative
 			//--------------
 
-			test = PathProperties.MakeRelative(PathProperties.FromPath(@"\\server\", false, true, null), PathProperties.FromPath(@"test", false, true, PathType.Unc));
+			test = PathProperties.MakeRelative(PathProperties.FromPath(@"/server/", false, true, null), PathProperties.FromPath(@"test", false, true, PathType.Unix));
 			if (test.PathResolved != @"test")
 			{
 				throw new TestAssertionException();
@@ -5605,7 +5647,7 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			test = PathProperties.MakeRelative(PathProperties.FromPath(@"\\server\", false, true, null), PathProperties.FromPath(@"\\server\", false, true, null));
+			test = PathProperties.MakeRelative(PathProperties.FromPath(@"/server/", false, true, null), PathProperties.FromPath(@"/server/", false, true, null));
 			if (test.PathResolved != @".")
 			{
 				throw new TestAssertionException();
@@ -5615,7 +5657,7 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			test = PathProperties.MakeRelative(PathProperties.FromPath(@"\\server\test", false, true, null), PathProperties.FromPath(@"\\server\test", false, true, null));
+			test = PathProperties.MakeRelative(PathProperties.FromPath(@"/server/test", false, true, null), PathProperties.FromPath(@"/server/test", false, true, null));
 			if (test.PathResolved != @".")
 			{
 				throw new TestAssertionException();
@@ -5625,47 +5667,47 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			test = PathProperties.MakeRelative(PathProperties.FromPath(@"\\server\", false, true, null), PathProperties.FromPath(@"\\test\", false, true, null));
-			if (test.PathResolved != @"\\test")
+			test = PathProperties.MakeRelative(PathProperties.FromPath(@"/server/", false, true, null), PathProperties.FromPath(@"/test/", false, true, null));
+			if (test.PathResolved != @"/test")
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathNormalized != @"\\test")
-			{
-				throw new TestAssertionException();
-			}
-
-			test = PathProperties.MakeRelative(PathProperties.FromPath(@"\\server\test", false, true, null), PathProperties.FromPath(@"\\abcd\test", false, true, null));
-			if (test.PathResolved != @"\\abcd\test")
-			{
-				throw new TestAssertionException();
-			}
-			if (test.PathNormalized != @"\\abcd\test")
+			if (test.PathNormalized != @"/test")
 			{
 				throw new TestAssertionException();
 			}
 
-			test = PathProperties.MakeRelative(PathProperties.FromPath(@"\\server\test\abcd", false, true, null), PathProperties.FromPath(@"\\server\test\1234", false, true, null));
-			if (test.PathResolved != @"..\1234")
+			test = PathProperties.MakeRelative(PathProperties.FromPath(@"/server/test", false, true, null), PathProperties.FromPath(@"/abcd/test", false, true, null));
+			if (test.PathResolved != @"/abcd/test")
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathNormalized != @"..\1234")
-			{
-				throw new TestAssertionException();
-			}
-
-			test = PathProperties.MakeRelative(PathProperties.FromPath(@"\\server\test\abcd", false, true, null), PathProperties.FromPath(@"\\server\abcd\1234", false, true, null));
-			if (test.PathResolved != @"..\..\abcd\1234")
-			{
-				throw new TestAssertionException();
-			}
-			if (test.PathNormalized != @"..\..\abcd\1234")
+			if (test.PathNormalized != @"/abcd/test")
 			{
 				throw new TestAssertionException();
 			}
 
-			test = PathProperties.MakeRelative(PathProperties.FromPath(@"\\server\test", false, true, null), PathProperties.FromPath(@"\\server\test\abcd", false, true, null));
+			test = PathProperties.MakeRelative(PathProperties.FromPath(@"/server/test/abcd", false, true, null), PathProperties.FromPath(@"/server/test/1234", false, true, null));
+			if (test.PathResolved != @"../1234")
+			{
+				throw new TestAssertionException();
+			}
+			if (test.PathNormalized != @"../1234")
+			{
+				throw new TestAssertionException();
+			}
+
+			test = PathProperties.MakeRelative(PathProperties.FromPath(@"/server/test/abcd", false, true, null), PathProperties.FromPath(@"/server/abcd/1234", false, true, null));
+			if (test.PathResolved != @"../../abcd/1234")
+			{
+				throw new TestAssertionException();
+			}
+			if (test.PathNormalized != @"../../abcd/1234")
+			{
+				throw new TestAssertionException();
+			}
+
+			test = PathProperties.MakeRelative(PathProperties.FromPath(@"/server/test", false, true, null), PathProperties.FromPath(@"/server/test/abcd", false, true, null));
 			if (test.PathResolved != @"abcd")
 			{
 				throw new TestAssertionException();
@@ -5675,7 +5717,7 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			test = PathProperties.MakeRelative(PathProperties.FromPath(@"\\server\test\abcd", false, true, null), PathProperties.FromPath(@"\\server\test", false, true, null));
+			test = PathProperties.MakeRelative(PathProperties.FromPath(@"/server/test/abcd", false, true, null), PathProperties.FromPath(@"/server/test", false, true, null));
 			if (test.PathResolved != @"..")
 			{
 				throw new TestAssertionException();
@@ -5685,12 +5727,12 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			test = PathProperties.MakeRelative(PathProperties.FromPath(@"\\server\test\.\..\abcd\.\", false, true, null), PathProperties.FromPath(@"\\server\.\test\..\1234\", false, true, null));
-			if (test.PathResolved != @"..\1234")
+			test = PathProperties.MakeRelative(PathProperties.FromPath(@"/server/test/./../abcd/./", false, true, null), PathProperties.FromPath(@"/server/./test/../1234/", false, true, null));
+			if (test.PathResolved != @"../1234")
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathNormalized != @"..\1234")
+			if (test.PathNormalized != @"../1234")
 			{
 				throw new TestAssertionException();
 			}
@@ -5699,102 +5741,102 @@ namespace RI.Test.Framework.IO.Paths
 			// Make absolute
 			//--------------
 
-			test = PathProperties.MakeAbsolute(PathProperties.FromPath(@"\\server\", false, true, null), PathProperties.FromPath(@"\\server\", false, true, null));
-			if (test.PathResolved != @"\\server")
+			test = PathProperties.MakeAbsolute(PathProperties.FromPath(@"/server/", false, true, null), PathProperties.FromPath(@"/server/", false, true, null));
+			if (test.PathResolved != @"/server")
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathNormalized != @"\\server")
-			{
-				throw new TestAssertionException();
-			}
-
-			test = PathProperties.MakeAbsolute(PathProperties.FromPath(@"\\server\test", false, true, null), PathProperties.FromPath(@"\\abcd\test", false, true, null));
-			if (test.PathResolved != @"\\abcd\test")
-			{
-				throw new TestAssertionException();
-			}
-			if (test.PathNormalized != @"\\abcd\test")
+			if (test.PathNormalized != @"/server")
 			{
 				throw new TestAssertionException();
 			}
 
-			test = PathProperties.MakeAbsolute(PathProperties.FromPath(@"\\server\", false, true, null), PathProperties.FromPath(@"test", false, true, PathType.Unc));
-			if (test.PathResolved != @"\\server\test")
+			test = PathProperties.MakeAbsolute(PathProperties.FromPath(@"/server/test", false, true, null), PathProperties.FromPath(@"/abcd/test", false, true, null));
+			if (test.PathResolved != @"/abcd/test")
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathNormalized != @"\\server\test")
-			{
-				throw new TestAssertionException();
-			}
-
-			test = PathProperties.MakeAbsolute(PathProperties.FromPath(@"\\server\abcd", false, true, null), PathProperties.FromPath(@"test", false, true, PathType.Unc));
-			if (test.PathResolved != @"\\server\abcd\test")
-			{
-				throw new TestAssertionException();
-			}
-			if (test.PathNormalized != @"\\server\abcd\test")
+			if (test.PathNormalized != @"/abcd/test")
 			{
 				throw new TestAssertionException();
 			}
 
-			test = PathProperties.MakeAbsolute(PathProperties.FromPath(@"\\server\", false, true, null), PathProperties.FromPath(@"test\abcd", false, true, PathType.Unc));
-			if (test.PathResolved != @"\\server\test\abcd")
+			test = PathProperties.MakeAbsolute(PathProperties.FromPath(@"/server/", false, true, null), PathProperties.FromPath(@"test", false, true, PathType.Unix));
+			if (test.PathResolved != @"/server/test")
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathNormalized != @"\\server\test\abcd")
-			{
-				throw new TestAssertionException();
-			}
-
-			test = PathProperties.MakeAbsolute(PathProperties.FromPath(@"\\server\1234", false, true, null), PathProperties.FromPath(@"test\abcd", false, true, PathType.Unc));
-			if (test.PathResolved != @"\\server\1234\test\abcd")
-			{
-				throw new TestAssertionException();
-			}
-			if (test.PathNormalized != @"\\server\1234\test\abcd")
+			if (test.PathNormalized != @"/server/test")
 			{
 				throw new TestAssertionException();
 			}
 
-			test = PathProperties.MakeAbsolute(PathProperties.FromPath(@"\\server\test\abcd\", false, true, null), PathProperties.FromPath(@"..\1234", false, true, PathType.Unc));
-			if (test.PathResolved != @"\\server\test\1234")
+			test = PathProperties.MakeAbsolute(PathProperties.FromPath(@"/server/abcd", false, true, null), PathProperties.FromPath(@"test", false, true, PathType.Unix));
+			if (test.PathResolved != @"/server/abcd/test")
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathNormalized != @"\\server\test\1234")
-			{
-				throw new TestAssertionException();
-			}
-
-			test = PathProperties.MakeAbsolute(PathProperties.FromPath(@"\\server\test\..\abcd\", false, true, null), PathProperties.FromPath(@"1234\test", false, true, PathType.Unc));
-			if (test.PathResolved != @"\\server\abcd\1234\test")
-			{
-				throw new TestAssertionException();
-			}
-			if (test.PathNormalized != @"\\server\abcd\1234\test")
+			if (test.PathNormalized != @"/server/abcd/test")
 			{
 				throw new TestAssertionException();
 			}
 
-			test = PathProperties.MakeAbsolute(PathProperties.FromPath(@"\\server\test\..\abcd\", false, true, null), PathProperties.FromPath(@"..\1234", false, true, PathType.Unc));
-			if (test.PathResolved != @"\\server\1234")
+			test = PathProperties.MakeAbsolute(PathProperties.FromPath(@"/server/", false, true, null), PathProperties.FromPath(@"test/abcd", false, true, PathType.Unix));
+			if (test.PathResolved != @"/server/test/abcd")
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathNormalized != @"\\server\1234")
+			if (test.PathNormalized != @"/server/test/abcd")
 			{
 				throw new TestAssertionException();
 			}
 
-			test = PathProperties.MakeAbsolute(PathProperties.FromPath(@"\\server\test\.\..\abcd\.\", false, true, null), PathProperties.FromPath(@"\.\test\..\1234\", false, true, PathType.Unc));
-			if (test.PathResolved != @"\\server\abcd\1234")
+			test = PathProperties.MakeAbsolute(PathProperties.FromPath(@"/server/1234", false, true, null), PathProperties.FromPath(@"test/abcd", false, true, PathType.Unix));
+			if (test.PathResolved != @"/server/1234/test/abcd")
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathNormalized != @"\\server\abcd\1234")
+			if (test.PathNormalized != @"/server/1234/test/abcd")
+			{
+				throw new TestAssertionException();
+			}
+
+			test = PathProperties.MakeAbsolute(PathProperties.FromPath(@"/server/test/abcd/", false, true, null), PathProperties.FromPath(@"../1234", false, true, PathType.Unix));
+			if (test.PathResolved != @"/server/test/1234")
+			{
+				throw new TestAssertionException();
+			}
+			if (test.PathNormalized != @"/server/test/1234")
+			{
+				throw new TestAssertionException();
+			}
+
+			test = PathProperties.MakeAbsolute(PathProperties.FromPath(@"/server/test/../abcd/", false, true, null), PathProperties.FromPath(@"1234/test", false, true, PathType.Unix));
+			if (test.PathResolved != @"/server/abcd/1234/test")
+			{
+				throw new TestAssertionException();
+			}
+			if (test.PathNormalized != @"/server/abcd/1234/test")
+			{
+				throw new TestAssertionException();
+			}
+
+			test = PathProperties.MakeAbsolute(PathProperties.FromPath(@"/server/test/../abcd/", false, true, null), PathProperties.FromPath(@"../1234", false, true, PathType.Unix));
+			if (test.PathResolved != @"/server/1234")
+			{
+				throw new TestAssertionException();
+			}
+			if (test.PathNormalized != @"/server/1234")
+			{
+				throw new TestAssertionException();
+			}
+
+			test = PathProperties.MakeAbsolute(PathProperties.FromPath(@"/server/test/./../abcd/./", false, true, null), PathProperties.FromPath(@"./test/../1234/", false, true, PathType.Unix));
+			if (test.PathResolved != @"/server/abcd/1234")
+			{
+				throw new TestAssertionException();
+			}
+			if (test.PathNormalized != @"/server/abcd/1234")
 			{
 				throw new TestAssertionException();
 			}
