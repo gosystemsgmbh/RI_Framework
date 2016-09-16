@@ -4546,8 +4546,8 @@ namespace RI.Test.Framework.IO.Paths
 
 			// Relative
 
-			test = PathProperties.FromPath(@"test", false, false, PathType.Unc);
-			if (test.Type != PathType.Unc)
+			test = PathProperties.FromPath(@"test", false, false, PathType.Unix);
+			if (test.Type != PathType.Unix)
 			{
 				throw new TestAssertionException();
 			}
@@ -4568,12 +4568,34 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			test = PathProperties.FromPath(@"\test", false, false, null);
-			if (test.Type != PathType.Unc)
+			test = PathProperties.FromPath(@"/test", false, false, null);
+			if (test.Type != PathType.Unix)
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathOriginal != @"\test")
+			if (test.PathOriginal != @"/test")
+			{
+				throw new TestAssertionException();
+			}
+			if (test.PathNormalized != @"/test")
+			{
+				throw new TestAssertionException();
+			}
+			if (test.PartsNormalized.Length != 1)
+			{
+				throw new TestAssertionException();
+			}
+			if (test.PartsNormalized[0] != @"test")
+			{
+				throw new TestAssertionException();
+			}
+
+			test = PathProperties.FromPath(@"test/", false, false, null);
+			if (test.Type != PathType.Unix)
+			{
+				throw new TestAssertionException();
+			}
+			if (test.PathOriginal != @"test/")
 			{
 				throw new TestAssertionException();
 			}
@@ -4590,38 +4612,16 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			test = PathProperties.FromPath(@"test\", false, false, null);
-			if (test.Type != PathType.Unc)
+			test = PathProperties.FromPath(@"/test/", false, false, null);
+			if (test.Type != PathType.Unix)
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathOriginal != @"test\")
+			if (test.PathOriginal != @"/test/")
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathNormalized != @"test")
-			{
-				throw new TestAssertionException();
-			}
-			if (test.PartsNormalized.Length != 1)
-			{
-				throw new TestAssertionException();
-			}
-			if (test.PartsNormalized[0] != @"test")
-			{
-				throw new TestAssertionException();
-			}
-
-			test = PathProperties.FromPath(@"\test\", false, false, null);
-			if (test.Type != PathType.Unc)
-			{
-				throw new TestAssertionException();
-			}
-			if (test.PathOriginal != @"\test\")
-			{
-				throw new TestAssertionException();
-			}
-			if (test.PathNormalized != @"test")
+			if (test.PathNormalized != @"/test")
 			{
 				throw new TestAssertionException();
 			}
@@ -4634,16 +4634,42 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			test = PathProperties.FromPath(@"\test\abcd\", false, false, null);
-			if (test.Type != PathType.Unc)
+			test = PathProperties.FromPath(@"test/abcd", false, false, null);
+			if (test.Type != PathType.Unix)
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathOriginal != @"\test\abcd\")
+			if (test.PathOriginal != @"test/abcd")
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathNormalized != @"test\abcd")
+			if (test.PathNormalized != @"test/abcd")
+			{
+				throw new TestAssertionException();
+			}
+			if (test.PartsNormalized.Length != 2)
+			{
+				throw new TestAssertionException();
+			}
+			if (test.PartsNormalized[0] != @"test")
+			{
+				throw new TestAssertionException();
+			}
+			if (test.PartsNormalized[1] != @"abcd")
+			{
+				throw new TestAssertionException();
+			}
+
+			test = PathProperties.FromPath(@"test/abcd/", false, false, null);
+			if (test.Type != PathType.Unix)
+			{
+				throw new TestAssertionException();
+			}
+			if (test.PathOriginal != @"test/abcd/")
+			{
+				throw new TestAssertionException();
+			}
+			if (test.PathNormalized != @"test/abcd")
 			{
 				throw new TestAssertionException();
 			}
@@ -4662,16 +4688,16 @@ namespace RI.Test.Framework.IO.Paths
 
 			// Absolute
 
-			test = PathProperties.FromPath(@"\\server\test\abcd", false, false, null);
-			if (test.Type != PathType.Unc)
+			test = PathProperties.FromPath(@"/server/test/abcd", false, false, null);
+			if (test.Type != PathType.Unix)
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathOriginal != @"\\server\test\abcd")
+			if (test.PathOriginal != @"/server/test/abcd")
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathNormalized != @"\\server\test\abcd")
+			if (test.PathNormalized != @"/server/test/abcd")
 			{
 				throw new TestAssertionException();
 			}
@@ -4692,16 +4718,16 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			test = PathProperties.FromPath(@"\\server\test\abcd\", false, false, null);
-			if (test.Type != PathType.Unc)
+			test = PathProperties.FromPath(@"/server/test/abcd/", false, false, null);
+			if (test.Type != PathType.Unix)
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathOriginal != @"\\server\test\abcd\")
+			if (test.PathOriginal != @"/server/test/abcd/")
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathNormalized != @"\\server\test\abcd")
+			if (test.PathNormalized != @"/server/test/abcd")
 			{
 				throw new TestAssertionException();
 			}
@@ -4728,8 +4754,8 @@ namespace RI.Test.Framework.IO.Paths
 
 			// General
 
-			test = PathProperties.FromPath(@".", false, true, PathType.Unc);
-			if (test.Type != PathType.Unc)
+			test = PathProperties.FromPath(@".", false, true, PathType.Unix);
+			if (test.Type != PathType.Unix)
 			{
 				throw new TestAssertionException();
 			}
@@ -4750,8 +4776,8 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			test = PathProperties.FromPath(@"..", false, true, PathType.Unc);
-			if (test.Type != PathType.Unc)
+			test = PathProperties.FromPath(@"..", false, true, PathType.Unix);
+			if (test.Type != PathType.Unix)
 			{
 				throw new TestAssertionException();
 			}
@@ -4772,8 +4798,8 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			test = PathProperties.FromPath(@"test", false, true, PathType.Unc);
-			if (test.Type != PathType.Unc)
+			test = PathProperties.FromPath(@"test", false, true, PathType.Unix);
+			if (test.Type != PathType.Unix)
 			{
 				throw new TestAssertionException();
 			}
@@ -4794,12 +4820,12 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			test = PathProperties.FromPath(@"\test\", false, true, null);
-			if (test.Type != PathType.Unc)
+			test = PathProperties.FromPath(@"test/", false, true, null);
+			if (test.Type != PathType.Unix)
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathOriginal != @"\test\")
+			if (test.PathOriginal != @"test/")
 			{
 				throw new TestAssertionException();
 			}
@@ -4816,16 +4842,16 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			test = PathProperties.FromPath(@"\\server\test", false, true, null);
-			if (test.Type != PathType.Unc)
+			test = PathProperties.FromPath(@"/server/test", false, true, null);
+			if (test.Type != PathType.Unix)
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathOriginal != @"\\server\test")
+			if (test.PathOriginal != @"/server/test")
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathResolved != @"\\server\test")
+			if (test.PathResolved != @"/server/test")
 			{
 				throw new TestAssertionException();
 			}
@@ -4842,16 +4868,16 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			test = PathProperties.FromPath(@"\\server\test\", false, true, null);
-			if (test.Type != PathType.Unc)
+			test = PathProperties.FromPath(@"/server/test/", false, true, null);
+			if (test.Type != PathType.Unix)
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathOriginal != @"\\server\test\")
+			if (test.PathOriginal != @"/server/test/")
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathResolved != @"\\server\test")
+			if (test.PathResolved != @"/server/test")
 			{
 				throw new TestAssertionException();
 			}
@@ -4870,34 +4896,12 @@ namespace RI.Test.Framework.IO.Paths
 
 			// Relative/Same
 
-			test = PathProperties.FromPath(@"\.\test", false, true, null);
-			if (test.Type != PathType.Unc)
+			test = PathProperties.FromPath(@"./test", false, true, null);
+			if (test.Type != PathType.Unix)
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathOriginal != @"\.\test")
-			{
-				throw new TestAssertionException();
-			}
-			if (test.PathResolved != @"test")
-			{
-				throw new TestAssertionException();
-			}
-			if (test.PartsResolved.Length != 1)
-			{
-				throw new TestAssertionException();
-			}
-			if (test.PartsResolved[0] != @"test")
-			{
-				throw new TestAssertionException();
-			}
-
-			test = PathProperties.FromPath(@".\.\test", false, true, null);
-			if (test.Type != PathType.Unc)
-			{
-				throw new TestAssertionException();
-			}
-			if (test.PathOriginal != @".\.\test")
+			if (test.PathOriginal != @"./test")
 			{
 				throw new TestAssertionException();
 			}
@@ -4914,34 +4918,12 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			test = PathProperties.FromPath(@"test\.\", false, true, null);
-			if (test.Type != PathType.Unc)
+			test = PathProperties.FromPath(@"././test", false, true, null);
+			if (test.Type != PathType.Unix)
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathOriginal != @"test\.\")
-			{
-				throw new TestAssertionException();
-			}
-			if (test.PathResolved != @"test")
-			{
-				throw new TestAssertionException();
-			}
-			if (test.PartsResolved.Length != 1)
-			{
-				throw new TestAssertionException();
-			}
-			if (test.PartsResolved[0] != @"test")
-			{
-				throw new TestAssertionException();
-			}
-
-			test = PathProperties.FromPath(@"test\.\.", false, true, null);
-			if (test.Type != PathType.Unc)
-			{
-				throw new TestAssertionException();
-			}
-			if (test.PathOriginal != @"test\.\.")
+			if (test.PathOriginal != @"././test")
 			{
 				throw new TestAssertionException();
 			}
@@ -4958,12 +4940,56 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			test = PathProperties.FromPath(@".\test\.", false, true, null);
-			if (test.Type != PathType.Unc)
+			test = PathProperties.FromPath(@"test/./", false, true, null);
+			if (test.Type != PathType.Unix)
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathOriginal != @".\test\.")
+			if (test.PathOriginal != @"test/./")
+			{
+				throw new TestAssertionException();
+			}
+			if (test.PathResolved != @"test")
+			{
+				throw new TestAssertionException();
+			}
+			if (test.PartsResolved.Length != 1)
+			{
+				throw new TestAssertionException();
+			}
+			if (test.PartsResolved[0] != @"test")
+			{
+				throw new TestAssertionException();
+			}
+
+			test = PathProperties.FromPath(@"test/./.", false, true, null);
+			if (test.Type != PathType.Unix)
+			{
+				throw new TestAssertionException();
+			}
+			if (test.PathOriginal != @"test/./.")
+			{
+				throw new TestAssertionException();
+			}
+			if (test.PathResolved != @"test")
+			{
+				throw new TestAssertionException();
+			}
+			if (test.PartsResolved.Length != 1)
+			{
+				throw new TestAssertionException();
+			}
+			if (test.PartsResolved[0] != @"test")
+			{
+				throw new TestAssertionException();
+			}
+
+			test = PathProperties.FromPath(@"./test/.", false, true, null);
+			if (test.Type != PathType.Unix)
+			{
+				throw new TestAssertionException();
+			}
+			if (test.PathOriginal != @"./test/.")
 			{
 				throw new TestAssertionException();
 			}
@@ -4982,16 +5008,16 @@ namespace RI.Test.Framework.IO.Paths
 
 			// Relative/Up
 
-			test = PathProperties.FromPath(@"\..\test", false, true, null);
-			if (test.Type != PathType.Unc)
+			test = PathProperties.FromPath(@"../test", false, true, null);
+			if (test.Type != PathType.Unix)
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathOriginal != @"\..\test")
+			if (test.PathOriginal != @"../test")
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathResolved != @"..\test")
+			if (test.PathResolved != @"../test")
 			{
 				throw new TestAssertionException();
 			}
@@ -5008,16 +5034,16 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			test = PathProperties.FromPath(@"..\..\test", false, true, null);
-			if (test.Type != PathType.Unc)
+			test = PathProperties.FromPath(@"../../test", false, true, null);
+			if (test.Type != PathType.Unix)
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathOriginal != @"..\..\test")
+			if (test.PathOriginal != @"../../test")
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathResolved != @"..\..\test")
+			if (test.PathResolved != @"../../test")
 			{
 				throw new TestAssertionException();
 			}
@@ -5038,12 +5064,12 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			test = PathProperties.FromPath(@"test\..\", false, true, null);
-			if (test.Type != PathType.Unc)
+			test = PathProperties.FromPath(@"test/../", false, true, null);
+			if (test.Type != PathType.Unix)
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathOriginal != @"test\..\")
+			if (test.PathOriginal != @"test/../")
 			{
 				throw new TestAssertionException();
 			}
@@ -5060,12 +5086,12 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			test = PathProperties.FromPath(@"test\..\..", false, true, null);
-			if (test.Type != PathType.Unc)
+			test = PathProperties.FromPath(@"test/../..", false, true, null);
+			if (test.Type != PathType.Unix)
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathOriginal != @"test\..\..")
+			if (test.PathOriginal != @"test/../..")
 			{
 				throw new TestAssertionException();
 			}
@@ -5082,12 +5108,12 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			test = PathProperties.FromPath(@"..\test\..", false, true, null);
-			if (test.Type != PathType.Unc)
+			test = PathProperties.FromPath(@"../test/..", false, true, null);
+			if (test.Type != PathType.Unix)
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathOriginal != @"..\test\..")
+			if (test.PathOriginal != @"../test/..")
 			{
 				throw new TestAssertionException();
 			}
@@ -5106,46 +5132,16 @@ namespace RI.Test.Framework.IO.Paths
 
 			// Absolute/Same
 
-			test = PathProperties.FromPath(@"\\server\test\abcd\.", false, true, null);
-			if (test.Type != PathType.Unc)
+			test = PathProperties.FromPath(@"/server/test/abcd/.", false, true, null);
+			if (test.Type != PathType.Unix)
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathOriginal != @"\\server\test\abcd\.")
+			if (test.PathOriginal != @"/server/test/abcd/.")
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathResolved != @"\\server\test\abcd")
-			{
-				throw new TestAssertionException();
-			}
-			if (test.PartsResolved.Length != 3)
-			{
-				throw new TestAssertionException();
-			}
-			if (test.PartsResolved[0] != @"server")
-			{
-				throw new TestAssertionException();
-			}
-			if (test.PartsResolved[1] != @"test")
-			{
-				throw new TestAssertionException();
-			}
-			if (test.PartsResolved[2] != @"abcd")
-			{
-				throw new TestAssertionException();
-			}
-
-			test = PathProperties.FromPath(@"\\server\test\abcd\.\.", false, true, null);
-			if (test.Type != PathType.Unc)
-			{
-				throw new TestAssertionException();
-			}
-			if (test.PathOriginal != @"\\server\test\abcd\.\.")
-			{
-				throw new TestAssertionException();
-			}
-			if (test.PathResolved != @"\\server\test\abcd")
+			if (test.PathResolved != @"/server/test/abcd")
 			{
 				throw new TestAssertionException();
 			}
@@ -5166,46 +5162,16 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			test = PathProperties.FromPath(@"\\server\test\.\abcd", false, true, null);
-			if (test.Type != PathType.Unc)
+			test = PathProperties.FromPath(@"/server/test/abcd/./.", false, true, null);
+			if (test.Type != PathType.Unix)
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathOriginal != @"\\server\test\.\abcd")
+			if (test.PathOriginal != @"/server/test/abcd/./.")
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathResolved != @"\\server\test\abcd")
-			{
-				throw new TestAssertionException();
-			}
-			if (test.PartsResolved.Length != 3)
-			{
-				throw new TestAssertionException();
-			}
-			if (test.PartsResolved[0] != @"server")
-			{
-				throw new TestAssertionException();
-			}
-			if (test.PartsResolved[1] != @"test")
-			{
-				throw new TestAssertionException();
-			}
-			if (test.PartsResolved[2] != @"abcd")
-			{
-				throw new TestAssertionException();
-			}
-
-			test = PathProperties.FromPath(@"\\server\test\.\.\abcd", false, true, null);
-			if (test.Type != PathType.Unc)
-			{
-				throw new TestAssertionException();
-			}
-			if (test.PathOriginal != @"\\server\test\.\.\abcd")
-			{
-				throw new TestAssertionException();
-			}
-			if (test.PathResolved != @"\\server\test\abcd")
+			if (test.PathResolved != @"/server/test/abcd")
 			{
 				throw new TestAssertionException();
 			}
@@ -5226,16 +5192,76 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			test = PathProperties.FromPath(@"\\server\test\.\abcd\.", false, true, null);
-			if (test.Type != PathType.Unc)
+			test = PathProperties.FromPath(@"/server/test/./abcd", false, true, null);
+			if (test.Type != PathType.Unix)
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathOriginal != @"\\server\test\.\abcd\.")
+			if (test.PathOriginal != @"/server/test/./abcd")
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathResolved != @"\\server\test\abcd")
+			if (test.PathResolved != @"/server/test/abcd")
+			{
+				throw new TestAssertionException();
+			}
+			if (test.PartsResolved.Length != 3)
+			{
+				throw new TestAssertionException();
+			}
+			if (test.PartsResolved[0] != @"server")
+			{
+				throw new TestAssertionException();
+			}
+			if (test.PartsResolved[1] != @"test")
+			{
+				throw new TestAssertionException();
+			}
+			if (test.PartsResolved[2] != @"abcd")
+			{
+				throw new TestAssertionException();
+			}
+
+			test = PathProperties.FromPath(@"/server/test/././abcd", false, true, null);
+			if (test.Type != PathType.Unix)
+			{
+				throw new TestAssertionException();
+			}
+			if (test.PathOriginal != @"/server/test/././abcd")
+			{
+				throw new TestAssertionException();
+			}
+			if (test.PathResolved != @"/server/test/abcd")
+			{
+				throw new TestAssertionException();
+			}
+			if (test.PartsResolved.Length != 3)
+			{
+				throw new TestAssertionException();
+			}
+			if (test.PartsResolved[0] != @"server")
+			{
+				throw new TestAssertionException();
+			}
+			if (test.PartsResolved[1] != @"test")
+			{
+				throw new TestAssertionException();
+			}
+			if (test.PartsResolved[2] != @"abcd")
+			{
+				throw new TestAssertionException();
+			}
+
+			test = PathProperties.FromPath(@"/server/test/./abcd/.", false, true, null);
+			if (test.Type != PathType.Unix)
+			{
+				throw new TestAssertionException();
+			}
+			if (test.PathOriginal != @"/server/test/./abcd/.")
+			{
+				throw new TestAssertionException();
+			}
+			if (test.PathResolved != @"/server/test/abcd")
 			{
 				throw new TestAssertionException();
 			}
@@ -5258,16 +5284,16 @@ namespace RI.Test.Framework.IO.Paths
 
 			// Absolute/Up
 
-			test = PathProperties.FromPath(@"\\server\test\abcd\..", false, true, null);
-			if (test.Type != PathType.Unc)
+			test = PathProperties.FromPath(@"/server/test/abcd/..", false, true, null);
+			if (test.Type != PathType.Unix)
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathOriginal != @"\\server\test\abcd\..")
+			if (test.PathOriginal != @"/server/test/abcd/..")
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathResolved != @"\\server\test")
+			if (test.PathResolved != @"/server/test")
 			{
 				throw new TestAssertionException();
 			}
@@ -5284,16 +5310,16 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			test = PathProperties.FromPath(@"\\server\test\abcd\..\..", false, true, null);
-			if (test.Type != PathType.Unc)
+			test = PathProperties.FromPath(@"/server/test/abcd/../..", false, true, null);
+			if (test.Type != PathType.Unix)
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathOriginal != @"\\server\test\abcd\..\..")
+			if (test.PathOriginal != @"/server/test/abcd/../..")
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathResolved != @"\\server")
+			if (test.PathResolved != @"/server")
 			{
 				throw new TestAssertionException();
 			}
@@ -5306,42 +5332,16 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			test = PathProperties.FromPath(@"\\server\test\..\abcd", false, true, null);
-			if (test.Type != PathType.Unc)
+			test = PathProperties.FromPath(@"/server/test/../abcd", false, true, null);
+			if (test.Type != PathType.Unix)
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathOriginal != @"\\server\test\..\abcd")
+			if (test.PathOriginal != @"/server/test/../abcd")
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathResolved != @"\\server\abcd")
-			{
-				throw new TestAssertionException();
-			}
-			if (test.PartsResolved.Length != 2)
-			{
-				throw new TestAssertionException();
-			}
-			if (test.PartsResolved[0] != @"server")
-			{
-				throw new TestAssertionException();
-			}
-			if (test.PartsResolved[1] != @"abcd")
-			{
-				throw new TestAssertionException();
-			}
-
-			test = PathProperties.FromPath(@"\\server\test\1234\..\..\abcd", false, true, null);
-			if (test.Type != PathType.Unc)
-			{
-				throw new TestAssertionException();
-			}
-			if (test.PathOriginal != @"\\server\test\1234\..\..\abcd")
-			{
-				throw new TestAssertionException();
-			}
-			if (test.PathResolved != @"\\server\abcd")
+			if (test.PathResolved != @"/server/abcd")
 			{
 				throw new TestAssertionException();
 			}
@@ -5358,16 +5358,42 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			test = PathProperties.FromPath(@"\\server\test\..\abcd\..", false, true, null);
-			if (test.Type != PathType.Unc)
+			test = PathProperties.FromPath(@"/server/test/1234/../../abcd", false, true, null);
+			if (test.Type != PathType.Unix)
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathOriginal != @"\\server\test\..\abcd\..")
+			if (test.PathOriginal != @"/server/test/1234/../../abcd")
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathResolved != @"\\server")
+			if (test.PathResolved != @"/server/abcd")
+			{
+				throw new TestAssertionException();
+			}
+			if (test.PartsResolved.Length != 2)
+			{
+				throw new TestAssertionException();
+			}
+			if (test.PartsResolved[0] != @"server")
+			{
+				throw new TestAssertionException();
+			}
+			if (test.PartsResolved[1] != @"abcd")
+			{
+				throw new TestAssertionException();
+			}
+
+			test = PathProperties.FromPath(@"/server/test/../abcd/..", false, true, null);
+			if (test.Type != PathType.Unix)
+			{
+				throw new TestAssertionException();
+			}
+			if (test.PathOriginal != @"/server/test/../abcd/..")
+			{
+				throw new TestAssertionException();
+			}
+			if (test.PathResolved != @"/server")
 			{
 				throw new TestAssertionException();
 			}
@@ -5382,12 +5408,12 @@ namespace RI.Test.Framework.IO.Paths
 
 			// Mixed
 
-			test = PathProperties.FromPath(@"..\test\..\.\abcd\..", false, true, null);
-			if (test.Type != PathType.Unc)
+			test = PathProperties.FromPath(@"../test/.././abcd/..", false, true, null);
+			if (test.Type != PathType.Unix)
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathOriginal != @"..\test\..\.\abcd\..")
+			if (test.PathOriginal != @"../test/.././abcd/..")
 			{
 				throw new TestAssertionException();
 			}
@@ -5404,16 +5430,16 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			test = PathProperties.FromPath(@"..\test\..\.\abcd\..\1234", false, true, null);
-			if (test.Type != PathType.Unc)
+			test = PathProperties.FromPath(@"../test/.././abcd/../1234", false, true, null);
+			if (test.Type != PathType.Unix)
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathOriginal != @"..\test\..\.\abcd\..\1234")
+			if (test.PathOriginal != @"../test/.././abcd/../1234")
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathResolved != @"..\1234")
+			if (test.PathResolved != @"../1234")
 			{
 				throw new TestAssertionException();
 			}
@@ -5430,16 +5456,16 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			test = PathProperties.FromPath(@"\\server\.\test\.\..\abcd\..", false, true, null);
-			if (test.Type != PathType.Unc)
+			test = PathProperties.FromPath(@"/server/./test/./../abcd/..", false, true, null);
+			if (test.Type != PathType.Unix)
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathOriginal != @"\\server\.\test\.\..\abcd\..")
+			if (test.PathOriginal != @"/server/./test/./../abcd/..")
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathResolved != @"\\server")
+			if (test.PathResolved != @"/server")
 			{
 				throw new TestAssertionException();
 			}
@@ -5452,16 +5478,16 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			test = PathProperties.FromPath(@"\\server\.\test\.\..\abcd\..\1234", false, true, null);
-			if (test.Type != PathType.Unc)
+			test = PathProperties.FromPath(@"/server/./test/./../abcd/../1234", false, true, null);
+			if (test.Type != PathType.Unix)
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathOriginal != @"\\server\.\test\.\..\abcd\..\1234")
+			if (test.PathOriginal != @"/server/./test/./../abcd/../1234")
 			{
 				throw new TestAssertionException();
 			}
-			if (test.PathResolved != @"\\server\1234")
+			if (test.PathResolved != @"/server/1234")
 			{
 				throw new TestAssertionException();
 			}
