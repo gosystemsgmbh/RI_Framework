@@ -771,17 +771,61 @@ namespace RI.Test.Framework.IO.Paths
 			// Operator
 			//---------
 
-			if (new FilePath("test.tmp") == "test.dat")
+			if (new FilePath("test.tmp") == (FilePath)"test.dat")
 			{
 				throw new TestAssertionException();
 			}
 
-			if (new FilePath("test.tmp") != "test.tmp")
+			if (!(new FilePath("test.tmp") == (FilePath)"test.tmp"))
 			{
 				throw new TestAssertionException();
 			}
 
-			if (new FilePath("test.tmp") == (string)null)
+			if (new FilePath("test.tmp") != (FilePath)"test.tmp")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!(new FilePath("test.tmp") != (FilePath)"test.dat"))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new FilePath("test.tmp") == (FilePath)(string)null)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!(new FilePath("test.tmp") != (FilePath)(string)null))
+			{
+				throw new TestAssertionException();
+			}
+
+			//-------
+			// Static
+			//-------
+
+			if (!PathString.Equals((FilePath)null, (FilePath)null))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (PathString.Equals((FilePath)"test.tmp", (FilePath)null))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (PathString.Equals((FilePath)null, (FilePath)"test.tmp"))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!PathString.Equals((FilePath)"test.tmp", (FilePath)"test.tmp"))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (PathString.Equals((FilePath)"test.tmp", (FilePath)"test.dat"))
 			{
 				throw new TestAssertionException();
 			}
@@ -789,6 +833,11 @@ namespace RI.Test.Framework.IO.Paths
 			//-------
 			// Object
 			//-------
+
+			if (new FilePath("test.tmp").Equals((object)null))
+			{
+				throw new TestAssertionException();
+			}
 
 			if (!new FilePath("test.tmp").Equals((object)(FilePath)"test.tmp"))
 			{
@@ -834,6 +883,178 @@ namespace RI.Test.Framework.IO.Paths
 			}
 
 			if (!new FilePath("test.tmp").Equals(PathProperties.FromPath("test.tmp", false, false, PathString.GetSystemType())))
+			{
+				throw new TestAssertionException();
+			}
+
+			//----------
+			// Hash code
+			//----------
+
+			if (new FilePath("test.tmp").GetHashCode() != new FilePath("test.tmp").GetHashCode())
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new FilePath("test.tmp").GetHashCode() == new FilePath("test.dat").GetHashCode())
+			{
+				throw new TestAssertionException();
+			}
+
+			//-------
+			// String
+			//-------
+
+			if (new FilePath("test.tmp").ToString() != "test.tmp")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new FilePath(@"c:\abcd\test.tmp\").ToString() != @"c:\abcd\test.tmp\")
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void Compare_Test()
+		{
+			//---------
+			// Operator
+			//---------
+
+			if (!(new FilePath("test.tmp") >= new FilePath("test.tmp")))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!(new FilePath("test.tmp") <= new FilePath("test.tmp")))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!(new FilePath("test1234.tmp") >= new FilePath("test.tmp")))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!(new FilePath("test.tmp") <= new FilePath("test1234.tmp")))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!(new FilePath("test1234.tmp") > new FilePath("test.tmp")))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!(new FilePath("test.tmp") < new FilePath("test1234.tmp")))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!(new FilePath("test1234.tmp") >= null))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new FilePath("test.tmp") <= null)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!(new FilePath("test1234.tmp") > null))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new FilePath("test.tmp") < null)
+			{
+				throw new TestAssertionException();
+			}
+
+			//-------
+			// Static
+			//-------
+
+			if (PathString.Compare((FilePath)null, (FilePath)null) != 0)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (PathString.Compare((FilePath)"test.tmp", (FilePath)null) != 1)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (PathString.Compare((FilePath)null, (FilePath)"test.tmp") != -1)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (PathString.Compare((FilePath)"test.tmp", (FilePath)"test.tmp") != 0)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (PathString.Compare((FilePath)"test.tmp", (FilePath)"test.dat") == 0)
+			{
+				throw new TestAssertionException();
+			}
+
+			//-------
+			// Object
+			//-------
+
+			if (new FilePath("test.tmp").CompareTo((object)null) != 1)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new FilePath("test.tmp").CompareTo((object)(FilePath)"test.tmp") != 0)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new FilePath("test.tmp").CompareTo((object)PathProperties.FromPath("test.tmp", false, false, PathString.GetSystemType())) != 0)
+			{
+				throw new TestAssertionException();
+			}
+
+			//---------
+			// FilePath
+			//---------
+
+			if (new FilePath("test.tmp").CompareTo((FilePath)(string)null) != 1)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new FilePath("test.tmp").CompareTo((FilePath)"test.dat") == 0)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new FilePath("test.tmp").CompareTo((FilePath)"test.tmp") != 0)
+			{
+				throw new TestAssertionException();
+			}
+
+			//---------------
+			// PathProperties
+			//---------------
+
+			if (new FilePath("test.tmp").CompareTo((PathProperties)null) != 1)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new FilePath("test.tmp").CompareTo(PathProperties.FromPath("test.dat", false, false, PathString.GetSystemType())) == 0)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new FilePath("test.tmp").CompareTo(PathProperties.FromPath("test.tmp", false, false, PathString.GetSystemType())) != 0)
 			{
 				throw new TestAssertionException();
 			}

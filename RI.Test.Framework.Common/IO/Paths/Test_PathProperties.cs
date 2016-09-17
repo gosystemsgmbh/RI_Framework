@@ -1863,7 +1863,7 @@ namespace RI.Test.Framework.IO.Paths
 			// Comparison
 			//-----------
 
-			if (PathProperties.FromPath(@"c:\test", false, false, null).CompareTo(1234) != -1)
+			if (PathProperties.FromPath(@"c:\test", false, false, null).CompareTo(1234) != 1)
 			{
 				throw new TestAssertionException();
 			}
@@ -3720,7 +3720,7 @@ namespace RI.Test.Framework.IO.Paths
 			// Comparison
 			//-----------
 
-			if (PathProperties.FromPath(@"\\server\test", false, false, null).CompareTo(1234) != -1)
+			if (PathProperties.FromPath(@"\\server\test", false, false, null).CompareTo(1234) != 1)
 			{
 				throw new TestAssertionException();
 			}
@@ -5603,7 +5603,7 @@ namespace RI.Test.Framework.IO.Paths
 			// Comparison
 			//-----------
 
-			if (PathProperties.FromPath(@"/server/test", false, false, null).CompareTo(1234) != -1)
+			if (PathProperties.FromPath(@"/server/test", false, false, null).CompareTo(1234) != 1)
 			{
 				throw new TestAssertionException();
 			}

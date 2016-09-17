@@ -1006,7 +1006,7 @@ namespace RI.Framework.IO.Paths
 		{
 			if (other == null)
 			{
-				return -1;
+				return 1;
 			}
 
 			return string.Compare(this.PathNormalizedComparable, other.PathNormalizedComparable, StringComparison.Ordinal);

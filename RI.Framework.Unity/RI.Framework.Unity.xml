@@ -9919,9 +9919,6 @@
         <member name="P:RI.Framework.IO.Paths.PathString.Type">
             <inheritdoc cref="P:RI.Framework.IO.Paths.PathProperties.Type" />
         </member>
-        <member name="M:RI.Framework.IO.Paths.PathString.CompareTo(System.String)">
-            <inheritdoc cref="M:RI.Framework.IO.Paths.PathString.CompareTo(RI.Framework.IO.Paths.PathString)" />
-        </member>
         <member name="M:RI.Framework.IO.Paths.PathString.CompareTo(RI.Framework.IO.Paths.PathProperties)">
             <inheritdoc cref="M:RI.Framework.IO.Paths.PathString.CompareTo(RI.Framework.IO.Paths.PathString)" />
         </member>

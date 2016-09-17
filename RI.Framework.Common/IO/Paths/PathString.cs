@@ -84,12 +84,12 @@ namespace RI.Framework.IO.Paths
 
 			if (x == null)
 			{
-				return 1;
+				return -1;
 			}
 
 			if (y == null)
 			{
-				return -1;
+				return 1;
 			}
 
 			return x.CompareTo(y);
@@ -341,17 +341,6 @@ namespace RI.Framework.IO.Paths
 		#region Instance Methods
 
 		/// <inheritdoc cref="PathString.CompareTo(PathString)" />
-		public int CompareTo (string other)
-		{
-			if (other == null)
-			{
-				return this.CompareTo((PathProperties)null);
-			}
-
-			return this.CompareTo(PathProperties.FromPath(other, this.PathInternal.AllowWildcards, this.PathInternal.AllowRelatives, this.PathInternal.Type));
-		}
-
-		/// <inheritdoc cref="PathString.CompareTo(PathString)" />
 		public int CompareTo (PathProperties other)
 		{
 			return this.PathInternal.CompareTo(other);
@@ -455,6 +444,11 @@ namespace RI.Framework.IO.Paths
 		/// <inheritdoc />
 		public int CompareTo (object obj)
 		{
+			if (obj is PathProperties)
+			{
+				return this.CompareTo((PathProperties)obj);
+			}
+
 			return this.CompareTo(obj as PathString);
 		}
 
