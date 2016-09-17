@@ -29,7 +29,9 @@ namespace RI.Framework.IO.Paths
 	/// </remarks>
 	[Serializable]
 	public sealed class DirectoryPath : PathString,
-	                                    ICloneable<DirectoryPath>
+	                                    ICloneable<DirectoryPath>,
+		IEquatable<DirectoryPath>,
+		IComparable<DirectoryPath>
 	{
 		#region Static Methods
 
@@ -86,6 +88,7 @@ namespace RI.Framework.IO.Paths
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="path" /> is null. </exception>
+		/// <exception cref="InvalidPathArgumentException"> <paramref name="path" /> is not a valid directory path. </exception>
 		public DirectoryPath (string path)
 			: this(PathProperties.FromPath(path, true, true, PathString.GetSystemType()))
 		{
@@ -488,5 +491,19 @@ namespace RI.Framework.IO.Paths
 		}
 
 		#endregion
+
+
+
+		/// <inheritdoc cref="PathString.Equals(PathString)" />
+		public bool Equals(DirectoryPath other)
+		{
+			return this.Equals((PathString)other);
+		}
+
+		/// <inheritdoc cref="PathString.CompareTo(PathString)" />
+		public int CompareTo(DirectoryPath other)
+		{
+			return this.CompareTo((PathString)other);
+		}
 	}
 }

@@ -29,7 +29,9 @@ namespace RI.Framework.IO.Paths
 	/// TODO: Example
 	[Serializable]
 	public sealed class FilePath : PathString,
-	                               ICloneable<FilePath>
+	                               ICloneable<FilePath>,
+		IEquatable<FilePath>,
+		IComparable<FilePath>
 	{
 		#region Static Methods
 
@@ -75,6 +77,7 @@ namespace RI.Framework.IO.Paths
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="path" /> is null. </exception>
+		/// <exception cref="InvalidPathArgumentException"> <paramref name="path" /> is not a valid file path. </exception>
 		public FilePath (string path)
 			: this(PathProperties.FromPath(path, true, true, PathString.GetSystemType()))
 		{
@@ -249,11 +252,15 @@ namespace RI.Framework.IO.Paths
 		/// <summary>
 		///     Creates a new file path with this file name and directory but another extension.
 		/// </summary>
-		/// <param name="extension"> The new extension (with or without leading dot). </param>
+		/// <param name="extension"> The new extension (with or without a leading dot). </param>
 		/// <returns>
 		///     The new file path.
 		/// </returns>
 		/// <remarks>
+		/// <para>
+		/// If <paramref name="extension"/> is an empty string, the resulting file name will have a dot at its end but no extension.
+		/// If <paramref name="extension"/> is null, the extension (including dot) will be removed.
+		/// </para>
 		/// <note type="note">
 		/// All leading dots will be trimmed to a single leading dot when combined with the rest of the file name.
 		/// </note>
@@ -262,17 +269,15 @@ namespace RI.Framework.IO.Paths
 		/// <exception cref="InvalidPathArgumentException"> The existing file name (without extension) plus <paramref name="extension" /> do not form a valid new file name. </exception>
 		public FilePath ChangeExtension (string extension)
 		{
-			if (extension == null)
+			if (extension != null)
 			{
-				throw new ArgumentNullException(nameof(extension));
+				extension = extension.TrimStart();
+				extension = extension.TrimStart(PathProperties.FileExtensionSeparator);
 			}
-
-			extension = extension.TrimStart();
-			extension = extension.TrimStart(PathProperties.FileExtensionSeparator);
-
+			
 			try
 			{
-				return this.Directory.Append(new FilePath(this.FileNameWithoutExtension + PathProperties.FileExtensionSeparator + extension, this.PathInternal.AllowWildcards, this.PathInternal.AllowRelatives, this.Type));
+				return this.Directory.Append(new FilePath(extension == null ? this.FileNameWithoutExtension : (this.FileNameWithoutExtension + PathProperties.FileExtensionSeparator + extension), this.PathInternal.AllowWildcards, this.PathInternal.AllowRelatives, this.Type));
 			}
 			catch (InvalidPathArgumentException exception)
 			{
@@ -288,12 +293,18 @@ namespace RI.Framework.IO.Paths
 		///     The new file path.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="fileName" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"><paramref name="fileName"/> is empty.</exception>
 		/// <exception cref="InvalidPathArgumentException"> <paramref name="fileName" /> is not a valid new file name. </exception>
 		public FilePath ChangeFileName (string fileName)
 		{
 			if (fileName == null)
 			{
 				throw new ArgumentNullException(nameof(fileName));
+			}
+
+			if (fileName.IsEmpty())
+			{
+				throw new EmptyStringArgumentException(nameof(fileName));
 			}
 
 			try
@@ -313,18 +324,19 @@ namespace RI.Framework.IO.Paths
 		/// <returns>
 		///     The new file path.
 		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// If <paramref name="fileNameWithoutExtension"/> is an empty string, the resulting file name will consist of only the extension (including its dot).
+		/// If <paramref name="fileNameWithoutExtension"/> is null, the resulting file name will consist of only the extension (without its dot).
+		/// </para>
+		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="fileNameWithoutExtension" /> is null. </exception>
 		/// <exception cref="InvalidPathArgumentException"> <paramref name="fileNameWithoutExtension" /> plus the existing extension do not form a valid new file name. </exception>
 		public FilePath ChangeFileNameWithoutExtension (string fileNameWithoutExtension)
 		{
-			if (fileNameWithoutExtension == null)
-			{
-				throw new ArgumentNullException(nameof(fileNameWithoutExtension));
-			}
-
 			try
 			{
-				return this.Directory.Append(new FilePath(fileNameWithoutExtension + PathProperties.FileExtensionSeparator + this.ExtensionWithoutDot, this.PathInternal.AllowWildcards, this.PathInternal.AllowRelatives, this.Type));
+				return this.Directory.Append(new FilePath(fileNameWithoutExtension == null ? this.ExtensionWithoutDot : (fileNameWithoutExtension + PathProperties.FileExtensionSeparator + this.ExtensionWithoutDot), this.PathInternal.AllowWildcards, this.PathInternal.AllowRelatives, this.Type));
 			}
 			catch (InvalidPathArgumentException exception)
 			{
@@ -677,5 +689,19 @@ namespace RI.Framework.IO.Paths
 		}
 
 		#endregion
+
+
+
+		/// <inheritdoc cref="PathString.Equals(PathString)" />
+		public bool Equals (FilePath other)
+		{
+			return this.Equals((PathString)other);
+		}
+
+		/// <inheritdoc cref="PathString.CompareTo(PathString)" />
+		public int CompareTo (FilePath other)
+		{
+			return this.CompareTo((PathString)other);
+		}
 	}
 }

@@ -358,17 +358,6 @@ namespace RI.Framework.IO.Paths
 		}
 
 		/// <inheritdoc cref="PathString.Equals(PathString)" />
-		public bool Equals (string other)
-		{
-			if (other == null)
-			{
-				return this.Equals((PathProperties)null);
-			}
-
-			return this.Equals(PathProperties.FromPath(other, this.PathInternal.AllowWildcards, this.PathInternal.AllowRelatives, this.PathInternal.Type));
-		}
-
-		/// <inheritdoc cref="PathString.Equals(PathString)" />
 		public bool Equals (PathProperties other)
 		{
 			return this.PathInternal.Equals(other);
@@ -410,6 +399,11 @@ namespace RI.Framework.IO.Paths
 		/// <inheritdoc />
 		public override bool Equals (object obj)
 		{
+			if (obj is PathProperties)
+			{
+				return this.Equals((PathProperties)obj);
+			}
+
 			return this.Equals(obj as PathString);
 		}
 

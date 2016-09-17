@@ -8869,6 +8869,7 @@
                 </para>
             </remarks>
             <exception cref="T:System.ArgumentNullException"> <paramref name="path" /> is null. </exception>
+            <exception cref="T:RI.Framework.Utilities.Exceptions.InvalidPathArgumentException"> <paramref name="path" /> is not a valid directory path. </exception>
         </member>
         <member name="M:RI.Framework.IO.Paths.DirectoryPath.#ctor(System.String,System.Boolean,System.Boolean,System.Nullable{RI.Framework.IO.Paths.PathType})">
             <summary>
@@ -9051,6 +9052,12 @@
         <member name="M:RI.Framework.IO.Paths.DirectoryPath.Clone">
             <inheritdoc />
         </member>
+        <member name="M:RI.Framework.IO.Paths.DirectoryPath.Equals(RI.Framework.IO.Paths.DirectoryPath)">
+            <inheritdoc cref="M:RI.Framework.IO.Paths.PathString.Equals(RI.Framework.IO.Paths.PathString)" />
+        </member>
+        <member name="M:RI.Framework.IO.Paths.DirectoryPath.CompareTo(RI.Framework.IO.Paths.DirectoryPath)">
+            <inheritdoc cref="M:RI.Framework.IO.Paths.PathString.CompareTo(RI.Framework.IO.Paths.PathString)" />
+        </member>
         <member name="T:RI.Framework.IO.Paths.FilePath">
             <summary>
                 Describes a path to a file.
@@ -9092,6 +9099,7 @@
                 </para>
             </remarks>
             <exception cref="T:System.ArgumentNullException"> <paramref name="path" /> is null. </exception>
+            <exception cref="T:RI.Framework.Utilities.Exceptions.InvalidPathArgumentException"> <paramref name="path" /> is not a valid file path. </exception>
         </member>
         <member name="M:RI.Framework.IO.Paths.FilePath.#ctor(System.String,System.Boolean,System.Boolean,System.Nullable{RI.Framework.IO.Paths.PathType})">
             <summary>
@@ -9192,11 +9200,15 @@
             <summary>
                 Creates a new file path with this file name and directory but another extension.
             </summary>
-            <param name="extension"> The new extension (with or without leading dot). </param>
+            <param name="extension"> The new extension (with or without a leading dot). </param>
             <returns>
                 The new file path.
             </returns>
             <remarks>
+            <para>
+            If <paramref name="extension"/> is an empty string, the resulting file name will have a dot at its end but no extension.
+            If <paramref name="extension"/> is null, the extension (including dot) will be removed.
+            </para>
             <note type="note">
             All leading dots will be trimmed to a single leading dot when combined with the rest of the file name.
             </note>
@@ -9213,6 +9225,7 @@
                 The new file path.
             </returns>
             <exception cref="T:System.ArgumentNullException"> <paramref name="fileName" /> is null. </exception>
+            <exception cref="T:RI.Framework.Utilities.Exceptions.EmptyStringArgumentException"><paramref name="fileName"/> is empty.</exception>
             <exception cref="T:RI.Framework.Utilities.Exceptions.InvalidPathArgumentException"> <paramref name="fileName" /> is not a valid new file name. </exception>
         </member>
         <member name="M:RI.Framework.IO.Paths.FilePath.ChangeFileNameWithoutExtension(System.String)">
@@ -9223,6 +9236,12 @@
             <returns>
                 The new file path.
             </returns>
+            <remarks>
+            <para>
+            If <paramref name="fileNameWithoutExtension"/> is an empty string, the resulting file name will consist of only the extension (including its dot).
+            If <paramref name="fileNameWithoutExtension"/> is null, the resulting file name will consist of only the extension (without its dot).
+            </para>
+            </remarks>
             <exception cref="T:System.ArgumentNullException"> <paramref name="fileNameWithoutExtension" /> is null. </exception>
             <exception cref="T:RI.Framework.Utilities.Exceptions.InvalidPathArgumentException"> <paramref name="fileNameWithoutExtension" /> plus the existing extension do not form a valid new file name. </exception>
         </member>
@@ -9406,6 +9425,12 @@
         </member>
         <member name="M:RI.Framework.IO.Paths.FilePath.Clone">
             <inheritdoc />
+        </member>
+        <member name="M:RI.Framework.IO.Paths.FilePath.Equals(RI.Framework.IO.Paths.FilePath)">
+            <inheritdoc cref="M:RI.Framework.IO.Paths.PathString.Equals(RI.Framework.IO.Paths.PathString)" />
+        </member>
+        <member name="M:RI.Framework.IO.Paths.FilePath.CompareTo(RI.Framework.IO.Paths.FilePath)">
+            <inheritdoc cref="M:RI.Framework.IO.Paths.PathString.CompareTo(RI.Framework.IO.Paths.PathString)" />
         </member>
         <member name="T:RI.Framework.IO.Paths.PathError">
             <summary>
@@ -9899,9 +9924,6 @@
         </member>
         <member name="M:RI.Framework.IO.Paths.PathString.CompareTo(RI.Framework.IO.Paths.PathProperties)">
             <inheritdoc cref="M:RI.Framework.IO.Paths.PathString.CompareTo(RI.Framework.IO.Paths.PathString)" />
-        </member>
-        <member name="M:RI.Framework.IO.Paths.PathString.Equals(System.String)">
-            <inheritdoc cref="M:RI.Framework.IO.Paths.PathString.Equals(RI.Framework.IO.Paths.PathString)" />
         </member>
         <member name="M:RI.Framework.IO.Paths.PathString.Equals(RI.Framework.IO.Paths.PathProperties)">
             <inheritdoc cref="M:RI.Framework.IO.Paths.PathString.Equals(RI.Framework.IO.Paths.PathString)" />

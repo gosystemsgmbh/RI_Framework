@@ -127,6 +127,68 @@ namespace RI.Test.Framework.IO.Paths
 			{
 				throw new TestAssertionException();
 			}
+
+			//----------------------------------
+			// Files not possible for operations
+			//----------------------------------
+
+			test = new FilePath("*.tmp");
+
+			try
+			{
+				bool temp = test.Exists;
+			}
+			catch (InvalidOperationException)
+			{
+			}
+
+			try
+			{
+				test.Create();
+			}
+			catch (InvalidOperationException)
+			{
+			}
+
+			try
+			{
+				test.Delete();
+			}
+			catch (InvalidOperationException)
+			{
+			}
+
+			try
+			{
+				test.ReadBytes();
+			}
+			catch (InvalidOperationException)
+			{
+			}
+
+			try
+			{
+				test.ReadText();
+			}
+			catch (InvalidOperationException)
+			{
+			}
+
+			try
+			{
+				test.WriteBytes(null);
+			}
+			catch (InvalidOperationException)
+			{
+			}
+
+			try
+			{
+				test.WriteText(null);
+			}
+			catch (InvalidOperationException)
+			{
+			}
 		}
 
 		[TestMethod]
@@ -607,6 +669,21 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
+			if (new FilePath(@"c:\test\1234.tmp").ChangeExtension(@"").PathNormalized != @"c:\test\1234.")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new FilePath(@"c:\test\1234.tmp").ChangeExtension(null).PathNormalized != @"c:\test\1234")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new FilePath(@"c:\test\1234.tmp").ChangeFileName(@"abcd.dat").PathNormalized != @"c:\test\abcd.dat")
+			{
+				throw new TestAssertionException();
+			}
+
 			if (new FilePath(@"c:\test\1234.tmp").ChangeFileName(@"abcd.dat.xxx").PathNormalized != @"c:\test\abcd.dat.xxx")
 			{
 				throw new TestAssertionException();
@@ -615,6 +692,30 @@ namespace RI.Test.Framework.IO.Paths
 			if (new FilePath(@"c:\test\1234.tmp").ChangeFileNameWithoutExtension(@"abcd").PathNormalized != @"c:\test\abcd.tmp")
 			{
 				throw new TestAssertionException();
+			}
+
+			if (new FilePath(@"c:\test\1234.tmp").ChangeFileNameWithoutExtension(@"abcd.dat").PathNormalized != @"c:\test\abcd.dat.tmp")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new FilePath(@"c:\test\1234.tmp").ChangeFileNameWithoutExtension(@"").PathNormalized != @"c:\test\.tmp")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new FilePath(@"c:\test\1234.tmp").ChangeFileNameWithoutExtension(null).PathNormalized != @"c:\test\tmp")
+			{
+				throw new TestAssertionException();
+			}
+
+			try
+			{
+				new FilePath(@"c:\test\1234.tmp").ChangeDirectory(null);
+				throw new TestAssertionException();
+			}
+			catch (ArgumentNullException)
+			{
 			}
 
 			try
@@ -637,11 +738,104 @@ namespace RI.Test.Framework.IO.Paths
 
 			try
 			{
+				new FilePath(@"c:\test\1234.tmp").ChangeFileName(@"");
+				throw new TestAssertionException();
+			}
+			catch (EmptyStringArgumentException)
+			{
+			}
+
+			try
+			{
+				new FilePath(@"c:\test\1234.tmp").ChangeFileName(null);
+				throw new TestAssertionException();
+			}
+			catch (ArgumentNullException)
+			{
+			}
+
+			try
+			{
 				new FilePath(@"c:\test\1234.tmp").ChangeFileNameWithoutExtension(@"|");
 				throw new TestAssertionException();
 			}
 			catch (InvalidPathArgumentException)
 			{
+			}
+		}
+
+		[TestMethod]
+		public void Equals_Test ()
+		{
+			//---------
+			// Operator
+			//---------
+
+			if (new FilePath("test.tmp") == "test.dat")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new FilePath("test.tmp") != "test.tmp")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new FilePath("test.tmp") == (string)null)
+			{
+				throw new TestAssertionException();
+			}
+
+			//-------
+			// Object
+			//-------
+
+			if (!new FilePath("test.tmp").Equals((object)(FilePath)"test.tmp"))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!new FilePath("test.tmp").Equals((object)PathProperties.FromPath("test.tmp", false, false, PathString.GetSystemType())))
+			{
+				throw new TestAssertionException();
+			}
+
+			//---------
+			// FilePath
+			//---------
+
+			if (new FilePath("test.tmp").Equals((FilePath)(string)null))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new FilePath("test.tmp").Equals((FilePath)"test.dat"))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!new FilePath("test.tmp").Equals((FilePath)"test.tmp"))
+			{
+				throw new TestAssertionException();
+			}
+
+			//---------------
+			// PathProperties
+			//---------------
+
+			if (new FilePath("test.tmp").Equals((PathProperties)null))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new FilePath("test.tmp").Equals(PathProperties.FromPath("test.dat", false, false, PathString.GetSystemType())))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!new FilePath("test.tmp").Equals(PathProperties.FromPath("test.tmp", false, false, PathString.GetSystemType())))
+			{
+				throw new TestAssertionException();
 			}
 		}
 	}
