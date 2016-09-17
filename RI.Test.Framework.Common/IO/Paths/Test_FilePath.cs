@@ -5,6 +5,7 @@ using RI.Framework.Collections;
 using RI.Framework.Collections.Comparison;
 using RI.Framework.IO.Paths;
 using RI.Framework.Utilities.Exceptions;
+using RI.Framework.Utilities.ObjectModel;
 
 namespace RI.Test.Framework.IO.Paths
 {
@@ -265,7 +266,7 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			if (test.Type != PathString.GetSystemType())
+			if (test.Type != PathProperties.GetSystemType())
 			{
 				throw new TestAssertionException();
 			}
@@ -341,7 +342,7 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			if (test.Type != PathString.GetSystemType())
+			if (test.Type != PathProperties.GetSystemType())
 			{
 				throw new TestAssertionException();
 			}
@@ -417,7 +418,7 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			if (test.Type != PathString.GetSystemType())
+			if (test.Type != PathProperties.GetSystemType())
 			{
 				throw new TestAssertionException();
 			}
@@ -493,7 +494,7 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			if (test.Type != PathString.GetSystemType())
+			if (test.Type != PathProperties.GetSystemType())
 			{
 				throw new TestAssertionException();
 			}
@@ -569,7 +570,7 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			if (test.Type != PathString.GetSystemType())
+			if (test.Type != PathProperties.GetSystemType())
 			{
 				throw new TestAssertionException();
 			}
@@ -645,7 +646,7 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			if (test.Type != PathString.GetSystemType())
+			if (test.Type != PathProperties.GetSystemType())
 			{
 				throw new TestAssertionException();
 			}
@@ -844,7 +845,7 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			if (!new FilePath("test.tmp").Equals((object)PathProperties.FromPath("test.tmp", false, false, PathString.GetSystemType())))
+			if (!new FilePath("test.tmp").Equals((object)PathProperties.FromPath("test.tmp", false, false, PathProperties.GetSystemType())))
 			{
 				throw new TestAssertionException();
 			}
@@ -877,12 +878,12 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			if (new FilePath("test.tmp").Equals(PathProperties.FromPath("test.dat", false, false, PathString.GetSystemType())))
+			if (new FilePath("test.tmp").Equals(PathProperties.FromPath("test.dat", false, false, PathProperties.GetSystemType())))
 			{
 				throw new TestAssertionException();
 			}
 
-			if (!new FilePath("test.tmp").Equals(PathProperties.FromPath("test.tmp", false, false, PathString.GetSystemType())))
+			if (!new FilePath("test.tmp").Equals(PathProperties.FromPath("test.tmp", false, false, PathProperties.GetSystemType())))
 			{
 				throw new TestAssertionException();
 			}
@@ -911,6 +912,11 @@ namespace RI.Test.Framework.IO.Paths
 			}
 
 			if (new FilePath(@"c:\abcd\test.tmp\").ToString() != @"c:\abcd\test.tmp\")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (( (string)( (FilePath)null ) ) != null)
 			{
 				throw new TestAssertionException();
 			}
@@ -1016,7 +1022,7 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			if (new FilePath("test.tmp").CompareTo((object)PathProperties.FromPath("test.tmp", false, false, PathString.GetSystemType())) != 0)
+			if (new FilePath("test.tmp").CompareTo((object)PathProperties.FromPath("test.tmp", false, false, PathProperties.GetSystemType())) != 0)
 			{
 				throw new TestAssertionException();
 			}
@@ -1049,12 +1055,34 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			if (new FilePath("test.tmp").CompareTo(PathProperties.FromPath("test.dat", false, false, PathString.GetSystemType())) == 0)
+			if (new FilePath("test.tmp").CompareTo(PathProperties.FromPath("test.dat", false, false, PathProperties.GetSystemType())) == 0)
 			{
 				throw new TestAssertionException();
 			}
 
-			if (new FilePath("test.tmp").CompareTo(PathProperties.FromPath("test.tmp", false, false, PathString.GetSystemType())) != 0)
+			if (new FilePath("test.tmp").CompareTo(PathProperties.FromPath("test.tmp", false, false, PathProperties.GetSystemType())) != 0)
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void Clone_Test ()
+		{
+			ICloneable test1 = new FilePath("test.tmp");
+			if ((FilePath)test1.Clone() != (FilePath)"test.tmp")
+			{
+				throw new TestAssertionException();
+			}
+
+			ICloneable<FilePath> test2 = new FilePath("test.tmp");
+			if (test2.Clone() != (FilePath)"test.tmp")
+			{
+				throw new TestAssertionException();
+			}
+
+			ICloneable<PathString> test3 = new FilePath("test.tmp");
+			if (test3.Clone() != (FilePath)"test.tmp")
 			{
 				throw new TestAssertionException();
 			}

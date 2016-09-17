@@ -100,6 +100,58 @@ namespace RI.Framework.IO.Paths
 		#region Static Methods
 
 		/// <summary>
+		/// Gets the <see cref="PathType"/> which is used by the current system.
+		/// </summary>
+		/// <returns>
+		/// The <see cref="PathType"/> which is used by the current system or null if the type cannot be determined.
+		/// </returns>
+		public static PathType? GetSystemType()
+		{
+			switch (Environment.OSVersion.Platform)
+			{
+				default:
+				{
+					return null;
+				}
+
+				case PlatformID.Win32NT:
+				{
+					return PathType.Windows;
+				}
+
+				case PlatformID.Win32Windows:
+				{
+					return PathType.Windows;
+				}
+
+				case PlatformID.Win32S:
+				{
+					return PathType.Windows;
+				}
+
+				case PlatformID.WinCE:
+				{
+					return PathType.Windows;
+				}
+
+				case PlatformID.Xbox:
+				{
+					return PathType.Windows;
+				}
+
+				case PlatformID.MacOSX:
+				{
+					return PathType.Unix;
+				}
+
+				case PlatformID.Unix:
+				{
+					return PathType.Unix;
+				}
+			}
+		}
+
+		/// <summary>
 		///     Analyzes a path and returns the results as an instance of <see cref="PathProperties" />.
 		/// </summary>
 		/// <param name="path"> The path to analyze. </param>
@@ -129,7 +181,7 @@ namespace RI.Framework.IO.Paths
 				}
 			}
 
-			path = path ?? string.Empty;
+			path = path ?? String.Empty;
 
 			PathType? type = null;
 			PathError error = PathError.None;
@@ -330,7 +382,7 @@ namespace RI.Framework.IO.Paths
 						break;
 					}
 
-					if (string.Equals(trimmed, PathProperties.RelativeSame, StringComparison.Ordinal) || string.Equals(trimmed, PathProperties.RelativeUp, StringComparison.Ordinal))
+					if (String.Equals(trimmed, PathProperties.RelativeSame, StringComparison.Ordinal) || String.Equals(trimmed, PathProperties.RelativeUp, StringComparison.Ordinal))
 					{
 						hasRelatives = true;
 						if (!allowRelatives)
@@ -359,12 +411,12 @@ namespace RI.Framework.IO.Paths
 				{
 					string part = parts[i1];
 
-					if (string.Equals(part, PathProperties.RelativeSame, StringComparison.Ordinal))
+					if (String.Equals(part, PathProperties.RelativeSame, StringComparison.Ordinal))
 					{
 						continue;
 					}
 
-					if (string.Equals(part, PathProperties.RelativeUp, StringComparison.Ordinal))
+					if (String.Equals(part, PathProperties.RelativeUp, StringComparison.Ordinal))
 					{
 						if (isRooted && (partsResolved.Count <= 1))
 						{
@@ -375,7 +427,7 @@ namespace RI.Framework.IO.Paths
 
 						if (partsResolved.Count > 0)
 						{
-							if (!string.Equals(partsResolved[partsResolved.Count - 1], PathProperties.RelativeUp, StringComparison.Ordinal))
+							if (!String.Equals(partsResolved[partsResolved.Count - 1], PathProperties.RelativeUp, StringComparison.Ordinal))
 							{
 								partsResolved.RemoveAt(partsResolved.Count - 1);
 								continue;
@@ -434,7 +486,7 @@ namespace RI.Framework.IO.Paths
 				}
 			}
 
-			bool isRoot = string.Equals(pathNormalized, root, comparison);
+			bool isRoot = String.Equals(pathNormalized, root, comparison);
 
 			string parent = null;
 
@@ -607,7 +659,7 @@ namespace RI.Framework.IO.Paths
 			List<string> leadingMatch = new List<string>();
 			for (int i1 = 0; i1 < Math.Min(rootParts.Length, pathParts.Length); i1++)
 			{
-				if (string.Equals(rootParts[i1], pathParts[i1], root.Comparison))
+				if (String.Equals(rootParts[i1], pathParts[i1], root.Comparison))
 				{
 					leadingMatch.Add(rootParts[i1]);
 				}
@@ -722,7 +774,7 @@ namespace RI.Framework.IO.Paths
 
 		private static bool IsAtoZ (char chr)
 		{
-			chr = char.ToUpperInvariant(chr);
+			chr = Char.ToUpperInvariant(chr);
 			return ( chr >= 'A' ) && ( chr <= 'Z' );
 		}
 
@@ -1009,7 +1061,7 @@ namespace RI.Framework.IO.Paths
 				return 1;
 			}
 
-			return string.Compare(this.PathNormalizedComparable, other.PathNormalizedComparable, StringComparison.Ordinal);
+			return String.Compare(this.PathNormalizedComparable, other.PathNormalizedComparable, StringComparison.Ordinal);
 		}
 
 		#endregion
@@ -1027,7 +1079,7 @@ namespace RI.Framework.IO.Paths
 				return false;
 			}
 
-			return string.Equals(this.PathNormalizedComparable, other.PathNormalizedComparable, StringComparison.Ordinal);
+			return String.Equals(this.PathNormalizedComparable, other.PathNormalizedComparable, StringComparison.Ordinal);
 		}
 
 		#endregion

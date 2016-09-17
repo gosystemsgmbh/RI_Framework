@@ -20,52 +20,6 @@ namespace RI.Framework.IO.Paths
 	{
 		#region Static Methods
 
-		public static PathType? GetSystemType()
-		{
-			switch (Environment.OSVersion.Platform)
-			{
-				default:
-					{
-						return null;
-					}
-
-				case PlatformID.Win32NT:
-					{
-						return PathType.Windows;
-					}
-
-				case PlatformID.Win32Windows:
-					{
-						return PathType.Windows;
-					}
-
-				case PlatformID.Win32S:
-					{
-						return PathType.Windows;
-					}
-
-				case PlatformID.WinCE:
-					{
-						return PathType.Windows;
-					}
-
-				case PlatformID.Xbox:
-					{
-						return PathType.Windows;
-					}
-
-				case PlatformID.MacOSX:
-					{
-						return PathType.Unix;
-					}
-
-				case PlatformID.Unix:
-					{
-						return PathType.Unix;
-					}
-			}
-		}
-
 		/// <summary>
 		///     Compares two <see cref="PathString" />s for order.
 		/// </summary>

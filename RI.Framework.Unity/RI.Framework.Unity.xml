@@ -9561,6 +9561,14 @@
                 </para>
             </remarks>
         </member>
+        <member name="M:RI.Framework.IO.Paths.PathProperties.GetSystemType">
+            <summary>
+            Gets the <see cref="T:RI.Framework.IO.Paths.PathType"/> which is used by the current system.
+            </summary>
+            <returns>
+            The <see cref="T:RI.Framework.IO.Paths.PathType"/> which is used by the current system or null if the type cannot be determined.
+            </returns>
+        </member>
         <member name="M:RI.Framework.IO.Paths.PathProperties.FromPath(System.String,System.Boolean,System.Boolean,System.Nullable{RI.Framework.IO.Paths.PathType})">
             <summary>
                 Analyzes a path and returns the results as an instance of <see cref="T:RI.Framework.IO.Paths.PathProperties" />.
