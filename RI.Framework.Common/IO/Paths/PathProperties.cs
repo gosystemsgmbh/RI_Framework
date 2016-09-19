@@ -171,6 +171,7 @@ namespace RI.Framework.IO.Paths
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="assumedType" /> is <see cref="PathType.Invalid" />. </exception>
+		/// TODO: Add overloads
 		public static PathProperties FromPath (string path, bool allowWildcards, bool allowRelatives, PathType? assumedType)
 		{
 			if (assumedType.HasValue)

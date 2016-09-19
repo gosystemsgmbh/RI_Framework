@@ -5,9 +5,10 @@
 - [ ] Features
   - [X] File and directory path
   - [X] INI handling
+  - [ ] Use FilePath and DirectoryPath
   - [ ] Additional dispatcher Features
   - [ ] Analyze and implement magic thread
-  - [X] TODOs
+  - [ ] TODOs
 - [ ] Documentation
   - [ ] Examples
   - [ ] Type and member descriptions

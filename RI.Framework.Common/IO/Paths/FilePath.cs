@@ -107,6 +107,7 @@ namespace RI.Framework.IO.Paths
 		/// </summary>
 		/// <param name="path"> The <see cref="PathProperties" /> object which describes the path. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="path" /> is null. </exception>
+		/// TODO: Add overloads
 		public FilePath (PathProperties path)
 			: base(path)
 		{
@@ -246,7 +247,7 @@ namespace RI.Framework.IO.Paths
 				throw new ArgumentNullException(nameof(directory));
 			}
 
-			return directory.Append(new FilePath(this.FileName, this.PathInternal.AllowWildcards, this.PathInternal.AllowRelatives, this.Type));
+			return directory.AppendFile(new FilePath(this.FileName, this.PathInternal.AllowWildcards, this.PathInternal.AllowRelatives, this.Type));
 		}
 
 		/// <summary>
@@ -277,7 +278,7 @@ namespace RI.Framework.IO.Paths
 			
 			try
 			{
-				return this.Directory.Append(new FilePath(extension == null ? this.FileNameWithoutExtension : (this.FileNameWithoutExtension + PathProperties.FileExtensionSeparator + extension), this.PathInternal.AllowWildcards, this.PathInternal.AllowRelatives, this.Type));
+				return this.Directory.AppendFile(new FilePath(extension == null ? this.FileNameWithoutExtension : (this.FileNameWithoutExtension + PathProperties.FileExtensionSeparator + extension), this.PathInternal.AllowWildcards, this.PathInternal.AllowRelatives, this.Type));
 			}
 			catch (InvalidPathArgumentException exception)
 			{
@@ -309,7 +310,7 @@ namespace RI.Framework.IO.Paths
 
 			try
 			{
-				return this.Directory.Append(new FilePath(fileName, this.PathInternal.AllowWildcards, this.PathInternal.AllowRelatives, this.Type));
+				return this.Directory.AppendFile(new FilePath(fileName, this.PathInternal.AllowWildcards, this.PathInternal.AllowRelatives, this.Type));
 			}
 			catch (InvalidPathArgumentException exception)
 			{
@@ -336,7 +337,7 @@ namespace RI.Framework.IO.Paths
 		{
 			try
 			{
-				return this.Directory.Append(new FilePath(fileNameWithoutExtension == null ? this.ExtensionWithoutDot : (fileNameWithoutExtension + PathProperties.FileExtensionSeparator + this.ExtensionWithoutDot), this.PathInternal.AllowWildcards, this.PathInternal.AllowRelatives, this.Type));
+				return this.Directory.AppendFile(new FilePath(fileNameWithoutExtension == null ? this.ExtensionWithoutDot : (fileNameWithoutExtension + PathProperties.FileExtensionSeparator + this.ExtensionWithoutDot), this.PathInternal.AllowWildcards, this.PathInternal.AllowRelatives, this.Type));
 			}
 			catch (InvalidPathArgumentException exception)
 			{
@@ -495,7 +496,7 @@ namespace RI.Framework.IO.Paths
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="root" /> is null. </exception>
 		/// <exception cref="InvalidPathArgumentException"> <paramref name="root" /> is not a rooted path. </exception>
-		public FilePath ToAbsolutePath (DirectoryPath root)
+		public FilePath MakeAbsoluteFrom (DirectoryPath root)
 		{
 			if (root == null)
 			{
@@ -526,10 +527,13 @@ namespace RI.Framework.IO.Paths
 		///     <para>
 		///         If this file path is already relative, nothing is done and the same file path is returned.
 		///     </para>
+		/// <note type="important">
+		/// If this file path and <paramref name="root"/> do not have the same root, the same value as this file path is returned, still being an absolute path.
+		/// </note>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="root" /> is null. </exception>
 		/// <exception cref="InvalidPathArgumentException"> <paramref name="root" /> is not a rooted path. </exception>
-		public FilePath ToRelativePath (DirectoryPath root)
+		public FilePath MakeRelativeTo (DirectoryPath root)
 		{
 			if (root == null)
 			{

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 
 using RI.Framework.Collections;
+using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.ObjectModel;
 
@@ -118,6 +119,7 @@ namespace RI.Framework.IO.Paths
 		/// </summary>
 		/// <param name="path"> The <see cref="PathProperties" /> object which describes the path. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="path" /> is null. </exception>
+		/// TODO: Add overloads
 		public DirectoryPath (PathProperties path)
 			: base(path)
 		{
@@ -214,14 +216,14 @@ namespace RI.Framework.IO.Paths
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="directories" /> is null. </exception>
 		/// <exception cref="InvalidPathArgumentException"> <paramref name="directories" /> contains at least one <see cref="DirectoryPath" /> which is rooted. </exception>
-		public DirectoryPath Append (IEnumerable<DirectoryPath> directories)
+		public DirectoryPath AppendDirectories (IEnumerable<DirectoryPath> directories)
 		{
 			if (directories == null)
 			{
 				throw new ArgumentNullException(nameof(directories));
 			}
 
-			return this.Append(directories.ToArray());
+			return this.AppendDirectories(directories.ToArray());
 		}
 
 		/// <summary>
@@ -238,7 +240,7 @@ namespace RI.Framework.IO.Paths
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="directories" /> is null. </exception>
 		/// <exception cref="InvalidPathArgumentException"> <paramref name="directories" /> contains at least one <see cref="DirectoryPath" /> which is rooted. </exception>
-		public DirectoryPath Append (params DirectoryPath[] directories)
+		public DirectoryPath AppendDirectories (params DirectoryPath[] directories)
 		{
 			if (directories == null)
 			{
@@ -269,7 +271,7 @@ namespace RI.Framework.IO.Paths
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="file" /> is null. </exception>
 		/// <exception cref="InvalidPathArgumentException"> <paramref name="file" /> is a rooted file path. </exception>
-		public FilePath Append (FilePath file)
+		public FilePath AppendFile (FilePath file)
 		{
 			if (file == null)
 			{
@@ -297,6 +299,7 @@ namespace RI.Framework.IO.Paths
 		///     The new directory path.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="directoryName" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"><paramref name="directoryName"/> is empty.</exception>
 		/// <exception cref="InvalidPathArgumentException"> <paramref name="directoryName" /> is not a valid new directory name. </exception>
 		public DirectoryPath ChangeDirectoryName (string directoryName)
 		{
@@ -305,9 +308,19 @@ namespace RI.Framework.IO.Paths
 				throw new ArgumentNullException(nameof(directoryName));
 			}
 
+			if (directoryName.IsEmpty())
+			{
+				throw new EmptyStringArgumentException(nameof(directoryName));
+			}
+
 			try
 			{
-				return this.Parent.Append(new DirectoryPath(directoryName, this.PathInternal.AllowWildcards, this.PathInternal.AllowRelatives, this.Type));
+				if (this.Parent == null)
+				{
+					return new DirectoryPath(directoryName, this.PathInternal.AllowWildcards, this.PathInternal.AllowRelatives, this.Type);
+				}
+
+				return this.Parent.AppendDirectories(new DirectoryPath(directoryName, this.PathInternal.AllowWildcards, this.PathInternal.AllowRelatives, this.Type));
 			}
 			catch (InvalidPathArgumentException exception)
 			{
@@ -322,15 +335,19 @@ namespace RI.Framework.IO.Paths
 		/// <returns>
 		///     The new directory path.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"> <paramref name="newParent" /> is null. </exception>
+		/// <remarks>
+		/// <para>
+		/// If <paramref name="newParent"/> is null, the resulting directory is a relative directory only consisting of this <see cref="DirectoryName"/> where the whole parent directory part is removed.
+		/// </para>
+		/// </remarks>
 		public DirectoryPath ChangeParent (DirectoryPath newParent)
 		{
 			if (newParent == null)
 			{
-				throw new ArgumentNullException(nameof(newParent));
+				return new DirectoryPath(this.DirectoryName, this.PathInternal.AllowWildcards, this.PathInternal.AllowRelatives, this.Type);
 			}
 
-			return newParent.Append(new DirectoryPath(this.DirectoryName));
+			return newParent.AppendDirectories(new DirectoryPath(this.DirectoryName));
 		}
 
 		/// <summary>
@@ -402,7 +419,7 @@ namespace RI.Framework.IO.Paths
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="root" /> is null. </exception>
 		/// <exception cref="InvalidPathArgumentException"> <paramref name="root" /> is not a rooted path. </exception>
-		public DirectoryPath ToAbsolutePath (DirectoryPath root)
+		public DirectoryPath MakeAbsoluteFrom (DirectoryPath root)
 		{
 			if (root == null)
 			{
@@ -433,10 +450,13 @@ namespace RI.Framework.IO.Paths
 		///     <para>
 		///         If this directory path is already relative, nothing is done and the same directory path is returned.
 		///     </para>
+		/// <note type="important">
+		/// If this directory path and <paramref name="root"/> do not have the same root, the same value as this directory path is returned, still being an absolute path.
+		/// </note>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="root" /> is null. </exception>
 		/// <exception cref="InvalidPathArgumentException"> <paramref name="root" /> is not a rooted path. </exception>
-		public DirectoryPath ToRelativePath (DirectoryPath root)
+		public DirectoryPath MakeRelativeTo (DirectoryPath root)
 		{
 			if (root == null)
 			{

@@ -8893,6 +8893,7 @@
             </summary>
             <param name="path"> The <see cref="T:RI.Framework.IO.Paths.PathProperties" /> object which describes the path. </param>
             <exception cref="T:System.ArgumentNullException"> <paramref name="path" /> is null. </exception>
+            TODO: Add overloads
         </member>
         <member name="P:RI.Framework.IO.Paths.DirectoryPath.DirectoryName">
             <summary>
@@ -8922,7 +8923,7 @@
                 The parent directory or null if this directory is a root or does not have a parent directory.
             </value>
         </member>
-        <member name="M:RI.Framework.IO.Paths.DirectoryPath.Append(System.Collections.Generic.IEnumerable{RI.Framework.IO.Paths.DirectoryPath})">
+        <member name="M:RI.Framework.IO.Paths.DirectoryPath.AppendDirectories(System.Collections.Generic.IEnumerable{RI.Framework.IO.Paths.DirectoryPath})">
             <summary>
                 Creates a new directory path by appending one or more additional directory paths.
             </summary>
@@ -8941,7 +8942,7 @@
             <exception cref="T:System.ArgumentNullException"> <paramref name="directories" /> is null. </exception>
             <exception cref="T:RI.Framework.Utilities.Exceptions.InvalidPathArgumentException"> <paramref name="directories" /> contains at least one <see cref="T:RI.Framework.IO.Paths.DirectoryPath" /> which is rooted. </exception>
         </member>
-        <member name="M:RI.Framework.IO.Paths.DirectoryPath.Append(RI.Framework.IO.Paths.DirectoryPath[])">
+        <member name="M:RI.Framework.IO.Paths.DirectoryPath.AppendDirectories(RI.Framework.IO.Paths.DirectoryPath[])">
             <summary>
                 Creates a new directory path by appending one or more additional directory paths.
             </summary>
@@ -8957,7 +8958,7 @@
             <exception cref="T:System.ArgumentNullException"> <paramref name="directories" /> is null. </exception>
             <exception cref="T:RI.Framework.Utilities.Exceptions.InvalidPathArgumentException"> <paramref name="directories" /> contains at least one <see cref="T:RI.Framework.IO.Paths.DirectoryPath" /> which is rooted. </exception>
         </member>
-        <member name="M:RI.Framework.IO.Paths.DirectoryPath.Append(RI.Framework.IO.Paths.FilePath)">
+        <member name="M:RI.Framework.IO.Paths.DirectoryPath.AppendFile(RI.Framework.IO.Paths.FilePath)">
             <summary>
                 Creates a new file path by appending an existing relative file path to this directory.
             </summary>
@@ -8977,6 +8978,7 @@
                 The new directory path.
             </returns>
             <exception cref="T:System.ArgumentNullException"> <paramref name="directoryName" /> is null. </exception>
+            <exception cref="T:RI.Framework.Utilities.Exceptions.EmptyStringArgumentException"><paramref name="directoryName"/> is empty.</exception>
             <exception cref="T:RI.Framework.Utilities.Exceptions.InvalidPathArgumentException"> <paramref name="directoryName" /> is not a valid new directory name. </exception>
         </member>
         <member name="M:RI.Framework.IO.Paths.DirectoryPath.ChangeParent(RI.Framework.IO.Paths.DirectoryPath)">
@@ -8987,7 +8989,11 @@
             <returns>
                 The new directory path.
             </returns>
-            <exception cref="T:System.ArgumentNullException"> <paramref name="newParent" /> is null. </exception>
+            <remarks>
+            <para>
+            If <paramref name="newParent"/> is null, the resulting directory is a relative directory only consisting of this <see cref="P:RI.Framework.IO.Paths.DirectoryPath.DirectoryName"/> where the whole parent directory part is removed.
+            </para>
+            </remarks>
         </member>
         <member name="M:RI.Framework.IO.Paths.DirectoryPath.Create">
             <summary>
@@ -9014,7 +9020,7 @@
             <exception cref="T:System.UnauthorizedAccessException"> The user does not have the required permissions. </exception>
             <exception cref="T:System.IO.PathTooLongException"> Although being a valid directory path, the directory path is too long for the current system to be used. </exception>
         </member>
-        <member name="M:RI.Framework.IO.Paths.DirectoryPath.ToAbsolutePath(RI.Framework.IO.Paths.DirectoryPath)">
+        <member name="M:RI.Framework.IO.Paths.DirectoryPath.MakeAbsoluteFrom(RI.Framework.IO.Paths.DirectoryPath)">
             <summary>
                 Creates an absolute directory path out of this directory path relative to a specified root path.
             </summary>
@@ -9030,7 +9036,7 @@
             <exception cref="T:System.ArgumentNullException"> <paramref name="root" /> is null. </exception>
             <exception cref="T:RI.Framework.Utilities.Exceptions.InvalidPathArgumentException"> <paramref name="root" /> is not a rooted path. </exception>
         </member>
-        <member name="M:RI.Framework.IO.Paths.DirectoryPath.ToRelativePath(RI.Framework.IO.Paths.DirectoryPath)">
+        <member name="M:RI.Framework.IO.Paths.DirectoryPath.MakeRelativeTo(RI.Framework.IO.Paths.DirectoryPath)">
             <summary>
                 Creates a relative directory path out of this directory path relative to a specified root path.
             </summary>
@@ -9042,6 +9048,9 @@
                 <para>
                     If this directory path is already relative, nothing is done and the same directory path is returned.
                 </para>
+            <note type="important">
+            If this directory path and <paramref name="root"/> do not have the same root, the same value as this directory path is returned, still being an absolute path.
+            </note>
             </remarks>
             <exception cref="T:System.ArgumentNullException"> <paramref name="root" /> is null. </exception>
             <exception cref="T:RI.Framework.Utilities.Exceptions.InvalidPathArgumentException"> <paramref name="root" /> is not a rooted path. </exception>
@@ -9123,6 +9132,7 @@
             </summary>
             <param name="path"> The <see cref="T:RI.Framework.IO.Paths.PathProperties" /> object which describes the path. </param>
             <exception cref="T:System.ArgumentNullException"> <paramref name="path" /> is null. </exception>
+            TODO: Add overloads
         </member>
         <member name="P:RI.Framework.IO.Paths.FilePath.Directory">
             <summary>
@@ -9318,7 +9328,7 @@
             <exception cref="T:System.UnauthorizedAccessException"> The user does not have the required permissions or the file is an executable which is in use. </exception>
             <exception cref="T:System.IO.PathTooLongException"> Although being a valid file path, the file path is too long for the current system to be used. </exception>
         </member>
-        <member name="M:RI.Framework.IO.Paths.FilePath.ToAbsolutePath(RI.Framework.IO.Paths.DirectoryPath)">
+        <member name="M:RI.Framework.IO.Paths.FilePath.MakeAbsoluteFrom(RI.Framework.IO.Paths.DirectoryPath)">
             <summary>
                 Creates an absolute file path out of this file path relative to a specified root path.
             </summary>
@@ -9334,7 +9344,7 @@
             <exception cref="T:System.ArgumentNullException"> <paramref name="root" /> is null. </exception>
             <exception cref="T:RI.Framework.Utilities.Exceptions.InvalidPathArgumentException"> <paramref name="root" /> is not a rooted path. </exception>
         </member>
-        <member name="M:RI.Framework.IO.Paths.FilePath.ToRelativePath(RI.Framework.IO.Paths.DirectoryPath)">
+        <member name="M:RI.Framework.IO.Paths.FilePath.MakeRelativeTo(RI.Framework.IO.Paths.DirectoryPath)">
             <summary>
                 Creates a relative file path out of this file path relative to a specified root path.
             </summary>
@@ -9346,6 +9356,9 @@
                 <para>
                     If this file path is already relative, nothing is done and the same file path is returned.
                 </para>
+            <note type="important">
+            If this file path and <paramref name="root"/> do not have the same root, the same value as this file path is returned, still being an absolute path.
+            </note>
             </remarks>
             <exception cref="T:System.ArgumentNullException"> <paramref name="root" /> is null. </exception>
             <exception cref="T:RI.Framework.Utilities.Exceptions.InvalidPathArgumentException"> <paramref name="root" /> is not a rooted path. </exception>
@@ -9590,6 +9603,7 @@
                 </para>
             </remarks>
             <exception cref="T:System.ArgumentOutOfRangeException"> <paramref name="assumedType" /> is <see cref="F:RI.Framework.IO.Paths.PathType.Invalid" />. </exception>
+            TODO: Add overloads
         </member>
         <member name="M:RI.Framework.IO.Paths.PathProperties.MakeAbsolute(RI.Framework.IO.Paths.PathProperties,RI.Framework.IO.Paths.PathProperties)">
             <summary>

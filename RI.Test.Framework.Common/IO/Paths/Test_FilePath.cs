@@ -96,7 +96,7 @@ namespace RI.Test.Framework.IO.Paths
 			}
 
 			//-------------------------
-			// Writing and reading text
+			// Writing and reading data
 			//-------------------------
 
 			byte[] data = new byte[]
@@ -1083,6 +1083,95 @@ namespace RI.Test.Framework.IO.Paths
 
 			ICloneable<PathString> test3 = new FilePath("test.tmp");
 			if (test3.Clone() != (FilePath)"test.tmp")
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void MakeRelativeTo_Test ()
+		{
+			try
+			{
+				new FilePath(@"c:\abcd\test.tmp").MakeRelativeTo(null);
+				throw new TestAssertionException();
+			}
+			catch (ArgumentNullException)
+			{
+			}
+
+			try
+			{
+				new FilePath(@"c:\abcd\test.tmp").MakeRelativeTo(@"1234\abcd");
+				throw new TestAssertionException();
+			}
+			catch (InvalidPathArgumentException)
+			{
+			}
+
+			if (new FilePath(@"abcd\test.tmp").MakeRelativeTo(@"c:\1234") != @"abcd\test.tmp")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new FilePath(@"c:\abcd\test.tmp").MakeRelativeTo(@"c:\abcd") != @"test.tmp")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new FilePath(@"c:\abcd\test.tmp").MakeRelativeTo(@"c:\abcd\1234") != @"..\test.tmp")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new FilePath(@"c:\abcd\test.tmp").MakeRelativeTo(@"c:\") != @"abcd\test.tmp")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new FilePath(@"c:\abcd\test.tmp").MakeRelativeTo(@"d:\abcd\test.tmp") != @"c:\abcd\test.tmp")
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void MakeAbsoluteFrom_Test()
+		{
+			try
+			{
+				new FilePath(@"test.tmp").MakeAbsoluteFrom(null);
+				throw new TestAssertionException();
+			}
+			catch (ArgumentNullException)
+			{
+			}
+
+			try
+			{
+				new FilePath(@"test.tmp").MakeAbsoluteFrom(@"1234\abcd");
+				throw new TestAssertionException();
+			}
+			catch (InvalidPathArgumentException)
+			{
+			}
+
+			if (new FilePath(@"c:\test\1234.tmp").MakeAbsoluteFrom(@"c:\abcd") != @"c:\test\1234.tmp")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new FilePath(@"test.tmp").MakeAbsoluteFrom(@"c:\abcd") != @"c:\abcd\test.tmp")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new FilePath(@"..\test.tmp").MakeAbsoluteFrom(@"c:\abcd") != @"c:\test.tmp")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new FilePath(@"abcd\test.tmp").MakeAbsoluteFrom(@"c:\1234") != @"c:\1234\abcd\test.tmp")
 			{
 				throw new TestAssertionException();
 			}
