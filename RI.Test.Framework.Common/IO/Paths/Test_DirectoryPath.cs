@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -627,7 +628,7 @@ namespace RI.Test.Framework.IO.Paths
 		{
 			try
 			{
-				new FilePath(@"c:\abcd\test.tmp").MakeRelativeTo(null);
+				new DirectoryPath(@"c:\abcd\test").MakeRelativeTo(null);
 				throw new TestAssertionException();
 			}
 			catch (ArgumentNullException)
@@ -636,34 +637,39 @@ namespace RI.Test.Framework.IO.Paths
 
 			try
 			{
-				new FilePath(@"c:\abcd\test.tmp").MakeRelativeTo(@"1234\abcd");
+				new DirectoryPath(@"c:\abcd\test").MakeRelativeTo(@"1234\abcd");
 				throw new TestAssertionException();
 			}
 			catch (InvalidPathArgumentException)
 			{
 			}
 
-			if (new FilePath(@"abcd\test.tmp").MakeRelativeTo(@"c:\1234") != @"abcd\test.tmp")
+			if (new DirectoryPath(@"abcd\test").MakeRelativeTo(@"c:\1234") != @"abcd\test")
 			{
 				throw new TestAssertionException();
 			}
 
-			if (new FilePath(@"c:\abcd\test.tmp").MakeRelativeTo(@"c:\abcd") != @"test.tmp")
+			if (new DirectoryPath(@"c:\abcd").MakeRelativeTo(@"c:\abcd") != @".")
 			{
 				throw new TestAssertionException();
 			}
 
-			if (new FilePath(@"c:\abcd\test.tmp").MakeRelativeTo(@"c:\abcd\1234") != @"..\test.tmp")
+			if (new DirectoryPath(@"c:\abcd\test").MakeRelativeTo(@"c:\abcd") != @"test")
 			{
 				throw new TestAssertionException();
 			}
 
-			if (new FilePath(@"c:\abcd\test.tmp").MakeRelativeTo(@"c:\") != @"abcd\test.tmp")
+			if (new DirectoryPath(@"c:\abcd\test").MakeRelativeTo(@"c:\abcd\1234") != @"..\test")
 			{
 				throw new TestAssertionException();
 			}
 
-			if (new FilePath(@"c:\abcd\test.tmp").MakeRelativeTo(@"d:\abcd\test.tmp") != @"c:\abcd\test.tmp")
+			if (new DirectoryPath(@"c:\abcd\test").MakeRelativeTo(@"c:\") != @"abcd\test")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new DirectoryPath(@"c:\abcd\test").MakeRelativeTo(@"d:\abcd\test") != @"c:\abcd\test")
 			{
 				throw new TestAssertionException();
 			}
@@ -674,7 +680,7 @@ namespace RI.Test.Framework.IO.Paths
 		{
 			try
 			{
-				new FilePath(@"test.tmp").MakeAbsoluteFrom(null);
+				new DirectoryPath(@"test").MakeAbsoluteFrom(null);
 				throw new TestAssertionException();
 			}
 			catch (ArgumentNullException)
@@ -683,31 +689,101 @@ namespace RI.Test.Framework.IO.Paths
 
 			try
 			{
-				new FilePath(@"test.tmp").MakeAbsoluteFrom(@"1234\abcd");
+				new DirectoryPath(@"test").MakeAbsoluteFrom(@"1234\abcd");
 				throw new TestAssertionException();
 			}
 			catch (InvalidPathArgumentException)
 			{
 			}
 
-			if (new FilePath(@"c:\test\1234.tmp").MakeAbsoluteFrom(@"c:\abcd") != @"c:\test\1234.tmp")
+			if (new DirectoryPath(@"c:\test\1234").MakeAbsoluteFrom(@"c:\abcd") != @"c:\test\1234")
 			{
 				throw new TestAssertionException();
 			}
 
-			if (new FilePath(@"test.tmp").MakeAbsoluteFrom(@"c:\abcd") != @"c:\abcd\test.tmp")
+			if (new DirectoryPath(@"test").MakeAbsoluteFrom(@"c:\abcd") != @"c:\abcd\test")
 			{
 				throw new TestAssertionException();
 			}
 
-			if (new FilePath(@"..\test.tmp").MakeAbsoluteFrom(@"c:\abcd") != @"c:\test.tmp")
+			if (new DirectoryPath(@"..\test").MakeAbsoluteFrom(@"c:\abcd") != @"c:\test")
 			{
 				throw new TestAssertionException();
 			}
 
-			if (new FilePath(@"abcd\test.tmp").MakeAbsoluteFrom(@"c:\1234") != @"c:\1234\abcd\test.tmp")
+			if (new DirectoryPath(@"abcd\test").MakeAbsoluteFrom(@"c:\1234") != @"c:\1234\abcd\test")
 			{
 				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void AppendDirectories_Test ()
+		{
+			if (new DirectoryPath(@"c:\test").AppendDirectories() != @"c:\test")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new DirectoryPath(@"c:\test").AppendDirectories(@"abcd") != @"c:\test\abcd")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new DirectoryPath(@"c:\test").AppendDirectories(@"abcd", @"1234") != @"c:\test\abcd\1234")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new DirectoryPath(@"c:\test").AppendDirectories((IEnumerable<DirectoryPath>)new DirectoryPath[0]) != @"c:\test")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new DirectoryPath(@"c:\test").AppendDirectories((IEnumerable<DirectoryPath>)new DirectoryPath[] { @"abcd" }) != @"c:\test\abcd")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new DirectoryPath(@"c:\test").AppendDirectories((IEnumerable<DirectoryPath>)new DirectoryPath[] { @"abcd", @"1234" }) != @"c:\test\abcd\1234")
+			{
+				throw new TestAssertionException();
+			}
+
+			try
+			{
+				new DirectoryPath(@"c:\test").AppendDirectories(null, null);
+				throw new TestAssertionException();
+			}
+			catch(ArgumentNullException)
+			{
+			}
+
+			try
+			{
+				new DirectoryPath(@"c:\test").AppendDirectories((IEnumerable<DirectoryPath>)null);
+				throw new TestAssertionException();
+			}
+			catch (ArgumentNullException)
+			{
+			}
+
+			try
+			{
+				new DirectoryPath(@"c:\test").AppendDirectories((DirectoryPath[])null);
+				throw new TestAssertionException();
+			}
+			catch (ArgumentNullException)
+			{
+			}
+
+			try
+			{
+				new DirectoryPath(@"c:\test").AppendDirectories(@"abcd", @"d:\test");
+				throw new TestAssertionException();
+			}
+			catch (InvalidPathArgumentException)
+			{
 			}
 		}
 	}

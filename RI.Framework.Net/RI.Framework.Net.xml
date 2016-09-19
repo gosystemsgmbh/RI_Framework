@@ -9760,7 +9760,7 @@
                     <paramref name="directories" /> is only enumerated once.
                 </para>
             </remarks>
-            <exception cref="T:System.ArgumentNullException"> <paramref name="directories" /> is null. </exception>
+            <exception cref="T:System.ArgumentNullException"> <paramref name="directories" /> is null or contains a null value. </exception>
             <exception cref="T:RI.Framework.Utilities.Exceptions.InvalidPathArgumentException"> <paramref name="directories" /> contains at least one <see cref="T:RI.Framework.IO.Paths.DirectoryPath" /> which is rooted. </exception>
         </member>
         <member name="M:RI.Framework.IO.Paths.DirectoryPath.AppendDirectories(RI.Framework.IO.Paths.DirectoryPath[])">
@@ -9776,7 +9776,7 @@
                     If <paramref name="directories" /> is an empty array, the same instance as this directory path is returned without any changes.
                 </para>
             </remarks>
-            <exception cref="T:System.ArgumentNullException"> <paramref name="directories" /> is null. </exception>
+            <exception cref="T:System.ArgumentNullException"> <paramref name="directories" /> is null or contains a null value. </exception>
             <exception cref="T:RI.Framework.Utilities.Exceptions.InvalidPathArgumentException"> <paramref name="directories" /> contains at least one <see cref="T:RI.Framework.IO.Paths.DirectoryPath" /> which is rooted. </exception>
         </member>
         <member name="M:RI.Framework.IO.Paths.DirectoryPath.AppendFile(RI.Framework.IO.Paths.FilePath)">

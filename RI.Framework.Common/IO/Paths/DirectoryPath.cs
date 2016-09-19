@@ -214,7 +214,7 @@ namespace RI.Framework.IO.Paths
 		///         <paramref name="directories" /> is only enumerated once.
 		///     </para>
 		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="directories" /> is null. </exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="directories" /> is null or contains a null value. </exception>
 		/// <exception cref="InvalidPathArgumentException"> <paramref name="directories" /> contains at least one <see cref="DirectoryPath" /> which is rooted. </exception>
 		public DirectoryPath AppendDirectories (IEnumerable<DirectoryPath> directories)
 		{
@@ -238,7 +238,7 @@ namespace RI.Framework.IO.Paths
 		///         If <paramref name="directories" /> is an empty array, the same instance as this directory path is returned without any changes.
 		///     </para>
 		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="directories" /> is null. </exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="directories" /> is null or contains a null value. </exception>
 		/// <exception cref="InvalidPathArgumentException"> <paramref name="directories" /> contains at least one <see cref="DirectoryPath" /> which is rooted. </exception>
 		public DirectoryPath AppendDirectories (params DirectoryPath[] directories)
 		{
@@ -251,6 +251,10 @@ namespace RI.Framework.IO.Paths
 			parts.Add(this.PathNormalized);
 			foreach (DirectoryPath directory in directories)
 			{
+				if (directory == null)
+				{
+					throw new ArgumentNullException(nameof(directories));
+				}
 				if (directory.IsRooted)
 				{
 					throw new InvalidPathArgumentException(nameof(directories));
