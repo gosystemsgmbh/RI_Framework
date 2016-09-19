@@ -8923,7 +8923,7 @@
                 The parent directory or null if this directory is a root or does not have a parent directory.
             </value>
         </member>
-        <member name="M:RI.Framework.IO.Paths.DirectoryPath.AppendDirectories(System.Collections.Generic.IEnumerable{RI.Framework.IO.Paths.DirectoryPath})">
+        <member name="M:RI.Framework.IO.Paths.DirectoryPath.AppendDirectory(System.Collections.Generic.IEnumerable{RI.Framework.IO.Paths.DirectoryPath})">
             <summary>
                 Creates a new directory path by appending one or more additional directory paths.
             </summary>
@@ -8942,7 +8942,7 @@
             <exception cref="T:System.ArgumentNullException"> <paramref name="directories" /> is null or contains a null value. </exception>
             <exception cref="T:RI.Framework.Utilities.Exceptions.InvalidPathArgumentException"> <paramref name="directories" /> contains at least one <see cref="T:RI.Framework.IO.Paths.DirectoryPath" /> which is rooted. </exception>
         </member>
-        <member name="M:RI.Framework.IO.Paths.DirectoryPath.AppendDirectories(RI.Framework.IO.Paths.DirectoryPath[])">
+        <member name="M:RI.Framework.IO.Paths.DirectoryPath.AppendDirectory(RI.Framework.IO.Paths.DirectoryPath[])">
             <summary>
                 Creates a new directory path by appending one or more additional directory paths.
             </summary>

@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using RI.Framework.Collections;
-using RI.Framework.Collections.Comparison;
 using RI.Framework.IO.Paths;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.ObjectModel;
@@ -18,10 +15,623 @@ namespace RI.Test.Framework.IO.Paths
 	[TestClass]
 	public sealed class Test_DirectoryPath
 	{
+		#region Instance Methods
+
 		[TestMethod]
-		public void Operations_Test()
+		public void AppendDirectory_Test ()
 		{
-			DirectoryPath test = DirectoryPath.GetTempDirectory().AppendDirectories("DirectoryPathTest");
+			if (new DirectoryPath(@"c:\test").AppendDirectory() != @"c:\test")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new DirectoryPath(@"c:\test").AppendDirectory(@"abcd") != @"c:\test\abcd")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new DirectoryPath(@"c:\test").AppendDirectory(@"abcd", @"1234") != @"c:\test\abcd\1234")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new DirectoryPath(@"c:\test").AppendDirectory((IEnumerable<DirectoryPath>)new DirectoryPath[0]) != @"c:\test")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new DirectoryPath(@"c:\test").AppendDirectory((IEnumerable<DirectoryPath>)new DirectoryPath[]
+			                                                  {
+				                                                  @"abcd"
+			                                                  }) != @"c:\test\abcd")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new DirectoryPath(@"c:\test").AppendDirectory((IEnumerable<DirectoryPath>)new DirectoryPath[]
+			                                                  {
+				                                                  @"abcd", @"1234"
+			                                                  }) != @"c:\test\abcd\1234")
+			{
+				throw new TestAssertionException();
+			}
+
+			try
+			{
+				new DirectoryPath(@"c:\test").AppendDirectory(null, null);
+				throw new TestAssertionException();
+			}
+			catch (ArgumentNullException)
+			{
+			}
+
+			try
+			{
+				new DirectoryPath(@"c:\test").AppendDirectory((IEnumerable<DirectoryPath>)null);
+				throw new TestAssertionException();
+			}
+			catch (ArgumentNullException)
+			{
+			}
+
+			try
+			{
+				new DirectoryPath(@"c:\test").AppendDirectory((DirectoryPath[])null);
+				throw new TestAssertionException();
+			}
+			catch (ArgumentNullException)
+			{
+			}
+
+			try
+			{
+				new DirectoryPath(@"c:\test").AppendDirectory(@"abcd", @"d:\test");
+				throw new TestAssertionException();
+			}
+			catch (InvalidPathArgumentException)
+			{
+			}
+		}
+
+		[TestMethod]
+		public void AppendFile_Test ()
+		{
+			if (new DirectoryPath(@"test").AppendFile(@"abcd.tmp") != @"test\abcd.tmp")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new DirectoryPath(@"c:\test").AppendFile(@"abcd.tmp") != @"c:\test\abcd.tmp")
+			{
+				throw new TestAssertionException();
+			}
+
+			try
+			{
+				new DirectoryPath(@"c:\test").AppendFile(null);
+				throw new TestAssertionException();
+			}
+			catch (ArgumentNullException)
+			{
+			}
+
+			try
+			{
+				new DirectoryPath(@"c:\test").AppendFile(@"d:\test\temp.tmp");
+				throw new TestAssertionException();
+			}
+			catch (InvalidPathArgumentException)
+			{
+			}
+		}
+
+		[TestMethod]
+		public void Changes_Test ()
+		{
+			if (new DirectoryPath(@"test").ChangeParent(null) != @"test")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new DirectoryPath(@"c:\test").ChangeParent(null) != @"test")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new DirectoryPath(@"test").ChangeParent(@"abcd") != @"abcd\test")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new DirectoryPath(@"c:\test").ChangeParent(@"abcd") != @"abcd\test")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new DirectoryPath(@"test").ChangeParent(@"c:\abcd") != @"c:\abcd\test")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new DirectoryPath(@"c:\test").ChangeParent(@"d:\") != @"d:\test")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new DirectoryPath(@"c:\test").ChangeParent(@"d:\test") != @"d:\test\test")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new DirectoryPath(@"c:\test\abcd").ChangeParent(@"c:\1234") != @"c:\1234\abcd")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new DirectoryPath(@"test").ChangeDirectoryName(@"abcd") != @"abcd")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new DirectoryPath(@"c:\test").ChangeDirectoryName(@"abcd") != @"c:\abcd")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new DirectoryPath(@"c:\test\1234").ChangeDirectoryName(@"abcd") != @"c:\test\abcd")
+			{
+				throw new TestAssertionException();
+			}
+
+			try
+			{
+				new DirectoryPath(@"c:\test").ChangeDirectoryName(null);
+				throw new TestAssertionException();
+			}
+			catch (ArgumentNullException)
+			{
+			}
+
+			try
+			{
+				new DirectoryPath(@"c:\test").ChangeDirectoryName(@"");
+				throw new TestAssertionException();
+			}
+			catch (EmptyStringArgumentException)
+			{
+			}
+
+			try
+			{
+				new DirectoryPath(@"c:\test").ChangeDirectoryName(@"|");
+				throw new TestAssertionException();
+			}
+			catch (InvalidPathArgumentException)
+			{
+			}
+		}
+
+		[TestMethod]
+		public void Clone_Test ()
+		{
+			ICloneable test1 = new DirectoryPath(@"c:\test\abcd");
+			if ((DirectoryPath)test1.Clone() != (DirectoryPath)@"c:\test\abcd")
+			{
+				throw new TestAssertionException();
+			}
+
+			ICloneable<DirectoryPath> test2 = new DirectoryPath(@"c:\test\abcd");
+			if (test2.Clone() != (DirectoryPath)@"c:\test\abcd")
+			{
+				throw new TestAssertionException();
+			}
+
+			ICloneable<PathString> test3 = new DirectoryPath(@"c:\test\abcd");
+			if (test3.Clone() != (DirectoryPath)@"c:\test\abcd")
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void Compare_Test ()
+		{
+			//---------
+			// Operator
+			//---------
+
+			if (!( new DirectoryPath("test.tmp") >= new DirectoryPath("test.tmp") ))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!( new DirectoryPath("test.tmp") <= new DirectoryPath("test.tmp") ))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!( new DirectoryPath("test1234.tmp") >= new DirectoryPath("test.tmp") ))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!( new DirectoryPath("test.tmp") <= new DirectoryPath("test1234.tmp") ))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!( new DirectoryPath("test1234.tmp") > new DirectoryPath("test.tmp") ))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!( new DirectoryPath("test.tmp") < new DirectoryPath("test1234.tmp") ))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!( new DirectoryPath("test1234.tmp") >= null ))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new DirectoryPath("test.tmp") <= null)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!( new DirectoryPath("test1234.tmp") > null ))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new DirectoryPath("test.tmp") < null)
+			{
+				throw new TestAssertionException();
+			}
+
+			//-------
+			// Static
+			//-------
+
+			if (PathString.Compare((DirectoryPath)null, (DirectoryPath)null) != 0)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (PathString.Compare((DirectoryPath)"test.tmp", (DirectoryPath)null) != 1)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (PathString.Compare((DirectoryPath)null, (DirectoryPath)"test.tmp") != -1)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (PathString.Compare((DirectoryPath)"test.tmp", (DirectoryPath)"test.tmp") != 0)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (PathString.Compare((DirectoryPath)"test.tmp", (DirectoryPath)"test.dat") == 0)
+			{
+				throw new TestAssertionException();
+			}
+
+			//-------
+			// Object
+			//-------
+
+			if (new DirectoryPath("test.tmp").CompareTo((object)null) != 1)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new DirectoryPath("test.tmp").CompareTo((object)(DirectoryPath)"test.tmp") != 0)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new DirectoryPath("test.tmp").CompareTo((object)PathProperties.FromPath("test.tmp", false, false, PathProperties.GetSystemType())) != 0)
+			{
+				throw new TestAssertionException();
+			}
+
+			//--------------
+			// DirectoryPath
+			//--------------
+
+			if (new DirectoryPath("test.tmp").CompareTo((DirectoryPath)(string)null) != 1)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new DirectoryPath("test.tmp").CompareTo((DirectoryPath)"test.dat") == 0)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new DirectoryPath("test.tmp").CompareTo((DirectoryPath)"test.tmp") != 0)
+			{
+				throw new TestAssertionException();
+			}
+
+			//---------------
+			// PathProperties
+			//---------------
+
+			if (new DirectoryPath("test.tmp").CompareTo((PathProperties)null) != 1)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new DirectoryPath("test.tmp").CompareTo(PathProperties.FromPath("test.dat", false, false, PathProperties.GetSystemType())) == 0)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new DirectoryPath("test.tmp").CompareTo(PathProperties.FromPath("test.tmp", false, false, PathProperties.GetSystemType())) != 0)
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void Equals_Test ()
+		{
+			//---------
+			// Operator
+			//---------
+
+			if (new DirectoryPath("test.tmp") == (DirectoryPath)"test.dat")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!( new DirectoryPath("test.tmp") == (DirectoryPath)"test.tmp" ))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new DirectoryPath("test.tmp") != (DirectoryPath)"test.tmp")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!( new DirectoryPath("test.tmp") != (DirectoryPath)"test.dat" ))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new DirectoryPath("test.tmp") == (DirectoryPath)(string)null)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!( new DirectoryPath("test.tmp") != (DirectoryPath)(string)null ))
+			{
+				throw new TestAssertionException();
+			}
+
+			//-------
+			// Static
+			//-------
+
+			if (!PathString.Equals((DirectoryPath)null, (DirectoryPath)null))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (PathString.Equals((DirectoryPath)"test.tmp", (DirectoryPath)null))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (PathString.Equals((DirectoryPath)null, (DirectoryPath)"test.tmp"))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!PathString.Equals((DirectoryPath)"test.tmp", (DirectoryPath)"test.tmp"))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (PathString.Equals((DirectoryPath)"test.tmp", (DirectoryPath)"test.dat"))
+			{
+				throw new TestAssertionException();
+			}
+
+			//-------
+			// Object
+			//-------
+
+			if (new DirectoryPath("test.tmp").Equals((object)null))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!new DirectoryPath("test.tmp").Equals((object)(DirectoryPath)"test.tmp"))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!new DirectoryPath("test.tmp").Equals((object)PathProperties.FromPath("test.tmp", false, false, PathProperties.GetSystemType())))
+			{
+				throw new TestAssertionException();
+			}
+
+			//--------------
+			// DirectoryPath
+			//--------------
+
+			if (new DirectoryPath("test.tmp").Equals((DirectoryPath)(string)null))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new DirectoryPath("test.tmp").Equals((DirectoryPath)"test.dat"))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!new DirectoryPath("test.tmp").Equals((DirectoryPath)"test.tmp"))
+			{
+				throw new TestAssertionException();
+			}
+
+			//---------------
+			// PathProperties
+			//---------------
+
+			if (new DirectoryPath("test.tmp").Equals((PathProperties)null))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new DirectoryPath("test.tmp").Equals(PathProperties.FromPath("test.dat", false, false, PathProperties.GetSystemType())))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!new DirectoryPath("test.tmp").Equals(PathProperties.FromPath("test.tmp", false, false, PathProperties.GetSystemType())))
+			{
+				throw new TestAssertionException();
+			}
+
+			//----------
+			// Hash code
+			//----------
+
+			if (new DirectoryPath("test.tmp").GetHashCode() != new DirectoryPath("test.tmp").GetHashCode())
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new DirectoryPath("test.tmp").GetHashCode() == new DirectoryPath("test.dat").GetHashCode())
+			{
+				throw new TestAssertionException();
+			}
+
+			//-------
+			// String
+			//-------
+
+			if (new DirectoryPath("test.tmp").ToString() != "test.tmp")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new DirectoryPath(@"c:\abcd\test.tmp\").ToString() != @"c:\abcd\test.tmp\")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (( (string)( (DirectoryPath)null ) ) != null)
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void MakeAbsoluteFrom_Test ()
+		{
+			try
+			{
+				new DirectoryPath(@"test").MakeAbsoluteFrom(null);
+				throw new TestAssertionException();
+			}
+			catch (ArgumentNullException)
+			{
+			}
+
+			try
+			{
+				new DirectoryPath(@"test").MakeAbsoluteFrom(@"1234\abcd");
+				throw new TestAssertionException();
+			}
+			catch (InvalidPathArgumentException)
+			{
+			}
+
+			if (new DirectoryPath(@"c:\test\1234").MakeAbsoluteFrom(@"c:\abcd") != @"c:\test\1234")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new DirectoryPath(@"test").MakeAbsoluteFrom(@"c:\abcd") != @"c:\abcd\test")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new DirectoryPath(@"..\test").MakeAbsoluteFrom(@"c:\abcd") != @"c:\test")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new DirectoryPath(@"abcd\test").MakeAbsoluteFrom(@"c:\1234") != @"c:\1234\abcd\test")
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void MakeRelativeTo_Test ()
+		{
+			try
+			{
+				new DirectoryPath(@"c:\abcd\test").MakeRelativeTo(null);
+				throw new TestAssertionException();
+			}
+			catch (ArgumentNullException)
+			{
+			}
+
+			try
+			{
+				new DirectoryPath(@"c:\abcd\test").MakeRelativeTo(@"1234\abcd");
+				throw new TestAssertionException();
+			}
+			catch (InvalidPathArgumentException)
+			{
+			}
+
+			if (new DirectoryPath(@"abcd\test").MakeRelativeTo(@"c:\1234") != @"abcd\test")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new DirectoryPath(@"c:\abcd").MakeRelativeTo(@"c:\abcd") != @".")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new DirectoryPath(@"c:\abcd\test").MakeRelativeTo(@"c:\abcd") != @"test")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new DirectoryPath(@"c:\abcd\test").MakeRelativeTo(@"c:\abcd\1234") != @"..\test")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new DirectoryPath(@"c:\abcd\test").MakeRelativeTo(@"c:\") != @"abcd\test")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (new DirectoryPath(@"c:\abcd\test").MakeRelativeTo(@"d:\abcd\test") != @"c:\abcd\test")
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void Operations_Test ()
+		{
+			DirectoryPath test = DirectoryPath.GetTempDirectory().AppendDirectory("DirectoryPathTest");
 
 			//-------------------
 			// Creation, deletion
@@ -61,7 +671,7 @@ namespace RI.Test.Framework.IO.Paths
 			// Files not possible for operations
 			//----------------------------------
 
-			test = DirectoryPath.GetCurrentDirectory().AppendDirectories("*test*");
+			test = DirectoryPath.GetCurrentDirectory().AppendDirectory("*test*");
 
 			try
 			{
@@ -89,7 +699,7 @@ namespace RI.Test.Framework.IO.Paths
 		}
 
 		[TestMethod]
-		public void Properties_Test()
+		public void Properties_Test ()
 		{
 			//---------
 			// Relative
@@ -214,577 +824,6 @@ namespace RI.Test.Framework.IO.Paths
 			}
 		}
 
-		[TestMethod]
-		public void Changes_Test()
-		{
-			if (new DirectoryPath(@"test").ChangeParent(null) != @"test")
-			{
-				throw new TestAssertionException();
-			}
-
-			if (new DirectoryPath(@"c:\test").ChangeParent(null) != @"test")
-			{
-				throw new TestAssertionException();
-			}
-
-			if (new DirectoryPath(@"test").ChangeParent(@"abcd") != @"abcd\test")
-			{
-				throw new TestAssertionException();
-			}
-
-			if (new DirectoryPath(@"c:\test").ChangeParent(@"abcd") != @"abcd\test")
-			{
-				throw new TestAssertionException();
-			}
-
-			if (new DirectoryPath(@"test").ChangeParent(@"c:\abcd") != @"c:\abcd\test")
-			{
-				throw new TestAssertionException();
-			}
-
-			if (new DirectoryPath(@"c:\test").ChangeParent(@"d:\") != @"d:\test")
-			{
-				throw new TestAssertionException();
-			}
-
-			if (new DirectoryPath(@"c:\test").ChangeParent(@"d:\test") != @"d:\test\test")
-			{
-				throw new TestAssertionException();
-			}
-
-			if (new DirectoryPath(@"c:\test\abcd").ChangeParent(@"c:\1234") != @"c:\1234\abcd")
-			{
-				throw new TestAssertionException();
-			}
-
-			if (new DirectoryPath(@"test").ChangeDirectoryName(@"abcd") != @"abcd")
-			{
-				throw new TestAssertionException();
-			}
-
-			if (new DirectoryPath(@"c:\test").ChangeDirectoryName(@"abcd") != @"c:\abcd")
-			{
-				throw new TestAssertionException();
-			}
-
-			if (new DirectoryPath(@"c:\test\1234").ChangeDirectoryName(@"abcd") != @"c:\test\abcd")
-			{
-				throw new TestAssertionException();
-			}
-
-			try
-			{
-				new DirectoryPath(@"c:\test").ChangeDirectoryName(null);
-				throw new TestAssertionException();
-			}
-			catch (ArgumentNullException)
-			{
-			}
-
-			try
-			{
-				new DirectoryPath(@"c:\test").ChangeDirectoryName(@"");
-				throw new TestAssertionException();
-			}
-			catch (EmptyStringArgumentException)
-			{
-			}
-
-			try
-			{
-				new DirectoryPath(@"c:\test").ChangeDirectoryName(@"|");
-				throw new TestAssertionException();
-			}
-			catch (InvalidPathArgumentException)
-			{
-			}
-		}
-
-		[TestMethod]
-		public void Equals_Test()
-		{
-			//---------
-			// Operator
-			//---------
-
-			if (new DirectoryPath("test.tmp") == (DirectoryPath)"test.dat")
-			{
-				throw new TestAssertionException();
-			}
-
-			if (!(new DirectoryPath("test.tmp") == (DirectoryPath)"test.tmp"))
-			{
-				throw new TestAssertionException();
-			}
-
-			if (new DirectoryPath("test.tmp") != (DirectoryPath)"test.tmp")
-			{
-				throw new TestAssertionException();
-			}
-
-			if (!(new DirectoryPath("test.tmp") != (DirectoryPath)"test.dat"))
-			{
-				throw new TestAssertionException();
-			}
-
-			if (new DirectoryPath("test.tmp") == (DirectoryPath)(string)null)
-			{
-				throw new TestAssertionException();
-			}
-
-			if (!(new DirectoryPath("test.tmp") != (DirectoryPath)(string)null))
-			{
-				throw new TestAssertionException();
-			}
-
-			//-------
-			// Static
-			//-------
-
-			if (!PathString.Equals((DirectoryPath)null, (DirectoryPath)null))
-			{
-				throw new TestAssertionException();
-			}
-
-			if (PathString.Equals((DirectoryPath)"test.tmp", (DirectoryPath)null))
-			{
-				throw new TestAssertionException();
-			}
-
-			if (PathString.Equals((DirectoryPath)null, (DirectoryPath)"test.tmp"))
-			{
-				throw new TestAssertionException();
-			}
-
-			if (!PathString.Equals((DirectoryPath)"test.tmp", (DirectoryPath)"test.tmp"))
-			{
-				throw new TestAssertionException();
-			}
-
-			if (PathString.Equals((DirectoryPath)"test.tmp", (DirectoryPath)"test.dat"))
-			{
-				throw new TestAssertionException();
-			}
-
-			//-------
-			// Object
-			//-------
-
-			if (new DirectoryPath("test.tmp").Equals((object)null))
-			{
-				throw new TestAssertionException();
-			}
-
-			if (!new DirectoryPath("test.tmp").Equals((object)(DirectoryPath)"test.tmp"))
-			{
-				throw new TestAssertionException();
-			}
-
-			if (!new DirectoryPath("test.tmp").Equals((object)PathProperties.FromPath("test.tmp", false, false, PathProperties.GetSystemType())))
-			{
-				throw new TestAssertionException();
-			}
-
-			//--------------
-			// DirectoryPath
-			//--------------
-
-			if (new DirectoryPath("test.tmp").Equals((DirectoryPath)(string)null))
-			{
-				throw new TestAssertionException();
-			}
-
-			if (new DirectoryPath("test.tmp").Equals((DirectoryPath)"test.dat"))
-			{
-				throw new TestAssertionException();
-			}
-
-			if (!new DirectoryPath("test.tmp").Equals((DirectoryPath)"test.tmp"))
-			{
-				throw new TestAssertionException();
-			}
-
-			//---------------
-			// PathProperties
-			//---------------
-
-			if (new DirectoryPath("test.tmp").Equals((PathProperties)null))
-			{
-				throw new TestAssertionException();
-			}
-
-			if (new DirectoryPath("test.tmp").Equals(PathProperties.FromPath("test.dat", false, false, PathProperties.GetSystemType())))
-			{
-				throw new TestAssertionException();
-			}
-
-			if (!new DirectoryPath("test.tmp").Equals(PathProperties.FromPath("test.tmp", false, false, PathProperties.GetSystemType())))
-			{
-				throw new TestAssertionException();
-			}
-
-			//----------
-			// Hash code
-			//----------
-
-			if (new DirectoryPath("test.tmp").GetHashCode() != new DirectoryPath("test.tmp").GetHashCode())
-			{
-				throw new TestAssertionException();
-			}
-
-			if (new DirectoryPath("test.tmp").GetHashCode() == new DirectoryPath("test.dat").GetHashCode())
-			{
-				throw new TestAssertionException();
-			}
-
-			//-------
-			// String
-			//-------
-
-			if (new DirectoryPath("test.tmp").ToString() != "test.tmp")
-			{
-				throw new TestAssertionException();
-			}
-
-			if (new DirectoryPath(@"c:\abcd\test.tmp\").ToString() != @"c:\abcd\test.tmp\")
-			{
-				throw new TestAssertionException();
-			}
-
-			if (((string)((DirectoryPath)null)) != null)
-			{
-				throw new TestAssertionException();
-			}
-		}
-
-		[TestMethod]
-		public void Compare_Test()
-		{
-			//---------
-			// Operator
-			//---------
-
-			if (!(new DirectoryPath("test.tmp") >= new DirectoryPath("test.tmp")))
-			{
-				throw new TestAssertionException();
-			}
-
-			if (!(new DirectoryPath("test.tmp") <= new DirectoryPath("test.tmp")))
-			{
-				throw new TestAssertionException();
-			}
-
-			if (!(new DirectoryPath("test1234.tmp") >= new DirectoryPath("test.tmp")))
-			{
-				throw new TestAssertionException();
-			}
-
-			if (!(new DirectoryPath("test.tmp") <= new DirectoryPath("test1234.tmp")))
-			{
-				throw new TestAssertionException();
-			}
-
-			if (!(new DirectoryPath("test1234.tmp") > new DirectoryPath("test.tmp")))
-			{
-				throw new TestAssertionException();
-			}
-
-			if (!(new DirectoryPath("test.tmp") < new DirectoryPath("test1234.tmp")))
-			{
-				throw new TestAssertionException();
-			}
-
-			if (!(new DirectoryPath("test1234.tmp") >= null))
-			{
-				throw new TestAssertionException();
-			}
-
-			if (new DirectoryPath("test.tmp") <= null)
-			{
-				throw new TestAssertionException();
-			}
-
-			if (!(new DirectoryPath("test1234.tmp") > null))
-			{
-				throw new TestAssertionException();
-			}
-
-			if (new DirectoryPath("test.tmp") < null)
-			{
-				throw new TestAssertionException();
-			}
-
-			//-------
-			// Static
-			//-------
-
-			if (PathString.Compare((DirectoryPath)null, (DirectoryPath)null) != 0)
-			{
-				throw new TestAssertionException();
-			}
-
-			if (PathString.Compare((DirectoryPath)"test.tmp", (DirectoryPath)null) != 1)
-			{
-				throw new TestAssertionException();
-			}
-
-			if (PathString.Compare((DirectoryPath)null, (DirectoryPath)"test.tmp") != -1)
-			{
-				throw new TestAssertionException();
-			}
-
-			if (PathString.Compare((DirectoryPath)"test.tmp", (DirectoryPath)"test.tmp") != 0)
-			{
-				throw new TestAssertionException();
-			}
-
-			if (PathString.Compare((DirectoryPath)"test.tmp", (DirectoryPath)"test.dat") == 0)
-			{
-				throw new TestAssertionException();
-			}
-
-			//-------
-			// Object
-			//-------
-
-			if (new DirectoryPath("test.tmp").CompareTo((object)null) != 1)
-			{
-				throw new TestAssertionException();
-			}
-
-			if (new DirectoryPath("test.tmp").CompareTo((object)(DirectoryPath)"test.tmp") != 0)
-			{
-				throw new TestAssertionException();
-			}
-
-			if (new DirectoryPath("test.tmp").CompareTo((object)PathProperties.FromPath("test.tmp", false, false, PathProperties.GetSystemType())) != 0)
-			{
-				throw new TestAssertionException();
-			}
-
-			//--------------
-			// DirectoryPath
-			//--------------
-
-			if (new DirectoryPath("test.tmp").CompareTo((DirectoryPath)(string)null) != 1)
-			{
-				throw new TestAssertionException();
-			}
-
-			if (new DirectoryPath("test.tmp").CompareTo((DirectoryPath)"test.dat") == 0)
-			{
-				throw new TestAssertionException();
-			}
-
-			if (new DirectoryPath("test.tmp").CompareTo((DirectoryPath)"test.tmp") != 0)
-			{
-				throw new TestAssertionException();
-			}
-
-			//---------------
-			// PathProperties
-			//---------------
-
-			if (new DirectoryPath("test.tmp").CompareTo((PathProperties)null) != 1)
-			{
-				throw new TestAssertionException();
-			}
-
-			if (new DirectoryPath("test.tmp").CompareTo(PathProperties.FromPath("test.dat", false, false, PathProperties.GetSystemType())) == 0)
-			{
-				throw new TestAssertionException();
-			}
-
-			if (new DirectoryPath("test.tmp").CompareTo(PathProperties.FromPath("test.tmp", false, false, PathProperties.GetSystemType())) != 0)
-			{
-				throw new TestAssertionException();
-			}
-		}
-
-		[TestMethod]
-		public void Clone_Test()
-		{
-			ICloneable test1 = new DirectoryPath(@"c:\test\abcd");
-			if ((DirectoryPath)test1.Clone() != (DirectoryPath)@"c:\test\abcd")
-			{
-				throw new TestAssertionException();
-			}
-
-			ICloneable<DirectoryPath> test2 = new DirectoryPath(@"c:\test\abcd");
-			if (test2.Clone() != (DirectoryPath)@"c:\test\abcd")
-			{
-				throw new TestAssertionException();
-			}
-
-			ICloneable<PathString> test3 = new DirectoryPath(@"c:\test\abcd");
-			if (test3.Clone() != (DirectoryPath)@"c:\test\abcd")
-			{
-				throw new TestAssertionException();
-			}
-		}
-
-		[TestMethod]
-		public void MakeRelativeTo_Test()
-		{
-			try
-			{
-				new DirectoryPath(@"c:\abcd\test").MakeRelativeTo(null);
-				throw new TestAssertionException();
-			}
-			catch (ArgumentNullException)
-			{
-			}
-
-			try
-			{
-				new DirectoryPath(@"c:\abcd\test").MakeRelativeTo(@"1234\abcd");
-				throw new TestAssertionException();
-			}
-			catch (InvalidPathArgumentException)
-			{
-			}
-
-			if (new DirectoryPath(@"abcd\test").MakeRelativeTo(@"c:\1234") != @"abcd\test")
-			{
-				throw new TestAssertionException();
-			}
-
-			if (new DirectoryPath(@"c:\abcd").MakeRelativeTo(@"c:\abcd") != @".")
-			{
-				throw new TestAssertionException();
-			}
-
-			if (new DirectoryPath(@"c:\abcd\test").MakeRelativeTo(@"c:\abcd") != @"test")
-			{
-				throw new TestAssertionException();
-			}
-
-			if (new DirectoryPath(@"c:\abcd\test").MakeRelativeTo(@"c:\abcd\1234") != @"..\test")
-			{
-				throw new TestAssertionException();
-			}
-
-			if (new DirectoryPath(@"c:\abcd\test").MakeRelativeTo(@"c:\") != @"abcd\test")
-			{
-				throw new TestAssertionException();
-			}
-
-			if (new DirectoryPath(@"c:\abcd\test").MakeRelativeTo(@"d:\abcd\test") != @"c:\abcd\test")
-			{
-				throw new TestAssertionException();
-			}
-		}
-
-		[TestMethod]
-		public void MakeAbsoluteFrom_Test()
-		{
-			try
-			{
-				new DirectoryPath(@"test").MakeAbsoluteFrom(null);
-				throw new TestAssertionException();
-			}
-			catch (ArgumentNullException)
-			{
-			}
-
-			try
-			{
-				new DirectoryPath(@"test").MakeAbsoluteFrom(@"1234\abcd");
-				throw new TestAssertionException();
-			}
-			catch (InvalidPathArgumentException)
-			{
-			}
-
-			if (new DirectoryPath(@"c:\test\1234").MakeAbsoluteFrom(@"c:\abcd") != @"c:\test\1234")
-			{
-				throw new TestAssertionException();
-			}
-
-			if (new DirectoryPath(@"test").MakeAbsoluteFrom(@"c:\abcd") != @"c:\abcd\test")
-			{
-				throw new TestAssertionException();
-			}
-
-			if (new DirectoryPath(@"..\test").MakeAbsoluteFrom(@"c:\abcd") != @"c:\test")
-			{
-				throw new TestAssertionException();
-			}
-
-			if (new DirectoryPath(@"abcd\test").MakeAbsoluteFrom(@"c:\1234") != @"c:\1234\abcd\test")
-			{
-				throw new TestAssertionException();
-			}
-		}
-
-		[TestMethod]
-		public void AppendDirectories_Test ()
-		{
-			if (new DirectoryPath(@"c:\test").AppendDirectories() != @"c:\test")
-			{
-				throw new TestAssertionException();
-			}
-
-			if (new DirectoryPath(@"c:\test").AppendDirectories(@"abcd") != @"c:\test\abcd")
-			{
-				throw new TestAssertionException();
-			}
-
-			if (new DirectoryPath(@"c:\test").AppendDirectories(@"abcd", @"1234") != @"c:\test\abcd\1234")
-			{
-				throw new TestAssertionException();
-			}
-
-			if (new DirectoryPath(@"c:\test").AppendDirectories((IEnumerable<DirectoryPath>)new DirectoryPath[0]) != @"c:\test")
-			{
-				throw new TestAssertionException();
-			}
-
-			if (new DirectoryPath(@"c:\test").AppendDirectories((IEnumerable<DirectoryPath>)new DirectoryPath[] { @"abcd" }) != @"c:\test\abcd")
-			{
-				throw new TestAssertionException();
-			}
-
-			if (new DirectoryPath(@"c:\test").AppendDirectories((IEnumerable<DirectoryPath>)new DirectoryPath[] { @"abcd", @"1234" }) != @"c:\test\abcd\1234")
-			{
-				throw new TestAssertionException();
-			}
-
-			try
-			{
-				new DirectoryPath(@"c:\test").AppendDirectories(null, null);
-				throw new TestAssertionException();
-			}
-			catch(ArgumentNullException)
-			{
-			}
-
-			try
-			{
-				new DirectoryPath(@"c:\test").AppendDirectories((IEnumerable<DirectoryPath>)null);
-				throw new TestAssertionException();
-			}
-			catch (ArgumentNullException)
-			{
-			}
-
-			try
-			{
-				new DirectoryPath(@"c:\test").AppendDirectories((DirectoryPath[])null);
-				throw new TestAssertionException();
-			}
-			catch (ArgumentNullException)
-			{
-			}
-
-			try
-			{
-				new DirectoryPath(@"c:\test").AppendDirectories(@"abcd", @"d:\test");
-				throw new TestAssertionException();
-			}
-			catch (InvalidPathArgumentException)
-			{
-			}
-		}
+		#endregion
 	}
 }

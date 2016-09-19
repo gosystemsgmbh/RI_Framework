@@ -100,58 +100,6 @@ namespace RI.Framework.IO.Paths
 		#region Static Methods
 
 		/// <summary>
-		/// Gets the <see cref="PathType"/> which is used by the current system.
-		/// </summary>
-		/// <returns>
-		/// The <see cref="PathType"/> which is used by the current system or null if the type cannot be determined.
-		/// </returns>
-		public static PathType? GetSystemType()
-		{
-			switch (Environment.OSVersion.Platform)
-			{
-				default:
-				{
-					return null;
-				}
-
-				case PlatformID.Win32NT:
-				{
-					return PathType.Windows;
-				}
-
-				case PlatformID.Win32Windows:
-				{
-					return PathType.Windows;
-				}
-
-				case PlatformID.Win32S:
-				{
-					return PathType.Windows;
-				}
-
-				case PlatformID.WinCE:
-				{
-					return PathType.Windows;
-				}
-
-				case PlatformID.Xbox:
-				{
-					return PathType.Windows;
-				}
-
-				case PlatformID.MacOSX:
-				{
-					return PathType.Unix;
-				}
-
-				case PlatformID.Unix:
-				{
-					return PathType.Unix;
-				}
-			}
-		}
-
-		/// <summary>
 		///     Analyzes a path and returns the results as an instance of <see cref="PathProperties" />.
 		/// </summary>
 		/// <param name="path"> The path to analyze. </param>
@@ -182,7 +130,7 @@ namespace RI.Framework.IO.Paths
 				}
 			}
 
-			path = path ?? String.Empty;
+			path = path ?? string.Empty;
 
 			PathType? type = null;
 			PathError error = PathError.None;
@@ -220,7 +168,7 @@ namespace RI.Framework.IO.Paths
 
 			if (assumedType.HasValue && type.HasValue)
 			{
-				if ((type.Value != assumedType.Value) && (type.Value != PathType.Invalid))
+				if (( type.Value != assumedType.Value ) && ( type.Value != PathType.Invalid ))
 				{
 					type = PathType.Invalid;
 					error = PathError.WrongType;
@@ -296,7 +244,7 @@ namespace RI.Framework.IO.Paths
 						{
 							type = assumedType.Value;
 						}
-						else if (type.HasValue && ((type.Value == PathType.Windows) || (type.Value == PathType.Unc)))
+						else if (type.HasValue && ( ( type.Value == PathType.Windows ) || ( type.Value == PathType.Unc ) ))
 						{
 							type = type.Value;
 						}
@@ -366,7 +314,7 @@ namespace RI.Framework.IO.Paths
 					{
 						continue;
 					}
-					if ((type == PathType.Unc) && (i1 <= 0) && (!isRooted) && (part.Length == 0))
+					if (( type == PathType.Unc ) && ( i1 <= 0 ) && ( !isRooted ) && ( part.Length == 0 ))
 					{
 						continue;
 					}
@@ -383,7 +331,7 @@ namespace RI.Framework.IO.Paths
 						break;
 					}
 
-					if (String.Equals(trimmed, PathProperties.RelativeSame, StringComparison.Ordinal) || String.Equals(trimmed, PathProperties.RelativeUp, StringComparison.Ordinal))
+					if (string.Equals(trimmed, PathProperties.RelativeSame, StringComparison.Ordinal) || string.Equals(trimmed, PathProperties.RelativeUp, StringComparison.Ordinal))
 					{
 						hasRelatives = true;
 						if (!allowRelatives)
@@ -412,14 +360,14 @@ namespace RI.Framework.IO.Paths
 				{
 					string part = parts[i1];
 
-					if (String.Equals(part, PathProperties.RelativeSame, StringComparison.Ordinal))
+					if (string.Equals(part, PathProperties.RelativeSame, StringComparison.Ordinal))
 					{
 						continue;
 					}
 
-					if (String.Equals(part, PathProperties.RelativeUp, StringComparison.Ordinal))
+					if (string.Equals(part, PathProperties.RelativeUp, StringComparison.Ordinal))
 					{
-						if (isRooted && (partsResolved.Count <= 1))
+						if (isRooted && ( partsResolved.Count <= 1 ))
 						{
 							type = PathType.Invalid;
 							error = PathError.RelativeGoesBeyondRoot;
@@ -428,7 +376,7 @@ namespace RI.Framework.IO.Paths
 
 						if (partsResolved.Count > 0)
 						{
-							if (!String.Equals(partsResolved[partsResolved.Count - 1], PathProperties.RelativeUp, StringComparison.Ordinal))
+							if (!string.Equals(partsResolved[partsResolved.Count - 1], PathProperties.RelativeUp, StringComparison.Ordinal))
 							{
 								partsResolved.RemoveAt(partsResolved.Count - 1);
 								continue;
@@ -487,7 +435,7 @@ namespace RI.Framework.IO.Paths
 				}
 			}
 
-			bool isRoot = String.Equals(pathNormalized, root, comparison);
+			bool isRoot = string.Equals(pathNormalized, root, comparison);
 
 			string parent = null;
 
@@ -538,6 +486,58 @@ namespace RI.Framework.IO.Paths
 			pathProperties.AllowWildcards = allowWildcards;
 			pathProperties.AllowRelatives = allowRelatives;
 			return pathProperties;
+		}
+
+		/// <summary>
+		///     Gets the <see cref="PathType" /> which is used by the current system.
+		/// </summary>
+		/// <returns>
+		///     The <see cref="PathType" /> which is used by the current system or null if the type cannot be determined.
+		/// </returns>
+		public static PathType? GetSystemType ()
+		{
+			switch (Environment.OSVersion.Platform)
+			{
+				default:
+				{
+					return null;
+				}
+
+				case PlatformID.Win32NT:
+				{
+					return PathType.Windows;
+				}
+
+				case PlatformID.Win32Windows:
+				{
+					return PathType.Windows;
+				}
+
+				case PlatformID.Win32S:
+				{
+					return PathType.Windows;
+				}
+
+				case PlatformID.WinCE:
+				{
+					return PathType.Windows;
+				}
+
+				case PlatformID.Xbox:
+				{
+					return PathType.Windows;
+				}
+
+				case PlatformID.MacOSX:
+				{
+					return PathType.Unix;
+				}
+
+				case PlatformID.Unix:
+				{
+					return PathType.Unix;
+				}
+			}
 		}
 
 		/// <summary>
@@ -660,7 +660,7 @@ namespace RI.Framework.IO.Paths
 			List<string> leadingMatch = new List<string>();
 			for (int i1 = 0; i1 < Math.Min(rootParts.Length, pathParts.Length); i1++)
 			{
-				if (String.Equals(rootParts[i1], pathParts[i1], root.Comparison))
+				if (string.Equals(rootParts[i1], pathParts[i1], root.Comparison))
 				{
 					leadingMatch.Add(rootParts[i1]);
 				}
@@ -775,18 +775,13 @@ namespace RI.Framework.IO.Paths
 
 		private static bool IsAtoZ (char chr)
 		{
-			chr = Char.ToUpperInvariant(chr);
+			chr = char.ToUpperInvariant(chr);
 			return ( chr >= 'A' ) && ( chr <= 'Z' );
 		}
 
 		private static string Trim (string part)
 		{
 			return part.TrimEnd('\t', '\n', '\v', '\f', '\r', (char)0x20, (char)0x85, (char)0xA0);
-		}
-
-		private PathProperties GetResolved ()
-		{
-			return PathProperties.FromPath(this.PathResolved, this.AllowWildcards, this.AllowRelatives, this.Type);
 		}
 
 		#endregion
@@ -994,6 +989,18 @@ namespace RI.Framework.IO.Paths
 
 
 
+		#region Instance Methods
+
+		private PathProperties GetResolved ()
+		{
+			return PathProperties.FromPath(this.PathResolved, this.AllowWildcards, this.AllowRelatives, this.Type);
+		}
+
+		#endregion
+
+
+
+
 		#region Overrides
 
 		/// <inheritdoc />
@@ -1062,7 +1069,7 @@ namespace RI.Framework.IO.Paths
 				return 1;
 			}
 
-			return String.Compare(this.PathNormalizedComparable, other.PathNormalizedComparable, StringComparison.Ordinal);
+			return string.Compare(this.PathNormalizedComparable, other.PathNormalizedComparable, StringComparison.Ordinal);
 		}
 
 		#endregion
@@ -1080,7 +1087,7 @@ namespace RI.Framework.IO.Paths
 				return false;
 			}
 
-			return String.Equals(this.PathNormalizedComparable, other.PathNormalizedComparable, StringComparison.Ordinal);
+			return string.Equals(this.PathNormalizedComparable, other.PathNormalizedComparable, StringComparison.Ordinal);
 		}
 
 		#endregion

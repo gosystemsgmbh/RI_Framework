@@ -30,8 +30,8 @@ namespace RI.Framework.IO.Paths
 	[Serializable]
 	public sealed class FilePath : PathString,
 	                               ICloneable<FilePath>,
-		IEquatable<FilePath>,
-		IComparable<FilePath>
+	                               IEquatable<FilePath>,
+	                               IComparable<FilePath>
 	{
 		#region Static Methods
 
@@ -258,13 +258,13 @@ namespace RI.Framework.IO.Paths
 		///     The new file path.
 		/// </returns>
 		/// <remarks>
-		/// <para>
-		/// If <paramref name="extension"/> is an empty string, the resulting file name will have a dot at its end but no extension.
-		/// If <paramref name="extension"/> is null, the extension (including dot) will be removed.
-		/// </para>
-		/// <note type="note">
-		/// All leading dots will be trimmed to a single leading dot when combined with the rest of the file name.
-		/// </note>
+		///     <para>
+		///         If <paramref name="extension" /> is an empty string, the resulting file name will have a dot at its end but no extension.
+		///         If <paramref name="extension" /> is null, the extension (including dot) will be removed.
+		///     </para>
+		///     <note type="note">
+		///         All leading dots will be trimmed to a single leading dot when combined with the rest of the file name.
+		///     </note>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="extension" /> is null. </exception>
 		/// <exception cref="InvalidPathArgumentException"> The existing file name (without extension) plus <paramref name="extension" /> do not form a valid new file name. </exception>
@@ -275,10 +275,10 @@ namespace RI.Framework.IO.Paths
 				extension = extension.TrimStart();
 				extension = extension.TrimStart(PathProperties.FileExtensionSeparator);
 			}
-			
+
 			try
 			{
-				return this.Directory.AppendFile(new FilePath(extension == null ? this.FileNameWithoutExtension : (this.FileNameWithoutExtension + PathProperties.FileExtensionSeparator + extension), this.PathInternal.AllowWildcards, this.PathInternal.AllowRelatives, this.Type));
+				return this.Directory.AppendFile(new FilePath(extension == null ? this.FileNameWithoutExtension : ( this.FileNameWithoutExtension + PathProperties.FileExtensionSeparator + extension ), this.PathInternal.AllowWildcards, this.PathInternal.AllowRelatives, this.Type));
 			}
 			catch (InvalidPathArgumentException exception)
 			{
@@ -294,7 +294,7 @@ namespace RI.Framework.IO.Paths
 		///     The new file path.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="fileName" /> is null. </exception>
-		/// <exception cref="EmptyStringArgumentException"><paramref name="fileName"/> is empty.</exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="fileName" /> is empty. </exception>
 		/// <exception cref="InvalidPathArgumentException"> <paramref name="fileName" /> is not a valid new file name. </exception>
 		public FilePath ChangeFileName (string fileName)
 		{
@@ -326,10 +326,10 @@ namespace RI.Framework.IO.Paths
 		///     The new file path.
 		/// </returns>
 		/// <remarks>
-		/// <para>
-		/// If <paramref name="fileNameWithoutExtension"/> is an empty string, the resulting file name will consist of only the extension (including its dot).
-		/// If <paramref name="fileNameWithoutExtension"/> is null, the resulting file name will consist of only the extension (without its dot).
-		/// </para>
+		///     <para>
+		///         If <paramref name="fileNameWithoutExtension" /> is an empty string, the resulting file name will consist of only the extension (including its dot).
+		///         If <paramref name="fileNameWithoutExtension" /> is null, the resulting file name will consist of only the extension (without its dot).
+		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="fileNameWithoutExtension" /> is null. </exception>
 		/// <exception cref="InvalidPathArgumentException"> <paramref name="fileNameWithoutExtension" /> plus the existing extension do not form a valid new file name. </exception>
@@ -337,7 +337,7 @@ namespace RI.Framework.IO.Paths
 		{
 			try
 			{
-				return this.Directory.AppendFile(new FilePath(fileNameWithoutExtension == null ? this.ExtensionWithoutDot : (fileNameWithoutExtension + PathProperties.FileExtensionSeparator + this.ExtensionWithoutDot), this.PathInternal.AllowWildcards, this.PathInternal.AllowRelatives, this.Type));
+				return this.Directory.AppendFile(new FilePath(fileNameWithoutExtension == null ? this.ExtensionWithoutDot : ( fileNameWithoutExtension + PathProperties.FileExtensionSeparator + this.ExtensionWithoutDot ), this.PathInternal.AllowWildcards, this.PathInternal.AllowRelatives, this.Type));
 			}
 			catch (InvalidPathArgumentException exception)
 			{
@@ -388,6 +388,77 @@ namespace RI.Framework.IO.Paths
 
 			File.Delete(this);
 			return true;
+		}
+
+		/// <summary>
+		///     Creates an absolute file path out of this file path relative to a specified root path.
+		/// </summary>
+		/// <param name="root"> The root path. </param>
+		/// <returns>
+		///     The absolute file path using <paramref name="root" />.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         If this file path is already absolute, nothing is done and the same file path is returned.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="root" /> is null. </exception>
+		/// <exception cref="InvalidPathArgumentException"> <paramref name="root" /> is not a rooted path. </exception>
+		public FilePath MakeAbsoluteFrom (DirectoryPath root)
+		{
+			if (root == null)
+			{
+				throw new ArgumentNullException(nameof(root));
+			}
+
+			if (!root.IsRooted)
+			{
+				throw new InvalidPathArgumentException(nameof(root));
+			}
+
+			if (this.IsRooted)
+			{
+				return this;
+			}
+
+			return new FilePath(PathProperties.MakeAbsolute(root.PathInternal, this.PathInternal));
+		}
+
+		/// <summary>
+		///     Creates a relative file path out of this file path relative to a specified root path.
+		/// </summary>
+		/// <param name="root"> The root path. </param>
+		/// <returns>
+		///     The relative file path relative to <paramref name="root" />.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         If this file path is already relative, nothing is done and the same file path is returned.
+		///     </para>
+		///     <note type="important">
+		///         If this file path and <paramref name="root" /> do not have the same root, the same value as this file path is returned, still being an absolute path.
+		///     </note>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="root" /> is null. </exception>
+		/// <exception cref="InvalidPathArgumentException"> <paramref name="root" /> is not a rooted path. </exception>
+		public FilePath MakeRelativeTo (DirectoryPath root)
+		{
+			if (root == null)
+			{
+				throw new ArgumentNullException(nameof(root));
+			}
+
+			if (!root.IsRooted)
+			{
+				throw new InvalidPathArgumentException(nameof(root));
+			}
+
+			if (!this.IsRooted)
+			{
+				return this;
+			}
+
+			return new FilePath(PathProperties.MakeRelative(root.PathInternal, this.PathInternal));
 		}
 
 		/// <summary>
@@ -480,77 +551,6 @@ namespace RI.Framework.IO.Paths
 			{
 				return null;
 			}
-		}
-
-		/// <summary>
-		///     Creates an absolute file path out of this file path relative to a specified root path.
-		/// </summary>
-		/// <param name="root"> The root path. </param>
-		/// <returns>
-		///     The absolute file path using <paramref name="root" />.
-		/// </returns>
-		/// <remarks>
-		///     <para>
-		///         If this file path is already absolute, nothing is done and the same file path is returned.
-		///     </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="root" /> is null. </exception>
-		/// <exception cref="InvalidPathArgumentException"> <paramref name="root" /> is not a rooted path. </exception>
-		public FilePath MakeAbsoluteFrom (DirectoryPath root)
-		{
-			if (root == null)
-			{
-				throw new ArgumentNullException(nameof(root));
-			}
-
-			if (!root.IsRooted)
-			{
-				throw new InvalidPathArgumentException(nameof(root));
-			}
-
-			if (this.IsRooted)
-			{
-				return this;
-			}
-
-			return new FilePath(PathProperties.MakeAbsolute(root.PathInternal, this.PathInternal));
-		}
-
-		/// <summary>
-		///     Creates a relative file path out of this file path relative to a specified root path.
-		/// </summary>
-		/// <param name="root"> The root path. </param>
-		/// <returns>
-		///     The relative file path relative to <paramref name="root" />.
-		/// </returns>
-		/// <remarks>
-		///     <para>
-		///         If this file path is already relative, nothing is done and the same file path is returned.
-		///     </para>
-		/// <note type="important">
-		/// If this file path and <paramref name="root"/> do not have the same root, the same value as this file path is returned, still being an absolute path.
-		/// </note>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="root" /> is null. </exception>
-		/// <exception cref="InvalidPathArgumentException"> <paramref name="root" /> is not a rooted path. </exception>
-		public FilePath MakeRelativeTo (DirectoryPath root)
-		{
-			if (root == null)
-			{
-				throw new ArgumentNullException(nameof(root));
-			}
-
-			if (!root.IsRooted)
-			{
-				throw new InvalidPathArgumentException(nameof(root));
-			}
-
-			if (!this.IsRooted)
-			{
-				return this;
-			}
-
-			return new FilePath(PathProperties.MakeRelative(root.PathInternal, this.PathInternal));
 		}
 
 		/// <summary>
@@ -696,16 +696,28 @@ namespace RI.Framework.IO.Paths
 
 
 
-		/// <inheritdoc cref="PathString.Equals(PathString)" />
-		public bool Equals (FilePath other)
-		{
-			return this.Equals((PathString)other);
-		}
+
+		#region Interface: IComparable<FilePath>
 
 		/// <inheritdoc cref="PathString.CompareTo(PathString)" />
 		public int CompareTo (FilePath other)
 		{
 			return this.CompareTo((PathString)other);
 		}
+
+		#endregion
+
+
+
+
+		#region Interface: IEquatable<FilePath>
+
+		/// <inheritdoc cref="PathString.Equals(PathString)" />
+		public bool Equals (FilePath other)
+		{
+			return this.Equals((PathString)other);
+		}
+
+		#endregion
 	}
 }
