@@ -8,6 +8,7 @@
   - [ ] Use FilePath and DirectoryPath
   - [ ] Additional dispatcher Features
   - [ ] Analyze and implement magic thread
+  - [ ] LogWriter for .NET
   - [ ] TODOs
 - [ ] Documentation
   - [ ] Examples
@@ -19,11 +20,12 @@
   - [X] Remove SuppressMessage attributes
   - [X] ReSharper configuration, cleanup, and review
   - [ ] Cleanup artifacts
+  - [ ] Split WPF stuff into separate assembly
 - [ ] Testing
   - [X] Split testing into "Unity" and ".NET"
   - [ ] Complete tests
-  - [ ] Run tests in Unity
   - [ ] Run tests in .NET
+  - [ ] Run tests in Unity
 - [ ] Release
   - [ ] Promotional material
   - [ ] Web page
@@ -31,9 +33,13 @@
 
 ## Second release
 
-- [ ] Features
-  - [ ] Stream extensions
-  - [ ] Path extensions
-  - [ ] ChangeType() for PathProperties
+- [ ] Specific Features
+  - [ ] RandomExtensions
+  - [ ] RandomStream
+  - [ ] UncloseableStream
+  - [ ] StreamExtensions
+- [ ] General Features
+  - [ ] I/O
+  - [ ] Math
 - [ ] Documentation
   - [ ] .NET documentation

@@ -7,7 +7,6 @@ using System.Windows;
 using RI.Framework.Composition;
 using RI.Framework.Composition.Catalogs;
 using RI.Framework.Composition.Model;
-using RI.Framework.Services;
 using RI.Framework.Services.Logging;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Reflection;
@@ -15,7 +14,7 @@ using RI.Framework.Utilities.Reflection;
 
 
 
-namespace RI.Framework.Wpf.Services
+namespace RI.Framework.Services
 {
 	/// <summary>
 	///     Implements a bootstrapper for WPF applications.

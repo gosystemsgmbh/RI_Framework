@@ -3,7 +3,7 @@
 
 
 
-namespace RI.Framework.Wpf.Services
+namespace RI.Framework.Services
 {
 	/// <summary>
 	///     Describes the current state of a WPF application bootstrapper.

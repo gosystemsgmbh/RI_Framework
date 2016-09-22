@@ -5,7 +5,7 @@ using System.Windows.Threading;
 
 
 
-namespace RI.Framework.Wpf
+namespace RI.Framework.Utilities
 {
 	/// <summary>
 	///     Provides utility/extension methods for the <see cref="Application" /> type.

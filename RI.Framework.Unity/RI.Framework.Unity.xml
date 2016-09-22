@@ -8978,7 +8978,7 @@
                 The new directory path.
             </returns>
             <exception cref="T:System.ArgumentNullException"> <paramref name="directoryName" /> is null. </exception>
-            <exception cref="T:RI.Framework.Utilities.Exceptions.EmptyStringArgumentException"><paramref name="directoryName"/> is empty.</exception>
+            <exception cref="T:RI.Framework.Utilities.Exceptions.EmptyStringArgumentException"> <paramref name="directoryName" /> is empty. </exception>
             <exception cref="T:RI.Framework.Utilities.Exceptions.InvalidPathArgumentException"> <paramref name="directoryName" /> is not a valid new directory name. </exception>
         </member>
         <member name="M:RI.Framework.IO.Paths.DirectoryPath.ChangeParent(RI.Framework.IO.Paths.DirectoryPath)">
@@ -8990,9 +8990,9 @@
                 The new directory path.
             </returns>
             <remarks>
-            <para>
-            If <paramref name="newParent"/> is null, the resulting directory is a relative directory only consisting of this <see cref="P:RI.Framework.IO.Paths.DirectoryPath.DirectoryName"/> where the whole parent directory part is removed.
-            </para>
+                <para>
+                    If <paramref name="newParent" /> is null, the resulting directory is a relative directory only consisting of this <see cref="P:RI.Framework.IO.Paths.DirectoryPath.DirectoryName" /> where the whole parent directory part is removed.
+                </para>
             </remarks>
         </member>
         <member name="M:RI.Framework.IO.Paths.DirectoryPath.Create">
@@ -9048,9 +9048,9 @@
                 <para>
                     If this directory path is already relative, nothing is done and the same directory path is returned.
                 </para>
-            <note type="important">
-            If this directory path and <paramref name="root"/> do not have the same root, the same value as this directory path is returned, still being an absolute path.
-            </note>
+                <note type="important">
+                    If this directory path and <paramref name="root" /> do not have the same root, the same value as this directory path is returned, still being an absolute path.
+                </note>
             </remarks>
             <exception cref="T:System.ArgumentNullException"> <paramref name="root" /> is null. </exception>
             <exception cref="T:RI.Framework.Utilities.Exceptions.InvalidPathArgumentException"> <paramref name="root" /> is not a rooted path. </exception>
@@ -9061,11 +9061,11 @@
         <member name="M:RI.Framework.IO.Paths.DirectoryPath.Clone">
             <inheritdoc />
         </member>
-        <member name="M:RI.Framework.IO.Paths.DirectoryPath.Equals(RI.Framework.IO.Paths.DirectoryPath)">
-            <inheritdoc cref="M:RI.Framework.IO.Paths.PathString.Equals(RI.Framework.IO.Paths.PathString)" />
-        </member>
         <member name="M:RI.Framework.IO.Paths.DirectoryPath.CompareTo(RI.Framework.IO.Paths.DirectoryPath)">
             <inheritdoc cref="M:RI.Framework.IO.Paths.PathString.CompareTo(RI.Framework.IO.Paths.PathString)" />
+        </member>
+        <member name="M:RI.Framework.IO.Paths.DirectoryPath.Equals(RI.Framework.IO.Paths.DirectoryPath)">
+            <inheritdoc cref="M:RI.Framework.IO.Paths.PathString.Equals(RI.Framework.IO.Paths.PathString)" />
         </member>
         <member name="T:RI.Framework.IO.Paths.FilePath">
             <summary>
@@ -9215,13 +9215,13 @@
                 The new file path.
             </returns>
             <remarks>
-            <para>
-            If <paramref name="extension"/> is an empty string, the resulting file name will have a dot at its end but no extension.
-            If <paramref name="extension"/> is null, the extension (including dot) will be removed.
-            </para>
-            <note type="note">
-            All leading dots will be trimmed to a single leading dot when combined with the rest of the file name.
-            </note>
+                <para>
+                    If <paramref name="extension" /> is an empty string, the resulting file name will have a dot at its end but no extension.
+                    If <paramref name="extension" /> is null, the extension (including dot) will be removed.
+                </para>
+                <note type="note">
+                    All leading dots will be trimmed to a single leading dot when combined with the rest of the file name.
+                </note>
             </remarks>
             <exception cref="T:System.ArgumentNullException"> <paramref name="extension" /> is null. </exception>
             <exception cref="T:RI.Framework.Utilities.Exceptions.InvalidPathArgumentException"> The existing file name (without extension) plus <paramref name="extension" /> do not form a valid new file name. </exception>
@@ -9235,7 +9235,7 @@
                 The new file path.
             </returns>
             <exception cref="T:System.ArgumentNullException"> <paramref name="fileName" /> is null. </exception>
-            <exception cref="T:RI.Framework.Utilities.Exceptions.EmptyStringArgumentException"><paramref name="fileName"/> is empty.</exception>
+            <exception cref="T:RI.Framework.Utilities.Exceptions.EmptyStringArgumentException"> <paramref name="fileName" /> is empty. </exception>
             <exception cref="T:RI.Framework.Utilities.Exceptions.InvalidPathArgumentException"> <paramref name="fileName" /> is not a valid new file name. </exception>
         </member>
         <member name="M:RI.Framework.IO.Paths.FilePath.ChangeFileNameWithoutExtension(System.String)">
@@ -9247,10 +9247,10 @@
                 The new file path.
             </returns>
             <remarks>
-            <para>
-            If <paramref name="fileNameWithoutExtension"/> is an empty string, the resulting file name will consist of only the extension (including its dot).
-            If <paramref name="fileNameWithoutExtension"/> is null, the resulting file name will consist of only the extension (without its dot).
-            </para>
+                <para>
+                    If <paramref name="fileNameWithoutExtension" /> is an empty string, the resulting file name will consist of only the extension (including its dot).
+                    If <paramref name="fileNameWithoutExtension" /> is null, the resulting file name will consist of only the extension (without its dot).
+                </para>
             </remarks>
             <exception cref="T:System.ArgumentNullException"> <paramref name="fileNameWithoutExtension" /> is null. </exception>
             <exception cref="T:RI.Framework.Utilities.Exceptions.InvalidPathArgumentException"> <paramref name="fileNameWithoutExtension" /> plus the existing extension do not form a valid new file name. </exception>
@@ -9280,6 +9280,41 @@
             <exception cref="T:System.IO.IOException"> The file is in use. </exception>
             <exception cref="T:System.UnauthorizedAccessException"> The user does not have the required permissions, the file is read-only, or the file is an executable which is in use. </exception>
             <exception cref="T:System.IO.PathTooLongException"> Although being a valid file path, the file path is too long for the current system to be used. </exception>
+        </member>
+        <member name="M:RI.Framework.IO.Paths.FilePath.MakeAbsoluteFrom(RI.Framework.IO.Paths.DirectoryPath)">
+            <summary>
+                Creates an absolute file path out of this file path relative to a specified root path.
+            </summary>
+            <param name="root"> The root path. </param>
+            <returns>
+                The absolute file path using <paramref name="root" />.
+            </returns>
+            <remarks>
+                <para>
+                    If this file path is already absolute, nothing is done and the same file path is returned.
+                </para>
+            </remarks>
+            <exception cref="T:System.ArgumentNullException"> <paramref name="root" /> is null. </exception>
+            <exception cref="T:RI.Framework.Utilities.Exceptions.InvalidPathArgumentException"> <paramref name="root" /> is not a rooted path. </exception>
+        </member>
+        <member name="M:RI.Framework.IO.Paths.FilePath.MakeRelativeTo(RI.Framework.IO.Paths.DirectoryPath)">
+            <summary>
+                Creates a relative file path out of this file path relative to a specified root path.
+            </summary>
+            <param name="root"> The root path. </param>
+            <returns>
+                The relative file path relative to <paramref name="root" />.
+            </returns>
+            <remarks>
+                <para>
+                    If this file path is already relative, nothing is done and the same file path is returned.
+                </para>
+                <note type="important">
+                    If this file path and <paramref name="root" /> do not have the same root, the same value as this file path is returned, still being an absolute path.
+                </note>
+            </remarks>
+            <exception cref="T:System.ArgumentNullException"> <paramref name="root" /> is null. </exception>
+            <exception cref="T:RI.Framework.Utilities.Exceptions.InvalidPathArgumentException"> <paramref name="root" /> is not a rooted path. </exception>
         </member>
         <member name="M:RI.Framework.IO.Paths.FilePath.ReadBytes">
             <summary>
@@ -9327,41 +9362,6 @@
             <exception cref="T:System.IO.IOException"> The file is in use. </exception>
             <exception cref="T:System.UnauthorizedAccessException"> The user does not have the required permissions or the file is an executable which is in use. </exception>
             <exception cref="T:System.IO.PathTooLongException"> Although being a valid file path, the file path is too long for the current system to be used. </exception>
-        </member>
-        <member name="M:RI.Framework.IO.Paths.FilePath.MakeAbsoluteFrom(RI.Framework.IO.Paths.DirectoryPath)">
-            <summary>
-                Creates an absolute file path out of this file path relative to a specified root path.
-            </summary>
-            <param name="root"> The root path. </param>
-            <returns>
-                The absolute file path using <paramref name="root" />.
-            </returns>
-            <remarks>
-                <para>
-                    If this file path is already absolute, nothing is done and the same file path is returned.
-                </para>
-            </remarks>
-            <exception cref="T:System.ArgumentNullException"> <paramref name="root" /> is null. </exception>
-            <exception cref="T:RI.Framework.Utilities.Exceptions.InvalidPathArgumentException"> <paramref name="root" /> is not a rooted path. </exception>
-        </member>
-        <member name="M:RI.Framework.IO.Paths.FilePath.MakeRelativeTo(RI.Framework.IO.Paths.DirectoryPath)">
-            <summary>
-                Creates a relative file path out of this file path relative to a specified root path.
-            </summary>
-            <param name="root"> The root path. </param>
-            <returns>
-                The relative file path relative to <paramref name="root" />.
-            </returns>
-            <remarks>
-                <para>
-                    If this file path is already relative, nothing is done and the same file path is returned.
-                </para>
-            <note type="important">
-            If this file path and <paramref name="root"/> do not have the same root, the same value as this file path is returned, still being an absolute path.
-            </note>
-            </remarks>
-            <exception cref="T:System.ArgumentNullException"> <paramref name="root" /> is null. </exception>
-            <exception cref="T:RI.Framework.Utilities.Exceptions.InvalidPathArgumentException"> <paramref name="root" /> is not a rooted path. </exception>
         </member>
         <member name="M:RI.Framework.IO.Paths.FilePath.WriteBytes(System.Byte[])">
             <summary>
@@ -9439,11 +9439,11 @@
         <member name="M:RI.Framework.IO.Paths.FilePath.Clone">
             <inheritdoc />
         </member>
-        <member name="M:RI.Framework.IO.Paths.FilePath.Equals(RI.Framework.IO.Paths.FilePath)">
-            <inheritdoc cref="M:RI.Framework.IO.Paths.PathString.Equals(RI.Framework.IO.Paths.PathString)" />
-        </member>
         <member name="M:RI.Framework.IO.Paths.FilePath.CompareTo(RI.Framework.IO.Paths.FilePath)">
             <inheritdoc cref="M:RI.Framework.IO.Paths.PathString.CompareTo(RI.Framework.IO.Paths.PathString)" />
+        </member>
+        <member name="M:RI.Framework.IO.Paths.FilePath.Equals(RI.Framework.IO.Paths.FilePath)">
+            <inheritdoc cref="M:RI.Framework.IO.Paths.PathString.Equals(RI.Framework.IO.Paths.PathString)" />
         </member>
         <member name="T:RI.Framework.IO.Paths.PathError">
             <summary>
@@ -9574,14 +9574,6 @@
                 </para>
             </remarks>
         </member>
-        <member name="M:RI.Framework.IO.Paths.PathProperties.GetSystemType">
-            <summary>
-            Gets the <see cref="T:RI.Framework.IO.Paths.PathType"/> which is used by the current system.
-            </summary>
-            <returns>
-            The <see cref="T:RI.Framework.IO.Paths.PathType"/> which is used by the current system or null if the type cannot be determined.
-            </returns>
-        </member>
         <member name="M:RI.Framework.IO.Paths.PathProperties.FromPath(System.String,System.Boolean,System.Boolean,System.Nullable{RI.Framework.IO.Paths.PathType})">
             <summary>
                 Analyzes a path and returns the results as an instance of <see cref="T:RI.Framework.IO.Paths.PathProperties" />.
@@ -9604,6 +9596,14 @@
             </remarks>
             <exception cref="T:System.ArgumentOutOfRangeException"> <paramref name="assumedType" /> is <see cref="F:RI.Framework.IO.Paths.PathType.Invalid" />. </exception>
             TODO: Add overloads
+        </member>
+        <member name="M:RI.Framework.IO.Paths.PathProperties.GetSystemType">
+            <summary>
+                Gets the <see cref="T:RI.Framework.IO.Paths.PathType" /> which is used by the current system.
+            </summary>
+            <returns>
+                The <see cref="T:RI.Framework.IO.Paths.PathType" /> which is used by the current system or null if the type cannot be determined.
+            </returns>
         </member>
         <member name="M:RI.Framework.IO.Paths.PathProperties.MakeAbsolute(RI.Framework.IO.Paths.PathProperties,RI.Framework.IO.Paths.PathProperties)">
             <summary>

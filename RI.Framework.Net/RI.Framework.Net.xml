@@ -1676,744 +1676,6 @@
                 Contains types for implementing globally available services.
             </summary>
         </member>
-        <member name="T:RI.Framework.Wpf.Services.Regions.NamespaceDoc">
-            <summary>
-                Provides a service to modularize a Windows Presentation Foundation (WPF) applications user interface.
-            </summary>
-        </member>
-        <member name="T:RI.Framework.Wpf.Services.Resources.NamespaceDoc">
-            <summary>
-                Provides a service to retrieve resources for Windows Presentation Foundation (WPF) applications.
-            </summary>
-        </member>
-        <member name="T:RI.Framework.Wpf.Services.Settings.NamespaceDoc">
-            <summary>
-                Provides a service to manage settings for Windows Presentation Foundation (WPF) applications.
-            </summary>
-        </member>
-        <member name="T:RI.Framework.Wpf.Services.WpfBootstrapper">
-            <summary>
-                Implements a bootstrapper for WPF applications.
-            </summary>
-            <remarks>
-                <para>
-                    The following sequence is performed when <see cref="M:RI.Framework.Wpf.Services.WpfBootstrapper.Run" /> is called:
-                </para>
-                <list type="number">
-                    <item>
-                        <para>
-                            <see cref="P:RI.Framework.Wpf.Services.WpfBootstrapper.State" /> is set to <see cref="F:RI.Framework.Wpf.Services.WpfBootstrapperState.Bootstrapping" />.
-                        </para>
-                    </item>
-                    <item>
-                        <para>
-                            <see cref="M:RI.Framework.Wpf.Services.WpfBootstrapper.DetermineApplicationAssembly" /> is called and <see cref="P:RI.Framework.Wpf.Services.WpfBootstrapper.ApplicationAssembly" /> is set.
-                        </para>
-                    </item>
-                    <item>
-                        <para>
-                            <see cref="M:RI.Framework.Wpf.Services.WpfBootstrapper.DetermineApplicationProductName" /> is called and <see cref="P:RI.Framework.Wpf.Services.WpfBootstrapper.ApplicationProductName" /> is set.
-                        </para>
-                    </item>
-                    <item>
-                        <para>
-                            <see cref="M:RI.Framework.Wpf.Services.WpfBootstrapper.DetermineApplicationCompanyName" /> is called and <see cref="P:RI.Framework.Wpf.Services.WpfBootstrapper.ApplicationCompanyName" /> is set.
-                        </para>
-                    </item>
-                    <item>
-                        <para>
-                            <see cref="M:RI.Framework.Wpf.Services.WpfBootstrapper.DetermineApplicationCopyright" /> is called and <see cref="P:RI.Framework.Wpf.Services.WpfBootstrapper.ApplicationCopyright" /> is set.
-                        </para>
-                    </item>
-                    <item>
-                        <para>
-                            <see cref="M:RI.Framework.Wpf.Services.WpfBootstrapper.DetermineApplicationVersion" /> is called and <see cref="P:RI.Framework.Wpf.Services.WpfBootstrapper.ApplicationVersion" /> is set.
-                        </para>
-                    </item>
-                    <item>
-                        <para>
-                            <see cref="M:RI.Framework.Wpf.Services.WpfBootstrapper.DetermineApplicationIdVersionIndependent" /> is called and <see cref="P:RI.Framework.Wpf.Services.WpfBootstrapper.ApplicationIdVersionIndependent" /> is set.
-                        </para>
-                    </item>
-                    <item>
-                        <para>
-                            <see cref="M:RI.Framework.Wpf.Services.WpfBootstrapper.DetermineApplicationIdVersionDependent" /> is called and <see cref="P:RI.Framework.Wpf.Services.WpfBootstrapper.ApplicationIdVersionDependent" /> is set.
-                        </para>
-                    </item>
-                    <item>
-                        <para>
-                            <see cref="M:RI.Framework.Wpf.Services.WpfBootstrapper.DetermineSessionTimestamp" /> is called and <see cref="P:RI.Framework.Wpf.Services.WpfBootstrapper.SessionTimestamp" /> is set.
-                        </para>
-                    </item>
-                    <item>
-                        <para>
-                            <see cref="M:RI.Framework.Wpf.Services.WpfBootstrapper.DetermineSessionId" /> is called and <see cref="P:RI.Framework.Wpf.Services.WpfBootstrapper.SessionId" /> is set.
-                        </para>
-                    </item>
-                    <item>
-                        <para>
-                            <see cref="M:RI.Framework.Wpf.Services.WpfBootstrapper.DetermineApplicationExecutableDirectory" /> is called and <see cref="P:RI.Framework.Wpf.Services.WpfBootstrapper.ApplicationExecutableDirectory" /> is set.
-                        </para>
-                    </item>
-                    <item>
-                        <para>
-                            <see cref="M:RI.Framework.Wpf.Services.WpfBootstrapper.DetermineApplicationDataDirectory" /> is called and <see cref="P:RI.Framework.Wpf.Services.WpfBootstrapper.ApplicationDataDirectory" /> is set.
-                        </para>
-                    </item>
-                    <item>
-                        <para>
-                            <see cref="M:RI.Framework.Wpf.Services.WpfBootstrapper.CreateContainer" /> is called and <see cref="P:RI.Framework.Wpf.Services.WpfBootstrapper.Container" /> is set.
-                        </para>
-                    </item>
-                    <item>
-                        <para>
-                            <see cref="M:RI.Framework.Wpf.Services.WpfBootstrapper.ConfigureBootstrapper" /> is called.
-                        </para>
-                    </item>
-                    <item>
-                        <para>
-                            <see cref="M:RI.Framework.Wpf.Services.WpfBootstrapper.ConfigureServiceLocator" /> is called.
-                        </para>
-                    </item>
-                    <item>
-                        <para>
-                            <see cref="M:RI.Framework.Wpf.Services.WpfBootstrapper.ConfigureLogging" /> is called.
-                        </para>
-                    </item>
-                    <item>
-                        <para>
-                            <see cref="M:RI.Framework.Wpf.Services.WpfBootstrapper.CreateApplication" /> is called and <see cref="P:RI.Framework.Wpf.Services.WpfBootstrapper.Application" /> is set.
-                        </para>
-                    </item>
-                    <item>
-                        <para>
-                            <see cref="M:RI.Framework.Wpf.Services.WpfBootstrapper.ConfigureApplication" /> is called.
-                        </para>
-                    </item>
-                    <item>
-                        <para>
-                            <see cref="M:RI.Framework.Wpf.Services.WpfBootstrapper.ShowSplashScreen" /> is called.
-                        </para>
-                    </item>
-                    <item>
-                        <para>
-                            <see cref="M:RI.Framework.Wpf.Services.WpfBootstrapper.ConfigureContainer" /> is called.
-                        </para>
-                    </item>
-                    <item>
-                        <para>
-                            <see cref="M:RI.Framework.Wpf.Services.WpfBootstrapper.ConfigureServices" /> is called.
-                        </para>
-                    </item>
-                    <item>
-                        <para>
-                            <see cref="M:RI.Framework.Wpf.Services.WpfBootstrapper.ConfigureModularization" /> is called.
-                        </para>
-                    </item>
-                    <item>
-                        <para>
-                            <see cref="P:RI.Framework.Wpf.Services.WpfBootstrapper.State" /> is set to <see cref="F:RI.Framework.Wpf.Services.WpfBootstrapperState.Running" />.
-                        </para>
-                    </item>
-                    <item>
-                        <para>
-                            <see cref="M:RI.Framework.Wpf.Services.WpfBootstrapper.BeginRun" /> is called.
-                        </para>
-                    </item>
-                    <item>
-                        <para>
-                            <see cref="P:RI.Framework.Wpf.Services.WpfBootstrapper.Application" />.<see cref="M:System.Windows.Application.Run" /> is called. The application is now running until <see cref="M:RI.Framework.Wpf.Services.WpfBootstrapper.Shutdown" /> is called.
-                        </para>
-                    </item>
-                    <item>
-                        <para>
-                            <see cref="M:RI.Framework.Wpf.Services.WpfBootstrapper.FinishRun" /> is called.
-                        </para>
-                    </item>
-                    <item>
-                        <para>
-                            <see cref="P:RI.Framework.Wpf.Services.WpfBootstrapper.State" /> is set to <see cref="F:RI.Framework.Wpf.Services.WpfBootstrapperState.ShuttingDown" />.
-                        </para>
-                    </item>
-                    <item>
-                        <para>
-                            <see cref="M:RI.Framework.Wpf.Services.WpfBootstrapper.BeginShutdown" /> is called.
-                        </para>
-                    </item>
-                    <item>
-                        <para>
-                            Remaining operations in the applications dispatcher are processed.
-                        </para>
-                    </item>
-                    <item>
-                        <para>
-                            <see cref="M:RI.Framework.Wpf.Services.WpfBootstrapper.FinishShutdown" /> is called.
-                        </para>
-                    </item>
-                    <item>
-                        <para>
-                            <see cref="P:RI.Framework.Wpf.Services.WpfBootstrapper.State" /> is set to <see cref="F:RI.Framework.Wpf.Services.WpfBootstrapperState.ShutDown" />.
-                        </para>
-                    </item>
-                    <item>
-                        <para>
-                            <see cref="M:RI.Framework.Wpf.Services.WpfBootstrapper.Run" /> returns.
-                        </para>
-                    </item>
-                </list>
-            </remarks>
-        </member>
-        <member name="M:RI.Framework.Wpf.Services.WpfBootstrapper.#ctor">
-            <summary>
-                Creates a new instance of <see cref="T:RI.Framework.Wpf.Services.WpfBootstrapper" />.
-            </summary>
-        </member>
-        <member name="P:RI.Framework.Wpf.Services.WpfBootstrapper.Application">
-            <summary>
-                Gets the used WPF application object.
-            </summary>
-            <value>
-                The used WPF application object.
-            </value>
-        </member>
-        <member name="P:RI.Framework.Wpf.Services.WpfBootstrapper.ApplicationAssembly">
-            <summary>
-                Gets the main assembly of the application.
-            </summary>
-            <value>
-                The main assembly of the application.
-            </value>
-        </member>
-        <member name="P:RI.Framework.Wpf.Services.WpfBootstrapper.ApplicationCompanyName">
-            <summary>
-                Gets the associated company name of the application.
-            </summary>
-            <value>
-                The associated company name of the application.
-            </value>
-        </member>
-        <member name="P:RI.Framework.Wpf.Services.WpfBootstrapper.ApplicationCopyright">
-            <summary>
-                Gets the copyright statement of the application.
-            </summary>
-            <value>
-                The copyright statement of the application.
-            </value>
-        </member>
-        <member name="P:RI.Framework.Wpf.Services.WpfBootstrapper.ApplicationDataDirectory">
-            <summary>
-                Gets the read- and writeable directory associated with the application used to store persistent data.
-            </summary>
-            <value>
-                The read- and writeable directory associated with the application used to store persistent data.
-            </value>
-        </member>
-        <member name="P:RI.Framework.Wpf.Services.WpfBootstrapper.ApplicationExecutableDirectory">
-            <summary>
-                Gets the read-only directory where the applications executable files are stored.
-            </summary>
-            <value>
-                The read-only directory where the applications executable files are stored.
-            </value>
-        </member>
-        <member name="P:RI.Framework.Wpf.Services.WpfBootstrapper.ApplicationIdVersionDependent">
-            <summary>
-                Gets the GUID of the application which is application version dependent.
-            </summary>
-            <value>
-                The GUID of the application which is application version dependent.
-            </value>
-        </member>
-        <member name="P:RI.Framework.Wpf.Services.WpfBootstrapper.ApplicationIdVersionIndependent">
-            <summary>
-                Gets the GUID of the application which is application version independent.
-            </summary>
-            <value>
-                The GUID of the application which is application version independent.
-            </value>
-        </member>
-        <member name="P:RI.Framework.Wpf.Services.WpfBootstrapper.ApplicationProductName">
-            <summary>
-                Gets the product name of the application.
-            </summary>
-            <value>
-                The product name of the application.
-            </value>
-        </member>
-        <member name="P:RI.Framework.Wpf.Services.WpfBootstrapper.ApplicationVersion">
-            <summary>
-                Gets the version of the application.
-            </summary>
-            <value>
-                The version of the application.
-            </value>
-        </member>
-        <member name="P:RI.Framework.Wpf.Services.WpfBootstrapper.Container">
-            <summary>
-                Gets the used composition container.
-            </summary>
-            <value>
-                The used composition container.
-            </value>
-        </member>
-        <member name="P:RI.Framework.Wpf.Services.WpfBootstrapper.SessionId">
-            <summary>
-                Gets the GUID of the current session.
-            </summary>
-            <value>
-                The GUID of the current session.
-            </value>
-        </member>
-        <member name="P:RI.Framework.Wpf.Services.WpfBootstrapper.SessionTimestamp">
-            <summary>
-                Gets the timestamp of the current session.
-            </summary>
-            <value>
-                The timestamp of the current session.
-            </value>
-        </member>
-        <member name="P:RI.Framework.Wpf.Services.WpfBootstrapper.State">
-            <summary>
-                Gets the current state of the bootstrapper.
-            </summary>
-            <value>
-                The current state of the bootstrapper.
-            </value>
-        </member>
-        <member name="M:RI.Framework.Wpf.Services.WpfBootstrapper.Log(RI.Framework.Services.Logging.LogLevel,System.String,System.Object[])">
-            <summary>
-                Logs a message.
-            </summary>
-            <param name="severity"> The severity of the message. </param>
-            <param name="format"> The message. </param>
-            <param name="args"> The arguments which will be expanded into the message (comparable to <see cref="M:System.String.Format(System.String,System.Object[])" />). </param>
-            <remarks>
-                <para>
-                    <see cref="T:RI.Framework.Services.Logging.ILogService" /> is used, obtained through <see cref="T:RI.Framework.Services.ServiceLocator" />.
-                    If no <see cref="T:RI.Framework.Services.Logging.ILogService" /> is available, no logging is performed.
-                </para>
-            </remarks>
-        </member>
-        <member name="M:RI.Framework.Wpf.Services.WpfBootstrapper.BeginRun">
-            <summary>
-                Called before the application begins running after the bootstrapping is completed.
-            </summary>
-            <remarks>
-                <note type="implement">
-                    The default implementation does nothing.
-                </note>
-            </remarks>
-        </member>
-        <member name="M:RI.Framework.Wpf.Services.WpfBootstrapper.BeginShutdown">
-            <summary>
-                Called before the application begins shutting down.
-            </summary>
-            <remarks>
-                <note type="implement">
-                    The default implementation does nothing.
-                </note>
-            </remarks>
-        </member>
-        <member name="M:RI.Framework.Wpf.Services.WpfBootstrapper.ConfigureApplication">
-            <summary>
-                Called when the used WPF application object (<see cref="P:RI.Framework.Wpf.Services.WpfBootstrapper.Application" />) needs to be configured.
-            </summary>
-            <remarks>
-                <note type="implement">
-                    The default implementation does nothing.
-                </note>
-            </remarks>
-        </member>
-        <member name="M:RI.Framework.Wpf.Services.WpfBootstrapper.ConfigureBootstrapper">
-            <summary>
-                Called when the bootstrapper itself needs to be configured.
-            </summary>
-            <remarks>
-                <note type="implement">
-                    The default implementation adds this bootstrapper instance to the used composition container as an export using a <see cref="T:RI.Framework.Composition.Catalogs.InstanceCatalog" />.
-                </note>
-            </remarks>
-        </member>
-        <member name="M:RI.Framework.Wpf.Services.WpfBootstrapper.ConfigureContainer">
-            <summary>
-                Called when the used composition container (<see cref="P:RI.Framework.Wpf.Services.WpfBootstrapper.Container" />) needs to be configured.
-            </summary>
-            <remarks>
-                <note type="implement">
-                    The default implementation does nothing.
-                </note>
-            </remarks>
-        </member>
-        <member name="M:RI.Framework.Wpf.Services.WpfBootstrapper.ConfigureLogging">
-            <summary>
-                Called when the logging needs to be configured.
-            </summary>
-            <remarks>
-                <note type="implement">
-                    The default implementation does nothing.
-                </note>
-            </remarks>
-        </member>
-        <member name="M:RI.Framework.Wpf.Services.WpfBootstrapper.ConfigureModularization">
-            <summary>
-                Called when the modularization needs to be configured.
-            </summary>
-            <remarks>
-                <note type="implement">
-                    The default implementation does nothing.
-                </note>
-            </remarks>
-        </member>
-        <member name="M:RI.Framework.Wpf.Services.WpfBootstrapper.ConfigureServiceLocator">
-            <summary>
-                Called when the service locator (<see cref="T:RI.Framework.Services.ServiceLocator" />) needs to be configured.
-            </summary>
-            <remarks>
-                <note type="implement">
-                    The default implementation calls <see cref="M:RI.Framework.Services.ServiceLocator.BindToCompositionContainer(RI.Framework.Composition.CompositionContainer)" /> using the used composition container (<see cref="P:RI.Framework.Wpf.Services.WpfBootstrapper.Container" />).
-                </note>
-            </remarks>
-        </member>
-        <member name="M:RI.Framework.Wpf.Services.WpfBootstrapper.ConfigureServices">
-            <summary>
-                Called when all the other services of the application need to be configured.
-            </summary>
-            <remarks>
-                <note type="implement">
-                    The default implementation does nothing.
-                </note>
-            </remarks>
-        </member>
-        <member name="M:RI.Framework.Wpf.Services.WpfBootstrapper.CreateApplication">
-            <summary>
-                Called when the WPF application object needs to be created.
-            </summary>
-            <returns>
-                The WPF application object to be used.
-                Can be null if a default <see cref="T:System.Windows.Application" /> is to be used.
-            </returns>
-            <remarks>
-                <note type="implement">
-                    The default implementation returns null so a default <see cref="T:System.Windows.Application" /> will be created and used.
-                </note>
-            </remarks>
-        </member>
-        <member name="M:RI.Framework.Wpf.Services.WpfBootstrapper.CreateContainer">
-            <summary>
-                Called when the composition container needs to be created.
-            </summary>
-            <returns>
-                The composition container to be used.
-                Can be null if a default <see cref="T:RI.Framework.Composition.CompositionContainer" /> is to be used.
-            </returns>
-            <remarks>
-                <note type="implement">
-                    The default implementation returns null so a default <see cref="T:RI.Framework.Composition.CompositionContainer" /> will be created and used.
-                </note>
-            </remarks>
-        </member>
-        <member name="M:RI.Framework.Wpf.Services.WpfBootstrapper.DetermineApplicationAssembly">
-            <summary>
-                Called to determine the main assembly of the application (<see cref="P:RI.Framework.Wpf.Services.WpfBootstrapper.ApplicationAssembly" />).
-            </summary>
-            <returns>
-                The main assembly of the application.
-                Cannot be null.
-            </returns>
-            <remarks>
-                <note type="implement">
-                    The default implementation uses <see cref="M:System.Reflection.Assembly.GetEntryAssembly" /> to determine the main assembly.
-                </note>
-            </remarks>
-        </member>
-        <member name="M:RI.Framework.Wpf.Services.WpfBootstrapper.DetermineApplicationCompanyName">
-            <summary>
-                Called to determine the associated company name of the application (<see cref="P:RI.Framework.Wpf.Services.WpfBootstrapper.ApplicationCompanyName" />).
-            </summary>
-            <returns>
-                The associated company name of the application.
-                Cannot be null.
-            </returns>
-            <remarks>
-                <note type="implement">
-                    The default implementation uses <see cref="M:RI.Framework.Utilities.Reflection.AssemblyExtensions.GetCompany(System.Reflection.Assembly)" /> on <see cref="P:RI.Framework.Wpf.Services.WpfBootstrapper.ApplicationAssembly" />.
-                </note>
-            </remarks>
-        </member>
-        <member name="M:RI.Framework.Wpf.Services.WpfBootstrapper.DetermineApplicationCopyright">
-            <summary>
-                Called to determine the copyright of the application (<see cref="P:RI.Framework.Wpf.Services.WpfBootstrapper.ApplicationCopyright" />).
-            </summary>
-            <returns>
-                The copyright of the application.
-                Cannot be null.
-            </returns>
-            <remarks>
-                <note type="implement">
-                    The default implementation uses <see cref="M:RI.Framework.Utilities.Reflection.AssemblyExtensions.GetCopyright(System.Reflection.Assembly)" /> on <see cref="P:RI.Framework.Wpf.Services.WpfBootstrapper.ApplicationAssembly" />.
-                </note>
-            </remarks>
-        </member>
-        <member name="M:RI.Framework.Wpf.Services.WpfBootstrapper.DetermineApplicationDataDirectory">
-            <summary>
-                Called to determine the read- and writeable directory associated with the application used to store persistent data (<see cref="P:RI.Framework.Wpf.Services.WpfBootstrapper.ApplicationDataDirectory" />).
-            </summary>
-            <returns>
-                The read- and writeable directory associated with the application used to store persistent data.
-                Cannot be null.
-            </returns>
-            <remarks>
-                <note type="implement">
-                    The default implementation uses the directory returned by <see cref="M:System.Environment.GetFolderPath(System.Environment.SpecialFolder)" /> using <see cref="F:System.Environment.SpecialFolder.LocalApplicationData" /> appended with <see cref="P:RI.Framework.Wpf.Services.WpfBootstrapper.ApplicationCompanyName" /> and <see cref="P:RI.Framework.Wpf.Services.WpfBootstrapper.ApplicationProductName" />.
-                    The directory is just determined but not accessed in any way.
-                </note>
-            </remarks>
-        </member>
-        <member name="M:RI.Framework.Wpf.Services.WpfBootstrapper.DetermineApplicationExecutableDirectory">
-            <summary>
-                Called to determine the read-only directory where the applications executable files are stored (<see cref="P:RI.Framework.Wpf.Services.WpfBootstrapper.ApplicationExecutableDirectory" />).
-            </summary>
-            <returns>
-                The read-only directory where the applications executable files are stored.
-                Cannot be null.
-            </returns>
-            <remarks>
-                <note type="implement">
-                    The default implementation uses <see cref="M:RI.Framework.Utilities.Reflection.AssemblyExtensions.GetFile(System.Reflection.Assembly)" /> on <see cref="P:RI.Framework.Wpf.Services.WpfBootstrapper.ApplicationAssembly" />.
-                    The directory is just determined but not accessed in any way.
-                </note>
-            </remarks>
-        </member>
-        <member name="M:RI.Framework.Wpf.Services.WpfBootstrapper.DetermineApplicationIdVersionDependent">
-            <summary>
-                Called to determine the GUID of the application which is application version dependent (<see cref="P:RI.Framework.Wpf.Services.WpfBootstrapper.ApplicationIdVersionDependent" />).
-            </summary>
-            <returns>
-                The GUID of the application which is application version dependent.
-            </returns>
-            <remarks>
-                <note type="implement">
-                    The default implementation uses <see cref="M:RI.Framework.Utilities.Reflection.AssemblyExtensions.GetGuid(System.Reflection.Assembly,System.Boolean,System.Boolean)" /> on <see cref="P:RI.Framework.Wpf.Services.WpfBootstrapper.ApplicationAssembly" />.
-                </note>
-            </remarks>
-        </member>
-        <member name="M:RI.Framework.Wpf.Services.WpfBootstrapper.DetermineApplicationIdVersionIndependent">
-            <summary>
-                Called to determine the GUID of the application which is application version independent (<see cref="P:RI.Framework.Wpf.Services.WpfBootstrapper.ApplicationIdVersionIndependent" />).
-            </summary>
-            <returns>
-                The GUID of the application which is application version independent.
-            </returns>
-            <remarks>
-                <note type="implement">
-                    The default implementation uses <see cref="M:RI.Framework.Utilities.Reflection.AssemblyExtensions.GetGuid(System.Reflection.Assembly,System.Boolean,System.Boolean)" /> on <see cref="P:RI.Framework.Wpf.Services.WpfBootstrapper.ApplicationAssembly" />.
-                </note>
-            </remarks>
-        </member>
-        <member name="M:RI.Framework.Wpf.Services.WpfBootstrapper.DetermineApplicationProductName">
-            <summary>
-                Called to determine the product name of the application (<see cref="P:RI.Framework.Wpf.Services.WpfBootstrapper.ApplicationProductName" />).
-            </summary>
-            <returns>
-                The product name of the application.
-                Cannot be null.
-            </returns>
-            <remarks>
-                <note type="implement">
-                    The default implementation uses <see cref="M:RI.Framework.Utilities.Reflection.AssemblyExtensions.GetProduct(System.Reflection.Assembly)" /> on <see cref="P:RI.Framework.Wpf.Services.WpfBootstrapper.ApplicationAssembly" />.
-                </note>
-            </remarks>
-        </member>
-        <member name="M:RI.Framework.Wpf.Services.WpfBootstrapper.DetermineApplicationVersion">
-            <summary>
-                Called to determine the version of the application (<see cref="P:RI.Framework.Wpf.Services.WpfBootstrapper.ApplicationVersion" />).
-            </summary>
-            <returns>
-                The version of the application.
-                Cannot be null.
-            </returns>
-            <remarks>
-                <note type="implement">
-                    The default implementation uses <see cref="M:RI.Framework.Utilities.Reflection.AssemblyExtensions.GetAssemblyVersion(System.Reflection.Assembly)" />, <see cref="M:RI.Framework.Utilities.Reflection.AssemblyExtensions.GetFileVersion(System.Reflection.Assembly)" />, and <see cref="M:RI.Framework.Utilities.Reflection.AssemblyExtensions.GetInformationalVersion(System.Reflection.Assembly)" /> on <see cref="P:RI.Framework.Wpf.Services.WpfBootstrapper.ApplicationAssembly" /> (in that order, whichever returns a valid version first).
-                </note>
-            </remarks>
-        </member>
-        <member name="M:RI.Framework.Wpf.Services.WpfBootstrapper.DetermineSessionId">
-            <summary>
-                Called to determine the GUID of the current session (<see cref="P:RI.Framework.Wpf.Services.WpfBootstrapper.SessionId" />).
-            </summary>
-            <returns>
-                The GUID of the current session.
-            </returns>
-            <remarks>
-                <note type="implement">
-                    The default implementation simply creates a new <see cref="T:System.Guid" /> using <see cref="M:System.Guid.NewGuid" />.
-                </note>
-            </remarks>
-        </member>
-        <member name="M:RI.Framework.Wpf.Services.WpfBootstrapper.DetermineSessionTimestamp">
-            <summary>
-                Called to determine the timestamp of the current session (<see cref="P:RI.Framework.Wpf.Services.WpfBootstrapper.SessionTimestamp" />).
-            </summary>
-            <returns>
-                The timestamp of the current session.
-            </returns>
-            <remarks>
-                <note type="implement">
-                    The default implementation simply returns the value of <see cref="P:System.DateTime.Now" /> at the time of calling.
-                </note>
-            </remarks>
-        </member>
-        <member name="M:RI.Framework.Wpf.Services.WpfBootstrapper.FinishRun">
-            <summary>
-                Called before the application begins shutting down after the application was running.
-            </summary>
-            <remarks>
-                <note type="implement">
-                    The default implementation does nothing.
-                </note>
-            </remarks>
-        </member>
-        <member name="M:RI.Framework.Wpf.Services.WpfBootstrapper.FinishShutdown">
-            <summary>
-                Called after the application finished shutting down.
-            </summary>
-            <remarks>
-                <note type="implement">
-                    The default implementation does nothing.
-                </note>
-            </remarks>
-        </member>
-        <member name="M:RI.Framework.Wpf.Services.WpfBootstrapper.HandleException(System.Exception)">
-            <summary>
-                Called when an unhandled exception occurs in the application.
-            </summary>
-            <param name="exception"> The unhandled exception. </param>
-            <remarks>
-                <para>
-                    The default implementation does nothing.
-                </para>
-                <para>
-                    Whatever you do in this method, the application is terminated using <see cref="M:System.Environment.FailFast(System.String,System.Exception)" /> after this method returns.
-                </para>
-            </remarks>
-        </member>
-        <member name="M:RI.Framework.Wpf.Services.WpfBootstrapper.ShowSplashScreen">
-            <summary>
-                Called when the splash screen can be created and shown.
-            </summary>
-            <remarks>
-                <note type="implement">
-                    The default implementation does nothing.
-                </note>
-            </remarks>
-        </member>
-        <member name="M:RI.Framework.Wpf.Services.WpfBootstrapper.Run">
-            <inheritdoc />
-        </member>
-        <member name="M:RI.Framework.Wpf.Services.WpfBootstrapper.Shutdown">
-            <inheritdoc />
-        </member>
-        <member name="T:RI.Framework.Wpf.Services.WpfBootstrapperState">
-            <summary>
-                Describes the current state of a WPF application bootstrapper.
-            </summary>
-        </member>
-        <member name="F:RI.Framework.Wpf.Services.WpfBootstrapperState.Uninitialized">
-            <summary>
-                The bootstrapper is unitialized (<see cref="M:RI.Framework.Wpf.Services.WpfBootstrapper.Run" /> was not called).
-            </summary>
-        </member>
-        <member name="F:RI.Framework.Wpf.Services.WpfBootstrapperState.Bootstrapping">
-            <summary>
-                The bootstrapping is in progress (<see cref="M:RI.Framework.Wpf.Services.WpfBootstrapper.Run" /> was called but the application is not yet running).
-            </summary>
-        </member>
-        <member name="F:RI.Framework.Wpf.Services.WpfBootstrapperState.Running">
-            <summary>
-                The application is running.
-            </summary>
-        </member>
-        <member name="F:RI.Framework.Wpf.Services.WpfBootstrapperState.ShuttingDown">
-            <summary>
-                The shutdown is in progress (<see cref="M:RI.Framework.Wpf.Services.WpfBootstrapper.Shutdown" /> was called).
-            </summary>
-        </member>
-        <member name="F:RI.Framework.Wpf.Services.WpfBootstrapperState.ShutDown">
-            <summary>
-                The shutdown is finished (<see cref="M:RI.Framework.Wpf.Services.WpfBootstrapper.Run" /> returned).
-            </summary>
-        </member>
-        <member name="T:RI.Framework.Wpf.Services.NamespaceDoc">
-            <summary>
-                Contains services for Windows Presentation Foundation (WPF) applications.
-            </summary>
-        </member>
-        <member name="T:RI.Framework.Wpf.ApplicationExtensions">
-            <summary>
-                Provides utility/extension methods for the <see cref="T:System.Windows.Application" /> type.
-            </summary>
-        </member>
-        <member name="M:RI.Framework.Wpf.ApplicationExtensions.DoAllEvents(System.Windows.Application)">
-            <summary>
-                Forces the application to process all its queued operations.
-            </summary>
-            <param name="application"> The application. </param>
-            <remarks>
-                <para>
-                    The method does not return until all operations are processed.
-                </para>
-            </remarks>
-            <exception cref="T:System.ArgumentNullException"> <paramref name="application" /> is null. </exception>
-        </member>
-        <member name="M:RI.Framework.Wpf.ApplicationExtensions.DoEvents(System.Windows.Application,System.Windows.Threading.DispatcherPriority)">
-            <summary>
-                Forces the application to process all its queued operations up to and including the specified priority.
-            </summary>
-            <param name="application"> The application. </param>
-            <param name="priority"> The priority up to and including all operations are to be processed. </param>
-            <remarks>
-                <para>
-                    The method does not return until all operations as specified are processed.
-                </para>
-            </remarks>
-            <exception cref="T:System.ArgumentNullException"> <paramref name="application" /> is null. </exception>
-        </member>
-        <member name="T:RI.Framework.Wpf.DispatcherExtensions">
-            <summary>
-                Provides utility/extension methods for the <see cref="T:System.Windows.Threading.Dispatcher" /> type.
-            </summary>
-        </member>
-        <member name="M:RI.Framework.Wpf.DispatcherExtensions.DoAllEvents(System.Windows.Threading.Dispatcher)">
-            <summary>
-                Forces the dispatcher to process all its queued operations.
-            </summary>
-            <param name="dispatcher"> The dispatcher. </param>
-            <remarks>
-                <para>
-                    The method does not return until all operations are processed.
-                </para>
-            </remarks>
-            <exception cref="T:System.ArgumentNullException"> <paramref name="dispatcher" /> is null. </exception>
-        </member>
-        <member name="M:RI.Framework.Wpf.DispatcherExtensions.DoEvents(System.Windows.Threading.Dispatcher,System.Windows.Threading.DispatcherPriority)">
-            <summary>
-                Forces the dispatcher to process all its queued operations up to and including the specified priority.
-            </summary>
-            <param name="dispatcher"> The dispatcher. </param>
-            <param name="priority"> The priority up to and including all operations are to be processed. </param>
-            <remarks>
-                <para>
-                    The method does not return until all operations as specified are processed.
-                </para>
-            </remarks>
-            <exception cref="T:System.ArgumentNullException"> <paramref name="dispatcher" /> is null. </exception>
-        </member>
-        <member name="T:RI.Framework.Wpf.NamespaceDoc">
-            <summary>
-                Contains utilities for the Windows Presentation Foundation (WPF).
-            </summary>
-        </member>
         <member name="T:RI.Framework.Collections.Comparison.CollectionComparer`1">
             <summary>
                 Implements an <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> for comparing collections and their elements.
@@ -9799,7 +9061,7 @@
                 The new directory path.
             </returns>
             <exception cref="T:System.ArgumentNullException"> <paramref name="directoryName" /> is null. </exception>
-            <exception cref="T:RI.Framework.Utilities.Exceptions.EmptyStringArgumentException"><paramref name="directoryName"/> is empty.</exception>
+            <exception cref="T:RI.Framework.Utilities.Exceptions.EmptyStringArgumentException"> <paramref name="directoryName" /> is empty. </exception>
             <exception cref="T:RI.Framework.Utilities.Exceptions.InvalidPathArgumentException"> <paramref name="directoryName" /> is not a valid new directory name. </exception>
         </member>
         <member name="M:RI.Framework.IO.Paths.DirectoryPath.ChangeParent(RI.Framework.IO.Paths.DirectoryPath)">
@@ -9811,9 +9073,9 @@
                 The new directory path.
             </returns>
             <remarks>
-            <para>
-            If <paramref name="newParent"/> is null, the resulting directory is a relative directory only consisting of this <see cref="P:RI.Framework.IO.Paths.DirectoryPath.DirectoryName"/> where the whole parent directory part is removed.
-            </para>
+                <para>
+                    If <paramref name="newParent" /> is null, the resulting directory is a relative directory only consisting of this <see cref="P:RI.Framework.IO.Paths.DirectoryPath.DirectoryName" /> where the whole parent directory part is removed.
+                </para>
             </remarks>
         </member>
         <member name="M:RI.Framework.IO.Paths.DirectoryPath.Create">
@@ -9869,9 +9131,9 @@
                 <para>
                     If this directory path is already relative, nothing is done and the same directory path is returned.
                 </para>
-            <note type="important">
-            If this directory path and <paramref name="root"/> do not have the same root, the same value as this directory path is returned, still being an absolute path.
-            </note>
+                <note type="important">
+                    If this directory path and <paramref name="root" /> do not have the same root, the same value as this directory path is returned, still being an absolute path.
+                </note>
             </remarks>
             <exception cref="T:System.ArgumentNullException"> <paramref name="root" /> is null. </exception>
             <exception cref="T:RI.Framework.Utilities.Exceptions.InvalidPathArgumentException"> <paramref name="root" /> is not a rooted path. </exception>
@@ -9882,11 +9144,11 @@
         <member name="M:RI.Framework.IO.Paths.DirectoryPath.Clone">
             <inheritdoc />
         </member>
-        <member name="M:RI.Framework.IO.Paths.DirectoryPath.Equals(RI.Framework.IO.Paths.DirectoryPath)">
-            <inheritdoc cref="M:RI.Framework.IO.Paths.PathString.Equals(RI.Framework.IO.Paths.PathString)" />
-        </member>
         <member name="M:RI.Framework.IO.Paths.DirectoryPath.CompareTo(RI.Framework.IO.Paths.DirectoryPath)">
             <inheritdoc cref="M:RI.Framework.IO.Paths.PathString.CompareTo(RI.Framework.IO.Paths.PathString)" />
+        </member>
+        <member name="M:RI.Framework.IO.Paths.DirectoryPath.Equals(RI.Framework.IO.Paths.DirectoryPath)">
+            <inheritdoc cref="M:RI.Framework.IO.Paths.PathString.Equals(RI.Framework.IO.Paths.PathString)" />
         </member>
         <member name="T:RI.Framework.IO.Paths.FilePath">
             <summary>
@@ -10036,13 +9298,13 @@
                 The new file path.
             </returns>
             <remarks>
-            <para>
-            If <paramref name="extension"/> is an empty string, the resulting file name will have a dot at its end but no extension.
-            If <paramref name="extension"/> is null, the extension (including dot) will be removed.
-            </para>
-            <note type="note">
-            All leading dots will be trimmed to a single leading dot when combined with the rest of the file name.
-            </note>
+                <para>
+                    If <paramref name="extension" /> is an empty string, the resulting file name will have a dot at its end but no extension.
+                    If <paramref name="extension" /> is null, the extension (including dot) will be removed.
+                </para>
+                <note type="note">
+                    All leading dots will be trimmed to a single leading dot when combined with the rest of the file name.
+                </note>
             </remarks>
             <exception cref="T:System.ArgumentNullException"> <paramref name="extension" /> is null. </exception>
             <exception cref="T:RI.Framework.Utilities.Exceptions.InvalidPathArgumentException"> The existing file name (without extension) plus <paramref name="extension" /> do not form a valid new file name. </exception>
@@ -10056,7 +9318,7 @@
                 The new file path.
             </returns>
             <exception cref="T:System.ArgumentNullException"> <paramref name="fileName" /> is null. </exception>
-            <exception cref="T:RI.Framework.Utilities.Exceptions.EmptyStringArgumentException"><paramref name="fileName"/> is empty.</exception>
+            <exception cref="T:RI.Framework.Utilities.Exceptions.EmptyStringArgumentException"> <paramref name="fileName" /> is empty. </exception>
             <exception cref="T:RI.Framework.Utilities.Exceptions.InvalidPathArgumentException"> <paramref name="fileName" /> is not a valid new file name. </exception>
         </member>
         <member name="M:RI.Framework.IO.Paths.FilePath.ChangeFileNameWithoutExtension(System.String)">
@@ -10068,10 +9330,10 @@
                 The new file path.
             </returns>
             <remarks>
-            <para>
-            If <paramref name="fileNameWithoutExtension"/> is an empty string, the resulting file name will consist of only the extension (including its dot).
-            If <paramref name="fileNameWithoutExtension"/> is null, the resulting file name will consist of only the extension (without its dot).
-            </para>
+                <para>
+                    If <paramref name="fileNameWithoutExtension" /> is an empty string, the resulting file name will consist of only the extension (including its dot).
+                    If <paramref name="fileNameWithoutExtension" /> is null, the resulting file name will consist of only the extension (without its dot).
+                </para>
             </remarks>
             <exception cref="T:System.ArgumentNullException"> <paramref name="fileNameWithoutExtension" /> is null. </exception>
             <exception cref="T:RI.Framework.Utilities.Exceptions.InvalidPathArgumentException"> <paramref name="fileNameWithoutExtension" /> plus the existing extension do not form a valid new file name. </exception>
@@ -10101,6 +9363,41 @@
             <exception cref="T:System.IO.IOException"> The file is in use. </exception>
             <exception cref="T:System.UnauthorizedAccessException"> The user does not have the required permissions, the file is read-only, or the file is an executable which is in use. </exception>
             <exception cref="T:System.IO.PathTooLongException"> Although being a valid file path, the file path is too long for the current system to be used. </exception>
+        </member>
+        <member name="M:RI.Framework.IO.Paths.FilePath.MakeAbsoluteFrom(RI.Framework.IO.Paths.DirectoryPath)">
+            <summary>
+                Creates an absolute file path out of this file path relative to a specified root path.
+            </summary>
+            <param name="root"> The root path. </param>
+            <returns>
+                The absolute file path using <paramref name="root" />.
+            </returns>
+            <remarks>
+                <para>
+                    If this file path is already absolute, nothing is done and the same file path is returned.
+                </para>
+            </remarks>
+            <exception cref="T:System.ArgumentNullException"> <paramref name="root" /> is null. </exception>
+            <exception cref="T:RI.Framework.Utilities.Exceptions.InvalidPathArgumentException"> <paramref name="root" /> is not a rooted path. </exception>
+        </member>
+        <member name="M:RI.Framework.IO.Paths.FilePath.MakeRelativeTo(RI.Framework.IO.Paths.DirectoryPath)">
+            <summary>
+                Creates a relative file path out of this file path relative to a specified root path.
+            </summary>
+            <param name="root"> The root path. </param>
+            <returns>
+                The relative file path relative to <paramref name="root" />.
+            </returns>
+            <remarks>
+                <para>
+                    If this file path is already relative, nothing is done and the same file path is returned.
+                </para>
+                <note type="important">
+                    If this file path and <paramref name="root" /> do not have the same root, the same value as this file path is returned, still being an absolute path.
+                </note>
+            </remarks>
+            <exception cref="T:System.ArgumentNullException"> <paramref name="root" /> is null. </exception>
+            <exception cref="T:RI.Framework.Utilities.Exceptions.InvalidPathArgumentException"> <paramref name="root" /> is not a rooted path. </exception>
         </member>
         <member name="M:RI.Framework.IO.Paths.FilePath.ReadBytes">
             <summary>
@@ -10148,41 +9445,6 @@
             <exception cref="T:System.IO.IOException"> The file is in use. </exception>
             <exception cref="T:System.UnauthorizedAccessException"> The user does not have the required permissions or the file is an executable which is in use. </exception>
             <exception cref="T:System.IO.PathTooLongException"> Although being a valid file path, the file path is too long for the current system to be used. </exception>
-        </member>
-        <member name="M:RI.Framework.IO.Paths.FilePath.MakeAbsoluteFrom(RI.Framework.IO.Paths.DirectoryPath)">
-            <summary>
-                Creates an absolute file path out of this file path relative to a specified root path.
-            </summary>
-            <param name="root"> The root path. </param>
-            <returns>
-                The absolute file path using <paramref name="root" />.
-            </returns>
-            <remarks>
-                <para>
-                    If this file path is already absolute, nothing is done and the same file path is returned.
-                </para>
-            </remarks>
-            <exception cref="T:System.ArgumentNullException"> <paramref name="root" /> is null. </exception>
-            <exception cref="T:RI.Framework.Utilities.Exceptions.InvalidPathArgumentException"> <paramref name="root" /> is not a rooted path. </exception>
-        </member>
-        <member name="M:RI.Framework.IO.Paths.FilePath.MakeRelativeTo(RI.Framework.IO.Paths.DirectoryPath)">
-            <summary>
-                Creates a relative file path out of this file path relative to a specified root path.
-            </summary>
-            <param name="root"> The root path. </param>
-            <returns>
-                The relative file path relative to <paramref name="root" />.
-            </returns>
-            <remarks>
-                <para>
-                    If this file path is already relative, nothing is done and the same file path is returned.
-                </para>
-            <note type="important">
-            If this file path and <paramref name="root"/> do not have the same root, the same value as this file path is returned, still being an absolute path.
-            </note>
-            </remarks>
-            <exception cref="T:System.ArgumentNullException"> <paramref name="root" /> is null. </exception>
-            <exception cref="T:RI.Framework.Utilities.Exceptions.InvalidPathArgumentException"> <paramref name="root" /> is not a rooted path. </exception>
         </member>
         <member name="M:RI.Framework.IO.Paths.FilePath.WriteBytes(System.Byte[])">
             <summary>
@@ -10260,11 +9522,11 @@
         <member name="M:RI.Framework.IO.Paths.FilePath.Clone">
             <inheritdoc />
         </member>
-        <member name="M:RI.Framework.IO.Paths.FilePath.Equals(RI.Framework.IO.Paths.FilePath)">
-            <inheritdoc cref="M:RI.Framework.IO.Paths.PathString.Equals(RI.Framework.IO.Paths.PathString)" />
-        </member>
         <member name="M:RI.Framework.IO.Paths.FilePath.CompareTo(RI.Framework.IO.Paths.FilePath)">
             <inheritdoc cref="M:RI.Framework.IO.Paths.PathString.CompareTo(RI.Framework.IO.Paths.PathString)" />
+        </member>
+        <member name="M:RI.Framework.IO.Paths.FilePath.Equals(RI.Framework.IO.Paths.FilePath)">
+            <inheritdoc cref="M:RI.Framework.IO.Paths.PathString.Equals(RI.Framework.IO.Paths.PathString)" />
         </member>
         <member name="T:RI.Framework.IO.Paths.PathError">
             <summary>
@@ -10395,14 +9657,6 @@
                 </para>
             </remarks>
         </member>
-        <member name="M:RI.Framework.IO.Paths.PathProperties.GetSystemType">
-            <summary>
-            Gets the <see cref="T:RI.Framework.IO.Paths.PathType"/> which is used by the current system.
-            </summary>
-            <returns>
-            The <see cref="T:RI.Framework.IO.Paths.PathType"/> which is used by the current system or null if the type cannot be determined.
-            </returns>
-        </member>
         <member name="M:RI.Framework.IO.Paths.PathProperties.FromPath(System.String,System.Boolean,System.Boolean,System.Nullable{RI.Framework.IO.Paths.PathType})">
             <summary>
                 Analyzes a path and returns the results as an instance of <see cref="T:RI.Framework.IO.Paths.PathProperties" />.
@@ -10425,6 +9679,14 @@
             </remarks>
             <exception cref="T:System.ArgumentOutOfRangeException"> <paramref name="assumedType" /> is <see cref="F:RI.Framework.IO.Paths.PathType.Invalid" />. </exception>
             TODO: Add overloads
+        </member>
+        <member name="M:RI.Framework.IO.Paths.PathProperties.GetSystemType">
+            <summary>
+                Gets the <see cref="T:RI.Framework.IO.Paths.PathType" /> which is used by the current system.
+            </summary>
+            <returns>
+                The <see cref="T:RI.Framework.IO.Paths.PathType" /> which is used by the current system or null if the type cannot be determined.
+            </returns>
         </member>
         <member name="M:RI.Framework.IO.Paths.PathProperties.MakeAbsolute(RI.Framework.IO.Paths.PathProperties,RI.Framework.IO.Paths.PathProperties)">
             <summary>
