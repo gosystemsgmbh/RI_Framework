@@ -8,6 +8,11 @@
 *.dll
 *.exe
 
+# Project specific
+/RI.Framework.Net/RI.Framework.Net.xml
+/RI.Framework.Wpf/RI.Framework.Wpf.xml
+/RI.Framework.Unity/RI.Framework.Unity.xml
+
 # User-specific files
 *.suo
 *.user
