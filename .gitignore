@@ -10,6 +10,7 @@
 
 # Project specific
 /RI.Framework.Net/RI.Framework.Net.xml
+/RI.Framework.WinForms/RI.Framework.WinForms.xml
 /RI.Framework.Wpf/RI.Framework.Wpf.xml
 /RI.Framework.Unity/RI.Framework.Unity.xml
 
