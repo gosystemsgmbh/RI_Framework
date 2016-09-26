@@ -56,7 +56,7 @@
 @copy "$(TargetDir)VersionUpdater.*" "$(SolutionDir)_Input\*.*"
 @copy "$(TargetDir)VersionUpdater.*" "$(SolutionDir)_Output\*.*"
 
-@"$(SolutionDir)_Input\VersionUpdater.exe" "$(ProjectDir)Properties" "nr" "file" "$(SolutionDir)RI.Framework.Property.Version.txt" "$(SolutionDir)RI.Framework.Property.Company.txt" "$(SolutionDir)RI.Framework.Property.Copyright.txt"</PostBuildEvent>
+@"$(SolutionDir)_Input\VersionUpdater.exe" "$(ProjectDir)." "r" "file" "$(SolutionDir)RI.Framework.Property.Version.txt" "$(SolutionDir)RI.Framework.Property.Company.txt" "$(SolutionDir)RI.Framework.Property.Copyright.txt"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>
