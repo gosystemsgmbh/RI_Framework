@@ -52,10 +52,14 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{37ECC737-2BAE-4776-A529-A0C946789FDF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Tools.VersionUpdater", "RI.Tools.VersionUpdater\RI.Tools.VersionUpdater.csproj", "{9AE61682-B33C-4814-BAE5-771008CA4147}"
+	ProjectSection(ProjectDependencies) = postProject
+		{59451CBF-33C9-4247-8446-B2E3D4105FDE} = {59451CBF-33C9-4247-8446-B2E3D4105FDE}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Tools.Doc2Pdf", "RI.Tools.Doc2Pdf\RI.Tools.Doc2Pdf.csproj", "{0563B040-9EE7-4963-8321-D328EDE5FAE1}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9AE61682-B33C-4814-BAE5-771008CA4147} = {9AE61682-B33C-4814-BAE5-771008CA4147}
+		{59451CBF-33C9-4247-8446-B2E3D4105FDE} = {59451CBF-33C9-4247-8446-B2E3D4105FDE}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Framework.Net", "RI.Framework.Net\RI.Framework.Net.csproj", "{A7F5DD2F-63BF-4032-AD1E-14D211E0D3ED}"
@@ -86,9 +90,6 @@ EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "RI.Test.Framework.Common", "RI.Test.Framework.Common\RI.Test.Framework.Common.shproj", "{D002CC0C-2A9C-4731-A3E6-DFFA517E3BD9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Tools.Framework.Libraries", "RI.Tools.Framework.Libraries\RI.Tools.Framework.Libraries.csproj", "{59451CBF-33C9-4247-8446-B2E3D4105FDE}"
-	ProjectSection(ProjectDependencies) = postProject
-		{9AE61682-B33C-4814-BAE5-771008CA4147} = {9AE61682-B33C-4814-BAE5-771008CA4147}
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Framework.Wpf", "RI.Framework.Wpf\RI.Framework.Wpf.csproj", "{D5BF9549-AEB4-4A21-ACA0-591131018428}"
 	ProjectSection(ProjectDependencies) = postProject
