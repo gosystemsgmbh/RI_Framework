@@ -100,28 +100,25 @@ Composition
 Services
 --------
 
- + (.NET) Logging: LogWriter
-
  + (Unity) Dispatcher: Pool for dispatcher operations?
  + (Unity) Dispatcher: Timeout for operations
  + (Unity) Dispatcher: Cancel all operations
  + (Unity) Dispatcher: Process (process item in background thread, then broadcast processed item)
 
- - (Common) Settings (SettingsService, FileSettingsStorage, SettingsConverter)
- - (.NET) Settings (AppConfigSettingsStorage)
- - (Unity) Settings (PlayerPrefsSettingsStorage)
+ - (Common) Settings (SettingService, FileSettingStorage, SettingConverter)
+ - (.NET) Settings (AppConfigSettingStorage)
+ - (Unity) Settings (PlayerPrefsSettingStorage)
 
  - (Common) Resources (ResourceService, DirectoryResourceSource, ResourceConverter)
  - (WPF) Resources (WpfResourceTarget, WpfResourceConverter)
  - (WinForms) Resources (WinFormsResourceTarget, WinFormsResourceConverter)
  - (Unity) Resources (UnityResourceTarget, UnityResourceConverter)
 
- - (Common) Regions (RegionService)
- - (WPF) Regions (WpfRegionAdapter)
- - (WinForms) Regions (WinFormsRegionAdapter)
+ - (WinForms) Regions (WinFormsRegionAdapter*)
 
  - (.NET) Backup (BackupService, DirectoryBackupStorage)
  - (.NET) Licensing (LicensingService, FileLicenseStorage)
+ - (.NET) Messaging (MessagingService, IMessageReceiver, IMessage)
 
  - (Unity) Packaging
  - (Unity) Input

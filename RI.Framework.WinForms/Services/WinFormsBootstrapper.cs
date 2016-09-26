@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Threading;
@@ -7,6 +8,7 @@ using System.Windows.Forms;
 using RI.Framework.Composition;
 using RI.Framework.Composition.Catalogs;
 using RI.Framework.Composition.Model;
+using RI.Framework.IO.Paths;
 using RI.Framework.Services.Logging;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Reflection;
@@ -194,7 +196,7 @@ namespace RI.Framework.Services
 		/// <summary>
 		///     Creates a new instance of <see cref="WinFormsBootstrapper" />.
 		/// </summary>
-		protected WinFormsBootstrapper()
+		protected WinFormsBootstrapper ()
 		{
 			this.State = WinFormsBootstrapperState.Uninitialized;
 			this.ShutdownInitiated = false;
@@ -248,7 +250,7 @@ namespace RI.Framework.Services
 		/// <value>
 		///     The read- and writeable directory associated with the application used to store persistent data.
 		/// </value>
-		public string ApplicationDataDirectory { get; private set; }
+		public DirectoryPath ApplicationDataDirectory { get; private set; }
 
 		/// <summary>
 		///     Gets the read-only directory where the applications executable files are stored.
@@ -256,7 +258,7 @@ namespace RI.Framework.Services
 		/// <value>
 		///     The read-only directory where the applications executable files are stored.
 		/// </value>
-		public string ApplicationExecutableDirectory { get; private set; }
+		public DirectoryPath ApplicationExecutableDirectory { get; private set; }
 
 		/// <summary>
 		///     Gets the GUID of the application which is application version dependent.
@@ -367,7 +369,7 @@ namespace RI.Framework.Services
 				{
 				}
 
-				if (this.ShutdownInitiated && ( exception is ThreadAbortException ))
+				if (this.ShutdownInitiated && (exception is ThreadAbortException))
 				{
 					return;
 				}
@@ -688,7 +690,7 @@ namespace RI.Framework.Services
 		/// </remarks>
 		protected virtual Version DetermineApplicationVersion ()
 		{
-			return ( this.ApplicationAssembly.GetAssemblyVersion() ?? this.ApplicationAssembly.GetFileVersion() ) ?? this.ApplicationAssembly.GetInformationalVersion();
+			return (this.ApplicationAssembly.GetAssemblyVersion() ?? this.ApplicationAssembly.GetFileVersion()) ?? this.ApplicationAssembly.GetInformationalVersion();
 		}
 
 		/// <summary>
@@ -785,93 +787,91 @@ namespace RI.Framework.Services
 		/// <inheritdoc />
 		public void Run ()
 		{
-			try
+			if (this.State != WinFormsBootstrapperState.Uninitialized)
 			{
-				if (this.State != WinFormsBootstrapperState.Uninitialized)
-				{
-					throw new InvalidOperationException();
-				}
+				throw new InvalidOperationException();
+			}
 
-				this.Log(LogLevel.Debug, "Bootstrapping");
-				this.State = WinFormsBootstrapperState.Bootstrapping;
+			this.Log(LogLevel.Debug, "Bootstrapping");
+			this.State = WinFormsBootstrapperState.Bootstrapping;
 
+			if (!Debugger.IsAttached)
+			{
+				System.Windows.Forms.Application.SetUnhandledExceptionMode(UnhandledExceptionMode.Automatic);
+				System.Windows.Forms.Application.ThreadException += (s, a) => this.HandleExceptionInternal(a.Exception);
 				AppDomain.CurrentDomain.UnhandledException += (s, a) => this.HandleExceptionInternal(a.ExceptionObject as Exception);
-
-				this.ApplicationAssembly = this.DetermineApplicationAssembly();
-				this.ApplicationProductName = this.DetermineApplicationProductName();
-				this.ApplicationCompanyName = this.DetermineApplicationCompanyName();
-				this.ApplicationCopyright = this.DetermineApplicationCopyright();
-				this.ApplicationVersion = this.DetermineApplicationVersion();
-				this.ApplicationIdVersionIndependent = this.DetermineApplicationIdVersionIndependent();
-				this.ApplicationIdVersionDependent = this.DetermineApplicationIdVersionDependent();
-
-				this.SessionTimestamp = this.DetermineSessionTimestamp();
-				this.SessionId = this.DetermineSessionId();
-
-				this.ApplicationExecutableDirectory = this.DetermineApplicationExecutableDirectory();
-				this.ApplicationDataDirectory = this.DetermineApplicationDataDirectory();
-
-				this.Log(LogLevel.Debug, "Creating container");
-				this.Container = this.CreateContainer() ?? new CompositionContainer();
-
-				this.Log(LogLevel.Debug, "Configuring service locator");
-				this.ConfigureServiceLocator();
-
-				this.Log(LogLevel.Debug, "Configuring bootstrapper");
-				this.ConfigureBootstrapper();
-
-				this.Log(LogLevel.Debug, "Configuring logging");
-				this.ConfigureLogging();
-
-				this.Log(LogLevel.Debug, "Creating application");
-				this.Application = this.CreateApplication() ?? new ApplicationContext();
-
-				this.Log(LogLevel.Debug, "Configuring application");
-				this.ConfigureApplication();
-
-				this.Log(LogLevel.Debug, "Showing splash screen");
-				this.ShowSplashScreen();
-
-				this.Log(LogLevel.Debug, "Configuring container");
-				this.ConfigureContainer();
-
-				this.Log(LogLevel.Debug, "Configuring services");
-				this.ConfigureServices();
-
-				this.Log(LogLevel.Debug, "Configuring modularization");
-				this.ConfigureModularization();
-
-				this.Log(LogLevel.Debug, "Running");
-				this.State = WinFormsBootstrapperState.Running;
-
-				this.Log(LogLevel.Debug, "Beginning run");
-				this.BeginRun();
-
-				this.Log(LogLevel.Debug, "Handing over to Windows Forms application object");
-				System.Windows.Forms.Application.Run(this.Application);
-
-				this.Log(LogLevel.Debug, "Finishing run");
-				this.FinishRun();
-
-				this.Log(LogLevel.Debug, "Shutting down");
-				this.State = WinFormsBootstrapperState.ShuttingDown;
-
-				this.Log(LogLevel.Debug, "Beginning shutdown");
-				this.BeginShutdown();
-
-				this.Log(LogLevel.Debug, "Processing remaining operations");
-				System.Windows.Forms.Application.DoEvents();
-
-				this.Log(LogLevel.Debug, "Finishing shutdown");
-				this.FinishShutdown();
-
-				this.Log(LogLevel.Debug, "Shut down");
-				this.State = WinFormsBootstrapperState.ShutDown;
 			}
-			catch (Exception exception)
-			{
-				this.HandleExceptionInternal(exception);
-			}
+
+			this.ApplicationAssembly = this.DetermineApplicationAssembly();
+			this.ApplicationProductName = this.DetermineApplicationProductName();
+			this.ApplicationCompanyName = this.DetermineApplicationCompanyName();
+			this.ApplicationCopyright = this.DetermineApplicationCopyright();
+			this.ApplicationVersion = this.DetermineApplicationVersion();
+			this.ApplicationIdVersionIndependent = this.DetermineApplicationIdVersionIndependent();
+			this.ApplicationIdVersionDependent = this.DetermineApplicationIdVersionDependent();
+
+			this.SessionTimestamp = this.DetermineSessionTimestamp();
+			this.SessionId = this.DetermineSessionId();
+
+			this.ApplicationExecutableDirectory = this.DetermineApplicationExecutableDirectory();
+			this.ApplicationDataDirectory = this.DetermineApplicationDataDirectory();
+
+			this.Log(LogLevel.Debug, "Creating container");
+			this.Container = this.CreateContainer() ?? new CompositionContainer();
+
+			this.Log(LogLevel.Debug, "Configuring service locator");
+			this.ConfigureServiceLocator();
+
+			this.Log(LogLevel.Debug, "Configuring bootstrapper");
+			this.ConfigureBootstrapper();
+
+			this.Log(LogLevel.Debug, "Configuring logging");
+			this.ConfigureLogging();
+
+			this.Log(LogLevel.Debug, "Creating application");
+			this.Application = this.CreateApplication() ?? new ApplicationContext();
+
+			this.Log(LogLevel.Debug, "Configuring application");
+			this.ConfigureApplication();
+
+			this.Log(LogLevel.Debug, "Showing splash screen");
+			this.ShowSplashScreen();
+
+			this.Log(LogLevel.Debug, "Configuring container");
+			this.ConfigureContainer();
+
+			this.Log(LogLevel.Debug, "Configuring services");
+			this.ConfigureServices();
+
+			this.Log(LogLevel.Debug, "Configuring modularization");
+			this.ConfigureModularization();
+
+			this.Log(LogLevel.Debug, "Running");
+			this.State = WinFormsBootstrapperState.Running;
+
+			this.Log(LogLevel.Debug, "Beginning run");
+			this.BeginRun();
+
+			this.Log(LogLevel.Debug, "Handing over to Windows Forms application object");
+			System.Windows.Forms.Application.Run(this.Application);
+
+			this.Log(LogLevel.Debug, "Finishing run");
+			this.FinishRun();
+
+			this.Log(LogLevel.Debug, "Shutting down");
+			this.State = WinFormsBootstrapperState.ShuttingDown;
+
+			this.Log(LogLevel.Debug, "Beginning shutdown");
+			this.BeginShutdown();
+
+			this.Log(LogLevel.Debug, "Processing remaining operations");
+			System.Windows.Forms.Application.DoEvents();
+
+			this.Log(LogLevel.Debug, "Finishing shutdown");
+			this.FinishShutdown();
+
+			this.Log(LogLevel.Debug, "Shut down");
+			this.State = WinFormsBootstrapperState.ShutDown;
 		}
 
 		/// <inheritdoc />

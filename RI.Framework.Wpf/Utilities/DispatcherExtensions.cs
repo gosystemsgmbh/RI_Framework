@@ -46,9 +46,7 @@ namespace RI.Framework.Utilities
 				throw new ArgumentNullException(nameof(dispatcher));
 			}
 
-			dispatcher.Invoke(() =>
-			                  {
-			                  }, priority);
+			dispatcher.Invoke(() => { }, priority);
 		}
 
 		#endregion

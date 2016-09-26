@@ -8,7 +8,8 @@
   - [ ] Use FilePath and DirectoryPath
   - [ ] Additional dispatcher Features
   - [ ] Analyze and implement magic thread
-  - [ ] LogWriter for .NET
+  - [X] LogWriter for .NET
+  - [ ] Shutdown handling for WinForms similar to WPF
   - [ ] TODOs
 - [ ] Documentation
   - [ ] Examples
@@ -22,7 +23,7 @@
   - [X] Remove SuppressMessage attributes
   - [X] ReSharper configuration, cleanup, and review
   - [ ] Cleanup artifacts
-  - [ ] Split WPF stuff into separate assembly
+  - [X] Split WPF stuff into separate assembly
 - [ ] Testing
   - [X] Split testing into "Unity" and ".NET"
   - [ ] Complete tests

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 using RI.Framework.Composition.Model;
 using RI.Framework.Utilities.Exceptions;
@@ -20,32 +19,6 @@ namespace RI.Framework.Services.Regions
 	[Export]
 	public interface IRegionAdapter
 	{
-		/// <summary>
-		///     Gets the container type this region adapter supports.
-		/// </summary>
-		/// <value>
-		///     The container type this region adapter supports.
-		/// </value>
-		/// <remarks>
-		///     <note type="implement">
-		///         The value of this property must never be null.
-		///     </note>
-		/// </remarks>
-		Type ContainerType { get; }
-
-		/// <summary>
-		///     Gets all element types this region adapter supports.
-		/// </summary>
-		/// <value>
-		///     All element types this region adapter supports.
-		/// </value>
-		/// <remarks>
-		///     <note type="implement">
-		///         The value of this property must never be null.
-		///     </note>
-		/// </remarks>
-		IEnumerable<Type> ElementTypes { get; }
-
 		/// <summary>
 		///     Activates an element in a container.
 		/// </summary>
@@ -85,6 +58,38 @@ namespace RI.Framework.Services.Regions
 		bool Contains (object container, object element);
 
 		/// <summary>
+		///     Deactivates an element in a container.
+		/// </summary>
+		/// <param name="container"> The container. </param>
+		/// <param name="element"> The element. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="container" /> or <paramref name="element" /> is null. </exception>
+		/// <exception cref="InvalidTypeArgumentException"> The type of <paramref name="container" /> or <paramref name="element" /> is not handled by this region adapter. </exception>
+		void Deactivate (object container, object element);
+
+		/// <summary>
+		///     Gets all elements of a container
+		/// </summary>
+		/// <param name="container"> The container. </param>
+		/// <returns>
+		///     The array which contains all the elements of the container.
+		///     An empty array is returned if the container contains no elements.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="container" /> is null. </exception>
+		/// <exception cref="InvalidTypeArgumentException"> The type of <paramref name="container" /> is not handled by this region adapter. </exception>
+		object[] Get (object container);
+
+		/// <summary>
+		///     Checks whether a specified type is supported by this region adapter for containers.
+		/// </summary>
+		/// <param name="type"> The type of the container. </param>
+		/// <param name="inheritanceDepth"> Returns the depth of the inheritance this region adapter supports the specified type. </param>
+		/// <returns>
+		///     true if this region adapter can use the specified type as container, false otherwise.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="type" /> is null. </exception>
+		bool IsCompatibleContainer (Type type, out int inheritanceDepth);
+
+		/// <summary>
 		///     Removes an element from a container.
 		/// </summary>
 		/// <param name="container"> The container. </param>
@@ -94,7 +99,7 @@ namespace RI.Framework.Services.Regions
 		void Remove (object container, object element);
 
 		/// <summary>
-		///     Sets the only element of a container.
+		///     Sets the only element in a container.
 		/// </summary>
 		/// <param name="container"> The container. </param>
 		/// <param name="element"> The element. </param>

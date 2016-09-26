@@ -1205,6 +1205,7 @@ namespace RI.Framework.Composition
 								{
 									Array array = Array.CreateInstance(propertyType, instances.Count);
 									( (ICollection)instances ).CopyTo(array, 0);
+									newValue = array;
 								}
 								else
 								{

@@ -106,6 +106,10 @@ namespace RI.Framework.Services.Logging
 			};
 
 			this.CurrentDirectory = Path.Combine(this.CommonDirectory, timestamp.ToSortableString('-'));
+
+			Directory.CreateDirectory(this.CommonDirectory);
+			Directory.CreateDirectory(this.CurrentDirectory);
+
 			this.CurrentFile = Path.Combine(this.CurrentDirectory, fileName ?? DirectoryLogWriter.DefaultFileName);
 
 			this.CurrentWriter = new StreamWriter(this.CurrentFile, false, this.Encoding);

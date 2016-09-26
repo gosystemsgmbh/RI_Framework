@@ -49,10 +49,11 @@
     <None Include="IO\Paths\DirectoryPathExtensions.cs" />
     <None Include="IO\Paths\FilePathExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\Logging\LogWriter.cs" />
     <Compile Include="Services\Regions\IRegionAdapter.cs" />
-    <Compile Include="Services\Regions\IRegionContainer.cs" />
-    <Compile Include="Services\Regions\IRegionElement.cs" />
     <Compile Include="Services\Regions\IRegionService.cs" />
+    <Compile Include="Services\Regions\RegionAdapterBase.cs" />
+    <Compile Include="Services\Regions\RegionService.cs" />
     <Compile Include="Services\Regions\_NamespaceDoc.cs" />
     <Compile Include="Services\Resources\IResourceService.cs" />
     <Compile Include="Services\Resources\IResourceSet.cs" />
@@ -69,6 +70,7 @@
   <ItemGroup>
     <Folder Include="Services\Backup\" />
     <Folder Include="Services\Licensing\" />
+    <Folder Include="Services\Messaging\" />
   </ItemGroup>
   <Import Project="..\RI.Framework.Common\RI.Framework.Common.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

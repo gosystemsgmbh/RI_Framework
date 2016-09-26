@@ -1,13 +1,17 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Windows;
+using System.Windows.Threading;
 
 using RI.Framework.Composition;
 using RI.Framework.Composition.Catalogs;
 using RI.Framework.Composition.Model;
+using RI.Framework.IO.Paths;
 using RI.Framework.Services.Logging;
+using RI.Framework.Services.Regions;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Reflection;
 
@@ -248,7 +252,7 @@ namespace RI.Framework.Services
 		/// <value>
 		///     The read- and writeable directory associated with the application used to store persistent data.
 		/// </value>
-		public string ApplicationDataDirectory { get; private set; }
+		public DirectoryPath ApplicationDataDirectory { get; private set; }
 
 		/// <summary>
 		///     Gets the read-only directory where the applications executable files are stored.
@@ -256,7 +260,7 @@ namespace RI.Framework.Services
 		/// <value>
 		///     The read-only directory where the applications executable files are stored.
 		/// </value>
-		public string ApplicationExecutableDirectory { get; private set; }
+		public DirectoryPath ApplicationExecutableDirectory { get; private set; }
 
 		/// <summary>
 		///     Gets the GUID of the application which is application version dependent.
@@ -367,7 +371,7 @@ namespace RI.Framework.Services
 				{
 				}
 
-				if (this.ShutdownInitiated && ( exception is ThreadAbortException ))
+				if (this.ShutdownInitiated && (exception is ThreadAbortException))
 				{
 					return;
 				}
@@ -393,6 +397,19 @@ namespace RI.Framework.Services
 
 
 		#region Virtuals
+
+		/// <summary>
+		///     Adds all default WPF region adapters to the current composition container.
+		/// </summary>
+		/// <remarks>
+		///     <para>
+		///         The following are the default WPF region adapters: <see cref="ContentControlRegionAdapter" />, <see cref="ItemsControlRegionAdapter" />, <see cref="PanelRegionAdapter" />.
+		///     </para>
+		/// </remarks>
+		protected virtual void AddDefaultWpfRegionAdaptersToContainer ()
+		{
+			this.Container.AddCatalog(new TypeCatalog(typeof(ContentControlRegionAdapter), typeof(ItemsControlRegionAdapter), typeof(PanelRegionAdapter)));
+		}
 
 		/// <summary>
 		///     Called before the application begins running after the bootstrapping is completed.
@@ -688,7 +705,7 @@ namespace RI.Framework.Services
 		/// </remarks>
 		protected virtual Version DetermineApplicationVersion ()
 		{
-			return ( this.ApplicationAssembly.GetAssemblyVersion() ?? this.ApplicationAssembly.GetFileVersion() ) ?? this.ApplicationAssembly.GetInformationalVersion();
+			return (this.ApplicationAssembly.GetAssemblyVersion() ?? this.ApplicationAssembly.GetFileVersion()) ?? this.ApplicationAssembly.GetInformationalVersion();
 		}
 
 		/// <summary>
@@ -785,93 +802,78 @@ namespace RI.Framework.Services
 		/// <inheritdoc />
 		public void Run ()
 		{
-			try
+			if (this.State != WpfBootstrapperState.Uninitialized)
 			{
-				if (this.State != WpfBootstrapperState.Uninitialized)
-				{
-					throw new InvalidOperationException();
-				}
+				throw new InvalidOperationException();
+			}
 
-				this.Log(LogLevel.Debug, "Bootstrapping");
-				this.State = WpfBootstrapperState.Bootstrapping;
+			this.Log(LogLevel.Debug, "Bootstrapping");
+			this.State = WpfBootstrapperState.Bootstrapping;
 
+			if (!Debugger.IsAttached)
+			{
 				AppDomain.CurrentDomain.UnhandledException += (s, a) => this.HandleExceptionInternal(a.ExceptionObject as Exception);
-
-				this.ApplicationAssembly = this.DetermineApplicationAssembly();
-				this.ApplicationProductName = this.DetermineApplicationProductName();
-				this.ApplicationCompanyName = this.DetermineApplicationCompanyName();
-				this.ApplicationCopyright = this.DetermineApplicationCopyright();
-				this.ApplicationVersion = this.DetermineApplicationVersion();
-				this.ApplicationIdVersionIndependent = this.DetermineApplicationIdVersionIndependent();
-				this.ApplicationIdVersionDependent = this.DetermineApplicationIdVersionDependent();
-
-				this.SessionTimestamp = this.DetermineSessionTimestamp();
-				this.SessionId = this.DetermineSessionId();
-
-				this.ApplicationExecutableDirectory = this.DetermineApplicationExecutableDirectory();
-				this.ApplicationDataDirectory = this.DetermineApplicationDataDirectory();
-
-				this.Log(LogLevel.Debug, "Creating container");
-				this.Container = this.CreateContainer() ?? new CompositionContainer();
-
-				this.Log(LogLevel.Debug, "Configuring service locator");
-				this.ConfigureServiceLocator();
-
-				this.Log(LogLevel.Debug, "Configuring bootstrapper");
-				this.ConfigureBootstrapper();
-
-				this.Log(LogLevel.Debug, "Configuring logging");
-				this.ConfigureLogging();
-
-				this.Log(LogLevel.Debug, "Creating application");
-				this.Application = this.CreateApplication() ?? new Application();
-
-				this.Log(LogLevel.Debug, "Configuring application");
-				this.ConfigureApplication();
-
-				this.Log(LogLevel.Debug, "Showing splash screen");
-				this.ShowSplashScreen();
-
-				this.Log(LogLevel.Debug, "Configuring container");
-				this.ConfigureContainer();
-
-				this.Log(LogLevel.Debug, "Configuring services");
-				this.ConfigureServices();
-
-				this.Log(LogLevel.Debug, "Configuring modularization");
-				this.ConfigureModularization();
-
-				this.Log(LogLevel.Debug, "Running");
-				this.State = WpfBootstrapperState.Running;
-
-				this.Log(LogLevel.Debug, "Beginning run");
-				this.BeginRun();
-
-				this.Log(LogLevel.Debug, "Handing over to WPF application object");
-				this.Application.Run();
-
-				this.Log(LogLevel.Debug, "Finishing run");
-				this.FinishRun();
-
-				this.Log(LogLevel.Debug, "Shutting down");
-				this.State = WpfBootstrapperState.ShuttingDown;
-
-				this.Log(LogLevel.Debug, "Beginning shutdown");
-				this.BeginShutdown();
-
-				this.Log(LogLevel.Debug, "Processing remaining operations");
-				this.Application.DoAllEvents();
-
-				this.Log(LogLevel.Debug, "Finishing shutdown");
-				this.FinishShutdown();
-
-				this.Log(LogLevel.Debug, "Shut down");
-				this.State = WpfBootstrapperState.ShutDown;
 			}
-			catch (Exception exception)
-			{
-				this.HandleExceptionInternal(exception);
-			}
+
+			this.ApplicationAssembly = this.DetermineApplicationAssembly();
+			this.ApplicationProductName = this.DetermineApplicationProductName();
+			this.ApplicationCompanyName = this.DetermineApplicationCompanyName();
+			this.ApplicationCopyright = this.DetermineApplicationCopyright();
+			this.ApplicationVersion = this.DetermineApplicationVersion();
+			this.ApplicationIdVersionIndependent = this.DetermineApplicationIdVersionIndependent();
+			this.ApplicationIdVersionDependent = this.DetermineApplicationIdVersionDependent();
+
+			this.SessionTimestamp = this.DetermineSessionTimestamp();
+			this.SessionId = this.DetermineSessionId();
+
+			this.ApplicationExecutableDirectory = this.DetermineApplicationExecutableDirectory();
+			this.ApplicationDataDirectory = this.DetermineApplicationDataDirectory();
+
+			this.Log(LogLevel.Debug, "Creating container");
+			this.Container = this.CreateContainer() ?? new CompositionContainer();
+
+			this.Log(LogLevel.Debug, "Configuring service locator");
+			this.ConfigureServiceLocator();
+
+			this.Log(LogLevel.Debug, "Configuring bootstrapper");
+			this.ConfigureBootstrapper();
+
+			this.Log(LogLevel.Debug, "Configuring logging");
+			this.ConfigureLogging();
+
+			this.Log(LogLevel.Debug, "Creating application");
+			this.Application = this.CreateApplication() ?? new Application();
+			this.Application.DispatcherUnhandledException += (s, a) => this.HandleExceptionInternal(a.Exception);
+
+			this.Log(LogLevel.Debug, "Configuring application");
+			this.ConfigureApplication();
+
+			this.Log(LogLevel.Debug, "Showing splash screen");
+			this.ShowSplashScreen();
+
+			this.Log(LogLevel.Debug, "Configuring container");
+			this.ConfigureContainer();
+
+			this.Log(LogLevel.Debug, "Configuring services");
+			this.ConfigureServices();
+
+			this.Log(LogLevel.Debug, "Configuring modularization");
+			this.ConfigureModularization();
+
+			this.Log(LogLevel.Debug, "Running");
+			this.State = WpfBootstrapperState.Running;
+
+			this.Log(LogLevel.Debug, "Beginning run");
+			this.BeginRun();
+
+			this.Log(LogLevel.Debug, "Handing over to WPF application object");
+			this.Application.Run();
+
+			this.Log(LogLevel.Debug, "Finishing shutdown");
+			this.FinishShutdown();
+
+			this.Log(LogLevel.Debug, "Shut down");
+			this.State = WpfBootstrapperState.ShutDown;
 		}
 
 		/// <inheritdoc />
@@ -889,8 +891,27 @@ namespace RI.Framework.Services
 
 			this.ShutdownInitiated = true;
 
-			this.Log(LogLevel.Debug, "Initiating shutdown");
-			this.Application.Shutdown();
+			this.Log(LogLevel.Debug, "Queueing shutdown");
+			this.Application.Dispatcher.BeginInvoke(DispatcherPriority.SystemIdle, new Action(() =>
+			                                                                                  {
+				                                                                                  this.Log(LogLevel.Debug, "Processing remaining operations");
+				                                                                                  this.Application.DoAllEvents();
+
+				                                                                                  this.Log(LogLevel.Debug, "Finishing run");
+				                                                                                  this.FinishRun();
+
+				                                                                                  this.Log(LogLevel.Debug, "Shutting down");
+				                                                                                  this.State = WpfBootstrapperState.ShuttingDown;
+
+				                                                                                  this.Log(LogLevel.Debug, "Beginning shutdown");
+				                                                                                  this.BeginShutdown();
+
+				                                                                                  this.Log(LogLevel.Debug, "Processing remaining operations");
+				                                                                                  this.Application.DoAllEvents();
+
+				                                                                                  this.Log(LogLevel.Debug, "Initiating shutdown");
+				                                                                                  this.Application.Shutdown();
+			                                                                                  }));
 		}
 
 		#endregion
