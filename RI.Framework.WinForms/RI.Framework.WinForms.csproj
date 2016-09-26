@@ -49,6 +49,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\WinFormsBootstrapper.cs" />
+    <Compile Include="Services\WinFormsBootstrapperState.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RI.Framework.Net\RI.Framework.Net.csproj">

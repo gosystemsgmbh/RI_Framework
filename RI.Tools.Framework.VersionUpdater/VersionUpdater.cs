@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 
 
 
-namespace RI.Tools.VersionUpdater
+namespace RI.Tools.Framework.VersionUpdater
 {
 	public static class VersionUpdater
 	{

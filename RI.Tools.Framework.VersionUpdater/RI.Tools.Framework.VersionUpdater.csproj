@@ -33,7 +33,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>RI.Tools.VersionUpdater.VersionUpdater</StartupObject>
+    <StartupObject>RI.Tools.Framework.VersionUpdater.VersionUpdater</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>

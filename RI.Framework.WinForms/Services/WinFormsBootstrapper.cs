@@ -2,7 +2,7 @@
 using System.IO;
 using System.Reflection;
 using System.Threading;
-using System.Windows;
+using System.Windows.Forms;
 
 using RI.Framework.Composition;
 using RI.Framework.Composition.Catalogs;
@@ -17,7 +17,7 @@ using RI.Framework.Utilities.Reflection;
 namespace RI.Framework.Services
 {
 	/// <summary>
-	///     Implements a bootstrapper for WPF applications.
+	///     Implements a bootstrapper for Windows Forms applications.
 	/// </summary>
 	/// <remarks>
 	///     <para>
@@ -26,7 +26,7 @@ namespace RI.Framework.Services
 	///     <list type="number">
 	///         <item>
 	///             <para>
-	///                 <see cref="State" /> is set to <see cref="WpfBootstrapperState.Bootstrapping" />.
+	///                 <see cref="State" /> is set to <see cref="WinFormsBootstrapperState.Bootstrapping" />.
 	///             </para>
 	///         </item>
 	///         <item>
@@ -136,7 +136,7 @@ namespace RI.Framework.Services
 	///         </item>
 	///         <item>
 	///             <para>
-	///                 <see cref="State" /> is set to <see cref="WpfBootstrapperState.Running" />.
+	///                 <see cref="State" /> is set to <see cref="WinFormsBootstrapperState.Running" />.
 	///             </para>
 	///         </item>
 	///         <item>
@@ -146,7 +146,7 @@ namespace RI.Framework.Services
 	///         </item>
 	///         <item>
 	///             <para>
-	///                 <see cref="Application" />.<see cref="System.Windows.Application.Run()" /> is called. The application is now running until <see cref="WpfBootstrapper.Shutdown" /> is called.
+	///                 <see cref="Application" />.<see cref="System.Windows.Forms.Application.Run()" /> is called. The application is now running until <see cref="WinFormsBootstrapper.Shutdown" /> is called.
 	///             </para>
 	///         </item>
 	///         <item>
@@ -156,7 +156,7 @@ namespace RI.Framework.Services
 	///         </item>
 	///         <item>
 	///             <para>
-	///                 <see cref="State" /> is set to <see cref="WpfBootstrapperState.ShuttingDown" />.
+	///                 <see cref="State" /> is set to <see cref="WinFormsBootstrapperState.ShuttingDown" />.
 	///             </para>
 	///         </item>
 	///         <item>
@@ -176,7 +176,7 @@ namespace RI.Framework.Services
 	///         </item>
 	///         <item>
 	///             <para>
-	///                 <see cref="State" /> is set to <see cref="WpfBootstrapperState.ShutDown" />.
+	///                 <see cref="State" /> is set to <see cref="WinFormsBootstrapperState.ShutDown" />.
 	///             </para>
 	///         </item>
 	///         <item>
@@ -187,16 +187,16 @@ namespace RI.Framework.Services
 	///     </list>
 	/// </remarks>
 	[Export]
-	public abstract class WpfBootstrapper : IBootstrapper
+	public abstract class WinFormsBootstrapper : IBootstrapper
 	{
 		#region Instance Constructor/Destructor
 
 		/// <summary>
-		///     Creates a new instance of <see cref="WpfBootstrapper" />.
+		///     Creates a new instance of <see cref="WinFormsBootstrapper" />.
 		/// </summary>
-		protected WpfBootstrapper ()
+		protected WinFormsBootstrapper()
 		{
-			this.State = WpfBootstrapperState.Uninitialized;
+			this.State = WinFormsBootstrapperState.Uninitialized;
 			this.ShutdownInitiated = false;
 
 			this.Container = null;
@@ -211,12 +211,12 @@ namespace RI.Framework.Services
 		#region Instance Properties/Indexer
 
 		/// <summary>
-		///     Gets the used WPF application object.
+		///     Gets the used Windows Forms application object.
 		/// </summary>
 		/// <value>
-		///     The used WPF application object.
+		///     The used Windows Forms application object.
 		/// </value>
-		public Application Application { get; private set; }
+		public ApplicationContext Application { get; private set; }
 
 		/// <summary>
 		///     Gets the main assembly of the application.
@@ -320,7 +320,7 @@ namespace RI.Framework.Services
 		/// <value>
 		///     The current state of the bootstrapper.
 		/// </value>
-		public WpfBootstrapperState State { get; private set; }
+		public WinFormsBootstrapperState State { get; private set; }
 
 		private bool ShutdownInitiated { get; set; }
 
@@ -419,7 +419,7 @@ namespace RI.Framework.Services
 		}
 
 		/// <summary>
-		///     Called when the used WPF application object (<see cref="Application" />) needs to be configured.
+		///     Called when the used Windows Forms application object (<see cref="Application" />) needs to be configured.
 		/// </summary>
 		/// <remarks>
 		///     <note type="implement">
@@ -505,18 +505,18 @@ namespace RI.Framework.Services
 		}
 
 		/// <summary>
-		///     Called when the WPF application object needs to be created.
+		///     Called when the Windows Forms application object needs to be created.
 		/// </summary>
 		/// <returns>
-		///     The WPF application object to be used.
-		///     Can be null if a default <see cref="System.Windows.Application" /> is to be used.
+		///     The Windows Forms application object to be used.
+		///     Can be null if a default <see cref="System.Windows.Forms.ApplicationContext" /> is to be used.
 		/// </returns>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation returns null so a default <see cref="System.Windows.Application" /> will be created and used.
+		///         The default implementation returns null so a default <see cref="System.Windows.Forms.ApplicationContext" /> will be created and used.
 		///     </note>
 		/// </remarks>
-		protected virtual Application CreateApplication ()
+		protected virtual ApplicationContext CreateApplication ()
 		{
 			return null;
 		}
@@ -787,13 +787,13 @@ namespace RI.Framework.Services
 		{
 			try
 			{
-				if (this.State != WpfBootstrapperState.Uninitialized)
+				if (this.State != WinFormsBootstrapperState.Uninitialized)
 				{
 					throw new InvalidOperationException();
 				}
 
 				this.Log(LogLevel.Debug, "Bootstrapping");
-				this.State = WpfBootstrapperState.Bootstrapping;
+				this.State = WinFormsBootstrapperState.Bootstrapping;
 
 				AppDomain.CurrentDomain.UnhandledException += (s, a) => this.HandleExceptionInternal(a.ExceptionObject as Exception);
 
@@ -824,7 +824,7 @@ namespace RI.Framework.Services
 				this.ConfigureLogging();
 
 				this.Log(LogLevel.Debug, "Creating application");
-				this.Application = this.CreateApplication() ?? new Application();
+				this.Application = this.CreateApplication() ?? new ApplicationContext();
 
 				this.Log(LogLevel.Debug, "Configuring application");
 				this.ConfigureApplication();
@@ -842,31 +842,31 @@ namespace RI.Framework.Services
 				this.ConfigureModularization();
 
 				this.Log(LogLevel.Debug, "Running");
-				this.State = WpfBootstrapperState.Running;
+				this.State = WinFormsBootstrapperState.Running;
 
 				this.Log(LogLevel.Debug, "Beginning run");
 				this.BeginRun();
 
-				this.Log(LogLevel.Debug, "Handing over to WPF application object");
-				this.Application.Run();
+				this.Log(LogLevel.Debug, "Handing over to Windows Forms application object");
+				System.Windows.Forms.Application.Run(this.Application);
 
 				this.Log(LogLevel.Debug, "Finishing run");
 				this.FinishRun();
 
 				this.Log(LogLevel.Debug, "Shutting down");
-				this.State = WpfBootstrapperState.ShuttingDown;
+				this.State = WinFormsBootstrapperState.ShuttingDown;
 
 				this.Log(LogLevel.Debug, "Beginning shutdown");
 				this.BeginShutdown();
 
 				this.Log(LogLevel.Debug, "Processing remaining operations");
-				this.Application.DoAllEvents();
+				System.Windows.Forms.Application.DoEvents();
 
 				this.Log(LogLevel.Debug, "Finishing shutdown");
 				this.FinishShutdown();
 
 				this.Log(LogLevel.Debug, "Shut down");
-				this.State = WpfBootstrapperState.ShutDown;
+				this.State = WinFormsBootstrapperState.ShutDown;
 			}
 			catch (Exception exception)
 			{
@@ -877,7 +877,7 @@ namespace RI.Framework.Services
 		/// <inheritdoc />
 		public void Shutdown ()
 		{
-			if (this.State != WpfBootstrapperState.Running)
+			if (this.State != WinFormsBootstrapperState.Running)
 			{
 				throw new InvalidOperationException();
 			}
@@ -890,7 +890,7 @@ namespace RI.Framework.Services
 			this.ShutdownInitiated = true;
 
 			this.Log(LogLevel.Debug, "Initiating shutdown");
-			this.Application.Shutdown();
+			System.Windows.Forms.Application.Exit();
 		}
 
 		#endregion
