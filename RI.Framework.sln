@@ -51,12 +51,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{5D59B6A0-1
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{37ECC737-2BAE-4776-A529-A0C946789FDF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Tools.VersionUpdater", "RI.Tools.VersionUpdater\RI.Tools.VersionUpdater.csproj", "{9AE61682-B33C-4814-BAE5-771008CA4147}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Tools.Framework.VersionUpdater", "RI.Tools.Framework.VersionUpdater\RI.Tools.Framework.VersionUpdater.csproj", "{9AE61682-B33C-4814-BAE5-771008CA4147}"
 	ProjectSection(ProjectDependencies) = postProject
 		{59451CBF-33C9-4247-8446-B2E3D4105FDE} = {59451CBF-33C9-4247-8446-B2E3D4105FDE}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Tools.Doc2Pdf", "RI.Tools.Doc2Pdf\RI.Tools.Doc2Pdf.csproj", "{0563B040-9EE7-4963-8321-D328EDE5FAE1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Tools.Framework.Doc2Pdf", "RI.Tools.Framework.Doc2Pdf\RI.Tools.Framework.Doc2Pdf.csproj", "{0563B040-9EE7-4963-8321-D328EDE5FAE1}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9AE61682-B33C-4814-BAE5-771008CA4147} = {9AE61682-B33C-4814-BAE5-771008CA4147}
 		{59451CBF-33C9-4247-8446-B2E3D4105FDE} = {59451CBF-33C9-4247-8446-B2E3D4105FDE}

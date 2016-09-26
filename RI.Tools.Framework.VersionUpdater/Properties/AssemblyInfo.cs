@@ -4,8 +4,8 @@ using System.Reflection;
 
 
 
-[assembly: AssemblyTitle ("RI.Tools.VersionUpdater")]
-[assembly: AssemblyDescription ("RI.Tools.VersionUpdater")]
+[assembly: AssemblyTitle ("RI.Tools.Framework.VersionUpdater")]
+[assembly: AssemblyDescription ("RI.Tools.Framework.VersionUpdater")]
 [assembly: AssemblyProduct ("Utility Framework")]
 [assembly: AssemblyCompany ("Roten Informatik")]
 [assembly: AssemblyCopyright ("Copyright (c) 2015-2016 Roten Informatik")]

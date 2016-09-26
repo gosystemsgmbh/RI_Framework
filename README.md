@@ -16,8 +16,8 @@
   - [ ] Conceptional documentation
   - [ ] TODOs
 - [ ] Cleanup
-  - [ ] Rename RI.Tools.Doc2Pdf to RI.Tools.Framework.Doc2Pdf
-  - [ ] Rename RI.Tools.VersionUpdater to RI.Tools.Framework.VersionUpdater
+  - [X] Rename RI.Tools.Doc2Pdf to RI.Tools.Framework.Doc2Pdf
+  - [X] Rename RI.Tools.VersionUpdater to RI.Tools.Framework.VersionUpdater
   - [ ] Exception throwing (messages, parameter names)
   - [X] Remove SuppressMessage attributes
   - [X] ReSharper configuration, cleanup, and review

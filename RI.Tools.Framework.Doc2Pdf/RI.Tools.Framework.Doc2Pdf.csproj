@@ -7,8 +7,8 @@
     <ProjectGuid>{0563B040-9EE7-4963-8321-D328EDE5FAE1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RI.Tools.Doc2Pdf</RootNamespace>
-    <AssemblyName>RI.Tools.Doc2Pdf</AssemblyName>
+    <RootNamespace>RI.Tools.Framework.Doc2Pdf</RootNamespace>
+    <AssemblyName>RI.Tools.Framework.Doc2Pdf</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -52,7 +52,7 @@
 @copy "$(ProjectDir)*.vbs" "$(SolutionDir)_Output\*.*"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>@"$(SolutionDir)_Input\RI.Tools.VersionUpdater.exe" "$(ProjectDir)." "nr" "file" "$(SolutionDir)RI.Framework.Property.Version.txt" "$(SolutionDir)RI.Framework.Property.Company.txt" "$(SolutionDir)RI.Framework.Property.Copyright.txt"</PreBuildEvent>
+    <PreBuildEvent>@"$(SolutionDir)_Input\VersionUpdater.exe" "$(ProjectDir)." "nr" "file" "$(SolutionDir)RI.Framework.Property.Version.txt" "$(SolutionDir)RI.Framework.Property.Company.txt" "$(SolutionDir)RI.Framework.Property.Copyright.txt"</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
