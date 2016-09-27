@@ -29,6 +29,21 @@ namespace RI.Framework.Services.Regions
 		/// <inheritdoc />
 		public void Activate (object container, object element)
 		{
+			if (element is IRegionElement)
+			{
+				IRegionElement regionElement = (IRegionElement)element;
+				regionElement.Activated();
+			}
+
+			if (element is FrameworkElement)
+			{
+				FrameworkElement frameworkElement = (FrameworkElement)element;
+				if (frameworkElement.DataContext is IRegionElement)
+				{
+					IRegionElement regionElement = (IRegionElement)frameworkElement.DataContext;
+					regionElement.Activated();
+				}
+			}
 		}
 
 		/// <inheritdoc />
@@ -78,6 +93,21 @@ namespace RI.Framework.Services.Regions
 		/// <inheritdoc />
 		public void Deactivate (object container, object element)
 		{
+			if (element is IRegionElement)
+			{
+				IRegionElement regionElement = (IRegionElement)element;
+				regionElement.Deactivated();
+			}
+
+			if (element is FrameworkElement)
+			{
+				FrameworkElement frameworkElement = (FrameworkElement)element;
+				if (frameworkElement.DataContext is IRegionElement)
+				{
+					IRegionElement regionElement = (IRegionElement)frameworkElement.DataContext;
+					regionElement.Deactivated();
+				}
+			}
 		}
 
 		/// <inheritdoc />

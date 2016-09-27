@@ -52,7 +52,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Modularization\WpfModule.cs" />
-    <Compile Include="Services\Regions\RegionExtension.cs" />
+    <Compile Include="Services\Regions\WpfRegionExtension.cs" />
     <Compile Include="Services\Regions\WpfRegionAdapter.cs" />
     <Compile Include="Services\WpfBootstrapper.cs" />
     <Compile Include="Services\WpfBootstrapperState.cs" />

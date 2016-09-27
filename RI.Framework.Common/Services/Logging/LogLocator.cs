@@ -8,6 +8,7 @@
 	///         <see cref="LogLocator" /> is merely a convenience utility as it uses <see cref="ServiceLocator" /> to retrieve and use a <see cref="ILogService" />.
 	///     </para>
 	/// </remarks>
+	/// TODO: Add events
 	public static class LogLocator
 	{
 		#region Static Methods

@@ -526,6 +526,7 @@ namespace RI.Framework.Services.Regions
 
 			this.ClearElements(region);
 			this.AddElement(region, element);
+			this.ActivateElement(region, element);
 		}
 
 		#endregion

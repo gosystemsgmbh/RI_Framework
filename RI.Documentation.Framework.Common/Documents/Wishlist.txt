@@ -120,7 +120,6 @@ Services
 
  - (.NET) Backup (BackupService, DirectoryBackupStorage)
  - (.NET) Licensing (LicensingService, FileLicenseStorage)
- - (.NET) Messaging (MessagingService, IMessageReceiver, IMessage)
 
  - (Unity) Packaging
  - (Unity) Input

@@ -31,7 +31,7 @@ namespace RI.Framework.Services.Modularization
 		///     The used <see cref="WpfBootstrapper" />.
 		/// </value>
 		[ImportProperty]
-		protected WpfBootstrapper Bootstrapper { get; private set; }
+		protected WpfBootstrapper Bootstrapper { get; set; }
 
 		/// <summary>
 		///     Gets the dispatcher of the WPF application object.

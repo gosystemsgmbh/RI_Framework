@@ -70,7 +70,6 @@
   <ItemGroup>
     <Folder Include="Services\Backup\" />
     <Folder Include="Services\Licensing\" />
-    <Folder Include="Services\Messaging\" />
   </ItemGroup>
   <Import Project="..\RI.Framework.Common\RI.Framework.Common.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

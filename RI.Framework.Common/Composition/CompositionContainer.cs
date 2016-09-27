@@ -345,7 +345,7 @@ namespace RI.Framework.Composition
 				throw new ArgumentNullException(nameof(type));
 			}
 
-			return type.IsClass && ( !type.IsAbstract );
+			return type.IsClass && (!type.IsAbstract);
 		}
 
 		private static void GetExportsOfTypeInternal (Type type, bool isSelf, HashSet<string> exports)
@@ -373,7 +373,7 @@ namespace RI.Framework.Composition
 			Type typeArgument = type.IsGenericType ? type.GetGenericArguments()[0] : type;
 			return ( typeArgument.IsClass || typeArgument.IsInterface ) && ( ( genericType == null ) || ( genericType == typeof(IEnumerable<>) ) );
 #else
-			return ( type.IsClass || type.IsInterface ) && ( !type.IsGenericType );
+			return (type.IsClass || type.IsInterface) && (!type.IsGenericType);
 #endif
 		}
 
@@ -1133,10 +1133,10 @@ namespace RI.Framework.Composition
 
 			bool composed = false;
 
-			bool isConstructing = ( composition & CompositionFlags.Constructing ) == CompositionFlags.Constructing;
-			bool updateMissing = ( composition & CompositionFlags.Missing ) == CompositionFlags.Missing;
-			bool updateRecomposable = ( composition & CompositionFlags.Recomposable ) == CompositionFlags.Recomposable;
-			bool updateComposed = ( composition & CompositionFlags.Composed ) == CompositionFlags.Composed;
+			bool isConstructing = (composition & CompositionFlags.Constructing) == CompositionFlags.Constructing;
+			bool updateMissing = (composition & CompositionFlags.Missing) == CompositionFlags.Missing;
+			bool updateRecomposable = (composition & CompositionFlags.Recomposable) == CompositionFlags.Recomposable;
+			bool updateComposed = (composition & CompositionFlags.Composed) == CompositionFlags.Composed;
 
 			Type type = obj.GetType();
 			PropertyInfo[] properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
@@ -1148,7 +1148,7 @@ namespace RI.Framework.Composition
 					bool canRecompose = attribute.Recomposable;
 					object oldValue = property.GetGetMethod(true).Invoke(obj, null);
 
-					if (isConstructing || ( updateMissing && ( oldValue == null ) ) || ( updateRecomposable && canRecompose ) || ( updateComposed && ( oldValue != null ) ))
+					if (isConstructing || (updateMissing && (oldValue == null)) || (updateRecomposable && canRecompose) || (updateComposed && (oldValue != null)))
 					{
 						object newValue = null;
 						bool updateValue = false;
@@ -1179,7 +1179,7 @@ namespace RI.Framework.Composition
 							List<object> instances = this.GetInstancesInternal(importName, typeof(object));
 
 							newValue = oldValue ?? new Import();
-							( (Import)newValue ).Instances = instances.Count == 0 ? null : instances.ToArray();
+							((Import)newValue).Instances = instances.Count == 0 ? null : instances.ToArray();
 
 							Import oldImport = oldValue as Import;
 							Import newImport = newValue as Import;
@@ -1204,7 +1204,7 @@ namespace RI.Framework.Composition
 								if (asArray)
 								{
 									Array array = Array.CreateInstance(propertyType, instances.Count);
-									( (ICollection)instances ).CopyTo(array, 0);
+									((ICollection)instances).CopyTo(array, 0);
 									newValue = array;
 								}
 								else
@@ -1219,12 +1219,20 @@ namespace RI.Framework.Composition
 
 						if (updateValue)
 						{
-							this.Log("Updating import ({0}): {1} @ {2}", composition, property.Name, obj.GetType().FullName);
+							MethodInfo setMethod = property.GetSetMethod(true);
+							if (setMethod == null)
+							{
+								throw new CompositionException("Cannot set value for property because set accessor is missing/unavailable: " + propertyType.Name + " @ " + property.Name + " @ " + type.FullName);
+							}
+							else
+							{
+								this.Log("Updating import ({0}): {1} @ {2}", composition, property.Name, obj.GetType().FullName);
 
-							property.GetSetMethod(true).Invoke(obj, new[]
-							                                   {
-								                                   newValue
-							                                   });
+								setMethod.Invoke(obj, new[]
+								                 {
+									                 newValue
+								                 });
+							}
 						}
 
 						if (currentComposed)
@@ -1264,7 +1272,7 @@ namespace RI.Framework.Composition
 
 		private void AddTypeInternal (Type type, string name)
 		{
-			if (IEnumerableExtensions.Any(this.Types, x => ( x.Type == type ) && CompositionContainer.NameComparer.Equals(x.Name, name)))
+			if (IEnumerableExtensions.Any(this.Types, x => (x.Type == type) && CompositionContainer.NameComparer.Equals(x.Name, name)))
 			{
 				return;
 			}
@@ -1336,7 +1344,7 @@ namespace RI.Framework.Composition
 				object newInstance = null;
 				{
 					MethodInfo[] allMethods = type.GetMethods(BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.FlattenHierarchy);
-					List<MethodInfo> methods = IEnumerableExtensions.Where(allMethods, x => ( x.GetCustomAttributes(typeof(ExportCreatorAttribute), true).Length > 0 ) && ( x.ReturnType != typeof(void) ) && ( x.GetParameters().Length >= 1 ) && ( x.GetParameters()[0].ParameterType == typeof(Type) ));
+					List<MethodInfo> methods = IEnumerableExtensions.Where(allMethods, x => (x.GetCustomAttributes(typeof(ExportCreatorAttribute), true).Length > 0) && (x.ReturnType != typeof(void)) && (x.GetParameters().Length >= 1) && (x.GetParameters()[0].ParameterType == typeof(Type)));
 
 					if (methods.Count > 1)
 					{
@@ -1421,7 +1429,7 @@ namespace RI.Framework.Composition
 					{
 						foreach (CompositionTypeItem typeItem in compositionItem.Value.Types)
 						{
-							if (( typeItem.Type == type ) && ( typeItem.Instance == null ))
+							if ((typeItem.Type == type) && (typeItem.Instance == null))
 							{
 								typeItem.Instance = newInstance;
 							}
@@ -1483,7 +1491,7 @@ namespace RI.Framework.Composition
 
 		private void RemoveTypeInternal (Type type, string name)
 		{
-			this.Types.RemoveAll(x => ( x.Type == type ) && CompositionContainer.NameComparer.Equals(x.Name, name));
+			this.Types.RemoveAll(x => (x.Type == type) && CompositionContainer.NameComparer.Equals(x.Name, name));
 		}
 
 		private void UpdateComposition (bool recompose)
@@ -1546,7 +1554,7 @@ namespace RI.Framework.Composition
 				{
 					if (CompositionContainer.ValidateExportType(item.Type))
 					{
-						CompositionTypeItem typeItem = IEnumerableExtensions.FirstOrDefault(compositionItem.Types, x => ( x.Type == item.Type ));
+						CompositionTypeItem typeItem = IEnumerableExtensions.FirstOrDefault(compositionItem.Types, x => (x.Type == item.Type));
 						if (typeItem == null)
 						{
 							typeItem = new CompositionTypeItem(item.Type);
@@ -1562,25 +1570,25 @@ namespace RI.Framework.Composition
 				IListExtensions.RemoveWhere(compositionItem.Value.Instances, x => !x.Checked).ForEach(x =>
 				                                                                                      {
 					                                                                                      this.Log("Instance removed from container: {0} / {1}", compositionItem.Key, x.Instance.GetType().FullName);
-					                                                                                      ( x.Instance as IExporting )?.RemovedFromContainer(compositionItem.Key, this);
+					                                                                                      (x.Instance as IExporting)?.RemovedFromContainer(compositionItem.Key, this);
 					                                                                                      if (this.AutoDispose)
 					                                                                                      {
-						                                                                                      ( x.Instance as IDisposable )?.Dispose();
+						                                                                                      (x.Instance as IDisposable)?.Dispose();
 					                                                                                      }
 				                                                                                      });
 				IListExtensions.RemoveWhere(compositionItem.Value.Types, x => !x.Checked).ForEach(x =>
 				                                                                                  {
 					                                                                                  this.Log("Type removed from container: {0} / {1}", compositionItem.Key, x.Instance.GetType().FullName);
-					                                                                                  ( x.Instance as IExporting )?.RemovedFromContainer(compositionItem.Key, this);
+					                                                                                  (x.Instance as IExporting)?.RemovedFromContainer(compositionItem.Key, this);
 					                                                                                  if (this.AutoDispose)
 					                                                                                  {
-						                                                                                  ( x.Instance as IDisposable )?.Dispose();
+						                                                                                  (x.Instance as IDisposable)?.Dispose();
 					                                                                                  }
 				                                                                                  });
 				compositionItem.Value.ResetChecked();
 			}
 
-			IDictionaryExtensions.RemoveWhere(this.Composition, x => ( x.Value.Instances.Count == 0 ) && ( x.Value.Types.Count == 0 )).ForEach(x => this.Log("Removing export: {0}", x));
+			IDictionaryExtensions.RemoveWhere(this.Composition, x => (x.Value.Instances.Count == 0) && (x.Value.Types.Count == 0)).ForEach(x => this.Log("Removing export: {0}", x));
 
 			foreach (KeyValuePair<object, HashSet<string>> newInstance in newInstances)
 			{

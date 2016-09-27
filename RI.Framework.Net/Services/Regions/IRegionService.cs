@@ -230,7 +230,7 @@ namespace RI.Framework.Services.Regions
 		void RemoveRegion (string region);
 
 		/// <summary>
-		///     Sets the only element in a region.
+		///     Sets the only element in a region and activates it.
 		/// </summary>
 		/// <param name="region"> The name of the region. </param>
 		/// <param name="element"> The element which is to be set the only element in the region. </param>
