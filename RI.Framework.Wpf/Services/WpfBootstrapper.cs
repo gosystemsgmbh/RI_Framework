@@ -452,11 +452,12 @@ namespace RI.Framework.Services
 		/// </summary>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation does nothing.
+		///         The default implementation adds the container to itself.
 		///     </note>
 		/// </remarks>
 		protected virtual void ConfigureContainer ()
 		{
+			this.Container.AddCatalog(new InstanceCatalog(this.Container));
 		}
 
 		/// <summary>

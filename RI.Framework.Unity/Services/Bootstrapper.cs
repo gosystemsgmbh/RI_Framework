@@ -262,11 +262,12 @@ namespace RI.Framework.Services
 		/// </summary>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation adds a single <see cref="ScriptingCatalog" /> to the composition container.
+		///         The default implementation adds a single <see cref="ScriptingCatalog" /> to the composition container as well as the container itself.
 		///     </note>
 		/// </remarks>
 		protected virtual void ConfigureContainer ()
 		{
+			this.Container.AddCatalog(new InstanceCatalog(this.Container));
 			this.Container.AddCatalog(new ScriptingCatalog());
 		}
 

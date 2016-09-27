@@ -30,7 +30,7 @@ namespace RI.Framework.Services.Modularization
 		/// <value>
 		///     The used <see cref="WpfBootstrapper" />.
 		/// </value>
-		[ImportProperty]
+		[ImportProperty (typeof(WpfBootstrapper), Recomposable = true)]
 		protected WpfBootstrapper Bootstrapper { get; set; }
 
 		/// <summary>
