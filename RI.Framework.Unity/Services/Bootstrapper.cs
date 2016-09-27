@@ -46,12 +46,12 @@ namespace RI.Framework.Services
 	///         </item>
 	///         <item>
 	///             <para>
-	///                 <see cref="ConfigureBootstrapper" /> is called.
+	///                 <see cref="ConfigureServiceLocator" /> is called.
 	///             </para>
 	///         </item>
 	///         <item>
 	///             <para>
-	///                 <see cref="ConfigureServiceLocator" /> is called.
+	///                 <see cref="ConfigureBootstrapper" /> is called.
 	///             </para>
 	///         </item>
 	///         <item>
@@ -200,7 +200,7 @@ namespace RI.Framework.Services
 
 			this.Container = null;
 
-			( (IBootstrapper)this ).Run();
+			((IBootstrapper)this).Run();
 		}
 
 		private void OnApplicationQuit ()
@@ -395,11 +395,11 @@ namespace RI.Framework.Services
 			this.Log(LogLevel.Debug, "Creating container");
 			this.Container = this.CreateContainer() ?? new CompositionContainer();
 
-			this.Log(LogLevel.Debug, "Configuring bootstrapper");
-			this.ConfigureBootstrapper();
-
 			this.Log(LogLevel.Debug, "Configuring service locator");
 			this.ConfigureServiceLocator();
+
+			this.Log(LogLevel.Debug, "Configuring bootstrapper");
+			this.ConfigureBootstrapper();
 
 			this.Log(LogLevel.Debug, "Configuring logging");
 			this.ConfigureLogging();

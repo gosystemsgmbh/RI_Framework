@@ -26,6 +26,10 @@ namespace RI.Framework.Services.Regions
 	///     <para>
 	///         Names of regions are considered case-insensitive.
 	///     </para>
+	///     <para>
+	///         Elements inserted into regions can be made aware of their status within a region by implementing the <see cref="IRegionElement" /> interface.
+	///         Note that the handling of <see cref="IRegionElement" /> is to be implemented in the region adapters, not the region service itself.
+	///     </para>
 	/// </remarks>
 	[Export]
 	public interface IRegionService
@@ -55,7 +59,6 @@ namespace RI.Framework.Services.Regions
 		///     </note>
 		/// </remarks>
 		IEnumerable<string> Regions { get; }
-
 
 		/// <summary>
 		///     Activates an element in a region.
@@ -89,7 +92,6 @@ namespace RI.Framework.Services.Regions
 		/// <exception cref="InvalidOperationException"> The region specified by <paramref name="region" /> does not exist. </exception>
 		void AddElement (string region, object element);
 
-
 		/// <summary>
 		///     Adds a region and associates it with a container.
 		/// </summary>
@@ -115,19 +117,6 @@ namespace RI.Framework.Services.Regions
 		void ClearElements (string region);
 
 		/// <summary>
-		///     Determines whether a region contains a specified element.
-		/// </summary>
-		/// <param name="region"> The name of the region. </param>
-		/// <param name="element"> The element which is to be checked whether it is in the region. </param>
-		/// <returns>
-		///     true if the element is in the specified region, false otherwise.
-		/// </returns>
-		/// <exception cref="ArgumentNullException"> <paramref name="region" /> or <paramref name="element" /> is null. </exception>
-		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
-		/// <exception cref="InvalidOperationException"> The region specified by <paramref name="region" /> does not exist. </exception>
-		bool ContainsElement (string region, object element);
-
-		/// <summary>
 		///     Deactivates all elements in a region.
 		/// </summary>
 		/// <param name="region"> The name of the region. </param>
@@ -140,11 +129,14 @@ namespace RI.Framework.Services.Regions
 		///     Gets all elements of a region.
 		/// </summary>
 		/// <param name="region"> The name of the region. </param>
-		/// <returns> </returns>
+		/// <returns>
+		///     The list with all elements of the region.
+		///     An empty list is returned if the region contains no elements.
+		///     null is returned if the specified region does not exist.
+		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="region" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
-		/// <exception cref="InvalidOperationException"> The region specified by <paramref name="region" /> does not exist. </exception>
-		object[] GetElements (string region);
+		List<object> GetElements (string region);
 
 		/// <summary>
 		///     Gets the container associated with a region.
@@ -172,11 +164,23 @@ namespace RI.Framework.Services.Regions
 		/// </summary>
 		/// <param name="container"> The container. </param>
 		/// <returns>
-		///     The array with all names of the region associated with the container.
-		///     An empty array is returned if no region is associated with the container.
+		///     The set with all names of the region associated with the container.
+		///     An empty set is returned if no region is associated with the container.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="container" /> is null. </exception>
-		string[] GetRegionNames (object container);
+		HashSet<string> GetRegionNames (object container);
+
+		/// <summary>
+		///     Determines whether a region contains a specified element.
+		/// </summary>
+		/// <param name="region"> The name of the region. </param>
+		/// <param name="element"> The element which is to be checked whether it is in the region. </param>
+		/// <returns>
+		///     true if the element is in the specified region, false otherwise. false is also returned if the specified region does not exist.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="region" /> or <paramref name="element" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
+		bool HasElement (string region, object element);
 
 		/// <summary>
 		///     Determines whether a region exists.

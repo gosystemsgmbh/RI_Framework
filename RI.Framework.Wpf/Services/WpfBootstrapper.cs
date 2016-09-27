@@ -11,7 +11,6 @@ using RI.Framework.Composition.Catalogs;
 using RI.Framework.Composition.Model;
 using RI.Framework.IO.Paths;
 using RI.Framework.Services.Logging;
-using RI.Framework.Services.Regions;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Reflection;
 
@@ -399,19 +398,6 @@ namespace RI.Framework.Services
 		#region Virtuals
 
 		/// <summary>
-		///     Adds all default WPF region adapters to the current composition container.
-		/// </summary>
-		/// <remarks>
-		///     <para>
-		///         The following are the default WPF region adapters: <see cref="ContentControlRegionAdapter" />, <see cref="ItemsControlRegionAdapter" />, <see cref="PanelRegionAdapter" />.
-		///     </para>
-		/// </remarks>
-		protected virtual void AddDefaultWpfRegionAdaptersToContainer ()
-		{
-			this.Container.AddCatalog(new TypeCatalog(typeof(ContentControlRegionAdapter), typeof(ItemsControlRegionAdapter), typeof(PanelRegionAdapter)));
-		}
-
-		/// <summary>
 		///     Called before the application begins running after the bootstrapping is completed.
 		/// </summary>
 		/// <remarks>
@@ -440,11 +426,12 @@ namespace RI.Framework.Services
 		/// </summary>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation does nothing.
+		///         The default implementation adds the application object (<see cref="Application" />) to the used composition container as an export using a <see cref="InstanceCatalog" />.
 		///     </note>
 		/// </remarks>
 		protected virtual void ConfigureApplication ()
 		{
+			this.Container.AddCatalog(new InstanceCatalog(this.Application));
 		}
 
 		/// <summary>

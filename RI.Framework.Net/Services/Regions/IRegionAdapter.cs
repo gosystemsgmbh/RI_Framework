@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using RI.Framework.Composition.Model;
 using RI.Framework.Utilities.Exceptions;
@@ -46,18 +47,6 @@ namespace RI.Framework.Services.Regions
 		void Clear (object container);
 
 		/// <summary>
-		///     Checks whether a container contains an element.
-		/// </summary>
-		/// <param name="container"> The container. </param>
-		/// <param name="element"> The element. </param>
-		/// <returns>
-		///     true if the container contains the element, false otherwise.
-		/// </returns>
-		/// <exception cref="ArgumentNullException"> <paramref name="container" /> or <paramref name="element" /> is null. </exception>
-		/// <exception cref="InvalidTypeArgumentException"> The type of <paramref name="container" /> or <paramref name="element" /> is not handled by this region adapter. </exception>
-		bool Contains (object container, object element);
-
-		/// <summary>
 		///     Deactivates an element in a container.
 		/// </summary>
 		/// <param name="container"> The container. </param>
@@ -71,12 +60,12 @@ namespace RI.Framework.Services.Regions
 		/// </summary>
 		/// <param name="container"> The container. </param>
 		/// <returns>
-		///     The array which contains all the elements of the container.
-		///     An empty array is returned if the container contains no elements.
+		///     The list which contains all the elements of the container.
+		///     An empty list is returned if the container contains no elements.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="container" /> is null. </exception>
 		/// <exception cref="InvalidTypeArgumentException"> The type of <paramref name="container" /> is not handled by this region adapter. </exception>
-		object[] Get (object container);
+		List<object> Get (object container);
 
 		/// <summary>
 		///     Checks whether a specified type is supported by this region adapter for containers.
@@ -97,14 +86,5 @@ namespace RI.Framework.Services.Regions
 		/// <exception cref="ArgumentNullException"> <paramref name="container" /> or <paramref name="element" /> is null. </exception>
 		/// <exception cref="InvalidTypeArgumentException"> The type of <paramref name="container" /> or <paramref name="element" /> is not handled by this region adapter. </exception>
 		void Remove (object container, object element);
-
-		/// <summary>
-		///     Sets the only element in a container.
-		/// </summary>
-		/// <param name="container"> The container. </param>
-		/// <param name="element"> The element. </param>
-		/// <exception cref="ArgumentNullException"> <paramref name="container" /> or <paramref name="element" /> is null. </exception>
-		/// <exception cref="InvalidTypeArgumentException"> The type of <paramref name="container" /> or <paramref name="element" /> is not handled by this region adapter. </exception>
-		void Set (object container, object element);
 	}
 }

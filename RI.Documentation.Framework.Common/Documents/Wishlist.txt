@@ -107,14 +107,16 @@ Services
 
  - (Common) Settings (SettingService, FileSettingStorage, SettingConverter)
  - (.NET) Settings (AppConfigSettingStorage)
- - (Unity) Settings (PlayerPrefsSettingStorage)
 
  - (Common) Resources (ResourceService, DirectoryResourceSource, ResourceConverter)
  - (WPF) Resources (WpfResourceTarget, WpfResourceConverter)
- - (WinForms) Resources (WinFormsResourceTarget, WinFormsResourceConverter)
+
+ - (Unity) Settings (PlayerPrefsSettingStorage)
  - (Unity) Resources (UnityResourceTarget, UnityResourceConverter)
 
- - (WinForms) Regions (WinFormsRegionAdapter*)
+ - (WinForms) Modularization (WinFormsModule)
+ - (WinForms) Regions (WinFormsRegionAdapter)
+ - (WinForms) Resources (WinFormsResourceTarget, WinFormsResourceConverter)
 
  - (.NET) Backup (BackupService, DirectoryBackupStorage)
  - (.NET) Licensing (LicensingService, FileLicenseStorage)
