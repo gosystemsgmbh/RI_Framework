@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Windows;
 
-using RI.Framework.Mvvm;
+using RI.Framework.Services;
+using RI.Framework.Services.Regions;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 
 
 
 
-namespace RI.Framework.Services.Regions
+namespace RI.Framework.Mvvm
 {
 	/// <summary>
 	///     Provides WPF XAML extensions and utilities to work with regions.
