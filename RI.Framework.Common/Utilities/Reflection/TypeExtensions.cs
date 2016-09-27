@@ -14,6 +14,87 @@ namespace RI.Framework.Utilities.Reflection
 		#region Static Methods
 
 		/// <summary>
+		///     Determines the best matching type from a list of candidates.
+		/// </summary>
+		/// <param name="type"> The type for which the best matching type from <paramref name="types" /> is to be determined. </param>
+		/// <param name="matchingType"> The type from <paramref name="types" /> which matches <paramref name="type" /> best. null if no matching type is found. </param>
+		/// <param name="inheritanceDepth"> The depth of inheritance from <paramref name="type" /> to <paramref name="matchingType" />. -1 if no mathcing type is found. </param>
+		/// <param name="types"> The list of candidates. </param>
+		/// <returns>
+		///     true if a matching type was found, false otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         This method determines the best match for <paramref name="type" /> from <paramref name="types" />.
+		///         The best match is the one which has the lowest inheritance depth (<paramref name="inheritanceDepth" />) by appearing in the inheritance list of <paramref name="type" />.
+		///         Or in other words, the type which is closes to <paramref name="type" /> in the inheritance list of <paramref name="type" /> is choosen.
+		///     </para>
+		///     <para>
+		///         <paramref name="inheritanceDepth" /> is zero if <paramref name="type" /> and <paramref name="matchingType" /> are the same (which is, for example, if <paramref name="type" /> also appears in <paramref name="types" />).
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="type" /> is null. </exception>
+		public static bool GetBestMatchingType (this Type type, out Type matchingType, out int inheritanceDepth, params Type[] types)
+		{
+			if (type == null)
+			{
+				throw new ArgumentNullException(nameof(type));
+			}
+
+			matchingType = null;
+			inheritanceDepth = -1;
+
+			if (types == null)
+			{
+				return false;
+			}
+
+			if (types.Length == 0)
+			{
+				return false;
+			}
+
+			List<Type> inheritance = type.GetInheritance(true);
+			inheritance.Reverse();
+
+			List<int> depths = new List<int>();
+			foreach (Type candidate in types)
+			{
+				int depth = -1;
+				for (int i1 = 0; i1 < inheritance.Count; i1++)
+				{
+					if (inheritance[i1] == candidate)
+					{
+						depth = i1;
+						break;
+					}
+				}
+				depths.Add(depth);
+			}
+
+			int minDepth = int.MaxValue;
+			int minIndex = -1;
+			for (int i1 = 0; i1 < depths.Count; i1++)
+			{
+				int depth = depths[i1];
+				if ((depth < minDepth) && (depth != -1))
+				{
+					minDepth = depth;
+					minIndex = i1;
+				}
+			}
+
+			if (minIndex == -1)
+			{
+				return false;
+			}
+
+			matchingType = types[minIndex];
+			inheritanceDepth = depths[minIndex];
+			return true;
+		}
+
+		/// <summary>
 		///     Gets all types the specified type inherits from.
 		/// </summary>
 		/// <param name="type"> The type of which the inheritance list should be returned. </param>

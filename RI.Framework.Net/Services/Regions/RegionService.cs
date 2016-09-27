@@ -49,7 +49,6 @@ namespace RI.Framework.Services.Regions
 
 		private List<IRegionAdapter> AdaptersManual { get; set; }
 
-
 		private Dictionary<string, Tuple<object, IRegionAdapter>> RegionDictionary { get; set; }
 
 		#endregion
@@ -120,6 +119,11 @@ namespace RI.Framework.Services.Regions
 				throw new InvalidOperationException();
 			}
 
+			if (!this.HasElement(region, element))
+			{
+				this.AddElement(region, element);
+			}
+
 			this.DeactivateAllElements(region);
 
 			object container = this.RegionDictionary[region].Item1;
@@ -169,6 +173,11 @@ namespace RI.Framework.Services.Regions
 				throw new InvalidOperationException();
 			}
 
+			if (this.HasElement(region, element))
+			{
+				return;
+			}
+
 			object container = this.RegionDictionary[region].Item1;
 			IRegionAdapter adapter = this.RegionDictionary[region].Item2;
 
@@ -210,7 +219,16 @@ namespace RI.Framework.Services.Regions
 			}
 			IRegionAdapter adapter = adapters[0].Item2;
 
-			this.RemoveRegion(region);
+			if (this.RegionDictionary.ContainsKey(region))
+			{
+				if (object.ReferenceEquals(container, this.RegionDictionary[region].Item1) && adapter.Equals(this.RegionDictionary[region].Item2))
+				{
+					return;
+				}
+
+				this.ClearElements(region);
+				this.RegionDictionary.Remove(region);
+			}
 
 			this.Log("Region added: {0} -> {1} @ {2}", region, container.GetType().Name, adapter.GetType().Name);
 
@@ -446,6 +464,11 @@ namespace RI.Framework.Services.Regions
 				throw new InvalidOperationException();
 			}
 
+			if (!this.HasElement(region, element))
+			{
+				return;
+			}
+
 			object container = this.RegionDictionary[region].Item1;
 			IRegionAdapter adapter = this.RegionDictionary[region].Item2;
 
@@ -470,6 +493,8 @@ namespace RI.Framework.Services.Regions
 			{
 				return;
 			}
+
+			this.ClearElements(region);
 
 			this.Log("Region removed: {0}", region);
 

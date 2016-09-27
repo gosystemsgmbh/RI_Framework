@@ -6,7 +6,7 @@
 namespace RI.Framework.Services.Modularization
 {
 	/// <summary>
-	///     Implements a base class which can be used for module implementation
+	///     Implements a base class which can be used for module implementation.
 	/// </summary>
 	public abstract class Module : IModule
 	{
