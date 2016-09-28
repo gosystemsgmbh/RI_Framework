@@ -38,7 +38,7 @@ namespace RI.Framework.Services.Settings
 		///     The string representation of the setting value as converted by this converter or null if <paramref name="value" /> is null.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="type" /> or <paramref name="value" /> is null. </exception>
-		/// <exception cref="InvalidTypeArgumentException"> The specified <paramref name="type" /> or the type of <paramref name="value" /> is not supported by this converter or <paramref name="type"/> and <paramref name="value"/> do not match. </exception>
+		/// <exception cref="InvalidTypeArgumentException"> The specified <paramref name="type" /> or the type of <paramref name="value" /> is not supported by this converter or <paramref name="type" /> and <paramref name="value" /> do not match. </exception>
 		string ConvertFrom (Type type, object value);
 
 		/// <summary>

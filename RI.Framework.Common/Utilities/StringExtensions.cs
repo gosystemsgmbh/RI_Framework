@@ -219,7 +219,7 @@ namespace RI.Framework.Utilities
 				return string.Empty;
 			}
 
-			StringBuilder sb = new StringBuilder(str.Length * 2);
+			StringBuilder sb = new StringBuilder(str.Length*2);
 
 			for (int i1 = 0; i1 < str.Length; i1++)
 			{
@@ -453,18 +453,18 @@ namespace RI.Framework.Utilities
 
 			double count = 0.0;
 
-			StringBuilder newStr = new StringBuilder((int)( str.Length * 1.1 ));
+			StringBuilder newStr = new StringBuilder((int)(str.Length*1.1));
 
 			for (int i1 = 0; i1 < str.Length; i1++)
 			{
 				if (str[i1] == chr)
 				{
-					char next = i1 >= ( str.Length - 1 ) ? '\0' : str[i1 + 1];
+					char next = i1 >= (str.Length - 1) ? '\0' : str[i1 + 1];
 					count += 1.0;
 
 					if (next != chr)
 					{
-						newStr.Append(new string(chr, (int)( Math.Max(0.0, ( count * factor ) + offset) )));
+						newStr.Append(new string(chr, (int)(Math.Max(0.0, (count*factor) + offset))));
 						count = 0.0;
 					}
 				}
@@ -475,7 +475,7 @@ namespace RI.Framework.Utilities
 				}
 			}
 
-			return ( newStr.ToString() );
+			return (newStr.ToString());
 		}
 
 		/// <summary>
@@ -553,7 +553,7 @@ namespace RI.Framework.Utilities
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="count" /> is less than zero. </exception>
 		public static string Repeat (this char chr, int count, string separator)
 		{
-			return ( new string(chr, 1) ).Repeat(count, separator);
+			return (new string(chr, 1)).Repeat(count, separator);
 		}
 
 		/// <summary>
@@ -628,7 +628,7 @@ namespace RI.Framework.Utilities
 
 			separator = separator ?? string.Empty;
 
-			StringBuilder sb = new StringBuilder(( str.Length * count ) + ( separator.Length * ( count - 1 ) ) + 1);
+			StringBuilder sb = new StringBuilder((str.Length*count) + (separator.Length*(count - 1)) + 1);
 			for (int i1 = 0; i1 < count; i1++)
 			{
 				if (i1 != 0)
@@ -876,7 +876,7 @@ namespace RI.Framework.Utilities
 					piece = new StringBuilder();
 				}
 
-				if (i1 <= ( str.Length - 1 ))
+				if (i1 <= (str.Length - 1))
 				{
 					piece.Append(str[i1]);
 				}
@@ -884,7 +884,7 @@ namespace RI.Framework.Utilities
 
 			pieces.Add(piece.ToString());
 
-			if (( options & StringSplitOptions.RemoveEmptyEntries ) == StringSplitOptions.RemoveEmptyEntries)
+			if ((options & StringSplitOptions.RemoveEmptyEntries) == StringSplitOptions.RemoveEmptyEntries)
 			{
 				pieces.RemoveWhere(x => x.IsEmpty());
 			}
@@ -940,7 +940,7 @@ namespace RI.Framework.Utilities
 
 			while (true)
 			{
-				if (( index + value.Length ) > str.Length)
+				if ((index + value.Length) > str.Length)
 				{
 					break;
 				}
@@ -1167,12 +1167,6 @@ namespace RI.Framework.Utilities
 				format.Append("'");
 			}
 			format.Append("fff");
-			if (separator != null)
-			{
-				format.Append("'");
-				format.Append(separator);
-				format.Append("'");
-			}
 
 			DateTime timestamp;
 			if (DateTime.TryParseExact(str, format.ToString(), CultureInfo.InvariantCulture, DateTimeStyles.None, out timestamp))
@@ -1181,6 +1175,68 @@ namespace RI.Framework.Utilities
 			}
 
 			return null;
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into a decimal floating point value.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     The decimal floating point value represented by the string if the string can be converted into a decimal floating point, null otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         <see cref="NumberStyles" />.<see cref="NumberStyles.Any" /> and <see cref="CultureInfo" />.<see cref="CultureInfo.CurrentCulture" /> are used for parsing.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static decimal? ToDecimal (this string str)
+		{
+			return str.ToDecimal(NumberStyles.Any, CultureInfo.CurrentCulture);
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into a decimal floating point value.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <param name="style"> The number styles which are to be expected in the string. </param>
+		/// <param name="provider"> An object that supplies culture-specific formatting information for parsing the string. Can be null to use the current threads culture. </param>
+		/// <returns>
+		///     The decimal floating point value represented by the string if the string can be converted into a decimal floating point, null otherwise.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static decimal? ToDecimal (this string str, NumberStyles style, IFormatProvider provider)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			decimal value = 0;
+			if (decimal.TryParse(str, style, provider, out value))
+			{
+				return value;
+			}
+
+			return null;
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into a decimal floating point value.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     The decimal floating point value represented by the string if the string can be converted into a decimal floating point, null otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         <see cref="NumberStyles" />.<see cref="NumberStyles.Any" /> and <see cref="CultureInfo" />.<see cref="CultureInfo.InvariantCulture" /> are used for parsing.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static decimal? ToDecimalInvariant (this string str)
+		{
+			return str.ToDecimal(NumberStyles.Any, CultureInfo.InvariantCulture);
 		}
 
 		/// <summary>
@@ -1646,6 +1702,78 @@ namespace RI.Framework.Utilities
 		}
 
 		/// <summary>
+		///     Attempts to convert a string into a time span.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     The time span represented by the string if the string is a time span as produced by <see cref="TimeSpanExtensions.ToSortableString(TimeSpan)" />, null otherwise.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static TimeSpan? ToTimeSpanFromSortable (this string str)
+		{
+			return str.ToTimeSpanFromSortable(null);
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into a time span.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <param name="separator"> The expected separator between each unit of the time span. </param>
+		/// <returns>
+		///     The time span represented by the string if the string is a time span as produced by <see cref="TimeSpanExtensions.ToSortableString(TimeSpan,char)" />, null otherwise.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static TimeSpan? ToTimeSpanFromSortable (this string str, char separator)
+		{
+			return str.ToTimeSpanFromSortable(new string(separator, 1));
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into a time span.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <param name="separator"> The expected separator between each unit of the time span. </param>
+		/// <returns>
+		///     The time span represented by the string if the string is a time span as produced by <see cref="TimeSpanExtensions.ToSortableString(TimeSpan,string)" />, null otherwise.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static TimeSpan? ToTimeSpanFromSortable (this string str, string separator)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			int separatorLength = separator?.Length ?? 0;
+
+			str = str.Trim();
+
+			if (str.Length < (10 + (separatorLength*4)))
+			{
+				return null;
+			}
+
+			int daysLength = str.Length - (9 + (separatorLength*4));
+			int hoursIndex = daysLength + separatorLength;
+			int minutesIndex = hoursIndex + 2 + separatorLength;
+			int secondsIndex = minutesIndex + 2 + separatorLength;
+			int millisecondsIndex = secondsIndex + 2 + separatorLength;
+
+			int? days = str.Substring(0, daysLength).ToInt32(NumberStyles.Any, CultureInfo.InvariantCulture);
+			int? hours = str.Substring(hoursIndex, 2).ToInt32(NumberStyles.Any, CultureInfo.InvariantCulture);
+			int? minutes = str.Substring(minutesIndex, 2).ToInt32(NumberStyles.Any, CultureInfo.InvariantCulture);
+			int? seconds = str.Substring(secondsIndex, 2).ToInt32(NumberStyles.Any, CultureInfo.InvariantCulture);
+			int? milliseconds = str.Substring(millisecondsIndex, 3).ToInt32(NumberStyles.Any, CultureInfo.InvariantCulture);
+
+			if ((days == null) || (hours == null) || (minutes == null) || (seconds == null) || (milliseconds == null))
+			{
+				return null;
+			}
+
+			return new TimeSpan(days.Value, hours.Value, minutes.Value, seconds.Value, milliseconds.Value);
+		}
+
+		/// <summary>
 		///     Attempts to convert a string into an unsigned short.
 		/// </summary>
 		/// <param name="str"> The string. </param>
@@ -1894,7 +2022,7 @@ namespace RI.Framework.Utilities
 			for (int i1 = 0; i1 < str.Length; i1++)
 			{
 				char current = str[i1];
-				if (( current == '\\' ) && ( i1 < ( str.Length - 1 ) ))
+				if ((current == '\\') && (i1 < (str.Length - 1)))
 				{
 					char next = str[i1 + 1];
 					char? replacement = null;

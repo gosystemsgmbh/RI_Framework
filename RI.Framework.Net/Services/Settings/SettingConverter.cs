@@ -14,13 +14,15 @@ namespace RI.Framework.Services.Settings
 	///     Implements a default setting converter which can convert to and from the basic types used in .NET.
 	/// </summary>
 	/// <remarks>
-	/// <para>
-	/// The types supported by this seting converter are:
-	/// <see cref="bool"/>, <see cref="char"/>, <see cref="string"/>, <see cref="sbyte"/>, <see cref="byte"/>, <see cref="short"/>, <see cref="ushort"/>, <see cref="int"/>, <see cref="uint"/>, <see cref="long"/>, <see cref="ulong"/>, <see cref="float"/>, <see cref="double"/>, <see cref="decimal"/>, <see cref="DateTime"/>, <see cref="TimeSpan"/>, <see cref="Guid"/>, <see cref="Version"/>, and enumerations (<see cref="Enum"/>)
-	/// </para>
+	///     <para>
+	///         The types supported by this seting converter are:
+	///         <see cref="bool" />, <see cref="char" />, <see cref="string" />, <see cref="sbyte" />, <see cref="byte" />, <see cref="short" />, <see cref="ushort" />, <see cref="int" />, <see cref="uint" />, <see cref="long" />, <see cref="ulong" />, <see cref="float" />, <see cref="double" />, <see cref="decimal" />, <see cref="DateTime" />, <see cref="TimeSpan" />, <see cref="Guid" />, <see cref="Version" />, and enumerations (<see cref="Enum" />)
+	///     </para>
 	/// </remarks>
 	public sealed class SettingConverter : ISettingConverter
 	{
+		#region Instance Fields
+
 		private readonly Type[] SupportedTypes =
 		{
 			typeof(bool),
@@ -43,6 +45,13 @@ namespace RI.Framework.Services.Settings
 			typeof(Version),
 			typeof(Enum),
 		};
+
+		#endregion
+
+
+
+
+		#region Interface: ISettingConverter
 
 		/// <inheritdoc />
 		public bool CanConvert (Type type)
@@ -140,11 +149,11 @@ namespace RI.Framework.Services.Settings
 			}
 			if (type == typeof(DateTime))
 			{
-				return ((DateTime)value).ToSortableString();
+				return ((DateTime)value).ToSortableString('-');
 			}
 			if (type == typeof(TimeSpan))
 			{
-				return ((TimeSpan)value).ToSortableString();
+				return ((TimeSpan)value).ToSortableString('-');
 			}
 			if (type == typeof(Guid))
 			{
@@ -184,55 +193,85 @@ namespace RI.Framework.Services.Settings
 			}
 			else if (type == typeof(char))
 			{
-				//TODO
+				finalValue = value.Length == 1 ? value[0] : (object)null;
 			}
 			else if (type == typeof(string))
 			{
+				finalValue = value;
 			}
 			else if (type == typeof(sbyte))
 			{
+				sbyte? tempValue = value.ToSByte(NumberStyles.Any, CultureInfo.InvariantCulture);
+				finalValue = tempValue.HasValue ? tempValue.Value : (object)null;
 			}
 			else if (type == typeof(byte))
 			{
+				byte? tempValue = value.ToByte(NumberStyles.Any, CultureInfo.InvariantCulture);
+				finalValue = tempValue.HasValue ? tempValue.Value : (object)null;
 			}
 			else if (type == typeof(short))
 			{
+				short? tempValue = value.ToInt16(NumberStyles.Any, CultureInfo.InvariantCulture);
+				finalValue = tempValue.HasValue ? tempValue.Value : (object)null;
 			}
 			else if (type == typeof(ushort))
 			{
+				ushort? tempValue = value.ToUInt16(NumberStyles.Any, CultureInfo.InvariantCulture);
+				finalValue = tempValue.HasValue ? tempValue.Value : (object)null;
 			}
 			else if (type == typeof(int))
 			{
+				int? tempValue = value.ToInt32(NumberStyles.Any, CultureInfo.InvariantCulture);
+				finalValue = tempValue.HasValue ? tempValue.Value : (object)null;
 			}
 			else if (type == typeof(uint))
 			{
+				uint? tempValue = value.ToUInt32(NumberStyles.Any, CultureInfo.InvariantCulture);
+				finalValue = tempValue.HasValue ? tempValue.Value : (object)null;
 			}
 			else if (type == typeof(long))
 			{
+				long? tempValue = value.ToInt64(NumberStyles.Any, CultureInfo.InvariantCulture);
+				finalValue = tempValue.HasValue ? tempValue.Value : (object)null;
 			}
 			else if (type == typeof(ulong))
 			{
+				ulong? tempValue = value.ToUInt64(NumberStyles.Any, CultureInfo.InvariantCulture);
+				finalValue = tempValue.HasValue ? tempValue.Value : (object)null;
 			}
 			else if (type == typeof(float))
 			{
+				float? tempValue = value.ToFloat(NumberStyles.Any, CultureInfo.InvariantCulture);
+				finalValue = tempValue.HasValue ? tempValue.Value : (object)null;
 			}
 			else if (type == typeof(double))
 			{
+				double? tempValue = value.ToDouble(NumberStyles.Any, CultureInfo.InvariantCulture);
+				finalValue = tempValue.HasValue ? tempValue.Value : (object)null;
 			}
 			else if (type == typeof(decimal))
 			{
+				decimal? tempValue = value.ToDecimal(NumberStyles.Any, CultureInfo.InvariantCulture);
+				finalValue = tempValue.HasValue ? tempValue.Value : (object)null;
 			}
 			else if (type == typeof(DateTime))
 			{
+				DateTime? tempValue = value.ToDateTimeFromSortable('-');
+				finalValue = tempValue.HasValue ? tempValue.Value : (object)null;
 			}
 			else if (type == typeof(TimeSpan))
 			{
+				TimeSpan? tempValue = value.ToTimeSpanFromSortable('-');
+				finalValue = tempValue.HasValue ? tempValue.Value : (object)null;
 			}
 			else if (type == typeof(Guid))
 			{
+				Guid? tempValue = value.ToGuid();
+				finalValue = tempValue.HasValue ? tempValue.Value : (object)null;
 			}
 			else if (type == typeof(Version))
 			{
+				finalValue = value.ToVersion();
 			}
 			else
 			{
@@ -243,8 +282,10 @@ namespace RI.Framework.Services.Settings
 			{
 				throw new FormatException();
 			}
-			
+
 			return finalValue;
 		}
+
+		#endregion
 	}
 }

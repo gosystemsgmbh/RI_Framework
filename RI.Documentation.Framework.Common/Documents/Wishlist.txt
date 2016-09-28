@@ -111,20 +111,20 @@ Services
  - (Common) Resources (ResourceService, DirectoryResourceSource, ResourceConverter)
  - (WPF) Resources (WpfResourceTarget, WpfResourceConverter)
 
- - (Unity) Settings (PlayerPrefsSettingStorage)
- - (Unity) Resources (UnityResourceTarget, UnityResourceConverter)
-
- - (WinForms) Modularization (WinFormsModule)
- - (WinForms) Regions (WinFormsRegionAdapter)
- - (WinForms) Resources (WinFormsResourceTarget, WinFormsResourceConverter)
-
  - (.NET) Backup (BackupService, DirectoryBackupStorage)
  - (.NET) Licensing (LicensingService, FileLicenseStorage)
+
+ - (Unity) Settings (PlayerPrefsSettingStorage)
+ - (Unity) Resources (UnityResourceTarget, UnityResourceConverter)
 
  - (Unity) Packaging
  - (Unity) Input
  - (Unity) Audio
  - (Unity) User interface
+
+ - (WinForms) Modularization (WinFormsModule)
+ - (WinForms) Regions (WinFormsRegionAdapter)
+ - (WinForms) Resources (WinFormsResourceTarget, WinFormsResourceConverter)
 
 
 Math

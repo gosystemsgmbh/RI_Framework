@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using RI.Framework.Collections;
 using RI.Framework.Composition;
 using RI.Framework.Composition.Model;
@@ -18,10 +19,10 @@ namespace RI.Framework.Services.Settings
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         This setting service manages <see cref="ISettingStorage" />s  and <see cref="ISettingConverter"/>s from two sources.
-	///         One are the explicitly specified storages and converters added through <see cref="AddStorage" /> and <see cref="AddConverter"/>.
+	///         This setting service manages <see cref="ISettingStorage" />s  and <see cref="ISettingConverter" />s from two sources.
+	///         One are the explicitly specified storages and converters added through <see cref="AddStorage" /> and <see cref="AddConverter" />.
 	///         The second is a <see cref="CompositionContainer" /> if this <see cref="SettingService" /> is added as an export (the storages and converters are then imported through composition).
-	///         <see cref="Storages" /> gives the sequence containing all setting storages from all sources and <see cref="Converters"/> gives the sequence containing all setting converters from all sources.
+	///         <see cref="Storages" /> gives the sequence containing all setting storages from all sources and <see cref="Converters" /> gives the sequence containing all setting converters from all sources.
 	///     </para>
 	///     <note type="note">
 	///         Values are persisted for all available non-read-only setting storages.
@@ -34,7 +35,7 @@ namespace RI.Framework.Services.Settings
 		/// <summary>
 		///     Creates a new instance of <see cref="RegionService" />.
 		/// </summary>
-		public SettingService()
+		public SettingService ()
 		{
 			this.StoragesManual = new List<ISettingStorage>();
 			this.ConvertersManual = new List<ISettingConverter>();
@@ -48,17 +49,24 @@ namespace RI.Framework.Services.Settings
 
 		#region Instance Properties/Indexer
 
-		[ImportProperty(typeof(ISettingStorage), Recomposable = true)]
-		private Import StoragesImported { get; set; }
+		private Dictionary<string, string> Cache { get; set; }
 
-		[ImportProperty(typeof(ISettingConverter), Recomposable = true)]
+		[ImportProperty (typeof(ISettingConverter), Recomposable = true)]
 		private Import ConvertersImported { get; set; }
-
-		private List<ISettingStorage> StoragesManual { get; set; }
 
 		private List<ISettingConverter> ConvertersManual { get; set; }
 
-		private Dictionary<string, string> Cache { get; set; }
+		[ImportProperty (typeof(ISettingStorage), Recomposable = true)]
+		private Import StoragesImported { get; set; }
+
+		private List<ISettingStorage> StoragesManual { get; set; }
+
+		#endregion
+
+
+
+
+		#region Instance Methods
 
 		private ISettingConverter GetConverterForType (Type type)
 		{
@@ -73,19 +81,17 @@ namespace RI.Framework.Services.Settings
 			return null;
 		}
 
-		#endregion
-
-
-
-
-		#region Instance Methods
-
-		private void Log(string format, params object[] args)
+		private void Log (string format, params object[] args)
 		{
 			LogLocator.LogDebug(this.GetType().Name, format, args);
 		}
 
 		#endregion
+
+
+
+
+		#region Interface: ISettingService
 
 		/// <inheritdoc />
 		public IEnumerable<ISettingConverter> Converters
@@ -452,5 +458,7 @@ namespace RI.Framework.Services.Settings
 			string stringValue = value == null ? null : converter.ConvertFrom(type, value);
 			this.SetRawValue(name, stringValue);
 		}
+
+		#endregion
 	}
 }
