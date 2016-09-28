@@ -12,7 +12,7 @@ namespace RI.Framework.Services.Resources
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         A resource source is used by a <see cref="IResourceService" /> to locate and load <see cref="IResourceSet" />.
+	///         A resource source is used by a <see cref="IResourceService" /> to locate and load <see cref="IResourceSet" />s.
 	///     </para>
 	/// </remarks>
 	[Export]
@@ -40,7 +40,7 @@ namespace RI.Framework.Services.Resources
 		bool IsInitialized { get; }
 
 		/// <summary>
-		///     Initializes the resource source.
+		///     Initializes the resource source but does not load any resource sets.
 		/// </summary>
 		void Initialize ();
 

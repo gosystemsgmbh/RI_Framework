@@ -37,8 +37,8 @@ namespace RI.Framework.Services.Settings
 		/// <returns>
 		///     The string representation of the setting value as converted by this converter or null if <paramref name="value" /> is null.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"> <paramref name="type" /> is null. </exception>
-		/// <exception cref="InvalidTypeArgumentException"> The specified <paramref name="type" /> or the type of <paramref name="value" /> is not supported by this converter. </exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="type" /> or <paramref name="value" /> is null. </exception>
+		/// <exception cref="InvalidTypeArgumentException"> The specified <paramref name="type" /> or the type of <paramref name="value" /> is not supported by this converter or <paramref name="type"/> and <paramref name="value"/> do not match. </exception>
 		string ConvertFrom (Type type, object value);
 
 		/// <summary>
@@ -49,7 +49,7 @@ namespace RI.Framework.Services.Settings
 		/// <returns>
 		///     The setting value in the specified type as converted by this converter or null if <paramref name="value" /> is null..
 		/// </returns>
-		/// <exception cref="ArgumentNullException"> <paramref name="type" /> is null. </exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="type" /> or <paramref name="value" /> is null. </exception>
 		/// <exception cref="InvalidTypeArgumentException"> The specified <paramref name="type" /> is not supported by this converter. </exception>
 		/// <exception cref="FormatException"> The string representation of <paramref name="value" /> is invalid and cannot be converted to <paramref name="type" />. </exception>
 		object ConvertTo (Type type, string value);

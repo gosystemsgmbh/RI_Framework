@@ -23,14 +23,14 @@ namespace RI.Framework.Services.Settings
 	///         Names of settings are considered case-insensitive.
 	///     </para>
 	///     <note type="note">
-	///         A setting store can be either read-only or not (see <see cref="ISettingStorage.IsReadOnly" />).
-	///         If only one non-read-only setting store is available, that setting store is always used for persisting values.
-	///         If no non-read-only setting store is available, values are simply not persisted.
-	///         If two or more non-read-only setting stores are available, the behaviour is undefined.
+	///         A setting storage can be either read-only or not (see <see cref="ISettingStorage.IsReadOnly" />).
+	///         If only one non-read-only setting storage is available, that setting storage is always used for persisting values.
+	///         If no non-read-only setting storage is available, values are simply not persisted.
+	///         If two or more non-read-only setting storages are available, the behaviour is undefined.
 	///     </note>
 	///     <note type="note">
-	///         When retrieving values, values from non-read-only setting stores have higher priority.
-	///         Otherwise, the order is undefined.
+	///         When retrieving values, values from non-read-only setting storages have higher priority if the have the same name.
+	///         Otherwise, the order is undefined for values with the same name.
 	///     </note>
 	/// </remarks>
 	[Export]

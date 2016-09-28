@@ -62,6 +62,8 @@
     <Compile Include="Services\Settings\ISettingConverter.cs" />
     <Compile Include="Services\Settings\ISettingService.cs" />
     <Compile Include="Services\Settings\ISettingStorage.cs" />
+    <Compile Include="Services\Settings\SettingConverter.cs" />
+    <Compile Include="Services\Settings\SettingService.cs" />
     <Compile Include="Services\Settings\_NamespaceDoc.cs" />
   </ItemGroup>
   <ItemGroup>
