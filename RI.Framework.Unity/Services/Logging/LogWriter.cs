@@ -30,9 +30,9 @@ namespace RI.Framework.Services.Logging
 		{
 			StringBuilder finalMessageBuilder = new StringBuilder();
 			finalMessageBuilder.Append("[");
-			finalMessageBuilder.Append(source);
+			finalMessageBuilder.Append(source ?? "null");
 			finalMessageBuilder.Append("] ");
-			finalMessageBuilder.Append(message);
+			finalMessageBuilder.Append(message ?? string.Empty);
 			string finalMessage = finalMessageBuilder.ToString();
 
 			switch (severity)

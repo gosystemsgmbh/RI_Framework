@@ -52,6 +52,8 @@ namespace RI.Framework.Services.Dispatcher
 		/// <returns>
 		///     true if the operation could be rescheduled, false if the operation has already finished or could not be rescheduled anymore.
 		/// </returns>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="millisecondsFromNow" /> is less than zero. </exception>
+		/// TODO: Add overload with TimeSpan
 		bool Reschedule (int millisecondsFromNow);
 
 		/// <summary>

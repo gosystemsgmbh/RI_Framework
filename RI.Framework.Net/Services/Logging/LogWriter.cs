@@ -30,6 +30,9 @@ namespace RI.Framework.Services.Logging
 		/// <inheritdoc />
 		public void Log (DateTime timestamp, int threadId, LogLevel severity, string source, string message)
 		{
+			source = source ?? "null";
+			message = message ?? string.Empty;
+
 			StringBuilder finalMessageBuilder = new StringBuilder();
 			finalMessageBuilder.Append("[");
 			finalMessageBuilder.Append(timestamp.ToSortableString());

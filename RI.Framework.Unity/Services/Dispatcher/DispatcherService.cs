@@ -125,7 +125,7 @@ namespace RI.Framework.Services.Dispatcher
 
 			for (int i1 = (int)DispatcherPriority.Highest; i1 <= (int)DispatcherPriority.Lowest; i1++)
 			{
-				if (( ( (DispatcherPriority)i1 ) >= DispatcherPriority.Idle ) && ( this.FramesWithoutOperations < 1 ))
+				if ((((DispatcherPriority)i1) >= DispatcherPriority.Idle) && (this.FramesWithoutOperations < 1))
 				{
 					break;
 				}
@@ -181,14 +181,14 @@ namespace RI.Framework.Services.Dispatcher
 				return false;
 			}
 
-			operation.TickTrigger = this.NowTicks + ( millisecondsFromNow * 10000L );
+			operation.TickTrigger = this.NowTicks + (millisecondsFromNow*10000L);
 
 			return true;
 		}
 
 		private bool Reschedule (DispatcherOperation operation, DateTime timestamp)
 		{
-			return this.Reschedule(operation, Math.Max((int)( ( timestamp.ToUniversalTime().Ticks - this.NowTicks ) / 10000 ), 0));
+			return this.Reschedule(operation, Math.Max((int)((timestamp.ToUniversalTime().Ticks - this.NowTicks)/10000), 0));
 		}
 
 		#endregion
@@ -460,8 +460,6 @@ namespace RI.Framework.Services.Dispatcher
 		}
 
 
-
-
 		private sealed class DispatcherAction <T> : DispatcherBroadcast
 		{
 			#region Instance Fields
@@ -484,8 +482,6 @@ namespace RI.Framework.Services.Dispatcher
 
 			#endregion
 		}
-
-
 
 
 		private sealed class DispatcherAction <T1, T2> : DispatcherBroadcast
@@ -514,8 +510,6 @@ namespace RI.Framework.Services.Dispatcher
 		}
 
 
-
-
 		private sealed class DispatcherAction <T1, T2, T3> : DispatcherBroadcast
 		{
 			#region Instance Fields
@@ -542,8 +536,6 @@ namespace RI.Framework.Services.Dispatcher
 
 			#endregion
 		}
-
-
 
 
 		private sealed class DispatcherAction <T1, T2, T3, T4> : DispatcherBroadcast
@@ -629,8 +621,6 @@ namespace RI.Framework.Services.Dispatcher
 		}
 
 
-
-
 		private sealed class DispatcherFunc <T, TResult> : DispatcherBroadcast
 		{
 			#region Instance Fields
@@ -653,8 +643,6 @@ namespace RI.Framework.Services.Dispatcher
 
 			#endregion
 		}
-
-
 
 
 		private sealed class DispatcherFunc <T1, T2, TResult> : DispatcherBroadcast
@@ -683,8 +671,6 @@ namespace RI.Framework.Services.Dispatcher
 		}
 
 
-
-
 		private sealed class DispatcherFunc <T1, T2, T3, TResult> : DispatcherBroadcast
 		{
 			#region Instance Fields
@@ -711,8 +697,6 @@ namespace RI.Framework.Services.Dispatcher
 
 			#endregion
 		}
-
-
 
 
 		private sealed class DispatcherFunc <T1, T2, T3, T4, TResult> : DispatcherBroadcast
@@ -833,6 +817,10 @@ namespace RI.Framework.Services.Dispatcher
 
 			bool IDispatcherOperation.Reschedule (int millisecondsFromNow)
 			{
+				if (millisecondsFromNow < 0)
+				{
+					throw new ArgumentOutOfRangeException(nameof(millisecondsFromNow));
+				}
 				return this.Dispatcher.Reschedule(this, millisecondsFromNow);
 			}
 
@@ -852,14 +840,12 @@ namespace RI.Framework.Services.Dispatcher
 		#region Type: DispatcherSlots
 
 		private static class DispatcherSlots <T>
-				where T : class
+			where T : class
 		{
 			#region Constants
 
 			private static List<Action<T>> Receivers;
-
 			private static Action<T>[] ReceiversSafe;
-
 			public static readonly Action<object> Invoker = DispatcherSlots<T>.Invoke;
 
 			#endregion

@@ -112,7 +112,7 @@ namespace RI.Framework.Services.Logging
 		{
 			DateTime timestamp = DateTime.Now;
 			int threadId = Thread.CurrentThread.ManagedThreadId;
-			string message = string.Format(CultureInfo.InvariantCulture, format, args);
+			string message = string.Format(CultureInfo.InvariantCulture, format ?? string.Empty, args ?? new object[0]);
 
 			foreach (ILogWriter logWriter in this.Writers)
 			{
@@ -123,7 +123,7 @@ namespace RI.Framework.Services.Logging
 		/// <inheritdoc />
 		public void Log (DateTime timestamp, int threadId, LogLevel severity, string source, string format, params object[] args)
 		{
-			string message = string.Format(CultureInfo.InvariantCulture, format, args);
+			string message = string.Format(CultureInfo.InvariantCulture, format ?? string.Empty, args ?? new object[0]);
 
 			foreach (ILogWriter logWriter in this.Writers)
 			{

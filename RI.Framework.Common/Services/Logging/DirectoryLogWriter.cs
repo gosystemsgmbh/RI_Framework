@@ -272,6 +272,7 @@ namespace RI.Framework.Services.Logging
 				{
 					try
 					{
+						message = message ?? string.Empty;
 						int newLineIndex = message.IndexOf('\n');
 						string firstLine = newLineIndex == -1 ? message.Trim() : message.Substring(0, newLineIndex).Trim();
 						string[] subsequentLines = newLineIndex == -1 ? null : message.Substring(newLineIndex + 1).Trim().SplitLines(StringSplitOptions.None);
@@ -279,11 +280,11 @@ namespace RI.Framework.Services.Logging
 						string[] headers = new string[6];
 
 						headers[0] = "#".PadRight(this.CurrentLengths[0], ' ');
-						headers[1] = ( " [" + timestamp.ToSortableString('-') + "]" ).PadRight(this.CurrentLengths[1], ' ');
-						headers[2] = ( " [" + threadId.ToString("D", CultureInfo.InvariantCulture) + "]" ).PadRight(this.CurrentLengths[2], ' ');
-						headers[3] = ( " [" + severity + "]" ).PadRight(this.CurrentLengths[3], ' ');
-						headers[4] = ( " [" + source + "]" ).PadRight(this.CurrentLengths[4], ' ');
-						headers[5] = ( " " ).PadRight(this.CurrentLengths[5], ' ');
+						headers[1] = (" [" + timestamp.ToSortableString('-') + "]").PadRight(this.CurrentLengths[1], ' ');
+						headers[2] = (" [" + threadId.ToString("D", CultureInfo.InvariantCulture) + "]").PadRight(this.CurrentLengths[2], ' ');
+						headers[3] = (" [" + severity + "]").PadRight(this.CurrentLengths[3], ' ');
+						headers[4] = (" [" + (source ?? "null") + "]").PadRight(this.CurrentLengths[4], ' ');
+						headers[5] = (" ").PadRight(this.CurrentLengths[5], ' ');
 
 						int headerLength = 0;
 
