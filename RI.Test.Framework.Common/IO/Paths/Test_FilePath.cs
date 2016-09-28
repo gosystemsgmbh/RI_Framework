@@ -161,37 +161,37 @@ namespace RI.Test.Framework.IO.Paths
 			// Operator
 			//---------
 
-			if (!( new FilePath("test.tmp") >= new FilePath("test.tmp") ))
+			if (!(new FilePath("test.tmp") >= new FilePath("test.tmp")))
 			{
 				throw new TestAssertionException();
 			}
 
-			if (!( new FilePath("test.tmp") <= new FilePath("test.tmp") ))
+			if (!(new FilePath("test.tmp") <= new FilePath("test.tmp")))
 			{
 				throw new TestAssertionException();
 			}
 
-			if (!( new FilePath("test1234.tmp") >= new FilePath("test.tmp") ))
+			if (!(new FilePath("test1234.tmp") >= new FilePath("test.tmp")))
 			{
 				throw new TestAssertionException();
 			}
 
-			if (!( new FilePath("test.tmp") <= new FilePath("test1234.tmp") ))
+			if (!(new FilePath("test.tmp") <= new FilePath("test1234.tmp")))
 			{
 				throw new TestAssertionException();
 			}
 
-			if (!( new FilePath("test1234.tmp") > new FilePath("test.tmp") ))
+			if (!(new FilePath("test1234.tmp") > new FilePath("test.tmp")))
 			{
 				throw new TestAssertionException();
 			}
 
-			if (!( new FilePath("test.tmp") < new FilePath("test1234.tmp") ))
+			if (!(new FilePath("test.tmp") < new FilePath("test1234.tmp")))
 			{
 				throw new TestAssertionException();
 			}
 
-			if (!( new FilePath("test1234.tmp") >= null ))
+			if (!(new FilePath("test1234.tmp") >= null))
 			{
 				throw new TestAssertionException();
 			}
@@ -201,7 +201,7 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			if (!( new FilePath("test1234.tmp") > null ))
+			if (!(new FilePath("test1234.tmp") > null))
 			{
 				throw new TestAssertionException();
 			}
@@ -310,7 +310,7 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			if (!( new FilePath("test.tmp") == (FilePath)"test.tmp" ))
+			if (!(new FilePath("test.tmp") == (FilePath)"test.tmp"))
 			{
 				throw new TestAssertionException();
 			}
@@ -320,7 +320,7 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			if (!( new FilePath("test.tmp") != (FilePath)"test.dat" ))
+			if (!(new FilePath("test.tmp") != (FilePath)"test.dat"))
 			{
 				throw new TestAssertionException();
 			}
@@ -330,7 +330,7 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			if (!( new FilePath("test.tmp") != (FilePath)(string)null ))
+			if (!(new FilePath("test.tmp") != (FilePath)(string)null))
 			{
 				throw new TestAssertionException();
 			}
@@ -449,7 +449,7 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			if (( (string)( (FilePath)null ) ) != null)
+			if (((string)((FilePath)null)) != null)
 			{
 				throw new TestAssertionException();
 			}
@@ -573,17 +573,27 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			if (!test.Create())
+			if (!test.CreateNew())
 			{
 				throw new TestAssertionException();
 			}
 
-			if (test.Create())
+			if (test.CreateNew())
 			{
 				throw new TestAssertionException();
 			}
 
 			if (!test.Delete())
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!test.CreateIfNotExist())
+			{
+				throw new TestAssertionException();
+			}
+
+			if (test.CreateIfNotExist())
 			{
 				throw new TestAssertionException();
 			}
@@ -677,7 +687,7 @@ namespace RI.Test.Framework.IO.Paths
 
 			try
 			{
-				test.Create();
+				test.CreateNew();
 			}
 			catch (InvalidOperationException)
 			{

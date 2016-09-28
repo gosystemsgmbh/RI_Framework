@@ -278,7 +278,7 @@ namespace RI.Framework.IO.Paths
 
 			try
 			{
-				return this.Directory.AppendFile(new FilePath(extension == null ? this.FileNameWithoutExtension : ( this.FileNameWithoutExtension + PathProperties.FileExtensionSeparator + extension ), this.PathInternal.AllowWildcards, this.PathInternal.AllowRelatives, this.Type));
+				return this.Directory.AppendFile(new FilePath(extension == null ? this.FileNameWithoutExtension : (this.FileNameWithoutExtension + PathProperties.FileExtensionSeparator + extension), this.PathInternal.AllowWildcards, this.PathInternal.AllowRelatives, this.Type));
 			}
 			catch (InvalidPathArgumentException exception)
 			{
@@ -337,12 +337,35 @@ namespace RI.Framework.IO.Paths
 		{
 			try
 			{
-				return this.Directory.AppendFile(new FilePath(fileNameWithoutExtension == null ? this.ExtensionWithoutDot : ( fileNameWithoutExtension + PathProperties.FileExtensionSeparator + this.ExtensionWithoutDot ), this.PathInternal.AllowWildcards, this.PathInternal.AllowRelatives, this.Type));
+				return this.Directory.AppendFile(new FilePath(fileNameWithoutExtension == null ? this.ExtensionWithoutDot : (fileNameWithoutExtension + PathProperties.FileExtensionSeparator + this.ExtensionWithoutDot), this.PathInternal.AllowWildcards, this.PathInternal.AllowRelatives, this.Type));
 			}
 			catch (InvalidPathArgumentException exception)
 			{
 				throw new InvalidPathArgumentException(nameof(fileNameWithoutExtension), exception.Message);
 			}
+		}
+
+		/// <summary>
+		///     Creates the file if it does not exist with a new file of zero length or keeps an already existing file.
+		/// </summary>
+		/// <returns>
+		///     true if the file was newly created, false if the file already existed.
+		/// </returns>
+		/// <exception cref="InvalidOperationException"> The file contains wildcards. </exception>
+		/// <exception cref="IOException"> The file is in use. </exception>
+		/// <exception cref="UnauthorizedAccessException"> The user does not have the required permissions, the file is read-only, or the file is an executable which is in use. </exception>
+		/// <exception cref="PathTooLongException"> Although being a valid file path, the file path is too long for the current system to be used. </exception>
+		/// <exception cref="DirectoryNotFoundException"> The files directory does not exist or is not available. </exception>
+		/// <exception cref="NotSupportedException"> The file is not of a compatible path type used on the current system. </exception>
+		public bool CreateIfNotExist ()
+		{
+			this.VerifyRealFile();
+			if (this.Exists)
+			{
+				return false;
+			}
+			this.CreateNew();
+			return true;
 		}
 
 		/// <summary>
@@ -357,7 +380,7 @@ namespace RI.Framework.IO.Paths
 		/// <exception cref="PathTooLongException"> Although being a valid file path, the file path is too long for the current system to be used. </exception>
 		/// <exception cref="DirectoryNotFoundException"> The files directory does not exist or is not available. </exception>
 		/// <exception cref="NotSupportedException"> The file is not of a compatible path type used on the current system. </exception>
-		public bool Create ()
+		public bool CreateNew ()
 		{
 			this.VerifyRealFile();
 			bool result = !this.Exists;

@@ -275,7 +275,7 @@ namespace RI.Framework.IO.INI
 			int insertIndex = this.GetInsertIndex(sectionName, ref mergeSections);
 
 			List<IniElement> elements = new List<IniElement>();
-			if (( sectionName != null ) && ( !mergeSections ))
+			if ((sectionName != null) && (!mergeSections))
 			{
 				elements.Add(new SectionIniElement(sectionName));
 			}
@@ -342,7 +342,7 @@ namespace RI.Framework.IO.INI
 			int insertIndex = this.GetInsertIndex(sectionName, ref mergeSections);
 
 			List<IniElement> elements = new List<IniElement>();
-			if (( sectionName != null ) && ( !mergeSections ))
+			if ((sectionName != null) && (!mergeSections))
 			{
 				elements.Add(new SectionIniElement(sectionName));
 			}
@@ -570,7 +570,7 @@ namespace RI.Framework.IO.INI
 			}
 
 			List<Dictionary<string, string>> sections = this.GetSections(sectionName);
-			return sections == null ? null : ( sections.Count == 0 ? new Dictionary<string, string>(this.ValueNameComparer) : sections[0] );
+			return sections == null ? null : (sections.Count == 0 ? new Dictionary<string, string>(this.ValueNameComparer) : sections[0]);
 		}
 
 		/// <summary>
@@ -605,7 +605,7 @@ namespace RI.Framework.IO.INI
 			}
 
 			List<Dictionary<string, List<string>>> sections = this.GetSectionsAll(sectionName);
-			return sections == null ? null : ( sections.Count == 0 ? new Dictionary<string, List<string>>(this.ValueNameComparer) : sections[0] );
+			return sections == null ? null : (sections.Count == 0 ? new Dictionary<string, List<string>>(this.ValueNameComparer) : sections[0]);
 		}
 
 		/// <summary>
@@ -762,7 +762,7 @@ namespace RI.Framework.IO.INI
 
 			foreach (Dictionary<string, List<string>> section in result)
 			{
-				section.RemoveWhere(x => ( x.Value == null ) || ( x.Value.Count == 0 ));
+				section.RemoveWhere(x => (x.Value == null) || (x.Value.Count == 0));
 			}
 			result.RemoveWhere(x => x.Count == 0);
 
@@ -1096,7 +1096,7 @@ namespace RI.Framework.IO.INI
 			{
 				int count = sections[i1].Value.Count(x =>
 				                                     {
-					                                     if (( x is SectionIniElement ) || ( x is ValueIniElement ))
+					                                     if ((x is SectionIniElement) || (x is ValueIniElement))
 					                                     {
 						                                     return true;
 					                                     }
@@ -1346,7 +1346,7 @@ namespace RI.Framework.IO.INI
 					bool wasMatchingSection = isMatchingSection;
 					SectionIniElement sectionElement = (SectionIniElement)element;
 					isMatchingSection = this.SectionNameComparer.Equals(sectionElement.SectionName, section);
-					if (wasMatchingSection && ( !isMatchingSection ) && ( insertIndex == -1 ))
+					if (wasMatchingSection && (!isMatchingSection) && (insertIndex == -1))
 					{
 						insertIndex = i1;
 					}
@@ -1451,6 +1451,7 @@ namespace RI.Framework.IO.INI
 		///         Sorting of INI elements in a section does only work reliable if a section only contains <see cref="ValueIniElement" />s.
 		///     </note>
 		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="comparer" /> is null. </exception>
 		public void SortElements (IComparer<string> comparer)
 		{
 			if (comparer == null)
@@ -1458,20 +1459,14 @@ namespace RI.Framework.IO.INI
 				throw new ArgumentNullException(nameof(comparer));
 			}
 
-			this.SortElements(new OrderComparison<IniElement>((x, y) =>
-			                                                  {
-				                                                  if (( !( x is ValueIniElement ) ) || ( !( y is ValueIniElement ) ))
-				                                                  {
-					                                                  return 0;
-				                                                  }
-				                                                  return comparer.Compare(( (ValueIniElement)x ).Name, ( (ValueIniElement)y ).Name);
-			                                                  }));
+			this.SortElements(this.CreateElementOrderComparer(comparer));
 		}
 
 		/// <summary>
 		///     Sorts the INI elements in all sections.
 		/// </summary>
 		/// <param name="comparer"> The comparer used to compare INI elements. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="comparer" /> is null. </exception>
 		public void SortElements (IComparer<IniElement> comparer)
 		{
 			if (comparer == null)
@@ -1479,25 +1474,86 @@ namespace RI.Framework.IO.INI
 				throw new ArgumentNullException(nameof(comparer));
 			}
 
-			List<KeyValuePair<string, List<IniElement>>> sections = null;
-			this.DecomposeSections(out sections);
+			this.SortElementsInternal(null, comparer, true);
+		}
 
-			if (sections.Count == 0)
+		/// <summary>
+		///     Sorts the INI elements in a specified section based on their names.
+		/// </summary>
+		/// <param name="section"> The name of the section (can be null). </param>
+		/// <remarks>
+		///     <para>
+		///         <see cref="StringComparer.InvariantCultureIgnoreCase" /> is used for comparison.
+		///     </para>
+		///     <para>
+		///         All elements in all sections matching the specified section name are sorted.
+		///         If <paramref name="section" /> is null, the elements outside any sections are sorted.
+		///     </para>
+		///     <note type="important">
+		///         Sorting of INI elements in a section does only work reliable if a section only contains <see cref="ValueIniElement" />s.
+		///     </note>
+		/// </remarks>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="section" /> is an empty string. </exception>
+		public void SortElements (string section)
+		{
+			this.SortElements(section, StringComparer.InvariantCultureIgnoreCase);
+		}
+
+		/// <summary>
+		///     Sorts the INI elements in a specified section based on their names.
+		/// </summary>
+		/// <param name="section"> The name of the section (can be null). </param>
+		/// <param name="comparer"> The comparer used to compare the names of name-value-pairs. </param>
+		/// <remarks>
+		///     <para>
+		///         All elements in all sections matching the specified section name are sorted.
+		///         If <paramref name="section" /> is null, the elements outside any sections are sorted.
+		///     </para>
+		///     <note type="important">
+		///         Sorting of INI elements in a section does only work reliable if a section only contains <see cref="ValueIniElement" />s.
+		///     </note>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="comparer" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="section" /> is an empty string. </exception>
+		public void SortElements (string section, IComparer<string> comparer)
+		{
+			if (comparer == null)
 			{
-				return;
+				throw new ArgumentNullException(nameof(comparer));
 			}
 
-			foreach (KeyValuePair<string, List<IniElement>> section in sections)
+			this.SortElements(section, this.CreateElementOrderComparer(comparer));
+		}
+
+		/// <summary>
+		///     Sorts the INI elements in a specified section.
+		/// </summary>
+		/// <param name="section"> The name of the section (can be null). </param>
+		/// <param name="comparer"> The comparer used to compare INI elements. </param>
+		/// <remarks>
+		///     <para>
+		///         All elements in all sections matching the specified section name are sorted.
+		///         If <paramref name="section" /> is null, the elements outside any sections are sorted.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="comparer" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="section" /> is an empty string. </exception>
+		public void SortElements (string section, IComparer<IniElement> comparer)
+		{
+			if (section != null)
 			{
-				int startIndex = section.Key == null ? 0 : 1;
-				section.Value.Sort(startIndex, section.Value.Count - startIndex, comparer);
+				if (section.IsEmpty())
+				{
+					throw new EmptyStringArgumentException(nameof(section));
+				}
 			}
 
-			this.Elements.Clear();
-			foreach (KeyValuePair<string, List<IniElement>> section in sections)
+			if (comparer == null)
 			{
-				this.Elements.AddRange(section.Value);
+				throw new ArgumentNullException(nameof(comparer));
 			}
+
+			this.SortElementsInternal(section, comparer, false);
 		}
 
 		/// <summary>
@@ -1542,6 +1598,18 @@ namespace RI.Framework.IO.INI
 			{
 				this.Elements.AddRange(section.Value);
 			}
+		}
+
+		private IComparer<IniElement> CreateElementOrderComparer (IComparer<string> comparer)
+		{
+			return new OrderComparison<IniElement>((x, y) =>
+			                                       {
+				                                       if ((!(x is ValueIniElement)) || (!(y is ValueIniElement)))
+				                                       {
+					                                       return 0;
+				                                       }
+				                                       return comparer.Compare(((ValueIniElement)x).Name, ((ValueIniElement)y).Name);
+			                                       });
 		}
 
 		private void DecomposeSections (out List<KeyValuePair<string, List<IniElement>>> sections)
@@ -1607,6 +1675,32 @@ namespace RI.Framework.IO.INI
 			}
 
 			return lastMatchingIndex;
+		}
+
+		private void SortElementsInternal (string section, IComparer<IniElement> comparer, bool allSections)
+		{
+			List<KeyValuePair<string, List<IniElement>>> sections = null;
+			this.DecomposeSections(out sections);
+
+			if (sections.Count == 0)
+			{
+				return;
+			}
+
+			foreach (KeyValuePair<string, List<IniElement>> currentSection in sections)
+			{
+				if (allSections || this.SectionNameComparer.Equals(currentSection.Key, section))
+				{
+					int startIndex = currentSection.Key == null ? 0 : 1;
+					currentSection.Value.Sort(startIndex, currentSection.Value.Count - startIndex, comparer);
+				}
+			}
+
+			this.Elements.Clear();
+			foreach (KeyValuePair<string, List<IniElement>> currentSection in sections)
+			{
+				this.Elements.AddRange(currentSection.Value);
+			}
 		}
 
 		#endregion
