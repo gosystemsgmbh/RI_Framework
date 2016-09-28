@@ -58,7 +58,7 @@ namespace RI.Framework.Services.Settings
 		/// <summary>
 		///     Writes, if necessary and applicable, all values to the storage, making them persistent.
 		/// </summary>
-		/// <exception cref="InvalidOperationException"> The setting stoarge is read-only. </exception>
+		/// <exception cref="NotSupportedException"> The setting stoarge is read-only. </exception>
 		void Save ();
 
 		/// <summary>
@@ -68,7 +68,7 @@ namespace RI.Framework.Services.Settings
 		/// <param name="value"> The actual value or null to delete the value. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="name" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
-		/// <exception cref="InvalidOperationException"> The setting stoarge is read-only. </exception>
+		/// <exception cref="NotSupportedException"> The setting stoarge is read-only. </exception>
 		void SetValue (string name, string value);
 	}
 }

@@ -39,6 +39,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Dynamic" />
@@ -59,6 +60,7 @@
     <Compile Include="Services\Resources\IResourceSet.cs" />
     <Compile Include="Services\Resources\IResourceSource.cs" />
     <Compile Include="Services\Resources\_NamespaceDoc.cs" />
+    <Compile Include="Services\Settings\AppConfigSettingStorage.cs" />
     <Compile Include="Services\Settings\IniFileSettingStorage.cs" />
     <Compile Include="Services\Settings\ISettingConverter.cs" />
     <Compile Include="Services\Settings\ISettingService.cs" />

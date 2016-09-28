@@ -105,9 +105,6 @@ Services
  + (Unity) Dispatcher: Cancel all operations
  + (Unity) Dispatcher: Process (process item in background thread, then broadcast processed item)
 
- - (Common) Settings (SettingService, FileSettingStorage, SettingConverter)
- - (.NET) Settings (AppConfigSettingStorage)
-
  - (Common) Resources (ResourceService, DirectoryResourceSource, ResourceConverter)
  - (WPF) Resources (WpfResourceTarget, WpfResourceConverter)
 
