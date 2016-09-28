@@ -186,7 +186,9 @@ namespace RI.Framework.Services.Settings
 		/// <inheritdoc />
 		public void Load ()
 		{
+			this.FilePath.Directory.Create();
 			this.FilePath.CreateIfNotExist();
+
 			this.Document.Clear();
 			this.Document.Load(this.FilePath, this.FileEncoding);
 		}
@@ -194,6 +196,8 @@ namespace RI.Framework.Services.Settings
 		/// <inheritdoc />
 		public void Save ()
 		{
+			this.FilePath.Directory.Create();
+
 			this.Document.SortElements(this.SectionName);
 			this.Document.Save(this.FilePath, this.FileEncoding);
 		}
