@@ -427,11 +427,13 @@ namespace RI.Framework.Services
 		/// <remarks>
 		///     <note type="implement">
 		///         The default implementation adds the application object (<see cref="Application" />) to the used composition container as an export using a <see cref="InstanceCatalog" />.
+		///         It also setts the WPF applications object <see cref="System.Windows.Application.ShutdownMode" /> property to <see cref="ShutdownMode.OnExplicitShutdown" />.
 		///     </note>
 		/// </remarks>
 		protected virtual void ConfigureApplication ()
 		{
 			this.Container.AddCatalog(new InstanceCatalog(this.Application));
+			this.Application.ShutdownMode = ShutdownMode.OnExplicitShutdown;
 		}
 
 		/// <summary>
