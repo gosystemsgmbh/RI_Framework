@@ -100,6 +100,8 @@ Composition
 Services
 --------
 
+ + (Common) Logging: FileLogWriter
+
  + (Unity) Dispatcher: Pool for dispatcher operations?
  + (Unity) Dispatcher: Timeout for operations
  + (Unity) Dispatcher: Cancel all operations

@@ -8,14 +8,14 @@ using RI.Framework.Utilities.Exceptions;
 
 
 
-namespace RI.Framework.Services.Settings
+namespace RI.Framework.Services.Settings.Storages
 {
 	/// <summary>
 	///     Implements a setting storage which reads from the applications default app.config file.
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         THis setting store is read-only.
+	///         This setting store is read-only.
 	///     </para>
 	///     <para>
 	///         This setting store internally uses <see cref="ConfigurationManager" />.<see cref="ConfigurationManager.AppSettings" /> to read the applications default configuration, which is usually the app.config file.

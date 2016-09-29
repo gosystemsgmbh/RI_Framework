@@ -11,7 +11,7 @@ using RI.Framework.Utilities.Exceptions;
 
 
 
-namespace RI.Framework.Services.Logging
+namespace RI.Framework.Services.Logging.Writers
 {
 	/// <summary>
 	///     Implements a log writer which writes text log files into a specified directory.
@@ -259,6 +259,7 @@ namespace RI.Framework.Services.Logging
 				LogLocator.LogDebug(this.GetType().Name, "Cleaning up old log directory: {0}", directory);
 
 				throw new NotImplementedException("TEST THIS FIRST !!!");
+				//TODO: Test this
 				//Directory.Delete(directory, true);
 			}
 		}

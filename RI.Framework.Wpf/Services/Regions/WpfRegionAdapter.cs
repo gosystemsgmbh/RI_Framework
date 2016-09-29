@@ -23,25 +23,9 @@ namespace RI.Framework.Services.Regions
 	///     </para>
 	/// </remarks>
 	[Export]
-	public sealed class WpfRegionAdapter : RegionAdapterBase
+	public sealed class WpfRegionAdapter : WpfRegionAdapterBase
 	{
 		#region Overrides
-
-		/// <inheritdoc />
-		public override void Activate (object container, object element)
-		{
-			base.Activate(container, element);
-
-			if (element is FrameworkElement)
-			{
-				FrameworkElement frameworkElement = (FrameworkElement)element;
-				if (frameworkElement.DataContext is IRegionElement)
-				{
-					IRegionElement regionElement = (IRegionElement)frameworkElement.DataContext;
-					regionElement.Activated();
-				}
-			}
-		}
 
 		/// <inheritdoc />
 		public override void Add (object container, object element)
@@ -84,22 +68,6 @@ namespace RI.Framework.Services.Regions
 			{
 				Panel panel = (Panel)container;
 				panel.Children.Clear();
-			}
-		}
-
-		/// <inheritdoc />
-		public override void Deactivate (object container, object element)
-		{
-			base.Deactivate(container, element);
-
-			if (element is FrameworkElement)
-			{
-				FrameworkElement frameworkElement = (FrameworkElement)element;
-				if (frameworkElement.DataContext is IRegionElement)
-				{
-					IRegionElement regionElement = (IRegionElement)frameworkElement.DataContext;
-					regionElement.Deactivated();
-				}
 			}
 		}
 

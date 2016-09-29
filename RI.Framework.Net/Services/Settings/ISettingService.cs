@@ -24,12 +24,10 @@ namespace RI.Framework.Services.Settings
 	///     </para>
 	///     <note type="note">
 	///         A setting storage can be either read-only or not (see <see cref="ISettingStorage.IsReadOnly" />).
-	///         If only one non-read-only setting storage is available, that setting storage is always used for persisting values.
-	///         If no non-read-only setting storage is available, values are simply not persisted.
-	///         If two or more non-read-only setting storages are available, the behaviour is undefined.
+	///         Values are persisted with all available non-read-only setting storages and therefore are saved multiple times if multiple non-read-only setting storages are available.
 	///     </note>
 	///     <note type="note">
-	///         When retrieving values, values from non-read-only setting storages have higher priority if the have the same name.
+	///         When retrieving values, values from read-only setting storages have higher priority if they have the same name.
 	///         Otherwise, the order is undefined for values with the same name.
 	///     </note>
 	/// </remarks>

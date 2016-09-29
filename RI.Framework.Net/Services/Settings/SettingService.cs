@@ -24,9 +24,6 @@ namespace RI.Framework.Services.Settings
 	///         The second is a <see cref="CompositionContainer" /> if this <see cref="SettingService" /> is added as an export (the storages and converters are then imported through composition).
 	///         <see cref="Storages" /> gives the sequence containing all setting storages from all sources and <see cref="Converters" /> gives the sequence containing all setting converters from all sources.
 	///     </para>
-	///     <note type="note">
-	///         Values are persisted for all available non-read-only setting storages.
-	///     </note>
 	/// </remarks>
 	public sealed class SettingService : ISettingService
 	{
@@ -199,7 +196,7 @@ namespace RI.Framework.Services.Settings
 
 			foreach (ISettingStorage store in this.Storages)
 			{
-				if (store.IsReadOnly)
+				if (!store.IsReadOnly)
 				{
 					continue;
 				}
@@ -213,7 +210,7 @@ namespace RI.Framework.Services.Settings
 
 			foreach (ISettingStorage store in this.Storages)
 			{
-				if (!store.IsReadOnly)
+				if (store.IsReadOnly)
 				{
 					continue;
 				}
@@ -344,6 +341,8 @@ namespace RI.Framework.Services.Settings
 		/// <inheritdoc />
 		public void Load ()
 		{
+			this.Log("Loading");
+
 			this.Cache.Clear();
 
 			foreach (ISettingStorage store in this.Storages)
@@ -391,6 +390,8 @@ namespace RI.Framework.Services.Settings
 		/// <inheritdoc />
 		public void Save ()
 		{
+			this.Log("Saving");
+
 			this.Cache.Clear();
 
 			foreach (ISettingStorage store in this.Storages)

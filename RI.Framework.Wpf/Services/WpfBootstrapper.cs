@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
@@ -12,6 +13,7 @@ using RI.Framework.IO.Paths;
 using RI.Framework.Services.Logging;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Reflection;
+using RI.Framework.Utilities.Text;
 
 
 
@@ -64,6 +66,11 @@ namespace RI.Framework.Services
 	///         <item>
 	///             <para>
 	///                 <see cref="DetermineApplicationIdVersionDependent" /> is called and <see cref="ApplicationIdVersionDependent" /> is set.
+	///             </para>
+	///         </item>
+	///         <item>
+	///             <para>
+	///                 <see cref="DetermineProcessCommandLine" /> is called and <see cref="ProcessCommandLine" /> is set.
 	///             </para>
 	///         </item>
 	///         <item>
@@ -299,6 +306,14 @@ namespace RI.Framework.Services
 		///     The used composition container.
 		/// </value>
 		public CompositionContainer Container { get; private set; }
+
+		/// <summary>
+		///     Gets the command line which was used for the current process.
+		/// </summary>
+		/// <value>
+		///     The command line which was used for the current process.
+		/// </value>
+		public CommandLine ProcessCommandLine { get; private set; }
 
 		/// <summary>
 		///     Gets the GUID of the current session.
@@ -698,6 +713,22 @@ namespace RI.Framework.Services
 		}
 
 		/// <summary>
+		///     Called to determine the command line of the current process (<see cref="ProcessCommandLine" />).
+		/// </summary>
+		/// <returns>
+		///     The command line of the current process.
+		/// </returns>
+		/// <remarks>
+		///     <note type="implement">
+		///         The default implementation uses <see cref="RI.Framework.Utilities.Text.CommandLine.Parse(string,bool,IEqualityComparer{string})" /> with <see cref="Environment" />.<see cref="Environment.CommandLine" />.
+		///     </note>
+		/// </remarks>
+		protected virtual CommandLine DetermineProcessCommandLine ()
+		{
+			return CommandLine.Parse(Environment.CommandLine, true, StringComparer.InvariantCultureIgnoreCase);
+		}
+
+		/// <summary>
 		///     Called to determine the GUID of the current session (<see cref="SessionId" />).
 		/// </summary>
 		/// <returns>
@@ -811,6 +842,8 @@ namespace RI.Framework.Services
 			this.ApplicationVersion = this.DetermineApplicationVersion();
 			this.ApplicationIdVersionIndependent = this.DetermineApplicationIdVersionIndependent();
 			this.ApplicationIdVersionDependent = this.DetermineApplicationIdVersionDependent();
+
+			this.ProcessCommandLine = this.DetermineProcessCommandLine();
 
 			this.SessionTimestamp = this.DetermineSessionTimestamp();
 			this.SessionId = this.DetermineSessionId();

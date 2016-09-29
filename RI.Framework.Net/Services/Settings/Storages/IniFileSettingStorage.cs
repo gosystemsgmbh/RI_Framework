@@ -4,13 +4,14 @@ using System.Text;
 using RI.Framework.Composition.Model;
 using RI.Framework.IO.INI;
 using RI.Framework.IO.Paths;
+using RI.Framework.Services.Logging;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 
 
 
 
-namespace RI.Framework.Services.Settings
+namespace RI.Framework.Services.Settings.Storages
 {
 	/// <summary>
 	///     Implements a setting storage which reads/writes from/to a specified INI file.
@@ -146,6 +147,18 @@ namespace RI.Framework.Services.Settings
 
 
 
+		#region Instance Methods
+
+		private void Log (string format, params object[] args)
+		{
+			LogLocator.LogDebug(this.GetType().Name, format, args);
+		}
+
+		#endregion
+
+
+
+
 		#region Interface: ISettingStorage
 
 		/// <inheritdoc />
@@ -186,8 +199,15 @@ namespace RI.Framework.Services.Settings
 		/// <inheritdoc />
 		public void Load ()
 		{
+			if (!this.FilePath.Exists)
+			{
+				this.Log("Creating INI settings file: {0}", this.FilePath);
+			}
+
 			this.FilePath.Directory.Create();
 			this.FilePath.CreateIfNotExist();
+
+			this.Log("Loading INI settings file: {0}", this.FilePath);
 
 			this.Document.Clear();
 			this.Document.Load(this.FilePath, this.FileEncoding);
@@ -196,7 +216,14 @@ namespace RI.Framework.Services.Settings
 		/// <inheritdoc />
 		public void Save ()
 		{
+			if (!this.FilePath.Exists)
+			{
+				this.Log("Creating INI settings file: {0}", this.FilePath);
+			}
+
 			this.FilePath.Directory.Create();
+
+			this.Log("Saving INI settings file: {0}", this.FilePath);
 
 			this.Document.SortElements(this.SectionName);
 			this.Document.Save(this.FilePath, this.FileEncoding);

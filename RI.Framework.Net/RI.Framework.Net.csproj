@@ -62,13 +62,16 @@
     <Compile Include="Services\Resources\IResourceSet.cs" />
     <Compile Include="Services\Resources\IResourceSource.cs" />
     <Compile Include="Services\Resources\_NamespaceDoc.cs" />
-    <Compile Include="Services\Settings\AppConfigSettingStorage.cs" />
-    <Compile Include="Services\Settings\IniFileSettingStorage.cs" />
+    <Compile Include="Services\Settings\Storages\AppConfigSettingStorage.cs" />
+    <Compile Include="Services\Settings\Storages\CommandLineSettingStore.cs" />
+    <Compile Include="Services\Settings\Storages\EnvironmentVariableSettingStore.cs" />
+    <Compile Include="Services\Settings\Storages\IniFileSettingStorage.cs" />
     <Compile Include="Services\Settings\ISettingConverter.cs" />
     <Compile Include="Services\Settings\ISettingService.cs" />
     <Compile Include="Services\Settings\ISettingStorage.cs" />
     <Compile Include="Services\Settings\SettingConverter.cs" />
     <Compile Include="Services\Settings\SettingService.cs" />
+    <Compile Include="Services\Settings\Storages\_NamespaceDoc.cs" />
     <Compile Include="Services\Settings\_NamespaceDoc.cs" />
   </ItemGroup>
   <ItemGroup>

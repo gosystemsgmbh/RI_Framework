@@ -6,8 +6,12 @@ using System.Windows.Input;
 
 namespace RI.Framework.Mvvm
 {
-	public sealed class DelegateCommand<T> : ICommand
+	public sealed class DelegateCommand <T> : ICommand
 	{
+		#region Interface: ICommand
+
+		public event EventHandler CanExecuteChanged;
+
 		public bool CanExecute (object parameter)
 		{
 			throw new NotImplementedException();
@@ -18,6 +22,6 @@ namespace RI.Framework.Mvvm
 			throw new NotImplementedException();
 		}
 
-		public event EventHandler CanExecuteChanged;
+		#endregion
 	}
 }
