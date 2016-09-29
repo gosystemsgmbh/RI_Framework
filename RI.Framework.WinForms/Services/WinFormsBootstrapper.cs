@@ -624,7 +624,7 @@ namespace RI.Framework.Services
 		/// </remarks>
 		protected virtual DirectoryPath DetermineApplicationExecutableDirectory ()
 		{
-			return new DirectoryPath(this.ApplicationAssembly.GetFile());
+			return new FilePath(this.ApplicationAssembly.GetFile()).Directory;
 		}
 
 		/// <summary>
