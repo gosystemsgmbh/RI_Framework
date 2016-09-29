@@ -16,7 +16,7 @@ namespace RI.Framework.Services.Settings
 	/// <remarks>
 	///     <para>
 	///         The types supported by this seting converter are:
-	///         <see cref="bool" />, <see cref="char" />, <see cref="string" />, <see cref="sbyte" />, <see cref="byte" />, <see cref="short" />, <see cref="ushort" />, <see cref="int" />, <see cref="uint" />, <see cref="long" />, <see cref="ulong" />, <see cref="float" />, <see cref="double" />, <see cref="decimal" />, <see cref="DateTime" />, <see cref="TimeSpan" />, <see cref="Guid" />, <see cref="Version" />, and enumerations (<see cref="Enum" />)
+	///         <see cref="bool" />, <see cref="char" />, <see cref="string" />, <see cref="sbyte" />, <see cref="byte" />, <see cref="short" />, <see cref="ushort" />, <see cref="int" />, <see cref="uint" />, <see cref="long" />, <see cref="ulong" />, <see cref="float" />, <see cref="double" />, <see cref="decimal" />, <see cref="DateTime" />, <see cref="TimeSpan" />, <see cref="Guid" />, <see cref="Version" />, enumerations (<see cref="Enum" />), and arrays of <see cref="byte" />.
 	///     </para>
 	/// </remarks>
 	public sealed class SettingConverter : ISettingConverter
@@ -44,6 +44,7 @@ namespace RI.Framework.Services.Settings
 			typeof(Guid),
 			typeof(Version),
 			typeof(Enum),
+			typeof(byte[])
 		};
 
 		#endregion
@@ -163,6 +164,10 @@ namespace RI.Framework.Services.Settings
 			{
 				return ((Version)value).ToString(4);
 			}
+			if (type == typeof(byte[]))
+			{
+				return Convert.ToBase64String((byte[])value, Base64FormattingOptions.None);
+			}
 
 			throw new InvalidTypeArgumentException(nameof(value));
 		}
@@ -272,6 +277,17 @@ namespace RI.Framework.Services.Settings
 			else if (type == typeof(Version))
 			{
 				finalValue = value.ToVersion();
+			}
+			else if (type == typeof(byte[]))
+			{
+				try
+				{
+					finalValue = Convert.FromBase64String(value);
+				}
+				catch (FormatException)
+				{
+					finalValue = null;
+				}
 			}
 			else
 			{

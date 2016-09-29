@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
@@ -605,9 +604,9 @@ namespace RI.Framework.Services
 		///         The directory is just determined but not accessed in any way.
 		///     </note>
 		/// </remarks>
-		protected virtual string DetermineApplicationDataDirectory ()
+		protected virtual DirectoryPath DetermineApplicationDataDirectory ()
 		{
-			return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), this.ApplicationCompanyName, this.ApplicationProductName);
+			return new DirectoryPath(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)).AppendDirectory(this.ApplicationCompanyName, this.ApplicationProductName);
 		}
 
 		/// <summary>
@@ -623,9 +622,9 @@ namespace RI.Framework.Services
 		///         The directory is just determined but not accessed in any way.
 		///     </note>
 		/// </remarks>
-		protected virtual string DetermineApplicationExecutableDirectory ()
+		protected virtual DirectoryPath DetermineApplicationExecutableDirectory ()
 		{
-			return Path.GetDirectoryName(this.ApplicationAssembly.GetFile());
+			return new DirectoryPath(this.ApplicationAssembly.GetFile());
 		}
 
 		/// <summary>
