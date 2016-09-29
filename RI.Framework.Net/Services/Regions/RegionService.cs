@@ -130,6 +130,7 @@ namespace RI.Framework.Services.Regions
 			IRegionAdapter adapter = this.RegionDictionary[region].Item2;
 
 			adapter.Activate(container, element);
+			adapter.Sort(container);
 		}
 
 		/// <inheritdoc />
@@ -182,6 +183,7 @@ namespace RI.Framework.Services.Regions
 			IRegionAdapter adapter = this.RegionDictionary[region].Item2;
 
 			adapter.Add(container, element);
+			adapter.Sort(container);
 		}
 
 		/// <inheritdoc />
@@ -287,6 +289,7 @@ namespace RI.Framework.Services.Regions
 			{
 				adapter.Deactivate(container, element);
 			}
+			adapter.Sort(container);
 		}
 
 		/// <inheritdoc />
@@ -474,6 +477,7 @@ namespace RI.Framework.Services.Regions
 
 			adapter.Deactivate(container, element);
 			adapter.Remove(container, element);
+			adapter.Sort(container);
 		}
 
 		/// <inheritdoc />
@@ -527,6 +531,30 @@ namespace RI.Framework.Services.Regions
 			this.ClearElements(region);
 			this.AddElement(region, element);
 			this.ActivateElement(region, element);
+		}
+
+		/// <inheritdoc />
+		public void SortAllElements (string region)
+		{
+			if (region == null)
+			{
+				throw new ArgumentNullException(nameof(region));
+			}
+
+			if (region.IsEmpty())
+			{
+				throw new EmptyStringArgumentException(nameof(region));
+			}
+
+			if (!this.RegionDictionary.ContainsKey(region))
+			{
+				throw new InvalidOperationException();
+			}
+
+			object container = this.RegionDictionary[region].Item1;
+			IRegionAdapter adapter = this.RegionDictionary[region].Item2;
+
+			adapter.Sort(container);
 		}
 
 		#endregion

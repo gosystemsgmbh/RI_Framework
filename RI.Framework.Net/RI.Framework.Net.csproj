@@ -54,6 +54,8 @@
     <Compile Include="Services\Regions\IRegionAdapter.cs" />
     <Compile Include="Services\Regions\IRegionElement.cs" />
     <Compile Include="Services\Regions\IRegionService.cs" />
+    <Compile Include="Services\Regions\RegionAdapterBase.cs" />
+    <Compile Include="Services\Regions\RegionElementSortHintAttribute.cs" />
     <Compile Include="Services\Regions\RegionService.cs" />
     <Compile Include="Services\Regions\_NamespaceDoc.cs" />
     <Compile Include="Services\Resources\IResourceService.cs" />

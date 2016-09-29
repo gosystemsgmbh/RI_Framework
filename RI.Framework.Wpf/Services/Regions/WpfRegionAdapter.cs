@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 
+using RI.Framework.Collections;
+using RI.Framework.Collections.Comparison;
 using RI.Framework.Composition.Model;
-using RI.Framework.Utilities.Reflection;
 
 
 
@@ -22,18 +23,14 @@ namespace RI.Framework.Services.Regions
 	///     </para>
 	/// </remarks>
 	[Export]
-	public sealed class WpfRegionAdapter : IRegionAdapter
+	public sealed class WpfRegionAdapter : RegionAdapterBase
 	{
-		#region Interface: IRegionAdapter
+		#region Overrides
 
 		/// <inheritdoc />
-		public void Activate (object container, object element)
+		public override void Activate (object container, object element)
 		{
-			if (element is IRegionElement)
-			{
-				IRegionElement regionElement = (IRegionElement)element;
-				regionElement.Activated();
-			}
+			base.Activate(container, element);
 
 			if (element is FrameworkElement)
 			{
@@ -47,7 +44,7 @@ namespace RI.Framework.Services.Regions
 		}
 
 		/// <inheritdoc />
-		public void Add (object container, object element)
+		public override void Add (object container, object element)
 		{
 			if (container is ContentControl)
 			{
@@ -71,7 +68,7 @@ namespace RI.Framework.Services.Regions
 		}
 
 		/// <inheritdoc />
-		public void Clear (object container)
+		public override void Clear (object container)
 		{
 			if (container is ContentControl)
 			{
@@ -91,13 +88,9 @@ namespace RI.Framework.Services.Regions
 		}
 
 		/// <inheritdoc />
-		public void Deactivate (object container, object element)
+		public override void Deactivate (object container, object element)
 		{
-			if (element is IRegionElement)
-			{
-				IRegionElement regionElement = (IRegionElement)element;
-				regionElement.Deactivated();
-			}
+			base.Deactivate(container, element);
 
 			if (element is FrameworkElement)
 			{
@@ -111,7 +104,7 @@ namespace RI.Framework.Services.Regions
 		}
 
 		/// <inheritdoc />
-		public List<object> Get (object container)
+		public override List<object> Get (object container)
 		{
 			List<object> elements = new List<object>();
 			if (container is ContentControl)
@@ -139,14 +132,7 @@ namespace RI.Framework.Services.Regions
 		}
 
 		/// <inheritdoc />
-		public bool IsCompatibleContainer (Type type, out int inheritanceDepth)
-		{
-			Type matchingType = null;
-			return type.GetBestMatchingType(out matchingType, out inheritanceDepth, typeof(ContentControl), typeof(ItemsControl), typeof(Panel));
-		}
-
-		/// <inheritdoc />
-		public void Remove (object container, object element)
+		public override void Remove (object container, object element)
 		{
 			if (container is ContentControl)
 			{
@@ -166,6 +152,47 @@ namespace RI.Framework.Services.Regions
 				Panel panel = (Panel)container;
 				panel.Children.Remove((UIElement)element);
 			}
+		}
+
+		/// <inheritdoc />
+		public override void Sort (object container)
+		{
+			if (container is ItemsControl)
+			{
+				ItemsControl itemsControl = (ItemsControl)container;
+				List<object> sortedElements = this.GetSortedElements(itemsControl.Items);
+				List<object> existingElements = itemsControl.Items.ToList();
+				if (!sortedElements.SequenceEqual(existingElements, CollectionComparerFlags.ReferenceEquality))
+				{
+					itemsControl.Items.Clear();
+					foreach (object sortedElement in sortedElements)
+					{
+						itemsControl.Items.Add(sortedElement);
+					}
+				}
+			}
+			else if (container is Panel)
+			{
+				Panel panel = (Panel)container;
+				List<object> sortedElements = this.GetSortedElements(panel.Children);
+				List<object> existingElements = panel.Children.ToList();
+				if (!sortedElements.SequenceEqual(existingElements, CollectionComparerFlags.ReferenceEquality))
+				{
+					panel.Children.Clear();
+					foreach (object sortedElement in sortedElements)
+					{
+						panel.Children.Add((UIElement)sortedElement);
+					}
+				}
+			}
+		}
+
+		/// <inheritdoc />
+		protected override void GetSupportedTypes (List<Type> types)
+		{
+			types.Add(typeof(ContentControl));
+			types.Add(typeof(ItemsControl));
+			types.Add(typeof(Panel));
 		}
 
 		#endregion

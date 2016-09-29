@@ -238,5 +238,14 @@ namespace RI.Framework.Services.Regions
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
 		/// <exception cref="InvalidOperationException"> The region specified by <paramref name="region" /> does not exist. </exception>
 		void SetElement (string region, object element);
+
+		/// <summary>
+		///     Sorts all elements in a region.
+		/// </summary>
+		/// <param name="region"> The name of the region. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="region" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
+		/// <exception cref="InvalidOperationException"> The region specified by <paramref name="region" /> does not exist. </exception>
+		void SortAllElements (string region);
 	}
 }

@@ -3133,6 +3133,38 @@ namespace RI.Framework.Collections
 		}
 
 		/// <summary>
+		///     Converts a non-generic sequence to a new list.
+		/// </summary>
+		/// <param name="enumerable"> The sequence which contains the elements. </param>
+		/// <returns>
+		///     A list which contains all elements of the sequence in the order they were enumerated.
+		///     The list has a length of zero if the sequence contains no elements.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         This is a O(n) operation where n is the number of elements in the sequence.
+		///     </para>
+		///     <para>
+		///         <paramref name="enumerable" /> is enumerated exactly once.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="enumerable" /> is null. </exception>
+		public static List<object> ToList (this IEnumerable enumerable)
+		{
+			if (enumerable == null)
+			{
+				throw new ArgumentNullException(nameof(enumerable));
+			}
+
+			List<object> result = new List<object>();
+			foreach (object item in enumerable)
+			{
+				result.Add(item);
+			}
+			return result;
+		}
+
+		/// <summary>
 		///     Converts a sequence to a new list, starting at a specified index.
 		/// </summary>
 		/// <typeparam name="T"> The type of the elements of <paramref name="enumerable" />. </typeparam>
@@ -3522,7 +3554,7 @@ namespace RI.Framework.Collections
 			{
 				if (currentIndex >= index)
 				{
-					if (( currentIndex >= ( index + count ) ) && ( count != -1 ))
+					if ((currentIndex >= (index + count)) && (count != -1))
 					{
 						break;
 					}

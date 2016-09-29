@@ -86,5 +86,13 @@ namespace RI.Framework.Services.Regions
 		/// <exception cref="ArgumentNullException"> <paramref name="container" /> or <paramref name="element" /> is null. </exception>
 		/// <exception cref="InvalidTypeArgumentException"> The type of <paramref name="container" /> or <paramref name="element" /> is not handled by this region adapter. </exception>
 		void Remove (object container, object element);
+
+		/// <summary>
+		///     Sorts all elements in a container according to their sort indices.
+		/// </summary>
+		/// <param name="container"> The container. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="container" /> is null. </exception>
+		/// <exception cref="InvalidTypeArgumentException"> The type of <paramref name="container" /> is not handled by this region adapter. </exception>
+		void Sort (object container);
 	}
 }

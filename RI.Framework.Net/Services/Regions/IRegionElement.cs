@@ -6,6 +6,14 @@
 	public interface IRegionElement
 	{
 		/// <summary>
+		///     Gets, if available, the sort index of the element in its container.
+		/// </summary>
+		/// <value>
+		///     The sort index of the element in its container or null if no index is provided by the element.
+		/// </value>
+		int? SortIndex { get; }
+
+		/// <summary>
 		///     The element was activated.
 		/// </summary>
 		void Activated ();
