@@ -60,7 +60,14 @@ namespace RI.Framework.Mvvm
 
 		internal static void ProcessValue (object value)
 		{
-			//TODO: Add view model support (also add documentation)
+			IViewModel viewModel = value as IViewModel;
+			if (viewModel != null)
+			{
+				if (!viewModel.IsInitialized)
+				{
+					viewModel.Initialize();
+				}
+			}
 		}
 
 		#endregion

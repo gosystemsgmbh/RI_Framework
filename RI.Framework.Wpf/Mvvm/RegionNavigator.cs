@@ -13,19 +13,19 @@ using RI.Framework.Utilities.Exceptions;
 namespace RI.Framework.Mvvm
 {
 	/// <summary>
-	///     Provides WPF XAML extensions and utilities to work with regions.
+	///     Provides extensions and utilities to work with regions.
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         <see cref="RegionNavigator" /> is a convenience utility to work with regions (<see cref="IRegionService" /> in particular) in MVVM scenarios.
-	///         It defines an attached property (<see cref="RegionNameProperty" />) which can be used in XAML to associate a container with a region (using the region services <see cref="IRegionService.AddRegion" /> method).
+	///         <see cref="RegionNavigator" /> is a convenience utility to work with regions (<see cref="IRegionService" />) in MVVM scenarios.
+	///         It defines an attached property (<see cref="RegionNameProperty" />) which can be used to associate a container with a region (using the region services <see cref="IRegionService.AddRegion" /> method).
 	///         It also defines navigation methods to simplify navigation of elements inside containers.
 	///     </para>
 	///     <para>
 	///         <see cref="ServiceLocator" /> is used to obtain an instance of <see cref="IRegionService" />.
 	///     </para>
 	///     <para>
-	///         To obtain the instances for the elements when navigating, <see cref="InstanceLocator" /> is used.
+	///         To obtain the instances for the containers and elements when navigating, <see cref="InstanceLocator" /> is used.
 	///     </para>
 	/// </remarks>
 	public static class RegionNavigator
