@@ -18,6 +18,9 @@ namespace RI.Framework.Services.Settings
 	///         The types supported by this seting converter are:
 	///         <see cref="bool" />, <see cref="char" />, <see cref="string" />, <see cref="sbyte" />, <see cref="byte" />, <see cref="short" />, <see cref="ushort" />, <see cref="int" />, <see cref="uint" />, <see cref="long" />, <see cref="ulong" />, <see cref="float" />, <see cref="double" />, <see cref="decimal" />, <see cref="DateTime" />, <see cref="TimeSpan" />, <see cref="Guid" />, <see cref="Version" />, enumerations (<see cref="Enum" />), and arrays of <see cref="byte" />.
 	///     </para>
+	///     <para>
+	///         See <see cref="ISettingConverter" /> for more details.
+	///     </para>
 	/// </remarks>
 	public sealed class SettingConverter : ISettingConverter
 	{

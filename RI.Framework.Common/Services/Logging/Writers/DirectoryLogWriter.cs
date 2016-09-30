@@ -22,6 +22,9 @@ namespace RI.Framework.Services.Logging.Writers
 	///         The name of the current log directory corresponds to the specified timestamp or to the timestamp at the time the <see cref="DirectoryLogWriter" /> was instantiated (depending on the used constructor).
 	///         The name of the current log directory is in the format yyyy-MM-dd-HH-mm-ss-fff or <c> 2016-02-01-14-30-50-333 </c> for example.
 	///     </para>
+	///     <para>
+	///         See <see cref="ILogWriter" /> for more details.
+	///     </para>
 	/// </remarks>
 	[Export]
 	public sealed class DirectoryLogWriter : ILogWriter,

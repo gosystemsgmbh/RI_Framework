@@ -22,6 +22,9 @@ namespace RI.Framework.Services.Settings.Storages
 	///     <para>
 	///         Because environment variables can be global and their names might be ambiguous, a prefix can be specified which is then always appended in front of any name when searching for environment variables.
 	///     </para>
+	///     <para>
+	///         See <see cref="ISettingStorage" /> for more details.
+	///     </para>
 	/// </remarks>
 	[Export]
 	public sealed class EnvironmentVariableSettingStorage : ISettingStorage

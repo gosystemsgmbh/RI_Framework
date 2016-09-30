@@ -25,6 +25,9 @@ namespace RI.Framework.Services.Settings.Storages
 	///     <para>
 	///         If a parameter occurs multiple times in the command line, only the first occurence is used.
 	///     </para>
+	///     <para>
+	///         See <see cref="ISettingStorage" /> for more details.
+	///     </para>
 	/// </remarks>
 	[Export]
 	public sealed class CommandLineSettingStorage : ISettingStorage

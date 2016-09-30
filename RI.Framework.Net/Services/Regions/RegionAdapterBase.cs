@@ -12,6 +12,9 @@ namespace RI.Framework.Services.Regions
 	/// <summary>
 	///     Implements a base class for region adapters which provides some commonly used base functionality.
 	/// </summary>
+	/// <para>
+	///     See <see cref="IRegionAdapter" /> for more details.
+	/// </para>
 	public abstract class RegionAdapterBase : IRegionAdapter
 	{
 		#region Abstracts

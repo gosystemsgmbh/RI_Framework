@@ -21,6 +21,9 @@ namespace RI.Framework.Services.Settings.Storages
 	///         This setting store internally uses <see cref="IniDocument" /> to process the INI file.
 	///         See <see cref="IniDocument" /> for more details about INI files.
 	///     </para>
+	///     <para>
+	///         See <see cref="ISettingStorage" /> for more details.
+	///     </para>
 	/// </remarks>
 	[Export]
 	public sealed class IniFileSettingStorage : ISettingStorage

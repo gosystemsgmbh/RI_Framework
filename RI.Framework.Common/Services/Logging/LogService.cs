@@ -22,6 +22,9 @@ namespace RI.Framework.Services.Logging
 	///         The second is a <see cref="CompositionContainer" /> if this <see cref="LogService" /> is added as an export (the log writers are then imported through composition).
 	///         <see cref="Writers" /> gives the sequence containing all log writers from all sources.
 	///     </para>
+	///     <para>
+	///         See <see cref="ILogService" /> for more details.
+	///     </para>
 	/// </remarks>
 	public sealed class LogService : ILogService
 	{

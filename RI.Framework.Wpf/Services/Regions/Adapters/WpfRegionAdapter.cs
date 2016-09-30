@@ -21,6 +21,9 @@ namespace RI.Framework.Services.Regions.Adapters
 	///         <see cref="ContentControl" />, <see cref="ItemsControl" />, <see cref="Panel" />.
 	///         All types derived from those are also supported.
 	///     </para>
+	///     <para>
+	///         See <see cref="IRegionAdapter" /> for more details.
+	///     </para>
 	/// </remarks>
 	[Export]
 	public sealed class WpfRegionAdapter : WpfRegionAdapterBase

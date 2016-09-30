@@ -17,6 +17,9 @@ namespace RI.Framework.Services.Logging
 	///     <para>
 	///         <see cref="Debugger.Log" /> is used to write the log messages.
 	///     </para>
+	///     <para>
+	///         See <see cref="ILogWriter" /> for more details.
+	///     </para>
 	/// </remarks>
 	public sealed class LogWriter : ILogWriter
 	{

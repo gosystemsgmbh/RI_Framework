@@ -8,6 +8,9 @@ namespace RI.Framework.Services.Modularization
 	/// <summary>
 	///     Implements a base class which can be used for module implementation.
 	/// </summary>
+	/// <para>
+	///     See <see cref="IModule" /> for more details.
+	/// </para>
 	public abstract class Module : IModule
 	{
 		#region Instance Methods

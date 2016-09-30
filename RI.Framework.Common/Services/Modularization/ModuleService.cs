@@ -21,6 +21,9 @@ namespace RI.Framework.Services.Modularization
 	///         The second is a <see cref="CompositionContainer" /> if this <see cref="ModuleService" /> is added as an export (the modules are then imported through composition).
 	///         <see cref="Modules" /> gives the sequence containing all modules from all sources.
 	///     </para>
+	///     <para>
+	///         See <see cref="IModuleService" /> for more details.
+	///     </para>
 	/// </remarks>
 	public sealed class ModuleService : IModuleService,
 	                                    IImporting

@@ -23,6 +23,9 @@ namespace RI.Framework.Services.Regions
 	///         The second is a <see cref="CompositionContainer" /> if this <see cref="RegionService" /> is added as an export (the adapters are then imported through composition).
 	///         <see cref="Adapters" /> gives the sequence containing all adapters from all sources.
 	///     </para>
+	///     <para>
+	///         See <see cref="IRegionService" /> for more details.
+	///     </para>
 	/// </remarks>
 	public sealed class RegionService : IRegionService
 	{

@@ -14,6 +14,9 @@ namespace RI.Framework.Services.Dispatcher
 	/// <summary>
 	///     Implements a default dispatcher service which is suitable for most scenarios.
 	/// </summary>
+	/// <para>
+	///     See <see cref="IDispatcherService" /> for more details.
+	/// </para>
 	public sealed class DispatcherService : IDispatcherService
 	{
 		#region Instance Constructor/Destructor

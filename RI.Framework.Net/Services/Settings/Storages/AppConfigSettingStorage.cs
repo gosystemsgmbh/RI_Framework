@@ -20,6 +20,9 @@ namespace RI.Framework.Services.Settings.Storages
 	///     <para>
 	///         This setting store internally uses <see cref="ConfigurationManager" />.<see cref="ConfigurationManager.AppSettings" /> to read the applications default configuration, which is usually the app.config file.
 	///     </para>
+	///     <para>
+	///         See <see cref="ISettingStorage" /> for more details.
+	///     </para>
 	/// </remarks>
 	[Export]
 	public sealed class AppConfigSettingStorage : ISettingStorage

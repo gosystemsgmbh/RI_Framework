@@ -24,6 +24,9 @@ namespace RI.Framework.Services.Settings
 	///         The second is a <see cref="CompositionContainer" /> if this <see cref="SettingService" /> is added as an export (the storages and converters are then imported through composition).
 	///         <see cref="Storages" /> gives the sequence containing all setting storages from all sources and <see cref="Converters" /> gives the sequence containing all setting converters from all sources.
 	///     </para>
+	///     <para>
+	///         See <see cref="ISettingService" /> for more details.
+	///     </para>
 	/// </remarks>
 	public sealed class SettingService : ISettingService
 	{

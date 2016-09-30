@@ -9,6 +9,9 @@ namespace RI.Framework.Services.Regions.Adapters
 	/// <summary>
 	///     Implements a base class for WPF region adapters which provides some commonly used base functionality.
 	/// </summary>
+	/// <para>
+	///     See <see cref="IRegionAdapter" /> for more details.
+	/// </para>
 	public abstract class WpfRegionAdapterBase : RegionAdapterBase
 	{
 		#region Overrides

@@ -16,6 +16,9 @@ namespace RI.Framework.Services.Modularization
 	///     Implements a base class which can be used for <c> MonoBehaviour </c> based module implementation.
 	/// </summary>
 	/// <remarks>
+	///     <para>
+	///         See <see cref="IModule" /> for more details.
+	///     </para>
 	///     <note type="note">
 	///         Instances of <see cref="MonoModule" />s are not created using their constructor (as this would be the wrong way how to instantiate anything <c> MonoBehaviour </c>). Instead, <see cref="CreateInstance" /> is used.
 	///     </note>

@@ -15,6 +15,9 @@ namespace RI.Framework.Services.Logging
 	///     <para>
 	///         <c> Debug.Log </c>, <c> Debug.LogWarning </c>, or <c> Debug.LogError </c> is used to write the log messages, depending on the severity of the message.
 	///     </para>
+	///     <para>
+	///         See <see cref="ILogWriter" /> for more details.
+	///     </para>
 	/// </remarks>
 	public sealed class LogWriter : ILogWriter
 	{
