@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Markup;
 
+using RI.Framework.Mvvm.ViewModel;
 using RI.Framework.Services;
 using RI.Framework.Services.Logging;
 using RI.Framework.Utilities;
@@ -16,7 +17,7 @@ namespace RI.Framework.Mvvm
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         The <see cref="InstanceLocator" /> can be used in XAML to get instances from <see cref="ServiceLocator" /> and assign them to properties defined in XAML.
+	///         The <see cref="InstanceLocator" /> can be used in XAML to get instances from <see cref="ServiceLocator" /> and assign them to properties in XAML.
 	///         For example, this can be used to retrieve and attach a view model to a <see cref="FrameworkElement.DataContext" /> in MVVM scenarios.
 	///     </para>
 	///     <para>
@@ -58,8 +59,13 @@ namespace RI.Framework.Mvvm
 			return value;
 		}
 
-		internal static void ProcessValue (object value)
+		private static void ProcessValue (object value)
 		{
+			if (value == null)
+			{
+				return;
+			}
+
 			IViewModel viewModel = value as IViewModel;
 			if (viewModel != null)
 			{

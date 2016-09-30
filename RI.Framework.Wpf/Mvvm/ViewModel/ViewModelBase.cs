@@ -4,9 +4,12 @@ using System.ComponentModel;
 
 
 
-namespace RI.Framework.Mvvm
+namespace RI.Framework.Mvvm.ViewModel
 {
-	public abstract class ViewModel : IViewModel
+	/// <summary>
+	///     Implements a base class for view models.
+	/// </summary>
+	public abstract class ViewModelBase : IViewModel
 	{
 		#region Virtuals
 

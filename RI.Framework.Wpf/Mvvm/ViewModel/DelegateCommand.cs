@@ -4,7 +4,7 @@ using System.Windows.Input;
 
 
 
-namespace RI.Framework.Mvvm
+namespace RI.Framework.Mvvm.ViewModel
 {
 	public sealed class DelegateCommand <T> : ICommand
 	{

@@ -3,7 +3,7 @@
 
 
 
-namespace RI.Framework.Mvvm
+namespace RI.Framework.Mvvm.ViewModel
 {
 	/// <summary>
 	///     Defines an interface for view models.
@@ -11,6 +11,7 @@ namespace RI.Framework.Mvvm
 	public interface IViewModel : INotifyPropertyChanged
 	{
 		bool IsInitialized { get; }
+
 		void Initialize ();
 	}
 }

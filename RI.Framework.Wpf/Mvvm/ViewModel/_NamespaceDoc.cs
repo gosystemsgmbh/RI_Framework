@@ -3,10 +3,10 @@
 
 
 
-namespace RI.Framework.Mvvm
+namespace RI.Framework.Mvvm.ViewModel
 {
 	/// <summary>
-	///     Provides general extensions and utilities to support MVVM scenarios.
+	///     Provides view model infrastructure for MVVM scenarios.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc
