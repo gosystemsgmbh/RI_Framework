@@ -87,6 +87,7 @@ namespace RI.Framework.Services.Regions
 			}
 		}
 
+
 		/// <inheritdoc />
 		public IEnumerable<string> Regions
 		{
@@ -95,6 +96,7 @@ namespace RI.Framework.Services.Regions
 				return this.RegionDictionary.Keys;
 			}
 		}
+
 
 		/// <inheritdoc />
 		public void ActivateElement (string region, object element)
@@ -116,15 +118,10 @@ namespace RI.Framework.Services.Regions
 
 			if (!this.RegionDictionary.ContainsKey(region))
 			{
-				throw new InvalidOperationException();
+				throw new RegionNotFoundException(region);
 			}
 
-			if (!this.HasElement(region, element))
-			{
-				this.AddElement(region, element);
-			}
-
-			this.DeactivateAllElements(region);
+			this.AddElement(region, element);
 
 			object container = this.RegionDictionary[region].Item1;
 			IRegionAdapter adapter = this.RegionDictionary[region].Item2;
@@ -151,6 +148,7 @@ namespace RI.Framework.Services.Regions
 			this.AdaptersManual.Add(regionAdapter);
 		}
 
+
 		/// <inheritdoc />
 		public void AddElement (string region, object element)
 		{
@@ -171,7 +169,7 @@ namespace RI.Framework.Services.Regions
 
 			if (!this.RegionDictionary.ContainsKey(region))
 			{
-				throw new InvalidOperationException();
+				throw new RegionNotFoundException(region);
 			}
 
 			if (this.HasElement(region, element))
@@ -227,14 +225,37 @@ namespace RI.Framework.Services.Regions
 				{
 					return;
 				}
-
-				this.ClearElements(region);
 				this.RegionDictionary.Remove(region);
 			}
 
 			this.Log("Region added: {0} -> {1} @ {2}", region, container.GetType().Name, adapter.GetType().Name);
 
 			this.RegionDictionary.Add(region, new Tuple<object, IRegionAdapter>(container, adapter));
+		}
+
+
+		/// <inheritdoc />
+		public bool CanNavigate (string region, object element)
+		{
+			if (region == null)
+			{
+				throw new ArgumentNullException(nameof(region));
+			}
+
+			if (region.IsEmpty())
+			{
+				throw new EmptyStringArgumentException(nameof(region));
+			}
+
+			if (!this.RegionDictionary.ContainsKey(region))
+			{
+				throw new RegionNotFoundException(region);
+			}
+
+			object container = this.RegionDictionary[region].Item1;
+			IRegionAdapter adapter = this.RegionDictionary[region].Item2;
+
+			return adapter.CanNavigate(container, element);
 		}
 
 		/// <inheritdoc />
@@ -252,10 +273,8 @@ namespace RI.Framework.Services.Regions
 
 			if (!this.RegionDictionary.ContainsKey(region))
 			{
-				throw new InvalidOperationException();
+				throw new RegionNotFoundException(region);
 			}
-
-			this.DeactivateAllElements(region);
 
 			object container = this.RegionDictionary[region].Item1;
 			IRegionAdapter adapter = this.RegionDictionary[region].Item2;
@@ -278,7 +297,7 @@ namespace RI.Framework.Services.Regions
 
 			if (!this.RegionDictionary.ContainsKey(region))
 			{
-				throw new InvalidOperationException();
+				throw new RegionNotFoundException(region);
 			}
 
 			object container = this.RegionDictionary[region].Item1;
@@ -289,6 +308,39 @@ namespace RI.Framework.Services.Regions
 			{
 				adapter.Deactivate(container, element);
 			}
+
+			adapter.Sort(container);
+		}
+
+		/// <inheritdoc />
+		public void DeactivateElement (string region, object element)
+		{
+			if (region == null)
+			{
+				throw new ArgumentNullException(nameof(region));
+			}
+
+			if (region.IsEmpty())
+			{
+				throw new EmptyStringArgumentException(nameof(region));
+			}
+
+			if (element == null)
+			{
+				throw new ArgumentNullException(nameof(element));
+			}
+
+			if (!this.RegionDictionary.ContainsKey(region))
+			{
+				throw new RegionNotFoundException(region);
+			}
+
+			this.AddElement(region, element);
+
+			object container = this.RegionDictionary[region].Item1;
+			IRegionAdapter adapter = this.RegionDictionary[region].Item2;
+
+			adapter.Deactivate(container, element);
 			adapter.Sort(container);
 		}
 
@@ -307,7 +359,7 @@ namespace RI.Framework.Services.Regions
 
 			if (!this.RegionDictionary.ContainsKey(region))
 			{
-				return null;
+				throw new RegionNotFoundException(region);
 			}
 
 			object container = this.RegionDictionary[region].Item1;
@@ -395,11 +447,13 @@ namespace RI.Framework.Services.Regions
 
 			if (!this.RegionDictionary.ContainsKey(region))
 			{
-				return false;
+				throw new RegionNotFoundException(region);
 			}
 
-			List<object> elements = this.GetElements(region);
-			return elements.Any(x => object.ReferenceEquals(x, element));
+			object container = this.RegionDictionary[region].Item1;
+			IRegionAdapter adapter = this.RegionDictionary[region].Item2;
+
+			return adapter.Contains(container, element);
 		}
 
 		/// <inheritdoc />
@@ -416,6 +470,30 @@ namespace RI.Framework.Services.Regions
 			}
 
 			return this.RegionDictionary.ContainsKey(region);
+		}
+
+		/// <inheritdoc />
+		public bool Navigate (string region, object element)
+		{
+			if (region == null)
+			{
+				throw new ArgumentNullException(nameof(region));
+			}
+
+			if (region.IsEmpty())
+			{
+				throw new EmptyStringArgumentException(nameof(region));
+			}
+
+			if (!this.RegionDictionary.ContainsKey(region))
+			{
+				throw new RegionNotFoundException(region);
+			}
+
+			object container = this.RegionDictionary[region].Item1;
+			IRegionAdapter adapter = this.RegionDictionary[region].Item2;
+
+			return adapter.Navigate(container, element);
 		}
 
 		/// <inheritdoc />
@@ -464,7 +542,7 @@ namespace RI.Framework.Services.Regions
 
 			if (!this.RegionDictionary.ContainsKey(region))
 			{
-				throw new InvalidOperationException();
+				throw new RegionNotFoundException(region);
 			}
 
 			if (!this.HasElement(region, element))
@@ -475,7 +553,6 @@ namespace RI.Framework.Services.Regions
 			object container = this.RegionDictionary[region].Item1;
 			IRegionAdapter adapter = this.RegionDictionary[region].Item2;
 
-			adapter.Deactivate(container, element);
 			adapter.Remove(container, element);
 			adapter.Sort(container);
 		}
@@ -498,63 +575,9 @@ namespace RI.Framework.Services.Regions
 				return;
 			}
 
-			this.ClearElements(region);
-
 			this.Log("Region removed: {0}", region);
 
 			this.RegionDictionary.Remove(region);
-		}
-
-		/// <inheritdoc />
-		public void SetElement (string region, object element)
-		{
-			if (region == null)
-			{
-				throw new ArgumentNullException(nameof(region));
-			}
-
-			if (region.IsEmpty())
-			{
-				throw new EmptyStringArgumentException(nameof(region));
-			}
-
-			if (element == null)
-			{
-				throw new ArgumentNullException(nameof(element));
-			}
-
-			if (!this.RegionDictionary.ContainsKey(region))
-			{
-				throw new InvalidOperationException();
-			}
-
-			this.ClearElements(region);
-			this.AddElement(region, element);
-			this.ActivateElement(region, element);
-		}
-
-		/// <inheritdoc />
-		public void SortAllElements (string region)
-		{
-			if (region == null)
-			{
-				throw new ArgumentNullException(nameof(region));
-			}
-
-			if (region.IsEmpty())
-			{
-				throw new EmptyStringArgumentException(nameof(region));
-			}
-
-			if (!this.RegionDictionary.ContainsKey(region))
-			{
-				throw new InvalidOperationException();
-			}
-
-			object container = this.RegionDictionary[region].Item1;
-			IRegionAdapter adapter = this.RegionDictionary[region].Item2;
-
-			adapter.Sort(container);
 		}
 
 		#endregion

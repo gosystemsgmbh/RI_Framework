@@ -15,8 +15,8 @@ namespace RI.Framework.Services.Regions
 	/// <remarks>
 	///     <para>
 	///         A region service is used to modularize the user interface of an application.
-	///         The modularization is done by defining regions in the user interface into which modules of the application can insert their user interface content by only knowing the name of a region.
-	///         This allows applications modules to implement their own user interface without any dependency of the overall user interface structure.
+	///         The modularization is done by defining regions in the user interface into which modules of the application can insert their user interface content by only knowing the name of the region.
+	///         This allows applications modules to implement their own user interface without any dependency to the overall user interface structure.
 	///     </para>
 	///     <para>
 	///         Each region is represented by a container into which elements are inserted.
@@ -24,11 +24,23 @@ namespace RI.Framework.Services.Regions
 	///         The supported types for containers and elements are defined by the available region adapters.
 	///     </para>
 	///     <para>
+	///         A region is associated with exactly one container and always identified by its name.
+	///         A region (or its container respectively) can have zero, one, or multiple elements, depending on the kind of region operations which are performed.
+	///     </para>
+	///     <para>
 	///         Names of regions are considered case-insensitive.
 	///     </para>
 	///     <para>
-	///         Elements inserted into regions can be made aware of their status within a region by implementing the <see cref="IRegionElement" /> interface.
-	///         Note that the handling of <see cref="IRegionElement" /> is to be implemented in the region adapters, not the region service itself.
+	///         There are three basic kind of operations which can be performed with regions: Navigation, Activation, Adding/Removing.
+	///         Navigation is used when a region only contains zero or one element and where the elements need to be aware of the navigation (e.g. allowing or disallowing the change of the current element).
+	///         An example for navigation are contextual views.
+	///         Activation is used when a region contains zero, one, or more elements and where zero, one, or more elements can be active elements.
+	///         An example for activation are tabs where multiple tabs can exist but only one can be the active tab.
+	///         Adding/Removing are the most basic operations where simply zero, one, or more elements are added to or removed from a region.
+	///         An example for adding/removing are toolbars.
+	///     </para>
+	///     <para>
+	///         For regions and elements where the order of elements matter, the elements can either implement <see cref="IRegionElement" /> or apply <see cref="RegionElementSortHintAttribute" />.
 	///     </para>
 	/// </remarks>
 	[Export]
@@ -47,6 +59,7 @@ namespace RI.Framework.Services.Regions
 		/// </remarks>
 		IEnumerable<IRegionAdapter> Adapters { get; }
 
+
 		/// <summary>
 		///     Gets all currently available regions.
 		/// </summary>
@@ -60,14 +73,20 @@ namespace RI.Framework.Services.Regions
 		/// </remarks>
 		IEnumerable<string> Regions { get; }
 
+
 		/// <summary>
 		///     Activates an element in a region.
 		/// </summary>
 		/// <param name="region"> The name of the region. </param>
 		/// <param name="element"> The element which is to be activated in the region. </param>
+		/// <remarks>
+		///     <para>
+		///         If the element is not in the region, it will be added before being activated.
+		///     </para>
+		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="region" /> or <paramref name="element" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
-		/// <exception cref="InvalidOperationException"> The region specified by <paramref name="region" /> does not exist. </exception>
+		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
 		void ActivateElement (string region, object element);
 
 		/// <summary>
@@ -82,6 +101,7 @@ namespace RI.Framework.Services.Regions
 		/// <exception cref="ArgumentNullException"> <paramref name="regionAdapter" /> is null. </exception>
 		void AddAdapter (IRegionAdapter regionAdapter);
 
+
 		/// <summary>
 		///     Adds an element to a region.
 		/// </summary>
@@ -89,7 +109,7 @@ namespace RI.Framework.Services.Regions
 		/// <param name="element"> The element to add to the region. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="region" /> or <paramref name="element" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
-		/// <exception cref="InvalidOperationException"> The region specified by <paramref name="region" /> does not exist. </exception>
+		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
 		void AddElement (string region, object element);
 
 		/// <summary>
@@ -107,13 +127,32 @@ namespace RI.Framework.Services.Regions
 		/// <exception cref="InvalidTypeArgumentException"> The type of <paramref region="container" /> is not handled by any region adapter. </exception>
 		void AddRegion (string region, object container);
 
+
+		/// <summary>
+		///     Determines whether the specified region can be navigated away from its current element to a specified new element.
+		/// </summary>
+		/// <param name="region"> The name of the region. </param>
+		/// <param name="element"> The element to navigate to. </param>
+		/// <returns>
+		///     true if the current element allows navigation away from (no current element is an implicit &quot;allow&quot;) and the new element allows navigation to (no new element is an implicit &quot;allow&quot;), false otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         <paramref name="element" /> can be null to only navigate away from the current element but not to a new one, leaving the region without an element.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="region" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
+		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
+		bool CanNavigate (string region, object element);
+
 		/// <summary>
 		///     Removes all elements from a region.
 		/// </summary>
 		/// <param name="region"> The name of the region. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="region" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
-		/// <exception cref="InvalidOperationException"> The region specified by <paramref name="region" /> does not exist. </exception>
+		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
 		void ClearElements (string region);
 
 		/// <summary>
@@ -122,8 +161,23 @@ namespace RI.Framework.Services.Regions
 		/// <param name="region"> The name of the region. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="region" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
-		/// <exception cref="InvalidOperationException"> The region specified by <paramref name="region" /> does not exist. </exception>
+		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
 		void DeactivateAllElements (string region);
+
+		/// <summary>
+		///     Deactivates an element in a region.
+		/// </summary>
+		/// <param name="region"> The name of the region. </param>
+		/// <param name="element"> The element which is to be deactivated in the region. </param>
+		/// <remarks>
+		///     <para>
+		///         If the element is not in the region, it will be added before being deactivated.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="region" /> or <paramref name="element" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
+		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
+		void DeactivateElement (string region, object element);
 
 		/// <summary>
 		///     Gets all elements of a region.
@@ -132,10 +186,10 @@ namespace RI.Framework.Services.Regions
 		/// <returns>
 		///     The list with all elements of the region.
 		///     An empty list is returned if the region contains no elements.
-		///     null is returned if the specified region does not exist.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="region" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
+		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
 		List<object> GetElements (string region);
 
 		/// <summary>
@@ -164,7 +218,7 @@ namespace RI.Framework.Services.Regions
 		/// </summary>
 		/// <param name="container"> The container. </param>
 		/// <returns>
-		///     The set with all names of the region associated with the container.
+		///     The set with all names of regions associated with the container.
 		///     An empty set is returned if no region is associated with the container.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="container" /> is null. </exception>
@@ -176,10 +230,11 @@ namespace RI.Framework.Services.Regions
 		/// <param name="region"> The name of the region. </param>
 		/// <param name="element"> The element which is to be checked whether it is in the region. </param>
 		/// <returns>
-		///     true if the element is in the specified region, false otherwise. false is also returned if the specified region does not exist.
+		///     true if the element is in the specified region, false otherwise.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="region" /> or <paramref name="element" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
+		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
 		bool HasElement (string region, object element);
 
 		/// <summary>
@@ -192,6 +247,25 @@ namespace RI.Framework.Services.Regions
 		/// <exception cref="ArgumentNullException"> <paramref name="region" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
 		bool HasRegion (string region);
+
+		/// <summary>
+		///     Navigates a region away from its current element to a specified different element.
+		/// </summary>
+		/// <param name="region"> The name of the region. </param>
+		/// <param name="element"> The element to navigate to. </param>
+		/// <returns>
+		///     true if the navigation is was successful, false otherwise.
+		///     <see cref="CanNavigate" /> for more details.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         <paramref name="element" /> can be null to only navigate away from the current element but not to a new one, leaving the region without an element.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="region" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
+		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
+		bool Navigate (string region, object element);
 
 		/// <summary>
 		///     Removes a region adapter.
@@ -213,7 +287,7 @@ namespace RI.Framework.Services.Regions
 		/// <param name="element"> The element to remove from the region. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="region" /> or <paramref name="element" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
-		/// <exception cref="InvalidOperationException"> The region specified by <paramref name="region" /> does not exist. </exception>
+		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
 		void RemoveElement (string region, object element);
 
 		/// <summary>
@@ -228,24 +302,5 @@ namespace RI.Framework.Services.Regions
 		/// <exception cref="ArgumentNullException"> <paramref name="region" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
 		void RemoveRegion (string region);
-
-		/// <summary>
-		///     Sets the only element in a region and activates it.
-		/// </summary>
-		/// <param name="region"> The name of the region. </param>
-		/// <param name="element"> The element which is to be set the only element in the region. </param>
-		/// <exception cref="ArgumentNullException"> <paramref name="region" /> or <paramref name="element" /> is null. </exception>
-		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
-		/// <exception cref="InvalidOperationException"> The region specified by <paramref name="region" /> does not exist. </exception>
-		void SetElement (string region, object element);
-
-		/// <summary>
-		///     Sorts all elements in a region.
-		/// </summary>
-		/// <param name="region"> The name of the region. </param>
-		/// <exception cref="ArgumentNullException"> <paramref name="region" /> is null. </exception>
-		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
-		/// <exception cref="InvalidOperationException"> The region specified by <paramref name="region" /> does not exist. </exception>
-		void SortAllElements (string region);
 	}
 }

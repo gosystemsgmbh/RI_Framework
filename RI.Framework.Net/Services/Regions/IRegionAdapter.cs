@@ -14,20 +14,21 @@ namespace RI.Framework.Services.Regions
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         A region adapter is used by a <see cref="IRegionService" /> to map between its containers (representing regions) and the elements added to it.
+	///         A region adapter is used by a <see cref="IRegionService" /> to map between its containers (representing regions) and its elements.
 	///     </para>
 	/// </remarks>
 	[Export]
 	public interface IRegionAdapter
 	{
 		/// <summary>
-		///     Activates an element in a container.
+		///     Activates an element after it was added to the container.
 		/// </summary>
 		/// <param name="container"> The container. </param>
 		/// <param name="element"> The element. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="container" /> or <paramref name="element" /> is null. </exception>
 		/// <exception cref="InvalidTypeArgumentException"> The type of <paramref name="container" /> or <paramref name="element" /> is not handled by this region adapter. </exception>
 		void Activate (object container, object element);
+
 
 		/// <summary>
 		///     Adds an element to a container.
@@ -38,6 +39,23 @@ namespace RI.Framework.Services.Regions
 		/// <exception cref="InvalidTypeArgumentException"> The type of <paramref name="container" /> or <paramref name="element" /> is not handled by this region adapter. </exception>
 		void Add (object container, object element);
 
+
+		/// <summary>
+		///     Determines whether the current and new element of a container allows navigation.
+		/// </summary>
+		/// <param name="container"> The container. </param>
+		/// <param name="element"> The element. </param>
+		/// <returns>
+		///     true if the current element allows navigation away from (no current element is an implicit &quot;allow&quot;) and the new element allows navigation to (no new element is an implicit &quot;allow&quot;), false otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         <paramref name="element" /> can be null to only navigate away from the current element but not to a new one, leaving the container without an element.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="container" /> is null. </exception>
+		bool CanNavigate (object container, object element);
+
 		/// <summary>
 		///     Removes all elements of a container
 		/// </summary>
@@ -47,7 +65,19 @@ namespace RI.Framework.Services.Regions
 		void Clear (object container);
 
 		/// <summary>
-		///     Deactivates an element in a container.
+		///     Checks whether an element is in a container.
+		/// </summary>
+		/// <param name="container"> The container. </param>
+		/// <param name="element"> The element. </param>
+		/// <returns>
+		///     true if the container contains the element, false otherwise.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="container" /> or <paramref name="element" /> is null. </exception>
+		/// <exception cref="InvalidTypeArgumentException"> The type of <paramref name="container" /> or <paramref name="element" /> is not handled by this region adapter. </exception>
+		bool Contains (object container, object element);
+
+		/// <summary>
+		///     Deactivates an element after it was added to the container.
 		/// </summary>
 		/// <param name="container"> The container. </param>
 		/// <param name="element"> The element. </param>
@@ -77,6 +107,23 @@ namespace RI.Framework.Services.Regions
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="type" /> is null. </exception>
 		bool IsCompatibleContainer (Type type, out int inheritanceDepth);
+
+		/// <summary>
+		///     Navigates from the current element to a new element in a container.
+		/// </summary>
+		/// <param name="container"> The container. </param>
+		/// <param name="element"> The element. </param>
+		/// <returns>
+		///     true if the navigation is was successful, false otherwise.
+		///     <see cref="CanNavigate" /> for more details.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         <paramref name="element" /> can be null to only navigate away from the current element but not to a new one, leaving the container without an element.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="container" /> is null. </exception>
+		bool Navigate (object container, object element);
 
 		/// <summary>
 		///     Removes an element from a container.
