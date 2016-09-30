@@ -87,7 +87,6 @@ namespace RI.Framework.Services.Regions
 			}
 		}
 
-
 		/// <inheritdoc />
 		public IEnumerable<string> Regions
 		{
@@ -96,7 +95,6 @@ namespace RI.Framework.Services.Regions
 				return this.RegionDictionary.Keys;
 			}
 		}
-
 
 		/// <inheritdoc />
 		public void ActivateElement (string region, object element)
@@ -147,7 +145,6 @@ namespace RI.Framework.Services.Regions
 
 			this.AdaptersManual.Add(regionAdapter);
 		}
-
 
 		/// <inheritdoc />
 		public void AddElement (string region, object element)
@@ -232,7 +229,6 @@ namespace RI.Framework.Services.Regions
 
 			this.RegionDictionary.Add(region, new Tuple<object, IRegionAdapter>(container, adapter));
 		}
-
 
 		/// <inheritdoc />
 		public bool CanNavigate (string region, object element)

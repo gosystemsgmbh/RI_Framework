@@ -4,7 +4,7 @@ using System.Windows;
 
 
 
-namespace RI.Framework.Services.Regions
+namespace RI.Framework.Services.Regions.Adapters
 {
 	/// <summary>
 	///     Implements a base class for WPF region adapters which provides some commonly used base functionality.

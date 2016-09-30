@@ -59,7 +59,6 @@ namespace RI.Framework.Services.Regions
 		/// </remarks>
 		IEnumerable<IRegionAdapter> Adapters { get; }
 
-
 		/// <summary>
 		///     Gets all currently available regions.
 		/// </summary>
@@ -72,7 +71,6 @@ namespace RI.Framework.Services.Regions
 		///     </note>
 		/// </remarks>
 		IEnumerable<string> Regions { get; }
-
 
 		/// <summary>
 		///     Activates an element in a region.
@@ -101,7 +99,6 @@ namespace RI.Framework.Services.Regions
 		/// <exception cref="ArgumentNullException"> <paramref name="regionAdapter" /> is null. </exception>
 		void AddAdapter (IRegionAdapter regionAdapter);
 
-
 		/// <summary>
 		///     Adds an element to a region.
 		/// </summary>
@@ -110,6 +107,7 @@ namespace RI.Framework.Services.Regions
 		/// <exception cref="ArgumentNullException"> <paramref name="region" /> or <paramref name="element" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
 		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
+		/// <exception cref="NotSupportedException"> The container associated to <paramref name="region" /> already has an element and does not support multiple elements. </exception>
 		void AddElement (string region, object element);
 
 		/// <summary>
@@ -126,7 +124,6 @@ namespace RI.Framework.Services.Regions
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
 		/// <exception cref="InvalidTypeArgumentException"> The type of <paramref region="container" /> is not handled by any region adapter. </exception>
 		void AddRegion (string region, object container);
-
 
 		/// <summary>
 		///     Determines whether the specified region can be navigated away from its current element to a specified new element.

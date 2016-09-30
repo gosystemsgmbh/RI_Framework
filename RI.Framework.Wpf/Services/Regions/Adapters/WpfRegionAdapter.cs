@@ -10,7 +10,7 @@ using RI.Framework.Composition.Model;
 
 
 
-namespace RI.Framework.Services.Regions
+namespace RI.Framework.Services.Regions.Adapters
 {
 	/// <summary>
 	///     Implements a region adapter which handles common WPF controls.
@@ -43,6 +43,10 @@ namespace RI.Framework.Services.Regions
 			if (container is ContentControl)
 			{
 				ContentControl contentControl = (ContentControl)container;
+				if (contentControl.Content != null)
+				{
+					throw new NotSupportedException();
+				}
 				contentControl.Content = element;
 			}
 			else if (container is ItemsControl)

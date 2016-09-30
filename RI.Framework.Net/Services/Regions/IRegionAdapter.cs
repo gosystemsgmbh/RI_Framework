@@ -29,7 +29,6 @@ namespace RI.Framework.Services.Regions
 		/// <exception cref="InvalidTypeArgumentException"> The type of <paramref name="container" /> or <paramref name="element" /> is not handled by this region adapter. </exception>
 		void Activate (object container, object element);
 
-
 		/// <summary>
 		///     Adds an element to a container.
 		/// </summary>
@@ -37,8 +36,8 @@ namespace RI.Framework.Services.Regions
 		/// <param name="element"> The element. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="container" /> or <paramref name="element" /> is null. </exception>
 		/// <exception cref="InvalidTypeArgumentException"> The type of <paramref name="container" /> or <paramref name="element" /> is not handled by this region adapter. </exception>
+		/// <exception cref="NotSupportedException"> <paramref name="container" /> already has an element and does not support multiple elements. </exception>
 		void Add (object container, object element);
-
 
 		/// <summary>
 		///     Determines whether the current and new element of a container allows navigation.
