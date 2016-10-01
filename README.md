@@ -9,7 +9,7 @@
   - [ ] Additional dispatcher Features
   - [ ] Analyze and implement magic thread
   - [X] LogWriter for .NET
-  - [ ] Shutdown handling for WinForms similar to WPF
+  - [ ] WinForms similar to WPF
   - [ ] TODOs
 - [ ] Documentation
   - [ ] Examples

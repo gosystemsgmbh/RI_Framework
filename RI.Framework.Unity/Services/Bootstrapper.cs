@@ -96,7 +96,7 @@ namespace RI.Framework.Services
 	///         </item>
 	///         <item>
 	///             <para>
-	///                 <see cref="FinishRun" /> is called.
+	///                 <see cref="EndRun" /> is called.
 	///             </para>
 	///         </item>
 	///         <item>
@@ -212,8 +212,8 @@ namespace RI.Framework.Services
 
 			this.ShutdownFinished = true;
 
-			this.Log(LogLevel.Debug, "Finishing run");
-			this.FinishRun();
+			this.Log(LogLevel.Debug, "Ending run");
+			this.EndRun();
 
 			this.Log(LogLevel.Debug, "Shutting down");
 			this.State = BootstrapperState.ShuttingDown;
@@ -369,7 +369,7 @@ namespace RI.Framework.Services
 		///         The default implementation does nothing.
 		///     </note>
 		/// </remarks>
-		protected virtual void FinishRun ()
+		protected virtual void EndRun ()
 		{
 		}
 

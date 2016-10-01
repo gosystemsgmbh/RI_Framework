@@ -30,7 +30,7 @@ namespace RI.Framework.Mvvm
 	{
 		#region Static Methods
 
-		internal static object GetValue (string name)
+		public static object GetValue (string name)
 		{
 			if (name == null)
 			{
@@ -47,7 +47,7 @@ namespace RI.Framework.Mvvm
 			return value;
 		}
 
-		internal static object GetValue (Type type)
+		public static object GetValue (Type type)
 		{
 			if (type == null)
 			{

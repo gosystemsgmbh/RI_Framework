@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
 using System.Windows;
-using System.Windows.Threading;
 
 using RI.Framework.Composition;
 using RI.Framework.Composition.Catalogs;
@@ -160,7 +159,7 @@ namespace RI.Framework.Services
 	///         </item>
 	///         <item>
 	///             <para>
-	///                 <see cref="FinishRun" /> is called.
+	///                 <see cref="EndRun" /> is called.
 	///             </para>
 	///         </item>
 	///         <item>
@@ -170,17 +169,7 @@ namespace RI.Framework.Services
 	///         </item>
 	///         <item>
 	///             <para>
-	///                 <see cref="BeginShutdown" /> is called.
-	///             </para>
-	///         </item>
-	///         <item>
-	///             <para>
-	///                 Remaining operations in the applications dispatcher are processed.
-	///             </para>
-	///         </item>
-	///         <item>
-	///             <para>
-	///                 <see cref="FinishShutdown" /> is called.
+	///                 <see cref="DoShutdown" /> is called.
 	///             </para>
 	///         </item>
 	///         <item>
@@ -420,18 +409,6 @@ namespace RI.Framework.Services
 		///     </note>
 		/// </remarks>
 		protected virtual void BeginRun ()
-		{
-		}
-
-		/// <summary>
-		///     Called before the application begins shutting down.
-		/// </summary>
-		/// <remarks>
-		///     <note type="implement">
-		///         The default implementation does nothing.
-		///     </note>
-		/// </remarks>
-		protected virtual void BeginShutdown ()
 		{
 		}
 
@@ -761,6 +738,18 @@ namespace RI.Framework.Services
 		}
 
 		/// <summary>
+		///     Called when the application is shut down.
+		/// </summary>
+		/// <remarks>
+		///     <note type="implement">
+		///         The default implementation does nothing.
+		///     </note>
+		/// </remarks>
+		protected virtual void DoShutdown ()
+		{
+		}
+
+		/// <summary>
 		///     Called before the application begins shutting down after the application was running.
 		/// </summary>
 		/// <remarks>
@@ -768,19 +757,7 @@ namespace RI.Framework.Services
 		///         The default implementation does nothing.
 		///     </note>
 		/// </remarks>
-		protected virtual void FinishRun ()
-		{
-		}
-
-		/// <summary>
-		///     Called after the application finished shutting down.
-		/// </summary>
-		/// <remarks>
-		///     <note type="implement">
-		///         The default implementation does nothing.
-		///     </note>
-		/// </remarks>
-		protected virtual void FinishShutdown ()
+		protected virtual void EndRun ()
 		{
 		}
 
@@ -891,8 +868,14 @@ namespace RI.Framework.Services
 			this.Log(LogLevel.Debug, "Handing over to WPF application object");
 			this.Application.Run();
 
-			this.Log(LogLevel.Debug, "Finishing shutdown");
-			this.FinishShutdown();
+			this.Log(LogLevel.Debug, "Ending run");
+			this.EndRun();
+
+			this.Log(LogLevel.Debug, "Shutting down");
+			this.State = WpfBootstrapperState.ShuttingDown;
+
+			this.Log(LogLevel.Debug, "Doing shutdown");
+			this.DoShutdown();
 
 			this.Log(LogLevel.Debug, "Shut down");
 			this.State = WpfBootstrapperState.ShutDown;
@@ -913,27 +896,8 @@ namespace RI.Framework.Services
 
 			this.ShutdownInitiated = true;
 
-			this.Log(LogLevel.Debug, "Queueing shutdown");
-			this.Application.Dispatcher.BeginInvoke(DispatcherPriority.SystemIdle, new Action(() =>
-			                                                                                  {
-				                                                                                  this.Log(LogLevel.Debug, "Processing remaining operations");
-				                                                                                  this.Application.DoAllEvents();
-
-				                                                                                  this.Log(LogLevel.Debug, "Finishing run");
-				                                                                                  this.FinishRun();
-
-				                                                                                  this.Log(LogLevel.Debug, "Shutting down");
-				                                                                                  this.State = WpfBootstrapperState.ShuttingDown;
-
-				                                                                                  this.Log(LogLevel.Debug, "Beginning shutdown");
-				                                                                                  this.BeginShutdown();
-
-				                                                                                  this.Log(LogLevel.Debug, "Processing remaining operations");
-				                                                                                  this.Application.DoAllEvents();
-
-				                                                                                  this.Log(LogLevel.Debug, "Initiating shutdown");
-				                                                                                  this.Application.Shutdown();
-			                                                                                  }));
+			this.Log(LogLevel.Debug, "Initiating shutdown");
+			this.Application.Shutdown();
 		}
 
 		#endregion
