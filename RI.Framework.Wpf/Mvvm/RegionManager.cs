@@ -13,11 +13,11 @@ using RI.Framework.Utilities.Exceptions;
 namespace RI.Framework.Mvvm
 {
 	/// <summary>
-	///     Provides extensions and utilities to work with regions in a WPF application.
+	///     Provides utilities to work with regions.
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         <see cref="RegionNavigator" /> is a convenience utility to work with regions (<see cref="IRegionService" />) in MVVM scenarios.
+	///         <see cref="RegionManager" /> is a convenience utility to work with regions (<see cref="IRegionService" />) in MVVM scenarios.
 	///         It defines an attached property (<see cref="RegionNameProperty" />) which can be used to associate a container with a region (using the region services <see cref="IRegionService.AddRegion" /> method).
 	///         It also defines region operation methods to simplify region handling.
 	///     </para>
@@ -28,14 +28,15 @@ namespace RI.Framework.Mvvm
 	///         To obtain the instances for the containers and elements when navigating, <see cref="InstanceLocator" /> is used.
 	///     </para>
 	/// </remarks>
-	public static class RegionNavigator
+	/// TODO: Remove, Clear, Deactivate
+	public static class RegionManager
 	{
 		#region Constants
 
 		/// <summary>
 		///     Associates a container with a region by specifying its region name.
 		/// </summary>
-		public static readonly DependencyProperty RegionNameProperty = DependencyProperty.RegisterAttached("RegionName", typeof(string), typeof(RegionNavigator), new UIPropertyMetadata(null, RegionNavigator.OnRegionNameChange));
+		public static readonly DependencyProperty RegionNameProperty = DependencyProperty.RegisterAttached("RegionName", typeof(string), typeof(RegionManager), new UIPropertyMetadata(null, RegionManager.OnRegionNameChange));
 
 		#endregion
 
@@ -89,7 +90,7 @@ namespace RI.Framework.Mvvm
 				throw new InvalidOperationException();
 			}
 
-			RegionNavigator.Activate(region, value);
+			RegionManager.Activate(region, value);
 		}
 
 		/// <summary>
@@ -132,7 +133,7 @@ namespace RI.Framework.Mvvm
 				throw new InvalidOperationException();
 			}
 
-			RegionNavigator.Activate(region, value);
+			RegionManager.Activate(region, value);
 		}
 
 		/// <summary>
@@ -220,7 +221,7 @@ namespace RI.Framework.Mvvm
 				throw new InvalidOperationException();
 			}
 
-			RegionNavigator.Add(region, value);
+			RegionManager.Add(region, value);
 		}
 
 		/// <summary>
@@ -263,7 +264,7 @@ namespace RI.Framework.Mvvm
 				throw new InvalidOperationException();
 			}
 
-			RegionNavigator.Add(region, value);
+			RegionManager.Add(region, value);
 		}
 
 		/// <summary>
@@ -354,7 +355,7 @@ namespace RI.Framework.Mvvm
 				throw new InvalidOperationException();
 			}
 
-			return RegionNavigator.CanNavigate(region, value);
+			return RegionManager.CanNavigate(region, value);
 		}
 
 		/// <summary>
@@ -400,7 +401,7 @@ namespace RI.Framework.Mvvm
 				throw new InvalidOperationException();
 			}
 
-			return RegionNavigator.CanNavigate(region, value);
+			return RegionManager.CanNavigate(region, value);
 		}
 
 		/// <summary>
@@ -455,7 +456,7 @@ namespace RI.Framework.Mvvm
 		/// </remarks>
 		public static string GetRegionName (DependencyObject obj)
 		{
-			return obj?.GetValue(RegionNavigator.RegionNameProperty) as string;
+			return obj?.GetValue(RegionManager.RegionNameProperty) as string;
 		}
 
 		/// <summary>
@@ -506,7 +507,7 @@ namespace RI.Framework.Mvvm
 				throw new InvalidOperationException();
 			}
 
-			return RegionNavigator.Navigate(region, value);
+			return RegionManager.Navigate(region, value);
 		}
 
 		/// <summary>
@@ -552,7 +553,7 @@ namespace RI.Framework.Mvvm
 				throw new InvalidOperationException();
 			}
 
-			return RegionNavigator.Navigate(region, value);
+			return RegionManager.Navigate(region, value);
 		}
 
 		/// <summary>
@@ -605,7 +606,7 @@ namespace RI.Framework.Mvvm
 		/// </remarks>
 		public static void SetRegionName (DependencyObject obj, string value)
 		{
-			obj?.SetValue(RegionNavigator.RegionNameProperty, value);
+			obj?.SetValue(RegionManager.RegionNameProperty, value);
 		}
 
 		private static void OnRegionNameChange (DependencyObject obj, DependencyPropertyChangedEventArgs e)
@@ -616,7 +617,7 @@ namespace RI.Framework.Mvvm
 			IRegionService regionService = ServiceLocator.GetInstance<IRegionService>();
 			if (regionService == null)
 			{
-				LogLocator.LogWarning(typeof(RegionNavigator).Name, "No region service available while trying to assign region: {0}/{1} -> {2}", oldRegion ?? "[null]", newRegion ?? "[null]", obj.GetType().Name);
+				LogLocator.LogWarning(typeof(RegionManager).Name, "No region service available while trying to assign region: {0}/{1} -> {2}", oldRegion ?? "[null]", newRegion ?? "[null]", obj.GetType().Name);
 				return;
 			}
 

@@ -30,6 +30,13 @@ namespace RI.Framework.Mvvm
 	{
 		#region Static Methods
 
+		/// <summary>
+		///     Gets an instance by its name.
+		/// </summary>
+		/// <param name="name"> The name. </param>
+		/// <returns>
+		///     The instance of null if the instance was not found, <paramref name="name" /> is null, or <paramref name="name" /> is an empty string.
+		/// </returns>
 		public static object GetValue (string name)
 		{
 			if (name == null)
@@ -47,6 +54,13 @@ namespace RI.Framework.Mvvm
 			return value;
 		}
 
+		/// <summary>
+		///     Gets an instance by its type.
+		/// </summary>
+		/// <param name="type"> The type. </param>
+		/// <returns>
+		///     The instance of null if the instance was not found or <paramref name="type" /> is null.
+		/// </returns>
 		public static object GetValue (Type type)
 		{
 			if (type == null)
@@ -66,12 +80,25 @@ namespace RI.Framework.Mvvm
 				return;
 			}
 
-			IViewModel viewModel = value as IViewModel;
-			if (viewModel != null)
+			if (value is IViewModel)
 			{
+				IViewModel viewModel = (IViewModel)value;
 				if (!viewModel.IsInitialized)
 				{
 					viewModel.Initialize();
+				}
+			}
+
+			if (value is FrameworkElement)
+			{
+				FrameworkElement frameworkElement = (FrameworkElement)value;
+				if (frameworkElement.DataContext is IViewModel)
+				{
+					IViewModel viewModel = (IViewModel)frameworkElement.DataContext;
+					if (!viewModel.IsInitialized)
+					{
+						viewModel.Initialize();
+					}
 				}
 			}
 		}

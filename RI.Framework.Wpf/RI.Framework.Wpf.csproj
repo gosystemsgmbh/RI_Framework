@@ -57,7 +57,7 @@
     <Compile Include="Mvvm\ViewModel\_NamespaceDoc.cs" />
     <Compile Include="Mvvm\_NamespaceDoc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Mvvm\RegionNavigator.cs" />
+    <Compile Include="Mvvm\RegionManager.cs" />
     <Compile Include="Services\Regions\Adapters\WpfRegionAdapter.cs" />
     <Compile Include="Services\Regions\Adapters\WpfRegionAdapterBase.cs" />
     <Compile Include="Services\WpfBootstrapper.cs" />
