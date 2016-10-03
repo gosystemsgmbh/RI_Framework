@@ -65,8 +65,11 @@
     <Compile Include="Services\Regions\Adapters\WpfRegionAdapterBase.cs" />
     <Compile Include="Services\WpfBootstrapper.cs" />
     <Compile Include="Services\WpfBootstrapperState.cs" />
-    <Compile Include="Utilities\ApplicationExtensions.cs" />
-    <Compile Include="Utilities\DispatcherExtensions.cs" />
+    <Compile Include="Utilities\Presentation\ApplicationExtensions.cs" />
+    <Compile Include="Utilities\Presentation\DispatcherExtensions.cs" />
+    <Compile Include="Utilities\Presentation\TemporaryCursor.cs" />
+    <Compile Include="Utilities\Presentation\WindowExtensions.cs" />
+    <Compile Include="Utilities\Presentation\_NamespaceDoc.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\AssemblyName.snk" />
