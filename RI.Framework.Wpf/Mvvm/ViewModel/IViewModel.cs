@@ -10,8 +10,17 @@ namespace RI.Framework.Mvvm.ViewModel
 	/// </summary>
 	public interface IViewModel : INotifyPropertyChanged
 	{
+		/// <summary>
+		///     Gets whether the view is initialized or not.
+		/// </summary>
+		/// <value>
+		///     true if the view is initialized, false otherwise.
+		/// </value>
 		bool IsInitialized { get; }
 
+		/// <summary>
+		///     Initializes the view model.
+		/// </summary>
 		void Initialize ();
 	}
 }

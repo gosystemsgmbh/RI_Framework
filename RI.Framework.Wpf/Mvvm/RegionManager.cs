@@ -22,10 +22,7 @@ namespace RI.Framework.Mvvm
 	///         It also defines region operation methods to simplify region handling.
 	///     </para>
 	///     <para>
-	///         <see cref="ServiceLocator" /> is used to obtain an instance of <see cref="IRegionService" />.
-	///     </para>
-	///     <para>
-	///         To obtain the instances for the containers and elements when navigating, <see cref="InstanceLocator" /> is used.
+	///         <see cref="ServiceLocator" /> is used to obtain an instance of <see cref="IRegionService" /> and, when using region operation methods, the instances for elements when the elements are specified by name or type.
 	///     </para>
 	/// </remarks>
 	/// TODO: Remove, Clear, Deactivate
@@ -84,7 +81,7 @@ namespace RI.Framework.Mvvm
 				throw new EmptyStringArgumentException(nameof(element));
 			}
 
-			object value = InstanceLocator.GetValue(element);
+			object value = RegionManager.GetValue(element);
 			if (value == null)
 			{
 				throw new InvalidOperationException();
@@ -127,7 +124,7 @@ namespace RI.Framework.Mvvm
 				throw new ArgumentNullException(nameof(element));
 			}
 
-			object value = InstanceLocator.GetValue(element);
+			object value = RegionManager.GetValue(element);
 			if (value == null)
 			{
 				throw new InvalidOperationException();
@@ -215,7 +212,7 @@ namespace RI.Framework.Mvvm
 				throw new EmptyStringArgumentException(nameof(element));
 			}
 
-			object value = InstanceLocator.GetValue(element);
+			object value = RegionManager.GetValue(element);
 			if (value == null)
 			{
 				throw new InvalidOperationException();
@@ -258,7 +255,7 @@ namespace RI.Framework.Mvvm
 				throw new ArgumentNullException(nameof(element));
 			}
 
-			object value = InstanceLocator.GetValue(element);
+			object value = RegionManager.GetValue(element);
 			if (value == null)
 			{
 				throw new InvalidOperationException();
@@ -349,7 +346,7 @@ namespace RI.Framework.Mvvm
 				throw new EmptyStringArgumentException(nameof(element));
 			}
 
-			object value = InstanceLocator.GetValue(element);
+			object value = RegionManager.GetValue(element);
 			if (value == null)
 			{
 				throw new InvalidOperationException();
@@ -395,7 +392,7 @@ namespace RI.Framework.Mvvm
 				throw new ArgumentNullException(nameof(element));
 			}
 
-			object value = InstanceLocator.GetValue(element);
+			object value = RegionManager.GetValue(element);
 			if (value == null)
 			{
 				throw new InvalidOperationException();
@@ -501,7 +498,7 @@ namespace RI.Framework.Mvvm
 				throw new EmptyStringArgumentException(nameof(element));
 			}
 
-			object value = InstanceLocator.GetValue(element);
+			object value = RegionManager.GetValue(element);
 			if (value == null)
 			{
 				throw new InvalidOperationException();
@@ -547,7 +544,7 @@ namespace RI.Framework.Mvvm
 				throw new ArgumentNullException(nameof(element));
 			}
 
-			object value = InstanceLocator.GetValue(element);
+			object value = RegionManager.GetValue(element);
 			if (value == null)
 			{
 				throw new InvalidOperationException();
@@ -609,6 +606,32 @@ namespace RI.Framework.Mvvm
 			obj?.SetValue(RegionManager.RegionNameProperty, value);
 		}
 
+
+		private static object GetValue (string name)
+		{
+			if (name == null)
+			{
+				return null;
+			}
+
+			if (name.IsEmpty())
+			{
+				return null;
+			}
+
+			return ServiceLocator.GetInstance(name);
+		}
+
+		private static object GetValue (Type type)
+		{
+			if (type == null)
+			{
+				return null;
+			}
+
+			return ServiceLocator.GetInstance(type);
+		}
+
 		private static void OnRegionNameChange (DependencyObject obj, DependencyPropertyChangedEventArgs e)
 		{
 			string oldRegion = e.OldValue as string;
@@ -617,7 +640,7 @@ namespace RI.Framework.Mvvm
 			IRegionService regionService = ServiceLocator.GetInstance<IRegionService>();
 			if (regionService == null)
 			{
-				LogLocator.LogWarning(typeof(RegionManager).Name, "No region service available while trying to assign region: {0}/{1} -> {2}", oldRegion ?? "[null]", newRegion ?? "[null]", obj.GetType().Name);
+				LogLocator.LogWarning(typeof(RegionManager).Name, "No region service available while trying to assign region: Object={0}, OldRegion={1}, NewRegion={2}", obj?.GetType()?.Name ?? "[null]", oldRegion ?? "[null]", newRegion ?? "[null]");
 				return;
 			}
 

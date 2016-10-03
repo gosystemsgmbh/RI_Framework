@@ -2,6 +2,8 @@
 using System.Windows;
 using System.Windows.Markup;
 
+using RI.Framework.Composition;
+using RI.Framework.Mvvm.View;
 using RI.Framework.Mvvm.ViewModel;
 using RI.Framework.Services;
 using RI.Framework.Services.Logging;
@@ -17,7 +19,7 @@ namespace RI.Framework.Mvvm
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         The <see cref="InstanceLocator" /> can be used in XAML to get instances from <see cref="ServiceLocator" /> and assign them to properties in XAML.
+	///         The <see cref="InstanceLocator" /> is used in XAML to get instances from <see cref="ServiceLocator" /> and assign them to properties in XAML.
 	///         For example, this can be used to retrieve and attach a view model to a <see cref="FrameworkElement.DataContext" /> in MVVM scenarios.
 	///     </para>
 	///     <para>
@@ -30,14 +32,7 @@ namespace RI.Framework.Mvvm
 	{
 		#region Static Methods
 
-		/// <summary>
-		///     Gets an instance by its name.
-		/// </summary>
-		/// <param name="name"> The name. </param>
-		/// <returns>
-		///     The instance of null if the instance was not found, <paramref name="name" /> is null, or <paramref name="name" /> is an empty string.
-		/// </returns>
-		public static object GetValue (string name)
+		private static object GetValue (string name)
 		{
 			if (name == null)
 			{
@@ -54,14 +49,7 @@ namespace RI.Framework.Mvvm
 			return value;
 		}
 
-		/// <summary>
-		///     Gets an instance by its type.
-		/// </summary>
-		/// <param name="type"> The type. </param>
-		/// <returns>
-		///     The instance of null if the instance was not found or <paramref name="type" /> is null.
-		/// </returns>
-		public static object GetValue (Type type)
+		private static object GetValue (Type type)
 		{
 			if (type == null)
 			{
@@ -80,6 +68,12 @@ namespace RI.Framework.Mvvm
 				return;
 			}
 
+			CompositionContainer container = ServiceLocator.GetInstance<CompositionContainer>();
+
+			if (container != null)
+			{
+				container.ResolveImports(value, CompositionFlags.Normal);
+			}
 			if (value is IViewModel)
 			{
 				IViewModel viewModel = (IViewModel)value;
@@ -88,16 +82,36 @@ namespace RI.Framework.Mvvm
 					viewModel.Initialize();
 				}
 			}
+			if (value is IView)
+			{
+				IView view = (IView)value;
+				if (!view.IsInitialized)
+				{
+					view.Initialize();
+				}
+			}
 
 			if (value is FrameworkElement)
 			{
 				FrameworkElement frameworkElement = (FrameworkElement)value;
+				if (container != null)
+				{
+					container.ResolveImports(frameworkElement.DataContext, CompositionFlags.Normal);
+				}
 				if (frameworkElement.DataContext is IViewModel)
 				{
 					IViewModel viewModel = (IViewModel)frameworkElement.DataContext;
 					if (!viewModel.IsInitialized)
 					{
 						viewModel.Initialize();
+					}
+				}
+				if (frameworkElement.DataContext is IView)
+				{
+					IView view = (IView)frameworkElement.DataContext;
+					if (!view.IsInitialized)
+					{
+						view.Initialize();
 					}
 				}
 			}
@@ -151,6 +165,14 @@ namespace RI.Framework.Mvvm
 			{
 				LogLocator.LogWarning(this.GetType().Name, "No value available while trying obtain instance: Name={0}, Type={1}", this.Name ?? "[null]", this.Type?.Name ?? "[null]");
 			}
+
+			IProvideValueTarget targetProvider = serviceProvider.GetService(typeof(IProvideValueTarget)) as IProvideValueTarget;
+			if (targetProvider != null)
+			{
+				object target = targetProvider.TargetObject;
+				InstanceLocator.ProcessValue(target);
+			}
+
 			return value;
 		}
 
