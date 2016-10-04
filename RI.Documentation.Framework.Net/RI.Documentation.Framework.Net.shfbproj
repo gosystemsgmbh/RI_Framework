@@ -35,6 +35,10 @@
       <DocumentationSource sourceFile="..\_Output\RI.Framework.WinForms.xml" />
       <DocumentationSource sourceFile="..\_Output\RI.Framework.Wpf.dll" />
       <DocumentationSource sourceFile="..\_Output\RI.Framework.Wpf.xml" />
+      <DocumentationSource sourceFile="..\_Output\RI.Framework.SQLite.dll" />
+      <DocumentationSource sourceFile="..\_Output\RI.Framework.SQLite.xml" />
+      <DocumentationSource sourceFile="..\_Output\RI.Framework.Windows.dll" />
+      <DocumentationSource sourceFile="..\_Output\RI.Framework.Windows.xml" />
     </DocumentationSources>
     <BuildAssemblerVerbosity>OnlyWarningsAndErrors</BuildAssemblerVerbosity>
     <HelpFileFormat>HtmlHelp1</HelpFileFormat>
