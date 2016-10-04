@@ -46,6 +46,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Utilities\Windows\NativeWindows.cs" />
+    <Compile Include="Utilities\Windows\Privileges.cs" />
+    <Compile Include="Utilities\Windows\SecurityEntity.cs" />
+    <Compile Include="Utilities\Windows\WindowsApi.cs" />
+    <Compile Include="Utilities\Windows\WindowsError.cs" />
+    <Compile Include="Utilities\Windows\WindowsSession.cs" />
+    <Compile Include="Utilities\Windows\WindowsShell.cs" />
+    <Compile Include="Utilities\Windows\_NamespaceDoc.cs" />
     <None Include="Properties\AssemblyName.snk" />
     <None Include="IO\Paths\DirectoryPathExtensions.cs" />
     <None Include="IO\Paths\FilePathExtensions.cs" />
