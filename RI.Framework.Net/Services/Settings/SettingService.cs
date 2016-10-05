@@ -5,7 +5,6 @@ using RI.Framework.Collections;
 using RI.Framework.Composition;
 using RI.Framework.Composition.Model;
 using RI.Framework.Services.Logging;
-using RI.Framework.Services.Regions;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 
@@ -33,7 +32,7 @@ namespace RI.Framework.Services.Settings
 		#region Instance Constructor/Destructor
 
 		/// <summary>
-		///     Creates a new instance of <see cref="RegionService" />.
+		///     Creates a new instance of <see cref="SettingService" />.
 		/// </summary>
 		public SettingService ()
 		{

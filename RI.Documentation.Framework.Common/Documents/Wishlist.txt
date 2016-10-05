@@ -107,7 +107,7 @@ Services
  + (Unity) Dispatcher: Cancel all operations
  + (Unity) Dispatcher: Process (process item in background thread, then broadcast processed item)
 
- - (Common) Resources (ResourceService, DirectoryResourceSource, ResourceConverter)
+ - (.NET) Resources (ResourceService, DirectoryResourceSource, ResourceConverter)
  - (WPF) Resources (WpfResourceTarget, WpfResourceConverter)
 
  - (.NET) Backup (BackupService, DirectoryBackupStorage)
@@ -116,14 +116,14 @@ Services
  - (Unity) Settings (PlayerPrefsSettingStorage)
  - (Unity) Resources (UnityResourceTarget, UnityResourceConverter)
 
+ - (WinForms) Regions (WinFormsRegionAdapter)
+ - (WinForms) Messaging (WinFormsMessageDispatcher)
+ - (WinForms) Resources (WinFormsResourceTarget, WinFormsResourceConverter)
+
  - (Unity) Packaging
  - (Unity) Input
  - (Unity) Audio
  - (Unity) User interface
-
- - (WinForms) Modularization (WinFormsModule)
- - (WinForms) Regions (WinFormsRegionAdapter)
- - (WinForms) Resources (WinFormsResourceTarget, WinFormsResourceConverter)
 
 
 Math
