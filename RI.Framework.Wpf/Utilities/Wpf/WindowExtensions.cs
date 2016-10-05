@@ -1,4 +1,4 @@
-namespace RI.Framework.Utilities.Presentation
+namespace RI.Framework.Utilities.Wpf
 {
 	public static class WindowExtensions
 	{

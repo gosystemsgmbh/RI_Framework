@@ -3,7 +3,7 @@
 
 
 
-namespace RI.Framework.Utilities.Presentation
+namespace RI.Framework.Utilities.Wpf
 {
 	/// <summary>
 	///     Contains utilities for WPF.
