@@ -6,7 +6,7 @@
 namespace RI.Framework.Data.SQLite.MigrationSteps
 {
 	/// <summary>
-	///     Implements migration steps.
+	///     Contains objects used in SQLite database migration.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc
