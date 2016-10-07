@@ -5,6 +5,9 @@ using System.Runtime.InteropServices;
 
 namespace RI.Framework.Utilities.Windows
 {
+	/// <summary>
+	///     Provides utilities for controlling the current Windows session.
+	/// </summary>
 	public static class WindowsSession
 	{
 		#region Constants
@@ -30,6 +33,10 @@ namespace RI.Framework.Utilities.Windows
 
 		#region Static Methods
 
+		/// <summary>
+		///     Logs-off the current user.
+		/// </summary>
+		/// <param name="force"> Specifies whether the logoff is forced (true), terminating all busy applications, or busy applications prevent from logging-off (false). </param>
 		public static void Logoff (bool force)
 		{
 			WindowsSession.AdjustPrivileges();
@@ -44,6 +51,10 @@ namespace RI.Framework.Utilities.Windows
 			}
 		}
 
+		/// <summary>
+		///     Restarts the machine.
+		/// </summary>
+		/// <param name="force"> Specifies whether the restart is forced (true), terminating all busy applications, or busy applications prevent from restarting (false). </param>
 		public static void Restart (bool force)
 		{
 			WindowsSession.AdjustPrivileges();
@@ -58,6 +69,10 @@ namespace RI.Framework.Utilities.Windows
 			}
 		}
 
+		/// <summary>
+		///     Shuts-down the machine.
+		/// </summary>
+		/// <param name="force"> Specifies whether the shutdown is forced (true), terminating all busy applications, or busy applications prevent from shutting-down (false). </param>
 		public static void Shutdown (bool force)
 		{
 			WindowsSession.AdjustPrivileges();

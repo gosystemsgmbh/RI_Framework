@@ -8,6 +8,9 @@ using System.Runtime.InteropServices;
 
 namespace RI.Framework.Utilities.Windows
 {
+	/// <summary>
+	///     Provides utilities for working with the native Windows API (WIN32).
+	/// </summary>
 	public static class WindowsApi
 	{
 		#region Constants
@@ -25,11 +28,32 @@ namespace RI.Framework.Utilities.Windows
 
 		#region Static Methods
 
+		/// <summary>
+		///     Gets the error message for a specified Windows API error code.
+		/// </summary>
+		/// <param name="errorCode"> The Windows API error code. </param>
+		/// <returns>
+		///     The error message for the specified error code.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         The current UI culture is used to determine which language to use for the error message.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="Win32Exception"> The error message could not be retrieved. </exception>
 		public static string GetErrorMessage (int errorCode)
 		{
 			return WindowsApi.GetErrorMessage(errorCode, null);
 		}
 
+		/// <summary>
+		/// </summary>
+		/// <param name="errorCode"> The Windows API error code. </param>
+		/// <param name="language"> The culture which defines the language to use for the error message. </param>
+		/// <returns>
+		///     The error message for the specified error code.
+		/// </returns>
+		/// <exception cref="Win32Exception"> The error message could not be retrieved. </exception>
 		public static string GetErrorMessage (int errorCode, CultureInfo language)
 		{
 			IntPtr messageBuffer = IntPtr.Zero;
@@ -57,6 +81,12 @@ namespace RI.Framework.Utilities.Windows
 			}
 		}
 
+		/// <summary>
+		///     Gets the Windows API error code which was set during the last call to the Windows API.
+		/// </summary>
+		/// <returns>
+		///     The error code set by the last call to the Windows API or zero if no error code was set (or no error occurred respectively).
+		/// </returns>
 		public static int GetLastErrorCode ()
 		{
 			return Marshal.GetLastWin32Error();
