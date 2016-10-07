@@ -3,7 +3,7 @@
 
 
 
-namespace RI.Framework.Data.SQLite.MigrationSteps
+namespace RI.Framework.Data.SQLite.Migration
 {
 	/// <summary>
 	///     Contains objects used in SQLite database migration.

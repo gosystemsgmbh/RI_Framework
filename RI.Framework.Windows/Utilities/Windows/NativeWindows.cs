@@ -12,6 +12,14 @@ using RI.Framework.Collections;
 
 namespace RI.Framework.Utilities.Windows
 {
+	/// <summary>
+	///     Provides utilities for working with native windows.
+	/// </summary>
+	/// <remarks>
+	///     <para>
+	///         Native windows are represented using their window handle (HWND).
+	///     </para>
+	/// </remarks>
 	public static class NativeWindows
 	{
 		#region Constants
@@ -79,6 +87,16 @@ namespace RI.Framework.Utilities.Windows
 
 		#region Static Methods
 
+		/// <summary>
+		///     Enables or disables a window.
+		/// </summary>
+		/// <param name="hWnd"> The window to enable/disable. </param>
+		/// <param name="enable"> true if the window should be enabled, false if it should be disabled. </param>
+		/// <remarks>
+		///     <para>
+		///         Nothing happens if <paramref name="hWnd" /> is <see cref="IntPtr.Zero" />.
+		///     </para>
+		/// </remarks>
 		public static void EnableWindow (IntPtr hWnd, bool enable)
 		{
 			if (hWnd == IntPtr.Zero)
@@ -89,6 +107,14 @@ namespace RI.Framework.Utilities.Windows
 			NativeWindows.EnableWindowInternal(hWnd, enable);
 		}
 
+		/// <summary>
+		///     Gets all child windows of a window.
+		/// </summary>
+		/// <param name="hWnd"> The window for which all child windows are to be found. </param>
+		/// <returns>
+		///     The array with window handles to all the child windows of the specified window.
+		///     An empty array is returned if no child windows are available or <paramref name="hWnd" /> is <see cref="IntPtr.Zero" />.
+		/// </returns>
 		public static IntPtr[] FindChildWindows (IntPtr hWnd)
 		{
 			if (hWnd == IntPtr.Zero)
@@ -109,6 +135,13 @@ namespace RI.Framework.Utilities.Windows
 			}
 		}
 
+		/// <summary>
+		///     Gets all top-level windows.
+		/// </summary>
+		/// <returns>
+		///     The array with window handles to all the top-level windows.
+		///     An empty array is returned if no top-level windows are available.
+		/// </returns>
 		public static IntPtr[] FindTopWindows ()
 		{
 			lock (NativeWindows.FindWindowsSyncRoot)
@@ -124,6 +157,18 @@ namespace RI.Framework.Utilities.Windows
 			}
 		}
 
+		/// <summary>
+		///     Gets the date and time when the last user input was made.
+		/// </summary>
+		/// <returns>
+		///     The date and time when the last user input was made.
+		/// </returns>
+		/// <remarks>
+		///     <note type="note">
+		///         This method is not necessarily precise and the time since the last user input can be affected by various system components or settings, other applications, or connected devices.
+		///         Therefore, only use the returned value for non-critical things which do not need to be precise.
+		///     </note>
+		/// </remarks>
 		public static DateTime GetLastInput ()
 		{
 			LASTINPUTINFO info = new LASTINPUTINFO();
@@ -135,6 +180,13 @@ namespace RI.Framework.Utilities.Windows
 			return inputTimestamp;
 		}
 
+		/// <summary>
+		///     Gets the process associated with a window.
+		/// </summary>
+		/// <param name="hWnd"> The window. </param>
+		/// <returns>
+		///     The process to which the specified window is associated or null if no process can be found or <paramref name="hWnd" /> is <see cref="IntPtr.Zero" />.
+		/// </returns>
 		public static Process GetProcess (IntPtr hWnd)
 		{
 			if (hWnd == IntPtr.Zero)
@@ -150,6 +202,15 @@ namespace RI.Framework.Utilities.Windows
 			return process;
 		}
 
+		/// <summary>
+		///     Gets all windows associated with a process.
+		/// </summary>
+		/// <param name="process"> The process. </param>
+		/// <returns>
+		///     The array with all window handles to all the windows of the specified process.
+		///     An empty array is returned if the process does not have any windows.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="process" /> is null. </exception>
 		public static IntPtr[] GetWindows (Process process)
 		{
 			if (process == null)
@@ -162,6 +223,18 @@ namespace RI.Framework.Utilities.Windows
 			return foundWindows;
 		}
 
+		/// <summary>
+		///     Gets the title of a window.
+		/// </summary>
+		/// <param name="hWnd"> The window. </param>
+		/// <returns>
+		///     The title of the window or null if the title cannot be retrieved or <paramref name="hWnd" /> is <see cref="IntPtr.Zero" />.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         Retrieving a window title can fail in cases the window is blocked and does not react to window messages within one second.
+		///     </para>
+		/// </remarks>
 		public static string GetWindowTitle (IntPtr hWnd)
 		{
 			if (hWnd == IntPtr.Zero)
@@ -206,6 +279,15 @@ namespace RI.Framework.Utilities.Windows
 			return title;
 		}
 
+		/// <summary>
+		///     Hides a window.
+		/// </summary>
+		/// <param name="hWnd"> The window to hide. </param>
+		/// <remarks>
+		///     <para>
+		///         Nothing happens if <paramref name="hWnd" /> is <see cref="IntPtr.Zero" />.
+		///     </para>
+		/// </remarks>
 		public static void HideWindow (IntPtr hWnd)
 		{
 			if (hWnd == IntPtr.Zero)
@@ -216,6 +298,15 @@ namespace RI.Framework.Utilities.Windows
 			NativeWindows.ShowWindow(hWnd, (int)NativeWindows.SwHide);
 		}
 
+		/// <summary>
+		///     Maximizes a window.
+		/// </summary>
+		/// <param name="hWnd"> The window to maximize. </param>
+		/// <remarks>
+		///     <para>
+		///         Nothing happens if <paramref name="hWnd" /> is <see cref="IntPtr.Zero" />.
+		///     </para>
+		/// </remarks>
 		public static void MaximizeWindow (IntPtr hWnd)
 		{
 			if (hWnd == IntPtr.Zero)
@@ -226,6 +317,15 @@ namespace RI.Framework.Utilities.Windows
 			NativeWindows.ShowWindow(hWnd, (int)NativeWindows.SwShowmaximized);
 		}
 
+		/// <summary>
+		///     Minimizes a window.
+		/// </summary>
+		/// <param name="hWnd"> The window to minimize. </param>
+		/// <remarks>
+		///     <para>
+		///         Nothing happens if <paramref name="hWnd" /> is <see cref="IntPtr.Zero" />.
+		///     </para>
+		/// </remarks>
 		public static void MinimizeWindow (IntPtr hWnd)
 		{
 			if (hWnd == IntPtr.Zero)
@@ -236,6 +336,15 @@ namespace RI.Framework.Utilities.Windows
 			NativeWindows.ShowWindow(hWnd, (int)NativeWindows.SwShowminimized);
 		}
 
+		/// <summary>
+		///     Moves a window to the background (behind other windows).
+		/// </summary>
+		/// <param name="hWnd"> The window to move to the background. </param>
+		/// <remarks>
+		///     <para>
+		///         Nothing happens if <paramref name="hWnd" /> is <see cref="IntPtr.Zero" />.
+		///     </para>
+		/// </remarks>
 		public static void MoveWindowToBackground (IntPtr hWnd)
 		{
 			if (hWnd == IntPtr.Zero)
@@ -246,6 +355,15 @@ namespace RI.Framework.Utilities.Windows
 			NativeWindows.SetWindowPos(hWnd, NativeWindows.HwndBottom, 0, 0, 0, 0, NativeWindows.SwpNosize | NativeWindows.SwpNomove | NativeWindows.SwpNoactivate);
 		}
 
+		/// <summary>
+		///     Moves a window to the foreground (ontop of other windows).
+		/// </summary>
+		/// <param name="hWnd"> The window to move to the foreground. </param>
+		/// <remarks>
+		///     <para>
+		///         Nothing happens if <paramref name="hWnd" /> is <see cref="IntPtr.Zero" />.
+		///     </para>
+		/// </remarks>
 		public static void MoveWindowToForeground (IntPtr hWnd)
 		{
 			if (hWnd == IntPtr.Zero)
@@ -258,6 +376,15 @@ namespace RI.Framework.Utilities.Windows
 			NativeWindows.SetActiveWindow(hWnd);
 		}
 
+		/// <summary>
+		///     Sets a window to its normal position and size.
+		/// </summary>
+		/// <param name="hWnd"> The window to set to its normal position and size. </param>
+		/// <remarks>
+		///     <para>
+		///         Nothing happens if <paramref name="hWnd" /> is <see cref="IntPtr.Zero" />.
+		///     </para>
+		/// </remarks>
 		public static void NormalizeWindow (IntPtr hWnd)
 		{
 			if (hWnd == IntPtr.Zero)
@@ -268,13 +395,22 @@ namespace RI.Framework.Utilities.Windows
 			NativeWindows.ShowWindow(hWnd, (int)NativeWindows.SwShownormal);
 		}
 
+		/// <summary>
+		///     Moves a window to a new position and size.
+		/// </summary>
+		/// <param name="hWnd"> The window to move to a new position and size. </param>
+		/// <param name="x"> The new x position of the window (top-left of the window). </param>
+		/// <param name="y"> The new y position of the window (top-left of the window). </param>
+		/// <param name="width"> The new width of the window. </param>
+		/// <param name="height"> The new height of the window. </param>
+		/// <remarks>
+		///     <para>
+		///         Nothing happens if <paramref name="hWnd" /> is <see cref="IntPtr.Zero" />.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="width" /> or <paramref name="height" /> is less than zero. </exception>
 		public static void RelocateWindow (IntPtr hWnd, int x, int y, int width, int height)
 		{
-			if (hWnd == IntPtr.Zero)
-			{
-				return;
-			}
-
 			if (width < 0)
 			{
 				throw new ArgumentOutOfRangeException(nameof(width));
@@ -285,9 +421,23 @@ namespace RI.Framework.Utilities.Windows
 				throw new ArgumentOutOfRangeException(nameof(height));
 			}
 
+			if (hWnd == IntPtr.Zero)
+			{
+				return;
+			}
+
 			NativeWindows.MoveWindow(hWnd, x, y, width, height, true);
 		}
 
+		/// <summary>
+		///     Shows a window.
+		/// </summary>
+		/// <param name="hWnd"> The window to show. </param>
+		/// <remarks>
+		///     <para>
+		///         Nothing happens if <paramref name="hWnd" /> is <see cref="IntPtr.Zero" />.
+		///     </para>
+		/// </remarks>
 		public static void ShowWindow (IntPtr hWnd)
 		{
 			if (hWnd == IntPtr.Zero)

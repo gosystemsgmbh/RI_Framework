@@ -5,6 +5,8 @@ Utilities
  - RandomExtensions: NextBytes with max and min/max overload
  - RandomExtensions: FillStream with max and min/max overload
 
+ - (Windows) Screen
+
  - (Unity) Screenshot
 
 
@@ -106,6 +108,8 @@ Services
  + (Unity) Dispatcher: Timeout for operations
  + (Unity) Dispatcher: Cancel all operations
  + (Unity) Dispatcher: Process (process item in background thread, then broadcast processed item)
+
+ - (.NET) Messaging (TriggerMessageHandler)
 
  - (.NET) Resources (ResourceService, DirectoryResourceSource, ResourceConverter)
  - (WPF) Resources (WpfResourceTarget, WpfResourceConverter)
