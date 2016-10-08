@@ -10,6 +10,10 @@
   - [ ] Analyze and implement magic thread
   - [X] LogWriter for .NET
   - [ ] WinForms similar to WPF
+  - [ ] Locking for all LogWriters
+  - [ ] Moving all randomizer stuff into Utilities.Randomizing
+  - [ ] Check all usage of StringComparison and StringComparer
+  - [ ] Use nameof() instead of GetType().Name for logging where possible (sealed classes)
   - [ ] TODOs
 - [ ] Documentation
   - [ ] Examples

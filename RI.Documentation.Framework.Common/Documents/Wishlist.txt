@@ -5,7 +5,11 @@ Utilities
  - RandomExtensions: NextBytes with max and min/max overload
  - RandomExtensions: FillStream with max and min/max overload
 
+ - ISynchronizable
+
  - (Windows) Screen
+ - (Windows) OnScreenKeyboard
+ - (Windows) SystemUser, UserProfile
 
  - (WinForms) FormExtensions
  - (WinForms) TemporaryCursor
@@ -58,6 +62,12 @@ Collections
  - InheritingTreeNode
 
 
+Net
+---
+
+ - (Windows) NetworkResource
+
+
 I/O
 ---
 
@@ -89,6 +99,9 @@ I/O
  + INI reader, writer, document
  - CSV reader, writer, document
  - ZIP reader, writer, document
+
+ - (Windows) SystemKeyboard
+ - (Windows) SerialPortInstance
 
  - (Unity) OBJ mesh loader
  - (Unity) JSON mesh loader (babylon.JS)

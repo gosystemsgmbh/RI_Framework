@@ -2,5 +2,6 @@
 {
 	public static class TriggerMessageExtensions
 	{
+		
 	}
 }

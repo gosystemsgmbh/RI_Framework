@@ -52,6 +52,7 @@
     <Compile Include="Services\Messaging\Dispatchers\_NamespaceDoc.cs" />
     <Compile Include="Services\Messaging\Handlers\TriggerMessageExtensions.cs" />
     <Compile Include="Services\Messaging\Handlers\TriggerMessageHandler.cs" />
+    <Compile Include="Services\Messaging\Handlers\TriggerMessageNames.cs" />
     <Compile Include="Services\Messaging\Handlers\_NamespaceDoc.cs" />
     <Compile Include="Services\Messaging\IMessage.cs" />
     <Compile Include="Services\Messaging\IMessageDispatcher.cs" />

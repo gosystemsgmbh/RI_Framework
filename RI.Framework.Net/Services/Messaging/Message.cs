@@ -144,6 +144,12 @@ namespace RI.Framework.Services.Messaging
 		/// <inheritdoc />
 		public string Name { get; }
 
+		/// <inheritdoc />
+		object IMessage.GetData(string name)
+		{
+			return this.Data.ContainsKey(name) ? this.Data[name] : null;
+		}
+
 		#endregion
 	}
 }

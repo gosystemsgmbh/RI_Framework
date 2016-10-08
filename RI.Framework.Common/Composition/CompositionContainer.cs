@@ -371,7 +371,7 @@ namespace RI.Framework.Composition
 #if PLATFORM_NET
 			Type genericType = type.IsGenericType ? type.GetGenericTypeDefinition() : null;
 			Type typeArgument = type.IsGenericType ? type.GetGenericArguments()[0] : type;
-			return ( typeArgument.IsClass || typeArgument.IsInterface ) && ( ( genericType == null ) || ( genericType == typeof(IEnumerable<>) ) );
+			return (typeArgument.IsClass || typeArgument.IsInterface) && ((genericType == null) || (genericType == typeof(IEnumerable<>)));
 #else
 			return (type.IsClass || type.IsInterface) && (!type.IsGenericType);
 #endif
@@ -1567,24 +1567,24 @@ namespace RI.Framework.Composition
 
 			foreach (KeyValuePair<string, CompositionItem> compositionItem in this.Composition)
 			{
-				IListExtensions.RemoveWhere(compositionItem.Value.Instances, x => !x.Checked).ForEach(x =>
-				                                                                                      {
-					                                                                                      this.Log("Instance removed from container: {0} / {1}", compositionItem.Key, x.Instance.GetType().FullName);
-					                                                                                      (x.Instance as IExporting)?.RemovedFromContainer(compositionItem.Key, this);
-					                                                                                      if (this.AutoDispose)
-					                                                                                      {
-						                                                                                      (x.Instance as IDisposable)?.Dispose();
-					                                                                                      }
-				                                                                                      });
-				IListExtensions.RemoveWhere(compositionItem.Value.Types, x => !x.Checked).ForEach(x =>
-				                                                                                  {
-					                                                                                  this.Log("Type removed from container: {0} / {1}", compositionItem.Key, x.Instance.GetType().FullName);
-					                                                                                  (x.Instance as IExporting)?.RemovedFromContainer(compositionItem.Key, this);
-					                                                                                  if (this.AutoDispose)
-					                                                                                  {
-						                                                                                  (x.Instance as IDisposable)?.Dispose();
-					                                                                                  }
-				                                                                                  });
+				compositionItem.Value.Instances.RemoveWhere(x => !x.Checked).ForEach(x =>
+				                                                                     {
+					                                                                     this.Log("Instance removed from container: {0} / {1}", compositionItem.Key, x.Instance.GetType().FullName);
+					                                                                     (x.Instance as IExporting)?.RemovedFromContainer(compositionItem.Key, this);
+					                                                                     if (this.AutoDispose)
+					                                                                     {
+						                                                                     (x.Instance as IDisposable)?.Dispose();
+					                                                                     }
+				                                                                     });
+				compositionItem.Value.Types.RemoveWhere(x => !x.Checked).ForEach(x =>
+				                                                                 {
+					                                                                 this.Log("Type removed from container: {0} / {1}", compositionItem.Key, x.Instance.GetType().FullName);
+					                                                                 (x.Instance as IExporting)?.RemovedFromContainer(compositionItem.Key, this);
+					                                                                 if (this.AutoDispose)
+					                                                                 {
+						                                                                 (x.Instance as IDisposable)?.Dispose();
+					                                                                 }
+				                                                                 });
 				compositionItem.Value.ResetChecked();
 			}
 

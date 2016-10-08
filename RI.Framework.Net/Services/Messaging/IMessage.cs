@@ -44,5 +44,14 @@ namespace RI.Framework.Services.Messaging
 		///     </note>
 		/// </remarks>
 		string Name { get; }
+
+		/// <summary>
+		///     Gets message data.
+		/// </summary>
+		/// <param name="name"> The name of the message data. </param>
+		/// <returns>
+		///     The message data or null if the specified message data does not exist.
+		/// </returns>
+		object GetData (string name);
 	}
 }
