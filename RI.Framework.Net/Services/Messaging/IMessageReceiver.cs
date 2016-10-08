@@ -22,6 +22,7 @@ namespace RI.Framework.Services.Messaging
 		///     Called for each received message.
 		/// </summary>
 		/// <param name="message"> The received message. </param>
+		/// <param name="messageService"> The message service used to deliver the message. </param>
 		/// <remarks>
 		///     <note type="implement">
 		///         The actual message delivery is done one receiver at a time.
@@ -29,7 +30,7 @@ namespace RI.Framework.Services.Messaging
 		///         Therefore, long-running tasks should be avoided in <see cref="ReceiveMessage" />.
 		///     </note>
 		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="message" /> is null. </exception>
-		void ReceiveMessage (IMessage message);
+		/// <exception cref="ArgumentNullException"> <paramref name="message" /> or <paramref name="messageService" /> is null. </exception>
+		void ReceiveMessage (IMessage message, IMessageService messageService);
 	}
 }

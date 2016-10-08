@@ -96,7 +96,7 @@ namespace RI.Framework.Services.Messaging.Dispatchers
 		#region Interface: IMessageDispatcher
 
 		/// <inheritdoc />
-		public void Post (IEnumerable<IMessageReceiver> receivers, IMessage message)
+		public void Post (IEnumerable<IMessageReceiver> receivers, IMessage message, IMessageService messageService)
 		{
 			if (receivers == null)
 			{
@@ -110,17 +110,17 @@ namespace RI.Framework.Services.Messaging.Dispatchers
 
 			DispatcherPriority priority = this.GetPriorityFormessage(message);
 
-			this.Dispatcher.BeginInvoke(priority, new Action<IEnumerable<IMessageReceiver>, IMessage>((a, b) =>
-			                                                                                          {
-				                                                                                          foreach (IMessageReceiver receiver in a)
-				                                                                                          {
-					                                                                                          receiver.ReceiveMessage(b);
-				                                                                                          }
-			                                                                                          }), receivers, message);
+			this.Dispatcher.BeginInvoke(priority, new Action<IEnumerable<IMessageReceiver>, IMessage, IMessageService>((a, b, s) =>
+			                                                                                                           {
+				                                                                                                           foreach (IMessageReceiver receiver in a)
+				                                                                                                           {
+					                                                                                                           receiver.ReceiveMessage(b, s);
+				                                                                                                           }
+			                                                                                                           }), receivers, message, messageService);
 		}
 
 		/// <inheritdoc />
-		public void Send (IEnumerable<IMessageReceiver> receivers, IMessage message)
+		public void Send (IEnumerable<IMessageReceiver> receivers, IMessage message, IMessageService messageService)
 		{
 			if (receivers == null)
 			{
@@ -134,13 +134,13 @@ namespace RI.Framework.Services.Messaging.Dispatchers
 
 			DispatcherPriority priority = this.GetPriorityFormessage(message);
 
-			this.Dispatcher.Invoke(priority, new Action<IEnumerable<IMessageReceiver>, IMessage>((a, b) =>
-			                                                                                     {
-				                                                                                     foreach (IMessageReceiver receiver in a)
-				                                                                                     {
-					                                                                                     receiver.ReceiveMessage(b);
-				                                                                                     }
-			                                                                                     }), receivers, message);
+			this.Dispatcher.Invoke(priority, new Action<IEnumerable<IMessageReceiver>, IMessage, IMessageService>((a, b, s) =>
+			                                                                                                      {
+				                                                                                                      foreach (IMessageReceiver receiver in a)
+				                                                                                                      {
+					                                                                                                      receiver.ReceiveMessage(b, s);
+				                                                                                                      }
+			                                                                                                      }), receivers, message, messageService);
 		}
 
 		#endregion

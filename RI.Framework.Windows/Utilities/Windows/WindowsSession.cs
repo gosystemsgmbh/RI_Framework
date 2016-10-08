@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.InteropServices;
 
 
@@ -37,6 +38,7 @@ namespace RI.Framework.Utilities.Windows
 		///     Logs-off the current user.
 		/// </summary>
 		/// <param name="force"> Specifies whether the logoff is forced (true), terminating all busy applications, or busy applications prevent from logging-off (false). </param>
+		/// <exception cref="InvalidOperationException"> The necessary privilege adjustments failed. </exception>
 		public static void Logoff (bool force)
 		{
 			WindowsSession.AdjustPrivileges();
@@ -55,6 +57,7 @@ namespace RI.Framework.Utilities.Windows
 		///     Restarts the machine.
 		/// </summary>
 		/// <param name="force"> Specifies whether the restart is forced (true), terminating all busy applications, or busy applications prevent from restarting (false). </param>
+		/// <exception cref="InvalidOperationException"> The necessary privilege adjustments failed. </exception>
 		public static void Restart (bool force)
 		{
 			WindowsSession.AdjustPrivileges();
@@ -73,6 +76,7 @@ namespace RI.Framework.Utilities.Windows
 		///     Shuts-down the machine.
 		/// </summary>
 		/// <param name="force"> Specifies whether the shutdown is forced (true), terminating all busy applications, or busy applications prevent from shutting-down (false). </param>
+		/// <exception cref="InvalidOperationException"> The necessary privilege adjustments failed. </exception>
 		public static void Shutdown (bool force)
 		{
 			WindowsSession.AdjustPrivileges();

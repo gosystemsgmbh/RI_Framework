@@ -154,7 +154,7 @@ namespace RI.Framework.Services.Messaging
 
 			foreach (IMessageDispatcher dispatcher in this.Dispatchers)
 			{
-				dispatcher.Post(this.Receivers, message);
+				dispatcher.Post(this.Receivers, message, this);
 			}
 		}
 
@@ -204,7 +204,7 @@ namespace RI.Framework.Services.Messaging
 
 			foreach (IMessageDispatcher dispatcher in this.Dispatchers)
 			{
-				dispatcher.Send(this.Receivers, message);
+				dispatcher.Send(this.Receivers, message, this);
 			}
 		}
 

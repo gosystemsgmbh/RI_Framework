@@ -7,6 +7,9 @@ Utilities
 
  - (Windows) Screen
 
+ - (WinForms) FormExtensions
+ - (WinForms) TemporaryCursor
+
  - (Unity) Screenshot
 
 
@@ -77,7 +80,6 @@ I/O
  - FilePath: Size
 
  - DirectoryPathExtensions: Access control
-
  - FilePathExtensions: Access control
 
  - RandomStream
@@ -120,8 +122,9 @@ Services
  - (Unity) Settings (PlayerPrefsSettingStorage)
  - (Unity) Resources (UnityResourceTarget, UnityResourceConverter)
 
- - (WinForms) Regions (WinFormsRegionAdapter)
- - (WinForms) Messaging (WinFormsMessageDispatcher)
+ - (WinForms) WinFormsBootstrapper
+ - (WinForms) Regions (WinFormsRegionAdapterBase, WinFormsRegionAdapter)
+ - (WinForms) Messaging (WinFormsMessageDispatcher, IWinFormsMessage)
  - (WinForms) Resources (WinFormsResourceTarget, WinFormsResourceConverter)
 
  - (Unity) Packaging
