@@ -124,8 +124,6 @@ Services
  + (Unity) Dispatcher: Cancel all operations
  + (Unity) Dispatcher: Process (process item in background thread, then broadcast processed item)
 
- - (.NET) Messaging (TriggerMessageHandler)
-
  - (.NET) Resources (ResourceService, DirectoryResourceSource, ResourceConverter)
  - (WPF) Resources (WpfResourceTarget, WpfResourceConverter)
 

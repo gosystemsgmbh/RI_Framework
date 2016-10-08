@@ -3,10 +3,10 @@
 
 
 
-namespace RI.Framework.Services.Settings.Storages
+namespace RI.Framework.Services.Messaging.Handlers.Triggers
 {
 	/// <summary>
-	///     Contains specialized setting stores.
+	///     Contains trigger functionality message handling.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

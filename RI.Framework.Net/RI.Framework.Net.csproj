@@ -50,9 +50,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Logging\LogWriter.cs" />
     <Compile Include="Services\Messaging\Dispatchers\_NamespaceDoc.cs" />
-    <Compile Include="Services\Messaging\Handlers\TriggerMessageExtensions.cs" />
-    <Compile Include="Services\Messaging\Handlers\TriggerMessageHandler.cs" />
-    <Compile Include="Services\Messaging\Handlers\TriggerMessageNames.cs" />
+    <Compile Include="Services\Messaging\Handlers\Triggers\TriggerMessageExtensions.cs" />
+    <Compile Include="Services\Messaging\Handlers\Triggers\TriggerMessageHandler.cs" />
+    <Compile Include="Services\Messaging\Handlers\Triggers\TriggerMessageNames.cs" />
+    <Compile Include="Services\Messaging\Handlers\Triggers\_NamespaceDoc.cs" />
     <Compile Include="Services\Messaging\Handlers\_NamespaceDoc.cs" />
     <Compile Include="Services\Messaging\IMessage.cs" />
     <Compile Include="Services\Messaging\IMessageDispatcher.cs" />

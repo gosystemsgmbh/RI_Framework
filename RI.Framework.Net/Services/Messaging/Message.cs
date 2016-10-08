@@ -145,9 +145,79 @@ namespace RI.Framework.Services.Messaging
 		public string Name { get; }
 
 		/// <inheritdoc />
-		object IMessage.GetData(string name)
+		void IMessage.DeleteData (string name)
 		{
-			return this.Data.ContainsKey(name) ? this.Data[name] : null;
+			if (name == null)
+			{
+				throw new ArgumentNullException(nameof(name));
+			}
+
+			if (name.IsEmpty())
+			{
+				throw new EmptyStringArgumentException(nameof(name));
+			}
+
+			this.Data.Remove(name);
+		}
+
+		/// <inheritdoc />
+		object IMessage.GetData (string name)
+		{
+			if (name == null)
+			{
+				throw new ArgumentNullException(nameof(name));
+			}
+
+			if (name.IsEmpty())
+			{
+				throw new EmptyStringArgumentException(nameof(name));
+			}
+
+			if (!this.Data.ContainsKey(name))
+			{
+				throw new KeyNotFoundException();
+			}
+
+			return this.Data[name];
+		}
+
+		/// <inheritdoc />
+		bool IMessage.HasData (string name)
+		{
+			if (name == null)
+			{
+				throw new ArgumentNullException(nameof(name));
+			}
+
+			if (name.IsEmpty())
+			{
+				throw new EmptyStringArgumentException(nameof(name));
+			}
+
+			return this.Data.ContainsKey(name);
+		}
+
+		/// <inheritdoc />
+		void IMessage.SetData (string name, object value)
+		{
+			if (name == null)
+			{
+				throw new ArgumentNullException(nameof(name));
+			}
+
+			if (name.IsEmpty())
+			{
+				throw new EmptyStringArgumentException(nameof(name));
+			}
+
+			if (this.Data.ContainsKey(name))
+			{
+				this.Data[name] = value;
+			}
+			else
+			{
+				this.Data.Add(name, value);
+			}
 		}
 
 		#endregion

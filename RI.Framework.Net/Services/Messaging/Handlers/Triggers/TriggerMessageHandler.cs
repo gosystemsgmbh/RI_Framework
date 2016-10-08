@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
@@ -11,7 +11,7 @@ using RI.Framework.Utilities.Exceptions;
 
 
 
-namespace RI.Framework.Services.Messaging.Handlers
+namespace RI.Framework.Services.Messaging.Handlers.Triggers
 {
 	/// <summary>
 	///     Implements a message handler which provides trigger functionality.
@@ -145,8 +145,20 @@ namespace RI.Framework.Services.Messaging.Handlers
 
 			if (message.Name.StartsWith(TriggerMessageNames.MessageNamePrefix, StringComparison.Ordinal))
 			{
-				string triggerName = message.GetData(TriggerMessageNames.DataNameTriggerName) as string;
-				string subscriberId = message.GetData(TriggerMessageNames.DataNameSubscriberId) as string;
+				string triggerName = null;
+				string subscriberId = null;
+
+				try
+				{
+					triggerName = message.GetTriggerName();
+					subscriberId = message.GetSubscriberId();
+				}
+				catch (InvalidOperationException)
+				{
+					triggerName = null;
+					subscriberId = null;
+				}
+
 				if ((triggerName != null) && (subscriberId != null))
 				{
 					if (string.Equals(message.Name, TriggerMessageNames.MessageNameRequestSubscribe, StringComparison.Ordinal))
@@ -172,9 +184,9 @@ namespace RI.Framework.Services.Messaging.Handlers
 						LogLocator.LogDebug(nameof(TriggerMessageHandler), "Trigger changed: {0} -> [{1}/{2}]", changedTrigger.Name, changedTrigger.ArmedCount, changedTrigger.SubscriberCount);
 
 						Message triggerChangedMessage = new Message(TriggerMessageNames.MessageNameResponseChanged);
-						triggerChangedMessage.Data.Add(TriggerMessageNames.DataNameTriggerName, changedTrigger.Name);
-						triggerChangedMessage.Data.Add(TriggerMessageNames.DataNameTriggeredOr, changedTrigger.TriggeredOr);
-						triggerChangedMessage.Data.Add(TriggerMessageNames.DataNameTriggeredAnd, changedTrigger.TriggeredAnd);
+						triggerChangedMessage.SetTriggerName(changedTrigger.Name);
+						triggerChangedMessage.SetAndTriggered(changedTrigger.AndTriggered);
+						triggerChangedMessage.SetOrTriggered(changedTrigger.OrTriggered);
 						messageService.Post(triggerChangedMessage);
 					}
 				}
@@ -216,6 +228,14 @@ namespace RI.Framework.Services.Messaging.Handlers
 
 			#region Instance Properties/Indexer
 
+			public bool AndTriggered
+			{
+				get
+				{
+					return this.ArmedCount == this.SubscriberCount;
+				}
+			}
+
 			public int ArmedCount
 			{
 				get
@@ -226,6 +246,14 @@ namespace RI.Framework.Services.Messaging.Handlers
 
 			public string Name { get; private set; }
 
+			public bool OrTriggered
+			{
+				get
+				{
+					return this.ArmedCount > 0;
+				}
+			}
+
 			public int SubscriberCount
 			{
 				get
@@ -235,22 +263,6 @@ namespace RI.Framework.Services.Messaging.Handlers
 			}
 
 			public Dictionary<string, bool> Subscribers { get; private set; }
-
-			public bool TriggeredAnd
-			{
-				get
-				{
-					return this.ArmedCount == this.SubscriberCount;
-				}
-			}
-
-			public bool TriggeredOr
-			{
-				get
-				{
-					return this.ArmedCount > 0;
-				}
-			}
 
 			#endregion
 		}
