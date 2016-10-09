@@ -94,9 +94,12 @@ namespace RI.Framework.Mvvm
 			if (value is FrameworkElement)
 			{
 				FrameworkElement frameworkElement = (FrameworkElement)value;
-				if (container != null)
+				if (frameworkElement.DataContext != null)
 				{
-					container.ResolveImports(frameworkElement.DataContext, CompositionFlags.Normal);
+					if (container != null)
+					{
+						container.ResolveImports(frameworkElement.DataContext, CompositionFlags.Normal);
+					}
 				}
 				if (frameworkElement.DataContext is IViewModel)
 				{
