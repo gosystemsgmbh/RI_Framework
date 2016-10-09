@@ -3,11 +3,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{CB4BB068-91A4-44CD-94BC-13D1C5542C5B}</ProjectGuid>
+    <ProjectGuid>{98EA0BA4-5A90-4BA7-AA63-2403F8BBA6C5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RI.Test.Framework</RootNamespace>
-    <AssemblyName>RI.Test.Framework.Net</AssemblyName>
+    <RootNamespace>RI.Test.Framework.Common</RootNamespace>
+    <AssemblyName>RI.Test.Framework.Common</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -22,7 +22,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;PLATFORM_NET</DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -30,26 +30,12 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;PLATFORM_NET</DefineConstants>
+    <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>Properties\AssemblyName.snk</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Dynamic" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="System.Core" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -59,23 +45,44 @@
     </When>
     <Otherwise>
       <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework">
-          <Private>False</Private>
-        </Reference>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
       </ItemGroup>
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Collections\Comparison\Test_CollectionComparer.cs" />
+    <Compile Include="Collections\Generic\Test_Warehouse.cs" />
+    <Compile Include="Collections\ObjectModel\Test_IPoolExtensions.cs" />
+    <Compile Include="Collections\ObjectModel\Test_ITreeNodeExtensions.cs" />
+    <Compile Include="Collections\ObjectModel\Test_Pool.cs" />
+    <Compile Include="Collections\ObjectModel\Test_TreeNode.cs" />
+    <Compile Include="Collections\Specialized\Test_ClonePool.cs" />
+    <Compile Include="Collections\Test_HashSetExtensions.cs" />
+    <Compile Include="Collections\Test_ICollectionExtensions.cs" />
+    <Compile Include="Collections\Test_IDictionaryExtensions.cs" />
+    <Compile Include="Collections\Test_IEnumerableExtensions.cs" />
+    <Compile Include="Collections\Test_IListExtensions.cs" />
+    <Compile Include="Collections\Test_LinkedListExtensions.cs" />
+    <Compile Include="Collections\Test_QueueExtensions.cs" />
+    <Compile Include="Collections\Test_StackExtensions.cs" />
+    <Compile Include="IO\INI\Test_IniDocument.cs" />
+    <Compile Include="IO\Paths\Test_DirectoryPath.cs" />
+    <Compile Include="IO\Paths\Test_FilePath.cs" />
+    <Compile Include="IO\Paths\Test_PathProperties.cs" />
+    <Compile Include="Mocks\RENP.cs" />
+    <Compile Include="Mocks\VENP.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\RI.Framework.Net\RI.Framework.Net.csproj">
-      <Project>{a7f5dd2f-63bf-4032-ad1e-14d211e0d3ed}</Project>
-      <Name>RI.Framework.Net</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\AssemblyName.snk" />
+    <Compile Include="TestAssertionException.cs" />
+    <Compile Include="Test_HashSetExtensions.cs" />
+    <Compile Include="Utilities\Comparison\Test_EqualityComparison.cs" />
+    <Compile Include="Utilities\Comparison\Test_OrderComparison.cs" />
+    <Compile Include="Utilities\Reflection\Test_AssemblyExtensions.cs" />
+    <Compile Include="Utilities\Reflection\Test_TypeExtensions.cs" />
+    <Compile Include="Utilities\Test_DateTimeExtensions.cs" />
+    <Compile Include="Utilities\Test_StringExtensions.cs" />
+    <Compile Include="Utilities\Test_TimeSpanExtensions.cs" />
+    <Compile Include="Utilities\Text\Test_CommandLine.cs" />
+    <Compile Include="Utilities\Text\Test_IndentedTextWriter.cs" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
@@ -95,17 +102,8 @@
       </ItemGroup>
     </When>
   </Choose>
-  <Import Project="..\RI.Test.Framework.Common\RI.Test.Framework.Common.projitems" Label="Shared" />
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PreBuildEvent>@"$(SolutionDir)_Input\VersionUpdater.exe" "$(ProjectDir)Properties" "nr" "file" "$(SolutionDir)RI.Framework.Property.Version.txt" "$(SolutionDir)RI.Framework.Property.Company.txt" "$(SolutionDir)RI.Framework.Property.Copyright.txt"</PreBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup>
-    <PostBuildEvent>@md "$(SolutionDir)_Test"
-
-@copy "$(TargetDir)$(TargetName).*" "$(SolutionDir)_Test\*.*"</PostBuildEvent>
-  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

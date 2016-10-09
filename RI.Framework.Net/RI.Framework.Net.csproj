@@ -20,7 +20,7 @@
     <DefineConstants>TRACE;DEBUG;PLATFORM_NET</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>RI.Framework.Net.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\RI.Framework.Net.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,7 +29,7 @@
     <DefineConstants>TRACE;PLATFORM_NET</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>RI.Framework.Net.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\RI.Framework.Net.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>

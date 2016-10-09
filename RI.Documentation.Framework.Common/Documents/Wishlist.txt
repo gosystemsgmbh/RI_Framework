@@ -2,10 +2,10 @@
 Utilities
 ---------
 
- - RandomExtensions: NextBytes with max and min/max overload
- - RandomExtensions: FillStream with max and min/max overload
+ - (Common) RandomExtensions: NextBytes with max and min/max overload
+ - (Common) RandomExtensions: FillStream with max and min/max overload
 
- - ISynchronizable
+ - (Common) ISynchronizable
 
  - (Windows) Screen
  - (Windows) OnScreenKeyboard
@@ -20,46 +20,46 @@ Utilities
 Collections
 -----------
 
- - IEnumerableExtensions: Merge
- - IEnumerableExtensions: IsEmpty
- - IEnumerableExtensions: Shuffle
- - IEnumerableExtensions: CopyTo
- - IEnumerableExtensions: Repeat
- - IEnumerableExtensions: Concat with separator element
- - IEnumerableExtensions: IsSubsetOf, IsProperSubsetOf, Overlaps
- - IEnumerableExtensions: OrderBy, GroupBy
- - IEnumerableExtensions: FirstIndex, LastIndex, Indices
- - IEnumerableExtensions: FirstIndexOf, LastIndexOf, IndicesOf
- - IEnumerableExtensions: Single, SingleOrDefault
- - IEnumerableExtensions: TakeTail, TakeTailWhere
- - IEnumerableExtensions: SkipTail, SkipTailWhere
- - IEnumerableExtensions: EndsWithCount
- - IEnumerableExtensions: StartsWithCount
+ - (Common) IEnumerableExtensions: Merge
+ - (Common) IEnumerableExtensions: IsEmpty
+ - (Common) IEnumerableExtensions: Shuffle
+ - (Common) IEnumerableExtensions: CopyTo
+ - (Common) IEnumerableExtensions: Repeat
+ - (Common) IEnumerableExtensions: Concat with separator element
+ - (Common) IEnumerableExtensions: IsSubsetOf, IsProperSubsetOf, Overlaps
+ - (Common) IEnumerableExtensions: OrderBy, GroupBy
+ - (Common) IEnumerableExtensions: FirstIndex, LastIndex, Indices
+ - (Common) IEnumerableExtensions: FirstIndexOf, LastIndexOf, IndicesOf
+ - (Common) IEnumerableExtensions: Single, SingleOrDefault
+ - (Common) IEnumerableExtensions: TakeTail, TakeTailWhere
+ - (Common) IEnumerableExtensions: SkipTail, SkipTailWhere
+ - (Common) IEnumerableExtensions: EndsWithCount
+ - (Common) IEnumerableExtensions: StartsWithCount
 
- - IListExtensions: Backward enumerator
- - IListEnumerator: GetIndexOrDefault
+ - (Common) IListExtensions: Backward enumerator
+ - (Common) IListEnumerator: GetIndexOrDefault
 
- - IDictionaryExtensions: RemoveValue, RemoveValues
- - IDictionaryExtensions: AddOrReplaceRange
- - IDictionaryExtensions: TryAddRange
- - IDictionaryExtensions: Swap
- - IDictionaryExtensions: ContainsKey with predicate
- - IDictionaryExtensions: ContainsValue with predicate
+ - (Common) IDictionaryExtensions: RemoveValue, RemoveValues
+ - (Common) IDictionaryExtensions: AddOrReplaceRange
+ - (Common) IDictionaryExtensions: TryAddRange
+ - (Common) IDictionaryExtensions: Swap
+ - (Common) IDictionaryExtensions: ContainsKey with predicate
+ - (Common) IDictionaryExtensions: ContainsValue with predicate
 
- - ITreeNodeExtensions: ClearChildren
- - ITreeNodeExtensions: ContainsChild
- - ITreeNodeExtensions: ContainsChildRecursive
- - ITreeNodeExtensions: AddChild
- - ITreeNodeExtensions: AddChildRange
- - ITreeNodeExtensions: Path building and deflating
+ - (Common) ITreeNodeExtensions: ClearChildren
+ - (Common) ITreeNodeExtensions: ContainsChild
+ - (Common) ITreeNodeExtensions: ContainsChildRecursive
+ - (Common) ITreeNodeExtensions: AddChild
+ - (Common) ITreeNodeExtensions: AddChildRange
+ - (Common) ITreeNodeExtensions: Path building and deflating
 
- - WatchableList
- - ObservableList
+ - (Common) WatchableList
+ - (Common) ObservableList
 
- - PriorityQueue
- - RingBuffer
- - SortedQueue
- - InheritingTreeNode
+ - (Common) PriorityQueue
+ - (Common) RingBuffer
+ - (Common) SortedQueue
+ - (Common) InheritingTreeNode
 
 
 Net
@@ -71,34 +71,34 @@ Net
 I/O
 ---
 
- - PathProperties: ChangeType
+ - (Common) PathProperties: ChangeType
  
- - PathString: IsCompatible
+ - (Common) PathString: IsCompatible
 
- - DirectoryPath: Copy
- - DirectoryPath: Move
- - DirectoryPath: GetFiles
- - DirectoryPath: FindFiles
- - DirectoryPath: GetDirectories
- - DirectoryPath: FindDirectories
+ - (Common) DirectoryPath: Copy
+ - (Common) DirectoryPath: Move
+ - (Common) DirectoryPath: GetFiles
+ - (Common) DirectoryPath: FindFiles
+ - (Common) DirectoryPath: GetDirectories
+ - (Common) DirectoryPath: FindDirectories
 
- - FilePath: Copy
- - FilePath: Move
- - FilePath: FindFiles
- - FilePath: AppendText
- - FilePath: AppendBytes
- - FilePath: Size
+ - (Common) FilePath: Copy
+ - (Common) FilePath: Move
+ - (Common) FilePath: FindFiles
+ - (Common) FilePath: AppendText
+ - (Common) FilePath: AppendBytes
+ - (Common) FilePath: Size
 
- - DirectoryPathExtensions: Access control
- - FilePathExtensions: Access control
+ - (Common) RandomStream
+ - (Common) UncloseableStream
+ - (Common) StreamExtensions
 
- - RandomStream
- - UncloseableStream
- - StreamExtensions
+ + (Common) INI reader, writer, document
+ - (Common) CSV reader, writer, document
+ - (Common) ZIP reader, writer, document
 
- + INI reader, writer, document
- - CSV reader, writer, document
- - ZIP reader, writer, document
+ - (Windows) DirectoryPathExtensions: Access control
+ - (Windows) FilePathExtensions: Access control
 
  - (Windows) SystemKeyboard
  - (Windows) SerialPortInstance
@@ -110,8 +110,8 @@ I/O
 Composition
 ---------
 
- - AggregateCatalog
- - Add container to container
+ - (Common) AggregateCatalog
+ - (Common) Add container to container
 
 
 Services
@@ -147,19 +147,19 @@ Services
 Math
 ----
 
- - AsDouble
- - AsFloat
- - Aggregate extensions for numerical types (byte, short, int, long, double, float), including statistics (min, max, sum, average, median, RMS, count)
+ - (Common) AsDouble
+ - (Common) AsFloat
+ - (Common) Aggregate extensions for numerical types (byte, short, int, long, double, float), including statistics (min, max, sum, average, median, RMS, count)
 
- - PID controller
+ - (Common) PID controller
 
- - Bezier/Spline curves
+ - (Common) Bezier/Spline curves
 
 
 State machines
 --------------
 
- - State machines
+ - (Common) State machines
 
 
 Behaviours

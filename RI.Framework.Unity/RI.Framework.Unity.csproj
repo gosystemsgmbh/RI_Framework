@@ -21,7 +21,7 @@
     <DefineConstants>TRACE;DEBUG;PLATFORM_UNITY</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>RI.Framework.Unity.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\RI.Framework.Unity.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,7 +30,7 @@
     <DefineConstants>TRACE;PLATFORM_UNITY</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>RI.Framework.Unity.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\RI.Framework.Unity.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

@@ -22,7 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>RI.Framework.SQLite.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\RI.Framework.SQLite.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,7 +31,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>RI.Framework.SQLite.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\RI.Framework.SQLite.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -51,18 +51,11 @@
       <HintPath>..\packages\System.Data.SQLite.Linq.1.0.103\lib\net46\System.Data.SQLite.Linq.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Dynamic" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\SQLite\ISQLiteDatabaseMigrationStep.cs" />
-    <Compile Include="Data\SQLite\ISQLiteDatabaseVersionDetector.cs" />
     <Compile Include="Data\SQLite\Migration\_NamespaceDoc.cs" />
-    <Compile Include="Data\SQLite\SQLiteDatabaseManager.cs" />
     <Compile Include="Data\SQLite\_NamespaceDoc.cs" />
     <Compile Include="Data\_NamespaceDoc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

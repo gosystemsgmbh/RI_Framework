@@ -1,0 +1,183 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{81E7385B-FA1F-4923-B911-32AE608DCCC5}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>RI.Framework</RootNamespace>
+    <AssemblyName>RI.Framework.Common</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>Properties\AssemblyName.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Collections\Comparison\CollectionComparer.cs" />
+    <Compile Include="Collections\Comparison\CollectionComparerFlags.cs" />
+    <Compile Include="Collections\Comparison\_NamespaceDoc.cs" />
+    <Compile Include="Collections\Generic\IWarehouse.cs" />
+    <Compile Include="Collections\Generic\Warehouse.cs" />
+    <Compile Include="Collections\Generic\_NamespaceDoc.cs" />
+    <Compile Include="Collections\HashSetExtensions.cs" />
+    <Compile Include="Collections\ICollectionExtensions.cs" />
+    <Compile Include="Collections\IDictionaryExtensions.cs" />
+    <Compile Include="Collections\IEnumerableExtensions.cs" />
+    <Compile Include="Collections\IListExtensions.cs" />
+    <Compile Include="Collections\LinkedListExtensions.cs" />
+    <Compile Include="Collections\ObjectModel\IPool.cs" />
+    <Compile Include="Collections\ObjectModel\IPoolAware.cs" />
+    <Compile Include="Collections\ObjectModel\IPoolExtensions.cs" />
+    <Compile Include="Collections\ObjectModel\ITreeNode.cs" />
+    <Compile Include="Collections\ObjectModel\ITreeNodeExtensions.cs" />
+    <Compile Include="Collections\ObjectModel\Pool.cs" />
+    <Compile Include="Collections\ObjectModel\PoolBase.cs" />
+    <Compile Include="Collections\ObjectModel\TreeNode.cs" />
+    <Compile Include="Collections\ObjectModel\TreeNodeBase.cs" />
+    <Compile Include="Collections\ObjectModel\_NamespaceDoc.cs" />
+    <Compile Include="Collections\QueueExtensions.cs" />
+    <Compile Include="Collections\Specialized\ClonePool.cs" />
+    <Compile Include="Collections\Specialized\_NamespaceDoc.cs" />
+    <Compile Include="Collections\StackExtensions.cs" />
+    <Compile Include="Collections\_NamespaceDoc.cs" />
+    <Compile Include="Composition\Catalogs\AssemblyCatalog.cs" />
+    <Compile Include="Composition\Catalogs\DirectoryCatalog.cs" />
+    <Compile Include="Composition\Catalogs\InstanceCatalog.cs" />
+    <Compile Include="Composition\Catalogs\TypeCatalog.cs" />
+    <Compile Include="Composition\Catalogs\_NamespaceDoc.cs" />
+    <Compile Include="Composition\CompositionBatch.cs" />
+    <Compile Include="Composition\CompositionCatalog.cs" />
+    <Compile Include="Composition\CompositionCatalogItem.cs" />
+    <Compile Include="Composition\CompositionContainer.cs" />
+    <Compile Include="Composition\CompositionException.cs" />
+    <Compile Include="Composition\CompositionFlags.cs" />
+    <Compile Include="Composition\Model\ExportAttribute.cs" />
+    <Compile Include="Composition\Model\ExportConstructorAttribute.cs" />
+    <Compile Include="Composition\Model\ExportCreatorAttribute.cs" />
+    <Compile Include="Composition\Model\IExporting.cs" />
+    <Compile Include="Composition\Model\IImporting.cs" />
+    <Compile Include="Composition\Model\Import.cs" />
+    <Compile Include="Composition\Model\ImportExtensions.cs" />
+    <Compile Include="Composition\Model\ImportPropertyAttribute.cs" />
+    <Compile Include="Composition\Model\_NamespaceDoc.cs" />
+    <Compile Include="Composition\_NamespaceDoc.cs" />
+    <Compile Include="IO\INI\Elements\CommentIniElement.cs" />
+    <Compile Include="IO\INI\Elements\SectionIniElement.cs" />
+    <Compile Include="IO\INI\Elements\TextIniElement.cs" />
+    <Compile Include="IO\INI\Elements\ValueIniElement.cs" />
+    <Compile Include="IO\INI\Elements\_NamespaceDoc.cs" />
+    <Compile Include="IO\INI\IniDocument.cs" />
+    <Compile Include="IO\INI\IniElement.cs" />
+    <Compile Include="IO\INI\IniParsingException.cs" />
+    <Compile Include="IO\INI\IniReader.cs" />
+    <Compile Include="IO\INI\IniReaderError.cs" />
+    <Compile Include="IO\INI\IniReaderSettings.cs" />
+    <Compile Include="IO\INI\IniSettings.cs" />
+    <Compile Include="IO\INI\IniWriter.cs" />
+    <Compile Include="IO\INI\IniWriterSettings.cs" />
+    <Compile Include="IO\INI\_NamespaceDoc.cs" />
+    <Compile Include="IO\Paths\DirectoryPath.cs" />
+    <Compile Include="IO\Paths\FilePath.cs" />
+    <Compile Include="IO\Paths\PathError.cs" />
+    <Compile Include="IO\Paths\PathProperties.cs" />
+    <Compile Include="IO\Paths\PathString.cs" />
+    <Compile Include="IO\Paths\PathType.cs" />
+    <Compile Include="IO\Paths\_NamespaceDoc.cs" />
+    <Compile Include="IO\_NamespaceDoc.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\IBootstrapper.cs" />
+    <Compile Include="Services\Logging\ILogService.cs" />
+    <Compile Include="Services\Logging\ILogWriter.cs" />
+    <Compile Include="Services\Logging\LogLevel.cs" />
+    <Compile Include="Services\Logging\LogLocator.cs" />
+    <Compile Include="Services\Logging\LogService.cs" />
+    <Compile Include="Services\Logging\Writers\DirectoryLogWriter.cs" />
+    <Compile Include="Services\Logging\Writers\_NamespaceDoc.cs" />
+    <Compile Include="Services\Logging\_NamespaceDoc.cs" />
+    <Compile Include="Services\Modularization\IModule.cs" />
+    <Compile Include="Services\Modularization\IModuleService.cs" />
+    <Compile Include="Services\Modularization\Module.cs" />
+    <Compile Include="Services\Modularization\ModuleService.cs" />
+    <Compile Include="Services\Modularization\_NamespaceDoc.cs" />
+    <Compile Include="Services\ServiceLocator.cs" />
+    <Compile Include="Services\_NamespaceDoc.cs" />
+    <Compile Include="Utilities\Comparison\EqualityComparison.cs" />
+    <Compile Include="Utilities\Comparison\OrderComparison.cs" />
+    <Compile Include="Utilities\Comparison\_NamespaceDoc.cs" />
+    <Compile Include="Utilities\DateTimeExtensions.cs" />
+    <Compile Include="Utilities\DoubleExtensions.cs" />
+    <Compile Include="Utilities\ExceptionExtensions.cs" />
+    <Compile Include="Utilities\Exceptions\EmptyStringArgumentException.cs" />
+    <Compile Include="Utilities\Exceptions\InvalidPathArgumentException.cs" />
+    <Compile Include="Utilities\Exceptions\InvalidTypeArgumentException.cs" />
+    <Compile Include="Utilities\Exceptions\NotAnEnumerationArgumentException.cs" />
+    <Compile Include="Utilities\Exceptions\NotFiniteArgumentException.cs" />
+    <Compile Include="Utilities\Exceptions\NotReadableStreamArgumentException.cs" />
+    <Compile Include="Utilities\Exceptions\NotSeekableStreamArgumentException.cs" />
+    <Compile Include="Utilities\Exceptions\NotWriteableStreamArgumentException.cs" />
+    <Compile Include="Utilities\Exceptions\_NamespaceDoc.cs" />
+    <Compile Include="Utilities\FloatExtensions.cs" />
+    <Compile Include="Utilities\ObjectModel\ICloneable.cs" />
+    <Compile Include="Utilities\ObjectModel\_NamespaceDoc.cs" />
+    <Compile Include="Utilities\RandomExtensions.cs" />
+    <Compile Include="Utilities\Reflection\AssemblyExtensions.cs" />
+    <Compile Include="Utilities\Reflection\TypeExtensions.cs" />
+    <Compile Include="Utilities\Reflection\_NamespaceDoc.cs" />
+    <Compile Include="Utilities\StringExtensions.cs" />
+    <Compile Include="Utilities\StringSplitPredicate.cs" />
+    <Compile Include="Utilities\Text\CommandLine.cs" />
+    <Compile Include="Utilities\Text\IndentedTextWriter.cs" />
+    <Compile Include="Utilities\Text\_NamespaceDoc.cs" />
+    <Compile Include="Utilities\TimeSpanExtensions.cs" />
+    <Compile Include="Utilities\_NamespaceDoc.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\AssemblyName.snk" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>@"$(SolutionDir)_Input\VersionUpdater.exe" "$(ProjectDir)Properties" "nr" "file" "$(SolutionDir)RI.Framework.Property.Version.txt" "$(SolutionDir)RI.Framework.Property.Company.txt" "$(SolutionDir)RI.Framework.Property.Copyright.txt"</PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>@md "$(SolutionDir)_Output"
+@md "$(SolutionDir)_Test"
+
+@copy "$(TargetDir)$(TargetName).*" "$(SolutionDir)_Output\*.*"
+@copy "$(TargetDir)$(TargetName).*" "$(SolutionDir)_Test\*.*"</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
