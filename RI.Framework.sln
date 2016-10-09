@@ -69,7 +69,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Framework.Net", "RI.Fram
 		{59451CBF-33C9-4247-8446-B2E3D4105FDE} = {59451CBF-33C9-4247-8446-B2E3D4105FDE}
 	EndProjectSection
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "RI.Framework.Common", "RI.Framework.Common\RI.Framework.Common.shproj", "{0DE0D41D-B3C7-4EB5-A76E-62FC4CA9CB30}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "RI.Framework.Shared", "RI.Framework.Common\RI.Framework.Shared.shproj", "{0DE0D41D-B3C7-4EB5-A76E-62FC4CA9CB30}"
 EndProject
 Project("{7CF6DF6D-3B04-46F8-A40B-537D21BCA0B4}") = "RI.Documentation.Framework.Net", "RI.Documentation.Framework.Net\RI.Documentation.Framework.Net.shfbproj", "{0CE71375-77BE-427A-822D-7BF17C7A3BC5}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -91,7 +91,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Test.Framework.Net", "RI
 		{59451CBF-33C9-4247-8446-B2E3D4105FDE} = {59451CBF-33C9-4247-8446-B2E3D4105FDE}
 	EndProjectSection
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "RI.Test.Framework.Common", "RI.Test.Framework.Common\RI.Test.Framework.Common.shproj", "{D002CC0C-2A9C-4731-A3E6-DFFA517E3BD9}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "RI.Test.Framework.Shared", "RI.Test.Framework.Common\RI.Test.Framework.Shared.shproj", "{D002CC0C-2A9C-4731-A3E6-DFFA517E3BD9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Tools.Framework.Libraries", "RI.Tools.Framework.Libraries\RI.Tools.Framework.Libraries.csproj", "{59451CBF-33C9-4247-8446-B2E3D4105FDE}"
 EndProject

@@ -59,19 +59,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\SQLite\ISQLiteDatabaseMigrationStep.cs" />
-    <Compile Include="Data\SQLite\ISQLiteDatabaseVersionDetector.cs" />
     <Compile Include="Data\SQLite\Migration\_NamespaceDoc.cs" />
-    <Compile Include="Data\SQLite\SQLiteDatabaseManager.cs" />
     <Compile Include="Data\SQLite\_NamespaceDoc.cs" />
     <Compile Include="Data\_NamespaceDoc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\RI.Framework.Net\RI.Framework.Net.csproj">
-      <Project>{a7f5dd2f-63bf-4032-ad1e-14d211e0d3ed}</Project>
-      <Name>RI.Framework.Net</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

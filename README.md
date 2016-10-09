@@ -48,5 +48,12 @@
 - [ ] General Features
   - [ ] I/O
   - [ ] Math
+- [ ] TODO
+  - [ ] Move settings base to Common, add settings types for Unity
 - [ ] Documentation
   - [ ] .NET documentation
+
+## Later
+
+- [ ] TODO
+  - [ ] Move resources base to Common, add resource types for Unity
