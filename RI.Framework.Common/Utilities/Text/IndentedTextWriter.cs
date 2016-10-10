@@ -181,7 +181,7 @@ namespace RI.Framework.Utilities.Text
 
 		private bool CheckNotClosed ()
 		{
-			return ( this.BaseWriter != null );
+			return (this.BaseWriter != null);
 		}
 
 		private void CloseInternal ()
@@ -201,22 +201,22 @@ namespace RI.Framework.Utilities.Text
 		{
 			if (value == null)
 			{
-				return ( string.Empty );
+				return (string.Empty);
 			}
 
 			if (value is IFormattable)
 			{
-				return ( ( (IFormattable)value ).ToString(null, this.FormatProvider) );
+				return (((IFormattable)value).ToString(null, this.FormatProvider));
 			}
 
-			return ( value.ToString() );
+			return (value.ToString());
 		}
 
 		private void VerifyNotClosed ()
 		{
 			if (!this.CheckNotClosed())
 			{
-				throw ( new ObjectDisposedException(this.GetType().Name) );
+				throw new ObjectDisposedException(nameof(IndentedTextWriter));
 			}
 		}
 
@@ -326,7 +326,7 @@ namespace RI.Framework.Utilities.Text
 				return;
 			}
 
-			if (( value == '\n' ) || ( value == this.NewLine[0] ))
+			if ((value == '\n') || (value == this.NewLine[0]))
 			{
 				this.WriteLine();
 			}
@@ -343,7 +343,7 @@ namespace RI.Framework.Utilities.Text
 		{
 			if (buffer == null)
 			{
-				throw ( new ArgumentNullException(nameof(buffer)) );
+				throw (new ArgumentNullException(nameof(buffer)));
 			}
 
 			this.VerifyNotClosed();
@@ -359,17 +359,17 @@ namespace RI.Framework.Utilities.Text
 		{
 			if (buffer == null)
 			{
-				throw ( new ArgumentNullException(nameof(buffer)) );
+				throw (new ArgumentNullException(nameof(buffer)));
 			}
 
-			if (( index < 0 ) || ( ( index >= buffer.Length ) && ( count > 0 ) ))
+			if ((index < 0) || ((index >= buffer.Length) && (count > 0)))
 			{
-				throw ( new ArgumentOutOfRangeException(nameof(index)) );
+				throw (new ArgumentOutOfRangeException(nameof(index)));
 			}
 
-			if (( count < 0 ) || ( ( index + count ) >= buffer.Length ))
+			if ((count < 0) || ((index + count) >= buffer.Length))
 			{
-				throw ( new ArgumentOutOfRangeException(nameof(count)) );
+				throw (new ArgumentOutOfRangeException(nameof(count)));
 			}
 
 			this.VerifyNotClosed();
@@ -475,7 +475,7 @@ namespace RI.Framework.Utilities.Text
 		{
 			if (value == null)
 			{
-				throw ( new ArgumentNullException(nameof(value)) );
+				throw (new ArgumentNullException(nameof(value)));
 			}
 
 			this.VerifyNotClosed();
@@ -540,7 +540,7 @@ namespace RI.Framework.Utilities.Text
 		{
 			if (buffer == null)
 			{
-				throw ( new ArgumentNullException(nameof(buffer)) );
+				throw (new ArgumentNullException(nameof(buffer)));
 			}
 
 			this.VerifyNotClosed();
@@ -558,17 +558,17 @@ namespace RI.Framework.Utilities.Text
 		{
 			if (buffer == null)
 			{
-				throw ( new ArgumentNullException(nameof(buffer)) );
+				throw (new ArgumentNullException(nameof(buffer)));
 			}
 
-			if (( index < 0 ) || ( ( index >= buffer.Length ) && ( count > 0 ) ))
+			if ((index < 0) || ((index >= buffer.Length) && (count > 0)))
 			{
-				throw ( new ArgumentOutOfRangeException(nameof(index)) );
+				throw (new ArgumentOutOfRangeException(nameof(index)));
 			}
 
-			if (( count < 0 ) || ( ( index + count ) >= buffer.Length ))
+			if ((count < 0) || ((index + count) >= buffer.Length))
 			{
-				throw ( new ArgumentOutOfRangeException(nameof(count)) );
+				throw (new ArgumentOutOfRangeException(nameof(count)));
 			}
 
 			this.VerifyNotClosed();
@@ -681,7 +681,7 @@ namespace RI.Framework.Utilities.Text
 		{
 			if (value == null)
 			{
-				throw ( new ArgumentNullException(nameof(value)) );
+				throw (new ArgumentNullException(nameof(value)));
 			}
 
 			this.VerifyNotClosed();

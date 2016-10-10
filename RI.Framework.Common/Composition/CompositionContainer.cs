@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 using RI.Framework.Collections;
@@ -406,7 +407,7 @@ namespace RI.Framework.Composition
 		/// </summary>
 		~CompositionContainer ()
 		{
-			this.Clear();
+			this.Dispose(false);
 		}
 
 		#endregion
@@ -1280,6 +1281,12 @@ namespace RI.Framework.Composition
 			this.Types.Add(new CompositionCatalogItem(name, type));
 		}
 
+		[SuppressMessage ("ReSharper", "UnusedParameter.Local")]
+		private void Dispose (bool disposing)
+		{
+			this.Clear();
+		}
+
 		private List<object> GetAllInstancesInternal ()
 		{
 			List<object> instances = new List<object>();
@@ -1619,8 +1626,7 @@ namespace RI.Framework.Composition
 		/// <inheritdoc />
 		void IDisposable.Dispose ()
 		{
-			this.Clear();
-			GC.SuppressFinalize(this);
+			this.Dispose(true);
 		}
 
 		#endregion

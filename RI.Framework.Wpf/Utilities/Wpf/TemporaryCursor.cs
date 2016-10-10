@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Windows.Input;
 
 
@@ -65,6 +66,14 @@ namespace RI.Framework.Utilities.Wpf
 			Mouse.OverrideCursor = cursor;
 		}
 
+		/// <summary>
+		///     Garbage collects this instance of <see cref="TemporaryCursor" />.
+		/// </summary>
+		~TemporaryCursor ()
+		{
+			this.Dispose(false);
+		}
+
 		#endregion
 
 
@@ -79,6 +88,23 @@ namespace RI.Framework.Utilities.Wpf
 
 
 
+		#region Instance Methods
+
+		[SuppressMessage ("ReSharper", "UnusedParameter.Local")]
+		private void Dispose (bool disposing)
+		{
+			if (this.PreviousCursor != null)
+			{
+				Mouse.OverrideCursor = this.PreviousCursor;
+				this.PreviousCursor = null;
+			}
+		}
+
+		#endregion
+
+
+
+
 		#region Interface: IDisposable
 
 		/// <summary>
@@ -86,7 +112,8 @@ namespace RI.Framework.Utilities.Wpf
 		/// </summary>
 		public void Dispose ()
 		{
-			Mouse.OverrideCursor = this.PreviousCursor;
+			this.Dispose(true);
+			GC.SuppressFinalize(this);
 		}
 
 		#endregion

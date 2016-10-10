@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
 using RI.Framework.IO.INI.Elements;
@@ -54,7 +55,6 @@ namespace RI.Framework.IO.INI
 			this.Settings = settings ?? new IniWriterSettings();
 
 			this.Written = false;
-			this.Closed = false;
 		}
 
 		/// <summary>
@@ -62,7 +62,7 @@ namespace RI.Framework.IO.INI
 		/// </summary>
 		~IniWriter ()
 		{
-			this.Close();
+			this.Dispose(false);
 		}
 
 		#endregion
@@ -75,14 +75,18 @@ namespace RI.Framework.IO.INI
 		/// <summary>
 		///     Gets the <see cref="TextWriter" /> which is used by this INI writer to write the INI data.
 		/// </summary>
+		/// <value>
+		///     The <see cref="TextWriter" /> which is used by this INI writer to write the INI data or null if the the INI writer is closed/disposed.
+		/// </value>
 		public TextWriter BaseWriter { get; private set; }
 
 		/// <summary>
 		///     Gets the used writer settings for this INI writer.
 		/// </summary>
+		/// <value>
+		///     The used writer settings for this INI writer.
+		/// </value>
 		public IniWriterSettings Settings { get; private set; }
-
-		private bool Closed { get; set; }
 
 		private bool Written { get; set; }
 
@@ -98,14 +102,14 @@ namespace RI.Framework.IO.INI
 		/// </summary>
 		public void Close ()
 		{
-			this.BaseWriter?.Flush();
-			this.BaseWriter?.Close();
+			this.Dispose(true);
+			GC.SuppressFinalize(this);
 		}
 
 		/// <summary>
 		///     Flushes all written data to the underlying <see cref="TextWriter" /> (<see cref="BaseWriter" />).
 		/// </summary>
-		/// <exception cref="InvalidOperationException"> The INI writer has been closed/disposed. </exception>
+		/// <exception cref="ObjectDisposedException"> The INI writer has been closed/disposed. </exception>
 		public void Flush ()
 		{
 			this.VerifyNotClosed();
@@ -125,12 +129,12 @@ namespace RI.Framework.IO.INI
 		///         If <paramref name="comment" /> is null or an empty string, an empty string is written as comment.
 		///     </para>
 		/// </remarks>
-		/// <exception cref="InvalidOperationException"> The INI writer has been closed/disposed. </exception>
+		/// <exception cref="ObjectDisposedException"> The INI writer has been closed/disposed. </exception>
 		public void WriteComment (string comment)
 		{
 			this.VerifyNotClosed();
 
-			string[] lines = ( comment ?? string.Empty ).SplitLines();
+			string[] lines = (comment ?? string.Empty).SplitLines();
 			foreach (string line in lines)
 			{
 				this.WriteNewLineIfNecessary();
@@ -144,7 +148,7 @@ namespace RI.Framework.IO.INI
 		/// </summary>
 		/// <param name="element"> The element to write. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="element" /> is null. </exception>
-		/// <exception cref="InvalidOperationException"> The INI writer has been closed/disposed. </exception>
+		/// <exception cref="ObjectDisposedException"> The INI writer has been closed/disposed. </exception>
 		public void WriteElement (IniElement element)
 		{
 			if (element == null)
@@ -188,7 +192,7 @@ namespace RI.Framework.IO.INI
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="sectionName" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="sectionName" /> is an empty string. </exception>
-		/// <exception cref="InvalidOperationException"> The INI writer has been closed/disposed. </exception>
+		/// <exception cref="ObjectDisposedException"> The INI writer has been closed/disposed. </exception>
 		public void WriteSection (string sectionName)
 		{
 			if (sectionName == null)
@@ -228,12 +232,12 @@ namespace RI.Framework.IO.INI
 		///         If <paramref name="text" /> is null or an empty string, an empty string is written as text.
 		///     </para>
 		/// </remarks>
-		/// <exception cref="InvalidOperationException"> The INI writer has been closed/disposed. </exception>
+		/// <exception cref="ObjectDisposedException"> The INI writer has been closed/disposed. </exception>
 		public void WriteText (string text)
 		{
 			this.VerifyNotClosed();
 
-			string[] lines = ( text ?? string.Empty ).SplitLines();
+			string[] lines = (text ?? string.Empty).SplitLines();
 			foreach (string line in lines)
 			{
 				this.WriteNewLineIfNecessary();
@@ -257,7 +261,7 @@ namespace RI.Framework.IO.INI
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="name" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
-		/// <exception cref="InvalidOperationException"> The INI writer has been closed/disposed. </exception>
+		/// <exception cref="ObjectDisposedException"> The INI writer has been closed/disposed. </exception>
 		public void WriteValue (string name, string value)
 		{
 			if (name == null)
@@ -279,6 +283,17 @@ namespace RI.Framework.IO.INI
 			this.WriteInternal(name);
 			this.WriteInternal(this.Settings.NameValueSeparator);
 			this.WriteInternal(value);
+		}
+
+		[SuppressMessage ("ReSharper", "UnusedParameter.Local")]
+		private void Dispose (bool disposing)
+		{
+			if (this.BaseWriter != null)
+			{
+				this.BaseWriter.Flush();
+				this.BaseWriter.Close();
+				this.BaseWriter = null;
+			}
 		}
 
 		private string EncodeGeneral (string value)
@@ -315,9 +330,9 @@ namespace RI.Framework.IO.INI
 
 		private void VerifyNotClosed ()
 		{
-			if (this.Closed)
+			if (this.BaseWriter == null)
 			{
-				throw new InvalidOperationException();
+				throw new ObjectDisposedException(nameof(IniWriter));
 			}
 		}
 

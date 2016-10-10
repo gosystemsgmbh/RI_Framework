@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
 using RI.Framework.IO.INI.Elements;
@@ -56,7 +57,6 @@ namespace RI.Framework.IO.INI
 			this.CurrentElement = null;
 			this.CurrentError = IniReaderError.None;
 			this.Buffer = null;
-			this.Closed = false;
 		}
 
 		/// <summary>
@@ -64,7 +64,7 @@ namespace RI.Framework.IO.INI
 		/// </summary>
 		~IniReader ()
 		{
-			this.Close();
+			this.Dispose(false);
 		}
 
 		#endregion
@@ -77,6 +77,9 @@ namespace RI.Framework.IO.INI
 		/// <summary>
 		///     Gets the <see cref="TextReader" /> which is used by this INI reader to read the INI data.
 		/// </summary>
+		/// <value>
+		///     The <see cref="TextReader" /> which is used by this INI reader to read the INI data or null if the the INI reader is closed/disposed.
+		/// </value>
 		public TextReader BaseReader { get; private set; }
 
 		/// <summary>
@@ -130,11 +133,12 @@ namespace RI.Framework.IO.INI
 		/// <summary>
 		///     Gets the used reader settings for this INI reader.
 		/// </summary>
+		/// <value>
+		///     The used reader settings for this INI reader.
+		/// </value>
 		public IniReaderSettings Settings { get; private set; }
 
 		private string Buffer { get; set; }
-
-		private bool Closed { get; set; }
 
 		#endregion
 
@@ -148,7 +152,8 @@ namespace RI.Framework.IO.INI
 		/// </summary>
 		public void Close ()
 		{
-			this.BaseReader?.Close();
+			this.Dispose(true);
+			GC.SuppressFinalize(this);
 		}
 
 		/// <summary>
@@ -163,7 +168,7 @@ namespace RI.Framework.IO.INI
 		///         Multiple consecutive comment or text lines are combined into a single comment or text line.
 		///     </note>
 		/// </remarks>
-		/// <exception cref="InvalidOperationException"> The INI reader has been closed/disposed. </exception>
+		/// <exception cref="ObjectDisposedException"> The INI reader has been closed/disposed. </exception>
 		public bool ReadNext ()
 		{
 			this.VerifyNotClosed();
@@ -178,7 +183,7 @@ namespace RI.Framework.IO.INI
 			if (element is ErrorElement)
 			{
 				this.CurrentElement = null;
-				this.CurrentError = ( (ErrorElement)element ).Error;
+				this.CurrentError = ((ErrorElement)element).Error;
 			}
 			else
 			{
@@ -193,13 +198,13 @@ namespace RI.Framework.IO.INI
 				{
 					string nextLine = this.PeekLine();
 					IniElement nextElement = this.ProcessLine(nextLine);
-					if (!( nextElement is TextIniElement ))
+					if (!(nextElement is TextIniElement))
 					{
 						break;
 					}
 					this.ReadLine();
 					TextIniElement nextTextElement = (TextIniElement)nextElement;
-					textElement.Text += ( Environment.NewLine + nextTextElement.Text );
+					textElement.Text += (Environment.NewLine + nextTextElement.Text);
 				}
 			}
 			else if (element is CommentIniElement)
@@ -209,13 +214,13 @@ namespace RI.Framework.IO.INI
 				{
 					string nextLine = this.PeekLine();
 					IniElement nextElement = this.ProcessLine(nextLine);
-					if (!( nextElement is CommentIniElement ))
+					if (!(nextElement is CommentIniElement))
 					{
 						break;
 					}
 					this.ReadLine();
 					CommentIniElement nextCommentElement = (CommentIniElement)nextElement;
-					commentElement.Comment += ( Environment.NewLine + nextCommentElement.Comment );
+					commentElement.Comment += (Environment.NewLine + nextCommentElement.Comment);
 				}
 			}
 
@@ -232,6 +237,16 @@ namespace RI.Framework.IO.INI
 			value = value.ReplaceSingleStart(this.Settings.EscapeCharacter + "r", "\r", StringComparison.Ordinal);
 			value = value.HalveOccurrence(this.Settings.EscapeCharacter);
 			return value;
+		}
+
+		[SuppressMessage ("ReSharper", "UnusedParameter.Local")]
+		private void Dispose (bool disposing)
+		{
+			if (this.BaseReader != null)
+			{
+				this.BaseReader.Close();
+				this.BaseReader = null;
+			}
 		}
 
 		private string PeekLine ()
@@ -310,9 +325,9 @@ namespace RI.Framework.IO.INI
 
 		private void VerifyNotClosed ()
 		{
-			if (this.Closed)
+			if (this.BaseReader == null)
 			{
-				throw new InvalidOperationException();
+				throw new ObjectDisposedException(nameof(IniReader));
 			}
 		}
 

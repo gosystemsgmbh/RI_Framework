@@ -6,7 +6,7 @@
 namespace RI.Framework.Data.SQLite
 {
 	/// <summary>
-	///     Provides utilities for working with SQLite.
+	///     Provides SQLite database utilities.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc
