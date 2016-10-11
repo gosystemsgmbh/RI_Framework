@@ -238,6 +238,11 @@ namespace RI.Framework.Services.Logging.Writers
 		/// <inheritdoc />
 		public void Cleanup (DateTime retentionDate)
 		{
+			if (this.CurrentWriter == null)
+			{
+				throw new ObjectDisposedException(nameof(DirectoryLogWriter));
+			}
+
 			string[] directories = Directory.GetDirectories(this.CommonDirectory, "*", SearchOption.TopDirectoryOnly);
 			foreach (string directory in directories)
 			{

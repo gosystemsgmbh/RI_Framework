@@ -82,8 +82,8 @@ I/O
  - (Common) DirectoryPath: GetDirectories
  - (Common) DirectoryPath: FindDirectories
 
- - (Common) FilePath: Copy
- - (Common) FilePath: Move
+ - (Common) FilePath: Copy (DirectoryPath)
+ - (Common) FilePath: Move (FilePath, DirectoryPath)
  - (Common) FilePath: FindFiles
  - (Common) FilePath: AppendText
  - (Common) FilePath: AppendBytes

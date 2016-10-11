@@ -27,6 +27,7 @@
   - [ ] Check all usage of StringComparison and StringComparer
   - [ ] Use nameof() instead of GetType().Name for logging where possible (sealed classes)
   - [ ] Check all namespace descriptions
+  - [ ] Check usage of LogLocator (including used methods) and ServiceLocator
   - [ ] TODOs
 - [ ] Testing
   - [X] Split testing into "Unity" and ".NET"

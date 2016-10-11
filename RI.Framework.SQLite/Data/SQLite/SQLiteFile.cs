@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.SQLite;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.IO;
 
 using RI.Framework.IO.Paths;
@@ -18,7 +19,7 @@ namespace RI.Framework.Data.SQLite
 	/// </summary>
 	/// <remarks>
 	///     <note type="note">
-	///         An instance of <see cref="SQLiteFile" /> can be reused by changing <see cref="ConnectionStringBuilder" />, <see cref="ConnectionString" />, and/or <see cref="File" />.
+	///         An instance of <see cref="SQLiteFile" /> can be reused by changing <see cref="ConnectionStringBuilder" />, <see cref="ConnectionString" />, <see cref="File" />, and/or <see cref="VersionDetector" />.
 	///         However, changes made while the SQLite file is initialized or open will not be automatically applied, closing and re-initializing/re-opening is necessary.
 	///     </note>
 	///     <note type="important">
@@ -94,9 +95,14 @@ namespace RI.Framework.Data.SQLite
 
 			this.ConnectionStringBuilder = connectionStringBuilder;
 
+			this.EnableLogging = false;
 			this.State = SQLiteFileState.Closed;
+			this.UsedFile = null;
 			this.UsedConnectionString = null;
+			this.Version = null;
 			this.Connection = null;
+
+			GC.KeepAlive(this);
 		}
 
 		/// <summary>
@@ -159,6 +165,22 @@ namespace RI.Framework.Data.SQLite
 		public SQLiteConnectionStringBuilder ConnectionStringBuilder { get; private set; }
 
 		/// <summary>
+		///     Gets or sets whether this instance of <see cref="SQLiteFile" /> uses logging or not.
+		/// </summary>
+		/// <value>
+		///     true if logging is used, false otherwise.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         The default value is false.
+		///     </para>
+		///     <para>
+		///         <see cref="LogLocator" /> is used for logging.
+		///     </para>
+		/// </remarks>
+		public bool EnableLogging { get; private set; }
+
+		/// <summary>
 		///     Gets or sets the current database file.
 		/// </summary>
 		/// <value>
@@ -193,7 +215,39 @@ namespace RI.Framework.Data.SQLite
 		/// </value>
 		public SQLiteFileState State { get; private set; }
 
+		/// <summary>
+		///     Gets the detected version of the database.
+		/// </summary>
+		/// <value>
+		///     The detected version of the database or null if no version was detected.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         The version of the database is detected on calling <see cref="Initialize" /> if <see cref="VersionDetector" /> is set.
+		///         If no version detector is set or the version cannot be determined, the value is reset to null by <see cref="Initialize" />.
+		///     </para>
+		///     <para>
+		///         A database version of zero can be used to indicate a new or empty database.
+		///     </para>
+		/// </remarks>
+		public int? Version { get; private set; }
+
+		/// <summary>
+		///     Gets or sets the used version detector to detect the version of the database.
+		/// </summary>
+		/// <value>
+		///     The used version detector to detect the version of the database.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         See <see cref="Version" /> for more details.
+		///     </para>
+		/// </remarks>
+		public ISQLiteFileVersionDetector VersionDetector { get; set; }
+
 		private string UsedConnectionString { get; set; }
+
+		private FilePath UsedFile { get; set; }
 
 		#endregion
 
@@ -213,6 +267,7 @@ namespace RI.Framework.Data.SQLite
 		/// <summary>
 		///     Initializes the SQLite file.
 		/// </summary>
+		/// <exception cref="InvalidOperationException"> The SQLite file is not closed. </exception>
 		public void Initialize ()
 		{
 			if (this.State != SQLiteFileState.Closed)
@@ -220,13 +275,28 @@ namespace RI.Framework.Data.SQLite
 				throw new InvalidOperationException("SQLite file not closed.");
 			}
 
+			this.UsedFile = this.File;
 			this.UsedConnectionString = this.ConnectionString;
-			this.Log("Initializing SQLite file: {0}", this.UsedConnectionString);
+			this.Version = null;
 
-			if (this.File.CreateIfNotExist())
+			this.Log("Initializing SQLite file: {0}; {1}", this.UsedFile, this.UsedConnectionString);
+
+			bool newFile = this.File.CreateIfNotExist();
+			this.Log(newFile ? "Used new SQLite file: {0}" : "Used existing SQLite file: {0}", this.File);
+
+			this.Log("Used SQLite file version detector: {0}", this.VersionDetector?.GetType().Name ?? "[null]");
+			if (this.VersionDetector != null)
 			{
-				this.Log("Created SQLite file: {0}", this.File);
+				SQLiteConnectionStringBuilder temporaryBuilder = new SQLiteConnectionStringBuilder(this.UsedConnectionString);
+				temporaryBuilder.ReadOnly = true;
+				using (SQLiteConnection temporaryConnection = new SQLiteConnection(temporaryBuilder.ConnectionString))
+				{
+					temporaryConnection.Open();
+					this.Version = this.VersionDetector.DetectVersion(temporaryConnection, newFile, this.File);
+					temporaryConnection.Close();
+				}
 			}
+			this.Log("Detected SQLite file version: {0}", this.Version?.ToString("D", CultureInfo.InvariantCulture) ?? "[null]");
 
 			this.Connection = null;
 
@@ -234,8 +304,107 @@ namespace RI.Framework.Data.SQLite
 		}
 
 		/// <summary>
+		///     Migrates the database version to the maximum target version supported by a migration chain.
+		/// </summary>
+		/// <param name="migrationChain"> The migration chain to use. </param>
+		/// <param name="restoreFileOnFail"> Specifies whether a backup should be made to restore the database after a failed migration to its state before the migration. </param>
+		/// <returns>
+		///     true if the migration was successful, false otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         If <paramref name="restoreFileOnFail" /> is true, a temporary file is used as a backup copy, obtained through <see cref="FilePath" />.<see cref="FilePath.GetTemporaryFile" />.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="migrationChain" /> is null. </exception>
+		/// <exception cref="ArgumentException"> <paramref name="migrationChain" /> is not a valid migration chain. </exception>
+		/// <exception cref="InvalidOperationException"> The SQLite file is not initialized, the database version was not detected, or <paramref name="migrationChain" /> does not support the version of this database. </exception>
+		/// <exception cref="FileNotFoundException"> The SQLite file was deleted after initialization. </exception>
+		/// <exception cref="IOException"> Creation or restore of the backup copy failed. </exception>
+		[SuppressMessage ("ReSharper", "PossibleInvalidOperationException")]
+		public bool Migrate (SQLiteFileMigrationChain migrationChain, bool restoreFileOnFail)
+		{
+			if (migrationChain == null)
+			{
+				throw new ArgumentNullException(nameof(migrationChain));
+			}
+
+			if (!migrationChain.IsValid)
+			{
+				throw new ArgumentException("The SQLite file migration chain is invalid", nameof(migrationChain));
+			}
+
+			if (this.State != SQLiteFileState.Initialized)
+			{
+				throw new InvalidOperationException("SQLite file not initialized.");
+			}
+
+			if (!this.Version.HasValue)
+			{
+				throw new InvalidOperationException("SQLite database version not detected.");
+			}
+
+			if (this.Version.Value < migrationChain.MinSourceVersion.Value)
+			{
+				throw new InvalidOperationException("The SQLite file migration chain does not support this database version.");
+			}
+
+			if (!this.UsedFile.Exists)
+			{
+				throw new FileNotFoundException("SQLite file not found.", this.UsedFile);
+			}
+
+			this.Log("Migrating SQLite database: {0} -> {1} ({2}; {3}; {4})", this.Version.Value, migrationChain.MaxTargetVersion.Value, restoreFileOnFail ? "restore file on fail" : "do not restore file on fail", this.UsedFile, this.UsedConnectionString);
+
+			bool result = false;
+			FilePath backupFile = restoreFileOnFail ? FilePath.GetTemporaryFile() : null;
+			try
+			{
+				if (backupFile != null)
+				{
+					this.Log("Creating backup of SQLite file before migration: {0} -> {1}", this.UsedFile, backupFile);
+					if (!this.UsedFile.Copy(backupFile, true))
+					{
+						throw new IOException(string.Format("Failed to create backup of SQLite file: {0} -> {1}", this.UsedFile, backupFile));
+					}
+				}
+
+				SQLiteConnectionStringBuilder temporaryBuilder = new SQLiteConnectionStringBuilder(this.UsedConnectionString);
+				using (SQLiteConnection temporaryConnection = new SQLiteConnection(temporaryBuilder.ConnectionString))
+				{
+					temporaryConnection.Open();
+					result = migrationChain.Execute(temporaryConnection);
+					temporaryConnection.Close();
+				}
+			}
+			finally
+			{
+				if ((backupFile != null) && backupFile.Exists)
+				{
+					if (!result)
+					{
+						this.Log("Restoring backup of SQLite file after failed migration: {0} -> {1}", backupFile, this.UsedFile);
+						if (!backupFile.Copy(this.UsedFile, true))
+						{
+							throw new IOException(string.Format("Failed to restore backup of SQLite file: {0} -> {1}", backupFile, this.UsedFile));
+						}
+					}
+
+					this.Log("Deleting backup of SQLite file after migration: {0}", backupFile);
+					backupFile.Delete();
+				}
+			}
+
+			this.Log("Migrated SQLite database: {0}", result ? "Success" : "Failed");
+
+			return result;
+		}
+
+		/// <summary>
 		///     Opens the SQLite file and the database connection.
 		/// </summary>
+		/// <exception cref="InvalidOperationException"> The SQLite file is not initialized. </exception>
+		/// <exception cref="FileNotFoundException"> The SQLite file was deleted after initialization. </exception>
 		public void Open ()
 		{
 			if (this.State != SQLiteFileState.Initialized)
@@ -243,12 +412,12 @@ namespace RI.Framework.Data.SQLite
 				throw new InvalidOperationException("SQLite file not initialized.");
 			}
 
-			if (!this.File.Exists)
+			if (!this.UsedFile.Exists)
 			{
-				throw new FileNotFoundException("SQLite file not found.", this.File);
+				throw new FileNotFoundException("SQLite file not found.", this.UsedFile);
 			}
 
-			this.Log("Opening SQLite file: {0}", this.UsedConnectionString);
+			this.Log("Opening SQLite file: {0}; {1}", this.UsedFile, this.UsedConnectionString);
 
 			this.Connection = new SQLiteConnection(this.UsedConnectionString);
 
@@ -262,18 +431,23 @@ namespace RI.Framework.Data.SQLite
 
 			if (this.Connection != null)
 			{
-				this.Log("Closing SQLite file: {0}", this.UsedConnectionString);
+				this.Log("Closing SQLite file: {0}; {1}", this.UsedFile, this.UsedConnectionString);
 
 				this.Connection.Close();
 				this.Connection = null;
 			}
 
+			this.UsedFile = null;
 			this.UsedConnectionString = null;
+			this.Version = null;
 		}
 
 		private void Log (string format, params object[] args)
 		{
-			LogLocator.LogDebug(nameof(SQLiteFile), format, args);
+			if (this.EnableLogging)
+			{
+				LogLocator.LogDebug(nameof(SQLiteFile), format, args);
+			}
 		}
 
 		#endregion

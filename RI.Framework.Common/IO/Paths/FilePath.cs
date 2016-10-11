@@ -346,6 +346,44 @@ namespace RI.Framework.IO.Paths
 		}
 
 		/// <summary>
+		///     Copies the file.
+		/// </summary>
+		/// <param name="destination"> The destination file. </param>
+		/// <param name="overwrite"> Specifies whether an already existing destination file should be overwritten (true) or not (false). </param>
+		/// <returns>
+		///     true if the file was copied, false otherwise.
+		/// </returns>
+		/// <exception cref="InvalidOperationException"> The file contains wildcards. </exception>
+		/// <exception cref="IOException"> The file is in use. </exception>
+		/// <exception cref="UnauthorizedAccessException"> The user does not have the required permissions, the file is read-only, or the file is an executable which is in use. </exception>
+		/// <exception cref="PathTooLongException"> Although being a valid file path, the file path is too long for the current system to be used. </exception>
+		/// <exception cref="FileNotFoundException"> The source file does not exist. </exception>
+		/// <exception cref="DirectoryNotFoundException"> The files directory does not exist or is not available. </exception>
+		/// <exception cref="NotSupportedException"> The file is not of a compatible path type used on the current system. </exception>
+		public bool Copy (FilePath destination, bool overwrite)
+		{
+			if (destination == null)
+			{
+				throw new ArgumentNullException(nameof(destination));
+			}
+
+			if (destination.HasWildcards)
+			{
+				throw new InvalidPathArgumentException(nameof(destination));
+			}
+
+			this.VerifyRealFile();
+
+			if ((!overwrite) && destination.Exists)
+			{
+				return false;
+			}
+
+			File.Copy(this, destination, true);
+			return true;
+		}
+
+		/// <summary>
 		///     Creates the file if it does not exist with a new file of zero length or keeps an already existing file.
 		/// </summary>
 		/// <returns>
