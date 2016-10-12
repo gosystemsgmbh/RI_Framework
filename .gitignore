@@ -8,14 +8,6 @@
 *.dll
 *.exe
 
-# Project specific
-/RI.Framework.Net/RI.Framework.Net.xml
-/RI.Framework.SQLite/RI.Framework.SQLite.xml
-/RI.Framework.Unity/RI.Framework.Unity.xml
-/RI.Framework.Windows/RI.Framework.Windows.xml
-/RI.Framework.WinForms/RI.Framework.WinForms.xml
-/RI.Framework.Wpf/RI.Framework.Wpf.xml
-
 # User-specific files
 *.suo
 *.user
