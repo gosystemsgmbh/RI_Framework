@@ -435,95 +435,95 @@ namespace RI.Test.Framework.Utilities
 		[TestMethod]
 		public void Join_Test ()
 		{
-			if (( new string[]
+			if ((new string[]
 				    {
-				    } ).Join() != string.Empty)
+				    }).Join() != string.Empty)
 			{
 				throw new TestAssertionException();
 			}
 
-			if (( new string[]
+			if ((new string[]
 				    {
-				    } ).Join('@') != string.Empty)
+				    }).Join('@') != string.Empty)
 			{
 				throw new TestAssertionException();
 			}
 
-			if (( new string[]
+			if ((new string[]
 				    {
-				    } ).Join("..") != string.Empty)
+				    }).Join("..") != string.Empty)
 			{
 				throw new TestAssertionException();
 			}
 
-			if (( new[]
+			if ((new[]
 				    {
 					    "A"
-				    } ).Join() != "A")
+				    }).Join() != "A")
 			{
 				throw new TestAssertionException();
 			}
 
-			if (( new[]
+			if ((new[]
 				    {
 					    "A"
-				    } ).Join('@') != "A")
+				    }).Join('@') != "A")
 			{
 				throw new TestAssertionException();
 			}
 
-			if (( new[]
+			if ((new[]
 				    {
 					    "A"
-				    } ).Join("..") != "A")
+				    }).Join("..") != "A")
 			{
 				throw new TestAssertionException();
 			}
 
-			if (( new[]
+			if ((new[]
 				    {
 					    "A", "B"
-				    } ).Join() != "AB")
+				    }).Join() != "AB")
 			{
 				throw new TestAssertionException();
 			}
 
-			if (( new[]
+			if ((new[]
 				    {
 					    "A", "B"
-				    } ).Join('@') != "A@B")
+				    }).Join('@') != "A@B")
 			{
 				throw new TestAssertionException();
 			}
 
-			if (( new[]
+			if ((new[]
 				    {
 					    "A", "B"
-				    } ).Join("..") != "A..B")
+				    }).Join("..") != "A..B")
 			{
 				throw new TestAssertionException();
 			}
 
-			if (( new[]
+			if ((new[]
 				    {
 					    "A", "B", "CD"
-				    } ).Join() != "ABCD")
+				    }).Join() != "ABCD")
 			{
 				throw new TestAssertionException();
 			}
 
-			if (( new[]
+			if ((new[]
 				    {
 					    "A", "B", "CD"
-				    } ).Join('@') != "A@B@CD")
+				    }).Join('@') != "A@B@CD")
 			{
 				throw new TestAssertionException();
 			}
 
-			if (( new[]
+			if ((new[]
 				    {
 					    "A", "B", "CD"
-				    } ).Join("..") != "A..B..CD")
+				    }).Join("..") != "A..B..CD")
 			{
 				throw new TestAssertionException();
 			}
@@ -1008,7 +1008,7 @@ namespace RI.Test.Framework.Utilities
 		[TestMethod]
 		public void SplitWhere_Test ()
 		{
-			string[] result = "".SplitWhere((s, c, p, n) => ( p == 3 ) || ( n == 5 ));
+			string[] result = "".SplitWhere((s, c, p, n) => (p == 3) || (n == 5));
 
 			if (result.Length != 1)
 			{
@@ -1020,7 +1020,7 @@ namespace RI.Test.Framework.Utilities
 				throw new TestAssertionException();
 			}
 
-			result = "abcd fghijklmnopqrstuvwxyz".SplitWhere((s, c, p, n) => ( p == 3 ) || ( n == 5 ) || ( n == 5 ));
+			result = "abcd fghijklmnopqrstuvwxyz".SplitWhere((s, c, p, n) => (p == 3) || (n == 5) || (n == 5));
 
 			if (result.Length != 3)
 			{
@@ -1042,7 +1042,7 @@ namespace RI.Test.Framework.Utilities
 				throw new TestAssertionException();
 			}
 
-			result = "abcd fghijklmnopqrstuvwxyz".SplitWhere(StringSplitOptions.RemoveEmptyEntries, (s, c, p, n) => ( p == 3 ) || ( n == 5 ) || ( n == 5 ));
+			result = "abcd fghijklmnopqrstuvwxyz".SplitWhere(StringSplitOptions.RemoveEmptyEntries, (s, c, p, n) => (p == 3) || (n == 5) || (n == 5));
 
 			if (result.Length != 2)
 			{

@@ -218,7 +218,7 @@ namespace RI.Test.Framework.Collections
 			};
 			test = list.AsList();
 
-			if (test.RemoveWhere((x, y) => ( x == 2 ) || ( x == 3 )).Count != 2)
+			if (test.RemoveWhere((x, y) => (x == 2) || (x == 3)).Count != 2)
 			{
 				throw new TestAssertionException();
 			}
@@ -683,7 +683,7 @@ namespace RI.Test.Framework.Collections
 			list.Add(20);
 			list.Add(0);
 
-			if (test.Transform(x => x * 10) != 4)
+			if (test.Transform(x => x*10) != 4)
 			{
 				throw new TestAssertionException();
 			}

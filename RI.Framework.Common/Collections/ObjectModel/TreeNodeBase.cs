@@ -13,7 +13,7 @@ namespace RI.Framework.Collections.ObjectModel
 	/// </summary>
 	/// <typeparam name="TNode"> The type of the tree nodes in the tree. This is usually the type itself which inherits from <see cref="TreeNodeBase{TNode}" />, e.g. <c> public class MyNode : TreeNodeBase&lt;MyNode&gt; { } </c>. </typeparam>
 	public abstract class TreeNodeBase <TNode> : ITreeNode<TNode>
-			where TNode : TreeNodeBase<TNode>
+		where TNode : TreeNodeBase<TNode>
 	{
 		#region Instance Constructor/Destructor
 
@@ -123,7 +123,7 @@ namespace RI.Framework.Collections.ObjectModel
 		#region Type: TreeNodeList
 
 		private sealed class TreeNodeList <T> : IList<T>
-				where T : TreeNodeBase<T>
+			where T : TreeNodeBase<T>
 		{
 			#region Instance Constructor/Destructor
 
@@ -131,7 +131,7 @@ namespace RI.Framework.Collections.ObjectModel
 			{
 				if (node == null)
 				{
-					throw ( new ArgumentNullException(nameof(node)) );
+					throw (new ArgumentNullException(nameof(node)));
 				}
 
 				this.Node = node;
@@ -159,8 +159,8 @@ namespace RI.Framework.Collections.ObjectModel
 			[SuppressMessage ("ReSharper", "PossibleNullReferenceException")]
 			private void SetItem (int index, TreeNodeOperation operation, T item)
 			{
-				T oldItem = ( operation == TreeNodeOperation.Insert ) ? null : this.Children[index];
-				T newItem = ( operation == TreeNodeOperation.Remove ) ? null : item;
+				T oldItem = (operation == TreeNodeOperation.Insert) ? null : this.Children[index];
+				T newItem = (operation == TreeNodeOperation.Remove) ? null : item;
 
 				T oldParent = newItem?.Parent;
 				oldParent?.RemoveChild(newItem);
@@ -234,7 +234,7 @@ namespace RI.Framework.Collections.ObjectModel
 			{
 				get
 				{
-					return ( (ICollection<T>)this.Children ).IsReadOnly;
+					return ((ICollection<T>)this.Children).IsReadOnly;
 				}
 			}
 
@@ -242,7 +242,7 @@ namespace RI.Framework.Collections.ObjectModel
 			{
 				get
 				{
-					if (( index < 0 ) || ( index >= this.Count ))
+					if ((index < 0) || (index >= this.Count))
 					{
 						throw new ArgumentOutOfRangeException(nameof(index));
 					}
@@ -251,7 +251,7 @@ namespace RI.Framework.Collections.ObjectModel
 				}
 				set
 				{
-					if (( index < 0 ) || ( index >= this.Count ))
+					if ((index < 0) || (index >= this.Count))
 					{
 						throw new ArgumentOutOfRangeException(nameof(index));
 					}
@@ -290,7 +290,7 @@ namespace RI.Framework.Collections.ObjectModel
 
 			public void CopyTo (T[] array, int arrayIndex)
 			{
-				( (ICollection<T>)this.Children ).CopyTo(array, arrayIndex);
+				((ICollection<T>)this.Children).CopyTo(array, arrayIndex);
 			}
 
 			IEnumerator IEnumerable.GetEnumerator ()
@@ -310,7 +310,7 @@ namespace RI.Framework.Collections.ObjectModel
 
 			public void Insert (int index, T item)
 			{
-				if (( index < 0 ) || ( index > this.Count ))
+				if ((index < 0) || (index > this.Count))
 				{
 					throw new ArgumentOutOfRangeException(nameof(index));
 				}
@@ -341,7 +341,7 @@ namespace RI.Framework.Collections.ObjectModel
 
 			public void RemoveAt (int index)
 			{
-				if (( index < 0 ) || ( index >= this.Count ))
+				if ((index < 0) || (index >= this.Count))
 				{
 					throw new ArgumentOutOfRangeException(nameof(index));
 				}

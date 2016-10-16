@@ -58,47 +58,47 @@ namespace RI.Test.Framework.IO.INI
 				throw new TestAssertionException();
 			}
 
-			if (( (TextIniElement)document.Elements[0] ).Text != Environment.NewLine + "Text")
+			if (((TextIniElement)document.Elements[0]).Text != Environment.NewLine + "Text")
 			{
 				throw new TestAssertionException();
 			}
 
-			if (( (CommentIniElement)document.Elements[1] ).Comment != "Comment")
+			if (((CommentIniElement)document.Elements[1]).Comment != "Comment")
 			{
 				throw new TestAssertionException();
 			}
 
-			if (( (ValueIniElement)document.Elements[2] ).Name != "Name")
+			if (((ValueIniElement)document.Elements[2]).Name != "Name")
 			{
 				throw new TestAssertionException();
 			}
 
-			if (( (ValueIniElement)document.Elements[2] ).Value != "Value")
+			if (((ValueIniElement)document.Elements[2]).Value != "Value")
 			{
 				throw new TestAssertionException();
 			}
 
-			if (( (SectionIniElement)document.Elements[3] ).SectionName != "Header1")
+			if (((SectionIniElement)document.Elements[3]).SectionName != "Header1")
 			{
 				throw new TestAssertionException();
 			}
 
-			if (( (TextIniElement)document.Elements[4] ).Text != Environment.NewLine + "Text1")
+			if (((TextIniElement)document.Elements[4]).Text != Environment.NewLine + "Text1")
 			{
 				throw new TestAssertionException();
 			}
 
-			if (( (CommentIniElement)document.Elements[5] ).Comment != "Comment1")
+			if (((CommentIniElement)document.Elements[5]).Comment != "Comment1")
 			{
 				throw new TestAssertionException();
 			}
 
-			if (( (ValueIniElement)document.Elements[6] ).Name != "Name1")
+			if (((ValueIniElement)document.Elements[6]).Name != "Name1")
 			{
 				throw new TestAssertionException();
 			}
 
-			if (( (ValueIniElement)document.Elements[6] ).Value != "Value1")
+			if (((ValueIniElement)document.Elements[6]).Value != "Value1")
 			{
 				throw new TestAssertionException();
 			}
@@ -111,47 +111,47 @@ namespace RI.Test.Framework.IO.INI
 				throw new TestAssertionException();
 			}
 
-			if (( (TextIniElement)document.Elements[0] ).Text != Environment.NewLine + "Text")
+			if (((TextIniElement)document.Elements[0]).Text != Environment.NewLine + "Text")
 			{
 				throw new TestAssertionException();
 			}
 
-			if (( (CommentIniElement)document.Elements[1] ).Comment != "Comment")
+			if (((CommentIniElement)document.Elements[1]).Comment != "Comment")
 			{
 				throw new TestAssertionException();
 			}
 
-			if (( (ValueIniElement)document.Elements[2] ).Name != "Name")
+			if (((ValueIniElement)document.Elements[2]).Name != "Name")
 			{
 				throw new TestAssertionException();
 			}
 
-			if (( (ValueIniElement)document.Elements[2] ).Value != "Value")
+			if (((ValueIniElement)document.Elements[2]).Value != "Value")
 			{
 				throw new TestAssertionException();
 			}
 
-			if (( (SectionIniElement)document.Elements[3] ).SectionName != "Header1")
+			if (((SectionIniElement)document.Elements[3]).SectionName != "Header1")
 			{
 				throw new TestAssertionException();
 			}
 
-			if (( (TextIniElement)document.Elements[4] ).Text != Environment.NewLine + "Text1")
+			if (((TextIniElement)document.Elements[4]).Text != Environment.NewLine + "Text1")
 			{
 				throw new TestAssertionException();
 			}
 
-			if (( (CommentIniElement)document.Elements[5] ).Comment != "Comment1")
+			if (((CommentIniElement)document.Elements[5]).Comment != "Comment1")
 			{
 				throw new TestAssertionException();
 			}
 
-			if (( (ValueIniElement)document.Elements[6] ).Name != "Name1")
+			if (((ValueIniElement)document.Elements[6]).Name != "Name1")
 			{
 				throw new TestAssertionException();
 			}
 
-			if (( (ValueIniElement)document.Elements[6] ).Value != "Value1")
+			if (((ValueIniElement)document.Elements[6]).Value != "Value1")
 			{
 				throw new TestAssertionException();
 			}
@@ -164,52 +164,52 @@ namespace RI.Test.Framework.IO.INI
 				throw new TestAssertionException();
 			}
 
-			if (( (TextIniElement)document.Elements[0] ).Text != Environment.NewLine + "Text")
+			if (((TextIniElement)document.Elements[0]).Text != Environment.NewLine + "Text")
 			{
 				throw new TestAssertionException();
 			}
 
-			if (( (CommentIniElement)document.Elements[1] ).Comment != "Comment")
+			if (((CommentIniElement)document.Elements[1]).Comment != "Comment")
 			{
 				throw new TestAssertionException();
 			}
 
-			if (( (ValueIniElement)document.Elements[2] ).Name != "Name")
+			if (((ValueIniElement)document.Elements[2]).Name != "Name")
 			{
 				throw new TestAssertionException();
 			}
 
-			if (( (ValueIniElement)document.Elements[2] ).Value != "Value")
+			if (((ValueIniElement)document.Elements[2]).Value != "Value")
 			{
 				throw new TestAssertionException();
 			}
 
-			if (( (SectionIniElement)document.Elements[3] ).SectionName != "Header1")
+			if (((SectionIniElement)document.Elements[3]).SectionName != "Header1")
 			{
 				throw new TestAssertionException();
 			}
 
-			if (( (TextIniElement)document.Elements[4] ).Text != Environment.NewLine + "Text1")
+			if (((TextIniElement)document.Elements[4]).Text != Environment.NewLine + "Text1")
 			{
 				throw new TestAssertionException();
 			}
 
-			if (( (CommentIniElement)document.Elements[5] ).Comment != "Comment1")
+			if (((CommentIniElement)document.Elements[5]).Comment != "Comment1")
 			{
 				throw new TestAssertionException();
 			}
 
-			if (( (ValueIniElement)document.Elements[6] ).Name != "Name1")
+			if (((ValueIniElement)document.Elements[6]).Name != "Name1")
 			{
 				throw new TestAssertionException();
 			}
 
-			if (( (ValueIniElement)document.Elements[6] ).Value != "Value1")
+			if (((ValueIniElement)document.Elements[6]).Value != "Value1")
 			{
 				throw new TestAssertionException();
 			}
 
-			if (( (TextIniElement)document.Elements[7] ).Text != "")
+			if (((TextIniElement)document.Elements[7]).Text != "")
 			{
 				throw new TestAssertionException();
 			}

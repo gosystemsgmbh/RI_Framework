@@ -240,37 +240,37 @@ namespace RI.Test.Framework.IO.Paths
 			// Operator
 			//---------
 
-			if (!( new DirectoryPath("test.tmp") >= new DirectoryPath("test.tmp") ))
+			if (!(new DirectoryPath("test.tmp") >= new DirectoryPath("test.tmp")))
 			{
 				throw new TestAssertionException();
 			}
 
-			if (!( new DirectoryPath("test.tmp") <= new DirectoryPath("test.tmp") ))
+			if (!(new DirectoryPath("test.tmp") <= new DirectoryPath("test.tmp")))
 			{
 				throw new TestAssertionException();
 			}
 
-			if (!( new DirectoryPath("test1234.tmp") >= new DirectoryPath("test.tmp") ))
+			if (!(new DirectoryPath("test1234.tmp") >= new DirectoryPath("test.tmp")))
 			{
 				throw new TestAssertionException();
 			}
 
-			if (!( new DirectoryPath("test.tmp") <= new DirectoryPath("test1234.tmp") ))
+			if (!(new DirectoryPath("test.tmp") <= new DirectoryPath("test1234.tmp")))
 			{
 				throw new TestAssertionException();
 			}
 
-			if (!( new DirectoryPath("test1234.tmp") > new DirectoryPath("test.tmp") ))
+			if (!(new DirectoryPath("test1234.tmp") > new DirectoryPath("test.tmp")))
 			{
 				throw new TestAssertionException();
 			}
 
-			if (!( new DirectoryPath("test.tmp") < new DirectoryPath("test1234.tmp") ))
+			if (!(new DirectoryPath("test.tmp") < new DirectoryPath("test1234.tmp")))
 			{
 				throw new TestAssertionException();
 			}
 
-			if (!( new DirectoryPath("test1234.tmp") >= null ))
+			if (!(new DirectoryPath("test1234.tmp") >= null))
 			{
 				throw new TestAssertionException();
 			}
@@ -280,7 +280,7 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			if (!( new DirectoryPath("test1234.tmp") > null ))
+			if (!(new DirectoryPath("test1234.tmp") > null))
 			{
 				throw new TestAssertionException();
 			}
@@ -389,7 +389,7 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			if (!( new DirectoryPath("test.tmp") == (DirectoryPath)"test.tmp" ))
+			if (!(new DirectoryPath("test.tmp") == (DirectoryPath)"test.tmp"))
 			{
 				throw new TestAssertionException();
 			}
@@ -399,7 +399,7 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			if (!( new DirectoryPath("test.tmp") != (DirectoryPath)"test.dat" ))
+			if (!(new DirectoryPath("test.tmp") != (DirectoryPath)"test.dat"))
 			{
 				throw new TestAssertionException();
 			}
@@ -409,7 +409,7 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			if (!( new DirectoryPath("test.tmp") != (DirectoryPath)(string)null ))
+			if (!(new DirectoryPath("test.tmp") != (DirectoryPath)(string)null))
 			{
 				throw new TestAssertionException();
 			}
@@ -528,7 +528,7 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			if (( (string)( (DirectoryPath)null ) ) != null)
+			if (((string)((DirectoryPath)null)) != null)
 			{
 				throw new TestAssertionException();
 			}

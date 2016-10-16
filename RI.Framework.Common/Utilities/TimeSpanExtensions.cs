@@ -66,7 +66,7 @@ namespace RI.Framework.Utilities
 			dateTimeString.Append(separator);
 			dateTimeString.Append(timeSpan.Milliseconds.ToString("D3", CultureInfo.InvariantCulture));
 
-			return ( dateTimeString.ToString() );
+			return (dateTimeString.ToString());
 		}
 
 		#endregion

@@ -78,7 +78,7 @@
 		/// </returns>
 		public static bool IsNumber (this float value)
 		{
-			return ( !float.IsNaN(value) ) && ( !float.IsInfinity(value) );
+			return (!float.IsNaN(value)) && (!float.IsInfinity(value));
 		}
 
 		#endregion

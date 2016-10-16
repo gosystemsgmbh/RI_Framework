@@ -66,32 +66,6 @@ namespace RI.Framework.Services.Resources
 		IEnumerable<IResourceSource> Sources { get; }
 
 		/// <summary>
-		/// Loads a resource set.
-		/// </summary>
-		/// <param name="resourceSet">The resource set to load.</param>
-		/// <remarks>
-		///     <note type="implement">
-		///         Specifying an already loaded resource set should have no effect.
-		///     </note>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="resourceSet" /> is null. </exception>
-		/// <exception cref="InvalidOperationException">The resource set specified by <paramref name="resourceSet"/> is not in <see cref="AvailableSets"/>.</exception>
-		void LoadSet (IResourceSet resourceSet);
-
-		/// <summary>
-		/// Unloads a resource set.
-		/// </summary>
-		/// <param name="resourceSet">The resource set to unload.</param>
-		/// <remarks>
-		///     <note type="implement">
-		///         Specifying an already unloaded resource set should have no effect.
-		///     </note>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="resourceSet" /> is null. </exception>
-		/// <exception cref="InvalidOperationException">The resource set specified by <paramref name="resourceSet"/> is not in <see cref="AvailableSets"/>.</exception>
-		void UnloadSet (IResourceSet resourceSet);
-
-		/// <summary>
 		///     Adds a resource source.
 		/// </summary>
 		/// <param name="resourceSource"> The resource source to add. </param>
@@ -139,6 +113,19 @@ namespace RI.Framework.Services.Resources
 		bool HasValue (string name);
 
 		/// <summary>
+		///     Loads a resource set.
+		/// </summary>
+		/// <param name="resourceSet"> The resource set to load. </param>
+		/// <remarks>
+		///     <note type="implement">
+		///         Specifying an already loaded resource set should have no effect.
+		///     </note>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="resourceSet" /> is null. </exception>
+		/// <exception cref="InvalidOperationException"> The resource set specified by <paramref name="resourceSet" /> is not in <see cref="AvailableSets" />. </exception>
+		void LoadSet (IResourceSet resourceSet);
+
+		/// <summary>
 		///     Reloads all currently loaded resource sets (<see cref="LoadedSets" />).
 		/// </summary>
 		void ReloadLoadedSets ();
@@ -154,6 +141,19 @@ namespace RI.Framework.Services.Resources
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="resourceSource" /> is null. </exception>
 		void RemoveSource (IResourceSource resourceSource);
+
+		/// <summary>
+		///     Unloads a resource set.
+		/// </summary>
+		/// <param name="resourceSet"> The resource set to unload. </param>
+		/// <remarks>
+		///     <note type="implement">
+		///         Specifying an already unloaded resource set should have no effect.
+		///     </note>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="resourceSet" /> is null. </exception>
+		/// <exception cref="InvalidOperationException"> The resource set specified by <paramref name="resourceSet" /> is not in <see cref="AvailableSets" />. </exception>
+		void UnloadSet (IResourceSet resourceSet);
 
 		/// <summary>
 		///     Updates the available resource sets (<see cref="AvailableSets" />).

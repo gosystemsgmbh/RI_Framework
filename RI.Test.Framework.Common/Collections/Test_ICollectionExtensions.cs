@@ -204,7 +204,7 @@ namespace RI.Test.Framework.Collections
 			};
 			test = list.AsCollection();
 
-			if (test.RemoveWhere((x, y) => ( x == 2 ) || ( x == 3 )).Count != 2)
+			if (test.RemoveWhere((x, y) => (x == 2) || (x == 3)).Count != 2)
 			{
 				throw new TestAssertionException();
 			}

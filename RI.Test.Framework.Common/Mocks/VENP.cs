@@ -37,7 +37,7 @@ namespace RI.Test.Framework.Mocks
 
 		public static bool operator != (VENP x, VENP y)
 		{
-			return !( x == y );
+			return !(x == y);
 		}
 
 		#endregion

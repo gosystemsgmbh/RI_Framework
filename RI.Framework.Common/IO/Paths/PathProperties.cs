@@ -146,19 +146,19 @@ namespace RI.Framework.IO.Paths
 
 			if (type != PathType.Invalid)
 			{
-				if (( path.Length >= 1 ) && ( path[0] == PathProperties.UnixDirectorySeparator ))
+				if ((path.Length >= 1) && (path[0] == PathProperties.UnixDirectorySeparator))
 				{
 					type = PathType.Unix;
 					isRooted = true;
 					startIndex = 1;
 				}
-				else if (( path.Length >= 2 ) && PathProperties.IsAtoZ(path[0]) && ( path[1] == PathProperties.WindowsDriveSeparator ))
+				else if ((path.Length >= 2) && PathProperties.IsAtoZ(path[0]) && (path[1] == PathProperties.WindowsDriveSeparator))
 				{
 					type = PathType.Windows;
 					isRooted = true;
 					startIndex = 2;
 				}
-				else if (( path.Length >= 2 ) && ( path[0] == PathProperties.UncDirectorySeparator ) && ( path[1] == PathProperties.UncDirectorySeparator ))
+				else if ((path.Length >= 2) && (path[0] == PathProperties.UncDirectorySeparator) && (path[1] == PathProperties.UncDirectorySeparator))
 				{
 					type = PathType.Unc;
 					isRooted = true;
@@ -168,7 +168,7 @@ namespace RI.Framework.IO.Paths
 
 			if (assumedType.HasValue && type.HasValue)
 			{
-				if (( type.Value != assumedType.Value ) && ( type.Value != PathType.Invalid ))
+				if ((type.Value != assumedType.Value) && (type.Value != PathType.Invalid))
 				{
 					type = PathType.Invalid;
 					error = PathError.WrongType;
@@ -183,7 +183,7 @@ namespace RI.Framework.IO.Paths
 				{
 					char chr = path[i1];
 
-					if (( chr == PathProperties.WildcardOne ) || ( chr == PathProperties.WildcardMore ))
+					if ((chr == PathProperties.WildcardOne) || (chr == PathProperties.WildcardMore))
 					{
 						hasWildcards = true;
 						if (allowWildcards)
@@ -207,14 +207,14 @@ namespace RI.Framework.IO.Paths
 
 					if (chr == PathProperties.UnixDirectorySeparator)
 					{
-						if (type.HasValue && ( type != PathType.Unix ))
+						if (type.HasValue && (type != PathType.Unix))
 						{
 							type = PathType.Invalid;
 							error = PathError.InvalidDirectorySeparator;
 							break;
 						}
 
-						if (( path.Length >= ( i1 + 2 ) ) && ( path[i1 + 1] == PathProperties.UnixDirectorySeparator ))
+						if ((path.Length >= (i1 + 2)) && (path[i1 + 1] == PathProperties.UnixDirectorySeparator))
 						{
 							type = PathType.Invalid;
 							error = PathError.RepeatedDirectorySeparator;
@@ -224,27 +224,27 @@ namespace RI.Framework.IO.Paths
 						type = PathType.Unix;
 						continue;
 					}
-					else if (( chr == PathProperties.WindowsDirectorySeparator ) || ( chr == PathProperties.UncDirectorySeparator ))
+					else if ((chr == PathProperties.WindowsDirectorySeparator) || (chr == PathProperties.UncDirectorySeparator))
 					{
-						if (type.HasValue && ( type != PathType.Windows ) && ( type != PathType.Unc ))
+						if (type.HasValue && (type != PathType.Windows) && (type != PathType.Unc))
 						{
 							type = PathType.Invalid;
 							error = PathError.InvalidDirectorySeparator;
 							break;
 						}
 
-						if (( path.Length >= ( i1 + 2 ) ) && ( ( path[i1 + 1] == PathProperties.WindowsDirectorySeparator ) || ( path[i1 + 1] == PathProperties.UncDirectorySeparator ) ))
+						if ((path.Length >= (i1 + 2)) && ((path[i1 + 1] == PathProperties.WindowsDirectorySeparator) || (path[i1 + 1] == PathProperties.UncDirectorySeparator)))
 						{
 							type = PathType.Invalid;
 							error = PathError.RepeatedDirectorySeparator;
 							break;
 						}
 
-						if (assumedType.HasValue && ( ( assumedType.Value == PathType.Windows ) || ( assumedType.Value == PathType.Unc ) ))
+						if (assumedType.HasValue && ((assumedType.Value == PathType.Windows) || (assumedType.Value == PathType.Unc)))
 						{
 							type = assumedType.Value;
 						}
-						else if (type.HasValue && ( ( type.Value == PathType.Windows ) || ( type.Value == PathType.Unc ) ))
+						else if (type.HasValue && ((type.Value == PathType.Windows) || (type.Value == PathType.Unc)))
 						{
 							type = type.Value;
 						}
@@ -256,7 +256,7 @@ namespace RI.Framework.IO.Paths
 						continue;
 					}
 
-					if (( chr < (char)32 ) || ( IEnumerableExtensions.Contains(PathProperties.InvalidPathCharacters, chr) ))
+					if ((chr < (char)32) || (IEnumerableExtensions.Contains(PathProperties.InvalidPathCharacters, chr)))
 					{
 						type = PathType.Invalid;
 						error = PathError.InvalidCharacter;
@@ -281,7 +281,7 @@ namespace RI.Framework.IO.Paths
 			{
 				if (assumedType.HasValue)
 				{
-					if (( type.Value != assumedType.Value ) && ( type.Value != PathType.Invalid ))
+					if ((type.Value != assumedType.Value) && (type.Value != PathType.Invalid))
 					{
 						type = PathType.Invalid;
 						error = PathError.WrongType;
@@ -302,23 +302,23 @@ namespace RI.Framework.IO.Paths
 				{
 					string part = parts[i1];
 
-					if (( type == PathType.Unix ) && ( i1 <= 0 ) && ( isRooted ) && ( part.Length == 0 ))
+					if ((type == PathType.Unix) && (i1 <= 0) && (isRooted) && (part.Length == 0))
 					{
 						continue;
 					}
-					if (( type == PathType.Windows ) && ( i1 <= 0 ) && ( !isRooted ) && ( part.Length == 0 ))
+					if ((type == PathType.Windows) && (i1 <= 0) && (!isRooted) && (part.Length == 0))
 					{
 						continue;
 					}
-					if (( type == PathType.Unc ) && ( i1 <= 1 ) && ( isRooted ) && ( part.Length == 0 ))
+					if ((type == PathType.Unc) && (i1 <= 1) && (isRooted) && (part.Length == 0))
 					{
 						continue;
 					}
-					if (( type == PathType.Unc ) && ( i1 <= 0 ) && ( !isRooted ) && ( part.Length == 0 ))
+					if ((type == PathType.Unc) && (i1 <= 0) && (!isRooted) && (part.Length == 0))
 					{
 						continue;
 					}
-					if (( i1 == ( parts.Count - 1 ) ) && ( part.Length == 0 ))
+					if ((i1 == (parts.Count - 1)) && (part.Length == 0))
 					{
 						continue;
 					}
@@ -367,7 +367,7 @@ namespace RI.Framework.IO.Paths
 
 					if (string.Equals(part, PathProperties.RelativeUp, StringComparison.Ordinal))
 					{
-						if (isRooted && ( partsResolved.Count <= 1 ))
+						if (isRooted && (partsResolved.Count <= 1))
 						{
 							type = PathType.Invalid;
 							error = PathError.RelativeGoesBeyondRoot;
@@ -441,7 +441,7 @@ namespace RI.Framework.IO.Paths
 
 			if (type != PathType.Invalid)
 			{
-				if (( !isRoot ) && ( partsNormalized.Count > 1 ))
+				if ((!isRoot) && (partsNormalized.Count > 1))
 				{
 					parent = PathProperties.CreatePath(partsNormalized.ToList(0, partsNormalized.Count - 1), type.Value, isRooted);
 				}
@@ -692,7 +692,7 @@ namespace RI.Framework.IO.Paths
 			}
 
 			List<string> upLinks = new List<string>();
-			for (int i1 = 0; i1 < ( rootParts.Length - leadingMatch.Count ); i1++)
+			for (int i1 = 0; i1 < (rootParts.Length - leadingMatch.Count); i1++)
 			{
 				upLinks.Add(PathProperties.RelativeUp);
 			}
@@ -776,7 +776,7 @@ namespace RI.Framework.IO.Paths
 		private static bool IsAtoZ (char chr)
 		{
 			chr = char.ToUpperInvariant(chr);
-			return ( chr >= 'A' ) && ( chr <= 'Z' );
+			return (chr >= 'A') && (chr <= 'Z');
 		}
 
 		private static string Trim (string part)

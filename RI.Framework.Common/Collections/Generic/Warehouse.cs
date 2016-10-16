@@ -112,7 +112,7 @@ namespace RI.Framework.Collections.Generic
 		/// </remarks>
 		public void Release (int bay)
 		{
-			if (( bay < 1 ) || ( bay > this.Bays.Length ))
+			if ((bay < 1) || (bay > this.Bays.Length))
 			{
 				throw new ArgumentOutOfRangeException(nameof(bay));
 			}

@@ -12,6 +12,7 @@
 - [ ] Documentation
   - [ ] Examples
   - [ ] Type and member descriptions
+  - [ ] Check all namespace descriptions
   - [ ] Conceptional documentation
 - [ ] Cleanup
   - [X] Rename RI.Tools.Doc2Pdf to RI.Tools.Framework.Doc2Pdf
@@ -26,7 +27,6 @@
   - [ ] Moving all randomizer stuff into Utilities.Randomizing
   - [ ] Check all usage of StringComparison and StringComparer
   - [ ] Use nameof() instead of GetType().Name for logging where possible (sealed classes)
-  - [ ] Check all namespace descriptions
   - [ ] Check usage of LogLocator (including used methods) and ServiceLocator
   - [ ] TODOs
 - [ ] Testing

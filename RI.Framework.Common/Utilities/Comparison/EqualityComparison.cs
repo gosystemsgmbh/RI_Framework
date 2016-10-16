@@ -92,7 +92,7 @@ namespace RI.Framework.Utilities.Comparison
 			}
 
 			this.Comparer = comparer;
-			this.Hasher = hasher ?? ( x => x.GetHashCode() );
+			this.Hasher = hasher ?? (x => x.GetHashCode());
 		}
 
 		#endregion
@@ -139,7 +139,7 @@ namespace RI.Framework.Utilities.Comparison
 		/// </remarks>
 		bool IEqualityComparer.Equals (object x, object y)
 		{
-			if (( !( x is T ) ) || ( !( y is T ) ))
+			if ((!(x is T)) || (!(y is T)))
 			{
 				return false;
 			}
@@ -155,7 +155,7 @@ namespace RI.Framework.Utilities.Comparison
 		/// </remarks>
 		int IEqualityComparer.GetHashCode (object obj)
 		{
-			if (!( obj is T ))
+			if (!(obj is T))
 			{
 				return 0;
 			}

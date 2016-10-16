@@ -2131,7 +2131,7 @@ namespace RI.Test.Framework.Collections
 
 			//With index
 
-			if (test.Select((x, y) => ( x + y ).ToString()).Count != 0)
+			if (test.Select((x, y) => (x + y).ToString()).Count != 0)
 			{
 				throw new TestAssertionException();
 			}
@@ -2177,7 +2177,7 @@ namespace RI.Test.Framework.Collections
 
 			//With index
 
-			result = test.Select((x, y) => ( x + y ).ToString());
+			result = test.Select((x, y) => (x + y).ToString());
 
 			if (result.Count != 4)
 			{
@@ -2225,7 +2225,7 @@ namespace RI.Test.Framework.Collections
 
 			//With index
 
-			if (test.SelectMany((x, y) => ( x + y ).ToString()).Count != 0)
+			if (test.SelectMany((x, y) => (x + y).ToString()).Count != 0)
 			{
 				throw new TestAssertionException();
 			}
@@ -2271,7 +2271,7 @@ namespace RI.Test.Framework.Collections
 
 			//With index
 
-			result = test.SelectMany((x, y) => ( x + y ).ToString());
+			result = test.SelectMany((x, y) => (x + y).ToString());
 
 			if (result.Count != 8)
 			{
@@ -3633,14 +3633,14 @@ namespace RI.Test.Framework.Collections
 
 			//Default comparer
 
-			if (test.ToDictionary(x => new KeyValuePair<string, int>(( x / 10 ).ToString(), x)).Count != 0)
+			if (test.ToDictionary(x => new KeyValuePair<string, int>((x/10).ToString(), x)).Count != 0)
 			{
 				throw new TestAssertionException();
 			}
 
 			//Custom comparer
 
-			if (test.ToDictionary(StringComparer.InvariantCultureIgnoreCase, ( x => new KeyValuePair<string, int>(( x / 10 ).ToString(), x) )).Count != 0)
+			if (test.ToDictionary(StringComparer.InvariantCultureIgnoreCase, (x => new KeyValuePair<string, int>((x/10).ToString(), x))).Count != 0)
 			{
 				throw new TestAssertionException();
 			}
@@ -3659,7 +3659,7 @@ namespace RI.Test.Framework.Collections
 
 			//Default comparer
 
-			Dictionary<string, int> result = test.ToDictionary(x => new KeyValuePair<string, int>(( x / 10 ).ToString(), x));
+			Dictionary<string, int> result = test.ToDictionary(x => new KeyValuePair<string, int>((x/10).ToString(), x));
 
 			if (result.Count != 6)
 			{
@@ -3678,7 +3678,7 @@ namespace RI.Test.Framework.Collections
 
 			//Custom comparer
 
-			result = test.ToDictionary(StringComparer.InvariantCultureIgnoreCase, ( x => new KeyValuePair<string, int>(( x / 10 ).ToString(), x) ));
+			result = test.ToDictionary(StringComparer.InvariantCultureIgnoreCase, (x => new KeyValuePair<string, int>((x/10).ToString(), x)));
 
 			if (result.Count != 6)
 			{
@@ -3706,7 +3706,7 @@ namespace RI.Test.Framework.Collections
 
 			try
 			{
-				test.ToDictionary(x => new KeyValuePair<string, int>(( x / 10 ).ToString(), x));
+				test.ToDictionary(x => new KeyValuePair<string, int>((x/10).ToString(), x));
 				throw new TestAssertionException();
 			}
 			catch (InvalidOperationException)
@@ -3727,14 +3727,14 @@ namespace RI.Test.Framework.Collections
 
 			//Default comparer
 
-			if (test.ToDictionaryList(x => new KeyValuePair<string, int>(( x / 10 ).ToString(), x)).Count != 0)
+			if (test.ToDictionaryList(x => new KeyValuePair<string, int>((x/10).ToString(), x)).Count != 0)
 			{
 				throw new TestAssertionException();
 			}
 
 			//Custom comparer
 
-			if (test.ToDictionaryList(StringComparer.InvariantCultureIgnoreCase, ( x => new KeyValuePair<string, int>(( x / 10 ).ToString(), x) )).Count != 0)
+			if (test.ToDictionaryList(StringComparer.InvariantCultureIgnoreCase, (x => new KeyValuePair<string, int>((x/10).ToString(), x))).Count != 0)
 			{
 				throw new TestAssertionException();
 			}
@@ -3753,7 +3753,7 @@ namespace RI.Test.Framework.Collections
 
 			//Default comparer
 
-			Dictionary<string, List<int>> result = test.ToDictionaryList(x => new KeyValuePair<string, int>(( x / 10 ).ToString(), x));
+			Dictionary<string, List<int>> result = test.ToDictionaryList(x => new KeyValuePair<string, int>((x/10).ToString(), x));
 
 			if (result.Count != 3)
 			{
@@ -3802,7 +3802,7 @@ namespace RI.Test.Framework.Collections
 
 			//Custom comparer
 
-			result = test.ToDictionaryList(StringComparer.InvariantCultureIgnoreCase, ( x => new KeyValuePair<string, int>(( x / 10 ).ToString(), x) ));
+			result = test.ToDictionaryList(StringComparer.InvariantCultureIgnoreCase, (x => new KeyValuePair<string, int>((x/10).ToString(), x)));
 
 			if (result.Count != 3)
 			{
@@ -3863,14 +3863,14 @@ namespace RI.Test.Framework.Collections
 
 			//Default comparer
 
-			if (test.ToDictionarySet(x => new KeyValuePair<string, int>(( x / 10 ).ToString(), x)).Count != 0)
+			if (test.ToDictionarySet(x => new KeyValuePair<string, int>((x/10).ToString(), x)).Count != 0)
 			{
 				throw new TestAssertionException();
 			}
 
 			//Custom comparer
 
-			if (test.ToDictionarySet(StringComparer.InvariantCultureIgnoreCase, EqualityComparer<int>.Default, ( x => new KeyValuePair<string, int>(( x / 10 ).ToString(), x) )).Count != 0)
+			if (test.ToDictionarySet(StringComparer.InvariantCultureIgnoreCase, EqualityComparer<int>.Default, (x => new KeyValuePair<string, int>((x/10).ToString(), x))).Count != 0)
 			{
 				throw new TestAssertionException();
 			}
@@ -3889,7 +3889,7 @@ namespace RI.Test.Framework.Collections
 
 			//Default comparer
 
-			Dictionary<string, HashSet<int>> result = test.ToDictionarySet(x => new KeyValuePair<string, int>(( x / 10 ).ToString(), x));
+			Dictionary<string, HashSet<int>> result = test.ToDictionarySet(x => new KeyValuePair<string, int>((x/10).ToString(), x));
 
 			if (result.Count != 3)
 			{
@@ -3938,7 +3938,7 @@ namespace RI.Test.Framework.Collections
 
 			//Custom comparer
 
-			result = test.ToDictionarySet(StringComparer.InvariantCultureIgnoreCase, EqualityComparer<int>.Default, ( x => new KeyValuePair<string, int>(( x / 10 ).ToString(), x) ));
+			result = test.ToDictionarySet(StringComparer.InvariantCultureIgnoreCase, EqualityComparer<int>.Default, (x => new KeyValuePair<string, int>((x/10).ToString(), x)));
 
 			if (result.Count != 3)
 			{
@@ -4309,24 +4309,24 @@ namespace RI.Test.Framework.Collections
 
 			//Without index
 
-			if (test1.Zip(test2, (x, y) => x * y).Count != 0)
+			if (test1.Zip(test2, (x, y) => x*y).Count != 0)
 			{
 				throw new TestAssertionException();
 			}
 
-			if (test2.Zip(test1, (x, y) => x * y).Count != 0)
+			if (test2.Zip(test1, (x, y) => x*y).Count != 0)
 			{
 				throw new TestAssertionException();
 			}
 
 			//Wit index
 
-			if (test1.Zip(test2, (x, y, z) => x * y * z).Count != 0)
+			if (test1.Zip(test2, (x, y, z) => x*y*z).Count != 0)
 			{
 				throw new TestAssertionException();
 			}
 
-			if (test2.Zip(test1, (x, y, z) => x * y * z).Count != 0)
+			if (test2.Zip(test1, (x, y, z) => x*y*z).Count != 0)
 			{
 				throw new TestAssertionException();
 			}
@@ -4342,24 +4342,24 @@ namespace RI.Test.Framework.Collections
 
 			//Without index
 
-			if (test1.Zip(test2, (x, y) => x * y).Count != 0)
+			if (test1.Zip(test2, (x, y) => x*y).Count != 0)
 			{
 				throw new TestAssertionException();
 			}
 
-			if (test2.Zip(test1, (x, y) => x * y).Count != 0)
+			if (test2.Zip(test1, (x, y) => x*y).Count != 0)
 			{
 				throw new TestAssertionException();
 			}
 
 			//Wit index
 
-			if (test1.Zip(test2, (x, y, z) => x * y * z).Count != 0)
+			if (test1.Zip(test2, (x, y, z) => x*y*z).Count != 0)
 			{
 				throw new TestAssertionException();
 			}
 
-			if (test2.Zip(test1, (x, y, z) => x * y * z).Count != 0)
+			if (test2.Zip(test1, (x, y, z) => x*y*z).Count != 0)
 			{
 				throw new TestAssertionException();
 			}
@@ -4377,44 +4377,44 @@ namespace RI.Test.Framework.Collections
 
 			//Without index
 
-			if (test1.Zip(test2, (x, y) => x * y).Count != 3)
+			if (test1.Zip(test2, (x, y) => x*y).Count != 3)
 			{
 				throw new TestAssertionException();
 			}
 
-			if (test1.Zip(test2, (x, y) => x * y)[0] != 10)
+			if (test1.Zip(test2, (x, y) => x*y)[0] != 10)
 			{
 				throw new TestAssertionException();
 			}
 
-			if (test2.Zip(test1, (x, y) => x * y).Count != 3)
+			if (test2.Zip(test1, (x, y) => x*y).Count != 3)
 			{
 				throw new TestAssertionException();
 			}
 
-			if (test1.Zip(test2, (x, y) => x * y)[2] != 90)
+			if (test1.Zip(test2, (x, y) => x*y)[2] != 90)
 			{
 				throw new TestAssertionException();
 			}
 
 			//With index
 
-			if (test1.Zip(test2, (x, y, z) => x * y * z).Count != 3)
+			if (test1.Zip(test2, (x, y, z) => x*y*z).Count != 3)
 			{
 				throw new TestAssertionException();
 			}
 
-			if (test1.Zip(test2, (x, y, z) => x * y * z)[0] != 0)
+			if (test1.Zip(test2, (x, y, z) => x*y*z)[0] != 0)
 			{
 				throw new TestAssertionException();
 			}
 
-			if (test2.Zip(test1, (x, y, z) => x * y * z).Count != 3)
+			if (test2.Zip(test1, (x, y, z) => x*y*z).Count != 3)
 			{
 				throw new TestAssertionException();
 			}
 
-			if (test1.Zip(test2, (x, y, z) => x * y * z)[2] != 180)
+			if (test1.Zip(test2, (x, y, z) => x*y*z)[2] != 180)
 			{
 				throw new TestAssertionException();
 			}

@@ -100,7 +100,7 @@ namespace RI.Test.Framework.IO.Paths
 			}
 
 			test = PathProperties.FromPath("@test", false, false, PathType.Windows);
-			if (!test.Equals(( (ICloneable)test ).Clone()))
+			if (!test.Equals(((ICloneable)test).Clone()))
 			{
 				throw new TestAssertionException();
 			}

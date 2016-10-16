@@ -243,9 +243,9 @@ namespace RI.Framework.Collections.Comparison
 
 		private void Initialize (CollectionComparerFlags options, Func<T, T, bool> comparer)
 		{
-			bool referenceEquality = ( options & CollectionComparerFlags.ReferenceEquality ) == CollectionComparerFlags.ReferenceEquality;
+			bool referenceEquality = (options & CollectionComparerFlags.ReferenceEquality) == CollectionComparerFlags.ReferenceEquality;
 
-			if (( comparer != null ) && referenceEquality)
+			if ((comparer != null) && referenceEquality)
 			{
 				throw new ArgumentException();
 			}
@@ -295,25 +295,25 @@ namespace RI.Framework.Collections.Comparison
 				return true;
 			}
 
-			if (( x == null ) && ( y == null ))
+			if ((x == null) && (y == null))
 			{
 				return true;
 			}
 
-			if (( x == null ) || ( y == null ))
+			if ((x == null) || (y == null))
 			{
 				return false;
 			}
 
-			IList<T> xList = ( x as IList<T> ) ?? x.ToList();
-			IList<T> yList = ( y as IList<T> ) ?? y.ToList();
+			IList<T> xList = (x as IList<T>) ?? x.ToList();
+			IList<T> yList = (y as IList<T>) ?? y.ToList();
 
 			if (xList.Count != yList.Count)
 			{
 				return false;
 			}
 
-			bool ignoreOrder = ( ( this.Options & CollectionComparerFlags.IgnoreOrder ) == CollectionComparerFlags.IgnoreOrder );
+			bool ignoreOrder = ((this.Options & CollectionComparerFlags.IgnoreOrder) == CollectionComparerFlags.IgnoreOrder);
 			if (ignoreOrder)
 			{
 				for (int i1 = 0; i1 < xList.Count; i1++)

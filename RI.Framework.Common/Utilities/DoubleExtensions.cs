@@ -78,7 +78,7 @@
 		/// </returns>
 		public static bool IsNumber (this double value)
 		{
-			return ( !double.IsNaN(value) ) && ( !double.IsInfinity(value) );
+			return (!double.IsNaN(value)) && (!double.IsInfinity(value));
 		}
 
 		#endregion

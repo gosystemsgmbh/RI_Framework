@@ -44,7 +44,7 @@ namespace RI.Framework.Collections.ObjectModel
 	/// </code>
 	/// </example>
 	public sealed class Pool <T> : PoolBase<T>
-			where T : new()
+		where T : new()
 	{
 		#region Instance Constructor/Destructor
 

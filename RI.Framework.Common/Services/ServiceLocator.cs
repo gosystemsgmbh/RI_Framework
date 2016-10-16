@@ -180,7 +180,7 @@ namespace RI.Framework.Services
 			Func<string, IList<object>> handler = ServiceLocator.Lookup;
 			IList<object> instances = handler?.Invoke(name);
 
-			return instances == null ? null : ( instances.Count == 0 ? null : instances[0] );
+			return instances == null ? null : (instances.Count == 0 ? null : instances[0]);
 		}
 
 		private static string TranslateTypeToName (Type type)

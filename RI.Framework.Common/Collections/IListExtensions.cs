@@ -63,7 +63,7 @@ namespace RI.Framework.Collections
 				throw new ArgumentNullException(nameof(list));
 			}
 
-			if (( index < 0 ) || ( index > list.Count ))
+			if ((index < 0) || (index > list.Count))
 			{
 				throw new ArgumentOutOfRangeException(nameof(index));
 			}
@@ -106,7 +106,7 @@ namespace RI.Framework.Collections
 				throw new ArgumentNullException(nameof(list));
 			}
 
-			if (( index < 0 ) || ( index > list.Count ))
+			if ((index < 0) || (index > list.Count))
 			{
 				throw new ArgumentOutOfRangeException(nameof(index));
 			}
@@ -117,7 +117,7 @@ namespace RI.Framework.Collections
 			}
 
 			int removedCount = 0;
-			for (removedCount = 0; ( removedCount < count ) && ( index < list.Count ); removedCount++)
+			for (removedCount = 0; (removedCount < count) && (index < list.Count); removedCount++)
 			{
 				list.RemoveAt(index);
 			}
@@ -161,7 +161,7 @@ namespace RI.Framework.Collections
 			deduplicatedAndSorted.Reverse();
 			for (int i1 = 0; i1 < deduplicatedAndSorted.Count; i1++)
 			{
-				if (( deduplicatedAndSorted[i1] < 0 ) || ( deduplicatedAndSorted[i1] >= list.Count ))
+				if ((deduplicatedAndSorted[i1] < 0) || (deduplicatedAndSorted[i1] >= list.Count))
 				{
 					throw new ArgumentOutOfRangeException(nameof(indices));
 				}
@@ -234,7 +234,7 @@ namespace RI.Framework.Collections
 			}
 
 			List<T> shuffled = new List<T>(list);
-			for (int i1 = 0; i1 < ( list.Count * 2 ); i1++)
+			for (int i1 = 0; i1 < (list.Count*2); i1++)
 			{
 				int a = randomizer.Next(0, list.Count);
 				int b = randomizer.Next(0, list.Count);
@@ -436,12 +436,12 @@ namespace RI.Framework.Collections
 				throw new ArgumentNullException(nameof(list));
 			}
 
-			if (( indexA < 0 ) || ( indexA >= list.Count ))
+			if ((indexA < 0) || (indexA >= list.Count))
 			{
 				throw new ArgumentOutOfRangeException(nameof(indexA));
 			}
 
-			if (( indexB < 0 ) || ( indexB >= list.Count ))
+			if ((indexB < 0) || (indexB >= list.Count))
 			{
 				throw new ArgumentOutOfRangeException(nameof(indexB));
 			}
@@ -481,12 +481,12 @@ namespace RI.Framework.Collections
 				throw new ArgumentNullException(nameof(list));
 			}
 
-			if (( indexA < 0 ) || ( indexA >= list.Count ))
+			if ((indexA < 0) || (indexA >= list.Count))
 			{
 				throw new ArgumentOutOfRangeException(nameof(indexA));
 			}
 
-			if (( indexB < 0 ) || ( indexB >= list.Count ))
+			if ((indexB < 0) || (indexB >= list.Count))
 			{
 				throw new ArgumentOutOfRangeException(nameof(indexB));
 			}
@@ -523,12 +523,12 @@ namespace RI.Framework.Collections
 				throw new ArgumentNullException(nameof(list));
 			}
 
-			if (( indexA < 0 ) || ( indexA >= list.Count ))
+			if ((indexA < 0) || (indexA >= list.Count))
 			{
 				throw new ArgumentOutOfRangeException(nameof(indexA));
 			}
 
-			if (( indexB < 0 ) || ( indexB >= list.Count ))
+			if ((indexB < 0) || (indexB >= list.Count))
 			{
 				throw new ArgumentOutOfRangeException(nameof(indexB));
 			}

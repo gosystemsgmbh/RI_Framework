@@ -15,7 +15,7 @@ namespace RI.Framework.Collections.ObjectModel
 	///     </para>
 	/// </remarks>
 	public interface ITreeNode <T>
-			where T : class, ITreeNode<T>
+		where T : class, ITreeNode<T>
 	{
 		/// <summary>
 		///     Gets the list of child nodes of this tree node.

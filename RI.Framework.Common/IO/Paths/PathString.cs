@@ -31,7 +31,7 @@ namespace RI.Framework.IO.Paths
 		/// </remarks>
 		public static int Compare (PathString x, PathString y)
 		{
-			if (( x == null ) && ( y == null ))
+			if ((x == null) && (y == null))
 			{
 				return 0;
 			}
@@ -84,7 +84,7 @@ namespace RI.Framework.IO.Paths
 		/// </remarks>
 		public static bool operator == (PathString x, PathString y)
 		{
-			return ( PathString.Equals(x, y) );
+			return (PathString.Equals(x, y));
 		}
 
 		/// <summary>
@@ -98,7 +98,7 @@ namespace RI.Framework.IO.Paths
 		/// </remarks>
 		public static bool operator > (PathString x, PathString y)
 		{
-			return ( PathString.Compare(x, y) > 0 );
+			return (PathString.Compare(x, y) > 0);
 		}
 
 		/// <summary>
@@ -112,7 +112,7 @@ namespace RI.Framework.IO.Paths
 		/// </remarks>
 		public static bool operator >= (PathString x, PathString y)
 		{
-			return ( PathString.Compare(x, y) >= 0 );
+			return (PathString.Compare(x, y) >= 0);
 		}
 
 		/// <summary>
@@ -140,7 +140,7 @@ namespace RI.Framework.IO.Paths
 		/// </remarks>
 		public static bool operator != (PathString x, PathString y)
 		{
-			return ( !PathString.Equals(x, y) );
+			return (!PathString.Equals(x, y));
 		}
 
 		/// <summary>
@@ -154,7 +154,7 @@ namespace RI.Framework.IO.Paths
 		/// </remarks>
 		public static bool operator < (PathString x, PathString y)
 		{
-			return ( PathString.Compare(x, y) < 0 );
+			return (PathString.Compare(x, y) < 0);
 		}
 
 		/// <summary>
@@ -168,7 +168,7 @@ namespace RI.Framework.IO.Paths
 		/// </remarks>
 		public static bool operator <= (PathString x, PathString y)
 		{
-			return ( PathString.Compare(x, y) <= 0 );
+			return (PathString.Compare(x, y) <= 0);
 		}
 
 		#endregion

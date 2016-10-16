@@ -15,7 +15,7 @@ namespace RI.Test.Framework.Utilities.Comparison
 		[TestMethod]
 		public void Test ()
 		{
-			OrderComparison<int> comparer = new OrderComparison<int>((x, y) => ( x % 5 ).CompareTo(y % 5));
+			OrderComparison<int> comparer = new OrderComparison<int>((x, y) => (x%5).CompareTo(y%5));
 
 			if (comparer.ReverseOrder)
 			{
@@ -52,7 +52,7 @@ namespace RI.Test.Framework.Utilities.Comparison
 				throw new TestAssertionException();
 			}
 
-			comparer = new OrderComparison<int>(false, (x, y) => ( x % 5 ).CompareTo(y % 5));
+			comparer = new OrderComparison<int>(false, (x, y) => (x%5).CompareTo(y%5));
 
 			if (comparer.ReverseOrder)
 			{
@@ -89,7 +89,7 @@ namespace RI.Test.Framework.Utilities.Comparison
 				throw new TestAssertionException();
 			}
 
-			comparer = new OrderComparison<int>(true, (x, y) => ( x % 5 ).CompareTo(y % 5));
+			comparer = new OrderComparison<int>(true, (x, y) => (x%5).CompareTo(y%5));
 
 			if (!comparer.ReverseOrder)
 			{

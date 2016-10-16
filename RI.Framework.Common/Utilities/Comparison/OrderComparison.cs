@@ -104,7 +104,7 @@ namespace RI.Framework.Utilities.Comparison
 		/// </remarks>
 		int IComparer.Compare (object x, object y)
 		{
-			if (( !( x is T ) ) || ( !( y is T ) ))
+			if ((!(x is T)) || (!(y is T)))
 			{
 				return -1;
 			}
@@ -129,7 +129,7 @@ namespace RI.Framework.Utilities.Comparison
 		/// </returns>
 		public int Compare (T x, T y)
 		{
-			return this.ReverseOrder ? ( this.Comparer(x, y) * -1 ) : this.Comparer(x, y);
+			return this.ReverseOrder ? (this.Comparer(x, y)*-1) : this.Comparer(x, y);
 		}
 
 		#endregion

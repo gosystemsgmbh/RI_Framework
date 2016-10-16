@@ -239,7 +239,7 @@ namespace RI.Framework.Collections.ObjectModel
 					siblings = new List<T>(treeNode.Parent.Children.Count);
 					foreach (T sibling in treeNode.Parent.Children)
 					{
-						if (( !object.ReferenceEquals(sibling, treeNode) ) || includeSelf)
+						if ((!object.ReferenceEquals(sibling, treeNode)) || includeSelf)
 						{
 							siblings.Add(sibling);
 						}
@@ -397,7 +397,7 @@ namespace RI.Framework.Collections.ObjectModel
 				throw new ArgumentNullException(nameof(treeNode));
 			}
 
-			return ( treeNode.Parent?.Children?.Count ).GetValueOrDefault(0) > 1;
+			return (treeNode.Parent?.Children?.Count).GetValueOrDefault(0) > 1;
 		}
 
 		/// <summary>

@@ -110,7 +110,7 @@ namespace RI.Framework.Utilities
 				throw new ArgumentNullException(nameof(randomizer));
 			}
 
-			return (byte)( randomizer.Next(0, 256) );
+			return (byte)(randomizer.Next(0, 256));
 		}
 
 		/// <summary>
@@ -129,7 +129,7 @@ namespace RI.Framework.Utilities
 				throw new ArgumentNullException(nameof(randomizer));
 			}
 
-			return (byte)( randomizer.Next(0, max + 1) );
+			return (byte)(randomizer.Next(0, max + 1));
 		}
 
 		/// <summary>
@@ -149,7 +149,7 @@ namespace RI.Framework.Utilities
 				throw new ArgumentNullException(nameof(randomizer));
 			}
 
-			return (byte)( randomizer.Next(min, max + 1) );
+			return (byte)(randomizer.Next(min, max + 1));
 		}
 
 		/// <summary>
@@ -167,7 +167,7 @@ namespace RI.Framework.Utilities
 				throw new ArgumentNullException(nameof(randomizer));
 			}
 
-			if (( offset < 0 ) || ( offset >= buffer.Length ))
+			if ((offset < 0) || (offset >= buffer.Length))
 			{
 				throw new ArgumentOutOfRangeException(nameof(offset));
 			}
@@ -191,17 +191,17 @@ namespace RI.Framework.Utilities
 				throw new ArgumentNullException(nameof(randomizer));
 			}
 
-			if (( offset < 0 ) || ( offset >= buffer.Length ))
+			if ((offset < 0) || (offset >= buffer.Length))
 			{
 				throw new ArgumentOutOfRangeException(nameof(offset));
 			}
 
-			if (( count < 0 ) || ( ( offset + count ) > buffer.Length ))
+			if ((count < 0) || ((offset + count) > buffer.Length))
 			{
 				throw new ArgumentOutOfRangeException(nameof(count));
 			}
 
-			for (int i1 = offset; i1 < ( offset + count ); i1++)
+			for (int i1 = offset; i1 < (offset + count); i1++)
 			{
 				buffer[i1] = (byte)randomizer.Next(0, 256);
 			}
@@ -337,7 +337,7 @@ namespace RI.Framework.Utilities
 				throw new NotFiniteNumberException(nameof(max));
 			}
 
-			return min + ( randomizer.NextDouble() * ( max - min ) );
+			return min + (randomizer.NextDouble()*(max - min));
 		}
 
 		/// <summary>
@@ -373,8 +373,8 @@ namespace RI.Framework.Utilities
 
 			double u1 = randomizer.NextDouble();
 			double u2 = randomizer.NextDouble();
-			double distribution = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(2.0 * Math.PI * u2);
-			return mu + ( sigma * distribution );
+			double distribution = Math.Sqrt(-2.0*Math.Log(u1))*Math.Sin(2.0*Math.PI*u2);
+			return mu + (sigma*distribution);
 		}
 
 		/// <summary>
@@ -412,7 +412,7 @@ namespace RI.Framework.Utilities
 				throw new ArgumentOutOfRangeException(nameof(words));
 			}
 
-			if (startWithLoremIpsum && ( words < 5 ))
+			if (startWithLoremIpsum && (words < 5))
 			{
 				throw new ArgumentOutOfRangeException(nameof(words));
 			}
@@ -463,7 +463,7 @@ namespace RI.Framework.Utilities
 			for (int i1 = 0; i1 < remainingWords; i1++)
 			{
 				string word = RandomExtensions.LoremIpsumWords[randomizer.Next(0, RandomExtensions.LoremIpsumWords.Count)];
-				if (( !started ) && startWithCapital)
+				if ((!started) && startWithCapital)
 				{
 					word = char.ToUpperInvariant(word[0]) + word.Substring(1);
 				}
@@ -555,13 +555,13 @@ namespace RI.Framework.Utilities
 			}
 
 			double u = randomizer.NextDouble();
-			if (u < ( ( mode - min ) / ( max - min ) ))
+			if (u < ((mode - min)/(max - min)))
 			{
-				return min + Math.Sqrt(u * ( max - min ) * ( mode - min ));
+				return min + Math.Sqrt(u*(max - min)*(mode - min));
 			}
 			else
 			{
-				return max - Math.Sqrt(( 1 - u ) * ( max - min ) * ( max - mode ));
+				return max - Math.Sqrt((1 - u)*(max - min)*(max - mode));
 			}
 		}
 
@@ -674,17 +674,17 @@ namespace RI.Framework.Utilities
 				return 0;
 			}
 
-			if (( index < 0 ) || ( index >= list.Count ))
+			if ((index < 0) || (index >= list.Count))
 			{
 				throw new ArgumentOutOfRangeException(nameof(index));
 			}
 
-			if (( count < 0 ) || ( ( index + count ) > list.Count ))
+			if ((count < 0) || ((index + count) > list.Count))
 			{
 				throw new ArgumentOutOfRangeException(nameof(count));
 			}
 
-			for (int i1 = index; i1 < ( index + count ); i1++)
+			for (int i1 = index; i1 < (index + count); i1++)
 			{
 				int newIndex = randomizer.Next(index, i1 + 1);
 				T temp = list[newIndex];

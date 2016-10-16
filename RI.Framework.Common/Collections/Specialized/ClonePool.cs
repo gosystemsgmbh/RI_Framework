@@ -26,7 +26,7 @@ namespace RI.Framework.Collections.Specialized
 	///     </para>
 	/// </remarks>
 	public sealed class ClonePool <T> : PoolBase<T>
-			where T : ICloneable
+		where T : ICloneable
 	{
 		#region Instance Constructor/Destructor
 

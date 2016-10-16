@@ -65,7 +65,7 @@ namespace RI.Framework.Utilities.Reflection
 				return null;
 			}
 
-			return ( (AssemblyCompanyAttribute)attributes[0] ).Company;
+			return ((AssemblyCompanyAttribute)attributes[0]).Company;
 		}
 
 		/// <summary>
@@ -95,7 +95,7 @@ namespace RI.Framework.Utilities.Reflection
 				return null;
 			}
 
-			return ( (AssemblyCopyrightAttribute)attributes[0] ).Copyright;
+			return ((AssemblyCopyrightAttribute)attributes[0]).Copyright;
 		}
 
 		/// <summary>
@@ -125,7 +125,7 @@ namespace RI.Framework.Utilities.Reflection
 				return null;
 			}
 
-			return ( (AssemblyDescriptionAttribute)attributes[0] ).Description;
+			return ((AssemblyDescriptionAttribute)attributes[0]).Description;
 		}
 
 		/// <summary>
@@ -196,7 +196,7 @@ namespace RI.Framework.Utilities.Reflection
 				return null;
 			}
 
-			return ( (AssemblyFileVersionAttribute)attributes[0] ).Version.ToVersion();
+			return ((AssemblyFileVersionAttribute)attributes[0]).Version.ToVersion();
 		}
 
 		/// <summary>
@@ -227,9 +227,9 @@ namespace RI.Framework.Utilities.Reflection
 
 			object[] attributes = assembly.GetCustomAttributes(typeof(GuidAttribute), true);
 
-			if (( attributes.Length > 0 ) && ( !ignoreGuidAttribute ))
+			if ((attributes.Length > 0) && (!ignoreGuidAttribute))
 			{
-				Guid? guidCandidate = ( (GuidAttribute)attributes[0] ).Value.ToGuid();
+				Guid? guidCandidate = ((GuidAttribute)attributes[0]).Value.ToGuid();
 				if (guidCandidate.HasValue)
 				{
 					return guidCandidate.Value;
@@ -245,7 +245,7 @@ namespace RI.Framework.Utilities.Reflection
 
 			for (int i1 = 0; i1 < guidInformationBytes.Length; i1++)
 			{
-				guidBytes[i1 % 16] = (byte)( ( guidBytes[i1 % 16] + guidInformationBytes[i1] ) % 255 );
+				guidBytes[i1%16] = (byte)((guidBytes[i1%16] + guidInformationBytes[i1])%255);
 			}
 
 			Guid guid = new Guid(guidBytes);
@@ -279,7 +279,7 @@ namespace RI.Framework.Utilities.Reflection
 				return null;
 			}
 
-			return ( (AssemblyInformationalVersionAttribute)attributes[0] ).InformationalVersion.ToVersion();
+			return ((AssemblyInformationalVersionAttribute)attributes[0]).InformationalVersion.ToVersion();
 		}
 
 		/// <summary>
@@ -309,7 +309,7 @@ namespace RI.Framework.Utilities.Reflection
 				return null;
 			}
 
-			return ( (AssemblyProductAttribute)attributes[0] ).Product;
+			return ((AssemblyProductAttribute)attributes[0]).Product;
 		}
 
 		/// <summary>
@@ -339,7 +339,7 @@ namespace RI.Framework.Utilities.Reflection
 				return null;
 			}
 
-			return ( (AssemblyTitleAttribute)attributes[0] ).Title;
+			return ((AssemblyTitleAttribute)attributes[0]).Title;
 		}
 
 		#endregion
