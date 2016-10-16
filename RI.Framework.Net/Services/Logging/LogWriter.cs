@@ -46,7 +46,7 @@ namespace RI.Framework.Services.Logging
 			finalMessageBuilder.Append("] [");
 			finalMessageBuilder.Append(source);
 			finalMessageBuilder.Append("] ");
-			finalMessageBuilder.Append(message);
+			finalMessageBuilder.AppendLine(message);
 			string finalMessage = finalMessageBuilder.ToString();
 			Debugger.Log((int)severity, source, finalMessage);
 		}
