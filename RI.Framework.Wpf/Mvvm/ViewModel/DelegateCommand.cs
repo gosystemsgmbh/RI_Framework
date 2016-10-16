@@ -40,7 +40,7 @@ namespace RI.Framework.Mvvm.ViewModel
 			this.CanExecutePrivate = canExecute;
 
 			this.CommandAction = x => this.CommandPrivate((T)x);
-			this.CanExecuteFunction = y => this.CanExecutePrivate((T)y);
+			this.CanExecuteFunction = y => this.CanExecutePrivate?.Invoke((T)y) ?? true;
 		}
 
 		#endregion
@@ -91,7 +91,7 @@ namespace RI.Framework.Mvvm.ViewModel
 			this.CanExecutePrivate = canExecute;
 
 			this.CommandAction = x => this.CommandPrivate();
-			this.CanExecuteFunction = y => this.CanExecutePrivate();
+			this.CanExecuteFunction = y => this.CanExecutePrivate?.Invoke() ?? true;
 		}
 
 		#endregion

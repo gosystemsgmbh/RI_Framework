@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
@@ -155,6 +156,47 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 		}
 
 		/// <summary>
+		///     Determines whether a message is a trigger changed response and if so, checks whether the specified trigger is AND-triggered.
+		/// </summary>
+		/// <param name="message"> The trigger message. </param>
+		/// <param name="triggerName"> The trigger name to check. </param>
+		/// <returns>
+		///     If the message is a trigger changed response and the trigger name matches, true is returned if AND-triggered or false if not AND-triggered.
+		///     If the message is not a trigger respond message or the trigger names do not match, null is returned.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="message" /> or <paramref name="triggerName" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="triggerName" /> is an empty string. </exception>
+		public static bool? IsTriggered (this IMessage message, string triggerName)
+		{
+			if (message == null)
+			{
+				throw new ArgumentNullException(nameof(message));
+			}
+
+			if (triggerName == null)
+			{
+				throw new ArgumentNullException(nameof(triggerName));
+			}
+
+			if (triggerName.IsEmpty())
+			{
+				throw new EmptyStringArgumentException(nameof(triggerName));
+			}
+
+			if (!message.IsTriggerChangedResponse())
+			{
+				return null;
+			}
+
+			if (!string.Equals(message.GetTriggerName(), triggerName, StringComparison.InvariantCultureIgnoreCase))
+			{
+				return null;
+			}
+
+			return message.GetAndTriggered();
+		}
+
+		/// <summary>
 		///     Sets the AND-triggered state.
 		/// </summary>
 		/// <param name="message"> The trigger message. </param>
@@ -238,6 +280,68 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 			}
 
 			message.SetData(TriggerMessageNames.DataNameTriggerName, triggerName);
+		}
+
+		public static string SubscribeToTrigger (this IMessageService messageService, string triggerName)
+		{
+			if (messageService == null)
+			{
+				throw new ArgumentNullException(nameof(messageService));
+			}
+
+			if (triggerName == null)
+			{
+				throw new ArgumentNullException(nameof(triggerName));
+			}
+
+			if (triggerName.IsEmpty())
+			{
+				throw new EmptyStringArgumentException(nameof(triggerName));
+			}
+
+			string subscriberId = Guid.NewGuid().ToString("N", CultureInfo.InvariantCulture);
+
+			Message subscriptionMessage = new Message(TriggerMessageNames.MessageNameRequestSubscribe);
+			subscriptionMessage.SetSubscriberId(subscriberId);
+			subscriptionMessage.SetTriggerName(triggerName);
+
+			messageService.Post(subscriptionMessage);
+
+			return subscriberId;
+		}
+
+		public static void ArmTrigger (this IMessageService messageService, string triggerName, string subscriberId)
+		{
+			if (messageService == null)
+			{
+				throw new ArgumentNullException(nameof(messageService));
+			}
+
+			if (triggerName == null)
+			{
+				throw new ArgumentNullException(nameof(triggerName));
+			}
+
+			if (triggerName.IsEmpty())
+			{
+				throw new EmptyStringArgumentException(nameof(triggerName));
+			}
+
+			if (subscriberId == null)
+			{
+				throw new ArgumentNullException(nameof(subscriberId));
+			}
+
+			if (subscriberId.IsEmpty())
+			{
+				throw new EmptyStringArgumentException(nameof(subscriberId));
+			}
+
+			Message armMessage = new Message(TriggerMessageNames.MessageNameRequestArm);
+			armMessage.SetSubscriberId(subscriberId);
+			armMessage.SetTriggerName(triggerName);
+
+			messageService.Post(armMessage);
 		}
 
 		#endregion
