@@ -32,7 +32,17 @@
   <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="7zip\7za.exe" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>@md "$(SolutionDir)_Input"
+@md "$(SolutionDir)_Output"
+
+@copy "$(ProjectDir)7zip\*.exe" "$(SolutionDir)_Input\*.*"
+@copy "$(ProjectDir)7zip\*.exe" "$(SolutionDir)_Output\*.*"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

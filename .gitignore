@@ -5,8 +5,8 @@
 /_Output
 /_Test
 /_Input
-*.dll
-*.exe
+#*.dll
+#*.exe
 
 # User-specific files
 *.suo
