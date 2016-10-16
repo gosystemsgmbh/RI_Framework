@@ -18,6 +18,90 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 		#region Static Methods
 
 		/// <summary>
+		///     Creates and sends a message to arm a trigger.
+		/// </summary>
+		/// <param name="messageService"> The message service used to send the message. </param>
+		/// <param name="triggerName"> The trigger name to arm. </param>
+		/// <param name="subscriberId"> The subscriber ID which arms the trigger. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="messageService" />, <paramref name="triggerName" /> or <paramref name="subscriberId" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="triggerName" /> or <paramref name="subscriberId" /> is an empty string. </exception>
+		public static void ArmTrigger (this IMessageService messageService, string triggerName, string subscriberId)
+		{
+			if (messageService == null)
+			{
+				throw new ArgumentNullException(nameof(messageService));
+			}
+
+			if (triggerName == null)
+			{
+				throw new ArgumentNullException(nameof(triggerName));
+			}
+
+			if (triggerName.IsEmpty())
+			{
+				throw new EmptyStringArgumentException(nameof(triggerName));
+			}
+
+			if (subscriberId == null)
+			{
+				throw new ArgumentNullException(nameof(subscriberId));
+			}
+
+			if (subscriberId.IsEmpty())
+			{
+				throw new EmptyStringArgumentException(nameof(subscriberId));
+			}
+
+			Message armMessage = new Message(TriggerMessageNames.MessageNameRequestArm);
+			armMessage.SetSubscriberId(subscriberId);
+			armMessage.SetTriggerName(triggerName);
+
+			messageService.Post(armMessage);
+		}
+
+		/// <summary>
+		///     Creates and sends a message to disarm a trigger.
+		/// </summary>
+		/// <param name="messageService"> The message service used to send the message. </param>
+		/// <param name="triggerName"> The trigger name to disarm. </param>
+		/// <param name="subscriberId"> The subscriber ID which disarms the trigger. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="messageService" />, <paramref name="triggerName" /> or <paramref name="subscriberId" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="triggerName" /> or <paramref name="subscriberId" /> is an empty string. </exception>
+		public static void DisarmTrigger (this IMessageService messageService, string triggerName, string subscriberId)
+		{
+			if (messageService == null)
+			{
+				throw new ArgumentNullException(nameof(messageService));
+			}
+
+			if (triggerName == null)
+			{
+				throw new ArgumentNullException(nameof(triggerName));
+			}
+
+			if (triggerName.IsEmpty())
+			{
+				throw new EmptyStringArgumentException(nameof(triggerName));
+			}
+
+			if (subscriberId == null)
+			{
+				throw new ArgumentNullException(nameof(subscriberId));
+			}
+
+			if (subscriberId.IsEmpty())
+			{
+				throw new EmptyStringArgumentException(nameof(subscriberId));
+			}
+
+			Message armMessage = new Message(TriggerMessageNames.MessageNameRequestDisarm);
+			armMessage.SetSubscriberId(subscriberId);
+			armMessage.SetTriggerName(triggerName);
+
+			messageService.Post(armMessage);
+		}
+
+		/// <summary>
 		///     Gets the AND-triggered state.
 		/// </summary>
 		/// <param name="message"> The trigger message. </param>
@@ -282,6 +366,21 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 			message.SetData(TriggerMessageNames.DataNameTriggerName, triggerName);
 		}
 
+		/// <summary>
+		///     Creates and sends a message to subscribe to a trigger.
+		/// </summary>
+		/// <param name="messageService"> The message service used to send the message. </param>
+		/// <param name="triggerName"> The trigger name to subscribe to. </param>
+		/// <returns>
+		///     An automatically generated subscriber ID which is used to subscribe to the trigger.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         The subscriber ID is generated using <see cref="Guid" />.<see cref="Guid.NewGuid" />.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="messageService" /> or <paramref name="triggerName" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="triggerName" /> is an empty string. </exception>
 		public static string SubscribeToTrigger (this IMessageService messageService, string triggerName)
 		{
 			if (messageService == null)
@@ -310,7 +409,15 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 			return subscriberId;
 		}
 
-		public static void ArmTrigger (this IMessageService messageService, string triggerName, string subscriberId)
+		/// <summary>
+		///     Creates and sends a message to unsubscribe from a trigger.
+		/// </summary>
+		/// <param name="messageService"> The message service used to send the message. </param>
+		/// <param name="triggerName"> The trigger name to unsubscribe from. </param>
+		/// <param name="subscriberId"> The subscriber ID which unsubscribes from the trigger. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="messageService" />, <paramref name="triggerName" /> or <paramref name="subscriberId" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="triggerName" /> or <paramref name="subscriberId" /> is an empty string. </exception>
+		public static void UnsubscribeFromTrigger (this IMessageService messageService, string triggerName, string subscriberId)
 		{
 			if (messageService == null)
 			{
@@ -337,11 +444,11 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 				throw new EmptyStringArgumentException(nameof(subscriberId));
 			}
 
-			Message armMessage = new Message(TriggerMessageNames.MessageNameRequestArm);
-			armMessage.SetSubscriberId(subscriberId);
-			armMessage.SetTriggerName(triggerName);
+			Message subscriptionMessage = new Message(TriggerMessageNames.MessageNameRequestUnsubscribe);
+			subscriptionMessage.SetSubscriberId(subscriberId);
+			subscriptionMessage.SetTriggerName(triggerName);
 
-			messageService.Post(armMessage);
+			messageService.Post(subscriptionMessage);
 		}
 
 		#endregion
