@@ -401,6 +401,21 @@ namespace RI.Framework.Services
 		#region Virtuals
 
 		/// <summary>
+		///     Hides the splash screen.
+		/// </summary>
+		/// <remarks>
+		///     <note type="implement">
+		///         The default implementation does nothing.
+		///     </note>
+		///     <note type="implement">
+		///         This method is not called from <see cref="Run" />, it must be called by the application itself when it is desired to hide the splash screen.
+		///     </note>
+		/// </remarks>
+		public virtual void HideSplashScreen ()
+		{
+		}
+
+		/// <summary>
 		///     Called before the application begins running after the bootstrapping is completed.
 		/// </summary>
 		/// <remarks>

@@ -13,6 +13,10 @@ Utilities
  - (WinForms) FormExtensions
  - (WinForms) TemporaryCursor
 
+ - (Common) IDispatcher
+ - (.NET) StandaloneDispatcher
+ - (.NET) SynchronizationContextDispatcher
+
 
 Collections
 -----------
@@ -111,12 +115,15 @@ Composition
 Services
 --------
 
+ - (Common) Logging: One-file-per-day option for DirectoryLogWriter
  - (Common) Logging: FileLogWriter
+ - (.NET) Logging: ConsoleLogWriter
 
  - (Unity) Dispatcher: Pool for dispatcher operations?
  - (Unity) Dispatcher: Timeout for operations
  - (Unity) Dispatcher: Cancel all operations
  - (Unity) Dispatcher: Process (process item in background thread, then broadcast processed item)
+ - (Unity) Dispatcher: Implement IDispatcher
 
  - (.NET) Resources (ResourceService, DirectoryResourceSource, ResourceConverter)
  - (WPF) Resources (WpfResourceTarget, WpfResourceConverter)

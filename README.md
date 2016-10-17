@@ -9,6 +9,7 @@
   - [ ] Additional dispatcher Features
   - [ ] Analyze and implement magic thread
   - [X] LogWriter for .NET
+  - [ ] Fatal LogLevel
 - [ ] Documentation
   - [ ] Examples
   - [ ] Type and member descriptions
@@ -28,6 +29,7 @@
   - [ ] Check all usage of StringComparison and StringComparer
   - [ ] Use nameof() instead of GetType().Name for logging where possible (sealed classes)
   - [ ] Check usage of LogLocator (including used methods) and ServiceLocator
+  - [ ] Overhaul SQLite module
   - [ ] TODOs
 - [ ] Testing
   - [X] Split testing into "Unity" and ".NET"
