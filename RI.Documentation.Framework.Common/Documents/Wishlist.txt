@@ -13,9 +13,9 @@ Utilities
  - (WinForms) FormExtensions
  - (WinForms) TemporaryCursor
 
- - (Common) IDispatcher
- - (.NET) StandaloneDispatcher
- - (.NET) SynchronizationContextDispatcher
+ + (Common) IDispatcher
+ + (.NET) StandaloneDispatcher
+ + (.NET) SynchronizationContextDispatcher
 
 
 Collections
@@ -88,16 +88,16 @@ I/O
  - (Common) UncloseableStream
  - (Common) StreamExtensions
 
- - (Common) INI reader, writer, document
+ + (Common) INI reader, writer, document
  - (Common) CSV reader, writer, document
  - (Common) ZIP reader, writer, document
 
  - (Windows) DirectoryPathExtensions: Access control
  - (Windows) FilePathExtensions: Access control
 
- - (Windows) SystemKeyboard
- - (Windows) OnScreenKeyboard
- - (Windows) InputManager
+ + (Windows) SystemKeyboard
+ + (Windows) OnScreenKeyboard
+ + (Windows) InputManager
 
  - (Windows) SerialPortInstance
 
@@ -115,18 +115,18 @@ Composition
 Services
 --------
 
- - (Common) Logging: One-file-per-day option for DirectoryLogWriter
- - (Common) Logging: FileLogWriter
- - (.NET) Logging: ConsoleLogWriter
+ + (Common) Logging: One-file-per-day option for DirectoryLogWriter
+ + (Common) Logging: FileLogWriter
+ + (.NET) Logging: ConsoleLogWriter
 
- - (Unity) Dispatcher: Pool for dispatcher operations?
- - (Unity) Dispatcher: Timeout for operations
- - (Unity) Dispatcher: Cancel all operations
- - (Unity) Dispatcher: Process (process item in background thread, then broadcast processed item)
- - (Unity) Dispatcher: Implement IDispatcher
+ + (Unity) Dispatcher: Pool for dispatcher operations?
+ + (Unity) Dispatcher: Timeout for operations
+ + (Unity) Dispatcher: Cancel all operations
+ + (Unity) Dispatcher: Process (process item in background thread, then broadcast processed item)
+ + (Unity) Dispatcher: Implement IDispatcher
 
- - (.NET) Resources (ResourceService, DirectoryResourceSource, ResourceConverter)
- - (WPF) Resources (WpfResourceTarget, WpfResourceConverter)
+ + (.NET) Resources (ResourceService, DirectoryResourceSource, ResourceConverter)
+ + (WPF) Resources (WpfResourceTarget, WpfResourceConverter)
 
  - (.NET) Backup (BackupService, DirectoryBackupStorage)
  - (.NET) Licensing (LicensingService, FileLicenseStorage)

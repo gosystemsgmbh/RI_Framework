@@ -30,6 +30,7 @@
   - [ ] Use nameof() instead of GetType().Name for logging where possible (sealed classes)
   - [ ] Check usage of LogLocator (including used methods) and ServiceLocator
   - [ ] Overhaul SQLite module
+  - [ ] Move IEnumerableExtensions to Linq subfolder
   - [ ] TODOs
 - [ ] Testing
   - [X] Split testing into "Unity" and ".NET"
