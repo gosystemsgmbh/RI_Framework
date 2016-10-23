@@ -1577,19 +1577,19 @@ namespace RI.Framework.Composition
 				compositionItem.Value.Instances.RemoveWhere(x => !x.Checked).ForEach(x =>
 				                                                                     {
 					                                                                     this.Log("Instance removed from container: {0} / {1}", compositionItem.Key, x?.Instance?.GetType()?.FullName ?? "[null]");
-					                                                                     (x.Instance as IExporting)?.RemovedFromContainer(compositionItem.Key, this);
+					                                                                     (x?.Instance as IExporting)?.RemovedFromContainer(compositionItem.Key, this);
 					                                                                     if (this.AutoDispose)
 					                                                                     {
-						                                                                     (x.Instance as IDisposable)?.Dispose();
+						                                                                     (x?.Instance as IDisposable)?.Dispose();
 					                                                                     }
 				                                                                     });
 				compositionItem.Value.Types.RemoveWhere(x => !x.Checked).ForEach(x =>
 				                                                                 {
 					                                                                 this.Log("Type removed from container: {0} / {1}", compositionItem.Key, x?.Instance?.GetType()?.FullName ?? "[null]");
-					                                                                 (x.Instance as IExporting)?.RemovedFromContainer(compositionItem.Key, this);
+					                                                                 (x?.Instance as IExporting)?.RemovedFromContainer(compositionItem.Key, this);
 					                                                                 if (this.AutoDispose)
 					                                                                 {
-						                                                                 (x.Instance as IDisposable)?.Dispose();
+						                                                                 (x?.Instance as IDisposable)?.Dispose();
 					                                                                 }
 				                                                                 });
 				compositionItem.Value.ResetChecked();
