@@ -31,6 +31,7 @@
   - [ ] Check usage of LogLocator (including used methods) and ServiceLocator
   - [ ] Overhaul SQLite module
   - [ ] Move IEnumerableExtensions to Linq subfolder
+  - [ ] Create constants for literals
   - [ ] TODOs
 - [ ] Testing
   - [X] Split testing into "Unity" and ".NET"

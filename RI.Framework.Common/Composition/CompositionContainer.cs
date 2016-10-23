@@ -1576,7 +1576,7 @@ namespace RI.Framework.Composition
 			{
 				compositionItem.Value.Instances.RemoveWhere(x => !x.Checked).ForEach(x =>
 				                                                                     {
-					                                                                     this.Log("Instance removed from container: {0} / {1}", compositionItem.Key, x.Instance.GetType().FullName);
+					                                                                     this.Log("Instance removed from container: {0} / {1}", compositionItem.Key, x?.Instance?.GetType()?.FullName ?? "[null]");
 					                                                                     (x.Instance as IExporting)?.RemovedFromContainer(compositionItem.Key, this);
 					                                                                     if (this.AutoDispose)
 					                                                                     {
@@ -1585,7 +1585,7 @@ namespace RI.Framework.Composition
 				                                                                     });
 				compositionItem.Value.Types.RemoveWhere(x => !x.Checked).ForEach(x =>
 				                                                                 {
-					                                                                 this.Log("Type removed from container: {0} / {1}", compositionItem.Key, x.Instance.GetType().FullName);
+					                                                                 this.Log("Type removed from container: {0} / {1}", compositionItem.Key, x?.Instance?.GetType()?.FullName ?? "[null]");
 					                                                                 (x.Instance as IExporting)?.RemovedFromContainer(compositionItem.Key, this);
 					                                                                 if (this.AutoDispose)
 					                                                                 {

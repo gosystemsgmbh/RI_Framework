@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
+using RI.Framework.Collections;
 using RI.Framework.Utilities.Reflection;
 
 
@@ -191,7 +192,6 @@ namespace RI.Framework.Services.Regions
 			}
 		}
 
-
 		/// <inheritdoc />
 		public abstract void Add (object container, object element);
 
@@ -259,7 +259,6 @@ namespace RI.Framework.Services.Regions
 			return type.GetBestMatchingType(out matchingType, out inheritanceDepth, supportedTypes.ToArray());
 		}
 
-
 		/// <inheritdoc />
 		public virtual bool Navigate (object container, object element)
 		{
@@ -268,12 +267,17 @@ namespace RI.Framework.Services.Regions
 				throw new ArgumentNullException(nameof(container));
 			}
 
+			List<object> currentElements = this.Get(container);
+			if (currentElements.Any(x => object.ReferenceEquals(x, element)))
+			{
+				return true;
+			}
+
 			if (!this.CanNavigate(container, element))
 			{
 				return false;
 			}
 
-			List<object> currentElements = this.Get(container);
 			foreach (object currentElement in currentElements)
 			{
 				this.NavigatedFrom(container, currentElement);
