@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 using Fluent;
 
-using RI.Framework.Collections;
+using RI.Framework.Collections.Linq;
 using RI.Framework.Collections.Comparison;
 using RI.Framework.Composition.Model;
 

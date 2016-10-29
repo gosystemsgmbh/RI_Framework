@@ -110,7 +110,9 @@ Composition
 
  - (Common) AggregateCatalog
  - (Common) Add container to container
-
+ - (Common) Lazy loading
+ - (Common) Generic Import property
+ 
 
 Services
 --------

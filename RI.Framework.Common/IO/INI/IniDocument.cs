@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 
 using RI.Framework.Collections;
+using RI.Framework.Collections.Linq;
 using RI.Framework.IO.INI.Elements;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Comparison;

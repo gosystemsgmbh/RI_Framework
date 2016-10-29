@@ -6,6 +6,7 @@ using System.Reflection;
 
 using RI.Framework.Collections;
 using RI.Framework.Collections.Comparison;
+using RI.Framework.Collections.Linq;
 using RI.Framework.Composition.Catalogs;
 using RI.Framework.Composition.Model;
 using RI.Framework.Services.Logging;

@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Text;
 
-using RI.Framework.Collections;
+using RI.Framework.Collections.Linq;
 
 
 

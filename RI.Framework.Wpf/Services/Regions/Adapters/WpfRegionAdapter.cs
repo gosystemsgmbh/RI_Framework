@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 
-using RI.Framework.Collections;
+using RI.Framework.Collections.Linq;
 using RI.Framework.Collections.Comparison;
 using RI.Framework.Composition.Model;
 

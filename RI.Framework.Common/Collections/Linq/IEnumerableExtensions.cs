@@ -9,7 +9,7 @@ using RI.Framework.Utilities.Comparison;
 
 
 
-namespace RI.Framework.Collections
+namespace RI.Framework.Collections.Linq
 {
 	/// <summary>
 	///     Provides utility/extension methods for the <see cref="IEnumerable{T}" /> type and its implementations.
@@ -24,6 +24,7 @@ namespace RI.Framework.Collections
 	///         </note>
 	///     </para>
 	/// </remarks>
+	/// TODO: Split things not in Linq
 	public static class IEnumerableExtensions
 	{
 		#region Static Methods

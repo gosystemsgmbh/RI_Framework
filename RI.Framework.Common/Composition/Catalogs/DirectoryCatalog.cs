@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 
 using RI.Framework.Collections;
+using RI.Framework.Collections.Linq;
 using RI.Framework.Services.Logging;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;

@@ -32,6 +32,9 @@
   - [ ] Overhaul SQLite module
   - [ ] Move IEnumerableExtensions to Linq subfolder
   - [ ] Create constants for literals
+  - [ ] Make all enums serializable
+  - [ ] Make all exceptions serializable
+  - [ ] Check usage of IDisposable
   - [ ] TODOs
 - [ ] Testing
   - [X] Split testing into "Unity" and ".NET"

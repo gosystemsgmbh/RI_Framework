@@ -18,9 +18,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Collections\HashSetExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\ICollectionExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\IDictionaryExtensions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Collections\IEnumerableExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\IListExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\LinkedListExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Linq\IEnumerableExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Linq\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\ObjectModel\IPool.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\ObjectModel\IPoolAware.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\ObjectModel\IPoolExtensions.cs" />
@@ -35,6 +36,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Collections\Specialized\ClonePool.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\Specialized\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\StackExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Virtualization\IItemsProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Virtualization\VirtualizationCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Virtualization\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Composition\Catalogs\AssemblyCatalog.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Composition\Catalogs\DirectoryCatalog.cs" />
@@ -123,6 +127,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Text\CommandLine.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Text\IndentedTextWriter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Text\_NamespaceDoc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Threading\HeavyThread.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Threading\HeavyThreadException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\TimeSpanExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\_NamespaceDoc.cs" />
   </ItemGroup>
