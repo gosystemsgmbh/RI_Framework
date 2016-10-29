@@ -8,14 +8,14 @@ Utilities
  - (Common) ISynchronizable
 
  - (Windows) Screen
- - (Windows) SystemUser, UserProfile
+ * (Windows) SystemUser, UserProfile
 
  - (WinForms) FormExtensions
  - (WinForms) TemporaryCursor
 
  + (Common) IDispatcher
- + (.NET) StandaloneDispatcher
- + (.NET) SynchronizationContextDispatcher
+ * (.NET) StandaloneDispatcher
+ * (.NET) SynchronizationContextDispatcher
 
 
 Collections
@@ -99,7 +99,7 @@ I/O
  + (Windows) OnScreenKeyboard
  + (Windows) InputManager
 
- - (Windows) SerialPortInstance
+ * (Windows) SerialPortInstance
 
  - (Unity) OBJ mesh loader
  - (Unity) JSON mesh loader (babylon.JS)
@@ -110,8 +110,8 @@ Composition
 
  - (Common) AggregateCatalog
  - (Common) Add container to container
- - (Common) Lazy loading
- - (Common) Generic Import property
+ * (Common) Lazy loading
+ * (Common) Generic Import property
  
 
 Services
@@ -150,7 +150,7 @@ Services
 Net
 ---
 
- - (Windows) NetworkResource
+ * (Windows) NetworkResource
 
 
 Math
@@ -168,7 +168,7 @@ Math
 State machines
 --------------
 
- - (Common) State machines
+ * (Common) State machines
 
 
 Behaviours
