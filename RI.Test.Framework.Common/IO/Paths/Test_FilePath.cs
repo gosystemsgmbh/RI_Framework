@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using RI.Framework.Collections;
 using RI.Framework.Collections.Comparison;
+using RI.Framework.Collections.Linq;
 using RI.Framework.IO.Paths;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.ObjectModel;

@@ -38,6 +38,7 @@
   - [ ] TODOs
 - [ ] Testing
   - [X] Split testing into "Unity" and ".NET"
+  - [ ] Remove test projects from ReSharper exclusion
   - [ ] Complete tests
   - [ ] Run tests in .NET
   - [ ] Run tests in Unity

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using RI.Framework.Collections;
+using RI.Framework.Collections.Linq;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Comparison;
 
