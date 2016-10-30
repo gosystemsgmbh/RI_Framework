@@ -25,6 +25,7 @@ namespace RI.Framework.Collections.Linq
 	///     </para>
 	/// </remarks>
 	/// TODO: Split things not in Linq
+	/// TODO: Only compile for Unity
 	public static class IEnumerableExtensions
 	{
 		#region Static Methods
