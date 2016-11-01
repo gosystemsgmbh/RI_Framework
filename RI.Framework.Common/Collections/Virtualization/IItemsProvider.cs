@@ -15,7 +15,7 @@ namespace RI.Framework.Collections.Virtualization
 		/// <summary>
 		///     Raised when the data source detects that the items have changed.
 		/// </summary>
-		event Action ItemsChanged;
+		event EventHandler ItemsChanged;
 
 		/// <summary>
 		///     Gets the total number of items.

@@ -26,7 +26,7 @@ namespace RI.Framework.Collections.Virtualization
 	///         If the used <see cref="IItemsProvider{T}" /> uses <see cref="IItemsProvider{T}.ItemsChanged" />, the cache will be cleared.
 	///     </note>
 	/// </remarks>
-	public sealed class VirtualizationCollection <T> : IList<T>, ICollection<T>, IEnumerable<T>, IList, ICollection, IEnumerable, IDisposable
+	public sealed class VirtualizationCollection <T> : IList<T>, ICollection<T>, IEnumerable<T>, IList, ICollection, IEnumerable, IDisposable, IItemsProvider<T>
 	{
 		#region Instance Constructor/Destructor
 
@@ -112,8 +112,7 @@ namespace RI.Framework.Collections.Virtualization
 
 		private PageCollection Cache { get; set; }
 
-
-		private Action ItemsChangedHandler { get; set; }
+		private EventHandler ItemsChangedHandler { get; set; }
 
 		private IItemsProvider<T> ItemsProvider { get; set; }
 
@@ -130,6 +129,8 @@ namespace RI.Framework.Collections.Virtualization
 		///     Raised when the used <see cref="IItemsProvider{T}" /> signalled that items have changed.
 		/// </summary>
 		public event EventHandler ItemsChanged;
+
+		private event EventHandler ProviderItemsChanged;
 
 		#endregion
 
@@ -153,15 +154,12 @@ namespace RI.Framework.Collections.Virtualization
 			this.Cache.RemoveWhere(x => now.Subtract(x.Timestamp).TotalMilliseconds > this.CacheTime);
 		}
 
-		private void ItemsChangedMethod ()
+		private void ItemsChangedMethod (object sender, EventArgs args)
 		{
 			this.ClearCache();
 
-			EventHandler handler = this.ItemsChanged;
-			if (handler != null)
-			{
-				handler(this, EventArgs.Empty);
-			}
+			this.ItemsChanged?.Invoke(this, EventArgs.Empty);
+			this.ProviderItemsChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		private Page LoadPage (int pageIndex, bool temporary)
@@ -239,6 +237,48 @@ namespace RI.Framework.Collections.Virtualization
 		public void Dispose ()
 		{
 			this.ItemsProvider.ItemsChanged -= this.ItemsChangedHandler;
+			this.ItemsProvider = null;
+		}
+
+		#endregion
+
+
+
+
+		#region Interface: IItemsProvider<T>
+
+		/// <inheritdoc />
+		event EventHandler IItemsProvider<T>.ItemsChanged
+		{
+			add
+			{
+				this.ProviderItemsChanged += value;
+			}
+			remove
+			{
+				this.ProviderItemsChanged -= value;
+			}
+		}
+
+		/// <inheritdoc />
+		int IItemsProvider<T>.GetCount ()
+		{
+			return this.Count;
+		}
+
+		/// <inheritdoc />
+		IEnumerable<T> IItemsProvider<T>.GetItems (int start, int count)
+		{
+			for (int i1 = start; i1 < (start + count); i1++)
+			{
+				yield return this[i1];
+			}
+		}
+
+		/// <inheritdoc />
+		int IItemsProvider<T>.Search (T item)
+		{
+			return this.IndexOf(item);
 		}
 
 		#endregion
@@ -291,14 +331,14 @@ namespace RI.Framework.Collections.Virtualization
 		/// <inheritdoc />
 		int IList.Add (object value)
 		{
-			this.ThrowReadOnlyException();
-			return -1;
+			((IList<T>)this).Add((T)value);
+			return ((IList)this).IndexOf(value);
 		}
 
 		/// <inheritdoc />
 		void IList.Clear ()
 		{
-			this.ThrowReadOnlyException();
+			((IList<T>)this).Clear();
 		}
 
 		/// <inheritdoc />
@@ -308,16 +348,9 @@ namespace RI.Framework.Collections.Virtualization
 		}
 
 		/// <inheritdoc />
-		public void CopyTo (Array array, int index)
+		void ICollection.CopyTo (Array array, int index)
 		{
-			this.VerifyNotDisposed();
-			this.CleanupCache();
-
-			foreach (T item in this)
-			{
-				array.SetValue(item, index);
-				index++;
-			}
+			this.CopyTo((T[])array, index);
 		}
 
 		/// <inheritdoc />
@@ -329,19 +362,19 @@ namespace RI.Framework.Collections.Virtualization
 		/// <inheritdoc />
 		void IList.Insert (int index, object value)
 		{
-			this.ThrowReadOnlyException();
+			((IList<T>)this).Insert(index, (T)value);
 		}
 
 		/// <inheritdoc />
 		void IList.Remove (object value)
 		{
-			this.ThrowReadOnlyException();
+			((IList<T>)this).Remove((T)value);
 		}
 
 		/// <inheritdoc />
 		void IList.RemoveAt (int index)
 		{
-			this.ThrowReadOnlyException();
+			((IList<T>)this).RemoveAt(index);
 		}
 
 		#endregion
@@ -358,6 +391,7 @@ namespace RI.Framework.Collections.Virtualization
 			{
 				this.VerifyNotDisposed();
 				this.CleanupCache();
+
 				return this.ItemsProvider.GetCount();
 			}
 		}
@@ -395,7 +429,6 @@ namespace RI.Framework.Collections.Virtualization
 				}
 
 				Page page = this.LoadPage(pageIndex, false);
-
 				if (page == null)
 				{
 					throw new IndexOutOfRangeException();
@@ -431,13 +464,21 @@ namespace RI.Framework.Collections.Virtualization
 		{
 			this.VerifyNotDisposed();
 			this.CleanupCache();
+
 			return this.ItemsProvider.Search(item) != -1;
 		}
 
 		/// <inheritdoc />
 		public void CopyTo (T[] array, int arrayIndex)
 		{
-			this.CopyTo((Array)array, arrayIndex);
+			this.VerifyNotDisposed();
+			this.CleanupCache();
+
+			foreach (T item in this)
+			{
+				array[arrayIndex] = item;
+				arrayIndex++;
+			}
 		}
 
 		/// <inheritdoc />
@@ -476,6 +517,7 @@ namespace RI.Framework.Collections.Virtualization
 		{
 			this.VerifyNotDisposed();
 			this.CleanupCache();
+
 			return this.ItemsProvider.Search(item);
 		}
 
