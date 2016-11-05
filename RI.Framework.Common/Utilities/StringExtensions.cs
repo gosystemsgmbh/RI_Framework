@@ -220,7 +220,7 @@ namespace RI.Framework.Utilities
 				return string.Empty;
 			}
 
-			StringBuilder sb = new StringBuilder(str.Length*2);
+			StringBuilder sb = new StringBuilder(str.Length * 2);
 
 			for (int i1 = 0; i1 < str.Length; i1++)
 			{
@@ -314,7 +314,7 @@ namespace RI.Framework.Utilities
 		/// <summary>
 		///     Determines whether a string is empty.
 		/// </summary>
-		/// <param name="str"> The string </param>
+		/// <param name="str"> The string. </param>
 		/// <returns>
 		///     true if the string is empty, false otherwise.
 		/// </returns>
@@ -345,6 +345,28 @@ namespace RI.Framework.Utilities
 			}
 
 			return true;
+		}
+
+		/// <summary>
+		///     Determines whether a string is null or empty.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     true if the string is null or an empty string, false otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         A string is considered empty if has a length of zero or contains only whitespaces.
+		///     </para>
+		/// </remarks>
+		public static bool IsNullOrEmpty (this string str)
+		{
+			if (str == null)
+			{
+				return true;
+			}
+
+			return str.IsEmpty();
 		}
 
 		/// <summary>
@@ -454,7 +476,7 @@ namespace RI.Framework.Utilities
 
 			double count = 0.0;
 
-			StringBuilder newStr = new StringBuilder((int)(str.Length*1.1));
+			StringBuilder newStr = new StringBuilder((int)(str.Length * 1.1));
 
 			for (int i1 = 0; i1 < str.Length; i1++)
 			{
@@ -465,7 +487,7 @@ namespace RI.Framework.Utilities
 
 					if (next != chr)
 					{
-						newStr.Append(new string(chr, (int)(Math.Max(0.0, (count*factor) + offset))));
+						newStr.Append(new string(chr, (int)(Math.Max(0.0, (count * factor) + offset))));
 						count = 0.0;
 					}
 				}
@@ -629,7 +651,7 @@ namespace RI.Framework.Utilities
 
 			separator = separator ?? string.Empty;
 
-			StringBuilder sb = new StringBuilder((str.Length*count) + (separator.Length*(count - 1)) + 1);
+			StringBuilder sb = new StringBuilder((str.Length * count) + (separator.Length * (count - 1)) + 1);
 			for (int i1 = 0; i1 < count; i1++)
 			{
 				if (i1 != 0)
@@ -1641,6 +1663,28 @@ namespace RI.Framework.Utilities
 		}
 
 		/// <summary>
+		///     Returns null if a string is null or empty.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     null if the string is null or an empty string, false otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         A string is considered empty if has a length of zero or contains only whitespaces.
+		///     </para>
+		/// </remarks>
+		public static string ToNullIfNullOrEmpty (this string str)
+		{
+			if (str == null)
+			{
+				return null;
+			}
+
+			return str.IsEmpty() ? null : str;
+		}
+
+		/// <summary>
 		///     Attempts to convert a string into a signed byte value.
 		/// </summary>
 		/// <param name="str"> The string. </param>
@@ -1749,12 +1793,12 @@ namespace RI.Framework.Utilities
 
 			str = str.Trim();
 
-			if (str.Length < (10 + (separatorLength*4)))
+			if (str.Length < (10 + (separatorLength * 4)))
 			{
 				return null;
 			}
 
-			int daysLength = str.Length - (9 + (separatorLength*4));
+			int daysLength = str.Length - (9 + (separatorLength * 4));
 			int hoursIndex = daysLength + separatorLength;
 			int minutesIndex = hoursIndex + 2 + separatorLength;
 			int secondsIndex = minutesIndex + 2 + separatorLength;
