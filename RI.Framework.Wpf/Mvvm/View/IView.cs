@@ -6,6 +6,14 @@
 	public interface IView
 	{
 		/// <summary>
+		///     Gets or sets the data context of the view.
+		/// </summary>
+		/// <value>
+		///     The data context of the view.
+		/// </value>
+		object DataContext { get; set; }
+
+		/// <summary>
 		///     Gets whether the view model is initialized or not.
 		/// </summary>
 		/// <value>
