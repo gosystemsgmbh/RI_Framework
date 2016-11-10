@@ -119,6 +119,7 @@ Services
 
  + (Common) Logging: One-file-per-day option for DirectoryLogWriter
  + (Common) Logging: FileLogWriter
+ + (Common) Logging: LogFilter
  + (.NET) Logging: ConsoleLogWriter
 
  + (Unity) Dispatcher: Pool for dispatcher operations?
