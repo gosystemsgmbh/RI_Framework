@@ -62,8 +62,8 @@
     <Compile Include="Data\SQLite\Functions\IsNullOrEmptyFunction.cs" />
     <Compile Include="Data\SQLite\Functions\RegularExpressionFunction.cs" />
     <Compile Include="Data\SQLite\Functions\_NamespaceDoc.cs" />
+    <Compile Include="Data\SQLite\SQLiteDatabase.cs" />
     <Compile Include="Data\SQLite\_NamespaceDoc.cs" />
-    <Compile Include="Data\_NamespaceDoc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

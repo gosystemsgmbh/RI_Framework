@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Reflection;
 using System.Threading;
 using System.Windows;
+using System.Windows.Threading;
 
 using RI.Framework.Composition;
 using RI.Framework.Composition.Catalogs;
 using RI.Framework.Composition.Model;
 using RI.Framework.IO.Paths;
 using RI.Framework.Services.Logging;
+using RI.Framework.Services.Modularization;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Reflection;
 using RI.Framework.Utilities.Text;
@@ -354,6 +357,23 @@ namespace RI.Framework.Services
 			LogLocator.Log(severity, this.GetType().Name, format, args);
 		}
 
+		/// <summary>
+		///     Logs a separator to allow quick visual distinguishing of application bootstrapping states in the a file.
+		/// </summary>
+		/// <remarks>
+		///     <para>
+		///         <see cref="ILogService" /> is used, obtained through <see cref="ServiceLocator" />.
+		///         If no <see cref="ILogService" /> is available, no logging is performed.
+		///     </para>
+		///     <para>
+		///         A separator consists of 200 dashes (<c> - </c>).
+		///     </para>
+		/// </remarks>
+		protected void LogSeperator ()
+		{
+			this.Log(LogLevel.Debug, new string('-', 200));
+		}
+
 		private void HandleExceptionInternal (Exception exception)
 		{
 			try
@@ -401,17 +421,14 @@ namespace RI.Framework.Services
 		#region Virtuals
 
 		/// <summary>
-		///     Hides the splash screen.
+		///     Called when all bootstrapping and initialization is done and actual application operations begin.
 		/// </summary>
 		/// <remarks>
 		///     <note type="implement">
 		///         The default implementation does nothing.
 		///     </note>
-		///     <note type="implement">
-		///         This method is not called from <see cref="Run" />, it must be called by the application itself when it is desired to hide the splash screen.
-		///     </note>
 		/// </remarks>
-		public virtual void HideSplashScreen ()
+		protected virtual void BeginOperations ()
 		{
 		}
 
@@ -420,11 +437,27 @@ namespace RI.Framework.Services
 		/// </summary>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation does nothing.
+		///         The default implementation injects module initialization (<see cref="IModuleService.Initialize" />), if available, into the applications dispatcher (<see cref="Application" />.<see cref="DispatcherObject.Dispatcher" />) using <see cref="DispatcherPriority.SystemIdle" /> priority.
+		///         Afterwards, it calls <see cref="BeginOperations" />.
 		///     </note>
 		/// </remarks>
 		protected virtual void BeginRun ()
 		{
+			this.Application.Dispatcher.BeginInvoke(DispatcherPriority.SystemIdle, new Action(() =>
+			                                                                                  {
+				                                                                                  this.LogSeperator();
+				                                                                                  this.Log(LogLevel.Debug, "Initializing modules");
+
+				                                                                                  ServiceLocator.GetInstance<IModuleService>()?.Initialize();
+
+				                                                                                  this.Application.Dispatcher.BeginInvoke(DispatcherPriority.SystemIdle, new Action(() =>
+				                                                                                                                                                                    {
+					                                                                                                                                                                    this.LogSeperator();
+					                                                                                                                                                                    this.Log(LogLevel.Debug, "Beginning operations");
+
+					                                                                                                                                                                    this.BeginOperations();
+				                                                                                                                                                                    }));
+			                                                                                  }));
 		}
 
 		/// <summary>
@@ -433,13 +466,18 @@ namespace RI.Framework.Services
 		/// <remarks>
 		///     <note type="implement">
 		///         The default implementation adds the application object (<see cref="Application" />) to the used composition container as an export using a <see cref="InstanceCatalog" />.
-		///         It also setts the WPF applications object <see cref="System.Windows.Application.ShutdownMode" /> property to <see cref="ShutdownMode.OnExplicitShutdown" />.
+		///         It also setts the WPF applications object <see cref="System.Windows.Application.ShutdownMode" /> property to <see cref="ShutdownMode.OnExplicitShutdown" /> and <see cref="WpfApplication.Bootstrapper" /> property to this boottsrapper instance (if the application object derives from <see cref="WpfApplication" />).
 		///     </note>
 		/// </remarks>
 		protected virtual void ConfigureApplication ()
 		{
-			this.Container.AddCatalog(new InstanceCatalog(this.Application));
 			this.Application.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+			if (this.Application is WpfApplication)
+			{
+				((WpfApplication)this.Application).Bootstrapper = this;
+			}
+
+			this.Container.AddCatalog(new InstanceCatalog(this.Application));
 		}
 
 		/// <summary>
@@ -460,7 +498,7 @@ namespace RI.Framework.Services
 		/// </summary>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation adds the container to itself.
+		///         The default implementation adds the container (<see cref="Container" />) to itself as an export using a <see cref="InstanceCatalog" />.
 		///     </note>
 		/// </remarks>
 		protected virtual void ConfigureContainer ()
@@ -522,11 +560,11 @@ namespace RI.Framework.Services
 		/// </summary>
 		/// <returns>
 		///     The WPF application object to be used.
-		///     Can be null if a default <see cref="System.Windows.Application" /> is to be used.
+		///     Can be null if a default <see cref="WpfApplication" /> is to be used.
 		/// </returns>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation returns null so a default <see cref="System.Windows.Application" /> will be created and used.
+		///         The default implementation returns null so a default <see cref="WpfApplication" /> will be created and used.
 		///     </note>
 		/// </remarks>
 		protected virtual Application CreateApplication ()
@@ -774,6 +812,10 @@ namespace RI.Framework.Services
 		/// </remarks>
 		protected virtual void EndRun ()
 		{
+			this.LogSeperator();
+			this.Log(LogLevel.Debug, "Unloading modules");
+
+			ServiceLocator.GetInstance<IModuleService>()?.Unload();
 		}
 
 		/// <summary>
@@ -790,6 +832,27 @@ namespace RI.Framework.Services
 		/// </remarks>
 		protected virtual void HandleException (Exception exception)
 		{
+		}
+
+		/// <summary>
+		///     Logs some relevant bootstrapper-determined variables.
+		/// </summary>
+		/// <remarks>
+		///     <note type="implement">
+		///         The default implementation logs the following variables using <see cref="Log" />: <see cref="ApplicationExecutableDirectory" />, <see cref="ApplicationDataDirectory" />, <see cref="ApplicationAssembly" />, <see cref="ApplicationIdVersionDependent" />, <see cref="ApplicationIdVersionIndependent" />, <see cref="ApplicationVersion" />, <see cref="SessionId" />, <see cref="SessionTimestamp" />, <see cref="ProcessCommandLine" />.
+		///     </note>
+		/// </remarks>
+		protected virtual void LogBootstrapperVariables ()
+		{
+			this.Log(LogLevel.Debug, "Executable directory: {0}", this.ApplicationExecutableDirectory.PathResolved);
+			this.Log(LogLevel.Debug, "Data directory:       {0}", this.ApplicationDataDirectory.PathResolved);
+			this.Log(LogLevel.Debug, "Application assembly: {0}", this.ApplicationAssembly.FullName);
+			this.Log(LogLevel.Debug, "Application ID:       {0}", this.ApplicationIdVersionDependent.ToString("N", CultureInfo.InvariantCulture));
+			this.Log(LogLevel.Debug, "Version ID:           {0}", this.ApplicationIdVersionIndependent.ToString("N", CultureInfo.InvariantCulture));
+			this.Log(LogLevel.Debug, "Application version:  {0}", this.ApplicationVersion.ToString(4));
+			this.Log(LogLevel.Debug, "Session ID:           {0}", this.SessionId.ToString("N", CultureInfo.InvariantCulture));
+			this.Log(LogLevel.Debug, "Session timestamp:    {0}", this.SessionTimestamp.ToSortableString('-'));
+			this.Log(LogLevel.Debug, "Command line:         {0}", this.ProcessCommandLine.ToString());
 		}
 
 		/// <summary>
@@ -856,7 +919,7 @@ namespace RI.Framework.Services
 			this.ConfigureLogging();
 
 			this.Log(LogLevel.Debug, "Creating application");
-			this.Application = this.CreateApplication() ?? new Application();
+			this.Application = this.CreateApplication() ?? new WpfApplication();
 			this.Application.DispatcherUnhandledException += (s, a) => this.HandleExceptionInternal(a.Exception);
 
 			this.Log(LogLevel.Debug, "Configuring application");
@@ -873,6 +936,9 @@ namespace RI.Framework.Services
 
 			this.Log(LogLevel.Debug, "Configuring modularization");
 			this.ConfigureModularization();
+
+			this.Log(LogLevel.Debug, "Logging bootstrapper variables");
+			this.LogBootstrapperVariables();
 
 			this.Log(LogLevel.Debug, "Running");
 			this.State = WpfBootstrapperState.Running;

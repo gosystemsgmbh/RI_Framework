@@ -88,7 +88,7 @@
 		/// </summary>
 		public const string MessageNameResponseChanged = TriggerMessageNames.MessageNamePrefix + "Response.Changed";
 
-		internal const string MessageNamePrefix = "Trigger.";
+		internal const string MessageNamePrefix = "Message.Trigger.";
 
 		#endregion
 	}
