@@ -667,7 +667,7 @@ namespace RI.Framework.Services
 		/// </remarks>
 		protected virtual Guid DetermineApplicationIdVersionIndependent ()
 		{
-			return this.ApplicationAssembly.GetGuid(true, true);
+			return this.ApplicationAssembly.GetGuid(false, true);
 		}
 
 		/// <summary>

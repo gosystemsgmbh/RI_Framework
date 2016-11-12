@@ -4,7 +4,7 @@ using System.Globalization;
 
 
 
-namespace RI.Framework.Data.SQLite
+namespace RI.Framework.Data.SQLite.Collations
 {
 	/// <summary>
 	///     Implements an SQLite collation which performs trimmed, case-insensitive string comparison.

@@ -4,7 +4,7 @@ using System.Globalization;
 
 
 
-namespace RI.Framework.Data.SQLite
+namespace RI.Framework.Data.SQLite.Collations
 {
 	/// <summary>
 	///     Implements an SQLite collation which performs trimmed, case-insensitive string comparison.
@@ -23,12 +23,17 @@ namespace RI.Framework.Data.SQLite
 		#region Static Properties/Indexer
 
 		/// <summary>
-		///     Gets the culture used for the string comparison when <see cref="TrimmedCaseInsensitiveCultureCollation" /> is used.
+		///     Gets or sets the culture used for the string comparison when <see cref="TrimmedCaseInsensitiveCultureCollation" /> is used.
 		/// </summary>
 		/// <value>
 		///     The culture used for the string comparison when <see cref="TrimmedCaseInsensitiveCultureCollation" /> is used.
 		/// </value>
-		public static CultureInfo Culture { get; private set; }
+		/// <remarks>
+		///     <para>
+		///         The value can be null if the current culture is to be determined using <see cref="CultureInfo.CurrentCulture" />.
+		///     </para>
+		/// </remarks>
+		public static CultureInfo Culture { get; set; }
 
 		#endregion
 
@@ -40,7 +45,7 @@ namespace RI.Framework.Data.SQLite
 		/// <summary>
 		///     Registers the collation with the specified <see cref="CultureInfo" />.
 		/// </summary>
-		/// <param name="culture"> The <see cref="CultureInfo" /> used for the string comparison by this collation or null if <see cref="CultureInfo.InvariantCulture" /> is to be used. </param>
+		/// <param name="culture"> The <see cref="CultureInfo" /> used for the string comparison by this collation or null if the current culture is to be determined using <see cref="CultureInfo.CurrentCulture" />. </param>
 		public static void Register (CultureInfo culture)
 		{
 			TrimmedCaseInsensitiveCultureCollation.Culture = culture ?? CultureInfo.InvariantCulture;
@@ -57,7 +62,7 @@ namespace RI.Framework.Data.SQLite
 		/// <inheritdoc />
 		public override int Compare (string param1, string param2)
 		{
-			return string.Compare(param1.Trim(), param2.Trim(), TrimmedCaseInsensitiveCultureCollation.Culture, CompareOptions.IgnoreCase);
+			return string.Compare(param1.Trim(), param2.Trim(), TrimmedCaseInsensitiveCultureCollation.Culture ?? CultureInfo.CurrentCulture, CompareOptions.IgnoreCase);
 		}
 
 		#endregion

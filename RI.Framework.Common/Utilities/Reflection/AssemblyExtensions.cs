@@ -245,7 +245,7 @@ namespace RI.Framework.Utilities.Reflection
 
 			for (int i1 = 0; i1 < guidInformationBytes.Length; i1++)
 			{
-				guidBytes[i1%16] = (byte)((guidBytes[i1%16] + guidInformationBytes[i1])%255);
+				guidBytes[i1 % 16] = (byte)((guidBytes[i1 % 16] + guidInformationBytes[i1]) % 255);
 			}
 
 			Guid guid = new Guid(guidBytes);
