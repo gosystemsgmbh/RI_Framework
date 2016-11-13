@@ -14,14 +14,20 @@ namespace RI.Framework.Data.Database
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         A database manager encapsulates low-level database functionality so that high-level database functionality (such as <see cref="IRepositoryContext" />, querying, ORM-ing, etc.) can be implemented on top without having to worry about low-level and/or database-specific details.
+	///         A database manager encapsulates low-level database functionality so that high-level database functionality (such as <see cref="IRepositoryContext" />) can be implemented on top without having to worry about low-level and/or database-specific details.
+	///         A database manager is intended to handle all low-level database stuff, such as connection management and migration, so that the high-level functionality can focus on the actual task of working with the data or accessing the database respectively.
 	///     </para>
 	///     <para>
-	///         The provided low-level database functionalities are:
-	///         Initialization (managing the connection string, creating a new database if it does not already exist, and creating connections), Versioning (detecting the database version and validating against known/supported versions), Upgrading (migrating a database version from an old version to the latest known/supported version), Cleanup (cleaning and optimization of the database).
+	///         The link from the database manager to higher-level functionality are the connections which can be created using <see cref="CreateConnection" />.
+	///     </para>
+	///     <para>
+	///         The database cannot be used if it is in any other state than <see cref="DatabaseState.Ready" />.
+	///         However, if the database is in the state <see cref="DatabaseState.New" /> or <see cref="DatabaseState.Old" />, the database can be made ready by upgrading to the latest known/supported version using <see cref="UpgradeDatabase" />.
+	///     </para>
+	///     <para>
+	///         If the database supports connection tracking (see <see cref="SupportsConnectionTracking" />), <see cref="UnloadDatabase" /> will close all currently non-closed connections which were created using <see cref="CreateConnection" />.
 	///     </para>
 	/// </remarks>
-	/// TODO: SupportsConnectionTracking
 	public interface IDatabaseManager : IDisposable
 	{
 		/// <summary>
@@ -56,7 +62,7 @@ namespace RI.Framework.Data.Database
 		///     Gets the current version of the database.
 		/// </summary>
 		/// <value>
-		///     The current version of the database, 0 if the database state is <see cref="DatabaseState.New" />, -1 if the database state is <see cref="DatabaseState.Uninitialized" /> or <see cref="DatabaseState.DamagedOrInvalid" />.
+		///     The current version of the database or 0 if the database state is <see cref="DatabaseState.Uninitialized" />.
 		/// </value>
 		int CurrentVersion { get; }
 
@@ -64,7 +70,7 @@ namespace RI.Framework.Data.Database
 		///     Gets the latest known/supported version of the database which can be applied through an upgrade.
 		/// </summary>
 		/// <value>
-		///     The latest known/supported version of the database which can be applied through an upgrade or -1 if the database state is <see cref="DatabaseState.Uninitialized" />
+		///     The latest known/supported version of the database which can be applied through an upgrade or 0 if the database state is <see cref="DatabaseState.Uninitialized" />
 		/// </value>
 		int MaxVersion { get; }
 
@@ -72,7 +78,7 @@ namespace RI.Framework.Data.Database
 		///     Gets the earliest known/supported version of the database which can be upgraded from.
 		/// </summary>
 		/// <value>
-		///     The earliest known/supported version of the database which can be upgraded from or -1 if the database state is <see cref="DatabaseState.Uninitialized" />
+		///     The earliest known/supported version of the database which can be upgraded from or 0 if the database state is <see cref="DatabaseState.Uninitialized" />
 		/// </value>
 		int MinVersion { get; }
 
@@ -85,12 +91,40 @@ namespace RI.Framework.Data.Database
 		DatabaseState State { get; }
 
 		/// <summary>
+		///     Gets whether the database supports connection tracking.
+		/// </summary>
+		/// <value>
+		///     true if the database supports connection tracking, false otherwise.
+		/// </value>
+		bool SupportsConnectionTracking { get; }
+
+		/// <summary>
 		///     Gets whether the database supportes read-only connections.
 		/// </summary>
 		/// <value>
 		///     true if the database supports read-only connections, false otherwise.
 		/// </value>
 		bool SupportsReadOnlyConnections { get; }
+
+		/// <summary>
+		///     Raised when a new connection to the database has been created using <see cref="CreateConnection" />.
+		/// </summary>
+		event EventHandler<DatabaseConnectionCreatedEventArgs> ConnectionCreated;
+
+		/// <summary>
+		///     Raised when a database script is about being executed.
+		/// </summary>
+		event EventHandler<DatabaseScriptEventArgs> ExecuteScript;
+
+		/// <summary>
+		///     Raised when a database script is prepared for execution.
+		/// </summary>
+		event EventHandler<DatabaseScriptEventArgs> PrepareScript;
+
+		/// <summary>
+		///     Raised when the current state of the database has changed.
+		/// </summary>
+		event EventHandler<DatabaseStateChangedEventArgs> StateChanged;
 
 		/// <summary>
 		///     Performs cleaning and optimization of the database.
@@ -125,10 +159,6 @@ namespace RI.Framework.Data.Database
 		/// <remarks>
 		///     <para>
 		///         <see cref="State" /> is set to <see cref="DatabaseState.Ready" />, <see cref="DatabaseState.New" />, <see cref="DatabaseState.Old" />, <see cref="DatabaseState.TooNew" />, <see cref="DatabaseState.TooOld" />, or <see cref="DatabaseState.DamagedOrInvalid" />.
-		///     </para>
-		///     <para>
-		///         Initialization includes the following:
-		///         Creating an initial connection for verification, creating a new database if it does not already exist, and detecting the version of the database.
 		///     </para>
 		///     <para>
 		///         <see cref="InitializeDatabase" /> can be called in any state of the database.

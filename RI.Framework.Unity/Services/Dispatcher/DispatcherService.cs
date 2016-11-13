@@ -827,6 +827,11 @@ namespace RI.Framework.Services.Dispatcher
 				return this.Dispatcher.Reschedule(this, millisecondsFromNow);
 			}
 
+			bool IDispatcherOperation.Reschedule(TimeSpan timeFromNow)
+			{
+				return ((IDispatcherOperation)this).Reschedule((int)timeFromNow.TotalMilliseconds);
+			}
+
 			bool IDispatcherOperation.Reschedule (DateTime timestamp)
 			{
 				return this.Dispatcher.Reschedule(this, timestamp);

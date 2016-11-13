@@ -62,6 +62,7 @@
     <Compile Include="Mvvm\RegionManager.cs" />
     <Compile Include="Services\Messaging\Dispatchers\IWpfMessage.cs" />
     <Compile Include="Services\Messaging\Dispatchers\WpfMessageDispatcher.cs" />
+    <Compile Include="Services\Messaging\WpfMessage.cs" />
     <Compile Include="Services\Regions\Adapters\WpfRegionAdapter.cs" />
     <Compile Include="Services\Regions\Adapters\WpfRegionAdapterBase.cs" />
     <Compile Include="Services\WpfApplication.cs" />

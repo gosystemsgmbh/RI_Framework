@@ -61,7 +61,9 @@
     <Compile Include="Data\SQLite\Collations\_NamespaceDoc.cs" />
     <Compile Include="Data\SQLite\Functions\IsNullOrEmptySQLiteFunction.cs" />
     <Compile Include="Data\SQLite\Functions\RegularExpressionSQLiteFunction.cs" />
+    <Compile Include="Data\SQLite\Functions\ToNullIfEmptyOrNullSQLiteFunction.cs" />
     <Compile Include="Data\SQLite\Functions\_NamespaceDoc.cs" />
+    <Compile Include="Data\SQLite\SQLiteConnectionExtensions.cs" />
     <Compile Include="Data\SQLite\SQLiteDatabaseManager.cs" />
     <Compile Include="Data\SQLite\_NamespaceDoc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

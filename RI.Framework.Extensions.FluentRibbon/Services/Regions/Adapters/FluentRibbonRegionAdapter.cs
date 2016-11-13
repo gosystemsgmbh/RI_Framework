@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 
 using Fluent;
 
 using RI.Framework.Collections.Linq;
-using RI.Framework.Collections.Comparison;
 using RI.Framework.Composition.Model;
 
 
@@ -117,30 +115,6 @@ namespace RI.Framework.Services.Regions.Adapters
 			if ((container is RibbonTabItem) && (element is RibbonGroupBox))
 			{
 				((RibbonTabItem)container).Groups.Remove((RibbonGroupBox)element);
-			}
-		}
-
-		/// <inheritdoc />
-		public override void Sort (object container)
-		{
-			if (container == null)
-			{
-				throw new ArgumentNullException(nameof(container));
-			}
-
-			if (container is RibbonTabItem)
-			{
-				RibbonTabItem ribbonTabItem = (RibbonTabItem)container;
-				List<object> sortedElements = this.GetSortedElements(ribbonTabItem.Groups);
-				List<object> existingElements = ((IEnumerable)ribbonTabItem.Groups).ToList();
-				if (!sortedElements.SequenceEqual(existingElements, CollectionComparerFlags.ReferenceEquality))
-				{
-					ribbonTabItem.Groups.Clear();
-					foreach (object sortedElement in sortedElements)
-					{
-						ribbonTabItem.Groups.Add((RibbonGroupBox)sortedElement);
-					}
-				}
 			}
 		}
 

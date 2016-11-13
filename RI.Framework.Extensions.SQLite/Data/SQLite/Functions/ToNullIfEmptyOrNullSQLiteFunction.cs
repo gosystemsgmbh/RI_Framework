@@ -9,27 +9,27 @@ using RI.Framework.Utilities;
 namespace RI.Framework.Data.SQLite.Functions
 {
 	/// <summary>
-	///     Implements an SQLite function which checks whether a string is empty.
+	///     Implements an SQLite function which returns null if a value is an empty string or null.
 	/// </summary>
 	/// <remarks>
 	///     <para>
 	///         A string is considered empty if it is NULL or consists only of whitespaces.
 	///     </para>
 	///     <para>
-	///         The SQL name of the function is <c> isnullorempty </c>.
+	///         The SQL name of the function is <c> tonullifemptyornull </c>.
 	///     </para>
 	/// </remarks>
 	/// <example>
 	///     <code language="sql">
 	/// <![CDATA[
-	/// isnullorempty(NULL)
-	/// isnullorempty(' ')
-	/// isnullorempty(column)
+	/// tonullifemptyornull(NULL)
+	/// tonullifemptyornull(' ')
+	/// tonullifemptyornull(column)
 	/// ]]>
 	/// </code>
 	/// </example>
-	[SQLiteFunction ("isnullorempty", 1, FunctionType.Scalar)]
-	public sealed class IsNullOrEmptySQLiteFunction : SQLiteFunction
+	[SQLiteFunction ("tonullifemptyornull", 1, FunctionType.Scalar)]
+	public class ToNullIfEmptyOrNullSQLiteFunction : SQLiteFunction
 	{
 		#region Static Methods
 
@@ -38,7 +38,7 @@ namespace RI.Framework.Data.SQLite.Functions
 		/// </summary>
 		public static void RegisterGlobal ()
 		{
-			SQLiteFunction.RegisterFunction(typeof(IsNullOrEmptySQLiteFunction));
+			SQLiteFunction.RegisterFunction(typeof(ToNullIfEmptyOrNullSQLiteFunction));
 		}
 
 		#endregion
@@ -53,32 +53,32 @@ namespace RI.Framework.Data.SQLite.Functions
 		{
 			if (args == null)
 			{
-				return true;
+				return null;
 			}
 
 			if (args.Length != 1)
 			{
-				return false;
+				return null;
 			}
 
 			object arg = args[0];
 
 			if (arg == null)
 			{
-				return true;
+				return null;
 			}
 
 			if (arg == DBNull.Value)
 			{
-				return true;
+				return null;
 			}
 
 			if (!(arg is string))
 			{
-				return false;
+				return arg;
 			}
 
-			return ((string)arg).IsNullOrEmpty();
+			return ((string)arg).IsNullOrEmpty() ? null : arg;
 		}
 
 		#endregion

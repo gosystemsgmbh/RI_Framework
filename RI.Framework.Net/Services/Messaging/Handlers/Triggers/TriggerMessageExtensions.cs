@@ -250,8 +250,7 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="message" /> or <paramref name="triggerName" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="triggerName" /> is an empty string. </exception>
-		/// TODO: Split into IsTriggeredOr and IsTriggeredAnd
-		public static bool? IsTriggered (this IMessage message, string triggerName)
+		public static bool? IsAndTriggered (this IMessage message, string triggerName)
 		{
 			if (message == null)
 			{
@@ -279,6 +278,47 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 			}
 
 			return message.GetAndTriggered();
+		}
+
+		/// <summary>
+		///     Determines whether a message is a trigger changed response and if so, checks whether the specified trigger is OR-triggered.
+		/// </summary>
+		/// <param name="message"> The trigger message. </param>
+		/// <param name="triggerName"> The trigger name to check. </param>
+		/// <returns>
+		///     If the message is a trigger changed response and the trigger name matches, true is returned if OR-triggered or false if not OR-triggered.
+		///     If the message is not a trigger respond message or the trigger names do not match, null is returned.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="message" /> or <paramref name="triggerName" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="triggerName" /> is an empty string. </exception>
+		public static bool? IsOrTriggered(this IMessage message, string triggerName)
+		{
+			if (message == null)
+			{
+				throw new ArgumentNullException(nameof(message));
+			}
+
+			if (triggerName == null)
+			{
+				throw new ArgumentNullException(nameof(triggerName));
+			}
+
+			if (triggerName.IsEmpty())
+			{
+				throw new EmptyStringArgumentException(nameof(triggerName));
+			}
+
+			if (!message.IsTriggerChangedResponse())
+			{
+				return null;
+			}
+
+			if (!string.Equals(message.GetTriggerName(), triggerName, StringComparison.InvariantCultureIgnoreCase))
+			{
+				return null;
+			}
+
+			return message.GetOrTriggered();
 		}
 
 		/// <summary>

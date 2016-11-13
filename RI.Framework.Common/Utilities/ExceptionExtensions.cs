@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Globalization;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 
 using RI.Framework.Utilities.Text;
@@ -21,9 +24,18 @@ namespace RI.Framework.Utilities
 
 		private const string NullString = "[null]";
 
+		private const string PropertyPrefix = "# ";
+
 		private const string StackTracePrefix = "-> ";
 
 		private const string TargetSiteSeparator = ".";
+
+		private const string PropertySeparator = " : ";
+
+		private static readonly string[] IgnoredProperties = new[]
+		{
+			"Message", "Source", "TargetSite", "HelpLink", "StackTrace", "InnerException"
+		};
 
 		#endregion
 
@@ -108,7 +120,61 @@ namespace RI.Framework.Utilities
 					writer.Write("Help link:   ");
 					writer.WriteLine(exception.HelpLink == null ? ExceptionExtensions.NullString : exception.HelpLink.Trim());
 
-					//TODO: Log other properties (with filter)
+					try
+					{
+						PropertyInfo[] properties = exception.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+						foreach (PropertyInfo property in properties)
+						{
+							try
+							{
+								MethodInfo getter = property.GetGetMethod(true);
+								object propertyValue = getter.Invoke(exception, null);
+
+								string name = property.Name;
+								if (ExceptionExtensions.IgnoredProperties.Contains(name))
+								{
+									continue;
+								}
+
+								string type = propertyValue?.GetType()?.Name ?? property.PropertyType.Name;
+								string stringValue = ExceptionExtensions.NullString;
+
+								if (propertyValue != null)
+								{
+									if (propertyValue is IDictionary)
+									{
+										stringValue = (from DictionaryEntry x in ((IDictionary)propertyValue) select "[" + x.Key + "]=[" + x.Value + "]").Join(";");
+									}
+									else if (propertyValue is IEnumerable)
+									{
+										stringValue = (from x in ((IEnumerable)propertyValue).OfType<object>() select "[" + x + "]").Join(";");
+									}
+									else
+									{
+										stringValue = propertyValue.ToString();
+									}
+								}
+
+								string escapedStringValue = stringValue.Escape();
+
+								writer.Write(ExceptionExtensions.PropertyPrefix);
+								writer.Write(name);
+								writer.Write(ExceptionExtensions.PropertySeparator);
+								writer.Write(type);
+								writer.Write(ExceptionExtensions.PropertySeparator);
+								writer.WriteLine(escapedStringValue);
+							}
+							catch
+							{
+								writer.Write("(failure while printing exception properties; property: )");
+								writer.WriteLine(property.Name);
+							}
+						}
+					}
+					catch
+					{
+						writer.WriteLine("(failure while printing exception properties; general)");
+					}
 
 					writer.Write("Stack trace:");
 					if (exception.StackTrace == null)

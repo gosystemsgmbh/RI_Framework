@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 
-using RI.Framework.Collections.Comparison;
-using RI.Framework.Collections.Linq;
 using RI.Framework.Composition.Model;
 
 
@@ -184,44 +182,6 @@ namespace RI.Framework.Services.Regions.Adapters
 			{
 				Panel panel = (Panel)container;
 				panel.Children.Remove((UIElement)element);
-			}
-		}
-
-		/// <inheritdoc />
-		public override void Sort (object container)
-		{
-			if (container == null)
-			{
-				throw new ArgumentNullException(nameof(container));
-			}
-
-			if (container is ItemsControl)
-			{
-				ItemsControl itemsControl = (ItemsControl)container;
-				List<object> sortedElements = this.GetSortedElements(itemsControl.Items);
-				List<object> existingElements = itemsControl.Items.ToList();
-				if (!sortedElements.SequenceEqual(existingElements, CollectionComparerFlags.ReferenceEquality))
-				{
-					itemsControl.Items.Clear();
-					foreach (object sortedElement in sortedElements)
-					{
-						itemsControl.Items.Add(sortedElement);
-					}
-				}
-			}
-			else if (container is Panel)
-			{
-				Panel panel = (Panel)container;
-				List<object> sortedElements = this.GetSortedElements(panel.Children);
-				List<object> existingElements = panel.Children.ToList();
-				if (!sortedElements.SequenceEqual(existingElements, CollectionComparerFlags.ReferenceEquality))
-				{
-					panel.Children.Clear();
-					foreach (object sortedElement in sortedElements)
-					{
-						panel.Children.Add((UIElement)sortedElement);
-					}
-				}
 			}
 		}
 

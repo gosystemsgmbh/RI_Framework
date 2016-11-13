@@ -48,7 +48,7 @@ namespace RI.Framework.Utilities.Text
 	///         When parsing command lines, the order of parameters and literals does not matter, they can be mixed as needed.
 	///     </para>
 	/// </remarks>
-	/// TODO: Example
+	/// EXAMPLE: Example
 	public sealed class CommandLine : ICloneable<CommandLine>,
 	                                  ICloneable
 	{

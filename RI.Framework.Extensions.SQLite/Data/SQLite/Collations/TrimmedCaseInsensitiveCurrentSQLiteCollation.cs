@@ -7,7 +7,7 @@ using System.Globalization;
 namespace RI.Framework.Data.SQLite.Collations
 {
 	/// <summary>
-	///     Implements an SQLite collation which performs trimmed, case-insensitive string comparison.
+	///     Implements an SQLite collation which performs trimmed, case-insensitive string comparison using the current culture.
 	/// </summary>
 	/// <remarks>
 	///     <para>
@@ -25,7 +25,7 @@ namespace RI.Framework.Data.SQLite.Collations
 		/// <summary>
 		///     Registers the collation.
 		/// </summary>
-		public static void Register ()
+		public static void RegisterGlobal ()
 		{
 			SQLiteFunction.RegisterFunction(typeof(TrimmedCaseInsensitiveCurrentSQLiteCollation));
 		}
@@ -40,7 +40,7 @@ namespace RI.Framework.Data.SQLite.Collations
 		/// <inheritdoc />
 		public override int Compare (string param1, string param2)
 		{
-			return string.Compare(param1.Trim(), param2.Trim(), CultureInfo.CurrentCulture, CompareOptions.IgnoreCase);
+			return string.Compare(param1?.Trim(), param2?.Trim(), CultureInfo.CurrentCulture, CompareOptions.IgnoreCase);
 		}
 
 		#endregion

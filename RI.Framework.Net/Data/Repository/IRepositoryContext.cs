@@ -12,11 +12,13 @@ namespace RI.Framework.Data.Repository
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         A repository context encapsulates high-level database functionality by representing a repository / unit-of-work pattern which uses objects as entities with the associated database.
+	///         A repository context encapsulates high-level database functionality by representing a repository/unit-of-work pattern.
 	///     </para>
 	///     <para>
-	///         A repository context is intended to be created, used for a certain task, and then disposed (either through a <see cref="Commit" /> or <see cref="Rollback" />).
-	///         It should not be a long-living instance.
+	///         A repository context encapsulates database access and logic and provides higher-level functionality by exposing context-specific data operations and by exposing the actual data using entities.
+	///     </para>
+	///     <para>
+	///         Repository contexts are intended to be short-living instances which are created when necessary and disposed after the data-specific tasks (&quot;unit of work&quot;) are completed.
 	///     </para>
 	/// </remarks>
 	public interface IRepositoryContext : IDisposable
@@ -57,7 +59,7 @@ namespace RI.Framework.Data.Repository
 		bool HasErrors ();
 
 		/// <summary>
-		///     Rolls back all changes since the last <see cref="SaveChanges" /> call and disposes the repository context.
+		///     Rolls back all changes since the last <see cref="SaveChanges" /> and disposes the repository context.
 		/// </summary>
 		/// <exception cref="ObjectDisposedException"> The repository context is disposed. </exception>
 		void Rollback ();

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
+using RI.Framework.Collections.Comparison;
 using RI.Framework.Collections.Linq;
 using RI.Framework.Utilities.Reflection;
 
@@ -302,8 +303,24 @@ namespace RI.Framework.Services.Regions
 		public abstract void Remove (object container, object element);
 
 		/// <inheritdoc />
-		/// TODO: Provide base implementation
-		public abstract void Sort (object container);
+		public virtual void Sort(object container)
+		{
+			if (container == null)
+			{
+				throw new ArgumentNullException(nameof(container));
+			}
+
+			List<object> existingElements = this.Get(container);
+			List<object> sortedElements = this.GetSortedElements(existingElements);
+			if (!sortedElements.SequenceEqual(existingElements, CollectionComparerFlags.ReferenceEquality))
+			{
+				this.Clear(container);
+				foreach (object sortedElement in sortedElements)
+				{
+					this.Add(container, sortedElement);
+				}
+			}
+		}
 
 		#endregion
 	}

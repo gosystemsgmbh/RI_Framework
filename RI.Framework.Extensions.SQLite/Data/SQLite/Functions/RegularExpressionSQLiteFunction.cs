@@ -33,7 +33,7 @@ namespace RI.Framework.Data.SQLite.Functions
 		/// <summary>
 		///     Registers the function.
 		/// </summary>
-		public static void Register ()
+		public static void RegisterGlobal ()
 		{
 			SQLiteFunction.RegisterFunction(typeof(RegularExpressionSQLiteFunction));
 		}

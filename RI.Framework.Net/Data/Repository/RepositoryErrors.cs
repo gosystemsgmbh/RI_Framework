@@ -12,11 +12,6 @@ namespace RI.Framework.Data.Repository
 	/// <summary>
 	///     Represents validation errors of an entity.
 	/// </summary>
-	/// <remarks>
-	///     <para>
-	///         Valiation errors are returned by <see cref="IRepositorySet{T}.Validate" />.
-	///     </para>
-	/// </remarks>
 	public class RepositoryErrors
 	{
 		#region Instance Constructor/Destructor

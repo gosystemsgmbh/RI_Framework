@@ -13,7 +13,7 @@ namespace RI.Framework.Data.Repository
 	/// <typeparam name="T"> The type of the entities which are represented by this repository set. </typeparam>
 	/// <remarks>
 	///     <para>
-	///         A repository set is used together with an <see cref="IRepositoryContext" /> and is used to represent one specific type of entities of that repository context.
+	///         A repository set is used together with an <see cref="IRepositoryContext" /> and is used to expose one specific type of entities of that repository context.
 	///     </para>
 	/// </remarks>
 	public interface IRepositorySet <T>
@@ -24,6 +24,7 @@ namespace RI.Framework.Data.Repository
 		/// </summary>
 		/// <param name="entity"> The entity to add to the set. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="entity" /> is null. </exception>
+		/// <exception cref="InvalidOperationException"> The entity cannot be added. </exception>
 		void Add (T entity);
 
 		/// <summary>
@@ -35,6 +36,14 @@ namespace RI.Framework.Data.Repository
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="entity" /> is null. </exception>
 		bool CanAdd (T entity);
+
+		/// <summary>
+		///     Checks whether can be created by the set.
+		/// </summary>
+		/// <returns>
+		///     true if new entities can be created, false otherwise.
+		/// </returns>
+		bool CanCreate ();
 
 		/// <summary>
 		///     Checks whether an entity can be deleted from the set.
@@ -72,6 +81,7 @@ namespace RI.Framework.Data.Repository
 		/// <returns>
 		///     The newly created entity.
 		/// </returns>
+		/// <exception cref="InvalidOperationException"> No new entities can be created. </exception>
 		T Create ();
 
 		/// <summary>
@@ -79,6 +89,7 @@ namespace RI.Framework.Data.Repository
 		/// </summary>
 		/// <param name="entity"> The entity to delete from the set. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="entity" /> is null. </exception>
+		/// <exception cref="InvalidOperationException"> The entity cannot be deleted. </exception>
 		void Delete (T entity);
 
 		/// <summary>
@@ -92,7 +103,7 @@ namespace RI.Framework.Data.Repository
 		/// <summary>
 		///     Gets a sequence of filtered entities of this sets type.
 		/// </summary>
-		/// <param name="filter"> An implementation-defined object which is used for filtering or null if no filter is to be used. </param>
+		/// <param name="filter"> An implementation-defined filter object which is used for filtering or null if no filter is to be used. </param>
 		/// <param name="pageIndex"> The zero-based index of the page of filtered entities to retrieve with the returned sequence. </param>
 		/// <param name="pageSize"> The size of one page or 0 if no paging is to be used. </param>
 		/// <param name="entityCount"> The total count of all entities over all pages with the filter applied. </param>
@@ -100,6 +111,13 @@ namespace RI.Framework.Data.Repository
 		/// <returns>
 		///     The sequence of filtered types of this sets type.
 		/// </returns>
+		/// <remarks>
+		///     <note type="important">
+		///         The number of elements in the sequence is not necessarily <paramref name="pageSize" /> but guaranteed to be less or equal.
+		///     </note>
+		/// </remarks>
+		/// <exception cref="ArgumentException"> <paramref name="filter" /> is an invalid filter object. </exception>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="pageIndex" /> or <paramref name="pageSize" /> is less than zero or <paramref name="pageIndex" /> points to a page which does not exist. </exception>
 		IEnumerable<T> GetFiltered (object filter, int pageIndex, int pageSize, out int entityCount, out int pageCount);
 
 		/// <summary>
@@ -125,17 +143,19 @@ namespace RI.Framework.Data.Repository
 		/// </summary>
 		/// <param name="entity"> The entity to explicitly mark as modified. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="entity" /> is null. </exception>
+		/// <exception cref="InvalidOperationException"> The entity cannot be modified. </exception>
 		void Modify (T entity);
 
 		/// <summary>
-		///     Reloads an entity from the database, discarding all its pending changes.
+		///     Reloads an entity from the database, discarding all its pending changes and validation errors.
 		/// </summary>
-		/// <param name="entity"> The entity to relaod from the database. </param>
+		/// <param name="entity"> The entity to reload from the database. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="entity" /> is null. </exception>
+		/// <exception cref="InvalidOperationException"> The entity cannot be reloaded. </exception>
 		void Reload (T entity);
 
 		/// <summary>
-		///     Validates an entity.
+		///     Determines whether an entity has validation errors.
 		/// </summary>
 		/// <param name="entity"> The entity. </param>
 		/// <returns>

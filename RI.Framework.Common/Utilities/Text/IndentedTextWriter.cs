@@ -18,7 +18,7 @@ namespace RI.Framework.Utilities.Text
 	///         <see cref="IndentedTextWriter" /> only works reliable with new line strings of LF or CRLF (see <see cref="TextWriter.NewLine" />).
 	///     </note>
 	/// </remarks>
-	/// TODO: Example
+	/// EXAMPLE: Example
 	public sealed class IndentedTextWriter : TextWriter
 	{
 		#region Instance Constructor/Destructor

@@ -14,7 +14,7 @@ namespace RI.Framework.Services.Messaging
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         The dictionary which stortes the transported data, <see cref="Data" />, uses <see cref="StringComparer" />.<see cref="StringComparer.InvariantCultureIgnoreCase" />.
+	///         The dictionary which stores the transported data, <see cref="Data" />, uses <see cref="StringComparer" />.<see cref="StringComparer.InvariantCultureIgnoreCase" />.
 	///     </para>
 	///     <para>
 	///         See <see cref="IMessage" /> for more details.
@@ -26,7 +26,7 @@ namespace RI.Framework.Services.Messaging
 		#region Instance Constructor/Destructor
 
 		/// <summary>
-		///     Creates a new instance of <see cref="MessageService" />.
+		///     Creates a new instance of <see cref="Message" />.
 		/// </summary>
 		/// <param name="name"> The name of the message. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="name" /> is null. </exception>
@@ -171,11 +171,6 @@ namespace RI.Framework.Services.Messaging
 			if (name.IsEmpty())
 			{
 				throw new EmptyStringArgumentException(nameof(name));
-			}
-
-			if (!this.Data.ContainsKey(name))
-			{
-				throw new KeyNotFoundException();
 			}
 
 			return this.Data[name];

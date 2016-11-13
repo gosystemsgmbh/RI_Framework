@@ -48,7 +48,10 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\Database\DatabaseConnectionCreatedEventArgs.cs" />
     <Compile Include="Data\Database\DatabaseState.cs" />
+    <Compile Include="Data\Database\DatabaseStateChangedEventArgs.cs" />
+    <Compile Include="Data\Database\DatabaseScriptEventArgs.cs" />
     <Compile Include="Data\Database\_NamespaceDoc.cs" />
     <Compile Include="Data\Database\IDatabaseManager.cs" />
     <Compile Include="Data\Repository\IRepositoryContext.cs" />

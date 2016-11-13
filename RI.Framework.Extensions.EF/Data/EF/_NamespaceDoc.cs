@@ -6,7 +6,7 @@
 namespace RI.Framework.Data.EF
 {
 	/// <summary>
-	///     Provides Entity Framework utilities.
+	///     Contains Entity Framework utilities.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

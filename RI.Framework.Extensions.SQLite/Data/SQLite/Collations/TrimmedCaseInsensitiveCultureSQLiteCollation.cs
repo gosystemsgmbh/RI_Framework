@@ -1,3 +1,4 @@
+using System;
 using System.Data.SQLite;
 using System.Globalization;
 
@@ -7,7 +8,7 @@ using System.Globalization;
 namespace RI.Framework.Data.SQLite.Collations
 {
 	/// <summary>
-	///     Implements an SQLite collation which performs trimmed, case-insensitive string comparison.
+	///     Implements an SQLite collation which performs trimmed, case-insensitive string comparison using a specified culture.
 	/// </summary>
 	/// <remarks>
 	///     <para>
@@ -20,37 +21,37 @@ namespace RI.Framework.Data.SQLite.Collations
 	[SQLiteFunction (FuncType = FunctionType.Collation, Name = "TRIMCICULTURE")]
 	public sealed class TrimmedCaseInsensitiveCultureSQLiteCollation : SQLiteFunction
 	{
-		#region Static Properties/Indexer
+		#region Instance Constructor/Destructor
 
 		/// <summary>
-		///     Gets or sets the culture used for the string comparison when <see cref="TrimmedCaseInsensitiveCultureSQLiteCollation" /> is used.
+		///     Creates a new instance of <see cref="TrimmedCaseInsensitiveCultureSQLiteCollation" />.
 		/// </summary>
-		/// <value>
-		///     The culture used for the string comparison when <see cref="TrimmedCaseInsensitiveCultureSQLiteCollation" /> is used.
-		/// </value>
-		/// <remarks>
-		///     <para>
-		///         The value can be null if the current culture is to be determined using <see cref="CultureInfo.CurrentCulture" />.
-		///     </para>
-		/// </remarks>
-		public static CultureInfo Culture { get; set; }
+		/// <param name="culture"> The culture used for the string comparison. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="culture" /> is null. </exception>
+		public TrimmedCaseInsensitiveCultureSQLiteCollation (CultureInfo culture)
+		{
+			if (culture == null)
+			{
+				throw new ArgumentNullException(nameof(culture));
+			}
+
+			this.Culture = culture;
+		}
 
 		#endregion
 
 
 
 
-		#region Static Methods
+		#region Instance Properties/Indexer
 
 		/// <summary>
-		///     Registers the collation with the specified <see cref="CultureInfo" />.
+		///     Gets the culture used for the string comparison.
 		/// </summary>
-		/// <param name="culture"> The <see cref="CultureInfo" /> used for the string comparison by this collation or null if the current culture is to be determined using <see cref="CultureInfo.CurrentCulture" />. </param>
-		public static void Register (CultureInfo culture)
-		{
-			TrimmedCaseInsensitiveCultureSQLiteCollation.Culture = culture ?? CultureInfo.InvariantCulture;
-			SQLiteFunction.RegisterFunction(typeof(TrimmedCaseInsensitiveCultureSQLiteCollation));
-		}
+		/// <value>
+		///     The culture used for the string comparison.
+		/// </value>
+		public CultureInfo Culture { get; private set; }
 
 		#endregion
 
@@ -62,7 +63,7 @@ namespace RI.Framework.Data.SQLite.Collations
 		/// <inheritdoc />
 		public override int Compare (string param1, string param2)
 		{
-			return string.Compare(param1.Trim(), param2.Trim(), TrimmedCaseInsensitiveCultureSQLiteCollation.Culture ?? CultureInfo.CurrentCulture, CompareOptions.IgnoreCase);
+			return string.Compare(param1?.Trim(), param2?.Trim(), this.Culture, CompareOptions.IgnoreCase);
 		}
 
 		#endregion
