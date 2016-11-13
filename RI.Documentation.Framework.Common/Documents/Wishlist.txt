@@ -5,11 +5,23 @@ Utilities
  - (Common) RandomExtensions: NextBytes with max and min/max overload
  - (Common) RandomExtensions: FillStream with max and min/max overload
 
+ - (Common) StringComparerEx
+
  - (Common) ISynchronizable
 
+ - (Common) TextReaderExtensions
+ - (Common) TextWriterExtensions
+
  - (Windows) Screen
+ - (Windows) WindowsVersion
+ - (Windows) UniqueIdentification
  * (Windows) SystemUser, UserProfile
  * (Windows) NetworkResource
+ + (Windows) SystemKeyboard
+ + (Windows) OnScreenKeyboard
+ + (Windows) InputManager
+ + (Windows) LocalEncryption
+ + (Windows) SystemInformation
 
  - (WinForms) FormExtensions
  - (WinForms) TemporaryCursor
@@ -55,8 +67,7 @@ Collections
  - (Common) ITreeNodeExtensions: AddChildRange
  - (Common) ITreeNodeExtensions: Path building and deflating
 
- - (Common) WatchableList
- - (Common) ObservableList
+ - (Common) Wrappers
 
  - (Common) PriorityQueue
  - (Common) RingBuffer
@@ -88,17 +99,17 @@ I/O
  - (Common) RandomStream
  - (Common) UncloseableStream
  - (Common) StreamExtensions
+ - (Common) EndianessConverter
 
  + (Common) INI reader, writer, document
  - (Common) CSV reader, writer, document
  - (Common) ZIP reader, writer, document
 
+ - (Common) ConcurrencyExtensions
+ - (Common) TransactiveExtensions
+
  - (Windows) DirectoryPathExtensions: Access control
  - (Windows) FilePathExtensions: Access control
-
- + (Windows) SystemKeyboard
- + (Windows) OnScreenKeyboard
- + (Windows) InputManager
 
  * (Windows) SerialPortInstance
 
@@ -136,6 +147,8 @@ Services
 
  - (.NET) Backup (BackupService, DirectoryBackupStorage)
  - (.NET) Licensing (LicensingService, FileLicenseStorage)
+
+ - (WPF) AvalonDockRegionAdapter
 
  - (WinForms) WinFormsBootstrapper
  - (WinForms) Regions (WinFormsRegionAdapterBase, WinFormsRegionAdapter)

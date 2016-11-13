@@ -102,15 +102,18 @@ namespace RI.Framework.Utilities
 					{
 						writer.Write(exception.TargetSite?.DeclaringType?.AssemblyQualifiedName?.Trim() ?? ExceptionExtensions.NullString);
 						writer.Write(ExceptionExtensions.TargetSiteSeparator);
-						writer.WriteLine(exception.TargetSite.Name.Trim());
+						writer.WriteLine(exception.TargetSite?.Name?.Trim() ?? ExceptionExtensions.NullString);
 					}
 
 					writer.Write("Help link:   ");
 					writer.WriteLine(exception.HelpLink == null ? ExceptionExtensions.NullString : exception.HelpLink.Trim());
 
-					writer.Write("Stack trace: ");
+					//TODO: Log other properties (with filter)
+
+					writer.Write("Stack trace:");
 					if (exception.StackTrace == null)
 					{
+						writer.Write(" ");
 						writer.WriteLine(ExceptionExtensions.NullString);
 					}
 					else
@@ -118,6 +121,7 @@ namespace RI.Framework.Utilities
 						string[] lines = exception.StackTrace.SplitLines(StringSplitOptions.RemoveEmptyEntries);
 						if (lines.Length == 0)
 						{
+							writer.Write(" ");
 							writer.WriteLine(ExceptionExtensions.NullString);
 						}
 						else
@@ -134,7 +138,7 @@ namespace RI.Framework.Utilities
 
 					if (exception.InnerException != null)
 					{
-						writer.WriteLine("Inner exception: ");
+						writer.WriteLine("Inner exception:");
 						writer.IndentLevel++;
 						writer.WriteLine(exception.InnerException.ToDetailedString(indentString));
 						writer.IndentLevel--;
