@@ -18,7 +18,7 @@ namespace RI.Framework.Data.SQLite.Collations
 	///     </para>
 	/// </remarks>
 	[SQLiteFunction (FuncType = FunctionType.Collation, Name = "TRIMCICURRENT")]
-	public sealed class TrimmedCaseInsensitiveCurrentCollation : SQLiteFunction
+	public sealed class TrimmedCaseInsensitiveCurrentSQLiteCollation : SQLiteFunction
 	{
 		#region Static Methods
 
@@ -27,7 +27,7 @@ namespace RI.Framework.Data.SQLite.Collations
 		/// </summary>
 		public static void Register ()
 		{
-			SQLiteFunction.RegisterFunction(typeof(TrimmedCaseInsensitiveCurrentCollation));
+			SQLiteFunction.RegisterFunction(typeof(TrimmedCaseInsensitiveCurrentSQLiteCollation));
 		}
 
 		#endregion

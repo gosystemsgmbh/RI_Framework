@@ -26,7 +26,7 @@ namespace RI.Framework.Data.SQLite.Functions
 	/// </code>
 	/// </example>
 	[SQLiteFunction ("REGEXP", 2, FunctionType.Scalar)]
-	public sealed class RegularExpressionFunction : SQLiteFunction
+	public sealed class RegularExpressionSQLiteFunction : SQLiteFunction
 	{
 		#region Static Methods
 
@@ -35,7 +35,7 @@ namespace RI.Framework.Data.SQLite.Functions
 		/// </summary>
 		public static void Register ()
 		{
-			SQLiteFunction.RegisterFunction(typeof(RegularExpressionFunction));
+			SQLiteFunction.RegisterFunction(typeof(RegularExpressionSQLiteFunction));
 		}
 
 		#endregion

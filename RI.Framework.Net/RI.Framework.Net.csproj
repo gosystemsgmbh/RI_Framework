@@ -51,7 +51,7 @@
     <Compile Include="Data\DatabaseState.cs" />
     <Compile Include="Data\IDatabaseManager.cs" />
     <Compile Include="Data\IRepositoryContext.cs" />
-    <Compile Include="Data\IRepositoryErrors.cs" />
+    <Compile Include="Data\RepositoryErrors.cs" />
     <Compile Include="Data\IRepositorySet.cs" />
     <Compile Include="Data\_NamespaceDoc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

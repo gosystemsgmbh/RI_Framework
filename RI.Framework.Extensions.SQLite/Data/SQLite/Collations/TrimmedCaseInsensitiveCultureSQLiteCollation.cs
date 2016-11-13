@@ -18,15 +18,15 @@ namespace RI.Framework.Data.SQLite.Collations
 	///     </para>
 	/// </remarks>
 	[SQLiteFunction (FuncType = FunctionType.Collation, Name = "TRIMCICULTURE")]
-	public sealed class TrimmedCaseInsensitiveCultureCollation : SQLiteFunction
+	public sealed class TrimmedCaseInsensitiveCultureSQLiteCollation : SQLiteFunction
 	{
 		#region Static Properties/Indexer
 
 		/// <summary>
-		///     Gets or sets the culture used for the string comparison when <see cref="TrimmedCaseInsensitiveCultureCollation" /> is used.
+		///     Gets or sets the culture used for the string comparison when <see cref="TrimmedCaseInsensitiveCultureSQLiteCollation" /> is used.
 		/// </summary>
 		/// <value>
-		///     The culture used for the string comparison when <see cref="TrimmedCaseInsensitiveCultureCollation" /> is used.
+		///     The culture used for the string comparison when <see cref="TrimmedCaseInsensitiveCultureSQLiteCollation" /> is used.
 		/// </value>
 		/// <remarks>
 		///     <para>
@@ -48,8 +48,8 @@ namespace RI.Framework.Data.SQLite.Collations
 		/// <param name="culture"> The <see cref="CultureInfo" /> used for the string comparison by this collation or null if the current culture is to be determined using <see cref="CultureInfo.CurrentCulture" />. </param>
 		public static void Register (CultureInfo culture)
 		{
-			TrimmedCaseInsensitiveCultureCollation.Culture = culture ?? CultureInfo.InvariantCulture;
-			SQLiteFunction.RegisterFunction(typeof(TrimmedCaseInsensitiveCultureCollation));
+			TrimmedCaseInsensitiveCultureSQLiteCollation.Culture = culture ?? CultureInfo.InvariantCulture;
+			SQLiteFunction.RegisterFunction(typeof(TrimmedCaseInsensitiveCultureSQLiteCollation));
 		}
 
 		#endregion
@@ -62,7 +62,7 @@ namespace RI.Framework.Data.SQLite.Collations
 		/// <inheritdoc />
 		public override int Compare (string param1, string param2)
 		{
-			return string.Compare(param1.Trim(), param2.Trim(), TrimmedCaseInsensitiveCultureCollation.Culture ?? CultureInfo.CurrentCulture, CompareOptions.IgnoreCase);
+			return string.Compare(param1.Trim(), param2.Trim(), TrimmedCaseInsensitiveCultureSQLiteCollation.Culture ?? CultureInfo.CurrentCulture, CompareOptions.IgnoreCase);
 		}
 
 		#endregion

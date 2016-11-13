@@ -35,6 +35,7 @@
   - [ ] Make all enums serializable
   - [ ] Make all exceptions serializable
   - [ ] Check usage of IDisposable
+  - [ ] Do we log enough?
   - [ ] TODOs
 - [ ] Testing
   - [X] Split testing into "Unity" and ".NET"

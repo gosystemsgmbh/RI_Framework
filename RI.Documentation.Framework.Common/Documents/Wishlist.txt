@@ -117,6 +117,8 @@ Composition
 Services
 --------
 
+ + (Common) ServiceLocator: Allow resolving of multiple instances (also update ServiceLocatorDbDependencyResolver)
+
  + (Common) Logging: One-file-per-day option for DirectoryLogWriter
  + (Common) Logging: FileLogWriter
  + (Common) Logging: LogFilter
@@ -183,4 +185,5 @@ Behaviours
 Tools
 -----
 
- - ElevStart
+ - ElevatedStart
+ - LogViewer

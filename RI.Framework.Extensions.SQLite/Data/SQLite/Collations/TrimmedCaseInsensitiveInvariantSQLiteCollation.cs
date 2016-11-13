@@ -18,7 +18,7 @@ namespace RI.Framework.Data.SQLite.Collations
 	///     </para>
 	/// </remarks>
 	[SQLiteFunction (FuncType = FunctionType.Collation, Name = "TRIMCIINVARIANT")]
-	public sealed class TrimmedCaseInsensitiveInvariantCollation : SQLiteFunction
+	public sealed class TrimmedCaseInsensitiveInvariantSQLiteCollation : SQLiteFunction
 	{
 		#region Static Methods
 
@@ -27,7 +27,7 @@ namespace RI.Framework.Data.SQLite.Collations
 		/// </summary>
 		public static void Register ()
 		{
-			SQLiteFunction.RegisterFunction(typeof(TrimmedCaseInsensitiveInvariantCollation));
+			SQLiteFunction.RegisterFunction(typeof(TrimmedCaseInsensitiveInvariantSQLiteCollation));
 		}
 
 		#endregion

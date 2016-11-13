@@ -29,7 +29,7 @@ namespace RI.Framework.Data.SQLite.Functions
 	/// </code>
 	/// </example>
 	[SQLiteFunction ("isnullorempty", 1, FunctionType.Scalar)]
-	public sealed class IsNullOrEmptyFunction : SQLiteFunction
+	public sealed class IsNullOrEmptySQLiteFunction : SQLiteFunction
 	{
 		#region Static Methods
 
@@ -38,7 +38,7 @@ namespace RI.Framework.Data.SQLite.Functions
 		/// </summary>
 		public static void Register ()
 		{
-			SQLiteFunction.RegisterFunction(typeof(IsNullOrEmptyFunction));
+			SQLiteFunction.RegisterFunction(typeof(IsNullOrEmptySQLiteFunction));
 		}
 
 		#endregion
