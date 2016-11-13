@@ -139,6 +139,7 @@ namespace RI.Framework.Services
 		///         If this property is true, nothing will be added to the composition container and you must add all services manually.
 		///     </note>
 		/// </remarks>
+		/// TODO: More fine-grained control
 		public bool UseDefaultServices = true;
 
 		#endregion

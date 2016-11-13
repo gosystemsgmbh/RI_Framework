@@ -37,6 +37,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Collections\Specialized\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\StackExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\Virtualization\IItemsProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Virtualization\INotifyItemsProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\Virtualization\VirtualizationCollection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\Virtualization\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\_NamespaceDoc.cs" />
@@ -115,7 +116,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Exceptions\NotSeekableStreamArgumentException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Exceptions\NotWriteableStreamArgumentException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Exceptions\_NamespaceDoc.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\FloatExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\SingleExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObjectModel\ICloneable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObjectModel\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\RandomExtensions.cs" />
@@ -129,6 +130,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Text\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Threading\HeavyThread.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Threading\HeavyThreadException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Threading\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\TimeSpanExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\_NamespaceDoc.cs" />
   </ItemGroup>

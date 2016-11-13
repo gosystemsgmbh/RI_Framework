@@ -5,7 +5,7 @@ using RI.Framework.Utilities.Exceptions;
 
 
 
-namespace RI.Framework.Data
+namespace RI.Framework.Data.Repository
 {
 	/// <summary>
 	///     Defines the interface for a repository context.

@@ -250,6 +250,7 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="message" /> or <paramref name="triggerName" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="triggerName" /> is an empty string. </exception>
+		/// TODO: Split into IsTriggeredOr and IsTriggeredAnd
 		public static bool? IsTriggered (this IMessage message, string triggerName)
 		{
 			if (message == null)

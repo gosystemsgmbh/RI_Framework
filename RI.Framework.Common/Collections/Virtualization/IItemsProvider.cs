@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 
 
@@ -12,11 +11,6 @@ namespace RI.Framework.Collections.Virtualization
 	/// <typeparam name="T"> The type of items loaded by this data source. </typeparam>
 	public interface IItemsProvider <T>
 	{
-		/// <summary>
-		///     Raised when the data source detects that the items have changed.
-		/// </summary>
-		event EventHandler ItemsChanged;
-
 		/// <summary>
 		///     Gets the total number of items.
 		/// </summary>
@@ -33,6 +27,11 @@ namespace RI.Framework.Collections.Virtualization
 		/// <returns>
 		///     A sequence which can be enumerated to actually load the items.
 		/// </returns>
+		/// <remarks>
+		/// <note type="important">
+		/// The number of elements in the sequence is not necessarily <paramref name="count"/> but guaranteed to be less or equal.
+		/// </note>
+		/// </remarks>
 		IEnumerable<T> GetItems (int start, int count);
 
 		/// <summary>

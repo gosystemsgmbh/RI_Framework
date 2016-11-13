@@ -3,10 +3,10 @@
 
 
 
-namespace RI.Framework.Mvvm
+namespace RI.Framework.Utilities.Threading
 {
 	/// <summary>
-	///     Contains general utilities and extensions to support MVVM scenarios.
+	///     Contains utilities for working with threads.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

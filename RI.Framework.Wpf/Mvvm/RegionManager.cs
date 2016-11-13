@@ -25,7 +25,7 @@ namespace RI.Framework.Mvvm
 	///         <see cref="ServiceLocator" /> is used to obtain an instance of <see cref="IRegionService" /> and, when using region operation methods, the instances for elements when the elements are specified by name or type.
 	///     </para>
 	/// </remarks>
-	/// TODO: Remove, Clear, Deactivate
+	/// TODO: Remove, Clear, Deactivate, etc.
 	public static class RegionManager
 	{
 		#region Constants

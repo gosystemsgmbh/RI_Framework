@@ -9,6 +9,7 @@ Utilities
 
  - (Windows) Screen
  * (Windows) SystemUser, UserProfile
+ * (Windows) NetworkResource
 
  - (WinForms) FormExtensions
  - (WinForms) TemporaryCursor
@@ -60,7 +61,7 @@ Collections
  - (Common) PriorityQueue
  - (Common) RingBuffer
  - (Common) SortedQueue
- - (Common) InheritingTreeNode
+ - (Common) InheritingTreeNodeBase, InheritingTreeNode
 
 
 I/O
@@ -148,12 +149,6 @@ Services
  - (Unity) Input
  - (Unity) Audio
  - (Unity) User interface
-
-
-Net
----
-
- * (Windows) NetworkResource
 
 
 Math

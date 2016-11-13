@@ -3,10 +3,10 @@
 
 
 
-namespace RI.Framework.Mvvm
+namespace RI.Framework.Data.Database
 {
 	/// <summary>
-	///     Contains general utilities and extensions to support MVVM scenarios.
+	///     Contains types for implementing low-level database functionality.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

@@ -302,6 +302,7 @@ namespace RI.Framework.Services.Regions
 		public abstract void Remove (object container, object element);
 
 		/// <inheritdoc />
+		/// TODO: Provide base implementation
 		public abstract void Sort (object container);
 
 		#endregion

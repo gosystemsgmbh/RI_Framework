@@ -7,7 +7,7 @@ using RI.Framework.Utilities.Exceptions;
 
 
 
-namespace RI.Framework.Data
+namespace RI.Framework.Data.Repository
 {
 	/// <summary>
 	///     Represents validation errors of an entity.

@@ -6,7 +6,7 @@
 namespace RI.Framework.Data
 {
 	/// <summary>
-	///     Provides data and database utilities.
+	///     Contains data and database utilities.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

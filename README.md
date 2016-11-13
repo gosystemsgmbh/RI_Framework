@@ -72,5 +72,8 @@
 
 ## Later
 
-- [ ] TODO
-  - [ ] Move resources base to Common, add resource types for Unity
+- [ ] TODOs
+
+## Candidates for moving to Common
+- [ ] Resource Service
+- [ ] Setting Service

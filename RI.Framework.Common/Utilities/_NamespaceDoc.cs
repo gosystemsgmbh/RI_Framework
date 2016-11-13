@@ -6,7 +6,7 @@
 namespace RI.Framework.Utilities
 {
 	/// <summary>
-	///     Contains utilities for working with common data types and objects (like string, double, etc.).
+	///     Contains utilities for working with common data types and objects.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

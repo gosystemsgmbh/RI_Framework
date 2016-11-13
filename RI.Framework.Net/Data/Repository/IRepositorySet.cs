@@ -5,7 +5,7 @@ using System.Linq;
 
 
 
-namespace RI.Framework.Data
+namespace RI.Framework.Data.Repository
 {
 	/// <summary>
 	///     Defines the interface for a repository set.

@@ -10,7 +10,7 @@ using RI.Framework.Utilities.Exceptions;
 namespace RI.Framework.Services.Messaging
 {
 	/// <summary>
-	///     Implements default message which uses a dictionary to transport the messages data.
+	///     Implements a default message which uses a dictionary to transport the messages data.
 	/// </summary>
 	/// <remarks>
 	///     <para>

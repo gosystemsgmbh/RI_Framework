@@ -66,6 +66,7 @@ namespace RI.Framework.Mvvm.ViewModel
 		/// <inheritdoc />
 		public virtual void Initialize ()
 		{
+			this.IsInitialized = true;
 		}
 
 		#endregion

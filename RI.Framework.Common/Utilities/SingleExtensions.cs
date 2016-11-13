@@ -3,7 +3,7 @@
 	/// <summary>
 	///     Provides utility/extension methods for the <see cref="float" /> type.
 	/// </summary>
-	public static class FloatExtensions
+	public static class SingleExtensions
 	{
 		#region Static Methods
 

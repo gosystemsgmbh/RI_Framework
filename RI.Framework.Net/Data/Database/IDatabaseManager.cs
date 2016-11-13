@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Data.Common;
 
+using RI.Framework.Data.Repository;
 using RI.Framework.Utilities.Exceptions;
 
 
 
 
-namespace RI.Framework.Data
+namespace RI.Framework.Data.Database
 {
 	/// <summary>
 	///     Defines the interface for a database manager.

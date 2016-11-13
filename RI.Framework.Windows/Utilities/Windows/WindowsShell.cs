@@ -13,6 +13,9 @@ namespace RI.Framework.Utilities.Windows
 	/// <summary>
 	///     Provides utilities for working with the Windows shell environment.
 	/// </summary>
+	/// TODO: Return Process objects for ExecuteXXXCommand
+	/// TODO: Elevated option for OpenExplorer, OpenFile, OpenFolder
+	/// TODO: OpenCommandPrompt
 	public static class WindowsShell
 	{
 		#region Constants

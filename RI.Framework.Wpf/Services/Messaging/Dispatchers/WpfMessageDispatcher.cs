@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -82,10 +81,9 @@ namespace RI.Framework.Services.Messaging.Dispatchers
 
 		#region Instance Methods
 
-		[SuppressMessage ("ReSharper", "SuspiciousTypeConversion.Global")]
 		private DispatcherPriority GetPriorityFormessage (IMessage message)
 		{
-			return (message as IWpfMessage)?.Priority ?? DispatcherPriority.Normal;
+			return ((message as IWpfMessage)?.Priority).GetValueOrDefault(DispatcherPriority.Normal);
 		}
 
 		#endregion

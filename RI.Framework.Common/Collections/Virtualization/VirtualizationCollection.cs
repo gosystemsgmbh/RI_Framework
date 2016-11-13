@@ -15,7 +15,7 @@ namespace RI.Framework.Collections.Virtualization
 	/// <typeparam name="T"> The type of items virtualized. </typeparam>
 	/// <remarks>
 	///     <para>
-	///         <see cref="VirtualizationCollection{T}" /> uses an <see cref="IItemsProvider{T}" /> to load items on-demand.
+	///         <see cref="VirtualizationCollection{T}" /> uses an <see cref="IItemsProvider{T}" /> or <see cref="INotifyItemsProvider{T}"/> to load items on-demand.
 	///         That means that items are only loaded when they are actually requested through <see cref="VirtualizationCollection{T}" /> (e.g. by using the collections indexer property).
 	///     </para>
 	///     <para>
@@ -23,10 +23,10 @@ namespace RI.Framework.Collections.Virtualization
 	///         The loaded pages will then stay in the cache for a specified amount of time.
 	///     </para>
 	///     <note type="note">
-	///         If the used <see cref="IItemsProvider{T}" /> uses <see cref="IItemsProvider{T}.ItemsChanged" />, the cache will be cleared.
+	///         If <see cref="INotifyItemsProvider{T}" /> is used, <see cref="INotifyItemsProvider{T}.ItemsChanged" /> will clear the entire cache.
 	///     </note>
 	/// </remarks>
-	public sealed class VirtualizationCollection <T> : IList<T>, ICollection<T>, IEnumerable<T>, IList, ICollection, IEnumerable, IDisposable, IItemsProvider<T>
+	public sealed class VirtualizationCollection <T> : IList<T>, ICollection<T>, IEnumerable<T>, IList, ICollection, IEnumerable, IDisposable
 	{
 		#region Instance Constructor/Destructor
 
@@ -76,7 +76,10 @@ namespace RI.Framework.Collections.Virtualization
 			this.Cache = new PageCollection();
 			this.ItemsChangedHandler = this.ItemsChangedMethod;
 
-			this.ItemsProvider.ItemsChanged += this.ItemsChangedHandler;
+			if (this.ItemsProvider is INotifyItemsProvider<T>)
+			{
+				((INotifyItemsProvider<T>)this.ItemsProvider).ItemsChanged += this.ItemsChangedHandler;
+			}
 		}
 
 		/// <summary>
@@ -236,49 +239,12 @@ namespace RI.Framework.Collections.Virtualization
 		/// <inheritdoc />
 		public void Dispose ()
 		{
-			this.ItemsProvider.ItemsChanged -= this.ItemsChangedHandler;
+			if (this.ItemsProvider is INotifyItemsProvider<T>)
+			{
+				((INotifyItemsProvider<T>)this.ItemsProvider).ItemsChanged -= this.ItemsChangedHandler;
+			}
+
 			this.ItemsProvider = null;
-		}
-
-		#endregion
-
-
-
-
-		#region Interface: IItemsProvider<T>
-
-		/// <inheritdoc />
-		event EventHandler IItemsProvider<T>.ItemsChanged
-		{
-			add
-			{
-				this.ProviderItemsChanged += value;
-			}
-			remove
-			{
-				this.ProviderItemsChanged -= value;
-			}
-		}
-
-		/// <inheritdoc />
-		int IItemsProvider<T>.GetCount ()
-		{
-			return this.Count;
-		}
-
-		/// <inheritdoc />
-		IEnumerable<T> IItemsProvider<T>.GetItems (int start, int count)
-		{
-			for (int i1 = start; i1 < (start + count); i1++)
-			{
-				yield return this[i1];
-			}
-		}
-
-		/// <inheritdoc />
-		int IItemsProvider<T>.Search (T item)
-		{
-			return this.IndexOf(item);
 		}
 
 		#endregion

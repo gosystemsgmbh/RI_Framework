@@ -8,7 +8,7 @@ namespace RI.Framework.Mvvm.ViewModel
 	/// <summary>
 	///     Defines an interface for view models.
 	/// </summary>
-	public interface IViewModel : INotifyPropertyChanged
+	public interface IViewModel : INotifyPropertyChanged, INotifyPropertyChanging
 	{
 		/// <summary>
 		///     Gets whether the view is initialized or not.

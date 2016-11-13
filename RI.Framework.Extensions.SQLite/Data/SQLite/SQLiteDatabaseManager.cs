@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.Common;
 using System.Data.SQLite;
 
+using RI.Framework.Data.Database;
 using RI.Framework.Data.SQLite.Collations;
 using RI.Framework.Data.SQLite.Functions;
 using RI.Framework.IO.Paths;

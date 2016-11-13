@@ -3,7 +3,7 @@
 
 
 
-namespace RI.Framework.Data
+namespace RI.Framework.Data.Database
 {
 	/// <summary>
 	///     Describes the current state of an <see cref="IDatabaseManager" />.
