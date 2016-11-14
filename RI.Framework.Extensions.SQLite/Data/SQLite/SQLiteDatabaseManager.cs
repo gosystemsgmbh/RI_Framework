@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.Common;
 using System.Data.SQLite;
 
+using RI.Framework.Collections.Linq;
 using RI.Framework.Data.Database;
 using RI.Framework.Data.SQLite.Collations;
 using RI.Framework.Data.SQLite.Functions;
@@ -26,8 +27,6 @@ namespace RI.Framework.Data.SQLite
 	///     </para>
 	/// </remarks>
 	/// TODO: Implement connection tracking
-	/// TODO: First prepare scripts, then execute
-	/// TODO: Wrap script execution in transaction
 	public sealed class SQLiteDatabaseManager : IDatabaseManager
 	{
 		#region Instance Constructor/Destructor
@@ -102,15 +101,21 @@ namespace RI.Framework.Data.SQLite
 		#region Instance Properties/Indexer
 
 		/// <summary>
-		/// Gets the cleanup script chain.
+		///     Gets the cleanup script chain.
 		/// </summary>
 		/// <value>
-		/// The cleanup script chain.
+		///     The cleanup script chain.
 		/// </value>
 		/// <remarks>
-		/// <para>
-		/// TODO: Explanation
-		/// </para>
+		///     <para>
+		///         This list contains all SQL scripts which are executed during <see cref="CleanupDatabase" />.
+		///     </para>
+		///     <para>
+		///         The scripts are executed in the order as they are in the list.
+		///     </para>
+		///     <para>
+		///         null values and empty strings are ignored and the list can be empty.
+		///     </para>
 		/// </remarks>
 		public List<string> CleanupScriptChain { get; private set; }
 
@@ -118,10 +123,10 @@ namespace RI.Framework.Data.SQLite
 		public SQLiteConnectionStringBuilder ConnectionStringBuilder { get; private set; }
 
 		/// <summary>
-		/// Gets or sets the file path of the SQLite database file.
+		///     Gets or sets the file path of the SQLite database file.
 		/// </summary>
 		/// <value>
-		/// The file path of the SQLite database file.
+		///     The file path of the SQLite database file.
 		/// </value>
 		/// <exception cref="ArgumentNullException"> <paramref name="value" /> is null. </exception>
 		/// <exception cref="InvalidPathArgumentException"> <paramref name="value" /> contains wildcards. </exception>
@@ -148,28 +153,55 @@ namespace RI.Framework.Data.SQLite
 		}
 
 		/// <summary>
-		/// Gets the upgrade script chain.
+		///     Gets the upgrade script chain.
 		/// </summary>
 		/// <value>
-		/// The upgrade script chain.
+		///     The upgrade script chain.
 		/// </value>
 		/// <remarks>
-		/// <para>
-		/// TODO: Explanation
-		/// </para>
+		///     <para>
+		///         This list contains all SQL scripts which are executed during <see cref="UpgradeDatabase" /> to upgrade the database to the latest known/supported version (which is <see cref="MaxVersion" />).
+		///         Furthermore, this list is used to detect <see cref="MinVersion" /> and <see cref="MaxVersion" />.
+		///     </para>
+		///     <para>
+		///         The scripts are executed in the order as they are in the list.
+		///     </para>
+		///     <para>
+		///         The list can contain null values but not empty strings and can be empty.
+		///     </para>
+		///     <para>
+		///         If the list is empty, only the version which will be detected using <see cref="VersionScriptChain" /> is supported (and <see cref="MinVersion" /> and <see cref="MaxVersion" /> will have the same value as <see cref="CurrentVersion" />).
+		///     </para>
+		///     <para>
+		///         To specify that a particular version of the database can be upgraded to its next version, an upgrade script must be placed at the list index of the version from which can be upgraded.
+		///         For example, if upgrade from version n to n+1 shall be supported, the corresponding script which performs the upgrade from version n to n+1 must be placed at the list index n.
+		///         Upgrades are only possible step-by-step or by a version number increment of one respectively.
+		///         The index zero is used to initialize a new database to its first version.
+		///     </para>
 		/// </remarks>
 		public List<string> UpgradeScriptChain { get; private set; }
 
 		/// <summary>
-		/// Gets the version script chain.
+		///     Gets the version script chain.
 		/// </summary>
 		/// <value>
-		/// The version script chain.
+		///     The version script chain.
 		/// </value>
 		/// <remarks>
-		/// <para>
-		/// TODO: Explanation
-		/// </para>
+		///     <para>
+		///         This list contains all SQL scripts which are executed during <see cref="InitializeDatabase" /> to detect the current version of the database.
+		///     </para>
+		///     <para>
+		///         The scripts are executed in the order as they are in the list.
+		///     </para>
+		///     <para>
+		///         The list cannot contain null values or empty strings and must contain at least one script.
+		///     </para>
+		///     <para>
+		///         Each script must return a scalar value.
+		///         When any script returns a scalar value of zero, the script chain is aborted and the database is considered <see cref="DatabaseState.DamagedOrInvalid" />.
+		///         Therefore, the last script must return the actual version of the database (or zero) while previous scripts can be used to check for validity (non-zero if valid, zero if invalid).
+		///     </para>
 		/// </remarks>
 		public List<string> VersionScriptChain { get; private set; }
 
@@ -195,12 +227,18 @@ namespace RI.Framework.Data.SQLite
 		{
 			if (this.State != DatabaseState.Ready)
 			{
-				throw new InvalidOperationException("Cannot create connection when in state " + this.State + ".");
+				throw new InvalidOperationException("Cannot create SQLite connection when in state \"" + this.State + "\".");
 			}
 
-			this.CachedConnectionString.ReadOnly = readOnly;
+			return this.CreateConnectionInternal(readOnly, false);
+		}
 
-			SQLiteConnection connection = new SQLiteConnection(this.CachedConnectionString.ConnectionString);
+		private SQLiteConnection CreateConnectionInternal (bool readOnly, bool open)
+		{
+			SQLiteConnectionStringBuilder connectionString = new SQLiteConnectionStringBuilder(this.CachedConnectionString.ConnectionString);
+			connectionString.ReadOnly = readOnly;
+
+			SQLiteConnection connection = new SQLiteConnection(connectionString.ConnectionString);
 			this.RegisterCollations(connection);
 			this.RegisterFunctions(connection);
 
@@ -208,6 +246,11 @@ namespace RI.Framework.Data.SQLite
 			if (handler != null)
 			{
 				handler(this, new DatabaseConnectionCreatedEventArgs(connection, readOnly));
+			}
+
+			if (open)
+			{
+				connection.Open();
 			}
 
 			return connection;
@@ -234,6 +277,8 @@ namespace RI.Framework.Data.SQLite
 
 		private string OnPrepareScript (string script)
 		{
+			this.Log(LogLevel.Debug, "Preparing database script: {0}{1}{2}", this.State == DatabaseState.Ready ? this.CachedConnectionString.ConnectionString : this.ConnectionStringBuilder.ConnectionString, Environment.NewLine, script ?? "[null]");
+
 			EventHandler<DatabaseScriptEventArgs> handler = this.PrepareScript;
 			if (handler != null)
 			{
@@ -257,7 +302,7 @@ namespace RI.Framework.Data.SQLite
 			connection.BindFunction(new IsNullOrEmptySQLiteFunction());
 			connection.BindFunction(new RegularExpressionSQLiteFunction());
 		}
-		
+
 		private void SetState (DatabaseState state)
 		{
 			this.Log(LogLevel.Information, "Setting database state: {0} @ {1}", state, state == DatabaseState.Ready ? this.CachedConnectionString.ConnectionString : this.ConnectionStringBuilder.ConnectionString);
@@ -268,13 +313,15 @@ namespace RI.Framework.Data.SQLite
 
 			if (this.State == DatabaseState.Uninitialized)
 			{
+				this.InitialVersion = 0;
+				this.InitialNew = false;
+				this.InitialOld = false;
+
 				this.CurrentVersion = 0;
+
 				this.MinVersion = 0;
 				this.MaxVersion = 0;
-			}
 
-			if (this.State != DatabaseState.Ready)
-			{
 				this.CachedConnectionString = null;
 				this.CachedDatabaseFile = null;
 
@@ -330,6 +377,15 @@ namespace RI.Framework.Data.SQLite
 		public int CurrentVersion { get; private set; }
 
 		/// <inheritdoc />
+		public bool InitialNew { get; private set; }
+
+		/// <inheritdoc />
+		public bool InitialOld { get; private set; }
+
+		/// <inheritdoc />
+		public int InitialVersion { get; private set; }
+
+		/// <inheritdoc />
 		public int MaxVersion { get; private set; }
 
 		/// <inheritdoc />
@@ -340,7 +396,7 @@ namespace RI.Framework.Data.SQLite
 
 		/// <inheritdoc />
 		public bool SupportsConnectionTracking => false;
-		
+
 		/// <inheritdoc />
 		public bool SupportsReadOnlyConnections => true;
 
@@ -361,74 +417,111 @@ namespace RI.Framework.Data.SQLite
 		{
 			if (this.State != DatabaseState.Ready)
 			{
-				throw new InvalidOperationException("Cannot cleanup database when in state " + this.State + ".");
+				throw new InvalidOperationException("Cannot cleanup SQLite database when in state \"" + this.State + "\".");
 			}
 
-			this.Log(LogLevel.Information, "Cleaning up database");
-
+			this.Log(LogLevel.Debug, "Begin upgrading database version: {0} -> {1}", this.CurrentVersion, this.MaxVersion);
 			try
 			{
-				//TODO: Internal create connection
-				using (SQLiteConnection connection = this.CreateConnection(true))
+				using (SQLiteConnection connection = this.CreateConnectionInternal(false, true))
 				{
-					connection.Open();
-
-					foreach (string commandText in this.CachedCleanupScriptChain)
+					using (SQLiteTransaction transaction = connection.BeginTransaction())
 					{
-						string usedCommandText = this.OnPrepareScript(commandText);
-						if (usedCommandText == null)
+						foreach (string commandText in this.CachedCleanupScriptChain)
 						{
-							continue;
+							if (commandText.IsNullOrEmpty())
+							{
+								continue;
+							}
+
+							string usedCommandText = this.OnPrepareScript(commandText);
+							if (usedCommandText == null)
+							{
+								continue;
+							}
+
+							using (SQLiteCommand command = connection.CreateCommand())
+							{
+								command.CommandText = usedCommandText;
+								command.CommandType = CommandType.Text;
+
+								this.OnExecuteScript(usedCommandText);
+								command.ExecuteNonQuery();
+							}
 						}
 
-						using (SQLiteCommand command = connection.CreateCommand())
-						{
-							command.CommandText = usedCommandText;
-							command.CommandType = CommandType.Text;
-
-							this.OnExecuteScript(usedCommandText);
-							command.ExecuteScalar();
-						}
+						transaction.Commit();
 					}
-
-					connection.Close();
 				}
 			}
 			catch (SQLiteException exception)
 			{
 				this.Log(LogLevel.Error, "SQLite exception while detecting database version: {0}", exception.ToDetailedString());
 				this.SetState(DatabaseState.DamagedOrInvalid);
+				this.CurrentVersion = 0;
 			}
+			this.Log(LogLevel.Debug, "Finished upgrading database version: {0} -> {1}", this.CurrentVersion, this.MaxVersion);
 		}
-		
+
+		/// <inheritdoc />
+		public void CloseConnections ()
+		{
+			if (this.State != DatabaseState.Ready)
+			{
+				throw new InvalidOperationException("Cannot close SQLite connections when in state \"" + this.State + "\".");
+			}
+
+			throw new NotSupportedException("The SQLite database manager does not support connection tracking.");
+		}
+
 		/// <inheritdoc />
 		DbConnection IDatabaseManager.CreateConnection (bool readOnly) => this.CreateConnection(readOnly);
 
 		/// <inheritdoc />
-		void IDisposable.Dispose ()
-		{
-			this.UnloadDatabase();
-		}
+		void IDisposable.Dispose () => this.UnloadDatabase();
 
 		/// <inheritdoc />
 		public void InitializeDatabase ()
 		{
-			bool databaseFileExists = this.CachedDatabaseFile.Exists;
+			bool databaseFileExists = this.DatabaseFile.Exists;
 
-			int firstUpgradeIndex = this.UpgradeScriptChain.FindIndex(x => x != null);
-			int lastUpgradeIndex = this.UpgradeScriptChain.FindLastIndex(x => x != null);
+			if (this.VersionScriptChain.Any(x => x == null))
+			{
+				throw new InvalidOperationException("Script in SQLite version script chain is null.");
+			}
 
-			//TODO: Check and throw min/max versions
-			//TODO: Check and throw version script chain (no nulls, min one)
+			if (this.VersionScriptChain.Any(x => x.IsEmpty()))
+			{
+				throw new InvalidOperationException("Script in SQLite version script chain is empty.");
+			}
+
+			if (this.VersionScriptChain.Count == 0)
+			{
+				throw new InvalidOperationException("SQLite version script chain has no scripts.");
+			}
+
+			if (this.UpgradeScriptChain.Any(x => x.IsEmpty()))
+			{
+				throw new InvalidOperationException("Script in SQLite upgrade script chain is empty.");
+			}
+
+			int firstUpgradeIndex = this.CachedUpgradeScriptChain.FindIndex(x => x != null);
+			int lastUpgradeIndex = this.CachedUpgradeScriptChain.FindLastIndex(x => x != null);
+			//TODO: Check for non-continuity
 
 			if (this.State != DatabaseState.Uninitialized)
 			{
 				this.UnloadDatabase();
 			}
 
+			this.InitialVersion = 0;
+			this.InitialNew = false;
+			this.InitialOld = false;
+
 			this.CurrentVersion = 0;
-			this.MinVersion = firstUpgradeIndex;
-			this.MaxVersion = lastUpgradeIndex + 1;
+
+			this.MinVersion = 0;
+			this.MaxVersion = 0;
 
 			this.CachedConnectionString = new SQLiteConnectionStringBuilder(this.ConnectionString);
 			this.CachedDatabaseFile = this.DatabaseFile.Clone();
@@ -446,12 +539,10 @@ namespace RI.Framework.Data.SQLite
 			{
 				try
 				{
-					//TODO: Internal create connection
-					using (SQLiteConnection connection = this.CreateConnection(true))
+					using (SQLiteConnection connection = this.CreateConnectionInternal(true, true))
 					{
-						connection.Open();
-
 						int result = 0;
+
 						foreach (string commandText in this.CachedVersionScriptChain)
 						{
 							string usedCommandText = this.OnPrepareScript(commandText);
@@ -467,6 +558,8 @@ namespace RI.Framework.Data.SQLite
 
 								this.OnExecuteScript(usedCommandText);
 								object scalarResult = command.ExecuteScalar();
+
+								//TODO: Log
 
 								if (scalarResult is int)
 								{
@@ -495,32 +588,47 @@ namespace RI.Framework.Data.SQLite
 								break;
 							}
 						}
-						this.CurrentVersion = result;
 
-						connection.Close();
+						this.CurrentVersion = result;
 					}
 				}
 				catch (SQLiteException exception)
 				{
 					this.Log(LogLevel.Error, "SQLite exception while detecting database version: {0}", exception.ToDetailedString());
 					this.SetState(DatabaseState.DamagedOrInvalid);
+					this.CurrentVersion = 0;
 				}
 			}
 			this.Log(LogLevel.Debug, "Finished detecting database version: {0}", this.CurrentVersion);
 
 			if (this.State == DatabaseState.Uninitialized)
 			{
-				if (this.CurrentVersion < this.MinVersion)
+				if ((firstUpgradeIndex != -1) && (lastUpgradeIndex != -1))
+				{
+					this.MinVersion = firstUpgradeIndex;
+					this.MaxVersion = lastUpgradeIndex + 1;
+				}
+				else
+				{
+					this.MinVersion = this.CurrentVersion;
+					this.MaxVersion = this.CurrentVersion;
+				}
+
+				if (!databaseFileExists)
+				{
+					this.SetState(DatabaseState.New);
+				}
+				else if (this.CurrentVersion == 0)
+				{
+					this.SetState(DatabaseState.DamagedOrInvalid);
+				}
+				else if (this.CurrentVersion < this.MinVersion)
 				{
 					this.SetState(DatabaseState.TooOld);
 				}
 				else if (this.CurrentVersion > this.MaxVersion)
 				{
 					this.SetState(DatabaseState.TooNew);
-				}
-				else if (this.CurrentVersion == 0)
-				{
-					this.SetState(DatabaseState.New);
 				}
 				else if (this.CurrentVersion < this.MaxVersion)
 				{
@@ -531,11 +639,17 @@ namespace RI.Framework.Data.SQLite
 					this.SetState(DatabaseState.Ready);
 				}
 			}
+
+			this.InitialVersion = this.CurrentVersion;
+			this.InitialNew = this.State == DatabaseState.New;
+			this.InitialOld = this.State == DatabaseState.Old;
 		}
 
 		/// <inheritdoc />
 		public void UnloadDatabase ()
 		{
+			//TODO: Log
+
 			this.SetState(DatabaseState.Uninitialized);
 		}
 
@@ -544,51 +658,53 @@ namespace RI.Framework.Data.SQLite
 		{
 			if ((this.State != DatabaseState.New) && (this.State != DatabaseState.Old))
 			{
-				throw new InvalidOperationException("Cannot upgrade database when in state " + this.State + ".");
+				throw new InvalidOperationException("Cannot upgrade SQLite database when in state \"" + this.State + "\".");
 			}
 
-			bool databaseFileCreated = this.DatabaseFile.CreateIfNotExist();
+			bool databaseFileCreated = this.CachedDatabaseFile.CreateIfNotExist();
 			if (databaseFileCreated)
 			{
-				this.Log(LogLevel.Information, "Database file created because it did not exist: {0}", this.DatabaseFile);
+				this.Log(LogLevel.Information, "Database file created because it did not exist: {0}", this.CachedDatabaseFile);
 			}
 
 			this.Log(LogLevel.Debug, "Begin upgrading database version: {0} -> {1}", this.CurrentVersion, this.MaxVersion);
 			try
 			{
-				//TODO: Internal create connection
-				using (SQLiteConnection connection = this.CreateConnection(false))
+				using (SQLiteConnection connection = this.CreateConnectionInternal(false, true))
 				{
-					connection.Open();
-
-					for (int i1 = this.CurrentVersion; i1 < this.MaxVersion; i1++)
+					using (SQLiteTransaction transaction = connection.BeginTransaction())
 					{
-						this.Log(LogLevel.Debug, "Upgrading database version: {0} -> {1}", i1, i1 + 1);
-
-						string commandText = this.UpgradeScriptChain[i1];
-						string usedCommandText = this.OnPrepareScript(commandText);
-						if (usedCommandText == null)
+						for (int i1 = this.CurrentVersion; i1 < this.MaxVersion; i1++)
 						{
-							continue;
+							this.Log(LogLevel.Debug, "Upgrading database version: {0} -> {1}", i1, i1 + 1);
+
+							string commandText = this.CachedUpgradeScriptChain[i1];
+							string usedCommandText = this.OnPrepareScript(commandText);
+							if (usedCommandText == null)
+							{
+								continue;
+							}
+
+							using (SQLiteCommand command = connection.CreateCommand())
+							{
+								command.CommandText = usedCommandText;
+								command.CommandType = CommandType.Text;
+
+								this.OnExecuteScript(usedCommandText);
+								command.ExecuteNonQuery();
+							}
 						}
 
-						using (SQLiteCommand command = connection.CreateCommand())
-						{
-							command.CommandText = usedCommandText;
-							command.CommandType = CommandType.Text;
-
-							this.OnExecuteScript(usedCommandText);
-							command.ExecuteNonQuery();
-						}
+						transaction.Commit();
+						this.CurrentVersion = this.MaxVersion;
 					}
-
-					connection.Close();
 				}
 			}
 			catch (SQLiteException exception)
 			{
 				this.Log(LogLevel.Error, "SQLite exception while upgrading database version: {0}", exception.ToDetailedString());
 				this.SetState(DatabaseState.DamagedOrInvalid);
+				this.CurrentVersion = 0;
 			}
 			this.Log(LogLevel.Debug, "Finished upgrading database version: {0} -> {1}", this.CurrentVersion, this.MaxVersion);
 
