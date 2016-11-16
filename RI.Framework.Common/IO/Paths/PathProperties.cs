@@ -103,6 +103,26 @@ namespace RI.Framework.IO.Paths
 		///     Analyzes a path and returns the results as an instance of <see cref="PathProperties" />.
 		/// </summary>
 		/// <param name="path"> The path to analyze. </param>
+		/// <returns>
+		///     The instance of <see cref="PathProperties" /> which describes the path.
+		/// </returns>
+		/// <remarks>
+		///     <note type="note">
+		///         Invalid paths will return a valid <see cref="PathProperties" /> instance with the <see cref="Error" /> property set accordingly.
+		///     </note>
+		///     <para>
+		///         Using this method, wildcards and relative paths are allowed and the type of the path is assumed to be of the same type as used on the current system.
+		///     </para>
+		/// </remarks>
+		public static PathProperties FromPath (string path)
+		{
+			return PathProperties.FromPath(path, true, true, PathProperties.GetSystemType());
+		}
+
+		/// <summary>
+		///     Analyzes a path and returns the results as an instance of <see cref="PathProperties" />.
+		/// </summary>
+		/// <param name="path"> The path to analyze. </param>
 		/// <param name="allowWildcards"> Specifies whether wildcards are allowed or not. </param>
 		/// <param name="allowRelatives"> Specifies whether relative directory names are allowed or not. </param>
 		/// <param name="assumedType"> Optionally specifies the type of the path which is assumed if the type cannot be clearly determined through analysis of <paramref name="path" />. </param>
@@ -119,7 +139,6 @@ namespace RI.Framework.IO.Paths
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="assumedType" /> is <see cref="PathType.Invalid" />. </exception>
-		/// TODO: Add overloads
 		public static PathProperties FromPath (string path, bool allowWildcards, bool allowRelatives, PathType? assumedType)
 		{
 			if (assumedType.HasValue)

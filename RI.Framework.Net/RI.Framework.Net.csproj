@@ -69,6 +69,7 @@
     <Compile Include="Services\Messaging\Handlers\_NamespaceDoc.cs" />
     <Compile Include="Services\Messaging\IMessage.cs" />
     <Compile Include="Services\Messaging\IMessageDispatcher.cs" />
+    <Compile Include="Services\Messaging\IMessageExtensions.cs" />
     <Compile Include="Services\Messaging\IMessageReceiver.cs" />
     <Compile Include="Services\Messaging\IMessageService.cs" />
     <Compile Include="Services\Messaging\Message.cs" />

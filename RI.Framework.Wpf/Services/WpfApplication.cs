@@ -16,7 +16,6 @@ namespace RI.Framework.Services
 	/// This default WPF application object inherits from <see cref="Application"/> and adds some common desktop application functionality such as handling of power events, logoff, sleep, etc.
 	/// </para>
 	/// </remarks>
-	/// TODO: Handle events such as power-off, low-battery, logoff, sleep, etc.
 	[Export]
 	public class WpfApplication : Application
 	{

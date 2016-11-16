@@ -27,6 +27,7 @@ namespace RI.Framework.Collections.Linq
 	/// TODO: Split things not in Linq
 	/// TODO: Only compile for Unity
 	/// TODO: Rename to DirectLINQ
+	/// TODO: Ensure not used outside Unity, ensure LINQ not used in Unity
 	public static class IEnumerableExtensions
 	{
 		#region Static Methods

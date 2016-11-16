@@ -73,7 +73,7 @@ namespace RI.Framework.IO.Paths
 		/// <param name="path"> The path. </param>
 		/// <remarks>
 		///     <para>
-		///         Using this constructor, wildcards and relative paths are allowed and the type of the path is assumed to be of the same type as used on the current system
+		///         Using this constructor, wildcards and relative paths are allowed and the type of the path is assumed to be of the same type as used on the current system.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="path" /> is null. </exception>
@@ -107,7 +107,6 @@ namespace RI.Framework.IO.Paths
 		/// </summary>
 		/// <param name="path"> The <see cref="PathProperties" /> object which describes the path. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="path" /> is null. </exception>
-		/// TODO: Add overloads
 		public FilePath (PathProperties path)
 			: base(path)
 		{

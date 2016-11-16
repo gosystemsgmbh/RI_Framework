@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Text;
 
 using RI.Framework.IO.Paths;
@@ -13,12 +14,15 @@ namespace RI.Framework.Utilities.Windows
 	/// <summary>
 	///     Provides utilities for working with the Windows shell environment.
 	/// </summary>
-	/// TODO: Return Process objects for ExecuteXXXCommand
-	/// TODO: Elevated option for OpenExplorer, OpenFile, OpenFolder
-	/// TODO: OpenCommandPrompt
 	public static class WindowsShell
 	{
 		#region Constants
+
+		private static readonly FilePath CommandPromptArguments = new FilePath("/k \"cd /d {0}\"");
+
+		private static readonly FilePath CommandPromptExecutable = new FilePath("cmd.exe");
+
+		private static readonly string ElevatedVerb = new FilePath("runas");
 
 		private static readonly FilePath ExplorerExecutable = new FilePath("explorer.exe");
 
@@ -38,46 +42,18 @@ namespace RI.Framework.Utilities.Windows
 		/// </summary>
 		/// <param name="command"> The command to execute. </param>
 		/// <param name="arguments"> The arguments. Can be null or an empty string if not used. </param>
-		/// <param name="output"> Returns the string which was the output of the console command. </param>
-		/// <returns>
-		///     true if the command could be executed successfully, false otherwise.
-		/// </returns>
-		/// <remarks>
-		///     <para>
-		///         This method does not return until the command finished executing.
-		///     </para>
-		///     <para>
-		///         Environment variables will be resolved for <paramref name="command" /> and <paramref name="arguments" />.
-		///     </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="command" /> is null. </exception>
-		/// <exception cref="EmptyStringArgumentException"> <paramref name="command" /> is an empty string. </exception>
-		public static bool ExecuteConsoleCommand (string command, string arguments, out string output)
-		{
-			return WindowsShell.ExecuteConsoleCommand(command, arguments, null, out output);
-		}
-
-		/// <summary>
-		///     Executes a console command.
-		/// </summary>
-		/// <param name="command"> The command to execute. </param>
-		/// <param name="arguments"> The arguments. Can be null or an empty string if not used. </param>
 		/// <param name="workingDirectory"> The used working directory. Can be null to use the current directory. </param>
-		/// <param name="output"> Returns the string which was the output of the console command (null if the command failed to execute, an empty string if there was no output). </param>
 		/// <returns>
-		///     true if the command could be executed successfully, false otherwise.
+		///     The <see cref="Process" /> if the command could be started successfully, null otherwise.
 		/// </returns>
 		/// <remarks>
-		///     <para>
-		///         This method does not return until the command finished executing.
-		///     </para>
 		///     <para>
 		///         Environment variables will be resolved for <paramref name="command" />, <paramref name="arguments" />, and <paramref name="workingDirectory" />.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="command" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="command" /> is an empty string. </exception>
-		public static bool ExecuteConsoleCommand (string command, string arguments, DirectoryPath workingDirectory, out string output)
+		public static Process ExecuteConsoleCommand (string command, string arguments, DirectoryPath workingDirectory)
 		{
 			if (command == null)
 			{
@@ -99,7 +75,7 @@ namespace RI.Framework.Utilities.Windows
 
 			ProcessStartInfo startInfo = new ProcessStartInfo(command, arguments);
 			startInfo.CreateNoWindow = true;
-			startInfo.ErrorDialog = true;
+			startInfo.ErrorDialog = false;
 			startInfo.UseShellExecute = false;
 			startInfo.WindowStyle = ProcessWindowStyle.Hidden;
 			startInfo.WorkingDirectory = directory;
@@ -108,93 +84,12 @@ namespace RI.Framework.Utilities.Windows
 
 			try
 			{
-				Process process = Process.Start(startInfo);
-				output = process?.StandardOutput?.ReadToEnd();
-				process?.WaitForExit();
+				return Process.Start(startInfo);
 			}
 			catch
 			{
-				output = null;
+				return null;
 			}
-
-			return output != null;
-		}
-
-		/// <summary>
-		///     Executes a shell command.
-		/// </summary>
-		/// <param name="command"> The command, program, file, or folder to execute. </param>
-		/// <param name="arguments"> The arguments. Can be null or an empty string if not used. </param>
-		/// <param name="verb"> The verb. Can be null or an empty string if not used. </param>
-		/// <returns>
-		///     true if the command could be executed successfully, false otherwise.
-		/// </returns>
-		/// <remarks>
-		///     <para>
-		///         This method returns immediately after the command started executing.
-		///         It is not waited until the command finished executing.
-		///     </para>
-		///     <para>
-		///         Environment variables will be resolved for <paramref name="command" />, <paramref name="arguments" />, and <paramref name="verb" />.
-		///     </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="command" /> is null. </exception>
-		/// <exception cref="EmptyStringArgumentException"> <paramref name="command" /> is an empty string. </exception>
-		public static bool ExecuteShellCommand (string command, string arguments, string verb)
-		{
-			return WindowsShell.ExecuteShellCommand(command, arguments, verb, null, ProcessWindowStyle.Normal);
-		}
-
-		/// <summary>
-		///     Executes a shell command.
-		/// </summary>
-		/// <param name="command"> The command, program, file, or folder to execute. </param>
-		/// <param name="arguments"> The arguments. Can be null or an empty string if not used. </param>
-		/// <param name="verb"> The verb. Can be null or an empty string if not used. </param>
-		/// <param name="workingDirectory"> The used working directory. Can be null to use the current directory. </param>
-		/// <returns>
-		///     true if the command could be executed successfully, false otherwise.
-		/// </returns>
-		/// <remarks>
-		///     <para>
-		///         This method returns immediately after the command started executing.
-		///         It is not waited until the command finished executing.
-		///     </para>
-		///     <para>
-		///         Environment variables will be resolved for <paramref name="command" />, <paramref name="arguments" />, <paramref name="verb" />, and <paramref name="workingDirectory" />.
-		///     </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="command" /> is null. </exception>
-		/// <exception cref="EmptyStringArgumentException"> <paramref name="command" /> is an empty string. </exception>
-		public static bool ExecuteShellCommand (string command, string arguments, string verb, DirectoryPath workingDirectory)
-		{
-			return WindowsShell.ExecuteShellCommand(command, arguments, verb, workingDirectory, ProcessWindowStyle.Normal);
-		}
-
-		/// <summary>
-		///     Executes a shell command.
-		/// </summary>
-		/// <param name="command"> The command, program, file, or folder to execute. </param>
-		/// <param name="arguments"> The arguments. Can be null or an empty string if not used. </param>
-		/// <param name="verb"> The verb. Can be null or an empty string if not used. </param>
-		/// <param name="windowStyle"> The window style of the opened program window (if any). </param>
-		/// <returns>
-		///     true if the command could be executed successfully, false otherwise.
-		/// </returns>
-		/// <remarks>
-		///     <para>
-		///         This method returns immediately after the command started executing.
-		///         It is not waited until the command finished executing.
-		///     </para>
-		///     <para>
-		///         Environment variables will be resolved for <paramref name="command" />, <paramref name="arguments" />, and <paramref name="verb" />.
-		///     </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="command" /> is null. </exception>
-		/// <exception cref="EmptyStringArgumentException"> <paramref name="command" /> is an empty string. </exception>
-		public static bool ExecuteShellCommand (string command, string arguments, string verb, ProcessWindowStyle windowStyle)
-		{
-			return WindowsShell.ExecuteShellCommand(command, arguments, verb, null, windowStyle);
 		}
 
 		/// <summary>
@@ -206,20 +101,16 @@ namespace RI.Framework.Utilities.Windows
 		/// <param name="workingDirectory"> The used working directory. Can be null to use the current directory. </param>
 		/// <param name="windowStyle"> The window style of the opened program window (if any). </param>
 		/// <returns>
-		///     true if the command could be executed successfully, false otherwise.
+		///     The <see cref="Process" /> if the command could be started successfully, null otherwise.
 		/// </returns>
 		/// <remarks>
-		///     <para>
-		///         This method returns immediately after the command started executing.
-		///         It is not waited until the command finished executing.
-		///     </para>
 		///     <para>
 		///         Environment variables will be resolved for <paramref name="command" />, <paramref name="arguments" />, <paramref name="verb" />, and <paramref name="workingDirectory" />.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="command" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="command" /> is an empty string. </exception>
-		public static bool ExecuteShellCommand (string command, string arguments, string verb, DirectoryPath workingDirectory, ProcessWindowStyle windowStyle)
+		public static Process ExecuteShellCommand (string command, string arguments, string verb, DirectoryPath workingDirectory, ProcessWindowStyle windowStyle)
 		{
 			if (command == null)
 			{
@@ -243,11 +134,65 @@ namespace RI.Framework.Utilities.Windows
 
 			ProcessStartInfo startInfo = new ProcessStartInfo(command, arguments);
 			startInfo.CreateNoWindow = false;
-			startInfo.ErrorDialog = true;
+			startInfo.ErrorDialog = false;
 			startInfo.UseShellExecute = true;
 			startInfo.WindowStyle = windowStyle;
 			startInfo.WorkingDirectory = directory;
 			startInfo.Verb = verb;
+
+			try
+			{
+				return Process.Start(startInfo);
+			}
+			catch
+			{
+				return null;
+			}
+		}
+
+		/// <summary>
+		///     Opens a command prompt.
+		/// </summary>
+		/// <returns>
+		///     true if the command prompt could be opened, false otherwise.
+		/// </returns>
+		public static bool OpenCommandPrompt ()
+		{
+			return WindowsShell.OpenCommandPrompt(null, false);
+		}
+
+		/// <summary>
+		///     Opens a command prompt.
+		/// </summary>
+		/// <param name="workingDirectory"> The used working directory. Can be null to use the current directory. </param>
+		/// <param name="elevated"> Specifies whether the command prompt should be opened with elevated privileges. </param>
+		/// <returns>
+		///     true if the command prompt could be opened, false otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         Environment variables will be resolved for <paramref name="workingDirectory" />.
+		///     </para>
+		/// </remarks>
+		public static bool OpenCommandPrompt (DirectoryPath workingDirectory, bool elevated)
+		{
+			workingDirectory = workingDirectory ?? DirectoryPath.GetCurrentDirectory();
+
+			string directory = Environment.ExpandEnvironmentVariables(workingDirectory);
+
+			string arguments = string.Format(CultureInfo.InvariantCulture, WindowsShell.CommandPromptArguments, directory);
+
+			ProcessStartInfo startInfo = new ProcessStartInfo(WindowsShell.CommandPromptExecutable, arguments);
+			startInfo.CreateNoWindow = false;
+			startInfo.ErrorDialog = false;
+			startInfo.UseShellExecute = true;
+			startInfo.WindowStyle = ProcessWindowStyle.Normal;
+			startInfo.WorkingDirectory = directory;
+
+			if (elevated)
+			{
+				startInfo.Verb = WindowsShell.ElevatedVerb;
+			}
 
 			try
 			{
@@ -269,17 +214,18 @@ namespace RI.Framework.Utilities.Windows
 		/// </returns>
 		public static bool OpenExplorer ()
 		{
-			return WindowsShell.OpenExplorer(ProcessWindowStyle.Normal);
+			return WindowsShell.OpenExplorer(ProcessWindowStyle.Normal, false);
 		}
 
 		/// <summary>
 		///     Opens the Windows Explorer.
 		/// </summary>
 		/// <param name="windowStyle"> The window style of the opened Windows Explorer window. </param>
+		/// <param name="elevated"> Specifies whether the Windows Explorer should be opened with elevated privileges. </param>
 		/// <returns>
 		///     true if the Windows Explorer could be opened, false otherwise.
 		/// </returns>
-		public static bool OpenExplorer (ProcessWindowStyle windowStyle)
+		public static bool OpenExplorer (ProcessWindowStyle windowStyle, bool elevated)
 		{
 			ProcessStartInfo startInfo = new ProcessStartInfo(WindowsShell.ExplorerExecutable);
 
@@ -288,6 +234,11 @@ namespace RI.Framework.Utilities.Windows
 			startInfo.UseShellExecute = true;
 			startInfo.WindowStyle = windowStyle;
 			startInfo.WorkingDirectory = Environment.CurrentDirectory;
+
+			if (elevated)
+			{
+				startInfo.Verb = WindowsShell.ElevatedVerb;
+			}
 
 			try
 			{
@@ -317,7 +268,7 @@ namespace RI.Framework.Utilities.Windows
 		/// <exception cref="InvalidPathArgumentException"> <paramref name="filePath" /> has wildcards. </exception>
 		public static bool OpenFile (FilePath filePath)
 		{
-			return WindowsShell.OpenFile(filePath, ProcessWindowStyle.Normal);
+			return WindowsShell.OpenFile(filePath, ProcessWindowStyle.Normal, false);
 		}
 
 		/// <summary>
@@ -325,6 +276,7 @@ namespace RI.Framework.Utilities.Windows
 		/// </summary>
 		/// <param name="filePath"> The file path to open. </param>
 		/// <param name="windowStyle"> The window style of the opened program window. </param>
+		/// <param name="elevated"> Specifies whether the file should be opened with elevated privileges. </param>
 		/// <returns>
 		///     true if the file could be opened, false otherwise.
 		/// </returns>
@@ -335,7 +287,7 @@ namespace RI.Framework.Utilities.Windows
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="filePath" /> is null. </exception>
 		/// <exception cref="InvalidPathArgumentException"> <paramref name="filePath" /> has wildcards. </exception>
-		public static bool OpenFile (FilePath filePath, ProcessWindowStyle windowStyle)
+		public static bool OpenFile (FilePath filePath, ProcessWindowStyle windowStyle, bool elevated)
 		{
 			if (filePath == null)
 			{
@@ -357,6 +309,11 @@ namespace RI.Framework.Utilities.Windows
 			startInfo.UseShellExecute = true;
 			startInfo.WindowStyle = windowStyle;
 			startInfo.WorkingDirectory = directory;
+
+			if (elevated)
+			{
+				startInfo.Verb = WindowsShell.ElevatedVerb;
+			}
 
 			try
 			{
@@ -386,7 +343,7 @@ namespace RI.Framework.Utilities.Windows
 		/// <exception cref="InvalidPathArgumentException"> <paramref name="folderPath" /> has wildcards. </exception>
 		public static bool OpenFolder (DirectoryPath folderPath)
 		{
-			return WindowsShell.OpenFolder(folderPath, ProcessWindowStyle.Normal);
+			return WindowsShell.OpenFolder(folderPath, ProcessWindowStyle.Normal, false);
 		}
 
 		/// <summary>
@@ -394,6 +351,7 @@ namespace RI.Framework.Utilities.Windows
 		/// </summary>
 		/// <param name="folderPath"> The folder path to open. </param>
 		/// <param name="windowStyle"> The window style of the opened Windows Explorer window. </param>
+		/// <param name="elevated"> Specifies whether the folder should be opened with elevated privileges. </param>
 		/// <returns>
 		///     true if the folder could be opened, false otherwise.
 		/// </returns>
@@ -404,7 +362,7 @@ namespace RI.Framework.Utilities.Windows
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="folderPath" /> is null. </exception>
 		/// <exception cref="InvalidPathArgumentException"> <paramref name="folderPath" /> has wildcards. </exception>
-		public static bool OpenFolder (DirectoryPath folderPath, ProcessWindowStyle windowStyle)
+		public static bool OpenFolder (DirectoryPath folderPath, ProcessWindowStyle windowStyle, bool elevated)
 		{
 			if (folderPath == null)
 			{
@@ -425,6 +383,11 @@ namespace RI.Framework.Utilities.Windows
 			startInfo.UseShellExecute = true;
 			startInfo.WindowStyle = windowStyle;
 			startInfo.WorkingDirectory = directory;
+
+			if (elevated)
+			{
+				startInfo.Verb = WindowsShell.ElevatedVerb;
+			}
 
 			try
 			{

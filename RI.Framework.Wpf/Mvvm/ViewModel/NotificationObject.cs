@@ -8,7 +8,6 @@ namespace RI.Framework.Mvvm.ViewModel
 	/// <summary>
 	///     Implements a base class which can raise notifications about changing its state and data.
 	/// </summary>
-	/// TODO: Use PropertyChanging in Coommercium etc.
 	public abstract class NotificationObject : INotifyPropertyChanged, INotifyPropertyChanging
 	{
 		#region Virtuals

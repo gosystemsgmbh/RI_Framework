@@ -119,7 +119,6 @@ namespace RI.Framework.IO.Paths
 		/// </summary>
 		/// <param name="path"> The <see cref="PathProperties" /> object which describes the path. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="path" /> is null. </exception>
-		/// TODO: Add overloads
 		public DirectoryPath (PathProperties path)
 			: base(path)
 		{
