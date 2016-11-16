@@ -167,7 +167,8 @@ Services
 Data
 ----
 
- - (Common) Support for creating connections when IDatabaseManager has state Old
+ - (.NET) Support for creating connections when IDatabaseManager has state Old
+ - (.NET) Switch from strings in chains to actual chain objects
 
 
 Math

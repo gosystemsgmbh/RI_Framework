@@ -35,7 +35,13 @@
   - [ ] Make all enums serializable
   - [ ] Make all exceptions serializable
   - [ ] Check usage of IDisposable
-  - [ ] Do we log enough?
+  - [ ] Do we log correctly?
+	- [ ] Source must be this.GetType()Name
+	- [ ] ToString() overload and use for multi-instance objects
+	- [ ] Log often and everywhere weher applicable
+	- [ ] Private or protected log method
+	- [ ] Check fixed log levels
+	- [ ] Check correct null handling
   - [ ] Do all events use proper event handler and event args?
   - [ ] TODOs
 - [ ] Testing
