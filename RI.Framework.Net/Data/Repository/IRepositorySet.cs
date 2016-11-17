@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 
 
@@ -119,14 +118,6 @@ namespace RI.Framework.Data.Repository
 		/// <exception cref="ArgumentException"> <paramref name="filter" /> is an invalid filter object. </exception>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="pageIndex" /> or <paramref name="pageSize" /> is less than zero or <paramref name="pageIndex" /> points to a page which does not exist. </exception>
 		IEnumerable<T> GetFiltered (object filter, int pageIndex, int pageSize, out int entityCount, out int pageCount);
-
-		/// <summary>
-		///     Gets a query provider for querying the underlying repository context or database respectively for entities of this sets type.
-		/// </summary>
-		/// <returns>
-		///     The query provider which can be used to query the database for entities of this sets type.
-		/// </returns>
-		IQueryable<T> GetQuery ();
 
 		/// <summary>
 		///     Determines whether an entity has any pending changes.

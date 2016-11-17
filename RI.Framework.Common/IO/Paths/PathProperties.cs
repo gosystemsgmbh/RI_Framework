@@ -960,7 +960,7 @@ namespace RI.Framework.IO.Paths
 		///     Gets the original path.
 		/// </summary>
 		/// <value>
-		///     The original path as provided to <see cref="FromPath" />.
+		///     The original path.
 		/// </value>
 		public string PathOriginal { get; private set; }
 

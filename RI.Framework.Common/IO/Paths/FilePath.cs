@@ -92,7 +92,7 @@ namespace RI.Framework.IO.Paths
 		/// <param name="assumedType"> Optionally specifies the type of the path which is assumed if the type cannot be clearly determined through analysis of <paramref name="path" />. </param>
 		/// <remarks>
 		///     <para>
-		///         See <see cref="PathProperties.FromPath" /> for more details about the parameters, especially <paramref name="assumedType" />.
+		///         See <see cref="PathProperties.FromPath(string,bool,bool,PathType?)" /> for more details about the parameters, especially <paramref name="assumedType" />.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="path" /> is null. </exception>

@@ -139,7 +139,7 @@ namespace RI.Framework.Services.Messaging
 		/// </returns>
 		public T GetOrDefault<T>()
 		{
-			return this.GetOrDefault<T>(default(T));
+			return this.GetOrDefault(default(T));
 		}
 
 		/// <summary>
@@ -155,7 +155,7 @@ namespace RI.Framework.Services.Messaging
 		/// <exception cref="InvalidCastException"> The data item was found but could not be converted to type <typeparamref name="T" />. </exception>
 		public T GetOrDefault<T>(string name)
 		{
-			return this.GetOrDefault<T>(name, default(T));
+			return this.GetOrDefault(name, default(T));
 		}
 
 		/// <summary>

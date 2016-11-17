@@ -15,6 +15,7 @@
 - [ ] Cleanup
   - [X] Rename RI.Tools.Doc2Pdf to RI.Tools.Framework.Doc2Pdf
   - [X] Rename RI.Tools.VersionUpdater to RI.Tools.Framework.VersionUpdater
+  - [ ] Check wherther nested types really need to be nested
   - [ ] Exception throwing
     - [ ] Always use parameter names for argument exceptions
 	- [ ] Always provide message or at least parameter name (for argument exceptions only)
@@ -32,6 +33,7 @@
   - [ ] Make all exceptions serializable
   - [ ] Check usage of IDisposable
   - [ ] Do we log correctly?
+    - [ ] ISupportsLogging
     - [ ] Usage of LogLocator, including used methods
 	- [ ] Source must be this.GetType()Name
 	- [ ] ToString() overload and use for multi-instance objects
