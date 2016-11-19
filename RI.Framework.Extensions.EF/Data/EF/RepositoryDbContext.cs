@@ -19,12 +19,12 @@ using RI.Framework.Services.Logging;
 namespace RI.Framework.Data.EF
 {
 	/// <summary>
-	/// Implements the repository / unit-of-work pattern on top of an Entity Frameworks <see cref="DbContext"/>.
+	///     Implements the repository / unit-of-work pattern on top of an Entity Frameworks <see cref="DbContext" />.
 	/// </summary>
 	/// <remarks>
-	/// <para>
-	/// See <see cref="IRepositoryContext"/> and <see cref="DbContext"/> for more details.
-	/// </para>
+	///     <para>
+	///         See <see cref="IRepositoryContext" /> and <see cref="DbContext" /> for more details.
+	///     </para>
 	/// </remarks>
 	public class RepositoryDbContext : DbContext, IRepositoryContext
 	{
@@ -92,11 +92,11 @@ namespace RI.Framework.Data.EF
 		#region Instance Constructor/Destructor
 
 		/// <summary>
-		/// Creates a new instance of <see cref="RepositoryDbContext"/>.
+		///     Creates a new instance of <see cref="RepositoryDbContext" />.
 		/// </summary>
-		/// <param name="connection">The database connection to be used by the underlying <see cref="DbContext"/>.</param>
-		/// <param name="ownConnection">Specifies whether the underlying <see cref="DbContext"/> owns the connection or not.</param>
-		/// <exception cref="ArgumentNullException"><paramref name="connection"/> is null.</exception>
+		/// <param name="connection"> The database connection to be used by the underlying <see cref="DbContext" />. </param>
+		/// <param name="ownConnection"> Specifies whether the underlying <see cref="DbContext" /> owns the connection or not. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="connection" /> is null. </exception>
 		public RepositoryDbContext (DbConnection connection, bool ownConnection)
 			: base(connection, ownConnection)
 		{
@@ -125,23 +125,23 @@ namespace RI.Framework.Data.EF
 
 		#region Instance Properties/Indexer
 
-		private SetCollection Sets { get; set; }
-
 		/// <summary>
-		/// Gets or sets whether database logging is enabled or not.
+		///     Gets or sets whether database logging is enabled or not.
 		/// </summary>
 		/// <value>
-		/// true if database logging is enabled, false otherwise.
+		///     true if database logging is enabled, false otherwise.
 		/// </value>
 		/// <remarks>
-		/// <para>
-		/// The default value is true.
-		/// </para>
-		/// <para>
-		/// See <see cref="LogDatabase"/> for more details.
-		/// </para>
+		///     <para>
+		///         The default value is true.
+		///     </para>
+		///     <para>
+		///         See <see cref="LogDatabase" /> for more details.
+		///     </para>
 		/// </remarks>
 		public bool EnableDatabaseLogging { get; set; }
+
+		private SetCollection Sets { get; set; }
 
 		#endregion
 
@@ -150,7 +150,7 @@ namespace RI.Framework.Data.EF
 
 		#region Instance Methods
 
-		/// <inheritdoc cref="IRepositoryContext.GetSet{T}"/>
+		/// <inheritdoc cref="IRepositoryContext.GetSet{T}" />
 		public RepositoryDbSet<T> GetSet <T> () where T : class
 		{
 			Type entityType = typeof(T);
@@ -159,6 +159,21 @@ namespace RI.Framework.Data.EF
 				this.Sets.Add(this.CreateSet<T>());
 			}
 			return (RepositoryDbSet<T>)this.Sets[entityType];
+		}
+
+		internal IEntityValidation GetValidator <T> () where T : class
+		{
+			return this.GetValidator(typeof(T));
+		}
+
+		internal IEntityValidation GetValidator (Type entityType)
+		{
+			if (entityType == null)
+			{
+				throw new ArgumentNullException(nameof(entityType));
+			}
+
+			return RepositoryDbContext.GetValidator(this, entityType);
 		}
 
 		/// <summary>
@@ -186,23 +201,23 @@ namespace RI.Framework.Data.EF
 		#region Virtuals
 
 		/// <summary>
-		/// Called when a <see cref="RepositoryDbSet{T}"/> is required which does not yet exist.
+		///     Called when a <see cref="RepositoryDbSet{T}" /> is required which does not yet exist.
 		/// </summary>
-		/// <typeparam name="T">The type of entity the <see cref="RepositoryDbSet{T}"/> is required for.</typeparam>
+		/// <typeparam name="T"> The type of entity the <see cref="RepositoryDbSet{T}" /> is required for. </typeparam>
 		/// <returns>
-		/// The <see cref="RepositoryDbSet{T}"/> which manages entities of type <typeparamref name="T"/>.
+		///     The <see cref="RepositoryDbSet{T}" /> which manages entities of type <typeparamref name="T" />.
 		/// </returns>
 		/// <remarks>
-		/// <note type="important">
-		/// Do not call this method directly to obtain a set, use <see cref="GetSet{T}"/> instead.
-		/// THis method is only used for instantiating the corresponding sets.
-		/// </note>
-		/// <para>
-		/// A set is only created once and then cached, reused for each subsequent call of <see cref="GetSet{T}"/> as long as this repository is not disposed.
-		/// </para>
-		/// <para>
-		/// The default implementation creates a new instance of <see cref="RepositoryDbSet{T}"/>.
-		/// </para>
+		///     <note type="important">
+		///         Do not call this method directly to obtain a set, use <see cref="GetSet{T}" /> instead.
+		///         THis method is only used for instantiating the corresponding sets.
+		///     </note>
+		///     <para>
+		///         A set is only created once and then cached, reused for each subsequent call of <see cref="GetSet{T}" /> as long as this repository is not disposed.
+		///     </para>
+		///     <para>
+		///         The default implementation creates a new instance of <see cref="RepositoryDbSet{T}" />.
+		///     </para>
 		/// </remarks>
 		protected virtual RepositoryDbSet<T> CreateSet <T> ()
 			where T : class
@@ -211,22 +226,22 @@ namespace RI.Framework.Data.EF
 		}
 
 		/// <summary>
-		/// Called when the underlying <see cref="DbContext"/> issues log messages.
+		///     Called when the underlying <see cref="DbContext" /> issues log messages.
 		/// </summary>
-		/// <param name="message">The message to log.</param>
+		/// <param name="message"> The message to log. </param>
 		/// <remarks>
-		/// <para>
-		/// The message is not trimmed before passed to <see cref="LogDatabase"/>.
-		/// </para>
-		/// <para>
-		/// The messages coming from <see cref="DbContext"/> are mostly SQL commands sent to the database.
-		/// </para>
-		/// <para>
-		/// The database logging or <see cref="DbContext"/> logging respectively can be enabled/disabled using <see cref="EnableDatabaseLogging"/>.
-		/// </para>
-		/// <para>
-		/// The default implementation calls <see cref="Log"/> to log the message.
-		/// </para>
+		///     <para>
+		///         The message is not trimmed before passed to <see cref="LogDatabase" />.
+		///     </para>
+		///     <para>
+		///         The messages coming from <see cref="DbContext" /> are mostly SQL commands sent to the database.
+		///     </para>
+		///     <para>
+		///         The database logging or <see cref="DbContext" /> logging respectively can be enabled/disabled using <see cref="EnableDatabaseLogging" />.
+		///     </para>
+		///     <para>
+		///         The default implementation calls <see cref="Log" /> to log the message.
+		///     </para>
 		/// </remarks>
 		protected virtual void LogDatabase (string message)
 		{
@@ -234,14 +249,14 @@ namespace RI.Framework.Data.EF
 		}
 
 		/// <summary>
-		/// Called when the entity configuration is to be created for this repository.
+		///     Called when the entity configuration is to be created for this repository.
 		/// </summary>
-		/// <param name="configurations">The entity configuration registrar to be used.</param>
+		/// <param name="configurations"> The entity configuration registrar to be used. </param>
 		/// <remarks>
-		/// <note type="note">
-		/// The entity configuration is only created once for a certain type of repository.
-		/// It is cached and reused for subsequent instances of the same concrete <see cref="RepositoryDbContext"/> type.
-		/// </note>
+		///     <note type="note">
+		///         The entity configuration is only created once for a certain type of repository.
+		///         It is cached and reused for subsequent instances of the same concrete <see cref="RepositoryDbContext" /> type.
+		///     </note>
 		/// </remarks>
 		protected virtual void OnConfigurationCreating (ConfigurationRegistrar configurations)
 		{
@@ -249,14 +264,14 @@ namespace RI.Framework.Data.EF
 		}
 
 		/// <summary>
-		/// Called when the entity validation is to be created for this repository.
+		///     Called when the entity validation is to be created for this repository.
 		/// </summary>
-		/// <param name="validators">The entity validation registrar to be used.</param>
+		/// <param name="validators"> The entity validation registrar to be used. </param>
 		/// <remarks>
-		/// <note type="note">
-		/// The entity validation is only created once for a certain type of repository.
-		/// It is cached and reused for subsequent instances of the same concrete <see cref="RepositoryDbContext"/> type.
-		/// </note>
+		///     <note type="note">
+		///         The entity validation is only created once for a certain type of repository.
+		///         It is cached and reused for subsequent instances of the same concrete <see cref="RepositoryDbContext" /> type.
+		///     </note>
 		/// </remarks>
 		protected virtual void OnValidatorsCreating (ValidationRegistrar validators)
 		{

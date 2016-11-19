@@ -212,7 +212,6 @@ Services
 Data
 ----
 
- # (EF) RepositoryDbSet
  # (EF) Add support for IEntityConfiguration of registrar (through extension method)
 
  # (.NET) ISupportsDatabaseLogging

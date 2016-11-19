@@ -17,13 +17,13 @@ namespace RI.Framework.Data.EF
 		#region Static Methods
 
 		/// <summary>
-		/// Converts validation results to repository errors.
+		///     Converts validation results to repository errors.
 		/// </summary>
-		/// <param name="entityValidationResult">The validation results to convert.</param>
+		/// <param name="entityValidationResult"> The validation results to convert. </param>
 		/// <returns>
-		/// The repository errors represented by <paramref name="entityValidationResult"/> or null if no validation errors are defined.
+		///     The repository errors represented by <paramref name="entityValidationResult" /> or null if no validation errors are defined.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="entityValidationResult"/> is null.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="entityValidationResult" /> is null. </exception>
 		public static RepositorySetErrors ToRepositoryErrors (this DbEntityValidationResult entityValidationResult)
 		{
 			if (entityValidationResult == null)

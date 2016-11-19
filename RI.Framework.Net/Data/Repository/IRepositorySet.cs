@@ -114,9 +114,12 @@ namespace RI.Framework.Data.Repository
 		///     <note type="important">
 		///         The number of elements in the sequence is not necessarily <paramref name="pageSize" /> but guaranteed to be less or equal.
 		///     </note>
+		///     <note type="important">
+		///         The first page (of index zero) can always be retrieved, even if <paramref name="entityCount" /> or <paramref name="pageCount" /> is zero (resulting in returning an empty sequence).
+		///     </note>
 		/// </remarks>
 		/// <exception cref="ArgumentException"> <paramref name="filter" /> is an invalid filter object. </exception>
-		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="pageIndex" /> or <paramref name="pageSize" /> is less than zero or <paramref name="pageIndex" /> points to a page which does not exist. </exception>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="pageIndex" /> or <paramref name="pageSize" /> is less than zero, <paramref name="pageIndex" /> is not zero when <paramref name="pageSize" /> is zero, or <paramref name="pageIndex" /> points to a page which does not exist. </exception>
 		IEnumerable<T> GetFiltered (object filter, int pageIndex, int pageSize, out int entityCount, out int pageCount);
 
 		/// <summary>

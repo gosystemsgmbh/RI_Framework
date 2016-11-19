@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Validation;
+using System.Linq;
 
 using RI.Framework.Data.Repository;
 using RI.Framework.Services;
@@ -14,13 +15,13 @@ using RI.Framework.Services.Logging;
 namespace RI.Framework.Data.EF
 {
 	/// <summary>
-	/// Implements a repository set using an Entity Frameworks <see cref="DbSet{TEntity}"/>.
+	///     Implements a repository set using an Entity Frameworks <see cref="DbSet{TEntity}" />.
 	/// </summary>
 	/// <typeparam name="T"> The type of the entities which are represented by this repository set. </typeparam>
 	/// <remarks>
-	/// <para>
-	/// See <see cref="IRepositorySet{T}"/> and <see cref="DbSet{TEntity}"/> for more details.
-	/// </para>
+	///     <para>
+	///         See <see cref="IRepositorySet{T}" /> and <see cref="DbSet{TEntity}" /> for more details.
+	///     </para>
 	/// </remarks>
 	public class RepositoryDbSet <T> : IRepositoryDbSet, IRepositorySet<T>
 		where T : class
@@ -28,11 +29,11 @@ namespace RI.Framework.Data.EF
 		#region Instance Constructor/Destructor
 
 		/// <summary>
-		/// Creates a new instance of <see cref="RepositoryDbSet{T}"/>.
+		///     Creates a new instance of <see cref="RepositoryDbSet{T}" />.
 		/// </summary>
-		/// <param name="repository">The repository this repository set belongs to.</param>
-		/// <param name="set">The underlying Entity Framework <see cref="DbSet{TEntity}"/> used by this repository set.</param>
-		/// <exception cref="ArgumentNullException"><paramref name="repository"/> or <paramref name="set"/> is null.</exception>
+		/// <param name="repository"> The repository this repository set belongs to. </param>
+		/// <param name="set"> The underlying Entity Framework <see cref="DbSet{TEntity}" /> used by this repository set. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="repository" /> or <paramref name="set" /> is null. </exception>
 		public RepositoryDbSet (RepositoryDbContext repository, DbSet<T> set)
 		{
 			if (set == null)
@@ -57,18 +58,18 @@ namespace RI.Framework.Data.EF
 		#region Instance Properties/Indexer
 
 		/// <summary>
-		/// Gets the repository this repository set belongs to.
+		///     Gets the repository this repository set belongs to.
 		/// </summary>
 		/// <value>
-		/// The repository this repository set belongs to.
+		///     The repository this repository set belongs to.
 		/// </value>
 		public RepositoryDbContext Repository { get; private set; }
 
 		/// <summary>
-		/// Gets the underlying Entity Framework <see cref="DbSet{TEntity}"/> used by this repository set.
+		///     Gets the underlying Entity Framework <see cref="DbSet{TEntity}" /> used by this repository set.
 		/// </summary>
 		/// <value>
-		/// The underlying Entity Framework <see cref="DbSet{TEntity}"/> used by this repository set.
+		///     The underlying Entity Framework <see cref="DbSet{TEntity}" /> used by this repository set.
 		/// </value>
 		public DbSet<T> Set { get; private set; }
 
@@ -116,49 +117,74 @@ namespace RI.Framework.Data.EF
 		/// <inheritdoc />
 		public void Add (T entity)
 		{
-			throw new NotImplementedException();
+			if (entity == null)
+			{
+				throw new ArgumentNullException(nameof(entity));
+			}
+
+			if (!this.CanAdd(entity))
+			{
+				throw new InvalidOperationException("The entity cannot be added.");
+			}
+
+			this.Set.Add(entity);
 		}
 
 		/// <inheritdoc />
 		public virtual bool CanAdd (T entity)
 		{
-			throw new NotImplementedException();
+			return (this.Repository.GetValidator<T>()?.CanAdd(this.Repository, entity)).GetValueOrDefault(true);
 		}
 
 		/// <inheritdoc />
 		public virtual bool CanCreate ()
 		{
-			throw new NotImplementedException();
+			return (this.Repository.GetValidator<T>()?.CanCreate(this.Repository)).GetValueOrDefault(true);
 		}
 
 		/// <inheritdoc />
 		public virtual bool CanDelete (T entity)
 		{
-			throw new NotImplementedException();
+			return (this.Repository.GetValidator<T>()?.CanDelete(this.Repository, this.Repository.Entry(entity))).GetValueOrDefault(true);
 		}
 
 		/// <inheritdoc />
 		public virtual bool CanModify (T entity)
 		{
-			throw new NotImplementedException();
+			return (this.Repository.GetValidator<T>()?.CanModify(this.Repository, this.Repository.Entry(entity))).GetValueOrDefault(true);
 		}
 
 		/// <inheritdoc />
 		public virtual bool CanReload (T entity)
 		{
-			throw new NotImplementedException();
+			return (this.Repository.GetValidator<T>()?.CanReload(this.Repository, this.Repository.Entry(entity))).GetValueOrDefault(true);
 		}
 
 		/// <inheritdoc />
-		public virtual T Create ()
+		public T Create ()
 		{
-			throw new NotImplementedException();
+			if (!this.CanCreate())
+			{
+				throw new InvalidOperationException("The entity cannot be created.");
+			}
+
+			return this.Set.Create();
 		}
 
 		/// <inheritdoc />
 		public void Delete (T entity)
 		{
-			throw new NotImplementedException();
+			if (entity == null)
+			{
+				throw new ArgumentNullException(nameof(entity));
+			}
+
+			if (!this.CanDelete(entity))
+			{
+				throw new InvalidOperationException("The entity cannot be deleted.");
+			}
+
+			this.Set.Remove(entity);
 		}
 
 		/// <inheritdoc />
@@ -170,7 +196,33 @@ namespace RI.Framework.Data.EF
 		/// <inheritdoc />
 		public virtual IEnumerable<T> GetFiltered (object filter, int pageIndex, int pageSize, out int entityCount, out int pageCount)
 		{
-			throw new NotImplementedException();
+			if (pageIndex < 0)
+			{
+				throw new ArgumentOutOfRangeException(nameof(pageIndex));
+			}
+
+			if (pageSize < 0)
+			{
+				throw new ArgumentOutOfRangeException(nameof(pageSize));
+			}
+
+			if ((pageSize == 0) && (pageIndex != 0))
+			{
+				throw new ArgumentOutOfRangeException(nameof(pageSize));
+			}
+
+			entityCount = this.Set.Count();
+			pageCount = ((pageSize == 0) || (entityCount == 0)) ? 1 : ((entityCount / pageSize) + (((entityCount % pageSize) == 0) ? 0 : 1));
+
+			if ((pageIndex != 0) && (pageIndex >= pageCount))
+			{
+				throw new ArgumentOutOfRangeException(nameof(pageIndex));
+			}
+
+			int offset = pageIndex * pageSize;
+
+			IQueryable<T> queryable = (filter as IRepositoryDbSetFilter<T>)?.Filter(this) ?? this.Set;
+			return queryable.Skip(offset).Take(pageSize);
 		}
 
 		/// <inheritdoc />
