@@ -134,7 +134,7 @@ I/O
 
  - (Common) EndianessConverter
 
- + (Common) INI reader, writer, document
+ # (Common) INI reader, writer, document
  - (Common) CSV reader, writer, document
  - (Common) ZIP reader, writer, document
 
@@ -165,19 +165,20 @@ Composition
 Services
 --------
 
+ * (.NET) Bootstrapper: Move common Bootstrapper stuff into IApplicationBootstrapper
+ + (Unity) Bootstrapper: More fine-grained control over default services
+
  # (Common) ServiceLocator: Allow resolving of multiple instances (also update ServiceLocatorDbDependencyResolver)
 
  - (WPF) WpfApplication: Handle power events using SystemEvents.PowerModeChanged
  - (WPF) WpfApplication: Handle user switching using SystemEvents.SessionSwitch
-
- + (Unity) Bootstrapper: More fine-grained control over default services
-
+ 
  # (Common) Logging: Fatal log level
  # (Common) Logging: One-file-per-day option for DirectoryLogWriter
  # (Common) Logging: LogFilter
  # (Common) Logging: Locking for all LogWriters
  - (Common) Logging: FileLogWriter
- - (.NET) Logging: ConsoleLogWriter
+ - (Common) Logging: ConsoleLogWriter
 
  + (Unity) Dispatcher: Pool for dispatcher operations?
  + (Unity) Dispatcher: Timeout for operations
@@ -194,7 +195,6 @@ Services
 
  - (WPF) AvalonDockRegionAdapter
 
- - (.NET) Move common Bootstrapper stuff into IApplicationBootstrapper
  - (WinForms) WinFormsBootstrapper (copy from WpfBootstrapper)
  - (WinForms) Regions (WinFormsRegionAdapterBase, WinFormsRegionAdapter)
  - (WinForms) Messaging (WinFormsMessageDispatcher, IWinFormsMessage, WinFormsMessage)
@@ -212,11 +212,20 @@ Services
 Data
 ----
 
- - (EF) RepositoryDbContext etc.
+ # (EF) RepositoryDbSet
+ # (EF) Add support for IEntityConfiguration of registrar (through extension method)
 
- - (.NET) Support for creating connections when IDatabaseManager has state Old
+ # (.NET) ISupportsDatabaseLogging
+ * (.NET) IRepositorySet: Add more GetFiltered overloads
+ * (.NET) IRepositorySet: Add entity and property descriptions functionality
+ - (.NET) IRepositoryContext: Add GetChanges method (return RepositoryContextChanges type)
+ - (.NET) IRepositoryContext: Add GetErrors method (return RepositoryContextErrors type)
 
- - (.NET) Switch from strings in chains to actual chain objects
+ # (SQLite) Add more collations and functions
+ # (SQLite) SQLiteDatabaseManager: Move script chains to IDatabaseManager
+
+ - (.NET) IDatabaseManager: Support for creating connections when state is Old
+ - (.NET) IDatabaseManager: Switch from strings in chains to actual chain objects
 
 
 Math

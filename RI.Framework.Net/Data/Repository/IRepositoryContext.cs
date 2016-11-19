@@ -24,7 +24,7 @@ namespace RI.Framework.Data.Repository
 	public interface IRepositoryContext : IDisposable
 	{
 		/// <summary>
-		///     Commits all pending changes and disposes the repository context.
+		///     Commits all pending changes since the last <see cref="SaveChanges" /> and disposes the repository context.
 		/// </summary>
 		/// <exception cref="ObjectDisposedException"> The repository context is disposed. </exception>
 		void Commit ();
@@ -59,21 +59,10 @@ namespace RI.Framework.Data.Repository
 		bool HasErrors ();
 
 		/// <summary>
-		///     Rolls back all changes since the last <see cref="SaveChanges" /> and disposes the repository context.
+		///     Rolls back all pending changes since the last <see cref="SaveChanges" /> and disposes the repository context.
 		/// </summary>
 		/// <exception cref="ObjectDisposedException"> The repository context is disposed. </exception>
 		void Rollback ();
-
-		/// <summary>
-		///     Performs a rollback of all entities which have invalid data without disposing the repository context.
-		/// </summary>
-		/// <remarks>
-		///     <para>
-		///         There will be no more validation errors afterwards.
-		///     </para>
-		/// </remarks>
-		/// <exception cref="ObjectDisposedException"> The repository context is disposed. </exception>
-		void RollbackErrors ();
 
 		/// <summary>
 		///     Saves all pending changes of all entities without disposing the repository context.

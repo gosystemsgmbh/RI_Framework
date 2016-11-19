@@ -55,7 +55,7 @@
     <Compile Include="Data\Database\_NamespaceDoc.cs" />
     <Compile Include="Data\Database\IDatabaseManager.cs" />
     <Compile Include="Data\Repository\IRepositoryContext.cs" />
-    <Compile Include="Data\Repository\RepositoryErrors.cs" />
+    <Compile Include="Data\Repository\RepositorySetErrors.cs" />
     <Compile Include="Data\Repository\IRepositorySet.cs" />
     <Compile Include="Data\Repository\_NamespaceDoc.cs" />
     <Compile Include="Data\_NamespaceDoc.cs" />

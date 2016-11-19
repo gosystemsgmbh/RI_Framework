@@ -57,6 +57,7 @@
   <ItemGroup>
     <Compile Include="Data\EF\Configuration\EntityConfiguration.cs" />
     <Compile Include="Data\EF\Configuration\IEntityConfiguration.cs" />
+    <Compile Include="Data\EF\Configuration\_NamespaceDoc.cs" />
     <Compile Include="Data\EF\DbEntityValidationResultExtensions.cs" />
     <Compile Include="Data\EF\IRepositoryDbSet.cs" />
     <Compile Include="Data\EF\RepositoryDbContext.cs" />
@@ -65,6 +66,7 @@
     <Compile Include="Data\EF\Validation\EntityValidation.cs" />
     <Compile Include="Data\EF\Validation\IEntityValidation.cs" />
     <Compile Include="Data\EF\Validation\ValidationRegistrar.cs" />
+    <Compile Include="Data\EF\Validation\_NamespaceDoc.cs" />
     <Compile Include="Data\EF\_NamespaceDoc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

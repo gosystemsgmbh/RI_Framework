@@ -153,6 +153,6 @@ namespace RI.Framework.Data.Repository
 		///     The validation errors or null if the entity is valid.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="entity" /> is null. </exception>
-		RepositoryErrors Validate (T entity);
+		RepositorySetErrors Validate (T entity);
 	}
 }

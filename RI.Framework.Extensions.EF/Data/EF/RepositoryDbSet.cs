@@ -13,11 +13,26 @@ using RI.Framework.Services.Logging;
 
 namespace RI.Framework.Data.EF
 {
+	/// <summary>
+	/// Implements a repository set using an Entity Frameworks <see cref="DbSet{TEntity}"/>.
+	/// </summary>
+	/// <typeparam name="T"> The type of the entities which are represented by this repository set. </typeparam>
+	/// <remarks>
+	/// <para>
+	/// See <see cref="IRepositorySet{T}"/> and <see cref="DbSet{TEntity}"/> for more details.
+	/// </para>
+	/// </remarks>
 	public class RepositoryDbSet <T> : IRepositoryDbSet, IRepositorySet<T>
 		where T : class
 	{
 		#region Instance Constructor/Destructor
 
+		/// <summary>
+		/// Creates a new instance of <see cref="RepositoryDbSet{T}"/>.
+		/// </summary>
+		/// <param name="repository">The repository this repository set belongs to.</param>
+		/// <param name="set">The underlying Entity Framework <see cref="DbSet{TEntity}"/> used by this repository set.</param>
+		/// <exception cref="ArgumentNullException"><paramref name="repository"/> or <paramref name="set"/> is null.</exception>
 		public RepositoryDbSet (RepositoryDbContext repository, DbSet<T> set)
 		{
 			if (set == null)
@@ -41,8 +56,20 @@ namespace RI.Framework.Data.EF
 
 		#region Instance Properties/Indexer
 
+		/// <summary>
+		/// Gets the repository this repository set belongs to.
+		/// </summary>
+		/// <value>
+		/// The repository this repository set belongs to.
+		/// </value>
 		public RepositoryDbContext Repository { get; private set; }
 
+		/// <summary>
+		/// Gets the underlying Entity Framework <see cref="DbSet{TEntity}"/> used by this repository set.
+		/// </summary>
+		/// <value>
+		/// The underlying Entity Framework <see cref="DbSet{TEntity}"/> used by this repository set.
+		/// </value>
 		public DbSet<T> Set { get; private set; }
 
 		#endregion
@@ -76,6 +103,7 @@ namespace RI.Framework.Data.EF
 
 		#region Interface: IRepositoryDbSet
 
+		/// <inheritdoc />
 		public Type EntityType => typeof(T);
 
 		#endregion
@@ -85,72 +113,86 @@ namespace RI.Framework.Data.EF
 
 		#region Interface: IRepositorySet<T>
 
+		/// <inheritdoc />
 		public virtual void Add (T entity)
 		{
 			throw new NotImplementedException();
 		}
 
+		/// <inheritdoc />
 		public virtual bool CanAdd (T entity)
 		{
 			throw new NotImplementedException();
 		}
 
+		/// <inheritdoc />
 		public virtual bool CanCreate ()
 		{
 			throw new NotImplementedException();
 		}
 
+		/// <inheritdoc />
 		public virtual bool CanDelete (T entity)
 		{
 			throw new NotImplementedException();
 		}
 
+		/// <inheritdoc />
 		public virtual bool CanModify (T entity)
 		{
 			throw new NotImplementedException();
 		}
 
+		/// <inheritdoc />
 		public virtual bool CanReload (T entity)
 		{
 			throw new NotImplementedException();
 		}
 
+		/// <inheritdoc />
 		public virtual T Create ()
 		{
 			throw new NotImplementedException();
 		}
 
+		/// <inheritdoc />
 		public virtual void Delete (T entity)
 		{
 			throw new NotImplementedException();
 		}
 
+		/// <inheritdoc />
 		public virtual IEnumerable<T> GetAll ()
 		{
 			throw new NotImplementedException();
 		}
 
+		/// <inheritdoc />
 		public virtual IEnumerable<T> GetFiltered (object filter, int pageIndex, int pageSize, out int entityCount, out int pageCount)
 		{
 			throw new NotImplementedException();
 		}
 
+		/// <inheritdoc />
 		public virtual bool IsModified (T entity)
 		{
 			throw new NotImplementedException();
 		}
 
+		/// <inheritdoc />
 		public virtual void Modify (T entity)
 		{
 			throw new NotImplementedException();
 		}
 
+		/// <inheritdoc />
 		public virtual void Reload (T entity)
 		{
 			throw new NotImplementedException();
 		}
 
-		public virtual RepositoryErrors Validate (T entity)
+		/// <inheritdoc />
+		public virtual RepositorySetErrors Validate (T entity)
 		{
 			if (entity == null)
 			{

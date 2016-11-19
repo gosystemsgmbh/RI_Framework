@@ -12,29 +12,29 @@ namespace RI.Framework.Data.Repository
 	/// <summary>
 	///     Represents validation errors of an entity.
 	/// </summary>
-	public class RepositoryErrors
+	public class RepositorySetErrors
 	{
 		#region Instance Constructor/Destructor
 
 		/// <summary>
-		///     Creates anew instance of <see cref="RepositoryErrors" />.
+		///     Creates anew instance of <see cref="RepositorySetErrors" />.
 		/// </summary>
 		/// <remarks>
 		///     <para>
 		///         <see cref="StringComparer.InvariantCultureIgnoreCase" /> is used for the property names and <see cref="StringComparer.CurrentCultureIgnoreCase" /> for the errors.
 		///     </para>
 		/// </remarks>
-		public RepositoryErrors ()
+		public RepositorySetErrors ()
 			: this(null, null)
 		{
 		}
 
 		/// <summary>
-		///     Creates anew instance of <see cref="RepositoryErrors" />.
+		///     Creates anew instance of <see cref="RepositorySetErrors" />.
 		/// </summary>
 		/// <param name="propertyNameComparer"> The property name comparer used with the <see cref="PropertyErrors" /> dictionary or null to use <see cref="StringComparer.InvariantCultureIgnoreCase" />. </param>
 		/// <param name="errorComparer"> The error comparer used with the <see cref="EntityErrors" /> and <see cref="PropertyErrors" /> sets or null to use <see cref="StringComparer.CurrentCultureIgnoreCase" />. </param>
-		public RepositoryErrors (IEqualityComparer<string> propertyNameComparer, IEqualityComparer<string> errorComparer)
+		public RepositorySetErrors (IEqualityComparer<string> propertyNameComparer, IEqualityComparer<string> errorComparer)
 		{
 			this.PropertyNameComparer = propertyNameComparer ?? StringComparer.InvariantCultureIgnoreCase;
 			this.ErrorComparer = errorComparer ?? StringComparer.CurrentCultureIgnoreCase;

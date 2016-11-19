@@ -18,7 +18,7 @@
   - [ ] Check wherther nested types really need to be nested
   - [ ] Exception throwing
     - [ ] Always use parameter names for argument exceptions
-	- [ ] Always provide message or at least parameter name (for argument exceptions only)
+    - [ ] Always provide message or at least parameter name (for argument exceptions only)
   - [X] Remove SuppressMessage attributes
   - [X] ReSharper configuration, cleanup, and review
   - [ ] Cleanup artifacts
@@ -35,12 +35,12 @@
   - [ ] Do we log correctly?
     - [ ] ISupportsLogging
     - [ ] Usage of LogLocator, including used methods
-	- [ ] Source must be this.GetType()Name
-	- [ ] ToString() overload and use for multi-instance objects
-	- [ ] Log often and everywhere weher applicable
-	- [ ] Private or protected log method
-	- [ ] Check fixed log levels
-	- [ ] Check correct null handling
+    - [ ] Source must be this.GetType()Name
+    - [ ] ToString() overload and use for multi-instance objects
+    - [ ] Log often and everywhere weher applicable
+    - [ ] Private or protected log method
+    - [ ] Check fixed log levels
+    - [ ] Check correct null handling
   - [ ] Do all events use proper event handler and event args?
   - [ ] TODOs
 - [ ] Testing
