@@ -114,7 +114,7 @@ namespace RI.Framework.Data.EF
 		#region Interface: IRepositorySet<T>
 
 		/// <inheritdoc />
-		public virtual void Add (T entity)
+		public void Add (T entity)
 		{
 			throw new NotImplementedException();
 		}
@@ -156,7 +156,7 @@ namespace RI.Framework.Data.EF
 		}
 
 		/// <inheritdoc />
-		public virtual void Delete (T entity)
+		public void Delete (T entity)
 		{
 			throw new NotImplementedException();
 		}
@@ -164,7 +164,7 @@ namespace RI.Framework.Data.EF
 		/// <inheritdoc />
 		public virtual IEnumerable<T> GetAll ()
 		{
-			throw new NotImplementedException();
+			return this.Set;
 		}
 
 		/// <inheritdoc />
@@ -174,25 +174,7 @@ namespace RI.Framework.Data.EF
 		}
 
 		/// <inheritdoc />
-		public virtual bool IsModified (T entity)
-		{
-			throw new NotImplementedException();
-		}
-
-		/// <inheritdoc />
-		public virtual void Modify (T entity)
-		{
-			throw new NotImplementedException();
-		}
-
-		/// <inheritdoc />
-		public virtual void Reload (T entity)
-		{
-			throw new NotImplementedException();
-		}
-
-		/// <inheritdoc />
-		public virtual RepositorySetErrors Validate (T entity)
+		public bool IsModified (T entity)
 		{
 			if (entity == null)
 			{
@@ -200,6 +182,62 @@ namespace RI.Framework.Data.EF
 			}
 
 			this.Repository.ChangeTracker.DetectChanges();
+
+			DbEntityEntry<T> entry = this.Repository.Entry(entity);
+			return entry == null ? false : (entry.State & (EntityState.Modified | EntityState.Added | EntityState.Deleted)) != 0;
+		}
+
+		/// <inheritdoc />
+		public void Modify (T entity)
+		{
+			if (entity == null)
+			{
+				throw new ArgumentNullException(nameof(entity));
+			}
+
+			if (!this.CanModify(entity))
+			{
+				throw new InvalidOperationException("The entity cannot be modified.");
+			}
+
+			DbEntityEntry<T> entry = this.Repository.Entry(entity);
+			if (entry != null)
+			{
+				entry.State |= EntityState.Modified;
+				entry.State &= ~EntityState.Unchanged;
+			}
+		}
+
+		/// <inheritdoc />
+		public void Reload (T entity)
+		{
+			if (entity == null)
+			{
+				throw new ArgumentNullException(nameof(entity));
+			}
+
+			if (!this.CanModify(entity))
+			{
+				throw new InvalidOperationException("The entity cannot be reloaded.");
+			}
+
+			DbEntityEntry<T> entry = this.Repository.Entry(entity);
+			if ((entry != null) && ((entry.State & (EntityState.Modified | EntityState.Deleted | EntityState.Detached)) != 0))
+			{
+				entry.Reload();
+			}
+		}
+
+		/// <inheritdoc />
+		public RepositorySetErrors Validate (T entity)
+		{
+			if (entity == null)
+			{
+				throw new ArgumentNullException(nameof(entity));
+			}
+
+			this.Repository.ChangeTracker.DetectChanges();
+
 			DbEntityEntry<T> entry = this.Repository.Entry(entity);
 			DbEntityValidationResult results = entry?.GetValidationResult();
 			return results?.ToRepositoryErrors();
