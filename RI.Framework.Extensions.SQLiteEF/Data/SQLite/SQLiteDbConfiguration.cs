@@ -19,7 +19,7 @@ namespace RI.Framework.Data.SQLite
 	///         It also registers a default resolver using <see cref="ServiceLocatorDbDependencyResolver" />.
 	///     </para>
 	/// </remarks>
-	public class SQLiteDbConfiguration : DbConfiguration
+	public abstract class SQLiteDbConfiguration : DbConfiguration
 	{
 		#region Instance Constructor/Destructor
 

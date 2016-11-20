@@ -1,5 +1,7 @@
 ﻿using System.Linq;
 
+using RI.Framework.Data.EF.Filter;
+
 
 
 
@@ -11,7 +13,7 @@ namespace RI.Framework.Data.EF
 	/// <typeparam name="T"> The type of entities to be filtered. </typeparam>
 	/// <remarks>
 	///     <para>
-	///         This interface is supported by <see cref="RepositoryDbSet{T}.GetFiltered" />.
+	///         This interface is supported by <see cref="RepositoryDbSet{T}.GetFiltered" /> and by <see cref="EntityFilter{T}" />.
 	///         If the filter parameter implements <see cref="IRepositoryDbSetFilter{T}" />, <see cref="Filter" /> is used for filtering, applied before paging.
 	///     </para>
 	/// </remarks>

@@ -8,6 +8,7 @@ using System.Data.Entity.ModelConfiguration.Configuration;
 using System.Data.Entity.Validation;
 using System.Linq;
 
+using RI.Framework.Data.EF.Filter;
 using RI.Framework.Data.EF.Validation;
 using RI.Framework.Data.Repository;
 using RI.Framework.Services;
@@ -26,7 +27,7 @@ namespace RI.Framework.Data.EF
 	///         See <see cref="IRepositoryContext" /> and <see cref="DbContext" /> for more details.
 	///     </para>
 	/// </remarks>
-	public class RepositoryDbContext : DbContext, IRepositoryContext
+	public abstract class RepositoryDbContext : DbContext, IRepositoryContext
 	{
 		#region Static Constructor/Destructor
 
@@ -34,6 +35,9 @@ namespace RI.Framework.Data.EF
 		{
 			RepositoryDbContext.ValidatorsSyncRoot = new object();
 			RepositoryDbContext.Validators = new Dictionary<Type, ValidatorCollection>();
+
+			RepositoryDbContext.FiltersSyncRoot = new object();
+			RepositoryDbContext.Filters = new Dictionary<Type, FilterCollection>();
 		}
 
 		#endregion
@@ -42,6 +46,10 @@ namespace RI.Framework.Data.EF
 
 
 		#region Static Properties/Indexer
+
+		private static Dictionary<Type, FilterCollection> Filters { get; set; }
+
+		private static object FiltersSyncRoot { get; set; }
 
 		private static Dictionary<Type, ValidatorCollection> Validators { get; set; }
 
@@ -53,6 +61,21 @@ namespace RI.Framework.Data.EF
 
 
 		#region Static Methods
+
+		private static void CreateFilters (RepositoryDbContext repository)
+		{
+			lock (RepositoryDbContext.FiltersSyncRoot)
+			{
+				Type repositoryType = repository.GetType();
+				if (!RepositoryDbContext.Filters.ContainsKey(repositoryType))
+				{
+					FilterCollection filters = new FilterCollection();
+					FilterRegistrar registrar = new FilterRegistrar(filters);
+					repository.OnFiltersCreating(registrar);
+					RepositoryDbContext.Filters.Add(repositoryType, filters);
+				}
+			}
+		}
 
 		private static void CreateValidators (RepositoryDbContext repository)
 		{
@@ -66,6 +89,21 @@ namespace RI.Framework.Data.EF
 					repository.OnValidatorsCreating(registrar);
 					RepositoryDbContext.Validators.Add(repositoryType, validators);
 				}
+			}
+		}
+
+		private static IEntityFilter GetFilter (RepositoryDbContext repository, Type entityType)
+		{
+			lock (RepositoryDbContext.FiltersSyncRoot)
+			{
+				RepositoryDbContext.CreateFilters(repository);
+
+				if (!RepositoryDbContext.Filters[repository.GetType()].Contains(entityType))
+				{
+					return null;
+				}
+
+				return RepositoryDbContext.Filters[repository.GetType()][entityType];
 			}
 		}
 
@@ -161,9 +199,24 @@ namespace RI.Framework.Data.EF
 			return (RepositoryDbSet<T>)this.Sets[entityType];
 		}
 
-		internal IEntityValidation GetValidator <T> () where T : class
+		internal EntityFilter<T> GetFilter <T> () where T : class
 		{
-			return this.GetValidator(typeof(T));
+			return this.GetFilter(typeof(T)) as EntityFilter<T>;
+		}
+
+		internal IEntityFilter GetFilter (Type entityType)
+		{
+			if (entityType == null)
+			{
+				throw new ArgumentNullException(nameof(entityType));
+			}
+
+			return RepositoryDbContext.GetFilter(this, entityType);
+		}
+
+		internal EntityValidation<T> GetValidator <T> () where T : class
+		{
+			return this.GetValidator(typeof(T)) as EntityValidation<T>;
 		}
 
 		internal IEntityValidation GetValidator (Type entityType)
@@ -264,12 +317,27 @@ namespace RI.Framework.Data.EF
 		}
 
 		/// <summary>
-		///     Called when the entity validation is to be created for this repository.
+		///     Called when the entity filters are to be created for this repository.
+		/// </summary>
+		/// <param name="filters"> The entity filter registrar to be used. </param>
+		/// <remarks>
+		///     <note type="note">
+		///         The entity filters are only created once for a certain type of repository.
+		///         It is cached and reused for subsequent instances of the same concrete <see cref="RepositoryDbContext" /> type.
+		///     </note>
+		/// </remarks>
+		protected virtual void OnFiltersCreating (FilterRegistrar filters)
+		{
+			filters.AddFromAssembly(this.GetType().Assembly);
+		}
+
+		/// <summary>
+		///     Called when the entity validations are to be created for this repository.
 		/// </summary>
 		/// <param name="validators"> The entity validation registrar to be used. </param>
 		/// <remarks>
 		///     <note type="note">
-		///         The entity validation is only created once for a certain type of repository.
+		///         The entity validations are only created once for a certain type of repository.
 		///         It is cached and reused for subsequent instances of the same concrete <see cref="RepositoryDbContext" /> type.
 		///     </note>
 		/// </remarks>
@@ -347,6 +415,25 @@ namespace RI.Framework.Data.EF
 
 		/// <inheritdoc />
 		void IRepositoryContext.SaveChanges () => this.SaveChanges();
+
+		#endregion
+
+
+
+
+		#region Type: FilterCollection
+
+		private sealed class FilterCollection : KeyedCollection<Type, IEntityFilter>
+		{
+			#region Overrides
+
+			protected override Type GetKeyForItem (IEntityFilter item)
+			{
+				return item.EntityType;
+			}
+
+			#endregion
+		}
 
 		#endregion
 

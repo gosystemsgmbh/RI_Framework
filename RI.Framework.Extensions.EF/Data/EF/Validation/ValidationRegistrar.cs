@@ -51,7 +51,7 @@ namespace RI.Framework.Data.EF.Validation
 		/// <summary>
 		///     Registers an entity validation class instance.
 		/// </summary>
-		/// <param name="entityTypeValidator"> The entity validation class instance to^register. </param>
+		/// <param name="entityTypeValidator"> The entity validation class instance to register. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="entityTypeValidator" /> is null. </exception>
 		public void Add (IEntityValidation entityTypeValidator)
 		{
@@ -64,7 +64,7 @@ namespace RI.Framework.Data.EF.Validation
 		}
 
 		/// <summary>
-		///     Registers an instance of each non-abstract entity validation class type deriving from xxx which can be found in an assembly.
+		///     Registers an instance of each non-abstract entity validation class type deriving from <see cref="IEntityValidation" /> which can be found in an assembly.
 		/// </summary>
 		/// <param name="assembly"> The assembly to search for entity validation class types. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="assembly" /> is null. </exception>

@@ -59,6 +59,10 @@
     <Compile Include="Data\EF\Configuration\IEntityConfiguration.cs" />
     <Compile Include="Data\EF\Configuration\_NamespaceDoc.cs" />
     <Compile Include="Data\EF\DbEntityValidationResultExtensions.cs" />
+    <Compile Include="Data\EF\Filter\EntityFilter.cs" />
+    <Compile Include="Data\EF\Filter\FilterRegistrar.cs" />
+    <Compile Include="Data\EF\Filter\IEntityFilter.cs" />
+    <Compile Include="Data\EF\Filter\_NamespaceDoc.cs" />
     <Compile Include="Data\EF\IRepositoryDbSet.cs" />
     <Compile Include="Data\EF\IRepositoryDbSetFilter.cs" />
     <Compile Include="Data\EF\RepositoryDbContext.cs" />

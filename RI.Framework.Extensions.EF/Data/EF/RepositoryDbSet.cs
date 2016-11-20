@@ -5,6 +5,8 @@ using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Validation;
 using System.Linq;
 
+using RI.Framework.Data.EF.Filter;
+using RI.Framework.Data.EF.Validation;
 using RI.Framework.Data.Repository;
 using RI.Framework.Services;
 using RI.Framework.Services.Logging;
@@ -133,31 +135,31 @@ namespace RI.Framework.Data.EF
 		/// <inheritdoc />
 		public virtual bool CanAdd (T entity)
 		{
-			return (this.Repository.GetValidator<T>()?.CanAdd(this.Repository, entity)).GetValueOrDefault(true);
+			return (((IEntityValidation)this.Repository.GetValidator<T>())?.CanAdd(this.Repository, entity)).GetValueOrDefault(true);
 		}
 
 		/// <inheritdoc />
 		public virtual bool CanCreate ()
 		{
-			return (this.Repository.GetValidator<T>()?.CanCreate(this.Repository)).GetValueOrDefault(true);
+			return (((IEntityValidation)this.Repository.GetValidator<T>())?.CanCreate(this.Repository)).GetValueOrDefault(true);
 		}
 
 		/// <inheritdoc />
 		public virtual bool CanDelete (T entity)
 		{
-			return (this.Repository.GetValidator<T>()?.CanDelete(this.Repository, this.Repository.Entry(entity))).GetValueOrDefault(true);
+			return (((IEntityValidation)this.Repository.GetValidator<T>())?.CanDelete(this.Repository, this.Repository.Entry(entity))).GetValueOrDefault(true);
 		}
 
 		/// <inheritdoc />
 		public virtual bool CanModify (T entity)
 		{
-			return (this.Repository.GetValidator<T>()?.CanModify(this.Repository, this.Repository.Entry(entity))).GetValueOrDefault(true);
+			return (((IEntityValidation)this.Repository.GetValidator<T>())?.CanModify(this.Repository, this.Repository.Entry(entity))).GetValueOrDefault(true);
 		}
 
 		/// <inheritdoc />
 		public virtual bool CanReload (T entity)
 		{
-			return (this.Repository.GetValidator<T>()?.CanReload(this.Repository, this.Repository.Entry(entity))).GetValueOrDefault(true);
+			return (((IEntityValidation)this.Repository.GetValidator<T>())?.CanReload(this.Repository, this.Repository.Entry(entity))).GetValueOrDefault(true);
 		}
 
 		/// <inheritdoc />
@@ -221,7 +223,8 @@ namespace RI.Framework.Data.EF
 
 			int offset = pageIndex * pageSize;
 
-			IQueryable<T> queryable = (filter as IRepositoryDbSetFilter<T>)?.Filter(this) ?? this.Set;
+			EntityFilter<T> entityFilter = this.Repository.GetFilter<T>();
+			IQueryable<T> queryable = (entityFilter?.Filter(this.Repository, this, filter) ?? (filter as IRepositoryDbSetFilter<T>)?.Filter(this)) ?? this.Set;
 			return queryable.Skip(offset).Take(pageSize);
 		}
 
