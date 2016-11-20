@@ -13,6 +13,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Collections\Comparison\CollectionComparerFlags.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\Comparison\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\Generic\IWarehouse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Generic\PriorityQueue.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\Generic\Warehouse.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\Generic\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\HashSetExtensions.cs" />

@@ -15,6 +15,9 @@ namespace RI.Framework.Collections.Generic
 	///         The items themselves must be managed by whatever uses the <see cref="Warehouse{T}" />.
 	///         <see cref="Warehouse{T}" /> never touches the contents of <see cref="Storage" />.
 	///     </para>
+	///     <para>
+	///         See <see cref="IWarehouse{T}" /> for more details.
+	///     </para>
 	/// </remarks>
 	/// <example>
 	///     <para>

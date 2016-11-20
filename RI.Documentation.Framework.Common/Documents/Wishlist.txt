@@ -95,7 +95,6 @@ Collections
  - (Common) WatchableXXX (Collection, List, Dictionary, Queue, Stack, HashSet)
  - (Common) ObservableXXX (Collection, List, Dictionary, Queue, Stack, HashSet)
 
- # (Common) PriorityQueue
  - (Common) RingBuffer
  - (Common) SortedQueue
 
