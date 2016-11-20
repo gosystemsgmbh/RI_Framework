@@ -26,7 +26,6 @@ namespace RI.Framework.IO.Paths
 	///         It can be implicitly converted to a <see cref="string" /> to work seamless with APIs using <see cref="string" /> for paths.
 	///     </para>
 	/// </remarks>
-	/// EXAMPLE: Example
 	[Serializable]
 	public sealed class FilePath : PathString,
 	                               ICloneable<FilePath>,

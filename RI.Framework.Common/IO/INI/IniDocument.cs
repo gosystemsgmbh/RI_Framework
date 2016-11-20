@@ -117,7 +117,6 @@ namespace RI.Framework.IO.INI
 	///         The used escape sequence character can be changed using <see cref="IniSettings.EscapeCharacter" />.
 	///     </para>
 	/// </remarks>
-	/// EXAMPLE: Example
 	public sealed class IniDocument : ICloneable,
 	                                  ICloneable<IniDocument>
 	{

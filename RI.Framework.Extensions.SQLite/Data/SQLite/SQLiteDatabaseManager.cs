@@ -4,8 +4,8 @@ using System.Data;
 using System.Data.Common;
 using System.Data.SQLite;
 using System.Globalization;
+using System.Linq;
 
-using RI.Framework.Collections.Linq;
 using RI.Framework.Data.Database;
 using RI.Framework.Data.SQLite.Collations;
 using RI.Framework.Data.SQLite.Functions;

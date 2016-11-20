@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 using RI.Framework.Collections;
-using RI.Framework.Collections.Linq;
 using RI.Framework.Composition.Model;
 using RI.Framework.Services.Logging;
 using RI.Framework.Utilities;

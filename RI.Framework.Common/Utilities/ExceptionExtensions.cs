@@ -2,10 +2,10 @@
 using System.Collections;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 
+using RI.Framework.Collections.Linq;
 using RI.Framework.Utilities.Text;
 
 

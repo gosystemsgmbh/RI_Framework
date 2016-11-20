@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using Fluent;
 
-using RI.Framework.Collections.Linq;
 using RI.Framework.Composition.Model;
 
 
@@ -94,7 +94,7 @@ namespace RI.Framework.Services.Regions.Adapters
 			List<object> elements = new List<object>();
 			if (container is RibbonTabItem)
 			{
-				return ((RibbonTabItem)container).Groups.Cast<object>();
+				return ((RibbonTabItem)container).Groups.Cast<object>().ToList();
 			}
 			return elements;
 		}

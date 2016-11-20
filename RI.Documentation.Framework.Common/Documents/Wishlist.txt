@@ -6,6 +6,15 @@
 + Utility Framework
 
 
+Examples
+---------
+
+ - CommandLine
+ - FilePath
+ - IndentedTextWriter
+ - IniDocument
+
+
 Utilities
 ---------
 
@@ -41,8 +50,43 @@ Utilities
 Collections
 -----------
 
- + (Common) IEnumerableExtensions: Ensure signature equivalence with LINQ to Objects (Enumerable)
+ - (Common) DirectLinq: Aggregate
+ - (Common) DirectLinq: Average
+ - (Common) DirectLinq: Concat (with separator element)
+ - (Common) DirectLinq: DefaultIfEmpty
+ - (Common) DirectLinq: Empty
+ - (Common) DirectLinq: GroupBy
+ - (Common) DirectLinq: GroupJoin
+ - (Common) DirectLinq: Join
+ - (Common) DirectLinq: LongCount
+ - (Common) DirectLinq: Max
+ - (Common) DirectLinq: Min
+ - (Common) DirectLinq: OrderBy
+ - (Common) DirectLinq: OrderByDescending
+ - (Common) DirectLinq: Range
+ - (Common) DirectLinq: Repeat
+ - (Common) DirectLinq: SelectMany (partially)
+ - (Common) DirectLinq: Single
+ - (Common) DirectLinq: SingleOrDefault
+ - (Common) DirectLinq: Sum
+ - (Common) DirectLinq: ThenBy
+ - (Common) DirectLinq: ThenByDescending
+ - (Common) DirectLinq: ToDictionary
+ - (Common) DirectLinq: ToLookup
 
+ - (Common) IEnumerableExtensions: Merge
+ - (Common) IEnumerableExtensions: IsEmpty
+ - (Common) IEnumerableExtensions: Shuffle
+ - (Common) IEnumerableExtensions: CopyTo
+ - (Common) IEnumerableExtensions: IsSubsetOf, IsProperSubsetOf, Overlaps
+ - (Common) IEnumerableExtensions: FirstIndex, LastIndex, Indices
+ - (Common) IEnumerableExtensions: FirstIndexOf, LastIndexOf, IndicesOf
+ - (Common) IEnumerableExtensions: TakeTail, TakeTailWhere
+ - (Common) IEnumerableExtensions: SkipTail, SkipTailWhere
+ - (Common) IEnumerableExtensions: EndsWithCount
+ - (Common) IEnumerableExtensions: StartsWithCount
+
+ - (Common) DirectLinq: Check symmetry of extensions
  - (Common) IEnumerableExtensions: Check symmetry of extensions
  - (Common) ICollectionExtensions: Check symmetry of extensions
  - (Common) IListExtensions: Check symmetry of extensions
@@ -55,22 +99,6 @@ Collections
 
  - (Common) ITreeNodeExtensions: Check symmetry of extensions
  - (Common) IPoolExtensions: Check symmetry of extensions
-
- - (Common) IEnumerableExtensions: Merge
- - (Common) IEnumerableExtensions: IsEmpty
- - (Common) IEnumerableExtensions: Shuffle
- - (Common) IEnumerableExtensions: CopyTo
- - (Common) IEnumerableExtensions: Repeat
- - (Common) IEnumerableExtensions: Concat with separator element
- - (Common) IEnumerableExtensions: IsSubsetOf, IsProperSubsetOf, Overlaps
- - (Common) IEnumerableExtensions: OrderBy, GroupBy
- - (Common) IEnumerableExtensions: FirstIndex, LastIndex, Indices
- - (Common) IEnumerableExtensions: FirstIndexOf, LastIndexOf, IndicesOf
- - (Common) IEnumerableExtensions: Single, SingleOrDefault
- - (Common) IEnumerableExtensions: TakeTail, TakeTailWhere
- - (Common) IEnumerableExtensions: SkipTail, SkipTailWhere
- - (Common) IEnumerableExtensions: EndsWithCount
- - (Common) IEnumerableExtensions: StartsWithCount
 
  - (Common) IListExtensions: Backward enumerator
  - (Common) IListExtensions: Forward enumerator

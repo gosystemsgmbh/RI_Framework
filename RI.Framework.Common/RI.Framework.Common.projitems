@@ -19,9 +19,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Collections\HashSetExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\ICollectionExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\IDictionaryExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\IEnumerableExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\IListExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\LinkedListExtensions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Collections\Linq\IEnumerableExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Linq\DirectLinq.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\Linq\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\ObjectModel\IPool.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\ObjectModel\IPoolAware.cs" />

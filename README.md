@@ -8,7 +8,7 @@
   - [ ] Use FilePath and DirectoryPath everywhere
   - [X] LogWriter for .NET
 - [ ] Documentation
-  - [ ] Examples
+  - [ ] Complete list of examples
   - [ ] Type and member descriptions
   - [ ] Check all namespace descriptions
   - [ ] Conceptional documentation
