@@ -316,14 +316,29 @@ namespace RI.Framework.Data.SQLite
 
 		private void RegisterCollations (SQLiteConnection connection)
 		{
-			connection.BindFunction(new TrimmedCaseInsensitiveInvariantSQLiteCollation());
-			connection.BindFunction(new TrimmedCaseInsensitiveCurrentSQLiteCollation());
+			connection.BindFunction(new CurrentCultureIgnoreCaseSQLiteCollation());
+			connection.BindFunction(new CurrentCultureSQLiteCollation());
+			connection.BindFunction(new InvariantCultureIgnoreCaseSQLiteCollation());
+			connection.BindFunction(new InvariantCultureSQLiteCollation());
+			connection.BindFunction(new OrdinalIgnoreCaseSQLiteCollation());
+			connection.BindFunction(new OrdinalSQLiteCollation());
+
+			connection.BindFunction(new TrimmedCurrentCultureIgnoreCaseSQLiteCollation());
+			connection.BindFunction(new TrimmedCurrentCultureSQLiteCollation());
+			connection.BindFunction(new TrimmedInvariantCultureIgnoreCaseSQLiteCollation());
+			connection.BindFunction(new TrimmedInvariantCultureSQLiteCollation());
+			connection.BindFunction(new TrimmedOrdinalIgnoreCaseSQLiteCollation());
+			connection.BindFunction(new TrimmedOrdinalSQLiteCollation());
 		}
 
 		private void RegisterFunctions (SQLiteConnection connection)
 		{
+			connection.BindFunction(new TrimSQLiteFunction());
+			connection.BindFunction(new ToEmptyIfEmptyOrNullSQLiteFunction());
 			connection.BindFunction(new ToNullIfEmptyOrNullSQLiteFunction());
+
 			connection.BindFunction(new IsNullOrEmptySQLiteFunction());
+
 			connection.BindFunction(new RegularExpressionSQLiteFunction());
 		}
 

@@ -14,7 +14,7 @@ namespace RI.Framework.Services.Messaging
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         The dictionary which stores the transported data, <see cref="Data" />, uses <see cref="StringComparer" />.<see cref="StringComparer.InvariantCultureIgnoreCase" />.
+	///         The dictionary which stores the transported data, <see cref="Data" />, uses <see cref="StringComparerEx" />.<see cref="StringComparerEx.InvariantCultureIgnoreCase" />.
 	///     </para>
 	///     <para>
 	///         See <see cref="IMessage" /> for more details.
@@ -45,7 +45,7 @@ namespace RI.Framework.Services.Messaging
 			this.Name = name;
 
 			this.Id = Guid.NewGuid();
-			this.Data = new Dictionary<string, object>(StringComparer.InvariantCultureIgnoreCase);
+			this.Data = new Dictionary<string, object>(StringComparerEx.InvariantCultureIgnoreCase);
 		}
 
 		#endregion

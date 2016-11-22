@@ -47,7 +47,7 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 		public TriggerMessageHandler ()
 		{
 			this.Triggers = new TriggerCollection();
-			this.ChangedTriggers = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+			this.ChangedTriggers = new HashSet<string>(StringComparerEx.InvariantCultureIgnoreCase);
 		}
 
 		#endregion
@@ -219,7 +219,7 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 
 				this.Name = name;
 
-				this.Subscribers = new Dictionary<string, bool>(StringComparer.InvariantCultureIgnoreCase);
+				this.Subscribers = new Dictionary<string, bool>(StringComparerEx.InvariantCultureIgnoreCase);
 			}
 
 			#endregion
@@ -280,7 +280,7 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 			#region Instance Constructor/Destructor
 
 			public TriggerCollection ()
-				: base(StringComparer.InvariantCultureIgnoreCase)
+				: base(StringComparerEx.InvariantCultureIgnoreCase)
 			{
 			}
 

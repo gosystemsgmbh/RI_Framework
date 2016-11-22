@@ -6,6 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RI.Framework.Collections;
 using RI.Framework.Collections.Comparison;
 using RI.Framework.Collections.Linq;
+using RI.Framework.Utilities;
 using RI.Framework.Utilities.Comparison;
 using RI.Test.Framework.Mocks;
 
@@ -3641,7 +3642,7 @@ namespace RI.Test.Framework.Collections
 
 			//Custom comparer
 
-			if (test.ToDictionary(StringComparer.InvariantCultureIgnoreCase, (x => new KeyValuePair<string, int>((x/10).ToString(), x))).Count != 0)
+			if (test.ToDictionary(StringComparerEx.InvariantCultureIgnoreCase, (x => new KeyValuePair<string, int>((x/10).ToString(), x))).Count != 0)
 			{
 				throw new TestAssertionException();
 			}
@@ -3679,7 +3680,7 @@ namespace RI.Test.Framework.Collections
 
 			//Custom comparer
 
-			result = test.ToDictionary(StringComparer.InvariantCultureIgnoreCase, (x => new KeyValuePair<string, int>((x/10).ToString(), x)));
+			result = test.ToDictionary(StringComparerEx.InvariantCultureIgnoreCase, (x => new KeyValuePair<string, int>((x/10).ToString(), x)));
 
 			if (result.Count != 6)
 			{
@@ -3735,7 +3736,7 @@ namespace RI.Test.Framework.Collections
 
 			//Custom comparer
 
-			if (test.ToDictionaryList(StringComparer.InvariantCultureIgnoreCase, (x => new KeyValuePair<string, int>((x/10).ToString(), x))).Count != 0)
+			if (test.ToDictionaryList(StringComparerEx.InvariantCultureIgnoreCase, (x => new KeyValuePair<string, int>((x/10).ToString(), x))).Count != 0)
 			{
 				throw new TestAssertionException();
 			}
@@ -3803,7 +3804,7 @@ namespace RI.Test.Framework.Collections
 
 			//Custom comparer
 
-			result = test.ToDictionaryList(StringComparer.InvariantCultureIgnoreCase, (x => new KeyValuePair<string, int>((x/10).ToString(), x)));
+			result = test.ToDictionaryList(StringComparerEx.InvariantCultureIgnoreCase, (x => new KeyValuePair<string, int>((x/10).ToString(), x)));
 
 			if (result.Count != 3)
 			{
@@ -3871,7 +3872,7 @@ namespace RI.Test.Framework.Collections
 
 			//Custom comparer
 
-			if (test.ToDictionarySet(StringComparer.InvariantCultureIgnoreCase, EqualityComparer<int>.Default, (x => new KeyValuePair<string, int>((x/10).ToString(), x))).Count != 0)
+			if (test.ToDictionarySet(StringComparerEx.InvariantCultureIgnoreCase, EqualityComparer<int>.Default, (x => new KeyValuePair<string, int>((x/10).ToString(), x))).Count != 0)
 			{
 				throw new TestAssertionException();
 			}
@@ -3939,7 +3940,7 @@ namespace RI.Test.Framework.Collections
 
 			//Custom comparer
 
-			result = test.ToDictionarySet(StringComparer.InvariantCultureIgnoreCase, EqualityComparer<int>.Default, (x => new KeyValuePair<string, int>((x/10).ToString(), x)));
+			result = test.ToDictionarySet(StringComparerEx.InvariantCultureIgnoreCase, EqualityComparer<int>.Default, (x => new KeyValuePair<string, int>((x/10).ToString(), x)));
 
 			if (result.Count != 3)
 			{

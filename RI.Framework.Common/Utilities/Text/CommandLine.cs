@@ -53,7 +53,7 @@ namespace RI.Framework.Utilities.Text
 	{
 		#region Constants
 
-		private static readonly IEqualityComparer<string> DefaultParameterNameComparer = StringComparer.InvariantCultureIgnoreCase;
+		private static readonly IEqualityComparer<string> DefaultParameterNameComparer = StringComparerEx.InvariantCultureIgnoreCase;
 
 		#endregion
 
@@ -80,7 +80,7 @@ namespace RI.Framework.Utilities.Text
 		///         For example, on Windows, a full process command line (e.g. as retrieved using <see cref="Environment.CommandLine" />) usually starts with the executable of the process.
 		///     </para>
 		///     <para>
-		///         <see cref="StringComparer" />.<see cref="StringComparer.InvariantCultureIgnoreCase" /> is used to distinguish parameter names.
+		///         <see cref="StringComparerEx" />.<see cref="StringComparerEx.InvariantCultureIgnoreCase" /> is used to distinguish parameter names.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="commandLine" /> is null. </exception>
@@ -278,7 +278,7 @@ namespace RI.Framework.Utilities.Text
 		/// </summary>
 		/// <remarks>
 		///     <para>
-		///         <see cref="StringComparer" />.<see cref="StringComparer.InvariantCultureIgnoreCase" /> is used to distinguish parameter names.
+		///         <see cref="StringComparerEx" />.<see cref="StringComparerEx.InvariantCultureIgnoreCase" /> is used to distinguish parameter names.
 		///     </para>
 		/// </remarks>
 		public CommandLine ()

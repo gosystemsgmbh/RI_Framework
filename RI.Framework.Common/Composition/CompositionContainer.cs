@@ -244,7 +244,7 @@ namespace RI.Framework.Composition
 	{
 		#region Constants
 
-		internal static readonly StringComparer NameComparer = StringComparer.Ordinal;
+		internal static readonly StringComparerEx NameComparer = StringComparerEx.Ordinal;
 
 		#endregion
 

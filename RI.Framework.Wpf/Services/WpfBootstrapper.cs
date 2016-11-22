@@ -755,7 +755,7 @@ namespace RI.Framework.Services
 		/// </remarks>
 		protected virtual CommandLine DetermineProcessCommandLine ()
 		{
-			return CommandLine.Parse(Environment.CommandLine, true, StringComparer.InvariantCultureIgnoreCase);
+			return CommandLine.Parse(Environment.CommandLine, true, StringComparerEx.InvariantCultureIgnoreCase);
 		}
 
 		/// <summary>

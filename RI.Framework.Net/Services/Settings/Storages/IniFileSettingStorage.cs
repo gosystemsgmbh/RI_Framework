@@ -109,7 +109,7 @@ namespace RI.Framework.Services.Settings.Storages
 			this.FileEncoding = fileEncoding ?? IniFileSettingStorage.DefaultEncoding;
 			this.SectionName = sectionName ?? IniFileSettingStorage.DefaultSectionName;
 
-			this.Document = new IniDocument(StringComparer.InvariantCultureIgnoreCase);
+			this.Document = new IniDocument(StringComparerEx.InvariantCultureIgnoreCase);
 		}
 
 		#endregion

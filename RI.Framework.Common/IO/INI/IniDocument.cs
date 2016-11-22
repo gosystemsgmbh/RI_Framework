@@ -127,7 +127,7 @@ namespace RI.Framework.IO.INI
 		/// </summary>
 		/// <remarks>
 		///     <para>
-		///         <see cref="StringComparer.InvariantCultureIgnoreCase" /> is used for name comparison of section names and name-value-pairs.
+		///         <see cref="StringComparerEx.InvariantCultureIgnoreCase" /> is used for name comparison of section names and name-value-pairs.
 		///     </para>
 		/// </remarks>
 		public IniDocument ()
@@ -141,7 +141,7 @@ namespace RI.Framework.IO.INI
 		/// <param name="nameComparer"> The comparer used to compare section names and names of name-value-pairs. </param>
 		/// <remarks>
 		///     <para>
-		///         <see cref="StringComparer.InvariantCultureIgnoreCase" /> is used if <paramref name="nameComparer" /> is null.
+		///         <see cref="StringComparerEx.InvariantCultureIgnoreCase" /> is used if <paramref name="nameComparer" /> is null.
 		///     </para>
 		/// </remarks>
 		public IniDocument (IEqualityComparer<string> nameComparer)
@@ -156,15 +156,15 @@ namespace RI.Framework.IO.INI
 		/// <param name="valueNameComparer"> The comparer used to compare names of name-value-pairs. </param>
 		/// <remarks>
 		///     <para>
-		///         <see cref="StringComparer.InvariantCultureIgnoreCase" /> is used if <paramref name="sectionNameComparer" /> or <paramref name="valueNameComparer" /> is null.
+		///         <see cref="StringComparerEx.InvariantCultureIgnoreCase" /> is used if <paramref name="sectionNameComparer" /> or <paramref name="valueNameComparer" /> is null.
 		///     </para>
 		/// </remarks>
 		public IniDocument (IEqualityComparer<string> sectionNameComparer, IEqualityComparer<string> valueNameComparer)
 		{
 			this.Elements = new List<IniElement>();
 
-			this.SectionNameComparer = sectionNameComparer ?? StringComparer.InvariantCultureIgnoreCase;
-			this.ValueNameComparer = valueNameComparer ?? StringComparer.InvariantCultureIgnoreCase;
+			this.SectionNameComparer = sectionNameComparer ?? StringComparerEx.InvariantCultureIgnoreCase;
+			this.ValueNameComparer = valueNameComparer ?? StringComparerEx.InvariantCultureIgnoreCase;
 		}
 
 		#endregion
@@ -1431,7 +1431,7 @@ namespace RI.Framework.IO.INI
 		/// </summary>
 		/// <remarks>
 		///     <para>
-		///         <see cref="StringComparer.InvariantCultureIgnoreCase" /> is used for comparison.
+		///         <see cref="StringComparerEx.InvariantCultureIgnoreCase" /> is used for comparison.
 		///     </para>
 		///     <note type="important">
 		///         Sorting of INI elements in a section does only work reliable if a section only contains <see cref="ValueIniElement" />s.
@@ -1439,7 +1439,7 @@ namespace RI.Framework.IO.INI
 		/// </remarks>
 		public void SortElements ()
 		{
-			this.SortElements(StringComparer.InvariantCultureIgnoreCase);
+			this.SortElements(StringComparerEx.InvariantCultureIgnoreCase);
 		}
 
 		/// <summary>
@@ -1483,7 +1483,7 @@ namespace RI.Framework.IO.INI
 		/// <param name="section"> The name of the section (can be null). </param>
 		/// <remarks>
 		///     <para>
-		///         <see cref="StringComparer.InvariantCultureIgnoreCase" /> is used for comparison.
+		///         <see cref="StringComparerEx.InvariantCultureIgnoreCase" /> is used for comparison.
 		///     </para>
 		///     <para>
 		///         All elements in all sections matching the specified section name are sorted.
@@ -1496,7 +1496,7 @@ namespace RI.Framework.IO.INI
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="section" /> is an empty string. </exception>
 		public void SortElements (string section)
 		{
-			this.SortElements(section, StringComparer.InvariantCultureIgnoreCase);
+			this.SortElements(section, StringComparerEx.InvariantCultureIgnoreCase);
 		}
 
 		/// <summary>
@@ -1561,12 +1561,12 @@ namespace RI.Framework.IO.INI
 		/// </summary>
 		/// <remarks>
 		///     <para>
-		///         <see cref="StringComparer.InvariantCultureIgnoreCase" /> is used for comparison.
+		///         <see cref="StringComparerEx.InvariantCultureIgnoreCase" /> is used for comparison.
 		///     </para>
 		/// </remarks>
 		public void SortRegions ()
 		{
-			this.SortRegions(StringComparer.InvariantCultureIgnoreCase);
+			this.SortRegions(StringComparerEx.InvariantCultureIgnoreCase);
 		}
 
 		/// <summary>

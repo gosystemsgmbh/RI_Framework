@@ -21,7 +21,7 @@ namespace RI.Framework.Data.Repository
 		/// </summary>
 		/// <remarks>
 		///     <para>
-		///         <see cref="StringComparer.InvariantCultureIgnoreCase" /> is used for the property names and <see cref="StringComparer.CurrentCultureIgnoreCase" /> for the errors.
+		///         <see cref="StringComparerEx.InvariantCultureIgnoreCase" /> is used for the property names and <see cref="StringComparerEx.CurrentCultureIgnoreCase" /> for the errors.
 		///     </para>
 		/// </remarks>
 		public RepositorySetErrors ()
@@ -32,12 +32,12 @@ namespace RI.Framework.Data.Repository
 		/// <summary>
 		///     Creates anew instance of <see cref="RepositorySetErrors" />.
 		/// </summary>
-		/// <param name="propertyNameComparer"> The property name comparer used with the <see cref="PropertyErrors" /> dictionary or null to use <see cref="StringComparer.InvariantCultureIgnoreCase" />. </param>
-		/// <param name="errorComparer"> The error comparer used with the <see cref="EntityErrors" /> and <see cref="PropertyErrors" /> sets or null to use <see cref="StringComparer.CurrentCultureIgnoreCase" />. </param>
+		/// <param name="propertyNameComparer"> The property name comparer used with the <see cref="PropertyErrors" /> dictionary or null to use <see cref="StringComparerEx.Ordinal" />. </param>
+		/// <param name="errorComparer"> The error comparer used with the <see cref="EntityErrors" /> and <see cref="PropertyErrors" /> sets or null to use <see cref="StringComparerEx.CurrentCultureIgnoreCase" />. </param>
 		public RepositorySetErrors (IEqualityComparer<string> propertyNameComparer, IEqualityComparer<string> errorComparer)
 		{
-			this.PropertyNameComparer = propertyNameComparer ?? StringComparer.InvariantCultureIgnoreCase;
-			this.ErrorComparer = errorComparer ?? StringComparer.CurrentCultureIgnoreCase;
+			this.PropertyNameComparer = propertyNameComparer ?? StringComparerEx.Ordinal;
+			this.ErrorComparer = errorComparer ?? StringComparerEx.CurrentCultureIgnoreCase;
 
 			this.EntityErrors = new HashSet<string>(this.ErrorComparer);
 			this.PropertyErrors = new Dictionary<string, HashSet<string>>(this.PropertyNameComparer);
@@ -69,7 +69,7 @@ namespace RI.Framework.Data.Repository
 		///         The keys of the dictionary are the property names and the values are the lists of validation errors associated with the corresponding property.
 		///     </para>
 		///     <para>
-		///         The dictionary uses <see cref="StringComparer.CurrentCultureIgnoreCase" /> for managing the property keys.
+		///         The dictionary uses <see cref="StringComparerEx.CurrentCultureIgnoreCase" /> for managing the property keys.
 		///     </para>
 		/// </remarks>
 		public Dictionary<string, HashSet<string>> PropertyErrors { get; private set; }

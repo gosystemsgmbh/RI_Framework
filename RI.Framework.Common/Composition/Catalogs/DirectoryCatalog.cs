@@ -100,7 +100,7 @@ namespace RI.Framework.Composition.Catalogs
 			this.FilePattern = filePattern;
 			this.Recursive = recursive;
 
-			this.LoadedFiles = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+			this.LoadedFiles = new HashSet<string>(StringComparerEx.InvariantCultureIgnoreCase);
 			this.FailedFiles = new HashSet<string>(this.LoadedFiles.Comparer);
 		}
 

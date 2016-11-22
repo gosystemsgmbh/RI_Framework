@@ -37,7 +37,7 @@ namespace RI.Framework.Services.Regions
 		public RegionService ()
 		{
 			this.AdaptersManual = new List<IRegionAdapter>();
-			this.RegionDictionary = new Dictionary<string, Tuple<object, IRegionAdapter>>(StringComparer.InvariantCultureIgnoreCase);
+			this.RegionDictionary = new Dictionary<string, Tuple<object, IRegionAdapter>>(StringComparerEx.InvariantCultureIgnoreCase);
 		}
 
 		#endregion

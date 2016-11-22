@@ -34,13 +34,13 @@ namespace RI.Tools.Framework.VersionUpdater
 			}
 
 			string fullPath = Path.GetFullPath(args[0]);
-			bool recursive = string.Equals(args[1], "r", StringComparison.OrdinalIgnoreCase);
+			bool recursive = string.Equals(args[1], "r", StringComparison.InvariantCultureIgnoreCase);
 
 			Version newVersion = null;
 			string newCompany = null;
 			string newCopyright = null;
 
-			if (string.Equals(args[2], "file", StringComparison.OrdinalIgnoreCase))
+			if (string.Equals(args[2], "file", StringComparison.InvariantCultureIgnoreCase))
 			{
 				newVersion = new Version(File.ReadAllText(Path.GetFullPath(args[3])).Trim());
 				newCompany = File.ReadAllText(Path.GetFullPath(args[4])).Trim();

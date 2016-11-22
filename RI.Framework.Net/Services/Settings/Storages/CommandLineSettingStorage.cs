@@ -44,7 +44,7 @@ namespace RI.Framework.Services.Settings.Storages
 		/// </remarks>
 		public CommandLineSettingStorage ()
 		{
-			this.CommandLine = CommandLine.Parse(Environment.CommandLine, true, StringComparer.InvariantCultureIgnoreCase);
+			this.CommandLine = CommandLine.Parse(Environment.CommandLine, true, StringComparerEx.InvariantCultureIgnoreCase);
 		}
 
 		#endregion

@@ -38,7 +38,7 @@ namespace RI.Framework.Services.Settings
 		{
 			this.StoragesManual = new List<ISettingStorage>();
 			this.ConvertersManual = new List<ISettingConverter>();
-			this.Cache = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
+			this.Cache = new Dictionary<string, string>(StringComparerEx.InvariantCultureIgnoreCase);
 		}
 
 		#endregion

@@ -18,8 +18,6 @@ Examples
 Utilities
 ---------
 
- # (Common) StringComparerEx (also use where appropriate, check all usages)
-
  # (Common) IDispatcher (also implement where appropriate)
 
  # (Common) ISynchronizable (also implement where appropriate)
@@ -247,7 +245,6 @@ Data
  - (.NET) IRepositoryContext: Add GetChanges method (return RepositoryContextChanges type)
  - (.NET) IRepositoryContext: Add GetErrors method (return RepositoryContextErrors type)
 
- # (SQLite) Add more collations and functions
  # (SQLite) SQLiteDatabaseManager: Move script chains to IDatabaseManager
 
  - (.NET) IDatabaseManager: Support for creating connections when state is Old
@@ -284,4 +281,4 @@ Tools
 -----
 
  # ElevatedStart
- - LogViewer
+ # LogViewer

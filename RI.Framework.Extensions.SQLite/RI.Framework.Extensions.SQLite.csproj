@@ -55,13 +55,24 @@
     <Reference Include="System.Data" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\SQLite\Collations\TrimmedCaseInsensitiveCultureSQLiteCollation.cs" />
-    <Compile Include="Data\SQLite\Collations\TrimmedCaseInsensitiveCurrentSQLiteCollation.cs" />
-    <Compile Include="Data\SQLite\Collations\TrimmedCaseInsensitiveInvariantSQLiteCollation.cs" />
+    <Compile Include="Data\SQLite\Collations\CurrentCultureIgnoreCaseSQLiteCollation.cs" />
+    <Compile Include="Data\SQLite\Collations\CurrentCultureSQLiteCollation.cs" />
+    <Compile Include="Data\SQLite\Collations\InvariantCultureIgnoreCaseSQLiteCollation.cs" />
+    <Compile Include="Data\SQLite\Collations\InvariantCultureSQLiteCollation.cs" />
+    <Compile Include="Data\SQLite\Collations\OrdinalIgnoreCaseSQLiteCollation.cs" />
+    <Compile Include="Data\SQLite\Collations\OrdinalSQLiteCollation.cs" />
+    <Compile Include="Data\SQLite\Collations\TrimmedCurrentCultureIgnoreCaseSQLiteCollation.cs" />
+    <Compile Include="Data\SQLite\Collations\TrimmedCurrentCultureSQLiteCollation.cs" />
+    <Compile Include="Data\SQLite\Collations\TrimmedInvariantCultureSQLiteCollation.cs" />
+    <Compile Include="Data\SQLite\Collations\TrimmedInvariantCultureIgnoreCaseSQLiteCollation.cs" />
+    <Compile Include="Data\SQLite\Collations\TrimmedOrdinalIgnoreCaseSQLiteCollation.cs" />
+    <Compile Include="Data\SQLite\Collations\TrimmedOrdinalSQLiteCollation.cs" />
     <Compile Include="Data\SQLite\Collations\_NamespaceDoc.cs" />
     <Compile Include="Data\SQLite\Functions\IsNullOrEmptySQLiteFunction.cs" />
     <Compile Include="Data\SQLite\Functions\RegularExpressionSQLiteFunction.cs" />
+    <Compile Include="Data\SQLite\Functions\ToEmptyIfEmptyOrNullSQLiteFunction.cs" />
     <Compile Include="Data\SQLite\Functions\ToNullIfEmptyOrNullSQLiteFunction.cs" />
+    <Compile Include="Data\SQLite\Functions\TrimSQLiteFunction.cs" />
     <Compile Include="Data\SQLite\Functions\_NamespaceDoc.cs" />
     <Compile Include="Data\SQLite\SQLiteConnectionExtensions.cs" />
     <Compile Include="Data\SQLite\SQLiteDatabaseManager.cs" />
