@@ -28,8 +28,9 @@ Utilities
  - (Common) TextReaderExtensions
  - (Common) TextWriterExtensions
 
- # (.NET) StandaloneDispatcher
- # (.NET) SynchronizationContextDispatcher
+ # (.NET) ThreadDispatcher
+ # (.NET) ThreadDispatcherSynchronizationContext
+ - (.NET) ThreadDispatcherTimer
 
  # (Windows) NetworkResource
  # (Windows) SystemUser, UserProfile
@@ -190,7 +191,10 @@ Composition
 Services
 --------
 
- * (.NET) Bootstrapper: Move common Bootstrapper stuff into IApplicationBootstrapper
+ # (Service) ServiceBootstrapper
+ # (Service) ServiceApplication
+ * (.NET) Bootstrapper and Application abstraction
+  
  + (Unity) Bootstrapper: More fine-grained control over default services
 
  # (Common) ServiceLocator: Allow resolving of multiple instances (also update ServiceLocatorDbDependencyResolver)

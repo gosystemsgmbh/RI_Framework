@@ -37,6 +37,20 @@ namespace RI.Framework.Data.EF.Validation
 		}
 
 		/// <summary>
+		///     Called when it is to be determined whether an entity can be attached.
+		/// </summary>
+		/// <param name="repository"> The repository. </param>
+		/// <param name="set"> The set. </param>
+		/// <param name="entity"> The entity. </param>
+		/// <returns>
+		///     true if the entity can be attached, false otherwise.
+		/// </returns>
+		public virtual bool CanAttach (RepositoryDbContext repository, RepositoryDbSet<T> set, T entity)
+		{
+			return true;
+		}
+
+		/// <summary>
 		///     Called when it is to be determined whether a new instance can be created,
 		/// </summary>
 		/// <param name="repository"> The repository. </param>
@@ -130,6 +144,22 @@ namespace RI.Framework.Data.EF.Validation
 			}
 
 			return this.CanAdd(repository, repository.GetSet<T>(), (T)entity);
+		}
+
+		/// <inheritdoc />
+		bool IEntityValidation.CanAttach (RepositoryDbContext repository, object entity)
+		{
+			if (repository == null)
+			{
+				throw new ArgumentNullException(nameof(repository));
+			}
+
+			if (entity == null)
+			{
+				throw new ArgumentNullException(nameof(entity));
+			}
+
+			return this.CanAttach(repository, repository.GetSet<T>(), (T)entity);
 		}
 
 		/// <inheritdoc />

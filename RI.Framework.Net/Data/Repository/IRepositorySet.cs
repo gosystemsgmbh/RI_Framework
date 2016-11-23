@@ -19,12 +19,20 @@ namespace RI.Framework.Data.Repository
 		where T : class
 	{
 		/// <summary>
-		///     Adds an entity to the set.
+		///     Adds a new entity to the set.
 		/// </summary>
 		/// <param name="entity"> The entity to add to the set. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="entity" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> The entity cannot be added. </exception>
 		void Add (T entity);
+
+		/// <summary>
+		///     Attaches an existing entity to the set.
+		/// </summary>
+		/// <param name="entity"> The entity to attach to the set. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="entity" /> is null. </exception>
+		/// <exception cref="InvalidOperationException"> The entity cannot be added. </exception>
+		void Attach (T entity);
 
 		/// <summary>
 		///     Checks whether an entity can be added to the set.
@@ -35,6 +43,16 @@ namespace RI.Framework.Data.Repository
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="entity" /> is null. </exception>
 		bool CanAdd (T entity);
+
+		/// <summary>
+		///     Checks whether an entity can be attached to the set.
+		/// </summary>
+		/// <param name="entity"> The entity. </param>
+		/// <returns>
+		///     true if the entity can be attached, false otherwise.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="entity" /> is null. </exception>
+		bool CanAttach (T entity);
 
 		/// <summary>
 		///     Checks whether can be created by the set.

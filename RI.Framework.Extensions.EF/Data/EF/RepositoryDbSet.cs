@@ -133,9 +133,31 @@ namespace RI.Framework.Data.EF
 		}
 
 		/// <inheritdoc />
+		public void Attach (T entity)
+		{
+			if (entity == null)
+			{
+				throw new ArgumentNullException(nameof(entity));
+			}
+
+			if (!this.CanAdd(entity))
+			{
+				throw new InvalidOperationException("The entity cannot be attached.");
+			}
+
+			this.Set.Attach(entity);
+		}
+
+		/// <inheritdoc />
 		public virtual bool CanAdd (T entity)
 		{
 			return (((IEntityValidation)this.Repository.GetValidator<T>())?.CanAdd(this.Repository, entity)).GetValueOrDefault(true);
+		}
+
+		/// <inheritdoc />
+		public virtual bool CanAttach (T entity)
+		{
+			return (((IEntityValidation)this.Repository.GetValidator<T>())?.CanAttach(this.Repository, entity)).GetValueOrDefault(true);
 		}
 
 		/// <inheritdoc />

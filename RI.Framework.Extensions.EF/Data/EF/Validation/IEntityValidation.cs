@@ -42,6 +42,16 @@ namespace RI.Framework.Data.EF.Validation
 		bool CanAdd (RepositoryDbContext repository, object entity);
 
 		/// <summary>
+		///     Determines whether an entity can be attached.
+		/// </summary>
+		/// <param name="repository"> The repository. </param>
+		/// <param name="entity"> The entity. </param>
+		/// <returns>
+		///     true if the entity can be attached, false otherwise.
+		/// </returns>
+		bool CanAttach (RepositoryDbContext repository, object entity);
+
+		/// <summary>
 		///     Determines whether a new entity instance can be created.
 		/// </summary>
 		/// <param name="repository"> The repository. </param>
