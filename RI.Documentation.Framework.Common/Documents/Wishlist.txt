@@ -202,6 +202,8 @@ Services
  - (WPF) WpfApplication: Handle power events using SystemEvents.PowerModeChanged
  - (WPF) WpfApplication: Handle user switching using SystemEvents.SessionSwitch
  
+ # (Common) Logging: ISupportsLogging
+ # (Common) Logging: Remove Log methods and replace with single extension method for ISupportsLogging
  # (Common) Logging: Fatal log level
  # (Common) Logging: One-file-per-day option for DirectoryLogWriter
  # (Common) Logging: LogFilter
