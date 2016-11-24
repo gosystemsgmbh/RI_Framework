@@ -340,6 +340,7 @@ namespace RI.Framework.Data.SQLite
 			connection.BindFunction(new IsNullOrEmptySQLiteFunction());
 
 			connection.BindFunction(new RegularExpressionSQLiteFunction());
+			connection.BindFunction(new MatchSQLiteFunction());
 		}
 
 		private void SetState (DatabaseState state)

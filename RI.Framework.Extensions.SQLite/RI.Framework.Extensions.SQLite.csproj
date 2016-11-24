@@ -69,6 +69,7 @@
     <Compile Include="Data\SQLite\Collations\TrimmedOrdinalSQLiteCollation.cs" />
     <Compile Include="Data\SQLite\Collations\_NamespaceDoc.cs" />
     <Compile Include="Data\SQLite\Functions\IsNullOrEmptySQLiteFunction.cs" />
+    <Compile Include="Data\SQLite\Functions\MatchSQLiteFunction.cs" />
     <Compile Include="Data\SQLite\Functions\RegularExpressionSQLiteFunction.cs" />
     <Compile Include="Data\SQLite\Functions\ToEmptyIfEmptyOrNullSQLiteFunction.cs" />
     <Compile Include="Data\SQLite\Functions\ToNullIfEmptyOrNullSQLiteFunction.cs" />

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.SQLite;
-using System.Text.RegularExpressions;
+
+using RI.Framework.Utilities;
 
 
 
@@ -8,26 +9,26 @@ using System.Text.RegularExpressions;
 namespace RI.Framework.Data.SQLite.Functions
 {
 	/// <summary>
-	///     Implements an SQLite function which checks whether a string matches with a regular expression.
+	///     Implements an SQLite function which checks whether a string contains a match of an other string.
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         <see cref="Regex" />.<see cref="Regex.IsMatch(string,string)" /> is used to match the input and the pattern.
+	///         <see cref="StringExtensions" />.<see cref="StringExtensions.Contains(string,string,StringComparison)" /> is used to match the input and the pattern.
 	///     </para>
 	///     <para>
-	///         The SQL name of the function is <c> regexp </c>.
+	///         The SQL name of the function is <c> match </c>.
 	///     </para>
 	/// </remarks>
 	/// <example>
 	///     <code language="sql">
 	/// <![CDATA[
-	/// column REGEXP 'pattern'
-	/// regexp('pattern', column)
+	/// column MATCH 'pattern'
+	/// match('pattern', column)
 	/// ]]>
 	/// </code>
 	/// </example>
-	[SQLiteFunction ("regexp", 2, FunctionType.Scalar)]
-	public sealed class RegularExpressionSQLiteFunction : SQLiteFunction
+	[SQLiteFunction ("match", 2, FunctionType.Scalar)]
+	public sealed class MatchSQLiteFunction : SQLiteFunction
 	{
 		#region Static Methods
 
@@ -36,7 +37,7 @@ namespace RI.Framework.Data.SQLite.Functions
 		/// </summary>
 		public static void RegisterGlobal ()
 		{
-			SQLiteFunction.RegisterFunction(typeof(RegularExpressionSQLiteFunction));
+			SQLiteFunction.RegisterFunction(typeof(MatchSQLiteFunction));
 		}
 
 		#endregion
@@ -82,7 +83,7 @@ namespace RI.Framework.Data.SQLite.Functions
 				input = input.ToString();
 			}
 
-			return Regex.IsMatch((string)input, (string)pattern);
+			return ((string)input).Contains((string)pattern, StringComparison.OrdinalIgnoreCase);
 		}
 
 		#endregion
