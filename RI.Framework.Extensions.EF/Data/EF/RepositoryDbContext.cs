@@ -7,6 +7,8 @@ using System.Data.Entity.Infrastructure;
 using System.Data.Entity.ModelConfiguration.Configuration;
 using System.Data.Entity.Validation;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 using RI.Framework.Data.EF.Filter;
 using RI.Framework.Data.EF.Validation;
@@ -279,6 +281,32 @@ namespace RI.Framework.Data.EF
 		}
 
 		/// <summary>
+		///     Called when all the changed entities are to be fixed before they are saved to the database.
+		/// </summary>
+		protected virtual void FixEntities ()
+		{
+			this.ChangeTracker.DetectChanges();
+
+			foreach (DbEntityEntry entry in this.ChangeTracker.Entries())
+			{
+				if (this.ShouldValidateEntity(entry))
+				{
+					this.FixEntity(entry);
+				}
+			}
+		}
+
+		/// <summary>
+		///     Called when a specific entity is to be fixed before it is saved to the database.
+		/// </summary>
+		/// <param name="entityEntry"> The entity to fix. </param>
+		protected virtual void FixEntity (DbEntityEntry entityEntry)
+		{
+			IEntityValidation validator = RepositoryDbContext.GetValidator(this, entityEntry.Entity.GetType());
+			validator?.Fix(this, entityEntry);
+		}
+
+		/// <summary>
 		///     Called when the underlying <see cref="DbContext" /> issues log messages.
 		/// </summary>
 		/// <param name="message"> The message to log. </param>
@@ -354,6 +382,22 @@ namespace RI.Framework.Data.EF
 		#region Overrides
 
 		/// <inheritdoc />
+		public override int SaveChanges ()
+		{
+			this.FixEntities();
+
+			return base.SaveChanges();
+		}
+
+		/// <inheritdoc />
+		public override Task<int> SaveChangesAsync (CancellationToken cancellationToken)
+		{
+			this.FixEntities();
+
+			return base.SaveChangesAsync(cancellationToken);
+		}
+
+		/// <inheritdoc />
 		protected override void Dispose (bool disposing)
 		{
 			this.Database.Log = null;
@@ -374,6 +418,7 @@ namespace RI.Framework.Data.EF
 		protected override DbEntityValidationResult ValidateEntity (DbEntityEntry entityEntry, IDictionary<object, object> items)
 		{
 			IEntityValidation validator = RepositoryDbContext.GetValidator(this, entityEntry.Entity.GetType());
+			validator?.Fix(this, entityEntry);
 			DbEntityValidationResult result = validator?.Validate(this, entityEntry);
 			return result ?? base.ValidateEntity(entityEntry, items);
 		}

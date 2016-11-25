@@ -109,6 +109,17 @@ namespace RI.Framework.Data.EF.Validation
 		}
 
 		/// <summary>
+		///     Called when an entity is to be fixed.
+		/// </summary>
+		/// <param name="repository"> The repository the fixed entity belongs to. </param>
+		/// <param name="set"> The set the fixed entity belongs to. </param>
+		/// <param name="entry"> The entity entry of the entity to fix. </param>
+		/// <param name="entity"> The entity to fix. </param>
+		protected virtual void Fix (RepositoryDbContext repository, RepositoryDbSet<T> set, DbEntityEntry entry, T entity)
+		{
+		}
+
+		/// <summary>
 		///     Called when an entity is to be validated.
 		/// </summary>
 		/// <param name="repository"> The repository the validated entity belongs to. </param>
@@ -219,6 +230,22 @@ namespace RI.Framework.Data.EF.Validation
 			}
 
 			return this.CanReload(repository, repository.GetSet<T>(), entry, (T)entry.Entity);
+		}
+
+		/// <inheritdoc />
+		void IEntityValidation.Fix (RepositoryDbContext repository, DbEntityEntry entry)
+		{
+			if (repository == null)
+			{
+				throw new ArgumentNullException(nameof(repository));
+			}
+
+			if (entry == null)
+			{
+				throw new ArgumentNullException(nameof(entry));
+			}
+
+			this.Fix(repository, repository.GetSet<T>(), entry, (T)entry.Entity);
 		}
 
 		/// <inheritdoc />
