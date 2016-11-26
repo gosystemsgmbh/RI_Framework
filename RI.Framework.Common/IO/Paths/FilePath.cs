@@ -420,6 +420,7 @@ namespace RI.Framework.IO.Paths
 		{
 			this.VerifyRealFile();
 			bool result = !this.Exists;
+			this.Directory.Create();
 			using (File.Create(this))
 			{
 				return result;

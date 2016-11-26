@@ -237,7 +237,7 @@ namespace RI.Framework.Data.SQLite
 				throw new InvalidOperationException("Cannot create SQLite connection when in state \"" + this.State + "\".");
 			}
 
-			return this.CreateConnectionInternal(readOnly, false);
+			return this.CreateConnectionInternal(readOnly);
 		}
 
 		private void ConnectionStateChangedMethod (object sender, StateChangeEventArgs e)
@@ -255,12 +255,14 @@ namespace RI.Framework.Data.SQLite
 			}
 		}
 
-		private SQLiteConnection CreateConnectionInternal (bool readOnly, bool open)
+		private SQLiteConnection CreateConnectionInternal (bool readOnly)
 		{
 			SQLiteConnectionStringBuilder connectionString = new SQLiteConnectionStringBuilder(this.CachedConnectionString.ConnectionString);
 			connectionString.ReadOnly = readOnly;
 
 			SQLiteConnection connection = new SQLiteConnection(connectionString.ConnectionString);
+			connection.Open();
+
 			this.RegisterCollations(connection);
 			this.RegisterFunctions(connection);
 
@@ -271,11 +273,6 @@ namespace RI.Framework.Data.SQLite
 			if (handler != null)
 			{
 				handler(this, new DatabaseConnectionCreatedEventArgs(connection, readOnly));
-			}
-
-			if (open)
-			{
-				connection.Open();
 			}
 
 			return connection;
@@ -347,14 +344,17 @@ namespace RI.Framework.Data.SQLite
 		{
 			this.Log(LogLevel.Debug, "Setting database state: {0} -> {1} @ [{2}]", this.State, state, this);
 
+			if ((this.State == DatabaseState.Ready) && (state == DatabaseState.Uninitialized))
+			{
+				this.CloseConnections();
+			}
+
 			DatabaseState oldState = this.State;
 
 			this.State = state;
 
 			if (this.State == DatabaseState.Uninitialized)
 			{
-				this.CloseConnections();
-
 				this.InitialVersion = 0;
 				this.InitialNew = false;
 				this.InitialOld = false;
@@ -478,7 +478,7 @@ namespace RI.Framework.Data.SQLite
 			this.Log(LogLevel.Information, "Beginning cleanup database: [{0}]", this);
 			try
 			{
-				using (SQLiteConnection connection = this.CreateConnectionInternal(false, true))
+				using (SQLiteConnection connection = this.CreateConnectionInternal(false))
 				{
 					using (SQLiteTransaction transaction = connection.BeginTransaction(IsolationLevel.Serializable))
 					{
@@ -609,7 +609,7 @@ namespace RI.Framework.Data.SQLite
 			{
 				try
 				{
-					using (SQLiteConnection connection = this.CreateConnectionInternal(true, true))
+					using (SQLiteConnection connection = this.CreateConnectionInternal(false))
 					{
 						using (SQLiteTransaction transaction = connection.BeginTransaction(IsolationLevel.Serializable))
 						{
@@ -748,7 +748,7 @@ namespace RI.Framework.Data.SQLite
 			this.Log(LogLevel.Information, "Beginning upgrade database: {0} -> {1} @ [{2}]", startVersion, this.MaxVersion, this);
 			try
 			{
-				using (SQLiteConnection connection = this.CreateConnectionInternal(false, true))
+				using (SQLiteConnection connection = this.CreateConnectionInternal(false))
 				{
 					using (SQLiteTransaction transaction = connection.BeginTransaction(IsolationLevel.Serializable))
 					{
