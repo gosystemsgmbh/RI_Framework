@@ -100,12 +100,20 @@ namespace RI.Framework.Data.EF
 			{
 				RepositoryDbContext.CreateFilters(repository);
 
-				if (!RepositoryDbContext.Filters[repository.GetType()].Contains(entityType))
+				if (RepositoryDbContext.Filters[repository.GetType()].Contains(entityType))
 				{
-					return null;
+					return RepositoryDbContext.Filters[repository.GetType()][entityType];
 				}
 
-				return RepositoryDbContext.Filters[repository.GetType()][entityType];
+				foreach (IEntityFilter filter in RepositoryDbContext.Filters[repository.GetType()])
+				{
+					if (filter.EntityType.IsAssignableFrom(entityType))
+					{
+						return filter;
+					}
+				}
+
+				return null;
 			}
 		}
 
@@ -115,12 +123,20 @@ namespace RI.Framework.Data.EF
 			{
 				RepositoryDbContext.CreateValidators(repository);
 
-				if (!RepositoryDbContext.Validators[repository.GetType()].Contains(entityType))
+				if (RepositoryDbContext.Validators[repository.GetType()].Contains(entityType))
 				{
-					return null;
+					return RepositoryDbContext.Validators[repository.GetType()][entityType];
 				}
 
-				return RepositoryDbContext.Validators[repository.GetType()][entityType];
+				foreach (IEntityValidation validator in RepositoryDbContext.Validators[repository.GetType()])
+				{
+					if (validator.EntityType.IsAssignableFrom(entityType))
+					{
+						return validator;
+					}
+				}
+
+				return null;
 			}
 		}
 

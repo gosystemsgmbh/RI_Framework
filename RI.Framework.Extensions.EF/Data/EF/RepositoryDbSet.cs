@@ -4,6 +4,7 @@ using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Validation;
 using System.Linq;
+using System.Linq.Expressions;
 
 using RI.Framework.Data.EF.Filter;
 using RI.Framework.Data.EF.Validation;
@@ -211,8 +212,13 @@ namespace RI.Framework.Data.EF
 		}
 
 		/// <inheritdoc />
-		public virtual IEnumerable<T> GetFiltered (object filter, int pageIndex, int pageSize, out int entityCount, out int pageCount)
+		public virtual IEnumerable<T> GetFiltered<TKey> (object filter, Expression<Func<T, TKey>> sorter, int pageIndex, int pageSize, out int entityCount, out int pageCount)
 		{
+			if (sorter == null)
+			{
+				throw new ArgumentNullException(nameof(sorter));
+			}
+
 			if (pageIndex < 0)
 			{
 				throw new ArgumentOutOfRangeException(nameof(pageIndex));
@@ -240,7 +246,7 @@ namespace RI.Framework.Data.EF
 
 			EntityFilter<T> entityFilter = this.Repository.GetFilter<T>();
 			IQueryable<T> queryable = (entityFilter?.Filter(this.Repository, this, filter) ?? (filter as IRepositoryDbSetFilter<T>)?.Filter(this.Repository, this)) ?? this.Set;
-			return queryable.Skip(offset).Take(pageSize);
+			return queryable.OrderBy(sorter).Skip(offset).Take(pageSize);
 		}
 
 		/// <inheritdoc />
@@ -271,10 +277,9 @@ namespace RI.Framework.Data.EF
 			}
 
 			DbEntityEntry<T> entry = this.Repository.Entry(entity);
-			if (entry != null)
+			if ((entry != null) && ((entry.State & (EntityState.Unchanged)) != 0))
 			{
-				entry.State |= EntityState.Modified;
-				entry.State &= ~EntityState.Unchanged;
+				entry.State = EntityState.Modified;
 			}
 		}
 
@@ -292,7 +297,7 @@ namespace RI.Framework.Data.EF
 			}
 
 			DbEntityEntry<T> entry = this.Repository.Entry(entity);
-			if ((entry != null) && ((entry.State & (EntityState.Modified | EntityState.Deleted | EntityState.Detached)) != 0))
+			if ((entry != null) && ((entry.State & (EntityState.Modified)) != 0))
 			{
 				entry.Reload();
 			}

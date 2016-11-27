@@ -25,7 +25,7 @@ namespace RI.Framework.Data.EF.Filter
 		/// </summary>
 		/// <param name="repository"> The repository. </param>
 		/// <param name="set"> The repository set to filter. </param>
-		/// <param name="filter"> The filter object specified passed to <see cref="RepositoryDbSet{T}.GetFiltered" /> </param>
+		/// <param name="filter"> The filter object specified passed to <see cref="RepositoryDbSet{T}.GetFiltered{TKey}" /> </param>
 		/// <returns>
 		///     The query provider which does the filtering or null if no filter shall be applied.
 		/// </returns>

@@ -57,6 +57,7 @@
     <Compile Include="Data\Repository\IRepositoryContext.cs" />
     <Compile Include="Data\Repository\RepositorySetErrors.cs" />
     <Compile Include="Data\Repository\IRepositorySet.cs" />
+    <Compile Include="Data\Repository\Views\_NamespaceDoc.cs" />
     <Compile Include="Data\Repository\_NamespaceDoc.cs" />
     <Compile Include="Data\_NamespaceDoc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
