@@ -25,7 +25,7 @@ namespace RI.Framework.Data.EF
 	///         See <see cref="IRepositorySet{T}" /> and <see cref="DbSet{TEntity}" /> for more details.
 	///     </para>
 	/// </remarks>
-	public class RepositoryDbSet <T> : IRepositoryDbSet, IRepositorySet<T>
+	public class RepositoryDbSet <T> : IRepositorySet<T>
 		where T : class
 	{
 		#region Instance Constructor/Destructor
@@ -104,17 +104,10 @@ namespace RI.Framework.Data.EF
 
 
 
-		#region Interface: IRepositoryDbSet
+		#region Interface: IRepositorySet<T>
 
 		/// <inheritdoc />
 		public Type EntityType => typeof(T);
-
-		#endregion
-
-
-
-
-		#region Interface: IRepositorySet<T>
 
 		/// <inheritdoc />
 		public void Add (T entity)
@@ -140,7 +133,7 @@ namespace RI.Framework.Data.EF
 				throw new ArgumentNullException(nameof(entity));
 			}
 
-			if (!this.CanAdd(entity))
+			if (!this.CanAttach(entity))
 			{
 				throw new InvalidOperationException("The entity cannot be attached.");
 			}
@@ -246,7 +239,7 @@ namespace RI.Framework.Data.EF
 			int offset = pageIndex * pageSize;
 
 			EntityFilter<T> entityFilter = this.Repository.GetFilter<T>();
-			IQueryable<T> queryable = (entityFilter?.Filter(this.Repository, this, filter) ?? (filter as IRepositoryDbSetFilter<T>)?.Filter(this)) ?? this.Set;
+			IQueryable<T> queryable = (entityFilter?.Filter(this.Repository, this, filter) ?? (filter as IRepositoryDbSetFilter<T>)?.Filter(this.Repository, this)) ?? this.Set;
 			return queryable.Skip(offset).Take(pageSize);
 		}
 
@@ -293,7 +286,7 @@ namespace RI.Framework.Data.EF
 				throw new ArgumentNullException(nameof(entity));
 			}
 
-			if (!this.CanModify(entity))
+			if (!this.CanReload(entity))
 			{
 				throw new InvalidOperationException("The entity cannot be reloaded.");
 			}

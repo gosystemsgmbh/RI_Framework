@@ -400,10 +400,11 @@ namespace RI.Framework.Data.EF
 		/// <inheritdoc />
 		protected override void Dispose (bool disposing)
 		{
-			this.Database.Log = null;
 			this.Sets.Clear();
 
 			base.Dispose(disposing);
+
+			this.Database.Log = null;
 		}
 
 		/// <inheritdoc />
@@ -487,11 +488,11 @@ namespace RI.Framework.Data.EF
 
 		#region Type: SetCollection
 
-		private sealed class SetCollection : KeyedCollection<Type, IRepositoryDbSet>
+		private sealed class SetCollection : KeyedCollection<Type, IRepositorySet>
 		{
 			#region Overrides
 
-			protected override Type GetKeyForItem (IRepositoryDbSet item)
+			protected override Type GetKeyForItem (IRepositorySet item)
 			{
 				return item.EntityType;
 			}

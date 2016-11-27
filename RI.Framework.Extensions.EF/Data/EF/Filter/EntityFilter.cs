@@ -36,7 +36,7 @@ namespace RI.Framework.Data.EF.Filter
 		/// </remarks>
 		public virtual IQueryable<T> Filter (RepositoryDbContext repository, RepositoryDbSet<T> set, object filter)
 		{
-			return (filter as IRepositoryDbSetFilter<T>)?.Filter(set);
+			return (filter as IRepositoryDbSetFilter<T>)?.Filter(repository, set);
 		}
 
 		#endregion

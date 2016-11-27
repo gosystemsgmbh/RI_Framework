@@ -23,10 +23,11 @@ namespace RI.Framework.Data.EF
 		/// <summary>
 		///     Filters the repository set.
 		/// </summary>
+		/// <param name="repository"> The repository. </param>
 		/// <param name="set"> The set to be filtered. </param>
 		/// <returns>
 		///     The query provider which does the filtering or null if no filter shall be applied.
 		/// </returns>
-		IQueryable<T> Filter (RepositoryDbSet<T> set);
+		IQueryable<T> Filter (RepositoryDbContext repository, RepositoryDbSet<T> set);
 	}
 }

@@ -7,6 +7,28 @@ using System.Collections.Generic;
 namespace RI.Framework.Data.Repository
 {
 	/// <summary>
+	///     Defines the interface for a non-generic repository set.
+	/// </summary>
+	/// <remarks>
+	///     <para>
+	///         This interface is currently only used to allow a non-generic abstraction of <see cref="IRepositorySet{T}" /> but does not provide actual functionality.
+	///     </para>
+	///     <para>
+	///         See <see cref="IRepositorySet{T}" /> for more details.
+	///     </para>
+	/// </remarks>
+	public interface IRepositorySet
+	{
+		/// <summary>
+		///     Gets the type of entities this repository set manages.
+		/// </summary>
+		/// <value>
+		///     The type of entities this repository set manages.
+		/// </value>
+		Type EntityType { get; }
+	}
+
+	/// <summary>
 	///     Defines the interface for a repository set.
 	/// </summary>
 	/// <typeparam name="T"> The type of the entities which are represented by this repository set. </typeparam>
@@ -15,7 +37,7 @@ namespace RI.Framework.Data.Repository
 	///         A repository set is used together with an <see cref="IRepositoryContext" /> and is used to expose one specific type of entities of that repository context.
 	///     </para>
 	/// </remarks>
-	public interface IRepositorySet <T>
+	public interface IRepositorySet <T> : IRepositorySet
 		where T : class
 	{
 		/// <summary>
