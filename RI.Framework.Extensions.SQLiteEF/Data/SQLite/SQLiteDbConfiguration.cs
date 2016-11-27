@@ -1,7 +1,7 @@
 ﻿using System.Data.Entity;
 using System.Data.Entity.Core.Common;
 using System.Data.SQLite;
-using System.Data.SQLite.Linq;
+using System.Data.SQLite.EF6;
 
 using RI.Framework.Data.EF;
 
@@ -19,7 +19,6 @@ namespace RI.Framework.Data.SQLite
 	///         It also registers a default resolver using <see cref="ServiceLocatorDbDependencyResolver" />.
 	///     </para>
 	/// </remarks>
-	/// TODO: Why the fuck does this not work?!
 	public abstract class SQLiteDbConfiguration : DbConfiguration
 	{
 		#region Instance Constructor/Destructor
@@ -33,6 +32,7 @@ namespace RI.Framework.Data.SQLite
 			this.SetProviderFactory("System.Data.SQLite.EF6", SQLiteProviderFactory.Instance);
 
 			this.SetProviderServices("System.Data.SQLite", (DbProviderServices)SQLiteProviderFactory.Instance.GetService(typeof(DbProviderServices)));
+			this.SetProviderServices("System.Data.SQLite.EF6", (DbProviderServices)SQLiteProviderFactory.Instance.GetService(typeof(DbProviderServices)));
 
 			this.AddDefaultResolver(new ServiceLocatorDbDependencyResolver());
 		}

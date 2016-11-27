@@ -250,6 +250,7 @@ Data
  * (.NET) IRepositorySet: Add entity and property descriptions functionality
  - (.NET) IRepositoryContext: Add GetChanges method (return RepositoryContextChanges type)
  - (.NET) IRepositoryContext: Add GetErrors method (return RepositoryContextErrors type)
+ - (.NET) Use type priority chain for GetValidator and GetFilter
 
  # (SQLite) SQLiteDatabaseManager: Move script chains to IDatabaseManager
 
