@@ -141,7 +141,15 @@ namespace RI.Framework.Data.Repository
 		IEnumerable<T> GetAll ();
 
 		/// <summary>
-		///     Gets a sequence of filtered entities of this sets type.
+		///     Gets the number of all entities of this sets type.
+		/// </summary>
+		/// <returns>
+		///     The number of all entities of this sets type.
+		/// </returns>
+		int GetCount ();
+
+		/// <summary>
+		///     Gets a sequence of filtered entities from this set.
 		/// </summary>
 		/// <param name="filter"> An implementation-defined filter object which is used for filtering or null if no filter is to be used. </param>
 		/// <param name="sorter"> The sorter expression or function which is used to sort the entities. </param>
@@ -160,10 +168,36 @@ namespace RI.Framework.Data.Repository
 		///         The first page (of index zero) can always be retrieved, even if <paramref name="entityCount" /> or <paramref name="pageCount" /> is zero (resulting in returning an empty sequence).
 		///     </note>
 		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="sorter"/> is null.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="sorter" /> is null. </exception>
 		/// <exception cref="ArgumentException"> <paramref name="filter" /> is an invalid filter object. </exception>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="pageIndex" /> or <paramref name="pageSize" /> is less than zero, <paramref name="pageIndex" /> is not zero when <paramref name="pageSize" /> is zero, or <paramref name="pageIndex" /> points to a page which does not exist. </exception>
-		IEnumerable<T> GetFiltered<TKey> (object filter, Expression<Func<T, TKey>> sorter, int pageIndex, int pageSize, out int entityCount, out int pageCount);
+		IEnumerable<T> GetFiltered <TKey> (object filter, Expression<Func<T, TKey>> sorter, int pageIndex, int pageSize, out int entityCount, out int pageCount);
+
+		/// <summary>
+		///     Gets a sequence of filtered entities from an existing sequence of entities.
+		/// </summary>
+		/// <param name="entities"> The sequence of existing entities to filter. </param>
+		/// <param name="filter"> An implementation-defined filter object which is used for filtering or null if no filter is to be used. </param>
+		/// <param name="sorter"> The sorter expression or function which is used to sort the entities. </param>
+		/// <param name="pageIndex"> The zero-based index of the page of filtered entities to retrieve with the returned sequence. </param>
+		/// <param name="pageSize"> The size of one page or 0 if no paging is to be used. </param>
+		/// <param name="entityCount"> The total count of all entities over all pages with the filter applied. </param>
+		/// <param name="pageCount"> The total count of pages available with the filter applied. </param>
+		/// <returns>
+		///     The sequence of filtered types of this sets type.
+		/// </returns>
+		/// <remarks>
+		///     <note type="important">
+		///         The number of elements in the sequence is not necessarily <paramref name="pageSize" /> but guaranteed to be less or equal.
+		///     </note>
+		///     <note type="important">
+		///         The first page (of index zero) can always be retrieved, even if <paramref name="entityCount" /> or <paramref name="pageCount" /> is zero (resulting in returning an empty sequence).
+		///     </note>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="entities" /> or <paramref name="sorter" /> is null. </exception>
+		/// <exception cref="ArgumentException"> <paramref name="filter" /> is an invalid filter object. </exception>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="pageIndex" /> or <paramref name="pageSize" /> is less than zero, <paramref name="pageIndex" /> is not zero when <paramref name="pageSize" /> is zero, or <paramref name="pageIndex" /> points to a page which does not exist. </exception>
+		IEnumerable<T> GetFiltered <TKey> (IEnumerable<T> entities, object filter, Expression<Func<T, TKey>> sorter, int pageIndex, int pageSize, out int entityCount, out int pageCount);
 
 		/// <summary>
 		///     Determines whether an entity has any pending changes.
