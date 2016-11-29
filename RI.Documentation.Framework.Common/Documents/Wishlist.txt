@@ -243,6 +243,8 @@ Services
 Data
 ----
 
+ * (.NET) Reporting
+
  # (EF) Add support for IEntityConfiguration of registrar (through extension method)
 
  # (.NET) ISupportsDatabaseLogging

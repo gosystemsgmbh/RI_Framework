@@ -18,6 +18,7 @@ namespace RI.Framework.Data.EF
 	///         If the filter parameter implements <see cref="IRepositoryDbSetFilter{T}" />, <see cref="Filter" /> is used for filtering, applied before paging.
 	///     </para>
 	/// </remarks>
+	/// TODO: Remove
 	public interface IRepositoryDbSetFilter <T>
 		where T : class
 	{

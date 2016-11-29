@@ -23,6 +23,7 @@ namespace RI.Framework.Services.Resources
 	///         Names of resources are considered case-insensitive.
 	///     </para>
 	/// </remarks>
+	/// TODO: Non-generic GetValue method
 	[Export]
 	public interface IResourceService
 	{

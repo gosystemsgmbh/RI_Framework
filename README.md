@@ -42,6 +42,9 @@
     - [ ] Check fixed log levels
     - [ ] Check correct null handling
   - [ ] Do all events use proper event handler and event args?
+  - [ ] Rename EF to EF6
+  - [ ] Rename SQLiteEF to SQLiteEF6
+  - [ ] Add NuGet packages to Libraries project
   - [ ] TODOs
 - [ ] Testing
   - [X] Split testing into "Unity" and ".NET"
@@ -54,7 +57,11 @@
   - [ ] Web page
   - [ ] Unity Asset Store
 
-## Candidates for moving to Common
+## Future
 
-- [ ] Resource Service
-- [ ] Setting Service
+- [ ] Moving to Common/Shared
+  - [ ] Resource Service
+  - [ ] Setting Service
+- [ ] Migrate Common to Shared
+  - [ ] Migrate Common to Shared
+  - [ ] Add reference to RI.Framework.Shared to all projects

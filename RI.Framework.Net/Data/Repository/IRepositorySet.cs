@@ -18,6 +18,7 @@ namespace RI.Framework.Data.Repository
 	///         See <see cref="IRepositorySet{T}" /> for more details.
 	///     </para>
 	/// </remarks>
+	/// TODO: Create full functioning non-generic version
 	public interface IRepositorySet
 	{
 		/// <summary>

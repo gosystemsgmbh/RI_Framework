@@ -90,6 +90,7 @@
     <Compile Include="Services\Resources\IResourceSet.cs" />
     <Compile Include="Services\Resources\IResourceSource.cs" />
     <Compile Include="Services\Resources\_NamespaceDoc.cs" />
+    <Compile Include="Services\Settings\Converters\_NamespaceDoc.cs" />
     <Compile Include="Services\Settings\Storages\AppConfigSettingStorage.cs" />
     <Compile Include="Services\Settings\Storages\CommandLineSettingStorage.cs" />
     <Compile Include="Services\Settings\Storages\EnvironmentVariableSettingStorage.cs" />

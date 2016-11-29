@@ -20,6 +20,7 @@ namespace RI.Framework.Services.Messaging
 	///         See <see cref="IMessage" /> for more details.
 	///     </para>
 	/// </remarks>
+	/// TODO: Non-generic Get methods
 	public class Message : IMessage
 	{
 		#region Instance Constructor/Destructor

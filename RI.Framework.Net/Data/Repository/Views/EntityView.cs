@@ -18,6 +18,8 @@ namespace RI.Framework.Data.Repository.Views
 {
 	//TODO: OnPage, etc. changed event
 	//TODO: Comments
+	//TODO: Notifications for behavioural properties
+	//TODO: Create non-generic version
 	public class EntityView <TEntity> : INotifyPropertyChanged, INotifyPropertyChanging, IDisposable
 		where TEntity : class
 	{

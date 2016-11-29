@@ -16,6 +16,7 @@ namespace RI.Framework.Data.EF.Filter
 	///         See <see cref="IEntityFilter" /> for more details.
 	///     </para>
 	/// </remarks>
+	/// TODO: Add and use default sorter
 	public abstract class EntityFilter <T> : IEntityFilter
 		where T : class
 	{
@@ -36,6 +37,7 @@ namespace RI.Framework.Data.EF.Filter
 		///         The default implementation uses <see cref="IRepositoryDbSetFilter{T}" /> if <paramref name="filter" /> derives from it or does no filtering otherwise.
 		///     </para>
 		/// </remarks>
+		/// TODO: Use IOrderedQueryable
 		public virtual IQueryable<T> Filter (RepositoryDbContext repository, RepositoryDbSet<T> set, IEnumerable<T> customSequence, object filter)
 		{
 			return (filter as IRepositoryDbSetFilter<T>)?.Filter(repository, set, customSequence);

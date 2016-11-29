@@ -31,6 +31,7 @@ namespace RI.Framework.Services.Settings
 	///         Otherwise, the order is undefined for values with the same name.
 	///     </note>
 	/// </remarks>
+	/// TODO: Non-generic GetValue, SetValue, InitializeValue method
 	[Export]
 	public interface ISettingService
 	{

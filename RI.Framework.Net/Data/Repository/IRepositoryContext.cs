@@ -21,6 +21,7 @@ namespace RI.Framework.Data.Repository
 	///         Repository contexts are intended to be short-living instances which are created when necessary and disposed after the data-specific tasks (&quot;unit of work&quot;) are completed.
 	///     </para>
 	/// </remarks>
+	/// TODO: Add non-generic version of GetSet
 	public interface IRepositoryContext : IDisposable
 	{
 		/// <summary>
