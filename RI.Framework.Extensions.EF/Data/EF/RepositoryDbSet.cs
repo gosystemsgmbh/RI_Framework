@@ -18,7 +18,25 @@ using RI.Framework.Services.Logging;
 namespace RI.Framework.Data.EF
 {
 	/// <summary>
-	///     Implements a repository set using an Entity Frameworks <see cref="DbSet{TEntity}" />.
+	///     Implements a non-generic repository set using an Entity Frameworks <see cref="DbSet{TEntity}" />.
+	/// </summary>
+	/// <remarks>
+	///     <para>
+	///         This is only a non-generic base class inherited by <see cref="RepositoryDbSet{T}" /> in order to provide an implementation of <see cref="IRepositoryDbSet" />.
+	///         This implementation simply forwards everything to <see cref="RepositoryDbSet{T}" />.
+	///         You cannot inherit from this class.
+	///         See <see cref="RepositoryDbSet{T}" /> for more details.
+	///     </para>
+	/// </remarks>
+	public abstract class RepositoryDbSet : IRepositorySet
+	{
+		internal RepositoryDbSet()
+		{
+		}
+	}
+	
+	/// <summary>
+	///     Implements a generic repository set using an Entity Frameworks <see cref="DbSet{TEntity}" />.
 	/// </summary>
 	/// <typeparam name="T"> The type of the entities which are represented by this repository set. </typeparam>
 	/// <remarks>
@@ -26,7 +44,7 @@ namespace RI.Framework.Data.EF
 	///         See <see cref="IRepositorySet{T}" /> and <see cref="DbSet{TEntity}" /> for more details.
 	///     </para>
 	/// </remarks>
-	public class RepositoryDbSet <T> : IRepositorySet<T>
+	public class RepositoryDbSet <T> : RepositoryDbSet, IRepositorySet<T>
 		where T : class
 	{
 		#region Instance Constructor/Destructor
@@ -39,14 +57,14 @@ namespace RI.Framework.Data.EF
 		/// <exception cref="ArgumentNullException"> <paramref name="repository" /> or <paramref name="set" /> is null. </exception>
 		public RepositoryDbSet (RepositoryDbContext repository, DbSet<T> set)
 		{
-			if (set == null)
-			{
-				throw new ArgumentNullException(nameof(set));
-			}
-
 			if (repository == null)
 			{
 				throw new ArgumentNullException(nameof(repository));
+			}
+
+			if (set == null)
+			{
+				throw new ArgumentNullException(nameof(set));
 			}
 
 			this.Repository = repository;
@@ -183,7 +201,7 @@ namespace RI.Framework.Data.EF
 		{
 			if (!this.CanCreate())
 			{
-				throw new InvalidOperationException("The entity cannot be created.");
+				throw new InvalidOperationException("New entities cannot be created.");
 			}
 
 			return this.Set.Create();
@@ -323,6 +341,11 @@ namespace RI.Framework.Data.EF
 			if (entity == null)
 			{
 				throw new ArgumentNullException(nameof(entity));
+			}
+
+			if (!this.CanValidate(entity))
+			{
+				throw new InvalidOperationException("The entity cannot be validated.");
 			}
 
 			this.Repository.ChangeTracker.DetectChanges();
