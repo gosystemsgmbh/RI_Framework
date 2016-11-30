@@ -197,6 +197,12 @@ namespace RI.Framework.Data.EF
 		}
 
 		/// <inheritdoc />
+		public virtual bool CanValidate (T entity)
+		{
+			return (((IEntityValidation)this.Repository.GetValidator<T>())?.CanValidate(this.Repository, this.Repository.Entry(entity))).GetValueOrDefault(true);
+		}
+
+		/// <inheritdoc />
 		public T Create ()
 		{
 			if (!this.CanCreate())
@@ -296,6 +302,12 @@ namespace RI.Framework.Data.EF
 		}
 
 		/// <inheritdoc />
+		public bool IsValid (T entity)
+		{
+			return this.Validate(entity) == null;
+		}
+
+		/// <inheritdoc />
 		public void Modify (T entity)
 		{
 			if (entity == null)
@@ -307,6 +319,8 @@ namespace RI.Framework.Data.EF
 			{
 				throw new InvalidOperationException("The entity cannot be modified.");
 			}
+
+			this.Repository.ChangeTracker.DetectChanges();
 
 			DbEntityEntry<T> entry = this.Repository.Entry(entity);
 			if ((entry != null) && ((entry.State & (EntityState.Unchanged)) != 0))
@@ -327,6 +341,8 @@ namespace RI.Framework.Data.EF
 			{
 				throw new InvalidOperationException("The entity cannot be reloaded.");
 			}
+
+			this.Repository.ChangeTracker.DetectChanges();
 
 			DbEntityEntry<T> entry = this.Repository.Entry(entity);
 			if ((entry != null) && ((entry.State & (EntityState.Modified)) != 0))
