@@ -91,6 +91,16 @@ namespace RI.Framework.Data.EF.Validation
 		bool CanReload (RepositoryDbContext repository, DbEntityEntry entry);
 
 		/// <summary>
+		///     Determines whether an entity can be validated.
+		/// </summary>
+		/// <param name="repository"> The repository. </param>
+		/// <param name="entry"> The entity entry of the entity. </param>
+		/// <returns>
+		///     true if the entity can be validated, false otherwise.
+		/// </returns>
+		bool CanValidate (RepositoryDbContext repository, DbEntityEntry entry);
+
+		/// <summary>
 		///     Fixes an entity (means: modifies values) before it is saved to the database.
 		/// </summary>
 		/// <param name="repository"> The repository the fixed entity belongs to. </param>
