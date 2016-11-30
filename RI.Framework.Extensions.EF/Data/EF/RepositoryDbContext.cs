@@ -172,6 +172,9 @@ namespace RI.Framework.Data.EF
 			this.Configuration.ProxyCreationEnabled = true;
 			this.Configuration.UseDatabaseNullSemantics = true;
 			this.Configuration.ValidateOnSaveEnabled = true;
+			
+			this.FixOnValidateEnabled = true;
+			this.FixOnSaveEnabled = true;
 		}
 
 		#endregion
@@ -196,6 +199,32 @@ namespace RI.Framework.Data.EF
 		///     </para>
 		/// </remarks>
 		public bool EnableDatabaseLogging { get; set; }
+		
+		/// <summary>
+		///     Gets or sets whether entity fixing is enabled before pending changes are saved or committed.
+		/// </summary>
+		/// <value>
+		///     true if fixing is enabled, false otherwise.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         The default value is true.
+		///     </para>
+		/// </remarks>
+		public bool FixOnSaveEnabled { get; set; }
+		
+		/// <summary>
+		///     Gets or sets whether entity fixing is enabled before validation.
+		/// </summary>
+		/// <value>
+		///     true if fixing is enabled, false otherwise.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         The default value is true.
+		///     </para>
+		/// </remarks>
+		public bool FixOnValidateEnabled { get; set; }
 
 		private SetCollection Sets { get; set; }
 
@@ -421,7 +450,10 @@ namespace RI.Framework.Data.EF
 		/// <inheritdoc />
 		public override int SaveChanges ()
 		{
-			this.FixEntities();
+			if(FixOnSaveEnabled)
+			{
+				this.FixEntities();
+			}
 
 			return base.SaveChanges();
 		}
@@ -429,7 +461,10 @@ namespace RI.Framework.Data.EF
 		/// <inheritdoc />
 		public override Task<int> SaveChangesAsync (CancellationToken cancellationToken)
 		{
-			this.FixEntities();
+			if(FixOnSaveEnabled)
+			{
+				this.FixEntities();
+			}
 
 			return base.SaveChangesAsync(cancellationToken);
 		}
@@ -455,7 +490,10 @@ namespace RI.Framework.Data.EF
 		/// <inheritdoc />
 		protected override DbEntityValidationResult ValidateEntity (DbEntityEntry entityEntry, IDictionary<object, object> items)
 		{
-			this.FixEntity(entityEntry);
+			if(FixOnValidateEnabled)
+			{
+				this.FixEntity(entityEntry);
+			}
 			
 			IEntityValidation validator = RepositoryDbContext.GetValidator(this, entityEntry.Entity.GetType());
 			DbEntityValidationResult result = validator?.Validate(this, entityEntry);
