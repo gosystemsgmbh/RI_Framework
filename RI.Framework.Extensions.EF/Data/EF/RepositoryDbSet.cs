@@ -242,19 +242,14 @@ namespace RI.Framework.Data.EF
 		}
 
 		/// <inheritdoc />
-		public virtual IEnumerable<T> GetFiltered <TKey> (object filter, Expression<Func<T, TKey>> sorter, int pageIndex, int pageSize, out int entityCount, out int pageCount)
+		public virtual IEnumerable<T> GetFiltered (object filter, IComparer<T> sorter, int pageIndex, int pageSize, out int entityCount, out int pageCount)
 		{
 			return this.GetFiltered(null, filter, sorter, pageIndex, pageSize, out entityCount, out pageCount);
 		}
 
 		/// <inheritdoc />
-		public IEnumerable<T> GetFiltered <TKey> (IEnumerable<T> entities, object filter, Expression<Func<T, TKey>> sorter, int pageIndex, int pageSize, out int entityCount, out int pageCount)
+		public virtual IEnumerable<T> GetFiltered (IEnumerable<T> entities, object filter, IComparer<T> sorter, int pageIndex, int pageSize, out int entityCount, out int pageCount)
 		{
-			if (sorter == null)
-			{
-				throw new ArgumentNullException(nameof(sorter));
-			}
-
 			if (pageIndex < 0)
 			{
 				throw new ArgumentOutOfRangeException(nameof(pageIndex));
@@ -277,13 +272,18 @@ namespace RI.Framework.Data.EF
 			{
 				throw new ArgumentOutOfRangeException(nameof(pageIndex));
 			}
+			
+			EntityFilter<T> entityFilter = this.Repository.GetFilter<T>();
+			if(entityFilter == null)
+			{
+				throw new InvalidOperationException("No entity filter available.");
+			}
 
 			int offset = pageIndex * pageSize;
 
 			List<T> sequence = entities?.ToList();
 
-			EntityFilter<T> entityFilter = this.Repository.GetFilter<T>();
-			IQueryable<T> queryable = ((entityFilter?.Filter(this.Repository, this, sequence, filter) ?? (filter as IRepositoryDbSetFilter<T>)?.Filter(this.Repository, this, sequence)) ?? sequence?.AsQueryable()) ?? this.Set;
+			IQueryable<T> queryable = (entityFilter.Filter(this.Repository, this, sequence, filter) ?? sequence?.AsQueryable()) ?? this.Set;
 			return queryable.OrderBy(sorter).Skip(offset).Take(pageSize);
 		}
 
