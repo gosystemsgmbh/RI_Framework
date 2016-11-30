@@ -209,12 +209,22 @@ namespace RI.Framework.Data.EF
 		/// <inheritdoc cref="IRepositoryContext.GetSet{T}" />
 		public RepositoryDbSet<T> GetSet <T> () where T : class
 		{
-			Type entityType = typeof(T);
-			if (!this.Sets.Contains(entityType))
+			return (RepositoryDbSet<T>)this.GetSet(typeof(T));
+		}
+
+		/// <inheritdoc cref="IRepositoryContext.GetSet(Type)" />
+		public RepositoryDbSet GetSet (Type type)
+		{
+			if (type == null)
 			{
-				this.Sets.Add(this.CreateSet<T>());
+				throw new ArgumentNullException(nameof(type));
 			}
-			return (RepositoryDbSet<T>)this.Sets[entityType];
+			
+			if (!this.Sets.Contains(type))
+			{
+				this.Sets.Add(this.CreateSet(type));
+			}
+			return this.Sets[type];
 		}
 
 		internal EntityFilter<T> GetFilter <T> () where T : class
@@ -272,6 +282,21 @@ namespace RI.Framework.Data.EF
 		#region Virtuals
 
 		/// <summary>
+		///     Fixes all entities.
+		/// </summary>
+		public void FixEntities ()
+		{
+			this.ChangeTracker.DetectChanges();
+			foreach (DbEntityEntry entry in this.ChangeTracker.Entries())
+			{
+				if (this.ShouldValidateEntity(entry))
+				{
+					this.FixEntity(entry);
+				}
+			}
+		}
+
+		/// <summary>
 		///     Called when a <see cref="RepositoryDbSet{T}" /> is required which does not yet exist.
 		/// </summary>
 		/// <typeparam name="T"> The type of entity the <see cref="RepositoryDbSet{T}" /> is required for. </typeparam>
@@ -294,22 +319,6 @@ namespace RI.Framework.Data.EF
 			where T : class
 		{
 			return new RepositoryDbSet<T>(this, this.Set<T>());
-		}
-
-		/// <summary>
-		///     Called when all the changed entities are to be fixed before they are saved to the database.
-		/// </summary>
-		protected virtual void FixEntities ()
-		{
-			this.ChangeTracker.DetectChanges();
-
-			foreach (DbEntityEntry entry in this.ChangeTracker.Entries())
-			{
-				if (this.ShouldValidateEntity(entry))
-				{
-					this.FixEntity(entry);
-				}
-			}
 		}
 
 		/// <summary>
@@ -342,7 +351,10 @@ namespace RI.Framework.Data.EF
 		/// </remarks>
 		protected virtual void LogDatabase (string message)
 		{
-			this.Log(LogLevel.Debug, "Database activity: {0}", message.Trim());
+			if(this.EnableDatabaseLogging)
+			{
+				this.Log(LogLevel.Debug, "Database activity: {0}", message.Trim());
+			}
 		}
 
 		/// <summary>
@@ -350,6 +362,9 @@ namespace RI.Framework.Data.EF
 		/// </summary>
 		/// <param name="configurations"> The entity configuration registrar to be used. </param>
 		/// <remarks>
+		///	<para>
+		///         The default implementation adds all <see cref="IEntityConfiguration" /> implementations in the assembly of this repositories type.
+		///	</para>
 		///     <note type="note">
 		///         The entity configuration is only created once for a certain type of repository.
 		///         It is cached and reused for subsequent instances of the same concrete <see cref="RepositoryDbContext" /> type.
@@ -365,6 +380,9 @@ namespace RI.Framework.Data.EF
 		/// </summary>
 		/// <param name="filters"> The entity filter registrar to be used. </param>
 		/// <remarks>
+		///	<para>
+		///         The default implementation adds all <see cref="IEntityFilter" /> implementations in the assembly of this repositories type.
+		///	</para>
 		///     <note type="note">
 		///         The entity filters are only created once for a certain type of repository.
 		///         It is cached and reused for subsequent instances of the same concrete <see cref="RepositoryDbContext" /> type.
@@ -380,6 +398,9 @@ namespace RI.Framework.Data.EF
 		/// </summary>
 		/// <param name="validators"> The entity validation registrar to be used. </param>
 		/// <remarks>
+		///	<para>
+		///         The default implementation adds all <see cref="IEntityValidation" /> implementations in the assembly of this repositories type.
+		///	</para>
 		///     <note type="note">
 		///         The entity validations are only created once for a certain type of repository.
 		///         It is cached and reused for subsequent instances of the same concrete <see cref="RepositoryDbContext" /> type.
@@ -434,8 +455,9 @@ namespace RI.Framework.Data.EF
 		/// <inheritdoc />
 		protected override DbEntityValidationResult ValidateEntity (DbEntityEntry entityEntry, IDictionary<object, object> items)
 		{
+			this.FixEntity(entityEntry);
+			
 			IEntityValidation validator = RepositoryDbContext.GetValidator(this, entityEntry.Entity.GetType());
-			validator?.Fix(this, entityEntry);
 			DbEntityValidationResult result = validator?.Validate(this, entityEntry);
 			return result ?? base.ValidateEntity(entityEntry, items);
 		}
@@ -453,6 +475,9 @@ namespace RI.Framework.Data.EF
 			this.SaveChanges();
 			this.Dispose();
 		}
+
+		/// <inheritdoc />
+		IRepositorySet IRepositoryContext.GetSet (Type type) => this.GetSet(type);
 
 		/// <inheritdoc />
 		IRepositorySet<T> IRepositoryContext.GetSet <T> () => this.GetSet<T>();
