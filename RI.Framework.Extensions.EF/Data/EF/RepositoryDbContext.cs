@@ -251,9 +251,16 @@ namespace RI.Framework.Data.EF
 			
 			if (!this.Sets.Contains(type))
 			{
-				this.Sets.Add(this.CreateSet(type));
+				this.Sets.Add(this.CreateSetInternal(type));
 			}
 			return this.Sets[type];
+		}
+		
+		private RepositoryDbSet CreateSetInternal(Type type)
+		{
+			MethodInfo method = this.GetType().GetMethod(nameof(CreateSet), BindingFlags.Instance | BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.NonPublic);
+			MethodInfo genericMethod = method.MakeGenericMethod(type);
+			return (RepositoryDbSet)genericMethod.Invoke(this, null);
 		}
 
 		internal EntityFilter<T> GetFilter <T> () where T : class
@@ -334,11 +341,11 @@ namespace RI.Framework.Data.EF
 		/// </returns>
 		/// <remarks>
 		///     <note type="important">
-		///         Do not call this method directly to obtain a set, use <see cref="GetSet{T}" /> instead.
-		///         THis method is only used for instantiating the corresponding sets.
+		///         Do not call this method directly to obtain a set, use <see cref="GetSet{T}" /> or <see cref="GetSet(Type)" /> instead.
+		///         This method is only used for instantiating the corresponding sets.
 		///     </note>
 		///     <para>
-		///         A set is only created once and then cached, reused for each subsequent call of <see cref="GetSet{T}" /> as long as this repository is not disposed.
+		///         A set is only created once and then cached and reused for each subsequent call of <see cref="GetSet{T}" /> or <see cref="GetSet(Type)" /> as long as this repository is not disposed.
 		///     </para>
 		///     <para>
 		///         The default implementation creates a new instance of <see cref="RepositoryDbSet{T}" />.
