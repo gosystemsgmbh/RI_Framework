@@ -109,6 +109,21 @@ namespace RI.Framework.Data.EF.Validation
 		}
 
 		/// <summary>
+		///     Called when it is to be determined whether an entity can be validated.
+		/// </summary>
+		/// <param name="repository"> The repository. </param>
+		/// <param name="set"> The set. </param>
+		/// <param name="entry"> The entity entry of the entity. </param>
+		/// <param name="entity"> The entity. </param>
+		/// <returns>
+		///     true if the entity can be validated, false otherwise.
+		/// </returns>
+		public virtual bool CanValidate (RepositoryDbContext repository, RepositoryDbSet<T> set, DbEntityEntry entry, T entity)
+		{
+			return true;
+		}
+
+		/// <summary>
 		///     Called when an entity is to be fixed.
 		/// </summary>
 		/// <param name="repository"> The repository the fixed entity belongs to. </param>
@@ -230,6 +245,22 @@ namespace RI.Framework.Data.EF.Validation
 			}
 
 			return this.CanReload(repository, repository.GetSet<T>(), entry, (T)entry.Entity);
+		}
+
+		/// <inheritdoc />
+		bool IEntityValidation.CanValidate (RepositoryDbContext repository, DbEntityEntry entry)
+		{
+			if (repository == null)
+			{
+				throw new ArgumentNullException(nameof(repository));
+			}
+
+			if (entry == null)
+			{
+				throw new ArgumentNullException(nameof(entry));
+			}
+
+			return this.CanValidate(repository, repository.GetSet<T>(), entry, (T)entry.Entity);
 		}
 
 		/// <inheritdoc />
