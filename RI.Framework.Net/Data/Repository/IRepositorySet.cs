@@ -204,8 +204,6 @@ namespace RI.Framework.Data.Repository
 		/// <exception cref="ArgumentNullException"> <paramref name="entity" /> is null. </exception>
 		/// <exception cref="InvalidTypeArgumentException"> <paramref name="entity" /> is of an incompatible type. </exception>
 		bool CanValidate (object entity);
-		
-		
 
 		/// <summary>
 		///     Gets a sequence of filtered entities from this set.
