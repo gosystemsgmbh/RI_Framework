@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
@@ -103,7 +104,7 @@ namespace RI.Framework.Data.EF
 		
 		
 		/// <inheritdoc />
-		public Type EntityType => return this.EntityTypeInternal;
+		public Type EntityType => this.EntityTypeInternal;
 
 		/// <inheritdoc />
 		public int GetCount ()
@@ -317,7 +318,7 @@ namespace RI.Framework.Data.EF
 		#region Interface: IRepositorySet<T>
 
 		/// <inheritdoc />
-		public override Type EntityType => typeof(T);
+		protected sealed override Type EntityTypeInternal => typeof(T);
 
 		/// <inheritdoc />
 		public new void Add (T entity)

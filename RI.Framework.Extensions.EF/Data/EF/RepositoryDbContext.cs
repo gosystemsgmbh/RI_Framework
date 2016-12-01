@@ -7,9 +7,11 @@ using System.Data.Entity.Infrastructure;
 using System.Data.Entity.ModelConfiguration.Configuration;
 using System.Data.Entity.Validation;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
+using RI.Framework.Data.EF.Configuration;
 using RI.Framework.Data.EF.Filter;
 using RI.Framework.Data.EF.Validation;
 using RI.Framework.Data.Repository;
@@ -574,11 +576,11 @@ namespace RI.Framework.Data.EF
 
 		#region Type: SetCollection
 
-		private sealed class SetCollection : KeyedCollection<Type, IRepositorySet>
+		private sealed class SetCollection : KeyedCollection<Type, RepositoryDbSet>
 		{
 			#region Overrides
 
-			protected override Type GetKeyForItem (IRepositorySet item)
+			protected override Type GetKeyForItem (RepositoryDbSet item)
 			{
 				return item.EntityType;
 			}
