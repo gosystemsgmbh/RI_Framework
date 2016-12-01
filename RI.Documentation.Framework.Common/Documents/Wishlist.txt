@@ -246,13 +246,13 @@ Data
  * (.NET) Reporting
 
  # (EF) Add support for IEntityConfiguration of registrar (through extension method)
+ * (EF) RepositoryDbContext: Use type priority chain for GetValidator and GetFilter
 
  # (.NET) ISupportsDatabaseLogging
- * (.NET) IRepositorySet: Add more GetFiltered overloads
  * (.NET) IRepositorySet: Add entity and property descriptions functionality
  - (.NET) IRepositoryContext: Add GetChanges method (return RepositoryContextChanges type)
  - (.NET) IRepositoryContext: Add GetErrors method (return RepositoryContextErrors type)
- - (.NET) Use type priority chain for GetValidator and GetFilter
+ - (.NET) EntityView: Make collection update strategy configurable
 
  # (SQLite) SQLiteDatabaseManager: Move script chains to IDatabaseManager
 

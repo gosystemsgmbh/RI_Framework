@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 
+using RI.Framework.Utilities.Exceptions;
+
 
 
 
@@ -249,7 +251,7 @@ namespace RI.Framework.Data.Repository
 		///     </note>
 		/// </remarks>
 		/// <exception cref="ArgumentException"> <paramref name="filter" /> is an invalid filter object. </exception>
-		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="pageIndex" /> or <paramref name="pageSize" /> is less than zero, <paramref name="pageIndex" /> is not zero when <paramref name="pageSize" /> is zero, or <paramref name="pageIndex" /> points to a page which does not exist. </exception>		new IEnumerable<T> GetFiltered <TKey> (IEnumerable<T> entities, object filter, Expression<Func<T, TKey>> sorter, int pageIndex, int pageSize, out int entityCount, out int pageCount);
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="pageIndex" /> or <paramref name="pageSize" /> is less than zero, <paramref name="pageIndex" /> is not zero when <paramref name="pageSize" /> is zero, or <paramref name="pageIndex" /> points to a page which does not exist. </exception>
 		IEnumerable<object> GetFiltered (IEnumerable entities, object filter, int pageIndex, int pageSize, out int entityCount, out int pageCount);
 	}
 
@@ -271,7 +273,7 @@ namespace RI.Framework.Data.Repository
 		/// <param name="entity"> The entity to add to the set. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="entity" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> The entity cannot be added. </exception>
-		new void Add (T entity);
+		void Add (T entity);
 
 		/// <summary>
 		///     Attaches an existing entity to the set.
@@ -279,7 +281,7 @@ namespace RI.Framework.Data.Repository
 		/// <param name="entity"> The entity to attach to the set. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="entity" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> The entity cannot be added. </exception>
-		new void Attach (T entity);
+		void Attach (T entity);
 
 		/// <summary>
 		///     Checks whether an entity can be added to the set.
@@ -289,7 +291,7 @@ namespace RI.Framework.Data.Repository
 		///     true if the entity can be added, false otherwise.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="entity" /> is null. </exception>
-		new bool CanAdd (T entity);
+		bool CanAdd (T entity);
 
 		/// <summary>
 		///     Checks whether an entity can be attached to the set.
@@ -299,7 +301,7 @@ namespace RI.Framework.Data.Repository
 		///     true if the entity can be attached, false otherwise.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="entity" /> is null. </exception>
-		new bool CanAttach (T entity);
+		bool CanAttach (T entity);
 
 		/// <summary>
 		///     Checks whether an entity can be deleted from the set.
@@ -309,7 +311,7 @@ namespace RI.Framework.Data.Repository
 		///     true if the entity can be deleted, false otherwise.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="entity" /> is null. </exception>
-		new bool CanDelete (T entity);
+		bool CanDelete (T entity);
 
 		/// <summary>
 		///     Checks whether an entity can be modified.
@@ -319,7 +321,7 @@ namespace RI.Framework.Data.Repository
 		///     true if the entity can be modified, false otherwise.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="entity" /> is null. </exception>
-		new bool CanModify (T entity);
+		bool CanModify (T entity);
 
 		/// <summary>
 		///     Checks whether an entity can be reloaded into the set.
@@ -329,7 +331,7 @@ namespace RI.Framework.Data.Repository
 		///     true if the entity can be reloaded, false otherwise.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="entity" /> is null. </exception>
-		new bool CanReload (T entity);
+		bool CanReload (T entity);
 
 		/// <summary>
 		///     Checks whether an entity can be validated.
@@ -339,7 +341,7 @@ namespace RI.Framework.Data.Repository
 		///     true if the entity can be validated, false otherwise.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="entity" /> is null. </exception>
-		new bool CanValidate (T entity);
+		bool CanValidate (T entity);
 
 		/// <summary>
 		///     Creates a new entity.
@@ -356,7 +358,7 @@ namespace RI.Framework.Data.Repository
 		/// <param name="entity"> The entity to delete from the set. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="entity" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> The entity cannot be deleted. </exception>
-		new void Delete (T entity);
+		void Delete (T entity);
 
 		/// <summary>
 		///     Gets a sequence of all entities of this sets type.
@@ -411,7 +413,7 @@ namespace RI.Framework.Data.Repository
 		/// </remarks>
 		/// <exception cref="ArgumentException"> <paramref name="filter" /> is an invalid filter object. </exception>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="pageIndex" /> or <paramref name="pageSize" /> is less than zero, <paramref name="pageIndex" /> is not zero when <paramref name="pageSize" /> is zero, or <paramref name="pageIndex" /> points to a page which does not exist. </exception>
-		new IEnumerable<T> GetFiltered (IEnumerable<T> entities, object filter, int pageIndex, int pageSize, out int entityCount, out int pageCount);
+		IEnumerable<T> GetFiltered (IEnumerable<T> entities, object filter, int pageIndex, int pageSize, out int entityCount, out int pageCount);
 
 		/// <summary>
 		///     Determines whether an entity has any pending changes.
@@ -422,7 +424,7 @@ namespace RI.Framework.Data.Repository
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="entity" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> The entitys modification status cannot be determined. </exception>
-		new bool IsModified (T entity);
+		bool IsModified (T entity);
 
 		/// <summary>
 		///     Determines whether an entity has validation errors.
@@ -433,7 +435,7 @@ namespace RI.Framework.Data.Repository
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="entity" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> The entitys validity status cannot be determined. </exception>
-		new bool IsValid (T entity);
+		bool IsValid (T entity);
 
 		/// <summary>
 		///     Explicitly marks an entity as modified or having pending changes respectively.
@@ -441,7 +443,7 @@ namespace RI.Framework.Data.Repository
 		/// <param name="entity"> The entity to explicitly mark as modified. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="entity" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> The entity cannot be modified. </exception>
-		new void Modify (T entity);
+		void Modify (T entity);
 
 		/// <summary>
 		///     Reloads an entity from the database, discarding all its pending changes and validation errors.
@@ -449,7 +451,7 @@ namespace RI.Framework.Data.Repository
 		/// <param name="entity"> The entity to reload from the database. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="entity" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> The entity cannot be reloaded. </exception>
-		new void Reload (T entity);
+		void Reload (T entity);
 
 		/// <summary>
 		///     Validates an entity and returns all ist validation errors.
@@ -460,6 +462,6 @@ namespace RI.Framework.Data.Repository
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="entity" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> The entity cannot be validated. </exception>
-		new RepositorySetErrors Validate (T entity);
+		RepositorySetErrors Validate (T entity);
 	}
 }

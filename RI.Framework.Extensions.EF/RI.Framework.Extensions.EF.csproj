@@ -63,7 +63,6 @@
     <Compile Include="Data\EF\Filter\FilterRegistrar.cs" />
     <Compile Include="Data\EF\Filter\IEntityFilter.cs" />
     <Compile Include="Data\EF\Filter\_NamespaceDoc.cs" />
-    <Compile Include="Data\EF\IRepositoryDbSetFilter.cs" />
     <Compile Include="Data\EF\RepositoryDbContext.cs" />
     <Compile Include="Data\EF\RepositoryDbSet.cs" />
     <Compile Include="Data\EF\ServiceLocatorDbDependencyResolver.cs" />

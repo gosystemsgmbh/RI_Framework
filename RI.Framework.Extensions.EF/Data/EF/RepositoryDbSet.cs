@@ -5,7 +5,6 @@ using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Validation;
 using System.Linq;
-using System.Linq.Expressions;
 
 using RI.Framework.Data.EF.Filter;
 using RI.Framework.Data.EF.Validation;
@@ -23,7 +22,7 @@ namespace RI.Framework.Data.EF
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         This is only a non-generic base class inherited by <see cref="RepositoryDbSet{T}" /> in order to provide an implementation of <see cref="IRepositoryDbSet" />.
+	///         This is only a non-generic base class inherited by <see cref="RepositoryDbSet{T}" /> in order to provide an implementation of <see cref="IRepositorySet" />.
 	///         This implementation simply forwards everything to <see cref="RepositoryDbSet{T}" />.
 	///         You cannot inherit from this class.
 	///         See <see cref="RepositoryDbSet{T}" /> for more details.
@@ -31,92 +30,91 @@ namespace RI.Framework.Data.EF
 	/// </remarks>
 	public abstract class RepositoryDbSet : IRepositorySet
 	{
-		internal RepositoryDbSet()
+		#region Instance Constructor/Destructor
+
+		internal RepositoryDbSet ()
 		{
 		}
-		
-		//TODO: Inheritdoc
-		
-		/// <inheritdoc />
+
+		#endregion
+
+
+
+
+		#region Abstracts
+
+		/// <inheritdoc cref="IRepositorySet.EntityType" />
 		protected abstract Type EntityTypeInternal { get; }
 
-		/// <inheritdoc />
-		protected abstract int GetCountInternal ();
-
-		/// <inheritdoc />
-		protected abstract bool CanCreateInternal ();
-
-		/// <inheritdoc />
+		/// <inheritdoc cref="IRepositorySet.Add" />
 		protected abstract void AddInternal (object entity);
 
-		/// <inheritdoc />
+		/// <inheritdoc cref="IRepositorySet.Attach" />
 		protected abstract void AttachInternal (object entity);
 
-		/// <inheritdoc />
-		protected abstract object CreateInternal ();
-
-		/// <inheritdoc />
-		protected abstract void DeleteInternal (object entity);
-		
-		/// <inheritdoc />
-		protected abstract bool IsModifiedInternal (object entity);
-
-		/// <inheritdoc />
-		protected abstract bool IsValidInternal (object entity);
-
-		/// <inheritdoc />
-		protected abstract void ModifyInternal (object entity);
-
-		/// <inheritdoc />
-		protected abstract void ReloadInternal (object entity);
-
-		/// <inheritdoc />
-		protected abstract RepositorySetErrors ValidateInternal (object entity);
-
-		/// <inheritdoc />
-		protected abstract IEnumerable<object> GetAllInternal ();
-
-		/// <inheritdoc />
+		/// <inheritdoc cref="IRepositorySet.CanAdd" />
 		protected abstract bool CanAddInternal (object entity);
 
-		/// <inheritdoc />
+		/// <inheritdoc cref="IRepositorySet.CanAttach" />
 		protected abstract bool CanAttachInternal (object entity);
 
-		/// <inheritdoc />
+		/// <inheritdoc cref="IRepositorySet.CanCreate" />
+		protected abstract bool CanCreateInternal ();
+
+		/// <inheritdoc cref="IRepositorySet.CanDelete" />
 		protected abstract bool CanDeleteInternal (object entity);
 
-		/// <inheritdoc />
+		/// <inheritdoc cref="IRepositorySet.CanModify" />
 		protected abstract bool CanModifyInternal (object entity);
 
-		/// <inheritdoc />
+		/// <inheritdoc cref="IRepositorySet.CanReload" />
 		protected abstract bool CanReloadInternal (object entity);
 
-		/// <inheritdoc />
+		/// <inheritdoc cref="IRepositorySet.CanValidate" />
 		protected abstract bool CanValidateInternal (object entity);
 
-		/// <inheritdoc />
+		/// <inheritdoc cref="IRepositorySet.Create" />
+		protected abstract object CreateInternal ();
+
+		/// <inheritdoc cref="IRepositorySet.Delete" />
+		protected abstract void DeleteInternal (object entity);
+
+		/// <inheritdoc cref="IRepositorySet.GetAll" />
+		protected abstract IEnumerable<object> GetAllInternal ();
+
+		/// <inheritdoc cref="IRepositorySet.GetCount" />
+		protected abstract int GetCountInternal ();
+
+		/// <inheritdoc cref="IRepositorySet.GetFiltered(object,int,int,out int,out int)" />
 		protected abstract IEnumerable<object> GetFilteredInternal (object filter, int pageIndex, int pageSize, out int entityCount, out int pageCount);
 
-		/// <inheritdoc />
+		/// <inheritdoc cref="IRepositorySet.GetFiltered(IEnumerable,object,int,int,out int,out int)" />
 		protected abstract IEnumerable<object> GetFilteredInternal (IEnumerable entities, object filter, int pageIndex, int pageSize, out int entityCount, out int pageCount);
-		
-		
-		
-		
+
+		/// <inheritdoc cref="IRepositorySet.IsModified" />
+		protected abstract bool IsModifiedInternal (object entity);
+
+		/// <inheritdoc cref="IRepositorySet.IsValid" />
+		protected abstract bool IsValidInternal (object entity);
+
+		/// <inheritdoc cref="IRepositorySet.Modify" />
+		protected abstract void ModifyInternal (object entity);
+
+		/// <inheritdoc cref="IRepositorySet.Reload" />
+		protected abstract void ReloadInternal (object entity);
+
+		/// <inheritdoc cref="IRepositorySet.Validate" />
+		protected abstract RepositorySetErrors ValidateInternal (object entity);
+
+		#endregion
+
+
+
+
+		#region Interface: IRepositorySet
+
 		/// <inheritdoc />
 		public Type EntityType => this.EntityTypeInternal;
-
-		/// <inheritdoc />
-		public int GetCount ()
-		{
-			return this.GetCountInternal();
-		}
-
-		/// <inheritdoc />
-		public bool CanCreate ()
-		{
-			return this.CanCreateInternal();
-		}
 
 		/// <inheritdoc />
 		public void Add (object entity)
@@ -131,6 +129,48 @@ namespace RI.Framework.Data.EF
 		}
 
 		/// <inheritdoc />
+		public bool CanAdd (object entity)
+		{
+			return this.CanAddInternal(entity);
+		}
+
+		/// <inheritdoc />
+		public bool CanAttach (object entity)
+		{
+			return this.CanAttachInternal(entity);
+		}
+
+		/// <inheritdoc />
+		public bool CanCreate ()
+		{
+			return this.CanCreateInternal();
+		}
+
+		/// <inheritdoc />
+		public bool CanDelete (object entity)
+		{
+			return this.CanDeleteInternal(entity);
+		}
+
+		/// <inheritdoc />
+		public bool CanModify (object entity)
+		{
+			return this.CanModifyInternal(entity);
+		}
+
+		/// <inheritdoc />
+		public bool CanReload (object entity)
+		{
+			return this.CanReloadInternal(entity);
+		}
+
+		/// <inheritdoc />
+		public bool CanValidate (object entity)
+		{
+			return this.CanValidateInternal(entity);
+		}
+
+		/// <inheritdoc />
 		public object Create ()
 		{
 			return this.CreateInternal();
@@ -141,7 +181,31 @@ namespace RI.Framework.Data.EF
 		{
 			this.DeleteInternal(entity);
 		}
-		
+
+		/// <inheritdoc />
+		public IEnumerable<object> GetAll ()
+		{
+			return this.GetAllInternal();
+		}
+
+		/// <inheritdoc />
+		public int GetCount ()
+		{
+			return this.GetCountInternal();
+		}
+
+		/// <inheritdoc />
+		public IEnumerable<object> GetFiltered (object filter, int pageIndex, int pageSize, out int entityCount, out int pageCount)
+		{
+			return this.GetFilteredInternal(filter, pageIndex, pageSize, out entityCount, out pageCount);
+		}
+
+		/// <inheritdoc />
+		public IEnumerable<object> GetFiltered (IEnumerable entities, object filter, int pageIndex, int pageSize, out int entityCount, out int pageCount)
+		{
+			return this.GetFilteredInternal(entities, filter, pageIndex, pageSize, out entityCount, out pageCount);
+		}
+
 		/// <inheritdoc />
 		public bool IsModified (object entity)
 		{
@@ -172,61 +236,9 @@ namespace RI.Framework.Data.EF
 			return this.ValidateInternal(entity);
 		}
 
-		/// <inheritdoc />
-		public IEnumerable<object> GetAll ()
-		{
-			return this.GetAllInternal();
-		}
-
-		/// <inheritdoc />
-		public bool CanAdd (object entity)
-		{
-			return this.CanAddInternal(entity);
-		}
-
-		/// <inheritdoc />
-		public bool CanAttach (object entity)
-		{
-			return this.CanAttachInternal(entity);
-		}
-
-		/// <inheritdoc />
-		public bool CanDelete (object entity)
-		{
-			return this.CanDeleteInternal(entity);
-		}
-
-		/// <inheritdoc />
-		public bool CanModify (object entity)
-		{
-			return this.CanModifyInternal(entity);
-		}
-
-		/// <inheritdoc />
-		public bool CanReload (object entity)
-		{
-			return this.CanReloadInternal(entity);
-		}
-
-		/// <inheritdoc />
-		public bool CanValidate (object entity)
-		{
-			return this.CanValidateInternal(entity);
-		}
-
-		/// <inheritdoc />
-		public IEnumerable<object> GetFiltered (object filter, int pageIndex, int pageSize, out int entityCount, out int pageCount)
-		{
-			return this.GetFilteredInternal(filter, pageIndex, pageSIze, out entityCount, out pageCount);
-		}
-
-		/// <inheritdoc />
-		public IEnumerable<object> GetFiltered (IEnumerable entities, object filter, int pageIndex, int pageSize, out int entityCount, out int pageCount)
-		{
-			return this.GetFilteredInternal(entities, filter, pageIndex, pageSIze, out entityCount, out pageCount);
-		}
+		#endregion
 	}
-	
+
 	/// <summary>
 	///     Implements a generic repository set using an Entity Frameworks <see cref="DbSet{TEntity}" />.
 	/// </summary>
@@ -315,13 +327,140 @@ namespace RI.Framework.Data.EF
 
 
 
-		#region Interface: IRepositorySet<T>
+		#region Overrides
 
 		/// <inheritdoc />
 		protected sealed override Type EntityTypeInternal => typeof(T);
 
 		/// <inheritdoc />
-		public new void Add (T entity)
+		protected sealed override void AddInternal (object entity)
+		{
+			this.Add((T)entity);
+		}
+
+		/// <inheritdoc />
+		protected sealed override void AttachInternal (object entity)
+		{
+			this.Attach((T)entity);
+		}
+
+		/// <inheritdoc />
+		protected sealed override bool CanAddInternal (object entity)
+		{
+			return this.CanAdd((T)entity);
+		}
+
+		/// <inheritdoc />
+		protected sealed override bool CanAttachInternal (object entity)
+		{
+			return this.CanAttach((T)entity);
+		}
+
+		/// <inheritdoc />
+		protected sealed override bool CanCreateInternal ()
+		{
+			return (((IEntityValidation)this.Repository.GetValidator<T>())?.CanCreate(this.Repository)).GetValueOrDefault(true);
+		}
+
+		/// <inheritdoc />
+		protected sealed override bool CanDeleteInternal (object entity)
+		{
+			return this.CanDelete((T)entity);
+		}
+
+		/// <inheritdoc />
+		protected sealed override bool CanModifyInternal (object entity)
+		{
+			return this.CanModify((T)entity);
+		}
+
+		/// <inheritdoc />
+		protected sealed override bool CanReloadInternal (object entity)
+		{
+			return this.CanReload((T)entity);
+		}
+
+		/// <inheritdoc />
+		protected sealed override bool CanValidateInternal (object entity)
+		{
+			return this.CanValidate((T)entity);
+		}
+
+		/// <inheritdoc />
+		protected sealed override object CreateInternal ()
+		{
+			return this.Create();
+		}
+
+		/// <inheritdoc />
+		protected sealed override void DeleteInternal (object entity)
+		{
+			this.Delete((T)entity);
+		}
+
+		/// <inheritdoc />
+		protected sealed override IEnumerable<object> GetAllInternal ()
+		{
+			return this.GetAll();
+		}
+
+		/// <inheritdoc />
+		protected sealed override int GetCountInternal ()
+		{
+			return this.Set.Count();
+		}
+
+		/// <inheritdoc />
+		protected sealed override IEnumerable<object> GetFilteredInternal (object filter, int pageIndex, int pageSize, out int entityCount, out int pageCount)
+		{
+			return this.GetFiltered(filter, pageIndex, pageSize, out entityCount, out pageCount);
+		}
+
+		/// <inheritdoc />
+		protected sealed override IEnumerable<object> GetFilteredInternal (IEnumerable entities, object filter, int pageIndex, int pageSize, out int entityCount, out int pageCount)
+		{
+			return this.GetFiltered(entities.Cast<T>(), filter, pageIndex, pageSize, out entityCount, out pageCount);
+		}
+
+		/// <inheritdoc />
+		protected sealed override bool IsModifiedInternal (object entity)
+		{
+			return this.IsModified((T)entity);
+		}
+
+		/// <inheritdoc />
+		protected sealed override bool IsValidInternal (object entity)
+		{
+			return this.IsValid((T)entity);
+		}
+
+		/// <inheritdoc />
+		protected sealed override void ModifyInternal (object entity)
+		{
+			this.Modify((T)entity);
+		}
+
+		/// <inheritdoc />
+		protected sealed override void ReloadInternal (object entity)
+		{
+			this.Reload((T)entity);
+		}
+
+		/// <inheritdoc />
+		protected sealed override RepositorySetErrors ValidateInternal (object entity)
+		{
+			return this.Validate((T)entity);
+		}
+
+		#endregion
+
+
+
+
+		#region Interface: IRepositorySet<T>
+
+		/// <inheritdoc />
+		public void Add (T entity)
 		{
 			if (entity == null)
 			{
@@ -337,7 +476,7 @@ namespace RI.Framework.Data.EF
 		}
 
 		/// <inheritdoc />
-		public new void Attach (T entity)
+		public void Attach (T entity)
 		{
 			if (entity == null)
 			{
@@ -353,43 +492,37 @@ namespace RI.Framework.Data.EF
 		}
 
 		/// <inheritdoc />
-		public new virtual bool CanAdd (T entity)
+		public virtual bool CanAdd (T entity)
 		{
 			return (((IEntityValidation)this.Repository.GetValidator<T>())?.CanAdd(this.Repository, entity)).GetValueOrDefault(true);
 		}
 
 		/// <inheritdoc />
-		public new virtual bool CanAttach (T entity)
+		public virtual bool CanAttach (T entity)
 		{
 			return (((IEntityValidation)this.Repository.GetValidator<T>())?.CanAttach(this.Repository, entity)).GetValueOrDefault(true);
 		}
 
 		/// <inheritdoc />
-		public override bool CanCreate ()
-		{
-			return (((IEntityValidation)this.Repository.GetValidator<T>())?.CanCreate(this.Repository)).GetValueOrDefault(true);
-		}
-
-		/// <inheritdoc />
-		public new virtual bool CanDelete (T entity)
+		public virtual bool CanDelete (T entity)
 		{
 			return (((IEntityValidation)this.Repository.GetValidator<T>())?.CanDelete(this.Repository, this.Repository.Entry(entity))).GetValueOrDefault(true);
 		}
 
 		/// <inheritdoc />
-		public new virtual bool CanModify (T entity)
+		public virtual bool CanModify (T entity)
 		{
 			return (((IEntityValidation)this.Repository.GetValidator<T>())?.CanModify(this.Repository, this.Repository.Entry(entity))).GetValueOrDefault(true);
 		}
 
 		/// <inheritdoc />
-		public new virtual bool CanReload (T entity)
+		public virtual bool CanReload (T entity)
 		{
 			return (((IEntityValidation)this.Repository.GetValidator<T>())?.CanReload(this.Repository, this.Repository.Entry(entity))).GetValueOrDefault(true);
 		}
 
 		/// <inheritdoc />
-		public new virtual bool CanValidate (T entity)
+		public virtual bool CanValidate (T entity)
 		{
 			return (((IEntityValidation)this.Repository.GetValidator<T>())?.CanValidate(this.Repository, this.Repository.Entry(entity))).GetValueOrDefault(true);
 		}
@@ -406,7 +539,7 @@ namespace RI.Framework.Data.EF
 		}
 
 		/// <inheritdoc />
-		public new void Delete (T entity)
+		public void Delete (T entity)
 		{
 			if (entity == null)
 			{
@@ -428,19 +561,13 @@ namespace RI.Framework.Data.EF
 		}
 
 		/// <inheritdoc />
-		public override int GetCount ()
-		{
-			return this.Set.Count();
-		}
-
-		/// <inheritdoc />
 		public new virtual IEnumerable<T> GetFiltered (object filter, int pageIndex, int pageSize, out int entityCount, out int pageCount)
 		{
 			return this.GetFiltered(null, filter, pageIndex, pageSize, out entityCount, out pageCount);
 		}
 
 		/// <inheritdoc />
-		public new virtual IEnumerable<T> GetFiltered (IEnumerable<T> entities, object filter, int pageIndex, int pageSize, out int entityCount, out int pageCount)
+		public virtual IEnumerable<T> GetFiltered (IEnumerable<T> entities, object filter, int pageIndex, int pageSize, out int entityCount, out int pageCount)
 		{
 			if (pageIndex < 0)
 			{
@@ -459,18 +586,18 @@ namespace RI.Framework.Data.EF
 
 			entityCount = this.GetCount();
 			pageCount = ((pageSize == 0) || (entityCount == 0)) ? 1 : ((entityCount / pageSize) + (((entityCount % pageSize) == 0) ? 0 : 1));
-			
+
 			if ((pageIndex != 0) && (pageIndex >= pageCount))
 			{
 				throw new ArgumentOutOfRangeException(nameof(pageIndex));
 			}
-			
+
 			EntityFilter<T> entityFilter = this.Repository.GetFilter<T>();
-			if(entityFilter == null)
+			if (entityFilter == null)
 			{
 				throw new InvalidOperationException("No entity filter available.");
 			}
-			
+
 			int offset = pageIndex * pageSize;
 
 			IOrderedQueryable<T> queryable = entityFilter.Filter(this.Repository, this, entities, filter);
@@ -478,7 +605,7 @@ namespace RI.Framework.Data.EF
 		}
 
 		/// <inheritdoc />
-		public new bool IsModified (T entity)
+		public bool IsModified (T entity)
 		{
 			if (entity == null)
 			{
@@ -492,13 +619,13 @@ namespace RI.Framework.Data.EF
 		}
 
 		/// <inheritdoc />
-		public new bool IsValid (T entity)
+		public bool IsValid (T entity)
 		{
 			return this.Validate(entity) == null;
 		}
 
 		/// <inheritdoc />
-		public new void Modify (T entity)
+		public void Modify (T entity)
 		{
 			if (entity == null)
 			{
@@ -520,7 +647,7 @@ namespace RI.Framework.Data.EF
 		}
 
 		/// <inheritdoc />
-		public new void Reload (T entity)
+		public void Reload (T entity)
 		{
 			if (entity == null)
 			{
@@ -542,7 +669,7 @@ namespace RI.Framework.Data.EF
 		}
 
 		/// <inheritdoc />
-		public new RepositorySetErrors Validate (T entity)
+		public RepositorySetErrors Validate (T entity)
 		{
 			if (entity == null)
 			{

@@ -19,7 +19,7 @@ namespace RI.Framework.Data.EF.Filter
 	public abstract class EntityFilter <T> : IEntityFilter
 		where T : class
 	{
-		#region Virtuals
+		#region Abstracts
 
 		/// <summary>
 		///     Filters a repository set for entities of the type this entity filter supports.
@@ -31,6 +31,12 @@ namespace RI.Framework.Data.EF.Filter
 		/// <returns>
 		///     The query provider which does the filtering or null if no filter shall be applied.
 		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         Despite its name, an <see cref="EntityFilter{T}" /> can not only be used for filtering but also for sorting, depending on the applied entity type and the filter object (<paramref name="filter" />).
+		///         This is also why <see cref="Filter" /> returns an <see cref="IOrderedQueryable{T}" /> instead of an <see cref="IQueryable{T}" />.
+		///     </para>
+		/// </remarks>
 		public abstract IOrderedQueryable<T> Filter (RepositoryDbContext repository, RepositoryDbSet<T> set, IEnumerable<T> customSequence, object filter);
 
 		#endregion

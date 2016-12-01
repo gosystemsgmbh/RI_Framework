@@ -174,7 +174,7 @@ namespace RI.Framework.Data.EF
 			this.Configuration.ProxyCreationEnabled = true;
 			this.Configuration.UseDatabaseNullSemantics = true;
 			this.Configuration.ValidateOnSaveEnabled = true;
-			
+
 			this.FixOnValidateEnabled = true;
 			this.FixOnSaveEnabled = true;
 		}
@@ -201,7 +201,7 @@ namespace RI.Framework.Data.EF
 		///     </para>
 		/// </remarks>
 		public bool EnableDatabaseLogging { get; set; }
-		
+
 		/// <summary>
 		///     Gets or sets whether entity fixing is enabled before pending changes are saved or committed.
 		/// </summary>
@@ -214,7 +214,7 @@ namespace RI.Framework.Data.EF
 		///     </para>
 		/// </remarks>
 		public bool FixOnSaveEnabled { get; set; }
-		
+
 		/// <summary>
 		///     Gets or sets whether entity fixing is enabled before validation.
 		/// </summary>
@@ -237,6 +237,21 @@ namespace RI.Framework.Data.EF
 
 		#region Instance Methods
 
+		/// <summary>
+		///     Fixes all entities.
+		/// </summary>
+		public void FixEntities ()
+		{
+			this.ChangeTracker.DetectChanges();
+			foreach (DbEntityEntry entry in this.ChangeTracker.Entries())
+			{
+				if (this.ShouldValidateEntity(entry))
+				{
+					this.FixEntity(entry);
+				}
+			}
+		}
+
 		/// <inheritdoc cref="IRepositoryContext.GetSet{T}" />
 		public RepositoryDbSet<T> GetSet <T> () where T : class
 		{
@@ -250,19 +265,12 @@ namespace RI.Framework.Data.EF
 			{
 				throw new ArgumentNullException(nameof(type));
 			}
-			
+
 			if (!this.Sets.Contains(type))
 			{
 				this.Sets.Add(this.CreateSetInternal(type));
 			}
 			return this.Sets[type];
-		}
-		
-		private RepositoryDbSet CreateSetInternal(Type type)
-		{
-			MethodInfo method = this.GetType().GetMethod(nameof(CreateSet), BindingFlags.Instance | BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.NonPublic);
-			MethodInfo genericMethod = method.MakeGenericMethod(type);
-			return (RepositoryDbSet)genericMethod.Invoke(this, null);
 		}
 
 		internal EntityFilter<T> GetFilter <T> () where T : class
@@ -312,27 +320,19 @@ namespace RI.Framework.Data.EF
 			LogLocator.Log(severity, this.GetType().Name, format, args);
 		}
 
+		private RepositoryDbSet CreateSetInternal (Type type)
+		{
+			MethodInfo method = this.GetType().GetMethod(nameof(this.CreateSet), BindingFlags.Instance | BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.NonPublic);
+			MethodInfo genericMethod = method.MakeGenericMethod(type);
+			return (RepositoryDbSet)genericMethod.Invoke(this, null);
+		}
+
 		#endregion
 
 
 
 
 		#region Virtuals
-
-		/// <summary>
-		///     Fixes all entities.
-		/// </summary>
-		public void FixEntities ()
-		{
-			this.ChangeTracker.DetectChanges();
-			foreach (DbEntityEntry entry in this.ChangeTracker.Entries())
-			{
-				if (this.ShouldValidateEntity(entry))
-				{
-					this.FixEntity(entry);
-				}
-			}
-		}
 
 		/// <summary>
 		///     Called when a <see cref="RepositoryDbSet{T}" /> is required which does not yet exist.
@@ -389,7 +389,7 @@ namespace RI.Framework.Data.EF
 		/// </remarks>
 		protected virtual void LogDatabase (string message)
 		{
-			if(this.EnableDatabaseLogging)
+			if (this.EnableDatabaseLogging)
 			{
 				this.Log(LogLevel.Debug, "Database activity: {0}", message.Trim());
 			}
@@ -400,9 +400,9 @@ namespace RI.Framework.Data.EF
 		/// </summary>
 		/// <param name="configurations"> The entity configuration registrar to be used. </param>
 		/// <remarks>
-		///	<para>
+		///     <para>
 		///         The default implementation adds all <see cref="IEntityConfiguration" /> implementations in the assembly of this repositories type.
-		///	</para>
+		///     </para>
 		///     <note type="note">
 		///         The entity configuration is only created once for a certain type of repository.
 		///         It is cached and reused for subsequent instances of the same concrete <see cref="RepositoryDbContext" /> type.
@@ -418,9 +418,9 @@ namespace RI.Framework.Data.EF
 		/// </summary>
 		/// <param name="filters"> The entity filter registrar to be used. </param>
 		/// <remarks>
-		///	<para>
+		///     <para>
 		///         The default implementation adds all <see cref="IEntityFilter" /> implementations in the assembly of this repositories type.
-		///	</para>
+		///     </para>
 		///     <note type="note">
 		///         The entity filters are only created once for a certain type of repository.
 		///         It is cached and reused for subsequent instances of the same concrete <see cref="RepositoryDbContext" /> type.
@@ -436,9 +436,9 @@ namespace RI.Framework.Data.EF
 		/// </summary>
 		/// <param name="validators"> The entity validation registrar to be used. </param>
 		/// <remarks>
-		///	<para>
+		///     <para>
 		///         The default implementation adds all <see cref="IEntityValidation" /> implementations in the assembly of this repositories type.
-		///	</para>
+		///     </para>
 		///     <note type="note">
 		///         The entity validations are only created once for a certain type of repository.
 		///         It is cached and reused for subsequent instances of the same concrete <see cref="RepositoryDbContext" /> type.
@@ -459,7 +459,7 @@ namespace RI.Framework.Data.EF
 		/// <inheritdoc />
 		public override int SaveChanges ()
 		{
-			if(FixOnSaveEnabled)
+			if (this.FixOnSaveEnabled)
 			{
 				this.FixEntities();
 			}
@@ -470,7 +470,7 @@ namespace RI.Framework.Data.EF
 		/// <inheritdoc />
 		public override Task<int> SaveChangesAsync (CancellationToken cancellationToken)
 		{
-			if(FixOnSaveEnabled)
+			if (this.FixOnSaveEnabled)
 			{
 				this.FixEntities();
 			}
@@ -499,11 +499,11 @@ namespace RI.Framework.Data.EF
 		/// <inheritdoc />
 		protected override DbEntityValidationResult ValidateEntity (DbEntityEntry entityEntry, IDictionary<object, object> items)
 		{
-			if(FixOnValidateEnabled)
+			if (this.FixOnValidateEnabled)
 			{
 				this.FixEntity(entityEntry);
 			}
-			
+
 			IEntityValidation validator = RepositoryDbContext.GetValidator(this, entityEntry.Entity.GetType());
 			DbEntityValidationResult result = validator?.Validate(this, entityEntry);
 			return result ?? base.ValidateEntity(entityEntry, items);
