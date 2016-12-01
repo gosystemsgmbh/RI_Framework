@@ -15,7 +15,7 @@ namespace RI.Framework.Data.Repository.Views
 	//TODO: Delete, CanDelete
 	//TODO: Edit, CanEdit
 
-	public class EntityView<TEntity, TViewObject> : INotifyPropertyChanged, INotifyPropertyChanging, IEntityViewCaller
+	public class EntityView<TEntity, TViewObject> : INotifyPropertyChanged, INotifyPropertyChanging, IEntityViewCaller<TEntity>
 		where TEntity : class, new()
 		where TViewObject : EntityViewObject<TEntity>, new()
 	{
@@ -57,11 +57,8 @@ namespace RI.Framework.Data.Repository.Views
 			this.SuppressItemsChangeHandling = false;
 			this.SuppressViewObjectChangeHandling = false;
 
-			this.Items = new ObservableCollection<TEntity>();
-			this.Items.CollectionChanged += this.ItemsChangedHandler;
-
-			this.ViewObjects = new ObservableCollection<TViewObject>();
-			this.ViewObjects.CollectionChanged += this.ViewObjectsChangedHandler;
+			this.Items = null;
+			this.ViewObjects = null;
 
 			this.Filter = null;
 			this.PageSize = 100;
@@ -302,9 +299,7 @@ namespace RI.Framework.Data.Repository.Views
 							}
 							foreach (TViewObject viewObj in newItems)
 							{
-								viewObj.Entity = viewObj.Entity ?? this.CreateEntity();
-								viewObj.ViewCaller = this;
-
+								this.PrepareViewObject(viewObj, null);
 								this.Items.Add(viewObj.Entity);
 							}
 
@@ -349,18 +344,24 @@ namespace RI.Framework.Data.Repository.Views
 
 				this.OnUpdatingItems(resetPageNumber);
 
-				this.ViewObjects.CollectionChanged -= this.ViewObjectsChangedHandler;
-				this.ViewObjects = null;
+				if (this.ViewObjects != null)
+				{
+					this.ViewObjects.CollectionChanged -= this.ViewObjectsChangedHandler;
+					this.ViewObjects = null;
+				}
 
-				this.Items.CollectionChanged -= this.ItemsChangedHandler;
-				this.Items = null;
+				if (this.Items != null)
+				{
+					this.Items.CollectionChanged -= this.ItemsChangedHandler;
+					this.Items = null;
+				}
 
 				int totalCount = this.Set.GetCount();
 				int entityCount = 0;
 				int pageCount = 0;
 
 				IEnumerable<TEntity> entities = this.Set.GetFiltered(this.Source, this.Filter, this.PageNumber - 1, this.PageSize, out entityCount, out pageCount);
-				IEnumerable<TViewObject> viewObjects = from x in entities select new TViewObject { Entity = x, ViewCaller = this };
+				IEnumerable<TViewObject> viewObjects = from x in entities select this.PrepareViewObject(new TViewObject(), x);
 
 				this.Items = new ObservableCollection<TEntity>(entities);
 				this.Items.CollectionChanged += this.ItemsChangedHandler;
@@ -436,6 +437,14 @@ namespace RI.Framework.Data.Repository.Views
 			return this.Set.Create();
 		}
 
+		private TViewObject PrepareViewObject (TViewObject viewObj, TEntity entityCandidate)
+		{
+			viewObj.Entity = (viewObj.Entity ?? entityCandidate) ?? this.CreateEntity();
+			viewObj.ViewCaller = this;
+
+			return viewObj;
+		}
+
 		public virtual bool CanNew()
 		{
 			return this.Set.CanCreate();
@@ -480,10 +489,5 @@ namespace RI.Framework.Data.Repository.Views
 		{
 			this.PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
 		}
-	}
-
-	internal interface IEntityViewCaller
-	{
-
 	}
 }

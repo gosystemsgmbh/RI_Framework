@@ -60,6 +60,7 @@
     <None Include="Data\Repository\Views\EntityView_old.cs" />
     <Compile Include="Data\Repository\Views\EntityView.cs" />
     <Compile Include="Data\Repository\Views\EntityViewObject.cs" />
+    <Compile Include="Data\Repository\Views\IEntityViewCaller.cs" />
     <Compile Include="Data\Repository\Views\_NamespaceDoc.cs" />
     <Compile Include="Data\Repository\_NamespaceDoc.cs" />
     <Compile Include="Data\_NamespaceDoc.cs" />

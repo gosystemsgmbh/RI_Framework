@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace RI.Framework.Data.Repository.Views
 {
-    public class EntityViewObject<T>
-        where T : class
+    public class EntityViewObject<TEntity>
+        where TEntity : class
     {
-        public T Entity { get; internal set; }
+        public TEntity Entity { get; internal set; }
 
-        internal IEntityViewCaller ViewCaller { get; set; }
+        internal IEntityViewCaller<TEntity> ViewCaller { get; set; }
     }
 }
