@@ -23,7 +23,6 @@ namespace RI.Framework.Services.Resources
 	///         Names of resources are considered case-insensitive.
 	///     </para>
 	/// </remarks>
-	/// TODO: Non-generic GetValue method
 	[Export]
 	public interface IResourceService
 	{
@@ -101,6 +100,19 @@ namespace RI.Framework.Services.Resources
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
 		/// <exception cref="InvalidTypeArgumentException"> The resource cannot be converted to type <typeparamref name="T" />. </exception>
 		T GetValue <T> (string name);
+
+		/// <summary>
+		///     Gets a resource as a value of a certain type.
+		/// </summary>
+		/// <param name="type"> The resource type. </param>
+		/// <param name="name"> The name of the resource. </param>
+		/// <returns>
+		///     The resource value or the default value of <paramref name="type" /> if the resource is not available.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="name" /> or <paramref name="type" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
+		/// <exception cref="InvalidTypeArgumentException"> The resource cannot be converted to type <paramref name="type" />. </exception>
+		object GetValue(string name, Type type);
 
 		/// <summary>
 		///     Determines whether a resource with a specified name is available.

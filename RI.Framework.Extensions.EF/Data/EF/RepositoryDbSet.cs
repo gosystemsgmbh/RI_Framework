@@ -85,11 +85,11 @@ namespace RI.Framework.Data.EF
 		/// <inheritdoc cref="IRepositorySet.GetCount" />
 		protected abstract int GetCountInternal ();
 
-		/// <inheritdoc cref="IRepositorySet.GetFiltered(object,int,int,out int,out int)" />
-		protected abstract IEnumerable<object> GetFilteredInternal (object filter, int pageIndex, int pageSize, out int entityCount, out int pageCount);
+		/// <inheritdoc cref="IRepositorySet.GetFiltered(object,int,int,out int,out int,out int)" />
+		protected abstract IEnumerable<object> GetFilteredInternal (object filter, int pageIndex, int pageSize, out int totalCount, out int filteredCount, out int pageCount);
 
-		/// <inheritdoc cref="IRepositorySet.GetFiltered(IEnumerable,object,int,int,out int,out int)" />
-		protected abstract IEnumerable<object> GetFilteredInternal (IEnumerable entities, object filter, int pageIndex, int pageSize, out int entityCount, out int pageCount);
+		/// <inheritdoc cref="IRepositorySet.GetFiltered(IEnumerable,object,int,int,out int,out int,out int)" />
+		protected abstract IEnumerable<object> GetFilteredInternal (IEnumerable entities, object filter, int pageIndex, int pageSize, out int totalCount, out int filteredCount, out int pageCount);
 
 		/// <inheritdoc cref="IRepositorySet.IsModified" />
 		protected abstract bool IsModifiedInternal (object entity);
@@ -195,15 +195,15 @@ namespace RI.Framework.Data.EF
 		}
 
 		/// <inheritdoc />
-		public IEnumerable<object> GetFiltered (object filter, int pageIndex, int pageSize, out int entityCount, out int pageCount)
+		public IEnumerable<object> GetFiltered (object filter, int pageIndex, int pageSize, out int totalCount, out int filteredCount, out int pageCount)
 		{
-			return this.GetFilteredInternal(filter, pageIndex, pageSize, out entityCount, out pageCount);
+			return this.GetFilteredInternal(filter, pageIndex, pageSize, out totalCount, out filteredCount, out pageCount);
 		}
 
 		/// <inheritdoc />
-		public IEnumerable<object> GetFiltered (IEnumerable entities, object filter, int pageIndex, int pageSize, out int entityCount, out int pageCount)
+		public IEnumerable<object> GetFiltered (IEnumerable entities, object filter, int pageIndex, int pageSize, out int totalCount, out int filteredCount, out int pageCount)
 		{
-			return this.GetFilteredInternal(entities, filter, pageIndex, pageSize, out entityCount, out pageCount);
+			return this.GetFilteredInternal(entities, filter, pageIndex, pageSize, out totalCount, out filteredCount, out pageCount);
 		}
 
 		/// <inheritdoc />
@@ -411,15 +411,15 @@ namespace RI.Framework.Data.EF
 		}
 
 		/// <inheritdoc />
-		protected sealed override IEnumerable<object> GetFilteredInternal (object filter, int pageIndex, int pageSize, out int entityCount, out int pageCount)
+		protected sealed override IEnumerable<object> GetFilteredInternal (object filter, int pageIndex, int pageSize, out int totalCount, out int filteredCount, out int pageCount)
 		{
-			return this.GetFiltered(filter, pageIndex, pageSize, out entityCount, out pageCount);
+			return this.GetFiltered(filter, pageIndex, pageSize, out totalCount, out filteredCount, out pageCount);
 		}
 
 		/// <inheritdoc />
-		protected sealed override IEnumerable<object> GetFilteredInternal (IEnumerable entities, object filter, int pageIndex, int pageSize, out int entityCount, out int pageCount)
+		protected sealed override IEnumerable<object> GetFilteredInternal (IEnumerable entities, object filter, int pageIndex, int pageSize, out int totalCount, out int filteredCount, out int pageCount)
 		{
-			return this.GetFiltered(entities.Cast<T>(), filter, pageIndex, pageSize, out entityCount, out pageCount);
+			return this.GetFiltered(entities.Cast<T>(), filter, pageIndex, pageSize, out totalCount, out filteredCount, out pageCount);
 		}
 
 		/// <inheritdoc />
@@ -561,13 +561,13 @@ namespace RI.Framework.Data.EF
 		}
 
 		/// <inheritdoc />
-		public new virtual IEnumerable<T> GetFiltered (object filter, int pageIndex, int pageSize, out int entityCount, out int pageCount)
+		public new virtual IEnumerable<T> GetFiltered (object filter, int pageIndex, int pageSize, out int totalCount, out int filteredCount, out int pageCount)
 		{
-			return this.GetFiltered(null, filter, pageIndex, pageSize, out entityCount, out pageCount);
+			return this.GetFiltered(null, filter, pageIndex, pageSize, out totalCount, out filteredCount, out pageCount);
 		}
 
 		/// <inheritdoc />
-		public virtual IEnumerable<T> GetFiltered (IEnumerable<T> entities, object filter, int pageIndex, int pageSize, out int entityCount, out int pageCount)
+		public virtual IEnumerable<T> GetFiltered (IEnumerable<T> entities, object filter, int pageIndex, int pageSize, out int totalCount, out int filteredCount, out int pageCount)
 		{
 			if (pageIndex < 0)
 			{
@@ -581,11 +581,11 @@ namespace RI.Framework.Data.EF
 
 			if ((pageSize == 0) && (pageIndex != 0))
 			{
-				throw new ArgumentOutOfRangeException(nameof(pageSize));
+				throw new ArgumentOutOfRangeException(nameof(pageIndex));
 			}
 
-			entityCount = this.GetCount();
-			pageCount = ((pageSize == 0) || (entityCount == 0)) ? 1 : ((entityCount / pageSize) + (((entityCount % pageSize) == 0) ? 0 : 1));
+			totalCount = this.GetCount();
+			pageCount = ((pageSize == 0) || (totalCount == 0)) ? 1 : ((totalCount / pageSize) + (((totalCount % pageSize) == 0) ? 0 : 1));
 
 			if ((pageIndex != 0) && (pageIndex >= pageCount))
 			{
@@ -598,10 +598,18 @@ namespace RI.Framework.Data.EF
 				throw new InvalidOperationException("No entity filter available.");
 			}
 
-			int offset = pageIndex * pageSize;
-
 			IOrderedQueryable<T> queryable = entityFilter.Filter(this.Repository, this, entities, filter);
-			return queryable.Skip(offset).Take(pageSize);
+			filteredCount = queryable.Count();
+
+			if (pageSize == 0)
+			{
+				return queryable;
+			}
+
+			int offset = pageIndex * pageSize;
+			IQueryable<T> pagedQueryable = queryable.Skip(offset).Take(pageSize);
+
+			return pagedQueryable;
 		}
 
 		/// <inheritdoc />

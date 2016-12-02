@@ -230,6 +230,12 @@ namespace RI.Framework.Services.Settings
 		/// <inheritdoc />
 		public T GetValue <T> (string name)
 		{
+			return (T)this.GetValue(name, typeof(T));
+		}
+
+		/// <inheritdoc />
+		public object GetValue (string name, Type type)
+		{
 			if (name == null)
 			{
 				throw new ArgumentNullException(nameof(name));
@@ -240,7 +246,10 @@ namespace RI.Framework.Services.Settings
 				throw new EmptyStringArgumentException(nameof(name));
 			}
 
-			Type type = typeof(T);
+			if (type == null)
+			{
+				throw new ArgumentNullException(nameof(type));
+			}
 
 			ISettingConverter converter = this.GetConverterForType(type);
 			if (converter == null)
@@ -251,11 +260,11 @@ namespace RI.Framework.Services.Settings
 			string stringValue = this.GetRawValue(name);
 			if (stringValue == null)
 			{
-				return default(T);
+				return null;
 			}
 
 			object value = converter.ConvertTo(type, stringValue);
-			return (T)value;
+			return value;
 		}
 
 		/// <inheritdoc />
@@ -318,6 +327,12 @@ namespace RI.Framework.Services.Settings
 		/// <inheritdoc />
 		public bool InitializeValue <T> (string name, T defaultValue)
 		{
+			return this.InitializeValue(name, defaultValue, typeof(T));
+		}
+
+		/// <inheritdoc />
+		public bool InitializeValue (string name, object defaultValue, Type type)
+		{
 			if (name == null)
 			{
 				throw new ArgumentNullException(nameof(name));
@@ -328,7 +343,10 @@ namespace RI.Framework.Services.Settings
 				throw new EmptyStringArgumentException(nameof(name));
 			}
 
-			Type type = typeof(T);
+			if (type == null)
+			{
+				throw new ArgumentNullException(nameof(type));
+			}
 
 			ISettingConverter converter = this.GetConverterForType(type);
 			if (converter == null)
@@ -440,6 +458,12 @@ namespace RI.Framework.Services.Settings
 		/// <inheritdoc />
 		public void SetValue <T> (string name, T value)
 		{
+			this.SetValue(name, value, typeof(T));
+		}
+
+		/// <inheritdoc />
+		public void SetValue (string name, object value, Type type)
+		{
 			if (name == null)
 			{
 				throw new ArgumentNullException(nameof(name));
@@ -450,7 +474,10 @@ namespace RI.Framework.Services.Settings
 				throw new EmptyStringArgumentException(nameof(name));
 			}
 
-			Type type = typeof(T);
+			if (type == null)
+			{
+				throw new ArgumentNullException(nameof(type));
+			}
 
 			ISettingConverter converter = this.GetConverterForType(type);
 			if (converter == null)

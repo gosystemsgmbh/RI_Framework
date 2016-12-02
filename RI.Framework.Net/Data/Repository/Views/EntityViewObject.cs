@@ -20,6 +20,7 @@ namespace RI.Framework.Data.Repository.Views
 			this.ViewCaller = null;
 
 			this.IsAdded = false;
+			this.IsAttached = false;
 			this.IsDeleted = false;
 			this.IsEdited = false;
 			this.IsModified = false;
@@ -44,10 +45,32 @@ namespace RI.Framework.Data.Repository.Views
 			internal set
 			{
 				this.OnPropertyChanging(nameof(this.IsAdded));
+				this.OnPropertyChanging(nameof(this.IsAddedOrAttached));
 				this._isAdded = value;
 				this.OnPropertyChanged(nameof(this.IsAdded));
+				this.OnPropertyChanged(nameof(this.IsAddedOrAttached));
 			}
 		}
+
+		private bool _isAttached;
+
+		public bool IsAttached
+		{
+			get
+			{
+				return this._isAttached;
+			}
+			internal set
+			{
+				this.OnPropertyChanging(nameof(this.IsAttached));
+				this.OnPropertyChanging(nameof(this.IsAddedOrAttached));
+				this._isAttached = value;
+				this.OnPropertyChanged(nameof(this.IsAttached));
+				this.OnPropertyChanged(nameof(this.IsAddedOrAttached));
+			}
+		}
+
+		public bool IsAddedOrAttached => this.IsAdded || this.IsAttached;
 
 		private bool _isDeleted;
 
@@ -107,7 +130,6 @@ namespace RI.Framework.Data.Repository.Views
 			}
 			internal set
 			{
-				//TODO: Handle INPC of Entity
 				this.OnPropertyChanging(nameof(this.Entity));
 				this._entity = value;
 				this.OnPropertyChanged(nameof(this.Entity));
@@ -244,6 +266,11 @@ namespace RI.Framework.Data.Repository.Views
 		public bool CanValidate()
 		{
 			return this.ViewCaller.CanValidate(this.Entity);
+		}
+
+		internal void RaiseEntityChanged ()
+		{
+			this.OnPropertyChanged(nameof(this.Entity));
 		}
 
 		/// <inheritdoc />

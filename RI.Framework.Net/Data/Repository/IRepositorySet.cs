@@ -213,8 +213,9 @@ namespace RI.Framework.Data.Repository
 		/// <param name="filter"> An implementation-defined filter object which is used for filtering or null if no filter is to be used. </param>
 		/// <param name="pageIndex"> The zero-based index of the page of filtered entities to retrieve with the returned sequence. </param>
 		/// <param name="pageSize"> The size of one page or 0 if no paging is to be used. </param>
-		/// <param name="entityCount"> The total count of all filtered entities over all pages. </param>
-		/// <param name="pageCount"> The total count of pages available with the filter applied. </param>
+		/// <param name="totalCount"> The number of all entities over all pages. </param>
+		/// <param name="entityCount"> The number of filtered entities over all pages. </param>
+		/// <param name="pageCount"> The number of pages available with the filter applied. </param>
 		/// <returns>
 		///     The sequence of filtered types of this sets type.
 		/// </returns>
@@ -228,7 +229,7 @@ namespace RI.Framework.Data.Repository
 		/// </remarks>
 		/// <exception cref="ArgumentException"> <paramref name="filter" /> is an invalid filter object. </exception>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="pageIndex" /> or <paramref name="pageSize" /> is less than zero, <paramref name="pageIndex" /> is not zero when <paramref name="pageSize" /> is zero, or <paramref name="pageIndex" /> points to a page which does not exist. </exception>
-		IEnumerable<object> GetFiltered (object filter, int pageIndex, int pageSize, out int entityCount, out int pageCount);
+		IEnumerable<object> GetFiltered (object filter, int pageIndex, int pageSize, out int totalCount, out int entityCount, out int pageCount);
 
 		/// <summary>
 		///     Gets a sequence of filtered entities from an existing sequence of entities.
@@ -237,8 +238,9 @@ namespace RI.Framework.Data.Repository
 		/// <param name="filter"> An implementation-defined filter object which is used for filtering or null if no filter is to be used. </param>
 		/// <param name="pageIndex"> The zero-based index of the page of filtered entities to retrieve with the returned sequence. </param>
 		/// <param name="pageSize"> The size of one page or 0 if no paging is to be used. </param>
-		/// <param name="entityCount"> The total count of all filtered entities over all pages. </param>
-		/// <param name="pageCount"> The total count of pages available with the filter applied. </param>
+		/// <param name="totalCount"> The number of all entities over all pages. </param>
+		/// <param name="entityCount"> The number of filtered entities over all pages. </param>
+		/// <param name="pageCount"> The number of pages available with the filter applied. </param>
 		/// <returns>
 		///     The sequence of filtered types of this sets type.
 		/// </returns>
@@ -252,7 +254,7 @@ namespace RI.Framework.Data.Repository
 		/// </remarks>
 		/// <exception cref="ArgumentException"> <paramref name="filter" /> is an invalid filter object. </exception>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="pageIndex" /> or <paramref name="pageSize" /> is less than zero, <paramref name="pageIndex" /> is not zero when <paramref name="pageSize" /> is zero, or <paramref name="pageIndex" /> points to a page which does not exist. </exception>
-		IEnumerable<object> GetFiltered (IEnumerable entities, object filter, int pageIndex, int pageSize, out int entityCount, out int pageCount);
+		IEnumerable<object> GetFiltered (IEnumerable entities, object filter, int pageIndex, int pageSize, out int totalCount, out int entityCount, out int pageCount);
 	}
 
 	/// <summary>
@@ -374,8 +376,9 @@ namespace RI.Framework.Data.Repository
 		/// <param name="filter"> An implementation-defined filter object which is used for filtering or null if no filter is to be used. </param>
 		/// <param name="pageIndex"> The zero-based index of the page of filtered entities to retrieve with the returned sequence. </param>
 		/// <param name="pageSize"> The size of one page or 0 if no paging is to be used. </param>
-		/// <param name="entityCount"> The total count of all filtered entities over all pages. </param>
-		/// <param name="pageCount"> The total count of pages available with the filter applied. </param>
+		/// <param name="totalCount"> The number of all entities over all pages. </param>
+		/// <param name="filteredCount"> The number of filtered entities over all pages. </param>
+		/// <param name="pageCount"> The number of pages available with the filter applied. </param>
 		/// <returns>
 		///     The sequence of filtered types of this sets type.
 		/// </returns>
@@ -384,12 +387,12 @@ namespace RI.Framework.Data.Repository
 		///         The number of elements in the sequence is not necessarily <paramref name="pageSize" /> but guaranteed to be less or equal.
 		///     </note>
 		///     <note type="important">
-		///         The first page (of index zero) can always be retrieved, even if <paramref name="entityCount" /> or <paramref name="pageCount" /> is zero (resulting in returning an empty sequence).
+		///         The first page (of index zero) can always be retrieved, even if <paramref name="filteredCount" /> or <paramref name="pageCount" /> is zero (resulting in returning an empty sequence).
 		///     </note>
 		/// </remarks>
 		/// <exception cref="ArgumentException"> <paramref name="filter" /> is an invalid filter object. </exception>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="pageIndex" /> or <paramref name="pageSize" /> is less than zero, <paramref name="pageIndex" /> is not zero when <paramref name="pageSize" /> is zero, or <paramref name="pageIndex" /> points to a page which does not exist. </exception>
-		new IEnumerable<T> GetFiltered (object filter, int pageIndex, int pageSize, out int entityCount, out int pageCount);
+		new IEnumerable<T> GetFiltered (object filter, int pageIndex, int pageSize, out int totalCount, out int filteredCount, out int pageCount);
 
 		/// <summary>
 		///     Gets a sequence of filtered entities from an existing sequence of entities.
@@ -398,8 +401,9 @@ namespace RI.Framework.Data.Repository
 		/// <param name="filter"> An implementation-defined filter object which is used for filtering or null if no filter is to be used. </param>
 		/// <param name="pageIndex"> The zero-based index of the page of filtered entities to retrieve with the returned sequence. </param>
 		/// <param name="pageSize"> The size of one page or 0 if no paging is to be used. </param>
-		/// <param name="entityCount"> The total count of all filtered entities over all pages. </param>
-		/// <param name="pageCount"> The total count of pages available with the filter applied. </param>
+		/// <param name="totalCount"> The number of all entities over all pages. </param>
+		/// <param name="filteredCount"> The number of filtered entities over all pages. </param>
+		/// <param name="pageCount"> The number of pages available with the filter applied. </param>
 		/// <returns>
 		///     The sequence of filtered types of this sets type.
 		/// </returns>
@@ -408,12 +412,12 @@ namespace RI.Framework.Data.Repository
 		///         The number of elements in the sequence is not necessarily <paramref name="pageSize" /> but guaranteed to be less or equal.
 		///     </note>
 		///     <note type="important">
-		///         The first page (of index zero) can always be retrieved, even if <paramref name="entityCount" /> or <paramref name="pageCount" /> is zero (resulting in returning an empty sequence).
+		///         The first page (of index zero) can always be retrieved, even if <paramref name="filteredCount" /> or <paramref name="pageCount" /> is zero (resulting in returning an empty sequence).
 		///     </note>
 		/// </remarks>
 		/// <exception cref="ArgumentException"> <paramref name="filter" /> is an invalid filter object. </exception>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="pageIndex" /> or <paramref name="pageSize" /> is less than zero, <paramref name="pageIndex" /> is not zero when <paramref name="pageSize" /> is zero, or <paramref name="pageIndex" /> points to a page which does not exist. </exception>
-		IEnumerable<T> GetFiltered (IEnumerable<T> entities, object filter, int pageIndex, int pageSize, out int entityCount, out int pageCount);
+		IEnumerable<T> GetFiltered (IEnumerable<T> entities, object filter, int pageIndex, int pageSize, out int totalCount, out int filteredCount, out int pageCount);
 
 		/// <summary>
 		///     Determines whether an entity has any pending changes.

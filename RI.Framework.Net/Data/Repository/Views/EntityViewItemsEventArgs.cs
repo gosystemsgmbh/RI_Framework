@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace RI.Framework.Data.Repository.Views
 {
-	public sealed class EntityViewItemsEventArgs<T>
+	public sealed class EntityViewItemsEventArgs<T> : EventArgs
 		where T : class
 	{
 		public EntityViewItemsEventArgs (IList<T> oldItems, IList<T> newItems)

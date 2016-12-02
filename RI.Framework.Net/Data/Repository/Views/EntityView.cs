@@ -62,8 +62,8 @@ namespace RI.Framework.Data.Repository.Views
 			this.PageFilteredCount = 0;
 
 			this.Filter = null;
-			this.PageSize = 100;
-			this.PageNumber = 1;
+			this.PageSize = 0;
+			this.PageNumber = 0;
 
 			this.IsInitializing = false;
 
@@ -353,7 +353,7 @@ namespace RI.Framework.Data.Repository.Views
 			{
 				this.IsUpdating = true;
 
-				if(resetPageNumber)
+				if(resetPageNumber && (this.PageNumber > 1))
 				{
 					this.PageNumber = 1;
 				}
@@ -375,14 +375,14 @@ namespace RI.Framework.Data.Repository.Views
 					this.Items = null;
 				}
 
-				int entityTotalCount = this.Set.GetCount();
-				int pageTotalCount = (entityTotalCount / this.PageSize) + (((entityTotalCount % this.PageSize) == 0) ? 0 : 1);
-
+				int entityTotalCount = 0;
 				int entityFilteredCount = 0;
 				int pageFilteredCount = 0;
 
-				List<TEntity> entities = this.Set.GetFiltered(this.Source, this.Filter, this.PageNumber - 1, this.PageSize, out entityFilteredCount, out pageFilteredCount).ToList();
+				List<TEntity> entities = this.PageNumber == 0 ? new List<TEntity>() : this.Set.GetFiltered(this.Source, this.Filter, this.PageNumber - 1, this.PageSize, out entityTotalCount, out entityFilteredCount, out pageFilteredCount).ToList();
 				List<TViewObject> viewObjects = (from x in entities select this.PrepareViewObject(null, x)).ToList();
+
+				int pageTotalCount = this.PageNumber == 0 ? 0 : (this.PageSize == 0 ? 1 : ((entityTotalCount / this.PageSize) + (((entityTotalCount % this.PageSize) == 0) ? 0 : 1)));
 
 				this.Items = new ObservableCollection<TEntity>(entities);
 				this.Items.CollectionChanged += this.ItemsChangedHandler;
@@ -480,12 +480,13 @@ namespace RI.Framework.Data.Repository.Views
 
 		protected virtual void EntityAdd (TViewObject viewObject)
 		{
-			if (viewObject.IsAdded)
+			if (viewObject.IsAddedOrAttached)
 			{
 				return;
 			}
 			viewObject.IsAdded = true;
 
+			viewObject.IsAttached = false;
 			viewObject.IsDeleted = false;
 
 			this.Set.Add(viewObject.Entity);
@@ -500,18 +501,20 @@ namespace RI.Framework.Data.Repository.Views
 			viewObject.IsDeleted = true;
 
 			viewObject.IsAdded = false;
+			viewObject.IsAttached = false;
 
 			this.Set.Delete(viewObject.Entity);
 		}
 
 		protected virtual void EntityAttach(TViewObject viewObject)
 		{
-			if (viewObject.IsAdded)
+			if (viewObject.IsAddedOrAttached)
 			{
 				return;
 			}
-			viewObject.IsAdded = true;
+			viewObject.IsAttached = true;
 
+			viewObject.IsAdded = false;
 			viewObject.IsDeleted = false;
 
 			this.Set.Attach(viewObject.Entity);
@@ -525,7 +528,9 @@ namespace RI.Framework.Data.Repository.Views
 			}
 			viewObject.IsEdited = true;
 
-			//TODO: Fire entity changed event on view object
+			viewObject.RaiseEntityChanged();
+
+			this.EntityBeginEdit?.Invoke(this, new EntityViewItemEventArgs<TViewObject>(viewObject));
 		}
 
 		protected virtual void EntityEditCancel(TViewObject viewObject)
@@ -536,7 +541,9 @@ namespace RI.Framework.Data.Repository.Views
 			}
 			viewObject.IsEdited = false;
 
-			//TODO: Fire entity changed event on view object
+			viewObject.RaiseEntityChanged();
+
+			this.EntityCancelEdit?.Invoke(this, new EntityViewItemEventArgs<TViewObject>(viewObject));
 		}
 
 		protected virtual void EntityEditEnd(TViewObject viewObject)
@@ -547,14 +554,16 @@ namespace RI.Framework.Data.Repository.Views
 			}
 			viewObject.IsEdited = false;
 
-			//TODO: Fire entity changed event on view object
+			viewObject.RaiseEntityChanged();
+
+			this.EntityEndEdit?.Invoke(this, new EntityViewItemEventArgs<TViewObject>(viewObject));
 		}
 
 		protected virtual void EntityReload (TViewObject viewObject)
 		{
 			this.Set.Reload(viewObject.Entity);
 
-			//TODO: Fire entity changed event on view object
+			viewObject.RaiseEntityChanged();
 
 			viewObject.Errors = null;
 			viewObject.IsModified = false;
@@ -564,7 +573,7 @@ namespace RI.Framework.Data.Repository.Views
 		{
 			this.Set.Modify(viewObject.Entity);
 
-			//TODO: Fire entity changed event on view object
+			viewObject.RaiseEntityChanged();
 
 			viewObject.IsModified = true;
 		}
@@ -573,6 +582,8 @@ namespace RI.Framework.Data.Repository.Views
 		{
 			viewObject.Errors = this.Set.Validate(viewObject.Entity);
 			viewObject.IsModified = this.Set.IsModified(viewObject.Entity);
+
+			viewObject.RaiseEntityChanged();
 		}
 
 		protected virtual bool EntityCanDelete(TViewObject viewObject)
@@ -615,17 +626,16 @@ namespace RI.Framework.Data.Repository.Views
 			return this.Set.CanCreate();
 		}
 
+		public event EventHandler<EntityViewItemEventArgs<TViewObject>> EntityBeginEdit;
+
+		public event EventHandler<EntityViewItemEventArgs<TViewObject>> EntityCancelEdit;
+
+		public event EventHandler<EntityViewItemEventArgs<TViewObject>> EntityEndEdit;
 
 
 
 
 
-		//TODO: Event: BeginEdit
-		//TODO: Event: CancelEdit
-		//TODO: Event: EndEdit
-		//TODO: Event: ItemChanged
-		//TODO: Event: ViewObjectChanged
-		//TODO: Mark view objects as attached
 
 		public void Delete (TEntity entity)
 		{

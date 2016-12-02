@@ -31,7 +31,6 @@ namespace RI.Framework.Services.Settings
 	///         Otherwise, the order is undefined for values with the same name.
 	///     </note>
 	/// </remarks>
-	/// TODO: Non-generic GetValue, SetValue, InitializeValue method
 	[Export]
 	public interface ISettingService
 	{
@@ -118,6 +117,19 @@ namespace RI.Framework.Services.Settings
 		T GetValue <T> (string name);
 
 		/// <summary>
+		///     Gets a setting as a value of a certain type.
+		/// </summary>
+		/// <param name="name"> The name of the setting. </param>
+		/// <param name="type"> The setting type. </param>
+		/// <returns>
+		///     The setting value or null if the setting is not available.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="name" /> or <paramref name="type" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
+		/// <exception cref="InvalidTypeArgumentException"> The specified <paramref name="type" /> is not supported by any setting converter. </exception>
+		object GetValue(string name, Type type);
+
+		/// <summary>
 		///     Determines whether a setting with a specified name is available.
 		/// </summary>
 		/// <param name="name"> The name of the setting to check. </param>
@@ -163,6 +175,25 @@ namespace RI.Framework.Services.Settings
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
 		/// <exception cref="InvalidTypeArgumentException"> The specified <typeparamref name="T" /> for <paramref name="defaultValue" /> is not supported by any setting converter. </exception>
 		bool InitializeValue <T> (string name, T defaultValue);
+
+		/// <summary>
+		///     Initializes a setting as a value of a certain type.
+		/// </summary>
+		/// <param name="name"> The name of the setting. </param>
+		/// <param name="type"> The setting type. </param>
+		/// <param name="defaultValue"> The default setting value. </param>
+		/// <returns>
+		///     true if the default value was used, false otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         Initialization means that the value is only used if the setting does not already exist and <paramref name="defaultValue" /> is not null.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="name" /> or <paramref name="type" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
+		/// <exception cref="InvalidTypeArgumentException"> The specified <paramref name="type" /> for <paramref name="defaultValue" /> is not supported by any setting converter. </exception>
+		bool InitializeValue(string name, object defaultValue, Type type);
 
 		/// <summary>
 		///     Reloads all settings from the underlying storage, replacing all previously loaded settings in this service.
@@ -217,5 +248,16 @@ namespace RI.Framework.Services.Settings
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
 		/// <exception cref="InvalidTypeArgumentException"> The specified <typeparamref name="T" /> for <paramref name="value" /> is not supported by any setting converter. </exception>
 		void SetValue <T> (string name, T value);
+
+		/// <summary>
+		///     Sets a setting as a value of a certain type.
+		/// </summary>
+		/// <param name="name"> The name of the setting. </param>
+		/// <param name="type"> The setting type. </param>
+		/// <param name="value"> The setting value. For class types, specifying null deletes the setting. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="name" /> or <paramref name="type" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
+		/// <exception cref="InvalidTypeArgumentException"> The specified <paramref name="type" /> for <paramref name="value" /> is not supported by any setting converter. </exception>
+		void SetValue(string name, object value, Type type);
 	}
 }

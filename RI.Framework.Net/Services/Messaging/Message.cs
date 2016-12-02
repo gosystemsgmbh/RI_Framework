@@ -20,7 +20,6 @@ namespace RI.Framework.Services.Messaging
 	///         See <see cref="IMessage" /> for more details.
 	///     </para>
 	/// </remarks>
-	/// TODO: Non-generic Get methods
 	public class Message : IMessage
 	{
 		#region Instance Constructor/Destructor
@@ -93,6 +92,39 @@ namespace RI.Framework.Services.Messaging
 		}
 
 		/// <summary>
+		///     Gets the first data item from the data dictionary which is of the specified type or a default value if the data item is not found.
+		/// </summary>
+		/// <typeparam name="T"> The type of the data item. </typeparam>
+		/// <returns>
+		///     The data item or the default value for the type <typeparamref name="T"/> if the message does not have a data item of type <typeparamref name="T"/>.
+		/// </returns>
+		public T GetOrDefault<T>()
+		{
+			return this.GetOrDefault(default(T));
+		}
+
+		/// <summary>
+		///     Gets the first data item from the data dictionary which is of the specified type or a default value if the data item is not found.
+		/// </summary>
+		/// <typeparam name="T"> The type of the data item. </typeparam>
+		/// <param name="defaultValue">The default value.</param>
+		/// <returns>
+		///     The data item or <paramref name="defaultValue" /> if the message does not have a data item of type <typeparamref name="T"/>.
+		/// </returns>
+		public T GetOrDefault<T>(T defaultValue)
+		{
+			foreach (KeyValuePair<string, object> data in this.Data)
+			{
+				if (data.Value is T)
+				{
+					return (T)data.Value;
+				}
+			}
+
+			return defaultValue;
+		}
+
+		/// <summary>
 		///     Gets the data item with the specified name from the data dictionary.
 		/// </summary>
 		/// <typeparam name="T"> The type the data item should be converted to. </typeparam>
@@ -132,18 +164,6 @@ namespace RI.Framework.Services.Messaging
 		}
 
 		/// <summary>
-		///     Gets the first data item from the data dictionary which is of the specified type or a default value if the data item is not found.
-		/// </summary>
-		/// <typeparam name="T"> The type of the data item. </typeparam>
-		/// <returns>
-		///     The data item or the default value for the type <typeparamref name="T"/> if the message does not have a data item of type <typeparamref name="T"/>.
-		/// </returns>
-		public T GetOrDefault<T>()
-		{
-			return this.GetOrDefault(default(T));
-		}
-
-		/// <summary>
 		///     Gets the data item with the specified name from the data dictionary or a default value if the data item is not found.
 		/// </summary>
 		/// <typeparam name="T"> The type the data item should be converted to. </typeparam>
@@ -157,27 +177,6 @@ namespace RI.Framework.Services.Messaging
 		public T GetOrDefault<T>(string name)
 		{
 			return this.GetOrDefault(name, default(T));
-		}
-
-		/// <summary>
-		///     Gets the first data item from the data dictionary which is of the specified type or a default value if the data item is not found.
-		/// </summary>
-		/// <typeparam name="T"> The type of the data item. </typeparam>
-		/// <param name="defaultValue">The default value.</param>
-		/// <returns>
-		///     The data item or <paramref name="defaultValue" /> if the message does not have a data item of type <typeparamref name="T"/>.
-		/// </returns>
-		public T GetOrDefault<T>(T defaultValue)
-		{
-			foreach (KeyValuePair<string, object> data in this.Data)
-			{
-				if (data.Value is T)
-				{
-					return (T)data.Value;
-				}
-			}
-
-			return defaultValue;
 		}
 
 		/// <summary>
@@ -233,7 +232,7 @@ namespace RI.Framework.Services.Messaging
 		public string Name { get; }
 
 		/// <inheritdoc />
-		void IMessage.DeleteData (string name)
+		public void DeleteData (string name)
 		{
 			if (name == null)
 			{
@@ -265,7 +264,7 @@ namespace RI.Framework.Services.Messaging
 		}
 
 		/// <inheritdoc />
-		bool IMessage.HasData (string name)
+		public bool HasData (string name)
 		{
 			if (name == null)
 			{

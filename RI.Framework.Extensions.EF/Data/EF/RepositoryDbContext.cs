@@ -459,7 +459,7 @@ namespace RI.Framework.Data.EF
 		/// <inheritdoc />
 		public override int SaveChanges ()
 		{
-			if (this.FixOnSaveEnabled)
+			if (this.FixOnSaveEnabled && (!(this.Configuration.ValidateOnSaveEnabled && this.FixOnValidateEnabled)))
 			{
 				this.FixEntities();
 			}
@@ -470,7 +470,7 @@ namespace RI.Framework.Data.EF
 		/// <inheritdoc />
 		public override Task<int> SaveChangesAsync (CancellationToken cancellationToken)
 		{
-			if (this.FixOnSaveEnabled)
+			if (this.FixOnSaveEnabled && (!(this.Configuration.ValidateOnSaveEnabled && this.FixOnValidateEnabled)))
 			{
 				this.FixEntities();
 			}
