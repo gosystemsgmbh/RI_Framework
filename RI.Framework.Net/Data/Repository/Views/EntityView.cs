@@ -132,7 +132,7 @@ namespace RI.Framework.Data.Repository.Views
 			}
 			set
 			{
-				if(value < 1)
+				if(value < 0)
 				{
 					throw new ArgumentOutOfRangeException(nameof(value));
 				}
@@ -153,7 +153,7 @@ namespace RI.Framework.Data.Repository.Views
 			}
 			set
 			{
-				if (value < 1)
+				if (value < 0)
 				{
 					throw new ArgumentOutOfRangeException(nameof(value));
 				}
@@ -234,12 +234,20 @@ namespace RI.Framework.Data.Repository.Views
 							foreach (TEntity entity in oldItems)
 							{
 								TViewObject viewObj = this.GetViewObjectForEntity(entity);
-								this.ViewObjects.Remove(viewObj);
+
+								if (!this.SuppressViewObjectChangeHandling)
+								{
+									this.ViewObjects.Remove(viewObj);
+								}
 							}
 							foreach (TEntity entity in newItems)
 							{
 								TViewObject viewObject = this.PrepareViewObject(null, entity);
-								this.ViewObjects.Add(viewObject);
+
+								if (!this.SuppressViewObjectChangeHandling)
+								{
+									this.ViewObjects.Add(viewObject);
+								}
 							}
 
 							this.OnPropertyChanged(nameof(this.Items));
@@ -302,12 +310,20 @@ namespace RI.Framework.Data.Repository.Views
 							foreach (TViewObject viewObj in oldItems)
 							{
 								this.EntityDelete(viewObj);
-								this.Items.Remove(viewObj.Entity);
+
+								if (!this.SuppressItemsChangeHandling)
+								{
+									this.Items.Remove(viewObj.Entity);
+								}
 							}
 							foreach (TViewObject viewObj in newItems)
 							{
 								this.PrepareViewObject(viewObj, null);
-								this.Items.Add(viewObj.Entity);
+
+								if (!this.SuppressItemsChangeHandling)
+								{
+									this.Items.Add(viewObj.Entity);
+								}
 
 								if (this.ItemToAddIsAttached)
 								{
