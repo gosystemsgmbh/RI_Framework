@@ -783,4 +783,18 @@ namespace RI.Framework.Data.Repository.Views
 			this.PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
 		}
 	}
+
+	public class EntityView <TEntity> : EntityView<TEntity, EntityViewObject<TEntity>>
+		where TEntity : class, new()
+	{
+		public EntityView (IRepositorySet<TEntity> set)
+			: base(set)
+		{
+		}
+
+		public EntityView (IRepositorySet<TEntity> set, IEnumerable<TEntity> source)
+			: base(set, source)
+		{
+		}
+	}
 }
