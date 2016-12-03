@@ -173,137 +173,6 @@ namespace RI.Framework.Mvvm
 		}
 
 		/// <summary>
-		///     Deactivates an element of a specified name in the specified region.
-		/// </summary>
-		/// <param name="region"> The region. </param>
-		/// <param name="element"> The name of the element. </param>
-		/// <remarks>
-		///     <para>
-		///         See <see cref="Deactivate(string,object)" /> for more details.
-		///     </para>
-		///     <para>
-		///         The elements instance is obtaines using <see cref="InstanceLocator" />.
-		///     </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="region" /> or <paramref name="element" /> is null. </exception>
-		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> or <paramref name="element" /> is an empty string. </exception>
-		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
-		/// <exception cref="InvalidOperationException"> <paramref name="element" /> cannot be resolved or no region service is available. </exception>
-		public static void Deactivate(string region, string element)
-		{
-			if (region == null)
-			{
-				throw new ArgumentNullException(nameof(region));
-			}
-
-			if (region.IsEmpty())
-			{
-				throw new EmptyStringArgumentException(nameof(region));
-			}
-
-			if (element == null)
-			{
-				throw new ArgumentNullException(nameof(element));
-			}
-
-			if (element.IsEmpty())
-			{
-				throw new EmptyStringArgumentException(nameof(element));
-			}
-
-			object value = RegionManager.GetValue(element);
-			if (value == null)
-			{
-				throw new InvalidOperationException();
-			}
-
-			RegionManager.Deactivate(region, value);
-		}
-
-		/// <summary>
-		///     Deactivates an element of a specified type in the specified region.
-		/// </summary>
-		/// <param name="region"> The region. </param>
-		/// <param name="element"> The type of the element. </param>
-		/// <remarks>
-		///     <para>
-		///         See <see cref="Deactivate(string,object)" /> for more details.
-		///     </para>
-		///     <para>
-		///         The elements instance is obtaines using <see cref="InstanceLocator" />.
-		///     </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="region" /> or <paramref name="element" /> is null. </exception>
-		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
-		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
-		/// <exception cref="InvalidOperationException"> <paramref name="element" /> cannot be resolved or no region service is available. </exception>
-		public static void Deactivate(string region, Type element)
-		{
-			if (region == null)
-			{
-				throw new ArgumentNullException(nameof(region));
-			}
-
-			if (region.IsEmpty())
-			{
-				throw new EmptyStringArgumentException(nameof(region));
-			}
-
-			if (element == null)
-			{
-				throw new ArgumentNullException(nameof(element));
-			}
-
-			object value = RegionManager.GetValue(element);
-			if (value == null)
-			{
-				throw new InvalidOperationException();
-			}
-
-			RegionManager.Deactivate(region, value);
-		}
-
-		/// <summary>
-		///     Deactivates an element in the specified region.
-		/// </summary>
-		/// <param name="region"> The region. </param>
-		/// <param name="element"> The element. </param>
-		/// <remarks>
-		///     <para>
-		///         <see cref="IRegionService" />.<see cref="IRegionService.DeactivateElement" /> is used internally, retrieved using <see cref="ServiceLocator" />.
-		///     </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="region" /> or <paramref name="element" /> is null. </exception>
-		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
-		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
-		/// <exception cref="InvalidOperationException"> No region service is available. </exception>
-		public static void Deactivate(string region, object element)
-		{
-			if (region == null)
-			{
-				throw new ArgumentNullException(nameof(region));
-			}
-
-			if (region.IsEmpty())
-			{
-				throw new EmptyStringArgumentException(nameof(region));
-			}
-
-			if (element == null)
-			{
-				throw new ArgumentNullException(nameof(element));
-			}
-
-			IRegionService regionService = ServiceLocator.GetInstance<IRegionService>();
-			if (regionService == null)
-			{
-				throw new InvalidOperationException();
-			}
-
-			regionService.DeactivateElement(region, element);
-		}
-
-		/// <summary>
 		///     Adds an element of a specified name to the specified region.
 		/// </summary>
 		/// <param name="region"> The region. </param>
@@ -432,205 +301,6 @@ namespace RI.Framework.Mvvm
 			}
 
 			regionService.AddElement(region, element);
-		}
-
-		/// <summary>
-		///     Removes an element of a specified name from the specified region.
-		/// </summary>
-		/// <param name="region"> The region. </param>
-		/// <param name="element"> The name of the element. </param>
-		/// <remarks>
-		///     <para>
-		///         See <see cref="Remove(string,object)" /> for more details.
-		///     </para>
-		///     <para>
-		///         The elements instance is obtaines using <see cref="InstanceLocator" />.
-		///     </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="region" /> or <paramref name="element" /> is null. </exception>
-		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> or <paramref name="element" /> is an empty string. </exception>
-		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
-		/// <exception cref="InvalidOperationException"> <paramref name="element" /> cannot be resolved or no region service is available. </exception>
-		public static void Remove(string region, string element)
-		{
-			if (region == null)
-			{
-				throw new ArgumentNullException(nameof(region));
-			}
-
-			if (region.IsEmpty())
-			{
-				throw new EmptyStringArgumentException(nameof(region));
-			}
-
-			if (element == null)
-			{
-				throw new ArgumentNullException(nameof(element));
-			}
-
-			if (element.IsEmpty())
-			{
-				throw new EmptyStringArgumentException(nameof(element));
-			}
-
-			object value = RegionManager.GetValue(element);
-			if (value == null)
-			{
-				throw new InvalidOperationException();
-			}
-
-			RegionManager.Remove(region, value);
-		}
-
-		/// <summary>
-		///     Removes an element of a specified type from the specified region.
-		/// </summary>
-		/// <param name="region"> The region. </param>
-		/// <param name="element"> The type of the element. </param>
-		/// <remarks>
-		///     <para>
-		///         See <see cref="Remove(string,object)" /> for more details.
-		///     </para>
-		///     <para>
-		///         The elements instance is obtaines using <see cref="InstanceLocator" />.
-		///     </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="region" /> or <paramref name="element" /> is null. </exception>
-		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
-		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
-		/// <exception cref="InvalidOperationException"> <paramref name="element" /> cannot be resolved or no region service is available. </exception>
-		public static void Remove(string region, Type element)
-		{
-			if (region == null)
-			{
-				throw new ArgumentNullException(nameof(region));
-			}
-
-			if (region.IsEmpty())
-			{
-				throw new EmptyStringArgumentException(nameof(region));
-			}
-
-			if (element == null)
-			{
-				throw new ArgumentNullException(nameof(element));
-			}
-
-			object value = RegionManager.GetValue(element);
-			if (value == null)
-			{
-				throw new InvalidOperationException();
-			}
-
-			RegionManager.Remove(region, value);
-		}
-
-		/// <summary>
-		///     Removes an element from the specified region.
-		/// </summary>
-		/// <param name="region"> The region. </param>
-		/// <param name="element"> The element. </param>
-		/// <remarks>
-		///     <para>
-		///         <see cref="IRegionService" />.<see cref="IRegionService.RemoveElement" /> is used internally, retrieved using <see cref="ServiceLocator" />.
-		///     </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="region" /> or <paramref name="element" /> is null. </exception>
-		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
-		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
-		/// <exception cref="InvalidOperationException"> No region service is available. </exception>
-		public static void Remove(string region, object element)
-		{
-			if (region == null)
-			{
-				throw new ArgumentNullException(nameof(region));
-			}
-
-			if (region.IsEmpty())
-			{
-				throw new EmptyStringArgumentException(nameof(region));
-			}
-
-			if (element == null)
-			{
-				throw new ArgumentNullException(nameof(element));
-			}
-
-			IRegionService regionService = ServiceLocator.GetInstance<IRegionService>();
-			if (regionService == null)
-			{
-				throw new InvalidOperationException();
-			}
-
-			regionService.RemoveElement(region, element);
-		}
-
-		/// <summary>
-		///     Removes all elements from the specified region.
-		/// </summary>
-		/// <param name="region"> The region. </param>
-		/// <remarks>
-		///     <para>
-		///         <see cref="IRegionService" />.<see cref="IRegionService.ClearElements" /> is used internally, retrieved using <see cref="ServiceLocator" />.
-		///     </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="region" /> is null. </exception>
-		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
-		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
-		/// <exception cref="InvalidOperationException"> No region service is available. </exception>
-		public static void Clear(string region)
-		{
-			if (region == null)
-			{
-				throw new ArgumentNullException(nameof(region));
-			}
-
-			if (region.IsEmpty())
-			{
-				throw new EmptyStringArgumentException(nameof(region));
-			}
-
-			IRegionService regionService = ServiceLocator.GetInstance<IRegionService>();
-			if (regionService == null)
-			{
-				throw new InvalidOperationException();
-			}
-
-			regionService.ClearElements(region);
-		}
-
-		/// <summary>
-		///     Deactivates all elements in the specified region.
-		/// </summary>
-		/// <param name="region"> The region. </param>
-		/// <remarks>
-		///     <para>
-		///         <see cref="IRegionService" />.<see cref="IRegionService.DeactivateAllElements" /> is used internally, retrieved using <see cref="ServiceLocator" />.
-		///     </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="region" /> is null. </exception>
-		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
-		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
-		/// <exception cref="InvalidOperationException"> No region service is available. </exception>
-		public static void DeactivateAll(string region)
-		{
-			if (region == null)
-			{
-				throw new ArgumentNullException(nameof(region));
-			}
-
-			if (region.IsEmpty())
-			{
-				throw new EmptyStringArgumentException(nameof(region));
-			}
-
-			IRegionService regionService = ServiceLocator.GetInstance<IRegionService>();
-			if (regionService == null)
-			{
-				throw new InvalidOperationException();
-			}
-
-			regionService.DeactivateAllElements(region);
 		}
 
 		/// <summary>
@@ -766,6 +436,205 @@ namespace RI.Framework.Mvvm
 			}
 
 			return regionService.CanNavigate(region, element);
+		}
+
+		/// <summary>
+		///     Removes all elements from the specified region.
+		/// </summary>
+		/// <param name="region"> The region. </param>
+		/// <remarks>
+		///     <para>
+		///         <see cref="IRegionService" />.<see cref="IRegionService.ClearElements" /> is used internally, retrieved using <see cref="ServiceLocator" />.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="region" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
+		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
+		/// <exception cref="InvalidOperationException"> No region service is available. </exception>
+		public static void Clear (string region)
+		{
+			if (region == null)
+			{
+				throw new ArgumentNullException(nameof(region));
+			}
+
+			if (region.IsEmpty())
+			{
+				throw new EmptyStringArgumentException(nameof(region));
+			}
+
+			IRegionService regionService = ServiceLocator.GetInstance<IRegionService>();
+			if (regionService == null)
+			{
+				throw new InvalidOperationException();
+			}
+
+			regionService.ClearElements(region);
+		}
+
+		/// <summary>
+		///     Deactivates an element of a specified name in the specified region.
+		/// </summary>
+		/// <param name="region"> The region. </param>
+		/// <param name="element"> The name of the element. </param>
+		/// <remarks>
+		///     <para>
+		///         See <see cref="Deactivate(string,object)" /> for more details.
+		///     </para>
+		///     <para>
+		///         The elements instance is obtaines using <see cref="InstanceLocator" />.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="region" /> or <paramref name="element" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> or <paramref name="element" /> is an empty string. </exception>
+		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
+		/// <exception cref="InvalidOperationException"> <paramref name="element" /> cannot be resolved or no region service is available. </exception>
+		public static void Deactivate (string region, string element)
+		{
+			if (region == null)
+			{
+				throw new ArgumentNullException(nameof(region));
+			}
+
+			if (region.IsEmpty())
+			{
+				throw new EmptyStringArgumentException(nameof(region));
+			}
+
+			if (element == null)
+			{
+				throw new ArgumentNullException(nameof(element));
+			}
+
+			if (element.IsEmpty())
+			{
+				throw new EmptyStringArgumentException(nameof(element));
+			}
+
+			object value = RegionManager.GetValue(element);
+			if (value == null)
+			{
+				throw new InvalidOperationException();
+			}
+
+			RegionManager.Deactivate(region, value);
+		}
+
+		/// <summary>
+		///     Deactivates an element of a specified type in the specified region.
+		/// </summary>
+		/// <param name="region"> The region. </param>
+		/// <param name="element"> The type of the element. </param>
+		/// <remarks>
+		///     <para>
+		///         See <see cref="Deactivate(string,object)" /> for more details.
+		///     </para>
+		///     <para>
+		///         The elements instance is obtaines using <see cref="InstanceLocator" />.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="region" /> or <paramref name="element" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
+		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
+		/// <exception cref="InvalidOperationException"> <paramref name="element" /> cannot be resolved or no region service is available. </exception>
+		public static void Deactivate (string region, Type element)
+		{
+			if (region == null)
+			{
+				throw new ArgumentNullException(nameof(region));
+			}
+
+			if (region.IsEmpty())
+			{
+				throw new EmptyStringArgumentException(nameof(region));
+			}
+
+			if (element == null)
+			{
+				throw new ArgumentNullException(nameof(element));
+			}
+
+			object value = RegionManager.GetValue(element);
+			if (value == null)
+			{
+				throw new InvalidOperationException();
+			}
+
+			RegionManager.Deactivate(region, value);
+		}
+
+		/// <summary>
+		///     Deactivates an element in the specified region.
+		/// </summary>
+		/// <param name="region"> The region. </param>
+		/// <param name="element"> The element. </param>
+		/// <remarks>
+		///     <para>
+		///         <see cref="IRegionService" />.<see cref="IRegionService.DeactivateElement" /> is used internally, retrieved using <see cref="ServiceLocator" />.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="region" /> or <paramref name="element" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
+		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
+		/// <exception cref="InvalidOperationException"> No region service is available. </exception>
+		public static void Deactivate (string region, object element)
+		{
+			if (region == null)
+			{
+				throw new ArgumentNullException(nameof(region));
+			}
+
+			if (region.IsEmpty())
+			{
+				throw new EmptyStringArgumentException(nameof(region));
+			}
+
+			if (element == null)
+			{
+				throw new ArgumentNullException(nameof(element));
+			}
+
+			IRegionService regionService = ServiceLocator.GetInstance<IRegionService>();
+			if (regionService == null)
+			{
+				throw new InvalidOperationException();
+			}
+
+			regionService.DeactivateElement(region, element);
+		}
+
+		/// <summary>
+		///     Deactivates all elements in the specified region.
+		/// </summary>
+		/// <param name="region"> The region. </param>
+		/// <remarks>
+		///     <para>
+		///         <see cref="IRegionService" />.<see cref="IRegionService.DeactivateAllElements" /> is used internally, retrieved using <see cref="ServiceLocator" />.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="region" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
+		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
+		/// <exception cref="InvalidOperationException"> No region service is available. </exception>
+		public static void DeactivateAll (string region)
+		{
+			if (region == null)
+			{
+				throw new ArgumentNullException(nameof(region));
+			}
+
+			if (region.IsEmpty())
+			{
+				throw new EmptyStringArgumentException(nameof(region));
+			}
+
+			IRegionService regionService = ServiceLocator.GetInstance<IRegionService>();
+			if (regionService == null)
+			{
+				throw new InvalidOperationException();
+			}
+
+			regionService.DeactivateAllElements(region);
 		}
 
 		/// <summary>
@@ -918,6 +787,137 @@ namespace RI.Framework.Mvvm
 			}
 
 			return regionService.Navigate(region, element);
+		}
+
+		/// <summary>
+		///     Removes an element of a specified name from the specified region.
+		/// </summary>
+		/// <param name="region"> The region. </param>
+		/// <param name="element"> The name of the element. </param>
+		/// <remarks>
+		///     <para>
+		///         See <see cref="Remove(string,object)" /> for more details.
+		///     </para>
+		///     <para>
+		///         The elements instance is obtaines using <see cref="InstanceLocator" />.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="region" /> or <paramref name="element" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> or <paramref name="element" /> is an empty string. </exception>
+		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
+		/// <exception cref="InvalidOperationException"> <paramref name="element" /> cannot be resolved or no region service is available. </exception>
+		public static void Remove (string region, string element)
+		{
+			if (region == null)
+			{
+				throw new ArgumentNullException(nameof(region));
+			}
+
+			if (region.IsEmpty())
+			{
+				throw new EmptyStringArgumentException(nameof(region));
+			}
+
+			if (element == null)
+			{
+				throw new ArgumentNullException(nameof(element));
+			}
+
+			if (element.IsEmpty())
+			{
+				throw new EmptyStringArgumentException(nameof(element));
+			}
+
+			object value = RegionManager.GetValue(element);
+			if (value == null)
+			{
+				throw new InvalidOperationException();
+			}
+
+			RegionManager.Remove(region, value);
+		}
+
+		/// <summary>
+		///     Removes an element of a specified type from the specified region.
+		/// </summary>
+		/// <param name="region"> The region. </param>
+		/// <param name="element"> The type of the element. </param>
+		/// <remarks>
+		///     <para>
+		///         See <see cref="Remove(string,object)" /> for more details.
+		///     </para>
+		///     <para>
+		///         The elements instance is obtaines using <see cref="InstanceLocator" />.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="region" /> or <paramref name="element" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
+		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
+		/// <exception cref="InvalidOperationException"> <paramref name="element" /> cannot be resolved or no region service is available. </exception>
+		public static void Remove (string region, Type element)
+		{
+			if (region == null)
+			{
+				throw new ArgumentNullException(nameof(region));
+			}
+
+			if (region.IsEmpty())
+			{
+				throw new EmptyStringArgumentException(nameof(region));
+			}
+
+			if (element == null)
+			{
+				throw new ArgumentNullException(nameof(element));
+			}
+
+			object value = RegionManager.GetValue(element);
+			if (value == null)
+			{
+				throw new InvalidOperationException();
+			}
+
+			RegionManager.Remove(region, value);
+		}
+
+		/// <summary>
+		///     Removes an element from the specified region.
+		/// </summary>
+		/// <param name="region"> The region. </param>
+		/// <param name="element"> The element. </param>
+		/// <remarks>
+		///     <para>
+		///         <see cref="IRegionService" />.<see cref="IRegionService.RemoveElement" /> is used internally, retrieved using <see cref="ServiceLocator" />.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="region" /> or <paramref name="element" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
+		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
+		/// <exception cref="InvalidOperationException"> No region service is available. </exception>
+		public static void Remove (string region, object element)
+		{
+			if (region == null)
+			{
+				throw new ArgumentNullException(nameof(region));
+			}
+
+			if (region.IsEmpty())
+			{
+				throw new EmptyStringArgumentException(nameof(region));
+			}
+
+			if (element == null)
+			{
+				throw new ArgumentNullException(nameof(element));
+			}
+
+			IRegionService regionService = ServiceLocator.GetInstance<IRegionService>();
+			if (regionService == null)
+			{
+				throw new InvalidOperationException();
+			}
+
+			regionService.RemoveElement(region, element);
 		}
 
 		/// <summary>

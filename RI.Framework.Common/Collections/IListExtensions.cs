@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using RI.Framework.Utilities.Comparison;
 using RI.Framework.Collections.Linq;
+using RI.Framework.Utilities.Comparison;
 
 
 
@@ -235,7 +235,7 @@ namespace RI.Framework.Collections
 			}
 
 			List<T> shuffled = new List<T>(list);
-			for (int i1 = 0; i1 < (list.Count*2); i1++)
+			for (int i1 = 0; i1 < (list.Count * 2); i1++)
 			{
 				int a = randomizer.Next(0, list.Count);
 				int b = randomizer.Next(0, list.Count);

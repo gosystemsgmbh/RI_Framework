@@ -9,12 +9,12 @@ using RI.Framework.Services.Logging;
 namespace RI.Framework.Services
 {
 	/// <summary>
-	/// Implements a default WPF application object.
+	///     Implements a default WPF application object.
 	/// </summary>
 	/// <remarks>
-	/// <para>
-	/// This default WPF application object inherits from <see cref="Application"/> and adds some common desktop application functionality such as handling of power events, logoff, sleep, etc.
-	/// </para>
+	///     <para>
+	///         This default WPF application object inherits from <see cref="Application" /> and adds some common desktop application functionality such as handling of power events, logoff, sleep, etc.
+	///     </para>
 	/// </remarks>
 	[Export]
 	public class WpfApplication : Application
@@ -48,7 +48,7 @@ namespace RI.Framework.Services
 		///         If no <see cref="ILogService" /> is available, no logging is performed.
 		///     </para>
 		/// </remarks>
-		protected void Log(LogLevel severity, string format, params object[] args)
+		protected void Log (LogLevel severity, string format, params object[] args)
 		{
 			LogLocator.Log(severity, this.GetType().Name, format, args);
 		}

@@ -174,7 +174,7 @@ namespace RI.Framework.Utilities.Windows
 			info.cbSize = (uint)Marshal.SizeOf(info);
 			NativeWindows.GetLastInputInfo(ref info);
 
-			double idleTicks = (Environment.TickCount - info.dwTime)*(-1.0);
+			double idleTicks = (Environment.TickCount - info.dwTime) * (-1.0);
 			DateTime inputTimestamp = DateTime.Now.AddMilliseconds(idleTicks);
 			return inputTimestamp;
 		}

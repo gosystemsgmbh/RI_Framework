@@ -6,9 +6,11 @@ using System.Collections.Generic;
 
 namespace RI.Framework.Data.Repository.Views
 {
-	public sealed class EntityViewItemsEventArgs<T> : EventArgs
+	public sealed class EntityViewItemsEventArgs <T> : EventArgs
 		where T : class
 	{
+		#region Instance Constructor/Destructor
+
 		public EntityViewItemsEventArgs (IList<T> oldItems, IList<T> newItems)
 		{
 			if (oldItems == null)
@@ -25,8 +27,17 @@ namespace RI.Framework.Data.Repository.Views
 			this.NewItems = newItems;
 		}
 
-		public IList<T> OldItems { get; }
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
 
 		public IList<T> NewItems { get; }
+
+		public IList<T> OldItems { get; }
+
+		#endregion
 	}
 }

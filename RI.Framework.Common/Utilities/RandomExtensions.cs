@@ -337,7 +337,7 @@ namespace RI.Framework.Utilities
 				throw new NotFiniteNumberException(nameof(max));
 			}
 
-			return min + (randomizer.NextDouble()*(max - min));
+			return min + (randomizer.NextDouble() * (max - min));
 		}
 
 		/// <summary>
@@ -373,8 +373,8 @@ namespace RI.Framework.Utilities
 
 			double u1 = randomizer.NextDouble();
 			double u2 = randomizer.NextDouble();
-			double distribution = Math.Sqrt(-2.0*Math.Log(u1))*Math.Sin(2.0*Math.PI*u2);
-			return mu + (sigma*distribution);
+			double distribution = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(2.0 * Math.PI * u2);
+			return mu + (sigma * distribution);
 		}
 
 		/// <summary>
@@ -555,13 +555,13 @@ namespace RI.Framework.Utilities
 			}
 
 			double u = randomizer.NextDouble();
-			if (u < ((mode - min)/(max - min)))
+			if (u < ((mode - min) / (max - min)))
 			{
-				return min + Math.Sqrt(u*(max - min)*(mode - min));
+				return min + Math.Sqrt(u * (max - min) * (mode - min));
 			}
 			else
 			{
-				return max - Math.Sqrt((1 - u)*(max - min)*(max - mode));
+				return max - Math.Sqrt((1 - u) * (max - min) * (max - mode));
 			}
 		}
 

@@ -2,9 +2,8 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using RI.Framework.Collections;
-using RI.Framework.Collections.ObjectModel;
 using RI.Framework.Collections.Linq;
+using RI.Framework.Collections.ObjectModel;
 
 
 

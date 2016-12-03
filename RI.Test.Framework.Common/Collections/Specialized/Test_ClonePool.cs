@@ -3,7 +3,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using RI.Framework.Collections.Specialized;
-using RI.Framework.Collections.Linq;
 
 
 

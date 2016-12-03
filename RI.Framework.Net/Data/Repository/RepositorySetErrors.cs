@@ -152,17 +152,17 @@ namespace RI.Framework.Data.Repository
 
 			this.PropertyErrors[property].Add(error);
 		}
-		
+
 		/// <summary>
 		///     Gets a list with all validation errors.
 		/// </summary>
 		/// <returns>
 		///     The list with all validation errors or null if no validation errors are defined.
 		/// </returns>
-		public List<string> ToErrorList()
+		public List<string> ToErrorList ()
 		{
 			List<string> list = new List<string>();
-			
+
 			foreach (string error in this.EntityErrors)
 			{
 				list.Add(error);
@@ -175,10 +175,10 @@ namespace RI.Framework.Data.Repository
 					list.Add(error);
 				}
 			}
-			
+
 			return list.Count == 0 ? null : list;
 		}
-		
+
 		/// <summary>
 		///     Converts all the validation errors into one string for display.
 		/// </summary>
@@ -190,11 +190,11 @@ namespace RI.Framework.Data.Repository
 		///         Each validation error is separated by a new line.
 		///     </para>
 		/// </remarks>
-		public string ToErrorString()
+		public string ToErrorString ()
 		{
 			return this.ToErrorString(null);
 		}
-		
+
 		/// <summary>
 		///     Converts all the validation errors into one string for display.
 		/// </summary>
@@ -202,11 +202,11 @@ namespace RI.Framework.Data.Repository
 		/// <returns>
 		///     The string containing all validation errors or null if no validation errors are defined.
 		/// </returns>
-		public string ToErrorString(char separator)
+		public string ToErrorString (char separator)
 		{
 			return this.ToErrorString(new string(separator, 1));
 		}
-		
+
 		/// <summary>
 		///     Converts all the validation errors into one string for display.
 		/// </summary>
@@ -214,7 +214,7 @@ namespace RI.Framework.Data.Repository
 		/// <returns>
 		///     The string containing all validation errors or null if no validation errors are defined.
 		/// </returns>
-		public string ToErrorString(string separator)
+		public string ToErrorString (string separator)
 		{
 			return this.ToErrorList()?.Join(separator ?? Environment.NewLine);
 		}

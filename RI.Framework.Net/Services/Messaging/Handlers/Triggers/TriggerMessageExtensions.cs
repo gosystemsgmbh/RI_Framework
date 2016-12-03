@@ -222,24 +222,6 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 		}
 
 		/// <summary>
-		///     Checks whether a message is a valid trigger changed response.
-		/// </summary>
-		/// <param name="message"> The message. </param>
-		/// <returns>
-		///     true if <paramref name="message" /> is a valid trigger chenged response, false otherwise.
-		/// </returns>
-		/// <exception cref="ArgumentNullException"> <paramref name="message" /> is null. </exception>
-		public static bool IsTriggerChangedResponse (this IMessage message)
-		{
-			if (message == null)
-			{
-				throw new ArgumentNullException(nameof(message));
-			}
-
-			return string.Equals(message.Name, TriggerMessageNames.MessageNameResponseChanged, StringComparison.Ordinal);
-		}
-
-		/// <summary>
 		///     Determines whether a message is a trigger changed response and if so, checks whether the specified trigger is AND-triggered.
 		/// </summary>
 		/// <param name="message"> The trigger message. </param>
@@ -291,7 +273,7 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="message" /> or <paramref name="triggerName" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="triggerName" /> is an empty string. </exception>
-		public static bool? IsOrTriggered(this IMessage message, string triggerName)
+		public static bool? IsOrTriggered (this IMessage message, string triggerName)
 		{
 			if (message == null)
 			{
@@ -319,6 +301,24 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 			}
 
 			return message.GetOrTriggered();
+		}
+
+		/// <summary>
+		///     Checks whether a message is a valid trigger changed response.
+		/// </summary>
+		/// <param name="message"> The message. </param>
+		/// <returns>
+		///     true if <paramref name="message" /> is a valid trigger chenged response, false otherwise.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="message" /> is null. </exception>
+		public static bool IsTriggerChangedResponse (this IMessage message)
+		{
+			if (message == null)
+			{
+				throw new ArgumentNullException(nameof(message));
+			}
+
+			return string.Equals(message.Name, TriggerMessageNames.MessageNameResponseChanged, StringComparison.Ordinal);
 		}
 
 		/// <summary>

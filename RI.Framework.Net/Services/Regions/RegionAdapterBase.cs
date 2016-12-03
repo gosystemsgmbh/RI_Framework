@@ -304,7 +304,7 @@ namespace RI.Framework.Services.Regions
 		public abstract void Remove (object container, object element);
 
 		/// <inheritdoc />
-		public virtual void Sort(object container)
+		public virtual void Sort (object container)
 		{
 			if (container == null)
 			{
@@ -313,7 +313,7 @@ namespace RI.Framework.Services.Regions
 
 			List<object> existingElements = this.Get(container);
 			List<object> sortedElements = this.GetSortedElements(existingElements);
-			
+
 			if (DirectLinq.SequenceEqual(sortedElements, existingElements, CollectionComparerFlags.ReferenceEquality))
 			{
 				this.Clear(container);

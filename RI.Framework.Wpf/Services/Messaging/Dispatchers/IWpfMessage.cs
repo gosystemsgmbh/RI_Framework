@@ -6,7 +6,7 @@
 namespace RI.Framework.Services.Messaging.Dispatchers
 {
 	/// <summary>
-	///     Defines the interface which allows messages to have more control over the dispatching of the message when used with <see cref="WpfMessageDispatcher"/>.
+	///     Defines the interface which allows messages to have more control over the dispatching of the message when used with <see cref="WpfMessageDispatcher" />.
 	/// </summary>
 	public interface IWpfMessage
 	{

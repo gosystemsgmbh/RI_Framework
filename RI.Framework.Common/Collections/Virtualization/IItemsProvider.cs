@@ -28,9 +28,9 @@ namespace RI.Framework.Collections.Virtualization
 		///     A sequence which can be enumerated to actually load the items.
 		/// </returns>
 		/// <remarks>
-		/// <note type="important">
-		/// The number of elements in the sequence is not necessarily <paramref name="count"/> but guaranteed to be less or equal.
-		/// </note>
+		///     <note type="important">
+		///         The number of elements in the sequence is not necessarily <paramref name="count" /> but guaranteed to be less or equal.
+		///     </note>
 		/// </remarks>
 		IEnumerable<T> GetItems (int start, int count);
 

@@ -15,7 +15,7 @@ namespace RI.Framework.Collections.Virtualization
 	/// <typeparam name="T"> The type of items virtualized. </typeparam>
 	/// <remarks>
 	///     <para>
-	///         <see cref="VirtualizationCollection{T}" /> uses an <see cref="IItemsProvider{T}" /> or <see cref="INotifyItemsProvider{T}"/> to load items on-demand.
+	///         <see cref="VirtualizationCollection{T}" /> uses an <see cref="IItemsProvider{T}" /> or <see cref="INotifyItemsProvider{T}" /> to load items on-demand.
 	///         That means that items are only loaded when they are actually requested through <see cref="VirtualizationCollection{T}" /> (e.g. by using the collections indexer property).
 	///     </para>
 	///     <para>

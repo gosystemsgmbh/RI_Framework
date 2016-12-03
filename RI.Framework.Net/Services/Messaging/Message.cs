@@ -92,39 +92,6 @@ namespace RI.Framework.Services.Messaging
 		}
 
 		/// <summary>
-		///     Gets the first data item from the data dictionary which is of the specified type or a default value if the data item is not found.
-		/// </summary>
-		/// <typeparam name="T"> The type of the data item. </typeparam>
-		/// <returns>
-		///     The data item or the default value for the type <typeparamref name="T"/> if the message does not have a data item of type <typeparamref name="T"/>.
-		/// </returns>
-		public T GetOrDefault<T>()
-		{
-			return this.GetOrDefault(default(T));
-		}
-
-		/// <summary>
-		///     Gets the first data item from the data dictionary which is of the specified type or a default value if the data item is not found.
-		/// </summary>
-		/// <typeparam name="T"> The type of the data item. </typeparam>
-		/// <param name="defaultValue">The default value.</param>
-		/// <returns>
-		///     The data item or <paramref name="defaultValue" /> if the message does not have a data item of type <typeparamref name="T"/>.
-		/// </returns>
-		public T GetOrDefault<T>(T defaultValue)
-		{
-			foreach (KeyValuePair<string, object> data in this.Data)
-			{
-				if (data.Value is T)
-				{
-					return (T)data.Value;
-				}
-			}
-
-			return defaultValue;
-		}
-
-		/// <summary>
 		///     Gets the data item with the specified name from the data dictionary.
 		/// </summary>
 		/// <typeparam name="T"> The type the data item should be converted to. </typeparam>
@@ -164,17 +131,50 @@ namespace RI.Framework.Services.Messaging
 		}
 
 		/// <summary>
+		///     Gets the first data item from the data dictionary which is of the specified type or a default value if the data item is not found.
+		/// </summary>
+		/// <typeparam name="T"> The type of the data item. </typeparam>
+		/// <returns>
+		///     The data item or the default value for the type <typeparamref name="T" /> if the message does not have a data item of type <typeparamref name="T" />.
+		/// </returns>
+		public T GetOrDefault <T> ()
+		{
+			return this.GetOrDefault(default(T));
+		}
+
+		/// <summary>
+		///     Gets the first data item from the data dictionary which is of the specified type or a default value if the data item is not found.
+		/// </summary>
+		/// <typeparam name="T"> The type of the data item. </typeparam>
+		/// <param name="defaultValue"> The default value. </param>
+		/// <returns>
+		///     The data item or <paramref name="defaultValue" /> if the message does not have a data item of type <typeparamref name="T" />.
+		/// </returns>
+		public T GetOrDefault <T> (T defaultValue)
+		{
+			foreach (KeyValuePair<string, object> data in this.Data)
+			{
+				if (data.Value is T)
+				{
+					return (T)data.Value;
+				}
+			}
+
+			return defaultValue;
+		}
+
+		/// <summary>
 		///     Gets the data item with the specified name from the data dictionary or a default value if the data item is not found.
 		/// </summary>
 		/// <typeparam name="T"> The type the data item should be converted to. </typeparam>
 		/// <param name="name"> The name of the data item. </param>
 		/// <returns>
-		///     The data item or the default value for the type <typeparamref name="T"/> if the message does not have <paramref name="name" />.
+		///     The data item or the default value for the type <typeparamref name="T" /> if the message does not have <paramref name="name" />.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="name" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
 		/// <exception cref="InvalidCastException"> The data item was found but could not be converted to type <typeparamref name="T" />. </exception>
-		public T GetOrDefault<T>(string name)
+		public T GetOrDefault <T> (string name)
 		{
 			return this.GetOrDefault(name, default(T));
 		}
@@ -184,14 +184,14 @@ namespace RI.Framework.Services.Messaging
 		/// </summary>
 		/// <typeparam name="T"> The type the data item should be converted to. </typeparam>
 		/// <param name="name"> The name of the data item. </param>
-		/// <param name="defaultValue">The default value.</param>
+		/// <param name="defaultValue"> The default value. </param>
 		/// <returns>
 		///     The data item or <paramref name="defaultValue" /> if the message does not have <paramref name="name" />.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="name" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
 		/// <exception cref="InvalidCastException"> The data item was found but could not be converted to type <typeparamref name="T" />. </exception>
-		public T GetOrDefault<T>(string name, T defaultValue)
+		public T GetOrDefault <T> (string name, T defaultValue)
 		{
 			if (name == null)
 			{

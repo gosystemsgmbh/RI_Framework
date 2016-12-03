@@ -112,7 +112,7 @@ namespace RI.Framework.Services.Resources
 		/// <exception cref="ArgumentNullException"> <paramref name="name" /> or <paramref name="type" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
 		/// <exception cref="InvalidTypeArgumentException"> The resource cannot be converted to type <paramref name="type" />. </exception>
-		object GetValue(string name, Type type);
+		object GetValue (string name, Type type);
 
 		/// <summary>
 		///     Determines whether a resource with a specified name is available.

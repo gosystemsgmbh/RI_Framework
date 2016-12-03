@@ -26,7 +26,7 @@ namespace RI.Framework.Data.Repository
 		///     The type of entities this repository set manages.
 		/// </value>
 		Type EntityType { get; }
-		
+
 		/// <summary>
 		///     Adds a new entity to the set.
 		/// </summary>
@@ -44,94 +44,6 @@ namespace RI.Framework.Data.Repository
 		/// <exception cref="InvalidTypeArgumentException"> <paramref name="entity" /> is of an incompatible type. </exception>
 		/// <exception cref="InvalidOperationException"> The entity cannot be added. </exception>
 		void Attach (object entity);
-
-		/// <summary>
-		///     Creates a new entity.
-		/// </summary>
-		/// <returns>
-		///     The newly created entity.
-		/// </returns>
-		/// <exception cref="InvalidOperationException"> No new entities can be created. </exception>
-		object Create ();
-
-		/// <summary>
-		///     Deletes an entity from the set.
-		/// </summary>
-		/// <param name="entity"> The entity to delete from the set. </param>
-		/// <exception cref="ArgumentNullException"> <paramref name="entity" /> is null. </exception>
-		/// <exception cref="InvalidTypeArgumentException"> <paramref name="entity" /> is of an incompatible type. </exception>
-		/// <exception cref="InvalidOperationException"> The entity cannot be deleted. </exception>
-		void Delete (object entity);
-		
-		/// <summary>
-		///     Determines whether an entity has any pending changes.
-		/// </summary>
-		/// <param name="entity"> The entity. </param>
-		/// <returns>
-		///     true if the entity has pending changes, false otherwise.
-		/// </returns>
-		/// <exception cref="ArgumentNullException"> <paramref name="entity" /> is null. </exception>
-		/// <exception cref="InvalidTypeArgumentException"> <paramref name="entity" /> is of an incompatible type. </exception>
-		/// <exception cref="InvalidOperationException"> The entitys modification status cannot be determined. </exception>
-		bool IsModified (object entity);
-
-		/// <summary>
-		///     Determines whether an entity has validation errors.
-		/// </summary>
-		/// <param name="entity"> The entity. </param>
-		/// <returns>
-		///     true if the entity has validation errors, false otherwise.
-		/// </returns>
-		/// <exception cref="ArgumentNullException"> <paramref name="entity" /> is null. </exception>
-		/// <exception cref="InvalidTypeArgumentException"> <paramref name="entity" /> is of an incompatible type. </exception>
-		/// <exception cref="InvalidOperationException"> The entitys validity status cannot be determined. </exception>
-		bool IsValid (object entity);
-
-		/// <summary>
-		///     Explicitly marks an entity as modified or having pending changes respectively.
-		/// </summary>
-		/// <param name="entity"> The entity to explicitly mark as modified. </param>
-		/// <exception cref="ArgumentNullException"> <paramref name="entity" /> is null. </exception>
-		/// <exception cref="InvalidTypeArgumentException"> <paramref name="entity" /> is of an incompatible type. </exception>
-		/// <exception cref="InvalidOperationException"> The entity cannot be modified. </exception>
-		void Modify (object entity);
-
-		/// <summary>
-		///     Reloads an entity from the database, discarding all its pending changes and validation errors.
-		/// </summary>
-		/// <param name="entity"> The entity to reload from the database. </param>
-		/// <exception cref="ArgumentNullException"> <paramref name="entity" /> is null. </exception>
-		/// <exception cref="InvalidTypeArgumentException"> <paramref name="entity" /> is of an incompatible type. </exception>
-		/// <exception cref="InvalidOperationException"> The entity cannot be reloaded. </exception>
-		void Reload (object entity);
-
-		/// <summary>
-		///     Validates an entity and returns all ist validation errors.
-		/// </summary>
-		/// <param name="entity"> The entity. </param>
-		/// <returns>
-		///     The validation errors or null if the entity is valid.
-		/// </returns>
-		/// <exception cref="ArgumentNullException"> <paramref name="entity" /> is null. </exception>
-		/// <exception cref="InvalidTypeArgumentException"> <paramref name="entity" /> is of an incompatible type. </exception>
-		/// <exception cref="InvalidOperationException"> The entity cannot be validated. </exception>
-		RepositorySetErrors Validate (object entity);
-
-		/// <summary>
-		///     Gets a sequence of all entities of this sets type.
-		/// </summary>
-		/// <returns>
-		///     The sequence of all entities of this sets type.
-		/// </returns>
-		IEnumerable<object> GetAll ();
-
-		/// <summary>
-		///     Gets the number of all entities of this sets type.
-		/// </summary>
-		/// <returns>
-		///     The number of all entities of this sets type.
-		/// </returns>
-		int GetCount ();
 
 		/// <summary>
 		///     Checks whether an entity can be added to the set.
@@ -208,6 +120,40 @@ namespace RI.Framework.Data.Repository
 		bool CanValidate (object entity);
 
 		/// <summary>
+		///     Creates a new entity.
+		/// </summary>
+		/// <returns>
+		///     The newly created entity.
+		/// </returns>
+		/// <exception cref="InvalidOperationException"> No new entities can be created. </exception>
+		object Create ();
+
+		/// <summary>
+		///     Deletes an entity from the set.
+		/// </summary>
+		/// <param name="entity"> The entity to delete from the set. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="entity" /> is null. </exception>
+		/// <exception cref="InvalidTypeArgumentException"> <paramref name="entity" /> is of an incompatible type. </exception>
+		/// <exception cref="InvalidOperationException"> The entity cannot be deleted. </exception>
+		void Delete (object entity);
+
+		/// <summary>
+		///     Gets a sequence of all entities of this sets type.
+		/// </summary>
+		/// <returns>
+		///     The sequence of all entities of this sets type.
+		/// </returns>
+		IEnumerable<object> GetAll ();
+
+		/// <summary>
+		///     Gets the number of all entities of this sets type.
+		/// </summary>
+		/// <returns>
+		///     The number of all entities of this sets type.
+		/// </returns>
+		int GetCount ();
+
+		/// <summary>
 		///     Gets a sequence of filtered entities from this set.
 		/// </summary>
 		/// <param name="filter"> An implementation-defined filter object which is used for filtering or null if no filter is to be used. </param>
@@ -255,6 +201,60 @@ namespace RI.Framework.Data.Repository
 		/// <exception cref="ArgumentException"> <paramref name="filter" /> is an invalid filter object. </exception>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="pageIndex" /> or <paramref name="pageSize" /> is less than zero, <paramref name="pageIndex" /> is not zero when <paramref name="pageSize" /> is zero, or <paramref name="pageIndex" /> points to a page which does not exist. </exception>
 		IEnumerable<object> GetFiltered (IEnumerable entities, object filter, int pageIndex, int pageSize, out int totalCount, out int entityCount, out int pageCount);
+
+		/// <summary>
+		///     Determines whether an entity has any pending changes.
+		/// </summary>
+		/// <param name="entity"> The entity. </param>
+		/// <returns>
+		///     true if the entity has pending changes, false otherwise.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="entity" /> is null. </exception>
+		/// <exception cref="InvalidTypeArgumentException"> <paramref name="entity" /> is of an incompatible type. </exception>
+		/// <exception cref="InvalidOperationException"> The entitys modification status cannot be determined. </exception>
+		bool IsModified (object entity);
+
+		/// <summary>
+		///     Determines whether an entity has validation errors.
+		/// </summary>
+		/// <param name="entity"> The entity. </param>
+		/// <returns>
+		///     true if the entity has validation errors, false otherwise.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="entity" /> is null. </exception>
+		/// <exception cref="InvalidTypeArgumentException"> <paramref name="entity" /> is of an incompatible type. </exception>
+		/// <exception cref="InvalidOperationException"> The entitys validity status cannot be determined. </exception>
+		bool IsValid (object entity);
+
+		/// <summary>
+		///     Explicitly marks an entity as modified or having pending changes respectively.
+		/// </summary>
+		/// <param name="entity"> The entity to explicitly mark as modified. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="entity" /> is null. </exception>
+		/// <exception cref="InvalidTypeArgumentException"> <paramref name="entity" /> is of an incompatible type. </exception>
+		/// <exception cref="InvalidOperationException"> The entity cannot be modified. </exception>
+		void Modify (object entity);
+
+		/// <summary>
+		///     Reloads an entity from the database, discarding all its pending changes and validation errors.
+		/// </summary>
+		/// <param name="entity"> The entity to reload from the database. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="entity" /> is null. </exception>
+		/// <exception cref="InvalidTypeArgumentException"> <paramref name="entity" /> is of an incompatible type. </exception>
+		/// <exception cref="InvalidOperationException"> The entity cannot be reloaded. </exception>
+		void Reload (object entity);
+
+		/// <summary>
+		///     Validates an entity and returns all ist validation errors.
+		/// </summary>
+		/// <param name="entity"> The entity. </param>
+		/// <returns>
+		///     The validation errors or null if the entity is valid.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="entity" /> is null. </exception>
+		/// <exception cref="InvalidTypeArgumentException"> <paramref name="entity" /> is of an incompatible type. </exception>
+		/// <exception cref="InvalidOperationException"> The entity cannot be validated. </exception>
+		RepositorySetErrors Validate (object entity);
 	}
 
 	/// <summary>

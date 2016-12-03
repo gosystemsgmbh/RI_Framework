@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
 
 using RI.Framework.Utilities;
 
@@ -12,9 +10,11 @@ using RI.Framework.Utilities;
 
 namespace RI.Framework.Data.Repository.Views
 {
-	public class EntityViewObject<TEntity> : INotifyPropertyChanged, INotifyPropertyChanging, IEditableObject, IDataErrorInfo, INotifyDataErrorInfo, IChangeTracking, IRevertibleChangeTracking
+	public class EntityViewObject <TEntity> : INotifyPropertyChanged, INotifyPropertyChanging, IEditableObject, IDataErrorInfo, INotifyDataErrorInfo, IChangeTracking, IRevertibleChangeTracking
 		where TEntity : class
 	{
+		#region Instance Constructor/Destructor
+
 		public EntityViewObject ()
 		{
 			this.ViewCaller = null;
@@ -29,12 +29,66 @@ namespace RI.Framework.Data.Repository.Views
 			this.Errors = null;
 		}
 
+		#endregion
 
 
 
+
+		#region Instance Fields
+
+		private TEntity _entity;
+
+		private RepositorySetErrors _errors;
 
 
 		private bool _isAdded;
+
+		private bool _isAttached;
+
+		private bool _isDeleted;
+
+		private bool _isEdited;
+
+		private bool _isModified;
+
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
+
+		public TEntity Entity
+		{
+			get
+			{
+				return this._entity;
+			}
+			internal set
+			{
+				this.OnPropertyChanging(nameof(this.Entity));
+				this._entity = value;
+				this.OnPropertyChanged(nameof(this.Entity));
+			}
+		}
+
+		public string ErrorLines => this.Errors?.ToErrorString(Environment.NewLine);
+
+		public RepositorySetErrors Errors
+		{
+			get
+			{
+				return this._errors;
+			}
+			internal set
+			{
+				this.OnErrorsChanging();
+				this._errors = value;
+				this.OnErrorsChanged();
+			}
+		}
+
+		public string ErrorStrings => this.Errors?.ToErrorString(" ");
 
 		public bool IsAdded
 		{
@@ -52,7 +106,7 @@ namespace RI.Framework.Data.Repository.Views
 			}
 		}
 
-		private bool _isAttached;
+		public bool IsAddedOrAttached => this.IsAdded || this.IsAttached;
 
 		public bool IsAttached
 		{
@@ -70,10 +124,6 @@ namespace RI.Framework.Data.Repository.Views
 			}
 		}
 
-		public bool IsAddedOrAttached => this.IsAdded || this.IsAttached;
-
-		private bool _isDeleted;
-
 		public bool IsDeleted
 		{
 			get
@@ -87,8 +137,6 @@ namespace RI.Framework.Data.Repository.Views
 				this.OnPropertyChanged(nameof(this.IsDeleted));
 			}
 		}
-
-		private bool _isEdited;
 
 		public bool IsEdited
 		{
@@ -104,8 +152,6 @@ namespace RI.Framework.Data.Repository.Views
 			}
 		}
 
-		private bool _isModified;
-		
 		public bool IsModified
 		{
 			get
@@ -120,74 +166,72 @@ namespace RI.Framework.Data.Repository.Views
 			}
 		}
 
-		private TEntity _entity;
-
-		public TEntity Entity
-		{
-			get
-			{
-				return this._entity;
-			}
-			internal set
-			{
-				this.OnPropertyChanging(nameof(this.Entity));
-				this._entity = value;
-				this.OnPropertyChanged(nameof(this.Entity));
-			}
-		}
-
-		private RepositorySetErrors _errors;
-
-		public RepositorySetErrors Errors
-		{
-			get
-			{
-				return this._errors;
-			}
-			internal set
-			{
-				this.OnErrorsChanging();
-				this._errors = value;
-				this.OnErrorsChanged();
-			}
-		}
-
-		public string ErrorsString
-		{
-			get
-			{
-				if (this.Errors == null)
-				{
-					return null;
-				}
-
-				StringBuilder sb = new StringBuilder();
-
-				foreach (string error in this.Errors.EntityErrors)
-				{
-					sb.AppendLine(error);
-				}
-
-				foreach (KeyValuePair<string, HashSet<string>> propertyError in this.Errors.PropertyErrors)
-				{
-					foreach (string error in propertyError.Value)
-					{
-						sb.AppendLine(error);
-					}
-				}
-
-				return sb.ToString().ToNullIfNullOrEmpty()?.Trim();
-			}
-		}
-
 		public bool IsValid => this.Errors == null;
 
 		internal IEntityViewCaller<TEntity> ViewCaller { get; set; }
 
-		private void OnErrorsChanged()
+		#endregion
+
+
+
+
+		#region Instance Methods
+
+		public bool CanDelete ()
+		{
+			return this.ViewCaller.CanDelete(this.Entity);
+		}
+
+		public bool CanEdit ()
+		{
+			return this.ViewCaller.CanEdit(this.Entity);
+		}
+
+		public bool CanModify ()
+		{
+			return this.ViewCaller.CanModify(this.Entity);
+		}
+
+		public bool CanReload ()
+		{
+			return this.ViewCaller.CanReload(this.Entity);
+		}
+
+		public bool CanValidate ()
+		{
+			return this.ViewCaller.CanValidate(this.Entity);
+		}
+
+		public void Delete ()
+		{
+			this.ViewCaller.Delete(this.Entity);
+		}
+
+		public void Modify ()
+		{
+			this.ViewCaller.Modify(this.Entity);
+		}
+
+		public void Reload ()
+		{
+			this.ViewCaller.Reload(this.Entity);
+		}
+
+		public void Validate ()
+		{
+			this.ViewCaller.Validate(this.Entity);
+		}
+
+		internal void RaiseEntityChanged ()
+		{
+			this.OnPropertyChanged(nameof(this.Entity));
+		}
+
+		private void OnErrorsChanged ()
 		{
 			this.OnPropertyChanged(nameof(this.Errors));
-			this.OnPropertyChanged(nameof(this.ErrorsString));
+			this.OnPropertyChanged(nameof(this.ErrorLines));
+			this.OnPropertyChanged(nameof(this.ErrorStrings));
 			this.OnPropertyChanged(nameof(this.IsValid));
 
 			this.OnPropertyChanged(nameof(string.Empty));
@@ -197,10 +241,11 @@ namespace RI.Framework.Data.Repository.Views
 			this.ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(null));
 		}
 
-		private void OnErrorsChanging()
+		private void OnErrorsChanging ()
 		{
 			this.OnPropertyChanging(nameof(this.Errors));
-			this.OnPropertyChanging(nameof(this.ErrorsString));
+			this.OnPropertyChanging(nameof(this.ErrorLines));
+			this.OnPropertyChanging(nameof(this.ErrorStrings));
 			this.OnPropertyChanging(nameof(this.IsValid));
 
 			this.OnPropertyChanging(nameof(string.Empty));
@@ -208,82 +253,18 @@ namespace RI.Framework.Data.Repository.Views
 			this.OnPropertyChanging(nameof(INotifyDataErrorInfo.HasErrors));
 		}
 
-		public void BeginEdit()
-		{
-			this.ViewCaller.BeginEdit(this.Entity);
-		}
+		#endregion
 
-		public void CancelEdit()
-		{
-			this.ViewCaller.CancelEdit(this.Entity);
-		}
 
-		public void EndEdit()
-		{
-			this.ViewCaller.EndEdit(this.Entity);
-		}
 
-		public void Delete()
-		{
-			this.ViewCaller.Delete(this.Entity);
-		}
 
-		public void Reload()
-		{
-			this.ViewCaller.Reload(this.Entity);
-		}
-
-		public void Modify()
-		{
-			this.ViewCaller.Modify(this.Entity);
-		}
-
-		public void Validate()
-		{
-			this.ViewCaller.Validate(this.Entity);
-		}
-
-		public bool CanEdit()
-		{
-			return this.ViewCaller.CanEdit(this.Entity);
-		}
-
-		public bool CanDelete()
-		{
-			return this.ViewCaller.CanDelete(this.Entity);
-		}
-
-		public bool CanReload()
-		{
-			return this.ViewCaller.CanReload(this.Entity);
-		}
-
-		public bool CanModify()
-		{
-			return this.ViewCaller.CanModify(this.Entity);
-		}
-
-		public bool CanValidate()
-		{
-			return this.ViewCaller.CanValidate(this.Entity);
-		}
-
-		internal void RaiseEntityChanged ()
-		{
-			this.OnPropertyChanged(nameof(this.Entity));
-		}
-
-		/// <inheritdoc />
-		public event PropertyChangedEventHandler PropertyChanged;
-
-		/// <inheritdoc />
-		public event PropertyChangingEventHandler PropertyChanging;
+		#region Virtuals
 
 		/// <summary>
 		///     Handles the change of a property value by raising the <see cref="PropertyChanged" /> event.
 		/// </summary>
 		/// <param name="propertyName"> The name of the property which has changed. </param>
-		protected virtual void OnPropertyChanged(string propertyName)
+		protected virtual void OnPropertyChanged (string propertyName)
 		{
 			this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
@@ -292,10 +273,12 @@ namespace RI.Framework.Data.Repository.Views
 		///     Handles the change of a property value by raising the <see cref="PropertyChanging" /> event.
 		/// </summary>
 		/// <param name="propertyName"> The name of the property which is about to be changed. </param>
-		protected virtual void OnPropertyChanging(string propertyName)
+		protected virtual void OnPropertyChanging (string propertyName)
 		{
 			this.PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
 		}
+
+		#endregion
 
 
 
@@ -306,15 +289,9 @@ namespace RI.Framework.Data.Repository.Views
 		bool IChangeTracking.IsChanged => this.IsEdited;
 
 		/// <inheritdoc />
-		void IChangeTracking.AcceptChanges()
+		void IChangeTracking.AcceptChanges ()
 		{
 			this.EndEdit();
-		}
-
-		/// <inheritdoc />
-		void IRevertibleChangeTracking.RejectChanges()
-		{
-			this.CancelEdit();
 		}
 
 		#endregion
@@ -328,7 +305,7 @@ namespace RI.Framework.Data.Repository.Views
 		string IDataErrorInfo.Error => this.Errors?.EntityErrors?.Join(Environment.NewLine)?.ToNullIfNullOrEmpty()?.Trim();
 
 		/// <inheritdoc />
-		string IDataErrorInfo.this[string columnName]
+		string IDataErrorInfo.this [string columnName]
 		{
 			get
 			{
@@ -356,6 +333,28 @@ namespace RI.Framework.Data.Repository.Views
 
 
 
+		#region Interface: IEditableObject
+
+		public void BeginEdit ()
+		{
+			this.ViewCaller.BeginEdit(this.Entity);
+		}
+
+		public void CancelEdit ()
+		{
+			this.ViewCaller.CancelEdit(this.Entity);
+		}
+
+		public void EndEdit ()
+		{
+			this.ViewCaller.EndEdit(this.Entity);
+		}
+
+		#endregion
+
+
+
+
 		#region Interface: INotifyDataErrorInfo
 
 		/// <inheritdoc />
@@ -365,7 +364,7 @@ namespace RI.Framework.Data.Repository.Views
 		public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
 
 		/// <inheritdoc />
-		IEnumerable INotifyDataErrorInfo.GetErrors(string propertyName)
+		IEnumerable INotifyDataErrorInfo.GetErrors (string propertyName)
 		{
 			if (this.Errors == null)
 			{
@@ -383,6 +382,39 @@ namespace RI.Framework.Data.Repository.Views
 			}
 
 			return this.Errors.PropertyErrors[propertyName].ToArray();
+		}
+
+		#endregion
+
+
+
+
+		#region Interface: INotifyPropertyChanged
+
+		/// <inheritdoc />
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		#endregion
+
+
+
+
+		#region Interface: INotifyPropertyChanging
+
+		/// <inheritdoc />
+		public event PropertyChangingEventHandler PropertyChanging;
+
+		#endregion
+
+
+
+
+		#region Interface: IRevertibleChangeTracking
+
+		/// <inheritdoc />
+		void IRevertibleChangeTracking.RejectChanges ()
+		{
+			this.CancelEdit();
 		}
 
 		#endregion

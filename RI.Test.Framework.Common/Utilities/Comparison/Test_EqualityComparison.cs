@@ -15,7 +15,7 @@ namespace RI.Test.Framework.Utilities.Comparison
 		[TestMethod]
 		public void Test ()
 		{
-			EqualityComparison<int> comparer = new EqualityComparison<int>((x, y) => (x%5) == (y%5), obj => obj%5);
+			EqualityComparison<int> comparer = new EqualityComparison<int>((x, y) => (x % 5) == (y % 5), obj => obj % 5);
 
 			if (!comparer.Equals(0, 0))
 			{
@@ -62,7 +62,7 @@ namespace RI.Test.Framework.Utilities.Comparison
 				throw new TestAssertionException();
 			}
 
-			comparer = new EqualityComparison<int>((x, y) => (x%5) == (y%5));
+			comparer = new EqualityComparison<int>((x, y) => (x % 5) == (y % 5));
 
 			if (!comparer.Comparer(0, 0))
 			{

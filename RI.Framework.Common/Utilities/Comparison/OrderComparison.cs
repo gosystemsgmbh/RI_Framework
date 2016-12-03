@@ -129,7 +129,7 @@ namespace RI.Framework.Utilities.Comparison
 		/// </returns>
 		public int Compare (T x, T y)
 		{
-			return this.ReverseOrder ? (this.Comparer(x, y)*-1) : this.Comparer(x, y);
+			return this.ReverseOrder ? (this.Comparer(x, y) * -1) : this.Comparer(x, y);
 		}
 
 		#endregion

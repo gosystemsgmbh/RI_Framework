@@ -26,11 +26,11 @@ namespace RI.Framework.Utilities
 
 		private const string PropertyPrefix = "# ";
 
+		private const string PropertySeparator = " : ";
+
 		private const string StackTracePrefix = "-> ";
 
 		private const string TargetSiteSeparator = ".";
-
-		private const string PropertySeparator = " : ";
 
 		private static readonly string[] IgnoredProperties = new[]
 		{

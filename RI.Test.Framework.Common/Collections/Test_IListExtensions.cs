@@ -684,7 +684,7 @@ namespace RI.Test.Framework.Collections
 			list.Add(20);
 			list.Add(0);
 
-			if (test.Transform(x => x*10) != 4)
+			if (test.Transform(x => x * 10) != 4)
 			{
 				throw new TestAssertionException();
 			}

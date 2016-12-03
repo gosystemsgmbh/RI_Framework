@@ -184,14 +184,14 @@ namespace RI.Framework.Services.Dispatcher
 				return false;
 			}
 
-			operation.TickTrigger = this.NowTicks + (millisecondsFromNow*10000L);
+			operation.TickTrigger = this.NowTicks + (millisecondsFromNow * 10000L);
 
 			return true;
 		}
 
 		private bool Reschedule (DispatcherOperation operation, DateTime timestamp)
 		{
-			return this.Reschedule(operation, Math.Max((int)((timestamp.ToUniversalTime().Ticks - this.NowTicks)/10000), 0));
+			return this.Reschedule(operation, Math.Max((int)((timestamp.ToUniversalTime().Ticks - this.NowTicks) / 10000), 0));
 		}
 
 		#endregion
@@ -827,7 +827,7 @@ namespace RI.Framework.Services.Dispatcher
 				return this.Dispatcher.Reschedule(this, millisecondsFromNow);
 			}
 
-			bool IDispatcherOperation.Reschedule(TimeSpan timeFromNow)
+			bool IDispatcherOperation.Reschedule (TimeSpan timeFromNow)
 			{
 				return ((IDispatcherOperation)this).Reschedule((int)timeFromNow.TotalMilliseconds);
 			}

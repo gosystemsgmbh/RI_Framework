@@ -22,12 +22,11 @@ namespace RI.Framework.Mvvm.ViewModel
 		}
 
 
-
 		/// <summary>
 		///     Handles the change of a property value by raising the <see cref="PropertyChanging" /> event.
 		/// </summary>
 		/// <param name="propertyName"> The name of the property which is about to be changed. </param>
-		protected virtual void OnPropertyChanging(string propertyName)
+		protected virtual void OnPropertyChanging (string propertyName)
 		{
 			this.PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
 		}
@@ -41,6 +40,13 @@ namespace RI.Framework.Mvvm.ViewModel
 
 		/// <inheritdoc />
 		public event PropertyChangedEventHandler PropertyChanged;
+
+		#endregion
+
+
+
+
+		#region Interface: INotifyPropertyChanging
 
 		/// <inheritdoc />
 		public event PropertyChangingEventHandler PropertyChanging;
