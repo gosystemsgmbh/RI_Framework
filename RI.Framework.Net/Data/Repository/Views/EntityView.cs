@@ -41,6 +41,8 @@ namespace RI.Framework.Data.Repository.Views
 			this.SuppressViewObjectChangeHandling = false;
 			this.ItemToAddIsAttached = false;
 
+			this.AllowEdit = true;
+
 			this.Items = null;
 			this.ViewObjects = null;
 
@@ -65,11 +67,14 @@ namespace RI.Framework.Data.Repository.Views
 
 		#region Instance Fields
 
+		private bool _allowEdit;
+
 		private object _filter;
 
 		private int _pageNumber;
 
 		private int _pageSize;
+
 		private IEnumerable<TEntity> _source;
 
 		#endregion
@@ -78,6 +83,20 @@ namespace RI.Framework.Data.Repository.Views
 
 
 		#region Instance Properties/Indexer
+
+		public bool AllowEdit
+		{
+			get
+			{
+				return this._allowEdit;
+			}
+			set
+			{
+				this.OnPropertyChanging(nameof(this.AllowEdit));
+				this._allowEdit = value;
+				this.OnPropertyChanged(nameof(this.AllowEdit));
+			}
+		}
 
 		public int EntityFilteredCount { get; private set; }
 
@@ -98,7 +117,6 @@ namespace RI.Framework.Data.Repository.Views
 				this.UpdateItems(true);
 			}
 		}
-
 
 		public ObservableCollection<TEntity> Items { get; private set; }
 
@@ -154,7 +172,6 @@ namespace RI.Framework.Data.Repository.Views
 		public int PageTotalCount { get; private set; }
 
 		public IRepositorySet<TEntity> Set { get; private set; }
-
 
 		public IEnumerable<TEntity> Source
 		{
@@ -508,7 +525,6 @@ namespace RI.Framework.Data.Repository.Views
 			return new TViewObject();
 		}
 
-
 		protected virtual void EntityAdd (TViewObject viewObject)
 		{
 			if (viewObject.IsAddedOrAttached)
@@ -554,7 +570,7 @@ namespace RI.Framework.Data.Repository.Views
 
 		protected virtual bool EntityCanEdit (TViewObject viewObject)
 		{
-			return this.Set.CanModify(viewObject.Entity);
+			return this.AllowEdit;
 		}
 
 		protected virtual bool EntityCanModify (TViewObject viewObject)
@@ -773,8 +789,7 @@ namespace RI.Framework.Data.Repository.Views
 			TViewObject viewObject = this.GetViewObjectForEntity(entity);
 			return this.EntityCanValidate(viewObject);
 		}
-
-
+		
 		public void Delete (TEntity entity)
 		{
 			this.Items.Remove(entity);

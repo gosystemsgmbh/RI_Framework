@@ -584,14 +584,6 @@ namespace RI.Framework.Data.EF
 				throw new ArgumentOutOfRangeException(nameof(pageIndex));
 			}
 
-			totalCount = this.GetCount();
-			pageCount = ((pageSize == 0) || (totalCount == 0)) ? 1 : ((totalCount / pageSize) + (((totalCount % pageSize) == 0) ? 0 : 1));
-
-			if ((pageIndex != 0) && (pageIndex >= pageCount))
-			{
-				throw new ArgumentOutOfRangeException(nameof(pageIndex));
-			}
-
 			EntityFilter<T> entityFilter = this.Repository.GetFilter<T>();
 			if (entityFilter == null)
 			{
@@ -599,7 +591,15 @@ namespace RI.Framework.Data.EF
 			}
 
 			IOrderedQueryable<T> queryable = entityFilter.Filter(this.Repository, this, entities, filter);
+
+			totalCount = this.GetCount();
 			filteredCount = queryable.Count();
+			pageCount = ((pageSize == 0) || (filteredCount == 0)) ? 1 : ((filteredCount / pageSize) + (((filteredCount % pageSize) == 0) ? 0 : 1));
+
+			if ((pageIndex != 0) && (pageIndex >= pageCount))
+			{
+				throw new ArgumentOutOfRangeException(nameof(pageIndex));
+			}
 
 			if (pageSize == 0)
 			{
