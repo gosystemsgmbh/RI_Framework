@@ -35,13 +35,17 @@ namespace RI.Framework.Data.Repository.Views
 
 			this.ItemsChangedHandler = this.ItemsChanged;
 			this.ViewObjectsChangedHandler = this.ViewObjectsChanged;
+			this.SourceChangedHandler = this.SourceChanged;
 
 			this.IsUpdating = false;
 			this.SuppressItemsChangeHandling = false;
 			this.SuppressViewObjectChangeHandling = false;
+			this.SuppressSourceChangeHandling = false;
 			this.ItemToAddIsAttached = false;
 
 			this.AllowEdit = true;
+			this.ObserveSource = true;
+			this.UpdateSource = true;
 
 			this.Items = null;
 			this.ViewObjects = null;
@@ -71,11 +75,15 @@ namespace RI.Framework.Data.Repository.Views
 
 		private object _filter;
 
+		private bool _observeSource;
+
 		private int _pageNumber;
 
 		private int _pageSize;
 
 		private IEnumerable<TEntity> _source;
+
+		private bool _updateSource;
 
 		#endregion
 
@@ -119,6 +127,20 @@ namespace RI.Framework.Data.Repository.Views
 		}
 
 		public ObservableCollection<TEntity> Items { get; private set; }
+
+		public bool ObserveSource
+		{
+			get
+			{
+				return this._observeSource;
+			}
+			set
+			{
+				this.OnPropertyChanging(nameof(this.ObserveSource));
+				this._observeSource = value;
+				this.OnPropertyChanged(nameof(this.ObserveSource));
+			}
+		}
 
 		public int PageFilteredCount { get; private set; }
 
@@ -181,11 +203,35 @@ namespace RI.Framework.Data.Repository.Views
 			}
 			set
 			{
+				if (this._source is INotifyCollectionChanged)
+				{
+					((INotifyCollectionChanged)this._source).CollectionChanged -= this.SourceChangedHandler;
+				}
+
 				this.OnPropertyChanging(nameof(this.Source));
 				this._source = value;
 				this.OnPropertyChanged(nameof(this.Source));
 
+				if (this._source is INotifyCollectionChanged)
+				{
+					((INotifyCollectionChanged)this._source).CollectionChanged += this.SourceChangedHandler;
+				}
+
 				this.UpdateItems(true);
+			}
+		}
+
+		public bool UpdateSource
+		{
+			get
+			{
+				return this._updateSource;
+			}
+			set
+			{
+				this.OnPropertyChanging(nameof(this.UpdateSource));
+				this._updateSource = value;
+				this.OnPropertyChanged(nameof(this.UpdateSource));
 			}
 		}
 
@@ -199,9 +245,13 @@ namespace RI.Framework.Data.Repository.Views
 
 		protected bool SuppressItemsChangeHandling { get; private set; }
 
+		protected bool SuppressSourceChangeHandling { get; private set; }
+
 		protected bool SuppressViewObjectChangeHandling { get; private set; }
 
 		private NotifyCollectionChangedEventHandler ItemsChangedHandler { get; set; }
+
+		private NotifyCollectionChangedEventHandler SourceChangedHandler { get; set; }
 
 		private NotifyCollectionChangedEventHandler ViewObjectsChangedHandler { get; set; }
 
@@ -219,6 +269,8 @@ namespace RI.Framework.Data.Repository.Views
 		public event EventHandler<EntityViewItemEventArgs<TViewObject>> EntityEndEdit;
 
 		public event EventHandler<EntityViewItemsEventArgs<TEntity>> ItemsChange;
+
+		public event EventHandler<EntityViewItemsEventArgs<TEntity>> SourceChange;
 
 		public event EventHandler<EntityViewUpdateEventArgs> Updated;
 
@@ -346,6 +398,87 @@ namespace RI.Framework.Data.Repository.Views
 			return viewObj;
 		}
 
+		private void SourceChanged (object sender, NotifyCollectionChangedEventArgs e)
+		{
+			if (!this.ObserveSource)
+			{
+				return;
+			}
+
+			if (this.IsInitializing)
+			{
+				return;
+			}
+
+			if (this.IsUpdating)
+			{
+				return;
+			}
+
+			if (this.SuppressSourceChangeHandling)
+			{
+				return;
+			}
+
+			try
+			{
+				this.SuppressSourceChangeHandling = true;
+
+				switch (e.Action)
+				{
+					default:
+					{
+						throw new NotSupportedException(e.Action + " not supported.");
+					}
+
+					case NotifyCollectionChangedAction.Add:
+					case NotifyCollectionChangedAction.Remove:
+					case NotifyCollectionChangedAction.Replace:
+					{
+						List<TEntity> oldItems = new List<TEntity>();
+						List<TEntity> newItems = new List<TEntity>();
+
+						if (e.OldItems != null)
+						{
+							oldItems.AddRange(e.OldItems.OfType<TEntity>());
+						}
+						if (e.NewItems != null)
+						{
+							newItems.AddRange(e.NewItems.OfType<TEntity>());
+						}
+
+						foreach (TEntity entity in oldItems)
+						{
+							TViewObject viewObj = this.GetViewObjectForEntity(entity);
+
+							if (!this.SuppressViewObjectChangeHandling)
+							{
+								this.ViewObjects.Remove(viewObj);
+							}
+						}
+						foreach (TEntity entity in newItems)
+						{
+							TViewObject viewObject = this.PrepareViewObject(null, entity);
+
+							if (!this.SuppressViewObjectChangeHandling)
+							{
+								this.ViewObjects.Add(viewObject);
+							}
+						}
+
+						this.OnPropertyChanged(nameof(this.Source));
+						this.OnSourceChanged(oldItems, newItems);
+
+						break;
+					}
+				}
+			}
+			finally
+			{
+				this.SuppressSourceChangeHandling = false;
+			}
+		}
+
 		private void UpdateItems (bool resetPageNumber)
 		{
 			if (this.IsInitializing)
@@ -444,6 +577,8 @@ namespace RI.Framework.Data.Repository.Views
 			{
 				this.SuppressViewObjectChangeHandling = true;
 
+				ICollection<TEntity> source = this.Source as ICollection<TEntity>;
+
 				switch (e.Action)
 				{
 					default:
@@ -475,10 +610,20 @@ namespace RI.Framework.Data.Repository.Views
 							{
 								this.Items.Remove(viewObj.Entity);
 							}
+
+							if ((!this.SuppressSourceChangeHandling) && this.UpdateSource)
+							{
+								source?.Remove(viewObj.Entity);
+							}
 						}
 						foreach (TViewObject viewObj in newItems)
 						{
 							this.PrepareViewObject(viewObj, null);
+
+							if ((!this.SuppressSourceChangeHandling) && this.UpdateSource)
+							{
+								source?.Add(viewObj.Entity);
+							}
 
 							if (!this.SuppressItemsChangeHandling)
 							{
@@ -696,6 +841,11 @@ namespace RI.Framework.Data.Repository.Views
 			this.PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
 		}
 
+		protected virtual void OnSourceChanged (IList<TEntity> oldItems, IList<TEntity> newItems)
+		{
+			this.SourceChange?.Invoke(this, new EntityViewItemsEventArgs<TEntity>(oldItems, newItems));
+		}
+
 		protected virtual void OnUpdatedItems (bool resetPageNumber)
 		{
 			this.Updated?.Invoke(this, new EntityViewUpdateEventArgs(resetPageNumber));
@@ -789,7 +939,7 @@ namespace RI.Framework.Data.Repository.Views
 			TViewObject viewObject = this.GetViewObjectForEntity(entity);
 			return this.EntityCanValidate(viewObject);
 		}
-		
+
 		public void Delete (TEntity entity)
 		{
 			this.Items.Remove(entity);
