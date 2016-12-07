@@ -24,6 +24,7 @@ namespace RI.Framework.Data.Repository.Views
 			this.IsDeleted = false;
 			this.IsEdited = false;
 			this.IsModified = false;
+			this.IsSelected = false;
 
 			this.Entity = null;
 			this.Errors = null;
@@ -40,7 +41,6 @@ namespace RI.Framework.Data.Repository.Views
 
 		private RepositorySetErrors _errors;
 
-
 		private bool _isAdded;
 
 		private bool _isAttached;
@@ -50,6 +50,8 @@ namespace RI.Framework.Data.Repository.Views
 		private bool _isEdited;
 
 		private bool _isModified;
+
+		private bool _isSelected;
 
 		#endregion
 
@@ -166,6 +168,20 @@ namespace RI.Framework.Data.Repository.Views
 			}
 		}
 
+		public bool IsSelected
+		{
+			get
+			{
+				return this._isSelected;
+			}
+			internal set
+			{
+				this.OnPropertyChanging(nameof(this.IsSelected));
+				this._isSelected = value;
+				this.OnPropertyChanged(nameof(this.IsSelected));
+			}
+		}
+
 		public bool IsValid => this.Errors == null;
 
 		internal IEntityViewCaller<TEntity> ViewCaller { get; set; }
@@ -197,6 +213,11 @@ namespace RI.Framework.Data.Repository.Views
 			return this.ViewCaller.CanReload(this.Entity);
 		}
 
+		public bool CanSelect ()
+		{
+			return this.ViewCaller.CanSelect(this.Entity);
+		}
+
 		public bool CanValidate ()
 		{
 			return this.ViewCaller.CanValidate(this.Entity);
@@ -207,6 +228,11 @@ namespace RI.Framework.Data.Repository.Views
 			this.ViewCaller.Delete(this.Entity);
 		}
 
+		public void Deselect ()
+		{
+			this.ViewCaller.Deselect(this.Entity);
+		}
+
 		public void Modify ()
 		{
 			this.ViewCaller.Modify(this.Entity);
@@ -215,6 +241,11 @@ namespace RI.Framework.Data.Repository.Views
 		public void Reload ()
 		{
 			this.ViewCaller.Reload(this.Entity);
+		}
+
+		public void Select ()
+		{
+			this.ViewCaller.Select(this.Entity);
 		}
 
 		public void Validate ()

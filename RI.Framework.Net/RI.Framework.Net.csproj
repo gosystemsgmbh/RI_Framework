@@ -57,7 +57,6 @@
     <Compile Include="Data\Repository\IRepositoryContext.cs" />
     <Compile Include="Data\Repository\RepositorySetErrors.cs" />
     <Compile Include="Data\Repository\IRepositorySet.cs" />
-    <None Include="Data\Repository\Views\EntityView_old.cs" />
     <Compile Include="Data\Repository\Views\EntityView.cs" />
     <Compile Include="Data\Repository\Views\EntityViewItemEventArgs.cs" />
     <Compile Include="Data\Repository\Views\EntityViewItemsEventArgs.cs" />

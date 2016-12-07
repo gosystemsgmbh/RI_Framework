@@ -33,21 +33,22 @@ namespace RI.Framework.Data.Repository.Views
 			this.Set = set;
 			this.Source = source;
 
-			this.ItemsChangedHandler = this.ItemsChanged;
-			this.ViewObjectsChangedHandler = this.ViewObjectsChanged;
-			this.SourceChangedHandler = this.SourceChanged;
+			this.EntitiesChangedHandler = this.EntitiesChangedMethod;
+			this.ViewObjectsChangedHandler = this.ViewObjectsChangedMethod;
+			this.SourceChangedHandler = this.SourceChangedMethod;
 
 			this.IsUpdating = false;
-			this.SuppressItemsChangeHandling = false;
-			this.SuppressViewObjectChangeHandling = false;
+			this.SuppressEntitiesChangeHandling = false;
+			this.SuppressViewObjectsChangeHandling = false;
 			this.SuppressSourceChangeHandling = false;
-			this.ItemToAddIsAttached = false;
+			this.EntityToAddIsAttached = false;
 
 			this.AllowEdit = true;
+			this.AllowSelect = true;
 			this.ObserveSource = true;
 			this.UpdateSource = true;
 
-			this.Items = null;
+			this.Entities = null;
 			this.ViewObjects = null;
 
 			this.EntityTotalCount = 0;
@@ -61,7 +62,7 @@ namespace RI.Framework.Data.Repository.Views
 
 			this.IsInitializing = false;
 
-			this.UpdateItems(false);
+			this.Update(false);
 		}
 
 		#endregion
@@ -72,6 +73,8 @@ namespace RI.Framework.Data.Repository.Views
 		#region Instance Fields
 
 		private bool _allowEdit;
+
+		private bool _allowSelect;
 
 		private object _filter;
 
@@ -106,6 +109,60 @@ namespace RI.Framework.Data.Repository.Views
 			}
 		}
 
+		public bool AllowSelect
+		{
+			get
+			{
+				return this._allowSelect;
+			}
+			set
+			{
+				this.OnPropertyChanging(nameof(this.AllowSelect));
+				this._allowSelect = value;
+				this.OnPropertyChanged(nameof(this.AllowSelect));
+			}
+		}
+
+		public TEntity EditedEntity
+		{
+			get
+			{
+				return (from x in this.ViewObjects where x.IsEdited select x.Entity).FirstOrDefault();
+			}
+			set
+			{
+				foreach (TViewObject viewObj in from x in this.ViewObjects where x.IsEdited select x)
+				{
+					viewObj.EndEdit();
+				}
+				if (value != null)
+				{
+					this.BeginEdit(value);
+				}
+			}
+		}
+
+		public TViewObject EditedViewObject
+		{
+			get
+			{
+				return (from x in this.ViewObjects where x.IsEdited select x).FirstOrDefault();
+			}
+			set
+			{
+				foreach (TViewObject viewObj in from x in this.ViewObjects where x.IsEdited select x)
+				{
+					viewObj.EndEdit();
+				}
+				if (value != null)
+				{
+					this.BeginEdit(value.Entity);
+				}
+			}
+		}
+
+		public ObservableCollection<TEntity> Entities { get; private set; }
+
 		public int EntityFilteredCount { get; private set; }
 
 		public int EntityTotalCount { get; private set; }
@@ -122,11 +179,9 @@ namespace RI.Framework.Data.Repository.Views
 				this._filter = value;
 				this.OnPropertyChanged(nameof(this.Filter));
 
-				this.UpdateItems(true);
+				this.Update(true);
 			}
 		}
-
-		public ObservableCollection<TEntity> Items { get; private set; }
 
 		public bool ObserveSource
 		{
@@ -166,7 +221,7 @@ namespace RI.Framework.Data.Repository.Views
 				this._pageNumber = value;
 				this.OnPropertyChanged(nameof(this.PageNumber));
 
-				this.UpdateItems(false);
+				this.Update(false);
 			}
 		}
 
@@ -187,11 +242,49 @@ namespace RI.Framework.Data.Repository.Views
 				this._pageSize = value;
 				this.OnPropertyChanged(nameof(this.PageSize));
 
-				this.UpdateItems(true);
+				this.Update(true);
 			}
 		}
 
 		public int PageTotalCount { get; private set; }
+
+		public TEntity SelectedEntity
+		{
+			get
+			{
+				return (from x in this.ViewObjects where x.IsSelected select x.Entity).FirstOrDefault();
+			}
+			set
+			{
+				foreach (TViewObject viewObj in from x in this.ViewObjects where x.IsSelected select x)
+				{
+					viewObj.Deselect();
+				}
+				if (value != null)
+				{
+					this.Select(value);
+				}
+			}
+		}
+
+		public TViewObject SelectedViewObject
+		{
+			get
+			{
+				return (from x in this.ViewObjects where x.IsSelected select x).FirstOrDefault();
+			}
+			set
+			{
+				foreach (TViewObject viewObj in from x in this.ViewObjects where x.IsSelected select x)
+				{
+					viewObj.Deselect();
+				}
+				if (value != null)
+				{
+					this.Select(value.Entity);
+				}
+			}
+		}
 
 		public IRepositorySet<TEntity> Set { get; private set; }
 
@@ -217,7 +310,7 @@ namespace RI.Framework.Data.Repository.Views
 					((INotifyCollectionChanged)this._source).CollectionChanged += this.SourceChangedHandler;
 				}
 
-				this.UpdateItems(true);
+				this.Update(true);
 			}
 		}
 
@@ -237,19 +330,19 @@ namespace RI.Framework.Data.Repository.Views
 
 		public ObservableCollection<TViewObject> ViewObjects { get; private set; }
 
+		protected bool EntityToAddIsAttached { get; private set; }
+
 		protected bool IsInitializing { get; private set; }
 
 		protected bool IsUpdating { get; private set; }
 
-		protected bool ItemToAddIsAttached { get; private set; }
-
-		protected bool SuppressItemsChangeHandling { get; private set; }
+		protected bool SuppressEntitiesChangeHandling { get; private set; }
 
 		protected bool SuppressSourceChangeHandling { get; private set; }
 
-		protected bool SuppressViewObjectChangeHandling { get; private set; }
+		protected bool SuppressViewObjectsChangeHandling { get; private set; }
 
-		private NotifyCollectionChangedEventHandler ItemsChangedHandler { get; set; }
+		private NotifyCollectionChangedEventHandler EntitiesChangedHandler { get; set; }
 
 		private NotifyCollectionChangedEventHandler SourceChangedHandler { get; set; }
 
@@ -262,21 +355,25 @@ namespace RI.Framework.Data.Repository.Views
 
 		#region Instance Events
 
+		public event EventHandler<EntityViewItemsEventArgs<TEntity>> EntitiesChanged;
+
 		public event EventHandler<EntityViewItemEventArgs<TViewObject>> EntityBeginEdit;
 
 		public event EventHandler<EntityViewItemEventArgs<TViewObject>> EntityCancelEdit;
 
+		public event EventHandler<EntityViewItemEventArgs<TViewObject>> EntityDeselected;
+
 		public event EventHandler<EntityViewItemEventArgs<TViewObject>> EntityEndEdit;
 
-		public event EventHandler<EntityViewItemsEventArgs<TEntity>> ItemsChange;
+		public event EventHandler<EntityViewItemEventArgs<TViewObject>> EntitySelected;
 
-		public event EventHandler<EntityViewItemsEventArgs<TEntity>> SourceChange;
+		public event EventHandler<EntityViewItemsEventArgs<TEntity>> SourceChanged;
 
 		public event EventHandler<EntityViewUpdateEventArgs> Updated;
 
 		public event EventHandler<EntityViewUpdateEventArgs> Updating;
 
-		public event EventHandler<EntityViewItemsEventArgs<TViewObject>> ViewObjectsChange;
+		public event EventHandler<EntityViewItemsEventArgs<TViewObject>> ViewObjectsChanged;
 
 		#endregion
 
@@ -307,12 +404,12 @@ namespace RI.Framework.Data.Repository.Views
 			return viewObj;
 		}
 
-		public void UpdateItems ()
+		public void Update ()
 		{
-			this.UpdateItems(false);
+			this.Update(false);
 		}
 
-		private void ItemsChanged (object sender, NotifyCollectionChangedEventArgs e)
+		private void EntitiesChangedMethod (object sender, NotifyCollectionChangedEventArgs e)
 		{
 			if (this.IsInitializing)
 			{
@@ -324,14 +421,14 @@ namespace RI.Framework.Data.Repository.Views
 				return;
 			}
 
-			if (this.SuppressItemsChangeHandling)
+			if (this.SuppressEntitiesChangeHandling)
 			{
 				return;
 			}
 
 			try
 			{
-				this.SuppressItemsChangeHandling = true;
+				this.SuppressEntitiesChangeHandling = true;
 
 				switch (e.Action)
 				{
@@ -360,7 +457,7 @@ namespace RI.Framework.Data.Repository.Views
 						{
 							TViewObject viewObj = this.GetViewObjectForEntity(entity);
 
-							if (!this.SuppressViewObjectChangeHandling)
+							if (!this.SuppressViewObjectsChangeHandling)
 							{
 								this.ViewObjects.Remove(viewObj);
 							}
@@ -369,14 +466,14 @@ namespace RI.Framework.Data.Repository.Views
 						{
 							TViewObject viewObject = this.PrepareViewObject(null, entity);
 
-							if (!this.SuppressViewObjectChangeHandling)
+							if (!this.SuppressViewObjectsChangeHandling)
 							{
 								this.ViewObjects.Add(viewObject);
 							}
 						}
 
-						this.OnPropertyChanged(nameof(this.Items));
-						this.OnItemsChanged(oldItems, newItems);
+						this.OnPropertyChanged(nameof(this.Entities));
+						this.OnEntitiesChanged(oldItems, newItems);
 
 						break;
 					}
@@ -384,7 +481,7 @@ namespace RI.Framework.Data.Repository.Views
 			}
 			finally
 			{
-				this.SuppressItemsChangeHandling = false;
+				this.SuppressEntitiesChangeHandling = false;
 			}
 		}
 
@@ -398,7 +495,7 @@ namespace RI.Framework.Data.Repository.Views
 			return viewObj;
 		}
 
-		private void SourceChanged (object sender, NotifyCollectionChangedEventArgs e)
+		private void SourceChangedMethod (object sender, NotifyCollectionChangedEventArgs e)
 		{
 			if (!this.ObserveSource)
 			{
@@ -451,7 +548,7 @@ namespace RI.Framework.Data.Repository.Views
 						{
 							TViewObject viewObj = this.GetViewObjectForEntity(entity);
 
-							if (!this.SuppressViewObjectChangeHandling)
+							if (!this.SuppressViewObjectsChangeHandling)
 							{
 								this.ViewObjects.Remove(viewObj);
 							}
@@ -460,7 +557,7 @@ namespace RI.Framework.Data.Repository.Views
 						{
 							TViewObject viewObject = this.PrepareViewObject(null, entity);
 
-							if (!this.SuppressViewObjectChangeHandling)
+							if (!this.SuppressViewObjectsChangeHandling)
 							{
 								this.ViewObjects.Add(viewObject);
 							}
@@ -479,7 +576,7 @@ namespace RI.Framework.Data.Repository.Views
 			}
 		}
 
-		private void UpdateItems (bool resetPageNumber)
+		private void Update (bool resetPageNumber)
 		{
 			if (this.IsInitializing)
 			{
@@ -500,9 +597,9 @@ namespace RI.Framework.Data.Repository.Views
 					this.PageNumber = 1;
 				}
 
-				this.OnUpdatingItems(resetPageNumber);
+				this.OnUpdating(resetPageNumber);
 
-				IList<TEntity> oldItems = (IList<TEntity>)this.Items ?? new List<TEntity>();
+				IList<TEntity> oldItems = (IList<TEntity>)this.Entities ?? new List<TEntity>();
 				IList<TViewObject> oldViewObjects = (IList<TViewObject>)this.ViewObjects ?? new List<TViewObject>();
 
 				if (this.ViewObjects != null)
@@ -511,10 +608,10 @@ namespace RI.Framework.Data.Repository.Views
 					this.ViewObjects = null;
 				}
 
-				if (this.Items != null)
+				if (this.Entities != null)
 				{
-					this.Items.CollectionChanged -= this.ItemsChangedHandler;
-					this.Items = null;
+					this.Entities.CollectionChanged -= this.EntitiesChangedHandler;
+					this.Entities = null;
 				}
 
 				int entityTotalCount = 0;
@@ -526,8 +623,8 @@ namespace RI.Framework.Data.Repository.Views
 
 				int pageTotalCount = this.PageNumber == 0 ? 0 : (this.PageSize == 0 ? 1 : ((entityTotalCount / this.PageSize) + (((entityTotalCount % this.PageSize) == 0) ? 0 : 1)));
 
-				this.Items = new ObservableCollection<TEntity>(entities);
-				this.Items.CollectionChanged += this.ItemsChangedHandler;
+				this.Entities = new ObservableCollection<TEntity>(entities);
+				this.Entities.CollectionChanged += this.EntitiesChangedHandler;
 
 				this.ViewObjects = new ObservableCollection<TViewObject>(viewObjects);
 				this.ViewObjects.CollectionChanged += this.ViewObjectsChangedHandler;
@@ -537,8 +634,8 @@ namespace RI.Framework.Data.Repository.Views
 				this.PageTotalCount = pageTotalCount;
 				this.PageFilteredCount = pageFilteredCount;
 
-				this.OnPropertyChanged(nameof(this.Items));
-				this.OnItemsChanged(oldItems, this.Items);
+				this.OnPropertyChanged(nameof(this.Entities));
+				this.OnEntitiesChanged(oldItems, this.Entities);
 
 				this.OnPropertyChanged(nameof(this.ViewObjects));
 				this.OnViewObjectsChanged(oldViewObjects, this.ViewObjects);
@@ -548,7 +645,13 @@ namespace RI.Framework.Data.Repository.Views
 				this.OnPropertyChanged(nameof(this.PageTotalCount));
 				this.OnPropertyChanged(nameof(this.PageFilteredCount));
 
-				this.OnUpdatedItems(resetPageNumber);
+				this.OnPropertyChanged(nameof(this.SelectedEntity));
+				this.OnPropertyChanged(nameof(this.SelectedViewObject));
+
+				this.OnPropertyChanged(nameof(this.EditedEntity));
+				this.OnPropertyChanged(nameof(this.EditedViewObject));
+
+				this.OnUpdated(resetPageNumber);
 			}
 			finally
 			{
@@ -556,7 +659,7 @@ namespace RI.Framework.Data.Repository.Views
 			}
 		}
 
-		private void ViewObjectsChanged (object sender, NotifyCollectionChangedEventArgs e)
+		private void ViewObjectsChangedMethod (object sender, NotifyCollectionChangedEventArgs e)
 		{
 			if (this.IsInitializing)
 			{
@@ -568,14 +671,14 @@ namespace RI.Framework.Data.Repository.Views
 				return;
 			}
 
-			if (this.SuppressViewObjectChangeHandling)
+			if (this.SuppressViewObjectsChangeHandling)
 			{
 				return;
 			}
 
 			try
 			{
-				this.SuppressViewObjectChangeHandling = true;
+				this.SuppressViewObjectsChangeHandling = true;
 
 				ICollection<TEntity> source = this.Source as ICollection<TEntity>;
 
@@ -604,11 +707,16 @@ namespace RI.Framework.Data.Repository.Views
 
 						foreach (TViewObject viewObj in oldItems)
 						{
+							if (object.ReferenceEquals(viewObj, this.SelectedViewObject))
+							{
+								this.SelectedViewObject = null;
+							}
+
 							this.EntityDelete(viewObj);
 
-							if (!this.SuppressItemsChangeHandling)
+							if (!this.SuppressEntitiesChangeHandling)
 							{
-								this.Items.Remove(viewObj.Entity);
+								this.Entities.Remove(viewObj.Entity);
 							}
 
 							if ((!this.SuppressSourceChangeHandling) && this.UpdateSource)
@@ -625,12 +733,12 @@ namespace RI.Framework.Data.Repository.Views
 								source?.Add(viewObj.Entity);
 							}
 
-							if (!this.SuppressItemsChangeHandling)
+							if (!this.SuppressEntitiesChangeHandling)
 							{
-								this.Items.Add(viewObj.Entity);
+								this.Entities.Add(viewObj.Entity);
 							}
 
-							if (this.ItemToAddIsAttached)
+							if (this.EntityToAddIsAttached)
 							{
 								this.EntityAttach(viewObj);
 							}
@@ -649,7 +757,7 @@ namespace RI.Framework.Data.Repository.Views
 			}
 			finally
 			{
-				this.SuppressViewObjectChangeHandling = false;
+				this.SuppressViewObjectsChangeHandling = false;
 			}
 		}
 
@@ -733,6 +841,11 @@ namespace RI.Framework.Data.Repository.Views
 			return this.Set.CanReload(viewObject.Entity);
 		}
 
+		protected virtual bool EntityCanSelect (TViewObject viewObject)
+		{
+			return this.AllowSelect;
+		}
+
 		protected virtual bool EntityCanValidate (TViewObject viewObject)
 		{
 			return this.Set.CanValidate(viewObject.Entity);
@@ -752,6 +865,22 @@ namespace RI.Framework.Data.Repository.Views
 			this.Set.Delete(viewObject.Entity);
 		}
 
+		protected virtual void EntityDeselect (TViewObject viewObject)
+		{
+			if (!viewObject.IsSelected)
+			{
+				return;
+			}
+			viewObject.IsSelected = false;
+
+			viewObject.RaiseEntityChanged();
+
+			this.OnPropertyChanged(nameof(this.SelectedEntity));
+			this.OnPropertyChanged(nameof(this.SelectedViewObject));
+
+			this.EntityDeselected?.Invoke(this, new EntityViewItemEventArgs<TViewObject>(viewObject));
+		}
+
 		protected virtual void EntityEditBegin (TViewObject viewObject)
 		{
 			if (viewObject.IsEdited)
@@ -761,6 +890,9 @@ namespace RI.Framework.Data.Repository.Views
 			viewObject.IsEdited = true;
 
 			viewObject.RaiseEntityChanged();
+
+			this.OnPropertyChanged(nameof(this.EditedEntity));
+			this.OnPropertyChanged(nameof(this.EditedViewObject));
 
 			this.EntityBeginEdit?.Invoke(this, new EntityViewItemEventArgs<TViewObject>(viewObject));
 		}
@@ -775,6 +907,9 @@ namespace RI.Framework.Data.Repository.Views
 
 			viewObject.RaiseEntityChanged();
 
+			this.OnPropertyChanged(nameof(this.EditedEntity));
+			this.OnPropertyChanged(nameof(this.EditedViewObject));
+
 			this.EntityCancelEdit?.Invoke(this, new EntityViewItemEventArgs<TViewObject>(viewObject));
 		}
 
@@ -787,6 +922,9 @@ namespace RI.Framework.Data.Repository.Views
 			viewObject.IsEdited = false;
 
 			viewObject.RaiseEntityChanged();
+
+			this.OnPropertyChanged(nameof(this.EditedEntity));
+			this.OnPropertyChanged(nameof(this.EditedViewObject));
 
 			this.EntityEndEdit?.Invoke(this, new EntityViewItemEventArgs<TViewObject>(viewObject));
 		}
@@ -810,6 +948,22 @@ namespace RI.Framework.Data.Repository.Views
 			viewObject.IsModified = false;
 		}
 
+		protected virtual void EntitySelect (TViewObject viewObject)
+		{
+			if (viewObject.IsSelected)
+			{
+				return;
+			}
+			viewObject.IsSelected = true;
+
+			viewObject.RaiseEntityChanged();
+
+			this.OnPropertyChanged(nameof(this.SelectedEntity));
+			this.OnPropertyChanged(nameof(this.SelectedViewObject));
+
+			this.EntitySelected?.Invoke(this, new EntityViewItemEventArgs<TViewObject>(viewObject));
+		}
+
 		protected virtual void EntityValidate (TViewObject viewObject)
 		{
 			viewObject.Errors = this.Set.Validate(viewObject.Entity);
@@ -818,9 +972,9 @@ namespace RI.Framework.Data.Repository.Views
 			viewObject.RaiseEntityChanged();
 		}
 
-		protected virtual void OnItemsChanged (IList<TEntity> oldItems, IList<TEntity> newItems)
+		protected virtual void OnEntitiesChanged (IList<TEntity> oldItems, IList<TEntity> newItems)
 		{
-			this.ItemsChange?.Invoke(this, new EntityViewItemsEventArgs<TEntity>(oldItems, newItems));
+			this.EntitiesChanged?.Invoke(this, new EntityViewItemsEventArgs<TEntity>(oldItems, newItems));
 		}
 
 		/// <summary>
@@ -843,22 +997,22 @@ namespace RI.Framework.Data.Repository.Views
 
 		protected virtual void OnSourceChanged (IList<TEntity> oldItems, IList<TEntity> newItems)
 		{
-			this.SourceChange?.Invoke(this, new EntityViewItemsEventArgs<TEntity>(oldItems, newItems));
+			this.SourceChanged?.Invoke(this, new EntityViewItemsEventArgs<TEntity>(oldItems, newItems));
 		}
 
-		protected virtual void OnUpdatedItems (bool resetPageNumber)
+		protected virtual void OnUpdated (bool resetPageNumber)
 		{
 			this.Updated?.Invoke(this, new EntityViewUpdateEventArgs(resetPageNumber));
 		}
 
-		protected virtual void OnUpdatingItems (bool resetPageNumber)
+		protected virtual void OnUpdating (bool resetPageNumber)
 		{
 			this.Updating?.Invoke(this, new EntityViewUpdateEventArgs(resetPageNumber));
 		}
 
 		protected virtual void OnViewObjectsChanged (IList<TViewObject> oldItems, IList<TViewObject> newItems)
 		{
-			this.ViewObjectsChange?.Invoke(this, new EntityViewItemsEventArgs<TViewObject>(oldItems, newItems));
+			this.ViewObjectsChanged?.Invoke(this, new EntityViewItemsEventArgs<TViewObject>(oldItems, newItems));
 		}
 
 		#endregion
@@ -870,101 +1024,214 @@ namespace RI.Framework.Data.Repository.Views
 
 		public void Add (TEntity entity)
 		{
-			this.Items.Add(entity);
+			if (entity == null)
+			{
+				throw new ArgumentNullException(nameof(entity));
+			}
+
+			this.Entities.Add(entity);
 		}
 
 		public void Attach (TEntity entity)
 		{
+			if (entity == null)
+			{
+				throw new ArgumentNullException(nameof(entity));
+			}
+
 			try
 			{
-				this.ItemToAddIsAttached = true;
-				this.Items.Add(entity);
+				this.EntityToAddIsAttached = true;
+				this.Entities.Add(entity);
 			}
 			finally
 			{
-				this.ItemToAddIsAttached = false;
+				this.EntityToAddIsAttached = false;
 			}
 		}
 
 		public void BeginEdit (TEntity entity)
 		{
+			if (entity == null)
+			{
+				throw new ArgumentNullException(nameof(entity));
+			}
+
 			TViewObject viewObject = this.GetViewObjectForEntity(entity);
 			this.EntityEditBegin(viewObject);
 		}
 
 		public bool CanAdd (TEntity entity)
 		{
+			if (entity == null)
+			{
+				throw new ArgumentNullException(nameof(entity));
+			}
+
 			TViewObject viewObject = this.GetViewObjectForEntity(entity);
 			return this.EntityCanAdd(viewObject);
 		}
 
 		public bool CanAttach (TEntity entity)
 		{
+			if (entity == null)
+			{
+				throw new ArgumentNullException(nameof(entity));
+			}
+
 			TViewObject viewObject = this.GetViewObjectForEntity(entity);
 			return this.EntityCanAttach(viewObject);
 		}
 
 		public void CancelEdit (TEntity entity)
 		{
+			if (entity == null)
+			{
+				throw new ArgumentNullException(nameof(entity));
+			}
+
 			TViewObject viewObject = this.GetViewObjectForEntity(entity);
 			this.EntityEditCancel(viewObject);
 		}
 
 		public bool CanDelete (TEntity entity)
 		{
+			if (entity == null)
+			{
+				throw new ArgumentNullException(nameof(entity));
+			}
+
 			TViewObject viewObject = this.GetViewObjectForEntity(entity);
 			return this.EntityCanDelete(viewObject);
 		}
 
 		public bool CanEdit (TEntity entity)
 		{
+			if (entity == null)
+			{
+				throw new ArgumentNullException(nameof(entity));
+			}
+
 			TViewObject viewObject = this.GetViewObjectForEntity(entity);
 			return this.EntityCanEdit(viewObject);
 		}
 
 		public bool CanModify (TEntity entity)
 		{
+			if (entity == null)
+			{
+				throw new ArgumentNullException(nameof(entity));
+			}
+
 			TViewObject viewObject = this.GetViewObjectForEntity(entity);
 			return this.EntityCanModify(viewObject);
 		}
 
 		public bool CanReload (TEntity entity)
 		{
+			if (entity == null)
+			{
+				throw new ArgumentNullException(nameof(entity));
+			}
+
 			TViewObject viewObject = this.GetViewObjectForEntity(entity);
 			return this.EntityCanReload(viewObject);
 		}
 
+		public bool CanSelect (TEntity entity)
+		{
+			if (entity == null)
+			{
+				throw new ArgumentNullException(nameof(entity));
+			}
+
+			TViewObject viewObject = this.GetViewObjectForEntity(entity);
+			return this.EntityCanSelect(viewObject);
+		}
+
 		public bool CanValidate (TEntity entity)
 		{
+			if (entity == null)
+			{
+				throw new ArgumentNullException(nameof(entity));
+			}
+
 			TViewObject viewObject = this.GetViewObjectForEntity(entity);
 			return this.EntityCanValidate(viewObject);
 		}
 
 		public void Delete (TEntity entity)
 		{
-			this.Items.Remove(entity);
+			if (entity == null)
+			{
+				throw new ArgumentNullException(nameof(entity));
+			}
+
+			this.Entities.Remove(entity);
+		}
+
+		public void Deselect (TEntity entity)
+		{
+			if (entity == null)
+			{
+				throw new ArgumentNullException(nameof(entity));
+			}
+
+			TViewObject viewObject = this.GetViewObjectForEntity(entity);
+			this.EntityDeselect(viewObject);
 		}
 
 		public void EndEdit (TEntity entity)
 		{
+			if (entity == null)
+			{
+				throw new ArgumentNullException(nameof(entity));
+			}
+
 			TViewObject viewObject = this.GetViewObjectForEntity(entity);
 			this.EntityEditEnd(viewObject);
 		}
 
 		public void Modify (TEntity entity)
 		{
+			if (entity == null)
+			{
+				throw new ArgumentNullException(nameof(entity));
+			}
+
 			TViewObject viewObject = this.GetViewObjectForEntity(entity);
 			this.EntityModify(viewObject);
 		}
 
 		public void Reload (TEntity entity)
 		{
+			if (entity == null)
+			{
+				throw new ArgumentNullException(nameof(entity));
+			}
+
 			TViewObject viewObject = this.GetViewObjectForEntity(entity);
 			this.EntityReload(viewObject);
 		}
 
+		public void Select (TEntity entity)
+		{
+			if (entity == null)
+			{
+				throw new ArgumentNullException(nameof(entity));
+			}
+
+			TViewObject viewObject = this.GetViewObjectForEntity(entity);
+			this.EntitySelect(viewObject);
+		}
+
 		public void Validate (TEntity entity)
 		{
+			if (entity == null)
+			{
+				throw new ArgumentNullException(nameof(entity));
+			}
+
 			TViewObject viewObject = this.GetViewObjectForEntity(entity);
 			this.EntityValidate(viewObject);
 		}
