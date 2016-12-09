@@ -243,6 +243,12 @@ namespace RI.Framework.Data.Repository.Views
 			this.ViewCaller.Reload(this.Entity);
 		}
 
+		public void ResetIsAddedOrAttached ()
+		{
+			this.IsAdded = false;
+			this.IsAttached = false;
+		}
+
 		public void Select ()
 		{
 			this.ViewCaller.Select(this.Entity);

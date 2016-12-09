@@ -548,11 +548,6 @@ namespace RI.Framework.Data.Repository.Views
 
 		#region Instance Methods
 
-		public virtual bool CanNew ()
-		{
-			return this.EntityCanNew();
-		}
-
 		public TViewObject GetViewObjectForEntity (TEntity entity)
 		{
 			if (entity == null)
@@ -561,13 +556,6 @@ namespace RI.Framework.Data.Repository.Views
 			}
 
 			return (from x in this.ViewObjects where object.ReferenceEquals(x.Entity, entity) select x).FirstOrDefault();
-		}
-
-		public virtual TViewObject New ()
-		{
-			TViewObject viewObj = this.PrepareViewObject(null, null);
-			this.ViewObjects.Add(viewObj);
-			return viewObj;
 		}
 
 		public void Update ()
@@ -917,6 +905,12 @@ namespace RI.Framework.Data.Repository.Views
 						this.OnPropertyChanged(nameof(this.ViewObjects));
 						this.OnViewObjectsChanged(oldItems, newItems);
 
+						this.OnPropertyChanged(nameof(this.SelectedEntity));
+						this.OnPropertyChanged(nameof(this.SelectedViewObject));
+
+						this.OnPropertyChanged(nameof(this.EditedEntity));
+						this.OnPropertyChanged(nameof(this.EditedViewObject));
+
 						break;
 					}
 				}
@@ -933,6 +927,18 @@ namespace RI.Framework.Data.Repository.Views
 
 
 		#region Virtuals
+
+		public virtual bool CanNew ()
+		{
+			return this.EntityCanNew();
+		}
+
+		public virtual TViewObject New ()
+		{
+			TViewObject viewObj = this.PrepareViewObject(null, null);
+			this.ViewObjects.Add(viewObj);
+			return viewObj;
+		}
 
 		protected virtual TEntity CreateEntity ()
 		{
