@@ -20,12 +20,25 @@ namespace RI.Framework.Services.Resources
 	public interface IResourceSet
 	{
 		/// <summary>
-		///     Gets whether this resource set shall always be loaded when available.
+		///     Gets whether this resource set shall always be loaded.
 		/// </summary>
 		/// <value>
-		///     true if this resource set shall always be loaded by the corresponding <see cref="IResourceService" /> as soon as the resource set is available, false if the resource set is only to be loaded when <see cref="Load" /> is called.
+		///     true if this resource set shall always be loaded false otherwise.
 		/// </value>
 		bool AlwaysLoad { get; }
+
+		/// <summary>
+		///     Gets all the resource values provided by this resource set.
+		/// </summary>
+		/// <value>
+		///     All the resource values provided by this resource set.
+		/// </value>
+		/// <remarks>
+		///     <note type="implement">
+		///         The value of this property must never be null.
+		///     </note>
+		/// </remarks>
+		IEnumerable<string> AvailableResources { get; }
 
 		/// <summary>
 		///     Gets the formatting culture which is associated with this resource set.
@@ -69,7 +82,7 @@ namespace RI.Framework.Services.Resources
 		///     Gets whether the resource set was lazy loaded or not.
 		/// </summary>
 		/// <value>
-		///     true if the resource set is currently loaded an lazy loading is used, false otherwise.
+		///     true if the resource set is currently loaded and lazy loading is used, false otherwise.
 		/// </value>
 		bool IsLazyLoaded { get; }
 
@@ -99,17 +112,18 @@ namespace RI.Framework.Services.Resources
 		string Name { get; }
 
 		/// <summary>
-		///     Gets all the resource values provided by this resource set.
+		///     Gets the priority of this resource set.
 		/// </summary>
 		/// <value>
-		///     All the resource values provided by this resource set.
+		///     The priority of this resource set.
 		/// </value>
 		/// <remarks>
-		///     <note type="implement">
-		///         The value of this property must never be null.
-		///     </note>
+		///     <para>
+		///         The priority of a resource set determines the order in which multiple resource sets are loaded.
+		///         Resource sets with higher priority will be loaded after resource sets with lower priority and override resource values of resource sets with lower priorities.
+		///     </para>
 		/// </remarks>
-		IEnumerable<string> Resources { get; }
+		int Priority { get; }
 
 		/// <summary>
 		///     Gets the UI culture which is associated with this resource set.
@@ -135,7 +149,7 @@ namespace RI.Framework.Services.Resources
 		/// </summary>
 		/// <param name="lazyLoad"> Specifies whether lazy loading shall be used for the resources of this resource set or not. </param>
 		/// <returns>
-		///     true if lazy loading is used, false otherwise.
+		///     true if lazy loading is supported and used, false otherwise.
 		/// </returns>
 		/// <remarks>
 		///     <para>
@@ -156,5 +170,10 @@ namespace RI.Framework.Services.Resources
 		///     </note>
 		/// </remarks>
 		void Unload ();
+
+		/// <summary>
+		///     Updates the available resources (<see cref="AvailableResources" />).
+		/// </summary>
+		void UpdateAvailable ();
 	}
 }

@@ -5,6 +5,7 @@
 
 namespace RI.Framework.Data.Repository.Views
 {
+	[Serializable]
 	public sealed class EntityViewUpdateEventArgs : EventArgs
 	{
 		#region Instance Constructor/Destructor

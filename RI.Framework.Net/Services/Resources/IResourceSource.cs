@@ -52,6 +52,6 @@ namespace RI.Framework.Services.Resources
 		/// <summary>
 		///     Updates the available resource sets (<see cref="AvailableSets" />).
 		/// </summary>
-		void UpdateAvailableSets ();
+		void UpdateAvailable ();
 	}
 }

@@ -27,6 +27,19 @@ namespace RI.Framework.Services.Resources
 	public interface IResourceService
 	{
 		/// <summary>
+		///     Gets all currently available resources.
+		/// </summary>
+		/// <value>
+		///     All currently available resources.
+		/// </value>
+		/// <remarks>
+		///     <note type="implement">
+		///         The value of this property must never be null.
+		///     </note>
+		/// </remarks>
+		IEnumerable<string> AvailableResources { get; }
+
+		/// <summary>
 		///     Gets all currently available resource sets.
 		/// </summary>
 		/// <value>
@@ -38,6 +51,32 @@ namespace RI.Framework.Services.Resources
 		///     </note>
 		/// </remarks>
 		IEnumerable<IResourceSet> AvailableSets { get; }
+
+		/// <summary>
+		///     Gets all currently available resource converters.
+		/// </summary>
+		/// <value>
+		///     All currently available resource converters.
+		/// </value>
+		/// <remarks>
+		///     <note type="implement">
+		///         The value of this property must never be null.
+		///     </note>
+		/// </remarks>
+		IEnumerable<IResourceConverter> Converters { get; }
+
+		/// <summary>
+		///     Gets all currently loaded resources.
+		/// </summary>
+		/// <value>
+		///     All currently loaded resources.
+		/// </value>
+		/// <remarks>
+		///     <note type="implement">
+		///         The value of this property must never be null.
+		///     </note>
+		/// </remarks>
+		IEnumerable<string> LoadedResources { get; }
 
 		/// <summary>
 		///     Gets all currently loaded resource sets.
@@ -64,6 +103,18 @@ namespace RI.Framework.Services.Resources
 		///     </note>
 		/// </remarks>
 		IEnumerable<IResourceSource> Sources { get; }
+
+		/// <summary>
+		///     Adds a resource converter and starts using it for all subsequent conversions.
+		/// </summary>
+		/// <param name="resourceConverter"> The resource converter to add. </param>
+		/// <remarks>
+		///     <note type="implement">
+		///         Specifying an already added resource converter should have no effect.
+		///     </note>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="resourceConverter" /> is null. </exception>
+		void AddConverter (IResourceConverter resourceConverter);
 
 		/// <summary>
 		///     Adds a resource source.
@@ -126,22 +177,21 @@ namespace RI.Framework.Services.Resources
 		bool HasValue (string name);
 
 		/// <summary>
-		///     Loads a resource set.
-		/// </summary>
-		/// <param name="resourceSet"> The resource set to load. </param>
-		/// <remarks>
-		///     <note type="implement">
-		///         Specifying an already loaded resource set should have no effect.
-		///     </note>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="resourceSet" /> is null. </exception>
-		/// <exception cref="InvalidOperationException"> The resource set specified by <paramref name="resourceSet" /> is not in <see cref="AvailableSets" />. </exception>
-		void LoadSet (IResourceSet resourceSet);
-
-		/// <summary>
 		///     Reloads all currently loaded resource sets (<see cref="LoadedSets" />).
 		/// </summary>
-		void ReloadLoadedSets ();
+		void ReloadSets ();
+
+		/// <summary>
+		///     Removes a resource converter and stops using it for all subsequent conversions.
+		/// </summary>
+		/// <param name="resourceConverter"> The resource converter to remove. </param>
+		/// <remarks>
+		///     <note type="implement">
+		///         Specifying an already removed resource converter should have no effect.
+		///     </note>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="resourceConverter" /> is null. </exception>
+		void RemoveConverter (IResourceConverter resourceConverter);
 
 		/// <summary>
 		///     Removes a resource source.
@@ -156,21 +206,8 @@ namespace RI.Framework.Services.Resources
 		void RemoveSource (IResourceSource resourceSource);
 
 		/// <summary>
-		///     Unloads a resource set.
+		///     Updates the available resources (<see cref="AvailableResources" />) and resource sets (<see cref="AvailableSets" />).
 		/// </summary>
-		/// <param name="resourceSet"> The resource set to unload. </param>
-		/// <remarks>
-		///     <note type="implement">
-		///         Specifying an already unloaded resource set should have no effect.
-		///     </note>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="resourceSet" /> is null. </exception>
-		/// <exception cref="InvalidOperationException"> The resource set specified by <paramref name="resourceSet" /> is not in <see cref="AvailableSets" />. </exception>
-		void UnloadSet (IResourceSet resourceSet);
-
-		/// <summary>
-		///     Updates the available resource sets (<see cref="AvailableSets" />).
-		/// </summary>
-		void UpdateAvailableSets ();
+		void UpdateAvailable ();
 	}
 }

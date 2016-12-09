@@ -10,17 +10,47 @@ using System.Linq;
 
 namespace RI.Framework.Data.Repository.Views
 {
+	/// <summary>
+	///     Provides a view onto data which is associated with an <see cref="IRepositorySet{T}" />.
+	/// </summary>
+	/// <typeparam name="TEntity"> The type of entities this view presents. </typeparam>
+	/// <typeparam name="TViewObject"> The type of <see cref="EntityViewObject{TEntity}" /> this view uses to wrap its entity items. </typeparam>
+	/// <remarks>
+	///     <para>
+	///         An <see cref="EntityView{TEntity,TViewObject}" /> can be used to provide a workable view onto data which is delivered using a <see cref="IRepositorySet{T}" />.
+	///         The items of a <see cref="IRepositorySet{T}" /> are processed and wrapped in an <see cref="EntityViewObject{TEntity}" /> instance to provide additional view-related functionality for each item.
+	///         Therefore, an <see cref="EntityView{TEntity,TViewObject}" /> can be seen as an additional buffering layer on top of a <see cref="IRepositorySet{T}" /> which can be used to paginate, filter, and manage the items of the <see cref="IRepositorySet{T}" />.
+	///     </para>
+	///     <para>
+	///         <see cref="EntityView{TEntity,TViewObject}" /> hides some of the complexity of <see cref="IRepositorySet{T}" /> by presenting the items through simple collections (<see cref="Entities" /> and <see cref="ViewObjects" />).
+	///     </para>
+	///     <para>
+	///         <see cref="EntityView{TEntity,TViewObject}" /> either uses all of the associated <see cref="IRepositorySet{T}" />s items if <see cref="Source" /> is not set, or only uses the items provided by <see cref="Source" />, if set.
+	///         This allows to control the final set of items an <see cref="EntityView{TEntity,TViewObject}" /> is using, as long as the items are associated with the specified <see cref="IRepositorySet{T}" />.
+	///     </para>
+	/// </remarks>
 	public class EntityView <TEntity, TViewObject> : INotifyPropertyChanged, INotifyPropertyChanging, IEntityViewCaller<TEntity>
 		where TEntity : class, new()
 		where TViewObject : EntityViewObject<TEntity>, new()
 	{
 		#region Instance Constructor/Destructor
 
+		/// <summary>
+		///     Creates a new instance of <see cref="EntityView{TEntity,TViewObject}" />.
+		/// </summary>
+		/// <param name="set"> The <see cref="IRepositorySet{T}" /> this view is associated with. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="set" /> is null. </exception>
 		public EntityView (IRepositorySet<TEntity> set)
 			: this(set, null)
 		{
 		}
 
+		/// <summary>
+		///     Creates a new instance of <see cref="EntityView{TEntity,TViewObject}" />.
+		/// </summary>
+		/// <param name="set"> The <see cref="IRepositorySet{T}" /> this view is associated with. </param>
+		/// <param name="source"> Specifies a value for <see cref="Source" /> (can be null). </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="set" /> is null. </exception>
 		public EntityView (IRepositorySet<TEntity> set, IEnumerable<TEntity> source)
 		{
 			if (set == null)
@@ -95,6 +125,12 @@ namespace RI.Framework.Data.Repository.Views
 
 		#region Instance Properties/Indexer
 
+		/// <summary>
+		///     Gets or sets whether the items managed by this view can be edited or not.
+		/// </summary>
+		/// <value>
+		///     true if the items can be edited, false otherwise.
+		/// </value>
 		public bool AllowEdit
 		{
 			get
@@ -109,6 +145,12 @@ namespace RI.Framework.Data.Repository.Views
 			}
 		}
 
+		/// <summary>
+		///     Gets or sets whether the items managed by this view can be selected or not.
+		/// </summary>
+		/// <value>
+		///     true if the items can be selected, false otherwise.
+		/// </value>
 		public bool AllowSelect
 		{
 			get
@@ -123,6 +165,19 @@ namespace RI.Framework.Data.Repository.Views
 			}
 		}
 
+		/// <summary>
+		///     Gets or sets the entity which is currently being edited.
+		/// </summary>
+		/// <value>
+		///     The entity which is currently being edited or null if no entity is to be edited.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         Multiple entities can be edited at the same time.
+		///         When reading, this property only returns the first edited entity found.
+		///         When setting, this property calls <see cref="EntityViewObject{TEntity}.EndEdit" /> for all currently edited entities and <see cref="EntityViewObject{TEntity}.BeginEdit" /> for the entity to be edited (if any).
+		///     </para>
+		/// </remarks>
 		public TEntity EditedEntity
 		{
 			get
@@ -131,7 +186,7 @@ namespace RI.Framework.Data.Repository.Views
 			}
 			set
 			{
-				foreach (TViewObject viewObj in from x in this.ViewObjects where x.IsEdited select x)
+				foreach (TViewObject viewObj in from x in this.ViewObjects where x.IsEdited && (!object.ReferenceEquals(x.Entity, value)) select x)
 				{
 					viewObj.EndEdit();
 				}
@@ -142,6 +197,19 @@ namespace RI.Framework.Data.Repository.Views
 			}
 		}
 
+		/// <summary>
+		///     Gets or sets the view object which is currently being edited.
+		/// </summary>
+		/// <value>
+		///     The view object which is currently being edited or null if no view object is to be edited.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         Multiple view objects can be edited at the same time.
+		///         When reading, this property only returns the first edited view object found.
+		///         When setting, this property calls <see cref="EntityViewObject{TEntity}.EndEdit" /> for all currently edited view objects and <see cref="EntityViewObject{TEntity}.BeginEdit" /> for the view object to be edited (if any).
+		///     </para>
+		/// </remarks>
 		public TViewObject EditedViewObject
 		{
 			get
@@ -150,7 +218,7 @@ namespace RI.Framework.Data.Repository.Views
 			}
 			set
 			{
-				foreach (TViewObject viewObj in from x in this.ViewObjects where x.IsEdited select x)
+				foreach (TViewObject viewObj in from x in this.ViewObjects where x.IsEdited && (!object.ReferenceEquals(x, value)) select x)
 				{
 					viewObj.EndEdit();
 				}
@@ -161,10 +229,46 @@ namespace RI.Framework.Data.Repository.Views
 			}
 		}
 
+		/// <summary>
+		///     Gets the observable collection of entities presented by this view.
+		/// </summary>
+		/// <value>
+		///     The observable collection of entities presented by this view.
+		/// </value>
+		/// <remarks>
+		///     <note type="important">
+		///         <see cref="Entities" /> gets a new instance of <see cref="ObservableCollection{T}" /> each time <see cref="Update()" /> is called.
+		///         See <see cref="Update()" /> for more details.
+		///     </note>
+		/// </remarks>
 		public ObservableCollection<TEntity> Entities { get; private set; }
 
+		/// <summary>
+		///     Gets the number of items actually presented by this view, after <see cref="Filter" /> is applied to the data source.
+		/// </summary>
+		/// <value>
+		///     The number of items actually presented by this view.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         <see cref="EntityFilteredCount" /> is updated during <see cref="Update()" />.
+		///         See <see cref="Update()" /> for more details.
+		///     </para>
+		/// </remarks>
 		public int EntityFilteredCount { get; private set; }
 
+		/// <summary>
+		///     Gets the total number of items which could be presented by this view, if no <see cref="Filter" /> would be set.
+		/// </summary>
+		/// <value>
+		///     The total number of items which could be presented by this view.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         <see cref="EntityTotalCount" /> is updated during <see cref="Update()" />.
+		///         See <see cref="Update()" /> for more details.
+		///     </para>
+		/// </remarks>
 		public int EntityTotalCount { get; private set; }
 
 		public object Filter
@@ -197,6 +301,18 @@ namespace RI.Framework.Data.Repository.Views
 			}
 		}
 
+		/// <summary>
+		///     Gets the number of pages actually available by this view, after <see cref="Filter" /> is applied to the data source.
+		/// </summary>
+		/// <value>
+		///     The number of pages actually available by this view.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         <see cref="PageFilteredCount" /> is updated during <see cref="Update()" />.
+		///         See <see cref="Update()" /> for more details.
+		///     </para>
+		/// </remarks>
 		public int PageFilteredCount { get; private set; }
 
 		public int PageNumber
@@ -246,8 +362,33 @@ namespace RI.Framework.Data.Repository.Views
 			}
 		}
 
+		/// <summary>
+		///     Gets the total number of pages which could be available by this view, if no <see cref="Filter" /> would be set.
+		/// </summary>
+		/// <value>
+		///     The total number of pages which could be available by this view.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         <see cref="PageTotalCount" /> is updated during <see cref="Update()" />.
+		///         See <see cref="Update()" /> for more details.
+		///     </para>
+		/// </remarks>
 		public int PageTotalCount { get; private set; }
 
+		/// <summary>
+		///     Gets or sets the entity which is currently selected.
+		/// </summary>
+		/// <value>
+		///     The entity which is currently selected or null if no entity is to be selected.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         Multiple entities can be selected at the same time.
+		///         When reading, this property only returns the first selected entity found.
+		///         When setting, this property calls <see cref="EntityViewObject{TEntity}.Deselect" /> for all currently selected entities and <see cref="EntityViewObject{TEntity}.Select" /> for the entity to be selected (if any).
+		///     </para>
+		/// </remarks>
 		public TEntity SelectedEntity
 		{
 			get
@@ -256,7 +397,7 @@ namespace RI.Framework.Data.Repository.Views
 			}
 			set
 			{
-				foreach (TViewObject viewObj in from x in this.ViewObjects where x.IsSelected select x)
+				foreach (TViewObject viewObj in from x in this.ViewObjects where x.IsSelected && (!object.ReferenceEquals(x.Entity, value)) select x)
 				{
 					viewObj.Deselect();
 				}
@@ -267,6 +408,19 @@ namespace RI.Framework.Data.Repository.Views
 			}
 		}
 
+		/// <summary>
+		///     Gets or sets the view object which is currently selected.
+		/// </summary>
+		/// <value>
+		///     The view object which is currently selected or null if no view object is to be selected.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         Multiple view objects can be selected at the same time.
+		///         When reading, this property only returns the first selected view object found.
+		///         When setting, this property calls <see cref="EntityViewObject{TEntity}.Deselect" /> for all currently selected view objects and <see cref="EntityViewObject{TEntity}.Select" /> for the view object to be selected (if any).
+		///     </para>
+		/// </remarks>
 		public TViewObject SelectedViewObject
 		{
 			get
@@ -275,7 +429,7 @@ namespace RI.Framework.Data.Repository.Views
 			}
 			set
 			{
-				foreach (TViewObject viewObj in from x in this.ViewObjects where x.IsSelected select x)
+				foreach (TViewObject viewObj in from x in this.ViewObjects where x.IsSelected && (!object.ReferenceEquals(x, value)) select x)
 				{
 					viewObj.Deselect();
 				}
@@ -328,6 +482,18 @@ namespace RI.Framework.Data.Repository.Views
 			}
 		}
 
+		/// <summary>
+		///     Gets the observable collection of view objects presented by this view.
+		/// </summary>
+		/// <value>
+		///     The observable collection of view objects presented by this view.
+		/// </value>
+		/// <remarks>
+		///     <note type="important">
+		///         <see cref="ViewObjects" /> gets a new instance of <see cref="ObservableCollection{T}" /> each time <see cref="Update()" /> is called.
+		///         See <see cref="Update()" /> for more details.
+		///     </note>
+		/// </remarks>
 		public ObservableCollection<TViewObject> ViewObjects { get; private set; }
 
 		protected bool EntityToAddIsAttached { get; private set; }

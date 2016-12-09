@@ -65,6 +65,7 @@
     <Compile Include="Services\Messaging\WpfMessage.cs" />
     <Compile Include="Services\Regions\Adapters\WpfRegionAdapter.cs" />
     <Compile Include="Services\Regions\Adapters\WpfRegionAdapterBase.cs" />
+    <Compile Include="Services\Resources\Converters\WpfResourceConverter.cs" />
     <Compile Include="Services\WpfApplication.cs" />
     <Compile Include="Services\WpfBootstrapper.cs" />
     <Compile Include="Services\WpfBootstrapperState.cs" />

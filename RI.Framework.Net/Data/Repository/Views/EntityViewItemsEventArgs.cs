@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 namespace RI.Framework.Data.Repository.Views
 {
+	[Serializable]
 	public sealed class EntityViewItemsEventArgs <T> : EventArgs
 		where T : class
 	{

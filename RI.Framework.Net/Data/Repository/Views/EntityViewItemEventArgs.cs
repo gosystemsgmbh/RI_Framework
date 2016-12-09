@@ -5,6 +5,7 @@
 
 namespace RI.Framework.Data.Repository.Views
 {
+	[Serializable]
 	public sealed class EntityViewItemEventArgs <T> : EventArgs
 		where T : class
 	{
