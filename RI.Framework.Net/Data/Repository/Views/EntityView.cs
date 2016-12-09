@@ -548,7 +548,7 @@ namespace RI.Framework.Data.Repository.Views
 
 		#region Instance Methods
 
-		public bool CanNew ()
+		public virtual bool CanNew ()
 		{
 			return this.EntityCanNew();
 		}
@@ -563,7 +563,7 @@ namespace RI.Framework.Data.Repository.Views
 			return (from x in this.ViewObjects where object.ReferenceEquals(x.Entity, entity) select x).FirstOrDefault();
 		}
 
-		public TViewObject New ()
+		public virtual TViewObject New ()
 		{
 			TViewObject viewObj = this.PrepareViewObject(null, null);
 			this.ViewObjects.Add(viewObj);
