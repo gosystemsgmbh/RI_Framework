@@ -1,9 +1,12 @@
 ﻿using System;
 using System.IO;
+using System.Windows;
+using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 using RI.Framework.Composition.Model;
+using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 
 
@@ -17,7 +20,7 @@ namespace RI.Framework.Services.Resources.Converters
 	/// <remarks>
 	///     <para>
 	///         The common WPF resource types which are supported by this resource converter are:
-	///         <see cref="ImageSource" /> to <see cref="ImageSource" />, <see cref="BitmapSource" /> to <see cref="BitmapSource" />, <see cref="BitmapImage" /> to <see cref="BitmapImage" />, arrays of <see cref="byte" /> to <see cref="ImageSource" />, arrays of <see cref="byte" /> to <see cref="BitmapSource" />, and arrays of <see cref="byte" /> to <see cref="BitmapImage" />.
+	///         <see cref="ImageSource" /> to <see cref="ImageSource" />, <see cref="BitmapSource" /> to <see cref="BitmapSource" />, <see cref="BitmapImage" /> to <see cref="BitmapImage" />, arrays of <see cref="byte" /> to <see cref="ImageSource" />, arrays of <see cref="byte" /> to <see cref="BitmapSource" />, arrays of <see cref="byte" /> to <see cref="BitmapImage" />, and arrays of <see cref="byte" /> to <see cref="ResourceDictionary" />.
 	///     </para>
 	///     <para>
 	///         See <see cref="IResourceConverter" /> for more details.
@@ -57,6 +60,11 @@ namespace RI.Framework.Services.Resources.Converters
 			}
 
 			if ((sourceType == typeof(byte[])) && ((targetType == typeof(ImageSource)) || (targetType == typeof(BitmapSource)) || (targetType == typeof(BitmapImage))))
+			{
+				return true;
+			}
+
+			if ((sourceType == typeof(byte[])) && (targetType == typeof(ResourceDictionary)))
 			{
 				return true;
 			}
@@ -106,7 +114,44 @@ namespace RI.Framework.Services.Resources.Converters
 				}
 			}
 
+			if ((value is byte[]) && (type == typeof(ResourceDictionary)))
+			{
+				using (MemoryStream ms = new MemoryStream((byte[])value, false))
+				{
+					object xamlResult = XamlReader.Load(ms);
+					return (ResourceDictionary)xamlResult;
+				}
+			}
+
 			throw new InvalidTypeArgumentException(nameof(value));
+		}
+
+		/// <inheritdoc />
+		public ResourceLoadingInfo GetLoadingInfoFromFileExtension (string extension)
+		{
+			if (extension == null)
+			{
+				throw new ArgumentNullException(nameof(extension));
+			}
+
+			if (extension.IsEmpty())
+			{
+				throw new EmptyStringArgumentException(nameof(extension));
+			}
+
+			extension = extension.ToUpperInvariant().Trim();
+
+			if (extension == ".PNG")
+			{
+				return new ResourceLoadingInfo(ResourceLoadingType.Text, typeof(BitmapImage));
+			}
+
+			if (extension == ".XAML")
+			{
+				return new ResourceLoadingInfo(ResourceLoadingType.Binary, typeof(ResourceDictionary));
+			}
+
+			return null;
 		}
 
 		#endregion

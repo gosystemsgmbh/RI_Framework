@@ -93,11 +93,14 @@
     <Compile Include="Services\Regions\_NamespaceDoc.cs" />
     <Compile Include="Services\Resources\Converters\_NamespaceDoc.cs" />
     <Compile Include="Services\Resources\IResourceConverter.cs" />
+    <Compile Include="Services\Resources\ResourceLoadingType.cs" />
     <Compile Include="Services\Resources\IResourceService.cs" />
     <Compile Include="Services\Resources\IResourceSet.cs" />
     <Compile Include="Services\Resources\IResourceSource.cs" />
     <Compile Include="Services\Resources\ResourceConverter.cs" />
+    <Compile Include="Services\Resources\ResourceLoadingInfo.cs" />
     <Compile Include="Services\Resources\ResourceService.cs" />
+    <Compile Include="Services\Resources\IResourceServiceExtensions.cs" />
     <Compile Include="Services\Resources\Sources\DirectoryResourceSet.cs" />
     <Compile Include="Services\Resources\Sources\DirectoryResourceSource.cs" />
     <Compile Include="Services\Resources\Sources\_NamespaceDoc.cs" />

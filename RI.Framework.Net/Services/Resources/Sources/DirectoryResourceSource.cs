@@ -105,6 +105,14 @@ namespace RI.Framework.Services.Resources.Sources
 		#region Instance Properties/Indexer
 
 		/// <summary>
+		///     Gets the currently used resource converters of the associated <see cref="IResourceService" />.
+		/// </summary>
+		/// <value>
+		///     The currently used resource converters of the associated <see cref="IResourceService" />.
+		/// </value>
+		public IEnumerable<IResourceConverter> Converters { get; private set; }
+
+		/// <summary>
 		///     Gets the directory which contains the resource set subdirectories.
 		/// </summary>
 		/// <value>
@@ -183,8 +191,15 @@ namespace RI.Framework.Services.Resources.Sources
 		public bool IsInitialized { get; private set; }
 
 		/// <inheritdoc />
-		void IResourceSource.Initialize ()
+		void IResourceSource.Initialize (IEnumerable<IResourceConverter> converters)
 		{
+			if (converters == null)
+			{
+				throw new ArgumentNullException(nameof(converters));
+			}
+
+			this.Converters = converters;
+
 			this.Log(LogLevel.Debug, "Initializing directory resource source: {0}", this.Directory);
 
 			this.UpdateSets(false);

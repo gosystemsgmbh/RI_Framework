@@ -27,19 +27,6 @@ namespace RI.Framework.Services.Resources
 	public interface IResourceService
 	{
 		/// <summary>
-		///     Gets all currently available resources.
-		/// </summary>
-		/// <value>
-		///     All currently available resources.
-		/// </value>
-		/// <remarks>
-		///     <note type="implement">
-		///         The value of this property must never be null.
-		///     </note>
-		/// </remarks>
-		IEnumerable<string> AvailableResources { get; }
-
-		/// <summary>
 		///     Gets all currently available resource sets.
 		/// </summary>
 		/// <value>
@@ -64,19 +51,6 @@ namespace RI.Framework.Services.Resources
 		///     </note>
 		/// </remarks>
 		IEnumerable<IResourceConverter> Converters { get; }
-
-		/// <summary>
-		///     Gets all currently loaded resources.
-		/// </summary>
-		/// <value>
-		///     All currently loaded resources.
-		/// </value>
-		/// <remarks>
-		///     <note type="implement">
-		///         The value of this property must never be null.
-		///     </note>
-		/// </remarks>
-		IEnumerable<string> LoadedResources { get; }
 
 		/// <summary>
 		///     Gets all currently loaded resource sets.
@@ -166,17 +140,6 @@ namespace RI.Framework.Services.Resources
 		object GetValue (string name, Type type);
 
 		/// <summary>
-		///     Determines whether a resource with a specified name is available.
-		/// </summary>
-		/// <param name="name"> The name of the resource to check. </param>
-		/// <returns>
-		///     true if the resource is available, false otherwise.
-		/// </returns>
-		/// <exception cref="ArgumentNullException"> <paramref name="name" /> is null. </exception>
-		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
-		bool HasValue (string name);
-
-		/// <summary>
 		///     Reloads all currently loaded resource sets (<see cref="LoadedSets" />).
 		/// </summary>
 		void ReloadSets ();
@@ -206,7 +169,12 @@ namespace RI.Framework.Services.Resources
 		void RemoveSource (IResourceSource resourceSource);
 
 		/// <summary>
-		///     Updates the available resources (<see cref="AvailableResources" />) and resource sets (<see cref="AvailableSets" />).
+		///     Unloads all currently loaded resource sets (<see cref="LoadedSets" />).
+		/// </summary>
+		void UnloadSets ();
+
+		/// <summary>
+		///     Updates the available resource sets (<see cref="AvailableSets" />).
 		/// </summary>
 		void UpdateAvailable ();
 	}

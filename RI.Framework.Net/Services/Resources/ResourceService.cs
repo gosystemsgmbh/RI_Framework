@@ -29,6 +29,7 @@ namespace RI.Framework.Services.Resources
 	///         See <see cref="IResourceService" /> for more details.
 	///     </para>
 	/// </remarks>
+	/// TODO: Make StringComparer for resource names and resource set IDs globally available
 	public sealed class ResourceService : IResourceService, IImporting
 	{
 		#region Instance Constructor/Destructor
@@ -52,12 +53,43 @@ namespace RI.Framework.Services.Resources
 
 		#region Instance Properties/Indexer
 
+		private IEnumerable<IResourceSet> AvailableSetsUnsorted
+		{
+			get
+			{
+				foreach (IResourceSource source in this.Sources)
+				{
+					foreach (IResourceSet set in source.AvailableSets)
+					{
+						yield return set;
+					}
+				}
+			}
+		}
+
 		[ImportProperty (typeof(IResourceConverter), Recomposable = true)]
 		private Import ConvertersImported { get; set; }
 
 		private List<IResourceConverter> ConvertersManual { get; set; }
 
 		private List<IResourceConverter> ConvertersUpdated { get; set; }
+
+		private IEnumerable<IResourceSet> LoadedSetsUnsorted
+		{
+			get
+			{
+				foreach (IResourceSource source in this.Sources)
+				{
+					foreach (IResourceSet set in source.AvailableSets)
+					{
+						if (set.IsLoaded)
+						{
+							yield return set;
+						}
+					}
+				}
+			}
+		}
 
 		[ImportProperty (typeof(IResourceSource), Recomposable = true)]
 		private Import SourcesImported { get; set; }
@@ -149,7 +181,7 @@ namespace RI.Framework.Services.Resources
 			{
 				if (!source.IsInitialized)
 				{
-					source.Initialize();
+					source.Initialize(this.Converters);
 				}
 			}
 
@@ -186,36 +218,7 @@ namespace RI.Framework.Services.Resources
 		#region Interface: IResourceService
 
 		/// <inheritdoc />
-		public IEnumerable<string> AvailableResources
-		{
-			get
-			{
-				//TODO: Distinct
-				foreach (IResourceSet set in this.AvailableSets)
-				{
-					foreach (string resource in set.AvailableResources)
-					{
-						yield return resource;
-					}
-				}
-			}
-		}
-
-		/// <inheritdoc />
-		public IEnumerable<IResourceSet> AvailableSets
-		{
-			get
-			{
-				foreach (IResourceSource source in this.Sources)
-				{
-					foreach (IResourceSet set in source.AvailableSets)
-					{
-						yield return set;
-					}
-				}
-			}
-		}
-
+		public IEnumerable<IResourceSet> AvailableSets => this.AvailableSetsUnsorted.OrderBy(x => x.Priority);
 
 		/// <inheritdoc />
 		public IEnumerable<IResourceConverter> Converters
@@ -235,38 +238,7 @@ namespace RI.Framework.Services.Resources
 		}
 
 		/// <inheritdoc />
-		public IEnumerable<string> LoadedResources
-		{
-			get
-			{
-				//TODO: Distinct
-				foreach (IResourceSet set in this.LoadedSets)
-				{
-					foreach (string resource in set.AvailableResources)
-					{
-						yield return resource;
-					}
-				}
-			}
-		}
-
-		/// <inheritdoc />
-		public IEnumerable<IResourceSet> LoadedSets
-		{
-			get
-			{
-				foreach (IResourceSource source in this.Sources)
-				{
-					foreach (IResourceSet set in source.AvailableSets)
-					{
-						if (set.IsLoaded)
-						{
-							yield return set;
-						}
-					}
-				}
-			}
-		}
+		public IEnumerable<IResourceSet> LoadedSets => this.LoadedSetsUnsorted.OrderBy(x => x.Priority);
 
 		/// <inheritdoc />
 		public IEnumerable<IResourceSource> Sources
@@ -334,7 +306,6 @@ namespace RI.Framework.Services.Resources
 				throw new EmptyStringArgumentException(nameof(name));
 			}
 
-			//TODO: Respect priority
 			foreach (IResourceSet set in this.LoadedSets)
 			{
 				object value = set.GetRawValue(name);
@@ -388,22 +359,6 @@ namespace RI.Framework.Services.Resources
 		}
 
 		/// <inheritdoc />
-		public bool HasValue (string name)
-		{
-			if (name == null)
-			{
-				throw new ArgumentNullException(nameof(name));
-			}
-
-			if (name.IsEmpty())
-			{
-				throw new EmptyStringArgumentException(nameof(name));
-			}
-
-			return Enumerable.Contains(this.LoadedResources, name, StringComparerEx.InvariantCultureIgnoreCase);
-		}
-
-		/// <inheritdoc />
 		public void ReloadSets ()
 		{
 			this.UpdateAvailable();
@@ -447,6 +402,16 @@ namespace RI.Framework.Services.Resources
 			this.SourcesManual.RemoveAll(resourceSource);
 
 			this.UpdateSources();
+		}
+
+		/// <inheritdoc />
+		public void UnloadSets ()
+		{
+			this.UpdateAvailable();
+			foreach (IResourceSet set in this.LoadedSets)
+			{
+				set.Unload();
+			}
 		}
 
 		/// <inheritdoc />

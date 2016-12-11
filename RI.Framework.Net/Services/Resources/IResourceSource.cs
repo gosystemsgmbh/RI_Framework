@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using RI.Framework.Composition.Model;
 
@@ -42,7 +43,9 @@ namespace RI.Framework.Services.Resources
 		/// <summary>
 		///     Initializes the resource source but does not load any resource sets.
 		/// </summary>
-		void Initialize ();
+		/// <param name="converters"> The sequence which gets the currently used resource converters of the associated <see cref="IResourceService" />. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="converters" /> is null. </exception>
+		void Initialize (IEnumerable<IResourceConverter> converters);
 
 		/// <summary>
 		///     Unloads the resource source and all its loaded resource sets.

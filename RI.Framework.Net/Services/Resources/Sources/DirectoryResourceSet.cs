@@ -100,6 +100,8 @@ namespace RI.Framework.Services.Resources.Sources
 		/// </value>
 		public FilePath SettingsFile { get; private set; }
 
+		internal IEnumerable<IResourceConverter> Converters => this.Source.Converters;
+
 		internal bool? IsValid { get; private set; }
 
 		internal DirectoryResourceSource Source { get; private set; }
@@ -292,6 +294,33 @@ namespace RI.Framework.Services.Resources.Sources
 			this.IsValid = true;
 		}
 
+		private IResourceConverter GetConverter (Type sourceType, Type targetType)
+		{
+			foreach (IResourceConverter converter in this.Converters)
+			{
+				if (converter.CanConvert(sourceType, targetType))
+				{
+					return converter;
+				}
+			}
+
+			return null;
+		}
+
+		private ResourceLoadingInfo GetLoadingInfo (string extension)
+		{
+			foreach (IResourceConverter converter in this.Converters)
+			{
+				ResourceLoadingInfo loadingInfo = converter.GetLoadingInfoFromFileExtension(extension);
+				if (loadingInfo != null)
+				{
+					return loadingInfo;
+				}
+			}
+
+			return new ResourceLoadingInfo(ResourceLoadingType.Unknown, null);
+		}
+
 		private void Log (LogLevel severity, string format, params object[] args)
 		{
 			LogLocator.Log(severity, this.GetType().Name, format, args);
@@ -352,7 +381,20 @@ namespace RI.Framework.Services.Resources.Sources
 				return null;
 			}
 
-			return this.Resources[name].Item2.Load();
+			Loader loader = this.Resources[name].Item2;
+			object loadedValue = loader.Load();
+
+			Type sourceType = loadedValue.GetType();
+			Type targetType = loader.Type;
+
+			IResourceConverter converter = this.GetConverter(sourceType, targetType);
+			if (converter == null)
+			{
+				return null;
+			}
+
+			object rawValue = converter.Convert(targetType, loadedValue);
+			return rawValue;
 		}
 
 		/// <inheritdoc />
@@ -397,51 +439,68 @@ namespace RI.Framework.Services.Resources.Sources
 
 			foreach (FilePath file in newFiles)
 			{
-				switch (file.ExtensionWithoutDot.ToUpperInvariant())
+				string extension = file.ExtensionWithDot.ToUpperInvariant();
+				ResourceLoadingInfo loadingInfo = this.GetLoadingInfo(extension);
+
+				switch (loadingInfo.LoadingType)
 				{
 					default:
 					{
-						this.Log(LogLevel.Warning, "Unknown resource file type: {0}", file);
+						this.Log(LogLevel.Warning, "Unknown resource loading type: {0} @ {1}", loadingInfo.LoadingType, file);
 						break;
 					}
 
-					case "PNG":
+					case ResourceLoadingType.Binary:
 					{
 						string name = file.FileNameWithoutExtension;
-						ByteArrayLoader loader = new ByteArrayLoader(file);
+						ByteArrayLoader loader = new ByteArrayLoader(file, loadingInfo.ResourceType);
 						this.Resources.Add(name, new Tuple<FilePath, Loader>(file, loader));
-						this.Log(LogLevel.Debug, "Added PNG resource file: {0} = {1}", name, file);
+						this.Log(LogLevel.Debug, "Added binary resource file: {0} = {1}", name, file);
 						break;
 					}
 
-					case "TXT":
+					case ResourceLoadingType.Text:
 					{
 						string name = file.FileNameWithoutExtension;
-						StringLoader loader = new StringLoader(file, this.Source.FileEncoding);
+						StringLoader loader = new StringLoader(file, this.Source.FileEncoding, loadingInfo.ResourceType);
 						this.Resources.Add(name, new Tuple<FilePath, Loader>(file, loader));
-						this.Log(LogLevel.Debug, "Added TXT resource file: {0} = {1}", name, file);
+						this.Log(LogLevel.Debug, "Added text resource file: {0} = {1}", name, file);
 						break;
 					}
 
-					case "INI":
+					case ResourceLoadingType.Unknown:
 					{
-						IniDocument iniDocument = new IniDocument();
-						try
+						switch (extension)
 						{
-							iniDocument.Load(file, this.Source.FileEncoding);
-							Dictionary<string, string> values = iniDocument.GetSection(null);
-							foreach (KeyValuePair<string, string> value in values)
+							default:
 							{
-								string name = value.Key;
-								EagerLoader loader = new EagerLoader(value.Value);
-								this.Resources.Add(name, new Tuple<FilePath, Loader>(file, loader));
+								this.Log(LogLevel.Warning, "Unknown resource file type: {0}", file);
+								break;
 							}
-							this.Log(LogLevel.Debug, "Added INI resource file: {0}", file);
+
+							case ".INI":
+							{
+								IniDocument iniDocument = new IniDocument();
+								try
+								{
+									iniDocument.Load(file, this.Source.FileEncoding);
+									Dictionary<string, string> values = iniDocument.GetSection(null);
+									foreach (KeyValuePair<string, string> value in values)
+									{
+										string name = value.Key;
+										EagerLoader loader = new EagerLoader(value.Value);
+										this.Resources.Add(name, new Tuple<FilePath, Loader>(file, loader));
+									}
+									this.Log(LogLevel.Debug, "Added INI resource file: {0}", file);
+								}
+								catch (IniParsingException exception)
+								{
+									this.Log(LogLevel.Error, "Invalid INI resource file: {0}{1}{2}", file, Environment.NewLine, exception.ToDetailedString());
+								}
+								break;
+							}
 						}
-						catch (IniParsingException exception)
-						{
-							this.Log(LogLevel.Error, "Invalid INI resource file: {0}{1}{2}", file, Environment.NewLine, exception.ToDetailedString());
-						}
+
 						break;
 					}
 				}
@@ -459,7 +518,7 @@ namespace RI.Framework.Services.Resources.Sources
 		{
 			#region Instance Constructor/Destructor
 
-			public ByteArrayLoader (FilePath file)
+			public ByteArrayLoader (FilePath file, Type type)
 			{
 				if (file == null)
 				{
@@ -471,7 +530,13 @@ namespace RI.Framework.Services.Resources.Sources
 					throw new InvalidPathArgumentException(nameof(file));
 				}
 
+				if (type == null)
+				{
+					throw new ArgumentNullException(nameof(type));
+				}
+
 				this.File = file;
+				this.Type = type;
 
 				this.Data = null;
 			}
@@ -493,6 +558,8 @@ namespace RI.Framework.Services.Resources.Sources
 
 
 			#region Overrides
+
+			public override Type Type { get; }
 
 			public override object Load ()
 			{
@@ -544,6 +611,8 @@ namespace RI.Framework.Services.Resources.Sources
 
 			#region Overrides
 
+			public override Type Type => this.Value.GetType();
+
 			public override object Load ()
 			{
 				return this.Value;
@@ -563,6 +632,8 @@ namespace RI.Framework.Services.Resources.Sources
 		{
 			#region Abstracts
 
+			public abstract Type Type { get; }
+
 			public abstract object Load ();
 
 			#endregion
@@ -579,7 +650,7 @@ namespace RI.Framework.Services.Resources.Sources
 		{
 			#region Instance Constructor/Destructor
 
-			public StringLoader (FilePath file, Encoding encoding)
+			public StringLoader (FilePath file, Encoding encoding, Type type)
 			{
 				if (file == null)
 				{
@@ -596,8 +667,14 @@ namespace RI.Framework.Services.Resources.Sources
 					throw new ArgumentNullException(nameof(encoding));
 				}
 
+				if (type == null)
+				{
+					throw new ArgumentNullException(nameof(type));
+				}
+
 				this.File = file;
 				this.Encoding = encoding;
+				this.Type = type;
 
 				this.Data = null;
 			}
@@ -621,6 +698,8 @@ namespace RI.Framework.Services.Resources.Sources
 
 
 			#region Overrides
+
+			public override Type Type { get; }
 
 			public override object Load ()
 			{

@@ -3,6 +3,7 @@ using System.Xml;
 using System.Xml.Linq;
 
 using RI.Framework.IO.INI;
+using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 
 
@@ -111,6 +112,29 @@ namespace RI.Framework.Services.Resources
 			}
 
 			throw new InvalidTypeArgumentException(nameof(value));
+		}
+
+		/// <inheritdoc />
+		public ResourceLoadingInfo GetLoadingInfoFromFileExtension (string extension)
+		{
+			if (extension == null)
+			{
+				throw new ArgumentNullException(nameof(extension));
+			}
+
+			if (extension.IsEmpty())
+			{
+				throw new EmptyStringArgumentException(nameof(extension));
+			}
+
+			extension = extension.ToUpperInvariant().Trim();
+
+			if (extension == ".TXT")
+			{
+				return new ResourceLoadingInfo(ResourceLoadingType.Text, typeof(string));
+			}
+
+			return null;
 		}
 
 		#endregion

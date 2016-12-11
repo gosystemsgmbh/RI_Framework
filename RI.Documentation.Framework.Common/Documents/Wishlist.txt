@@ -218,9 +218,6 @@ Services
  + (Unity) Dispatcher: Implement IDispatcher
  + (Unity) Dispatcher: "Magic Thread"
 
- # (.NET) Resources (ResourceService, DirectoryResourceSource, ResourceConverter)
- # (WPF) Resources (WpfResourceTarget, WpfResourceConverter)
-
  * (.NET) Backup (BackupService, DirectoryBackupStorage)
  * (.NET) Licensing (LicensingService, FileLicenseStorage)
 
