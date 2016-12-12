@@ -145,8 +145,6 @@ namespace RI.Framework.Services.Resources
 			{
 				this.Log("Converter removed: {0}", converter.GetType().Name);
 			}
-
-			this.UpdateAvailable();
 		}
 
 		private void UpdateSources ()
@@ -184,8 +182,6 @@ namespace RI.Framework.Services.Resources
 					source.Initialize(this.Converters);
 				}
 			}
-
-			this.UpdateAvailable();
 		}
 
 		#endregion
@@ -202,6 +198,7 @@ namespace RI.Framework.Services.Resources
 			{
 				this.UpdateConverters();
 				this.UpdateSources();
+				this.UpdateAvailable();
 			}
 		}
 
@@ -273,6 +270,7 @@ namespace RI.Framework.Services.Resources
 			this.ConvertersManual.Add(resourceConverter);
 
 			this.UpdateConverters();
+			this.UpdateAvailable();
 		}
 
 		/// <inheritdoc />
@@ -291,6 +289,7 @@ namespace RI.Framework.Services.Resources
 			this.SourcesManual.Add(resourceSource);
 
 			this.UpdateSources();
+			this.UpdateAvailable();
 		}
 
 		/// <inheritdoc />
@@ -384,6 +383,7 @@ namespace RI.Framework.Services.Resources
 			this.ConvertersManual.RemoveAll(resourceConverter);
 
 			this.UpdateConverters();
+			this.UpdateAvailable();
 		}
 
 		/// <inheritdoc />
@@ -402,6 +402,7 @@ namespace RI.Framework.Services.Resources
 			this.SourcesManual.RemoveAll(resourceSource);
 
 			this.UpdateSources();
+			this.UpdateAvailable();
 		}
 
 		/// <inheritdoc />

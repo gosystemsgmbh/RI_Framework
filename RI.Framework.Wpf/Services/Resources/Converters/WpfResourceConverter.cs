@@ -143,7 +143,7 @@ namespace RI.Framework.Services.Resources.Converters
 
 			if (extension == ".PNG")
 			{
-				return new ResourceLoadingInfo(ResourceLoadingType.Text, typeof(BitmapImage));
+				return new ResourceLoadingInfo(ResourceLoadingType.Binary, typeof(BitmapImage));
 			}
 
 			if (extension == ".XAML")

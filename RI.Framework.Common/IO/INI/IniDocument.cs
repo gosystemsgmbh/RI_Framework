@@ -745,6 +745,7 @@ namespace RI.Framework.IO.INI
 				{
 					if (element is ValueIniElement)
 					{
+						found = true;
 						ValueIniElement valueElement = (ValueIniElement)element;
 						if (!dict.ContainsKey(valueElement.Name))
 						{

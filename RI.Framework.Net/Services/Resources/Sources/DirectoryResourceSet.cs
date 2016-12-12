@@ -435,6 +435,8 @@ namespace RI.Framework.Services.Resources.Sources
 		public void UpdateAvailable ()
 		{
 			List<FilePath> existingFiles = this.Directory.GetFiles(false, false);
+			existingFiles.Remove(this.SettingsFile);
+
 			HashSet<FilePath> newFiles = DirectLinq.Except(existingFiles, from x in this.Resources select x.Value.Item1);
 
 			foreach (FilePath file in newFiles)

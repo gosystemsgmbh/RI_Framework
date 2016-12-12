@@ -201,6 +201,8 @@ Services
 
  - (WPF) WpfApplication: Handle power events using SystemEvents.PowerModeChanged
  - (WPF) WpfApplication: Handle user switching using SystemEvents.SessionSwitch
+
+ # (.NET) Resources: Selectable property for IResourceSet
  
  # (Common) Logging: ISupportsLogging
  # (Common) Logging: Remove Log methods and replace with single extension method for ISupportsLogging
