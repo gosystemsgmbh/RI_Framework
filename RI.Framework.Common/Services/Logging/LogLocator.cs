@@ -1,7 +1,7 @@
 ﻿namespace RI.Framework.Services.Logging
 {
 	/// <summary>
-	///     Provides a centralized and global logger.
+	///     Provides a centralized and global logging provider.
 	/// </summary>
 	/// <remarks>
 	///     <para>

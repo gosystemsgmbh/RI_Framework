@@ -259,11 +259,6 @@ namespace RI.Framework.Data.Repository.Views
 			this.ViewCaller.Validate(this.Entity);
 		}
 
-		internal void RaiseEntityChanged ()
-		{
-			this.OnPropertyChanged(nameof(this.Entity));
-		}
-
 		private void OnErrorsChanged ()
 		{
 			this.OnPropertyChanged(nameof(this.Errors));
@@ -313,6 +308,11 @@ namespace RI.Framework.Data.Repository.Views
 		protected virtual void OnPropertyChanging (string propertyName)
 		{
 			this.PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
+		}
+
+		protected internal virtual void RaiseEntityChanged ()
+		{
+			this.OnPropertyChanged(nameof(this.Entity));
 		}
 
 		#endregion

@@ -99,6 +99,7 @@
     <Compile Include="Services\Resources\IResourceSource.cs" />
     <Compile Include="Services\Resources\ResourceConverter.cs" />
     <Compile Include="Services\Resources\ResourceLoadingInfo.cs" />
+    <Compile Include="Services\Resources\ResourceLocator.cs" />
     <Compile Include="Services\Resources\ResourceService.cs" />
     <Compile Include="Services\Resources\IResourceServiceExtensions.cs" />
     <Compile Include="Services\Resources\Sources\DirectoryResourceSet.cs" />
