@@ -6,7 +6,7 @@ using System.Windows.Input;
 
 
 
-namespace RI.Framework.Mvvm
+namespace RI.Framework.Utilities.Wpf.Markup
 {
 	/// <summary>
 	///     Provides attached properties to bind specific events of WPF objects to commands.

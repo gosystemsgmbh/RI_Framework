@@ -1,45 +1,24 @@
 ﻿using System;
-using System.Windows;
 
-using RI.Framework.Services;
-using RI.Framework.Services.Logging;
-using RI.Framework.Services.Regions;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 
 
 
 
-namespace RI.Framework.Mvvm
+namespace RI.Framework.Services.Regions
 {
 	/// <summary>
-	///     Provides utilities to work with regions.
+	///     Provides a centralized and global region provider.
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         <see cref="RegionManager" /> is a convenience utility to work with regions (<see cref="IRegionService" />) in MVVM scenarios.
-	///         It defines an attached property (<see cref="RegionNameProperty" />) which can be used to associate a container with a region (using the region services <see cref="IRegionService.AddRegion" /> method).
-	///         It also defines region operation methods to simplify region handling.
-	///     </para>
-	///     <para>
-	///         <see cref="ServiceLocator" /> is used to obtain an instance of <see cref="IRegionService" /> and, when using region operation methods, the instances for elements when the elements are specified by name or type.
+	///         <see cref="RegionLocator" /> is merely a convenience utility as it uses <see cref="ServiceLocator" /> to retrieve and use a <see cref="IRegionService" />.
 	///     </para>
 	/// </remarks>
-	public static class RegionManager
+	public static class RegionLocator
 	{
-		#region Constants
 
-		/// <summary>
-		///     Associates a container with a region by specifying its region name.
-		/// </summary>
-		public static readonly DependencyProperty RegionNameProperty = DependencyProperty.RegisterAttached("RegionName", typeof(string), typeof(RegionManager), new UIPropertyMetadata(null, RegionManager.OnRegionNameChange));
-
-		#endregion
-
-
-
-
-		#region Static Methods
 
 		/// <summary>
 		///     Activates an element of a specified name in the specified region.
@@ -51,14 +30,14 @@ namespace RI.Framework.Mvvm
 		///         See <see cref="Activate(string,object)" /> for more details.
 		///     </para>
 		///     <para>
-		///         The elements instance is obtaines using <see cref="InstanceLocator" />.
+		///         The elements instance is obtaines using <see cref="ServiceLocator" />.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="region" /> or <paramref name="element" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> or <paramref name="element" /> is an empty string. </exception>
 		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
 		/// <exception cref="InvalidOperationException"> <paramref name="element" /> cannot be resolved or no region service is available. </exception>
-		public static void Activate (string region, string element)
+		public static void Activate(string region, string element)
 		{
 			if (region == null)
 			{
@@ -80,13 +59,13 @@ namespace RI.Framework.Mvvm
 				throw new EmptyStringArgumentException(nameof(element));
 			}
 
-			object value = RegionManager.GetValue(element);
+			object value = RegionLocator.GetValue(element);
 			if (value == null)
 			{
 				throw new InvalidOperationException();
 			}
 
-			RegionManager.Activate(region, value);
+			RegionLocator.Activate(region, value);
 		}
 
 		/// <summary>
@@ -99,14 +78,14 @@ namespace RI.Framework.Mvvm
 		///         See <see cref="Activate(string,object)" /> for more details.
 		///     </para>
 		///     <para>
-		///         The elements instance is obtaines using <see cref="InstanceLocator" />.
+		///         The elements instance is obtaines using <see cref="ServiceLocator" />.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="region" /> or <paramref name="element" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
 		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
 		/// <exception cref="InvalidOperationException"> <paramref name="element" /> cannot be resolved or no region service is available. </exception>
-		public static void Activate (string region, Type element)
+		public static void Activate(string region, Type element)
 		{
 			if (region == null)
 			{
@@ -123,13 +102,13 @@ namespace RI.Framework.Mvvm
 				throw new ArgumentNullException(nameof(element));
 			}
 
-			object value = RegionManager.GetValue(element);
+			object value = RegionLocator.GetValue(element);
 			if (value == null)
 			{
 				throw new InvalidOperationException();
 			}
 
-			RegionManager.Activate(region, value);
+			RegionLocator.Activate(region, value);
 		}
 
 		/// <summary>
@@ -146,7 +125,7 @@ namespace RI.Framework.Mvvm
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
 		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
 		/// <exception cref="InvalidOperationException"> No region service is available. </exception>
-		public static void Activate (string region, object element)
+		public static void Activate(string region, object element)
 		{
 			if (region == null)
 			{
@@ -182,14 +161,14 @@ namespace RI.Framework.Mvvm
 		///         See <see cref="Add(string,object)" /> for more details.
 		///     </para>
 		///     <para>
-		///         The elements instance is obtaines using <see cref="InstanceLocator" />.
+		///         The elements instance is obtaines using <see cref="ServiceLocator" />.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="region" /> or <paramref name="element" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> or <paramref name="element" /> is an empty string. </exception>
 		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
 		/// <exception cref="InvalidOperationException"> <paramref name="element" /> cannot be resolved or no region service is available. </exception>
-		public static void Add (string region, string element)
+		public static void Add(string region, string element)
 		{
 			if (region == null)
 			{
@@ -211,13 +190,13 @@ namespace RI.Framework.Mvvm
 				throw new EmptyStringArgumentException(nameof(element));
 			}
 
-			object value = RegionManager.GetValue(element);
+			object value = RegionLocator.GetValue(element);
 			if (value == null)
 			{
 				throw new InvalidOperationException();
 			}
 
-			RegionManager.Add(region, value);
+			RegionLocator.Add(region, value);
 		}
 
 		/// <summary>
@@ -230,14 +209,14 @@ namespace RI.Framework.Mvvm
 		///         See <see cref="Add(string,object)" /> for more details.
 		///     </para>
 		///     <para>
-		///         The elements instance is obtaines using <see cref="InstanceLocator" />.
+		///         The elements instance is obtaines using <see cref="ServiceLocator" />.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="region" /> or <paramref name="element" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
 		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
 		/// <exception cref="InvalidOperationException"> <paramref name="element" /> cannot be resolved or no region service is available. </exception>
-		public static void Add (string region, Type element)
+		public static void Add(string region, Type element)
 		{
 			if (region == null)
 			{
@@ -254,13 +233,13 @@ namespace RI.Framework.Mvvm
 				throw new ArgumentNullException(nameof(element));
 			}
 
-			object value = RegionManager.GetValue(element);
+			object value = RegionLocator.GetValue(element);
 			if (value == null)
 			{
 				throw new InvalidOperationException();
 			}
 
-			RegionManager.Add(region, value);
+			RegionLocator.Add(region, value);
 		}
 
 		/// <summary>
@@ -277,7 +256,7 @@ namespace RI.Framework.Mvvm
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
 		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
 		/// <exception cref="InvalidOperationException"> No region service is available. </exception>
-		public static void Add (string region, object element)
+		public static void Add(string region, object element)
 		{
 			if (region == null)
 			{
@@ -316,14 +295,14 @@ namespace RI.Framework.Mvvm
 		///         See <see cref="Navigate(string,object)" /> for more details.
 		///     </para>
 		///     <para>
-		///         The elements instance is obtaines using <see cref="InstanceLocator" />.
+		///         The elements instance is obtaines using <see cref="ServiceLocator" />.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="region" /> or <paramref name="element" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> or <paramref name="element" /> is an empty string. </exception>
 		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
 		/// <exception cref="InvalidOperationException"> <paramref name="element" /> cannot be resolved or no region service is available. </exception>
-		public static bool CanNavigate (string region, string element)
+		public static bool CanNavigate(string region, string element)
 		{
 			if (region == null)
 			{
@@ -345,13 +324,13 @@ namespace RI.Framework.Mvvm
 				throw new EmptyStringArgumentException(nameof(element));
 			}
 
-			object value = RegionManager.GetValue(element);
+			object value = RegionLocator.GetValue(element);
 			if (value == null)
 			{
 				throw new InvalidOperationException();
 			}
 
-			return RegionManager.CanNavigate(region, value);
+			return RegionLocator.CanNavigate(region, value);
 		}
 
 		/// <summary>
@@ -367,14 +346,14 @@ namespace RI.Framework.Mvvm
 		///         See <see cref="Navigate(string,object)" /> for more details.
 		///     </para>
 		///     <para>
-		///         The elements instance is obtaines using <see cref="InstanceLocator" />.
+		///         The elements instance is obtaines using <see cref="ServiceLocator" />.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="region" /> or <paramref name="element" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
 		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
 		/// <exception cref="InvalidOperationException"> <paramref name="element" /> cannot be resolved or no region service is available. </exception>
-		public static bool CanNavigate (string region, Type element)
+		public static bool CanNavigate(string region, Type element)
 		{
 			if (region == null)
 			{
@@ -391,13 +370,13 @@ namespace RI.Framework.Mvvm
 				throw new ArgumentNullException(nameof(element));
 			}
 
-			object value = RegionManager.GetValue(element);
+			object value = RegionLocator.GetValue(element);
 			if (value == null)
 			{
 				throw new InvalidOperationException();
 			}
 
-			return RegionManager.CanNavigate(region, value);
+			return RegionLocator.CanNavigate(region, value);
 		}
 
 		/// <summary>
@@ -417,7 +396,7 @@ namespace RI.Framework.Mvvm
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
 		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
 		/// <exception cref="InvalidOperationException"> No region service is available. </exception>
-		public static bool CanNavigate (string region, object element)
+		public static bool CanNavigate(string region, object element)
 		{
 			if (region == null)
 			{
@@ -451,7 +430,7 @@ namespace RI.Framework.Mvvm
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
 		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
 		/// <exception cref="InvalidOperationException"> No region service is available. </exception>
-		public static void Clear (string region)
+		public static void Clear(string region)
 		{
 			if (region == null)
 			{
@@ -482,14 +461,14 @@ namespace RI.Framework.Mvvm
 		///         See <see cref="Deactivate(string,object)" /> for more details.
 		///     </para>
 		///     <para>
-		///         The elements instance is obtaines using <see cref="InstanceLocator" />.
+		///         The elements instance is obtaines using <see cref="ServiceLocator" />.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="region" /> or <paramref name="element" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> or <paramref name="element" /> is an empty string. </exception>
 		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
 		/// <exception cref="InvalidOperationException"> <paramref name="element" /> cannot be resolved or no region service is available. </exception>
-		public static void Deactivate (string region, string element)
+		public static void Deactivate(string region, string element)
 		{
 			if (region == null)
 			{
@@ -511,13 +490,13 @@ namespace RI.Framework.Mvvm
 				throw new EmptyStringArgumentException(nameof(element));
 			}
 
-			object value = RegionManager.GetValue(element);
+			object value = RegionLocator.GetValue(element);
 			if (value == null)
 			{
 				throw new InvalidOperationException();
 			}
 
-			RegionManager.Deactivate(region, value);
+			RegionLocator.Deactivate(region, value);
 		}
 
 		/// <summary>
@@ -530,14 +509,14 @@ namespace RI.Framework.Mvvm
 		///         See <see cref="Deactivate(string,object)" /> for more details.
 		///     </para>
 		///     <para>
-		///         The elements instance is obtaines using <see cref="InstanceLocator" />.
+		///         The elements instance is obtaines using <see cref="ServiceLocator" />.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="region" /> or <paramref name="element" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
 		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
 		/// <exception cref="InvalidOperationException"> <paramref name="element" /> cannot be resolved or no region service is available. </exception>
-		public static void Deactivate (string region, Type element)
+		public static void Deactivate(string region, Type element)
 		{
 			if (region == null)
 			{
@@ -554,13 +533,13 @@ namespace RI.Framework.Mvvm
 				throw new ArgumentNullException(nameof(element));
 			}
 
-			object value = RegionManager.GetValue(element);
+			object value = RegionLocator.GetValue(element);
 			if (value == null)
 			{
 				throw new InvalidOperationException();
 			}
 
-			RegionManager.Deactivate(region, value);
+			RegionLocator.Deactivate(region, value);
 		}
 
 		/// <summary>
@@ -577,7 +556,7 @@ namespace RI.Framework.Mvvm
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
 		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
 		/// <exception cref="InvalidOperationException"> No region service is available. </exception>
-		public static void Deactivate (string region, object element)
+		public static void Deactivate(string region, object element)
 		{
 			if (region == null)
 			{
@@ -616,7 +595,7 @@ namespace RI.Framework.Mvvm
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
 		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
 		/// <exception cref="InvalidOperationException"> No region service is available. </exception>
-		public static void DeactivateAll (string region)
+		public static void DeactivateAll(string region)
 		{
 			if (region == null)
 			{
@@ -638,23 +617,6 @@ namespace RI.Framework.Mvvm
 		}
 
 		/// <summary>
-		///     Gets the region name of the specified container.
-		/// </summary>
-		/// <param name="obj"> The container. </param>
-		/// <returns>
-		///     The region name associated with the container or null if the container has no region name associated.
-		/// </returns>
-		/// <remarks>
-		///     <note type="note">
-		///         This method is for supporting the XAML designer and not intended to be used by your code.
-		///     </note>
-		/// </remarks>
-		public static string GetRegionName (DependencyObject obj)
-		{
-			return obj?.GetValue(RegionManager.RegionNameProperty) as string;
-		}
-
-		/// <summary>
 		///     Navigates to an element of a specified name in the specified region.
 		/// </summary>
 		/// <param name="region"> The region. </param>
@@ -667,14 +629,14 @@ namespace RI.Framework.Mvvm
 		///         See <see cref="Navigate(string,object)" /> for more details.
 		///     </para>
 		///     <para>
-		///         The elements instance is obtaines using <see cref="InstanceLocator" />.
+		///         The elements instance is obtaines using <see cref="ServiceLocator" />.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="region" /> or <paramref name="element" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> or <paramref name="element" /> is an empty string. </exception>
 		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
 		/// <exception cref="InvalidOperationException"> <paramref name="element" /> cannot be resolved or no region service is available. </exception>
-		public static bool Navigate (string region, string element)
+		public static bool Navigate(string region, string element)
 		{
 			if (region == null)
 			{
@@ -696,13 +658,13 @@ namespace RI.Framework.Mvvm
 				throw new EmptyStringArgumentException(nameof(element));
 			}
 
-			object value = RegionManager.GetValue(element);
+			object value = RegionLocator.GetValue(element);
 			if (value == null)
 			{
 				throw new InvalidOperationException();
 			}
 
-			return RegionManager.Navigate(region, value);
+			return RegionLocator.Navigate(region, value);
 		}
 
 		/// <summary>
@@ -718,14 +680,14 @@ namespace RI.Framework.Mvvm
 		///         See <see cref="Navigate(string,object)" /> for more details.
 		///     </para>
 		///     <para>
-		///         The elements instance is obtaines using <see cref="InstanceLocator" />.
+		///         The elements instance is obtaines using <see cref="ServiceLocator" />.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="region" /> or <paramref name="element" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
 		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
 		/// <exception cref="InvalidOperationException"> <paramref name="element" /> cannot be resolved or no region service is available. </exception>
-		public static bool Navigate (string region, Type element)
+		public static bool Navigate(string region, Type element)
 		{
 			if (region == null)
 			{
@@ -742,13 +704,13 @@ namespace RI.Framework.Mvvm
 				throw new ArgumentNullException(nameof(element));
 			}
 
-			object value = RegionManager.GetValue(element);
+			object value = RegionLocator.GetValue(element);
 			if (value == null)
 			{
 				throw new InvalidOperationException();
 			}
 
-			return RegionManager.Navigate(region, value);
+			return RegionLocator.Navigate(region, value);
 		}
 
 		/// <summary>
@@ -768,7 +730,7 @@ namespace RI.Framework.Mvvm
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
 		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
 		/// <exception cref="InvalidOperationException"> No region service is available. </exception>
-		public static bool Navigate (string region, object element)
+		public static bool Navigate(string region, object element)
 		{
 			if (region == null)
 			{
@@ -799,14 +761,14 @@ namespace RI.Framework.Mvvm
 		///         See <see cref="Remove(string,object)" /> for more details.
 		///     </para>
 		///     <para>
-		///         The elements instance is obtaines using <see cref="InstanceLocator" />.
+		///         The elements instance is obtaines using <see cref="ServiceLocator" />.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="region" /> or <paramref name="element" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> or <paramref name="element" /> is an empty string. </exception>
 		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
 		/// <exception cref="InvalidOperationException"> <paramref name="element" /> cannot be resolved or no region service is available. </exception>
-		public static void Remove (string region, string element)
+		public static void Remove(string region, string element)
 		{
 			if (region == null)
 			{
@@ -828,13 +790,13 @@ namespace RI.Framework.Mvvm
 				throw new EmptyStringArgumentException(nameof(element));
 			}
 
-			object value = RegionManager.GetValue(element);
+			object value = RegionLocator.GetValue(element);
 			if (value == null)
 			{
 				throw new InvalidOperationException();
 			}
 
-			RegionManager.Remove(region, value);
+			RegionLocator.Remove(region, value);
 		}
 
 		/// <summary>
@@ -847,14 +809,14 @@ namespace RI.Framework.Mvvm
 		///         See <see cref="Remove(string,object)" /> for more details.
 		///     </para>
 		///     <para>
-		///         The elements instance is obtaines using <see cref="InstanceLocator" />.
+		///         The elements instance is obtaines using <see cref="ServiceLocator" />.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="region" /> or <paramref name="element" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
 		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
 		/// <exception cref="InvalidOperationException"> <paramref name="element" /> cannot be resolved or no region service is available. </exception>
-		public static void Remove (string region, Type element)
+		public static void Remove(string region, Type element)
 		{
 			if (region == null)
 			{
@@ -871,13 +833,13 @@ namespace RI.Framework.Mvvm
 				throw new ArgumentNullException(nameof(element));
 			}
 
-			object value = RegionManager.GetValue(element);
+			object value = RegionLocator.GetValue(element);
 			if (value == null)
 			{
 				throw new InvalidOperationException();
 			}
 
-			RegionManager.Remove(region, value);
+			RegionLocator.Remove(region, value);
 		}
 
 		/// <summary>
@@ -894,7 +856,7 @@ namespace RI.Framework.Mvvm
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
 		/// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
 		/// <exception cref="InvalidOperationException"> No region service is available. </exception>
-		public static void Remove (string region, object element)
+		public static void Remove(string region, object element)
 		{
 			if (region == null)
 			{
@@ -920,23 +882,8 @@ namespace RI.Framework.Mvvm
 			regionService.RemoveElement(region, element);
 		}
 
-		/// <summary>
-		///     Sets the region name of the specified container.
-		/// </summary>
-		/// <param name="obj"> The container. </param>
-		/// <param name="value"> The region name to associate with the container. Can be null to unassociate the container from a region. </param>
-		/// <remarks>
-		///     <note type="note">
-		///         This method is for supporting the XAML designer and not intended to be used by your code.
-		///     </note>
-		/// </remarks>
-		public static void SetRegionName (DependencyObject obj, string value)
-		{
-			obj?.SetValue(RegionManager.RegionNameProperty, value);
-		}
 
-
-		private static object GetValue (string name)
+		private static object GetValue(string name)
 		{
 			if (name == null)
 			{
@@ -951,7 +898,7 @@ namespace RI.Framework.Mvvm
 			return ServiceLocator.GetInstance(name);
 		}
 
-		private static object GetValue (Type type)
+		private static object GetValue(Type type)
 		{
 			if (type == null)
 			{
@@ -960,30 +907,5 @@ namespace RI.Framework.Mvvm
 
 			return ServiceLocator.GetInstance(type);
 		}
-
-		private static void OnRegionNameChange (DependencyObject obj, DependencyPropertyChangedEventArgs e)
-		{
-			string oldRegion = e.OldValue as string;
-			string newRegion = e.NewValue as string;
-
-			IRegionService regionService = ServiceLocator.GetInstance<IRegionService>();
-			if (regionService == null)
-			{
-				LogLocator.LogWarning(typeof(RegionManager).Name, "No region service available while trying to assign region: Object={0}, OldRegion={1}, NewRegion={2}", obj?.GetType()?.Name ?? "[null]", oldRegion ?? "[null]", newRegion ?? "[null]");
-				return;
-			}
-
-			if (oldRegion != null)
-			{
-				regionService.RemoveRegion(oldRegion);
-			}
-
-			if (newRegion != null)
-			{
-				regionService.AddRegion(newRegion, obj);
-			}
-		}
-
-		#endregion
 	}
 }

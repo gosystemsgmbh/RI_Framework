@@ -203,6 +203,8 @@ Services
  - (WPF) WpfApplication: Handle user switching using SystemEvents.SessionSwitch
 
  # (.NET) Resources: Selectable property for IResourceSet
+
+ # (.NET) Settings: SettingLocator
  
  # (Common) Logging: ISupportsLogging
  # (Common) Logging: Remove Log methods and replace with single extension method for ISupportsLogging
@@ -219,6 +221,7 @@ Services
  + (Unity) Dispatcher: Process (process item in background thread, then broadcast processed item)
  + (Unity) Dispatcher: Implement IDispatcher
  + (Unity) Dispatcher: "Magic Thread"
+ + (unity) Dispatcher: Singleton or DispatcherLocator
 
  * (.NET) Backup (BackupService, DirectoryBackupStorage)
  * (.NET) Licensing (LicensingService, FileLicenseStorage)

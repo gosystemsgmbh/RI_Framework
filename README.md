@@ -13,6 +13,7 @@
   - [ ] Check all namespace descriptions
   - [ ] Conceptional documentation
 - [ ] Cleanup
+  - [ ] All ReSharper configurations of all solutions (shared settings file in own repository?)
   - [X] Rename RI.Tools.Doc2Pdf to RI.Tools.Framework.Doc2Pdf
   - [X] Rename RI.Tools.VersionUpdater to RI.Tools.Framework.VersionUpdater
   - [ ] Check wherther nested types really need to be nested

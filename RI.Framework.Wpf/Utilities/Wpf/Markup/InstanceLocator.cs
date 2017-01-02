@@ -7,12 +7,11 @@ using RI.Framework.Mvvm.View;
 using RI.Framework.Mvvm.ViewModel;
 using RI.Framework.Services;
 using RI.Framework.Services.Logging;
-using RI.Framework.Utilities;
 
 
 
 
-namespace RI.Framework.Mvvm
+namespace RI.Framework.Utilities.Wpf.Markup
 {
 	/// <summary>
 	///     Implements a WPF XAML markup extension to obtain instances.
