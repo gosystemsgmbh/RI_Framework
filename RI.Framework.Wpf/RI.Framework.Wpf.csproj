@@ -49,6 +49,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Utilities\Wpf\Controls\ComboBoxChecker.cs" />
+    <Compile Include="Utilities\Wpf\Controls\_NamespaceDoc.cs" />
+    <Compile Include="Utilities\Wpf\Converters\ObjectBoolConverter.cs" />
     <Compile Include="Utilities\Wpf\Markup\EventBinder.cs" />
     <Compile Include="Mvvm\ViewModel\NotificationObject.cs" />
     <Compile Include="Mvvm\ViewModel\DelegateCommand.cs" />
