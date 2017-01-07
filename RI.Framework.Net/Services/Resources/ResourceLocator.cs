@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 using RI.Framework.Utilities.Exceptions;
 
@@ -46,6 +47,28 @@ namespace RI.Framework.Services.Resources
 		public static string GetText (string name)
 		{
 			return ResourceLocator.GetValue<string>(name);
+		}
+
+		/// <summary>
+		///     Gets a text resource as a formatted string.
+		/// </summary>
+		/// <param name="name"> The name of the text resource to use as the format string. </param>
+		/// <param name="formatProvider">The format provider or null to use <see cref="CultureInfo.CurrentCulture"/>.</param>
+		/// <param name="args">The formatting arguments.</param>
+		/// <returns>
+		///     The formatted string or null if the resource is not available.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="name" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
+		public static string GetTextFormat(string name, IFormatProvider formatProvider, params object[] args)
+		{
+			string format = GetText(name);
+			if (format == null)
+			{
+				return null;
+			}
+
+			return string.Format(formatProvider ?? CultureInfo.CurrentCulture, format, args);
 		}
 
 		/// <summary>
