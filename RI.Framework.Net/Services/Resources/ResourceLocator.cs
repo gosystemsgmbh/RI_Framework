@@ -62,7 +62,7 @@ namespace RI.Framework.Services.Resources
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
 		public static string GetTextFormat(string name, IFormatProvider formatProvider, params object[] args)
 		{
-			string format = GetText(name);
+			string format = ResourceLocator.GetText(name);
 			if (format == null)
 			{
 				return null;
