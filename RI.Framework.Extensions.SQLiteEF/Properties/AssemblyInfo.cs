@@ -8,7 +8,7 @@ using System.Reflection;
 [assembly: AssemblyDescription ("RI.Framework.Extensions.SQLiteEF")]
 [assembly: AssemblyProduct ("Utility Framework")]
 [assembly: AssemblyCompany ("Roten Informatik")]
-[assembly: AssemblyCopyright ("Copyright (c) 2015-2016 Roten Informatik")]
+[assembly: AssemblyCopyright ("Copyright (c) 2015-2017 Roten Informatik")]
 [assembly: AssemblyTrademark ("")]
 [assembly: AssemblyCulture ("")]
 [assembly: AssemblyConfiguration ("")]
