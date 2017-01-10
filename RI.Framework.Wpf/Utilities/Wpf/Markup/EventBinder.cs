@@ -31,6 +31,11 @@ namespace RI.Framework.Utilities.Wpf.Markup
 		public static readonly DependencyProperty MouseDoubleClickEventProperty = DependencyProperty.RegisterAttached("MouseDoubleClickEvent", typeof(ICommand), typeof(EventBinder), new FrameworkPropertyMetadata(EventBinder.OnMouseDoubleClickEventChanged));
 
 		/// <summary>
+		///     Binds the <see cref="UIElement.MouseDown" /> event to a command.
+		/// </summary>
+		public static readonly DependencyProperty MouseDownEventProperty = DependencyProperty.RegisterAttached("MouseDownEvent", typeof(ICommand), typeof(EventBinder), new FrameworkPropertyMetadata(EventBinder.OnMouseDownEventChanged));
+
+		/// <summary>
 		///     Binds the <see cref="UIElement.PreviewKeyDown" /> event to a command.
 		/// </summary>
 		public static readonly DependencyProperty PreviewKeyDownEventProperty = DependencyProperty.RegisterAttached("PreviewKeyDownEvent", typeof(ICommand), typeof(EventBinder), new FrameworkPropertyMetadata(EventBinder.OnPreviewKeyDownEventChanged));
@@ -57,6 +62,18 @@ namespace RI.Framework.Utilities.Wpf.Markup
 		private static MouseButtonEventHandler MouseDoubleClickEventHandler { get; set; } = (s, e) =>
 		{
 			ICommand command = EventBinder.GetMouseDoubleClickEvent(s as DependencyObject);
+			if (command != null)
+			{
+				if (command.CanExecute(e))
+				{
+					command.Execute(e);
+				}
+			}
+		};
+
+		private static MouseButtonEventHandler MouseDownEventHandler { get; set; } = (s, e) =>
+		{
+			ICommand command = EventBinder.GetMouseDownEvent(s as DependencyObject);
 			if (command != null)
 			{
 				if (command.CanExecute(e))
@@ -120,6 +137,23 @@ namespace RI.Framework.Utilities.Wpf.Markup
 		}
 
 		/// <summary>
+		///     Gets the command bound to the <see cref="UIElement.MouseDown" /> event.
+		/// </summary>
+		/// <param name="obj"> The container. </param>
+		/// <returns>
+		///     The command bound to the <see cref="UIElement.MouseDown" /> event.
+		/// </returns>
+		/// <remarks>
+		///     <note type="note">
+		///         This method is for supporting the XAML designer and not intended to be used by your code.
+		///     </note>
+		/// </remarks>
+		public static ICommand GetMouseDownEvent(DependencyObject obj)
+		{
+			return obj?.GetValue(EventBinder.MouseDownEventProperty) as ICommand;
+		}
+
+		/// <summary>
 		///     Gets the command bound to the <see cref="UIElement.PreviewKeyDown" /> event.
 		/// </summary>
 		/// <param name="obj"> The container. </param>
@@ -164,6 +198,21 @@ namespace RI.Framework.Utilities.Wpf.Markup
 		public static void SetMouseDoubleClickEvent (DependencyObject obj, ICommand value)
 		{
 			obj?.SetValue(EventBinder.MouseDoubleClickEventProperty, value);
+		}
+
+		/// <summary>
+		///     Sets the command bound to the <see cref="UIElement.MouseDown" /> event.
+		/// </summary>
+		/// <param name="obj"> The container. </param>
+		/// <param name="value"> The command to bind to the <see cref="UIElement.MouseDown" /> event. </param>
+		/// <remarks>
+		///     <note type="note">
+		///         This method is for supporting the XAML designer and not intended to be used by your code.
+		///     </note>
+		/// </remarks>
+		public static void SetMouseDownEvent(DependencyObject obj, ICommand value)
+		{
+			obj?.SetValue(EventBinder.MouseDownEventProperty, value);
 		}
 
 		/// <summary>
@@ -232,6 +281,33 @@ namespace RI.Framework.Utilities.Wpf.Markup
 			if (newCommand != null)
 			{
 				control.MouseDoubleClick += EventBinder.MouseDoubleClickEventHandler;
+			}
+		}
+
+		private static void OnMouseDownEventChanged(DependencyObject obj, DependencyPropertyChangedEventArgs args)
+		{
+			ICommand oldCommand = args.OldValue as ICommand;
+			ICommand newCommand = args.NewValue as ICommand;
+			UIElement control = obj as UIElement;
+
+			if (control == null)
+			{
+				return;
+			}
+
+			if (object.ReferenceEquals(oldCommand, newCommand))
+			{
+				return;
+			}
+
+			if (oldCommand != null)
+			{
+				control.MouseDown -= EventBinder.MouseDownEventHandler;
+			}
+
+			if (newCommand != null)
+			{
+				control.MouseDown += EventBinder.MouseDownEventHandler;
 			}
 		}
 

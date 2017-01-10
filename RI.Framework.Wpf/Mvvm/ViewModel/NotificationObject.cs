@@ -8,7 +8,7 @@ namespace RI.Framework.Mvvm.ViewModel
 	/// <summary>
 	///     Implements a base class which can raise notifications about changing its state and data.
 	/// </summary>
-	public abstract class NotificationObject : INotifyPropertyChanged, INotifyPropertyChanging
+	public abstract class NotificationObject : INotifyPropertyChanged
 	{
 		#region Virtuals
 
@@ -21,16 +21,6 @@ namespace RI.Framework.Mvvm.ViewModel
 			this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 
-
-		/// <summary>
-		///     Handles the change of a property value by raising the <see cref="PropertyChanging" /> event.
-		/// </summary>
-		/// <param name="propertyName"> The name of the property which is about to be changed. </param>
-		protected virtual void OnPropertyChanging (string propertyName)
-		{
-			this.PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
-		}
-
 		#endregion
 
 
@@ -40,16 +30,6 @@ namespace RI.Framework.Mvvm.ViewModel
 
 		/// <inheritdoc />
 		public event PropertyChangedEventHandler PropertyChanged;
-
-		#endregion
-
-
-
-
-		#region Interface: INotifyPropertyChanging
-
-		/// <inheritdoc />
-		public event PropertyChangingEventHandler PropertyChanging;
 
 		#endregion
 	}

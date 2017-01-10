@@ -10,7 +10,7 @@ using RI.Framework.Utilities;
 
 namespace RI.Framework.Data.Repository.Views
 {
-	public class EntityViewObject <TEntity> : INotifyPropertyChanged, INotifyPropertyChanging, IEditableObject, IDataErrorInfo, INotifyDataErrorInfo, IChangeTracking, IRevertibleChangeTracking
+	public class EntityViewObject <TEntity> : INotifyPropertyChanged, IEditableObject, IDataErrorInfo, INotifyDataErrorInfo, IChangeTracking, IRevertibleChangeTracking
 		where TEntity : class
 	{
 		#region Instance Constructor/Destructor
@@ -68,7 +68,6 @@ namespace RI.Framework.Data.Repository.Views
 			}
 			internal set
 			{
-				this.OnPropertyChanging(nameof(this.Entity));
 				this._entity = value;
 				this.OnPropertyChanged(nameof(this.Entity));
 			}
@@ -84,7 +83,6 @@ namespace RI.Framework.Data.Repository.Views
 			}
 			internal set
 			{
-				this.OnErrorsChanging();
 				this._errors = value;
 				this.OnErrorsChanged();
 			}
@@ -100,8 +98,6 @@ namespace RI.Framework.Data.Repository.Views
 			}
 			internal set
 			{
-				this.OnPropertyChanging(nameof(this.IsAdded));
-				this.OnPropertyChanging(nameof(this.IsAddedOrAttached));
 				this._isAdded = value;
 				this.OnPropertyChanged(nameof(this.IsAdded));
 				this.OnPropertyChanged(nameof(this.IsAddedOrAttached));
@@ -118,8 +114,6 @@ namespace RI.Framework.Data.Repository.Views
 			}
 			internal set
 			{
-				this.OnPropertyChanging(nameof(this.IsAttached));
-				this.OnPropertyChanging(nameof(this.IsAddedOrAttached));
 				this._isAttached = value;
 				this.OnPropertyChanged(nameof(this.IsAttached));
 				this.OnPropertyChanged(nameof(this.IsAddedOrAttached));
@@ -134,7 +128,6 @@ namespace RI.Framework.Data.Repository.Views
 			}
 			internal set
 			{
-				this.OnPropertyChanging(nameof(this.IsDeleted));
 				this._isDeleted = value;
 				this.OnPropertyChanged(nameof(this.IsDeleted));
 			}
@@ -148,7 +141,6 @@ namespace RI.Framework.Data.Repository.Views
 			}
 			internal set
 			{
-				this.OnPropertyChanging(nameof(this.IsEdited));
 				this._isEdited = value;
 				this.OnPropertyChanged(nameof(this.IsEdited));
 			}
@@ -162,7 +154,6 @@ namespace RI.Framework.Data.Repository.Views
 			}
 			internal set
 			{
-				this.OnPropertyChanging(nameof(this.IsModified));
 				this._isModified = value;
 				this.OnPropertyChanged(nameof(this.IsModified));
 			}
@@ -176,7 +167,6 @@ namespace RI.Framework.Data.Repository.Views
 			}
 			internal set
 			{
-				this.OnPropertyChanging(nameof(this.IsSelected));
 				this._isSelected = value;
 				this.OnPropertyChanged(nameof(this.IsSelected));
 			}
@@ -273,18 +263,6 @@ namespace RI.Framework.Data.Repository.Views
 			this.ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(null));
 		}
 
-		private void OnErrorsChanging ()
-		{
-			this.OnPropertyChanging(nameof(this.Errors));
-			this.OnPropertyChanging(nameof(this.ErrorLines));
-			this.OnPropertyChanging(nameof(this.ErrorStrings));
-			this.OnPropertyChanging(nameof(this.IsValid));
-
-			this.OnPropertyChanging(nameof(string.Empty));
-			this.OnPropertyChanging(nameof(IDataErrorInfo.Error));
-			this.OnPropertyChanging(nameof(INotifyDataErrorInfo.HasErrors));
-		}
-
 		#endregion
 
 
@@ -299,15 +277,6 @@ namespace RI.Framework.Data.Repository.Views
 		protected virtual void OnPropertyChanged (string propertyName)
 		{
 			this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-		}
-
-		/// <summary>
-		///     Handles the change of a property value by raising the <see cref="PropertyChanging" /> event.
-		/// </summary>
-		/// <param name="propertyName"> The name of the property which is about to be changed. </param>
-		protected virtual void OnPropertyChanging (string propertyName)
-		{
-			this.PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
 		}
 
 		protected internal virtual void RaiseEntityChanged ()
@@ -430,16 +399,6 @@ namespace RI.Framework.Data.Repository.Views
 
 		/// <inheritdoc />
 		public event PropertyChangedEventHandler PropertyChanged;
-
-		#endregion
-
-
-
-
-		#region Interface: INotifyPropertyChanging
-
-		/// <inheritdoc />
-		public event PropertyChangingEventHandler PropertyChanging;
 
 		#endregion
 

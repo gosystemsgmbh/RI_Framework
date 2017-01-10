@@ -29,7 +29,7 @@ namespace RI.Framework.Data.Repository.Views
 	///         This allows to control the final set of items an <see cref="EntityView{TEntity,TViewObject}" /> is using, as long as the items are associated with the specified <see cref="IRepositorySet{T}" />.
 	///     </para>
 	/// </remarks>
-	public class EntityView <TEntity, TViewObject> : INotifyPropertyChanged, INotifyPropertyChanging, IEntityViewCaller<TEntity>
+	public class EntityView <TEntity, TViewObject> : INotifyPropertyChanged, IEntityViewCaller<TEntity>
 		where TEntity : class, new()
 		where TViewObject : EntityViewObject<TEntity>, new()
 	{
@@ -139,7 +139,6 @@ namespace RI.Framework.Data.Repository.Views
 			}
 			set
 			{
-				this.OnPropertyChanging(nameof(this.AllowEdit));
 				this._allowEdit = value;
 				this.OnPropertyChanged(nameof(this.AllowEdit));
 			}
@@ -159,7 +158,6 @@ namespace RI.Framework.Data.Repository.Views
 			}
 			set
 			{
-				this.OnPropertyChanging(nameof(this.AllowSelect));
 				this._allowSelect = value;
 				this.OnPropertyChanged(nameof(this.AllowSelect));
 			}
@@ -279,7 +277,6 @@ namespace RI.Framework.Data.Repository.Views
 			}
 			set
 			{
-				this.OnPropertyChanging(nameof(this.Filter));
 				this._filter = value;
 				this.OnPropertyChanged(nameof(this.Filter));
 
@@ -295,7 +292,6 @@ namespace RI.Framework.Data.Repository.Views
 			}
 			set
 			{
-				this.OnPropertyChanging(nameof(this.ObserveSource));
 				this._observeSource = value;
 				this.OnPropertyChanged(nameof(this.ObserveSource));
 			}
@@ -333,7 +329,6 @@ namespace RI.Framework.Data.Repository.Views
 					throw new ArgumentOutOfRangeException(nameof(value));
 				}
 
-				this.OnPropertyChanging(nameof(this.PageNumber));
 				this._pageNumber = value;
 				this.OnPropertyChanged(nameof(this.PageNumber));
 
@@ -354,7 +349,6 @@ namespace RI.Framework.Data.Repository.Views
 					throw new ArgumentOutOfRangeException(nameof(value));
 				}
 
-				this.OnPropertyChanging(nameof(this.PageSize));
 				this._pageSize = value;
 				this.OnPropertyChanged(nameof(this.PageSize));
 
@@ -455,7 +449,6 @@ namespace RI.Framework.Data.Repository.Views
 					((INotifyCollectionChanged)this._source).CollectionChanged -= this.SourceChangedHandler;
 				}
 
-				this.OnPropertyChanging(nameof(this.Source));
 				this._source = value;
 				this.OnPropertyChanged(nameof(this.Source));
 
@@ -476,7 +469,6 @@ namespace RI.Framework.Data.Repository.Views
 			}
 			set
 			{
-				this.OnPropertyChanging(nameof(this.UpdateSource));
 				this._updateSource = value;
 				this.OnPropertyChanged(nameof(this.UpdateSource));
 			}
@@ -1158,15 +1150,6 @@ namespace RI.Framework.Data.Repository.Views
 			this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 
-		/// <summary>
-		///     Handles the change of a property value by raising the <see cref="PropertyChanging" /> event.
-		/// </summary>
-		/// <param name="propertyName"> The name of the property which is about to be changed. </param>
-		protected virtual void OnPropertyChanging (string propertyName)
-		{
-			this.PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
-		}
-
 		protected virtual void OnSourceChanged (IList<TEntity> oldItems, IList<TEntity> newItems)
 		{
 			this.SourceChanged?.Invoke(this, new EntityViewItemsEventArgs<TEntity>(oldItems, newItems));
@@ -1417,16 +1400,6 @@ namespace RI.Framework.Data.Repository.Views
 
 		/// <inheritdoc />
 		public event PropertyChangedEventHandler PropertyChanged;
-
-		#endregion
-
-
-
-
-		#region Interface: INotifyPropertyChanging
-
-		/// <inheritdoc />
-		public event PropertyChangingEventHandler PropertyChanging;
 
 		#endregion
 	}

@@ -93,11 +93,8 @@ namespace RI.Framework.Utilities.Wpf
 		[SuppressMessage ("ReSharper", "UnusedParameter.Local")]
 		private void Dispose (bool disposing)
 		{
-			if (this.PreviousCursor != null)
-			{
-				Mouse.OverrideCursor = this.PreviousCursor;
-				this.PreviousCursor = null;
-			}
+			Mouse.OverrideCursor = this.PreviousCursor;
+			this.PreviousCursor = null;
 		}
 
 		#endregion
