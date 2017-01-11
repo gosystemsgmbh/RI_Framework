@@ -17,6 +17,8 @@ namespace RI.Framework.Data.Repository.Views
 
 		public EntityViewObject ()
 		{
+			this.EntityChangedHandler = this.EntityChangedMethod;
+
 			this.ViewCaller = null;
 
 			this.IsAdded = false;
@@ -60,6 +62,13 @@ namespace RI.Framework.Data.Repository.Views
 
 		#region Instance Properties/Indexer
 
+		private PropertyChangedEventHandler EntityChangedHandler { get; set; }
+
+		private void EntityChangedMethod (object sender, PropertyChangedEventArgs e)
+		{
+			this.RaiseEntityChanged();
+		}
+
 		public TEntity Entity
 		{
 			get
@@ -68,8 +77,19 @@ namespace RI.Framework.Data.Repository.Views
 			}
 			internal set
 			{
+				if (this._entity is INotifyPropertyChanged)
+				{
+					((INotifyPropertyChanged)this._entity).PropertyChanged -= this.EntityChangedHandler;
+				}
+
 				this._entity = value;
-				this.OnPropertyChanged(nameof(this.Entity));
+
+				if (this._entity is INotifyPropertyChanged)
+				{
+					((INotifyPropertyChanged)this._entity).PropertyChanged += this.EntityChangedHandler;
+				}
+
+				this.RaiseEntityChanged();
 			}
 		}
 
@@ -143,6 +163,7 @@ namespace RI.Framework.Data.Repository.Views
 			{
 				this._isEdited = value;
 				this.OnPropertyChanged(nameof(this.IsEdited));
+				this.OnPropertyChanged(nameof(IChangeTracking.IsChanged));
 			}
 		}
 
@@ -237,6 +258,8 @@ namespace RI.Framework.Data.Repository.Views
 		{
 			this.IsAdded = false;
 			this.IsAttached = false;
+
+			this.RaiseEntityChanged();
 		}
 
 		public void Select ()
@@ -247,20 +270,6 @@ namespace RI.Framework.Data.Repository.Views
 		public void Validate ()
 		{
 			this.ViewCaller.Validate(this.Entity);
-		}
-
-		private void OnErrorsChanged ()
-		{
-			this.OnPropertyChanged(nameof(this.Errors));
-			this.OnPropertyChanged(nameof(this.ErrorLines));
-			this.OnPropertyChanged(nameof(this.ErrorStrings));
-			this.OnPropertyChanged(nameof(this.IsValid));
-
-			this.OnPropertyChanged(nameof(string.Empty));
-			this.OnPropertyChanged(nameof(IDataErrorInfo.Error));
-			this.OnPropertyChanged(nameof(INotifyDataErrorInfo.HasErrors));
-
-			this.ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(null));
 		}
 
 		#endregion
@@ -277,6 +286,21 @@ namespace RI.Framework.Data.Repository.Views
 		protected virtual void OnPropertyChanged (string propertyName)
 		{
 			this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+		}
+
+		protected virtual void OnErrorsChanged ()
+		{
+			this.OnPropertyChanged(nameof(this.Errors));
+			this.OnPropertyChanged(nameof(this.ErrorLines));
+			this.OnPropertyChanged(nameof(this.ErrorStrings));
+			this.OnPropertyChanged(nameof(this.IsValid));
+
+			this.OnPropertyChanged(null);
+			this.OnPropertyChanged(string.Empty);
+			this.OnPropertyChanged(nameof(IDataErrorInfo.Error));
+			this.OnPropertyChanged(nameof(INotifyDataErrorInfo.HasErrors));
+
+			this.ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(null));
 		}
 
 		protected internal virtual void RaiseEntityChanged ()

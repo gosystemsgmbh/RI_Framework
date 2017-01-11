@@ -449,13 +449,19 @@ namespace RI.Framework.Data.Repository.Views
 					((INotifyCollectionChanged)this._source).CollectionChanged -= this.SourceChangedHandler;
 				}
 
+				List<TEntity> oldItems = this._source?.ToList() ?? new List<TEntity>();
+
 				this._source = value;
-				this.OnPropertyChanged(nameof(this.Source));
+
+				List<TEntity> newItems = this._source?.ToList() ?? new List<TEntity>();
 
 				if (this._source is INotifyCollectionChanged)
 				{
 					((INotifyCollectionChanged)this._source).CollectionChanged += this.SourceChangedHandler;
 				}
+
+				this.OnPropertyChanged(nameof(this.Source));
+				this.OnSourceChanged(oldItems, newItems);
 
 				this.Update(true);
 			}
@@ -515,14 +521,19 @@ namespace RI.Framework.Data.Repository.Views
 
 		public event EventHandler<EntityViewItemsEventArgs<TEntity>> EntitiesChanged;
 
+		//TODO: On method
 		public event EventHandler<EntityViewItemEventArgs<TViewObject>> EntityBeginEdit;
 
+		//TODO: On method
 		public event EventHandler<EntityViewItemEventArgs<TViewObject>> EntityCancelEdit;
 
+		//TODO: On method
 		public event EventHandler<EntityViewItemEventArgs<TViewObject>> EntityDeselected;
 
+		//TODO: On method
 		public event EventHandler<EntityViewItemEventArgs<TViewObject>> EntityEndEdit;
 
+		//TODO: On method
 		public event EventHandler<EntityViewItemEventArgs<TViewObject>> EntitySelected;
 
 		public event EventHandler<EntityViewItemsEventArgs<TEntity>> SourceChanged;
@@ -696,7 +707,10 @@ namespace RI.Framework.Data.Repository.Views
 
 							if (!this.SuppressViewObjectsChangeHandling)
 							{
-								this.ViewObjects.Remove(viewObj);
+								if (viewObj != null)
+								{
+									this.ViewObjects.Remove(viewObj);
+								}
 							}
 						}
 						foreach (TEntity entity in newItems)
@@ -738,14 +752,14 @@ namespace RI.Framework.Data.Repository.Views
 			{
 				this.IsUpdating = true;
 
+				this.OnUpdating(resetPageNumber);
+
 				if (resetPageNumber && (this.PageNumber > 1))
 				{
 					this.PageNumber = 1;
 				}
 
-				this.OnUpdating(resetPageNumber);
-
-				IList<TEntity> oldItems = (IList<TEntity>)this.Entities ?? new List<TEntity>();
+				IList<TEntity> oldEntities = (IList<TEntity>)this.Entities ?? new List<TEntity>();
 				IList<TViewObject> oldViewObjects = (IList<TViewObject>)this.ViewObjects ?? new List<TViewObject>();
 
 				if (this.ViewObjects != null)
@@ -781,9 +795,9 @@ namespace RI.Framework.Data.Repository.Views
 				this.PageFilteredCount = pageFilteredCount;
 
 				this.OnPropertyChanged(nameof(this.Entities));
-				this.OnEntitiesChanged(oldItems, this.Entities);
-
 				this.OnPropertyChanged(nameof(this.ViewObjects));
+
+				this.OnEntitiesChanged(oldEntities, this.Entities);
 				this.OnViewObjectsChanged(oldViewObjects, this.ViewObjects);
 
 				this.OnPropertyChanged(nameof(this.EntityTotalCount));
@@ -953,6 +967,8 @@ namespace RI.Framework.Data.Repository.Views
 			viewObject.IsAttached = false;
 			viewObject.IsDeleted = false;
 
+			viewObject.RaiseEntityChanged();
+
 			this.Set.Add(viewObject.Entity);
 		}
 
@@ -966,6 +982,8 @@ namespace RI.Framework.Data.Repository.Views
 
 			viewObject.IsAdded = false;
 			viewObject.IsDeleted = false;
+
+			viewObject.RaiseEntityChanged();
 
 			this.Set.Attach(viewObject.Entity);
 		}
@@ -1025,6 +1043,8 @@ namespace RI.Framework.Data.Repository.Views
 
 			viewObject.IsAdded = false;
 			viewObject.IsAttached = false;
+
+			viewObject.RaiseEntityChanged();
 
 			this.Set.Delete(viewObject.Entity);
 		}
@@ -1097,19 +1117,19 @@ namespace RI.Framework.Data.Repository.Views
 		{
 			this.Set.Modify(viewObject.Entity);
 
-			viewObject.RaiseEntityChanged();
-
 			viewObject.IsModified = true;
+
+			viewObject.RaiseEntityChanged();
 		}
 
 		protected virtual void EntityReload (TViewObject viewObject)
 		{
 			this.Set.Reload(viewObject.Entity);
 
-			viewObject.RaiseEntityChanged();
-
 			viewObject.Errors = null;
 			viewObject.IsModified = false;
+
+			viewObject.RaiseEntityChanged();
 		}
 
 		protected virtual void EntitySelect (TViewObject viewObject)
