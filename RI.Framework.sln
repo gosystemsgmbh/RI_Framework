@@ -149,6 +149,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Framework.Extensions.SQL
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Framework.Service", "RI.Framework.Service\RI.Framework.Service.csproj", "{EC0E161F-F9C9-4DE2-8A00-DA16E0957191}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Tools.Framework.ElevatedStart", "RI.Tools.Framework.ElevatedStart\RI.Tools.Framework.ElevatedStart.csproj", "{CFB1848C-0CFC-4F07-A7C4-BC88FD662E8C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9AE61682-B33C-4814-BAE5-771008CA4147} = {9AE61682-B33C-4814-BAE5-771008CA4147}
+		{59451CBF-33C9-4247-8446-B2E3D4105FDE} = {59451CBF-33C9-4247-8446-B2E3D4105FDE}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		RI.Framework.Common\RI.Framework.Common.projitems*{0de0d41d-b3c7-4eb5-a76e-62fc4ca9cb30}*SharedItemsImports = 13
@@ -232,6 +238,10 @@ Global
 		{EC0E161F-F9C9-4DE2-8A00-DA16E0957191}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC0E161F-F9C9-4DE2-8A00-DA16E0957191}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC0E161F-F9C9-4DE2-8A00-DA16E0957191}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFB1848C-0CFC-4F07-A7C4-BC88FD662E8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFB1848C-0CFC-4F07-A7C4-BC88FD662E8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFB1848C-0CFC-4F07-A7C4-BC88FD662E8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFB1848C-0CFC-4F07-A7C4-BC88FD662E8C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -257,5 +267,6 @@ Global
 		{7CD5C68C-51E2-47DD-8BE3-B71848CF4964} = {2139B354-0C0B-461E-B0BD-D83F111F63B2}
 		{4CDB344E-5D01-43EA-801A-AE66846613C0} = {2139B354-0C0B-461E-B0BD-D83F111F63B2}
 		{EC0E161F-F9C9-4DE2-8A00-DA16E0957191} = {2139B354-0C0B-461E-B0BD-D83F111F63B2}
+		{CFB1848C-0CFC-4F07-A7C4-BC88FD662E8C} = {37ECC737-2BAE-4776-A529-A0C946789FDF}
 	EndGlobalSection
 EndGlobal

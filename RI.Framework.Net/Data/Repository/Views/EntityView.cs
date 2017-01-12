@@ -782,6 +782,7 @@ namespace RI.Framework.Data.Repository.Views
 				List<TViewObject> viewObjects = (from x in entities select this.PrepareViewObject(null, x)).ToList();
 
 				int pageTotalCount = this.PageNumber == 0 ? 0 : (this.PageSize == 0 ? 1 : ((entityTotalCount / this.PageSize) + (((entityTotalCount % this.PageSize) == 0) ? 0 : 1)));
+				pageTotalCount = Math.Max(pageTotalCount, 1);
 
 				this.Entities = new ObservableCollection<TEntity>(entities);
 				this.Entities.CollectionChanged += this.EntitiesChangedHandler;

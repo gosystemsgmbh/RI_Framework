@@ -885,7 +885,8 @@ namespace RI.Framework.Services
 			this.Log(LogLevel.Debug, "Bootstrapping");
 			this.State = WpfBootstrapperState.Bootstrapping;
 
-			if (!Debugger.IsAttached)
+			bool debuggerAttached = Debugger.IsAttached;
+			if (!debuggerAttached)
 			{
 				AppDomain.CurrentDomain.UnhandledException += (s, a) => this.HandleExceptionInternal(a.ExceptionObject as Exception);
 			}
@@ -920,7 +921,11 @@ namespace RI.Framework.Services
 
 			this.Log(LogLevel.Debug, "Creating application");
 			this.Application = this.CreateApplication() ?? new WpfApplication();
-			this.Application.DispatcherUnhandledException += (s, a) => this.HandleExceptionInternal(a.Exception);
+
+			if (!debuggerAttached)
+			{
+				this.Application.DispatcherUnhandledException += (s, a) => this.HandleExceptionInternal(a.Exception);
+			}
 
 			this.Log(LogLevel.Debug, "Configuring application");
 			this.ConfigureApplication();
