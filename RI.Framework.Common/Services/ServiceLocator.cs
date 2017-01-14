@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using RI.Framework.Collections.Linq;
 using RI.Framework.Composition;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
@@ -127,6 +128,50 @@ namespace RI.Framework.Services
 		}
 
 		/// <summary>
+		///     Retrieves service instances by type.
+		/// </summary>
+		/// <typeparam name="T"> The type of the services to retrieve. </typeparam>
+		/// <returns>
+		///     The array of service instances.
+		///     An empty array is returned if no services can be found.
+		/// </returns>
+		public static T[] GetInstances<T>() where T : class
+		{
+			return ServiceLocator.GetInstances(typeof(T)).OfType<T>().ToArray();
+		}
+
+		/// <summary>
+		///     Retrieves service instances by type.
+		/// </summary>
+		/// <param name="type"> The type of the services to retrieve. </param>
+		/// <typeparam name="T"> The type to which the services are converted to. </typeparam>
+		/// <returns>
+		///     The array of service instances.
+		///     An empty array is returned if no services can be found.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="type" /> is null. </exception>
+		public static T[] GetInstances<T>(Type type) where T : class
+		{
+			return ServiceLocator.GetInstances(type).OfType<T>().ToArray();
+		}
+
+		/// <summary>
+		///     Retrieves service instances by name.
+		/// </summary>
+		/// <param name="name"> The name of the services to retrieve. </param>
+		/// <typeparam name="T"> The type to which the services are converted to. </typeparam>
+		/// <returns>
+		///     The array of service instances.
+		///     An empty array is returned if no services can be found.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="name" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
+		public static T[] GetInstances<T>(string name) where T : class
+		{
+			return ServiceLocator.GetInstances(name).OfType<T>().ToArray();
+		}
+
+		/// <summary>
 		///     Retrieves a service instance by its type.
 		/// </summary>
 		/// <param name="type"> The type of the service to retrieve. </param>
@@ -170,6 +215,52 @@ namespace RI.Framework.Services
 			return ServiceLocator.LookupService(name);
 		}
 
+		/// <summary>
+		///     Retrieves services instance by type.
+		/// </summary>
+		/// <param name="type"> The type of the services to retrieve. </param>
+		/// <returns>
+		///     The array of service instances.
+		///     An empty array is returned if no services can be found.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="type" /> is null. </exception>
+		public static object[] GetInstances(Type type)
+		{
+			if (type == null)
+			{
+				throw new ArgumentNullException(nameof(type));
+			}
+
+			string name = ServiceLocator.TranslateTypeToName(type);
+
+			return ServiceLocator.LookupServices(name);
+		}
+
+		/// <summary>
+		///     Retrieves service instances by name.
+		/// </summary>
+		/// <param name="name"> The name of the services to retrieve. </param>
+		/// <returns>
+		///     The array of service instances.
+		///     An empty array is returned if no services can be found.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="name" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
+		public static object[] GetInstances(string name)
+		{
+			if (name == null)
+			{
+				throw new ArgumentNullException(nameof(name));
+			}
+
+			if (name.IsEmpty())
+			{
+				throw new EmptyStringArgumentException(nameof(name));
+			}
+
+			return ServiceLocator.LookupServices(name);
+		}
+
 		private static object LookupService (string name)
 		{
 			if (name == null)
@@ -181,6 +272,19 @@ namespace RI.Framework.Services
 			IList<object> instances = handler?.Invoke(name);
 
 			return instances == null ? null : (instances.Count == 0 ? null : instances[0]);
+		}
+
+		private static object[] LookupServices (string name)
+		{
+			if (name == null)
+			{
+				return new object[0];
+			}
+
+			Func<string, IList<object>> handler = ServiceLocator.Lookup;
+			IList<object> instances = handler?.Invoke(name);
+
+			return instances?.ToArray() ?? new object[0];
 		}
 
 		private static string TranslateTypeToName (Type type)

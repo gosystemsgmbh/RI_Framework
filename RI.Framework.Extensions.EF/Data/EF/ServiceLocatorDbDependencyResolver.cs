@@ -30,7 +30,7 @@ namespace RI.Framework.Data.EF
 		/// <inheritdoc />
 		public IEnumerable<object> GetServices (Type type, object key)
 		{
-			return new[] {this.GetService(type, key)};
+			return ServiceLocator.GetInstances(type);
 		}
 
 		#endregion

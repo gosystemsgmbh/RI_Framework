@@ -66,6 +66,7 @@ namespace RI.Framework.Services.Resources.Sources
 
 			this.Name = null;
 			this.Group = null;
+			this.Selectable = false;
 			this.AlwaysLoad = false;
 			this.Priority = 0;
 			this.UiCulture = null;
@@ -126,6 +127,7 @@ namespace RI.Framework.Services.Resources.Sources
 
 			this.Name = null;
 			this.Group = null;
+			this.Selectable = false;
 			this.AlwaysLoad = false;
 			this.Priority = 0;
 			this.UiCulture = null;
@@ -154,6 +156,7 @@ namespace RI.Framework.Services.Resources.Sources
 
 			string nameKey = nameof(this.Name);
 			string groupKey = nameof(this.Group);
+			string selectableKey = nameof(this.Selectable);
 			string alwaysLoadKey = nameof(this.AlwaysLoad);
 			string priorityKey = nameof(this.Priority);
 			string uiCultureKey = nameof(this.UiCulture);
@@ -197,6 +200,25 @@ namespace RI.Framework.Services.Resources.Sources
 			else
 			{
 				this.Log(LogLevel.Warning, "Missing settings value in settings file: {0} @ {1}", groupKey, this.SettingsFile);
+			}
+
+			if (settings.ContainsKey(selectableKey))
+			{
+				string value = settings[selectableKey];
+				bool? candidate = value.ToBoolean();
+				if (candidate.HasValue)
+				{
+					this.Log(LogLevel.Debug, "Settings value: {0}={1} @ {2}", selectableKey, value, this.SettingsFile);
+					this.Selectable = candidate.Value;
+				}
+				else
+				{
+					this.Log(LogLevel.Warning, "Invalid settings value in settings file: {0}={1} @ {2}", selectableKey, value, this.SettingsFile);
+				}
+			}
+			else
+			{
+				this.Log(LogLevel.Warning, "Missing settings value in settings file: {0} @ {1}", selectableKey, this.SettingsFile);
 			}
 
 			if (settings.ContainsKey(alwaysLoadKey))
@@ -332,6 +354,9 @@ namespace RI.Framework.Services.Resources.Sources
 
 
 		#region Interface: IResourceSet
+
+		/// <inheritdoc />
+		public bool Selectable { get; private set; }
 
 		/// <inheritdoc />
 		public bool AlwaysLoad { get; private set; }

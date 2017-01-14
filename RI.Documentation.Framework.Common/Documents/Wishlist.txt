@@ -26,12 +26,11 @@ Utilities
 
  # (.NET) ThreadDispatcher
  # (.NET) ThreadDispatcherSynchronizationContext
- - (.NET) ThreadDispatcherTimer
+ # (.NET) ThreadDispatcherTimer
 
- # (Windows) NetworkResource
  # (Windows) SystemUser, UserProfile
- * (Windows) LocalEncryption
- * (Windows) UniqueIdentification
+ # (Windows) LocalEncryption
+ # (Windows) UniqueIdentification
  - (Windows) Screen
  - (Windows) SystemKeyboard
  - (Windows) OnScreenKeyboard
@@ -211,12 +210,8 @@ Services
   
  + (Unity) Bootstrapper: More fine-grained control over default services
 
- # (Common) ServiceLocator: Allow resolving of multiple instances (also update ServiceLocatorDbDependencyResolver)
-
  - (WPF) WpfApplication: Handle power events using SystemEvents.PowerModeChanged
  - (WPF) WpfApplication: Handle user switching using SystemEvents.SessionSwitch
-
- # (.NET) Resources: Selectable property for IResourceSet
 
  # (.NET) Settings: SettingLocator
  

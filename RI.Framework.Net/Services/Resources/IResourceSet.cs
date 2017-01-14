@@ -20,10 +20,18 @@ namespace RI.Framework.Services.Resources
 	public interface IResourceSet
 	{
 		/// <summary>
+		///     Gets whether this resource set can be selected by the user.
+		/// </summary>
+		/// <value>
+		///     true if this resource set can be selected by the user, false otherwise.
+		/// </value>
+		bool Selectable { get; }
+
+		/// <summary>
 		///     Gets whether this resource set shall always be loaded.
 		/// </summary>
 		/// <value>
-		///     true if this resource set shall always be loaded false otherwise.
+		///     true if this resource set shall always be loaded, false otherwise.
 		/// </value>
 		bool AlwaysLoad { get; }
 

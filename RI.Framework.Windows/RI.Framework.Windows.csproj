@@ -48,6 +48,8 @@
     <Compile Include="IO\Serial\SerialPortInstance.cs" />
     <Compile Include="IO\Serial\_NamespaceDoc.cs" />
     <Compile Include="Utilities\Windows\NativeWindows.cs" />
+    <Compile Include="Utilities\Windows\NetworkResource.cs" />
+    <Compile Include="Utilities\Windows\NetworkResourceError.cs" />
     <Compile Include="Utilities\Windows\Privileges.cs" />
     <Compile Include="Utilities\Windows\SecurityEntity.cs" />
     <Compile Include="Utilities\Windows\WindowsApi.cs" />
