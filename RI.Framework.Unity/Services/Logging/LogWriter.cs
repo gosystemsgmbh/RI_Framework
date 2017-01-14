@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Text;
 
+using RI.Framework.Utilities.ObjectModel;
+
 using UnityEngine;
 
 
@@ -31,40 +33,65 @@ namespace RI.Framework.Services.Logging
 		/// <inheritdoc />
 		public void Log (DateTime timestamp, int threadId, LogLevel severity, string source, string message)
 		{
-			StringBuilder finalMessageBuilder = new StringBuilder();
-			finalMessageBuilder.Append("[");
-			finalMessageBuilder.Append(source ?? "null");
-			finalMessageBuilder.Append("] ");
-			finalMessageBuilder.Append(message ?? string.Empty);
-			string finalMessage = finalMessageBuilder.ToString();
-
-			switch (severity)
+			lock (this.SyncRoot)
 			{
-				case LogLevel.Debug:
-				{
-					Debug.Log(finalMessage);
-					break;
-				}
+				StringBuilder finalMessageBuilder = new StringBuilder();
+				finalMessageBuilder.Append("[");
+				finalMessageBuilder.Append(source ?? "null");
+				finalMessageBuilder.Append("] ");
+				finalMessageBuilder.Append(message ?? string.Empty);
+				string finalMessage = finalMessageBuilder.ToString();
 
-				case LogLevel.Information:
+				switch (severity)
 				{
-					Debug.Log(finalMessage);
-					break;
-				}
+					case LogLevel.Debug:
+						{
+							Debug.Log(finalMessage);
+							break;
+						}
 
-				case LogLevel.Warning:
-				{
-					Debug.LogWarning(finalMessage);
-					break;
-				}
+					case LogLevel.Information:
+						{
+							Debug.Log(finalMessage);
+							break;
+						}
 
-				case LogLevel.Error:
-				{
-					Debug.LogError(finalMessage);
-					break;
+					case LogLevel.Warning:
+						{
+							Debug.LogWarning(finalMessage);
+							break;
+						}
+
+					case LogLevel.Error:
+						{
+							Debug.LogError(finalMessage);
+							break;
+						}
+
+					case LogLevel.Fatal:
+						{
+							Debug.LogError(finalMessage);
+							break;
+						}
 				}
 			}
 		}
+
+		/// <summary>
+		/// Creates a new instance of <see cref="LogWriter"/>.
+		/// </summary>
+		public LogWriter ()
+		{
+			this.SyncRoot = new object();
+		}
+
+		private object SyncRoot { get; set; }
+
+		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		object ISynchronizable.SyncRoot => this.SyncRoot;
 
 		#endregion
 	}

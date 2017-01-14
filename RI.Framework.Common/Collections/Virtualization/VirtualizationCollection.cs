@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 
+using RI.Framework.Utilities.ObjectModel;
+
 
 
 
@@ -26,7 +28,7 @@ namespace RI.Framework.Collections.Virtualization
 	///         If <see cref="INotifyItemsProvider{T}" /> is used, <see cref="INotifyItemsProvider{T}.ItemsChanged" /> will clear the entire cache.
 	///     </note>
 	/// </remarks>
-	public sealed class VirtualizationCollection <T> : IList<T>, ICollection<T>, IEnumerable<T>, IList, ICollection, IEnumerable, IDisposable
+	public sealed class VirtualizationCollection <T> : IList<T>, ICollection<T>, IEnumerable<T>, IList, ICollection, IEnumerable, IDisposable, ISynchronizable
 	{
 		#region Instance Constructor/Destructor
 
@@ -264,22 +266,16 @@ namespace RI.Framework.Collections.Virtualization
 		}
 
 		/// <inheritdoc />
-		bool ICollection.IsSynchronized
-		{
-			get
-			{
-				return false;
-			}
-		}
+		bool ICollection.IsSynchronized => ((ISynchronizable)this).IsSynchronized;
 
 		/// <inheritdoc />
-		object ICollection.SyncRoot
-		{
-			get
-			{
-				return this.SyncRoot;
-			}
-		}
+		object ICollection.SyncRoot => ((ISynchronizable)this).SyncRoot;
+
+		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => false;
+
+		/// <inheritdoc />
+		object ISynchronizable.SyncRoot => this.SyncRoot;
 
 		/// <inheritdoc />
 		object IList.this [int index]

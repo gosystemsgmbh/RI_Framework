@@ -7,6 +7,7 @@ using System.Text;
 using RI.Framework.Composition.Model;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
+using RI.Framework.Utilities.ObjectModel;
 
 
 
@@ -238,37 +239,40 @@ namespace RI.Framework.Services.Logging.Writers
 		/// <inheritdoc />
 		public void Cleanup (DateTime retentionDate)
 		{
-			if (this.CurrentWriter == null)
+			lock (this.SyncRoot)
 			{
-				throw new ObjectDisposedException(nameof(DirectoryLogWriter));
-			}
-
-			string[] directories = Directory.GetDirectories(this.CommonDirectory, "*", SearchOption.TopDirectoryOnly);
-			foreach (string directory in directories)
-			{
-				if (string.Equals(directory, this.CurrentDirectory, StringComparison.OrdinalIgnoreCase))
+				if (this.CurrentWriter == null)
 				{
-					continue;
-				}
-				DateTime? timestamp = Path.GetDirectoryName(directory).ToDateTimeFromSortable('-');
-				if (!timestamp.HasValue)
-				{
-					continue;
-				}
-				if (timestamp.Value == this.Timestamp)
-				{
-					continue;
-				}
-				if (timestamp >= retentionDate)
-				{
-					continue;
+					throw new ObjectDisposedException(nameof(DirectoryLogWriter));
 				}
 
-				LogLocator.LogDebug(this.GetType().Name, "Cleaning up old log directory: {0}", directory);
+				string[] directories = Directory.GetDirectories(this.CommonDirectory, "*", SearchOption.TopDirectoryOnly);
+				foreach (string directory in directories)
+				{
+					if (string.Equals(directory, this.CurrentDirectory, StringComparison.OrdinalIgnoreCase))
+					{
+						continue;
+					}
+					DateTime? timestamp = Path.GetDirectoryName(directory).ToDateTimeFromSortable('-');
+					if (!timestamp.HasValue)
+					{
+						continue;
+					}
+					if (timestamp.Value == this.Timestamp)
+					{
+						continue;
+					}
+					if (timestamp >= retentionDate)
+					{
+						continue;
+					}
 
-				throw new NotImplementedException("TEST THIS FIRST !!!");
-				//TODO: Test this
-				//Directory.Delete(directory, true);
+					LogLocator.LogDebug(this.GetType().Name, "Cleaning up old log directory: {0}", directory);
+
+					throw new NotImplementedException("TEST THIS FIRST !!!");
+					//TODO: Test this
+					//Directory.Delete(directory, true);
+				}
 			}
 		}
 
@@ -326,6 +330,12 @@ namespace RI.Framework.Services.Logging.Writers
 				}
 			}
 		}
+
+		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		object ISynchronizable.SyncRoot => this.SyncRoot;
 
 		#endregion
 	}

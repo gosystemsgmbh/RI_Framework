@@ -1,6 +1,7 @@
 ﻿using System;
 
 using RI.Framework.Composition.Model;
+using RI.Framework.Utilities.ObjectModel;
 
 
 
@@ -16,7 +17,7 @@ namespace RI.Framework.Services.Logging
 	///     </para>
 	/// </remarks>
 	[Export]
-	public interface ILogWriter
+	public interface ILogWriter : ISynchronizable
 	{
 		/// <summary>
 		///     Performs a cleanup of old log messages.

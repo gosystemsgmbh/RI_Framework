@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading;
 
+using RI.Framework.Utilities.ObjectModel;
+
 
 
 
@@ -17,7 +19,7 @@ namespace RI.Framework.Utilities.Threading
 	///         See <see cref="Start" /> and <see cref="Stop" /> for a description of the thread execution sequence.
 	///     </para>
 	/// </remarks>
-	public abstract class HeavyThread : IDisposable
+	public abstract class HeavyThread : IDisposable, ISynchronizable
 	{
 		#region Constants
 
@@ -59,6 +61,12 @@ namespace RI.Framework.Utilities.Threading
 		{
 			this.Dispose(false);
 		}
+
+		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		object ISynchronizable.SyncRoot => this.SyncRoot;
 
 		#endregion
 

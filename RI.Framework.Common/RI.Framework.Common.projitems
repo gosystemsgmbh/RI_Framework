@@ -87,6 +87,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)IO\Paths\PathType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\Paths\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\_NamespaceDoc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\ISupportsLogging.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\ISupportsLoggingExtended.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\LogLocator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\ILogService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\ILogWriter.cs" />
@@ -132,6 +134,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Exceptions\NotSeekableStreamArgumentException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Exceptions\NotWriteableStreamArgumentException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Exceptions\_NamespaceDoc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObjectModel\ISynchronizable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\SingleExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObjectModel\ICloneable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObjectModel\_NamespaceDoc.cs" />

@@ -40,7 +40,7 @@ namespace RI.Framework.IO.Paths
 		/// <returns>
 		///     The path to the newly created temporary file.
 		/// </returns>
-		public static FilePath GetTemporaryFile ()
+		public static FilePath GetTempFile ()
 		{
 			return new FilePath(Path.GetTempFileName(), false, false, null);
 		}
@@ -718,13 +718,37 @@ namespace RI.Framework.IO.Paths
 			return result;
 		}
 
-		private void VerifyRealFile ()
+		/// <summary>
+		/// Verifies that the file path is a &quot;real&quot; usable file.
+		/// </summary>
+		/// <remarks>
+		/// <para>
+		/// If the file path is not a real usable file, <see cref="InvalidOperationException"/> is thrown.
+		/// </para>
+		/// <para>
+		/// <see cref="IsRealFile"/> is used to determine whether it is a real usable file.
+		/// </para>
+		/// </remarks>
+		public void VerifyRealFile ()
 		{
-			if (this.HasWildcards)
+			if (!this.IsRealFile)
 			{
 				throw new InvalidOperationException();
 			}
 		}
+
+		/// <summary>
+		/// Gets whether the file path is a &quot;real&quot; usable file.
+		/// </summary>
+		/// <value>
+		/// true if the file path is a real usable file, false otherwise.
+		/// </value>
+		/// <remarks>
+		/// <para>
+		/// A real usable file is a file which has not wildcards.
+		/// </para>
+		/// </remarks>
+		public bool IsRealFile => !this.HasWildcards;
 
 		#endregion
 

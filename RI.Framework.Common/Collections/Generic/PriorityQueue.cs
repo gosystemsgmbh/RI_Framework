@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
+using RI.Framework.Utilities.ObjectModel;
+
 
 
 
@@ -27,7 +29,7 @@ namespace RI.Framework.Collections.Generic
 	///         Regardless of the actual numeric priority values or the distribution of the priority values respectively, a priority queue with, for example, 10 used priorities is on average 10 times faster than a priority queue with 100 used priorities.
 	///     </para>
 	/// </remarks>
-	public sealed class PriorityQueue <T> : ICollection, IEnumerable<T>, IEnumerable
+	public sealed class PriorityQueue <T> : ICollection, IEnumerable<T>, IEnumerable, ISynchronizable
 	{
 		#region Instance Constructor/Destructor
 
@@ -236,10 +238,10 @@ namespace RI.Framework.Collections.Generic
 		}
 
 		/// <inheritdoc />
-		bool ICollection.IsSynchronized => false;
+		bool ICollection.IsSynchronized => ((ISynchronizable)this).IsSynchronized;
 
 		/// <inheritdoc />
-		object ICollection.SyncRoot => this.SyncRoot;
+		object ICollection.SyncRoot => ((ISynchronizable)this).SyncRoot;
 
 		/// <inheritdoc />
 		void ICollection.CopyTo (Array array, int index)
@@ -273,6 +275,12 @@ namespace RI.Framework.Collections.Generic
 				node = node.Previous;
 			}
 		}
+
+		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => false;
+
+		/// <inheritdoc />
+		object ISynchronizable.SyncRoot => this.SyncRoot;
 
 		#endregion
 

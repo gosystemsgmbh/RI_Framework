@@ -27,8 +27,13 @@ namespace RI.Framework.Services.Logging
 		Warning = 2,
 
 		/// <summary>
-		///     Error.
+		///     Error (error or handled exception).
 		/// </summary>
 		Error = 3,
+
+		/// <summary>
+		///     Fatal (crash or unhandled exception).
+		/// </summary>
+		Fatal = 4,
 	}
 }

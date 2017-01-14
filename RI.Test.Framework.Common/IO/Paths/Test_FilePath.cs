@@ -547,7 +547,7 @@ namespace RI.Test.Framework.IO.Paths
 		[TestMethod]
 		public void Operations_Test ()
 		{
-			FilePath test = FilePath.GetTemporaryFile();
+			FilePath test = FilePath.GetTempFile();
 
 			//-------------------
 			// Creation, deletion

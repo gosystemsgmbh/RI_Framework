@@ -387,7 +387,7 @@ namespace RI.Framework.Services
 
 				try
 				{
-					this.Log(LogLevel.Error, "EXCEPTION: {0}", message);
+					this.Log(LogLevel.Fatal, "EXCEPTION: {0}", message);
 				}
 				catch
 				{

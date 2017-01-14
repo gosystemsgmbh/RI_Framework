@@ -18,10 +18,6 @@ Examples
 Utilities
 ---------
 
- # (Common) IDispatcher (also implement where appropriate)
-
- # (Common) ISynchronizable (also implement where appropriate)
-
  - (Common) RandomExtensions: NextBytes with max and min/max overload
  - (Common) RandomExtensions: FillStream with max and min/max overload
 
@@ -143,6 +139,17 @@ I/O
  - (Common) DirectoryPath: FindFiles
  - (Common) DirectoryPath: GetDirectories
  - (Common) DirectoryPath: FindDirectories
+ - (Common) DirectoryPath: IsEmpty
+ - (Common) DirectoryPath: Size
+ - (Common) DirectoryPath: CreationTime
+ - (Common) DirectoryPath: CreationTimeUtc
+ - (Common) DirectoryPath: LastAccessTime
+ - (Common) DirectoryPath: LastAccessTimeUtc
+ - (Common) DirectoryPath: LastWriteTime
+ - (Common) DirectoryPath: LastWriteTimeUtc
+ - (Common) DirectoryPath: LastReadTime
+ - (Common) DirectoryPath: LastReadTimeUtc
+ - (Common) DirectoryPath: TryDeleteAsManyAsPossible
 
  - (Common) FilePath: Copy (FilePath, DirectoryPath)
  - (Common) FilePath: Move (FilePath, DirectoryPath)
@@ -153,6 +160,19 @@ I/O
  - (Common) FilePath: OpenWriter
  - (Common) FilePath: OpenStream
  - (Common) FilePath: Size
+ - (Common) FilePath: CreationTime
+ - (Common) FilePath: CreationTimeUtc
+ - (Common) FilePath: LastAccessTime
+ - (Common) FilePath: LastAccessTimeUtc
+ - (Common) FilePath: LastWriteTime
+ - (Common) FilePath: LastWriteTimeUtc
+ - (Common) FilePath: LastReadTime
+ - (Common) FilePath: LastReadTimeUtc
+
+ - (Common) FilePath: DeleteConcurrent
+ - (Common) FilePath: ExistConcurrent
+ - (Common) FilePath: ReadConcurrent
+ - (Common) FilePath: WriteConcurrent
 
  - (Common) StreamExtensions
  - (Common) UncloseableStream
@@ -160,17 +180,11 @@ I/O
 
  - (Common) EndianessConverter
 
- # (Common) INI reader, writer, document
  - (Common) CSV reader, writer, document
  - (Common) ZIP reader, writer, document
 
  - (Common) ConcurrencyExtensions
  - (Common) TransactiveExtensions
-
- # (Windows) DirectoryPathExtensions: Access control
- # (Windows) FilePathExtensions: Access control
-
- # (Windows) SerialPortInstance
 
  - (Unity) OBJ mesh loader
  - (Unity) JSON mesh loader (babylon.JS)
@@ -208,10 +222,8 @@ Services
  
  # (Common) Logging: ISupportsLogging
  # (Common) Logging: Remove Log methods and replace with single extension method for ISupportsLogging
- # (Common) Logging: Fatal log level
  # (Common) Logging: One-file-per-day option for DirectoryLogWriter
  # (Common) Logging: LogFilter
- # (Common) Logging: Locking for all LogWriters
  - (Common) Logging: FileLogWriter
  - (Common) Logging: ConsoleLogWriter
 
@@ -254,7 +266,7 @@ Data
  * (.NET) IRepositorySet: Add entity and property descriptions functionality
  - (.NET) IRepositoryContext: Add GetChanges method (return RepositoryContextChanges type)
  - (.NET) IRepositoryContext: Add GetErrors method (return RepositoryContextErrors type)
- - (.NET) EntityView: Make collection update strategy configurable
+ - (.NET) EntityView: Make collection update strategy configurable (clear vs. create new)
 
  # (SQLite) SQLiteDatabaseManager: Move script chains to IDatabaseManager
 
@@ -291,5 +303,4 @@ Behaviours
 Tools
 -----
 
- # ElevatedStart
  # LogViewer

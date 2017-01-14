@@ -34,6 +34,11 @@ namespace RI.Framework.IO.Paths
 	                                    IEquatable<DirectoryPath>,
 	                                    IComparable<DirectoryPath>
 	{
+		/// <summary>
+		/// The file extension for temporary files used by <see cref="GetTempFile"/>.
+		/// </summary>
+		public const string TemporaryExtension = ".tmp";
+
 		#region Static Methods
 
 		/// <summary>
@@ -197,6 +202,37 @@ namespace RI.Framework.IO.Paths
 
 
 		#region Instance Methods
+
+		/// <summary>
+		///     Creates a temporary zero-byte file.
+		/// </summary>
+		/// <returns>
+		///     The path to the newly created temporary file.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <see cref="GetTempFile"/> creates a new file name consisting of a <see cref="Guid"/> and <see cref="TemporaryExtension"/> and then creates the file using <see cref="FilePath.CreateNew"/>.
+		/// If a file with the created <see cref="Guid"/> (veeeery unlikely...) already exists, it tries another <see cref="Guid"/>, as long as necessary to find an unused <see cref="Guid"/>.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="IOException"> The file is in use. </exception>
+		/// <exception cref="UnauthorizedAccessException"> The user does not have the required permissions, the file is read-only, or the file is an executable which is in use. </exception>
+		/// <exception cref="PathTooLongException"> Although being a valid file path, the file path is too long for the current system to be used. </exception>
+		/// <exception cref="DirectoryNotFoundException"> The files directory does not exist or is not available. </exception>
+		/// <exception cref="NotSupportedException"> The file is not of a compatible path type used on the current system. </exception>
+		public FilePath GetTempFile()
+		{
+			while (true)
+			{
+				FilePath file = this.AppendFile(new FilePath(Guid.NewGuid().ToString("N") + DirectoryPath.TemporaryExtension));
+				if (file.Exists)
+				{
+					continue;
+				}
+				file.CreateNew();
+				return file;
+			}
+		}
 
 		/// <summary>
 		///     Creates a new directory path by appending one or more additional directory paths.
@@ -525,13 +561,37 @@ namespace RI.Framework.IO.Paths
 			return new DirectoryPath(PathProperties.MakeRelative(root.PathInternal, this.PathInternal));
 		}
 
-		private void VerifyRealDirectory ()
+		/// <summary>
+		/// Verifies that the directory path is a &quot;real&quot; usable directory.
+		/// </summary>
+		/// <remarks>
+		/// <para>
+		/// If the directory path is not a real usable directory, <see cref="InvalidOperationException"/> is thrown.
+		/// </para>
+		/// <para>
+		/// <see cref="IsRealDirectory"/> is used to determine whether it is a real usable directory.
+		/// </para>
+		/// </remarks>
+		public void VerifyRealDirectory()
 		{
-			if (this.HasWildcards)
+			if (!this.IsRealDirectory)
 			{
 				throw new InvalidOperationException();
 			}
 		}
+
+		/// <summary>
+		/// Gets whether the directory path is a &quot;real&quot; usable directory.
+		/// </summary>
+		/// <value>
+		/// true if the directory path is a real usable directory, false otherwise.
+		/// </value>
+		/// <remarks>
+		/// <para>
+		/// A real usable directory is a directory which has not wildcards.
+		/// </para>
+		/// </remarks>
+		public bool IsRealDirectory => !this.HasWildcards;
 
 		#endregion
 

@@ -44,6 +44,9 @@
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IO\Serial\SerialPortExtensions.cs" />
+    <Compile Include="IO\Serial\SerialPortInstance.cs" />
+    <Compile Include="IO\Serial\_NamespaceDoc.cs" />
     <Compile Include="Utilities\Windows\NativeWindows.cs" />
     <Compile Include="Utilities\Windows\Privileges.cs" />
     <Compile Include="Utilities\Windows\SecurityEntity.cs" />
@@ -53,8 +56,8 @@
     <Compile Include="Utilities\Windows\WindowsShell.cs" />
     <Compile Include="Utilities\Windows\_NamespaceDoc.cs" />
     <None Include="Properties\AssemblyName.snk" />
-    <None Include="IO\Paths\DirectoryPathExtensions.cs" />
-    <None Include="IO\Paths\FilePathExtensions.cs" />
+    <Compile Include="IO\Paths\DirectoryPathExtensions.cs" />
+    <Compile Include="IO\Paths\FilePathExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
