@@ -28,7 +28,6 @@ Utilities
  # (.NET) ThreadDispatcherSynchronizationContext
  # (.NET) ThreadDispatcherTimer
 
- # (Windows) SystemUser, UserProfile
  # (Windows) LocalEncryption
  # (Windows) UniqueIdentification
  - (Windows) Screen

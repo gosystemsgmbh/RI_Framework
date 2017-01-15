@@ -6,10 +6,10 @@
 namespace RI.Framework.Utilities.Windows
 {
 	/// <summary>
-	/// Describes the result of a network resource operation performed by <see cref="NetworkResource"/>.
+	/// Describes the result of a network resource operation performed by <see cref="WindowsNetwork"/>.
 	/// </summary>
 	[Serializable]
-	public enum NetworkResourceError
+	public enum WindowsNetworkError
 	{
 		/// <summary>
 		/// The operation succeeded.

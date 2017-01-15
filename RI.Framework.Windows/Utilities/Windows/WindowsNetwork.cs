@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
 
@@ -8,14 +9,9 @@ using System.Runtime.InteropServices;
 namespace RI.Framework.Utilities.Windows
 {
 	/// <summary>
-	/// Manages Windows network resources.
+	/// Provides utilities for managing Windows network resources.
 	/// </summary>
-	/// <remarks>
-	/// <para>
-	/// <see cref="NetworkResource"/> can be used to establish and close connections to Windows network resources (e.g. shared drives such as \\server\share\path).
-	/// </para>
-	/// </remarks>
-	public static class NetworkResource
+	public static class WindowsNetwork
 	{
 		#region Constants
 
@@ -49,7 +45,7 @@ namespace RI.Framework.Utilities.Windows
 		/// </remarks>
 		public static void CloseConnection(string resource, bool force)
 		{
-			NetworkResource.WNetCancelConnection2(resource, 0, force);
+			WindowsNetwork.WNetCancelConnection2(resource, 0, force);
 		}
 
 		/// <summary>
@@ -61,7 +57,7 @@ namespace RI.Framework.Utilities.Windows
 		/// <param name="interactive">Specifies whether an interactive logon can be performed if necessary (e.g. the user might be asked to enter credentials).</param>
 		/// <returns>
 		/// The error which occurred during establishing the network connection.
-		/// <see cref="NetworkResourceError.None"/> is returned if the connection was established successfully.
+		/// <see cref="WindowsNetworkError.None"/> is returned if the connection was established successfully.
 		/// </returns>
 		/// <remarks>
 		/// <note type="important">
@@ -69,18 +65,18 @@ namespace RI.Framework.Utilities.Windows
 		/// This is even more true for using interactive logon (<paramref name="interactive"/>).
 		/// </note>
 		/// </remarks>
-		/// <exception cref="Win32Exception">An unknown error occurred which could not be translated to <see cref="NetworkResourceError"/>.</exception>
-		public static NetworkResourceError OpenConnection(string resource, string username, string password, bool interactive)
+		/// <exception cref="Win32Exception">An unknown error occurred which could not be translated to <see cref="WindowsNetworkError"/>.</exception>
+		public static WindowsNetworkError OpenConnection(string resource, string username, string password, bool interactive)
 		{
-			Netresource connection = new Netresource();
-			connection.dwType = NetworkResource.ResourcetypeAny;
+			NETRESOURCE connection = new NETRESOURCE();
+			connection.dwType = WindowsNetwork.ResourcetypeAny;
 			connection.LocalName = null;
 			connection.RemoteName = resource;
 			connection.Provider = null;
 
-			int errorCode = NetworkResource.WNetAddConnection3(IntPtr.Zero, ref connection, password, username, interactive ? (NetworkResource.ConnectInteractive | NetworkResource.ConnectPrompt) : 0);
+			int errorCode = WindowsNetwork.WNetAddConnection3(IntPtr.Zero, ref connection, password, username, interactive ? (WindowsNetwork.ConnectInteractive | WindowsNetwork.ConnectPrompt) : 0);
 
-			NetworkResourceError error = NetworkResourceError.None;
+			WindowsNetworkError error = WindowsNetworkError.None;
 
 			switch (errorCode)
 			{
@@ -92,43 +88,43 @@ namespace RI.Framework.Utilities.Windows
 
 				case (int)WindowsError.ErrorSuccess:
 					{
-						error = NetworkResourceError.None;
+						error = WindowsNetworkError.None;
 						break;
 					}
 
 				case (int)WindowsError.ErrorBadNetName:
 					{
-						error = NetworkResourceError.InvalidParameters;
+						error = WindowsNetworkError.InvalidParameters;
 						break;
 					}
 
 				case (int)WindowsError.ErrorInvalidPassword:
 					{
-						error = NetworkResourceError.InvalidPassword;
+						error = WindowsNetworkError.InvalidPassword;
 						break;
 					}
 
 				case (int)WindowsError.ErrorCancelled:
 					{
-						error = NetworkResourceError.CanceledByUser;
+						error = WindowsNetworkError.CanceledByUser;
 						break;
 					}
 
 				case (int)WindowsError.ErrorBusy:
 					{
-						error = NetworkResourceError.Busy;
+						error = WindowsNetworkError.Busy;
 						break;
 					}
 
 				case (int)WindowsError.ErrorNoNetOrBadPath:
 					{
-						error = NetworkResourceError.Unavailable;
+						error = WindowsNetworkError.Unavailable;
 						break;
 					}
 
 				case (int)WindowsError.ErrorNoNetwork:
 					{
-						error = NetworkResourceError.Unavailable;
+						error = WindowsNetworkError.Unavailable;
 						break;
 					}
 			}
@@ -137,7 +133,7 @@ namespace RI.Framework.Utilities.Windows
 		}
 
 		[DllImport("mpr.dll", SetLastError = true, EntryPoint = "WNetAddConnection3W", CharSet = CharSet.Unicode)]
-		private static extern int WNetAddConnection3(IntPtr hWndOwner, ref Netresource lpNetResource, [MarshalAs(UnmanagedType.LPWStr)] string lpPassword, [MarshalAs(UnmanagedType.LPWStr)] string lpUserName, int dwFlags);
+		private static extern int WNetAddConnection3(IntPtr hWndOwner, ref NETRESOURCE lpNetResource, [MarshalAs(UnmanagedType.LPWStr)] string lpPassword, [MarshalAs(UnmanagedType.LPWStr)] string lpUserName, int dwFlags);
 
 		[DllImport("mpr.dll", SetLastError = false, EntryPoint = "WNetCancelConnection2W", CharSet = CharSet.Unicode)]
 		private static extern int WNetCancelConnection2([MarshalAs(UnmanagedType.LPWStr)] string lpName, int dwFlags, [MarshalAs(UnmanagedType.Bool)] bool fForce);
@@ -150,7 +146,8 @@ namespace RI.Framework.Utilities.Windows
 		#region Type: NETRESOURCE
 
 		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-		private struct Netresource
+		[SuppressMessage ("ReSharper", "InconsistentNaming")]
+		private struct NETRESOURCE
 		{
 			public int dwScope;
 

@@ -42,20 +42,24 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IO\Serial\SerialPortExtensions.cs" />
     <Compile Include="IO\Serial\SerialPortInstance.cs" />
     <Compile Include="IO\Serial\_NamespaceDoc.cs" />
     <Compile Include="Utilities\Windows\NativeWindows.cs" />
-    <Compile Include="Utilities\Windows\NetworkResource.cs" />
-    <Compile Include="Utilities\Windows\NetworkResourceError.cs" />
+    <Compile Include="Utilities\Windows\WindowsNetwork.cs" />
+    <Compile Include="Utilities\Windows\WindowsNetworkError.cs" />
     <Compile Include="Utilities\Windows\Privileges.cs" />
     <Compile Include="Utilities\Windows\SecurityEntity.cs" />
     <Compile Include="Utilities\Windows\WindowsApi.cs" />
     <Compile Include="Utilities\Windows\WindowsError.cs" />
     <Compile Include="Utilities\Windows\WindowsSession.cs" />
     <Compile Include="Utilities\Windows\WindowsShell.cs" />
+    <Compile Include="Utilities\Windows\WindowsUser.cs" />
+    <Compile Include="Utilities\Windows\WindowsUserImpersonation.cs" />
+    <Compile Include="Utilities\Windows\WindowsUserProfile.cs" />
     <Compile Include="Utilities\Windows\_NamespaceDoc.cs" />
     <None Include="Properties\AssemblyName.snk" />
     <Compile Include="IO\Paths\DirectoryPathExtensions.cs" />
