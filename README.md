@@ -45,7 +45,7 @@
   - [ ] Do all events use proper event handler and event args?
   - [ ] Rename EF to EF6
   - [ ] Rename SQLiteEF to SQLiteEF6
-  - [ ] Add NuGet packages to Libraries project
+  - [X] Add NuGet packages to Libraries project
   - [ ] TODOs
 - [ ] Testing
   - [X] Split testing into "Unity" and ".NET"
