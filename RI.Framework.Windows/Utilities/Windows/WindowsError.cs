@@ -35,5 +35,7 @@
 		ErrorSuccess = 0,
 
 		ErrorNotAllAssigned = 1300,
+
+		ErrorInsufficientBuffer = 122,
 	}
 }

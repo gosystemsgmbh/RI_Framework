@@ -23,6 +23,7 @@ namespace RI.Framework.Utilities.Wpf.Controls
 			}
 		}
 
+		/// <inheritdoc />
 		protected override void OnChecked (RoutedEventArgs e)
 		{
 			base.OnChecked(e);
@@ -45,6 +46,7 @@ namespace RI.Framework.Utilities.Wpf.Controls
 			}
 		}
 
+		/// <inheritdoc />
 		protected override void OnUnchecked (RoutedEventArgs e)
 		{
 			base.OnUnchecked(e);
@@ -76,7 +78,7 @@ namespace RI.Framework.Utilities.Wpf.Controls
 		{
 			if (this.ComboBox != null)
 			{
-				this.ComboBox.SelectionChanged -= SelectionChangedHandler;
+				this.ComboBox.SelectionChanged -= this.SelectionChangedHandler;
 			}
 
 			this.UpdateChecked();
@@ -86,7 +88,7 @@ namespace RI.Framework.Utilities.Wpf.Controls
 		{
 			if (this.ComboBox != null)
 			{
-				this.ComboBox.SelectionChanged += SelectionChangedHandler;
+				this.ComboBox.SelectionChanged += this.SelectionChangedHandler;
 			}
 
 			this.UpdateChecked();

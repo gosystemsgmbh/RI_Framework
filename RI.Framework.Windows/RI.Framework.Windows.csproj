@@ -45,6 +45,10 @@
     <Reference Include="System.Management" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IO\Printer\PrinterDevice.cs" />
+    <Compile Include="IO\Printer\PrinterTypes.cs" />
+    <Compile Include="IO\Printer\RawPrinterAccess.cs" />
+    <Compile Include="IO\Printer\_NamespaceDoc.cs" />
     <Compile Include="IO\Serial\SerialPortExtensions.cs" />
     <Compile Include="IO\Serial\SerialPortInstance.cs" />
     <Compile Include="IO\Serial\_NamespaceDoc.cs" />
