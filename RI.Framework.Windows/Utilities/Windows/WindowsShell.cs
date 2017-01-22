@@ -18,7 +18,7 @@ namespace RI.Framework.Utilities.Windows
 	{
 		#region Constants
 
-		private static readonly FilePath CommandPromptArguments = new FilePath("/k \"cd /d {0}\"");
+		private static readonly string CommandPromptArguments = "/k \"cd /d {0}\"";
 
 		private static readonly FilePath CommandPromptExecutable = new FilePath("cmd.exe");
 
