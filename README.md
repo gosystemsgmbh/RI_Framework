@@ -45,6 +45,8 @@
   - [ ] Do all events use proper event handler and event args?
   - [ ] Rename EF to EF6
   - [ ] Rename SQLiteEF to SQLiteEF6
+  - [ ] Rename Service to WinService into 
+  - [ ] Split RI.Framework.RotenInformatik
   - [X] Add NuGet packages to Libraries project
   - [ ] TODOs
 - [ ] Testing

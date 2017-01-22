@@ -41,14 +41,14 @@
       <DocumentationSource sourceFile="..\_Output\RI.Framework.Net.xml" />
       <DocumentationSource sourceFile="..\_Output\RI.Framework.Service.dll" />
       <DocumentationSource sourceFile="..\_Output\RI.Framework.Service.xml" />
-      <DocumentationSource sourceFile="..\_Output\RI.Framework.Unity.dll" />
-      <DocumentationSource sourceFile="..\_Output\RI.Framework.Unity.xml" />
       <DocumentationSource sourceFile="..\_Output\RI.Framework.Windows.dll" />
       <DocumentationSource sourceFile="..\_Output\RI.Framework.Windows.xml" />
       <DocumentationSource sourceFile="..\_Output\RI.Framework.WinForms.dll" />
       <DocumentationSource sourceFile="..\_Output\RI.Framework.WinForms.xml" />
       <DocumentationSource sourceFile="..\_Output\RI.Framework.Wpf.dll" />
       <DocumentationSource sourceFile="..\_Output\RI.Framework.Wpf.xml" />
+      <DocumentationSource sourceFile="..\_Output\RI.Framework.RotenInformatik.dll" />
+      <DocumentationSource sourceFile="..\_Output\RI.Framework.RotenInformatik.xml" />
     </DocumentationSources>
     <BuildAssemblerVerbosity>OnlyWarningsAndErrors</BuildAssemblerVerbosity>
     <HelpFileFormat>HtmlHelp1</HelpFileFormat>
