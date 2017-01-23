@@ -867,6 +867,30 @@ namespace RI.Framework.Services
 		{
 		}
 
+		/// <summary>
+		/// Creates a dictionary which contains anonymous data which can be used as additional data for crash reports.
+		/// </summary>
+		/// <returns>
+		/// The dictionary which contains additional data for crash reports.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// The dictionary uses <see cref="StringComparerEx.InvariantCultureIgnoreCase"/> for its keys.
+		/// </para>
+		/// </remarks>
+		protected virtual Dictionary<string, string> CreateAdditionalDataForCrashReport ()
+		{
+			Dictionary<string, string> additionalData = new Dictionary<string, string>(StringComparerEx.InvariantCultureIgnoreCase);
+			additionalData.Add(nameof(this.ApplicationProductName), this.ApplicationProductName);
+			additionalData.Add(nameof(this.ApplicationVersion), this.ApplicationVersion.ToString(4));
+			//TODO: Add MachineId
+			additionalData.Add("Machine64Bit", Environment.Is64BitOperatingSystem.ToString());
+			additionalData.Add("Session64Bit", Environment.Is64BitProcess.ToString());
+			additionalData.Add(nameof(this.SessionId), this.SessionId.ToString("N"));
+			additionalData.Add(nameof(this.SessionTimestamp), this.SessionTimestamp.ToSortableString('-'));
+			return additionalData;
+		}
+
 		#endregion
 
 
