@@ -144,7 +144,7 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 				throw new ArgumentNullException(nameof(messageService));
 			}
 
-			if (message.Name.StartsWith(TriggerMessageNames.MessageNamePrefix, StringComparison.Ordinal))
+			if (message.Name.StartsWith(TriggerMessageNames.MessageNamePrefix, StringComparison.Ordinal) && (!string.Equals(message.Name, TriggerMessageNames.MessageNameResponseChanged, StringComparison.Ordinal)))
 			{
 				string triggerName = null;
 				string subscriberId = null;
