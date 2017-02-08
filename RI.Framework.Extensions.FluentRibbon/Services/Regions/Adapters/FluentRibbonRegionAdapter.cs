@@ -17,7 +17,7 @@ namespace RI.Framework.Services.Regions.Adapters
 	/// <remarks>
 	///     <para>
 	///         The Fluent Ribbon controls which are supported by this region adapter are:
-	///         <see cref="RibbonTabItem" />.
+	///         <see cref="Ribbon" />, <see cref="RibbonTabItem" />.
 	///         All types derived from those are also supported.
 	///     </para>
 	///     <para>
@@ -46,6 +46,10 @@ namespace RI.Framework.Services.Regions.Adapters
 			{
 				((RibbonTabItem)container).Groups.Add((RibbonGroupBox)element);
 			}
+			else if ((container is Ribbon) && (element is RibbonTabItem))
+			{
+				((Ribbon)container).Tabs.Add((RibbonTabItem)element);
+			}
 		}
 
 		/// <inheritdoc />
@@ -59,6 +63,10 @@ namespace RI.Framework.Services.Regions.Adapters
 			if (container is RibbonTabItem)
 			{
 				((RibbonTabItem)container).Groups.Clear();
+			}
+			else if (container is Ribbon)
+			{
+				((Ribbon)container).Tabs.Clear();
 			}
 		}
 
@@ -80,6 +88,10 @@ namespace RI.Framework.Services.Regions.Adapters
 			{
 				contains = ((RibbonTabItem)container).Groups.Contains((RibbonGroupBox)element);
 			}
+			else if ((container is Ribbon) && (element is RibbonTabItem))
+			{
+				contains = ((Ribbon)container).Tabs.Contains((RibbonTabItem)element);
+			}
 			return contains;
 		}
 
@@ -95,6 +107,10 @@ namespace RI.Framework.Services.Regions.Adapters
 			if (container is RibbonTabItem)
 			{
 				return ((RibbonTabItem)container).Groups.Cast<object>().ToList();
+			}
+			else if (container is Ribbon)
+			{
+				return ((Ribbon)container).Tabs.Cast<object>().ToList();
 			}
 			return elements;
 		}
@@ -116,11 +132,16 @@ namespace RI.Framework.Services.Regions.Adapters
 			{
 				((RibbonTabItem)container).Groups.Remove((RibbonGroupBox)element);
 			}
+			else if ((container is Ribbon) && (element is RibbonTabItem))
+			{
+				((Ribbon)container).Tabs.Remove((RibbonTabItem)element);
+			}
 		}
 
 		/// <inheritdoc />
 		protected override void GetSupportedTypes (List<Type> types)
 		{
+			types.Add(typeof(Ribbon));
 			types.Add(typeof(RibbonTabItem));
 		}
 
