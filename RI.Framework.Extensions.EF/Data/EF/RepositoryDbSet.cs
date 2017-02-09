@@ -535,7 +535,9 @@ namespace RI.Framework.Data.EF
 				throw new InvalidOperationException("New entities cannot be created.");
 			}
 
-			return this.Set.Create();
+			T entity = this.Set.Create();
+			((IEntityValidation)this.Repository.GetValidator<T>())?.Initialize(this.Repository, this.Repository.Entry(entity));
+			return entity;
 		}
 
 		/// <inheritdoc />

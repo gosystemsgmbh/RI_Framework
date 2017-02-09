@@ -53,11 +53,13 @@ namespace RI.Framework.Services.Regions.Adapters
 			else if (container is ItemsControl)
 			{
 				ItemsControl itemsControl = (ItemsControl)container;
+				itemsControl.Items.Remove(element);
 				itemsControl.Items.Add(element);
 			}
 			else if ((container is Panel) && (element is UIElement))
 			{
 				Panel panel = (Panel)container;
+				panel.Children.Remove((UIElement)element);
 				panel.Children.Add((UIElement)element);
 			}
 		}

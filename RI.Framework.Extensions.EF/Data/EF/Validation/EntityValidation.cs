@@ -146,6 +146,17 @@ namespace RI.Framework.Data.EF.Validation
 		{
 		}
 
+		/// <summary>
+		///     Called when an entity is to be initialized.
+		/// </summary>
+		/// <param name="repository"> The repository the initialized entity belongs to. </param>
+		/// <param name="set"> The set the initialized entity belongs to. </param>
+		/// <param name="entry"> The entity entry of the entity to initialize. </param>
+		/// <param name="entity"> The entity to initialize. </param>
+		protected virtual void Initialize(RepositoryDbContext repository, RepositoryDbSet<T> set, DbEntityEntry entry, T entity)
+		{
+		}
+
 		#endregion
 
 
@@ -295,6 +306,22 @@ namespace RI.Framework.Data.EF.Validation
 			List<DbValidationError> errors = new List<DbValidationError>();
 			this.Validate(repository, repository.GetSet<T>(), entry, (T)entry.Entity, errors);
 			return errors.Count == 0 ? null : new DbEntityValidationResult(entry, errors);
+		}
+
+		/// <inheritdoc />
+		void IEntityValidation.Initialize(RepositoryDbContext repository, DbEntityEntry entry)
+		{
+			if (repository == null)
+			{
+				throw new ArgumentNullException(nameof(repository));
+			}
+
+			if (entry == null)
+			{
+				throw new ArgumentNullException(nameof(entry));
+			}
+
+			this.Initialize(repository, repository.GetSet<T>(), entry, (T)entry.Entity);
 		}
 
 		#endregion

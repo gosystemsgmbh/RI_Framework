@@ -44,10 +44,12 @@ namespace RI.Framework.Services.Regions.Adapters
 
 			if ((container is RibbonTabItem) && (element is RibbonGroupBox))
 			{
+				((RibbonTabItem)container).Groups.Remove((RibbonGroupBox)element);
 				((RibbonTabItem)container).Groups.Add((RibbonGroupBox)element);
 			}
 			else if ((container is Ribbon) && (element is RibbonTabItem))
 			{
+				((Ribbon)container).Tabs.Remove((RibbonTabItem)element);
 				((Ribbon)container).Tabs.Add((RibbonTabItem)element);
 			}
 		}
