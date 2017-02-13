@@ -1117,6 +1117,7 @@ namespace RI.Framework.Composition
 		/// <exception cref="ArgumentNullException"> <paramref name="obj" /> is null. </exception>
 		/// <exception cref="InvalidTypeArgumentException"> <paramref name="obj" /> is not a type which can be composed. </exception>
 		/// <exception cref="CompositionException"> The imports for <paramref name="obj" /> cannot be resolved. </exception>
+		[SuppressMessage ("ReSharper", "RedundantAssignment")]
 		public bool ResolveImports (object obj, CompositionFlags composition)
 		{
 			if (obj == null)
@@ -1502,6 +1503,7 @@ namespace RI.Framework.Composition
 			this.Types.RemoveAll(x => (x.Type == type) && CompositionContainer.NameComparer.Equals(x.Name, name));
 		}
 
+		[SuppressMessage ("ReSharper", "ConstantConditionalAccessQualifier")]
 		private void UpdateComposition (bool recompose)
 		{
 			foreach (KeyValuePair<string, CompositionItem> compositionItem in this.Composition)
@@ -1527,7 +1529,7 @@ namespace RI.Framework.Composition
 			Dictionary<object, HashSet<string>> newInstances = new Dictionary<object, HashSet<string>>();
 			foreach (CompositionCatalogItem item in items)
 			{
-				CompositionItem compositionItem = null;
+				CompositionItem compositionItem;
 				if (this.Composition.ContainsKey(item.Name))
 				{
 					compositionItem = this.Composition[item.Name];

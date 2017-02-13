@@ -1,4 +1,5 @@
 ﻿using System.Data.SQLite;
+using System.Diagnostics.CodeAnalysis;
 
 using RI.Framework.Utilities;
 
@@ -19,6 +20,7 @@ namespace RI.Framework.Data.SQLite.Collations
 	///     </para>
 	/// </remarks>
 	[SQLiteFunction (FuncType = FunctionType.Collation, Name = "InvariantCulture")]
+	[SuppressMessage("ReSharper", "InconsistentNaming")]
 	public sealed class InvariantCultureSQLiteCollation : SQLiteFunction
 	{
 		#region Static Methods

@@ -150,7 +150,7 @@ namespace RI.Framework.Utilities.Reflection
 			}
 #endif
 
-			string location = null;
+			string location;
 
 			try
 			{

@@ -188,6 +188,7 @@ namespace RI.Framework.Services.Logging.Writers
 		#region Instance Methods
 
 		[SuppressMessage ("ReSharper", "UnusedParameter.Local")]
+		[SuppressMessage ("ReSharper", "EmptyGeneralCatchClause")]
 		private void Dispose (bool disposing)
 		{
 			lock (this.SyncRoot)
@@ -277,6 +278,7 @@ namespace RI.Framework.Services.Logging.Writers
 		}
 
 		/// <inheritdoc />
+		[SuppressMessage ("ReSharper", "EmptyGeneralCatchClause")]
 		public void Log (DateTime timestamp, int threadId, LogLevel severity, string source, string message)
 		{
 			lock (this.SyncRoot)

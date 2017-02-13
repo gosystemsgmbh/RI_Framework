@@ -257,7 +257,7 @@ namespace RI.Framework.Services.Regions
 			List<Type> supportedTypes = new List<Type>();
 			this.GetSupportedTypes(supportedTypes);
 
-			Type matchingType = null;
+			Type matchingType;
 			return type.GetBestMatchingType(out matchingType, out inheritanceDepth, supportedTypes.ToArray());
 		}
 

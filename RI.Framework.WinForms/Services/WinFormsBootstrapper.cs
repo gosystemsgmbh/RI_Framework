@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
@@ -364,6 +365,7 @@ namespace RI.Framework.Services
 			LogLocator.Log(severity, this.GetType().Name, format, args);
 		}
 
+		[SuppressMessage ("ReSharper", "EmptyGeneralCatchClause")]
 		private void HandleExceptionInternal (Exception exception)
 		{
 			try

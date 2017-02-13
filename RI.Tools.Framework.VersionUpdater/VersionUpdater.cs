@@ -36,9 +36,9 @@ namespace RI.Tools.Framework.VersionUpdater
 			string fullPath = Path.GetFullPath(args[0]);
 			bool recursive = string.Equals(args[1], "r", StringComparison.InvariantCultureIgnoreCase);
 
-			Version newVersion = null;
-			string newCompany = null;
-			string newCopyright = null;
+			Version newVersion;
+			string newCompany;
+			string newCopyright;
 
 			if (string.Equals(args[2], "file", StringComparison.InvariantCultureIgnoreCase))
 			{
@@ -85,8 +85,7 @@ namespace RI.Tools.Framework.VersionUpdater
 
 		private static void PerformReplacementRegex (string file, string search, string replacement, Encoding encoding)
 		{
-			string input = null;
-
+			string input;
 			using (StreamReader reader = new StreamReader(file, encoding, true))
 			{
 				input = reader.ReadToEnd();
@@ -102,8 +101,7 @@ namespace RI.Tools.Framework.VersionUpdater
 
 		private static void PerformReplacementToken (string file, string search, string replacement, Encoding encoding)
 		{
-			string input = null;
-
+			string input;
 			using (StreamReader reader = new StreamReader(file, encoding, true))
 			{
 				input = reader.ReadToEnd();
@@ -126,15 +124,15 @@ namespace RI.Tools.Framework.VersionUpdater
 			string newVersionDot = newVersion.ToString(4);
 
 			byte[] versionBytes = Encoding.UTF8.GetBytes(newVersionDot);
-			byte[] versionGuidBytes = null;
+			byte[] versionGuidBytes;
 			using (MD5 hasher = MD5.Create())
 			{
 				versionGuidBytes = hasher.ComputeHash(versionBytes);
 			}
 			Guid versionGuid = new Guid(versionGuidBytes);
 
-			string search = null;
-			string replacement = null;
+			string search;
+			string replacement;
 
 			bool processed = false;
 

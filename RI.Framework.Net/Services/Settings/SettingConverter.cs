@@ -26,7 +26,7 @@ namespace RI.Framework.Services.Settings
 	{
 		#region Instance Fields
 
-		private readonly Type[] SupportedTypes =
+		private readonly Type[] _supportedTypes =
 		{
 			typeof(bool),
 			typeof(char),
@@ -70,7 +70,7 @@ namespace RI.Framework.Services.Settings
 				return true;
 			}
 
-			return this.SupportedTypes.Contains(type);
+			return this._supportedTypes.Contains(type);
 		}
 
 		/// <inheritdoc />
@@ -188,7 +188,7 @@ namespace RI.Framework.Services.Settings
 				throw new ArgumentNullException(nameof(value));
 			}
 
-			object finalValue = null;
+			object finalValue;
 
 			if (type.IsEnum)
 			{

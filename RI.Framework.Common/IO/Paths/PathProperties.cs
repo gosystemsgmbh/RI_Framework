@@ -473,8 +473,7 @@ namespace RI.Framework.IO.Paths
 				name = partsNormalized[partsNormalized.Count - 1];
 			}
 
-			int hashcode = 0;
-
+			int hashcode;
 			if (type == PathType.Invalid)
 			{
 				hashcode = error.GetHashCode();

@@ -206,7 +206,7 @@ namespace RI.Framework.Services.Regions
 			Type containerType = container.GetType();
 			foreach (IRegionAdapter currentAdapter in this.Adapters)
 			{
-				int inheritanceDepth = 0;
+				int inheritanceDepth;
 				if (currentAdapter.IsCompatibleContainer(containerType, out inheritanceDepth))
 				{
 					adapters.Add(new Tuple<int, IRegionAdapter>(inheritanceDepth, currentAdapter));

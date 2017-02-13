@@ -1015,7 +1015,7 @@ namespace RI.Framework.Utilities
 
 			str = str.ToLowerInvariant();
 
-			bool value = false;
+			bool value;
 			if (bool.TryParse(str, out value))
 			{
 				return value;
@@ -1075,7 +1075,7 @@ namespace RI.Framework.Utilities
 				throw new ArgumentNullException(nameof(str));
 			}
 
-			byte value = 0;
+			byte value;
 			if (byte.TryParse(str, style, provider, out value))
 			{
 				return value;
@@ -1235,7 +1235,7 @@ namespace RI.Framework.Utilities
 				throw new ArgumentNullException(nameof(str));
 			}
 
-			decimal value = 0;
+			decimal value;
 			if (decimal.TryParse(str, style, provider, out value))
 			{
 				return value;
@@ -1297,7 +1297,7 @@ namespace RI.Framework.Utilities
 				throw new ArgumentNullException(nameof(str));
 			}
 
-			double value = 0;
+			double value;
 			if (double.TryParse(str, style, provider, out value))
 			{
 				return value;
@@ -1421,7 +1421,7 @@ namespace RI.Framework.Utilities
 				throw new ArgumentNullException(nameof(str));
 			}
 
-			float value = 0;
+			float value;
 			if (float.TryParse(str, style, provider, out value))
 			{
 				return value;
@@ -1513,7 +1513,7 @@ namespace RI.Framework.Utilities
 				throw new ArgumentNullException(nameof(str));
 			}
 
-			short value = 0;
+			short value;
 			if (short.TryParse(str, style, provider, out value))
 			{
 				return value;
@@ -1575,7 +1575,7 @@ namespace RI.Framework.Utilities
 				throw new ArgumentNullException(nameof(str));
 			}
 
-			int value = 0;
+			int value;
 			if (int.TryParse(str, style, provider, out value))
 			{
 				return value;
@@ -1637,7 +1637,7 @@ namespace RI.Framework.Utilities
 				throw new ArgumentNullException(nameof(str));
 			}
 
-			long value = 0;
+			long value;
 			if (long.TryParse(str, style, provider, out value))
 			{
 				return value;
@@ -1719,7 +1719,7 @@ namespace RI.Framework.Utilities
 				throw new ArgumentNullException(nameof(str));
 			}
 
-			sbyte value = 0;
+			sbyte value;
 			if (sbyte.TryParse(str, style, provider, out value))
 			{
 				return value;
@@ -1853,7 +1853,7 @@ namespace RI.Framework.Utilities
 				throw new ArgumentNullException(nameof(str));
 			}
 
-			ushort value = 0;
+			ushort value;
 			if (ushort.TryParse(str, style, provider, out value))
 			{
 				return value;
@@ -1915,7 +1915,7 @@ namespace RI.Framework.Utilities
 				throw new ArgumentNullException(nameof(str));
 			}
 
-			uint value = 0;
+			uint value;
 			if (uint.TryParse(str, style, provider, out value))
 			{
 				return value;
@@ -1977,7 +1977,7 @@ namespace RI.Framework.Utilities
 				throw new ArgumentNullException(nameof(str));
 			}
 
-			ulong value = 0;
+			ulong value;
 			if (ulong.TryParse(str, style, provider, out value))
 			{
 				return value;

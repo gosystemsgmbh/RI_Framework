@@ -117,7 +117,7 @@ namespace RI.Framework.Collections
 				throw new ArgumentOutOfRangeException(nameof(index));
 			}
 
-			int removedCount = 0;
+			int removedCount;
 			for (removedCount = 0; (removedCount < count) && (index < list.Count); removedCount++)
 			{
 				list.RemoveAt(index);

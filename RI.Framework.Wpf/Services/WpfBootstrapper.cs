@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
 using System.Threading;
@@ -374,6 +375,7 @@ namespace RI.Framework.Services
 			this.Log(LogLevel.Debug, new string('-', 200));
 		}
 
+		[SuppressMessage ("ReSharper", "EmptyGeneralCatchClause")]
 		private void HandleExceptionInternal (Exception exception)
 		{
 			try

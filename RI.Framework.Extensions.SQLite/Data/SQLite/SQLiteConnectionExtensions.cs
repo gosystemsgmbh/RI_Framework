@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data.SQLite;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 
@@ -10,6 +11,7 @@ namespace RI.Framework.Data.SQLite
 	/// <summary>
 	///     Provides utility/extension methods for the <see cref="SQLiteConnection" /> type.
 	/// </summary>
+	[SuppressMessage ("ReSharper", "InconsistentNaming")]
 	public static class SQLiteConnectionExtensions
 	{
 		#region Static Methods

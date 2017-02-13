@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 
 using RI.Framework.Utilities.ObjectModel;
@@ -289,6 +290,8 @@ namespace RI.Framework.Utilities.Threading
 		/// <exception cref="InvalidOperationException"> The thread is already running. </exception>
 		/// <exception cref="TimeoutException"> The thread failed to return from <see cref="OnBegin" /> within <see cref="Timeout" />. </exception>
 		/// <exception cref="HeavyThreadException"> An exception occurred inside the thread during execution of <see cref="OnBegin" />. </exception>
+		[SuppressMessage ("ReSharper", "AccessToDisposedClosure")]
+		[SuppressMessage ("ReSharper", "EmptyGeneralCatchClause")]
 		public void Start ()
 		{
 			lock (this.StartStopSyncRoot)
@@ -464,6 +467,7 @@ namespace RI.Framework.Utilities.Threading
 		///     </para>
 		/// </remarks>
 		/// <exception cref="InvalidOperationException"> This function was called from inside the thread. </exception>
+		[SuppressMessage ("ReSharper", "EmptyGeneralCatchClause")]
 		protected virtual void Dispose (bool disposing)
 		{
 			lock (this.StartStopSyncRoot)
@@ -475,7 +479,7 @@ namespace RI.Framework.Utilities.Threading
 					this.OnStop();
 				}
 
-				bool terminated = false;
+				bool terminated;
 				try
 				{
 					terminated = this.Thread.Join(this.Timeout);

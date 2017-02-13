@@ -42,8 +42,8 @@ namespace RI.Framework.Utilities.Windows
 		{
 			using (WindowsIdentity identity = WindowsIdentity.GetCurrent(false))
 			{
-				string domain = null;
-				string username = null;
+				string domain;
+				string username;
 				WindowsUser.ExtractDomainAndUser(identity.Name, true, out domain, out username);
 
 				return domain;
@@ -60,8 +60,8 @@ namespace RI.Framework.Utilities.Windows
 		{
 			using (WindowsIdentity identity = WindowsIdentity.GetCurrent(false))
 			{
-				string domain = null;
-				string username = null;
+				string domain;
+				string username;
 				WindowsUser.ExtractDomainAndUser(identity.Name, true, out domain, out username);
 
 				return username;

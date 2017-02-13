@@ -23,7 +23,7 @@ namespace RI.Framework.Collections.ObjectModel
 		/// </summary>
 		protected PoolBase ()
 		{
-			this.FreeItemsInternal = new List<T>();
+			this._freeItemsInternal = new List<T>();
 		}
 
 		/// <summary>
@@ -44,7 +44,7 @@ namespace RI.Framework.Collections.ObjectModel
 				throw new ArgumentOutOfRangeException(nameof(capacity));
 			}
 
-			this.FreeItemsInternal = new List<T>(capacity);
+			this._freeItemsInternal = new List<T>(capacity);
 		}
 
 		#endregion
@@ -54,7 +54,7 @@ namespace RI.Framework.Collections.ObjectModel
 
 		#region Instance Fields
 
-		private readonly List<T> FreeItemsInternal;
+		private readonly List<T> _freeItemsInternal;
 
 		#endregion
 
@@ -167,7 +167,7 @@ namespace RI.Framework.Collections.ObjectModel
 		{
 			get
 			{
-				return this.FreeItemsInternal.Count;
+				return this._freeItemsInternal.Count;
 			}
 		}
 
@@ -176,7 +176,7 @@ namespace RI.Framework.Collections.ObjectModel
 		{
 			get
 			{
-				return this.FreeItemsInternal;
+				return this._freeItemsInternal;
 			}
 		}
 
@@ -204,7 +204,7 @@ namespace RI.Framework.Collections.ObjectModel
 				throw new ArgumentNullException(nameof(item));
 			}
 
-			return this.FreeItemsInternal.Contains(item);
+			return this._freeItemsInternal.Contains(item);
 		}
 
 		/// <inheritdoc />
@@ -220,17 +220,17 @@ namespace RI.Framework.Collections.ObjectModel
 				throw new ArgumentOutOfRangeException(nameof(minItems));
 			}
 
-			if (this.FreeItemsInternal.Capacity < minItems)
+			if (this._freeItemsInternal.Capacity < minItems)
 			{
-				this.FreeItemsInternal.Capacity = minItems;
+				this._freeItemsInternal.Capacity = minItems;
 			}
 
 			int count = 0;
-			while (this.FreeItemsInternal.Count < minItems)
+			while (this._freeItemsInternal.Count < minItems)
 			{
 				T item = this.Create();
 				this.OnCreated(item);
-				this.FreeItemsInternal.Add(item);
+				this._freeItemsInternal.Add(item);
 				this.OnReturned(item);
 				count++;
 			}
@@ -251,10 +251,10 @@ namespace RI.Framework.Collections.ObjectModel
 			}
 
 			int count = 0;
-			while (this.FreeItemsInternal.Count > maxItems)
+			while (this._freeItemsInternal.Count > maxItems)
 			{
-				T item = this.FreeItemsInternal[this.FreeItemsInternal.Count - 1];
-				this.FreeItemsInternal.RemoveAt(this.FreeItemsInternal.Count - 1);
+				T item = this._freeItemsInternal[this._freeItemsInternal.Count - 1];
+				this._freeItemsInternal.RemoveAt(this._freeItemsInternal.Count - 1);
 				this.OnRemoved(item);
 				count++;
 			}
@@ -280,7 +280,7 @@ namespace RI.Framework.Collections.ObjectModel
 				throw new ArgumentNullException(nameof(item));
 			}
 
-			this.FreeItemsInternal.Add(item);
+			this._freeItemsInternal.Add(item);
 			this.OnReturned(item);
 		}
 
@@ -292,17 +292,17 @@ namespace RI.Framework.Collections.ObjectModel
 		/// </remarks>
 		public T Take ()
 		{
-			T item = default(T);
+			T item;
 
-			if (this.FreeItemsInternal.Count == 0)
+			if (this._freeItemsInternal.Count == 0)
 			{
 				item = this.Create();
 				this.OnCreated(item);
 			}
 			else
 			{
-				item = this.FreeItemsInternal[this.FreeItemsInternal.Count - 1];
-				this.FreeItemsInternal.RemoveAt(this.FreeItemsInternal.Count - 1);
+				item = this._freeItemsInternal[this._freeItemsInternal.Count - 1];
+				this._freeItemsInternal.RemoveAt(this._freeItemsInternal.Count - 1);
 			}
 
 			this.OnTaking(item);

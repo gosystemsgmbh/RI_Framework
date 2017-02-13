@@ -76,7 +76,7 @@ namespace RI.Framework.Utilities.Windows
 
 			int errorCode = WindowsNetwork.WNetAddConnection3(IntPtr.Zero, ref connection, password, username, interactive ? (WindowsNetwork.ConnectInteractive | WindowsNetwork.ConnectPrompt) : 0);
 
-			WindowsNetworkError error = WindowsNetworkError.None;
+			WindowsNetworkError error;
 
 			switch (errorCode)
 			{

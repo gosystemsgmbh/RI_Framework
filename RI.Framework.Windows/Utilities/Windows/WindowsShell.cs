@@ -519,7 +519,7 @@ namespace RI.Framework.Utilities.Windows
 				throw new EmptyStringArgumentException(nameof(url));
 			}
 
-			Uri uri = null;
+			Uri uri;
 			try
 			{
 				uri = new Uri(url);

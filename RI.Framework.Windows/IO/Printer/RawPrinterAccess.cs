@@ -173,7 +173,7 @@ namespace RI.Framework.IO.Printer
 			bool success = false;
 			try
 			{
-				IntPtr hPrinter = IntPtr.Zero;
+				IntPtr hPrinter;
 				if (RawPrinterAccess.OpenPrinter(this.PrinterDevice.PrinterName.Normalize(), out hPrinter, IntPtr.Zero))
 				{
 					this.PrinterHandle = hPrinter;
@@ -305,7 +305,7 @@ namespace RI.Framework.IO.Printer
 
 		private void SendBytes (IntPtr pointer, int byteCount)
 		{
-			int dwWritten = 0;
+			int dwWritten;
 			if (!RawPrinterAccess.WritePrinter(this.PrinterHandle, pointer, byteCount, out dwWritten))
 			{
 				int errorCode = WindowsApi.GetLastErrorCode();

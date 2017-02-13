@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data.SQLite;
+using System.Diagnostics.CodeAnalysis;
 
 using RI.Framework.Utilities;
 
@@ -29,6 +30,7 @@ namespace RI.Framework.Data.SQLite.Functions
 	/// </code>
 	/// </example>
 	[SQLiteFunction ("toemptyifemptyornull", 1, FunctionType.Scalar)]
+	[SuppressMessage("ReSharper", "InconsistentNaming")]
 	public class ToEmptyIfEmptyOrNullSQLiteFunction : SQLiteFunction
 	{
 		#region Static Methods

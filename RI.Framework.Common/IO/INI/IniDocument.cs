@@ -1014,7 +1014,7 @@ namespace RI.Framework.IO.INI
 		/// </remarks>
 		public void MergeSections ()
 		{
-			List<KeyValuePair<string, List<IniElement>>> sections = null;
+			List<KeyValuePair<string, List<IniElement>>> sections;
 			this.DecomposeSections(out sections);
 
 			Dictionary<string, List<IniElement>> result = new Dictionary<string, List<IniElement>>(this.SectionNameComparer);
@@ -1087,7 +1087,7 @@ namespace RI.Framework.IO.INI
 		/// </remarks>
 		public HashSet<string> RemoveEmptySections (bool keepIfText, bool keepIfComments)
 		{
-			List<KeyValuePair<string, List<IniElement>>> sections = null;
+			List<KeyValuePair<string, List<IniElement>>> sections;
 			this.DecomposeSections(out sections);
 
 			List<IniElement> elementsToRemove = new List<IniElement>();
@@ -1581,7 +1581,7 @@ namespace RI.Framework.IO.INI
 				throw new ArgumentNullException(nameof(comparer));
 			}
 
-			List<KeyValuePair<string, List<IniElement>>> sections = null;
+			List<KeyValuePair<string, List<IniElement>>> sections;
 			this.DecomposeSections(out sections);
 
 			if (sections.Count == 0)
@@ -1680,7 +1680,7 @@ namespace RI.Framework.IO.INI
 
 		private void SortElementsInternal (string section, IComparer<IniElement> comparer, bool allSections)
 		{
-			List<KeyValuePair<string, List<IniElement>>> sections = null;
+			List<KeyValuePair<string, List<IniElement>>> sections;
 			this.DecomposeSections(out sections);
 
 			if (sections.Count == 0)

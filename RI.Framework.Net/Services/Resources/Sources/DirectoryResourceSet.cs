@@ -262,7 +262,7 @@ namespace RI.Framework.Services.Resources.Sources
 			if (settings.ContainsKey(uiCultureKey))
 			{
 				string value = settings[uiCultureKey];
-				CultureInfo candidate = null;
+				CultureInfo candidate;
 				try
 				{
 					candidate = new CultureInfo(value, false);
@@ -289,7 +289,7 @@ namespace RI.Framework.Services.Resources.Sources
 			if (settings.ContainsKey(formattingCultureKey))
 			{
 				string value = settings[formattingCultureKey];
-				CultureInfo candidate = null;
+				CultureInfo candidate;
 				try
 				{
 					candidate = new CultureInfo(value, false);

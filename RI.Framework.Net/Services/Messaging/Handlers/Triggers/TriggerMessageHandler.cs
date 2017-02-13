@@ -146,8 +146,8 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 
 			if (message.Name.StartsWith(TriggerMessageNames.MessageNamePrefix, StringComparison.Ordinal) && (!string.Equals(message.Name, TriggerMessageNames.MessageNameResponseChanged, StringComparison.Ordinal)))
 			{
-				string triggerName = null;
-				string subscriberId = null;
+				string triggerName;
+				string subscriberId;
 
 				try
 				{

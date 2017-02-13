@@ -26,13 +26,13 @@ namespace RI.Framework.Services.Dispatcher
 		/// </summary>
 		public DispatcherService ()
 		{
-			this.NowTicks = DateTime.UtcNow.Ticks;
-			this.FramesWithoutOperations = 0;
+			this._nowTicks = DateTime.UtcNow.Ticks;
+			this._framesWithoutOperations = 0;
 
-			this.PendingOperations = new List<LinkedList<DispatcherOperation>>();
-			while (this.PendingOperations.Count <= (int)DispatcherPriority.Lowest)
+			this._pendingOperations = new List<LinkedList<DispatcherOperation>>();
+			while (this._pendingOperations.Count <= (int)DispatcherPriority.Lowest)
 			{
-				this.PendingOperations.Add(new LinkedList<DispatcherOperation>());
+				this._pendingOperations.Add(new LinkedList<DispatcherOperation>());
 			}
 
 			GameObject dispatcherServiceObject = new GameObject(this.GetType().Name);
@@ -52,11 +52,11 @@ namespace RI.Framework.Services.Dispatcher
 
 		#region Instance Fields
 
-		private int FramesWithoutOperations;
+		private int _framesWithoutOperations;
 
-		private long NowTicks;
+		private long _nowTicks;
 
-		private readonly List<LinkedList<DispatcherOperation>> PendingOperations;
+		private readonly List<LinkedList<DispatcherOperation>> _pendingOperations;
 
 		#endregion
 
@@ -79,11 +79,11 @@ namespace RI.Framework.Services.Dispatcher
 			if (operation.Priority == DispatcherPriority.Now)
 			{
 				this.Invoke(operation);
-				this.FramesWithoutOperations = 0;
+				this._framesWithoutOperations = 0;
 			}
 			else
 			{
-				this.PendingOperations[(int)operation.Priority].AddLast(operation);
+				this._pendingOperations[(int)operation.Priority].AddLast(operation);
 			}
 
 			return operation;
@@ -122,18 +122,18 @@ namespace RI.Framework.Services.Dispatcher
 
 		private void InvokePendingOperations ()
 		{
-			this.NowTicks = DateTime.UtcNow.Ticks;
+			this._nowTicks = DateTime.UtcNow.Ticks;
 
 			bool operationsDispatched = false;
 
 			for (int i1 = (int)DispatcherPriority.Highest; i1 <= (int)DispatcherPriority.Lowest; i1++)
 			{
-				if ((((DispatcherPriority)i1) >= DispatcherPriority.Idle) && (this.FramesWithoutOperations < 1))
+				if ((((DispatcherPriority)i1) >= DispatcherPriority.Idle) && (this._framesWithoutOperations < 1))
 				{
 					break;
 				}
 
-				LinkedList<DispatcherOperation> operations = this.PendingOperations[i1];
+				LinkedList<DispatcherOperation> operations = this._pendingOperations[i1];
 
 				LinkedListNode<DispatcherOperation> currentNode = operations.First;
 				LinkedListNode<DispatcherOperation> nextNode = currentNode;
@@ -148,7 +148,7 @@ namespace RI.Framework.Services.Dispatcher
 					bool isProcessable = true;
 					if (operation.TickTrigger.HasValue)
 					{
-						isProcessable = this.NowTicks >= operation.TickTrigger.Value;
+						isProcessable = this._nowTicks >= operation.TickTrigger.Value;
 					}
 
 					if (isProcessable)
@@ -169,11 +169,11 @@ namespace RI.Framework.Services.Dispatcher
 
 			if (operationsDispatched)
 			{
-				this.FramesWithoutOperations = 0;
+				this._framesWithoutOperations = 0;
 			}
 			else
 			{
-				this.FramesWithoutOperations++;
+				this._framesWithoutOperations++;
 			}
 		}
 
@@ -184,14 +184,14 @@ namespace RI.Framework.Services.Dispatcher
 				return false;
 			}
 
-			operation.TickTrigger = this.NowTicks + (millisecondsFromNow * 10000L);
+			operation.TickTrigger = this._nowTicks + (millisecondsFromNow * 10000L);
 
 			return true;
 		}
 
 		private bool Reschedule (DispatcherOperation operation, DateTime timestamp)
 		{
-			return this.Reschedule(operation, Math.Max((int)((timestamp.ToUniversalTime().Ticks - this.NowTicks) / 10000), 0));
+			return this.Reschedule(operation, Math.Max((int)((timestamp.ToUniversalTime().Ticks - this._nowTicks) / 10000), 0));
 		}
 
 		#endregion

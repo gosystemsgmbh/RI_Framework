@@ -107,7 +107,7 @@ namespace RI.Framework.IO.Serial
 				throw new EmptyStringArgumentException(nameof(str));
 			}
 
-			SerialPortInstance candidate = null;
+			SerialPortInstance candidate;
 			if (!SerialPortInstance.TryParse(str, out candidate))
 			{
 				throw new FormatException("\"" + str + "\" is not a valid serial port name.");
@@ -159,7 +159,7 @@ namespace RI.Framework.IO.Serial
 
 		private static byte NameToNumber (string name)
 		{
-			byte number = 0;
+			byte number;
 			if (!byte.TryParse(name.Replace(SerialPortInstance.SerialPortNamePrefix, string.Empty), NumberStyles.Any, CultureInfo.InvariantCulture, out number))
 			{
 				number = 0;

@@ -127,7 +127,7 @@ namespace RI.Framework.Collections.Generic
 			int firstPriority = this.Chain.First.Value.Priority;
 			int lastPriority = this.Chain.Last.Value.Priority;
 
-			PriorityItem priorityItem = null;
+			PriorityItem priorityItem;
 			if (this.Table.Count == 0)
 			{
 				priorityItem = new PriorityItem(priority);

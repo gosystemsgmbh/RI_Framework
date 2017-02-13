@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data.SQLite;
+using System.Diagnostics.CodeAnalysis;
 
 
 
@@ -27,6 +28,7 @@ namespace RI.Framework.Data.SQLite.Functions
 	/// </code>
 	/// </example>
 	[SQLiteFunction ("trim", 1, FunctionType.Scalar)]
+	[SuppressMessage("ReSharper", "InconsistentNaming")]
 	public class TrimSQLiteFunction : SQLiteFunction
 	{
 		#region Static Methods

@@ -169,8 +169,8 @@ namespace RI.Framework.Collections.Virtualization
 
 		private Page LoadPage (int pageIndex, bool temporary)
 		{
-			Page page = null;
-			bool load = false;
+			Page page;
+			bool load;
 
 			if ((!temporary) && this.Cache.Contains(pageIndex))
 			{

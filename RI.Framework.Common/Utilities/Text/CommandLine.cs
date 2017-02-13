@@ -378,7 +378,7 @@ namespace RI.Framework.Utilities.Text
 		/// </remarks>
 		public string Build ()
 		{
-			string executable = null;
+			string executable;
 			if (this.Executable == null)
 			{
 				executable = null;
@@ -392,7 +392,7 @@ namespace RI.Framework.Utilities.Text
 				executable = this.Executable;
 			}
 
-			Dictionary<string, List<string>> parameters = null;
+			Dictionary<string, List<string>> parameters;
 			if (this.Parameters.Count == 0)
 			{
 				parameters = null;
@@ -402,7 +402,7 @@ namespace RI.Framework.Utilities.Text
 				parameters = this.Parameters;
 			}
 
-			List<string> literals = null;
+			List<string> literals;
 			if (this.Literals.Count == 0)
 			{
 				literals = null;

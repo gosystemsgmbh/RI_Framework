@@ -61,12 +61,12 @@ namespace RI.Framework.Collections.Generic
 			this.Size = size;
 			this.Storage = new T[size + 1];
 
-			this.Bays = new int[size];
-			this.BayIndex = size - 1;
+			this._bays = new int[size];
+			this._bayIndex = size - 1;
 
 			for (int i1 = 0; i1 < size; i1++)
 			{
-				this.Bays[i1] = size - i1;
+				this._bays[i1] = size - i1;
 			}
 		}
 
@@ -77,9 +77,9 @@ namespace RI.Framework.Collections.Generic
 
 		#region Instance Fields
 
-		private int BayIndex;
+		private int _bayIndex;
 
-		private readonly int[] Bays;
+		private readonly int[] _bays;
 
 		#endregion
 
@@ -93,7 +93,7 @@ namespace RI.Framework.Collections.Generic
 		{
 			get
 			{
-				return this.BayIndex + 1;
+				return this._bayIndex + 1;
 			}
 		}
 
@@ -115,13 +115,13 @@ namespace RI.Framework.Collections.Generic
 		/// </remarks>
 		public void Release (int bay)
 		{
-			if ((bay < 1) || (bay > this.Bays.Length))
+			if ((bay < 1) || (bay > this._bays.Length))
 			{
 				throw new ArgumentOutOfRangeException(nameof(bay));
 			}
 
-			this.BayIndex++;
-			this.Bays[this.BayIndex] = bay;
+			this._bayIndex++;
+			this._bays[this._bayIndex] = bay;
 		}
 
 		/// <inheritdoc />
@@ -132,13 +132,13 @@ namespace RI.Framework.Collections.Generic
 		/// </remarks>
 		public int Reserve ()
 		{
-			if (this.BayIndex == -1)
+			if (this._bayIndex == -1)
 			{
 				return 0;
 			}
 
-			int bay = this.Bays[this.BayIndex];
-			this.BayIndex--;
+			int bay = this._bays[this._bayIndex];
+			this._bayIndex--;
 			return bay;
 		}
 

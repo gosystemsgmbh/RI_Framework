@@ -76,7 +76,6 @@ namespace RI.Framework.Utilities.Windows
 				if (messageBuffer != IntPtr.Zero)
 				{
 					WindowsApi.LocalFree(messageBuffer);
-					messageBuffer = IntPtr.Zero;
 				}
 			}
 		}

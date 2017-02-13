@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
@@ -77,6 +78,8 @@ namespace RI.Framework.Utilities
 		///         The created string representation is not intented for serializing or storing an exception, it is only used for logging and debugging purposes.
 		///     </note>
 		/// </remarks>
+		[SuppressMessage ("ReSharper", "ConstantConditionalAccessQualifier")]
+		[SuppressMessage ("ReSharper", "ConstantNullCoalescingCondition")]
 		public static string ToDetailedString (this Exception exception, string indentString)
 		{
 			if (exception == null)

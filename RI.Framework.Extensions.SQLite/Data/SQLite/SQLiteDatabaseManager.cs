@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Data.SQLite;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 
@@ -27,6 +28,7 @@ namespace RI.Framework.Data.SQLite
 	///         See <see cref="IDatabaseManager" /> for more details.
 	///     </para>
 	/// </remarks>
+	[SuppressMessage ("ReSharper", "InconsistentNaming")]
 	public sealed class SQLiteDatabaseManager : IDatabaseManager
 	{
 		#region Instance Constructor/Destructor
