@@ -19,7 +19,7 @@ namespace RI.Framework.Data.Repository.Views
 	///     <para>
 	///         An <see cref="EntityView{TEntity,TViewObject}" /> can be used to provide a workable view onto data which is delivered using a <see cref="IRepositorySet{T}" />.
 	///         The items of a <see cref="IRepositorySet{T}" /> are processed and wrapped in an <see cref="EntityViewObject{TEntity}" /> instance to provide additional view-related functionality for each item.
-	///         Therefore, an <see cref="EntityView{TEntity,TViewObject}" /> can be seen as an additional buffering layer on top of a <see cref="IRepositorySet{T}" /> which can be used to paginate, filter, and manage the items of the <see cref="IRepositorySet{T}" />.
+	///         Therefore, an <see cref="EntityView{TEntity,TViewObject}" /> can be seen as an additional layer on top of a <see cref="IRepositorySet{T}" /> which can be used to paginate, filter, and manage the items of the <see cref="IRepositorySet{T}" />.
 	///     </para>
 	///     <para>
 	///         <see cref="EntityView{TEntity,TViewObject}" /> hides some of the complexity of <see cref="IRepositorySet{T}" /> by presenting the items through simple collections (<see cref="Entities" /> and <see cref="ViewObjects" />).
@@ -117,6 +117,7 @@ namespace RI.Framework.Data.Repository.Views
 		private IEnumerable<TEntity> _source;
 
 		private bool _updateSource;
+		private bool _isUpdating;
 
 		#endregion
 
@@ -131,6 +132,11 @@ namespace RI.Framework.Data.Repository.Views
 		/// <value>
 		///     true if the items can be edited, false otherwise.
 		/// </value>
+		/// <remarks>
+		/// <para>
+		/// The default value is true.
+		/// </para>
+		/// </remarks>
 		public bool AllowEdit
 		{
 			get
@@ -150,6 +156,11 @@ namespace RI.Framework.Data.Repository.Views
 		/// <value>
 		///     true if the items can be selected, false otherwise.
 		/// </value>
+		/// <remarks>
+		/// <para>
+		/// The default value is true.
+		/// </para>
+		/// </remarks>
 		public bool AllowSelect
 		{
 			get
@@ -256,10 +267,10 @@ namespace RI.Framework.Data.Repository.Views
 		public int EntityFilteredCount { get; private set; }
 
 		/// <summary>
-		///     Gets the total number of items which could be presented by this view, if no <see cref="Filter" /> would be set.
+		///     Gets the total number of items presented by this view, before <see cref="Filter" /> is applied to the data source.
 		/// </summary>
 		/// <value>
-		///     The total number of items which could be presented by this view.
+		///     The total number of items presented by this view.
 		/// </value>
 		/// <remarks>
 		///     <para>
@@ -269,6 +280,28 @@ namespace RI.Framework.Data.Repository.Views
 		/// </remarks>
 		public int EntityTotalCount { get; private set; }
 
+		/// <summary>
+		/// Gets or sets the entity filter.
+		/// </summary>
+		/// <value>
+		/// The entity filter.
+		/// </value>
+		/// <remarks>
+		/// <note type="important">
+		/// Changing <see cref="Filter"/> calls <see cref="Update()"/> and resets <see cref="PageNumber"/> to 1 (if current page number is higher than 1).
+		/// </note>
+		/// <para>
+		/// The entity filter is an arbitrary filter object which is used to filter the data source before its entities are presented by the view.
+		/// Note that the filter is applied before pagination is performed.
+		/// </para>
+		/// <para>
+		/// The filter object itself is used by <see cref="IRepositorySet{T}.GetFiltered(object, int, int, out int, out int, out int)"/> and therefore depends on its implementation.
+		/// The filter object itself is not directly used by the view.
+		/// </para>
+		/// <para>
+		/// The default value is null.
+		/// </para>
+		/// </remarks>
 		public object Filter
 		{
 			get
@@ -278,12 +311,24 @@ namespace RI.Framework.Data.Repository.Views
 			set
 			{
 				this._filter = value;
-				this.OnPropertyChanged(nameof(this.Filter));
-
 				this.Update(true);
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets whether changes in <see cref="Source"/> should be observed and replicated into <see cref="Entities"/> and <see cref="ViewObjects"/>.
+		/// </summary>
+		/// <value>
+		/// true if changes in <see cref="Source"/> should be replicated, false otherwise.
+		/// </value>
+		/// <remarks>
+		/// <para>
+		/// The default value is true.
+		/// </para>
+		/// <para>
+		/// In order to be observable, the source must implement <see cref="INotifyCollectionChanged"/>.
+		/// </para>
+		/// </remarks>
 		public bool ObserveSource
 		{
 			get
@@ -298,10 +343,10 @@ namespace RI.Framework.Data.Repository.Views
 		}
 
 		/// <summary>
-		///     Gets the number of pages actually available by this view, after <see cref="Filter" /> is applied to the data source.
+		///     Gets the number of pages actually available by this view, before <see cref="Filter" /> is applied to the data source.
 		/// </summary>
 		/// <value>
-		///     The number of pages actually available by this view.
+		///     The total number of pages available by this view.
 		/// </value>
 		/// <remarks>
 		///     <para>
@@ -311,6 +356,33 @@ namespace RI.Framework.Data.Repository.Views
 		/// </remarks>
 		public int PageFilteredCount { get; private set; }
 
+		/// <summary>
+		/// Gets or sets the current page number.
+		/// </summary>
+		/// <value>
+		/// The current page number.
+		/// </value>
+		/// <remarks>
+		/// <note type="important">
+		/// Changing <see cref="PageNumber"/> calls <see cref="Update()"/>.
+		/// </note>
+		/// <note type="important">
+		/// <see cref="PageNumber"/> is one-indexed, so the first page has the number 1 and not 0.
+		/// </note>
+		/// <para>
+		/// The page number 0 is the &quot;empty&quot; page which always exists and is always empty, regardless of the actual number of items available from the data source.
+		/// </para>
+		/// <para>
+		/// The page number 1 is the first page and always exists, even if the data source provides no entities (in which case the first page is empty).
+		/// </para>
+		/// <para>
+		/// The page number is reset to 1 (if it is not already 0 or 1), when one of the following properties is changed: <see cref="Filter"/>, <see cref="PageSize"/>, <see cref="Source"/>.
+		/// </para>
+		/// <para>
+		/// The default value is 0.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> is less than zero, is higher than <see cref="PageTotalCount"/> or is higher than one when no pages are available.</exception>
 		public int PageNumber
 		{
 			get
@@ -330,12 +402,28 @@ namespace RI.Framework.Data.Repository.Views
 				}
 
 				this._pageNumber = value;
-				this.OnPropertyChanged(nameof(this.PageNumber));
-
 				this.Update(false);
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the current page size.
+		/// </summary>
+		/// <value>
+		/// The current page size.
+		/// </value>
+		/// <remarks>
+		/// <note type="important">
+		/// Changing <see cref="PageSize"/> calls <see cref="Update()"/> and resets <see cref="PageNumber"/> to 1 (if current page number is higher than 1).
+		/// </note>
+		/// <para>
+		/// A page size of 0 will set the page size to infinite so that all entities available by the data source fit in one page (so there will be exactly one page available).
+		/// </para>
+		/// <para>
+		/// The default value is 0.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> is less than zero.</exception>
 		public int PageSize
 		{
 			get
@@ -350,14 +438,12 @@ namespace RI.Framework.Data.Repository.Views
 				}
 
 				this._pageSize = value;
-				this.OnPropertyChanged(nameof(this.PageSize));
-
 				this.Update(true);
 			}
 		}
 
 		/// <summary>
-		///     Gets the total number of pages which could be available by this view, if no <see cref="Filter" /> would be set.
+		///     Gets the total number of pages available by this view, if no <see cref="Filter" /> would be set.
 		/// </summary>
 		/// <value>
 		///     The total number of pages which could be available by this view.
@@ -434,8 +520,34 @@ namespace RI.Framework.Data.Repository.Views
 			}
 		}
 
+		/// <summary>
+		/// Gets the <see cref="IRepositorySet{T}" /> this view is associated with.
+		/// </summary>
+		/// <value>
+		/// The <see cref="IRepositorySet{T}" /> this view is associated with.
+		/// </value>
 		public IRepositorySet<TEntity> Set { get; private set; }
 
+		/// <summary>
+		/// Gets or sets the data source presented by this view.
+		/// </summary>
+		/// <value>
+		/// The data source presented by this view.
+		/// </value>
+		/// <remarks>
+		/// <note type="important">
+		/// Changing <see cref="Source"/> calls <see cref="Update()"/> and resets <see cref="PageNumber"/> to 1 (if current page number is higher than 1).
+		/// </note>
+		/// <para>
+		/// The entities of <see cref="Source"/> must be managed by the repository set specified by <see cref="Set"/>.
+		///  </para>
+		/// <para>
+		/// If no data source is specified (<see cref="Source"/> is set to null), all entities managed by <see cref="Set"/> are presented by this view.
+		/// </para>
+		/// <para>
+		/// For change replication between <see cref="Source"/> and this view, see <see cref="ObserveSource"/> and <see cref="UpdateSource"/>.
+		/// </para>
+		/// </remarks>
 		public IEnumerable<TEntity> Source
 		{
 			get
@@ -460,13 +572,26 @@ namespace RI.Framework.Data.Repository.Views
 					((INotifyCollectionChanged)this._source).CollectionChanged += this.SourceChangedHandler;
 				}
 
-				this.OnPropertyChanged(nameof(this.Source));
 				this.OnSourceChanged(oldItems, newItems);
 
 				this.Update(true);
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets whether changes in <see cref="Entities"/> and <see cref="ViewObjects"/> should be replicated into <see cref="Source"/>.
+		/// </summary>
+		/// <value>
+		/// true if changes in <see cref="Entities"/> and <see cref="ViewObjects"/> should be replicated, false otherwise.
+		/// </value>
+		/// <remarks>
+		/// <para>
+		/// The default value is true.
+		/// </para>
+		/// <para>
+		/// In order to be updateable, the source must implement <see cref="ICollection{TEntity}"/>.
+		/// </para>
+		/// </remarks>
 		public bool UpdateSource
 		{
 			get
@@ -494,16 +619,63 @@ namespace RI.Framework.Data.Repository.Views
 		/// </remarks>
 		public ObservableCollection<TViewObject> ViewObjects { get; private set; }
 
+		/// <summary>
+		/// Gets whether the current entity being added to <see cref="Entities"/> or <see cref="ViewObjects"/> is attached instead of added (from the <see cref="Set"/>s point-of-view).
+		/// </summary>
+		/// <value>
+		/// true if the entity is attaced, false if it is added.
+		/// </value>
 		protected bool EntityToAddIsAttached { get; private set; }
 
+		/// <summary>
+		/// Gets whether the view is currently being initialized.
+		/// </summary>
+		/// <value>
+		/// true if the view is being initialized, false otherwise.
+		/// </value>
 		protected bool IsInitializing { get; private set; }
 
-		protected bool IsUpdating { get; private set; }
+		/// <summary>
+		/// Gets whether the view is currently being updated.
+		/// </summary>
+		/// <value>
+		/// true if the view is being updated, false otherwise.
+		/// </value>
+		public bool IsUpdating
+		{
+			get
+			{
+				return this._isUpdating;
+			}
+			private set
+			{
+				this._isUpdating = value;
+				this.OnPropertyChanged(nameof(this.IsUpdating));
+			}
+		}
 
+		/// <summary>
+		/// Gets whether change handling of <see cref="Entities"/> is currently suppressed.
+		/// </summary>
+		/// <value>
+		/// true if change handling of <see cref="Entities"/> is currently suppressed, false otherwise.
+		/// </value>
 		protected bool SuppressEntitiesChangeHandling { get; private set; }
 
+		/// <summary>
+		/// Gets whether change handling of <see cref="Source"/> is currently suppressed.
+		/// </summary>
+		/// <value>
+		/// true if change handling of <see cref="Source"/> is currently suppressed, false otherwise.
+		/// </value>
 		protected bool SuppressSourceChangeHandling { get; private set; }
 
+		/// <summary>
+		/// Gets whether change handling of <see cref="ViewObjects"/> is currently suppressed.
+		/// </summary>
+		/// <value>
+		/// true if change handling of <see cref="ViewObjects"/> is currently suppressed, false otherwise.
+		/// </value>
 		protected bool SuppressViewObjectsChangeHandling { get; private set; }
 
 		private NotifyCollectionChangedEventHandler EntitiesChangedHandler { get; set; }
@@ -519,30 +691,55 @@ namespace RI.Framework.Data.Repository.Views
 
 		#region Instance Events
 
-		public event EventHandler<EntityViewItemsEventArgs<TEntity>> EntitiesChanged;
-
-		//TODO: On method
+		/// <summary>
+		/// Raised after an entity has started being edited.
+		/// </summary>
 		public event EventHandler<EntityViewItemEventArgs<TViewObject>> EntityBeginEdit;
 
-		//TODO: On method
+		/// <summary>
+		/// Raised after an entity has canceled its editing.
+		/// </summary>
 		public event EventHandler<EntityViewItemEventArgs<TViewObject>> EntityCancelEdit;
 
-		//TODO: On method
+		/// <summary>
+		/// Raised after an entity was deselected.
+		/// </summary>
 		public event EventHandler<EntityViewItemEventArgs<TViewObject>> EntityDeselected;
 
-		//TODO: On method
+		/// <summary>
+		/// Raised after an entity has finished its editing.
+		/// </summary>
 		public event EventHandler<EntityViewItemEventArgs<TViewObject>> EntityEndEdit;
 
-		//TODO: On method
+		/// <summary>
+		/// Raised after an entity was selected.
+		/// </summary>
 		public event EventHandler<EntityViewItemEventArgs<TViewObject>> EntitySelected;
 
+		/// <summary>
+		/// Raised after <see cref="Entities"/> has changed.
+		/// </summary>
+		public event EventHandler<EntityViewItemsEventArgs<TEntity>> EntitiesChanged;
+
+		/// <summary>
+		/// Raised after <see cref="ViewObjects"/> has changed.
+		/// </summary>
+		public event EventHandler<EntityViewItemsEventArgs<TViewObject>> ViewObjectsChanged;
+
+		/// <summary>
+		/// Raised after <see cref="Source"/> has changed.
+		/// </summary>
 		public event EventHandler<EntityViewItemsEventArgs<TEntity>> SourceChanged;
 
+		/// <summary>
+		/// Raised after <see cref="Update()"/> finished all processing.
+		/// </summary>
 		public event EventHandler<EntityViewUpdateEventArgs> Updated;
 
+		/// <summary>
+		/// Raised before <see cref="Update()"/> starts any processing.
+		/// </summary>
 		public event EventHandler<EntityViewUpdateEventArgs> Updating;
-
-		public event EventHandler<EntityViewItemsEventArgs<TViewObject>> ViewObjectsChanged;
 
 		#endregion
 
@@ -551,6 +748,14 @@ namespace RI.Framework.Data.Repository.Views
 
 		#region Instance Methods
 
+		/// <summary>
+		/// Gets the view object for the specified entity.
+		/// </summary>
+		/// <param name="entity">The entity.</param>
+		/// <returns>
+		/// The view object which is used to wrap the specified entity or null if the entity is currently not presented by the view.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"><paramref name="entity"/> is null.</exception>
 		public TViewObject GetViewObjectForEntity (TEntity entity)
 		{
 			if (entity == null)
@@ -561,6 +766,17 @@ namespace RI.Framework.Data.Repository.Views
 			return (from x in this.ViewObjects where object.ReferenceEquals(x.Entity, entity) select x).FirstOrDefault();
 		}
 
+		/// <summary>
+		/// Rebuilds and updates the view.
+		/// </summary>
+		/// <remarks>
+		/// <para>
+		/// <see cref="Update()"/> should only be called if fundamental characteristics of the view have changed and which are not automatically handled by the view itself.
+		/// </para>
+		/// <para>
+		/// <see cref="Update()"/> is automatically called by changing the following properties: <see cref="Filter"/>, <see cref="PageNumber"/>, <see cref="PageSize"/>, <see cref="Source"/>.
+		/// </para>
+		/// </remarks>
 		public void Update ()
 		{
 			this.Update(false);
@@ -750,11 +966,13 @@ namespace RI.Framework.Data.Repository.Views
 
 			try
 			{
+				bool pageNumberReallyReset = resetPageNumber && (this.PageNumber > 1);
+
 				this.IsUpdating = true;
 
-				this.OnUpdating(resetPageNumber);
+				this.OnUpdating(pageNumberReallyReset);
 
-				if (resetPageNumber && (this.PageNumber > 1))
+				if (pageNumberReallyReset)
 				{
 					this.PageNumber = 1;
 				}
@@ -795,11 +1013,12 @@ namespace RI.Framework.Data.Repository.Views
 				this.PageTotalCount = pageTotalCount;
 				this.PageFilteredCount = pageFilteredCount;
 
-				this.OnPropertyChanged(nameof(this.Entities));
-				this.OnPropertyChanged(nameof(this.ViewObjects));
-
 				this.OnEntitiesChanged(oldEntities, this.Entities);
 				this.OnViewObjectsChanged(oldViewObjects, this.ViewObjects);
+
+				this.OnPropertyChanged(nameof(this.Entities));
+				this.OnPropertyChanged(nameof(this.ViewObjects));
+				this.OnPropertyChanged(nameof(this.Source));
 
 				this.OnPropertyChanged(nameof(this.EntityTotalCount));
 				this.OnPropertyChanged(nameof(this.EntityFilteredCount));
@@ -812,7 +1031,11 @@ namespace RI.Framework.Data.Repository.Views
 				this.OnPropertyChanged(nameof(this.EditedEntity));
 				this.OnPropertyChanged(nameof(this.EditedViewObject));
 
-				this.OnUpdated(resetPageNumber);
+				this.OnPropertyChanged(nameof(this.Filter));
+				this.OnPropertyChanged(nameof(this.PageSize));
+				this.OnPropertyChanged(nameof(this.PageNumber));
+
+				this.OnUpdated(pageNumberReallyReset);
 			}
 			finally
 			{
@@ -1063,7 +1286,7 @@ namespace RI.Framework.Data.Repository.Views
 			this.OnPropertyChanged(nameof(this.SelectedEntity));
 			this.OnPropertyChanged(nameof(this.SelectedViewObject));
 
-			this.EntityDeselected?.Invoke(this, new EntityViewItemEventArgs<TViewObject>(viewObject));
+			this.OnEntityDeselected(viewObject);
 		}
 
 		protected virtual void EntityEditBegin (TViewObject viewObject)
@@ -1079,7 +1302,7 @@ namespace RI.Framework.Data.Repository.Views
 			this.OnPropertyChanged(nameof(this.EditedEntity));
 			this.OnPropertyChanged(nameof(this.EditedViewObject));
 
-			this.EntityBeginEdit?.Invoke(this, new EntityViewItemEventArgs<TViewObject>(viewObject));
+			this.OnEntityBeginEdit(viewObject);
 		}
 
 		protected virtual void EntityEditCancel (TViewObject viewObject)
@@ -1095,7 +1318,7 @@ namespace RI.Framework.Data.Repository.Views
 			this.OnPropertyChanged(nameof(this.EditedEntity));
 			this.OnPropertyChanged(nameof(this.EditedViewObject));
 
-			this.EntityCancelEdit?.Invoke(this, new EntityViewItemEventArgs<TViewObject>(viewObject));
+			this.OnEntityCancelEdit(viewObject);
 		}
 
 		protected virtual void EntityEditEnd (TViewObject viewObject)
@@ -1111,7 +1334,7 @@ namespace RI.Framework.Data.Repository.Views
 			this.OnPropertyChanged(nameof(this.EditedEntity));
 			this.OnPropertyChanged(nameof(this.EditedViewObject));
 
-			this.EntityEndEdit?.Invoke(this, new EntityViewItemEventArgs<TViewObject>(viewObject));
+			this.OnEntityEndEdit(viewObject);
 		}
 
 		protected virtual void EntityModify (TViewObject viewObject)
@@ -1146,7 +1369,7 @@ namespace RI.Framework.Data.Repository.Views
 			this.OnPropertyChanged(nameof(this.SelectedEntity));
 			this.OnPropertyChanged(nameof(this.SelectedViewObject));
 
-			this.EntitySelected?.Invoke(this, new EntityViewItemEventArgs<TViewObject>(viewObject));
+			this.OnEntitySelected(viewObject);
 		}
 
 		protected virtual void EntityValidate (TViewObject viewObject)
@@ -1189,6 +1412,31 @@ namespace RI.Framework.Data.Repository.Views
 		protected virtual void OnViewObjectsChanged (IList<TViewObject> oldItems, IList<TViewObject> newItems)
 		{
 			this.ViewObjectsChanged?.Invoke(this, new EntityViewItemsEventArgs<TViewObject>(oldItems, newItems));
+		}
+
+		protected virtual void OnEntityBeginEdit(TViewObject viewObject)
+		{
+			this.EntityBeginEdit?.Invoke(this, new EntityViewItemEventArgs<TViewObject>(viewObject));
+		}
+
+		protected virtual void OnEntityCancelEdit(TViewObject viewObject)
+		{
+			this.EntityCancelEdit?.Invoke(this, new EntityViewItemEventArgs<TViewObject>(viewObject));
+		}
+
+		protected virtual void OnEntityDeselected(TViewObject viewObject)
+		{
+			this.EntityDeselected?.Invoke(this, new EntityViewItemEventArgs<TViewObject>(viewObject));
+		}
+
+		protected virtual void OnEntityEndEdit(TViewObject viewObject)
+		{
+			this.EntityEndEdit?.Invoke(this, new EntityViewItemEventArgs<TViewObject>(viewObject));
+		}
+
+		protected virtual void OnEntitySelected(TViewObject viewObject)
+		{
+			this.EntitySelected?.Invoke(this, new EntityViewItemEventArgs<TViewObject>(viewObject));
 		}
 
 		#endregion
@@ -1425,16 +1673,19 @@ namespace RI.Framework.Data.Repository.Views
 		#endregion
 	}
 
+	/// <inheritdoc cref="EntityView{TEntity,TViewObject}"/>
 	public class EntityView <TEntity> : EntityView<TEntity, EntityViewObject<TEntity>>
 		where TEntity : class, new()
 	{
 		#region Instance Constructor/Destructor
 
+		/// <inheritdoc cref="EntityView{TEntity,TViewObject}(IRepositorySet{TEntity})"/>.
 		public EntityView (IRepositorySet<TEntity> set)
 			: base(set)
 		{
 		}
 
+		/// <inheritdoc cref="EntityView{TEntity,TViewObject}(IRepositorySet{TEntity}, IEnumerable{TEntity})"/>.
 		public EntityView (IRepositorySet<TEntity> set, IEnumerable<TEntity> source)
 			: base(set, source)
 		{

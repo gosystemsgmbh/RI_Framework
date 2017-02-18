@@ -15,6 +15,7 @@ using RI.Framework.Data.EF.Configuration;
 using RI.Framework.Data.EF.Filter;
 using RI.Framework.Data.EF.Validation;
 using RI.Framework.Data.Repository;
+using RI.Framework.Data.Repository.Entities;
 using RI.Framework.Services;
 using RI.Framework.Services.Logging;
 
@@ -164,8 +165,14 @@ namespace RI.Framework.Data.EF
 			}
 
 			this.EnableDatabaseLogging = true;
+			this.FixOnValidateEnabled = true;
+			this.FixOnSaveEnabled = true;
+			this.EntitySelfErrorTrackingEnabled = true;
+			this.EntitySelfChangeTrackingEnabled = true;
+
 			this.Sets = new SetCollection();
 
+			this.Database.CommandTimeout = null;
 			this.Database.Log = this.LogDatabase;
 
 			this.Configuration.AutoDetectChangesEnabled = true;
@@ -174,9 +181,6 @@ namespace RI.Framework.Data.EF
 			this.Configuration.ProxyCreationEnabled = true;
 			this.Configuration.UseDatabaseNullSemantics = true;
 			this.Configuration.ValidateOnSaveEnabled = true;
-
-			this.FixOnValidateEnabled = true;
-			this.FixOnSaveEnabled = true;
 		}
 
 		#endregion
@@ -228,6 +232,32 @@ namespace RI.Framework.Data.EF
 		/// </remarks>
 		public bool FixOnValidateEnabled { get; set; }
 
+		/// <summary>
+		///     Gets or sets whether entity self change tracking using <see cref="IEntityChangeTracking"/> is enabled or not.
+		/// </summary>
+		/// <value>
+		///     true if enabled, false otherwise.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         The default value is true.
+		///     </para>
+		/// </remarks>
+		public bool EntitySelfChangeTrackingEnabled { get; set; }
+
+		/// <summary>
+		///     Gets or sets whether entity self error tracking using <see cref="IEntityErrorTracking"/> is enabled or not.
+		/// </summary>
+		/// <value>
+		///     true if enabled, false otherwise.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         The default value is true.
+		///     </para>
+		/// </remarks>
+		public bool EntitySelfErrorTrackingEnabled { get; set; }
+
 		private SetCollection Sets { get; set; }
 
 		#endregion
@@ -245,7 +275,7 @@ namespace RI.Framework.Data.EF
 			this.ChangeTracker.DetectChanges();
 			foreach (DbEntityEntry entry in this.ChangeTracker.Entries())
 			{
-				if (this.ShouldValidateEntity(entry))
+				if (this.ShouldFixEntity(entry))
 				{
 					this.FixEntity(entry);
 				}
@@ -270,6 +300,7 @@ namespace RI.Framework.Data.EF
 			{
 				this.Sets.Add(this.CreateSetInternal(type));
 			}
+
 			return this.Sets[type];
 		}
 
@@ -322,9 +353,33 @@ namespace RI.Framework.Data.EF
 
 		private RepositoryDbSet CreateSetInternal (Type type)
 		{
-			MethodInfo method = this.GetType().GetMethod(nameof(this.CreateSet), BindingFlags.Instance | BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.NonPublic);
+			MethodInfo method = this.GetType().GetMethod(nameof(this.CreateSet), BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 			MethodInfo genericMethod = method.MakeGenericMethod(type);
 			return (RepositoryDbSet)genericMethod.Invoke(this, null);
+		}
+
+		private void PerformEntitySelfChangeTracking ()
+		{
+			object context = this.OnChangeTrackingContextResolve();
+			DateTime now = DateTime.Now;
+			
+			this.ChangeTracker.DetectChanges();
+			foreach (DbEntityEntry entry in this.ChangeTracker.Entries())
+			{
+				IEntityChangeTracking entity = entry.Entity as IEntityChangeTracking;
+				if (entity != null)
+				{
+					if ((entry.State & EntityState.Added) == EntityState.Added)
+					{
+						entity.SetCreation(context, now);
+					}
+
+					if ((entry.State & EntityState.Modified) == EntityState.Modified)
+					{
+						entity.SetModification(context, now);
+					}
+				}
+			}
 		}
 
 		#endregion
@@ -333,6 +388,23 @@ namespace RI.Framework.Data.EF
 
 
 		#region Virtuals
+
+		/// <summary>
+		/// Determines whether an entity needs to be fixed.
+		/// </summary>
+		/// <param name="entityEntry">The entity entry of the entity.</param>
+		/// <returns>
+		/// true if the entity needs to be fixed, false otherwise.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// By default, all added or modified entities are specified to be fixed.
+		/// </para>
+		/// </remarks>
+		protected virtual bool ShouldFixEntity (DbEntityEntry entityEntry)
+		{
+			return (entityEntry.State & (EntityState.Added | EntityState.Modified)) != 0;
+		}
 
 		/// <summary>
 		///     Called when a <see cref="RepositoryDbSet{T}" /> is required which does not yet exist.
@@ -356,7 +428,7 @@ namespace RI.Framework.Data.EF
 		protected virtual RepositoryDbSet<T> CreateSet <T> ()
 			where T : class
 		{
-			return new RepositoryDbSet<T>(this, this.Set<T>());
+			return new RepositoryDbSet<T>(this, base.Set<T>());
 		}
 
 		/// <summary>
@@ -365,7 +437,7 @@ namespace RI.Framework.Data.EF
 		/// <param name="entityEntry"> The entity to fix. </param>
 		protected virtual void FixEntity (DbEntityEntry entityEntry)
 		{
-			IEntityValidation validator = RepositoryDbContext.GetValidator(this, entityEntry.Entity.GetType());
+			IEntityValidation validator = this.GetValidator(entityEntry.Entity.GetType());
 			validator?.Fix(this, entityEntry);
 		}
 
@@ -449,6 +521,19 @@ namespace RI.Framework.Data.EF
 			validators.AddFromAssembly(this.GetType().Assembly);
 		}
 
+		/// <summary>
+		/// Tries to resolve the currently used change tracking context for use with <see cref="IEntityChangeTracking"/>.
+		/// </summary>
+		/// <returns>
+		/// The resolved change tracking context or null if no change tracking context is available.
+		/// </returns>
+		protected virtual object OnChangeTrackingContextResolve ()
+		{
+			ChangeTrackingContextResolveEventArgs eventArgs = new ChangeTrackingContextResolveEventArgs();
+			this.ChangeTrackingContextResolve?.Invoke(this, eventArgs);
+			return eventArgs.ChangeTrackingContext;
+		}
+
 		#endregion
 
 
@@ -457,11 +542,30 @@ namespace RI.Framework.Data.EF
 		#region Overrides
 
 		/// <inheritdoc />
+		public override DbSet Set (Type entityType)
+		{
+			RepositoryDbSet set = this.GetSet(entityType);
+			return set.Set;
+		}
+
+		/// <inheritdoc />
+		public override DbSet<TEntity> Set <TEntity> ()
+		{
+			RepositoryDbSet<TEntity> set = this.GetSet<TEntity>();
+			return set.Set;
+		}
+
+		/// <inheritdoc />
 		public override int SaveChanges ()
 		{
-			if (this.FixOnSaveEnabled && (!(this.Configuration.ValidateOnSaveEnabled && this.FixOnValidateEnabled)))
+			if (this.FixOnSaveEnabled)
 			{
 				this.FixEntities();
+			}
+
+			if (this.EntitySelfChangeTrackingEnabled)
+			{
+				this.PerformEntitySelfChangeTracking();
 			}
 
 			return base.SaveChanges();
@@ -470,20 +574,28 @@ namespace RI.Framework.Data.EF
 		/// <inheritdoc />
 		public override Task<int> SaveChangesAsync (CancellationToken cancellationToken)
 		{
-			if (this.FixOnSaveEnabled && (!(this.Configuration.ValidateOnSaveEnabled && this.FixOnValidateEnabled)))
+			if (this.FixOnSaveEnabled)
 			{
 				this.FixEntities();
+			}
+
+			if (this.EntitySelfChangeTrackingEnabled)
+			{
+				this.PerformEntitySelfChangeTracking();
 			}
 
 			return base.SaveChangesAsync(cancellationToken);
 		}
 
 		/// <inheritdoc />
+		public sealed override Task<int> SaveChangesAsync () => base.SaveChangesAsync();
+
+		/// <inheritdoc />
 		protected override void Dispose (bool disposing)
 		{
-			this.Sets.Clear();
-
 			base.Dispose(disposing);
+
+			this.Sets.Clear();
 
 			this.Database.Log = null;
 		}
@@ -499,13 +611,19 @@ namespace RI.Framework.Data.EF
 		/// <inheritdoc />
 		protected override DbEntityValidationResult ValidateEntity (DbEntityEntry entityEntry, IDictionary<object, object> items)
 		{
-			if (this.FixOnValidateEnabled)
+			if (this.FixOnValidateEnabled && this.ShouldFixEntity(entityEntry))
 			{
 				this.FixEntity(entityEntry);
 			}
-
-			IEntityValidation validator = RepositoryDbContext.GetValidator(this, entityEntry.Entity.GetType());
+			
+			IEntityValidation validator = this.GetValidator(entityEntry.Entity.GetType());
 			DbEntityValidationResult result = validator?.Validate(this, entityEntry);
+
+			if (this.EntitySelfErrorTrackingEnabled)
+			{
+				(entityEntry.Entity as IEntityErrorTracking)?.SetErrors(result?.ToRepositoryErrors());
+			}
+
 			return result ?? base.ValidateEntity(entityEntry, items);
 		}
 
@@ -549,6 +667,9 @@ namespace RI.Framework.Data.EF
 
 		/// <inheritdoc />
 		void IRepositoryContext.SaveChanges () => this.SaveChanges();
+
+		/// <inheritdoc />
+		public event EventHandler<ChangeTrackingContextResolveEventArgs> ChangeTrackingContextResolve;
 
 		#endregion
 

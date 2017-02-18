@@ -37,7 +37,7 @@ namespace RI.Framework.Data.Database
 		/// <value>
 		///     The new state of the database.
 		/// </value>
-		public DatabaseState NewState { get; private set; }
+		public DatabaseState NewState { get; }
 
 
 		/// <summary>
@@ -46,7 +46,7 @@ namespace RI.Framework.Data.Database
 		/// <value>
 		///     The old state of the database.
 		/// </value>
-		public DatabaseState OldState { get; private set; }
+		public DatabaseState OldState { get; }
 
 		#endregion
 	}

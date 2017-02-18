@@ -32,9 +32,44 @@ namespace RI.Framework.Data.EF
 	{
 		#region Instance Constructor/Destructor
 
-		internal RepositoryDbSet ()
+		internal RepositoryDbSet (RepositoryDbContext repository, DbSet set)
 		{
+			if (repository == null)
+			{
+				throw new ArgumentNullException(nameof(repository));
+			}
+
+			if (set == null)
+			{
+				throw new ArgumentNullException(nameof(set));
+			}
+
+			this.Repository = repository;
+			this.Set = set;
 		}
+
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
+
+		/// <summary>
+		///     Gets the repository this repository set belongs to.
+		/// </summary>
+		/// <value>
+		///     The repository this repository set belongs to.
+		/// </value>
+		public RepositoryDbContext Repository { get; private set; }
+
+		/// <summary>
+		///     Gets the underlying Entity Framework <see cref="DbSet" /> used by this repository set.
+		/// </summary>
+		/// <value>
+		///     The underlying Entity Framework <see cref="DbSet" /> used by this repository set.
+		/// </value>
+		public DbSet Set { get; private set; }
 
 		#endregion
 
@@ -260,18 +295,13 @@ namespace RI.Framework.Data.EF
 		/// <param name="set"> The underlying Entity Framework <see cref="DbSet{TEntity}" /> used by this repository set. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="repository" /> or <paramref name="set" /> is null. </exception>
 		public RepositoryDbSet (RepositoryDbContext repository, DbSet<T> set)
+			: base(repository, set)
 		{
-			if (repository == null)
-			{
-				throw new ArgumentNullException(nameof(repository));
-			}
-
 			if (set == null)
 			{
 				throw new ArgumentNullException(nameof(set));
 			}
 
-			this.Repository = repository;
 			this.Set = set;
 		}
 
@@ -283,20 +313,12 @@ namespace RI.Framework.Data.EF
 		#region Instance Properties/Indexer
 
 		/// <summary>
-		///     Gets the repository this repository set belongs to.
-		/// </summary>
-		/// <value>
-		///     The repository this repository set belongs to.
-		/// </value>
-		public RepositoryDbContext Repository { get; private set; }
-
-		/// <summary>
 		///     Gets the underlying Entity Framework <see cref="DbSet{TEntity}" /> used by this repository set.
 		/// </summary>
 		/// <value>
 		///     The underlying Entity Framework <see cref="DbSet{TEntity}" /> used by this repository set.
 		/// </value>
-		public DbSet<T> Set { get; private set; }
+		public new DbSet<T> Set { get; private set; }
 
 		#endregion
 
@@ -625,7 +647,7 @@ namespace RI.Framework.Data.EF
 			this.Repository.ChangeTracker.DetectChanges();
 
 			DbEntityEntry<T> entry = this.Repository.Entry(entity);
-			return entry == null ? false : (entry.State & (EntityState.Modified | EntityState.Added | EntityState.Deleted)) != 0;
+			return entry == null ? false : ((entry.State & (EntityState.Modified | EntityState.Added | EntityState.Deleted)) != 0);
 		}
 
 		/// <inheritdoc />

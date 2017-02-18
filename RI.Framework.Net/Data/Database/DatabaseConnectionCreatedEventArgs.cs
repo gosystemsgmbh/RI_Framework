@@ -44,7 +44,7 @@ namespace RI.Framework.Data.Database
 		/// <value>
 		///     The created connection.
 		/// </value>
-		public DbConnection Connection { get; private set; }
+		public DbConnection Connection { get; }
 
 		/// <summary>
 		///     Gets whether the connection is read-only or not.
@@ -52,7 +52,7 @@ namespace RI.Framework.Data.Database
 		/// <value>
 		///     true if the connection is read-only, false otherwise.
 		/// </value>
-		public bool IsReadOnly { get; private set; }
+		public bool IsReadOnly { get; }
 
 		#endregion
 	}

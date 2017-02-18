@@ -1,5 +1,6 @@
 ﻿using System;
 
+using RI.Framework.Data.Repository.Entities;
 using RI.Framework.Utilities.Exceptions;
 
 
@@ -12,13 +13,13 @@ namespace RI.Framework.Data.Repository
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         A repository context encapsulates high-level database functionality by representing a repository/unit-of-work pattern.
+	///         A repository context encapsulates high-level database functionality by representing a repository and unit-of-work pattern.
 	///     </para>
 	///     <para>
 	///         A repository context encapsulates database access and logic and provides higher-level functionality by exposing context-specific data operations and by exposing the actual data using entities.
 	///     </para>
 	///     <para>
-	///         Repository contexts are intended to be short-living instances which are created when necessary and disposed after the data-specific tasks (&quot;unit of work&quot;) are completed.
+	///         Repository contexts are intended to be short-living instances which are created when necessary and disposed after the data-specific tasks are completed (&quot;unit of work&quot;).
 	///     </para>
 	/// </remarks>
 	public interface IRepositoryContext : IDisposable
@@ -86,5 +87,15 @@ namespace RI.Framework.Data.Repository
 		/// </remarks>
 		/// <exception cref="ObjectDisposedException"> The repository context is disposed. </exception>
 		void SaveChanges ();
+
+		/// <summary>
+		/// Raised to resolve the currently used change tracking context for <see cref="IEntityChangeTracking"/> when <see cref="Commit"/> or <see cref="SaveChanges"/> is executed.
+		/// </summary>
+		/// <remarks>
+		/// <para>
+		/// <see cref="ChangeTrackingContextResolve"/> is always called, regardless whether the processed entities support <see cref="IEntityChangeTracking"/> or not.
+		/// </para>
+		/// </remarks>
+		event EventHandler<ChangeTrackingContextResolveEventArgs> ChangeTrackingContextResolve;
 	}
 }
