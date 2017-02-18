@@ -6,6 +6,7 @@ using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.ModelConfiguration.Configuration;
 using System.Data.Entity.Validation;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -428,7 +429,7 @@ namespace RI.Framework.Data.EF
 		protected virtual RepositoryDbSet<T> CreateSet <T> ()
 			where T : class
 		{
-			return new RepositoryDbSet<T>(this, base.Set<T>());
+			return new RepositoryDbSet<T>(this, this.EFSet<T>());
 		}
 
 		/// <summary>
@@ -541,15 +542,46 @@ namespace RI.Framework.Data.EF
 
 		#region Overrides
 
+		/// <summary>
+		/// Creates a <see cref="DbSet"/> by the Entity Framework.
+		/// </summary>
+		/// <param name="entityType">The type of entities managed by the <see cref="DbSet"/>.</param>
+		/// <returns>
+		/// The created <see cref="DbSet"/>.
+		/// </returns>
+		/// <remarks>
+		/// <note type="important">
+		/// Always use this method, never <see cref="DbContext.Set"/>!
+		/// </note>
+		/// </remarks>
+		[SuppressMessage("ReSharper", "InconsistentNaming")]
+		protected virtual DbSet EFSet (Type entityType) => base.Set(entityType);
+
+		/// <summary>
+		/// Creates a <see cref="DbSet{TEntity}"/> by the Entity Framework.
+		/// </summary>
+		/// <typeparam name="TEntity">The type of entities managed by the <see cref="DbSet{TEntity}"/></typeparam>
+		/// <returns>
+		/// The created <see cref="DbSet{TEntity}"/>.
+		/// </returns>
+		/// <remarks>
+		/// <note type="important">
+		/// Always use this method, never <see cref="DbContext.Set{TEntity}"/>!
+		/// </note>
+		/// </remarks>
+		[SuppressMessage ("ReSharper", "InconsistentNaming")]
+		protected virtual DbSet<TEntity> EFSet <TEntity> ()
+			where TEntity : class => base.Set<TEntity>();
+
 		/// <inheritdoc />
-		public override DbSet Set (Type entityType)
+		public sealed override DbSet Set (Type entityType)
 		{
 			RepositoryDbSet set = this.GetSet(entityType);
 			return set.Set;
 		}
 
 		/// <inheritdoc />
-		public override DbSet<TEntity> Set <TEntity> ()
+		public sealed override DbSet<TEntity> Set <TEntity> ()
 		{
 			RepositoryDbSet<TEntity> set = this.GetSet<TEntity>();
 			return set.Set;
