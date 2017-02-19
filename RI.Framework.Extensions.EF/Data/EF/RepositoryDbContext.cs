@@ -35,6 +35,11 @@ namespace RI.Framework.Data.EF
 	/// </remarks>
 	public abstract class RepositoryDbContext : DbContext, IRepositoryContext
 	{
+		private object _changeTrackingContext;
+
+
+
+
 		#region Static Constructor/Destructor
 
 		static RepositoryDbContext ()
@@ -233,30 +238,10 @@ namespace RI.Framework.Data.EF
 		/// </remarks>
 		public bool FixOnValidateEnabled { get; set; }
 
-		/// <summary>
-		///     Gets or sets whether entity self change tracking using <see cref="IEntityChangeTracking"/> is enabled or not.
-		/// </summary>
-		/// <value>
-		///     true if enabled, false otherwise.
-		/// </value>
-		/// <remarks>
-		///     <para>
-		///         The default value is true.
-		///     </para>
-		/// </remarks>
+		/// <inheritdoc />
 		public bool EntitySelfChangeTrackingEnabled { get; set; }
 
-		/// <summary>
-		///     Gets or sets whether entity self error tracking using <see cref="IEntityErrorTracking"/> is enabled or not.
-		/// </summary>
-		/// <value>
-		///     true if enabled, false otherwise.
-		/// </value>
-		/// <remarks>
-		///     <para>
-		///         The default value is true.
-		///     </para>
-		/// </remarks>
+		/// <inheritdoc />
 		public bool EntitySelfErrorTrackingEnabled { get; set; }
 
 		private SetCollection Sets { get; set; }
@@ -361,7 +346,8 @@ namespace RI.Framework.Data.EF
 
 		private void PerformEntitySelfChangeTracking ()
 		{
-			object context = this.OnChangeTrackingContextResolve();
+			this.ChangeTrackingContext = this.ChangeTrackingContext ?? this.OnChangeTrackingContextResolve();
+
 			DateTime now = DateTime.Now;
 			
 			this.ChangeTracker.DetectChanges();
@@ -372,12 +358,12 @@ namespace RI.Framework.Data.EF
 				{
 					if ((entry.State & EntityState.Added) == EntityState.Added)
 					{
-						entity.SetCreation(context, now);
+						entity.SetCreation(this.ChangeTrackingContext, now);
 					}
 
 					if ((entry.State & EntityState.Modified) == EntityState.Modified)
 					{
-						entity.SetModification(context, now);
+						entity.SetModification(this.ChangeTrackingContext, now);
 					}
 				}
 			}
@@ -702,6 +688,9 @@ namespace RI.Framework.Data.EF
 
 		/// <inheritdoc />
 		public event EventHandler<ChangeTrackingContextResolveEventArgs> ChangeTrackingContextResolve;
+
+		/// <inheritdoc />
+		public object ChangeTrackingContext { get; set; }
 
 		#endregion
 
