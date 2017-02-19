@@ -51,7 +51,9 @@
   <ItemGroup>
     <Compile Include="Utilities\Wpf\Controls\ComboBoxChecker.cs" />
     <Compile Include="Utilities\Wpf\Controls\_NamespaceDoc.cs" />
+    <Compile Include="Utilities\Wpf\Converters\BoolVisibilityConverter.cs" />
     <Compile Include="Utilities\Wpf\Converters\ObjectBoolConverter.cs" />
+    <Compile Include="Utilities\Wpf\Converters\ObjectVisibilityConverter.cs" />
     <Compile Include="Utilities\Wpf\Markup\EventBinder.cs" />
     <Compile Include="Mvvm\ViewModel\NotificationObject.cs" />
     <Compile Include="Mvvm\ViewModel\DelegateCommand.cs" />
