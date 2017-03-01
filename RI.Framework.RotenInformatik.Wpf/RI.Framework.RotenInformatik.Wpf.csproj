@@ -58,9 +58,9 @@
     <None Include="Properties\AssemblyName.snk" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RI.Framework.Net\RI.Framework.Net.csproj">
+    <ProjectReference Include="..\RI.Framework.NetFx\RI.Framework.NetFx.csproj">
       <Project>{a7f5dd2f-63bf-4032-ad1e-14d211e0d3ed}</Project>
-      <Name>RI.Framework.Net</Name>
+      <Name>RI.Framework.NetFx</Name>
     </ProjectReference>
     <ProjectReference Include="..\RI.Framework.RotenInformatik.Shared\RI.Framework.RotenInformatik.Shared.csproj">
       <Project>{88faa6d9-0bee-4182-b414-90e3ea5a4c40}</Project>

@@ -11,7 +11,7 @@
     <!-- AssemblyName, Name, and RootNamespace are not used by SHFB but Visual Studio adds them anyway -->
     <AssemblyName>RI.Documentation.Framework.Net</AssemblyName>
     <RootNamespace>RI.Documentation.Framework.Net</RootNamespace>
-    <Name>RI.Documentation.Framework.Net</Name>
+    <Name>RI.Documentation.Framework.NetFx</Name>
     <!-- SHFB properties -->
     <FrameworkVersion>.NET Framework 4.6</FrameworkVersion>
     <OutputPath>.\Help\</OutputPath>

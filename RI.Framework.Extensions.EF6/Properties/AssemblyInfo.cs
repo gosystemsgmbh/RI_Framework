@@ -4,8 +4,8 @@ using System.Reflection;
 
 
 
-[assembly: AssemblyTitle ("RI.Framework.Net")]
-[assembly: AssemblyDescription ("RI.Framework.Net")]
+[assembly: AssemblyTitle ("RI.Framework.Extensions.EF6")]
+[assembly: AssemblyDescription ("RI.Framework.Extensions.EF6")]
 [assembly: AssemblyProduct ("Utility Framework")]
 [assembly: AssemblyCompany ("Roten Informatik")]
 [assembly: AssemblyCopyright ("Copyright (c) 2015-2017 Roten Informatik")]

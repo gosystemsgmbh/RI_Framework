@@ -4,8 +4,8 @@ using System.Reflection;
 
 
 
-[assembly: AssemblyTitle ("RI.Framework.Extensions.EntityFramework")]
-[assembly: AssemblyDescription ("RI.Framework.Extensions.EntityFramework")]
+[assembly: AssemblyTitle ("RI.Framework.WinService")]
+[assembly: AssemblyDescription ("RI.Framework.WinService")]
 [assembly: AssemblyProduct ("Utility Framework")]
 [assembly: AssemblyCompany ("Roten Informatik")]
 [assembly: AssemblyCopyright ("Copyright (c) 2015-2017 Roten Informatik")]

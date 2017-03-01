@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F0017883-0BCA-4B15-AE3C-1D0580152506}</ProjectGuid>
+    <ProjectGuid>{4CDB344E-5D01-43EA-801A-AE66846613C0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>RI.Framework</RootNamespace>
-    <AssemblyName>RI.Framework.Extensions.SQLite</AssemblyName>
+    <AssemblyName>RI.Framework.Extensions.SQLiteEF6</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
@@ -22,7 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\RI.Framework.Extensions.SQLite.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\RI.Framework.Extensions.SQLiteEF6.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,7 +31,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\RI.Framework.Extensions.SQLite.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\RI.Framework.Extensions.SQLiteEF6.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -40,6 +40,14 @@
     <AssemblyOriginatorKeyFile>Properties\AssemblyName.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -49,35 +57,17 @@
       <HintPath>..\packages\System.Data.SQLite.Core.1.0.104.0\lib\net46\System.Data.SQLite.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Data.SQLite.EF6, Version=1.0.104.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SQLite.EF6.1.0.104.0\lib\net46\System.Data.SQLite.EF6.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Data.SQLite.Linq, Version=1.0.104.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Data.SQLite.Linq.1.0.104.0\lib\net46\System.Data.SQLite.Linq.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\SQLite\Collations\CurrentCultureIgnoreCaseSQLiteCollation.cs" />
-    <Compile Include="Data\SQLite\Collations\CurrentCultureSQLiteCollation.cs" />
-    <Compile Include="Data\SQLite\Collations\InvariantCultureIgnoreCaseSQLiteCollation.cs" />
-    <Compile Include="Data\SQLite\Collations\InvariantCultureSQLiteCollation.cs" />
-    <Compile Include="Data\SQLite\Collations\OrdinalIgnoreCaseSQLiteCollation.cs" />
-    <Compile Include="Data\SQLite\Collations\OrdinalSQLiteCollation.cs" />
-    <Compile Include="Data\SQLite\Collations\TrimmedCurrentCultureIgnoreCaseSQLiteCollation.cs" />
-    <Compile Include="Data\SQLite\Collations\TrimmedCurrentCultureSQLiteCollation.cs" />
-    <Compile Include="Data\SQLite\Collations\TrimmedInvariantCultureSQLiteCollation.cs" />
-    <Compile Include="Data\SQLite\Collations\TrimmedInvariantCultureIgnoreCaseSQLiteCollation.cs" />
-    <Compile Include="Data\SQLite\Collations\TrimmedOrdinalIgnoreCaseSQLiteCollation.cs" />
-    <Compile Include="Data\SQLite\Collations\TrimmedOrdinalSQLiteCollation.cs" />
-    <Compile Include="Data\SQLite\Collations\_NamespaceDoc.cs" />
-    <Compile Include="Data\SQLite\Functions\IsNullOrEmptySQLiteFunction.cs" />
-    <Compile Include="Data\SQLite\Functions\MatchSQLiteFunction.cs" />
-    <Compile Include="Data\SQLite\Functions\RegularExpressionSQLiteFunction.cs" />
-    <Compile Include="Data\SQLite\Functions\ToEmptyIfEmptyOrNullSQLiteFunction.cs" />
-    <Compile Include="Data\SQLite\Functions\ToNullIfEmptyOrNullSQLiteFunction.cs" />
-    <Compile Include="Data\SQLite\Functions\TrimSQLiteFunction.cs" />
-    <Compile Include="Data\SQLite\Functions\_NamespaceDoc.cs" />
-    <Compile Include="Data\SQLite\SQLiteConnectionExtensions.cs" />
-    <Compile Include="Data\SQLite\SQLiteDatabaseManager.cs" />
-    <Compile Include="Data\SQLite\_NamespaceDoc.cs" />
+    <Compile Include="Data\SQLite\SQLiteDbConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -85,6 +75,14 @@
     <None Include="Properties\AssemblyName.snk" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\RI.Framework.Extensions.EF6\RI.Framework.Extensions.EF6.csproj">
+      <Project>{7cd5c68c-51e2-47dd-8be3-b71848cf4964}</Project>
+      <Name>RI.Framework.Extensions.EF6</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RI.Framework.Extensions.SQLite\RI.Framework.Extensions.SQLite.csproj">
+      <Project>{f0017883-0bca-4b15-ae3c-1d0580152506}</Project>
+      <Name>RI.Framework.Extensions.SQLite</Name>
+    </ProjectReference>
     <ProjectReference Include="..\RI.Framework.NetFx\RI.Framework.NetFx.csproj">
       <Project>{a7f5dd2f-63bf-4032-ad1e-14d211e0d3ed}</Project>
       <Name>RI.Framework.NetFx</Name>

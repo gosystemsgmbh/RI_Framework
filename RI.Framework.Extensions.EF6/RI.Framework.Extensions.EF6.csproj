@@ -4,15 +4,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{4CDB344E-5D01-43EA-801A-AE66846613C0}</ProjectGuid>
+    <ProjectGuid>{7CD5C68C-51E2-47DD-8BE3-B71848CF4964}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>RI.Framework</RootNamespace>
-    <AssemblyName>RI.Framework.Extensions.SQLiteEF</AssemblyName>
+    <AssemblyName>RI.Framework.Extensions.EF6</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -22,7 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\RI.Framework.Extensions.SQLiteEF.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\RI.Framework.Extensions.EF6.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,7 +29,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\RI.Framework.Extensions.SQLiteEF.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\RI.Framework.Extensions.EF6.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -53,39 +51,37 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Data.SQLite, Version=1.0.104.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Data.SQLite.Core.1.0.104.0\lib\net46\System.Data.SQLite.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Data.SQLite.EF6, Version=1.0.104.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Data.SQLite.EF6.1.0.104.0\lib\net46\System.Data.SQLite.EF6.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Data.SQLite.Linq, Version=1.0.104.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Data.SQLite.Linq.1.0.104.0\lib\net46\System.Data.SQLite.Linq.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\SQLite\SQLiteDbConfiguration.cs" />
+    <Compile Include="Data\EF\Configuration\EntityConfiguration.cs" />
+    <Compile Include="Data\EF\Configuration\IEntityConfiguration.cs" />
+    <Compile Include="Data\EF\Configuration\_NamespaceDoc.cs" />
+    <Compile Include="Data\EF\DbContextExtensions.cs" />
+    <Compile Include="Data\EF\DbEntityValidationResultExtensions.cs" />
+    <Compile Include="Data\EF\Filter\EntityFilter.cs" />
+    <Compile Include="Data\EF\Filter\FilterRegistrar.cs" />
+    <Compile Include="Data\EF\Filter\IEntityFilter.cs" />
+    <Compile Include="Data\EF\Filter\_NamespaceDoc.cs" />
+    <Compile Include="Data\EF\RepositoryDbContext.cs" />
+    <Compile Include="Data\EF\RepositoryDbSet.cs" />
+    <Compile Include="Data\EF\ServiceLocatorDbDependencyResolver.cs" />
+    <Compile Include="Data\EF\Validation\EntityValidation.cs" />
+    <Compile Include="Data\EF\Validation\IEntityValidation.cs" />
+    <Compile Include="Data\EF\Validation\ValidationRegistrar.cs" />
+    <Compile Include="Data\EF\Validation\_NamespaceDoc.cs" />
+    <Compile Include="Data\EF\_NamespaceDoc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
     <None Include="Properties\AssemblyName.snk" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RI.Framework.Extensions.EF\RI.Framework.Extensions.EF.csproj">
-      <Project>{7cd5c68c-51e2-47dd-8be3-b71848cf4964}</Project>
-      <Name>RI.Framework.Extensions.EF</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\RI.Framework.Extensions.SQLite\RI.Framework.Extensions.SQLite.csproj">
-      <Project>{f0017883-0bca-4b15-ae3c-1d0580152506}</Project>
-      <Name>RI.Framework.Extensions.SQLite</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\RI.Framework.Net\RI.Framework.Net.csproj">
+    <ProjectReference Include="..\RI.Framework.NetFx\RI.Framework.NetFx.csproj">
       <Project>{a7f5dd2f-63bf-4032-ad1e-14d211e0d3ed}</Project>
-      <Name>RI.Framework.Net</Name>
+      <Name>RI.Framework.NetFx</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -103,13 +99,6 @@
 
 @copy "$(TargetDir)$(TargetName).*" "$(SolutionDir)_Test\*.*"</PostBuildEvent>
   </PropertyGroup>
-  <Import Project="..\packages\System.Data.SQLite.Core.1.0.104.0\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.104.0\build\net46\System.Data.SQLite.Core.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\System.Data.SQLite.Core.1.0.104.0\build\net46\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Data.SQLite.Core.1.0.104.0\build\net46\System.Data.SQLite.Core.targets'))" />
-  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

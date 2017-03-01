@@ -4,8 +4,8 @@ using System.Reflection;
 
 
 
-[assembly: AssemblyTitle ("RI.Framework.Extensions.SQLiteEF")]
-[assembly: AssemblyDescription ("RI.Framework.Extensions.SQLiteEF")]
+[assembly: AssemblyTitle ("RI.Framework.NetFx")]
+[assembly: AssemblyDescription ("RI.Framework.NetFx")]
 [assembly: AssemblyProduct ("Utility Framework")]
 [assembly: AssemblyCompany ("Roten Informatik")]
 [assembly: AssemblyCopyright ("Copyright (c) 2015-2017 Roten Informatik")]

@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7CD5C68C-51E2-47DD-8BE3-B71848CF4964}</ProjectGuid>
+    <ProjectGuid>{EC0E161F-F9C9-4DE2-8A00-DA16E0957191}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>RI.Framework</RootNamespace>
-    <AssemblyName>RI.Framework.Extensions.EF</AssemblyName>
+    <AssemblyName>RI.Framework.WinService</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -20,7 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\RI.Framework.Extensions.EF.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\RI.Framework.WinService.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,7 +29,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\RI.Framework.Extensions.EF.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\RI.Framework.WinService.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -38,51 +38,27 @@
     <AssemblyOriginatorKeyFile>Properties\AssemblyName.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.ServiceProcess" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\EF\Configuration\EntityConfiguration.cs" />
-    <Compile Include="Data\EF\Configuration\IEntityConfiguration.cs" />
-    <Compile Include="Data\EF\Configuration\_NamespaceDoc.cs" />
-    <Compile Include="Data\EF\DbContextExtensions.cs" />
-    <Compile Include="Data\EF\DbEntityValidationResultExtensions.cs" />
-    <Compile Include="Data\EF\Filter\EntityFilter.cs" />
-    <Compile Include="Data\EF\Filter\FilterRegistrar.cs" />
-    <Compile Include="Data\EF\Filter\IEntityFilter.cs" />
-    <Compile Include="Data\EF\Filter\_NamespaceDoc.cs" />
-    <Compile Include="Data\EF\RepositoryDbContext.cs" />
-    <Compile Include="Data\EF\RepositoryDbSet.cs" />
-    <Compile Include="Data\EF\ServiceLocatorDbDependencyResolver.cs" />
-    <Compile Include="Data\EF\Validation\EntityValidation.cs" />
-    <Compile Include="Data\EF\Validation\IEntityValidation.cs" />
-    <Compile Include="Data\EF\Validation\ValidationRegistrar.cs" />
-    <Compile Include="Data\EF\Validation\_NamespaceDoc.cs" />
-    <Compile Include="Data\EF\_NamespaceDoc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Properties\AssemblyName.snk" />
-    <None Include="packages.config" />
+    <ProjectReference Include="..\RI.Framework.NetFx\RI.Framework.NetFx.csproj">
+      <Project>{a7f5dd2f-63bf-4032-ad1e-14d211e0d3ed}</Project>
+      <Name>RI.Framework.NetFx</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RI.Framework.Windows\RI.Framework.Windows.csproj">
+      <Project>{cd9c2847-a48f-45e1-908f-3f9a86ee0e37}</Project>
+      <Name>RI.Framework.Windows</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RI.Framework.Net\RI.Framework.Net.csproj">
-      <Project>{a7f5dd2f-63bf-4032-ad1e-14d211e0d3ed}</Project>
-      <Name>RI.Framework.Net</Name>
-    </ProjectReference>
+    <None Include="Properties\AssemblyName.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
@@ -90,13 +66,9 @@
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>@md "$(SolutionDir)_Output"
-
 @md "$(SolutionDir)_Test"
 
-
-
 @copy "$(TargetDir)$(TargetName).*" "$(SolutionDir)_Output\*.*"
-
 @copy "$(TargetDir)$(TargetName).*" "$(SolutionDir)_Test\*.*"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
