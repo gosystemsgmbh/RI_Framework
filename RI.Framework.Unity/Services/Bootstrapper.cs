@@ -129,17 +129,34 @@ namespace RI.Framework.Services
 		#region Instance Fields
 
 		/// <summary>
-		///     Specifies whether default services should be used or not.
+		///     Specifies whether the default logging service should be used or not.
 		/// </summary>
 		/// <remarks>
 		///     <para>
-		///         Default services, added to the used composition container, when this field is true are the following types: <see cref="LogService" />, <see cref="LogWriter" />, <see cref="ModuleService" />, <see cref="DispatcherService" />.
+		/// If true, <see cref="LogService"/> and <see cref="LogWriter"/> are added automatically, providing logging through Unitys logging mechanism.
 		///     </para>
-		///     <note type="important">
-		///         If this property is true, nothing will be added to the composition container and you must add all services manually.
-		///     </note>
 		/// </remarks>
-		public bool UseDefaultServices = true;
+		public bool UseDefaultLoggingService = true;
+
+		/// <summary>
+		///     Specifies whether the default module service should be used or not.
+		/// </summary>
+		/// <remarks>
+		///     <para>
+		/// If true, <see cref="ModuleService"/> is added automatically, providing a default modularization service using <see cref="IModule"/> or <see cref="MonoModule"/>.
+		///     </para>
+		/// </remarks>
+		public bool UseDefaultModuleService = true;
+
+		/// <summary>
+		///     Specifies whether the default dispatcher service should be used or not.
+		/// </summary>
+		/// <remarks>
+		///     <para>
+		/// If true, <see cref="DispatcherService"/> is added automatically, providing a default dispatcher service.
+		///     </para>
+		/// </remarks>
+		public bool UseDefaultDispatcherService = true;
 
 		#endregion
 
@@ -276,12 +293,12 @@ namespace RI.Framework.Services
 		/// </summary>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation adds <see cref="LogService" /> and <see cref="LogWriter" /> to the composition container if <see cref="UseDefaultServices" /> is true, otherwise it does nothing.
+		///         The default implementation adds <see cref="LogService" /> and <see cref="LogWriter" /> to the composition container if <see cref="UseDefaultLoggingService" /> is true, otherwise it does nothing.
 		///     </note>
 		/// </remarks>
 		protected virtual void ConfigureLogging ()
 		{
-			if (this.UseDefaultServices)
+			if (this.UseDefaultLoggingService)
 			{
 				this.Container.AddCatalog(new TypeCatalog(typeof(LogService), typeof(LogWriter)));
 			}
@@ -292,12 +309,12 @@ namespace RI.Framework.Services
 		/// </summary>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation adds <see cref="ModuleService" /> to the composition container if <see cref="UseDefaultServices" /> is true, otherwise it does nothing.
+		///         The default implementation adds <see cref="ModuleService" /> to the composition container if <see cref="UseDefaultModuleService" /> is true, otherwise it does nothing.
 		///     </note>
 		/// </remarks>
 		protected virtual void ConfigureModularization ()
 		{
-			if (this.UseDefaultServices)
+			if (this.UseDefaultModuleService)
 			{
 				this.Container.AddCatalog(new TypeCatalog(typeof(ModuleService)));
 			}
@@ -321,12 +338,12 @@ namespace RI.Framework.Services
 		/// </summary>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation adds <see cref="DispatcherService" /> to the composition container if <see cref="UseDefaultServices" /> is true, otherwise it does nothing.
+		///         The default implementation adds <see cref="DispatcherService" /> to the composition container if <see cref="UseDefaultDispatcherService" /> is true, otherwise it does nothing.
 		///     </note>
 		/// </remarks>
 		protected virtual void ConfigureServices ()
 		{
-			if (this.UseDefaultServices)
+			if (this.UseDefaultDispatcherService)
 			{
 				this.Container.AddCatalog(new TypeCatalog(typeof(DispatcherService)));
 			}

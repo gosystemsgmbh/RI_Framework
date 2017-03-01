@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
 
 using RI.Framework.Collections;
 using RI.Framework.Collections.Linq;
+using RI.Framework.IO.Paths;
 using RI.Framework.Services.Logging;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
@@ -63,7 +63,7 @@ namespace RI.Framework.Composition.Catalogs
 		///         The default file pattern <see cref="DefaultFilePattern" /> is used and search is performed non-recursive.
 		///     </para>
 		/// </remarks>
-		public DirectoryCatalog (string directoryPath)
+		public DirectoryCatalog (DirectoryPath directoryPath)
 			: this(directoryPath, DirectoryCatalog.DefaultFilePattern, false)
 		{
 		}
@@ -74,16 +74,11 @@ namespace RI.Framework.Composition.Catalogs
 		/// <param name="directoryPath"> The directory which is searched for assemblies. </param>
 		/// <param name="filePattern"> The file pattern which is used to search for assemblies. </param>
 		/// <param name="recursive"> Specifies whether assemblies are searched recursive (including subdirectories) or not. </param>
-		public DirectoryCatalog (string directoryPath, string filePattern, bool recursive)
+		public DirectoryCatalog (DirectoryPath directoryPath, string filePattern, bool recursive)
 		{
 			if (directoryPath == null)
 			{
 				throw new ArgumentNullException(nameof(directoryPath));
-			}
-
-			if (directoryPath.IsEmpty())
-			{
-				throw new EmptyStringArgumentException(nameof(directoryPath));
 			}
 
 			if (filePattern == null)
@@ -100,8 +95,8 @@ namespace RI.Framework.Composition.Catalogs
 			this.FilePattern = filePattern;
 			this.Recursive = recursive;
 
-			this.LoadedFiles = new HashSet<string>(StringComparerEx.InvariantCultureIgnoreCase);
-			this.FailedFiles = new HashSet<string>(this.LoadedFiles.Comparer);
+			this.LoadedFiles = new HashSet<FilePath>();
+			this.FailedFiles = new HashSet<FilePath>();
 		}
 
 		#endregion
@@ -117,7 +112,7 @@ namespace RI.Framework.Composition.Catalogs
 		/// <value>
 		///     The directory which is searched for assemblies.
 		/// </value>
-		public string DirectoryPath { get; private set; }
+		public DirectoryPath DirectoryPath { get; private set; }
 
 		/// <summary>
 		///     Gets the file pattern which is used to search for assemblies.
@@ -135,9 +130,9 @@ namespace RI.Framework.Composition.Catalogs
 		/// </value>
 		public bool Recursive { get; private set; }
 
-		private HashSet<string> FailedFiles { get; set; }
+		private HashSet<FilePath> FailedFiles { get; set; }
 
-		private HashSet<string> LoadedFiles { get; set; }
+		private HashSet<FilePath> LoadedFiles { get; set; }
 
 		#endregion
 
@@ -153,7 +148,7 @@ namespace RI.Framework.Composition.Catalogs
 		///     The array with the assembly files which failed to load.
 		///     The array is empty if there are no assembly files which failed to load.
 		/// </returns>
-		public string[] GetFailedFiles ()
+		public FilePath[] GetFailedFiles ()
 		{
 			return this.FailedFiles.ToArray();
 		}
@@ -165,7 +160,7 @@ namespace RI.Framework.Composition.Catalogs
 		///     The array with the successfully loaded assembly files.
 		///     The array is empty if there are no successfully loaded assembly files.
 		/// </returns>
-		public string[] GetLoadedFiles ()
+		public FilePath[] GetLoadedFiles ()
 		{
 			return this.LoadedFiles.ToArray();
 		}
@@ -190,12 +185,12 @@ namespace RI.Framework.Composition.Catalogs
 		{
 			base.UpdateItems();
 
-			HashSet<string> allFiles = new HashSet<string>(Directory.GetFiles(this.DirectoryPath, this.FilePattern, this.Recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly), this.LoadedFiles.Comparer);
-			HashSet<string> newFiles = allFiles.Except(this.LoadedFiles, this.LoadedFiles.Comparer).Except(this.FailedFiles, this.LoadedFiles.Comparer);
-			HashSet<string> suceededFiles = new HashSet<string>(this.LoadedFiles.Comparer);
-			HashSet<string> failedFiles = new HashSet<string>(this.LoadedFiles.Comparer);
+			HashSet<FilePath> allFiles = new HashSet<FilePath>(this.DirectoryPath.GetFiles(false, this.Recursive, this.FilePattern), this.LoadedFiles.Comparer);
+			HashSet<FilePath> newFiles = allFiles.Except(this.LoadedFiles, this.LoadedFiles.Comparer).Except(this.FailedFiles, this.LoadedFiles.Comparer);
+			HashSet<FilePath> suceededFiles = new HashSet<FilePath>(this.LoadedFiles.Comparer);
+			HashSet<FilePath> failedFiles = new HashSet<FilePath>(this.LoadedFiles.Comparer);
 
-			foreach (string newFile in newFiles)
+			foreach (FilePath newFile in newFiles)
 			{
 				this.Log(LogLevel.Debug, "Trying to load assembly: {0}", newFile);
 

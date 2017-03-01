@@ -460,9 +460,29 @@ namespace RI.Framework.IO.Paths
 		/// <exception cref="DirectoryNotFoundException"> The directory path does not exist. </exception>
 		public List<FilePath> GetFiles (bool relativePaths, bool recursive)
 		{
+			return this.GetFiles(relativePaths, recursive, null);
+		}
+
+		/// <summary>
+		///     Gets a list of all files in this directory path which matches a specified file name pattern.
+		/// </summary>
+		/// <param name="relativePaths"> Specifies whether the list of files should be relative to this directory path or not. </param>
+		/// <param name="recursive"> Specifies whether only immediate files in this directory path should be returned or recursively all files, including files in subdirectories. </param>
+		/// <param name="pattern"> The pattern for the file names (can be null to return all files). </param>
+		/// <returns>
+		///     The list of files of this directory path.
+		///     If no files are available, an empty list is returned.
+		/// </returns>
+		/// <exception cref="InvalidOperationException"> The directory contains wildcards. </exception>
+		/// <exception cref="UnauthorizedAccessException"> The user does not have the required permissions. </exception>
+		/// <exception cref="PathTooLongException"> Although being a valid directory path, the directory path is too long for the current system to be used. </exception>
+		/// <exception cref="IOException"> The directory path is actually an existing file or a part of its parent is not available. </exception>
+		/// <exception cref="DirectoryNotFoundException"> The directory path does not exist. </exception>
+		public List<FilePath> GetFiles(bool relativePaths, bool recursive, string pattern)
+		{
 			this.VerifyRealDirectory();
 
-			string[] entries = Directory.GetFiles(this, "*", recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
+			string[] entries = Directory.GetFiles(this, pattern ?? "*", recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
 			List<FilePath> files = new List<FilePath>(from x in entries select relativePaths ? new FilePath(x).MakeRelativeTo(this) : new FilePath(x));
 			return files;
 		}

@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Text;
 
 using RI.Framework.Composition.Model;
+using RI.Framework.IO.Paths;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.ObjectModel;
@@ -75,7 +77,7 @@ namespace RI.Framework.Services.Logging.Writers
 		///         <see cref="DateTime.Now" /> is used as the timestamp for the current log directory.
 		///     </para>
 		/// </remarks>
-		public DirectoryLogWriter (string directory)
+		public DirectoryLogWriter (DirectoryPath directory)
 			: this(directory, null, null, DateTime.Now)
 		{
 		}
@@ -87,16 +89,16 @@ namespace RI.Framework.Services.Logging.Writers
 		/// <param name="fileName"> The file name of the text log file in the current log directory. </param>
 		/// <param name="encoding"> The text encoding which is used to write the log files. </param>
 		/// <param name="timestamp"> The timestamp which is used as the name for the current log directory. </param>
-		public DirectoryLogWriter (string directory, string fileName, Encoding encoding, DateTime timestamp)
+		public DirectoryLogWriter (DirectoryPath directory, string fileName, Encoding encoding, DateTime timestamp)
 		{
 			if (directory == null)
 			{
 				throw new ArgumentNullException(nameof(directory));
 			}
 
-			if (directory.IsEmpty())
+			if (directory.HasWildcards)
 			{
-				throw new EmptyStringArgumentException(nameof(directory));
+				throw new InvalidPathArgumentException(nameof(directory), "Wildcards are not allowed.");
 			}
 
 			this.Encoding = encoding ?? DirectoryLogWriter.DefaultEncoding;
@@ -109,12 +111,12 @@ namespace RI.Framework.Services.Logging.Writers
 				0, 0, 0, 0, 0, 0,
 			};
 
-			this.CurrentDirectory = Path.Combine(this.CommonDirectory, timestamp.ToSortableString('-'));
+			this.CurrentDirectory = this.CommonDirectory.AppendDirectory(timestamp.ToSortableString('-'));
 
-			Directory.CreateDirectory(this.CommonDirectory);
-			Directory.CreateDirectory(this.CurrentDirectory);
+			this.CommonDirectory.Create();
+			this.CurrentDirectory.Create();
 
-			this.CurrentFile = Path.Combine(this.CurrentDirectory, fileName ?? DirectoryLogWriter.DefaultFileName);
+			this.CurrentFile = this.CurrentDirectory.AppendFile(fileName ?? DirectoryLogWriter.DefaultFileName);
 
 			this.CurrentWriter = new StreamWriter(this.CurrentFile, false, this.Encoding);
 		}
@@ -140,7 +142,7 @@ namespace RI.Framework.Services.Logging.Writers
 		/// <value>
 		///     The common log directory.
 		/// </value>
-		public string CommonDirectory { get; private set; }
+		public DirectoryPath CommonDirectory { get; private set; }
 
 		/// <summary>
 		///     Gets the current log directory which is a subdirectory of the common log directory (<see cref="CommonDirectory" />).
@@ -148,7 +150,7 @@ namespace RI.Framework.Services.Logging.Writers
 		/// <value>
 		///     The current log directory.
 		/// </value>
-		public string CurrentDirectory { get; private set; }
+		public DirectoryPath CurrentDirectory { get; private set; }
 
 		/// <summary>
 		///     Gets the current log file in the current log directory (<see cref="CurrentDirectory" />).
@@ -156,7 +158,7 @@ namespace RI.Framework.Services.Logging.Writers
 		/// <value>
 		///     The current log file.
 		/// </value>
-		public string CurrentFile { get; private set; }
+		public FilePath CurrentFile { get; private set; }
 
 		/// <summary>
 		///     Gets the used text encoding which is used to write log files.
@@ -247,14 +249,14 @@ namespace RI.Framework.Services.Logging.Writers
 					throw new ObjectDisposedException(nameof(DirectoryLogWriter));
 				}
 
-				string[] directories = Directory.GetDirectories(this.CommonDirectory, "*", SearchOption.TopDirectoryOnly);
-				foreach (string directory in directories)
+				List<DirectoryPath> directories = this.CommonDirectory.GetSubdirectories(false, false);
+				foreach (DirectoryPath directory in directories)
 				{
-					if (string.Equals(directory, this.CurrentDirectory, StringComparison.OrdinalIgnoreCase))
+					if (directory == this.CurrentDirectory)
 					{
 						continue;
 					}
-					DateTime? timestamp = Path.GetDirectoryName(directory).ToDateTimeFromSortable('-');
+					DateTime? timestamp = directory.DirectoryName.ToDateTimeFromSortable('-');
 					if (!timestamp.HasValue)
 					{
 						continue;

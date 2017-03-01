@@ -3,7 +3,6 @@
 ## TODO
 
 - [ ] Features
-  - [ ] Use FilePath and DirectoryPath everywhere
   - [ ] Implement things from Wishlist
 - [ ] Documentation
   - [ ] Complete list of examples

@@ -35,11 +35,6 @@ namespace RI.Framework.Data.EF
 	/// </remarks>
 	public abstract class RepositoryDbContext : DbContext, IRepositoryContext
 	{
-		private object _changeTrackingContext;
-
-
-
-
 		#region Static Constructor/Destructor
 
 		static RepositoryDbContext ()

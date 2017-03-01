@@ -1,18 +1,19 @@
 ﻿Priorities
 ----------
 
++ Utility Framework
 # g&o
 * Commercium
-+ Utility Framework
 
 
 Examples
 ---------
 
- - CommandLine
- - FilePath
- - IndentedTextWriter
- - IniDocument
+ + CommandLine
+ + FilePath
+ + IndentedTextWriter
+ + IniDocument
+ + StateMachine
 
 
 Utilities
@@ -207,15 +208,13 @@ Services
  # (Service) ServiceApplication
  * (.NET) Bootstrapper and Application abstraction
   
- + (Unity) Bootstrapper: More fine-grained control over default services
-
  - (WPF) WpfApplication: Handle power events using SystemEvents.PowerModeChanged
  - (WPF) WpfApplication: Handle user switching using SystemEvents.SessionSwitch
 
  # (.NET) Settings: SettingLocator
  
- # (Common) Logging: ISupportsLogging
- # (Common) Logging: Remove Log methods and replace with single extension method for ISupportsLogging
+ + (Common) Logging: ISupportsLogging
+ + (Common) Logging: Remove Log methods and replace with single extension method for ISupportsLogging
  # (Common) Logging: One-file-per-day option for DirectoryLogWriter
  # (Common) Logging: LogFilter
  - (Common) Logging: FileLogWriter
@@ -283,7 +282,7 @@ Math
 State machines
 --------------
 
- # (Common) State machines
+ + (Common) State machines
 
 
 Behaviours
