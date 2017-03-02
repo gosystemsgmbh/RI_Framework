@@ -16,6 +16,17 @@ Examples
  + StateMachine
 
 
+Conceptual documentations
+-------------------------
+
+ + Composition
+ + Bootstrapper/Services
+ + State Machines
+ + Utilities
+ + Collections
+ + I/O
+
+
 Utilities
 ---------
 
@@ -282,7 +293,15 @@ Math
 State machines
 --------------
 
- + (Common) State machines
+ + (Unity) MonoState
+ + (Unity) StateDispatcher
+ + (Unity) StateResolver
+ + (Unity) DefaultStateMachineConfiguration
+ - (WPF) DispatcherStateDispatcher
+ - (Common) CompositionContainerStateResolver
+ - (Common) ServiceLocatorStateResolver
+ - (Common) Cascading
+ - (Common) Performance optimization of State signal dispatching (refer to DispatcherService)
 
 
 Behaviours

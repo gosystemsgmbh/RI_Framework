@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Globalization;
-using System.Linq;
 using System.Windows;
 using System.Windows.Data;
+
+using RI.Framework.Utilities.Exceptions;
 
 
 
@@ -16,6 +16,11 @@ namespace RI.Framework.Utilities.Wpf.Converters
 		/// <inheritdoc />
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
+			if (!(parameter is Visibility))
+			{
+				throw new InvalidTypeArgumentException(nameof(parameter));
+			}
+
 			return (value != null) ? Visibility.Visible : (Visibility)parameter;
 		}
 

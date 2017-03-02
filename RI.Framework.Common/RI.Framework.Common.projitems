@@ -109,7 +109,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\IStateCache.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\IStateDispatcher.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\IStateResolver.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\StateBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\State.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\StateCache.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\StateMachine.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\StateMachineConfiguration.cs" />
@@ -117,6 +117,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\StateMachineSignalEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\StateMachineTransientDelegate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\StateMachineTransientEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\StateNotFoundException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\StateSignalInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\StateTransientInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Comparison\EqualityComparison.cs" />
