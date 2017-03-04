@@ -103,6 +103,9 @@ namespace RI.Framework.Composition.Model
 		///     true if the decorated property is automatically updated, false otherwise.
 		/// </value>
 		/// <remarks>
+		/// <para>
+		/// The default value is true.
+		/// </para>
 		///     <note type="note">
 		///         Automatic reimport is only performed if the object, to which the decorated property belongs, is itself an export of the corresponding <see cref="CompositionContainer" />.
 		///     </note>

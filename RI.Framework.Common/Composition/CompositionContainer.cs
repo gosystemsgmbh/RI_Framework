@@ -166,6 +166,9 @@ namespace RI.Framework.Composition
 	///         In such cases, all the resolved import values are provided or assigned respectively.
 	///         Therefore, multiple types or object can be exported under the same name.
 	///     </para>
+	/// <para>
+	/// TODO: Document private and shared export
+	/// </para>
 	///     <para>
 	///         <b> ELIGIBLE TYPES </b>
 	///     </para>
@@ -289,6 +292,51 @@ namespace RI.Framework.Composition
 		}
 
 		/// <summary>
+		/// Gets whether a type is exported privately (using <see cref="ExportAttribute" />).
+		/// </summary>
+		/// <param name="type">The type.</param>
+		/// <returns>
+		/// true if the type is exported privately, false if the type is exported shared, or null if the specified type has no exports defined.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="type" /> is null. </exception>
+		/// <exception cref="CompositionException">The inheritance of <paramref name="type"/> defines multiple <see cref="ExportAttribute"/> with conflicting values for <see cref="ExportAttribute.Private"/>.</exception>
+		public static bool? IsExportPrivate (Type type)
+		{
+			if (type == null)
+			{
+				throw new ArgumentNullException(nameof(type));
+			}
+
+			HashSet<bool> privates = new HashSet<bool>();
+
+			CompositionContainer.IsExportPrivateInternal(type, true, privates);
+
+			List<Type> inheritedTypes = type.GetInheritance(false);
+			foreach (Type inheritedType in inheritedTypes)
+			{
+				CompositionContainer.IsExportPrivateInternal(inheritedType, false, privates);
+			}
+
+			Type[] interfaceTypes = type.GetInterfaces();
+			foreach (Type interfaceType in interfaceTypes)
+			{
+				CompositionContainer.IsExportPrivateInternal(interfaceType, false, privates);
+			}
+
+			if (privates.Count == 0)
+			{
+				return null;
+			}
+
+			if ((privates.Count(x => x) != privates.Count) && (privates.Count(x => !x) != privates.Count))
+			{
+				throw new CompositionException("Conflicting private exports defined. All exports in a types hierarchy must be either private or shared.");
+			}
+
+			return privates.FirstOrDefault(false);
+		}
+
+		/// <summary>
 		///     Gets the default name of a type.
 		/// </summary>
 		/// <param name="type"> The type whose default name is to be determined. </param>
@@ -359,6 +407,18 @@ namespace RI.Framework.Composition
 				{
 					string name = attribute.Name ?? CompositionContainer.GetNameOfType(type);
 					exports.Add(name);
+				}
+			}
+		}
+
+		private static void IsExportPrivateInternal(Type type, bool isSelf, HashSet<bool> privates)
+		{
+			object[] attributes = type.GetCustomAttributes(typeof(ExportAttribute), false);
+			foreach (ExportAttribute attribute in attributes)
+			{
+				if (attribute.Inherited || isSelf)
+				{
+					privates.Add(attribute.Private);
 				}
 			}
 		}
@@ -575,6 +635,7 @@ namespace RI.Framework.Composition
 		/// </summary>
 		/// <param name="type"> The type to export. </param>
 		/// <param name="exportType"> The type under whose default name the type is exported. </param>
+		/// <param name="privateExport">Specifies whether the export is private (true) or shared (false).</param>
 		/// <remarks>
 		///     <para>
 		///         If the specified type is already exported under the specified name, the composition remains unchanged.
@@ -587,7 +648,7 @@ namespace RI.Framework.Composition
 		/// <exception cref="ArgumentNullException"> <paramref name="type" /> or <paramref name="exportType" /> is null. </exception>
 		/// <exception cref="InvalidTypeArgumentException"> <paramref name="type" /> is not of a type which can be exported. </exception>
 		/// <exception cref="CompositionException"> The internal recomposition failed. </exception>
-		public void AddExport (Type type, Type exportType)
+		public void AddExport (Type type, Type exportType, bool privateExport)
 		{
 			if (type == null)
 			{
@@ -599,7 +660,7 @@ namespace RI.Framework.Composition
 				throw new ArgumentNullException(nameof(exportType));
 			}
 
-			this.AddExport(type, CompositionContainer.GetNameOfType(exportType));
+			this.AddExport(type, CompositionContainer.GetNameOfType(exportType), privateExport);
 		}
 
 		/// <summary>
@@ -607,6 +668,7 @@ namespace RI.Framework.Composition
 		/// </summary>
 		/// <param name="type"> The type to export. </param>
 		/// <param name="exportName"> The name under which the type is exported. </param>
+		/// <param name="privateExport">Specifies whether the export is private (true) or shared (false).</param>
 		/// <remarks>
 		///     <para>
 		///         If the specified type is already exported under the specified type, the composition remains unchanged.
@@ -620,7 +682,7 @@ namespace RI.Framework.Composition
 		/// <exception cref="InvalidTypeArgumentException"> <paramref name="type" /> is not of a type which can be exported. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="exportName" /> is an empty string. </exception>
 		/// <exception cref="CompositionException"> The internal recomposition failed. </exception>
-		public void AddExport (Type type, string exportName)
+		public void AddExport (Type type, string exportName, bool privateExport)
 		{
 			if (type == null)
 			{
@@ -642,7 +704,7 @@ namespace RI.Framework.Composition
 				throw new EmptyStringArgumentException(nameof(exportName));
 			}
 
-			this.AddTypeInternal(type, exportName);
+			this.AddTypeInternal(type, exportName, privateExport);
 			this.UpdateComposition(true);
 		}
 
@@ -696,7 +758,7 @@ namespace RI.Framework.Composition
 				}
 				else if (item.Type != null)
 				{
-					this.AddTypeInternal(item.Type, item.Name);
+					this.AddTypeInternal(item.Type, item.Name, item.PrivateExport);
 				}
 			}
 
@@ -1273,14 +1335,14 @@ namespace RI.Framework.Composition
 			this.Instances.Add(new CompositionCatalogItem(name, instance));
 		}
 
-		private void AddTypeInternal (Type type, string name)
+		private void AddTypeInternal (Type type, string name, bool privateExport)
 		{
 			if (DirectLinq.Any(this.Types, x => (x.Type == type) && CompositionContainer.NameComparer.Equals(x.Name, name)))
 			{
 				return;
 			}
 
-			this.Types.Add(new CompositionCatalogItem(name, type));
+			this.Types.Add(new CompositionCatalogItem(name, type, privateExport));
 		}
 
 		[SuppressMessage ("ReSharper", "UnusedParameter.Local")]
@@ -1438,7 +1500,7 @@ namespace RI.Framework.Composition
 					{
 						foreach (CompositionTypeItem typeItem in compositionItem.Value.Types)
 						{
-							if ((typeItem.Type == type) && (typeItem.Instance == null))
+							if ((typeItem.Type == type) && (typeItem.Instance == null) && (!typeItem.PrivateExport))
 							{
 								typeItem.Instance = newInstance;
 							}
@@ -1449,15 +1511,15 @@ namespace RI.Framework.Composition
 
 			foreach (object newInstance in newInstances)
 			{
-				this.Log("Type added to container: {0} / {1}", name, newInstance.GetType().FullName);
-
-				IExporting exportingInstance = newInstance as IExporting;
-				exportingInstance?.AddedToContainer(name, this);
+				this.ResolveImports(newInstance, CompositionFlags.Constructing);
 			}
 
 			foreach (object newInstance in newInstances)
 			{
-				this.ResolveImports(newInstance, CompositionFlags.Constructing);
+				this.Log("Type added to container: {0} / {1}", name, newInstance.GetType().FullName);
+
+				IExporting exportingInstance = newInstance as IExporting;
+				exportingInstance?.AddedToContainer(name, this);
 			}
 
 			HashSetExtensions.AddRange(instances, newInstances);
@@ -1567,7 +1629,7 @@ namespace RI.Framework.Composition
 						CompositionTypeItem typeItem = DirectLinq.FirstOrDefault(compositionItem.Types, x => (x.Type == item.Type));
 						if (typeItem == null)
 						{
-							typeItem = new CompositionTypeItem(item.Type);
+							typeItem = new CompositionTypeItem(item.Type, item.PrivateExport);
 							compositionItem.Types.Add(typeItem);
 						}
 						typeItem.Checked = true;
@@ -1728,10 +1790,12 @@ namespace RI.Framework.Composition
 		{
 			#region Instance Constructor/Destructor
 
-			public CompositionTypeItem (Type type)
+			public CompositionTypeItem (Type type, bool privateExport)
 			{
-				this.Checked = false;
 				this.Type = type;
+				this.PrivateExport = privateExport;
+
+				this.Checked = false;
 				this.Instance = null;
 			}
 
@@ -1747,6 +1811,8 @@ namespace RI.Framework.Composition
 			public object Instance { get; set; }
 
 			public Type Type { get; private set; }
+
+			public bool PrivateExport { get; private set; }
 
 			#endregion
 		}

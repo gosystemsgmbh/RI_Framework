@@ -26,9 +26,10 @@ namespace RI.Framework.Composition
 		/// </summary>
 		/// <param name="name"> The name under which the export is exported. </param>
 		/// <param name="type"> The type which is exported. </param>
+		/// <param name="privateExport">Specifies whether the type export is a private export (false) or a shared export (true).</param>
 		/// <exception cref="ArgumentNullException"> <paramref name="name" /> or <paramref name="type" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
-		public CompositionCatalogItem (string name, Type type)
+		public CompositionCatalogItem (string name, Type type, bool privateExport)
 		{
 			if (name == null)
 			{
@@ -47,6 +48,7 @@ namespace RI.Framework.Composition
 
 			this.Name = name;
 			this.Type = type;
+			this.PrivateExport = privateExport;
 			this.Value = null;
 		}
 
@@ -76,6 +78,7 @@ namespace RI.Framework.Composition
 
 			this.Name = name;
 			this.Type = null;
+			this.PrivateExport = false;
 			this.Value = value;
 		}
 
@@ -109,6 +112,14 @@ namespace RI.Framework.Composition
 		///     The object which is exported or null if a type is exported instead.
 		/// </value>
 		public object Value { get; private set; }
+
+		/// <summary>
+		/// Gets whether the export is private or shared.
+		/// </summary>
+		/// <value>
+		/// true if the export is private, false if the export is shared.
+		/// </value>
+		public bool PrivateExport { get; private set; }
 
 		#endregion
 	}

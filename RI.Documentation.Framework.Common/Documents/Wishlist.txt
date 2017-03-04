@@ -203,8 +203,6 @@ I/O
 Composition
 ---------
 
- + (Common) Shared and private exports
-
  - (Common) AggregateCatalog
 
  - (Common) Add container to container

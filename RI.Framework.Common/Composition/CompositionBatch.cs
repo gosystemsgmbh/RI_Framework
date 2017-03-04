@@ -117,8 +117,8 @@ namespace RI.Framework.Composition
 			this.ItemsToAdd.Add(new CompositionCatalogItem(exportName, instance));
 		}
 
-		/// <inheritdoc cref="CompositionContainer.AddExport(Type, Type)" />
-		public void AddExport (Type type, Type exportType)
+		/// <inheritdoc cref="CompositionContainer.AddExport(Type, Type, bool)" />
+		public void AddExport (Type type, Type exportType, bool privateExport)
 		{
 			if (type == null)
 			{
@@ -130,11 +130,11 @@ namespace RI.Framework.Composition
 				throw new ArgumentNullException(nameof(exportType));
 			}
 
-			this.AddExport(type, CompositionContainer.GetNameOfType(exportType));
+			this.AddExport(type, CompositionContainer.GetNameOfType(exportType), privateExport);
 		}
 
-		/// <inheritdoc cref="CompositionContainer.AddExport(Type, string)" />
-		public void AddExport (Type type, string exportName)
+		/// <inheritdoc cref="CompositionContainer.AddExport(Type, string, bool)" />
+		public void AddExport (Type type, string exportName, bool privateExport)
 		{
 			if (type == null)
 			{
@@ -156,7 +156,7 @@ namespace RI.Framework.Composition
 				throw new EmptyStringArgumentException(nameof(exportName));
 			}
 
-			this.ItemsToAdd.Add(new CompositionCatalogItem(exportName, type));
+			this.ItemsToAdd.Add(new CompositionCatalogItem(exportName, type, privateExport));
 		}
 
 		/// <summary>
@@ -261,7 +261,7 @@ namespace RI.Framework.Composition
 				throw new EmptyStringArgumentException(nameof(exportName));
 			}
 
-			this.ItemsToRemove.Add(new CompositionCatalogItem(exportName, type));
+			this.ItemsToRemove.Add(new CompositionCatalogItem(exportName, type, false));
 		}
 
 		/// <inheritdoc cref="CompositionContainer.ResolveImports" />

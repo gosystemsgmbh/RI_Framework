@@ -42,6 +42,7 @@ namespace RI.Framework.Composition.Catalogs
 					{
 						if (CompositionContainer.ValidateExportType(type))
 						{
+							bool privateExport = CompositionContainer.IsExportPrivate(type).GetValueOrDefault(false);
 							HashSet<string> names = CompositionContainer.GetExportsOfType(type);
 							foreach (string name in names)
 							{
@@ -52,7 +53,7 @@ namespace RI.Framework.Composition.Catalogs
 
 								if (!this.Items[name].Any(x => x.Type == type))
 								{
-									this.Items[name].Add(new CompositionCatalogItem(name, type));
+									this.Items[name].Add(new CompositionCatalogItem(name, type, privateExport));
 								}
 							}
 						}

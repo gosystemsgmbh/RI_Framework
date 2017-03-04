@@ -33,6 +33,7 @@ namespace RI.Framework.Composition.Model
 		{
 			this.Name = null;
 			this.Inherited = true;
+			this.Private = false;
 		}
 
 		/// <summary>
@@ -91,7 +92,25 @@ namespace RI.Framework.Composition.Model
 		/// <value>
 		///     true if the this <see cref="ExportAttribute" /> is inherited, false otherwise.
 		/// </value>
+		/// <remarks>
+		/// <para>
+		/// The default value is true.
+		/// </para>
+		/// </remarks>
 		public bool Inherited { get; set; }
+
+		/// <summary>
+		///     Gets or sets whether this export is a private export or not.
+		/// </summary>
+		/// <value>
+		///     true if the export is private, false if the export is shared.
+		/// </value>
+		/// <remarks>
+		/// <para>
+		/// The default value is false.
+		/// </para>
+		/// </remarks>
+		public bool Private { get; set; }
 
 		/// <summary>
 		///     Gets the name under which the decorated type is exported.
