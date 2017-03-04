@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 
 
@@ -47,12 +48,30 @@ namespace RI.Framework.Services.Dispatcher
 		Idle = 3,
 
 		/// <summary>
-		///     The operation is executed with the lowest possible priority.
+		/// The operation is executed in a background thread, using <see cref="ThreadPool"/>.
+		/// </summary>
+		/// <remarks>
+		///     <note type="note">
+		/// The dispatcher service uses <see cref="ThreadPool"/> as is, without any changes to it.
+		///     </note>
+		///     <note type="note">
+		/// A dispatcher operation with <see cref="Background"/> priority cannot be canceled, rescheduled, or its timeout set after the end of the frame the operation was dispatched.
+		///     </note>
+		///     <note type="important">
+		/// The <see cref="IDispatcherOperation.Result"/> property is set from the background thread.
+		/// The <see cref="IDispatcherOperation.Status"/> property is set from the dispatcher services thread.
+		/// Therefore, only use <see cref="IDispatcherOperation.Status"/> to check whether a background operation has finished.
+		///     </note>
+		/// </remarks>
+		Background = 4,
+
+		/// <summary>
+		///     The operation is executed with the lowest possible priority (which is <see cref="Idle"/>).
 		/// </summary>
 		Lowest = DispatcherPriority.Idle,
 
 		/// <summary>
-		///     The operation is executed with the highest possible priority.
+		///     The operation is executed with the highest possible priority (which is <see cref="Now"/>).
 		/// </summary>
 		Highest = DispatcherPriority.Now,
 	}

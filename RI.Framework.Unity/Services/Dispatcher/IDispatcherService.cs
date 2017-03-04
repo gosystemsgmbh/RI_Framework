@@ -22,6 +22,16 @@ namespace RI.Framework.Services.Dispatcher
 	public interface IDispatcherService
 	{
 		/// <summary>
+		/// Cancels all pending operations.
+		/// </summary>
+		/// <remarks>
+		/// <para>
+		/// This is similar to calling <see cref="IDispatcherOperation.Cancel"/> on all still pending <see cref="IDispatcherOperation"/>s.
+		/// </para>
+		/// </remarks>
+		void CancelAllOperations ();
+
+		/// <summary>
 		///     Broadcasts an object of a specified type to all receivers registered for that type.
 		/// </summary>
 		/// <typeparam name="T"> The type to broadcast. </typeparam>

@@ -50,33 +50,67 @@ namespace RI.Framework.Services.Dispatcher
 		/// </summary>
 		/// <param name="millisecondsFromNow"> The amount of time to delay, in milliseconds. </param>
 		/// <returns>
-		///     true if the operation could be rescheduled, false if the operation has already finished or could not be rescheduled anymore.
+		///     The dispatcher operation itself (for use in fluent API) if the operation could be rescheduled, null if the operation has already finished or could not be rescheduled anymore.
 		/// </returns>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="millisecondsFromNow" /> is less than zero. </exception>
-		bool Reschedule (int millisecondsFromNow);
+		IDispatcherOperation Reschedule (int millisecondsFromNow);
 
 		/// <summary>
 		///     Delays the operation by a given amount of time relative to now.
 		/// </summary>
 		/// <param name="timeFromNow"> The amount of time to delay. </param>
 		/// <returns>
-		///     true if the operation could be rescheduled, false if the operation has already finished or could not be rescheduled anymore.
+		///     The dispatcher operation itself (for use in fluent API) if the operation could be rescheduled, null if the operation has already finished or could not be rescheduled anymore.
 		/// </returns>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="timeFromNow" /> is negative. </exception>
-		bool Reschedule (TimeSpan timeFromNow);
+		IDispatcherOperation Reschedule (TimeSpan timeFromNow);
 
 		/// <summary>
 		///     Delays the operation until a given date and time.
 		/// </summary>
 		/// <param name="timestamp"> The date and time when the operation should be executed. </param>
 		/// <returns>
-		///     true if the operation could be rescheduled, false if the operation has already finished or could not be rescheduled anymore.
+		///     The dispatcher operation itself (for use in fluent API) if the operation could be rescheduled, null if the operation has already finished or could not be rescheduled anymore.
 		/// </returns>
 		/// <remarks>
 		///     <note type="important">
 		///         To avoid troubles with daylight saving time (e.g. issuing a reschedule around the time when the clock jumps or holds for one hour), <paramref name="timestamp" /> is considered to be UTC (compared to <see cref="DateTime" />.<see cref="DateTime.UtcNow" />).
 		///     </note>
 		/// </remarks>
-		bool Reschedule (DateTime timestamp);
+		IDispatcherOperation Reschedule (DateTime timestamp);
+
+		/// <summary>
+		/// Sets a timeout for the operation relative to now.
+		/// </summary>
+		/// <param name="millisecondsFromNow">The timeout in milliseconds (zero means no timeout).</param>
+		/// <returns>
+		///     The dispatcher operation itself (for use in fluent API) if the operations timeout could be set, null if the operation has already finished or could not change its timeout anymore.
+		/// </returns>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="millisecondsFromNow" /> is less than zero. </exception>
+		IDispatcherOperation Timeout (int millisecondsFromNow);
+
+		/// <summary>
+		/// Sets a timeout for the operation relative to now.
+		/// </summary>
+		/// <param name="timeFromNow">The timeout (zero means no timeout).</param>
+		/// <returns>
+		///     The dispatcher operation itself (for use in fluent API) if the operations timeout could be set, null if the operation has already finished or could not change its timeout anymore.
+		/// </returns>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="timeFromNow" /> is negative. </exception>
+		IDispatcherOperation Timeout (TimeSpan timeFromNow);
+
+		/// <summary>
+		/// Sets the timeout to a given date and time.
+		/// </summary>
+		/// <param name="timestamp">The date and time when the operation should time-out.</param>
+		/// <returns>
+		///     The dispatcher operation itself (for use in fluent API) if the operations timeout could be set, null if the operation has already finished or could not change its timeout anymore.
+		/// </returns>
+		/// <remarks>
+		///     <note type="important">
+		///         To avoid troubles with daylight saving time (e.g. issuing a reschedule around the time when the clock jumps or holds for one hour), <paramref name="timestamp" /> is considered to be UTC (compared to <see cref="DateTime" />.<see cref="DateTime.UtcNow" />).
+		///     </note>
+		/// </remarks>
+		IDispatcherOperation Timeout (DateTime timestamp);
 	}
 }

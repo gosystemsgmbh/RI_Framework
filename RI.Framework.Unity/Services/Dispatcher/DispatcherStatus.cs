@@ -30,5 +30,10 @@ namespace RI.Framework.Services.Dispatcher
 		///     The operation has been canceled without being executed.
 		/// </summary>
 		Canceled = 3,
+
+		/// <summary>
+		/// The operation has timed-out without being executed.
+		/// </summary>
+		Timeout = 4,
 	}
 }
