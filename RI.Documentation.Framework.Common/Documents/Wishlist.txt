@@ -288,9 +288,6 @@ State machines
 --------------
 
  + (Unity) MonoState
- + (Unity) StateDispatcher
- + (Unity) StateResolver
- + (Unity) DefaultStateMachineConfiguration
  - (WPF) DispatcherStateDispatcher
  - (Common) CompositionContainerStateResolver
  - (Common) ServiceLocatorStateResolver

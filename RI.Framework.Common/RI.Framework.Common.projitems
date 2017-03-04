@@ -118,8 +118,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\StateMachineTransientDelegate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\StateMachineTransientEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\StateNotFoundException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\StateResolver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\StateSignalInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\StateTransientInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Comparison\EqualityComparison.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Comparison\OrderComparison.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Comparison\_NamespaceDoc.cs" />
