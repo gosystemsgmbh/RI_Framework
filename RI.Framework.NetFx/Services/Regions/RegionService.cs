@@ -144,8 +144,6 @@ namespace RI.Framework.Services.Regions
 				return;
 			}
 
-			this.Log("Region adapter added: {0}", regionAdapter.GetType().Name);
-
 			this.AdaptersManual.Add(regionAdapter);
 		}
 
@@ -515,8 +513,6 @@ namespace RI.Framework.Services.Regions
 			{
 				return;
 			}
-
-			this.Log("Region adapter removed: {0}", regionAdapter.GetType().Name);
 
 			this.AdaptersManual.RemoveAll(regionAdapter);
 		}

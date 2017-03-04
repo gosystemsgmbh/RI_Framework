@@ -1,4 +1,9 @@
-﻿namespace RI.Framework.StateMachines
+﻿using RI.Framework.Services.Logging;
+
+
+
+
+namespace RI.Framework.StateMachines
 {
 	/// <summary>
 	/// Defines the configuration of a state machine.
@@ -20,6 +25,7 @@
 			this.Cache = null;
 
 			this.EnableAutomaticCaching = true;
+			this.LoggingEnabled = true;
 		}
 
 		/// <summary>
@@ -76,6 +82,24 @@
 		/// <value>
 		/// true if a state instance is added to the cache after it became the current state for the first time, false if the state instances must be added manually.
 		/// </value>
+		/// <remarks>
+		/// <para>
+		/// The default value is true.
+		/// </para>
+		/// </remarks>
 		public bool EnableAutomaticCaching { get; set; }
+
+		/// <summary>
+		/// Gets or sets whether logging, using <see cref="LogLocator"/>, is enabled.
+		/// </summary>
+		/// <value>
+		/// true if logging is enabled, false otherwise.
+		/// </value>
+		/// <remarks>
+		/// <para>
+		/// The default value is true.
+		/// </para>
+		/// </remarks>
+		public bool LoggingEnabled { get; set; }
 	}
 }

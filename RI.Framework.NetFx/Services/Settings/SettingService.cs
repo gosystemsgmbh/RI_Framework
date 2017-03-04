@@ -139,8 +139,6 @@ namespace RI.Framework.Services.Settings
 				return;
 			}
 
-			this.Log("Setting converter added: {0}", settingConverter.GetType().Name);
-
 			this.ConvertersManual.Add(settingConverter);
 		}
 
@@ -156,8 +154,6 @@ namespace RI.Framework.Services.Settings
 			{
 				return;
 			}
-
-			this.Log("Setting storage added: {0}", settingStorage.GetType().Name);
 
 			this.StoragesManual.Add(settingStorage);
 		}
@@ -384,8 +380,6 @@ namespace RI.Framework.Services.Settings
 				return;
 			}
 
-			this.Log("Setting converter removed: {0}", settingConverter.GetType().Name);
-
 			this.ConvertersManual.RemoveAll(settingConverter);
 		}
 
@@ -401,8 +395,6 @@ namespace RI.Framework.Services.Settings
 			{
 				return;
 			}
-
-			this.Log("Setting storage removed: {0}", settingStorage.GetType().Name);
 
 			this.StoragesManual.RemoveAll(settingStorage);
 		}

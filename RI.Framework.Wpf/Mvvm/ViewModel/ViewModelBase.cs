@@ -103,7 +103,7 @@ namespace RI.Framework.Mvvm.ViewModel
 		/// <inheritdoc />
 		void IViewModel.Initialize ()
 		{
-			this.Log(LogLevel.Debug, "Initializing module");
+			this.Log(LogLevel.Debug, "Initializing view model");
 
 			this.Initialize();
 

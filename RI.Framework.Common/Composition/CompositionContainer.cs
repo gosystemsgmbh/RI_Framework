@@ -453,7 +453,8 @@ namespace RI.Framework.Composition
 		{
 			this.CatalogRecomposeRequestHandler = this.HandleCatalogRecomposeRequest;
 
-			this.AutoDispose = false;
+			this.AutoDispose = true;
+			this.LoggingEnabled = true;
 
 			this.Instances = new List<CompositionCatalogItem>();
 			this.Types = new List<CompositionCatalogItem>();
@@ -489,10 +490,23 @@ namespace RI.Framework.Composition
 		///         This setting applies to all instances which are exported, regardless whether they are object exports or instances created from type exports.
 		///     </para>
 		///     <para>
-		///         The default value is false.
+		///         The default value is true.
 		///     </para>
 		/// </rermarks>
 		public bool AutoDispose { get; set; }
+
+		/// <summary>
+		/// Gets or sets whether logging, using <see cref="LogLocator"/>, is enabled.
+		/// </summary>
+		/// <value>
+		/// true if logging is enabled, false otherwise.
+		/// </value>
+		/// <remarks>
+		/// <para>
+		/// The default value is true.
+		/// </para>
+		/// </remarks>
+		public bool LoggingEnabled { get; set; }
 
 		private Action CatalogRecomposeRequestHandler { get; set; }
 
@@ -1534,7 +1548,10 @@ namespace RI.Framework.Composition
 
 		private void Log (string format, params object[] args)
 		{
-			LogLocator.LogDebug(this.GetType().Name, format, args);
+			if (this.LoggingEnabled)
+			{
+				LogLocator.LogDebug(this.GetType().Name, format, args);
+			}
 		}
 
 		private void RaiseCompositionChanged ()

@@ -121,8 +121,6 @@ namespace RI.Framework.Services.Messaging
 				return;
 			}
 
-			this.Log("Message dispatcher added: {0}", messageDispatcher.GetType().Name);
-
 			this.DispatchersManual.Add(messageDispatcher);
 		}
 
@@ -138,8 +136,6 @@ namespace RI.Framework.Services.Messaging
 			{
 				return;
 			}
-
-			this.Log("Message receiver added: {0}", messageReceiver.GetType().Name);
 
 			this.ReceiversManual.Add(messageReceiver);
 		}
@@ -171,8 +167,6 @@ namespace RI.Framework.Services.Messaging
 				return;
 			}
 
-			this.Log("Message dispatcher removed: {0}", messageDispatcher.GetType().Name);
-
 			this.DispatchersManual.RemoveAll(messageDispatcher);
 		}
 
@@ -188,8 +182,6 @@ namespace RI.Framework.Services.Messaging
 			{
 				return;
 			}
-
-			this.Log("Message receiver removed: {0}", messageReceiver.GetType().Name);
 
 			this.ReceiversManual.RemoveAll(messageReceiver);
 		}

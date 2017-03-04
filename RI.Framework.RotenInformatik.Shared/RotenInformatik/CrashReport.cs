@@ -142,6 +142,7 @@ namespace RI.Framework.RotenInformatik
 		public string GetDetails ()
 		{
 			//TODO: Implement
+			//TODO: Log
 			return "Test123";
 		}
 
@@ -151,6 +152,7 @@ namespace RI.Framework.RotenInformatik
 		public void Send ()
 		{
 			//TODO: Implement
+			//TODO: Log
 		}
 
 		#endregion

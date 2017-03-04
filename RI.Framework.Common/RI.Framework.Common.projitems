@@ -87,8 +87,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)IO\Paths\PathType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\Paths\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\_NamespaceDoc.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\ISupportsLogging.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\ISupportsLoggingExtended.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\LogLocator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\ILogService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\ILogWriter.cs" />

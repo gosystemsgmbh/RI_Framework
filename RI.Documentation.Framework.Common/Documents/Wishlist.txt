@@ -224,8 +224,6 @@ Services
 
  # (.NET) Settings: SettingLocator
  
- + (Common) Logging: ISupportsLogging
- + (Common) Logging: Remove Log methods and replace with single extension method for ISupportsLogging
  # (Common) Logging: One-file-per-day option for DirectoryLogWriter
  # (Common) Logging: LogFilter
  - (Common) Logging: FileLogWriter

@@ -1,5 +1,7 @@
 ﻿using System;
 
+using RI.Framework.Services.Logging;
+
 
 
 
@@ -121,6 +123,11 @@ namespace RI.Framework.StateMachines
 		/// </remarks>
 		protected virtual void DispatchTransient(StateTransientInfo transientInfo)
 		{
+			if (this.Configuration.LoggingEnabled)
+			{
+				this.Log(LogLevel.Debug, "Dispatching transient: {0} -> {1}", transientInfo.PreviousState.GetType().Name, transientInfo.NextState.GetType().Name);
+			}
+
 			if (this.Configuration.Dispatcher == null)
 			{
 				this.TransientDelegate(transientInfo);
@@ -142,6 +149,11 @@ namespace RI.Framework.StateMachines
 		/// </remarks>
 		protected virtual void DispatchSignal(StateSignalInfo signalInfo)
 		{
+			if (this.Configuration.LoggingEnabled)
+			{
+				this.Log(LogLevel.Debug, "Dispatching signal: {0}", signalInfo.Signal?.ToString() ?? "[null]");
+			}
+
 			if (this.Configuration.Dispatcher == null)
 			{
 				this.SignalDelegate(signalInfo);
@@ -246,11 +258,21 @@ namespace RI.Framework.StateMachines
 		/// <param name="transientInfo">The transition to execute.</param>
 		protected virtual void ExecuteTransient (StateTransientInfo transientInfo)
 		{
+			if (this.Configuration.LoggingEnabled)
+			{
+				this.Log(LogLevel.Debug, "Executing transient: {0} -> {1}", transientInfo.PreviousState.GetType().Name, transientInfo.NextState.GetType().Name);
+			}
+
 			IState previousState = transientInfo.PreviousState;
 			IState nextState = transientInfo.NextState;
 
 			if (!object.ReferenceEquals(this.State, previousState))
 			{
+				if (this.Configuration.LoggingEnabled)
+				{
+					this.Log(LogLevel.Debug, "Transient aborted: {0} -> {1}", transientInfo.PreviousState.GetType().Name, transientInfo.NextState.GetType().Name);
+				}
+
 				return;
 			}
 
@@ -308,9 +330,31 @@ namespace RI.Framework.StateMachines
 		/// <param name="signalInfo">The signal to execute.</param>
 		protected virtual void ExecuteSignal (StateSignalInfo signalInfo)
 		{
+			if (this.Configuration.LoggingEnabled)
+			{
+				this.Log(LogLevel.Debug, "Executing signal: {0}", signalInfo.Signal?.ToString() ?? "[null]");
+			}
+
 			this.OnBeforeSignal(signalInfo);
 			this.State?.Signal(signalInfo);
 			this.OnAfterSignal(signalInfo);
+		}
+
+		/// <summary>
+		///     Logs a message.
+		/// </summary>
+		/// <param name="severity"> The severity of the message. </param>
+		/// <param name="format"> The message. </param>
+		/// <param name="args"> The arguments which will be expanded into the message (comparable to <see cref="string.Format(string, object[])" />). </param>
+		/// <remarks>
+		///     <para>
+		///         <see cref="ILogService" /> is used, obtained through <see cref="LogLocator" />.
+		///         If no <see cref="ILogService" /> is available, no logging is performed.
+		///     </para>
+		/// </remarks>
+		protected void Log(LogLevel severity, string format, params object[] args)
+		{
+			LogLocator.Log(severity, this.GetType().Name, format, args);
 		}
 
 

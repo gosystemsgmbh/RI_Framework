@@ -158,6 +158,16 @@ namespace RI.Framework.Services
 		/// </remarks>
 		public bool UseDefaultDispatcherService = true;
 
+		/// <summary>
+		///     Specifies whether the default scripting container should be used or not.
+		/// </summary>
+		/// <remarks>
+		///     <para>
+		/// If true, <see cref="ScriptingCatalog"/> is added automatically, adding all eligible types from the scripting assembly to the container.
+		///     </para>
+		/// </remarks>
+		public bool UseDefaultScriptingCatalog = true;
+
 		#endregion
 
 
@@ -214,7 +224,6 @@ namespace RI.Framework.Services
 			this.State = BootstrapperState.Uninitialized;
 			this.ShutdownInitiated = false;
 			this.ShutdownFinished = false;
-
 			this.Container = null;
 
 			((IBootstrapper)this).Run();
@@ -232,13 +241,13 @@ namespace RI.Framework.Services
 			this.Log(LogLevel.Debug, "Ending run");
 			this.EndRun();
 
-			this.Log(LogLevel.Debug, "Shutting down");
+			this.Log(LogLevel.Debug, "State: Shutting down");
 			this.State = BootstrapperState.ShuttingDown;
 
 			this.Log(LogLevel.Debug, "Doing shutdown");
 			this.DoShutdown();
 
-			this.Log(LogLevel.Debug, "Shut down");
+			this.Log(LogLevel.Debug, "State: Shut down");
 			this.State = BootstrapperState.ShutDown;
 		}
 
@@ -285,7 +294,12 @@ namespace RI.Framework.Services
 		protected virtual void ConfigureContainer ()
 		{
 			this.Container.AddCatalog(new InstanceCatalog(this.Container));
-			this.Container.AddCatalog(new ScriptingCatalog());
+
+			if (this.UseDefaultScriptingCatalog)
+			{
+				this.Log(LogLevel.Debug, "Using default scripting catalog");
+				this.Container.AddCatalog(new ScriptingCatalog());
+			}
 		}
 
 		/// <summary>
@@ -300,6 +314,7 @@ namespace RI.Framework.Services
 		{
 			if (this.UseDefaultLoggingService)
 			{
+				this.Log(LogLevel.Debug, "Using default logging service");
 				this.Container.AddCatalog(new TypeCatalog(typeof(LogService), typeof(LogWriter)));
 			}
 		}
@@ -316,6 +331,7 @@ namespace RI.Framework.Services
 		{
 			if (this.UseDefaultModuleService)
 			{
+				this.Log(LogLevel.Debug, "Using default module service");
 				this.Container.AddCatalog(new TypeCatalog(typeof(ModuleService)));
 			}
 		}
@@ -345,6 +361,7 @@ namespace RI.Framework.Services
 		{
 			if (this.UseDefaultDispatcherService)
 			{
+				this.Log(LogLevel.Debug, "Using default dispatcher service");
 				this.Container.AddCatalog(new TypeCatalog(typeof(DispatcherService)));
 			}
 		}
@@ -402,10 +419,10 @@ namespace RI.Framework.Services
 		{
 			if (this.State != BootstrapperState.Uninitialized)
 			{
-				throw new InvalidOperationException();
+				throw new InvalidOperationException(this.GetType().Name + " is already running.");
 			}
 
-			this.Log(LogLevel.Debug, "Bootstrapping");
+			this.Log(LogLevel.Debug, "State: Bootstrapping");
 			this.State = BootstrapperState.Bootstrapping;
 
 			Object.DontDestroyOnLoad(this.gameObject);
@@ -431,7 +448,7 @@ namespace RI.Framework.Services
 			this.Log(LogLevel.Debug, "Configuring modularization");
 			this.ConfigureModularization();
 
-			this.Log(LogLevel.Debug, "Running");
+			this.Log(LogLevel.Debug, "State: Running");
 			this.State = BootstrapperState.Running;
 
 			this.Log(LogLevel.Debug, "Beginning run");
@@ -443,7 +460,7 @@ namespace RI.Framework.Services
 		{
 			if (this.State != BootstrapperState.Running)
 			{
-				throw new InvalidOperationException();
+				throw new InvalidOperationException(this.GetType().Name + " is not running.");
 			}
 
 			if (this.ShutdownInitiated)

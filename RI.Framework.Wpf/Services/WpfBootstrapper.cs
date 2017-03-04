@@ -332,6 +332,22 @@ namespace RI.Framework.Services
 		/// </value>
 		public WpfBootstrapperState State { get; private set; }
 
+		/// <summary>
+		/// Gets whether the program is executed on a 64 bit machine.
+		/// </summary>
+		/// <value>
+		/// true if executed on a 64 bit machine, false otherwise.
+		/// </value>
+		public bool Machine64Bit { get; private set; }
+
+		/// <summary>
+		/// Gets whether the program is executed in a 64 bit process.
+		/// </summary>
+		/// <value>
+		/// true if executed in a 64 bit process, false otherwise.
+		/// </value>
+		public bool Session64Bit { get; private set; }
+
 		private bool ShutdownInitiated { get; set; }
 
 		#endregion
@@ -846,14 +862,18 @@ namespace RI.Framework.Services
 		/// </remarks>
 		protected virtual void LogBootstrapperVariables ()
 		{
+			this.Log(LogLevel.Debug, "Application name:     {0}", this.ApplicationProductName.ToString(4));
+			this.Log(LogLevel.Debug, "Application version:  {0}", this.ApplicationVersion.ToString(4));
 			this.Log(LogLevel.Debug, "Executable directory: {0}", this.ApplicationExecutableDirectory.PathResolved);
 			this.Log(LogLevel.Debug, "Data directory:       {0}", this.ApplicationDataDirectory.PathResolved);
 			this.Log(LogLevel.Debug, "Application assembly: {0}", this.ApplicationAssembly.FullName);
 			this.Log(LogLevel.Debug, "Application ID:       {0}", this.ApplicationIdVersionDependent.ToString("N", CultureInfo.InvariantCulture));
+			//TODO: Add MachineId
 			this.Log(LogLevel.Debug, "Version ID:           {0}", this.ApplicationIdVersionIndependent.ToString("N", CultureInfo.InvariantCulture));
-			this.Log(LogLevel.Debug, "Application version:  {0}", this.ApplicationVersion.ToString(4));
 			this.Log(LogLevel.Debug, "Session ID:           {0}", this.SessionId.ToString("N", CultureInfo.InvariantCulture));
 			this.Log(LogLevel.Debug, "Session timestamp:    {0}", this.SessionTimestamp.ToSortableString('-'));
+			this.Log(LogLevel.Debug, "Session 64 bit:       {0}", this.Session64Bit.ToString());
+			this.Log(LogLevel.Debug, "Machine 64 bit:       {0}", this.Machine64Bit.ToString());
 			this.Log(LogLevel.Debug, "Command line:         {0}", this.ProcessCommandLine.ToString());
 		}
 
@@ -886,10 +906,11 @@ namespace RI.Framework.Services
 			additionalData.Add(nameof(this.ApplicationProductName), this.ApplicationProductName);
 			additionalData.Add(nameof(this.ApplicationVersion), this.ApplicationVersion.ToString(4));
 			//TODO: Add MachineId
-			additionalData.Add("Machine64Bit", Environment.Is64BitOperatingSystem.ToString());
-			additionalData.Add("Session64Bit", Environment.Is64BitProcess.ToString());
+			additionalData.Add(nameof(this.Machine64Bit), this.Machine64Bit.ToString());
+			additionalData.Add(nameof(this.Session64Bit), this.Session64Bit.ToString());
 			additionalData.Add(nameof(this.SessionId), this.SessionId.ToString("N"));
 			additionalData.Add(nameof(this.SessionTimestamp), this.SessionTimestamp.ToSortableString('-'));
+			additionalData.Add(nameof(this.ProcessCommandLine), this.ProcessCommandLine.ToString());
 			return additionalData;
 		}
 
@@ -905,10 +926,10 @@ namespace RI.Framework.Services
 		{
 			if (this.State != WpfBootstrapperState.Uninitialized)
 			{
-				throw new InvalidOperationException();
+				throw new InvalidOperationException(this.GetType().Name + " is already running.");
 			}
 
-			this.Log(LogLevel.Debug, "Bootstrapping");
+			this.Log(LogLevel.Debug, "State: Bootstrapping");
 			this.State = WpfBootstrapperState.Bootstrapping;
 
 			bool debuggerAttached = Debugger.IsAttached;
@@ -971,7 +992,7 @@ namespace RI.Framework.Services
 			this.Log(LogLevel.Debug, "Logging bootstrapper variables");
 			this.LogBootstrapperVariables();
 
-			this.Log(LogLevel.Debug, "Running");
+			this.Log(LogLevel.Debug, "State: Running");
 			this.State = WpfBootstrapperState.Running;
 
 			this.Log(LogLevel.Debug, "Beginning run");
@@ -983,13 +1004,13 @@ namespace RI.Framework.Services
 			this.Log(LogLevel.Debug, "Ending run");
 			this.EndRun();
 
-			this.Log(LogLevel.Debug, "Shutting down");
+			this.Log(LogLevel.Debug, "State: Shutting down");
 			this.State = WpfBootstrapperState.ShuttingDown;
 
 			this.Log(LogLevel.Debug, "Doing shutdown");
 			this.DoShutdown();
 
-			this.Log(LogLevel.Debug, "Shut down");
+			this.Log(LogLevel.Debug, "State: Shut down");
 			this.State = WpfBootstrapperState.ShutDown;
 		}
 
@@ -998,7 +1019,7 @@ namespace RI.Framework.Services
 		{
 			if (this.State != WpfBootstrapperState.Running)
 			{
-				throw new InvalidOperationException();
+				throw new InvalidOperationException(this.GetType().Name + " is not running.");
 			}
 
 			if (this.ShutdownInitiated)
