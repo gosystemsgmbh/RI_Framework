@@ -1,5 +1,11 @@
-﻿namespace RI.Framework.Utilities.Windows
+﻿using System;
+
+
+
+
+namespace RI.Framework.Utilities.Windows
 {
+	[Serializable]
 	internal enum WindowsError
 	{
 		ErrorAccessDenied = 5,

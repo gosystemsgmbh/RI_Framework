@@ -97,6 +97,15 @@ namespace RI.Framework.Utilities.Wpf
 			this.PreviousCursor = null;
 		}
 
+		/// <summary>
+		/// Restores the original cursor before this instance was created.
+		/// </summary>
+		public void Restore ()
+		{
+			this.Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
 		#endregion
 
 
@@ -107,10 +116,9 @@ namespace RI.Framework.Utilities.Wpf
 		/// <summary>
 		///     Restores the original cursor which was saved when this <see cref="TemporaryCursor" /> was created.
 		/// </summary>
-		public void Dispose ()
+		void IDisposable.Dispose()
 		{
-			this.Dispose(true);
-			GC.SuppressFinalize(this);
+			this.Restore();
 		}
 
 		#endregion

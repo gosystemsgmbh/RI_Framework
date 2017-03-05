@@ -2,8 +2,6 @@
 
 ## TODO
 
-- [ ] Features
-  - [ ] Implement things from Wishlist
 - [ ] Documentation
   - [ ] Complete list of examples
   - [ ] Type and member descriptions
@@ -11,17 +9,10 @@
   - [ ] Conceptional documentation
   - [ ] Cleanup artifacts
 - [ ] Cleanup
-  - [ ] Check whether nested types really need to be nested
   - [ ] Exception throwing
     - [ ] Always use parameter names for argument exceptions
     - [ ] Always provide message or at least parameter name (for argument exceptions only)
-  - [ ] Moving all randomizer stuff into Utilities.Randomizing
-  - [ ] Check all usage of StringComparison and StringComparer
-  - [ ] Check usage of ServiceLocator
-  - [ ] Make all enums serializable
-  - [ ] Make all exceptions serializable
-  - [ ] Check usage of IDisposable
-  - [ ] Do all events use proper event handler and event args?
+  - [ ] Check all usage of StringComparison
   - [ ] TODOs
 - [ ] Testing
   - [ ] Remove test projects from ReSharper exclusion
@@ -35,6 +26,7 @@
 
 ## Future
 
+- [ ] TODOs
 - [ ] Migrate Common to Shared
   - [ ] Migrate Common to Shared
   - [ ] Add reference to RI.Framework.Shared to all projects

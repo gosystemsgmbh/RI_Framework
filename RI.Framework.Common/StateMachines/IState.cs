@@ -1,4 +1,9 @@
-﻿namespace RI.Framework.StateMachines
+﻿using RI.Framework.Composition.Model;
+
+
+
+
+namespace RI.Framework.StateMachines
 {
 	/// <summary>
 	/// Defines the interface for a state instance.
@@ -8,6 +13,7 @@
 	/// See <see cref="StateMachine"/> for more details about state machines.
 	/// </para>
 	/// </remarks>
+	[Export]
 	public interface IState
 	{
 		/// <summary>

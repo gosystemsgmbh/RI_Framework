@@ -189,7 +189,21 @@ namespace RI.Framework.Services.Logging.Writers
 
 		#region Instance Methods
 
-		[SuppressMessage ("ReSharper", "UnusedParameter.Local")]
+		/// <summary>
+		/// Closes this log writer and all used underlying streams.
+		/// </summary>
+		/// <remarks>
+		/// <para>
+		/// After the log writer is closed, all calls to <see cref="Log"/> do not have any effect but do not fail.
+		/// </para>
+		/// </remarks>
+		public void Close()
+		{
+			this.Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		[SuppressMessage("ReSharper", "UnusedParameter.Local")]
 		[SuppressMessage ("ReSharper", "EmptyGeneralCatchClause")]
 		private void Dispose (bool disposing)
 		{
@@ -226,10 +240,9 @@ namespace RI.Framework.Services.Logging.Writers
 		#region Interface: IDisposable
 
 		/// <inheritdoc />
-		public void Dispose ()
+		void IDisposable.Dispose ()
 		{
-			this.Dispose(true);
-			GC.SuppressFinalize(this);
+			this.Close();
 		}
 
 		#endregion

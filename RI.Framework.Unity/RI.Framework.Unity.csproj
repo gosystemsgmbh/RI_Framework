@@ -54,6 +54,7 @@
     <Compile Include="Services\Logging\LogWriter.cs" />
     <Compile Include="Services\Modularization\MonoModule.cs" />
     <Compile Include="StateMachines\BootstrapperBasedStateMachineConfiguration.cs" />
+    <Compile Include="StateMachines\MonoState.cs" />
     <Compile Include="StateMachines\StateDispatcher.cs" />
   </ItemGroup>
   <ItemGroup />

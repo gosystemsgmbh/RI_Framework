@@ -359,6 +359,7 @@ namespace RI.Framework.Collections.ObjectModel
 
 		#region Type: TreeNodeOperation
 
+		[Serializable]
 		private enum TreeNodeOperation
 		{
 			Insert = 0,

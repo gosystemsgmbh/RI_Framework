@@ -1,8 +1,14 @@
-﻿namespace RI.Framework.IO.INI
+﻿using System;
+
+
+
+
+namespace RI.Framework.IO.INI
 {
 	/// <summary>
 	///     Describes an error which ocurred during reading INI data using an <see cref="IniReader" />.
 	/// </summary>
+	[Serializable]
 	public enum IniReaderError
 	{
 		/// <summary>

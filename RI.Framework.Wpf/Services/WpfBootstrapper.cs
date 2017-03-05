@@ -862,7 +862,7 @@ namespace RI.Framework.Services
 		/// </remarks>
 		protected virtual void LogBootstrapperVariables ()
 		{
-			this.Log(LogLevel.Debug, "Application name:     {0}", this.ApplicationProductName.ToString(4));
+			this.Log(LogLevel.Debug, "Application name:     {0}", this.ApplicationProductName);
 			this.Log(LogLevel.Debug, "Application version:  {0}", this.ApplicationVersion.ToString(4));
 			this.Log(LogLevel.Debug, "Executable directory: {0}", this.ApplicationExecutableDirectory.PathResolved);
 			this.Log(LogLevel.Debug, "Data directory:       {0}", this.ApplicationDataDirectory.PathResolved);

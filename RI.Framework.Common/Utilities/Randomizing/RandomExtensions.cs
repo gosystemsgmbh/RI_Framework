@@ -8,7 +8,7 @@ using RI.Framework.Utilities.Exceptions;
 
 
 
-namespace RI.Framework.Utilities
+namespace RI.Framework.Utilities.Randomizing
 {
 	/// <summary>
 	///     Provides utility/extension methods for the <see cref="Random" /> type.

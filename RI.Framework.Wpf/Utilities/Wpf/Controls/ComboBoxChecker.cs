@@ -1,16 +1,38 @@
 ﻿using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 
 
 
 
 namespace RI.Framework.Utilities.Wpf.Controls
 {
+	/// <summary>
+	/// A specialized <see cref="CheckBox"/> which is connected to a <see cref="ComboBox"/> in order to set its <see cref="Selector.SelectedItem"/> property to null.
+	/// </summary>
+	/// <remarks>
+	/// <para>
+	/// When the <see cref="ComboBoxChecker"/> is checked and the <see cref="ComboBox"/>.<see cref="Selector.SelectedItem"/> property is null, <see cref="Selector.SelectedItem"/> is set to the first item in <see cref="ComboBox"/>.<see cref="ItemsControl.ItemsSource"/> or <see cref="ComboBox"/>.<see cref="ItemsControl.Items"/>.
+	/// When the <see cref="ComboBoxChecker"/> is unchecked, the <see cref="ComboBox"/>.<see cref="Selector.SelectedItem"/> property is set to null.
+	/// </para>
+	/// </remarks>
 	public class ComboBoxChecker : CheckBox
 	{
+		/// <summary>
+		/// The dependency property for the <see cref="ComboBox"/> property.
+		/// </summary>
+		/// <value>
+		/// The dependency property for the <see cref="ComboBox"/> property.
+		/// </value>
 		public static readonly DependencyProperty ComboBoxProperty = DependencyProperty.Register(nameof(ComboBoxChecker.ComboBox), typeof(ComboBox), typeof(ComboBoxChecker), new FrameworkPropertyMetadata(ComboBoxChecker.OnComboBoxChanged));
 
+		/// <summary>
+		/// Gets or sets the <see cref="ComboBox"/> connected to this <see cref="ComboBoxChecker"/>.
+		/// </summary>
+		/// <value>
+		/// The <see cref="ComboBox"/> connected to this <see cref="ComboBoxChecker"/>.
+		/// </value>
 		public ComboBox ComboBox
 		{
 			get
@@ -62,6 +84,9 @@ namespace RI.Framework.Utilities.Wpf.Controls
 			}
 		}
 
+		/// <summary>
+		/// Creates a new instance of <see cref="ComboBoxChecker"/>.
+		/// </summary>
 		public ComboBoxChecker ()
 		{
 			this.SelectionChangedHandler = this.SelectionChangedMethod;

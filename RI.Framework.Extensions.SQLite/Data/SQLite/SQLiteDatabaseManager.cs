@@ -95,7 +95,7 @@ namespace RI.Framework.Data.SQLite
 		/// </summary>
 		~SQLiteDatabaseManager ()
 		{
-			this.UnloadDatabase();
+			this.Dispose();
 		}
 
 		#endregion
@@ -541,7 +541,7 @@ namespace RI.Framework.Data.SQLite
 		DbConnection IDatabaseManager.CreateConnection (bool readOnly) => this.CreateConnection(readOnly);
 
 		/// <inheritdoc />
-		void IDisposable.Dispose () => this.UnloadDatabase();
+		public void Dispose () => this.UnloadDatabase();
 
 		/// <inheritdoc />
 		public void InitializeDatabase ()

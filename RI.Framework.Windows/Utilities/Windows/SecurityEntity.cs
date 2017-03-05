@@ -1,5 +1,11 @@
+using System;
+
+
+
+
 namespace RI.Framework.Utilities.Windows
 {
+	[Serializable]
 	internal enum SecurityEntity
 	{
 		SeCreateTokenName,

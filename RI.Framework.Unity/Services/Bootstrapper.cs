@@ -168,6 +168,8 @@ namespace RI.Framework.Services
 		/// </remarks>
 		public bool UseDefaultScriptingCatalog = true;
 
+		//TODO: Add ModuleInitialization
+
 		#endregion
 
 

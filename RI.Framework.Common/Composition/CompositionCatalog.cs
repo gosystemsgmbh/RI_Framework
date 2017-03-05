@@ -76,7 +76,7 @@ namespace RI.Framework.Composition
 
 		#region Instance Events
 
-		internal event Action RecomposeRequested;
+		internal event EventHandler RecomposeRequested;
 
 		#endregion
 
@@ -112,8 +112,7 @@ namespace RI.Framework.Composition
 		/// </remarks>
 		protected void RequestRecompose ()
 		{
-			Action handler = this.RecomposeRequested;
-			handler?.Invoke();
+			this.RecomposeRequested?.Invoke(this, EventArgs.Empty);
 		}
 
 		#endregion

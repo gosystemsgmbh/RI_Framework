@@ -469,7 +469,7 @@ namespace RI.Framework.Composition
 		/// </summary>
 		~CompositionContainer ()
 		{
-			this.Dispose(false);
+			this.Dispose();
 		}
 
 		#endregion
@@ -508,7 +508,7 @@ namespace RI.Framework.Composition
 		/// </remarks>
 		public bool LoggingEnabled { get; set; }
 
-		private Action CatalogRecomposeRequestHandler { get; set; }
+		private EventHandler CatalogRecomposeRequestHandler { get; set; }
 
 		private List<CompositionCatalog> Catalogs { get; set; }
 
@@ -533,7 +533,7 @@ namespace RI.Framework.Composition
 		///         This event is raised after recomposition is done.
 		///     </para>
 		/// </remarks>
-		public event Action CompositionChanged;
+		public event EventHandler CompositionChanged;
 
 		#endregion
 
@@ -1359,12 +1359,6 @@ namespace RI.Framework.Composition
 			this.Types.Add(new CompositionCatalogItem(name, type, privateExport));
 		}
 
-		[SuppressMessage ("ReSharper", "UnusedParameter.Local")]
-		private void Dispose (bool disposing)
-		{
-			this.Clear();
-		}
-
 		private List<object> GetAllInstancesInternal ()
 		{
 			List<object> instances = new List<object>();
@@ -1541,7 +1535,7 @@ namespace RI.Framework.Composition
 			return DirectLinq.Where(instances, compatibleType.IsInstanceOfType);
 		}
 
-		private void HandleCatalogRecomposeRequest ()
+		private void HandleCatalogRecomposeRequest (object sender, EventArgs e)
 		{
 			this.UpdateComposition(true);
 		}
@@ -1556,8 +1550,7 @@ namespace RI.Framework.Composition
 
 		private void RaiseCompositionChanged ()
 		{
-			Action handler = this.CompositionChanged;
-			handler?.Invoke();
+			this.CompositionChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		private void RemoveCatalogInternal (CompositionCatalog catalog)
@@ -1706,9 +1699,9 @@ namespace RI.Framework.Composition
 		#region Interface: IDisposable
 
 		/// <inheritdoc />
-		void IDisposable.Dispose ()
+		public void Dispose ()
 		{
-			this.Dispose(true);
+			this.Clear();
 		}
 
 		#endregion

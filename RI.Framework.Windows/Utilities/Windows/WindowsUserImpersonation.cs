@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Security;
 using System.Security.Principal;
 
@@ -96,7 +97,7 @@ namespace RI.Framework.Utilities.Windows
 		/// </summary>
 		~WindowsUserImpersonation ()
 		{
-			this.Dispose();
+			this.Dispose(false);
 		}
 
 		private void Impersonate ()
@@ -140,8 +141,17 @@ namespace RI.Framework.Utilities.Windows
 			this.Profile = profile;
 		}
 
-		/// <inheritdoc />
-		public void Dispose ()
+		/// <summary>
+		/// Revokes the impersonation of the WIndows user and frees all resources.
+		/// </summary>
+		public void Close ()
+		{
+			this.Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		[SuppressMessage ("ReSharper", "UnusedParameter.Local")]
+		private void Dispose (bool disposing)
 		{
 			if ((this.Token != IntPtr.Zero) && (this.Identity != null) && (this.Context != null) && (this.Profile != null))
 			{
@@ -157,6 +167,12 @@ namespace RI.Framework.Utilities.Windows
 			this.Identity = null;
 			this.Context = null;
 			this.Profile = null;
+		}
+
+		/// <inheritdoc />
+		void IDisposable.Dispose()
+		{
+			this.Close();
 		}
 
 		/// <summary>

@@ -283,7 +283,6 @@ Math
 State machines
 --------------
 
- + (Unity) MonoState
  - (WPF) DispatcherStateDispatcher
  - (Common) CompositionContainerStateResolver
  - (Common) ServiceLocatorStateResolver

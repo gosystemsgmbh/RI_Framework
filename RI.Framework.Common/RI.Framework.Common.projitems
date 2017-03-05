@@ -136,10 +136,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Exceptions\NotWriteableStreamArgumentException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Exceptions\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObjectModel\ISynchronizable.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Randomizing\RandomExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Randomizing\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\SingleExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObjectModel\ICloneable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObjectModel\_NamespaceDoc.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\RandomExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Reflection\AssemblyExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Reflection\TypeExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Reflection\_NamespaceDoc.cs" />
