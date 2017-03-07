@@ -114,8 +114,14 @@ namespace RI.Framework.IO.Paths
 		///         Using this method, wildcards and relative paths are allowed and the type of the path is assumed to be of the same type as used on the current system.
 		///     </para>
 		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="path" /> is null. </exception>
 		public static PathProperties FromPath (string path)
 		{
+			if (path == null)
+			{
+				throw new ArgumentNullException(nameof(path));
+			}
+
 			return PathProperties.FromPath(path, true, true, PathProperties.GetSystemType());
 		}
 
@@ -138,9 +144,15 @@ namespace RI.Framework.IO.Paths
 		///         If <paramref name="assumedType" /> is not null and the path type determined through analysis of <paramref name="path" /> does not match with <paramref name="assumedType" />, the path is considered invalid and <see cref="Error" /> is set to <see cref="PathError.WrongType" />.
 		///     </para>
 		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="path" /> is null. </exception>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="assumedType" /> is <see cref="PathType.Invalid" />. </exception>
 		public static PathProperties FromPath (string path, bool allowWildcards, bool allowRelatives, PathType? assumedType)
 		{
+			if (path == null)
+			{
+				throw new ArgumentNullException(nameof(path));
+			}
+
 			if (assumedType.HasValue)
 			{
 				if (assumedType.Value == PathType.Invalid)
@@ -148,8 +160,6 @@ namespace RI.Framework.IO.Paths
 					throw new ArgumentOutOfRangeException(nameof(assumedType));
 				}
 			}
-
-			path = path ?? string.Empty;
 
 			PathType? type = null;
 			PathError error = PathError.None;

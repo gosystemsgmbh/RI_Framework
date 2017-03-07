@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Collections\Comparison\Test_CollectionComparer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Generic\Test_PriorityQueue.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\Generic\Test_Warehouse.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\ObjectModel\Test_IPoolExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\ObjectModel\Test_ITreeNodeExtensions.cs" />

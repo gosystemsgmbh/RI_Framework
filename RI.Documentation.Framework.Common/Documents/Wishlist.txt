@@ -27,6 +27,14 @@ Conceptual documentations
  + I/O
 
 
+Tests
+-----
+
+ + VirtualizationCollection
+ + DirectoryPath
+ + FilePath
+
+
 Utilities
 ---------
 

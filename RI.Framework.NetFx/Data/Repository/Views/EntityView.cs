@@ -117,6 +117,7 @@ namespace RI.Framework.Data.Repository.Views
 		private IEnumerable<TEntity> _source;
 
 		private bool _updateSource;
+
 		private bool _isUpdating;
 
 		#endregion
@@ -1158,11 +1159,23 @@ namespace RI.Framework.Data.Repository.Views
 
 		#region Virtuals
 
+		/// <summary>
+		/// Determines whether the underlying <see cref="IRepositorySet{T}"/> supports creating new entities.
+		/// </summary>
+		/// <returns>
+		/// true if new entities can be created, false otherwise.
+		/// </returns>
 		public virtual bool CanNew ()
 		{
 			return this.EntityCanNew();
 		}
 
+		/// <summary>
+		/// Creates and adds a new entity.
+		/// </summary>
+		/// <returns>
+		/// The new entity.
+		/// </returns>
 		public virtual TViewObject New ()
 		{
 			TViewObject viewObj = this.PrepareViewObject(null, null);
@@ -1170,11 +1183,28 @@ namespace RI.Framework.Data.Repository.Views
 			return viewObj;
 		}
 
+		/// <summary>
+		/// Called when a new entity is to be created.
+		/// </summary>
+		/// <returns>
+		/// The newly created entity.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// The default implementation uses <see cref="IRepositorySet{T}.Create"/> to create a new instance of the entities type.
+		/// </para>
+		/// </remarks>
 		protected virtual TEntity CreateEntity ()
 		{
 			return this.Set.Create();
 		}
 
+		/// <summary>
+		/// Called when a new view object is to be created before it is assigned to wrap an entity.
+		/// </summary>
+		/// <returns>
+		/// The newly created view object.
+		/// </returns>
 		protected virtual TViewObject CreateViewObject ()
 		{
 			return new TViewObject();
@@ -1380,6 +1410,11 @@ namespace RI.Framework.Data.Repository.Views
 			viewObject.RaiseEntityChanged();
 		}
 
+		/// <summary>
+		/// Raises <see cref="EntitiesChanged"/>.
+		/// </summary>
+		/// <param name="oldItems">The entities which were removed.</param>
+		/// <param name="newItems">The entities which were added.</param>
 		protected virtual void OnEntitiesChanged (IList<TEntity> oldItems, IList<TEntity> newItems)
 		{
 			this.EntitiesChanged?.Invoke(this, new EntityViewItemsEventArgs<TEntity>(oldItems, newItems));
@@ -1394,21 +1429,39 @@ namespace RI.Framework.Data.Repository.Views
 			this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 
+		/// <summary>
+		/// Raises <see cref="SourceChanged"/>.
+		/// </summary>
+		/// <param name="oldItems">The entities which were removed.</param>
+		/// <param name="newItems">The entities which were added.</param>
 		protected virtual void OnSourceChanged (IList<TEntity> oldItems, IList<TEntity> newItems)
 		{
 			this.SourceChanged?.Invoke(this, new EntityViewItemsEventArgs<TEntity>(oldItems, newItems));
 		}
 
+		/// <summary>
+		/// Raises <see cref="Updated"/>.
+		/// </summary>
+		/// <param name="resetPageNumber">Specifies whether the page number was reset to 1.</param>
 		protected virtual void OnUpdated (bool resetPageNumber)
 		{
 			this.Updated?.Invoke(this, new EntityViewUpdateEventArgs(resetPageNumber));
 		}
 
+		/// <summary>
+		/// Raises <see cref="Updating"/>.
+		/// </summary>
+		/// <param name="resetPageNumber">Specifies whether the page number was reset to 1.</param>
 		protected virtual void OnUpdating (bool resetPageNumber)
 		{
 			this.Updating?.Invoke(this, new EntityViewUpdateEventArgs(resetPageNumber));
 		}
 
+		/// <summary>
+		/// Raises <see cref="ViewObjectsChanged"/>.
+		/// </summary>
+		/// <param name="oldItems">The view objects which were removed.</param>
+		/// <param name="newItems">The view objects which were added.</param>
 		protected virtual void OnViewObjectsChanged (IList<TViewObject> oldItems, IList<TViewObject> newItems)
 		{
 			this.ViewObjectsChanged?.Invoke(this, new EntityViewItemsEventArgs<TViewObject>(oldItems, newItems));
@@ -1446,6 +1499,11 @@ namespace RI.Framework.Data.Repository.Views
 
 		#region Interface: IEntityViewCaller<TEntity>
 
+		/// <summary>
+		/// Adds a new entity.
+		/// </summary>
+		/// <param name="entity">The entity to add.</param>
+		/// <exception cref="ArgumentNullException"><paramref name="entity"/> is null.</exception>
 		public void Add (TEntity entity)
 		{
 			if (entity == null)
@@ -1456,6 +1514,11 @@ namespace RI.Framework.Data.Repository.Views
 			this.Entities.Add(entity);
 		}
 
+		/// <summary>
+		/// Attaches an exiting entity.
+		/// </summary>
+		/// <param name="entity">The entity to attach.</param>
+		/// <exception cref="ArgumentNullException"><paramref name="entity"/> is null.</exception>
 		public void Attach (TEntity entity)
 		{
 			if (entity == null)
@@ -1474,6 +1537,11 @@ namespace RI.Framework.Data.Repository.Views
 			}
 		}
 
+		/// <summary>
+		/// Starts editing of an entity.
+		/// </summary>
+		/// <param name="entity">The entity to edit.</param>
+		/// <exception cref="ArgumentNullException"><paramref name="entity"/> is null.</exception>
 		public void BeginEdit (TEntity entity)
 		{
 			if (entity == null)
@@ -1485,6 +1553,14 @@ namespace RI.Framework.Data.Repository.Views
 			this.EntityEditBegin(viewObject);
 		}
 
+		/// <summary>
+		/// Determines whether the underlying <see cref="IRepositorySet{T}"/> supports adding of the specified new entity.
+		/// </summary>
+		/// <param name="entity">The entity.</param>
+		/// <returns>
+		/// true if the new entity can be added, false otherwise.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"><paramref name="entity"/> is null.</exception>
 		public bool CanAdd (TEntity entity)
 		{
 			if (entity == null)
@@ -1496,6 +1572,14 @@ namespace RI.Framework.Data.Repository.Views
 			return this.EntityCanAdd(viewObject);
 		}
 
+		/// <summary>
+		/// Determines whether the underlying <see cref="IRepositorySet{T}"/> supports attaching of the specified existing entity.
+		/// </summary>
+		/// <param name="entity">The entity.</param>
+		/// <returns>
+		/// true if the existing entity can be attached, false otherwise.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"><paramref name="entity"/> is null.</exception>
 		public bool CanAttach (TEntity entity)
 		{
 			if (entity == null)
@@ -1507,6 +1591,18 @@ namespace RI.Framework.Data.Repository.Views
 			return this.EntityCanAttach(viewObject);
 		}
 
+		/// <summary>
+		/// Finishes editing of an entity without applying the changes made during edit.
+		/// </summary>
+		/// <param name="entity">The entity to finish editing of.</param>
+		/// <remarks>
+		/// <note type="note">
+		/// <see cref="CancelEdit"/> does not automatically reload the entity or does not discard changes made since <see cref="BeginEdit"/> was called respectively.
+		/// This cannot be done as the higher context is not known by the <see cref="EntityView{TEntity,TViewObject}"/>.
+		/// However, you can do your own reload logic by listening to the <see cref="EntityCancelEdit"/> event.
+		/// </note>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"><paramref name="entity"/> is null.</exception>
 		public void CancelEdit (TEntity entity)
 		{
 			if (entity == null)
@@ -1518,6 +1614,14 @@ namespace RI.Framework.Data.Repository.Views
 			this.EntityEditCancel(viewObject);
 		}
 
+		/// <summary>
+		/// Determines whether the underlying <see cref="IRepositorySet{T}"/> supports deleting of the specified entity.
+		/// </summary>
+		/// <param name="entity">The entity.</param>
+		/// <returns>
+		/// true if the entity can be deleted, false otherwise.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"><paramref name="entity"/> is null.</exception>
 		public bool CanDelete (TEntity entity)
 		{
 			if (entity == null)
@@ -1529,6 +1633,14 @@ namespace RI.Framework.Data.Repository.Views
 			return this.EntityCanDelete(viewObject);
 		}
 
+		/// <summary>
+		/// Determines whether this <see cref="EntityView{TEntity,TViewObject}"/> supports editing of the specified entity (that is, if <see cref="AllowEdit"/> is true).
+		/// </summary>
+		/// <param name="entity">The entity.</param>
+		/// <returns>
+		/// true if the entity can be edited, false otherwise.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"><paramref name="entity"/> is null.</exception>
 		public bool CanEdit (TEntity entity)
 		{
 			if (entity == null)
@@ -1540,6 +1652,14 @@ namespace RI.Framework.Data.Repository.Views
 			return this.EntityCanEdit(viewObject);
 		}
 
+		/// <summary>
+		/// Determines whether the underlying <see cref="IRepositorySet{T}"/> supports modification of the specified entity.
+		/// </summary>
+		/// <param name="entity">The entity.</param>
+		/// <returns>
+		/// true if the entity can be modified, false otherwise.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"><paramref name="entity"/> is null.</exception>
 		public bool CanModify (TEntity entity)
 		{
 			if (entity == null)
@@ -1551,6 +1671,14 @@ namespace RI.Framework.Data.Repository.Views
 			return this.EntityCanModify(viewObject);
 		}
 
+		/// <summary>
+		/// Determines whether the underlying <see cref="IRepositorySet{T}"/> supports reloading of the specified entity.
+		/// </summary>
+		/// <param name="entity">The entity.</param>
+		/// <returns>
+		/// true if the entity can be reloaded, false otherwise.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"><paramref name="entity"/> is null.</exception>
 		public bool CanReload (TEntity entity)
 		{
 			if (entity == null)
@@ -1562,6 +1690,14 @@ namespace RI.Framework.Data.Repository.Views
 			return this.EntityCanReload(viewObject);
 		}
 
+		/// <summary>
+		/// Determines whether this <see cref="EntityView{TEntity,TViewObject}"/> supports selection of the specified entity (that is, if <see cref="AllowSelect"/> is true).
+		/// </summary>
+		/// <param name="entity">The entity.</param>
+		/// <returns>
+		/// true if the entity can be selected, false otherwise.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"><paramref name="entity"/> is null.</exception>
 		public bool CanSelect (TEntity entity)
 		{
 			if (entity == null)
@@ -1573,6 +1709,14 @@ namespace RI.Framework.Data.Repository.Views
 			return this.EntityCanSelect(viewObject);
 		}
 
+		/// <summary>
+		/// Determines whether the underlying <see cref="IRepositorySet{T}"/> supports checking for changes and validation of the specified entity.
+		/// </summary>
+		/// <param name="entity">The entity.</param>
+		/// <returns>
+		/// true if the entity can be checked for changes and validated, false otherwise.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"><paramref name="entity"/> is null.</exception>
 		public bool CanValidate (TEntity entity)
 		{
 			if (entity == null)
@@ -1584,6 +1728,11 @@ namespace RI.Framework.Data.Repository.Views
 			return this.EntityCanValidate(viewObject);
 		}
 
+		/// <summary>
+		/// Deletes an entity.
+		/// </summary>
+		/// <param name="entity">The entity to delete.</param>
+		/// <exception cref="ArgumentNullException"><paramref name="entity"/> is null.</exception>
 		public void Delete (TEntity entity)
 		{
 			if (entity == null)
@@ -1594,6 +1743,11 @@ namespace RI.Framework.Data.Repository.Views
 			this.Entities.Remove(entity);
 		}
 
+		/// <summary>
+		/// Deselects an entity.
+		/// </summary>
+		/// <param name="entity">The entity to deselect.</param>
+		/// <exception cref="ArgumentNullException"><paramref name="entity"/> is null.</exception>
 		public void Deselect (TEntity entity)
 		{
 			if (entity == null)
@@ -1605,6 +1759,18 @@ namespace RI.Framework.Data.Repository.Views
 			this.EntityDeselect(viewObject);
 		}
 
+		/// <summary>
+		/// Finished editing of an entity and applies the changes made during edit.
+		/// </summary>
+		/// <param name="entity">The entity to finish editing of.</param>
+		/// <remarks>
+		/// <note type="note">
+		/// <see cref="EndEdit"/> does not automatically save the entity or does not save changes made since <see cref="BeginEdit"/> was called respectively.
+		/// This cannot be done as the higher context is not known by the <see cref="EntityView{TEntity,TViewObject}"/>.
+		/// However, you can do your own reload logic by listening to the <see cref="EntityEndEdit"/> event.
+		/// </note>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"><paramref name="entity"/> is null.</exception>
 		public void EndEdit (TEntity entity)
 		{
 			if (entity == null)
@@ -1616,6 +1782,11 @@ namespace RI.Framework.Data.Repository.Views
 			this.EntityEditEnd(viewObject);
 		}
 
+		/// <summary>
+		/// Explicitly marks an entity as modified, regardless whether actual changes were made.
+		/// </summary>
+		/// <param name="entity">The entity to mark as modify.</param>
+		/// <exception cref="ArgumentNullException"><paramref name="entity"/> is null.</exception>
 		public void Modify (TEntity entity)
 		{
 			if (entity == null)
@@ -1627,6 +1798,11 @@ namespace RI.Framework.Data.Repository.Views
 			this.EntityModify(viewObject);
 		}
 
+		/// <summary>
+		/// Relaods an entity from the store used by the underlying <see cref="IRepositoryContext"/> to which the associated <see cref="IRepositorySet{T}"/> belongs.
+		/// </summary>
+		/// <param name="entity">The entity to reload.</param>
+		/// <exception cref="ArgumentNullException"><paramref name="entity"/> is null.</exception>
 		public void Reload (TEntity entity)
 		{
 			if (entity == null)
@@ -1638,6 +1814,11 @@ namespace RI.Framework.Data.Repository.Views
 			this.EntityReload(viewObject);
 		}
 
+		/// <summary>
+		/// Selects an entity.
+		/// </summary>
+		/// <param name="entity">The entity to select.</param>
+		/// <exception cref="ArgumentNullException"><paramref name="entity"/> is null.</exception>
 		public void Select (TEntity entity)
 		{
 			if (entity == null)
@@ -1649,6 +1830,16 @@ namespace RI.Framework.Data.Repository.Views
 			this.EntitySelect(viewObject);
 		}
 
+		/// <summary>
+		/// Checks an entity for changes and validates the entity.
+		/// </summary>
+		/// <param name="entity">The entity to check for changes and validate.</param>
+		/// <remarks>
+		/// <para>
+		/// The information whether the entity has changes and is valid can be retrieved through its associated <see cref="EntityViewObject{TEntity}"/> (<see cref="EntityViewObject{TEntity}.IsModified"/>, <see cref="EntityViewObject{TEntity}.IsValid"/>, <see cref="EntityViewObject{TEntity}.Errors"/>).
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"><paramref name="entity"/> is null.</exception>
 		public void Validate (TEntity entity)
 		{
 			if (entity == null)

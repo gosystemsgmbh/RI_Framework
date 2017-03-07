@@ -824,6 +824,28 @@ namespace RI.Test.Framework.IO.Paths
 			}
 		}
 
+		[TestMethod]
+		public void ConstructorTest ()
+		{
+			try
+			{
+				new DirectoryPath((string)null);
+				throw new TestAssertionException();
+			}
+			catch (ArgumentNullException)
+			{
+			}
+
+			try
+			{
+				new DirectoryPath((PathProperties)null);
+				throw new TestAssertionException();
+			}
+			catch (ArgumentNullException)
+			{
+			}
+		}
+
 		#endregion
 	}
 }

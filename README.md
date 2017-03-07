@@ -8,6 +8,7 @@
   - [ ] Check all namespace descriptions (in final documentation)
   - [ ] Conceptional documentation
   - [ ] Cleanup artifacts
+  - [ ] Remove RI.Documentation.Framework.Common
 - [ ] Cleanup
   - [ ] Exception throwing
     - [ ] Always use parameter names for argument exceptions

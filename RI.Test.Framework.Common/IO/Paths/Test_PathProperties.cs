@@ -24,7 +24,16 @@ namespace RI.Test.Framework.IO.Paths
 			// FromPath
 			//---------
 
-			test = PathProperties.FromPath(null, false, false, null);
+			try
+			{
+				test = PathProperties.FromPath(null);
+				throw new TestAssertionException();
+			}
+			catch (ArgumentNullException)
+			{
+			}
+
+			test = PathProperties.FromPath(@"");
 			if (test.Type != PathType.Invalid)
 			{
 				throw new TestAssertionException();
@@ -32,6 +41,35 @@ namespace RI.Test.Framework.IO.Paths
 			if (test.Error != PathError.Empty)
 			{
 				throw new TestAssertionException();
+			}
+
+			test = PathProperties.FromPath(@"test");
+			if (test.Type != PathType.Windows)
+			{
+				throw new TestAssertionException();
+			}
+			if (test.Error != PathError.None)
+			{
+				throw new TestAssertionException();
+			}
+
+			test = PathProperties.FromPath(@"c:\test");
+			if (test.Type != PathType.Windows)
+			{
+				throw new TestAssertionException();
+			}
+			if (test.Error != PathError.None)
+			{
+				throw new TestAssertionException();
+			}
+
+			try
+			{
+				test = PathProperties.FromPath(null, false, false, null);
+				throw new TestAssertionException();
+			}
+			catch (ArgumentNullException)
+			{
 			}
 
 			test = PathProperties.FromPath(@"", false, false, null);
@@ -54,14 +92,13 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			test = PathProperties.FromPath(null, false, false, PathType.Windows);
-			if (test.Type != PathType.Invalid)
+			try
 			{
+				test = PathProperties.FromPath(null, false, false, PathType.Windows);
 				throw new TestAssertionException();
 			}
-			if (test.Error != PathError.Empty)
+			catch (ArgumentNullException)
 			{
-				throw new TestAssertionException();
 			}
 
 			test = PathProperties.FromPath(@"", false, false, PathType.Windows);

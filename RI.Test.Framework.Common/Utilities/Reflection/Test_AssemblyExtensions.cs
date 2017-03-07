@@ -31,7 +31,7 @@ namespace RI.Test.Framework.Utilities.Reflection
 		{
 			Assembly assembly = Assembly.GetExecutingAssembly();
 
-			if (assembly.GetCopyright() != "Copyright (c) 2015-2016 Roten Informatik")
+			if (assembly.GetCopyright() != "Copyright (c) 2015-2017 Roten Informatik")
 			{
 				throw new TestAssertionException();
 			}
@@ -63,14 +63,16 @@ namespace RI.Test.Framework.Utilities.Reflection
 		public void GetGuid_Test ()
 		{
 			Assembly assembly = Assembly.GetExecutingAssembly();
-			Guid testGuid = new Guid("92AD84FB-E1BE-4908-9D1E-77D02DFF5A5B");
 
-			if (assembly.GetGuid(false, false) != testGuid)
+			Guid testGuid1 = new Guid("02DF9426-0104-B72E-A587-900B1C1BF71F");
+			Guid testGuid2 = new Guid("B97C77BD-B9D9-2EEC-4672-616D65776F72");
+
+			if (assembly.GetGuid(false, false) != testGuid1)
 			{
 				throw new TestAssertionException();
 			}
-
-			if (assembly.GetGuid(false, true) != testGuid)
+			
+			if (assembly.GetGuid(false, true) != testGuid2)
 			{
 				throw new TestAssertionException();
 			}
@@ -80,12 +82,12 @@ namespace RI.Test.Framework.Utilities.Reflection
 				throw new TestAssertionException();
 			}
 
-			if (assembly.GetGuid(true, false) == testGuid)
+			if (assembly.GetGuid(true, false) == testGuid1)
 			{
 				throw new TestAssertionException();
 			}
 
-			if (assembly.GetGuid(true, true) == testGuid)
+			if (assembly.GetGuid(true, true) == testGuid1)
 			{
 				throw new TestAssertionException();
 			}

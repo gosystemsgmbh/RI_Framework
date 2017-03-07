@@ -124,8 +124,14 @@ namespace RI.Framework.Collections.Generic
 				throw new ArgumentOutOfRangeException(nameof(priority));
 			}
 
-			int firstPriority = this.Chain.First.Value.Priority;
-			int lastPriority = this.Chain.Last.Value.Priority;
+			int firstPriority = 0;
+			int lastPriority = 0;
+
+			if (this.Table.Count > 0)
+			{
+				firstPriority = this.Chain.First.Value.Priority;
+				lastPriority = this.Chain.Last.Value.Priority;
+			}
 
 			PriorityItem priorityItem;
 			if (this.Table.Count == 0)
@@ -207,6 +213,7 @@ namespace RI.Framework.Collections.Generic
 			if (priorityItem.Count == 0)
 			{
 				this.Chain.RemoveLast();
+				this.Table.Remove(priority);
 			}
 			return item;
 		}
