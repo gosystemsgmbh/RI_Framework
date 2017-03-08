@@ -30,9 +30,11 @@ Conceptual documentations
 Tests
 -----
 
- + VirtualizationCollection
- + DirectoryPath
- + FilePath
+ + INI
+ + Composition
+ + State Machines
+ + Services
+ + Utilities
 
 
 Utilities

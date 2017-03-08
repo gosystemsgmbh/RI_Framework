@@ -66,13 +66,14 @@ namespace RI.Test.Framework.Utilities.Reflection
 
 			Guid testGuid1 = new Guid("02DF9426-0104-B72E-A587-900B1C1BF71F");
 			Guid testGuid2 = new Guid("B97C77BD-B9D9-2EEC-4672-616D65776F72");
+			Guid testGuid3 = new Guid("2F863F60-632D-46A2-A4E2-D7A214FA495F");
 
-			if (assembly.GetGuid(false, false) != testGuid1)
+			if (assembly.GetGuid(true, false) != testGuid1)
 			{
 				throw new TestAssertionException();
 			}
 			
-			if (assembly.GetGuid(false, true) != testGuid2)
+			if (assembly.GetGuid(true, true) != testGuid2)
 			{
 				throw new TestAssertionException();
 			}
@@ -82,12 +83,12 @@ namespace RI.Test.Framework.Utilities.Reflection
 				throw new TestAssertionException();
 			}
 
-			if (assembly.GetGuid(true, false) == testGuid1)
+			if (assembly.GetGuid(false, false) != testGuid3)
 			{
 				throw new TestAssertionException();
 			}
 
-			if (assembly.GetGuid(true, true) == testGuid1)
+			if (assembly.GetGuid(false, true) != testGuid3)
 			{
 				throw new TestAssertionException();
 			}

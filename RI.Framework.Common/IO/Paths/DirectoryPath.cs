@@ -501,11 +501,31 @@ namespace RI.Framework.IO.Paths
 		/// <exception cref="PathTooLongException"> Although being a valid directory path, the directory path is too long for the current system to be used. </exception>
 		/// <exception cref="IOException"> The directory path is actually an existing file or a part of its parent is not available. </exception>
 		/// <exception cref="DirectoryNotFoundException"> The directory path does not exist. </exception>
-		public List<DirectoryPath> GetSubdirectories (bool relativePaths, bool recursive)
+		public List<DirectoryPath> GetSubdirectories(bool relativePaths, bool recursive)
+		{
+			return this.GetSubdirectories(relativePaths, recursive, null);
+		}
+
+		/// <summary>
+		///     Gets a list of all subdirectories in this directory path which matches a specified directory name pattern.
+		/// </summary>
+		/// <param name="relativePaths"> Specifies whether the list of subdirectories should be relative to this directory path or not. </param>
+		/// <param name="recursive"> Specifies whether only immediate subdirectories should be returned or recursively all subdirectories. </param>
+		/// <param name="pattern"> The pattern for the directory names (can be null to return all subdirectories). </param>
+		/// <returns>
+		///     The list of subdirectories of this directory path.
+		///     If no subdirectories are available, an empty list is returned.
+		/// </returns>
+		/// <exception cref="InvalidOperationException"> The directory contains wildcards. </exception>
+		/// <exception cref="UnauthorizedAccessException"> The user does not have the required permissions. </exception>
+		/// <exception cref="PathTooLongException"> Although being a valid directory path, the directory path is too long for the current system to be used. </exception>
+		/// <exception cref="IOException"> The directory path is actually an existing file or a part of its parent is not available. </exception>
+		/// <exception cref="DirectoryNotFoundException"> The directory path does not exist. </exception>
+		public List<DirectoryPath> GetSubdirectories (bool relativePaths, bool recursive, string pattern)
 		{
 			this.VerifyRealDirectory();
 
-			string[] entries = Directory.GetDirectories(this, "*", recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
+			string[] entries = Directory.GetDirectories(this, pattern ?? "*", recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
 			List<DirectoryPath> subdirectories = new List<DirectoryPath>(from x in entries select relativePaths ? new DirectoryPath(x).MakeRelativeTo(this) : new DirectoryPath(x));
 			return subdirectories;
 		}

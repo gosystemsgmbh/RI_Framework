@@ -25,6 +25,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Collections\Test_LinkedListExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\Test_QueueExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\Test_StackExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Virtualization\Mock_IItemsProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Virtualization\Test_VirtualizationCollection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\INI\Test_IniDocument.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\Paths\Test_DirectoryPath.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\Paths\Test_FilePath.cs" />

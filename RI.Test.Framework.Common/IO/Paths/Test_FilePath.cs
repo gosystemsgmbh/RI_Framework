@@ -602,12 +602,17 @@ namespace RI.Test.Framework.IO.Paths
 			// Writing and reading text
 			//-------------------------
 
-			if (!test.WriteText("Test 1234"))
+			if (test.WriteText("Test 1234"))
 			{
 				throw new TestAssertionException();
 			}
 
-			if (test.WriteText("0123456789"))
+			if (!test.Delete())
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!test.WriteText("0123456789"))
 			{
 				throw new TestAssertionException();
 			}
@@ -667,6 +672,29 @@ namespace RI.Test.Framework.IO.Paths
 			}
 
 			if (test.ReadBytes() != null)
+			{
+				throw new TestAssertionException();
+			}
+
+			//--------
+			// Copying
+			//--------
+
+			test = DirectoryPath.GetTempDirectory().GetTempFile();
+
+			FilePath targetFile = test.ChangeFileName(test.FileName + ".tmp");
+
+			if (!test.Copy(targetFile, false))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (test.Copy(targetFile, false))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!test.Copy(targetFile, true))
 			{
 				throw new TestAssertionException();
 			}

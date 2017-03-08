@@ -1210,6 +1210,10 @@ namespace RI.Framework.Data.Repository.Views
 			return new TViewObject();
 		}
 
+		/// <summary>
+		/// Called when an entities view object is to be added.
+		/// </summary>
+		/// <param name="viewObject">The view object to add.</param>
 		protected virtual void EntityAdd (TViewObject viewObject)
 		{
 			if (viewObject.IsAddedOrAttached)
@@ -1226,6 +1230,10 @@ namespace RI.Framework.Data.Repository.Views
 			this.Set.Add(viewObject.Entity);
 		}
 
+		/// <summary>
+		/// Called when an entities view object is to be attached.
+		/// </summary>
+		/// <param name="viewObject">The view object to attach.</param>
 		protected virtual void EntityAttach (TViewObject viewObject)
 		{
 			if (viewObject.IsAddedOrAttached)
@@ -1242,51 +1250,117 @@ namespace RI.Framework.Data.Repository.Views
 			this.Set.Attach(viewObject.Entity);
 		}
 
+		/// <summary>
+		/// Called to determine whether an entities view object can be added.
+		/// </summary>
+		/// <param name="viewObject">The view object.</param>
+		/// <returns>
+		/// true if the view object can be added, false otherwise.
+		/// </returns>
 		protected virtual bool EntityCanAdd (TViewObject viewObject)
 		{
 			return this.Set.CanAdd(viewObject.Entity);
 		}
 
+		/// <summary>
+		/// Called to determine whether an entities view object can be attached.
+		/// </summary>
+		/// <param name="viewObject">The view object.</param>
+		/// <returns>
+		/// true if the view object can be attached, false otherwise.
+		/// </returns>
 		protected virtual bool EntityCanAttach (TViewObject viewObject)
 		{
 			return this.Set.CanAttach(viewObject.Entity);
 		}
 
+		/// <summary>
+		/// Called to determine whether an entities view object can be deleted.
+		/// </summary>
+		/// <param name="viewObject">The view object.</param>
+		/// <returns>
+		/// true if the view object can be deleted, false otherwise.
+		/// </returns>
 		protected virtual bool EntityCanDelete (TViewObject viewObject)
 		{
 			return this.Set.CanDelete(viewObject.Entity);
 		}
 
+		/// <summary>
+		/// Called to determine whether an entities view object can be edited.
+		/// </summary>
+		/// <param name="viewObject">The view object.</param>
+		/// <returns>
+		/// true if the view object can be edited, false otherwise.
+		/// </returns>
 		protected virtual bool EntityCanEdit (TViewObject viewObject)
 		{
 			return this.AllowEdit;
 		}
 
+		/// <summary>
+		/// Called to determine whether an entities view object can be modified.
+		/// </summary>
+		/// <param name="viewObject">The view object.</param>
+		/// <returns>
+		/// true if the view object can be modified, false otherwise.
+		/// </returns>
 		protected virtual bool EntityCanModify (TViewObject viewObject)
 		{
 			return this.Set.CanModify(viewObject.Entity);
 		}
 
+		/// <summary>
+		/// Called to determine whether a new entity or view object can be created.
+		/// </summary>
+		/// <returns>
+		/// true if a new entity or view object can be created, false otherwise.
+		/// </returns>
 		protected virtual bool EntityCanNew ()
 		{
 			return this.Set.CanCreate();
 		}
 
+		/// <summary>
+		/// Called to determine whether an entities view object can be reloaded.
+		/// </summary>
+		/// <param name="viewObject">The view object.</param>
+		/// <returns>
+		/// true if the view object can be reloaded, false otherwise.
+		/// </returns>
 		protected virtual bool EntityCanReload (TViewObject viewObject)
 		{
 			return this.Set.CanReload(viewObject.Entity);
 		}
 
+		/// <summary>
+		/// Called to determine whether an entities view object can be selected.
+		/// </summary>
+		/// <param name="viewObject">The view object.</param>
+		/// <returns>
+		/// true if the view object can be selected, false otherwise.
+		/// </returns>
 		protected virtual bool EntityCanSelect (TViewObject viewObject)
 		{
 			return this.AllowSelect;
 		}
 
+		/// <summary>
+		/// Called to determine whether an entities view object can be validated.
+		/// </summary>
+		/// <param name="viewObject">The view object.</param>
+		/// <returns>
+		/// true if the view object can be validated, false otherwise.
+		/// </returns>
 		protected virtual bool EntityCanValidate (TViewObject viewObject)
 		{
 			return this.Set.CanValidate(viewObject.Entity);
 		}
 
+		/// <summary>
+		/// Called when an entities view object is to be deleted.
+		/// </summary>
+		/// <param name="viewObject">The view object to delete.</param>
 		protected virtual void EntityDelete (TViewObject viewObject)
 		{
 			if (viewObject.IsDeleted)
@@ -1303,6 +1377,10 @@ namespace RI.Framework.Data.Repository.Views
 			this.Set.Delete(viewObject.Entity);
 		}
 
+		/// <summary>
+		/// Called when an entities view object is to be deselected.
+		/// </summary>
+		/// <param name="viewObject">The view object to deselect.</param>
 		protected virtual void EntityDeselect (TViewObject viewObject)
 		{
 			if (!viewObject.IsSelected)
@@ -1319,6 +1397,10 @@ namespace RI.Framework.Data.Repository.Views
 			this.OnEntityDeselected(viewObject);
 		}
 
+		/// <summary>
+		/// Called when an entities view object is to start editing.
+		/// </summary>
+		/// <param name="viewObject">The view object to start editing.</param>
 		protected virtual void EntityEditBegin (TViewObject viewObject)
 		{
 			if (viewObject.IsEdited)
@@ -1335,6 +1417,10 @@ namespace RI.Framework.Data.Repository.Views
 			this.OnEntityBeginEdit(viewObject);
 		}
 
+		/// <summary>
+		/// Called when an entities view object is to cancel editing.
+		/// </summary>
+		/// <param name="viewObject">The vie object to cancel editing.</param>
 		protected virtual void EntityEditCancel (TViewObject viewObject)
 		{
 			if (!viewObject.IsEdited)
@@ -1351,6 +1437,10 @@ namespace RI.Framework.Data.Repository.Views
 			this.OnEntityCancelEdit(viewObject);
 		}
 
+		/// <summary>
+		/// Called when an entities view object is to finish editing.
+		/// </summary>
+		/// <param name="viewObject">The view object to finish editing.</param>
 		protected virtual void EntityEditEnd (TViewObject viewObject)
 		{
 			if (!viewObject.IsEdited)
@@ -1367,6 +1457,10 @@ namespace RI.Framework.Data.Repository.Views
 			this.OnEntityEndEdit(viewObject);
 		}
 
+		/// <summary>
+		/// Called when an entities view object is to be marked as modified.
+		/// </summary>
+		/// <param name="viewObject">The view object to mark as modified.</param>
 		protected virtual void EntityModify (TViewObject viewObject)
 		{
 			this.Set.Modify(viewObject.Entity);
@@ -1376,6 +1470,10 @@ namespace RI.Framework.Data.Repository.Views
 			viewObject.RaiseEntityChanged();
 		}
 
+		/// <summary>
+		/// Called when an entities view object is to be reloaded.
+		/// </summary>
+		/// <param name="viewObject">The view object to reload.</param>
 		protected virtual void EntityReload (TViewObject viewObject)
 		{
 			this.Set.Reload(viewObject.Entity);
@@ -1386,6 +1484,10 @@ namespace RI.Framework.Data.Repository.Views
 			viewObject.RaiseEntityChanged();
 		}
 
+		/// <summary>
+		/// Called when an entities view object is to be selected.
+		/// </summary>
+		/// <param name="viewObject">The view object to select.</param>
 		protected virtual void EntitySelect (TViewObject viewObject)
 		{
 			if (viewObject.IsSelected)
@@ -1402,6 +1504,10 @@ namespace RI.Framework.Data.Repository.Views
 			this.OnEntitySelected(viewObject);
 		}
 
+		/// <summary>
+		/// Called when an entities view object is to be validated.
+		/// </summary>
+		/// <param name="viewObject">The view object to validate.</param>
 		protected virtual void EntityValidate (TViewObject viewObject)
 		{
 			viewObject.Errors = this.Set.Validate(viewObject.Entity);
@@ -1467,26 +1573,46 @@ namespace RI.Framework.Data.Repository.Views
 			this.ViewObjectsChanged?.Invoke(this, new EntityViewItemsEventArgs<TViewObject>(oldItems, newItems));
 		}
 
+		/// <summary>
+		/// Raises <see cref="EntityBeginEdit"/>.
+		/// </summary>
+		/// <param name="viewObject">The entities view object.</param>
 		protected virtual void OnEntityBeginEdit(TViewObject viewObject)
 		{
 			this.EntityBeginEdit?.Invoke(this, new EntityViewItemEventArgs<TViewObject>(viewObject));
 		}
 
+		/// <summary>
+		/// Raises <see cref="EntityCancelEdit"/>.
+		/// </summary>
+		/// <param name="viewObject">The entities view object.</param>
 		protected virtual void OnEntityCancelEdit(TViewObject viewObject)
 		{
 			this.EntityCancelEdit?.Invoke(this, new EntityViewItemEventArgs<TViewObject>(viewObject));
 		}
 
+		/// <summary>
+		/// Raises <see cref="EntityDeselected"/>.
+		/// </summary>
+		/// <param name="viewObject">The entities view object.</param>
 		protected virtual void OnEntityDeselected(TViewObject viewObject)
 		{
 			this.EntityDeselected?.Invoke(this, new EntityViewItemEventArgs<TViewObject>(viewObject));
 		}
 
+		/// <summary>
+		/// Raises <see cref="EntityEndEdit"/>.
+		/// </summary>
+		/// <param name="viewObject">The entities view object.</param>
 		protected virtual void OnEntityEndEdit(TViewObject viewObject)
 		{
 			this.EntityEndEdit?.Invoke(this, new EntityViewItemEventArgs<TViewObject>(viewObject));
 		}
 
+		/// <summary>
+		/// Raises <see cref="EntitySelected"/>.
+		/// </summary>
+		/// <param name="viewObject">The entities view object.</param>
 		protected virtual void OnEntitySelected(TViewObject viewObject)
 		{
 			this.EntitySelected?.Invoke(this, new EntityViewItemEventArgs<TViewObject>(viewObject));
