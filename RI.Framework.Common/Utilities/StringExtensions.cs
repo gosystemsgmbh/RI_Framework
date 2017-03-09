@@ -325,7 +325,7 @@ namespace RI.Framework.Utilities
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
 		public static bool IsEmpty (this string str)
-		{
+		{//TODO: Rename to IsWhitespace
 			if (str == null)
 			{
 				throw new ArgumentNullException(nameof(str));
@@ -360,7 +360,7 @@ namespace RI.Framework.Utilities
 		///     </para>
 		/// </remarks>
 		public static bool IsNullOrEmpty (this string str)
-		{
+		{//TODO: Rename to IsNullOrWhitespace
 			if (str == null)
 			{
 				return true;

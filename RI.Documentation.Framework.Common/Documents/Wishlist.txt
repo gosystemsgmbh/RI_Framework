@@ -30,15 +30,17 @@ Conceptual documentations
 Tests
 -----
 
- + INI
  + Composition
- + State Machines
+ + INI
  + Services
- + Utilities
+ + State Machines
+ + Utilities (StringExtensions, HeavyThread)
 
 
 Utilities
 ---------
+
+ - (Common) DecimalExtensions
 
  - (Common) RandomExtensions: NextBytes with max and min/max overload
  - (Common) RandomExtensions: FillStream with max and min/max overload
@@ -140,6 +142,7 @@ Collections
 
  - (Common) RingBuffer
  - (Common) SortedQueue
+ - (Common) WrappingCollection
 
  - (Common) InheritingTreeNodeBase, InheritingTreeNode
 

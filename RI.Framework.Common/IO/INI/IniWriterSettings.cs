@@ -20,10 +20,10 @@
 		/// </summary>
 		/// <remarks>
 		///     <para>
-		///         The default value is true.
+		///         The default value is false.
 		///     </para>
 		/// </remarks>
-		public const bool DefaultEmptyLineBeforeSectionHeader = true;
+		public const bool DefaultEmptyLineBeforeSectionHeader = false;
 
 		#endregion
 

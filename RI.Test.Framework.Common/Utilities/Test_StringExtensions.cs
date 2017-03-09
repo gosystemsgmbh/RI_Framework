@@ -1061,6 +1061,132 @@ namespace RI.Test.Framework.Utilities
 		}
 
 		[TestMethod]
+		public void Split_Test ()
+		{
+			string[] result = "abcHALLOxyzCIAOtestHALLOCIAO ".Split("HALLO", "CIAO");
+			if (result.Length != 5)
+			{
+				throw new TestAssertionException();
+			}
+			if (result[0] != "abc")
+			{
+				throw new TestAssertionException();
+			}
+			if (result[1] != "xyz")
+			{
+				throw new TestAssertionException();
+			}
+			if (result[2] != "test")
+			{
+				throw new TestAssertionException();
+			}
+			if (result[3] != "")
+			{
+				throw new TestAssertionException();
+			}
+			if (result[4] != " ")
+			{
+				throw new TestAssertionException();
+			}
+
+			result = "abcHALLOxyzCIAOtestHALLOCIAO ".Split(StringSplitOptions.None, "HALLO", "CIAO");
+			if (result.Length != 5)
+			{
+				throw new TestAssertionException();
+			}
+			if (result[0] != "abc")
+			{
+				throw new TestAssertionException();
+			}
+			if (result[1] != "xyz")
+			{
+				throw new TestAssertionException();
+			}
+			if (result[2] != "test")
+			{
+				throw new TestAssertionException();
+			}
+			if (result[3] != "")
+			{
+				throw new TestAssertionException();
+			}
+			if (result[4] != " ")
+			{
+				throw new TestAssertionException();
+			}
+
+			result = "abcHALLOxyzCIAOtestHALLOCIAO ".Split(StringSplitOptions.RemoveEmptyEntries, "HALLO", "CIAO");
+			if (result.Length != 4)
+			{
+				throw new TestAssertionException();
+			}
+			if (result[0] != "abc")
+			{
+				throw new TestAssertionException();
+			}
+			if (result[1] != "xyz")
+			{
+				throw new TestAssertionException();
+			}
+			if (result[2] != "test")
+			{
+				throw new TestAssertionException();
+			}
+			if (result[3] != " ")
+			{
+				throw new TestAssertionException();
+			}
+
+			result = "abc#xyz@test@# ".Split(StringSplitOptions.None, '#', '@');
+			if (result.Length != 5)
+			{
+				throw new TestAssertionException();
+			}
+			if (result[0] != "abc")
+			{
+				throw new TestAssertionException();
+			}
+			if (result[1] != "xyz")
+			{
+				throw new TestAssertionException();
+			}
+			if (result[2] != "test")
+			{
+				throw new TestAssertionException();
+			}
+			if (result[3] != "")
+			{
+				throw new TestAssertionException();
+			}
+			if (result[4] != " ")
+			{
+				throw new TestAssertionException();
+			}
+
+			result = "abc#xyz@test@# ".Split(StringSplitOptions.RemoveEmptyEntries, '#', '@');
+			if (result.Length != 4)
+			{
+				throw new TestAssertionException();
+			}
+			if (result[0] != "abc")
+			{
+				throw new TestAssertionException();
+			}
+			if (result[1] != "xyz")
+			{
+				throw new TestAssertionException();
+			}
+			if (result[2] != "test")
+			{
+				throw new TestAssertionException();
+			}
+			if (result[3] != " ")
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
 		public void StartsWithCount_Test ()
 		{
 			if (string.Empty.StartsWithCount('A', StringComparison.Ordinal) != 0)
@@ -1233,6 +1359,55 @@ namespace RI.Test.Framework.Utilities
 			}
 
 			if ("1\\x2".Unescape() != "1x2")
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void IsNullOrEmpty_Test()
+		{
+			if (!((string)null).IsNullOrEmpty())
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!string.Empty.IsNullOrEmpty())
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"".IsNullOrEmpty())
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!" ".IsNullOrEmpty())
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"  ".IsNullOrEmpty())
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"\f\r\n\t\v".IsNullOrEmpty())
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("A".IsNullOrEmpty())
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("ABC".IsNullOrEmpty())
+			{
+				throw new TestAssertionException();
+			}
+
+			if (" A ".IsNullOrEmpty())
 			{
 				throw new TestAssertionException();
 			}
