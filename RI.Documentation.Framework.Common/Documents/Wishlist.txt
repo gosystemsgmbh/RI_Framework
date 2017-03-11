@@ -34,13 +34,14 @@ Tests
  + INI
  + Services
  + State Machines
- + Utilities (StringExtensions, HeavyThread)
+ + Utilities (HeavyThread)
 
 
 Utilities
 ---------
 
  - (Common) DecimalExtensions
+ - (Common) Rounding extensions for double, float, and decimal
 
  - (Common) RandomExtensions: NextBytes with max and min/max overload
  - (Common) RandomExtensions: FillStream with max and min/max overload
@@ -51,6 +52,11 @@ Utilities
  # (.NET) ThreadDispatcher
  # (.NET) ThreadDispatcherSynchronizationContext
  # (.NET) ThreadDispatcherTimer
+
+ # (Windows) WindowsMessage
+ # (Windows) WindowsMessageLoop
+ # (Windows) WindowsMessageLoopSynchronizationContext
+ # (Windows) WindowsMessageLoopTimer
 
  # (Windows) LocalEncryption
  # (Windows) UniqueIdentification

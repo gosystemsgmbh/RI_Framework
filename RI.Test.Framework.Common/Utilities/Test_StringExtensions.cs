@@ -1413,6 +1413,1847 @@ namespace RI.Test.Framework.Utilities
 			}
 		}
 
+		[TestMethod]
+		public void ToBoolean_Test ()
+		{
+			//----------
+			// Has value
+			//----------
+
+			if (string.Empty.ToBoolean().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("test".ToBoolean().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"true".ToBoolean().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"TRUE".ToBoolean().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"false".ToBoolean().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"FALSE".ToBoolean().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			//-----
+			// True
+			//-----
+
+			if (!"true".ToBoolean().Value)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"TRUE".ToBoolean().Value)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"yes".ToBoolean().Value)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"YES".ToBoolean().Value)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"on".ToBoolean().Value)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"ON".ToBoolean().Value)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"1".ToBoolean().Value)
+			{
+				throw new TestAssertionException();
+			}
+
+			//------
+			// False
+			//------
+
+			if ("false".ToBoolean().Value)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("FALSE".ToBoolean().Value)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("no".ToBoolean().Value)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("NO".ToBoolean().Value)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("off".ToBoolean().Value)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("OFF".ToBoolean().Value)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("0".ToBoolean().Value)
+			{
+				throw new TestAssertionException();
+			}
+
+			//----------
+			// Untrimmed
+			//----------
+
+			if (!" true".ToBoolean().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"true ".ToBoolean().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!" true ".ToBoolean().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void ToByte_Test ()
+		{
+			//----------
+			// Has value
+			//----------
+
+			if (string.Empty.ToByte().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("test".ToByte().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("-1".ToByte().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("-1".ToByteInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("256".ToByte().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("256".ToByteInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("1.2".ToByteInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"0".ToByte().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"0".ToByteInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"255".ToByte().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"255".ToByteInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			//-------
+			// Values
+			//-------
+
+			if ("0".ToByte().Value != 0)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("0".ToByteInvariant().Value != 0)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("255".ToByte().Value != 255)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("255".ToByteInvariant().Value != 255)
+			{
+				throw new TestAssertionException();
+			}
+
+			//----------
+			// Untrimmed
+			//----------
+
+			if (!" 0".ToByteInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"0 ".ToByteInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!" 0 ".ToByteInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void ToUInt32_Test()
+		{
+			//----------
+			// Has value
+			//----------
+
+			if (string.Empty.ToUInt32().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("test".ToUInt32().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("-1".ToUInt32().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("-1".ToUInt32Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("4294967296".ToUInt32().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("4294967296".ToUInt32Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("1.2".ToUInt32Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"0".ToUInt32().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"0".ToUInt32Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"4294967295".ToUInt32().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"4294967295".ToUInt32Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			//-------
+			// Values
+			//-------
+
+			if ("0".ToUInt32().Value != 0)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("0".ToUInt32Invariant().Value != 0)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("4294967295".ToUInt32().Value != 4294967295)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("4294967295".ToUInt32Invariant().Value != 4294967295)
+			{
+				throw new TestAssertionException();
+			}
+
+			//----------
+			// Untrimmed
+			//----------
+
+			if (!" 0".ToUInt32Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"0 ".ToUInt32Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!" 0 ".ToUInt32Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void ToUInt16_Test()
+		{
+			//----------
+			// Has value
+			//----------
+
+			if (string.Empty.ToUInt16().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("test".ToUInt16().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("-1".ToUInt16().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("-1".ToUInt16Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("65536".ToUInt16().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("65536".ToUInt16Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("1.2".ToUInt16Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"0".ToUInt16().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"0".ToUInt16Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"65535".ToUInt16().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"65535".ToUInt16Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			//-------
+			// Values
+			//-------
+
+			if ("0".ToUInt16().Value != 0)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("0".ToUInt16Invariant().Value != 0)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("65535".ToUInt16().Value != 65535)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("65535".ToUInt16Invariant().Value != 65535)
+			{
+				throw new TestAssertionException();
+			}
+
+			//----------
+			// Untrimmed
+			//----------
+
+			if (!" 0".ToUInt16Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"0 ".ToUInt16Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!" 0 ".ToUInt16Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void ToUInt64_Test()
+		{
+			//----------
+			// Has value
+			//----------
+
+			if (string.Empty.ToUInt64().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("test".ToUInt64().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("-1".ToUInt64().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("-1".ToUInt64Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("18446744073709551616".ToUInt64().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("18446744073709551616".ToUInt64Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("1.2".ToUInt64Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"0".ToUInt64().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"0".ToUInt64Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"18446744073709551615".ToUInt64().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"18446744073709551615".ToUInt64Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			//-------
+			// Values
+			//-------
+
+			if ("0".ToUInt64().Value != 0)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("0".ToUInt64Invariant().Value != 0)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("18446744073709551615".ToUInt64().Value != 18446744073709551615)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("18446744073709551615".ToUInt64Invariant().Value != 18446744073709551615)
+			{
+				throw new TestAssertionException();
+			}
+
+			//----------
+			// Untrimmed
+			//----------
+
+			if (!" 0".ToUInt64Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"0 ".ToUInt64Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!" 0 ".ToUInt64Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void ToSByte_Test()
+		{
+			//----------
+			// Has value
+			//----------
+
+			if (string.Empty.ToSByte().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("test".ToSByte().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("-129".ToSByte().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("-129".ToSByteInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("128".ToSByte().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("128".ToSByteInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("1.2".ToSByteInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"-128".ToSByte().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"-128".ToSByteInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"127".ToSByte().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"127".ToSByteInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			//-------
+			// Values
+			//-------
+
+			if ("-128".ToSByte().Value != -128)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("-128".ToSByteInvariant().Value != -128)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("127".ToSByte().Value != 127)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("127".ToSByteInvariant().Value != 127)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("0".ToSByte().Value != 0)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("0".ToSByteInvariant().Value != 0)
+			{
+				throw new TestAssertionException();
+			}
+
+			//----------
+			// Untrimmed
+			//----------
+
+			if (!" 0".ToSByteInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"0 ".ToSByteInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!" 0 ".ToSByteInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void ToInt16_Test()
+		{
+			//----------
+			// Has value
+			//----------
+
+			if (string.Empty.ToInt16().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("test".ToInt16().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("-32769".ToInt16().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("-32769".ToInt16Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("32768".ToInt16().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("32768".ToInt16Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("1.2".ToInt16Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"-32768".ToInt16().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"-32768".ToInt16Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"32767".ToInt16().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"32767".ToInt16Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			//-------
+			// Values
+			//-------
+
+			if ("-32768".ToInt16().Value != -32768)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("-32768".ToInt16Invariant().Value != -32768)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("32767".ToInt16().Value != 32767)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("32767".ToInt16Invariant().Value != 32767)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("0".ToInt16().Value != 0)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("0".ToInt16Invariant().Value != 0)
+			{
+				throw new TestAssertionException();
+			}
+
+			//----------
+			// Untrimmed
+			//----------
+
+			if (!" 0".ToInt16Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"0 ".ToInt16Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!" 0 ".ToInt16Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void ToInt32_Test()
+		{
+			//----------
+			// Has value
+			//----------
+
+			if (string.Empty.ToInt32().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("test".ToInt32().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("-2147483649".ToInt32().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("-2147483649".ToInt32Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("2147483648".ToInt32().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("2147483648".ToInt32Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("1.2".ToInt32Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"-2147483648".ToInt32().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"-2147483648".ToInt32Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"2147483647".ToInt32().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"2147483647".ToInt32Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			//-------
+			// Values
+			//-------
+
+			if ("-2147483648".ToInt32().Value != -2147483648)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("-2147483648".ToInt32Invariant().Value != -2147483648)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("2147483647".ToInt32().Value != 2147483647)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("2147483647".ToInt32Invariant().Value != 2147483647)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("0".ToInt32().Value != 0)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("0".ToInt32Invariant().Value != 0)
+			{
+				throw new TestAssertionException();
+			}
+
+			//----------
+			// Untrimmed
+			//----------
+
+			if (!" 0".ToInt32Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"0 ".ToInt32Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!" 0 ".ToInt32Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void ToInt64_Test()
+		{
+			//----------
+			// Has value
+			//----------
+
+			if (string.Empty.ToInt64().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("test".ToInt64().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("-9223372036854775809".ToInt64().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("-9223372036854775809".ToInt64Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("9223372036854775808".ToInt64().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("9223372036854775808".ToInt64Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("1.2".ToInt64Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"-9223372036854775808".ToInt64().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"-9223372036854775808".ToInt64Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"9223372036854775807".ToInt64().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"9223372036854775807".ToInt64Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			//-------
+			// Values
+			//-------
+
+			if ("-9223372036854775808".ToInt64().Value != -9223372036854775808)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("-9223372036854775808".ToInt64Invariant().Value != -9223372036854775808)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("9223372036854775807".ToInt64().Value != 9223372036854775807)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("9223372036854775807".ToInt64Invariant().Value != 9223372036854775807)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("0".ToInt64().Value != 0)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("0".ToInt64Invariant().Value != 0)
+			{
+				throw new TestAssertionException();
+			}
+
+			//----------
+			// Untrimmed
+			//----------
+
+			if (!" 0".ToInt64Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"0 ".ToInt64Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!" 0 ".ToInt64Invariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void ToGuid_Test ()
+		{
+			if (string.Empty.ToGuid().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("test".ToGuid().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("F8DB57DCA314421F8CA1E88F6B73126".ToGuid().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("F8DB57DCA314421F8CA1E88F6B73126Z".ToGuid().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"{17F87CCD-C3D0-4211-8D3B-6C5F8FBE394A}".ToGuid().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"{17f87ccd-c3d0-4211-8d3b-6c5f8fbe394a}".ToGuid().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"71B759B7-C14C-411B-9234-434A6AC46112".ToGuid().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"71b759b7-c14c-411b-9234-434a6ac46112".ToGuid().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"F8DB57DCA314421F8CA1E88F6B73126E".ToGuid().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"f8db57dca314421f8ca1e88f6b73126e".ToGuid().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"(4CD3826B-47AE-48D1-95CE-5F3EA533222E)".ToGuid().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"(4cd3826b-47ae-48d1-95ce-5f3ea533222e)".ToGuid().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"{0XCC5BE5A0,0X79A5,0X410F,{0XB8,0XDF,0XBF,0X74,0X4C,0X48,0XD5,0X18}}".ToGuid().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"{0xcc5be5a0,0x79a5,0x410f,{0xb8,0xdf,0xbf,0x74,0x4c,0x48,0xd5,0x18}}".ToGuid().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void ToVersion_Test ()
+		{
+			if (string.Empty.ToVersion() != null)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("test".ToVersion() != null)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("1.2.3.4.5".ToVersion() != null)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("1".ToVersion() != null)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("1.2".ToVersion() != new Version(1, 2))
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("1.2.3".ToVersion() != new Version(1, 2, 3))
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("1.2.3.4".ToVersion() != new Version(1, 2, 3, 4))
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void ToNullIfNullOrEmpty_Test()
+		{
+			if (((string)null).ToNullIfNullOrEmpty() != null)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (string.Empty.ToNullIfNullOrEmpty() != null)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("test".ToNullIfNullOrEmpty() == null)
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void ToEmptyIfNullOrEmpty_Test()
+		{
+			if (((string)null).ToEmptyIfNullOrEmpty() != string.Empty)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (string.Empty.ToEmptyIfNullOrEmpty() != string.Empty)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("test".ToEmptyIfNullOrEmpty() == string.Empty)
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void ToFloat_Test()
+		{
+			//----------
+			// Has value
+			//----------
+
+			if (string.Empty.ToFloat().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("test".ToFloat().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("-3.402824e38".ToFloatInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("3.402824e38".ToFloatInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"1.2".ToFloatInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"-3.402823e38".ToFloatInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"3.402823e38".ToFloatInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			//-------
+			// Values
+			//-------
+
+			if ("-3.402823e38".ToFloatInvariant().Value != -3.402823e38f)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("3.402823e38".ToFloatInvariant().Value != 3.402823e38f)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("0".ToFloat().Value != 0.0f)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("-1".ToFloat().Value != -1.0f)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("1".ToFloat().Value != 1.0f)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("0".ToFloatInvariant().Value != 0.0f)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("0.0".ToFloatInvariant().Value != 0.0f)
+			{
+				throw new TestAssertionException();
+			}
+
+			//----------
+			// Untrimmed
+			//----------
+
+			if (!" 0".ToFloatInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"0 ".ToFloatInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!" 0 ".ToFloatInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!" 0.0".ToFloatInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"0.0 ".ToFloatInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!" 0.0 ".ToFloatInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void ToDouble_Test()
+		{
+			//----------
+			// Has value
+			//----------
+
+			if (string.Empty.ToDouble().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("test".ToDouble().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("-1.79769313486232e308".ToDoubleInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("1.79769313486232e308".ToDoubleInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"1.2".ToDoubleInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"-1.79769313486231e308".ToDoubleInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"1.79769313486231e308".ToDoubleInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			//-------
+			// Values
+			//-------
+
+			if ("-1.79769313486231e308".ToDoubleInvariant().Value != -1.79769313486231e308)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("1.79769313486231e308".ToDoubleInvariant().Value != 1.79769313486231e308)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("0".ToDouble().Value != 0.0)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("-1".ToDouble().Value != -1.0)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("1".ToDouble().Value != 1.0)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("0".ToDoubleInvariant().Value != 0.0)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("0.0".ToDoubleInvariant().Value != 0.0)
+			{
+				throw new TestAssertionException();
+			}
+
+			//----------
+			// Untrimmed
+			//----------
+
+			if (!" 0".ToDoubleInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"0 ".ToDoubleInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!" 0 ".ToDoubleInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!" 0.0".ToDoubleInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"0.0 ".ToDoubleInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!" 0.0 ".ToDoubleInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void ToDecimal_Test()
+		{
+			//----------
+			// Has value
+			//----------
+
+			if (string.Empty.ToDecimal().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("test".ToDecimal().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("-79228162514264337593543950336".ToDecimalInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("79228162514264337593543950336".ToDecimalInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"1.2".ToDecimalInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"-79228162514264337593543950335".ToDecimalInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"79228162514264337593543950335".ToDecimalInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			//-------
+			// Values
+			//-------
+
+			if ("-79228162514264337593543950335".ToDecimalInvariant().Value != -79228162514264337593543950335m)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("79228162514264337593543950335".ToDecimalInvariant().Value != 79228162514264337593543950335m)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("0".ToDecimal().Value != 0m)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("-1".ToDecimal().Value != -1m)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("1".ToDecimal().Value != 1m)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("0".ToDecimalInvariant().Value != 0.0m)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("0.0".ToDecimalInvariant().Value != 0.0m)
+			{
+				throw new TestAssertionException();
+			}
+
+			//----------
+			// Untrimmed
+			//----------
+
+			if (!" 0".ToDecimalInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"0 ".ToDecimalInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!" 0 ".ToDecimalInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!" 0.0".ToDecimalInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"0.0 ".ToDecimalInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!" 0.0 ".ToDecimalInvariant().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void ToEnum_Test()
+		{
+			//----------
+			// Has value
+			//----------
+
+			if (string.Empty.ToEnum<UriFormat>().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("test".ToEnum<UriFormat>().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"UriEscaped".ToEnum<UriFormat>().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (string.Empty.ToEnum(typeof(UriFormat)) != null)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("test".ToEnum(typeof(UriFormat)) != null)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("UriEscaped".ToEnum(typeof(UriFormat)) == null)
+			{
+				throw new TestAssertionException();
+			}
+
+			//--------
+			// Generic
+			//--------
+
+			if ("UriEscaped".ToEnum<UriFormat>().Value != UriFormat.UriEscaped)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("1".ToEnum<UriFormat>().Value != UriFormat.UriEscaped)
+			{
+				throw new TestAssertionException();
+			}
+
+			//-----
+			// Type
+			//-----
+
+			if ((UriFormat)"UriEscaped".ToEnum(typeof(UriFormat)) != UriFormat.UriEscaped)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ((UriFormat)"1".ToEnum(typeof(UriFormat)) != UriFormat.UriEscaped)
+			{
+				throw new TestAssertionException();
+			}
+
+			//----------
+			// Untrimmed
+			//----------
+
+			if (!" UriEscaped".ToEnum<UriFormat>().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"UriEscaped ".ToEnum<UriFormat>().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!" UriEscaped ".ToEnum<UriFormat>().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (" UriEscaped".ToEnum(typeof(UriFormat)) == null)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("UriEscaped ".ToEnum(typeof(UriFormat)) == null)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (" UriEscaped ".ToEnum(typeof(UriFormat)) == null)
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void ToDateTimeFromSortable_Test()
+		{
+			//---------------
+			// Invalid values
+			//---------------
+
+			if (string.Empty.ToDateTimeFromSortable().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (string.Empty.ToDateTimeFromSortable('-').HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (string.Empty.ToDateTimeFromSortable("###").HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("test".ToDateTimeFromSortable().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("test".ToDateTimeFromSortable('-').HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("test".ToDateTimeFromSortable("###").HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("20001303040506007".ToDateTimeFromSortable().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("2000-13-03-04-05-06-007".ToDateTimeFromSortable('-').HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("2000###13###03###04###05###06###007".ToDateTimeFromSortable("###").HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			//-------------
+			// Valid values
+			//-------------
+
+			if ("20000203040506007".ToDateTimeFromSortable().Value != new DateTime(2000, 2, 3, 4, 5, 6, 7))
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("2000-02-03-04-05-06-007".ToDateTimeFromSortable('-').Value != new DateTime(2000, 2, 3, 4, 5, 6, 7))
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("2000###02###03###04###05###06###007".ToDateTimeFromSortable("###").Value != new DateTime(2000, 2, 3, 4, 5, 6, 7))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (" 20000203040506007".ToDateTimeFromSortable().Value != new DateTime(2000, 2, 3, 4, 5, 6, 7))
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("20000203040506007 ".ToDateTimeFromSortable().Value != new DateTime(2000, 2, 3, 4, 5, 6, 7))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (" 20000203040506007 ".ToDateTimeFromSortable().Value != new DateTime(2000, 2, 3, 4, 5, 6, 7))
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void ToTimeSpanFromSortable_Test()
+		{
+			//---------------
+			// Invalid values
+			//---------------
+
+			if (string.Empty.ToTimeSpanFromSortable().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (string.Empty.ToTimeSpanFromSortable('-').HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (string.Empty.ToTimeSpanFromSortable("###").HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("test".ToTimeSpanFromSortable().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("test".ToTimeSpanFromSortable('-').HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("test".ToTimeSpanFromSortable("###").HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("1240304005".ToTimeSpanFromSortable().HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("1-24-03-04-005".ToTimeSpanFromSortable('-').HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("1###24###03###04###005".ToTimeSpanFromSortable("###").HasValue)
+			{
+				throw new TestAssertionException();
+			}
+
+			//-------------
+			// Valid values
+			//-------------
+
+			if ("1020304005".ToTimeSpanFromSortable().Value != new TimeSpan(1, 2, 3, 4, 5))
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("1-02-03-04-005".ToTimeSpanFromSortable('-').Value != new TimeSpan(1, 2, 3, 4, 5))
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("1###02###03###04###005".ToTimeSpanFromSortable("###").Value != new TimeSpan(1, 2, 3, 4, 5))
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("-1020304005".ToTimeSpanFromSortable().Value != new TimeSpan(-1, -2, -3, -4, -5))
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("-1-02-03-04-005".ToTimeSpanFromSortable('-').Value != new TimeSpan(-1, -2, -3, -4, -5))
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("-1###02###03###04###005".ToTimeSpanFromSortable("###").Value != new TimeSpan(-1, -2, -3, -4, -5))
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("01020304005".ToTimeSpanFromSortable().Value != new TimeSpan(1, 2, 3, 4, 5))
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("01-02-03-04-005".ToTimeSpanFromSortable('-').Value != new TimeSpan(1, 2, 3, 4, 5))
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("01###02###03###04###005".ToTimeSpanFromSortable("###").Value != new TimeSpan(1, 2, 3, 4, 5))
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("1000020304005".ToTimeSpanFromSortable().Value != new TimeSpan(1000, 2, 3, 4, 5))
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("1000-02-03-04-005".ToTimeSpanFromSortable('-').Value != new TimeSpan(1000, 2, 3, 4, 5))
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("1000###02###03###04###005".ToTimeSpanFromSortable("###").Value != new TimeSpan(1000, 2, 3, 4, 5))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (" 1020304005".ToTimeSpanFromSortable().Value != new TimeSpan(1, 2, 3, 4, 5))
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("1020304005 ".ToTimeSpanFromSortable().Value != new TimeSpan(1, 2, 3, 4, 5))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (" 1020304005 ".ToTimeSpanFromSortable().Value != new TimeSpan(1, 2, 3, 4, 5))
+			{
+				throw new TestAssertionException();
+			}
+		}
+
 		#endregion
 	}
 }

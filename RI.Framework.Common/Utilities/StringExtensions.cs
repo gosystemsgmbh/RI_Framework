@@ -1145,6 +1145,8 @@ namespace RI.Framework.Utilities
 				throw new ArgumentNullException(nameof(str));
 			}
 
+			str = str.Trim();
+
 			StringBuilder format = new StringBuilder(35);
 
 			format.Append("yyyy");
@@ -1685,6 +1687,28 @@ namespace RI.Framework.Utilities
 		}
 
 		/// <summary>
+		///     Returns an empty string if a string is null or empty.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     An empty string if the string is null or an empty string, false otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         A string is considered empty if has a length of zero or contains only whitespaces.
+		///     </para>
+		/// </remarks>
+		public static string ToEmptyIfNullOrEmpty(this string str)
+		{
+			if (str == null)
+			{
+				return string.Empty;
+			}
+
+			return str.IsEmpty() ? string.Empty : str;
+		}
+
+		/// <summary>
 		///     Attempts to convert a string into a signed byte value.
 		/// </summary>
 		/// <param name="str"> The string. </param>
@@ -1815,7 +1839,19 @@ namespace RI.Framework.Utilities
 				return null;
 			}
 
-			return new TimeSpan(days.Value, hours.Value, minutes.Value, seconds.Value, milliseconds.Value);
+			if ((hours < 0) || (hours > 23) || (minutes < 0) || (minutes > 59) || (seconds < 0) || (seconds > 59) || (milliseconds < 0) || (milliseconds > 999))
+			{
+				return null;
+			}
+
+			TimeSpan timeSpan = new TimeSpan(Math.Abs(days.Value), hours.Value, minutes.Value, seconds.Value, milliseconds.Value);
+
+			if (days < 0)
+			{
+				timeSpan = new TimeSpan(timeSpan.Ticks * -1);
+			}
+
+			return timeSpan;
 		}
 
 		/// <summary>
