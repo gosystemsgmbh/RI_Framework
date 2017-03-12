@@ -234,7 +234,7 @@ namespace RI.Framework.IO.INI
 		///     Adds the values of a dictionary as a new section.
 		/// </summary>
 		/// <param name="sectionName"> The name of the new section (can be null). </param>
-		/// <param name="mergeSections"> Specifies whether the values should be added to an existing section of the same name if one exists (true) or if a new separate section with the same name should be added (false). </param>
+		/// <param name="mode"> Specifies how the section is added to the existing elements. </param>
 		/// <param name="values"> The dictionary to add as a section. </param>
 		/// <returns>
 		///     The list of INI elements which were added to <see cref="Elements" />.
@@ -245,7 +245,7 @@ namespace RI.Framework.IO.INI
 		///         If <paramref name="sectionName" /> is null, the values are added outside a section (that is: before the first section header or at the end if no section header exists).
 		///     </para>
 		///     <para>
-		///         <paramref name="mergeSections" /> is ignored if <paramref name="sectionName" /> is null.
+		///         <paramref name="mode" /> is ignored if <paramref name="sectionName" /> is null, the behavior of <see cref="IniSectionAddMode.AppendSame"/> is applied.
 		///     </para>
 		///     <para>
 		///         If <paramref name="values" /> is empty, an empty section is added anyways (consisting only of the section header).
@@ -257,7 +257,7 @@ namespace RI.Framework.IO.INI
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="sectionName" /> is an empty string. </exception>
 		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
 		/// <exception cref="ArgumentException"> <paramref name="values" /> contains name-value-pairs with invalid names. </exception>
-		public List<IniElement> AddSection (string sectionName, bool mergeSections, IDictionary<string, string> values)
+		public List<IniElement> AddSection (string sectionName, IniSectionAddMode mode, IDictionary<string, string> values)
 		{
 			if (sectionName != null)
 			{
@@ -272,7 +272,8 @@ namespace RI.Framework.IO.INI
 				throw new ArgumentNullException(nameof(values));
 			}
 
-			int insertIndex = this.GetInsertIndex(sectionName, ref mergeSections);
+			bool mergeSections;
+			int insertIndex = this.GetInsertIndex(sectionName, mode, out mergeSections);
 
 			List<IniElement> elements = new List<IniElement>();
 			if ((sectionName != null) && (!mergeSections))
@@ -301,7 +302,7 @@ namespace RI.Framework.IO.INI
 		///     Adds the values of a dictionary as a new section.
 		/// </summary>
 		/// <param name="sectionName"> The name of the new section (can be null). </param>
-		/// <param name="mergeSections"> Specifies whether the values should be added to an existing section of the same name if one exists (true) or if a new separate section with the same name should be added (false). </param>
+		/// <param name="mode"> Specifies how the section is added to the existing elements. </param>
 		/// <param name="values"> The dictionary to add as a section. </param>
 		/// <returns>
 		///     The list of INI elements which were added to <see cref="Elements" />.
@@ -312,7 +313,7 @@ namespace RI.Framework.IO.INI
 		///         If <paramref name="sectionName" /> is null, the values are added outside a section (that is: before the first section header or at the end if no section header exists).
 		///     </para>
 		///     <para>
-		///         <paramref name="mergeSections" /> is ignored if <paramref name="sectionName" /> is null.
+		///         <paramref name="mode" /> is ignored if <paramref name="sectionName" /> is null, the behavior of <see cref="IniSectionAddMode.AppendSame"/> is applied.
 		///     </para>
 		///     <para>
 		///         If <paramref name="values" /> is empty, an empty section is added anyways (consisting only of the section header).
@@ -324,7 +325,7 @@ namespace RI.Framework.IO.INI
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="sectionName" /> is an empty string. </exception>
 		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
 		/// <exception cref="ArgumentException"> <paramref name="values" /> contains name-value-pairs with invalid names. </exception>
-		public List<IniElement> AddSection (string sectionName, bool mergeSections, IDictionary<string, IList<string>> values)
+		public List<IniElement> AddSection (string sectionName, IniSectionAddMode mode, IDictionary<string, IList<string>> values)
 		{
 			if (sectionName != null)
 			{
@@ -339,7 +340,8 @@ namespace RI.Framework.IO.INI
 				throw new ArgumentNullException(nameof(values));
 			}
 
-			int insertIndex = this.GetInsertIndex(sectionName, ref mergeSections);
+			bool mergeSections;
+			int insertIndex = this.GetInsertIndex(sectionName, mode, out mergeSections);
 
 			List<IniElement> elements = new List<IniElement>();
 			if ((sectionName != null) && (!mergeSections))
@@ -1408,7 +1410,7 @@ namespace RI.Framework.IO.INI
 					try
 					{
 						this.RemoveSections(value.Key);
-						this.AddSection(value.Key, false, value.Value);
+						this.AddSection(value.Key, IniSectionAddMode.AppendSame, value.Value);
 					}
 					catch (ArgumentException exception)
 					{
@@ -1632,8 +1634,15 @@ namespace RI.Framework.IO.INI
 			}
 		}
 
-		private int GetInsertIndex (string sectionName, ref bool mergeSections)
+		private int GetInsertIndex (string sectionName, IniSectionAddMode mode, out bool mergeSections)
 		{
+			mergeSections = mode == IniSectionAddMode.MergeSame;
+
+			if (mode == IniSectionAddMode.AppendEnd)
+			{
+				return this.Elements.Count;
+			}
+
 			if (sectionName == null)
 			{
 				mergeSections = false;
@@ -1671,8 +1680,8 @@ namespace RI.Framework.IO.INI
 
 			if (lastMatchingIndex == -1)
 			{
-				mergeSections = false;
 				lastMatchingIndex = this.Elements.Count;
+				mergeSections = mergeSections && matchingSectionFound;
 			}
 
 			return lastMatchingIndex;

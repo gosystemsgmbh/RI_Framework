@@ -75,6 +75,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)IO\INI\IniReader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\INI\IniReaderError.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\INI\IniReaderSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\INI\IniSectionAddMode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\INI\IniSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\INI\IniWriter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\INI\IniWriterSettings.cs" />

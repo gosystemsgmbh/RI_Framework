@@ -81,6 +81,7 @@ namespace RI.Framework.Utilities.Threading
 		private bool? _hasStoppedGracefully;
 
 		private bool _isRunning;
+
 		private int _timeout;
 
 		#endregion
@@ -359,11 +360,11 @@ namespace RI.Framework.Utilities.Threading
 							{
 								if (this.ThreadException != null)
 								{
-									throw new HeavyThreadException(this.GetType().Name + "failed to start (exception).", this.ThreadException);
+									throw new HeavyThreadException(this.GetType().Name + " failed to start (exception).", this.ThreadException);
 								}
 								else
 								{
-									throw new TimeoutException(this.GetType().Name + "failed to start (timeout).");
+									throw new TimeoutException(this.GetType().Name + " failed to start (timeout).");
 								}
 							}
 
