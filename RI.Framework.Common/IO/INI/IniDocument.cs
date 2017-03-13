@@ -1022,11 +1022,16 @@ namespace RI.Framework.IO.INI
 			Dictionary<string, List<IniElement>> result = new Dictionary<string, List<IniElement>>(this.SectionNameComparer);
 			foreach (KeyValuePair<string, List<IniElement>> section in sections)
 			{
-				if (!result.ContainsKey(section.Key))
+				string key = section.Key ?? string.Empty;
+				if (!result.ContainsKey(key))
 				{
-					result.Add(section.Key, new List<IniElement>());
+					result.Add(key, new List<IniElement>());
+					if (section.Key != null)
+					{
+						result[key].Add(new SectionIniElement(key));
+					}
 				}
-				result[section.Key].AddRange(section.Value.Skip(section.Key == null ? 0 : 1));
+				result[key].AddRange(section.Value.Skip(section.Key == null ? 0 : 1));
 			}
 
 			this.Elements.Clear();
@@ -1099,7 +1104,7 @@ namespace RI.Framework.IO.INI
 			{
 				int count = sections[i1].Value.Count(x =>
 				                                     {
-					                                     if ((x is SectionIniElement) || (x is ValueIniElement))
+					                                     if (x is ValueIniElement)
 					                                     {
 						                                     return true;
 					                                     }
@@ -1371,7 +1376,10 @@ namespace RI.Framework.IO.INI
 
 			if (insertIndex == -1)
 			{
-				this.Elements.Add(new SectionIniElement(section));
+				if (!isMatchingSection)
+				{
+					this.Elements.Add(new SectionIniElement(section));
+				}
 				this.Elements.Add(new ValueIniElement(name, value));
 			}
 			else
@@ -1380,6 +1388,56 @@ namespace RI.Framework.IO.INI
 			}
 
 			return false;
+		}
+
+		/// <summary>
+		///     Sets the name-value-pairs of a section specified by a dictionary.
+		/// </summary>
+		/// <param name="section"> The name of the section (can be null). </param>
+		/// <param name="values"> The dictionary with the name-value-pairs of the section. </param>
+		/// <remarks>
+		///     <para>
+		///         If <paramref name="section" /> is null, the value is set outside any section.
+		///     </para>
+		///     <para>
+		///         All existing sections and their name-value-pairs which are specified by <paramref name="section"/> will be replaced by the specified values.
+		///         Sections not specified by <paramref name="section"/> will remain unchanged.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="section" /> is an empty string. </exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		/// <exception cref="ArgumentException"> <paramref name="values" /> contains name-value-pairs with invalid names. </exception>
+		public void SetValues (string section, IDictionary<string, string> values)
+		{
+			if (section != null)
+			{
+				if (section.IsEmpty())
+				{
+					throw new EmptyStringArgumentException(nameof(section));
+				}
+			}
+
+			if (values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			List<IniElement> backup = new List<IniElement>(this.Elements);
+			bool success = false;
+			try
+			{
+				this.RemoveSections(section);
+				this.AddSection(section, IniSectionAddMode.AppendEnd, values);
+				success = true;
+			}
+			finally
+			{
+				if (!success)
+				{
+					this.Elements.Clear();
+					this.Elements.AddRange(backup);
+				}
+			}
 		}
 
 		/// <summary>

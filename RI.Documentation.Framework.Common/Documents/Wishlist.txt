@@ -209,6 +209,9 @@ I/O
 
  - (Common) EndianessConverter
 
+ - (Common) IniDocument: DecomposeSections
+ - (Common) IniDocument: RemoveSections with predicate
+
  - (Common) CSV reader, writer, document
  - (Common) ZIP reader, writer, document
 

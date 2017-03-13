@@ -46,6 +46,24 @@ namespace RI.Test.Framework.IO.INI
 
 		private const string Data12 = "[H3]\nH3N1=V1\nH3N1=V2\nH3N1=V5\nH3N2=V6\n[H4]\nH4N1=V3\nH4N1=V4\nH4N1=V7\nH4N2=V8";
 
+		private const string Data13 = "[H1]\nH1N1=V1\nH1N2=V2\nH1N3=V5\nH1N4=V6";
+
+		private const string Data14 = "[H1]\nH1N1=V1\nH1N2=V2\nH1N3=V5\nH1N4=V6\n[H2]";
+
+		private const string Data15 = "[H1]\nH1N1=V1\nH1N2=V2\nH1N3=V5\nH1N4=V6\n[H2]\n;Comment1\n;Comment2";
+
+		private const string Data16 = "[H1]\nH1N1=V1\nH1N2=V2\nH1N3=V5\nH1N4=V6\n[H2]\nText1\nText2";
+
+		private const string Data17 = "[H1]\nH1N1=V1\nH1N2=V2\nH1N3=V5\nH1N4=V6\n[H2]\n;Comment1\n;Comment2\nText1\nText2";
+
+		private const string Data18 = "[H1]\nH1N1=V1\nH1N2=V2\n[H2]\n[H1]\nH1N3=V5\nH1N4=V6\n[H2]";
+
+		private const string Data19 = "[H1]\nH1N1=V11\nH1N2=V22\nH1N3=V55\nH1N4=V66\n[H2]\nH2N1=V3\nH2N2=V4\nH2N3=V7\nH2N4=V8";
+
+		private const string Data20 = "[H1]\nH1N1=V11\nH1N2=V22\n[H2]\nH2N1=V3\nH2N2=V4\n[H1]\nH1N3=V55\nH1N4=V66\n[H2]\nH2N3=V7\nH2N4=V8";
+
+		private const string Data21 = "[H1]\nH1N1=V11\nH1N2=V22\nH1N3=V55\nH1N4=V66\n[H2]\nH2N1=V33\nH2N2=V44\nH2N3=V77\nH2N4=V88";
+
 		private static readonly Dictionary<string, string> H1 = new Dictionary<string, string>()
 		{
 			{"H1N1", "V1"},
@@ -540,6 +558,337 @@ namespace RI.Test.Framework.IO.INI
 			this.VerifyH4(test);
 
 			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data12)
+			{
+				throw new TestAssertionException();
+			}
+
+			//----------------
+			// Remove sections
+			//----------------
+
+			test.Load(Test_IniDocument.Data9);
+			test.RemoveSections("H2");
+			this.VerifyH1(test);
+			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data13)
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Load(Test_IniDocument.Data13);
+			test.RemoveSections("H2");
+			test.RemoveSections("H3");
+			test.RemoveSections("H4");
+			this.VerifyH1(test);
+			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data13)
+			{
+				throw new TestAssertionException();
+			}
+
+			//----------------------
+			// Remove empty sections
+			//----------------------
+
+			test.Load(Test_IniDocument.Data14);
+			test.RemoveEmptySections();
+			this.VerifyH1(test);
+			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data13)
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Load(Test_IniDocument.Data14);
+			test.RemoveEmptySections(false, false);
+			this.VerifyH1(test);
+			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data13)
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Load(Test_IniDocument.Data14);
+			test.RemoveEmptySections(false, true);
+			this.VerifyH1(test);
+			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data13)
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Load(Test_IniDocument.Data14);
+			test.RemoveEmptySections(true, false);
+			this.VerifyH1(test);
+			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data13)
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Load(Test_IniDocument.Data14);
+			test.RemoveEmptySections(true, true);
+			this.VerifyH1(test);
+			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data13)
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Load(Test_IniDocument.Data15);
+			test.RemoveEmptySections();
+			this.VerifyH1(test);
+			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data13)
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Load(Test_IniDocument.Data15);
+			test.RemoveEmptySections(false, false);
+			this.VerifyH1(test);
+			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data13)
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Load(Test_IniDocument.Data15);
+			test.RemoveEmptySections(false, true);
+			this.VerifyH1(test);
+			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data15)
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Load(Test_IniDocument.Data15);
+			test.RemoveEmptySections(true, false);
+			this.VerifyH1(test);
+			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data13)
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Load(Test_IniDocument.Data15);
+			test.RemoveEmptySections(true, true);
+			this.VerifyH1(test);
+			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data15)
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Load(Test_IniDocument.Data16);
+			test.RemoveEmptySections();
+			this.VerifyH1(test);
+			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data13)
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Load(Test_IniDocument.Data16);
+			test.RemoveEmptySections(false, false);
+			this.VerifyH1(test);
+			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data13)
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Load(Test_IniDocument.Data16);
+			test.RemoveEmptySections(false, true);
+			this.VerifyH1(test);
+			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data13)
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Load(Test_IniDocument.Data16);
+			test.RemoveEmptySections(true, false);
+			this.VerifyH1(test);
+			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data16)
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Load(Test_IniDocument.Data16);
+			test.RemoveEmptySections(true, true);
+			this.VerifyH1(test);
+			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data16)
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Load(Test_IniDocument.Data17);
+			test.RemoveEmptySections();
+			this.VerifyH1(test);
+			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data13)
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Load(Test_IniDocument.Data17);
+			test.RemoveEmptySections(false, false);
+			this.VerifyH1(test);
+			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data13)
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Load(Test_IniDocument.Data17);
+			test.RemoveEmptySections(false, true);
+			this.VerifyH1(test);
+			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data17)
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Load(Test_IniDocument.Data17);
+			test.RemoveEmptySections(true, false);
+			this.VerifyH1(test);
+			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data17)
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Load(Test_IniDocument.Data17);
+			test.RemoveEmptySections(true, true);
+			this.VerifyH1(test);
+			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data17)
+			{
+				throw new TestAssertionException();
+			}
+
+			//---------------
+			// Merge sections
+			//---------------
+
+			test.Load(Test_IniDocument.Data7);
+			test.RemoveSections("H2");
+			test.MergeSections();
+			this.VerifyH1(test);
+			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data13)
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Load(Test_IniDocument.Data7);
+			test.MergeSections();
+			this.VerifyH1(test);
+			this.VerifyH2(test);
+			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data9)
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Load(Test_IniDocument.Data18);
+			test.RemoveEmptySections(false, false);
+			test.MergeSections();
+			this.VerifyH1(test);
+			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data13)
+			{
+				throw new TestAssertionException();
+			}
+
+			//-----------------------------
+			// Removal of text and comments
+			//-----------------------------
+
+			test.Load(Test_IniDocument.Data17);
+			test.RemoveComments();
+			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data16)
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Load(Test_IniDocument.Data17);
+			test.RemoveText();
+			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data15)
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Load(Test_IniDocument.Data17);
+			test.RemoveTextAndComments();
+			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data14)
+			{
+				throw new TestAssertionException();
+			}
+
+			//---------------------------
+			// Set, Get, Delete of values
+			//---------------------------
+
+			test.Clear();
+
+			test.SetValue("H1", "H1N1", "V1");
+			test.SetValue("H1", "H1N2", "V2");
+			test.SetValue("H1", "H1N3", "V5");
+			test.SetValue("H1", "H1N4", "V6");
+			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data13)
+			{
+				throw new TestAssertionException();
+			}
+
+			test.SetValue("H2", "H2N1", "V3");
+			test.SetValue("H2", "H2N2", "V4");
+			test.SetValue("H2", "H2N3", "V7");
+			test.SetValue("H2", "H2N4", "V8");
+			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data9)
+			{
+				throw new TestAssertionException();
+			}
+
+			test.SetValue("H1", "H1N1", "V11");
+			test.SetValue("H1", "H1N2", "V22");
+			test.SetValue("H1", "H1N3", "V55");
+			test.SetValue("H1", "H1N4", "V66");
+			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data19)
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Load(Test_IniDocument.Data7);
+			test.SetValue("H1", "H1N1", "V11");
+			test.SetValue("H1", "H1N2", "V22");
+			test.SetValue("H1", "H1N3", "V55");
+			test.SetValue("H1", "H1N4", "V66");
+			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data20)
+			{
+				throw new TestAssertionException();
+			}
+
+			Dictionary<string, string> v1 = new Dictionary<string, string>
+			{
+				{"H1N1", "V1" },
+				{"H1N2", "V2" },
+				{"H1N3", "V5" },
+				{"H1N4", "V6" },
+			};
+
+			test.SetValues("H1", v1);
+			test.MergeSections();
+			test.SortRegions();
+			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data9)
+			{
+				throw new TestAssertionException();
+			}
+
+			Dictionary<string, IDictionary<string, string>> v2 = new Dictionary<string, IDictionary<string, string>>
+			{
+				{
+					"H1", new Dictionary<string, string>
+					{
+						{"H1N1", "V11" },
+						{"H1N2", "V22" },
+						{"H1N3", "V55" },
+						{"H1N4", "V66" },
+					}
+				},
+				{
+					"H2", new Dictionary<string, string>
+					{
+						{"H2N1", "V33" },
+						{"H2N2", "V44" },
+						{"H2N3", "V77" },
+						{"H2N4", "V88" },
+					}
+				}
+			};
+
+			test.SetValues(v2);
+			test.MergeSections();
+			test.SortRegions();
+			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data21)
 			{
 				throw new TestAssertionException();
 			}
