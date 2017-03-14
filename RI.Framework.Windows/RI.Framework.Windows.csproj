@@ -43,6 +43,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Management" />
+    <Reference Include="System.Security" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IO\Printer\PrinterDevice.cs" />
@@ -52,7 +53,9 @@
     <Compile Include="IO\Serial\SerialPortExtensions.cs" />
     <Compile Include="IO\Serial\SerialPortInstance.cs" />
     <Compile Include="IO\Serial\_NamespaceDoc.cs" />
+    <Compile Include="Utilities\Windows\LocalEncryption.cs" />
     <Compile Include="Utilities\Windows\NativeWindows.cs" />
+    <Compile Include="Utilities\Windows\UniqueIdentification.cs" />
     <Compile Include="Utilities\Windows\WindowsNetwork.cs" />
     <Compile Include="Utilities\Windows\WindowsNetworkError.cs" />
     <Compile Include="Utilities\Windows\Privileges.cs" />

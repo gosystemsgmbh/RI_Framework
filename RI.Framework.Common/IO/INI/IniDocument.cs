@@ -251,8 +251,11 @@ namespace RI.Framework.IO.INI
 		///         If <paramref name="values" /> is empty, an empty section is added anyways (consisting only of the section header).
 		///     </para>
 		///     <para>
-		///         This method is used if the same name-value-pair only exists once in a section.
+		///         All values in <paramref name="values"/> will be added, even if a name-value-pair with the same name already exists.
 		///     </para>
+		/// <para>
+		/// This method is used if the dictionary can have only one value per name-value-pair.
+		/// </para>
 		/// </remarks>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="sectionName" /> is an empty string. </exception>
 		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
@@ -319,8 +322,11 @@ namespace RI.Framework.IO.INI
 		///         If <paramref name="values" /> is empty, an empty section is added anyways (consisting only of the section header).
 		///     </para>
 		///     <para>
-		///         This method is used if the same name-value-pair can exist multiple times in a section.
+		///         All values in <paramref name="values"/> will be added, even if a name-value-pair with the same name already exists.
 		///     </para>
+		/// <para>
+		/// This method is used if the dictionary can have one or multiple values per name-value-pair (using the inner list).
+		/// </para>
 		/// </remarks>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="sectionName" /> is an empty string. </exception>
 		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
@@ -592,7 +598,7 @@ namespace RI.Framework.IO.INI
 		///     </para>
 		///     <para>
 		///         If the specified section exists multiple times, only the first section is returned as a dictionary.
-		///         If the same name-value-pair exists multiple times in a section, all pairs are returned in the dictionary.
+		///         If the same name-value-pair exists multiple times in a section, all pairs are returned in the dictionary (using the inner list).
 		///     </para>
 		/// </remarks>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="sectionName" /> is an empty string. </exception>
@@ -634,6 +640,10 @@ namespace RI.Framework.IO.INI
 				{
 					SectionIniElement sectionElement = (SectionIniElement)element;
 					sectionNames.Add(sectionElement.SectionName);
+				}
+				else if (sectionNames.Count == 0)
+				{
+					sectionNames.Add(null);
 				}
 			}
 			return sectionNames;
@@ -848,7 +858,7 @@ namespace RI.Framework.IO.INI
 		///         An inner dictionary can be empty if the section exists but has no name-value-pairs.
 		///     </para>
 		///     <para>
-		///         If a section exists multiple times, only the first section is returned as an inner dictionary.
+		///         If a section exists multiple times, all the sections are merged and returned as an inner dictionary.
 		///         If the same name-value-pair exists multiple times in a section, only the first pair is returned in an inner dictionary.
 		///     </para>
 		/// </remarks>
@@ -858,8 +868,62 @@ namespace RI.Framework.IO.INI
 			HashSet<string> sectionNames = this.GetSectionNames();
 			foreach (string sectionName in sectionNames)
 			{
-				Dictionary<string, string> section = this.GetSection(sectionName);
-				result.Add(sectionName, section);
+				Dictionary<string, string> mergedSection = new Dictionary<string, string>(this.ValueNameComparer);
+				List<Dictionary<string, string>> sections = this.GetSections(sectionName);
+				foreach (Dictionary<string, string> section in sections)
+				{
+					foreach (KeyValuePair<string, string> nameValuePair in section)
+					{
+						if (!mergedSection.ContainsKey(nameValuePair.Key))
+						{
+							mergedSection.Add(nameValuePair.Key, nameValuePair.Value);
+						}
+					}
+				}
+				result.Add(sectionName, mergedSection);
+			}
+			return result;
+		}
+
+		/// <summary>
+		///     Gets the name-value-pairs of all sections as a dictionary.
+		/// </summary>
+		/// <returns>
+		///     The dictionary which contains dictionaries (one for each section) which contain the name-value-pairs.
+		///     An empty dictionary is returned if no name-value-pairs exist.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         The returned outer dictionary uses <see cref="SectionNameComparer" /> and the inner dictionaries use <see cref="ValueNameComparer" />.
+		///     </para>
+		///     <para>
+		///         An inner dictionary can be empty if the section exists but has no name-value-pairs.
+		///     </para>
+		///     <para>
+		///         If a section exists multiple times, all the sections are merged and returned as an inner dictionary.
+		///         If the same name-value-pair exists multiple times in a section, all values returned in an inner dictionary (using the list).
+		///     </para>
+		/// </remarks>
+		public Dictionary<string, Dictionary<string, List<string>>> GetValuesAll()
+		{
+			Dictionary<string, Dictionary<string, List<string>>> result = new Dictionary<string, Dictionary<string, List<string>>>(this.SectionNameComparer);
+			HashSet<string> sectionNames = this.GetSectionNames();
+			foreach (string sectionName in sectionNames)
+			{
+				Dictionary<string, List<string>> mergedSection = new Dictionary<string, List<string>>(this.ValueNameComparer);
+				List<Dictionary<string, List<string>>> sections = this.GetSectionsAll(sectionName);
+				foreach (Dictionary<string, List<string>> section in sections)
+				{
+					foreach (KeyValuePair<string, List<string>> nameValuePair in section)
+					{
+						if (!mergedSection.ContainsKey(nameValuePair.Key))
+						{
+							mergedSection.Add(nameValuePair.Key, new List<string>());
+						}
+						mergedSection[nameValuePair.Key].AddRange(nameValuePair.Value);
+					}
+				}
+				result.Add(sectionName, mergedSection);
 			}
 			return result;
 		}
@@ -1209,16 +1273,7 @@ namespace RI.Framework.IO.INI
 		/// </remarks>
 		public bool RemoveTextAndComments ()
 		{
-			bool result = false;
-			if (this.RemoveText())
-			{
-				result = true;
-			}
-			if (this.RemoveComments())
-			{
-				result = true;
-			}
-			return result;
+			return this.Elements.RemoveWhere(x => (x is TextIniElement) || (x is CommentIniElement)).Count > 0;
 		}
 
 		/// <summary>
@@ -1441,9 +1496,9 @@ namespace RI.Framework.IO.INI
 		}
 
 		/// <summary>
-		///     Sets the name-value-pairs of sections specified by a dictionary.
+		///     Sets the name-value-pairs of all sections specified by a dictionary.
 		/// </summary>
-		/// <param name="values"> The dictionary with sections and inner dictionaries for the name-value-pairs. </param>
+		/// <param name="values"> The dictionary with sections and inner dictionaries for their name-value-pairs. </param>
 		/// <remarks>
 		///     <para>
 		///         All existing sections and their name-value-pairs which are specified in the outer dictionary will be replaced by the specified values.
@@ -1468,7 +1523,7 @@ namespace RI.Framework.IO.INI
 					try
 					{
 						this.RemoveSections(value.Key);
-						this.AddSection(value.Key, IniSectionAddMode.AppendSame, value.Value);
+						this.AddSection(value.Key, IniSectionAddMode.AppendEnd, value.Value);
 					}
 					catch (ArgumentException exception)
 					{
@@ -1631,7 +1686,7 @@ namespace RI.Framework.IO.INI
 		}
 
 		/// <summary>
-		///     Sorts the regions based on their names.
+		///     Sorts the regions.
 		/// </summary>
 		/// <param name="comparer"> The comparer used to compare the region names. </param>
 		public void SortRegions (IComparer<string> comparer)

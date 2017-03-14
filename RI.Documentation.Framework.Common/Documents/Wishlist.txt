@@ -58,8 +58,6 @@ Utilities
  # (Windows) WindowsMessageLoopSynchronizationContext
  # (Windows) WindowsMessageLoopTimer
 
- # (Windows) LocalEncryption
- # (Windows) UniqueIdentification
  - (Windows) Screen
  - (Windows) SystemKeyboard
  - (Windows) OnScreenKeyboard
@@ -209,6 +207,8 @@ I/O
 
  - (Common) EndianessConverter
 
+ - (Common) IniDocument: SetValues (string section, IDictionary<string, IList<string>> values)
+ - (Common) IniDocument: SetValues (IDictionary<string, IDictionary<string, IList<string>>> values)
  - (Common) IniDocument: DecomposeSections
  - (Common) IniDocument: RemoveSections with predicate
 

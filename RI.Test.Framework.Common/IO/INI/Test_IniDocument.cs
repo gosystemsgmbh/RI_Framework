@@ -64,7 +64,7 @@ namespace RI.Test.Framework.IO.INI
 
 		private const string Data21 = "[H1]\nH1N1=V11\nH1N2=V22\nH1N3=V55\nH1N4=V66\n[H2]\nH2N1=V33\nH2N2=V44\nH2N3=V77\nH2N4=V88";
 
-		private static readonly Dictionary<string, string> H1 = new Dictionary<string, string>()
+		private static readonly IDictionary<string, string> H1 = new Dictionary<string, string>()
 		{
 			{"H1N1", "V1"},
 			{"H1N2", "V2"},
@@ -72,7 +72,7 @@ namespace RI.Test.Framework.IO.INI
 			{"H1N4", "V6"},
 		};
 
-		private static readonly Dictionary<string, string> H2 = new Dictionary<string, string>()
+		private static readonly IDictionary<string, string> H2 = new Dictionary<string, string>()
 		{
 			{"H2N1", "V3"},
 			{"H2N2", "V4"},
@@ -80,16 +80,64 @@ namespace RI.Test.Framework.IO.INI
 			{"H2N4", "V8"},
 		};
 
-		private static readonly Dictionary<string, List<string>> H3 = new Dictionary<string, List<string>>()
+		private static readonly IDictionary<string, IList<string>> H3 = new Dictionary<string, IList<string>>()
 		{
 			{"H3N1", new List<string> {"V1", "V2", "V5"} },
 			{"H3N2", new List<string> {"V6"}},
 		};
 
-		private static readonly Dictionary<string, List<string>> H4 = new Dictionary<string, List<string>>()
+		private static readonly IDictionary<string, IList<string>> H4 = new Dictionary<string, IList<string>>()
 		{
 			{"H4N1", new List<string> {"V3", "V4", "V7"} },
 			{"H4N2", new List<string> {"V8"}},
+		};
+
+		private static readonly IDictionary<string, string> V1 = new Dictionary<string, string>
+		{
+			{"H1N1", "V1" },
+			{"H1N2", "V2" },
+			{"H1N3", "V5" },
+			{"H1N4", "V6" },
+		};
+
+		private static readonly IDictionary<string, string> V2 = new Dictionary<string, string>
+		{
+			{"H2N1", "V3" },
+			{"H2N2", "V4" },
+			{"H2N3", "V7" },
+			{"H2N4", "V8" },
+		};
+
+		private static readonly IDictionary<string, IDictionary<string, string>> V12 = new Dictionary<string, IDictionary<string, string>>
+		{
+			{
+				"H1", new Dictionary<string, string>
+				{
+					{"H1N1", "V1" },
+					{"H1N2", "V2" },
+					{"H1N3", "V5" },
+					{"H1N4", "V6" },
+				}
+			},
+			{
+				"H2", new Dictionary<string, string>
+				{
+					{"H2N1", "V3" },
+					{"H2N2", "V4" },
+					{"H2N3", "V7" },
+					{"H2N4", "V8" },
+				}
+			}
+		};
+
+		private static readonly IDictionary<string, IDictionary<string, IList<string>>> V34 = new Dictionary<string, IDictionary<string, IList<string>>>
+		{
+			{
+				"H3", H3
+			},
+			{
+				"H4", H4
+			}
 		};
 
 		#endregion
@@ -748,6 +796,46 @@ namespace RI.Test.Framework.IO.INI
 				throw new TestAssertionException();
 			}
 
+			//-------------
+			// Get sections
+			//-------------
+
+			test.Load(Test_IniDocument.Data9);
+
+			if (!this.VerifySection(new List<Dictionary<string, string>>
+			{
+				test.GetSection("H1")
+			}, Test_IniDocument.H1.ToList()))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!this.VerifySection(new List<Dictionary<string, string>>
+			{
+				test.GetSection("H2")
+			}, Test_IniDocument.H2.ToList()))
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Load(Test_IniDocument.Data12);
+
+			if (!this.VerifySection(new List<Dictionary<string, List<string>>>
+			{
+				test.GetSectionAll("H3")
+			}, Test_IniDocument.H3.ToList()))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!this.VerifySection(new List<Dictionary<string, List<string>>>
+			{
+				test.GetSectionAll("H4")
+			}, Test_IniDocument.H4.ToList()))
+			{
+				throw new TestAssertionException();
+			}
+
 			//---------------
 			// Merge sections
 			//---------------
@@ -804,9 +892,9 @@ namespace RI.Test.Framework.IO.INI
 				throw new TestAssertionException();
 			}
 
-			//---------------------------
-			// Set, Get, Delete of values
-			//---------------------------
+			//-----------
+			// Set values
+			//-----------
 
 			test.Clear();
 
@@ -892,6 +980,108 @@ namespace RI.Test.Framework.IO.INI
 			{
 				throw new TestAssertionException();
 			}
+
+			//-----------
+			// Get values
+			//-----------
+
+			test.Load(Test_IniDocument.Data7);
+			if (test.GetValue("H1", "Test") != null)
+			{
+				throw new TestAssertionException();
+			}
+			if (test.GetValue("Test", "H1N1") != null)
+			{
+				throw new TestAssertionException();
+			}
+			if (test.GetValue("H1", "H1N1") != "V1")
+			{
+				throw new TestAssertionException();
+			}
+			if (test.GetValue("H1", "H1N2") != "V2")
+			{
+				throw new TestAssertionException();
+			}
+			if (test.GetValue("H1", "H1N3") != "V5")
+			{
+				throw new TestAssertionException();
+			}
+			if (test.GetValue("H1", "H1N4") != "V6")
+			{
+				throw new TestAssertionException();
+			}
+			if (test.GetValue("H2", "H2N1") != "V3")
+			{
+				throw new TestAssertionException();
+			}
+			if (test.GetValue("H2", "H2N2") != "V4")
+			{
+				throw new TestAssertionException();
+			}
+			if (test.GetValue("H2", "H2N3") != "V7")
+			{
+				throw new TestAssertionException();
+			}
+			if (test.GetValue("H2", "H2N4") != "V8")
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!this.VerifySection(test.GetValues(), Test_IniDocument.V12))
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Load(Test_IniDocument.Data10);
+
+			if (!this.VerifySection(test.GetValuesAll(), Test_IniDocument.V34))
+			{
+				throw new TestAssertionException();
+			}
+
+			//--------------
+			// Delete values
+			//--------------
+
+			test.Load(Test_IniDocument.Data7);
+
+			if (test.DeleteValue("Test", "H1N1"))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (test.DeleteValue("H1", "Test"))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!test.DeleteValue("H2", "H2N1"))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!test.DeleteValue("H2", "H2N2"))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!test.DeleteValue("H2", "H2N3"))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!test.DeleteValue("H2", "H2N4"))
+			{
+				throw new TestAssertionException();
+			}
+
+			test.RemoveEmptySections(false, false);
+			test.MergeSections();
+
+			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data13)
+			{
+				throw new TestAssertionException();
+			}
 		}
 
 		[TestMethod]
@@ -899,6 +1089,7 @@ namespace RI.Test.Framework.IO.INI
 		{
 			//TODO: Test: Basic settings (read + write)
 			//TODO: Test: IniReaderSettings
+			//TODO: Test: Elements outside a section
 			
 			IniDocument test = new IniDocument();
 
@@ -1193,7 +1384,7 @@ namespace RI.Test.Framework.IO.INI
 		private void VerifyH3(IniDocument document)
 		{
 			List<Dictionary<string, List<string>>> section = document.GetSectionsAll("H3").ToList();
-			List<KeyValuePair<string, List<string>>> h3 = Test_IniDocument.H3.ToList();
+			List<KeyValuePair<string, IList<string>>> h3 = Test_IniDocument.H3.ToList();
 
 			if (!this.VerifySection(section, h3))
 			{
@@ -1204,7 +1395,7 @@ namespace RI.Test.Framework.IO.INI
 		private void VerifyH4(IniDocument document)
 		{
 			List<Dictionary<string, List<string>>> section = document.GetSectionsAll("H4").ToList();
-			List<KeyValuePair<string, List<string>>> h4 = Test_IniDocument.H4.ToList();
+			List<KeyValuePair<string, IList<string>>> h4 = Test_IniDocument.H4.ToList();
 
 			if (!this.VerifySection(section, h4))
 			{
@@ -1241,11 +1432,11 @@ namespace RI.Test.Framework.IO.INI
 			return true;
 		}
 
-		private bool VerifySection(List<Dictionary<string, List<string>>> sections, List<KeyValuePair<string, List<string>>> elements)
+		private bool VerifySection(List<Dictionary<string, List<string>>> sections, List<KeyValuePair<string, IList<string>>> elements)
 		{
 			CollectionComparer<string> comparer = new CollectionComparer<string>((x,y) => string.Equals(x,y,StringComparison.Ordinal));
 
-			foreach (KeyValuePair<string, List<string>> element in elements)
+			foreach (KeyValuePair<string, IList<string>> element in elements)
 			{
 				bool found = false;
 				foreach (Dictionary<string, List<string>> section in sections)
@@ -1267,6 +1458,92 @@ namespace RI.Test.Framework.IO.INI
 				if (!found)
 				{
 					return false;
+				}
+			}
+
+			return true;
+		}
+
+		private bool VerifySection (Dictionary<string, Dictionary<string, string>> sections, IDictionary<string, IDictionary<string, string>> elements)
+		{
+			foreach (KeyValuePair<string, IDictionary<string, string>> elementSection in elements)
+			{
+				if (!sections.ContainsKey(elementSection.Key))
+				{
+					return false;
+				}
+				foreach (KeyValuePair<string, string> elementValue in elementSection.Value)
+				{
+					if (!sections[elementSection.Key].ContainsKey(elementValue.Key))
+					{
+						return false;
+					}
+					if (!string.Equals(sections[elementSection.Key][elementValue.Key], elementValue.Value, StringComparison.Ordinal))
+					{
+						return false;
+					}
+				}
+			}
+
+			foreach (KeyValuePair<string, Dictionary<string, string>> section in sections)
+			{
+				if (!elements.ContainsKey(section.Key))
+				{
+					return false;
+				}
+				foreach (KeyValuePair<string, string> value in section.Value)
+				{
+					if (!elements[section.Key].ContainsKey(value.Key))
+					{
+						return false;
+					}
+					if (!string.Equals(elements[section.Key][value.Key], value.Value, StringComparison.Ordinal))
+					{
+						return false;
+					}
+				}
+			}
+
+			return true;
+		}
+
+		private bool VerifySection(Dictionary<string, Dictionary<string, List<string>>> sections, IDictionary<string, IDictionary<string, IList<string>>> elements)
+		{
+			foreach (KeyValuePair<string, IDictionary<string, IList<string>>> elementSection in elements)
+			{
+				if (!sections.ContainsKey(elementSection.Key))
+				{
+					return false;
+				}
+				foreach (KeyValuePair<string, IList<string>> elementValue in elementSection.Value)
+				{
+					if (!sections[elementSection.Key].ContainsKey(elementValue.Key))
+					{
+						return false;
+					}
+					if (!sections[elementSection.Key][elementValue.Key].SequenceEqual(elementValue.Value, CollectionComparerFlags.None, StringComparerEx.Ordinal))
+					{
+						return false;
+					}
+				}
+			}
+
+			foreach (KeyValuePair<string, Dictionary<string, List<string>>> section in sections)
+			{
+				if (!elements.ContainsKey(section.Key))
+				{
+					return false;
+				}
+				foreach (KeyValuePair<string, List<string>> value in section.Value)
+				{
+					if (!elements[section.Key].ContainsKey(value.Key))
+					{
+						return false;
+					}
+					if (!elements[section.Key][value.Key].SequenceEqual(value.Value, CollectionComparerFlags.None, StringComparerEx.Ordinal))
+					{
+						return false;
+					}
 				}
 			}
 
