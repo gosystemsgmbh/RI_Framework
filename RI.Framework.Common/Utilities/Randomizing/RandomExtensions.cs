@@ -350,7 +350,9 @@ namespace RI.Framework.Utilities.Randomizing
 		///     A normally distributed random double precision floating point value.
 		/// </returns>
 		/// <remarks>
-		///     See <see href="https://en.wikipedia.org/wiki/Box-Muller_transform"> https://en.wikipedia.org/wiki/Box-Muller_transform </see> for details about the used algorithm.
+		///     <para>
+		/// See <see href="https://en.wikipedia.org/wiki/Box-Muller_transform"> https://en.wikipedia.org/wiki/Box-Muller_transform </see> for details about the used algorithm.
+		/// </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="randomizer" /> is null. </exception>
 		/// <exception cref="NotFiniteNumberException"> <paramref name="mu" /> or <paramref name="sigma" /> is either "NaN"/"Not-a-Number" or infinity (positive or negative). </exception>

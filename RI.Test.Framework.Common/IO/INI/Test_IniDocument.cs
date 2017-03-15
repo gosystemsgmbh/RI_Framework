@@ -34,35 +34,49 @@ namespace RI.Test.Framework.IO.INI
 
 		private const string Data6 = "\nText\n;Comment\nName=Value\n\n[Header1]\n\nText1\n;Comment1\nName1=Value1";
 
-		private const string Data7 = "[H1]\nH1N1=V1\nH1N2=V2\n[H2]\nH2N1=V3\nH2N2=V4\n[H1]\nH1N3=V5\nH1N4=V6\n[H2]\nH2N3=V7\nH2N4=V8";
+		private const string Data7 = "H0N1=VA\nH0N2=VB\n[H1]\nH1N1=V1\nH1N2=V2\n[H2]\nH2N1=V3\nH2N2=V4\n[H1]\nH1N3=V5\nH1N4=V6\n[H2]\nH2N3=V7\nH2N4=V8";
 
-		private const string Data8 = "[H1]\nH1N1=V1\nH1N2=V2\n[H1]\nH1N3=V5\nH1N4=V6\n[H2]\nH2N1=V3\nH2N2=V4\n[H2]\nH2N3=V7\nH2N4=V8";
+		private const string Data8 = "H0N1=VA\nH0N2=VB\n[H1]\nH1N1=V1\nH1N2=V2\n[H1]\nH1N3=V5\nH1N4=V6\n[H2]\nH2N1=V3\nH2N2=V4\n[H2]\nH2N3=V7\nH2N4=V8";
 
-		private const string Data9 = "[H1]\nH1N1=V1\nH1N2=V2\nH1N3=V5\nH1N4=V6\n[H2]\nH2N1=V3\nH2N2=V4\nH2N3=V7\nH2N4=V8";
+		private const string Data9 = "H0N1=VA\nH0N2=VB\n[H1]\nH1N1=V1\nH1N2=V2\nH1N3=V5\nH1N4=V6\n[H2]\nH2N1=V3\nH2N2=V4\nH2N3=V7\nH2N4=V8";
 
-		private const string Data10 = "[H3]\nH3N1=V1\nH3N1=V2\n[H4]\nH4N1=V3\nH4N1=V4\n[H3]\nH3N1=V5\nH3N2=V6\n[H4]\nH4N1=V7\nH4N2=V8";
+		private const string Data10 = "H9N1=VA\nH9N1=VB\nH9N2=VC\nH9N2=VD\n[H3]\nH3N1=V1\nH3N1=V2\n[H4]\nH4N1=V3\nH4N1=V4\n[H3]\nH3N1=V5\nH3N2=V6\n[H4]\nH4N1=V7\nH4N2=V8";
 
-		private const string Data11 = "[H3]\nH3N1=V1\nH3N1=V2\n[H3]\nH3N1=V5\nH3N2=V6\n[H4]\nH4N1=V3\nH4N1=V4\n[H4]\nH4N1=V7\nH4N2=V8";
+		private const string Data11 = "H9N1=VA\nH9N1=VB\nH9N2=VC\nH9N2=VD\n[H3]\nH3N1=V1\nH3N1=V2\n[H3]\nH3N1=V5\nH3N2=V6\n[H4]\nH4N1=V3\nH4N1=V4\n[H4]\nH4N1=V7\nH4N2=V8";
 
-		private const string Data12 = "[H3]\nH3N1=V1\nH3N1=V2\nH3N1=V5\nH3N2=V6\n[H4]\nH4N1=V3\nH4N1=V4\nH4N1=V7\nH4N2=V8";
+		private const string Data12 = "H9N1=VA\nH9N1=VB\nH9N2=VC\nH9N2=VD\n[H3]\nH3N1=V1\nH3N1=V2\nH3N1=V5\nH3N2=V6\n[H4]\nH4N1=V3\nH4N1=V4\nH4N1=V7\nH4N2=V8";
 
-		private const string Data13 = "[H1]\nH1N1=V1\nH1N2=V2\nH1N3=V5\nH1N4=V6";
+		private const string Data13 = "H0N1=VA\nH0N2=VB\n[H1]\nH1N1=V1\nH1N2=V2\nH1N3=V5\nH1N4=V6";
 
-		private const string Data14 = "[H1]\nH1N1=V1\nH1N2=V2\nH1N3=V5\nH1N4=V6\n[H2]";
+		private const string Data14 = "H0N1=VA\nH0N2=VB\n[H1]\nH1N1=V1\nH1N2=V2\nH1N3=V5\nH1N4=V6\n[H2]";
 
-		private const string Data15 = "[H1]\nH1N1=V1\nH1N2=V2\nH1N3=V5\nH1N4=V6\n[H2]\n;Comment1\n;Comment2";
+		private const string Data15 = "H0N1=VA\nH0N2=VB\n[H1]\nH1N1=V1\nH1N2=V2\nH1N3=V5\nH1N4=V6\n[H2]\n;Comment1\n;Comment2";
 
-		private const string Data16 = "[H1]\nH1N1=V1\nH1N2=V2\nH1N3=V5\nH1N4=V6\n[H2]\nText1\nText2";
+		private const string Data16 = "H0N1=VA\nH0N2=VB\n[H1]\nH1N1=V1\nH1N2=V2\nH1N3=V5\nH1N4=V6\n[H2]\nText1\nText2";
 
-		private const string Data17 = "[H1]\nH1N1=V1\nH1N2=V2\nH1N3=V5\nH1N4=V6\n[H2]\n;Comment1\n;Comment2\nText1\nText2";
+		private const string Data17 = "H0N1=VA\nH0N2=VB\n[H1]\nH1N1=V1\nH1N2=V2\nH1N3=V5\nH1N4=V6\n[H2]\n;Comment1\n;Comment2\nText1\nText2";
 
-		private const string Data18 = "[H1]\nH1N1=V1\nH1N2=V2\n[H2]\n[H1]\nH1N3=V5\nH1N4=V6\n[H2]";
+		private const string Data18 = "H0N1=VA\nH0N2=VB\n[H1]\nH1N1=V1\nH1N2=V2\n[H2]\n[H1]\nH1N3=V5\nH1N4=V6\n[H2]";
 
-		private const string Data19 = "[H1]\nH1N1=V11\nH1N2=V22\nH1N3=V55\nH1N4=V66\n[H2]\nH2N1=V3\nH2N2=V4\nH2N3=V7\nH2N4=V8";
+		private const string Data19 = "H0N1=VA\nH0N2=VB\n[H1]\nH1N1=V11\nH1N2=V22\nH1N3=V55\nH1N4=V66\n[H2]\nH2N1=V3\nH2N2=V4\nH2N3=V7\nH2N4=V8";
 
-		private const string Data20 = "[H1]\nH1N1=V11\nH1N2=V22\n[H2]\nH2N1=V3\nH2N2=V4\n[H1]\nH1N3=V55\nH1N4=V66\n[H2]\nH2N3=V7\nH2N4=V8";
+		private const string Data20 = "H0N1=VA\nH0N2=VB\n[H1]\nH1N1=V11\nH1N2=V22\n[H2]\nH2N1=V3\nH2N2=V4\n[H1]\nH1N3=V55\nH1N4=V66\n[H2]\nH2N3=V7\nH2N4=V8";
 
-		private const string Data21 = "[H1]\nH1N1=V11\nH1N2=V22\nH1N3=V55\nH1N4=V66\n[H2]\nH2N1=V33\nH2N2=V44\nH2N3=V77\nH2N4=V88";
+		private const string Data21 = "H0N1=VA\nH0N2=VB\n[H1]\nH1N1=V11\nH1N2=V22\nH1N3=V55\nH1N4=V66\n[H2]\nH2N1=V33\nH2N2=V44\nH2N3=V77\nH2N4=V88";
+
+		private const string Data22 = "H0N1=VA\nH0N2=VB\n[H1]\nH1N2=V2\nH1N1=V1\n[H2]\nH2N2=V4\nH2N1=V3\n[H1]\nH1N4=V6\nH1N3=V5\n[H2]\nH2N4=V8\nH2N3=V7";
+
+		private const string Data23 = "H0N1=VA\nH0N2=VB\n[H1]\nH1N1=V1\nH1N2=V2\n[H2]\nH2N2=V4\nH2N1=V3\n[H1]\nH1N3=V5\nH1N4=V6\n[H2]\nH2N4=V8\nH2N3=V7";
+
+		private const string Data24 = "H0N1=VA\nH0N2=VB\n[H1]\nH1N2=V2\nH1N1=V1\n[H2]\nH2N1=V3\nH2N2=V4\n[H1]\nH1N4=V6\nH1N3=V5\n[H2]\nH2N3=V7\nH2N4=V8";
+
+		private const string Data25 = "[H1]\nH1N1=V1\nH1N2=V2\nH1N3=V5\nH1N4=V6";
+
+		private static readonly IDictionary<string, string> H0 = new Dictionary<string, string>()
+		{
+			{"H0N1", "VA"},
+			{"H0N2", "VB"},
+		};
 
 		private static readonly IDictionary<string, string> H1 = new Dictionary<string, string>()
 		{
@@ -92,6 +106,12 @@ namespace RI.Test.Framework.IO.INI
 			{"H4N2", new List<string> {"V8"}},
 		};
 
+		private static readonly IDictionary<string, IList<string>> H9 = new Dictionary<string, IList<string>>()
+		{
+			{"H9N1", new List<string> {"VA", "VB"} },
+			{"H9N2", new List<string> {"VC", "VD"}},
+		};
+
 		private static readonly IDictionary<string, string> V1 = new Dictionary<string, string>
 		{
 			{"H1N1", "V1" },
@@ -110,6 +130,13 @@ namespace RI.Test.Framework.IO.INI
 
 		private static readonly IDictionary<string, IDictionary<string, string>> V12 = new Dictionary<string, IDictionary<string, string>>
 		{
+			{
+				string.Empty, new Dictionary<string, string>
+				{
+					{"H0N1", "VA" },
+					{"H0N2", "VB" },
+				}
+			},
 			{
 				"H1", new Dictionary<string, string>
 				{
@@ -132,6 +159,9 @@ namespace RI.Test.Framework.IO.INI
 
 		private static readonly IDictionary<string, IDictionary<string, IList<string>>> V34 = new Dictionary<string, IDictionary<string, IList<string>>>
 		{
+			{
+				string.Empty, H9
+			},
 			{
 				"H3", H3
 			},
@@ -391,6 +421,16 @@ namespace RI.Test.Framework.IO.INI
 			// Add sections (single values)
 			//-----------------------------
 
+			Dictionary<string, string> h0_1 = new Dictionary<string, string>()
+			{
+				{"H0N1", "VA"},
+			};
+
+			Dictionary<string, string> h0_2 = new Dictionary<string, string>()
+			{
+				{"H0N2", "VB"},
+			};
+
 			Dictionary<string, string> h1_1 = new Dictionary<string, string>()
 			{
 				{"H1N1", "V1"},
@@ -416,11 +456,14 @@ namespace RI.Test.Framework.IO.INI
 			};
 
 			test.Clear();
+			test.AddSection(null, IniSectionAddMode.AppendEnd, h0_1);
 			test.AddSection("H1", IniSectionAddMode.AppendEnd, h1_1);
 			test.AddSection("H2", IniSectionAddMode.AppendEnd, h2_1);
 			test.AddSection("H1", IniSectionAddMode.AppendEnd, h1_2);
 			test.AddSection("H2", IniSectionAddMode.AppendEnd, h2_2);
+			test.AddSection(null, IniSectionAddMode.AppendEnd, h0_2);
 
+			this.VerifyH0(test);
 			this.VerifyH1(test);
 			this.VerifyH2(test);
 
@@ -430,11 +473,14 @@ namespace RI.Test.Framework.IO.INI
 			}
 
 			test.Clear();
+			test.AddSection(null, IniSectionAddMode.AppendSame, h0_1);
 			test.AddSection("H1", IniSectionAddMode.AppendSame, h1_1);
 			test.AddSection("H2", IniSectionAddMode.AppendSame, h2_1);
 			test.AddSection("H1", IniSectionAddMode.AppendSame, h1_2);
 			test.AddSection("H2", IniSectionAddMode.AppendSame, h2_2);
+			test.AddSection(null, IniSectionAddMode.AppendSame, h0_2);
 
+			this.VerifyH0(test);
 			this.VerifyH1(test);
 			this.VerifyH2(test);
 
@@ -444,11 +490,14 @@ namespace RI.Test.Framework.IO.INI
 			}
 
 			test.Clear();
+			test.AddSection(null, IniSectionAddMode.AppendEnd, h0_1);
+			test.AddSection(null, IniSectionAddMode.AppendEnd, h0_2);
 			test.AddSection("H1", IniSectionAddMode.AppendEnd, h1_1);
 			test.AddSection("H1", IniSectionAddMode.AppendEnd, h1_2);
 			test.AddSection("H2", IniSectionAddMode.AppendEnd, h2_1);
 			test.AddSection("H2", IniSectionAddMode.AppendEnd, h2_2);
 
+			this.VerifyH0(test);
 			this.VerifyH1(test);
 			this.VerifyH2(test);
 
@@ -458,11 +507,14 @@ namespace RI.Test.Framework.IO.INI
 			}
 
 			test.Clear();
+			test.AddSection(null, IniSectionAddMode.AppendSame, h0_1);
+			test.AddSection(null, IniSectionAddMode.AppendSame, h0_2);
 			test.AddSection("H1", IniSectionAddMode.AppendSame, h1_1);
 			test.AddSection("H1", IniSectionAddMode.AppendSame, h1_2);
 			test.AddSection("H2", IniSectionAddMode.AppendSame, h2_1);
 			test.AddSection("H2", IniSectionAddMode.AppendSame, h2_2);
 
+			this.VerifyH0(test);
 			this.VerifyH1(test);
 			this.VerifyH2(test);
 
@@ -472,11 +524,14 @@ namespace RI.Test.Framework.IO.INI
 			}
 
 			test.Clear();
+			test.AddSection(null, IniSectionAddMode.AppendSame, h0_1);
 			test.AddSection("H1", IniSectionAddMode.MergeSame, h1_1);
 			test.AddSection("H2", IniSectionAddMode.MergeSame, h2_1);
 			test.AddSection("H1", IniSectionAddMode.MergeSame, h1_2);
 			test.AddSection("H2", IniSectionAddMode.MergeSame, h2_2);
+			test.AddSection(null, IniSectionAddMode.AppendSame, h0_2);
 
+			this.VerifyH0(test);
 			this.VerifyH1(test);
 			this.VerifyH2(test);
 
@@ -486,11 +541,14 @@ namespace RI.Test.Framework.IO.INI
 			}
 
 			test.Clear();
+			test.AddSection(null, IniSectionAddMode.AppendSame, h0_1);
+			test.AddSection(null, IniSectionAddMode.AppendSame, h0_2);
 			test.AddSection("H1", IniSectionAddMode.MergeSame, h1_1);
 			test.AddSection("H1", IniSectionAddMode.MergeSame, h1_2);
 			test.AddSection("H2", IniSectionAddMode.MergeSame, h2_1);
 			test.AddSection("H2", IniSectionAddMode.MergeSame, h2_2);
 
+			this.VerifyH0(test);
 			this.VerifyH1(test);
 			this.VerifyH2(test);
 
@@ -502,6 +560,16 @@ namespace RI.Test.Framework.IO.INI
 			//-------------------------------
 			// Add sections (multiple values)
 			//-------------------------------
+
+			Dictionary<string, IList<string>> h9_1 = new Dictionary<string, IList<string>>()
+			{
+				{"H9N1", new List<string> {"VA", "VB"} },
+			};
+
+			Dictionary<string, IList<string>> h9_2 = new Dictionary<string, IList<string>>()
+			{
+				{"H9N2", new List<string> {"VC", "VD"} },
+			};
 
 			Dictionary<string, IList<string>> h3_1 = new Dictionary<string, IList<string>>()
 			{
@@ -526,11 +594,14 @@ namespace RI.Test.Framework.IO.INI
 			};
 
 			test.Clear();
+			test.AddSection(null, IniSectionAddMode.AppendEnd, h9_1);
 			test.AddSection("H3", IniSectionAddMode.AppendEnd, h3_1);
 			test.AddSection("H4", IniSectionAddMode.AppendEnd, h4_1);
 			test.AddSection("H3", IniSectionAddMode.AppendEnd, h3_2);
 			test.AddSection("H4", IniSectionAddMode.AppendEnd, h4_2);
+			test.AddSection(null, IniSectionAddMode.AppendEnd, h9_2);
 
+			this.VerifyH9(test);
 			this.VerifyH3(test);
 			this.VerifyH4(test);
 
@@ -541,11 +612,14 @@ namespace RI.Test.Framework.IO.INI
 			}
 
 			test.Clear();
+			test.AddSection(null, IniSectionAddMode.AppendSame, h9_1);
 			test.AddSection("H3", IniSectionAddMode.AppendSame, h3_1);
 			test.AddSection("H4", IniSectionAddMode.AppendSame, h4_1);
 			test.AddSection("H3", IniSectionAddMode.AppendSame, h3_2);
 			test.AddSection("H4", IniSectionAddMode.AppendSame, h4_2);
+			test.AddSection(null, IniSectionAddMode.AppendSame, h9_2);
 
+			this.VerifyH9(test);
 			this.VerifyH3(test);
 			this.VerifyH4(test);
 
@@ -555,11 +629,14 @@ namespace RI.Test.Framework.IO.INI
 			}
 
 			test.Clear();
+			test.AddSection(null, IniSectionAddMode.AppendEnd, h9_1);
+			test.AddSection(null, IniSectionAddMode.AppendEnd, h9_2);
 			test.AddSection("H3", IniSectionAddMode.AppendEnd, h3_1);
 			test.AddSection("H3", IniSectionAddMode.AppendEnd, h3_2);
 			test.AddSection("H4", IniSectionAddMode.AppendEnd, h4_1);
 			test.AddSection("H4", IniSectionAddMode.AppendEnd, h4_2);
 
+			this.VerifyH9(test);
 			this.VerifyH3(test);
 			this.VerifyH4(test);
 
@@ -569,11 +646,14 @@ namespace RI.Test.Framework.IO.INI
 			}
 
 			test.Clear();
+			test.AddSection(null, IniSectionAddMode.AppendSame, h9_1);
+			test.AddSection(null, IniSectionAddMode.AppendSame, h9_2);
 			test.AddSection("H3", IniSectionAddMode.AppendSame, h3_1);
 			test.AddSection("H3", IniSectionAddMode.AppendSame, h3_2);
 			test.AddSection("H4", IniSectionAddMode.AppendSame, h4_1);
 			test.AddSection("H4", IniSectionAddMode.AppendSame, h4_2);
 
+			this.VerifyH9(test);
 			this.VerifyH3(test);
 			this.VerifyH4(test);
 
@@ -583,11 +663,14 @@ namespace RI.Test.Framework.IO.INI
 			}
 
 			test.Clear();
+			test.AddSection(null, IniSectionAddMode.MergeSame, h9_1);
 			test.AddSection("H3", IniSectionAddMode.MergeSame, h3_1);
 			test.AddSection("H4", IniSectionAddMode.MergeSame, h4_1);
 			test.AddSection("H3", IniSectionAddMode.MergeSame, h3_2);
 			test.AddSection("H4", IniSectionAddMode.MergeSame, h4_2);
+			test.AddSection(null, IniSectionAddMode.MergeSame, h9_2);
 
+			this.VerifyH9(test);
 			this.VerifyH3(test);
 			this.VerifyH4(test);
 
@@ -597,11 +680,14 @@ namespace RI.Test.Framework.IO.INI
 			}
 
 			test.Clear();
+			test.AddSection(null, IniSectionAddMode.MergeSame, h9_1);
+			test.AddSection(null, IniSectionAddMode.MergeSame, h9_2);
 			test.AddSection("H3", IniSectionAddMode.MergeSame, h3_1);
 			test.AddSection("H3", IniSectionAddMode.MergeSame, h3_2);
 			test.AddSection("H4", IniSectionAddMode.MergeSame, h4_1);
 			test.AddSection("H4", IniSectionAddMode.MergeSame, h4_2);
 
+			this.VerifyH9(test);
 			this.VerifyH3(test);
 			this.VerifyH4(test);
 
@@ -616,6 +702,7 @@ namespace RI.Test.Framework.IO.INI
 
 			test.Load(Test_IniDocument.Data9);
 			test.RemoveSections("H2");
+			this.VerifyH0(test);
 			this.VerifyH1(test);
 			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data13)
 			{
@@ -626,8 +713,17 @@ namespace RI.Test.Framework.IO.INI
 			test.RemoveSections("H2");
 			test.RemoveSections("H3");
 			test.RemoveSections("H4");
+			this.VerifyH0(test);
 			this.VerifyH1(test);
 			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data13)
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Load(Test_IniDocument.Data13);
+			test.RemoveSections(null);
+			this.VerifyH1(test);
+			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data25)
 			{
 				throw new TestAssertionException();
 			}
@@ -804,6 +900,14 @@ namespace RI.Test.Framework.IO.INI
 
 			if (!this.VerifySection(new List<Dictionary<string, string>>
 			{
+				test.GetSection(null)
+			}, Test_IniDocument.H0.ToList()))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!this.VerifySection(new List<Dictionary<string, string>>
+			{
 				test.GetSection("H1")
 			}, Test_IniDocument.H1.ToList()))
 			{
@@ -819,6 +923,14 @@ namespace RI.Test.Framework.IO.INI
 			}
 
 			test.Load(Test_IniDocument.Data12);
+
+			if (!this.VerifySection(new List<Dictionary<string, List<string>>>
+			{
+				test.GetSectionAll(null)
+			}, Test_IniDocument.H9.ToList()))
+			{
+				throw new TestAssertionException();
+			}
 
 			if (!this.VerifySection(new List<Dictionary<string, List<string>>>
 			{
@@ -898,6 +1010,8 @@ namespace RI.Test.Framework.IO.INI
 
 			test.Clear();
 
+			test.SetValue(null, "H0N1", "VA");
+			test.SetValue(null, "H0N2", "VB");
 			test.SetValue("H1", "H1N1", "V1");
 			test.SetValue("H1", "H1N2", "V2");
 			test.SetValue("H1", "H1N3", "V5");
@@ -907,6 +1021,8 @@ namespace RI.Test.Framework.IO.INI
 				throw new TestAssertionException();
 			}
 
+			test.SetValue(null, "H0N1", "VA");
+			test.SetValue(null, "H0N2", "VB");
 			test.SetValue("H2", "H2N1", "V3");
 			test.SetValue("H2", "H2N2", "V4");
 			test.SetValue("H2", "H2N3", "V7");
@@ -945,7 +1061,7 @@ namespace RI.Test.Framework.IO.INI
 
 			test.SetValues("H1", v1);
 			test.MergeSections();
-			test.SortRegions();
+			test.SortSections();
 			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data9)
 			{
 				throw new TestAssertionException();
@@ -975,7 +1091,7 @@ namespace RI.Test.Framework.IO.INI
 
 			test.SetValues(v2);
 			test.MergeSections();
-			test.SortRegions();
+			test.SortSections();
 			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data21)
 			{
 				throw new TestAssertionException();
@@ -986,11 +1102,23 @@ namespace RI.Test.Framework.IO.INI
 			//-----------
 
 			test.Load(Test_IniDocument.Data7);
+			if (test.GetValue(null, "Test") != null)
+			{
+				throw new TestAssertionException();
+			}
 			if (test.GetValue("H1", "Test") != null)
 			{
 				throw new TestAssertionException();
 			}
 			if (test.GetValue("Test", "H1N1") != null)
+			{
+				throw new TestAssertionException();
+			}
+			if (test.GetValue(null, "H0N1") != "VA")
+			{
+				throw new TestAssertionException();
+			}
+			if (test.GetValue(null, "H0N2") != "VB")
 			{
 				throw new TestAssertionException();
 			}
@@ -1033,7 +1161,6 @@ namespace RI.Test.Framework.IO.INI
 			}
 
 			test.Load(Test_IniDocument.Data10);
-
 			if (!this.VerifySection(test.GetValuesAll(), Test_IniDocument.V34))
 			{
 				throw new TestAssertionException();
@@ -1045,12 +1172,27 @@ namespace RI.Test.Framework.IO.INI
 
 			test.Load(Test_IniDocument.Data7);
 
+			if (test.DeleteValue(null, "H1N1"))
+			{
+				throw new TestAssertionException();
+			}
+
 			if (test.DeleteValue("Test", "H1N1"))
 			{
 				throw new TestAssertionException();
 			}
 
 			if (test.DeleteValue("H1", "Test"))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!test.DeleteValue(null, "H0N1"))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!test.DeleteValue(null, "H0N2"))
 			{
 				throw new TestAssertionException();
 			}
@@ -1078,7 +1220,51 @@ namespace RI.Test.Framework.IO.INI
 			test.RemoveEmptySections(false, false);
 			test.MergeSections();
 
-			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data13)
+			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data25)
+			{
+				throw new TestAssertionException();
+			}
+
+			//----------------
+			// Sorting regions
+			//----------------
+
+			test.Load(Test_IniDocument.Data7);
+			test.SortSections();
+			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data8)
+			{
+				throw new TestAssertionException();
+			}
+
+			//-----------------
+			// Sorting Elements
+			//-----------------
+
+			test.Load(Test_IniDocument.Data22);
+			test.SortElements();
+			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data7)
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Load(Test_IniDocument.Data22);
+			test.SortElements("H1");
+			test.SortElements("H2");
+			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data7)
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Load(Test_IniDocument.Data22);
+			test.SortElements("H1");
+			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data23)
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Load(Test_IniDocument.Data22);
+			test.SortElements("H2");
+			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data24)
 			{
 				throw new TestAssertionException();
 			}
@@ -1089,7 +1275,6 @@ namespace RI.Test.Framework.IO.INI
 		{
 			//TODO: Test: Basic settings (read + write)
 			//TODO: Test: IniReaderSettings
-			//TODO: Test: Elements outside a section
 			
 			IniDocument test = new IniDocument();
 
@@ -1359,6 +1544,17 @@ namespace RI.Test.Framework.IO.INI
 			}
 		}
 
+		private void VerifyH0(IniDocument document)
+		{
+			List<Dictionary<string, string>> section = document.GetSections(null).ToList();
+			List<KeyValuePair<string, string>> h0 = Test_IniDocument.H0.ToList();
+
+			if (!this.VerifySection(section, h0))
+			{
+				throw new TestAssertionException();
+			}
+		}
+
 		private void VerifyH1(IniDocument document)
 		{
 			List<Dictionary<string, string>> section = document.GetSections("H1").ToList();
@@ -1398,6 +1594,17 @@ namespace RI.Test.Framework.IO.INI
 			List<KeyValuePair<string, IList<string>>> h4 = Test_IniDocument.H4.ToList();
 
 			if (!this.VerifySection(section, h4))
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		private void VerifyH9(IniDocument document)
+		{
+			List<Dictionary<string, List<string>>> section = document.GetSectionsAll(null).ToList();
+			List<KeyValuePair<string, IList<string>>> h9 = Test_IniDocument.H9.ToList();
+
+			if (!this.VerifySection(section, h9))
 			{
 				throw new TestAssertionException();
 			}

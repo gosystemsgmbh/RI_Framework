@@ -17,6 +17,7 @@ using RI.Framework.Services.Modularization;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Reflection;
 using RI.Framework.Utilities.Text;
+using RI.Framework.Utilities.Windows;
 
 
 
@@ -275,6 +276,30 @@ namespace RI.Framework.Services
 		///     The GUID of the application which is application version independent.
 		/// </value>
 		public Guid ApplicationIdVersionIndependent { get; private set; }
+
+		/// <summary>
+		///     Gets the anonymized GUID of the local machine.
+		/// </summary>
+		/// <value>
+		///     The anonymized GUID of the local machine.
+		/// </value>
+		public Guid MachineId { get; private set; }
+
+		/// <summary>
+		///     Gets the anonymized GUID of the current user.
+		/// </summary>
+		/// <value>
+		///     The anonymized GUID of the current user.
+		/// </value>
+		public Guid UserId { get; private set; }
+
+		/// <summary>
+		///     Gets the anonymized GUID of the domain this machine belongs to.
+		/// </summary>
+		/// <value>
+		///     The anonymized GUID of the domain this machine belongs to.
+		/// </value>
+		public Guid DomainId { get; private set; }
 
 		/// <summary>
 		///     Gets the product name of the application.
@@ -727,6 +752,54 @@ namespace RI.Framework.Services
 		}
 
 		/// <summary>
+		///     Called to determine the GUID of the local machine.
+		/// </summary>
+		/// <returns>
+		///     The GUID of the local machine.
+		/// </returns>
+		/// <remarks>
+		///     <note type="implement">
+		///         The default implementation uses <see cref="UniqueIdentification" />.<see cref="UniqueIdentification.GetMachineId" />.
+		///     </note>
+		/// </remarks>
+		protected virtual Guid DetermineMachineId()
+		{
+			return UniqueIdentification.GetMachineId();
+		}
+
+		/// <summary>
+		///     Called to determine the GUID of the current user.
+		/// </summary>
+		/// <returns>
+		///     The GUID of the current user.
+		/// </returns>
+		/// <remarks>
+		///     <note type="implement">
+		///         The default implementation uses <see cref="UniqueIdentification" />.<see cref="UniqueIdentification.GetUserId" />.
+		///     </note>
+		/// </remarks>
+		protected virtual Guid DetermineUserId()
+		{
+			return UniqueIdentification.GetUserId();
+		}
+
+		/// <summary>
+		///     Called to determine the GUID of the domain this machine belongs to.
+		/// </summary>
+		/// <returns>
+		///     The GUID of the the domain this machine belongs to.
+		/// </returns>
+		/// <remarks>
+		///     <note type="implement">
+		///         The default implementation uses <see cref="UniqueIdentification" />.<see cref="UniqueIdentification.GetDomainId" />.
+		///     </note>
+		/// </remarks>
+		protected virtual Guid DetermineDomainId()
+		{
+			return UniqueIdentification.GetDomainId();
+		}
+
+		/// <summary>
 		///     Called to determine the product name of the application (<see cref="ApplicationProductName" />).
 		/// </summary>
 		/// <returns>
@@ -868,12 +941,14 @@ namespace RI.Framework.Services
 			this.Log(LogLevel.Debug, "Data directory:       {0}", this.ApplicationDataDirectory.PathResolved);
 			this.Log(LogLevel.Debug, "Application assembly: {0}", this.ApplicationAssembly.FullName);
 			this.Log(LogLevel.Debug, "Application ID:       {0}", this.ApplicationIdVersionDependent.ToString("N", CultureInfo.InvariantCulture));
-			//TODO: Add MachineId
 			this.Log(LogLevel.Debug, "Version ID:           {0}", this.ApplicationIdVersionIndependent.ToString("N", CultureInfo.InvariantCulture));
 			this.Log(LogLevel.Debug, "Session ID:           {0}", this.SessionId.ToString("N", CultureInfo.InvariantCulture));
 			this.Log(LogLevel.Debug, "Session timestamp:    {0}", this.SessionTimestamp.ToSortableString('-'));
 			this.Log(LogLevel.Debug, "Session 64 bit:       {0}", this.Session64Bit.ToString());
 			this.Log(LogLevel.Debug, "Machine 64 bit:       {0}", this.Machine64Bit.ToString());
+			this.Log(LogLevel.Debug, "Machine ID:           {0}", this.MachineId.ToString("N", CultureInfo.InvariantCulture));
+			this.Log(LogLevel.Debug, "Domain ID:            {0}", this.DomainId.ToString("N", CultureInfo.InvariantCulture));
+			this.Log(LogLevel.Debug, "User ID:              {0}", this.UserId.ToString("N", CultureInfo.InvariantCulture));
 			this.Log(LogLevel.Debug, "Command line:         {0}", this.ProcessCommandLine.ToString());
 		}
 
@@ -905,10 +980,12 @@ namespace RI.Framework.Services
 			Dictionary<string, string> additionalData = new Dictionary<string, string>(StringComparerEx.InvariantCultureIgnoreCase);
 			additionalData.Add(nameof(this.ApplicationProductName), this.ApplicationProductName);
 			additionalData.Add(nameof(this.ApplicationVersion), this.ApplicationVersion.ToString(4));
-			//TODO: Add MachineId
+			additionalData.Add(nameof(this.UserId), this.UserId.ToString("N", CultureInfo.InvariantCulture));
+			additionalData.Add(nameof(this.DomainId), this.DomainId.ToString("N", CultureInfo.InvariantCulture));
+			additionalData.Add(nameof(this.MachineId), this.MachineId.ToString("N", CultureInfo.InvariantCulture));
 			additionalData.Add(nameof(this.Machine64Bit), this.Machine64Bit.ToString());
 			additionalData.Add(nameof(this.Session64Bit), this.Session64Bit.ToString());
-			additionalData.Add(nameof(this.SessionId), this.SessionId.ToString("N"));
+			additionalData.Add(nameof(this.SessionId), this.SessionId.ToString("N", CultureInfo.InvariantCulture));
 			additionalData.Add(nameof(this.SessionTimestamp), this.SessionTimestamp.ToSortableString('-'));
 			additionalData.Add(nameof(this.ProcessCommandLine), this.ProcessCommandLine.ToString());
 			return additionalData;
@@ -937,6 +1014,13 @@ namespace RI.Framework.Services
 			{
 				AppDomain.CurrentDomain.UnhandledException += (s, a) => this.HandleExceptionInternal(a.ExceptionObject as Exception);
 			}
+
+			this.Machine64Bit = Environment.Is64BitOperatingSystem;
+			this.Session64Bit = Environment.Is64BitProcess;
+
+			this.DomainId = this.DetermineDomainId();
+			this.MachineId = this.DetermineMachineId();
+			this.UserId = this.DetermineUserId();
 
 			this.ApplicationAssembly = this.DetermineApplicationAssembly();
 			this.ApplicationProductName = this.DetermineApplicationProductName();

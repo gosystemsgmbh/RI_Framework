@@ -19,12 +19,13 @@ Examples
 Conceptual documentations
 -------------------------
 
- + Composition
- + Bootstrapper/Services
- + State Machines
  + Utilities
  + Collections
  + I/O
+ + Mathematic
+ + Composition
+ + Bootstrapper/Services
+ + State Machines
 
 
 Tests
@@ -34,7 +35,8 @@ Tests
  + INI
  + Services
  + State Machines
- + Utilities (HeavyThread)
+ + Utilities (HeavyThread, ThreadDispatcher)
+ + Mathematic
 
 
 Utilities
@@ -49,9 +51,9 @@ Utilities
  - (Common) TextReaderExtensions
  - (Common) TextWriterExtensions
 
- # (.NET) ThreadDispatcher
- # (.NET) ThreadDispatcherSynchronizationContext
- # (.NET) ThreadDispatcherTimer
+ + (.NET) ThreadDispatcher
+ + (.NET) ThreadDispatcherSynchronizationContext
+ + (.NET) ThreadDispatcherTimer
 
  # (Windows) WindowsMessage
  # (Windows) WindowsMessageLoop
@@ -297,7 +299,10 @@ Math
  - (Common) AsSingle
  - (Common) Aggregate extensions for numerical types (byte, short, int, long, double, float), including statistics (min, max, sum, average, median, RMS, count)
 
- - (Common) PID controller
+ - (Common) RunningValueBase: Min
+ - (Common) RunningValueBase: Max
+
+ + (Common) PID controller
 
  - (Common) Bezier/Spline curves
 

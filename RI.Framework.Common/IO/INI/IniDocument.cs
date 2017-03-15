@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 
 using RI.Framework.Collections;
+using RI.Framework.Collections.Comparison;
 using RI.Framework.Collections.Linq;
 using RI.Framework.IO.INI.Elements;
 using RI.Framework.Utilities;
@@ -257,18 +258,11 @@ namespace RI.Framework.IO.INI
 		/// This method is used if the dictionary can have only one value per name-value-pair.
 		/// </para>
 		/// </remarks>
-		/// <exception cref="EmptyStringArgumentException"> <paramref name="sectionName" /> is an empty string. </exception>
 		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
 		/// <exception cref="ArgumentException"> <paramref name="values" /> contains name-value-pairs with invalid names. </exception>
 		public List<IniElement> AddSection (string sectionName, IniSectionAddMode mode, IDictionary<string, string> values)
 		{
-			if (sectionName != null)
-			{
-				if (sectionName.IsEmpty())
-				{
-					throw new EmptyStringArgumentException(nameof(sectionName));
-				}
-			}
+			sectionName = sectionName.ToNullIfNullOrEmpty();
 
 			if (values == null)
 			{
@@ -328,18 +322,11 @@ namespace RI.Framework.IO.INI
 		/// This method is used if the dictionary can have one or multiple values per name-value-pair (using the inner list).
 		/// </para>
 		/// </remarks>
-		/// <exception cref="EmptyStringArgumentException"> <paramref name="sectionName" /> is an empty string. </exception>
 		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
 		/// <exception cref="ArgumentException"> <paramref name="values" /> contains name-value-pairs with invalid names. </exception>
 		public List<IniElement> AddSection (string sectionName, IniSectionAddMode mode, IDictionary<string, IList<string>> values)
 		{
-			if (sectionName != null)
-			{
-				if (sectionName.IsEmpty())
-				{
-					throw new EmptyStringArgumentException(nameof(sectionName));
-				}
-			}
+			sectionName = sectionName.ToNullIfNullOrEmpty();
 
 			if (values == null)
 			{
@@ -496,16 +483,10 @@ namespace RI.Framework.IO.INI
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="name" /> is null. </exception>
-		/// <exception cref="EmptyStringArgumentException"> <paramref name="section" /> or <paramref name="name" /> is an empty string. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
 		public bool DeleteValue (string section, string name)
 		{
-			if (section != null)
-			{
-				if (section.IsEmpty())
-				{
-					throw new EmptyStringArgumentException(nameof(section));
-				}
-			}
+			section = section.ToNullIfNullOrEmpty();
 
 			if (name == null)
 			{
@@ -566,16 +547,9 @@ namespace RI.Framework.IO.INI
 		///         If the same name-value-pair exists multiple times in a section, only the first pair is returned in the dictionary.
 		///     </para>
 		/// </remarks>
-		/// <exception cref="EmptyStringArgumentException"> <paramref name="sectionName" /> is an empty string. </exception>
 		public Dictionary<string, string> GetSection (string sectionName)
 		{
-			if (sectionName != null)
-			{
-				if (sectionName.IsEmpty())
-				{
-					throw new EmptyStringArgumentException(nameof(sectionName));
-				}
-			}
+			sectionName = sectionName.ToNullIfNullOrEmpty();
 
 			List<Dictionary<string, string>> sections = this.GetSections(sectionName);
 			return sections == null ? null : (sections.Count == 0 ? new Dictionary<string, string>(this.ValueNameComparer) : sections[0]);
@@ -601,16 +575,9 @@ namespace RI.Framework.IO.INI
 		///         If the same name-value-pair exists multiple times in a section, all pairs are returned in the dictionary (using the inner list).
 		///     </para>
 		/// </remarks>
-		/// <exception cref="EmptyStringArgumentException"> <paramref name="sectionName" /> is an empty string. </exception>
 		public Dictionary<string, List<string>> GetSectionAll (string sectionName)
 		{
-			if (sectionName != null)
-			{
-				if (sectionName.IsEmpty())
-				{
-					throw new EmptyStringArgumentException(nameof(sectionName));
-				}
-			}
+			sectionName = sectionName.ToNullIfNullOrEmpty();
 
 			List<Dictionary<string, List<string>>> sections = this.GetSectionsAll(sectionName);
 			return sections == null ? null : (sections.Count == 0 ? new Dictionary<string, List<string>>(this.ValueNameComparer) : sections[0]);
@@ -670,16 +637,9 @@ namespace RI.Framework.IO.INI
 		///         If the same name-value-pair exists multiple times in a section, only the first pair is returned in the corresponding dictionary.
 		///     </para>
 		/// </remarks>
-		/// <exception cref="EmptyStringArgumentException"> <paramref name="sectionName" /> is an empty string. </exception>
 		public List<Dictionary<string, string>> GetSections (string sectionName)
 		{
-			if (sectionName != null)
-			{
-				if (sectionName.IsEmpty())
-				{
-					throw new EmptyStringArgumentException(nameof(sectionName));
-				}
-			}
+			sectionName = sectionName.ToNullIfNullOrEmpty();
 
 			List<Dictionary<string, List<string>>> sections = this.GetSectionsAll(sectionName);
 			if (sections == null)
@@ -721,16 +681,9 @@ namespace RI.Framework.IO.INI
 		///         If the same name-value-pair exists multiple times in a section, all pairs are returned in the corresponding dictionary.
 		///     </para>
 		/// </remarks>
-		/// <exception cref="EmptyStringArgumentException"> <paramref name="sectionName" /> is an empty string. </exception>
 		public List<Dictionary<string, List<string>>> GetSectionsAll (string sectionName)
 		{
-			if (sectionName != null)
-			{
-				if (sectionName.IsEmpty())
-				{
-					throw new EmptyStringArgumentException(nameof(sectionName));
-				}
-			}
+			sectionName = sectionName.ToNullIfNullOrEmpty();
 
 			List<Dictionary<string, List<string>>> result = new List<Dictionary<string, List<string>>>();
 			bool found = false;
@@ -797,16 +750,10 @@ namespace RI.Framework.IO.INI
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="name" /> is null. </exception>
-		/// <exception cref="EmptyStringArgumentException"> <paramref name="section" /> or <paramref name="name" /> is an empty string. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
 		public string GetValue (string section, string name)
 		{
-			if (section != null)
-			{
-				if (section.IsEmpty())
-				{
-					throw new EmptyStringArgumentException(nameof(section));
-				}
-			}
+			section = section.ToNullIfNullOrEmpty();
 
 			if (name == null)
 			{
@@ -880,7 +827,7 @@ namespace RI.Framework.IO.INI
 						}
 					}
 				}
-				result.Add(sectionName, mergedSection);
+				result.Add(sectionName ?? string.Empty, mergedSection);
 			}
 			return result;
 		}
@@ -923,7 +870,7 @@ namespace RI.Framework.IO.INI
 						mergedSection[nameValuePair.Key].AddRange(nameValuePair.Value);
 					}
 				}
-				result.Add(sectionName, mergedSection);
+				result.Add(sectionName ?? string.Empty, mergedSection);
 			}
 			return result;
 		}
@@ -1211,16 +1158,9 @@ namespace RI.Framework.IO.INI
 		///         If <paramref name="sectionName" /> is null, all values outside a section are removed (that is: before the first section header or all if no section header exists).
 		///     </para>
 		/// </remarks>
-		/// <exception cref="EmptyStringArgumentException"> <paramref name="sectionName" /> is an empty string. </exception>
 		public List<IniElement> RemoveSections (string sectionName)
 		{
-			if (sectionName != null)
-			{
-				if (sectionName.IsEmpty())
-				{
-					throw new EmptyStringArgumentException(nameof(sectionName));
-				}
-			}
+			sectionName = sectionName.ToNullIfNullOrEmpty();
 
 			List<IniElement> elements = new List<IniElement>();
 
@@ -1373,16 +1313,10 @@ namespace RI.Framework.IO.INI
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="name" /> is null. </exception>
-		/// <exception cref="EmptyStringArgumentException"> <paramref name="section" /> or <paramref name="name" /> is an empty string. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
 		public bool SetValue (string section, string name, string value)
 		{
-			if (section != null)
-			{
-				if (section.IsEmpty())
-				{
-					throw new EmptyStringArgumentException(nameof(section));
-				}
-			}
+			section = section.ToNullIfNullOrEmpty();
 
 			if (name == null)
 			{
@@ -1459,18 +1393,11 @@ namespace RI.Framework.IO.INI
 		///         Sections not specified by <paramref name="section"/> will remain unchanged.
 		///     </para>
 		/// </remarks>
-		/// <exception cref="EmptyStringArgumentException"> <paramref name="section" /> is an empty string. </exception>
 		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
 		/// <exception cref="ArgumentException"> <paramref name="values" /> contains name-value-pairs with invalid names. </exception>
 		public void SetValues (string section, IDictionary<string, string> values)
 		{
-			if (section != null)
-			{
-				if (section.IsEmpty())
-				{
-					throw new EmptyStringArgumentException(nameof(section));
-				}
-			}
+			section = section.ToNullIfNullOrEmpty();
 
 			if (values == null)
 			{
@@ -1609,7 +1536,6 @@ namespace RI.Framework.IO.INI
 		///         Sorting of INI elements in a section does only work reliable if a section only contains <see cref="ValueIniElement" />s.
 		///     </note>
 		/// </remarks>
-		/// <exception cref="EmptyStringArgumentException"> <paramref name="section" /> is an empty string. </exception>
 		public void SortElements (string section)
 		{
 			this.SortElements(section, StringComparerEx.InvariantCultureIgnoreCase);
@@ -1630,7 +1556,6 @@ namespace RI.Framework.IO.INI
 		///     </note>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="comparer" /> is null. </exception>
-		/// <exception cref="EmptyStringArgumentException"> <paramref name="section" /> is an empty string. </exception>
 		public void SortElements (string section, IComparer<string> comparer)
 		{
 			if (comparer == null)
@@ -1653,16 +1578,9 @@ namespace RI.Framework.IO.INI
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="comparer" /> is null. </exception>
-		/// <exception cref="EmptyStringArgumentException"> <paramref name="section" /> is an empty string. </exception>
 		public void SortElements (string section, IComparer<IniElement> comparer)
 		{
-			if (section != null)
-			{
-				if (section.IsEmpty())
-				{
-					throw new EmptyStringArgumentException(nameof(section));
-				}
-			}
+			section = section.ToNullIfNullOrEmpty();
 
 			if (comparer == null)
 			{
@@ -1673,23 +1591,23 @@ namespace RI.Framework.IO.INI
 		}
 
 		/// <summary>
-		///     Sorts the regions based on their names.
+		///     Sorts the sections based on their names.
 		/// </summary>
 		/// <remarks>
 		///     <para>
 		///         <see cref="StringComparerEx.InvariantCultureIgnoreCase" /> is used for comparison.
 		///     </para>
 		/// </remarks>
-		public void SortRegions ()
+		public void SortSections ()
 		{
-			this.SortRegions(StringComparerEx.InvariantCultureIgnoreCase);
+			this.SortSections(StringComparerEx.InvariantCultureIgnoreCase);
 		}
 
 		/// <summary>
-		///     Sorts the regions.
+		///     Sorts the sections.
 		/// </summary>
 		/// <param name="comparer"> The comparer used to compare the region names. </param>
-		public void SortRegions (IComparer<string> comparer)
+		public void SortSections (IComparer<string> comparer)
 		{
 			if (comparer == null)
 			{
@@ -1704,7 +1622,15 @@ namespace RI.Framework.IO.INI
 				return;
 			}
 
-			OrderComparison<KeyValuePair<string, List<IniElement>>> sectionComparer = new OrderComparison<KeyValuePair<string, List<IniElement>>>((x, y) => comparer.Compare(x.Key, y.Key));
+			OrderComparison<KeyValuePair<string, List<IniElement>>> sectionComparer = new OrderComparison<KeyValuePair<string, List<IniElement>>>((x, y) =>
+			{
+				int result = comparer.Compare(x.Key, y.Key);
+				if (result == 0)
+				{
+					result = sections.FindIndex(a => a.Value.SequenceEqual(x.Value, CollectionComparerFlags.ReferenceEquality)).CompareTo(sections.FindIndex(b => b.Value.SequenceEqual(y.Value, CollectionComparerFlags.ReferenceEquality)));
+				}
+				return result;
+			});
 
 			int startIndex = sections[0].Key == null ? 1 : 0;
 			sections.Sort(startIndex, sections.Count - startIndex, sectionComparer);
@@ -1751,14 +1677,9 @@ namespace RI.Framework.IO.INI
 		{
 			mergeSections = mode == IniSectionAddMode.MergeSame;
 
-			if (mode == IniSectionAddMode.AppendEnd)
-			{
-				return this.Elements.Count;
-			}
-
 			if (sectionName == null)
 			{
-				mergeSections = false;
+				mergeSections = true;
 				for (int i1 = 0; i1 < this.Elements.Count; i1++)
 				{
 					if (this.Elements[i1] is SectionIniElement)
@@ -1766,6 +1687,11 @@ namespace RI.Framework.IO.INI
 						return i1;
 					}
 				}
+				return this.Elements.Count;
+			}
+
+			if (mode == IniSectionAddMode.AppendEnd)
+			{
 				return this.Elements.Count;
 			}
 

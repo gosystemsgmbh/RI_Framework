@@ -88,6 +88,16 @@
     <Compile Include="$(MSBuildThisFileDirectory)IO\Paths\PathType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\Paths\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\_NamespaceDoc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Mathematic\Controllers\ContinuousPIDController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Mathematic\Controllers\DiscretePIDController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Mathematic\Controllers\PIDControllerBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Mathematic\Controllers\_NamespaceDoc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Mathematic\RunningDouble.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Mathematic\RunningFloat.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Mathematic\RunningInt32.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Mathematic\RunningValuesBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Mathematic\Statistics.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Mathematic\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\LogLocator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\ILogService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\ILogWriter.cs" />
@@ -153,6 +163,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Text\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Threading\HeavyThread.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Threading\HeavyThreadException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Threading\ThreadDispatcher.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Threading\ThreadDispatcherOperation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Threading\ThreadDispatcherOperationState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Threading\ThreadDispatcherShutdownMode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Threading\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\TimeSpanExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\_NamespaceDoc.cs" />
