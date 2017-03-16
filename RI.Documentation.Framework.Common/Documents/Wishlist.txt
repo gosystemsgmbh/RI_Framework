@@ -32,7 +32,6 @@ Tests
 -----
 
  + Composition
- + INI
  + Services
  + State Machines
  + Utilities (HeavyThread, ThreadDispatcher)
@@ -50,6 +49,8 @@ Utilities
 
  - (Common) TextReaderExtensions
  - (Common) TextWriterExtensions
+
+ - (Common) StringExtensions: NormalizeNewLines
 
  + (.NET) ThreadDispatcher
  + (.NET) ThreadDispatcherSynchronizationContext

@@ -166,8 +166,27 @@ namespace RI.Framework.Composition
 	///         In such cases, all the resolved import values are provided or assigned respectively.
 	///         Therefore, multiple types or object can be exported under the same name.
 	///     </para>
+	///     <para>
+	///         <b> SHARED &amp; PRIVATE EXPORTS </b>
+	///     </para>
 	/// <para>
-	/// TODO: Document private and shared export
+	/// Another distinction for exporting is shared and private exports.
+	/// </para>
+	/// <para>
+	/// Shared exports behave exactly like described above.
+	/// For type exports, the instance which is created for the type is used (shared) for all imports of the same name.
+	/// For object exports, the instance is used (shared) for all imports of the same name.
+	/// </para>
+	/// <para>
+	/// Private exports behave more or less also the same as described above, with one exception:
+	/// For type exports, imports will receive their own (private) instance each time (!) an import is resolved.
+	/// Object exports cannot be private.
+	/// </para>
+	/// <para>
+	/// An export can be made private through the <see cref="ExportAttribute.Private"/> property of <see cref="ExportAttribute"/>.
+	/// Therefore, private exports are only available for type and model based exports.
+	/// </para>
+	/// <para>
 	/// </para>
 	///     <para>
 	///         <b> ELIGIBLE TYPES </b>

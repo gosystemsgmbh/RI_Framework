@@ -1617,6 +1617,9 @@ namespace RI.Framework.IO.INI
 			List<KeyValuePair<string, List<IniElement>>> sections;
 			this.DecomposeSections(out sections);
 
+			List<KeyValuePair<string, List<IniElement>>> staticSections;
+			this.DecomposeSections(out staticSections);
+
 			if (sections.Count == 0)
 			{
 				return;
@@ -1627,7 +1630,9 @@ namespace RI.Framework.IO.INI
 				int result = comparer.Compare(x.Key, y.Key);
 				if (result == 0)
 				{
-					result = sections.FindIndex(a => a.Value.SequenceEqual(x.Value, CollectionComparerFlags.ReferenceEquality)).CompareTo(sections.FindIndex(b => b.Value.SequenceEqual(y.Value, CollectionComparerFlags.ReferenceEquality)));
+					int xIndex = staticSections.FindIndex(a => a.Value.SequenceEqual(x.Value, CollectionComparerFlags.ReferenceEquality));
+					int yIndex = staticSections.FindIndex(b => b.Value.SequenceEqual(y.Value, CollectionComparerFlags.ReferenceEquality));
+					result = xIndex.CompareTo(yIndex);
 				}
 				return result;
 			});

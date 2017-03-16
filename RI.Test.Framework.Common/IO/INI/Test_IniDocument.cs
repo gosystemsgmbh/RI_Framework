@@ -72,6 +72,14 @@ namespace RI.Test.Framework.IO.INI
 
 		private const string Data25 = "[H1]\nH1N1=V1\nH1N2=V2\nH1N3=V5\nH1N4=V6";
 
+		private const string Data26 = "%!Name#Value%n%#\n(Header1%n%#)\n!!Comment";
+
+		private const string Data27 = "!Name=Value|n#\n[Header1|n#]\n;!Comment";
+
+		private const string Data28 = "|;Name=Value|n|=\n[Header1|n|=]\n;;Comment";
+
+		private const string Data29 = ";Name#Value%n=\n(Header1%n=)\n!;Comment";
+
 		private static readonly IDictionary<string, string> H0 = new Dictionary<string, string>()
 		{
 			{"H0N1", "VA"},
@@ -1273,9 +1281,6 @@ namespace RI.Test.Framework.IO.INI
 		[TestMethod]
 		public void Settings_Test()
 		{
-			//TODO: Test: Basic settings (read + write)
-			//TODO: Test: IniReaderSettings
-			
 			IniDocument test = new IniDocument();
 
 			//----------------
@@ -1296,6 +1301,41 @@ namespace RI.Test.Framework.IO.INI
 			{
 				EmptyLineBeforeSectionHeader = true
 			}).Replace("\r", string.Empty) != Test_IniDocument.Data6)
+			{
+				throw new TestAssertionException();
+			}
+
+			//-----------------
+			// General settings
+			//-----------------
+
+			IniReaderSettings s1 = new IniReaderSettings
+			{
+				CommentStart = '!',
+				EscapeCharacter = '%',
+				NameValueSeparator = '#',
+				SectionEnd = ')',
+				SectionStart = '('
+			};
+
+			IniWriterSettings s2 = new IniWriterSettings
+			{
+				CommentStart = '!',
+				EscapeCharacter = '%',
+				NameValueSeparator = '#',
+				SectionEnd = ')',
+				SectionStart = '('
+			};
+
+			test.Load(Test_IniDocument.Data26, s1);
+			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data27)
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Load(Test_IniDocument.Data28);
+			string temp = test.AsString(s2).Replace("\r", string.Empty);
+			if (temp != Test_IniDocument.Data29)
 			{
 				throw new TestAssertionException();
 			}

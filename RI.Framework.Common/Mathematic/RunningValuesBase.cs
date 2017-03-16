@@ -50,7 +50,13 @@ namespace RI.Framework.Mathematic
 		/// </value>
 		public int Capacity { get; private set; }
 
-		protected bool InitializeWithZero { get; private set; }
+		/// <summary>
+		/// Gets whether the values are to be initialized with zero by default.
+		/// </summary>
+		/// <value>
+		/// true if the values are to be initialized with zero by default, false otherwise.
+		/// </value>
+		public bool InitializeWithZero { get; private set; }
 
 		private T[] Values;
 
@@ -125,6 +131,13 @@ namespace RI.Framework.Mathematic
 		/// </remarks>
 		public T MaxAll;
 
+		/// <summary>
+		/// Replaces the oldest value in the history with a new value.
+		/// </summary>
+		/// <param name="value">The newest value to add to the history.</param>
+		/// <returns>
+		/// The oldest value which was returned.
+		/// </returns>
 		protected T ReplaceOldest (T value)
 		{
 			T removedValue = this.Values[this.Index];
@@ -141,6 +154,12 @@ namespace RI.Framework.Mathematic
 			return removedValue;
 		}
 
+		/// <summary>
+		/// Resets all values and clears the history.
+		/// </summary>
+		/// <param name="capacity">The new capacity of the history.</param>
+		/// <param name="initializeWithZero">Specifies whether the values are initialized with zero (true) or <see cref="Double.NaN"/> (false).</param>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity"/> is less than 1.</exception>
 		protected void ResetInternal (int capacity, bool initializeWithZero)
 		{
 			if (capacity < 1)
