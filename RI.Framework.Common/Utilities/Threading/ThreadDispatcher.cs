@@ -2,21 +2,14 @@
 using System.Collections.Generic;
 using System.Threading;
 
+using RI.Framework.Utilities.ObjectModel;
+
 
 
 
 namespace RI.Framework.Utilities.Threading
 {
-	//TODO: IThreadDispatcher
-	//TODO: ThreadDispatcherTimer
-	//TODO: MultiThreadDispatcher
-	//TODO: HeavyThreadDispatcher
-
-	//TODO: ISynchronizable
-	//TODO: Destructor
-	//TODO: Use priority queue
-	//TODO: Add timeout functionality
-	public sealed class ThreadDispatcher
+	public sealed class ThreadDispatcher : ISynchronizable
 	{
 		private ThreadDispatcherShutdownMode _shutdownMode;
 
@@ -24,6 +17,12 @@ namespace RI.Framework.Utilities.Threading
 		private Thread Thread { get; set; }
 		private Queue<ThreadDispatcherOperation> Queue { get; set; }
 		private ManualResetEvent Posted { get; set; }
+
+		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		object ISynchronizable.SyncRoot => this.SyncRoot;
 
 
 		public ThreadDispatcher()
@@ -35,6 +34,12 @@ namespace RI.Framework.Utilities.Threading
 			this.Posted = null;
 			
 			this.ShutdownMode = ThreadDispatcherShutdownMode.None;
+		}
+
+		~ThreadDispatcher ()
+		{
+			this.Posted?.Close();
+			this.Posted = null;
 		}
 
 		public void Run()

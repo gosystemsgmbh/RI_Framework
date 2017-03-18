@@ -32,8 +32,8 @@ Tests
 -----
 
  + Composition
- + Services
- + State Machines
+ + Services (Common + Unity)
+ + State Machines (Common + Unity)
  + Utilities (HeavyThread, ThreadDispatcher)
 
 
@@ -51,14 +51,19 @@ Utilities
 
  - (Common) StringExtensions: NormalizeNewLines
 
- + (.NET) ThreadDispatcher
- + (.NET) ThreadDispatcherSynchronizationContext
- + (.NET) ThreadDispatcherTimer
+ # (.NET) ThreadDispatcherSynchronizationContext
+ - (.NET) ThreadDispatcher: Priority queue
+ - (.NET) ThreadDispatcher: Timer
+ - (.NET) ThreadDispatcher: Delay
+ - (.NET) ThreadDispatcher: Timeouts
 
  # (Windows) WindowsMessage
  # (Windows) WindowsMessageLoop
  # (Windows) WindowsMessageLoopSynchronizationContext
- # (Windows) WindowsMessageLoopTimer
+ - (Windows) WindowsMessageLoop: Priority queue
+ - (Windows) WindowsMessageLoop: Timer
+ - (Windows) WindowsMessageLoop: Delay
+ - (Windows) WindowsMessageLoop: Timeouts
 
  - (Windows) Screen
  - (Windows) SystemKeyboard
@@ -212,6 +217,7 @@ I/O
  - (Common) IniDocument: SetValues (string section, IDictionary<string, IList<string>> values)
  - (Common) IniDocument: SetValues (IDictionary<string, IDictionary<string, IList<string>>> values)
  - (Common) IniDocument: DecomposeSections
+ - (Common) IniDocument: RemoveElements with predicate
  - (Common) IniDocument: RemoveSections with predicate
 
  - (Common) CSV reader, writer, document
@@ -305,11 +311,11 @@ Mathematic
 State machines
 --------------
 
- - (WPF) DispatcherStateDispatcher
  - (Common) CompositionContainerStateResolver
  - (Common) ServiceLocatorStateResolver
  - (Common) Cascading
- - (Common) Performance optimization of State signal dispatching (refer to DispatcherService)
+
+ - (WPF) DispatcherStateDispatcher
 
 
 Behaviours
