@@ -99,16 +99,15 @@ namespace RI.Framework.Mathematic
 			this.Values[this.Index] = value;
 			this.Timesteps[this.Index] = timestep;
 
+			this.Index = (this.Index + 1) % this.Capacity;
+
 			if (this.Count < this.Capacity)
 			{
-				this.Index++;
 				this.Count++;
 
 				removedValue = 0.0f;
 				removedTimestep = 0.0f;
 			}
-
-			this.Index = (this.Index + 1) % this.Capacity;
 		}
 
 		/// <summary>

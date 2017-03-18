@@ -35,7 +35,6 @@ Tests
  + Services
  + State Machines
  + Utilities (HeavyThread, ThreadDispatcher)
- + Mathematic
 
 
 Utilities
@@ -293,17 +292,12 @@ Data
  - (.NET) IDatabaseManager: Switch from strings in chains to actual chain objects
 
 
-Math
-----
+Mathematic
+----------
 
  - (Common) AsDouble
  - (Common) AsSingle
  - (Common) Aggregate extensions for numerical types (byte, short, int, long, double, float), including statistics (min, max, sum, average, median, RMS, count)
-
- - (Common) RunningValueBase: Min
- - (Common) RunningValueBase: Max
-
- + (Common) PID controller
 
  - (Common) Bezier/Spline curves
 

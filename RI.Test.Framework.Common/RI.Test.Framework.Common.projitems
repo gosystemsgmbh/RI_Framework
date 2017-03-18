@@ -31,6 +31,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)IO\Paths\Test_DirectoryPath.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\Paths\Test_FilePath.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\Paths\Test_PathProperties.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Mathematic\Test_PIDController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Mathematic\Test_RunningValues.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mathematic\Test_Statistics.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mocks\RENP.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mocks\VENP.cs" />

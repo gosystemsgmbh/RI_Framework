@@ -31,13 +31,13 @@ namespace RI.Framework.Mathematic
 	/// The following values are used after a new instance of <see cref="PIDController"/> is created or the controller has been reset using <see cref="Reset"/>:
 	/// <see cref="KP"/>, <see cref="KI"/> are set to 1.0.
 	/// <see cref="KD"/> is set to 0.0.
-	/// <see cref="SetPoint"/>, <see cref="ProcessVariable"/>, <see cref="Output"/> are set to 0.0.
+	/// <see cref="SetPoint"/>, <see cref="ProcessVariable"/>, <see cref="Output"/>, <see cref="OutputUnclamped"/> are set to 0.0.
 	/// <see cref="OutputMin"/> is set to <see cref="float.MinValue"/> and <see cref="OutputMax"/> is set to <see cref="float.MaxValue"/>, effectively disable clamping of the output.
 	/// <see cref="Error"/>, <see cref="Integral"/> are set to 0.0.
 	/// <see cref="Loops"/> is set to 0.
 	/// </para>
 	/// <para>
-	/// The following values are updated with each computation: <see cref="SetPoint"/>, <see cref="ProcessVariable"/>, <see cref="Output"/>, <see cref="Error"/>, <see cref="Integral"/>, <see cref="Loops"/>.
+	/// The following values are updated with each computation: <see cref="SetPoint"/>, <see cref="ProcessVariable"/>, <see cref="Output"/>, <see cref="OutputUnclamped"/>, <see cref="Error"/>, <see cref="Integral"/>, <see cref="Loops"/>.
 	/// </para>
 	/// </remarks>
 	[SuppressMessage("ReSharper", "InconsistentNaming")]
@@ -82,9 +82,14 @@ namespace RI.Framework.Mathematic
 		public float ProcessVariable;
 
 		/// <summary>
-		/// The current output.
+		/// The current output (clamped by <see cref="OutputMin"/> and <see cref="OutputMax"/>).
 		/// </summary>
 		public float Output;
+
+		/// <summary>
+		/// The current output (not clamped).
+		/// </summary>
+		public float OutputUnclamped;
 
 		/// <summary>
 		/// Minimum allowed value of the output.
@@ -120,6 +125,7 @@ namespace RI.Framework.Mathematic
 			this.SetPoint = 0.0f;
 			this.ProcessVariable = 0.0f;
 			this.Output = 0.0f;
+			this.OutputUnclamped = 0.0f;
 
 			this.OutputMin = float.MinValue;
 			this.OutputMax = float.MaxValue;
@@ -156,13 +162,14 @@ namespace RI.Framework.Mathematic
 
 			float error = setPoint - processVariable;
 			float integral = this.Integral + (error * timestep);
-			float differential = (this.Error - error) / timestep;
+			float differential = (error - this.Error) / timestep;
 
 			float p = this.KP * error;
 			float i = this.KI * integral;
 			float d = this.KD * differential;
 
-			float output = p + i + d;
+			float outputUnclamped = p + i + d;
+			float output = outputUnclamped;
 			if (output < this.OutputMin)
 			{
 				output = this.OutputMin;
@@ -175,6 +182,7 @@ namespace RI.Framework.Mathematic
 			this.SetPoint = setPoint;
 			this.ProcessVariable = processVariable;
 			this.Output = output;
+			this.OutputUnclamped = outputUnclamped;
 			this.Error = error;
 			this.Integral = integral;
 
