@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 
+using RI.Framework.Collections.Linq;
+using RI.Framework.Utilities;
+using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.ObjectModel;
 
 
@@ -11,32 +12,35 @@ using RI.Framework.Utilities.ObjectModel;
 namespace RI.Framework.Mathematic
 {
 	/// <summary>
-	/// Contains statistics about a sequence of numbers.
+	/// Contains discrete and continuous statistics for a sequence of numbers.
 	/// </summary>
+	/// <remarks>
+	/// <para>
+	/// Discrete statistics implicitly use a fixed timestep of 1.0 while the continuous statistics use weigthed values based on their timestep.
+	/// The weighted value is the value multiplied by its corresponding timestep.
+	/// </para>
+	/// <para>
+	/// Use <see cref="StatisticValues"/> if you only need discrete or continuous statistics but not both.
+	/// </para>
+	/// <remarks>
+	/// <note type="note">
+	/// For performance sensitive scenarios, consider using <see cref="RunningValues"/>.
+	/// </note>
+	/// </remarks>
+	/// </remarks>
 	public struct Statistics : ICloneable<Statistics>, ICloneable
 	{
 		/// <summary>
 		/// Creates a new instance of <see cref="Statistics"/>.
 		/// </summary>
-		/// <param name="values">The sequence of numbers of which the statistics are calculated.</param>
+		/// <param name="values">The sequence of numbers the statistics are calculated from. </param>
 		/// <remarks>
 		/// <para>
-		/// <paramref name="values"/> is only enumerated once.
+		/// <paramref name="values"/> is enumerated only once.
 		/// </para>
 		/// <para>
-		/// If the sequence <paramref name="values"/> contains no values, the statistics are initialized with the following values:
-		/// <see cref="Count"/>, <see cref="Sum"/>, <see cref="SquareSum"/>, <see cref="RMS"/>, <see cref="Average"/>, <see cref="Sigma"/> are set to zero.
-		/// <see cref="Min"/>, <see cref="Max"/> are set to <see cref="double.NaN"/>.
-		/// <see cref="Values"/>, <see cref="SortedValues"/> are set to an empty array.
+		/// As no timestep is provided, the timestep is implicitly assumed to be 1.0, leading to <see cref="Discrete"/> and <see cref="Continuous"/> containing the same values.
 		/// </para>
-		/// <para>
-		/// If the sequence <paramref name="values"/> contains less than two values, the statistics are initialized with the following values:
-		/// <see cref="Median"/> is set to <see cref="double.NaN"/>.
-		/// </para>
-		/// <note type="note">
-		/// This constructor takes some time to execute because of the various calculations (approx. O(n log n)).
-		/// For performance sensitive scenarios, consider using <see cref="RunningValuesBase{T}"/> or its derived classes respectively.
-		/// </note>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"><paramref name="values"/> is null.</exception>
 		public Statistics (IEnumerable<double> values)
@@ -46,140 +50,88 @@ namespace RI.Framework.Mathematic
 				throw new ArgumentNullException(nameof(values));
 			}
 
-			this.Values = values.ToArray();
-			this.SortedValues = (double[])this.Values.Clone();
-			Array.Sort(this.SortedValues);
-
-			this.Count = 0;
-			this.Sum = 0.0;
-			this.SquareSum = 0.0;
-
-			this.Min = double.MaxValue;
-			this.Max = double.MinValue;
-
-			foreach (double value in this.Values)
-			{
-				this.Count++;
-				this.Sum += value;
-				this.SquareSum += Math.Pow(value, 2.0);
-
-				if (this.Min > value)
-				{
-					this.Min = value;
-				}
-
-				if (this.Max < value)
-				{
-					this.Max = value;
-				}
-			}
-
-			if (this.Count == 0)
-			{
-				this.Min = double.NaN;
-				this.Max = double.NaN;
-				this.RMS = 0.0;
-				this.Average = 0.0;
-				this.Sigma = 0.0;
-			}
-			else
-			{
-				this.RMS = Math.Sqrt(this.SquareSum / this.Count);
-				this.Average = this.Sum / this.Count;
-
-				double sigmaTemp = 0.0;
-				foreach (double value in this.Values)
-				{
-					sigmaTemp += Math.Pow(value - this.Average, 2.0);
-				}
-				this.Sigma = Math.Sqrt(sigmaTemp / this.Count);
-			}
-
-			if (this.Count < 2)
-			{
-				this.Median = double.NaN;
-			}
-			else if ((this.Count % 2) == 0)
-			{
-				this.Median = ((this.SortedValues[this.Count / 2]) + (this.SortedValues[(this.Count / 2) - 1])) / 2.0;
-			}
-			else
-			{
-				this.Median = this.SortedValues[this.Count / 2];
-			}
+			this.Discrete = new StatisticValues(values);
+			this.Continuous = this.Discrete.Clone();
 		}
 
 		/// <summary>
-		/// The number of values.
+		/// Creates a new instance of <see cref="Statistics"/>.
 		/// </summary>
-		public int Count;
+		/// <param name="values">The sequence of numbers the statistics are calculated from. </param>
+		/// <param name="fixedTimestep">The fixed timestep which is used for all values.</param>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values"/> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"><paramref name="values"/> is null.</exception>
+		/// <exception cref="NotFiniteArgumentException"><paramref name="fixedTimestep"/> is NaN or infinity.</exception>
+		public Statistics (IEnumerable<double> values, double fixedTimestep)
+		{
+			if (values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			if (fixedTimestep.IsNanOrInfinity())
+			{
+				throw new NotFiniteArgumentException(nameof(fixedTimestep));
+			}
+
+			double[] valueArray = values.ToArray();
+
+			this.Discrete = new StatisticValues(valueArray);
+			this.Continuous = new StatisticValues(valueArray, fixedTimestep);
+		}
 
 		/// <summary>
-		/// The sum of all values.
+		/// Creates a new instance of <see cref="Statistics"/>.
 		/// </summary>
-		public double Sum;
+		/// <param name="values">The sequence of numbers the statistics are calculated from. </param>
+		/// <param name="timesteps">The sequence of timesteps for each value.</param>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values"/> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"><paramref name="values"/> or <paramref name="timesteps"/> is null.</exception>
+		/// <exception cref="ArgumentException">The number of timesteps does not match the number of values.</exception>
+		public Statistics (IEnumerable<double> values, IEnumerable<double> timesteps)
+		{
+			if (values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			if (timesteps == null)
+			{
+				throw new ArgumentNullException(nameof(timesteps));
+			}
+
+			double[] valueArray = values.ToArray();
+
+			this.Discrete = new StatisticValues(valueArray);
+			this.Continuous = new StatisticValues(valueArray, timesteps);
+		}
 
 		/// <summary>
-		/// The sum of all values squared.
+		/// The computed discrete statistical values.
 		/// </summary>
-		public double SquareSum;
+		public StatisticValues Discrete;
 
 		/// <summary>
-		/// The smallest value of all values.
+		/// The computed continuous statistical values.
 		/// </summary>
-		public double Min;
-
-		/// <summary>
-		/// The largest value of all values.
-		/// </summary>
-		public double Max;
-
-		/// <summary>
-		/// The root-mean-square (RMS) of all values.
-		/// </summary>
-		[SuppressMessage("ReSharper", "InconsistentNaming")]
-		public double RMS;
-
-		/// <summary>
-		/// The average of all values.
-		/// </summary>
-		public double Average;
-
-		/// <summary>
-		/// The standard deviation of all values.
-		/// </summary>
-		public double Sigma;
-
-		/// <summary>
-		/// The median of all values.
-		/// </summary>
-		public double Median;
-
-		/// <summary>
-		/// All values, sorted by their numeric value.
-		/// </summary>
-		public double[] SortedValues;
-
-		/// <summary>
-		/// All values.
-		/// </summary>
-		public double[] Values;
+		public StatisticValues Continuous;
 
 		/// <inheritdoc />
 		public Statistics Clone ()
 		{
 			Statistics clone = new Statistics();
-			clone.Count = this.Count;
-			clone.Sum = this.Sum;
-			clone.SquareSum = this.SquareSum;
-			clone.Min = this.Min;
-			clone.Max = this.Max;
-			clone.RMS = this.RMS;
-			clone.Average = this.Average;
-			clone.Sigma = this.Sigma;
-			clone.Median = this.Median;
-			clone.SortedValues = (double[])this.SortedValues.Clone();
-			clone.Values = (double[])this.Values.Clone();
+
+			clone.Discrete = this.Discrete.Clone();
+			clone.Continuous = this.Continuous.Clone();
+
 			return clone;
 		}
 

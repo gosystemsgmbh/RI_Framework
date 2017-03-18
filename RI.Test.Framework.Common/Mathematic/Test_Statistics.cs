@@ -17,8 +17,12 @@ namespace RI.Test.Framework.Mathematic
 		[TestMethod]
 		public void Test()
 		{
-			Statistics stats1 = new Statistics(new double[0]);
+			StatisticValues stats1 = new Statistics(new double[0]).Discrete;
 
+			if (stats1.Duration != 0)
+			{
+				throw new TestAssertionException();
+			}
 			if (stats1.Count != 0)
 			{
 				throw new TestAssertionException();
@@ -39,7 +43,7 @@ namespace RI.Test.Framework.Mathematic
 			{
 				throw new TestAssertionException();
 			}
-			if (stats1.RMS != 0.0)
+			if (stats1.Rms != 0.0)
 			{
 				throw new TestAssertionException();
 			}
@@ -56,8 +60,12 @@ namespace RI.Test.Framework.Mathematic
 				throw new TestAssertionException();
 			}
 
-			Statistics stats2 = new Statistics(new []{2.0});
+			StatisticValues stats2 = new Statistics(new []{2.0}).Discrete;
 
+			if (stats2.Duration != 1)
+			{
+				throw new TestAssertionException();
+			}
 			if (stats2.Count != 1)
 			{
 				throw new TestAssertionException();
@@ -78,7 +86,7 @@ namespace RI.Test.Framework.Mathematic
 			{
 				throw new TestAssertionException();
 			}
-			if (stats2.RMS != 2.0)
+			if (stats2.Rms != 2.0)
 			{
 				throw new TestAssertionException();
 			}
@@ -95,8 +103,12 @@ namespace RI.Test.Framework.Mathematic
 				throw new TestAssertionException();
 			}
 
-			Statistics stats3 = new Statistics(new[] { 1.0, 3.0 });
+			StatisticValues stats3 = new Statistics(new[] { 1.0, 3.0 }).Discrete;
 
+			if (stats3.Duration != 2)
+			{
+				throw new TestAssertionException();
+			}
 			if (stats3.Count != 2)
 			{
 				throw new TestAssertionException();
@@ -117,7 +129,7 @@ namespace RI.Test.Framework.Mathematic
 			{
 				throw new TestAssertionException();
 			}
-			if (stats3.RMS != Math.Sqrt(5.0))
+			if (stats3.Rms != Math.Sqrt(5.0))
 			{
 				throw new TestAssertionException();
 			}
@@ -134,8 +146,12 @@ namespace RI.Test.Framework.Mathematic
 				throw new TestAssertionException();
 			}
 
-			Statistics stats4 = new Statistics(new[] { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 20.0 });
+			StatisticValues stats4 = new Statistics(new[] { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 20.0 }).Discrete;
 
+			if (stats4.Duration != 10)
+			{
+				throw new TestAssertionException();
+			}
 			if (stats4.Count != 10)
 			{
 				throw new TestAssertionException();
@@ -156,7 +172,7 @@ namespace RI.Test.Framework.Mathematic
 			{
 				throw new TestAssertionException();
 			}
-			if (stats4.RMS != Math.Sqrt(68.5))
+			if (stats4.Rms != Math.Sqrt(68.5))
 			{
 				throw new TestAssertionException();
 			}
