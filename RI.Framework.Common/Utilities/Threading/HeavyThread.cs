@@ -20,6 +20,7 @@ namespace RI.Framework.Utilities.Threading
 	///         See <see cref="Start" /> and <see cref="Stop" /> for a description of the thread execution sequence.
 	///     </para>
 	/// </remarks>
+	/// TODO: Exception handling mode
 	public abstract class HeavyThread : IDisposable, ISynchronizable
 	{
 		#region Constants
@@ -224,7 +225,13 @@ namespace RI.Framework.Utilities.Threading
 
 		private object StartStopSyncRoot { get; set; }
 
-		private object SyncRoot { get; set; }
+		/// <summary>
+		/// Gets the synchronization object which can be used to synchronize thread operations.
+		/// </summary>
+		/// <value>
+		/// The synchronization object which can be used to synchronize thread operations.
+		/// </value>
+		protected object SyncRoot { get; private set; }
 
 		/// <summary>
 		/// Gets whether the thread has been requested to stop (using <see cref="Stop"/>).
@@ -351,10 +358,7 @@ namespace RI.Framework.Utilities.Threading
 		{
 			lock (this.StartStopSyncRoot)
 			{
-				if (this.IsRunning)
-				{
-					throw new InvalidOperationException(this.GetType().Name + " is already running.");
-				}
+				this.VerifyNotRunning();
 
 				bool success = false;
 				try
@@ -509,6 +513,30 @@ namespace RI.Framework.Utilities.Threading
 			}
 		}
 
+		/// <summary>
+		/// Throws an <see cref="InvalidOperationException"/> if the thread is running.
+		/// </summary>
+		/// <exception cref="InvalidOperationException">The thread is running.</exception>
+		protected void VerifyNotRunning ()
+		{
+			if (this.IsRunning)
+			{
+				throw new InvalidOperationException(this.GetType().Name + " is already running.");
+			}
+		}
+
+		/// <summary>
+		/// Throws an <see cref="InvalidOperationException"/> if the thread is not running.
+		/// </summary>
+		/// <exception cref="InvalidOperationException">The thread is not running.</exception>
+		protected void VerifyRunning()
+		{
+			if (!this.IsRunning)
+			{
+				throw new InvalidOperationException(this.GetType().Name + " is not running.");
+			}
+		}
+
 		#endregion
 
 
@@ -535,6 +563,11 @@ namespace RI.Framework.Utilities.Threading
 
 				lock (this.SyncRoot)
 				{
+					if (!this.IsRunning)
+					{
+						return;
+					}
+
 					this.OnStop();
 				}
 
