@@ -53,6 +53,8 @@ namespace RI.Framework.Utilities.Threading
 			this.IsRunning = false;
 			this.HasStoppedGracefully = null;
 			this.Timeout = HeavyThread.DefaultThreadTimeout;
+			this.StopRequested = false;
+			this.StopEvent = null;
 		}
 
 		/// <summary>
@@ -83,6 +85,10 @@ namespace RI.Framework.Utilities.Threading
 		private bool _isRunning;
 
 		private int _timeout;
+
+		private bool _stopRequested;
+
+		private ManualResetEvent _stopEvent;
 
 		#endregion
 
@@ -181,7 +187,7 @@ namespace RI.Framework.Utilities.Threading
 		/// </value>
 		/// <remarks>
 		///     <para>
-		///         This timeout is used during <see cref="Start" /> while waiting for <see cref="OnBegin" /> to finish and during <see cref="Dispose(bool)" /> while waiting for <see cref="OnStop" /> to take effect.
+		///         This timeout is used during <see cref="Start" /> while waiting for <see cref="OnBegin" /> to finish and during <see cref="Dispose(bool)" /> or <see cref="Stop"/> while waiting for <see cref="OnStop" /> to take effect.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="value" /> is less than zero. </exception>
@@ -219,6 +225,54 @@ namespace RI.Framework.Utilities.Threading
 		private object StartStopSyncRoot { get; set; }
 
 		private object SyncRoot { get; set; }
+
+		/// <summary>
+		/// Gets whether the thread has been requested to stop (using <see cref="Stop"/>).
+		/// </summary>
+		/// <value>
+		/// true if the thread has been requested to stop, false otherwise or the thread is not running.
+		/// </value>
+		protected bool StopRequested
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._stopRequested;
+				}
+			}
+			private set
+			{
+				lock (this.SyncRoot)
+				{
+					this._stopRequested = value;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets the event which is signaled when the thread is requested to stop (using <see cref="Stop"/>).
+		/// </summary>
+		/// <value>
+		/// The event which is signaled when the thread is requested to stop.
+		/// </value>
+		protected ManualResetEvent StopEvent
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._stopEvent;
+				}
+			}
+			private set
+			{
+				lock (this.SyncRoot)
+				{
+					this._stopEvent = value;
+				}
+			}
+		}
 
 		#endregion
 
@@ -283,7 +337,7 @@ namespace RI.Framework.Utilities.Threading
 		///         </item>
 		///         <item>
 		///             <para>
-		///                 As soon as <see cref="OnRun" /> finishes, <see cref="OnEnd" /> is executed inside the thread and the thread ended afterwards.
+		///                 As soon as <see cref="OnRun" /> finishes, <see cref="OnEnd" /> is executed inside the thread and the thread ends afterwards.
 		///             </para>
 		///         </item>
 		///     </list>
@@ -309,6 +363,9 @@ namespace RI.Framework.Utilities.Threading
 					{
 						lock (this.SyncRoot)
 						{
+							this.StopRequested = false;
+							this.StopEvent = new ManualResetEvent(false);
+
 							this.Thread = new Thread(() =>
 							                         {
 								                         bool running = false;
@@ -394,6 +451,7 @@ namespace RI.Framework.Utilities.Threading
 		///         <item>
 		///             <para>
 		///                 <see cref="OnStop" /> is called.
+		/// Its default implementation sets <see cref="StopRequested"/> to true and signals <see cref="StopEvent"/>.
 		///             </para>
 		///         </item>
 		///         <item>
@@ -423,9 +481,9 @@ namespace RI.Framework.Utilities.Threading
 		///     Determines whether the caller of this function is executed inside the thread or not.
 		/// </summary>
 		/// <returns>
-		///     true if the caller of this function is executed inside this thread, false otherwise.
+		///     true if the caller of this function is executed inside this thread, false otherwise or if the thread is not running.
 		/// </returns>
-		protected bool IsInThread ()
+		public bool IsInThread ()
 		{
 			lock (this.SyncRoot)
 			{
@@ -503,8 +561,12 @@ namespace RI.Framework.Utilities.Threading
 						}
 					}
 
+					this.StopEvent?.Close();
+					this.StopEvent = null;
+
+					this.StopRequested = false;
 					this.Thread = null;
-					this.HasStoppedGracefully = terminated;
+					this.HasStoppedGracefully = terminated && (this.ThreadException != null);
 					this.IsRunning = false;
 				}
 			}
@@ -531,7 +593,7 @@ namespace RI.Framework.Utilities.Threading
 		/// </summary>
 		/// <remarks>
 		///     <para>
-		///         The thread ends as soon as <see cref="OnRun" /> returns.
+		///         The thread ends as soon as <see cref="OnEnd" /> returns.
 		///     </para>
 		///     <note type="note">
 		///         This method is called inside the thread.
@@ -588,6 +650,7 @@ namespace RI.Framework.Utilities.Threading
 		/// <remarks>
 		///     <para>
 		///         This method can be used to signalize the thread to end and return from <see cref="OnRun" />.
+		/// Therefore, the default implementation sets <see cref="StopRequested"/> to true and signals <see cref="StopEvent"/>.
 		///     </para>
 		///     <note type="important">
 		///         If the thread does not end on its own after <see cref="OnStop" /> was called, the thread is terminated.
@@ -599,6 +662,8 @@ namespace RI.Framework.Utilities.Threading
 		/// </remarks>
 		protected virtual void OnStop ()
 		{
+			this.StopRequested = true;
+			this.StopEvent.Set();
 		}
 
 		#endregion
