@@ -31,6 +31,3 @@
 - [ ] Migrate Common to Shared
   - [ ] Migrate Common to Shared
   - [ ] Add reference to RI.Framework.Shared to all projects
-- [ ] Moving to Shared
-  - [ ] Resource Service
-  - [ ] Setting Service
