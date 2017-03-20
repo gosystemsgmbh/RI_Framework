@@ -20,7 +20,6 @@ namespace RI.Framework.Utilities.Threading
 	///         See <see cref="Start" /> and <see cref="Stop" /> for a description of the thread execution sequence.
 	///     </para>
 	/// </remarks>
-	/// TODO: Exception handling mode
 	public abstract class HeavyThread : IDisposable, ISynchronizable
 	{
 		#region Constants
@@ -395,7 +394,7 @@ namespace RI.Framework.Utilities.Threading
 									                         }
 									                         try
 									                         {
-										                         this.OnException(exception, running);
+										                         this.OnException(exception, running, false);
 									                         }
 									                         catch
 									                         {
@@ -403,12 +402,20 @@ namespace RI.Framework.Utilities.Threading
 								                         }
 							                         });
 
-							this.Thread.Name = this.GetType().Name;
+							Thread currentThread = Thread.CurrentThread;
+
 							this.Thread.IsBackground = true;
 							this.Thread.Priority = ThreadPriority.Normal;
+							this.Thread.CurrentCulture = currentThread.CurrentCulture;
+							this.Thread.CurrentUICulture = currentThread.CurrentUICulture;
 							this.Thread.SetApartmentState(ApartmentState.STA);
 
 							this.OnStart();
+
+							if (this.Thread.Name == null)
+							{
+								this.Thread.Name = this.GetType().Name;
+							}
 
 							this.Thread.Start();
 						}
@@ -599,7 +606,7 @@ namespace RI.Framework.Utilities.Threading
 
 					this.StopRequested = false;
 					this.Thread = null;
-					this.HasStoppedGracefully = terminated && (this.ThreadException != null);
+					this.HasStoppedGracefully = terminated && (this.ThreadException == null);
 					this.IsRunning = false;
 				}
 			}
@@ -641,12 +648,16 @@ namespace RI.Framework.Utilities.Threading
 		/// </summary>
 		/// <param name="exception"> The exception. </param>
 		/// <param name="running"> Indicates whether the exception occured during the actual run (true; inside <see cref="OnRun" /> or <see cref="OnEnd" />) or during start (false; inside <see cref="OnBegin" />). </param>
+		/// <param name="canContinue">Indicates whether the thread is able to continue or not after the exception was handled by <see cref="OnException"/>.</param>
 		/// <remarks>
 		///     <note type="note">
 		///         This method is called inside the thread.
 		///     </note>
+		/// <para>
+		/// <paramref name="canContinue"/> is only true if you call <see cref="OnException"/> yourself with <paramref name="canContinue"/> set to true.
+		/// </para>
 		/// </remarks>
-		protected virtual void OnException (Exception exception, bool running)
+		protected virtual void OnException (Exception exception, bool running, bool canContinue)
 		{
 		}
 

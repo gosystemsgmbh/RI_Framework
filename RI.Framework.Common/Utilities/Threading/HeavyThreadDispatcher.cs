@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Threading;
+
+
+
 
 namespace RI.Framework.Utilities.Threading
 {
@@ -13,9 +17,13 @@ namespace RI.Framework.Utilities.Threading
 	public sealed class HeavyThreadDispatcher : HeavyThread
 	{
 		private bool _finishPendingDelegatesOnShutdown;
+		private ThreadPriority _threadPriority;
+		private string _threadName;
+		private bool _isBackgroundThread;
+		private bool _catchExceptions;
 
 		/// <summary>
-		/// Gets or sets whether pending delegates hould be processed when shutting down (<see cref="HeavyThread.Stop"/>).
+		/// Gets or sets whether pending delegates should be processed when shutting down (<see cref="HeavyThread.Stop"/>).
 		/// </summary>
 		/// <value>
 		/// true if pending delegates should be processed during shutdown, false if pending delegates should be discarded when <see cref="HeavyThread.Stop"/> is called.
@@ -45,6 +53,8 @@ namespace RI.Framework.Utilities.Threading
 
 		private ThreadDispatcher Dispatcher { get; set; }
 
+		private EventHandler<ThreadDispatcherExceptionEventArgs> DispatcherExceptionHandlerDelegate { get; set; }
+
 		/// <inheritdoc cref="ThreadDispatcher.ShutdownMode"/>
 		public ThreadDispatcherShutdownMode ShutdownMode
 		{
@@ -58,12 +68,173 @@ namespace RI.Framework.Utilities.Threading
 		}
 
 		/// <summary>
+		/// Gets or sets the priority of the thread.
+		/// </summary>
+		/// <value>
+		/// The priority of the thread.
+		/// </value>
+		public ThreadPriority ThreadPriority
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._threadPriority;
+				}
+			}
+			set
+			{
+				lock (this.SyncRoot)
+				{
+					this._threadPriority = value;
+
+					if (this.Thread != null)
+					{
+						this.Thread.Priority = value;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the name of the thread.
+		/// </summary>
+		/// <value>
+		/// The name of the thread.
+		/// </value>
+		public string ThreadName
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._threadName;
+				}
+			}
+			set
+			{
+				lock (this.SyncRoot)
+				{
+					this._threadName = value;
+
+					if (this.Thread != null)
+					{
+						this.Thread.Name = value;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets whether the thread is a background thread.
+		/// </summary>
+		/// <value>
+		/// true if the thread is a background thread, false otherwise.
+		/// </value>
+		public bool IsBackgroundThread
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._isBackgroundThread;
+				}
+			}
+			set
+			{
+				lock (this.SyncRoot)
+				{
+					this._isBackgroundThread = value;
+
+					if (this.Thread != null)
+					{
+						this.Thread.IsBackground = value;
+					}
+				}
+			}
+		}
+
+		/// <summary>
 		/// Creates a new instance of <see cref="HeavyThreadDispatcher"/>.
 		/// </summary>
 		public HeavyThreadDispatcher ()
 		{
+			this.DispatcherExceptionHandlerDelegate = this.DispatcherExceptionHandler;
+
+			this.CatchExceptions = false;
 			this.FinishPendingDelegatesOnShutdown = false;
+			this.ThreadName = this.GetType().Name;
+			this.ThreadPriority = ThreadPriority.Normal;
+			this.IsBackgroundThread = true;
+
 			this.Dispatcher = null;
+		}
+
+		private void DispatcherExceptionHandler (object sender, ThreadDispatcherExceptionEventArgs args)
+		{
+			this.OnException(args.Exception, true, args.CanContinue);
+		}
+
+		/// <summary>
+		/// Raised when an exception occurred during execution of a enqueued delegate.
+		/// </summary>
+		/// <remarks>
+		/// <note type="important">
+		/// The event is raised from the <see cref="HeavyThreadDispatcher"/>s thread.
+		/// </note>
+		/// </remarks>
+		public event EventHandler<ThreadDispatcherExceptionEventArgs> Exception;
+
+		private void OnException(Exception exception, bool canContinue)
+		{
+			this.Exception?.Invoke(this, new ThreadDispatcherExceptionEventArgs(exception, canContinue));
+		}
+
+		/// <summary>
+		/// Gets or sets whether exceptions, thrown when executing delegates, are catched and the dispatcher continues its operations.
+		/// </summary>
+		/// <value>
+		/// true if exceptions are catched, false otherwise.
+		/// </value>
+		/// <remarks>
+		/// <para>
+		/// The default value is false.
+		/// </para>
+		/// <para>
+		/// The <see cref="Exception"/> event is raised regardless of the value of <see cref="CatchExceptions"/>.
+		/// </para>
+		/// </remarks>
+		public bool CatchExceptions
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._catchExceptions;
+				}
+			}
+			set
+			{
+				lock (this.SyncRoot)
+				{
+					this._catchExceptions = value;
+
+					if (this.Dispatcher != null)
+					{
+						this.Dispatcher.CatchExceptions = value;
+					}
+				}
+			}
+		}
+
+		/// <inheritdoc />
+		protected override void OnStart ()
+		{
+			base.OnStart();
+
+			this.Thread.Name = this.ThreadName;
+			this.Thread.Priority = this.ThreadPriority;
+			this.Thread.IsBackground = this.IsBackgroundThread;
 		}
 
 		/// <inheritdoc />
@@ -71,7 +242,19 @@ namespace RI.Framework.Utilities.Threading
 		{
 			base.Dispose(disposing);
 
-			this.Dispatcher = null;
+			if (this.Dispatcher != null)
+			{
+				this.Dispatcher.Exception -= this.DispatcherExceptionHandlerDelegate;
+				this.Dispatcher = null;
+			}
+		}
+
+		/// <inheritdoc />
+		protected override void OnException (Exception exception, bool running, bool canContinue)
+		{
+			base.OnException(exception, running, canContinue);
+
+			this.OnException(exception, canContinue);
 		}
 
 		/// <inheritdoc />
@@ -80,6 +263,8 @@ namespace RI.Framework.Utilities.Threading
 			base.OnBegin();
 
 			this.Dispatcher = new ThreadDispatcher();
+			this.Dispatcher.Exception += this.DispatcherExceptionHandlerDelegate;
+			this.Dispatcher.CatchExceptions = this.CatchExceptions;
 		}
 
 		/// <inheritdoc />
@@ -95,7 +280,10 @@ namespace RI.Framework.Utilities.Threading
 		{
 			base.OnStop();
 
-			this.Dispatcher.Shutdown(this.FinishPendingDelegatesOnShutdown);
+			if (this.Dispatcher.IsRunning)
+			{
+				this.Dispatcher.Shutdown(this.FinishPendingDelegatesOnShutdown);
+			}
 		}
 
 		/// <inheritdoc cref="HeavyThread.Stop"/>
@@ -126,12 +314,9 @@ namespace RI.Framework.Utilities.Threading
 		/// <inheritdoc cref="ThreadDispatcher.Send"/>
 		public object Send (Delegate action, params object[] parameters)
 		{
-			lock (this.SyncRoot)
-			{
-				this.VerifyRunning();
+			this.VerifyRunning();
 
-				return this.Dispatcher.Send(action, parameters);
-			}
+			return this.Dispatcher.Send(action, parameters);
 		}
 	}
 }

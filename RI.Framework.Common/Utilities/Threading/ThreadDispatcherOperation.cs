@@ -59,20 +59,30 @@ namespace RI.Framework.Utilities.Threading
 
 		internal void Execute()
 		{
-			lock (this.SyncRoot)
-			{
-				if (this.State != ThreadDispatcherOperationState.Waiting)
-				{
-					return;
-				}
-
-				this.State = ThreadDispatcherOperationState.Executing;
-			}
-
 			object result = null;
 			try
 			{
+				lock (this.SyncRoot)
+				{
+					if (this.State != ThreadDispatcherOperationState.Waiting)
+					{
+						return;
+					}
+
+					this.State = ThreadDispatcherOperationState.Executing;
+				}
+
 				result = this.Action.DynamicInvoke(this.Parameters);
+			}
+			catch (ThreadAbortException)
+			{
+				lock (this.SyncRoot)
+				{
+					this.State = ThreadDispatcherOperationState.Aborted;
+					this.Result = null;
+					this.OperationDone.Set();
+				}
+				throw;
 			}
 			catch (Exception exception)
 			{

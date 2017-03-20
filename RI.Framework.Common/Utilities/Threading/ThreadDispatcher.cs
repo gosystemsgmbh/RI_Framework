@@ -21,10 +21,10 @@ namespace RI.Framework.Utilities.Threading
 	/// When all delegates are executed, or the queue is empty respectively, <see cref="ThreadDispatcher"/> waits for new delegates to process.
 	/// </para>
 	/// </remarks>
-	/// TODO: Exception handling mode
 	public sealed class ThreadDispatcher : ISynchronizable
 	{
 		private ThreadDispatcherShutdownMode _shutdownMode;
+		private bool _catchExceptions;
 
 		private object SyncRoot { get; set; }
 		private Thread Thread { get; set; }
@@ -38,6 +38,53 @@ namespace RI.Framework.Utilities.Threading
 		object ISynchronizable.SyncRoot => this.SyncRoot;
 
 		/// <summary>
+		/// Raised when an exception occurred during execution of a enqueued delegate.
+		/// </summary>
+		/// <remarks>
+		/// <note type="important">
+		/// The event is raised from the thread <see cref="ThreadDispatcher"/> runs in.
+		/// </note>
+		/// </remarks>
+		public event EventHandler<ThreadDispatcherExceptionEventArgs> Exception;
+
+		private void OnException (Exception exception, bool canContinue)
+		{
+			this.Exception?.Invoke(this, new ThreadDispatcherExceptionEventArgs(exception, canContinue));
+		}
+
+		/// <summary>
+		/// Gets or sets whether exceptions, thrown when executing delegates, are catched and the dispatcher continues its operations.
+		/// </summary>
+		/// <value>
+		/// true if exceptions are catched, false otherwise.
+		/// </value>
+		/// <remarks>
+		/// <para>
+		/// The default value is false.
+		/// </para>
+		/// <para>
+		/// The <see cref="Exception"/> event is raised regardless of the value of <see cref="CatchExceptions"/>.
+		/// </para>
+		/// </remarks>
+		public bool CatchExceptions
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._catchExceptions;
+				}
+			}
+			set
+			{
+				lock (this.SyncRoot)
+				{
+					this._catchExceptions = value;
+				}
+			}
+		}
+
+		/// <summary>
 		/// Creates a new instance of <see cref="ThreadDispatcher"/>.
 		/// </summary>
 		public ThreadDispatcher()
@@ -49,6 +96,8 @@ namespace RI.Framework.Utilities.Threading
 			this.Posted = null;
 			
 			this.ShutdownMode = ThreadDispatcherShutdownMode.None;
+
+			this.CatchExceptions = false;
 		}
 
 		/// <summary>
@@ -145,8 +194,18 @@ namespace RI.Framework.Utilities.Threading
 
 					operation.Execute();
 
-					//TODO: Exception handling
+					if (operation.State == ThreadDispatcherOperationState.Exception)
+					{
+						bool canContinue = this.CatchExceptions;
 
+						this.OnException(operation.Exception, canContinue);
+
+						if (!canContinue)
+						{
+							throw new ThreadDispatcherException(operation.Exception);
+						}
+					}
+					
 					if (object.ReferenceEquals(operation, returnTrigger))
 					{
 						return;

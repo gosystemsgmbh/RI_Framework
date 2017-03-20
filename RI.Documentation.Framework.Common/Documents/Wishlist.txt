@@ -34,7 +34,6 @@ Tests
  + Composition
  + Services (Common + Unity)
  + State Machines (Common + Unity)
- + Utilities (HeavyThread, ThreadDispatcher)
 
 
 Utilities
