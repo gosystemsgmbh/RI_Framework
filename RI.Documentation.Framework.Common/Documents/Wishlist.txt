@@ -31,13 +31,14 @@ Conceptual documentations
 Tests
 -----
 
- + Composition
  + Services (Common + Unity)
  + State Machines (Common + Unity)
 
 
 Utilities
 ---------
+
+ - (Common) MagicThread clone
 
  - (Common) DecimalExtensions
  - (Common) Rounding extensions for double, float, and decimal
@@ -314,7 +315,9 @@ State machines
  - (Common) ServiceLocatorStateResolver
  - (Common) Cascading
 
+ - (Windows) WindowsMessageLoopStateDispatcher
  - (WPF) DispatcherStateDispatcher
+ - (WinForms) ApplicationStateDispatcher
 
 
 Behaviours

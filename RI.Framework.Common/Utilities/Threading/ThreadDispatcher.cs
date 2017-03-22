@@ -21,7 +21,7 @@ namespace RI.Framework.Utilities.Threading
 	/// When all delegates are executed, or the queue is empty respectively, <see cref="ThreadDispatcher"/> waits for new delegates to process.
 	/// </para>
 	/// </remarks>
-	public sealed class ThreadDispatcher : ISynchronizable
+	public sealed class ThreadDispatcher : IThreadDispatcher, ISynchronizable
 	{
 		private ThreadDispatcherShutdownMode _shutdownMode;
 		private bool _catchExceptions;
@@ -37,14 +37,7 @@ namespace RI.Framework.Utilities.Threading
 		/// <inheritdoc />
 		object ISynchronizable.SyncRoot => this.SyncRoot;
 
-		/// <summary>
-		/// Raised when an exception occurred during execution of a enqueued delegate.
-		/// </summary>
-		/// <remarks>
-		/// <note type="important">
-		/// The event is raised from the thread <see cref="ThreadDispatcher"/> runs in.
-		/// </note>
-		/// </remarks>
+		/// <inheritdoc />
 		public event EventHandler<ThreadDispatcherExceptionEventArgs> Exception;
 
 		private void OnException (Exception exception, bool canContinue)
@@ -52,20 +45,7 @@ namespace RI.Framework.Utilities.Threading
 			this.Exception?.Invoke(this, new ThreadDispatcherExceptionEventArgs(exception, canContinue));
 		}
 
-		/// <summary>
-		/// Gets or sets whether exceptions, thrown when executing delegates, are catched and the dispatcher continues its operations.
-		/// </summary>
-		/// <value>
-		/// true if exceptions are catched, false otherwise.
-		/// </value>
-		/// <remarks>
-		/// <para>
-		/// The default value is false.
-		/// </para>
-		/// <para>
-		/// The <see cref="Exception"/> event is raised regardless of the value of <see cref="CatchExceptions"/>.
-		/// </para>
-		/// </remarks>
+		/// <inheritdoc />
 		public bool CatchExceptions
 		{
 			get
@@ -246,12 +226,7 @@ namespace RI.Framework.Utilities.Threading
 			}
 		}
 
-		/// <summary>
-		/// Gets whether the dispatcher is running.
-		/// </summary>
-		/// <value>
-		/// true if the dispatcher is running, false otherwise.
-		/// </value>
+		/// <inheritdoc />
 		public bool IsRunning
 		{
 			get
@@ -263,12 +238,7 @@ namespace RI.Framework.Utilities.Threading
 			}
 		}
 
-		/// <summary>
-		///     Determines whether the caller of this function is executed inside the dispatchers thread (where <see cref="Run"/> is executed) or not.
-		/// </summary>
-		/// <returns>
-		///     true if the caller of this function is executed inside this thread, false otherwise or if the dispatcher is not running.
-		/// </returns>
+		/// <inheritdoc />
 		public bool IsInThread ()
 		{
 			lock (this.SyncRoot)
@@ -282,12 +252,7 @@ namespace RI.Framework.Utilities.Threading
 			}
 		}
 
-		/// <summary>
-		/// Gets the active shutdown mode.
-		/// </summary>
-		/// <value>
-		/// <see cref="ThreadDispatcherShutdownMode.None"/> if the dispatcher is not running or is not being shut down, <see cref="ThreadDispatcherShutdownMode.FinishPending"/> if the dispatcher is shutting down and all already pending delegates are processed before the shutdown completes, <see cref="ThreadDispatcherShutdownMode.DiscardPending"/> if the dispatcher is shutting down and all already pending delegates are discarded.
-		/// </value>
+		/// <inheritdoc />
 		public ThreadDispatcherShutdownMode ShutdownMode
 		{
 			get
@@ -311,16 +276,7 @@ namespace RI.Framework.Utilities.Threading
 			}
 		}
 
-		/// <summary>
-		/// Enqueues a delegate to the dispatchers queue and does not wait for its execution.
-		/// </summary>
-		/// <param name="action">The delegate.</param>
-		/// <param name="parameters">Optional parameters of the delagate.</param>
-		/// <returns>
-		/// The dispatcher operation object which can be used to track the execution of the enqueued delegate.
-		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="action"/> is null.</exception>
-		/// <exception cref="InvalidOperationException">The dispatcher is not running or is being shut down.</exception>
+		/// <inheritdoc />
 		public ThreadDispatcherOperation Post (Delegate action, params object[] parameters)
 		{
 			if (action == null)
@@ -342,25 +298,7 @@ namespace RI.Framework.Utilities.Threading
 			}
 		}
 
-		/// <summary>
-		/// Enqueues a delegate to the dispatchers queue and waits for its execution to be completed.
-		/// </summary>
-		/// <param name="action">The delegate.</param>
-		/// <param name="parameters">Optional parameters of the delagate.</param>
-		/// <returns>
-		/// The return value of the executed delegate or null if the delegate has no return value. 
-		/// </returns>
-		/// <remarks>
-		/// <para>
-		/// <see cref="Send"/> blocks until all previously enqueued delegates were processed.
-		/// </para>
-		/// <para>
-		/// <see cref="Send"/> can be called from the dispatchers thread.
-		/// Therefore, <see cref="Send"/> calls can be cascaded.
-		/// </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="action"/> is null.</exception>
-		/// <exception cref="InvalidOperationException">The dispatcher is not running or is being shut down.</exception>
+		/// <inheritdoc />
 		public object Send (Delegate action, params object[] parameters)
 		{
 			if (action == null)
@@ -394,11 +332,13 @@ namespace RI.Framework.Utilities.Threading
 			return operation.Result;
 		}
 
-		/// <summary>
-		/// Stops processing the delegate queue.
-		/// </summary>
-		/// <param name="finishPendingDelegates">Specifies whether already pending delegates should be processed before the dispatcher is shut down.</param>
-		/// <exception cref="InvalidOperationException">The dispatcher is not running or it is already being shut down.</exception>
+		/// <inheritdoc />
+		public void DoProcessing ()
+		{
+			this.Send(new Action(() => { }));
+		}
+
+		/// <inheritdoc />
 		public void Shutdown (bool finishPendingDelegates)
 		{
 			lock (this.SyncRoot)

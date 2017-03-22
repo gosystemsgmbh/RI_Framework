@@ -56,23 +56,23 @@ namespace RI.Framework.Composition
 	///         Resolving of imports is also always done using the name of the import.
 	///         Now, when types are used instead of names, the types are simply translated into what is called &quot;the types default name&quot;.
 	///         After the translation, the types are ignored and the exports and imports are continued to be handled using their translated names.
-	///         For example, the method <see cref="AddExport(object, Type)" /> does nothing else than determining the types default name and then calling <see cref="AddExport(object, string)" /> with that name.
+	///         For example, the method <see cref="AddExport(object, Type)" /> does nothing else than determine the types default name and then call <see cref="AddExport(object, string)" /> with that name.
 	///         This allows you to mix type-based import and export (using their types default names) and also name-based import and export (using any custom names you specify).
-	///         Finally, a types default name is simply its namespace and type name, e.g. the string &quot;<see cref="RI" />.<see cref="RI.Framework" />.<see cref="RI.Framework.Composition" />.<see cref="CompositionContainer" />&quot; for <see cref="CompositionContainer" />.
+	///         Finally, a types default name is simply its namespace and type name, e.g. the string &quot;RI.Framework.Composition.CompositionContainer&quot; for <see cref="CompositionContainer" />.
 	///     </para>
 	///     <para>
-	///         Note that names are case-sensitive.
+	///         Note that names are always case-sensitive.
 	///     </para>
 	///     <para>
 	///         <b> EXPORT COMPOSITION &amp; DEPENDENCY INJECTION (DI) </b>
 	///     </para>
 	///     <para>
-	///         A powerful aspect of the <see cref="CompositionContainer" /> is the fact that all its known exports are composed themselves.
+	///         A powerful aspect of the <see cref="CompositionContainer" /> is the fact that all its known/contained exports are composed themselves.
 	///         This means that all exports of a <see cref="CompositionContainer" /> can have imports themselves (model-based imports using <see cref="ImportPropertyAttribute" />) and that those imports are automatically resolved by the <see cref="CompositionContainer" />.
-	///         In other words, when getting an import from a <see cref="CompositionContainer" />, all its own imports (if any) will be resolved (if possible).
+	///         In other words, when getting an import from a <see cref="CompositionContainer" />, all the imports of the import itself (if any) will be resolved as well (if possible).
 	///     </para>
 	///     <para>
-	///         This is how Dependency Injection is implemented in the <see cref="CompositionContainer" />.
+	///         This is how Dependency Injection is implemented using <see cref="CompositionContainer" />.
 	///         If you have a cascade of objects, with all kind of dependencies, you do not need to resolve them all by yourself by creating instances, dealing with singletons, or getting manual imports.
 	///         You just make the <see cref="CompositionContainer" /> aware where to find all the possibly required objects or types (the simplest way to do this is to use an <see cref="AssemblyCatalog" />) and then start to pull the objects from the <see cref="CompositionContainer" /> as you need them.
 	///     </para>
@@ -85,11 +85,11 @@ namespace RI.Framework.Composition
 	///     <para>
 	///         Manual export is done by calling one of the <c> AddExport </c> methods explicitly and stating a type or object and under which name it is exported.
 	///         Advantage: A type or object does not need any special preparation in order to be exported manually, any type or object can be exported (restrictions apply, see below).
-	///         Disadvantage: The type or object to be manually exported must be known and explicitly added to the <see cref="CompositionContainer" />, adding a strong dependency to that type or object and/or a lot of boilerplate code just to discover the types or objects.
+	///         Disadvantage: The type or object to be manually exported must be known and explicitly added to the <see cref="CompositionContainer" />, adding a strong dependency to that type or object and/or a lot of boilerplate code just to discover the type or object.
 	///     </para>
 	///     <para>
 	///         Model-based export is done by using a <see cref="CompositionCatalog" /> and adding it to the <see cref="CompositionContainer" /> using the <see cref="AddCatalog(CompositionCatalog)" /> method.
-	///         Advantage: No dependencies or references to the exported types or objects are required at compile time because, depending on the used <see cref="CompositionCatalog" />, the composition catalog might collect all exports by itself (e.g. all prepared types in an <see cref="Assembly" /> when using <see cref="AssemblyCatalog" />).
+	///         Advantage: No dependencies or references to the exported types or objects are required at compile time because, depending on the used <see cref="CompositionCatalog" />, the composition catalog can collect all exports by itself (e.g. all prepared types in an <see cref="Assembly" /> when using <see cref="AssemblyCatalog" />).
 	///         Disadvantage: A type or object needs special preparation in order to be model-based exported, namely at least one or more <see cref="ExportAttribute" /> applied to it.
 	///     </para>
 	///     <para>
@@ -97,7 +97,7 @@ namespace RI.Framework.Composition
 	///     </para>
 	///     <para>
 	///         Two things can be exported: Types and objects.
-	///         When it says &quot;types or objects&quot;, it means that either a <see cref="Type" /> or an already instantiated <see cref="object" /> of any type can be used.
+	///         &quot;Types or objects&quot; means that either a <see cref="Type" /> or an already instantiated <see cref="object" /> of any type can be used.
 	///     </para>
 	///     <para>
 	///         A type can be exported by specifying the <see cref="Type" /> and under which name it is exported.
@@ -121,6 +121,26 @@ namespace RI.Framework.Composition
 	///         In such cases, a new shared instance for the type export is still created although there are object exports with instances of the same type.
 	///         Or in other words: Type exports and object exports do not share their instances.
 	///     </para>
+	///     <para>
+	///         <b> SHARED &amp; PRIVATE EXPORTS </b>
+	///     </para>
+	/// <para>
+	/// Another distinction for exporting is shared and private exports.
+	/// </para>
+	/// <para>
+	/// Shared exports behave exactly like described above.
+	/// For type exports, the instance which is created for the type is used (shared) for all imports of the same type.
+	/// For object exports, the instance is used (shared) for all imports of the same name.
+	/// </para>
+	/// <para>
+	/// Private exports behave more or less also the same as described above, with one exception:
+	/// For type exports, imports will receive their own (private) instance each time (!) an import is resolved.
+	/// Object exports cannot be private.
+	/// </para>
+	/// <para>
+	/// An export can be made private through the <see cref="ExportAttribute.Private"/> property of <see cref="ExportAttribute"/>.
+	/// Therefore, private exports are only available for type and model based exports.
+	/// </para>
 	///     <para>
 	///         <b> MANUAL &amp; MODEL-BASED IMPORTING </b>
 	///     </para>
@@ -166,28 +186,6 @@ namespace RI.Framework.Composition
 	///         In such cases, all the resolved import values are provided or assigned respectively.
 	///         Therefore, multiple types or object can be exported under the same name.
 	///     </para>
-	///     <para>
-	///         <b> SHARED &amp; PRIVATE EXPORTS </b>
-	///     </para>
-	/// <para>
-	/// Another distinction for exporting is shared and private exports.
-	/// </para>
-	/// <para>
-	/// Shared exports behave exactly like described above.
-	/// For type exports, the instance which is created for the type is used (shared) for all imports of the same name.
-	/// For object exports, the instance is used (shared) for all imports of the same name.
-	/// </para>
-	/// <para>
-	/// Private exports behave more or less also the same as described above, with one exception:
-	/// For type exports, imports will receive their own (private) instance each time (!) an import is resolved.
-	/// Object exports cannot be private.
-	/// </para>
-	/// <para>
-	/// An export can be made private through the <see cref="ExportAttribute.Private"/> property of <see cref="ExportAttribute"/>.
-	/// Therefore, private exports are only available for type and model based exports.
-	/// </para>
-	/// <para>
-	/// </para>
 	///     <para>
 	///         <b> ELIGIBLE TYPES </b>
 	///     </para>
@@ -238,6 +236,7 @@ namespace RI.Framework.Composition
 	///         A <see cref="CompositionContainer" /> logs all composition operations.
 	///         <see cref="ILogService" /> is used for logging, obtained through <see cref="LogLocator" />.
 	///         If no <see cref="ILogService" /> is available, no logging is performed.
+	/// If logging is not desired, it can be disabled using <see cref="LoggingEnabled"/>.
 	///     </para>
 	/// </remarks>
 	/// <example>
@@ -1551,7 +1550,7 @@ namespace RI.Framework.Composition
 
 			HashSetExtensions.AddRange(instances, newInstances);
 
-			return DirectLinq.Where(instances, compatibleType.IsInstanceOfType);
+			return DirectLinq.Where(instances, x => compatibleType.IsAssignableFrom(x.GetType()));
 		}
 
 		private void HandleCatalogRecomposeRequest (object sender, EventArgs e)

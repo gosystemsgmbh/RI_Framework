@@ -125,6 +125,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\StateResolver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\StateSignalInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\StateTransientInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\ThreadDispatcherStateDispatcher.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Comparison\EqualityComparison.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Comparison\OrderComparison.cs" />
@@ -158,6 +159,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Text\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Threading\HeavyThread.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Threading\HeavyThreadDispatcher.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Threading\IThreadDispatcher.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Threading\ThreadDispatcherException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Threading\HeavyThreadException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Threading\ThreadDispatcher.cs" />

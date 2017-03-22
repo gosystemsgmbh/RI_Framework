@@ -27,6 +27,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Collections\Test_StackExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\Virtualization\Mock_IItemsProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\Virtualization\Test_VirtualizationCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\Mock_Exports.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\Mock_Imports.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\Test_CompositionContainer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\INI\Test_IniDocument.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\Paths\Test_DirectoryPath.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\Paths\Test_FilePath.cs" />
@@ -36,6 +39,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Mathematic\Test_Statistics.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mocks\RENP.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mocks\VENP.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Mock_States.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Test_StateMachine.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TestAssertionException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Comparison\Test_EqualityComparison.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Comparison\Test_OrderComparison.cs" />

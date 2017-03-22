@@ -11,7 +11,7 @@ namespace RI.Test.Framework.Collections.Virtualization
 	public sealed class Test_VirtualizationCollection
 	{
 		[TestMethod]
-		public void Test_General ()
+		public void General_Test ()
 		{
 			Mock_IItemsProvider mock = new Mock_IItemsProvider();
 			VirtualizationCollection<int> test = new VirtualizationCollection<int>(3, 100, mock);
@@ -98,7 +98,7 @@ namespace RI.Test.Framework.Collections.Virtualization
 		}
 
 		[TestMethod]
-		public void Test_Timeout ()
+		public void Timeout_Test ()
 		{
 			Mock_IItemsProvider mock = new Mock_IItemsProvider();
 			VirtualizationCollection<int> test = new VirtualizationCollection<int>(3, 100, mock);
@@ -128,7 +128,7 @@ namespace RI.Test.Framework.Collections.Virtualization
 		}
 
 		[TestMethod]
-		public void Test_List ()
+		public void List_Test ()
 		{
 			IList<int> test = new VirtualizationCollection<int>(3, 0, new Mock_IItemsProvider());
 

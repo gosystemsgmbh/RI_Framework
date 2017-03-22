@@ -14,7 +14,7 @@ namespace RI.Framework.Utilities.Threading
 	/// See <see cref="HeavyThread"/> and <see cref="ThreadDispatcher"/> for more details.
 	/// </para>
 	/// </remarks>
-	public sealed class HeavyThreadDispatcher : HeavyThread
+	public sealed class HeavyThreadDispatcher : HeavyThread, IThreadDispatcher
 	{
 		private bool _finishPendingDelegatesOnShutdown;
 		private ThreadPriority _threadPriority;
@@ -51,18 +51,35 @@ namespace RI.Framework.Utilities.Threading
 			}
 		}
 
-		private ThreadDispatcher Dispatcher { get; set; }
+		private ThreadDispatcher DispatcherInternal { get; set; }
+
+		/// <summary>
+		/// Gets the used <see cref="ThreadDispatcher"/>.
+		/// </summary>
+		/// <value>
+		/// The used <see cref="ThreadDispatcher"/> or null if the thread is not running.
+		/// </value>
+		public ThreadDispatcher Dispatcher
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this.DispatcherInternal;
+				}
+			}
+		}
 
 		private EventHandler<ThreadDispatcherExceptionEventArgs> DispatcherExceptionHandlerDelegate { get; set; }
 
-		/// <inheritdoc cref="ThreadDispatcher.ShutdownMode"/>
+		/// <inheritdoc />
 		public ThreadDispatcherShutdownMode ShutdownMode
 		{
 			get
 			{
 				lock (this.SyncRoot)
 				{
-					return this.Dispatcher?.ShutdownMode ?? ThreadDispatcherShutdownMode.None;
+					return this.DispatcherInternal?.ShutdownMode ?? ThreadDispatcherShutdownMode.None;
 				}
 			}
 		}
@@ -167,7 +184,7 @@ namespace RI.Framework.Utilities.Threading
 			this.ThreadPriority = ThreadPriority.Normal;
 			this.IsBackgroundThread = true;
 
-			this.Dispatcher = null;
+			this.DispatcherInternal = null;
 		}
 
 		private void DispatcherExceptionHandler (object sender, ThreadDispatcherExceptionEventArgs args)
@@ -175,14 +192,7 @@ namespace RI.Framework.Utilities.Threading
 			this.OnException(args.Exception, true, args.CanContinue);
 		}
 
-		/// <summary>
-		/// Raised when an exception occurred during execution of a enqueued delegate.
-		/// </summary>
-		/// <remarks>
-		/// <note type="important">
-		/// The event is raised from the <see cref="HeavyThreadDispatcher"/>s thread.
-		/// </note>
-		/// </remarks>
+		/// <inheritdoc />
 		public event EventHandler<ThreadDispatcherExceptionEventArgs> Exception;
 
 		private void OnException(Exception exception, bool canContinue)
@@ -190,20 +200,7 @@ namespace RI.Framework.Utilities.Threading
 			this.Exception?.Invoke(this, new ThreadDispatcherExceptionEventArgs(exception, canContinue));
 		}
 
-		/// <summary>
-		/// Gets or sets whether exceptions, thrown when executing delegates, are catched and the dispatcher continues its operations.
-		/// </summary>
-		/// <value>
-		/// true if exceptions are catched, false otherwise.
-		/// </value>
-		/// <remarks>
-		/// <para>
-		/// The default value is false.
-		/// </para>
-		/// <para>
-		/// The <see cref="Exception"/> event is raised regardless of the value of <see cref="CatchExceptions"/>.
-		/// </para>
-		/// </remarks>
+		/// <inheritdoc />
 		public bool CatchExceptions
 		{
 			get
@@ -219,9 +216,9 @@ namespace RI.Framework.Utilities.Threading
 				{
 					this._catchExceptions = value;
 
-					if (this.Dispatcher != null)
+					if (this.DispatcherInternal != null)
 					{
-						this.Dispatcher.CatchExceptions = value;
+						this.DispatcherInternal.CatchExceptions = value;
 					}
 				}
 			}
@@ -242,10 +239,10 @@ namespace RI.Framework.Utilities.Threading
 		{
 			base.Dispose(disposing);
 
-			if (this.Dispatcher != null)
+			if (this.DispatcherInternal != null)
 			{
-				this.Dispatcher.Exception -= this.DispatcherExceptionHandlerDelegate;
-				this.Dispatcher = null;
+				this.DispatcherInternal.Exception -= this.DispatcherExceptionHandlerDelegate;
+				this.DispatcherInternal = null;
 			}
 		}
 
@@ -262,9 +259,9 @@ namespace RI.Framework.Utilities.Threading
 		{
 			base.OnBegin();
 
-			this.Dispatcher = new ThreadDispatcher();
-			this.Dispatcher.Exception += this.DispatcherExceptionHandlerDelegate;
-			this.Dispatcher.CatchExceptions = this.CatchExceptions;
+			this.DispatcherInternal = new ThreadDispatcher();
+			this.DispatcherInternal.Exception += this.DispatcherExceptionHandlerDelegate;
+			this.DispatcherInternal.CatchExceptions = this.CatchExceptions;
 		}
 
 		/// <inheritdoc />
@@ -272,7 +269,7 @@ namespace RI.Framework.Utilities.Threading
 		{
 			base.OnRun();
 
-			this.Dispatcher.Run();
+			this.DispatcherInternal.Run();
 		}
 
 		/// <inheritdoc />
@@ -280,9 +277,9 @@ namespace RI.Framework.Utilities.Threading
 		{
 			base.OnStop();
 
-			if (this.Dispatcher.IsRunning)
+			if (this.DispatcherInternal.IsRunning)
 			{
-				this.Dispatcher.Shutdown(this.FinishPendingDelegatesOnShutdown);
+				this.DispatcherInternal.Shutdown(this.FinishPendingDelegatesOnShutdown);
 			}
 		}
 
@@ -300,23 +297,34 @@ namespace RI.Framework.Utilities.Threading
 			this.Stop();
 		}
 
-		/// <inheritdoc cref="ThreadDispatcher.Post"/>
-		public ThreadDispatcherOperation Post(Delegate action, params object[] parameters)
+		/// <inheritdoc />
+		void IThreadDispatcher.Shutdown(bool finishPendingDelegates)
 		{
-			lock (this.SyncRoot)
-			{
-				this.VerifyRunning();
-
-				return this.Dispatcher.Post(action, parameters);
-			}
+			this.Stop(finishPendingDelegates);
 		}
 
-		/// <inheritdoc cref="ThreadDispatcher.Send"/>
+		/// <inheritdoc />
+		public ThreadDispatcherOperation Post(Delegate action, params object[] parameters)
+		{
+			this.VerifyRunning();
+
+			return this.DispatcherInternal.Post(action, parameters);
+		}
+
+		/// <inheritdoc />
 		public object Send (Delegate action, params object[] parameters)
 		{
 			this.VerifyRunning();
 
-			return this.Dispatcher.Send(action, parameters);
+			return this.DispatcherInternal.Send(action, parameters);
+		}
+		
+		/// <inheritdoc />
+		public void DoProcessing()
+		{
+			this.VerifyRunning();
+
+			this.DispatcherInternal.DoProcessing();
 		}
 	}
 }
