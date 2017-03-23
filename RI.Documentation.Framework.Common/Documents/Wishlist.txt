@@ -32,7 +32,7 @@ Tests
 -----
 
  + Services (Common + Unity)
- + State Machines (Common + Unity)
+ + State Machines (Unity)
 
 
 Utilities

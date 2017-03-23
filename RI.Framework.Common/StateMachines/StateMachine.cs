@@ -125,7 +125,7 @@ namespace RI.Framework.StateMachines
 		{
 			if (this.Configuration.LoggingEnabled)
 			{
-				this.Log(LogLevel.Debug, "Dispatching transient: {0} -> {1}", transientInfo.PreviousState.GetType().Name, transientInfo.NextState.GetType().Name);
+				this.Log(LogLevel.Debug, "Dispatching transient: {0} -> {1}", transientInfo.PreviousState?.GetType().Name ?? "[null]", transientInfo.NextState?.GetType().Name ?? "[null]");
 			}
 
 			if (this.Configuration.Dispatcher == null)
@@ -232,14 +232,8 @@ namespace RI.Framework.StateMachines
 		/// Initiates a transition to another state.
 		/// </summary>
 		/// <param name="state">The type of state to transition to.</param>
-		/// <exception cref="ArgumentNullException"><paramref name="state"/> is null.</exception>
 		public void Transient (Type state)
 		{
-			if (state == null)
-			{
-				throw new ArgumentNullException(nameof(state));
-			}
-
 			IState previousState = this.State;
 			IState nextState = this.Resolve(state, true);
 
@@ -260,7 +254,7 @@ namespace RI.Framework.StateMachines
 		{
 			if (this.Configuration.LoggingEnabled)
 			{
-				this.Log(LogLevel.Debug, "Executing transient: {0} -> {1}", transientInfo.PreviousState.GetType().Name, transientInfo.NextState.GetType().Name);
+				this.Log(LogLevel.Debug, "Executing transient: {0} -> {1}", transientInfo.PreviousState?.GetType().Name ?? "[null]", transientInfo.NextState?.GetType().Name ?? "[null]");
 			}
 
 			IState previousState = transientInfo.PreviousState;
@@ -270,7 +264,7 @@ namespace RI.Framework.StateMachines
 			{
 				if (this.Configuration.LoggingEnabled)
 				{
-					this.Log(LogLevel.Debug, "Transient aborted: {0} -> {1}", transientInfo.PreviousState.GetType().Name, transientInfo.NextState.GetType().Name);
+					this.Log(LogLevel.Debug, "Transient aborted: {0} -> {1}", transientInfo.PreviousState?.GetType().Name ?? "[null]", transientInfo.NextState?.GetType().Name ?? "[null]");
 				}
 
 				return;

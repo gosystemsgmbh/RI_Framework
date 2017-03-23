@@ -72,7 +72,7 @@ namespace RI.Framework.StateMachines
 		{
 		}
 
-		/// <inheritdoc cref="IState.Leave"/>
+		/// <inheritdoc cref="IState.Signal"/>
 		/// <remarks>
 		/// <para>
 		/// The default implementation checks whether signal handlers have been registered using <see cref="RegisterSignal{TSignal}"/>.

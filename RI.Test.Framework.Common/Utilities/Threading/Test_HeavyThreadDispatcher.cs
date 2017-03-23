@@ -555,5 +555,35 @@ namespace RI.Test.Framework.Utilities.Threading
 				throw new TestAssertionException();
 			}
 		}
+
+		[TestMethod]
+		public void DoProcessing_Test ()
+		{
+			HeavyThreadDispatcher test = new HeavyThreadDispatcher();
+
+			test.Stop(false);
+			test.Start();
+
+			int syncTestValue = 0;
+			Action syncTestAction1 = null;
+			Action syncTestAction2 = new Action(() =>
+			{
+				syncTestValue++;
+				if (syncTestValue < 10)
+				{
+					test.Post(syncTestAction1);
+				}
+			});
+			syncTestAction1 = syncTestAction2;
+
+			test.Post(syncTestAction1);
+
+			test.DoProcessing();
+
+			if (syncTestValue != 10)
+			{
+				throw new TestAssertionException();
+			}
+		}
 	}
 }

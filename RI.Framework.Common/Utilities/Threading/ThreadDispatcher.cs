@@ -30,6 +30,7 @@ namespace RI.Framework.Utilities.Threading
 		private Thread Thread { get; set; }
 		private Queue<ThreadDispatcherOperation> Queue { get; set; }
 		private ManualResetEvent Posted { get; set; }
+		private ThreadDispatcherOperation OperationInProgress { get; set; }
 
 		/// <inheritdoc />
 		bool ISynchronizable.IsSynchronized => true;
@@ -143,6 +144,8 @@ namespace RI.Framework.Utilities.Threading
 
 					lock (this.SyncRoot)
 					{
+						this.OperationInProgress = null;
+
 						if (this.ShutdownMode == ThreadDispatcherShutdownMode.DiscardPending)
 						{
 							foreach (ThreadDispatcherOperation operationToCancel in this.Queue)
@@ -164,6 +167,7 @@ namespace RI.Framework.Utilities.Threading
 						if (this.Queue.Count > 0)
 						{
 							operation = this.Queue.Dequeue();
+							this.OperationInProgress = operation;
 						}
 					}
 
@@ -173,6 +177,11 @@ namespace RI.Framework.Utilities.Threading
 					}
 
 					operation.Execute();
+					
+					lock (this.SyncRoot)
+					{
+						this.OperationInProgress = null;
+					}
 
 					if (operation.State == ThreadDispatcherOperationState.Exception)
 					{
@@ -335,7 +344,18 @@ namespace RI.Framework.Utilities.Threading
 		/// <inheritdoc />
 		public void DoProcessing ()
 		{
-			this.Send(new Action(() => { }));
+			while (true)
+			{
+				this.Send(new Action(() => { }));
+
+				lock (this.SyncRoot)
+				{
+					if ((this.Queue.Count == 0) && (this.OperationInProgress == null))
+					{
+						return;
+					}
+				}
+			}
 		}
 
 		/// <inheritdoc />
