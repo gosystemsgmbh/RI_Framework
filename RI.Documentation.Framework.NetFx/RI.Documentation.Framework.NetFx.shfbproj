@@ -29,26 +29,24 @@
       <Argument Key="includeEnumValues" Value="true" />
     </TransformComponentArguments>
     <DocumentationSources>
-      <DocumentationSource sourceFile="..\_Output\RI.Framework.Extensions.EF.dll" />
-      <DocumentationSource sourceFile="..\_Output\RI.Framework.Extensions.EF.xml" />
+      <DocumentationSource sourceFile="..\_Output\RI.Framework.Extensions.EF6.dll" />
+      <DocumentationSource sourceFile="..\_Output\RI.Framework.Extensions.EF6.xml" />
       <DocumentationSource sourceFile="..\_Output\RI.Framework.Extensions.FluentRibbon.dll" />
       <DocumentationSource sourceFile="..\_Output\RI.Framework.Extensions.FluentRibbon.xml" />
       <DocumentationSource sourceFile="..\_Output\RI.Framework.Extensions.SQLite.dll" />
       <DocumentationSource sourceFile="..\_Output\RI.Framework.Extensions.SQLite.xml" />
-      <DocumentationSource sourceFile="..\_Output\RI.Framework.Extensions.SQLiteEF.dll" />
-      <DocumentationSource sourceFile="..\_Output\RI.Framework.Extensions.SQLiteEF.xml" />
-      <DocumentationSource sourceFile="..\_Output\RI.Framework.Net.dll" />
-      <DocumentationSource sourceFile="..\_Output\RI.Framework.Net.xml" />
-      <DocumentationSource sourceFile="..\_Output\RI.Framework.Service.dll" />
-      <DocumentationSource sourceFile="..\_Output\RI.Framework.Service.xml" />
+      <DocumentationSource sourceFile="..\_Output\RI.Framework.Extensions.SQLiteEF6.dll" />
+      <DocumentationSource sourceFile="..\_Output\RI.Framework.Extensions.SQLiteEF6.xml" />
+      <DocumentationSource sourceFile="..\_Output\RI.Framework.NetFx.dll" />
+      <DocumentationSource sourceFile="..\_Output\RI.Framework.NetFx.xml" />
       <DocumentationSource sourceFile="..\_Output\RI.Framework.Windows.dll" />
       <DocumentationSource sourceFile="..\_Output\RI.Framework.Windows.xml" />
       <DocumentationSource sourceFile="..\_Output\RI.Framework.WinForms.dll" />
       <DocumentationSource sourceFile="..\_Output\RI.Framework.WinForms.xml" />
+      <DocumentationSource sourceFile="..\_Output\RI.Framework.WinService.dll" />
+      <DocumentationSource sourceFile="..\_Output\RI.Framework.WinService.xml" />
       <DocumentationSource sourceFile="..\_Output\RI.Framework.Wpf.dll" />
       <DocumentationSource sourceFile="..\_Output\RI.Framework.Wpf.xml" />
-      <DocumentationSource sourceFile="..\_Output\RI.Framework.RotenInformatik.dll" />
-      <DocumentationSource sourceFile="..\_Output\RI.Framework.RotenInformatik.xml" />
     </DocumentationSources>
     <BuildAssemblerVerbosity>OnlyWarningsAndErrors</BuildAssemblerVerbosity>
     <HelpFileFormat>HtmlHelp1</HelpFileFormat>

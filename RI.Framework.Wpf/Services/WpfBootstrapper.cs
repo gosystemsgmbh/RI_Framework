@@ -491,7 +491,7 @@ namespace RI.Framework.Services
 				                                                                                  this.LogSeperator();
 				                                                                                  this.Log(LogLevel.Debug, "Initializing modules");
 
-				                                                                                  ServiceLocator.GetInstance<IModuleService>()?.Initialize();
+				                                                                                  this.Container.GetExport<IModuleService>()?.Initialize();
 
 				                                                                                  this.Application.Dispatcher.BeginInvoke(DispatcherPriority.SystemIdle, new Action(() =>
 				                                                                                                                                                                    {
@@ -906,7 +906,7 @@ namespace RI.Framework.Services
 			this.LogSeperator();
 			this.Log(LogLevel.Debug, "Unloading modules");
 
-			ServiceLocator.GetInstance<IModuleService>()?.Unload();
+			this.Container.GetExport<IModuleService>()?.Unload();
 		}
 
 		/// <summary>

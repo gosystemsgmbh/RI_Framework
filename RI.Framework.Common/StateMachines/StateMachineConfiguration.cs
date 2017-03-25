@@ -12,6 +12,9 @@ namespace RI.Framework.StateMachines
 	/// <para>
 	/// See <see cref="StateMachine"/> for more details about state machines.
 	/// </para>
+	/// <para>
+	/// See the respective properties for their default values.
+	/// </para>
 	/// </remarks>
 	public class StateMachineConfiguration
 	{
@@ -21,8 +24,8 @@ namespace RI.Framework.StateMachines
 		public StateMachineConfiguration ()
 		{
 			this.Dispatcher = null;
-			this.Resolver = null;
-			this.Cache = null;
+			this.Resolver = new StateResolver();
+			this.Cache = new StateCache();
 
 			this.EnableAutomaticCaching = true;
 			this.LoggingEnabled = true;
@@ -41,6 +44,9 @@ namespace RI.Framework.StateMachines
 		/// <note type="note">
 		/// The dispatcher of a state machine should not be changed while the current state is not null.
 		/// </note>
+		/// <para>
+		/// The default value is null.
+		/// </para>
 		/// </remarks>
 		public IStateDispatcher Dispatcher { get; set; }
 
@@ -57,6 +63,9 @@ namespace RI.Framework.StateMachines
 		/// <note type="note">
 		/// The resolver of a state machine can be changed at any time.
 		/// </note>
+		/// <para>
+		/// The default value is an instance of <see cref="StateResolver"/>.
+		/// </para>
 		/// </remarks>
 		public IStateResolver Resolver { get; set; }
 
@@ -73,6 +82,9 @@ namespace RI.Framework.StateMachines
 		/// <note type="note">
 		/// The state cache of a state machine should not be changed while the current state is not null.
 		/// </note>
+		/// <para>
+		/// The default value is an instance of <see cref="StateCache"/>.
+		/// </para>
 		/// </remarks>
 		public IStateCache Cache { get; set; }
 

@@ -12,7 +12,7 @@ using RI.Framework.Utilities.Exceptions;
 namespace RI.Framework.Services
 {
 	/// <summary>
-	///     Provides a centralized and global locator to lookup services.
+	///     Provides a centralized and global locator to lookup services and instances.
 	/// </summary>
 	/// <remarks>
 	///     <para>

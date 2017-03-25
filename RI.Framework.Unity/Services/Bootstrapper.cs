@@ -136,39 +136,57 @@ namespace RI.Framework.Services
 		/// If true, <see cref="LogService"/> and <see cref="LogWriter"/> are added automatically, providing logging through Unitys logging mechanism.
 		///     </para>
 		/// </remarks>
-		public bool UseDefaultLoggingService = true;
+		public bool LoggingService = true;
 
 		/// <summary>
 		///     Specifies whether the default module service should be used or not.
 		/// </summary>
 		/// <remarks>
 		///     <para>
-		/// If true, <see cref="ModuleService"/> is added automatically, providing a default modularization service using <see cref="IModule"/> or <see cref="MonoModule"/>.
+		/// If true, <see cref="Modularization.ModuleService"/> is added automatically, providing a default modularization service using <see cref="IModule"/> or <see cref="MonoModule"/>.
 		///     </para>
 		/// </remarks>
-		public bool UseDefaultModuleService = true;
+		public bool ModuleService = true;
+
+		/// <summary>
+		///     Specifies whether the used module service should initialize all modules.
+		/// </summary>
+		/// <remarks>
+		///     <para>
+		/// If true, the used <see cref="IModuleService"/> initializes all modules during <see cref="BeginRun"/> (using <see cref="IModuleService.Initialize"/>).
+		///     </para>
+		/// </remarks>
+		public bool ModuleInitialization = true;
+
+		/// <summary>
+		///     Specifies whether the used module service should unload all modules.
+		/// </summary>
+		/// <remarks>
+		///     <para>
+		/// If true, the used <see cref="IModuleService"/> unloads all modules during <see cref="EndRun"/> (using <see cref="IModuleService.Unload"/>).
+		///     </para>
+		/// </remarks>
+		public bool ModuleUnloading = true;
 
 		/// <summary>
 		///     Specifies whether the default dispatcher service should be used or not.
 		/// </summary>
 		/// <remarks>
 		///     <para>
-		/// If true, <see cref="DispatcherService"/> is added automatically, providing a default dispatcher service.
+		/// If true, <see cref="Dispatcher.DispatcherService"/> is added automatically, providing a default dispatcher service.
 		///     </para>
 		/// </remarks>
-		public bool UseDefaultDispatcherService = true;
+		public bool DispatcherService = true;
 
 		/// <summary>
 		///     Specifies whether the default scripting container should be used or not.
 		/// </summary>
 		/// <remarks>
 		///     <para>
-		/// If true, <see cref="ScriptingCatalog"/> is added automatically, adding all eligible types from the scripting assembly to the container.
+		/// If true, <see cref="Composition.Catalogs.ScriptingCatalog"/> is added automatically, adding all eligible types from the scripting assembly to the container.
 		///     </para>
 		/// </remarks>
-		public bool UseDefaultScriptingCatalog = true;
-
-		//TODO: Add ModuleInitialization
+		public bool ScriptingCatalog = true;
 
 		#endregion
 
@@ -183,7 +201,7 @@ namespace RI.Framework.Services
 		/// <value>
 		///     The used composition container.
 		/// </value>
-		public CompositionContainer Container { get; private set; }
+		public CompositionContainer Container { get; private set; } = null;
 
 		/// <summary>
 		///     Gets the current state of the bootstrapper.
@@ -191,11 +209,9 @@ namespace RI.Framework.Services
 		/// <value>
 		///     The current state of the bootstrapper.
 		/// </value>
-		public BootstrapperState State { get; private set; }
+		public BootstrapperState State { get; private set; } = BootstrapperState.Uninitialized;
 
-		private bool ShutdownFinished { get; set; }
-
-		private bool ShutdownInitiated { get; set; }
+		private bool ShutdownFinished { get; set; } = false;
 
 		#endregion
 
@@ -223,11 +239,6 @@ namespace RI.Framework.Services
 
 		private void Awake ()
 		{
-			this.State = BootstrapperState.Uninitialized;
-			this.ShutdownInitiated = false;
-			this.ShutdownFinished = false;
-			this.Container = null;
-
 			((IBootstrapper)this).Run();
 		}
 
@@ -239,6 +250,11 @@ namespace RI.Framework.Services
 			}
 
 			this.ShutdownFinished = true;
+
+			if (this.State != BootstrapperState.Running)
+			{
+				return;
+			}
 
 			this.Log(LogLevel.Debug, "Ending run");
 			this.EndRun();
@@ -265,11 +281,16 @@ namespace RI.Framework.Services
 		/// </summary>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation does nothing.
+		///         The default implementation calls <see cref="IModuleService.Initialize"/> of the used <see cref="IModuleService"/> if <see cref="ModuleInitialization"/> is true, otherwise it does nothing.
 		///     </note>
 		/// </remarks>
 		protected virtual void BeginRun ()
 		{
+			if (this.ModuleInitialization)
+			{
+				this.Log(LogLevel.Debug, "Automatically initialize modules");
+				this.Container.GetExport<IModuleService>()?.Initialize();
+			}
 		}
 
 		/// <summary>
@@ -290,14 +311,14 @@ namespace RI.Framework.Services
 		/// </summary>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation adds a single <see cref="ScriptingCatalog" /> to the composition container as well as the container itself.
+		///         The default implementation adds a single <see cref="Composition.Catalogs.ScriptingCatalog" /> to the composition container as well as the container itself.
 		///     </note>
 		/// </remarks>
 		protected virtual void ConfigureContainer ()
 		{
 			this.Container.AddCatalog(new InstanceCatalog(this.Container));
 
-			if (this.UseDefaultScriptingCatalog)
+			if (this.ScriptingCatalog)
 			{
 				this.Log(LogLevel.Debug, "Using default scripting catalog");
 				this.Container.AddCatalog(new ScriptingCatalog());
@@ -309,12 +330,12 @@ namespace RI.Framework.Services
 		/// </summary>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation adds <see cref="LogService" /> and <see cref="LogWriter" /> to the composition container if <see cref="UseDefaultLoggingService" /> is true, otherwise it does nothing.
+		///         The default implementation adds <see cref="LogService" /> and <see cref="LogWriter" /> to the composition container if <see cref="LoggingService" /> is true, otherwise it does nothing.
 		///     </note>
 		/// </remarks>
 		protected virtual void ConfigureLogging ()
 		{
-			if (this.UseDefaultLoggingService)
+			if (this.LoggingService)
 			{
 				this.Log(LogLevel.Debug, "Using default logging service");
 				this.Container.AddCatalog(new TypeCatalog(typeof(LogService), typeof(LogWriter)));
@@ -326,12 +347,12 @@ namespace RI.Framework.Services
 		/// </summary>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation adds <see cref="ModuleService" /> to the composition container if <see cref="UseDefaultModuleService" /> is true, otherwise it does nothing.
+		///         The default implementation adds <see cref="Modularization.ModuleService" /> to the composition container if <see cref="ModuleService" /> is true, otherwise it does nothing.
 		///     </note>
 		/// </remarks>
 		protected virtual void ConfigureModularization ()
 		{
-			if (this.UseDefaultModuleService)
+			if (this.ModuleService)
 			{
 				this.Log(LogLevel.Debug, "Using default module service");
 				this.Container.AddCatalog(new TypeCatalog(typeof(ModuleService)));
@@ -356,12 +377,12 @@ namespace RI.Framework.Services
 		/// </summary>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation adds <see cref="DispatcherService" /> to the composition container if <see cref="UseDefaultDispatcherService" /> is true, otherwise it does nothing.
+		///         The default implementation adds <see cref="Dispatcher.DispatcherService" /> to the composition container if <see cref="DispatcherService" /> is true, otherwise it does nothing.
 		///     </note>
 		/// </remarks>
 		protected virtual void ConfigureServices ()
 		{
-			if (this.UseDefaultDispatcherService)
+			if (this.DispatcherService)
 			{
 				this.Log(LogLevel.Debug, "Using default dispatcher service");
 				this.Container.AddCatalog(new TypeCatalog(typeof(DispatcherService)));
@@ -402,11 +423,16 @@ namespace RI.Framework.Services
 		/// </summary>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation does nothing.
+		///         The default implementation calls <see cref="IModuleService.Unload"/> of the used <see cref="IModuleService"/> if <see cref="ModuleUnloading"/> is true, otherwise it does nothing.
 		///     </note>
 		/// </remarks>
 		protected virtual void EndRun ()
 		{
+			if (this.ModuleUnloading)
+			{
+				this.Log(LogLevel.Debug, "Automatically unload modules");
+				this.Container.GetExport<IModuleService>()?.Unload();
+			}
 		}
 
 		#endregion
@@ -460,18 +486,6 @@ namespace RI.Framework.Services
 		/// <inheritdoc />
 		public void Shutdown ()
 		{
-			if (this.State != BootstrapperState.Running)
-			{
-				throw new InvalidOperationException(this.GetType().Name + " is not running.");
-			}
-
-			if (this.ShutdownInitiated)
-			{
-				return;
-			}
-
-			this.ShutdownInitiated = true;
-
 			this.Log(LogLevel.Debug, "Initiating shutdown");
 			Application.Quit();
 		}

@@ -39,6 +39,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cases\Collections\Specialized\Test_PrefabPool.cs" />
+    <Compile Include="Cases\Composition\Catalogs\Test_ScriptingCatalog.cs" />
+    <Compile Include="Cases\Test_Common.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestClassAttribute.cs" />
     <Compile Include="TestMethodAttribute.cs" />

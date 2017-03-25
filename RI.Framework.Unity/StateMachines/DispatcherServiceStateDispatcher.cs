@@ -13,13 +13,13 @@ namespace RI.Framework.StateMachines
 	/// </summary>
 	/// <remarks>
 	/// <para>
-	/// <see cref="StateDispatcher"/> internally uses a specified <see cref="IDispatcherService"/> or <see cref="ServiceLocator"/> to retrieve a <see cref="IDispatcherService"/>, depending on the used constructor..
+	/// <see cref="DispatcherServiceStateDispatcher"/> internally uses a specified <see cref="IDispatcherService"/> or <see cref="ServiceLocator"/> to retrieve a <see cref="IDispatcherService"/>, depending on the used constructor..
 	/// </para>
 	/// <para>
 	/// See <see cref="IStateDispatcher"/> for more details.
 	/// </para>
 	/// </remarks>
-	public sealed class StateDispatcher : IStateDispatcher
+	public sealed class DispatcherServiceStateDispatcher : IStateDispatcher
 	{
 		/// <summary>
 		/// Gets the used dispatcher service.
@@ -30,11 +30,11 @@ namespace RI.Framework.StateMachines
 		public IDispatcherService DispatcherService { get; private set; }
 
 		/// <summary>
-		/// Creates a new instance of <see cref="StateDispatcher"/>.
+		/// Creates a new instance of <see cref="DispatcherServiceStateDispatcher"/>.
 		/// </summary>
 		/// <remarks>
 		/// <para>
-		/// <see cref="StateDispatcher"/> instances created with this constructor use <see cref="ServiceLocator"/> to retrieve an instance of <see cref="IDispatcherService"/> at construction time.
+		/// <see cref="DispatcherServiceStateDispatcher"/> instances created with this constructor use <see cref="ServiceLocator"/> to retrieve an instance of <see cref="IDispatcherService"/> at construction time.
 		/// </para>
 		/// <note type="important">
 		/// For performance reasons, the <see cref="IDispatcherService"/> instance which is used is not dynamically retrieved from <see cref="ServiceLocator"/> for each dispatched operation.
@@ -42,7 +42,7 @@ namespace RI.Framework.StateMachines
 		/// </note>
 		/// </remarks>
 		/// <exception cref="InvalidOperationException"><see cref="ServiceLocator"/> could not retrieve an instance of <see cref="IDispatcherService"/>.</exception>
-		public StateDispatcher ()
+		public DispatcherServiceStateDispatcher ()
 		{
 			this.DispatcherService = ServiceLocator.GetInstance<IDispatcherService>();
 			if (this.DispatcherService == null)
@@ -52,15 +52,15 @@ namespace RI.Framework.StateMachines
 		}
 
 		/// <summary>
-		/// Creates a new instance of <see cref="StateDispatcher"/>.
+		/// Creates a new instance of <see cref="DispatcherServiceStateDispatcher"/>.
 		/// </summary>
 		/// <remarks>
 		/// <para>
-		/// <see cref="StateDispatcher"/> instances created with this constructor use the <see cref="IDispatcherService"/> specified by <paramref name="dispatcherService"/>.
+		/// <see cref="DispatcherServiceStateDispatcher"/> instances created with this constructor use the <see cref="IDispatcherService"/> specified by <paramref name="dispatcherService"/>.
 		/// </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"><paramref name="dispatcherService"/> is null.</exception>
-		public StateDispatcher (IDispatcherService dispatcherService)
+		public DispatcherServiceStateDispatcher (IDispatcherService dispatcherService)
 		{
 			if (dispatcherService == null)
 			{

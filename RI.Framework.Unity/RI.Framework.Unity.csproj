@@ -53,9 +53,9 @@
     <Compile Include="Services\Dispatcher\_NamespaceDoc.cs" />
     <Compile Include="Services\Logging\LogWriter.cs" />
     <Compile Include="Services\Modularization\MonoModule.cs" />
-    <Compile Include="StateMachines\BootstrapperBasedStateMachineConfiguration.cs" />
+    <Compile Include="StateMachines\DefaultStateMachineConfiguration.cs" />
     <Compile Include="StateMachines\MonoState.cs" />
-    <Compile Include="StateMachines\StateDispatcher.cs" />
+    <Compile Include="StateMachines\DispatcherServiceStateDispatcher.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="..\RI.Framework.Common\RI.Framework.Common.projitems" Label="Shared" />

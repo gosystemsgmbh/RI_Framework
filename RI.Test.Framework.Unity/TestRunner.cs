@@ -31,8 +31,8 @@ namespace RI.Test.Framework
 
 			int totalTestMethods = 0;
 			Dictionary<TestModule, List<MethodInfo>> testMethods = new Dictionary<TestModule, List<MethodInfo>>();
-			List<TestModule> testModules = bootstrapper.Container.GetExports<TestModule>();
 
+			List<TestModule> testModules = bootstrapper.Container.GetExports<TestModule>();
 			foreach (TestModule testModule in testModules)
 			{
 				List<MethodInfo> testMethod = testModule.GetTestMethods();

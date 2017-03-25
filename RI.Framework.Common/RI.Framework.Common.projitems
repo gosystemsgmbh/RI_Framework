@@ -104,6 +104,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Services\Modularization\IModule.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Modularization\IModuleService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Modularization\Module.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Modularization\ModuleLocator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Modularization\ModuleService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Modularization\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\IBootstrapper.cs" />

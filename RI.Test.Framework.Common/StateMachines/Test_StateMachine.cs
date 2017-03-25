@@ -16,7 +16,7 @@ namespace RI.Test.Framework.StateMachines
 	[TestClass]
 	public sealed class Test_StateMachine
 	{
-		//StateDispatcher (Unity)
+		//DispatcherServiceStateDispatcher (Unity)
 		//MonoState (Unity)
 
 		[TestMethod]
