@@ -112,5 +112,25 @@ namespace RI.Framework.Services.Dispatcher
 		///     </note>
 		/// </remarks>
 		IDispatcherOperation Timeout (DateTime timestamp);
+
+		/// <summary>
+		/// Sets a callback which is called when the operation is finished.
+		/// </summary>
+		/// <param name="callback">The callback which is called when the operation is finished. Can be set to null to remove a previously set callback.</param>
+		/// <returns>
+		///     The dispatcher operation itself (for use in fluent API) if the operations timeout could be set, null if the operation has already finished or could not change its timeout anymore.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// The operation is finished when its state is <see cref="DispatcherStatus.Processed"/>, <see cref="DispatcherStatus.Canceled"/>, or <see cref="DispatcherStatus.Timeout"/>.
+		/// The <see cref="Status"/> property of the provided <see cref="IDispatcherOperation"/> argument of the callback can be used to determine the status.
+		/// </para>
+		/// <para>
+		/// The callback has two arguments: The finished operation and the arguments of the operation.
+		/// For broadcasts, the arguments is a single object which is the broadcasted object.
+		/// For dispatches, the arguments is the array of arguments of the dispatched action/function.
+		/// </para>
+		/// </remarks>
+		IDispatcherOperation OnFinished (Action<IDispatcherOperation, object[]> callback);
 	}
 }

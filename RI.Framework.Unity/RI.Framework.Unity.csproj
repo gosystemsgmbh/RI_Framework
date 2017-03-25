@@ -50,6 +50,7 @@
     <Compile Include="Services\Dispatcher\DispatcherStatus.cs" />
     <Compile Include="Services\Dispatcher\IDispatcherOperation.cs" />
     <Compile Include="Services\Dispatcher\IDispatcherService.cs" />
+    <Compile Include="Services\Dispatcher\IDispatcherServiceExtensions.cs" />
     <Compile Include="Services\Dispatcher\_NamespaceDoc.cs" />
     <Compile Include="Services\Logging\LogWriter.cs" />
     <Compile Include="Services\Modularization\MonoModule.cs" />

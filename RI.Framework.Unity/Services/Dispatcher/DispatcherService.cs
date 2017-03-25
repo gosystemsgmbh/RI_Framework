@@ -86,6 +86,7 @@ namespace RI.Framework.Services.Dispatcher
 			operation.ResultInternal = null;
 			operation.TickTrigger = null;
 			operation.TickTimeout = null;
+			operation.FinishedCallback = null;
 
 			lock (this._syncRoot)
 			{
@@ -130,7 +131,7 @@ namespace RI.Framework.Services.Dispatcher
 			{
 				return false;
 			}
-
+			
 			if (operation.Priority == DispatcherPriority.Background)
 			{
 				operation.StatusInternal = DispatcherStatus.Processing;
@@ -141,6 +142,7 @@ namespace RI.Framework.Services.Dispatcher
 				operation.StatusInternal = DispatcherStatus.Processing;
 				operation.Invoker(operation.Broadcast);
 				operation.StatusInternal = DispatcherStatus.Processed;
+				this.InvokeOnFinished(operation);
 			}
 
 			return true;
@@ -150,7 +152,22 @@ namespace RI.Framework.Services.Dispatcher
 		{
 			DispatcherOperation operation = (DispatcherOperation)state;
 			operation.Invoker(operation.Broadcast);
-			this.Dispatch(DispatcherPriority.Frame, x => x.StatusInternal = DispatcherStatus.Processed, operation);
+			this.Dispatch(DispatcherPriority.Frame, x =>
+			{
+				x.StatusInternal = DispatcherStatus.Processed;
+				this.InvokeOnFinished(x);
+			}, operation);
+		}
+
+		private void InvokeOnFinished(DispatcherOperation operation)
+		{
+			if (operation.FinishedCallback == null)
+			{
+				return;
+			}
+
+			object[] arguments = operation.Broadcast is DispatcherBroadcast ? ((DispatcherBroadcast)operation.Broadcast).GetArguments() : new[] { operation.Broadcast };
+			operation.FinishedCallback(operation, arguments);
 		}
 
 		private void InvokePendingOperations ()
@@ -255,6 +272,18 @@ namespace RI.Framework.Services.Dispatcher
 		private bool Timeout(DispatcherOperation operation, DateTime timestamp)
 		{
 			return this.Timeout(operation, Math.Max((int)((timestamp.ToUniversalTime().Ticks - this._nowTicks) / 10000), 0));
+		}
+
+		private bool OnFinished(DispatcherOperation operation, Action<IDispatcherOperation, object[]> callback)
+		{
+			if (operation.StatusInternal != DispatcherStatus.Queued)
+			{
+				return false;
+			}
+
+			operation.FinishedCallback = callback;
+
+			return true;
 		}
 
 		#endregion
@@ -543,6 +572,11 @@ namespace RI.Framework.Services.Dispatcher
 				this.Action();
 			}
 
+			public override object[] GetArguments ()
+			{
+				return new object[0];
+			}
+
 			#endregion
 		}
 
@@ -565,6 +599,11 @@ namespace RI.Framework.Services.Dispatcher
 			public override void Invoke ()
 			{
 				this.Action(this.Arg);
+			}
+
+			public override object[] GetArguments()
+			{
+				return new object[] { this.Arg };
 			}
 
 			#endregion
@@ -593,6 +632,11 @@ namespace RI.Framework.Services.Dispatcher
 				this.Action(this.Arg1, this.Arg2);
 			}
 
+			public override object[] GetArguments()
+			{
+				return new object[] { this.Arg1, this.Arg2 };
+			}
+
 			#endregion
 		}
 
@@ -619,6 +663,11 @@ namespace RI.Framework.Services.Dispatcher
 			public override void Invoke ()
 			{
 				this.Action(this.Arg1, this.Arg2, this.Arg3);
+			}
+
+			public override object[] GetArguments()
+			{
+				return new object[] { this.Arg1, this.Arg2, this.Arg3 };
 			}
 
 			#endregion
@@ -651,6 +700,11 @@ namespace RI.Framework.Services.Dispatcher
 				this.Action(this.Arg1, this.Arg2, this.Arg3, this.Arg4);
 			}
 
+			public override object[] GetArguments()
+			{
+				return new object[] { this.Arg1, this.Arg2, this.Arg3, this.Arg4 };
+			}
+
 			#endregion
 		}
 
@@ -675,6 +729,8 @@ namespace RI.Framework.Services.Dispatcher
 			#region Abstracts
 
 			public abstract void Invoke ();
+
+			public abstract object[] GetArguments ();
 
 			#endregion
 		}
@@ -704,6 +760,11 @@ namespace RI.Framework.Services.Dispatcher
 				this.Operation.ResultInternal = this.Func();
 			}
 
+			public override object[] GetArguments()
+			{
+				return new object[0];
+			}
+
 			#endregion
 		}
 
@@ -726,6 +787,11 @@ namespace RI.Framework.Services.Dispatcher
 			public override void Invoke ()
 			{
 				this.Operation.ResultInternal = this.Func(this.Arg);
+			}
+
+			public override object[] GetArguments()
+			{
+				return new object[] { this.Arg };
 			}
 
 			#endregion
@@ -752,6 +818,11 @@ namespace RI.Framework.Services.Dispatcher
 			public override void Invoke ()
 			{
 				this.Operation.ResultInternal = this.Func(this.Arg1, this.Arg2);
+			}
+
+			public override object[] GetArguments()
+			{
+				return new object[] { this.Arg1, this.Arg2 };
 			}
 
 			#endregion
@@ -782,6 +853,11 @@ namespace RI.Framework.Services.Dispatcher
 				this.Operation.ResultInternal = this.Func(this.Arg1, this.Arg2, this.Arg3);
 			}
 
+			public override object[] GetArguments()
+			{
+				return new object[] { this.Arg1, this.Arg2, this.Arg3 };
+			}
+
 			#endregion
 		}
 
@@ -810,6 +886,11 @@ namespace RI.Framework.Services.Dispatcher
 			public override void Invoke ()
 			{
 				this.Operation.ResultInternal = this.Func(this.Arg1, this.Arg2, this.Arg3, this.Arg4);
+			}
+
+			public override object[] GetArguments()
+			{
+				return new object[] { this.Arg1, this.Arg2, this.Arg3, this.Arg4 };
 			}
 
 			#endregion
@@ -876,6 +957,8 @@ namespace RI.Framework.Services.Dispatcher
 
 			public long? TickTimeout;
 
+			public Action<IDispatcherOperation, object[]> FinishedCallback;
+
 			#endregion
 
 
@@ -940,6 +1023,11 @@ namespace RI.Framework.Services.Dispatcher
 			IDispatcherOperation IDispatcherOperation.Timeout (DateTime timestamp)
 			{
 				return this.Dispatcher.Timeout(this, timestamp) ? this : null;
+			}
+
+			IDispatcherOperation IDispatcherOperation.OnFinished(Action<IDispatcherOperation, object[]> callback)
+			{
+				return this.Dispatcher.OnFinished(this, callback) ? this : null;
 			}
 
 			#endregion

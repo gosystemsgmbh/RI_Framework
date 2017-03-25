@@ -238,9 +238,6 @@ Composition
 Services
 --------
 
- + (Unity) IDispatcherService: More overloads for Dispatch() (or extension methods)
- + (Unity) IDispatcherOperation: OnFinished()
-
  * (.NET) Bootstrapper and Application abstraction
 
  # (Service) ServiceBootstrapper

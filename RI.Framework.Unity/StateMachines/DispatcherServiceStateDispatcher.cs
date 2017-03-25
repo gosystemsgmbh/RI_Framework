@@ -18,6 +18,9 @@ namespace RI.Framework.StateMachines
 	/// <para>
 	/// See <see cref="IStateDispatcher"/> for more details.
 	/// </para>
+	/// <note type="note">
+	/// Signals and transitions are dispatched using the <see cref="DispatcherPriority.Default"/> priority.
+	/// </note>
 	/// </remarks>
 	public sealed class DispatcherServiceStateDispatcher : IStateDispatcher
 	{
@@ -73,13 +76,13 @@ namespace RI.Framework.StateMachines
 		/// <inheritdoc />
 		public void DispatchTransition (StateMachineTransientDelegate transientDelegate, StateTransientInfo transientInfo)
 		{
-			this.DispatcherService.Dispatch(DispatcherPriority.Frame, (x, y) => x(y), transientDelegate, transientInfo);
+			this.DispatcherService.Dispatch(DispatcherPriority.Default, (x, y) => x(y), transientDelegate, transientInfo);
 		}
 
 		/// <inheritdoc />
 		public void DispatchSignal (StateMachineSignalDelegate signalDelegate, StateSignalInfo signalInfo)
 		{
-			this.DispatcherService.Dispatch(DispatcherPriority.Frame, (x, y) => x(y), signalDelegate, signalInfo);
+			this.DispatcherService.Dispatch(DispatcherPriority.Default, (x, y) => x(y), signalDelegate, signalInfo);
 		}
 	}
 }
