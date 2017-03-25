@@ -68,6 +68,8 @@ namespace RI.Test.Framework.Utilities.Reflection
 			Guid testGuid2 = new Guid("B97C77BD-B9D9-2EEC-4672-616D65776F72");
 			Guid testGuid3 = new Guid("2F863F60-632D-46A2-A4E2-D7A214FA495F");
 
+#if PLATFORM_NET
+
 			if (assembly.GetGuid(true, false) != testGuid1)
 			{
 				throw new TestAssertionException();
@@ -82,6 +84,8 @@ namespace RI.Test.Framework.Utilities.Reflection
 			{
 				throw new TestAssertionException();
 			}
+
+#endif
 
 			if (assembly.GetGuid(false, false) != testGuid3)
 			{
@@ -132,6 +136,6 @@ namespace RI.Test.Framework.Utilities.Reflection
 			}
 		}
 
-		#endregion
+#endregion
 	}
 }

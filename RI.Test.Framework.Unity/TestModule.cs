@@ -4,17 +4,16 @@ using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using RI.Framework.Collections;
-
-
-
+using RI.Framework.Composition.Model;
 
 namespace RI.Test.Framework
 {
+	[Export]
 	public abstract class TestModule
 	{
 		#region Instance Methods
 
-		public List<MethodInfo> GetTestMethods ()
+		public virtual List<MethodInfo> GetTestMethods ()
 		{
 			List<MethodInfo> testMethods = new List<MethodInfo>(this.GetType().GetMethods(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public));
 
@@ -25,6 +24,11 @@ namespace RI.Test.Framework
 			                        });
 
 			return testMethods;
+		}
+
+		public virtual void InvokeTestMethod (MethodInfo method)
+		{
+			method.Invoke(this, null);
 		}
 
 		protected void Fail()

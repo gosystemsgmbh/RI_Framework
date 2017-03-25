@@ -236,6 +236,7 @@ namespace RI.Test.Framework.StateMachines
 			ThreadDispatcherStateDispatcher dispatcher = new ThreadDispatcherStateDispatcher(htd);
 			StateMachineConfiguration config = new StateMachineConfiguration();
 			config.Dispatcher = dispatcher;
+			config.EnableAutomaticCaching = false;
 			StateMachine test = new StateMachine(config);
 
 			htd.Start();

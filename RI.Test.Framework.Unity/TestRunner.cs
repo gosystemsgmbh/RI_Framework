@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Reflection;
 
+using RI.Framework.Collections.Linq;
+using RI.Framework.Composition;
+using RI.Framework.Composition.Catalogs;
 using RI.Framework.Services;
 using RI.Framework.Services.Dispatcher;
 using RI.Framework.Services.Logging;
@@ -27,12 +30,12 @@ namespace RI.Test.Framework
 		{
 			this.Log(LogLevel.Debug, "Searching for available tests");
 
-			Bootstrapper bootstrapper = ServiceLocator.GetInstance<Bootstrapper>();
+			ServiceLocator.GetInstance<CompositionContainer>().AddCatalog(new AssemblyCatalog(Assembly.GetExecutingAssembly()));
 
 			int totalTestMethods = 0;
 			Dictionary<TestModule, List<MethodInfo>> testMethods = new Dictionary<TestModule, List<MethodInfo>>();
 
-			List<TestModule> testModules = bootstrapper.Container.GetExports<TestModule>();
+			List<TestModule> testModules = ServiceLocator.GetInstances<TestModule>().ToList();
 			foreach (TestModule testModule in testModules)
 			{
 				List<MethodInfo> testMethod = testModule.GetTestMethods();
@@ -41,7 +44,7 @@ namespace RI.Test.Framework
 			}
 
 			this.Log(LogLevel.Debug, "Found total {0} test modules and {1} test methods", testModules.Count, totalTestMethods);
-			this.Log(LogLevel.Debug, "Beginning running tests");
+			this.Log(LogLevel.Debug, "Beginning run tests");
 
 			int processedTestModules = 0;
 			int processedTestMethods = 0;
@@ -49,17 +52,20 @@ namespace RI.Test.Framework
 
 			foreach (KeyValuePair<TestModule, List<MethodInfo>> test in testMethods)
 			{
+				processedTestModules++;
+
 				TestModule testModule = test.Key;
+
 				foreach (MethodInfo testMethod in test.Value)
 				{
-					this.Log(LogLevel.Debug, "------------------------------");
-					this.Log(LogLevel.Debug, "Test: {0}.{1}", testModule.GetType().Name, testMethod.Name);
-
 					processedTestMethods++;
+
+					this.Log(LogLevel.Debug, "------------------------------");
+					this.Log(LogLevel.Debug, "Test: {0}.{1} @ {2}", testMethod.DeclaringType.Name, testMethod.Name, testModule.GetType().Name);
 
 					try
 					{
-						testMethod.Invoke(testModule, null);
+						testModule.InvokeTestMethod(testMethod);
 
 						this.Log(LogLevel.Debug, "Test succeeded");
 					}
@@ -68,15 +74,13 @@ namespace RI.Test.Framework
 						this.Log(LogLevel.Error, "Test failed: {0}", exception.ToDetailedString());
 
 						failed = true;
-						break;
+						//break;
 					}
 				}
 
-				processedTestModules++;
-
 				if (failed)
 				{
-					break;
+					//break;
 				}
 			}
 

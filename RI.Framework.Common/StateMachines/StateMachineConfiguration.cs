@@ -24,7 +24,7 @@ namespace RI.Framework.StateMachines
 		public StateMachineConfiguration ()
 		{
 			this.Dispatcher = null;
-			this.Resolver = new StateResolver();
+			this.Resolver = null;
 			this.Cache = new StateCache();
 
 			this.EnableAutomaticCaching = true;
@@ -64,7 +64,7 @@ namespace RI.Framework.StateMachines
 		/// The resolver of a state machine can be changed at any time.
 		/// </note>
 		/// <para>
-		/// The default value is an instance of <see cref="StateResolver"/>.
+		/// The default value is null.
 		/// </para>
 		/// </remarks>
 		public IStateResolver Resolver { get; set; }
