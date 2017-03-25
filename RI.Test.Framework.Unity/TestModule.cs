@@ -27,6 +27,11 @@ namespace RI.Test.Framework
 			return testMethods;
 		}
 
+		protected void Fail()
+		{
+			throw new TestAssertionException();
+		}
+
 		protected void Fail (string message, params object[] args)
 		{
 			string finalMessage = string.Format(message, args);

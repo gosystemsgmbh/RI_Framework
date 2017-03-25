@@ -17,7 +17,7 @@
   - [ ] Check all usage of StringComparison
   - [ ] Move Windows-specific projects to Windows subfolder
   - [ ] Synchronize Windows, Extensions, RotenInformatik references
-  - [ ] TODOs
+  - [ ] TODOs (search + ReSharper window)
 - [ ] Testing
   - [ ] Remove test projects from ReSharper exclusion
   - [ ] Complete tests
@@ -32,6 +32,7 @@
 ## Future
 
 - [ ] TODOs
+- [ ] .NET Documentation
 - [ ] Migrate Common to Shared
   - [ ] Migrate Common to Shared
   - [ ] Add reference to RI.Framework.Shared to all projects

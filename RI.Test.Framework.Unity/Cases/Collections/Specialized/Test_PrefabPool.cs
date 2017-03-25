@@ -16,6 +16,8 @@ namespace RI.Test.Framework.Cases.Collections.Specialized
 		[TestMethod]
 		public void Test ()
 		{
+			//TODO: Testing
+
 			GameObject prefab = new GameObject();
 			PrefabPool pool = new PrefabPool(prefab);
 
