@@ -53,7 +53,10 @@
       <Name>RI.Framework.Unity</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Cases\Services\" />
+    <Folder Include="Cases\StateMachines\" />
+  </ItemGroup>
   <Import Project="..\RI.Test.Framework.Common\RI.Test.Framework.Common.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

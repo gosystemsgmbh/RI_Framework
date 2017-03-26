@@ -389,7 +389,119 @@ namespace RI.Test.Framework.Utilities
 		}
 
 		[TestMethod]
+		public void IsNull_Test()
+		{
+			if (!((string)null).IsNull())
+			{
+				throw new TestAssertionException();
+			}
+
+			if (string.Empty.IsNull())
+			{
+				throw new TestAssertionException();
+			}
+
+			if (" ".IsNull())
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("test".IsNull())
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
 		public void IsEmpty_Test ()
+		{
+			if (!string.Empty.IsEmpty())
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"".IsEmpty())
+			{
+				throw new TestAssertionException();
+			}
+
+			if (" ".IsEmpty())
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("  ".IsEmpty())
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("\f\r\n\t\v".IsEmpty())
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("A".IsEmpty())
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("ABC".IsEmpty())
+			{
+				throw new TestAssertionException();
+			}
+
+			if (" A ".IsEmpty())
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void IsWhitespace_Test()
+		{
+			if (string.Empty.IsWhitespace())
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("".IsWhitespace())
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!" ".IsWhitespace())
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"  ".IsWhitespace())
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"\f\r\n\t\v".IsWhitespace())
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("A".IsWhitespace())
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("ABC".IsWhitespace())
+			{
+				throw new TestAssertionException();
+			}
+
+			if (" A ".IsWhitespace())
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void IsEmptyOrWhitespace_Test()
 		{
 			if (!string.Empty.IsEmptyOrWhitespace())
 			{
@@ -427,6 +539,153 @@ namespace RI.Test.Framework.Utilities
 			}
 
 			if (" A ".IsEmptyOrWhitespace())
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void IsNullOrEmpty_Test()
+		{
+			if (!((string)null).IsNullOrEmpty())
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!string.Empty.IsNullOrEmpty())
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"".IsNullOrEmpty())
+			{
+				throw new TestAssertionException();
+			}
+
+			if (" ".IsNullOrEmpty())
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("  ".IsNullOrEmpty())
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("\f\r\n\t\v".IsNullOrEmpty())
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("A".IsNullOrEmpty())
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("ABC".IsNullOrEmpty())
+			{
+				throw new TestAssertionException();
+			}
+
+			if (" A ".IsEmptyOrWhitespace())
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void IsNullOrWhitespace_Test()
+		{
+			if (!((string)null).IsNullOrWhitespaces())
+			{
+				throw new TestAssertionException();
+			}
+
+			if (string.Empty.IsNullOrWhitespaces())
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("".IsNullOrWhitespaces())
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!" ".IsNullOrWhitespaces())
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"  ".IsNullOrWhitespaces())
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"\f\r\n\t\v".IsNullOrWhitespaces())
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("A".IsNullOrWhitespaces())
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("ABC".IsNullOrWhitespaces())
+			{
+				throw new TestAssertionException();
+			}
+
+			if (" A ".IsNullOrWhitespaces())
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void IsNullOrEmptyOrWhitespace_Test()
+		{
+			if (!((string)null).IsNullOrEmptyOrWhitespace())
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!string.Empty.IsNullOrEmptyOrWhitespace())
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"".IsNullOrEmptyOrWhitespace())
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!" ".IsNullOrEmptyOrWhitespace())
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"  ".IsNullOrEmptyOrWhitespace())
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!"\f\r\n\t\v".IsNullOrEmptyOrWhitespace())
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("A".IsNullOrEmptyOrWhitespace())
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("ABC".IsNullOrEmptyOrWhitespace())
+			{
+				throw new TestAssertionException();
+			}
+
+			if (" A ".IsNullOrEmptyOrWhitespace())
 			{
 				throw new TestAssertionException();
 			}
@@ -1359,55 +1618,6 @@ namespace RI.Test.Framework.Utilities
 			}
 
 			if ("1\\x2".Unescape() != "1x2")
-			{
-				throw new TestAssertionException();
-			}
-		}
-
-		[TestMethod]
-		public void IsNullOrEmpty_Test()
-		{
-			if (!((string)null).IsNullOrEmptyOrWhitespace())
-			{
-				throw new TestAssertionException();
-			}
-
-			if (!string.Empty.IsNullOrEmptyOrWhitespace())
-			{
-				throw new TestAssertionException();
-			}
-
-			if (!"".IsNullOrEmptyOrWhitespace())
-			{
-				throw new TestAssertionException();
-			}
-
-			if (!" ".IsNullOrEmptyOrWhitespace())
-			{
-				throw new TestAssertionException();
-			}
-
-			if (!"  ".IsNullOrEmptyOrWhitespace())
-			{
-				throw new TestAssertionException();
-			}
-
-			if (!"\f\r\n\t\v".IsNullOrEmptyOrWhitespace())
-			{
-				throw new TestAssertionException();
-			}
-
-			if ("A".IsNullOrEmptyOrWhitespace())
-			{
-				throw new TestAssertionException();
-			}
-
-			if ("ABC".IsNullOrEmptyOrWhitespace())
-			{
-				throw new TestAssertionException();
-			}
-
-			if (" A ".IsNullOrEmptyOrWhitespace())
 			{
 				throw new TestAssertionException();
 			}

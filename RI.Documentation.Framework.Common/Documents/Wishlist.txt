@@ -31,9 +31,8 @@ Conceptual documentations
 Tests
 -----
 
- + Services (Common + Unity)
+ + Services (Unity)
  + State Machines (Unity)
- + Utilities (StringExtensions: null, empty, whitespace)
 
 
 Utilities

@@ -118,7 +118,21 @@ namespace RI.Framework.Services.Logging.Writers
 
 			this.CurrentFile = this.CurrentDirectory.AppendFile(fileName ?? DirectoryLogWriter.DefaultFileName);
 
-			this.CurrentWriter = new StreamWriter(this.CurrentFile, false, this.Encoding);
+			bool success = false;
+			try
+			{
+				this.CurrentStream = new FileStream(this.CurrentFile, FileMode.Create, FileAccess.ReadWrite, FileShare.Read);
+				this.CurrentWriter = new StreamWriter(this.CurrentStream, this.Encoding);
+				success = true;
+			}
+			finally
+			{
+				if (!success)
+				{
+					this.CurrentWriter?.Close();
+					this.CurrentStream?.Close();
+				}
+			}
 		}
 
 		/// <summary>
@@ -180,6 +194,8 @@ namespace RI.Framework.Services.Logging.Writers
 
 		private StreamWriter CurrentWriter { get; set; }
 
+		private FileStream CurrentStream { get; set; }
+
 		private object SyncRoot { get; set; }
 
 		#endregion
@@ -229,6 +245,27 @@ namespace RI.Framework.Services.Logging.Writers
 
 					this.CurrentWriter = null;
 				}
+
+				if (this.CurrentStream != null)
+				{
+					try
+					{
+						this.CurrentStream.Flush();
+					}
+					catch
+					{
+					}
+
+					try
+					{
+						this.CurrentStream.Close();
+					}
+					catch
+					{
+					}
+
+					this.CurrentStream = null;
+				}
 			}
 		}
 
@@ -257,7 +294,7 @@ namespace RI.Framework.Services.Logging.Writers
 		{
 			lock (this.SyncRoot)
 			{
-				if (this.CurrentWriter == null)
+				if ((this.CurrentWriter == null) || (this.CurrentStream == null))
 				{
 					throw new ObjectDisposedException(nameof(DirectoryLogWriter));
 				}
@@ -285,9 +322,7 @@ namespace RI.Framework.Services.Logging.Writers
 
 					LogLocator.LogDebug(this.GetType().Name, "Cleaning up old log directory: {0}", directory);
 
-					throw new NotImplementedException("TEST THIS FIRST !!!");
-					//TODO: Test this
-					//Directory.Delete(directory, true);
+					Directory.Delete(directory, true);
 				}
 			}
 		}
@@ -298,7 +333,7 @@ namespace RI.Framework.Services.Logging.Writers
 		{
 			lock (this.SyncRoot)
 			{
-				if (this.CurrentWriter != null)
+				if ((this.CurrentWriter != null) && (this.CurrentStream != null))
 				{
 					try
 					{
@@ -340,6 +375,12 @@ namespace RI.Framework.Services.Logging.Writers
 						}
 
 						this.CurrentWriter.Flush();
+#if PLATFORM_NET
+						this.CurrentStream.Flush(true);
+#endif
+#if PLATFORM_UNITY
+						this.CurrentStream.Flush();
+#endif
 					}
 					catch
 					{

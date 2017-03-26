@@ -29,7 +29,6 @@ namespace RI.Framework.Services.Resources
 	///         See <see cref="IResourceService" /> for more details.
 	///     </para>
 	/// </remarks>
-	/// TODO: Make StringComparer for resource names and resource set IDs globally available
 	public sealed class ResourceService : IResourceService, IImporting
 	{
 		#region Instance Constructor/Destructor

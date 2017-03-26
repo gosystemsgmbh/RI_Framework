@@ -39,6 +39,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)Mathematic\Test_Statistics.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mocks\RENP.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mocks\VENP.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\Mock_Writer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\Test_DirectoryLogWriter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\Test_LogService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Modularization\Mock_Module.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Modularization\Test_ModuleService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Mock_States.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Test_StateMachine.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TestAssertionException.cs" />
