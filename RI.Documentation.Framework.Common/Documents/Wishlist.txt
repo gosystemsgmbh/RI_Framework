@@ -38,10 +38,11 @@ Tests
 Utilities
 ---------
 
+ + (Common) AsDouble
+ + (Common) AsSingle
+ + (Common) NumericExtensions
+ + (Common) Rounding extensions for double, float, and decimal (including financial rounding)
  + (Common) MagicThread clone
-
- - (Common) DecimalExtensions (including: FinancialRounding)
- - (Common) Rounding extensions for double, float, and decimal
 
  - (Common) RandomExtensions: NextBytes with max and min/max overload
  - (Common) RandomExtensions: FillStream with max and min/max overload
@@ -295,8 +296,6 @@ Data
 Mathematic
 ----------
 
- - (Common) AsDouble
- - (Common) AsSingle
  - (Common) Aggregate extensions for numerical types (byte, short, int, long, double, float), including statistics (min, max, sum, average, median, RMS, count)
 
  - (Common) NonlinearController
