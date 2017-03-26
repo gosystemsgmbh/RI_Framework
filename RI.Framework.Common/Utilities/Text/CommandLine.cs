@@ -215,7 +215,7 @@ namespace RI.Framework.Utilities.Text
 					else
 					{
 						string literal = CommandLine.ReadUntil(commandLine, ref i1, out eos, (v, p) => (char.IsWhiteSpace(v[p])));
-						if (!literal.IsEmpty())
+						if (!literal.IsEmptyOrWhitespace())
 						{
 							literalList.Add(literal.Unescape().Trim());
 
@@ -383,7 +383,7 @@ namespace RI.Framework.Utilities.Text
 			{
 				executable = null;
 			}
-			else if (this.Executable.IsEmpty())
+			else if (this.Executable.IsEmptyOrWhitespace())
 			{
 				executable = null;
 			}
@@ -476,7 +476,7 @@ namespace RI.Framework.Utilities.Text
 
 		private string BuildValueOrKey (string valueOrKey)
 		{
-			bool encapsulate = valueOrKey.Contains('\"') || valueOrKey.ContainsWhitespace() || valueOrKey.IsEmpty();
+			bool encapsulate = valueOrKey.Contains('\"') || valueOrKey.ContainsWhitespace() || valueOrKey.IsEmptyOrWhitespace();
 			valueOrKey = valueOrKey.Replace("\"", "\\\"");
 			if (encapsulate)
 			{

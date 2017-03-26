@@ -33,6 +33,7 @@ Tests
 
  + Services (Common + Unity)
  + State Machines (Unity)
+ + Utilities (StringExtensions: null, empty, whitespace)
 
 
 Utilities
@@ -48,8 +49,6 @@ Utilities
 
  - (Common) TextReaderExtensions
  - (Common) TextWriterExtensions
-
- + (Common) StringExtensions: NormalizeNewLines
 
  # (Common) ThreadDispatcherSynchronizationContext
  - (Common) ThreadDispatcher: Priority queue
@@ -288,6 +287,7 @@ Data
  - (.NET) EntityView: Make collection update strategy configurable (clear vs. create new)
 
  # (SQLite) SQLiteDatabaseManager: Move script chains to IDatabaseManager
+ # (SQLite) Collations: Use proper naming (null, empty, whitespaces)
 
  - (.NET) IDatabaseManager: Support for creating connections when state is Old
  - (.NET) IDatabaseManager: Switch from strings in chains to actual chain objects

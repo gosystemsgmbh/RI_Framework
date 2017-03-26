@@ -34,7 +34,7 @@ namespace RI.Framework.IO.INI.Elements
 				throw new ArgumentNullException(nameof(name));
 			}
 
-			if (name.IsEmpty())
+			if (name.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(name));
 			}
@@ -82,7 +82,7 @@ namespace RI.Framework.IO.INI.Elements
 					throw new ArgumentNullException(nameof(value));
 				}
 
-				if (value.IsEmpty())
+				if (value.IsEmptyOrWhitespace())
 				{
 					throw new EmptyStringArgumentException(nameof(value));
 				}

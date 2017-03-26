@@ -102,7 +102,7 @@ namespace RI.Framework.IO.Serial
 				throw new ArgumentNullException(nameof(str));
 			}
 
-			if (str.IsEmpty())
+			if (str.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(str));
 			}
@@ -140,7 +140,7 @@ namespace RI.Framework.IO.Serial
 				return false;
 			}
 
-			if (str.IsEmpty())
+			if (str.IsEmptyOrWhitespace())
 			{
 				instance = null;
 				return false;
@@ -210,7 +210,7 @@ namespace RI.Framework.IO.Serial
 				throw new ArgumentNullException(nameof(portName));
 			}
 
-			if (portName.IsEmpty())
+			if (portName.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(portName));
 			}

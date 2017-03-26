@@ -200,7 +200,7 @@ namespace RI.Framework.IO.INI
 				throw new ArgumentNullException(nameof(sectionName));
 			}
 
-			if (sectionName.IsEmpty())
+			if (sectionName.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(sectionName));
 			}
@@ -269,7 +269,7 @@ namespace RI.Framework.IO.INI
 				throw new ArgumentNullException(nameof(name));
 			}
 
-			if (name.IsEmpty())
+			if (name.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(name));
 			}

@@ -108,7 +108,7 @@ namespace RI.Framework.Data.Repository
 		/// </remarks>
 		public void AddEntityError (string error)
 		{
-			if (error.IsNullOrEmpty())
+			if (error.IsNullOrEmptyOrWhitespace())
 			{
 				return;
 			}
@@ -135,12 +135,12 @@ namespace RI.Framework.Data.Repository
 				throw new ArgumentNullException(nameof(property));
 			}
 
-			if (property.IsEmpty())
+			if (property.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(property));
 			}
 
-			if (error.IsNullOrEmpty())
+			if (error.IsNullOrEmptyOrWhitespace())
 			{
 				return;
 			}

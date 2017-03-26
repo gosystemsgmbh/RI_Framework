@@ -226,23 +226,23 @@ namespace RI.Framework.Utilities.Wpf
 
 			CrashDialogWindow dialog = new CrashDialogWindow();
 
-			if (!this.TextTitle.IsNullOrEmpty())
+			if (!this.TextTitle.IsNullOrEmptyOrWhitespace())
 			{
 				dialog.Title = this.TextTitle;
 			}
-			if (!this.TextLabel.IsNullOrEmpty())
+			if (!this.TextLabel.IsNullOrEmptyOrWhitespace())
 			{
 				dialog.Label.Content = this.TextLabel;
 			}
-			if (!this.TextReportConsent.IsNullOrEmpty())
+			if (!this.TextReportConsent.IsNullOrEmptyOrWhitespace())
 			{
 				dialog.ReportConsent.Content = this.TextReportConsent;
 			}
-			if (!this.TextReportDetails.IsNullOrEmpty())
+			if (!this.TextReportDetails.IsNullOrEmptyOrWhitespace())
 			{
 				dialog.ReportDetails.Text = this.TextReportDetails;
 			}
-			if (!this.TextButton.IsNullOrEmpty())
+			if (!this.TextButton.IsNullOrEmptyOrWhitespace())
 			{
 				dialog.Button.Content = this.TextButton;
 			}

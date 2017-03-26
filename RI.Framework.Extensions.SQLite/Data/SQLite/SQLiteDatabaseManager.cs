@@ -47,7 +47,7 @@ namespace RI.Framework.Data.SQLite
 				throw new ArgumentNullException(nameof(connectionString));
 			}
 
-			if (connectionString.IsEmpty())
+			if (connectionString.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(connectionString));
 			}
@@ -310,7 +310,7 @@ namespace RI.Framework.Data.SQLite
 				handler(this, eventArgs);
 				script = eventArgs.Script;
 			}
-			return script.ToNullIfNullOrEmpty();
+			return script.ToNullIfNullOrEmptyOrWhitespace();
 		}
 
 		private void RegisterCollations (SQLiteConnection connection)
@@ -418,7 +418,7 @@ namespace RI.Framework.Data.SQLite
 					throw new ArgumentNullException(nameof(value));
 				}
 
-				if (value.IsEmpty())
+				if (value.IsEmptyOrWhitespace())
 				{
 					throw new EmptyStringArgumentException(nameof(value));
 				}
@@ -486,7 +486,7 @@ namespace RI.Framework.Data.SQLite
 					{
 						foreach (string commandText in this.CachedCleanupScriptChain)
 						{
-							if (commandText.IsNullOrEmpty())
+							if (commandText.IsNullOrEmptyOrWhitespace())
 							{
 								continue;
 							}
@@ -553,7 +553,7 @@ namespace RI.Framework.Data.SQLite
 				throw new InvalidOperationException("Script in SQLite version script chain is null.");
 			}
 
-			if (this.VersionScriptChain.Any(x => x.IsEmpty()))
+			if (this.VersionScriptChain.Any(x => x.IsEmptyOrWhitespace()))
 			{
 				throw new InvalidOperationException("Script in SQLite version script chain is empty.");
 			}
@@ -563,7 +563,7 @@ namespace RI.Framework.Data.SQLite
 				throw new InvalidOperationException("SQLite version script chain has no scripts.");
 			}
 
-			if (this.UpgradeScriptChain.Any(x => x.IsEmpty()))
+			if (this.UpgradeScriptChain.Any(x => x.IsEmptyOrWhitespace()))
 			{
 				throw new InvalidOperationException("Script in SQLite upgrade script chain is empty.");
 			}

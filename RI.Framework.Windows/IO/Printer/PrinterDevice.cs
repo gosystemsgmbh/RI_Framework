@@ -164,7 +164,7 @@ namespace RI.Framework.IO.Printer
 		/// <value>
 		/// The physical location of the printer or null if no location is available.
 		/// </value>
-		public string Location => this.NativePrinterInfo.pLocation.ToNullIfNullOrEmpty();
+		public string Location => this.NativePrinterInfo.pLocation.ToNullIfNullOrEmptyOrWhitespace();
 
 		/// <summary>
 		/// Gets the comment of the printer.
@@ -172,7 +172,7 @@ namespace RI.Framework.IO.Printer
 		/// <value>
 		/// The comment of the printer (a brief description) or null if no comment is available.
 		/// </value>
-		public string Comment => this.NativePrinterInfo.pComment.ToNullIfNullOrEmpty();
+		public string Comment => this.NativePrinterInfo.pComment.ToNullIfNullOrEmptyOrWhitespace();
 
 		/// <summary>
 		/// Gets the name of the print processor.

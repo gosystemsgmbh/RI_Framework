@@ -86,7 +86,7 @@ namespace RI.Framework.Composition.Catalogs
 				throw new ArgumentNullException(nameof(filePattern));
 			}
 
-			if (filePattern.IsEmpty())
+			if (filePattern.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(filePattern));
 			}

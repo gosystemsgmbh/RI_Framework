@@ -71,7 +71,7 @@ namespace RI.Framework.Composition.Model
 				throw new ArgumentNullException(nameof(name));
 			}
 
-			if (name.IsEmpty())
+			if (name.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(name));
 			}

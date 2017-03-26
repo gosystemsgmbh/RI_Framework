@@ -60,7 +60,7 @@ namespace RI.Framework.Utilities.Windows
 				throw new ArgumentNullException(nameof(command));
 			}
 
-			if (command.IsEmpty())
+			if (command.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(command));
 			}
@@ -117,7 +117,7 @@ namespace RI.Framework.Utilities.Windows
 				throw new ArgumentNullException(nameof(command));
 			}
 
-			if (command.IsEmpty())
+			if (command.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(command));
 			}
@@ -514,7 +514,7 @@ namespace RI.Framework.Utilities.Windows
 				throw new ArgumentNullException(nameof(url));
 			}
 
-			if (url.IsEmpty())
+			if (url.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(url));
 			}

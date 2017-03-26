@@ -165,7 +165,7 @@ namespace RI.Framework.Services.Resources.Sources
 			if (settings.ContainsKey(nameKey))
 			{
 				string value = settings[nameKey];
-				if (!value.IsEmpty())
+				if (!value.IsEmptyOrWhitespace())
 				{
 					this.Log(LogLevel.Debug, "Settings value: {0}={1} @ {2}", nameKey, value, this.SettingsFile);
 					this.Name = value;
@@ -187,7 +187,7 @@ namespace RI.Framework.Services.Resources.Sources
 			if (settings.ContainsKey(groupKey))
 			{
 				string value = settings[groupKey];
-				if (!value.IsEmpty())
+				if (!value.IsEmptyOrWhitespace())
 				{
 					this.Log(LogLevel.Debug, "Settings value: {0}={1} @ {2}", groupKey, value, this.SettingsFile);
 					this.Group = value;
@@ -396,7 +396,7 @@ namespace RI.Framework.Services.Resources.Sources
 				throw new ArgumentNullException(nameof(name));
 			}
 
-			if (name.IsEmpty())
+			if (name.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(name));
 			}

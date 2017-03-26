@@ -331,7 +331,7 @@ namespace RI.Framework.Services.Logging.Writers
 						{
 							foreach (string subsequentLine in subsequentLines)
 							{
-								if (!subsequentLine.IsEmpty())
+								if (!subsequentLine.IsEmptyOrWhitespace())
 								{
 									this.CurrentWriter.Write(">".PadRight(headerLength, ' '));
 									this.CurrentWriter.WriteLine(subsequentLine);

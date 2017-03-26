@@ -164,7 +164,7 @@ namespace RI.Framework.IO.Paths
 			PathType? type = null;
 			PathError error = PathError.None;
 
-			if (path.IsEmpty())
+			if (path.IsEmptyOrWhitespace())
 			{
 				type = PathType.Invalid;
 				error = PathError.Empty;

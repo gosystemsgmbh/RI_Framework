@@ -482,7 +482,7 @@ namespace RI.Framework.Data.Repository.Views
 		#region Interface: IDataErrorInfo
 
 		/// <inheritdoc />
-		string IDataErrorInfo.Error => this.Errors?.EntityErrors?.Join(Environment.NewLine)?.ToNullIfNullOrEmpty()?.Trim();
+		string IDataErrorInfo.Error => this.Errors?.EntityErrors?.Join(Environment.NewLine)?.ToNullIfNullOrEmptyOrWhitespace()?.Trim();
 
 		/// <inheritdoc />
 		string IDataErrorInfo.this [string columnName]
@@ -494,7 +494,7 @@ namespace RI.Framework.Data.Repository.Views
 					return null;
 				}
 
-				if (columnName.IsNullOrEmpty())
+				if (columnName.IsNullOrEmptyOrWhitespace())
 				{
 					return ((IDataErrorInfo)this).Error;
 				}
@@ -504,7 +504,7 @@ namespace RI.Framework.Data.Repository.Views
 					return null;
 				}
 
-				return this.Errors.PropertyErrors[columnName].Join(Environment.NewLine).ToNullIfNullOrEmpty()?.Trim();
+				return this.Errors.PropertyErrors[columnName].Join(Environment.NewLine).ToNullIfNullOrEmptyOrWhitespace()?.Trim();
 			}
 		}
 
@@ -554,7 +554,7 @@ namespace RI.Framework.Data.Repository.Views
 				return new string[0];
 			}
 
-			if (propertyName.IsNullOrEmpty())
+			if (propertyName.IsNullOrEmptyOrWhitespace())
 			{
 				return this.Errors.EntityErrors.ToArray();
 			}

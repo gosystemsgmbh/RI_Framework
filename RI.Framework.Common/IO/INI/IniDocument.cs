@@ -378,7 +378,7 @@ namespace RI.Framework.IO.INI
 				throw new ArgumentNullException(nameof(sectionName));
 			}
 
-			if (sectionName.IsEmpty())
+			if (sectionName.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(sectionName));
 			}
@@ -419,7 +419,7 @@ namespace RI.Framework.IO.INI
 				throw new ArgumentNullException(nameof(name));
 			}
 
-			if (name.IsEmpty())
+			if (name.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(name));
 			}
@@ -493,7 +493,7 @@ namespace RI.Framework.IO.INI
 				throw new ArgumentNullException(nameof(name));
 			}
 
-			if (name.IsEmpty())
+			if (name.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(name));
 			}
@@ -760,7 +760,7 @@ namespace RI.Framework.IO.INI
 				throw new ArgumentNullException(nameof(name));
 			}
 
-			if (name.IsEmpty())
+			if (name.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(name));
 			}
@@ -1323,7 +1323,7 @@ namespace RI.Framework.IO.INI
 				throw new ArgumentNullException(nameof(name));
 			}
 
-			if (name.IsEmpty())
+			if (name.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(name));
 			}
@@ -1569,25 +1569,25 @@ namespace RI.Framework.IO.INI
 		/// <summary>
 		///     Sorts the INI elements in a specified section.
 		/// </summary>
-		/// <param name="section"> The name of the section (can be null). </param>
+		/// <param name="sectionName"> The name of the section (can be null). </param>
 		/// <param name="comparer"> The comparer used to compare INI elements. </param>
 		/// <remarks>
 		///     <para>
 		///         All elements in all sections matching the specified section name are sorted.
-		///         If <paramref name="section" /> is null, the elements outside any sections are sorted.
+		///         If <paramref name="sectionName" /> is null, the elements outside any sections are sorted.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="comparer" /> is null. </exception>
-		public void SortElements (string section, IComparer<IniElement> comparer)
+		public void SortElements (string sectionName, IComparer<IniElement> comparer)
 		{
-			section = section.ToNullIfNullOrEmpty();
+			sectionName = sectionName.ToNullIfNullOrEmpty();
 
 			if (comparer == null)
 			{
 				throw new ArgumentNullException(nameof(comparer));
 			}
 
-			this.SortElementsInternal(section, comparer, false);
+			this.SortElementsInternal(sectionName, comparer, false);
 		}
 
 		/// <summary>

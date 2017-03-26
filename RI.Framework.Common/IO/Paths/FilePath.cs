@@ -301,7 +301,7 @@ namespace RI.Framework.IO.Paths
 				throw new ArgumentNullException(nameof(fileName));
 			}
 
-			if (fileName.IsEmpty())
+			if (fileName.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(fileName));
 			}

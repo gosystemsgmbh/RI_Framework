@@ -80,7 +80,7 @@ namespace RI.Framework.Data.SQLite.Functions
 				return false;
 			}
 
-			return ((string)arg).IsNullOrEmpty();
+			return ((string)arg).IsNullOrEmptyOrWhitespace();
 		}
 
 		#endregion

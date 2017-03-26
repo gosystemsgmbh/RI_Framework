@@ -134,7 +134,7 @@ namespace RI.Framework.Services.Resources.Converters
 				throw new ArgumentNullException(nameof(extension));
 			}
 
-			if (extension.IsEmpty())
+			if (extension.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(extension));
 			}

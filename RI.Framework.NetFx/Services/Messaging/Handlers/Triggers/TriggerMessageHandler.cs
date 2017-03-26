@@ -212,7 +212,7 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 					throw new ArgumentNullException(nameof(name));
 				}
 
-				if (name.IsEmpty())
+				if (name.IsEmptyOrWhitespace())
 				{
 					throw new EmptyStringArgumentException(nameof(name));
 				}

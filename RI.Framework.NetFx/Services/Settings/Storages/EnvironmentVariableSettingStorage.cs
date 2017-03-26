@@ -51,7 +51,7 @@ namespace RI.Framework.Services.Settings.Storages
 		public EnvironmentVariableSettingStorage (string prefix)
 		{
 			this.Prefix = prefix ?? string.Empty;
-			this.Prefix = this.Prefix.IsEmpty() ? null : this.Prefix.Trim();
+			this.Prefix = this.Prefix.IsEmptyOrWhitespace() ? null : this.Prefix.Trim();
 		}
 
 		#endregion
@@ -87,7 +87,7 @@ namespace RI.Framework.Services.Settings.Storages
 				throw new ArgumentNullException(nameof(name));
 			}
 
-			if (name.IsEmpty())
+			if (name.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(name));
 			}
@@ -103,7 +103,7 @@ namespace RI.Framework.Services.Settings.Storages
 				throw new ArgumentNullException(nameof(name));
 			}
 
-			if (name.IsEmpty())
+			if (name.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(name));
 			}

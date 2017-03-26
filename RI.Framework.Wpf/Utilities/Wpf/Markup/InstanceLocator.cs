@@ -38,7 +38,7 @@ namespace RI.Framework.Utilities.Wpf.Markup
 				return null;
 			}
 
-			if (name.IsEmpty())
+			if (name.IsEmptyOrWhitespace())
 			{
 				return null;
 			}

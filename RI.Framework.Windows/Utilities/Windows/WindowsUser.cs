@@ -299,7 +299,7 @@ namespace RI.Framework.Utilities.Windows
 				throw new ArgumentNullException(nameof(domain));
 			}
 
-			if (domain.IsEmpty() || string.Equals(domain.Trim(), ".", StringComparison.InvariantCultureIgnoreCase))
+			if (domain.IsEmptyOrWhitespace() || string.Equals(domain.Trim(), ".", StringComparison.InvariantCultureIgnoreCase))
 			{
 				return WindowsUser.GetLocalDomain();
 			}
@@ -322,7 +322,7 @@ namespace RI.Framework.Utilities.Windows
 				throw new ArgumentNullException(nameof(user));
 			}
 
-			if (user.IsEmpty() || string.Equals(user.Trim(), ".", StringComparison.InvariantCultureIgnoreCase))
+			if (user.IsEmptyOrWhitespace() || string.Equals(user.Trim(), ".", StringComparison.InvariantCultureIgnoreCase))
 			{
 				//Do not use CurrentUser because it would call ResolveUser again
 				return WindowsUser.GetCurrentUser();
@@ -352,7 +352,7 @@ namespace RI.Framework.Utilities.Windows
 				throw new ArgumentNullException(nameof(logon));
 			}
 
-			if (logon.IsEmpty())
+			if (logon.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(logon));
 			}

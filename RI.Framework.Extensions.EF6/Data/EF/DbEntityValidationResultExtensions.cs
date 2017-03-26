@@ -39,7 +39,7 @@ namespace RI.Framework.Data.EF
 			RepositorySetErrors errors = new RepositorySetErrors();
 			foreach (DbValidationError result in entityValidationResult.ValidationErrors)
 			{
-				if (result.PropertyName.IsNullOrEmpty())
+				if (result.PropertyName.IsNullOrEmptyOrWhitespace())
 				{
 					errors.AddEntityError(result.ErrorMessage);
 				}

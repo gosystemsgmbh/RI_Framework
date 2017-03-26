@@ -312,6 +312,18 @@ namespace RI.Framework.Utilities
 		}
 
 		/// <summary>
+		///     Determines whether a string is null.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     true if the string is null, false otherwise.
+		/// </returns>
+		public static bool IsNull (this string str)
+		{
+			return str == null;
+		}
+
+		/// <summary>
 		///     Determines whether a string is empty.
 		/// </summary>
 		/// <param name="str"> The string. </param>
@@ -320,12 +332,74 @@ namespace RI.Framework.Utilities
 		/// </returns>
 		/// <remarks>
 		///     <para>
-		///         A string is considered empty if has a length of zero or contains only whitespaces.
+		///         A string is considered empty if has a length of zero.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
-		public static bool IsEmpty (this string str)
-		{//TODO: Rename to IsWhitespace
+		public static bool IsEmpty(this string str)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			return str.Length == 0;
+		}
+
+		/// <summary>
+		///     Determines whether a string consists only of whitespaces.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     true if the string consists only of whitespaces, false otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         A string is considered consisting only of whitespaces if it is not empty and only has whitespace characters.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static bool IsWhitespace (this string str)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			if (str.Length == 0)
+			{
+				return false;
+			}
+
+			for (int i1 = 0; i1 < str.Length; i1++)
+			{
+				if (!char.IsWhiteSpace(str[i1]))
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		/// <summary>
+		///     Determines whether a string is empty or consists only of whitespace.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     true if the string is empty or consists only of whitespaces, false otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         A string is considered empty if has a length of zero.
+		///     </para>
+		///     <para>
+		///         A string is considered consisting only of whitespaces if it is not empty and only has whitespace characters.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static bool IsEmptyOrWhitespace (this string str)
+		{
 			if (str == null)
 			{
 				throw new ArgumentNullException(nameof(str));
@@ -352,21 +426,83 @@ namespace RI.Framework.Utilities
 		/// </summary>
 		/// <param name="str"> The string. </param>
 		/// <returns>
-		///     true if the string is null or an empty string, false otherwise.
+		///     true if the string is null or empty, false otherwise.
 		/// </returns>
 		/// <remarks>
 		///     <para>
-		///         A string is considered empty if has a length of zero or contains only whitespaces.
+		///         A string is considered empty if has a length of zero.
 		///     </para>
 		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
 		public static bool IsNullOrEmpty (this string str)
-		{//TODO: Rename to IsNullOrWhitespace
+		{
 			if (str == null)
 			{
 				return true;
 			}
 
 			return str.IsEmpty();
+		}
+
+		/// <summary>
+		///     Determines whether a string is null or consists only of whitespaces.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     true if the string is null or consists only of whitespaces, false otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         A string is considered consisting only of whitespaces if it is not empty and only has whitespace characters.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static bool IsNullOrWhitespaces(this string str)
+		{
+			if (str == null)
+			{
+				return true;
+			}
+
+			return str.IsWhitespace();
+		}
+
+		/// <summary>
+		///     Determines whether a string is null, empty, or consists only of whitespace.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     true if the string is null, empty, or consists only of whitespaces, false otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         A string is considered empty if has a length of zero.
+		///     </para>
+		///     <para>
+		///         A string is considered consisting only of whitespaces if it is not empty and only has whitespace characters.
+		///     </para>
+		/// </remarks>
+		public static bool IsNullOrEmptyOrWhitespace(this string str)
+		{
+			if (str == null)
+			{
+				return true;
+			}
+
+			if (str.Length == 0)
+			{
+				return true;
+			}
+
+			for (int i1 = 0; i1 < str.Length; i1++)
+			{
+				if (!char.IsWhiteSpace(str[i1]))
+				{
+					return false;
+				}
+			}
+
+			return true;
 		}
 
 		/// <summary>
@@ -510,11 +646,8 @@ namespace RI.Framework.Utilities
 		/// </returns>
 		/// <remarks>
 		///     <para>
-		///         Normalizing line breaks means that all <c> CRLF </c>, <c> CR </c>, and <c> LF </c> are replaced with the value of <see cref="Environment.NewLine" />.
+		///         Normalizing line breaks means that all <c> CRLF </c> and <c> LF </c> are replaced with the value of <see cref="Environment.NewLine" />.
 		///     </para>
-		///     <note type="important">
-		///         Be aware that normalization of line breaks destroys all carriage returns (<c> CR </c>) which are not part of a line break!
-		///     </note>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
 		public static string NormalizeLineBreaks (this string str)
@@ -909,7 +1042,7 @@ namespace RI.Framework.Utilities
 
 			if ((options & StringSplitOptions.RemoveEmptyEntries) == StringSplitOptions.RemoveEmptyEntries)
 			{
-				pieces.RemoveWhere(x => x.IsEmpty());
+				pieces.RemoveWhere(x => x.IsEmptyOrWhitespace());
 			}
 
 			return pieces.ToArray();
@@ -1669,21 +1802,36 @@ namespace RI.Framework.Utilities
 		/// </summary>
 		/// <param name="str"> The string. </param>
 		/// <returns>
-		///     null if the string is null or an empty string, false otherwise.
+		///     null if the string is null or empty, the original string otherwise.
 		/// </returns>
 		/// <remarks>
 		///     <para>
-		///         A string is considered empty if has a length of zero or contains only whitespaces.
+		///         A string is considered empty if has a length of zero.
 		///     </para>
 		/// </remarks>
 		public static string ToNullIfNullOrEmpty (this string str)
 		{
-			if (str == null)
-			{
-				return null;
-			}
+			return str.IsNullOrEmpty() ? null : str;
+		}
 
-			return str.IsEmpty() ? null : str;
+		/// <summary>
+		///     Returns null if a string is null, empty, or consists only of whitespaces.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     null if the string is null, empty, or consists only of whitespaces, the original string otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         A string is considered empty if has a length of zero.
+		///     </para>
+		///     <para>
+		///         A string is considered consisting only of whitespaces if it is not empty and only has whitespace characters.
+		///     </para>
+		/// </remarks>
+		public static string ToNullIfNullOrEmptyOrWhitespace(this string str)
+		{
+			return str.IsNullOrEmptyOrWhitespace() ? null : str;
 		}
 
 		/// <summary>
@@ -1691,21 +1839,36 @@ namespace RI.Framework.Utilities
 		/// </summary>
 		/// <param name="str"> The string. </param>
 		/// <returns>
-		///     An empty string if the string is null or an empty string, false otherwise.
+		///    <see cref="string.Empty"/> if the string is null or empty, the original string otherwise.
 		/// </returns>
 		/// <remarks>
 		///     <para>
-		///         A string is considered empty if has a length of zero or contains only whitespaces.
+		///         A string is considered empty if has a length of zero.
 		///     </para>
 		/// </remarks>
 		public static string ToEmptyIfNullOrEmpty(this string str)
 		{
-			if (str == null)
-			{
-				return string.Empty;
-			}
+			return str.IsNullOrEmpty() ? string.Empty : str;
+		}
 
-			return str.IsEmpty() ? string.Empty : str;
+		/// <summary>
+		///     Returns an empty string if a string is null, empty, or consists only of whitespaces.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     <see cref="string.Empty"/> if the string is null, empty, or consists only of whitespaces, the original string otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         A string is considered empty if has a length of zero.
+		///     </para>
+		///     <para>
+		///         A string is considered consisting only of whitespaces if it is not empty and only has whitespace characters.
+		///     </para>
+		/// </remarks>
+		public static string ToEmptyIfNullOrEmptyOrWhitespace(this string str)
+		{
+			return str.IsNullOrEmptyOrWhitespace() ? string.Empty : str;
 		}
 
 		/// <summary>

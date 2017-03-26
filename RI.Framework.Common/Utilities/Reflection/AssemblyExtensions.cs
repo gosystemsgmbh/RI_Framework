@@ -161,7 +161,7 @@ namespace RI.Framework.Utilities.Reflection
 				return null;
 			}
 
-			if (location.IsEmpty())
+			if (location.IsEmptyOrWhitespace())
 			{
 				return null;
 			}

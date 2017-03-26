@@ -38,7 +38,7 @@ namespace RI.Framework.Utilities.Windows
 				throw new ArgumentNullException(nameof(user));
 			}
 
-			if (user.IsEmpty())
+			if (user.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(user));
 			}
@@ -79,7 +79,7 @@ namespace RI.Framework.Utilities.Windows
 				throw new ArgumentNullException(nameof(user));
 			}
 
-			if (user.IsEmpty())
+			if (user.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(user));
 			}

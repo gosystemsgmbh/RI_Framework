@@ -158,7 +158,7 @@ namespace RI.Framework.IO.Printer
 				throw new ArgumentNullException(nameof(documentName));
 			}
 
-			if (documentName.IsEmpty())
+			if (documentName.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(documentName));
 			}

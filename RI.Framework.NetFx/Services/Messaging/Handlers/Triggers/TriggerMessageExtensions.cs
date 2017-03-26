@@ -37,7 +37,7 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 				throw new ArgumentNullException(nameof(triggerName));
 			}
 
-			if (triggerName.IsEmpty())
+			if (triggerName.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(triggerName));
 			}
@@ -47,7 +47,7 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 				throw new ArgumentNullException(nameof(subscriberId));
 			}
 
-			if (subscriberId.IsEmpty())
+			if (subscriberId.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(subscriberId));
 			}
@@ -79,7 +79,7 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 				throw new ArgumentNullException(nameof(triggerName));
 			}
 
-			if (triggerName.IsEmpty())
+			if (triggerName.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(triggerName));
 			}
@@ -89,7 +89,7 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 				throw new ArgumentNullException(nameof(subscriberId));
 			}
 
-			if (subscriberId.IsEmpty())
+			if (subscriberId.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(subscriberId));
 			}
@@ -244,7 +244,7 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 				throw new ArgumentNullException(nameof(triggerName));
 			}
 
-			if (triggerName.IsEmpty())
+			if (triggerName.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(triggerName));
 			}
@@ -285,7 +285,7 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 				throw new ArgumentNullException(nameof(triggerName));
 			}
 
-			if (triggerName.IsEmpty())
+			if (triggerName.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(triggerName));
 			}
@@ -372,7 +372,7 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 				throw new ArgumentNullException(nameof(subscriberId));
 			}
 
-			if (subscriberId.IsEmpty())
+			if (subscriberId.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(subscriberId));
 			}
@@ -399,7 +399,7 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 				throw new ArgumentNullException(nameof(triggerName));
 			}
 
-			if (triggerName.IsEmpty())
+			if (triggerName.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(triggerName));
 			}
@@ -434,7 +434,7 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 				throw new ArgumentNullException(nameof(triggerName));
 			}
 
-			if (triggerName.IsEmpty())
+			if (triggerName.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(triggerName));
 			}
@@ -470,7 +470,7 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 				throw new ArgumentNullException(nameof(triggerName));
 			}
 
-			if (triggerName.IsEmpty())
+			if (triggerName.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(triggerName));
 			}
@@ -480,7 +480,7 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 				throw new ArgumentNullException(nameof(subscriberId));
 			}
 
-			if (subscriberId.IsEmpty())
+			if (subscriberId.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(subscriberId));
 			}

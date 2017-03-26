@@ -391,42 +391,42 @@ namespace RI.Test.Framework.Utilities
 		[TestMethod]
 		public void IsEmpty_Test ()
 		{
-			if (!string.Empty.IsEmpty())
+			if (!string.Empty.IsEmptyOrWhitespace())
 			{
 				throw new TestAssertionException();
 			}
 
-			if (!"".IsEmpty())
+			if (!"".IsEmptyOrWhitespace())
 			{
 				throw new TestAssertionException();
 			}
 
-			if (!" ".IsEmpty())
+			if (!" ".IsEmptyOrWhitespace())
 			{
 				throw new TestAssertionException();
 			}
 
-			if (!"  ".IsEmpty())
+			if (!"  ".IsEmptyOrWhitespace())
 			{
 				throw new TestAssertionException();
 			}
 
-			if (!"\f\r\n\t\v".IsEmpty())
+			if (!"\f\r\n\t\v".IsEmptyOrWhitespace())
 			{
 				throw new TestAssertionException();
 			}
 
-			if ("A".IsEmpty())
+			if ("A".IsEmptyOrWhitespace())
 			{
 				throw new TestAssertionException();
 			}
 
-			if ("ABC".IsEmpty())
+			if ("ABC".IsEmptyOrWhitespace())
 			{
 				throw new TestAssertionException();
 			}
 
-			if (" A ".IsEmpty())
+			if (" A ".IsEmptyOrWhitespace())
 			{
 				throw new TestAssertionException();
 			}
@@ -1367,47 +1367,47 @@ namespace RI.Test.Framework.Utilities
 		[TestMethod]
 		public void IsNullOrEmpty_Test()
 		{
-			if (!((string)null).IsNullOrEmpty())
+			if (!((string)null).IsNullOrEmptyOrWhitespace())
 			{
 				throw new TestAssertionException();
 			}
 
-			if (!string.Empty.IsNullOrEmpty())
+			if (!string.Empty.IsNullOrEmptyOrWhitespace())
 			{
 				throw new TestAssertionException();
 			}
 
-			if (!"".IsNullOrEmpty())
+			if (!"".IsNullOrEmptyOrWhitespace())
 			{
 				throw new TestAssertionException();
 			}
 
-			if (!" ".IsNullOrEmpty())
+			if (!" ".IsNullOrEmptyOrWhitespace())
 			{
 				throw new TestAssertionException();
 			}
 
-			if (!"  ".IsNullOrEmpty())
+			if (!"  ".IsNullOrEmptyOrWhitespace())
 			{
 				throw new TestAssertionException();
 			}
 
-			if (!"\f\r\n\t\v".IsNullOrEmpty())
+			if (!"\f\r\n\t\v".IsNullOrEmptyOrWhitespace())
 			{
 				throw new TestAssertionException();
 			}
 
-			if ("A".IsNullOrEmpty())
+			if ("A".IsNullOrEmptyOrWhitespace())
 			{
 				throw new TestAssertionException();
 			}
 
-			if ("ABC".IsNullOrEmpty())
+			if ("ABC".IsNullOrEmptyOrWhitespace())
 			{
 				throw new TestAssertionException();
 			}
 
-			if (" A ".IsNullOrEmpty())
+			if (" A ".IsNullOrEmptyOrWhitespace())
 			{
 				throw new TestAssertionException();
 			}
@@ -2563,7 +2563,36 @@ namespace RI.Test.Framework.Utilities
 				throw new TestAssertionException();
 			}
 
+			if (" ".ToNullIfNullOrEmpty() == null)
+			{
+				throw new TestAssertionException();
+			}
+
 			if ("test".ToNullIfNullOrEmpty() == null)
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void ToNullIfNullOrEmptyOrWhitespace_Test()
+		{
+			if (((string)null).ToNullIfNullOrEmptyOrWhitespace() != null)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (string.Empty.ToNullIfNullOrEmptyOrWhitespace() != null)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (" ".ToNullIfNullOrEmptyOrWhitespace() != null)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("test".ToNullIfNullOrEmptyOrWhitespace() == null)
 			{
 				throw new TestAssertionException();
 			}
@@ -2582,7 +2611,36 @@ namespace RI.Test.Framework.Utilities
 				throw new TestAssertionException();
 			}
 
+			if (" ".ToEmptyIfNullOrEmpty() == string.Empty)
+			{
+				throw new TestAssertionException();
+			}
+
 			if ("test".ToEmptyIfNullOrEmpty() == string.Empty)
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void ToEmptyIfNullOrEmptyOrWhitespace_Test()
+		{
+			if (((string)null).ToEmptyIfNullOrEmptyOrWhitespace() != string.Empty)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (string.Empty.ToEmptyIfNullOrEmptyOrWhitespace() != string.Empty)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (" ".ToEmptyIfNullOrEmptyOrWhitespace() != string.Empty)
+			{
+				throw new TestAssertionException();
+			}
+
+			if ("test".ToEmptyIfNullOrEmptyOrWhitespace() == string.Empty)
 			{
 				throw new TestAssertionException();
 			}

@@ -347,7 +347,7 @@ namespace RI.Framework.IO.Paths
 				throw new ArgumentNullException(nameof(directoryName));
 			}
 
-			if (directoryName.IsEmpty())
+			if (directoryName.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(directoryName));
 			}

@@ -109,7 +109,7 @@ namespace RI.Framework.Composition
 				throw new ArgumentNullException(nameof(exportName));
 			}
 
-			if (exportName.IsEmpty())
+			if (exportName.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(exportName));
 			}
@@ -151,7 +151,7 @@ namespace RI.Framework.Composition
 				throw new ArgumentNullException(nameof(exportName));
 			}
 
-			if (exportName.IsEmpty())
+			if (exportName.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(exportName));
 			}
@@ -219,7 +219,7 @@ namespace RI.Framework.Composition
 				throw new ArgumentNullException(nameof(exportName));
 			}
 
-			if (exportName.IsEmpty())
+			if (exportName.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(exportName));
 			}
@@ -256,7 +256,7 @@ namespace RI.Framework.Composition
 				throw new ArgumentNullException(nameof(exportName));
 			}
 
-			if (exportName.IsEmpty())
+			if (exportName.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(exportName));
 			}

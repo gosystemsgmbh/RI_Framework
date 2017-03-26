@@ -107,7 +107,7 @@ namespace RI.Framework.Services.Regions
 				throw new ArgumentNullException(nameof(region));
 			}
 
-			if (region.IsEmpty())
+			if (region.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(region));
 			}
@@ -155,7 +155,7 @@ namespace RI.Framework.Services.Regions
 				throw new ArgumentNullException(nameof(region));
 			}
 
-			if (region.IsEmpty())
+			if (region.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(region));
 			}
@@ -190,7 +190,7 @@ namespace RI.Framework.Services.Regions
 				throw new ArgumentNullException(nameof(region));
 			}
 
-			if (region.IsEmpty())
+			if (region.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(region));
 			}
@@ -239,7 +239,7 @@ namespace RI.Framework.Services.Regions
 				throw new ArgumentNullException(nameof(region));
 			}
 
-			if (region.IsEmpty())
+			if (region.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(region));
 			}
@@ -263,7 +263,7 @@ namespace RI.Framework.Services.Regions
 				throw new ArgumentNullException(nameof(region));
 			}
 
-			if (region.IsEmpty())
+			if (region.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(region));
 			}
@@ -287,7 +287,7 @@ namespace RI.Framework.Services.Regions
 				throw new ArgumentNullException(nameof(region));
 			}
 
-			if (region.IsEmpty())
+			if (region.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(region));
 			}
@@ -317,7 +317,7 @@ namespace RI.Framework.Services.Regions
 				throw new ArgumentNullException(nameof(region));
 			}
 
-			if (region.IsEmpty())
+			if (region.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(region));
 			}
@@ -349,7 +349,7 @@ namespace RI.Framework.Services.Regions
 				throw new ArgumentNullException(nameof(region));
 			}
 
-			if (region.IsEmpty())
+			if (region.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(region));
 			}
@@ -373,7 +373,7 @@ namespace RI.Framework.Services.Regions
 				throw new ArgumentNullException(nameof(region));
 			}
 
-			if (region.IsEmpty())
+			if (region.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(region));
 			}
@@ -432,7 +432,7 @@ namespace RI.Framework.Services.Regions
 				throw new ArgumentNullException(nameof(region));
 			}
 
-			if (region.IsEmpty())
+			if (region.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(region));
 			}
@@ -461,7 +461,7 @@ namespace RI.Framework.Services.Regions
 				throw new ArgumentNullException(nameof(region));
 			}
 
-			if (region.IsEmpty())
+			if (region.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(region));
 			}
@@ -477,7 +477,7 @@ namespace RI.Framework.Services.Regions
 				throw new ArgumentNullException(nameof(region));
 			}
 
-			if (region.IsEmpty())
+			if (region.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(region));
 			}
@@ -525,7 +525,7 @@ namespace RI.Framework.Services.Regions
 				throw new ArgumentNullException(nameof(region));
 			}
 
-			if (region.IsEmpty())
+			if (region.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(region));
 			}
@@ -560,7 +560,7 @@ namespace RI.Framework.Services.Regions
 				throw new ArgumentNullException(nameof(region));
 			}
 
-			if (region.IsEmpty())
+			if (region.IsEmptyOrWhitespace())
 			{
 				throw new EmptyStringArgumentException(nameof(region));
 			}
