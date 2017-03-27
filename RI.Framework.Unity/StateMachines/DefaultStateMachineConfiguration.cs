@@ -16,7 +16,7 @@ namespace RI.Framework.StateMachines
 	/// By default, during construction, <see cref="DefaultStateMachineConfiguration"/> uses a <see cref="DispatcherServiceStateDispatcher"/> with <see cref="ServiceLocator"/>, a <see cref="StateResolver"/> with <see cref="ServiceLocator"/>, and a <see cref="StateCache"/>.
 	/// </para>
 	/// <para>
-	/// <see cref="DefaultStateMachineConfiguration"/> uses the same default values as <see cref="StateMachineConfiguration"/>, except for <see cref="StateMachineConfiguration.Dispatcher"/> where an instance of <see cref="DispatcherServiceStateDispatcher"/> is used.
+	/// <see cref="DefaultStateMachineConfiguration"/> uses the same default values as <see cref="StateMachineConfiguration"/>, except for <see cref="StateMachineConfiguration.Dispatcher"/> where an instance of <see cref="DispatcherServiceStateDispatcher"/> is used and <see cref="StateMachineConfiguration.Resolver"/> where an instance of <see cref="StateResolver"/> is used.
 	/// Therefore, <see cref="DefaultStateMachineConfiguration"/> requires an <see cref="IDispatcherService"/> which can be retrieved using <see cref="ServiceLocator"/>.
 	/// </para>
 	/// <para>
@@ -31,6 +31,7 @@ namespace RI.Framework.StateMachines
 		public DefaultStateMachineConfiguration ()
 		{
 			this.Dispatcher = new DispatcherServiceStateDispatcher();
+			this.Resolver = new StateResolver();
 		}
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 
+using RI.Framework.Composition;
 using RI.Framework.Composition.Model;
 using RI.Framework.Services.Logging;
 
@@ -21,6 +22,9 @@ namespace RI.Framework.StateMachines
 	///     </para>
 	///     <note type="note">
 	///         Instances of <see cref="MonoState" />s are not created using their constructor (as this would be the wrong way how to instantiate anything <c> MonoBehaviour </c>). Instead, <see cref="CreateInstance" /> is used.
+	///     </note>
+	///     <note type="important">
+	///         Instances of <see cref="MonoState" />s can only be used with a <see cref="IStateResolver"/> which uses a <see cref="CompositionContainer"/> (e.g. <see cref="StateResolver"/>) because <see cref="MonoState"/>s cannot be instantiated directly (see note above).
 	///     </note>
 	/// </remarks>
 	[Export]

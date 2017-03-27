@@ -1,5 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+using RI.Framework.Services;
+
 
 
 
@@ -10,7 +12,12 @@ namespace RI.Test.Framework.Cases.Composition.Catalogs
 		[TestMethod]
 		public void Test ()
 		{
-			//TODO: Testing
+			object customExport = ServiceLocator.GetInstance("CustomExport");
+
+			if (customExport == null)
+			{
+				throw new TestAssertionException();
+			}
 		}
 	}
 }

@@ -26,72 +26,79 @@ namespace RI.Test.Framework
 			LogLocator.Log(severity, this.GetType().Name, format, args);
 		}
 
-		private void RunTests ()
+		private int ProcessedTestMethods { get; set; }
+
+		private List<object[]> TestMethods { get; set; }
+
+		private void StartTests ()
 		{
 			this.Log(LogLevel.Debug, "Searching for available tests");
 
 			ServiceLocator.GetInstance<CompositionContainer>().AddCatalog(new AssemblyCatalog(Assembly.GetExecutingAssembly()));
 
-			int totalTestMethods = 0;
-			Dictionary<TestModule, List<MethodInfo>> testMethods = new Dictionary<TestModule, List<MethodInfo>>();
+			this.ProcessedTestMethods = 0;
+			this.TestMethods = new List<object[]>();
 
 			List<TestModule> testModules = ServiceLocator.GetInstances<TestModule>().ToList();
 			foreach (TestModule testModule in testModules)
 			{
-				List<MethodInfo> testMethod = testModule.GetTestMethods();
-				testMethods.Add(testModule, testMethod);
-				totalTestMethods += testMethod.Count;
+				List<MethodInfo> testMethods = testModule.GetTestMethods();
+				foreach (MethodInfo testMethod in testMethods)
+				{
+					this.TestMethods.Add(new object[] {testModule, testMethod});
+				}
 			}
 
-			this.Log(LogLevel.Debug, "Found total {0} test modules and {1} test methods", testModules.Count, totalTestMethods);
+			this.Log(LogLevel.Debug, "Found total {0} test methods", this.TestMethods.Count);
 			this.Log(LogLevel.Debug, "Beginning run tests");
 
-			int processedTestModules = 0;
-			int processedTestMethods = 0;
-			bool failed = false;
+			this.ContinueTests();
+		}
 
-			foreach (KeyValuePair<TestModule, List<MethodInfo>> test in testMethods)
+		private void ContinueTests ()
+		{
+			if (this.ProcessedTestMethods >= this.TestMethods.Count)
 			{
-				processedTestModules++;
-
-				TestModule testModule = test.Key;
-
-				foreach (MethodInfo testMethod in test.Value)
-				{
-					processedTestMethods++;
-
-					this.Log(LogLevel.Debug, "------------------------------");
-					this.Log(LogLevel.Debug, "Test: {0}.{1} @ {2}", testMethod.DeclaringType.Name, testMethod.Name, testModule.GetType().Name);
-
-					try
-					{
-						testModule.InvokeTestMethod(testMethod);
-
-						this.Log(LogLevel.Debug, "Test succeeded");
-					}
-					catch (Exception exception)
-					{
-						this.Log(LogLevel.Error, "Test failed: {0}", exception.ToDetailedString());
-
-						failed = true;
-						//break;
-					}
-				}
-
-				if (failed)
-				{
-					//break;
-				}
+				ServiceLocator.GetInstance<IDispatcherService>().Dispatch(DispatcherPriority.Idle, this.StopTests);
+				return;
 			}
 
+			ServiceLocator.GetInstance<IDispatcherService>().Dispatch(DispatcherPriority.Idle, () =>
+			{
+				TestModule testModule = (TestModule)this.TestMethods[this.ProcessedTestMethods][0];
+				MethodInfo testMethod = (MethodInfo)this.TestMethods[this.ProcessedTestMethods][1];
+
+				this.Log(LogLevel.Debug, "------------------------------");
+				this.Log(LogLevel.Debug, "Test: {0}.{1} @ {2}", testMethod.DeclaringType.Name, testMethod.Name, testModule.GetType().Name);
+
+				try
+				{
+					testModule.InvokeTestMethod(testMethod);
+
+					this.Log(LogLevel.Debug, "Test succeeded");
+				}
+				catch (Exception exception)
+				{
+					this.Log(LogLevel.Error, "Test failed: {0}", exception.ToDetailedString());
+				}
+
+				this.ProcessedTestMethods++;
+				this.ContinueTests();
+			});
+		}
+
+		private void StopTests ()
+		{
 			this.Log(LogLevel.Debug, "------------------------------");
 			this.Log(LogLevel.Debug, "Finished running tests");
-			this.Log(LogLevel.Debug, "Processed {0}/{1} test modules and {2}/{3} test methods", processedTestModules, testModules.Count, processedTestMethods, totalTestMethods);
+			this.Log(LogLevel.Debug, "Processed {0}/{1} test methods", this.ProcessedTestMethods, this.TestMethods.Count);
+
+			ServiceLocator.GetInstance<Bootstrapper>().Shutdown();
 		}
 
 		private void Start ()
 		{
-			ServiceLocator.GetInstance<IDispatcherService>().Dispatch(DispatcherPriority.Frame, this.RunTests);
+			ServiceLocator.GetInstance<IDispatcherService>().Dispatch(DispatcherPriority.Idle, this.StartTests);
 		}
 
 		#endregion

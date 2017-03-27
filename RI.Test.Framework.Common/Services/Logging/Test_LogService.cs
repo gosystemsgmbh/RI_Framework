@@ -6,9 +6,7 @@ using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using RI.Framework.Services.Logging;
-
-
-
+using RI.Test.Framework.Mocks;
 
 namespace RI.Test.Framework.Services.Logging
 {
@@ -152,7 +150,7 @@ namespace RI.Test.Framework.Services.Logging
 			}
 		}
 
-		private bool TestEntry (Tuple<DateTime, int, LogLevel, string, string> entry, DateTime timestamp, int threadId, LogLevel severity, string source, string message)
+		private bool TestEntry (MockTuple<DateTime, int, LogLevel, string, string> entry, DateTime timestamp, int threadId, LogLevel severity, string source, string message)
 		{
 			if (entry.Item1 != timestamp)
 			{

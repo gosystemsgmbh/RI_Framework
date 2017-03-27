@@ -38,6 +38,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Mathematic\Test_RunningValues.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mathematic\Test_Statistics.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mocks\RENP.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Mocks\MockTuple.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mocks\VENP.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\Mock_Writer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\Test_DirectoryLogWriter.cs" />

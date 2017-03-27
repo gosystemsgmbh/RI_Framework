@@ -31,18 +31,17 @@ Conceptual documentations
 Tests
 -----
 
- + Services (Unity)
- + State Machines (Unity)
+ + DispatcherService
 
 
 Utilities
 ---------
 
- + (Common) AsDouble
- + (Common) AsSingle
- + (Common) NumericExtensions
- + (Common) Rounding extensions for double, float, and decimal (including financial rounding)
  + (Common) MagicThread clone
+
+ - (Common) Rounding extensions for double, float, and decimal (including financial rounding)
+
+ - (Unity) Tuples (and remove MockTuple)
 
  - (Common) RandomExtensions: NextBytes with max and min/max overload
  - (Common) RandomExtensions: FillStream with max and min/max overload

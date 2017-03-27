@@ -16,9 +16,8 @@ namespace RI.Test.Framework.Cases.Collections.Specialized
 		[TestMethod]
 		public void Test ()
 		{
-			//TODO: Testing
-
 			GameObject prefab = new GameObject();
+			prefab.SetActive(false);
 			PrefabPool pool = new PrefabPool(prefab);
 
 			if (pool.AutoActivate)
@@ -46,6 +45,20 @@ namespace RI.Test.Framework.Cases.Collections.Specialized
 				throw new TestAssertionException();
 			}
 
+			GameObject test = pool.Take();
+
+			if (test.activeSelf)
+			{
+				throw new TestAssertionException();
+			}
+
+			pool.Return(test);
+
+			if (test.activeSelf)
+			{
+				throw new TestAssertionException();
+			}
+
 			pool = new PrefabPool(prefab, 10);
 
 			pool.AutoActivate = true;
@@ -56,7 +69,7 @@ namespace RI.Test.Framework.Cases.Collections.Specialized
 				throw new TestAssertionException();
 			}
 
-			GameObject test = pool.Take();
+			test = pool.Take();
 
 			if (!test.activeSelf)
 			{

@@ -27,7 +27,7 @@ namespace RI.Framework.Services.Dispatcher
 		{
 			if (dispatcher == null)
 			{
-				throw new ArgumentException(nameof(dispatcher));
+				throw new ArgumentNullException(nameof(dispatcher));
 			}
 
 			return dispatcher.Broadcast(DispatcherPriority.Default, broadcast);
@@ -48,7 +48,7 @@ namespace RI.Framework.Services.Dispatcher
 		{
 			if (dispatcher == null)
 			{
-				throw new ArgumentException(nameof(dispatcher));
+				throw new ArgumentNullException(nameof(dispatcher));
 			}
 
 			return dispatcher.Dispatch(DispatcherPriority.Default, action);
@@ -71,7 +71,7 @@ namespace RI.Framework.Services.Dispatcher
 		{
 			if (dispatcher == null)
 			{
-				throw new ArgumentException(nameof(dispatcher));
+				throw new ArgumentNullException(nameof(dispatcher));
 			}
 
 			return dispatcher.Dispatch(DispatcherPriority.Default, action, arg);
@@ -96,7 +96,7 @@ namespace RI.Framework.Services.Dispatcher
 		{
 			if (dispatcher == null)
 			{
-				throw new ArgumentException(nameof(dispatcher));
+				throw new ArgumentNullException(nameof(dispatcher));
 			}
 
 			return dispatcher.Dispatch(DispatcherPriority.Default, action, arg1, arg2);
@@ -123,7 +123,7 @@ namespace RI.Framework.Services.Dispatcher
 		{
 			if (dispatcher == null)
 			{
-				throw new ArgumentException(nameof(dispatcher));
+				throw new ArgumentNullException(nameof(dispatcher));
 			}
 
 			return dispatcher.Dispatch(DispatcherPriority.Default, action, arg1, arg2, arg3);
@@ -152,7 +152,7 @@ namespace RI.Framework.Services.Dispatcher
 		{
 			if (dispatcher == null)
 			{
-				throw new ArgumentException(nameof(dispatcher));
+				throw new ArgumentNullException(nameof(dispatcher));
 			}
 
 			return dispatcher.Dispatch(DispatcherPriority.Default, action, arg1, arg2, arg3, arg4);
@@ -174,7 +174,7 @@ namespace RI.Framework.Services.Dispatcher
 		{
 			if (dispatcher == null)
 			{
-				throw new ArgumentException(nameof(dispatcher));
+				throw new ArgumentNullException(nameof(dispatcher));
 			}
 
 			return dispatcher.Dispatch(DispatcherPriority.Default, func);
@@ -198,7 +198,7 @@ namespace RI.Framework.Services.Dispatcher
 		{
 			if (dispatcher == null)
 			{
-				throw new ArgumentException(nameof(dispatcher));
+				throw new ArgumentNullException(nameof(dispatcher));
 			}
 
 			return dispatcher.Dispatch(DispatcherPriority.Default, func, arg);
@@ -224,7 +224,7 @@ namespace RI.Framework.Services.Dispatcher
 		{
 			if (dispatcher == null)
 			{
-				throw new ArgumentException(nameof(dispatcher));
+				throw new ArgumentNullException(nameof(dispatcher));
 			}
 
 			return dispatcher.Dispatch(DispatcherPriority.Default, func, arg1, arg2);
@@ -252,7 +252,7 @@ namespace RI.Framework.Services.Dispatcher
 		{
 			if (dispatcher == null)
 			{
-				throw new ArgumentException(nameof(dispatcher));
+				throw new ArgumentNullException(nameof(dispatcher));
 			}
 
 			return dispatcher.Dispatch(DispatcherPriority.Default, func, arg1, arg2, arg3);
@@ -282,7 +282,7 @@ namespace RI.Framework.Services.Dispatcher
 		{
 			if (dispatcher == null)
 			{
-				throw new ArgumentException(nameof(dispatcher));
+				throw new ArgumentNullException(nameof(dispatcher));
 			}
 
 			return dispatcher.Dispatch(DispatcherPriority.Default, func, arg1, arg2, arg3, arg4);
