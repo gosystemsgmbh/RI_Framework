@@ -18,8 +18,6 @@
   - [ ] Move Windows-specific projects to Windows subfolder
   - [ ] Synchronize Windows, Extensions, RotenInformatik references
   - [ ] TODOs (search + ReSharper window)
-- [ ] Testing
-  - [ ] Complete tests
 - [ ] Release
   - [ ] Installers
   - [ ] Promotional material
