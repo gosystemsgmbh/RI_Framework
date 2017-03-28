@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -26,9 +27,10 @@ namespace RI.Test.Framework
 			return testMethods;
 		}
 
-		public virtual void InvokeTestMethod (MethodInfo method)
+		public virtual void InvokeTestMethod (MethodInfo method, Action testContinuation)
 		{
 			method.Invoke(this, null);
+			testContinuation?.Invoke();
 		}
 
 		protected void Fail()

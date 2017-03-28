@@ -71,9 +71,11 @@ namespace RI.Test.Framework
 				this.Log(LogLevel.Debug, "------------------------------");
 				this.Log(LogLevel.Debug, "Test: {0}.{1} @ {2}", testMethod.DeclaringType.Name, testMethod.Name, testModule.GetType().Name);
 
+				this.ProcessedTestMethods++;
+
 				try
 				{
-					testModule.InvokeTestMethod(testMethod);
+					testModule.InvokeTestMethod(testMethod, new Action(this.ContinueTests));
 
 					this.Log(LogLevel.Debug, "Test succeeded");
 				}
@@ -81,9 +83,6 @@ namespace RI.Test.Framework
 				{
 					this.Log(LogLevel.Error, "Test failed: {0}", exception.ToDetailedString());
 				}
-
-				this.ProcessedTestMethods++;
-				this.ContinueTests();
 			});
 		}
 

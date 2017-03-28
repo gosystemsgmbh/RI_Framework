@@ -28,12 +28,6 @@ Conceptual documentations
  + State Machines
 
 
-Tests
------
-
- + DispatcherService
-
-
 Utilities
 ---------
 

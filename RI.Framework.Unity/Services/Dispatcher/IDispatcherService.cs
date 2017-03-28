@@ -142,7 +142,7 @@ namespace RI.Framework.Services.Dispatcher
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="func" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> The service is not fully initialized. </exception>
-		IDispatcherOperation Dispatch <TResult> (DispatcherPriority priority, Func<TResult> func);
+		IDispatcherOperation DispatchFunc <TResult> (DispatcherPriority priority, Func<TResult> func);
 
 		/// <summary>
 		///     Dispatches the execution of a method (with 1 parameter, using a return value).
@@ -158,7 +158,7 @@ namespace RI.Framework.Services.Dispatcher
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="func" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> The service is not fully initialized. </exception>
-		IDispatcherOperation Dispatch <T, TResult> (DispatcherPriority priority, Func<T, TResult> func, T arg);
+		IDispatcherOperation DispatchFunc <T, TResult> (DispatcherPriority priority, Func<T, TResult> func, T arg);
 
 		/// <summary>
 		///     Dispatches the execution of a method (with 2 parameters, using a return value).
@@ -176,7 +176,7 @@ namespace RI.Framework.Services.Dispatcher
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="func" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> The service is not fully initialized. </exception>
-		IDispatcherOperation Dispatch <T1, T2, TResult> (DispatcherPriority priority, Func<T1, T2, TResult> func, T1 arg1, T2 arg2);
+		IDispatcherOperation DispatchFunc <T1, T2, TResult> (DispatcherPriority priority, Func<T1, T2, TResult> func, T1 arg1, T2 arg2);
 
 		/// <summary>
 		///     Dispatches the execution of a method (with 3 parameters, using a return value).
@@ -196,7 +196,7 @@ namespace RI.Framework.Services.Dispatcher
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="func" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> The service is not fully initialized. </exception>
-		IDispatcherOperation Dispatch <T1, T2, T3, TResult> (DispatcherPriority priority, Func<T1, T2, T3, TResult> func, T1 arg1, T2 arg2, T3 arg3);
+		IDispatcherOperation DispatchFunc <T1, T2, T3, TResult> (DispatcherPriority priority, Func<T1, T2, T3, TResult> func, T1 arg1, T2 arg2, T3 arg3);
 
 		/// <summary>
 		///     Dispatches the execution of a method (with 4 parameters, using a return value).
@@ -218,7 +218,7 @@ namespace RI.Framework.Services.Dispatcher
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="func" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> The service is not fully initialized. </exception>
-		IDispatcherOperation Dispatch <T1, T2, T3, T4, TResult> (DispatcherPriority priority, Func<T1, T2, T3, T4, TResult> func, T1 arg1, T2 arg2, T3 arg3, T4 arg4);
+		IDispatcherOperation DispatchFunc <T1, T2, T3, T4, TResult> (DispatcherPriority priority, Func<T1, T2, T3, T4, TResult> func, T1 arg1, T2 arg2, T3 arg3, T4 arg4);
 
 		/// <summary>
 		///     Registers a receiver for a specified broadcast type.

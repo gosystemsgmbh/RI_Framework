@@ -177,7 +177,7 @@ namespace RI.Framework.Services.Dispatcher
 				throw new ArgumentNullException(nameof(dispatcher));
 			}
 
-			return dispatcher.Dispatch(DispatcherPriority.Default, func);
+			return dispatcher.DispatchFunc(DispatcherPriority.Default, func);
 		}
 
 		/// <summary>
@@ -201,7 +201,7 @@ namespace RI.Framework.Services.Dispatcher
 				throw new ArgumentNullException(nameof(dispatcher));
 			}
 
-			return dispatcher.Dispatch(DispatcherPriority.Default, func, arg);
+			return dispatcher.DispatchFunc(DispatcherPriority.Default, func, arg);
 		}
 
 		/// <summary>
@@ -227,7 +227,7 @@ namespace RI.Framework.Services.Dispatcher
 				throw new ArgumentNullException(nameof(dispatcher));
 			}
 
-			return dispatcher.Dispatch(DispatcherPriority.Default, func, arg1, arg2);
+			return dispatcher.DispatchFunc(DispatcherPriority.Default, func, arg1, arg2);
 		}
 
 		/// <summary>
@@ -255,7 +255,7 @@ namespace RI.Framework.Services.Dispatcher
 				throw new ArgumentNullException(nameof(dispatcher));
 			}
 
-			return dispatcher.Dispatch(DispatcherPriority.Default, func, arg1, arg2, arg3);
+			return dispatcher.DispatchFunc(DispatcherPriority.Default, func, arg1, arg2, arg3);
 		}
 
 		/// <summary>
@@ -285,7 +285,7 @@ namespace RI.Framework.Services.Dispatcher
 				throw new ArgumentNullException(nameof(dispatcher));
 			}
 
-			return dispatcher.Dispatch(DispatcherPriority.Default, func, arg1, arg2, arg3, arg4);
+			return dispatcher.DispatchFunc(DispatcherPriority.Default, func, arg1, arg2, arg3, arg4);
 		}
 	}
 }

@@ -15,9 +15,6 @@ namespace RI.Test.Framework.Cases
 	{
 		public override List<MethodInfo> GetTestMethods ()
 		{
-			//TODO: Re-activate
-			return new List<MethodInfo>();
-
 			List<MethodInfo> result = new List<MethodInfo>(base.GetTestMethods());
 
 			Assembly assembly = Assembly.GetExecutingAssembly();
@@ -30,10 +27,11 @@ namespace RI.Test.Framework.Cases
 			return result;
 		}
 
-		public override void InvokeTestMethod (MethodInfo method)
+		public override void InvokeTestMethod (MethodInfo method, Action testContinuation)
 		{
 			object instance = Activator.CreateInstance(method.DeclaringType);
 			method.Invoke(instance, null);
+			testContinuation.Invoke();
 		}
 
 		private bool TestType (Type type)

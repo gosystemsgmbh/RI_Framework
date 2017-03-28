@@ -88,6 +88,12 @@ namespace RI.Framework.Services.Dispatcher
 			operation.TickTimeout = null;
 			operation.FinishedCallback = null;
 
+			DispatcherBroadcast dispatcherBroadcast = broadcast as DispatcherBroadcast;
+			if (dispatcherBroadcast != null)
+			{
+				dispatcherBroadcast.Operation = operation;
+			}
+
 			lock (this._syncRoot)
 			{
 				if (operation.Priority == DispatcherPriority.Now)
@@ -129,6 +135,10 @@ namespace RI.Framework.Services.Dispatcher
 		{
 			if (operation.StatusInternal != DispatcherStatus.Queued)
 			{
+				if ((operation.StatusInternal == DispatcherStatus.Canceled) || (operation.StatusInternal == DispatcherStatus.Timeout))
+				{
+					this.InvokeOnFinished(operation);
+				}
 				return false;
 			}
 			
@@ -405,7 +415,7 @@ namespace RI.Framework.Services.Dispatcher
 		}
 
 		/// <inheritdoc />
-		public IDispatcherOperation Dispatch <TResult> (DispatcherPriority priority, Func<TResult> func)
+		public IDispatcherOperation DispatchFunc <TResult> (DispatcherPriority priority, Func<TResult> func)
 		{
 			if (func == null)
 			{
@@ -423,7 +433,7 @@ namespace RI.Framework.Services.Dispatcher
 		}
 
 		/// <inheritdoc />
-		public IDispatcherOperation Dispatch <T, TResult> (DispatcherPriority priority, Func<T, TResult> func, T arg)
+		public IDispatcherOperation DispatchFunc <T, TResult> (DispatcherPriority priority, Func<T, TResult> func, T arg)
 		{
 			if (func == null)
 			{
@@ -442,7 +452,7 @@ namespace RI.Framework.Services.Dispatcher
 		}
 
 		/// <inheritdoc />
-		public IDispatcherOperation Dispatch <T1, T2, TResult> (DispatcherPriority priority, Func<T1, T2, TResult> func, T1 arg1, T2 arg2)
+		public IDispatcherOperation DispatchFunc <T1, T2, TResult> (DispatcherPriority priority, Func<T1, T2, TResult> func, T1 arg1, T2 arg2)
 		{
 			if (func == null)
 			{
@@ -462,7 +472,7 @@ namespace RI.Framework.Services.Dispatcher
 		}
 
 		/// <inheritdoc />
-		public IDispatcherOperation Dispatch <T1, T2, T3, TResult> (DispatcherPriority priority, Func<T1, T2, T3, TResult> func, T1 arg1, T2 arg2, T3 arg3)
+		public IDispatcherOperation DispatchFunc <T1, T2, T3, TResult> (DispatcherPriority priority, Func<T1, T2, T3, TResult> func, T1 arg1, T2 arg2, T3 arg3)
 		{
 			if (func == null)
 			{
@@ -483,7 +493,7 @@ namespace RI.Framework.Services.Dispatcher
 		}
 
 		/// <inheritdoc />
-		public IDispatcherOperation Dispatch <T1, T2, T3, T4, TResult> (DispatcherPriority priority, Func<T1, T2, T3, T4, TResult> func, T1 arg1, T2 arg2, T3 arg3, T4 arg4)
+		public IDispatcherOperation DispatchFunc <T1, T2, T3, T4, TResult> (DispatcherPriority priority, Func<T1, T2, T3, T4, TResult> func, T1 arg1, T2 arg2, T3 arg3, T4 arg4)
 		{
 			if (func == null)
 			{
@@ -500,7 +510,6 @@ namespace RI.Framework.Services.Dispatcher
 			};
 
 			DispatcherOperation operation = this.BroadcastInternal(priority, broadcast);
-			broadcast.Operation = operation;
 			return operation;
 		}
 
