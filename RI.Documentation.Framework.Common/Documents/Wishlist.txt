@@ -31,8 +31,6 @@ Conceptual documentations
 Utilities
 ---------
 
- + (Common) MagicThread clone
-
  + NextFloat
  
  + GetRandom

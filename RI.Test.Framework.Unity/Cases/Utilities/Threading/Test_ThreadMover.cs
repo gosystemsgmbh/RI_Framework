@@ -32,38 +32,35 @@ namespace RI.Test.Framework.Cases.Utilities.Threading
 				heavyThread.Start();
 
 				yield return null;
-
 				yield return new WaitForSeconds(2);
-
 				yield return new ToBackground();
-
 				yield return new ToBackground();
-
 				yield return new ToForeground();
-
 				yield return new ToForeground();
-
 				yield return new ToHeavyThread();
-
 				yield return new ToHeavyThread();
-
 				yield return new ToDispatcher();
-
 				yield return new ToDispatcher();
-
 				yield return new ToDispatcher(heavyThread);
-
 				yield return new ToDispatcher(heavyThread);
 
 				yield return null;
-
 				yield return new WaitForSeconds(2);
-
 				yield return new ToBackground();
-
 				yield return new WaitForSeconds(2);
-
 				yield return new ToBackground();
+				yield return new WaitForEndOfFrame();
+				yield return new ToHeavyThread();
+				yield return new WaitForEndOfFrame();
+				yield return new ToDispatcher();
+				yield return new WaitForEndOfFrame();
+				yield return new ToDispatcher(heavyThread);
+				yield return new WaitForEndOfFrame();
+				yield return new ToForeground();
+				yield return new ToBackground();
+				yield return new ToHeavyThread();
+				yield return new ToDispatcher();
+				yield return new ToDispatcher(heavyThread);
 
 				this.TestContinuation();
 			}
@@ -71,27 +68,41 @@ namespace RI.Test.Framework.Cases.Utilities.Threading
 
 		private IEnumerator TestCoroutine2 ()
 		{
-			yield return null;
+			using (HeavyThreadDispatcher heavyThread = new HeavyThreadDispatcher())
+			{
+				heavyThread.Start();
 
-			yield return new WaitForSeconds(1);
+				yield return null;
+				yield return new WaitForSeconds(2);
+				yield return new ToBackground();
+				yield return new ToBackground();
+				yield return new ToForeground();
+				yield return new ToForeground();
+				yield return new ToHeavyThread();
+				yield return new ToHeavyThread();
+				yield return new ToDispatcher();
+				yield return new ToDispatcher();
+				yield return new ToDispatcher(heavyThread);
+				yield return new ToDispatcher(heavyThread);
 
-			yield return new ToBackground();
-
-			yield return new ToBackground();
-
-			yield return new ToForeground();
-
-			yield return new ToForeground();
-
-			yield return null;
-
-			yield return new WaitForSeconds(1);
-
-			yield return new ToBackground();
-
-			yield return new WaitForSeconds(1);
-
-			yield return new ToBackground();
+				yield return null;
+				yield return new WaitForSeconds(2);
+				yield return new ToBackground();
+				yield return new WaitForSeconds(2);
+				yield return new ToBackground();
+				yield return new WaitForEndOfFrame();
+				yield return new ToHeavyThread();
+				yield return new WaitForEndOfFrame();
+				yield return new ToDispatcher();
+				yield return new WaitForEndOfFrame();
+				yield return new ToDispatcher(heavyThread);
+				yield return new WaitForEndOfFrame();
+				yield return new ToForeground();
+				yield return new ToBackground();
+				yield return new ToHeavyThread();
+				yield return new ToDispatcher();
+				yield return new ToDispatcher(heavyThread);
+			}
 		}
 
 		public override void InvokeTestMethod(MethodInfo method, Action testContinuation)
