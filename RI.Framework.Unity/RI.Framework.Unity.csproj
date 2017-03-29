@@ -57,6 +57,11 @@
     <Compile Include="StateMachines\DefaultStateMachineConfiguration.cs" />
     <Compile Include="StateMachines\MonoState.cs" />
     <Compile Include="StateMachines\DispatcherServiceStateDispatcher.cs" />
+    <Compile Include="Utilities\Threading\ThreadMover.cs" />
+    <Compile Include="Utilities\Threading\ToBackground.cs" />
+    <Compile Include="Utilities\Threading\ToDispatcher.cs" />
+    <Compile Include="Utilities\Threading\ToForeground.cs" />
+    <Compile Include="Utilities\Threading\ToHeavyThread.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="..\RI.Framework.Common\RI.Framework.Common.projitems" Label="Shared" />

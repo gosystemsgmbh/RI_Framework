@@ -1,0 +1,103 @@
+﻿using System;
+using System.Collections;
+using System.Reflection;
+
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+using RI.Framework.Utilities.Threading;
+
+using UnityEngine;
+
+
+
+
+namespace RI.Test.Framework.Cases.Utilities.Threading
+{
+	public sealed class Test_ThreadMover : TestModule
+	{
+		private Action TestContinuation { get; set; }
+
+		[TestMethod]
+		public void Test ()
+		{
+			ThreadMover.BeginTask(this.TestCoroutine1());
+			ThreadMover.BeginTask(this.TestCoroutine2());
+			ThreadMover.BeginTask(this.TestCoroutine2());
+		}
+
+		private IEnumerator TestCoroutine1 ()
+		{
+			using (HeavyThreadDispatcher heavyThread = new HeavyThreadDispatcher())
+			{
+				heavyThread.Start();
+
+				yield return null;
+
+				yield return new WaitForSeconds(2);
+
+				yield return new ToBackground();
+
+				yield return new ToBackground();
+
+				yield return new ToForeground();
+
+				yield return new ToForeground();
+
+				yield return new ToHeavyThread();
+
+				yield return new ToHeavyThread();
+
+				yield return new ToDispatcher();
+
+				yield return new ToDispatcher();
+
+				yield return new ToDispatcher(heavyThread);
+
+				yield return new ToDispatcher(heavyThread);
+
+				yield return null;
+
+				yield return new WaitForSeconds(2);
+
+				yield return new ToBackground();
+
+				yield return new WaitForSeconds(2);
+
+				yield return new ToBackground();
+
+				this.TestContinuation();
+			}
+		}
+
+		private IEnumerator TestCoroutine2 ()
+		{
+			yield return null;
+
+			yield return new WaitForSeconds(1);
+
+			yield return new ToBackground();
+
+			yield return new ToBackground();
+
+			yield return new ToForeground();
+
+			yield return new ToForeground();
+
+			yield return null;
+
+			yield return new WaitForSeconds(1);
+
+			yield return new ToBackground();
+
+			yield return new WaitForSeconds(1);
+
+			yield return new ToBackground();
+		}
+
+		public override void InvokeTestMethod(MethodInfo method, Action testContinuation)
+		{
+			this.TestContinuation = testContinuation;
+			base.InvokeTestMethod(method, null);
+		}
+	}
+}

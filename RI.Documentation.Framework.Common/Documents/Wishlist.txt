@@ -33,7 +33,17 @@ Utilities
 
  + (Common) MagicThread clone
 
+ + NextFloat
+ 
+ + GetRandom
+ + PopRandom
+ + Get
+ + Pop
+ 
+ + GetChildren
+
  - (Common) Rounding extensions for double, float, and decimal (including financial rounding)
+ - (Common) More NumberExtensions
 
  - (Unity) Tuples (and remove MockTuple)
 

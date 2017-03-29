@@ -29,6 +29,7 @@ namespace RI.Framework.Services.Dispatcher
 		/// </summary>
 		public DispatcherService ()
 		{
+			//TODO: Singleton
 			this._syncRoot = new object();
 			this._backgroundInvoker = this.BackgroundInvoke;
 
