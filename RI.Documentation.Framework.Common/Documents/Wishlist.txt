@@ -31,15 +31,6 @@ Conceptual documentations
 Utilities
 ---------
 
- + NextFloat
- 
- + GetRandom
- + PopRandom
- + Get
- + Pop
- 
- + GetChildren
-
  - (Common) Rounding extensions for double, float, and decimal (including financial rounding)
  - (Common) More NumberExtensions
 
@@ -67,6 +58,7 @@ Utilities
 
  - (WinForms) FormExtensions
  - (WinForms) TemporaryCursor
+ - (WinForms) WindowWrapper
 
 
 Collections
@@ -218,6 +210,8 @@ I/O
 
  - (Common) ConcurrencyExtensions
  - (Common) TransactiveExtensions
+
+ - (.NET) TemporaryFile
 
  - (Unity) OBJ mesh loader
  - (Unity) JSON mesh loader (babylon.JS)

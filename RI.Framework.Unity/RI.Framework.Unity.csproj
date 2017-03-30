@@ -57,6 +57,7 @@
     <Compile Include="StateMachines\DefaultStateMachineConfiguration.cs" />
     <Compile Include="StateMachines\MonoState.cs" />
     <Compile Include="StateMachines\DispatcherServiceStateDispatcher.cs" />
+    <Compile Include="Utilities\GameObjectExtensions.cs" />
     <Compile Include="Utilities\Threading\ThreadMover.cs" />
     <Compile Include="Utilities\Threading\ToBackground.cs" />
     <Compile Include="Utilities\Threading\ToDispatcher.cs" />

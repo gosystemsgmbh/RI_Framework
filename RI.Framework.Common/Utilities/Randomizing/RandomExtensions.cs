@@ -341,6 +341,69 @@ namespace RI.Framework.Utilities.Randomizing
 		}
 
 		/// <summary>
+		///     Gets a random single precision floating point value.
+		/// </summary>
+		/// <param name="randomizer"> The randomizer to use. </param>
+		/// <param name="max"> The allowed maximum value (exclusive). </param>
+		/// <returns>
+		///     A random single precision floating point value between 0.0 (inclusive) and <paramref name="max" /> (exclusive).
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="randomizer" /> is null. </exception>
+		public static float NextFloat(this Random randomizer, float max)
+		{
+			return randomizer.NextFloat(0.0f, max);
+		}
+
+		/// <summary>
+		///     Gets a random single precision floating point value.
+		/// </summary>
+		/// <param name="randomizer"> The randomizer to use. </param>
+		/// <param name="min"> The allowed minimum value (inclusive). </param>
+		/// <param name="max"> The allowed maximum value (exclusive). </param>
+		/// <returns>
+		///     A random single precision floating point value between <paramref name="min" /> (inclusive) and <paramref name="max" /> (exclusive).
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="randomizer" /> is null. </exception>
+		/// <exception cref="NotFiniteNumberException"> <paramref name="min" /> or <paramref name="max" /> is either "NaN"/"Not-a-Number" or infinity (positive or negative). </exception>
+		public static float NextFloat(this Random randomizer, float min, float max)
+		{
+			if (randomizer == null)
+			{
+				throw new ArgumentNullException(nameof(randomizer));
+			}
+
+			if (min.IsNanOrInfinity())
+			{
+				throw new NotFiniteNumberException(nameof(min));
+			}
+
+			if (max.IsNanOrInfinity())
+			{
+				throw new NotFiniteNumberException(nameof(max));
+			}
+
+			return min + (randomizer.NextFloat() * (max - min));
+		}
+
+		/// <summary>
+		///     Gets a random single precision floating point value.
+		/// </summary>
+		/// <param name="randomizer"> The randomizer to use. </param>
+		/// <returns>
+		///     A random single precision floating point value between 0.0 (inclusive) and 1.0 (exclusive).
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="randomizer" /> is null. </exception>
+		public static float NextFloat(this Random randomizer)
+		{
+			if (randomizer == null)
+			{
+				throw new ArgumentNullException(nameof(randomizer));
+			}
+
+			return (float)randomizer.NextDouble();
+		}
+
+		/// <summary>
 		///     Gets a normally distributed random number.
 		/// </summary>
 		/// <param name="randomizer"> The randomizer to use. </param>
