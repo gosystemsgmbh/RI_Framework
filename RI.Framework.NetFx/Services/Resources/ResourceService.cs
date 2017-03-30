@@ -9,6 +9,7 @@ using RI.Framework.Composition.Model;
 using RI.Framework.Services.Logging;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
+using RI.Framework.Utilities.ObjectModel;
 
 
 
@@ -28,6 +29,9 @@ namespace RI.Framework.Services.Resources
 	///     <para>
 	///         See <see cref="IResourceService" /> for more details.
 	///     </para>
+	/// <note type="note">
+	/// The first created instance of <see cref="ResourceService"/> is set as the singleton instance for <see cref="Singleton{IResourceService}"/>
+	/// </note>
 	/// </remarks>
 	public sealed class ResourceService : IResourceService, IImporting
 	{
@@ -43,6 +47,8 @@ namespace RI.Framework.Services.Resources
 
 			this.SourcesManual = new List<IResourceSource>();
 			this.ConvertersManual = new List<IResourceConverter>();
+
+			Singleton<IResourceService>.Ensure(() => this);
 		}
 
 		#endregion

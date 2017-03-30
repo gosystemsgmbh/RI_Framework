@@ -5,6 +5,7 @@ using RI.Framework.Collections;
 using RI.Framework.Composition;
 using RI.Framework.Composition.Model;
 using RI.Framework.Services.Logging;
+using RI.Framework.Utilities.ObjectModel;
 
 
 
@@ -24,6 +25,9 @@ namespace RI.Framework.Services.Messaging
 	///     <para>
 	///         See <see cref="IMessageService" /> for more details.
 	///     </para>
+	/// <note type="note">
+	/// The first created instance of <see cref="MessageService"/> is set as the singleton instance for <see cref="Singleton{IMessageService}"/>
+	/// </note>
 	/// </remarks>
 	public sealed class MessageService : IMessageService
 	{
@@ -36,6 +40,8 @@ namespace RI.Framework.Services.Messaging
 		{
 			this.DispatchersManual = new List<IMessageDispatcher>();
 			this.ReceiversManual = new List<IMessageReceiver>();
+
+			Singleton<IMessageService>.Ensure(() => this);
 		}
 
 		#endregion

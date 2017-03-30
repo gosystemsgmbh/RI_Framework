@@ -36,6 +36,8 @@ Utilities
 
  - (Unity) Tuples (and remove MockTuple)
 
+ - (Common) Singleton: Global register to lookup by Type (use where service locator is used by type; ServiceLocatorDbDependencyResolver, StateResolver, InstanceLocator)
+
  - (Common) RandomExtensions: NextBytes with max and min/max overload
  - (Common) RandomExtensions: FillStream with max and min/max overload
 

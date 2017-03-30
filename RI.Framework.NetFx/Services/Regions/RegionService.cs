@@ -7,6 +7,7 @@ using RI.Framework.Composition.Model;
 using RI.Framework.Services.Logging;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
+using RI.Framework.Utilities.ObjectModel;
 
 
 
@@ -26,6 +27,9 @@ namespace RI.Framework.Services.Regions
 	///     <para>
 	///         See <see cref="IRegionService" /> for more details.
 	///     </para>
+	/// <note type="note">
+	/// The first created instance of <see cref="RegionService"/> is set as the singleton instance for <see cref="Singleton{IRegionService}"/>
+	/// </note>
 	/// </remarks>
 	public sealed class RegionService : IRegionService
 	{
@@ -38,6 +42,8 @@ namespace RI.Framework.Services.Regions
 		{
 			this.AdaptersManual = new List<IRegionAdapter>();
 			this.RegionDictionary = new Dictionary<string, Tuple<object, IRegionAdapter>>(StringComparerEx.InvariantCultureIgnoreCase);
+
+			Singleton<IRegionService>.Ensure(() => this);
 		}
 
 		#endregion

@@ -6,6 +6,7 @@ using System.Threading;
 using RI.Framework.Collections;
 using RI.Framework.Composition;
 using RI.Framework.Composition.Model;
+using RI.Framework.Utilities.ObjectModel;
 
 
 
@@ -25,6 +26,9 @@ namespace RI.Framework.Services.Logging
 	///     <para>
 	///         See <see cref="ILogService" /> for more details.
 	///     </para>
+	/// <note type="note">
+	/// The first created instance of <see cref="LogService"/> is set as the singleton instance for <see cref="Singleton{ILogService}"/>
+	/// </note>
 	/// </remarks>
 	public sealed class LogService : ILogService
 	{
@@ -36,6 +40,8 @@ namespace RI.Framework.Services.Logging
 		public LogService ()
 		{
 			this.WritersManual = new List<ILogWriter>();
+
+			Singleton<ILogService>.Ensure(() => this);
 		}
 
 		#endregion

@@ -3,30 +3,28 @@
 ## TODO
 
 - [ ] Documentation
-  - [ ] Complete list of examples
-  - [ ] Type and member descriptions
-  - [ ] Check all namespace descriptions (in final documentation)
+  - [ ] Namespace, type, member descriptions
   - [ ] Conceptional documentation
+  - [ ] Examples
   - [ ] Cleanup artifacts
   - [ ] Remove RI.Documentation.Framework.Common
-  - [ ] Update/Enhance Readme
+  - [ ] Update/Enhance Readme (including whishlist)
 - [ ] Cleanup
   - [ ] Exception throwing
     - [ ] Always use parameter names for argument exceptions
     - [ ] Always provide message or at least parameter name (for argument exceptions only)
-  - [ ] Check all usage of StringComparison
   - [ ] Move Windows-specific projects to Windows subfolder
   - [ ] Synchronize Windows, Extensions, RotenInformatik references
-  - [ ] TODOs (search + ReSharper window)
 - [ ] Release
   - [ ] Installers
+  - [ ] Final testing
   - [ ] Promotional material
   - [ ] Web page
   - [ ] Unity Asset Store
 
 ## Future
 
-- [ ] TODOs
+- [ ] TODOs (search + ReSharper window)
 - [ ] .NET Documentation
 - [ ] Migrate Common to Shared
   - [ ] Migrate Common to Shared

@@ -15,6 +15,7 @@ using RI.Framework.IO.Paths;
 using RI.Framework.Services.Logging;
 using RI.Framework.Services.Modularization;
 using RI.Framework.Utilities;
+using RI.Framework.Utilities.ObjectModel;
 using RI.Framework.Utilities.Reflection;
 using RI.Framework.Utilities.Text;
 using RI.Framework.Utilities.Windows;
@@ -105,6 +106,11 @@ namespace RI.Framework.Services
 	///         <item>
 	///             <para>
 	///                 <see cref="ConfigureServiceLocator" /> is called.
+	///             </para>
+	///         </item>
+	///         <item>
+	///             <para>
+	///                 <see cref="ConfigureBootstrapperSingletons" /> is called.
 	///             </para>
 	///         </item>
 	///         <item>
@@ -587,6 +593,21 @@ namespace RI.Framework.Services
 		}
 
 		/// <summary>
+		/// Called when the bootstrapper singletons are to be configured.
+		/// </summary>
+		/// <remarks>
+		///     <note type="implement">
+		///         The default implementation sets the singleton instance for <see cref="WpfBootstrapper"/>, <see cref="CompositionContainer"/> (<see cref="Container"/>), and <see cref="System.Windows.Application"/> (<see cref="Application"/>) using <see cref="Singleton{T}"/>.
+		///     </note>
+		/// </remarks>
+		protected virtual void ConfigureBootstrapperSingletons()
+		{
+			Singleton<WpfBootstrapper>.Ensure(() => this);
+			Singleton<CompositionContainer>.Ensure(() => this.Container);
+			Singleton<Application>.Ensure(() => this.Application);
+		}
+
+		/// <summary>
 		///     Called when all the other services of the application need to be configured.
 		/// </summary>
 		/// <remarks>
@@ -1043,6 +1064,9 @@ namespace RI.Framework.Services
 
 			this.Log(LogLevel.Debug, "Configuring service locator");
 			this.ConfigureServiceLocator();
+
+			this.Log(LogLevel.Debug, "Configuring bootstrapper singletons");
+			this.ConfigureBootstrapperSingletons();
 
 			this.Log(LogLevel.Debug, "Configuring bootstrapper");
 			this.ConfigureBootstrapper();

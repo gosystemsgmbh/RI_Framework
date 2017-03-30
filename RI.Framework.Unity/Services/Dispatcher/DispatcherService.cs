@@ -17,9 +17,14 @@ namespace RI.Framework.Services.Dispatcher
 	/// <summary>
 	///     Implements a default dispatcher service which is suitable for most scenarios.
 	/// </summary>
+	/// <remarks>
 	/// <para>
 	///     See <see cref="IDispatcherService" /> for more details.
 	/// </para>
+	/// <note type="note">
+	/// The first created instance of <see cref="DispatcherService"/> is set as the singleton instance for <see cref="Singleton{IDispatcherService}"/>
+	/// </note>
+	/// </remarks>
 	public sealed class DispatcherService : IDispatcherService, ISynchronizable
 	{
 		#region Instance Constructor/Destructor
@@ -29,7 +34,6 @@ namespace RI.Framework.Services.Dispatcher
 		/// </summary>
 		public DispatcherService ()
 		{
-			//TODO: Singleton
 			this._syncRoot = new object();
 			this._backgroundInvoker = this.BackgroundInvoke;
 
@@ -50,6 +54,8 @@ namespace RI.Framework.Services.Dispatcher
 			dispatcherServiceListener.DispatcherService = this;
 
 			this.RegisterReceiver<DispatcherBroadcast>(this.HandleDispatcherBroadcast);
+
+			Singleton<IDispatcherService>.Ensure(() => this);
 		}
 
 		#endregion

@@ -2,6 +2,7 @@
 
 using RI.Framework.Services;
 using RI.Framework.Services.Dispatcher;
+using RI.Framework.Utilities.ObjectModel;
 
 
 
@@ -13,7 +14,8 @@ namespace RI.Framework.StateMachines
 	/// </summary>
 	/// <remarks>
 	/// <para>
-	/// <see cref="DispatcherServiceStateDispatcher"/> internally uses a specified <see cref="IDispatcherService"/> or <see cref="ServiceLocator"/> to retrieve a <see cref="IDispatcherService"/>, depending on the used constructor..
+	/// <see cref="DispatcherServiceStateDispatcher"/> internally uses a specified <see cref="IDispatcherService"/>.
+	/// If no such is provided, <see cref="ServiceLocator"/> and <see cref="Singleton{IDispatcherService}"/> are used to retrieve a <see cref="IDispatcherService"/>.
 	/// </para>
 	/// <para>
 	/// See <see cref="IStateDispatcher"/> for more details.
@@ -38,16 +40,17 @@ namespace RI.Framework.StateMachines
 		/// <remarks>
 		/// <para>
 		/// <see cref="DispatcherServiceStateDispatcher"/> instances created with this constructor use <see cref="ServiceLocator"/> to retrieve an instance of <see cref="IDispatcherService"/> at construction time.
+		/// If <see cref="ServiceLocator"/> does not return an instance, <see cref="Singleton{IDispatcherService}"/> is used.
 		/// </para>
 		/// <note type="important">
-		/// For performance reasons, the <see cref="IDispatcherService"/> instance which is used is not dynamically retrieved from <see cref="ServiceLocator"/> for each dispatched operation.
-		/// The <see cref="IDispatcherService"/> instance is only once retrieved when this constructor is run.
+		/// For performance reasons, the <see cref="IDispatcherService"/> instance which is used is not dynamically retrieved from <see cref="ServiceLocator"/> or <see cref="Singleton{IDispatcherService}"/> for each dispatched operation.
+		/// The <see cref="IDispatcherService"/> instance is only once retrieved when this constructor is executed.
 		/// </note>
 		/// </remarks>
-		/// <exception cref="InvalidOperationException"><see cref="ServiceLocator"/> could not retrieve an instance of <see cref="IDispatcherService"/>.</exception>
+		/// <exception cref="InvalidOperationException">Neither <see cref="ServiceLocator"/> nor <see cref="Singleton{IDispatcherService}"/> could retrieve an instance of <see cref="IDispatcherService"/>.</exception>
 		public DispatcherServiceStateDispatcher ()
 		{
-			this.DispatcherService = ServiceLocator.GetInstance<IDispatcherService>();
+			this.DispatcherService = ServiceLocator.GetInstance<IDispatcherService>() ?? Singleton<IDispatcherService>.Instance;
 			if (this.DispatcherService == null)
 			{
 				throw new InvalidOperationException("Could not retrieve an instance of " + nameof(IDispatcherService) + " for " + this.GetType().Name + ".");

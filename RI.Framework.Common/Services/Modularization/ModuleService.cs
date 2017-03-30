@@ -6,6 +6,7 @@ using RI.Framework.Collections.Linq;
 using RI.Framework.Composition;
 using RI.Framework.Composition.Model;
 using RI.Framework.Services.Logging;
+using RI.Framework.Utilities.ObjectModel;
 
 
 
@@ -25,6 +26,9 @@ namespace RI.Framework.Services.Modularization
 	///     <para>
 	///         See <see cref="IModuleService" /> for more details.
 	///     </para>
+	/// <note type="note">
+	/// The first created instance of <see cref="LogService"/> is set as the singleton instance for <see cref="Singleton{IModuleService}"/>
+	/// </note>
 	/// </remarks>
 	public sealed class ModuleService : IModuleService,
 	                                    IImporting
@@ -40,6 +44,8 @@ namespace RI.Framework.Services.Modularization
 
 			this.ModulesManual = new List<IModule>();
 			this.ModulesUpdated = new List<IModule>();
+
+			Singleton<IModuleService>.Ensure(() => this);
 		}
 
 		#endregion

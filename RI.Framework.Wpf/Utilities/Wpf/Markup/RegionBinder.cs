@@ -3,6 +3,7 @@
 using RI.Framework.Services;
 using RI.Framework.Services.Logging;
 using RI.Framework.Services.Regions;
+using RI.Framework.Utilities.ObjectModel;
 
 
 
@@ -19,7 +20,7 @@ namespace RI.Framework.Utilities.Wpf.Markup
 	///         It also defines region operation methods to simplify region handling.
 	///     </para>
 	///     <para>
-	///         <see cref="ServiceLocator" /> is used to obtain an instance of <see cref="IRegionService" /> and, when using region operation methods, the instances for elements when the elements are specified by name or type.
+	///         <see cref="ServiceLocator" /> or <see cref="Singleton{IRegionService}"/> is used to obtain an instance of <see cref="IRegionService" />.
 	///     </para>
 	/// </remarks>
 	public static class RegionBinder
@@ -75,7 +76,7 @@ namespace RI.Framework.Utilities.Wpf.Markup
 			string oldRegion = e.OldValue as string;
 			string newRegion = e.NewValue as string;
 
-			IRegionService regionService = ServiceLocator.GetInstance<IRegionService>();
+			IRegionService regionService = ServiceLocator.GetInstance<IRegionService>() ?? Singleton<IRegionService>.Instance;
 			if (regionService == null)
 			{
 				LogLocator.LogWarning(typeof(RegionBinder).Name, "No region service available while trying to assign region: Object={0}, OldRegion={1}, NewRegion={2}", obj?.GetType().Name ?? "[null]", oldRegion ?? "[null]", newRegion ?? "[null]");
