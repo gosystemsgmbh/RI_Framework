@@ -13,8 +13,6 @@
   - [ ] Exception throwing
     - [ ] Always use parameter names for argument exceptions
     - [ ] Always provide message or at least parameter name (for argument exceptions only)
-  - [ ] Move Windows-specific projects to Windows subfolder
-  - [ ] Synchronize Windows, Extensions, RotenInformatik references
 - [ ] Release
   - [ ] Installers
   - [ ] Final testing

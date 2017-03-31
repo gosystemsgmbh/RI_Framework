@@ -100,21 +100,21 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "RI.Test.Framework.Common", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Tools.Framework.Libraries", "RI.Tools.Framework.Libraries\RI.Tools.Framework.Libraries.csproj", "{59451CBF-33C9-4247-8446-B2E3D4105FDE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Framework.Windows.Wpf", "RI.Framework.Wpf\RI.Framework.Windows.Wpf.csproj", "{D5BF9549-AEB4-4A21-ACA0-591131018428}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Framework.Windows.Wpf", "RI.Framework.Windows.Wpf\RI.Framework.Windows.Wpf.csproj", "{D5BF9549-AEB4-4A21-ACA0-591131018428}"
 	ProjectSection(ProjectDependencies) = postProject
 		{0563B040-9EE7-4963-8321-D328EDE5FAE1} = {0563B040-9EE7-4963-8321-D328EDE5FAE1}
 		{9AE61682-B33C-4814-BAE5-771008CA4147} = {9AE61682-B33C-4814-BAE5-771008CA4147}
 		{59451CBF-33C9-4247-8446-B2E3D4105FDE} = {59451CBF-33C9-4247-8446-B2E3D4105FDE}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Framework.Windows.WinForms", "RI.Framework.WinForms\RI.Framework.Windows.WinForms.csproj", "{01DFC9AF-FEA4-4996-BCEF-BC6E878C5C2A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Framework.Windows.Forms", "RI.Framework.Windows.Forms\RI.Framework.Windows.Forms.csproj", "{01DFC9AF-FEA4-4996-BCEF-BC6E878C5C2A}"
 	ProjectSection(ProjectDependencies) = postProject
 		{0563B040-9EE7-4963-8321-D328EDE5FAE1} = {0563B040-9EE7-4963-8321-D328EDE5FAE1}
 		{9AE61682-B33C-4814-BAE5-771008CA4147} = {9AE61682-B33C-4814-BAE5-771008CA4147}
 		{59451CBF-33C9-4247-8446-B2E3D4105FDE} = {59451CBF-33C9-4247-8446-B2E3D4105FDE}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Framework.Windows.Shared", "RI.Framework.Windows\RI.Framework.Windows.Shared.csproj", "{CD9C2847-A48F-45E1-908F-3F9A86EE0E37}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Framework.Windows.Shared", "RI.Framework.Windows.Shared\RI.Framework.Windows.Shared.csproj", "{CD9C2847-A48F-45E1-908F-3F9A86EE0E37}"
 	ProjectSection(ProjectDependencies) = postProject
 		{0563B040-9EE7-4963-8321-D328EDE5FAE1} = {0563B040-9EE7-4963-8321-D328EDE5FAE1}
 		{9AE61682-B33C-4814-BAE5-771008CA4147} = {9AE61682-B33C-4814-BAE5-771008CA4147}
@@ -149,7 +149,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Framework.Extensions.SQL
 		{59451CBF-33C9-4247-8446-B2E3D4105FDE} = {59451CBF-33C9-4247-8446-B2E3D4105FDE}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Framework.Windows.WinService", "RI.Framework.WinService\RI.Framework.Windows.WinService.csproj", "{EC0E161F-F9C9-4DE2-8A00-DA16E0957191}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Framework.Windows.Service", "RI.Framework.Windows.Service\RI.Framework.Windows.Service.csproj", "{EC0E161F-F9C9-4DE2-8A00-DA16E0957191}"
 	ProjectSection(ProjectDependencies) = postProject
 		{0563B040-9EE7-4963-8321-D328EDE5FAE1} = {0563B040-9EE7-4963-8321-D328EDE5FAE1}
 		{9AE61682-B33C-4814-BAE5-771008CA4147} = {9AE61682-B33C-4814-BAE5-771008CA4147}

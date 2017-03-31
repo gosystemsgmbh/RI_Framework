@@ -4,23 +4,24 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{EC0E161F-F9C9-4DE2-8A00-DA16E0957191}</ProjectGuid>
+    <ProjectGuid>{01DFC9AF-FEA4-4996-BCEF-BC6E878C5C2A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>RI.Framework</RootNamespace>
-    <AssemblyName>RI.Framework.WinService</AssemblyName>
+    <AssemblyName>RI.Framework.Windows.Forms</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\RI.Framework.WinService.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\RI.Framework.Windows.Forms.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,7 +30,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\RI.Framework.WinService.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\RI.Framework.Windows.Forms.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -40,19 +41,21 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
-    <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
-    <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\WinFormsBootstrapper.cs" />
+    <Compile Include="Services\WinFormsBootstrapperState.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RI.Framework.NetFx\RI.Framework.NetFx.csproj">
       <Project>{a7f5dd2f-63bf-4032-ad1e-14d211e0d3ed}</Project>
       <Name>RI.Framework.NetFx</Name>
     </ProjectReference>
-    <ProjectReference Include="..\RI.Framework.Windows\RI.Framework.Windows.Shared.csproj">
+    <ProjectReference Include="..\RI.Framework.Windows.Shared\RI.Framework.Windows.Shared.csproj">
       <Project>{cd9c2847-a48f-45e1-908f-3f9a86ee0e37}</Project>
       <Name>RI.Framework.Windows.Shared</Name>
     </ProjectReference>

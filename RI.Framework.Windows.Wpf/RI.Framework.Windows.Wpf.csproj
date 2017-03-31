@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>RI.Framework</RootNamespace>
-    <AssemblyName>RI.Framework.Wpf</AssemblyName>
+    <AssemblyName>RI.Framework.Windows.Wpf</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -20,7 +20,7 @@
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\RI.Framework.Wpf.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\RI.Framework.Windows.Wpf.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,7 +29,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\RI.Framework.Wpf.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\RI.Framework.Windows.Wpf.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -93,7 +93,7 @@
       <Project>{a7f5dd2f-63bf-4032-ad1e-14d211e0d3ed}</Project>
       <Name>RI.Framework.NetFx</Name>
     </ProjectReference>
-    <ProjectReference Include="..\RI.Framework.Windows\RI.Framework.Windows.Shared.csproj">
+    <ProjectReference Include="..\RI.Framework.Windows.Shared\RI.Framework.Windows.Shared.csproj">
       <Project>{cd9c2847-a48f-45e1-908f-3f9a86ee0e37}</Project>
       <Name>RI.Framework.Windows.Shared</Name>
     </ProjectReference>
