@@ -70,13 +70,13 @@
       <Project>{a7f5dd2f-63bf-4032-ad1e-14d211e0d3ed}</Project>
       <Name>RI.Framework.NetFx</Name>
     </ProjectReference>
-    <ProjectReference Include="..\RI.Framework.Windows\RI.Framework.Windows.csproj">
+    <ProjectReference Include="..\RI.Framework.Windows\RI.Framework.Windows.Shared.csproj">
       <Project>{cd9c2847-a48f-45e1-908f-3f9a86ee0e37}</Project>
-      <Name>RI.Framework.Windows</Name>
+      <Name>RI.Framework.Windows.Shared</Name>
     </ProjectReference>
-    <ProjectReference Include="..\RI.Framework.Wpf\RI.Framework.Wpf.csproj">
+    <ProjectReference Include="..\RI.Framework.Wpf\RI.Framework.Windows.Wpf.csproj">
       <Project>{d5bf9549-aeb4-4a21-aca0-591131018428}</Project>
-      <Name>RI.Framework.Wpf</Name>
+      <Name>RI.Framework.Windows.Wpf</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

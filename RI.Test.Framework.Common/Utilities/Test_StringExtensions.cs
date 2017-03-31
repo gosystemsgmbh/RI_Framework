@@ -2708,7 +2708,7 @@ namespace RI.Test.Framework.Utilities
 			{
 				throw new TestAssertionException();
 			}
-#if PLATFORM_NET
+#if PLATFORM_NETFX
 			if (!"{0XCC5BE5A0,0X79A5,0X410F,{0XB8,0XDF,0XBF,0X74,0X4C,0X48,0XD5,0X18}}".ToGuid().HasValue)
 			{
 				throw new TestAssertionException();
@@ -2873,13 +2873,12 @@ namespace RI.Test.Framework.Utilities
 				throw new TestAssertionException();
 			}
 
-#if PLATFORM_NET
+#if PLATFORM_NETFX
 			if ("-3.402824e38".ToFloatInvariant().HasValue)
 			{
 				throw new TestAssertionException();
 			}
-#endif
-#if PLATFORM_UNITY
+#else
 			if ("-3.402824e38".ToFloatInvariant().Value != float.NegativeInfinity)
 			{
 				throw new TestAssertionException();

@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D5BF9549-AEB4-4A21-ACA0-591131018428}</ProjectGuid>
+    <ProjectGuid>{EC0E161F-F9C9-4DE2-8A00-DA16E0957191}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>RI.Framework</RootNamespace>
-    <AssemblyName>RI.Framework.Wpf</AssemblyName>
+    <AssemblyName>RI.Framework.WinService</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -17,10 +17,10 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\RI.Framework.Wpf.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\RI.Framework.WinService.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,7 +29,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\RI.Framework.Wpf.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\RI.Framework.WinService.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -38,65 +38,27 @@
     <AssemblyOriginatorKeyFile>Properties\AssemblyName.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="WindowsBase" />
+    <Reference Include="System.ServiceProcess" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Utilities\Wpf\Controls\ComboBoxChecker.cs" />
-    <Compile Include="Utilities\Wpf\Controls\_NamespaceDoc.cs" />
-    <Compile Include="Utilities\Wpf\Converters\BoolVisibilityConverter.cs" />
-    <Compile Include="Utilities\Wpf\Converters\ObjectBoolConverter.cs" />
-    <Compile Include="Utilities\Wpf\Converters\ObjectVisibilityConverter.cs" />
-    <Compile Include="Utilities\Wpf\Markup\EventBinder.cs" />
-    <Compile Include="Mvvm\ViewModel\NotificationObject.cs" />
-    <Compile Include="Mvvm\ViewModel\DelegateCommand.cs" />
-    <Compile Include="Utilities\Wpf\Markup\InstanceLocator.cs" />
-    <Compile Include="Mvvm\ViewModel\DelegateCommandBase.cs" />
-    <Compile Include="Mvvm\ViewModel\IViewModel.cs" />
-    <Compile Include="Mvvm\ViewModel\ViewModelBase.cs" />
-    <Compile Include="Mvvm\ViewModel\_NamespaceDoc.cs" />
-    <Compile Include="Mvvm\View\IView.cs" />
-    <Compile Include="Mvvm\View\_NamespaceDoc.cs" />
-    <Compile Include="Mvvm\_NamespaceDoc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utilities\Wpf\Markup\RegionBinder.cs" />
-    <Compile Include="Services\Messaging\IWpfMessage.cs" />
-    <Compile Include="Services\Messaging\Dispatchers\WpfMessageDispatcher.cs" />
-    <Compile Include="Services\Messaging\WpfMessage.cs" />
-    <Compile Include="Services\Regions\Adapters\WpfRegionAdapter.cs" />
-    <Compile Include="Services\Regions\Adapters\WpfRegionAdapterBase.cs" />
-    <Compile Include="Services\Resources\Converters\WpfResourceConverter.cs" />
-    <Compile Include="Services\Resources\Converters\WpfResourceServiceExtensions.cs" />
-    <Compile Include="Services\WpfApplication.cs" />
-    <Compile Include="Services\WpfBootstrapper.cs" />
-    <Compile Include="Services\WpfBootstrapperState.cs" />
-    <Compile Include="Utilities\Wpf\ApplicationExtensions.cs" />
-    <Compile Include="Utilities\Wpf\Converters\_NamespaceDoc.cs" />
-    <Compile Include="Utilities\Wpf\DispatcherExtensions.cs" />
-    <Compile Include="Utilities\Wpf\Markup\_NamespaceDoc.cs" />
-    <Compile Include="Utilities\Wpf\TemporaryCursor.cs" />
-    <Compile Include="Utilities\Wpf\WindowExtensions.cs" />
-    <Compile Include="Utilities\Wpf\_NamespaceDoc.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\AssemblyName.snk" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RI.Framework.NetFx\RI.Framework.NetFx.csproj">
       <Project>{a7f5dd2f-63bf-4032-ad1e-14d211e0d3ed}</Project>
       <Name>RI.Framework.NetFx</Name>
     </ProjectReference>
-    <ProjectReference Include="..\RI.Framework.Windows\RI.Framework.Windows.csproj">
+    <ProjectReference Include="..\RI.Framework.Windows\RI.Framework.Windows.Shared.csproj">
       <Project>{cd9c2847-a48f-45e1-908f-3f9a86ee0e37}</Project>
-      <Name>RI.Framework.Windows</Name>
+      <Name>RI.Framework.Windows.Shared</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\AssemblyName.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

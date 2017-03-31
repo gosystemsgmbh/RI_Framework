@@ -448,7 +448,7 @@ namespace RI.Framework.Composition
 				throw new ArgumentNullException(nameof(type));
 			}
 
-#if PLATFORM_NET
+#if PLATFORM_NETFX
 			Type genericType = type.IsGenericType ? type.GetGenericTypeDefinition() : null;
 			Type typeArgument = type.IsGenericType ? type.GetGenericArguments()[0] : type;
 			return (typeArgument.IsClass || typeArgument.IsInterface) && ((genericType == null) || (genericType == typeof(IEnumerable<>)));
@@ -1258,7 +1258,7 @@ namespace RI.Framework.Composition
 							throw new CompositionException("Invalid import type for property: " + propertyType.Name + " @ " + property.Name + " @ " + type.FullName);
 						}
 
-#if PLATFORM_NET
+#if PLATFORM_NETFX
 						Type genericType = propertyType.IsGenericType ? propertyType.GetGenericTypeDefinition() : null;
 						Type typeArgument = propertyType.IsGenericType ? propertyType.GetGenericArguments()[0] : propertyType;
 						propertyType = typeArgument;

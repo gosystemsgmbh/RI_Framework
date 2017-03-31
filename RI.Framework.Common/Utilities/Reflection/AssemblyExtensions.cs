@@ -143,7 +143,7 @@ namespace RI.Framework.Utilities.Reflection
 				throw new ArgumentNullException(nameof(assembly));
 			}
 
-#if PLATFORM_NET
+#if PLATFORM_NETFX
 			if (assembly.IsDynamic)
 			{
 				return null;

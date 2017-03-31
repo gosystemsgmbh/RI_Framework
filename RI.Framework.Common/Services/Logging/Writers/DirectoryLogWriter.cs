@@ -375,10 +375,9 @@ namespace RI.Framework.Services.Logging.Writers
 						}
 
 						this.CurrentWriter.Flush();
-#if PLATFORM_NET
+#if PLATFORM_NETFX
 						this.CurrentStream.Flush(true);
-#endif
-#if PLATFORM_UNITY
+#else
 						this.CurrentStream.Flush();
 #endif
 					}
