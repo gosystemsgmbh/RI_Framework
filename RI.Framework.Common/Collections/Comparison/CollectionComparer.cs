@@ -249,7 +249,7 @@ namespace RI.Framework.Collections.Comparison
 
 			if ((comparer != null) && referenceEquality)
 			{
-				throw new ArgumentException();
+				throw new ArgumentException("Cannot use both reference quality and a comparer.");
 			}
 
 			this.Options = options;

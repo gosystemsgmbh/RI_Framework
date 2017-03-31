@@ -62,7 +62,7 @@ namespace RI.Framework.Services.Regions
 			object value = RegionLocator.GetValue(element);
 			if (value == null)
 			{
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("An element of name \"" + element + "\" could not be found or no region service is available.");
 			}
 
 			RegionLocator.Activate(region, value);
@@ -105,7 +105,7 @@ namespace RI.Framework.Services.Regions
 			object value = RegionLocator.GetValue(element);
 			if (value == null)
 			{
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("An element of type " + element.Name + " could not be found or no region service is available.");
 			}
 
 			RegionLocator.Activate(region, value);
@@ -145,7 +145,7 @@ namespace RI.Framework.Services.Regions
 			IRegionService regionService = ServiceLocator.GetInstance<IRegionService>();
 			if (regionService == null)
 			{
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("No region service is available.");
 			}
 
 			regionService.ActivateElement(region, element);
@@ -193,7 +193,7 @@ namespace RI.Framework.Services.Regions
 			object value = RegionLocator.GetValue(element);
 			if (value == null)
 			{
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("An element of name \"" + element + "\" could not be found or no region service is available.");
 			}
 
 			RegionLocator.Add(region, value);
@@ -236,7 +236,7 @@ namespace RI.Framework.Services.Regions
 			object value = RegionLocator.GetValue(element);
 			if (value == null)
 			{
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("An element of type " + element.Name + " could not be found or no region service is available.");
 			}
 
 			RegionLocator.Add(region, value);
@@ -276,7 +276,7 @@ namespace RI.Framework.Services.Regions
 			IRegionService regionService = ServiceLocator.GetInstance<IRegionService>();
 			if (regionService == null)
 			{
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("No region service is available.");
 			}
 
 			regionService.AddElement(region, element);
@@ -327,7 +327,7 @@ namespace RI.Framework.Services.Regions
 			object value = RegionLocator.GetValue(element);
 			if (value == null)
 			{
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("An element of name \"" + element + "\" could not be found or no region service is available.");
 			}
 
 			return RegionLocator.CanNavigate(region, value);
@@ -373,7 +373,7 @@ namespace RI.Framework.Services.Regions
 			object value = RegionLocator.GetValue(element);
 			if (value == null)
 			{
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("An element of type " + element.Name + " could not be found or no region service is available.");
 			}
 
 			return RegionLocator.CanNavigate(region, value);
@@ -411,7 +411,7 @@ namespace RI.Framework.Services.Regions
 			IRegionService regionService = ServiceLocator.GetInstance<IRegionService>();
 			if (regionService == null)
 			{
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("No region service available.");
 			}
 
 			return regionService.CanNavigate(region, element);
@@ -445,7 +445,7 @@ namespace RI.Framework.Services.Regions
 			IRegionService regionService = ServiceLocator.GetInstance<IRegionService>();
 			if (regionService == null)
 			{
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("No region service available.");
 			}
 
 			regionService.ClearElements(region);
@@ -493,7 +493,7 @@ namespace RI.Framework.Services.Regions
 			object value = RegionLocator.GetValue(element);
 			if (value == null)
 			{
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("An element of name \"" + element + "\" could not be found or no region service is available.");
 			}
 
 			RegionLocator.Deactivate(region, value);
@@ -536,7 +536,7 @@ namespace RI.Framework.Services.Regions
 			object value = RegionLocator.GetValue(element);
 			if (value == null)
 			{
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("An element of type " + element.Name + " could not be found or no region service is available.");
 			}
 
 			RegionLocator.Deactivate(region, value);
@@ -576,7 +576,7 @@ namespace RI.Framework.Services.Regions
 			IRegionService regionService = ServiceLocator.GetInstance<IRegionService>();
 			if (regionService == null)
 			{
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("No region service available.");
 			}
 
 			regionService.DeactivateElement(region, element);
@@ -610,7 +610,7 @@ namespace RI.Framework.Services.Regions
 			IRegionService regionService = ServiceLocator.GetInstance<IRegionService>();
 			if (regionService == null)
 			{
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("No region service available.");
 			}
 
 			regionService.DeactivateAllElements(region);
@@ -661,7 +661,7 @@ namespace RI.Framework.Services.Regions
 			object value = RegionLocator.GetValue(element);
 			if (value == null)
 			{
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("An element of name \"" + element + "\" could not be found or no region service is available.");
 			}
 
 			return RegionLocator.Navigate(region, value);
@@ -707,7 +707,7 @@ namespace RI.Framework.Services.Regions
 			object value = RegionLocator.GetValue(element);
 			if (value == null)
 			{
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("An element of type " + element.Name + " could not be found or no region service is available.");
 			}
 
 			return RegionLocator.Navigate(region, value);
@@ -745,7 +745,7 @@ namespace RI.Framework.Services.Regions
 			IRegionService regionService = ServiceLocator.GetInstance<IRegionService>();
 			if (regionService == null)
 			{
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("No region service available.");
 			}
 
 			return regionService.Navigate(region, element);
@@ -793,7 +793,7 @@ namespace RI.Framework.Services.Regions
 			object value = RegionLocator.GetValue(element);
 			if (value == null)
 			{
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("An element of name \"" + element + "\" could not be found or no region service is available.");
 			}
 
 			RegionLocator.Remove(region, value);
@@ -836,7 +836,7 @@ namespace RI.Framework.Services.Regions
 			object value = RegionLocator.GetValue(element);
 			if (value == null)
 			{
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("An element of type " + element.Name + " could not be found or no region service is available.");
 			}
 
 			RegionLocator.Remove(region, value);
@@ -876,7 +876,7 @@ namespace RI.Framework.Services.Regions
 			IRegionService regionService = ServiceLocator.GetInstance<IRegionService>();
 			if (regionService == null)
 			{
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("No region service available.");
 			}
 
 			regionService.RemoveElement(region, element);

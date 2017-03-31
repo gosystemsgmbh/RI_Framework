@@ -88,7 +88,7 @@ namespace RI.Framework.Services.Messaging
 				}
 			}
 
-			throw new KeyNotFoundException();
+			throw new KeyNotFoundException("No data item of type " + typeof(T).Name + " could be found.");
 		}
 
 		/// <summary>
@@ -117,14 +117,14 @@ namespace RI.Framework.Services.Messaging
 
 			if (!this.Data.ContainsKey(name))
 			{
-				throw new KeyNotFoundException();
+				throw new KeyNotFoundException("No data item of name \"" + name + "\" could be found.");
 			}
 
 			object value = this.Data[name];
 
 			if (!(value is T))
 			{
-				throw new InvalidCastException();
+				throw new InvalidCastException("A data item of name \"" + name + "\" was found but could not be converted to type " + typeof(T).Name);
 			}
 
 			return (T)value;
@@ -212,7 +212,7 @@ namespace RI.Framework.Services.Messaging
 
 			if (!(value is T))
 			{
-				throw new InvalidCastException();
+				throw new InvalidCastException("A data item of name \"" + name + "\" was found but could not be converted to type " + typeof(T).Name);
 			}
 
 			return (T)value;

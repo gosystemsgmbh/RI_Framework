@@ -256,7 +256,7 @@ namespace RI.Framework.Services.Settings
 			ISettingConverter converter = this.GetConverterForType(type);
 			if (converter == null)
 			{
-				throw new InvalidTypeArgumentException();
+				throw new InvalidTypeArgumentException(nameof(type));
 			}
 
 			string stringValue = this.GetRawValue(name);
@@ -353,7 +353,7 @@ namespace RI.Framework.Services.Settings
 			ISettingConverter converter = this.GetConverterForType(type);
 			if (converter == null)
 			{
-				throw new InvalidTypeArgumentException(nameof(defaultValue));
+				throw new InvalidTypeArgumentException(nameof(type));
 			}
 
 			string stringValue = defaultValue == null ? null : converter.ConvertFrom(type, defaultValue);
@@ -480,7 +480,7 @@ namespace RI.Framework.Services.Settings
 			ISettingConverter converter = this.GetConverterForType(type);
 			if (converter == null)
 			{
-				throw new InvalidTypeArgumentException(nameof(value));
+				throw new InvalidTypeArgumentException(nameof(type));
 			}
 
 			string stringValue = value == null ? null : converter.ConvertFrom(type, value);

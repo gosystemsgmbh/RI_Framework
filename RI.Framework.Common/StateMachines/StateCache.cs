@@ -56,7 +56,7 @@ namespace RI.Framework.StateMachines
 
 			if (!this.States.ContainsKey(state))
 			{
-				throw new KeyNotFoundException();
+				throw new KeyNotFoundException("The state of type " + state.Name + " could not be found in the cache.");
 			}
 
 			return this.States[state];

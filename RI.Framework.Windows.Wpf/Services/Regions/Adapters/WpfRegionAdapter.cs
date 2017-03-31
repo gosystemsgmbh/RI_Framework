@@ -46,7 +46,7 @@ namespace RI.Framework.Services.Regions.Adapters
 				ContentControl contentControl = (ContentControl)container;
 				if (contentControl.Content != null)
 				{
-					throw new NotSupportedException();
+					throw new NotSupportedException("The container of type" + container.GetType().Name + " already has an element and does not support multiple elements.");
 				}
 				contentControl.Content = element;
 			}

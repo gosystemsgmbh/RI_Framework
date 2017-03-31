@@ -172,7 +172,7 @@ namespace RI.Framework.Services.Settings
 				return Convert.ToBase64String((byte[])value, Base64FormattingOptions.None);
 			}
 
-			throw new InvalidTypeArgumentException(nameof(value));
+			throw new InvalidTypeArgumentException(nameof(type));
 		}
 
 		/// <inheritdoc />
@@ -299,7 +299,7 @@ namespace RI.Framework.Services.Settings
 
 			if (finalValue == null)
 			{
-				throw new FormatException();
+				throw new FormatException("The string representation is invalid and cannot be converted to the type " + type.Name + ".");
 			}
 
 			return finalValue;

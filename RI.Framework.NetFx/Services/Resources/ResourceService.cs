@@ -355,7 +355,7 @@ namespace RI.Framework.Services.Resources
 			IResourceConverter converter = this.GetConverterForType(value.GetType(), type);
 			if (converter == null)
 			{
-				throw new InvalidTypeArgumentException();
+				throw new InvalidTypeArgumentException(nameof(type));
 			}
 
 			object finalValue = converter.Convert(type, value);

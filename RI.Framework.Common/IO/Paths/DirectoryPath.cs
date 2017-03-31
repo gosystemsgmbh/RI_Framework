@@ -616,7 +616,7 @@ namespace RI.Framework.IO.Paths
 		{
 			if (!this.IsRealDirectory)
 			{
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("The directory is not a real usable directory.");
 			}
 		}
 

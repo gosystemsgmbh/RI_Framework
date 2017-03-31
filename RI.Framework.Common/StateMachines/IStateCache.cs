@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 
 
@@ -43,6 +44,7 @@ namespace RI.Framework.StateMachines
 		/// </note>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"><paramref name="state"/> is null.</exception>
+		/// <exception cref="KeyNotFoundException"><paramref name="state"/> was not found in the cache.</exception>
 		IState GetState (Type state);
 
 		/// <summary>

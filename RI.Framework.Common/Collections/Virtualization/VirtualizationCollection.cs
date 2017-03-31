@@ -378,7 +378,7 @@ namespace RI.Framework.Collections.Virtualization
 
 				if (index < 0)
 				{
-					throw new IndexOutOfRangeException();
+					throw new IndexOutOfRangeException("The index cannot be less than zero.");
 				}
 
 				int pageIndex = index / this.PageSize;
@@ -393,12 +393,12 @@ namespace RI.Framework.Collections.Virtualization
 				Page page = this.LoadPage(pageIndex, false);
 				if (page == null)
 				{
-					throw new IndexOutOfRangeException();
+					throw new IndexOutOfRangeException("The index points to a nonexistent page.");
 				}
 
 				if (pageOffset >= page.Items.Count)
 				{
-					throw new IndexOutOfRangeException();
+					throw new IndexOutOfRangeException("The index results in a too large offset.");
 				}
 
 				return page.Items[pageOffset];

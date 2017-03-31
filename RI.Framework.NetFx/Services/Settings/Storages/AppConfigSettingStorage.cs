@@ -72,13 +72,13 @@ namespace RI.Framework.Services.Settings.Storages
 		/// <inheritdoc />
 		public void Save ()
 		{
-			throw new NotSupportedException();
+			throw new NotSupportedException("Saving to app.config is not supported.");
 		}
 
 		/// <inheritdoc />
 		public void SetValue (string name, string value)
 		{
-			throw new NotSupportedException();
+			throw new NotSupportedException("Setting a valu to app.config is not supported.");
 		}
 
 		#endregion

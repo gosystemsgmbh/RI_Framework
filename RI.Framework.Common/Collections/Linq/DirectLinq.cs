@@ -829,7 +829,7 @@ namespace RI.Framework.Collections.Linq
 				count++;
 			}
 
-			throw new InvalidOperationException();
+			throw new InvalidOperationException("The specified index is outside the length of the sequence.");
 		}
 
 		/// <summary>
@@ -1042,7 +1042,7 @@ namespace RI.Framework.Collections.Linq
 				return item;
 			}
 
-			throw new InvalidOperationException();
+			throw new InvalidOperationException("The sequence is empty and thus cannot provide a first element.");
 		}
 
 		/// <summary>
@@ -1110,7 +1110,7 @@ namespace RI.Framework.Collections.Linq
 				count++;
 			}
 
-			throw new InvalidOperationException();
+			throw new InvalidOperationException("The sequence does not contain any element which satisfies the specified condition and thus cannot provide a first element.");
 		}
 
 		/// <summary>
@@ -1434,7 +1434,7 @@ namespace RI.Framework.Collections.Linq
 				return last;
 			}
 
-			throw new InvalidOperationException();
+			throw new InvalidOperationException("The sequence is empty and thus cannot provide a last element.");
 		}
 
 		/// <summary>
@@ -1509,7 +1509,7 @@ namespace RI.Framework.Collections.Linq
 				return last;
 			}
 
-			throw new InvalidOperationException();
+			throw new InvalidOperationException("The sequence does not contain any element which satisfies the specified condition and thus cannot provide a last element.");
 		}
 
 		/// <summary>
@@ -2965,7 +2965,7 @@ namespace RI.Framework.Collections.Linq
 				}
 				catch (ArgumentException)
 				{
-					throw new InvalidOperationException();
+					throw new InvalidOperationException("The same key is derived for more than one element.");
 				}
 			}
 			return dictionary;

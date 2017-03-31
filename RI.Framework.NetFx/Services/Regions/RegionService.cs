@@ -511,7 +511,7 @@ namespace RI.Framework.Services.Regions
 			{
 				if (regionAdapter.Equals(region.Value.Item2))
 				{
-					throw new InvalidOperationException();
+					throw new InvalidOperationException("The specified region adapter is still in use.");
 				}
 			}
 

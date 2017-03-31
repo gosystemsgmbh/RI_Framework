@@ -119,13 +119,13 @@ namespace RI.Framework.Services.Settings.Storages
 		/// <inheritdoc />
 		public void Save ()
 		{
-			throw new NotSupportedException();
+			throw new NotSupportedException("Saving to environment variables is not supported.");
 		}
 
 		/// <inheritdoc />
 		public void SetValue (string name, string value)
 		{
-			throw new NotSupportedException();
+			throw new NotSupportedException("Setting a value to environment variables is not supported.");
 		}
 
 		#endregion

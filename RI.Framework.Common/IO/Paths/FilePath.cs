@@ -733,7 +733,7 @@ namespace RI.Framework.IO.Paths
 		{
 			if (!this.IsRealFile)
 			{
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("The file is not a real usable file.");
 			}
 		}
 

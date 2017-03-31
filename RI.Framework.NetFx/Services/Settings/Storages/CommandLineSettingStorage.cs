@@ -126,13 +126,13 @@ namespace RI.Framework.Services.Settings.Storages
 		/// <inheritdoc />
 		public void Save ()
 		{
-			throw new NotSupportedException();
+			throw new NotSupportedException("Saving to the command line is not supported.");
 		}
 
 		/// <inheritdoc />
 		public void SetValue (string name, string value)
 		{
-			throw new NotSupportedException();
+			throw new NotSupportedException("Setting a value to the command line is not supported.");
 		}
 
 		#endregion
