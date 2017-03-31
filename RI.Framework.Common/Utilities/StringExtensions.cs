@@ -5,6 +5,7 @@ using System.Text;
 
 using RI.Framework.Collections;
 using RI.Framework.Collections.Linq;
+using RI.Framework.Mathematic;
 using RI.Framework.Utilities.Exceptions;
 
 
@@ -1611,6 +1612,30 @@ namespace RI.Framework.Utilities
 			{
 				return null;
 			}
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into a <see cref="RomanNumber" /> value.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     The <see cref="RomanNumber" /> value represented by the string if the string can be converted into a <see cref="RomanNumber" />, null otherwise.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static RomanNumber? ToRomanNumber(this string str)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			RomanNumber value;
+			if (RomanNumber.TryParse(str, out value))
+			{
+				return value;
+			}
+
+			return null;
 		}
 
 		/// <summary>

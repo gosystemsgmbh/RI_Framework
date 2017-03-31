@@ -293,6 +293,14 @@ Data
 Mathematic
 ----------
 
+ - (Common) NumberExtensions: FractionAsInteger
+ - (Common) NumberExtensions: ExtractDigits
+ - (Common) NumberExtensions: ggT
+ - (Common) NumberExtensions: kgV
+
+ - (Common) MathUtils: CirclePosition
+ - (Common) MathUtils: EllipsePosition
+
  - (Common) Aggregate extensions for numerical types (byte, short, int, long, double, float), including statistics (min, max, sum, average, median, RMS, count)
 
  - (Common) NonlinearController

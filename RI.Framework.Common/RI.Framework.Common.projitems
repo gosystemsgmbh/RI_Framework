@@ -88,7 +88,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)IO\Paths\PathType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\Paths\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\_NamespaceDoc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Mathematic\MathConstD.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Mathematic\MathConstF.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Mathematic\MathUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Mathematic\NumberExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mathematic\PIDController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Mathematic\RomanNumber.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mathematic\RunningValues.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mathematic\Statistics.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mathematic\StatisticValues.cs" />

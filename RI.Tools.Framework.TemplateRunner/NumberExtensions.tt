@@ -1,0 +1,597 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".tt.cs" #>
+using System;
+using System.Diagnostics.CodeAnalysis;
+
+// ReSharper disable RedundantCast
+// ReSharper disable once CheckNamespace
+namespace RI.Framework.Mathematic
+{
+	/// <summary>
+	///     Provides utility/extension methods for numerical types.
+	/// </summary>
+	/// <remarks>
+	/// <para>
+	/// Numerical types are: <see cref="sbyte"/>, <see cref="byte"/>, <see cref="short"/>, <see cref="ushort"/>, <see cref="int"/>, <see cref="uint"/>, <see cref="long"/>, <see cref="ulong"/>, <see cref="float"/>, <see cref="double"/>, <see cref="decimal"/>.
+	/// </para>
+	/// </remarks>
+	public static class NumberExtensions
+	{
+<#
+string[] types = new string[]		{	"sbyte",	"byte",		"short",	"ushort",	"int",	"uint",		"long",		"ulong",	"float",	"double",	"decimal"	};
+string[] zeros = new string[]		{	"0",		"0",		"0",		"0",		"0",	"0",		"0",		"0ul",		"0.0f",		"0.0",		"0.0m"		};
+string[] plusOnes = new string[]	{	"1",		"1",		"1",		"1",		"1",	"1",		"1",		"1ul",		"1.0f",		"1.0",		"1.0m"		};
+string[] minusOnes = new string[]	{	"-1",		"-1",		"-1",		"-1",		"-1",	"-1",		"-1",		"-1ul",		"-1.0f",	"-1.0",		"-1.0m"		};
+for (int i1 = 0; i1 < types.Length; i1++)
+{
+string type = types[i1];
+string zero = zeros[i1];
+string plusOne = plusOnes[i1];
+string minusOne = minusOnes[i1];
+#>
+
+		/// <summary>
+		/// Clamps a value between an inclusive minimum and maximum value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="min">The lowest possible value.</param>
+		/// <param name="max">The highest possible value.</param>
+		/// <returns>
+		/// The clamped value.
+		/// </returns>
+		public static <#=type#> Clamp (this <#=type#> value, <#=type#> min, <#=type#> max)
+		{
+			if(value < min)
+			{
+				return min;
+			}
+			if(value > max)
+			{
+				return max;
+			}
+			return value;
+		}
+
+		/// <summary>
+		/// Clamps a value to an inclusive minimum value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="min">The lowest possible value.</param>
+		/// <returns>
+		/// The clamped value.
+		/// </returns>
+		public static <#=type#> ClampMin (this <#=type#> value, <#=type#> min)
+		{
+			if(value < min)
+			{
+				return min;
+			}
+			return value;
+		}
+
+		/// <summary>
+		/// Clamps a value to an inclusive maximum value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="max">The highest possible value.</param>
+		/// <returns>
+		/// The clamped value.
+		/// </returns>
+		public static <#=type#> ClampMax (this <#=type#> value, <#=type#> max)
+		{
+			if(value > max)
+			{
+				return max;
+			}
+			return value;
+		}
+
+		/// <summary>
+		/// Quantizes a value to the nearest value of a multiple.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="multiple">The multiple.</param>
+		/// <returns>
+		/// The quantized value.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <see cref="MidpointRounding.ToEven"/> is used for <see cref="MidpointRounding"/>.
+		/// </para>
+		/// </remarks>
+		public static <#=type#> Quantize (this <#=type#> value, <#=type#> multiple) => (<#=type#>)(Math.Round((double)value / (double)multiple) * (double)multiple);
+
+		/// <summary>
+		/// Quantizes a value to the nearest value of a multiple.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="multiple">The multiple.</param>
+		/// <param name="rounding">The kind of rounding to use.</param>
+		/// <returns>
+		/// The quantized value.
+		/// </returns>
+		public static <#=type#> Quantize (this <#=type#> value, <#=type#> multiple, MidpointRounding rounding) => (<#=type#>)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
+<#
+}
+types = new string[]		{	"sbyte",	"short",	"int",	"long",		"float",	"double",	"decimal"	};
+zeros = new string[]		{	"0",		"0",		"0",	"0",		"0.0f",		"0.0",		"0.0m"		};
+plusOnes = new string[]		{	"1",		"1",		"1",	"1",		"1.0f",		"1.0",		"1.0m"		};
+minusOnes = new string[]	{	"-1",		"-1",		"-1",	"-1",		"-1.0f",	"-1.0",		"-1.0m"		};
+for (int i1 = 0; i1 < types.Length; i1++)
+{
+string type = types[i1];
+string zero = zeros[i1];
+string plusOne = plusOnes[i1];
+string minusOne = minusOnes[i1];
+#>
+
+		/// <summary>
+		/// Gets the absolute number of a value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The absolute number.
+		/// </returns>
+		public static <#=type#> Abs (this <#=type#> value) => value < <#=zero#> ? (<#=type#>)(<#=minusOne#> * value) : value;
+
+		/// <summary>
+		/// Gets the sign of a value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// 1 if the number is positive, 0 if the number is zero, -1 if the number is negative.
+		/// </returns>
+		[SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
+		public static <#=type#> Sign (this <#=type#> value) => (<#=type#>)((value == <#=zero#>) ? <#=zero#> : (value < <#=zero#> ? <#=minusOne#> : <#=plusOne#>));
+
+		/// <summary>
+		/// Calculates the magnitude of a value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The magnitude.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// The magnitude expresses the order of magnitude of a number.
+		/// Simply said, it calculates the number of significant digits on the left side of the decimal point.
+		/// </para>
+		/// <para>
+		/// If <paramref name="value"/> is positive, the result is positive.
+		/// If <paramref name="value"/> is negative, the result is negative.
+		/// If <paramref name="value"/> is zero, the result is zero.
+		/// </para>
+		/// <para>
+		/// Examples: 0 -> 0; 1 -> 1; -1 -> -1; 5 -> 1; -5 -> -1; 10 -> 2; 100 -> 3; 1234 -> 4; -1234 -> -4; 9999 -> 4; 10000 -> 5; 10001 -> 5
+		/// </para>
+		/// </remarks>
+		[SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
+		public static <#=type#> Magnitude (this <#=type#> value)
+		{
+			if(value == <#=zero#>)
+			{
+				return <#=zero#>;
+			}
+
+			return (<#=type#>)(Math.Floor(Math.Log10((double)Math.Abs(value)) + 1.0) * (double)Math.Sign(value));
+		}
+<#
+}
+types = new string[]				{	"float",					"double"					};
+zeros = new string[]				{	"0.0f",						"0.0"						};
+plusOnes = new string[]				{	"1.0f",						"1.0"						};
+minusOnes = new string[]			{	"-1.0f",					"-1.0"						};
+string[] accuracies = new string[]	{	"5.96046447753906E-07f",	"1.11022302462516E-15"		};
+for (int i1 = 0; i1 < types.Length; i1++)
+{
+string type = types[i1];
+string zero = zeros[i1];
+string plusOne = plusOnes[i1];
+string minusOne = minusOnes[i1];
+string accuracy = accuracies[i1];
+#>
+
+		/// <summary>
+		/// Determines whether a value is almost equal to another value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="other">The other value to compare with.</param>
+		/// <returns>
+		/// true if the value is within the default accuracy for equality, false otherwise.
+		/// </returns>
+		public static bool AlmostEqual (this <#=type#> value, <#=type#> other) => value.AlmostEqual(other, <#=accuracy#>);
+
+		/// <summary>
+		/// Determines whether a value is almost equal to another value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="other">The other value to compare with.</param>
+		/// <param name="accuracy">The accuracy within the two values are considered equal.</param>
+		/// <returns>
+		/// true if the value is within the specified accuracy for equality, false otherwise.
+		/// </returns>
+		public static bool AlmostEqual (this <#=type#> value, <#=type#> other, <#=type#> accuracy) => Math.Abs(value - other) < (double)accuracy;
+
+		/// <summary>
+		/// Determines whether a value is almost zero.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// true if the value is within the default accuracy to zero, false otherwise.
+		/// </returns>
+		public static bool AlmostZero (this <#=type#> value) => Math.Abs(value) < (double)<#=accuracy#>;
+
+		/// <summary>
+		/// Determines whether a value is almost zero.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="accuracy">The accuracy within the value is considered zero.</param>
+		/// <returns>
+		/// true if the value is within the specified accuracy to zero, false otherwise.
+		/// </returns>
+		public static bool AlmostZero (this <#=type#> value, <#=type#> accuracy) => Math.Abs(value) < (double)accuracy;
+
+		/// <summary>
+		/// Gets the smallest integer that is greater than or equal to a value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The smallest integer.
+		/// </returns>
+		public static <#=type#> Ceiling (this <#=type#> value) => (<#=type#>)Math.Ceiling(value);
+
+		/// <summary>
+		/// Gets the largest integer less than or equal to a value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The largest integer.
+		/// </returns>
+		public static <#=type#> Floor (this <#=type#> value) => (<#=type#>)Math.Floor(value);
+
+		/// <summary>
+		/// Gets the integer part of a value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The integer part.
+		/// </returns>
+		public static <#=type#> Integer (this <#=type#> value) => (<#=type#>)Math.Truncate(value);
+
+		/// <summary>
+		/// Gets the fraction part of a value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The fraction part.
+		/// </returns>
+		public static <#=type#> Fraction (this <#=type#> value) => (<#=type#>)(value - Math.Truncate(value));
+
+		/// <summary>
+		/// Rounds a value to the nearest integer.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The rounded value.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <see cref="MidpointRounding.ToEven"/> is used for <see cref="MidpointRounding"/>.
+		/// </para>
+		/// </remarks>
+		public static <#=type#> RoundInteger (this <#=type#> value) => (<#=type#>)Math.Round(value);
+
+		/// <summary>
+		/// Rounds a value to the nearest integer.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="rounding">The kind of rounding to use.</param>
+		/// <returns>
+		/// The rounded value.
+		/// </returns>
+		public static <#=type#> RoundInteger (this <#=type#> value, MidpointRounding rounding) => (<#=type#>)Math.Round(value, rounding);
+
+		/// <summary>
+		/// Rounds a value to a specified amount of fractional digits.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="digits">The number of digits.</param>
+		/// <returns>
+		/// The rounded value.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <see cref="MidpointRounding.ToEven"/> is used for <see cref="MidpointRounding"/>.
+		/// </para>
+		/// </remarks>
+		public static <#=type#> RoundDigits (this <#=type#> value, int digits) => (<#=type#>)Math.Round(value, digits);
+
+		/// <summary>
+		/// Rounds a value to a specified amount of fractional digits.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="digits">The number of digits.</param>
+		/// <param name="rounding">The kind of rounding to use.</param>
+		/// <returns>
+		/// The rounded value.
+		/// </returns>
+		public static <#=type#> RoundDigits (this <#=type#> value, int digits, MidpointRounding rounding) => (<#=type#>)Math.Round(value, digits, rounding);
+
+		/// <summary>
+		/// Calculates value^power.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="power">The power.</param>
+		/// <returns>
+		/// The result.
+		/// </returns>
+		public static <#=type#> Pow (this <#=type#> value, double power) => (<#=type#>)Math.Pow((double)value, power);
+
+		/// <summary>
+		/// Calculates value^2.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The result.
+		/// </returns>
+		public static <#=type#> Pow2 (this <#=type#> value) => value * value;
+
+		/// <summary>
+		/// Calculates value^3.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The result.
+		/// </returns>
+		public static <#=type#> Pow3 (this <#=type#> value) => value * value * value;
+
+		/// <summary>
+		/// Calculates value^10.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The result.
+		/// </returns>
+		public static <#=type#> Pow10 (this <#=type#> value) => (<#=type#>)Math.Pow((double)value, 10.0);
+
+		/// <summary>
+		/// Calculates value^e.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The result.
+		/// </returns>
+		public static <#=type#> PowE (this <#=type#> value) => (<#=type#>)Math.Pow((double)value, Math.E);
+
+		/// <summary>
+		/// Calculates expBase^value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="expBase">The base.</param>
+		/// <returns>
+		/// The result.
+		/// </returns>
+		public static <#=type#> Exp (this <#=type#> value, double expBase) => (<#=type#>)Math.Pow(expBase, (double)value);
+
+		/// <summary>
+		/// Calculates 2^value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The result.
+		/// </returns>
+		public static <#=type#> Exp2 (this <#=type#> value) => (<#=type#>)Math.Pow(2.0, (double)value);
+
+		/// <summary>
+		/// Calculates 3^value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The result.
+		/// </returns>
+		public static <#=type#> Exp3 (this <#=type#> value) => (<#=type#>)Math.Pow(3.0, (double)value);
+
+		/// <summary>
+		/// Calculates 10^value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The result.
+		/// </returns>
+		public static <#=type#> Exp10 (this <#=type#> value) => (<#=type#>)Math.Pow(10.0, (double)value);
+
+		/// <summary>
+		/// Calculates e^value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The result.
+		/// </returns>
+		public static <#=type#> ExpE (this <#=type#> value) => (<#=type#>)Math.Exp((double)value);
+
+		/// <summary>
+		/// Calculates log[logBase](value).
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="logBase">The base.</param>
+		/// <returns>
+		/// The result.
+		/// </returns>
+		public static <#=type#> Log (this <#=type#> value, double logBase) => (<#=type#>)Math.Log((double)value, logBase);
+
+		/// <summary>
+		/// Calculates log[2](value).
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The result.
+		/// </returns>
+		public static <#=type#> Log2 (this <#=type#> value) => (<#=type#>)Math.Log((double)value, 2.0);
+
+		/// <summary>
+		/// Calculates log[3](value).
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The result.
+		/// </returns>
+		public static <#=type#> Log3 (this <#=type#> value) => (<#=type#>)Math.Log((double)value, 3.0);
+
+		/// <summary>
+		/// Calculates log[10](value).
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The result.
+		/// </returns>
+		public static <#=type#> Log10 (this <#=type#> value) => (<#=type#>)Math.Log10((double)value);
+
+		/// <summary>
+		/// Calculates log[e](value).
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The result.
+		/// </returns>
+		public static <#=type#> LogE (this <#=type#> value) => (<#=type#>)Math.Log((double)value);
+
+		/// <summary>
+		/// Calculates the square-root of a value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The square-root.
+		/// </returns>
+		public static <#=type#> Sqrt (this <#=type#> value) => (<#=type#>)Math.Sqrt((double)value);
+
+		/// <summary>
+		/// Calculates the n-th root of a value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="n">The root.</param>
+		/// <returns>
+		/// The n-th root.
+		/// </returns>
+		public static <#=type#> Root (this <#=type#> value, double n) => (<#=type#>)Math.Pow((double)value, 1.0 / n);
+
+		/// <summary>
+		/// Calculates the Sine of a value in radians.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The result.
+		/// </returns>
+		public static <#=type#> Sin (this <#=type#> value) => (<#=type#>)Math.Sin(value);
+
+		/// <summary>
+		/// Calculates the Cosine of a value in radians.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The result.
+		/// </returns>
+		public static <#=type#> Cos (this <#=type#> value) => (<#=type#>)Math.Cos(value);
+
+		/// <summary>
+		/// Calculates the Tangent of a value in radians.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The result.
+		/// </returns>
+		public static <#=type#> Tan (this <#=type#> value) => (<#=type#>)Math.Tan(value);
+
+		/// <summary>
+		/// Calculates the Cotangent of a value in radians.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The result.
+		/// </returns>
+		public static <#=type#> Cot (this <#=type#> value) => <#=plusOne#> / (<#=type#>)Math.Tan(value);
+
+		/// <summary>
+		/// Calculates the Arc Sine of a value in radians.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The result.
+		/// </returns>
+		public static <#=type#> Asin (this <#=type#> value) => (<#=type#>)Math.Asin(value);
+
+		/// <summary>
+		/// Calculates the Arc Cosine of a value in radians.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The result.
+		/// </returns>
+		public static <#=type#> Acos (this <#=type#> value) => (<#=type#>)Math.Acos(value);
+
+		/// <summary>
+		/// Calculates the Arc Tangent of a value in radians.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The result.
+		/// </returns>
+		public static <#=type#> Atan (this <#=type#> value) => (<#=type#>)Math.Atan(value);
+
+		/// <summary>
+		/// Calculates the Arc Cotangent of a value in radians.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The result.
+		/// </returns>
+		public static <#=type#> Acot (this <#=type#> value) => (<#=type#>)Math.Tan(<#=plusOne#> / value);
+
+		/// <summary>
+		/// Calculates the Hyperbolic Sine of a value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The result.
+		/// </returns>
+		public static <#=type#> Sinh (this <#=type#> value) => (<#=type#>)Math.Sinh(value);
+
+		/// <summary>
+		/// Calculates the Hyperbolic Cosine of a value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The result.
+		/// </returns>
+		public static <#=type#> Cosh (this <#=type#> value) => (<#=type#>)Math.Cosh(value);
+
+		/// <summary>
+		/// Calculates the Hyperbolic Tangent of a value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The result.
+		/// </returns>
+		public static <#=type#> Tanh (this <#=type#> value) => (<#=type#>)Math.Tanh(value);
+
+		/// <summary>
+		/// Calculates the Hyperbolic Cotangent of a value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The result.
+		/// </returns>
+		public static <#=type#> Coth (this <#=type#> value)
+		{
+			double e1 = Math.Exp(value);
+			double e2 = Math.Exp(-value);
+			return (<#=type#>)((e1 + e2) / (e1 - e2));
+		}
+<#
+}
+#>
+	}
+}
