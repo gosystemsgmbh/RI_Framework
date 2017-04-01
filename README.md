@@ -3,9 +3,11 @@
 ## TODO
 
 - [ ] Documentation
-  - [ ] Namespace, type, member descriptions
-  - [ ] Conceptional documentation
-  - [ ] Examples
+  - [ ] Reference (namespace, type, member)
+  - [ ] Welcome
+  - [ ] Support
+  - [ ] Version History
+  - [ ] Overview (including examples)
   - [ ] Cleanup artifacts
   - [ ] Remove RI.Documentation.Framework.Common
   - [ ] Update/Enhance Readme (including whishlist)

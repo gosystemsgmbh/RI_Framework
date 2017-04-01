@@ -73,6 +73,32 @@ namespace RI.Framework.Mathematic
 		}
 
 		/// <summary>
+		/// Quantizes a value to the nearest value of a multiple.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="multiple">The multiple.</param>
+		/// <returns>
+		/// The quantized value.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <see cref="MidpointRounding.ToEven"/> is used for <see cref="MidpointRounding"/>.
+		/// </para>
+		/// </remarks>
+		public static sbyte Quantize (this sbyte value, sbyte multiple) => (sbyte)(Math.Round((double)value / (double)multiple) * (double)multiple);
+
+		/// <summary>
+		/// Quantizes a value to the nearest value of a multiple.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="multiple">The multiple.</param>
+		/// <param name="rounding">The kind of rounding to use.</param>
+		/// <returns>
+		/// The quantized value.
+		/// </returns>
+		public static sbyte Quantize (this sbyte value, sbyte multiple, MidpointRounding rounding) => (sbyte)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
+
+		/// <summary>
 		/// Clamps a value between an inclusive minimum and maximum value.
 		/// </summary>
 		/// <param name="value">The value.</param>
@@ -127,6 +153,32 @@ namespace RI.Framework.Mathematic
 			}
 			return value;
 		}
+
+		/// <summary>
+		/// Quantizes a value to the nearest value of a multiple.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="multiple">The multiple.</param>
+		/// <returns>
+		/// The quantized value.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <see cref="MidpointRounding.ToEven"/> is used for <see cref="MidpointRounding"/>.
+		/// </para>
+		/// </remarks>
+		public static byte Quantize (this byte value, byte multiple) => (byte)(Math.Round((double)value / (double)multiple) * (double)multiple);
+
+		/// <summary>
+		/// Quantizes a value to the nearest value of a multiple.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="multiple">The multiple.</param>
+		/// <param name="rounding">The kind of rounding to use.</param>
+		/// <returns>
+		/// The quantized value.
+		/// </returns>
+		public static byte Quantize (this byte value, byte multiple, MidpointRounding rounding) => (byte)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
 
 		/// <summary>
 		/// Clamps a value between an inclusive minimum and maximum value.
@@ -185,6 +237,32 @@ namespace RI.Framework.Mathematic
 		}
 
 		/// <summary>
+		/// Quantizes a value to the nearest value of a multiple.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="multiple">The multiple.</param>
+		/// <returns>
+		/// The quantized value.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <see cref="MidpointRounding.ToEven"/> is used for <see cref="MidpointRounding"/>.
+		/// </para>
+		/// </remarks>
+		public static short Quantize (this short value, short multiple) => (short)(Math.Round((double)value / (double)multiple) * (double)multiple);
+
+		/// <summary>
+		/// Quantizes a value to the nearest value of a multiple.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="multiple">The multiple.</param>
+		/// <param name="rounding">The kind of rounding to use.</param>
+		/// <returns>
+		/// The quantized value.
+		/// </returns>
+		public static short Quantize (this short value, short multiple, MidpointRounding rounding) => (short)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
+
+		/// <summary>
 		/// Clamps a value between an inclusive minimum and maximum value.
 		/// </summary>
 		/// <param name="value">The value.</param>
@@ -239,6 +317,32 @@ namespace RI.Framework.Mathematic
 			}
 			return value;
 		}
+
+		/// <summary>
+		/// Quantizes a value to the nearest value of a multiple.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="multiple">The multiple.</param>
+		/// <returns>
+		/// The quantized value.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <see cref="MidpointRounding.ToEven"/> is used for <see cref="MidpointRounding"/>.
+		/// </para>
+		/// </remarks>
+		public static ushort Quantize (this ushort value, ushort multiple) => (ushort)(Math.Round((double)value / (double)multiple) * (double)multiple);
+
+		/// <summary>
+		/// Quantizes a value to the nearest value of a multiple.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="multiple">The multiple.</param>
+		/// <param name="rounding">The kind of rounding to use.</param>
+		/// <returns>
+		/// The quantized value.
+		/// </returns>
+		public static ushort Quantize (this ushort value, ushort multiple, MidpointRounding rounding) => (ushort)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
 
 		/// <summary>
 		/// Clamps a value between an inclusive minimum and maximum value.
@@ -297,6 +401,32 @@ namespace RI.Framework.Mathematic
 		}
 
 		/// <summary>
+		/// Quantizes a value to the nearest value of a multiple.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="multiple">The multiple.</param>
+		/// <returns>
+		/// The quantized value.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <see cref="MidpointRounding.ToEven"/> is used for <see cref="MidpointRounding"/>.
+		/// </para>
+		/// </remarks>
+		public static int Quantize (this int value, int multiple) => (int)(Math.Round((double)value / (double)multiple) * (double)multiple);
+
+		/// <summary>
+		/// Quantizes a value to the nearest value of a multiple.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="multiple">The multiple.</param>
+		/// <param name="rounding">The kind of rounding to use.</param>
+		/// <returns>
+		/// The quantized value.
+		/// </returns>
+		public static int Quantize (this int value, int multiple, MidpointRounding rounding) => (int)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
+
+		/// <summary>
 		/// Clamps a value between an inclusive minimum and maximum value.
 		/// </summary>
 		/// <param name="value">The value.</param>
@@ -351,6 +481,32 @@ namespace RI.Framework.Mathematic
 			}
 			return value;
 		}
+
+		/// <summary>
+		/// Quantizes a value to the nearest value of a multiple.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="multiple">The multiple.</param>
+		/// <returns>
+		/// The quantized value.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <see cref="MidpointRounding.ToEven"/> is used for <see cref="MidpointRounding"/>.
+		/// </para>
+		/// </remarks>
+		public static uint Quantize (this uint value, uint multiple) => (uint)(Math.Round((double)value / (double)multiple) * (double)multiple);
+
+		/// <summary>
+		/// Quantizes a value to the nearest value of a multiple.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="multiple">The multiple.</param>
+		/// <param name="rounding">The kind of rounding to use.</param>
+		/// <returns>
+		/// The quantized value.
+		/// </returns>
+		public static uint Quantize (this uint value, uint multiple, MidpointRounding rounding) => (uint)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
 
 		/// <summary>
 		/// Clamps a value between an inclusive minimum and maximum value.
@@ -409,6 +565,32 @@ namespace RI.Framework.Mathematic
 		}
 
 		/// <summary>
+		/// Quantizes a value to the nearest value of a multiple.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="multiple">The multiple.</param>
+		/// <returns>
+		/// The quantized value.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <see cref="MidpointRounding.ToEven"/> is used for <see cref="MidpointRounding"/>.
+		/// </para>
+		/// </remarks>
+		public static long Quantize (this long value, long multiple) => (long)(Math.Round((double)value / (double)multiple) * (double)multiple);
+
+		/// <summary>
+		/// Quantizes a value to the nearest value of a multiple.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="multiple">The multiple.</param>
+		/// <param name="rounding">The kind of rounding to use.</param>
+		/// <returns>
+		/// The quantized value.
+		/// </returns>
+		public static long Quantize (this long value, long multiple, MidpointRounding rounding) => (long)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
+
+		/// <summary>
 		/// Clamps a value between an inclusive minimum and maximum value.
 		/// </summary>
 		/// <param name="value">The value.</param>
@@ -463,6 +645,32 @@ namespace RI.Framework.Mathematic
 			}
 			return value;
 		}
+
+		/// <summary>
+		/// Quantizes a value to the nearest value of a multiple.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="multiple">The multiple.</param>
+		/// <returns>
+		/// The quantized value.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <see cref="MidpointRounding.ToEven"/> is used for <see cref="MidpointRounding"/>.
+		/// </para>
+		/// </remarks>
+		public static ulong Quantize (this ulong value, ulong multiple) => (ulong)(Math.Round((double)value / (double)multiple) * (double)multiple);
+
+		/// <summary>
+		/// Quantizes a value to the nearest value of a multiple.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="multiple">The multiple.</param>
+		/// <param name="rounding">The kind of rounding to use.</param>
+		/// <returns>
+		/// The quantized value.
+		/// </returns>
+		public static ulong Quantize (this ulong value, ulong multiple, MidpointRounding rounding) => (ulong)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
 
 		/// <summary>
 		/// Clamps a value between an inclusive minimum and maximum value.
@@ -521,6 +729,32 @@ namespace RI.Framework.Mathematic
 		}
 
 		/// <summary>
+		/// Quantizes a value to the nearest value of a multiple.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="multiple">The multiple.</param>
+		/// <returns>
+		/// The quantized value.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <see cref="MidpointRounding.ToEven"/> is used for <see cref="MidpointRounding"/>.
+		/// </para>
+		/// </remarks>
+		public static float Quantize (this float value, float multiple) => (float)(Math.Round((double)value / (double)multiple) * (double)multiple);
+
+		/// <summary>
+		/// Quantizes a value to the nearest value of a multiple.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="multiple">The multiple.</param>
+		/// <param name="rounding">The kind of rounding to use.</param>
+		/// <returns>
+		/// The quantized value.
+		/// </returns>
+		public static float Quantize (this float value, float multiple, MidpointRounding rounding) => (float)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
+
+		/// <summary>
 		/// Clamps a value between an inclusive minimum and maximum value.
 		/// </summary>
 		/// <param name="value">The value.</param>
@@ -577,6 +811,32 @@ namespace RI.Framework.Mathematic
 		}
 
 		/// <summary>
+		/// Quantizes a value to the nearest value of a multiple.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="multiple">The multiple.</param>
+		/// <returns>
+		/// The quantized value.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <see cref="MidpointRounding.ToEven"/> is used for <see cref="MidpointRounding"/>.
+		/// </para>
+		/// </remarks>
+		public static double Quantize (this double value, double multiple) => (double)(Math.Round((double)value / (double)multiple) * (double)multiple);
+
+		/// <summary>
+		/// Quantizes a value to the nearest value of a multiple.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="multiple">The multiple.</param>
+		/// <param name="rounding">The kind of rounding to use.</param>
+		/// <returns>
+		/// The quantized value.
+		/// </returns>
+		public static double Quantize (this double value, double multiple, MidpointRounding rounding) => (double)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
+
+		/// <summary>
 		/// Clamps a value between an inclusive minimum and maximum value.
 		/// </summary>
 		/// <param name="value">The value.</param>
@@ -631,6 +891,32 @@ namespace RI.Framework.Mathematic
 			}
 			return value;
 		}
+
+		/// <summary>
+		/// Quantizes a value to the nearest value of a multiple.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="multiple">The multiple.</param>
+		/// <returns>
+		/// The quantized value.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <see cref="MidpointRounding.ToEven"/> is used for <see cref="MidpointRounding"/>.
+		/// </para>
+		/// </remarks>
+		public static decimal Quantize (this decimal value, decimal multiple) => (decimal)(Math.Round((double)value / (double)multiple) * (double)multiple);
+
+		/// <summary>
+		/// Quantizes a value to the nearest value of a multiple.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="multiple">The multiple.</param>
+		/// <param name="rounding">The kind of rounding to use.</param>
+		/// <returns>
+		/// The quantized value.
+		/// </returns>
+		public static decimal Quantize (this decimal value, decimal multiple, MidpointRounding rounding) => (decimal)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
 
 		/// <summary>
 		/// Gets the absolute number of a value.
