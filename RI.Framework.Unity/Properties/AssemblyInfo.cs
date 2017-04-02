@@ -4,9 +4,9 @@ using System.Reflection;
 
 
 
-[assembly: AssemblyTitle ("RI.Framework.Unity")]
-[assembly: AssemblyDescription ("RI.Framework.Unity")]
-[assembly: AssemblyProduct ("Utility Framework")]
+[assembly: AssemblyTitle ("AndisToolbox")]
+[assembly: AssemblyDescription ("AndisToolbox")]
+[assembly: AssemblyProduct ("Andis Toolbox")]
 [assembly: AssemblyCompany ("Roten Informatik")]
 [assembly: AssemblyCopyright ("Copyright (c) 2015-2017 Roten Informatik")]
 [assembly: AssemblyTrademark ("")]

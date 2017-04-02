@@ -22,8 +22,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Collections\IEnumerableExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\IListExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\LinkedListExtensions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Collections\Linq\DirectLinq.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Collections\Linq\_NamespaceDoc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\DirectLinq\DirectLinqExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\DirectLinq\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\ObjectModel\IPool.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\ObjectModel\IPoolAware.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\ObjectModel\IPoolExtensions.cs" />

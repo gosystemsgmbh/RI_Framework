@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using RI.Framework.Collections.Comparison;
-using RI.Framework.Collections.Linq;
+using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Utilities.Reflection;
 
 
@@ -314,7 +314,7 @@ namespace RI.Framework.Services.Regions
 			List<object> existingElements = this.Get(container);
 			List<object> sortedElements = this.GetSortedElements(existingElements);
 
-			if (!DirectLinq.SequenceEqual(sortedElements, existingElements, CollectionComparerFlags.ReferenceEquality))
+			if (!DirectLinqExtensions.SequenceEqual(sortedElements, existingElements, CollectionComparerFlags.ReferenceEquality))
 			{
 				this.Clear(container);
 				foreach (object sortedElement in sortedElements)

@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using RI.Framework.Collections.Generic;
-using RI.Framework.Collections.Linq;
+using RI.Framework.Collections.DirectLinq;
 
 
 

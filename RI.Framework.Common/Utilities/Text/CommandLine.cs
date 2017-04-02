@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 using RI.Framework.Collections;
-using RI.Framework.Collections.Linq;
+using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Utilities.ObjectModel;
 
 

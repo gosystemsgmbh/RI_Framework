@@ -6,7 +6,7 @@ using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using RI.Framework.Collections.Comparison;
-using RI.Framework.Collections.Linq;
+using RI.Framework.Collections.DirectLinq;
 using RI.Framework.IO.INI;
 using RI.Framework.IO.INI.Elements;
 using RI.Framework.IO.Paths;

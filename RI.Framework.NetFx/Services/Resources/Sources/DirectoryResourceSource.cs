@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 using RI.Framework.Collections;
-using RI.Framework.Collections.Linq;
+using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Composition.Model;
 using RI.Framework.IO.Paths;
 using RI.Framework.Services.Logging;
@@ -147,8 +147,8 @@ namespace RI.Framework.Services.Resources.Sources
 			HashSet<DirectoryPath> currentDirectories = unload ? new HashSet<DirectoryPath>() : new HashSet<DirectoryPath>(this.Directory.GetSubdirectories(false, false));
 			HashSet<DirectoryPath> lastDirectories = new HashSet<DirectoryPath>(this.Sets.Keys);
 
-			HashSet<DirectoryPath> newDirectories = DirectLinq.Except(currentDirectories, lastDirectories);
-			HashSet<DirectoryPath> oldDirectories = DirectLinq.Except(lastDirectories, currentDirectories);
+			HashSet<DirectoryPath> newDirectories = DirectLinqExtensions.Except(currentDirectories, lastDirectories);
+			HashSet<DirectoryPath> oldDirectories = DirectLinqExtensions.Except(lastDirectories, currentDirectories);
 
 			foreach (DirectoryPath directory in newDirectories)
 			{

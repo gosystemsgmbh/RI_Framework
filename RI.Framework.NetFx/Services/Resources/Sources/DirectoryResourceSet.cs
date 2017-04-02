@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
-using RI.Framework.Collections.Linq;
+using RI.Framework.Collections.DirectLinq;
 using RI.Framework.IO.INI;
 using RI.Framework.IO.Paths;
 using RI.Framework.Services.Logging;
@@ -462,7 +462,7 @@ namespace RI.Framework.Services.Resources.Sources
 			List<FilePath> existingFiles = this.Directory.GetFiles(false, false);
 			existingFiles.Remove(this.SettingsFile);
 
-			HashSet<FilePath> newFiles = DirectLinq.Except(existingFiles, from x in this.Resources select x.Value.Item1);
+			HashSet<FilePath> newFiles = DirectLinqExtensions.Except(existingFiles, from x in this.Resources select x.Value.Item1);
 
 			foreach (FilePath file in newFiles)
 			{

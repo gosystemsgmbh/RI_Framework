@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-using RI.Framework.Collections.Linq;
+using RI.Framework.Collections.DirectLinq;
 
 
 

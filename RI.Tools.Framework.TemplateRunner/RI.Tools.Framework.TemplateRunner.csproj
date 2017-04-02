@@ -56,6 +56,9 @@
   <PropertyGroup>
     <PostBuildEvent>@copy "$(ProjectDir)NumberExtensions.tt.cs" "$(SolutionDir)RI.Framework.Common\Mathematic\NumberExtensions.cs"</PostBuildEvent>
   </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>@"$(SolutionDir)_Input\VersionUpdater.exe" "$(ProjectDir)." "r" "file" "$(SolutionDir)RI.Framework.Property.Version.txt" "$(SolutionDir)RI.Framework.Property.Company.txt" "$(SolutionDir)RI.Framework.Property.Copyright.txt"</PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

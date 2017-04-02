@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
-using RI.Framework.Collections.Linq;
+using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.ObjectModel;
@@ -285,7 +285,7 @@ namespace RI.Framework.IO.Paths
 						continue;
 					}
 
-					if ((chr < (char)32) || (DirectLinq.Contains(PathProperties.InvalidPathCharacters, chr)))
+					if ((chr < (char)32) || (DirectLinqExtensions.Contains(PathProperties.InvalidPathCharacters, chr)))
 					{
 						type = PathType.Invalid;
 						error = PathError.InvalidCharacter;

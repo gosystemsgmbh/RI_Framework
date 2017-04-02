@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 
-using RI.Framework.Collections.Linq;
+using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Services.Logging;
 
 

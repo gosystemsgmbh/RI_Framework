@@ -3,7 +3,7 @@
 
 
 
-namespace RI.Framework.Collections.Linq
+namespace RI.Framework.Collections.DirectLinq
 {
 	/// <summary>
 	///     Contains AOT-compatible replacements for LINQ.

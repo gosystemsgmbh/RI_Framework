@@ -9,22 +9,29 @@ using RI.Framework.Utilities.Comparison;
 
 
 
-namespace RI.Framework.Collections.Linq
+namespace RI.Framework.Collections.DirectLinq
 {
 	/// <summary>
-	///     Provides utility/extension methods for the <see cref="IEnumerable{T}" /> type and its implementations.
+	///     Provides a LINQ replacement with utility/extension methods for the <see cref="IEnumerable{T}" /> type and its implementations.
 	/// </summary>
 	/// <remarks>
-	///     <para>
+	///         <para>
+	/// <see cref="DirectLinqExtensions"/> provides a LINQ replacement which uses non-deferred execution and does not depend on reflection.
+	/// Therefore, the LINQ query is executed at the time a <see cref="DirectLinqExtensions"/> method is called, not at the time its result is eventually enumerated.
+	///         </para>
+	/// <para>
+	/// Normal LINQ query expressions, such as <c>from x in values where x.IsActive select x</c>, can still be used.
+	/// Just replace the namespace <see cref="System.Linq"/> (<c>using System.Linq;</c>) with <see cref="RI.Framework.Collections.DirectLinq"/> (<c>using RI.Framework.Collections.DirectLinq;</c>).
+	/// </para>
+	///         <note type="important">
+	///             Not all LINQ features are implemented in <see cref="DirectLinqExtensions"/>.
+	/// The main missing functions are: Grouping, Joining, Ordering, Aggregating.
+	///         </note>
 	///         <note type="important">
 	///             The complexity stated for the operations provided by this class are under the assumption that enumerating an <see cref="IEnumerable{T}" /> has a complexity of O(n) where n is the number of elements in the sequence.
 	///         </note>
-	///         <note type="note">
-	///             These utility/extension methods provide a LINQ replacement which is AOT-compatible and uses non-deferred execution.
-	///         </note>
-	///     </para>
 	/// </remarks>
-	public static class DirectLinq
+	public static class DirectLinqExtensions
 	{
 		#region Static Methods
 
@@ -2430,7 +2437,7 @@ namespace RI.Framework.Collections.Linq
 				throw new ArgumentOutOfRangeException(nameof(index));
 			}
 
-			return DirectLinq.ToListInternal(enumerable, index, -1).ToArray();
+			return DirectLinqExtensions.ToListInternal(enumerable, index, -1).ToArray();
 		}
 
 		/// <summary>
@@ -2472,7 +2479,7 @@ namespace RI.Framework.Collections.Linq
 				throw new ArgumentOutOfRangeException(nameof(count));
 			}
 
-			return DirectLinq.ToListInternal(enumerable, index, count).ToArray();
+			return DirectLinqExtensions.ToListInternal(enumerable, index, count).ToArray();
 		}
 
 		/// <summary>
@@ -2511,7 +2518,7 @@ namespace RI.Framework.Collections.Linq
 				throw new ArgumentNullException(nameof(mapper));
 			}
 
-			return DirectLinq.ToDictionaryInternal(enumerable, null, mapper);
+			return DirectLinqExtensions.ToDictionaryInternal(enumerable, null, mapper);
 		}
 
 		/// <summary>
@@ -2556,7 +2563,7 @@ namespace RI.Framework.Collections.Linq
 				throw new ArgumentNullException(nameof(mapper));
 			}
 
-			return DirectLinq.ToDictionaryInternal(enumerable, keyComparer, mapper);
+			return DirectLinqExtensions.ToDictionaryInternal(enumerable, keyComparer, mapper);
 		}
 
 		/// <summary>
@@ -2652,7 +2659,7 @@ namespace RI.Framework.Collections.Linq
 				throw new ArgumentOutOfRangeException(nameof(index));
 			}
 
-			return DirectLinq.ToListInternal(enumerable, index, -1);
+			return DirectLinqExtensions.ToListInternal(enumerable, index, -1);
 		}
 
 		/// <summary>
@@ -2694,7 +2701,7 @@ namespace RI.Framework.Collections.Linq
 				throw new ArgumentOutOfRangeException(nameof(count));
 			}
 
-			return DirectLinq.ToListInternal(enumerable, index, count);
+			return DirectLinqExtensions.ToListInternal(enumerable, index, count);
 		}
 
 		/// <summary>

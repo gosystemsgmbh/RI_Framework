@@ -15,7 +15,7 @@
     <!-- SHFB properties -->
     <FrameworkVersion>.NET Framework 3.5</FrameworkVersion>
     <OutputPath>.\Help\</OutputPath>
-    <HtmlHelpName>Utility Framework</HtmlHelpName>
+    <HtmlHelpName>AndisToolbox</HtmlHelpName>
     <Language>en-US</Language>
     <TransformComponentArguments>
       <Argument Key="logoFile" Value="" />
@@ -43,13 +43,13 @@
     <PresentationStyle>VS2013</PresentationStyle>
     <Preliminary>False</Preliminary>
     <NamingMethod>Guid</NamingMethod>
-    <HelpTitle>Utility Framework</HelpTitle>
+    <HelpTitle>Andis Toolbox</HelpTitle>
     <ContentPlacement>AboveNamespaces</ContentPlacement>
     <DocumentationSources>
       <DocumentationSource sourceFile="..\_Output\RI.Framework.Unity.dll" />
       <DocumentationSource sourceFile="..\_Output\RI.Framework.Unity.xml" />
     </DocumentationSources>
-    <RootNamespaceTitle>API Reference</RootNamespaceTitle>
+    <RootNamespaceTitle>Reference</RootNamespaceTitle>
     <WebsiteSdkLinkType>Msdn</WebsiteSdkLinkType>
     <HtmlSdkLinkType>Msdn</HtmlSdkLinkType>
     <IncludeFavorites>False</IncludeFavorites>
@@ -68,12 +68,6 @@
       </ComponentConfig>
     </ComponentConfigurations>
     <ApiFilter>
-      <Filter entryType="Namespace" fullName="UnityEngine" isExposed="True">
-        <Filter entryType="Class" fullName="UnityEngine.Behaviour" filterName="Behaviour" isExposed="False" />
-        <Filter entryType="Class" fullName="UnityEngine.Component" filterName="Component" isExposed="False" />
-        <Filter entryType="Class" fullName="UnityEngine.MonoBehaviour" filterName="MonoBehaviour" isExposed="False" />
-        <Filter entryType="Class" fullName="UnityEngine.Object" filterName="Object" isExposed="False" />
-      </Filter>
     </ApiFilter>
     <SaveComponentCacheCapacity>100</SaveComponentCacheCapacity>
   </PropertyGroup>

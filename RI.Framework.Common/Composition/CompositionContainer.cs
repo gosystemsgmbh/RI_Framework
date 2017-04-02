@@ -6,7 +6,7 @@ using System.Reflection;
 
 using RI.Framework.Collections;
 using RI.Framework.Collections.Comparison;
-using RI.Framework.Collections.Linq;
+using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Composition.Catalogs;
 using RI.Framework.Composition.Model;
 using RI.Framework.Services.Logging;
@@ -948,7 +948,7 @@ namespace RI.Framework.Composition
 			}
 
 			List<object> instances = this.GetInstancesInternal(exportName, typeof(T));
-			return DirectLinq.Select(instances, x => (T)x);
+			return DirectLinqExtensions.Select(instances, x => (T)x);
 		}
 
 		/// <summary>
@@ -1359,7 +1359,7 @@ namespace RI.Framework.Composition
 
 		private void AddInstanceInternal (object instance, string name)
 		{
-			if (DirectLinq.Any(this.Instances, x => object.ReferenceEquals(x.Value, instance) && CompositionContainer.NameComparer.Equals(x.Name, name)))
+			if (DirectLinqExtensions.Any(this.Instances, x => object.ReferenceEquals(x.Value, instance) && CompositionContainer.NameComparer.Equals(x.Name, name)))
 			{
 				return;
 			}
@@ -1369,7 +1369,7 @@ namespace RI.Framework.Composition
 
 		private void AddTypeInternal (Type type, string name, bool privateExport)
 		{
-			if (DirectLinq.Any(this.Types, x => (x.Type == type) && CompositionContainer.NameComparer.Equals(x.Name, name)))
+			if (DirectLinqExtensions.Any(this.Types, x => (x.Type == type) && CompositionContainer.NameComparer.Equals(x.Name, name)))
 			{
 				return;
 			}
@@ -1441,7 +1441,7 @@ namespace RI.Framework.Composition
 				object newInstance = null;
 				{
 					MethodInfo[] allMethods = type.GetMethods(BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.FlattenHierarchy);
-					List<MethodInfo> methods = DirectLinq.Where(allMethods, x => (x.GetCustomAttributes(typeof(ExportCreatorAttribute), true).Length > 0) && (x.ReturnType != typeof(void)) && (x.GetParameters().Length >= 1) && (x.GetParameters()[0].ParameterType == typeof(Type)));
+					List<MethodInfo> methods = DirectLinqExtensions.Where(allMethods, x => (x.GetCustomAttributes(typeof(ExportCreatorAttribute), true).Length > 0) && (x.ReturnType != typeof(void)) && (x.GetParameters().Length >= 1) && (x.GetParameters()[0].ParameterType == typeof(Type)));
 
 					if (methods.Count > 1)
 					{
@@ -1481,7 +1481,7 @@ namespace RI.Framework.Composition
 				if (newInstance == null)
 				{
 					ConstructorInfo[] allConstructors = type.GetConstructors(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-					List<ConstructorInfo> constructors = allConstructors.Length == 1 ? new List<ConstructorInfo>(allConstructors) : DirectLinq.Where(allConstructors, x => x.GetCustomAttributes(typeof(ExportConstructorAttribute), false).Length > 0);
+					List<ConstructorInfo> constructors = allConstructors.Length == 1 ? new List<ConstructorInfo>(allConstructors) : DirectLinqExtensions.Where(allConstructors, x => x.GetCustomAttributes(typeof(ExportConstructorAttribute), false).Length > 0);
 
 					if (constructors.Count > 1)
 					{
@@ -1550,7 +1550,7 @@ namespace RI.Framework.Composition
 
 			HashSetExtensions.AddRange(instances, newInstances);
 
-			return DirectLinq.Where(instances, x => compatibleType.IsAssignableFrom(x.GetType()));
+			return DirectLinqExtensions.Where(instances, x => compatibleType.IsAssignableFrom(x.GetType()));
 		}
 
 		private void HandleCatalogRecomposeRequest (object sender, EventArgs e)
@@ -1635,7 +1635,7 @@ namespace RI.Framework.Composition
 				{
 					if (CompositionContainer.ValidateExportInstance(item.Value))
 					{
-						CompositionInstanceItem instanceItem = DirectLinq.FirstOrDefault(compositionItem.Instances, x => object.ReferenceEquals(x.Instance, item.Value));
+						CompositionInstanceItem instanceItem = DirectLinqExtensions.FirstOrDefault(compositionItem.Instances, x => object.ReferenceEquals(x.Instance, item.Value));
 						if (instanceItem == null)
 						{
 							instanceItem = new CompositionInstanceItem(item.Value);
@@ -1654,7 +1654,7 @@ namespace RI.Framework.Composition
 				{
 					if (CompositionContainer.ValidateExportType(item.Type))
 					{
-						CompositionTypeItem typeItem = DirectLinq.FirstOrDefault(compositionItem.Types, x => (x.Type == item.Type));
+						CompositionTypeItem typeItem = DirectLinqExtensions.FirstOrDefault(compositionItem.Types, x => (x.Type == item.Type));
 						if (typeItem == null)
 						{
 							typeItem = new CompositionTypeItem(item.Type, item.PrivateExport);

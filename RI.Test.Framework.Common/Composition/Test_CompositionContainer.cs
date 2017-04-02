@@ -6,7 +6,7 @@ using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using RI.Framework.Collections.Comparison;
-using RI.Framework.Collections.Linq;
+using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Composition;
 using RI.Framework.Composition.Catalogs;
 using RI.Framework.Composition.Model;
