@@ -49,6 +49,9 @@ namespace RI.Framework.IO.Paths
 		///     Implicit conversion of a <see cref="string" /> to <see cref="FilePath" />.
 		/// </summary>
 		/// <param name="path"> The path to convert to a file path. </param>
+		/// <returns>
+		/// The file path.
+		/// </returns>
 		public static implicit operator FilePath (string path)
 		{
 			if (path == null)

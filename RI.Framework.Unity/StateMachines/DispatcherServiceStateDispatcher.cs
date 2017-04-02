@@ -60,6 +60,7 @@ namespace RI.Framework.StateMachines
 		/// <summary>
 		/// Creates a new instance of <see cref="DispatcherServiceStateDispatcher"/>.
 		/// </summary>
+		/// <param name="dispatcherService">The used dispatcher service.</param>
 		/// <remarks>
 		/// <para>
 		/// <see cref="DispatcherServiceStateDispatcher"/> instances created with this constructor use the <see cref="IDispatcherService"/> specified by <paramref name="dispatcherService"/>.

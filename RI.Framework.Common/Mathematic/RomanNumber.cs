@@ -597,6 +597,9 @@ namespace RI.Framework.Mathematic
 		/// Implicitly converts a string to a <see cref="RomanNumber"/>.
 		/// </summary>
 		/// <param name="value">The string to convert.</param>
+		/// <returns>
+		/// The <see cref="RomanNumber"/>.
+		/// </returns>
 		/// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
 		/// <exception cref="FormatException"><paramref name="value"/> is not a valid roman number.</exception>
 		public static implicit operator RomanNumber (string value)
@@ -608,6 +611,9 @@ namespace RI.Framework.Mathematic
 		/// Implicitly converts an integer to a <see cref="RomanNumber"/>.
 		/// </summary>
 		/// <param name="value">The integer to convert.</param>
+		/// <returns>
+		/// The <see cref="RomanNumber"/>.
+		/// </returns>
 		public static implicit operator RomanNumber(int value)
 		{
 			return new RomanNumber(value);
@@ -617,6 +623,9 @@ namespace RI.Framework.Mathematic
 		/// Implicitly converts a <see cref="RomanNumber"/> to a string.
 		/// </summary>
 		/// <param name="value">The value to convert.</param>
+		/// <returns>
+		/// The string.
+		/// </returns>
 		public static implicit operator string(RomanNumber value)
 		{
 			return value.RomanValue;
@@ -626,6 +635,9 @@ namespace RI.Framework.Mathematic
 		/// Implicitly converts a <see cref="RomanNumber"/> to an integer.
 		/// </summary>
 		/// <param name="value">The value to convert.</param>
+		/// <returns>
+		/// The integer.
+		/// </returns>
 		public static implicit operator int(RomanNumber value)
 		{
 			return value.DecimalValue;

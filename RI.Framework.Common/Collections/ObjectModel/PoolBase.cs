@@ -67,6 +67,9 @@ namespace RI.Framework.Collections.ObjectModel
 		///     Returns an item to the pool as a free item so that it can be recycled by <see cref="IPool{T}.Take" />.
 		/// </summary>
 		/// <param name="item"> The item to return to the pool. </param>
+		/// <returns>
+		/// true if the item was returned, false if it was already returned.
+		/// </returns>
 		/// <remarks>
 		///     <para>
 		///         This is a O(n) operation where n is the number of free items in the pool.

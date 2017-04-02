@@ -29,24 +29,15 @@
       <Argument Key="includeEnumValues" Value="true" />
     </TransformComponentArguments>
     <DocumentationSources>
-      <DocumentationSource sourceFile="..\_Output\RI.Framework.Extensions.EF6.dll" />
-      <DocumentationSource sourceFile="..\_Output\RI.Framework.Extensions.EF6.xml" />
-      <DocumentationSource sourceFile="..\_Output\RI.Framework.Extensions.FluentRibbon.dll" />
-      <DocumentationSource sourceFile="..\_Output\RI.Framework.Extensions.FluentRibbon.xml" />
-      <DocumentationSource sourceFile="..\_Output\RI.Framework.Extensions.SQLite.dll" />
-      <DocumentationSource sourceFile="..\_Output\RI.Framework.Extensions.SQLite.xml" />
-      <DocumentationSource sourceFile="..\_Output\RI.Framework.Extensions.SQLiteEF6.dll" />
-      <DocumentationSource sourceFile="..\_Output\RI.Framework.Extensions.SQLiteEF6.xml" />
-      <DocumentationSource sourceFile="..\_Output\RI.Framework.NetFx.dll" />
-      <DocumentationSource sourceFile="..\_Output\RI.Framework.NetFx.xml" />
-      <DocumentationSource sourceFile="..\_Output\RI.Framework.Windows.dll" />
-      <DocumentationSource sourceFile="..\_Output\RI.Framework.Windows.xml" />
-      <DocumentationSource sourceFile="..\_Output\RI.Framework.WinForms.dll" />
-      <DocumentationSource sourceFile="..\_Output\RI.Framework.WinForms.xml" />
-      <DocumentationSource sourceFile="..\_Output\RI.Framework.WinService.dll" />
-      <DocumentationSource sourceFile="..\_Output\RI.Framework.WinService.xml" />
-      <DocumentationSource sourceFile="..\_Output\RI.Framework.Wpf.dll" />
-      <DocumentationSource sourceFile="..\_Output\RI.Framework.Wpf.xml" />
+      <DocumentationSource sourceFile="..\RI.Framework.Extensions.EF6\RI.Framework.Extensions.EF6.csproj" />
+      <DocumentationSource sourceFile="..\RI.Framework.Extensions.FluentRibbon\RI.Framework.Extensions.FluentRibbon.csproj" />
+      <DocumentationSource sourceFile="..\RI.Framework.Extensions.SQLite\RI.Framework.Extensions.SQLite.csproj" />
+      <DocumentationSource sourceFile="..\RI.Framework.Extensions.SQLiteEF6\RI.Framework.Extensions.SQLiteEF6.csproj" />
+      <DocumentationSource sourceFile="..\RI.Framework.NetFx\RI.Framework.NetFx.csproj" />
+      <DocumentationSource sourceFile="..\RI.Framework.Windows.Forms\RI.Framework.Windows.Forms.csproj" />
+      <DocumentationSource sourceFile="..\RI.Framework.Windows.Service\RI.Framework.Windows.Service.csproj" />
+      <DocumentationSource sourceFile="..\RI.Framework.Windows.Shared\RI.Framework.Windows.Shared.csproj" />
+      <DocumentationSource sourceFile="..\RI.Framework.Windows.Wpf\RI.Framework.Windows.Wpf.csproj" />
     </DocumentationSources>
     <BuildAssemblerVerbosity>OnlyWarningsAndErrors</BuildAssemblerVerbosity>
     <HelpFileFormat>HtmlHelp1, Website</HelpFileFormat>
@@ -69,7 +60,7 @@
     <VisibleItems>Attributes, ExplicitInterfaceImplementations, InheritedMembers, Protected, ProtectedInternalAsProtected</VisibleItems>
     <MissingTags>Summary, Parameter, Returns, Value, Namespace, TypeParameter</MissingTags>
     <ComponentConfigurations>
-      <ComponentConfig id="Code Block Component" enabled="True" xmlns="">
+      <ComponentConfig id="Code Block Component" enabled="True">
         <component id="Code Block Component">
           <basePath value="{@HtmlEncProjectFolder}" />
           <outputPaths>{@HelpFormatOutputPaths}</outputPaths>
@@ -78,8 +69,48 @@
           <colorizer syntaxFile="{@SHFBFolder}PresentationStyles\Colorizer\highlight.xml" styleFile="{@SHFBFolder}PresentationStyles\Colorizer\highlight.xsl" stylesheet="{@SHFBFolder}PresentationStyles\Colorizer\highlight.css" scriptFile="{@SHFBFolder}PresentationStyles\Colorizer\highlight.js" disabled="{@DisableCodeBlockComponent}" language="cs" tabSize="0" numberLines="false" outlining="false" keepSeeTags="false" defaultTitle="true" />
         </component>
       </ComponentConfig>
-    </ComponentConfigurations>
+<ComponentConfig id="Syntax Component" enabled="True"><component id="Syntax Component">
+  <syntax input="/document/reference" output="/document/syntax" renderReferenceLinks="false" />
+  <generators>
+    {@SyntaxFilters}
+</generators>
+  <containerElement name="codeSnippetGroup" addNoExampleTabs="true" includeOnSingleSnippets="false" groupingEnabled="{@CodeSnippetGrouping}" />
+  <configurations>
+    <generator id="C#" />
+    <generator id="Visual Basic">
+      <includeLineContinuation value="false" />
+    </generator>
+    <generator id="Visual Basic Usage">
+      <includeLineContinuation value="false" />
+    </generator>
+    <generator id="Managed C++" />
+    <generator id="F#" />
+    <generator id="J#" />
+    <generator id="JScript" />
+    <generator id="JavaScript" />
+    <generator id="XAML Usage" />
+    <generator id="ASP.NET" />
+  </configurations>
+</component></ComponentConfig>
+<ComponentConfig id="IntelliSense Component" enabled="True"><component id="IntelliSense Component"><!-- Output options (optional)
+  Attributes:
+    Include namespaces (false by default)
+    Namespaces comments filename ("Namespaces" if not specified or empty)
+    Output folder (current folder if not specified or empty) --><output includeNamespaces="false" namespacesFile="Namespaces" folder="{@OutputFolder}" boundedCapacity="100" /></component></ComponentConfig>
+<ComponentConfig id="API Token Resolution" enabled="True"><component id="API Token Resolution">{@TokenFiles}
+<replace elements="/*//token" item="string(.)" /></component></ComponentConfig></ComponentConfigurations>
     <SaveComponentCacheCapacity>100</SaveComponentCacheCapacity>
+    <WebsiteSdkLinkType>None</WebsiteSdkLinkType>
+    <HtmlSdkLinkType>None</HtmlSdkLinkType>
+    <IncludeFavorites>False</IncludeFavorites>
+    <BinaryTOC>True</BinaryTOC>
+    <TocParentId>-1</TocParentId>
+    <TocParentVersion>100</TocParentVersion>
+    <TopicVersion>100</TopicVersion>
+    <TocOrder>-1</TocOrder>
+    <MSHelpViewerSdkLinkType>None</MSHelpViewerSdkLinkType>
+    <CatalogVersion>100</CatalogVersion>
+    <CatalogProductId>VS</CatalogProductId>
   </PropertyGroup>
   <!-- There are no properties for these groups.  AnyCPU needs to appear in order for Visual Studio to perform
 			 the build.  The others are optional common platform types that may appear. -->

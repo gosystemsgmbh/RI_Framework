@@ -3,14 +3,14 @@
 ## TODO
 
 - [ ] Documentation
-  - [ ] Reference (namespace, type, member)
   - [ ] Welcome
   - [ ] Support
   - [ ] Version History
-  - [ ] Overview (including examples)
+  - [ ] Overview (including examples in type description)
+  - [ ] Review
   - [ ] Cleanup artifacts
-  - [ ] Remove RI.Documentation.Framework.Common
-  - [ ] Update/Enhance Readme (including whishlist)
+  - [ ] Update/Enhance Readme
+  - [ ] Re-enable MSDN links
 - [ ] Release
   - [ ] Installers
   - [ ] Final testing
@@ -22,6 +22,11 @@
 
 - [ ] TODOs (search + ReSharper window)
 - [ ] .NET Documentation
+- [ ] Unity documentation
+  - [ ] AOT/IL2CPP
+  - [ ] Performance
+  - [ ] Thread Safety
+  - [ ] Compatibility & Usage
 - [ ] Migrate Common to Shared
   - [ ] Migrate Common to Shared
   - [ ] Add reference to RI.Framework.Shared to all projects

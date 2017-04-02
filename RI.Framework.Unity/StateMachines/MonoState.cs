@@ -138,7 +138,7 @@ namespace RI.Framework.StateMachines
 		{
 		}
 
-		/// <inheritdoc cref="IState.Leave"/>
+		/// <inheritdoc cref="IState.Signal"/>
 		protected virtual void Signal(StateSignalInfo signalInfo)
 		{
 		}

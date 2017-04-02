@@ -192,6 +192,9 @@ namespace RI.Framework.IO.INI
 		/// <summary>
 		///     Gets the list with all INI elements of this INI document.
 		/// </summary>
+		/// <value>
+		/// The list with all INI elements of this INI document.
+		/// </value>
 		public IList<IniElement> Elements { get; private set; }
 
 		/// <summary>

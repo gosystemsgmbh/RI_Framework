@@ -22,12 +22,9 @@
       </content>
     </section>
 
-    <section address="RoadmapWishlist">
-      <title>Roadmap &amp; Wishlist</title>
+    <section address="KnownIssues">
+      <title>Known Issues</title>
       <content>
-        <para>
-          <link xlink:href="b20d1e13-cad9-4f24-a151-aeec2c3efb92" />
-        </para>
         <para>
           <link xlink:href="b49f5d80-bfd9-4c08-be8c-c8ff2d97a3cb" />
         </para>

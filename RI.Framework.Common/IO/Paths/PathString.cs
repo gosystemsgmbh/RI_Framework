@@ -119,6 +119,9 @@ namespace RI.Framework.IO.Paths
 		///     Implicit conversion of a <see cref="PathString" /> to <see cref="string" />.
 		/// </summary>
 		/// <param name="path"> The path to convert to a string. </param>
+		/// <returns>
+		/// The string.
+		/// </returns>
 		public static implicit operator string (PathString path)
 		{
 			if (path == null)

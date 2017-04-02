@@ -67,6 +67,9 @@ namespace RI.Framework.IO.Paths
 		///     Implicit conversion of a <see cref="string" /> to <see cref="DirectoryPath" />.
 		/// </summary>
 		/// <param name="path"> The path to convert to a directory path. </param>
+		/// <returns>
+		/// The directory path.
+		/// </returns>
 		public static implicit operator DirectoryPath (string path)
 		{
 			if (path == null)

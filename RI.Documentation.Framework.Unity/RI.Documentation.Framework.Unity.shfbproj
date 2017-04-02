@@ -46,12 +46,11 @@
     <HelpTitle>Andis Toolbox</HelpTitle>
     <ContentPlacement>AboveNamespaces</ContentPlacement>
     <DocumentationSources>
-      <DocumentationSource sourceFile="..\_Output\RI.Framework.Unity.dll" />
-      <DocumentationSource sourceFile="..\_Output\RI.Framework.Unity.xml" />
+      <DocumentationSource sourceFile="..\RI.Framework.Unity\RI.Framework.Unity.csproj" />
     </DocumentationSources>
     <RootNamespaceTitle>Reference</RootNamespaceTitle>
-    <WebsiteSdkLinkType>Msdn</WebsiteSdkLinkType>
-    <HtmlSdkLinkType>Msdn</HtmlSdkLinkType>
+    <WebsiteSdkLinkType>None</WebsiteSdkLinkType>
+    <HtmlSdkLinkType>None</HtmlSdkLinkType>
     <IncludeFavorites>False</IncludeFavorites>
     <BinaryTOC>True</BinaryTOC>
     <VisibleItems>Attributes, ExplicitInterfaceImplementations, InheritedMembers, Protected, ProtectedInternalAsProtected</VisibleItems>
@@ -66,10 +65,52 @@
           <colorizer syntaxFile="{@SHFBFolder}PresentationStyles\Colorizer\highlight.xml" styleFile="{@SHFBFolder}PresentationStyles\Colorizer\highlight.xsl" stylesheet="{@SHFBFolder}PresentationStyles\Colorizer\highlight.css" scriptFile="{@SHFBFolder}PresentationStyles\Colorizer\highlight.js" disabled="{@DisableCodeBlockComponent}" language="cs" tabSize="0" numberLines="false" outlining="false" keepSeeTags="false" defaultTitle="true" />
         </component>
       </ComponentConfig>
-    </ComponentConfigurations>
+<ComponentConfig id="Syntax Component" enabled="True"><component id="Syntax Component">
+  <syntax input="/document/reference" output="/document/syntax" renderReferenceLinks="false" />
+  <generators>
+    {@SyntaxFilters}
+</generators>
+  <containerElement name="codeSnippetGroup" addNoExampleTabs="true" includeOnSingleSnippets="false" groupingEnabled="{@CodeSnippetGrouping}" />
+  <configurations>
+    <generator id="C#" />
+    <generator id="Visual Basic">
+      <includeLineContinuation value="false" />
+    </generator>
+    <generator id="Visual Basic Usage">
+      <includeLineContinuation value="false" />
+    </generator>
+    <generator id="Managed C++" />
+    <generator id="F#" />
+    <generator id="J#" />
+    <generator id="JScript" />
+    <generator id="JavaScript" />
+    <generator id="XAML Usage" />
+    <generator id="ASP.NET" />
+  </configurations>
+</component></ComponentConfig>
+<ComponentConfig id="API Token Resolution" enabled="True"><component id="API Token Resolution">{@TokenFiles}
+<replace elements="/*//token" item="string(.)" /></component></ComponentConfig>
+<ComponentConfig id="IntelliSense Component" enabled="True"><component id="IntelliSense Component"><!-- Output options (optional)
+  Attributes:
+    Include namespaces (false by default)
+    Namespaces comments filename ("Namespaces" if not specified or empty)
+    Output folder (current folder if not specified or empty) --><output includeNamespaces="false" namespacesFile="Namespaces" folder="{@OutputFolder}" boundedCapacity="100" /></component></ComponentConfig></ComponentConfigurations>
     <ApiFilter>
+      <Filter entryType="Namespace" fullName="UnityEngine" isExposed="True">
+  <Filter entryType="Class" fullName="UnityEngine.Behaviour" filterName="Behaviour" isExposed="False" />
+  <Filter entryType="Class" fullName="UnityEngine.Component" filterName="Component" isExposed="False" />
+  <Filter entryType="Class" fullName="UnityEngine.MonoBehaviour" filterName="MonoBehaviour" isExposed="False" />
+  <Filter entryType="Class" fullName="UnityEngine.Object" filterName="Object" isExposed="False" />
+</Filter>
     </ApiFilter>
     <SaveComponentCacheCapacity>100</SaveComponentCacheCapacity>
+    <TocParentId>-1</TocParentId>
+    <TocParentVersion>100</TocParentVersion>
+    <TopicVersion>100</TopicVersion>
+    <TocOrder>-1</TocOrder>
+    <MSHelpViewerSdkLinkType>None</MSHelpViewerSdkLinkType>
+    <CatalogVersion>100</CatalogVersion>
+    <CatalogProductId>VS</CatalogProductId>
   </PropertyGroup>
   <!-- There are no properties for these groups.  AnyCPU needs to appear in order for Visual Studio to perform
 			 the build.  The others are optional common platform types that may appear. -->
@@ -91,30 +132,18 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Content" />
-    <Folder Include="Content\SpecialTopics" />
-    <Folder Include="Content\Features" />
+    <Folder Include="Content\Overview" />
     <Folder Include="Content\VersionHistory" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Content\Overview\Overview.aml" />
     <None Include="PostBuild.bat" />
     <None Include="PreBuild.bat" />
-    <None Include="Content\CompatibilityUsage.aml" />
-    <None Include="Content\Contact.aml" />
-    <None Include="Content\Features\Modularization.aml" />
-    <None Include="Content\SpecialTopics\AotIl2cpp.aml" />
-    <None Include="Content\SpecialTopics\Performance.aml" />
-    <None Include="Content\SpecialTopics\SpecialTopics.aml" />
-    <None Include="Content\SpecialTopics\ThreadSafety.aml" />
-    <None Include="Content\Features\Collections.aml" />
-    <None Include="Content\Features\Composition.aml" />
-    <None Include="Content\Features\Dispatcher.aml" />
-    <None Include="Content\Features\Utilities.aml" />
-    <None Include="Content\Features\Features.aml" />
+    <None Include="Content\Support.aml" />
     <None Include="Content\VersionHistory\KnownIssues.aml" />
-    <None Include="Content\VersionHistory\RoadmapWishlist.aml" />
     <None Include="Content\VersionHistory\v01.00.00.0000.aml" />
     <None Include="Content\VersionHistory\VersionHistory.aml" />
-    <None Include="Content\Introduction.aml" />
+    <None Include="Content\Welcome.aml" />
   </ItemGroup>
   <ItemGroup>
     <ContentLayout Include="ContentLayout.content" />

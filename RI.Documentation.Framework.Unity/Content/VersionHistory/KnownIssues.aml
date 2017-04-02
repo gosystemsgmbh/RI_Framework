@@ -12,13 +12,30 @@
       </para>
     </introduction>
 
+    <section address="DirectLinq">
+      <title>DirectLINQ</title>
+      <content>
+        <list class="bullet">
+          <listItem>
+            <para>Grouping is currently not supported.</para>
+          </listItem>
+          <listItem>
+            <para>Joining is currently not supported.</para>
+          </listItem>
+          <listItem>
+            <para>Ordering is currently not supported.</para>
+          </listItem>
+          <listItem>
+            <para>Aggregating is currently not supported.</para>
+          </listItem>
+        </list>
+      </content>
+    </section>
+
     <section address="Composition">
       <title>Composition</title>
       <content>
         <list class="bullet">
-          <listItem>
-            <para>An update to a CompositionCatalog (by changing its Items property) after it has been added to a CompositionContainer has no effect.</para>
-          </listItem>
           <listItem>
             <para>The state of a CompositionContainer is undefined when a CompositionException is thrown.</para>
           </listItem>
