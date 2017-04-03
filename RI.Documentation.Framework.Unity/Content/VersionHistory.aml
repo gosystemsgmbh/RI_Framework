@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<topic id="5ae21634-faf4-4aa1-a06a-0306b020b502"
+       revisionNumber="1">
+  <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+                               xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <autoOutline />
+    </introduction>
+
+    <section address="V.1.0.0.0">
+      <title>1.0.0.0</title>
+      <content>
+        <para>
+          First release.
+        </para>
+      </content>
+    </section>
+
+    <section address="KnownIssues">
+      <title>Known Issues</title>
+      <content />
+      <sections>
+
+        <section address="DirectLinq">
+          <title>DirectLINQ</title>
+          <content>
+            <para/>
+            <list class="bullet">
+              <listItem>
+                <para>
+                  Grouping is currently not supported by
+                  <codeEntityReference qualifyHint="false">T:RI.Framework.Collections.DirectLinq.DirectLinqExtensions</codeEntityReference>
+                  .
+                </para>
+              </listItem>
+              <listItem>
+                <para>
+                  Joining is currently not supported by
+                  <codeEntityReference qualifyHint="false">T:RI.Framework.Collections.DirectLinq.DirectLinqExtensions</codeEntityReference>
+                  .
+                </para>
+              </listItem>
+              <listItem>
+                <para>
+                  Ordering is currently not supported by
+                  <codeEntityReference qualifyHint="false">T:RI.Framework.Collections.DirectLinq.DirectLinqExtensions</codeEntityReference>
+                  .
+                </para>
+              </listItem>
+              <listItem>
+                <para>
+                  Aggregating is currently not supported by
+                  <codeEntityReference qualifyHint="false">T:RI.Framework.Collections.DirectLinq.DirectLinqExtensions</codeEntityReference>
+                  .
+                </para>
+              </listItem>
+            </list>
+          </content>
+        </section>
+
+        <section address="Composition">
+          <title>Composition</title>
+          <content>
+            <para/>
+            <list class="bullet">
+              <listItem>
+                <para>
+                  The state of a
+                  <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionContainer</codeEntityReference>
+                  is undefined when a
+                  <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionException</codeEntityReference>
+                  is thrown.
+                </para>
+              </listItem>
+            </list>
+          </content>
+        </section>
+
+      </sections>
+    </section>
+
+    <relatedTopics />
+
+  </developerConceptualDocument>
+</topic>

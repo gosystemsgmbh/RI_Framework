@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 
-// ReSharper disable CheckNamespace
 // ReSharper disable RedundantCast
 
 namespace RI.Framework.Mathematic

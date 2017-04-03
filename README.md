@@ -3,9 +3,6 @@
 ## TODO
 
 - [ ] Documentation
-  - [ ] Welcome
-  - [ ] Support
-  - [ ] Version History
   - [ ] Overview (including examples in type description)
   - [ ] Review
   - [ ] Cleanup artifacts
@@ -16,11 +13,13 @@
   - [ ] Final testing
   - [ ] Promotional material
   - [ ] Web page
+  - [ ] E-Mail address
   - [ ] Unity Asset Store
 
 ## Future
 
 - [ ] TODOs (search + ReSharper window)
+- [ ] NuGetUpdates
 - [ ] .NET Documentation
 - [ ] Unity documentation
   - [ ] AOT/IL2CPP

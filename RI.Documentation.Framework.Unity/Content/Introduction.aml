@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<topic id="3b528423-a50a-4dde-85d0-f89804990df9"
+       revisionNumber="1">
+  <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+                               xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>
+        The Decoupling &amp; Utilities Framework aims at providing useful scripting tools for programmers so they can focus on implementing core functionality of their games instead of writing glue logic and boilerplate code.
+        These scripting tools come in the form of .NET/Mono types which can be used right away in Unity scripts.
+      </para>
+      <para>
+        Decoupling is the separation of code into logical units and reducing their dependencies, making it more maintainable and extensible.
+        This framework supports you with decoupling your game code and reducing the amount of required glue logic code by providing the following features:
+      </para>
+      <list class="bullet">
+        <listItem>
+          <para>
+            <legacyBold>Dependency Injection (DI) and Inversion-of-Control (IoC)</legacyBold>
+          </para>
+        </listItem>
+        <listItem>
+          <para>
+            <legacyBold>Service locator and singleton management</legacyBold>
+          </para>
+        </listItem>
+        <listItem>
+          <para>
+            <legacyBold>Modularization infrastructure</legacyBold>
+          </para>
+        </listItem>
+        <listItem>
+          <para>
+            <legacyBold>Messaging system</legacyBold>
+          </para>
+        </listItem>
+        <listItem>
+          <para>
+            <legacyBold>Bootstrapper</legacyBold>, integrating all those features with zero code required from your side
+          </para>
+        </listItem>
+      </list>
+      <para>
+        Furthermore, this framework also provides numerous utilities to save you the time of writing commonly used functionality:
+      </para>
+      <list class="bullet">
+        <listItem>
+          <para>
+            <legacyBold>LINQ replacement</legacyBold>; for using LINQ without reflection and for deterministic execution
+          </para>
+        </listItem>
+        <listItem>
+          <para>
+            <legacyBold>Collection types</legacyBold>; pools, priority queues, trees, etc.
+          </para>
+        </listItem>
+        <listItem>
+          <para>
+            <legacyBold>Collection extension methods</legacyBold>; enumerables, collections, lists, etc.
+          </para>
+        </listItem>
+        <listItem>
+          <para>
+            <legacyBold>Platform-independent file/directory path handling and manipulation</legacyBold>
+          </para>
+        </listItem>
+        <listItem>
+          <para>
+            <legacyBold>INI file processing</legacyBold>; reading, writing, in-memory representation, conversion from/to dictionaries
+          </para>
+        </listItem>
+        <listItem>
+          <para>
+            <legacyBold>Mathematic functions</legacyBold>; running values, statistics, etc.
+          </para>
+        </listItem>
+        <listItem>
+          <para>
+            <legacyBold>Mathematical extension methods</legacyBold>; for numerical types such as int, float, double, etc.
+          </para>
+        </listItem>
+        <listItem>
+          <para>
+            <legacyBold>Roman numbers</legacyBold>
+          </para>
+        </listItem>
+        <listItem>
+          <para>
+            <legacyBold>PID controllers</legacyBold>
+          </para>
+        </listItem>
+        <listItem>
+          <para>
+            <legacyBold>Hierarchical state machines</legacyBold>
+          </para>
+        </listItem>
+        <listItem>
+          <para>
+            <legacyBold>ThreadMover</legacyBold>; allows at will switching between threads and dispatchers in a coroutine
+          </para>
+        </listItem>
+        <listItem>
+          <para>
+            <legacyBold>Thread management</legacyBold>; heavyweight/dedicated threads, standalone dispatchers, etc.
+          </para>
+        </listItem>
+        <listItem>
+          <para>
+            <legacyBold>String and text processing</legacyBold>
+          </para>
+        </listItem>
+        <listItem>
+          <para>
+            <legacyBold>Common types extension methods</legacyBold>; GameObject, DateTime, TimeSpan, Exception, etc.
+          </para>
+        </listItem>
+      </list>
+    </introduction>
+
+    <relatedTopics />
+
+  </developerConceptualDocument>
+</topic>

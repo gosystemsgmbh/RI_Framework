@@ -1,10 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Topics>
-  <Topic id="3b528423-a50a-4dde-85d0-f89804990df9" visible="True" isDefault="true" title="Welcome" />
-  <Topic id="0b0c3c61-ecf8-4ddd-879e-8e28e6815750" visible="True" isSelected="true" title="Overview" />
-  <Topic id="e666ce46-f739-4f98-81cc-e1646ce5bb62" visible="True" title="Support" />
-  <Topic id="46092e03-126a-4510-874a-e69408d446ea" visible="True" isExpanded="true" title="Version History">
-    <Topic id="5301703f-80a0-4d39-972f-3d2950ddf998" visible="True" title="1.0.0.0" />
-    <Topic id="b49f5d80-bfd9-4c08-be8c-c8ff2d97a3cb" visible="True" title="Known Issues" />
+  <Topic id="3b528423-a50a-4dde-85d0-f89804990df9" visible="True" isDefault="true" title="Introduction" />
+  <Topic id="345781e4-d213-4b73-938d-c46d061ad384" visible="True" title="Usage" />
+  <Topic id="e666ce46-f739-4f98-81cc-e1646ce5bb62" visible="True" isSelected="true" title="Contact &amp; Support" />
+  <Topic id="5ae21634-faf4-4aa1-a06a-0306b020b502" visible="True" title="Version History" />
+  <Topic id="0b0c3c61-ecf8-4ddd-879e-8e28e6815750" visible="True" isExpanded="true" title="Overview &amp; Tutorials">
+    <Topic id="3120b15f-18f6-4b5e-92c7-8b51e2bedfb1" visible="True" title="Decoupling - Basic" />
+    <Topic id="8ec8f13f-ef95-4aec-8fc1-9b54dff96e01" visible="True" title="Decoupling - Advanced" />
+    <Topic id="baac3f30-823f-4e5a-9a79-6a04f2972381" visible="True" title="Utilities" />
   </Topic>
 </Topics>

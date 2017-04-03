@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<topic id="0b0c3c61-ecf8-4ddd-879e-8e28e6815750"
+       revisionNumber="1">
+  <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+                               xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>
+        The basic usage of the decoupling features, using the <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Bootstrapper</codeEntityReference>, is described in <link xlink:href="3120b15f-18f6-4b5e-92c7-8b51e2bedfb1"/>.
+      </para>
+      <para>
+        Advanced usage of the decoupling features, using them independently or without a <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Bootstrapper</codeEntityReference>, is described in <link xlink:href="8ec8f13f-ef95-4aec-8fc1-9b54dff96e01"/>.
+      </para>
+      <para>
+        Some of the more advanced utilities are described in <link xlink:href="baac3f30-823f-4e5a-9a79-6a04f2972381"/>.
+        For an overview of all utilities you can browse the <codeEntityReference qualifyHint="false">R:Project_DecouplingUtilities</codeEntityReference>.
+      </para>
+      <alert class="important">
+        <para>
+          You should always read the remarks section of type and member descriptions as they often contain helpful or important information.
+        </para>
+      </alert>
+    </introduction>
+
+    <relatedTopics />
+
+  </developerConceptualDocument>
+</topic>
