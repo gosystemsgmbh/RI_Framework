@@ -17,7 +17,7 @@
       <list class="bullet">
         <listItem>
           <para>
-            <legacyBold>Dependency Injection (DI) and Inversion-of-Control (IoC)</legacyBold>
+            <legacyBold>Dependency Injection (DI)</legacyBold> and <legacyBold>Inversion-of-Control (IoC)</legacyBold>
           </para>
         </listItem>
         <listItem>
@@ -37,17 +37,23 @@
         </listItem>
         <listItem>
           <para>
+            <legacyBold>Job dispatching</legacyBold>
+          </para>
+        </listItem>
+        <listItem>
+          <para>
             <legacyBold>Bootstrapper</legacyBold>, integrating all those features with zero code required from your side
           </para>
         </listItem>
       </list>
       <para>
-        Furthermore, this framework also provides numerous utilities to save you the time of writing commonly used functionality:
+        Furthermore, this framework also provides numerous utilities to save you the time of writing commonly used functionality.
+        Some highlights are:
       </para>
       <list class="bullet">
         <listItem>
           <para>
-            <legacyBold>LINQ replacement</legacyBold>; for using LINQ without reflection and for deterministic execution
+            <legacyBold>LINQ replacement</legacyBold>; for using LINQ without dependency on reflection and for deterministic execution
           </para>
         </listItem>
         <listItem>
@@ -57,7 +63,7 @@
         </listItem>
         <listItem>
           <para>
-            <legacyBold>Collection extension methods</legacyBold>; enumerables, collections, lists, etc.
+            <legacyBold>Collection extension methods</legacyBold>; for enumerables, collections, lists, etc.
           </para>
         </listItem>
         <listItem>
@@ -72,7 +78,7 @@
         </listItem>
         <listItem>
           <para>
-            <legacyBold>Mathematic functions</legacyBold>; running values, statistics, etc.
+            <legacyBold>Mathematical functions</legacyBold>; running values, statistics, etc.
           </para>
         </listItem>
         <listItem>

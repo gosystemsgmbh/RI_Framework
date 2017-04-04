@@ -141,8 +141,11 @@ namespace RI.Framework.Services
 		///     <para>
 		/// If true, <see cref="LogService"/> and <see cref="LogWriter"/> are added automatically, providing logging through Unitys logging mechanism.
 		///     </para>
+		/// <para>
+		/// The default value is false.
+		/// </para>
 		/// </remarks>
-		public bool LoggingService = true;
+		public bool LoggingService = false;
 
 		/// <summary>
 		///     Specifies whether the default module service should be used or not.
@@ -151,6 +154,9 @@ namespace RI.Framework.Services
 		///     <para>
 		/// If true, <see cref="Modularization.ModuleService"/> is added automatically, providing a default modularization service using <see cref="IModule"/> or <see cref="MonoModule"/>.
 		///     </para>
+		/// <para>
+		/// The default value is true.
+		/// </para>
 		/// </remarks>
 		public bool ModuleService = true;
 
@@ -161,6 +167,9 @@ namespace RI.Framework.Services
 		///     <para>
 		/// If true, the used <see cref="IModuleService"/> initializes all modules during <see cref="BeginRun"/> (using <see cref="IModuleService.Initialize"/>).
 		///     </para>
+		/// <para>
+		/// The default value is true.
+		/// </para>
 		/// </remarks>
 		public bool ModuleInitialization = true;
 
@@ -171,6 +180,9 @@ namespace RI.Framework.Services
 		///     <para>
 		/// If true, the used <see cref="IModuleService"/> unloads all modules during <see cref="EndRun"/> (using <see cref="IModuleService.Unload"/>).
 		///     </para>
+		/// <para>
+		/// The default value is true.
+		/// </para>
 		/// </remarks>
 		public bool ModuleUnloading = true;
 
@@ -181,6 +193,9 @@ namespace RI.Framework.Services
 		///     <para>
 		/// If true, <see cref="Dispatcher.DispatcherService"/> is added automatically, providing a default dispatcher service.
 		///     </para>
+		/// <para>
+		/// The default value is true.
+		/// </para>
 		/// </remarks>
 		public bool DispatcherService = true;
 
@@ -191,6 +206,9 @@ namespace RI.Framework.Services
 		///     <para>
 		/// If true, <see cref="Composition.Catalogs.ScriptingCatalog"/> is added automatically, adding all eligible types from the scripting assembly to the container.
 		///     </para>
+		/// <para>
+		/// The default value is true.
+		/// </para>
 		/// </remarks>
 		public bool ScriptingCatalog = true;
 
@@ -474,6 +492,7 @@ namespace RI.Framework.Services
 			this.State = BootstrapperState.Bootstrapping;
 
 			Object.DontDestroyOnLoad(this.gameObject);
+			this.gameObject.name = this.GetType().Name;
 
 			this.Log(LogLevel.Debug, "Creating container");
 			this.Container = this.CreateContainer() ?? new CompositionContainer();

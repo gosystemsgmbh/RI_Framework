@@ -18,69 +18,6 @@
       </content>
     </section>
 
-    <section address="KnownIssues">
-      <title>Known Issues</title>
-      <content />
-      <sections>
-
-        <section address="DirectLinq">
-          <title>DirectLINQ</title>
-          <content>
-            <para/>
-            <list class="bullet">
-              <listItem>
-                <para>
-                  Grouping is currently not supported by
-                  <codeEntityReference qualifyHint="false">T:RI.Framework.Collections.DirectLinq.DirectLinqExtensions</codeEntityReference>
-                  .
-                </para>
-              </listItem>
-              <listItem>
-                <para>
-                  Joining is currently not supported by
-                  <codeEntityReference qualifyHint="false">T:RI.Framework.Collections.DirectLinq.DirectLinqExtensions</codeEntityReference>
-                  .
-                </para>
-              </listItem>
-              <listItem>
-                <para>
-                  Ordering is currently not supported by
-                  <codeEntityReference qualifyHint="false">T:RI.Framework.Collections.DirectLinq.DirectLinqExtensions</codeEntityReference>
-                  .
-                </para>
-              </listItem>
-              <listItem>
-                <para>
-                  Aggregating is currently not supported by
-                  <codeEntityReference qualifyHint="false">T:RI.Framework.Collections.DirectLinq.DirectLinqExtensions</codeEntityReference>
-                  .
-                </para>
-              </listItem>
-            </list>
-          </content>
-        </section>
-
-        <section address="Composition">
-          <title>Composition</title>
-          <content>
-            <para/>
-            <list class="bullet">
-              <listItem>
-                <para>
-                  The state of a
-                  <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionContainer</codeEntityReference>
-                  is undefined when a
-                  <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionException</codeEntityReference>
-                  is thrown.
-                </para>
-              </listItem>
-            </list>
-          </content>
-        </section>
-
-      </sections>
-    </section>
-
     <relatedTopics />
 
   </developerConceptualDocument>

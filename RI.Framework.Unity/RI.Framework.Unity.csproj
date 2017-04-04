@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="Collections\Specialized\PrefabPool.cs" />
     <Compile Include="Composition\Catalogs\ScriptingCatalog.cs" />
+    <Compile Include="Composition\ComposableMonoBehaviour.cs" />
     <Compile Include="Services\Bootstrapper.cs" />
     <Compile Include="Services\BootstrapperState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

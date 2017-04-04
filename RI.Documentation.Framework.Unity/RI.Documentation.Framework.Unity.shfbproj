@@ -143,6 +143,7 @@
   <ItemGroup>
     <Folder Include="Content" />
     <Folder Include="Content\OverviewTutorials" />
+    <Folder Include="Media" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Content\OverviewTutorials\DecouplingAdvanced.aml" />

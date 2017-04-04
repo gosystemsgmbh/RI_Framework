@@ -1,81 +1,168 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 
-<topic id="3120b15f-18f6-4b5e-92c7-8b51e2bedfb1" revisionNumber="1">
-  <developerHowToDocument
-    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
-    xmlns:xlink="http://www.w3.org/1999/xlink">
+<topic id="3120b15f-18f6-4b5e-92c7-8b51e2bedfb1"
+			 revisionNumber="1">
+	<developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+															 xmlns:xlink="http://www.w3.org/1999/xlink">
 
-    <!--
-    <summary>
-      <para>Optional summary abstract</para>
-    </summary>
-    -->
+		<introduction>
+		  <alert class="important">
+		    <para>
+		      Please consider reading the remarks section of type and member descriptions as they often contain futher explanations and provide more detailed information.
+		    </para>
+		  </alert>
+			<autoOutline/>
+		</introduction>
 
-    <introduction>
-      <para>Required introduction</para>
-    </introduction>
+		<section address="PreparingTheBootstrapper">
+			<title>Preparing the bootstrapper</title>
+			<content>
+				<para>
+					The first thing we need is a <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Bootstrapper</codeEntityReference>.
+					During scene load, the bootstrapper will prepare and start all the other decoupling services for us.
+				</para>
+				<para>
+					We create a new GameObject in our scene and add the bootstrapper via drag-and-drop from the <fictitiousUri>DecouplingUtilities.dll</fictitiousUri>:
+				</para>
+				<para>
+					[screenshot: drag and drop]
+				</para>
+				<para>
+					We can now press play to start the scene and see our bootstrapper.
+				</para>
+				<para>
+					[screenshot: bootstrapper object]
+				</para>
+				<para>
+					The actual decoupling services are now ready to be used.
+				</para>
+			</content>
+		</section>
 
-    <!-- Optional procedures followed by optional code example but must have
-         at least one procedure or code example -->
-    <procedure>
-      <title>Procedure title</title>
-      <steps class="ordered">
-        <step>
-          <content>
-            <para>First step</para>
-          </content>
-        </step>
-        <step>
-          <content>
-            <para>Second step</para>
-          </content>
-        </step>
-      </steps>
-      <!-- <conclusion>Optional conclusion</conclusion> -->
-    </procedure>
+		<section address="CreatingModules">
+			<title>Creating modules to separate functionality</title>
+			<content>
+				<para>
+					With the modularization infrastructure, implemented by <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.ModuleService</codeEntityReference>, it is very easy to implement modules.
+					Modules are very similar to singletons as they are started once during the start and are then used throughout the game.
+					Typical examples for modules are &quot;Controllers&quot; or &quot;Managers&quot;, e.g. PlayerController, EnemyManager, etc.
+				</para>
+				<para>
+					To implement a module, simply add a class to your project which inherits from <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.MonoModule</codeEntityReference>:
+				</para>
+				<code language="cs">
+					[code: simple module]
+				</code>
+				<para>
+					By default, all modules are initialized when the bootstrapper starts.
+					If your module needs intialization, you can override <codeEntityReference qualifyHint="false">M:RI.Framework.Services.Modularization.MonoModule.Initialize</codeEntityReference>
+				</para>
+				<para>
+					<codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.MonoModule</codeEntityReference> itself inherits from <codeInline>MonoBehaviour</codeInline> so your module can use all Unity features, such as messages or attaching components to its <codeInline>GameObject</codeInline>.
+				</para>
+				<para>
+					The advantage of using modules instead of regular <codeInline>MonoBehaviour</codeInline>s will be shown in the following sections.
+				</para>
+			</content>
+		</section>
 
-    <!-- <codeExample>Optional code example</codeExample> -->
+		<section address="UsingDiIoc">
+			<title>Using DI/IoC to glue things together</title>
+			<content>
+				<para>
+					Dependency Injection (DI) and Inversion-of-Control (IoC) are very powerful concepts.
+					Instead of finding, creating, and managing all the required objects, instances, singletons, services etc. all by yourself, DI/IoC does it for you.
+					Basically, instead of creating instances yourself or using a singleton instance, creating a hard dependency, you just declare what you need.
+				</para>
+				<para>
+					DI/IoC is implemented by <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionContainer</codeEntityReference>.
+					It discovers all types you have in your project, adds them to the container, and then creates instances of them as necessary to fill the declared imports.
+				</para>
+				<para>
+					The following example shows two modules where one module requires the other.
+					As described in the section above, the modules are created when the bootstrapper starts.
+					In this case, the <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionContainer</codeEntityReference> does additional work by resolving all the properties which have the <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Model.ImportPropertyAttribute</codeEntityReference>.
+				</para>
+				<code language="cs">
+					[code: module import]
+				</code>
+				<para>
+					In some cases this level of decoupling might be enough, having a hard dependency but nothing to do with the instantiation.
+					However, further decoupling is possible using interfaces.
+					The following example shows the use of interfaces to further decouple the modules:
+				</para>
+				<code language="cs">
+					[code: module interfaces]
+				</code>
+				<para>
+					Until now, we were just importing single instances of some types, making it not that much different from good old singletons.
+					Besides importing a single instance of a type, we can also import all instances of a type.
+					The following example shows how a module imports all concrete implementations of an interface.
+				</para>
+				<code language="cs">
+					[code: multiple interfaces]
+				</code>
+				<para>
+					It also shows that not only module can be imported or have imports.
+					In fact, any class type can be imported.
+				</para>
+			</content>
+		</section>
 
-    <!-- <buildInstructions>Optional instructions for building a
-         code example.</buildInstructions> -->
+		<section address="UsingTheServiceLocator">
+			<title>Using the service locator to access services globally</title>
+			<content>
+				<para>
+					Your code ist not always in a module.
+					It might not even be in a class which can receive imports because it is not known to the xxx.
+					The <codeEntityReference qualifyHint="false">T:RI.Framework.Services.ServiceLocator</codeEntityReference> can be used in such cases.
+					It is a singleton-like static object which is bound to the xxx so it can be used to get all the instancs you can get using imports.
+				</para>
+				<code language="cs">
+					[code: service locator]
+				</code>
+			</content>
+		</section>
 
-    <!-- <robustProgramming>Optional discussion of error handling and other
-         issues related to writing solid code.</robustProgramming> -->
+		<section address="ExchangingMessages">
+			<title>Exchanging messages.</title>
+			<content>
+				<para>
+					As soon as you start to decouple things, it becomes harder to exchange events and data between them.
+					This is where the messaging system comes in, implemented by xxx.
+				</para>
+				<para>
+					The messaging system consists of two parts: registering for message reception and sending the messages.
+					The following example shows how to register to receive a message of a certain type:
+				</para>
+				<code language="cs">
+					[code: message registering]
+				</code>
+				<para>
+					Note that you can register for and send any object you like.
+					Sending a message is also very easy:
+				</para>
+				<code language="cs">
+					[code: message sending]
+				</code>
+			</content>
+		</section>
 
-    <!-- <security>Optional discussion of security issues.</security> -->
+		<section address="DispatchingJobs">
+			<title>Dispatching jobs</title>
+			<content>
+				<para>
+					Besides providing a messaging system, xxx also allows you to dispatch jobs.
+					Dispatched jobs are basically delegates which are put into a queue and processed depending on their priority.
+					This can be very helpful to synchronize/serialize operations or when run-to-completion behaviour is required, e.g. state machine transitions which need to occur after everything of the current frame is processed.
+				</para>
+				<para>
+					The following example shows how to put a simple action into the dispatchers queue.
+				</para>
+			</content>
+		</section>
 
-    <relatedTopics>
-      <!-- One or more of the following:
-           - A local link
-           - An external link
-           - A code entity reference
+		<relatedTopics />
 
-      <link xlink:href="Other Topic's ID">Link text</link>
-      <externalLink>
-          <linkText>Link text</linkText>
-          <linkAlternateText>Optional alternate link text</linkAlternateText>
-          <linkUri>URI</linkUri>
-      </externalLink>
-      <codeEntityReference>API member ID</codeEntityReference>
-
-      Examples:
-
-      <link xlink:href="00e97994-e9e6-46e0-b420-5be86b2f8278">Some other topic</link>
-
-      <externalLink>
-          <linkText>SHFB on GitHub</linkText>
-          <linkAlternateText>Go to GitHub</linkAlternateText>
-          <linkUri>https://GitHub.com/EWSoftware/SHFB</linkUri>
-      </externalLink>
-
-      <codeEntityReference>T:TestDoc.TestClass</codeEntityReference>
-      <codeEntityReference>P:TestDoc.TestClass.SomeProperty</codeEntityReference>
-      <codeEntityReference>M:TestDoc.TestClass.#ctor</codeEntityReference>
-      <codeEntityReference>M:TestDoc.TestClass.#ctor(System.String,System.Int32)</codeEntityReference>
-      <codeEntityReference>M:TestDoc.TestClass.ToString</codeEntityReference>
-      <codeEntityReference>M:TestDoc.TestClass.FirstMethod</codeEntityReference>
-      <codeEntityReference>M:TestDoc.TestClass.SecondMethod(System.Int32,System.String)</codeEntityReference>
-      -->
-    </relatedTopics>
-  </developerHowToDocument>
+	</developerConceptualDocument>
 </topic>

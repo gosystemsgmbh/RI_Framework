@@ -50,6 +50,7 @@ namespace RI.Framework.Services.Modularization
 			}
 
 			GameObject gameObject = new GameObject();
+			gameObject.name = type.Name;
 			MonoModule instance = gameObject.AddComponent(type) as MonoModule;
 			Object.DontDestroyOnLoad(gameObject);
 			return instance;
