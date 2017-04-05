@@ -1,31 +1,37 @@
-# Framework
+# Decoupling & Utilities Framework
 
-## TODO
+## 1.0.0.0
 
 - [ ] Documentation
-  - [ ] Overview (including examples in type description)
-  - [ ] Review
-  - [ ] Cleanup artifacts
-  - [ ] Update/Enhance Readme
+  - [ ] Overview & Tutorials
+  - [ ] Review Reference
   - [ ] Re-enable MSDN links
+  - [ ] Zip and copy HTML help files to output (2x)
+- [ ] Cleanup
+  - [ ] Cleanup common documentation files
+  - [ ] Move Utilities\Wpf in RotenInformatik to RotenInformatik namespace
+  - [ ] Move Test_HashSetExtensions
+  - [ ] Move contents of Cases one up
 - [ ] Release
-  - [ ] Installers
   - [ ] Final testing
+  - [ ] Installers
   - [ ] Promotional material
-  - [ ] Web page
   - [ ] E-Mail address
+  - [ ] Web page
   - [ ] Unity Asset Store
 
-## Future
+## Backlog
 
-- [ ] TODOs (search + ReSharper window)
-- [ ] NuGetUpdates
-- [ ] .NET Documentation
-- [ ] Unity documentation
+- [ ] Documentation
+  - [ ] NetFx
   - [ ] AOT/IL2CPP
   - [ ] Performance
   - [ ] Thread Safety
-  - [ ] Compatibility & Usage
-- [ ] Migrate Common to Shared
-  - [ ] Migrate Common to Shared
-  - [ ] Add reference to RI.Framework.Shared to all projects
+- [ ] Cleanup
+  - [ ] Warnings
+  - [ ] TODOs
+  - [ ] NuGet updates
+
+## Proposals
+
+- [ ] Migrate Common to Shared (own DLL using .NET Standard)
