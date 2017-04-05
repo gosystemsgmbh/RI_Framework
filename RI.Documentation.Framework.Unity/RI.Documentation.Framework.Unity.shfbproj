@@ -15,7 +15,7 @@
     <!-- SHFB properties -->
     <FrameworkVersion>.NET Framework 3.5</FrameworkVersion>
     <OutputPath>.\Help\</OutputPath>
-    <HtmlHelpName>DecouplingUtilities</HtmlHelpName>
+    <HtmlHelpName>RI.Documentation.Framework.Unity</HtmlHelpName>
     <Language>en-US</Language>
     <TransformComponentArguments>
       <Argument Key="logoFile" Value="" />
@@ -107,11 +107,11 @@
     </ComponentConfigurations>
     <ApiFilter>
       <Filter entryType="Namespace" fullName="UnityEngine" isExposed="True">
-        <Filter entryType="Class" fullName="UnityEngine.Behaviour" filterName="Behaviour" isExposed="False" />
-        <Filter entryType="Class" fullName="UnityEngine.Component" filterName="Component" isExposed="False" />
-        <Filter entryType="Class" fullName="UnityEngine.MonoBehaviour" filterName="MonoBehaviour" isExposed="False" />
-        <Filter entryType="Class" fullName="UnityEngine.Object" filterName="Object" isExposed="False" />
-      </Filter>
+  <Filter entryType="Class" fullName="UnityEngine.Behaviour" filterName="Behaviour" isExposed="False" />
+  <Filter entryType="Class" fullName="UnityEngine.Component" filterName="Component" isExposed="False" />
+  <Filter entryType="Class" fullName="UnityEngine.MonoBehaviour" filterName="MonoBehaviour" isExposed="False" />
+  <Filter entryType="Class" fullName="UnityEngine.Object" filterName="Object" isExposed="False" />
+</Filter>
     </ApiFilter>
     <SaveComponentCacheCapacity>100</SaveComponentCacheCapacity>
     <TocParentId>-1</TocParentId>

@@ -6,7 +6,7 @@ using System.Reflection;
 
 [assembly: AssemblyTitle ("RI.Tools.Framework.VersionUpdater")]
 [assembly: AssemblyDescription ("RI.Tools.Framework.VersionUpdater")]
-[assembly: AssemblyProduct ("Utility Framework")]
+[assembly: AssemblyProduct ("Decoupling & Utilities Framework")]
 [assembly: AssemblyCompany ("Roten Informatik")]
 [assembly: AssemblyCopyright ("Copyright (c) 2015-2017 Roten Informatik")]
 [assembly: AssemblyTrademark ("")]

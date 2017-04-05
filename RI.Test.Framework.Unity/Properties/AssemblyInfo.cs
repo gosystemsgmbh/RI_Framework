@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle ("RI.Test.Framework.Unity")]
 [assembly: AssemblyDescription ("RI.Test.Framework.Unity")]
-[assembly: AssemblyProduct ("Utility Framework")]
+[assembly: AssemblyProduct ("Decoupling & Utilities Framework")]
 [assembly: AssemblyCompany ("Roten Informatik")]
 [assembly: AssemblyCopyright ("Copyright (c) 2015-2017 Roten Informatik")]
 [assembly: AssemblyTrademark ("")]
