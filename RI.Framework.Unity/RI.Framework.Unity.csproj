@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>RI.Framework</RootNamespace>
-    <AssemblyName>DecouplingUtilities</AssemblyName>
+    <AssemblyName>RI.Framework.Unity</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
@@ -73,7 +73,10 @@
 @md "$(SolutionDir)_Test"
 
 @copy "$(TargetDir)$(TargetName).*" "$(SolutionDir)_Output\*.*"
-@copy "$(TargetDir)$(TargetName).*" "$(SolutionDir)_Test\*.*"</PostBuildEvent>
+@copy "$(TargetDir)$(TargetName).*" "$(SolutionDir)_Test\*.*"
+
+@copy "$(TargetDir)$(TargetName).dll" "$(SolutionDir)_Output\DecouplingUtilities.dll"
+@copy "$(TargetDir)$(TargetName).xml" "$(SolutionDir)_Output\DecouplingUtilities.xml"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>@"$(SolutionDir)_Input\VersionUpdater.exe" "$(ProjectDir)Properties" "nr" "file" "$(SolutionDir)RI.Framework.Property.Version.txt" "$(SolutionDir)RI.Framework.Property.Company.txt" "$(SolutionDir)RI.Framework.Property.Copyright.txt"</PreBuildEvent>
