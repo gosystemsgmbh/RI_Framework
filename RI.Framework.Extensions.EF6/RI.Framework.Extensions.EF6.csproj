@@ -87,13 +87,9 @@
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>@md "$(SolutionDir)_Output"
-
 @md "$(SolutionDir)_Test"
 
-
-
 @copy "$(TargetDir)$(TargetName).*" "$(SolutionDir)_Output\*.*"
-
 @copy "$(TargetDir)$(TargetName).*" "$(SolutionDir)_Test\*.*"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
