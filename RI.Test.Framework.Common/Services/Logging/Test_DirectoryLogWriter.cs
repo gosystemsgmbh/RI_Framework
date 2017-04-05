@@ -23,17 +23,19 @@ namespace RI.Test.Framework.Services.Logging
 			DirectoryPath path = DirectoryPath.GetTempDirectory().AppendDirectory(Guid.NewGuid().ToString("N"));
 			path.Delete();
 
+			bool isUnix = path.Type == PathType.Unix;
+
 			DirectoryLogWriter test = new DirectoryLogWriter(path, "Test.txt", Encoding.UTF8, new DateTime(1,2,3,4,5,6,7));
 
 			if (test.CommonDirectory != path)
 			{
 				throw new TestAssertionException();
 			}
-			if (test.CurrentDirectory != (path + "\\0001-02-03-04-05-06-007"))
+			if (test.CurrentDirectory != (isUnix ? (path + "/0001-02-03-04-05-06-007") : (path + "\\0001-02-03-04-05-06-007")))
 			{
 				throw new TestAssertionException();
 			}
-			if (test.CurrentFile != (path + "\\0001-02-03-04-05-06-007\\Test.txt"))
+			if (test.CurrentFile != (isUnix ? (path + "/0001-02-03-04-05-06-007/Test.txt") : (path + "\\0001-02-03-04-05-06-007\\Test.txt")))
 			{
 				throw new TestAssertionException();
 			}
@@ -69,11 +71,11 @@ namespace RI.Test.Framework.Services.Logging
 			{
 				throw new TestAssertionException();
 			}
-			if (test.CurrentDirectory != (path + "\\" + now.ToSortableString('-')))
+			if (test.CurrentDirectory != (isUnix ? (path + "/" + now.ToSortableString('-')) : (path + "\\" + now.ToSortableString('-'))))
 			{
 				throw new TestAssertionException();
 			}
-			if (test.CurrentFile != (path + "\\" + now.ToSortableString('-') + "\\Test.log"))
+			if (test.CurrentFile != (isUnix ? (path + "/" + now.ToSortableString('-') + "/Test.log") : (path + "\\" + now.ToSortableString('-') + "\\Test.log")))
 			{
 				throw new TestAssertionException();
 			}

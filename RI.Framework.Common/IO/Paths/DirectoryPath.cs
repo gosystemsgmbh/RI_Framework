@@ -99,7 +99,7 @@ namespace RI.Framework.IO.Paths
 		/// <exception cref="ArgumentNullException"> <paramref name="path" /> is null. </exception>
 		/// <exception cref="InvalidPathArgumentException"> <paramref name="path" /> is not a valid directory path. </exception>
 		public DirectoryPath (string path)
-			: this(PathProperties.FromPath(path, true, true, PathProperties.GetSystemType()))
+			: this(PathProperties.FromPath(path, true, true, PathProperties.GetPathType(path, false) ?? PathProperties.GetSystemType()))
 		{
 		}
 

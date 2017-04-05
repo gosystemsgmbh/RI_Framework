@@ -469,7 +469,7 @@ namespace RI.Test.Framework.IO.Paths
 
 			try
 			{
-				new FilePath(@"test.tmp").MakeAbsoluteFrom(@"1234\abcd");
+				new FilePath(@"test.tmp", false, true, PathType.Windows).MakeAbsoluteFrom(@"1234\abcd");
 				throw new TestAssertionException();
 			}
 			catch (InvalidPathArgumentException)
@@ -481,7 +481,7 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			if (new FilePath(@"test.tmp").MakeAbsoluteFrom(@"c:\abcd") != @"c:\abcd\test.tmp")
+			if (new FilePath(@"test.tmp", false, true, PathType.Windows).MakeAbsoluteFrom(@"c:\abcd") != @"c:\abcd\test.tmp")
 			{
 				throw new TestAssertionException();
 			}
@@ -1064,7 +1064,7 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			if (test.Type != PathProperties.GetSystemType())
+			if (test.Type != PathType.Windows)
 			{
 				throw new TestAssertionException();
 			}
@@ -1140,7 +1140,7 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			if (test.Type != PathProperties.GetSystemType())
+			if (test.Type != PathType.Windows)
 			{
 				throw new TestAssertionException();
 			}
@@ -1216,7 +1216,7 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			if (test.Type != PathProperties.GetSystemType())
+			if (test.Type != PathType.Windows)
 			{
 				throw new TestAssertionException();
 			}

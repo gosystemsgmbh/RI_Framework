@@ -56,6 +56,12 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
+			DirectoryPath test = new DirectoryPath(@"/var/folders/xh/q4kp0wvs4mg_8g7yh2b4y0h00000gn/T/", false, true, PathType.Unix).AppendDirectory("TEST");
+			if (test.Type == PathType.Invalid)
+			{
+				throw new TestAssertionException();
+			}
+
 			try
 			{
 				new DirectoryPath(@"c:\test").AppendDirectory(null, null);
@@ -96,7 +102,7 @@ namespace RI.Test.Framework.IO.Paths
 		[TestMethod]
 		public void AppendFile_Test ()
 		{
-			if (new DirectoryPath(@"test").AppendFile(@"abcd.tmp") != @"test\abcd.tmp")
+			if (new DirectoryPath(@"test", false, true, PathType.Windows).AppendFile(@"abcd.tmp") != @"test\abcd.tmp")
 			{
 				throw new TestAssertionException();
 			}
@@ -138,17 +144,17 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			if (new DirectoryPath(@"test").ChangeParent(@"abcd") != @"abcd\test")
+			if (new DirectoryPath(@"test", false, true, PathType.Windows).ChangeParent(new DirectoryPath(@"abcd", false, true, PathType.Windows)) != @"abcd\test")
 			{
 				throw new TestAssertionException();
 			}
 
-			if (new DirectoryPath(@"c:\test").ChangeParent(@"abcd") != @"abcd\test")
+			if (new DirectoryPath(@"c:\test").ChangeParent(new DirectoryPath(@"abcd", false, true, PathType.Windows)) != @"abcd\test")
 			{
 				throw new TestAssertionException();
 			}
 
-			if (new DirectoryPath(@"test").ChangeParent(@"c:\abcd") != @"c:\abcd\test")
+			if (new DirectoryPath(@"test", false, true, PathType.Windows).ChangeParent(@"c:\abcd") != @"c:\abcd\test")
 			{
 				throw new TestAssertionException();
 			}
@@ -548,7 +554,7 @@ namespace RI.Test.Framework.IO.Paths
 
 			try
 			{
-				new DirectoryPath(@"test").MakeAbsoluteFrom(@"1234\abcd");
+				new DirectoryPath(@"test", false, true, PathType.Windows).MakeAbsoluteFrom(@"1234\abcd");
 				throw new TestAssertionException();
 			}
 			catch (InvalidPathArgumentException)
@@ -560,7 +566,7 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			if (new DirectoryPath(@"test").MakeAbsoluteFrom(@"c:\abcd") != @"c:\abcd\test")
+			if (new DirectoryPath(@"test", false, true, PathType.Windows).MakeAbsoluteFrom(@"c:\abcd") != @"c:\abcd\test")
 			{
 				throw new TestAssertionException();
 			}
@@ -818,7 +824,7 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			if (test.Type != PathProperties.GetSystemType())
+			if (test.Type != PathType.Windows)
 			{
 				throw new TestAssertionException();
 			}

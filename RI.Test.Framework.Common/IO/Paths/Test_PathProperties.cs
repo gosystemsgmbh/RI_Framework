@@ -44,7 +44,7 @@ namespace RI.Test.Framework.IO.Paths
 			}
 
 			test = PathProperties.FromPath(@"test");
-			if (test.Type != PathType.Windows)
+			if (test.Type != PathProperties.GetSystemType())
 			{
 				throw new TestAssertionException();
 			}

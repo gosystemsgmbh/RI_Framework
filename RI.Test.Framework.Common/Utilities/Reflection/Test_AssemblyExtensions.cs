@@ -103,7 +103,7 @@ namespace RI.Test.Framework.Utilities.Reflection
 		{
 			Assembly assembly = Assembly.GetExecutingAssembly();
 
-			if (assembly.GetProduct() != "Utility Framework")
+			if (assembly.GetProduct() != "Decoupling & Utilities Framework")
 			{
 				throw new TestAssertionException();
 			}

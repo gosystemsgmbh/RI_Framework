@@ -122,7 +122,7 @@ namespace RI.Framework.IO.Paths
 				throw new ArgumentNullException(nameof(path));
 			}
 
-			return PathProperties.FromPath(path, true, true, PathProperties.GetSystemType());
+			return PathProperties.FromPath(path, true, true, PathProperties.GetPathType(path, false) ?? PathProperties.GetSystemType());
 		}
 
 		/// <summary>
@@ -175,23 +175,25 @@ namespace RI.Framework.IO.Paths
 
 			if (type != PathType.Invalid)
 			{
-				if ((path.Length >= 1) && (path[0] == PathProperties.UnixDirectorySeparator))
+				PathType? typeCandidate = PathProperties.GetPathType(path, true);
+				if (typeCandidate.HasValue)
 				{
-					type = PathType.Unix;
-					isRooted = true;
-					startIndex = 1;
-				}
-				else if ((path.Length >= 2) && PathProperties.IsAtoZ(path[0]) && (path[1] == PathProperties.WindowsDriveSeparator))
-				{
-					type = PathType.Windows;
-					isRooted = true;
-					startIndex = 2;
-				}
-				else if ((path.Length >= 2) && (path[0] == PathProperties.UncDirectorySeparator) && (path[1] == PathProperties.UncDirectorySeparator))
-				{
-					type = PathType.Unc;
-					isRooted = true;
-					startIndex = 2;
+					type = typeCandidate.Value;
+					switch (typeCandidate.Value)
+					{
+						case PathType.Unix:
+							isRooted = true;
+							startIndex = 1;
+							break;
+						case PathType.Windows:
+							isRooted = true;
+							startIndex = 2;
+							break;
+						case PathType.Unc:
+							isRooted = true;
+							startIndex = 2;
+							break;
+					}
 				}
 			}
 
@@ -568,6 +570,46 @@ namespace RI.Framework.IO.Paths
 			}
 		}
 
+		internal static PathType? GetPathType(string path, bool rootOnly)
+		{
+			if (path == null)
+			{
+				throw new ArgumentNullException(nameof(path));
+			}
+
+			if ((path.Length >= 1) && (path[0] == PathProperties.UnixDirectorySeparator))
+			{
+				return PathType.Unix;
+			}
+			else if ((path.Length >= 2) && PathProperties.IsAtoZ(path[0]) && (path[1] == PathProperties.WindowsDriveSeparator))
+			{
+				return PathType.Windows;
+			}
+			else if ((path.Length >= 2) && (path[0] == PathProperties.UncDirectorySeparator) && (path[1] == PathProperties.UncDirectorySeparator))
+			{
+				return PathType.Unc;
+			}
+
+			if (rootOnly)
+			{
+				return null;
+			}
+
+			foreach (char chr in path)
+			{
+				if (chr == PathProperties.UnixDirectorySeparator)
+				{
+					return PathType.Unix;
+				}
+				else if (chr == PathProperties.WindowsDirectorySeparator)
+				{
+					return PathType.Windows;
+				}
+			}
+
+			return null;
+		}
+
 		/// <summary>
 		///     Makes an absolute path out of a path relative to a rooted path.
 		/// </summary>
@@ -768,6 +810,11 @@ namespace RI.Framework.IO.Paths
 				return null;
 			}
 
+			if (parts.Count == 0)
+			{
+				return string.Empty;
+			}
+
 			StringBuilder builder = new StringBuilder();
 
 			if (isRooted)
@@ -776,14 +823,20 @@ namespace RI.Framework.IO.Paths
 				{
 					case PathType.Unix:
 					{
-						builder.Append(PathProperties.UnixDirectorySeparator);
+						if (parts[0][0] != PathProperties.UnixDirectorySeparator)
+						{
+							builder.Append(PathProperties.UnixDirectorySeparator);
+						}
 						break;
 					}
 
 					case PathType.Unc:
 					{
-						builder.Append(PathProperties.UncDirectorySeparator);
-						builder.Append(PathProperties.UncDirectorySeparator);
+						if ((parts[0][0] != PathProperties.UncDirectorySeparator) || (parts[0][1] != PathProperties.UncDirectorySeparator))
+						{
+							builder.Append(PathProperties.UncDirectorySeparator);
+							builder.Append(PathProperties.UncDirectorySeparator);
+							}
 						break;
 					}
 				}
