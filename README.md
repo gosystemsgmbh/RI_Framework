@@ -8,6 +8,7 @@
   - [ ] Re-enable MSDN links
   - [ ] Zip and copy HTML help files to output (2x)
 - [ ] Cleanup
+  - [ ] Update product name everywhere to Decoupling & Utilities Framework
   - [ ] Cleanup common documentation files
   - [ ] Move Utilities\Wpf in RotenInformatik to RotenInformatik namespace
   - [ ] Move Test_HashSetExtensions
