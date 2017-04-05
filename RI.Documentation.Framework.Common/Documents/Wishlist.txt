@@ -6,28 +6,6 @@
 * Commercium
 
 
-Examples
----------
-
- + CommandLine
- + FilePath
- + IndentedTextWriter
- + IniDocument
- + StateMachine
-
-
-Conceptual documentations
--------------------------
-
- + Utilities
- + Collections
- + I/O
- + Mathematic
- + Composition
- + Bootstrapper/Services
- + State Machines
-
-
 Utilities
 ---------
 
