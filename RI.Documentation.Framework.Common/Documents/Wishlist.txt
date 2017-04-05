@@ -12,6 +12,8 @@ Utilities
  - (Common) Rounding extensions for double, float, and decimal (including financial rounding)
  - (Common) More NumberExtensions
 
+ - (Common) AlphanumSorter
+
  - (Unity) Tuples (and remove MockTuple)
 
  - (Common) Singleton: Global register to lookup by Type (use where service locator is used by type; ServiceLocatorDbDependencyResolver, StateResolver, InstanceLocator)

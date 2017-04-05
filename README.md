@@ -10,6 +10,7 @@
 - [ ] Cleanup
   - [ ] Cleanup common documentation files
   - [ ] Move Utilities\Wpf in RotenInformatik to RotenInformatik namespace
+  - [ ] Treeify some namespaces
 - [ ] Release
   - [ ] Final testing
   - [ ] Installers
