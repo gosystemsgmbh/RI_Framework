@@ -17,38 +17,46 @@
 			<autoOutline/>
 		</introduction>
 
-		<section address="PreparingTheBootstrapper">
-			<title>Preparing the bootstrapper</title>
+		<section address="Bootstrapper">
+			<title>Bootstrapper</title>
 			<content>
 				<para>
-					The first thing we need is a <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Bootstrapper</codeEntityReference>.
-					During scene load, the bootstrapper will prepare and start all the other decoupling services for us.
+					A <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Bootstrapper</codeEntityReference> is used to load all the actual decoupling services during scene load (using Unitys Awake() ).
 				</para>
 				<para>
-					We create a new GameObject in our scene and add the bootstrapper via drag-and-drop from the <fictitiousUri>DecouplingUtilities.dll</fictitiousUri>:
+					Note that the bootstrapper is only required once as it is persistent over all scenes (using Unitys DontDestroyOnLoad() ).
+				</para>
+				<para>
+					Add a new GameObject to the scene and then add the bootstrapper via drag-and-drop from the <legacyItalic>RI.Framework.Unity.dll</legacyItalic>:
 				</para>
 				<para>
 					[screenshot: drag and drop]
 				</para>
 				<para>
-					We can now press play to start the scene and see our bootstrapper.
+					Alternatively, you can also do this in code by adding <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Bootstrapper</codeEntityReference> as a component to a GameObject:
+				</para>
+				<code language="cs">
+					[code: add bootstrapper in code]
+				</code>
+				<para>
+					When you now start the scene, you can see the bootstrapper object:
 				</para>
 				<para>
 					[screenshot: bootstrapper object]
 				</para>
-				<para>
-					The actual decoupling services are now ready to be used.
-				</para>
 			</content>
 		</section>
 
-		<section address="CreatingModules">
-			<title>Creating modules to separate functionality</title>
+		<section address="IModuleService">
+			<title>IModuleService</title>
 			<content>
 				<para>
-					With the modularization infrastructure, implemented by <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.ModuleService</codeEntityReference>, it is very easy to implement modules.
-					Modules are very similar to singletons as they are started once during the start and are then used throughout the game.
-					Typical examples for modules are &quot;Controllers&quot; or &quot;Managers&quot;, e.g. PlayerController, EnemyManager, etc.
+					An implementation of <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.IModuleService</codeEntityReference> is used to implement and manage modules.
+					Modules are very similar to singletons as they are started once and then used throughout the game.
+					Typical examples for modules are &quot;Controllers&quot; or &quot;Managers&quot; (e.g. PlayerController, EnemyManager, etc.) or globally available services and functionality in general.
+				</para>
+				<para>
+					The default implementation of <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.IModuleService</codeEntityReference> is <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.ModuleService</codeEntityReference>.
 				</para>
 				<para>
 					To implement a module, simply add a class to your project which inherits from <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.MonoModule</codeEntityReference>:
@@ -57,21 +65,34 @@
 					[code: simple module]
 				</code>
 				<para>
-					By default, all modules are initialized when the bootstrapper starts.
-					If your module needs intialization, you can override <codeEntityReference qualifyHint="false">M:RI.Framework.Services.Modularization.MonoModule.Initialize</codeEntityReference>
+					The bootstrapper will create the module service which in turn will discover, instantiate, and initialize all modules.
 				</para>
 				<para>
-					<codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.MonoModule</codeEntityReference> itself inherits from <codeInline>MonoBehaviour</codeInline> so your module can use all Unity features, such as messages or attaching components to its <codeInline>GameObject</codeInline>.
+					<codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.MonoModule</codeEntityReference> inherits from MonoBehaviour so your module can use all Unity features as usual.
+					A GameObject is created for each module automatically.
 				</para>
 				<para>
-					The advantage of using modules instead of regular <codeInline>MonoBehaviour</codeInline>s will be shown in the following sections.
+					The advantage of using modules instead of regular MonoBehaviours attached to GameObjects will be shown in the next sections.
 				</para>
 			</content>
 		</section>
 
-		<section address="UsingDiIoc">
-			<title>Using DI/IoC to glue things together</title>
+		<section address="CompositionContainer">
+			<title>CompositionContainer</title>
 			<content>
+				<para>
+					A <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionContainer</codeEntityReference> provides Dependency Injection (DI) and Inversion-of-Control (IoC).
+					DI and IoC are powerful concepts: You just declare (using xxx) what you need and it will be resolved for you.
+					This includes instantiation, instance management, and cascading dependencies.
+				</para>
+				<para>
+				</para>
+				<code language="cs">
+					[code: module import]
+				</code>
+				<para>
+				</para>
+				
 				<para>
 					Dependency Injection (DI) and Inversion-of-Control (IoC) are very powerful concepts.
 					Instead of finding, creating, and managing all the required objects, instances, singletons, services etc. all by yourself, DI/IoC does it for you.
@@ -109,11 +130,14 @@
 					It also shows that not only module can be imported or have imports.
 					In fact, any class type can be imported.
 				</para>
+				<para>
+					The difference between modules () and xxx is that modules are created and initialized as soon as they are added to the xxx while xxx are only created if required (e.g. imported using xxx).
+				</para>
 			</content>
 		</section>
 
-		<section address="UsingTheServiceLocator">
-			<title>Using the service locator to access services globally</title>
+		<section address="ServiceLocator">
+			<title>ServiceLocator</title>
 			<content>
 				<para>
 					Your code ist not always in a module.
@@ -127,8 +151,8 @@
 			</content>
 		</section>
 
-		<section address="ExchangingMessages">
-			<title>Exchanging messages.</title>
+		<section address="IDispatcherService_Messaging">
+			<title>IDispatcherService (Messaging)</title>
 			<content>
 				<para>
 					As soon as you start to decouple things, it becomes harder to exchange events and data between them.
@@ -151,8 +175,8 @@
 			</content>
 		</section>
 
-		<section address="DispatchingJobs">
-			<title>Dispatching jobs</title>
+		<section address="IDispatcherService_Jobs">
+			<title>IDispatcherService (Jobs)</title>
 			<content>
 				<para>
 					Besides providing a messaging system, xxx also allows you to dispatch jobs.
