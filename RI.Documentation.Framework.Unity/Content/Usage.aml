@@ -7,12 +7,11 @@
 
     <introduction>
       <para>
-        To use the Decoupling &amp; Utilities Framework, you only need the file
-        <fictitiousUri>DecouplingUtilities.dll</fictitiousUri> in your Asset folder.
-        Optionally, you can also have <fictitiousUri>DecouplingUtilities.xml</fictitiousUri> in the same folder as the DLL to get VisualStudio IntelliSense support.
+        To use the Decoupling &amp; Utilities Framework, you only need the file <legacyItalic>RI.Framework.Unity.dll</legacyItalic> in your Asset folder or a subfolder of the Asset folder.
+        Optionally, you can also have <legacyItalic>RI.Framework.Unity.xml</legacyItalic> in the same folder as the DLL to get VisualStudio IntelliSense support.
       </para>
       <para>
-        The namespaces of all types in the framework start with <fictitiousUri>RI.Framework.*</fictitiousUri>.
+        The namespaces of all types in the framework start with <legacyItalic>RI.Framework.*</legacyItalic>.
       </para>
       <para>
         Please note that, for the time being, the framework is provided in compiled form, as a DLL, without source code.
