@@ -65,7 +65,7 @@
 					[code: simple module]
 				</code>
 				<para>
-					The bootstrapper will create the module service which in turn will discover, instantiate, and initialize all modules.
+					The bootstrapper will create the module service which in turn will discover, instantiate, and initialize all modules (using a composition container as described in the next section).
 				</para>
 				<para>
 					<codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.MonoModule</codeEntityReference> inherits from MonoBehaviour so your module can use all Unity features as usual.
@@ -82,15 +82,41 @@
 			<content>
 				<para>
 					A <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionContainer</codeEntityReference> provides Dependency Injection (DI) and Inversion-of-Control (IoC).
-					DI and IoC are powerful concepts: You just declare (using xxx) what you need and it will be resolved for you.
-					This includes instantiation, instance management, and cascading dependencies.
+					DI and IoC are powerful concepts: You just declare the dependency you need and it will be resolved for you.
+					This includes instance creation, singleton management, and cascading dependencies.
 				</para>
 				<para>
+					To add a dependency to a module:
 				</para>
 				<code language="cs">
-					[code: module import]
+					[code: import modules]
 				</code>
 				<para>
+					The bootstrapper will create the composition container which then discovers all types it can use for importing.
+					A type can be used for importing (as declared by <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Model.ImportPropertyAttribute</codeEntityReference>) if it is exported.
+					To export a type, and therefore make it discoverable by the composition container, add an <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Model.ExportAttribute</codeEntityReference> to the type.
+					By default, a declared export is inherited to subclasses (that is why our module example in the previous section did not require the export attribute as <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.MonoModule</codeEntityReference> has already delcared it).
+				</para>
+				<para>
+					An object will have its imports resolved when the object is known by the composition container (means: its type is exported) and instances for that object/type are retrieved using the composition container (e.g. using importing).
+					This means that each object which is imported has its own imports resolved, and the imports of those imports, and so on.
+					Alternative perspective: Each exported type gets its imports resolved if instances of those types are retrieved using the composition container.
+				</para>
+				<para>
+					Besides importing, an instance of a type can also be explicitly retrieved from a composition container:
+				</para>
+				
+				
+				<para>
+					Types discovered by the composition container will not be automatically instantiated.
+					A type is only instantiated if it is actually required, e.g. when an import is resolved.
+					Besides importing, the composition container can also be used to explicitly get an instance of a type:
+				</para>
+				<code language="cs">
+					[code: explicitly get instance of type]
+				</code>
+				<para>
+					Each instance which is requested through the composition container will have its imports resolved
 				</para>
 				
 				<para>
