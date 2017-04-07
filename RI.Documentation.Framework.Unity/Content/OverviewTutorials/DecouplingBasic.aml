@@ -133,63 +133,17 @@
 				</code>
 				<para>
 					It is also possible to import multiple instances of a type.
-					The following example shows how to import all concrete implementations of an interface.
+					The following example shows how to import all concrete implementations of an interface:
 				</para>
 				<code language="cs">
 					[code: import multiple instances of interface]
 				</code>
 				<para>
-				</para>
-				
-				
-				<para>
-					Types discovered by the composition container will not be automatically instantiated.
-					A type is only instantiated if it is actually required, e.g. when an import is resolved.
-					Besides importing, the composition container can also be used to explicitly get an instance of a type:
+					So this all makes possible the perfection of decoupling: You just use an interface, even for instantiation, resulting in zero dependency to the actually used type.
 				</para>
 				<para>
-					Each instance which is requested through the composition container will have its imports resolved
-				</para>
-				
-				<para>
-					Dependency Injection (DI) and Inversion-of-Control (IoC) are very powerful concepts.
-					Instead of finding, creating, and managing all the required objects, instances, singletons, services etc. all by yourself, DI/IoC does it for you.
-					Basically, instead of creating instances yourself or using a singleton instance, creating a hard dependency, you just declare what you need.
-				</para>
-				<para>
-					DI/IoC is implemented by <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionContainer</codeEntityReference>.
-					It discovers all types you have in your project, adds them to the container, and then creates instances of them as necessary to fill the declared imports.
-				</para>
-				<para>
-					The following example shows two modules where one module requires the other.
-					As described in the section above, the modules are created when the bootstrapper starts.
-					In this case, the <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionContainer</codeEntityReference> does additional work by resolving all the properties which have the <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Model.ImportPropertyAttribute</codeEntityReference>.
-				</para>
-				<code language="cs">
-					[code: module import]
-				</code>
-				<para>
-					In some cases this level of decoupling might be enough, having a hard dependency but nothing to do with the instantiation.
-					However, further decoupling is possible using interfaces.
-					The following example shows the use of interfaces to further decouple the modules:
-				</para>
-				<code language="cs">
-					[code: module interfaces]
-				</code>
-				<para>
-					Until now, we were just importing single instances of some types, making it not that much different from good old singletons.
-					Besides importing a single instance of a type, we can also import all instances of a type.
-					The following example shows how a module imports all concrete implementations of an interface.
-				</para>
-				<code language="cs">
-					[code: multiple interfaces]
-				</code>
-				<para>
-					It also shows that not only module can be imported or have imports.
-					In fact, any class type can be imported.
-				</para>
-				<para>
-					The difference between modules () and xxx is that modules are created and initialized as soon as they are added to the xxx while xxx are only created if required (e.g. imported using xxx).
+					What was not answered yet: Why use modules instead of regular MonoBehaviours attached to GameObjects?
+					The three reasons are: Modules are singletons, go through the composition container (making them exportable/importable), and are automatically instantiated by the module service during bootstrapping (compared to other exported types which are only instantiated when retrieved from the composition container).
 				</para>
 			</content>
 		</section>
