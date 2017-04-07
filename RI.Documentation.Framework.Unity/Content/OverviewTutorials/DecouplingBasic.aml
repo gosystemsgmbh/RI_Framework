@@ -179,23 +179,42 @@
 			<title>IDispatcherService (Messaging)</title>
 			<content>
 				<para>
-					As soon as you start to decouple things, it becomes harder to exchange events and data between them.
-					This is where the messaging system comes in, implemented by xxx.
+					An implementation of <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.IDispatcherService</codeEntityReference> is used to send and receive messages.
+					Sending and receiving messages is very simple: Any object which has access to <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.IDispatcherService</codeEntityReference> (e.g. by using property-based importing or through the service locator) can send and receive messages.
 				</para>
 				<para>
-					The messaging system consists of two parts: registering for message reception and sending the messages.
-					The following example shows how to register to receive a message of a certain type:
+					The default implementation of <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.IDispatcherService</codeEntityReference> is <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.DispatcherService</codeEntityReference>.
+				</para>
+				<para>
+					To receive a message of a specified type, a receiver needs to be registered:
 				</para>
 				<code language="cs">
-					[code: message registering]
+					[code: register message receiver]
 				</code>
 				<para>
-					Note that you can register for and send any object you like.
-					Sending a message is also very easy:
+					A message is sent by broadcasting it to all its registered receivers:
 				</para>
 				<code language="cs">
-					[code: message sending]
+					[code: broadcast message]
 				</code>
+				<para>
+					The messaging system is type-based.
+					It means that a message of a certain type is received by each receiver which registered for the messages type.
+					Any class type objects can be sent/received.
+				</para>
+				<para>
+					Messages can be sent from any thread but are delivered to the receivers in Unitys main/foreground thread.
+					This makes it a good tool for asynchronous cross-thread interaction or, for example, to deliver results from a background thread to the main/foreground thread.
+				</para>
+				<para>
+					Messages are delivered asynchronously.
+					It means that the messages are not immediately delivered to the respective receivers when sent.
+					Instead, the messages are put into a queue and delivered from there during certain points in time of a frame cycle.
+					The only exception to this is when the priority xxx is used, which will deliver the message immediately.
+				</para>
+				<para>
+					Each message has a xxx which defines at which point in time during a frame cycle the message is delivered.
+				</para>
 			</content>
 		</section>
 
@@ -203,12 +222,42 @@
 			<title>IDispatcherService (Jobs)</title>
 			<content>
 				<para>
+					Besides messaging, an implementation of <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.IDispatcherService</codeEntityReference> also lets you dispatch operations (or jobs).
+				</para>
+				<para>
+					The following example shows how to dispatch a simple operation:
+				</para>
+				<code language="cs">
+					[code: simple operation dispatching]
+				</code>
+				<para>
+					The following example shows how to dispatch an operation which has parameters:
+				</para>
+				<code language="cs">
+					[code: parameterized operation dispatching]
+				</code>
+				<para>
+					Operations can be dispatched from any thread but are executed in Unitys main/foreground thread.
+					This makes it a good tool for asynchronous cross-thread execution or, for example, to continue a procedure from a background thread in the main/foreground thread.
+					Note that there is also xxx which is a nice cross-thread execution tool when working with coroutines.
+				</para>
+				<para>
+					Operations are executed asynchronously.
+					It means that the operations are not immediately executed when dispatched.
+					Instead, the operations are put into a queue and executed from there during certain points in time of a frame cycle.
+					The only exception to this is when the priority xxx is used, which will execute the operation immediately.
+				</para>
+				<para>
+					Each operation has a xxx which defines at which point in time during a frame cycle the operation is executed.
+				</para>
+				<para>
+					
+				</para>
+			
+				<para>
 					Besides providing a messaging system, xxx also allows you to dispatch jobs.
 					Dispatched jobs are basically delegates which are put into a queue and processed depending on their priority.
 					This can be very helpful to synchronize/serialize operations or when run-to-completion behaviour is required, e.g. state machine transitions which need to occur after everything of the current frame is processed.
-				</para>
-				<para>
-					The following example shows how to put a simple action into the dispatchers queue.
 				</para>
 			</content>
 		</section>
