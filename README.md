@@ -11,6 +11,7 @@
   - [ ] Cleanup common documentation files
   - [ ] Move Utilities\Wpf in RotenInformatik to RotenInformatik namespace
   - [ ] Treeify some namespaces
+  - [ ] ReSharper cleanup (after update to 2017.1 !)
 - [ ] Release
   - [ ] Final testing
   - [ ] Installers
