@@ -7,6 +7,8 @@
   - [ ] Review Reference
   - [ ] Re-enable MSDN links
   - [ ] Zip and copy HTML help files to output (2x)
+  - [ ] Add Additional Reference Links Plug-In to suppress missing links
+  - [ ] Cleanup SHFB warnings/errors
 - [ ] Cleanup
   - [ ] Cleanup common documentation files
   - [ ] Move Utilities\Wpf in RotenInformatik to RotenInformatik namespace
