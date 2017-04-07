@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 
 <topic id="3120b15f-18f6-4b5e-92c7-8b51e2bedfb1"
-			 revisionNumber="1">
+	revisionNumber="1">
 	<developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
-															 xmlns:xlink="http://www.w3.org/1999/xlink">
+					xmlns:xlink="http://www.w3.org/1999/xlink">
 
 		<introduction>
 			<para>
@@ -152,14 +152,26 @@
 			<title>ServiceLocator</title>
 			<content>
 				<para>
-					Your code ist not always in a module.
-					It might not even be in a class which can receive imports because it is not known to the xxx.
-					The <codeEntityReference qualifyHint="false">T:RI.Framework.Services.ServiceLocator</codeEntityReference> can be used in such cases.
-					It is a singleton-like static object which is bound to the xxx so it can be used to get all the instancs you can get using imports.
+					The <codeEntityReference qualifyHint="false">T:RI.Framework.Services.ServiceLocator</codeEntityReference> lets you use the decoupling features from anywhere.
+					It provides global access to the composition container which is created by the bootstrapper.
+				</para>
+				<para>
+					To use the service locator, simply specify the type you need an instance of (similar to explicitly retrieving an instance from a composition container):
 				</para>
 				<code language="cs">
-					[code: service locator]
+					[code: service locator single]
 				</code>
+				<para>
+					This works also for multiple instances of a type:
+				</para>
+				<code language="cs">
+					[code: service locator multiple]
+				</code>
+				<para>
+					Be aware that using the service locator is considerably slower than property-based importing as shown in the previous section.
+					Property-based importing performs resolving of the instances only once (which is not fully true, as explained in xxx).
+					The service locator however performs resolving each time it is used.
+				</para>				
 			</content>
 		</section>
 
