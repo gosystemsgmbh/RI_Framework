@@ -6,11 +6,14 @@
 															 xmlns:xlink="http://www.w3.org/1999/xlink">
 
 		<introduction>
-		  <alert class="important">
-		    <para>
-		      Please consider reading the remarks section of type and member descriptions as they often contain futher explanations and provide more detailed information.
-		    </para>
-		  </alert>
+			<para>
+				A simple and straigh-forward use of the decoupling features is described in this section.
+			</para>
+			<alert class="important">
+				<para>
+					Please consider reading the remarks section of type and member descriptions as they often contain futher explanations and provide more detailed information.
+				</para>
+			</alert>
 			<autoOutline/>
 		</introduction>
 
