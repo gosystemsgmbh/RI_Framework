@@ -6,6 +6,9 @@
                                xmlns:xlink="http://www.w3.org/1999/xlink">
 
     <introduction>
+      <para>
+        A more advanced use of the decoupling features, going more into details and also what happens under the hood, is described in this section.
+      </para>
       <alert class="important">
         <para>
           Please consider reading the remarks section of type and member descriptions as they often contain futher explanations and provide more detailed information.
