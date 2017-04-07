@@ -11,8 +11,8 @@
         These scripting tools come in the form of .NET/Mono types which can be used right away in Unity scripts.
       </para>
       <para>
-        Decoupling is the separation of code into logical units and reducing their dependencies, making it more maintainable and extensible.
-        This framework supports you with decoupling your game code and reducing the amount of required glue logic code by providing the following features:
+        Decoupling is the separation of code into logical units and the reduction of their dependencies, making them more maintainable, extensible, and portable.
+        This framework supports you with decoupling your game code by providing the following features:
       </para>
       <list class="bullet">
         <listItem>
@@ -42,18 +42,18 @@
         </listItem>
         <listItem>
           <para>
-            <legacyBold>Bootstrapper</legacyBold>, integrating all those features with zero code required from your side
+            <legacyBold>Bootstrapper</legacyBold>, integrating all those features with almost no code required from your side
           </para>
         </listItem>
       </list>
       <para>
-        Furthermore, this framework also provides numerous utilities to save you the time of writing commonly used functionality.
+        Furthermore, the Decoupling &amp; Utilities Framework also provides numerous utilities to save you the time of writing commonly used functionality.
         Some highlights are:
       </para>
       <list class="bullet">
         <listItem>
           <para>
-            <legacyBold>LINQ replacement</legacyBold>; for using LINQ without dependency on reflection and for deterministic execution
+            <legacyBold>LINQ replacement</legacyBold>; for using LINQ without dependency on reflection and for deterministic non-deferred execution
           </para>
         </listItem>
         <listItem>
@@ -63,7 +63,7 @@
         </listItem>
         <listItem>
           <para>
-            <legacyBold>Collection extension methods</legacyBold>; for enumerables, collections, lists, etc.
+            <legacyBold>Collection extensions</legacyBold>; for enumerables, collections, lists, etc.
           </para>
         </listItem>
         <listItem>
@@ -83,7 +83,7 @@
         </listItem>
         <listItem>
           <para>
-            <legacyBold>Mathematical extension methods</legacyBold>; for numerical types such as int, float, double, etc.
+            <legacyBold>Mathematical extensions</legacyBold>; for numerical types such as int, float, double, etc.
           </para>
         </listItem>
         <listItem>
@@ -103,7 +103,7 @@
         </listItem>
         <listItem>
           <para>
-            <legacyBold>ThreadMover</legacyBold>; allows at will switching between threads and dispatchers in a coroutine
+            <legacyBold>ThreadMover</legacyBold>; allows at-will-switching between threads and dispatchers in a coroutine
           </para>
         </listItem>
         <listItem>
@@ -114,11 +114,6 @@
         <listItem>
           <para>
             <legacyBold>String and text processing</legacyBold>
-          </para>
-        </listItem>
-        <listItem>
-          <para>
-            <legacyBold>Common types extension methods</legacyBold>; GameObject, DateTime, TimeSpan, Exception, etc.
           </para>
         </listItem>
       </list>
