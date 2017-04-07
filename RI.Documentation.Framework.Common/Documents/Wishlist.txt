@@ -204,6 +204,9 @@ I/O
 Composition
 ---------
 
+ - (Common) CreateIndependent
+ - (Common) CreateAndExport
+
  - (Common) AggregateCatalog
 
  - (Common) Add container to container
