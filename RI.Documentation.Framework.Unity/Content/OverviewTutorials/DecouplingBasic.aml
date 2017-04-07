@@ -120,6 +120,26 @@
 				<code language="cs">
 					[code: explicitly export of object]
 				</code>
+				<para>
+					As shown, exporting and importing is not restricted to modules.
+					In fact, any class type can be exported and/or have imports as long as they go through the composition container.
+					One special case is a type which inherits from MonoBehaviour.
+					Instances of MonoBehaviour cannot be instantiated in a normal way, they need to be added as a component to a GameObject.
+					Therefore, if you want to make a MonoBehaviour discoverable, you need to inherit from xxx instead of MonoBehaviour.
+					During instantiation, a new GameObject is automatically created to which the MonoBehaviour is then added.
+				</para>
+				<code language="cs">
+					[code: composable monobehaviour]
+				</code>
+				<para>
+					It is also possible to import multiple instances of a type.
+					The following example shows how to import all concrete implementations of an interface.
+				</para>
+				<code language="cs">
+					[code: import multiple instances of interface]
+				</code>
+				<para>
+				</para>
 				
 				
 				<para>
