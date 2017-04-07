@@ -251,13 +251,9 @@
 					Each operation has a xxx which defines at which point in time during a frame cycle the operation is executed.
 				</para>
 				<para>
-					
-				</para>
-			
-				<para>
-					Besides providing a messaging system, xxx also allows you to dispatch jobs.
-					Dispatched jobs are basically delegates which are put into a queue and processed depending on their priority.
-					This can be very helpful to synchronize/serialize operations or when run-to-completion behaviour is required, e.g. state machine transitions which need to occur after everything of the current frame is processed.
+					A particular use case for dispatched operations is when run-to-completion behaviour is required.
+					For example: A method needs an operation executed but not before the method itself has returned.
+					This is especially required for handling state transitions in state machines where you want to dispatch a state transition but the actual transition should not happen before the current method is finished (so that the rest of the method, after the dispatching, can still finish with the current state).
 				</para>
 			</content>
 		</section>
