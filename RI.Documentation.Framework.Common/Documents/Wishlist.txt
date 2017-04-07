@@ -46,6 +46,8 @@ Utilities
 Collections
 -----------
 
+ - (Common) IPriorityQueue
+
  - (Common) DirectLinq: Aggregate
  - (Common) DirectLinq: Average
  - (Common) DirectLinq: Concat (with separator element)
