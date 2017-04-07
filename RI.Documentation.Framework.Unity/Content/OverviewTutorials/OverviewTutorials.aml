@@ -10,12 +10,17 @@
         A simple and straigh-forward use of the decoupling features is described in <link xlink:href="3120b15f-18f6-4b5e-92c7-8b51e2bedfb1"/>.
       </para>
       <para>
-        A more advanced usage of the decoupling features is described in <link xlink:href="8ec8f13f-ef95-4aec-8fc1-9b54dff96e01"/>.
+        A more advanced use of the decoupling features, going more into details and also what happens under the hood, is described in <link xlink:href="8ec8f13f-ef95-4aec-8fc1-9b54dff96e01"/>.
       </para>
       <para>
-        Some of the numerous utilities are described in <link xlink:href="baac3f30-823f-4e5a-9a79-6a04f2972381"/>.
-        You can browse the <codeEntityReference qualifyHint="false">R:Project_DecouplingUtilities</codeEntityReference> to explore all of them.
+        A list of examples for some of the utilities can be found in <link xlink:href="baac3f30-823f-4e5a-9a79-6a04f2972381"/>.
+        You can browse the <codeEntityReference qualifyHint="false">R:Project_DecouplingUtilities</codeEntityReference> to explore all of the available utilities.
       </para>
+      <alert class="important">
+        <para>
+          Please consider reading the remarks section of type and member descriptions as they often contain futher explanations and provide more detailed information.
+        </para>
+      </alert>
     </introduction>
 
     <relatedTopics />
