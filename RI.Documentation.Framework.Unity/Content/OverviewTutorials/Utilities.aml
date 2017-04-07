@@ -6,12 +6,15 @@
                                xmlns:xlink="http://www.w3.org/1999/xlink">
 
     <introduction>
+      <para>
+        A list of examples for some of the utilities can be found in this section.
+        You can browse the <codeEntityReference qualifyHint="false">R:Project_DecouplingUtilities</codeEntityReference> to explore all of the available utilities.
+      </para>
       <alert class="important">
         <para>
           Please consider reading the remarks section of type and member descriptions as they often contain futher explanations and provide more detailed information.
         </para>
       </alert>
-      <autoOutline/>
     </introduction>
 
     <relatedTopics />
