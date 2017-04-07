@@ -100,11 +100,26 @@
 				<para>
 					An object will have its imports resolved when the object is known by the composition container (means: its type is exported) and instances for that object/type are retrieved using the composition container (e.g. using importing).
 					This means that each object which is imported has its own imports resolved, and the imports of those imports, and so on.
-					Alternative perspective: Each exported type gets its imports resolved if instances of those types are retrieved using the composition container.
+					Alternative perspective: Each exported type gets its imports resolved if instances of those exported types are retrieved using the composition container.
 				</para>
 				<para>
 					Besides importing, an instance of a type can also be explicitly retrieved from a composition container:
 				</para>
+				<code language="cs">
+					[code: explicitly get instance of type]
+				</code>
+				<para>
+					If you want to export a type which is not under your control, so you cannot apply the export attribute to it, you can also explicitly export a type:
+				</para>
+				<code language="cs">
+					[code: explicitly export of type]
+				</code>				
+				<para>
+					And if you want to export an already created instance instead of a type (for example when constructing the object is complex), you can also explicitly export an object:
+				</para>
+				<code language="cs">
+					[code: explicitly export of object]
+				</code>
 				
 				
 				<para>
@@ -112,9 +127,6 @@
 					A type is only instantiated if it is actually required, e.g. when an import is resolved.
 					Besides importing, the composition container can also be used to explicitly get an instance of a type:
 				</para>
-				<code language="cs">
-					[code: explicitly get instance of type]
-				</code>
 				<para>
 					Each instance which is requested through the composition container will have its imports resolved
 				</para>
