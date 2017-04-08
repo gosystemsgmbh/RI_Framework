@@ -39,6 +39,6 @@ namespace RI.Framework.Utilities.Threading
 		/// <summary>
 		/// The thread, in which the operation was supposed to be executed, was aborted during the execution of the delegate.
 		/// </summary>
-		Aborted = 4,
+		Aborted = 5,
 	}
 }

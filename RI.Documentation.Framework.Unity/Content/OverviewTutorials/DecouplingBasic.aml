@@ -1,264 +1,530 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 
 <topic id="3120b15f-18f6-4b5e-92c7-8b51e2bedfb1"
-	revisionNumber="1">
-	<developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
-					xmlns:xlink="http://www.w3.org/1999/xlink">
+  revisionNumber="1">
+  <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+          xmlns:xlink="http://www.w3.org/1999/xlink">
 
-		<introduction>
-			<para>
-				A simple and straigh-forward use of the decoupling features is described in this section.
-			</para>
-			<alert class="important">
-				<para>
-					Please consider reading the remarks section of type and member descriptions as they often contain futher explanations and provide more detailed information.
-				</para>
-			</alert>
-			<autoOutline/>
-		</introduction>
+    <introduction>
+      <para>
+        A simple and straigh-forward use of the decoupling features is described in this section.
+      </para>
+      <alert class="important">
+        <para>
+          Please consider reading the remarks section of type and member descriptions as they often contain futher explanations and provide more detailed information.
+        </para>
+      </alert>
+      <autoOutline/>
+    </introduction>
 
-		<section address="Bootstrapper">
-			<title>Bootstrapper</title>
-			<content>
-				<para>
-					A <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Bootstrapper</codeEntityReference> is used to load all the actual decoupling services during scene load (using Unitys Awake() ).
-				</para>
-				<para>
-					Note that the bootstrapper is only required once as it is persistent over all scenes (using Unitys DontDestroyOnLoad() ).
-				</para>
-				<para>
-					Add a new GameObject to the scene and then add the bootstrapper via drag-and-drop from the <legacyItalic>RI.Framework.Unity.dll</legacyItalic>:
-				</para>
-				<para>
-					[screenshot: drag and drop]
-				</para>
-				<para>
-					Alternatively, you can also do this in code by adding <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Bootstrapper</codeEntityReference> as a component to a GameObject:
-				</para>
-				<code language="cs">
-					[code: add bootstrapper in code]
-				</code>
-				<para>
-					When you now start the scene, you can see the bootstrapper object:
-				</para>
-				<para>
-					[screenshot: bootstrapper object]
-				</para>
-			</content>
-		</section>
+    <section address="Bootstrapper">
+      <title>Bootstrapper</title>
+      <content>
+        <para>
+          A <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Bootstrapper</codeEntityReference> is used to load all the actual decoupling services during scene load (using Unitys <legacyItalic>Awake()</legacyItalic> ).
+        </para>
+        <para>
+          Note that the bootstrapper is only required once as it is persistent over all scenes (using Unitys <legacyItalic>DontDestroyOnLoad()</legacyItalic> ).
+        </para>
+        <para>
+          Add a new <legacyItalic>GameObject</legacyItalic> to the scene and then add the bootstrapper via drag-and-drop from the <legacyItalic>RI.Framework.Unity.dll</legacyItalic>:
+        </para>
+        <mediaLink>
+          <image xlink:href="BootstrapperDragDrop"/>
+        </mediaLink>
+        <para>
+          Alternatively, you can also do this in code by adding <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Bootstrapper</codeEntityReference> as a component to a <legacyItalic>GameObject</legacyItalic>:
+        </para>
+        <code language="cs">
+          <![CDATA[
+using UnityEngine;
+using RI.Framework.Services;
 
-		<section address="IModuleService">
-			<title>IModuleService</title>
-			<content>
-				<para>
-					An implementation of <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.IModuleService</codeEntityReference> is used to implement and manage modules.
-					Modules are very similar to singletons as they are started once and then used throughout the game.
-					Typical examples for modules are &quot;Controllers&quot; or &quot;Managers&quot; (e.g. PlayerController, EnemyManager, etc.) or globally available services and functionality in general.
-				</para>
-				<para>
-					The default implementation of <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.IModuleService</codeEntityReference> is <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.ModuleService</codeEntityReference>.
-				</para>
-				<para>
-					To implement a module, simply add a class to your project which inherits from <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.MonoModule</codeEntityReference>:
-				</para>
-				<code language="cs">
-					[code: simple module]
-				</code>
-				<para>
-					The bootstrapper will create the module service which in turn will discover, instantiate, and initialize all modules (using a composition container as described in the next section).
-				</para>
-				<para>
-					<codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.MonoModule</codeEntityReference> inherits from MonoBehaviour so your module can use all Unity features as usual.
-					A GameObject is created for each module automatically.
-				</para>
-				<para>
-					The advantage of using modules instead of regular MonoBehaviours attached to GameObjects will be shown in the next sections.
-				</para>
-			</content>
-		</section>
+GameObject go = new GameObject();
+go.AddComponent<Bootstrapper>();
+          ]]>
+        </code>
+        <para>
+          When you now start the scene, you can see the bootstrapper object:
+        </para>
+        <mediaLink>
+          <image xlink:href="BootstrapperObject"/>
+        </mediaLink>
+      </content>
+    </section>
 
-		<section address="CompositionContainer">
-			<title>CompositionContainer</title>
-			<content>
-				<para>
-					A <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionContainer</codeEntityReference> provides Dependency Injection (DI) and Inversion-of-Control (IoC).
-					DI and IoC are powerful concepts: You just declare the dependency you need and it will be resolved for you.
-					This includes instance creation, singleton management, and cascading dependencies.
-				</para>
-				<para>
-					To add a dependency to a module:
-				</para>
-				<code language="cs">
-					[code: import modules]
-				</code>
-				<para>
-					The bootstrapper will create the composition container which then discovers all types it can use for importing.
-					A type can be used for importing (as declared by <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Model.ImportPropertyAttribute</codeEntityReference>) if it is exported.
-					To export a type, and therefore make it discoverable by the composition container, add an <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Model.ExportAttribute</codeEntityReference> to the type.
-					By default, a declared export is inherited to subclasses (that is why our module example in the previous section did not require the export attribute as <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.MonoModule</codeEntityReference> has already delcared it).
-				</para>
-				<para>
-					An object will have its imports resolved when the object is known by the composition container (means: its type is exported) and instances for that object/type are retrieved using the composition container (e.g. using importing).
-					This means that each object which is imported has its own imports resolved, and the imports of those imports, and so on.
-					Alternative perspective: Each exported type gets its imports resolved if instances of those exported types are retrieved using the composition container.
-				</para>
-				<para>
-					Besides importing, an instance of a type can also be explicitly retrieved from a composition container:
-				</para>
-				<code language="cs">
-					[code: explicitly get instance of type]
-				</code>
-				<para>
-					If you want to export a type which is not under your control, so you cannot apply the export attribute to it, you can also explicitly export a type:
-				</para>
-				<code language="cs">
-					[code: explicitly export of type]
-				</code>				
-				<para>
-					And if you want to export an already created instance instead of a type (for example when constructing the object is complex), you can also explicitly export an object:
-				</para>
-				<code language="cs">
-					[code: explicitly export of object]
-				</code>
-				<para>
-					As shown, exporting and importing is not restricted to modules.
-					In fact, any class type can be exported and/or have imports as long as they go through the composition container.
-					One special case is a type which inherits from MonoBehaviour.
-					Instances of MonoBehaviour cannot be instantiated in a normal way, they need to be added as a component to a GameObject.
-					Therefore, if you want to make a MonoBehaviour discoverable, you need to inherit from xxx instead of MonoBehaviour.
-					During instantiation, a new GameObject is automatically created to which the MonoBehaviour is then added.
-				</para>
-				<code language="cs">
-					[code: composable monobehaviour]
-				</code>
-				<para>
-					It is also possible to import multiple instances of a type.
-					The following example shows how to import all concrete implementations of an interface:
-				</para>
-				<code language="cs">
-					[code: import multiple instances of interface]
-				</code>
-				<para>
-					So this all makes possible the perfection of decoupling: You just use an interface, even for instantiation, resulting in zero dependency to the actually used type.
-				</para>
-				<para>
-					What was not answered yet: Why use modules instead of regular MonoBehaviours attached to GameObjects?
-					The three reasons are: Modules are singletons, go through the composition container (making them exportable/importable), and are automatically instantiated by the module service during bootstrapping (compared to other exported types which are only instantiated when retrieved from the composition container).
-				</para>
-			</content>
-		</section>
+    <section address="IModuleService">
+      <title>IModuleService</title>
+      <content>
+        <para>
+          An implementation of <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.IModuleService</codeEntityReference> is used to implement and manage modules.
+          Modules are very similar to singletons as they are started once and then used throughout the game.
+          Typical examples for modules are &quot;Controllers&quot; or &quot;Managers&quot; (e.g. PlayerController, EnemyManager, etc.) or globally available services and functionality in general.
+        </para>
+        <para>
+          The default implementation of <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.IModuleService</codeEntityReference> is <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.ModuleService</codeEntityReference>.
+        </para>
+        <para>
+          To implement a module, simply add a class to your project which inherits from <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.MonoModule</codeEntityReference>:
+        </para>
+        <code language="cs">
+          <![CDATA[
+using RI.Framework.Services.Modularization;
 
-		<section address="ServiceLocator">
-			<title>ServiceLocator</title>
-			<content>
-				<para>
-					The <codeEntityReference qualifyHint="false">T:RI.Framework.Services.ServiceLocator</codeEntityReference> lets you use the decoupling features from anywhere.
-					It provides global access to the composition container which is created by the bootstrapper.
-				</para>
-				<para>
-					To use the service locator, simply specify the type you need an instance of (similar to explicitly retrieving an instance from a composition container):
-				</para>
-				<code language="cs">
-					[code: service locator single]
-				</code>
-				<para>
-					This works also for multiple instances of a type:
-				</para>
-				<code language="cs">
-					[code: service locator multiple]
-				</code>
-				<para>
-					Be aware that using the service locator is considerably slower than property-based importing as shown in the previous section.
-					Property-based importing performs resolving of the instances only once (which is not fully true, as explained in xxx).
-					The service locator however performs resolving each time it is used.
-				</para>				
-			</content>
-		</section>
+public class EnemyManager : MonoModule
+{
+  protected override void Initialize ()
+  {
+    // called when the module is initialized (e.g. when the bootstrapper starts)
+  }
+  
+  protected override void Unload ()
+  {
+    // called when the module is unloaded (e.g. when the game ends)
+  }
+}
+          ]]>
+        </code>
+        <para>
+          The bootstrapper will create the module service which in turn will discover, instantiate, and initialize all modules (using a composition container as described in the next section).
+        </para>
+        <para>
+          <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.MonoModule</codeEntityReference> inherits from <legacyItalic>MonoBehaviour</legacyItalic> so your module can use all Unity features as usual.
+          A <legacyItalic>GameObject</legacyItalic> is created for each module automatically.
+        </para>
+        <para>
+          The advantage of using modules instead of regular <legacyItalic>MonoBehaviour</legacyItalic>s attached to <legacyItalic>GameObject</legacyItalic>s will be shown in the next section.
+        </para>
+      </content>
+    </section>
 
-		<section address="IDispatcherService_Messaging">
-			<title>IDispatcherService (Messaging)</title>
-			<content>
-				<para>
-					An implementation of <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.IDispatcherService</codeEntityReference> is used to send and receive messages.
-					Sending and receiving messages is very simple: Any object which has access to <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.IDispatcherService</codeEntityReference> (e.g. by using property-based importing or through the service locator) can send and receive messages.
-				</para>
-				<para>
-					The default implementation of <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.IDispatcherService</codeEntityReference> is <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.DispatcherService</codeEntityReference>.
-				</para>
-				<para>
-					To receive a message of a specified type, a receiver needs to be registered:
-				</para>
-				<code language="cs">
-					[code: register message receiver]
-				</code>
-				<para>
-					A message is sent by broadcasting it to all its registered receivers:
-				</para>
-				<code language="cs">
-					[code: broadcast message]
-				</code>
-				<para>
-					The messaging system is type-based.
-					It means that a message of a certain type is received by each receiver which registered for the messages type.
-					Any class type objects can be sent/received.
-				</para>
-				<para>
-					Messages can be sent from any thread but are delivered to the receivers in Unitys main/foreground thread.
-					This makes it a good tool for asynchronous cross-thread interaction or, for example, to deliver results from a background thread to the main/foreground thread.
-				</para>
-				<para>
-					Messages are delivered asynchronously.
-					It means that the messages are not immediately delivered to the respective receivers when sent.
-					Instead, the messages are put into a queue and delivered from there during certain points in time of a frame cycle.
-					The only exception to this is when the priority xxx is used, which will deliver the message immediately.
-				</para>
-				<para>
-					Each message has a xxx which defines at which point in time during a frame cycle the message is delivered.
-				</para>
-			</content>
-		</section>
+    <section address="CompositionContainer">
+      <title>CompositionContainer</title>
+      <content>
+        <para>
+          A <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionContainer</codeEntityReference> provides Dependency Injection (DI) and Inversion-of-Control (IoC).
+          DI and IoC are powerful concepts: You just declare the dependency you need and it will be resolved for you.
+          This includes instance creation, singleton management, and cascading dependencies.
+        </para>
+        <para>
+          To add a dependency to a module:
+        </para>
+        <code language="cs">
+          <![CDATA[
+using RI.Framework.Composition.Model;
+using RI.Framework.Services.Modularization;
 
-		<section address="IDispatcherService_Jobs">
-			<title>IDispatcherService (Jobs)</title>
-			<content>
-				<para>
-					Besides messaging, an implementation of <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.IDispatcherService</codeEntityReference> also lets you dispatch operations (or jobs).
-				</para>
-				<para>
-					The following example shows how to dispatch a simple operation:
-				</para>
-				<code language="cs">
-					[code: simple operation dispatching]
-				</code>
-				<para>
-					The following example shows how to dispatch an operation which has parameters:
-				</para>
-				<code language="cs">
-					[code: parameterized operation dispatching]
-				</code>
-				<para>
-					Operations can be dispatched from any thread but are executed in Unitys main/foreground thread.
-					This makes it a good tool for asynchronous cross-thread execution or, for example, to continue a procedure from a background thread in the main/foreground thread.
-					Note that there is also xxx which is a nice cross-thread execution tool when working with coroutines.
-				</para>
-				<para>
-					Operations are executed asynchronously.
-					It means that the operations are not immediately executed when dispatched.
-					Instead, the operations are put into a queue and executed from there during certain points in time of a frame cycle.
-					The only exception to this is when the priority xxx is used, which will execute the operation immediately.
-				</para>
-				<para>
-					Each operation has a xxx which defines at which point in time during a frame cycle the operation is executed.
-				</para>
-				<para>
-					A particular use case for dispatched operations is when run-to-completion behaviour is required.
-					For example: A method needs an operation executed but not before the method itself has returned.
-					This is especially required for handling state transitions in state machines where you want to dispatch a state transition but the actual transition should not happen before the current method is finished (so that the rest of the method, after the dispatching, can still finish with the current state).
-				</para>
-			</content>
-		</section>
+[Export]
+public class GameRules : MonoModule
+{
+}
 
-		<relatedTopics />
+[Export]
+public class EnemyManager : MonoModule
+{
+  [ImportProperty]
+  GameRules Rules { get; set; }
+  
+  void Update ()
+  {
+    // use Rules as necessary
+  }
+}
+          ]]>
+        </code>
+        <para>
+          The bootstrapper will create the composition container which then discovers all types it can use for importing.
+          A type can be used for importing (as declared by <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Model.ImportPropertyAttribute</codeEntityReference>) if it is exported.
+          To export a type, and therefore make it discoverable by the composition container, add an <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Model.ExportAttribute</codeEntityReference> to the type.
+        </para>
+        <para>
+          An object will have its imports resolved when the object is known by the composition container (means: its type is exported) and instances for that object/type are retrieved using the composition container (e.g. using importing).
+          This means that each object which is imported has its own imports resolved, and the imports of those imports, and so on.
+          Alternative perspective: Each exported type gets its imports resolved if instances of those exported types are retrieved using the composition container.
+        </para>
+        <para>
+          Besides importing, an instance of a type can also be explicitly retrieved from a composition container (note that the composition container contains itself):
+        </para>
+        <code language="cs">
+          <![CDATA[
+using RI.Framework.Composition;
+using RI.Framework.Composition.Model;
+using RI.Framework.Services.Modularization;
 
-	</developerConceptualDocument>
+[Export]
+public class GameRules : MonoModule
+{
+}
+
+[Export]
+public class EnemyManager : MonoModule
+{
+  [ImportProperty]
+  CompositionContainer Container { get; set; }
+
+  protected override void Initialize ()
+  {
+    GameRules rules = this.Container.GetExport<GameRules>();
+    // do something with rules
+  }
+}
+          ]]>
+        </code>
+        <para>
+          If you want to export a type which is not under your control, so you cannot apply <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Model.ExportAttribute</codeEntityReference> to it, you can also explicitly export a type:
+        </para>
+        <code language="cs">
+          <![CDATA[
+using RI.Framework.Composition;
+using RI.Framework.Composition.Model;
+using RI.Framework.Services.Modularization;
+
+[Export]
+public class EnemyManager : MonoModule
+{
+  [ImportProperty]
+  CompositionContainer Container { get; set; }
+
+  protected override void Initialize ()
+  {
+    this.Container.AddExport(typeof(ThirdPartyType), typeof(ThirdPartyType), false);
+  }
+}
+          ]]>
+        </code>				
+        <para>
+          And if you want to export an already created instance instead of a type (for example when constructing the object is complex), you can also explicitly export an object:
+        </para>
+        <code language="cs">
+          <![CDATA[
+using RI.Framework.Composition;
+using RI.Framework.Composition.Model;
+using RI.Framework.Services.Modularization;
+
+[Export]
+public class EnemyManager : MonoModule
+{
+  [ImportProperty]
+  CompositionContainer Container { get; set; }
+
+  protected override void Initialize ()
+  {
+    this.Container.AddExport(new ThirdPartyType(), typeof(ThirdPartyType));
+  }
+}
+          ]]>
+        </code>
+        <para>
+          As shown, exporting and importing is not restricted to modules.
+          In fact, any class type can be exported and/or have imports as long as they go through the composition container.
+          One special case is a type which inherits from <legacyItalic>MonoBehaviour</legacyItalic>.
+          Instances of <legacyItalic>MonoBehaviour</legacyItalic> cannot be instantiated in a normal way, they need to be added as a component to a <legacyItalic>GameObject</legacyItalic>.
+          Therefore, if you want to make a <legacyItalic>MonoBehaviour</legacyItalic> discoverable, you need to inherit from <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.ComposableMonoBehaviour</codeEntityReference> instead of <legacyItalic>MonoBehaviour</legacyItalic>.
+          During instantiation, a new <legacyItalic>GameObject</legacyItalic> is automatically created to which the <legacyItalic>MonoBehaviour</legacyItalic> is then added.
+        </para>
+        <code language="cs">
+          <![CDATA[
+using RI.Framework.Composition;
+using RI.Framework.Composition.Model;
+using RI.Framework.Services.Modularization;
+
+[Export]
+public class Raycaster : ComposableMonoBehaviour
+{
+  // this class is only instantiated when an instance of it is requested through the composition container (import or explicit)
+}
+
+[Export]
+public class EnemyManager : MonoModule
+{
+  protected override void Initialize ()
+  {
+    Raycaster raycaster = this.Container.GetExport<Raycaster>();
+    // do something with raycaster
+  }
+}
+          ]]>
+        </code>
+        <para>
+          It is also possible to import multiple instances of a type.
+          The following example shows how to import all concrete implementations of an interface:
+        </para>
+        <code language="cs">
+          <![CDATA[
+using RI.Framework.Composition;
+using RI.Framework.Composition.Model;
+using RI.Framework.Services.Modularization;
+
+[Export]
+public interface IEnemyAI
+{
+}
+
+public class SmartEnemyAI : IEnemyAI
+{
+}
+
+public class DumbEnemyAI : IEnemyAI
+{
+}
+
+[Export]
+public class EnemyManager : MonoModule
+{
+  // importing multiple instances is only possible with the Import proxy because we would otherwise have a dependency on System.Reflection.Emit
+  [ImportProperty(typeof(IEnemyAI))]
+  Import ImportedAIs { get; set; }
+  
+  IEnemyAI[] ResolvedAIs;
+  
+  protected override void Initialize ()
+  {
+    // we get the imported AIs once, for performance reasons
+    this.ResolvedAIs = this.ImportedAIs.ToArray<IEnemyAI>();
+  }
+}
+          ]]>
+        </code>
+        <para>
+          So this all makes possible the perfection of decoupling: You just use an interface, even for instantiation, resulting in zero dependency to the actually used type.
+        </para>
+        <para>
+          What was not answered yet: Why use modules instead of regular <legacyItalic>MonoBehaviour</legacyItalic>s attached to <legacyItalic>GameObjects</legacyItalic>s?
+          The three reasons are: Modules are singletons, go through the composition container (making them exportable/importable), and are automatically instantiated by the module service during bootstrapping (compared to other exported types which are only instantiated when retrieved from the composition container; possibly never if an instance is never requested).
+        </para>
+      </content>
+    </section>
+
+    <section address="ServiceLocator">
+      <title>ServiceLocator</title>
+      <content>
+        <para>
+          The <codeEntityReference qualifyHint="false">T:RI.Framework.Services.ServiceLocator</codeEntityReference> lets you use the decoupling features from anywhere.
+          It provides global access to the composition container which is created by the bootstrapper.
+        </para>
+        <para>
+          To use the service locator, simply specify the type you need an instance of (similar to explicitly retrieving an instance from a composition container):
+        </para>
+        <code language="cs">
+          <![CDATA[
+using RI.Framework.Services;
+
+ServiceLocator.GetInstance<GameManager>().Win();
+          ]]>
+        </code>
+        <para>
+          This works also for multiple instances of a type:
+        </para>
+        <code language="cs">
+          <![CDATA[
+using RI.Framework.Composition.Model;
+using RI.Framework.Services;
+using RI.Framework.Services.Modularization;
+
+[Export]
+public interface IEnemyAI
+{
+}
+
+public class SmartEnemyAI : IEnemyAI
+{
+}
+
+public class DumbEnemyAI : IEnemyAI
+{
+}
+
+[Export]
+public class EnemyManager : MonoModule
+{
+  IEnemyAI[] EnemyAIs;
+  
+  protected override void Initialize ()
+  {
+    this.EnemyAIs = ServiceLocator.GetInstances<IEnemyAI>();
+  }
+}
+          ]]>
+        </code>
+        <para>
+          Be aware that using the service locator is considerably slower than property-based importing as shown in the previous section.
+          Property-based importing performs resolving of the instances only once (which is not fully true, as explained in <link xlink:href="8ec8f13f-ef95-4aec-8fc1-9b54dff96e01"/>).
+          The service locator however performs resolving each time it is used.
+        </para>				
+      </content>
+    </section>
+
+    <section address="IDispatcherService_Messaging">
+      <title>IDispatcherService (Messaging)</title>
+      <content>
+        <para>
+          An implementation of <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.IDispatcherService</codeEntityReference> is used to send and receive messages.
+          Sending and receiving messages is very simple: Any object which has access to <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.IDispatcherService</codeEntityReference> (e.g. by using property-based importing or through the service locator) can send and receive messages.
+        </para>
+        <para>
+          The default implementation of <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.IDispatcherService</codeEntityReference> is <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.DispatcherService</codeEntityReference>.
+        </para>
+        <para>
+          To receive a message of a specified type, a receiver needs to be registered:
+        </para>
+        <code language="cs">
+          <![CDATA[
+using RI.Framework.Services.Dispatcher;
+using RI.Framework.Services.Modularization;
+
+public class SpawnEvent
+{
+}
+
+public class KillEvent
+{
+}
+
+public class GameRules : MonoModule
+{
+  [ImportProperty]
+  IDispatcherService Dispatcher { get; set; }
+  
+  void OnSpawn(SpawnEvent spawnEvent)
+  {
+    // process spawn
+  }
+  
+  void OnKill(KillEvent killEvent)
+  {
+    // process kill
+  }
+
+  protected override void Initialize ()
+  {
+    this.Dispatcher.RegisterReceiver<KillEvent>(this.OnKill);
+    this.Dispatcher.RegisterReceiver<SpawnEvent>(this.OnSpawn);
+  }
+}
+          ]]>
+        </code>
+        <para>
+          A message is sent by broadcasting it to all its registered receivers:
+        </para>
+        <code language="cs">
+          <![CDATA[
+using RI.Framework.Services.Dispatcher;
+using RI.Framework.Services.Modularization;
+
+public class SpawnEvent
+{
+}
+
+public class KillEvent
+{
+}
+
+public class EnemyManager : MonoModule
+{
+  [ImportProperty]
+  IDispatcherService Dispatcher { get; set; }
+
+  void Update ()
+  {
+    this.Dispatcher.Broadcast(new KillEvent());
+    
+    this.Dispatcher.Broadcast(new SpawnEvent());
+  }
+}
+          ]]>
+        </code>
+        <para>
+          The messaging system is type-based.
+          It means that a message of a certain type is received by each receiver which registered for the messages type.
+          Any class type objects can be sent/received.
+        </para>
+        <para>
+          Messages can be sent from any thread but are delivered to the receivers in Unitys main/foreground thread.
+          This makes it a good tool for asynchronous cross-thread interaction or, for example, to deliver results from a background thread to the main/foreground thread.
+        </para>
+        <para>
+          Messages are delivered asynchronously.
+          It means that the messages are not immediately delivered to the respective receivers when sent.
+          Instead, the messages are put into a queue and delivered from there during certain points in time of a frame cycle.
+          The only exception to this is when the priority <codeEntityReference qualifyHint="false">M:RI.Framework.Services.Dispatcher.DispatcherPriority.Now</codeEntityReference> is used, which will deliver the message immediately.
+        </para>
+        <para>
+          Each message has a <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.DispatcherPriority</codeEntityReference> which defines at which point in time during a frame cycle the message is delivered.
+        </para>
+      </content>
+    </section>
+
+    <section address="IDispatcherService_Jobs">
+      <title>IDispatcherService (Jobs)</title>
+      <content>
+        <para>
+          Besides messaging, an implementation of <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.IDispatcherService</codeEntityReference> also lets you dispatch operations (or jobs).
+        </para>
+        <para>
+          The following example shows how to dispatch a simple operation:
+        </para>
+        <code language="cs">
+          <![CDATA[
+using RI.Framework.Services.Dispatcher;
+using RI.Framework.Services.Modularization;
+
+public class MyModule : MonoModule
+{
+  [ImportProperty]
+  IDispatcherService Dispatcher { get; set; }
+
+  protected override void Initialize ()
+  {
+    this.Dispatcher.Dispatch(() => Debug.Log("I'm being logged with default priority"));
+    
+    this.Dispatcher.Dispatch(DispatcherPriority.Idle, () => Debug.Log("I'm being logged when the dispatcher is idle"));
+  }
+}
+          ]]>
+        </code>
+        <para>
+          The following example shows how to dispatch an operation which has parameters:
+        </para>
+        <code language="cs">
+          <![CDATA[
+using RI.Framework.Services.Dispatcher;
+using RI.Framework.Services.Modularization;
+
+public class MyModule : MonoModule
+{
+  [ImportProperty]
+  IDispatcherService Dispatcher { get; set; }
+
+  protected override void Initialize ()
+  {
+    this.Dispatcher.Dispatch(x => Debug.Log(x), "I'm x !");
+  }
+}
+          ]]>
+        </code>
+        <para>
+          Operations can be dispatched from any thread but are executed in Unitys main/foreground thread.
+          This makes it a good tool for asynchronous cross-thread execution or, for example, to continue a procedure from a background thread in the main/foreground thread.
+          Note that there is also <codeEntityReference qualifyHint="false">T:RI.Framework.Utilities.Threading.ThreadMover</codeEntityReference> which is a nice cross-thread execution tool when working with coroutines.
+        </para>
+        <para>
+          Operations are executed asynchronously.
+          It means that the operations are not immediately executed when dispatched.
+          Instead, the operations are put into a queue and executed from there during certain points in time of a frame cycle.
+          The only exception to this is when the priority <codeEntityReference qualifyHint="false">M:RI.Framework.Services.Dispatcher.DispatcherPriority.Now</codeEntityReference> is used, which will execute the operation immediately.
+        </para>
+        <para>
+          Each operation has a <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.DispatcherPriority</codeEntityReference> which defines at which point in time during a frame cycle the operation is executed.
+        </para>
+        <para>
+          A particular use case for dispatched operations are situations where run-to-completion behaviour is required.
+          For example: A method needs an operation executed but not before the method itself has returned.
+          This is especially required for handling state transitions in state machines where you want to dispatch a state transition but the actual transition should not happen before the current method is finished (so that the rest of the method, after the dispatching, can still finish with the current state).
+        </para>
+      </content>
+    </section>
+
+    <relatedTopics />
+
+  </developerConceptualDocument>
 </topic>

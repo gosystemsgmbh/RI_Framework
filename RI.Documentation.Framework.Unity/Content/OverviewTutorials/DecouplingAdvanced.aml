@@ -7,7 +7,7 @@
 
     <introduction>
       <para>
-        A more advanced use of the decoupling features, going more into details and also what happens under the hood, is described in this section.
+        A more advanced use of the decoupling features is described in this section.
       </para>
       <alert class="important">
         <para>
@@ -16,6 +16,41 @@
       </alert>
       <autoOutline/>
     </introduction>
+
+    <section address="Bootstrapper">
+      <title>Bootstrapper</title>
+      <content>
+        
+      </content>
+    </section>
+
+    <section address="CompositionContainer">
+      <title>CompositionContainer</title>
+      <content>
+        
+      </content>
+    </section>
+
+    <section address="ServiceLocator">
+      <title>ServiceLocator</title>
+      <content>
+        
+      </content>
+    </section>
+
+    <section address="IModuleService">
+      <title>IModuleService</title>
+      <content>
+        
+      </content>
+    </section>
+
+    <section address="IDispatcherService">
+      <title>IDispatcherService</title>
+      <content>
+        
+      </content>
+    </section>
 
     <relatedTopics />
 

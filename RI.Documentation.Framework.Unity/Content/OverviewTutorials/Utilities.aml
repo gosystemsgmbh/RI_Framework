@@ -8,7 +8,7 @@
     <introduction>
       <para>
         A list of examples for some of the utilities can be found in this section.
-        You can browse the <codeEntityReference qualifyHint="false">R:Project_DecouplingUtilities</codeEntityReference> to explore all of the available utilities.
+        You can browse the <codeEntityReference qualifyHint="false">R:Project_RI.Documentation.Framework.Unity</codeEntityReference> to explore all of the available utilities.
       </para>
       <alert class="important">
         <para>
@@ -21,142 +21,142 @@
       <list class="bullet">
         <listItem>
           <para>
-            <codeEntityReference qualifyHint="true">T:RI.Framework.Collections.Comparison.CollectionComparer</codeEntityReference>
+            <codeEntityReference qualifyHint="false">T:RI.Framework.Collections.Comparison.CollectionComparer`1</codeEntityReference>
           </para>
         </listItem>
         <listItem>
           <para>
-            <codeEntityReference qualifyHint="true">T:RI.Framework.Collections.DirectLinq.DirectLinqExtensions</codeEntityReference>
+            <codeEntityReference qualifyHint="false">T:RI.Framework.Collections.DirectLinq.DirectLinqExtensions</codeEntityReference>
           </para>
         </listItem>
         <listItem>
           <para>
-            <codeEntityReference qualifyHint="true">T:RI.Framework.Collections.Generic.PriorityQueue</codeEntityReference>
+            <codeEntityReference qualifyHint="false">T:RI.Framework.Collections.Generic.PriorityQueue`1</codeEntityReference>
           </para>
         </listItem>
         <listItem>
           <para>
-            <codeEntityReference qualifyHint="true">T:RI.Framework.Collections.Generic.Warehouse</codeEntityReference>
+            <codeEntityReference qualifyHint="false">T:RI.Framework.Collections.Generic.Warehouse`1</codeEntityReference>
           </para>
         </listItem>
         <listItem>
           <para>
-            <codeEntityReference qualifyHint="true">T:RI.Framework.Collections.ObjectModel.Pool</codeEntityReference>
+            <codeEntityReference qualifyHint="false">T:RI.Framework.Collections.ObjectModel.Pool`1</codeEntityReference>
           </para>
         </listItem>
         <listItem>
           <para>
-            <codeEntityReference qualifyHint="true">T:RI.Framework.Collections.ObjectModel.TreeNode</codeEntityReference>
+            <codeEntityReference qualifyHint="false">T:RI.Framework.Collections.ObjectModel.TreeNode`1</codeEntityReference>
           </para>
         </listItem>
         <listItem>
           <para>
-            <codeEntityReference qualifyHint="true">T:RI.Framework.Collections.Specialized.ClonePool</codeEntityReference>
+            <codeEntityReference qualifyHint="false">T:RI.Framework.Collections.Specialized.ClonePool`1</codeEntityReference>
           </para>
         </listItem>
         <listItem>
           <para>
-            <codeEntityReference qualifyHint="true">T:RI.Framework.Collections.Specialized.PrefabPool</codeEntityReference>
+            <codeEntityReference qualifyHint="false">T:RI.Framework.Collections.Specialized.PrefabPool</codeEntityReference>
           </para>
         </listItem>
         <listItem>
           <para>
-            <codeEntityReference qualifyHint="true">T:RI.Framework.Composition.CompositionContainer</codeEntityReference>
+            <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionContainer</codeEntityReference>
           </para>
         </listItem>
         <listItem>
           <para>
-            <codeEntityReference qualifyHint="true">T:RI.Framework.Composition.ComposableMonoBehaviour</codeEntityReference>
+            <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.ComposableMonoBehaviour</codeEntityReference>
           </para>
         </listItem>
         <listItem>
           <para>
-            <codeEntityReference qualifyHint="true">T:RI.Framework.IO.INI.IniDocument</codeEntityReference>
+            <codeEntityReference qualifyHint="false">T:RI.Framework.IO.INI.IniDocument</codeEntityReference>
           </para>
         </listItem>
         <listItem>
           <para>
-            <codeEntityReference qualifyHint="true">T:RI.Framework.IO.Paths.FilePath</codeEntityReference>
+            <codeEntityReference qualifyHint="false">T:RI.Framework.IO.Paths.FilePath</codeEntityReference>
           </para>
         </listItem>
         <listItem>
           <para>
-            <codeEntityReference qualifyHint="true">T:RI.Framework.IO.Paths.DirectoryPath</codeEntityReference>
+            <codeEntityReference qualifyHint="false">T:RI.Framework.IO.Paths.DirectoryPath</codeEntityReference>
           </para>
         </listItem>
         <listItem>
           <para>
-            <codeEntityReference qualifyHint="true">T:RI.Framework.Mathematic.PIDController</codeEntityReference>
+            <codeEntityReference qualifyHint="false">T:RI.Framework.Mathematic.PIDController</codeEntityReference>
           </para>
         </listItem>
         <listItem>
           <para>
-            <codeEntityReference qualifyHint="true">T:RI.Framework.Mathematic.RomanNumber</codeEntityReference>
+            <codeEntityReference qualifyHint="false">T:RI.Framework.Mathematic.RomanNumber</codeEntityReference>
           </para>
         </listItem>
         <listItem>
           <para>
-            <codeEntityReference qualifyHint="true">T:RI.Framework.Mathematic.RunningValues</codeEntityReference>
+            <codeEntityReference qualifyHint="false">T:RI.Framework.Mathematic.RunningValues</codeEntityReference>
           </para>
         </listItem>
         <listItem>
           <para>
-            <codeEntityReference qualifyHint="true">T:RI.Framework.Mathematic.StatisticValues</codeEntityReference>
+            <codeEntityReference qualifyHint="false">T:RI.Framework.Mathematic.StatisticValues</codeEntityReference>
           </para>
         </listItem>
         <listItem>
           <para>
-            <codeEntityReference qualifyHint="true">T:RI.Framework.StateMachines.StateMachine</codeEntityReference>
+            <codeEntityReference qualifyHint="false">T:RI.Framework.StateMachines.StateMachine</codeEntityReference>
           </para>
         </listItem>
         <listItem>
           <para>
-            <codeEntityReference qualifyHint="true">T:RI.Framework.StateMachines.MonoState</codeEntityReference>
+            <codeEntityReference qualifyHint="false">T:RI.Framework.StateMachines.MonoState</codeEntityReference>
           </para>
         </listItem>
         <listItem>
           <para>
-            <codeEntityReference qualifyHint="true">T:RI.Framework.Utilities.Comparison.EqualityComparison</codeEntityReference>
+            <codeEntityReference qualifyHint="false">T:RI.Framework.Utilities.Comparison.EqualityComparison`1</codeEntityReference>
           </para>
         </listItem>
         <listItem>
           <para>
-            <codeEntityReference qualifyHint="true">T:RI.Framework.Utilities.Comparison.OrderComparison</codeEntityReference>
+            <codeEntityReference qualifyHint="false">T:RI.Framework.Utilities.Comparison.OrderComparison`1</codeEntityReference>
           </para>
         </listItem>
         <listItem>
           <para>
-            <codeEntityReference qualifyHint="true">T:RI.Framework.Utilities.ObjectModel.Singleton</codeEntityReference>
+            <codeEntityReference qualifyHint="false">T:RI.Framework.Utilities.ObjectModel.Singleton`1</codeEntityReference>
           </para>
         </listItem>
         <listItem>
           <para>
-            <codeEntityReference qualifyHint="true">T:RI.Framework.Utilities.Text.CommandLine</codeEntityReference>
+            <codeEntityReference qualifyHint="false">T:RI.Framework.Utilities.Text.CommandLine</codeEntityReference>
           </para>
         </listItem>
         <listItem>
           <para>
-            <codeEntityReference qualifyHint="true">T:RI.Framework.Utilities.Text.IndentedTextWriter</codeEntityReference>
+            <codeEntityReference qualifyHint="false">T:RI.Framework.Utilities.Text.IndentedTextWriter</codeEntityReference>
           </para>
         </listItem>
         <listItem>
           <para>
-            <codeEntityReference qualifyHint="true">T:RI.Framework.Utilities.Threading.HeavyThread</codeEntityReference>
+            <codeEntityReference qualifyHint="false">T:RI.Framework.Utilities.Threading.HeavyThread</codeEntityReference>
           </para>
         </listItem>
         <listItem>
           <para>
-            <codeEntityReference qualifyHint="true">T:RI.Framework.Utilities.Threading.ThreadDispatcher</codeEntityReference>
+            <codeEntityReference qualifyHint="false">T:RI.Framework.Utilities.Threading.ThreadDispatcher</codeEntityReference>
           </para>
         </listItem>
         <listItem>
           <para>
-            <codeEntityReference qualifyHint="true">T:RI.Framework.Utilities.Threading.HeavyThreadDispatcher</codeEntityReference>
+            <codeEntityReference qualifyHint="false">T:RI.Framework.Utilities.Threading.HeavyThreadDispatcher</codeEntityReference>
           </para>
         </listItem>
         <listItem>
           <para>
-            <codeEntityReference qualifyHint="true">T:RI.Framework.Utilities.Threading.ThreadMover</codeEntityReference>
+            <codeEntityReference qualifyHint="false">T:RI.Framework.Utilities.Threading.ThreadMover</codeEntityReference>
           </para>
         </listItem>
       </list>
