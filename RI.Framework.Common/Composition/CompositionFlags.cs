@@ -30,7 +30,7 @@ namespace RI.Framework.Composition
 		Missing = 0x02,
 
 		/// <summary>
-		///     Imports which are recomposable (<see cref="ImportPropertyAttribute" />.<see cref="ImportPropertyAttribute.Recomposable" /> is true) are resolved (existing values, if any, are overwritten).
+		///     Imports which are recomposable (<see cref="ImportAttribute" />.<see cref="ImportAttribute.Recomposable" /> is true) are resolved (existing values, if any, are overwritten).
 		/// </summary>
 		Recomposable = 0x04,
 

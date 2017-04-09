@@ -53,7 +53,7 @@ namespace RI.Framework.Services.Regions
 
 		#region Instance Properties/Indexer
 
-		[ImportProperty (typeof(IRegionAdapter), Recomposable = true)]
+		[Import (typeof(IRegionAdapter), Recomposable = true)]
 		private Import AdaptersImported { get; set; }
 
 		private List<IRegionAdapter> AdaptersManual { get; set; }

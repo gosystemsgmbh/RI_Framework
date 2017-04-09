@@ -7,7 +7,7 @@ using RI.Framework.Collections.DirectLinq;
 namespace RI.Framework.Composition.Model
 {
 	/// <summary>
-	///     Defines extension methods used to access the actual imported values when using <see cref="Import" /> and <see cref="ImportPropertyAttribute" />.
+	///     Defines extension methods used to access the actual imported values when using <see cref="Import" /> and <see cref="ImportAttribute" />.
 	/// </summary>
 	/// <remarks>
 	///     <para>

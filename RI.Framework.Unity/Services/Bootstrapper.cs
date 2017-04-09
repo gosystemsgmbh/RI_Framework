@@ -204,13 +204,26 @@ namespace RI.Framework.Services
 		/// </summary>
 		/// <remarks>
 		///     <para>
-		/// If true, <see cref="Composition.Catalogs.ScriptingCatalog"/> is added automatically, adding all eligible types from the scripting assembly to the container.
+		/// If true, <see cref="Composition.Catalogs.ScriptingCatalog"/> is added automatically to <see cref="Container"/>, adding all eligible types from the scripting assembly to the container.
 		///     </para>
 		/// <para>
 		/// The default value is true.
 		/// </para>
 		/// </remarks>
 		public bool ScriptingCatalog = true;
+
+		/// <summary>
+		///     Specifies whether the <see cref="ServiceLocator"/> should be bound to <see cref="Container"/> or not.
+		/// </summary>
+		/// <remarks>
+		///     <para>
+		/// If true, <see cref="Container"/> is bound to <see cref="ServiceLocator"/> using <see cref="ServiceLocator.BindToCompositionContainer"/>.
+		///     </para>
+		/// <para>
+		/// The default value is true.
+		/// </para>
+		/// </remarks>
+		public bool ServiceLocatorBinding = true;
 
 		#endregion
 
@@ -388,12 +401,15 @@ namespace RI.Framework.Services
 		/// </summary>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation calls <see cref="ServiceLocator.BindToCompositionContainer" /> using the used composition container (<see cref="Container" />).
+		///         The default implementation calls <see cref="ServiceLocator.BindToCompositionContainer" /> using the used composition container (<see cref="Container" />) if <see cref="ServiceLocatorBinding"/> is true, otherwise it does nothing.
 		///     </note>
 		/// </remarks>
 		protected virtual void ConfigureServiceLocator ()
 		{
-			ServiceLocator.BindToCompositionContainer(this.Container);
+			if (this.ServiceLocatorBinding)
+			{
+				ServiceLocator.BindToCompositionContainer(this.Container);
+			}
 		}
 
 		/// <summary>

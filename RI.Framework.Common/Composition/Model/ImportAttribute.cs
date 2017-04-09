@@ -13,14 +13,14 @@ namespace RI.Framework.Composition.Model
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         In cases where a single value needs to be imported, the property type (of the property <see cref="ImportPropertyAttribute" /> is applied to) can be of the imported type.
+	///         In cases where a single value needs to be imported, the property type (of the property <see cref="ImportAttribute" /> is applied to) can be of the imported type.
 	///     </para>
 	///     <para>
-	///         In cases where multiple values need to be imported, the property type (of the property <see cref="ImportPropertyAttribute" /> is applied to) must be <see cref="Import" /> and <see cref="ImportExtensions" /> must be used to access the actual imported values.
+	///         In cases where multiple values need to be imported, the property type (of the property <see cref="ImportAttribute" /> is applied to) must be <see cref="Import" /> and <see cref="ImportExtensions" /> must be used to access the actual imported values.
 	///     </para>
 	/// </remarks>
 	[AttributeUsage (AttributeTargets.Property)]
-	public sealed class ImportPropertyAttribute : Attribute
+	public sealed class ImportAttribute : Attribute
 	{
 		#region Instance Constructor/Destructor
 
@@ -32,7 +32,7 @@ namespace RI.Framework.Composition.Model
 		///         See <see cref="CompositionContainer" /> for more details about the default name of a type.
 		///     </para>
 		/// </remarks>
-		public ImportPropertyAttribute ()
+		public ImportAttribute ()
 		{
 			this.Name = null;
 			this.Recomposable = true;
@@ -48,7 +48,7 @@ namespace RI.Framework.Composition.Model
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="type" /> is null. </exception>
-		public ImportPropertyAttribute (Type type)
+		public ImportAttribute (Type type)
 			: this()
 		{
 			if (type == null)
@@ -65,7 +65,7 @@ namespace RI.Framework.Composition.Model
 		/// <param name="name"> The name which is used for resolving. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="name" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
-		public ImportPropertyAttribute (string name)
+		public ImportAttribute (string name)
 			: this()
 		{
 			if (name == null)

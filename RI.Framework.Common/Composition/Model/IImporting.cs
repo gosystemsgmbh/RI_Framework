@@ -1,7 +1,7 @@
 ﻿namespace RI.Framework.Composition.Model
 {
 	/// <summary>
-	///     Defines an interface which allows types and objects which use model-based importing (using <see cref="ImportPropertyAttribute" />) to be informed when their imports are being resolved or updated.
+	///     Defines an interface which allows types and objects which use model-based importing (using <see cref="ImportAttribute" />) to be informed when their imports are being resolved or updated.
 	/// </summary>
 	public interface IImporting
 	{

@@ -51,12 +51,12 @@ namespace RI.Framework.Services.Messaging
 
 		#region Instance Properties/Indexer
 
-		[ImportProperty (typeof(IMessageDispatcher), Recomposable = true)]
+		[Import (typeof(IMessageDispatcher), Recomposable = true)]
 		private Import DispatchersImported { get; set; }
 
 		private List<IMessageDispatcher> DispatchersManual { get; set; }
 
-		[ImportProperty (typeof(IMessageReceiver), Recomposable = true)]
+		[Import (typeof(IMessageReceiver), Recomposable = true)]
 		private Import ReceiversImported { get; set; }
 
 		private List<IMessageReceiver> ReceiversManual { get; set; }

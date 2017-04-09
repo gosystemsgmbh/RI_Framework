@@ -51,7 +51,7 @@ namespace RI.Framework.Services.Logging
 
 		#region Instance Properties/Indexer
 
-		[ImportProperty (typeof(ILogWriter), Recomposable = true)]
+		[Import (typeof(ILogWriter), Recomposable = true)]
 		private Import WritersImported { get; set; }
 
 		private List<ILogWriter> WritersManual { get; set; }

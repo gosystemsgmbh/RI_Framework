@@ -12,28 +12,28 @@ namespace RI.Test.Framework.Composition
 	[Export]
 	public sealed class Mock_Imports
 	{
-		[ImportProperty]
+		[Import]
 		public Mock_Exports_1 Import_1 { get; private set; }
 
-		[ImportProperty(typeof(Mock_Exports_2))]
+		[Import(typeof(Mock_Exports_2))]
 		public Import Import_2 { get; private set; }
 
-		[ImportProperty("E3")]
+		[Import("E3")]
 		public object Import_3 { get; private set; }
 
-		[ImportProperty("E4")]
+		[Import("E4")]
 		public Import Import_4 { get; private set; }
 
-		[ImportProperty(typeof(Mock_Exports_5))]
+		[Import(typeof(Mock_Exports_5))]
 		public Import Import_5 { get; private set; }
 
-		[ImportProperty(typeof(Mock_Exports_6))]
+		[Import(typeof(Mock_Exports_6))]
 		public Import Import_6 { get; private set; }
 
-		[ImportProperty(typeof(Mock_Exports_1), Recomposable = false)]
+		[Import(typeof(Mock_Exports_1), Recomposable = false)]
 		public Import Import_7 { get; private set; }
 
-		[ImportProperty(typeof(Mock_Exports_1), Recomposable = true)]
+		[Import(typeof(Mock_Exports_1), Recomposable = true)]
 		public Import Import_8 { get; private set; }
 	}
 }

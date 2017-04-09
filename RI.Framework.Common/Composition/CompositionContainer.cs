@@ -68,7 +68,7 @@ namespace RI.Framework.Composition
 	///     </para>
 	///     <para>
 	///         A powerful aspect of the <see cref="CompositionContainer" /> is the fact that all its known/contained exports are composed themselves.
-	///         This means that all exports of a <see cref="CompositionContainer" /> can have imports themselves (model-based imports using <see cref="ImportPropertyAttribute" />) and that those imports are automatically resolved by the <see cref="CompositionContainer" />.
+	///         This means that all exports of a <see cref="CompositionContainer" /> can have imports themselves (model-based imports using <see cref="ImportAttribute" />) and that those imports are automatically resolved by the <see cref="CompositionContainer" />.
 	///         In other words, when getting an import from a <see cref="CompositionContainer" />, all the imports of the import itself (if any) will be resolved as well (if possible).
 	///     </para>
 	///     <para>
@@ -152,7 +152,7 @@ namespace RI.Framework.Composition
 	///         This is usually used to retrieve an export from the <see cref="CompositionContainer" /> programmatically.
 	///     </para>
 	///     <para>
-	///         Model-based import is done by decorating properties of composed types or objects with <see cref="ImportPropertyAttribute" />.
+	///         Model-based import is done by decorating properties of composed types or objects with <see cref="ImportAttribute" />.
 	///         This is usually used for implementing Dependency Injection (DI).
 	///     </para>
 	///     <para>
@@ -177,12 +177,12 @@ namespace RI.Framework.Composition
 	///         Importing can be used in two ways: Single import and multiple import.
 	///     </para>
 	///     <para>
-	///         A single import is when one of the <c> GetExport </c> methods is used or when an <see cref="ImportPropertyAttribute" /> is applied to a normal property (means: a property not of type <see cref="Import" />).
+	///         A single import is when one of the <c> GetExport </c> methods is used or when an <see cref="ImportAttribute" /> is applied to a normal property (means: a property not of type <see cref="Import" />).
 	///         In such cases, the first resolved import value is provided or assigned respectively.
 	///         If the import resolves to more than one value, the provided value is one of them but it is not defined which one.
 	///     </para>
 	///     <para>
-	///         A multiple import is when one of the <c> GetExports </c> methods is used or when an <see cref="ImportPropertyAttribute" /> is applied to a property of the type <see cref="Import" />.
+	///         A multiple import is when one of the <c> GetExports </c> methods is used or when an <see cref="ImportAttribute" /> is applied to a property of the type <see cref="Import" />.
 	///         In such cases, all the resolved import values are provided or assigned respectively.
 	///         Therefore, multiple types or object can be exported under the same name.
 	///     </para>
@@ -197,7 +197,7 @@ namespace RI.Framework.Composition
 	///         <b> RECOMPOSITION &amp; TRACKING </b>
 	///     </para>
 	///     <para>
-	///         Model-based imports can be marked as &quot;recomposable&quot; using <see cref="ImportPropertyAttribute" />.<see cref="ImportPropertyAttribute.Recomposable" />.
+	///         Model-based imports can be marked as &quot;recomposable&quot; using <see cref="ImportAttribute" />.<see cref="ImportAttribute.Recomposable" />.
 	///         This means that the imports of such properties are reimported or resolved again respectively whenever the composition for the corresponding name changes (e.g. a new export of that name gets added to the <see cref="CompositionContainer" />).
 	///         However, this is only done using implicit model-based importing, meaning that only exports known to the <see cref="CompositionContainer" /> get their recomposable imports updated.
 	///         Imports resolved using <see cref="ResolveImports(object, CompositionFlags)" /> are not updated during a recomposition.
@@ -239,27 +239,6 @@ namespace RI.Framework.Composition
 	/// If logging is not desired, it can be disabled using <see cref="LoggingEnabled"/>.
 	///     </para>
 	/// </remarks>
-	/// <example>
-	///     <para>
-	///         The following example shows how a <see cref="CompositionContainer" /> can be used:
-	///     </para>
-	///     <code language="cs">
-	/// <![CDATA[
-	/// // create the container
-	/// var container = new CompositionContainer();
-	/// 
-	/// // automatically dispose all objects which implement <see cref="IDisposable"/> when removed from the container
-	/// container.AutoDispose = true;
-	/// 
-	/// // add a catalog (all types in the current assembly)
-	/// container.AddCatalog(new AssemblyCatalog(Assembly.GetExecutingAssembly()));
-	/// 
-	/// // start pulling instances from the container
-	/// var sources = container.GetExports<IMySources>();
-	/// var service = container.GetExport<MyService>();
-	/// ]]>
-	/// </code>
-	/// </example>
 	[Export]
 	public sealed class CompositionContainer : IDisposable
 	{
@@ -1193,7 +1172,7 @@ namespace RI.Framework.Composition
 		}
 
 		/// <summary>
-		///     Model-based import: Resolves the imports of the specified object, using <see cref="ImportPropertyAttribute" />.
+		///     Model-based import: Resolves the imports of the specified object, using <see cref="ImportAttribute" />.
 		/// </summary>
 		/// <param name="obj"> The object whose imports are resolved. </param>
 		/// <param name="composition"> The composition type which is going to be done on the object. </param>
@@ -1239,8 +1218,8 @@ namespace RI.Framework.Composition
 			PropertyInfo[] properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 			foreach (PropertyInfo property in properties)
 			{
-				object[] attributes = property.GetCustomAttributes(typeof(ImportPropertyAttribute), false);
-				foreach (ImportPropertyAttribute attribute in attributes)
+				object[] attributes = property.GetCustomAttributes(typeof(ImportAttribute), false);
+				foreach (ImportAttribute attribute in attributes)
 				{
 					bool canRecompose = attribute.Recomposable;
 					object oldValue = property.GetGetMethod(true).Invoke(obj, null);

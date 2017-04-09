@@ -72,7 +72,7 @@ namespace RI.Framework.Services.Resources
 			}
 		}
 
-		[ImportProperty (typeof(IResourceConverter), Recomposable = true)]
+		[Import (typeof(IResourceConverter), Recomposable = true)]
 		private Import ConvertersImported { get; set; }
 
 		private List<IResourceConverter> ConvertersManual { get; set; }
@@ -96,7 +96,7 @@ namespace RI.Framework.Services.Resources
 			}
 		}
 
-		[ImportProperty (typeof(IResourceSource), Recomposable = true)]
+		[Import (typeof(IResourceSource), Recomposable = true)]
 		private Import SourcesImported { get; set; }
 
 		private List<IResourceSource> SourcesManual { get; set; }

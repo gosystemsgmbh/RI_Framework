@@ -56,12 +56,12 @@ namespace RI.Framework.Services.Settings
 
 		private Dictionary<string, string> Cache { get; set; }
 
-		[ImportProperty (typeof(ISettingConverter), Recomposable = true)]
+		[Import (typeof(ISettingConverter), Recomposable = true)]
 		private Import ConvertersImported { get; set; }
 
 		private List<ISettingConverter> ConvertersManual { get; set; }
 
-		[ImportProperty (typeof(ISettingStorage), Recomposable = true)]
+		[Import (typeof(ISettingStorage), Recomposable = true)]
 		private Import StoragesImported { get; set; }
 
 		private List<ISettingStorage> StoragesManual { get; set; }

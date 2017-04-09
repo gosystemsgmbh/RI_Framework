@@ -177,6 +177,10 @@
       <ImageId>BootstrapperObject</ImageId>
       <AlternateText>Bootstrapper Object</AlternateText>
     </Image>
+    <Image Include="Media\BootstrapperOptions.png">
+      <ImageId>BootstrapperOptions</ImageId>
+      <AlternateText>Bootstrapper Options</AlternateText>
+    </Image>
   </ItemGroup>
   <!-- Import the SHFB build targets -->
   <Import Project="$(SHFBROOT)\SandcastleHelpFileBuilder.targets" />

@@ -61,7 +61,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Composition\Model\IImporting.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Composition\Model\Import.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Composition\Model\ImportExtensions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Composition\Model\ImportPropertyAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\Model\ImportAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Composition\Model\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Composition\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\INI\Elements\CommentIniElement.cs" />

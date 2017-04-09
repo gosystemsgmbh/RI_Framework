@@ -55,7 +55,7 @@ namespace RI.Framework.Services.Modularization
 
 		#region Instance Properties/Indexer
 
-		[ImportProperty (typeof(IModule), Recomposable = true)]
+		[Import (typeof(IModule), Recomposable = true)]
 		private Import ModulesImported { get; set; }
 
 		private List<IModule> ModulesManual { get; set; }

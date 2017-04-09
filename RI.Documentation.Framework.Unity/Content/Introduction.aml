@@ -12,6 +12,7 @@
       </para>
       <para>
         Decoupling is the separation of code into logical units and the reduction of their dependencies, making them more maintainable, extensible, and portable.
+        It can also help to make your architecture ready for mods/plugins.
         This framework supports you with decoupling your game code by providing the following features:
       </para>
       <list class="bullet">
