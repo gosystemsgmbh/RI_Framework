@@ -1,33 +1,39 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
+
 <topic id="9d879aea-3b60-4198-a459-dfd97f897798" revisionNumber="1">
-	<developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
-		<introduction>
-			<para>The topics in this section describe the various changes made to the [TODO: Project Title] over the
-life of the project.</para>
-		</introduction>
+    <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+                                 xmlns:xlink="http://www.w3.org/1999/xlink">
+        <introduction>
+            <para>
+                The topics in this section describe the various changes made to the [TODO: Project Title] over the
+                life of the project.
+            </para>
+        </introduction>
 
-		<section>
-			<title>Version History</title>
-			<content>
-				<para>Select a version below to see a description of its changes.</para>
+        <section>
+            <title>Version History</title>
+            <content>
+                <para>Select a version below to see a description of its changes.</para>
 
-				<list class="bullet">
-					<listItem>
-						<para><link xlink:href="a819857a-ff40-4950-bae5-0a09d5f557a8" /></para>
-					</listItem>
+                <list class="bullet">
+                    <listItem>
+                        <para>
+                            <link xlink:href="a819857a-ff40-4950-bae5-0a09d5f557a8" />
+                        </para>
+                    </listItem>
 
-					<listItem>
-						<para>[TODO: Add links to each specific version page]</para>
-					</listItem>
+                    <listItem>
+                        <para>[TODO: Add links to each specific version page]</para>
+                    </listItem>
 
-				</list>
+                </list>
 
-			</content>
-		</section>
+            </content>
+        </section>
 
-		<relatedTopics>
-			<link xlink:href="6459ff5d-d5e3-4d58-8578-74ffb0640c94" />
-		</relatedTopics>
+        <relatedTopics>
+            <link xlink:href="6459ff5d-d5e3-4d58-8578-74ffb0640c94" />
+        </relatedTopics>
 
-	</developerConceptualDocument>
+    </developerConceptualDocument>
 </topic>

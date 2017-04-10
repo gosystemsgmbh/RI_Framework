@@ -49,8 +49,8 @@
       <DocumentationSource sourceFile="..\RI.Framework.Unity\RI.Framework.Unity.csproj" />
     </DocumentationSources>
     <RootNamespaceTitle>Reference</RootNamespaceTitle>
-    <WebsiteSdkLinkType>None</WebsiteSdkLinkType>
-    <HtmlSdkLinkType>None</HtmlSdkLinkType>
+    <WebsiteSdkLinkType>Msdn</WebsiteSdkLinkType>
+    <HtmlSdkLinkType>Msdn</HtmlSdkLinkType>
     <IncludeFavorites>False</IncludeFavorites>
     <BinaryTOC>True</BinaryTOC>
     <VisibleItems>Attributes, ExplicitInterfaceImplementations, InheritedMembers, Protected, ProtectedInternalAsProtected</VisibleItems>

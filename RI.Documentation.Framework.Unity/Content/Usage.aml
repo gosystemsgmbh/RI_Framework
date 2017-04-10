@@ -2,26 +2,28 @@
 
 <topic id="345781e4-d213-4b73-938d-c46d061ad384"
        revisionNumber="1">
-  <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
-                               xmlns:xlink="http://www.w3.org/1999/xlink">
+    <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+                                 xmlns:xlink="http://www.w3.org/1999/xlink">
 
-    <introduction>
-      <para>
-        To use the Decoupling &amp; Utilities Framework, you only need the file <legacyItalic>RI.Framework.Unity.dll</legacyItalic> in your Asset folder or a subfolder of the Asset folder.
-        Optionally, you can also have <legacyItalic>RI.Framework.Unity.xml</legacyItalic> in the same folder as the DLL to get IntelliSense support for VisualStudio or MonoDevelop.
-      </para>
-      <para>
-        The namespaces of all types in the framework start with <legacyItalic>RI.Framework.*</legacyItalic>.
-      </para>
-      <para>
-        An overview and tutorial about how to use the framework is provided in <link xlink:href="0b0c3c61-ecf8-4ddd-879e-8e28e6815750"/>.
-      </para>
-      <para>
-        Please note that, for the time being, the framework is provided in compiled form, as a DLL, without source code.
-      </para>
-    </introduction>
+        <introduction>
+            <para>
+                To use the Decoupling &amp; Utilities Framework, you only need the file
+                <legacyItalic>RI.Framework.Unity.dll</legacyItalic> in your Asset folder or a subfolder of the Asset folder.
+                Optionally, you can also have <legacyItalic>RI.Framework.Unity.xml</legacyItalic> in the same folder as the DLL to get IntelliSense support for VisualStudio or MonoDevelop.
+            </para>
+            <para>
+                The namespaces of all types in the framework start with <legacyItalic>RI.Framework.*</legacyItalic>.
+            </para>
+            <para>
+                An overview and tutorial about how to use the framework is provided in
+                <link xlink:href="0b0c3c61-ecf8-4ddd-879e-8e28e6815750" />.
+            </para>
+            <para>
+                Please note that, for the time being, the framework is provided in compiled form, as a DLL, without source code.
+            </para>
+        </introduction>
 
-    <relatedTopics />
+        <relatedTopics />
 
-  </developerConceptualDocument>
+    </developerConceptualDocument>
 </topic>

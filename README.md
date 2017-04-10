@@ -4,18 +4,20 @@
 
 - [ ] Documentation
   - [ ] Overview & Tutorials
+  - [ ] Utility examples
   - [ ] Review Reference
-  - [ ] Re-enable MSDN links
-  - [ ] Zip and copy HTML help files to output (2x)
   - [ ] Cleanup SHFB warnings/errors
+  - [ ] Sample scene
 - [ ] Cleanup
+  - [ ] FileCatalog
+  - [ ] AppDomainCatalog
   - [ ] Cleanup common documentation files
   - [ ] Move Utilities\Wpf in RotenInformatik to RotenInformatik namespace
   - [ ] Treeify some namespaces
   - [ ] ReSharper cleanup (after update to 2017.1 !)
 - [ ] Release
   - [ ] Final testing
-  - [ ] Installers
+  - [ ] Installer
   - [ ] Promotional material
   - [ ] E-Mail address
   - [ ] Web page

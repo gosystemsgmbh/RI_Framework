@@ -2,55 +2,37 @@
 
 <topic id="5ae21634-faf4-4aa1-a06a-0306b020b502"
        revisionNumber="1">
-  <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
-                               xmlns:xlink="http://www.w3.org/1999/xlink">
+    <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+                                 xmlns:xlink="http://www.w3.org/1999/xlink">
 
-    <introduction>
-      <autoOutline />
-    </introduction>
+        <introduction>
+            <autoOutline />
+        </introduction>
 
-    <section address="V.1.0.0.0">
-      <title>1.0.0.0</title>
-      <content>
-        <para>
-          First release.
-        </para>
-      </content>
-    </section>
+        <section address="V.1.0.0.0">
+            <title>1.0.0.0</title>
+            <content>
+                <para>
+                    First release.
+                </para>
+            </content>
+        </section>
 
-    <section address="Versioning">
-      <title>Versioning</title>
-      <content>
-        <para>
-          The Decoupling &amp; Utilities Framework uses
-          <externalLink>
-            <linkText>Semantic Versioning</linkText>
-            <linkUri>http://www.semver.org/</linkUri>
-          </externalLink>
-          .
-        </para>
-        <para>
-          Version numbers consist of the format a.b.c.d, for example 1.5.2.1, and are incremented by the following rules:
-        </para>
-        <para>
-          a is incremented after breaking changes, destroying backward compatibility. a starts at 1.
-        </para>
-        <para>
-          b is incremented when new functionality was added in a backward-compatible manner. b starts a 0.
-        </para>
-        <para>
-          c is incremented when bugs were fixed in a backward-compatible manner. c starts at 0.
-        </para>
-        <para>
-          d is incremented when no code was changed (e.g. only documentation). d starts at 0.
-        </para>
-        <para>
-          Increment of a number resets all following numbers to the right back to zero.
-        </para>
-      </content>
-    </section>
+        <section address="Versioning">
+            <title>Versioning</title>
+            <content>
+                <para>
+                    The Decoupling &amp; Utilities Framework uses
+                    <externalLink>
+                        <linkText>Semantic Versioning</linkText>
+                        <linkUri>http://www.semver.org/</linkUri>
+                    </externalLink>
+                    .
+                </para>
+            </content>
+        </section>
 
-    <relatedTopics />
+        <relatedTopics />
 
-  </developerConceptualDocument>
+    </developerConceptualDocument>
 </topic>

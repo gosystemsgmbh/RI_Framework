@@ -2,125 +2,126 @@
 
 <topic id="3b528423-a50a-4dde-85d0-f89804990df9"
        revisionNumber="1">
-  <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
-                               xmlns:xlink="http://www.w3.org/1999/xlink">
+    <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+                                 xmlns:xlink="http://www.w3.org/1999/xlink">
 
-    <introduction>
-      <para>
-        The Decoupling &amp; Utilities Framework aims at providing useful scripting tools for programmers so they can focus on implementing core functionality of their games instead of writing glue logic and boilerplate code.
-        These scripting tools come in the form of .NET/Mono types which can be used right away in Unity scripts.
-      </para>
-      <para>
-        Decoupling is the separation of code into logical units and the reduction of their dependencies, making them more maintainable, extensible, and portable.
-        It can also help to make your architecture ready for mods/plugins.
-        This framework supports you with decoupling your game code by providing the following features:
-      </para>
-      <list class="bullet">
-        <listItem>
-          <para>
-            <legacyBold>Dependency Injection (DI)</legacyBold> and <legacyBold>Inversion-of-Control (IoC)</legacyBold>
-          </para>
-        </listItem>
-        <listItem>
-          <para>
-            <legacyBold>Service locator and singleton management</legacyBold>
-          </para>
-        </listItem>
-        <listItem>
-          <para>
-            <legacyBold>Modularization infrastructure</legacyBold>
-          </para>
-        </listItem>
-        <listItem>
-          <para>
-            <legacyBold>Messaging system</legacyBold>
-          </para>
-        </listItem>
-        <listItem>
-          <para>
-            <legacyBold>Job dispatching</legacyBold>
-          </para>
-        </listItem>
-        <listItem>
-          <para>
-            <legacyBold>Bootstrapper</legacyBold>, integrating all those features with almost no code required from your side
-          </para>
-        </listItem>
-      </list>
-      <para>
-        Furthermore, the Decoupling &amp; Utilities Framework also provides numerous utilities to save you the time of writing commonly used functionality.
-        Some highlights are:
-      </para>
-      <list class="bullet">
-        <listItem>
-          <para>
-            <legacyBold>LINQ replacement</legacyBold>; for using LINQ without dependency on reflection and for deterministic non-deferred execution
-          </para>
-        </listItem>
-        <listItem>
-          <para>
-            <legacyBold>Collection types</legacyBold>; pools, priority queues, trees, etc.
-          </para>
-        </listItem>
-        <listItem>
-          <para>
-            <legacyBold>Collection extensions</legacyBold>; for enumerables, collections, lists, etc.
-          </para>
-        </listItem>
-        <listItem>
-          <para>
-            <legacyBold>Platform-independent file/directory path handling and manipulation</legacyBold>
-          </para>
-        </listItem>
-        <listItem>
-          <para>
-            <legacyBold>INI file processing</legacyBold>; reading, writing, in-memory representation, conversion from/to dictionaries
-          </para>
-        </listItem>
-        <listItem>
-          <para>
-            <legacyBold>Mathematical functions</legacyBold>; running values, statistics, etc.
-          </para>
-        </listItem>
-        <listItem>
-          <para>
-            <legacyBold>Mathematical extensions</legacyBold>; for numerical types such as int, float, double, etc.
-          </para>
-        </listItem>
-        <listItem>
-          <para>
-            <legacyBold>PID controllers</legacyBold>
-          </para>
-        </listItem>
-        <listItem>
-          <para>
-            <legacyBold>Roman numbers</legacyBold>
-          </para>
-        </listItem>
-        <listItem>
-          <para>
-            <legacyBold>Hierarchical state machines</legacyBold>
-          </para>
-        </listItem>
-        <listItem>
-          <para>
-            <legacyBold>ThreadMover</legacyBold>; allows at-will-switching between threads and dispatchers in a coroutine
-          </para>
-        </listItem>
-        <listItem>
-          <para>
-            <legacyBold>Thread management</legacyBold>; heavyweight/dedicated threads, standalone dispatchers, etc.
-          </para>
-        </listItem>
-        <listItem>
-          <para>
-            <legacyBold>String and text processing</legacyBold>
-          </para>
-        </listItem>
-      </list>
-    </introduction>
+        <introduction>
+            <para>
+                The Decoupling &amp; Utilities Framework aims at providing useful scripting tools for programmers so they can focus on implementing core functionality of their games instead of writing glue logic and boilerplate code.
+                These scripting tools come in the form of .NET/Mono types which can be used right away in Unity scripts.
+            </para>
+            <para>
+                Decoupling is the separation of code into logical units and the reduction of their dependencies, making them more maintainable, extensible, and portable.
+                It can also help to make your architecture ready for mods/plugins.
+                This framework supports you with decoupling your game code by providing the following features:
+            </para>
+            <list class="bullet">
+                <listItem>
+                    <para>
+                        <legacyBold>Dependency Injection (DI)</legacyBold> and
+                        <legacyBold>Inversion-of-Control (IoC)</legacyBold>
+                    </para>
+                </listItem>
+                <listItem>
+                    <para>
+                        <legacyBold>Service locator and singleton management</legacyBold>
+                    </para>
+                </listItem>
+                <listItem>
+                    <para>
+                        <legacyBold>Modularization infrastructure</legacyBold>
+                    </para>
+                </listItem>
+                <listItem>
+                    <para>
+                        <legacyBold>Messaging system</legacyBold>
+                    </para>
+                </listItem>
+                <listItem>
+                    <para>
+                        <legacyBold>Job dispatching</legacyBold>
+                    </para>
+                </listItem>
+                <listItem>
+                    <para>
+                        <legacyBold>Bootstrapper</legacyBold>, integrating all those features with almost no code required from your side
+                    </para>
+                </listItem>
+            </list>
+            <para>
+                Furthermore, the Decoupling &amp; Utilities Framework also provides numerous utilities to save you the time of writing commonly used functionality.
+                Some highlights are:
+            </para>
+            <list class="bullet">
+                <listItem>
+                    <para>
+                        <legacyBold>LINQ replacement</legacyBold>; for using LINQ without dependency on reflection and for deterministic non-deferred execution
+                    </para>
+                </listItem>
+                <listItem>
+                    <para>
+                        <legacyBold>Collection types</legacyBold>; pools, priority queues, trees, etc.
+                    </para>
+                </listItem>
+                <listItem>
+                    <para>
+                        <legacyBold>Collection extensions</legacyBold>; for enumerables, collections, lists, etc.
+                    </para>
+                </listItem>
+                <listItem>
+                    <para>
+                        <legacyBold>Platform-independent file/directory path handling and manipulation</legacyBold>
+                    </para>
+                </listItem>
+                <listItem>
+                    <para>
+                        <legacyBold>INI file processing</legacyBold>; reading, writing, in-memory representation, conversion from/to dictionaries
+                    </para>
+                </listItem>
+                <listItem>
+                    <para>
+                        <legacyBold>Mathematical functions</legacyBold>; running values, statistics, etc.
+                    </para>
+                </listItem>
+                <listItem>
+                    <para>
+                        <legacyBold>Mathematical extensions</legacyBold>; for numerical types such as int, float, double, etc.
+                    </para>
+                </listItem>
+                <listItem>
+                    <para>
+                        <legacyBold>PID controllers</legacyBold>
+                    </para>
+                </listItem>
+                <listItem>
+                    <para>
+                        <legacyBold>Roman numbers</legacyBold>
+                    </para>
+                </listItem>
+                <listItem>
+                    <para>
+                        <legacyBold>Hierarchical state machines</legacyBold>
+                    </para>
+                </listItem>
+                <listItem>
+                    <para>
+                        <legacyBold>ThreadMover</legacyBold>; allows at-will-switching between threads and dispatchers in a coroutine
+                    </para>
+                </listItem>
+                <listItem>
+                    <para>
+                        <legacyBold>Thread management</legacyBold>; heavyweight/dedicated threads, standalone dispatchers, etc.
+                    </para>
+                </listItem>
+                <listItem>
+                    <para>
+                        <legacyBold>String and text processing</legacyBold>
+                    </para>
+                </listItem>
+            </list>
+        </introduction>
 
-    <relatedTopics />
+        <relatedTopics />
 
-  </developerConceptualDocument>
+    </developerConceptualDocument>
 </topic>

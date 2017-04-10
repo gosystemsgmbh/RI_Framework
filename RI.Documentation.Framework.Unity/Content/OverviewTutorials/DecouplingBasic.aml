@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 
 <topic id="3120b15f-18f6-4b5e-92c7-8b51e2bedfb1"
-  revisionNumber="1">
+       revisionNumber="1">
     <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
-            xmlns:xlink="http://www.w3.org/1999/xlink">
+                                 xmlns:xlink="http://www.w3.org/1999/xlink">
 
         <introduction>
             <para>
@@ -14,26 +14,33 @@
                     Please consider reading the remarks section of type and member descriptions as they often contain futher explanations and provide more detailed information.
                 </para>
             </alert>
-            <autoOutline/>
+            <autoOutline />
         </introduction>
 
         <section address="Bootstrapper">
             <title>Bootstrapper</title>
             <content>
                 <para>
-                    A <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Bootstrapper</codeEntityReference> is used to load all the actual decoupling services during scene load (using Unitys <legacyItalic>Awake()</legacyItalic> ).
+                    A
+                    <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Bootstrapper</codeEntityReference>
+                    is used to load all the actual decoupling services during scene load (using Unitys
+                    <legacyItalic>Awake()</legacyItalic> ).
                 </para>
                 <para>
-                    Note that the bootstrapper is only required once as it is persistent over all scenes (using Unitys <legacyItalic>DontDestroyOnLoad()</legacyItalic> ).
+                    Note that the bootstrapper is only required once as it is persistent over all scenes (using Unitys
+                    <legacyItalic>DontDestroyOnLoad()</legacyItalic> ).
                 </para>
                 <para>
-                    Add a new <legacyItalic>GameObject</legacyItalic> to the scene and then add the bootstrapper via drag-and-drop from the <legacyItalic>RI.Framework.Unity.dll</legacyItalic>:
+                    Add a new <legacyItalic>GameObject</legacyItalic> to the scene and then add the bootstrapper via drag-and-drop from the
+                    <legacyItalic>RI.Framework.Unity.dll</legacyItalic>:
                 </para>
                 <mediaLink>
-                    <image xlink:href="BootstrapperDragDrop"/>
+                    <image xlink:href="BootstrapperDragDrop" />
                 </mediaLink>
                 <para>
-                    Alternatively, you can also do this in code by adding <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Bootstrapper</codeEntityReference> as a component to a <legacyItalic>GameObject</legacyItalic>:
+                    Alternatively, you can also do this in code by adding
+                    <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Bootstrapper</codeEntityReference>
+                    as a component to a <legacyItalic>GameObject</legacyItalic>:
                 </para>
                 <code language="cs">
                     <![CDATA[
@@ -49,7 +56,7 @@ go.AddComponent<Bootstrapper>();
                     When you now start the scene, you can see the bootstrapper object:
                 </para>
                 <mediaLink>
-                    <image xlink:href="BootstrapperObject"/>
+                    <image xlink:href="BootstrapperObject" />
                 </mediaLink>
             </content>
         </section>
@@ -58,15 +65,23 @@ go.AddComponent<Bootstrapper>();
             <title>IModuleService</title>
             <content>
                 <para>
-                    An implementation of <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.IModuleService</codeEntityReference> is used to implement and manage modules.
+                    An implementation of
+                    <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.IModuleService</codeEntityReference>
+                    is used to implement and manage modules.
                     Modules are very similar to singletons as they are started once and then used throughout the game.
                     Typical examples for modules are &quot;Controllers&quot; or &quot;Managers&quot; (e.g. PlayerController, EnemyManager, etc.) or globally available services and functionality in general.
                 </para>
                 <para>
-                    The default implementation of <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.IModuleService</codeEntityReference> is <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.ModuleService</codeEntityReference>.
+                    The default implementation of
+                    <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.IModuleService</codeEntityReference>
+                    is
+                    <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.ModuleService</codeEntityReference>
+                    .
                 </para>
                 <para>
-                    To implement a module, simply add a class to your project which inherits from <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.MonoModule</codeEntityReference>:
+                    To implement a module, simply add a class to your project which inherits from
+                    <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.MonoModule</codeEntityReference>
+                    :
                 </para>
                 <code language="cs">
                     <![CDATA[
@@ -77,11 +92,15 @@ public class EnemyManager : MonoModule
 {
     protected override void Initialize ()
     {
+        base.Initialize();
+        
         // called when the module is initialized (e.g. when the bootstrapper starts)
     }
   
     protected override void Unload ()
     {
+        base.Unload();
+    
         // called when the module is unloaded (e.g. when the game ends)
     }
 }
@@ -91,11 +110,13 @@ public class EnemyManager : MonoModule
                     The bootstrapper will create the module service which in turn will discover, instantiate, and initialize all modules (using a composition container as described in the next section).
                 </para>
                 <para>
-                    <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.MonoModule</codeEntityReference> inherits from <legacyItalic>MonoBehaviour</legacyItalic> so your module can use all Unity features as usual.
+                    <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.MonoModule</codeEntityReference>
+                    inherits from <legacyItalic>MonoBehaviour</legacyItalic> so your module can use all Unity features as usual.
                     A <legacyItalic>GameObject</legacyItalic> is created for each module automatically.
                 </para>
                 <para>
-                    The advantage of using modules instead of regular <legacyItalic>MonoBehaviour</legacyItalic>s attached to <legacyItalic>GameObject</legacyItalic>s will be shown in the next section.
+                    The advantage of using modules instead of regular <legacyItalic>MonoBehaviour</legacyItalic>s attached to
+                    <legacyItalic>GameObject</legacyItalic>s will be shown in the next section.
                 </para>
             </content>
         </section>
@@ -104,7 +125,9 @@ public class EnemyManager : MonoModule
             <title>CompositionContainer</title>
             <content>
                 <para>
-                    A <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionContainer</codeEntityReference> provides Dependency Injection (DI) and Inversion-of-Control (IoC).
+                    A
+                    <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionContainer</codeEntityReference>
+                    provides Dependency Injection (DI) and Inversion-of-Control (IoC).
                     DI and IoC are powerful concepts: You just declare the dependency you need and it will be resolved for you.
                     This includes instance creation, singleton management, and cascading dependencies.
                 </para>
@@ -135,8 +158,12 @@ public class EnemyManager : MonoModule
                 </code>
                 <para>
                     The bootstrapper will create the composition container which then discovers all types it can use for importing.
-                    A type can be used for importing (as declared by <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Model.ImportAttribute</codeEntityReference>) if it is exported.
-                    To export a type, and therefore make it discoverable by the composition container, add an <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Model.ExportAttribute</codeEntityReference> to the type.
+                    A type can be used for importing (as declared by
+                    <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Model.ImportAttribute</codeEntityReference>
+                    ) if it is exported.
+                    To export a type, and therefore make it discoverable by the composition container, add an
+                    <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Model.ExportAttribute</codeEntityReference>
+                    to the type.
                 </para>
                 <para>
                     An object will have its imports resolved when the object is known by the composition container (means: its type is exported) and instances for that object/type are retrieved using the composition container (e.g. using importing).
@@ -167,6 +194,8 @@ public class EnemyManager : MonoModule
 
     protected override void Initialize ()
     {
+        base.Initialize();
+        
         GameRules rules = this.Container.GetExport<GameRules>();
         // do something with rules
     }
@@ -174,7 +203,9 @@ public class EnemyManager : MonoModule
           ]]>
                 </code>
                 <para>
-                    If you want to export a type which is not under your control, so you cannot apply <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Model.ExportAttribute</codeEntityReference> to it, you can also explicitly export a type:
+                    If you want to export a type which is not under your control, so you cannot apply
+                    <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Model.ExportAttribute</codeEntityReference>
+                    to it, you can also explicitly export a type:
                 </para>
                 <code language="cs">
                     <![CDATA[
@@ -191,6 +222,8 @@ public class EnemyManager : MonoModule
 
     protected override void Initialize ()
     {
+        base.Initialize();
+        
         this.Container.AddExport(typeof(SomeOtherType), typeof(SomeOtherType), false);
     }
 }
@@ -214,6 +247,8 @@ public class EnemyManager : MonoModule
 
     protected override void Initialize ()
     {
+        base.Initialize();
+        
         this.Container.AddExport(new SomeOtherType("Test", 123, SomeEnum.Default), typeof(SomeOtherType));
     }
 }
@@ -223,9 +258,13 @@ public class EnemyManager : MonoModule
                     As shown, exporting and importing is not restricted to modules.
                     In fact, any class type can be exported and/or have imports as long as they go through the composition container.
                     One special case is a type which inherits from <legacyItalic>MonoBehaviour</legacyItalic>.
-                    Instances of <legacyItalic>MonoBehaviour</legacyItalic> cannot be instantiated in a normal way, they need to be added as a component to a <legacyItalic>GameObject</legacyItalic>.
-                    Therefore, if you want to make a <legacyItalic>MonoBehaviour</legacyItalic> discoverable, you need to inherit from <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.ComposableMonoBehaviour</codeEntityReference> instead of <legacyItalic>MonoBehaviour</legacyItalic>.
-                    During instantiation, a new <legacyItalic>GameObject</legacyItalic> is automatically created to which the <legacyItalic>MonoBehaviour</legacyItalic> is then added.
+                    Instances of <legacyItalic>MonoBehaviour</legacyItalic> cannot be instantiated in a normal way, they need to be added as a component to a
+                    <legacyItalic>GameObject</legacyItalic>.
+                    Therefore, if you want to make a <legacyItalic>MonoBehaviour</legacyItalic> discoverable, you need to inherit from
+                    <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.ComposableMonoBehaviour</codeEntityReference>
+                    instead of <legacyItalic>MonoBehaviour</legacyItalic>.
+                    During instantiation, a new <legacyItalic>GameObject</legacyItalic> is automatically created to which the
+                    <legacyItalic>MonoBehaviour</legacyItalic> is then added.
                 </para>
                 <code language="cs">
                     <![CDATA[
@@ -246,6 +285,8 @@ public class EnemyManager : MonoModule
 {
     protected override void Initialize ()
     {
+        base.Initialize();
+        
         Raycaster raycaster = this.Container.GetExport<Raycaster>();
         // do something with raycaster
     }
@@ -289,6 +330,8 @@ public class EnemyManager : MonoModule
   
     protected override void Initialize ()
     {
+        base.Initialize();
+        
         // one way is to retrieve all instances as an array
         IEnemyAI[] aiArray = this.AIs.ToArray<IEnemyAI>();
         
@@ -311,7 +354,8 @@ public class EnemyManager : MonoModule
                     The used type (or types) is not known to the using type as even for instantiation the required interface is requested instead of an actual type.
                 </para>
                 <para>
-                    What was not answered yet: Why use modules instead of regular <legacyItalic>MonoBehaviour</legacyItalic>s attached to <legacyItalic>GameObjects</legacyItalic>s?
+                    What was not answered yet: Why use modules instead of regular
+                    <legacyItalic>MonoBehaviour</legacyItalic>s attached to <legacyItalic>GameObjects</legacyItalic>s?
                     The three reasons are: Modules are singletons, go through the composition container (making them exportable/importable), and are automatically instantiated by the module service during bootstrapping (compared to other exported types which are only instantiated when retrieved from the composition container; possibly never if an instance is never requested).
                 </para>
             </content>
@@ -321,7 +365,9 @@ public class EnemyManager : MonoModule
             <title>ServiceLocator</title>
             <content>
                 <para>
-                    The <codeEntityReference qualifyHint="false">T:RI.Framework.Services.ServiceLocator</codeEntityReference> lets you use the decoupling features from anywhere.
+                    The
+                    <codeEntityReference qualifyHint="false">T:RI.Framework.Services.ServiceLocator</codeEntityReference>
+                    lets you use the decoupling features from anywhere.
                     It provides global access to the composition container which is created by the bootstrapper.
                 </para>
                 <para>
@@ -368,6 +414,8 @@ public class EnemyManager : MonoModule
   
     protected override void Initialize ()
     {
+        base.Initialize();
+        
         this.EnemyAIs = ServiceLocator.GetInstances<IEnemyAI>();
     }
 }
@@ -375,7 +423,8 @@ public class EnemyManager : MonoModule
                 </code>
                 <para>
                     Be aware that using the service locator is considerably slower than property-based importing as shown in the previous section.
-                    Property-based importing performs resolving of the instances only once (which is not fully true, as explained in <link xlink:href="8ec8f13f-ef95-4aec-8fc1-9b54dff96e01"/>).
+                    Property-based importing performs resolving of the instances only once (which is not fully true, as explained in
+                    <link xlink:href="8ec8f13f-ef95-4aec-8fc1-9b54dff96e01" />).
                     The service locator however performs resolving each time it is used.
                 </para>
             </content>
@@ -385,11 +434,19 @@ public class EnemyManager : MonoModule
             <title>IDispatcherService (Messaging)</title>
             <content>
                 <para>
-                    An implementation of <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.IDispatcherService</codeEntityReference> is used to send and receive messages.
-                    Sending and receiving messages is very simple: Any object which has access to <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.IDispatcherService</codeEntityReference> (e.g. by using property-based importing or through the service locator) can send and receive messages.
+                    An implementation of
+                    <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.IDispatcherService</codeEntityReference>
+                    is used to send and receive messages.
+                    Sending and receiving messages is very simple: Any object which has access to
+                    <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.IDispatcherService</codeEntityReference>
+                    (e.g. by using property-based importing or through the service locator) can send and receive messages.
                 </para>
                 <para>
-                    The default implementation of <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.IDispatcherService</codeEntityReference> is <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.DispatcherService</codeEntityReference>.
+                    The default implementation of
+                    <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.IDispatcherService</codeEntityReference>
+                    is
+                    <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.DispatcherService</codeEntityReference>
+                    .
                 </para>
                 <para>
                     To receive a message of a specified type, a receiver needs to be registered:
@@ -417,6 +474,8 @@ public class GameRules : MonoModule
 
     protected override void Initialize ()
     {
+        base.Initialize();
+        
         this.Dispatcher.RegisterReceiver<KillEvent>(this.OnKill);
     }
 }
@@ -464,10 +523,12 @@ public class EnemyManager : MonoModule
                     Messages are delivered asynchronously.
                     It means that the messages are not immediately delivered to the respective receivers when sent.
                     Instead, the messages are put into a queue and delivered from there during certain points in time of a frame cycle.
-                    The only exception to this is when the priority <codeEntityReference qualifyHint="false">M:RI.Framework.Services.Dispatcher.DispatcherPriority.Now</codeEntityReference> is used, which will deliver the message immediately.
+                    The only exception to this is when the priority <legacyItalic>Now</legacyItalic> is used, which will deliver the message immediately.
                 </para>
                 <para>
-                    Each message has a <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.DispatcherPriority</codeEntityReference> which defines at which point in time during a frame cycle the message is delivered.
+                    Each message has a
+                    <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.DispatcherPriority</codeEntityReference>
+                    which defines at which point in time during a frame cycle the message is delivered.
                 </para>
             </content>
         </section>
@@ -476,7 +537,14 @@ public class EnemyManager : MonoModule
             <title>IDispatcherService (Jobs)</title>
             <content>
                 <para>
-                    Besides messaging, an implementation of <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.IDispatcherService</codeEntityReference> also lets you dispatch operations (or jobs).
+                    Besides messaging, an implementation of
+                    <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.IDispatcherService</codeEntityReference>
+                    also lets you dispatch operations (or jobs).
+                </para>
+                <para>
+                    Note that there is also
+                    <codeEntityReference qualifyHint="false">T:RI.Framework.Utilities.Threading.ThreadMover</codeEntityReference>
+                    which is a nice cross-thread execution tool when working with coroutines.
                 </para>
                 <para>
                     The following example shows how to dispatch a simple operation:
@@ -494,6 +562,8 @@ public class MyModule : MonoModule
 
     protected override void Initialize ()
     {
+        base.Initialize();
+        
         this.Dispatcher.Dispatch(() => Debug.Log("I'm being logged with default priority"));
     
         this.Dispatcher.Dispatch(DispatcherPriority.Idle, () => Debug.Log("I'm being logged when the dispatcher is idle"));
@@ -517,6 +587,8 @@ public class MyModule : MonoModule
 
     protected override void Initialize ()
     {
+        base.Initialize();
+        
         this.Dispatcher.Dispatch(x => Debug.Log(x), "I'm x !");
 
         this.Dispatcher.Dispatch(DispatcherPriority.Background, filename => 
@@ -530,16 +602,17 @@ public class MyModule : MonoModule
                 <para>
                     Operations can be dispatched from any thread but are executed in Unitys main/foreground thread.
                     This makes it a good tool for asynchronous cross-thread execution or, for example, to continue a procedure from a background thread in the main/foreground thread.
-                    Note that there is also <codeEntityReference qualifyHint="false">T:RI.Framework.Utilities.Threading.ThreadMover</codeEntityReference> which is a nice cross-thread execution tool when working with coroutines.
                 </para>
                 <para>
                     Operations are executed asynchronously.
                     It means that the operations are not immediately executed when dispatched.
                     Instead, the operations are put into a queue and executed from there during certain points in time of a frame cycle.
-                    The only exception to this is when the priority <codeEntityReference qualifyHint="false">M:RI.Framework.Services.Dispatcher.DispatcherPriority.Now</codeEntityReference> is used, which will execute the operation immediately.
+                    The only exception to this is when the priority <legacyItalic>Now</legacyItalic> is used, which will execute the operation immediately.
                 </para>
                 <para>
-                    Each operation has a <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.DispatcherPriority</codeEntityReference> which defines at which point in time during a frame cycle the operation is executed.
+                    Each operation has a
+                    <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.DispatcherPriority</codeEntityReference>
+                    which defines at which point in time during a frame cycle the operation is executed.
                 </para>
                 <para>
                     A particular use case for dispatched operations are situations where run-to-completion behaviour is required.
