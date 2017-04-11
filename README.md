@@ -6,7 +6,6 @@
   - [ ] Highlights
   - [ ] Utility examples
   - [ ] Review Reference
-  - [ ] Sample scene
 - [ ] Cleanup
   - [ ] Move Utilities\Wpf in RotenInformatik to RotenInformatik namespace
   - [ ] Treeify some namespaces
