@@ -541,12 +541,12 @@ public class MyModModule : MonoModule
             <title>IModuleService</title>
             <content/>
             <sections>
-                <section address="IModuleService_UsageOfInterface">
-                    <title>Usage of interface</title>
+                <section address="IModuleService_Interface">
+                    <title>Interface</title>
                     <content>
                         <para>
                              The module service is always represented by the interface <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.IModuleService</codeEntityReference> and not its default implementation, <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.ModuleService</codeEntityReference>.
-                             <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.ModuleService</codeEntityReference> does not even have an xxx so only the interface can be used.
+                             <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.ModuleService</codeEntityReference> does not have an <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Model.ExportAttribute</codeEntityReference> so only <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.IModuleService</codeEntityReference> can be used with <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionContainer</codeEntityReference> or <codeEntityReference qualifyHint="false">T:RI.Framework.Services.ServiceLocator</codeEntityReference> (unless explicitly added).
                              This decouples the module service itself and allows you to substitute it with your own implementation.
                         </para>
                     </content>
@@ -564,27 +564,26 @@ using RI.Framework.Services.Modularization;
 
 
 IModuleService moduleService = new ModuleService();
-          ]]>
+                            ]]>
                         </code>
                         <para>
-                            It is also possible to create multiple module services.
-                            Each module service will be completely independent of each other and they will only share the same modules if they are contained in the same xxx or have the same modules added.
+                            It is also possible to create multiple independent instances of <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.ModuleService</codeEntityReference>.
                         </para>
                     </content>
                 </section>
-                <section>
-                    <title>With/Without composition container</title>
+                <section address="IModuleService_DependencyOnCompositionContainer">
+                    <title>Dependency on CompositionContainer</title>
                     <content>
                         <para>
-                            The default module service implementation xxx has an import property to import all instances of the xxx.
-                            It also implements xxx, making it aware when it is contained in a xxx and its imported modules are updated/recomposed.
-                            Therefore, it is not necessary to add the modules explicitly as they are automatically discovered by the xx and imported by xxx.
-                            However, if xxx is not contained in a xxx, the modules must be added manually using xxx.
-                            It is also possible to use both importing and adding modules explicitly.
+                            The default module service implementation <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.ModuleService</codeEntityReference> has an import property to import all implementations of <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.IModule</codeEntityReference>.
+                            It also implements <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Model.IImporting</codeEntityReference>, making it aware when the imported <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.IModule</codeEntityReference>s were updated/recomposed.
+                            Therefore, it is not necessary to add the modules explicitly as they are automatically discovered by the <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionManager</codeEntityReference> and imported by <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.ModuleService</codeEntityReference>.
+                            However, if <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.ModuleService</codeEntityReference> is not contained in a <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionContainer</codeEntityReference>, the modules must be manually added and removed using <codeEntityReference qualifyHint="false">M:RI.Framework.Services.Modularization.ModuleService.AddModule</codeEntityReference> and <codeEntityReference qualifyHint="false">M:RI.Framework.Services.Modularization.ModuleService.RemoveModule</codeEntityReference>.
+                            It is possible to use both importing and explicit add/remove but you cannot explicitly remove a module which is imported.
                         </para>
                     </content>
                 </section>
-                <section>
+                <section address="IModuleService_ModuleImplementation">
                     <title>Module implementation</title>
                     <content>
                         <para>
