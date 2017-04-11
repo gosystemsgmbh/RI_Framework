@@ -539,29 +539,89 @@ public class MyModModule : MonoModule
 
         <section address="IModuleService">
             <title>IModuleService</title>
-            <content>
-                <para>
-                    Only interface
-                    Independent
-                    No CompositionContainer
-                    IModule and Module
-                    Transitive Initialization/Unloading
-                </para>
-            </content>
+            <content/>
             <sections>
-                <section>
-                    <title>xxx</title>
+                <section address="IModuleService_UsageOfInterface">
+                    <title>Usage of interface</title>
                     <content>
                         <para>
-                            xxx
+                             The module service is always represented by the interface <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.IModuleService</codeEntityReference> and not its default implementation, <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.ModuleService</codeEntityReference>.
+                             <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.ModuleService</codeEntityReference> does not even have an xxx so only the interface can be used.
+                             This decouples the module service itself and allows you to substitute it with your own implementation.
+                        </para>
+                    </content>
+                </section>
+                <section address="IModuleService_StandaloneUse">
+                    <title>Standalone use</title>
+                    <content>
+                        <para>
+                            You can use the default module service implementation <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.ModuleService</codeEntityReference> as a standalone service.
+                            Just create an instance:
+                        </para>
+                        <code language="cs">
+                            <![CDATA[
+using RI.Framework.Services.Modularization;
+
+
+IModuleService moduleService = new ModuleService();
+          ]]>
+                        </code>
+                        <para>
+                            It is also possible to create multiple module services.
+                            Each module service will be completely independent of each other and they will only share the same modules if they are contained in the same xxx or have the same modules added.
                         </para>
                     </content>
                 </section>
                 <section>
-                    <title>xxx</title>
+                    <title>With/Without composition container</title>
                     <content>
                         <para>
-                            xxx
+                            The default module service implementation xxx has an import property to import all instances of the xxx.
+                            It also implements xxx, making it aware when it is contained in a xxx and its imported modules are updated/recomposed.
+                            Therefore, it is not necessary to add the modules explicitly as they are automatically discovered by the xx and imported by xxx.
+                            However, if xxx is not contained in a xxx, the modules must be added manually using xxx.
+                            It is also possible to use both importing and adding modules explicitly.
+                        </para>
+                    </content>
+                </section>
+                <section>
+                    <title>Module implementation</title>
+                    <content>
+                        <para>
+                            There are two base implementations for modules which implement xxx: xxx and xxx.
+                            You can use one of these base classes to implement your modules or implement xxx directly.
+                        </para>
+                        <para>
+                            xxx is used for modules which also need to be a <legacyItalic>MonoBehaviour</legacyItalic>.
+                            When such modules are instantiated, a <legacyItalic>GameObject</legacyItalic> is automatically created to which the module instance is attached (one <legacyItalic>GameObject</legacyItalic> per module).
+                        </para>
+                        <para>
+                            xxx is used for modules which do not require to be a <legacyItalic>MonoBehaviour</legacyItalic>.
+                        </para>
+                    </content>
+                </section>
+                <section>
+                    <title>Transitive initialization and unloading</title>
+                    <content>
+                        <para>
+                            The initialization and unlaoding of modules should be managed by the module service.
+                            Do not call xxx or xxx on a module directly.
+                            The reason for this is transitive initialization and unloading.
+                        </para>
+                        <para>
+                            The module service knows whether a module is initialized or not (not initialized = unloaded) through its xxx property.
+                            At a certain point during startup, the modules are going to be initialized (e.g. by the bootstrapper).
+                            This will initialize all modules which are then known to the module service at this point in time.
+                            If a module is added later, the added module is also initialized.
+                        </para>
+                        <para>
+                            The same applies for unloading in a somewhat reversed fashion:
+                            At a certain point during shutdown, the modules are going to be unloaded (e.g. by the bootstrapper) so they can free all their resources.
+                            This will unload all modules which are then known to the module service at this point in time.
+                            If a module was removed earlier, the removed module was already unloaded during removal.
+                        </para>
+                        <para>
+                            This mechanism ensures that modules are always properly initialized and unloaded.
                         </para>
                     </content>
                 </section>
