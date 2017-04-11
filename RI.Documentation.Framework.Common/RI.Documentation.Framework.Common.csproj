@@ -30,15 +30,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="Documents\Advertising.txt" />
-    <Content Include="Documents\AOT compatibility.txt" />
-    <Content Include="Documents\Nomenclature.txt" />
-    <Content Include="Documents\Wishlist.txt" />
+    <Content Include="Wishlist.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PostBuild.bat" />
     <None Include="PreBuild.bat" />
-    <None Include="Documents\IEnumerable extensions.xlsx" />
+    <None Include="IEnumerableExtensions.xlsx" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

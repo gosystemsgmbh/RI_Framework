@@ -162,18 +162,18 @@ namespace RI.Framework.Mathematic
 				this.Max = double.NaN;
 
 				this.Rms = 0.0;
-				this.Average = 0.0;
+				this.ArithmeticMean = 0.0;
 				this.Sigma = 0.0;
 			}
 			else
 			{
 				this.Rms = Math.Sqrt(this.SquareSum / this.Duration);
-				this.Average = this.Sum / this.Duration;
+				this.ArithmeticMean = this.Sum / this.Duration;
 
 				double sigmaTemp = 0.0;
 				foreach (double value in this.WeightedValues)
 				{
-					sigmaTemp += Math.Pow(value - this.Average, 2.0);
+					sigmaTemp += Math.Pow(value - this.ArithmeticMean, 2.0);
 				}
 				this.Sigma = Math.Sqrt(sigmaTemp / this.Duration);
 			}
@@ -228,9 +228,9 @@ namespace RI.Framework.Mathematic
 		public double Rms;
 
 		/// <summary>
-		/// The average of all values.
+		/// The arithmetic mean or average of all values.
 		/// </summary>
-		public double Average;
+		public double ArithmeticMean;
 
 		/// <summary>
 		/// The standard deviation of all values.
@@ -292,7 +292,7 @@ namespace RI.Framework.Mathematic
 			clone.Min = this.Min;
 			clone.Max = this.Max;
 			clone.Rms = this.Rms;
-			clone.Average = this.Average;
+			clone.ArithmeticMean = this.ArithmeticMean;
 			clone.Sigma = this.Sigma;
 			clone.Median = this.Median;
 			clone.Values = (double[])this.Values?.Clone();

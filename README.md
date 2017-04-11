@@ -3,15 +3,11 @@
 ## 1.0.0.0
 
 - [ ] Documentation
-  - [ ] Overview & Tutorials
+  - [ ] Highlights
   - [ ] Utility examples
   - [ ] Review Reference
-  - [ ] Cleanup SHFB warnings/errors
   - [ ] Sample scene
 - [ ] Cleanup
-  - [ ] FileCatalog
-  - [ ] AppDomainCatalog
-  - [ ] Cleanup common documentation files
   - [ ] Move Utilities\Wpf in RotenInformatik to RotenInformatik namespace
   - [ ] Treeify some namespaces
   - [ ] ReSharper cleanup (after update to 2017.1 !)

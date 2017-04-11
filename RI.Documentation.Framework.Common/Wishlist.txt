@@ -208,6 +208,8 @@ Composition
  - (Common) CreateAndExport
 
  - (Common) AggregateCatalog
+ - (Common) FileCatalog
+ - (Common) AppDomainCatalog
 
  - (Common) Add container to container
 
@@ -218,6 +220,9 @@ Composition
 
 Services
 --------
+
+ - (Unity) IDispatcherOperation: OnXXX callbacks
+ - (Unity) IDispatcherOperation: Stacking of all OnXXX callbacks
 
  * (.NET) Bootstrapper and Application abstraction
 
@@ -279,12 +284,18 @@ Mathematic
 ----------
 
  - (Common) NumberExtensions: FractionAsInteger
- - (Common) NumberExtensions: ExtractDigits
+ - (Common) NumberExtensions: FirstDigits
+ - (Common) NumberExtensions: LastDigits
  - (Common) NumberExtensions: ggT
  - (Common) NumberExtensions: kgV
 
  - (Common) MathUtils: CirclePosition
  - (Common) MathUtils: EllipsePosition
+
+ - (Common) StatisticValues: Variance
+ - (Common) StatisticValues: GeometricMean
+
+ - (Common) RunningValues: GeometricMean
 
  - (Common) Aggregate extensions for numerical types (byte, short, int, long, double, float), including statistics (min, max, sum, average, median, RMS, count)
 

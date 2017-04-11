@@ -83,9 +83,9 @@ namespace RI.Framework.Mathematic
 		public float Sum;
 
 		/// <summary>
-		/// The average of all values in the history.
+		/// The arithmetic mean or average of all values.
 		/// </summary>
-		public float Average;
+		public double ArithmeticMean;
 
 		/// <summary>
 		/// The sum of all timesteps in the history.
@@ -207,7 +207,7 @@ namespace RI.Framework.Mathematic
 			this.Last = 0.0f;
 			this.Difference = 0.0f;
 			this.Sum = 0.0f;
-			this.Average = 0.0f;
+			this.ArithmeticMean = 0.0f;
 			this.Duration = 0.0f;
 		}
 
@@ -242,7 +242,7 @@ namespace RI.Framework.Mathematic
 			this.Last = weightedValue;
 			this.Difference = weightedValue - last;
 			this.Sum = sum;
-			this.Average = sum / duration;
+			this.ArithmeticMean = sum / duration;
 			this.Duration = duration;
 		}
 

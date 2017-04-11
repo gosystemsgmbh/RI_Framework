@@ -44,10 +44,6 @@
                 </para>
                 <code language="cs">
                     <![CDATA[
-using UnityEngine;
-using RI.Framework.Services;
-
-
 GameObject go = new GameObject();
 go.AddComponent<Bootstrapper>();
           ]]>
@@ -85,6 +81,7 @@ go.AddComponent<Bootstrapper>();
                 </para>
                 <code language="cs">
                     <![CDATA[
+using RI.Framework.Services;
 using RI.Framework.Services.Modularization;
 
 
@@ -136,7 +133,9 @@ public class EnemyManager : MonoModule
                 </para>
                 <code language="cs">
                     <![CDATA[
+using RI.Framework.Composition;
 using RI.Framework.Composition.Model;
+using RI.Framework.Services;
 using RI.Framework.Services.Modularization;
 
 
@@ -177,6 +176,7 @@ public class EnemyManager : MonoModule
                     <![CDATA[
 using RI.Framework.Composition;
 using RI.Framework.Composition.Model;
+using RI.Framework.Services;
 using RI.Framework.Services.Modularization;
 
 
@@ -211,6 +211,7 @@ public class EnemyManager : MonoModule
                     <![CDATA[
 using RI.Framework.Composition;
 using RI.Framework.Composition.Model;
+using RI.Framework.Services;
 using RI.Framework.Services.Modularization;
 
 
@@ -236,6 +237,7 @@ public class EnemyManager : MonoModule
                     <![CDATA[
 using RI.Framework.Composition;
 using RI.Framework.Composition.Model;
+using RI.Framework.Services;
 using RI.Framework.Services.Modularization;
 
 
@@ -270,6 +272,7 @@ public class EnemyManager : MonoModule
                     <![CDATA[
 using RI.Framework.Composition;
 using RI.Framework.Composition.Model;
+using RI.Framework.Services;
 using RI.Framework.Services.Modularization;
 
 
@@ -301,6 +304,7 @@ public class EnemyManager : MonoModule
                     <![CDATA[
 using RI.Framework.Composition;
 using RI.Framework.Composition.Model;
+using RI.Framework.Services;
 using RI.Framework.Services.Modularization;
 
 
@@ -375,9 +379,6 @@ public class EnemyManager : MonoModule
                 </para>
                 <code language="cs">
                     <![CDATA[
-using RI.Framework.Services;
-
-
 ServiceLocator.GetInstance<GameManager>().Win();
           ]]>
                 </code>
@@ -386,6 +387,7 @@ ServiceLocator.GetInstance<GameManager>().Win();
                 </para>
                 <code language="cs">
                     <![CDATA[
+using RI.Framework.Composition;
 using RI.Framework.Composition.Model;
 using RI.Framework.Services;
 using RI.Framework.Services.Modularization;
@@ -453,6 +455,7 @@ public class EnemyManager : MonoModule
                 </para>
                 <code language="cs">
                     <![CDATA[
+using RI.Framework.Services;
 using RI.Framework.Services.Dispatcher;
 using RI.Framework.Services.Modularization;
 
@@ -486,6 +489,7 @@ public class GameRules : MonoModule
                 </para>
                 <code language="cs">
                     <![CDATA[
+using RI.Framework.Services;
 using RI.Framework.Services.Dispatcher;
 using RI.Framework.Services.Modularization;
 
@@ -551,6 +555,7 @@ public class EnemyManager : MonoModule
                 </para>
                 <code language="cs">
                     <![CDATA[
+using RI.Framework.Services;
 using RI.Framework.Services.Dispatcher;
 using RI.Framework.Services.Modularization;
 
@@ -576,6 +581,7 @@ public class MyModule : MonoModule
                 </para>
                 <code language="cs">
                     <![CDATA[
+using RI.Framework.Services;
 using RI.Framework.Services.Dispatcher;
 using RI.Framework.Services.Modularization;
 
