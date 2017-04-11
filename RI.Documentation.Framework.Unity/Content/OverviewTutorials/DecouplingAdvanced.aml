@@ -671,7 +671,33 @@ IDispatcherService dispatcher = new DispatcherService();
                     <title>IDispatcherOperation</title>
                     <content>
                         <para>
-                            xxx
+                            When a message is broadcasted or an operation is dispatched, the dispatcher service returns an <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.IDispatcherOperation</codeEntityReference>.
+                            This object provides some advanced control over the broadcast of messages or execution of operations respectively.
+                            Each broadcast and each dispatch will return its own unique <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.IDispatcherOperation</codeEntityReference>.
+                        </para>
+                        <para>
+                            You can cancel a broadcast or execution:
+                        </para>
+                        <para>
+                            You can reschedule a broadcast or execution so that it is delayed for a specified amount of time or until a specified point in time:
+                        </para>
+                        <para>
+                            You can set a timeout (helpful for lower priorities which do not guarantee execution):
+                        </para>
+                        <para>
+                            You can set a callback:
+                        </para>
+                        <para>
+                            You can chain all these methods fluently:
+                        </para>
+                        <para>
+                            You can check the current execution status:
+                        </para>
+                        <para>
+                            You can get the return value of a dispatched method:
+                        </para>
+                        <para>
+                            Note that for broadcasts and dispatchs of priority <legacyItalic>Now</legacyItalic>, the returned <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.IDispatcherOperation</codeEntityReference> is only useful for getting the results of dispatched methods because the the operation will already be completed when the <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.IDispatcherOperation</codeEntityReference> is returned.
                         </para>
                     </content>
                 </section>
