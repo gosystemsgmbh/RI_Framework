@@ -587,40 +587,39 @@ IModuleService moduleService = new ModuleService();
                     <title>Module implementation</title>
                     <content>
                         <para>
-                            There are two base implementations for modules which implement xxx: xxx and xxx.
-                            You can use one of these base classes to implement your modules or implement xxx directly.
+                            There are two base implementations for modules which implement <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.IModule</codeEntityReference>: <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.MonoModule</codeEntityReference> and <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.Module</codeEntityReference>.
+                            You can use one of these base classes to implement your modules or implement <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.IModule</codeEntityReference> directly.
                         </para>
                         <para>
-                            xxx is used for modules which also need to be a <legacyItalic>MonoBehaviour</legacyItalic>.
+                            <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.MonoModule</codeEntityReference> is used for modules which also need to be a <legacyItalic>MonoBehaviour</legacyItalic>.
                             When such modules are instantiated, a <legacyItalic>GameObject</legacyItalic> is automatically created to which the module instance is attached (one <legacyItalic>GameObject</legacyItalic> per module).
                         </para>
                         <para>
-                            xxx is used for modules which do not require to be a <legacyItalic>MonoBehaviour</legacyItalic>.
+                            <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.Module</codeEntityReference> is used for modules which do not require to be a <legacyItalic>MonoBehaviour</legacyItalic>.
                         </para>
                     </content>
                 </section>
                 <section>
-                    <title>Transitive initialization and unloading</title>
+                    <title>Initialization and unloading</title>
                     <content>
                         <para>
                             The initialization and unlaoding of modules should be managed by the module service.
-                            Do not call xxx or xxx on a module directly.
-                            The reason for this is transitive initialization and unloading.
+                            Do not call <codeEntityReference qualifyHint="false">M:RI.Framework.Services.Modularization.IModule.Initialize</codeEntityReference> or <codeEntityReference qualifyHint="false">M:RI.Framework.Services.Modularization.IModule.Unload</codeEntityReference> on a module directly.
                         </para>
                         <para>
-                            The module service knows whether a module is initialized or not (not initialized = unloaded) through its xxx property.
-                            At a certain point during startup, the modules are going to be initialized (e.g. by the bootstrapper).
-                            This will initialize all modules which are then known to the module service at this point in time.
-                            If a module is added later, the added module is also initialized.
+                            The module service knows whether a module is initialized or not through its <codeEntityReference qualifyHint="false">P:RI.Framework.Services.Modularization.IModule.IsInitialized</codeEntityReference> property.
+                            At a certain point during startup, the modules are going to be initialized (e.g. when the bootstrapper calls <codeEntityReference qualifyHint="false">M:RI.Framework.Services.Modularization.IModuleService.Initialize</codeEntityReference>).
+                            This will initialize all modules which are known to the module service at this point in time.
+                            If a module is added later, the added module is also initialized immediately after it was added.
                         </para>
                         <para>
                             The same applies for unloading in a somewhat reversed fashion:
-                            At a certain point during shutdown, the modules are going to be unloaded (e.g. by the bootstrapper) so they can free all their resources.
-                            This will unload all modules which are then known to the module service at this point in time.
+                            At a certain point during shutdown, the modules are going to be unloaded (e.g. when the bootstrapper calls <codeEntityReference qualifyHint="false">M:RI.Framework.Services.Modularization.IModuleService.Unload</codeEntityReference>).
+                            This will unload all modules which are known to the module service at this point in time.
                             If a module was removed earlier, the removed module was already unloaded during removal.
                         </para>
                         <para>
-                            This mechanism ensures that modules are always properly initialized and unloaded.
+                            This mechanism ensures that modules are always properly initialized and unloaded, regardless when they were added/removed.
                         </para>
                     </content>
                 </section>
