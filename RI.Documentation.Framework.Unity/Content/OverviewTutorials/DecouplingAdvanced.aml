@@ -599,7 +599,7 @@ IModuleService moduleService = new ModuleService();
                         </para>
                     </content>
                 </section>
-                <section>
+                <section address="IModuleService_InitializationAndUnloading">
                     <title>Initialization and unloading</title>
                     <content>
                         <para>
@@ -632,21 +632,43 @@ IModuleService moduleService = new ModuleService();
                 <para>
                     Only interface
                     Independent
-                    No CompositionContainer
                     IDispatcherOperation
                 </para>
             </content>
             <sections>
-                <section>
-                    <title>xxx</title>
+            <sections>
+                <section address="IDispatcherService_Interface">
+                    <title>Interface</title>
                     <content>
                         <para>
-                            xxx
+                             The dispatcher service is always represented by the interface <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.IDispatcherService</codeEntityReference> and not its default implementation, <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.DispatcherService</codeEntityReference>.
+                             <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.DispatcherService</codeEntityReference> does not have an <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Model.ExportAttribute</codeEntityReference> so only <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.IDispatcherService</codeEntityReference> can be used with <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionContainer</codeEntityReference> or <codeEntityReference qualifyHint="false">T:RI.Framework.Services.ServiceLocator</codeEntityReference> (unless explicitly added).
+                             This decouples the dispatcher service itself and allows you to substitute it with your own implementation.
                         </para>
                     </content>
                 </section>
-                <section>
-                    <title>xxx</title>
+                <section address="IDispatcherService_StandaloneUse">
+                    <title>Standalone use</title>
+                    <content>
+                        <para>
+                            You can use the default dispatcher service implementation <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.DispatcherService</codeEntityReference> as a standalone service.
+                            Just create an instance:
+                        </para>
+                        <code language="cs">
+                            <![CDATA[
+using RI.Framework.Services.Modularization;
+
+
+IDispatcherService dispatcher = new DispatcherService();
+                            ]]>
+                        </code>
+                        <para>
+                            It is also possible to create multiple independent instances of <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.DispatcherService</codeEntityReference>.
+                        </para>
+                    </content>
+                </section>
+                <section address="IDispatcherService_DispatcherOperation">
+                    <title>IDispatcherOperation</title>
                     <content>
                         <para>
                             xxx
