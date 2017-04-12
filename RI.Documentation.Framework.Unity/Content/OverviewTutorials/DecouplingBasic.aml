@@ -168,12 +168,12 @@ public class EnemyManager : MonoModule
                     to the type.
                 </para>
                 <para>
-                    An object will have its imports resolved when the object is known by the composition container (means: its type is exported) and instances for that object/type are retrieved using the composition container (e.g. using importing).
+                    An object will have its imports resolved and assigned when it is known by the composition container (means: the object is exported) and instances for that object (or its type respectively) are retrieved using the composition container (e.g. using importing).
                     This means that each object which is imported has its own imports resolved, and the imports of those imports, and so on.
-                    Alternative perspective: Each exported type gets its imports resolved if instances of those exported types are retrieved using the composition container.
+                    Alternative perspective: Each exported object gets its imports resolved if instances of those exported objects are retrieved using the composition container.
                 </para>
                 <para>
-                    Besides importing, an instance of a type can also be explicitly retrieved from a composition container (note that the composition container contains itself):
+                    Besides importing, an instance of a type can also be explicitly retrieved from a composition container (note that the composition container can contain itself):
                 </para>
                 <code language="cs">
                     <![CDATA[
@@ -200,7 +200,6 @@ public class EnemyManager : MonoModule
         base.Initialize();
         
         GameRules rules = this.Container.GetExport<GameRules>();
-        // do something with rules
     }
 }
           ]]>
@@ -234,7 +233,7 @@ public class EnemyManager : MonoModule
           ]]>
                 </code>
                 <para>
-                    And if you want to export an already created instance instead of a type (for example when constructing the object is complex), you can also explicitly export an object:
+                    And if you want to export an already created instance instead of a type (e.g. when constructing the object is complex), you can also explicitly export an instance of a type:
                 </para>
                 <code language="cs">
                     <![CDATA[
@@ -260,8 +259,10 @@ public class EnemyManager : MonoModule
           ]]>
                 </code>
                 <para>
-                    As shown, exporting and importing is not restricted to modules.
-                    In fact, any class type can be exported and/or have imports as long as they go through the composition container.
+                    Exporting and importing is not restricted to modules.
+                    Any class type can be exported and/or have imports as long as they go through the composition container.
+                <para>
+                </para>
                     One special case is a type which inherits from <legacyItalic>MonoBehaviour</legacyItalic>.
                     Instances of <legacyItalic>MonoBehaviour</legacyItalic> cannot be instantiated in a normal way, they need to be added as a component to a
                     <legacyItalic>GameObject</legacyItalic>.
@@ -271,6 +272,11 @@ public class EnemyManager : MonoModule
                     During instantiation, a new <legacyItalic>GameObject</legacyItalic> is automatically created to which the
                     <legacyItalic>MonoBehaviour</legacyItalic> is then added.
                 </para>
+                <para>
+                    Another special case is that only modules are automatically instantiated and initialized during startup (by the bootstrapper).
+                    Any other type contained in a composition container is only instantiated when an actual instance is required (importing or explicit retrieval).
+                    Therefore, if a type in a composition container is never imported nor requested, no instances of that type will be created.
+                <para>
                 <code language="cs">
                     <![CDATA[
 using RI.Framework.Composition;
@@ -282,7 +288,6 @@ using RI.Framework.Services.Modularization;
 [Export]
 public class Raycaster : ComposableMonoBehaviour
 {
-    // this class is only instantiated when an instance of it is requested through the composition container (import or explicit)
 }
 
 
@@ -294,7 +299,6 @@ public class EnemyManager : MonoModule
         base.Initialize();
         
         Raycaster raycaster = this.Container.GetExport<Raycaster>();
-        // do something with raycaster
     }
 }
           ]]>
@@ -330,8 +334,9 @@ public class DumbEnemyAI : IEnemyAI
 [Export]
 public class EnemyManager : MonoModule
 {
-    // importing multiple instances is only possible with the Import proxy because we would otherwise have a dependency on System.Reflection.Emit
+    // importing multiple instances is only possible with the Import proxy type because we would otherwise have a dependency on System.Reflection.Emit
     // this is also why we need to explicitly specify the desired type
+
     [Import(typeof(IEnemyAI))]
     public Import AIs { get; set; }
   
@@ -357,13 +362,14 @@ public class EnemyManager : MonoModule
           ]]>
                 </code>
                 <para>
-                    This allows you to maximize decoupling: You just use an interface, resulting in zero dependency to the actually used type.
-                    The used type (or types) is not known to the using type as even for instantiation the required interface is requested instead of an actual type.
+                    All this allows you to maximize decoupling: You just use an interface, resulting in zero dependency to the actually used type.
+                    The used type (or types) is not known to the using type.
+                    Even for instantiation, the required interface is requested instead of an actual type.
                 </para>
                 <para>
-                    What was not answered yet: Why use modules instead of regular
-                    <legacyItalic>MonoBehaviour</legacyItalic>s attached to <legacyItalic>GameObjects</legacyItalic>s?
-                    The three reasons are: Modules are singletons, go through the composition container (making them exportable/importable), and are automatically instantiated by the module service during bootstrapping (compared to other exported types which are only instantiated when retrieved from the composition container; possibly never if an instance is never requested).
+                    One thing was not yet explicitly addressed: Why use modules instead of regular
+                    <legacyItalic>MonoBehaviour</legacyItalic>s attached to <legacyItalic>GameObject</legacyItalic>s?
+                    The three reasons are: Modules are singletons, go through the composition container (making them exportable/importable), and are automatically instantiated and initialized by the module service during bootstrapping (compared to other exported types which are only instantiated when retrieved from the composition container).
                 </para>
             </content>
         </section>
