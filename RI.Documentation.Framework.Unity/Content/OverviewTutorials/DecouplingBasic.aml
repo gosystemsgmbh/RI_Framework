@@ -488,6 +488,7 @@ public class GameRules : MonoModule
     {
         base.Initialize();
         
+        // register OnKill to receive all messages of type KillEvent
         this.Dispatcher.RegisterReceiver<KillEvent>(this.OnKill);
     }
 }
@@ -517,6 +518,7 @@ public class EnemyManager : MonoModule
     {
         if(enemyIsKilled)
         {
+            // broadcast a message of type KillEvent to all registered KillEvent receivers
             this.Dispatcher.Broadcast(new KillEvent());
         }
     }
@@ -525,12 +527,12 @@ public class EnemyManager : MonoModule
                 </code>
                 <para>
                     The messaging system is type-based.
-                    It means that a message of a certain type is received by each receiver which registered for the messages type.
-                    Any class type objects can be sent/received.
+                    It means that a message of a certain type is received by each receiver which registered for that message type.
+                    Any class type can be used as a message.
                 </para>
                 <para>
                     Messages can be sent from any thread but are delivered to the receivers in Unitys main/foreground thread.
-                    This makes it a good tool for asynchronous cross-thread interaction or, for example, to deliver results from a background thread to the main/foreground thread.
+                    This makes it a good tool for asynchronous cross-thread interaction or, for example, to deliver events and results from a background thread to the main/foreground thread.
                 </para>
                 <para>
                     Messages are delivered asynchronously.
