@@ -13,9 +13,6 @@ namespace RI.Framework.Collections.ObjectModel
 	/// </summary>
 	/// <typeparam name="TValue"> The type of the value which is assigned to a tree node. </typeparam>
 	/// <example>
-	///     <para>
-	///         The following example shows how a <see cref="TreeNode{T}" /> can be used:
-	///     </para>
 	///     <code language="cs">
 	/// <![CDATA[
 	/// // create root node

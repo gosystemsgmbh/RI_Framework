@@ -26,6 +26,33 @@ namespace RI.Framework.IO.Paths
 	///         It can be implicitly converted to a <see cref="string" /> to work seamless with APIs using <see cref="string" /> for paths.
 	///     </para>
 	/// </remarks>
+	/// <example>
+	///     <code language="cs">
+	/// <![CDATA[
+	/// // get a temporary file
+	/// var tempFile = FilePath.GetTempFile();
+	/// 
+	/// // write some text
+	/// tempFile.WriteText("some text");
+	/// 
+	/// // read some text
+	/// string text = tempFile.ReadText();
+	/// 
+	/// // delete temporary file
+	/// tempFile.Delete();
+	/// 
+	/// // create some paths
+	/// var gamePath = new FilePath(@"C:\Program Files (x86)\Steam\steamapps\common\MyGame\MyGame.exe");
+	/// var modPath  = new FilePath(@"C:\Program Files (x86)\Steam\steamapps\common\MyGame\data\mods\mods.ini");
+	/// 
+	/// // get directories
+	/// var gameDir  = gamePath.Directory;                       // C:\Program Files (x86)\Steam\steamapps\common\MyGame
+	/// var modDir   = modPath.Directory;                        // C:\Program Files (x86)\Steam\steamapps\common\MyGame\data\mods
+	/// var otherDir = gameDir.AppendDirectory("other", "dir");  // C:\Program Files (x86)\Steam\steamapps\common\MyGame\other\dir
+	/// var modRel   = modDir.MakeRelativeTo(otherDir);          // ..\..\other\dir
+	/// ]]>
+	/// </code>
+	/// </example>
 	[Serializable]
 	public sealed class FilePath : PathString,
 	                               ICloneable<FilePath>,

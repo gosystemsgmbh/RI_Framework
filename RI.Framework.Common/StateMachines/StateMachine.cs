@@ -62,6 +62,115 @@ namespace RI.Framework.StateMachines
 	/// This guarantees, for example, that all state code executed in <see cref="IState.Signal"/>, <see cref="IState.Enter"/> or <see cref="IState.Leave"/> is executed under the same current state, even if the state issues a signal or a transient.
 	/// </para>
 	/// </remarks>
+	/// <example>
+	///     <code language="cs">
+	/// <![CDATA[
+	/// // create a state machine with default configuration (which uses the dispatcher service for dispatching transitions and signals)
+	/// var stateMachine = new StateMachine(new DefaultStateMachineConfiguration());
+	/// 
+	/// // dispatch some transitions and signals
+	/// 
+	/// // transition from state null to StateA
+	/// stateMachine.Transient<StateA>();
+	/// 
+	/// // send a signal to StateA
+	/// stateMachine.Signal("some signal, event, data, etc. to be handled by the current state");
+	/// 
+	/// // INVALID TRANSITION!
+	/// // this transition is invalid (can be dispatched but will not be executed)
+	/// // reason: as the transition from null to StateA was not yet executed when the transition to StateB was issued,
+	/// // this transition was dispatched as a transition from null to StateB. However, when this transition is executed,
+	/// // it would be a transition from StateA to StateB and NOT from null to StateB as it was assumed at the time this transition was dispatched.
+	/// stateMachine.Transient<StateB>();
+	/// 
+	/// // send a signal to StateA
+	/// // (we are still in state a as the transition to StateB was invalid)
+	/// stateMachine.Signal("some signal, event, data, etc. to be handled by the current state");
+	/// 
+	/// 
+	/// // ...
+	/// 
+	/// 
+	/// [Export]
+	/// public class BaseState : MonoState
+	/// {
+	///		protected override void Enter (StateTransitionInfo transientInfo)
+	///		{
+	///			base.Enter(transientInfo);
+	///			Debug.Log("Enter base");
+	///		}
+	/// 
+	///		protected override void Leave (StateTransitionInfo transientInfo)
+	///		{
+	///			base.Leave(transientInfo);
+	///			Debug.Log("Leave base");
+	///		}
+	/// 
+	///		protected override void Signal (StateSignalInfo signalInfo)
+	///		{
+	///			base.Signal(signalInfo);
+	///			Debug.Log("Signal base");
+	///		}
+	/// }
+	/// 
+	/// [Export]
+	/// public class StateA : BaseState
+	/// {
+	///		protected override void Enter (StateTransitionInfo transientInfo)
+	///		{
+	///			base.Enter(transientInfo);
+	///			Debug.Log("Enter A");
+	///		}
+	/// 
+	///		protected override void Leave (StateTransitionInfo transientInfo)
+	///		{
+	///			base.Leave(transientInfo);
+	///			Debug.Log("Leave A");
+	///		}
+	/// 
+	///		protected override void Signal (StateSignalInfo signalInfo)
+	///		{
+	///			base.Signal(signalInfo);
+	///			Debug.Log("Signal A");
+	///		}
+	/// }
+	/// 
+	/// [Export]
+	/// public class StateB : BaseState
+	/// {
+	///		protected override void Enter (StateTransitionInfo transientInfo)
+	///		{
+	///			base.Enter(transientInfo);
+	///			Debug.Log("Enter B");
+	///		}
+	/// 
+	///		protected override void Leave (StateTransitionInfo transientInfo)
+	///		{
+	///			base.Leave(transientInfo);
+	///			Debug.Log("Leave B");
+	///		}
+	/// 
+	///		protected override void Signal (StateSignalInfo signalInfo)
+	///		{
+	///			base.Signal(signalInfo);
+	///			Debug.Log("Signal B");
+	///		}
+	/// }
+	/// 
+	/// 
+	/// // ...
+	/// 
+	/// 
+	/// // the debug output will be:
+	/// // Enter base
+	/// // Enter A
+	/// // Signal base
+	/// // Signal A
+	/// // Signal base
+	/// // Signal A
+	/// ]]>
+	/// </code>
+	/// </example>
 	public class StateMachine
 	{
 		/// <summary>

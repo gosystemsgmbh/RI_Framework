@@ -20,9 +20,6 @@ namespace RI.Framework.Collections.Generic
 	///     </para>
 	/// </remarks>
 	/// <example>
-	///     <para>
-	///         The following example shows how a <see cref="Warehouse{T}" /> can be used to store items:
-	///     </para>
 	///     <code language="cs">
 	/// <![CDATA[
 	/// // create a new warehouse and get its storage

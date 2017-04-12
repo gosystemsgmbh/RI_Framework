@@ -74,7 +74,7 @@ namespace RI.Test.Framework.Mathematic
 			test.OutputMin = 1.0f;
 			test.OutputMax = 10.0f;
 
-			test.Compute(10.0f, 0.0f, 1.0f);
+			test.ComputeNewSetPoint(10.0f, 0.0f, 1.0f);
 
 			if (test.Loops != 1)
 			{
@@ -125,7 +125,7 @@ namespace RI.Test.Framework.Mathematic
 				throw new TestAssertionException();
 			}
 
-			test.Compute(10.0f, 0.0f, 2.0f);
+			test.ComputeNewSetPoint(10.0f, 0.0f, 2.0f);
 
 			if (test.Loops != 2)
 			{
@@ -176,7 +176,7 @@ namespace RI.Test.Framework.Mathematic
 				throw new TestAssertionException();
 			}
 
-			test.Compute(5.0f, 5.0f, 3.0f);
+			test.ComputeNewSetPoint(5.0f, 5.0f, 3.0f);
 
 			if (test.Loops != 3)
 			{
@@ -227,7 +227,7 @@ namespace RI.Test.Framework.Mathematic
 				throw new TestAssertionException();
 			}
 
-			test.Compute(5.0f, 20.0f, 0.5f);
+			test.ComputeNewSetPoint(5.0f, 20.0f, 0.5f);
 
 			if (test.Loops != 4)
 			{

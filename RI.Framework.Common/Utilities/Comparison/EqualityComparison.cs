@@ -21,9 +21,6 @@ namespace RI.Framework.Utilities.Comparison
 	///     </note>
 	/// </remarks>
 	/// <example>
-	///     <para>
-	///         The following example shows how an <see cref="EqualityComparison{T}" /> can be used to check for integers which have the same remainder when divided by 5:
-	///     </para>
 	///     <code language="cs">
 	///  <![CDATA[
 	///  // create a list of integers

@@ -25,7 +25,7 @@ namespace RI.Framework.Mathematic
 	/// </para>
 	/// <para>
 	/// <see cref="PIDController"/> can be used for discrete or continuous control.
-	/// Their usage can be mixed, using <see cref="Compute(float,float)"/> or <see cref="Compute(float,float,float)"/> with a timestep of 1.0f for discrete control or <see cref="Compute(float,float,float)"/> for continuous control.
+	/// Their usage can be mixed, using <see cref="ComputeNewSetPoint"/> or <see cref="ComputeNewSetPoint(float,float,float)"/> with a timestep of 1.0f for discrete control or <see cref="ComputeNewSetPoint(float,float,float)"/> for continuous control.
 	/// </para>
 	/// <para>
 	/// The following values are used after a new instance of <see cref="PIDController"/> is created or the controller has been reset using <see cref="Reset"/>:
@@ -40,6 +40,25 @@ namespace RI.Framework.Mathematic
 	/// The following values are updated with each computation: <see cref="SetPoint"/>, <see cref="ProcessVariable"/>, <see cref="Output"/>, <see cref="OutputUnclamped"/>, <see cref="Error"/>, <see cref="Integral"/>, <see cref="Loops"/>.
 	/// </para>
 	/// </remarks>
+	/// <example>
+	///     <code language="cs">
+	/// <![CDATA[
+	/// // create the controller
+	/// PIDController controller = new PIDController();
+	/// 
+	/// // set parameters
+	/// controller.KP = 0.5f;
+	/// controller.KI = 0.22f;
+	/// controller.KD = 0.0f;
+	/// 
+	/// // ...
+	/// 
+	/// // update the controller once per frame
+	/// // Time.deltaTime is used as timestep to ensure that the controller behaves framerate-independent
+	/// float newSetting = controller.ComputeNewSetPoint(aim, feedback, Time.deltaTime);
+	/// ]]>
+	/// </code>
+	/// </example>
 	[SuppressMessage("ReSharper", "InconsistentNaming")]
 	public sealed class PIDController
 	{
@@ -135,20 +154,45 @@ namespace RI.Framework.Mathematic
 		}
 
 		/// <summary>
-		/// Computes the controller output using a timestep of 1.0.
+		/// Keeps the set point and computes the controller output using a timestep of 1.0.
+		/// </summary>
+		/// <param name="processVariable">The process variable (feedback or measurement from the controlled process).</param>
+		/// <returns>
+		/// The computet and clamped output (same as <see cref="Output"/>.
+		/// </returns>
+		public float ComputeKeepSetPoint(float processVariable)
+		{
+			return this.ComputeNewSetPoint(this.SetPoint, processVariable, 1.0f);
+		}
+
+		/// <summary>
+		///  Keeps the set point and computes the controller output using a given timestep.
+		/// </summary>
+		/// <param name="processVariable">The process variable (feedback or measurement from the controlled process).</param>
+		/// <param name="timestep">The timestep for the current process value.</param>
+		/// <returns>
+		/// The computet and clamped output (same as <see cref="Output"/>.
+		/// </returns>
+		public float ComputeKeepSetPoint(float processVariable, float timestep)
+		{
+			return this.ComputeNewSetPoint(this.SetPoint, processVariable, timestep);
+		}
+
+		/// <summary>
+		/// Sets a new set point and computes the controller output using a timestep of 1.0.
 		/// </summary>
 		/// <param name="setPoint">The used set point (the desired value).</param>
 		/// <param name="processVariable">The process variable (feedback or measurement from the controlled process).</param>
 		/// <returns>
 		/// The computet and clamped output (same as <see cref="Output"/>.
 		/// </returns>
-		public float Compute(float setPoint, float processVariable)
+		public float ComputeNewSetPoint(float setPoint, float processVariable)
 		{
-			return this.Compute(setPoint, processVariable, 1.0f);
+			return this.ComputeNewSetPoint(setPoint, processVariable, 1.0f);
 		}
 
 		/// <summary>
-		/// Computes the controller output using a given timestep.
+		/// Sets a new set point and computes the controller output using a given timestep.
 		/// </summary>
 		/// <param name="setPoint">The used set point (the desired value).</param>
 		/// <param name="processVariable">The process variable (feedback or measurement from the controlled process).</param>
@@ -156,7 +200,7 @@ namespace RI.Framework.Mathematic
 		/// <returns>
 		/// The computet and clamped output (same as <see cref="Output"/>.
 		/// </returns>
-		public float Compute(float setPoint, float processVariable, float timestep)
+		public float ComputeNewSetPoint(float setPoint, float processVariable, float timestep)
 		{
 			this.Loops++;
 

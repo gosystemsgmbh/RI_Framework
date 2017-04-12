@@ -28,6 +28,29 @@ namespace RI.Framework.Collections.Specialized
 	///         See <see cref="PoolBase{T}" /> for more details.
 	///     </para>
 	/// </remarks>
+	/// <example>
+	///     <code language="cs">
+	/// <![CDATA[
+	/// // create a pool with a prefab as prototype
+	/// var pool = new PrefabPool(myPrefab);
+	/// 
+	/// // get some instantiated game objects from the prefab
+	/// var item1 = pool.Take();
+	/// var item2 = pool.Take();
+	/// var item3 = pool.Take();
+	/// 
+	/// // ... do something ...
+	/// 
+	/// // return one of the game objects
+	/// pool.Return(item2);
+	/// 
+	/// // ... do something ...
+	/// 
+	/// // get another game object (the former item2 is recycled)
+	/// var item4 = pool.Take();
+	/// ]]>
+	/// </code>
+	/// </example>
 	public sealed class PrefabPool : PoolBase<GameObject>
 	{
 		#region Instance Constructor/Destructor

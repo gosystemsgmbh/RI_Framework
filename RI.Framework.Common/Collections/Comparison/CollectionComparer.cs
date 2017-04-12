@@ -23,9 +23,6 @@ namespace RI.Framework.Collections.Comparison
 	///     </note>
 	/// </remarks>
 	/// <example>
-	///     <para>
-	///         The following example shows how a <see cref="CollectionComparer{T}" /> can be used to compare two collections containing strings:
-	///     </para>
 	///     <code language="cs">
 	/// <![CDATA[
 	/// // create some collections of strings we want to compare

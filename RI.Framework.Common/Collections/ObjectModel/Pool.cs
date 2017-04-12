@@ -16,13 +16,12 @@ namespace RI.Framework.Collections.ObjectModel
 	///     </para>
 	/// </remarks>
 	/// <example>
-	///     <para>
-	///         The following example shows how a <see cref="Pool{T}" /> can be used:
-	///     </para>
 	///     <code language="cs">
 	/// <![CDATA[
 	/// // create a pool with initially one free item
 	/// var pool = new Pool<MyObject>(1);
+	/// 
+	/// // register an event to initialize all items which will be created by the pool
 	/// pool.Created += x => x.Initialize();
 	/// 
 	/// // get an item from the pool (the first one already exists as a free item in the pool)

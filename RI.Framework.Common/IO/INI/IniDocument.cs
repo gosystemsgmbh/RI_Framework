@@ -118,6 +118,29 @@ namespace RI.Framework.IO.INI
 	///         The used escape sequence character can be changed using <see cref="IniSettings.EscapeCharacter" />.
 	///     </para>
 	/// </remarks>
+	/// <example>
+	///     <code language="cs">
+	/// <![CDATA[
+	/// // create an empty INI document
+	/// var doc = new IniDocument();
+	/// 
+	/// // load an INI file
+	/// doc.Load("settings.ini");
+	/// 
+	/// // get the value for the Difficulty key in the [GameSettings] section
+	/// var difficulty = doc.GetValue("GameSettings", "Difficulty");
+	/// 
+	/// // get all name-value-pairs under the [GraphicsSettings] section as a dictionary
+	/// var graphics = doc.GetSection("GraphicsSettings");
+	/// 
+	/// // set the value of the Difficulty key in the [GameSettings] section
+	/// doc.SetValue("GameSettings", "Difficulty", "Princess");
+	/// 
+	/// // save back into the INI file
+	/// doc.Save("settings.ini");
+	/// ]]>
+	/// </code>
+	/// </example>
 	public sealed class IniDocument : ICloneable,
 	                                  ICloneable<IniDocument>
 	{

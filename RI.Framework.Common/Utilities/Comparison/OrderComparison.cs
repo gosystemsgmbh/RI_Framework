@@ -17,9 +17,6 @@ namespace RI.Framework.Utilities.Comparison
 	///     </para>
 	/// </remarks>
 	/// <example>
-	///     <para>
-	///         The following example shows how an <see cref="OrderComparison{T}" /> can be used to sort strings based on some customized ordering behaviour:
-	///     </para>
 	///     <code language="cs">
 	///   <![CDATA[
 	///   // create a list of strings we want to sort

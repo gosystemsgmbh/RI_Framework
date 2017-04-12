@@ -18,6 +18,44 @@ namespace RI.Framework.Utilities.Text
 	///         <see cref="IndentedTextWriter" /> only works reliable with new line strings of LF or CRLF (see <see cref="TextWriter.NewLine" />).
 	///     </note>
 	/// </remarks>
+	/// <example>
+	///     <code language="cs">
+	/// <![CDATA[
+	/// // create a string builder to write into
+	/// var sb = new StringBuilder();
+	/// using(var sw = new StringWriter(sb))
+	/// {
+	///		// create the indented text writer
+	///		using(var itw = new IndentedTextWriter(sb))
+	///		{
+	///			// lets use tabs for indentation
+	///			itw.IndentString = "\t";
+	/// 
+	///			// write some lines
+	///			itw.WriteLine("Line 1");
+	///			itw.IndentLevel++;
+	///			itw.WriteLine("Line 2");
+	///			itw.IndentLevel++;
+	///			itw.WriteLine("Line 3");
+	///			itw.IndentLevel--;
+	///			itw.WriteLine("Line 4");
+	///			itw.IndentLevel = 0;
+	///			itw.WriteLine("Line 5");
+	///		}
+	/// }
+	/// 
+	/// // get final string
+	/// var text = sb.ToString();
+	/// 
+	/// // result:
+	/// // Line 1
+	/// //     Line 2
+	/// //         Line 3
+	/// //     Line4
+	/// // Line 5
+	/// ]]>
+	/// </code>
+	/// </example>
 	public sealed class IndentedTextWriter : TextWriter
 	{
 		#region Instance Constructor/Destructor

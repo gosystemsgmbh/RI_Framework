@@ -6,6 +6,24 @@ namespace RI.Framework.Utilities.ObjectModel
 	/// Provides a centralized functionality to implement singletons.
 	/// </summary>
 	/// <typeparam name="T">The singleton type.</typeparam>
+	/// <example>
+	///     <code language="cs">
+	/// <![CDATA[
+	/// // gets an existing singleton or null if it does not exist
+	/// var playerManager = Singleton<PlayerManager>.Instance;
+	/// 
+	/// // sets a new or replaces an existing singleton
+	/// Singleton<PlayerManager>.Instance = new PlayerManager();
+	/// 
+	/// // gets an existing singleton or creates one if it does not exist
+	/// // (might throw an exception if the type has no default constructor)
+	/// var gameRules = Singleton<GameRules>.Ensure();
+	/// 
+	/// // gets an existing singleton or gets one from a callback if it does not exist
+	/// var enemyManager = Singleton<EnemyManager>.Ensure(() => new EnemyManager());
+	/// ]]>
+	/// </code>
+	/// </example>
 	public static class Singleton<T>
 		where T : class
 	{

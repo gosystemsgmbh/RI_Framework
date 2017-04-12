@@ -28,6 +28,13 @@ namespace RI.Framework.IO.Paths
 	///         See <see cref="FilePath" /> for an example how to use <see cref="DirectoryPath" /> and <see cref="FilePath" />.
 	///     </para>
 	/// </remarks>
+	/// <example>
+	///     <code language="cs">
+	/// <![CDATA[
+	/// // see FilePath for examples
+	/// ]]>
+	/// </code>
+	/// </example>
 	[Serializable]
 	public sealed class DirectoryPath : PathString,
 	                                    ICloneable<DirectoryPath>,

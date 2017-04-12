@@ -23,23 +23,6 @@ namespace RI.Framework.Services
 	///         A &quot;service&quot; can actually be any object/instance which is required to be made globally available (comparable to a singleton).
 	///     </para>
 	/// </remarks>
-	/// <example>
-	///     <para>
-	///         The following example shows how the <see cref="ServiceLocator" /> can be used to globally access services, a logging service in this case:
-	///     </para>
-	///     <code language="cs">
-	/// <![CDATA[
-	/// // get the logging service
-	/// var logService = ServiceLocator.GetInstance<ILogService>();
-	/// 
-	/// // use the logging service if available
-	/// if (logService != null)
-	/// {
-	///     logService.Log(LogLevel.Debug, this.GetType().Name, "Hello debugger.");
-	/// }
-	/// ]]>
-	/// </code>
-	/// </example>
 	public static class ServiceLocator
 	{
 		#region Static Events

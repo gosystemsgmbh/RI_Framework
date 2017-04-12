@@ -29,6 +29,26 @@ namespace RI.Framework.Collections.Generic
 	///         Regardless of the actual numeric priority values or the distribution of the priority values respectively, a priority queue with, for example, 10 used priorities is on average 10 times faster than a priority queue with 100 used priorities.
 	///     </para>
 	/// </remarks>
+	/// <example>
+	///     <code language="cs">
+	/// <![CDATA[
+	/// // create the queue
+	/// var queue = new PriorityQueue<string>();
+	/// 
+	/// // add some items with different priorities
+	/// queue.Enqueue("this", 0);
+	/// queue.Enqueue("queue", 101);
+	/// queue.Enqueue("is", 10);
+	/// queue.Enqueue("a", 100);
+	/// 
+	/// // dequeue items, we get: this, is, a, queue
+	/// while(queue.Count > 0)
+	/// {
+	///		string value = queue.Dequeue();
+	/// }
+	/// ]]>
+	/// </code>
+	/// </example>
 	public sealed class PriorityQueue <T> : ICollection, IEnumerable<T>, IEnumerable, ISynchronizable
 	{
 		#region Instance Constructor/Destructor
@@ -85,6 +105,24 @@ namespace RI.Framework.Collections.Generic
 				array[index] = item;
 				index++;
 			}
+		}
+
+		/// <summary>
+		///     Gets the next item in the queue and removes it.
+		/// </summary>
+		/// <returns>
+		///     The item.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         This is a O(1) operation.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="InvalidOperationException"> The priority queue is empty. </exception>
+		public T Dequeue()
+		{
+			int priority;
+			return this.Get(true, out priority);
 		}
 
 		/// <summary>
@@ -180,6 +218,24 @@ namespace RI.Framework.Collections.Generic
 			}
 
 			priorityItem.Enqueue(item);
+		}
+
+		/// <summary>
+		///     Gets the next item in the queue without removing it.
+		/// </summary>
+		/// <returns>
+		///     The item.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         This is a O(1) operation.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="InvalidOperationException"> The priority queue is empty. </exception>
+		public T Peek()
+		{
+			int priority;
+			return this.Get(false, out priority);
 		}
 
 		/// <summary>

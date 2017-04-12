@@ -25,12 +25,26 @@ namespace RI.Framework.Collections.DirectLinq
 	/// </para>
 	///         <note type="important">
 	///             Not all LINQ features are implemented in <see cref="DirectLinqExtensions"/>.
-	/// The main missing functions are: Grouping, Joining, Ordering, Aggregating.
+	/// The main missing functions are: Grouping (group), Joining (join), Ordering (orderby), Aggregating.
 	///         </note>
 	///         <note type="important">
 	///             The complexity stated for the operations provided by this class are under the assumption that enumerating an <see cref="IEnumerable{T}" /> has a complexity of O(n) where n is the number of elements in the sequence.
 	///         </note>
 	/// </remarks>
+	/// <example>
+	///     <code language="cs">
+	/// <![CDATA[
+	/// //using System.Linq;
+	/// using RI.Framework.Collections.DirectLinq;
+	/// 
+	/// // ...
+	/// 
+	/// var array1 = new string[] { "Test", "123", "abc" };
+	/// 
+	/// var array2 = (from x in array1 where x.Length <= 3 select x.ToUpperInvariant()).ToArray();
+	/// ]]>
+	/// </code>
+	/// </example>
 	public static class DirectLinqExtensions
 	{
 		#region Static Methods

@@ -3,7 +3,6 @@
 ## 1.0.0.0
 
 - [ ] Documentation
-  - [ ] Utility examples
   - [ ] Review Reference
 - [ ] Cleanup
   - [ ] Move Utilities\Wpf in RotenInformatik to RotenInformatik namespace
@@ -19,6 +18,7 @@
 ## Backlog
 
 - [ ] Documentation
+  - [ ] Unity: Uncomments after implementation (Utilities, DecouplingAdvanced)
   - [ ] NetFx
   - [ ] AOT/IL2CPP
   - [ ] Performance

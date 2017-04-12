@@ -296,6 +296,7 @@ Mathematic
  - (Common) StatisticValues: GeometricMean
 
  - (Common) RunningValues: GeometricMean
+ - (Common) RunningValues: PreFill (also as constructor parameter)
 
  - (Common) Aggregate extensions for numerical types (byte, short, int, long, double, float), including statistics (min, max, sum, average, median, RMS, count)
 
@@ -306,6 +307,8 @@ Mathematic
 
 State machines
 --------------
+
+ - (Common) Callback for aborted transitions
 
  - (Common) Cascading
 

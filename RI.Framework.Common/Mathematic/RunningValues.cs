@@ -28,6 +28,28 @@ namespace RI.Framework.Mathematic
 	/// The running values are always calculated using the weighted value, which is the value multiplied with the corresponding timestep.
 	/// </para>
 	/// </remarks>
+	/// <example>
+	///     <code language="cs">
+	/// <![CDATA[
+	/// // create running values
+	/// var frameTime  = new RunningValues(1000);  // to calculate the average framerate
+	/// var enemyKills = new RunningValues(1000);  // to calculate the average enemy kills per second
+	/// 
+	/// // ...
+	/// 
+	/// // update in each frame
+	/// frameTime.Add(Time.deltaTime);
+	/// enemyKills.Add(killCountSinceLastFrame, Time.deltaTime); // use the timestep to get kills per second independent of the framerate
+	/// 
+	/// // get averages over the last 1000 frames
+	/// var framerate = 1.0f / frameTime.ArithmeticMean;
+	/// var killsPerSecond = 1.0f / enemyKills.ArithmeticMean;
+	/// 
+	/// // reset kill counter
+	/// killCountSinceLastFrame = 0;
+	/// ]]>
+	/// </code>
+	/// </example>
 	public sealed class RunningValues
 	{
 		/// <summary>

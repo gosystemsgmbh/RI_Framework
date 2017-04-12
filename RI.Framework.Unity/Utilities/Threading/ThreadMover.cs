@@ -57,6 +57,60 @@ namespace RI.Framework.Utilities.Threading
 	/// If the coroutine is already executed in a <see cref="HeavyThread"/>, a new thread is created and the execution moved to that new thread.
 	/// </para>
 	/// </remarks>
+	/// <example>
+	///     <code language="cs">
+	/// <![CDATA[
+	/// [Export]
+	/// public class MyModule : MonoModule
+	/// {
+	///		protected override void Initialize()
+	///		{
+	///			base.Initialize();
+	///			
+	///			// start the coroutine which changes threads multiple times and also uses regular Unity yields
+	///			ThreadMover.BeginTask(this.MyCoroutine());
+	///		}
+	/// 
+	///		private IEnumerator MyCoroutine()
+	///		{
+	///			// I'm starting in the main/foreground thread
+	/// 
+	///			yield return null;
+	/// 
+	///			// I'm still in the main/foreground thread
+	/// 
+	///			yield return new WaitForSeconds(2);
+	/// 
+	///			// I'm still in the main/foreground thread
+	/// 
+	///			yield return new ToBackground();
+	/// 
+	/// 		// Now I'm running in a background thread
+	/// 
+	/// 		yield return new ToForeground();
+	/// 
+	///			// I'm back in the main/foreground thread
+	/// 
+	/// 		yield return new ToHeavyThread(ThreadPriority.BelowNormal);
+	/// 
+	///			// Now I'm in my own dedicated thread with a custom priority
+	/// 
+	/// 		yield return new ToDispatcher();
+	/// 
+	/// 		// Now I'm being dispatched (in the main/foreground thread)
+	/// 
+	///			yield return new ToBackground();
+	/// 
+	/// 		// And back in the background
+	/// 
+	///			yield return new WaitForSeconds(2);
+	/// 
+	///			// I'm in the main/foreground thread now because regular yields always switch to main/foreground
+	///		}
+	/// }
+	/// ]]>
+	/// </code>
+	/// </example>
 	public static class ThreadMover
 	{
 		/// <summary>

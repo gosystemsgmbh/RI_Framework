@@ -23,6 +23,26 @@
             <list class="bullet">
                 <listItem>
                     <para>
+                        <codeEntityReference qualifyHint="false">T:RI.Framework.Utilities.Threading.ThreadMover</codeEntityReference>
+                    </para>
+                </listItem>
+                <!--<listItem>
+                    <para>
+                        <codeEntityReference qualifyHint="false">T:RI.Framework.Utilities.Threading.HeavyThread</codeEntityReference>
+                    </para>
+                </listItem>-->
+                <!--<listItem>
+                    <para>
+                        <codeEntityReference qualifyHint="false">T:RI.Framework.Utilities.Threading.ThreadDispatcher</codeEntityReference>
+                    </para>
+                </listItem>-->
+                <!--<listItem>
+                    <para>
+                        <codeEntityReference qualifyHint="false">T:RI.Framework.Utilities.Threading.HeavyThreadDispatcher</codeEntityReference>
+                    </para>
+                </listItem>-->
+                <listItem>
+                    <para>
                         <codeEntityReference qualifyHint="false">T:RI.Framework.Collections.Comparison.CollectionComparer`1</codeEntityReference>
                     </para>
                 </listItem>
@@ -63,16 +83,6 @@
                 </listItem>
                 <listItem>
                     <para>
-                        <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionContainer</codeEntityReference>
-                    </para>
-                </listItem>
-                <listItem>
-                    <para>
-                        <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.ComposableMonoBehaviour</codeEntityReference>
-                    </para>
-                </listItem>
-                <listItem>
-                    <para>
                         <codeEntityReference qualifyHint="false">T:RI.Framework.IO.INI.IniDocument</codeEntityReference>
                     </para>
                 </listItem>
@@ -101,19 +111,14 @@
                         <codeEntityReference qualifyHint="false">T:RI.Framework.Mathematic.RunningValues</codeEntityReference>
                     </para>
                 </listItem>
-                <listItem>
+                <!--<listItem>
                     <para>
                         <codeEntityReference qualifyHint="false">T:RI.Framework.Mathematic.StatisticValues</codeEntityReference>
                     </para>
-                </listItem>
+                </listItem>-->
                 <listItem>
                     <para>
                         <codeEntityReference qualifyHint="false">T:RI.Framework.StateMachines.StateMachine</codeEntityReference>
-                    </para>
-                </listItem>
-                <listItem>
-                    <para>
-                        <codeEntityReference qualifyHint="false">T:RI.Framework.StateMachines.MonoState</codeEntityReference>
                     </para>
                 </listItem>
                 <listItem>
@@ -131,34 +136,14 @@
                         <codeEntityReference qualifyHint="false">T:RI.Framework.Utilities.ObjectModel.Singleton`1</codeEntityReference>
                     </para>
                 </listItem>
-                <listItem>
+                <!--<listItem>
                     <para>
                         <codeEntityReference qualifyHint="false">T:RI.Framework.Utilities.Text.CommandLine</codeEntityReference>
                     </para>
-                </listItem>
+                </listItem>-->
                 <listItem>
                     <para>
-                        <codeEntityReference qualifyHint="false">T:RI.Framework.Utilities.Text.IndentedTextWriter</codeEntityReference>
-                    </para>
-                </listItem>
-                <listItem>
-                    <para>
-                        <codeEntityReference qualifyHint="false">T:RI.Framework.Utilities.Threading.HeavyThread</codeEntityReference>
-                    </para>
-                </listItem>
-                <listItem>
-                    <para>
-                        <codeEntityReference qualifyHint="false">T:RI.Framework.Utilities.Threading.ThreadDispatcher</codeEntityReference>
-                    </para>
-                </listItem>
-                <listItem>
-                    <para>
-                        <codeEntityReference qualifyHint="false">T:RI.Framework.Utilities.Threading.HeavyThreadDispatcher</codeEntityReference>
-                    </para>
-                </listItem>
-                <listItem>
-                    <para>
-                        <codeEntityReference qualifyHint="false">T:RI.Framework.Utilities.Threading.ThreadMover</codeEntityReference>
+                       <codeEntityReference qualifyHint="false">T:RI.Framework.Utilities.Text.IndentedTextWriter</codeEntityReference>
                     </para>
                 </listItem>
             </list>

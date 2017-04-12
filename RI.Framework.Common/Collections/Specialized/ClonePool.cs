@@ -25,6 +25,29 @@ namespace RI.Framework.Collections.Specialized
 	///         See <see cref="PoolBase{T}" /> for more details.
 	///     </para>
 	/// </remarks>
+	/// <example>
+	///     <code language="cs">
+	/// <![CDATA[
+	/// // create a pool with a cloneable prototype
+	/// var pool = new ClonePool<MyObject>(new MyObject(some, constructor, parameters));
+	/// 
+	/// // get some cloned items
+	/// var item1 = pool.Take();
+	/// var item2 = pool.Take();
+	/// var item3 = pool.Take();
+	/// 
+	/// // ... do something ...
+	/// 
+	/// // return one of the items
+	/// pool.Return(item2);
+	/// 
+	/// // ... do something ...
+	/// 
+	/// // get another item (the former item2 is recycled)
+	/// var item4 = pool.Take();
+	/// ]]>
+	/// </code>
+	/// </example>
 	public sealed class ClonePool <T> : PoolBase<T>
 		where T : ICloneable
 	{

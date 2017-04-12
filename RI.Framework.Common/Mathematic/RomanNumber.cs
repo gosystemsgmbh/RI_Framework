@@ -43,6 +43,28 @@ namespace RI.Framework.Mathematic
 	/// It is advised that the numbers are clamped to a reasonable range which is suitable for you.
 	/// </note>
 	/// </remarks>
+	/// <example>
+	///     <code language="cs">
+	/// <![CDATA[
+	/// // convert decimal to roman
+	/// var roman = RomanNumber.DecimalToRoman(123); // Result: "CXXIII"
+	/// 
+	/// // convert roman to decimal
+	/// var dec = RomanNumber.RomanToDecimal("CLIV"); // Result: 154
+	/// 
+	/// // create two roman numbers
+	/// RomanNumber num1 = 123;
+	/// RomanNumber num2 = "CLIV";
+	/// 
+	/// // do some math with roman numbers
+	/// RomanNumber num3 = num1 + num2;
+	/// 
+	/// // get explicit values
+	/// var romanValue = num3.RomanValue; // "CCLXXVII" 
+	/// var decimalValue = num3.DecimalValue; // 277
+	/// ]]>
+	/// </code>
+	/// </example>
 	public struct RomanNumber : IEquatable<RomanNumber>, IComparable<RomanNumber>, IComparable
 	{
 		private static Dictionary<char, int> ValuesToDecimal { get; set; }
@@ -403,7 +425,7 @@ namespace RI.Framework.Mathematic
 		}
 
 		/// <summary>
-		/// Adds two <see cref="RomanValue"/>s.
+		/// Adds two <see cref="RomanNumber"/>s.
 		/// </summary>
 		/// <param name="x">The first value.</param>
 		/// <param name="y">The second value.</param>
