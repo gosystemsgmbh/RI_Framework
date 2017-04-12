@@ -7,19 +7,18 @@
 
         <introduction>
             <para>
-                The Decoupling &amp; Utilities Framework aims at providing useful scripting tools for programmers so they can focus on implementing core functionality of their games instead of writing glue logic and boilerplate code.
+                The Decoupling &amp; Utilities Framework aims at providing useful scripting tools for game programmers so they can focus on implementing core functionality of their games instead of writing glue logic and boilerplate code.
                 These scripting tools come in the form of .NET/Mono types which can be used right away in Unity scripts.
             </para>
             <para>
                 Decoupling is the separation of code into logical units and the reduction of their dependencies, making them more maintainable, extensible, and portable.
-                It can also help to make your architecture ready for mods/plugins.
+                This is particularly important for games which provide mod support or use platform-specific code.
                 This framework supports you with decoupling your game code by providing the following features:
             </para>
             <list class="bullet">
                 <listItem>
                     <para>
-                        <legacyBold>Dependency Injection (DI)</legacyBold> and
-                        <legacyBold>Inversion-of-Control (IoC)</legacyBold>
+                        <legacyBold>Dependency Injection (DI)</legacyBold> and <legacyBold>Inversion-of-Control (IoC)</legacyBold>
                     </para>
                 </listItem>
                 <listItem>
@@ -50,12 +49,12 @@
             </list>
             <para>
                 Furthermore, the Decoupling &amp; Utilities Framework also provides numerous utilities to save you the time of writing commonly used functionality.
-                Some highlights are:
+                Some of the more prominent Utilities features are:
             </para>
             <list class="bullet">
                 <listItem>
                     <para>
-                        <legacyBold>LINQ replacement</legacyBold>; for using LINQ without dependency on reflection and for deterministic non-deferred execution
+                        <legacyBold>LINQ replacement</legacyBold>; for using a subset of LINQ without dependency on reflection and for deterministic non-deferred execution
                     </para>
                 </listItem>
                 <listItem>
@@ -70,12 +69,27 @@
                 </listItem>
                 <listItem>
                     <para>
+                        <legacyBold>ThreadMover</legacyBold>; allows at-will-switching between threads and dispatchers in a coroutine
+                    </para>
+                </listItem>
+                <listItem>
+                    <para>
+                        <legacyBold>Thread management</legacyBold>; heavyweight/dedicated threads, standalone dispatchers, etc.
+                    </para>
+                </listItem>
+                <listItem>
+                    <para>
+                        <legacyBold>Hierarchical state machines</legacyBold>
+                    </para>
+                </listItem>
+                <listItem>
+                    <para>
                         <legacyBold>Platform-independent file/directory path handling and manipulation</legacyBold>
                     </para>
                 </listItem>
                 <listItem>
                     <para>
-                        <legacyBold>INI file processing</legacyBold>; reading, writing, in-memory representation, conversion from/to dictionaries
+                        <legacyBold>INI file processing</legacyBold>; reading, writing, in-memory representation, conversion to/from dictionaries
                     </para>
                 </listItem>
                 <listItem>
@@ -96,21 +110,6 @@
                 <listItem>
                     <para>
                         <legacyBold>Roman numbers</legacyBold>
-                    </para>
-                </listItem>
-                <listItem>
-                    <para>
-                        <legacyBold>Hierarchical state machines</legacyBold>
-                    </para>
-                </listItem>
-                <listItem>
-                    <para>
-                        <legacyBold>ThreadMover</legacyBold>; allows at-will-switching between threads and dispatchers in a coroutine
-                    </para>
-                </listItem>
-                <listItem>
-                    <para>
-                        <legacyBold>Thread management</legacyBold>; heavyweight/dedicated threads, standalone dispatchers, etc.
                     </para>
                 </listItem>
                 <listItem>
