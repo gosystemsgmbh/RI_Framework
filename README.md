@@ -3,7 +3,6 @@
 ## 1.0.0.0
 
 - [ ] Documentation
-  - [ ] Highlights
   - [ ] Utility examples
   - [ ] Review Reference
 - [ ] Cleanup
@@ -12,7 +11,6 @@
   - [ ] ReSharper cleanup (after update to 2017.1 !)
 - [ ] Release
   - [ ] Final testing
-  - [ ] Installer
   - [ ] Promotional material
   - [ ] E-Mail address
   - [ ] Web page
@@ -29,6 +27,8 @@
   - [ ] Warnings
   - [ ] TODOs
   - [ ] NuGet updates
+- [ ] TODO
+  - [ ] Packages
 
 ## Proposals
 
