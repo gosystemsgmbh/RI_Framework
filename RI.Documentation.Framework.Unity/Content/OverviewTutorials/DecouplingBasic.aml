@@ -537,7 +537,7 @@ public class EnemyManager : MonoModule
                 <para>
                     Messages are delivered asynchronously.
                     It means that the messages are not immediately delivered to the respective receivers when sent.
-                    Instead, the messages are put into a queue and delivered from there during certain points in time of a frame cycle.
+                    Instead, the messages are put into a queue and are delivered from there during certain points in time of a frame cycle.
                     The only exception to this is when the priority <legacyItalic>Now</legacyItalic> is used, which will deliver the message immediately.
                 </para>
                 <para>
@@ -559,7 +559,7 @@ public class EnemyManager : MonoModule
                 <para>
                     Note that there is also
                     <codeEntityReference qualifyHint="false">T:RI.Framework.Utilities.Threading.ThreadMover</codeEntityReference>
-                    which is a nice cross-thread execution tool when working with coroutines.
+                    which is also a nice cross-thread execution tool when working with coroutines.
                 </para>
                 <para>
                     The following example shows how to dispatch a simple operation:
@@ -611,7 +611,7 @@ public class MyModule : MonoModule
         this.Dispatcher.Dispatch(DispatcherPriority.Background, filename => 
         {
             LoadMeshFromFile(filename);
-        }, "Spaceship.obj");
+        }, "Spaceship.obj").OnFinished((_op, _args) => Debug.Log("Spaceship was loaded in the background."));
     }
 }
           ]]>
@@ -623,7 +623,7 @@ public class MyModule : MonoModule
                 <para>
                     Operations are executed asynchronously.
                     It means that the operations are not immediately executed when dispatched.
-                    Instead, the operations are put into a queue and executed from there during certain points in time of a frame cycle.
+                    Instead, the operations are put into a queue and are executed from there during certain points in time of a frame cycle.
                     The only exception to this is when the priority <legacyItalic>Now</legacyItalic> is used, which will execute the operation immediately.
                 </para>
                 <para>
@@ -634,7 +634,7 @@ public class MyModule : MonoModule
                 <para>
                     A particular use case for dispatched operations are situations where run-to-completion behaviour is required.
                     For example: A method needs an operation executed but not before the method itself has returned.
-                    This is especially required for handling state transitions in state machines where you want to dispatch a state transition but the actual transition should not happen before the current method is finished (so that the rest of the method, after the dispatching, can still finish with the current state).
+                    This is especially required for handling state transitions in state machines where you want to dispatch a state transition but the actual transition should not happen before the current method is finished (so that the rest of the method, after the dispatching of the transient, can still finish with the current state).
                 </para>
             </content>
         </section>
