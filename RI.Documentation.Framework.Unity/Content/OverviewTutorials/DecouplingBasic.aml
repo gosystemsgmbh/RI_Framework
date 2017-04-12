@@ -31,14 +31,14 @@
                     <legacyItalic>DontDestroyOnLoad()</legacyItalic> ).
                 </para>
                 <para>
-                    Add a new <legacyItalic>GameObject</legacyItalic> to the scene and then add the bootstrapper via drag-and-drop from the
+                    The bootstrapper is added to a <legacyItalic>GameObject</legacyItalic> in a scene using drag-and-drop from
                     <legacyItalic>RI.Framework.Unity.dll</legacyItalic>:
                 </para>
                 <mediaLink>
                     <image xlink:href="BootstrapperDragDrop" />
                 </mediaLink>
                 <para>
-                    Alternatively, you can also do this in code by adding
+                    Alternatively, it can also be done in code by adding
                     <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Bootstrapper</codeEntityReference>
                     as a component to a <legacyItalic>GameObject</legacyItalic>:
                 </para>
@@ -49,7 +49,7 @@ go.AddComponent<Bootstrapper>();
           ]]>
                 </code>
                 <para>
-                    When you now start the scene, you can see the bootstrapper object:
+                    After the scene load, the bootstrapper can be seen in the list of objects:
                 </para>
                 <mediaLink>
                     <image xlink:href="BootstrapperObject" />
@@ -108,7 +108,7 @@ public class EnemyManager : MonoModule
                 </para>
                 <para>
                     <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.MonoModule</codeEntityReference>
-                    inherits from <legacyItalic>MonoBehaviour</legacyItalic> so your module can use all Unity features as usual.
+                    inherits from <legacyItalic>MonoBehaviour</legacyItalic> so a module can use all Unity features as usual.
                     A <legacyItalic>GameObject</legacyItalic> is created for each module automatically.
                 </para>
                 <para>
@@ -125,7 +125,9 @@ public class EnemyManager : MonoModule
                     A
                     <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionContainer</codeEntityReference>
                     provides Dependency Injection (DI) and Inversion-of-Control (IoC).
-                    DI and IoC are powerful concepts: You just declare the dependency you need and it will be resolved for you.
+                </para>
+                <para>
+                    DI and IoC are powerful concepts: You just declare the dependency you need and it will be resolved and assigned for you.
                     This includes instance creation, singleton management, and cascading dependencies.
                 </para>
                 <para>
@@ -151,7 +153,8 @@ public class EnemyManager : MonoModule
     [Import]
     public GameRules Rules { get; set; }
   
-    // the Rules property can be used everywhere inside EnemyManager, except its constructor(s)
+    // EnemyManager has a dependency to GameRules which will be automatically resolved and assigned
+    // the Rules property can be used everywhere inside EnemyManager, except its constructor
 }
           ]]>
                 </code>
