@@ -27,7 +27,7 @@ namespace RI.Test.Framework.Cases.Services.Dispatcher
 		[TestMethod]
 		public void Test_1 ()
 		{
-			IDispatcherService test = ServiceLocator.GetInstance<IDispatcherService>();
+			DispatcherService test = ServiceLocator.GetInstance<DispatcherService>();
 
 			IDispatcherOperation op1 = test.Dispatch(() => { throw new TestAssertionException(); });
 			IDispatcherOperation op2 = test.Dispatch(() => { throw new TestAssertionException(); });
@@ -99,7 +99,7 @@ namespace RI.Test.Framework.Cases.Services.Dispatcher
 		[TestMethod]
 		public void Test_2 ()
 		{
-			IDispatcherService test = ServiceLocator.GetInstance<IDispatcherService>();
+			DispatcherService test = ServiceLocator.GetInstance<DispatcherService>();
 
 			IDispatcherOperation op = test.Dispatch(DispatcherPriority.Later, () => { });
 			op.OnFinished((x, y) =>
@@ -116,7 +116,7 @@ namespace RI.Test.Framework.Cases.Services.Dispatcher
 		[TestMethod]
 		public void Test_3 ()
 		{
-			IDispatcherService test = ServiceLocator.GetInstance<IDispatcherService>();
+			DispatcherService test = ServiceLocator.GetInstance<DispatcherService>();
 
 			string testValue = string.Empty;
 

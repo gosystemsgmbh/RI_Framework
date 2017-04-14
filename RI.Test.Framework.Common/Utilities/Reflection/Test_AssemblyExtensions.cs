@@ -51,12 +51,16 @@ namespace RI.Test.Framework.Utilities.Reflection
 		[TestMethod]
 		public void GetFile_Test ()
 		{
+#if PLATFORM_NETFX
+
 			Assembly assembly = Assembly.GetExecutingAssembly();
 
 			if (!assembly.GetFile().EndsWith(assembly.GetTitle() + ".dll"))
 			{
 				throw new TestAssertionException();
 			}
+
+#endif
 		}
 
 		[TestMethod]

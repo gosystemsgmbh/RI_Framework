@@ -58,8 +58,23 @@ namespace RI.Framework.IO.Paths
 		/// <returns>
 		///     The path to the current working directory.
 		/// </returns>
+		/// <remarks>
+		///     <note type="important">
+		///         This method is only supported on Windows (without Store Apps) and Mac OS.
+		///     </note>
+		/// </remarks>
+		/// <exception cref="NotSupportedException"> Called on a platform other than Windows or Mac OS. </exception>
 		public static DirectoryPath GetCurrentDirectory ()
 		{
+#if PLATFORM_UNITY
+
+			if ((UnityEngine.Application.platform != UnityEngine.RuntimePlatform.WindowsEditor) && (UnityEngine.Application.platform != UnityEngine.RuntimePlatform.WindowsPlayer) && (UnityEngine.Application.platform != UnityEngine.RuntimePlatform.OSXEditor) && (UnityEngine.Application.platform != UnityEngine.RuntimePlatform.OSXPlayer) && (UnityEngine.Application.platform != UnityEngine.RuntimePlatform.OSXDashboardPlayer))
+			{
+				throw new NotSupportedException(nameof(DirectoryPath.GetCurrentDirectory) + " is only supported on Windows and Mac OS.");
+			}
+
+#endif
+
 			return new DirectoryPath(Environment.CurrentDirectory);
 		}
 

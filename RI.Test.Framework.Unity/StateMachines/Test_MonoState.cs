@@ -39,7 +39,7 @@ namespace RI.Test.Framework.Cases.StateMachines
 
 			test.Transient(typeof(Mock_State_A));
 
-			ServiceLocator.GetInstance<IDispatcherService>().Dispatch(() =>
+			ServiceLocator.GetInstance<DispatcherService>().Dispatch(() =>
 			{
 				if (!(test.State is Mock_State_A))
 				{
@@ -52,7 +52,7 @@ namespace RI.Test.Framework.Cases.StateMachines
 
 				test.Signal("#2");
 
-				ServiceLocator.GetInstance<IDispatcherService>().Dispatch(() =>
+				ServiceLocator.GetInstance<DispatcherService>().Dispatch(() =>
 				{
 					if (Mock_State.TestValue != "iAeA#2")
 					{
@@ -61,7 +61,7 @@ namespace RI.Test.Framework.Cases.StateMachines
 
 					test.Transient(typeof(Mock_State_B));
 
-					ServiceLocator.GetInstance<IDispatcherService>().Dispatch(() =>
+					ServiceLocator.GetInstance<DispatcherService>().Dispatch(() =>
 					{
 						if (!(test.State is Mock_State_B))
 						{
@@ -74,7 +74,7 @@ namespace RI.Test.Framework.Cases.StateMachines
 
 						test.Signal("#3");
 
-						ServiceLocator.GetInstance<IDispatcherService>().Dispatch(() =>
+						ServiceLocator.GetInstance<DispatcherService>().Dispatch(() =>
 						{
 							if (Mock_State.TestValue != "iAeA#2iBlAeB#3")
 							{
@@ -83,7 +83,7 @@ namespace RI.Test.Framework.Cases.StateMachines
 
 							test.Transient(typeof(Mock_State_C));
 
-							ServiceLocator.GetInstance<IDispatcherService>().Dispatch(() =>
+							ServiceLocator.GetInstance<DispatcherService>().Dispatch(() =>
 							{
 								if (!(test.State is Mock_State_C))
 								{
@@ -96,7 +96,7 @@ namespace RI.Test.Framework.Cases.StateMachines
 
 								test.Signal("#4");
 
-								ServiceLocator.GetInstance<IDispatcherService>().Dispatch(() =>
+								ServiceLocator.GetInstance<DispatcherService>().Dispatch(() =>
 								{
 									if (Mock_State.TestValue != "iAeA#2iBlAeB#3iClBeC#4")
 									{
@@ -105,7 +105,7 @@ namespace RI.Test.Framework.Cases.StateMachines
 
 									test.Transient(null);
 
-									ServiceLocator.GetInstance<IDispatcherService>().Dispatch(() =>
+									ServiceLocator.GetInstance<DispatcherService>().Dispatch(() =>
 									{
 										if (test.State != null)
 										{
@@ -118,7 +118,7 @@ namespace RI.Test.Framework.Cases.StateMachines
 
 										test.Signal("#5");
 
-										ServiceLocator.GetInstance<IDispatcherService>().Dispatch(() =>
+										ServiceLocator.GetInstance<DispatcherService>().Dispatch(() =>
 										{
 											if (Mock_State.TestValue != "iAeA#2iBlAeB#3iClBeC#4lC")
 											{

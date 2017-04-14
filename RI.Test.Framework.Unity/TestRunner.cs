@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 
+using RI.Framework.Collections;
 using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Composition;
 using RI.Framework.Composition.Catalogs;
@@ -19,9 +20,30 @@ namespace RI.Test.Framework
 {
 	public sealed class TestRunner : MonoBehaviour
 	{
+		#region Instance Fields
+
+		[TextArea(10, 10)]
+		public string ExcludedMethods = string.Empty;
+
+		[TextArea(10, 10)]
+		public string IncludedMethods = string.Empty;
+
+		#endregion
+
+
+
+
 		#region Instance Properties/Indexer
 
+		private Exception Exception { get; set; }
+
+		private HashSet<string> ExcludedMethodList { get; set; }
+
+		private HashSet<string> IncludedMethodList { get; set; }
+
 		private int ProcessedTestMethods { get; set; }
+
+		private string Progress { get; set; }
 
 		private List<object[]> TestMethods { get; set; }
 
@@ -36,11 +58,11 @@ namespace RI.Test.Framework
 		{
 			if (this.ProcessedTestMethods >= this.TestMethods.Count)
 			{
-				ServiceLocator.GetInstance<IDispatcherService>().Dispatch(DispatcherPriority.Idle, this.StopTests);
+				ServiceLocator.GetInstance<DispatcherService>().Dispatch(DispatcherPriority.Idle, this.StopTests);
 				return;
 			}
 
-			ServiceLocator.GetInstance<IDispatcherService>().Dispatch(DispatcherPriority.Idle, () =>
+			ServiceLocator.GetInstance<DispatcherService>().Dispatch(DispatcherPriority.Idle, () =>
 			{
 				TestModule testModule = (TestModule)this.TestMethods[this.ProcessedTestMethods][0];
 				MethodInfo testMethod = (MethodInfo)this.TestMethods[this.ProcessedTestMethods][1];
@@ -48,19 +70,45 @@ namespace RI.Test.Framework
 				this.Log(LogLevel.Debug, "------------------------------");
 				this.Log(LogLevel.Debug, "Test: {0}.{1} @ {2}", testMethod.DeclaringType.Name, testMethod.Name, testModule.GetType().Name);
 
+				string testName = this.GetTestName(testMethod);
+
 				this.ProcessedTestMethods++;
 
-				try
-				{
-					testModule.InvokeTestMethod(testMethod, new Action(this.ContinueTests));
+				this.Progress = this.ProcessedTestMethods.ToString() + " / " + this.TestMethods.Count.ToString() + Environment.NewLine + testName;
 
-					this.Log(LogLevel.Debug, "Test succeeded");
-				}
-				catch (Exception exception)
+				if (this.ExcludedMethodList.Contains(testName))
 				{
-					this.Log(LogLevel.Error, "Test failed: {0}", exception.ToDetailedString());
+					this.Log(LogLevel.Warning, "Test excluded");
+
+					this.ContinueTests();
+				}
+				else
+				{
+					ServiceLocator.GetInstance<DispatcherService>().Dispatch(DispatcherPriority.Idle, (_testModule, _testMethod) =>
+					{
+						try
+						{
+							_testModule.InvokeTestMethod(_testMethod, new Action(this.ContinueTests));
+
+							this.Log(LogLevel.Debug, "Test succeeded");
+						}
+						catch (Exception exception)
+						{
+							this.Log(LogLevel.Error, "Test failed: {0}", exception.ToDetailedString());
+
+							if (this.Exception == null)
+							{
+								this.Exception = exception;
+							}
+						}
+					}, testModule, testMethod);
 				}
 			});
+		}
+
+		private string GetTestName (MethodInfo testMethod)
+		{
+			return testMethod.DeclaringType.Name + "." + testMethod.Name;
 		}
 
 		private void Log (LogLevel severity, string format, params object[] args)
@@ -68,13 +116,28 @@ namespace RI.Test.Framework
 			LogLocator.Log(severity, this.GetType().Name, format, args);
 		}
 
+		private void OnGUI ()
+		{
+			string text = this.Exception?.ToString() ?? this.Progress ?? string.Empty;
+			GUI.Label(new Rect(0, 0, Screen.width, Screen.height), text);
+		}
+
 		private void Start ()
 		{
-			ServiceLocator.GetInstance<IDispatcherService>().Dispatch(DispatcherPriority.Idle, this.StartTests);
+			ServiceLocator.GetInstance<DispatcherService>().Dispatch(DispatcherPriority.Idle, this.StartTests);
 		}
 
 		private void StartTests ()
 		{
+			this.Progress = null;
+			this.Exception = null;
+
+			this.ExcludedMethodList = new HashSet<string>(this.ExcludedMethods.SplitLines(), StringComparerEx.InvariantCultureIgnoreCase);
+			this.IncludedMethodList = new HashSet<string>(this.IncludedMethods.SplitLines().Where(x => !x.IsNullOrEmptyOrWhitespace()), StringComparerEx.InvariantCultureIgnoreCase);
+
+			this.Log(LogLevel.Debug, "Excluded tests: {0}", this.ExcludedMethodList.Join("; "));
+			this.Log(LogLevel.Debug, "Included tests: {0}", this.IncludedMethodList.Join("; "));
+
 			this.Log(LogLevel.Debug, "Searching for available tests");
 
 			ServiceLocator.GetInstance<CompositionContainer>().AddCatalog(new AssemblyCatalog(Assembly.GetExecutingAssembly()));
@@ -90,6 +153,12 @@ namespace RI.Test.Framework
 				{
 					this.TestMethods.Add(new object[] {testModule, testMethod});
 				}
+			}
+
+			this.IncludedMethodList.RemoveWhere(x => x.IsNullOrEmptyOrWhitespace());
+			if (this.IncludedMethodList.Count > 0)
+			{
+				this.TestMethods.RemoveWhere(x => !this.IncludedMethodList.Contains(this.GetTestName((MethodInfo)x[1])));
 			}
 
 			this.Log(LogLevel.Debug, "Found total {0} test methods", this.TestMethods.Count);

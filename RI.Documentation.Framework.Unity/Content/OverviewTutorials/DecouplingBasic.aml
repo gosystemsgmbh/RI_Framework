@@ -261,8 +261,8 @@ public class EnemyManager : MonoModule
                 <para>
                     Exporting and importing is not restricted to modules.
                     Any class type can be exported and/or have imports as long as they go through the composition container.
-                <para>
                 </para>
+                <para>
                     One special case is a type which inherits from <legacyItalic>MonoBehaviour</legacyItalic>.
                     Instances of <legacyItalic>MonoBehaviour</legacyItalic> cannot be instantiated in a normal way, they need to be added as a component to a
                     <legacyItalic>GameObject</legacyItalic>.
@@ -276,7 +276,7 @@ public class EnemyManager : MonoModule
                     Another special case is that only modules are automatically instantiated and initialized during startup (by the bootstrapper).
                     Any other type contained in a composition container is only instantiated when an actual instance is required (importing or explicit retrieval).
                     Therefore, if a type in a composition container is never imported nor requested, no instances of that type will be created.
-                <para>
+                </para>
                 <code language="cs">
                     <![CDATA[
 using RI.Framework.Composition;

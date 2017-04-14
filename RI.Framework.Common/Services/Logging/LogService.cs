@@ -42,6 +42,7 @@ namespace RI.Framework.Services.Logging
 		{
 			this.WritersManual = new List<ILogWriter>();
 
+			Singleton<LogService>.Ensure(() => this);
 			Singleton<ILogService>.Ensure(() => this);
 		}
 

@@ -44,7 +44,7 @@ namespace RI.Framework.StateMachines.Dispatchers
 		/// <exception cref="InvalidOperationException"> Neither <see cref="ServiceLocator" /> nor <see cref="Singleton{IDispatcherService}" /> could retrieve an instance of <see cref="IDispatcherService" />. </exception>
 		public DispatcherServiceStateDispatcher ()
 		{
-			this.DispatcherService = ServiceLocator.GetInstance<IDispatcherService>() ?? Singleton<IDispatcherService>.Instance;
+			this.DispatcherService = ServiceLocator.GetInstance<DispatcherService>() ?? ServiceLocator.GetInstance<IDispatcherService>() ?? Singleton<DispatcherService>.Instance ?? Singleton<IDispatcherService>.Instance;
 			if (this.DispatcherService == null)
 			{
 				throw new InvalidOperationException("Could not retrieve an instance of " + nameof(IDispatcherService) + " for " + this.GetType().Name + ".");

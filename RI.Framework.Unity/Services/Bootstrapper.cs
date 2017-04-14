@@ -353,6 +353,7 @@ namespace RI.Framework.Services
 		protected virtual void ConfigureBootstrapperSingletons ()
 		{
 			Singleton<Bootstrapper>.Ensure(() => this);
+			Singleton<IBootstrapper>.Ensure(() => this);
 			Singleton<CompositionContainer>.Ensure(() => this.Container);
 		}
 

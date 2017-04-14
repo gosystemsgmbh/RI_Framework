@@ -135,7 +135,13 @@ namespace RI.Framework.Utilities.Reflection
 		/// <returns>
 		///     The file of the assembly or null if the file could not be determined.
 		/// </returns>
+		/// <remarks>
+		///     <note type="important">
+		///         This method is only supported on Windows (without Store Apps) and Mac OS.
+		///     </note>
+		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="assembly" /> is null. </exception>
+		/// <exception cref="NotSupportedException"> Called on a platform other than Windows or Mac OS. </exception>
 		public static string GetFile (this Assembly assembly)
 		{
 			if (assembly == null)
@@ -143,11 +149,28 @@ namespace RI.Framework.Utilities.Reflection
 				throw new ArgumentNullException(nameof(assembly));
 			}
 
+#if PLATFORM_UNITY
+			
+			if  (
+				(UnityEngine.Application.platform != UnityEngine.RuntimePlatform.WindowsEditor) &&
+				(UnityEngine.Application.platform != UnityEngine.RuntimePlatform.WindowsPlayer) &&
+				(UnityEngine.Application.platform != UnityEngine.RuntimePlatform.OSXEditor) &&
+				(UnityEngine.Application.platform != UnityEngine.RuntimePlatform.OSXPlayer) &&
+				(UnityEngine.Application.platform != UnityEngine.RuntimePlatform.OSXDashboardPlayer)
+				)
+			{
+				throw new NotSupportedException(nameof(AssemblyExtensions.GetFile) + " is only supported on Windows and Mac OS.");
+			}
+
+#endif
+
 #if PLATFORM_NETFX
+
 			if (assembly.IsDynamic)
 			{
 				return null;
 			}
+
 #endif
 
 			string location;

@@ -35,7 +35,7 @@ namespace RI.Framework.Utilities.Threading
 		///     </para>
 		/// </remarks>
 		public ToDispatcher ()
-			: this(ServiceLocator.GetInstance<IDispatcherService>() ?? Singleton<IDispatcherService>.Instance, DispatcherPriority.Default)
+			: this(ServiceLocator.GetInstance<DispatcherService>() ?? ServiceLocator.GetInstance<IDispatcherService>() ?? Singleton<DispatcherService>.Instance ?? Singleton<IDispatcherService>.Instance, DispatcherPriority.Default)
 		{
 		}
 
@@ -49,7 +49,7 @@ namespace RI.Framework.Utilities.Threading
 		///     </para>
 		/// </remarks>
 		public ToDispatcher (DispatcherPriority priority)
-			: this(ServiceLocator.GetInstance<IDispatcherService>() ?? Singleton<IDispatcherService>.Instance, priority)
+			: this(ServiceLocator.GetInstance<DispatcherService>() ?? ServiceLocator.GetInstance<IDispatcherService>() ?? Singleton<DispatcherService>.Instance ?? Singleton<IDispatcherService>.Instance, priority)
 		{
 		}
 

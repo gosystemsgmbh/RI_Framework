@@ -453,6 +453,9 @@ namespace RI.Framework.Utilities.Threading
 							success = true;
 						}
 					}
+
+					xxx;
+					Thread.Sleep(10);
 				}
 				finally
 				{

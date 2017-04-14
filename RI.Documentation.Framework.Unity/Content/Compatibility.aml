@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<topic id="3ed0f7b3-a523-4371-9f63-dfe8ed821a65"
+       revisionNumber="1">
+    <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+                                 xmlns:xlink="http://www.w3.org/1999/xlink">
+
+        <introduction>
+            <para>
+                The Decoupling &amp; Utilities Framework is designed for Mono and IL2CPP backends.
+                AOT is fully supported within Unitys own AOT and IL2CPP related restrictions.
+            </para>
+            <para>
+                The framework has been fully tested on the following configurations:
+            </para>
+            <list class="bullet">
+                <listItem>
+                    <para>
+                        Windows (Standalone, Mono backend)
+                    </para>
+                </listItem>
+                <listItem>
+                    <para>
+                        Mac OS (Standalone, Mono backend)
+                    </para>
+                </listItem>
+                <listItem>
+                    <para>
+                        iOS (IL2CPP backend)
+                    </para>
+                </listItem>
+            </list>
+            <para>
+                The following types/members have platform restrictions:
+            </para>
+            <list class="bullet">
+                <listItem>
+                    <para>
+                        Method: <codeEntityReference qualifyHint="false">M:RI.Framework.IO.Paths.DirectoryPath.GetCurrentDirectory</codeEntityReference>: Only usable on Windows (without Store Apps) and Mac OS.
+                    </para>
+                </listItem>
+                <listItem>
+                    <para>
+                        Method: <codeEntityReference qualifyHint="false">M:RI.Framework.Utilities.Reflection.AssemblyExtensions.GetFile</codeEntityReference>: Only usable on Windows (without Store Apps) and Mac OS.
+                    </para>
+                </listItem>
+            </list>
+        </introduction>
+
+        <relatedTopics />
+
+    </developerConceptualDocument>
+</topic>

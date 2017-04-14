@@ -28,7 +28,7 @@ namespace RI.Test.Framework.Cases.Services.Dispatcher
 		[TestMethod]
 		public void Test_Broadcast ()
 		{
-			IDispatcherService test = ServiceLocator.GetInstance<IDispatcherService>();
+			DispatcherService test = ServiceLocator.GetInstance<DispatcherService>();
 
 			this.BroadcastTestValue = string.Empty;
 
@@ -60,7 +60,7 @@ namespace RI.Test.Framework.Cases.Services.Dispatcher
 		[TestMethod]
 		public void Test_Cascading ()
 		{
-			IDispatcherService test = ServiceLocator.GetInstance<IDispatcherService>();
+			DispatcherService test = ServiceLocator.GetInstance<DispatcherService>();
 
 			string testValue = string.Empty;
 
@@ -124,7 +124,7 @@ namespace RI.Test.Framework.Cases.Services.Dispatcher
 		[TestMethod]
 		public void Test_Stacking ()
 		{
-			IDispatcherService test = ServiceLocator.GetInstance<IDispatcherService>();
+			DispatcherService test = ServiceLocator.GetInstance<DispatcherService>();
 
 			string testValue = string.Empty;
 

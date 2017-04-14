@@ -45,6 +45,7 @@ namespace RI.Framework.Services.Modularization
 			this.ModulesManual = new List<IModule>();
 			this.ModulesUpdated = new List<IModule>();
 
+			Singleton<ModuleService>.Ensure(() => this);
 			Singleton<IModuleService>.Ensure(() => this);
 		}
 

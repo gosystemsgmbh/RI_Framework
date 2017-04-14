@@ -307,7 +307,10 @@ namespace RI.Framework.Utilities.Threading
 		{
 			while (true)
 			{
-				this.Send(new Action(() => { }));
+				xxx;
+				Thread.Sleep(100);
+
+				this.Send(new Action(this.VerifyRunning));
 
 				lock (this.SyncRoot)
 				{

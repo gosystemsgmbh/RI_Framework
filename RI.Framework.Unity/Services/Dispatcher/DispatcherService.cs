@@ -57,6 +57,7 @@ namespace RI.Framework.Services.Dispatcher
 
 			this.RegisterReceiver<DispatcherBroadcast>(this.HandleDispatcherBroadcast);
 
+			Singleton<DispatcherService>.Ensure(() => this);
 			Singleton<IDispatcherService>.Ensure(() => this);
 		}
 
