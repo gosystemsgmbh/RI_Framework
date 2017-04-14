@@ -30,6 +30,7 @@ namespace RI.Framework.Services.Modularization
 	///         The first created instance of <see cref="LogService" /> is set as the singleton instance for <see cref="Singleton{T}" />
 	///     </note>
 	/// </remarks>
+	[Export]
 	public sealed class ModuleService : IModuleService, IImporting
 	{
 		#region Instance Constructor/Destructor

@@ -4,8 +4,6 @@
 
 - [ ] Documentation
   - [ ] Review Reference
-- [ ] Cleanup
-  - [ ] ReSharper cleanup (after update to 2017.1 !)
 - [ ] Release
   - [ ] Final testing
   - [ ] Promotional material

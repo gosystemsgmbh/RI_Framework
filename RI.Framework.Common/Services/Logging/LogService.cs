@@ -30,6 +30,7 @@ namespace RI.Framework.Services.Logging
 	///         The first created instance of <see cref="LogService" /> is set as the singleton instance for <see cref="Singleton{T}" />
 	///     </note>
 	/// </remarks>
+	[Export]
 	public sealed class LogService : ILogService
 	{
 		#region Instance Constructor/Destructor

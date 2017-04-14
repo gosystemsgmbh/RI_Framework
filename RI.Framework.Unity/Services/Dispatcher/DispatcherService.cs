@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 
+using RI.Framework.Composition.Model;
 using RI.Framework.Utilities.ObjectModel;
 
 using UnityEngine;
@@ -25,6 +26,7 @@ namespace RI.Framework.Services.Dispatcher
 	///         The first created instance of <see cref="DispatcherService" /> is set as the singleton instance for <see cref="Singleton{T}" />
 	///     </note>
 	/// </remarks>
+	[Export]
 	public sealed class DispatcherService : IDispatcherService, ISynchronizable
 	{
 		#region Instance Constructor/Destructor

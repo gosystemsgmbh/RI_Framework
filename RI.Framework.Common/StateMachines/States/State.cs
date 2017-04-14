@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using RI.Framework.Composition.Model;
+
 
 
 
@@ -18,6 +20,7 @@ namespace RI.Framework.StateMachines
 	///         See <see cref="RegisterSignal{TSignal}" /> for details.
 	///     </note>
 	/// </remarks>
+	[Export]
 	public abstract class State : IState
 	{
 		#region Instance Constructor/Destructor

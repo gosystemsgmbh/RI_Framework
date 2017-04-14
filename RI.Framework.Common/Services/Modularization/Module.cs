@@ -1,4 +1,5 @@
-﻿using RI.Framework.Services.Logging;
+﻿using RI.Framework.Composition.Model;
+using RI.Framework.Services.Logging;
 
 
 
@@ -11,6 +12,7 @@ namespace RI.Framework.Services.Modularization
 	/// <para>
 	///     See <see cref="IModule" /> for more details.
 	/// </para>
+	[Export]
 	public abstract class Module : IModule
 	{
 		#region Instance Methods

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 
+using RI.Framework.Composition.Model;
 using RI.Framework.Utilities.ObjectModel;
 
 using UnityEngine;
@@ -21,6 +22,7 @@ namespace RI.Framework.Services.Logging
 	///         See <see cref="ILogWriter" /> for more details.
 	///     </para>
 	/// </remarks>
+	[Export]
 	public sealed class LogWriter : ILogWriter
 	{
 		#region Instance Constructor/Destructor

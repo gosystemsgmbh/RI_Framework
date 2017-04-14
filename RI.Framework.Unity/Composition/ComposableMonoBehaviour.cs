@@ -17,6 +17,7 @@ namespace RI.Framework.Composition
 	///         Instances of <see cref="ComposableMonoBehaviour" />s are not created using their constructor (as this would be the wrong way how to instantiate anything <c> MonoBehaviour </c>). Instead, <see cref="CreateInstance" /> is used.
 	///     </note>
 	/// </remarks>
+	[Export]
 	public abstract class ComposableMonoBehaviour : MonoBehaviour
 	{
 		#region Static Methods
