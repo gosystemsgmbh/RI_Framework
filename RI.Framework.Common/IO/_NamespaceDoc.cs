@@ -6,7 +6,7 @@
 namespace RI.Framework.IO
 {
 	/// <summary>
-	///     Contains utilities for working with I/O in general.
+	///     Contains general I/O utilities.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

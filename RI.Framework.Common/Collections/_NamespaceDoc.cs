@@ -6,7 +6,7 @@
 namespace RI.Framework.Collections
 {
 	/// <summary>
-	///     Contains utilities for working with collections in general.
+	///     Contains general collection utilities.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

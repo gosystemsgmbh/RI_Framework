@@ -107,7 +107,7 @@ namespace RI.Framework.Mathematic
 		/// <summary>
 		/// The arithmetic mean or average of all values.
 		/// </summary>
-		public double ArithmeticMean;
+		public float ArithmeticMean;
 
 		/// <summary>
 		/// The sum of all timesteps in the history.

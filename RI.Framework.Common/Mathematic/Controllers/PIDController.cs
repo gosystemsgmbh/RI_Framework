@@ -3,7 +3,7 @@
 
 
 
-namespace RI.Framework.Mathematic
+namespace RI.Framework.Mathematic.Controllers
 {
 	/// <summary>
 	/// Implements a PID controller.
@@ -22,10 +22,6 @@ namespace RI.Framework.Mathematic
 	/// When using PID controller, be aware of steady-state-error, integral windup, noise sensitivity, and instability/oscillation.
 	/// To increase stability, the output can be clamped using <see cref="OutputMin"/> and <see cref="OutputMax"/>.
 	/// Especially the differential component is sensitive to noise in the process variable, therefore the differential component is disabled by default (<see cref="KD"/> is 0.0).
-	/// </para>
-	/// <para>
-	/// <see cref="PIDController"/> can be used for discrete or continuous control.
-	/// Their usage can be mixed, using <see cref="ComputeNewSetPoint"/> or <see cref="ComputeNewSetPoint(float,float,float)"/> with a timestep of 1.0f for discrete control or <see cref="ComputeNewSetPoint(float,float,float)"/> for continuous control.
 	/// </para>
 	/// <para>
 	/// The following values are used after a new instance of <see cref="PIDController"/> is created or the controller has been reset using <see cref="Reset"/>:

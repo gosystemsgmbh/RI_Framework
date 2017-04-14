@@ -6,7 +6,7 @@
 namespace RI.Framework.Services.Modularization
 {
 	/// <summary>
-	///     Provides a service for modularizing an application.
+	///     Contains the module service.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

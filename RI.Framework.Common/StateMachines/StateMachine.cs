@@ -81,6 +81,7 @@ namespace RI.Framework.StateMachines
 	/// // reason: as the transition from null to StateA was not yet executed when the transition to StateB was issued,
 	/// // this transition was dispatched as a transition from null to StateB. However, when this transition is executed,
 	/// // it would be a transition from StateA to StateB and NOT from null to StateB as it was assumed at the time this transition was dispatched.
+	/// // ONLY STATES SHOULD ISSUE TRANSIENTS! USE SIGNALS FROM OUTSIDE!
 	/// stateMachine.Transient<StateB>();
 	/// 
 	/// // send a signal to StateA

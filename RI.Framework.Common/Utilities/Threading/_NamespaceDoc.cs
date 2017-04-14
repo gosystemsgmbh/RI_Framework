@@ -6,7 +6,7 @@
 namespace RI.Framework.Utilities.Threading
 {
 	/// <summary>
-	///     Contains utilities for working with threads.
+	///     Contains thread utilities.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

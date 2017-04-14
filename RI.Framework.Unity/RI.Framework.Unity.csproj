@@ -56,8 +56,8 @@
     <Compile Include="Services\Logging\LogWriter.cs" />
     <Compile Include="Services\Modularization\MonoModule.cs" />
     <Compile Include="StateMachines\DefaultStateMachineConfiguration.cs" />
-    <Compile Include="StateMachines\MonoState.cs" />
-    <Compile Include="StateMachines\DispatcherServiceStateDispatcher.cs" />
+    <Compile Include="StateMachines\States\MonoState.cs" />
+    <Compile Include="StateMachines\Dispatchers\DispatcherServiceStateDispatcher.cs" />
     <Compile Include="Utilities\GameObjectExtensions.cs" />
     <Compile Include="Utilities\Threading\ThreadMover.cs" />
     <Compile Include="Utilities\Threading\ToBackground.cs" />

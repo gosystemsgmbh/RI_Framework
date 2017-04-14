@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RotenInformatik\CrashReport.cs" />
+    <Compile Include="RotenInformatik\_NamespaceDoc.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\AssemblyName.snk" />

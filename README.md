@@ -5,8 +5,6 @@
 - [ ] Documentation
   - [ ] Review Reference
 - [ ] Cleanup
-  - [ ] Move Utilities\Wpf in RotenInformatik to RotenInformatik namespace
-  - [ ] Treeify some namespaces
   - [ ] ReSharper cleanup (after update to 2017.1 !)
 - [ ] Release
   - [ ] Final testing
@@ -19,7 +17,7 @@
 
 - [ ] Documentation
   - [ ] Unity: Uncomments after implementation (Utilities, DecouplingAdvanced)
-  - [ ] NetFx
+  - [ ] NetFx: Simple documentation
   - [ ] AOT/IL2CPP
   - [ ] Performance
   - [ ] Thread Safety

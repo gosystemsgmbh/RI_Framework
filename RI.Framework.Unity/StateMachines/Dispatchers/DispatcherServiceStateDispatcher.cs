@@ -7,7 +7,7 @@ using RI.Framework.Utilities.ObjectModel;
 
 
 
-namespace RI.Framework.StateMachines
+namespace RI.Framework.StateMachines.Dispatchers
 {
 	/// <summary>
 	/// Implements a default state machine operation dispatcher suitable for most scenarios.

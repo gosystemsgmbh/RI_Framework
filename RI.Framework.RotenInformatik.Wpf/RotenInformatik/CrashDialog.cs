@@ -4,13 +4,13 @@ using System.Text;
 using System.Windows;
 
 using RI.Framework.IO.Paths;
-using RI.Framework.RotenInformatik;
+using RI.Framework.Utilities;
 using RI.Framework.Utilities.Windows;
 
 
 
 
-namespace RI.Framework.Utilities.Wpf
+namespace RI.Framework.RotenInformatik
 {
 	/// <summary>
 	///     Shows a common dialog to notify users about crashes.

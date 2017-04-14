@@ -6,7 +6,7 @@
 namespace RI.Framework.Services.Logging
 {
 	/// <summary>
-	///     Provides a service to perform logging.
+	///     Contains the logging service.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

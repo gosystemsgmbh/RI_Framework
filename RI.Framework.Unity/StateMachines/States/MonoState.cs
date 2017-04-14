@@ -11,7 +11,7 @@ using Object = UnityEngine.Object;
 
 
 
-namespace RI.Framework.StateMachines
+namespace RI.Framework.StateMachines.States
 {
 	/// <summary>
 	///     Implements a base class which can be used for <c> MonoBehaviour </c> based state implementation.

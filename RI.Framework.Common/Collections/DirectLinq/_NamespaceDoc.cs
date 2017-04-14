@@ -6,7 +6,7 @@
 namespace RI.Framework.Collections.DirectLinq
 {
 	/// <summary>
-	///     Contains AOT-compatible replacements for LINQ.
+	///     Contains a LINQ replacement implementation.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

@@ -42,9 +42,13 @@
     <Compile Include="Composition\Catalogs\Test_ScriptingCatalog.cs" />
     <Compile Include="Services\Dispatcher\Test_DispatcherOperation.cs" />
     <Compile Include="Services\Dispatcher\Test_DispatcherService.cs" />
-    <Compile Include="Services\Modularization\Mock_MonoModules.cs" />
+    <Compile Include="Services\Modularization\Mock_ModuleB.cs" />
+    <Compile Include="Services\Modularization\Mock_ModuleA.cs" />
     <Compile Include="Services\Modularization\Test_MonoModule.cs" />
-    <Compile Include="StateMachines\Mock_MonoStates.cs" />
+    <Compile Include="StateMachines\Mock_State.cs" />
+    <Compile Include="StateMachines\Mock_State_A.cs" />
+    <Compile Include="StateMachines\Mock_State_B.cs" />
+    <Compile Include="StateMachines\Mock_State_C.cs" />
     <Compile Include="StateMachines\Test_MonoState.cs" />
     <Compile Include="Test_Common.cs" />
     <Compile Include="Utilities\Threading\Test_ThreadMover.cs" />

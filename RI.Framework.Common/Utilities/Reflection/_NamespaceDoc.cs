@@ -6,7 +6,7 @@
 namespace RI.Framework.Utilities.Reflection
 {
 	/// <summary>
-	///     Contains utilities for reflection.
+	///     Contains reflection utilities.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

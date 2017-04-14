@@ -6,7 +6,7 @@
 namespace RI.Framework.Services.Dispatcher
 {
 	/// <summary>
-	///     Provides a service to dispatch events, data, processing, and tasks.
+	///     Contains the dispatcher service.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

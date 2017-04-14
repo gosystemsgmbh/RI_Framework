@@ -39,7 +39,7 @@ namespace RI.Test.Framework.Mathematic
 			{
 				throw new TestAssertionException();
 			}
-			if (stats1.Average != 0.0)
+			if (stats1.ArithmeticMean != 0.0)
 			{
 				throw new TestAssertionException();
 			}
@@ -82,7 +82,7 @@ namespace RI.Test.Framework.Mathematic
 			{
 				throw new TestAssertionException();
 			}
-			if (stats2.Average != 2.0)
+			if (stats2.ArithmeticMean != 2.0)
 			{
 				throw new TestAssertionException();
 			}
@@ -125,7 +125,7 @@ namespace RI.Test.Framework.Mathematic
 			{
 				throw new TestAssertionException();
 			}
-			if (stats3.Average != 2.0)
+			if (stats3.ArithmeticMean != 2.0)
 			{
 				throw new TestAssertionException();
 			}
@@ -168,7 +168,7 @@ namespace RI.Test.Framework.Mathematic
 			{
 				throw new TestAssertionException();
 			}
-			if (stats4.Average != 6.5)
+			if (stats4.ArithmeticMean != 6.5)
 			{
 				throw new TestAssertionException();
 			}

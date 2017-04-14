@@ -6,7 +6,7 @@
 namespace RI.Framework.Utilities.Text
 {
 	/// <summary>
-	///     Contains utilities for string and text processing.
+	///     Contains string and text processing utilities.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

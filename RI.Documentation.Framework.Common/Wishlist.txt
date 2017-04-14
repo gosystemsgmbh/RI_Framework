@@ -300,6 +300,7 @@ Mathematic
 
  - (Common) Aggregate extensions for numerical types (byte, short, int, long, double, float), including statistics (min, max, sum, average, median, RMS, count)
 
+ - (Common) IController
  - (Common) NonlinearController
 
  - (Common) Bezier/Spline curves

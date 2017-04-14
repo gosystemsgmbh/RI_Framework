@@ -6,7 +6,7 @@
 namespace RI.Framework.Utilities.Randomizing
 {
 	/// <summary>
-	///     Contains utilities for randomizing.
+	///     Contains randomizing utilities.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

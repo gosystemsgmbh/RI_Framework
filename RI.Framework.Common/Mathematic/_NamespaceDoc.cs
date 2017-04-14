@@ -6,7 +6,7 @@
 namespace RI.Framework.Mathematic
 {
 	/// <summary>
-	///     Contains math utilities.
+	///     Contains general mathematical utilities.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

@@ -4,7 +4,7 @@ using System.Windows;
 
 
 
-namespace RI.Framework.Utilities.Wpf
+namespace RI.Framework.RotenInformatik
 {
 	internal partial class CrashDialogWindow : Window
 	{

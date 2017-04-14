@@ -7,9 +7,4 @@ namespace RI.Test.Framework.Cases.Services.Modularization
 	public sealed class Mock_ModuleA : MonoModule
 	{
 	}
-
-	[Export]
-	public sealed class Mock_ModuleB : MonoModule
-	{
-	}
 }
