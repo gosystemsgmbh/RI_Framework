@@ -19,7 +19,7 @@ namespace RI.Framework.Composition.Model
 	///         In cases where multiple values need to be imported, the property type (of the property <see cref="ImportAttribute" /> is applied to) must be <see cref="Import" /> and <see cref="ImportExtensions" /> must be used to access the actual imported values.
 	///     </para>
 	/// </remarks>
-	[AttributeUsage (AttributeTargets.Property)]
+	[AttributeUsage(AttributeTargets.Property)]
 	public sealed class ImportAttribute : Attribute
 	{
 		#region Instance Constructor/Destructor
@@ -103,9 +103,9 @@ namespace RI.Framework.Composition.Model
 		///     true if the decorated property is automatically updated, false otherwise.
 		/// </value>
 		/// <remarks>
-		/// <para>
-		/// The default value is true.
-		/// </para>
+		///     <para>
+		///         The default value is true.
+		///     </para>
 		///     <note type="note">
 		///         Automatic reimport is only performed if the object, to which the decorated property belongs, is itself an export of the corresponding <see cref="CompositionContainer" />.
 		///     </note>

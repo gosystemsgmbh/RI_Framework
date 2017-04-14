@@ -285,7 +285,7 @@ namespace RI.Framework.IO.INI
 			this.WriteInternal(value);
 		}
 
-		[SuppressMessage ("ReSharper", "UnusedParameter.Local")]
+		[SuppressMessage("ReSharper", "UnusedParameter.Local")]
 		private void Dispose (bool disposing)
 		{
 			if (this.BaseWriter != null)

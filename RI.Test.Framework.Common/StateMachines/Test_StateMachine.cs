@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using RI.Framework.Composition;
 using RI.Framework.StateMachines;
@@ -16,348 +12,10 @@ namespace RI.Test.Framework.StateMachines
 	[TestClass]
 	public sealed class Test_StateMachine
 	{
-		//DispatcherServiceStateDispatcher (Unity)
-		//MonoState (Unity)
+		#region Instance Methods
 
 		[TestMethod]
-		public void WithoutDispatcher_Test ()
-		{
-			Mock_State.TestValue = "";
-
-			StateMachineConfiguration config = new StateMachineConfiguration();
-			StateMachine test = new StateMachine(config);
-
-			if (test.State != null)
-			{
-				throw new TestAssertionException();
-			}
-			if (Mock_State.TestValue != "")
-			{
-				throw new TestAssertionException();
-			}
-
-			test.Signal("#1");
-
-			if (Mock_State.TestValue != "")
-			{
-				throw new TestAssertionException();
-			}
-			
-			test.Transient(typeof(Mock_State_A));
-
-			if (!(test.State is Mock_State_A))
-			{
-				throw new TestAssertionException();
-			}
-			if (Mock_State.TestValue != "iAeA")
-			{
-				throw new TestAssertionException();
-			}
-
-			test.Signal("#2");
-
-			if (Mock_State.TestValue != "iAeA#2")
-			{
-				throw new TestAssertionException();
-			}
-
-			test.Transient(typeof(Mock_State_B));
-
-			if (!(test.State is Mock_State_B))
-			{
-				throw new TestAssertionException();
-			}
-			if (Mock_State.TestValue != "iAeA#2iBlAeB")
-			{
-				throw new TestAssertionException();
-			}
-
-			test.Signal("#3");
-
-			if (Mock_State.TestValue != "iAeA#2iBlAeB#3")
-			{
-				throw new TestAssertionException();
-			}
-
-			test.Transient(typeof(Mock_State_C));
-
-			if (!(test.State is Mock_State_C))
-			{
-				throw new TestAssertionException();
-			}
-			if (Mock_State.TestValue != "iAeA#2iBlAeB#3iClBeC")
-			{
-				throw new TestAssertionException();
-			}
-
-			test.Signal("#4");
-
-			if (Mock_State.TestValue != "iAeA#2iBlAeB#3iClBeC#4")
-			{
-				throw new TestAssertionException();
-			}
-
-			test.Transient(null);
-
-			if (test.State != null)
-			{
-				throw new TestAssertionException();
-			}
-			if (Mock_State.TestValue != "iAeA#2iBlAeB#3iClBeC#4lC")
-			{
-				throw new TestAssertionException();
-			}
-
-			test.Signal("#5");
-
-			if (Mock_State.TestValue != "iAeA#2iBlAeB#3iClBeC#4lC")
-			{
-				throw new TestAssertionException();
-			}
-		}
-
-		[TestMethod]
-		public void WithDispatcher_Test ()
-		{
-			Mock_State.TestValue = "";
-			
-			HeavyThreadDispatcher htd = new HeavyThreadDispatcher();
-			ThreadDispatcherStateDispatcher dispatcher = new ThreadDispatcherStateDispatcher(htd);
-			StateMachineConfiguration config = new StateMachineConfiguration();
-			config.Dispatcher = dispatcher;
-			StateMachine test = new StateMachine(config);
-
-			htd.Start();
-
-			if (test.State != null)
-			{
-				throw new TestAssertionException();
-			}
-			if (Mock_State.TestValue != "")
-			{
-				throw new TestAssertionException();
-			}
-
-			test.Signal("#1");
-			htd.DoProcessing();
-
-			if (Mock_State.TestValue != "")
-			{
-				throw new TestAssertionException();
-			}
-
-			test.Transient(typeof(Mock_State_A));
-			htd.DoProcessing();
-
-			if (!(test.State is Mock_State_A))
-			{
-				throw new TestAssertionException();
-			}
-			if (Mock_State.TestValue != "iAeA")
-			{
-				throw new TestAssertionException();
-			}
-
-			test.Signal("#2");
-			htd.DoProcessing();
-
-			if (Mock_State.TestValue != "iAeA#2")
-			{
-				throw new TestAssertionException();
-			}
-
-			test.Transient(typeof(Mock_State_B));
-			htd.DoProcessing();
-
-			if (!(test.State is Mock_State_B))
-			{
-				throw new TestAssertionException();
-			}
-			if (Mock_State.TestValue != "iAeA#2iBlAeB")
-			{
-				throw new TestAssertionException();
-			}
-
-			test.Signal("#3");
-			htd.DoProcessing();
-
-			if (Mock_State.TestValue != "iAeA#2iBlAeB#3")
-			{
-				throw new TestAssertionException();
-			}
-
-			test.Transient(typeof(Mock_State_C));
-			htd.DoProcessing();
-
-			if (!(test.State is Mock_State_C))
-			{
-				throw new TestAssertionException();
-			}
-			if (Mock_State.TestValue != "iAeA#2iBlAeB#3iClBeC")
-			{
-				throw new TestAssertionException();
-			}
-
-			test.Signal("#4");
-			htd.DoProcessing();
-
-			if (Mock_State.TestValue != "iAeA#2iBlAeB#3iClBeC#4")
-			{
-				throw new TestAssertionException();
-			}
-
-			test.Transient(null);
-			htd.DoProcessing();
-
-			if (test.State != null)
-			{
-				throw new TestAssertionException();
-			}
-			if (Mock_State.TestValue != "iAeA#2iBlAeB#3iClBeC#4lC")
-			{
-				throw new TestAssertionException();
-			}
-
-			test.Signal("#5");
-			htd.DoProcessing();
-
-			if (Mock_State.TestValue != "iAeA#2iBlAeB#3iClBeC#4lC")
-			{
-				throw new TestAssertionException();
-			}
-		}
-
-		[TestMethod]
-		public void Inherited_Test()
-		{
-			Mock_State.TestValue = "";
-
-			HeavyThreadDispatcher htd = new HeavyThreadDispatcher();
-			ThreadDispatcherStateDispatcher dispatcher = new ThreadDispatcherStateDispatcher(htd);
-			StateMachineConfiguration config = new StateMachineConfiguration();
-			config.Dispatcher = dispatcher;
-			config.EnableAutomaticCaching = false;
-			StateMachine test = new StateMachine(config);
-
-			htd.Start();
-
-			if (test.State != null)
-			{
-				throw new TestAssertionException();
-			}
-			if (Mock_State.TestValue != "")
-			{
-				throw new TestAssertionException();
-			}
-
-			test.Signal(1);
-			htd.DoProcessing();
-
-			if (Mock_State.TestValue != "")
-			{
-				throw new TestAssertionException();
-			}
-
-			test.Transient<Mock_State_D1>();
-			htd.DoProcessing();
-
-			if (!(test.State is Mock_State_D1))
-			{
-				throw new TestAssertionException();
-			}
-			if (Mock_State.TestValue != "iDiD1eDeD1")
-			{
-				throw new TestAssertionException();
-			}
-
-			test.Signal(2);
-			htd.DoProcessing();
-
-			if (Mock_State.TestValue != "iDiD1eDeD1sDsD1")
-			{
-				throw new TestAssertionException();
-			}
-
-			test.Transient<Mock_State_D2>();
-			htd.DoProcessing();
-
-			if (!(test.State is Mock_State_D2))
-			{
-				throw new TestAssertionException();
-			}
-			if (Mock_State.TestValue != "iDiD1eDeD1sDsD1iDiD2lDlD1eDeD2")
-			{
-				throw new TestAssertionException();
-			}
-
-			Mock_State.TestValue = "";
-
-			test.Signal(3);
-			htd.DoProcessing();
-
-			if (Mock_State.TestValue != "sDsD2***iDiD3lDlD2eDeD3###iDiD1lDlD3eDeD1")
-			{
-				throw new TestAssertionException();
-			}
-		}
-
-		[TestMethod]
-		public void Signals_Test()
-		{
-			Mock_State.TestValue = "";
-
-			StateMachineConfiguration config = new StateMachineConfiguration();
-			StateMachine test = new StateMachine(config);
-
-			test.Transient<Mock_State_E>();
-
-			if (!(test.State is Mock_State_E))
-			{
-				throw new TestAssertionException();
-			}
-			if (Mock_State.TestValue != "")
-			{
-				throw new TestAssertionException();
-			}
-
-			test.Signal("1");
-
-			if (Mock_State.TestValue != "1")
-			{
-				throw new TestAssertionException();
-			}
-
-			test.Signal("2");
-
-			if (Mock_State.TestValue != "12")
-			{
-				throw new TestAssertionException();
-			}
-
-			test.Signal("3");
-
-			if (Mock_State.TestValue != "123")
-			{
-				throw new TestAssertionException();
-			}
-
-			test.Signal("X");
-
-			if (Mock_State.TestValue != "123X")
-			{
-				throw new TestAssertionException();
-			}
-
-			test.Signal("4");
-
-			if (Mock_State.TestValue != "123X")
-			{
-				throw new TestAssertionException();
-			}
-		}
-
-		[TestMethod]
-		public void CachingResolver_Test()
+		public void CachingResolver_Test ()
 		{
 			Mock_State.TestValue = "";
 
@@ -496,5 +154,346 @@ namespace RI.Test.Framework.StateMachines
 				throw new TestAssertionException();
 			}
 		}
+
+		[TestMethod]
+		public void Inherited_Test ()
+		{
+			Mock_State.TestValue = "";
+
+			HeavyThreadDispatcher htd = new HeavyThreadDispatcher();
+			ThreadDispatcherStateDispatcher dispatcher = new ThreadDispatcherStateDispatcher(htd);
+			StateMachineConfiguration config = new StateMachineConfiguration();
+			config.Dispatcher = dispatcher;
+			config.EnableAutomaticCaching = false;
+			StateMachine test = new StateMachine(config);
+
+			htd.Start();
+
+			if (test.State != null)
+			{
+				throw new TestAssertionException();
+			}
+			if (Mock_State.TestValue != "")
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Signal(1);
+			htd.DoProcessing();
+
+			if (Mock_State.TestValue != "")
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Transient<Mock_State_D1>();
+			htd.DoProcessing();
+
+			if (!(test.State is Mock_State_D1))
+			{
+				throw new TestAssertionException();
+			}
+			if (Mock_State.TestValue != "iDiD1eDeD1")
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Signal(2);
+			htd.DoProcessing();
+
+			if (Mock_State.TestValue != "iDiD1eDeD1sDsD1")
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Transient<Mock_State_D2>();
+			htd.DoProcessing();
+
+			if (!(test.State is Mock_State_D2))
+			{
+				throw new TestAssertionException();
+			}
+			if (Mock_State.TestValue != "iDiD1eDeD1sDsD1iDiD2lDlD1eDeD2")
+			{
+				throw new TestAssertionException();
+			}
+
+			Mock_State.TestValue = "";
+
+			test.Signal(3);
+			htd.DoProcessing();
+
+			if (Mock_State.TestValue != "sDsD2***iDiD3lDlD2eDeD3###iDiD1lDlD3eDeD1")
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void Signals_Test ()
+		{
+			Mock_State.TestValue = "";
+
+			StateMachineConfiguration config = new StateMachineConfiguration();
+			StateMachine test = new StateMachine(config);
+
+			test.Transient<Mock_State_E>();
+
+			if (!(test.State is Mock_State_E))
+			{
+				throw new TestAssertionException();
+			}
+			if (Mock_State.TestValue != "")
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Signal("1");
+
+			if (Mock_State.TestValue != "1")
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Signal("2");
+
+			if (Mock_State.TestValue != "12")
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Signal("3");
+
+			if (Mock_State.TestValue != "123")
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Signal("X");
+
+			if (Mock_State.TestValue != "123X")
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Signal("4");
+
+			if (Mock_State.TestValue != "123X")
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void WithDispatcher_Test ()
+		{
+			Mock_State.TestValue = "";
+
+			HeavyThreadDispatcher htd = new HeavyThreadDispatcher();
+			ThreadDispatcherStateDispatcher dispatcher = new ThreadDispatcherStateDispatcher(htd);
+			StateMachineConfiguration config = new StateMachineConfiguration();
+			config.Dispatcher = dispatcher;
+			StateMachine test = new StateMachine(config);
+
+			htd.Start();
+
+			if (test.State != null)
+			{
+				throw new TestAssertionException();
+			}
+			if (Mock_State.TestValue != "")
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Signal("#1");
+			htd.DoProcessing();
+
+			if (Mock_State.TestValue != "")
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Transient(typeof(Mock_State_A));
+			htd.DoProcessing();
+
+			if (!(test.State is Mock_State_A))
+			{
+				throw new TestAssertionException();
+			}
+			if (Mock_State.TestValue != "iAeA")
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Signal("#2");
+			htd.DoProcessing();
+
+			if (Mock_State.TestValue != "iAeA#2")
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Transient(typeof(Mock_State_B));
+			htd.DoProcessing();
+
+			if (!(test.State is Mock_State_B))
+			{
+				throw new TestAssertionException();
+			}
+			if (Mock_State.TestValue != "iAeA#2iBlAeB")
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Signal("#3");
+			htd.DoProcessing();
+
+			if (Mock_State.TestValue != "iAeA#2iBlAeB#3")
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Transient(typeof(Mock_State_C));
+			htd.DoProcessing();
+
+			if (!(test.State is Mock_State_C))
+			{
+				throw new TestAssertionException();
+			}
+			if (Mock_State.TestValue != "iAeA#2iBlAeB#3iClBeC")
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Signal("#4");
+			htd.DoProcessing();
+
+			if (Mock_State.TestValue != "iAeA#2iBlAeB#3iClBeC#4")
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Transient(null);
+			htd.DoProcessing();
+
+			if (test.State != null)
+			{
+				throw new TestAssertionException();
+			}
+			if (Mock_State.TestValue != "iAeA#2iBlAeB#3iClBeC#4lC")
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Signal("#5");
+			htd.DoProcessing();
+
+			if (Mock_State.TestValue != "iAeA#2iBlAeB#3iClBeC#4lC")
+			{
+				throw new TestAssertionException();
+			}
+		}
+		//DispatcherServiceStateDispatcher (Unity)
+		//MonoState (Unity)
+
+		[TestMethod]
+		public void WithoutDispatcher_Test ()
+		{
+			Mock_State.TestValue = "";
+
+			StateMachineConfiguration config = new StateMachineConfiguration();
+			StateMachine test = new StateMachine(config);
+
+			if (test.State != null)
+			{
+				throw new TestAssertionException();
+			}
+			if (Mock_State.TestValue != "")
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Signal("#1");
+
+			if (Mock_State.TestValue != "")
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Transient(typeof(Mock_State_A));
+
+			if (!(test.State is Mock_State_A))
+			{
+				throw new TestAssertionException();
+			}
+			if (Mock_State.TestValue != "iAeA")
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Signal("#2");
+
+			if (Mock_State.TestValue != "iAeA#2")
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Transient(typeof(Mock_State_B));
+
+			if (!(test.State is Mock_State_B))
+			{
+				throw new TestAssertionException();
+			}
+			if (Mock_State.TestValue != "iAeA#2iBlAeB")
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Signal("#3");
+
+			if (Mock_State.TestValue != "iAeA#2iBlAeB#3")
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Transient(typeof(Mock_State_C));
+
+			if (!(test.State is Mock_State_C))
+			{
+				throw new TestAssertionException();
+			}
+			if (Mock_State.TestValue != "iAeA#2iBlAeB#3iClBeC")
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Signal("#4");
+
+			if (Mock_State.TestValue != "iAeA#2iBlAeB#3iClBeC#4")
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Transient(null);
+
+			if (test.State != null)
+			{
+				throw new TestAssertionException();
+			}
+			if (Mock_State.TestValue != "iAeA#2iBlAeB#3iClBeC#4lC")
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Signal("#5");
+
+			if (Mock_State.TestValue != "iAeA#2iBlAeB#3iClBeC#4lC")
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		#endregion
 	}
 }

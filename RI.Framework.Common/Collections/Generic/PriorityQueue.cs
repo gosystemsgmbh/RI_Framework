@@ -31,23 +31,23 @@ namespace RI.Framework.Collections.Generic
 	/// </remarks>
 	/// <example>
 	///     <code language="cs">
-	/// <![CDATA[
-	/// // create the queue
-	/// var queue = new PriorityQueue<string>();
-	/// 
-	/// // add some items with different priorities
-	/// queue.Enqueue("this", 0);
-	/// queue.Enqueue("queue", 101);
-	/// queue.Enqueue("is", 10);
-	/// queue.Enqueue("a", 100);
-	/// 
-	/// // dequeue items, we get: this, is, a, queue
-	/// while(queue.Count > 0)
-	/// {
-	///		string value = queue.Dequeue();
-	/// }
-	/// ]]>
-	/// </code>
+	///  <![CDATA[
+	///  // create the queue
+	///  var queue = new PriorityQueue<string>();
+	///  
+	///  // add some items with different priorities
+	///  queue.Enqueue("this", 0);
+	///  queue.Enqueue("queue", 101);
+	///  queue.Enqueue("is", 10);
+	///  queue.Enqueue("a", 100);
+	///  
+	///  // dequeue items, we get: this, is, a, queue
+	///  while(queue.Count > 0)
+	///  {
+	/// 		string value = queue.Dequeue();
+	///  }
+	///  ]]>
+	///  </code>
 	/// </example>
 	public sealed class PriorityQueue <T> : ICollection, IEnumerable<T>, IEnumerable, ISynchronizable
 	{
@@ -119,7 +119,7 @@ namespace RI.Framework.Collections.Generic
 		///     </para>
 		/// </remarks>
 		/// <exception cref="InvalidOperationException"> The priority queue is empty. </exception>
-		public T Dequeue()
+		public T Dequeue ()
 		{
 			int priority;
 			return this.Get(true, out priority);
@@ -154,7 +154,7 @@ namespace RI.Framework.Collections.Generic
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="priority" /> is less than zero. </exception>
-		[SuppressMessage ("ReSharper", "PossibleNullReferenceException")]
+		[SuppressMessage("ReSharper", "PossibleNullReferenceException")]
 		public void Enqueue (T item, int priority)
 		{
 			if (priority < 0)
@@ -232,7 +232,7 @@ namespace RI.Framework.Collections.Generic
 		///     </para>
 		/// </remarks>
 		/// <exception cref="InvalidOperationException"> The priority queue is empty. </exception>
-		public T Peek()
+		public T Peek ()
 		{
 			int priority;
 			return this.Get(false, out priority);
@@ -338,6 +338,13 @@ namespace RI.Framework.Collections.Generic
 				node = node.Previous;
 			}
 		}
+
+		#endregion
+
+
+
+
+		#region Interface: ISynchronizable
 
 		/// <inheritdoc />
 		bool ISynchronizable.IsSynchronized => false;

@@ -284,30 +284,6 @@ namespace RI.Framework.Services
 		public Guid ApplicationIdVersionIndependent { get; private set; }
 
 		/// <summary>
-		///     Gets the anonymized GUID of the local machine.
-		/// </summary>
-		/// <value>
-		///     The anonymized GUID of the local machine.
-		/// </value>
-		public Guid MachineId { get; private set; }
-
-		/// <summary>
-		///     Gets the anonymized GUID of the current user.
-		/// </summary>
-		/// <value>
-		///     The anonymized GUID of the current user.
-		/// </value>
-		public Guid UserId { get; private set; }
-
-		/// <summary>
-		///     Gets the anonymized GUID of the domain this machine belongs to.
-		/// </summary>
-		/// <value>
-		///     The anonymized GUID of the domain this machine belongs to.
-		/// </value>
-		public Guid DomainId { get; private set; }
-
-		/// <summary>
 		///     Gets the product name of the application.
 		/// </summary>
 		/// <value>
@@ -332,12 +308,44 @@ namespace RI.Framework.Services
 		public CompositionContainer Container { get; private set; }
 
 		/// <summary>
+		///     Gets the anonymized GUID of the domain this machine belongs to.
+		/// </summary>
+		/// <value>
+		///     The anonymized GUID of the domain this machine belongs to.
+		/// </value>
+		public Guid DomainId { get; private set; }
+
+		/// <summary>
+		///     Gets whether the program is executed on a 64 bit machine.
+		/// </summary>
+		/// <value>
+		///     true if executed on a 64 bit machine, false otherwise.
+		/// </value>
+		public bool Machine64Bit { get; private set; }
+
+		/// <summary>
+		///     Gets the anonymized GUID of the local machine.
+		/// </summary>
+		/// <value>
+		///     The anonymized GUID of the local machine.
+		/// </value>
+		public Guid MachineId { get; private set; }
+
+		/// <summary>
 		///     Gets the command line which was used for the current process.
 		/// </summary>
 		/// <value>
 		///     The command line which was used for the current process.
 		/// </value>
 		public CommandLine ProcessCommandLine { get; private set; }
+
+		/// <summary>
+		///     Gets whether the program is executed in a 64 bit process.
+		/// </summary>
+		/// <value>
+		///     true if executed in a 64 bit process, false otherwise.
+		/// </value>
+		public bool Session64Bit { get; private set; }
 
 		/// <summary>
 		///     Gets the GUID of the current session.
@@ -364,20 +372,12 @@ namespace RI.Framework.Services
 		public WpfBootstrapperState State { get; private set; }
 
 		/// <summary>
-		/// Gets whether the program is executed on a 64 bit machine.
+		///     Gets the anonymized GUID of the current user.
 		/// </summary>
 		/// <value>
-		/// true if executed on a 64 bit machine, false otherwise.
+		///     The anonymized GUID of the current user.
 		/// </value>
-		public bool Machine64Bit { get; private set; }
-
-		/// <summary>
-		/// Gets whether the program is executed in a 64 bit process.
-		/// </summary>
-		/// <value>
-		/// true if executed in a 64 bit process, false otherwise.
-		/// </value>
-		public bool Session64Bit { get; private set; }
+		public Guid UserId { get; private set; }
 
 		private bool ShutdownInitiated { get; set; }
 
@@ -422,7 +422,7 @@ namespace RI.Framework.Services
 			this.Log(LogLevel.Debug, new string('-', 200));
 		}
 
-		[SuppressMessage ("ReSharper", "EmptyGeneralCatchClause")]
+		[SuppressMessage("ReSharper", "EmptyGeneralCatchClause")]
 		private void HandleExceptionInternal (Exception exception)
 		{
 			try
@@ -493,20 +493,20 @@ namespace RI.Framework.Services
 		protected virtual void BeginRun ()
 		{
 			this.Application.Dispatcher.BeginInvoke(DispatcherPriority.SystemIdle, new Action(() =>
-			                                                                                  {
-				                                                                                  this.LogSeperator();
-				                                                                                  this.Log(LogLevel.Debug, "Initializing modules");
+			{
+				this.LogSeperator();
+				this.Log(LogLevel.Debug, "Initializing modules");
 
-				                                                                                  this.Container.GetExport<IModuleService>()?.Initialize();
+				this.Container.GetExport<IModuleService>()?.Initialize();
 
-				                                                                                  this.Application.Dispatcher.BeginInvoke(DispatcherPriority.SystemIdle, new Action(() =>
-				                                                                                                                                                                    {
-					                                                                                                                                                                    this.LogSeperator();
-					                                                                                                                                                                    this.Log(LogLevel.Debug, "Beginning operations");
+				this.Application.Dispatcher.BeginInvoke(DispatcherPriority.SystemIdle, new Action(() =>
+				{
+					this.LogSeperator();
+					this.Log(LogLevel.Debug, "Beginning operations");
 
-					                                                                                                                                                                    this.BeginOperations();
-				                                                                                                                                                                    }));
-			                                                                                  }));
+					this.BeginOperations();
+				}));
+			}));
 		}
 
 		/// <summary>
@@ -540,6 +540,21 @@ namespace RI.Framework.Services
 		protected virtual void ConfigureBootstrapper ()
 		{
 			this.Container.AddCatalog(new InstanceCatalog(this));
+		}
+
+		/// <summary>
+		///     Called when the bootstrapper singletons are to be configured.
+		/// </summary>
+		/// <remarks>
+		///     <note type="implement">
+		///         The default implementation sets the singleton instance for <see cref="WpfBootstrapper" />, <see cref="CompositionContainer" /> (<see cref="Container" />), and <see cref="System.Windows.Application" /> (<see cref="Application" />) using <see cref="Singleton{T}" />.
+		///     </note>
+		/// </remarks>
+		protected virtual void ConfigureBootstrapperSingletons ()
+		{
+			Singleton<WpfBootstrapper>.Ensure(() => this);
+			Singleton<CompositionContainer>.Ensure(() => this.Container);
+			Singleton<Application>.Ensure(() => this.Application);
 		}
 
 		/// <summary>
@@ -593,21 +608,6 @@ namespace RI.Framework.Services
 		}
 
 		/// <summary>
-		/// Called when the bootstrapper singletons are to be configured.
-		/// </summary>
-		/// <remarks>
-		///     <note type="implement">
-		///         The default implementation sets the singleton instance for <see cref="WpfBootstrapper"/>, <see cref="CompositionContainer"/> (<see cref="Container"/>), and <see cref="System.Windows.Application"/> (<see cref="Application"/>) using <see cref="Singleton{T}"/>.
-		///     </note>
-		/// </remarks>
-		protected virtual void ConfigureBootstrapperSingletons()
-		{
-			Singleton<WpfBootstrapper>.Ensure(() => this);
-			Singleton<CompositionContainer>.Ensure(() => this.Container);
-			Singleton<Application>.Ensure(() => this.Application);
-		}
-
-		/// <summary>
 		///     Called when all the other services of the application need to be configured.
 		/// </summary>
 		/// <remarks>
@@ -617,6 +617,33 @@ namespace RI.Framework.Services
 		/// </remarks>
 		protected virtual void ConfigureServices ()
 		{
+		}
+
+		/// <summary>
+		///     Creates a dictionary which contains anonymous data which can be used as additional data for crash reports.
+		/// </summary>
+		/// <returns>
+		///     The dictionary which contains additional data for crash reports.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         The dictionary uses <see cref="StringComparerEx.InvariantCultureIgnoreCase" /> for its keys.
+		///     </para>
+		/// </remarks>
+		protected virtual Dictionary<string, string> CreateAdditionalDataForCrashReport ()
+		{
+			Dictionary<string, string> additionalData = new Dictionary<string, string>(StringComparerEx.InvariantCultureIgnoreCase);
+			additionalData.Add(nameof(this.ApplicationProductName), this.ApplicationProductName);
+			additionalData.Add(nameof(this.ApplicationVersion), this.ApplicationVersion.ToString(4));
+			additionalData.Add(nameof(this.UserId), this.UserId.ToString("N", CultureInfo.InvariantCulture));
+			additionalData.Add(nameof(this.DomainId), this.DomainId.ToString("N", CultureInfo.InvariantCulture));
+			additionalData.Add(nameof(this.MachineId), this.MachineId.ToString("N", CultureInfo.InvariantCulture));
+			additionalData.Add(nameof(this.Machine64Bit), this.Machine64Bit.ToString());
+			additionalData.Add(nameof(this.Session64Bit), this.Session64Bit.ToString());
+			additionalData.Add(nameof(this.SessionId), this.SessionId.ToString("N", CultureInfo.InvariantCulture));
+			additionalData.Add(nameof(this.SessionTimestamp), this.SessionTimestamp.ToSortableString('-'));
+			additionalData.Add(nameof(this.ProcessCommandLine), this.ProcessCommandLine.ToString());
+			return additionalData;
 		}
 
 		/// <summary>
@@ -773,54 +800,6 @@ namespace RI.Framework.Services
 		}
 
 		/// <summary>
-		///     Called to determine the GUID of the local machine.
-		/// </summary>
-		/// <returns>
-		///     The GUID of the local machine.
-		/// </returns>
-		/// <remarks>
-		///     <note type="implement">
-		///         The default implementation uses <see cref="UniqueIdentification" />.<see cref="UniqueIdentification.GetMachineId" />.
-		///     </note>
-		/// </remarks>
-		protected virtual Guid DetermineMachineId()
-		{
-			return UniqueIdentification.GetMachineId();
-		}
-
-		/// <summary>
-		///     Called to determine the GUID of the current user.
-		/// </summary>
-		/// <returns>
-		///     The GUID of the current user.
-		/// </returns>
-		/// <remarks>
-		///     <note type="implement">
-		///         The default implementation uses <see cref="UniqueIdentification" />.<see cref="UniqueIdentification.GetUserId" />.
-		///     </note>
-		/// </remarks>
-		protected virtual Guid DetermineUserId()
-		{
-			return UniqueIdentification.GetUserId();
-		}
-
-		/// <summary>
-		///     Called to determine the GUID of the domain this machine belongs to.
-		/// </summary>
-		/// <returns>
-		///     The GUID of the the domain this machine belongs to.
-		/// </returns>
-		/// <remarks>
-		///     <note type="implement">
-		///         The default implementation uses <see cref="UniqueIdentification" />.<see cref="UniqueIdentification.GetDomainId" />.
-		///     </note>
-		/// </remarks>
-		protected virtual Guid DetermineDomainId()
-		{
-			return UniqueIdentification.GetDomainId();
-		}
-
-		/// <summary>
 		///     Called to determine the product name of the application (<see cref="ApplicationProductName" />).
 		/// </summary>
 		/// <returns>
@@ -852,6 +831,38 @@ namespace RI.Framework.Services
 		protected virtual Version DetermineApplicationVersion ()
 		{
 			return (this.ApplicationAssembly.GetAssemblyVersion() ?? this.ApplicationAssembly.GetFileVersion()) ?? this.ApplicationAssembly.GetInformationalVersion();
+		}
+
+		/// <summary>
+		///     Called to determine the GUID of the domain this machine belongs to.
+		/// </summary>
+		/// <returns>
+		///     The GUID of the the domain this machine belongs to.
+		/// </returns>
+		/// <remarks>
+		///     <note type="implement">
+		///         The default implementation uses <see cref="UniqueIdentification" />.<see cref="UniqueIdentification.GetDomainId" />.
+		///     </note>
+		/// </remarks>
+		protected virtual Guid DetermineDomainId ()
+		{
+			return UniqueIdentification.GetDomainId();
+		}
+
+		/// <summary>
+		///     Called to determine the GUID of the local machine.
+		/// </summary>
+		/// <returns>
+		///     The GUID of the local machine.
+		/// </returns>
+		/// <remarks>
+		///     <note type="implement">
+		///         The default implementation uses <see cref="UniqueIdentification" />.<see cref="UniqueIdentification.GetMachineId" />.
+		///     </note>
+		/// </remarks>
+		protected virtual Guid DetermineMachineId ()
+		{
+			return UniqueIdentification.GetMachineId();
 		}
 
 		/// <summary>
@@ -900,6 +911,22 @@ namespace RI.Framework.Services
 		protected virtual DateTime DetermineSessionTimestamp ()
 		{
 			return DateTime.Now;
+		}
+
+		/// <summary>
+		///     Called to determine the GUID of the current user.
+		/// </summary>
+		/// <returns>
+		///     The GUID of the current user.
+		/// </returns>
+		/// <remarks>
+		///     <note type="implement">
+		///         The default implementation uses <see cref="UniqueIdentification" />.<see cref="UniqueIdentification.GetUserId" />.
+		///     </note>
+		/// </remarks>
+		protected virtual Guid DetermineUserId ()
+		{
+			return UniqueIdentification.GetUserId();
 		}
 
 		/// <summary>
@@ -983,33 +1010,6 @@ namespace RI.Framework.Services
 		/// </remarks>
 		protected virtual void ShowSplashScreen ()
 		{
-		}
-
-		/// <summary>
-		/// Creates a dictionary which contains anonymous data which can be used as additional data for crash reports.
-		/// </summary>
-		/// <returns>
-		/// The dictionary which contains additional data for crash reports.
-		/// </returns>
-		/// <remarks>
-		/// <para>
-		/// The dictionary uses <see cref="StringComparerEx.InvariantCultureIgnoreCase"/> for its keys.
-		/// </para>
-		/// </remarks>
-		protected virtual Dictionary<string, string> CreateAdditionalDataForCrashReport ()
-		{
-			Dictionary<string, string> additionalData = new Dictionary<string, string>(StringComparerEx.InvariantCultureIgnoreCase);
-			additionalData.Add(nameof(this.ApplicationProductName), this.ApplicationProductName);
-			additionalData.Add(nameof(this.ApplicationVersion), this.ApplicationVersion.ToString(4));
-			additionalData.Add(nameof(this.UserId), this.UserId.ToString("N", CultureInfo.InvariantCulture));
-			additionalData.Add(nameof(this.DomainId), this.DomainId.ToString("N", CultureInfo.InvariantCulture));
-			additionalData.Add(nameof(this.MachineId), this.MachineId.ToString("N", CultureInfo.InvariantCulture));
-			additionalData.Add(nameof(this.Machine64Bit), this.Machine64Bit.ToString());
-			additionalData.Add(nameof(this.Session64Bit), this.Session64Bit.ToString());
-			additionalData.Add(nameof(this.SessionId), this.SessionId.ToString("N", CultureInfo.InvariantCulture));
-			additionalData.Add(nameof(this.SessionTimestamp), this.SessionTimestamp.ToSortableString('-'));
-			additionalData.Add(nameof(this.ProcessCommandLine), this.ProcessCommandLine.ToString());
-			return additionalData;
 		}
 
 		#endregion

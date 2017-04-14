@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Services.Modularization;
 
@@ -14,6 +11,8 @@ namespace RI.Test.Framework.Services.Modularization
 	[TestClass]
 	public sealed class Test_ModuleService
 	{
+		#region Instance Methods
+
 		[TestMethod]
 		public void Test ()
 		{
@@ -137,5 +136,7 @@ namespace RI.Test.Framework.Services.Modularization
 				throw new TestAssertionException();
 			}
 		}
+
+		#endregion
 	}
 }

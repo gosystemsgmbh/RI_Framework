@@ -8,13 +8,13 @@ using System.Text;
 namespace RI.Framework.Utilities.Windows
 {
 	/// <summary>
-	/// Provides transparent encryption functionality with a machine or user local scope.
+	///     Provides transparent encryption functionality with a machine or user local scope.
 	/// </summary>
 	/// <remarks>
-	/// <para>
-	/// <see cref="LocalEncryption"/> allows you to encrypt strings so that they can only be decrypted on the machine and/or by the user which encrypted them.
-	/// The used encryption key is managed by the operating system.
-	/// </para>
+	///     <para>
+	///         <see cref="LocalEncryption" /> allows you to encrypt strings so that they can only be decrypted on the machine and/or by the user which encrypted them.
+	///         The used encryption key is managed by the operating system.
+	///     </para>
 	/// </remarks>
 	public static class LocalEncryption
 	{
@@ -29,22 +29,17 @@ namespace RI.Framework.Utilities.Windows
 
 		#region Static Methods
 
-		private static byte[] GetAdditionalEntropyBytes (string additionalEntropy)
-		{
-			return additionalEntropy == null ? null : (additionalEntropy.Length == 0 ? null : LocalEncryption.StringEncoding.GetBytes(additionalEntropy));
-		}
-
 		/// <summary>
-		/// Decrypts a string.
+		///     Decrypts a string.
 		/// </summary>
-		/// <param name="userScope">true if the string should only be decryptable by the current user, false if the string should only be decryptable by any user on the local machine.</param>
-		/// <param name="cipherText">The string to decrypt (binary data in BASE64 format).</param>
-		/// <param name="additionalEntropy">Any used additional entropy or salt (can be null).</param>
+		/// <param name="userScope"> true if the string should only be decryptable by the current user, false if the string should only be decryptable by any user on the local machine. </param>
+		/// <param name="cipherText"> The string to decrypt (binary data in BASE64 format). </param>
+		/// <param name="additionalEntropy"> Any used additional entropy or salt (can be null). </param>
 		/// <returns>
-		/// The decrypted plain text string or null if <paramref name="cipherText"/> is null.
+		///     The decrypted plain text string or null if <paramref name="cipherText" /> is null.
 		/// </returns>
-		/// <exception cref="CryptographicException">The decryption failed.</exception>
-		public static string Decrypt(bool userScope, string cipherText, string additionalEntropy)
+		/// <exception cref="CryptographicException"> The decryption failed. </exception>
+		public static string Decrypt (bool userScope, string cipherText, string additionalEntropy)
 		{
 			if (cipherText == null)
 			{
@@ -70,16 +65,16 @@ namespace RI.Framework.Utilities.Windows
 		}
 
 		/// <summary>
-		/// Encrypts a string.
+		///     Encrypts a string.
 		/// </summary>
-		/// <param name="userScope">true if the string should only be decryptable by the current user, false if the string should only be decryptable by any user on the local machine.</param>
-		/// <param name="plainText">The plain text string to encrypt.</param>
-		/// <param name="additionalEntropy">Any used additional entropy or salt (can be null).</param>
+		/// <param name="userScope"> true if the string should only be decryptable by the current user, false if the string should only be decryptable by any user on the local machine. </param>
+		/// <param name="plainText"> The plain text string to encrypt. </param>
+		/// <param name="additionalEntropy"> Any used additional entropy or salt (can be null). </param>
 		/// <returns>
-		/// The encrypted string (binary data in BASE64 format) or null if <paramref name="plainText"/> is null.
+		///     The encrypted string (binary data in BASE64 format) or null if <paramref name="plainText" /> is null.
 		/// </returns>
-		/// <exception cref="CryptographicException">The encryption failed.</exception>
-		public static string Encrypt(bool userScope, string plainText, string additionalEntropy)
+		/// <exception cref="CryptographicException"> The encryption failed. </exception>
+		public static string Encrypt (bool userScope, string plainText, string additionalEntropy)
 		{
 			if (plainText == null)
 			{
@@ -92,6 +87,11 @@ namespace RI.Framework.Utilities.Windows
 			string encryptedText = Convert.ToBase64String(encryptedBytes);
 
 			return encryptedText;
+		}
+
+		private static byte[] GetAdditionalEntropyBytes (string additionalEntropy)
+		{
+			return additionalEntropy == null ? null : (additionalEntropy.Length == 0 ? null : LocalEncryption.StringEncoding.GetBytes(additionalEntropy));
 		}
 
 		#endregion

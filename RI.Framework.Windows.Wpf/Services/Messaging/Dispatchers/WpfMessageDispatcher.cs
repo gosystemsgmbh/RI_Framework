@@ -109,12 +109,12 @@ namespace RI.Framework.Services.Messaging.Dispatchers
 			DispatcherPriority priority = this.GetPriorityFormessage(message);
 
 			this.Dispatcher.BeginInvoke(priority, new Action<IEnumerable<IMessageReceiver>, IMessage, IMessageService>((a, b, s) =>
-			                                                                                                           {
-				                                                                                                           foreach (IMessageReceiver receiver in a)
-				                                                                                                           {
-					                                                                                                           receiver.ReceiveMessage(b, s);
-				                                                                                                           }
-			                                                                                                           }), receivers, message, messageService);
+			{
+				foreach (IMessageReceiver receiver in a)
+				{
+					receiver.ReceiveMessage(b, s);
+				}
+			}), receivers, message, messageService);
 		}
 
 		/// <inheritdoc />
@@ -133,12 +133,12 @@ namespace RI.Framework.Services.Messaging.Dispatchers
 			DispatcherPriority priority = this.GetPriorityFormessage(message);
 
 			this.Dispatcher.Invoke(priority, new Action<IEnumerable<IMessageReceiver>, IMessage, IMessageService>((a, b, s) =>
-			                                                                                                      {
-				                                                                                                      foreach (IMessageReceiver receiver in a)
-				                                                                                                      {
-					                                                                                                      receiver.ReceiveMessage(b, s);
-				                                                                                                      }
-			                                                                                                      }), receivers, message, messageService);
+			{
+				foreach (IMessageReceiver receiver in a)
+				{
+					receiver.ReceiveMessage(b, s);
+				}
+			}), receivers, message, messageService);
 		}
 
 		#endregion

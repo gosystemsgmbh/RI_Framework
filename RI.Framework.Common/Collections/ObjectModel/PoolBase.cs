@@ -68,7 +68,7 @@ namespace RI.Framework.Collections.ObjectModel
 		/// </summary>
 		/// <param name="item"> The item to return to the pool. </param>
 		/// <returns>
-		/// true if the item was returned, false if it was already returned.
+		///     true if the item was returned, false if it was already returned.
 		/// </returns>
 		/// <remarks>
 		///     <para>

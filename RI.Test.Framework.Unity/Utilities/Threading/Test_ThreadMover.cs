@@ -15,7 +15,16 @@ namespace RI.Test.Framework.Cases.Utilities.Threading
 {
 	public sealed class Test_ThreadMover : TestModule
 	{
+		#region Instance Properties/Indexer
+
 		private Action TestContinuation { get; set; }
+
+		#endregion
+
+
+
+
+		#region Instance Methods
 
 		[TestMethod]
 		public void Test ()
@@ -105,10 +114,19 @@ namespace RI.Test.Framework.Cases.Utilities.Threading
 			}
 		}
 
-		public override void InvokeTestMethod(MethodInfo method, Action testContinuation)
+		#endregion
+
+
+
+
+		#region Overrides
+
+		public override void InvokeTestMethod (MethodInfo method, Action testContinuation)
 		{
 			this.TestContinuation = testContinuation;
 			base.InvokeTestMethod(method, null);
 		}
+
+		#endregion
 	}
 }

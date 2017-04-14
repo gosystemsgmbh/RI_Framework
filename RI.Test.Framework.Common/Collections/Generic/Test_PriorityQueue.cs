@@ -1,8 +1,9 @@
 ﻿using System.Collections;
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using RI.Framework.Collections.Generic;
 using RI.Framework.Collections.DirectLinq;
+using RI.Framework.Collections.Generic;
 
 
 
@@ -12,6 +13,8 @@ namespace RI.Test.Framework.Collections.Generic
 	[TestClass]
 	public sealed class Test_PriorityQueue
 	{
+		#region Instance Methods
+
 		[TestMethod]
 		public void Test ()
 		{
@@ -200,5 +203,7 @@ namespace RI.Test.Framework.Collections.Generic
 				throw new TestAssertionException();
 			}
 		}
+
+		#endregion
 	}
 }

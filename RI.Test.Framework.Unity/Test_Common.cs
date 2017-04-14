@@ -2,17 +2,36 @@
 using System.Collections.Generic;
 using System.Reflection;
 
-using RI.Framework.Collections.DirectLinq;
-
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+using RI.Framework.Collections.DirectLinq;
 
 
 
 
 namespace RI.Test.Framework.Cases
 {
-	public sealed  class Test_Common : TestModule
+	public sealed class Test_Common : TestModule
 	{
+		#region Instance Methods
+
+		private bool TestMethod (MethodInfo method)
+		{
+			return method.GetCustomAttributes(typeof(TestMethodAttribute), false).Length > 0;
+		}
+
+		private bool TestType (Type type)
+		{
+			return type.GetCustomAttributes(typeof(TestClassAttribute), false).Length > 0;
+		}
+
+		#endregion
+
+
+
+
+		#region Overrides
+
 		public override List<MethodInfo> GetTestMethods ()
 		{
 			List<MethodInfo> result = new List<MethodInfo>(base.GetTestMethods());
@@ -34,14 +53,6 @@ namespace RI.Test.Framework.Cases
 			testContinuation.Invoke();
 		}
 
-		private bool TestType (Type type)
-		{
-			return type.GetCustomAttributes(typeof(TestClassAttribute), false).Length > 0;
-		}
-
-		private bool TestMethod (MethodInfo method)
-		{
-			return method.GetCustomAttributes(typeof(TestMethodAttribute), false).Length > 0;
-		}
+		#endregion
 	}
 }

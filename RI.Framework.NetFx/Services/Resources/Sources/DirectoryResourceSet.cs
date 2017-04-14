@@ -356,9 +356,6 @@ namespace RI.Framework.Services.Resources.Sources
 		#region Interface: IResourceSet
 
 		/// <inheritdoc />
-		public bool Selectable { get; private set; }
-
-		/// <inheritdoc />
 		public bool AlwaysLoad { get; private set; }
 
 		/// <inheritdoc />
@@ -384,6 +381,9 @@ namespace RI.Framework.Services.Resources.Sources
 
 		/// <inheritdoc />
 		public int Priority { get; private set; }
+
+		/// <inheritdoc />
+		public bool Selectable { get; private set; }
 
 		/// <inheritdoc />
 		public CultureInfo UiCulture { get; private set; }

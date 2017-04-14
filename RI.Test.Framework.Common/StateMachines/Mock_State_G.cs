@@ -7,21 +7,16 @@ namespace RI.Test.Framework.StateMachines
 {
 	public sealed class Mock_State_G : Mock_State
 	{
-		protected override void Enter(StateTransientInfo transientInfo)
+		#region Overrides
+
+		protected override void Enter (StateTransientInfo transientInfo)
 		{
 			base.Enter(transientInfo);
 
 			Mock_State.TestValue += "eG";
 		}
 
-		protected override void Leave(StateTransientInfo transientInfo)
-		{
-			base.Leave(transientInfo);
-
-			Mock_State.TestValue += "lG";
-		}
-
-		protected override void Initialize(StateMachine stateMachine)
+		protected override void Initialize (StateMachine stateMachine)
 		{
 			base.Initialize(stateMachine);
 
@@ -29,5 +24,14 @@ namespace RI.Test.Framework.StateMachines
 
 			this.UseCaching = true;
 		}
+
+		protected override void Leave (StateTransientInfo transientInfo)
+		{
+			base.Leave(transientInfo);
+
+			Mock_State.TestValue += "lG";
+		}
+
+		#endregion
 	}
 }

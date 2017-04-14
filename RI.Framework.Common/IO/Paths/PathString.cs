@@ -12,11 +12,7 @@ namespace RI.Framework.IO.Paths
 	///     Base class for specialized path objects (<see cref="FilePath" />, <see cref="DirectoryPath" />).
 	/// </summary>
 	[Serializable]
-	public abstract class PathString : IEquatable<PathString>,
-	                                   IComparable,
-	                                   IComparable<PathString>,
-	                                   ICloneable,
-	                                   ICloneable<PathString>
+	public abstract class PathString : IEquatable<PathString>, IComparable, IComparable<PathString>, ICloneable, ICloneable<PathString>
 	{
 		#region Static Methods
 
@@ -120,7 +116,7 @@ namespace RI.Framework.IO.Paths
 		/// </summary>
 		/// <param name="path"> The path to convert to a string. </param>
 		/// <returns>
-		/// The string.
+		///     The string.
 		/// </returns>
 		public static implicit operator string (PathString path)
 		{

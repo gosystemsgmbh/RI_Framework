@@ -38,28 +38,28 @@ namespace RI.Framework.IO.Printer
 
 		#region Static Methods
 
-		[DllImport ("winspool.Drv", EntryPoint = "ClosePrinter", SetLastError = true, ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]
+		[DllImport("winspool.Drv", EntryPoint = "ClosePrinter", SetLastError = true, ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]
 		private static extern bool ClosePrinter (IntPtr hPrinter);
 
-		[DllImport ("winspool.Drv", EntryPoint = "EndDocPrinter", SetLastError = true, ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]
+		[DllImport("winspool.Drv", EntryPoint = "EndDocPrinter", SetLastError = true, ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]
 		private static extern bool EndDocPrinter (IntPtr hPrinter);
 
-		[DllImport ("winspool.Drv", EntryPoint = "EndPagePrinter", SetLastError = true, ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]
+		[DllImport("winspool.Drv", EntryPoint = "EndPagePrinter", SetLastError = true, ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]
 		private static extern bool EndPagePrinter (IntPtr hPrinter);
 
-		[DllImport ("winspool.drv", EntryPoint = "EnumPrinters", SetLastError = true, CharSet = CharSet.Auto)]
+		[DllImport("winspool.drv", EntryPoint = "EnumPrinters", SetLastError = true, CharSet = CharSet.Auto)]
 		private static extern bool EnumPrinters (uint flags, string name, uint level, IntPtr pPrinterEnum, uint cbBuf, ref uint pcbNeeded, ref uint pcReturned);
 
-		[DllImport ("winspool.Drv", EntryPoint = "OpenPrinterA", SetLastError = true, CharSet = CharSet.Ansi, ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]
-		private static extern bool OpenPrinter ([MarshalAs (UnmanagedType.LPStr)] string szPrinter, out IntPtr hPrinter, IntPtr pd);
+		[DllImport("winspool.Drv", EntryPoint = "OpenPrinterA", SetLastError = true, CharSet = CharSet.Ansi, ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]
+		private static extern bool OpenPrinter ([MarshalAs(UnmanagedType.LPStr)] string szPrinter, out IntPtr hPrinter, IntPtr pd);
 
-		[DllImport ("winspool.Drv", EntryPoint = "StartDocPrinterA", SetLastError = true, CharSet = CharSet.Ansi, ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]
-		private static extern bool StartDocPrinter (IntPtr hPrinter, int level, [In] [MarshalAs (UnmanagedType.LPStruct)] DOCINFOA di);
+		[DllImport("winspool.Drv", EntryPoint = "StartDocPrinterA", SetLastError = true, CharSet = CharSet.Ansi, ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]
+		private static extern bool StartDocPrinter (IntPtr hPrinter, int level, [In] [MarshalAs(UnmanagedType.LPStruct)] DOCINFOA di);
 
-		[DllImport ("winspool.Drv", EntryPoint = "StartPagePrinter", SetLastError = true, ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]
+		[DllImport("winspool.Drv", EntryPoint = "StartPagePrinter", SetLastError = true, ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]
 		private static extern bool StartPagePrinter (IntPtr hPrinter);
 
-		[DllImport ("winspool.Drv", EntryPoint = "WritePrinter", SetLastError = true, ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]
+		[DllImport("winspool.Drv", EntryPoint = "WritePrinter", SetLastError = true, ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]
 		private static extern bool WritePrinter (IntPtr hPrinter, IntPtr pBytes, int dwCount, out int dwWritten);
 
 		#endregion
@@ -291,7 +291,7 @@ namespace RI.Framework.IO.Printer
 			this.WriteBytes(finalBytes);
 		}
 
-		[SuppressMessage ("ReSharper", "UnusedParameter.Local")]
+		[SuppressMessage("ReSharper", "UnusedParameter.Local")]
 		private void Dispose (bool disposing)
 		{
 			if (this.PrinterHandle != IntPtr.Zero)
@@ -334,22 +334,24 @@ namespace RI.Framework.IO.Printer
 
 		#region Type: DOCINFOA
 
-		[StructLayout (LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-		[SuppressMessage ("ReSharper", "InconsistentNaming")]
-		[SuppressMessage ("ReSharper", "NotAccessedField.Local")]
+		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+		[SuppressMessage("ReSharper", "InconsistentNaming")]
+		[SuppressMessage("ReSharper", "NotAccessedField.Local")]
 		private class DOCINFOA
 		{
-			[MarshalAs (UnmanagedType.LPStr)]
+			[MarshalAs(UnmanagedType.LPStr)]
 			public string pDocName;
 
-			[MarshalAs (UnmanagedType.LPStr)]
+			[MarshalAs(UnmanagedType.LPStr)]
 #pragma warning disable 169
 			public string pOutputFile;
+
 #pragma warning restore 169
 
-			[MarshalAs (UnmanagedType.LPStr)]
+			[MarshalAs(UnmanagedType.LPStr)]
 #pragma warning disable 414
 			public string pDataType;
+
 #pragma warning restore 414
 		}
 

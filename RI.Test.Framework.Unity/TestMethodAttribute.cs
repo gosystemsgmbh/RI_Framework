@@ -5,7 +5,7 @@
 
 namespace Microsoft.VisualStudio.TestTools.UnitTesting
 {
-	[AttributeUsage (AttributeTargets.Method)]
+	[AttributeUsage(AttributeTargets.Method)]
 	public sealed class TestMethodAttribute : Attribute
 	{
 	}

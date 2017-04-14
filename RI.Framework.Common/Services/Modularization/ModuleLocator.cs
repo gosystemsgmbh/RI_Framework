@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
 
+
+
+
 namespace RI.Framework.Services.Modularization
 {
 	/// <summary>
@@ -12,6 +15,8 @@ namespace RI.Framework.Services.Modularization
 	/// </remarks>
 	public static class ModuleLocator
 	{
+		#region Static Properties/Indexer
+
 		/// <summary>
 		///     Gets all currently available modules.
 		/// </summary>
@@ -26,6 +31,13 @@ namespace RI.Framework.Services.Modularization
 				return moduleService?.Modules;
 			}
 		}
+
+		#endregion
+
+
+
+
+		#region Static Methods
 
 		/// <summary>
 		///     Initializes all modules.
@@ -44,5 +56,7 @@ namespace RI.Framework.Services.Modularization
 			IModuleService moduleService = ServiceLocator.GetInstance<IModuleService>();
 			moduleService?.Unload();
 		}
+
+		#endregion
 	}
 }

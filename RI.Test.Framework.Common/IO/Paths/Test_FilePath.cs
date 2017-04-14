@@ -299,6 +299,28 @@ namespace RI.Test.Framework.IO.Paths
 		}
 
 		[TestMethod]
+		public void ConstructorTest ()
+		{
+			try
+			{
+				new DirectoryPath((string)null);
+				throw new TestAssertionException();
+			}
+			catch (ArgumentNullException)
+			{
+			}
+
+			try
+			{
+				new DirectoryPath((PathProperties)null);
+				throw new TestAssertionException();
+			}
+			catch (ArgumentNullException)
+			{
+			}
+		}
+
+		[TestMethod]
 		public void Equals_Test ()
 		{
 			//---------
@@ -646,10 +668,7 @@ namespace RI.Test.Framework.IO.Paths
 			// Writing and reading data
 			//-------------------------
 
-			byte[] data = new byte[]
-			{
-				0, 1, 2, 3, 4
-			};
+			byte[] data = new byte[] {0, 1, 2, 3, 4};
 
 			if (!test.WriteBytes(data))
 			{
@@ -1223,27 +1242,5 @@ namespace RI.Test.Framework.IO.Paths
 		}
 
 		#endregion
-
-		[TestMethod]
-		public void ConstructorTest()
-		{
-			try
-			{
-				new DirectoryPath((string)null);
-				throw new TestAssertionException();
-			}
-			catch (ArgumentNullException)
-			{
-			}
-
-			try
-			{
-				new DirectoryPath((PathProperties)null);
-				throw new TestAssertionException();
-			}
-			catch (ArgumentNullException)
-			{
-			}
-		}
 	}
 }

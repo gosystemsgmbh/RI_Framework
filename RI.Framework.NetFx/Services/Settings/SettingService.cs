@@ -27,9 +27,9 @@ namespace RI.Framework.Services.Settings
 	///     <para>
 	///         See <see cref="ISettingService" /> for more details.
 	///     </para>
-	/// <note type="note">
-	/// The first created instance of <see cref="SettingService"/> is set as the singleton instance for <see cref="Singleton{SettingService}"/>
-	/// </note>
+	///     <note type="note">
+	///         The first created instance of <see cref="SettingService" /> is set as the singleton instance for <see cref="Singleton{T}" />
+	///     </note>
 	/// </remarks>
 	public sealed class SettingService : ISettingService
 	{
@@ -56,12 +56,12 @@ namespace RI.Framework.Services.Settings
 
 		private Dictionary<string, string> Cache { get; set; }
 
-		[Import (typeof(ISettingConverter), Recomposable = true)]
+		[Import(typeof(ISettingConverter), Recomposable = true)]
 		private Import ConvertersImported { get; set; }
 
 		private List<ISettingConverter> ConvertersManual { get; set; }
 
-		[Import (typeof(ISettingStorage), Recomposable = true)]
+		[Import(typeof(ISettingStorage), Recomposable = true)]
 		private Import StoragesImported { get; set; }
 
 		private List<ISettingStorage> StoragesManual { get; set; }

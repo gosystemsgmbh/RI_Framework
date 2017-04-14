@@ -110,6 +110,14 @@ namespace RI.Framework.Data.EF.Validation
 		void Fix (RepositoryDbContext repository, DbEntityEntry entry);
 
 		/// <summary>
+		///     Initializes a newly created entity which was created using <see cref="IRepositorySet.Create" />.
+		/// </summary>
+		/// <param name="repository"> The repository the newly created entity belongs to. </param>
+		/// <param name="entry"> The entity entry of the entity to initialize. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="repository" /> or <paramref name="entry" /> is null. </exception>
+		void Initialize (RepositoryDbContext repository, DbEntityEntry entry);
+
+		/// <summary>
 		///     Validates an entity.
 		/// </summary>
 		/// <param name="repository"> The repository the validated entity belongs to. </param>
@@ -119,13 +127,5 @@ namespace RI.Framework.Data.EF.Validation
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="repository" /> or <paramref name="entry" /> is null. </exception>
 		DbEntityValidationResult Validate (RepositoryDbContext repository, DbEntityEntry entry);
-
-		/// <summary>
-		/// Initializes a newly created entity which was created using <see cref="IRepositorySet.Create"/>.
-		/// </summary>
-		/// <param name="repository">The repository the newly created entity belongs to.</param>
-		/// <param name="entry">The entity entry of the entity to initialize.</param>
-		/// <exception cref="ArgumentNullException"> <paramref name="repository" /> or <paramref name="entry" /> is null. </exception>
-		void Initialize (RepositoryDbContext repository, DbEntityEntry entry);
 	}
 }

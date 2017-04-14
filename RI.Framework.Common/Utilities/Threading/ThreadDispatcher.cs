@@ -10,72 +10,32 @@ using RI.Framework.Utilities.ObjectModel;
 namespace RI.Framework.Utilities.Threading
 {
 	/// <summary>
-	/// Implements a delegate dispatcher which can be run on any thread.
+	///     Implements a delegate dispatcher which can be run on any thread.
 	/// </summary>
 	/// <remarks>
-	/// <para>
-	/// A <see cref="ThreadDispatcher"/> provides a queue for delegates, filled through <see cref="Send"/> and <see cref="Post"/>, which is processed on the thread where <see cref="Run"/> is called (<see cref="Run"/> blocks while executing the queue until <see cref="Shutdown"/> is called).
-	/// </para>
-	/// <para>
-	/// The delegates are executed in the order they are added to the queue through <see cref="Send"/> or <see cref="Post"/>.
-	/// When all delegates are executed, or the queue is empty respectively, <see cref="ThreadDispatcher"/> waits for new delegates to process.
-	/// </para>
+	///     <para>
+	///         A <see cref="ThreadDispatcher" /> provides a queue for delegates, filled through <see cref="Send" /> and <see cref="Post" />, which is processed on the thread where <see cref="Run" /> is called (<see cref="Run" /> blocks while executing the queue until <see cref="Shutdown" /> is called).
+	///     </para>
+	///     <para>
+	///         The delegates are executed in the order they are added to the queue through <see cref="Send" /> or <see cref="Post" />.
+	///         When all delegates are executed, or the queue is empty respectively, <see cref="ThreadDispatcher" /> waits for new delegates to process.
+	///     </para>
 	/// </remarks>
 	public sealed class ThreadDispatcher : IThreadDispatcher, ISynchronizable
 	{
-		private ThreadDispatcherShutdownMode _shutdownMode;
-		private bool _catchExceptions;
-
-		private object SyncRoot { get; set; }
-		private Thread Thread { get; set; }
-		private Queue<ThreadDispatcherOperation> Queue { get; set; }
-		private ManualResetEvent Posted { get; set; }
-		private ThreadDispatcherOperation OperationInProgress { get; set; }
-
-		/// <inheritdoc />
-		bool ISynchronizable.IsSynchronized => true;
-
-		/// <inheritdoc />
-		object ISynchronizable.SyncRoot => this.SyncRoot;
-
-		/// <inheritdoc />
-		public event EventHandler<ThreadDispatcherExceptionEventArgs> Exception;
-
-		private void OnException (Exception exception, bool canContinue)
-		{
-			this.Exception?.Invoke(this, new ThreadDispatcherExceptionEventArgs(exception, canContinue));
-		}
-
-		/// <inheritdoc />
-		public bool CatchExceptions
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					return this._catchExceptions;
-				}
-			}
-			set
-			{
-				lock (this.SyncRoot)
-				{
-					this._catchExceptions = value;
-				}
-			}
-		}
+		#region Instance Constructor/Destructor
 
 		/// <summary>
-		/// Creates a new instance of <see cref="ThreadDispatcher"/>.
+		///     Creates a new instance of <see cref="ThreadDispatcher" />.
 		/// </summary>
-		public ThreadDispatcher()
+		public ThreadDispatcher ()
 		{
 			this.SyncRoot = new object();
 
 			this.Thread = null;
 			this.Queue = null;
 			this.Posted = null;
-			
+
 			this.ShutdownMode = ThreadDispatcherShutdownMode.None;
 
 			this.CatchExceptions = false;
@@ -93,11 +53,42 @@ namespace RI.Framework.Utilities.Threading
 			this.Queue = null;
 		}
 
+		#endregion
+
+
+
+
+		#region Instance Fields
+
+		private bool _catchExceptions;
+		private ThreadDispatcherShutdownMode _shutdownMode;
+
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
+
+		private ThreadDispatcherOperation OperationInProgress { get; set; }
+		private ManualResetEvent Posted { get; set; }
+		private Queue<ThreadDispatcherOperation> Queue { get; set; }
+
+		private object SyncRoot { get; set; }
+		private Thread Thread { get; set; }
+
+		#endregion
+
+
+
+
+		#region Instance Methods
+
 		/// <summary>
-		/// Processes the delegate queue or waits for new delegates until <see cref="Shutdown"/> is called.
+		///     Processes the delegate queue or waits for new delegates until <see cref="Shutdown" /> is called.
 		/// </summary>
-		/// <exception cref="InvalidOperationException">The dispatcher is already running.</exception>
-		public void Run()
+		/// <exception cref="InvalidOperationException"> The dispatcher is already running. </exception>
+		public void Run ()
 		{
 			try
 			{
@@ -177,7 +168,7 @@ namespace RI.Framework.Utilities.Threading
 					}
 
 					operation.Execute();
-					
+
 					lock (this.SyncRoot)
 					{
 						this.OperationInProgress = null;
@@ -194,7 +185,7 @@ namespace RI.Framework.Utilities.Threading
 							throw new ThreadDispatcherException(operation.Exception);
 						}
 					}
-					
+
 					if (object.ReferenceEquals(operation, returnTrigger))
 					{
 						return;
@@ -203,15 +194,12 @@ namespace RI.Framework.Utilities.Threading
 			}
 		}
 
-		private void VerifyRunning()
+		private void OnException (Exception exception, bool canContinue)
 		{
-			if (!this.IsRunning)
-			{
-				throw new InvalidOperationException(nameof(ThreadDispatcher) + " is not running.");
-			}
+			this.Exception?.Invoke(this, new ThreadDispatcherExceptionEventArgs(exception, canContinue));
 		}
 
-		private void VerifyNotRunning()
+		private void VerifyNotRunning ()
 		{
 			if (this.IsRunning)
 			{
@@ -219,7 +207,23 @@ namespace RI.Framework.Utilities.Threading
 			}
 		}
 
-		private void VerifyShuttingDown()
+		private void VerifyNotShuttingDown ()
+		{
+			if (this.ShutdownMode != ThreadDispatcherShutdownMode.None)
+			{
+				throw new InvalidOperationException(nameof(ThreadDispatcher) + " is already shutting down.");
+			}
+		}
+
+		private void VerifyRunning ()
+		{
+			if (!this.IsRunning)
+			{
+				throw new InvalidOperationException(nameof(ThreadDispatcher) + " is not running.");
+			}
+		}
+
+		private void VerifyShuttingDown ()
 		{
 			if (this.ShutdownMode == ThreadDispatcherShutdownMode.None)
 			{
@@ -227,11 +231,29 @@ namespace RI.Framework.Utilities.Threading
 			}
 		}
 
-		private void VerifyNotShuttingDown()
+		#endregion
+
+
+
+
+		#region Interface: IThreadDispatcher
+
+		/// <inheritdoc />
+		public bool CatchExceptions
 		{
-			if (this.ShutdownMode != ThreadDispatcherShutdownMode.None)
+			get
 			{
-				throw new InvalidOperationException(nameof(ThreadDispatcher) + " is already shutting down.");
+				lock (this.SyncRoot)
+				{
+					return this._catchExceptions;
+				}
+			}
+			set
+			{
+				lock (this.SyncRoot)
+				{
+					this._catchExceptions = value;
+				}
 			}
 		}
 
@@ -248,18 +270,7 @@ namespace RI.Framework.Utilities.Threading
 		}
 
 		/// <inheritdoc />
-		public bool IsInThread ()
-		{
-			lock (this.SyncRoot)
-			{
-				if (this.Thread == null)
-				{
-					return false;
-				}
-
-				return this.Thread.ManagedThreadId == Thread.CurrentThread.ManagedThreadId;
-			}
-		}
+		bool ISynchronizable.IsSynchronized => true;
 
 		/// <inheritdoc />
 		public ThreadDispatcherShutdownMode ShutdownMode
@@ -282,6 +293,43 @@ namespace RI.Framework.Utilities.Threading
 				{
 					this._shutdownMode = value;
 				}
+			}
+		}
+
+		/// <inheritdoc />
+		object ISynchronizable.SyncRoot => this.SyncRoot;
+
+		/// <inheritdoc />
+		public event EventHandler<ThreadDispatcherExceptionEventArgs> Exception;
+
+		/// <inheritdoc />
+		public void DoProcessing ()
+		{
+			while (true)
+			{
+				this.Send(new Action(() => { }));
+
+				lock (this.SyncRoot)
+				{
+					if ((this.Queue.Count == 0) && (this.OperationInProgress == null))
+					{
+						return;
+					}
+				}
+			}
+		}
+
+		/// <inheritdoc />
+		public bool IsInThread ()
+		{
+			lock (this.SyncRoot)
+			{
+				if (this.Thread == null)
+				{
+					return false;
+				}
+
+				return this.Thread.ManagedThreadId == Thread.CurrentThread.ManagedThreadId;
 			}
 		}
 
@@ -342,23 +390,6 @@ namespace RI.Framework.Utilities.Threading
 		}
 
 		/// <inheritdoc />
-		public void DoProcessing ()
-		{
-			while (true)
-			{
-				this.Send(new Action(() => { }));
-
-				lock (this.SyncRoot)
-				{
-					if ((this.Queue.Count == 0) && (this.OperationInProgress == null))
-					{
-						return;
-					}
-				}
-			}
-		}
-
-		/// <inheritdoc />
 		public void Shutdown (bool finishPendingDelegates)
 		{
 			lock (this.SyncRoot)
@@ -370,5 +401,7 @@ namespace RI.Framework.Utilities.Threading
 				this.Posted.Set();
 			}
 		}
+
+		#endregion
 	}
 }

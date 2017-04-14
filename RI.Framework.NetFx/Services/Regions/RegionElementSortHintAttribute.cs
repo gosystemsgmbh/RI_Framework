@@ -8,7 +8,7 @@ namespace RI.Framework.Services.Regions
 	/// <summary>
 	///     Used as a hint for region adapters to assign a sort index to an element.
 	/// </summary>
-	[AttributeUsage (AttributeTargets.Class)]
+	[AttributeUsage(AttributeTargets.Class)]
 	public sealed class RegionElementSortHintAttribute : Attribute
 	{
 		#region Instance Constructor/Destructor

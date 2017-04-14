@@ -272,12 +272,6 @@ namespace RI.Framework.Collections.Virtualization
 		object ICollection.SyncRoot => ((ISynchronizable)this).SyncRoot;
 
 		/// <inheritdoc />
-		bool ISynchronizable.IsSynchronized => false;
-
-		/// <inheritdoc />
-		object ISynchronizable.SyncRoot => this.SyncRoot;
-
-		/// <inheritdoc />
 		object IList.this [int index]
 		{
 			get
@@ -368,7 +362,7 @@ namespace RI.Framework.Collections.Virtualization
 		}
 
 		/// <inheritdoc />
-		[SuppressMessage ("ReSharper", "ValueParameterNotUsed")]
+		[SuppressMessage("ReSharper", "ValueParameterNotUsed")]
 		public T this [int index]
 		{
 			get
@@ -501,6 +495,19 @@ namespace RI.Framework.Collections.Virtualization
 		{
 			this.ThrowReadOnlyException();
 		}
+
+		#endregion
+
+
+
+
+		#region Interface: ISynchronizable
+
+		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => false;
+
+		/// <inheritdoc />
+		object ISynchronizable.SyncRoot => this.SyncRoot;
 
 		#endregion
 

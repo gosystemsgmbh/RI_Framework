@@ -256,10 +256,7 @@ namespace RI.Test.Framework.Collections
 			Dictionary<string, int> dict = new Dictionary<string, int>();
 			IDictionary<string, int> test = dict.AsDictionary();
 
-			if (test.RemoveRange(new[]
-			                     {
-				                     "1", "2"
-			                     }) != 0)
+			if (test.RemoveRange(new[] {"1", "2"}) != 0)
 			{
 				throw new TestAssertionException();
 			}
@@ -271,10 +268,7 @@ namespace RI.Test.Framework.Collections
 			dict.Add("b", 5);
 			dict.Add("c", 6);
 
-			if (test.RemoveRange(new[]
-			                     {
-				                     "1", "2"
-			                     }) != 2)
+			if (test.RemoveRange(new[] {"1", "2"}) != 2)
 			{
 				throw new TestAssertionException();
 			}
@@ -291,7 +285,7 @@ namespace RI.Test.Framework.Collections
 			Dictionary<string, int> dict = new Dictionary<string, int>();
 			IDictionary<string, int> test = dict.AsDictionary();
 
-			if (test.RemoveWhere(x => x.Key.ToInt32().HasValue || x.Value > 5).Count != 0)
+			if (test.RemoveWhere(x => x.Key.ToInt32().HasValue || (x.Value > 5)).Count != 0)
 			{
 				throw new TestAssertionException();
 			}
@@ -303,7 +297,7 @@ namespace RI.Test.Framework.Collections
 			dict.Add("b", 5);
 			dict.Add("c", 6);
 
-			List<KeyValuePair<string, int>> result = test.RemoveWhere(x => x.Key.ToInt32().HasValue || x.Value > 5);
+			List<KeyValuePair<string, int>> result = test.RemoveWhere(x => x.Key.ToInt32().HasValue || (x.Value > 5));
 
 			if (result.Count != 4)
 			{

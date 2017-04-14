@@ -10,6 +10,8 @@ namespace RI.Test.Framework.Utilities
 	[TestClass]
 	public sealed class Test_DoubleExtensions
 	{
+		#region Instance Methods
+
 		[TestMethod]
 		public void Test ()
 		{
@@ -133,5 +135,7 @@ namespace RI.Test.Framework.Utilities
 				throw new TestAssertionException();
 			}
 		}
+
+		#endregion
 	}
 }

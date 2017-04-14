@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using RI.Framework.Mathematic;
@@ -14,8 +13,10 @@ namespace RI.Test.Framework.Mathematic
 	[TestClass]
 	public sealed class Test_Statistics
 	{
+		#region Instance Methods
+
 		[TestMethod]
-		public void Test()
+		public void Test ()
 		{
 			StatisticValues stats1 = new Statistics(new double[0]).Discrete;
 
@@ -60,7 +61,7 @@ namespace RI.Test.Framework.Mathematic
 				throw new TestAssertionException();
 			}
 
-			StatisticValues stats2 = new Statistics(new []{2.0}).Discrete;
+			StatisticValues stats2 = new Statistics(new[] {2.0}).Discrete;
 
 			if (stats2.Duration != 1)
 			{
@@ -103,7 +104,7 @@ namespace RI.Test.Framework.Mathematic
 				throw new TestAssertionException();
 			}
 
-			StatisticValues stats3 = new Statistics(new[] { 1.0, 3.0 }).Discrete;
+			StatisticValues stats3 = new Statistics(new[] {1.0, 3.0}).Discrete;
 
 			if (stats3.Duration != 2)
 			{
@@ -146,7 +147,7 @@ namespace RI.Test.Framework.Mathematic
 				throw new TestAssertionException();
 			}
 
-			StatisticValues stats4 = new Statistics(new[] { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 20.0 }).Discrete;
+			StatisticValues stats4 = new Statistics(new[] {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 20.0}).Discrete;
 
 			if (stats4.Duration != 10)
 			{
@@ -189,5 +190,7 @@ namespace RI.Test.Framework.Mathematic
 				throw new TestAssertionException();
 			}
 		}
+
+		#endregion
 	}
 }

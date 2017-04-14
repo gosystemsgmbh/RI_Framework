@@ -15,15 +15,9 @@ namespace RI.Framework.Utilities.Windows
 	//TODO: Add timeout functionality
 	public sealed class WindowsMessageLoop
 	{
-		private WindowsMessageLoopShutdownMode _shutdownMode;
+		#region Instance Constructor/Destructor
 
-		private object SyncRoot { get; set; }
-		private Thread Thread { get; set; }
-		private uint ThreadId { get; set; }
-		private Hashtable Queue { get; set; }
-		private int LastInvokeHandle { get; set; }
-
-		public WindowsMessageLoop()
+		public WindowsMessageLoop ()
 		{
 			this.SyncRoot = new object();
 
@@ -33,6 +27,113 @@ namespace RI.Framework.Utilities.Windows
 			this.LastInvokeHandle = 0;
 
 			this.ShutdownMode = WindowsMessageLoopShutdownMode.None;
+		}
+
+		#endregion
+
+
+
+
+		#region Instance Fields
+
+		private WindowsMessageLoopShutdownMode _shutdownMode;
+
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
+
+		public bool IsInThread
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					this.VerifyRunning();
+
+					return this.Thread.ManagedThreadId == Thread.CurrentThread.ManagedThreadId;
+				}
+			}
+		}
+
+		public bool IsRunning
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this.Thread != null;
+				}
+			}
+		}
+
+		public WindowsMessageLoopShutdownMode ShutdownMode
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					this.VerifyRunning();
+
+					return this._shutdownMode;
+				}
+			}
+			private set
+			{
+				lock (this.SyncRoot)
+				{
+					this._shutdownMode = value;
+				}
+			}
+		}
+
+		internal uint NativeThreadId
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this.ThreadId;
+				}
+			}
+		}
+
+		private int LastInvokeHandle { get; set; }
+		private Hashtable Queue { get; set; }
+
+		private object SyncRoot { get; set; }
+		private Thread Thread { get; set; }
+		private uint ThreadId { get; set; }
+
+		#endregion
+
+
+
+
+		#region Instance Methods
+
+		public WindowsMessageLoopOperation Post (Delegate action, params object[] parameters)
+		{
+			if (action == null)
+			{
+				throw new ArgumentNullException(nameof(action));
+			}
+
+			parameters = parameters ?? new object[0];
+
+			lock (this.SyncRoot)
+			{
+				this.VerifyRunning();
+				this.VerifyNotShuttingDown();
+
+				this.LastInvokeHandle++;
+				int handle = this.LastInvokeHandle;
+				WindowsMessageLoopOperation operation = new WindowsMessageLoopOperation(this, handle, action, parameters);
+				this.Queue.Add(handle, operation);
+				return operation;
+			}
 		}
 
 		public void Run ()
@@ -72,115 +173,6 @@ namespace RI.Framework.Utilities.Windows
 					this.Queue = null;
 					this.LastInvokeHandle = 0;
 				}
-			}
-		}
-
-		private void VerifyRunning()
-		{
-			if (!this.IsRunning)
-			{
-				throw new InvalidOperationException(nameof(WindowsMessageLoop) + " is not running.");
-			}
-		}
-
-		private void VerifyNotRunning()
-		{
-			if (this.IsRunning)
-			{
-				throw new InvalidOperationException(nameof(WindowsMessageLoop) + " is already running.");
-			}
-		}
-
-		private void VerifyShuttingDown()
-		{
-			if (this.ShutdownMode == WindowsMessageLoopShutdownMode.None)
-			{
-				throw new InvalidOperationException(nameof(WindowsMessageLoop) + " is not shutting down.");
-			}
-		}
-
-		private void VerifyNotShuttingDown()
-		{
-			if (this.ShutdownMode != WindowsMessageLoopShutdownMode.None)
-			{
-				throw new InvalidOperationException(nameof(WindowsMessageLoop) + " is already shutting down.");
-			}
-		}
-
-		public bool IsRunning
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					return this.Thread != null;
-				}
-			}
-		}
-
-		public bool IsInThread
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					this.VerifyRunning();
-
-					return this.Thread.ManagedThreadId == Thread.CurrentThread.ManagedThreadId;
-				}
-			}
-		}
-
-		internal uint NativeThreadId
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					return this.ThreadId;
-				}
-			}
-		}
-
-		public WindowsMessageLoopShutdownMode ShutdownMode
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					this.VerifyRunning();
-
-					return this._shutdownMode;
-				}
-			}
-			private set
-			{
-				lock (this.SyncRoot)
-				{
-					this._shutdownMode = value;
-				}
-			}
-		}
-
-		public WindowsMessageLoopOperation Post (Delegate action, params object[] parameters)
-		{
-			if (action == null)
-			{
-				throw new ArgumentNullException(nameof(action));
-			}
-
-			parameters = parameters ?? new object[0];
-
-			lock (this.SyncRoot)
-			{
-				this.VerifyRunning();
-				this.VerifyNotShuttingDown();
-
-				this.LastInvokeHandle++;
-				int handle = this.LastInvokeHandle;
-				WindowsMessageLoopOperation operation = new WindowsMessageLoopOperation(this, handle, action, parameters);
-				this.Queue.Add(handle, operation);
-				return operation;
 			}
 		}
 
@@ -229,6 +221,40 @@ namespace RI.Framework.Utilities.Windows
 				//TODO
 			}
 		}
+
+		private void VerifyNotRunning ()
+		{
+			if (this.IsRunning)
+			{
+				throw new InvalidOperationException(nameof(WindowsMessageLoop) + " is already running.");
+			}
+		}
+
+		private void VerifyNotShuttingDown ()
+		{
+			if (this.ShutdownMode != WindowsMessageLoopShutdownMode.None)
+			{
+				throw new InvalidOperationException(nameof(WindowsMessageLoop) + " is already shutting down.");
+			}
+		}
+
+		private void VerifyRunning ()
+		{
+			if (!this.IsRunning)
+			{
+				throw new InvalidOperationException(nameof(WindowsMessageLoop) + " is not running.");
+			}
+		}
+
+		private void VerifyShuttingDown ()
+		{
+			if (this.ShutdownMode == WindowsMessageLoopShutdownMode.None)
+			{
+				throw new InvalidOperationException(nameof(WindowsMessageLoop) + " is not shutting down.");
+			}
+		}
+
+		#endregion
 	}
 
 	//TODO: ISynchronizable

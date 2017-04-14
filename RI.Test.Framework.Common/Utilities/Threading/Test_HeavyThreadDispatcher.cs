@@ -17,6 +17,38 @@ namespace RI.Test.Framework.Utilities.Threading
 	[TestClass]
 	public sealed class Test_HeavyThreadDispatcher
 	{
+		#region Instance Methods
+
+		[TestMethod]
+		public void DoProcessing_Test ()
+		{
+			HeavyThreadDispatcher test = new HeavyThreadDispatcher();
+
+			test.Stop(false);
+			test.Start();
+
+			int syncTestValue = 0;
+			Action syncTestAction1 = null;
+			Action syncTestAction2 = new Action(() =>
+			{
+				syncTestValue++;
+				if (syncTestValue < 10)
+				{
+					test.Post(syncTestAction1);
+				}
+			});
+			syncTestAction1 = syncTestAction2;
+
+			test.Post(syncTestAction1);
+
+			test.DoProcessing();
+
+			if (syncTestValue != 10)
+			{
+				throw new TestAssertionException();
+			}
+		}
+
 		[TestMethod]
 		public void Test ()
 		{
@@ -178,10 +210,7 @@ namespace RI.Test.Framework.Utilities.Threading
 
 			test.Start();
 
-			op1 = test.Post(new Action(() =>
-			{
-				Thread.Sleep(9999999);
-			}));
+			op1 = test.Post(new Action(() => { Thread.Sleep(9999999); }));
 
 			Thread.Sleep(100);
 
@@ -243,10 +272,7 @@ namespace RI.Test.Framework.Utilities.Threading
 			test.CatchExceptions = true;
 			test.Start();
 
-			op1 = test.Post(new Action(() =>
-			{
-				throw new TestAssertionException();
-			}));
+			op1 = test.Post(new Action(() => { throw new TestAssertionException(); }));
 
 			Thread.Sleep(100);
 
@@ -306,10 +332,7 @@ namespace RI.Test.Framework.Utilities.Threading
 			test.CatchExceptions = false;
 			test.Start();
 
-			op1 = test.Post(new Action(() =>
-			{
-				throw new TestAssertionException();
-			}));
+			op1 = test.Post(new Action(() => { throw new TestAssertionException(); }));
 
 			Thread.Sleep(100);
 
@@ -374,10 +397,7 @@ namespace RI.Test.Framework.Utilities.Threading
 
 			test.Start();
 
-			op1 = test.Post(new Action(() =>
-			{
-				Thread.Sleep(1);
-			}));
+			op1 = test.Post(new Action(() => { Thread.Sleep(1); }));
 
 			Thread.Sleep(100);
 
@@ -386,20 +406,14 @@ namespace RI.Test.Framework.Utilities.Threading
 				throw new TestAssertionException();
 			}
 
-			op1 = test.Post(new Action(() =>
-			{
-				Thread.Sleep(10000);
-			}));
+			op1 = test.Post(new Action(() => { Thread.Sleep(10000); }));
 
 			if (op1.Wait(100))
 			{
 				throw new TestAssertionException();
 			}
 
-			op2 = test.Post(new Action(() =>
-			{
-				Thread.Sleep(1);
-			}));
+			op2 = test.Post(new Action(() => { Thread.Sleep(1); }));
 
 			if (op1.State != ThreadDispatcherOperationState.Executing)
 			{
@@ -439,10 +453,7 @@ namespace RI.Test.Framework.Utilities.Threading
 			test.Stop();
 			test.Start();
 
-			op1 = test.Post(new Action(() =>
-			{
-				Thread.Sleep(100);
-			}));
+			op1 = test.Post(new Action(() => { Thread.Sleep(100); }));
 
 			if (!op1.Wait(200))
 			{
@@ -451,29 +462,57 @@ namespace RI.Test.Framework.Utilities.Threading
 
 			StringBuilder sb = new StringBuilder();
 
-			test.Post(new Action(() => { sb.Append("T"); Thread.Sleep(10); }));
-			test.Post(new Action(() => { sb.Append("e"); Thread.Sleep(10); }));
-			test.Post(new Action(() => { sb.Append("s"); Thread.Sleep(10); }));
-			test.Post(new Action(() => { sb.Append("t"); Thread.Sleep(10); }));
+			test.Post(new Action(() =>
+			{
+				sb.Append("T");
+				Thread.Sleep(10);
+			}));
+			test.Post(new Action(() =>
+			{
+				sb.Append("e");
+				Thread.Sleep(10);
+			}));
+			test.Post(new Action(() =>
+			{
+				sb.Append("s");
+				Thread.Sleep(10);
+			}));
+			test.Post(new Action(() =>
+			{
+				sb.Append("t");
+				Thread.Sleep(10);
+			}));
 
 			if (sb.ToString() == "Test")
 			{
 				throw new TestAssertionException();
 			}
 
-			test.Send(new Action(() => { sb.Append("1"); Thread.Sleep(10); }));
+			test.Send(new Action(() =>
+			{
+				sb.Append("1");
+				Thread.Sleep(10);
+			}));
 			if (sb.ToString() != "Test1")
 			{
 				throw new TestAssertionException();
 			}
 
-			test.Send(new Action(() => { sb.Append("2"); Thread.Sleep(10); }));
+			test.Send(new Action(() =>
+			{
+				sb.Append("2");
+				Thread.Sleep(10);
+			}));
 			if (sb.ToString() != "Test12")
 			{
 				throw new TestAssertionException();
 			}
 
-			test.Send(new Action(() => { sb.Append("3"); Thread.Sleep(10); }));
+			test.Send(new Action(() =>
+			{
+				sb.Append("3");
+				Thread.Sleep(10);
+			}));
 			if (sb.ToString() != "Test123")
 			{
 				throw new TestAssertionException();
@@ -481,10 +520,46 @@ namespace RI.Test.Framework.Utilities.Threading
 
 			sb = new StringBuilder();
 
-			test.Post(new Action(() => { sb.Append("T"); Thread.Sleep(10); test.Post(new Action(() => { sb.Append("a"); Thread.Sleep(10); })); }));
-			test.Post(new Action(() => { sb.Append("e"); Thread.Sleep(10); test.Send(new Action(() => { sb.Append("b"); Thread.Sleep(10); })); }));
-			test.Post(new Action(() => { sb.Append("s"); Thread.Sleep(10); test.Send(new Action(() => { sb.Append("c"); Thread.Sleep(10); })); }));
-			test.Post(new Action(() => { sb.Append("t"); Thread.Sleep(10); test.Post(new Action(() => { sb.Append("d"); Thread.Sleep(10); })); }));
+			test.Post(new Action(() =>
+			{
+				sb.Append("T");
+				Thread.Sleep(10);
+				test.Post(new Action(() =>
+				{
+					sb.Append("a");
+					Thread.Sleep(10);
+				}));
+			}));
+			test.Post(new Action(() =>
+			{
+				sb.Append("e");
+				Thread.Sleep(10);
+				test.Send(new Action(() =>
+				{
+					sb.Append("b");
+					Thread.Sleep(10);
+				}));
+			}));
+			test.Post(new Action(() =>
+			{
+				sb.Append("s");
+				Thread.Sleep(10);
+				test.Send(new Action(() =>
+				{
+					sb.Append("c");
+					Thread.Sleep(10);
+				}));
+			}));
+			test.Post(new Action(() =>
+			{
+				sb.Append("t");
+				Thread.Sleep(10);
+				test.Post(new Action(() =>
+				{
+					sb.Append("d");
+					Thread.Sleep(10);
+				}));
+			}));
 
 			Thread.Sleep(100);
 
@@ -556,34 +631,6 @@ namespace RI.Test.Framework.Utilities.Threading
 			}
 		}
 
-		[TestMethod]
-		public void DoProcessing_Test ()
-		{
-			HeavyThreadDispatcher test = new HeavyThreadDispatcher();
-
-			test.Stop(false);
-			test.Start();
-
-			int syncTestValue = 0;
-			Action syncTestAction1 = null;
-			Action syncTestAction2 = new Action(() =>
-			{
-				syncTestValue++;
-				if (syncTestValue < 10)
-				{
-					test.Post(syncTestAction1);
-				}
-			});
-			syncTestAction1 = syncTestAction2;
-
-			test.Post(syncTestAction1);
-
-			test.DoProcessing();
-
-			if (syncTestValue != 10)
-			{
-				throw new TestAssertionException();
-			}
-		}
+		#endregion
 	}
 }

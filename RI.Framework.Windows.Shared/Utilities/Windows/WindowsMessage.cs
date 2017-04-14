@@ -15,6 +15,23 @@ namespace RI.Framework.Utilities.Windows
 	//TODO: BroadcastSystemMessage
 	public struct WindowsMessage
 	{
+		#region Constants
+
+		internal const uint WM_QUIT = 0x0012;
+
+		private const uint PM_NOREMOVE = 0x0000;
+		private const uint PM_NOYIELD = 0x0002;
+		private const uint PM_REMOVE = 0x0001;
+
+		private static readonly IntPtr HWND_BROADCAST = new IntPtr(0xFFFF);
+
+		#endregion
+
+
+
+
+		#region Static Methods
+
 		public static WindowsMessage GetMessage ()
 		{
 			return WindowsMessage.GetMessage(IntPtr.Zero);
@@ -58,79 +75,41 @@ namespace RI.Framework.Utilities.Windows
 			return WindowsMessage.GetCurrentThreadIdNative();
 		}
 
-		private const uint PM_NOREMOVE = 0x0000;
-		private const uint PM_REMOVE = 0x0001;
-		private const uint PM_NOYIELD = 0x0002;
-
-		private static readonly IntPtr HWND_BROADCAST = new IntPtr(0xFFFF);
-
-		internal const uint WM_QUIT = 0x0012;
-
 		[DllImport("user32.dll")]
-		private static extern int GetMessage(out MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax);
-
-		[DllImport("user32.dll")]
-		private static extern bool PeekMessage(out MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax, uint wRemoveMsg);
-
-		[DllImport("user32.dll")]
-		private static extern bool TranslateMessage(ref MSG lpMsg);
-
-		[DllImport("user32.dll")]
-		private static extern IntPtr DispatchMessage(ref MSG lpMsg);
-
-		[DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-		private static extern bool PostMessage(IntPtr hWnd, uint msg, UIntPtr wParam, IntPtr lParam);
-
-		[DllImport("user32.dll", SetLastError = true)]
-		private static extern bool PostThreadMessage(uint threadId, uint msg, UIntPtr wParam, IntPtr lParam);
-
-		[DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-		private static extern IntPtr SendMessage(IntPtr hWnd, uint msg, UIntPtr wParam, IntPtr lParam);
+		private static extern IntPtr DispatchMessage (ref MSG lpMsg);
 
 		[DllImport("kernel32.dll", EntryPoint = "GetCurrentThreadId")]
-		private static extern uint GetCurrentThreadIdNative();
+		private static extern uint GetCurrentThreadIdNative ();
 
 		[DllImport("user32.dll")]
-		private static extern void PostQuitMessage(int nExitCode);
+		private static extern int GetMessage (out MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax);
 
-		[StructLayout(LayoutKind.Sequential)]
-		private struct MSG
-		{
-			public IntPtr hWnd;
-			public uint message;
-			public UIntPtr wParam;
-			public IntPtr lParam;
-			public uint time;
-			public POINT pt;
-		}
+		[DllImport("user32.dll")]
+		private static extern bool PeekMessage (out MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax, uint wRemoveMsg);
 
-		[StructLayout (LayoutKind.Sequential)]
-		private struct POINT
-		{
-			public int X;
-			public int Y;
-		}
+		[DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+		private static extern bool PostMessage (IntPtr hWnd, uint msg, UIntPtr wParam, IntPtr lParam);
 
-		private MSG NativeMessage { get; set; }
+		[DllImport("user32.dll")]
+		private static extern void PostQuitMessage (int nExitCode);
 
-		private WindowsMessage (MSG nativeMessage)
-		{
-			this.NativeMessage = nativeMessage;
-		}
+		[DllImport("user32.dll", SetLastError = true)]
+		private static extern bool PostThreadMessage (uint threadId, uint msg, UIntPtr wParam, IntPtr lParam);
 
-		public uint Message => this.NativeMessage.message;
+		[DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+		private static extern IntPtr SendMessage (IntPtr hWnd, uint msg, UIntPtr wParam, IntPtr lParam);
 
-		public UIntPtr WParam => this.NativeMessage.wParam;
+		[DllImport("user32.dll")]
+		private static extern bool TranslateMessage (ref MSG lpMsg);
 
-		public IntPtr LParam => this.NativeMessage.lParam;
+		#endregion
 
-		public IntPtr Window => this.NativeMessage.hWnd;
 
-		public Point Point => new Point(this.NativeMessage.pt.X, this.NativeMessage.pt.Y);
 
-		public DateTime Time => new DateTime(this.NativeMessage.time);
 
-		public WindowsMessage(uint message)
+		#region Instance Constructor/Destructor
+
+		public WindowsMessage (uint message)
 		{
 			MSG nativeMessage = new MSG();
 			nativeMessage.message = message;
@@ -150,7 +129,7 @@ namespace RI.Framework.Utilities.Windows
 			this.NativeMessage = nativeMessage;
 		}
 
-		public WindowsMessage(uint message, UIntPtr wParam, IntPtr lParam, IntPtr window)
+		public WindowsMessage (uint message, UIntPtr wParam, IntPtr lParam, IntPtr window)
 		{
 			MSG nativeMessage = new MSG();
 			nativeMessage.message = message;
@@ -160,11 +139,42 @@ namespace RI.Framework.Utilities.Windows
 			this.NativeMessage = nativeMessage;
 		}
 
-		public WindowsMessage Translate ()
+		private WindowsMessage (MSG nativeMessage)
 		{
-			MSG message = this.NativeMessage;
-			WindowsMessage.TranslateMessage(ref message);
-			return new WindowsMessage(message);
+			this.NativeMessage = nativeMessage;
+		}
+
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
+
+		public IntPtr LParam => this.NativeMessage.lParam;
+
+		public uint Message => this.NativeMessage.message;
+
+		public Point Point => new Point(this.NativeMessage.pt.X, this.NativeMessage.pt.Y);
+
+		public DateTime Time => new DateTime(this.NativeMessage.time);
+
+		public IntPtr Window => this.NativeMessage.hWnd;
+
+		public UIntPtr WParam => this.NativeMessage.wParam;
+
+		private MSG NativeMessage { get; set; }
+
+		#endregion
+
+
+
+
+		#region Instance Methods
+
+		public void Broadcast ()
+		{
+			this.Post(WindowsMessage.HWND_BROADCAST);
 		}
 
 		public IntPtr Dispatch ()
@@ -172,21 +182,6 @@ namespace RI.Framework.Utilities.Windows
 			MSG message = this.NativeMessage;
 			IntPtr result = WindowsMessage.DispatchMessage(ref message);
 			return result;
-		}
-
-		public void Broadcast ()
-		{
-			this.Post(WindowsMessage.HWND_BROADCAST);
-		}
-
-		public void PostQuit ()
-		{
-			this.PostQuit(Environment.ExitCode);
-		}
-
-		public void PostQuit (int exitCode)
-		{
-			WindowsMessage.PostQuitMessage(exitCode);
 		}
 
 		public void Post ()
@@ -209,9 +204,14 @@ namespace RI.Framework.Utilities.Windows
 			WindowsMessage.PostMessage(window, this.NativeMessage.message, this.NativeMessage.wParam, this.NativeMessage.lParam);
 		}
 
-		internal void Post (uint nativeThreadId)
+		public void PostQuit ()
 		{
-			WindowsMessage.PostThreadMessage(nativeThreadId, this.NativeMessage.message, this.NativeMessage.wParam, this.NativeMessage.lParam);
+			this.PostQuit(Environment.ExitCode);
+		}
+
+		public void PostQuit (int exitCode)
+		{
+			WindowsMessage.PostQuitMessage(exitCode);
 		}
 
 		public IntPtr Send (IntPtr window)
@@ -219,5 +219,51 @@ namespace RI.Framework.Utilities.Windows
 			IntPtr result = WindowsMessage.SendMessage(window, this.NativeMessage.message, this.NativeMessage.wParam, this.NativeMessage.lParam);
 			return result;
 		}
+
+		public WindowsMessage Translate ()
+		{
+			MSG message = this.NativeMessage;
+			WindowsMessage.TranslateMessage(ref message);
+			return new WindowsMessage(message);
+		}
+
+		internal void Post (uint nativeThreadId)
+		{
+			WindowsMessage.PostThreadMessage(nativeThreadId, this.NativeMessage.message, this.NativeMessage.wParam, this.NativeMessage.lParam);
+		}
+
+		#endregion
+
+
+
+
+		#region Type: MSG
+
+		[StructLayout(LayoutKind.Sequential)]
+		private struct MSG
+		{
+			public IntPtr hWnd;
+			public uint message;
+			public UIntPtr wParam;
+			public IntPtr lParam;
+			public uint time;
+			public POINT pt;
+		}
+
+		#endregion
+
+
+
+
+		#region Type: POINT
+
+		[StructLayout(LayoutKind.Sequential)]
+		private struct POINT
+		{
+			public int X;
+			public int Y;
+		}
+
+		#endregion
 	}
 }

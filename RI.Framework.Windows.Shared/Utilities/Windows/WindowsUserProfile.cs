@@ -1,13 +1,13 @@
 ﻿namespace RI.Framework.Utilities.Windows
 {
 	/// <summary>
-	/// Contains the user profile of a Windows user.
+	///     Contains the user profile of a Windows user.
 	/// </summary>
 	public sealed class WindowsUserProfile
 	{
 		#region Instance Constructor/Destructor
 
-		internal WindowsUserProfile(WindowsUser.USERPROFILE nativeUserProfile)
+		internal WindowsUserProfile (WindowsUser.USERPROFILE nativeUserProfile)
 		{
 			this.NativeUserProfile = nativeUserProfile;
 		}
@@ -20,10 +20,10 @@
 		#region Instance Properties/Indexer
 
 		/// <summary>
-		/// Gets the path to the default user profile.
+		///     Gets the path to the default user profile.
 		/// </summary>
 		/// <value>
-		/// The path to the default user profile or null if not available.
+		///     The path to the default user profile or null if not available.
 		/// </value>
 		public string DefaultPath
 		{
@@ -34,10 +34,10 @@
 		}
 
 		/// <summary>
-		/// Gets the path to the roaming user profile.
+		///     Gets the path to the roaming user profile.
 		/// </summary>
 		/// <value>
-		/// The path to the roaming user profile or null if not available.
+		///     The path to the roaming user profile or null if not available.
 		/// </value>
 		public string ProfilePath
 		{
@@ -48,10 +48,10 @@
 		}
 
 		/// <summary>
-		/// Gets the name of the domain controller.
+		///     Gets the name of the domain controller.
 		/// </summary>
 		/// <value>
-		/// The name of the domain controller or null if not used.
+		///     The name of the domain controller or null if not used.
 		/// </value>
 		public string ServerName
 		{
@@ -62,10 +62,10 @@
 		}
 
 		/// <summary>
-		/// Gets the user name.
+		///     Gets the user name.
 		/// </summary>
 		/// <value>
-		/// The user name.
+		///     The user name.
 		/// </value>
 		public string UserName
 		{

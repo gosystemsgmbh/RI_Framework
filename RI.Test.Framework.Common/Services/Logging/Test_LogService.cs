@@ -1,17 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Services.Logging;
 using RI.Test.Framework.Mocks;
+
+
+
 
 namespace RI.Test.Framework.Services.Logging
 {
 	[TestClass]
 	public sealed class Test_LogService
 	{
+		#region Instance Methods
+
 		[TestMethod]
 		public void Test ()
 		{
@@ -178,5 +182,7 @@ namespace RI.Test.Framework.Services.Logging
 
 			return true;
 		}
+
+		#endregion
 	}
 }

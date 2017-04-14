@@ -6,24 +6,18 @@
 namespace RI.Framework.StateMachines
 {
 	/// <summary>
-	/// Event arguments for state machine events related to transitions.
+	///     Event arguments for state machine events related to transitions.
 	/// </summary>
 	[Serializable]
 	public sealed class StateMachineTransientEventArgs : EventArgs
 	{
-		/// <summary>
-		/// Gets information about the processed transition.
-		/// </summary>
-		/// <value>
-		/// Information about the processed transition.
-		/// </value>
-		public StateTransientInfo TransientInfo { get; private set; }
+		#region Instance Constructor/Destructor
 
 		/// <summary>
-		/// Creates a new instance of <see cref="StateMachineTransientEventArgs"/>.
+		///     Creates a new instance of <see cref="StateMachineTransientEventArgs" />.
 		/// </summary>
-		/// <param name="transientInfo">Information about the processed transition.</param>
-		/// <exception cref="ArgumentNullException"><paramref name="transientInfo"/> is null.</exception>
+		/// <param name="transientInfo"> Information about the processed transition. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="transientInfo" /> is null. </exception>
 		public StateMachineTransientEventArgs (StateTransientInfo transientInfo)
 		{
 			if (transientInfo == null)
@@ -33,5 +27,22 @@ namespace RI.Framework.StateMachines
 
 			this.TransientInfo = transientInfo;
 		}
+
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
+
+		/// <summary>
+		///     Gets information about the processed transition.
+		/// </summary>
+		/// <value>
+		///     Information about the processed transition.
+		/// </value>
+		public StateTransientInfo TransientInfo { get; private set; }
+
+		#endregion
 	}
 }

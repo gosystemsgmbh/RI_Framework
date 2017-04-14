@@ -25,9 +25,9 @@ namespace RI.Framework.Services.Messaging
 	///     <para>
 	///         See <see cref="IMessageService" /> for more details.
 	///     </para>
-	/// <note type="note">
-	/// The first created instance of <see cref="MessageService"/> is set as the singleton instance for <see cref="Singleton{IMessageService}"/>
-	/// </note>
+	///     <note type="note">
+	///         The first created instance of <see cref="MessageService" /> is set as the singleton instance for <see cref="Singleton{T}" />
+	///     </note>
 	/// </remarks>
 	public sealed class MessageService : IMessageService
 	{
@@ -51,12 +51,12 @@ namespace RI.Framework.Services.Messaging
 
 		#region Instance Properties/Indexer
 
-		[Import (typeof(IMessageDispatcher), Recomposable = true)]
+		[Import(typeof(IMessageDispatcher), Recomposable = true)]
 		private Import DispatchersImported { get; set; }
 
 		private List<IMessageDispatcher> DispatchersManual { get; set; }
 
-		[Import (typeof(IMessageReceiver), Recomposable = true)]
+		[Import(typeof(IMessageReceiver), Recomposable = true)]
 		private Import ReceiversImported { get; set; }
 
 		private List<IMessageReceiver> ReceiversManual { get; set; }

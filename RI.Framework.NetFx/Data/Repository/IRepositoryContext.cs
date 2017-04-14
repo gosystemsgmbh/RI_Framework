@@ -25,6 +25,62 @@ namespace RI.Framework.Data.Repository
 	public interface IRepositoryContext : IDisposable
 	{
 		/// <summary>
+		///     Gets or sets the currently used change tracking context for <see cref="IEntityChangeTracking" /> when <see cref="Commit" /> or <see cref="SaveChanges" /> is executed.
+		/// </summary>
+		/// <value>
+		///     The currently used change tracking context for <see cref="IEntityChangeTracking" /> when <see cref="Commit" /> or <see cref="SaveChanges" /> is executed.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         A change tracking context can be provided either trough <see cref="ChangeTrackingContext" /> or <see cref="ChangeTrackingContextResolve" />.
+		///         If both are providing a value (meaning: not null), the value from <see cref="ChangeTrackingContext" /> is used.
+		///     </para>
+		///     <para>
+		///         If <see cref="ChangeTrackingContext" /> is null and <see cref="ChangeTrackingContextResolve" /> resolves a context, <see cref="ChangeTrackingContext" /> is also set to the context.
+		///     </para>
+		/// </remarks>
+		object ChangeTrackingContext { get; set; }
+
+		/// <summary>
+		///     Gets or sets whether entity self change tracking using <see cref="IEntityChangeTracking" /> is enabled or not.
+		/// </summary>
+		/// <value>
+		///     true if enabled, false otherwise.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         The default value is true.
+		///     </para>
+		/// </remarks>
+		bool EntitySelfChangeTrackingEnabled { get; set; }
+
+		/// <summary>
+		///     Gets or sets whether entity self error tracking using <see cref="IEntityErrorTracking" /> is enabled or not.
+		/// </summary>
+		/// <value>
+		///     true if enabled, false otherwise.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         The default value is true.
+		///     </para>
+		/// </remarks>
+		bool EntitySelfErrorTrackingEnabled { get; set; }
+
+		/// <summary>
+		///     Raised to resolve the currently used change tracking context for <see cref="IEntityChangeTracking" /> when <see cref="Commit" /> or <see cref="SaveChanges" /> is executed.
+		/// </summary>
+		/// <remarks>
+		///     <para>
+		///         <see cref="ChangeTrackingContextResolve" /> is always called, regardless whether the processed entities support <see cref="IEntityChangeTracking" /> or not.
+		///     </para>
+		///     <para>
+		///         See <see cref="ChangeTrackingContext" /> for more information.
+		///     </para>
+		/// </remarks>
+		event EventHandler<ChangeTrackingContextResolveEventArgs> ChangeTrackingContextResolve;
+
+		/// <summary>
 		///     Commits all pending changes since the last <see cref="SaveChanges" /> and disposes the repository context.
 		/// </summary>
 		/// <exception cref="ObjectDisposedException"> The repository context is disposed. </exception>
@@ -51,7 +107,8 @@ namespace RI.Framework.Data.Repository
 		/// </returns>
 		/// <exception cref="ObjectDisposedException"> The repository context is disposed. </exception>
 		/// <exception cref="InvalidTypeArgumentException"> The type <typeparamref name="T" /> does not represent a valid entity type for which a repository set can be retrieved. </exception>
-		IRepositorySet<T> GetSet <T> () where T : class;
+		IRepositorySet<T> GetSet <T> ()
+			where T : class;
 
 		/// <summary>
 		///     Determines whether the repository has any pending changes, meaning that one or more of its entities were modified.
@@ -87,61 +144,5 @@ namespace RI.Framework.Data.Repository
 		/// </remarks>
 		/// <exception cref="ObjectDisposedException"> The repository context is disposed. </exception>
 		void SaveChanges ();
-
-		/// <summary>
-		/// Raised to resolve the currently used change tracking context for <see cref="IEntityChangeTracking"/> when <see cref="Commit"/> or <see cref="SaveChanges"/> is executed.
-		/// </summary>
-		/// <remarks>
-		/// <para>
-		/// <see cref="ChangeTrackingContextResolve"/> is always called, regardless whether the processed entities support <see cref="IEntityChangeTracking"/> or not.
-		/// </para>
-		/// <para>
-		/// See <see cref="ChangeTrackingContext"/> for more information.
-		/// </para>
-		/// </remarks>
-		event EventHandler<ChangeTrackingContextResolveEventArgs> ChangeTrackingContextResolve;
-
-		/// <summary>
-		/// Gets or sets the currently used change tracking context for <see cref="IEntityChangeTracking"/> when <see cref="Commit"/> or <see cref="SaveChanges"/> is executed.
-		/// </summary>
-		/// <value>
-		/// The currently used change tracking context for <see cref="IEntityChangeTracking"/> when <see cref="Commit"/> or <see cref="SaveChanges"/> is executed.
-		/// </value>
-		/// <remarks>
-		/// <para>
-		/// A change tracking context can be provided either trough <see cref="ChangeTrackingContext"/> or <see cref="ChangeTrackingContextResolve"/>.
-		/// If both are providing a value (meaning: not null), the value from <see cref="ChangeTrackingContext"/> is used.
-		/// </para>
-		/// <para>
-		/// If <see cref="ChangeTrackingContext"/> is null and <see cref="ChangeTrackingContextResolve"/> resolves a context, <see cref="ChangeTrackingContext"/> is also set to the context.
-		/// </para>
-		/// </remarks>
-		object ChangeTrackingContext { get; set; }
-
-		/// <summary>
-		///     Gets or sets whether entity self change tracking using <see cref="IEntityChangeTracking"/> is enabled or not.
-		/// </summary>
-		/// <value>
-		///     true if enabled, false otherwise.
-		/// </value>
-		/// <remarks>
-		///     <para>
-		///         The default value is true.
-		///     </para>
-		/// </remarks>
-		bool EntitySelfChangeTrackingEnabled { get; set; }
-
-		/// <summary>
-		///     Gets or sets whether entity self error tracking using <see cref="IEntityErrorTracking"/> is enabled or not.
-		/// </summary>
-		/// <value>
-		///     true if enabled, false otherwise.
-		/// </value>
-		/// <remarks>
-		///     <para>
-		///         The default value is true.
-		///     </para>
-		/// </remarks>
-		bool EntitySelfErrorTrackingEnabled { get; set; }
 	}
 }

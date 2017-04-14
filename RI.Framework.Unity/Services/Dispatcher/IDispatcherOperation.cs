@@ -46,6 +46,26 @@ namespace RI.Framework.Services.Dispatcher
 		bool Cancel ();
 
 		/// <summary>
+		///     Sets a callback which is called when the operation is finished.
+		/// </summary>
+		/// <param name="callback"> The callback which is called when the operation is finished. Can be set to null to remove a previously set callback. </param>
+		/// <returns>
+		///     The dispatcher operation itself (for use in fluent API) if the operations timeout could be set, null if the operation has already finished or could not change its timeout anymore.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         The operation is finished when its state is <see cref="DispatcherStatus.Processed" />, <see cref="DispatcherStatus.Canceled" />, or <see cref="DispatcherStatus.Timeout" />.
+		///         The <see cref="Status" /> property of the provided <see cref="IDispatcherOperation" /> argument of the callback can be used to determine the status.
+		///     </para>
+		///     <para>
+		///         The callback has two arguments: The finished operation and the arguments of the operation.
+		///         For broadcasts, the arguments is a single object which is the broadcasted object.
+		///         For dispatches, the arguments is the array of arguments of the dispatched action/function.
+		///     </para>
+		/// </remarks>
+		IDispatcherOperation OnFinished (Action<IDispatcherOperation, object[]> callback);
+
+		/// <summary>
 		///     Delays the operation by a given amount of time relative to now.
 		/// </summary>
 		/// <param name="millisecondsFromNow"> The amount of time to delay, in milliseconds. </param>
@@ -80,9 +100,9 @@ namespace RI.Framework.Services.Dispatcher
 		IDispatcherOperation Reschedule (DateTime timestamp);
 
 		/// <summary>
-		/// Sets a timeout for the operation relative to now.
+		///     Sets a timeout for the operation relative to now.
 		/// </summary>
-		/// <param name="millisecondsFromNow">The timeout in milliseconds (zero means no timeout).</param>
+		/// <param name="millisecondsFromNow"> The timeout in milliseconds (zero means no timeout). </param>
 		/// <returns>
 		///     The dispatcher operation itself (for use in fluent API) if the operations timeout could be set, null if the operation has already finished or could not change its timeout anymore.
 		/// </returns>
@@ -90,9 +110,9 @@ namespace RI.Framework.Services.Dispatcher
 		IDispatcherOperation Timeout (int millisecondsFromNow);
 
 		/// <summary>
-		/// Sets a timeout for the operation relative to now.
+		///     Sets a timeout for the operation relative to now.
 		/// </summary>
-		/// <param name="timeFromNow">The timeout (zero means no timeout).</param>
+		/// <param name="timeFromNow"> The timeout (zero means no timeout). </param>
 		/// <returns>
 		///     The dispatcher operation itself (for use in fluent API) if the operations timeout could be set, null if the operation has already finished or could not change its timeout anymore.
 		/// </returns>
@@ -100,9 +120,9 @@ namespace RI.Framework.Services.Dispatcher
 		IDispatcherOperation Timeout (TimeSpan timeFromNow);
 
 		/// <summary>
-		/// Sets the timeout to a given date and time.
+		///     Sets the timeout to a given date and time.
 		/// </summary>
-		/// <param name="timestamp">The date and time when the operation should time-out.</param>
+		/// <param name="timestamp"> The date and time when the operation should time-out. </param>
 		/// <returns>
 		///     The dispatcher operation itself (for use in fluent API) if the operations timeout could be set, null if the operation has already finished or could not change its timeout anymore.
 		/// </returns>
@@ -112,25 +132,5 @@ namespace RI.Framework.Services.Dispatcher
 		///     </note>
 		/// </remarks>
 		IDispatcherOperation Timeout (DateTime timestamp);
-
-		/// <summary>
-		/// Sets a callback which is called when the operation is finished.
-		/// </summary>
-		/// <param name="callback">The callback which is called when the operation is finished. Can be set to null to remove a previously set callback.</param>
-		/// <returns>
-		///     The dispatcher operation itself (for use in fluent API) if the operations timeout could be set, null if the operation has already finished or could not change its timeout anymore.
-		/// </returns>
-		/// <remarks>
-		/// <para>
-		/// The operation is finished when its state is <see cref="DispatcherStatus.Processed"/>, <see cref="DispatcherStatus.Canceled"/>, or <see cref="DispatcherStatus.Timeout"/>.
-		/// The <see cref="Status"/> property of the provided <see cref="IDispatcherOperation"/> argument of the callback can be used to determine the status.
-		/// </para>
-		/// <para>
-		/// The callback has two arguments: The finished operation and the arguments of the operation.
-		/// For broadcasts, the arguments is a single object which is the broadcasted object.
-		/// For dispatches, the arguments is the array of arguments of the dispatched action/function.
-		/// </para>
-		/// </remarks>
-		IDispatcherOperation OnFinished (Action<IDispatcherOperation, object[]> callback);
 	}
 }

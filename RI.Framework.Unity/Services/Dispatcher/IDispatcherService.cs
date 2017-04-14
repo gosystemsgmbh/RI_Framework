@@ -22,16 +22,6 @@ namespace RI.Framework.Services.Dispatcher
 	public interface IDispatcherService
 	{
 		/// <summary>
-		/// Cancels all pending operations.
-		/// </summary>
-		/// <remarks>
-		/// <para>
-		/// This is similar to calling <see cref="IDispatcherOperation.Cancel"/> on all still pending <see cref="IDispatcherOperation"/>s.
-		/// </para>
-		/// </remarks>
-		void CancelAllOperations ();
-
-		/// <summary>
 		///     Broadcasts an object of a specified type to all receivers registered for that type.
 		/// </summary>
 		/// <typeparam name="T"> The type to broadcast. </typeparam>
@@ -43,7 +33,18 @@ namespace RI.Framework.Services.Dispatcher
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="broadcast" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> The service is not fully initialized. </exception>
-		IDispatcherOperation Broadcast <T> (DispatcherPriority priority, T broadcast) where T : class;
+		IDispatcherOperation Broadcast <T> (DispatcherPriority priority, T broadcast)
+			where T : class;
+
+		/// <summary>
+		///     Cancels all pending operations.
+		/// </summary>
+		/// <remarks>
+		///     <para>
+		///         This is similar to calling <see cref="IDispatcherOperation.Cancel" /> on all still pending <see cref="IDispatcherOperation" />s.
+		///     </para>
+		/// </remarks>
+		void CancelAllOperations ();
 
 		/// <summary>
 		///     Dispatches the execution of a method (with no parameter, no return value).
@@ -235,7 +236,8 @@ namespace RI.Framework.Services.Dispatcher
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="receiver" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> The service is not fully initialized. </exception>
-		void RegisterReceiver <T> (Action<T> receiver) where T : class;
+		void RegisterReceiver <T> (Action<T> receiver)
+			where T : class;
 
 		/// <summary>
 		///     Unregisters a receiver for a specified broadcast type.
@@ -252,6 +254,7 @@ namespace RI.Framework.Services.Dispatcher
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="receiver" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> The service is not fully initialized. </exception>
-		void UnregisterReceiver <T> (Action<T> receiver) where T : class;
+		void UnregisterReceiver <T> (Action<T> receiver)
+			where T : class;
 	}
 }

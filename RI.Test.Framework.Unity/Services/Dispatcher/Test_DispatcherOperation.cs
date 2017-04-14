@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection;
-using System.Runtime.Remoting.Messaging;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -14,7 +13,16 @@ namespace RI.Test.Framework.Cases.Services.Dispatcher
 {
 	public sealed class Test_DispatcherOperation : TestModule
 	{
+		#region Instance Properties/Indexer
+
 		private Action TestContinuation { get; set; }
+
+		#endregion
+
+
+
+
+		#region Instance Methods
 
 		[TestMethod]
 		public void Test_1 ()
@@ -85,14 +93,11 @@ namespace RI.Test.Framework.Cases.Services.Dispatcher
 					this.TestContinuation();
 				});
 			});
-			op1.Reschedule(1100).OnFinished((x, y) =>
-			{
-				testValue += x.Status;
-			});
+			op1.Reschedule(1100).OnFinished((x, y) => { testValue += x.Status; });
 		}
 
 		[TestMethod]
-		public void Test_2()
+		public void Test_2 ()
 		{
 			IDispatcherService test = ServiceLocator.GetInstance<IDispatcherService>();
 
@@ -105,14 +110,11 @@ namespace RI.Test.Framework.Cases.Services.Dispatcher
 				}
 				this.TestContinuation();
 			});
-			test.Dispatch(DispatcherPriority.Frame, () =>
-			{
-				op.Cancel();
-			});
+			test.Dispatch(DispatcherPriority.Frame, () => { op.Cancel(); });
 		}
 
 		[TestMethod]
-		public void Test_3()
+		public void Test_3 ()
 		{
 			IDispatcherService test = ServiceLocator.GetInstance<IDispatcherService>();
 
@@ -132,10 +134,19 @@ namespace RI.Test.Framework.Cases.Services.Dispatcher
 			}).Reschedule(1000);
 		}
 
+		#endregion
+
+
+
+
+		#region Overrides
+
 		public override void InvokeTestMethod (MethodInfo method, Action testContinuation)
 		{
 			this.TestContinuation = testContinuation;
 			base.InvokeTestMethod(method, null);
 		}
+
+		#endregion
 	}
 }

@@ -19,13 +19,13 @@ namespace RI.Framework.Data.EF
 	/// </remarks>
 	public sealed class CompositionContainerDbDependencyResolver : IDbDependencyResolver
 	{
-		#region Interface: IDbDependencyResolver
+		#region Instance Constructor/Destructor
 
 		/// <summary>
-		/// Creates a new instance of <see cref="CompositionContainerDbDependencyResolver"/>.
+		///     Creates a new instance of <see cref="CompositionContainerDbDependencyResolver" />.
 		/// </summary>
-		/// <param name="container">The used composition container.</param>
-		/// <exception cref="ArgumentNullException"><paramref name="container"/> is null.</exception>
+		/// <param name="container"> The used composition container. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="container" /> is null. </exception>
 		public CompositionContainerDbDependencyResolver (CompositionContainer container)
 		{
 			if (container == null)
@@ -36,22 +36,36 @@ namespace RI.Framework.Data.EF
 			this.Container = container;
 		}
 
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
+
 		/// <summary>
-		/// Gets the used composition container.
+		///     Gets the used composition container.
 		/// </summary>
 		/// <value>
-		/// The used composition container.
+		///     The used composition container.
 		/// </value>
 		public CompositionContainer Container { get; private set; }
 
+		#endregion
+
+
+
+
+		#region Interface: IDbDependencyResolver
+
 		/// <inheritdoc />
-		public object GetService(Type type, object key)
+		public object GetService (Type type, object key)
 		{
 			return this.Container.GetExport<object>(type);
 		}
 
 		/// <inheritdoc />
-		public IEnumerable<object> GetServices(Type type, object key)
+		public IEnumerable<object> GetServices (Type type, object key)
 		{
 			return this.Container.GetExports<object>(type);
 		}

@@ -74,7 +74,7 @@ namespace RI.Test.Framework.Utilities.Reflection
 			{
 				throw new TestAssertionException();
 			}
-			
+
 			if (assembly.GetGuid(true, true) != testGuid2)
 			{
 				throw new TestAssertionException();
@@ -136,6 +136,6 @@ namespace RI.Test.Framework.Utilities.Reflection
 			}
 		}
 
-#endregion
+		#endregion
 	}
 }

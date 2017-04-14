@@ -48,8 +48,7 @@ namespace RI.Framework.Utilities.Text
 	///         When parsing command lines, the order of parameters and literals does not matter, they can be mixed as needed.
 	///     </para>
 	/// </remarks>
-	public sealed class CommandLine : ICloneable<CommandLine>,
-	                                  ICloneable
+	public sealed class CommandLine : ICloneable<CommandLine>, ICloneable
 	{
 		#region Constants
 
@@ -162,7 +161,7 @@ namespace RI.Framework.Utilities.Text
 							string parameterKeyToAdd = key;
 							string parameterValueToAdd = null;
 
-							if (hasValue && (!eos) || (key == null))
+							if ((hasValue && (!eos)) || (key == null))
 							{
 								if (i1 < commandLine.Length)
 								{
@@ -525,7 +524,7 @@ namespace RI.Framework.Utilities.Text
 		///         The <see cref="ParameterNameComparer" /> of the cloned command line is also cloned if it implements <see cref="ICloneable{T}" /> or <see cref="ICloneable" />.
 		///     </para>
 		/// </remarks>
-		[SuppressMessage ("ReSharper", "SuspiciousTypeConversion.Global")]
+		[SuppressMessage("ReSharper", "SuspiciousTypeConversion.Global")]
 		public CommandLine Clone ()
 		{
 			IEqualityComparer<string> parameterNameComparer = null;

@@ -6,12 +6,12 @@
 namespace RI.Framework.Utilities.Threading
 {
 	/// <summary>
-	/// Yield instruction to move a task to Unitys main/foreground thread.
+	///     Yield instruction to move a task to Unitys main/foreground thread.
 	/// </summary>
 	/// <remarks>
-	/// <para>
-	/// <see cref="ThreadMover"/> for more details.
-	/// </para>
+	///     <para>
+	///         <see cref="ThreadMover" /> for more details.
+	///     </para>
 	/// </remarks>
 	public sealed class ToForeground : YieldInstruction
 	{

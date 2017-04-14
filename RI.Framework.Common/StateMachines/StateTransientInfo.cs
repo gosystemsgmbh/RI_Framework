@@ -6,11 +6,13 @@
 namespace RI.Framework.StateMachines
 {
 	/// <summary>
-	/// Contains all information about a transition.
+	///     Contains all information about a transition.
 	/// </summary>
 	public sealed class StateTransientInfo
 	{
-		internal StateTransientInfo(StateMachine stateMachine)
+		#region Instance Constructor/Destructor
+
+		internal StateTransientInfo (StateMachine stateMachine)
 		{
 			if (stateMachine == null)
 			{
@@ -20,28 +22,37 @@ namespace RI.Framework.StateMachines
 			this.StateMachine = stateMachine;
 		}
 
-		/// <summary>
-		/// Gets the state machine associated with the transition.
-		/// </summary>
-		/// <value>
-		/// The state machine associated with the transition.
-		/// </value>
-		public StateMachine StateMachine { get; private set; }
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
 
 		/// <summary>
-		/// Gets the previous state.
+		///     Gets the next state.
 		/// </summary>
 		/// <value>
-		/// The previous state.
+		///     The next state.
+		/// </value>
+		public IState NextState { get; internal set; }
+
+		/// <summary>
+		///     Gets the previous state.
+		/// </summary>
+		/// <value>
+		///     The previous state.
 		/// </value>
 		public IState PreviousState { get; internal set; }
 
 		/// <summary>
-		/// Gets the next state.
+		///     Gets the state machine associated with the transition.
 		/// </summary>
 		/// <value>
-		/// The next state.
+		///     The state machine associated with the transition.
 		/// </value>
-		public IState NextState { get; internal set; }
+		public StateMachine StateMachine { get; private set; }
+
+		#endregion
 	}
 }

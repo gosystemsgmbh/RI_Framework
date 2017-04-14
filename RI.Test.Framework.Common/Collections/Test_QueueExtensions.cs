@@ -50,10 +50,7 @@ namespace RI.Test.Framework.Collections
 		{
 			Queue<int> test = new Queue<int>();
 
-			if (test.EnqueueRange(new[]
-			                      {
-				                      1, 2, 3
-			                      }) != 3)
+			if (test.EnqueueRange(new[] {1, 2, 3}) != 3)
 			{
 				throw new TestAssertionException();
 			}

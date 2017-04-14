@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+
 using RI.Framework.Collections.DirectLinq;
 
 
@@ -30,7 +31,8 @@ namespace RI.Framework.Composition.Model
 		///     The array which contains all imported values of type <typeparamref name="T" />.
 		///     The array is empty if no values were imported or no value is of type <typeparamref name="T" />.
 		/// </returns>
-		public static T[] ToArray <T> (this Import import) where T : class
+		public static T[] ToArray <T> (this Import import)
+			where T : class
 		{
 			return import.ToList<T>().ToArray<T>();
 		}
@@ -44,7 +46,8 @@ namespace RI.Framework.Composition.Model
 		///     The list which contains all imported values of type <typeparamref name="T" />.
 		///     The list is empty if no values were imported or no value is of type <typeparamref name="T" />.
 		/// </returns>
-		public static List<T> ToList <T> (this Import import) where T : class
+		public static List<T> ToList <T> (this Import import)
+			where T : class
 		{
 			if (import == null)
 			{
@@ -84,7 +87,8 @@ namespace RI.Framework.Composition.Model
 		///         If multiple values of type <typeparamref name="T" /> were imported, one of them is returned but it is undefined which one.
 		///     </para>
 		/// </remarks>
-		public static T Value <T> (this Import import) where T : class
+		public static T Value <T> (this Import import)
+			where T : class
 		{
 			object[] instances = import?.Instances;
 
@@ -115,7 +119,8 @@ namespace RI.Framework.Composition.Model
 		///     The sequence which contains all imported values of type <typeparamref name="T" />.
 		///     The sequence contains no elements if no values were imported or no value is of type <typeparamref name="T" />.
 		/// </returns>
-		public static IEnumerable<T> Values <T> (this Import import) where T : class
+		public static IEnumerable<T> Values <T> (this Import import)
+			where T : class
 		{
 			object[] instances = import?.Instances;
 

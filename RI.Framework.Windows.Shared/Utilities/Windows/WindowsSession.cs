@@ -96,8 +96,8 @@ namespace RI.Framework.Utilities.Windows
 			Privileges.EnablePrivilege(SecurityEntity.SeShutdownName);
 		}
 
-		[DllImport ("user32.dll", SetLastError = false)]
-		[return: MarshalAs (UnmanagedType.Bool)]
+		[DllImport("user32.dll", SetLastError = false)]
+		[return: MarshalAs(UnmanagedType.Bool)]
 		private static extern bool ExitWindowsEx (uint uFlags, uint dwReason);
 
 		#endregion

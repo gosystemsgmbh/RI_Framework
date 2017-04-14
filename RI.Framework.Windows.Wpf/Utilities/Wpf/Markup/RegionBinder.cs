@@ -11,7 +11,7 @@ using RI.Framework.Utilities.ObjectModel;
 namespace RI.Framework.Utilities.Wpf.Markup
 {
 	/// <summary>
-	///     Provides attached properties to associate a WPF control with a region of a <see cref="IRegionService"/>.
+	///     Provides attached properties to associate a WPF control with a region of a <see cref="IRegionService" />.
 	/// </summary>
 	/// <remarks>
 	///     <para>
@@ -20,7 +20,7 @@ namespace RI.Framework.Utilities.Wpf.Markup
 	///         It also defines region operation methods to simplify region handling.
 	///     </para>
 	///     <para>
-	///         <see cref="ServiceLocator" /> or <see cref="Singleton{IRegionService}"/> is used to obtain an instance of <see cref="IRegionService" />.
+	///         <see cref="ServiceLocator" /> or <see cref="Singleton{T}" /> is used to obtain an instance of <see cref="IRegionService" />.
 	///     </para>
 	/// </remarks>
 	public static class RegionBinder

@@ -91,10 +91,10 @@ namespace RI.Framework.Utilities.Windows
 			return Marshal.GetLastWin32Error();
 		}
 
-		[DllImport ("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+		[DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
 		private static extern uint FormatMessage (uint dwFlags, IntPtr lpSource, uint dwMessageId, int dwLanguageId, ref IntPtr lpBuffer, uint nSize, IntPtr pArguments);
 
-		[DllImport ("kernel32.dll", SetLastError = false)]
+		[DllImport("kernel32.dll", SetLastError = false)]
 		private static extern IntPtr LocalFree (IntPtr hMem);
 
 		#endregion

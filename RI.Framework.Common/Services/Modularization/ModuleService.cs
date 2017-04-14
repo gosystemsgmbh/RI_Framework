@@ -26,12 +26,11 @@ namespace RI.Framework.Services.Modularization
 	///     <para>
 	///         See <see cref="IModuleService" /> for more details.
 	///     </para>
-	/// <note type="note">
-	/// The first created instance of <see cref="LogService"/> is set as the singleton instance for <see cref="Singleton{IModuleService}"/>
-	/// </note>
+	///     <note type="note">
+	///         The first created instance of <see cref="LogService" /> is set as the singleton instance for <see cref="Singleton{T}" />
+	///     </note>
 	/// </remarks>
-	public sealed class ModuleService : IModuleService,
-	                                    IImporting
+	public sealed class ModuleService : IModuleService, IImporting
 	{
 		#region Instance Constructor/Destructor
 
@@ -55,7 +54,7 @@ namespace RI.Framework.Services.Modularization
 
 		#region Instance Properties/Indexer
 
-		[Import (typeof(IModule), Recomposable = true)]
+		[Import(typeof(IModule), Recomposable = true)]
 		private Import ModulesImported { get; set; }
 
 		private List<IModule> ModulesManual { get; set; }

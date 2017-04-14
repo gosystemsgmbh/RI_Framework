@@ -8,6 +8,8 @@ namespace RI.Test.Framework.Composition
 	[Export]
 	public sealed class Mock_Exports_7
 	{
+		#region Instance Constructor/Destructor
+
 		[ExportConstructor]
 		public Mock_Exports_7 ()
 		{
@@ -16,5 +18,7 @@ namespace RI.Test.Framework.Composition
 		public Mock_Exports_7 (string value)
 		{
 		}
+
+		#endregion
 	}
 }

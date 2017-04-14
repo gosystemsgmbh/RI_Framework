@@ -81,10 +81,7 @@ namespace RI.Test.Framework.Collections
 		{
 			Stack<int> test = new Stack<int>();
 
-			if (test.PushRange(new[]
-			                   {
-				                   1, 2, 3
-			                   }) != 3)
+			if (test.PushRange(new[] {1, 2, 3}) != 3)
 			{
 				throw new TestAssertionException();
 			}

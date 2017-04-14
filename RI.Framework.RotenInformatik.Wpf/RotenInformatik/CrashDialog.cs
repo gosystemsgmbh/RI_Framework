@@ -30,9 +30,9 @@ namespace RI.Framework.RotenInformatik
 
 		private const char IndentCharacter = ' ';
 
-		private static readonly Encoding ReportDetailsEncoding = Encoding.UTF8;
-
 		private const string ReportDetailsFileExtension = "txt";
+
+		private static readonly Encoding ReportDetailsEncoding = Encoding.UTF8;
 
 		#endregion
 

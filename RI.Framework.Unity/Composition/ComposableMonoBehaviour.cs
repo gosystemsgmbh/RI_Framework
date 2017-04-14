@@ -10,7 +10,7 @@ using UnityEngine;
 namespace RI.Framework.Composition
 {
 	/// <summary>
-	/// Extends <c>MonoBehaviour</c> so that it can be used as a base class for composable types.
+	///     Extends <c> MonoBehaviour </c> so that it can be used as a base class for composable types.
 	/// </summary>
 	/// <remarks>
 	///     <note type="note">
@@ -19,6 +19,8 @@ namespace RI.Framework.Composition
 	/// </remarks>
 	public abstract class ComposableMonoBehaviour : MonoBehaviour
 	{
+		#region Static Methods
+
 		/// <summary>
 		///     Creates an instance of the specified <see cref="ComposableMonoBehaviour" /> type.
 		/// </summary>
@@ -32,7 +34,7 @@ namespace RI.Framework.Composition
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="type" /> is null. </exception>
 		[ExportCreator]
-		public static ComposableMonoBehaviour CreateInstance(Type type)
+		public static ComposableMonoBehaviour CreateInstance (Type type)
 		{
 			if (type == null)
 			{
@@ -44,5 +46,7 @@ namespace RI.Framework.Composition
 			ComposableMonoBehaviour instance = gameObject.AddComponent(type) as ComposableMonoBehaviour;
 			return instance;
 		}
+
+		#endregion
 	}
 }

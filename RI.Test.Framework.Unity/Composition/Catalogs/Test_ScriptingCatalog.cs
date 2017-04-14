@@ -9,6 +9,8 @@ namespace RI.Test.Framework.Cases.Composition.Catalogs
 {
 	public sealed class Test_ScriptingCatalog : TestModule
 	{
+		#region Instance Methods
+
 		[TestMethod]
 		public void Test ()
 		{
@@ -19,5 +21,7 @@ namespace RI.Test.Framework.Cases.Composition.Catalogs
 				throw new TestAssertionException();
 			}
 		}
+
+		#endregion
 	}
 }

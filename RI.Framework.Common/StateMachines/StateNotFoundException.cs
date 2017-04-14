@@ -7,12 +7,19 @@ using System.Runtime.Serialization;
 namespace RI.Framework.StateMachines
 {
 	/// <summary>
-	///     The <see cref="StateNotFoundException" /> is thrown when <see cref="StateMachine.Resolve"/> is unable to resolve the instance for a requested state type.
+	///     The <see cref="StateNotFoundException" /> is thrown when <see cref="StateMachine.Resolve" /> is unable to resolve the instance for a requested state type.
 	/// </summary>
 	[Serializable]
 	public class StateNotFoundException : Exception
 	{
+		#region Constants
+
 		private const string ExceptionMessage = "The state \"{0}\" cannot be resolved.";
+
+		#endregion
+
+
+
 
 		#region Instance Constructor/Destructor
 
@@ -20,7 +27,7 @@ namespace RI.Framework.StateMachines
 		///     Creates a new instance of <see cref="StateNotFoundException" />.
 		/// </summary>
 		/// <param name="state"> The states type which could not be resolved. </param>
-		public StateNotFoundException(Type state)
+		public StateNotFoundException (Type state)
 			: base(string.Format(StateNotFoundException.ExceptionMessage, state?.Name))
 		{
 		}
@@ -30,7 +37,7 @@ namespace RI.Framework.StateMachines
 		/// </summary>
 		/// <param name="message"> The message which describes the exception. </param>
 		/// <param name="innerException"> The exception which triggered this exception. </param>
-		public StateNotFoundException(string message, Exception innerException)
+		public StateNotFoundException (string message, Exception innerException)
 			: base(message, innerException)
 		{
 		}
@@ -40,7 +47,7 @@ namespace RI.Framework.StateMachines
 		/// </summary>
 		/// <param name="info"> The serialization data. </param>
 		/// <param name="context"> The type of the source of the serialization data. </param>
-		protected StateNotFoundException(SerializationInfo info, StreamingContext context)
+		protected StateNotFoundException (SerializationInfo info, StreamingContext context)
 			: base(info, context)
 		{
 		}

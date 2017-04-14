@@ -11,15 +11,17 @@ namespace RI.Framework.IO.Serial
 	/// </summary>
 	public static class SerialPortExtensions
 	{
+		#region Static Methods
+
 		/// <summary>
-		/// Gets the serial port instance for the serial port.
+		///     Gets the serial port instance for the serial port.
 		/// </summary>
-		/// <param name="serialPort">The serial port.</param>
+		/// <param name="serialPort"> The serial port. </param>
 		/// <returns>
-		/// The serial port instance.
+		///     The serial port instance.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="serialPort"/> is null.</exception>
-		public static SerialPortInstance GetSerialPortInstance(this SerialPort serialPort)
+		/// <exception cref="ArgumentNullException"> <paramref name="serialPort" /> is null. </exception>
+		public static SerialPortInstance GetSerialPortInstance (this SerialPort serialPort)
 		{
 			if (serialPort == null)
 			{
@@ -28,5 +30,7 @@ namespace RI.Framework.IO.Serial
 
 			return new SerialPortInstance(serialPort.PortName);
 		}
+
+		#endregion
 	}
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 using RI.Framework.Collections.Virtualization;
 
@@ -11,23 +10,47 @@ namespace RI.Test.Framework.Collections.Virtualization
 {
 	public sealed class Mock_IItemsProvider : IItemsProvider<int>
 	{
-		private List<int> TestValues { get; set; }
-
-		public int GetCounter { get; private set; }
+		#region Instance Constructor/Destructor
 
 		public Mock_IItemsProvider ()
 		{
 			this.TestValues = new List<int>
 			{
-				1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9,
+				10
 			};
 
 			this.GetCounter = 0;
 		}
 
-		public int GetCount() => this.TestValues.Count;
+		#endregion
 
-		public IEnumerable<int> GetItems(int start, int count)
+
+
+
+		#region Instance Properties/Indexer
+
+		public int GetCounter { get; private set; }
+		private List<int> TestValues { get; set; }
+
+		#endregion
+
+
+
+
+		#region Interface: IItemsProvider<int>
+
+		public int GetCount () => this.TestValues.Count;
+
+		public IEnumerable<int> GetItems (int start, int count)
 		{
 			this.GetCounter++;
 
@@ -37,6 +60,8 @@ namespace RI.Test.Framework.Collections.Virtualization
 			}
 		}
 
-		public int Search(int item) => this.TestValues.IndexOf(item);
+		public int Search (int item) => this.TestValues.IndexOf(item);
+
+		#endregion
 	}
 }

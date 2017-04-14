@@ -12,16 +12,14 @@ using RI.Framework.Utilities.Exceptions;
 namespace RI.Framework.IO.Serial
 {
 	/// <summary>
-	/// Represents an instance of a serial port on the current machine.
+	///     Represents an instance of a serial port on the current machine.
 	/// </summary>
 	/// <remarks>
-	/// <para>
-	/// A serial port on Windows is also called a COM port, e.g. COM1.
-	/// </para>
+	///     <para>
+	///         A serial port on Windows is also called a COM port, e.g. COM1.
+	///     </para>
 	/// </remarks>
-	public sealed class SerialPortInstance : IEquatable<SerialPortInstance>,
-	                                         IComparable,
-	                                         IComparable<SerialPortInstance>
+	public sealed class SerialPortInstance : IEquatable<SerialPortInstance>, IComparable, IComparable<SerialPortInstance>
 	{
 		#region Constants
 
@@ -37,16 +35,16 @@ namespace RI.Framework.IO.Serial
 		#region Static Methods
 
 		/// <summary>
-		/// Gets a list of all available serial ports on the current machine.
+		///     Gets a list of all available serial ports on the current machine.
 		/// </summary>
 		/// <returns>
-		/// The list of all available serial ports on the current machine.
-		/// An empty list is returned if no serial ports are available.
+		///     The list of all available serial ports on the current machine.
+		///     An empty list is returned if no serial ports are available.
 		/// </returns>
 		/// <remarks>
-		/// <para>
-		/// The available serial ports are determined by using <see cref="GetPresentPorts"/> and <see cref="IsAvailable"/>.
-		/// </para>
+		///     <para>
+		///         The available serial ports are determined by using <see cref="GetPresentPorts" /> and <see cref="IsAvailable" />.
+		///     </para>
 		/// </remarks>
 		public static List<SerialPortInstance> GetAvailablePorts ()
 		{
@@ -63,16 +61,16 @@ namespace RI.Framework.IO.Serial
 		}
 
 		/// <summary>
-		/// Gets a list of all present serial ports on the current machine.
+		///     Gets a list of all present serial ports on the current machine.
 		/// </summary>
 		/// <returns>
-		/// The list of all present serial ports on the current machine.
-		/// An empty list is returned if no serial ports are present.
+		///     The list of all present serial ports on the current machine.
+		///     An empty list is returned if no serial ports are present.
 		/// </returns>
 		/// <remarks>
-		/// <para>
-		/// A serial port is present if its is there, regardless whether if it is available or not.
-		/// </para> 
+		///     <para>
+		///         A serial port is present if its is there, regardless whether if it is available or not.
+		///     </para>
 		/// </remarks>
 		public static List<SerialPortInstance> GetPresentPorts ()
 		{
@@ -86,15 +84,15 @@ namespace RI.Framework.IO.Serial
 		}
 
 		/// <summary>
-		/// Parses a string into a serial port instance where the string is the serial port name.
+		///     Parses a string into a serial port instance where the string is the serial port name.
 		/// </summary>
-		/// <param name="str">The string to parse.</param>
+		/// <param name="str"> The string to parse. </param>
 		/// <returns>
-		/// The serial port instance.
+		///     The serial port instance.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="str"/> is null.</exception>
-		/// <exception cref="EmptyStringArgumentException"><paramref name="str"/> is an empty string.</exception>
-		/// <exception cref="FormatException"><paramref name="str"/> is not a valid serial port name.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="str" /> is an empty string. </exception>
+		/// <exception cref="FormatException"> <paramref name="str" /> is not a valid serial port name. </exception>
 		public static SerialPortInstance Parse (string str)
 		{
 			if (str == null)
@@ -116,21 +114,21 @@ namespace RI.Framework.IO.Serial
 		}
 
 		/// <summary>
-		/// Tries to parse a string into a serial port instance where the string is the serial port name.
+		///     Tries to parse a string into a serial port instance where the string is the serial port name.
 		/// </summary>
-		/// <param name="str">The string to parse.</param>
-		/// <param name="instance">The serial port instance.</param>
+		/// <param name="str"> The string to parse. </param>
+		/// <param name="instance"> The serial port instance. </param>
 		/// <returns>
-		/// true if <paramref name="str"/> is a valid serial port name, false otherwise.
+		///     true if <paramref name="str" /> is a valid serial port name, false otherwise.
 		/// </returns>
 		/// <remarks>
-		/// <para>
-		/// No exception is thrown if <paramref name="str"/> is null or an empty string.
-		/// In such cases, false is returned.
-		/// </para>
-		/// <para>
-		/// If false is returned, <paramref name="instance"/> is always null.
-		/// </para>
+		///     <para>
+		///         No exception is thrown if <paramref name="str" /> is null or an empty string.
+		///         In such cases, false is returned.
+		///     </para>
+		///     <para>
+		///         If false is returned, <paramref name="instance" /> is always null.
+		///     </para>
 		/// </remarks>
 		public static bool TryParse (string str, out SerialPortInstance instance)
 		{
@@ -181,10 +179,10 @@ namespace RI.Framework.IO.Serial
 		#region Instance Constructor/Destructor
 
 		/// <summary>
-		/// Creates a new instance of <see cref="SerialPortInstance"/>.
+		///     Creates a new instance of <see cref="SerialPortInstance" />.
 		/// </summary>
-		/// <param name="portNumber">The serial port number (COM port number).</param>
-		/// <exception cref="ArgumentOutOfRangeException"><paramref name="portNumber"/> is zero.</exception>
+		/// <param name="portNumber"> The serial port number (COM port number). </param>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="portNumber" /> is zero. </exception>
 		public SerialPortInstance (byte portNumber)
 		{
 			if (portNumber == 0)
@@ -197,12 +195,12 @@ namespace RI.Framework.IO.Serial
 		}
 
 		/// <summary>
-		/// Creates a new instance of <see cref="SerialPortInstance"/>.
+		///     Creates a new instance of <see cref="SerialPortInstance" />.
 		/// </summary>
-		/// <param name="portName"></param>
-		/// <exception cref="ArgumentNullException"><paramref name="portName"/> is null.</exception>
-		/// <exception cref="EmptyStringArgumentException"><paramref name="portName"/> is an empty string.</exception>
-		/// <exception cref="ArgumentOutOfRangeException"><paramref name="portName"/> is not a valid COM port name.</exception>
+		/// <param name="portName"> </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="portName" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="portName" /> is an empty string. </exception>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="portName" /> is not a valid COM port name. </exception>
 		public SerialPortInstance (string portName)
 		{
 			if (portName == null)
@@ -232,18 +230,18 @@ namespace RI.Framework.IO.Serial
 		#region Instance Properties/Indexer
 
 		/// <summary>
-		/// Gets the serial port name of this serial port.
+		///     Gets the serial port name of this serial port.
 		/// </summary>
 		/// <value>
-		/// The serial port name of this serial port (e.g. COM1).
+		///     The serial port name of this serial port (e.g. COM1).
 		/// </value>
 		public string PortName { get; }
 
 		/// <summary>
-		/// Gets the serial port number of this serial port.
+		///     Gets the serial port number of this serial port.
 		/// </summary>
 		/// <value>
-		/// The serial port number of this serial port (e.g. 1).
+		///     The serial port number of this serial port (e.g. 1).
 		/// </value>
 		public byte PortNumber { get; }
 
@@ -255,17 +253,17 @@ namespace RI.Framework.IO.Serial
 		#region Instance Methods
 
 		/// <summary>
-		/// Determines whether the serial port is available.
+		///     Determines whether the serial port is available.
 		/// </summary>
 		/// <returns>
-		/// true if the serial port is available, false otherwise.
+		///     true if the serial port is available, false otherwise.
 		/// </returns>
 		/// <remarks>
-		/// <para>
-		/// A serial port is available if it can be opened successfully.
-		/// This is verified by temporarily opening the serial port with default settings.
-		/// If there is any exception while temporarily opening the serial port, the serial port is assumed to be not available.
-		/// </para>
+		///     <para>
+		///         A serial port is available if it can be opened successfully.
+		///         This is verified by temporarily opening the serial port with default settings.
+		///         If there is any exception while temporarily opening the serial port, the serial port is assumed to be not available.
+		///     </para>
 		/// </remarks>
 		public bool IsAvailable ()
 		{

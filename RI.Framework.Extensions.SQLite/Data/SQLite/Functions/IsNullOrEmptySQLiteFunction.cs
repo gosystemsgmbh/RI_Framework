@@ -29,7 +29,7 @@ namespace RI.Framework.Data.SQLite.Functions
 	/// ]]>
 	/// </code>
 	/// </example>
-	[SQLiteFunction ("isnullorempty", 1, FunctionType.Scalar)]
+	[SQLiteFunction("isnullorempty", 1, FunctionType.Scalar)]
 	[SuppressMessage("ReSharper", "InconsistentNaming")]
 	public sealed class IsNullOrEmptySQLiteFunction : SQLiteFunction
 	{

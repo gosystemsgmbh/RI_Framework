@@ -42,8 +42,7 @@ namespace RI.Framework.Utilities.Comparison
 	///  ]]>
 	///  </code>
 	/// </example>
-	public sealed class EqualityComparison <T> : IEqualityComparer<T>,
-	                                             IEqualityComparer
+	public sealed class EqualityComparison <T> : IEqualityComparer<T>, IEqualityComparer
 	{
 		#region Instance Constructor/Destructor
 

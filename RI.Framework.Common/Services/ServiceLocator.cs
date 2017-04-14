@@ -76,7 +76,8 @@ namespace RI.Framework.Services
 		/// <returns>
 		///     The service instance or null if it cannot be found.
 		/// </returns>
-		public static T GetInstance <T> () where T : class
+		public static T GetInstance <T> ()
+			where T : class
 		{
 			return ServiceLocator.GetInstance(typeof(T)) as T;
 		}
@@ -90,7 +91,8 @@ namespace RI.Framework.Services
 		///     The service instance or null if it cannot be found or converted to <typeparamref name="T" />.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="type" /> is null. </exception>
-		public static T GetInstance <T> (Type type) where T : class
+		public static T GetInstance <T> (Type type)
+			where T : class
 		{
 			return ServiceLocator.GetInstance(type) as T;
 		}
@@ -105,53 +107,10 @@ namespace RI.Framework.Services
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="name" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
-		public static T GetInstance <T> (string name) where T : class
+		public static T GetInstance <T> (string name)
+			where T : class
 		{
 			return ServiceLocator.GetInstance(name) as T;
-		}
-
-		/// <summary>
-		///     Retrieves service instances by type.
-		/// </summary>
-		/// <typeparam name="T"> The type of the services to retrieve. </typeparam>
-		/// <returns>
-		///     The array of service instances.
-		///     An empty array is returned if no services can be found.
-		/// </returns>
-		public static T[] GetInstances<T>() where T : class
-		{
-			return ServiceLocator.GetInstances(typeof(T)).OfType<T>().ToArray();
-		}
-
-		/// <summary>
-		///     Retrieves service instances by type.
-		/// </summary>
-		/// <param name="type"> The type of the services to retrieve. </param>
-		/// <typeparam name="T"> The type to which the services are converted to. </typeparam>
-		/// <returns>
-		///     The array of service instances.
-		///     An empty array is returned if no services can be found.
-		/// </returns>
-		/// <exception cref="ArgumentNullException"> <paramref name="type" /> is null. </exception>
-		public static T[] GetInstances<T>(Type type) where T : class
-		{
-			return ServiceLocator.GetInstances(type).OfType<T>().ToArray();
-		}
-
-		/// <summary>
-		///     Retrieves service instances by name.
-		/// </summary>
-		/// <param name="name"> The name of the services to retrieve. </param>
-		/// <typeparam name="T"> The type to which the services are converted to. </typeparam>
-		/// <returns>
-		///     The array of service instances.
-		///     An empty array is returned if no services can be found.
-		/// </returns>
-		/// <exception cref="ArgumentNullException"> <paramref name="name" /> is null. </exception>
-		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
-		public static T[] GetInstances<T>(string name) where T : class
-		{
-			return ServiceLocator.GetInstances(name).OfType<T>().ToArray();
 		}
 
 		/// <summary>
@@ -199,6 +158,53 @@ namespace RI.Framework.Services
 		}
 
 		/// <summary>
+		///     Retrieves service instances by type.
+		/// </summary>
+		/// <typeparam name="T"> The type of the services to retrieve. </typeparam>
+		/// <returns>
+		///     The array of service instances.
+		///     An empty array is returned if no services can be found.
+		/// </returns>
+		public static T[] GetInstances <T> ()
+			where T : class
+		{
+			return ServiceLocator.GetInstances(typeof(T)).OfType<T>().ToArray();
+		}
+
+		/// <summary>
+		///     Retrieves service instances by type.
+		/// </summary>
+		/// <param name="type"> The type of the services to retrieve. </param>
+		/// <typeparam name="T"> The type to which the services are converted to. </typeparam>
+		/// <returns>
+		///     The array of service instances.
+		///     An empty array is returned if no services can be found.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="type" /> is null. </exception>
+		public static T[] GetInstances <T> (Type type)
+			where T : class
+		{
+			return ServiceLocator.GetInstances(type).OfType<T>().ToArray();
+		}
+
+		/// <summary>
+		///     Retrieves service instances by name.
+		/// </summary>
+		/// <param name="name"> The name of the services to retrieve. </param>
+		/// <typeparam name="T"> The type to which the services are converted to. </typeparam>
+		/// <returns>
+		///     The array of service instances.
+		///     An empty array is returned if no services can be found.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="name" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
+		public static T[] GetInstances <T> (string name)
+			where T : class
+		{
+			return ServiceLocator.GetInstances(name).OfType<T>().ToArray();
+		}
+
+		/// <summary>
 		///     Retrieves services instance by type.
 		/// </summary>
 		/// <param name="type"> The type of the services to retrieve. </param>
@@ -207,7 +213,7 @@ namespace RI.Framework.Services
 		///     An empty array is returned if no services can be found.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="type" /> is null. </exception>
-		public static object[] GetInstances(Type type)
+		public static object[] GetInstances (Type type)
 		{
 			if (type == null)
 			{
@@ -229,7 +235,7 @@ namespace RI.Framework.Services
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="name" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
-		public static object[] GetInstances(string name)
+		public static object[] GetInstances (string name)
 		{
 			if (name == null)
 			{

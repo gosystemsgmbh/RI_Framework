@@ -12,29 +12,31 @@ using RI.Framework.Utilities.ObjectModel;
 namespace RI.Framework.Mathematic
 {
 	/// <summary>
-	/// Contains statistic values for a sequence of numbers.
+	///     Contains statistic values for a sequence of numbers.
 	/// </summary>
 	/// <remarks>
-	/// <note type="note">
-	/// For performance sensitive scenarios, consider using <see cref="RunningValues"/>.
-	/// </note>
+	///     <note type="note">
+	///         For performance sensitive scenarios, consider using <see cref="RunningValues" />.
+	///     </note>
 	/// </remarks>
 	public struct StatisticValues : ICloneable<StatisticValues>, ICloneable
 	{
+		#region Instance Constructor/Destructor
+
 		/// <summary>
-		/// Creates a new instance of <see cref="StatisticValues"/>.
+		///     Creates a new instance of <see cref="StatisticValues" />.
 		/// </summary>
-		/// <param name="values">The sequence of numbers the statistics are calculated from. </param>
+		/// <param name="values"> The sequence of numbers the statistics are calculated from. </param>
 		/// <remarks>
-		/// <para>
-		/// <paramref name="values"/> is enumerated only once.
-		/// </para>
-		/// <para>
-		/// As no timestep is provided, the timestep is implicitly assumed to be 1.0.
-		/// </para>
+		///     <para>
+		///         <paramref name="values" /> is enumerated only once.
+		///     </para>
+		///     <para>
+		///         As no timestep is provided, the timestep is implicitly assumed to be 1.0.
+		///     </para>
 		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="values"/> is null.</exception>
-		public StatisticValues(IEnumerable<double> values)
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public StatisticValues (IEnumerable<double> values)
 			: this(values, null, 1.0)
 		{
 			if (values == null)
@@ -44,18 +46,18 @@ namespace RI.Framework.Mathematic
 		}
 
 		/// <summary>
-		/// Creates a new instance of <see cref="StatisticValues"/>.
+		///     Creates a new instance of <see cref="StatisticValues" />.
 		/// </summary>
-		/// <param name="values">The sequence of numbers the statistics are calculated from. </param>
-		/// <param name="fixedTimestep">The fixed timestep which is used for all values.</param>
+		/// <param name="values"> The sequence of numbers the statistics are calculated from. </param>
+		/// <param name="fixedTimestep"> The fixed timestep which is used for all values. </param>
 		/// <remarks>
-		/// <para>
-		/// <paramref name="values"/> is enumerated only once.
-		/// </para>
+		///     <para>
+		///         <paramref name="values" /> is enumerated only once.
+		///     </para>
 		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="values"/> is null.</exception>
-		/// <exception cref="NotFiniteArgumentException"><paramref name="fixedTimestep"/> is NaN or infinity.</exception>
-		public StatisticValues(IEnumerable<double> values, double fixedTimestep)
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		/// <exception cref="NotFiniteArgumentException"> <paramref name="fixedTimestep" /> is NaN or infinity. </exception>
+		public StatisticValues (IEnumerable<double> values, double fixedTimestep)
 			: this(values, null, fixedTimestep)
 		{
 			if (values == null)
@@ -70,18 +72,18 @@ namespace RI.Framework.Mathematic
 		}
 
 		/// <summary>
-		/// Creates a new instance of <see cref="Statistics"/>.
+		///     Creates a new instance of <see cref="Statistics" />.
 		/// </summary>
-		/// <param name="values">The sequence of numbers the statistics are calculated from. </param>
-		/// <param name="timesteps">The sequence of timesteps for each value.</param>
+		/// <param name="values"> The sequence of numbers the statistics are calculated from. </param>
+		/// <param name="timesteps"> The sequence of timesteps for each value. </param>
 		/// <remarks>
-		/// <para>
-		/// <paramref name="values"/> is enumerated only once.
-		/// </para>
+		///     <para>
+		///         <paramref name="values" /> is enumerated only once.
+		///     </para>
 		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="values"/> or <paramref name="timesteps"/> is null.</exception>
-		/// <exception cref="ArgumentException">The number of timesteps does not match the number of values.</exception>
-		public StatisticValues(IEnumerable<double> values, IEnumerable<double> timesteps)
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> or <paramref name="timesteps" /> is null. </exception>
+		/// <exception cref="ArgumentException"> The number of timesteps does not match the number of values. </exception>
+		public StatisticValues (IEnumerable<double> values, IEnumerable<double> timesteps)
 			: this(values, timesteps, double.NaN)
 		{
 			if (values == null)
@@ -95,7 +97,7 @@ namespace RI.Framework.Mathematic
 			}
 		}
 
-		private StatisticValues(IEnumerable<double> values, IEnumerable<double> timesteps, double fixedTimestep)
+		private StatisticValues (IEnumerable<double> values, IEnumerable<double> timesteps, double fixedTimestep)
 		{
 			Func<double, int, double[]> arrayCreator = (a, b) =>
 			{
@@ -192,95 +194,109 @@ namespace RI.Framework.Mathematic
 			}
 		}
 
-		/// <summary>
-		/// The sum of all values.
-		/// </summary>
-		public double Sum;
+		#endregion
+
+
+
+
+		#region Instance Fields
 
 		/// <summary>
-		/// The sum of all squared values (first squared, then summed).
-		/// </summary>
-		public double SquareSum;
-
-		/// <summary>
-		/// The smallest value of all values.
-		/// </summary>
-		/// <remarks>
-		/// <note type="note">
-		/// This value is <see cref="double.NaN"/> after one of the parameterized constructors is used with an empty sequence of numbers.
-		/// </note>
-		/// </remarks>
-		public double Min;
-
-		/// <summary>
-		/// The largest value of all values.
-		/// </summary>
-		/// <remarks>
-		/// <note type="note">
-		/// This value is <see cref="double.NaN"/> after one of the parameterized constructors is used with an empty sequence of numbers.
-		/// </note>
-		/// </remarks>
-		public double Max;
-
-		/// <summary>
-		/// The root-mean-square (RMS) of all values.
-		/// </summary>
-		public double Rms;
-
-		/// <summary>
-		/// The arithmetic mean or average of all values.
+		///     The arithmetic mean or average of all values.
 		/// </summary>
 		public double ArithmeticMean;
 
 		/// <summary>
-		/// The standard deviation of all values.
-		/// </summary>
-		public double Sigma;
-
-		/// <summary>
-		/// The median of all values.
-		/// </summary>
-		/// <remarks>
-		/// <note type="note">
-		/// This value is <see cref="double.NaN"/> after one of the parameterized constructors is used with a sequence of numbers of less than two numbers.
-		/// </note>
-		/// </remarks>
-		public double Median;
-
-		/// <summary>
-		/// All values.
-		/// </summary>
-		public double[] Values;
-
-		/// <summary>
-		/// All values, sorted by their numeric value.
-		/// </summary>
-		public double[] SortedValues;
-
-		/// <summary>
-		/// All values, multiplied by their corresponding timestep.
-		/// </summary>
-		public double[] WeightedValues;
-
-		/// <summary>
-		/// All values, multiplied by their corresponding timestep and then sorted by their numeric value.
-		/// </summary>
-		public double[] WeightedSortedValues;
-
-		/// <summary>
-		/// The number of values.
+		///     The number of values.
 		/// </summary>
 		public int Count;
 
 		/// <summary>
-		/// The sum of all timesteps.
+		///     The sum of all timesteps.
 		/// </summary>
 		public double Duration;
 
 		/// <summary>
-		/// The timesteps of each value.
+		///     The largest value of all values.
+		/// </summary>
+		/// <remarks>
+		///     <note type="note">
+		///         This value is <see cref="double.NaN" /> after one of the parameterized constructors is used with an empty sequence of numbers.
+		///     </note>
+		/// </remarks>
+		public double Max;
+
+		/// <summary>
+		///     The median of all values.
+		/// </summary>
+		/// <remarks>
+		///     <note type="note">
+		///         This value is <see cref="double.NaN" /> after one of the parameterized constructors is used with a sequence of numbers of less than two numbers.
+		///     </note>
+		/// </remarks>
+		public double Median;
+
+		/// <summary>
+		///     The smallest value of all values.
+		/// </summary>
+		/// <remarks>
+		///     <note type="note">
+		///         This value is <see cref="double.NaN" /> after one of the parameterized constructors is used with an empty sequence of numbers.
+		///     </note>
+		/// </remarks>
+		public double Min;
+
+		/// <summary>
+		///     The root-mean-square (RMS) of all values.
+		/// </summary>
+		public double Rms;
+
+		/// <summary>
+		///     The standard deviation of all values.
+		/// </summary>
+		public double Sigma;
+
+		/// <summary>
+		///     All values, sorted by their numeric value.
+		/// </summary>
+		public double[] SortedValues;
+
+		/// <summary>
+		///     The sum of all squared values (first squared, then summed).
+		/// </summary>
+		public double SquareSum;
+
+		/// <summary>
+		///     The sum of all values.
+		/// </summary>
+		public double Sum;
+
+		/// <summary>
+		///     The timesteps of each value.
 		/// </summary>
 		public double[] Timesteps;
+
+		/// <summary>
+		///     All values.
+		/// </summary>
+		public double[] Values;
+
+		/// <summary>
+		///     All values, multiplied by their corresponding timestep and then sorted by their numeric value.
+		/// </summary>
+		public double[] WeightedSortedValues;
+
+		/// <summary>
+		///     All values, multiplied by their corresponding timestep.
+		/// </summary>
+		public double[] WeightedValues;
+
+		#endregion
+
+
+
+
+		#region Interface: ICloneable<StatisticValues>
 
 		/// <inheritdoc />
 		public StatisticValues Clone ()
@@ -303,7 +319,7 @@ namespace RI.Framework.Mathematic
 			clone.Count = this.Count;
 			clone.Duration = this.Duration;
 			clone.Timesteps = (double[])this.Timesteps?.Clone();
-			
+
 			return clone;
 		}
 
@@ -312,5 +328,7 @@ namespace RI.Framework.Mathematic
 		{
 			return this.Clone();
 		}
+
+		#endregion
 	}
 }

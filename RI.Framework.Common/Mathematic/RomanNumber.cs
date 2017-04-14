@@ -12,36 +12,36 @@ using RI.Framework.Utilities;
 namespace RI.Framework.Mathematic
 {
 	/// <summary>
-	/// Type to convert and/or store roman numbers.
+	///     Type to convert and/or store roman numbers.
 	/// </summary>
 	/// <remarks>
-	/// <para>
-	/// You can either use <see cref="RomanNumber"/> to store a roman number by creating instances of it or use its static methods to convert from/to roman numbers.
-	/// </para>
-	/// <para>
-	/// See <see href="https://en.wikipedia.org/wiki/Roman_numerals"> https://en.wikipedia.org/wiki/Roman_numerals </see> for details about roman numbers.
-	/// </para>
-	/// <para>
-	/// Only the uppercase letters I (1), V (5), X (10), L (50), C (100), D (500), M (1000) are supported, lowercase letters of those characters are considered invalid (as is any other character).
-	/// </para>
-	/// <para>
-	/// When converting from roman to decimal, additive and subtractive forms are supported.
-	/// When converting from decimal to roman, the subtractive form is used for certain special cases (see below).
-	/// </para>
-	/// <para>
-	/// The following special cases represent numbers in subtractive form (only these are supported): IV (4), IX (9), XL (40), XC (90), CD (400), CM (900).
-	/// </para>
-	/// <para>
-	/// Both positive and negative numbers are supported as well as zero.
-	/// For positive values, <see cref="DecimalToRoman"/> and <see cref="RomanValue"/> will never add the plus sign as a prefix but parsed values (<see cref="Parse"/>, <see cref="TryParse"/>, <see cref="DecimalToRoman"/>) can have an optional plus sign prefix.
-	/// For negative values, both roman and decimal representations use a minus sign prefix.
-	/// An empty string is used to express zero.
-	/// </para>
-	/// <note type="important">
-	/// Apostrophus and Vinculum are not supported for larger numbers.
-	/// Therefore, the value 1'000'000'000 would result in one million <c>M</c>s.
-	/// It is advised that the numbers are clamped to a reasonable range which is suitable for you.
-	/// </note>
+	///     <para>
+	///         You can either use <see cref="RomanNumber" /> to store a roman number by creating instances of it or use its static methods to convert from/to roman numbers.
+	///     </para>
+	///     <para>
+	///         See <see href="https://en.wikipedia.org/wiki/Roman_numerals"> https://en.wikipedia.org/wiki/Roman_numerals </see> for details about roman numbers.
+	///     </para>
+	///     <para>
+	///         Only the uppercase letters I (1), V (5), X (10), L (50), C (100), D (500), M (1000) are supported, lowercase letters of those characters are considered invalid (as is any other character).
+	///     </para>
+	///     <para>
+	///         When converting from roman to decimal, additive and subtractive forms are supported.
+	///         When converting from decimal to roman, the subtractive form is used for certain special cases (see below).
+	///     </para>
+	///     <para>
+	///         The following special cases represent numbers in subtractive form (only these are supported): IV (4), IX (9), XL (40), XC (90), CD (400), CM (900).
+	///     </para>
+	///     <para>
+	///         Both positive and negative numbers are supported as well as zero.
+	///         For positive values, <see cref="DecimalToRoman" /> and <see cref="RomanValue" /> will never add the plus sign as a prefix but parsed values (<see cref="Parse" />, <see cref="TryParse" />, <see cref="DecimalToRoman" />) can have an optional plus sign prefix.
+	///         For negative values, both roman and decimal representations use a minus sign prefix.
+	///         An empty string is used to express zero.
+	///     </para>
+	///     <note type="important">
+	///         Apostrophus and Vinculum are not supported for larger numbers.
+	///         Therefore, the value 1'000'000'000 would result in one million <c> M </c>s.
+	///         It is advised that the numbers are clamped to a reasonable range which is suitable for you.
+	///     </note>
 	/// </remarks>
 	/// <example>
 	///     <code language="cs">
@@ -67,13 +67,7 @@ namespace RI.Framework.Mathematic
 	/// </example>
 	public struct RomanNumber : IEquatable<RomanNumber>, IComparable<RomanNumber>, IComparable
 	{
-		private static Dictionary<char, int> ValuesToDecimal { get; set; }
-
-		private static Dictionary<int, char> ValuesToRoman { get; set; }
-
-		private static Dictionary<string, int> SpecialCasesToDecimal { get; set; }
-
-		private static Dictionary<int, string> SpecialCasesToRoman { get; set; }
+		#region Static Constructor/Destructor
 
 		static RomanNumber ()
 		{
@@ -112,12 +106,33 @@ namespace RI.Framework.Mathematic
 			RomanNumber.SpecialCasesToRoman.Add(900, "CM");
 		}
 
+		#endregion
+
+
+
+
+		#region Static Properties/Indexer
+
+		private static Dictionary<string, int> SpecialCasesToDecimal { get; set; }
+
+		private static Dictionary<int, string> SpecialCasesToRoman { get; set; }
+		private static Dictionary<char, int> ValuesToDecimal { get; set; }
+
+		private static Dictionary<int, char> ValuesToRoman { get; set; }
+
+		#endregion
+
+
+
+
+		#region Static Methods
+
 		/// <summary>
-		/// Converts a decimal number into a roman number.
+		///     Converts a decimal number into a roman number.
 		/// </summary>
-		/// <param name="value">The decimal number.</param>
+		/// <param name="value"> The decimal number. </param>
 		/// <returns>
-		/// The roman number as a string.
+		///     The roman number as a string.
 		/// </returns>
 		public static string DecimalToRoman (int value)
 		{
@@ -232,13 +247,278 @@ namespace RI.Framework.Mathematic
 		}
 
 		/// <summary>
-		/// Tries to convert a roman number into a decimal number.
+		///     Adds two <see cref="RomanNumber" />s.
 		/// </summary>
-		/// <param name="value">The roman number as a string.</param>
+		/// <param name="x"> The first value. </param>
+		/// <param name="y"> The second value. </param>
 		/// <returns>
-		/// The decimal number or null if <paramref name="value"/> is not a vlid roman number.
+		///     The result.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
+		public static RomanNumber operator + (RomanNumber x, RomanNumber y)
+		{
+			return new RomanNumber(x.DecimalValue + y.DecimalValue);
+		}
+
+		/// <summary>
+		///     Decrements a <see cref="RomanNumber" /> by 1.
+		/// </summary>
+		/// <param name="x"> The value. </param>
+		/// <returns>
+		///     The result.
+		/// </returns>
+		public static RomanNumber operator -- (RomanNumber x)
+		{
+			return new RomanNumber(x.DecimalValue - 1);
+		}
+
+		/// <summary>
+		///     Divides a <see cref="RomanNumber" /> by another.
+		/// </summary>
+		/// <param name="x"> The value to divide. </param>
+		/// <param name="y"> The value to divide by. </param>
+		/// <returns>
+		///     The result.
+		/// </returns>
+		public static RomanNumber operator / (RomanNumber x, RomanNumber y)
+		{
+			return new RomanNumber(x.DecimalValue / y.DecimalValue);
+		}
+
+		/// <summary>
+		///     Compares two <see cref="RomanNumber" />s for equality.
+		/// </summary>
+		/// <param name="x"> The first value. </param>
+		/// <param name="y"> The second value. </param>
+		/// <returns>
+		///     true if both values are equal, false otherwise.
+		/// </returns>
+		public static bool operator == (RomanNumber x, RomanNumber y)
+		{
+			return x.DecimalValue == y.DecimalValue;
+		}
+
+		/// <summary>
+		///     Checks if a <see cref="RomanNumber" /> is greater than another.
+		/// </summary>
+		/// <param name="x"> The first value. </param>
+		/// <param name="y"> The second value. </param>
+		/// <returns>
+		///     true if the first value is greater than the second value, false otherwise.
+		/// </returns>
+		public static bool operator > (RomanNumber x, RomanNumber y)
+		{
+			return x.DecimalValue > y.DecimalValue;
+		}
+
+		/// <summary>
+		///     Checks if a <see cref="RomanNumber" /> is greater or equal than another.
+		/// </summary>
+		/// <param name="x"> The first value. </param>
+		/// <param name="y"> The second value. </param>
+		/// <returns>
+		///     true if the first value is greater or equal than the second value, false otherwise.
+		/// </returns>
+		public static bool operator >= (RomanNumber x, RomanNumber y)
+		{
+			return x.DecimalValue >= y.DecimalValue;
+		}
+
+		/// <summary>
+		///     Implicitly converts a string to a <see cref="RomanNumber" />.
+		/// </summary>
+		/// <param name="value"> The string to convert. </param>
+		/// <returns>
+		///     The <see cref="RomanNumber" />.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="value" /> is null. </exception>
+		/// <exception cref="FormatException"> <paramref name="value" /> is not a valid roman number. </exception>
+		public static implicit operator RomanNumber (string value)
+		{
+			return RomanNumber.Parse(value);
+		}
+
+		/// <summary>
+		///     Implicitly converts an integer to a <see cref="RomanNumber" />.
+		/// </summary>
+		/// <param name="value"> The integer to convert. </param>
+		/// <returns>
+		///     The <see cref="RomanNumber" />.
+		/// </returns>
+		public static implicit operator RomanNumber (int value)
+		{
+			return new RomanNumber(value);
+		}
+
+		/// <summary>
+		///     Implicitly converts a <see cref="RomanNumber" /> to a string.
+		/// </summary>
+		/// <param name="value"> The value to convert. </param>
+		/// <returns>
+		///     The string.
+		/// </returns>
+		public static implicit operator string (RomanNumber value)
+		{
+			return value.RomanValue;
+		}
+
+		/// <summary>
+		///     Implicitly converts a <see cref="RomanNumber" /> to an integer.
+		/// </summary>
+		/// <param name="value"> The value to convert. </param>
+		/// <returns>
+		///     The integer.
+		/// </returns>
+		public static implicit operator int (RomanNumber value)
+		{
+			return value.DecimalValue;
+		}
+
+		/// <summary>
+		///     Increments a <see cref="RomanNumber" /> by 1.
+		/// </summary>
+		/// <param name="x"> The value. </param>
+		/// <returns>
+		///     The result.
+		/// </returns>
+		public static RomanNumber operator ++ (RomanNumber x)
+		{
+			return new RomanNumber(x.DecimalValue + 1);
+		}
+
+		/// <summary>
+		///     Compares two <see cref="RomanNumber" />s for inequality.
+		/// </summary>
+		/// <param name="x"> The first value. </param>
+		/// <param name="y"> The second value. </param>
+		/// <returns>
+		///     false if both values are equal, true otherwise.
+		/// </returns>
+		public static bool operator != (RomanNumber x, RomanNumber y)
+		{
+			return x.DecimalValue != y.DecimalValue;
+		}
+
+		/// <summary>
+		///     Checks if a <see cref="RomanNumber" /> is less than another.
+		/// </summary>
+		/// <param name="x"> The first value. </param>
+		/// <param name="y"> The second value. </param>
+		/// <returns>
+		///     true if the first value is less than the second value, false otherwise.
+		/// </returns>
+		public static bool operator < (RomanNumber x, RomanNumber y)
+		{
+			return x.DecimalValue < y.DecimalValue;
+		}
+
+		/// <summary>
+		///     Checks if a <see cref="RomanNumber" /> is less or equal than another.
+		/// </summary>
+		/// <param name="x"> The first value. </param>
+		/// <param name="y"> The second value. </param>
+		/// <returns>
+		///     true if the first value is less or equal than the second value, false otherwise.
+		/// </returns>
+		public static bool operator <= (RomanNumber x, RomanNumber y)
+		{
+			return x.DecimalValue <= y.DecimalValue;
+		}
+
+		/// <summary>
+		///     Gets the remainder from a division of a <see cref="RomanNumber" /> by another.
+		/// </summary>
+		/// <param name="x"> The value to divide. </param>
+		/// <param name="y"> The value to divide by. </param>
+		/// <returns>
+		///     The result.
+		/// </returns>
+		public static RomanNumber operator % (RomanNumber x, RomanNumber y)
+		{
+			return new RomanNumber(x.DecimalValue % y.DecimalValue);
+		}
+
+		/// <summary>
+		///     Multiplies two <see cref="RomanNumber" />s.
+		/// </summary>
+		/// <param name="x"> The first value. </param>
+		/// <param name="y"> The second value. </param>
+		/// <returns>
+		///     The result.
+		/// </returns>
+		public static RomanNumber operator * (RomanNumber x, RomanNumber y)
+		{
+			return new RomanNumber(x.DecimalValue * y.DecimalValue);
+		}
+
+		/// <summary>
+		///     Subtracts a <see cref="RomanNumber" /> from another.
+		/// </summary>
+		/// <param name="x"> The value subtracted from. </param>
+		/// <param name="y"> The value to subtract. </param>
+		/// <returns>
+		///     The result.
+		/// </returns>
+		public static RomanNumber operator - (RomanNumber x, RomanNumber y)
+		{
+			return new RomanNumber(x.DecimalValue + y.DecimalValue);
+		}
+
+		/// <summary>
+		///     Multiplies a <see cref="RomanNumber" /> with -1.
+		/// </summary>
+		/// <param name="x"> The value. </param>
+		/// <returns>
+		///     The result.
+		/// </returns>
+		public static RomanNumber operator - (RomanNumber x)
+		{
+			return new RomanNumber(x.DecimalValue * -1);
+		}
+
+		/// <summary>
+		///     Multiplies a <see cref="RomanNumber" /> with 1.
+		/// </summary>
+		/// <param name="x"> The value. </param>
+		/// <returns>
+		///     The result.
+		/// </returns>
+		public static RomanNumber operator + (RomanNumber x)
+		{
+			return new RomanNumber(x.DecimalValue);
+		}
+
+		/// <summary>
+		///     Parses a string as a roman number.
+		/// </summary>
+		/// <param name="str"> The string to parse. </param>
+		/// <returns>
+		///     The roman number.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		/// <exception cref="FormatException"> <paramref name="str" /> is not a valid roman number. </exception>
+		public static RomanNumber Parse (string str)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			RomanNumber value;
+			if (!RomanNumber.TryParse(str, out value))
+			{
+				throw new FormatException("\"" + str + "\" is not a valid roman number.");
+			}
+			return value;
+		}
+
+		/// <summary>
+		///     Tries to convert a roman number into a decimal number.
+		/// </summary>
+		/// <param name="value"> The roman number as a string. </param>
+		/// <returns>
+		///     The decimal number or null if <paramref name="value" /> is not a vlid roman number.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="value" /> is null. </exception>
 		public static int? RomanToDecimal (string value)
 		{
 			if (value == null)
@@ -293,38 +573,14 @@ namespace RI.Framework.Mathematic
 		}
 
 		/// <summary>
-		/// Parses a string as a roman number.
+		///     Tries to parse a string as a roman number.
 		/// </summary>
-		/// <param name="str">The string to parse.</param>
+		/// <param name="str"> The string to parse. </param>
+		/// <param name="value"> The parsed roman number. </param>
 		/// <returns>
-		/// The roman number.
+		///     true if <paramref name="str" /> was a valid roman number, false otherwise.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="str"/> is null.</exception>
-		/// <exception cref="FormatException"><paramref name="str"/> is not a valid roman number.</exception>
-		public static RomanNumber Parse (string str)
-		{
-			if (str == null)
-			{
-				throw new ArgumentNullException(nameof(str));
-			}
-
-			RomanNumber value;
-			if (!RomanNumber.TryParse(str, out value))
-			{
-				throw new FormatException("\"" + str + "\" is not a valid roman number.");
-			}
-			return value;
-		}
-
-		/// <summary>
-		/// Tries to parse a string as a roman number.
-		/// </summary>
-		/// <param name="str">The string to parse.</param>
-		/// <param name="value">The parsed roman number.</param>
-		/// <returns>
-		/// true if <paramref name="str"/> was a valid roman number, false otherwise.
-		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="str"/> is null.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
 		public static bool TryParse (string str, out RomanNumber value)
 		{
 			if (str == null)
@@ -342,31 +598,52 @@ namespace RI.Framework.Mathematic
 			return false;
 		}
 
+		#endregion
+
+
+
+
+		#region Instance Constructor/Destructor
+
 		/// <summary>
-		/// Creates a new instance of <see cref="RomanNumber"/>.
+		///     Creates a new instance of <see cref="RomanNumber" />.
 		/// </summary>
-		/// <param name="decimalValue">The number as a decimal number.</param>
+		/// <param name="decimalValue"> The number as a decimal number. </param>
 		public RomanNumber (int decimalValue)
 		{
 			this.DecimalValue = decimalValue;
 			this._romanValue = null;
 		}
 
+		#endregion
+
+
+
+
+		#region Instance Fields
+
 		private string _romanValue;
 
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
+
 		/// <summary>
-		/// Gets the value as a decimal value.
+		///     Gets the value as a decimal value.
 		/// </summary>
 		/// <value>
-		/// The value as a decimal value.
+		///     The value as a decimal value.
 		/// </value>
 		public int DecimalValue { get; }
 
 		/// <summary>
-		/// Gets the value as a roman value.
+		///     Gets the value as a roman value.
 		/// </summary>
 		/// <value>
-		/// The value as a roman value.
+		///     The value as a roman value.
 		/// </value>
 		public string RomanValue
 		{
@@ -380,20 +657,15 @@ namespace RI.Framework.Mathematic
 			}
 		}
 
-		/// <inheritdoc />
-		public override string ToString ()
-		{
-			return this.RomanValue;
-		}
+		#endregion
+
+
+
+
+		#region Overrides
 
 		/// <inheritdoc />
-		public override int GetHashCode ()
-		{
-			return this.DecimalValue;
-		}
-
-		/// <inheritdoc />
-		public override bool Equals(object obj)
+		public override bool Equals (object obj)
 		{
 			if (obj is RomanNumber)
 			{
@@ -403,13 +675,26 @@ namespace RI.Framework.Mathematic
 		}
 
 		/// <inheritdoc />
-		public bool Equals (RomanNumber other)
+		public override int GetHashCode ()
 		{
-			return this.DecimalValue == other.DecimalValue;
+			return this.DecimalValue;
 		}
 
 		/// <inheritdoc />
-		int IComparable.CompareTo(object obj)
+		public override string ToString ()
+		{
+			return this.RomanValue;
+		}
+
+		#endregion
+
+
+
+
+		#region Interface: IComparable
+
+		/// <inheritdoc />
+		int IComparable.CompareTo (object obj)
 		{
 			if (obj is RomanNumber)
 			{
@@ -418,251 +703,32 @@ namespace RI.Framework.Mathematic
 			return 1;
 		}
 
+		#endregion
+
+
+
+
+		#region Interface: IComparable<RomanNumber>
+
 		/// <inheritdoc />
 		public int CompareTo (RomanNumber other)
 		{
 			return this.DecimalValue.CompareTo(other.DecimalValue);
 		}
 
-		/// <summary>
-		/// Adds two <see cref="RomanNumber"/>s.
-		/// </summary>
-		/// <param name="x">The first value.</param>
-		/// <param name="y">The second value.</param>
-		/// <returns>
-		/// The result.
-		/// </returns>
-		public static RomanNumber operator + (RomanNumber x, RomanNumber y)
+		#endregion
+
+
+
+
+		#region Interface: IEquatable<RomanNumber>
+
+		/// <inheritdoc />
+		public bool Equals (RomanNumber other)
 		{
-			return new RomanNumber(x.DecimalValue + y.DecimalValue);
+			return this.DecimalValue == other.DecimalValue;
 		}
 
-		/// <summary>
-		/// Subtracts a <see cref="RomanNumber"/> from another.
-		/// </summary>
-		/// <param name="x">The value subtracted from.</param>
-		/// <param name="y">The value to subtract.</param>
-		/// <returns>
-		/// The result.
-		/// </returns>
-		public static RomanNumber operator -(RomanNumber x, RomanNumber y)
-		{
-			return new RomanNumber(x.DecimalValue + y.DecimalValue);
-		}
-
-		/// <summary>
-		/// Multiplies two <see cref="RomanNumber"/>s.
-		/// </summary>
-		/// <param name="x">The first value.</param>
-		/// <param name="y">The second value.</param>
-		/// <returns>
-		/// The result.
-		/// </returns>
-		public static RomanNumber operator *(RomanNumber x, RomanNumber y)
-		{
-			return new RomanNumber(x.DecimalValue * y.DecimalValue);
-		}
-
-		/// <summary>
-		/// Divides a <see cref="RomanNumber"/> by another.
-		/// </summary>
-		/// <param name="x">The value to divide.</param>
-		/// <param name="y">The value to divide by.</param>
-		/// <returns>
-		/// The result.
-		/// </returns>
-		public static RomanNumber operator /(RomanNumber x, RomanNumber y)
-		{
-			return new RomanNumber(x.DecimalValue / y.DecimalValue);
-		}
-
-		/// <summary>
-		/// Gets the remainder from a division of a <see cref="RomanNumber"/> by another.
-		/// </summary>
-		/// <param name="x">The value to divide.</param>
-		/// <param name="y">The value to divide by.</param>
-		/// <returns>
-		/// The result.
-		/// </returns>
-		public static RomanNumber operator %(RomanNumber x, RomanNumber y)
-		{
-			return new RomanNumber(x.DecimalValue % y.DecimalValue);
-		}
-
-		/// <summary>
-		/// Compares two <see cref="RomanNumber"/>s for equality.
-		/// </summary>
-		/// <param name="x">The first value.</param>
-		/// <param name="y">The second value.</param>
-		/// <returns>
-		/// true if both values are equal, false otherwise.
-		/// </returns>
-		public static bool operator ==(RomanNumber x, RomanNumber y)
-		{
-			return x.DecimalValue == y.DecimalValue;
-		}
-
-		/// <summary>
-		/// Compares two <see cref="RomanNumber"/>s for inequality.
-		/// </summary>
-		/// <param name="x">The first value.</param>
-		/// <param name="y">The second value.</param>
-		/// <returns>
-		/// false if both values are equal, true otherwise.
-		/// </returns>
-		public static bool operator !=(RomanNumber x, RomanNumber y)
-		{
-			return x.DecimalValue != y.DecimalValue;
-		}
-
-		/// <summary>
-		/// Checks if a <see cref="RomanNumber"/> is greater than another.
-		/// </summary>
-		/// <param name="x">The first value.</param>
-		/// <param name="y">The second value.</param>
-		/// <returns>
-		/// true if the first value is greater than the second value, false otherwise.
-		/// </returns>
-		public static bool operator > (RomanNumber x, RomanNumber y)
-		{
-			return x.DecimalValue > y.DecimalValue;
-		}
-
-		/// <summary>
-		/// Checks if a <see cref="RomanNumber"/> is less than another.
-		/// </summary>
-		/// <param name="x">The first value.</param>
-		/// <param name="y">The second value.</param>
-		/// <returns>
-		/// true if the first value is less than the second value, false otherwise.
-		/// </returns>
-		public static bool operator <(RomanNumber x, RomanNumber y)
-		{
-			return x.DecimalValue < y.DecimalValue;
-		}
-
-		/// <summary>
-		/// Checks if a <see cref="RomanNumber"/> is greater or equal than another.
-		/// </summary>
-		/// <param name="x">The first value.</param>
-		/// <param name="y">The second value.</param>
-		/// <returns>
-		/// true if the first value is greater or equal than the second value, false otherwise.
-		/// </returns>
-		public static bool operator >=(RomanNumber x, RomanNumber y)
-		{
-			return x.DecimalValue >= y.DecimalValue;
-		}
-
-		/// <summary>
-		/// Checks if a <see cref="RomanNumber"/> is less or equal than another.
-		/// </summary>
-		/// <param name="x">The first value.</param>
-		/// <param name="y">The second value.</param>
-		/// <returns>
-		/// true if the first value is less or equal than the second value, false otherwise.
-		/// </returns>
-		public static bool operator <=(RomanNumber x, RomanNumber y)
-		{
-			return x.DecimalValue <= y.DecimalValue;
-		}
-
-		/// <summary>
-		/// Multiplies a <see cref="RomanNumber"/> with 1.
-		/// </summary>
-		/// <param name="x">The value.</param>
-		/// <returns>
-		/// The result.
-		/// </returns>
-		public static RomanNumber operator +(RomanNumber x)
-		{
-			return new RomanNumber(x.DecimalValue);
-		}
-
-		/// <summary>
-		/// Multiplies a <see cref="RomanNumber"/> with -1.
-		/// </summary>
-		/// <param name="x">The value.</param>
-		/// <returns>
-		/// The result.
-		/// </returns>
-		public static RomanNumber operator -(RomanNumber x)
-		{
-			return new RomanNumber(x.DecimalValue * -1);
-		}
-
-		/// <summary>
-		/// Increments a <see cref="RomanNumber"/> by 1.
-		/// </summary>
-		/// <param name="x">The value.</param>
-		/// <returns>
-		/// The result.
-		/// </returns>
-		public static RomanNumber operator ++(RomanNumber x)
-		{
-			return new RomanNumber(x.DecimalValue + 1);
-		}
-
-		/// <summary>
-		/// Decrements a <see cref="RomanNumber"/> by 1.
-		/// </summary>
-		/// <param name="x">The value.</param>
-		/// <returns>
-		/// The result.
-		/// </returns>
-		public static RomanNumber operator --(RomanNumber x)
-		{
-			return new RomanNumber(x.DecimalValue - 1);
-		}
-
-		/// <summary>
-		/// Implicitly converts a string to a <see cref="RomanNumber"/>.
-		/// </summary>
-		/// <param name="value">The string to convert.</param>
-		/// <returns>
-		/// The <see cref="RomanNumber"/>.
-		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
-		/// <exception cref="FormatException"><paramref name="value"/> is not a valid roman number.</exception>
-		public static implicit operator RomanNumber (string value)
-		{
-			return RomanNumber.Parse(value);
-		}
-
-		/// <summary>
-		/// Implicitly converts an integer to a <see cref="RomanNumber"/>.
-		/// </summary>
-		/// <param name="value">The integer to convert.</param>
-		/// <returns>
-		/// The <see cref="RomanNumber"/>.
-		/// </returns>
-		public static implicit operator RomanNumber(int value)
-		{
-			return new RomanNumber(value);
-		}
-
-		/// <summary>
-		/// Implicitly converts a <see cref="RomanNumber"/> to a string.
-		/// </summary>
-		/// <param name="value">The value to convert.</param>
-		/// <returns>
-		/// The string.
-		/// </returns>
-		public static implicit operator string(RomanNumber value)
-		{
-			return value.RomanValue;
-		}
-
-		/// <summary>
-		/// Implicitly converts a <see cref="RomanNumber"/> to an integer.
-		/// </summary>
-		/// <param name="value">The value to convert.</param>
-		/// <returns>
-		/// The integer.
-		/// </returns>
-		public static implicit operator int(RomanNumber value)
-		{
-			return value.DecimalValue;
-		}
+		#endregion
 	}
 }

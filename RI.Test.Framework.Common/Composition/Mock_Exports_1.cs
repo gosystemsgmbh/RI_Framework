@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Text;
-
-using RI.Framework.Composition.Model;
+﻿using RI.Framework.Composition.Model;
 
 
 

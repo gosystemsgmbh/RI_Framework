@@ -27,9 +27,9 @@ namespace RI.Framework.Services.Regions
 	///     <para>
 	///         See <see cref="IRegionService" /> for more details.
 	///     </para>
-	/// <note type="note">
-	/// The first created instance of <see cref="RegionService"/> is set as the singleton instance for <see cref="Singleton{IRegionService}"/>
-	/// </note>
+	///     <note type="note">
+	///         The first created instance of <see cref="RegionService" /> is set as the singleton instance for <see cref="Singleton{T}" />
+	///     </note>
 	/// </remarks>
 	public sealed class RegionService : IRegionService
 	{
@@ -53,7 +53,7 @@ namespace RI.Framework.Services.Regions
 
 		#region Instance Properties/Indexer
 
-		[Import (typeof(IRegionAdapter), Recomposable = true)]
+		[Import(typeof(IRegionAdapter), Recomposable = true)]
 		private Import AdaptersImported { get; set; }
 
 		private List<IRegionAdapter> AdaptersManual { get; set; }

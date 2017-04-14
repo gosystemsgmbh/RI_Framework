@@ -121,10 +121,7 @@ namespace RI.Test.Framework.Collections.ObjectModel
 				throw new TestAssertionException();
 			}
 
-			if (!root.Children.AsEnumerable().SequenceEqual(new[]
-			                                                {
-				                                                n11, n12, n13
-			                                                }))
+			if (!root.Children.AsEnumerable().SequenceEqual(new[] {n11, n12, n13}))
 			{
 				throw new TestAssertionException();
 			}
@@ -148,20 +145,14 @@ namespace RI.Test.Framework.Collections.ObjectModel
 				throw new TestAssertionException();
 			}
 
-			root = new TreeNode<int>(new[]
-			                         {
-				                         new TreeNode<int>()
-			                         });
+			root = new TreeNode<int>(new[] {new TreeNode<int>()});
 
 			if (root.Children.Count != 1)
 			{
 				throw new TestAssertionException();
 			}
 
-			root = new TreeNode<int>(99, new[]
-			                         {
-				                         new TreeNode<int>(), new TreeNode<int>()
-			                         });
+			root = new TreeNode<int>(99, new[] {new TreeNode<int>(), new TreeNode<int>()});
 
 			if (root.Value != 99)
 			{
@@ -237,17 +228,12 @@ namespace RI.Test.Framework.Collections.ObjectModel
 
 			root.Children.Clear();
 
-			if (root.AddChildren(new int[]
-			                     {
-			                     }).Count != 0)
+			if (root.AddChildren(new int[] { }).Count != 0)
 			{
 				throw new TestAssertionException();
 			}
 
-			if (root.AddChildren(new[]
-			                     {
-				                     1, 2, 3, 4, 5
-			                     }).Count != 5)
+			if (root.AddChildren(new[] {1, 2, 3, 4, 5}).Count != 5)
 			{
 				throw new TestAssertionException();
 			}

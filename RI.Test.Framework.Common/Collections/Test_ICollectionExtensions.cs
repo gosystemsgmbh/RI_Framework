@@ -20,10 +20,7 @@ namespace RI.Test.Framework.Collections
 			List<int> list = new List<int>();
 			ICollection<int> test = list.AsCollection();
 
-			if (test.AddRange(new[]
-			                  {
-				                  1, 2, 30, 40, 500, 600
-			                  }) != 6)
+			if (test.AddRange(new[] {1, 2, 30, 40, 500, 600}) != 6)
 			{
 				throw new TestAssertionException();
 			}
@@ -94,10 +91,7 @@ namespace RI.Test.Framework.Collections
 			};
 			ICollection<int> test = list.AsCollection();
 
-			if (test.RemoveAllRange(new[]
-			                        {
-				                        1, 2, 30, 40, 500, 600
-			                        }) != 5)
+			if (test.RemoveAllRange(new[] {1, 2, 30, 40, 500, 600}) != 5)
 			{
 				throw new TestAssertionException();
 			}
@@ -131,10 +125,7 @@ namespace RI.Test.Framework.Collections
 			};
 			ICollection<int> test = list.AsCollection();
 
-			if (test.RemoveRange(new[]
-			                     {
-				                     1, 2, 30, 40, 500, 600
-			                     }) != 2)
+			if (test.RemoveRange(new[] {1, 2, 30, 40, 500, 600}) != 2)
 			{
 				throw new TestAssertionException();
 			}

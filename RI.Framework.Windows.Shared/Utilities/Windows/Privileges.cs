@@ -125,100 +125,65 @@ namespace RI.Framework.Utilities.Windows
 			}
 		}
 
-		[DllImport ("advapi32.dll", SetLastError = true)]
-		[return: MarshalAs (UnmanagedType.Bool)]
-		private static extern bool AdjustTokenPrivileges (IntPtr tokenhandle, [MarshalAs (UnmanagedType.Bool)] bool disableAllPrivileges, ref TOKEN_PRIVILEGES newstate, uint bufferlength, IntPtr previousState, IntPtr returnlength);
+		[DllImport("advapi32.dll", SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		private static extern bool AdjustTokenPrivileges (IntPtr tokenhandle, [MarshalAs(UnmanagedType.Bool)] bool disableAllPrivileges, ref TOKEN_PRIVILEGES newstate, uint bufferlength, IntPtr previousState, IntPtr returnlength);
 
-		[DllImport ("kernel32.dll", SetLastError = false)]
-		[return: MarshalAs (UnmanagedType.Bool)]
+		[DllImport("kernel32.dll", SetLastError = false)]
+		[return: MarshalAs(UnmanagedType.Bool)]
 		private static extern bool CloseHandle (IntPtr hObject);
 
-		[DllImport ("kernel32.dll", SetLastError = false)]
+		[DllImport("kernel32.dll", SetLastError = false)]
 		private static extern IntPtr GetCurrentProcess ();
 
 		private static string GetSecurityEntityValue (SecurityEntity securityEntity)
 		{
 			switch (securityEntity)
 			{
-				case SecurityEntity.SeAssignprimarytokenName:
-					return "SeAssignPrimaryTokenPrivilege";
-				case SecurityEntity.SeAuditName:
-					return "SeAuditPrivilege";
-				case SecurityEntity.SeBackupName:
-					return "SeBackupPrivilege";
-				case SecurityEntity.SeChangeNotifyName:
-					return "SeChangeNotifyPrivilege";
-				case SecurityEntity.SeCreateGlobalName:
-					return "SeCreateGlobalPrivilege";
-				case SecurityEntity.SeCreatePagefileName:
-					return "SeCreatePagefilePrivilege";
-				case SecurityEntity.SeCreatePermanentName:
-					return "SeCreatePermanentPrivilege";
-				case SecurityEntity.SeCreateSymbolicLinkName:
-					return "SeCreateSymbolicLinkPrivilege";
-				case SecurityEntity.SeCreateTokenName:
-					return "SeCreateTokenPrivilege";
-				case SecurityEntity.SeDebugName:
-					return "SeDebugPrivilege";
-				case SecurityEntity.SeEnableDelegationName:
-					return "SeEnableDelegationPrivilege";
-				case SecurityEntity.SeImpersonateName:
-					return "SeImpersonatePrivilege";
-				case SecurityEntity.SeIncBasePriorityName:
-					return "SeIncreaseBasePriorityPrivilege";
-				case SecurityEntity.SeIncreaseQuotaName:
-					return "SeIncreaseQuotaPrivilege";
-				case SecurityEntity.SeIncWorkingSetName:
-					return "SeIncreaseWorkingSetPrivilege";
-				case SecurityEntity.SeLoadDriverName:
-					return "SeLoadDriverPrivilege";
-				case SecurityEntity.SeLockMemoryName:
-					return "SeLockMemoryPrivilege";
-				case SecurityEntity.SeMachineAccountName:
-					return "SeMachineAccountPrivilege";
-				case SecurityEntity.SeManageVolumeName:
-					return "SeManageVolumePrivilege";
-				case SecurityEntity.SeProfSingleProcessName:
-					return "SeProfileSingleProcessPrivilege";
-				case SecurityEntity.SeRelabelName:
-					return "SeRelabelPrivilege";
-				case SecurityEntity.SeRemoteShutdownName:
-					return "SeRemoteShutdownPrivilege";
-				case SecurityEntity.SeRestoreName:
-					return "SeRestorePrivilege";
-				case SecurityEntity.SeSecurityName:
-					return "SeSecurityPrivilege";
-				case SecurityEntity.SeShutdownName:
-					return "SeShutdownPrivilege";
-				case SecurityEntity.SeSyncAgentName:
-					return "SeSyncAgentPrivilege";
-				case SecurityEntity.SeSystemEnvironmentName:
-					return "SeSystemEnvironmentPrivilege";
-				case SecurityEntity.SeSystemProfileName:
-					return "SeSystemProfilePrivilege";
-				case SecurityEntity.SeSystemtimeName:
-					return "SeSystemtimePrivilege";
-				case SecurityEntity.SeTakeOwnershipName:
-					return "SeTakeOwnershipPrivilege";
-				case SecurityEntity.SeTcbName:
-					return "SeTcbPrivilege";
-				case SecurityEntity.SeTimeZoneName:
-					return "SeTimeZonePrivilege";
-				case SecurityEntity.SeTrustedCredmanAccessName:
-					return "SeTrustedCredManAccessPrivilege";
-				case SecurityEntity.SeUndockName:
-					return "SeUndockPrivilege";
-				default:
-					throw new ArgumentOutOfRangeException(typeof(SecurityEntity).Name);
+				case SecurityEntity.SeAssignprimarytokenName: return "SeAssignPrimaryTokenPrivilege";
+				case SecurityEntity.SeAuditName: return "SeAuditPrivilege";
+				case SecurityEntity.SeBackupName: return "SeBackupPrivilege";
+				case SecurityEntity.SeChangeNotifyName: return "SeChangeNotifyPrivilege";
+				case SecurityEntity.SeCreateGlobalName: return "SeCreateGlobalPrivilege";
+				case SecurityEntity.SeCreatePagefileName: return "SeCreatePagefilePrivilege";
+				case SecurityEntity.SeCreatePermanentName: return "SeCreatePermanentPrivilege";
+				case SecurityEntity.SeCreateSymbolicLinkName: return "SeCreateSymbolicLinkPrivilege";
+				case SecurityEntity.SeCreateTokenName: return "SeCreateTokenPrivilege";
+				case SecurityEntity.SeDebugName: return "SeDebugPrivilege";
+				case SecurityEntity.SeEnableDelegationName: return "SeEnableDelegationPrivilege";
+				case SecurityEntity.SeImpersonateName: return "SeImpersonatePrivilege";
+				case SecurityEntity.SeIncBasePriorityName: return "SeIncreaseBasePriorityPrivilege";
+				case SecurityEntity.SeIncreaseQuotaName: return "SeIncreaseQuotaPrivilege";
+				case SecurityEntity.SeIncWorkingSetName: return "SeIncreaseWorkingSetPrivilege";
+				case SecurityEntity.SeLoadDriverName: return "SeLoadDriverPrivilege";
+				case SecurityEntity.SeLockMemoryName: return "SeLockMemoryPrivilege";
+				case SecurityEntity.SeMachineAccountName: return "SeMachineAccountPrivilege";
+				case SecurityEntity.SeManageVolumeName: return "SeManageVolumePrivilege";
+				case SecurityEntity.SeProfSingleProcessName: return "SeProfileSingleProcessPrivilege";
+				case SecurityEntity.SeRelabelName: return "SeRelabelPrivilege";
+				case SecurityEntity.SeRemoteShutdownName: return "SeRemoteShutdownPrivilege";
+				case SecurityEntity.SeRestoreName: return "SeRestorePrivilege";
+				case SecurityEntity.SeSecurityName: return "SeSecurityPrivilege";
+				case SecurityEntity.SeShutdownName: return "SeShutdownPrivilege";
+				case SecurityEntity.SeSyncAgentName: return "SeSyncAgentPrivilege";
+				case SecurityEntity.SeSystemEnvironmentName: return "SeSystemEnvironmentPrivilege";
+				case SecurityEntity.SeSystemProfileName: return "SeSystemProfilePrivilege";
+				case SecurityEntity.SeSystemtimeName: return "SeSystemtimePrivilege";
+				case SecurityEntity.SeTakeOwnershipName: return "SeTakeOwnershipPrivilege";
+				case SecurityEntity.SeTcbName: return "SeTcbPrivilege";
+				case SecurityEntity.SeTimeZoneName: return "SeTimeZonePrivilege";
+				case SecurityEntity.SeTrustedCredmanAccessName: return "SeTrustedCredManAccessPrivilege";
+				case SecurityEntity.SeUndockName: return "SeUndockPrivilege";
+				default: throw new ArgumentOutOfRangeException(typeof(SecurityEntity).Name);
 			}
 		}
 
-		[DllImport ("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-		[return: MarshalAs (UnmanagedType.Bool)]
+		[DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+		[return: MarshalAs(UnmanagedType.Bool)]
 		private static extern bool LookupPrivilegeValue (string lpsystemname, string lpname, ref LUID lpLuid);
 
-		[DllImport ("Advapi32.dll", SetLastError = true)]
-		[return: MarshalAs (UnmanagedType.Bool)]
+		[DllImport("Advapi32.dll", SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
 		private static extern bool OpenProcessToken (IntPtr processHandle, uint desiredAccesss, ref IntPtr tokenHandle);
 
 		#endregion
@@ -228,8 +193,8 @@ namespace RI.Framework.Utilities.Windows
 
 		#region Type: LUID
 
-		[StructLayout (LayoutKind.Sequential)]
-		[SuppressMessage ("ReSharper", "InconsistentNaming")]
+		[StructLayout(LayoutKind.Sequential)]
+		[SuppressMessage("ReSharper", "InconsistentNaming")]
 		private struct LUID
 		{
 			internal int LowPart;
@@ -244,8 +209,8 @@ namespace RI.Framework.Utilities.Windows
 
 		#region Type: TOKEN_PRIVILEGES
 
-		[StructLayout (LayoutKind.Sequential)]
-		[SuppressMessage ("ReSharper", "InconsistentNaming")]
+		[StructLayout(LayoutKind.Sequential)]
+		[SuppressMessage("ReSharper", "InconsistentNaming")]
 		private struct TOKEN_PRIVILEGES
 		{
 			internal int PrivilegeCount;

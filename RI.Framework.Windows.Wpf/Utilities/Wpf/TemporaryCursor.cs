@@ -90,20 +90,20 @@ namespace RI.Framework.Utilities.Wpf
 
 		#region Instance Methods
 
-		[SuppressMessage ("ReSharper", "UnusedParameter.Local")]
-		private void Dispose (bool disposing)
-		{
-			Mouse.OverrideCursor = this.PreviousCursor;
-			this.PreviousCursor = null;
-		}
-
 		/// <summary>
-		/// Restores the original cursor before this instance was created.
+		///     Restores the original cursor before this instance was created.
 		/// </summary>
 		public void Restore ()
 		{
 			this.Dispose(true);
 			GC.SuppressFinalize(this);
+		}
+
+		[SuppressMessage("ReSharper", "UnusedParameter.Local")]
+		private void Dispose (bool disposing)
+		{
+			Mouse.OverrideCursor = this.PreviousCursor;
+			this.PreviousCursor = null;
 		}
 
 		#endregion
@@ -116,7 +116,7 @@ namespace RI.Framework.Utilities.Wpf
 		/// <summary>
 		///     Restores the original cursor which was saved when this <see cref="TemporaryCursor" /> was created.
 		/// </summary>
-		void IDisposable.Dispose()
+		void IDisposable.Dispose ()
 		{
 			this.Restore();
 		}

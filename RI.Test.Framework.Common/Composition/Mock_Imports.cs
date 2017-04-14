@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-using RI.Framework.Composition.Model;
+﻿using RI.Framework.Composition.Model;
 
 
 
@@ -12,6 +8,8 @@ namespace RI.Test.Framework.Composition
 	[Export]
 	public sealed class Mock_Imports
 	{
+		#region Instance Properties/Indexer
+
 		[Import]
 		public Mock_Exports_1 Import_1 { get; private set; }
 
@@ -35,5 +33,7 @@ namespace RI.Test.Framework.Composition
 
 		[Import(typeof(Mock_Exports_1), Recomposable = true)]
 		public Import Import_8 { get; private set; }
+
+		#endregion
 	}
 }

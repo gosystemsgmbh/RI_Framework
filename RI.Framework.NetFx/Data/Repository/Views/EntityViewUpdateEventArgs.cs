@@ -14,9 +14,9 @@ namespace RI.Framework.Data.Repository.Views
 		#region Instance Constructor/Destructor
 
 		/// <summary>
-		/// Creates a new instance of <see cref="EntityViewUpdateEventArgs"/>.
+		///     Creates a new instance of <see cref="EntityViewUpdateEventArgs" />.
 		/// </summary>
-		/// <param name="resetPageNumber">Specifies whether <see cref="EntityView{TEntity,TViewObject}.PageNumber" /> is reset to 1.</param>
+		/// <param name="resetPageNumber"> Specifies whether <see cref="EntityView{TEntity,TViewObject}.PageNumber" /> is reset to 1. </param>
 		public EntityViewUpdateEventArgs (bool resetPageNumber)
 		{
 			this.ResetPageNumber = resetPageNumber;
@@ -30,15 +30,15 @@ namespace RI.Framework.Data.Repository.Views
 		#region Instance Properties/Indexer
 
 		/// <summary>
-		/// Gets whether <see cref="EntityView{TEntity,TViewObject}.PageNumber" /> is reset to 1.
+		///     Gets whether <see cref="EntityView{TEntity,TViewObject}.PageNumber" /> is reset to 1.
 		/// </summary>
 		/// <value>
-		/// true if <see cref="EntityView{TEntity,TViewObject}.PageNumber" /> is reset to 1, false otherwise.
+		///     true if <see cref="EntityView{TEntity,TViewObject}.PageNumber" /> is reset to 1, false otherwise.
 		/// </value>
 		/// <remarks>
-		/// <para>
-		/// See <see cref="EntityView{TEntity,TViewObject}.PageNumber" /> for more details.
-		/// </para>
+		///     <para>
+		///         See <see cref="EntityView{TEntity,TViewObject}.PageNumber" /> for more details.
+		///     </para>
 		/// </remarks>
 		public bool ResetPageNumber { get; }
 

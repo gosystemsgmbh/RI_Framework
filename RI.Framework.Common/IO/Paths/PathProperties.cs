@@ -26,11 +26,7 @@ namespace RI.Framework.IO.Paths
 	///     </para>
 	/// </remarks>
 	[Serializable]
-	public sealed class PathProperties : ICloneable<PathProperties>,
-	                                     ICloneable,
-	                                     IEquatable<PathProperties>,
-	                                     IComparable<PathProperties>,
-	                                     IComparable
+	public sealed class PathProperties : ICloneable<PathProperties>, ICloneable, IEquatable<PathProperties>, IComparable<PathProperties>, IComparable
 	{
 		#region Constants
 
@@ -87,10 +83,7 @@ namespace RI.Framework.IO.Paths
 		///         These characters are invalid for both directory and file paths.
 		///     </para>
 		/// </remarks>
-		public static readonly char[] InvalidPathCharacters =
-		{
-			'\0', '\"', '|', '<', '>', PathProperties.WildcardOne, PathProperties.WildcardMore, PathProperties.WindowsDirectorySeparator, PathProperties.UnixDirectorySeparator, PathProperties.UncDirectorySeparator, PathProperties.WindowsDriveSeparator
-		};
+		public static readonly char[] InvalidPathCharacters = {'\0', '\"', '|', '<', '>', PathProperties.WildcardOne, PathProperties.WildcardMore, PathProperties.WindowsDirectorySeparator, PathProperties.UnixDirectorySeparator, PathProperties.UncDirectorySeparator, PathProperties.WindowsDriveSeparator};
 
 		#endregion
 
@@ -460,9 +453,9 @@ namespace RI.Framework.IO.Paths
 				if (isRooted)
 				{
 					root = PathProperties.CreatePath(new List<string>
-					                                 {
-						                                 partsNormalized[0]
-					                                 }, type.Value, true);
+					{
+						partsNormalized[0]
+					}, type.Value, true);
 				}
 			}
 
@@ -568,46 +561,6 @@ namespace RI.Framework.IO.Paths
 					return PathType.Unix;
 				}
 			}
-		}
-
-		internal static PathType? GetPathType(string path, bool rootOnly)
-		{
-			if (path == null)
-			{
-				throw new ArgumentNullException(nameof(path));
-			}
-
-			if ((path.Length >= 1) && (path[0] == PathProperties.UnixDirectorySeparator))
-			{
-				return PathType.Unix;
-			}
-			else if ((path.Length >= 2) && PathProperties.IsAtoZ(path[0]) && (path[1] == PathProperties.WindowsDriveSeparator))
-			{
-				return PathType.Windows;
-			}
-			else if ((path.Length >= 2) && (path[0] == PathProperties.UncDirectorySeparator) && (path[1] == PathProperties.UncDirectorySeparator))
-			{
-				return PathType.Unc;
-			}
-
-			if (rootOnly)
-			{
-				return null;
-			}
-
-			foreach (char chr in path)
-			{
-				if (chr == PathProperties.UnixDirectorySeparator)
-				{
-					return PathType.Unix;
-				}
-				else if (chr == PathProperties.WindowsDirectorySeparator)
-				{
-					return PathType.Windows;
-				}
-			}
-
-			return null;
 		}
 
 		/// <summary>
@@ -836,7 +789,7 @@ namespace RI.Framework.IO.Paths
 						{
 							builder.Append(PathProperties.UncDirectorySeparator);
 							builder.Append(PathProperties.UncDirectorySeparator);
-							}
+						}
 						break;
 					}
 				}
@@ -852,6 +805,46 @@ namespace RI.Framework.IO.Paths
 			}
 
 			return builder.ToString();
+		}
+
+		internal static PathType? GetPathType (string path, bool rootOnly)
+		{
+			if (path == null)
+			{
+				throw new ArgumentNullException(nameof(path));
+			}
+
+			if ((path.Length >= 1) && (path[0] == PathProperties.UnixDirectorySeparator))
+			{
+				return PathType.Unix;
+			}
+			else if ((path.Length >= 2) && PathProperties.IsAtoZ(path[0]) && (path[1] == PathProperties.WindowsDriveSeparator))
+			{
+				return PathType.Windows;
+			}
+			else if ((path.Length >= 2) && (path[0] == PathProperties.UncDirectorySeparator) && (path[1] == PathProperties.UncDirectorySeparator))
+			{
+				return PathType.Unc;
+			}
+
+			if (rootOnly)
+			{
+				return null;
+			}
+
+			foreach (char chr in path)
+			{
+				if (chr == PathProperties.UnixDirectorySeparator)
+				{
+					return PathType.Unix;
+				}
+				else if (chr == PathProperties.WindowsDirectorySeparator)
+				{
+					return PathType.Windows;
+				}
+			}
+
+			return null;
 		}
 
 		private static bool IsAtoZ (char chr)
@@ -1091,7 +1084,7 @@ namespace RI.Framework.IO.Paths
 		}
 
 		/// <inheritdoc />
-		[SuppressMessage ("ReSharper", "NonReadonlyMemberInGetHashCode")]
+		[SuppressMessage("ReSharper", "NonReadonlyMemberInGetHashCode")]
 		public override int GetHashCode ()
 		{
 			return this.Hashcode;

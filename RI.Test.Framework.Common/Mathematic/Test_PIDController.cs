@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-using RI.Framework.Mathematic;
 using RI.Framework.Mathematic.Controllers;
 
 
@@ -15,6 +10,8 @@ namespace RI.Test.Framework.Mathematic
 	[TestClass]
 	public sealed class Test_PIDController
 	{
+		#region Instance Methods
+
 		[TestMethod]
 		public void Test ()
 		{
@@ -279,5 +276,7 @@ namespace RI.Test.Framework.Mathematic
 				throw new TestAssertionException();
 			}
 		}
+
+		#endregion
 	}
 }

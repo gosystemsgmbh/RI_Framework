@@ -11,6 +11,8 @@ namespace RI.Test.Framework.Cases.Services.Modularization
 {
 	public sealed class Test_MonoModule : TestModule
 	{
+		#region Instance Methods
+
 		[TestMethod]
 		public void Test ()
 		{
@@ -134,5 +136,7 @@ namespace RI.Test.Framework.Cases.Services.Modularization
 				throw new TestAssertionException();
 			}
 		}
+
+		#endregion
 	}
 }

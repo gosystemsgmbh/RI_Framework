@@ -29,7 +29,7 @@ namespace RI.Framework.Data.SQLite.Functions
 	/// ]]>
 	/// </code>
 	/// </example>
-	[SQLiteFunction ("tonullifemptyornull", 1, FunctionType.Scalar)]
+	[SQLiteFunction("tonullifemptyornull", 1, FunctionType.Scalar)]
 	[SuppressMessage("ReSharper", "InconsistentNaming")]
 	public class ToNullIfEmptyOrNullSQLiteFunction : SQLiteFunction
 	{

@@ -65,12 +65,6 @@ namespace RI.Framework.Utilities.Threading
 			this.Dispose(false);
 		}
 
-		/// <inheritdoc />
-		bool ISynchronizable.IsSynchronized => true;
-
-		/// <inheritdoc />
-		object ISynchronizable.SyncRoot => this.SyncRoot;
-
 		#endregion
 
 
@@ -84,11 +78,11 @@ namespace RI.Framework.Utilities.Threading
 
 		private bool _isRunning;
 
-		private int _timeout;
+		private ManualResetEvent _stopEvent;
 
 		private bool _stopRequested;
 
-		private ManualResetEvent _stopEvent;
+		private int _timeout;
 
 		#endregion
 
@@ -187,7 +181,7 @@ namespace RI.Framework.Utilities.Threading
 		/// </value>
 		/// <remarks>
 		///     <para>
-		///         This timeout is used during <see cref="Start" /> while waiting for <see cref="OnBegin" /> to finish and during <see cref="Dispose(bool)" /> or <see cref="Stop"/> while waiting for <see cref="OnStop" /> to take effect.
+		///         This timeout is used during <see cref="Start" /> while waiting for <see cref="OnBegin" /> to finish and during <see cref="Dispose(bool)" /> or <see cref="Stop" /> while waiting for <see cref="OnStop" /> to take effect.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="value" /> is less than zero. </exception>
@@ -215,28 +209,34 @@ namespace RI.Framework.Utilities.Threading
 		}
 
 		/// <summary>
-		///     Gets the actual thread instance used to run the thread.
+		///     Gets the event which is signaled when the thread is requested to stop (using <see cref="Stop" />).
 		/// </summary>
 		/// <value>
-		///     The actual thread instance used to run the thread.
+		///     The event which is signaled when the thread is requested to stop.
 		/// </value>
-		protected Thread Thread { get; private set; }
-
-		private object StartStopSyncRoot { get; set; }
+		protected ManualResetEvent StopEvent
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._stopEvent;
+				}
+			}
+			private set
+			{
+				lock (this.SyncRoot)
+				{
+					this._stopEvent = value;
+				}
+			}
+		}
 
 		/// <summary>
-		/// Gets the synchronization object which can be used to synchronize thread operations.
+		///     Gets whether the thread has been requested to stop (using <see cref="Stop" />).
 		/// </summary>
 		/// <value>
-		/// The synchronization object which can be used to synchronize thread operations.
-		/// </value>
-		protected object SyncRoot { get; private set; }
-
-		/// <summary>
-		/// Gets whether the thread has been requested to stop (using <see cref="Stop"/>).
-		/// </summary>
-		/// <value>
-		/// true if the thread has been requested to stop, false otherwise or the thread is not running.
+		///     true if the thread has been requested to stop, false otherwise or the thread is not running.
 		/// </value>
 		protected bool StopRequested
 		{
@@ -257,28 +257,22 @@ namespace RI.Framework.Utilities.Threading
 		}
 
 		/// <summary>
-		/// Gets the event which is signaled when the thread is requested to stop (using <see cref="Stop"/>).
+		///     Gets the synchronization object which can be used to synchronize thread operations.
 		/// </summary>
 		/// <value>
-		/// The event which is signaled when the thread is requested to stop.
+		///     The synchronization object which can be used to synchronize thread operations.
 		/// </value>
-		protected ManualResetEvent StopEvent
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					return this._stopEvent;
-				}
-			}
-			private set
-			{
-				lock (this.SyncRoot)
-				{
-					this._stopEvent = value;
-				}
-			}
-		}
+		protected object SyncRoot { get; private set; }
+
+		/// <summary>
+		///     Gets the actual thread instance used to run the thread.
+		/// </summary>
+		/// <value>
+		///     The actual thread instance used to run the thread.
+		/// </value>
+		protected Thread Thread { get; private set; }
+
+		private object StartStopSyncRoot { get; set; }
 
 		#endregion
 
@@ -305,6 +299,25 @@ namespace RI.Framework.Utilities.Threading
 			if (threadException != null)
 			{
 				throw new HeavyThreadException(this.ThreadException);
+			}
+		}
+
+		/// <summary>
+		///     Determines whether the caller of this function is executed inside the thread or not.
+		/// </summary>
+		/// <returns>
+		///     true if the caller of this function is executed inside this thread, false otherwise or if the thread is not running.
+		/// </returns>
+		public bool IsInThread ()
+		{
+			lock (this.SyncRoot)
+			{
+				if (this.Thread == null)
+				{
+					return false;
+				}
+
+				return this.Thread.ManagedThreadId == Thread.CurrentThread.ManagedThreadId;
 			}
 		}
 
@@ -351,8 +364,8 @@ namespace RI.Framework.Utilities.Threading
 		/// <exception cref="InvalidOperationException"> The thread is already running. </exception>
 		/// <exception cref="TimeoutException"> The thread failed to return from <see cref="OnBegin" /> within <see cref="Timeout" />. </exception>
 		/// <exception cref="HeavyThreadException"> An exception occurred inside the thread during execution of <see cref="OnBegin" />. </exception>
-		[SuppressMessage ("ReSharper", "AccessToDisposedClosure")]
-		[SuppressMessage ("ReSharper", "EmptyGeneralCatchClause")]
+		[SuppressMessage("ReSharper", "AccessToDisposedClosure")]
+		[SuppressMessage("ReSharper", "EmptyGeneralCatchClause")]
 		public void Start ()
 		{
 			lock (this.StartStopSyncRoot)
@@ -370,37 +383,37 @@ namespace RI.Framework.Utilities.Threading
 							this.StopEvent = new ManualResetEvent(false);
 
 							this.Thread = new Thread(() =>
-							                         {
-								                         bool running = false;
-								                         try
-								                         {
-									                         this.OnBegin();
-									                         running = true;
-									                         startEvent.Set();
-									                         this.OnRun();
-									                         this.OnEnd();
-								                         }
-								                         catch (ThreadAbortException)
-								                         {
-								                         }
-								                         catch (Exception exception)
-								                         {
-									                         try
-									                         {
-										                         this.ThreadException = exception;
-									                         }
-									                         catch
-									                         {
-									                         }
-									                         try
-									                         {
-										                         this.OnException(exception, running, false);
-									                         }
-									                         catch
-									                         {
-									                         }
-								                         }
-							                         });
+							{
+								bool running = false;
+								try
+								{
+									this.OnBegin();
+									running = true;
+									startEvent.Set();
+									this.OnRun();
+									this.OnEnd();
+								}
+								catch (ThreadAbortException)
+								{
+								}
+								catch (Exception exception)
+								{
+									try
+									{
+										this.ThreadException = exception;
+									}
+									catch
+									{
+									}
+									try
+									{
+										this.OnException(exception, running, false);
+									}
+									catch
+									{
+									}
+								}
+							});
 
 							Thread currentThread = Thread.CurrentThread;
 
@@ -462,7 +475,7 @@ namespace RI.Framework.Utilities.Threading
 		///         <item>
 		///             <para>
 		///                 <see cref="OnStop" /> is called.
-		/// Its default implementation sets <see cref="StopRequested"/> to true and signals <see cref="StopEvent"/>.
+		///                 Its default implementation sets <see cref="StopRequested" /> to true and signals <see cref="StopEvent" />.
 		///             </para>
 		///         </item>
 		///         <item>
@@ -489,25 +502,6 @@ namespace RI.Framework.Utilities.Threading
 		}
 
 		/// <summary>
-		///     Determines whether the caller of this function is executed inside the thread or not.
-		/// </summary>
-		/// <returns>
-		///     true if the caller of this function is executed inside this thread, false otherwise or if the thread is not running.
-		/// </returns>
-		public bool IsInThread ()
-		{
-			lock (this.SyncRoot)
-			{
-				if (this.Thread == null)
-				{
-					return false;
-				}
-
-				return this.Thread.ManagedThreadId == Thread.CurrentThread.ManagedThreadId;
-			}
-		}
-
-		/// <summary>
 		///     Ensures that the caller of this function is not executed inside the thread.
 		/// </summary>
 		/// <param name="operation"> The name of the performed operation. </param>
@@ -521,9 +515,9 @@ namespace RI.Framework.Utilities.Threading
 		}
 
 		/// <summary>
-		/// Throws an <see cref="InvalidOperationException"/> if the thread is running.
+		///     Throws an <see cref="InvalidOperationException" /> if the thread is running.
 		/// </summary>
-		/// <exception cref="InvalidOperationException">The thread is running.</exception>
+		/// <exception cref="InvalidOperationException"> The thread is running. </exception>
 		protected void VerifyNotRunning ()
 		{
 			if (this.IsRunning)
@@ -533,10 +527,10 @@ namespace RI.Framework.Utilities.Threading
 		}
 
 		/// <summary>
-		/// Throws an <see cref="InvalidOperationException"/> if the thread is not running.
+		///     Throws an <see cref="InvalidOperationException" /> if the thread is not running.
 		/// </summary>
-		/// <exception cref="InvalidOperationException">The thread is not running.</exception>
-		protected void VerifyRunning()
+		/// <exception cref="InvalidOperationException"> The thread is not running. </exception>
+		protected void VerifyRunning ()
 		{
 			if (!this.IsRunning)
 			{
@@ -561,7 +555,7 @@ namespace RI.Framework.Utilities.Threading
 		///     </para>
 		/// </remarks>
 		/// <exception cref="InvalidOperationException"> This function was called from inside the thread. </exception>
-		[SuppressMessage ("ReSharper", "EmptyGeneralCatchClause")]
+		[SuppressMessage("ReSharper", "EmptyGeneralCatchClause")]
 		protected virtual void Dispose (bool disposing)
 		{
 			lock (this.StartStopSyncRoot)
@@ -648,14 +642,14 @@ namespace RI.Framework.Utilities.Threading
 		/// </summary>
 		/// <param name="exception"> The exception. </param>
 		/// <param name="running"> Indicates whether the exception occured during the actual run (true; inside <see cref="OnRun" /> or <see cref="OnEnd" />) or during start (false; inside <see cref="OnBegin" />). </param>
-		/// <param name="canContinue">Indicates whether the thread is able to continue or not after the exception was handled by <see cref="OnException"/>.</param>
+		/// <param name="canContinue"> Indicates whether the thread is able to continue or not after the exception was handled by <see cref="OnException" />. </param>
 		/// <remarks>
 		///     <note type="note">
 		///         This method is called inside the thread.
 		///     </note>
-		/// <para>
-		/// <paramref name="canContinue"/> is only true if you call <see cref="OnException"/> yourself with <paramref name="canContinue"/> set to true.
-		/// </para>
+		///     <para>
+		///         <paramref name="canContinue" /> is only true if you call <see cref="OnException" /> yourself with <paramref name="canContinue" /> set to true.
+		///     </para>
 		/// </remarks>
 		protected virtual void OnException (Exception exception, bool running, bool canContinue)
 		{
@@ -694,7 +688,7 @@ namespace RI.Framework.Utilities.Threading
 		/// <remarks>
 		///     <para>
 		///         This method can be used to signalize the thread to end and return from <see cref="OnRun" />.
-		/// Therefore, the default implementation sets <see cref="StopRequested"/> to true and signals <see cref="StopEvent"/>.
+		///         Therefore, the default implementation sets <see cref="StopRequested" /> to true and signals <see cref="StopEvent" />.
 		///     </para>
 		///     <note type="important">
 		///         If the thread does not end on its own after <see cref="OnStop" /> was called, the thread is terminated.
@@ -722,6 +716,19 @@ namespace RI.Framework.Utilities.Threading
 		{
 			this.Stop();
 		}
+
+		#endregion
+
+
+
+
+		#region Interface: ISynchronizable
+
+		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		object ISynchronizable.SyncRoot => this.SyncRoot;
 
 		#endregion
 	}

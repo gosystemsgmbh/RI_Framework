@@ -24,10 +24,7 @@ namespace RI.Test.Framework.Collections
 			List<int> list = new List<int>();
 			IList<int> test = list.AsList();
 
-			if (test.InsertRange(0, new[]
-			                     {
-				                     1, 3
-			                     }) != 2)
+			if (test.InsertRange(0, new[] {1, 3}) != 2)
 			{
 				throw new TestAssertionException();
 			}
@@ -47,10 +44,7 @@ namespace RI.Test.Framework.Collections
 				throw new TestAssertionException();
 			}
 
-			if (test.InsertRange(1, new[]
-			                     {
-				                     2, 2, 2
-			                     }) != 3)
+			if (test.InsertRange(1, new[] {2, 2, 2}) != 3)
 			{
 				throw new TestAssertionException();
 			}
@@ -141,10 +135,7 @@ namespace RI.Test.Framework.Collections
 			list.Add(4);
 			list.Add(5);
 
-			if (test.RemoveAtRange(new[]
-			                       {
-				                       1, 3, 3, 1
-			                       }) != 2)
+			if (test.RemoveAtRange(new[] {1, 3, 3, 1}) != 2)
 			{
 				throw new TestAssertionException();
 			}

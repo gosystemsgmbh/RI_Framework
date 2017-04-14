@@ -26,9 +26,9 @@ namespace RI.Framework.Services.Logging
 	///     <para>
 	///         See <see cref="ILogService" /> for more details.
 	///     </para>
-	/// <note type="note">
-	/// The first created instance of <see cref="LogService"/> is set as the singleton instance for <see cref="Singleton{ILogService}"/>
-	/// </note>
+	///     <note type="note">
+	///         The first created instance of <see cref="LogService" /> is set as the singleton instance for <see cref="Singleton{T}" />
+	///     </note>
 	/// </remarks>
 	public sealed class LogService : ILogService
 	{
@@ -51,7 +51,7 @@ namespace RI.Framework.Services.Logging
 
 		#region Instance Properties/Indexer
 
-		[Import (typeof(ILogWriter), Recomposable = true)]
+		[Import(typeof(ILogWriter), Recomposable = true)]
 		private Import WritersImported { get; set; }
 
 		private List<ILogWriter> WritersManual { get; set; }

@@ -31,8 +31,7 @@ namespace RI.Framework.Utilities.Comparison
 	///   ]]>
 	///   </code>
 	/// </example>
-	public sealed class OrderComparison <T> : IComparer<T>,
-	                                          IComparer
+	public sealed class OrderComparison <T> : IComparer<T>, IComparer
 	{
 		#region Instance Constructor/Destructor
 

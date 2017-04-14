@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Diagnostics;
 
+
+
+
 namespace RI.Tools.Framework.ElevatedStart
 {
 	public static class ElevatedStart
 	{
+		#region Static Methods
+
 		public static int Main (string[] args)
 		{
 			const string executable = "elevstart.exe";
@@ -34,5 +39,7 @@ namespace RI.Tools.Framework.ElevatedStart
 			Environment.ExitCode = (process?.ExitCode).GetValueOrDefault(0);
 			return Environment.ExitCode;
 		}
+
+		#endregion
 	}
 }

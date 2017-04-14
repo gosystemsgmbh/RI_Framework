@@ -129,99 +129,98 @@ namespace RI.Framework.Services
 	///     </note>
 	/// </remarks>
 	[Export]
-	public class Bootstrapper : MonoBehaviour,
-	                            IBootstrapper
+	public class Bootstrapper : MonoBehaviour, IBootstrapper
 	{
 		#region Instance Fields
-
-		/// <summary>
-		///     Specifies whether the default logging service should be used or not.
-		/// </summary>
-		/// <remarks>
-		///     <para>
-		/// If true, <see cref="LogService"/> and <see cref="LogWriter"/> are added automatically, providing logging through Unitys logging mechanism.
-		///     </para>
-		/// <para>
-		/// The default value is false.
-		/// </para>
-		/// </remarks>
-		public bool LoggingService = false;
-
-		/// <summary>
-		///     Specifies whether the default module service should be used or not.
-		/// </summary>
-		/// <remarks>
-		///     <para>
-		/// If true, <see cref="Modularization.ModuleService"/> is added automatically, providing a default modularization service using <see cref="IModule"/> or <see cref="MonoModule"/>.
-		///     </para>
-		/// <para>
-		/// The default value is true.
-		/// </para>
-		/// </remarks>
-		public bool ModuleService = true;
-
-		/// <summary>
-		///     Specifies whether the used module service should initialize all modules.
-		/// </summary>
-		/// <remarks>
-		///     <para>
-		/// If true, the used <see cref="IModuleService"/> initializes all modules during <see cref="BeginRun"/> (using <see cref="IModuleService.Initialize"/>).
-		///     </para>
-		/// <para>
-		/// The default value is true.
-		/// </para>
-		/// </remarks>
-		public bool ModuleInitialization = true;
-
-		/// <summary>
-		///     Specifies whether the used module service should unload all modules.
-		/// </summary>
-		/// <remarks>
-		///     <para>
-		/// If true, the used <see cref="IModuleService"/> unloads all modules during <see cref="EndRun"/> (using <see cref="IModuleService.Unload"/>).
-		///     </para>
-		/// <para>
-		/// The default value is true.
-		/// </para>
-		/// </remarks>
-		public bool ModuleUnloading = true;
 
 		/// <summary>
 		///     Specifies whether the default dispatcher service should be used or not.
 		/// </summary>
 		/// <remarks>
 		///     <para>
-		/// If true, <see cref="Dispatcher.DispatcherService"/> is added automatically, providing a default dispatcher service.
+		///         If true, <see cref="Dispatcher.DispatcherService" /> is added automatically, providing a default dispatcher service.
 		///     </para>
-		/// <para>
-		/// The default value is true.
-		/// </para>
+		///     <para>
+		///         The default value is true.
+		///     </para>
 		/// </remarks>
 		public bool DispatcherService = true;
+
+		/// <summary>
+		///     Specifies whether the default logging service should be used or not.
+		/// </summary>
+		/// <remarks>
+		///     <para>
+		///         If true, <see cref="LogService" /> and <see cref="LogWriter" /> are added automatically, providing logging through Unitys logging mechanism.
+		///     </para>
+		///     <para>
+		///         The default value is false.
+		///     </para>
+		/// </remarks>
+		public bool LoggingService = false;
+
+		/// <summary>
+		///     Specifies whether the used module service should initialize all modules.
+		/// </summary>
+		/// <remarks>
+		///     <para>
+		///         If true, the used <see cref="IModuleService" /> initializes all modules during <see cref="BeginRun" /> (using <see cref="IModuleService.Initialize" />).
+		///     </para>
+		///     <para>
+		///         The default value is true.
+		///     </para>
+		/// </remarks>
+		public bool ModuleInitialization = true;
+
+		/// <summary>
+		///     Specifies whether the default module service should be used or not.
+		/// </summary>
+		/// <remarks>
+		///     <para>
+		///         If true, <see cref="Modularization.ModuleService" /> is added automatically, providing a default modularization service using <see cref="IModule" /> or <see cref="MonoModule" />.
+		///     </para>
+		///     <para>
+		///         The default value is true.
+		///     </para>
+		/// </remarks>
+		public bool ModuleService = true;
+
+		/// <summary>
+		///     Specifies whether the used module service should unload all modules.
+		/// </summary>
+		/// <remarks>
+		///     <para>
+		///         If true, the used <see cref="IModuleService" /> unloads all modules during <see cref="EndRun" /> (using <see cref="IModuleService.Unload" />).
+		///     </para>
+		///     <para>
+		///         The default value is true.
+		///     </para>
+		/// </remarks>
+		public bool ModuleUnloading = true;
 
 		/// <summary>
 		///     Specifies whether the default scripting container should be used or not.
 		/// </summary>
 		/// <remarks>
 		///     <para>
-		/// If true, <see cref="Composition.Catalogs.ScriptingCatalog"/> is added automatically to <see cref="Container"/>, adding all eligible types from the scripting assembly to the container.
+		///         If true, <see cref="Composition.Catalogs.ScriptingCatalog" /> is added automatically to <see cref="Container" />, adding all eligible types from the scripting assembly to the container.
 		///     </para>
-		/// <para>
-		/// The default value is true.
-		/// </para>
+		///     <para>
+		///         The default value is true.
+		///     </para>
 		/// </remarks>
 		public bool ScriptingCatalog = true;
 
 		/// <summary>
-		///     Specifies whether the <see cref="ServiceLocator"/> should be bound to <see cref="Container"/> or not.
+		///     Specifies whether the <see cref="ServiceLocator" /> should be bound to <see cref="Container" /> or not.
 		/// </summary>
 		/// <remarks>
 		///     <para>
-		/// If true, <see cref="Container"/> is bound to <see cref="ServiceLocator"/> using <see cref="ServiceLocator.BindToCompositionContainer"/>.
+		///         If true, <see cref="Container" /> is bound to <see cref="ServiceLocator" /> using <see cref="ServiceLocator.BindToCompositionContainer" />.
 		///     </para>
-		/// <para>
-		/// The default value is true.
-		/// </para>
+		///     <para>
+		///         The default value is true.
+		///     </para>
 		/// </remarks>
 		public bool ServiceLocatorBinding = true;
 
@@ -318,7 +317,7 @@ namespace RI.Framework.Services
 		/// </summary>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation calls <see cref="IModuleService.Initialize"/> of the used <see cref="IModuleService"/> if <see cref="ModuleInitialization"/> is true, otherwise it does nothing.
+		///         The default implementation calls <see cref="IModuleService.Initialize" /> of the used <see cref="IModuleService" /> if <see cref="ModuleInitialization" /> is true, otherwise it does nothing.
 		///     </note>
 		/// </remarks>
 		protected virtual void BeginRun ()
@@ -341,6 +340,20 @@ namespace RI.Framework.Services
 		protected virtual void ConfigureBootstrapper ()
 		{
 			this.Container.AddCatalog(new InstanceCatalog(this));
+		}
+
+		/// <summary>
+		///     Called when the bootstrapper singletons are to be configured.
+		/// </summary>
+		/// <remarks>
+		///     <note type="implement">
+		///         The default implementation sets the singleton instance for <see cref="Bootstrapper" /> and <see cref="CompositionContainer" /> (<see cref="Container" />) using <see cref="Singleton{T}" />.
+		///     </note>
+		/// </remarks>
+		protected virtual void ConfigureBootstrapperSingletons ()
+		{
+			Singleton<Bootstrapper>.Ensure(() => this);
+			Singleton<CompositionContainer>.Ensure(() => this.Container);
 		}
 
 		/// <summary>
@@ -401,7 +414,7 @@ namespace RI.Framework.Services
 		/// </summary>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation calls <see cref="ServiceLocator.BindToCompositionContainer" /> using the used composition container (<see cref="Container" />) if <see cref="ServiceLocatorBinding"/> is true, otherwise it does nothing.
+		///         The default implementation calls <see cref="ServiceLocator.BindToCompositionContainer" /> using the used composition container (<see cref="Container" />) if <see cref="ServiceLocatorBinding" /> is true, otherwise it does nothing.
 		///     </note>
 		/// </remarks>
 		protected virtual void ConfigureServiceLocator ()
@@ -410,20 +423,6 @@ namespace RI.Framework.Services
 			{
 				ServiceLocator.BindToCompositionContainer(this.Container);
 			}
-		}
-
-		/// <summary>
-		/// Called when the bootstrapper singletons are to be configured.
-		/// </summary>
-		/// <remarks>
-		///     <note type="implement">
-		///         The default implementation sets the singleton instance for <see cref="Bootstrapper"/> and <see cref="CompositionContainer"/> (<see cref="Container"/>) using <see cref="Singleton{T}"/>.
-		///     </note>
-		/// </remarks>
-		protected virtual void ConfigureBootstrapperSingletons()
-		{
-			Singleton<Bootstrapper>.Ensure(() => this);
-			Singleton<CompositionContainer>.Ensure(() => this.Container);
 		}
 
 		/// <summary>
@@ -477,7 +476,7 @@ namespace RI.Framework.Services
 		/// </summary>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation calls <see cref="IModuleService.Unload"/> of the used <see cref="IModuleService"/> if <see cref="ModuleUnloading"/> is true, otherwise it does nothing.
+		///         The default implementation calls <see cref="IModuleService.Unload" /> of the used <see cref="IModuleService" /> if <see cref="ModuleUnloading" /> is true, otherwise it does nothing.
 		///     </note>
 		/// </remarks>
 		protected virtual void EndRun ()

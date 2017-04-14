@@ -10,8 +10,10 @@ namespace RI.Test.Framework.Utilities
 	[TestClass]
 	public sealed class Test_SingleExtensions
 	{
+		#region Instance Methods
+
 		[TestMethod]
-		public void Test()
+		public void Test ()
 		{
 			//--------------
 			// Numeric value
@@ -133,5 +135,7 @@ namespace RI.Test.Framework.Utilities
 				throw new TestAssertionException();
 			}
 		}
+
+		#endregion
 	}
 }

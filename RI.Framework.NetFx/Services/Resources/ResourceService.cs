@@ -29,9 +29,9 @@ namespace RI.Framework.Services.Resources
 	///     <para>
 	///         See <see cref="IResourceService" /> for more details.
 	///     </para>
-	/// <note type="note">
-	/// The first created instance of <see cref="ResourceService"/> is set as the singleton instance for <see cref="Singleton{IResourceService}"/>
-	/// </note>
+	///     <note type="note">
+	///         The first created instance of <see cref="ResourceService" /> is set as the singleton instance for <see cref="Singleton{T}" />
+	///     </note>
 	/// </remarks>
 	public sealed class ResourceService : IResourceService, IImporting
 	{
@@ -72,7 +72,7 @@ namespace RI.Framework.Services.Resources
 			}
 		}
 
-		[Import (typeof(IResourceConverter), Recomposable = true)]
+		[Import(typeof(IResourceConverter), Recomposable = true)]
 		private Import ConvertersImported { get; set; }
 
 		private List<IResourceConverter> ConvertersManual { get; set; }
@@ -96,7 +96,7 @@ namespace RI.Framework.Services.Resources
 			}
 		}
 
-		[Import (typeof(IResourceSource), Recomposable = true)]
+		[Import(typeof(IResourceSource), Recomposable = true)]
 		private Import SourcesImported { get; set; }
 
 		private List<IResourceSource> SourcesManual { get; set; }

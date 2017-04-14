@@ -24,7 +24,7 @@ namespace RI.Framework.StateMachines.States
 	///         Instances of <see cref="MonoState" />s are not created using their constructor (as this would be the wrong way how to instantiate anything <c> MonoBehaviour </c>). Instead, <see cref="CreateInstance" /> is used.
 	///     </note>
 	///     <note type="important">
-	///         Instances of <see cref="MonoState" />s can only be used with a <see cref="IStateResolver"/> which uses a <see cref="CompositionContainer"/> (e.g. <see cref="StateResolver"/>) because <see cref="MonoState"/>s cannot be instantiated directly (see note above).
+	///         Instances of <see cref="MonoState" />s can only be used with a <see cref="IStateResolver" /> which uses a <see cref="CompositionContainer" /> (e.g. <see cref="StateResolver" />) because <see cref="MonoState" />s cannot be instantiated directly (see note above).
 	///     </note>
 	/// </remarks>
 	[Export]
@@ -45,7 +45,7 @@ namespace RI.Framework.StateMachines.States
 		/// </remarks>
 		/// <exception cref="System.ArgumentNullException"> <paramref name="type" /> is null. </exception>
 		[ExportCreator]
-		public static MonoState CreateInstance(Type type)
+		public static MonoState CreateInstance (Type type)
 		{
 			if (type == null)
 			{
@@ -57,6 +57,44 @@ namespace RI.Framework.StateMachines.States
 			Object.DontDestroyOnLoad(gameObject);
 			return instance;
 		}
+
+		#endregion
+
+
+
+
+		#region Instance Constructor/Destructor
+
+		/// <summary>
+		///     Creates a new instance of <see cref="MonoState" />.
+		/// </summary>
+		protected MonoState ()
+		{
+			this.IsInitialized = false;
+			this.UseCaching = true;
+
+			this.StateMachine = null;
+		}
+
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
+
+		/// <summary>
+		///     Gets the state machine associated with this state.
+		/// </summary>
+		/// <value>
+		///     The state machine associated with this state.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         <see cref="StateMachine" /> is updated before each signal or transition.
+		///     </para>
+		/// </remarks>
+		protected StateMachine StateMachine { get; private set; }
 
 		#endregion
 
@@ -77,9 +115,15 @@ namespace RI.Framework.StateMachines.States
 		///         If no <see cref="ILogService" /> is available, no logging is performed.
 		///     </para>
 		/// </remarks>
-		protected void Log(LogLevel severity, string format, params object[] args)
+		protected void Log (LogLevel severity, string format, params object[] args)
 		{
 			LogLocator.Log(severity, this.GetType().Name, format, args);
+		}
+
+
+		private void SetStateMachine (StateMachine stateMachine)
+		{
+			this.StateMachine = stateMachine;
 		}
 
 		#endregion
@@ -87,17 +131,35 @@ namespace RI.Framework.StateMachines.States
 
 
 
-		/// <summary>
-		/// Creates a new instance of <see cref="MonoState"/>.
-		/// </summary>
-		protected MonoState ()
-		{
-			this.IsInitialized = false;
-			this.UseCaching = true;
+		#region Virtuals
 
-			this.StateMachine = null;
+		/// <inheritdoc cref="IState.Enter" />
+		protected virtual void Enter (StateTransientInfo transientInfo)
+		{
 		}
 
+
+		/// <inheritdoc cref="IState.Initialize" />
+		protected virtual void Initialize (StateMachine stateMachine)
+		{
+		}
+
+		/// <inheritdoc cref="IState.Leave" />
+		protected virtual void Leave (StateTransientInfo transientInfo)
+		{
+		}
+
+		/// <inheritdoc cref="IState.Signal" />
+		protected virtual void Signal (StateSignalInfo signalInfo)
+		{
+		}
+
+		#endregion
+
+
+
+
+		#region Interface: IState
 
 		/// <inheritdoc />
 		public bool IsInitialized { get; protected set; }
@@ -105,53 +167,20 @@ namespace RI.Framework.StateMachines.States
 		/// <inheritdoc />
 		public bool UseCaching { get; protected set; }
 
-		/// <summary>
-		/// Gets the state machine associated with this state.
-		/// </summary>
-		/// <value>
-		/// The state machine associated with this state.
-		/// </value>
-		/// <remarks>
-		/// <para>
-		/// <see cref="StateMachine"/> is updated before each signal or transition.
-		/// </para>
-		/// </remarks>
-		protected StateMachine StateMachine { get; private set; }
-
-
-
-
-
-
-		/// <inheritdoc cref="IState.Initialize"/>
-		protected virtual void Initialize(StateMachine stateMachine)
+		/// <inheritdoc />
+		void IState.Enter (StateTransientInfo transientInfo)
 		{
-		}
+			if (transientInfo == null)
+			{
+				throw new ArgumentNullException(nameof(transientInfo));
+			}
 
-		/// <inheritdoc cref="IState.Enter"/>
-		protected virtual void Enter(StateTransientInfo transientInfo)
-		{
-		}
-
-		/// <inheritdoc cref="IState.Leave"/>
-		protected virtual void Leave(StateTransientInfo transientInfo)
-		{
-		}
-
-		/// <inheritdoc cref="IState.Signal"/>
-		protected virtual void Signal(StateSignalInfo signalInfo)
-		{
-		}
-
-
-
-		private void SetStateMachine(StateMachine stateMachine)
-		{
-			this.StateMachine = stateMachine;
+			this.SetStateMachine(transientInfo.StateMachine);
+			this.Enter(transientInfo);
 		}
 
 		/// <inheritdoc />
-		void IState.Initialize(StateMachine stateMachine)
+		void IState.Initialize (StateMachine stateMachine)
 		{
 			if (stateMachine == null)
 			{
@@ -168,19 +197,7 @@ namespace RI.Framework.StateMachines.States
 		}
 
 		/// <inheritdoc />
-		void IState.Enter(StateTransientInfo transientInfo)
-		{
-			if (transientInfo == null)
-			{
-				throw new ArgumentNullException(nameof(transientInfo));
-			}
-
-			this.SetStateMachine(transientInfo.StateMachine);
-			this.Enter(transientInfo);
-		}
-
-		/// <inheritdoc />
-		void IState.Leave(StateTransientInfo transientInfo)
+		void IState.Leave (StateTransientInfo transientInfo)
 		{
 			if (transientInfo == null)
 			{
@@ -192,7 +209,7 @@ namespace RI.Framework.StateMachines.States
 		}
 
 		/// <inheritdoc />
-		void IState.Signal(StateSignalInfo signalInfo)
+		void IState.Signal (StateSignalInfo signalInfo)
 		{
 			if (signalInfo == null)
 			{
@@ -202,5 +219,7 @@ namespace RI.Framework.StateMachines.States
 			this.SetStateMachine(signalInfo.StateMachine);
 			this.Signal(signalInfo);
 		}
+
+		#endregion
 	}
 }

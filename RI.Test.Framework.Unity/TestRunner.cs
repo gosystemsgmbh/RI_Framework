@@ -19,41 +19,18 @@ namespace RI.Test.Framework
 {
 	public sealed class TestRunner : MonoBehaviour
 	{
-		#region Instance Methods
-
-		private void Log (LogLevel severity, string format, params object[] args)
-		{
-			LogLocator.Log(severity, this.GetType().Name, format, args);
-		}
+		#region Instance Properties/Indexer
 
 		private int ProcessedTestMethods { get; set; }
 
 		private List<object[]> TestMethods { get; set; }
 
-		private void StartTests ()
-		{
-			this.Log(LogLevel.Debug, "Searching for available tests");
+		#endregion
 
-			ServiceLocator.GetInstance<CompositionContainer>().AddCatalog(new AssemblyCatalog(Assembly.GetExecutingAssembly()));
 
-			this.ProcessedTestMethods = 0;
-			this.TestMethods = new List<object[]>();
 
-			List<TestModule> testModules = ServiceLocator.GetInstances<TestModule>().ToList();
-			foreach (TestModule testModule in testModules)
-			{
-				List<MethodInfo> testMethods = testModule.GetTestMethods();
-				foreach (MethodInfo testMethod in testMethods)
-				{
-					this.TestMethods.Add(new object[] {testModule, testMethod});
-				}
-			}
 
-			this.Log(LogLevel.Debug, "Found total {0} test methods", this.TestMethods.Count);
-			this.Log(LogLevel.Debug, "Beginning run tests");
-
-			this.ContinueTests();
-		}
+		#region Instance Methods
 
 		private void ContinueTests ()
 		{
@@ -86,6 +63,41 @@ namespace RI.Test.Framework
 			});
 		}
 
+		private void Log (LogLevel severity, string format, params object[] args)
+		{
+			LogLocator.Log(severity, this.GetType().Name, format, args);
+		}
+
+		private void Start ()
+		{
+			ServiceLocator.GetInstance<IDispatcherService>().Dispatch(DispatcherPriority.Idle, this.StartTests);
+		}
+
+		private void StartTests ()
+		{
+			this.Log(LogLevel.Debug, "Searching for available tests");
+
+			ServiceLocator.GetInstance<CompositionContainer>().AddCatalog(new AssemblyCatalog(Assembly.GetExecutingAssembly()));
+
+			this.ProcessedTestMethods = 0;
+			this.TestMethods = new List<object[]>();
+
+			List<TestModule> testModules = ServiceLocator.GetInstances<TestModule>().ToList();
+			foreach (TestModule testModule in testModules)
+			{
+				List<MethodInfo> testMethods = testModule.GetTestMethods();
+				foreach (MethodInfo testMethod in testMethods)
+				{
+					this.TestMethods.Add(new object[] {testModule, testMethod});
+				}
+			}
+
+			this.Log(LogLevel.Debug, "Found total {0} test methods", this.TestMethods.Count);
+			this.Log(LogLevel.Debug, "Beginning run tests");
+
+			this.ContinueTests();
+		}
+
 		private void StopTests ()
 		{
 			this.Log(LogLevel.Debug, "------------------------------");
@@ -93,11 +105,6 @@ namespace RI.Test.Framework
 			this.Log(LogLevel.Debug, "Processed {0}/{1} test methods", this.ProcessedTestMethods, this.TestMethods.Count);
 
 			ServiceLocator.GetInstance<Bootstrapper>().Shutdown();
-		}
-
-		private void Start ()
-		{
-			ServiceLocator.GetInstance<IDispatcherService>().Dispatch(DispatcherPriority.Idle, this.StartTests);
 		}
 
 		#endregion

@@ -7,12 +7,7 @@ namespace RI.Test.Framework.StateMachines
 {
 	public sealed class Mock_State_E : Mock_State
 	{
-		protected override void Initialize(StateMachine stateMachine)
-		{
-			base.Initialize(stateMachine);
-
-			this.RegisterSignal<string>(this.MySignal);
-		}
+		#region Instance Methods
 
 		private void MySignal (string signal)
 		{
@@ -23,5 +18,21 @@ namespace RI.Test.Framework.StateMachines
 				this.UnregisterSignal<string>();
 			}
 		}
+
+		#endregion
+
+
+
+
+		#region Overrides
+
+		protected override void Initialize (StateMachine stateMachine)
+		{
+			base.Initialize(stateMachine);
+
+			this.RegisterSignal<string>(this.MySignal);
+		}
+
+		#endregion
 	}
 }

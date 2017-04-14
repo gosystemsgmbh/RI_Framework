@@ -6,23 +6,23 @@
 namespace RI.Framework.StateMachines
 {
 	/// <summary>
-	/// Defines the interface for a state instance resolver.
+	///     Defines the interface for a state instance resolver.
 	/// </summary>
 	/// <remarks>
-	/// <para>
-	/// See <see cref="StateMachine"/> for more details about state machines.
-	/// </para>
+	///     <para>
+	///         See <see cref="StateMachine" /> for more details about state machines.
+	///     </para>
 	/// </remarks>
 	public interface IStateResolver
 	{
 		/// <summary>
-		/// Called when a state of the specified type needs to be resolved.
+		///     Called when a state of the specified type needs to be resolved.
 		/// </summary>
-		/// <param name="type">The state type to resolve.</param>
+		/// <param name="type"> The state type to resolve. </param>
 		/// <returns>
-		/// The state instance or null if the state instance could not be resolved.
+		///     The state instance or null if the state instance could not be resolved.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="type"/> is null.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="type" /> is null. </exception>
 		IState ResolveState (Type type);
 	}
 }

@@ -11,19 +11,19 @@ using RI.Framework.Utilities;
 namespace RI.Framework.Data.Repository.Views
 {
 	/// <summary>
-	/// Used by <see cref="EntityView{TEntity,TViewObject}"/> to wrap entities.
+	///     Used by <see cref="EntityView{TEntity,TViewObject}" /> to wrap entities.
 	/// </summary>
 	/// <remarks>
-	/// See <see cref="EntityView{TEntity,TViewObject}"/> for details.
+	///     See <see cref="EntityView{TEntity,TViewObject}" /> for details.
 	/// </remarks>
-	/// <typeparam name="TEntity">The type of entities wrapped by <see cref="EntityView{TEntity,TViewObject}"/>.</typeparam>
+	/// <typeparam name="TEntity"> The type of entities wrapped by <see cref="EntityView{TEntity,TViewObject}" />. </typeparam>
 	public class EntityViewObject <TEntity> : INotifyPropertyChanged, IEditableObject, IDataErrorInfo, INotifyDataErrorInfo, IChangeTracking, IRevertibleChangeTracking
 		where TEntity : class
 	{
 		#region Instance Constructor/Destructor
 
 		/// <summary>
-		/// Creates a new instance of <see cref="EntityViewObject{TEntity}"/>.
+		///     Creates a new instance of <see cref="EntityViewObject{TEntity}" />.
 		/// </summary>
 		public EntityViewObject ()
 		{
@@ -72,18 +72,11 @@ namespace RI.Framework.Data.Repository.Views
 
 		#region Instance Properties/Indexer
 
-		private PropertyChangedEventHandler EntityChangedHandler { get; set; }
-
-		private void EntityChangedMethod (object sender, PropertyChangedEventArgs e)
-		{
-			this.RaiseEntityChanged();
-		}
-
 		/// <summary>
-		/// Gets the wrapped entity.
+		///     Gets the wrapped entity.
 		/// </summary>
 		/// <value>
-		/// The wrapped entity.
+		///     The wrapped entity.
 		/// </value>
 		public TEntity Entity
 		{
@@ -110,18 +103,18 @@ namespace RI.Framework.Data.Repository.Views
 		}
 
 		/// <summary>
-		/// Gets all validation errors of the wrapped entity as a string, separated by line feeds.
+		///     Gets all validation errors of the wrapped entity as a string, separated by line feeds.
 		/// </summary>
 		/// <value>
-		/// All validation errors of the wrapped entity as a string, separated by line feeds.
+		///     All validation errors of the wrapped entity as a string, separated by line feeds.
 		/// </value>
 		public string ErrorLines => this.Errors?.ToErrorString(Environment.NewLine);
 
 		/// <summary>
-		/// Gets all validation errors of the wrapped entity.
+		///     Gets all validation errors of the wrapped entity.
 		/// </summary>
 		/// <value>
-		/// All validation errors of the wrapped entity.
+		///     All validation errors of the wrapped entity.
 		/// </value>
 		public RepositorySetErrors Errors
 		{
@@ -137,18 +130,18 @@ namespace RI.Framework.Data.Repository.Views
 		}
 
 		/// <summary>
-		/// Gets all validation errors of the wrapped entity as a string, separated by space characters.
+		///     Gets all validation errors of the wrapped entity as a string, separated by space characters.
 		/// </summary>
 		/// <value>
-		/// All validation errors of the wrapped entity as a string, separated by space characters.
+		///     All validation errors of the wrapped entity as a string, separated by space characters.
 		/// </value>
 		public string ErrorStrings => this.Errors?.ToErrorString(" ");
 
 		/// <summary>
-		/// Gets whether the wrapped entity was added.
+		///     Gets whether the wrapped entity was added.
 		/// </summary>
 		/// <value>
-		/// true if the wrapped entity was added, false otherwise.
+		///     true if the wrapped entity was added, false otherwise.
 		/// </value>
 		public bool IsAdded
 		{
@@ -165,18 +158,18 @@ namespace RI.Framework.Data.Repository.Views
 		}
 
 		/// <summary>
-		/// Gets whether the wrapped entity was added or attached.
+		///     Gets whether the wrapped entity was added or attached.
 		/// </summary>
 		/// <value>
-		/// true if the wrapped entity was added or attached, false otherwise.
+		///     true if the wrapped entity was added or attached, false otherwise.
 		/// </value>
 		public bool IsAddedOrAttached => this.IsAdded || this.IsAttached;
 
 		/// <summary>
-		/// Gets whether the wrapped entity was attached.
+		///     Gets whether the wrapped entity was attached.
 		/// </summary>
 		/// <value>
-		/// true if the wrapped entity was attached, false otherwise.
+		///     true if the wrapped entity was attached, false otherwise.
 		/// </value>
 		public bool IsAttached
 		{
@@ -193,10 +186,10 @@ namespace RI.Framework.Data.Repository.Views
 		}
 
 		/// <summary>
-		/// Gets whether the wrapped entity was deleted.
+		///     Gets whether the wrapped entity was deleted.
 		/// </summary>
 		/// <value>
-		/// true if the wrapped entity was deleted, false otherwise.
+		///     true if the wrapped entity was deleted, false otherwise.
 		/// </value>
 		public bool IsDeleted
 		{
@@ -212,10 +205,10 @@ namespace RI.Framework.Data.Repository.Views
 		}
 
 		/// <summary>
-		/// Gets whether the wrapped entity is currently being edited.
+		///     Gets whether the wrapped entity is currently being edited.
 		/// </summary>
 		/// <value>
-		/// true if the wrapped entity is currently being edited, false otherwise.
+		///     true if the wrapped entity is currently being edited, false otherwise.
 		/// </value>
 		public bool IsEdited
 		{
@@ -232,10 +225,10 @@ namespace RI.Framework.Data.Repository.Views
 		}
 
 		/// <summary>
-		/// Gets whether the wrapped entity was modified.
+		///     Gets whether the wrapped entity was modified.
 		/// </summary>
 		/// <value>
-		/// true if the wrapped entity was modified, false otherwise.
+		///     true if the wrapped entity was modified, false otherwise.
 		/// </value>
 		public bool IsModified
 		{
@@ -251,10 +244,10 @@ namespace RI.Framework.Data.Repository.Views
 		}
 
 		/// <summary>
-		/// Gets whether the wrapped entity is currently selected.
+		///     Gets whether the wrapped entity is currently selected.
 		/// </summary>
 		/// <value>
-		/// true if the wrapped entity is currently selected, false otherwise.
+		///     true if the wrapped entity is currently selected, false otherwise.
 		/// </value>
 		public bool IsSelected
 		{
@@ -270,14 +263,16 @@ namespace RI.Framework.Data.Repository.Views
 		}
 
 		/// <summary>
-		/// Gets whether the wrapped entity is valid.
+		///     Gets whether the wrapped entity is valid.
 		/// </summary>
 		/// <value>
-		/// true if the wrapped entity is valid, false otherwise.
+		///     true if the wrapped entity is valid, false otherwise.
 		/// </value>
 		public bool IsValid => this.Errors == null;
 
 		internal IEntityViewCaller<TEntity> ViewCaller { get; set; }
+
+		private PropertyChangedEventHandler EntityChangedHandler { get; set; }
 
 		#endregion
 
@@ -287,10 +282,10 @@ namespace RI.Framework.Data.Repository.Views
 		#region Instance Methods
 
 		/// <summary>
-		/// Determines whether the entity wrapped by this view object can be deleted.
+		///     Determines whether the entity wrapped by this view object can be deleted.
 		/// </summary>
 		/// <returns>
-		/// true if the entity wrapped by this view object can be deleted, false otherwise.
+		///     true if the entity wrapped by this view object can be deleted, false otherwise.
 		/// </returns>
 		public bool CanDelete ()
 		{
@@ -298,10 +293,10 @@ namespace RI.Framework.Data.Repository.Views
 		}
 
 		/// <summary>
-		/// Determines whether the entity wrapped by this view object can be edited.
+		///     Determines whether the entity wrapped by this view object can be edited.
 		/// </summary>
 		/// <returns>
-		/// true if the entity wrapped by this view object can be edited, false otherwise.
+		///     true if the entity wrapped by this view object can be edited, false otherwise.
 		/// </returns>
 		public bool CanEdit ()
 		{
@@ -309,10 +304,10 @@ namespace RI.Framework.Data.Repository.Views
 		}
 
 		/// <summary>
-		/// Determines whether the entity wrapped by this view object can be modified.
+		///     Determines whether the entity wrapped by this view object can be modified.
 		/// </summary>
 		/// <returns>
-		/// true if the entity wrapped by this view object can be modified, false otherwise.
+		///     true if the entity wrapped by this view object can be modified, false otherwise.
 		/// </returns>
 		public bool CanModify ()
 		{
@@ -320,10 +315,10 @@ namespace RI.Framework.Data.Repository.Views
 		}
 
 		/// <summary>
-		/// Determines whether the entity wrapped by this view object can be reloaded.
+		///     Determines whether the entity wrapped by this view object can be reloaded.
 		/// </summary>
 		/// <returns>
-		/// true if the entity wrapped by this view object can be reloaded, false otherwise.
+		///     true if the entity wrapped by this view object can be reloaded, false otherwise.
 		/// </returns>
 		public bool CanReload ()
 		{
@@ -331,10 +326,10 @@ namespace RI.Framework.Data.Repository.Views
 		}
 
 		/// <summary>
-		/// Determines whether the entity wrapped by this view object can be selected.
+		///     Determines whether the entity wrapped by this view object can be selected.
 		/// </summary>
 		/// <returns>
-		/// true if the entity wrapped by this view object can be selected, false otherwise.
+		///     true if the entity wrapped by this view object can be selected, false otherwise.
 		/// </returns>
 		public bool CanSelect ()
 		{
@@ -342,10 +337,10 @@ namespace RI.Framework.Data.Repository.Views
 		}
 
 		/// <summary>
-		/// Determines whether the entity wrapped by this view object can be validated.
+		///     Determines whether the entity wrapped by this view object can be validated.
 		/// </summary>
 		/// <returns>
-		/// true if the entity wrapped by this view object can be validated, false otherwise.
+		///     true if the entity wrapped by this view object can be validated, false otherwise.
 		/// </returns>
 		public bool CanValidate ()
 		{
@@ -353,7 +348,7 @@ namespace RI.Framework.Data.Repository.Views
 		}
 
 		/// <summary>
-		/// Deletes the entity wrapped by this view object.
+		///     Deletes the entity wrapped by this view object.
 		/// </summary>
 		public void Delete ()
 		{
@@ -361,7 +356,7 @@ namespace RI.Framework.Data.Repository.Views
 		}
 
 		/// <summary>
-		/// Deselects the entity wrapped by this view object.
+		///     Deselects the entity wrapped by this view object.
 		/// </summary>
 		public void Deselect ()
 		{
@@ -369,7 +364,7 @@ namespace RI.Framework.Data.Repository.Views
 		}
 
 		/// <summary>
-		/// Modifies the entity wrapped by this view object.
+		///     Modifies the entity wrapped by this view object.
 		/// </summary>
 		public void Modify ()
 		{
@@ -377,7 +372,7 @@ namespace RI.Framework.Data.Repository.Views
 		}
 
 		/// <summary>
-		/// Reloads the entity wrapped by this view object.
+		///     Reloads the entity wrapped by this view object.
 		/// </summary>
 		public void Reload ()
 		{
@@ -385,12 +380,12 @@ namespace RI.Framework.Data.Repository.Views
 		}
 
 		/// <summary>
-		/// Resets <see cref="IsAdded"/>, <see cref="IsAttached"/>, and <see cref="IsAddedOrAttached"/>.
+		///     Resets <see cref="IsAdded" />, <see cref="IsAttached" />, and <see cref="IsAddedOrAttached" />.
 		/// </summary>
 		/// <remarks>
-		/// <para>
-		/// This method might be usefull in cases when an entity is no longer considered &quot;new&quot; after it was added or attached.
-		/// </para>
+		///     <para>
+		///         This method might be usefull in cases when an entity is no longer considered &quot;new&quot; after it was added or attached.
+		///     </para>
 		/// </remarks>
 		public void ResetIsAddedOrAttached ()
 		{
@@ -401,7 +396,7 @@ namespace RI.Framework.Data.Repository.Views
 		}
 
 		/// <summary>
-		/// Selects the entity wrapped by this view object.
+		///     Selects the entity wrapped by this view object.
 		/// </summary>
 		public void Select ()
 		{
@@ -409,11 +404,16 @@ namespace RI.Framework.Data.Repository.Views
 		}
 
 		/// <summary>
-		/// Validates the entity wrapped by this view object.
+		///     Validates the entity wrapped by this view object.
 		/// </summary>
 		public void Validate ()
 		{
 			this.ViewCaller.Validate(this.Entity);
+		}
+
+		private void EntityChangedMethod (object sender, PropertyChangedEventArgs e)
+		{
+			this.RaiseEntityChanged();
 		}
 
 		#endregion
@@ -424,16 +424,7 @@ namespace RI.Framework.Data.Repository.Views
 		#region Virtuals
 
 		/// <summary>
-		///     Handles the change of a property value by raising the <see cref="PropertyChanged" /> event.
-		/// </summary>
-		/// <param name="propertyName"> The name of the property which has changed. </param>
-		protected virtual void OnPropertyChanged (string propertyName)
-		{
-			this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-		}
-
-		/// <summary>
-		/// Raises <see cref="ErrorsChanged"/> and <see cref="PropertyChanged"/> for all error/validation relevant properties.
+		///     Raises <see cref="ErrorsChanged" /> and <see cref="PropertyChanged" /> for all error/validation relevant properties.
 		/// </summary>
 		protected virtual void OnErrorsChanged ()
 		{
@@ -451,7 +442,16 @@ namespace RI.Framework.Data.Repository.Views
 		}
 
 		/// <summary>
-		/// Raises <see cref="PropertyChanged"/> for all wrapped entity relevant properties.
+		///     Handles the change of a property value by raising the <see cref="PropertyChanged" /> event.
+		/// </summary>
+		/// <param name="propertyName"> The name of the property which has changed. </param>
+		protected virtual void OnPropertyChanged (string propertyName)
+		{
+			this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+		}
+
+		/// <summary>
+		///     Raises <see cref="PropertyChanged" /> for all wrapped entity relevant properties.
 		/// </summary>
 		protected internal virtual void RaiseEntityChanged ()
 		{

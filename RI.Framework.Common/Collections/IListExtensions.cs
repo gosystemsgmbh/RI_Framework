@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 using RI.Framework.Collections.DirectLinq;
-using RI.Framework.Utilities;
+using RI.Framework.Mathematic;
 using RI.Framework.Utilities.Comparison;
 
 
@@ -82,6 +82,188 @@ namespace RI.Framework.Collections
 				addedCount++;
 			}
 			return addedCount;
+		}
+
+		/// <summary>
+		///     Gets the item at the specified index without removing it.
+		/// </summary>
+		/// <typeparam name="T"> The type of the items in <paramref name="list" />. </typeparam>
+		/// <param name="list"> The list. </param>
+		/// <param name="index"> The index of the item to retrieve. </param>
+		/// <returns>
+		///     The item at the specified index.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="list" /> is null. </exception>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="index" /> is less than zero or bigger or equal to the size of the list. </exception>
+		public static T Peek <T> (this IList<T> list, int index)
+		{
+			if (list == null)
+			{
+				throw new ArgumentNullException(nameof(list));
+			}
+
+			if ((index < 0) || (index >= list.Count))
+			{
+				throw new ArgumentOutOfRangeException(nameof(index));
+			}
+
+			return list[index];
+		}
+
+		/// <summary>
+		///     Gets the item at the specified index without removing it after clamping the index to the size of the list.
+		/// </summary>
+		/// <typeparam name="T"> The type of the items in <paramref name="list" />. </typeparam>
+		/// <param name="list"> The list. </param>
+		/// <param name="index"> The index of the item to retrieve. </param>
+		/// <returns>
+		///     The item at the specified index.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         Before used to access the list, <paramref name="index" /> is clamped between zero and the size of the list minus one.
+		///         If the list does not contain any elements, <see cref="InvalidOperationException" /> is thrown.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="list" /> is null. </exception>
+		/// <exception cref="InvalidOperationException"> <paramref name="list" /> contains no elements. </exception>
+		public static T PeekClamp <T> (this IList<T> list, int index)
+		{
+			if (list == null)
+			{
+				throw new ArgumentNullException(nameof(list));
+			}
+
+			if (list.Count == 0)
+			{
+				throw new InvalidOperationException("The list contains no elements.");
+			}
+
+			index = index.Clamp(0, list.Count - 1);
+
+			return list[index];
+		}
+
+		/// <summary>
+		///     Gets an item at a random position without removing it.
+		/// </summary>
+		/// <typeparam name="T"> The type of the items in <paramref name="list" />. </typeparam>
+		/// <param name="list"> The list. </param>
+		/// <param name="randomizer"> The randomizer which is used for generating the random position. </param>
+		/// <returns>
+		///     An item at a random index.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="list" /> is null. </exception>
+		/// <exception cref="InvalidOperationException"> <paramref name="list" /> contains no elements. </exception>
+		public static T PeekRandom <T> (this IList<T> list, Random randomizer)
+		{
+			if (list == null)
+			{
+				throw new ArgumentNullException(nameof(list));
+			}
+
+			if (list.Count == 0)
+			{
+				throw new InvalidOperationException("The list contains no elements.");
+			}
+
+			int index = randomizer.Next(0, list.Count);
+
+			return list[index];
+		}
+
+		/// <summary>
+		///     Gets and removes the item at the specified index.
+		/// </summary>
+		/// <typeparam name="T"> The type of the items in <paramref name="list" />. </typeparam>
+		/// <param name="list"> The list. </param>
+		/// <param name="index"> The index of the item to retrieve. </param>
+		/// <returns>
+		///     The item at the specified index.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="list" /> is null. </exception>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="index" /> is less than zero or bigger or equal to the size of the list. </exception>
+		public static T Pop <T> (this IList<T> list, int index)
+		{
+			if (list == null)
+			{
+				throw new ArgumentNullException(nameof(list));
+			}
+
+			if ((index < 0) || (index >= list.Count))
+			{
+				throw new ArgumentOutOfRangeException(nameof(index));
+			}
+
+			T item = list[index];
+			list.RemoveAt(index);
+			return item;
+		}
+
+		/// <summary>
+		///     Gets and removes the item at the specified index after clamping the index to the size of the list.
+		/// </summary>
+		/// <typeparam name="T"> The type of the items in <paramref name="list" />. </typeparam>
+		/// <param name="list"> The list. </param>
+		/// <param name="index"> The index of the item to retrieve. </param>
+		/// <returns>
+		///     The item at the specified index.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         Before used to access the list, <paramref name="index" /> is clamped between zero and the size of the list minus one.
+		///         If the list does not contain any elements, <see cref="InvalidOperationException" /> is thrown.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="list" /> is null. </exception>
+		/// <exception cref="InvalidOperationException"> <paramref name="list" /> contains no elements. </exception>
+		public static T PopClamp <T> (this IList<T> list, int index)
+		{
+			if (list == null)
+			{
+				throw new ArgumentNullException(nameof(list));
+			}
+
+			if (list.Count == 0)
+			{
+				throw new InvalidOperationException("The list contains no elements.");
+			}
+
+			index = index.Clamp(0, list.Count - 1);
+
+			T item = list[index];
+			list.RemoveAt(index);
+			return item;
+		}
+
+		/// <summary>
+		///     Gets and removes an item at a random position.
+		/// </summary>
+		/// <typeparam name="T"> The type of the items in <paramref name="list" />. </typeparam>
+		/// <param name="list"> The list. </param>
+		/// <param name="randomizer"> The randomizer which is used for generating the random position. </param>
+		/// <returns>
+		///     An item at a random index.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="list" /> is null. </exception>
+		/// <exception cref="InvalidOperationException"> <paramref name="list" /> contains no elements. </exception>
+		public static T PopRandom <T> (this IList<T> list, Random randomizer)
+		{
+			if (list == null)
+			{
+				throw new ArgumentNullException(nameof(list));
+			}
+
+			if (list.Count == 0)
+			{
+				throw new InvalidOperationException("The list contains no elements.");
+			}
+
+			int index = randomizer.Next(0, list.Count);
+
+			T item = list[index];
+			list.RemoveAt(index);
+			return item;
 		}
 
 		/// <summary>
@@ -649,188 +831,6 @@ namespace RI.Framework.Collections
 			}
 			item = list[index];
 			return true;
-		}
-
-		/// <summary>
-		/// Gets and removes the item at the specified index.
-		/// </summary>
-		/// <typeparam name="T"> The type of the items in <paramref name="list" />. </typeparam>
-		/// <param name="list"> The list. </param>
-		/// <param name="index">The index of the item to retrieve.</param>
-		/// <returns>
-		/// The item at the specified index.
-		/// </returns>
-		/// <exception cref="ArgumentNullException"> <paramref name="list" /> is null. </exception>
-		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="index" /> is less than zero or bigger or equal to the size of the list. </exception>
-		public static T Pop<T>(this IList<T> list, int index)
-		{
-			if (list == null)
-			{
-				throw new ArgumentNullException(nameof(list));
-			}
-
-			if ((index < 0) || (index >= list.Count))
-			{
-				throw new ArgumentOutOfRangeException(nameof(index));
-			}
-
-			T item = list[index];
-			list.RemoveAt(index);
-			return item;
-		}
-
-		/// <summary>
-		/// Gets the item at the specified index without removing it.
-		/// </summary>
-		/// <typeparam name="T"> The type of the items in <paramref name="list" />. </typeparam>
-		/// <param name="list"> The list. </param>
-		/// <param name="index">The index of the item to retrieve.</param>
-		/// <returns>
-		/// The item at the specified index.
-		/// </returns>
-		/// <exception cref="ArgumentNullException"> <paramref name="list" /> is null. </exception>
-		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="index" /> is less than zero or bigger or equal to the size of the list. </exception>
-		public static T Peek<T>(this IList<T> list, int index)
-		{
-			if (list == null)
-			{
-				throw new ArgumentNullException(nameof(list));
-			}
-
-			if ((index < 0) || (index >= list.Count))
-			{
-				throw new ArgumentOutOfRangeException(nameof(index));
-			}
-
-			return list[index];
-		}
-
-		/// <summary>
-		/// Gets and removes the item at the specified index after clamping the index to the size of the list.
-		/// </summary>
-		/// <typeparam name="T"> The type of the items in <paramref name="list" />. </typeparam>
-		/// <param name="list"> The list. </param>
-		/// <param name="index">The index of the item to retrieve.</param>
-		/// <returns>
-		/// The item at the specified index.
-		/// </returns>
-		/// <remarks>
-		/// <para>
-		/// Before used to access the list, <paramref name="index"/> is clamped between zero and the size of the list minus one.
-		/// If the list does not contain any elements, <see cref="InvalidOperationException"/> is thrown.
-		/// </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="list" /> is null. </exception>
-		/// <exception cref="InvalidOperationException"> <paramref name="list" /> contains no elements. </exception>
-		public static T PopClamp<T>(this IList<T> list, int index)
-		{
-			if (list == null)
-			{
-				throw new ArgumentNullException(nameof(list));
-			}
-
-			if (list.Count == 0)
-			{
-				throw new InvalidOperationException("The list contains no elements.");
-			}
-
-			index = index.Clamp(0, list.Count - 1);
-
-			T item = list[index];
-			list.RemoveAt(index);
-			return item;
-		}
-
-		/// <summary>
-		/// Gets the item at the specified index without removing it after clamping the index to the size of the list.
-		/// </summary>
-		/// <typeparam name="T"> The type of the items in <paramref name="list" />. </typeparam>
-		/// <param name="list"> The list. </param>
-		/// <param name="index">The index of the item to retrieve.</param>
-		/// <returns>
-		/// The item at the specified index.
-		/// </returns>
-		/// <remarks>
-		/// <para>
-		/// Before used to access the list, <paramref name="index"/> is clamped between zero and the size of the list minus one.
-		/// If the list does not contain any elements, <see cref="InvalidOperationException"/> is thrown.
-		/// </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="list" /> is null. </exception>
-		/// <exception cref="InvalidOperationException"> <paramref name="list" /> contains no elements. </exception>
-		public static T PeekClamp<T>(this IList<T> list, int index)
-		{
-			if (list == null)
-			{
-				throw new ArgumentNullException(nameof(list));
-			}
-
-			if (list.Count == 0)
-			{
-				throw new InvalidOperationException("The list contains no elements.");
-			}
-
-			index = index.Clamp(0, list.Count - 1);
-
-			return list[index];
-		}
-
-		/// <summary>
-		/// Gets and removes an item at a random position.
-		/// </summary>
-		/// <typeparam name="T"> The type of the items in <paramref name="list" />. </typeparam>
-		/// <param name="list"> The list. </param>
-		/// <param name="randomizer"> The randomizer which is used for generating the random position. </param>
-		/// <returns>
-		/// An item at a random index.
-		/// </returns>
-		/// <exception cref="ArgumentNullException"> <paramref name="list" /> is null. </exception>
-		/// <exception cref="InvalidOperationException"> <paramref name="list" /> contains no elements. </exception>
-		public static T PopRandom<T>(this IList<T> list, Random randomizer)
-		{
-			if (list == null)
-			{
-				throw new ArgumentNullException(nameof(list));
-			}
-
-			if (list.Count == 0)
-			{
-				throw new InvalidOperationException("The list contains no elements.");
-			}
-
-			int index = randomizer.Next(0, list.Count);
-
-			T item = list[index];
-			list.RemoveAt(index);
-			return item;
-		}
-
-		/// <summary>
-		/// Gets an item at a random position without removing it.
-		/// </summary>
-		/// <typeparam name="T"> The type of the items in <paramref name="list" />. </typeparam>
-		/// <param name="list"> The list. </param>
-		/// <param name="randomizer"> The randomizer which is used for generating the random position. </param>
-		/// <returns>
-		/// An item at a random index.
-		/// </returns>
-		/// <exception cref="ArgumentNullException"> <paramref name="list" /> is null. </exception>
-		/// <exception cref="InvalidOperationException"> <paramref name="list" /> contains no elements. </exception>
-		public static T PeekRandom<T>(this IList<T> list, Random randomizer)
-		{
-			if (list == null)
-			{
-				throw new ArgumentNullException(nameof(list));
-			}
-
-			if (list.Count == 0)
-			{
-				throw new InvalidOperationException("The list contains no elements.");
-			}
-
-			int index = randomizer.Next(0, list.Count);
-
-			return list[index];
 		}
 
 		#endregion

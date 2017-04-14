@@ -12,17 +12,19 @@ namespace RI.Framework.IO.Paths
 	/// </summary>
 	public static class DirectoryPathExtensions
 	{
+		#region Static Methods
+
 		/// <summary>
-		/// Gets the access control information for the directory.
+		///     Gets the access control information for the directory.
 		/// </summary>
-		/// <param name="directory">The directory.</param>
-		/// <param name="sections">The access control sections required for the directory.</param>
+		/// <param name="directory"> The directory. </param>
+		/// <param name="sections"> The access control sections required for the directory. </param>
 		/// <returns>
-		/// The access control information for the directory.
+		///     The access control information for the directory.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="directory"/> is null.</exception>
-		/// <exception cref="InvalidOperationException"><paramref name="directory"/> has wildcards.</exception>
-		public static DirectorySecurity GetAccessControl(this DirectoryPath directory, AccessControlSections sections)
+		/// <exception cref="ArgumentNullException"> <paramref name="directory" /> is null. </exception>
+		/// <exception cref="InvalidOperationException"> <paramref name="directory" /> has wildcards. </exception>
+		public static DirectorySecurity GetAccessControl (this DirectoryPath directory, AccessControlSections sections)
 		{
 			if (directory == null)
 			{
@@ -35,13 +37,13 @@ namespace RI.Framework.IO.Paths
 		}
 
 		/// <summary>
-		/// Sets the access control information for the directory.
+		///     Sets the access control information for the directory.
 		/// </summary>
-		/// <param name="directory">The directory.</param>
-		/// <param name="accessControl">The access control information to apply to the directory.</param>
-		/// <exception cref="ArgumentNullException"><paramref name="directory"/> or <paramref name="accessControl"/> is null.</exception>
-		/// <exception cref="InvalidOperationException"><paramref name="directory"/> has wildcards.</exception>
-		public static void SetAccessControl(this DirectoryPath directory, DirectorySecurity accessControl)
+		/// <param name="directory"> The directory. </param>
+		/// <param name="accessControl"> The access control information to apply to the directory. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="directory" /> or <paramref name="accessControl" /> is null. </exception>
+		/// <exception cref="InvalidOperationException"> <paramref name="directory" /> has wildcards. </exception>
+		public static void SetAccessControl (this DirectoryPath directory, DirectorySecurity accessControl)
 		{
 			if (directory == null)
 			{
@@ -57,5 +59,7 @@ namespace RI.Framework.IO.Paths
 
 			Directory.SetAccessControl(directory, accessControl);
 		}
+
+		#endregion
 	}
 }

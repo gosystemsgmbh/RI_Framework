@@ -47,6 +47,6 @@ namespace RI.Framework.Data.EF.Filter
 		///         This is also why <see cref="Filter" /> returns an <see cref="IOrderedQueryable" /> instead of an <see cref="IQueryable" />.
 		///     </para>
 		/// </remarks>
-		IOrderedQueryable Filter(RepositoryDbContext repository, RepositoryDbSet set, IEnumerable customSequence, object filter);
+		IOrderedQueryable Filter (RepositoryDbContext repository, RepositoryDbSet set, IEnumerable customSequence, object filter);
 	}
 }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using RI.Framework.Utilities;
 
@@ -14,6 +10,8 @@ namespace RI.Test.Framework.Utilities
 	[TestClass]
 	public sealed class Test_StringComparerEx
 	{
+		#region Instance Methods
+
 		[TestMethod]
 		public void Test ()
 		{
@@ -60,6 +58,19 @@ namespace RI.Test.Framework.Utilities
 			this.TestComparerEqual(StringComparerEx.TrimmedOrdinalIgnoreCase, " ABC ", " abc ");
 		}
 
+		public void TestComparerDifferent (StringComparerEx comparer, string x, string y)
+		{
+			if (comparer.Equals(x, y))
+			{
+				throw new TestAssertionException(comparer.GetType().Name + ": [" + x + "] == [" + y + "]");
+			}
+
+			if (comparer.Compare(x, y) == 0)
+			{
+				throw new TestAssertionException(comparer.GetType().Name + ": [" + x + "] <> [" + y + "] == 0");
+			}
+		}
+
 		public void TestComparerEqual (StringComparerEx comparer, string x, string y)
 		{
 			if (!comparer.Equals(x, y))
@@ -73,17 +84,6 @@ namespace RI.Test.Framework.Utilities
 			}
 		}
 
-		public void TestComparerDifferent(StringComparerEx comparer, string x, string y)
-		{
-			if (comparer.Equals(x, y))
-			{
-				throw new TestAssertionException(comparer.GetType().Name + ": [" + x + "] == [" + y + "]");
-			}
-
-			if (comparer.Compare(x, y) == 0)
-			{
-				throw new TestAssertionException(comparer.GetType().Name + ": [" + x + "] <> [" + y + "] == 0");
-			}
-		}
+		#endregion
 	}
 }

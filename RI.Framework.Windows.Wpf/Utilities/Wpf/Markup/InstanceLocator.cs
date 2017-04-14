@@ -26,7 +26,7 @@ namespace RI.Framework.Utilities.Wpf.Markup
 	///         See <see cref="ServiceLocator" /> for more details.
 	///     </para>
 	/// </remarks>
-	[MarkupExtensionReturnType (typeof(object))]
+	[MarkupExtensionReturnType(typeof(object))]
 	public sealed class InstanceLocator : MarkupExtension
 	{
 		#region Static Methods

@@ -8,18 +8,9 @@ namespace RI.Framework.Utilities.Windows
 {
 	public sealed class WindowsMessageLoopOperation
 	{
-		private WindowsMessageLoopOperationState _state;
-		private object _result;
-		private Exception _exception;
+		#region Instance Constructor/Destructor
 
-		private object SyncRoot { get; set; }
-		private WindowsMessageLoop MessageLoop { get; set; }
-		private int Handle { get; set; }
-		private Delegate Action { get; set; }
-		private object[] Parameters { get; set; }
-		private ManualResetEvent OperationDone { get; set; }
-
-		internal WindowsMessageLoopOperation(WindowsMessageLoop messageLoop, int handle, Delegate action, object[] parameters)
+		internal WindowsMessageLoopOperation (WindowsMessageLoop messageLoop, int handle, Delegate action, object[] parameters)
 		{
 			this.SyncRoot = new object();
 
@@ -34,7 +25,142 @@ namespace RI.Framework.Utilities.Windows
 			this.OperationDone = new ManualResetEvent(false);
 		}
 
-		internal void Execute()
+		#endregion
+
+
+
+
+		#region Instance Fields
+
+		private Exception _exception;
+		private object _result;
+		private WindowsMessageLoopOperationState _state;
+
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
+
+		public Exception Exception
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._exception;
+				}
+			}
+			private set
+			{
+				lock (this.SyncRoot)
+				{
+					this._exception = value;
+				}
+			}
+		}
+
+		public bool IsDone
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return (this.State != WindowsMessageLoopOperationState.Waiting) && (this.State != WindowsMessageLoopOperationState.Executing);
+				}
+			}
+		}
+
+		public object Result
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._result;
+				}
+			}
+			private set
+			{
+				lock (this.SyncRoot)
+				{
+					this._result = value;
+				}
+			}
+		}
+
+		public WindowsMessageLoopOperationState State
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._state;
+				}
+			}
+			private set
+			{
+				lock (this.SyncRoot)
+				{
+					this._state = value;
+				}
+			}
+		}
+
+		private Delegate Action { get; set; }
+		private int Handle { get; set; }
+		private WindowsMessageLoop MessageLoop { get; set; }
+		private ManualResetEvent OperationDone { get; set; }
+		private object[] Parameters { get; set; }
+
+		private object SyncRoot { get; set; }
+
+		#endregion
+
+
+
+
+		#region Instance Methods
+
+		public bool Cancel ()
+		{
+			lock (this.SyncRoot)
+			{
+				if (this.State != WindowsMessageLoopOperationState.Waiting)
+				{
+					return false;
+				}
+
+				this.State = WindowsMessageLoopOperationState.Canceled;
+				this.Result = null;
+				this.OperationDone.Set();
+
+				return true;
+			}
+		}
+
+		public void Wait ()
+		{
+			this.Wait(Timeout.Infinite);
+		}
+
+		public bool Wait (TimeSpan timeout)
+		{
+			return this.Wait((int)timeout.TotalMilliseconds);
+		}
+
+		public bool Wait (int milliseconds)
+		{
+			if ((milliseconds < 0) && (milliseconds != Timeout.Infinite))
+			{
+				throw new ArgumentOutOfRangeException(nameof(milliseconds));
+			}
+
+			return this.OperationDone.WaitOne(milliseconds);
+		}
+
+		internal void Execute ()
 		{
 			lock (this.SyncRoot)
 			{
@@ -64,106 +190,6 @@ namespace RI.Framework.Utilities.Windows
 			}
 		}
 
-		public bool IsDone
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					return (this.State != WindowsMessageLoopOperationState.Waiting) && (this.State != WindowsMessageLoopOperationState.Executing);
-				}
-			}
-		}
-
-		public WindowsMessageLoopOperationState State
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					return this._state;
-				}
-			}
-			private set
-			{
-				lock (this.SyncRoot)
-				{
-					this._state = value;
-				}
-			}
-		}
-
-		public Exception Exception
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					return this._exception;
-				}
-			}
-			private set
-			{
-				lock (this.SyncRoot)
-				{
-					this._exception = value;
-				}
-			}
-		}
-
-		public object Result
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					return this._result;
-				}
-			}
-			private set
-			{
-				lock (this.SyncRoot)
-				{
-					this._result = value;
-				}
-			}
-		}
-
-		public void Wait()
-		{
-			this.Wait(Timeout.Infinite);
-		}
-
-		public bool Wait(TimeSpan timeout)
-		{
-			return this.Wait((int)timeout.TotalMilliseconds);
-		}
-
-		public bool Wait(int milliseconds)
-		{
-			if ((milliseconds < 0) && (milliseconds != Timeout.Infinite))
-			{
-				throw new ArgumentOutOfRangeException(nameof(milliseconds));
-			}
-
-			return this.OperationDone.WaitOne(milliseconds);
-		}
-
-		public bool Cancel()
-		{
-			lock (this.SyncRoot)
-			{
-				if (this.State != WindowsMessageLoopOperationState.Waiting)
-				{
-					return false;
-				}
-
-				this.State = WindowsMessageLoopOperationState.Canceled;
-				this.Result = null;
-				this.OperationDone.Set();
-
-				return true;
-			}
-		}
+		#endregion
 	}
 }

@@ -19,7 +19,7 @@ namespace RI.Framework.Composition.Model
 	///         See <see cref="CompositionContainer" /> for more details about manual imports and the default name of a type.
 	///     </para>
 	/// </remarks>
-	[AttributeUsage (AttributeTargets.Constructor)]
+	[AttributeUsage(AttributeTargets.Constructor)]
 	public sealed class ExportConstructorAttribute : Attribute
 	{
 	}

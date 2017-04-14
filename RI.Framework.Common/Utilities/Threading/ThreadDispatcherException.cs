@@ -27,7 +27,7 @@ namespace RI.Framework.Utilities.Threading
 		/// <summary>
 		///     Creates a new instance of <see cref="ThreadDispatcherException" />.
 		/// </summary>
-		public ThreadDispatcherException()
+		public ThreadDispatcherException ()
 			: base(ThreadDispatcherException.ExceptionMessageWithoutException)
 		{
 		}
@@ -36,7 +36,7 @@ namespace RI.Framework.Utilities.Threading
 		///     Creates a new instance of <see cref="ThreadDispatcherException" />.
 		/// </summary>
 		/// <param name="message"> The message which describes the exception. </param>
-		public ThreadDispatcherException(string message)
+		public ThreadDispatcherException (string message)
 			: base(message)
 		{
 		}
@@ -45,7 +45,7 @@ namespace RI.Framework.Utilities.Threading
 		///     Creates a new instance of <see cref="ThreadDispatcherException" />.
 		/// </summary>
 		/// <param name="innerException"> The exception which triggered this exception. </param>
-		public ThreadDispatcherException(Exception innerException)
+		public ThreadDispatcherException (Exception innerException)
 			: base(string.Format(ThreadDispatcherException.ExceptionMessageWithException, innerException.GetType().Name, innerException.Message), innerException)
 		{
 		}
@@ -55,7 +55,7 @@ namespace RI.Framework.Utilities.Threading
 		/// </summary>
 		/// <param name="message"> The message which describes the exception. </param>
 		/// <param name="innerException"> The exception which triggered this exception. </param>
-		public ThreadDispatcherException(string message, Exception innerException)
+		public ThreadDispatcherException (string message, Exception innerException)
 			: base(message, innerException)
 		{
 		}
@@ -65,7 +65,7 @@ namespace RI.Framework.Utilities.Threading
 		/// </summary>
 		/// <param name="info"> The serialization data. </param>
 		/// <param name="context"> The type of the source of the serialization data. </param>
-		protected ThreadDispatcherException(SerializationInfo info, StreamingContext context)
+		protected ThreadDispatcherException (SerializationInfo info, StreamingContext context)
 			: base(info, context)
 		{
 		}

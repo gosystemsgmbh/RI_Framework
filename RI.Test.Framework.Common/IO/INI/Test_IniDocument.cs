@@ -24,22 +24,6 @@ namespace RI.Test.Framework.IO.INI
 
 		private const string Data1 = "\nText\n;Comment\nName=Value\n[Header1]\n\nText1\n;Comment1\nName1=Value1";
 
-		private const string Data2 = "\nText\n;Comment\nName=Value\n[Header1]\n\nText1\n;Comment1\nName1=Value1\n";
-
-		private const string Data3 = "\nText\n;Comment\nName=Value\n[Header1]\n\nText1\n;Comment1\nName1=Value1\n\n";
-
-		private const string Data4 = "";
-
-		private const string Data5 = " ";
-
-		private const string Data6 = "\nText\n;Comment\nName=Value\n\n[Header1]\n\nText1\n;Comment1\nName1=Value1";
-
-		private const string Data7 = "H0N1=VA\nH0N2=VB\n[H1]\nH1N1=V1\nH1N2=V2\n[H2]\nH2N1=V3\nH2N2=V4\n[H1]\nH1N3=V5\nH1N4=V6\n[H2]\nH2N3=V7\nH2N4=V8";
-
-		private const string Data8 = "H0N1=VA\nH0N2=VB\n[H1]\nH1N1=V1\nH1N2=V2\n[H1]\nH1N3=V5\nH1N4=V6\n[H2]\nH2N1=V3\nH2N2=V4\n[H2]\nH2N3=V7\nH2N4=V8";
-
-		private const string Data9 = "H0N1=VA\nH0N2=VB\n[H1]\nH1N1=V1\nH1N2=V2\nH1N3=V5\nH1N4=V6\n[H2]\nH2N1=V3\nH2N2=V4\nH2N3=V7\nH2N4=V8";
-
 		private const string Data10 = "H9N1=VA\nH9N1=VB\nH9N2=VC\nH9N2=VD\n[H3]\nH3N1=V1\nH3N1=V2\n[H4]\nH4N1=V3\nH4N1=V4\n[H3]\nH3N1=V5\nH3N2=V6\n[H4]\nH4N1=V7\nH4N2=V8";
 
 		private const string Data11 = "H9N1=VA\nH9N1=VB\nH9N2=VC\nH9N2=VD\n[H3]\nH3N1=V1\nH3N1=V2\n[H3]\nH3N1=V5\nH3N2=V6\n[H4]\nH4N1=V3\nH4N1=V4\n[H4]\nH4N1=V7\nH4N2=V8";
@@ -60,6 +44,8 @@ namespace RI.Test.Framework.IO.INI
 
 		private const string Data19 = "H0N1=VA\nH0N2=VB\n[H1]\nH1N1=V11\nH1N2=V22\nH1N3=V55\nH1N4=V66\n[H2]\nH2N1=V3\nH2N2=V4\nH2N3=V7\nH2N4=V8";
 
+		private const string Data2 = "\nText\n;Comment\nName=Value\n[Header1]\n\nText1\n;Comment1\nName1=Value1\n";
+
 		private const string Data20 = "H0N1=VA\nH0N2=VB\n[H1]\nH1N1=V11\nH1N2=V22\n[H2]\nH2N1=V3\nH2N2=V4\n[H1]\nH1N3=V55\nH1N4=V66\n[H2]\nH2N3=V7\nH2N4=V8";
 
 		private const string Data21 = "H0N1=VA\nH0N2=VB\n[H1]\nH1N1=V11\nH1N2=V22\nH1N3=V55\nH1N4=V66\n[H2]\nH2N1=V33\nH2N2=V44\nH2N3=V77\nH2N4=V88";
@@ -79,6 +65,20 @@ namespace RI.Test.Framework.IO.INI
 		private const string Data28 = "|;Name=Value|n|=\n[Header1|n|=]\n;;Comment";
 
 		private const string Data29 = ";Name#Value%n=\n(Header1%n=)\n!;Comment";
+
+		private const string Data3 = "\nText\n;Comment\nName=Value\n[Header1]\n\nText1\n;Comment1\nName1=Value1\n\n";
+
+		private const string Data4 = "";
+
+		private const string Data5 = " ";
+
+		private const string Data6 = "\nText\n;Comment\nName=Value\n\n[Header1]\n\nText1\n;Comment1\nName1=Value1";
+
+		private const string Data7 = "H0N1=VA\nH0N2=VB\n[H1]\nH1N1=V1\nH1N2=V2\n[H2]\nH2N1=V3\nH2N2=V4\n[H1]\nH1N3=V5\nH1N4=V6\n[H2]\nH2N3=V7\nH2N4=V8";
+
+		private const string Data8 = "H0N1=VA\nH0N2=VB\n[H1]\nH1N1=V1\nH1N2=V2\n[H1]\nH1N3=V5\nH1N4=V6\n[H2]\nH2N1=V3\nH2N2=V4\n[H2]\nH2N3=V7\nH2N4=V8";
+
+		private const string Data9 = "H0N1=VA\nH0N2=VB\n[H1]\nH1N1=V1\nH1N2=V2\nH1N3=V5\nH1N4=V6\n[H2]\nH2N1=V3\nH2N2=V4\nH2N3=V7\nH2N4=V8";
 
 		private static readonly IDictionary<string, string> H0 = new Dictionary<string, string>()
 		{
@@ -104,36 +104,64 @@ namespace RI.Test.Framework.IO.INI
 
 		private static readonly IDictionary<string, IList<string>> H3 = new Dictionary<string, IList<string>>()
 		{
-			{"H3N1", new List<string> {"V1", "V2", "V5"} },
-			{"H3N2", new List<string> {"V6"}},
+			{
+				"H3N1", new List<string>
+				{
+					"V1",
+					"V2",
+					"V5"
+				}
+			},
+			{
+				"H3N2", new List<string>
+				{
+					"V6"
+				}
+			},
 		};
 
 		private static readonly IDictionary<string, IList<string>> H4 = new Dictionary<string, IList<string>>()
 		{
-			{"H4N1", new List<string> {"V3", "V4", "V7"} },
-			{"H4N2", new List<string> {"V8"}},
+			{
+				"H4N1", new List<string>
+				{
+					"V3",
+					"V4",
+					"V7"
+				}
+			},
+			{
+				"H4N2", new List<string>
+				{
+					"V8"
+				}
+			},
 		};
 
 		private static readonly IDictionary<string, IList<string>> H9 = new Dictionary<string, IList<string>>()
 		{
-			{"H9N1", new List<string> {"VA", "VB"} },
-			{"H9N2", new List<string> {"VC", "VD"}},
+			{
+				"H9N1", new List<string>
+				{
+					"VA",
+					"VB"
+				}
+			},
+			{
+				"H9N2", new List<string>
+				{
+					"VC",
+					"VD"
+				}
+			},
 		};
 
 		private static readonly IDictionary<string, string> V1 = new Dictionary<string, string>
 		{
-			{"H1N1", "V1" },
-			{"H1N2", "V2" },
-			{"H1N3", "V5" },
-			{"H1N4", "V6" },
-		};
-
-		private static readonly IDictionary<string, string> V2 = new Dictionary<string, string>
-		{
-			{"H2N1", "V3" },
-			{"H2N2", "V4" },
-			{"H2N3", "V7" },
-			{"H2N4", "V8" },
+			{"H1N1", "V1"},
+			{"H1N2", "V2"},
+			{"H1N3", "V5"},
+			{"H1N4", "V6"},
 		};
 
 		private static readonly IDictionary<string, IDictionary<string, string>> V12 = new Dictionary<string, IDictionary<string, string>>
@@ -141,41 +169,43 @@ namespace RI.Test.Framework.IO.INI
 			{
 				string.Empty, new Dictionary<string, string>
 				{
-					{"H0N1", "VA" },
-					{"H0N2", "VB" },
+					{"H0N1", "VA"},
+					{"H0N2", "VB"},
 				}
 			},
 			{
 				"H1", new Dictionary<string, string>
 				{
-					{"H1N1", "V1" },
-					{"H1N2", "V2" },
-					{"H1N3", "V5" },
-					{"H1N4", "V6" },
+					{"H1N1", "V1"},
+					{"H1N2", "V2"},
+					{"H1N3", "V5"},
+					{"H1N4", "V6"},
 				}
 			},
 			{
 				"H2", new Dictionary<string, string>
 				{
-					{"H2N1", "V3" },
-					{"H2N2", "V4" },
-					{"H2N3", "V7" },
-					{"H2N4", "V8" },
+					{"H2N1", "V3"},
+					{"H2N2", "V4"},
+					{"H2N3", "V7"},
+					{"H2N4", "V8"},
 				}
 			}
 		};
 
+		private static readonly IDictionary<string, string> V2 = new Dictionary<string, string>
+		{
+			{"H2N1", "V3"},
+			{"H2N2", "V4"},
+			{"H2N3", "V7"},
+			{"H2N4", "V8"},
+		};
+
 		private static readonly IDictionary<string, IDictionary<string, IList<string>>> V34 = new Dictionary<string, IDictionary<string, IList<string>>>
 		{
-			{
-				string.Empty, H9
-			},
-			{
-				"H3", H3
-			},
-			{
-				"H4", H4
-			}
+			{string.Empty, Test_IniDocument.H9},
+			{"H3", Test_IniDocument.H3},
+			{"H4", Test_IniDocument.H4}
 		};
 
 		#endregion
@@ -184,191 +214,6 @@ namespace RI.Test.Framework.IO.INI
 
 
 		#region Instance Methods
-
-		[TestMethod]
-		public void LoadSave_Test ()
-		{
-			IniDocument test = new IniDocument();
-			FilePath file = FilePath.GetTempFile();
-
-			//---------------------
-			// Load from INI reader
-			//---------------------
-
-			using (StringReader sr = new StringReader(Test_IniDocument.Data1))
-			{
-				using (IniReader ir = new IniReader(sr))
-				{
-					test.Load(ir);
-				}
-			}
-			this.VerifyData1(test);
-
-			using (StringReader sr = new StringReader(Test_IniDocument.Data1))
-			{
-				using (IniReader ir = new IniReader(sr, new IniReaderSettings()))
-				{
-					test.Load(ir);
-				}
-			}
-			this.VerifyData1(test);
-
-			//-----------------
-			// Load from string
-			//-----------------
-
-			test.Load(Test_IniDocument.Data1);
-			this.VerifyData1(test);
-
-			test.Load(Test_IniDocument.Data2);
-			this.VerifyData2(test);
-
-			test.Load(Test_IniDocument.Data3);
-			this.VerifyData3(test);
-
-			test.Load(Test_IniDocument.Data1, new IniReaderSettings());
-			this.VerifyData1(test);
-
-			test.Load(Test_IniDocument.Data2, new IniReaderSettings());
-			this.VerifyData2(test);
-
-			test.Load(Test_IniDocument.Data3, new IniReaderSettings());
-			this.VerifyData3(test);
-
-			//------------------
-			// Loading from file
-			//------------------
-
-			file.WriteText(Test_IniDocument.Data1, Encoding.UTF8);
-			test.Load(file, Encoding.UTF8);
-			this.VerifyData1(test);
-
-			file.WriteText(Test_IniDocument.Data2, Encoding.UTF8);
-			test.Load(file, Encoding.UTF8);
-			this.VerifyData2(test);
-
-			file.WriteText(Test_IniDocument.Data3, Encoding.UTF8);
-			test.Load(file, Encoding.UTF8);
-			this.VerifyData3(test);
-
-			file.WriteText(Test_IniDocument.Data1, Encoding.UTF8);
-			test.Load(file, Encoding.UTF8, new IniReaderSettings());
-			this.VerifyData1(test);
-
-			file.WriteText(Test_IniDocument.Data2, Encoding.UTF8);
-			test.Load(file, Encoding.UTF8, new IniReaderSettings());
-			this.VerifyData2(test);
-
-			file.WriteText(Test_IniDocument.Data3, Encoding.UTF8);
-			test.Load(file, Encoding.UTF8, new IniReaderSettings());
-			this.VerifyData3(test);
-
-			//---------------------
-			// Saving to INI writer
-			//---------------------
-
-			test.Load(Test_IniDocument.Data1);
-			using (StringWriter sw = new StringWriter())
-			{
-				using (IniWriter iw = new IniWriter(sw))
-				{
-					test.Save(iw);
-				}
-				string temp = sw.ToString();
-				if (temp.Replace("\r", string.Empty) != Test_IniDocument.Data1)
-				{
-					throw new TestAssertionException();
-				}
-			}
-
-			test.Load(Test_IniDocument.Data1);
-			using (StringWriter sw = new StringWriter())
-			{
-				using (IniWriter iw = new IniWriter(sw, new IniWriterSettings()))
-				{
-					test.Save(iw);
-				}
-				string temp = sw.ToString();
-				if (temp.Replace("\r", string.Empty) != Test_IniDocument.Data1)
-				{
-					throw new TestAssertionException();
-				}
-			}
-
-			//-----------------
-			// Saving to string
-			//-----------------
-
-			test.Load(Test_IniDocument.Data1);
-			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data1)
-			{
-				throw new TestAssertionException();
-			}
-
-			test.Load(Test_IniDocument.Data2);
-			if ((test.AsString().Replace("\r", string.Empty) + "\n") != Test_IniDocument.Data2)
-			{
-				throw new TestAssertionException();
-			}
-
-			test.Load(Test_IniDocument.Data3);
-			if ((test.AsString().Replace("\r", string.Empty) + "\n") != Test_IniDocument.Data3)
-			{
-				throw new TestAssertionException();
-			}
-
-			test.Load(Test_IniDocument.Data1);
-			if (test.AsString(new IniWriterSettings()).Replace("\r", string.Empty) != Test_IniDocument.Data1)
-			{
-				throw new TestAssertionException();
-			}
-
-			test.Load(Test_IniDocument.Data2);
-			if ((test.AsString(new IniWriterSettings()).Replace("\r", string.Empty) + "\n") != Test_IniDocument.Data2)
-			{
-				throw new TestAssertionException();
-			}
-
-			test.Load(Test_IniDocument.Data3);
-			if ((test.AsString(new IniWriterSettings()).Replace("\r", string.Empty) + "\n") != Test_IniDocument.Data3)
-			{
-				throw new TestAssertionException();
-			}
-
-			//---------------
-			// Saving to file
-			//---------------
-
-			test.Load(Test_IniDocument.Data1);
-			test.Save(file, Encoding.UTF8);
-			test.Load(file, Encoding.UTF8);
-			this.VerifyData1(test);
-
-			test.Load(Test_IniDocument.Data2);
-			test.Save(file, Encoding.UTF8);
-			test.Load(file, Encoding.UTF8);
-			this.VerifyData2(test);
-
-			test.Load(Test_IniDocument.Data3 + "\n");
-			test.Save(file, Encoding.UTF8);
-			test.Load(file, Encoding.UTF8);
-			this.VerifyData3(test);
-
-			test.Load(Test_IniDocument.Data1);
-			test.Save(file, Encoding.UTF8, new IniWriterSettings());
-			test.Load(file, Encoding.UTF8);
-			this.VerifyData1(test);
-
-			test.Load(Test_IniDocument.Data2);
-			test.Save(file, Encoding.UTF8, new IniWriterSettings());
-			test.Load(file, Encoding.UTF8);
-			this.VerifyData2(test);
-
-			test.Load(Test_IniDocument.Data3 + "\n");
-			test.Save(file, Encoding.UTF8, new IniWriterSettings());
-			test.Load(file, Encoding.UTF8);
-			this.VerifyData3(test);
-		}
 
 		[TestMethod]
 		public void Elements_Test ()
@@ -571,34 +416,78 @@ namespace RI.Test.Framework.IO.INI
 
 			Dictionary<string, IList<string>> h9_1 = new Dictionary<string, IList<string>>()
 			{
-				{"H9N1", new List<string> {"VA", "VB"} },
+				{
+					"H9N1", new List<string>
+					{
+						"VA",
+						"VB"
+					}
+				},
 			};
 
 			Dictionary<string, IList<string>> h9_2 = new Dictionary<string, IList<string>>()
 			{
-				{"H9N2", new List<string> {"VC", "VD"} },
+				{
+					"H9N2", new List<string>
+					{
+						"VC",
+						"VD"
+					}
+				},
 			};
 
 			Dictionary<string, IList<string>> h3_1 = new Dictionary<string, IList<string>>()
 			{
-				{"H3N1", new List<string> {"V1", "V2"} },
+				{
+					"H3N1", new List<string>
+					{
+						"V1",
+						"V2"
+					}
+				},
 			};
 
 			Dictionary<string, IList<string>> h3_2 = new Dictionary<string, IList<string>>()
 			{
-				{"H3N1", new List<string> {"V5"} },
-				{"H3N2", new List<string> {"V6"}},
+				{
+					"H3N1", new List<string>
+					{
+						"V5"
+					}
+				},
+				{
+					"H3N2", new List<string>
+					{
+						"V6"
+					}
+				},
 			};
 
 			Dictionary<string, IList<string>> h4_1 = new Dictionary<string, IList<string>>()
 			{
-				{"H4N1", new List<string> {"V3", "V4"} },
+				{
+					"H4N1", new List<string>
+					{
+						"V3",
+						"V4"
+					}
+				},
 			};
 
 			Dictionary<string, IList<string>> h4_2 = new Dictionary<string, IList<string>>()
 			{
-				{"H4N1", new List<string> {"V7"} },
-				{"H4N2", new List<string> {"V8"}},
+				{
+					"H4N1", new List<string>
+					{
+						"V7"
+					}
+				},
+				{
+					"H4N2", new List<string>
+					{
+						"V8"
+					}
+				},
 			};
 
 			test.Clear();
@@ -1061,10 +950,10 @@ namespace RI.Test.Framework.IO.INI
 
 			Dictionary<string, string> v1 = new Dictionary<string, string>
 			{
-				{"H1N1", "V1" },
-				{"H1N2", "V2" },
-				{"H1N3", "V5" },
-				{"H1N4", "V6" },
+				{"H1N1", "V1"},
+				{"H1N2", "V2"},
+				{"H1N3", "V5"},
+				{"H1N4", "V6"},
 			};
 
 			test.SetValues("H1", v1);
@@ -1080,19 +969,19 @@ namespace RI.Test.Framework.IO.INI
 				{
 					"H1", new Dictionary<string, string>
 					{
-						{"H1N1", "V11" },
-						{"H1N2", "V22" },
-						{"H1N3", "V55" },
-						{"H1N4", "V66" },
+						{"H1N1", "V11"},
+						{"H1N2", "V22"},
+						{"H1N3", "V55"},
+						{"H1N4", "V66"},
 					}
 				},
 				{
 					"H2", new Dictionary<string, string>
 					{
-						{"H2N1", "V33" },
-						{"H2N2", "V44" },
-						{"H2N3", "V77" },
-						{"H2N4", "V88" },
+						{"H2N1", "V33"},
+						{"H2N2", "V44"},
+						{"H2N3", "V77"},
+						{"H2N4", "V88"},
 					}
 				}
 			};
@@ -1279,7 +1168,192 @@ namespace RI.Test.Framework.IO.INI
 		}
 
 		[TestMethod]
-		public void Settings_Test()
+		public void LoadSave_Test ()
+		{
+			IniDocument test = new IniDocument();
+			FilePath file = FilePath.GetTempFile();
+
+			//---------------------
+			// Load from INI reader
+			//---------------------
+
+			using (StringReader sr = new StringReader(Test_IniDocument.Data1))
+			{
+				using (IniReader ir = new IniReader(sr))
+				{
+					test.Load(ir);
+				}
+			}
+			this.VerifyData1(test);
+
+			using (StringReader sr = new StringReader(Test_IniDocument.Data1))
+			{
+				using (IniReader ir = new IniReader(sr, new IniReaderSettings()))
+				{
+					test.Load(ir);
+				}
+			}
+			this.VerifyData1(test);
+
+			//-----------------
+			// Load from string
+			//-----------------
+
+			test.Load(Test_IniDocument.Data1);
+			this.VerifyData1(test);
+
+			test.Load(Test_IniDocument.Data2);
+			this.VerifyData2(test);
+
+			test.Load(Test_IniDocument.Data3);
+			this.VerifyData3(test);
+
+			test.Load(Test_IniDocument.Data1, new IniReaderSettings());
+			this.VerifyData1(test);
+
+			test.Load(Test_IniDocument.Data2, new IniReaderSettings());
+			this.VerifyData2(test);
+
+			test.Load(Test_IniDocument.Data3, new IniReaderSettings());
+			this.VerifyData3(test);
+
+			//------------------
+			// Loading from file
+			//------------------
+
+			file.WriteText(Test_IniDocument.Data1, Encoding.UTF8);
+			test.Load(file, Encoding.UTF8);
+			this.VerifyData1(test);
+
+			file.WriteText(Test_IniDocument.Data2, Encoding.UTF8);
+			test.Load(file, Encoding.UTF8);
+			this.VerifyData2(test);
+
+			file.WriteText(Test_IniDocument.Data3, Encoding.UTF8);
+			test.Load(file, Encoding.UTF8);
+			this.VerifyData3(test);
+
+			file.WriteText(Test_IniDocument.Data1, Encoding.UTF8);
+			test.Load(file, Encoding.UTF8, new IniReaderSettings());
+			this.VerifyData1(test);
+
+			file.WriteText(Test_IniDocument.Data2, Encoding.UTF8);
+			test.Load(file, Encoding.UTF8, new IniReaderSettings());
+			this.VerifyData2(test);
+
+			file.WriteText(Test_IniDocument.Data3, Encoding.UTF8);
+			test.Load(file, Encoding.UTF8, new IniReaderSettings());
+			this.VerifyData3(test);
+
+			//---------------------
+			// Saving to INI writer
+			//---------------------
+
+			test.Load(Test_IniDocument.Data1);
+			using (StringWriter sw = new StringWriter())
+			{
+				using (IniWriter iw = new IniWriter(sw))
+				{
+					test.Save(iw);
+				}
+				string temp = sw.ToString();
+				if (temp.Replace("\r", string.Empty) != Test_IniDocument.Data1)
+				{
+					throw new TestAssertionException();
+				}
+			}
+
+			test.Load(Test_IniDocument.Data1);
+			using (StringWriter sw = new StringWriter())
+			{
+				using (IniWriter iw = new IniWriter(sw, new IniWriterSettings()))
+				{
+					test.Save(iw);
+				}
+				string temp = sw.ToString();
+				if (temp.Replace("\r", string.Empty) != Test_IniDocument.Data1)
+				{
+					throw new TestAssertionException();
+				}
+			}
+
+			//-----------------
+			// Saving to string
+			//-----------------
+
+			test.Load(Test_IniDocument.Data1);
+			if (test.AsString().Replace("\r", string.Empty) != Test_IniDocument.Data1)
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Load(Test_IniDocument.Data2);
+			if ((test.AsString().Replace("\r", string.Empty) + "\n") != Test_IniDocument.Data2)
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Load(Test_IniDocument.Data3);
+			if ((test.AsString().Replace("\r", string.Empty) + "\n") != Test_IniDocument.Data3)
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Load(Test_IniDocument.Data1);
+			if (test.AsString(new IniWriterSettings()).Replace("\r", string.Empty) != Test_IniDocument.Data1)
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Load(Test_IniDocument.Data2);
+			if ((test.AsString(new IniWriterSettings()).Replace("\r", string.Empty) + "\n") != Test_IniDocument.Data2)
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Load(Test_IniDocument.Data3);
+			if ((test.AsString(new IniWriterSettings()).Replace("\r", string.Empty) + "\n") != Test_IniDocument.Data3)
+			{
+				throw new TestAssertionException();
+			}
+
+			//---------------
+			// Saving to file
+			//---------------
+
+			test.Load(Test_IniDocument.Data1);
+			test.Save(file, Encoding.UTF8);
+			test.Load(file, Encoding.UTF8);
+			this.VerifyData1(test);
+
+			test.Load(Test_IniDocument.Data2);
+			test.Save(file, Encoding.UTF8);
+			test.Load(file, Encoding.UTF8);
+			this.VerifyData2(test);
+
+			test.Load(Test_IniDocument.Data3 + "\n");
+			test.Save(file, Encoding.UTF8);
+			test.Load(file, Encoding.UTF8);
+			this.VerifyData3(test);
+
+			test.Load(Test_IniDocument.Data1);
+			test.Save(file, Encoding.UTF8, new IniWriterSettings());
+			test.Load(file, Encoding.UTF8);
+			this.VerifyData1(test);
+
+			test.Load(Test_IniDocument.Data2);
+			test.Save(file, Encoding.UTF8, new IniWriterSettings());
+			test.Load(file, Encoding.UTF8);
+			this.VerifyData2(test);
+
+			test.Load(Test_IniDocument.Data3 + "\n");
+			test.Save(file, Encoding.UTF8, new IniWriterSettings());
+			test.Load(file, Encoding.UTF8);
+			this.VerifyData3(test);
+		}
+
+		[TestMethod]
+		public void Settings_Test ()
 		{
 			IniDocument test = new IniDocument();
 
@@ -1348,7 +1422,7 @@ namespace RI.Test.Framework.IO.INI
 				throw new TestAssertionException();
 			}
 
-			if (((TextIniElement)document.Elements[0]).Text != Environment.NewLine + "Text")
+			if (((TextIniElement)document.Elements[0]).Text != (Environment.NewLine + "Text"))
 			{
 				throw new TestAssertionException();
 			}
@@ -1373,7 +1447,7 @@ namespace RI.Test.Framework.IO.INI
 				throw new TestAssertionException();
 			}
 
-			if (((TextIniElement)document.Elements[4]).Text != Environment.NewLine + "Text1")
+			if (((TextIniElement)document.Elements[4]).Text != (Environment.NewLine + "Text1"))
 			{
 				throw new TestAssertionException();
 			}
@@ -1401,7 +1475,7 @@ namespace RI.Test.Framework.IO.INI
 				throw new TestAssertionException();
 			}
 
-			if (((TextIniElement)document.Elements[0]).Text != Environment.NewLine + "Text")
+			if (((TextIniElement)document.Elements[0]).Text != (Environment.NewLine + "Text"))
 			{
 				throw new TestAssertionException();
 			}
@@ -1426,7 +1500,7 @@ namespace RI.Test.Framework.IO.INI
 				throw new TestAssertionException();
 			}
 
-			if (((TextIniElement)document.Elements[4]).Text != Environment.NewLine + "Text1")
+			if (((TextIniElement)document.Elements[4]).Text != (Environment.NewLine + "Text1"))
 			{
 				throw new TestAssertionException();
 			}
@@ -1454,7 +1528,7 @@ namespace RI.Test.Framework.IO.INI
 				throw new TestAssertionException();
 			}
 
-			if (((TextIniElement)document.Elements[0]).Text != Environment.NewLine + "Text")
+			if (((TextIniElement)document.Elements[0]).Text != (Environment.NewLine + "Text"))
 			{
 				throw new TestAssertionException();
 			}
@@ -1479,7 +1553,7 @@ namespace RI.Test.Framework.IO.INI
 				throw new TestAssertionException();
 			}
 
-			if (((TextIniElement)document.Elements[4]).Text != Environment.NewLine + "Text1")
+			if (((TextIniElement)document.Elements[4]).Text != (Environment.NewLine + "Text1"))
 			{
 				throw new TestAssertionException();
 			}
@@ -1505,7 +1579,7 @@ namespace RI.Test.Framework.IO.INI
 			}
 		}
 
-		private void VerifyData4(IniDocument document)
+		private void VerifyData4 (IniDocument document)
 		{
 			if (document.Count != 0)
 			{
@@ -1513,7 +1587,7 @@ namespace RI.Test.Framework.IO.INI
 			}
 		}
 
-		private void VerifyData5(IniDocument document)
+		private void VerifyData5 (IniDocument document)
 		{
 			if (document.Count != 1)
 			{
@@ -1526,14 +1600,14 @@ namespace RI.Test.Framework.IO.INI
 			}
 		}
 
-		private void VerifyData6(IniDocument document)
+		private void VerifyData6 (IniDocument document)
 		{
 			if (document.Count != 8)
 			{
 				throw new TestAssertionException();
 			}
 
-			if (((TextIniElement)document.Elements[0]).Text != Environment.NewLine + "Text")
+			if (((TextIniElement)document.Elements[0]).Text != (Environment.NewLine + "Text"))
 			{
 				throw new TestAssertionException();
 			}
@@ -1563,7 +1637,7 @@ namespace RI.Test.Framework.IO.INI
 				throw new TestAssertionException();
 			}
 
-			if (((TextIniElement)document.Elements[5]).Text != Environment.NewLine + "Text1")
+			if (((TextIniElement)document.Elements[5]).Text != (Environment.NewLine + "Text1"))
 			{
 				throw new TestAssertionException();
 			}
@@ -1584,7 +1658,7 @@ namespace RI.Test.Framework.IO.INI
 			}
 		}
 
-		private void VerifyH0(IniDocument document)
+		private void VerifyH0 (IniDocument document)
 		{
 			List<Dictionary<string, string>> section = document.GetSections(null).ToList();
 			List<KeyValuePair<string, string>> h0 = Test_IniDocument.H0.ToList();
@@ -1595,7 +1669,7 @@ namespace RI.Test.Framework.IO.INI
 			}
 		}
 
-		private void VerifyH1(IniDocument document)
+		private void VerifyH1 (IniDocument document)
 		{
 			List<Dictionary<string, string>> section = document.GetSections("H1").ToList();
 			List<KeyValuePair<string, string>> h1 = Test_IniDocument.H1.ToList();
@@ -1617,7 +1691,7 @@ namespace RI.Test.Framework.IO.INI
 			}
 		}
 
-		private void VerifyH3(IniDocument document)
+		private void VerifyH3 (IniDocument document)
 		{
 			List<Dictionary<string, List<string>>> section = document.GetSectionsAll("H3").ToList();
 			List<KeyValuePair<string, IList<string>>> h3 = Test_IniDocument.H3.ToList();
@@ -1628,7 +1702,7 @@ namespace RI.Test.Framework.IO.INI
 			}
 		}
 
-		private void VerifyH4(IniDocument document)
+		private void VerifyH4 (IniDocument document)
 		{
 			List<Dictionary<string, List<string>>> section = document.GetSectionsAll("H4").ToList();
 			List<KeyValuePair<string, IList<string>>> h4 = Test_IniDocument.H4.ToList();
@@ -1639,7 +1713,7 @@ namespace RI.Test.Framework.IO.INI
 			}
 		}
 
-		private void VerifyH9(IniDocument document)
+		private void VerifyH9 (IniDocument document)
 		{
 			List<Dictionary<string, List<string>>> section = document.GetSectionsAll(null).ToList();
 			List<KeyValuePair<string, IList<string>>> h9 = Test_IniDocument.H9.ToList();
@@ -1679,9 +1753,9 @@ namespace RI.Test.Framework.IO.INI
 			return true;
 		}
 
-		private bool VerifySection(List<Dictionary<string, List<string>>> sections, List<KeyValuePair<string, IList<string>>> elements)
+		private bool VerifySection (List<Dictionary<string, List<string>>> sections, List<KeyValuePair<string, IList<string>>> elements)
 		{
-			CollectionComparer<string> comparer = new CollectionComparer<string>((x,y) => string.Equals(x,y,StringComparison.Ordinal));
+			CollectionComparer<string> comparer = new CollectionComparer<string>((x, y) => string.Equals(x, y, StringComparison.Ordinal));
 
 			foreach (KeyValuePair<string, IList<string>> element in elements)
 			{
@@ -1754,7 +1828,7 @@ namespace RI.Test.Framework.IO.INI
 			return true;
 		}
 
-		private bool VerifySection(Dictionary<string, Dictionary<string, List<string>>> sections, IDictionary<string, IDictionary<string, IList<string>>> elements)
+		private bool VerifySection (Dictionary<string, Dictionary<string, List<string>>> sections, IDictionary<string, IDictionary<string, IList<string>>> elements)
 		{
 			foreach (KeyValuePair<string, IDictionary<string, IList<string>>> elementSection in elements)
 			{

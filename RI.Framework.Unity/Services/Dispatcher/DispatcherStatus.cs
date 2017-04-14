@@ -32,7 +32,7 @@ namespace RI.Framework.Services.Dispatcher
 		Canceled = 3,
 
 		/// <summary>
-		/// The operation has timed-out without being executed.
+		///     The operation has timed-out without being executed.
 		/// </summary>
 		Timeout = 4,
 	}

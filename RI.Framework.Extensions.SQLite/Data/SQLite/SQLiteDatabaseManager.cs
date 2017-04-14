@@ -28,7 +28,7 @@ namespace RI.Framework.Data.SQLite
 	///         See <see cref="IDatabaseManager" /> for more details.
 	///     </para>
 	/// </remarks>
-	[SuppressMessage ("ReSharper", "InconsistentNaming")]
+	[SuppressMessage("ReSharper", "InconsistentNaming")]
 	public sealed class SQLiteDatabaseManager : IDatabaseManager
 	{
 		#region Instance Constructor/Destructor

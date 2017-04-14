@@ -558,18 +558,12 @@ namespace RI.Test.Framework.Collections.ObjectModel
 			n12.Children.Add(n22);
 			n12.Children.Add(n23);
 
-			if (root.RemoveChildren(new[]
-			                        {
-				                        n21, n22, n23
-			                        }) != 0)
+			if (root.RemoveChildren(new[] {n21, n22, n23}) != 0)
 			{
 				throw new TestAssertionException();
 			}
 
-			if (n12.RemoveChildren(new[]
-			                       {
-				                       n21, n22, root
-			                       }) != 2)
+			if (n12.RemoveChildren(new[] {n21, n22, root}) != 2)
 			{
 				throw new TestAssertionException();
 			}
@@ -594,26 +588,17 @@ namespace RI.Test.Framework.Collections.ObjectModel
 			n12.Children.Add(n22);
 			n12.Children.Add(n23);
 
-			if (n11.RemoveChildrenRecursive(new[]
-			                                {
-				                                n21, n22, n23
-			                                }) != 0)
+			if (n11.RemoveChildrenRecursive(new[] {n21, n22, n23}) != 0)
 			{
 				throw new TestAssertionException();
 			}
 
-			if (n12.RemoveChildrenRecursive(new[]
-			                                {
-				                                n21, n22, root
-			                                }) != 2)
+			if (n12.RemoveChildrenRecursive(new[] {n21, n22, root}) != 2)
 			{
 				throw new TestAssertionException();
 			}
 
-			if (root.RemoveChildrenRecursive(new[]
-			                                 {
-				                                 n23, n11, root
-			                                 }) != 2)
+			if (root.RemoveChildrenRecursive(new[] {n23, n11, root}) != 2)
 			{
 				throw new TestAssertionException();
 			}

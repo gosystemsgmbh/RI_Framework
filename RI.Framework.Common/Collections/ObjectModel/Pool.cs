@@ -81,10 +81,10 @@ namespace RI.Framework.Collections.ObjectModel
 		///     Raised when a new item is created.
 		/// </summary>
 		/// <remarks>
-		/// <note type="note">
-		/// For performance reasons, the event handler is not of type <see cref="EventHandler"/>, therefore not using <see cref="EventArgs"/>.
-		/// To identify the <see cref="Pool{T}"/> which is the event source, the <see cref="Pool{T}"/> instance is provided as the firts parameter and the affected item as the second parameter.
-		/// </note>
+		///     <note type="note">
+		///         For performance reasons, the event handler is not of type <see cref="EventHandler" />, therefore not using <see cref="EventArgs" />.
+		///         To identify the <see cref="Pool{T}" /> which is the event source, the <see cref="Pool{T}" /> instance is provided as the firts parameter and the affected item as the second parameter.
+		///     </note>
 		/// </remarks>
 		public event Action<Pool<T>, T> Created;
 
@@ -92,10 +92,10 @@ namespace RI.Framework.Collections.ObjectModel
 		///     Raised when a free item is removed from the pool.
 		/// </summary>
 		/// <remarks>
-		/// <note type="note">
-		/// For performance reasons, the event handler is not of type <see cref="EventHandler"/>, therefore not using <see cref="EventArgs"/>.
-		/// To identify the <see cref="Pool{T}"/> which is the event source, the <see cref="Pool{T}"/> instance is provided as the firts parameter and the affected item as the second parameter.
-		/// </note>
+		///     <note type="note">
+		///         For performance reasons, the event handler is not of type <see cref="EventHandler" />, therefore not using <see cref="EventArgs" />.
+		///         To identify the <see cref="Pool{T}" /> which is the event source, the <see cref="Pool{T}" /> instance is provided as the firts parameter and the affected item as the second parameter.
+		///     </note>
 		/// </remarks>
 		public event Action<Pool<T>, T> Removed;
 
@@ -103,10 +103,10 @@ namespace RI.Framework.Collections.ObjectModel
 		///     Raised when an item is returned to the pool.
 		/// </summary>
 		/// <remarks>
-		/// <note type="note">
-		/// For performance reasons, the event handler is not of type <see cref="EventHandler"/>, therefore not using <see cref="EventArgs"/>.
-		/// To identify the <see cref="Pool{T}"/> which is the event source, the <see cref="Pool{T}"/> instance is provided as the firts parameter and the affected item as the second parameter.
-		/// </note>
+		///     <note type="note">
+		///         For performance reasons, the event handler is not of type <see cref="EventHandler" />, therefore not using <see cref="EventArgs" />.
+		///         To identify the <see cref="Pool{T}" /> which is the event source, the <see cref="Pool{T}" /> instance is provided as the firts parameter and the affected item as the second parameter.
+		///     </note>
 		/// </remarks>
 		public event Action<Pool<T>, T> Returned;
 
@@ -114,10 +114,10 @@ namespace RI.Framework.Collections.ObjectModel
 		///     Raised when an item is taken from the pool.
 		/// </summary>
 		/// <remarks>
-		/// <note type="note">
-		/// For performance reasons, the event handler is not of type <see cref="EventHandler"/>, therefore not using <see cref="EventArgs"/>.
-		/// To identify the <see cref="Pool{T}"/> which is the event source, the <see cref="Pool{T}"/> instance is provided as the firts parameter and the affected item as the second parameter.
-		/// </note>
+		///     <note type="note">
+		///         For performance reasons, the event handler is not of type <see cref="EventHandler" />, therefore not using <see cref="EventArgs" />.
+		///         To identify the <see cref="Pool{T}" /> which is the event source, the <see cref="Pool{T}" /> instance is provided as the firts parameter and the affected item as the second parameter.
+		///     </note>
 		/// </remarks>
 		public event Action<Pool<T>, T> Taking;
 

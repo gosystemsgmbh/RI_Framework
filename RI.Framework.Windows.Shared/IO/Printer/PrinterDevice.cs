@@ -13,27 +13,27 @@ using RI.Framework.Utilities.Windows;
 namespace RI.Framework.IO.Printer
 {
 	/// <summary>
-	/// Provides information about printer devices.
+	///     Provides information about printer devices.
 	/// </summary>
 	/// <remarks>
-	/// <para>
-	/// <see cref="PrinterDevice"/> provides various information about printer devices available to the local machine.
-	/// The available printer devices can be retrieved using <see cref="GetPrinters"/>.
-	/// </para>
+	///     <para>
+	///         <see cref="PrinterDevice" /> provides various information about printer devices available to the local machine.
+	///         The available printer devices can be retrieved using <see cref="GetPrinters" />.
+	///     </para>
 	/// </remarks>
 	public sealed class PrinterDevice
 	{
 		#region Static Methods
 
 		/// <summary>
-		/// Gets all printer devices currently available to the local machine.
+		///     Gets all printer devices currently available to the local machine.
 		/// </summary>
-		/// <param name="printerTypes">The types of printers to get.</param>
+		/// <param name="printerTypes"> The types of printers to get. </param>
 		/// <returns>
-		/// The array of available printer device information.
-		/// An empty array is returned if no printers are currently available.
+		///     The array of available printer device information.
+		///     An empty array is returned if no printers are currently available.
 		/// </returns>
-		/// <exception cref="Win32Exception">A system error ocurred during enumeration of the printer devices.</exception>
+		/// <exception cref="Win32Exception"> A system error ocurred during enumeration of the printer devices. </exception>
 		public static PrinterDevice[] GetPrinters (PrinterTypes printerTypes)
 		{
 			PrinterEnumFlags flags = 0;
@@ -96,8 +96,8 @@ namespace RI.Framework.IO.Printer
 			throw new Win32Exception(errorCode, errorMessage);
 		}
 
-		[DllImport ("winspool.drv", EntryPoint = "EnumPrinters", SetLastError = true, CharSet = CharSet.Auto)]
-		private static extern bool EnumPrinters (uint flags, [MarshalAs (UnmanagedType.LPTStr)] string name, uint level, IntPtr pPrinterEnum, uint cbBuf, ref uint pcbNeeded, ref uint pcReturned);
+		[DllImport("winspool.drv", EntryPoint = "EnumPrinters", SetLastError = true, CharSet = CharSet.Auto)]
+		private static extern bool EnumPrinters (uint flags, [MarshalAs(UnmanagedType.LPTStr)] string name, uint level, IntPtr pPrinterEnum, uint cbBuf, ref uint pcbNeeded, ref uint pcReturned);
 
 		#endregion
 
@@ -119,68 +119,68 @@ namespace RI.Framework.IO.Printer
 		#region Instance Properties/Indexer
 
 		/// <summary>
-		/// Gets the name of the printer.
+		///     Gets the comment of the printer.
 		/// </summary>
 		/// <value>
-		/// The name of the printer.
-		/// </value>
-		public string PrinterName => this.NativePrinterInfo.pPrinterName;
-
-		/// <summary>
-		/// Gets the name of the printer driver.
-		/// </summary>
-		/// <value>
-		/// The name of the printer driver.
-		/// </value>
-		public string DriverName => this.NativePrinterInfo.pDriverName;
-
-		/// <summary>
-		/// Gets the name of the server which controls the printer.
-		/// </summary>
-		/// <value>
-		/// The name of the server which controls the printer or null if it is a local printer.
-		/// </value>
-		public string ServerName => this.NativePrinterInfo.pServerName;
-
-		/// <summary>
-		/// Gets the name of the printer share.
-		/// </summary>
-		/// <value>
-		/// The name of the printer share or null if the printer is not a shared printer.
-		/// </value>
-		public string ShareName => this.NativePrinterInfo.pShareName;
-
-		/// <summary>
-		/// Gets the name of the port used by the printer.
-		/// </summary>
-		/// <value>
-		/// The name of the port used by the printer.
-		/// </value>
-		public string PortName => this.NativePrinterInfo.pPortName;
-
-		/// <summary>
-		/// Gets the physical location of the printer.
-		/// </summary>
-		/// <value>
-		/// The physical location of the printer or null if no location is available.
-		/// </value>
-		public string Location => this.NativePrinterInfo.pLocation.ToNullIfNullOrEmptyOrWhitespace();
-
-		/// <summary>
-		/// Gets the comment of the printer.
-		/// </summary>
-		/// <value>
-		/// The comment of the printer (a brief description) or null if no comment is available.
+		///     The comment of the printer (a brief description) or null if no comment is available.
 		/// </value>
 		public string Comment => this.NativePrinterInfo.pComment.ToNullIfNullOrEmptyOrWhitespace();
 
 		/// <summary>
-		/// Gets the name of the print processor.
+		///     Gets the name of the printer driver.
 		/// </summary>
 		/// <value>
-		/// The name of the print processor.
+		///     The name of the printer driver.
+		/// </value>
+		public string DriverName => this.NativePrinterInfo.pDriverName;
+
+		/// <summary>
+		///     Gets the physical location of the printer.
+		/// </summary>
+		/// <value>
+		///     The physical location of the printer or null if no location is available.
+		/// </value>
+		public string Location => this.NativePrinterInfo.pLocation.ToNullIfNullOrEmptyOrWhitespace();
+
+		/// <summary>
+		///     Gets the name of the port used by the printer.
+		/// </summary>
+		/// <value>
+		///     The name of the port used by the printer.
+		/// </value>
+		public string PortName => this.NativePrinterInfo.pPortName;
+
+		/// <summary>
+		///     Gets the name of the printer.
+		/// </summary>
+		/// <value>
+		///     The name of the printer.
+		/// </value>
+		public string PrinterName => this.NativePrinterInfo.pPrinterName;
+
+		/// <summary>
+		///     Gets the name of the print processor.
+		/// </summary>
+		/// <value>
+		///     The name of the print processor.
 		/// </value>
 		public string ProcessorName => this.NativePrinterInfo.pPrintProcessor;
+
+		/// <summary>
+		///     Gets the name of the server which controls the printer.
+		/// </summary>
+		/// <value>
+		///     The name of the server which controls the printer or null if it is a local printer.
+		/// </value>
+		public string ServerName => this.NativePrinterInfo.pServerName;
+
+		/// <summary>
+		///     Gets the name of the printer share.
+		/// </summary>
+		/// <value>
+		///     The name of the printer share or null if the printer is not a shared printer.
+		/// </value>
+		public string ShareName => this.NativePrinterInfo.pShareName;
 
 		private PRINTER_INFO_2 NativePrinterInfo { get; set; }
 
@@ -191,43 +191,43 @@ namespace RI.Framework.IO.Printer
 
 		#region Type: PRINTER_INFO_2
 
-		[StructLayout (LayoutKind.Sequential, CharSet = CharSet.Auto)]
-		[SuppressMessage ("ReSharper", "InconsistentNaming")]
+		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+		[SuppressMessage("ReSharper", "InconsistentNaming")]
 		private struct PRINTER_INFO_2
 		{
-			[MarshalAs (UnmanagedType.LPTStr)]
+			[MarshalAs(UnmanagedType.LPTStr)]
 			public string pServerName;
 
-			[MarshalAs (UnmanagedType.LPTStr)]
+			[MarshalAs(UnmanagedType.LPTStr)]
 			public string pPrinterName;
 
-			[MarshalAs (UnmanagedType.LPTStr)]
+			[MarshalAs(UnmanagedType.LPTStr)]
 			public string pShareName;
 
-			[MarshalAs (UnmanagedType.LPTStr)]
+			[MarshalAs(UnmanagedType.LPTStr)]
 			public string pPortName;
 
-			[MarshalAs (UnmanagedType.LPTStr)]
+			[MarshalAs(UnmanagedType.LPTStr)]
 			public string pDriverName;
 
-			[MarshalAs (UnmanagedType.LPTStr)]
+			[MarshalAs(UnmanagedType.LPTStr)]
 			public string pComment;
 
-			[MarshalAs (UnmanagedType.LPTStr)]
+			[MarshalAs(UnmanagedType.LPTStr)]
 			public string pLocation;
 
 			public IntPtr pDevMode;
 
-			[MarshalAs (UnmanagedType.LPTStr)]
+			[MarshalAs(UnmanagedType.LPTStr)]
 			public string pSepFile;
 
-			[MarshalAs (UnmanagedType.LPTStr)]
+			[MarshalAs(UnmanagedType.LPTStr)]
 			public string pPrintProcessor;
 
-			[MarshalAs (UnmanagedType.LPTStr)]
+			[MarshalAs(UnmanagedType.LPTStr)]
 			public string pDatatype;
 
-			[MarshalAs (UnmanagedType.LPTStr)]
+			[MarshalAs(UnmanagedType.LPTStr)]
 			public string pParameters;
 
 			public IntPtr pSecurityDescriptor;
@@ -250,7 +250,7 @@ namespace RI.Framework.IO.Printer
 
 		[Serializable]
 		[Flags]
-		[SuppressMessage ("ReSharper", "InconsistentNaming")]
+		[SuppressMessage("ReSharper", "InconsistentNaming")]
 		private enum PrinterEnumFlags
 		{
 			PRINTER_ENUM_DEFAULT = 0x00000001,

@@ -13,7 +13,49 @@ namespace RI.Test.Framework.Cases.Services.Dispatcher
 {
 	public sealed class Test_DispatcherService : TestModule
 	{
+		#region Instance Properties/Indexer
+
+		private string BroadcastTestValue { get; set; }
 		private Action TestContinuation { get; set; }
+
+		#endregion
+
+
+
+
+		#region Instance Methods
+
+		[TestMethod]
+		public void Test_Broadcast ()
+		{
+			IDispatcherService test = ServiceLocator.GetInstance<IDispatcherService>();
+
+			this.BroadcastTestValue = string.Empty;
+
+			test.Broadcast(DispatcherPriority.Now, "0");
+			test.Broadcast(DispatcherPriority.Idle, "1");
+
+			test.RegisterReceiver<string>(this.BroadcastTestReceiver);
+
+			test.Broadcast(DispatcherPriority.Idle, "2");
+			test.Broadcast(DispatcherPriority.Later, "3");
+			test.Broadcast(DispatcherPriority.Frame, "4");
+			test.Broadcast(DispatcherPriority.Now, "5");
+
+			test.Dispatch(DispatcherPriority.Idle, () => { test.UnregisterReceiver<string>(this.BroadcastTestReceiver); });
+
+			test.Broadcast(DispatcherPriority.Now, "6");
+			test.Broadcast(DispatcherPriority.Idle, "7");
+
+			test.Dispatch(DispatcherPriority.Idle, () =>
+			{
+				if (this.BroadcastTestValue != "564312")
+				{
+					throw new TestAssertionException();
+				}
+				this.TestContinuation();
+			});
+		}
 
 		[TestMethod]
 		public void Test_Cascading ()
@@ -96,55 +138,11 @@ namespace RI.Test.Framework.Cases.Services.Dispatcher
 				this.TestContinuation();
 			});
 
-			test.Dispatch(DispatcherPriority.Later, (a) =>
-			{
-				testValue += a.ToString();
-			}, 1);
+			test.Dispatch(DispatcherPriority.Later, (a) => { testValue += a.ToString(); }, 1);
 
-			test.Dispatch(DispatcherPriority.Frame, (b, c) =>
-			{
-				testValue += b.ToString() + c.ToString();
-			}, 2, 3);
+			test.Dispatch(DispatcherPriority.Frame, (b, c) => { testValue += b.ToString() + c.ToString(); }, 2, 3);
 
-			test.Dispatch(DispatcherPriority.Now, (d, e, f) =>
-			{
-				testValue += d.ToString() + e.ToString() + f.ToString();
-			}, 4, 5, 6);
-		}
-
-		[TestMethod]
-		public void Test_Broadcast()
-		{
-			IDispatcherService test = ServiceLocator.GetInstance<IDispatcherService>();
-
-			this.BroadcastTestValue = string.Empty;
-
-			test.Broadcast(DispatcherPriority.Now, "0");
-			test.Broadcast(DispatcherPriority.Idle, "1");
-
-			test.RegisterReceiver<string>(this.BroadcastTestReceiver);
-
-			test.Broadcast(DispatcherPriority.Idle, "2");
-			test.Broadcast(DispatcherPriority.Later, "3");
-			test.Broadcast(DispatcherPriority.Frame, "4");
-			test.Broadcast(DispatcherPriority.Now, "5");
-
-			test.Dispatch(DispatcherPriority.Idle, () =>
-			{
-				test.UnregisterReceiver<string>(this.BroadcastTestReceiver);
-			});
-
-			test.Broadcast(DispatcherPriority.Now, "6");
-			test.Broadcast(DispatcherPriority.Idle, "7");
-
-			test.Dispatch(DispatcherPriority.Idle, () =>
-			{
-				if (this.BroadcastTestValue != "564312")
-				{
-					throw new TestAssertionException();
-				}
-				this.TestContinuation();
-			});
+			test.Dispatch(DispatcherPriority.Now, (d, e, f) => { testValue += d.ToString() + e.ToString() + f.ToString(); }, 4, 5, 6);
 		}
 
 		private void BroadcastTestReceiver (string value)
@@ -152,12 +150,19 @@ namespace RI.Test.Framework.Cases.Services.Dispatcher
 			this.BroadcastTestValue += value;
 		}
 
-		private string BroadcastTestValue { get; set; }
+		#endregion
 
-		public override void InvokeTestMethod(MethodInfo method, Action testContinuation)
+
+
+
+		#region Overrides
+
+		public override void InvokeTestMethod (MethodInfo method, Action testContinuation)
 		{
 			this.TestContinuation = testContinuation;
 			base.InvokeTestMethod(method, null);
 		}
+
+		#endregion
 	}
 }

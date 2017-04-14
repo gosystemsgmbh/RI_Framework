@@ -161,7 +161,7 @@ namespace RI.Test.Framework.Collections.ObjectModel
 
 			int indicator = 0;
 
-			pool.Created += (x,y) => indicator = 10;
+			pool.Created += (x, y) => indicator = 10;
 			pool.Taking += (x, y) => indicator++;
 			pool.Returned += (x, y) => indicator++;
 			pool.Removed += (x, y) => indicator++;

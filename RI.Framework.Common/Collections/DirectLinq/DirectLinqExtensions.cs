@@ -15,21 +15,21 @@ namespace RI.Framework.Collections.DirectLinq
 	///     Provides a LINQ replacement with utility/extension methods for the <see cref="IEnumerable{T}" /> type and its implementations.
 	/// </summary>
 	/// <remarks>
-	///         <para>
-	/// <see cref="DirectLinqExtensions"/> provides a LINQ replacement which uses non-deferred execution and does not depend on reflection.
-	/// Therefore, the LINQ query is executed at the time a <see cref="DirectLinqExtensions"/> method is called, not at the time its result is eventually enumerated.
-	///         </para>
-	/// <para>
-	/// Normal LINQ query expressions, such as <c>from x in values where x.IsActive select x</c>, can still be used.
-	/// Just replace the namespace <see cref="System.Linq"/> (<c>using System.Linq;</c>) with <see cref="RI.Framework.Collections.DirectLinq"/> (<c>using RI.Framework.Collections.DirectLinq;</c>).
-	/// </para>
-	///         <note type="important">
-	///             Not all LINQ features are implemented in <see cref="DirectLinqExtensions"/>.
-	/// The main missing functions are: Grouping (group), Joining (join), Ordering (orderby), Aggregating.
-	///         </note>
-	///         <note type="important">
-	///             The complexity stated for the operations provided by this class are under the assumption that enumerating an <see cref="IEnumerable{T}" /> has a complexity of O(n) where n is the number of elements in the sequence.
-	///         </note>
+	///     <para>
+	///         <see cref="DirectLinqExtensions" /> provides a LINQ replacement which uses non-deferred execution and does not depend on reflection.
+	///         Therefore, the LINQ query is executed at the time a <see cref="DirectLinqExtensions" /> method is called, not at the time its result is eventually enumerated.
+	///     </para>
+	///     <para>
+	///         Normal LINQ query expressions, such as <c> from x in values where x.IsActive select x </c>, can still be used.
+	///         Just replace the namespace <see cref="System.Linq" /> (<c> using System.Linq; </c>) with <see cref="RI.Framework.Collections.DirectLinq" /> (<c> using RI.Framework.Collections.DirectLinq; </c>).
+	///     </para>
+	///     <note type="important">
+	///         Not all LINQ features are implemented in <see cref="DirectLinqExtensions" />.
+	///         The main missing functions are: Grouping (group), Joining (join), Ordering (orderby), Aggregating.
+	///     </note>
+	///     <note type="important">
+	///         The complexity stated for the operations provided by this class are under the assumption that enumerating an <see cref="IEnumerable{T}" /> has a complexity of O(n) where n is the number of elements in the sequence.
+	///     </note>
 	/// </remarks>
 	/// <example>
 	///     <code language="cs">
@@ -241,7 +241,7 @@ namespace RI.Framework.Collections.DirectLinq
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="enumerable" /> is null. </exception>
-		[SuppressMessage ("ReSharper", "UnusedVariable")]
+		[SuppressMessage("ReSharper", "UnusedVariable")]
 		public static bool Any <T> (this IEnumerable<T> enumerable)
 		{
 			if (enumerable == null)
@@ -340,7 +340,7 @@ namespace RI.Framework.Collections.DirectLinq
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="enumerable" /> is null. </exception>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="index" /> is less than zero. </exception>
-		[SuppressMessage ("ReSharper", "UnusedVariable")]
+		[SuppressMessage("ReSharper", "UnusedVariable")]
 		public static bool Any <T> (this IEnumerable<T> enumerable, int index)
 		{
 			if (enumerable == null)
@@ -585,7 +585,7 @@ namespace RI.Framework.Collections.DirectLinq
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="enumerable" /> is null. </exception>
-		[SuppressMessage ("ReSharper", "UnusedVariable")]
+		[SuppressMessage("ReSharper", "UnusedVariable")]
 		public static int Count <T> (this IEnumerable<T> enumerable)
 		{
 			if (enumerable == null)
@@ -687,7 +687,7 @@ namespace RI.Framework.Collections.DirectLinq
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="enumerable" /> is null. </exception>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="index" /> is less than zero. </exception>
-		[SuppressMessage ("ReSharper", "UnusedVariable")]
+		[SuppressMessage("ReSharper", "UnusedVariable")]
 		public static int Count <T> (this IEnumerable<T> enumerable, int index)
 		{
 			if (enumerable == null)

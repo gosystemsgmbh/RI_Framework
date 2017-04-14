@@ -6,18 +6,18 @@
 	public interface ISynchronizable
 	{
 		/// <summary>
-		/// Gets a value indicating whether access to the implementing object is synchronized (thread safe).
+		///     Gets a value indicating whether access to the implementing object is synchronized (thread safe).
 		/// </summary>
 		/// <value>
-		/// true if the access to the implementing object is synchronized (thread safe), false otherwise.
+		///     true if the access to the implementing object is synchronized (thread safe), false otherwise.
 		/// </value>
 		bool IsSynchronized { get; }
 
 		/// <summary>
-		/// Gets an object that can be used to synchronize access to the implementing object.
+		///     Gets an object that can be used to synchronize access to the implementing object.
 		/// </summary>
 		/// <value>
-		/// An object that can be used to synchronize access to the implementing object.
+		///     An object that can be used to synchronize access to the implementing object.
 		/// </value>
 		object SyncRoot { get; }
 	}

@@ -24,7 +24,37 @@ namespace RI.Framework.Services.Logging
 	/// </remarks>
 	public sealed class LogWriter : ILogWriter
 	{
+		#region Instance Constructor/Destructor
+
+		/// <summary>
+		///     Creates a new instance of <see cref="LogWriter" />.
+		/// </summary>
+		public LogWriter ()
+		{
+			this.SyncRoot = new object();
+		}
+
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
+
+		private object SyncRoot { get; set; }
+
+		#endregion
+
+
+
+
 		#region Interface: ILogWriter
+
+		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		object ISynchronizable.SyncRoot => this.SyncRoot;
 
 		/// <inheritdoc />
 		void ILogWriter.Cleanup (DateTime retentionDate)
@@ -54,22 +84,6 @@ namespace RI.Framework.Services.Logging
 				Debugger.Log((int)severity, source, finalMessage);
 			}
 		}
-
-		/// <summary>
-		/// Creates a new instance of <see cref="LogWriter"/>.
-		/// </summary>
-		public LogWriter()
-		{
-			this.SyncRoot = new object();
-		}
-
-		private object SyncRoot { get; set; }
-
-		/// <inheritdoc />
-		bool ISynchronizable.IsSynchronized => true;
-
-		/// <inheritdoc />
-		object ISynchronizable.SyncRoot => this.SyncRoot;
 
 		#endregion
 	}

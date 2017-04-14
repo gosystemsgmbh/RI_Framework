@@ -148,7 +148,7 @@ namespace RI.Framework.Utilities.Wpf.Markup
 		///         This method is for supporting the XAML designer and not intended to be used by your code.
 		///     </note>
 		/// </remarks>
-		public static ICommand GetMouseDownEvent(DependencyObject obj)
+		public static ICommand GetMouseDownEvent (DependencyObject obj)
 		{
 			return obj?.GetValue(EventBinder.MouseDownEventProperty) as ICommand;
 		}
@@ -210,7 +210,7 @@ namespace RI.Framework.Utilities.Wpf.Markup
 		///         This method is for supporting the XAML designer and not intended to be used by your code.
 		///     </note>
 		/// </remarks>
-		public static void SetMouseDownEvent(DependencyObject obj, ICommand value)
+		public static void SetMouseDownEvent (DependencyObject obj, ICommand value)
 		{
 			obj?.SetValue(EventBinder.MouseDownEventProperty, value);
 		}
@@ -284,7 +284,7 @@ namespace RI.Framework.Utilities.Wpf.Markup
 			}
 		}
 
-		private static void OnMouseDownEventChanged(DependencyObject obj, DependencyPropertyChangedEventArgs args)
+		private static void OnMouseDownEventChanged (DependencyObject obj, DependencyPropertyChangedEventArgs args)
 		{
 			ICommand oldCommand = args.OldValue as ICommand;
 			ICommand newCommand = args.NewValue as ICommand;

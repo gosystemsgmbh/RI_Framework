@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Mathematic;
-using RI.Test.Framework.Mocks;
 
 
 
@@ -16,120 +12,7 @@ namespace RI.Test.Framework.Mathematic
 	[TestClass]
 	public sealed class Test_RomanNumber
 	{
-		[TestMethod]
-		public void Test ()
-		{
-			if (RomanNumber.DecimalToRoman(0) != string.Empty)
-			{
-				throw new TestAssertionException();
-			}
-
-			if (RomanNumber.RomanToDecimal(string.Empty) != 0)
-			{
-				throw new TestAssertionException();
-			}
-
-			RomanNumber test = 0;
-
-			if (!RomanNumber.TryParse("-M", out test))
-			{
-				throw new TestAssertionException();
-			}
-			if (!RomanNumber.TryParse("", out test))
-			{
-				throw new TestAssertionException();
-			}
-			if (!RomanNumber.TryParse("+M", out test))
-			{
-				throw new TestAssertionException();
-			}
-			if (!RomanNumber.TryParse("M", out test))
-			{
-				throw new TestAssertionException();
-			}
-
-			if (RomanNumber.TryParse(" ", out test))
-			{
-				throw new TestAssertionException();
-			}
-			if (RomanNumber.TryParse("m", out test))
-			{
-				throw new TestAssertionException();
-			}
-			if (RomanNumber.TryParse(" m ", out test))
-			{
-				throw new TestAssertionException();
-			}
-			if (RomanNumber.TryParse("test", out test))
-			{
-				throw new TestAssertionException();
-			}
-
-			foreach (KeyValuePair<int, string> testValue in Test_RomanNumber.TestValues)
-			{
-				test = testValue.Key;
-				if (test.DecimalValue != testValue.Key)
-				{
-					throw new TestAssertionException();
-				}
-				if (test.RomanValue != testValue.Value)
-				{
-					throw new TestAssertionException();
-				}
-
-				test = testValue.Value;
-				if (test.DecimalValue != testValue.Key)
-				{
-					throw new TestAssertionException();
-				}
-				if (test.RomanValue != testValue.Value)
-				{
-					throw new TestAssertionException();
-				}
-
-				string romanPos = RomanNumber.DecimalToRoman(testValue.Key);
-				if (romanPos != testValue.Value)
-				{
-					throw new TestAssertionException(testValue.Key + " -> " + testValue.Value + ": " + romanPos);
-				}
-
-				int? decPos = RomanNumber.RomanToDecimal(testValue.Value);
-				if (!decPos.HasValue)
-				{
-					throw new TestAssertionException(testValue.Value + " -> " + testValue.Key + ": [null]");
-				}
-				if (decPos.Value != testValue.Key)
-				{
-					throw new TestAssertionException(testValue.Value + " -> " + testValue.Key + ": " + decPos.Value);
-				}
-
-				string romanNeg = RomanNumber.DecimalToRoman(testValue.Key * -1);
-				if (romanNeg != ("-" + testValue.Value))
-				{
-					throw new TestAssertionException("-" + testValue.Key + " -> -" + testValue.Value + ": " + romanNeg);
-				}
-
-				int? decNeg = RomanNumber.RomanToDecimal("-" + testValue.Value);
-				if (!decNeg.HasValue)
-				{
-					throw new TestAssertionException("-" + testValue.Value + " -> -" + testValue.Key + ": [null]");
-				}
-				if (decNeg.Value != (testValue.Key * -1))
-				{
-					throw new TestAssertionException("-" + testValue.Value + " -> -" + testValue.Key + ": " + decNeg.Value);
-				}
-
-				int? decPosPos = RomanNumber.RomanToDecimal("+" + testValue.Value);
-				if (!decPosPos.HasValue)
-				{
-					throw new TestAssertionException("+" + testValue.Value + " -> +" + testValue.Key + ": [null]");
-				}
-				if (decPosPos.Value != testValue.Key)
-				{
-					throw new TestAssertionException("+" + testValue.Value + " -> +" + testValue.Key + ": " + decPosPos.Value);
-				}
-			}
-		}
+		#region Constants
 
 		private static readonly Dictionary<int, string> TestValues = new Dictionary<int, string>
 		{
@@ -5140,5 +5023,129 @@ namespace RI.Test.Framework.Mathematic
 			{10000, "MMMMMMMMMM"},
 			{11000, "MMMMMMMMMMM"},
 		};
+
+		#endregion
+
+
+
+
+		#region Instance Methods
+
+		[TestMethod]
+		public void Test ()
+		{
+			if (RomanNumber.DecimalToRoman(0) != string.Empty)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (RomanNumber.RomanToDecimal(string.Empty) != 0)
+			{
+				throw new TestAssertionException();
+			}
+
+			RomanNumber test = 0;
+
+			if (!RomanNumber.TryParse("-M", out test))
+			{
+				throw new TestAssertionException();
+			}
+			if (!RomanNumber.TryParse("", out test))
+			{
+				throw new TestAssertionException();
+			}
+			if (!RomanNumber.TryParse("+M", out test))
+			{
+				throw new TestAssertionException();
+			}
+			if (!RomanNumber.TryParse("M", out test))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (RomanNumber.TryParse(" ", out test))
+			{
+				throw new TestAssertionException();
+			}
+			if (RomanNumber.TryParse("m", out test))
+			{
+				throw new TestAssertionException();
+			}
+			if (RomanNumber.TryParse(" m ", out test))
+			{
+				throw new TestAssertionException();
+			}
+			if (RomanNumber.TryParse("test", out test))
+			{
+				throw new TestAssertionException();
+			}
+
+			foreach (KeyValuePair<int, string> testValue in Test_RomanNumber.TestValues)
+			{
+				test = testValue.Key;
+				if (test.DecimalValue != testValue.Key)
+				{
+					throw new TestAssertionException();
+				}
+				if (test.RomanValue != testValue.Value)
+				{
+					throw new TestAssertionException();
+				}
+
+				test = testValue.Value;
+				if (test.DecimalValue != testValue.Key)
+				{
+					throw new TestAssertionException();
+				}
+				if (test.RomanValue != testValue.Value)
+				{
+					throw new TestAssertionException();
+				}
+
+				string romanPos = RomanNumber.DecimalToRoman(testValue.Key);
+				if (romanPos != testValue.Value)
+				{
+					throw new TestAssertionException(testValue.Key + " -> " + testValue.Value + ": " + romanPos);
+				}
+
+				int? decPos = RomanNumber.RomanToDecimal(testValue.Value);
+				if (!decPos.HasValue)
+				{
+					throw new TestAssertionException(testValue.Value + " -> " + testValue.Key + ": [null]");
+				}
+				if (decPos.Value != testValue.Key)
+				{
+					throw new TestAssertionException(testValue.Value + " -> " + testValue.Key + ": " + decPos.Value);
+				}
+
+				string romanNeg = RomanNumber.DecimalToRoman(testValue.Key * -1);
+				if (romanNeg != ("-" + testValue.Value))
+				{
+					throw new TestAssertionException("-" + testValue.Key + " -> -" + testValue.Value + ": " + romanNeg);
+				}
+
+				int? decNeg = RomanNumber.RomanToDecimal("-" + testValue.Value);
+				if (!decNeg.HasValue)
+				{
+					throw new TestAssertionException("-" + testValue.Value + " -> -" + testValue.Key + ": [null]");
+				}
+				if (decNeg.Value != (testValue.Key * -1))
+				{
+					throw new TestAssertionException("-" + testValue.Value + " -> -" + testValue.Key + ": " + decNeg.Value);
+				}
+
+				int? decPosPos = RomanNumber.RomanToDecimal("+" + testValue.Value);
+				if (!decPosPos.HasValue)
+				{
+					throw new TestAssertionException("+" + testValue.Value + " -> +" + testValue.Key + ": [null]");
+				}
+				if (decPosPos.Value != testValue.Key)
+				{
+					throw new TestAssertionException("+" + testValue.Value + " -> +" + testValue.Key + ": " + decPosPos.Value);
+				}
+			}
+		}
+
+		#endregion
 	}
 }

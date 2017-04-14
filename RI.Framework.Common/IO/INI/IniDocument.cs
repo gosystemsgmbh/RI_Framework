@@ -141,8 +141,7 @@ namespace RI.Framework.IO.INI
 	/// ]]>
 	/// </code>
 	/// </example>
-	public sealed class IniDocument : ICloneable,
-	                                  ICloneable<IniDocument>
+	public sealed class IniDocument : ICloneable, ICloneable<IniDocument>
 	{
 		#region Instance Constructor/Destructor
 
@@ -216,7 +215,7 @@ namespace RI.Framework.IO.INI
 		///     Gets the list with all INI elements of this INI document.
 		/// </summary>
 		/// <value>
-		/// The list with all INI elements of this INI document.
+		///     The list with all INI elements of this INI document.
 		/// </value>
 		public IList<IniElement> Elements { get; private set; }
 
@@ -272,17 +271,17 @@ namespace RI.Framework.IO.INI
 		///         If <paramref name="sectionName" /> is null, the values are added outside a section (that is: before the first section header or at the end if no section header exists).
 		///     </para>
 		///     <para>
-		///         <paramref name="mode" /> is ignored if <paramref name="sectionName" /> is null, the behavior of <see cref="IniSectionAddMode.AppendSame"/> is applied.
+		///         <paramref name="mode" /> is ignored if <paramref name="sectionName" /> is null, the behavior of <see cref="IniSectionAddMode.AppendSame" /> is applied.
 		///     </para>
 		///     <para>
 		///         If <paramref name="values" /> is empty, an empty section is added anyways (consisting only of the section header).
 		///     </para>
 		///     <para>
-		///         All values in <paramref name="values"/> will be added, even if a name-value-pair with the same name already exists.
+		///         All values in <paramref name="values" /> will be added, even if a name-value-pair with the same name already exists.
 		///     </para>
-		/// <para>
-		/// This method is used if the dictionary can have only one value per name-value-pair.
-		/// </para>
+		///     <para>
+		///         This method is used if the dictionary can have only one value per name-value-pair.
+		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
 		/// <exception cref="ArgumentException"> <paramref name="values" /> contains name-value-pairs with invalid names. </exception>
@@ -336,17 +335,17 @@ namespace RI.Framework.IO.INI
 		///         If <paramref name="sectionName" /> is null, the values are added outside a section (that is: before the first section header or at the end if no section header exists).
 		///     </para>
 		///     <para>
-		///         <paramref name="mode" /> is ignored if <paramref name="sectionName" /> is null, the behavior of <see cref="IniSectionAddMode.AppendSame"/> is applied.
+		///         <paramref name="mode" /> is ignored if <paramref name="sectionName" /> is null, the behavior of <see cref="IniSectionAddMode.AppendSame" /> is applied.
 		///     </para>
 		///     <para>
 		///         If <paramref name="values" /> is empty, an empty section is added anyways (consisting only of the section header).
 		///     </para>
 		///     <para>
-		///         All values in <paramref name="values"/> will be added, even if a name-value-pair with the same name already exists.
+		///         All values in <paramref name="values" /> will be added, even if a name-value-pair with the same name already exists.
 		///     </para>
-		/// <para>
-		/// This method is used if the dictionary can have one or multiple values per name-value-pair (using the inner list).
-		/// </para>
+		///     <para>
+		///         This method is used if the dictionary can have one or multiple values per name-value-pair (using the inner list).
+		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
 		/// <exception cref="ArgumentException"> <paramref name="values" /> contains name-value-pairs with invalid names. </exception>
@@ -877,7 +876,7 @@ namespace RI.Framework.IO.INI
 		///         If the same name-value-pair exists multiple times in a section, all values returned in an inner dictionary (using the list).
 		///     </para>
 		/// </remarks>
-		public Dictionary<string, Dictionary<string, List<string>>> GetValuesAll()
+		public Dictionary<string, Dictionary<string, List<string>>> GetValuesAll ()
 		{
 			Dictionary<string, Dictionary<string, List<string>>> result = new Dictionary<string, Dictionary<string, List<string>>>(this.SectionNameComparer);
 			HashSet<string> sectionNames = this.GetSectionNames();
@@ -1140,24 +1139,24 @@ namespace RI.Framework.IO.INI
 			for (int i1 = 0; i1 < sections.Count; i1++)
 			{
 				int count = sections[i1].Value.Count(x =>
-				                                     {
-					                                     if (x is ValueIniElement)
-					                                     {
-						                                     return true;
-					                                     }
+				{
+					if (x is ValueIniElement)
+					{
+						return true;
+					}
 
-					                                     if (x is TextIniElement)
-					                                     {
-						                                     return keepIfText;
-					                                     }
+					if (x is TextIniElement)
+					{
+						return keepIfText;
+					}
 
-					                                     if (x is CommentIniElement)
-					                                     {
-						                                     return keepIfComments;
-					                                     }
+					if (x is CommentIniElement)
+					{
+						return keepIfComments;
+					}
 
-					                                     return false;
-				                                     });
+					return false;
+				});
 
 				if (count == 0)
 				{
@@ -1415,8 +1414,8 @@ namespace RI.Framework.IO.INI
 		///         If <paramref name="section" /> is null, the value is set outside any section.
 		///     </para>
 		///     <para>
-		///         All existing sections and their name-value-pairs which are specified by <paramref name="section"/> will be replaced by the specified values.
-		///         Sections not specified by <paramref name="section"/> will remain unchanged.
+		///         All existing sections and their name-value-pairs which are specified by <paramref name="section" /> will be replaced by the specified values.
+		///         Sections not specified by <paramref name="section" /> will remain unchanged.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
@@ -1676,13 +1675,13 @@ namespace RI.Framework.IO.INI
 		private IComparer<IniElement> CreateElementOrderComparer (IComparer<string> comparer)
 		{
 			return new OrderComparison<IniElement>((x, y) =>
-			                                       {
-				                                       if ((!(x is ValueIniElement)) || (!(y is ValueIniElement)))
-				                                       {
-					                                       return 0;
-				                                       }
-				                                       return comparer.Compare(((ValueIniElement)x).Name, ((ValueIniElement)y).Name);
-			                                       });
+			{
+				if ((!(x is ValueIniElement)) || (!(y is ValueIniElement)))
+				{
+					return 0;
+				}
+				return comparer.Compare(((ValueIniElement)x).Name, ((ValueIniElement)y).Name);
+			});
 		}
 
 		private void DecomposeSections (out List<KeyValuePair<string, List<IniElement>>> sections)

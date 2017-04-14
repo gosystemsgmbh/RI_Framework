@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
+﻿using System.Reflection;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using RI.Framework.Collections.Comparison;
 using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Composition;
 using RI.Framework.Composition.Catalogs;
@@ -19,8 +15,144 @@ namespace RI.Test.Framework.Composition
 	[TestClass]
 	public sealed class Test_CompositionContainer
 	{
+		#region Instance Methods
+
 		[TestMethod]
-		public void ModelExportImport_Test()
+		public void ConstructorCreator_Test ()
+		{
+			CompositionContainer test = new CompositionContainer();
+			test.AddCatalog(new AssemblyCatalog(Assembly.GetExecutingAssembly()));
+
+			Mock_Exports_7 m7 = test.GetExport<Mock_Exports_7>();
+			if (m7 == null)
+			{
+				throw new TestAssertionException();
+			}
+
+			Mock_Exports_8 m8 = test.GetExport<Mock_Exports_8>();
+			if (m8 == null)
+			{
+				throw new TestAssertionException();
+			}
+			if (!object.ReferenceEquals(m8.Value, m7))
+			{
+				throw new TestAssertionException();
+			}
+
+			Mock_Exports_9 m9 = test.GetExport<Mock_Exports_9>();
+			if (m9 == null)
+			{
+				throw new TestAssertionException();
+			}
+			if (m9.Value != "Test123")
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void Inheritance_Test ()
+		{
+			CompositionContainer test = new CompositionContainer();
+			test.AddCatalog(new AssemblyCatalog(Assembly.GetExecutingAssembly()));
+
+			Mock_Imports imports = test.GetExport<Mock_Imports>();
+
+			if (imports.Import_5.Values<Mock_Exports_5>().Count() != 0)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (imports.Import_6.Values<Mock_Exports_6>().Count() != 2)
+			{
+				throw new TestAssertionException();
+			}
+			if (imports.Import_6.Value<Mock_Exports_6A>() == null)
+			{
+				throw new TestAssertionException();
+			}
+			if (imports.Import_6.Value<Mock_Exports_6B>() == null)
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void ManualExportImport_Test ()
+		{
+			CompositionContainer test = new CompositionContainer();
+
+			test.AddExport(typeof(Mock_Exports_1), typeof(Mock_Exports_1), false);
+			test.AddExport(new Mock_Exports_2(), typeof(Mock_Exports_2));
+			test.AddExport(typeof(Mock_Exports_3A), "E3", false);
+			test.AddExport(new Mock_Exports_3B(), "E3");
+			test.AddExport(typeof(Mock_Exports_4A), "E4", false);
+			test.AddExport(new Mock_Exports_4B(), "E4");
+
+			if (test.GetExports<object>().Count != 0)
+			{
+				throw new TestAssertionException();
+			}
+			if (test.GetExports<object>(typeof(object)).Count != 0)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (test.GetExport<Mock_Exports_1>() == null)
+			{
+				throw new TestAssertionException();
+			}
+			if (test.GetExport<object>(typeof(Mock_Exports_1)) == null)
+			{
+				throw new TestAssertionException();
+			}
+			if (test.GetExports<Mock_Exports_1>().Count != 1)
+			{
+				throw new TestAssertionException();
+			}
+			if (test.GetExports<object>(typeof(Mock_Exports_1)).Count != 1)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (test.GetExport<Mock_Exports_2>() == null)
+			{
+				throw new TestAssertionException();
+			}
+			if (test.GetExport<object>(typeof(Mock_Exports_2)) == null)
+			{
+				throw new TestAssertionException();
+			}
+			if (test.GetExports<Mock_Exports_2>().Count != 1)
+			{
+				throw new TestAssertionException();
+			}
+			if (test.GetExports<object>(typeof(Mock_Exports_2)).Count != 1)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (test.GetExport<object>("E3") == null)
+			{
+				throw new TestAssertionException();
+			}
+			if (test.GetExports<object>("E3").Count != 2)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (test.GetExport<object>("E4") == null)
+			{
+				throw new TestAssertionException();
+			}
+			if (test.GetExports<object>("E4").Count != 2)
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void ModelExportImport_Test ()
 		{
 			CompositionContainer test = new CompositionContainer();
 			test.AddCatalog(new AssemblyCatalog(Assembly.GetExecutingAssembly()));
@@ -136,175 +268,6 @@ namespace RI.Test.Framework.Composition
 		}
 
 		[TestMethod]
-		public void ManualExportImport_Test()
-		{
-			CompositionContainer test = new CompositionContainer();
-
-			test.AddExport(typeof(Mock_Exports_1), typeof(Mock_Exports_1), false);
-			test.AddExport(new Mock_Exports_2(), typeof(Mock_Exports_2));
-			test.AddExport(typeof(Mock_Exports_3A), "E3", false);
-			test.AddExport(new Mock_Exports_3B(), "E3");
-			test.AddExport(typeof(Mock_Exports_4A), "E4", false);
-			test.AddExport(new Mock_Exports_4B(), "E4");
-
-			if (test.GetExports<object>().Count != 0)
-			{
-				throw new TestAssertionException();
-			}
-			if (test.GetExports<object>(typeof(object)).Count != 0)
-			{
-				throw new TestAssertionException();
-			}
-
-			if (test.GetExport<Mock_Exports_1>() == null)
-			{
-				throw new TestAssertionException();
-			}
-			if (test.GetExport<object>(typeof(Mock_Exports_1)) == null)
-			{
-				throw new TestAssertionException();
-			}
-			if (test.GetExports<Mock_Exports_1>().Count != 1)
-			{
-				throw new TestAssertionException();
-			}
-			if (test.GetExports<object>(typeof(Mock_Exports_1)).Count != 1)
-			{
-				throw new TestAssertionException();
-			}
-
-			if (test.GetExport<Mock_Exports_2>() == null)
-			{
-				throw new TestAssertionException();
-			}
-			if (test.GetExport<object>(typeof(Mock_Exports_2)) == null)
-			{
-				throw new TestAssertionException();
-			}
-			if (test.GetExports<Mock_Exports_2>().Count != 1)
-			{
-				throw new TestAssertionException();
-			}
-			if (test.GetExports<object>(typeof(Mock_Exports_2)).Count != 1)
-			{
-				throw new TestAssertionException();
-			}
-
-			if (test.GetExport<object>("E3") == null)
-			{
-				throw new TestAssertionException();
-			}
-			if (test.GetExports<object>("E3").Count != 2)
-			{
-				throw new TestAssertionException();
-			}
-
-			if (test.GetExport<object>("E4") == null)
-			{
-				throw new TestAssertionException();
-			}
-			if (test.GetExports<object>("E4").Count != 2)
-			{
-				throw new TestAssertionException();
-			}
-		}
-
-		[TestMethod]
-		public void Inheritance_Test()
-		{
-			CompositionContainer test = new CompositionContainer();
-			test.AddCatalog(new AssemblyCatalog(Assembly.GetExecutingAssembly()));
-
-			Mock_Imports imports = test.GetExport<Mock_Imports>();
-
-			if (imports.Import_5.Values<Mock_Exports_5>().Count() != 0)
-			{
-				throw new TestAssertionException();
-			}
-
-			if (imports.Import_6.Values<Mock_Exports_6>().Count() != 2)
-			{
-				throw new TestAssertionException();
-			}
-			if (imports.Import_6.Value<Mock_Exports_6A>() == null)
-			{
-				throw new TestAssertionException();
-			}
-			if (imports.Import_6.Value<Mock_Exports_6B>() == null)
-			{
-				throw new TestAssertionException();
-			}
-		}
-
-		[TestMethod]
-		public void SharedPrivate_Test()
-		{
-			CompositionContainer test = new CompositionContainer();
-
-			test.AddExport(typeof(Mock_Exports_1), typeof(Mock_Exports_1), false);
-			test.AddExport(typeof(Mock_Exports_2), typeof(Mock_Exports_2), true);
-
-			if (!object.ReferenceEquals(test.GetExport<Mock_Exports_1>(), test.GetExport<Mock_Exports_1>()))
-			{
-				throw new TestAssertionException();
-			}
-
-			if (object.ReferenceEquals(test.GetExport<Mock_Exports_2>(), test.GetExport<Mock_Exports_2>()))
-			{
-				throw new TestAssertionException();
-			}
-
-			Mock_Exports_1 instance1 = new Mock_Exports_1();
-			Mock_Exports_2 instance2 = new Mock_Exports_2();
-
-			test.AddExport(instance1, typeof(Mock_Exports_1));
-			test.AddExport(instance2, typeof(Mock_Exports_2));
-
-			if (object.ReferenceEquals(test.GetExports<Mock_Exports_1>()[0], test.GetExports<Mock_Exports_1>()[1]))
-			{
-				throw new TestAssertionException();
-			}
-
-			if (object.ReferenceEquals(test.GetExports<Mock_Exports_2>()[0], test.GetExports<Mock_Exports_2>()[1]))
-			{
-				throw new TestAssertionException();
-			}
-		}
-
-		[TestMethod]
-		public void ConstructorCreator_Test()
-		{
-			CompositionContainer test = new CompositionContainer();
-			test.AddCatalog(new AssemblyCatalog(Assembly.GetExecutingAssembly()));
-
-			Mock_Exports_7 m7 = test.GetExport<Mock_Exports_7>();
-			if (m7 == null)
-			{
-				throw new TestAssertionException();
-			}
-
-			Mock_Exports_8 m8 = test.GetExport<Mock_Exports_8>();
-			if (m8 == null)
-			{
-				throw new TestAssertionException();
-			}
-			if (!object.ReferenceEquals(m8.Value, m7))
-			{
-				throw new TestAssertionException();
-			}
-
-			Mock_Exports_9 m9 = test.GetExport<Mock_Exports_9>();
-			if (m9 == null)
-			{
-				throw new TestAssertionException();
-			}
-			if (m9.Value != "Test123")
-			{
-				throw new TestAssertionException();
-			}
-		}
-
-		[TestMethod]
 		public void Recomposition_Test ()
 		{
 			CompositionContainer test = new CompositionContainer();
@@ -364,5 +327,42 @@ namespace RI.Test.Framework.Composition
 				throw new TestAssertionException();
 			}
 		}
+
+		[TestMethod]
+		public void SharedPrivate_Test ()
+		{
+			CompositionContainer test = new CompositionContainer();
+
+			test.AddExport(typeof(Mock_Exports_1), typeof(Mock_Exports_1), false);
+			test.AddExport(typeof(Mock_Exports_2), typeof(Mock_Exports_2), true);
+
+			if (!object.ReferenceEquals(test.GetExport<Mock_Exports_1>(), test.GetExport<Mock_Exports_1>()))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (object.ReferenceEquals(test.GetExport<Mock_Exports_2>(), test.GetExport<Mock_Exports_2>()))
+			{
+				throw new TestAssertionException();
+			}
+
+			Mock_Exports_1 instance1 = new Mock_Exports_1();
+			Mock_Exports_2 instance2 = new Mock_Exports_2();
+
+			test.AddExport(instance1, typeof(Mock_Exports_1));
+			test.AddExport(instance2, typeof(Mock_Exports_2));
+
+			if (object.ReferenceEquals(test.GetExports<Mock_Exports_1>()[0], test.GetExports<Mock_Exports_1>()[1]))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (object.ReferenceEquals(test.GetExports<Mock_Exports_2>()[0], test.GetExports<Mock_Exports_2>()[1]))
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		#endregion
 	}
 }

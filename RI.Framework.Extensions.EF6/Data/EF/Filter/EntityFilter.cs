@@ -25,12 +25,6 @@ namespace RI.Framework.Data.EF.Filter
 		/// <inheritdoc cref="IEntityFilter.Filter" />
 		public abstract IOrderedQueryable<T> Filter (RepositoryDbContext repository, RepositoryDbSet<T> set, IEnumerable<T> customSequence, object filter);
 
-		/// <inheritdoc />
-		IOrderedQueryable IEntityFilter.Filter(RepositoryDbContext repository, RepositoryDbSet set, IEnumerable customSequence, object filter)
-		{
-			return this.Filter(repository, (RepositoryDbSet<T>)set, (IEnumerable<T>)customSequence, filter);
-		}
-
 		#endregion
 
 
@@ -40,6 +34,12 @@ namespace RI.Framework.Data.EF.Filter
 
 		/// <inheritdoc />
 		Type IEntityFilter.EntityType => typeof(T);
+
+		/// <inheritdoc />
+		IOrderedQueryable IEntityFilter.Filter (RepositoryDbContext repository, RepositoryDbSet set, IEnumerable customSequence, object filter)
+		{
+			return this.Filter(repository, (RepositoryDbSet<T>)set, (IEnumerable<T>)customSequence, filter);
+		}
 
 		#endregion
 	}

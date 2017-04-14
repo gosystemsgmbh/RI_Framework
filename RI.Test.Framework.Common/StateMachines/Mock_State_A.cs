@@ -7,18 +7,13 @@ namespace RI.Test.Framework.StateMachines
 {
 	public sealed class Mock_State_A : Mock_State
 	{
+		#region Overrides
+
 		protected override void Enter (StateTransientInfo transientInfo)
 		{
 			base.Enter(transientInfo);
 
 			Mock_State.TestValue += "eA";
-		}
-
-		protected override void Leave (StateTransientInfo transientInfo)
-		{
-			base.Leave(transientInfo);
-
-			Mock_State.TestValue += "lA";
 		}
 
 		protected override void Initialize (StateMachine stateMachine)
@@ -28,11 +23,20 @@ namespace RI.Test.Framework.StateMachines
 			Mock_State.TestValue += "iA";
 		}
 
+		protected override void Leave (StateTransientInfo transientInfo)
+		{
+			base.Leave(transientInfo);
+
+			Mock_State.TestValue += "lA";
+		}
+
 		protected override void Signal (StateSignalInfo signalInfo)
 		{
 			base.Signal(signalInfo);
 
 			Mock_State.TestValue += (string)signalInfo.Signal;
 		}
+
+		#endregion
 	}
 }

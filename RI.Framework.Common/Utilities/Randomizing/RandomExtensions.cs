@@ -349,7 +349,7 @@ namespace RI.Framework.Utilities.Randomizing
 		///     A random single precision floating point value between 0.0 (inclusive) and <paramref name="max" /> (exclusive).
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="randomizer" /> is null. </exception>
-		public static float NextFloat(this Random randomizer, float max)
+		public static float NextFloat (this Random randomizer, float max)
 		{
 			return randomizer.NextFloat(0.0f, max);
 		}
@@ -365,7 +365,7 @@ namespace RI.Framework.Utilities.Randomizing
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="randomizer" /> is null. </exception>
 		/// <exception cref="NotFiniteNumberException"> <paramref name="min" /> or <paramref name="max" /> is either "NaN"/"Not-a-Number" or infinity (positive or negative). </exception>
-		public static float NextFloat(this Random randomizer, float min, float max)
+		public static float NextFloat (this Random randomizer, float min, float max)
 		{
 			if (randomizer == null)
 			{
@@ -393,7 +393,7 @@ namespace RI.Framework.Utilities.Randomizing
 		///     A random single precision floating point value between 0.0 (inclusive) and 1.0 (exclusive).
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="randomizer" /> is null. </exception>
-		public static float NextFloat(this Random randomizer)
+		public static float NextFloat (this Random randomizer)
 		{
 			if (randomizer == null)
 			{
@@ -414,8 +414,8 @@ namespace RI.Framework.Utilities.Randomizing
 		/// </returns>
 		/// <remarks>
 		///     <para>
-		/// See <see href="https://en.wikipedia.org/wiki/Box-Muller_transform"> https://en.wikipedia.org/wiki/Box-Muller_transform </see> for details about the used algorithm.
-		/// </para>
+		///         See <see href="https://en.wikipedia.org/wiki/Box-Muller_transform"> https://en.wikipedia.org/wiki/Box-Muller_transform </see> for details about the used algorithm.
+		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="randomizer" /> is null. </exception>
 		/// <exception cref="NotFiniteNumberException"> <paramref name="mu" /> or <paramref name="sigma" /> is either "NaN"/"Not-a-Number" or infinity (positive or negative). </exception>

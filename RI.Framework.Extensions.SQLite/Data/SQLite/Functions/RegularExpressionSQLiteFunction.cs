@@ -27,7 +27,7 @@ namespace RI.Framework.Data.SQLite.Functions
 	/// ]]>
 	/// </code>
 	/// </example>
-	[SQLiteFunction ("regexp", 2, FunctionType.Scalar)]
+	[SQLiteFunction("regexp", 2, FunctionType.Scalar)]
 	[SuppressMessage("ReSharper", "InconsistentNaming")]
 	public sealed class RegularExpressionSQLiteFunction : SQLiteFunction
 	{

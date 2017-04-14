@@ -1,15 +1,20 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using RI.Framework.Composition;
+
 using RI.Framework.Services;
 using RI.Framework.Services.Dispatcher;
 using RI.Framework.StateMachines;
+
+
+
 
 namespace RI.Test.Framework.Cases.StateMachines
 {
 	public sealed class Test_MonoState : TestModule
 	{
+		#region Instance Methods
+
 		[TestMethod]
-		public void Test()
+		public void Test ()
 		{
 			Mock_State.TestValue = "";
 
@@ -128,5 +133,7 @@ namespace RI.Test.Framework.Cases.StateMachines
 				});
 			});
 		}
+
+		#endregion
 	}
 }

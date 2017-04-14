@@ -11,7 +11,7 @@ namespace RI.Framework.Data.SQLite
 	/// <summary>
 	///     Provides utility/extension methods for the <see cref="SQLiteConnection" /> type.
 	/// </summary>
-	[SuppressMessage ("ReSharper", "InconsistentNaming")]
+	[SuppressMessage("ReSharper", "InconsistentNaming")]
 	public static class SQLiteConnectionExtensions
 	{
 		#region Static Methods

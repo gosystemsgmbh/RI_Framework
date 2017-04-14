@@ -24,7 +24,8 @@ namespace RI.Framework.Collections.ObjectModel
 		///     The list is empty if there are no child nodes and <paramref name="includeSelf" /> is false.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="treeNode" /> is null. </exception>
-		public static List<T> GetChildren <T> (this ITreeNode<T> treeNode, bool includeSelf) where T : class, ITreeNode<T>
+		public static List<T> GetChildren <T> (this ITreeNode<T> treeNode, bool includeSelf)
+			where T : class, ITreeNode<T>
 		{
 			if (treeNode == null)
 			{
@@ -54,7 +55,8 @@ namespace RI.Framework.Collections.ObjectModel
 		///     The list is empty if there are no child nodes and <paramref name="includeSelf" /> is false.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="treeNode" /> is null. </exception>
-		public static List<T> GetChildrenRecursive <T> (this ITreeNode<T> treeNode, bool includeSelf) where T : class, ITreeNode<T>
+		public static List<T> GetChildrenRecursive <T> (this ITreeNode<T> treeNode, bool includeSelf)
+			where T : class, ITreeNode<T>
 		{
 			if (treeNode == null)
 			{
@@ -80,7 +82,8 @@ namespace RI.Framework.Collections.ObjectModel
 		///     The list contains only <paramref name="treeNode" /> if it is a leaf itself.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="treeNode" /> is null. </exception>
-		public static List<T> GetLeafs <T> (this ITreeNode<T> treeNode) where T : class, ITreeNode<T>
+		public static List<T> GetLeafs <T> (this ITreeNode<T> treeNode)
+			where T : class, ITreeNode<T>
 		{
 			if (treeNode == null)
 			{
@@ -112,7 +115,8 @@ namespace RI.Framework.Collections.ObjectModel
 		///     The list contains only <paramref name="treeNode" /> if it is a leaf itself.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="treeNode" /> is null. </exception>
-		public static List<T> GetLeafsRecursive <T> (this ITreeNode<T> treeNode) where T : class, ITreeNode<T>
+		public static List<T> GetLeafsRecursive <T> (this ITreeNode<T> treeNode)
+			where T : class, ITreeNode<T>
 		{
 			if (treeNode == null)
 			{
@@ -134,7 +138,8 @@ namespace RI.Framework.Collections.ObjectModel
 		///     The root itself has a level of zero.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="treeNode" /> is null. </exception>
-		public static int GetLevel <T> (this ITreeNode<T> treeNode) where T : class, ITreeNode<T>
+		public static int GetLevel <T> (this ITreeNode<T> treeNode)
+			where T : class, ITreeNode<T>
 		{
 			if (treeNode == null)
 			{
@@ -163,7 +168,8 @@ namespace RI.Framework.Collections.ObjectModel
 		///     The list is ordered so that the first item is the root node and the last item is <paramref name="treeNode" /> itself or its parent, depending on <paramref name="includeSelf" />.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="treeNode" /> is null. </exception>
-		public static List<T> GetParents <T> (this ITreeNode<T> treeNode, bool includeSelf) where T : class, ITreeNode<T>
+		public static List<T> GetParents <T> (this ITreeNode<T> treeNode, bool includeSelf)
+			where T : class, ITreeNode<T>
 		{
 			if (treeNode == null)
 			{
@@ -198,7 +204,8 @@ namespace RI.Framework.Collections.ObjectModel
 		///     If <paramref name="treeNode" /> itself is the root node, <paramref name="treeNode" /> is returned.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="treeNode" /> is null. </exception>
-		public static T GetRoot <T> (this ITreeNode<T> treeNode) where T : class, ITreeNode<T>
+		public static T GetRoot <T> (this ITreeNode<T> treeNode)
+			where T : class, ITreeNode<T>
 		{
 			if (treeNode == null)
 			{
@@ -224,7 +231,8 @@ namespace RI.Framework.Collections.ObjectModel
 		///     The list is empty if there are no sibling nodes and <paramref name="includeSelf" /> is false.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="treeNode" /> is null. </exception>
-		public static List<T> GetSiblings <T> (this ITreeNode<T> treeNode, bool includeSelf) where T : class, ITreeNode<T>
+		public static List<T> GetSiblings <T> (this ITreeNode<T> treeNode, bool includeSelf)
+			where T : class, ITreeNode<T>
 		{
 			if (treeNode == null)
 			{
@@ -283,7 +291,8 @@ namespace RI.Framework.Collections.ObjectModel
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="treeNode" /> is null. </exception>
-		public static bool IsChild <T> (this ITreeNode<T> treeNode) where T : class, ITreeNode<T>
+		public static bool IsChild <T> (this ITreeNode<T> treeNode)
+			where T : class, ITreeNode<T>
 		{
 			if (treeNode == null)
 			{
@@ -307,7 +316,8 @@ namespace RI.Framework.Collections.ObjectModel
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="treeNode" /> is null. </exception>
-		public static bool IsLeaf <T> (this ITreeNode<T> treeNode) where T : class, ITreeNode<T>
+		public static bool IsLeaf <T> (this ITreeNode<T> treeNode)
+			where T : class, ITreeNode<T>
 		{
 			if (treeNode == null)
 			{
@@ -336,7 +346,8 @@ namespace RI.Framework.Collections.ObjectModel
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="treeNode" /> is null. </exception>
-		public static bool IsParent <T> (this ITreeNode<T> treeNode) where T : class, ITreeNode<T>
+		public static bool IsParent <T> (this ITreeNode<T> treeNode)
+			where T : class, ITreeNode<T>
 		{
 			if (treeNode == null)
 			{
@@ -365,7 +376,8 @@ namespace RI.Framework.Collections.ObjectModel
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="treeNode" /> is null. </exception>
-		public static bool IsRoot <T> (this ITreeNode<T> treeNode) where T : class, ITreeNode<T>
+		public static bool IsRoot <T> (this ITreeNode<T> treeNode)
+			where T : class, ITreeNode<T>
 		{
 			if (treeNode == null)
 			{
@@ -390,7 +402,8 @@ namespace RI.Framework.Collections.ObjectModel
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="treeNode" /> is null. </exception>
-		public static bool IsSibling <T> (this ITreeNode<T> treeNode) where T : class, ITreeNode<T>
+		public static bool IsSibling <T> (this ITreeNode<T> treeNode)
+			where T : class, ITreeNode<T>
 		{
 			if (treeNode == null)
 			{
@@ -410,7 +423,8 @@ namespace RI.Framework.Collections.ObjectModel
 		///     true if the child node was removed, false otherwise.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="treeNode" /> or <paramref name="item" /> is null. </exception>
-		public static bool RemoveChild <T> (this ITreeNode<T> treeNode, T item) where T : class, ITreeNode<T>
+		public static bool RemoveChild <T> (this ITreeNode<T> treeNode, T item)
+			where T : class, ITreeNode<T>
 		{
 			if (treeNode == null)
 			{
@@ -440,7 +454,8 @@ namespace RI.Framework.Collections.ObjectModel
 		///     true if the child node was removed, false otherwise.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="treeNode" /> or <paramref name="item" /> is null. </exception>
-		public static bool RemoveChildRecursive <T> (this ITreeNode<T> treeNode, T item) where T : class, ITreeNode<T>
+		public static bool RemoveChildRecursive <T> (this ITreeNode<T> treeNode, T item)
+			where T : class, ITreeNode<T>
 		{
 			if (treeNode == null)
 			{
@@ -484,7 +499,8 @@ namespace RI.Framework.Collections.ObjectModel
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="treeNode" /> or <paramref name="items" /> is null. </exception>
-		public static int RemoveChildren <T> (this ITreeNode<T> treeNode, IEnumerable<T> items) where T : class, ITreeNode<T>
+		public static int RemoveChildren <T> (this ITreeNode<T> treeNode, IEnumerable<T> items)
+			where T : class, ITreeNode<T>
 		{
 			if (treeNode == null)
 			{
@@ -520,7 +536,8 @@ namespace RI.Framework.Collections.ObjectModel
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="treeNode" /> or <paramref name="items" /> is null. </exception>
-		public static int RemoveChildrenRecursive <T> (this ITreeNode<T> treeNode, IEnumerable<T> items) where T : class, ITreeNode<T>
+		public static int RemoveChildrenRecursive <T> (this ITreeNode<T> treeNode, IEnumerable<T> items)
+			where T : class, ITreeNode<T>
 		{
 			if (treeNode == null)
 			{
@@ -559,7 +576,8 @@ namespace RI.Framework.Collections.ObjectModel
 		///     The list is empty if no child nodes were removed.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="treeNode" /> or <paramref name="condition" /> is null. </exception>
-		public static List<T> RemoveChildrenWhere <T> (this ITreeNode<T> treeNode, Func<T, bool> condition) where T : class, ITreeNode<T>
+		public static List<T> RemoveChildrenWhere <T> (this ITreeNode<T> treeNode, Func<T, bool> condition)
+			where T : class, ITreeNode<T>
 		{
 			if (treeNode == null)
 			{
@@ -590,7 +608,8 @@ namespace RI.Framework.Collections.ObjectModel
 		///     The list is empty if no child nodes were removed.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="treeNode" /> or <paramref name="condition" /> is null. </exception>
-		public static List<T> RemoveChildrenWhereRecursive <T> (this ITreeNode<T> treeNode, Func<T, bool> condition) where T : class, ITreeNode<T>
+		public static List<T> RemoveChildrenWhereRecursive <T> (this ITreeNode<T> treeNode, Func<T, bool> condition)
+			where T : class, ITreeNode<T>
 		{
 			if (treeNode == null)
 			{
@@ -607,7 +626,8 @@ namespace RI.Framework.Collections.ObjectModel
 			return removedNodes;
 		}
 
-		private static void GetChildrenRecursiveInternal <T> (ITreeNode<T> treeNode, ICollection<T> children) where T : class, ITreeNode<T>
+		private static void GetChildrenRecursiveInternal <T> (ITreeNode<T> treeNode, ICollection<T> children)
+			where T : class, ITreeNode<T>
 		{
 			if (treeNode.Children != null)
 			{
@@ -619,7 +639,8 @@ namespace RI.Framework.Collections.ObjectModel
 			}
 		}
 
-		private static void GetLeafsRecursiveInternal <T> (ITreeNode<T> treeNode, ICollection<T> leafs) where T : class, ITreeNode<T>
+		private static void GetLeafsRecursiveInternal <T> (ITreeNode<T> treeNode, ICollection<T> leafs)
+			where T : class, ITreeNode<T>
 		{
 			if (treeNode.IsLeaf())
 			{
@@ -634,7 +655,8 @@ namespace RI.Framework.Collections.ObjectModel
 			}
 		}
 
-		private static void RemoveChildrenWhereRecursiveInternal <T> (ITreeNode<T> treeNode, Func<T, bool> condition, ICollection<T> removedNodes) where T : class, ITreeNode<T>
+		private static void RemoveChildrenWhereRecursiveInternal <T> (ITreeNode<T> treeNode, Func<T, bool> condition, ICollection<T> removedNodes)
+			where T : class, ITreeNode<T>
 		{
 			if (treeNode.Children != null)
 			{

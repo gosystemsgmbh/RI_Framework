@@ -71,30 +71,30 @@ namespace RI.Test.Framework.Utilities.Text
 			test = new CommandLine();
 
 			test.Parameters.Add("n1", new List<string>
-			                    {
-				                    "v1",
-				                    "v2"
-			                    });
+			{
+				"v1",
+				"v2"
+			});
 			if (test.ToString() != "-n1=v1 -n1=v2")
 			{
 				throw new TestAssertionException();
 			}
 
 			test.Parameters.Add("n 1", new List<string>
-			                    {
-				                    "v 1",
-				                    "v 2"
-			                    });
+			{
+				"v 1",
+				"v 2"
+			});
 			if (test.ToString() != "-n1=v1 -n1=v2 -\"n 1\"=\"v 1\" -\"n 1\"=\"v 2\"")
 			{
 				throw new TestAssertionException();
 			}
 
 			test.Parameters.Add("n\"1", new List<string>
-			                    {
-				                    "v\"1",
-				                    "v\"2"
-			                    });
+			{
+				"v\"1",
+				"v\"2"
+			});
 			if (test.ToString() != "-n1=v1 -n1=v2 -\"n 1\"=\"v 1\" -\"n 1\"=\"v 2\" -\"n\\\"1\"=\"v\\\"1\" -\"n\\\"1\"=\"v\\\"2\"")
 			{
 				throw new TestAssertionException();
@@ -135,15 +135,15 @@ namespace RI.Test.Framework.Utilities.Text
 			test.Literals.Add("literal 1");
 
 			test.Parameters.Add("n1", new List<string>
-			                    {
-				                    "v1",
-				                    "v2"
-			                    });
+			{
+				"v1",
+				"v2"
+			});
 
 			test.Parameters.Add("n2", new List<string>
-			                    {
-				                    "v3"
-			                    });
+			{
+				"v3"
+			});
 
 			if (test.ToString() != "test.exe -n1=v1 -n1=v2 -n2=v3 \"literal 1\"")
 			{
@@ -170,9 +170,9 @@ namespace RI.Test.Framework.Utilities.Text
 
 			test = new CommandLine();
 			test.Parameters.Add("n1", new List<string>
-			                    {
-				                    null
-			                    });
+			{
+				null
+			});
 			if (test.ToString() != "-n1")
 			{
 				throw new TestAssertionException();
@@ -180,9 +180,9 @@ namespace RI.Test.Framework.Utilities.Text
 
 			test = new CommandLine();
 			test.Parameters.Add("n1", new List<string>
-			                    {
-				                    ""
-			                    });
+			{
+				""
+			});
 			if (test.ToString() != "-n1=\"\"")
 			{
 				throw new TestAssertionException();
@@ -190,9 +190,9 @@ namespace RI.Test.Framework.Utilities.Text
 
 			test = new CommandLine();
 			test.Parameters.Add("n1", new List<string>
-			                    {
-				                    " "
-			                    });
+			{
+				" "
+			});
 			if (test.ToString() != "-n1=\" \"")
 			{
 				throw new TestAssertionException();

@@ -18,12 +18,12 @@ namespace RI.Framework.Services.Dispatcher
 	///     Implements a default dispatcher service which is suitable for most scenarios.
 	/// </summary>
 	/// <remarks>
-	/// <para>
-	///     See <see cref="IDispatcherService" /> for more details.
-	/// </para>
-	/// <note type="note">
-	/// The first created instance of <see cref="DispatcherService"/> is set as the singleton instance for <see cref="Singleton{IDispatcherService}"/>
-	/// </note>
+	///     <para>
+	///         See <see cref="IDispatcherService" /> for more details.
+	///     </para>
+	///     <note type="note">
+	///         The first created instance of <see cref="DispatcherService" /> is set as the singleton instance for <see cref="Singleton{T}" />
+	///     </note>
 	/// </remarks>
 	public sealed class DispatcherService : IDispatcherService, ISynchronizable
 	{
@@ -65,13 +65,13 @@ namespace RI.Framework.Services.Dispatcher
 
 		#region Instance Fields
 
+		private WaitCallback _backgroundInvoker;
+
 		private int _framesWithoutOperations;
 
 		private long _nowTicks;
 
 		private readonly List<LinkedList<DispatcherOperation>> _pendingOperations;
-
-		private WaitCallback _backgroundInvoker;
 
 		private object _syncRoot;
 
@@ -82,7 +82,19 @@ namespace RI.Framework.Services.Dispatcher
 
 		#region Instance Methods
 
-		private DispatcherOperation BroadcastInternal <T> (DispatcherPriority priority, T broadcast) where T : class
+		private void BackgroundInvoke (object state)
+		{
+			DispatcherOperation operation = (DispatcherOperation)state;
+			operation.Invoker(operation.Broadcast);
+			this.Dispatch(DispatcherPriority.Frame, x =>
+			{
+				x.StatusInternal = DispatcherStatus.Processed;
+				this.InvokeOnFinished(x);
+			}, operation);
+		}
+
+		private DispatcherOperation BroadcastInternal <T> (DispatcherPriority priority, T broadcast)
+			where T : class
 		{
 			DispatcherOperation operation = new DispatcherOperation();
 			operation.Dispatcher = this;
@@ -148,7 +160,7 @@ namespace RI.Framework.Services.Dispatcher
 				}
 				return false;
 			}
-			
+
 			if (operation.Priority == DispatcherPriority.Background)
 			{
 				operation.StatusInternal = DispatcherStatus.Processing;
@@ -165,25 +177,14 @@ namespace RI.Framework.Services.Dispatcher
 			return true;
 		}
 
-		private void BackgroundInvoke (object state)
-		{
-			DispatcherOperation operation = (DispatcherOperation)state;
-			operation.Invoker(operation.Broadcast);
-			this.Dispatch(DispatcherPriority.Frame, x =>
-			{
-				x.StatusInternal = DispatcherStatus.Processed;
-				this.InvokeOnFinished(x);
-			}, operation);
-		}
-
-		private void InvokeOnFinished(DispatcherOperation operation)
+		private void InvokeOnFinished (DispatcherOperation operation)
 		{
 			if (operation.FinishedCallback == null)
 			{
 				return;
 			}
 
-			object[] arguments = operation.Broadcast is DispatcherBroadcast ? ((DispatcherBroadcast)operation.Broadcast).GetArguments() : new[] { operation.Broadcast };
+			object[] arguments = operation.Broadcast is DispatcherBroadcast ? ((DispatcherBroadcast)operation.Broadcast).GetArguments() : new[] {operation.Broadcast};
 			operation.FinishedCallback(operation, arguments);
 		}
 
@@ -257,6 +258,18 @@ namespace RI.Framework.Services.Dispatcher
 			}
 		}
 
+		private bool OnFinished (DispatcherOperation operation, Action<IDispatcherOperation, object[]> callback)
+		{
+			if (operation.StatusInternal != DispatcherStatus.Queued)
+			{
+				return false;
+			}
+
+			operation.FinishedCallback = callback;
+
+			return true;
+		}
+
 		private bool Reschedule (DispatcherOperation operation, int millisecondsFromNow)
 		{
 			if (operation.StatusInternal != DispatcherStatus.Queued)
@@ -274,7 +287,7 @@ namespace RI.Framework.Services.Dispatcher
 			return this.Reschedule(operation, Math.Max((int)((timestamp.ToUniversalTime().Ticks - this._nowTicks) / 10000), 0));
 		}
 
-		private bool Timeout(DispatcherOperation operation, int millisecondsFromNow)
+		private bool Timeout (DispatcherOperation operation, int millisecondsFromNow)
 		{
 			if (operation.StatusInternal != DispatcherStatus.Queued)
 			{
@@ -286,21 +299,9 @@ namespace RI.Framework.Services.Dispatcher
 			return true;
 		}
 
-		private bool Timeout(DispatcherOperation operation, DateTime timestamp)
+		private bool Timeout (DispatcherOperation operation, DateTime timestamp)
 		{
 			return this.Timeout(operation, Math.Max((int)((timestamp.ToUniversalTime().Ticks - this._nowTicks) / 10000), 0));
-		}
-
-		private bool OnFinished(DispatcherOperation operation, Action<IDispatcherOperation, object[]> callback)
-		{
-			if (operation.StatusInternal != DispatcherStatus.Queued)
-			{
-				return false;
-			}
-
-			operation.FinishedCallback = callback;
-
-			return true;
 		}
 
 		#endregion
@@ -311,7 +312,8 @@ namespace RI.Framework.Services.Dispatcher
 		#region Interface: IDispatcherService
 
 		/// <inheritdoc />
-		public IDispatcherOperation Broadcast <T> (DispatcherPriority priority, T broadcast) where T : class
+		public IDispatcherOperation Broadcast <T> (DispatcherPriority priority, T broadcast)
+			where T : class
 		{
 			if (broadcast == null)
 			{
@@ -319,6 +321,21 @@ namespace RI.Framework.Services.Dispatcher
 			}
 
 			return this.BroadcastInternal(priority, broadcast);
+		}
+
+		/// <inheritdoc />
+		public void CancelAllOperations ()
+		{
+			lock (this._syncRoot)
+			{
+				foreach (LinkedList<DispatcherOperation> priority in this._pendingOperations)
+				{
+					foreach (DispatcherOperation operation in priority)
+					{
+						((IDispatcherOperation)operation).Cancel();
+					}
+				}
+			}
 		}
 
 		/// <inheritdoc />
@@ -521,7 +538,8 @@ namespace RI.Framework.Services.Dispatcher
 		}
 
 		/// <inheritdoc />
-		public void RegisterReceiver <T> (Action<T> receiver) where T : class
+		public void RegisterReceiver <T> (Action<T> receiver)
+			where T : class
 		{
 			if (receiver == null)
 			{
@@ -532,7 +550,8 @@ namespace RI.Framework.Services.Dispatcher
 		}
 
 		/// <inheritdoc />
-		public void UnregisterReceiver <T> (Action<T> receiver) where T : class
+		public void UnregisterReceiver <T> (Action<T> receiver)
+			where T : class
 		{
 			if (receiver == null)
 			{
@@ -542,20 +561,12 @@ namespace RI.Framework.Services.Dispatcher
 			DispatcherSlots<T>.UnregisterReceiver(receiver);
 		}
 
-		/// <inheritdoc />
-		public void CancelAllOperations ()
-		{
-			lock (this._syncRoot)
-			{
-				foreach (LinkedList<DispatcherOperation> priority in this._pendingOperations)
-				{
-					foreach (DispatcherOperation operation in priority)
-					{
-						((IDispatcherOperation)operation).Cancel();
-					}
-				}
-			}
-		}
+		#endregion
+
+
+
+
+		#region Interface: ISynchronizable
 
 		/// <inheritdoc />
 		bool ISynchronizable.IsSynchronized => true;
@@ -583,14 +594,14 @@ namespace RI.Framework.Services.Dispatcher
 
 			#region Overrides
 
-			public override void Invoke ()
-			{
-				this.Action();
-			}
-
 			public override object[] GetArguments ()
 			{
 				return new object[0];
+			}
+
+			public override void Invoke ()
+			{
+				this.Action();
 			}
 
 			#endregion
@@ -612,14 +623,14 @@ namespace RI.Framework.Services.Dispatcher
 
 			#region Overrides
 
+			public override object[] GetArguments ()
+			{
+				return new object[] {this.Arg};
+			}
+
 			public override void Invoke ()
 			{
 				this.Action(this.Arg);
-			}
-
-			public override object[] GetArguments()
-			{
-				return new object[] { this.Arg };
 			}
 
 			#endregion
@@ -643,14 +654,14 @@ namespace RI.Framework.Services.Dispatcher
 
 			#region Overrides
 
+			public override object[] GetArguments ()
+			{
+				return new object[] {this.Arg1, this.Arg2};
+			}
+
 			public override void Invoke ()
 			{
 				this.Action(this.Arg1, this.Arg2);
-			}
-
-			public override object[] GetArguments()
-			{
-				return new object[] { this.Arg1, this.Arg2 };
 			}
 
 			#endregion
@@ -676,14 +687,14 @@ namespace RI.Framework.Services.Dispatcher
 
 			#region Overrides
 
+			public override object[] GetArguments ()
+			{
+				return new object[] {this.Arg1, this.Arg2, this.Arg3};
+			}
+
 			public override void Invoke ()
 			{
 				this.Action(this.Arg1, this.Arg2, this.Arg3);
-			}
-
-			public override object[] GetArguments()
-			{
-				return new object[] { this.Arg1, this.Arg2, this.Arg3 };
 			}
 
 			#endregion
@@ -711,14 +722,14 @@ namespace RI.Framework.Services.Dispatcher
 
 			#region Overrides
 
+			public override object[] GetArguments ()
+			{
+				return new object[] {this.Arg1, this.Arg2, this.Arg3, this.Arg4};
+			}
+
 			public override void Invoke ()
 			{
 				this.Action(this.Arg1, this.Arg2, this.Arg3, this.Arg4);
-			}
-
-			public override object[] GetArguments()
-			{
-				return new object[] { this.Arg1, this.Arg2, this.Arg3, this.Arg4 };
 			}
 
 			#endregion
@@ -744,9 +755,9 @@ namespace RI.Framework.Services.Dispatcher
 
 			#region Abstracts
 
-			public abstract void Invoke ();
-
 			public abstract object[] GetArguments ();
+
+			public abstract void Invoke ();
 
 			#endregion
 		}
@@ -771,14 +782,14 @@ namespace RI.Framework.Services.Dispatcher
 
 			#region Overrides
 
+			public override object[] GetArguments ()
+			{
+				return new object[0];
+			}
+
 			public override void Invoke ()
 			{
 				this.Operation.ResultInternal = this.Func();
-			}
-
-			public override object[] GetArguments()
-			{
-				return new object[0];
 			}
 
 			#endregion
@@ -800,14 +811,14 @@ namespace RI.Framework.Services.Dispatcher
 
 			#region Overrides
 
+			public override object[] GetArguments ()
+			{
+				return new object[] {this.Arg};
+			}
+
 			public override void Invoke ()
 			{
 				this.Operation.ResultInternal = this.Func(this.Arg);
-			}
-
-			public override object[] GetArguments()
-			{
-				return new object[] { this.Arg };
 			}
 
 			#endregion
@@ -831,14 +842,14 @@ namespace RI.Framework.Services.Dispatcher
 
 			#region Overrides
 
+			public override object[] GetArguments ()
+			{
+				return new object[] {this.Arg1, this.Arg2};
+			}
+
 			public override void Invoke ()
 			{
 				this.Operation.ResultInternal = this.Func(this.Arg1, this.Arg2);
-			}
-
-			public override object[] GetArguments()
-			{
-				return new object[] { this.Arg1, this.Arg2 };
 			}
 
 			#endregion
@@ -864,14 +875,14 @@ namespace RI.Framework.Services.Dispatcher
 
 			#region Overrides
 
+			public override object[] GetArguments ()
+			{
+				return new object[] {this.Arg1, this.Arg2, this.Arg3};
+			}
+
 			public override void Invoke ()
 			{
 				this.Operation.ResultInternal = this.Func(this.Arg1, this.Arg2, this.Arg3);
-			}
-
-			public override object[] GetArguments()
-			{
-				return new object[] { this.Arg1, this.Arg2, this.Arg3 };
 			}
 
 			#endregion
@@ -899,14 +910,14 @@ namespace RI.Framework.Services.Dispatcher
 
 			#region Overrides
 
+			public override object[] GetArguments ()
+			{
+				return new object[] {this.Arg1, this.Arg2, this.Arg3, this.Arg4};
+			}
+
 			public override void Invoke ()
 			{
 				this.Operation.ResultInternal = this.Func(this.Arg1, this.Arg2, this.Arg3, this.Arg4);
-			}
-
-			public override object[] GetArguments()
-			{
-				return new object[] { this.Arg1, this.Arg2, this.Arg3, this.Arg4 };
 			}
 
 			#endregion
@@ -961,6 +972,8 @@ namespace RI.Framework.Services.Dispatcher
 
 			public DispatcherService Dispatcher;
 
+			public Action<IDispatcherOperation, object[]> FinishedCallback;
+
 			public Action<object> Invoker;
 
 			public DispatcherPriority Priority = DispatcherPriority.Now;
@@ -969,11 +982,9 @@ namespace RI.Framework.Services.Dispatcher
 
 			public DispatcherStatus StatusInternal = DispatcherStatus.Queued;
 
-			public long? TickTrigger;
-
 			public long? TickTimeout;
 
-			public Action<IDispatcherOperation, object[]> FinishedCallback;
+			public long? TickTrigger;
 
 			#endregion
 
@@ -1001,6 +1012,11 @@ namespace RI.Framework.Services.Dispatcher
 			bool IDispatcherOperation.Cancel ()
 			{
 				return this.Dispatcher.Cancel(this);
+			}
+
+			IDispatcherOperation IDispatcherOperation.OnFinished (Action<IDispatcherOperation, object[]> callback)
+			{
+				return this.Dispatcher.OnFinished(this, callback) ? this : null;
 			}
 
 			IDispatcherOperation IDispatcherOperation.Reschedule (int millisecondsFromNow)
@@ -1039,11 +1055,6 @@ namespace RI.Framework.Services.Dispatcher
 			IDispatcherOperation IDispatcherOperation.Timeout (DateTime timestamp)
 			{
 				return this.Dispatcher.Timeout(this, timestamp) ? this : null;
-			}
-
-			IDispatcherOperation IDispatcherOperation.OnFinished(Action<IDispatcherOperation, object[]> callback)
-			{
-				return this.Dispatcher.OnFinished(this, callback) ? this : null;
 			}
 
 			#endregion

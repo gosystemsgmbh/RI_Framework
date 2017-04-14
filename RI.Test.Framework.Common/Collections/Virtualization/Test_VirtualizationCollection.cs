@@ -1,15 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using RI.Framework.Collections.Virtualization;
+
+
+
 
 namespace RI.Test.Framework.Collections.Virtualization
 {
 	[TestClass]
 	public sealed class Test_VirtualizationCollection
 	{
+		#region Instance Methods
+
 		[TestMethod]
 		public void General_Test ()
 		{
@@ -77,7 +83,7 @@ namespace RI.Test.Framework.Collections.Virtualization
 			}
 
 			test.ClearCache();
-			
+
 			temp = test[5];
 
 			if (mock.GetCounter != 8)
@@ -94,36 +100,6 @@ namespace RI.Test.Framework.Collections.Virtualization
 			}
 			catch (ObjectDisposedException)
 			{
-			}
-		}
-
-		[TestMethod]
-		public void Timeout_Test ()
-		{
-			Mock_IItemsProvider mock = new Mock_IItemsProvider();
-			VirtualizationCollection<int> test = new VirtualizationCollection<int>(3, 100, mock);
-
-			int temp = test[0];
-
-			if (mock.GetCounter != 2)
-			{
-				throw new TestAssertionException();
-			}
-
-			temp = test[0];
-
-			if (mock.GetCounter != 2)
-			{
-				throw new TestAssertionException();
-			}
-
-			Thread.Sleep(200);
-
-			temp = test[0];
-
-			if (mock.GetCounter != 4)
-			{
-				throw new TestAssertionException();
 			}
 		}
 
@@ -254,5 +230,37 @@ namespace RI.Test.Framework.Collections.Virtualization
 			{
 			}
 		}
+
+		[TestMethod]
+		public void Timeout_Test ()
+		{
+			Mock_IItemsProvider mock = new Mock_IItemsProvider();
+			VirtualizationCollection<int> test = new VirtualizationCollection<int>(3, 100, mock);
+
+			int temp = test[0];
+
+			if (mock.GetCounter != 2)
+			{
+				throw new TestAssertionException();
+			}
+
+			temp = test[0];
+
+			if (mock.GetCounter != 2)
+			{
+				throw new TestAssertionException();
+			}
+
+			Thread.Sleep(200);
+
+			temp = test[0];
+
+			if (mock.GetCounter != 4)
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		#endregion
 	}
 }

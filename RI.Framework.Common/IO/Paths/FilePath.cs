@@ -54,10 +54,7 @@ namespace RI.Framework.IO.Paths
 	/// </code>
 	/// </example>
 	[Serializable]
-	public sealed class FilePath : PathString,
-	                               ICloneable<FilePath>,
-	                               IEquatable<FilePath>,
-	                               IComparable<FilePath>
+	public sealed class FilePath : PathString, ICloneable<FilePath>, IEquatable<FilePath>, IComparable<FilePath>
 	{
 		#region Static Methods
 
@@ -77,7 +74,7 @@ namespace RI.Framework.IO.Paths
 		/// </summary>
 		/// <param name="path"> The path to convert to a file path. </param>
 		/// <returns>
-		/// The file path.
+		///     The file path.
 		/// </returns>
 		public static implicit operator FilePath (string path)
 		{
@@ -250,6 +247,19 @@ namespace RI.Framework.IO.Paths
 		///     The file name without its extension.
 		/// </value>
 		public string FileNameWithoutExtension { get; private set; }
+
+		/// <summary>
+		///     Gets whether the file path is a &quot;real&quot; usable file.
+		/// </summary>
+		/// <value>
+		///     true if the file path is a real usable file, false otherwise.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         A real usable file is a file which has not wildcards.
+		///     </para>
+		/// </remarks>
+		public bool IsRealFile => !this.HasWildcards;
 
 		private string[] FileNameParts { get; set; }
 
@@ -644,6 +654,25 @@ namespace RI.Framework.IO.Paths
 		}
 
 		/// <summary>
+		///     Verifies that the file path is a &quot;real&quot; usable file.
+		/// </summary>
+		/// <remarks>
+		///     <para>
+		///         If the file path is not a real usable file, <see cref="InvalidOperationException" /> is thrown.
+		///     </para>
+		///     <para>
+		///         <see cref="IsRealFile" /> is used to determine whether it is a real usable file.
+		///     </para>
+		/// </remarks>
+		public void VerifyRealFile ()
+		{
+			if (!this.IsRealFile)
+			{
+				throw new InvalidOperationException("The file is not a real usable file.");
+			}
+		}
+
+		/// <summary>
 		///     Writes binary data to the file.
 		/// </summary>
 		/// <param name="data"> The data to write (can be null to write zero bytes). </param>
@@ -747,38 +776,6 @@ namespace RI.Framework.IO.Paths
 
 			return result;
 		}
-
-		/// <summary>
-		/// Verifies that the file path is a &quot;real&quot; usable file.
-		/// </summary>
-		/// <remarks>
-		/// <para>
-		/// If the file path is not a real usable file, <see cref="InvalidOperationException"/> is thrown.
-		/// </para>
-		/// <para>
-		/// <see cref="IsRealFile"/> is used to determine whether it is a real usable file.
-		/// </para>
-		/// </remarks>
-		public void VerifyRealFile ()
-		{
-			if (!this.IsRealFile)
-			{
-				throw new InvalidOperationException("The file is not a real usable file.");
-			}
-		}
-
-		/// <summary>
-		/// Gets whether the file path is a &quot;real&quot; usable file.
-		/// </summary>
-		/// <value>
-		/// true if the file path is a real usable file, false otherwise.
-		/// </value>
-		/// <remarks>
-		/// <para>
-		/// A real usable file is a file which has not wildcards.
-		/// </para>
-		/// </remarks>
-		public bool IsRealFile => !this.HasWildcards;
 
 		#endregion
 

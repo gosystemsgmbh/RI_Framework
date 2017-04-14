@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Mathematic;
@@ -15,6 +11,8 @@ namespace RI.Test.Framework.Mathematic
 	[TestClass]
 	public sealed class Test_RunningValues
 	{
+		#region Instance Methods
+
 		[TestMethod]
 		public void Test ()
 		{
@@ -49,7 +47,7 @@ namespace RI.Test.Framework.Mathematic
 			{
 				throw new TestAssertionException();
 			}
-			if (!test.GetHistory().SequenceEqual(new float[]{}))
+			if (!test.GetHistory().SequenceEqual(new float[] { }))
 			{
 				throw new TestAssertionException();
 			}
@@ -84,11 +82,11 @@ namespace RI.Test.Framework.Mathematic
 			{
 				throw new TestAssertionException();
 			}
-			if (!test.GetHistory().SequenceEqual(new float[] { 1.0f }))
+			if (!test.GetHistory().SequenceEqual(new float[] {1.0f}))
 			{
 				throw new TestAssertionException();
 			}
-			if (!test.GetTimesteps().SequenceEqual(new float[] { 1.0f }))
+			if (!test.GetTimesteps().SequenceEqual(new float[] {1.0f}))
 			{
 				throw new TestAssertionException();
 			}
@@ -119,11 +117,11 @@ namespace RI.Test.Framework.Mathematic
 			{
 				throw new TestAssertionException();
 			}
-			if (!test.GetHistory().SequenceEqual(new float[] { 1.0f, 2.0f }))
+			if (!test.GetHistory().SequenceEqual(new float[] {1.0f, 2.0f}))
 			{
 				throw new TestAssertionException();
 			}
-			if (!test.GetTimesteps().SequenceEqual(new float[] { 1.0f, 2.0f }))
+			if (!test.GetTimesteps().SequenceEqual(new float[] {1.0f, 2.0f}))
 			{
 				throw new TestAssertionException();
 			}
@@ -154,11 +152,11 @@ namespace RI.Test.Framework.Mathematic
 			{
 				throw new TestAssertionException();
 			}
-			if (!test.GetHistory().SequenceEqual(new float[] { 1.0f, 2.0f, 4.0f }))
+			if (!test.GetHistory().SequenceEqual(new float[] {1.0f, 2.0f, 4.0f}))
 			{
 				throw new TestAssertionException();
 			}
-			if (!test.GetTimesteps().SequenceEqual(new float[] { 1.0f, 2.0f, 3.0f }))
+			if (!test.GetTimesteps().SequenceEqual(new float[] {1.0f, 2.0f, 3.0f}))
 			{
 				throw new TestAssertionException();
 			}
@@ -189,11 +187,11 @@ namespace RI.Test.Framework.Mathematic
 			{
 				throw new TestAssertionException();
 			}
-			if (!test.GetHistory().SequenceEqual(new float[] { 2.0f, 4.0f, 8.0f }))
+			if (!test.GetHistory().SequenceEqual(new float[] {2.0f, 4.0f, 8.0f}))
 			{
 				throw new TestAssertionException();
 			}
-			if (!test.GetTimesteps().SequenceEqual(new float[] { 2.0f, 3.0f, 4.0f }))
+			if (!test.GetTimesteps().SequenceEqual(new float[] {2.0f, 3.0f, 4.0f}))
 			{
 				throw new TestAssertionException();
 			}
@@ -204,11 +202,11 @@ namespace RI.Test.Framework.Mathematic
 			{
 				throw new TestAssertionException();
 			}
-			if (!stats.Timesteps.SequenceEqual(new[] { 2.0, 3.0, 4.0 }))
+			if (!stats.Timesteps.SequenceEqual(new[] {2.0, 3.0, 4.0}))
 			{
 				throw new TestAssertionException();
 			}
-			if (!stats.WeightedValues.SequenceEqual(new[] { 4.0, 12.0, 32.0 }))
+			if (!stats.WeightedValues.SequenceEqual(new[] {4.0, 12.0, 32.0}))
 			{
 				throw new TestAssertionException();
 			}
@@ -248,5 +246,7 @@ namespace RI.Test.Framework.Mathematic
 				throw new TestAssertionException();
 			}
 		}
+
+		#endregion
 	}
 }

@@ -40,18 +40,12 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-			if (new DirectoryPath(@"c:\test").AppendDirectory((IEnumerable<DirectoryPath>)new DirectoryPath[]
-			                                                  {
-				                                                  @"abcd"
-			                                                  }) != @"c:\test\abcd")
+			if (new DirectoryPath(@"c:\test").AppendDirectory((IEnumerable<DirectoryPath>)new DirectoryPath[] {@"abcd"}) != @"c:\test\abcd")
 			{
 				throw new TestAssertionException();
 			}
 
-			if (new DirectoryPath(@"c:\test").AppendDirectory((IEnumerable<DirectoryPath>)new DirectoryPath[]
-			                                                  {
-				                                                  @"abcd", @"1234"
-			                                                  }) != @"c:\test\abcd\1234")
+			if (new DirectoryPath(@"c:\test").AppendDirectory((IEnumerable<DirectoryPath>)new DirectoryPath[] {@"abcd", @"1234"}) != @"c:\test\abcd\1234")
 			{
 				throw new TestAssertionException();
 			}
@@ -380,6 +374,28 @@ namespace RI.Test.Framework.IO.Paths
 			if (new DirectoryPath("test.tmp").CompareTo(PathProperties.FromPath("test.tmp", false, false, PathProperties.GetSystemType())) != 0)
 			{
 				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
+		public void ConstructorTest ()
+		{
+			try
+			{
+				new DirectoryPath((string)null);
+				throw new TestAssertionException();
+			}
+			catch (ArgumentNullException)
+			{
+			}
+
+			try
+			{
+				new DirectoryPath((PathProperties)null);
+				throw new TestAssertionException();
+			}
+			catch (ArgumentNullException)
+			{
 			}
 		}
 
@@ -827,28 +843,6 @@ namespace RI.Test.Framework.IO.Paths
 			if (test.Type != PathType.Windows)
 			{
 				throw new TestAssertionException();
-			}
-		}
-
-		[TestMethod]
-		public void ConstructorTest ()
-		{
-			try
-			{
-				new DirectoryPath((string)null);
-				throw new TestAssertionException();
-			}
-			catch (ArgumentNullException)
-			{
-			}
-
-			try
-			{
-				new DirectoryPath((PathProperties)null);
-				throw new TestAssertionException();
-			}
-			catch (ArgumentNullException)
-			{
 			}
 		}
 

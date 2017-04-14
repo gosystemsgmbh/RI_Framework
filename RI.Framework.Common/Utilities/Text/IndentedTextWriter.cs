@@ -20,41 +20,41 @@ namespace RI.Framework.Utilities.Text
 	/// </remarks>
 	/// <example>
 	///     <code language="cs">
-	/// <![CDATA[
-	/// // create a string builder to write into
-	/// var sb = new StringBuilder();
-	/// using(var sw = new StringWriter(sb))
-	/// {
-	///		// create the indented text writer
-	///		using(var itw = new IndentedTextWriter(sb))
-	///		{
-	///			// lets use tabs for indentation
-	///			itw.IndentString = "\t";
-	/// 
-	///			// write some lines
-	///			itw.WriteLine("Line 1");
-	///			itw.IndentLevel++;
-	///			itw.WriteLine("Line 2");
-	///			itw.IndentLevel++;
-	///			itw.WriteLine("Line 3");
-	///			itw.IndentLevel--;
-	///			itw.WriteLine("Line 4");
-	///			itw.IndentLevel = 0;
-	///			itw.WriteLine("Line 5");
-	///		}
-	/// }
-	/// 
-	/// // get final string
-	/// var text = sb.ToString();
-	/// 
-	/// // result:
-	/// // Line 1
-	/// //     Line 2
-	/// //         Line 3
-	/// //     Line4
-	/// // Line 5
-	/// ]]>
-	/// </code>
+	///  <![CDATA[
+	///  // create a string builder to write into
+	///  var sb = new StringBuilder();
+	///  using(var sw = new StringWriter(sb))
+	///  {
+	/// 		// create the indented text writer
+	/// 		using(var itw = new IndentedTextWriter(sb))
+	/// 		{
+	/// 			// lets use tabs for indentation
+	/// 			itw.IndentString = "\t";
+	///  
+	/// 			// write some lines
+	/// 			itw.WriteLine("Line 1");
+	/// 			itw.IndentLevel++;
+	/// 			itw.WriteLine("Line 2");
+	/// 			itw.IndentLevel++;
+	/// 			itw.WriteLine("Line 3");
+	/// 			itw.IndentLevel--;
+	/// 			itw.WriteLine("Line 4");
+	/// 			itw.IndentLevel = 0;
+	/// 			itw.WriteLine("Line 5");
+	/// 		}
+	///  }
+	///  
+	///  // get final string
+	///  var text = sb.ToString();
+	///  
+	///  // result:
+	///  // Line 1
+	///  //     Line 2
+	///  //         Line 3
+	///  //     Line4
+	///  // Line 5
+	///  ]]>
+	///  </code>
 	/// </example>
 	public sealed class IndentedTextWriter : TextWriter
 	{
@@ -524,7 +524,7 @@ namespace RI.Framework.Utilities.Text
 		}
 
 		/// <inheritdoc />
-		[CLSCompliant (false)]
+		[CLSCompliant(false)]
 		public override void Write (uint value)
 		{
 			this.VerifyNotClosed();
@@ -533,7 +533,7 @@ namespace RI.Framework.Utilities.Text
 		}
 
 		/// <inheritdoc />
-		[CLSCompliant (false)]
+		[CLSCompliant(false)]
 		public override void Write (ulong value)
 		{
 			this.VerifyNotClosed();
@@ -732,7 +732,7 @@ namespace RI.Framework.Utilities.Text
 		}
 
 		/// <inheritdoc />
-		[CLSCompliant (false)]
+		[CLSCompliant(false)]
 		public override void WriteLine (uint value)
 		{
 			this.VerifyNotClosed();
@@ -742,7 +742,7 @@ namespace RI.Framework.Utilities.Text
 		}
 
 		/// <inheritdoc />
-		[CLSCompliant (false)]
+		[CLSCompliant(false)]
 		public override void WriteLine (ulong value)
 		{
 			this.VerifyNotClosed();

@@ -30,9 +30,7 @@ namespace RI.Framework.Collections.ObjectModel
 	/// ]]>
 	/// </code>
 	/// </example>
-	public sealed class TreeNode <TValue> : TreeNodeBase<TreeNode<TValue>>,
-	                                        ICloneable<TreeNode<TValue>>,
-	                                        ICloneable
+	public sealed class TreeNode <TValue> : TreeNodeBase<TreeNode<TValue>>, ICloneable<TreeNode<TValue>>, ICloneable
 	{
 		#region Instance Constructor/Destructor
 

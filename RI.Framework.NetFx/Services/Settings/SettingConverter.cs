@@ -26,29 +26,7 @@ namespace RI.Framework.Services.Settings
 	{
 		#region Instance Fields
 
-		private readonly Type[] _supportedTypes =
-		{
-			typeof(bool),
-			typeof(char),
-			typeof(string),
-			typeof(sbyte),
-			typeof(byte),
-			typeof(short),
-			typeof(ushort),
-			typeof(int),
-			typeof(uint),
-			typeof(long),
-			typeof(ulong),
-			typeof(float),
-			typeof(double),
-			typeof(decimal),
-			typeof(DateTime),
-			typeof(TimeSpan),
-			typeof(Guid),
-			typeof(Version),
-			typeof(Enum),
-			typeof(byte[])
-		};
+		private readonly Type[] _supportedTypes = {typeof(bool), typeof(char), typeof(string), typeof(sbyte), typeof(byte), typeof(short), typeof(ushort), typeof(int), typeof(uint), typeof(long), typeof(ulong), typeof(float), typeof(double), typeof(decimal), typeof(DateTime), typeof(TimeSpan), typeof(Guid), typeof(Version), typeof(Enum), typeof(byte[])};
 
 		#endregion
 

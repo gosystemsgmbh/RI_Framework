@@ -365,7 +365,7 @@ namespace RI.Framework.Services
 			LogLocator.Log(severity, this.GetType().Name, format, args);
 		}
 
-		[SuppressMessage ("ReSharper", "EmptyGeneralCatchClause")]
+		[SuppressMessage("ReSharper", "EmptyGeneralCatchClause")]
 		private void HandleExceptionInternal (Exception exception)
 		{
 			try

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -17,6 +16,8 @@ namespace RI.Test.Framework.Services.Logging
 	[TestClass]
 	public sealed class Test_DirectoryLogWriter
 	{
+		#region Instance Methods
+
 		[TestMethod]
 		public void Test ()
 		{
@@ -25,7 +26,7 @@ namespace RI.Test.Framework.Services.Logging
 
 			bool isUnix = path.Type == PathType.Unix;
 
-			DirectoryLogWriter test = new DirectoryLogWriter(path, "Test.txt", Encoding.UTF8, new DateTime(1,2,3,4,5,6,7));
+			DirectoryLogWriter test = new DirectoryLogWriter(path, "Test.txt", Encoding.UTF8, new DateTime(1, 2, 3, 4, 5, 6, 7));
 
 			if (test.CommonDirectory != path)
 			{
@@ -114,5 +115,7 @@ namespace RI.Test.Framework.Services.Logging
 
 			path.Delete();
 		}
+
+		#endregion
 	}
 }

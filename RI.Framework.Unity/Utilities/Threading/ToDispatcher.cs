@@ -12,65 +12,67 @@ using UnityEngine;
 namespace RI.Framework.Utilities.Threading
 {
 	/// <summary>
-	/// Yield instruction to move a task to an <see cref="IDispatcherService"/> or an <see cref="IThreadDispatcher"/>.
+	///     Yield instruction to move a task to an <see cref="IDispatcherService" /> or an <see cref="IThreadDispatcher" />.
 	/// </summary>
 	/// <remarks>
-	/// <para>
-	/// <see cref="ThreadMover"/> for more details.
-	/// </para>
+	///     <para>
+	///         <see cref="ThreadMover" /> for more details.
+	///     </para>
 	/// </remarks>
 	public sealed class ToDispatcher : YieldInstruction
 	{
+		#region Instance Constructor/Destructor
+
 		/// <summary>
-		/// Creates a new instance of <see cref="ToDispatcher"/>.
+		///     Creates a new instance of <see cref="ToDispatcher" />.
 		/// </summary>
 		/// <remarks>
-		/// <para>
-		/// An <see cref="IDispatcherService"/> is used, retrieved using <see cref="ServiceLocator"/> or <see cref="Singleton{IDispatcherService}"/>.
-		/// </para>
-		/// <para>
-		/// <see cref="DispatcherPriority.Default"/> is used as the priority.
-		/// </para>
+		///     <para>
+		///         An <see cref="IDispatcherService" /> is used, retrieved using <see cref="ServiceLocator" /> or <see cref="Singleton{T}" />.
+		///     </para>
+		///     <para>
+		///         <see cref="DispatcherPriority.Default" /> is used as the priority.
+		///     </para>
 		/// </remarks>
-		public ToDispatcher()
+		public ToDispatcher ()
 			: this(ServiceLocator.GetInstance<IDispatcherService>() ?? Singleton<IDispatcherService>.Instance, DispatcherPriority.Default)
 		{
 		}
 
 		/// <summary>
-		/// Creates a new instance of <see cref="ToDispatcher"/>.
+		///     Creates a new instance of <see cref="ToDispatcher" />.
 		/// </summary>
-		/// <param name="priority">The priority to use.</param>
+		/// <param name="priority"> The priority to use. </param>
 		/// <remarks>
-		/// <para>
-		/// An <see cref="IDispatcherService"/> is used, retrieved using <see cref="ServiceLocator"/> or <see cref="Singleton{IDispatcherService}"/>.
-		/// </para>
+		///     <para>
+		///         An <see cref="IDispatcherService" /> is used, retrieved using <see cref="ServiceLocator" /> or <see cref="Singleton{IDispatcherService}" />.
+		///     </para>
 		/// </remarks>
-		public ToDispatcher(DispatcherPriority priority)
+		public ToDispatcher (DispatcherPriority priority)
 			: this(ServiceLocator.GetInstance<IDispatcherService>() ?? Singleton<IDispatcherService>.Instance, priority)
 		{
 		}
 
 		/// <summary>
-		/// Creates a new instance of <see cref="ToDispatcher"/>.
+		///     Creates a new instance of <see cref="ToDispatcher" />.
 		/// </summary>
-		/// <param name="dispatcherService">The dispatcher to use.</param>
+		/// <param name="dispatcherService"> The dispatcher to use. </param>
 		/// <remarks>
-		/// <para>
-		/// <see cref="DispatcherPriority.Default"/> is used as the priority.
-		/// </para>
+		///     <para>
+		///         <see cref="DispatcherPriority.Default" /> is used as the priority.
+		///     </para>
 		/// </remarks>
-		public ToDispatcher(IDispatcherService dispatcherService)
+		public ToDispatcher (IDispatcherService dispatcherService)
 			: this(dispatcherService, DispatcherPriority.Default)
 		{
 		}
 
 		/// <summary>
-		/// Creates a new instance of <see cref="ToDispatcher"/>.
+		///     Creates a new instance of <see cref="ToDispatcher" />.
 		/// </summary>
-		/// <param name="dispatcherService">The dispatcher to use.</param>
-		/// <param name="priority">The priority to use.</param>
-		/// <exception cref="ArgumentNullException"><paramref name="dispatcherService"/> is null.</exception>
+		/// <param name="dispatcherService"> The dispatcher to use. </param>
+		/// <param name="priority"> The priority to use. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="dispatcherService" /> is null. </exception>
 		public ToDispatcher (IDispatcherService dispatcherService, DispatcherPriority priority)
 		{
 			if (dispatcherService == null)
@@ -84,11 +86,11 @@ namespace RI.Framework.Utilities.Threading
 		}
 
 		/// <summary>
-		/// Creates a new instance of <see cref="ToDispatcher"/>.
+		///     Creates a new instance of <see cref="ToDispatcher" />.
 		/// </summary>
-		/// <param name="threadDispatcher">The dispatcher to use.</param>
-		/// <exception cref="ArgumentNullException"><paramref name="threadDispatcher"/> is null.</exception>
-		public ToDispatcher(IThreadDispatcher threadDispatcher)
+		/// <param name="threadDispatcher"> The dispatcher to use. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="threadDispatcher" /> is null. </exception>
+		public ToDispatcher (IThreadDispatcher threadDispatcher)
 		{
 			if (threadDispatcher == null)
 			{
@@ -99,28 +101,37 @@ namespace RI.Framework.Utilities.Threading
 			this.ThreadDispatcher = threadDispatcher;
 		}
 
-		/// <summary>
-		/// Gets the used priority.
-		/// </summary>
-		/// <value>
-		/// The used priority if a <see cref="IDispatcherService"/> is used, undefined otherwise.
-		/// </value>
-		public DispatcherPriority Priority { get; }
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
 
 		/// <summary>
-		/// Gets the used <see cref="IDispatcherService"/>.
+		///     Gets the used <see cref="IDispatcherService" />.
 		/// </summary>
 		/// <value>
-		/// The used <see cref="IDispatcherService"/> if used, null otherwise.
+		///     The used <see cref="IDispatcherService" /> if used, null otherwise.
 		/// </value>
 		public IDispatcherService DispatcherService { get; }
 
 		/// <summary>
-		/// Gets the used <see cref="IThreadDispatcher"/>.
+		///     Gets the used priority.
 		/// </summary>
 		/// <value>
-		/// The used <see cref="IThreadDispatcher"/> if used, null otherwise.
+		///     The used priority if a <see cref="IDispatcherService" /> is used, undefined otherwise.
+		/// </value>
+		public DispatcherPriority Priority { get; }
+
+		/// <summary>
+		///     Gets the used <see cref="IThreadDispatcher" />.
+		/// </summary>
+		/// <value>
+		///     The used <see cref="IThreadDispatcher" /> if used, null otherwise.
 		/// </value>
 		public IThreadDispatcher ThreadDispatcher { get; }
+
+		#endregion
 	}
 }

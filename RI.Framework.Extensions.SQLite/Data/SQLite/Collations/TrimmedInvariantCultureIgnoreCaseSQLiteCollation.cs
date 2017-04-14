@@ -19,7 +19,7 @@ namespace RI.Framework.Data.SQLite.Collations
 	///         The SQL name of the collation is <c> TrimmedInvariantCultureIgnoreCase </c>.
 	///     </para>
 	/// </remarks>
-	[SQLiteFunction (FuncType = FunctionType.Collation, Name = "TrimmedInvariantCultureIgnoreCase")]
+	[SQLiteFunction(FuncType = FunctionType.Collation, Name = "TrimmedInvariantCultureIgnoreCase")]
 	[SuppressMessage("ReSharper", "InconsistentNaming")]
 	public sealed class TrimmedInvariantCultureIgnoreCaseSQLiteCollation : SQLiteFunction
 	{

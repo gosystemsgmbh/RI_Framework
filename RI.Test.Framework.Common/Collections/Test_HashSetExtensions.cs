@@ -19,10 +19,7 @@ namespace RI.Test.Framework.Collections
 		{
 			HashSet<int> set = new HashSet<int>();
 
-			if (set.AddRange(new[]
-			                 {
-				                 1, 2, 30, 40, 500, 600
-			                 }) != 6)
+			if (set.AddRange(new[] {1, 2, 30, 40, 500, 600}) != 6)
 			{
 				throw new TestAssertionException();
 			}
@@ -42,10 +39,7 @@ namespace RI.Test.Framework.Collections
 				throw new TestAssertionException();
 			}
 
-			if (set.AddRange(new[]
-			                 {
-				                 2, 3, 40, 50, 600, 600
-			                 }) != 2)
+			if (set.AddRange(new[] {2, 3, 40, 50, 600, 600}) != 2)
 			{
 				throw new TestAssertionException();
 			}
@@ -73,10 +67,7 @@ namespace RI.Test.Framework.Collections
 				5
 			};
 
-			if (set.RemoveRange(new[]
-			                    {
-				                    1, 2, 30, 40, 500, 600
-			                    }) != 2)
+			if (set.RemoveRange(new[] {1, 2, 30, 40, 500, 600}) != 2)
 			{
 				throw new TestAssertionException();
 			}

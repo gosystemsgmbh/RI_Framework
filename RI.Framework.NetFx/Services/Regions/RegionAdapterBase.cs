@@ -92,11 +92,11 @@ namespace RI.Framework.Services.Regions
 				sorted.Add(element);
 			}
 			sorted.Sort((x, y) =>
-			            {
-				            int xIndex = sorted.IndexOf(x);
-				            int yIndex = sorted.IndexOf(y);
-				            return this.GetSortIndex(x, xIndex == -1 ? (int?)null : xIndex).CompareTo(this.GetSortIndex(y, yIndex == -1 ? (int?)null : yIndex));
-			            });
+			{
+				int xIndex = sorted.IndexOf(x);
+				int yIndex = sorted.IndexOf(y);
+				return this.GetSortIndex(x, xIndex == -1 ? (int?)null : xIndex).CompareTo(this.GetSortIndex(y, yIndex == -1 ? (int?)null : yIndex));
+			});
 			return sorted;
 		}
 

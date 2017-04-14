@@ -20,7 +20,7 @@ namespace RI.Framework.Data.SQLite
 	///         It also registers a default resolver using <see cref="ServiceLocatorDbDependencyResolver" />.
 	///     </para>
 	/// </remarks>
-	[SuppressMessage ("ReSharper", "InconsistentNaming")]
+	[SuppressMessage("ReSharper", "InconsistentNaming")]
 	public abstract class SQLiteDbConfiguration : DbConfiguration
 	{
 		#region Instance Constructor/Destructor

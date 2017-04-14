@@ -19,7 +19,7 @@ namespace RI.Framework.Data.SQLite.Collations
 	///         The SQL name of the collation is <c> Ordinal </c>.
 	///     </para>
 	/// </remarks>
-	[SQLiteFunction (FuncType = FunctionType.Collation, Name = "Ordinal")]
+	[SQLiteFunction(FuncType = FunctionType.Collation, Name = "Ordinal")]
 	[SuppressMessage("ReSharper", "InconsistentNaming")]
 	public sealed class OrdinalSQLiteCollation : SQLiteFunction
 	{

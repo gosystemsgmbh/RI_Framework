@@ -16,7 +16,7 @@ namespace RI.Framework.Composition.Model
 	///         Multiple <see cref="ExportAttribute" /> can be used to export a type under more than one name.
 	///     </para>
 	/// </remarks>
-	[AttributeUsage (AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = true, Inherited = false)]
+	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = true, Inherited = false)]
 	public sealed class ExportAttribute : Attribute
 	{
 		#region Instance Constructor/Destructor
@@ -93,24 +93,11 @@ namespace RI.Framework.Composition.Model
 		///     true if the this <see cref="ExportAttribute" /> is inherited, false otherwise.
 		/// </value>
 		/// <remarks>
-		/// <para>
-		/// The default value is true.
-		/// </para>
+		///     <para>
+		///         The default value is true.
+		///     </para>
 		/// </remarks>
 		public bool Inherited { get; set; }
-
-		/// <summary>
-		///     Gets or sets whether this export is a private export or not.
-		/// </summary>
-		/// <value>
-		///     true if the export is private, false if the export is shared.
-		/// </value>
-		/// <remarks>
-		/// <para>
-		/// The default value is false.
-		/// </para>
-		/// </remarks>
-		public bool Private { get; set; }
 
 		/// <summary>
 		///     Gets the name under which the decorated type is exported.
@@ -119,6 +106,19 @@ namespace RI.Framework.Composition.Model
 		///     The name under which the decorated type is exported.
 		/// </value>
 		public string Name { get; private set; }
+
+		/// <summary>
+		///     Gets or sets whether this export is a private export or not.
+		/// </summary>
+		/// <value>
+		///     true if the export is private, false if the export is shared.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         The default value is false.
+		///     </para>
+		/// </remarks>
+		public bool Private { get; set; }
 
 		#endregion
 	}

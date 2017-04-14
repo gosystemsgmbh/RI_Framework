@@ -72,10 +72,7 @@ namespace RI.Test.Framework.Collections.ObjectModel
 			Pool<int> pool = new Pool<int>();
 			IPool<int> test = pool;
 
-			if (test.ReturnRange(new[]
-			                     {
-				                     1, 2, 3
-			                     }) != 3)
+			if (test.ReturnRange(new[] {1, 2, 3}) != 3)
 			{
 				throw new TestAssertionException();
 			}
@@ -100,10 +97,7 @@ namespace RI.Test.Framework.Collections.ObjectModel
 				throw new TestAssertionException();
 			}
 
-			if (test.ReturnRange((IList<int>)new[]
-			                     {
-				                     1, 2, 3
-			                     }) != 3)
+			if (test.ReturnRange((IList<int>)new[] {1, 2, 3}) != 3)
 			{
 				throw new TestAssertionException();
 			}
@@ -128,10 +122,7 @@ namespace RI.Test.Framework.Collections.ObjectModel
 				throw new TestAssertionException();
 			}
 
-			if (test.ReturnRange((IEnumerable<int>)new[]
-			                     {
-				                     1, 2, 3
-			                     }) != 3)
+			if (test.ReturnRange((IEnumerable<int>)new[] {1, 2, 3}) != 3)
 			{
 				throw new TestAssertionException();
 			}

@@ -7,21 +7,23 @@ using System.Collections.Generic;
 namespace RI.Framework.StateMachines
 {
 	/// <summary>
-	/// Implements a base class which can be used for state implementation.
+	///     Implements a base class which can be used for state implementation.
 	/// </summary>
 	/// <remarks>
-	/// <para>
-	/// See <see cref="IState"/> for more details.
-	/// </para>
-	/// <note type="important">
-	/// Becareful when using <see cref="State"/> with performance critical code!
-	/// See <see cref="RegisterSignal{TSignal}"/> for details.
-	/// </note>
+	///     <para>
+	///         See <see cref="IState" /> for more details.
+	///     </para>
+	///     <note type="important">
+	///         Becareful when using <see cref="State" /> with performance critical code!
+	///         See <see cref="RegisterSignal{TSignal}" /> for details.
+	///     </note>
 	/// </remarks>
 	public abstract class State : IState
 	{
+		#region Instance Constructor/Destructor
+
 		/// <summary>
-		/// Creates a new instance of <see cref="State"/>.
+		///     Creates a new instance of <see cref="State" />.
 		/// </summary>
 		protected State ()
 		{
@@ -33,52 +35,124 @@ namespace RI.Framework.StateMachines
 			this.SignalHandlers = new Dictionary<Type, Delegate>();
 		}
 
+		#endregion
 
-		/// <inheritdoc />
-		public bool IsInitialized { get; protected set; }
 
-		/// <inheritdoc />
-		public bool UseCaching { get; protected set; }
+
+
+		#region Instance Properties/Indexer
 
 		/// <summary>
-		/// Gets the state machine associated with this state.
+		///     Gets the state machine associated with this state.
 		/// </summary>
 		/// <value>
-		/// The state machine associated with this state.
+		///     The state machine associated with this state.
 		/// </value>
 		/// <remarks>
-		/// <para>
-		/// <see cref="StateMachine"/> is updated before each signal or transition.
-		/// </para>
+		///     <para>
+		///         <see cref="StateMachine" /> is updated before each signal or transition.
+		///     </para>
 		/// </remarks>
 		protected StateMachine StateMachine { get; private set; }
 
 		private Dictionary<Type, Delegate> SignalHandlers { get; set; }
 
+		#endregion
 
 
-		/// <inheritdoc cref="IState.Initialize"/>
-		protected virtual void Initialize (StateMachine stateMachine)
+
+
+		#region Instance Methods
+
+		/// <summary>
+		///     Registers a type-specific signal handler.
+		/// </summary>
+		/// <typeparam name="TSignal"> The type of the signals handled by <paramref name="handler" />. </typeparam>
+		/// <param name="handler"> The delegate which handles signals of type <typeparamref name="TSignal" />. </param>
+		/// <remarks>
+		///     <note type="important">
+		///         This is a convenience method which allows you to register type-specific signal handlers, automatically routing signals to their corresponding handler based on their type.
+		///         However, this comes with a significant performance impact as the routing uses <see cref="Delegate.DynamicInvoke" />.
+		///         Do not use <see cref="RegisterSignal{TSignal}" /> for highly performance critical code!
+		///         Use <see cref="OnUnregisteredSignal" /> instead.
+		///     </note>
+		///     <para>
+		///         Any handler already registered for the signal type <typeparamref name="TSignal" /> will be unregistered first.
+		///         Only one handler for a particular signal type can be registered.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="handler" /> is null. </exception>
+		protected void RegisterSignal <TSignal> (Action<TSignal> handler)
 		{
+			if (handler == null)
+			{
+				throw new ArgumentNullException(nameof(handler));
+			}
+
+			Type type = typeof(TSignal);
+			this.SignalHandlers.Remove(type);
+			this.SignalHandlers.Add(type, handler);
 		}
 
-		/// <inheritdoc cref="IState.Enter"/>
+		/// <summary>
+		///     Unregisters the signal handler for the specified signal type.
+		/// </summary>
+		/// <typeparam name="TSignal"> The type of the signal. </typeparam>
+		/// <remarks>
+		///     <para>
+		///         Nothing happens if no signal handler for the specified signal type is registered.
+		///     </para>
+		/// </remarks>
+		protected void UnregisterSignal <TSignal> ()
+		{
+			Type type = typeof(TSignal);
+			this.SignalHandlers.Remove(type);
+		}
+
+
+		private void SetStateMachine (StateMachine stateMachine)
+		{
+			this.StateMachine = stateMachine;
+		}
+
+		#endregion
+
+
+
+
+		#region Virtuals
+
+		/// <inheritdoc cref="IState.Enter" />
 		protected virtual void Enter (StateTransientInfo transientInfo)
 		{
 		}
 
-		/// <inheritdoc cref="IState.Leave"/>
+
+		/// <inheritdoc cref="IState.Initialize" />
+		protected virtual void Initialize (StateMachine stateMachine)
+		{
+		}
+
+		/// <inheritdoc cref="IState.Leave" />
 		protected virtual void Leave (StateTransientInfo transientInfo)
 		{
 		}
 
-		/// <inheritdoc cref="IState.Signal"/>
+		/// <summary>
+		///     Called by <see cref="Signal" /> for all signals which do not match with a registered signal handler.
+		/// </summary>
+		/// <param name="signalInfo"> The executed signal. </param>
+		protected virtual void OnUnregisteredSignal (StateSignalInfo signalInfo)
+		{
+		}
+
+		/// <inheritdoc cref="IState.Signal" />
 		/// <remarks>
-		/// <para>
-		/// The default implementation checks whether signal handlers have been registered using <see cref="RegisterSignal{TSignal}"/>.
-		/// If a registered signal handler is found which matches the signals type, that signal handler is called.
-		/// Otherwise <see cref="OnUnregisteredSignal"/> is called.
-		/// </para>
+		///     <para>
+		///         The default implementation checks whether signal handlers have been registered using <see cref="RegisterSignal{TSignal}" />.
+		///         If a registered signal handler is found which matches the signals type, that signal handler is called.
+		///         Otherwise <see cref="OnUnregisteredSignal" /> is called.
+		///     </para>
 		/// </remarks>
 		protected virtual void Signal (StateSignalInfo signalInfo)
 		{
@@ -93,19 +167,29 @@ namespace RI.Framework.StateMachines
 			}
 		}
 
-		/// <summary>
-		/// Called by <see cref="Signal"/> for all signals which do not match with a registered signal handler.
-		/// </summary>
-		/// <param name="signalInfo">The executed signal.</param>
-		protected virtual void OnUnregisteredSignal (StateSignalInfo signalInfo)
+		#endregion
+
+
+
+
+		#region Interface: IState
+
+		/// <inheritdoc />
+		public bool IsInitialized { get; protected set; }
+
+		/// <inheritdoc />
+		public bool UseCaching { get; protected set; }
+
+		/// <inheritdoc />
+		void IState.Enter (StateTransientInfo transientInfo)
 		{
-		}
+			if (transientInfo == null)
+			{
+				throw new ArgumentNullException(nameof(transientInfo));
+			}
 
-
-
-		private void SetStateMachine (StateMachine stateMachine)
-		{
-			this.StateMachine = stateMachine;
+			this.SetStateMachine(transientInfo.StateMachine);
+			this.Enter(transientInfo);
 		}
 
 		/// <inheritdoc />
@@ -123,18 +207,6 @@ namespace RI.Framework.StateMachines
 			}
 
 			this.IsInitialized = true;
-		}
-
-		/// <inheritdoc />
-		void IState.Enter (StateTransientInfo transientInfo)
-		{
-			if (transientInfo == null)
-			{
-				throw new ArgumentNullException(nameof(transientInfo));
-			}
-
-			this.SetStateMachine(transientInfo.StateMachine);
-			this.Enter(transientInfo);
 		}
 
 		/// <inheritdoc />
@@ -161,50 +233,6 @@ namespace RI.Framework.StateMachines
 			this.Signal(signalInfo);
 		}
 
-
-		/// <summary>
-		/// Registers a type-specific signal handler.
-		/// </summary>
-		/// <typeparam name="TSignal">The type of the signals handled by <paramref name="handler"/>.</typeparam>
-		/// <param name="handler">The delegate which handles signals of type <typeparamref name="TSignal"/>.</param>
-		/// <remarks>
-		/// <note type="important">
-		/// This is a convenience method which allows you to register type-specific signal handlers, automatically routing signals to their corresponding handler based on their type.
-		/// However, this comes with a significant performance impact as the routing uses <see cref="Delegate.DynamicInvoke"/>.
-		/// Do not use <see cref="RegisterSignal{TSignal}"/> for highly performance critical code!
-		/// Use <see cref="OnUnregisteredSignal"/> instead.
-		/// </note>
-		/// <para>
-		/// Any handler already registered for the signal type <typeparamref name="TSignal"/> will be unregistered first.
-		/// Only one handler for a particular signal type can be registered.
-		/// </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="handler"/> is null.</exception>
-		protected void RegisterSignal<TSignal> (Action<TSignal> handler)
-		{
-			if (handler == null)
-			{
-				throw new ArgumentNullException(nameof(handler));
-			}
-
-			Type type = typeof(TSignal);
-			this.SignalHandlers.Remove(type);
-			this.SignalHandlers.Add(type, handler);
-		}
-
-		/// <summary>
-		/// Unregisters the signal handler for the specified signal type.
-		/// </summary>
-		/// <typeparam name="TSignal">The type of the signal.</typeparam>
-		/// <remarks>
-		/// <para>
-		/// Nothing happens if no signal handler for the specified signal type is registered.
-		/// </para>
-		/// </remarks>
-		protected void UnregisterSignal<TSignal> ()
-		{
-			Type type = typeof(TSignal);
-			this.SignalHandlers.Remove(type);
-		}
+		#endregion
 	}
 }

@@ -124,23 +124,23 @@ namespace RI.Framework.Composition
 	///     <para>
 	///         <b> SHARED &amp; PRIVATE EXPORTS </b>
 	///     </para>
-	/// <para>
-	/// Another distinction for exporting is shared and private exports.
-	/// </para>
-	/// <para>
-	/// Shared exports behave exactly like described above.
-	/// For type exports, the instance which is created for the type is used (shared) for all imports of the same type.
-	/// For object exports, the instance is used (shared) for all imports of the same name.
-	/// </para>
-	/// <para>
-	/// Private exports behave more or less also the same as described above, with one exception:
-	/// For type exports, imports will receive their own (private) instance each time (!) an import is resolved.
-	/// Object exports cannot be private.
-	/// </para>
-	/// <para>
-	/// An export can be made private through the <see cref="ExportAttribute.Private"/> property of <see cref="ExportAttribute"/>.
-	/// Therefore, private exports are only available for type and model based exports.
-	/// </para>
+	///     <para>
+	///         Another distinction for exporting is shared and private exports.
+	///     </para>
+	///     <para>
+	///         Shared exports behave exactly like described above.
+	///         For type exports, the instance which is created for the type is used (shared) for all imports of the same type.
+	///         For object exports, the instance is used (shared) for all imports of the same name.
+	///     </para>
+	///     <para>
+	///         Private exports behave more or less also the same as described above, with one exception:
+	///         For type exports, imports will receive their own (private) instance each time (!) an import is resolved.
+	///         Object exports cannot be private.
+	///     </para>
+	///     <para>
+	///         An export can be made private through the <see cref="ExportAttribute.Private" /> property of <see cref="ExportAttribute" />.
+	///         Therefore, private exports are only available for type and model based exports.
+	///     </para>
 	///     <para>
 	///         <b> MANUAL &amp; MODEL-BASED IMPORTING </b>
 	///     </para>
@@ -236,7 +236,7 @@ namespace RI.Framework.Composition
 	///         A <see cref="CompositionContainer" /> logs all composition operations.
 	///         <see cref="ILogService" /> is used for logging, obtained through <see cref="LogLocator" />.
 	///         If no <see cref="ILogService" /> is available, no logging is performed.
-	/// If logging is not desired, it can be disabled using <see cref="LoggingEnabled"/>.
+	///         If logging is not desired, it can be disabled using <see cref="LoggingEnabled" />.
 	///     </para>
 	/// </remarks>
 	[Export]
@@ -289,14 +289,32 @@ namespace RI.Framework.Composition
 		}
 
 		/// <summary>
-		/// Gets whether a type is exported privately (using <see cref="ExportAttribute" />).
+		///     Gets the default name of a type.
 		/// </summary>
-		/// <param name="type">The type.</param>
+		/// <param name="type"> The type whose default name is to be determined. </param>
 		/// <returns>
-		/// true if the type is exported privately, false if the type is exported shared, or null if the specified type has no exports defined.
+		///     The default name of the specified type.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="type" /> is null. </exception>
-		/// <exception cref="CompositionException">The inheritance of <paramref name="type"/> defines multiple <see cref="ExportAttribute"/> with conflicting values for <see cref="ExportAttribute.Private"/>.</exception>
+		public static string GetNameOfType (Type type)
+		{
+			if (type == null)
+			{
+				throw new ArgumentNullException(nameof(type));
+			}
+
+			return type.FullName;
+		}
+
+		/// <summary>
+		///     Gets whether a type is exported privately (using <see cref="ExportAttribute" />).
+		/// </summary>
+		/// <param name="type"> The type. </param>
+		/// <returns>
+		///     true if the type is exported privately, false if the type is exported shared, or null if the specified type has no exports defined.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="type" /> is null. </exception>
+		/// <exception cref="CompositionException"> The inheritance of <paramref name="type" /> defines multiple <see cref="ExportAttribute" /> with conflicting values for <see cref="ExportAttribute.Private" />. </exception>
 		public static bool? IsExportPrivate (Type type)
 		{
 			if (type == null)
@@ -331,24 +349,6 @@ namespace RI.Framework.Composition
 			}
 
 			return privates.FirstOrDefault(false);
-		}
-
-		/// <summary>
-		///     Gets the default name of a type.
-		/// </summary>
-		/// <param name="type"> The type whose default name is to be determined. </param>
-		/// <returns>
-		///     The default name of the specified type.
-		/// </returns>
-		/// <exception cref="ArgumentNullException"> <paramref name="type" /> is null. </exception>
-		public static string GetNameOfType (Type type)
-		{
-			if (type == null)
-			{
-				throw new ArgumentNullException(nameof(type));
-			}
-
-			return type.FullName;
 		}
 
 		/// <summary>
@@ -408,7 +408,7 @@ namespace RI.Framework.Composition
 			}
 		}
 
-		private static void IsExportPrivateInternal(Type type, bool isSelf, HashSet<bool> privates)
+		private static void IsExportPrivateInternal (Type type, bool isSelf, HashSet<bool> privates)
 		{
 			object[] attributes = type.GetCustomAttributes(typeof(ExportAttribute), false);
 			foreach (ExportAttribute attribute in attributes)
@@ -493,15 +493,15 @@ namespace RI.Framework.Composition
 		public bool AutoDispose { get; set; }
 
 		/// <summary>
-		/// Gets or sets whether logging, using <see cref="LogLocator"/>, is enabled.
+		///     Gets or sets whether logging, using <see cref="LogLocator" />, is enabled.
 		/// </summary>
 		/// <value>
-		/// true if logging is enabled, false otherwise.
+		///     true if logging is enabled, false otherwise.
 		/// </value>
 		/// <remarks>
-		/// <para>
-		/// The default value is true.
-		/// </para>
+		///     <para>
+		///         The default value is true.
+		///     </para>
 		/// </remarks>
 		public bool LoggingEnabled { get; set; }
 
@@ -646,7 +646,7 @@ namespace RI.Framework.Composition
 		/// </summary>
 		/// <param name="type"> The type to export. </param>
 		/// <param name="exportType"> The type under whose default name the type is exported. </param>
-		/// <param name="privateExport">Specifies whether the export is private (true) or shared (false).</param>
+		/// <param name="privateExport"> Specifies whether the export is private (true) or shared (false). </param>
 		/// <remarks>
 		///     <para>
 		///         If the specified type is already exported under the specified name, the composition remains unchanged.
@@ -679,7 +679,7 @@ namespace RI.Framework.Composition
 		/// </summary>
 		/// <param name="type"> The type to export. </param>
 		/// <param name="exportName"> The name under which the type is exported. </param>
-		/// <param name="privateExport">Specifies whether the export is private (true) or shared (false).</param>
+		/// <param name="privateExport"> Specifies whether the export is private (true) or shared (false). </param>
 		/// <remarks>
 		///     <para>
 		///         If the specified type is already exported under the specified type, the composition remains unchanged.
@@ -815,7 +815,8 @@ namespace RI.Framework.Composition
 		///     The first resolved value which is exported under the specified types default name and which is of type <typeparamref name="T" />, null if no such value could be resolved.
 		/// </returns>
 		/// <exception cref="CompositionException"> The resolving failed although matching exports were found. </exception>
-		public T GetExport <T> () where T : class
+		public T GetExport <T> ()
+			where T : class
 		{
 			return this.GetExport<T>(CompositionContainer.GetNameOfType(typeof(T)));
 		}
@@ -830,7 +831,8 @@ namespace RI.Framework.Composition
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="exportType" /> is null. </exception>
 		/// <exception cref="CompositionException"> The resolving failed although matching exports were found. </exception>
-		public T GetExport <T> (Type exportType) where T : class
+		public T GetExport <T> (Type exportType)
+			where T : class
 		{
 			if (exportType == null)
 			{
@@ -851,7 +853,8 @@ namespace RI.Framework.Composition
 		/// <exception cref="ArgumentNullException"> <paramref name="exportName" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="exportName" /> is an empty string. </exception>
 		/// <exception cref="CompositionException"> The resolving failed although matching exports were found. </exception>
-		public T GetExport <T> (string exportName) where T : class
+		public T GetExport <T> (string exportName)
+			where T : class
 		{
 			if (exportName == null)
 			{
@@ -876,7 +879,8 @@ namespace RI.Framework.Composition
 		///     The list is empty if no values could be resolved or none of the values are of type <typeparamref name="T" />.
 		/// </returns>
 		/// <exception cref="CompositionException"> The resolving failed although matching exports were found. </exception>
-		public List<T> GetExports <T> () where T : class
+		public List<T> GetExports <T> ()
+			where T : class
 		{
 			return this.GetExports<T>(CompositionContainer.GetNameOfType(typeof(T)));
 		}
@@ -892,7 +896,8 @@ namespace RI.Framework.Composition
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="exportType" /> is null. </exception>
 		/// <exception cref="CompositionException"> The resolving failed although matching exports were found. </exception>
-		public List<T> GetExports <T> (Type exportType) where T : class
+		public List<T> GetExports <T> (Type exportType)
+			where T : class
 		{
 			if (exportType == null)
 			{
@@ -914,7 +919,8 @@ namespace RI.Framework.Composition
 		/// <exception cref="ArgumentNullException"> <paramref name="exportName" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="exportName" /> is an empty string. </exception>
 		/// <exception cref="CompositionException"> The resolving failed although matching exports were found. </exception>
-		public List<T> GetExports <T> (string exportName) where T : class
+		public List<T> GetExports <T> (string exportName)
+			where T : class
 		{
 			if (exportName == null)
 			{
@@ -1190,7 +1196,7 @@ namespace RI.Framework.Composition
 		/// <exception cref="ArgumentNullException"> <paramref name="obj" /> is null. </exception>
 		/// <exception cref="InvalidTypeArgumentException"> <paramref name="obj" /> is not a type which can be composed. </exception>
 		/// <exception cref="CompositionException"> The imports for <paramref name="obj" /> cannot be resolved. </exception>
-		[SuppressMessage ("ReSharper", "RedundantAssignment")]
+		[SuppressMessage("ReSharper", "RedundantAssignment")]
 		public bool ResolveImports (object obj, CompositionFlags composition)
 		{
 			if (obj == null)
@@ -1304,10 +1310,7 @@ namespace RI.Framework.Composition
 							{
 								this.Log("Updating import ({0}): {1} @ {2}", composition, property.Name, obj.GetType().FullName);
 
-								setMethod.Invoke(obj, new[]
-								                 {
-									                 newValue
-								                 });
+								setMethod.Invoke(obj, new[] {newValue});
 							}
 						}
 
@@ -1572,7 +1575,7 @@ namespace RI.Framework.Composition
 			this.Types.RemoveAll(x => (x.Type == type) && CompositionContainer.NameComparer.Equals(x.Name, name));
 		}
 
-		[SuppressMessage ("ReSharper", "ConstantConditionalAccessQualifier")]
+		[SuppressMessage("ReSharper", "ConstantConditionalAccessQualifier")]
 		private void UpdateComposition (bool recompose)
 		{
 			foreach (KeyValuePair<string, CompositionItem> compositionItem in this.Composition)
@@ -1647,23 +1650,23 @@ namespace RI.Framework.Composition
 			foreach (KeyValuePair<string, CompositionItem> compositionItem in this.Composition)
 			{
 				compositionItem.Value.Instances.RemoveWhere(x => !x.Checked).ForEach(x =>
-				                                                                     {
-					                                                                     this.Log("Instance removed from container: {0} / {1}", compositionItem.Key, x?.Instance?.GetType()?.FullName ?? "[null]");
-					                                                                     (x?.Instance as IExporting)?.RemovedFromContainer(compositionItem.Key, this);
-					                                                                     if (this.AutoDispose)
-					                                                                     {
-						                                                                     (x?.Instance as IDisposable)?.Dispose();
-					                                                                     }
-				                                                                     });
+				{
+					this.Log("Instance removed from container: {0} / {1}", compositionItem.Key, x?.Instance?.GetType()?.FullName ?? "[null]");
+					(x?.Instance as IExporting)?.RemovedFromContainer(compositionItem.Key, this);
+					if (this.AutoDispose)
+					{
+						(x?.Instance as IDisposable)?.Dispose();
+					}
+				});
 				compositionItem.Value.Types.RemoveWhere(x => !x.Checked).ForEach(x =>
-				                                                                 {
-					                                                                 this.Log("Type removed from container: {0} / {1}", compositionItem.Key, x?.Instance?.GetType()?.FullName ?? "[null]");
-					                                                                 (x?.Instance as IExporting)?.RemovedFromContainer(compositionItem.Key, this);
-					                                                                 if (this.AutoDispose)
-					                                                                 {
-						                                                                 (x?.Instance as IDisposable)?.Dispose();
-					                                                                 }
-				                                                                 });
+				{
+					this.Log("Type removed from container: {0} / {1}", compositionItem.Key, x?.Instance?.GetType()?.FullName ?? "[null]");
+					(x?.Instance as IExporting)?.RemovedFromContainer(compositionItem.Key, this);
+					if (this.AutoDispose)
+					{
+						(x?.Instance as IDisposable)?.Dispose();
+					}
+				});
 				compositionItem.Value.ResetChecked();
 			}
 
@@ -1817,9 +1820,9 @@ namespace RI.Framework.Composition
 
 			public object Instance { get; set; }
 
-			public Type Type { get; private set; }
-
 			public bool PrivateExport { get; private set; }
+
+			public Type Type { get; private set; }
 
 			#endregion
 		}

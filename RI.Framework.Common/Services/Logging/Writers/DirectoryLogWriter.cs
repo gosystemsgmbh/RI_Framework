@@ -30,8 +30,7 @@ namespace RI.Framework.Services.Logging.Writers
 	///     </para>
 	/// </remarks>
 	[Export]
-	public sealed class DirectoryLogWriter : ILogWriter,
-	                                         IDisposable
+	public sealed class DirectoryLogWriter : ILogWriter, IDisposable
 	{
 		#region Constants
 
@@ -106,10 +105,7 @@ namespace RI.Framework.Services.Logging.Writers
 			this.CommonDirectory = directory;
 
 			this.SyncRoot = new object();
-			this.CurrentLengths = new int[]
-			{
-				0, 0, 0, 0, 0, 0,
-			};
+			this.CurrentLengths = new int[] {0, 0, 0, 0, 0, 0,};
 
 			this.CurrentDirectory = this.CommonDirectory.AppendDirectory(timestamp.ToSortableString('-'));
 
@@ -192,9 +188,9 @@ namespace RI.Framework.Services.Logging.Writers
 
 		private int[] CurrentLengths { get; set; }
 
-		private StreamWriter CurrentWriter { get; set; }
-
 		private FileStream CurrentStream { get; set; }
+
+		private StreamWriter CurrentWriter { get; set; }
 
 		private object SyncRoot { get; set; }
 
@@ -206,21 +202,21 @@ namespace RI.Framework.Services.Logging.Writers
 		#region Instance Methods
 
 		/// <summary>
-		/// Closes this log writer and all used underlying streams.
+		///     Closes this log writer and all used underlying streams.
 		/// </summary>
 		/// <remarks>
-		/// <para>
-		/// After the log writer is closed, all calls to <see cref="Log"/> do not have any effect but do not fail.
-		/// </para>
+		///     <para>
+		///         After the log writer is closed, all calls to <see cref="Log" /> do not have any effect but do not fail.
+		///     </para>
 		/// </remarks>
-		public void Close()
+		public void Close ()
 		{
 			this.Dispose(true);
 			GC.SuppressFinalize(this);
 		}
 
 		[SuppressMessage("ReSharper", "UnusedParameter.Local")]
-		[SuppressMessage ("ReSharper", "EmptyGeneralCatchClause")]
+		[SuppressMessage("ReSharper", "EmptyGeneralCatchClause")]
 		private void Dispose (bool disposing)
 		{
 			lock (this.SyncRoot)
@@ -290,6 +286,12 @@ namespace RI.Framework.Services.Logging.Writers
 		#region Interface: ILogWriter
 
 		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		object ISynchronizable.SyncRoot => this.SyncRoot;
+
+		/// <inheritdoc />
 		public void Cleanup (DateTime retentionDate)
 		{
 			lock (this.SyncRoot)
@@ -328,7 +330,7 @@ namespace RI.Framework.Services.Logging.Writers
 		}
 
 		/// <inheritdoc />
-		[SuppressMessage ("ReSharper", "EmptyGeneralCatchClause")]
+		[SuppressMessage("ReSharper", "EmptyGeneralCatchClause")]
 		public void Log (DateTime timestamp, int threadId, LogLevel severity, string source, string message)
 		{
 			lock (this.SyncRoot)
@@ -387,12 +389,6 @@ namespace RI.Framework.Services.Logging.Writers
 				}
 			}
 		}
-
-		/// <inheritdoc />
-		bool ISynchronizable.IsSynchronized => true;
-
-		/// <inheritdoc />
-		object ISynchronizable.SyncRoot => this.SyncRoot;
 
 		#endregion
 	}

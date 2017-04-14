@@ -447,20 +447,20 @@ namespace RI.Framework.Utilities.Windows
 			NativeWindows.ShowWindow(hWnd, (int)NativeWindows.SwShow);
 		}
 
-		[DllImport ("user32.dll", SetLastError = false)]
-		[return: MarshalAs (UnmanagedType.Bool)]
+		[DllImport("user32.dll", SetLastError = false)]
+		[return: MarshalAs(UnmanagedType.Bool)]
 		private static extern bool BringWindowToTop (IntPtr hWnd);
 
-		[DllImport ("user32.dll", SetLastError = false, EntryPoint = "EnableWindow")]
-		[return: MarshalAs (UnmanagedType.Bool)]
-		private static extern bool EnableWindowInternal (IntPtr hWnd, [MarshalAs (UnmanagedType.Bool)] bool enable);
+		[DllImport("user32.dll", SetLastError = false, EntryPoint = "EnableWindow")]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		private static extern bool EnableWindowInternal (IntPtr hWnd, [MarshalAs(UnmanagedType.Bool)] bool enable);
 
-		[DllImport ("user32.dll", SetLastError = false)]
-		[return: MarshalAs (UnmanagedType.Bool)]
+		[DllImport("user32.dll", SetLastError = false)]
+		[return: MarshalAs(UnmanagedType.Bool)]
 		private static extern bool EnumChildWindows (IntPtr hWnd, EnumChildWindowsProc lpEnumFunc, IntPtr lParam);
 
-		[DllImport ("user32.dll", SetLastError = false)]
-		[return: MarshalAs (UnmanagedType.Bool)]
+		[DllImport("user32.dll", SetLastError = false)]
+		[return: MarshalAs(UnmanagedType.Bool)]
 		private static extern bool EnumWindows (EnumWindowsProc lpEnumFunc, IntPtr lParam);
 
 		private static bool FindChildWindowsProc (IntPtr hWnd, ref IntPtr lParam)
@@ -475,44 +475,44 @@ namespace RI.Framework.Utilities.Windows
 			return true;
 		}
 
-		[DllImport ("user32.dll", SetLastError = false)]
-		[return: MarshalAs (UnmanagedType.Bool)]
+		[DllImport("user32.dll", SetLastError = false)]
+		[return: MarshalAs(UnmanagedType.Bool)]
 		private static extern bool GetLastInputInfo (ref LASTINPUTINFO plii);
 
-		[DllImport ("user32.dll", SetLastError = false)]
-		[return: MarshalAs (UnmanagedType.Bool)]
+		[DllImport("user32.dll", SetLastError = false)]
+		[return: MarshalAs(UnmanagedType.Bool)]
 		private static extern bool GetWindowInfo (IntPtr hwnd, ref WINDOWINFO pwi);
 
-		[DllImport ("user32.dll", SetLastError = false)]
-		[return: MarshalAs (UnmanagedType.Bool)]
+		[DllImport("user32.dll", SetLastError = false)]
+		[return: MarshalAs(UnmanagedType.Bool)]
 		private static extern bool GetWindowPlacement (IntPtr hWnd, ref WINDOWPLACEMENT lpwndpl);
 
-		[DllImport ("user32.dll", SetLastError = false)]
+		[DllImport("user32.dll", SetLastError = false)]
 		private static extern uint GetWindowThreadProcessId (IntPtr hWnd, ref int lpdwProcessId);
 
-		[DllImport ("User32.dll", SetLastError = false)]
-		[return: MarshalAs (UnmanagedType.Bool)]
-		private static extern bool MoveWindow (IntPtr handle, int x, int y, int width, int height, [MarshalAs (UnmanagedType.Bool)] bool redraw);
+		[DllImport("User32.dll", SetLastError = false)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		private static extern bool MoveWindow (IntPtr handle, int x, int y, int width, int height, [MarshalAs(UnmanagedType.Bool)] bool redraw);
 
-		[DllImport ("user32.dll", SetLastError = false, EntryPoint = "SendMessageTimeout")]
+		[DllImport("user32.dll", SetLastError = false, EntryPoint = "SendMessageTimeout")]
 		private static extern IntPtr SendMessageTimeout1 (IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam, uint fuFlags, uint uTimeout, ref int lpdwResult);
 
-		[DllImport ("user32.dll", SetLastError = false, EntryPoint = "SendMessageTimeout", CharSet = CharSet.Unicode)]
+		[DllImport("user32.dll", SetLastError = false, EntryPoint = "SendMessageTimeout", CharSet = CharSet.Unicode)]
 		private static extern IntPtr SendMessageTimeout2 (IntPtr hWnd, uint msg, IntPtr wParam, StringBuilder lParam, uint fuFlags, uint uTimeout, ref IntPtr lpdwResult);
 
-		[DllImport ("user32.dll", SetLastError = false)]
+		[DllImport("user32.dll", SetLastError = false)]
 		private static extern IntPtr SetActiveWindow (IntPtr hWnd);
 
-		[DllImport ("user32.dll", SetLastError = false)]
-		[return: MarshalAs (UnmanagedType.Bool)]
+		[DllImport("user32.dll", SetLastError = false)]
+		[return: MarshalAs(UnmanagedType.Bool)]
 		private static extern bool SetForegroundWindow (IntPtr hWnd);
 
-		[DllImport ("user32.dll", SetLastError = false)]
-		[return: MarshalAs (UnmanagedType.Bool)]
+		[DllImport("user32.dll", SetLastError = false)]
+		[return: MarshalAs(UnmanagedType.Bool)]
 		private static extern bool SetWindowPos (IntPtr hWnd, IntPtr hWndInsertAfter, int x, int y, int cx, int cy, uint uFlags);
 
-		[DllImport ("user32.dll", SetLastError = false)]
-		[return: MarshalAs (UnmanagedType.Bool)]
+		[DllImport("user32.dll", SetLastError = false)]
+		[return: MarshalAs(UnmanagedType.Bool)]
 		private static extern bool ShowWindow (IntPtr hWnd, int nCmdShow);
 
 		#endregion
@@ -540,8 +540,8 @@ namespace RI.Framework.Utilities.Windows
 
 		#region Type: LASTINPUTINFO
 
-		[StructLayout (LayoutKind.Sequential)]
-		[SuppressMessage ("ReSharper", "InconsistentNaming")]
+		[StructLayout(LayoutKind.Sequential)]
+		[SuppressMessage("ReSharper", "InconsistentNaming")]
 		private struct LASTINPUTINFO
 		{
 			public uint cbSize;
@@ -556,8 +556,8 @@ namespace RI.Framework.Utilities.Windows
 
 		#region Type: POINT
 
-		[StructLayout (LayoutKind.Sequential)]
-		[SuppressMessage ("ReSharper", "InconsistentNaming")]
+		[StructLayout(LayoutKind.Sequential)]
+		[SuppressMessage("ReSharper", "InconsistentNaming")]
 		private struct POINT
 		{
 			public int X;
@@ -572,8 +572,8 @@ namespace RI.Framework.Utilities.Windows
 
 		#region Type: RECT
 
-		[StructLayout (LayoutKind.Sequential)]
-		[SuppressMessage ("ReSharper", "InconsistentNaming")]
+		[StructLayout(LayoutKind.Sequential)]
+		[SuppressMessage("ReSharper", "InconsistentNaming")]
 		private struct RECT
 		{
 			public int Left;
@@ -592,8 +592,8 @@ namespace RI.Framework.Utilities.Windows
 
 		#region Type: WINDOWINFO
 
-		[StructLayout (LayoutKind.Sequential)]
-		[SuppressMessage ("ReSharper", "InconsistentNaming")]
+		[StructLayout(LayoutKind.Sequential)]
+		[SuppressMessage("ReSharper", "InconsistentNaming")]
 		private struct WINDOWINFO
 		{
 			public uint cbSize;
@@ -624,8 +624,8 @@ namespace RI.Framework.Utilities.Windows
 
 		#region Type: WINDOWPLACEMENT
 
-		[StructLayout (LayoutKind.Sequential)]
-		[SuppressMessage ("ReSharper", "InconsistentNaming")]
+		[StructLayout(LayoutKind.Sequential)]
+		[SuppressMessage("ReSharper", "InconsistentNaming")]
 		private struct WINDOWPLACEMENT
 		{
 			public uint Length;

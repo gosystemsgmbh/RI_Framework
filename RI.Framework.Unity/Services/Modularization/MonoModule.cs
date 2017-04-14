@@ -24,8 +24,7 @@ namespace RI.Framework.Services.Modularization
 	///     </note>
 	/// </remarks>
 	[Export]
-	public abstract class MonoModule : MonoBehaviour,
-	                                   IModule
+	public abstract class MonoModule : MonoBehaviour, IModule
 	{
 		#region Static Methods
 
