@@ -31,16 +31,6 @@
                         <codeEntityReference qualifyHint="false">T:RI.Framework.Utilities.Threading.HeavyThread</codeEntityReference>
                     </para>
                 </listItem>-->
-                <!--<listItem>
-                    <para>
-                        <codeEntityReference qualifyHint="false">T:RI.Framework.Utilities.Threading.ThreadDispatcher</codeEntityReference>
-                    </para>
-                </listItem>-->
-                <!--<listItem>
-                    <para>
-                        <codeEntityReference qualifyHint="false">T:RI.Framework.Utilities.Threading.HeavyThreadDispatcher</codeEntityReference>
-                    </para>
-                </listItem>-->
                 <listItem>
                     <para>
                         <codeEntityReference qualifyHint="false">T:RI.Framework.Collections.Comparison.CollectionComparer`1</codeEntityReference>

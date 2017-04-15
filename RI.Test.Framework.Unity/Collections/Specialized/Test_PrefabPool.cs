@@ -7,7 +7,7 @@ using UnityEngine;
 
 
 
-namespace RI.Test.Framework.Cases.Collections.Specialized
+namespace RI.Test.Framework.Collections.Specialized
 {
 	public sealed class Test_PrefabPool : TestModule
 	{

@@ -9,7 +9,7 @@ using RI.Framework.Services.Dispatcher;
 
 
 
-namespace RI.Test.Framework.Cases.Services.Dispatcher
+namespace RI.Test.Framework.Services.Dispatcher
 {
 	public sealed class Test_DispatcherOperation : TestModule
 	{

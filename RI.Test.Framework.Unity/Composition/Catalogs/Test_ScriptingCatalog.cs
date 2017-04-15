@@ -5,7 +5,7 @@ using RI.Framework.Services;
 
 
 
-namespace RI.Test.Framework.Cases.Composition.Catalogs
+namespace RI.Test.Framework.Composition.Catalogs
 {
 	public sealed class Test_ScriptingCatalog : TestModule
 	{

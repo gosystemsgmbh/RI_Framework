@@ -54,7 +54,7 @@
             <list class="bullet">
                 <listItem>
                     <para>
-                        <legacyBold>LINQ replacement</legacyBold>; for using a subset of LINQ without dependency on reflection and for deterministic non-deferred execution
+                        <legacyBold>LINQ replacement</legacyBold>; AOT-compatible subset of LINQ and with immediate execution
                     </para>
                 </listItem>
                 <listItem>
@@ -70,11 +70,6 @@
                 <listItem>
                     <para>
                         <legacyBold>ThreadMover</legacyBold>; allows at-will-switching between threads and dispatchers in a coroutine
-                    </para>
-                </listItem>
-                <listItem>
-                    <para>
-                        <legacyBold>Thread management</legacyBold>; heavyweight/dedicated threads, standalone dispatchers, etc.
                     </para>
                 </listItem>
                 <listItem>

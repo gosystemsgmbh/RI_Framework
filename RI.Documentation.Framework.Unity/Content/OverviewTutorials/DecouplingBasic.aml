@@ -57,22 +57,14 @@ go.AddComponent<Bootstrapper>();
             </content>
         </section>
 
-        <section address="IModuleService">
-            <title>IModuleService</title>
+        <section address="ModuleService">
+            <title>ModuleService</title>
             <content>
                 <para>
-                    An implementation of
-                    <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.IModuleService</codeEntityReference>
-                    is used to implement and manage modules.
-                    Modules are very similar to singletons as they are started once and then used throughout the game.
-                    Typical examples for modules are &quot;Controllers&quot; or &quot;Managers&quot; (e.g. PlayerController, EnemyManager, etc.) or globally available services and functionality in general.
-                </para>
-                <para>
-                    The default implementation of
-                    <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.IModuleService</codeEntityReference>
-                    is
                     <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.ModuleService</codeEntityReference>
-                    .
+                    is used to implement and manage modules.
+                    Modules are very similar to singletons as they are instantiated and started once and then used throughout the game.
+                    Typical examples for modules are &quot;Controllers&quot; or &quot;Managers&quot; (e.g. PlayerController, EnemyManager, etc.) or globally available services and functionality in general.
                 </para>
                 <para>
                     To implement a module, simply add a class to your project which inherits from
@@ -334,7 +326,7 @@ public class DumbEnemyAI : IEnemyAI
 [Export]
 public class EnemyManager : MonoModule
 {
-    // importing multiple instances is only possible with the Import proxy type because we would otherwise have a dependency on System.Reflection.Emit
+    // importing multiple instances is only possible with the Import proxy in order to be AOT-compatible
     // this is also why we need to explicitly specify the desired type
 
     [Import(typeof(IEnemyAI))]
@@ -441,23 +433,15 @@ public class EnemyManager : MonoModule
             </content>
         </section>
 
-        <section address="IDispatcherService_Messaging">
-            <title>IDispatcherService (Messaging)</title>
+        <section address="DispatcherService_Messaging">
+            <title>DispatcherService (Messaging)</title>
             <content>
                 <para>
-                    An implementation of
-                    <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.IDispatcherService</codeEntityReference>
+                    <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.DispatcherService</codeEntityReference>
                     is used to send and receive messages.
                     Sending and receiving messages is very simple: Any object which has access to
-                    <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.IDispatcherService</codeEntityReference>
-                    (e.g. by using property-based importing or through the service locator) can send and receive messages.
-                </para>
-                <para>
-                    The default implementation of
-                    <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.IDispatcherService</codeEntityReference>
-                    is
                     <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.DispatcherService</codeEntityReference>
-                    .
+                    (e.g. by using property-based importing or through the service locator) can send and receive messages.
                 </para>
                 <para>
                     To receive a message of a specified type, a receiver needs to be registered:
@@ -477,7 +461,7 @@ public class KillEvent
 public class GameRules : MonoModule
 {
     [Import]
-    public IDispatcherService Dispatcher { get; set; }
+    public DispatcherService Dispatcher { get; set; }
   
     private void OnKill(KillEvent killEvent)
     {
@@ -512,7 +496,7 @@ public class KillEvent
 public class EnemyManager : MonoModule
 {
     [Import]
-    public IDispatcherService Dispatcher { get; set; }
+    public DispatcherService Dispatcher { get; set; }
 
     void Update ()
     {
@@ -552,8 +536,8 @@ public class EnemyManager : MonoModule
             <title>IDispatcherService (Jobs)</title>
             <content>
                 <para>
-                    Besides messaging, an implementation of
-                    <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.IDispatcherService</codeEntityReference>
+                    Besides messaging,
+                    <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.DispatcherService</codeEntityReference>
                     also lets you dispatch operations (or jobs).
                 </para>
                 <para>
@@ -574,7 +558,7 @@ using RI.Framework.Services.Modularization;
 public class MyModule : MonoModule
 {
     [Import]
-    public IDispatcherService Dispatcher { get; set; }
+    public DispatcherService Dispatcher { get; set; }
 
     protected override void Initialize ()
     {
@@ -600,7 +584,7 @@ using RI.Framework.Services.Modularization;
 public class MyModule : MonoModule
 {
     [Import]
-    public IDispatcherService Dispatcher { get; set; }
+    public DispatcherService Dispatcher { get; set; }
 
     protected override void Initialize ()
     {

@@ -12,7 +12,7 @@ using UnityEngine;
 namespace RI.Framework.Utilities.Threading
 {
 	/// <summary>
-	///     Yield instruction to move a task to an <see cref="IDispatcherService" /> or an <see cref="IThreadDispatcher" />.
+	///     Yield instruction to move a task to an <see cref="IDispatcherService" />.
 	/// </summary>
 	/// <remarks>
 	///     <para>
@@ -82,23 +82,6 @@ namespace RI.Framework.Utilities.Threading
 
 			this.DispatcherService = dispatcherService;
 			this.Priority = priority;
-			this.ThreadDispatcher = null;
-		}
-
-		/// <summary>
-		///     Creates a new instance of <see cref="ToDispatcher" />.
-		/// </summary>
-		/// <param name="threadDispatcher"> The dispatcher to use. </param>
-		/// <exception cref="ArgumentNullException"> <paramref name="threadDispatcher" /> is null. </exception>
-		public ToDispatcher (IThreadDispatcher threadDispatcher)
-		{
-			if (threadDispatcher == null)
-			{
-				throw new ArgumentNullException(nameof(threadDispatcher));
-			}
-
-			this.DispatcherService = null;
-			this.ThreadDispatcher = threadDispatcher;
 		}
 
 		#endregion
@@ -123,14 +106,6 @@ namespace RI.Framework.Utilities.Threading
 		///     The used priority if a <see cref="IDispatcherService" /> is used, undefined otherwise.
 		/// </value>
 		public DispatcherPriority Priority { get; }
-
-		/// <summary>
-		///     Gets the used <see cref="IThreadDispatcher" />.
-		/// </summary>
-		/// <value>
-		///     The used <see cref="IThreadDispatcher" /> if used, null otherwise.
-		/// </value>
-		public IThreadDispatcher ThreadDispatcher { get; }
 
 		#endregion
 	}

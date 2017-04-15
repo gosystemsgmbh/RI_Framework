@@ -12,15 +12,15 @@ using RI.Framework.Utilities.Comparison;
 namespace RI.Framework.Collections.DirectLinq
 {
 	/// <summary>
-	///     Provides a LINQ replacement with utility/extension methods for the <see cref="IEnumerable{T}" /> type and its implementations.
+	///     Provides an AOT-compatible LINQ replacement with utility/extension methods for the <see cref="IEnumerable{T}" /> type and its implementations.
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         <see cref="DirectLinqExtensions" /> provides a LINQ replacement which uses non-deferred execution and does not depend on reflection.
+	///         <see cref="DirectLinqExtensions" /> provides an AOT-compatible LINQ replacement which uses non-deferred execution and does not depend on reflection.
 	///         Therefore, the LINQ query is executed at the time a <see cref="DirectLinqExtensions" /> method is called, not at the time its result is eventually enumerated.
 	///     </para>
 	///     <para>
-	///         Normal LINQ query expressions, such as <c> from x in values where x.IsActive select x </c>, can still be used.
+	///         LINQ query expressions, such as <c> from x in values where x.IsActive select x </c>, can still be used.
 	///         Just replace the namespace <see cref="System.Linq" /> (<c> using System.Linq; </c>) with <see cref="RI.Framework.Collections.DirectLinq" /> (<c> using RI.Framework.Collections.DirectLinq; </c>).
 	///     </para>
 	///     <note type="important">
@@ -42,6 +42,8 @@ namespace RI.Framework.Collections.DirectLinq
 	/// var array1 = new string[] { "Test", "123", "abc" };
 	/// 
 	/// var array2 = (from x in array1 where x.Length <= 3 select x.ToUpperInvariant()).ToArray();
+	/// 
+	/// var array3 = array1.Where(x => x.Length <= 3).Select(x => x.ToUpperInvariant()).ToArray();
 	/// ]]>
 	/// </code>
 	/// </example>

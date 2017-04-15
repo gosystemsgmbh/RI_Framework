@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 
 
-namespace RI.Framework.StateMachines
+namespace RI.Framework.StateMachines.Caches
 {
 	/// <summary>
 	///     Implements a default state cache suitable for most scenarios.

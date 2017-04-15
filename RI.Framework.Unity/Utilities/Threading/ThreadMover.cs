@@ -47,7 +47,7 @@ namespace RI.Framework.Utilities.Threading
 	///         If the coroutine is already executed in a <see cref="ThreadPool" /> thread, it is re-queued
 	///     </para>
 	///     <para>
-	///         <see cref="ToDispatcher" /> dispatches the continuation of the coroutine to an <see cref="IDispatcherService" /> or an <see cref="IThreadDispatcher" />.
+	///         <see cref="ToDispatcher" /> dispatches the continuation of the coroutine to an <see cref="IDispatcherService" />.
 	///         If the coroutine is already executed by a dispatcher, its continuation is re-dispatched.
 	///     </para>
 	///     <para>
@@ -85,23 +85,27 @@ namespace RI.Framework.Utilities.Threading
 	///  
 	/// 			yield return new ToBackground();
 	///  
-	///  		// Now I'm running in a background thread
+	///  			// Now I'm running in a background thread (from the ThreadPool)
 	///  
-	///  		yield return new ToForeground();
+	///  			yield return new ToForeground();
 	///  
 	/// 			// I'm back in the main/foreground thread
 	///  
-	///  		yield return new ToHeavyThread(ThreadPriority.BelowNormal);
+	///  			yield return new ToHeavyThread(ThreadPriority.BelowNormal);
 	///  
 	/// 			// Now I'm in my own dedicated thread with a custom priority
 	///  
-	///  		yield return new ToDispatcher();
+	///  			yield return new ToDispatcher();
 	///  
-	///  		// Now I'm being dispatched (in the main/foreground thread)
+	///  			// Now I'm being dispatched (in the main/foreground thread)
 	///  
 	/// 			yield return new ToBackground();
 	///  
-	///  		// And back in the background
+	///  			// And back in the background
+	///  
+	///  			yield return new ToDispatcher(DispatcherPriority.Idle);
+	///  
+	///  			// And now dispatched again, when the dispatcher is idle
 	///  
 	/// 			yield return new WaitForSeconds(2);
 	///  
@@ -214,9 +218,9 @@ namespace RI.Framework.Utilities.Threading
 				ThreadPool.QueueUserWorkItem(x => ((HeavyThreadExecutor)x).Stop(), this);
 			}
 
-			protected override void OnStart ()
+			protected override void OnStarting ()
 			{
-				base.OnStart();
+				base.OnStarting();
 
 				this.Thread.IsBackground = true;
 				this.Thread.Priority = this.Priority;
@@ -284,14 +288,7 @@ namespace RI.Framework.Utilities.Threading
 
 				if (toDispatcher != null)
 				{
-					if (toDispatcher.DispatcherService != null)
-					{
-						toDispatcher.DispatcherService.Dispatch(toDispatcher.Priority, this.HandleBackground);
-					}
-					else
-					{
-						toDispatcher.ThreadDispatcher.Post(new Action<MoveableTask>(x => x.HandleBackground()), this);
-					}
+					toDispatcher.DispatcherService.Dispatch(toDispatcher.Priority, this.HandleBackground);
 					return;
 				}
 
@@ -352,14 +349,7 @@ namespace RI.Framework.Utilities.Threading
 
 				if (toDispatcher != null)
 				{
-					if (toDispatcher.DispatcherService != null)
-					{
-						toDispatcher.DispatcherService.Dispatch(toDispatcher.Priority, this.HandleBackground);
-					}
-					else
-					{
-						toDispatcher.ThreadDispatcher.Post(new Action<MoveableTask>(x => x.HandleBackground()), this);
-					}
+					toDispatcher.DispatcherService.Dispatch(toDispatcher.Priority, this.HandleBackground);
 					return false;
 				}
 

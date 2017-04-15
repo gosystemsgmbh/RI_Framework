@@ -268,9 +268,26 @@ namespace RI.Framework.Utilities.Threading
 		}
 
 		/// <inheritdoc />
-		protected override void OnStart ()
+		protected override void OnStarted ()
 		{
-			base.OnStart();
+			base.OnStarted();
+
+			//TODO: Use WaitOne in NetFx
+			DateTime start = DateTime.UtcNow;
+			while (!this.DispatcherInternal.IsRunning)
+			{
+				Thread.Sleep(10);
+				if (DateTime.UtcNow.Subtract(start).TotalMilliseconds > this.Timeout)
+				{
+					throw new TimeoutException("Timeout while waiting for dispatcher to start running.");
+				}
+			}
+		}
+
+		/// <inheritdoc />
+		protected override void OnStarting ()
+		{
+			base.OnStarting();
 
 			this.Thread.Name = this.ThreadName;
 			this.Thread.Priority = this.ThreadPriority;

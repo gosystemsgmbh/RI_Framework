@@ -126,6 +126,15 @@
     <Compile Include="Services\Settings\SettingService.cs" />
     <Compile Include="Services\Settings\Storages\_NamespaceDoc.cs" />
     <Compile Include="Services\Settings\_NamespaceDoc.cs" />
+    <Compile Include="StateMachines\Dispatchers\ThreadDispatcherStateDispatcher.cs" />
+    <Compile Include="Utilities\Threading\HeavyThreadDispatcher.cs" />
+    <Compile Include="Utilities\Threading\IThreadDispatcher.cs" />
+    <Compile Include="Utilities\Threading\ThreadDispatcher.cs" />
+    <Compile Include="Utilities\Threading\ThreadDispatcherException.cs" />
+    <Compile Include="Utilities\Threading\ThreadDispatcherExceptionEventArgs.cs" />
+    <Compile Include="Utilities\Threading\ThreadDispatcherOperation.cs" />
+    <Compile Include="Utilities\Threading\ThreadDispatcherOperationState.cs" />
+    <Compile Include="Utilities\Threading\ThreadDispatcherShutdownMode.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\AssemblyName.snk" />

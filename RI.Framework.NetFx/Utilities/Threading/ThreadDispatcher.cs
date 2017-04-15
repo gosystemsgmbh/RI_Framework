@@ -122,7 +122,11 @@ namespace RI.Framework.Utilities.Threading
 		{
 			while (true)
 			{
+#if PLATFORM_NETFX
 				this.Posted.WaitOne();
+#else
+				this.Posted.WaitOne(10);
+#endif
 
 				lock (this.SyncRoot)
 				{
@@ -307,10 +311,7 @@ namespace RI.Framework.Utilities.Threading
 		{
 			while (true)
 			{
-				xxx;
-				Thread.Sleep(100);
-
-				this.Send(new Action(this.VerifyRunning));
+				this.Send(new Action(() => { }));
 
 				lock (this.SyncRoot)
 				{

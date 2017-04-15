@@ -6,7 +6,7 @@ using RI.Framework.Services;
 
 
 
-namespace RI.Framework.StateMachines
+namespace RI.Framework.StateMachines.Resolvers
 {
 	/// <summary>
 	///     Implements a default state instance resolver suitable for most scenarios.

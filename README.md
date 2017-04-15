@@ -4,6 +4,8 @@
 
 - [ ] Documentation
   - [ ] Review Reference
+  - [ ] Tests for HeavyThread
+  - [ ] TODO: Use WaitOne in NetFx
 - [ ] Release
   - [ ] Final testing
   - [ ] Promotional material

@@ -336,7 +336,7 @@ namespace RI.Framework.Utilities.Threading
 		///         </item>
 		///         <item>
 		///             <para>
-		///                 <see cref="OnStart" /> is called.
+		///                 <see cref="OnStarting" /> is called.
 		///             </para>
 		///         </item>
 		///         <item>
@@ -372,6 +372,7 @@ namespace RI.Framework.Utilities.Threading
 			{
 				this.VerifyNotRunning();
 
+				bool startEventSet = false;
 				bool success = false;
 				try
 				{
@@ -390,6 +391,7 @@ namespace RI.Framework.Utilities.Threading
 									this.OnBegin();
 									running = true;
 									startEvent.Set();
+									startEventSet = true;
 									this.OnRun();
 									this.OnEnd();
 								}
@@ -423,7 +425,7 @@ namespace RI.Framework.Utilities.Threading
 							this.Thread.CurrentUICulture = currentThread.CurrentUICulture;
 							this.Thread.SetApartmentState(ApartmentState.STA);
 
-							this.OnStart();
+							this.OnStarting();
 
 							if (this.Thread.Name == null)
 							{
@@ -433,7 +435,26 @@ namespace RI.Framework.Utilities.Threading
 							this.Thread.Start();
 						}
 
+#if PLATFORM_NETFX
+
 						bool started = startEvent.WaitOne(this.Timeout);
+						GC.KeepAlive(startEventSet);
+
+#else
+
+						bool started = true;
+						DateTime start = DateTime.UtcNow;
+						while (!startEventSet)
+						{
+							Thread.Sleep(10);
+							if (DateTime.UtcNow.Subtract(start).TotalMilliseconds > this.Timeout)
+							{
+								started = false;
+							}
+						}
+
+#endif
+
 
 						lock (this.SyncRoot)
 						{
@@ -450,12 +471,12 @@ namespace RI.Framework.Utilities.Threading
 							}
 
 							this.IsRunning = true;
-							success = true;
 						}
 					}
 
-					xxx;
-					Thread.Sleep(10);
+					this.OnStarted();
+
+					success = true;
 				}
 				finally
 				{
@@ -671,6 +692,18 @@ namespace RI.Framework.Utilities.Threading
 		}
 
 		/// <summary>
+		///     Called after the thread was started.
+		/// </summary>
+		/// <remarks>
+		///     <note type="note">
+		///         This method is called by <see cref="Start" />.
+		///     </note>
+		/// </remarks>
+		protected virtual void OnStarted ()
+		{
+		}
+
+		/// <summary>
 		///     Called before the thread is started.
 		/// </summary>
 		/// <remarks>
@@ -681,7 +714,7 @@ namespace RI.Framework.Utilities.Threading
 		///         This method is called by <see cref="Start" />.
 		///     </note>
 		/// </remarks>
-		protected virtual void OnStart ()
+		protected virtual void OnStarting ()
 		{
 		}
 

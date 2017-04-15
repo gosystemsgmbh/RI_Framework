@@ -11,7 +11,7 @@
                 AOT is fully supported within Unitys own AOT and IL2CPP related restrictions.
             </para>
             <para>
-                The framework has been fully tested on the following configurations:
+                The framework has been fully tested on the following platforms:
             </para>
             <list class="bullet">
                 <listItem>
@@ -36,12 +36,12 @@
             <list class="bullet">
                 <listItem>
                     <para>
-                        Method: <codeEntityReference qualifyHint="false">M:RI.Framework.IO.Paths.DirectoryPath.GetCurrentDirectory</codeEntityReference>: Only usable on Windows (without Store Apps) and Mac OS.
+                        Method: <codeEntityReference qualifyHint="false">M:RI.Framework.IO.Paths.DirectoryPath.GetCurrentDirectory</codeEntityReference>: Only usable on Windows (without Store Apps) and Mac OS, throws <legacyItalic>NotSupportedException</legacyItalic> on other platforms.
                     </para>
                 </listItem>
                 <listItem>
                     <para>
-                        Method: <codeEntityReference qualifyHint="false">M:RI.Framework.Utilities.Reflection.AssemblyExtensions.GetFile</codeEntityReference>: Only usable on Windows (without Store Apps) and Mac OS.
+                        Method: <codeEntityReference qualifyHint="false">M:RI.Framework.Utilities.Reflection.AssemblyExtensions.GetFile</codeEntityReference>: Only usable on Windows (without Store Apps) and Mac OS, throws <legacyItalic>NotSupportedException</legacyItalic> on other platforms.
                     </para>
                 </listItem>
             </list>

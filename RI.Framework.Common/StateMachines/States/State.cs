@@ -6,7 +6,7 @@ using RI.Framework.Composition.Model;
 
 
 
-namespace RI.Framework.StateMachines
+namespace RI.Framework.StateMachines.States
 {
 	/// <summary>
 	///     Implements a base class which can be used for state implementation.

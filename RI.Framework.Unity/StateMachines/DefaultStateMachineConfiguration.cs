@@ -1,7 +1,9 @@
 ﻿using RI.Framework.Composition;
 using RI.Framework.Services;
 using RI.Framework.Services.Dispatcher;
+using RI.Framework.StateMachines.Caches;
 using RI.Framework.StateMachines.Dispatchers;
+using RI.Framework.StateMachines.Resolvers;
 
 
 

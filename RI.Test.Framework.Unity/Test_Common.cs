@@ -9,7 +9,7 @@ using RI.Framework.Collections.DirectLinq;
 
 
 
-namespace RI.Test.Framework.Cases
+namespace RI.Test.Framework
 {
 	public sealed class Test_Common : TestModule
 	{

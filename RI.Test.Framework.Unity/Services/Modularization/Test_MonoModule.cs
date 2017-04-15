@@ -7,7 +7,7 @@ using RI.Framework.Services.Modularization;
 
 
 
-namespace RI.Test.Framework.Cases.Services.Modularization
+namespace RI.Test.Framework.Services.Modularization
 {
 	public sealed class Test_MonoModule : TestModule
 	{

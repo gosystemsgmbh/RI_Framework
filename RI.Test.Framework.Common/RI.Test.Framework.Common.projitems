@@ -85,6 +85,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Test_TimeSpanExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Text\Test_CommandLine.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Text\Test_IndentedTextWriter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Threading\Test_HeavyThreadDispatcher.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Threading\Test_HeavyThread.cs" />
   </ItemGroup>
 </Project>

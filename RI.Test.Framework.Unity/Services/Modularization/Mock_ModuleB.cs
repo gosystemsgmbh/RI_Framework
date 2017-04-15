@@ -4,7 +4,7 @@ using RI.Framework.Services.Modularization;
 
 
 
-namespace RI.Test.Framework.Cases.Services.Modularization
+namespace RI.Test.Framework.Services.Modularization
 {
 	[Export]
 	public sealed class Mock_ModuleB : MonoModule

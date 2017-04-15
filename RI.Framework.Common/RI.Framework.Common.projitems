@@ -118,7 +118,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Services\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Caches\StateCache.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Caches\_NamespaceDoc.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Dispatchers\ThreadDispatcherStateDispatcher.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Dispatchers\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\IState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\IStateCache.cs" />
@@ -170,15 +169,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Text\IndentedTextWriter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Text\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Threading\HeavyThread.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Threading\HeavyThreadDispatcher.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Threading\IThreadDispatcher.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Threading\ThreadDispatcherException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Threading\HeavyThreadException.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Threading\ThreadDispatcher.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Threading\ThreadDispatcherExceptionEventArgs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Threading\ThreadDispatcherOperation.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Threading\ThreadDispatcherOperationState.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Threading\ThreadDispatcherShutdownMode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Threading\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\TimeSpanExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\_NamespaceDoc.cs" />

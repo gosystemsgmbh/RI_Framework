@@ -5,7 +5,7 @@ using RI.Framework.Utilities.Threading;
 
 
 
-namespace RI.Framework.StateMachines
+namespace RI.Framework.StateMachines.Dispatchers
 {
 	/// <summary>
 	///     Implements a state machine operation dispatcher which uses a <see cref="IThreadDispatcher" />.
