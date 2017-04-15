@@ -431,7 +431,8 @@ namespace RI.Framework.Composition
 			Type genericType = type.IsGenericType ? type.GetGenericTypeDefinition() : null;
 			Type typeArgument = type.IsGenericType ? type.GetGenericArguments()[0] : type;
 			return (typeArgument.IsClass || typeArgument.IsInterface) && ((genericType == null) || (genericType == typeof(IEnumerable<>)));
-#else
+#endif
+#if PLATFORM_UNITY
 			return (type.IsClass || type.IsInterface) && (!type.IsGenericType);
 #endif
 		}

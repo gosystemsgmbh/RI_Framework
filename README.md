@@ -5,7 +5,7 @@
 - [ ] Documentation
   - [ ] Review Reference
   - [ ] Tests for HeavyThread
-  - [ ] TODO: Use WaitOne in NetFx
+  - [ ] Test circular importing + note in basic
 - [ ] Release
   - [ ] Final testing
   - [ ] Promotional material

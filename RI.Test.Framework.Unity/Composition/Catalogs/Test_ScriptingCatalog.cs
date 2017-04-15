@@ -14,7 +14,7 @@ namespace RI.Test.Framework.Composition.Catalogs
 		[TestMethod]
 		public void Test ()
 		{
-			object customExport = ServiceLocator.GetInstance("CustomExport");
+			object customExport = ServiceLocator.GetInstance("Mock_Export");
 
 			if (customExport == null)
 			{

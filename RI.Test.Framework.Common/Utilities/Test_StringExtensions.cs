@@ -2276,7 +2276,8 @@ namespace RI.Test.Framework.Utilities
 			{
 				throw new TestAssertionException();
 			}
-#else
+#endif
+#if PLATFORM_UNITY
 			if ("-3.402824e38".ToFloatInvariant().Value != float.NegativeInfinity)
 			{
 				throw new TestAssertionException();

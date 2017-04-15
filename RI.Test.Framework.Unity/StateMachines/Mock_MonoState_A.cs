@@ -4,10 +4,10 @@ using RI.Framework.StateMachines;
 
 
 
-namespace RI.Test.Framework.Cases.StateMachines
+namespace RI.Test.Framework.StateMachines
 {
 	[Export]
-	public sealed class Mock_State_B : Mock_State
+	public sealed class Mock_MonoState_A : Mock_MonoState
 	{
 		#region Overrides
 
@@ -15,21 +15,21 @@ namespace RI.Test.Framework.Cases.StateMachines
 		{
 			base.Enter(transientInfo);
 
-			Mock_State.TestValue += "eB";
+			Mock_State.TestValue += "eA";
 		}
 
 		protected override void Initialize (StateMachine stateMachine)
 		{
 			base.Initialize(stateMachine);
 
-			Mock_State.TestValue += "iB";
+			Mock_State.TestValue += "iA";
 		}
 
 		protected override void Leave (StateTransientInfo transientInfo)
 		{
 			base.Leave(transientInfo);
 
-			Mock_State.TestValue += "lB";
+			Mock_State.TestValue += "lA";
 		}
 
 		protected override void Signal (StateSignalInfo signalInfo)

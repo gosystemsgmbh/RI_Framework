@@ -372,12 +372,13 @@ namespace RI.Framework.Utilities.Threading
 			{
 				this.VerifyNotRunning();
 
-				bool startEventSet = false;
 				bool success = false;
 				try
 				{
 					using (ManualResetEvent startEvent = new ManualResetEvent(false))
 					{
+						bool startEventSet = false;
+
 						lock (this.SyncRoot)
 						{
 							this.StopRequested = false;
@@ -436,23 +437,21 @@ namespace RI.Framework.Utilities.Threading
 						}
 
 #if PLATFORM_NETFX
-
 						bool started = startEvent.WaitOne(this.Timeout);
 						GC.KeepAlive(startEventSet);
-
-#else
-
+#endif
+#if PLATFORM_UNITY
 						bool started = true;
 						DateTime start = DateTime.UtcNow;
 						while (!startEventSet)
 						{
-							Thread.Sleep(10);
+							Thread.Sleep(1);
 							if (DateTime.UtcNow.Subtract(start).TotalMilliseconds > this.Timeout)
 							{
 								started = false;
+								break;
 							}
 						}
-
 #endif
 
 

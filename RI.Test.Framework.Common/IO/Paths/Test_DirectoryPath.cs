@@ -690,10 +690,9 @@ namespace RI.Test.Framework.IO.Paths
 			}
 
 #if PLATFORM_NETFX
-
-//----------------------------------
-// Files not possible for operations
-//----------------------------------
+			//----------------------------------
+			// Files not possible for operations
+			//----------------------------------
 
 			test = DirectoryPath.GetCurrentDirectory().AppendDirectory("*test*");
 
@@ -720,7 +719,6 @@ namespace RI.Test.Framework.IO.Paths
 			catch (InvalidOperationException)
 			{
 			}
-
 #endif
 		}
 

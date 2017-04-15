@@ -228,27 +228,7 @@ namespace RI.Framework.Utilities.Threading
 				throw new ArgumentOutOfRangeException(nameof(milliseconds));
 			}
 
-#if PLATFORM_NETFX
-
 			return this.OperationDone.WaitOne(milliseconds);
-
-#else
-
-			DateTime start = DateTime.UtcNow;
-			while (!this.IsDone)
-			{
-				Thread.Sleep(10);
-				if (milliseconds != Timeout.Infinite)
-				{
-					if (DateTime.UtcNow.Subtract(start).TotalMilliseconds > milliseconds)
-					{
-						return false;
-					}
-				}
-			}
-			return true;
-
-#endif
 		}
 
 		internal void Execute ()

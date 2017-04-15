@@ -9,7 +9,8 @@ using RI.Framework.StateMachines.Dispatchers;
 using RI.Framework.StateMachines.Resolvers;
 #if PLATFORM_NETFX
 using RI.Framework.Utilities.Threading;
-#else
+#endif
+#if PLATFORM_UNITY
 using RI.Framework.Services.Dispatcher;
 #endif
 
@@ -170,7 +171,6 @@ namespace RI.Test.Framework.StateMachines
 			Mock_State.TestValue = "";
 
 #if PLATFORM_NETFX
-
 			HeavyThreadDispatcher htd = new HeavyThreadDispatcher();
 			ThreadDispatcherStateDispatcher dispatcher = new ThreadDispatcherStateDispatcher(htd);
 
@@ -181,8 +181,8 @@ namespace RI.Test.Framework.StateMachines
 				htd.DoProcessing();
 				x();
 			});
-
-#else
+#endif
+#if PLATFORM_UNITY
 			DispatcherServiceStateDispatcher dispatcher = new DispatcherServiceStateDispatcher();
 
 			Action<Action> cont = new Action<Action>(x => dispatcher.DispatcherService.Dispatch(DispatcherPriority.Idle, x));
@@ -322,7 +322,6 @@ namespace RI.Test.Framework.StateMachines
 			Mock_State.TestValue = "";
 
 #if PLATFORM_NETFX
-
 			HeavyThreadDispatcher htd = new HeavyThreadDispatcher();
 			ThreadDispatcherStateDispatcher dispatcher = new ThreadDispatcherStateDispatcher(htd);
 
@@ -333,8 +332,8 @@ namespace RI.Test.Framework.StateMachines
 				htd.DoProcessing();
 				x();
 			});
-
-#else
+#endif
+#if PLATFORM_UNITY
 			DispatcherServiceStateDispatcher dispatcher = new DispatcherServiceStateDispatcher();
 
 			Action<Action> cont = new Action<Action>(x => dispatcher.DispatcherService.Dispatch(DispatcherPriority.Idle, x));

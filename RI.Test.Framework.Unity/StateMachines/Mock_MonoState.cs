@@ -3,9 +3,9 @@
 
 
 
-namespace RI.Test.Framework.Cases.StateMachines
+namespace RI.Test.Framework.StateMachines
 {
-	public abstract class Mock_State : MonoState
+	public abstract class Mock_MonoState : MonoState
 	{
 		#region Static Properties/Indexer
 

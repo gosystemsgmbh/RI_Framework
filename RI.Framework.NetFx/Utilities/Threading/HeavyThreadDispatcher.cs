@@ -31,6 +31,7 @@ namespace RI.Framework.Utilities.Threading
 			this.ThreadPriority = ThreadPriority.Normal;
 			this.IsBackgroundThread = true;
 
+			this.StartedEvent = null;
 			this.DispatcherInternal = null;
 		}
 
@@ -191,6 +192,8 @@ namespace RI.Framework.Utilities.Threading
 
 		private ThreadDispatcher DispatcherInternal { get; set; }
 
+		private ManualResetEvent StartedEvent { get; set; }
+
 		#endregion
 
 
@@ -239,12 +242,20 @@ namespace RI.Framework.Utilities.Threading
 				this.DispatcherInternal.Exception -= this.DispatcherExceptionHandlerDelegate;
 				this.DispatcherInternal = null;
 			}
+
+			if (this.StartedEvent != null)
+			{
+				this.StartedEvent.Dispose();
+				this.StartedEvent = null;
+			}
 		}
 
 		/// <inheritdoc />
 		protected override void OnBegin ()
 		{
 			base.OnBegin();
+
+			this.StartedEvent = new ManualResetEvent(false);
 
 			this.DispatcherInternal = new ThreadDispatcher();
 			this.DispatcherInternal.Exception += this.DispatcherExceptionHandlerDelegate;
@@ -264,6 +275,8 @@ namespace RI.Framework.Utilities.Threading
 		{
 			base.OnRun();
 
+			this.StartedEvent.Set();
+
 			this.DispatcherInternal.Run();
 		}
 
@@ -272,15 +285,25 @@ namespace RI.Framework.Utilities.Threading
 		{
 			base.OnStarted();
 
-			//TODO: Use WaitOne in NetFx
-			DateTime start = DateTime.UtcNow;
-			while (!this.DispatcherInternal.IsRunning)
+			bool started = this.StartedEvent.WaitOne(this.Timeout);
+
+			if (started)
 			{
-				Thread.Sleep(10);
-				if (DateTime.UtcNow.Subtract(start).TotalMilliseconds > this.Timeout)
+				DateTime start = DateTime.UtcNow;
+				while (!this.DispatcherInternal.IsRunning)
 				{
-					throw new TimeoutException("Timeout while waiting for dispatcher to start running.");
+					Thread.Sleep(1);
+					if (DateTime.UtcNow.Subtract(start).TotalMilliseconds > this.Timeout)
+					{
+						started = false;
+						break;
+					}
 				}
+			}
+
+			if (!started)
+			{
+				throw new TimeoutException("Timeout while waiting for dispatcher to start running.");
 			}
 		}
 

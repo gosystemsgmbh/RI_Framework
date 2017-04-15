@@ -16,7 +16,7 @@ namespace RI.Test.Framework.StateMachines
 		[TestMethod]
 		public void Test ()
 		{
-			Cases.StateMachines.Mock_State.TestValue = "";
+			Mock_MonoState.TestValue = "";
 
 			DefaultStateMachineConfiguration config = new DefaultStateMachineConfiguration();
 			StateMachine test = new StateMachine(config);
@@ -25,27 +25,27 @@ namespace RI.Test.Framework.StateMachines
 			{
 				throw new TestAssertionException();
 			}
-			if (Cases.StateMachines.Mock_State.TestValue != "")
+			if (Mock_MonoState.TestValue != "")
 			{
 				throw new TestAssertionException();
 			}
 
 			test.Signal("#1");
 
-			if (Cases.StateMachines.Mock_State.TestValue != "")
+			if (Mock_MonoState.TestValue != "")
 			{
 				throw new TestAssertionException();
 			}
 
-			test.Transient(typeof(Cases.StateMachines.Mock_State_A));
+			test.Transient(typeof(Mock_MonoState_A));
 
 			ServiceLocator.GetInstance<DispatcherService>().Dispatch(() =>
 			{
-				if (!(test.State is Cases.StateMachines.Mock_State_A))
+				if (!(test.State is Mock_MonoState_A))
 				{
 					throw new TestAssertionException();
 				}
-				if (Cases.StateMachines.Mock_State.TestValue != "iAeA")
+				if (Mock_MonoState.TestValue != "iAeA")
 				{
 					throw new TestAssertionException();
 				}
@@ -54,20 +54,20 @@ namespace RI.Test.Framework.StateMachines
 
 				ServiceLocator.GetInstance<DispatcherService>().Dispatch(() =>
 				{
-					if (Cases.StateMachines.Mock_State.TestValue != "iAeA#2")
+					if (Mock_MonoState.TestValue != "iAeA#2")
 					{
 						throw new TestAssertionException();
 					}
 
-					test.Transient(typeof(Cases.StateMachines.Mock_State_B));
+					test.Transient(typeof(Mock_MonoState_B));
 
 					ServiceLocator.GetInstance<DispatcherService>().Dispatch(() =>
 					{
-						if (!(test.State is Cases.StateMachines.Mock_State_B))
+						if (!(test.State is Mock_MonoState_B))
 						{
 							throw new TestAssertionException();
 						}
-						if (Cases.StateMachines.Mock_State.TestValue != "iAeA#2iBlAeB")
+						if (Mock_MonoState.TestValue != "iAeA#2iBlAeB")
 						{
 							throw new TestAssertionException();
 						}
@@ -76,20 +76,20 @@ namespace RI.Test.Framework.StateMachines
 
 						ServiceLocator.GetInstance<DispatcherService>().Dispatch(() =>
 						{
-							if (Cases.StateMachines.Mock_State.TestValue != "iAeA#2iBlAeB#3")
+							if (Mock_MonoState.TestValue != "iAeA#2iBlAeB#3")
 							{
 								throw new TestAssertionException();
 							}
 
-							test.Transient(typeof(Cases.StateMachines.Mock_State_C));
+							test.Transient(typeof(Mock_MonoState_C));
 
 							ServiceLocator.GetInstance<DispatcherService>().Dispatch(() =>
 							{
-								if (!(test.State is Cases.StateMachines.Mock_State_C))
+								if (!(test.State is Mock_MonoState_C))
 								{
 									throw new TestAssertionException();
 								}
-								if (Cases.StateMachines.Mock_State.TestValue != "iAeA#2iBlAeB#3iClBeC")
+								if (Mock_MonoState.TestValue != "iAeA#2iBlAeB#3iClBeC")
 								{
 									throw new TestAssertionException();
 								}
@@ -98,7 +98,7 @@ namespace RI.Test.Framework.StateMachines
 
 								ServiceLocator.GetInstance<DispatcherService>().Dispatch(() =>
 								{
-									if (Cases.StateMachines.Mock_State.TestValue != "iAeA#2iBlAeB#3iClBeC#4")
+									if (Mock_MonoState.TestValue != "iAeA#2iBlAeB#3iClBeC#4")
 									{
 										throw new TestAssertionException();
 									}
@@ -111,7 +111,7 @@ namespace RI.Test.Framework.StateMachines
 										{
 											throw new TestAssertionException();
 										}
-										if (Cases.StateMachines.Mock_State.TestValue != "iAeA#2iBlAeB#3iClBeC#4lC")
+										if (Mock_MonoState.TestValue != "iAeA#2iBlAeB#3iClBeC#4lC")
 										{
 											throw new TestAssertionException();
 										}
@@ -120,7 +120,7 @@ namespace RI.Test.Framework.StateMachines
 
 										ServiceLocator.GetInstance<DispatcherService>().Dispatch(() =>
 										{
-											if (Cases.StateMachines.Mock_State.TestValue != "iAeA#2iBlAeB#3iClBeC#4lC")
+											if (Mock_MonoState.TestValue != "iAeA#2iBlAeB#3iClBeC#4lC")
 											{
 												throw new TestAssertionException();
 											}
