@@ -27,6 +27,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Collections\Test_StackExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\Virtualization\Mock_IItemsProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\Virtualization\Test_VirtualizationCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\Mock_Exports_10.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\Mock_Exports_11.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Composition\Mock_Exports_1.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Composition\Mock_Exports_2.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Composition\Mock_Exports_3A.cs" />
@@ -85,6 +87,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Test_TimeSpanExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Text\Test_CommandLine.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Text\Test_IndentedTextWriter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Threading\Mock_HeavyThread.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Threading\Test_HeavyThread.cs" />
   </ItemGroup>
 </Project>

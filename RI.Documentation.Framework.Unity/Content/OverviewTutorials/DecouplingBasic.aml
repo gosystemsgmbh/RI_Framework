@@ -354,6 +354,10 @@ public class EnemyManager : MonoModule
           ]]>
                 </code>
                 <para>
+                    And last but not least: Circular dependencies are possible.
+                    For example, object A can import object B and object B can import object A.
+                </para>
+                <para>
                     All this allows you to maximize decoupling: You just use an interface, resulting in zero dependency to the actually used type.
                     The used type (or types) is not known to the using type.
                     Even for instantiation, the required interface is requested instead of an actual type.

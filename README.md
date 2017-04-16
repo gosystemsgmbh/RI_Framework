@@ -4,13 +4,10 @@
 
 - [ ] Documentation
   - [ ] Review Reference
-  - [ ] Tests for HeavyThread
-  - [ ] Test circular importing + note in basic
 - [ ] Release
-  - [ ] Final testing
-  - [ ] Promotional material
   - [ ] E-Mail address
   - [ ] Web page
+  - [ ] Promotional material
   - [ ] Unity Asset Store
 
 ## Backlog

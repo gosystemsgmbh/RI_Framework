@@ -18,6 +18,58 @@ namespace RI.Test.Framework.Composition
 		#region Instance Methods
 
 		[TestMethod]
+		public void CircularImport_Test ()
+		{
+			CompositionContainer test = new CompositionContainer();
+
+			test.AddExport(typeof(Mock_Exports_10), typeof(Mock_Exports_10), false);
+			test.AddExport(typeof(Mock_Exports_11), typeof(Mock_Exports_11), false);
+
+			Mock_Exports_10 test10 = test.GetExport<Mock_Exports_10>();
+			Mock_Exports_11 test11 = test.GetExport<Mock_Exports_11>();
+
+			if (test10.Test10 == null)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (test10.Test11 == null)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (test11.Test10 == null)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (test11.Test11 == null)
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!object.ReferenceEquals(test10, test10.Test10))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!object.ReferenceEquals(test10, test11.Test10))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!object.ReferenceEquals(test11, test10.Test11))
+			{
+				throw new TestAssertionException();
+			}
+
+			if (!object.ReferenceEquals(test11, test11.Test11))
+			{
+				throw new TestAssertionException();
+			}
+		}
+
+		[TestMethod]
 		public void ConstructorCreator_Test ()
 		{
 			CompositionContainer test = new CompositionContainer();
