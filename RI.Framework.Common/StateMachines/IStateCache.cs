@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace RI.Framework.StateMachines
 {
 	/// <summary>
-	///     Defines the interface for a state cache.
+	///     Defines the interface for a state instance cache.
 	/// </summary>
 	/// <remarks>
 	///     <para>

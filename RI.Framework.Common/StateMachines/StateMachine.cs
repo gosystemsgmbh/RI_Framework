@@ -12,6 +12,9 @@ namespace RI.Framework.StateMachines
 	/// </summary>
 	/// <remarks>
 	///     <para>
+	///         <b> GENERAL </b>
+	///     </para>
+	///     <para>
 	///         <see cref="StateMachine" /> is the actual state machine which manages the current state, signals, and state transitions.
 	///     </para>
 	///     <para>
@@ -23,7 +26,10 @@ namespace RI.Framework.StateMachines
 	///         A state machine has four core concepts: states, signals, transitions, and dispatching.
 	///     </para>
 	///     <para>
-	///         STATES: A state machine always has a current state (<see cref="State" />) which is either null or an instance of <see cref="IState" />.
+	///         <b> STATES </b>
+	///     </para>
+	///     <para>
+	///         A state machine always has a current state (<see cref="State" />) which is either null or an instance of <see cref="IState" />.
 	///         The initial state after a <see cref="StateMachine" /> is created is always null (and is therefore usually used to expresss &quot;no state&quot; and/or to shut down the state machine by a transition to the null state).
 	///         Instead of directly using instances of <see cref="IState" /> when working with state machines, you use the states <see cref="Type" />.
 	///         The state machine then resolves the actual <see cref="IState" /> instance of that type.
@@ -32,7 +38,10 @@ namespace RI.Framework.StateMachines
 	///         See <see cref="IStateCache" /> for more details about state caches.
 	///     </para>
 	///     <para>
-	///         SIGNALS: A signal is used to inform the current state about an event to which the current state might react (or not, depending on the current state and the signal).
+	///         <b> SIGNALS </b>
+	///     </para>
+	///     <para>
+	///         A signal is used to inform the current state about an event to which the current state might react (or not, depending on the current state and the signal).
 	///         Basically, a signal is just an object of any type which is passed to the current state.
 	///         A signal is issued using <see cref="Signal" /> or <see cref="Signal{T}" />.
 	///         The current state receives the signal using <see cref="IState.Signal" />.
@@ -45,15 +54,25 @@ namespace RI.Framework.StateMachines
 	///         Other states can then inherit from that base class and only add signal handling for their special state-specific cases.
 	///     </para>
 	///     <para>
-	///         TRANSITIONS: Transitions are nothing else than changing the current state.
+	///         <b> TRANSITIONS </b>
+	///     </para>
+	///     <para>
+	///         Transitions are nothing else than changing the current state.
 	///         A transition is initiated using <see cref="Transient" /> or <see cref="Transient{TState}" />.
 	///         During a transition, the previous states <see cref="IState.Leave" /> method is called, then <see cref="State" /> is updated to the next state, and then the next states <see cref="IState.Enter" /> method is called.
 	///     </para>
 	///     <para>
-	///         DISPATCHING: Dispatching is a very important concept for creating state machines that behave in a logical way.
+	///         To maintain valid state transitions, only states themselves should initiate a state transition.
+	///         See the example below for more details about maintaining valid state transitions.
+	///     </para>
+	///     <para>
+	///         <b> DISPATCHING </b>
+	///     </para>
+	///     <para>
+	///         Dispatching is a very important concept for creating state machines that behave in a logical way.
 	///         When a signal or a transition is initiated (see above), the state machine does not immediately execute the signal or transition.
 	///         Instead, it is handed to the dispatcher (<see cref="IStateDispatcher" />), specified by the state machine configuration (<see cref="Configuration" />, <see cref="StateMachineConfiguration.Dispatcher" />).
-	///         The dispatcher is the responsible for the actual execution of the signals and transitions.
+	///         The dispatcher is then responsible for the actual execution of the signals and transitions.
 	///         Usually, the signals and transitions are placed in a queue and are then processed one-by-one.
 	///         However, this depends on the actual implementation of the <see cref="IStateDispatcher" />.
 	///     </para>
@@ -81,7 +100,7 @@ namespace RI.Framework.StateMachines
 	///  // reason: as the transition from null to StateA was not yet executed when the transition to StateB was issued,
 	///  // this transition was dispatched as a transition from null to StateB. However, when this transition is executed,
 	///  // it would be a transition from StateA to StateB and NOT from null to StateB as it was assumed at the time this transition was dispatched.
-	///  // ONLY STATES SHOULD ISSUE TRANSIENTS! USE SIGNALS FROM OUTSIDE!
+	///  // ONLY STATES SHOULD ISSUE TRANSIENTS! USE SIGNALS FROM OUTSIDE OF STATES TO INITIATE STATE TRANSITIONS! (sorry for shouting, I needed to draw attention to this very important concept)
 	///  stateMachine.Transient<StateB>();
 	///  
 	///  // send a signal to StateA

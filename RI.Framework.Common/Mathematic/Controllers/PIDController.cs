@@ -19,7 +19,7 @@ namespace RI.Framework.Mathematic.Controllers
 	///         See <see href="https://en.wikipedia.org/wiki/PID_controller"> https://en.wikipedia.org/wiki/PID_controller </see> for details about PID controllers and their theory of operation.
 	///     </para>
 	///     <para>
-	///         When using PID controller, be aware of steady-state-error, integral windup, noise sensitivity, and instability/oscillation.
+	///         When using a PID controller, be aware of steady-state-error, integral windup, noise sensitivity, and instability/oscillation.
 	///         To increase stability, the output can be clamped using <see cref="OutputMin" /> and <see cref="OutputMax" />.
 	///         Especially the differential component is sensitive to noise in the process variable, therefore the differential component is disabled by default (<see cref="KD" /> is 0.0).
 	///     </para>

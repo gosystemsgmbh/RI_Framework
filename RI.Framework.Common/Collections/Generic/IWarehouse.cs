@@ -18,11 +18,11 @@ namespace RI.Framework.Collections.Generic
 	///     <para>
 	///         Each bay is identified by a number, provided and used by <see cref="Reserve" /> and <see cref="Release" />.
 	///         That number can be used to directly access the bays by using it as an index for the <see cref="Storage" /> array.
-	///         Zero is always used as an equivalent of &quot;invalid&quot; or &quot;null&quot; (sorry to all C/C++ developers who now have nightmares about <c> #define NULL (0) </c>).
+	///         Zero is always used as an equivalent of &quot;invalid&quot; or &quot;null&quot;.
 	///     </para>
 	///     <para>
-	///         This allows to use <see cref="int" />s instead of object references for the items, effectively containing the object references to the <see cref="Warehouse{T}" />.
-	///         It also allows to provide a very efficient way to allocate and deallocate storage for items.
+	///         This allows to use <see cref="int" />s instead of object references for the items.
+	///         It also allows to provide a very efficient way to allocate and deallocate collection storage for items.
 	///     </para>
 	/// </remarks>
 	public interface IWarehouse <out T>

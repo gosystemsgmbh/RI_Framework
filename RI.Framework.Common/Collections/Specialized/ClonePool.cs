@@ -22,6 +22,8 @@ namespace RI.Framework.Collections.Specialized
 	///     </para>
 	///     <para>
 	///         This pool implementation supports <see cref="IPoolAware" />.
+	///     </para>
+	///     <para>
 	///         See <see cref="PoolBase{T}" /> for more details.
 	///     </para>
 	/// </remarks>

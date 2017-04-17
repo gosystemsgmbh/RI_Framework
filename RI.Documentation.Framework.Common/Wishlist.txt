@@ -48,6 +48,8 @@ Collections
 
  - (Common) IPriorityQueue
 
+ - (Common) Enumeration of items in a IWarehouse
+
  - (Common) DirectLinq: Aggregate
  - (Common) DirectLinq: Average
  - (Common) DirectLinq: Concat (with separator element)

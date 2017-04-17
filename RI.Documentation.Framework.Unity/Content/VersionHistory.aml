@@ -29,6 +29,9 @@
                     </externalLink>
                     .
                 </para>
+                <para>
+                    A fourth BUILD number is added, resulting in the version format MAJOR.MINOR.PATCH.BUILD, where the build number indicates a different version but without code changes (e.g. only documentation changes).
+                </para>
             </content>
         </section>
 

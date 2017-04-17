@@ -19,26 +19,44 @@
 
         <section address="Bootstrapper">
             <title>Bootstrapper</title>
-            <content/>
+            <content />
             <sections>
                 <section address="Bootstrapper_NoBootstrapper">
                     <title>No Bootstrapper</title>
                     <content>
-                        <para/>
+                        <para />
                         <para>
-                            One important thing to know about the bootstrapper is that you do not need the bootstrapper.
+                            One important thing to know about
+                            <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Bootstrapper</codeEntityReference>
+                            is that you do not need it.
                             You can use each decoupling service as its own independent standalone service (e.g. if you only want/need one of them).
                             However, you would have to do all the setup and wiring yourself.
                             Following sections will describe how to use each decoupling service as an independent standalone service.
                         </para>
                     </content>
                 </section>
+                <section address="Bootstrapper_InheritFromBootstrapper">
+                    <title>Inherit from Bootstrapper</title>
+                    <content>
+                        <para />
+                        <para>
+                            You can inherit from
+                            <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Bootstrapper</codeEntityReference>
+                            to create a customized bootstrapper which overrides most of its default behaviour.
+                            See the documentation of
+                            <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Bootstrapper</codeEntityReference>
+                            for more information about its default behaviour.
+                        </para>
+                    </content>
+                </section>
                 <section address="Bootstrapper_BootstrapperOptions">
                     <title>Bootstrapper options</title>
                     <content>
-                        <para/>
+                        <para />
                         <para>
-                            The bootstrapper provides a few options:
+                            The
+                            <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Bootstrapper</codeEntityReference>
+                            provides a few options:
                         </para>
                         <mediaLink>
                             <image xlink:href="BootstrapperOptions" />
@@ -114,7 +132,7 @@
                                     <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Catalogs.ScriptingCatalog</codeEntityReference>
                                     to the
                                     <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionContainer</codeEntityReference>
-                                    .
+                                    if enabled.
                                     The purpose and use of catalogs is described below.
                                 </para>
                             </listItem>
@@ -142,9 +160,11 @@
                 <section address="CompositionContainer_StandaloneUse">
                     <title>Standalone use</title>
                     <content>
-                        <para/>
+                        <para />
                         <para>
-                            You can use a <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionContainer</codeEntityReference> as a standalone service.
+                            You can use a
+                            <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionContainer</codeEntityReference>
+                            as a standalone service.
                             Just create an instance:
                         </para>
                         <code language="cs">
@@ -161,19 +181,29 @@ CompositionContainer container = new CompositionContainer();
                 <section address="CompositionContainer_Catalogs">
                     <title>Catalogs</title>
                     <content>
-                        <para/>
+                        <para />
                         <para>
-                            Catalogs are used to tell a <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionContainer</codeEntityReference> where to look for exports.
+                            Catalogs are used to tell a
+                            <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionContainer</codeEntityReference>
+                            where to look for exports.
                             Only exports found in catalogs, which are added to the composition container, will be discovered and used.
-                            Catalogs are added using <codeEntityReference qualifyHint="false">M:RI.Framework.Composition.CompositionContainer.AddCatalog</codeEntityReference> and removed using <codeEntityReference qualifyHint="false">M:RI.Framework.Composition.CompositionContainer.RemoveCatalog</codeEntityReference>.
+                            Catalogs are added using
+                            <codeEntityReference qualifyHint="false">M:RI.Framework.Composition.CompositionContainer.AddCatalog(RI.Framework.Composition.CompositionCatalog)</codeEntityReference>
+                            and removed using
+                            <codeEntityReference qualifyHint="false">M:RI.Framework.Composition.CompositionContainer.RemoveCatalog(RI.Framework.Composition.CompositionCatalog)</codeEntityReference>
+                            .
                             Multiple different catalogs can be used at the same time.
                         </para>
                         <para>
                             Catalogs can be added and removed dynamically, as shown above.
-                            When the available catalogs change, the available exports in the corresponding <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionContainer</codeEntityReference> will be updated as well, adding or removing exports dynamically.
+                            When the available catalogs change, the available exports in the corresponding
+                            <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionContainer</codeEntityReference>
+                            will be updated as well, adding or removing exports dynamically.
                         </para>
                         <para>
-                            All catalogs inherit from <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionCatalog</codeEntityReference>.
+                            All catalogs inherit from
+                            <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionCatalog</codeEntityReference>
+                            .
                             You can use one or more of the built-in catalogs and/or implement your own.
                         </para>
                         <para>
@@ -182,22 +212,28 @@ CompositionContainer container = new CompositionContainer();
                         <list class="bullet">
                             <listItem>
                                 <para>
-                                    <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Catalogs.ScriptingCatalog</codeEntityReference>:
+                                    <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Catalogs.ScriptingCatalog</codeEntityReference>
+                                    :
                                     All exported types of the Unity scripting assemblies are used for discovery.
-                                    Unity scripting assemblies are all assemblies which start with the name <legacyItalic>Assembly-CSharp</legacyItalic>.
+                                    Unity scripting assemblies are all assemblies which start with the name
+                                    <legacyItalic>Assembly-CSharp</legacyItalic>.
                                     Therefore, this catalog makes possible the &quot;magic&quot; discovery of all the types you add to your Unity project.
-                                    This catalog is added by default by the <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Bootstrapper</codeEntityReference>.
+                                    This catalog is added by default by the
+                                    <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Bootstrapper</codeEntityReference>
+                                    .
                                 </para>
                             </listItem>
                             <listItem>
                                 <para>
-                                    <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Catalogs.AssemblyCatalog</codeEntityReference>:
+                                    <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Catalogs.AssemblyCatalog</codeEntityReference>
+                                    :
                                     All exported types of one or more specified assemblies are used for discovery.
                                 </para>
                             </listItem>
                             <listItem>
                                 <para>
-                                    <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Catalogs.DirectoryCatalog</codeEntityReference>:
+                                    <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Catalogs.DirectoryCatalog</codeEntityReference>
+                                    :
                                     All managed DLL assembly files in a specified directory will be loaded and their exported types used for discovery.
                                 </para>
                             </listItem>
@@ -209,13 +245,15 @@ CompositionContainer container = new CompositionContainer();
                             </listItem>-->
                             <listItem>
                                 <para>
-                                    <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Catalogs.TypeCatalog</codeEntityReference>:
+                                    <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Catalogs.TypeCatalog</codeEntityReference>
+                                    :
                                     A catalog where one or more exports can be added manually by directly specifying types.
                                 </para>
                             </listItem>
                             <listItem>
                                 <para>
-                                    <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Catalogs.InstanceCatalog</codeEntityReference>:
+                                    <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Catalogs.InstanceCatalog</codeEntityReference>
+                                    :
                                     A catalog where one or more exports can be added manually by directly specifying instances.
                                 </para>
                             </listItem>
@@ -237,13 +275,19 @@ CompositionContainer container = new CompositionContainer();
                 <section address="CompositionContainer_Recomposition">
                     <title>Recomposition</title>
                     <content>
-                        <para/>
+                        <para />
                         <para>
-                            By default, all imports (<codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Model.ImportAttribute</codeEntityReference>) are recomposable.
-                            This means that when the available exports of a <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionContainer</codeEntityReference> is changed (e.g. by adding or removing a catalog), the imports are updated automatically.
+                            By default, all imports (
+                            <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Model.ImportAttribute</codeEntityReference>
+                            ) are recomposable.
+                            This means that when the available exports of a
+                            <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionContainer</codeEntityReference>
+                            is changed (e.g. by adding or removing a catalog), the imports are updated automatically.
                         </para>
                         <para>
-                            If a type implements <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Model.IImporting</codeEntityReference>, it is notified when one or more of its imports have been updated.
+                            If a type implements
+                            <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Model.IImporting</codeEntityReference>
+                            , it is notified when one or more of its imports have been updated.
                             The following example shows how to track recompositions:
                         </para>
                         <code language="cs">
@@ -290,7 +334,7 @@ public class EnemyManager : MonoModule, IImporting
                 <section address="CompositionContainer_NamedExportsAndImports">
                     <title>Named exports and imports</title>
                     <content>
-                        <para/>
+                        <para />
                         <para>
                             So far, we have seen how to identify exports and imports using their types.
                             Besides that, it is also possible to identify them using names.
@@ -323,7 +367,7 @@ public class EnemyManager : MonoModule
                 <section address="CompositionContainer_MultiExport">
                     <title>Multi-export</title>
                     <content>
-                        <para/>
+                        <para />
                         <para>
                             The same type or instance can also be exported multiple times under different types or names:
                         </para>
@@ -366,202 +410,21 @@ public class EnemyManager : MonoModule
                         </code>
                     </content>
                 </section>
-                <section address="CompositionContainer_PrepareForModsPlugins">
-                    <title>Prepare for Mods/Plugins</title>
-                    <content>
-                        <para/>
-                        <para>
-                            The <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionContainer</codeEntityReference> can be used to prepare your architecture for easy integration of mods or plugins.
-                            As shown in the examples above, catalogs can be added and removed dynamically and doing so will update the affected imports.
-                            We can use this to implement a mod/plugin infrastructure.
-                        </para>
-                        <para>
-                            The following example shows a simple mod infrastructure.
-                            It is assumed that each mod is in its own directory.
-                            We load all DLLs of each mod which will also automatically load and initialize all of the mods modules.
-                            We could then use the module initialization to load further resources for each mod.
-                            The example particularly shows how a mod can add new enemy AI behaviour in a very simple way.
-                        </para>
-                        <code language="cs">
-                            <![CDATA[
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using RI.Framework.Composition;
-using RI.Framework.Composition.Catalogs;
-using RI.Framework.Composition.Model;
-using RI.Framework.Services;
-using RI.Framework.Services.Modularization;
-using RI.Framework.IO.Paths;
-using RI.Framework.Collections;
-
-
-// in your Unity project:
-
-
-public class ModInfo
-{
-    // this class holds information about one mod
-
-    public DirectoryPath ModDir;
-    public DirectoryCatalog Catalog;
-
-    public ModInfo (DirectoryPath modDir)
-    {
-        this.ModDir = modDir;
-        this.Catalog = new DirectoryCatalog(modDir);
-    }
-
-    public void Load()
-    {
-        // to load a mod, we just add its catalog to the composition container, it will implicitly do the rest
-
-        ServiceLocator.GetInstance<CompositionContainer>().AddCatalog(this.Catalog);
-    }
-
-    public void Unload()
-    {
-        // to unload a mod, we remove the catalog
-
-        ServiceLocator.GetInstance<CompositionContainer>().RemoveCatalog(this.Catalog);
-    }
-}
-
-
-[Export]
-public class ModManager : MonoModule
-{
-    // this is our mod manager
-
-    public List<ModInfo> AvailableMods;
-
-    protected override void Initialize ()
-    {
-        base.Initialize();
-
-        this.AvailableMods = new List<ModInfo>();
-
-        // get the path to our mod root directory where each mod is in its own subdirectory
-        DirectoryPath modRoot = new DirectoryPath("path to mod directory");
-
-        // get each subdirectory and create the mod objects
-        List<DirectoryPath> modDirs = modRoot.GetSubdirectories(false, false);
-        foreach (string modDir in modDirs)
-        {
-            // create the mod object...
-            ModInfo mod = new ModInfo(modDir);
-            this.AvailableMods.Add(mod);
-
-            // ...and load the mod
-            mod.Load();
-        }
-    }
-}
-
-
-[Export]
-public interface IEnemyAI
-{
-    // this is the interface which our mod is going to implement    
-
-    // for the sake of simplicity, we keep the interface empty
-}
-
-
-[Export]
-public class EnemyManager : MonoModule, IImporting
-{
-    // this is our enemy manager
-    // you could, for example, pick a random AI from UsedAIs each time a new enemy is spawned
-
-    [ImportProperty(typeof(IEnemyAI))]
-    private Import ImportedAIs  { get; set; }
-
-    private IEnemyAI[] UsedAIs;
-
-    public void ImportsResolved (CompositionFlags composition, bool updated)
-    {
-        if (updated)
-        {
-            // each time the imported AIs were updated, we get and keep an array of the AIs
-            this.UsedAIs = this.ImportedAIs.ToArray<IEnemyAI> ();
-        }
-    }
-
-    public void ImportsResolving (CompositionFlags composition)
-    {
-    }
-    
-    public void SpawnEnemy ()
-    {
-        // ...
-        
-        IEnemyAI ai = this.UsedAIs.PopRandom(new Random());
-        
-        // ...
-    }
-}
-
-
-// in some mod DLL:
-
-// note that you need to reference Assembly-CSharp.dll and RI.Framework.Unity.dll from your mod
-
-
-public class MyEnemyAI : IEnemyAI
-{
-    // this is our small little mod, a custom enemy AI
-}
-
-
-public class MyModModule : MonoModule
-{
-    // this is our mods main module which is used to load/unload additional resources
-    // it is optional
-
-    protected override void Initialize ()
-    {
-        base.Initialize ();
-
-        // load mod resources (meshes, sounds, ...)
-
-        // good to know: as soon as the mod is loaded...
-        // ...its catalog is added...
-        // ...which adds this module as an export...
-        // ...which is detected by the module service...
-        // ...which then initializes the module if (and only if!) the modules were already initialized using IModuleService.Initialize
-    }
-
-    protected override void Unload ()
-    {
-        base.Unload ();
-
-        // unload mod resources
-
-        // good to know: as soon as the mod is unloaded...
-        // ...its catalog is removed...
-        // ...which removes this module as an export...
-        // ...which is detected by the module service...
-        // ...which then unloads the module, even if the game continues to run
-    }
-}
-                            ]]>
-                        </code>
-                    </content>
-                </section>
             </sections>
         </section>
 
         <section address="ModuleService">
             <title>ModuleService</title>
-            <content/>
+            <content />
             <sections>
                 <section address="ModuleService_StandaloneUse">
                     <title>Standalone use</title>
                     <content>
-                        <para/>
+                        <para />
                         <para>
-                            You can use the <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.ModuleService</codeEntityReference> as a standalone service.
+                            You can use the
+                            <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.ModuleService</codeEntityReference>
+                            as a standalone service.
                             Just create an instance:
                         </para>
                         <code language="cs">
@@ -570,21 +433,43 @@ ModuleService moduleService = new ModuleService();
                             ]]>
                         </code>
                         <para>
-                            It is also possible to create multiple independent instances of <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.ModuleService</codeEntityReference>.
+                            It is also possible to create multiple independent instances of
+                            <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.ModuleService</codeEntityReference>
+                            .
                         </para>
                     </content>
                 </section>
                 <section address="ModuleService_DependencyOnCompositionContainer">
                     <title>Dependency on CompositionContainer</title>
                     <content>
-                        <para/>
+                        <para />
                         <para>
-                            The <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.ModuleService</codeEntityReference> has an import property to import all implementations of <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.IModule</codeEntityReference>.
-                            It also implements <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Model.IImporting</codeEntityReference>, making it aware when the imported <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.IModule</codeEntityReference>s were updated/recomposed.
-                            Therefore, it is not necessary to add the modules explicitly as they are automatically discovered by the <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionContainer</codeEntityReference> and imported into <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.ModuleService</codeEntityReference>.
+                            The
+                            <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.ModuleService</codeEntityReference>
+                            has an import property to import all implementations of
+                            <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.IModule</codeEntityReference>
+                            .
+                            It also implements
+                            <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Model.IImporting</codeEntityReference>
+                            , making it aware when the imported
+                            <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.IModule</codeEntityReference>
+                            s were updated/recomposed.
+                            Therefore, it is not necessary to add the modules explicitly as they are automatically discovered by the
+                            <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionContainer</codeEntityReference>
+                            and imported into
+                            <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.ModuleService</codeEntityReference>
+                            .
                         </para>
                         <para>
-                            If <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.ModuleService</codeEntityReference> is not contained in a <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionContainer</codeEntityReference>, the modules must be manually added and removed using <codeEntityReference qualifyHint="false">M:RI.Framework.Services.Modularization.ModuleService.AddModule</codeEntityReference> and <codeEntityReference qualifyHint="false">M:RI.Framework.Services.Modularization.ModuleService.RemoveModule</codeEntityReference>.
+                            If
+                            <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.ModuleService</codeEntityReference>
+                            is not contained in a
+                            <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionContainer</codeEntityReference>
+                            , the modules must be manually added and removed using
+                            <codeEntityReference qualifyHint="false">M:RI.Framework.Services.Modularization.ModuleService.AddModule(RI.Framework.Services.Modularization.IModule)</codeEntityReference>
+                            and
+                            <codeEntityReference qualifyHint="false">M:RI.Framework.Services.Modularization.ModuleService.RemoveModule(RI.Framework.Services.Modularization.IModule)</codeEntityReference>
+                            .
                         </para>
                         <para>
                             It is possible to use both importing and explicit add/remove but you cannot explicitly remove a module which is imported.
@@ -595,37 +480,59 @@ ModuleService moduleService = new ModuleService();
                 <section address="ModuleService_ModuleImplementation">
                     <title>Module implementation</title>
                     <content>
-                        <para/>
+                        <para />
                         <para>
-                            There are two base implementations for modules which implement <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.IModule</codeEntityReference>: <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.MonoModule</codeEntityReference> and <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.Module</codeEntityReference>.
-                            You can use one of these base classes to implement your modules or implement <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.IModule</codeEntityReference> directly.
+                            There are two base implementations for modules which implement
+                            <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.IModule</codeEntityReference>
+                            :
+                            <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.MonoModule</codeEntityReference>
+                            and
+                            <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.Module</codeEntityReference>
+                            .
+                            You can use one of these base classes to implement your modules or implement
+                            <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.IModule</codeEntityReference>
+                            directly.
                         </para>
                         <para>
-                            <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.MonoModule</codeEntityReference> is used for modules which also need to be a <legacyItalic>MonoBehaviour</legacyItalic>.
-                            When such modules are instantiated, a <legacyItalic>GameObject</legacyItalic> is automatically created to which the module instance is attached (one <legacyItalic>GameObject</legacyItalic> per module).
+                            <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.MonoModule</codeEntityReference>
+                            is used for modules which also need to be a <legacyItalic>MonoBehaviour</legacyItalic>.
+                            When such modules are instantiated, a <legacyItalic>GameObject</legacyItalic> is automatically created to which the module instance is attached (one
+                            <legacyItalic>GameObject</legacyItalic> per module).
                         </para>
                         <para>
-                            <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.Module</codeEntityReference> is used for modules which do not require to be a <legacyItalic>MonoBehaviour</legacyItalic>.
+                            <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.Module</codeEntityReference>
+                            is used for modules which do not require to be a <legacyItalic>MonoBehaviour</legacyItalic>
+                            .
                         </para>
                     </content>
                 </section>
                 <section address="ModuleService_InitializationAndUnloading">
                     <title>Initialization and unloading</title>
                     <content>
-                        <para/>
+                        <para />
                         <para>
-                            The initialization and unlaoding of modules should be managed by the module service.
-                            Do not call <codeEntityReference qualifyHint="false">M:RI.Framework.Services.Modularization.IModule.Initialize</codeEntityReference> or <codeEntityReference qualifyHint="false">M:RI.Framework.Services.Modularization.IModule.Unload</codeEntityReference> on a module directly.
+                            The initialization and unloading of modules should be managed by the module service.
+                            Do not call
+                            <codeEntityReference qualifyHint="false">M:RI.Framework.Services.Modularization.IModule.Initialize</codeEntityReference>
+                            or
+                            <codeEntityReference qualifyHint="false">M:RI.Framework.Services.Modularization.IModule.Unload</codeEntityReference>
+                            on a module directly.
                         </para>
                         <para>
-                            The module service knows whether a module is initialized or not through its <codeEntityReference qualifyHint="false">P:RI.Framework.Services.Modularization.IModule.IsInitialized</codeEntityReference> property.
-                            At a certain point during startup, the modules are going to be initialized (e.g. when the bootstrapper calls <codeEntityReference qualifyHint="false">M:RI.Framework.Services.Modularization.ModuleService.Initialize</codeEntityReference>).
+                            The module service knows whether a module is initialized or not through its
+                            <codeEntityReference qualifyHint="false">P:RI.Framework.Services.Modularization.IModule.IsInitialized</codeEntityReference>
+                            property.
+                            At a certain point during startup, the modules are going to be initialized (e.g. when the bootstrapper calls
+                            <codeEntityReference qualifyHint="false">M:RI.Framework.Services.Modularization.ModuleService.Initialize</codeEntityReference>
+                            ).
                             This will initialize all modules which are known to the module service at this point in time.
                             If a module is added later, the added module is also initialized immediately after it was added (but only if the other modules were previously initialized).
                         </para>
                         <para>
                             The same applies for unloading in a somewhat reversed fashion:
-                            At a certain point during shutdown, the modules are going to be unloaded (e.g. when the bootstrapper calls <codeEntityReference qualifyHint="false">M:RI.Framework.Services.Modularization.ModuleService.Unload</codeEntityReference>).
+                            At a certain point during shutdown, the modules are going to be unloaded (e.g. when the bootstrapper calls
+                            <codeEntityReference qualifyHint="false">M:RI.Framework.Services.Modularization.ModuleService.Unload</codeEntityReference>
+                            ).
                             This will unload all modules which are known to the module service at this point in time.
                             If a module was removed earlier, the removed module was already unloaded during removal.
                         </para>
@@ -639,14 +546,16 @@ ModuleService moduleService = new ModuleService();
 
         <section address="DispatcherService">
             <title>DispatcherService</title>
-            <content/>
+            <content />
             <sections>
                 <section address="IDispatcherService_StandaloneUse">
                     <title>Standalone use</title>
                     <content>
-                        <para/>
+                        <para />
                         <para>
-                            You can use the <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.DispatcherService</codeEntityReference> as a standalone service.
+                            You can use the
+                            <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.DispatcherService</codeEntityReference>
+                            as a standalone service.
                             Just create an instance:
                         </para>
                         <code language="cs">
@@ -655,18 +564,24 @@ DispatcherService dispatcher = new DispatcherService();
                             ]]>
                         </code>
                         <para>
-                            It is also possible to create multiple independent instances of <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.DispatcherService</codeEntityReference>.
+                            It is also possible to create multiple independent instances of
+                            <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.DispatcherService</codeEntityReference>
+                            .
                         </para>
                     </content>
                 </section>
                 <section address="DispatcherService_IDispatcherOperation">
                     <title>IDispatcherOperation</title>
                     <content>
-                        <para/>
+                        <para />
                         <para>
-                            When a message is broadcasted or an operation is dispatched, the dispatcher service returns an <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.IDispatcherOperation</codeEntityReference> object.
+                            When a message is broadcasted or an operation is dispatched, the dispatcher service returns an
+                            <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.IDispatcherOperation</codeEntityReference>
+                            object.
                             This object provides some advanced control over the broadcast of messages or execution of operations respectively.
-                            Each broadcast and each dispatch will return its own unique <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.IDispatcherOperation</codeEntityReference>.
+                            Each broadcast and each dispatch will return its own unique
+                            <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.IDispatcherOperation</codeEntityReference>
+                            .
                         </para>
                         <para>
                             You can cancel a broadcast or execution:
@@ -712,8 +627,7 @@ op.OnFinished((_op, _args) =>
     Debug.Log("Result: " + _op.Result);
     
     // lets broadcast something from the callback
-    IDispatcherOperation op2 = dispatcher.Broadcast(SomeEventData);
-    op.Reschedule(1000);
+    dispatcher.Broadcast(SomeEventData);
 });
                             ]]>
                         </code>
@@ -728,7 +642,11 @@ dispatcher.Dispatch(SomeMethod)
                             ]]>
                         </code>
                         <para>
-                            Note that for broadcasts and dispatchs of priority <legacyItalic>Now</legacyItalic>, the returned <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.IDispatcherOperation</codeEntityReference> is only useful for getting the results of dispatched methods because the the operation will already be completed when the <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.IDispatcherOperation</codeEntityReference> is returned.
+                            Note that for broadcasts and dispatchs of priority <legacyItalic>Now</legacyItalic>, the returned
+                            <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.IDispatcherOperation</codeEntityReference>
+                            is only useful for getting the results of dispatched methods because the the operation will already be completed when the
+                            <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.IDispatcherOperation</codeEntityReference>
+                            is returned.
                         </para>
                     </content>
                 </section>

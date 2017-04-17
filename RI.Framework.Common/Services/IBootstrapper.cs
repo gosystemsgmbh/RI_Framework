@@ -8,7 +8,7 @@ using RI.Framework.Composition.Model;
 namespace RI.Framework.Services
 {
 	/// <summary>
-	///     Defines the interface for an application and service bootstrapper.
+	///     Defines the interface for a bootstrapper.
 	/// </summary>
 	/// <remarks>
 	///     <para>

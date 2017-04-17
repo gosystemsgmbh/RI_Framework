@@ -2,8 +2,6 @@
 
 ## 1.0.0.0
 
-- [ ] Documentation
-  - [ ] Review Reference
 - [ ] Release
   - [ ] E-Mail address
   - [ ] Web page
@@ -23,6 +21,7 @@
   - [ ] TODOs
   - [ ] NuGet updates
 - [ ] TODO
+  - [ ] Analyze generic virtual methods
   - [ ] Packages
 
 ## Proposals

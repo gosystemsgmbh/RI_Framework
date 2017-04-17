@@ -8,7 +8,7 @@ using System.Reflection;
 namespace RI.Framework.Composition.Catalogs
 {
 	/// <summary>
-	///     Implements a composition catalog which contains the types of assemblies.
+	///     Implements a composition catalog which contains assemblies.
 	/// </summary>
 	/// <remarks>
 	///     <para>

@@ -358,11 +358,6 @@ public class EnemyManager : MonoModule
                     For example, object A can import object B and object B can import object A.
                 </para>
                 <para>
-                    All this allows you to maximize decoupling: You just use an interface, resulting in zero dependency to the actually used type.
-                    The used type (or types) is not known to the using type.
-                    Even for instantiation, the required interface is requested instead of an actual type.
-                </para>
-                <para>
                     One thing was not yet explicitly addressed: Why use modules instead of regular
                     <legacyItalic>MonoBehaviour</legacyItalic>s attached to <legacyItalic>GameObject</legacyItalic>s?
                     The three reasons are: Modules are singletons, go through the composition container (making them exportable/importable), and are automatically instantiated and initialized by the module service during bootstrapping (compared to other exported types which are only instantiated when retrieved from the composition container).
@@ -526,7 +521,7 @@ public class EnemyManager : MonoModule
                     Messages are delivered asynchronously.
                     It means that the messages are not immediately delivered to the respective receivers when sent.
                     Instead, the messages are put into a queue and are delivered from there during certain points in time of a frame cycle.
-                    The only exception to this is when the priority <legacyItalic>Now</legacyItalic> is used, which will deliver the message immediately.
+                    The only exception to this is when the priority <legacyItalic>Now</legacyItalic> is used, which will deliver the message immediately and in the thread which does the sending.
                 </para>
                 <para>
                     Each message has a
@@ -536,8 +531,8 @@ public class EnemyManager : MonoModule
             </content>
         </section>
 
-        <section address="IDispatcherService_Jobs">
-            <title>IDispatcherService (Jobs)</title>
+        <section address="DispatcherService_Jobs">
+            <title>DispatcherService (Jobs)</title>
             <content>
                 <para>
                     Besides messaging,
@@ -612,7 +607,7 @@ public class MyModule : MonoModule
                     Operations are executed asynchronously.
                     It means that the operations are not immediately executed when dispatched.
                     Instead, the operations are put into a queue and are executed from there during certain points in time of a frame cycle.
-                    The only exception to this is when the priority <legacyItalic>Now</legacyItalic> is used, which will execute the operation immediately.
+                    The only exception to this is when the priority <legacyItalic>Now</legacyItalic> is used, which will execute the operation immediately and in the thread which does the dispatching.
                 </para>
                 <para>
                     Each operation has a

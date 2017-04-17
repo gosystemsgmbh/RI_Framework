@@ -1,7 +1,7 @@
 ﻿namespace RI.Framework.Composition.Model
 {
 	/// <summary>
-	///     Used as a proxy in model-based importing (using <see cref="ImportAttribute" />) to hold multiple imported values.
+	///     Used as a proxy in model-based importing (using <see cref="ImportAttribute" />) to hold multiple imported values in an AOT-compatible way.
 	/// </summary>
 	/// <remarks>
 	///     <para>

@@ -88,7 +88,7 @@
                 </listItem>
                 <listItem>
                     <para>
-                        <codeEntityReference qualifyHint="false">T:RI.Framework.Mathematic.PIDController</codeEntityReference>
+                        <codeEntityReference qualifyHint="false">T:RI.Framework.Mathematic.Controllers.PIDController</codeEntityReference>
                     </para>
                 </listItem>
                 <listItem>
@@ -133,7 +133,7 @@
                 </listItem>-->
                 <listItem>
                     <para>
-                       <codeEntityReference qualifyHint="false">T:RI.Framework.Utilities.Text.IndentedTextWriter</codeEntityReference>
+                        <codeEntityReference qualifyHint="false">T:RI.Framework.Utilities.Text.IndentedTextWriter</codeEntityReference>
                     </para>
                 </listItem>
             </list>

@@ -151,6 +151,7 @@
     <None Include="Content\Compatibility.aml" />
     <None Include="Content\OverviewTutorials\DecouplingAdvanced.aml" />
     <None Include="Content\OverviewTutorials\DecouplingBasic.aml" />
+    <None Include="Content\OverviewTutorials\DecouplingMods.aml" />
     <None Include="Content\OverviewTutorials\OverviewTutorials.aml" />
     <None Include="Content\OverviewTutorials\Utilities.aml" />
     <None Include="Content\Usage.aml" />

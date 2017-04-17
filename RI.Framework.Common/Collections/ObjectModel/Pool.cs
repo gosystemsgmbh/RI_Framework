@@ -11,8 +11,10 @@ namespace RI.Framework.Collections.ObjectModel
 	/// <typeparam name="T"> The type of objects which can be stored and recycled by the pool. </typeparam>
 	/// <remarks>
 	///     <para>
-	///         This pool implementation supports <see cref="IPoolAware" />.
 	///         See <see cref="PoolBase{T}" /> for more details.
+	///     </para>
+	///     <para>
+	///         This pool implementation supports <see cref="IPoolAware" />.
 	///     </para>
 	/// </remarks>
 	/// <example>

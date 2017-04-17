@@ -8,7 +8,7 @@ using RI.Framework.Collections.DirectLinq;
 namespace RI.Framework.Composition.Catalogs
 {
 	/// <summary>
-	///     Implements a composition catalog which contains objects.
+	///     Implements a composition catalog which contains instances.
 	/// </summary>
 	/// <remarks>
 	///     <para>

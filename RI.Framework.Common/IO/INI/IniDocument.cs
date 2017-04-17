@@ -86,7 +86,7 @@ namespace RI.Framework.IO.INI
 	///     <para>
 	///         <b> Text: </b>
 	///         A text is everything else which is not a section header, name-value-pair, or comment, and is represented using <see cref="TextIniElement" />
-	///         Therefore, technically speaking, text elements are actually invalid sections and should not be used in any processing.
+	///         Therefore, technically speaking, text elements are actually invalid lines and should not be used in any processing.
 	///         Text is not processed by <see cref="IniDocument" /> besides loading/saving them to/from <see cref="Elements" />.
 	///         Note that consecutive text lines will be combined into a single <see cref="TextIniElement" />.
 	///     </para>
@@ -94,6 +94,7 @@ namespace RI.Framework.IO.INI
 	///         Note that elements always belong to a section.
 	///         This is either the section started by the last section header or the default section if no section header appeared before the element.
 	///         When &quot;outside a section&quot; is mentioned in the description of <see cref="IniDocument" />, that default section is meant.
+	///         The default section can be identified using null or <see cref="string.Empty"/>.
 	///     </note>
 	///     <para>
 	///         <b> ESCAPING </b>

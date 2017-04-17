@@ -43,11 +43,11 @@ namespace RI.Framework.Utilities.Threading
 	///     </para>
 	///     <para>
 	///         <see cref="ToBackground" /> moves the coroutine into a seperate worker thread managed by <see cref="ThreadPool" />, using <see cref="ThreadPool.QueueUserWorkItem(WaitCallback,object)" />.
-	///         The <see cref="ThreadPool" /> is used as-is.
-	///         If the coroutine is already executed in a <see cref="ThreadPool" /> thread, it is re-queued
+	///         The behaviour of <see cref="ThreadPool" /> depends on how it is configured and the used platform.
+	///         If the coroutine is already executed in a <see cref="ThreadPool" /> thread, it is re-queued.
 	///     </para>
 	///     <para>
-	///         <see cref="ToDispatcher" /> dispatches the continuation of the coroutine to an <see cref="IDispatcherService" />.
+	///         <see cref="ToDispatcher" /> dispatches the continuation of the coroutine to a <see cref="DispatcherService" />.
 	///         If the coroutine is already executed by a dispatcher, its continuation is re-dispatched.
 	///     </para>
 	///     <para>

@@ -7,8 +7,8 @@
 
         <introduction>
             <para>
-                The Decoupling &amp; Utilities Framework aims at providing useful scripting tools for game programmers so they can focus on implementing core functionality of their games instead of writing glue logic and boilerplate code.
-                These scripting tools come in the form of .NET/Mono types which can be used right away in Unity scripts.
+                The Decoupling &amp; Utilities Framework aims at providing useful scripting tools for game programmers so they can focus on core game functionality instead of writing glue logic and boilerplate code.
+                These scripting tools come in the form of .NET/Mono types which can be used right away.
             </para>
             <para>
                 Decoupling is the separation of code into logical units and the reduction of their dependencies, making them more maintainable, extensible, and portable.
@@ -18,12 +18,13 @@
             <list class="bullet">
                 <listItem>
                     <para>
-                        <legacyBold>Dependency Injection (DI)</legacyBold> and <legacyBold>Inversion-of-Control (IoC)</legacyBold>
+                        <legacyBold>Dependency Injection (DI)</legacyBold> and
+                        <legacyBold>Inversion-of-Control (IoC)</legacyBold>
                     </para>
                 </listItem>
                 <listItem>
                     <para>
-                        <legacyBold>Service locator and singleton management</legacyBold>
+                        <legacyBold>Service locator</legacyBold> and <legacyBold>Singleton management</legacyBold>
                     </para>
                 </listItem>
                 <listItem>
@@ -48,13 +49,13 @@
                 </listItem>
             </list>
             <para>
-                Furthermore, the Decoupling &amp; Utilities Framework also provides numerous utilities to save you the time of writing commonly used functionality.
-                Some of the more prominent Utilities features are:
+                Furthermore, this framework provides numerous utilities to save you the time of writing commonly used functionality.
+                Some of those more prominent features are:
             </para>
             <list class="bullet">
                 <listItem>
                     <para>
-                        <legacyBold>LINQ replacement</legacyBold>; AOT-compatible subset of LINQ and with immediate execution
+                        <legacyBold>LINQ replacement</legacyBold>; AOT-compatible subset of LINQ with immediate execution
                     </para>
                 </listItem>
                 <listItem>
@@ -69,7 +70,7 @@
                 </listItem>
                 <listItem>
                     <para>
-                        <legacyBold>ThreadMover</legacyBold>; allows at-will-switching between threads and dispatchers in a coroutine
+                        <legacyBold>ThreadMover</legacyBold>; allows switching between threads and dispatchers in a coroutine
                     </para>
                 </listItem>
                 <listItem>
