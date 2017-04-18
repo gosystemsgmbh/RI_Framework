@@ -3,8 +3,6 @@
 ## 1.0.0.0
 
 - [ ] Release
-  - [ ] E-Mail address
-  - [ ] Web page
   - [ ] Promotional material
   - [ ] Unity Asset Store
 
