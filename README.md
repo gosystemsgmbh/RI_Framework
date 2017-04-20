@@ -1,14 +1,13 @@
 # Decoupling & Utilities Framework
 
-## 1.0.0.0
+## 1.x
 
-- [ ] Release
-  - [ ] Promotional material
-  - [ ] Unity Asset Store
+- [ ] ???
 
 ## Backlog
 
 - [ ] Documentation
+  - [ ] Unify descriptions
   - [ ] Unity: Uncomments after implementation (Utilities, DecouplingAdvanced)
   - [ ] NetFx: Simple documentation
   - [ ] AOT/IL2CPP
