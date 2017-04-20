@@ -7,19 +7,19 @@
 ## Backlog
 
 - [ ] Documentation
-  - [ ] Unify descriptions
   - [ ] Unity: Uncomments after implementation (Utilities, DecouplingAdvanced)
   - [ ] NetFx: Simple documentation
-  - [ ] AOT/IL2CPP
-  - [ ] Performance
-  - [ ] Thread Safety
+  - [ ] Unity: AOT/IL2CPP
+  - [ ] Unity: Performance
+  - [ ] Unity: Thread Safety
 - [ ] Cleanup
   - [ ] Warnings
   - [ ] TODOs
   - [ ] NuGet updates
+  - [ ] Packages
 - [ ] TODO
   - [ ] Analyze generic virtual methods
-  - [ ] Packages
+  - [ ] Wishlist
 
 ## Proposals
 
