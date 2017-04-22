@@ -1,8 +1,14 @@
 # Decoupling & Utilities Framework
 
-## 1.x
+## 1.1.0.0
 
-- [ ] ???
+- [ ] Documentation
+  - [ ] Better list of utilities in Asset Store
+  - [ ] Better tutorial structure
+- [ ] Cleanup
+  - [ ] Packages
+- [ ] TODO
+  - [ ] WL: ???
 
 ## Backlog
 
@@ -16,7 +22,6 @@
   - [ ] Warnings
   - [ ] TODOs
   - [ ] NuGet updates
-  - [ ] Packages
 - [ ] TODO
   - [ ] Analyze generic virtual methods
   - [ ] Wishlist
