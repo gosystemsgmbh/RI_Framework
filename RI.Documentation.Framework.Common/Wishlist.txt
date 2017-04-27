@@ -212,6 +212,7 @@ Composition
  - (Common) AggregateCatalog
  - (Common) FileCatalog
  - (Common) AppDomainCatalog
+ - (Common) GameObjectCatalog
 
  - (Common) Add container to container
 
