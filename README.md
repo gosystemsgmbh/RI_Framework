@@ -1,21 +1,22 @@
 # Decoupling & Utilities Framework
 
-## 1.1.0.0
+## 1.0.0.1
 
 - [ ] Documentation
-  - [ ] Better list of utilities in Asset Store
-  - [ ] Better tutorial structure
   - [ ] Check mentioning of Reflection and Reflection.Emit
+  - [ ] Check mentioning of AOT
+  - [ ] Overhaul tutorial structure
+  - [ ] Better general description in Asset Store
+  - [ ] Better general description in documentation
+  - [ ] Better general description on website
 - [ ] Cleanup
   - [ ] Packages
-- [ ] TODO
-  - [ ] WL: ???
 
 ## Backlog
 
 - [ ] Documentation
-  - [ ] Unity: Uncomments after implementation (Utilities, DecouplingAdvanced)
   - [ ] NetFx: Simple documentation
+  - [ ] Unity: Uncomments after implementation
   - [ ] Unity: AOT/IL2CPP
   - [ ] Unity: Performance
   - [ ] Unity: Thread Safety
@@ -23,10 +24,9 @@
   - [ ] Warnings
   - [ ] TODOs
   - [ ] NuGet updates
-- [ ] TODO
-  - [ ] Analyze generic virtual methods
-  - [ ] Wishlist
+- [ ] Wishlist
 
 ## Proposals
 
+- [ ] AOT checking utility
 - [ ] Migrate Common to Shared (own DLL using .NET Standard)
