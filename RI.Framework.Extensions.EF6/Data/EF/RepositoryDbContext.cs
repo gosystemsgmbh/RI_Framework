@@ -331,6 +331,7 @@ namespace RI.Framework.Data.EF
 
 		private RepositoryDbSet CreateSetInternal (Type type)
 		{
+			//TODO: Store created method in static dictionary
 			MethodInfo method = this.GetType().GetMethod(nameof(this.CreateSet), BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 			MethodInfo genericMethod = method.MakeGenericMethod(type);
 			return (RepositoryDbSet)genericMethod.Invoke(this, null);
