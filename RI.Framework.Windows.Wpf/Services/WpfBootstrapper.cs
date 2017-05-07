@@ -1065,9 +1065,6 @@ namespace RI.Framework.Services
 			this.Log(LogLevel.Debug, "Configuring service locator");
 			this.ConfigureServiceLocator();
 
-			this.Log(LogLevel.Debug, "Configuring bootstrapper singletons");
-			this.ConfigureBootstrapperSingletons();
-
 			this.Log(LogLevel.Debug, "Configuring bootstrapper");
 			this.ConfigureBootstrapper();
 
@@ -1084,6 +1081,9 @@ namespace RI.Framework.Services
 
 			this.Log(LogLevel.Debug, "Configuring application");
 			this.ConfigureApplication();
+
+			this.Log(LogLevel.Debug, "Configuring bootstrapper singletons");
+			this.ConfigureBootstrapperSingletons();
 
 			this.Log(LogLevel.Debug, "Showing splash screen");
 			this.ShowSplashScreen();

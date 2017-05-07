@@ -5,6 +5,10 @@
 /_Output
 /_Test
 /_Input
+# *.dll
+# *.exe
+
+# Project specific
 /RI.Documentation.Framework.NetFx/Help
 /RI.Documentation.Framework.Unity/Help
 
@@ -149,7 +153,7 @@ publish/
 *.azurePubxml
 # TODO: Comment the next line if you want to checkin your web deploy settings
 # but database connection strings (with potential passwords) will be unencrypted
-# *.pubxml
+*.pubxml
 *.publishproj
 
 # Microsoft Azure Web App publish settings. Comment the next line if you want to
