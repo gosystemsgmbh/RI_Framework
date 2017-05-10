@@ -49,11 +49,16 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Mvvm\View\GenericViewBase.cs" />
+    <Compile Include="Mvvm\View\WindowViewBase.cs" />
     <Compile Include="Utilities\Wpf\Controls\ComboBoxChecker.cs" />
     <Compile Include="Utilities\Wpf\Controls\_NamespaceDoc.cs" />
-    <Compile Include="Utilities\Wpf\Converters\BoolVisibilityConverter.cs" />
-    <Compile Include="Utilities\Wpf\Converters\ObjectBoolConverter.cs" />
-    <Compile Include="Utilities\Wpf\Converters\ObjectVisibilityConverter.cs" />
+    <Compile Include="Utilities\Wpf\Converters\InvertedBoolVisibilityConverter.cs" />
+    <Compile Include="Utilities\Wpf\Converters\NormalBoolVisibilityConverter.cs" />
+    <Compile Include="Utilities\Wpf\Converters\InvertedObjectBoolConverter.cs" />
+    <Compile Include="Utilities\Wpf\Converters\NormalObjectBoolConverter.cs" />
+    <Compile Include="Utilities\Wpf\Converters\InvertedObjectVisibilityConverter.cs" />
+    <Compile Include="Utilities\Wpf\Converters\NormalObjectVisibilityConverter.cs" />
     <Compile Include="Utilities\Wpf\Markup\EventBinder.cs" />
     <Compile Include="Mvvm\ViewModel\NotificationObject.cs" />
     <Compile Include="Mvvm\ViewModel\DelegateCommand.cs" />

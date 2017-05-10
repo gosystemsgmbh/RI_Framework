@@ -15,7 +15,7 @@ namespace RI.Framework.Utilities.Wpf.Converters
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         <see cref="BoolVisibilityConverter" /> is used when a boolen value needs to be used as the visibility for a WPF element.
+	///         <see cref="NormalBoolVisibilityConverter" /> is used when a boolen value needs to be used as the visibility for a WPF element.
 	///         If the value is true, the converter returns <see cref="Visibility.Visible" />.
 	///         If the value is false, the converter returns its parameter of type <see cref="Visibility" />.
 	///         This allows to choose whether <see cref="Visibility.Hidden" /> or <see cref="Visibility.Collapsed" /> is used when the boolean value is false.
@@ -25,7 +25,7 @@ namespace RI.Framework.Utilities.Wpf.Converters
 	///     </para>
 	/// </remarks>
 	[ValueConversion(typeof(bool), typeof(Visibility), ParameterType = typeof(Visibility))]
-	public sealed class BoolVisibilityConverter : IValueConverter
+	public sealed class NormalBoolVisibilityConverter : IValueConverter
 	{
 		#region Interface: IValueConverter
 

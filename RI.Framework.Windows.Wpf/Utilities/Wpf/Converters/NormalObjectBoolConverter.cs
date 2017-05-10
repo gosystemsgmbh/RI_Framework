@@ -14,7 +14,7 @@ namespace RI.Framework.Utilities.Wpf.Converters
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         <see cref="ObjectBoolConverter" /> is used when a reference value of any type needs to be used as boolean value.
+	///         <see cref="NormalObjectBoolConverter" /> is used when a reference value of any type needs to be used as boolean value.
 	///     </para>
 	///     <para>
 	///         Conversion from <see cref="object" /> (the source) to <see cref="bool" /> (the target):
@@ -29,7 +29,7 @@ namespace RI.Framework.Utilities.Wpf.Converters
 	///     </para>
 	/// </remarks>
 	[ValueConversion(typeof(object), typeof(bool), ParameterType = typeof(object))]
-	public sealed class ObjectBoolConverter : IValueConverter
+	public sealed class NormalObjectBoolConverter : IValueConverter
 	{
 		#region Interface: IValueConverter
 
