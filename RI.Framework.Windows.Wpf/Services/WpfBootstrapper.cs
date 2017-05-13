@@ -21,7 +21,7 @@ namespace RI.Framework.Services
 	///     </para>
 	/// </remarks>
 	[Export]
-	public abstract class WpfBootstrapper <TApplication> : Bootstrapper<TApplication>
+	public abstract class WpfBootstrapper <TApplication> : WindowsBootstrapper<TApplication>
 		where TApplication : Application
 	{
 		#region Overrides

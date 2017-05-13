@@ -214,6 +214,16 @@ namespace RI.Framework.Services
 		/// <exception cref="InvalidOperationException"> <see cref="Run" /> was not called before. </exception>
 		void Shutdown ();
 
+		/// <summary>
+		///     Hides the splash screen.
+		/// </summary>
+		/// <remarks>
+		///     <note type="implement">
+		///         It must be possible to call <see cref="HideSplashScreen" /> multiple times.
+		///     </note>
+		/// </remarks>
+		void HideSplashScreen ();
+
 		#endregion
 	}
 }

@@ -850,18 +850,6 @@ namespace RI.Framework.Services
 		}
 
 		/// <summary>
-		///     Called when the splash screen needs to be hidden.
-		/// </summary>
-		/// <remarks>
-		///     <note type="implement">
-		///         The default implementation does nothing.
-		///     </note>
-		/// </remarks>
-		protected virtual void HideSplashScreen ()
-		{
-		}
-
-		/// <summary>
 		///     Logs some relevant bootstrapper-determined variables.
 		/// </summary>
 		/// <remarks>
@@ -966,6 +954,11 @@ namespace RI.Framework.Services
 
 		/// <inheritdoc />
 		public Guid UserId { get; private set; }
+
+		/// <inheritdoc />
+		public virtual void HideSplashScreen ()
+		{
+		}
 
 		/// <inheritdoc />
 		public void Run ()
