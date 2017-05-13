@@ -74,6 +74,9 @@
     <Compile Include="Data\Repository\_NamespaceDoc.cs" />
     <Compile Include="Data\_NamespaceDoc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\Bootstrapper.cs" />
+    <Compile Include="Services\BootstrapperState.cs" />
+    <Compile Include="Services\IBootstrapper.cs" />
     <Compile Include="Services\Logging\LogWriter.cs" />
     <Compile Include="Services\Messaging\Dispatchers\_NamespaceDoc.cs" />
     <Compile Include="Services\Messaging\Handlers\Triggers\TriggerMessageExtensions.cs" />

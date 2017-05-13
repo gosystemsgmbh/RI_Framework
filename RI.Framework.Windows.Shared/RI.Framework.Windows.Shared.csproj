@@ -53,6 +53,7 @@
     <Compile Include="IO\Serial\SerialPortExtensions.cs" />
     <Compile Include="IO\Serial\SerialPortInstance.cs" />
     <Compile Include="IO\Serial\_NamespaceDoc.cs" />
+    <Compile Include="Services\WindowsBootstrapper.cs" />
     <Compile Include="Utilities\Windows\LocalEncryption.cs" />
     <Compile Include="Utilities\Windows\NativeWindows.cs" />
     <Compile Include="Utilities\Windows\UniqueIdentification.cs" />

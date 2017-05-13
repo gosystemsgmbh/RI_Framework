@@ -22,12 +22,12 @@ namespace RI.Framework.Services
 		#region Instance Properties/Indexer
 
 		/// <summary>
-		///     Gets the used WPF bootstrapper object.
+		///     Gets the used bootstrapper object.
 		/// </summary>
 		/// <value>
-		///     The used WPF bootstrapper object.
+		///     The used bootstrapper object.
 		/// </value>
-		public WpfBootstrapper Bootstrapper { get; internal set; }
+		public Bootstrapper Bootstrapper { get; internal set; }
 
 		#endregion
 

@@ -113,7 +113,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Services\Modularization\ModuleLocator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Modularization\ModuleService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Modularization\_NamespaceDoc.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Services\IBootstrapper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\ServiceLocator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Caches\StateCache.cs" />

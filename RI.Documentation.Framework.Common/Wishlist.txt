@@ -226,11 +226,6 @@ Services
 
  - (Unity) IDispatcherOperation: OnXXX callbacks
  - (Unity) IDispatcherOperation: Stacking of all OnXXX callbacks
-
- * (.NET) Bootstrapper and Application abstraction
-
- # (Service) ServiceBootstrapper
- # (Service) ServiceApplication
   
  - (WPF) WpfApplication: Handle power events using SystemEvents.PowerModeChanged
  - (WPF) WpfApplication: Handle user switching using SystemEvents.SessionSwitch
@@ -252,6 +247,9 @@ Services
  - (WinForms) Regions (WinFormsRegionAdapterBase, WinFormsRegionAdapter)
  - (WinForms) Messaging (WinFormsMessageDispatcher, IWinFormsMessage, WinFormsMessage)
  - (WinForms) Resources (WinFormsResourceTarget, WinFormsResourceConverter)
+
+ # (Service) ServiceBootstrapper
+ # (Service) ServiceApplication
 
  - (Unity) Settings (PlayerPrefsSettingStorage)
  - (Unity) Resources (UnityResourceTarget, UnityResourceConverter)

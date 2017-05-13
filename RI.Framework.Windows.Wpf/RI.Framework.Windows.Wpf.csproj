@@ -81,7 +81,6 @@
     <Compile Include="Services\Resources\Converters\WpfResourceServiceExtensions.cs" />
     <Compile Include="Services\WpfApplication.cs" />
     <Compile Include="Services\WpfBootstrapper.cs" />
-    <Compile Include="Services\WpfBootstrapperState.cs" />
     <Compile Include="Utilities\Wpf\ApplicationExtensions.cs" />
     <Compile Include="Utilities\Wpf\Converters\_NamespaceDoc.cs" />
     <Compile Include="Utilities\Wpf\DispatcherExtensions.cs" />
