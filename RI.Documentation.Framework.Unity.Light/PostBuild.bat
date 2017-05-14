@@ -2,5 +2,10 @@
 
 @md "..\_Output"
 
-rem @copy ".\Help\RI.Documentation.Framework.Unity.chm" "..\_Output\RI.Documentation.Framework.Unity.chm"
-rem @copy ".\Help\RI.Documentation.Framework.Unity.chm" "..\_Output\DecouplingUtilities.chm"
+@copy ".\Help\RI.Documentation.Framework.Unity.Light.docx" "..\_Output\RI.Documentation.Framework.Unity.Light.docx"
+@copy ".\Help\RI.Documentation.Framework.Unity.Light.docx" "..\_Output\DecouplingUtilities.docx"
+
+@cscript "..\_Input\Doc2Pdf.vbs" ".\Help\RI.Documentation.Framework.Unity.Light.docx"
+
+@copy ".\Help\RI.Documentation.Framework.Unity.Light.pdf" "..\_Output\RI.Documentation.Framework.Unity.Light.pdf"
+@copy ".\Help\RI.Documentation.Framework.Unity.Light.pdf" "..\_Output\DecouplingUtilities.pdf"

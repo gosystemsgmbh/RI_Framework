@@ -31,8 +31,20 @@
                 </listItem>
             </list>
             <para>
-                Other platforms can work, except any multithreading-related functionalities on WebGL.
+                The framework has been fully tested with the following Unity versions:
             </para>
+            <list class="bullet">
+                <listItem>
+                    <para>
+                        5.4.1f1
+                    </para>
+                </listItem>
+                <listItem>
+                    <para>
+                        5.6.0f3
+                    </para>
+                </listItem>
+            </list>
             <para>
                 The following types/members have platform restrictions:
             </para>
@@ -41,7 +53,7 @@
                     <para>
                         Method:
                         <codeEntityReference qualifyHint="true">M:RI.Framework.IO.Paths.DirectoryPath.GetCurrentDirectory</codeEntityReference>
-                        : Only usable on Windows (without Store Apps) and Mac OS, throws
+                        : Only usable on Windows (except Store Apps) and Mac OS, throws
                         <legacyItalic>NotSupportedException</legacyItalic> on other platforms.
                     </para>
                 </listItem>
@@ -49,7 +61,7 @@
                     <para>
                         Method:
                         <codeEntityReference qualifyHint="true">M:RI.Framework.Utilities.Reflection.AssemblyExtensions.GetFile(System.Reflection.Assembly)</codeEntityReference>
-                        : Only usable on Windows (without Store Apps) and Mac OS, throws
+                        : Only usable on Windows (except Store Apps) and Mac OS, throws
                         <legacyItalic>NotSupportedException</legacyItalic> on other platforms.
                     </para>
                 </listItem>

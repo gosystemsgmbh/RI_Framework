@@ -6,9 +6,12 @@
   <Topic id="e666ce46-f739-4f98-81cc-e1646ce5bb62" visible="True" title="Contact &amp; Support" />
   <Topic id="5ae21634-faf4-4aa1-a06a-0306b020b502" visible="True" title="Version History" />
   <Topic id="0b0c3c61-ecf8-4ddd-879e-8e28e6815750" visible="True" isExpanded="true" title="Overview &amp; Tutorials">
-    <Topic id="3120b15f-18f6-4b5e-92c7-8b51e2bedfb1" visible="True" title="Decoupling - Basic" />
-    <Topic id="8ec8f13f-ef95-4aec-8fc1-9b54dff96e01" visible="True" title="Decoupling - Advanced" />
-    <Topic id="452daa42-1096-4122-921a-67456541173c" visible="True" isSelected="true" title="Decoupling - Mods/Plugins" />
+    <Topic id="3120b15f-18f6-4b5e-92c7-8b51e2bedfb1" visible="True" title="Bootstrapper" />
+    <Topic id="3120b15f-18f6-4b5e-92c7-8b51e2bedfb1" visible="True" title="CompositionContainer" />
+    <Topic id="3120b15f-18f6-4b5e-92c7-8b51e2bedfb1" visible="True" isSelected="true" title="ServiceLocator" />
+    <Topic id="3120b15f-18f6-4b5e-92c7-8b51e2bedfb1" visible="True" title="ModuleService" />
+    <Topic id="3120b15f-18f6-4b5e-92c7-8b51e2bedfb1" visible="True" title="DispatcherService" />
+    <Topic id="452daa42-1096-4122-921a-67456541173c" visible="True" title="Mods/Plugins Example" />
     <Topic id="baac3f30-823f-4e5a-9a79-6a04f2972381" visible="True" title="Utilities" />
   </Topic>
 </Topics>

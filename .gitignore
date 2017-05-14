@@ -10,7 +10,8 @@
 
 # Project specific
 /RI.Documentation.Framework.NetFx/Help
-/RI.Documentation.Framework.Unity/Help
+/RI.Documentation.Framework.Unity.Heavy/Help
+/RI.Documentation.Framework.Unity.Light/Help
 
 # User-specific files
 *.suo

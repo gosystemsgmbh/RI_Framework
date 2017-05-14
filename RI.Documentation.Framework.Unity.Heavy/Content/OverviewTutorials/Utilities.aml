@@ -7,7 +7,7 @@
 
         <introduction>
             <para>
-                A list of examples for some of the utilities can be found in this section.
+                A list of examples for the most prominent of the utilities can be found in this section.
                 You can browse the
                 <codeEntityReference qualifyHint="false">R:Project_RI.Documentation.Framework.Unity</codeEntityReference>
                 to explore all of the available utilities.
