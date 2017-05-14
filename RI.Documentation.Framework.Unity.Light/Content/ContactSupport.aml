@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<topic id="e666ce46-f739-4f98-81cc-e1646ce5bb62"
+       revisionNumber="1">
+    <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+                                 xmlns:xlink="http://www.w3.org/1999/xlink">
+
+        <introduction>
+            <para>
+                The developer of the Decoupling &amp; Utilities Framework is
+                <externalLink>
+                    <linkText>Roten Informatik</linkText>
+                    <linkUri>http://www.roteninformatik.ch/</linkUri>
+                </externalLink>
+                , a small company in Lucerne, Switzerland.
+            </para>
+            <para>
+                You can write to
+                <externalLink>
+                    <linkText>support@roteninformatik.ch</linkText>
+                    <linkUri>mailto:support@roteninformatik.ch</linkUri>
+                </externalLink>
+                for technical support, questions, suggestions, or general feedback.
+            </para>
+        </introduction>
+
+        <relatedTopics />
+
+    </developerConceptualDocument>
+</topic>

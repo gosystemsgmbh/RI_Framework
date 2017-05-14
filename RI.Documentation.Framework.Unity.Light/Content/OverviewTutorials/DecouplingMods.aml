@@ -1,0 +1,193 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<topic id="452daa42-1096-4122-921a-67456541173c"
+       revisionNumber="1">
+    <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+                                 xmlns:xlink="http://www.w3.org/1999/xlink">
+
+        <introduction>
+            <para>
+                The
+                <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionContainer</codeEntityReference>
+                can be used to prepare your architecture for easy integration of mods or plugins.
+                As shown in <link xlink:href="8ec8f13f-ef95-4aec-8fc1-9b54dff96e01" />, catalogs can be added and removed dynamically and doing so will update the affected imports.
+                We can use this to implement a mod/plugin infrastructure.
+            </para>
+            <para>
+                The following example shows a simple mod infrastructure.
+                It is assumed that each mod is in its own directory.
+                We load all DLLs of each mod which will also automatically load and initialize all of the mods modules.
+                We could then use the module initialization to load further resources for each mod.
+                The example particularly shows how a mod can add new enemy AI behaviour in a very simple way.
+            </para>
+            <code language="cs">
+                <![CDATA[
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using RI.Framework.Composition;
+using RI.Framework.Composition.Catalogs;
+using RI.Framework.Composition.Model;
+using RI.Framework.Services;
+using RI.Framework.Services.Modularization;
+using RI.Framework.IO.Paths;
+using RI.Framework.Collections;
+
+
+// in your Unity project:
+
+
+public class ModInfo
+{
+    // this class holds information about one mod
+
+    public DirectoryPath ModDir;
+    public DirectoryCatalog Catalog;
+
+    public ModInfo (DirectoryPath modDir)
+    {
+        this.ModDir = modDir;
+        this.Catalog = new DirectoryCatalog(modDir);
+    }
+
+    public void Load()
+    {
+        // to load a mod, we just add its catalog to the composition container, it will implicitly do the rest
+
+        ServiceLocator.GetInstance<CompositionContainer>().AddCatalog(this.Catalog);
+    }
+
+    public void Unload()
+    {
+        // to unload a mod, we remove the catalog
+
+        ServiceLocator.GetInstance<CompositionContainer>().RemoveCatalog(this.Catalog);
+    }
+}
+
+
+[Export]
+public class ModManager : MonoModule
+{
+    // this is our mod manager
+
+    public List<ModInfo> AvailableMods;
+
+    protected override void Initialize ()
+    {
+        base.Initialize();
+
+        this.AvailableMods = new List<ModInfo>();
+
+        // get the path to our mod root directory where each mod is in its own subdirectory
+        DirectoryPath modRoot = new DirectoryPath("path to mod directory");
+
+        // get each subdirectory and create the mod objects
+        List<DirectoryPath> modDirs = modRoot.GetSubdirectories(false, false);
+        foreach (string modDir in modDirs)
+        {
+            // create the mod object...
+            ModInfo mod = new ModInfo(modDir);
+            this.AvailableMods.Add(mod);
+
+            // ...and load the mod
+            mod.Load();
+        }
+    }
+}
+
+
+[Export]
+public interface IEnemyAI
+{
+    // this is the interface which our mod is going to implement    
+
+    // for the sake of simplicity, we keep the interface empty
+}
+
+
+[Export]
+public class EnemyManager : MonoModule, IImporting
+{
+    // this is our enemy manager
+    // you could, for example, pick a random AI from UsedAIs each time a new enemy is spawned
+
+    [ImportProperty(typeof(IEnemyAI))]
+    private Import ImportedAIs  { get; set; }
+
+    private IEnemyAI[] UsedAIs;
+
+    public void ImportsResolved (CompositionFlags composition, bool updated)
+    {
+        if (updated)
+        {
+            // each time the imported AIs were updated, we get and keep an array of the AIs
+            this.UsedAIs = this.ImportedAIs.ToArray<IEnemyAI> ();
+        }
+    }
+
+    public void ImportsResolving (CompositionFlags composition)
+    {
+    }
+    
+    public void SpawnEnemy ()
+    {
+        // ...
+        
+        IEnemyAI ai = this.UsedAIs.PopRandom(new Random());
+        
+        // ...
+    }
+}
+
+
+// in some mod DLL:
+
+// note that you need to reference Assembly-CSharp.dll and RI.Framework.Unity.dll from your mod
+
+
+public class MyEnemyAI : IEnemyAI
+{
+    // this is our small little mod, a custom enemy AI
+}
+
+
+public class MyModModule : MonoModule
+{
+    // this is our mods main module which is used to load/unload additional resources
+    // it is optional
+
+    protected override void Initialize ()
+    {
+        base.Initialize ();
+
+        // load mod resources (meshes, sounds, ...)
+
+        // good to know: as soon as the mod is loaded...
+        // ...its catalog is added...
+        // ...which adds this module as an export...
+        // ...which is detected by the module service...
+        // ...which then initializes the module if (and only if!) the modules were already initialized using ModuleService.Initialize
+    }
+
+    protected override void Unload ()
+    {
+        base.Unload ();
+
+        // unload mod resources
+
+        // good to know: as soon as the mod is unloaded...
+        // ...its catalog is removed...
+        // ...which removes this module as an export...
+        // ...which is detected by the module service...
+        // ...which then unloads the module, even if the game continues to run
+    }
+}
+                            ]]>
+            </code>
+        </introduction>
+
+        <relatedTopics />
+
+    </developerConceptualDocument>
+</topic>

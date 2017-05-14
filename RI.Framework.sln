@@ -35,7 +35,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Documentation.Framework.
 		{59451CBF-33C9-4247-8446-B2E3D4105FDE} = {59451CBF-33C9-4247-8446-B2E3D4105FDE}
 	EndProjectSection
 EndProject
-Project("{7CF6DF6D-3B04-46F8-A40B-537D21BCA0B4}") = "RI.Documentation.Framework.Unity", "RI.Documentation.Framework.Unity\RI.Documentation.Framework.Unity.shfbproj", "{BEA7ACCD-752E-4BE7-93F3-491CD5A7E02D}"
+Project("{7CF6DF6D-3B04-46F8-A40B-537D21BCA0B4}") = "RI.Documentation.Framework.Unity.Heavy", "RI.Documentation.Framework.Unity\RI.Documentation.Framework.Unity.Heavy.shfbproj", "{BEA7ACCD-752E-4BE7-93F3-491CD5A7E02D}"
 	ProjectSection(ProjectDependencies) = postProject
 		{0563B040-9EE7-4963-8321-D328EDE5FAE1} = {0563B040-9EE7-4963-8321-D328EDE5FAE1}
 		{36E8EB66-9A69-41EA-A7F8-45BA5299A03F} = {36E8EB66-9A69-41EA-A7F8-45BA5299A03F}
@@ -185,6 +185,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Tools.Framework.Template
 		{59451CBF-33C9-4247-8446-B2E3D4105FDE} = {59451CBF-33C9-4247-8446-B2E3D4105FDE}
 	EndProjectSection
 EndProject
+Project("{7CF6DF6D-3B04-46F8-A40B-537D21BCA0B4}") = "RI.Documentation.Framework.Unity.Light", "RI.Documentation.Framework.Unity.Light\RI.Documentation.Framework.Unity.Light.shfbproj", "{349D4C73-3C31-430A-8AD2-ED3D95FE6CEA}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		RI.Framework.Common\RI.Framework.Common.projitems*{0de0d41d-b3c7-4eb5-a76e-62fc4ca9cb30}*SharedItemsImports = 13
@@ -281,6 +283,10 @@ Global
 		{5210DF0B-3AD1-444A-8C79-38821577788C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5210DF0B-3AD1-444A-8C79-38821577788C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5210DF0B-3AD1-444A-8C79-38821577788C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{349D4C73-3C31-430A-8AD2-ED3D95FE6CEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{349D4C73-3C31-430A-8AD2-ED3D95FE6CEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{349D4C73-3C31-430A-8AD2-ED3D95FE6CEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{349D4C73-3C31-430A-8AD2-ED3D95FE6CEA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -313,5 +319,6 @@ Global
 		{90CE42CD-8AE3-4CC4-89C5-BCC8A7FE3D7A} = {2139B354-0C0B-461E-B0BD-D83F111F63B2}
 		{9F9ECA94-BB74-4AA6-9A0E-9B06ADDA88CA} = {2139B354-0C0B-461E-B0BD-D83F111F63B2}
 		{5210DF0B-3AD1-444A-8C79-38821577788C} = {37ECC737-2BAE-4776-A529-A0C946789FDF}
+		{349D4C73-3C31-430A-8AD2-ED3D95FE6CEA} = {1411DED4-EBBC-4986-9C82-8450F21B9235}
 	EndGlobalSection
 EndGlobal
