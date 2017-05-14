@@ -35,7 +35,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Documentation.Framework.
 		{59451CBF-33C9-4247-8446-B2E3D4105FDE} = {59451CBF-33C9-4247-8446-B2E3D4105FDE}
 	EndProjectSection
 EndProject
-Project("{7CF6DF6D-3B04-46F8-A40B-537D21BCA0B4}") = "RI.Documentation.Framework.Unity.Heavy", "RI.Documentation.Framework.Unity\RI.Documentation.Framework.Unity.Heavy.shfbproj", "{BEA7ACCD-752E-4BE7-93F3-491CD5A7E02D}"
+Project("{7CF6DF6D-3B04-46F8-A40B-537D21BCA0B4}") = "RI.Documentation.Framework.Unity.Heavy", "RI.Documentation.Framework.Unity.Heavy\RI.Documentation.Framework.Unity.Heavy.shfbproj", "{BEA7ACCD-752E-4BE7-93F3-491CD5A7E02D}"
 	ProjectSection(ProjectDependencies) = postProject
 		{0563B040-9EE7-4963-8321-D328EDE5FAE1} = {0563B040-9EE7-4963-8321-D328EDE5FAE1}
 		{36E8EB66-9A69-41EA-A7F8-45BA5299A03F} = {36E8EB66-9A69-41EA-A7F8-45BA5299A03F}

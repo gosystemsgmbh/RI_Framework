@@ -15,7 +15,7 @@
     <!-- SHFB properties -->
     <FrameworkVersion>.NET Framework 3.5</FrameworkVersion>
     <OutputPath>.\Help\</OutputPath>
-    <HtmlHelpName>RI.Documentation.Framework.Unity</HtmlHelpName>
+    <HtmlHelpName>RI.Documentation.Framework.Unity.Heavy</HtmlHelpName>
     <Language>en-US</Language>
     <TransformComponentArguments>
       <Argument Key="logoFile" Value="" />
