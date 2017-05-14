@@ -114,6 +114,11 @@
                         <legacyBold>String and text processing</legacyBold>
                     </para>
                 </listItem>
+                <listItem>
+                    <para>
+                        <legacyBold>Unity object extensions</legacyBold>
+                    </para>
+                </listItem>
             </list>
         </introduction>
 

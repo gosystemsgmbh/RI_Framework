@@ -7,10 +7,8 @@
 
         <introduction>
             <para>
-                The
-                <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionContainer</codeEntityReference>
-                can be used to prepare your architecture for easy integration of mods or plugins.
-                As shown in <link xlink:href="8ec8f13f-ef95-4aec-8fc1-9b54dff96e01" />, catalogs can be added and removed dynamically and doing so will update the affected imports.
+                The CompositionContainer can be used to prepare your architecture for easy integration of mods or plugins.
+                As described previously, catalogs can be added and removed dynamically and doing so will update the affected imports.
                 We can use this to implement a mod/plugin infrastructure.
             </para>
             <para>
