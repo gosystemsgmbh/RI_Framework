@@ -8,7 +8,9 @@
         <introduction>
             <para>
                 The Decoupling &amp; Utilities Framework is designed for the Unity game engine and its Mono and IL2CPP backends.
-                AOT is fully supported within Unitys own AOT and IL2CPP related restrictions, especially those about generic virtual methods.
+            </para>
+            <para>
+                AOT is fully supported within Unitys own AOT and IL2CPP related restrictions.
             </para>
             <para>
                 The framework has been fully tested on the following platforms:
