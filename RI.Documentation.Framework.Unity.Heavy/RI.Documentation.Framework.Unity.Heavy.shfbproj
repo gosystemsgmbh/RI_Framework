@@ -153,7 +153,7 @@
     <None Include="Content\OverviewTutorials\CompositionContainer.aml" />
     <None Include="Content\OverviewTutorials\_DecouplingAdvanced.aml" />
     <None Include="Content\OverviewTutorials\_DecouplingBasic.aml" />
-    <None Include="Content\OverviewTutorials\ModsPluginsExample.aml" />
+    <None Include="Content\OverviewTutorials\ExampleMods.aml" />
     <None Include="Content\OverviewTutorials\DispatcherService.aml" />
     <None Include="Content\OverviewTutorials\ModuleService.aml" />
     <None Include="Content\OverviewTutorials\OverviewTutorials.aml" />

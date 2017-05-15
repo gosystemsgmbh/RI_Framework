@@ -10,18 +10,16 @@
                 This section provides an example which shows how the decoupling features can be used to implement a simple mod infrastructure.
             </para>
             <para>
-                The CompositionContainer can be used to prepare your architecture for easy integration of mods.
-                As described, catalogs can be added and removed dynamically to a CompositionContainer which will update the available imports.
+                The CompositionContainer can be used to prepare your architecture for easy integration of mods or plugins.
+                As described previously, catalogs can be added and removed dynamically and doing so will update the affected imports.
                 We can use this to implement a mod/plugin infrastructure.
             </para>
             <para>
-                For this example, it is assumed that each mod is in its own directory.
-                We load all DLLs of each mod directory using directory catalogs (one for each mod).
-                This will also automatically load and initialize all of the modules which are contained in a mod.
+                The following example shows a simple mod infrastructure.
+                It is assumed that each mod is in its own directory.
+                We load all DLLs of each mod which will also automatically load and initialize all of the mods modules.
                 We could then use the module initialization to load further resources for each mod.
-            </para>
-            <para>
-                In particular, this example shows how a mod could add new enemy AI behaviour in a very simple way.
+                The example particularly shows how a mod can add new enemy AI behaviour in a very simple way.
             </para>
             <code language="cs">
                 <![CDATA[
@@ -37,14 +35,12 @@ using RI.Framework.IO.Paths;
 using RI.Framework.Collections;
 
 
-// ----------------------
 // in your Unity project:
-// ----------------------
 
 
 public class ModInfo
 {
-    // this class holds information about one mod and is used by the mod manager
+    // this class holds information about one mod
 
     public DirectoryPath ModDir;
     public DirectoryCatalog Catalog;
@@ -57,13 +53,15 @@ public class ModInfo
 
     public void Load()
     {
-        // to load a mod, we just add its catalog to the composition container, it will automatically do the rest
+        // to load a mod, we just add its catalog to the composition container, it will implicitly do the rest
+
         ServiceLocator.GetInstance<CompositionContainer>().AddCatalog(this.Catalog);
     }
 
     public void Unload()
     {
         // to unload a mod, we remove the catalog
+
         ServiceLocator.GetInstance<CompositionContainer>().RemoveCatalog(this.Catalog);
     }
 }
@@ -72,9 +70,8 @@ public class ModInfo
 [Export]
 public class ModManager : MonoModule
 {
-    // this is our mod manager (which is a module and therefore automatically initialized by the Bootstrapper)
+    // this is our mod manager
 
-    public DirectoryPath ModRoot;
     public List<ModInfo> AvailableMods;
 
     protected override void Initialize ()
@@ -84,10 +81,11 @@ public class ModManager : MonoModule
         this.AvailableMods = new List<ModInfo>();
 
         // get the path to our mod root directory where each mod is in its own subdirectory
-        this.ModRoot = new DirectoryPath("path to mod directory");
+        DirectoryPath modRoot = new DirectoryPath("path to mod directory");
 
         // get each subdirectory and create the mod objects
-        foreach (string modDir in this.ModRoot.GetSubdirectories(false, false))
+        List<DirectoryPath> modDirs = modRoot.GetSubdirectories(false, false);
+        foreach (string modDir in modDirs)
         {
             // create the mod object...
             ModInfo mod = new ModInfo(modDir);
@@ -103,7 +101,7 @@ public class ModManager : MonoModule
 [Export]
 public interface IEnemyAI
 {
-    // this is the interface which our mod is going to implement (an interface for implementing enemy AI behaviour)
+    // this is the interface which our mod is going to implement    
 
     // for the sake of simplicity, we keep the interface empty
 }
@@ -112,27 +110,20 @@ public interface IEnemyAI
 [Export]
 public class EnemyManager : MonoModule, IImporting
 {
-    // this is our enemy manager, utilizing the available enemy AI behaviours
+    // this is our enemy manager
+    // you could, for example, pick a random AI from UsedAIs each time a new enemy is spawned
 
-    [Import(typeof(IEnemyAI))]
+    [ImportProperty(typeof(IEnemyAI))]
     private Import ImportedAIs  { get; set; }
 
-    private IEnemyAI[] AvailableAIs;
-    private Random Randomizer;
-    
-    protected override void Initialize ()
-    {
-        base.Initialize();
-        
-        this.Randomizer = new Random();
-    }
+    private IEnemyAI[] UsedAIs;
 
     public void ImportsResolved (CompositionFlags composition, bool updated)
     {
         if (updated)
         {
             // each time the imported AIs were updated, we get and keep an array of the AIs
-            this.AvailableAIs = this.ImportedAIs.ToArray<IEnemyAI> ();
+            this.UsedAIs = this.ImportedAIs.ToArray<IEnemyAI> ();
         }
     }
 
@@ -144,30 +135,28 @@ public class EnemyManager : MonoModule, IImporting
     {
         // ...
         
-        // pick a random enemy AI behaviour
-        IEnemyAI ai = this.AvailableAIs.PopRandom(this.Randomizer);
+        IEnemyAI ai = this.UsedAIs.PopRandom(new Random());
         
         // ...
     }
 }
 
 
-// ----------------
 // in some mod DLL:
-// ----------------
 
 // note that you need to reference Assembly-CSharp.dll and RI.Framework.Unity.dll from your mod
 
 
 public class MyEnemyAI : IEnemyAI
 {
-    // this is one small little mod, a custom enemy AI
+    // this is our small little mod, a custom enemy AI
 }
 
 
 public class MyModModule : MonoModule
 {
-    // this is our mods main module which is used to load/unload additional resources of the mod (it is entirely optional)
+    // this is our mods main module which is used to load/unload additional resources
+    // it is optional
 
     protected override void Initialize ()
     {
@@ -179,7 +168,7 @@ public class MyModModule : MonoModule
         // ...its catalog is added...
         // ...which adds this module as an export...
         // ...which is detected by the module service...
-        // ...which then initializes the module if (and only if!) the modules were already initialized using ModuleService.Initialize (e.g. by the Bootstrapper)
+        // ...which then initializes the module if (and only if!) the modules were already initialized using ModuleService.Initialize
     }
 
     protected override void Unload ()
@@ -192,40 +181,11 @@ public class MyModModule : MonoModule
         // ...its catalog is removed...
         // ...which removes this module as an export...
         // ...which is detected by the module service...
-        // ...which then unloads the module, even if the game continues to run and other modules stay loaded/initialized
+        // ...which then unloads the module, even if the game continues to run
     }
-}
-
-
-// -------------------
-// in another mod DLL:
-// -------------------
-
-// note that you need to reference Assembly-CSharp.dll and RI.Framework.Unity.dll from your mod
-
-
-public class OtherEnemyAI : IEnemyAI
-{
-    // this is another small little mod, a custom enemy AI
 }
                             ]]>
             </code>
-            <para>
-                So we heavily decoupled all our infrastructure and reduced the glue logic and boilerplate code to an absolute minimum.
-                What we did was:
-            </para>
-            <list class="bullet">
-                <listItem>
-                    <para>
-                        We decoupled the mod infrastructure (ModManager, ModInfo) from the things we want moddable (IEnemyAI).
-                        The ModManager knows nothing about IEnemyAI and we could add more interfaces for other moddable parts without touching our mod infrastructure at all.
-                    </para>
-                    <para>
-                        We decoupled the enemy infrastructure (EnemyManager, IEnemyAI) from its actual implementations (MyEnemyAI, OtherEnemyAI).
-                        The EnemyManager knows nothing about where and how all its instances of IEnemyAI are coming from and we could add more mods (means: add more implementations of IEnemyAI) without touching EnemyManager.
-                    </para>
-                </listItem>
-            </list>
         </introduction>
 
         <relatedTopics />

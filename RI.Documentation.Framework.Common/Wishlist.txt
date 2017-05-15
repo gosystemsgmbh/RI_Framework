@@ -27,9 +27,9 @@ Utilities
  # (Common) ThreadDispatcherSynchronizationContext
  - (Common) ThreadDispatcher: Priority queue
 
- # (Windows) WindowsMessage
- # (Windows) WindowsMessageLoop
- # (Windows) WindowsMessageLoopSynchronizationContext
+ - (Windows) WindowsMessage
+ - (Windows) WindowsMessageLoop
+ - (Windows) WindowsMessageLoopSynchronizationContext
  - (Windows) WindowsMessageLoop: Priority queue
 
  - (Windows) Screen
@@ -248,8 +248,8 @@ Services
  - (WinForms) Messaging (WinFormsMessageDispatcher, IWinFormsMessage, WinFormsMessage)
  - (WinForms) Resources (WinFormsResourceTarget, WinFormsResourceConverter)
 
- # (Service) ServiceBootstrapper
- # (Service) ServiceApplication
+ - (Service) ServiceBootstrapper
+ - (Service) ServiceApplication
 
  - (Unity) Settings (PlayerPrefsSettingStorage)
  - (Unity) Resources (UnityResourceTarget, UnityResourceConverter)

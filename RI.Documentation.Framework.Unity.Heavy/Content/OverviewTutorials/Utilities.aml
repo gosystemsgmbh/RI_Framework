@@ -7,18 +7,10 @@
 
         <introduction>
             <para>
-                A list of examples for the most prominent of the utilities can be found in this section.
-                You can browse the
-                <codeEntityReference qualifyHint="false">R:Project_RI.Documentation.Framework.Unity</codeEntityReference>
-                to explore all of the available utilities.
+                This section provides a list of examples for some of the more prominent utilities. In addition, you can browse the <codeEntityReference qualifyHint="false">R:Project_RI.Documentation.Framework.Unity</codeEntityReference> to explore all available utilities.
             </para>
-            <alert class="important">
-                <para>
-                    Please consider reading the remarks section of type and member descriptions as they often contain futher explanations and provide more detailed information.
-                </para>
-            </alert>
             <para>
-                The following types provide examples in their description:
+                The following utilities provide examples in their type description:
             </para>
             <list class="bullet">
                 <listItem>
