@@ -10,8 +10,9 @@
     <Topic id="dcd0ab6e-87ba-42ab-8810-ad01d32dc132" visible="True" title="CompositionContainer" />
     <Topic id="51398a91-3652-46f9-b034-44e6fd6ab428" visible="True" title="ServiceLocator" />
     <Topic id="381cc397-dd59-4d41-b1fd-7017cb7e1dd8" visible="True" title="ModuleService" />
-    <Topic id="5ad1a46e-e56a-4c33-90dc-f3ca2e7a56a6" visible="True" title="DispatcherService" />
+    <Topic id="5ad1a46e-e56a-4c33-90dc-f3ca2e7a56a6" visible="True" isSelected="true" title="DispatcherService (Messages)" />
+    <Topic id="ca36bd10-f19c-4760-8764-aa8042d942ef" visible="True" title="DispatcherService (Jobs)" />
     <Topic id="baac3f30-823f-4e5a-9a79-6a04f2972381" visible="True" title="Utilities" />
-    <Topic id="452daa42-1096-4122-921a-67456541173c" visible="True" isSelected="true" title="Example: Mods" />
+    <Topic id="452daa42-1096-4122-921a-67456541173c" visible="True" title="Example: Mods" />
   </Topic>
 </Topics>

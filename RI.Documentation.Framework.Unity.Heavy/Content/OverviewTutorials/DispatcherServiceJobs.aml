@@ -1,0 +1,226 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<topic id="ca36bd10-f19c-4760-8764-aa8042d942ef"
+       revisionNumber="1">
+    <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+                                 xmlns:xlink="http://www.w3.org/1999/xlink">
+
+        <introduction>
+            <autoOutline />
+        </introduction>
+
+        <section address="Purpose">
+            <title>Purpose</title>
+            <content>
+                <para>
+                    Besides messaging,
+                    <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.DispatcherService</codeEntityReference>
+                    also lets you dispatch operations (or jobs).
+                </para>
+                <para>
+                    Note that there is also
+                    <codeEntityReference qualifyHint="false">T:RI.Framework.Utilities.Threading.ThreadMover</codeEntityReference>
+                    which is also a nice cross-thread execution tool when working with coroutines.
+                </para>
+            </content>
+        </section>
+
+        <section address="Usage">
+            <title>Usage</title>
+            <content>
+                <para>
+                    The following example shows how to dispatch a simple operation:
+                </para>
+                <code language="cs">
+                    <![CDATA[
+using RI.Framework.Services;
+using RI.Framework.Services.Dispatcher;
+using RI.Framework.Services.Modularization;
+
+
+public class MyModule : MonoModule
+{
+    [Import]
+    public DispatcherService Dispatcher { get; set; }
+
+    protected override void Initialize ()
+    {
+        base.Initialize();
+        
+        this.Dispatcher.Dispatch(() => Debug.Log("I'm being logged with default priority"));
+    
+        this.Dispatcher.Dispatch(DispatcherPriority.Idle, () => Debug.Log("I'm being logged when the dispatcher is idle"));
+    }
+}
+          ]]>
+                </code>
+                <para>
+                    The following example shows how to dispatch an operation which has parameters:
+                </para>
+                <code language="cs">
+                    <![CDATA[
+using RI.Framework.Services;
+using RI.Framework.Services.Dispatcher;
+using RI.Framework.Services.Modularization;
+
+
+public class MyModule : MonoModule
+{
+    [Import]
+    public DispatcherService Dispatcher { get; set; }
+
+    protected override void Initialize ()
+    {
+        base.Initialize();
+        
+        this.Dispatcher.Dispatch(x => Debug.Log(x), "I'm x !");
+
+        this.Dispatcher.Dispatch(DispatcherPriority.Background, filename => 
+        {
+            LoadMeshFromFile(filename);
+        }, "Spaceship.obj").OnFinished((_op, _args) => Debug.Log("Spaceship was loaded in the background."));
+    }
+}
+          ]]>
+                </code>
+            </content>
+        </section>
+
+        <section address="HowItWorks">
+            <title>How it works</title>
+            <content>
+                <para>
+                    Operations can be dispatched from any thread but are executed in Unitys main/foreground thread.
+                    This makes it a good tool for asynchronous cross-thread execution or, for example, to continue a procedure from a background thread in the main/foreground thread.
+                </para>
+                <para>
+                    Operations are executed asynchronously.
+                    It means that the operations are not immediately executed when dispatched.
+                    Instead, the operations are put into a queue and are executed from there during certain points in time of a frame cycle.
+                    The only exception to this is when the priority <legacyItalic>Now</legacyItalic> is used, which will execute the operation immediately and in the thread which does the dispatching.
+                </para>
+                <para>
+                    Each operation has a
+                    <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.DispatcherPriority</codeEntityReference>
+                    which defines at which point in time during a frame cycle the operation is executed.
+                </para>
+                <para>
+                    A particular use case for dispatched operations are situations where run-to-completion behaviour is required.
+                    For example: A method needs an operation executed but not before the method itself has returned.
+                    This is especially required for handling state transitions in state machines where you want to dispatch a state transition but the actual transition should not happen before the current method is finished (so that the rest of the method, after the dispatching of the transient, can still finish with the current state).
+                </para>
+            </content>
+        </section>
+
+        <section address="StandaloneUse">
+            <title>Standalone use</title>
+            <content>
+                <para>
+                    You can use the
+                    <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.DispatcherService</codeEntityReference>
+                    as a standalone service.
+                    Just create an instance:
+                </para>
+                <code language="cs">
+                    <![CDATA[
+DispatcherService dispatcher = new DispatcherService();
+                            ]]>
+                </code>
+            </content>
+        </section>
+
+        <section address="MultipleInstances">
+            <title>Multiple instances</title>
+            <content>
+                <para>
+                    It is also possible to create multiple independent instances of
+                    <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.DispatcherService</codeEntityReference>
+                    .
+                </para>
+            </content>
+        </section>
+
+        <section address="DispatcherOperations">
+            <title>Dispatcher operations</title>
+            <content>
+                <para>
+                    When a message is broadcasted or an operation is dispatched, the dispatcher service returns an
+                    <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.IDispatcherOperation</codeEntityReference>
+                    object.
+                    This object provides some advanced control over the broadcast of messages or execution of operations respectively.
+                    Each broadcast and each dispatch will return its own unique
+                    <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.IDispatcherOperation</codeEntityReference>
+                    .
+                </para>
+                <para>
+                    You can cancel a broadcast or execution:
+                </para>
+                <code language="cs">
+                    <![CDATA[
+IDispatcherOperation op = dispatcher.Dispatch(SomeMethod);
+op.Cancel(); // cancel operation
+                            ]]>
+                </code>
+                <para>
+                    You can reschedule a broadcast or execution so that it is delayed for a specified amount of time or until a specified point in time:
+                </para>
+                <code language="cs">
+                    <![CDATA[
+IDispatcherOperation op = dispatcher.Dispatch(SomeMethod);
+op.Reschedule(1000); // delay execution by 1000 milliseconds
+                            ]]>
+                </code>
+                <para>
+                    You can set a timeout (helpful for lower priorities which do not guarantee execution):
+                </para>
+                <code language="cs">
+                    <![CDATA[
+IDispatcherOperation op = dispatcher.Dispatch(DispatcherPriority.Idle, SomeMethod);
+op.Timeout(1000); // cancel execution if not started after 1000 milliseconds (e.g. the dispatcher never becomes idle)
+                            ]]>
+                </code>
+                <para>
+                    You can set a callback:
+                </para>
+                <code language="cs">
+                    <![CDATA[
+IDispatcherOperation op = dispatcher.DispatchFunc(DispatcherPriority.Background, SomeMethodWithReturnValue);
+op.OnFinished((_op, _args) =>
+{
+    // the callback is always executed on Unitys main/foreground thread
+    
+    // evaluate how the operation finished
+    Debug.Log("Finished: " + _op.Status);
+    
+    // get the return value of the executed method
+    Debug.Log("Result: " + _op.Result);
+    
+    // lets broadcast something from the callback
+    dispatcher.Broadcast(SomeEventData);
+});
+                            ]]>
+                </code>
+                <para>
+                    You can chain all these methods fluently:
+                </para>
+                <code language="cs">
+                    <![CDATA[
+dispatcher.Dispatch(SomeMethod)
+          .Timeout(1000)
+          .OnFinished((_op, _args) => MyCallbackMethod);
+                            ]]>
+                </code>
+                <para>
+                    Note that for broadcasts and dispatchs of priority <legacyItalic>Now</legacyItalic>, the returned
+                    <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.IDispatcherOperation</codeEntityReference>
+                    is only useful for getting the results of dispatched methods because the the operation will already be completed when the
+                    <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.IDispatcherOperation</codeEntityReference>
+                    is returned.
+                </para>
+            </content>
+        </section>
+
+        <relatedTopics />
+
+    </developerConceptualDocument>
+</topic>

@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<topic id="ca36bd10-f19c-4760-8764-aa8042d942ef"
+       revisionNumber="1">
+    <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+                                 xmlns:xlink="http://www.w3.org/1999/xlink">
+
+        <introduction>
+            <para>
+                xxx
+            </para>
+            <autoOutline />
+        </introduction>
+
+        <section address="xxx">
+            <title>xxx</title>
+            <content>
+            </content>
+        </section>
+
+        <section address="xxx">
+            <title>xxx</title>
+            <content>
+            </content>
+        </section>
+
+        <section address="xxx">
+            <title>xxx</title>
+            <content>
+            </content>
+        </section>
+
+        <section address="xxx">
+            <title>xxx</title>
+            <content>
+            </content>
+        </section>
+
+        <section address="xxx">
+            <title>xxx</title>
+            <content>
+            </content>
+        </section>
+
+        <relatedTopics />
+
+    </developerConceptualDocument>
+</topic>

@@ -15,10 +15,6 @@
                 The namespaces of all types in the framework start with <legacyItalic>RI.Framework.*</legacyItalic>.
             </para>
             <para>
-                An overview and tutorial about how to use the framework is provided in
-                <link xlink:href="0b0c3c61-ecf8-4ddd-879e-8e28e6815750" />.
-            </para>
-            <para>
                 The framework is provided in compiled form, as a DLL, without source code.
             </para>
         </introduction>

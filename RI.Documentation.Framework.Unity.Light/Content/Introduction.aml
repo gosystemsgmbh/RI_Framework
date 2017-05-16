@@ -24,7 +24,8 @@
                 </listItem>
                 <listItem>
                     <para>
-                        <legacyBold>Service locator</legacyBold> and <legacyBold>Singleton management</legacyBold>
+                        <legacyBold>Service locator</legacyBold> and
+                        <legacyBold>Singleton management</legacyBold>
                     </para>
                 </listItem>
                 <listItem>
@@ -44,7 +45,7 @@
                 </listItem>
                 <listItem>
                     <para>
-                        <legacyBold>Bootstrapper</legacyBold>, integrating all those features with almost no code required from your side
+                        <legacyBold>Bootstrapper</legacyBold>
                     </para>
                 </listItem>
             </list>
@@ -111,6 +112,11 @@
                 <listItem>
                     <para>
                         <legacyBold>String and text processing</legacyBold>
+                    </para>
+                </listItem>
+                <listItem>
+                    <para>
+                        <legacyBold>Unity object extensions</legacyBold>
                     </para>
                 </listItem>
             </list>
