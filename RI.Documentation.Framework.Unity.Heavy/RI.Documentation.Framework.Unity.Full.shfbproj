@@ -11,7 +11,7 @@
     <!-- AssemblyName, Name, and RootNamespace are not used by SHFB but Visual Studio adds them anyway -->
     <AssemblyName>MPG.Framework.Documentation</AssemblyName>
     <RootNamespace>MPG.Framework.Documentation</RootNamespace>
-    <Name>RI.Documentation.Framework.Unity.Heavy</Name>
+    <Name>RI.Documentation.Framework.Unity.Full</Name>
     <!-- SHFB properties -->
     <FrameworkVersion>.NET Framework 3.5</FrameworkVersion>
     <OutputPath>.\Help\</OutputPath>

@@ -13,7 +13,8 @@
 @xcopy "..\RI.Documentation.Framework.Unity.Heavy\Content\OverviewTutorials\CompositionContainer.aml" ".\Content\OverviewTutorials\CompositionContainer.aml" /E /Y
 @xcopy "..\RI.Documentation.Framework.Unity.Heavy\Content\OverviewTutorials\ServiceLocator.aml" ".\Content\OverviewTutorials\ServiceLocator.aml" /E /Y
 @xcopy "..\RI.Documentation.Framework.Unity.Heavy\Content\OverviewTutorials\ModuleService.aml" ".\Content\OverviewTutorials\ModuleService.aml" /E /Y
-@xcopy "..\RI.Documentation.Framework.Unity.Heavy\Content\OverviewTutorials\DispatcherService.aml" ".\Content\OverviewTutorials\DispatcherService.aml" /E /Y
+@xcopy "..\RI.Documentation.Framework.Unity.Heavy\Content\OverviewTutorials\DispatcherServiceMessages.aml" ".\Content\OverviewTutorials\DispatcherServiceMessages.aml" /E /Y
+@xcopy "..\RI.Documentation.Framework.Unity.Heavy\Content\OverviewTutorials\DispatcherServiceJobs.aml" ".\Content\OverviewTutorials\DispatcherServiceJobs.aml" /E /Y
 @xcopy "..\RI.Documentation.Framework.Unity.Heavy\Content\OverviewTutorials\ExampleMods.aml" ".\Content\OverviewTutorials\ExampleMods.aml" /E /Y
 
 @xcopy "..\RI.Documentation.Framework.Unity.Heavy\Media\BootstrapperDragDrop.png" ".\Media\BootstrapperDragDrop.png" /E /Y
