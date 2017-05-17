@@ -15,10 +15,10 @@
                 <para>
                     Besides messaging,
                     <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.DispatcherService</codeEntityReference>
-                    also lets you dispatch operations (or jobs).
+                    also lets you dispatch operations (or &quot;jobs&quot;).
                 </para>
                 <para>
-                    Note that there is also
+                    Note that there is
                     <codeEntityReference qualifyHint="false">T:RI.Framework.Utilities.Threading.ThreadMover</codeEntityReference>
                     which is also a nice cross-thread execution tool when working with coroutines.
                 </para>
@@ -38,7 +38,7 @@ using RI.Framework.Services.Dispatcher;
 using RI.Framework.Services.Modularization;
 
 
-public class MyModule : MonoModule
+public sealed class MyModule : MonoModule
 {
     [Import]
     public DispatcherService Dispatcher { get; set; }
@@ -52,7 +52,7 @@ public class MyModule : MonoModule
         this.Dispatcher.Dispatch(DispatcherPriority.Idle, () => Debug.Log("I'm being logged when the dispatcher is idle"));
     }
 }
-          ]]>
+                    ]]>
                 </code>
                 <para>
                     The following example shows how to dispatch an operation which has parameters:
@@ -64,7 +64,7 @@ using RI.Framework.Services.Dispatcher;
 using RI.Framework.Services.Modularization;
 
 
-public class MyModule : MonoModule
+public sealed class MyModule : MonoModule
 {
     [Import]
     public DispatcherService Dispatcher { get; set; }
@@ -81,7 +81,7 @@ public class MyModule : MonoModule
         }, "Spaceship.obj").OnFinished((_op, _args) => Debug.Log("Spaceship was loaded in the background."));
     }
 }
-          ]]>
+                    ]]>
                 </code>
             </content>
         </section>
@@ -91,7 +91,7 @@ public class MyModule : MonoModule
             <content>
                 <para>
                     Operations can be dispatched from any thread but are executed in Unitys main/foreground thread.
-                    This makes it a good tool for asynchronous cross-thread execution or, for example, to continue a procedure from a background thread in the main/foreground thread.
+                    This makes the dispatcher service a good tool for asynchronous cross-thread execution, to synchronize jobs, or, for example, to continue a procedure from a background thread in the main/foreground thread.
                 </para>
                 <para>
                     Operations are executed asynchronously.
@@ -107,7 +107,7 @@ public class MyModule : MonoModule
                 <para>
                     A particular use case for dispatched operations are situations where run-to-completion behaviour is required.
                     For example: A method needs an operation executed but not before the method itself has returned.
-                    This is especially required for handling state transitions in state machines where you want to dispatch a state transition but the actual transition should not happen before the current method is finished (so that the rest of the method, after the dispatching of the transient, can still finish with the current state).
+                    This is particularly required for handling state transitions in state machines where you want to dispatch a state transition but the actual transition should not happen before the current method is finished (so that the rest of the method, after the dispatching of the transition, can still finish with the current state).
                 </para>
             </content>
         </section>
@@ -116,15 +116,13 @@ public class MyModule : MonoModule
             <title>Standalone use</title>
             <content>
                 <para>
-                    You can use the
-                    <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.DispatcherService</codeEntityReference>
-                    as a standalone service.
+                    You can use the dispatcher service as a standalone service.
                     Just create an instance:
                 </para>
                 <code language="cs">
                     <![CDATA[
 DispatcherService dispatcher = new DispatcherService();
-                            ]]>
+                    ]]>
                 </code>
             </content>
         </section>
@@ -133,9 +131,7 @@ DispatcherService dispatcher = new DispatcherService();
             <title>Multiple instances</title>
             <content>
                 <para>
-                    It is also possible to create multiple independent instances of
-                    <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.DispatcherService</codeEntityReference>
-                    .
+                    It is also possible to create multiple independent instances of the dispatcher service.
                 </para>
             </content>
         </section>
@@ -158,8 +154,8 @@ DispatcherService dispatcher = new DispatcherService();
                 <code language="cs">
                     <![CDATA[
 IDispatcherOperation op = dispatcher.Dispatch(SomeMethod);
-op.Cancel(); // cancel operation
-                            ]]>
+op.Cancel();
+                    ]]>
                 </code>
                 <para>
                     You can reschedule a broadcast or execution so that it is delayed for a specified amount of time or until a specified point in time:
@@ -168,7 +164,7 @@ op.Cancel(); // cancel operation
                     <![CDATA[
 IDispatcherOperation op = dispatcher.Dispatch(SomeMethod);
 op.Reschedule(1000); // delay execution by 1000 milliseconds
-                            ]]>
+                    ]]>
                 </code>
                 <para>
                     You can set a timeout (helpful for lower priorities which do not guarantee execution):
@@ -176,8 +172,8 @@ op.Reschedule(1000); // delay execution by 1000 milliseconds
                 <code language="cs">
                     <![CDATA[
 IDispatcherOperation op = dispatcher.Dispatch(DispatcherPriority.Idle, SomeMethod);
-op.Timeout(1000); // cancel execution if not started after 1000 milliseconds (e.g. the dispatcher never becomes idle)
-                            ]]>
+op.Timeout(1000); // cancel execution if it is not started after 1000 milliseconds (e.g. the dispatcher never becomes idle)
+                    ]]>
                 </code>
                 <para>
                     You can set a callback:
@@ -198,7 +194,7 @@ op.OnFinished((_op, _args) =>
     // lets broadcast something from the callback
     dispatcher.Broadcast(SomeEventData);
 });
-                            ]]>
+                    ]]>
                 </code>
                 <para>
                     You can chain all these methods fluently:
@@ -208,14 +204,12 @@ op.OnFinished((_op, _args) =>
 dispatcher.Dispatch(SomeMethod)
           .Timeout(1000)
           .OnFinished((_op, _args) => MyCallbackMethod);
-                            ]]>
+                    ]]>
                 </code>
                 <para>
-                    Note that for broadcasts and dispatchs of priority <legacyItalic>Now</legacyItalic>, the returned
-                    <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.IDispatcherOperation</codeEntityReference>
-                    is only useful for getting the results of dispatched methods because the the operation will already be completed when the
-                    <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.IDispatcherOperation</codeEntityReference>
-                    is returned.
+                    Note that for broadcasts and dispatchs of priority
+                    <legacyItalic>Now</legacyItalic>
+                    , the returned dispatcher operation is only useful for getting the results of dispatched methods because the operation will already be completed when thedispatcher operation is returned.
                 </para>
             </content>
         </section>

@@ -1,50 +1,56 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
+
+
+
 
 namespace RI.Framework.Utilities.Threading
 {
 	/// <summary>
-	/// Implements a timer which can be used with <see cref="IThreadDispatcher"/>.
+	///     Implements a timer which can be used with <see cref="IThreadDispatcher" />.
 	/// </summary>
 	/// <remarks>
-	/// <para>
-	/// <see cref="ThreadDispatcherTimer"/> enqueues a delegate to the specified dispatchers queue (using <see cref="IThreadDispatcher.Post"/>) in a specified interval.
-	/// </para>
-	/// <para>
-	/// The interval is awaited before the timer is executed for the first time. Afterwards, the delegate is posted to the dispatcher in the specified interval.
-	/// </para>
-	/// <para>
-	/// The timer is initially stopped and needs to be started explicitly using <see cref="Start"/>.
-	/// </para>
-	/// <note type="note">
-	/// <see cref="ThreadDispatcherTimer"/> is relatively heavy-weighted as it uses its own thread (one per instance) to deliver the delegate to the dispatcher.
-	/// </note>
+	///     <para>
+	///         <see cref="ThreadDispatcherTimer" /> enqueues a delegate to the specified dispatchers queue (using <see cref="IThreadDispatcher.Post" />) in a specified interval.
+	///     </para>
+	///     <para>
+	///         The interval is awaited before the timer is executed for the first time. Afterwards, the delegate is posted to the dispatcher in the specified interval.
+	///     </para>
+	///     <para>
+	///         The timer is initially stopped and needs to be started explicitly using <see cref="Start" />.
+	///     </para>
+	///     <note type="note">
+	///         <see cref="ThreadDispatcherTimer" /> is relatively heavy-weighted as it uses its own thread (one per instance) to deliver the delegate to the dispatcher.
+	///     </note>
 	/// </remarks>
 	public sealed class ThreadDispatcherTimer : IDisposable
 	{
+		#region Instance Constructor/Destructor
+
 		/// <summary>
-		/// Creates a new instance of <see cref="ThreadDispatcherTimer" />.
+		///     Creates a new instance of <see cref="ThreadDispatcherTimer" />.
 		/// </summary>
-		/// <param name="dispatcher">The used dispatcher.</param>
-		/// <param name="mode">The timer mode.</param>
-		/// <param name="interval">The interval between executions in milliseconds.</param>
-		/// <param name="action">The delegate.</param>
-		/// <param name="parameters">Optional parameters of the delagate.</param>
-		/// <exception cref="ArgumentNullException"><paramref name="dispatcher"/> or <paramref name="action"/> is null.</exception>
+		/// <param name="dispatcher"> The used dispatcher. </param>
+		/// <param name="mode"> The timer mode. </param>
+		/// <param name="interval"> The interval between executions in milliseconds. </param>
+		/// <param name="action"> The delegate. </param>
+		/// <param name="parameters"> Optional parameters of the delagate. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" /> or <paramref name="action" /> is null. </exception>
 		public ThreadDispatcherTimer (IThreadDispatcher dispatcher, ThreadDispatcherTimerMode mode, int interval, Delegate action, params object[] parameters)
 			: this(dispatcher, mode, TimeSpan.FromMilliseconds(interval), action, parameters)
 		{
 		}
 
 		/// <summary>
-		/// Creates a new instance of <see cref="ThreadDispatcherTimer" />.
+		///     Creates a new instance of <see cref="ThreadDispatcherTimer" />.
 		/// </summary>
-		/// <param name="dispatcher">The used dispatcher.</param>
-		/// <param name="mode">The timer mode.</param>
-		/// <param name="interval">The interval between executions.</param>
-		/// <param name="action">The delegate.</param>
-		/// <param name="parameters">Optional parameters of the delagate.</param>
-		/// <exception cref="ArgumentNullException"><paramref name="dispatcher"/> or <paramref name="action"/> is null.</exception>
+		/// <param name="dispatcher"> The used dispatcher. </param>
+		/// <param name="mode"> The timer mode. </param>
+		/// <param name="interval"> The interval between executions. </param>
+		/// <param name="action"> The delegate. </param>
+		/// <param name="parameters"> Optional parameters of the delagate. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" /> or <paramref name="action" /> is null. </exception>
 		public ThreadDispatcherTimer (IThreadDispatcher dispatcher, ThreadDispatcherTimerMode mode, TimeSpan interval, Delegate action, params object[] parameters)
 		{
 			if (dispatcher == null)
@@ -74,78 +80,66 @@ namespace RI.Framework.Utilities.Threading
 			this.Dispose(false);
 		}
 
-		/// <inheritdoc />
-		void IDisposable.Dispose ()
-		{
-			this.Stop();
-		}
+		#endregion
 
-		private void Dispose (bool disposing)
-		{
-			lock (this.SyncRoot)
-			{
-				if (this.TimerThread == null)
-				{
-					return;
-				}
 
-				try
-				{
-					this.TimerThread.Abort();
-				}
-				catch
-				{
-				}
-				this.TimerThread = null;
-			}
-		}
+
+
+		#region Instance Properties/Indexer
 
 		/// <summary>
-		/// Gets the used dispatcher.
+		///     Gets the used delegate.
 		/// </summary>
 		/// <value>
-		/// The used dispatcher.
-		/// </value>
-		public IThreadDispatcher Dispatcher { get; private set; }
-
-		/// <summary>
-		/// Gets the timer mode.
-		/// </summary>
-		/// <value>
-		/// The timer mode.
-		/// </value>
-		public ThreadDispatcherTimerMode Mode { get; private set; }
-
-		/// <summary>
-		/// Gets the used interval.
-		/// </summary>
-		/// <value>
-		/// The used interval.
-		/// </value>
-		public TimeSpan Interval { get; private set; }
-
-		/// <summary>
-		/// Gets the used delegate.
-		/// </summary>
-		/// <value>
-		/// The used delegate.
+		///     The used delegate.
 		/// </value>
 		public Delegate Action { get; private set; }
 
 		/// <summary>
-		/// Gets the optional parameters of the delagate.
+		///     Gets the used dispatcher.
 		/// </summary>
 		/// <value>
-		/// The optional parameters of the delagate.
+		///     The used dispatcher.
+		/// </value>
+		public IThreadDispatcher Dispatcher { get; private set; }
+
+		/// <summary>
+		///     Gets the used interval.
+		/// </summary>
+		/// <value>
+		///     The used interval.
+		/// </value>
+		public TimeSpan Interval { get; private set; }
+
+		/// <summary>
+		///     Gets the timer mode.
+		/// </summary>
+		/// <value>
+		///     The timer mode.
+		/// </value>
+		public ThreadDispatcherTimerMode Mode { get; private set; }
+
+		/// <summary>
+		///     Gets the optional parameters of the delagate.
+		/// </summary>
+		/// <value>
+		///     The optional parameters of the delagate.
 		/// </value>
 		public object[] Parameters { get; private set; }
 
-		private Thread TimerThread { get; set; }
-
 		private object SyncRoot { get; set; }
 
+		private Thread TimerThread { get; set; }
+
+		#endregion
+
+
+
+
+		#region Instance Methods
+
 		/// <summary>
-		/// Starts the timer.
+		///     Starts the timer.
 		/// </summary>
 		public void Start ()
 		{
@@ -185,12 +179,49 @@ namespace RI.Framework.Utilities.Threading
 		}
 
 		/// <summary>
-		/// Stops the timer.
+		///     Stops the timer.
 		/// </summary>
 		public void Stop ()
 		{
 			this.Dispose(true);
 			GC.SuppressFinalize(this);
 		}
+
+		[SuppressMessage("ReSharper", "UnusedParameter.Local")]
+		[SuppressMessage("ReSharper", "EmptyGeneralCatchClause")]
+		private void Dispose (bool disposing)
+		{
+			lock (this.SyncRoot)
+			{
+				if (this.TimerThread == null)
+				{
+					return;
+				}
+
+				try
+				{
+					this.TimerThread.Abort();
+				}
+				catch
+				{
+				}
+				this.TimerThread = null;
+			}
+		}
+
+		#endregion
+
+
+
+
+		#region Interface: IDisposable
+
+		/// <inheritdoc />
+		void IDisposable.Dispose ()
+		{
+			this.Stop();
+		}
+
+		#endregion
 	}
 }

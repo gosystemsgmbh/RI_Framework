@@ -2,6 +2,9 @@
 using System.Security.Cryptography;
 using System.Text;
 
+
+
+
 namespace RI.Framework.Utilities.Linux
 {
 	/// <summary>
@@ -26,8 +29,8 @@ namespace RI.Framework.Utilities.Linux
 		/// <returns>
 		///     The ID as a GUID.
 		/// </returns>
-		/// <exception cref="NotSupportedException"><see cref="GetDomainId"/> is not yet implemented for Linux.</exception>
-		public static Guid GetDomainId()
+		/// <exception cref="NotSupportedException"> <see cref="GetDomainId" /> is not yet implemented for Linux. </exception>
+		public static Guid GetDomainId ()
 		{
 			throw new NotSupportedException(nameof(UniqueIdentification.GetDomainId) + " is not yet implemented for Linux.");
 		}
@@ -38,7 +41,7 @@ namespace RI.Framework.Utilities.Linux
 		/// <returns>
 		///     The ID as a GUID.
 		/// </returns>
-		public static Guid GetMachineId()
+		public static Guid GetMachineId ()
 		{
 			string cipher = LocalEncryption.Encrypt(false, UniqueIdentification.InnerGuid, null);
 			Guid guid = UniqueIdentification.CreateGuidFromString(cipher);
@@ -51,14 +54,14 @@ namespace RI.Framework.Utilities.Linux
 		/// <returns>
 		///     The ID as a GUID.
 		/// </returns>
-		public static Guid GetUserId()
+		public static Guid GetUserId ()
 		{
 			string cipher = LocalEncryption.Encrypt(true, UniqueIdentification.InnerGuid, null);
 			Guid guid = UniqueIdentification.CreateGuidFromString(cipher);
 			return guid;
 		}
 
-		private static Guid CreateGuidFromString(string data)
+		private static Guid CreateGuidFromString (string data)
 		{
 			byte[] guidBytes;
 			using (MD5 hasher = MD5.Create())

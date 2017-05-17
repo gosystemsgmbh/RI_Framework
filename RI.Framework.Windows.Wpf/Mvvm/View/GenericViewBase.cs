@@ -7,13 +7,13 @@ using System.Windows.Controls;
 namespace RI.Framework.Mvvm.View
 {
 	/// <summary>
-	/// Implements a base class for generic views which are hosted inside another WPF element.
+	///     Implements a base class for generic views which are hosted inside another WPF element.
 	/// </summary>
 	public class GenericViewBase : UserControl, IView
 	{
 		#region Instance Properties/Indexer
 
-		/// <inheritdoc cref="IView.IsInitialized"/>
+		/// <inheritdoc cref="IView.IsInitialized" />
 		public new bool IsInitialized { get; private set; }
 
 		#endregion
@@ -24,9 +24,9 @@ namespace RI.Framework.Mvvm.View
 		#region Instance Methods
 
 		/// <summary>
-		/// Initializes this view if it was not already initialized before.
+		///     Initializes this view if it was not already initialized before.
 		/// </summary>
-		protected void PerformInitializationIfNotAlreadyDone()
+		protected void PerformInitializationIfNotAlreadyDone ()
 		{
 			if (!this.IsInitialized)
 			{
@@ -42,8 +42,8 @@ namespace RI.Framework.Mvvm.View
 
 		#region Virtuals
 
-		/// <inheritdoc cref="IView.Initialize"/>
-		protected virtual void Initialize()
+		/// <inheritdoc cref="IView.Initialize" />
+		protected virtual void Initialize ()
 		{
 		}
 
@@ -55,7 +55,7 @@ namespace RI.Framework.Mvvm.View
 		#region Overrides
 
 		/// <inheritdoc />
-		protected override void OnInitialized(EventArgs e)
+		protected override void OnInitialized (EventArgs e)
 		{
 			base.OnInitialized(e);
 
@@ -73,7 +73,7 @@ namespace RI.Framework.Mvvm.View
 		bool IView.IsInitialized => this.IsInitialized;
 
 		/// <inheritdoc />
-		void IView.Initialize()
+		void IView.Initialize ()
 		{
 			this.PerformInitializationIfNotAlreadyDone();
 		}

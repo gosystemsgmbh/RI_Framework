@@ -7,13 +7,13 @@ using System.Windows;
 namespace RI.Framework.Mvvm.View
 {
 	/// <summary>
-	/// Implements a base class for Window-based views
+	///     Implements a base class for Window-based views
 	/// </summary>
 	public class WindowViewBase : Window, IView
 	{
 		#region Instance Properties/Indexer
 
-		/// <inheritdoc cref="IView.IsInitialized"/>
+		/// <inheritdoc cref="IView.IsInitialized" />
 		public new bool IsInitialized { get; private set; }
 
 		#endregion
@@ -24,7 +24,7 @@ namespace RI.Framework.Mvvm.View
 		#region Instance Methods
 
 		/// <summary>
-		/// Initializes this view if it was not already initialized before.
+		///     Initializes this view if it was not already initialized before.
 		/// </summary>
 		protected void PerformInitializationIfNotAlreadyDone ()
 		{
@@ -42,7 +42,7 @@ namespace RI.Framework.Mvvm.View
 
 		#region Virtuals
 
-		/// <inheritdoc cref="IView.Initialize"/>
+		/// <inheritdoc cref="IView.Initialize" />
 		protected virtual void Initialize ()
 		{
 		}

@@ -408,7 +408,7 @@ namespace RI.Framework.Services
 		/// </summary>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation performs module initialization (<see cref="IModuleService.Initialize" />), if available, and then dispatches <see cref="BeginOperations" /> using <see cref="DispatchOperation"/>.
+		///         The default implementation performs module initialization (<see cref="IModuleService.Initialize" />), if available, and then dispatches <see cref="BeginOperations" /> using <see cref="DispatchOperation" />.
 		///     </note>
 		/// </remarks>
 		protected virtual void BeginRun ()
@@ -808,6 +808,21 @@ namespace RI.Framework.Services
 		}
 
 		/// <summary>
+		///     Dispatches a bootstrapper-specific operation for execution after bootstrapping completed.
+		/// </summary>
+		/// <param name="action"> The delegate to execute. </param>
+		/// <param name="args"> The optional arguments for the delegate. </param>
+		/// <remarks>
+		///     <note type="implement">
+		///         The default implementation executes the delegate immediately before returning.
+		///     </note>
+		/// </remarks>
+		protected virtual void DispatchOperation (Delegate action, params object[] args)
+		{
+			action.DynamicInvoke(args);
+		}
+
+		/// <summary>
 		///     Called when the application is shut down.
 		/// </summary>
 		/// <remarks>
@@ -890,21 +905,6 @@ namespace RI.Framework.Services
 		/// </remarks>
 		protected virtual void ShowSplashScreen ()
 		{
-		}
-
-		/// <summary>
-		/// Dispatches a bootstrapper-specific operation for execution after bootstrapping completed.
-		/// </summary>
-		/// <param name="action">The delegate to execute.</param>
-		/// <param name="args">The optional arguments for the delegate.</param>
-		/// <remarks>
-		///     <note type="implement">
-		///         The default implementation executes the delegate immediately before returning.
-		///     </note>
-		/// </remarks>
-		protected virtual void DispatchOperation (Delegate action, params object[] args)
-		{
-			action.DynamicInvoke(args);
 		}
 
 		#endregion

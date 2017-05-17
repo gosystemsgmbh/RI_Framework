@@ -54,7 +54,7 @@
                 <listItem>
                     <para>
                         Method:
-                        <codeEntityReference qualifyHint="true">M:RI.Framework.IO.Paths.DirectoryPath.GetCurrentDirectory</codeEntityReference>
+                        <codeEntityReference qualifyHint="true">M:RI.Framework.IO.Paths.DirectoryPath.GetCurrentDirectory()</codeEntityReference>
                         : Only usable on Windows (except Store Apps) and Mac OS, throws
                         <legacyItalic>NotSupportedException</legacyItalic> on other platforms.
                     </para>

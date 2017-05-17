@@ -182,7 +182,7 @@ public sealed class OtherEnemyAI : IEnemyAI
 {
     // this is another small little mod, a custom enemy AI
 }
-                            ]]>
+                ]]>
             </code>
             <para>
                 What happens when a mod is loaded:

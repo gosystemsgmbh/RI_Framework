@@ -16,7 +16,8 @@
                     A
                     <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Bootstrapper</codeEntityReference>
                     is used to load all the actual decoupling services during scene load (using Unitys
-                    <legacyItalic>Awake()</legacyItalic> ).
+                    <legacyItalic>Awake()</legacyItalic>
+                    ).
                 </para>
             </content>
         </section>
@@ -25,26 +26,25 @@
             <title>Usage</title>
             <content>
                 <para>
-                    Note that the bootstrapper is only required once as it is persistent over all scenes (using Unitys
-                    <legacyItalic>DontDestroyOnLoad()</legacyItalic> ).
-                </para>
-                <para>
-                    The bootstrapper is added to a <legacyItalic>GameObject</legacyItalic> in a scene using drag-and-drop from
-                    <legacyItalic>RI.Framework.Unity.dll</legacyItalic>:
+                    The bootstrapper is added to a
+                    <legacyItalic>GameObject</legacyItalic>
+                    using drag-and-drop from
+                    <legacyItalic>RI.Framework.Unity.dll</legacyItalic>
+                    :
                 </para>
                 <mediaLink>
                     <image xlink:href="BootstrapperDragDrop" />
                 </mediaLink>
                 <para>
-                    Alternatively, it can also be done in code by adding
-                    <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Bootstrapper</codeEntityReference>
-                    as a component to a <legacyItalic>GameObject</legacyItalic>:
+                    Alternatively, it can also be done in code by adding the bootstrapper as a component to a
+                    <legacyItalic>GameObject</legacyItalic>
+                    :
                 </para>
                 <code language="cs">
                     <![CDATA[
 GameObject go = new GameObject();
 go.AddComponent<Bootstrapper>();
-          ]]>
+                    ]]>
                 </code>
                 <para>
                     After the scene load, the bootstrapper can be seen in the list of objects:
@@ -52,6 +52,11 @@ go.AddComponent<Bootstrapper>();
                 <mediaLink>
                     <image xlink:href="BootstrapperObject" />
                 </mediaLink>
+                <para>
+                    Note that the bootstrapper is only required once as it is persistent over all scenes (using Unitys
+                    <legacyItalic>DontDestroyOnLoad()</legacyItalic>
+                    ).
+                </para>
             </content>
         </section>
 
@@ -64,6 +69,9 @@ go.AddComponent<Bootstrapper>();
                     However, you would have to do all the setup and wiring yourself.
                     The other decoupling service descriptions explain how to use them as independent standalone services.
                 </para>
+                <para>
+                    As an alternative, you can also disable certain decoupling features using the bootstrapper options (see below).
+                </para>
             </content>
         </section>
 
@@ -71,11 +79,14 @@ go.AddComponent<Bootstrapper>();
             <title>Inherit</title>
             <content>
                 <para>
-                    You can inherit from Bootstrapper to create a customized bootstrapper which overrides most of its default behaviour.
-                    See the documentation of <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Bootstrapper</codeEntityReference> for more information about its default behaviour.
+                    You can create your own class which inherits from the bootstrapper for customization.
+                    This allows you to override most of the bootstrappers default behaviour.
+                    See the documentation of the bootstrapper type for more information about its default behaviour.
                 </para>
                 <para>
-                    For example, you could override <codeEntityReference qualifyHint="false">M:RI.Framework.Services.Bootstrapper.ConfigureContainer()</codeEntityReference> to add custom catalogs to the CompositionContainer:
+                    For example, you could override
+                    <legacyItalic>ConfigureContainer()</legacyItalic>
+                    to add custom catalogs to the composition container:
                 </para>
                 <code language="cs">
                     <![CDATA[
@@ -84,7 +95,7 @@ protected override void ConfigureContainer ()
     base.ConfigureContainer();
     this.Container.AddCatalog(new TypeCatalog(typeof(SomeType), typeof(AnotherType)));
 }
-          ]]>
+                    ]]>
                 </code>
             </content>
         </section>
@@ -93,18 +104,14 @@ protected override void ConfigureContainer ()
             <title>Options</title>
             <content>
                 <para>
-                    The
-                    <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Bootstrapper</codeEntityReference>
-                    provides a few options:
+                    The bootstrapper provides a few options:
                 </para>
                 <mediaLink>
                     <image xlink:href="BootstrapperOptions" />
                 </mediaLink>
                 <para>
                     These options can be helpful if you do want to use the bootstrapper but not all of the decoupling services or if you want to use your own implementation of a service.
-                    The only decoupling service always required and created by the bootstrapper is the
-                    <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionContainer</codeEntityReference>
-                    .
+                    The only decoupling service always required and created by the bootstrapper is the composition container.
                 </para>
                 <para>
                     The available options are:
@@ -112,21 +119,19 @@ protected override void ConfigureContainer ()
                 <list class="bullet">
                     <listItem>
                         <para>
-                            <legacyBold>Logging Service</legacyBold>:
-                            Disabled by default.
+                            <legacyBold>Logging Service</legacyBold>
+                            : Disabled by default.
                             Creates the logging service (
                             <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Logging.LogService</codeEntityReference>
                             ) if enabled.
                             It is used internally by the framework for logging and therefore can be used to enable/disable all log output generated by the framework.
-                            It is disabled by default to not spam your logs as especially the
-                            <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionContainer</codeEntityReference>
-                            can generate an excessive amount of log entries.
+                            It is disabled by default to not spam your logs as especially the composition container can generate an excessive amount of log messages.
                         </para>
                     </listItem>
                     <listItem>
                         <para>
-                            <legacyBold>Module Service</legacyBold>:
-                            Enabled by default.
+                            <legacyBold>Module Service</legacyBold>
+                            : Enabled by default.
                             Creates the modularization service (
                             <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.ModuleService</codeEntityReference>
                             ) if enabled.
@@ -134,30 +139,22 @@ protected override void ConfigureContainer ()
                     </listItem>
                     <listItem>
                         <para>
-                            <legacyBold>Module Initialization</legacyBold>:
-                            Enabled by default.
-                            If enabled, the bootstrapper will automatically initialize the modules during the start if a
-                            <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.ModuleService</codeEntityReference>
-                            is available.
-                            <codeEntityReference qualifyHint="false">M:RI.Framework.Services.Modularization.ModuleService.Initialize</codeEntityReference>
-                            will be called.
+                            <legacyBold>Module Initialization</legacyBold>
+                            : Enabled by default.
+                            If enabled and the module service is available, the bootstrapper will automatically initialize all available modules.
                         </para>
                     </listItem>
                     <listItem>
                         <para>
-                            <legacyBold>Module Unloading</legacyBold>:
-                            Enabled by default.
-                            If enabled, the bootstrapper will automatically unload the modules during the shutdown if a
-                            <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.ModuleService</codeEntityReference>
-                            is available.
-                            <codeEntityReference qualifyHint="false">M:RI.Framework.Services.Modularization.ModuleService.Unload</codeEntityReference>
-                            will be called.
+                            <legacyBold>Module Unloading</legacyBold>
+                            : Enabled by default.
+                            If enabled and the module service is available, the bootstrapper will automatically unload all modules during shutdown.
                         </para>
                     </listItem>
                     <listItem>
                         <para>
-                            <legacyBold>Dispatcher Service</legacyBold>:
-                            Enabled by default.
+                            <legacyBold>Dispatcher Service</legacyBold>
+                            : Enabled by default.
                             Creates the dispatcher service (
                             <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Dispatcher.DispatcherService</codeEntityReference>
                             ) if enabled.
@@ -165,25 +162,20 @@ protected override void ConfigureContainer ()
                     </listItem>
                     <listItem>
                         <para>
-                            <legacyBold>Scripting Catalog</legacyBold>:
-                            Enabled by default.
+                            <legacyBold>Scripting Catalog</legacyBold>
+                            : Enabled by default.
                             Adds a
                             <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Catalogs.ScriptingCatalog</codeEntityReference>
-                            to the
-                            <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionContainer</codeEntityReference>
-                            if enabled.
-                            The purpose and use of catalogs is described below.
+                            to the composition container.
                         </para>
                     </listItem>
                     <listItem>
                         <para>
-                            <legacyBold>Service Locator Binding</legacyBold>:
-                            Enabled by default.
+                            <legacyBold>Service Locator Binding</legacyBold>
+                            : Enabled by default.
                             Binds the
                             <codeEntityReference qualifyHint="false">T:RI.Framework.Services.ServiceLocator</codeEntityReference>
-                            to
-                            <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionContainer</codeEntityReference>
-                            if enabled.
+                            to the composition container.
                         </para>
                     </listItem>
                 </list>

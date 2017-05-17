@@ -72,6 +72,21 @@ namespace RI.Framework.Services
 		}
 
 		/// <summary>
+		///     Dispatches a bootstrapper-specific operation for execution after bootstrapping completed.
+		/// </summary>
+		/// <param name="action"> The delegate to execute. </param>
+		/// <param name="args"> The optional arguments for the delegate. </param>
+		/// <remarks>
+		///     <note type="implement">
+		///         The default implementation posts the delegate to the application objects dispatcher.
+		///     </note>
+		/// </remarks>
+		protected override void DispatchOperation (Delegate action, params object[] args)
+		{
+			this.Application.Dispatcher.BeginInvoke(DispatcherPriority.SystemIdle, new Action<Delegate, object[]>((x, y) => x.DynamicInvoke(y)), args);
+		}
+
+		/// <summary>
 		///     Instructs the application to start running.
 		/// </summary>
 		/// <remarks>
@@ -97,21 +112,6 @@ namespace RI.Framework.Services
 		{
 			this.Log(LogLevel.Debug, "Triggering WPF application object to shutdown");
 			this.Application.Shutdown();
-		}
-
-		/// <summary>
-		/// Dispatches a bootstrapper-specific operation for execution after bootstrapping completed.
-		/// </summary>
-		/// <param name="action">The delegate to execute.</param>
-		/// <param name="args">The optional arguments for the delegate.</param>
-		/// <remarks>
-		///     <note type="implement">
-		///         The default implementation posts the delegate to the application objects dispatcher.
-		///     </note>
-		/// </remarks>
-		protected override void DispatchOperation (Delegate action, params object[] args)
-		{
-			this.Application.Dispatcher.BeginInvoke(DispatcherPriority.SystemIdle, new Action<Delegate, object[]>((x,y) => x.DynamicInvoke(y)), args);
 		}
 
 		#endregion
