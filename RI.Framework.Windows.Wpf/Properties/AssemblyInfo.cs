@@ -4,8 +4,8 @@ using System.Reflection;
 
 
 
-[assembly: AssemblyTitle("RI.Framework.Wpf")]
-[assembly: AssemblyDescription("RI.Framework.Wpf")]
+[assembly: AssemblyTitle("RI.Framework.Windows.Wpf")]
+[assembly: AssemblyDescription("RI.Framework.Windows.Wpf")]
 [assembly: AssemblyProduct("Decoupling & Utilities Framework")]
 [assembly: AssemblyCompany("Roten Informatik")]
 [assembly: AssemblyCopyright("Copyright (c) 2015-2017 Roten Informatik")]

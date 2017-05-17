@@ -4,8 +4,8 @@ using System.Reflection;
 
 
 
-[assembly: AssemblyTitle("RI.Framework.Windows.Service")]
-[assembly: AssemblyDescription("RI.Framework.Windows.Service")]
+[assembly: AssemblyTitle("RI.Framework.Linux.Shared")]
+[assembly: AssemblyDescription("RI.Framework.Linux.Shared")]
 [assembly: AssemblyProduct("Decoupling & Utilities Framework")]
 [assembly: AssemblyCompany("Roten Informatik")]
 [assembly: AssemblyCopyright("Copyright (c) 2015-2017 Roten Informatik")]

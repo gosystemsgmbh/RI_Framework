@@ -6,39 +6,85 @@
                                  xmlns:xlink="http://www.w3.org/1999/xlink">
 
         <introduction>
-            <para>
-                xxx
-            </para>
             <autoOutline />
         </introduction>
 
-        <section address="xxx">
-            <title>xxx</title>
+        <section address="Purpose">
+            <title>Purpose</title>
             <content>
+                <para>
+                    The
+                    <codeEntityReference qualifyHint="false">T:RI.Framework.Services.ServiceLocator</codeEntityReference>
+                    lets you use the decoupling features from anywhere.
+                    It provides global access to the composition container which is created by the bootstrapper.
+                </para>
             </content>
         </section>
 
-        <section address="xxx">
-            <title>xxx</title>
+        <section address="Usage">
+            <title>Usage</title>
             <content>
+                <para>
+                    To use the service locator, simply specify the type you need an instance of (similar to explicitly retrieving an instance from a composition container):
+                </para>
+                <code language="cs">
+                    <![CDATA[
+ServiceLocator.GetInstance<GameManager>().Win();
+          ]]>
+                </code>
+                <para>
+                    This works also for multiple instances of a type:
+                </para>
+                <code language="cs">
+                    <![CDATA[
+using RI.Framework.Composition;
+using RI.Framework.Composition.Model;
+using RI.Framework.Services;
+using RI.Framework.Services.Modularization;
+
+
+[Export]
+public interface IEnemyAI
+{
+}
+
+
+public class SmartEnemyAI : IEnemyAI
+{
+}
+
+
+public class DumbEnemyAI : IEnemyAI
+{
+}
+
+
+[Export]
+public class EnemyManager : MonoModule
+{
+    public IEnemyAI[] EnemyAIs;
+  
+    protected override void Initialize ()
+    {
+        base.Initialize();
+        
+        this.EnemyAIs = ServiceLocator.GetInstances<IEnemyAI>();
+    }
+}
+          ]]>
+                </code>
             </content>
         </section>
 
-        <section address="xxx">
-            <title>xxx</title>
+        <section address="Performance">
+            <title>Performance</title>
             <content>
-            </content>
-        </section>
-
-        <section address="xxx">
-            <title>xxx</title>
-            <content>
-            </content>
-        </section>
-
-        <section address="xxx">
-            <title>xxx</title>
-            <content>
+                <para>
+                    Be aware that using the service locator is considerably slower than property-based importing as shown in the previous section.
+                    Property-based importing performs resolving of the instances only once (which is not fully true, as explained in
+                    <link xlink:href="8ec8f13f-ef95-4aec-8fc1-9b54dff96e01" />).
+                    The service locator however performs resolving each time it is used.
+                </para>
             </content>
         </section>
 
