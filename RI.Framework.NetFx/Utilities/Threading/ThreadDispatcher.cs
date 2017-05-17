@@ -20,6 +20,9 @@ namespace RI.Framework.Utilities.Threading
 	///         The delegates are executed in the order they are added to the queue through <see cref="Send" /> or <see cref="Post" />.
 	///         When all delegates are executed, or the queue is empty respectively, <see cref="ThreadDispatcher" /> waits for new delegates to process.
 	///     </para>
+	/// <para>
+	/// During <see cref="Run"/>, the current <see cref="SynchronizationContext"/> is replaced by an instance of <see cref="ThreadDispatcherSynchronizationContext"/> and restored afterwards.
+	/// </para>
 	/// </remarks>
 	public sealed class ThreadDispatcher : IThreadDispatcher, ISynchronizable
 	{
@@ -96,10 +99,14 @@ namespace RI.Framework.Utilities.Threading
 		/// <exception cref="InvalidOperationException"> The dispatcher is already running. </exception>
 		public void Run ()
 		{
+			SynchronizationContext synchronizationContextBackup = SynchronizationContext.Current;
+
 			try
 			{
 				lock (this.SyncRoot)
 				{
+					synchronizationContextBackup = SynchronizationContext.Current;
+
 					this.VerifyNotRunning();
 
 					this.Thread = Thread.CurrentThread;
@@ -118,7 +125,7 @@ namespace RI.Framework.Utilities.Threading
 			{
 				lock (this.SyncRoot)
 				{
-					SynchronizationContext.SetSynchronizationContext(null);
+					SynchronizationContext.SetSynchronizationContext(synchronizationContextBackup);
 
 					this.Posted?.Close();
 					this.Queue?.Clear();
