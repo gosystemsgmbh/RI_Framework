@@ -5,7 +5,6 @@ using System.Windows.Threading;
 using RI.Framework.Composition.Catalogs;
 using RI.Framework.Composition.Model;
 using RI.Framework.Services.Logging;
-using RI.Framework.Services.Modularization;
 
 
 
@@ -25,33 +24,6 @@ namespace RI.Framework.Services
 		where TApplication : Application
 	{
 		#region Overrides
-
-		/// <summary>
-		///     Called before the application begins running after the bootstrapping is completed.
-		/// </summary>
-		/// <remarks>
-		///     <note type="implement">
-		///         The default implementation injects module initialization (<see cref="IModuleService.Initialize" />), if available, and then injects <see cref="Bootstrapper.BeginOperations" /> into the applications dispatcher (<see cref="Application" />.<see cref="DispatcherObject.Dispatcher" />) using the <see cref="DispatcherPriority.SystemIdle" /> priority.
-		///     </note>
-		/// </remarks>
-		protected override void BeginRun ()
-		{
-			this.Application.Dispatcher.BeginInvoke(DispatcherPriority.SystemIdle, new Action(() =>
-			{
-				this.LogSeperator();
-				this.Log(LogLevel.Debug, "Initializing modules");
-
-				this.Container.GetExport<IModuleService>()?.Initialize();
-
-				this.Application.Dispatcher.BeginInvoke(DispatcherPriority.SystemIdle, new Action(() =>
-				{
-					this.LogSeperator();
-					this.Log(LogLevel.Debug, "Beginning operations");
-
-					this.BeginOperations();
-				}));
-			}));
-		}
 
 		/// <summary>
 		///     Called when the used application object (<see cref="Application" />) needs to be configured.
@@ -125,6 +97,21 @@ namespace RI.Framework.Services
 		{
 			this.Log(LogLevel.Debug, "Triggering WPF application object to shutdown");
 			this.Application.Shutdown();
+		}
+
+		/// <summary>
+		/// Dispatches a bootstrapper-specific operation for execution after bootstrapping completed.
+		/// </summary>
+		/// <param name="action">The delegate to execute.</param>
+		/// <param name="args">The optional arguments for the delegate.</param>
+		/// <remarks>
+		///     <note type="implement">
+		///         The default implementation posts the delegate to the application objects dispatcher.
+		///     </note>
+		/// </remarks>
+		protected override void DispatchOperation (Delegate action, params object[] args)
+		{
+			this.Application.Dispatcher.BeginInvoke(DispatcherPriority.SystemIdle, new Action<Delegate, object[]>((x,y) => x.DynamicInvoke(y)), args);
 		}
 
 		#endregion

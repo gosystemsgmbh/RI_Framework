@@ -155,6 +155,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObjectModel\Singleton.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Randomizing\RandomExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Randomizing\_NamespaceDoc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Runtime\RuntimeEnvironment.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Runtime\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\SingleExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObjectModel\ICloneable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObjectModel\_NamespaceDoc.cs" />

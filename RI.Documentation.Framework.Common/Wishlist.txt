@@ -24,7 +24,6 @@ Utilities
  - (Common) TextReaderExtensions
  - (Common) TextWriterExtensions
 
- # (Common) ThreadDispatcherSynchronizationContext
  - (Common) ThreadDispatcher: Priority queue
 
  - (Windows) WindowsMessage
@@ -238,8 +237,8 @@ Services
  - (Common) Logging: FileLogWriter
  - (Common) Logging: ConsoleLogWriter
 
- * (.NET) Backup (BackupService, DirectoryBackupStorage)
- * (.NET) Licensing (LicensingService, FileLicenseStorage)
+ # (.NET) Backup (BackupService, DirectoryBackupStorage)
+ # (.NET) Licensing (LicensingService, FileLicenseStorage)
 
  - (WpfToolkit) AvalonDockRegionAdapter
 

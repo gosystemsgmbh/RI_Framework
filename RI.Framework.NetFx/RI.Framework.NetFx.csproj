@@ -138,6 +138,9 @@
     <Compile Include="Utilities\Threading\ThreadDispatcherOperation.cs" />
     <Compile Include="Utilities\Threading\ThreadDispatcherOperationState.cs" />
     <Compile Include="Utilities\Threading\ThreadDispatcherShutdownMode.cs" />
+    <Compile Include="Utilities\Threading\ThreadDispatcherSynchronizationContext.cs" />
+    <Compile Include="Utilities\Threading\ThreadDispatcherTimer.cs" />
+    <Compile Include="Utilities\Threading\ThreadDispatcherTimerMode.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\AssemblyName.snk" />

@@ -36,6 +36,8 @@ namespace RI.Framework.Utilities.Threading
 			this.Queue = null;
 			this.Posted = null;
 
+			this.PreRunQueue = new Queue<ThreadDispatcherOperation>();
+
 			this.ShutdownMode = ThreadDispatcherShutdownMode.None;
 
 			this.CatchExceptions = false;
@@ -51,6 +53,9 @@ namespace RI.Framework.Utilities.Threading
 
 			this.Queue?.Clear();
 			this.Queue = null;
+
+			this.PreRunQueue?.Clear();
+			this.PreRunQueue = null;
 		}
 
 		#endregion
@@ -73,6 +78,7 @@ namespace RI.Framework.Utilities.Threading
 		private ThreadDispatcherOperation OperationInProgress { get; set; }
 		private ManualResetEvent Posted { get; set; }
 		private Queue<ThreadDispatcherOperation> Queue { get; set; }
+		private Queue<ThreadDispatcherOperation> PreRunQueue { get; set; }
 
 		private object SyncRoot { get; set; }
 		private Thread Thread { get; set; }
@@ -97,9 +103,13 @@ namespace RI.Framework.Utilities.Threading
 					this.VerifyNotRunning();
 
 					this.Thread = Thread.CurrentThread;
-					this.Queue = new Queue<ThreadDispatcherOperation>();
-					this.Posted = new ManualResetEvent(false);
+					this.Queue = new Queue<ThreadDispatcherOperation>(this.PreRunQueue);
+					this.Posted = new ManualResetEvent(this.Queue.Count > 0);
 					this.ShutdownMode = ThreadDispatcherShutdownMode.None;
+
+					this.PreRunQueue.Clear();
+
+					SynchronizationContext.SetSynchronizationContext(new ThreadDispatcherSynchronizationContext(this));
 				}
 
 				this.ExecuteFrame(null);
@@ -108,6 +118,8 @@ namespace RI.Framework.Utilities.Threading
 			{
 				lock (this.SyncRoot)
 				{
+					SynchronizationContext.SetSynchronizationContext(null);
+
 					this.Posted?.Close();
 					this.Queue?.Clear();
 
@@ -345,12 +357,20 @@ namespace RI.Framework.Utilities.Threading
 
 			lock (this.SyncRoot)
 			{
-				this.VerifyRunning();
 				this.VerifyNotShuttingDown();
 
 				ThreadDispatcherOperation operation = new ThreadDispatcherOperation(this, action, parameters);
-				this.Queue.Enqueue(operation);
-				this.Posted.Set();
+
+				if (this.IsRunning)
+				{
+					this.Queue.Enqueue(operation);
+					this.Posted.Set();
+				}
+				else
+				{
+					this.PreRunQueue.Enqueue(operation);
+				}
+
 				return operation;
 			}
 		}
