@@ -5,9 +5,7 @@
     <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
                                  xmlns:xlink="http://www.w3.org/1999/xlink">
 
-        <introduction>
-            <autoOutline />
-        </introduction>
+        <introduction />
 
         <section address="Purpose">
             <title>Purpose</title>

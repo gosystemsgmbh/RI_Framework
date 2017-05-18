@@ -132,6 +132,7 @@
   <ItemGroup>
     <None Include="Content\Compatibility.aml" />
     <None Include="Content\ContactSupport.aml" />
+    <None Include="Content\Documentation.aml" />
     <None Include="Content\Introduction.aml" />
     <None Include="Content\OverviewTutorials\Bootstrapper.aml" />
     <None Include="Content\OverviewTutorials\CompositionContainer.aml" />

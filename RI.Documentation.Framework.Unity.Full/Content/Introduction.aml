@@ -7,30 +7,30 @@
 
         <introduction>
             <para>
-                The Decoupling &amp; Utilities Framework aims at providing useful scripting tools for game programmers so they can focus on core game functionality instead of writing glue logic and boilerplate code.
-                These scripting tools come in the form of .NET/Mono types which can be used right away.
+                The Decoupling &amp; Utilities Framework helps game programmers to focus on core game functionality instead of writing glue logic and boilerplate code.
             </para>
             <para>
-                Decoupling is the separation of code into logical units and the reduction of their dependencies, making them more maintainable, extensible, and portable.
-                This is particularly important for games which provide mod support or use platform-specific code.
+                Decoupling is the separation of code into logical units and the reduction of their dependencies to make it more maintainable, extensible, and portable as well as increase its conciseness and clarity.
                 This framework supports you with decoupling your game code by providing the following features:
             </para>
             <list class="bullet">
                 <listItem>
                     <para>
-                        <legacyBold>Dependency Injection (DI)</legacyBold> and
+                        <legacyBold>Dependency Injection (DI)</legacyBold>
+                        and
                         <legacyBold>Inversion-of-Control (IoC)</legacyBold>
                     </para>
                 </listItem>
                 <listItem>
                     <para>
-                        <legacyBold>Service locator</legacyBold> and
+                        <legacyBold>Service locator</legacyBold>
+                        and
                         <legacyBold>Singleton management</legacyBold>
                     </para>
                 </listItem>
                 <listItem>
                     <para>
-                        <legacyBold>Modularization infrastructure</legacyBold>
+                        <legacyBold>Module infrastructure</legacyBold>
                     </para>
                 </listItem>
                 <listItem>
@@ -51,7 +51,7 @@
             </list>
             <para>
                 Furthermore, this framework provides numerous utilities to save you the time of writing commonly used functionality.
-                Some of those more prominent features are:
+                Some of the more prominent utilities features are:
             </para>
             <list class="bullet">
                 <listItem>

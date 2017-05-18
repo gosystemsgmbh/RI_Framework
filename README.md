@@ -1,16 +1,9 @@
 # Decoupling & Utilities Framework
 
-## 1.0.0.1
+## 1.1.0.0
 
-- [ ] Documentation
-  - [ ] Check mentioning of Reflection and Reflection.Emit
-  - [ ] Check mentioning of AOT
-  - [ ] Overhaul tutorial structure
-  - [ ] Better general description in Asset Store
-  - [ ] Better general description in documentation
-  - [ ] Better general description on website
-- [ ] Cleanup
-  - [ ] Packages
+- [ ] Packages
+- [ ] Wishlist
 
 ## Backlog
 

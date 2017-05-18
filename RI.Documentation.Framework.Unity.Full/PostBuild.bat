@@ -2,8 +2,8 @@
 
 @md "..\_Output"
 
-@copy ".\Help\RI.Documentation.Framework.Unity.Heavy.chm" "..\_Output\RI.Documentation.Framework.Unity.Heavy.chm"
-@copy ".\Help\RI.Documentation.Framework.Unity.Heavy.chm" "..\_Output\DecouplingUtilities.chm"
+@copy ".\Help\RI.Documentation.Framework.Unity.Full.chm" "..\_Output\RI.Documentation.Framework.Unity.Full.chm"
+@copy ".\Help\RI.Documentation.Framework.Unity.Full.chm" "..\_Output\DecouplingUtilities.chm"
 
 @cd Help
 @del ".\_doc.zip" /F
@@ -15,5 +15,5 @@
 @"..\..\_Input\7za.exe" d ".\_doc.zip" "*.log"
 @cd..
 
-@copy ".\Help\_doc.zip" "..\_Output\RI.Documentation.Framework.Unity.Heavy.zip"
+@copy ".\Help\_doc.zip" "..\_Output\RI.Documentation.Framework.Unity.Full.zip"
 @copy ".\Help\_doc.zip" "..\_Output\DecouplingUtilities.zip"

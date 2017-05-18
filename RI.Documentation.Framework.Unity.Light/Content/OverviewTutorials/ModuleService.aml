@@ -5,9 +5,7 @@
     <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
                                  xmlns:xlink="http://www.w3.org/1999/xlink">
 
-        <introduction>
-            <autoOutline />
-        </introduction>
+        <introduction />
 
         <section address="Purpose">
             <title>Purpose</title>
@@ -35,7 +33,7 @@ using RI.Framework.Services;
 using RI.Framework.Services.Modularization;
 
 
-public class EnemyManager : MonoModule
+public sealed class EnemyManager : MonoModule
 {
     protected override void Initialize ()
     {
@@ -51,7 +49,7 @@ public class EnemyManager : MonoModule
         // called when the module is unloaded (e.g. when the game ends)
     }
 }
-          ]]>
+                    ]]>
                 </code>
             </content>
         </section>
@@ -60,17 +58,24 @@ public class EnemyManager : MonoModule
             <title>How it works</title>
             <content>
                 <para>
-                    The bootstrapper will create the module service which in turn will discover, instantiate, and initialize all modules (using a composition container as described in the next section).
+                    The bootstrapper will create the module service which in turn will discover, instantiate, and initialize all modules (using the composition container).
                 </para>
                 <para>
                     <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.MonoModule</codeEntityReference>
-                    inherits from <legacyItalic>MonoBehaviour</legacyItalic> so a module can use all Unity features as usual.
-                    A <legacyItalic>GameObject</legacyItalic> is created for each module automatically.
+                    inherits from
+                    <legacyItalic>MonoBehaviour</legacyItalic>
+                    so a module can use all its features.
+                    A
+                    <legacyItalic>GameObject</legacyItalic>
+                    is created for each module automatically.
                 </para>
                 <para>
-                    One thing was not yet explicitly addressed: Why use modules instead of regular
-                    <legacyItalic>MonoBehaviour</legacyItalic>s attached to <legacyItalic>GameObject</legacyItalic>s?
-                    The three reasons are: Modules are singletons, go through the composition container (making them exportable/importable), and are automatically instantiated and initialized by the module service during bootstrapping (compared to other exported types which are only instantiated when retrieved from the composition container).
+                    Why use a module instead of a regular
+                    <legacyItalic>MonoBehaviour</legacyItalic>
+                    which is attached to a
+                    <legacyItalic>GameObject</legacyItalic>
+                    ?
+                    There are three reasons: (1) Modules are singletons, (2) they go through the composition container (making them exportable/importable), (3) and are automatically instantiated and initialized by the module service during bootstrapping (compared to other exported types which are only instantiated when retrieved from the composition container).
                 </para>
             </content>
         </section>
@@ -79,15 +84,13 @@ public class EnemyManager : MonoModule
             <title>Standalone use</title>
             <content>
                 <para>
-                    You can use the
-                    <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.ModuleService</codeEntityReference>
-                    as a standalone service.
+                    You can use the module service as a standalone service.
                     Just create an instance:
                 </para>
                 <code language="cs">
                     <![CDATA[
 ModuleService moduleService = new ModuleService();
-                            ]]>
+                    ]]>
                 </code>
             </content>
         </section>
@@ -96,39 +99,27 @@ ModuleService moduleService = new ModuleService();
             <title>Multiple instances</title>
             <content>
                 <para>
-                    It is also possible to create multiple independent instances of
-                    <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.ModuleService</codeEntityReference>
-                    .
+                    It is possible to create multiple module service instances.
+                    However, this is rarely useful as all the modules discovered by the composition container would be shared by all module service instances.
                 </para>
             </content>
         </section>
 
         <section address="DependencyOnCompositionContainer">
-            <title>Dependency on CompositionContainer</title>
+            <title>Dependency on composition container</title>
             <content>
                 <para>
-                    The
-                    <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.ModuleService</codeEntityReference>
-                    has an import property to import all implementations of
+                    The module service has an import property to import all implementations of
                     <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.IModule</codeEntityReference>
                     .
                     It also implements
                     <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Model.IImporting</codeEntityReference>
                     , making it aware when the imported
-                    <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.IModule</codeEntityReference>
-                    s were updated/recomposed.
-                    Therefore, it is not necessary to add the modules explicitly as they are automatically discovered by the
-                    <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionContainer</codeEntityReference>
-                    and imported into
-                    <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.ModuleService</codeEntityReference>
-                    .
+                    modules were updated/recomposed.
+                    Therefore, it is not necessary to add the modules explicitly as they are automatically discovered by the composition container and imported into the module service.
                 </para>
                 <para>
-                    If
-                    <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.ModuleService</codeEntityReference>
-                    is not contained in a
-                    <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionContainer</codeEntityReference>
-                    , the modules must be manually added and removed using
+                    If a module service instance itself is not contained in a composition container, the modules must be manually added and removed using
                     <codeEntityReference qualifyHint="false">M:RI.Framework.Services.Modularization.ModuleService.AddModule(RI.Framework.Services.Modularization.IModule)</codeEntityReference>
                     and
                     <codeEntityReference qualifyHint="false">M:RI.Framework.Services.Modularization.ModuleService.RemoveModule(RI.Framework.Services.Modularization.IModule)</codeEntityReference>
@@ -158,13 +149,18 @@ ModuleService moduleService = new ModuleService();
                 </para>
                 <para>
                     <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.MonoModule</codeEntityReference>
-                    is used for modules which also need to be a <legacyItalic>MonoBehaviour</legacyItalic>.
-                    When such modules are instantiated, a <legacyItalic>GameObject</legacyItalic> is automatically created to which the module instance is attached (one
-                    <legacyItalic>GameObject</legacyItalic> per module).
+                    is used for modules which also need to be a
+                    <legacyItalic>MonoBehaviour</legacyItalic>.
+                    When such modules are instantiated, a
+                    <legacyItalic>GameObject</legacyItalic>
+                    is automatically created to which the module instance is attached (one
+                    <legacyItalic>GameObject</legacyItalic>
+                    per module).
                 </para>
                 <para>
                     <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.Module</codeEntityReference>
-                    is used for modules which do not require to be a <legacyItalic>MonoBehaviour</legacyItalic>
+                    is used for modules which do not require to be a
+                    <legacyItalic>MonoBehaviour</legacyItalic>
                     .
                 </para>
             </content>
@@ -192,12 +188,12 @@ ModuleService moduleService = new ModuleService();
                     If a module is added later, the added module is also initialized immediately after it was added (but only if the other modules were previously initialized).
                 </para>
                 <para>
-                    The same applies for unloading in a somewhat reversed fashion:
+                    The same applies for unloading in a reversed fashion:
                     At a certain point during shutdown, the modules are going to be unloaded (e.g. when the bootstrapper calls
                     <codeEntityReference qualifyHint="false">M:RI.Framework.Services.Modularization.ModuleService.Unload</codeEntityReference>
                     ).
                     This will unload all modules which are known to the module service at this point in time.
-                    If a module was removed earlier, the removed module was already unloaded during removal.
+                    If a module is removed earlier, the removed module is unloaded during removal.
                 </para>
                 <para>
                     This mechanism ensures that modules are always properly initialized and unloaded, regardless when they were added/removed.

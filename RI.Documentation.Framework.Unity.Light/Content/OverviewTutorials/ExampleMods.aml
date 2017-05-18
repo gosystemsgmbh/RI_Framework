@@ -7,11 +7,13 @@
 
         <introduction>
             <para>
-                This section provides an example which shows how the decoupling features can be used to implement a simple mod infrastructure.
+                The following is a practical example which shows how the decoupling features can be used to implement a simple mod infrastructure.
+            </para>
+            <para>
                 In particular, it shows how a mod could add new enemy AI behaviours.
             </para>
             <para>
-                For the example, we assume that each mod is in its own (sub)directory.
+                For this example, we assume that each mod is in its own (sub)directory.
             </para>
             <code language="cs">
                 <![CDATA[
@@ -182,7 +184,7 @@ public sealed class OtherEnemyAI : IEnemyAI
 {
     // this is another small little mod, a custom enemy AI
 }
-                            ]]>
+                ]]>
             </code>
             <para>
                 What happens when a mod is loaded:
@@ -195,7 +197,7 @@ public sealed class OtherEnemyAI : IEnemyAI
                 </listItem>
                 <listItem>
                     <para>
-                        All exported types of all DLLs found in the mod directory are added to the composition container as exports.
+                        Through the directory catalog, all exported types of all DLLs found in the mod directory are added to the composition container as exports.
                     </para>
                 </listItem>
                 <listItem>
@@ -205,7 +207,7 @@ public sealed class OtherEnemyAI : IEnemyAI
                 </listItem>
                 <listItem>
                     <para>
-                        The module service detects any new mod modules and initializes them.
+                        The module service detects newly imported mod modules and initializes them.
                     </para>
                 </listItem>
             </list>
@@ -230,7 +232,7 @@ public sealed class OtherEnemyAI : IEnemyAI
                 </listItem>
                 <listItem>
                     <para>
-                        The module service detects any disappearing mod modules and unloads them.
+                        The module service detects disappearing mod modules and unloads them.
                     </para>
                 </listItem>
             </list>
@@ -245,21 +247,30 @@ public sealed class OtherEnemyAI : IEnemyAI
                         The ModManager or ModInfo knows nothing about EnemyManager or IEnemyAI and vice versa.
                         We could add more interfaces for other moddable parts without touching the mod infrastructure.
                     </para>
+                </listItem>
+                <listItem>
                     <para>
                         We decoupled the enemy infrastructure (EnemyManager, IEnemyAI) from its actual implementations (MyEnemyAI, OtherEnemyAI).
                         The EnemyManager knows nothing about where and how all its instances of IEnemyAI are coming from.
                         We could add more mods (means: add more implementations of IEnemyAI) without touching the enemy infrastructure.
                     </para>
+                </listItem>
+                <listItem>
                     <para>
                         We made the implementation sources transparent.
                         Whether they are coming from mods (using DirectoryCatalog) or are built-in (using ScriptingCatalog) is completely transparent to the importers (EnemyManager).
-                        We could add the modding capabilities after everything else without changing anything (if everything is already properly decoupled).
+                        We could add the modding capability later in development, after everything else, without changing anything (assuming that everything is already properly decoupled).
                     </para>
                 </listItem>
             </list>
             <alert class="note">
                 <para>
-                    Do not forget to reference <legacyItalic>UnityEngine.dll</legacyItalic>, <legacyItalic>Assembly-CSharp.dll</legacyItalic> and <legacyItalic>RI.Framework.Unity.dll</legacyItalic> from your mod DLLs.
+                    Do not forget to reference <legacyItalic>UnityEngine.dll</legacyItalic>
+                    ,
+                    <legacyItalic>Assembly-CSharp.dll</legacyItalic>
+                    and
+                    <legacyItalic>RI.Framework.Unity.dll</legacyItalic>
+                    from your mod DLLs.
                 </para>
             </alert>
         </introduction>

@@ -5,9 +5,7 @@
     <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
                                  xmlns:xlink="http://www.w3.org/1999/xlink">
 
-        <introduction>
-            <autoOutline />
-        </introduction>
+        <introduction />
 
         <section address="Purpose">
             <title>Purpose</title>
@@ -70,7 +68,7 @@ go.AddComponent<Bootstrapper>();
                     The other decoupling service descriptions explain how to use them as independent standalone services.
                 </para>
                 <para>
-                    As an alternative, you can also disable certain decoupling features using the bootstrapper options (see below).
+                    As an alternative, you can disable certain decoupling features using the bootstrapper options (see below).
                 </para>
             </content>
         </section>
@@ -132,7 +130,7 @@ protected override void ConfigureContainer ()
                         <para>
                             <legacyBold>Module Service</legacyBold>
                             : Enabled by default.
-                            Creates the modularization service (
+                            Creates the module service (
                             <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Modularization.ModuleService</codeEntityReference>
                             ) if enabled.
                         </para>

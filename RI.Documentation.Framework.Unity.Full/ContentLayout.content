@@ -5,14 +5,15 @@
   <Topic id="345781e4-d213-4b73-938d-c46d061ad384" visible="True" title="Usage" />
   <Topic id="e666ce46-f739-4f98-81cc-e1646ce5bb62" visible="True" title="Contact &amp; Support" />
   <Topic id="5ae21634-faf4-4aa1-a06a-0306b020b502" visible="True" title="Version History" />
+  <Topic id="256bd44e-b85b-4f9e-9617-3258a5140f15" visible="True" title="Documentation" />
   <Topic id="0b0c3c61-ecf8-4ddd-879e-8e28e6815750" visible="True" isExpanded="true" title="Overview &amp; Tutorials">
     <Topic id="b1c2cd1c-1022-42ba-840e-aff488a4f498" visible="True" title="Bootstrapper" />
     <Topic id="dcd0ab6e-87ba-42ab-8810-ad01d32dc132" visible="True" title="CompositionContainer" />
     <Topic id="51398a91-3652-46f9-b034-44e6fd6ab428" visible="True" title="ServiceLocator" />
     <Topic id="381cc397-dd59-4d41-b1fd-7017cb7e1dd8" visible="True" title="ModuleService" />
-    <Topic id="5ad1a46e-e56a-4c33-90dc-f3ca2e7a56a6" visible="True" isSelected="true" title="DispatcherService (Messages)" />
+    <Topic id="5ad1a46e-e56a-4c33-90dc-f3ca2e7a56a6" visible="True" title="DispatcherService (Messages)" />
     <Topic id="ca36bd10-f19c-4760-8764-aa8042d942ef" visible="True" title="DispatcherService (Jobs)" />
     <Topic id="baac3f30-823f-4e5a-9a79-6a04f2972381" visible="True" title="Utilities" />
-    <Topic id="452daa42-1096-4122-921a-67456541173c" visible="True" title="Example: Mods" />
+    <Topic id="452daa42-1096-4122-921a-67456541173c" visible="True" isSelected="true" title="Full example: Mods" />
   </Topic>
 </Topics>

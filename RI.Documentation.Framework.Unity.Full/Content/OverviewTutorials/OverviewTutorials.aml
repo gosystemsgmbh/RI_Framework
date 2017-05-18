@@ -5,13 +5,7 @@
     <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
                                  xmlns:xlink="http://www.w3.org/1999/xlink">
 
-        <introduction>
-            <alert class="important">
-                <para>
-                    Please consider reading the remarks section in the description of types and members you use as they often contain futher explanations and provide more detailed information.
-                </para>
-            </alert>
-        </introduction>
+        <introduction />
 
         <relatedTopics />
 

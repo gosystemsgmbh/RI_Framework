@@ -15,7 +15,7 @@
     <!-- SHFB properties -->
     <FrameworkVersion>.NET Framework 3.5</FrameworkVersion>
     <OutputPath>.\Help\</OutputPath>
-    <HtmlHelpName>RI.Documentation.Framework.Unity.Heavy</HtmlHelpName>
+    <HtmlHelpName>RI.Documentation.Framework.Unity.Full</HtmlHelpName>
     <Language>en-US</Language>
     <TransformComponentArguments>
       <Argument Key="logoFile" Value="" />
@@ -149,6 +149,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Content\Compatibility.aml" />
+    <None Include="Content\Documentation.aml" />
     <None Include="Content\OverviewTutorials\Bootstrapper.aml" />
     <None Include="Content\OverviewTutorials\CompositionContainer.aml" />
     <None Include="Content\OverviewTutorials\DispatcherServiceJobs.aml" />

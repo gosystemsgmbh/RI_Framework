@@ -5,9 +5,7 @@
     <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
                                  xmlns:xlink="http://www.w3.org/1999/xlink">
 
-        <introduction>
-            <autoOutline />
-        </introduction>
+        <introduction />
 
         <section address="V.1.0.0.0">
             <title>1.0.0.0</title>
@@ -17,6 +15,8 @@
                 </para>
             </content>
         </section>
+
+        <!-- Added: RuntimeEnvironment -->
 
         <section address="Versioning">
             <title>Versioning</title>

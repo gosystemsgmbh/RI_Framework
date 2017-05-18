@@ -5,9 +5,7 @@
     <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
                                  xmlns:xlink="http://www.w3.org/1999/xlink">
 
-        <introduction>
-            <autoOutline />
-        </introduction>
+        <introduction />
 
         <section address="Purpose">
             <title>Purpose</title>
@@ -18,8 +16,8 @@
                     provides Dependency Injection (DI) and Inversion-of-Control (IoC).
                 </para>
                 <para>
-                    DI and IoC are powerful concepts: You just declare the dependency you need and it will be resolved and assigned for you.
-                    This includes instance creation, singleton management, and cascading dependencies.
+                    DI and IoC are powerful concepts: You just declare the dependency you need and it will be automatically resolved and assigned for you.
+                    This includes instance creation, singleton management, cascading dependencies, and automatic dependency updates.
                 </para>
             </content>
         </section>
@@ -39,22 +37,29 @@ using RI.Framework.Services.Modularization;
 
 
 [Export]
-public class GameRules : MonoModule
+public sealed class GameRules : MonoModule
 {
 }
 
 
 [Export]
-public class EnemyManager : MonoModule
+public sealed class EnemyManager : MonoModule
 {
     [Import]
     public GameRules Rules { get; set; }
-  
-    // EnemyManager has a dependency to GameRules which will be automatically resolved and assigned
-    // the Rules property can be used everywhere inside EnemyManager, except its constructor
 }
-          ]]>
+                    ]]>
                 </code>
+                <para>
+                    In the above example,
+                    <legacyItalic>EnemyManager</legacyItalic>
+                    requires an instance of
+                    <legacyItalic>GameRules</legacyItalic>
+                    .
+                    The composition container will automatically create the instance and assign it to the
+                    <legacyItalic>Rules</legacyItalic>
+                    property.
+                </para>
             </content>
         </section>
 
@@ -62,18 +67,34 @@ public class EnemyManager : MonoModule
             <title>How it works</title>
             <content>
                 <para>
-                    The bootstrapper will create the composition container which then discovers all types it can use for importing.
-                    A type can be used for importing (as declared by
+                    The bootstrapper will create the composition container which then discovers, using catalogs, all types it can use for importing.
+                </para>
+                <para>
+                    A type can be imported (
                     <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Model.ImportAttribute</codeEntityReference>
-                    ) if it is exported.
+                    ) if it is exported first.
                     To export a type, and therefore make it discoverable by the composition container, add an
                     <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Model.ExportAttribute</codeEntityReference>
                     to the type.
                 </para>
                 <para>
-                    An object will have its imports resolved and assigned when it is known by the composition container (means: the object is exported) and instances for that object (or its type respectively) are retrieved using the composition container (e.g. using importing).
-                    This means that each object which is imported has its own imports resolved, and the imports of those imports, and so on.
+                    An object will have its declared imports resolved when the object itself is also known by the composition container (means: the object itself is also exported)
+                    <legacyBold>and</legacyBold>
+                    instances for that object (or its type respectively) are retrieved using the composition container (e.g. using importing) and
+                    <legacyBold>not</legacyBold>
+                    by creating a new instance yourself.
+                </para>
+                <para>
+                    Then, each object which is imported to another object has its own imports resolved, and the imports of those imports, and so on.
                     Alternative perspective: Each exported object gets its imports resolved if instances of those exported objects are retrieved using the composition container.
+                </para>
+                <para>
+                    Or in short words: If you want to use dependency injection, always get instances through the composition container instead of creating them using
+                    <legacyItalic>new</legacyItalic>
+                    .
+                </para>
+                <para>
+                    Note that imports are available after the constructer has run.
                 </para>
             </content>
         </section>
@@ -82,15 +103,13 @@ public class EnemyManager : MonoModule
             <title>Standalone use</title>
             <content>
                 <para>
-                    You can use a
-                    <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionContainer</codeEntityReference>
-                    as a standalone service.
+                    You can use a composition container as a standalone service.
                     Just create an instance:
                 </para>
                 <code language="cs">
                     <![CDATA[
 CompositionContainer container = new CompositionContainer();
-          ]]>
+                    ]]>
                 </code>
             </content>
         </section>
@@ -99,8 +118,8 @@ CompositionContainer container = new CompositionContainer();
             <title>Multiple instances</title>
             <content>
                 <para>
-                    It is also possible to create multiple composition containers.
-                    Each composition container will be completely independent of each other and they will share neither exports nor imports.
+                    It is possible to create multiple composition containers.
+                    Each composition container will be completely independent of the others and they will not automatically share exports or imports.
                 </para>
             </content>
         </section>
@@ -113,14 +132,35 @@ CompositionContainer container = new CompositionContainer();
                     Any class type can be exported and/or have imports as long as they go through the composition container.
                 </para>
                 <para>
-                    One special case is a type which inherits from <legacyItalic>MonoBehaviour</legacyItalic>.
-                    Instances of <legacyItalic>MonoBehaviour</legacyItalic> cannot be instantiated in a normal way, they need to be added as a component to a
-                    <legacyItalic>GameObject</legacyItalic>.
-                    Therefore, if you want to make a <legacyItalic>MonoBehaviour</legacyItalic> discoverable, you need to inherit from
+                    One special case is a type which inherits from
+                    <legacyItalic>MonoBehaviour</legacyItalic>
+                    .
+                    Instances of
+                    <legacyItalic>MonoBehaviour</legacyItalic>
+                    cannot be instantiated in a normal way, using
+                    <legacyItalic>new</legacyItalic>
+                    , because they need to be added as a component to a
+                    <legacyItalic>GameObject</legacyItalic>
+                    .
+                    Therefore, if you want to make a
+                    <legacyItalic>MonoBehaviour</legacyItalic>
+                    discoverable, you need to inherit from
                     <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.ComposableMonoBehaviour</codeEntityReference>
-                    instead of <legacyItalic>MonoBehaviour</legacyItalic>.
-                    During instantiation, a new <legacyItalic>GameObject</legacyItalic> is automatically created to which the
-                    <legacyItalic>MonoBehaviour</legacyItalic> is then added.
+                    instead of
+                    <legacyItalic>MonoBehaviour</legacyItalic>
+                    .
+                    During instantiation, a new
+                    <legacyItalic>GameObject</legacyItalic>
+                    is automatically created to which the
+                    <legacyItalic>MonoBehaviour</legacyItalic>
+                    is added.
+                    Alternatively, you can explicitly export any
+                    <legacyItalic>MonoBehaviour</legacyItalic>
+                    , as described below.
+                </para>
+                <para>
+                    The following exemple shows usage with an arbitrary type and with
+                    <legacyItalic>MonoBehaviour</legacyItalic>:
                 </para>
                 <code language="cs">
                     <![CDATA[
@@ -131,7 +171,13 @@ using RI.Framework.Services.Modularization;
 
 
 [Export]
-public class Raycaster : ComposableMonoBehaviour
+public sealed class FancyCalculations
+{
+}
+
+
+[Export]
+public sealed class Raycaster : ComposableMonoBehaviour
 {
 }
 
@@ -139,19 +185,18 @@ public class Raycaster : ComposableMonoBehaviour
 [Export]
 public class EnemyManager : MonoModule
 {
-    protected override void Initialize ()
-    {
-        base.Initialize();
-        
-        Raycaster raycaster = this.Container.GetExport<Raycaster>();
-    }
+    [Import]
+    public Raycaster Rays { get; set; }
+    
+    [Import]
+    public FancyCalculations Calcs { get; set; }
 }
-          ]]>
+                    ]]>
                 </code>
                 <para>
-                    Another special case is that only modules are automatically instantiated and initialized during startup (by the bootstrapper).
+                    Another special case is that only modules are automatically instantiated and initialized during startup (by the bootstrapper and the module service).
                     Any other type contained in a composition container is only instantiated when an actual instance is required (importing or explicit retrieval).
-                    Therefore, if a type in a composition container is never imported nor requested, no instances of that type will be created.
+                    Therefore, if a type in a composition container is never imported nor retrieved, no instances of that type will be created.
                 </para>
             </content>
         </section>
@@ -171,13 +216,13 @@ using RI.Framework.Services.Modularization;
 
 
 [Export]
-public class GameRules : MonoModule
+public sealed class GameRules : MonoModule
 {
 }
 
 
 [Export]
-public class EnemyManager : MonoModule
+public sealed class EnemyManager : MonoModule
 {
     [Import]
     public CompositionContainer Container { get; set; }
@@ -189,8 +234,13 @@ public class EnemyManager : MonoModule
         GameRules rules = this.Container.GetExport<GameRules>();
     }
 }
-          ]]>
+                    ]]>
                 </code>
+                <para>
+                    Be aware that using explicit export retrieval is considerably slower than property-based importing.
+                    Property-based importing performs resolving of the instances only once (except in cases of recomposition).
+                    Explicit export retrieval however performs resolving each time it is used.
+                </para>
             </content>
         </section>
 
@@ -198,9 +248,9 @@ public class EnemyManager : MonoModule
             <title>Explicit export definition</title>
             <content>
                 <para>
-                    If you want to export a type which is not under your control, so you cannot apply
+                    If you want to export a type which is not under your control (so you cannot apply
                     <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Model.ExportAttribute</codeEntityReference>
-                    to it, you can also explicitly export a type:
+                    to it) you can also explicitly export a type:
                 </para>
                 <code language="cs">
                     <![CDATA[
@@ -211,7 +261,7 @@ using RI.Framework.Services.Modularization;
 
 
 [Export]
-public class EnemyManager : MonoModule
+public sealed class EnemyManager : MonoModule
 {
     [Import]
     public CompositionContainer Container { get; set; }
@@ -220,10 +270,10 @@ public class EnemyManager : MonoModule
     {
         base.Initialize();
         
-        this.Container.AddExport(typeof(SomeOtherType), typeof(SomeOtherType), false);
+        this.Container.AddExport(typeof(SomeType), typeof(SomeOtherType), false);
     }
 }
-          ]]>
+                    ]]>
                 </code>
                 <para>
                     And if you want to export an already created instance instead of a type (e.g. when constructing the object is complex), you can also explicitly export an instance of a type:
@@ -237,7 +287,7 @@ using RI.Framework.Services.Modularization;
 
 
 [Export]
-public class EnemyManager : MonoModule
+public sealed class EnemyManager : MonoModule
 {
     [Import]
     public CompositionContainer Container { get; set; }
@@ -246,10 +296,10 @@ public class EnemyManager : MonoModule
     {
         base.Initialize();
         
-        this.Container.AddExport(new SomeOtherType("Test", 123, SomeEnum.Default), typeof(SomeOtherType));
+        this.Container.AddExport(new SomeType("Test", 123, SomeEnum.Default), typeof(SomeType));
     }
 }
-          ]]>
+                    ]]>
                 </code>
             </content>
         </section>
@@ -275,12 +325,12 @@ public interface IEnemyAI
 }
 
 
-public class SmartEnemyAI : IEnemyAI
+public sealed class SmartEnemyAI : IEnemyAI
 {
 }
 
 
-public class DumbEnemyAI : IEnemyAI
+public sealed class DumbEnemyAI : IEnemyAI
 {
 }
 
@@ -288,7 +338,7 @@ public class DumbEnemyAI : IEnemyAI
 [Export]
 public class EnemyManager : MonoModule
 {
-    // importing multiple instances is only possible with the Import proxy in order to be AOT-compatible
+    // importing multiple instances is only possible with the Import proxy in order to be AOT-compatible (this might change in a future version...)
     // this is also why we need to explicitly specify the desired type
 
     [Import(typeof(IEnemyAI))]
@@ -298,7 +348,7 @@ public class EnemyManager : MonoModule
     {
         base.Initialize();
         
-        // one way is to retrieve all instances as an array
+        // one way to retrieve is all instances as an array
         IEnemyAI[] aiArray = this.AIs.ToArray<IEnemyAI>();
         
         // ...or a list
@@ -313,8 +363,11 @@ public class EnemyManager : MonoModule
         IEnemyAI first = this.AIs.Value<IEnemyAI>();
     }
 }
-          ]]>
+                    ]]>
                 </code>
+                <para>
+                    Note that the implementations have no export declaration as the one of the interface is inherited to its implementations.
+                </para>
             </content>
         </section>
 
@@ -332,10 +385,8 @@ public class EnemyManager : MonoModule
             <title>Catalogs</title>
             <content>
                 <para>
-                    Catalogs are used to tell a
-                    <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionContainer</codeEntityReference>
-                    where to look for exports.
-                    Only exports found in catalogs, which are added to the composition container, will be discovered and used.
+                    Catalogs are used to tell a composition container where to look for exports.
+                    Only exports found in catalogs, which are added to the composition container, can be discovered and used.
                     Catalogs are added using
                     <codeEntityReference qualifyHint="false">M:RI.Framework.Composition.CompositionContainer.AddCatalog(RI.Framework.Composition.CompositionCatalog)</codeEntityReference>
                     and removed using
@@ -345,15 +396,13 @@ public class EnemyManager : MonoModule
                 </para>
                 <para>
                     Catalogs can be added and removed dynamically, as shown above.
-                    When the available catalogs change, the available exports in the corresponding
-                    <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionContainer</codeEntityReference>
-                    will be updated as well, adding or removing exports dynamically.
+                    When the available catalogs change, the available exports in the corresponding composition container will be updated as well, adding or removing exports dynamically.
                 </para>
                 <para>
                     All catalogs inherit from
                     <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionCatalog</codeEntityReference>
                     .
-                    You can use one or more of the built-in catalogs and/or implement your own.
+                    You can use the built-in catalogs and/or implement your own.
                 </para>
                 <para>
                     The following built-in catalogs exist:
@@ -365,11 +414,10 @@ public class EnemyManager : MonoModule
                             :
                             All exported types of the Unity scripting assemblies are used for discovery.
                             Unity scripting assemblies are all assemblies which start with the name
-                            <legacyItalic>Assembly-CSharp</legacyItalic>.
-                            Therefore, this catalog makes possible the &quot;magic&quot; discovery of all the types you add to your Unity project.
-                            This catalog is added by default by the
-                            <codeEntityReference qualifyHint="false">T:RI.Framework.Services.Bootstrapper</codeEntityReference>
+                            <legacyItalic>Assembly-CSharp</legacyItalic>
                             .
+                            Therefore, this catalog makes possible the &quot;magic&quot; discovery of all the types you have in your Unity project.
+                            This catalog is added by default by the bootstrapper.
                         </para>
                     </listItem>
                     <listItem>
@@ -387,11 +435,11 @@ public class EnemyManager : MonoModule
                         </para>
                     </listItem>
                     <!--<listItem>
-                                <para>
-                                    <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Catalogs.FileCatalog</codeEntityReference>:
-                                    All exported types of a specified managed DLL assembly file are used for discovery.
-                                </para>
-                            </listItem>-->
+                        <para>
+                            <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Catalogs.FileCatalog</codeEntityReference>:
+                            All exported types of a specified managed DLL assembly file are used for discovery.
+                        </para>
+                    </listItem>-->
                     <listItem>
                         <para>
                             <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Catalogs.TypeCatalog</codeEntityReference>
@@ -407,17 +455,17 @@ public class EnemyManager : MonoModule
                         </para>
                     </listItem>
                     <!--<listItem>
-                                <para>
-                                    <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Catalogs.AppDomainCatalog</codeEntityReference>:
-                                    All exported types of all assemblies loaded into the current application domain will be used for discovery.
-                                </para>
-                            </listItem>-->
+                        <para>
+                            <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Catalogs.AppDomainCatalog</codeEntityReference>:
+                            All exported types of all assemblies loaded into the current application domain will be used for discovery.
+                        </para>
+                    </listItem>-->
                     <!--<listItem>
-                                <para>
-                                    <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Catalogs.AggregateCatalog</codeEntityReference>:
-                                    Combines multiple catalogs so they can be used as one.
-                                </para>
-                            </listItem>-->
+                        <para>
+                            <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Catalogs.AggregateCatalog</codeEntityReference>:
+                            Combines multiple catalogs so they can be used as one.
+                        </para>
+                    </listItem>-->
                 </list>
             </content>
         </section>
@@ -426,12 +474,8 @@ public class EnemyManager : MonoModule
             <title>Recomposition</title>
             <content>
                 <para>
-                    By default, all imports (
-                    <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Model.ImportAttribute</codeEntityReference>
-                    ) are recomposable.
-                    This means that when the available exports of a
-                    <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.CompositionContainer</codeEntityReference>
-                    is changed (e.g. by adding or removing a catalog), the imports are updated automatically.
+                    By default, all imports are recomposable.
+                    This means that when the available exports of a composition container has changed (e.g. by adding or removing a catalog), the corresponding imports are updated automatically.
                 </para>
                 <para>
                     If a type implements
@@ -454,7 +498,7 @@ public interface IEnemyAI
 
 
 [Export]
-public class EnemyManager : MonoModule, IImporting
+public sealed class EnemyManager : MonoModule, IImporting
 {
     [Import]
     public Import ImportedAIs { get; set; }
@@ -463,7 +507,7 @@ public class EnemyManager : MonoModule, IImporting
   
     public void ImportsResolving (CompositionFlags composition, bool updated)
     {
-        // called immediately before imports are resolved
+        // called immediately before imports are resolved (usually not of much use...)
     }
   
     public void ImportsResolved (CompositionFlags composition, bool updated)
@@ -476,7 +520,7 @@ public class EnemyManager : MonoModule, IImporting
         }
     }
 }
-          ]]>
+                    ]]>
                 </code>
             </content>
         </section>
@@ -498,18 +542,18 @@ using RI.Framework.Services.Modularization;
 
 
 [Export("MyRules")]
-public class GameRules : MonoModule
+public sealed class GameRules : MonoModule
 {
 }
 
 
 [Export]
-public class EnemyManager : MonoModule
+public sealed class EnemyManager : MonoModule
 {
     [Import("MyRules")]
     public GameRules Rules { get; set; }
 }
-          ]]>
+                    ]]>
                 </code>
             </content>
         </section>
@@ -533,16 +577,16 @@ public interface IGameRules
 }
 
 
-[Export] // default export (GameRules)
-[Export("MyRules")] // named export (MyRules)
-[Export(typeof(IGameRules))] // export as different type (IGameRules)
-public class GameRules : MonoModule, IGameRules
+[Export] // default export (GameRules type)
+[Export("MyRules")] // named export (MyRules name)
+[Export(typeof(IGameRules))] // export as different type (IGameRules type)
+public sealed class GameRules : MonoModule, IGameRules
 {
 }
 
 
 [Export]
-public class EnemyManager : MonoModule
+public sealed class EnemyManager : MonoModule
 {
     // all of the following imports will get the same instance of the GameRules type
 
@@ -555,7 +599,7 @@ public class EnemyManager : MonoModule
     [Import(typeof(IGameRules))]
     public GameRules Rules { get; set; }
 }
-          ]]>
+                    ]]>
                 </code>
             </content>
         </section>

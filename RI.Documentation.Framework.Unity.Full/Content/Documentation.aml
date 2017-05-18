@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<topic id="256bd44e-b85b-4f9e-9617-3258a5140f15"
+       revisionNumber="1">
+    <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+                                 xmlns:xlink="http://www.w3.org/1999/xlink">
+
+        <introduction>
+            <para>
+                The Decoupling &amp; Utilities Framework comes with a comprehensive documentation.
+                It contains both conceptional documentation and a full reference of all types and members.
+            </para>
+            <para>
+                Because the framework contains a large number of types and members, its documentation spans hundreds of pages.
+                Having all this information in a single document (e.g. PDF) would make it inaccessible and very hard to work with.
+                Because of this, the documentation is organized into the following parts:
+            </para>
+            <list class="bullet">
+                <listItem>
+                    <para>
+                        A PDF version which contains all the conceptional documentation and gives an overview of the framework.
+                    </para>
+                </listItem>
+                <listItem>
+                    <para>
+                        A Microsoft Word version (DOCX) which is the same as the PDF version.
+                    </para>
+                </listItem>
+                <listItem>
+                    <para>
+                        A zipped HTML package which contains the full documentation, consisting of all the conceptional documentation and the full reference.
+                        It uses the the well-known documentation style for programming libraries known to software developers.
+                        Unzip the package and open
+                        <legacyItalic>index.html</legacyItalic>
+                        to view the HTML documentation.
+                    </para>
+                </listItem>
+                <listItem>
+                    <para>
+                        A CHM version which is the same as the zipped HTML version.
+                    </para>
+                </listItem>
+            </list>
+            <alert class="important">
+                <para>
+                    It is recommended that you read the reference for types and members you use.
+                    Especially the remarks sections often provide further explanations and helpful information about a type or member.
+                </para>
+            </alert>
+        </introduction>
+
+        <relatedTopics />
+
+    </developerConceptualDocument>
+</topic>
