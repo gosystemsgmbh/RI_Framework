@@ -408,7 +408,7 @@ namespace RI.Framework.Services
 		/// </summary>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation performs module initialization (<see cref="IModuleService.Initialize" />), if available, and then dispatches <see cref="BeginOperations" /> using <see cref="DispatchOperation" />.
+		///         The default implementation performs module initialization (<see cref="IModuleService.Initialize" />), if available, and then dispatches <see cref="BeginOperations" /> using <see cref="DispatchBeginOperations" />.
 		///     </note>
 		/// </remarks>
 		protected virtual void BeginRun ()
@@ -418,7 +418,7 @@ namespace RI.Framework.Services
 			this.Container.GetExport<IModuleService>()?.Initialize();
 			this.LogSeperator();
 
-			this.DispatchOperation(new Action(() =>
+			this.DispatchBeginOperations(new Action(() =>
 			{
 				this.LogSeperator();
 				this.Log(LogLevel.Debug, "Beginning operations");
@@ -463,6 +463,7 @@ namespace RI.Framework.Services
 		protected virtual void ConfigureBootstrapperSingletons ()
 		{
 			Singleton<Bootstrapper>.Ensure(() => this);
+			Singleton<IBootstrapper>.Ensure(() => this);
 			Singleton<CompositionContainer>.Ensure(() => this.Container);
 			//TODO: Add application object singleton by type nad remove from Bootstrapper<>
 		}
@@ -808,7 +809,7 @@ namespace RI.Framework.Services
 		}
 
 		/// <summary>
-		///     Dispatches a bootstrapper-specific operation for execution after bootstrapping completed.
+		///     Used to dispatch <see cref="BeginOperations"/> for execution after bootstrapping completed.
 		/// </summary>
 		/// <param name="action"> The delegate to execute. </param>
 		/// <param name="args"> The optional arguments for the delegate. </param>
@@ -817,7 +818,7 @@ namespace RI.Framework.Services
 		///         The default implementation executes the delegate immediately before returning.
 		///     </note>
 		/// </remarks>
-		protected virtual void DispatchOperation (Delegate action, params object[] args)
+		protected virtual void DispatchBeginOperations (Delegate action, params object[] args)
 		{
 			action.DynamicInvoke(args);
 		}

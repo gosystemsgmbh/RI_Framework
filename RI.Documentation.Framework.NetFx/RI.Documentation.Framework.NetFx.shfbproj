@@ -38,6 +38,8 @@
       <DocumentationSource sourceFile="..\RI.Framework.Windows.Service\RI.Framework.Windows.Service.csproj" />
       <DocumentationSource sourceFile="..\RI.Framework.Windows.Shared\RI.Framework.Windows.Shared.csproj" />
       <DocumentationSource sourceFile="..\RI.Framework.Windows.Wpf\RI.Framework.Windows.Wpf.csproj" />
+      <DocumentationSource sourceFile="..\RI.Framework.CrossPlatform.Shared\RI.Framework.CrossPlatform.Shared.csproj" />
+      <DocumentationSource sourceFile="..\RI.Framework.Linux.Shared\RI.Framework.Linux.Shared.csproj" />
     </DocumentationSources>
     <BuildAssemblerVerbosity>OnlyWarningsAndErrors</BuildAssemblerVerbosity>
     <HelpFileFormat>HtmlHelp1, Website</HelpFileFormat>
@@ -50,8 +52,9 @@
     <NamespaceGrouping>False</NamespaceGrouping>
     <SyntaxFilters>C#</SyntaxFilters>
     <SdkLinkTarget>Blank</SdkLinkTarget>
-    <RootNamespaceTitle>Reference</RootNamespaceTitle>
-    <RootNamespaceContainer>True</RootNamespaceContainer>
+    <RootNamespaceTitle>
+    </RootNamespaceTitle>
+    <RootNamespaceContainer>False</RootNamespaceContainer>
     <PresentationStyle>VS2013</PresentationStyle>
     <Preliminary>True</Preliminary>
     <NamingMethod>Guid</NamingMethod>
@@ -143,12 +146,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Content" />
-    <Folder Include="Content\VersionHistory" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Content\VersionHistory\v1.0.0.0.aml" />
-    <None Include="Content\VersionHistory\VersionHistory.aml" />
-    <None Include="Content\Welcome.aml" />
     <None Include="PostBuild.bat" />
     <None Include="PreBuild.bat" />
   </ItemGroup>

@@ -41,6 +41,7 @@ namespace RI.Framework.Services.Messaging
 			this.DispatchersManual = new List<IMessageDispatcher>();
 			this.ReceiversManual = new List<IMessageReceiver>();
 
+			Singleton<MessageService>.Ensure(() => this);
 			Singleton<IMessageService>.Ensure(() => this);
 		}
 

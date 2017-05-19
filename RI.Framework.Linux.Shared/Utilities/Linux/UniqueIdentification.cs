@@ -24,18 +24,6 @@ namespace RI.Framework.Utilities.Linux
 		#region Static Methods
 
 		/// <summary>
-		///     Gets an anonymous ID identifying the current network domain.
-		/// </summary>
-		/// <returns>
-		///     The ID as a GUID.
-		/// </returns>
-		/// <exception cref="NotSupportedException"> <see cref="GetDomainId" /> is not yet implemented for Linux. </exception>
-		public static Guid GetDomainId ()
-		{
-			throw new NotSupportedException(nameof(UniqueIdentification.GetDomainId) + " is not yet implemented for Linux.");
-		}
-
-		/// <summary>
 		///     Gets an anonymous ID identifying the current machine.
 		/// </summary>
 		/// <returns>

@@ -43,6 +43,7 @@ namespace RI.Framework.Services.Regions
 			this.AdaptersManual = new List<IRegionAdapter>();
 			this.RegionDictionary = new Dictionary<string, Tuple<object, IRegionAdapter>>(StringComparerEx.InvariantCultureIgnoreCase);
 
+			Singleton<RegionService>.Ensure(() => this);
 			Singleton<IRegionService>.Ensure(() => this);
 		}
 

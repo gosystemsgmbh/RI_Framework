@@ -230,6 +230,9 @@ Services
  - (WPF) WpfApplication: Handle user switching using SystemEvents.SessionSwitch
 
  # (.NET) Settings: SettingLocator
+ # (.NET) Settings: WriteOnlyKnown for storage
+ # (.NET) Settings: PrefixAffinity for storage
+
  # (.NET) Messaging: MessageLocator
  
  # (Common) Logging: One-file-per-day option for DirectoryLogWriter

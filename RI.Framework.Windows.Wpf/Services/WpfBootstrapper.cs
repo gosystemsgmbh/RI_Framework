@@ -16,7 +16,7 @@ namespace RI.Framework.Services
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         See <see cref="Bootstrapper{TApplication}" /> for more details.
+	///         See <see cref="WindowsBootstrapper{TApplication}" /> for more details.
 	///     </para>
 	/// </remarks>
 	[Export]
@@ -60,7 +60,7 @@ namespace RI.Framework.Services
 		/// </returns>
 		/// <remarks>
 		///     <para>
-		///         <see cref="CreateDefaultApplication" /> is called if <see cref="Bootstrapper.CreateApplication" /> returns null. to use a default application object.
+		///         <see cref="CreateDefaultApplication" /> is called if <see cref="Bootstrapper.CreateApplication" /> returns null to use a default application object.
 		///     </para>
 		///     <note type="implement">
 		///         The default implementation returns a new instance of <see cref="WpfApplication" />.
@@ -81,7 +81,7 @@ namespace RI.Framework.Services
 		///         The default implementation posts the delegate to the application objects dispatcher.
 		///     </note>
 		/// </remarks>
-		protected override void DispatchOperation (Delegate action, params object[] args)
+		protected override void DispatchBeginOperations (Delegate action, params object[] args)
 		{
 			this.Application.Dispatcher.BeginInvoke(DispatcherPriority.SystemIdle, new Action<Delegate, object[]>((x, y) => x.DynamicInvoke(y)), args);
 		}

@@ -44,6 +44,7 @@ namespace RI.Framework.Services.Settings
 			this.ConvertersManual = new List<ISettingConverter>();
 			this.Cache = new Dictionary<string, string>(StringComparerEx.InvariantCultureIgnoreCase);
 
+			Singleton<SettingService>.Ensure(() => this);
 			Singleton<ISettingService>.Ensure(() => this);
 		}
 

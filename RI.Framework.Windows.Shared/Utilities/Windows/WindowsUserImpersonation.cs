@@ -181,7 +181,7 @@ namespace RI.Framework.Utilities.Windows
 		#region Instance Methods
 
 		/// <summary>
-		///     Revokes the impersonation of the WIndows user and frees all resources.
+		///     Revokes the impersonation of the Windows user and frees all resources.
 		/// </summary>
 		public void Close ()
 		{

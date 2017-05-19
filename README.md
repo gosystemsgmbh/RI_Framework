@@ -21,5 +21,6 @@
 
 ## Proposals
 
+- [ ] Unify cross-platform model and code
 - [ ] AOT checking utility
 - [ ] Migrate Common to Shared (own DLL using .NET Standard)

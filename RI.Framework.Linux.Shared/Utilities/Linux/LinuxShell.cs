@@ -1,6 +1,9 @@
 ﻿namespace RI.Framework.Utilities.Linux
 {
-	public class LinuxShell
+	/// <summary>
+	///     Provides utilities for working with the Linux shell environment.
+	/// </summary>
+	public static class LinuxShell
 	{
 	}
 }

@@ -48,6 +48,7 @@ namespace RI.Framework.Services.Resources
 			this.SourcesManual = new List<IResourceSource>();
 			this.ConvertersManual = new List<IResourceConverter>();
 
+			Singleton<ResourceService>.Ensure(() => this);
 			Singleton<IResourceService>.Ensure(() => this);
 		}
 
