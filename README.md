@@ -4,23 +4,24 @@
 
 - [ ] Packages
 - [ ] Wishlist
-
-## Backlog
-
+- [ ] Cleanup
+  - [ ] Warnings
+  - [ ] TODOs
+  - [ ] NuGet updates
 - [ ] Documentation
   - [ ] NetFx: Simple documentation
   - [ ] Unity: Uncomments after implementation
   - [ ] Unity: AOT/IL2CPP
   - [ ] Unity: Performance
   - [ ] Unity: Thread Safety
-- [ ] Cleanup
-  - [ ] Warnings
-  - [ ] TODOs
-  - [ ] NuGet updates
+
+
+## Backlog
+
 - [ ] Wishlist
 
 ## Proposals
 
 - [ ] Unify cross-platform model and code
 - [ ] AOT checking utility
-- [ ] Migrate Common to Shared (own DLL using .NET Standard)
+- [ ] Migrate Common to Shared (own DLL using .NET Standard?)

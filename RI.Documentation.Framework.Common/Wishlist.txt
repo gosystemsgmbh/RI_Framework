@@ -16,7 +16,7 @@ Utilities
 
  - (Unity) Tuples (and remove MockTuple)
 
- - (Common) Singleton: Global register to lookup by Type (use where service locator is used by type; ServiceLocatorDbDependencyResolver, StateResolver, InstanceLocator)
+ # (Common) Singleton: Global register to lookup by Type (use where service locator is used by type; ServiceLocatorDbDependencyResolver, StateResolver, InstanceLocator)
 
  - (Common) RandomExtensions: NextBytes with max and min/max overload
  - (Common) RandomExtensions: FillStream with max and min/max overload
@@ -24,7 +24,9 @@ Utilities
  - (Common) TextReaderExtensions
  - (Common) TextWriterExtensions
 
- - (Common) ThreadDispatcher: Priority queue
+ - (Common) ComponentManager
+
+ # (.NET) ThreadDispatcher: Priority queue
 
  - (Windows) WindowsMessage
  - (Windows) WindowsMessageLoop
@@ -190,13 +192,13 @@ I/O
  - (Common) IniDocument: RemoveElements with predicate
  - (Common) IniDocument: RemoveSections with predicate
 
- - (Common) CSV reader, writer, document
+ # (Common) CSV reader, writer, document
  - (Common) ZIP reader, writer, document
 
  - (Common) ConcurrencyExtensions
  - (Common) TransactiveExtensions
 
- - (.NET) TemporaryFile
+ # (.NET) TemporaryFile
 
  - (Unity) OBJ mesh loader
  - (Unity) JSON mesh loader (babylon.JS)
@@ -228,17 +230,19 @@ Services
   
  - (WPF) WpfApplication: Handle power events using SystemEvents.PowerModeChanged
  - (WPF) WpfApplication: Handle user switching using SystemEvents.SessionSwitch
-
- # (.NET) Settings: SettingLocator
- # (.NET) Settings: WriteOnlyKnown for storage
- # (.NET) Settings: PrefixAffinity for storage
-
- # (.NET) Messaging: MessageLocator
  
  # (Common) Logging: One-file-per-day option for DirectoryLogWriter
  # (Common) Logging: LogFilter
  - (Common) Logging: FileLogWriter
  - (Common) Logging: ConsoleLogWriter
+
+ # (.NET) Settings: SettingLocator
+ # (.NET) Settings: WriteOnlyKnown for storage
+ # (.NET) Settings: PrefixAffinity for storage
+ # (.NET) Settings: XmlSettingStorage
+ # (.NET) Settings: ComplexConverter (JSON?)
+
+ # (.NET) Messaging: MessageLocator
 
  # (.NET) Backup (BackupService, DirectoryBackupStorage)
  # (.NET) Licensing (LicensingService, FileLicenseStorage)
@@ -265,10 +269,10 @@ Services
 Data
 ----
 
- * (.NET) Reporting
+ * (.NET) Reporting (Excel?)
 
  # (EF) Add support for IEntityConfiguration of registrar (through extension method)
- * (EF) RepositoryDbContext: Use type priority chain for GetValidator and GetFilter
+ # (EF) RepositoryDbContext: Use type priority chain for GetValidator and GetFilter
 
  # (.NET) ISupportsDatabaseLogging (???)
  * (.NET) IRepositorySet: Add entity and property descriptions functionality
@@ -280,7 +284,7 @@ Data
  # (SQLite) Collations: Use proper naming (null, empty, whitespaces)
 
  - (.NET) IDatabaseManager: Support for creating connections when state is Old
- - (.NET) IDatabaseManager: Switch from strings in chains to actual chain objects
+ # (.NET) IDatabaseManager: Switch from strings in chains to actual chain objects
 
 
 Mathematic
@@ -312,7 +316,8 @@ Mathematic
 State machines
 --------------
 
- - (Common) Callback for aborted transitions
+ # (Common) Callback for aborted transitions
+ # (Common) Timeouts through dispatcher
 
  - (Common) Cascading
 
