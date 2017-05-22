@@ -275,7 +275,6 @@ namespace RI.Framework.StateMachines
 		/// </summary>
 		public event EventHandler<StateMachineTransientEventArgs> BeforeEnter;
 
-
 		/// <summary>
 		///     Raised before the previous state is left during a transition.
 		/// </summary>
@@ -285,6 +284,11 @@ namespace RI.Framework.StateMachines
 		///     Raised before a signal is passed to the current state.
 		/// </summary>
 		public event EventHandler<StateMachineSignalEventArgs> BeforeSignal;
+
+		/// <summary>
+		///     Raised when a transition was aborted because the previous state did not match the current state.
+		/// </summary>
+		public event EventHandler<StateMachineTransientEventArgs> TransitionAborted;
 
 		#endregion
 
@@ -314,7 +318,6 @@ namespace RI.Framework.StateMachines
 
 			this.DispatchSignal(signalInfo);
 		}
-
 
 		/// <summary>
 		///     Initiates a transition to another state.
@@ -392,7 +395,6 @@ namespace RI.Framework.StateMachines
 			}
 		}
 
-
 		/// <summary>
 		///     Called when a transition is to be dispatched.
 		/// </summary>
@@ -455,6 +457,8 @@ namespace RI.Framework.StateMachines
 				{
 					this.Log(LogLevel.Debug, "Transient aborted: {0} -> {1}", transientInfo.PreviousState?.GetType().Name ?? "[null]", transientInfo.NextState?.GetType().Name ?? "[null]");
 				}
+
+				this.OnTransitionAborted(transientInfo);
 
 				return;
 			}
@@ -535,6 +539,15 @@ namespace RI.Framework.StateMachines
 		protected virtual void OnBeforeSignal (StateSignalInfo signalInfo)
 		{
 			this.BeforeSignal?.Invoke(this, new StateMachineSignalEventArgs(signalInfo));
+		}
+
+		/// <summary>
+		///     Raises <see cref="TransitionAborted" />.
+		/// </summary>
+		/// <param name="transientInfo"> The aborted transition. </param>
+		protected virtual void OnTransitionAborted (StateTransientInfo transientInfo)
+		{
+			this.TransitionAborted?.Invoke(this, new StateMachineTransientEventArgs(transientInfo));
 		}
 
 		/// <summary>

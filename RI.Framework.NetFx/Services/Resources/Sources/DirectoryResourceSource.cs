@@ -170,7 +170,7 @@ namespace RI.Framework.Services.Resources.Sources
 				set.Prepare();
 				if (!set.IsValid.GetValueOrDefault(false))
 				{
-					this.Log(LogLevel.Warning, "Unable to use directory as directory resource set: {0}", directory);
+					this.Log(LogLevel.Error, "Unable to use directory as directory resource set: {0}", directory);
 				}
 			}
 

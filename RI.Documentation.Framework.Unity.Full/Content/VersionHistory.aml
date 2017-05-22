@@ -16,7 +16,15 @@
             </content>
         </section>
 
-        <!-- Added: RuntimeEnvironment -->
+        <!-- Added: Class: RuntimeEnvironment -->
+        <!-- Added: Property: StateMachine.TransitionAborted -->
+        <!-- Added: Method: StateMachine.OnTransitionAborted -->
+        <!-- Added: Non-generic Singleton -->
+        <!-- xxx -->
+        <!-- xxx -->
+        <!-- xxx -->
+        <!-- xxx -->
+        <!-- xxx -->
 
         <section address="Versioning">
             <title>Versioning</title>

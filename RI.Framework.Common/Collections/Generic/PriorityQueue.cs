@@ -29,6 +29,7 @@ namespace RI.Framework.Collections.Generic
 	///         Regardless of the actual numeric priority values or the distribution of the priority values respectively, a priority queue with, for example, 10 used priorities is on average 10 times faster than a priority queue with 100 used priorities.
 	///     </para>
 	/// </remarks>
+	/// TODO: Fix example
 	/// <example>
 	///     <code language="cs">
 	///  <![CDATA[
@@ -218,6 +219,33 @@ namespace RI.Framework.Collections.Generic
 			}
 
 			priorityItem.Enqueue(item);
+		}
+
+		/// <summary>
+		/// Moves all items of this queue to another queue while keeping the assigned priorities.
+		/// </summary>
+		/// <param name="queue">The other queue the items are moved to.</param>
+		/// <returns>
+		/// The number of moved items.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"><paramref name="queue"/> is null.</exception>
+		public int MoveTo (PriorityQueue<T> queue)
+		{
+			if (queue == null)
+			{
+				throw new ArgumentNullException(nameof(queue));
+			}
+
+			int count = 0;
+			while (this.Count > 0)
+			{
+				int priority;
+				T item = this.Dequeue(out priority);
+				queue.Enqueue(item, priority);
+				count++;
+			}
+
+			return count;
 		}
 
 		/// <summary>

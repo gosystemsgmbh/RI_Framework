@@ -75,9 +75,33 @@ namespace RI.Framework.Utilities.Threading
 		/// <returns>
 		///     The dispatcher operation object which can be used to track the execution of the enqueued delegate.
 		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// The delegate is enqueued with the highest possible priority.
+		/// </para>
+		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="action" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> The dispatcher is not running or is being shut down. </exception>
 		ThreadDispatcherOperation Post (Delegate action, params object[] parameters);
+
+		/// <summary>
+		///     Enqueues a delegate to the dispatchers queue and does not wait for its execution.
+		/// </summary>
+		/// <param name="priority">The priority.</param>
+		/// <param name="action"> The delegate. </param>
+		/// <param name="parameters"> Optional parameters of the delagate. </param>
+		/// <returns>
+		///     The dispatcher operation object which can be used to track the execution of the enqueued delegate.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// The higher the priority, the earlier the operation is execution (highest priority, first executed).
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="priority"/> is less than zero.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="action" /> is null. </exception>
+		/// <exception cref="InvalidOperationException"> The dispatcher is not running or is being shut down. </exception>
+		ThreadDispatcherOperation Post(int priority, Delegate action, params object[] parameters);
 
 		/// <summary>
 		///     Enqueues a delegate to the dispatchers queue and waits for its execution to be completed.
@@ -88,17 +112,48 @@ namespace RI.Framework.Utilities.Threading
 		///     The return value of the executed delegate or null if the delegate has no return value.
 		/// </returns>
 		/// <remarks>
+		/// <remarks>
+		/// <para>
+		/// The delegate is enqueued with the highest possible priority.
+		/// </para>
+		/// </remarks>
 		///     <para>
-		///         <see cref="Send" /> blocks until all previously enqueued delegates were processed.
+		///         <see cref="Send(Delegate,object[])" /> blocks until all previously enqueued delegates were processed.
 		///     </para>
 		///     <para>
-		///         <see cref="Send" /> can be called from the dispatchers thread.
-		///         Therefore, <see cref="Send" /> calls can be cascaded.
+		///         <see cref="Send(Delegate,object[])" /> can be called from the dispatchers thread.
+		///         Therefore, <see cref="Send(Delegate,object[])" /> calls can be cascaded.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="action" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> The dispatcher is not running or is being shut down. </exception>
 		object Send (Delegate action, params object[] parameters);
+
+		/// <summary>
+		///     Enqueues a delegate to the dispatchers queue and waits for its execution to be completed.
+		/// </summary>
+		/// <param name="priority">The priority.</param>
+		/// <param name="action"> The delegate. </param>
+		/// <param name="parameters"> Optional parameters of the delagate. </param>
+		/// <returns>
+		///     The return value of the executed delegate or null if the delegate has no return value.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// The higher the priority, the earlier the operation is execution (highest priority, first executed).
+		/// </para>
+		///     <para>
+		///         <see cref="Send(int,Delegate,object[])" /> blocks until all previously enqueued delegates were processed.
+		///     </para>
+		///     <para>
+		///         <see cref="Send(int,Delegate,object[])" /> can be called from the dispatchers thread.
+		///         Therefore, <see cref="Send(int,Delegate,object[])" /> calls can be cascaded.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="priority"/> is less than zero.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="action" /> is null. </exception>
+		/// <exception cref="InvalidOperationException"> The dispatcher is not running or is being shut down. </exception>
+		object Send(int priority, Delegate action, params object[] parameters);
 
 		/// <summary>
 		///     Stops processing the delegate queue.

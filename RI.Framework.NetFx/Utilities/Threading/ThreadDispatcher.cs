@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 
+using RI.Framework.Collections.Generic;
 using RI.Framework.Utilities.ObjectModel;
 
 
@@ -39,7 +40,7 @@ namespace RI.Framework.Utilities.Threading
 			this.Queue = null;
 			this.Posted = null;
 
-			this.PreRunQueue = new Queue<ThreadDispatcherOperation>();
+			this.PreRunQueue = new PriorityQueue<ThreadDispatcherOperation>();
 
 			this.ShutdownMode = ThreadDispatcherShutdownMode.None;
 
@@ -80,8 +81,8 @@ namespace RI.Framework.Utilities.Threading
 
 		private ThreadDispatcherOperation OperationInProgress { get; set; }
 		private ManualResetEvent Posted { get; set; }
-		private Queue<ThreadDispatcherOperation> PreRunQueue { get; set; }
-		private Queue<ThreadDispatcherOperation> Queue { get; set; }
+		private PriorityQueue<ThreadDispatcherOperation> PreRunQueue { get; set; }
+		private PriorityQueue<ThreadDispatcherOperation> Queue { get; set; }
 
 		private object SyncRoot { get; set; }
 		private Thread Thread { get; set; }
@@ -110,11 +111,11 @@ namespace RI.Framework.Utilities.Threading
 					this.VerifyNotRunning();
 
 					this.Thread = Thread.CurrentThread;
-					this.Queue = new Queue<ThreadDispatcherOperation>(this.PreRunQueue);
-					this.Posted = new ManualResetEvent(this.Queue.Count > 0);
+					this.Queue = new PriorityQueue<ThreadDispatcherOperation>();
+					this.Posted = new ManualResetEvent(this.PreRunQueue.Count > 0);
 					this.ShutdownMode = ThreadDispatcherShutdownMode.None;
 
-					this.PreRunQueue.Clear();
+					this.PreRunQueue.MoveTo(this.Queue);
 
 					SynchronizationContext.SetSynchronizationContext(new ThreadDispatcherSynchronizationContext(this));
 				}
@@ -355,6 +356,17 @@ namespace RI.Framework.Utilities.Threading
 		/// <inheritdoc />
 		public ThreadDispatcherOperation Post (Delegate action, params object[] parameters)
 		{
+			return this.Post(int.MaxValue, action, parameters);
+		}
+
+		/// <inheritdoc />
+		public ThreadDispatcherOperation Post (int priority, Delegate action, params object[] parameters)
+		{
+			if (priority < 0)
+			{
+				throw new ArgumentOutOfRangeException(nameof(priority));
+			}
+
 			if (action == null)
 			{
 				throw new ArgumentNullException(nameof(action));
@@ -370,12 +382,12 @@ namespace RI.Framework.Utilities.Threading
 
 				if (this.IsRunning)
 				{
-					this.Queue.Enqueue(operation);
+					this.Queue.Enqueue(operation, priority);
 					this.Posted.Set();
 				}
 				else
 				{
-					this.PreRunQueue.Enqueue(operation);
+					this.PreRunQueue.Enqueue(operation, priority);
 				}
 
 				return operation;
@@ -385,6 +397,17 @@ namespace RI.Framework.Utilities.Threading
 		/// <inheritdoc />
 		public object Send (Delegate action, params object[] parameters)
 		{
+			return this.Send(int.MaxValue, action, parameters);
+		}
+
+		/// <inheritdoc />
+		public object Send (int priority, Delegate action, params object[] parameters)
+		{
+			if (priority < 0)
+			{
+				throw new ArgumentOutOfRangeException(nameof(priority));
+			}
+
 			if (action == null)
 			{
 				throw new ArgumentNullException(nameof(action));
@@ -401,7 +424,7 @@ namespace RI.Framework.Utilities.Threading
 				this.VerifyNotShuttingDown();
 
 				isInThread = this.IsInThread();
-				operation = this.Post(action, parameters);
+				operation = this.Post(priority, action, parameters);
 			}
 
 			if (isInThread)

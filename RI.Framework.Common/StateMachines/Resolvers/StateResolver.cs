@@ -2,9 +2,7 @@
 
 using RI.Framework.Composition;
 using RI.Framework.Services;
-
-
-
+using RI.Framework.Utilities.ObjectModel;
 
 namespace RI.Framework.StateMachines.Resolvers
 {
@@ -77,7 +75,7 @@ namespace RI.Framework.StateMachines.Resolvers
 		{
 			if (this.Container == null)
 			{
-				return ServiceLocator.GetInstance(type) as IState;
+				return (ServiceLocator.GetInstance(type) ?? Singleton.Get(type)) as IState;
 			}
 
 			return this.Container.GetExport<IState>(type);

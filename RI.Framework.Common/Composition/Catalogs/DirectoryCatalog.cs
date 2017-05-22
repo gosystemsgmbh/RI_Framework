@@ -222,7 +222,7 @@ namespace RI.Framework.Composition.Catalogs
 				}
 				catch (Exception exception)
 				{
-					this.Log(LogLevel.Warning, "Load assembly failed: {0}{1}{2}", newFile, Environment.NewLine, exception.ToDetailedString());
+					this.Log(LogLevel.Error, "Load assembly failed: {0}{1}{2}", newFile, Environment.NewLine, exception.ToDetailedString());
 
 					failedFiles.Add(newFile);
 				}

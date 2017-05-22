@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Data.Entity.Infrastructure.DependencyResolution;
 
+using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Services;
-
-
-
+using RI.Framework.Utilities.ObjectModel;
 
 namespace RI.Framework.Data.EF
 {
@@ -24,13 +23,20 @@ namespace RI.Framework.Data.EF
 		/// <inheritdoc />
 		public object GetService (Type type, object key)
 		{
-			return ServiceLocator.GetInstance(type);
+			return ServiceLocator.GetInstance(type) ?? Singleton.Get(type);
 		}
 
 		/// <inheritdoc />
 		public IEnumerable<object> GetServices (Type type, object key)
 		{
-			return ServiceLocator.GetInstances(type);
+			List<object> values = new List<object>();
+			values.AddRange(ServiceLocator.GetInstances(type));
+			object singleton = Singleton.Get(type);
+			if (singleton != null)
+			{
+				values.Add(singleton);
+			}
+			return values;
 		}
 
 		#endregion

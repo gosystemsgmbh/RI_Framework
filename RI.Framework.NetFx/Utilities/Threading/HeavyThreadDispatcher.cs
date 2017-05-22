@@ -391,11 +391,27 @@ namespace RI.Framework.Utilities.Threading
 		}
 
 		/// <inheritdoc />
+		public ThreadDispatcherOperation Post (int priority, Delegate action, params object[] parameters)
+		{
+			this.VerifyRunning();
+
+			return this.DispatcherInternal.Post(priority, action, parameters);
+		}
+
+		/// <inheritdoc />
 		public object Send (Delegate action, params object[] parameters)
 		{
 			this.VerifyRunning();
 
 			return this.DispatcherInternal.Send(action, parameters);
+		}
+
+		/// <inheritdoc />
+		public object Send (int priority, Delegate action, params object[] parameters)
+		{
+			this.VerifyRunning();
+
+			return this.DispatcherInternal.Send(priority, action, parameters);
 		}
 
 		/// <inheritdoc />

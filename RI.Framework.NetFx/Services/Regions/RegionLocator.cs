@@ -2,9 +2,7 @@
 
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
-
-
-
+using RI.Framework.Utilities.ObjectModel;
 
 namespace RI.Framework.Services.Regions
 {
@@ -905,7 +903,7 @@ namespace RI.Framework.Services.Regions
 				return null;
 			}
 
-			return ServiceLocator.GetInstance(type);
+			return ServiceLocator.GetInstance(type) ?? Singleton.Get(type);
 		}
 
 		#endregion

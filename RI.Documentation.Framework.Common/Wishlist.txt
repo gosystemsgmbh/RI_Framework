@@ -16,8 +16,6 @@ Utilities
 
  - (Unity) Tuples (and remove MockTuple)
 
- # (Common) Singleton: Global register to lookup by Type (use where service locator is used by type; ServiceLocatorDbDependencyResolver, StateResolver, InstanceLocator)
-
  - (Common) RandomExtensions: NextBytes with max and min/max overload
  - (Common) RandomExtensions: FillStream with max and min/max overload
 
@@ -25,8 +23,6 @@ Utilities
  - (Common) TextWriterExtensions
 
  - (Common) ComponentManager
-
- # (.NET) ThreadDispatcher: Priority queue
 
  - (Windows) WindowsMessage
  - (Windows) WindowsMessageLoop
@@ -209,6 +205,7 @@ Composition
 
  - (Common) CreateIndependent
  - (Common) CreateAndExport
+ - (Common) AddMultiple
 
  - (Common) AggregateCatalog
  - (Common) FileCatalog
@@ -216,6 +213,7 @@ Composition
  - (Common) GameObjectCatalog
 
  - (Common) Add container to container
+ - (Common) Child container support
 
  - (Common) Lazy loading
 
@@ -233,6 +231,7 @@ Services
  
  # (Common) Logging: One-file-per-day option for DirectoryLogWriter
  # (Common) Logging: LogFilter
+ # (Common) Logging: Debug and Trace redirector
  - (Common) Logging: FileLogWriter
  - (Common) Logging: ConsoleLogWriter
 
@@ -316,7 +315,6 @@ Mathematic
 State machines
 --------------
 
- # (Common) Callback for aborted transitions
  # (Common) Timeouts through dispatcher
 
  - (Common) Cascading

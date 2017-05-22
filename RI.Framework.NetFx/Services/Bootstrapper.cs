@@ -414,16 +414,24 @@ namespace RI.Framework.Services
 		protected virtual void BeginRun ()
 		{
 			this.LogSeperator();
-			this.Log(LogLevel.Debug, "Initializing modules");
-			this.Container.GetExport<IModuleService>()?.Initialize();
-			this.LogSeperator();
 
+			this.Log(LogLevel.Debug, "Dispatching module initialization");
+			this.DispatchModuleInitialization(new Action(() =>
+			{
+				this.LogSeperator();
+				this.Log(LogLevel.Debug, "Initializing modules");
+				this.Container.GetExport<IModuleService>()?.Initialize();
+			}));
+
+			this.Log(LogLevel.Debug, "Dispatching begin operations");
 			this.DispatchBeginOperations(new Action(() =>
 			{
 				this.LogSeperator();
 				this.Log(LogLevel.Debug, "Beginning operations");
 				this.BeginOperations();
 			}));
+
+			this.LogSeperator();
 		}
 
 		/// <summary>
@@ -465,7 +473,11 @@ namespace RI.Framework.Services
 			Singleton<Bootstrapper>.Ensure(() => this);
 			Singleton<IBootstrapper>.Ensure(() => this);
 			Singleton<CompositionContainer>.Ensure(() => this.Container);
-			//TODO: Add application object singleton by type nad remove from Bootstrapper<>
+
+			if (this.Application != null)
+			{
+				Singleton.Set(this.Application.GetType(), this.Application);
+			}
 		}
 
 		/// <summary>
@@ -545,7 +557,9 @@ namespace RI.Framework.Services
 		{
 			Dictionary<string, string> additionalData = new Dictionary<string, string>(StringComparerEx.InvariantCultureIgnoreCase);
 			additionalData.Add(nameof(this.ApplicationProductName), this.ApplicationProductName);
-			additionalData.Add(nameof(this.ApplicationVersion), this.ApplicationVersion.ToString(4));
+			additionalData.Add(nameof(this.ApplicationVersion), this.ApplicationVersion.ToString());
+			additionalData.Add(nameof(this.ApplicationIdVersionIndependent), this.ApplicationIdVersionIndependent.ToString("N", CultureInfo.InvariantCulture));
+			additionalData.Add(nameof(this.ApplicationIdVersionDependent), this.ApplicationIdVersionDependent.ToString("N", CultureInfo.InvariantCulture));
 			additionalData.Add(nameof(this.UserId), this.UserId.ToString("N", CultureInfo.InvariantCulture));
 			additionalData.Add(nameof(this.DomainId), this.DomainId.ToString("N", CultureInfo.InvariantCulture));
 			additionalData.Add(nameof(this.MachineId), this.MachineId.ToString("N", CultureInfo.InvariantCulture));
@@ -554,6 +568,7 @@ namespace RI.Framework.Services
 			additionalData.Add(nameof(this.SessionId), this.SessionId.ToString("N", CultureInfo.InvariantCulture));
 			additionalData.Add(nameof(this.SessionTimestamp), this.SessionTimestamp.ToSortableString('-'));
 			additionalData.Add(nameof(this.ProcessCommandLine), this.ProcessCommandLine.ToString());
+			additionalData.Add(nameof(this.DebuggerAttached), this.DebuggerAttached.ToString());
 			return additionalData;
 		}
 
@@ -824,6 +839,21 @@ namespace RI.Framework.Services
 		}
 
 		/// <summary>
+		///     Used to dispatch module initialization.
+		/// </summary>
+		/// <param name="action"> The delegate to execute. </param>
+		/// <param name="args"> The optional arguments for the delegate. </param>
+		/// <remarks>
+		///     <note type="implement">
+		///         The default implementation executes the delegate immediately before returning.
+		///     </note>
+		/// </remarks>
+		protected virtual void DispatchModuleInitialization(Delegate action, params object[] args)
+		{
+			action.DynamicInvoke(args);
+		}
+
+		/// <summary>
 		///     Called when the application is shut down.
 		/// </summary>
 		/// <remarks>
@@ -846,11 +876,14 @@ namespace RI.Framework.Services
 		protected virtual void EndRun ()
 		{
 			this.LogSeperator();
-			this.Log(LogLevel.Debug, "Unloading modules");
 
+			this.Log(LogLevel.Debug, "Unloading modules");
 			this.Container.GetExport<IModuleService>()?.Unload();
 
+			this.Log(LogLevel.Debug, "Hiding splash screen");
 			this.HideSplashScreen();
+
+			this.LogSeperator();
 		}
 
 		/// <summary>
@@ -879,21 +912,25 @@ namespace RI.Framework.Services
 		/// </remarks>
 		protected virtual void LogBootstrapperVariables ()
 		{
-			this.Log(LogLevel.Debug, "Application name:     {0}", this.ApplicationProductName);
-			this.Log(LogLevel.Debug, "Application version:  {0}", this.ApplicationVersion.ToString(4));
-			this.Log(LogLevel.Debug, "Executable directory: {0}", this.ApplicationExecutableDirectory.PathResolved);
-			this.Log(LogLevel.Debug, "Data directory:       {0}", this.ApplicationDataDirectory.PathResolved);
-			this.Log(LogLevel.Debug, "Application assembly: {0}", this.ApplicationAssembly.FullName);
-			this.Log(LogLevel.Debug, "Application ID:       {0}", this.ApplicationIdVersionDependent.ToString("N", CultureInfo.InvariantCulture));
-			this.Log(LogLevel.Debug, "Version ID:           {0}", this.ApplicationIdVersionIndependent.ToString("N", CultureInfo.InvariantCulture));
-			this.Log(LogLevel.Debug, "Session ID:           {0}", this.SessionId.ToString("N", CultureInfo.InvariantCulture));
-			this.Log(LogLevel.Debug, "Session timestamp:    {0}", this.SessionTimestamp.ToSortableString('-'));
-			this.Log(LogLevel.Debug, "Session 64 bit:       {0}", this.Session64Bit.ToString());
-			this.Log(LogLevel.Debug, "Machine 64 bit:       {0}", this.Machine64Bit.ToString());
-			this.Log(LogLevel.Debug, "Machine ID:           {0}", this.MachineId.ToString("N", CultureInfo.InvariantCulture));
-			this.Log(LogLevel.Debug, "Domain ID:            {0}", this.DomainId.ToString("N", CultureInfo.InvariantCulture));
-			this.Log(LogLevel.Debug, "User ID:              {0}", this.UserId.ToString("N", CultureInfo.InvariantCulture));
-			this.Log(LogLevel.Debug, "Command line:         {0}", this.ProcessCommandLine.ToString());
+			this.Log(LogLevel.Debug, "Application name:      {0}", this.ApplicationProductName);
+			this.Log(LogLevel.Debug, "Application version:   {0}", this.ApplicationVersion);
+			this.Log(LogLevel.Debug, "Application company:   {0}", this.ApplicationCompanyName);
+			this.Log(LogLevel.Debug, "Application copyright: {0}", this.ApplicationCopyright);
+			this.Log(LogLevel.Debug, "Executable directory:  {0}", this.ApplicationExecutableDirectory.PathResolved);
+			this.Log(LogLevel.Debug, "Data directory:        {0}", this.ApplicationDataDirectory.PathResolved);
+			this.Log(LogLevel.Debug, "Application object:    {0}", this.Application?.ToString() ?? "[null]");
+			this.Log(LogLevel.Debug, "Application assembly:  {0}", this.ApplicationAssembly.FullName);
+			this.Log(LogLevel.Debug, "Application ID:        {0}", this.ApplicationIdVersionIndependent.ToString("N", CultureInfo.InvariantCulture));
+			this.Log(LogLevel.Debug, "Version ID:            {0}", this.ApplicationIdVersionDependent.ToString("N", CultureInfo.InvariantCulture));
+			this.Log(LogLevel.Debug, "Session ID:            {0}", this.SessionId.ToString("N", CultureInfo.InvariantCulture));
+			this.Log(LogLevel.Debug, "Session timestamp:     {0}", this.SessionTimestamp.ToSortableString('-'));
+			this.Log(LogLevel.Debug, "Session 64 bit:        {0}", this.Session64Bit.ToString());
+			this.Log(LogLevel.Debug, "Machine 64 bit:        {0}", this.Machine64Bit.ToString());
+			this.Log(LogLevel.Debug, "Machine ID:            {0}", this.MachineId.ToString("N", CultureInfo.InvariantCulture));
+			this.Log(LogLevel.Debug, "Domain ID:             {0}", this.DomainId.ToString("N", CultureInfo.InvariantCulture));
+			this.Log(LogLevel.Debug, "User ID:               {0}", this.UserId.ToString("N", CultureInfo.InvariantCulture));
+			this.Log(LogLevel.Debug, "Command line:          {0}", this.ProcessCommandLine.ToString());
+			this.Log(LogLevel.Debug, "Debugger attached:     {0}", this.DebuggerAttached);
 		}
 
 		/// <summary>
@@ -1004,6 +1041,8 @@ namespace RI.Framework.Services
 			this.MachineId = this.DetermineMachineId();
 			this.UserId = this.DetermineUserId();
 
+			this.ProcessCommandLine = this.DetermineProcessCommandLine();
+
 			this.ApplicationAssembly = this.DetermineApplicationAssembly();
 			this.ApplicationProductName = this.DetermineApplicationProductName();
 			this.ApplicationCompanyName = this.DetermineApplicationCompanyName();
@@ -1011,8 +1050,6 @@ namespace RI.Framework.Services
 			this.ApplicationVersion = this.DetermineApplicationVersion();
 			this.ApplicationIdVersionIndependent = this.DetermineApplicationIdVersionIndependent();
 			this.ApplicationIdVersionDependent = this.DetermineApplicationIdVersionDependent();
-
-			this.ProcessCommandLine = this.DetermineProcessCommandLine();
 
 			this.SessionTimestamp = this.DetermineSessionTimestamp();
 			this.SessionId = this.DetermineSessionId();

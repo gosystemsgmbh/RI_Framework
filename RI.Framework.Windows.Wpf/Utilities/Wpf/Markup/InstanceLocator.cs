@@ -7,9 +7,7 @@ using RI.Framework.Mvvm.View;
 using RI.Framework.Mvvm.ViewModel;
 using RI.Framework.Services;
 using RI.Framework.Services.Logging;
-
-
-
+using RI.Framework.Utilities.ObjectModel;
 
 namespace RI.Framework.Utilities.Wpf.Markup
 {
@@ -55,7 +53,7 @@ namespace RI.Framework.Utilities.Wpf.Markup
 				return null;
 			}
 
-			object value = ServiceLocator.GetInstance(type);
+			object value = ServiceLocator.GetInstance(type) ?? Singleton.Get(type);
 			InstanceLocator.ProcessValue(value);
 			return value;
 		}
