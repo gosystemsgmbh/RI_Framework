@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -83,7 +85,22 @@ namespace RI.Framework.Services
 		/// </remarks>
 		protected override void DispatchBeginOperations (Delegate action, params object[] args)
 		{
-			this.Application.Dispatcher.BeginInvoke(DispatcherPriority.SystemIdle, new Action<Delegate, object[]>((x, y) => x.DynamicInvoke(y)), args);
+			this.Application.Dispatcher.BeginInvoke(DispatcherPriority.SystemIdle, new Action<Delegate, List<object>>((x, y) => x.DynamicInvoke(y.ToArray())), action, args.ToList());
+		}
+
+		/// <summary>
+		///     Dispatches a bootstrapper-specific operation for execution after bootstrapping completed.
+		/// </summary>
+		/// <param name="action"> The delegate to execute. </param>
+		/// <param name="args"> The optional arguments for the delegate. </param>
+		/// <remarks>
+		///     <note type="implement">
+		///         The default implementation posts the delegate to the application objects dispatcher.
+		///     </note>
+		/// </remarks>
+		protected override void DispatchModuleInitialization (Delegate action, params object[] args)
+		{
+			this.Application.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action<Delegate, List<object>>((x, y) => x.DynamicInvoke(y.ToArray())), action, args.ToList());
 		}
 
 		/// <summary>

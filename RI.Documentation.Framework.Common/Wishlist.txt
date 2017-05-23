@@ -12,8 +12,6 @@ Utilities
  - (Common) Rounding extensions for double, float, and decimal (including financial rounding)
  - (Common) More NumberExtensions
 
- - (Common) AlphanumSorter
-
  - (Unity) Tuples (and remove MockTuple)
 
  - (Common) RandomExtensions: NextBytes with max and min/max overload
@@ -193,8 +191,6 @@ I/O
 
  - (Common) ConcurrencyExtensions
  - (Common) TransactiveExtensions
-
- # (.NET) TemporaryFile
 
  - (Unity) OBJ mesh loader
  - (Unity) JSON mesh loader (babylon.JS)

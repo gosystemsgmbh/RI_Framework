@@ -16,16 +16,16 @@
             </content>
         </section>
 
-        <!-- Added: Class: RuntimeEnvironment -->
-        <!-- Added: Property: StateMachine.TransitionAborted -->
-        <!-- Added: Method: StateMachine.OnTransitionAborted -->
-        <!-- Added: Non-generic Singleton -->
+        <!-- Added: RuntimeEnvironment -->
+        <!-- Added: StateMachine.TransitionAborted -->
+        <!-- Added: StateMachine.OnTransitionAborted -->
+        <!-- Added: Singleton -->
         <!-- Changed: StateResolver also uses Singleton to resolve states -->
-        <!-- xxx -->
-        <!-- xxx -->
-        <!-- xxx -->
-        <!-- xxx -->
-        <!-- xxx -->
+        <!-- Added: AlphanumComparer -->
+        <!-- Added: TemporaryFile -->
+        <!-- Added: ServiceLocator.UseCaching -->
+        <!-- Added: ServiceLocator.UseSingletons -->
+        <!-- Fixed: Exception when disposing/clearing CompositionContainer when it was added to itself -->
 
         <section address="Versioning">
             <title>Versioning</title>

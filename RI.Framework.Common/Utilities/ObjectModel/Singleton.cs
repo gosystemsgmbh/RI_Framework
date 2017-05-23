@@ -6,6 +6,11 @@ namespace RI.Framework.Utilities.ObjectModel
 	/// <summary>
 	///     Provides a centralized functionality to store singletons.
 	/// </summary>
+	/// <remarks>
+	/// <note type="note">
+	/// <see cref="Singleton"/> shares its singleton instances with <see cref="Singleton{T}"/>.
+	/// </note>
+	/// </remarks>
 	/// <example>
 	///     <code language="cs">
 	/// <![CDATA[
@@ -134,7 +139,7 @@ namespace RI.Framework.Utilities.ObjectModel
 
 			if (!Singleton.Instances.ContainsKey(type))
 			{
-				Object instance = creator();
+				object instance = creator();
 				if (instance == null)
 				{
 					throw new NotSupportedException("The creator delegate did not return a new instance of the singleton.");
@@ -150,6 +155,11 @@ namespace RI.Framework.Utilities.ObjectModel
 	///     Provides a centralized functionality to store singletons.
 	/// </summary>
 	/// <typeparam name="T"> The singleton type. </typeparam>
+	/// <remarks>
+	/// <note type="note">
+	/// <see cref="Singleton{T}"/> shares its singleton instances with <see cref="Singleton"/>.
+	/// </note>
+	/// </remarks>
 	/// <example>
 	///     <code language="cs">
 	/// <![CDATA[

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 
 using RI.Framework.Collections.Generic;
@@ -15,10 +14,10 @@ namespace RI.Framework.Utilities.Threading
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         A <see cref="ThreadDispatcher" /> provides a queue for delegates, filled through <see cref="Send" /> and <see cref="Post" />, which is processed on the thread where <see cref="Run" /> is called (<see cref="Run" /> blocks while executing the queue until <see cref="Shutdown" /> is called).
+	///         A <see cref="ThreadDispatcher" /> provides a queue for delegates, filled through <see cref="Send(Delegate,object[])" />/<see cref="Send(int,Delegate,object[])"/> and <see cref="Post(Delegate,object[])" />/<see cref="Post(int,System.Delegate,object[])"/>, which is processed on the thread where <see cref="Run" /> is called (<see cref="Run" /> blocks while executing the queue until <see cref="Shutdown" /> is called).
 	///     </para>
 	///     <para>
-	///         The delegates are executed in the order they are added to the queue through <see cref="Send" /> or <see cref="Post" />.
+	///         The delegates are executed in the order they are added to the queue through <see cref="Send(Delegate,object[])" />/<see cref="Send(int,Delegate,object[])"/> or <see cref="Post(Delegate,object[])" />/<see cref="Post(int,System.Delegate,object[])"/>.
 	///         When all delegates are executed, or the queue is empty respectively, <see cref="ThreadDispatcher" /> waits for new delegates to process.
 	///     </para>
 	///     <para>

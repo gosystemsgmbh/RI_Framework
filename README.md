@@ -8,6 +8,7 @@
   - [ ] Warnings
   - [ ] TODOs
   - [ ] NuGet updates
+  - [ ] Code cleanup
 - [ ] Documentation
   - [ ] NetFx: Simple documentation
   - [ ] Unity: Uncomments after implementation
@@ -21,6 +22,8 @@
   - [ ] StateMachine.TransitionAborted
   - [ ] RuntimeEnvironment
   - [ ] Singleton (generic and non-generic)
+  - [ ] AlphanumComparer
+  - [ ] TemporaryFile
 
 
 ## Backlog

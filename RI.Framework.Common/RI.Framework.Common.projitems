@@ -64,6 +64,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Composition\Model\ImportAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Composition\Model\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Composition\_NamespaceDoc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\Files\TemporaryFile.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\Files\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\INI\Elements\CommentIniElement.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\INI\Elements\SectionIniElement.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\INI\Elements\TextIniElement.cs" />
@@ -166,6 +168,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\StringComparerEx.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\StringExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\StringSplitPredicate.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Text\AlphanumComparer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Text\CommandLine.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Text\IndentedTextWriter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Text\_NamespaceDoc.cs" />

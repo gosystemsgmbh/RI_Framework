@@ -5,6 +5,7 @@ using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Composition;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
+using RI.Framework.Utilities.ObjectModel;
 
 
 
@@ -22,9 +23,57 @@ namespace RI.Framework.Services
 	///     <para>
 	///         A &quot;service&quot; can actually be any object/instance which is required to be made globally available (comparable to a singleton).
 	///     </para>
+	///     <para>
+	///         To improve performance, caching can be used (controlled by <see cref="UseCaching" />).
+	///         If caching is used, previously retrieved services are cached and no lookup is performed for those.
+	///         Caching is enabled by default.
+	///     </para>
+	///     <para>
+	///         <see cref="ServiceLocator" /> can be tied to <see cref="Singleton" /> and <see cref="Singleton{T}" />, controllable through <see cref="UseSingletons" />.
+	///         If enabled, services which cannot be resolved through a lookup are tried to be resolved using the singletons.
+	///         It can only be used when working with types, not with names.
+	///         The connection to the singletons is enabled by default.
+	///     </para>
 	/// </remarks>
 	public static class ServiceLocator
 	{
+		#region Static Constructor/Destructor
+
+		static ServiceLocator ()
+		{
+			ServiceLocator.Cache = new Dictionary<string, object[]>(CompositionContainer.NameComparer);
+		}
+
+		#endregion
+
+
+
+
+		#region Static Properties/Indexer
+
+		/// <summary>
+		///     Gets or sets whether cahcing is used.
+		/// </summary>
+		/// <value>
+		///     true if caching is used, false otherwise.
+		/// </value>
+		public static bool UseCaching { get; set; } = true;
+
+		/// <summary>
+		///     Gets or sets whether <see cref="ServiceLocator" /> is connected to <see cref="Singleton" /> / <see cref="Singleton{T}" />.
+		/// </summary>
+		/// <value>
+		///     true if connected to <see cref="Singleton" /> / <see cref="Singleton{T}" />, false otherwise.
+		/// </value>
+		public static bool UseSingletons { get; set; } = true;
+
+		private static Dictionary<string, object[]> Cache { get; set; }
+
+		#endregion
+
+
+
+
 		#region Static Events
 
 		/// <summary>
@@ -67,6 +116,14 @@ namespace RI.Framework.Services
 			ServiceLocator.Translate += CompositionContainer.GetNameOfType;
 
 			ServiceLocator.Lookup += compositionContainer.GetExports<object>;
+		}
+
+		/// <summary>
+		///     Clears the cache.
+		/// </summary>
+		public static void ClearCache ()
+		{
+			ServiceLocator.Cache.Clear();
 		}
 
 		/// <summary>
@@ -130,7 +187,7 @@ namespace RI.Framework.Services
 
 			string name = ServiceLocator.TranslateTypeToName(type);
 
-			return ServiceLocator.LookupService(name);
+			return ServiceLocator.LookupService(name, type);
 		}
 
 		/// <summary>
@@ -154,7 +211,7 @@ namespace RI.Framework.Services
 				throw new EmptyStringArgumentException(nameof(name));
 			}
 
-			return ServiceLocator.LookupService(name);
+			return ServiceLocator.LookupService(name, null);
 		}
 
 		/// <summary>
@@ -222,7 +279,7 @@ namespace RI.Framework.Services
 
 			string name = ServiceLocator.TranslateTypeToName(type);
 
-			return ServiceLocator.LookupServices(name);
+			return ServiceLocator.LookupServices(name, type);
 		}
 
 		/// <summary>
@@ -247,33 +304,58 @@ namespace RI.Framework.Services
 				throw new EmptyStringArgumentException(nameof(name));
 			}
 
-			return ServiceLocator.LookupServices(name);
+			return ServiceLocator.LookupServices(name, null);
 		}
 
-		private static object LookupService (string name)
+		private static object LookupService (string name, Type typeHint)
 		{
 			if (name == null)
 			{
 				return null;
 			}
 
-			Func<string, IList<object>> handler = ServiceLocator.Lookup;
-			IList<object> instances = handler?.Invoke(name);
-
-			return instances == null ? null : (instances.Count == 0 ? null : instances[0]);
+			object[] instances = ServiceLocator.Resolve(name, typeHint);
+			return instances.Length == 0 ? null : instances[0];
 		}
 
-		private static object[] LookupServices (string name)
+		private static object[] LookupServices (string name, Type typeHint)
 		{
 			if (name == null)
 			{
 				return new object[0];
 			}
 
-			Func<string, IList<object>> handler = ServiceLocator.Lookup;
-			IList<object> instances = handler?.Invoke(name);
+			object[] instances = ServiceLocator.Resolve(name, typeHint);
+			return instances;
+		}
 
-			return instances?.ToArray() ?? new object[0];
+		private static object[] Resolve (string name, Type typeHint)
+		{
+			if (ServiceLocator.UseCaching && ServiceLocator.Cache.ContainsKey(name))
+			{
+				return ServiceLocator.Cache[name];
+			}
+
+			Func<string, IList<object>> handler = ServiceLocator.Lookup;
+			IList<object> instances = handler?.Invoke(name) ?? new object[0];
+
+			object[] resolved;
+			if ((instances.Count == 0) && (typeHint != null))
+			{
+				resolved = new object[] {Singleton.Get(typeHint)};
+			}
+			else
+			{
+				resolved = instances.ToArray();
+			}
+
+			if (ServiceLocator.UseCaching && (resolved.Length > 0))
+			{
+				ServiceLocator.Cache.Remove(name);
+				ServiceLocator.Cache.Add(name, resolved);
+			}
+
+			return resolved;
 		}
 
 		private static string TranslateTypeToName (Type type)

@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 
 using RI.Framework.Collections;
 using RI.Framework.Collections.Comparison;
@@ -241,13 +240,12 @@ namespace RI.Framework.Composition
 	///         If logging is not desired, it can be disabled using <see cref="LoggingEnabled" />.
 	///     </para>
 	/// </remarks>
-	/// TODO: Fix Dispose
 	/// TODO: Lazy loading
 	/// TODO: Consistent parameter import handling
 	/// TODO: Check platform differences
 	/// TODO: Update version history
 	[Export]
-	public sealed class CompositionContainer //: IDisposable
+	public sealed class CompositionContainer : IDisposable
 	{
 		#region Constants
 
@@ -1750,7 +1748,7 @@ namespace RI.Framework.Composition
 				{
 					this.Log("Instance removed from container: {0} / {1}", compositionItem.Key, x?.Instance?.GetType()?.FullName ?? "[null]");
 					(x?.Instance as IExporting)?.RemovedFromContainer(compositionItem.Key, this);
-					if (this.AutoDispose)
+					if (this.AutoDispose && (!object.ReferenceEquals(x?.Instance, this)))
 					{
 						(x?.Instance as IDisposable)?.Dispose();
 					}
@@ -1759,7 +1757,7 @@ namespace RI.Framework.Composition
 				{
 					this.Log("Type removed from container: {0} / {1}", compositionItem.Key, x?.Instance?.GetType()?.FullName ?? "[null]");
 					(x?.Instance as IExporting)?.RemovedFromContainer(compositionItem.Key, this);
-					if (this.AutoDispose)
+					if (this.AutoDispose && (!object.ReferenceEquals(x?.Instance, this)))
 					{
 						(x?.Instance as IDisposable)?.Dispose();
 					}

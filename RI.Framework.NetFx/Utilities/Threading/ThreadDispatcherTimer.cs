@@ -12,7 +12,7 @@ namespace RI.Framework.Utilities.Threading
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         <see cref="ThreadDispatcherTimer" /> enqueues a delegate to the specified dispatchers queue (using <see cref="IThreadDispatcher.Post" />) in a specified interval.
+	///         <see cref="ThreadDispatcherTimer" /> enqueues a delegate to the specified dispatchers queue (using <see cref="IThreadDispatcher.Post(int,Delegate,object[])" />) in a specified interval.
 	///     </para>
 	///     <para>
 	///         The interval is awaited before the timer is executed for the first time. Afterwards, the delegate is posted to the dispatcher in the specified interval.
