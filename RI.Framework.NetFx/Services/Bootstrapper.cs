@@ -396,11 +396,15 @@ namespace RI.Framework.Services
 		/// </summary>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation does nothing.
+		///         The default implementation uses the composition container to discover all implementations of <see cref="IBootstrapperOperations"/> and calls <see cref="IBootstrapperOperations.BeginOperations"/> on them.
 		///     </note>
 		/// </remarks>
 		protected virtual void BeginOperations ()
 		{
+			foreach (IBootstrapperOperations ops in this.Container.GetExports<IBootstrapperOperations>())
+			{
+				ops.BeginOperations();
+			}
 		}
 
 		/// <summary>

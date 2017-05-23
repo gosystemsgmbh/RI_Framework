@@ -20,6 +20,7 @@
         <!-- Added: Property: StateMachine.TransitionAborted -->
         <!-- Added: Method: StateMachine.OnTransitionAborted -->
         <!-- Added: Non-generic Singleton -->
+        <!-- Changed: StateResolver also uses Singleton to resolve states -->
         <!-- xxx -->
         <!-- xxx -->
         <!-- xxx -->

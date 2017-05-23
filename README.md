@@ -16,8 +16,11 @@
   - [ ] Unity: Thread Safety
 - [ ] Testing
   - [ ] ThreadDispatcher with priority queue
+  - [ ] ThreadDispatcherTimer
+  - [ ] ThreadDispatcher async/await
   - [ ] StateMachine.TransitionAborted
   - [ ] RuntimeEnvironment
+  - [ ] Singleton (generic and non-generic)
 
 
 ## Backlog
