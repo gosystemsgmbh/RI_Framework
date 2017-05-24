@@ -24,6 +24,7 @@
   - [ ] Singleton (generic and non-generic)
   - [ ] AlphanumComparer
   - [ ] TemporaryFile
+  - [ ] CultureInfoExtensions
 
 
 ## Backlog

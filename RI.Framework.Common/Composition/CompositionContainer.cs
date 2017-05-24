@@ -476,14 +476,41 @@ namespace RI.Framework.Composition
 		public CompositionContainer ()
 		{
 			this.CatalogRecomposeRequestHandler = this.HandleCatalogRecomposeRequest;
+			this.ParentContainerCompositionChangedHandler = this.HandleParentContainerCompositionChanged;
 
 			this.AutoDispose = true;
 			this.LoggingEnabled = true;
+
+			this.ParentContainer = null;
 
 			this.Instances = new List<CompositionCatalogItem>();
 			this.Types = new List<CompositionCatalogItem>();
 			this.Catalogs = new List<CompositionCatalog>();
 			this.Composition = new Dictionary<string, CompositionItem>(CompositionContainer.NameComparer);
+
+			this.UpdateComposition(true);
+		}
+
+		/// <summary>
+		/// Creates a new instance of <see cref="CompositionContainer"/>.
+		/// </summary>
+		/// <param name="parentContainer">The used parent composition container.</param>
+		/// <remarks>
+		/// <para>
+		/// The created composition container will be a child composition container with <paramref name="parentContainer"/> as its parent composition container.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"><paramref name="parentContainer"/> is null.</exception>
+		public CompositionContainer (CompositionContainer parentContainer)
+			: this()
+		{
+			if (parentContainer == null)
+			{
+				throw new ArgumentNullException(nameof(parentContainer));
+			}
+
+			this.ParentContainer = parentContainer;
+			this.ParentContainer.CompositionChanged += this.ParentContainerCompositionChangedHandler;
 
 			this.UpdateComposition(true);
 		}
@@ -532,7 +559,17 @@ namespace RI.Framework.Composition
 		/// </remarks>
 		public bool LoggingEnabled { get; set; }
 
+		/// <summary>
+		/// Gets the parent composition container if this composition container is a child composition container.
+		/// </summary>
+		/// <value>
+		/// The parent composition container or null if this composition container is not a child composition container.
+		/// </value>
+		public CompositionContainer ParentContainer { get; private set; }
+
 		private EventHandler CatalogRecomposeRequestHandler { get; set; }
+
+		private EventHandler ParentContainerCompositionChangedHandler { get; set; }
 
 		private List<CompositionCatalog> Catalogs { get; set; }
 
@@ -1025,6 +1062,14 @@ namespace RI.Framework.Composition
 				throw new EmptyStringArgumentException(nameof(exportName));
 			}
 
+			if (this.ParentContainer != null)
+			{
+				if (this.ParentContainer.HasExport(exportName))
+				{
+					return true;
+				}
+			}
+
 			return this.Composition.ContainsKey(exportName);
 		}
 
@@ -1046,7 +1091,7 @@ namespace RI.Framework.Composition
 		public bool Recompose (CompositionFlags composition)
 		{
 			bool recomposed = false;
-			List<object> instances = this.GetExistingInstancesInternal();
+			List<object> instances = this.GetExistingInstancesInternal(false);
 			foreach (object instance in instances)
 			{
 				if (this.ResolveImports(instance, composition))
@@ -1401,7 +1446,7 @@ namespace RI.Framework.Composition
 			this.Types.Add(new CompositionCatalogItem(name, type, privateExport));
 		}
 
-		private List<object> GetExistingInstancesInternal ()
+		private List<object> GetExistingInstancesInternal (bool includeParentInstances)
 		{
 			List<object> instances = new List<object>();
 
@@ -1424,39 +1469,53 @@ namespace RI.Framework.Composition
 				}
 			}
 
+			if (includeParentInstances && (this.ParentContainer != null))
+			{
+				instances.AddRange(this.ParentContainer.GetExistingInstancesInternal(true));
+			}
+
 			return instances;
 		}
 
 		private List<object> GetOrCreateInstancesInternal (string name, Type compatibleType)
 		{
-			if (!this.Composition.ContainsKey(name))
+			if ((!this.Composition.ContainsKey(name)) && (!(this.ParentContainer?.Composition.ContainsKey(name)).GetValueOrDefault(false)))
 			{
 				return new List<object>();
 			}
 
-			CompositionItem item = this.Composition[name];
-
 			HashSet<object> instances = new HashSet<object>();
 			HashSet<Type> types = new HashSet<Type>();
 
-			foreach (CompositionInstanceItem instanceItem in item.Instances)
+			if (this.Composition.ContainsKey(name))
 			{
-				if (instanceItem.Instance != null)
+				CompositionItem item = this.Composition[name];
+
+				foreach (CompositionInstanceItem instanceItem in item.Instances)
 				{
-					instances.Add(instanceItem.Instance);
+					if (instanceItem.Instance != null)
+					{
+						instances.Add(instanceItem.Instance);
+					}
+				}
+
+				foreach (CompositionTypeItem typeItem in item.Types)
+				{
+					if (typeItem.Instance != null)
+					{
+						instances.Add(typeItem.Instance);
+					}
+					else
+					{
+						types.Add(typeItem.Type);
+					}
 				}
 			}
 
-			foreach (CompositionTypeItem typeItem in item.Types)
+			if (this.ParentContainer != null)
 			{
-				if (typeItem.Instance != null)
-				{
-					instances.Add(typeItem.Instance);
-				}
-				else
-				{
-					types.Add(typeItem.Type);
-				}
+				List<object> parentInstances = this.ParentContainer.GetOrCreateInstancesInternal(name, compatibleType);
+				instances.AddRange(parentInstances);
 			}
 
 			List<object> newInstances = new List<object>();
@@ -1635,6 +1694,11 @@ namespace RI.Framework.Composition
 			this.UpdateComposition(true);
 		}
 
+		private void HandleParentContainerCompositionChanged(object sender, EventArgs e)
+		{
+			this.UpdateComposition(true);
+		}
+
 		private void Log (string format, params object[] args)
 		{
 			if (this.LoggingEnabled)
@@ -1797,6 +1861,12 @@ namespace RI.Framework.Composition
 		public void Dispose ()
 		{
 			this.Clear();
+
+			if (this.ParentContainer != null)
+			{
+				this.ParentContainer.CompositionChanged -= this.ParentContainerCompositionChangedHandler;
+				this.ParentContainer = null;
+			}
 		}
 
 		#endregion

@@ -26,6 +26,12 @@
         <!-- Added: ServiceLocator.UseCaching -->
         <!-- Added: ServiceLocator.UseSingletons -->
         <!-- Fixed: Exception when disposing/clearing CompositionContainer when it was added to itself -->
+        <!-- Added: CultureInfoExtensions -->
+        <!-- Added: CompositionContainer.ParentContainer -->
+        <!-- Added: xxx -->
+        <!-- Added: xxx -->
+        <!-- Added: xxx -->
+        <!-- Added: xxx -->
 
         <section address="Versioning">
             <title>Versioning</title>
