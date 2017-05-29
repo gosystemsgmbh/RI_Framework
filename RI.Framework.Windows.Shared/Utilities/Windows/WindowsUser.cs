@@ -6,6 +6,7 @@ using System.Management;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.Principal;
+using System.Text;
 
 using RI.Framework.Utilities.Exceptions;
 
@@ -239,7 +240,7 @@ namespace RI.Framework.Utilities.Windows
 		/// <param name="token"> The logon token. </param>
 		/// <param name="identity"> The Windows identity of the impersonated user. </param>
 		/// <param name="context"> The impersonation context. </param>
-		/// <param name="profile"> The user profile od the impersonated user. </param>
+		/// <param name="profile"> The user profile of the impersonated user. </param>
 		/// <exception cref="SecurityException"> The current user does not have sufficient permissions. </exception>
 		/// <exception cref="Win32Exception"> The current user does not have sufficient permissions or the impersonation could not be completed. </exception>
 		public static void Impersonate (bool loadUserProfile, IntPtr token, out WindowsIdentity identity, out WindowsImpersonationContext context, out WindowsUserProfile profile)
@@ -385,6 +386,78 @@ namespace RI.Framework.Utilities.Windows
 			}
 		}
 
+		/// <summary>
+		/// Resolves the domain and username of a user as specified by a SID.
+		/// </summary>
+		/// <param name="sid">The SID to resolve.</param>
+		/// <param name="domain">The domain the resolved user belongs to.</param>
+		/// <param name="user">The username of the resolved user.</param>
+		/// <returns>
+		/// true if the SID was successfully resolved, false otherwise.
+		/// </returns>
+		/// <remarks>
+		/// <value>
+		/// For well-known-users/SIDs, the resolved username depends on the system language.
+		/// </value>
+		/// </remarks>
+		/// <exception cref="Win32Exception">The resolve failed.</exception>
+		public static bool GetUserFromSid (SecurityIdentifier sid, out string domain, out string user)
+		{
+			if (sid == null)
+			{
+				throw new ArgumentNullException(nameof(sid));
+			}
+
+			domain = null;
+			user = null;
+
+			byte[] sidBytes = new byte[sid.BinaryLength];
+			sid.GetBinaryForm(sidBytes, 0);
+
+			uint capacity = 1024;
+
+			StringBuilder domainBuilder = new StringBuilder((int)capacity);
+			StringBuilder nameBuilder = new StringBuilder((int)capacity);
+
+			SID_NAME_USE sidNameUse;
+
+			bool success = WindowsUser.LookupAccountSid(null, sidBytes, nameBuilder, ref capacity, domainBuilder, ref capacity, out sidNameUse);
+			if (!success)
+			{
+				int errorCode = WindowsApi.GetLastErrorCode();
+				if (errorCode != (int)WindowsError.ErrorNoneMapped)
+				{
+					string errorMessage = WindowsApi.GetErrorMessage(errorCode);
+					throw new Win32Exception(errorCode, errorMessage);
+				}
+
+				return false;
+			}
+
+			domain = domainBuilder.ToString();
+			user = nameBuilder.ToString();
+
+			return true;
+		}
+
+		/// <summary>
+		/// Gets the localized username for the "Everyone" user.
+		/// </summary>
+		/// <returns>
+		/// The localized username for the "Everyone" user.
+		/// </returns>
+		public static string GetEveryoneUserName ()
+		{
+			string domain;
+			string user;
+			WindowsUser.GetUserFromSid(new SecurityIdentifier(WellKnownSidType.WorldSid, null), out domain, out user);
+			return user;
+		}
+
+		[DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		private static extern bool LookupAccountSid (string lpSystemName, [MarshalAs(UnmanagedType.LPArray)] byte[] sid, StringBuilder lpName, ref uint cchName, StringBuilder lpReferencedDomainName, ref uint cchReferencedDomainName, out SID_NAME_USE peUse);
+
 		[DllImport("kernel32.dll", SetLastError = false)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		private static extern bool CloseHandle (IntPtr handle);
@@ -433,5 +506,21 @@ namespace RI.Framework.Utilities.Windows
 		}
 
 		#endregion
+
+
+
+		internal enum SID_NAME_USE
+		{
+			SidTypeUser = 1,
+			SidTypeGroup,
+			SidTypeDomain,
+			SidTypeAlias,
+			SidTypeWellKnownGroup,
+			SidTypeDeletedAccount,
+			SidTypeInvalid,
+			SidTypeUnknown,
+			SidTypeComputer
+		}
+
 	}
 }

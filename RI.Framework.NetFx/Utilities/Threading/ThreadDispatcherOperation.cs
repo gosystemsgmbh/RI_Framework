@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 using RI.Framework.Utilities.ObjectModel;
 
@@ -32,6 +33,7 @@ namespace RI.Framework.Utilities.Threading
 			this.Result = null;
 			this.Exception = null;
 			this.OperationDone = new ManualResetEvent(false);
+			this.OperationDoneTask = new TaskCompletionSource<object>();
 		}
 
 		/// <summary>
@@ -41,6 +43,8 @@ namespace RI.Framework.Utilities.Threading
 		{
 			this.OperationDone?.Close();
 			this.OperationDone = null;
+
+			this.OperationDoneTask = null;
 		}
 
 		#endregion
@@ -153,6 +157,7 @@ namespace RI.Framework.Utilities.Threading
 		private Delegate Action { get; set; }
 		private ThreadDispatcher Dispatcher { get; set; }
 		private ManualResetEvent OperationDone { get; set; }
+		private TaskCompletionSource<object> OperationDoneTask { get; set; }
 		private object[] Parameters { get; set; }
 
 		private object SyncRoot { get; set; }
@@ -187,6 +192,7 @@ namespace RI.Framework.Utilities.Threading
 				this.State = ThreadDispatcherOperationState.Canceled;
 				this.Result = null;
 				this.OperationDone.Set();
+				this.OperationDoneTask.SetCanceled();
 
 				return true;
 			}
@@ -231,6 +237,14 @@ namespace RI.Framework.Utilities.Threading
 			return this.OperationDone.WaitOne(milliseconds);
 		}
 
+		/// <summary>
+		///     Waits indefinitely for the dispatcher operation to finish processing.
+		/// </summary>
+		public async Task WaitAsync ()
+		{
+			await this.OperationDoneTask.Task;
+		}
+
 		internal void Execute ()
 		{
 			object result = null;
@@ -255,6 +269,7 @@ namespace RI.Framework.Utilities.Threading
 					this.State = ThreadDispatcherOperationState.Aborted;
 					this.Result = null;
 					this.OperationDone.Set();
+					this.OperationDoneTask.SetCanceled();
 				}
 				throw;
 			}
@@ -265,9 +280,20 @@ namespace RI.Framework.Utilities.Threading
 
 			lock (this.SyncRoot)
 			{
-				this.State = this.Exception == null ? ThreadDispatcherOperationState.Finished : ThreadDispatcherOperationState.Exception;
-				this.Result = result;
-				this.OperationDone.Set();
+				if (this.Exception == null)
+				{
+					this.State = ThreadDispatcherOperationState.Finished;
+					this.Result = result;
+					this.OperationDone.Set();
+					this.OperationDoneTask.SetResult(this.Result);
+				}
+				else
+				{
+					this.State = ThreadDispatcherOperationState.Exception;
+					this.Result = null;
+					this.OperationDone.Set();
+					this.OperationDoneTask.SetException(this.Exception);
+				}
 			}
 		}
 

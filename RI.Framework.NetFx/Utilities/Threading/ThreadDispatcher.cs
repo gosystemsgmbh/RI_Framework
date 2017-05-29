@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 using RI.Framework.Collections.Generic;
 using RI.Framework.Utilities.ObjectModel;
@@ -434,6 +435,34 @@ namespace RI.Framework.Utilities.Threading
 			{
 				operation.Wait();
 			}
+
+			return operation.Result;
+		}
+
+		/// <inheritdoc />
+		public async Task<object> SendAsync (Delegate action, params object[] parameters)
+		{
+			return this.SendAsync(int.MaxValue, action, parameters);
+		}
+
+		/// <inheritdoc />
+		public async Task<object> SendAsync (int priority, Delegate action, params object[] parameters)
+		{
+			if (priority < 0)
+			{
+				throw new ArgumentOutOfRangeException(nameof(priority));
+			}
+
+			if (action == null)
+			{
+				throw new ArgumentNullException(nameof(action));
+			}
+
+			parameters = parameters ?? new object[0];
+
+			ThreadDispatcherOperation operation = this.Post(priority, action, parameters);
+
+			await operation.WaitAsync();
 
 			return operation.Result;
 		}

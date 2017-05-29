@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Threading;
-
-
-
+using System.Threading.Tasks;
 
 namespace RI.Framework.Utilities.Threading
 {
@@ -412,6 +410,22 @@ namespace RI.Framework.Utilities.Threading
 			this.VerifyRunning();
 
 			return this.DispatcherInternal.Send(priority, action, parameters);
+		}
+
+		/// <inheritdoc />
+		public async Task<object> SendAsync (Delegate action, params object[] parameters)
+		{
+			this.VerifyRunning();
+
+			return await this.DispatcherInternal.SendAsync(action, parameters);
+		}
+
+		/// <inheritdoc />
+		public async Task<object> SendAsync (int priority, Delegate action, params object[] parameters)
+		{
+			this.VerifyRunning();
+
+			return await this.DispatcherInternal.SendAsync(priority, action, parameters);
 		}
 
 		/// <inheritdoc />

@@ -43,5 +43,7 @@ namespace RI.Framework.Utilities.Windows
 		ErrorNotAllAssigned = 1300,
 
 		ErrorInsufficientBuffer = 122,
-	}
+
+		ErrorNoneMapped = 1332,
+}
 }

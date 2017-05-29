@@ -10,7 +10,7 @@ namespace RI.Framework.Utilities.Threading
 	{
 		#region Instance Constructor/Destructor
 
-		public ThreadDispatcherSynchronizationContext (ThreadDispatcher dispatcher)
+		public ThreadDispatcherSynchronizationContext (IThreadDispatcher dispatcher)
 		{
 			if (dispatcher == null)
 			{
@@ -27,7 +27,7 @@ namespace RI.Framework.Utilities.Threading
 
 		#region Instance Properties/Indexer
 
-		public ThreadDispatcher Dispatcher { get; private set; }
+		public IThreadDispatcher Dispatcher { get; private set; }
 
 		#endregion
 

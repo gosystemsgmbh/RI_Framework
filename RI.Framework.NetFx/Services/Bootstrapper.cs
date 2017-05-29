@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
+using System.Runtime.ExceptionServices;
 using System.Threading;
 
 using RI.Framework.Composition;
@@ -207,6 +208,9 @@ namespace RI.Framework.Services
 
 			this.Container = null;
 			this.Application = null;
+
+			this.FirstChanceExceptionHandler = (s, e) => this.StartFirstChanceExceptionHandling(e.Exception);
+			this.ExceptionHandler = (s, a) => this.StartExceptionHandling(a.ExceptionObject as Exception);
 		}
 
 		#endregion
@@ -225,6 +229,10 @@ namespace RI.Framework.Services
 		protected object Application { get; private set; }
 
 		private bool ShutdownInitiated { get; set; }
+
+		private EventHandler<FirstChanceExceptionEventArgs> FirstChanceExceptionHandler { get; set; }
+
+		private UnhandledExceptionEventHandler ExceptionHandler { get; set; }
 
 		#endregion
 
@@ -313,6 +321,56 @@ namespace RI.Framework.Services
 				}
 
 				Environment.FailFast(message, exception);
+			}
+			catch
+			{
+			}
+		}
+
+		/// <summary>
+		///     Starts the first chance handling of an application-level exception.
+		/// </summary>
+		/// <param name="exception"> The exception to be handled. </param>
+		/// <remarks>
+		///     <note type="note">
+		///         This method is called to start the exception handling, not to do custom exception handling (e.g. log an exception; use <see cref="HandleFirstChanceException" /> for custom exception handling).
+		///     </note>
+		///     <note type="note">
+		///         <see cref="StartFirstChanceExceptionHandling" /> always returns and does not terminate the current process.
+		///     </note>
+		/// </remarks>
+		[SuppressMessage("ReSharper", "EmptyGeneralCatchClause")]
+		protected void StartFirstChanceExceptionHandling (Exception exception)
+		{
+			try
+			{
+				if (exception == null)
+				{
+					return;
+				}
+
+				string message = exception.ToDetailedString();
+
+				try
+				{
+					this.Log(LogLevel.Warning, "FIRST CHANCE EXCEPTION: {0}", message);
+				}
+				catch
+				{
+				}
+
+				if (this.ShutdownInitiated && (exception is ThreadAbortException))
+				{
+					return;
+				}
+
+				try
+				{
+					this.HandleFirstChanceException(exception);
+				}
+				catch
+				{
+				}
 			}
 			catch
 			{
@@ -949,6 +1007,49 @@ namespace RI.Framework.Services
 		{
 		}
 
+		/// <summary>
+		/// Starts listening for and handling of first chance exceptions.
+		/// </summary>
+		/// <remarks>
+		/// <value>
+		/// See <see cref="HandleFirstChanceException"/> for details.
+		/// </value>
+		/// </remarks>
+		protected void StartListeningForFirstChanceExceptions ()
+		{
+			this.StopListeningForFirstChanceExceptions();
+			AppDomain.CurrentDomain.FirstChanceException += this.FirstChanceExceptionHandler;
+		}
+
+		/// <summary>
+		/// Stops listening for and handling of first chance exceptions.
+		/// </summary>
+		/// <remarks>
+		/// <value>
+		/// See <see cref="HandleFirstChanceException"/> for details.
+		/// </value>
+		/// </remarks>
+		protected void StopListeningForFirstChanceExceptions ()
+		{
+			AppDomain.CurrentDomain.FirstChanceException -= this.FirstChanceExceptionHandler;
+		}
+
+		/// <summary>
+		///     Called when an exception occurs in the application.
+		/// </summary>
+		/// <param name="exception"> The exception. </param>
+		/// <remarks>
+		///     <para>
+		///         The default implementation does nothing.
+		///     </para>
+		///     <para>
+		///         First chance exceptions are exceptions which are handled immediately when they are thrown, regardless whether they are handled or not.
+		///     </para>
+		/// </remarks>
+		protected virtual void HandleFirstChanceException (Exception exception)
+		{
+		}
+
 		#endregion
 
 
@@ -1029,94 +1130,116 @@ namespace RI.Framework.Services
 				throw new InvalidOperationException(this.GetType().Name + " is already running.");
 			}
 
-			this.Log(LogLevel.Debug, "State: Bootstrapping");
-			this.State = BootstrapperState.Bootstrapping;
-
-			this.DebuggerAttached = this.DetermineDebuggerAttached();
-			if (!this.DebuggerAttached)
+			try
 			{
-				AppDomain.CurrentDomain.UnhandledException += (s, a) => this.StartExceptionHandling(a.ExceptionObject as Exception);
+				this.Log(LogLevel.Debug, "State: Bootstrapping");
+				this.State = BootstrapperState.Bootstrapping;
+
+				this.DebuggerAttached = this.DetermineDebuggerAttached();
+				if (!this.DebuggerAttached)
+				{
+					AppDomain.CurrentDomain.UnhandledException += this.ExceptionHandler;
+					this.StartListeningForFirstChanceExceptions();
+				}
+
+				this.Machine64Bit = Environment.Is64BitOperatingSystem;
+				this.Session64Bit = Environment.Is64BitProcess;
+
+				this.DomainId = this.DetermineDomainId();
+				this.MachineId = this.DetermineMachineId();
+				this.UserId = this.DetermineUserId();
+
+				this.ProcessCommandLine = this.DetermineProcessCommandLine();
+
+				this.ApplicationAssembly = this.DetermineApplicationAssembly();
+				this.ApplicationProductName = this.DetermineApplicationProductName();
+				this.ApplicationCompanyName = this.DetermineApplicationCompanyName();
+				this.ApplicationCopyright = this.DetermineApplicationCopyright();
+				this.ApplicationVersion = this.DetermineApplicationVersion();
+				this.ApplicationIdVersionIndependent = this.DetermineApplicationIdVersionIndependent();
+				this.ApplicationIdVersionDependent = this.DetermineApplicationIdVersionDependent();
+
+				this.SessionTimestamp = this.DetermineSessionTimestamp();
+				this.SessionId = this.DetermineSessionId();
+
+				this.ApplicationExecutableDirectory = this.DetermineApplicationExecutableDirectory();
+				this.ApplicationDataDirectory = this.DetermineApplicationDataDirectory();
+
+				this.Log(LogLevel.Debug, "Creating container");
+				this.Container = this.CreateContainer() ?? new CompositionContainer();
+
+				this.Log(LogLevel.Debug, "Configuring service locator");
+				this.ConfigureServiceLocator();
+
+				this.Log(LogLevel.Debug, "Configuring bootstrapper");
+				this.ConfigureBootstrapper();
+
+				this.Log(LogLevel.Debug, "Configuring logging");
+				this.ConfigureLogging();
+
+				this.Log(LogLevel.Debug, "Creating application");
+				this.Application = this.CreateApplication() ?? this.CreateDefaultApplication();
+
+				this.Log(LogLevel.Debug, "Configuring application");
+				this.ConfigureApplication();
+
+				this.Log(LogLevel.Debug, "Configuring bootstrapper singletons");
+				this.ConfigureBootstrapperSingletons();
+
+				this.Log(LogLevel.Debug, "Showing splash screen");
+				this.ShowSplashScreen();
+
+				this.Log(LogLevel.Debug, "Configuring container");
+				this.ConfigureContainer();
+
+				this.Log(LogLevel.Debug, "Configuring services");
+				this.ConfigureServices();
+
+				this.Log(LogLevel.Debug, "Configuring modularization");
+				this.ConfigureModularization();
+
+				this.Log(LogLevel.Debug, "Logging bootstrapper variables");
+				this.LogBootstrapperVariables();
+
+				this.Log(LogLevel.Debug, "State: Running");
+				this.State = BootstrapperState.Running;
+
+				this.Log(LogLevel.Debug, "Beginning run");
+				this.BeginRun();
+
+				this.Log(LogLevel.Debug, "Initiating run");
+				this.InitiateRun();
+
+				this.Log(LogLevel.Debug, "Ending run");
+				this.EndRun();
+
+				this.Log(LogLevel.Debug, "State: Shutting down");
+				this.State = BootstrapperState.ShuttingDown;
+
+				this.Log(LogLevel.Debug, "Doing shutdown");
+				this.DoShutdown();
+
+				this.Log(LogLevel.Debug, "State: Shut down");
+				this.State = BootstrapperState.ShutDown;
 			}
+			finally
+			{
+				try
+				{
+					this.StopListeningForFirstChanceExceptions();
+				}
+				catch
+				{
+				}
 
-			this.Machine64Bit = Environment.Is64BitOperatingSystem;
-			this.Session64Bit = Environment.Is64BitProcess;
-
-			this.DomainId = this.DetermineDomainId();
-			this.MachineId = this.DetermineMachineId();
-			this.UserId = this.DetermineUserId();
-
-			this.ProcessCommandLine = this.DetermineProcessCommandLine();
-
-			this.ApplicationAssembly = this.DetermineApplicationAssembly();
-			this.ApplicationProductName = this.DetermineApplicationProductName();
-			this.ApplicationCompanyName = this.DetermineApplicationCompanyName();
-			this.ApplicationCopyright = this.DetermineApplicationCopyright();
-			this.ApplicationVersion = this.DetermineApplicationVersion();
-			this.ApplicationIdVersionIndependent = this.DetermineApplicationIdVersionIndependent();
-			this.ApplicationIdVersionDependent = this.DetermineApplicationIdVersionDependent();
-
-			this.SessionTimestamp = this.DetermineSessionTimestamp();
-			this.SessionId = this.DetermineSessionId();
-
-			this.ApplicationExecutableDirectory = this.DetermineApplicationExecutableDirectory();
-			this.ApplicationDataDirectory = this.DetermineApplicationDataDirectory();
-
-			this.Log(LogLevel.Debug, "Creating container");
-			this.Container = this.CreateContainer() ?? new CompositionContainer();
-
-			this.Log(LogLevel.Debug, "Configuring service locator");
-			this.ConfigureServiceLocator();
-
-			this.Log(LogLevel.Debug, "Configuring bootstrapper");
-			this.ConfigureBootstrapper();
-
-			this.Log(LogLevel.Debug, "Configuring logging");
-			this.ConfigureLogging();
-
-			this.Log(LogLevel.Debug, "Creating application");
-			this.Application = this.CreateApplication() ?? this.CreateDefaultApplication();
-
-			this.Log(LogLevel.Debug, "Configuring application");
-			this.ConfigureApplication();
-
-			this.Log(LogLevel.Debug, "Configuring bootstrapper singletons");
-			this.ConfigureBootstrapperSingletons();
-
-			this.Log(LogLevel.Debug, "Showing splash screen");
-			this.ShowSplashScreen();
-
-			this.Log(LogLevel.Debug, "Configuring container");
-			this.ConfigureContainer();
-
-			this.Log(LogLevel.Debug, "Configuring services");
-			this.ConfigureServices();
-
-			this.Log(LogLevel.Debug, "Configuring modularization");
-			this.ConfigureModularization();
-
-			this.Log(LogLevel.Debug, "Logging bootstrapper variables");
-			this.LogBootstrapperVariables();
-
-			this.Log(LogLevel.Debug, "State: Running");
-			this.State = BootstrapperState.Running;
-
-			this.Log(LogLevel.Debug, "Beginning run");
-			this.BeginRun();
-
-			this.Log(LogLevel.Debug, "Initiating run");
-			this.InitiateRun();
-
-			this.Log(LogLevel.Debug, "Ending run");
-			this.EndRun();
-
-			this.Log(LogLevel.Debug, "State: Shutting down");
-			this.State = BootstrapperState.ShuttingDown;
-
-			this.Log(LogLevel.Debug, "Doing shutdown");
-			this.DoShutdown();
-
-			this.Log(LogLevel.Debug, "State: Shut down");
-			this.State = BootstrapperState.ShutDown;
+				try
+				{
+					AppDomain.CurrentDomain.UnhandledException -= this.ExceptionHandler;
+				}
+				catch
+				{
+				}
+			}
 		}
 
 		/// <inheritdoc />
