@@ -38,6 +38,14 @@ namespace RI.Framework.Utilities.Threading
 		bool IsRunning { get; }
 
 		/// <summary>
+		/// Gets whether the dispatcher is shutting down.
+		/// </summary>
+		/// <value>
+		/// true if the dispatcher is shutting down, false otherwise.
+		/// </value>
+		bool IsShuttingDown { get; }
+
+		/// <summary>
 		///     Gets the active shutdown mode.
 		/// </summary>
 		/// <value>
@@ -59,6 +67,11 @@ namespace RI.Framework.Utilities.Threading
 		///     Waits until all queued operations have been processed.
 		/// </summary>
 		void DoProcessing ();
+
+		/// <summary>
+		///     Waits until all queued operations have been processed.
+		/// </summary>
+		Task DoProcessingAsync ();
 
 		/// <summary>
 		///     Determines whether the caller of this function is executed inside the dispatchers thread or not.

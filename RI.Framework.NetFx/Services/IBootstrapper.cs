@@ -224,6 +224,34 @@ namespace RI.Framework.Services
 		/// </remarks>
 		void HideSplashScreen ();
 
+		/// <summary>
+		///     Starts the handling of an application-level exception.
+		/// </summary>
+		/// <param name="exception"> The exception to be handled. </param>
+		/// <remarks>
+		///     <note type="note">
+		///         This method is called to start the exception handling, not to do custom exception handling.
+		///     </note>
+		///     <note type="note">
+		///         <see cref="StartExceptionHandling" /> does never return and terminates the current process.
+		///     </note>
+		/// </remarks>
+		void StartExceptionHandling (Exception exception);
+
+		/// <summary>
+		///     Starts the first chance handling of an application-level exception.
+		/// </summary>
+		/// <param name="exception"> The exception to be handled. </param>
+		/// <remarks>
+		///     <note type="note">
+		///         This method is called to start the exception handling, not to do custom exception handling.
+		///     </note>
+		///     <note type="note">
+		///         <see cref="StartFirstChanceExceptionHandling" /> always returns and does not terminate the current process.
+		///     </note>
+		/// </remarks>
+		void StartFirstChanceExceptionHandling (Exception exception);
+
 		#endregion
 	}
 }

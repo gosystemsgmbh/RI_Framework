@@ -370,6 +370,18 @@ namespace RI.Framework.Utilities.Threading
 		}
 
 		/// <inheritdoc />
+		public bool IsShuttingDown
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this.DispatcherInternal.IsShuttingDown;
+				}
+			}
+		}
+
+		/// <inheritdoc />
 		public event EventHandler<ThreadDispatcherExceptionEventArgs> Exception;
 
 		/// <inheritdoc />
@@ -378,6 +390,14 @@ namespace RI.Framework.Utilities.Threading
 			this.VerifyRunning();
 
 			this.DispatcherInternal.DoProcessing();
+		}
+
+		/// <inheritdoc />
+		public async Task DoProcessingAsync ()
+		{
+			this.VerifyRunning();
+
+			await this.DispatcherInternal.DoProcessingAsync();
 		}
 
 		/// <inheritdoc />

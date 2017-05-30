@@ -98,6 +98,7 @@ namespace RI.Framework.Utilities.Threading
 		///     Processes the delegate queue or waits for new delegates until <see cref="Shutdown" /> is called.
 		/// </summary>
 		/// <exception cref="InvalidOperationException"> The dispatcher is already running. </exception>
+		/// <exception cref="ThreadDispatcherException"> The execution of a delegate has thrown an exception and <see cref="CatchExceptions"/> is false. </exception>
 		public void Run ()
 		{
 			SynchronizationContext synchronizationContextBackup = SynchronizationContext.Current;
@@ -290,6 +291,9 @@ namespace RI.Framework.Utilities.Threading
 		}
 
 		/// <inheritdoc />
+		public bool IsShuttingDown => this.ShutdownMode != ThreadDispatcherShutdownMode.None;
+
+		/// <inheritdoc />
 		bool ISynchronizable.IsSynchronized => true;
 
 		/// <inheritdoc />
@@ -327,7 +331,24 @@ namespace RI.Framework.Utilities.Threading
 		{
 			while (true)
 			{
-				this.Send(new Action(() => { }));
+				this.Send(0, new Action(() => { }));
+
+				lock (this.SyncRoot)
+				{
+					if ((this.Queue.Count == 0) && (this.OperationInProgress == null))
+					{
+						return;
+					}
+				}
+			}
+		}
+
+		/// <inheritdoc />
+		public async Task DoProcessingAsync ()
+		{
+			while (true)
+			{
+				await this.SendAsync(0, new Action(() => { }));
 
 				lock (this.SyncRoot)
 				{
@@ -436,13 +457,18 @@ namespace RI.Framework.Utilities.Threading
 				operation.Wait();
 			}
 
+			if (operation.Exception != null)
+			{
+				throw new ThreadDispatcherException(operation.Exception);
+			}
+
 			return operation.Result;
 		}
 
 		/// <inheritdoc />
 		public async Task<object> SendAsync (Delegate action, params object[] parameters)
 		{
-			return this.SendAsync(int.MaxValue, action, parameters);
+			return await this.SendAsync(int.MaxValue, action, parameters);
 		}
 
 		/// <inheritdoc />
@@ -460,7 +486,17 @@ namespace RI.Framework.Utilities.Threading
 
 			parameters = parameters ?? new object[0];
 
-			ThreadDispatcherOperation operation = this.Post(priority, action, parameters);
+			bool isInThread;
+			ThreadDispatcherOperation operation;
+
+			lock (this.SyncRoot)
+			{
+				this.VerifyRunning();
+				this.VerifyNotShuttingDown();
+
+				isInThread = this.IsInThread();
+				operation = this.Post(priority, action, parameters);
+			}
 
 			await operation.WaitAsync();
 

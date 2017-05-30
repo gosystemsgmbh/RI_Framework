@@ -275,20 +275,9 @@ namespace RI.Framework.Services
 			this.Log(LogLevel.Debug, new string('-', 200));
 		}
 
-		/// <summary>
-		///     Starts the handling of an application-level exception.
-		/// </summary>
-		/// <param name="exception"> The exception to be handled. </param>
-		/// <remarks>
-		///     <note type="note">
-		///         This method is called to start the exception handling, not to do custom exception handling (e.g. log an exception; use <see cref="HandleException" /> for custom exception handling).
-		///     </note>
-		///     <note type="note">
-		///         <see cref="StartExceptionHandling" /> does never return and terminates the current process.
-		///     </note>
-		/// </remarks>
+		/// <inheritdoc />
 		[SuppressMessage("ReSharper", "EmptyGeneralCatchClause")]
-		protected void StartExceptionHandling (Exception exception)
+		public void StartExceptionHandling (Exception exception)
 		{
 			try
 			{
@@ -297,7 +286,14 @@ namespace RI.Framework.Services
 					return;
 				}
 
-				string message = exception.ToDetailedString();
+				string message = "[EXCEPTION]";
+				try
+				{
+					message = exception.ToDetailedString();
+				}
+				catch
+				{
+				}
 
 				try
 				{
@@ -327,20 +323,9 @@ namespace RI.Framework.Services
 			}
 		}
 
-		/// <summary>
-		///     Starts the first chance handling of an application-level exception.
-		/// </summary>
-		/// <param name="exception"> The exception to be handled. </param>
-		/// <remarks>
-		///     <note type="note">
-		///         This method is called to start the exception handling, not to do custom exception handling (e.g. log an exception; use <see cref="HandleFirstChanceException" /> for custom exception handling).
-		///     </note>
-		///     <note type="note">
-		///         <see cref="StartFirstChanceExceptionHandling" /> always returns and does not terminate the current process.
-		///     </note>
-		/// </remarks>
+		/// <inheritdoc />
 		[SuppressMessage("ReSharper", "EmptyGeneralCatchClause")]
-		protected void StartFirstChanceExceptionHandling (Exception exception)
+		public void StartFirstChanceExceptionHandling (Exception exception)
 		{
 			try
 			{
@@ -349,7 +334,14 @@ namespace RI.Framework.Services
 					return;
 				}
 
-				string message = exception.ToDetailedString();
+				string message = "[EXCEPTION]";
+				try
+				{
+					message = exception.ToDetailedString();
+				}
+				catch
+				{
+				}
 
 				try
 				{
