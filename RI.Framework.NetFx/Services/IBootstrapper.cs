@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Reflection;
 
 using RI.Framework.Composition;
@@ -22,6 +23,23 @@ namespace RI.Framework.Services
 	[Export]
 	public interface IBootstrapper
 	{
+		/// <summary>
+		///     Gets the formatting culture which was set during start of the bootstrapping.
+		/// </summary>
+		/// <value>
+		///     The formatting culture which was set during start of the bootstrapping.
+		/// </value>
+		CultureInfo StartupCulture { get; }
+
+
+		/// <summary>
+		///     Gets the UI culture which was set during start of the bootstrapping.
+		/// </summary>
+		/// <value>
+		///     The UI culture which was set during start of the bootstrapping.
+		/// </value>
+		CultureInfo StartupUICulture { get; }
+
 		/// <summary>
 		///     Gets the main assembly of the application.
 		/// </summary>
@@ -195,6 +213,9 @@ namespace RI.Framework.Services
 		/// <summary>
 		///     Starts the bootstrapping and runs the application.
 		/// </summary>
+		/// <returns>
+		/// The exit code of the application.
+		/// </returns>
 		/// <remarks>
 		///     <note type="implement">
 		///         <see cref="Run" /> must only be called once.

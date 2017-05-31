@@ -52,6 +52,9 @@ namespace RI.Framework.Services.Logging
 		#region Interface: ILogWriter
 
 		/// <inheritdoc />
+		public ILogFilter Filter { get; set; }
+
+		/// <inheritdoc />
 		bool ISynchronizable.IsSynchronized => true;
 
 		/// <inheritdoc />
@@ -65,6 +68,14 @@ namespace RI.Framework.Services.Logging
 		/// <inheritdoc />
 		public void Log (DateTime timestamp, int threadId, LogLevel severity, string source, string message)
 		{
+			if (this.Filter != null)
+			{
+				if (!this.Filter.Filter(timestamp, threadId, severity, source))
+				{
+					return;
+				}
+			}
+
 			lock (this.SyncRoot)
 			{
 				StringBuilder finalMessageBuilder = new StringBuilder();

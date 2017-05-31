@@ -29,7 +29,7 @@ namespace RI.Framework.Data.SQLite
 	///     </para>
 	/// </remarks>
 	[SuppressMessage("ReSharper", "InconsistentNaming")]
-	public sealed class SQLiteDatabaseManager : IDatabaseManager
+	public sealed class SQLiteDatabaseManager : IDatabaseManager, ILogSource
 	{
 		#region Instance Constructor/Destructor
 
@@ -278,11 +278,6 @@ namespace RI.Framework.Data.SQLite
 			}
 
 			return connection;
-		}
-
-		private void Log (LogLevel severity, string format, params object[] args)
-		{
-			LogLocator.Log(severity, this.GetType().Name, format, args);
 		}
 
 		private void OnExecuteScript (string script)

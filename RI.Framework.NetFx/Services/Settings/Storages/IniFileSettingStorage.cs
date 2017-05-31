@@ -26,7 +26,7 @@ namespace RI.Framework.Services.Settings.Storages
 	///     </para>
 	/// </remarks>
 	[Export]
-	public sealed class IniFileSettingStorage : ISettingStorage
+	public sealed class IniFileSettingStorage : ISettingStorage, ILogSource
 	{
 		#region Constants
 
@@ -150,18 +150,6 @@ namespace RI.Framework.Services.Settings.Storages
 
 
 
-		#region Instance Methods
-
-		private void Log (string format, params object[] args)
-		{
-			LogLocator.LogDebug(this.GetType().Name, format, args);
-		}
-
-		#endregion
-
-
-
-
 		#region Interface: ISettingStorage
 
 		/// <inheritdoc />
@@ -204,13 +192,13 @@ namespace RI.Framework.Services.Settings.Storages
 		{
 			if (!this.FilePath.Exists)
 			{
-				this.Log("Creating INI settings file: {0}", this.FilePath);
+				this.Log(LogLevel.Debug, "Creating INI settings file: {0}", this.FilePath);
 			}
 
 			this.FilePath.Directory.Create();
 			this.FilePath.CreateIfNotExist();
 
-			this.Log("Loading INI settings file: {0}", this.FilePath);
+			this.Log(LogLevel.Debug, "Loading INI settings file: {0}", this.FilePath);
 
 			this.Document.Clear();
 			this.Document.Load(this.FilePath, this.FileEncoding);
@@ -221,12 +209,12 @@ namespace RI.Framework.Services.Settings.Storages
 		{
 			if (!this.FilePath.Exists)
 			{
-				this.Log("Creating INI settings file: {0}", this.FilePath);
+				this.Log(LogLevel.Debug, "Creating INI settings file: {0}", this.FilePath);
 			}
 
 			this.FilePath.Directory.Create();
 
-			this.Log("Saving INI settings file: {0}", this.FilePath);
+			this.Log(LogLevel.Debug, "Saving INI settings file: {0}", this.FilePath);
 
 			this.Document.SortElements(this.SectionName);
 			this.Document.Save(this.FilePath, this.FileEncoding);

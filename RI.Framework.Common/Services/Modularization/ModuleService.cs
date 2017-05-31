@@ -31,7 +31,7 @@ namespace RI.Framework.Services.Modularization
 	///     </note>
 	/// </remarks>
 	[Export]
-	public sealed class ModuleService : IModuleService, IImporting
+	public sealed class ModuleService : IModuleService, IImporting, ILogSource
 	{
 		#region Instance Constructor/Destructor
 
@@ -70,14 +70,9 @@ namespace RI.Framework.Services.Modularization
 
 		#region Instance Methods
 
-		private void Log (string format, params object[] args)
-		{
-			LogLocator.LogDebug(this.GetType().Name, format, args);
-		}
-
 		private void UpdateModules ()
 		{
-			this.Log("Updating modules");
+			this.Log(LogLevel.Debug, "Updating modules");
 
 			HashSet<IModule> currentModules = new HashSet<IModule>(this.Modules);
 			HashSet<IModule> lastModules = new HashSet<IModule>(this.ModulesUpdated);
@@ -90,7 +85,7 @@ namespace RI.Framework.Services.Modularization
 
 			foreach (IModule module in newModules)
 			{
-				this.Log("Module added: {0}", module.GetType().Name);
+				this.Log(LogLevel.Debug, "Module added: {0}", module.GetType().Name);
 			}
 
 			foreach (IModule module in oldModules)
@@ -100,7 +95,7 @@ namespace RI.Framework.Services.Modularization
 					module.Unload();
 				}
 
-				this.Log("Module removed: {0}", module.GetType().Name);
+				this.Log(LogLevel.Debug, "Module removed: {0}", module.GetType().Name);
 			}
 
 			foreach (IModule module in currentModules)

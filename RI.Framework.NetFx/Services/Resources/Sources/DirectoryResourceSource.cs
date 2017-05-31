@@ -35,7 +35,7 @@ namespace RI.Framework.Services.Resources.Sources
 	///     </para>
 	/// </remarks>
 	[Export]
-	public sealed class DirectoryResourceSource : IResourceSource
+	public sealed class DirectoryResourceSource : IResourceSource, ILogSource
 	{
 		#region Constants
 
@@ -136,11 +136,6 @@ namespace RI.Framework.Services.Resources.Sources
 
 
 		#region Instance Methods
-
-		private void Log (LogLevel severity, string format, params object[] args)
-		{
-			LogLocator.Log(severity, this.GetType().Name, format, args);
-		}
 
 		private void UpdateSets (bool unload)
 		{

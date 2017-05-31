@@ -194,7 +194,7 @@ namespace RI.Framework.Services
 	///     </list>
 	/// </remarks>
 	[Export]
-	public abstract class Bootstrapper : IBootstrapper
+	public abstract class Bootstrapper : IBootstrapper, ILogSource
 	{
 		#region Instance Constructor/Destructor
 
@@ -240,23 +240,6 @@ namespace RI.Framework.Services
 
 
 		#region Instance Methods
-
-		/// <summary>
-		///     Logs a message.
-		/// </summary>
-		/// <param name="severity"> The severity of the message. </param>
-		/// <param name="format"> The message. </param>
-		/// <param name="args"> The arguments which will be expanded into the message (comparable to <see cref="string.Format(string, object[])" />). </param>
-		/// <remarks>
-		///     <para>
-		///         <see cref="ILogService" /> is used, obtained through <see cref="ServiceLocator" />.
-		///         If no <see cref="ILogService" /> is available, no logging is performed.
-		///     </para>
-		/// </remarks>
-		protected void Log (LogLevel severity, string format, params object[] args)
-		{
-			LogLocator.Log(severity, this.GetType().Name, format, args);
-		}
 
 		/// <summary>
 		///     Logs a separator to allow quick visual distinguishing of application bootstrapping states in the a file.
@@ -334,7 +317,7 @@ namespace RI.Framework.Services
 					return;
 				}
 
-				string message = "[EXCEPTION]";
+				string message = "[FIRST CHANCE EXCEPTION]";
 				try
 				{
 					message = exception.ToDetailedString();
@@ -1050,6 +1033,12 @@ namespace RI.Framework.Services
 		#region Interface: IBootstrapper
 
 		/// <inheritdoc />
+		public CultureInfo StartupCulture { get; private set; }
+
+		/// <inheritdoc />
+		public CultureInfo StartupUICulture { get; private set; }
+
+		/// <inheritdoc />
 		public Assembly ApplicationAssembly { get; private set; }
 
 		/// <inheritdoc />
@@ -1133,6 +1122,9 @@ namespace RI.Framework.Services
 					AppDomain.CurrentDomain.UnhandledException += this.ExceptionHandler;
 					this.StartListeningForFirstChanceExceptions();
 				}
+
+				this.StartupCulture = CultureInfo.CurrentCulture;
+				this.StartupUICulture = CultureInfo.CurrentUICulture;
 
 				this.Machine64Bit = Environment.Is64BitOperatingSystem;
 				this.Session64Bit = Environment.Is64BitProcess;

@@ -25,6 +25,9 @@
   - [ ] AlphanumComparer
   - [ ] TemporaryFile
   - [ ] CultureInfoExtensions
+  - [ ] CompositionContainer with parent container
+  - [ ] Filtered log service
+  - [ ] Filtered log writer
 
 
 ## Backlog

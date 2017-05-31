@@ -33,7 +33,7 @@ namespace RI.Framework.Services.Resources
 	///         The first created instance of <see cref="ResourceService" /> is set as the singleton instance for <see cref="Singleton{T}" />
 	///     </note>
 	/// </remarks>
-	public sealed class ResourceService : IResourceService, IImporting
+	public sealed class ResourceService : IResourceService, IImporting, ILogSource
 	{
 		#region Instance Constructor/Destructor
 
@@ -124,14 +124,9 @@ namespace RI.Framework.Services.Resources
 			return null;
 		}
 
-		private void Log (string format, params object[] args)
-		{
-			LogLocator.LogDebug(this.GetType().Name, format, args);
-		}
-
 		private void UpdateConverters ()
 		{
-			this.Log("Updating converters");
+			this.Log(LogLevel.Debug, "Updating converters");
 
 			HashSet<IResourceConverter> currentConverters = new HashSet<IResourceConverter>(this.Converters);
 			HashSet<IResourceConverter> lastConverters = new HashSet<IResourceConverter>(this.ConvertersUpdated);
@@ -144,18 +139,18 @@ namespace RI.Framework.Services.Resources
 
 			foreach (IResourceConverter converter in newConverters)
 			{
-				this.Log("Converter added: {0}", converter.GetType().Name);
+				this.Log(LogLevel.Debug, "Converter added: {0}", converter.GetType().Name);
 			}
 
 			foreach (IResourceConverter converter in oldConverters)
 			{
-				this.Log("Converter removed: {0}", converter.GetType().Name);
+				this.Log(LogLevel.Debug, "Converter removed: {0}", converter.GetType().Name);
 			}
 		}
 
 		private void UpdateSources ()
 		{
-			this.Log("Updating sources");
+			this.Log(LogLevel.Debug, "Updating sources");
 
 			HashSet<IResourceSource> currentSources = new HashSet<IResourceSource>(this.Sources);
 			HashSet<IResourceSource> lastSources = new HashSet<IResourceSource>(this.SourcesUpdated);
@@ -168,7 +163,7 @@ namespace RI.Framework.Services.Resources
 
 			foreach (IResourceSource source in newSources)
 			{
-				this.Log("Source added: {0}", source.GetType().Name);
+				this.Log(LogLevel.Debug, "Source added: {0}", source.GetType().Name);
 			}
 
 			foreach (IResourceSource source in oldSources)
@@ -178,7 +173,7 @@ namespace RI.Framework.Services.Resources
 					source.Unload();
 				}
 
-				this.Log("Source removed: {0}", source.GetType().Name);
+				this.Log(LogLevel.Debug, "Source removed: {0}", source.GetType().Name);
 			}
 
 			foreach (IResourceSource source in currentSources)

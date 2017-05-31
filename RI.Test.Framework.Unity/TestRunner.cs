@@ -18,7 +18,7 @@ using UnityEngine;
 
 namespace RI.Test.Framework
 {
-	public sealed class TestRunner : MonoBehaviour
+	public sealed class TestRunner : MonoBehaviour, ILogSource
 	{
 		#region Instance Fields
 
@@ -109,11 +109,6 @@ namespace RI.Test.Framework
 		private string GetTestName (MethodInfo testMethod)
 		{
 			return testMethod.DeclaringType.Name + "." + testMethod.Name;
-		}
-
-		private void Log (LogLevel severity, string format, params object[] args)
-		{
-			LogLocator.Log(severity, this.GetType().Name, format, args);
 		}
 
 		private void OnGUI ()

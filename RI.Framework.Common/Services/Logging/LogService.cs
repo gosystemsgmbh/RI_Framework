@@ -83,6 +83,9 @@ namespace RI.Framework.Services.Logging
 		}
 
 		/// <inheritdoc />
+		public ILogFilter Filter { get; set; }
+
+		/// <inheritdoc />
 		public void AddWriter (ILogWriter logWriter)
 		{
 			if (logWriter == null)
@@ -123,6 +126,15 @@ namespace RI.Framework.Services.Logging
 		{
 			DateTime timestamp = DateTime.Now;
 			int threadId = Thread.CurrentThread.ManagedThreadId;
+
+			if (this.Filter != null)
+			{
+				if (!this.Filter.Filter(timestamp, threadId, severity, source))
+				{
+					return;
+				}
+			}
+
 			string message = string.Format(CultureInfo.InvariantCulture, format ?? string.Empty, args ?? new object[0]);
 
 			foreach (ILogWriter logWriter in this.Writers)
@@ -134,6 +146,14 @@ namespace RI.Framework.Services.Logging
 		/// <inheritdoc />
 		public void Log (DateTime timestamp, int threadId, LogLevel severity, string source, string format, params object[] args)
 		{
+			if (this.Filter != null)
+			{
+				if (!this.Filter.Filter(timestamp, threadId, severity, source))
+				{
+					return;
+				}
+			}
+
 			string message = string.Format(CultureInfo.InvariantCulture, format ?? string.Empty, args ?? new object[0]);
 
 			foreach (ILogWriter logWriter in this.Writers)

@@ -30,7 +30,7 @@ namespace RI.Framework.Services.Logging.Writers
 	///     </para>
 	/// </remarks>
 	[Export]
-	public sealed class DirectoryLogWriter : ILogWriter, IDisposable
+	public sealed class DirectoryLogWriter : ILogWriter, IDisposable, ILogSource
 	{
 		#region Constants
 
@@ -292,6 +292,9 @@ namespace RI.Framework.Services.Logging.Writers
 		object ISynchronizable.SyncRoot => this.SyncRoot;
 
 		/// <inheritdoc />
+		public ILogFilter Filter { get; set; }
+
+		/// <inheritdoc />
 		public void Cleanup (DateTime retentionDate)
 		{
 			lock (this.SyncRoot)
@@ -322,7 +325,7 @@ namespace RI.Framework.Services.Logging.Writers
 						continue;
 					}
 
-					LogLocator.LogDebug(this.GetType().Name, "Cleaning up old log directory: {0}", directory);
+					this.Log(LogLevel.Information, "Cleaning up old log directory: {0}", directory);
 
 					Directory.Delete(directory, true);
 				}
@@ -333,6 +336,14 @@ namespace RI.Framework.Services.Logging.Writers
 		[SuppressMessage("ReSharper", "EmptyGeneralCatchClause")]
 		public void Log (DateTime timestamp, int threadId, LogLevel severity, string source, string message)
 		{
+			if (this.Filter != null)
+			{
+				if (!this.Filter.Filter(timestamp, threadId, severity, source))
+				{
+					return;
+				}
+			}
+
 			lock (this.SyncRoot)
 			{
 				if ((this.CurrentWriter != null) && (this.CurrentStream != null))

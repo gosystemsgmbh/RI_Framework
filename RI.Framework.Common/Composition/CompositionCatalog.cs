@@ -30,7 +30,7 @@ namespace RI.Framework.Composition
 	///         See <see cref="CompositionContainer" /> for more details about composition.
 	///     </para>
 	/// </remarks>
-	public abstract class CompositionCatalog
+	public abstract class CompositionCatalog : ILogSource
 	{
 		#region Instance Constructor/Destructor
 
@@ -84,23 +84,6 @@ namespace RI.Framework.Composition
 
 
 		#region Instance Methods
-
-		/// <summary>
-		///     Logs a message.
-		/// </summary>
-		/// <param name="severity"> The severity of the message. </param>
-		/// <param name="format"> The message. </param>
-		/// <param name="args"> The arguments which will be expanded into the message (comparable to <see cref="string.Format(string, object[])" />). </param>
-		/// <remarks>
-		///     <para>
-		///         <see cref="ILogService" /> is used, obtained through <see cref="LogLocator" />.
-		///         If no <see cref="ILogService" /> is available, no logging is performed.
-		///     </para>
-		/// </remarks>
-		protected void Log (LogLevel severity, string format, params object[] args)
-		{
-			LogLocator.Log(severity, this.GetType().Name, format, args);
-		}
 
 		/// <summary>
 		///     Requests recomposition from all <see cref="CompositionContainer" />s this <see cref="CompositionCatalog" /> is added to when it detects the change of its exports.

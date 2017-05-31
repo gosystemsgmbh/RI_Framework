@@ -33,6 +33,19 @@ namespace RI.Framework.Services.Logging
 		IEnumerable<ILogWriter> Writers { get; }
 
 		/// <summary>
+		/// Gets or sets the used global log filter.
+		/// </summary>
+		/// <value>
+		/// The used log filter or null if no log filter is used globally.
+		/// </value>
+		/// <remarks>
+		/// <para>
+		/// The log filter applied here filters globally over all messages handled by this log service, regardless of the used log writers.
+		/// </para>
+		/// </remarks>
+		ILogFilter Filter { get; set; }
+
+		/// <summary>
 		///     Adds a log writer and starts using it for all subsequent logging.
 		/// </summary>
 		/// <param name="logWriter"> The log writer to add. </param>

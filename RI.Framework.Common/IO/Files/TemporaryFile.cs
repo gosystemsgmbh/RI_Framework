@@ -43,6 +43,10 @@ namespace RI.Framework.IO.Files
 		/// <summary>
 		///     Deletes as much temporary files as possible in <see cref="TemporaryDirectory" />.
 		/// </summary>
+		/// <returns>
+		/// The list of deleted files.
+		/// If no files were deleted, an empty list is returned.
+		/// </returns>
 		/// <remarks>
 		///     <note type="important">
 		///         All files, regardles of name or extension, which are in <see cref="TemporaryDirectory" /> are deleted.
@@ -52,20 +56,23 @@ namespace RI.Framework.IO.Files
 		///         If <see cref="TemporaryDirectory" /> is null, <see cref="DirectoryPath.GetTempDirectory" /> is used.
 		///     </note>
 		/// </remarks>
-		public static void DeleteTemporaryFiles ()
+		public static List<FilePath> DeleteTemporaryFiles ()
 		{
 			List<FilePath> files = TemporaryFile.GetTemporaryFiles();
+			List<FilePath> deletedFiles = new List<FilePath>();
 			foreach (FilePath file in files)
 			{
 				try
 				{
 					file.Delete();
+					deletedFiles.Add(file);
 				}
 				catch (IOException)
 				{
 					//IOException most likely means that the file is still in use.
 				}
 			}
+			return deletedFiles;
 		}
 
 		/// <summary>

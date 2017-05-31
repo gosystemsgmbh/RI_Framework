@@ -25,7 +25,7 @@ namespace RI.Framework.Utilities.Wpf.Markup
 	///     </para>
 	/// </remarks>
 	[MarkupExtensionReturnType(typeof(object))]
-	public sealed class InstanceLocator : MarkupExtension
+	public sealed class InstanceLocator : MarkupExtension, ILogSource
 	{
 		#region Static Methods
 
@@ -163,7 +163,7 @@ namespace RI.Framework.Utilities.Wpf.Markup
 			object value = InstanceLocator.GetValue(this.Name) ?? InstanceLocator.GetValue(this.Type);
 			if (value == null)
 			{
-				LogLocator.LogWarning(this.GetType().Name, "No value available while trying obtain instance: Name={0}, Type={1}", this.Name ?? "[null]", this.Type?.Name ?? "[null]");
+				this.Log(LogLevel.Warning, "No value available while trying obtain instance: Name={0}, Type={1}", this.Name ?? "[null]", this.Type?.Name ?? "[null]");
 			}
 
 			IProvideValueTarget targetProvider = serviceProvider.GetService(typeof(IProvideValueTarget)) as IProvideValueTarget;

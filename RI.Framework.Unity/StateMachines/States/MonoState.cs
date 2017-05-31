@@ -29,7 +29,7 @@ namespace RI.Framework.StateMachines.States
 	///     </note>
 	/// </remarks>
 	[Export]
-	public abstract class MonoState : MonoBehaviour, IState
+	public abstract class MonoState : MonoBehaviour, IState, ILogSource
 	{
 		#region Static Methods
 
@@ -103,24 +103,6 @@ namespace RI.Framework.StateMachines.States
 
 
 		#region Instance Methods
-
-		/// <summary>
-		///     Logs a message.
-		/// </summary>
-		/// <param name="severity"> The severity of the message. </param>
-		/// <param name="format"> The message. </param>
-		/// <param name="args"> The arguments which will be expanded into the message (comparable to <see cref="string.Format(string, object[])" />). </param>
-		/// <remarks>
-		///     <para>
-		///         <see cref="ILogService" /> is used, obtained through <see cref="LogLocator" />.
-		///         If no <see cref="ILogService" /> is available, no logging is performed.
-		///     </para>
-		/// </remarks>
-		protected void Log (LogLevel severity, string format, params object[] args)
-		{
-			LogLocator.Log(severity, this.GetType().Name, format, args);
-		}
-
 
 		private void SetStateMachine (StateMachine stateMachine)
 		{

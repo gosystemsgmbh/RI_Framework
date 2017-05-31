@@ -36,6 +36,8 @@ namespace RI.Test.Framework.Services.Logging
 
 		#region Interface: ILogWriter
 
+		public ILogFilter Filter { get; set; }
+
 		public bool IsSynchronized => true;
 
 		public object SyncRoot { get; }
@@ -47,6 +49,14 @@ namespace RI.Test.Framework.Services.Logging
 
 		public void Log (DateTime timestamp, int threadId, LogLevel severity, string source, string message)
 		{
+			if (this.Filter != null)
+			{
+				if (!this.Filter.Filter(timestamp, threadId, severity, source))
+				{
+					return;
+				}
+			}
+
 			this.Entries.Add(new MockTuple<DateTime, int, LogLevel, string, string>(timestamp, threadId, severity, source, message));
 		}
 

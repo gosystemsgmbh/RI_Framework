@@ -245,7 +245,7 @@ namespace RI.Framework.Composition
 	/// TODO: Check platform differences
 	/// TODO: Update version history
 	[Export]
-	public sealed class CompositionContainer : IDisposable
+	public sealed class CompositionContainer : IDisposable, ILogSource
 	{
 		#region Constants
 
@@ -1396,7 +1396,7 @@ namespace RI.Framework.Composition
 							}
 							else
 							{
-								this.Log("Updating import ({0}): {1} @ {2}", composition, property.Name, obj.GetType().FullName);
+								this.Log(LogLevel.Debug, "Updating import ({0}): {1} @ {2}", composition, property.Name, obj.GetType().FullName);
 								setMethod.Invoke(obj, new[] {newValue});
 							}
 						}
@@ -1667,7 +1667,7 @@ namespace RI.Framework.Composition
 
 			foreach (object newInstance in newInstances)
 			{
-				this.Log("Type added to container: {0} / {1}", name, newInstance.GetType().FullName);
+				this.Log(LogLevel.Debug, "Type added to container: {0} / {1}", name, newInstance.GetType().FullName);
 
 				IExporting exportingInstance = newInstance as IExporting;
 				exportingInstance?.AddedToContainer(name, this);
@@ -1697,14 +1697,6 @@ namespace RI.Framework.Composition
 		private void HandleParentContainerCompositionChanged(object sender, EventArgs e)
 		{
 			this.UpdateComposition(true);
-		}
-
-		private void Log (string format, params object[] args)
-		{
-			if (this.LoggingEnabled)
-			{
-				LogLocator.LogDebug(this.GetType().Name, format, args);
-			}
 		}
 
 		private void RaiseCompositionChanged ()
@@ -1767,7 +1759,7 @@ namespace RI.Framework.Composition
 				}
 				else
 				{
-					this.Log("Adding export: {0}", item.Name);
+					this.Log(LogLevel.Debug, "Adding export: {0}", item.Name);
 					compositionItem = new CompositionItem(item.Name);
 					this.Composition.Add(compositionItem.Name, compositionItem);
 				}
@@ -1810,7 +1802,7 @@ namespace RI.Framework.Composition
 			{
 				compositionItem.Value.Instances.RemoveWhere(x => !x.Checked).ForEach(x =>
 				{
-					this.Log("Instance removed from container: {0} / {1}", compositionItem.Key, x?.Instance?.GetType()?.FullName ?? "[null]");
+					this.Log(LogLevel.Debug, "Instance removed from container: {0} / {1}", compositionItem.Key, x?.Instance?.GetType()?.FullName ?? "[null]");
 					(x?.Instance as IExporting)?.RemovedFromContainer(compositionItem.Key, this);
 					if (this.AutoDispose && (!object.ReferenceEquals(x?.Instance, this)))
 					{
@@ -1819,7 +1811,7 @@ namespace RI.Framework.Composition
 				});
 				compositionItem.Value.Types.RemoveWhere(x => !x.Checked).ForEach(x =>
 				{
-					this.Log("Type removed from container: {0} / {1}", compositionItem.Key, x?.Instance?.GetType()?.FullName ?? "[null]");
+					this.Log(LogLevel.Debug, "Type removed from container: {0} / {1}", compositionItem.Key, x?.Instance?.GetType()?.FullName ?? "[null]");
 					(x?.Instance as IExporting)?.RemovedFromContainer(compositionItem.Key, this);
 					if (this.AutoDispose && (!object.ReferenceEquals(x?.Instance, this)))
 					{
@@ -1829,13 +1821,13 @@ namespace RI.Framework.Composition
 				compositionItem.Value.ResetChecked();
 			}
 
-			IDictionaryExtensions.RemoveWhere(this.Composition, x => (x.Value.Instances.Count == 0) && (x.Value.Types.Count == 0)).ForEach(x => this.Log("Removing export: {0}", x));
+			IDictionaryExtensions.RemoveWhere(this.Composition, x => (x.Value.Instances.Count == 0) && (x.Value.Types.Count == 0)).ForEach(x => this.Log(LogLevel.Debug, "Removing export: {0}", x));
 
 			foreach (KeyValuePair<object, HashSet<string>> newInstance in newInstances)
 			{
 				foreach (string name in newInstance.Value)
 				{
-					this.Log("Instance added to container: {0} / {1}", name, newInstance.Key.GetType().FullName);
+					this.Log(LogLevel.Debug, "Instance added to container: {0} / {1}", name, newInstance.Key.GetType().FullName);
 
 					IExporting exportingInstance = newInstance.Key as IExporting;
 					exportingInstance?.AddedToContainer(name, this);

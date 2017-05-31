@@ -31,7 +31,7 @@ namespace RI.Framework.Services.Settings
 	///         The first created instance of <see cref="SettingService" /> is set as the singleton instance for <see cref="Singleton{T}" />
 	///     </note>
 	/// </remarks>
-	public sealed class SettingService : ISettingService
+	public sealed class SettingService : ISettingService, ILogSource
 	{
 		#region Instance Constructor/Destructor
 
@@ -85,11 +85,6 @@ namespace RI.Framework.Services.Settings
 			}
 
 			return null;
-		}
-
-		private void Log (string format, params object[] args)
-		{
-			LogLocator.LogDebug(this.GetType().Name, format, args);
 		}
 
 		#endregion
@@ -364,7 +359,7 @@ namespace RI.Framework.Services.Settings
 		/// <inheritdoc />
 		public void Load ()
 		{
-			this.Log("Loading");
+			this.Log(LogLevel.Debug, "Loading");
 
 			this.Cache.Clear();
 
@@ -409,7 +404,7 @@ namespace RI.Framework.Services.Settings
 		/// <inheritdoc />
 		public void Save ()
 		{
-			this.Log("Saving");
+			this.Log(LogLevel.Debug, "Saving");
 
 			this.Cache.Clear();
 

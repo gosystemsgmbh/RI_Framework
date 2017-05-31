@@ -31,7 +31,7 @@ namespace RI.Framework.Services.Regions
 	///         The first created instance of <see cref="RegionService" /> is set as the singleton instance for <see cref="Singleton{T}" />
 	///     </note>
 	/// </remarks>
-	public sealed class RegionService : IRegionService
+	public sealed class RegionService : IRegionService, ILogSource
 	{
 		#region Instance Constructor/Destructor
 
@@ -60,18 +60,6 @@ namespace RI.Framework.Services.Regions
 		private List<IRegionAdapter> AdaptersManual { get; set; }
 
 		private Dictionary<string, Tuple<object, IRegionAdapter>> RegionDictionary { get; set; }
-
-		#endregion
-
-
-
-
-		#region Instance Methods
-
-		private void Log (string format, params object[] args)
-		{
-			LogLocator.LogDebug(this.GetType().Name, format, args);
-		}
 
 		#endregion
 
@@ -233,7 +221,7 @@ namespace RI.Framework.Services.Regions
 				this.RegionDictionary.Remove(region);
 			}
 
-			this.Log("Region added: {0} -> {1} @ {2}", region, container.GetType().Name, adapter.GetType().Name);
+			this.Log(LogLevel.Debug, "Region added: {0} -> {1} @ {2}", region, container.GetType().Name, adapter.GetType().Name);
 
 			this.RegionDictionary.Add(region, new Tuple<object, IRegionAdapter>(container, adapter));
 		}
@@ -577,7 +565,7 @@ namespace RI.Framework.Services.Regions
 				return;
 			}
 
-			this.Log("Region removed: {0}", region);
+			this.Log(LogLevel.Debug, "Region removed: {0}", region);
 
 			this.RegionDictionary.Remove(region);
 		}

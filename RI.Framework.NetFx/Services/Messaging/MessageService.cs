@@ -29,7 +29,7 @@ namespace RI.Framework.Services.Messaging
 	///         The first created instance of <see cref="MessageService" /> is set as the singleton instance for <see cref="Singleton{T}" />
 	///     </note>
 	/// </remarks>
-	public sealed class MessageService : IMessageService
+	public sealed class MessageService : IMessageService, ILogSource
 	{
 		#region Instance Constructor/Destructor
 
@@ -61,18 +61,6 @@ namespace RI.Framework.Services.Messaging
 		private Import ReceiversImported { get; set; }
 
 		private List<IMessageReceiver> ReceiversManual { get; set; }
-
-		#endregion
-
-
-
-
-		#region Instance Methods
-
-		private void Log (string format, params object[] args)
-		{
-			LogLocator.LogDebug(this.GetType().Name, format, args);
-		}
 
 		#endregion
 

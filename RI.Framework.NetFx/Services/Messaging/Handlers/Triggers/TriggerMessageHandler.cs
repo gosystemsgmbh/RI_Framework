@@ -37,7 +37,7 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 	///     </note>
 	/// </remarks>
 	[Export]
-	public sealed class TriggerMessageHandler : IMessageReceiver
+	public sealed class TriggerMessageHandler : IMessageReceiver, ILogSource
 	{
 		#region Instance Constructor/Destructor
 
@@ -182,7 +182,7 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 					Trigger[] changedTriggers = this.CheckTriggersChanged();
 					foreach (Trigger changedTrigger in changedTriggers)
 					{
-						LogLocator.LogDebug(this.GetType().Name, "Trigger changed: {0} -> [{1}/{2}]", changedTrigger.Name, changedTrigger.ArmedCount, changedTrigger.SubscriberCount);
+						this.Log(LogLevel.Debug, "Trigger changed: {0} -> [{1}/{2}]", changedTrigger.Name, changedTrigger.ArmedCount, changedTrigger.SubscriberCount);
 
 						Message triggerChangedMessage = new Message(TriggerMessageNames.MessageNameResponseChanged);
 						triggerChangedMessage.SetTriggerName(changedTrigger.Name);

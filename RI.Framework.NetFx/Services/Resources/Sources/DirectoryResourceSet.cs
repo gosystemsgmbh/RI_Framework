@@ -23,7 +23,7 @@ namespace RI.Framework.Services.Resources.Sources
 	///         See <see cref="IResourceSet" /> and <see cref="DirectoryResourceSource" /> for more details.
 	///     </para>
 	/// </remarks>
-	public sealed class DirectoryResourceSet : IResourceSet
+	public sealed class DirectoryResourceSet : IResourceSet, ILogSource
 	{
 		#region Constants
 
@@ -179,7 +179,7 @@ namespace RI.Framework.Services.Resources.Sources
 			}
 			else
 			{
-				this.Log(LogLevel.Error, "Missing settings value in settings file: {0} @ {1}", nameKey, this.SettingsFile);
+				this.Log(LogLevel.Error, "Missing required settings value in settings file: {0} @ {1}", nameKey, this.SettingsFile);
 				this.IsValid = false;
 				return;
 			}
@@ -199,7 +199,7 @@ namespace RI.Framework.Services.Resources.Sources
 			}
 			else
 			{
-				this.Log(LogLevel.Warning, "Missing settings value in settings file: {0} @ {1}", groupKey, this.SettingsFile);
+				this.Log(LogLevel.Warning, "Missing recommended settings value in settings file: {0} @ {1}", groupKey, this.SettingsFile);
 			}
 
 			if (settings.ContainsKey(selectableKey))
@@ -218,7 +218,7 @@ namespace RI.Framework.Services.Resources.Sources
 			}
 			else
 			{
-				this.Log(LogLevel.Warning, "Missing settings value in settings file: {0} @ {1}", selectableKey, this.SettingsFile);
+				this.Log(LogLevel.Warning, "Missing recommended settings value in settings file: {0} @ {1}", selectableKey, this.SettingsFile);
 			}
 
 			if (settings.ContainsKey(alwaysLoadKey))
@@ -237,7 +237,7 @@ namespace RI.Framework.Services.Resources.Sources
 			}
 			else
 			{
-				this.Log(LogLevel.Warning, "Missing settings value in settings file: {0} @ {1}", alwaysLoadKey, this.SettingsFile);
+				this.Log(LogLevel.Warning, "Missing recommended settings value in settings file: {0} @ {1}", alwaysLoadKey, this.SettingsFile);
 			}
 
 			if (settings.ContainsKey(priorityKey))
@@ -256,7 +256,7 @@ namespace RI.Framework.Services.Resources.Sources
 			}
 			else
 			{
-				this.Log(LogLevel.Warning, "Missing settings value in settings file: {0} @ {1}", priorityKey, this.SettingsFile);
+				this.Log(LogLevel.Warning, "Missing recommended settings value in settings file: {0} @ {1}", priorityKey, this.SettingsFile);
 			}
 
 			if (settings.ContainsKey(uiCultureKey))
@@ -283,7 +283,7 @@ namespace RI.Framework.Services.Resources.Sources
 			}
 			else
 			{
-				this.Log(LogLevel.Warning, "Missing settings value in settings file: {0} @ {1}", uiCultureKey, this.SettingsFile);
+				this.Log(LogLevel.Debug, "Missing optional settings value in settings file: {0} @ {1}", uiCultureKey, this.SettingsFile);
 			}
 
 			if (settings.ContainsKey(formattingCultureKey))
@@ -310,7 +310,7 @@ namespace RI.Framework.Services.Resources.Sources
 			}
 			else
 			{
-				this.Log(LogLevel.Warning, "Missing settings value in settings file: {0} @ {1}", formattingCultureKey, this.SettingsFile);
+				this.Log(LogLevel.Debug, "Missing optional settings value in settings file: {0} @ {1}", formattingCultureKey, this.SettingsFile);
 			}
 
 			this.IsValid = true;
@@ -341,11 +341,6 @@ namespace RI.Framework.Services.Resources.Sources
 			}
 
 			return new ResourceLoadingInfo(ResourceLoadingType.Unknown, null);
-		}
-
-		private void Log (LogLevel severity, string format, params object[] args)
-		{
-			LogLocator.Log(severity, this.GetType().Name, format, args);
 		}
 
 		#endregion

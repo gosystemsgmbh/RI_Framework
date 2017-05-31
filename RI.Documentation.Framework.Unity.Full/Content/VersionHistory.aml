@@ -28,7 +28,7 @@
         <!-- Fixed: Exception when disposing/clearing CompositionContainer when it was added to itself -->
         <!-- Added: CultureInfoExtensions -->
         <!-- Added: CompositionContainer.ParentContainer -->
-        <!-- Added: xxx -->
+        <!-- Added: ILogSource and ILogSourceExtensions -->
         <!-- Added: xxx -->
         <!-- Added: xxx -->
         <!-- Added: xxx -->

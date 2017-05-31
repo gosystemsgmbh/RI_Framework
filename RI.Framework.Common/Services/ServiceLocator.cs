@@ -57,6 +57,11 @@ namespace RI.Framework.Services
 		/// <value>
 		///     true if caching is used, false otherwise.
 		/// </value>
+		/// <remarks>
+		/// <para>
+		/// The default value is true.
+		/// </para>
+		/// </remarks>
 		public static bool UseCaching { get; set; } = true;
 
 		/// <summary>
@@ -65,6 +70,11 @@ namespace RI.Framework.Services
 		/// <value>
 		///     true if connected to <see cref="Singleton" /> / <see cref="Singleton{T}" />, false otherwise.
 		/// </value>
+		/// <remarks>
+		/// <para>
+		/// The default value is true.
+		/// </para>
+		/// </remarks>
 		public static bool UseSingletons { get; set; } = true;
 
 		private static Dictionary<string, object[]> Cache { get; set; }
@@ -340,9 +350,20 @@ namespace RI.Framework.Services
 			IList<object> instances = handler?.Invoke(name) ?? new object[0];
 
 			object[] resolved;
-			if ((instances.Count == 0) && (typeHint != null))
+			if ((instances.Count == 0) && (typeHint != null) && ServiceLocator.UseSingletons)
 			{
-				resolved = new object[] {Singleton.Get(typeHint)};
+				object singleton = Singleton.Get(typeHint);
+				if (singleton != null)
+				{
+					resolved = new object[]
+					{
+						singleton
+					};
+				}
+				else
+				{
+					resolved = new object[0];
+				}
 			}
 			else
 			{

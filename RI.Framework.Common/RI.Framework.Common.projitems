@@ -101,6 +101,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)Mathematic\Statistics.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mathematic\StatisticValues.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mathematic\_NamespaceDoc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\Filters\PredicateLogFilter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\Filters\SeverityLogFilter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\Filters\_NamespaceDoc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\ILogFilter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\ILogSource.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\ILogSourceExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\LogLocator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\ILogService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\ILogWriter.cs" />

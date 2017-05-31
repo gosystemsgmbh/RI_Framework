@@ -129,7 +129,7 @@ namespace RI.Framework.Services
 	///     </note>
 	/// </remarks>
 	[Export]
-	public class Bootstrapper : MonoBehaviour, IBootstrapper
+	public class Bootstrapper : MonoBehaviour, IBootstrapper, ILogSource
 	{
 		#region Instance Fields
 
@@ -255,23 +255,6 @@ namespace RI.Framework.Services
 
 
 		#region Instance Methods
-
-		/// <summary>
-		///     Logs a message.
-		/// </summary>
-		/// <param name="severity"> The severity of the message. </param>
-		/// <param name="format"> The message. </param>
-		/// <param name="args"> The arguments which will be expanded into the message (comparable to <see cref="string.Format(string, object[])" />). </param>
-		/// <remarks>
-		///     <para>
-		///         <see cref="ILogService" /> is used, obtained through <see cref="ServiceLocator" />.
-		///         If no <see cref="ILogService" /> is available, no logging is performed.
-		///     </para>
-		/// </remarks>
-		protected void Log (LogLevel severity, string format, params object[] args)
-		{
-			LogLocator.Log(severity, this.GetType().Name, format, args);
-		}
 
 		private void Awake ()
 		{

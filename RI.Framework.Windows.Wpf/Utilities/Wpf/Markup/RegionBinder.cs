@@ -79,7 +79,7 @@ namespace RI.Framework.Utilities.Wpf.Markup
 			IRegionService regionService = ServiceLocator.GetInstance<IRegionService>() ?? Singleton<IRegionService>.Instance;
 			if (regionService == null)
 			{
-				LogLocator.LogWarning(typeof(RegionBinder).Name, "No region service available while trying to assign region: Object={0}, OldRegion={1}, NewRegion={2}", obj?.GetType().Name ?? "[null]", oldRegion ?? "[null]", newRegion ?? "[null]");
+				LogLocator.Log(LogLevel.Warning, typeof(RegionBinder).Name, "No region service available while trying to assign region: Object={0}, OldRegion={1}, NewRegion={2}", obj?.GetType().Name ?? "[null]", oldRegion ?? "[null]", newRegion ?? "[null]");
 				return;
 			}
 
