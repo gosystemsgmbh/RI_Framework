@@ -54,6 +54,20 @@ namespace RI.Framework.Utilities.Threading
 		ThreadDispatcherShutdownMode ShutdownMode { get; }
 
 		/// <summary>
+		/// Gets or sets the default priority.
+		/// </summary>
+		/// <value>
+		/// The default priority.
+		/// </value>
+		/// <remarks>
+		/// <note type="implement">
+		/// The default value, if not explicitly set, is expected to be half of <see cref="int.MaxValue"/>.
+		/// </note>
+		/// </remarks>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> is less than zero.</exception>
+		int DefaultPriority { get; set; }
+
+		/// <summary>
 		///     Raised when an exception occurred during execution of a enqueued delegate.
 		/// </summary>
 		/// <remarks>
@@ -91,7 +105,7 @@ namespace RI.Framework.Utilities.Threading
 		/// </returns>
 		/// <remarks>
 		/// <para>
-		/// The delegate is enqueued with the highest possible priority.
+		/// The delegate is enqueued with the default priority (<see cref="DefaultPriority"/>).
 		/// </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="action" /> is null. </exception>
@@ -128,7 +142,7 @@ namespace RI.Framework.Utilities.Threading
 		/// <remarks>
 		/// <remarks>
 		/// <para>
-		/// The delegate is enqueued with the highest possible priority.
+		/// The delegate is enqueued with the default priority (<see cref="DefaultPriority"/>).
 		/// </para>
 		/// </remarks>
 		///     <para>
@@ -180,7 +194,7 @@ namespace RI.Framework.Utilities.Threading
 		/// <remarks>
 		/// <remarks>
 		/// <para>
-		/// The delegate is enqueued with the highest possible priority.
+		/// The delegate is enqueued with the default priority (<see cref="DefaultPriority"/>).
 		/// </para>
 		/// </remarks>
 		///     <para>

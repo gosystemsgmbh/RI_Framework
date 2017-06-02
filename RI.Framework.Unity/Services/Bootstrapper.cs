@@ -52,17 +52,17 @@ namespace RI.Framework.Services
 	///         </item>
 	///         <item>
 	///             <para>
-	///                 <see cref="ConfigureBootstrapperSingletons" /> is called.
-	///             </para>
-	///         </item>
-	///         <item>
-	///             <para>
 	///                 <see cref="ConfigureBootstrapper" /> is called.
 	///             </para>
 	///         </item>
 	///         <item>
 	///             <para>
 	///                 <see cref="ConfigureLogging" /> is called.
+	///             </para>
+	///         </item>
+	///         <item>
+	///             <para>
+	///                 <see cref="ConfigureSingletons" /> is called.
 	///             </para>
 	///         </item>
 	///         <item>
@@ -333,7 +333,7 @@ namespace RI.Framework.Services
 		///         The default implementation sets the singleton instance for <see cref="Bootstrapper" /> and <see cref="CompositionContainer" /> (<see cref="Container" />) using <see cref="Singleton{T}" />.
 		///     </note>
 		/// </remarks>
-		protected virtual void ConfigureBootstrapperSingletons ()
+		protected virtual void ConfigureSingletons ()
 		{
 			Singleton<Bootstrapper>.Ensure(() => this);
 			Singleton<IBootstrapper>.Ensure(() => this);
@@ -499,14 +499,14 @@ namespace RI.Framework.Services
 			this.Log(LogLevel.Debug, "Configuring service locator");
 			this.ConfigureServiceLocator();
 
-			this.Log(LogLevel.Debug, "Configuring bootstrapper singletons");
-			this.ConfigureBootstrapperSingletons();
-
 			this.Log(LogLevel.Debug, "Configuring bootstrapper");
 			this.ConfigureBootstrapper();
 
 			this.Log(LogLevel.Debug, "Configuring logging");
 			this.ConfigureLogging();
+
+			this.Log(LogLevel.Debug, "Configuring bootstrapper singletons");
+			this.ConfigureSingletons();
 
 			this.Log(LogLevel.Debug, "Configuring container");
 			this.ConfigureContainer();

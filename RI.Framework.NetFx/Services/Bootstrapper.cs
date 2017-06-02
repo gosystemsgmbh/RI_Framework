@@ -38,6 +38,56 @@ namespace RI.Framework.Services
 	///         </item>
 	///         <item>
 	///             <para>
+	///                 <see cref="DetermineDebuggerAttached" /> is called and <see cref="DebuggerAttached" /> is set.
+	///             </para>
+	///         </item>
+	///         <item>
+	///             <para>
+	///                 <see cref="StartListeningForFirstChanceExceptions" /> is called (if <see cref="DebuggerAttached"/> is false).
+	///             </para>
+	///         </item>
+	///         <item>
+	///             <para>
+	///                 <see cref="StartupCulture" /> is set to <see cref="CultureInfo.CurrentCulture"/>.
+	///             </para>
+	///         </item>
+	///         <item>
+	///             <para>
+	///                 <see cref="StartupUICulture" /> is set to <see cref="CultureInfo.CurrentUICulture"/>.
+	///             </para>
+	///         </item>
+	///         <item>
+	///             <para>
+	///                 <see cref="Machine64Bit" /> is set to <see cref="Environment.Is64BitOperatingSystem"/>.
+	///             </para>
+	///         </item>
+	///         <item>
+	///             <para>
+	///                 <see cref="Session64Bit" /> is set to <see cref="Environment.Is64BitProcess"/>.
+	///             </para>
+	///         </item>
+	///         <item>
+	///             <para>
+	///                 <see cref="DetermineProcessCommandLine" /> is called and <see cref="ProcessCommandLine" /> is set.
+	///             </para>
+	///         </item>
+	///         <item>
+	///             <para>
+	///                 <see cref="DetermineDomainId" /> is called and <see cref="DomainId" /> is set.
+	///             </para>
+	///         </item>
+	///         <item>
+	///             <para>
+	///                 <see cref="DetermineMachineId" /> is called and <see cref="MachineId" /> is set.
+	///             </para>
+	///         </item>
+	///         <item>
+	///             <para>
+	///                 <see cref="DetermineUserId" /> is called and <see cref="UserId" /> is set.
+	///             </para>
+	///         </item>
+	///         <item>
+	///             <para>
 	///                 <see cref="DetermineApplicationAssembly" /> is called and <see cref="ApplicationAssembly" /> is set.
 	///             </para>
 	///         </item>
@@ -73,17 +123,17 @@ namespace RI.Framework.Services
 	///         </item>
 	///         <item>
 	///             <para>
-	///                 <see cref="DetermineProcessCommandLine" /> is called and <see cref="ProcessCommandLine" /> is set.
-	///             </para>
-	///         </item>
-	///         <item>
-	///             <para>
 	///                 <see cref="DetermineSessionTimestamp" /> is called and <see cref="SessionTimestamp" /> is set.
 	///             </para>
 	///         </item>
 	///         <item>
 	///             <para>
 	///                 <see cref="DetermineSessionId" /> is called and <see cref="SessionId" /> is set.
+	///             </para>
+	///         </item>
+	///         <item>
+	///             <para>
+	///                 <see cref="DetermineInstanceId" /> is called and <see cref="InstanceId" /> is set.
 	///             </para>
 	///         </item>
 	///         <item>
@@ -108,11 +158,6 @@ namespace RI.Framework.Services
 	///         </item>
 	///         <item>
 	///             <para>
-	///                 <see cref="ConfigureBootstrapperSingletons" /> is called.
-	///             </para>
-	///         </item>
-	///         <item>
-	///             <para>
 	///                 <see cref="ConfigureBootstrapper" /> is called.
 	///             </para>
 	///         </item>
@@ -123,12 +168,17 @@ namespace RI.Framework.Services
 	///         </item>
 	///         <item>
 	///             <para>
-	///                 <see cref="CreateApplication" /> is called and <see cref="Application" /> is set.
+	///                 <see cref="CreateApplication" /> and, if necessary, <see cref="CreateDefaultApplication"/> are called and <see cref="Application" /> is set.
 	///             </para>
 	///         </item>
 	///         <item>
 	///             <para>
 	///                 <see cref="ConfigureApplication" /> is called.
+	///             </para>
+	///         </item>
+	///         <item>
+	///             <para>
+	///                 <see cref="ConfigureSingletons" /> is called.
 	///             </para>
 	///         </item>
 	///         <item>
@@ -153,17 +203,37 @@ namespace RI.Framework.Services
 	///         </item>
 	///         <item>
 	///             <para>
+	///                 <see cref="LogVariables" /> is called.
+	///             </para>
+	///         </item>
+	///         <item>
+	///             <para>
 	///                 <see cref="State" /> is set to <see cref="BootstrapperState.Running" />.
 	///             </para>
 	///         </item>
 	///         <item>
 	///             <para>
-	///                 <see cref="BeginRun" /> is called.
+	///                 <see cref="BeginRun" /> is called, triggering <see cref="DispatchModuleInitialization"/> and <see cref="DispatchBeginOperations"/>.
 	///             </para>
 	///         </item>
 	///         <item>
 	///             <para>
-	///                 <see cref="InitiateRun" /> is called. The application is now running until <see cref="Bootstrapper.Shutdown" /> is called.
+	///                 <see cref="InitiateRun" /> is called. The application is now running and <see cref="Run"/> blocks until <see cref="Shutdown" /> is called.
+	///             </para>
+	///         </item>
+	///         <item>
+	///             <para>
+	///                 The application calls <see cref="Shutdown"/>.
+	///             </para>
+	///         </item>
+	///         <item>
+	///             <para>
+	///                 <see cref="BeginShutdown"/> is called, triggering <see cref="DispatchStopOperations"/>.
+	///             </para>
+	///         </item>
+	///         <item>
+	///             <para>
+	///                 <see cref="InitiateShutdown" /> is called.
 	///             </para>
 	///         </item>
 	///         <item>
@@ -253,9 +323,9 @@ namespace RI.Framework.Services
 		///         A separator consists of 200 dashes (<c> - </c>).
 		///     </para>
 		/// </remarks>
-		protected void LogSeperator ()
+		protected void LogSeperator (string stage)
 		{
-			this.Log(LogLevel.Debug, new string('-', 200));
+			this.Log(LogLevel.Information, new string('-', 50) + (stage.IsNullOrEmptyOrWhitespace() ? string.Empty : (" " + stage + " ")) + new string('-', 150));
 		}
 
 		/// <inheritdoc />
@@ -441,6 +511,22 @@ namespace RI.Framework.Services
 		}
 
 		/// <summary>
+		///     Called before the bootstrapper starts shutting down and everything is still initialized and available.
+		/// </summary>
+		/// <remarks>
+		///     <note type="implement">
+		///         The default implementation uses the composition container to discover all implementations of <see cref="IBootstrapperOperations"/> and calls <see cref="IBootstrapperOperations.StopOperations"/> on them.
+		///     </note>
+		/// </remarks>
+		protected virtual void StopOperations()
+		{
+			foreach (IBootstrapperOperations ops in this.Container.GetExports<IBootstrapperOperations>())
+			{
+				ops.StopOperations();
+			}
+		}
+
+		/// <summary>
 		///     Called before the application begins running after the bootstrapping is completed.
 		/// </summary>
 		/// <remarks>
@@ -450,12 +536,12 @@ namespace RI.Framework.Services
 		/// </remarks>
 		protected virtual void BeginRun ()
 		{
-			this.LogSeperator();
+			this.LogSeperator("BEGIN RUN");
 
-			this.Log(LogLevel.Debug, "Dispatching module initialization");
+			this.Log(LogLevel.Debug, "Dispatching initialize modules");
 			this.DispatchModuleInitialization(new Action(() =>
 			{
-				this.LogSeperator();
+				this.LogSeperator("INITIALIZE MODULES");
 				this.Log(LogLevel.Debug, "Initializing modules");
 				this.Container.GetExport<IModuleService>()?.Initialize();
 			}));
@@ -463,12 +549,31 @@ namespace RI.Framework.Services
 			this.Log(LogLevel.Debug, "Dispatching begin operations");
 			this.DispatchBeginOperations(new Action(() =>
 			{
-				this.LogSeperator();
+				this.LogSeperator("BEGIN OPERATIONS");
 				this.Log(LogLevel.Debug, "Beginning operations");
 				this.BeginOperations();
 			}));
+		}
 
-			this.LogSeperator();
+		/// <summary>
+		/// Called before the application begins shutdown.
+		/// </summary>
+		/// <remarks>
+		///     <note type="implement">
+		///         The default implementation dispatches <see cref="StopOperations" /> using <see cref="DispatchStopOperations" />.
+		///     </note>
+		/// </remarks>
+		protected virtual void BeginShutdown ()
+		{
+			this.LogSeperator("BEGIN SHUTDOWN");
+
+			this.Log(LogLevel.Debug, "Dispatching stop operations");
+			this.DispatchStopOperations(new Action(() =>
+			{
+				this.LogSeperator("STOP OPERATIONS");
+				this.Log(LogLevel.Debug, "Stopping operations");
+				this.StopOperations();
+			}));
 		}
 
 		/// <summary>
@@ -505,7 +610,7 @@ namespace RI.Framework.Services
 		///         The default implementation sets the singleton instance for <see cref="Bootstrapper" /> and <see cref="CompositionContainer" /> (<see cref="Container" />).
 		///     </note>
 		/// </remarks>
-		protected virtual void ConfigureBootstrapperSingletons ()
+		protected virtual void ConfigureSingletons ()
 		{
 			Singleton<Bootstrapper>.Ensure(() => this);
 			Singleton<IBootstrapper>.Ensure(() => this);
@@ -593,19 +698,24 @@ namespace RI.Framework.Services
 		protected virtual Dictionary<string, string> CreateAdditionalDataForCrashReport ()
 		{
 			Dictionary<string, string> additionalData = new Dictionary<string, string>(StringComparerEx.InvariantCultureIgnoreCase);
-			additionalData.Add(nameof(this.ApplicationProductName), this.ApplicationProductName);
-			additionalData.Add(nameof(this.ApplicationVersion), this.ApplicationVersion.ToString());
-			additionalData.Add(nameof(this.ApplicationIdVersionIndependent), this.ApplicationIdVersionIndependent.ToString("N", CultureInfo.InvariantCulture));
-			additionalData.Add(nameof(this.ApplicationIdVersionDependent), this.ApplicationIdVersionDependent.ToString("N", CultureInfo.InvariantCulture));
-			additionalData.Add(nameof(this.UserId), this.UserId.ToString("N", CultureInfo.InvariantCulture));
-			additionalData.Add(nameof(this.DomainId), this.DomainId.ToString("N", CultureInfo.InvariantCulture));
-			additionalData.Add(nameof(this.MachineId), this.MachineId.ToString("N", CultureInfo.InvariantCulture));
+			additionalData.Add(nameof(this.DebuggerAttached), this.DebuggerAttached.ToString());
+			additionalData.Add(nameof(this.StartupCulture), this.StartupCulture?.ToString() ?? "[null]");
+			additionalData.Add(nameof(this.StartupUICulture), this.StartupUICulture?.ToString() ?? "[null]");
 			additionalData.Add(nameof(this.Machine64Bit), this.Machine64Bit.ToString());
 			additionalData.Add(nameof(this.Session64Bit), this.Session64Bit.ToString());
-			additionalData.Add(nameof(this.SessionId), this.SessionId.ToString("N", CultureInfo.InvariantCulture));
+			additionalData.Add(nameof(this.ProcessCommandLine), this.ProcessCommandLine?.ToString() ?? "[null]");
+			additionalData.Add(nameof(this.DomainId), this.DomainId.ToString("N", CultureInfo.InvariantCulture));
+			additionalData.Add(nameof(this.MachineId), this.MachineId.ToString("N", CultureInfo.InvariantCulture));
+			additionalData.Add(nameof(this.UserId), this.UserId.ToString("N", CultureInfo.InvariantCulture));
+			additionalData.Add(nameof(this.ApplicationAssembly), this.ApplicationAssembly.FullName);
+			additionalData.Add(nameof(this.ApplicationProductName), this.ApplicationProductName ?? "[null]");
+			additionalData.Add(nameof(this.ApplicationVersion), this.ApplicationVersion?.ToString() ?? "[null]");
+			additionalData.Add(nameof(this.ApplicationIdVersionIndependent), this.ApplicationIdVersionIndependent.ToString("N", CultureInfo.InvariantCulture));
+			additionalData.Add(nameof(this.ApplicationIdVersionDependent), this.ApplicationIdVersionDependent.ToString("N", CultureInfo.InvariantCulture));
 			additionalData.Add(nameof(this.SessionTimestamp), this.SessionTimestamp.ToSortableString('-'));
-			additionalData.Add(nameof(this.ProcessCommandLine), this.ProcessCommandLine.ToString());
-			additionalData.Add(nameof(this.DebuggerAttached), this.DebuggerAttached.ToString());
+			additionalData.Add(nameof(this.SessionId), this.SessionId.ToString("N", CultureInfo.InvariantCulture));
+			additionalData.Add(nameof(this.InstanceId), this.InstanceId ?? "[null]");
+
 			return additionalData;
 		}
 
@@ -845,6 +955,22 @@ namespace RI.Framework.Services
 		}
 
 		/// <summary>
+		///     Called to determine the ID of the currently running instance of the application (<see cref="InstanceId" />).
+		/// </summary>
+		/// <returns>
+		///     The ID of the currently running instance of the application.
+		/// </returns>
+		/// <remarks>
+		///     <note type="implement">
+		///         The default implementation returns null and therefore indicates that multiple instances at the same time are not supported.
+		///     </note>
+		/// </remarks>
+		protected virtual string DetermineInstanceId()
+		{
+			return null;
+		}
+
+		/// <summary>
 		///     Called to determine the timestamp of the current session (<see cref="SessionTimestamp" />).
 		/// </summary>
 		/// <returns>
@@ -871,6 +997,21 @@ namespace RI.Framework.Services
 		///     </note>
 		/// </remarks>
 		protected virtual void DispatchBeginOperations (Delegate action, params object[] args)
+		{
+			action.DynamicInvoke(args);
+		}
+
+		/// <summary>
+		///     Used to dispatch <see cref="StopOperations"/> for execution before shutdown starts.
+		/// </summary>
+		/// <param name="action"> The delegate to execute. </param>
+		/// <param name="args"> The optional arguments for the delegate. </param>
+		/// <remarks>
+		///     <note type="implement">
+		///         The default implementation executes the delegate immediately before returning.
+		///     </note>
+		/// </remarks>
+		protected virtual void DispatchStopOperations(Delegate action, params object[] args)
 		{
 			action.DynamicInvoke(args);
 		}
@@ -912,15 +1053,13 @@ namespace RI.Framework.Services
 		/// </remarks>
 		protected virtual void EndRun ()
 		{
-			this.LogSeperator();
+			this.LogSeperator("END RUN");
 
 			this.Log(LogLevel.Debug, "Unloading modules");
 			this.Container.GetExport<IModuleService>()?.Unload();
 
 			this.Log(LogLevel.Debug, "Hiding splash screen");
 			this.HideSplashScreen();
-
-			this.LogSeperator();
 		}
 
 		/// <summary>
@@ -947,27 +1086,30 @@ namespace RI.Framework.Services
 		///         The default implementation logs the following variables using <see cref="Log" />: <see cref="ApplicationExecutableDirectory" />, <see cref="ApplicationDataDirectory" />, <see cref="ApplicationAssembly" />, <see cref="ApplicationIdVersionDependent" />, <see cref="ApplicationIdVersionIndependent" />, <see cref="ApplicationVersion" />, <see cref="SessionId" />, <see cref="SessionTimestamp" />, <see cref="ProcessCommandLine" />.
 		///     </note>
 		/// </remarks>
-		protected virtual void LogBootstrapperVariables ()
+		protected virtual void LogVariables ()
 		{
-			this.Log(LogLevel.Debug, "Application name:      {0}", this.ApplicationProductName);
-			this.Log(LogLevel.Debug, "Application version:   {0}", this.ApplicationVersion);
-			this.Log(LogLevel.Debug, "Application company:   {0}", this.ApplicationCompanyName);
-			this.Log(LogLevel.Debug, "Application copyright: {0}", this.ApplicationCopyright);
-			this.Log(LogLevel.Debug, "Executable directory:  {0}", this.ApplicationExecutableDirectory.PathResolved);
-			this.Log(LogLevel.Debug, "Data directory:        {0}", this.ApplicationDataDirectory.PathResolved);
-			this.Log(LogLevel.Debug, "Application object:    {0}", this.Application?.ToString() ?? "[null]");
-			this.Log(LogLevel.Debug, "Application assembly:  {0}", this.ApplicationAssembly.FullName);
-			this.Log(LogLevel.Debug, "Application ID:        {0}", this.ApplicationIdVersionIndependent.ToString("N", CultureInfo.InvariantCulture));
-			this.Log(LogLevel.Debug, "Version ID:            {0}", this.ApplicationIdVersionDependent.ToString("N", CultureInfo.InvariantCulture));
-			this.Log(LogLevel.Debug, "Session ID:            {0}", this.SessionId.ToString("N", CultureInfo.InvariantCulture));
-			this.Log(LogLevel.Debug, "Session timestamp:     {0}", this.SessionTimestamp.ToSortableString('-'));
-			this.Log(LogLevel.Debug, "Session 64 bit:        {0}", this.Session64Bit.ToString());
-			this.Log(LogLevel.Debug, "Machine 64 bit:        {0}", this.Machine64Bit.ToString());
-			this.Log(LogLevel.Debug, "Machine ID:            {0}", this.MachineId.ToString("N", CultureInfo.InvariantCulture));
-			this.Log(LogLevel.Debug, "Domain ID:             {0}", this.DomainId.ToString("N", CultureInfo.InvariantCulture));
-			this.Log(LogLevel.Debug, "User ID:               {0}", this.UserId.ToString("N", CultureInfo.InvariantCulture));
-			this.Log(LogLevel.Debug, "Command line:          {0}", this.ProcessCommandLine.ToString());
 			this.Log(LogLevel.Debug, "Debugger attached:     {0}", this.DebuggerAttached);
+			this.Log(LogLevel.Debug, "Startup culture:       {0}", this.StartupCulture?.Name ?? "[null]");
+			this.Log(LogLevel.Debug, "Startup UI culture:    {0}", this.StartupUICulture?.Name ?? "[null]");
+			this.Log(LogLevel.Debug, "Machine 64 bit:        {0}", this.Machine64Bit.ToString());
+			this.Log(LogLevel.Debug, "Session 64 bit:        {0}", this.Session64Bit.ToString());
+			this.Log(LogLevel.Debug, "Command line:          {0}", this.ProcessCommandLine?.ToString() ?? "[null]");
+			this.Log(LogLevel.Debug, "Domain ID:             {0}", this.DomainId.ToString("N", CultureInfo.InvariantCulture));
+			this.Log(LogLevel.Debug, "Machine ID:            {0}", this.MachineId.ToString("N", CultureInfo.InvariantCulture));
+			this.Log(LogLevel.Debug, "User ID:               {0}", this.UserId.ToString("N", CultureInfo.InvariantCulture));
+			this.Log(LogLevel.Debug, "Application assembly:  {0}", this.ApplicationAssembly.FullName);
+			this.Log(LogLevel.Debug, "Application product:   {0}", this.ApplicationProductName ?? "[null]");
+			this.Log(LogLevel.Debug, "Application company:   {0}", this.ApplicationCompanyName ?? "[null]");
+			this.Log(LogLevel.Debug, "Application copyright: {0}", this.ApplicationCopyright ?? "[null]");
+			this.Log(LogLevel.Debug, "Application version:   {0}", this.ApplicationVersion?.ToString() ?? "[null]");
+			this.Log(LogLevel.Debug, "Application ID (-V):   {0}", this.ApplicationIdVersionIndependent.ToString("N", CultureInfo.InvariantCulture));
+			this.Log(LogLevel.Debug, "Application ID (+V):   {0}", this.ApplicationIdVersionDependent.ToString("N", CultureInfo.InvariantCulture));
+			this.Log(LogLevel.Debug, "Session timestamp:     {0}", this.SessionTimestamp.ToSortableString('-'));
+			this.Log(LogLevel.Debug, "Session ID:            {0}", this.SessionId.ToString("N", CultureInfo.InvariantCulture));
+			this.Log(LogLevel.Debug, "Instance ID:           {0}", this.InstanceId ?? "[null]");
+			this.Log(LogLevel.Debug, "Executable directory:  {0}", this.ApplicationExecutableDirectory?.PathResolved ?? "[null]");
+			this.Log(LogLevel.Debug, "Data directory:        {0}", this.ApplicationDataDirectory?.PathResolved ?? "[null]");
+			this.Log(LogLevel.Debug, "Application object:    {0}", this.Application?.ToString() ?? "[null]");
 		}
 
 		/// <summary>
@@ -1081,6 +1223,9 @@ namespace RI.Framework.Services
 		public Guid MachineId { get; private set; }
 
 		/// <inheritdoc />
+		public string InstanceId { get; private set; }
+
+		/// <inheritdoc />
 		public CommandLine ProcessCommandLine { get; private set; }
 
 		/// <inheritdoc />
@@ -1129,11 +1274,11 @@ namespace RI.Framework.Services
 				this.Machine64Bit = Environment.Is64BitOperatingSystem;
 				this.Session64Bit = Environment.Is64BitProcess;
 
+				this.ProcessCommandLine = this.DetermineProcessCommandLine();
+
 				this.DomainId = this.DetermineDomainId();
 				this.MachineId = this.DetermineMachineId();
 				this.UserId = this.DetermineUserId();
-
-				this.ProcessCommandLine = this.DetermineProcessCommandLine();
 
 				this.ApplicationAssembly = this.DetermineApplicationAssembly();
 				this.ApplicationProductName = this.DetermineApplicationProductName();
@@ -1145,6 +1290,8 @@ namespace RI.Framework.Services
 
 				this.SessionTimestamp = this.DetermineSessionTimestamp();
 				this.SessionId = this.DetermineSessionId();
+
+				this.InstanceId = this.DetermineInstanceId();
 
 				this.ApplicationExecutableDirectory = this.DetermineApplicationExecutableDirectory();
 				this.ApplicationDataDirectory = this.DetermineApplicationDataDirectory();
@@ -1167,8 +1314,8 @@ namespace RI.Framework.Services
 				this.Log(LogLevel.Debug, "Configuring application");
 				this.ConfigureApplication();
 
-				this.Log(LogLevel.Debug, "Configuring bootstrapper singletons");
-				this.ConfigureBootstrapperSingletons();
+				this.Log(LogLevel.Debug, "Configuring singletons");
+				this.ConfigureSingletons();
 
 				this.Log(LogLevel.Debug, "Showing splash screen");
 				this.ShowSplashScreen();
@@ -1182,8 +1329,8 @@ namespace RI.Framework.Services
 				this.Log(LogLevel.Debug, "Configuring modularization");
 				this.ConfigureModularization();
 
-				this.Log(LogLevel.Debug, "Logging bootstrapper variables");
-				this.LogBootstrapperVariables();
+				this.Log(LogLevel.Debug, "Logging variables");
+				this.LogVariables();
 
 				this.Log(LogLevel.Debug, "State: Running");
 				this.State = BootstrapperState.Running;
@@ -1241,6 +1388,9 @@ namespace RI.Framework.Services
 
 			this.ShutdownInitiated = true;
 
+			this.Log(LogLevel.Debug, "Beginning shutdown");
+			this.BeginShutdown();
+
 			this.Log(LogLevel.Debug, "Initiating shutdown");
 			this.InitiateShutdown();
 		}
@@ -1273,9 +1423,9 @@ namespace RI.Framework.Services
 		///         The default implementation sets the singleton instance for <see cref="Bootstrapper" />, <see cref="CompositionContainer" /> (<see cref="Bootstrapper.Container" />), and the application object (<see cref="Bootstrapper.Application" />) using <see cref="Singleton{T}" />.
 		///     </note>
 		/// </remarks>
-		protected override void ConfigureBootstrapperSingletons ()
+		protected override void ConfigureSingletons ()
 		{
-			base.ConfigureBootstrapperSingletons();
+			base.ConfigureSingletons();
 
 			if (this.Application != null)
 			{

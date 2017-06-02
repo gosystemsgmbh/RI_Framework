@@ -10,11 +10,11 @@ using RI.Framework.Utilities.ObjectModel;
 namespace RI.Framework.Utilities.Threading
 {
 	/// <summary>
-	///     Used to track <see cref="ThreadDispatcher" /> operations or the processing of enqueued delegates respectively.
+	///     Used to track <see cref="IThreadDispatcher" /> operations or the processing of enqueued delegates respectively.
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         See <see cref="ThreadDispatcher" /> for more information.
+	///         See <see cref="IThreadDispatcher" /> for more information.
 	///     </para>
 	/// </remarks>
 	public sealed class ThreadDispatcherOperation : ISynchronizable

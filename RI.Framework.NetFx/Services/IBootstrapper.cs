@@ -158,6 +158,19 @@ namespace RI.Framework.Services
 		Guid MachineId { get; }
 
 		/// <summary>
+		///     Gets the ID of the currently running instance.
+		/// </summary>
+		/// <value>
+		///     The ID of the currently running instance or null if multiple instances are not supported.
+		/// </value>
+		/// <remarks>
+		/// <para>
+		/// The instance ID can be used to distinguish between multiple instances of the same application running at the same time on the same machine.
+		/// </para>
+		/// </remarks>
+		string InstanceId { get; }
+
+		/// <summary>
 		///     Gets the command line which was used for the current process.
 		/// </summary>
 		/// <value>

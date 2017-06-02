@@ -50,8 +50,26 @@ namespace RI.Framework.Services.Logging
 
 		#region Interface: ILogWriter
 
+		private ILogFilter _filter;
+
 		/// <inheritdoc />
-		public ILogFilter Filter { get; set; }
+		public ILogFilter Filter
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._filter;
+				}
+			}
+			set
+			{
+				lock (this.SyncRoot)
+				{
+					this._filter = value;
+				}
+			}
+		}
 
 		/// <inheritdoc />
 		bool ISynchronizable.IsSynchronized => true;

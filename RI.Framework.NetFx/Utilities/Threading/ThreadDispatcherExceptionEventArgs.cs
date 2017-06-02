@@ -6,7 +6,7 @@
 namespace RI.Framework.Utilities.Threading
 {
 	/// <summary>
-	///     Event arguments for the <see cref="ThreadDispatcher" />.<see cref="ThreadDispatcher.Exception" /> and <see cref="HeavyThreadDispatcher" />.<see cref="HeavyThreadDispatcher.Exception" /> event.
+	///     Event arguments for the <see cref="IThreadDispatcher" />.<see cref="IThreadDispatcher.Exception" /> event.
 	/// </summary>
 	public sealed class ThreadDispatcherExceptionEventArgs : EventArgs
 	{

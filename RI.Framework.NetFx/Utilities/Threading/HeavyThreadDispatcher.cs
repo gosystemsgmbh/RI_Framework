@@ -23,6 +23,7 @@ namespace RI.Framework.Utilities.Threading
 		{
 			this.DispatcherExceptionHandlerDelegate = this.DispatcherExceptionHandler;
 
+			this.DefaultPriority = ThreadDispatcher.DefaultPriorityValue;
 			this.CatchExceptions = false;
 			this.FinishPendingDelegatesOnShutdown = false;
 			this.ThreadName = this.GetType().Name;
@@ -40,6 +41,7 @@ namespace RI.Framework.Utilities.Threading
 
 		#region Instance Fields
 
+		private int _defaultPriority;
 		private bool _catchExceptions;
 		private bool _finishPendingDelegatesOnShutdown;
 		private bool _isBackgroundThread;
@@ -258,6 +260,7 @@ namespace RI.Framework.Utilities.Threading
 			this.DispatcherInternal = new ThreadDispatcher();
 			this.DispatcherInternal.Exception += this.DispatcherExceptionHandlerDelegate;
 			this.DispatcherInternal.CatchExceptions = this.CatchExceptions;
+			this.DispatcherInternal.DefaultPriority = this.DefaultPriority;
 		}
 
 		/// <inheritdoc />
@@ -365,6 +368,30 @@ namespace RI.Framework.Utilities.Threading
 				lock (this.SyncRoot)
 				{
 					return this.DispatcherInternal?.ShutdownMode ?? ThreadDispatcherShutdownMode.None;
+				}
+			}
+		}
+
+		/// <inheritdoc />
+		public int DefaultPriority
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._defaultPriority;
+				}
+			}
+			set
+			{
+				lock (this.SyncRoot)
+				{
+					this._defaultPriority = value;
+
+					if (this.DispatcherInternal != null)
+					{
+						this.DispatcherInternal.DefaultPriority = value;
+					}
 				}
 			}
 		}

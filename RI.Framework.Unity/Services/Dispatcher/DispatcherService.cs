@@ -26,6 +26,7 @@ namespace RI.Framework.Services.Dispatcher
 	///         The first created instance of <see cref="DispatcherService" /> is set as the singleton instance for <see cref="Singleton{T}" />
 	///     </note>
 	/// </remarks>
+	/// TODO: Correct locking
 	[Export]
 	public sealed class DispatcherService : IDispatcherService, ISynchronizable
 	{

@@ -19,5 +19,10 @@ namespace RI.Framework.Services
 		/// Called when all bootstrapping and initialization is done and actual application operations begin.
 		/// </summary>
 		void BeginOperations ();
+
+		/// <summary>
+		///     Called before the bootstrapper starts shutting down and everything is still initialized and available.
+		/// </summary>
+		void StopOperations ();
 	}
 }

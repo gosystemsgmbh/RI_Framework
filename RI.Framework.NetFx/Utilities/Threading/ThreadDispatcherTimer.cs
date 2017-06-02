@@ -2,8 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 
-
-
+using RI.Framework.Utilities.ObjectModel;
 
 namespace RI.Framework.Utilities.Threading
 {
@@ -12,10 +11,11 @@ namespace RI.Framework.Utilities.Threading
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         <see cref="ThreadDispatcherTimer" /> enqueues a delegate to the specified dispatchers queue (using <see cref="IThreadDispatcher.Post(int,Delegate,object[])" />) in a specified interval.
+	///         <see cref="ThreadDispatcherTimer" /> enqueues a delegate to the specified dispatchers queue (using <see cref="IThreadDispatcher.Send(int,Delegate,object[])" />) in a specified interval.
 	///     </para>
 	///     <para>
 	///         The interval is awaited before the timer is executed for the first time. Afterwards, the delegate is posted to the dispatcher in the specified interval.
+	/// However, to prevent congestion in cases the execution of the delegate takes longer than the interval, the interval is not restarted before the delegate has finished processing.
 	///     </para>
 	///     <para>
 	///         The timer is initially stopped and needs to be started explicitly using <see cref="Start" />.
@@ -24,7 +24,7 @@ namespace RI.Framework.Utilities.Threading
 	///         <see cref="ThreadDispatcherTimer" /> is relatively heavy-weighted as it uses its own thread (one per instance) to deliver the delegate to the dispatcher.
 	///     </note>
 	/// </remarks>
-	public sealed class ThreadDispatcherTimer : IDisposable
+	public sealed class ThreadDispatcherTimer : IDisposable, ISynchronizable
 	{
 		#region Instance Constructor/Destructor
 
@@ -145,6 +145,23 @@ namespace RI.Framework.Utilities.Threading
 		/// </value>
 		public int Priority { get; private set; }
 
+		/// <summary>
+		/// Gets whether the timer is currently running.
+		/// </summary>
+		/// <value>
+		/// true if the timer is running, false otherwise.
+		/// </value>
+		public bool IsRunning
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this.TimerThread != null;
+				}
+			}
+		}
+
 		private object SyncRoot { get; set; }
 
 		private Thread TimerThread { get; set; }
@@ -180,10 +197,11 @@ namespace RI.Framework.Utilities.Threading
 							{
 								if (this.Dispatcher.IsRunning)
 								{
-									this.Dispatcher.Post(this.Priority, this.Action, this.Parameters);
+									this.Dispatcher.Send(this.Priority, this.Action, this.Parameters);
 								}
+
+								cont = (this.Mode == ThreadDispatcherTimerMode.Continuous) && this.Dispatcher.IsRunning;
 							}
-							cont = this.Mode == ThreadDispatcherTimerMode.Continuous;
 						}
 					}
 					while (cont);
@@ -193,6 +211,8 @@ namespace RI.Framework.Utilities.Threading
 						this.TimerThread = null;
 					}
 				});
+
+				this.TimerThread.Start();
 			}
 		}
 
@@ -239,6 +259,18 @@ namespace RI.Framework.Utilities.Threading
 		{
 			this.Stop();
 		}
+
+		#endregion
+
+
+
+		#region Interface: ISynchronizable
+
+		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		object ISynchronizable.SyncRoot => this.SyncRoot;
 
 		#endregion
 	}

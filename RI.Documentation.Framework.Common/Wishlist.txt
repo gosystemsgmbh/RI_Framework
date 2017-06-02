@@ -203,7 +203,7 @@ Composition
  - (Common) CreateAndExport
  - (Common) AddMultiple
 
- - (Common) AggregateCatalog
+ # (Common) AggregateCatalog (including filtering)
  - (Common) FileCatalog
  - (Common) AppDomainCatalog
  - (Common) GameObjectCatalog

@@ -44,6 +44,7 @@ namespace RI.Framework.Utilities.Threading
 
 			this.ShutdownMode = ThreadDispatcherShutdownMode.None;
 
+			this.DefaultPriority = ThreadDispatcher.DefaultPriorityValue; ;
 			this.CatchExceptions = false;
 		}
 
@@ -66,9 +67,20 @@ namespace RI.Framework.Utilities.Threading
 
 
 
+		/// <summary>
+		/// Gets the default value for <see cref="DefaultPriority"/> if it is not explicitly set.
+		/// </summary>
+		/// <value>
+		/// The default value for <see cref="DefaultPriority"/> if it is not explicitly set.
+		/// </value>
+		public const int DefaultPriorityValue = int.MaxValue / 2;
+
+
+
 
 		#region Instance Fields
 
+		private int _defaultPriority;
 		private bool _catchExceptions;
 		private ThreadDispatcherShutdownMode _shutdownMode;
 
@@ -321,6 +333,30 @@ namespace RI.Framework.Utilities.Threading
 		}
 
 		/// <inheritdoc />
+		public int DefaultPriority
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._defaultPriority;
+				}
+			}
+			set
+			{
+				if (value < 0)
+				{
+					throw new ArgumentOutOfRangeException(nameof(value));
+				}
+
+				lock (this.SyncRoot)
+				{
+					this._defaultPriority = value;
+				}
+			}
+		}
+
+		/// <inheritdoc />
 		object ISynchronizable.SyncRoot => this.SyncRoot;
 
 		/// <inheritdoc />
@@ -377,7 +413,7 @@ namespace RI.Framework.Utilities.Threading
 		/// <inheritdoc />
 		public ThreadDispatcherOperation Post (Delegate action, params object[] parameters)
 		{
-			return this.Post(int.MaxValue, action, parameters);
+			return this.Post(this.DefaultPriority, action, parameters);
 		}
 
 		/// <inheritdoc />
@@ -418,7 +454,7 @@ namespace RI.Framework.Utilities.Threading
 		/// <inheritdoc />
 		public object Send (Delegate action, params object[] parameters)
 		{
-			return this.Send(int.MaxValue, action, parameters);
+			return this.Send(this.DefaultPriority, action, parameters);
 		}
 
 		/// <inheritdoc />
@@ -468,7 +504,7 @@ namespace RI.Framework.Utilities.Threading
 		/// <inheritdoc />
 		public async Task<object> SendAsync (Delegate action, params object[] parameters)
 		{
-			return await this.SendAsync(int.MaxValue, action, parameters);
+			return await this.SendAsync(this.DefaultPriority, action, parameters);
 		}
 
 		/// <inheritdoc />

@@ -291,8 +291,26 @@ namespace RI.Framework.Services.Logging.Writers
 		/// <inheritdoc />
 		object ISynchronizable.SyncRoot => this.SyncRoot;
 
+		private ILogFilter _filter;
+
 		/// <inheritdoc />
-		public ILogFilter Filter { get; set; }
+		public ILogFilter Filter
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._filter;
+				}
+			}
+			set
+			{
+				lock (this.SyncRoot)
+				{
+					this._filter = value;
+				}
+			}
+		}
 
 		/// <inheritdoc />
 		public void Cleanup (DateTime retentionDate)
