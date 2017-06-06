@@ -1350,7 +1350,7 @@ namespace RI.Framework.Composition
 
 							List<object> instances = this.GetOrCreateInstancesInternal(importName, typeof(object));
 
-							newValue = oldValue ?? new Import();
+							newValue = new Import();
 							((Import)newValue).Instances = instances.Count == 0 ? null : instances.ToArray();
 
 							Import oldImport = oldValue as Import;

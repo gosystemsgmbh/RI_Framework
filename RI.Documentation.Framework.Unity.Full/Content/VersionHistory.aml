@@ -29,6 +29,9 @@
         <!-- Added: CultureInfoExtensions -->
         <!-- Added: CompositionContainer.ParentContainer -->
         <!-- Added: ILogSource and ILogSourceExtensions -->
+        <!-- Added: AssemblyExtensions.GetEmbeddedFileStream -->
+        <!-- Fixed: Imports using the Import type were not updated after they were resolved -->
+        <!-- Added: xxx -->
         <!-- Added: xxx -->
         <!-- Added: xxx -->
         <!-- Added: xxx -->
