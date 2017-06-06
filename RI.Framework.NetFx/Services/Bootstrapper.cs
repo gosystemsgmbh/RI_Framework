@@ -1249,6 +1249,7 @@ namespace RI.Framework.Services
 		}
 
 		/// <inheritdoc />
+		[SuppressMessage("ReSharper", "EmptyGeneralCatchClause")]
 		public void Run ()
 		{
 			if (this.State != BootstrapperState.Uninitialized)

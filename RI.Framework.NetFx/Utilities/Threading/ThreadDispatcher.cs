@@ -44,7 +44,7 @@ namespace RI.Framework.Utilities.Threading
 
 			this.ShutdownMode = ThreadDispatcherShutdownMode.None;
 
-			this.DefaultPriority = ThreadDispatcher.DefaultPriorityValue; ;
+			this.DefaultPriority = ThreadDispatcher.DefaultPriorityValue;
 			this.CatchExceptions = false;
 		}
 
@@ -522,7 +522,6 @@ namespace RI.Framework.Utilities.Threading
 
 			parameters = parameters ?? new object[0];
 
-			bool isInThread;
 			ThreadDispatcherOperation operation;
 
 			lock (this.SyncRoot)
@@ -530,7 +529,6 @@ namespace RI.Framework.Utilities.Threading
 				this.VerifyRunning();
 				this.VerifyNotShuttingDown();
 
-				isInThread = this.IsInThread();
 				operation = this.Post(priority, action, parameters);
 			}
 

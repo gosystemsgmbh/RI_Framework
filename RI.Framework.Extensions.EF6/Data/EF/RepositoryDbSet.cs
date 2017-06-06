@@ -9,7 +9,6 @@ using System.Linq;
 using RI.Framework.Data.EF.Filter;
 using RI.Framework.Data.EF.Validation;
 using RI.Framework.Data.Repository;
-using RI.Framework.Services;
 using RI.Framework.Services.Logging;
 
 

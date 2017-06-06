@@ -1,7 +1,5 @@
 ﻿using System;
 
-using RI.Framework.Composition;
-
 namespace RI.Framework.Services.Logging
 {
 	/// <summary>

@@ -509,6 +509,7 @@ namespace RI.Framework.Utilities.Windows
 
 
 
+		[SuppressMessage("ReSharper", "InconsistentNaming")]
 		internal enum SID_NAME_USE
 		{
 			SidTypeUser = 1,

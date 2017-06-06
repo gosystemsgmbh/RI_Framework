@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
 
@@ -38,6 +39,7 @@ namespace RI.Framework.Services
 		/// <value>
 		///     The UI culture which was set during start of the bootstrapping.
 		/// </value>
+		[SuppressMessage("ReSharper", "InconsistentNaming")]
 		CultureInfo StartupUICulture { get; }
 
 		/// <summary>

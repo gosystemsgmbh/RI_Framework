@@ -17,7 +17,6 @@ using RI.Framework.Data.EF.Filter;
 using RI.Framework.Data.EF.Validation;
 using RI.Framework.Data.Repository;
 using RI.Framework.Data.Repository.Entities;
-using RI.Framework.Services;
 using RI.Framework.Services.Logging;
 
 
@@ -433,7 +432,7 @@ namespace RI.Framework.Data.EF
 		///         The database logging or <see cref="DbContext" /> logging respectively can be enabled/disabled using <see cref="EnableDatabaseLogging" />.
 		///     </para>
 		///     <para>
-		///         The default implementation calls <see cref="Log" /> to log the message.
+		///         The default implementation calls <see cref="ILogSourceExtensions.Log" /> to log the message.
 		///     </para>
 		/// </remarks>
 		protected virtual void LogDatabase (string message)
