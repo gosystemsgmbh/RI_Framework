@@ -2,6 +2,9 @@
 
 using RI.Framework.Utilities.Runtime;
 
+
+
+
 namespace RI.Framework.Utilities.CrossPlatform
 {
 	/// <summary>
@@ -18,9 +21,9 @@ namespace RI.Framework.Utilities.CrossPlatform
 		///     The ID as a GUID.
 		/// </returns>
 		/// <remarks>
-		/// <note type="important">
-		/// <see cref="GetDomainId"/> returns an empty <see cref="Guid"/> on non-Windows platforms.
-		/// </note>
+		///     <note type="important">
+		///         <see cref="GetDomainId" /> returns an empty <see cref="Guid" /> on non-Windows platforms.
+		///     </note>
 		/// </remarks>
 		public static Guid GetDomainId ()
 		{

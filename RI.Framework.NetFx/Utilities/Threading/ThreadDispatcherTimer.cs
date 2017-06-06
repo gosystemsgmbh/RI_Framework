@@ -4,6 +4,9 @@ using System.Threading;
 
 using RI.Framework.Utilities.ObjectModel;
 
+
+
+
 namespace RI.Framework.Utilities.Threading
 {
 	/// <summary>
@@ -15,7 +18,7 @@ namespace RI.Framework.Utilities.Threading
 	///     </para>
 	///     <para>
 	///         The interval is awaited before the timer is executed for the first time. Afterwards, the delegate is posted to the dispatcher in the specified interval.
-	/// However, to prevent congestion in cases the execution of the delegate takes longer than the interval, the interval is not restarted before the delegate has finished processing.
+	///         However, to prevent congestion in cases the execution of the delegate takes longer than the interval, the interval is not restarted before the delegate has finished processing.
 	///     </para>
 	///     <para>
 	///         The timer is initially stopped and needs to be started explicitly using <see cref="Start" />.
@@ -33,12 +36,12 @@ namespace RI.Framework.Utilities.Threading
 		/// </summary>
 		/// <param name="dispatcher"> The used dispatcher. </param>
 		/// <param name="mode"> The timer mode. </param>
-		/// <param name="priority">The priority.</param>
+		/// <param name="priority"> The priority. </param>
 		/// <param name="interval"> The interval between executions in milliseconds. </param>
 		/// <param name="action"> The delegate. </param>
 		/// <param name="parameters"> Optional parameters of the delagate. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" /> or <paramref name="action" /> is null. </exception>
-		/// <exception cref="ArgumentOutOfRangeException"><paramref name="priority"/> is less than zero.</exception>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="priority" /> is less than zero. </exception>
 		public ThreadDispatcherTimer (IThreadDispatcher dispatcher, ThreadDispatcherTimerMode mode, int priority, int interval, Delegate action, params object[] parameters)
 			: this(dispatcher, mode, priority, TimeSpan.FromMilliseconds(interval), action, parameters)
 		{
@@ -49,12 +52,12 @@ namespace RI.Framework.Utilities.Threading
 		/// </summary>
 		/// <param name="dispatcher"> The used dispatcher. </param>
 		/// <param name="mode"> The timer mode. </param>
-		/// <param name="priority">The priority.</param>
+		/// <param name="priority"> The priority. </param>
 		/// <param name="interval"> The interval between executions. </param>
 		/// <param name="action"> The delegate. </param>
 		/// <param name="parameters"> Optional parameters of the delagate. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" /> or <paramref name="action" /> is null. </exception>
-		/// <exception cref="ArgumentOutOfRangeException"><paramref name="priority"/> is less than zero.</exception>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="priority" /> is less than zero. </exception>
 		public ThreadDispatcherTimer (IThreadDispatcher dispatcher, ThreadDispatcherTimerMode mode, int priority, TimeSpan interval, Delegate action, params object[] parameters)
 		{
 			if (dispatcher == null)
@@ -122,6 +125,23 @@ namespace RI.Framework.Utilities.Threading
 		public TimeSpan Interval { get; private set; }
 
 		/// <summary>
+		///     Gets whether the timer is currently running.
+		/// </summary>
+		/// <value>
+		///     true if the timer is running, false otherwise.
+		/// </value>
+		public bool IsRunning
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this.TimerThread != null;
+				}
+			}
+		}
+
+		/// <summary>
 		///     Gets the timer mode.
 		/// </summary>
 		/// <value>
@@ -138,29 +158,12 @@ namespace RI.Framework.Utilities.Threading
 		public object[] Parameters { get; private set; }
 
 		/// <summary>
-		/// Gets the priority.
+		///     Gets the priority.
 		/// </summary>
 		/// <value>
-		/// The priority.
+		///     The priority.
 		/// </value>
 		public int Priority { get; private set; }
-
-		/// <summary>
-		/// Gets whether the timer is currently running.
-		/// </summary>
-		/// <value>
-		/// true if the timer is running, false otherwise.
-		/// </value>
-		public bool IsRunning
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					return this.TimerThread != null;
-				}
-			}
-		}
 
 		private object SyncRoot { get; set; }
 
@@ -261,6 +264,7 @@ namespace RI.Framework.Utilities.Threading
 		}
 
 		#endregion
+
 
 
 

@@ -20,15 +20,15 @@ namespace RI.Framework.Services.Logging
 	public interface ILogWriter : ISynchronizable
 	{
 		/// <summary>
-		/// Gets or sets the used log filter.
+		///     Gets or sets the used log filter.
 		/// </summary>
 		/// <value>
-		/// The used log filter or null if no log filter is used.
+		///     The used log filter or null if no log filter is used.
 		/// </value>
 		/// <remarks>
-		/// <para>
-		/// The log filter applied here filters all messages passed to this log writer, independently of other log filters of other log writers.
-		/// </para>
+		///     <para>
+		///         The log filter applied here filters all messages passed to this log writer, independently of other log filters of other log writers.
+		///     </para>
 		/// </remarks>
 		ILogFilter Filter { get; set; }
 

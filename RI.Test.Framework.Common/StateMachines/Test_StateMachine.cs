@@ -1,4 +1,7 @@
-﻿using System;
+﻿#if PLATFORM_NETFX
+using RI.Framework.Utilities.Threading;
+#endif
+using System;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -7,14 +10,13 @@ using RI.Framework.StateMachines;
 using RI.Framework.StateMachines.Caches;
 using RI.Framework.StateMachines.Dispatchers;
 using RI.Framework.StateMachines.Resolvers;
-#if PLATFORM_NETFX
-using RI.Framework.Utilities.Threading;
-#endif
 #if PLATFORM_UNITY
 using RI.Framework.Services.Dispatcher;
+
+
+
+
 #endif
-
-
 
 
 namespace RI.Test.Framework.StateMachines

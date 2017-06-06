@@ -2,10 +2,13 @@
 
 using RI.Framework.Utilities.CrossPlatform;
 
+
+
+
 namespace RI.Framework.Services
 {
 	/// <summary>
-	/// Implements a cross-platform application bootstrapper.
+	///     Implements a cross-platform application bootstrapper.
 	/// </summary>
 	/// <remarks>
 	///     <para>
@@ -14,6 +17,8 @@ namespace RI.Framework.Services
 	/// </remarks>
 	public abstract class CrossPlatformBootstrapper : Bootstrapper
 	{
+		#region Overrides
+
 		/// <summary>
 		///     Called when a default application object needs to be created.
 		/// </summary>
@@ -29,7 +34,7 @@ namespace RI.Framework.Services
 		///         The default implementation returns null.
 		///     </note>
 		/// </remarks>
-		protected override object CreateDefaultApplication()
+		protected override object CreateDefaultApplication ()
 		{
 			return null;
 		}
@@ -45,7 +50,7 @@ namespace RI.Framework.Services
 		///         The default implementation uses <see cref="UniqueIdentification" />.<see cref="UniqueIdentification.GetDomainId" />.
 		///     </note>
 		/// </remarks>
-		protected override Guid DetermineDomainId()
+		protected override Guid DetermineDomainId ()
 		{
 			return UniqueIdentification.GetDomainId();
 		}
@@ -61,7 +66,7 @@ namespace RI.Framework.Services
 		///         The default implementation uses <see cref="UniqueIdentification" />.<see cref="UniqueIdentification.GetMachineId" />.
 		///     </note>
 		/// </remarks>
-		protected override Guid DetermineMachineId()
+		protected override Guid DetermineMachineId ()
 		{
 			return UniqueIdentification.GetMachineId();
 		}
@@ -77,9 +82,11 @@ namespace RI.Framework.Services
 		///         The default implementation uses <see cref="UniqueIdentification" />.<see cref="UniqueIdentification.GetUserId" />.
 		///     </note>
 		/// </remarks>
-		protected override Guid DetermineUserId()
+		protected override Guid DetermineUserId ()
 		{
 			return UniqueIdentification.GetUserId();
 		}
+
+		#endregion
 	}
 }

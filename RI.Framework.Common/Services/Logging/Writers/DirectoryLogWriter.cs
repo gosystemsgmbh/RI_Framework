@@ -144,6 +144,15 @@ namespace RI.Framework.Services.Logging.Writers
 
 
 
+		#region Instance Fields
+
+		private ILogFilter _filter;
+
+		#endregion
+
+
+
+
 		#region Instance Properties/Indexer
 
 		/// <summary>
@@ -286,14 +295,6 @@ namespace RI.Framework.Services.Logging.Writers
 		#region Interface: ILogWriter
 
 		/// <inheritdoc />
-		bool ISynchronizable.IsSynchronized => true;
-
-		/// <inheritdoc />
-		object ISynchronizable.SyncRoot => this.SyncRoot;
-
-		private ILogFilter _filter;
-
-		/// <inheritdoc />
 		public ILogFilter Filter
 		{
 			get
@@ -311,6 +312,12 @@ namespace RI.Framework.Services.Logging.Writers
 				}
 			}
 		}
+
+		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		object ISynchronizable.SyncRoot => this.SyncRoot;
 
 		/// <inheritdoc />
 		public void Cleanup (DateTime retentionDate)

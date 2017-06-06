@@ -40,6 +40,15 @@ namespace RI.Framework.Services.Logging
 
 
 
+		#region Instance Fields
+
+		private ILogFilter _filter;
+
+		#endregion
+
+
+
+
 		#region Instance Properties/Indexer
 
 		private object SyncRoot { get; set; }
@@ -50,8 +59,6 @@ namespace RI.Framework.Services.Logging
 
 
 		#region Interface: ILogWriter
-
-		private ILogFilter _filter;
 
 		/// <inheritdoc />
 		public ILogFilter Filter

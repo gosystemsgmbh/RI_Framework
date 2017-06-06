@@ -25,24 +25,6 @@ namespace RI.Framework.Services
 	public interface IBootstrapper
 	{
 		/// <summary>
-		///     Gets the formatting culture which was set during start of the bootstrapping.
-		/// </summary>
-		/// <value>
-		///     The formatting culture which was set during start of the bootstrapping.
-		/// </value>
-		CultureInfo StartupCulture { get; }
-
-
-		/// <summary>
-		///     Gets the UI culture which was set during start of the bootstrapping.
-		/// </summary>
-		/// <value>
-		///     The UI culture which was set during start of the bootstrapping.
-		/// </value>
-		[SuppressMessage("ReSharper", "InconsistentNaming")]
-		CultureInfo StartupUICulture { get; }
-
-		/// <summary>
 		///     Gets the main assembly of the application.
 		/// </summary>
 		/// <value>
@@ -144,6 +126,19 @@ namespace RI.Framework.Services
 		Guid DomainId { get; }
 
 		/// <summary>
+		///     Gets the ID of the currently running instance.
+		/// </summary>
+		/// <value>
+		///     The ID of the currently running instance or null if multiple instances are not supported.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         The instance ID can be used to distinguish between multiple instances of the same application running at the same time on the same machine.
+		///     </para>
+		/// </remarks>
+		string InstanceId { get; }
+
+		/// <summary>
 		///     Gets whether the program is executed on a 64 bit machine.
 		/// </summary>
 		/// <value>
@@ -158,19 +153,6 @@ namespace RI.Framework.Services
 		///     The anonymized GUID of the local machine.
 		/// </value>
 		Guid MachineId { get; }
-
-		/// <summary>
-		///     Gets the ID of the currently running instance.
-		/// </summary>
-		/// <value>
-		///     The ID of the currently running instance or null if multiple instances are not supported.
-		/// </value>
-		/// <remarks>
-		/// <para>
-		/// The instance ID can be used to distinguish between multiple instances of the same application running at the same time on the same machine.
-		/// </para>
-		/// </remarks>
-		string InstanceId { get; }
 
 		/// <summary>
 		///     Gets the command line which was used for the current process.
@@ -205,6 +187,24 @@ namespace RI.Framework.Services
 		DateTime SessionTimestamp { get; }
 
 		/// <summary>
+		///     Gets the formatting culture which was set during start of the bootstrapping.
+		/// </summary>
+		/// <value>
+		///     The formatting culture which was set during start of the bootstrapping.
+		/// </value>
+		CultureInfo StartupCulture { get; }
+
+
+		/// <summary>
+		///     Gets the UI culture which was set during start of the bootstrapping.
+		/// </summary>
+		/// <value>
+		///     The UI culture which was set during start of the bootstrapping.
+		/// </value>
+		[SuppressMessage("ReSharper", "InconsistentNaming")]
+		CultureInfo StartupUICulture { get; }
+
+		/// <summary>
 		///     Gets the current state of the bootstrapper.
 		/// </summary>
 		/// <value>
@@ -229,7 +229,7 @@ namespace RI.Framework.Services
 		///     Starts the bootstrapping and runs the application.
 		/// </summary>
 		/// <returns>
-		/// The exit code of the application.
+		///     The exit code of the application.
 		/// </returns>
 		/// <remarks>
 		///     <note type="implement">

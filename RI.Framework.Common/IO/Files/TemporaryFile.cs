@@ -44,8 +44,8 @@ namespace RI.Framework.IO.Files
 		///     Deletes as much temporary files as possible in <see cref="TemporaryDirectory" />.
 		/// </summary>
 		/// <returns>
-		/// The list of deleted files.
-		/// If no files were deleted, an empty list is returned.
+		///     The list of deleted files.
+		///     If no files were deleted, an empty list is returned.
 		/// </returns>
 		/// <remarks>
 		///     <note type="important">

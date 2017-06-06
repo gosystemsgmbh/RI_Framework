@@ -1,12 +1,17 @@
 ﻿using System;
 
+
+
+
 namespace RI.Framework.Services.Logging
 {
 	/// <summary>
-	/// Provides extension methods for the <see cref="ILogSource"/> interface to add simple logging to types.
+	///     Provides extension methods for the <see cref="ILogSource" /> interface to add simple logging to types.
 	/// </summary>
 	public static class ILogSourceExtensions
 	{
+		#region Static Methods
+
 		/// <summary>
 		///     Logs a message.
 		/// </summary>
@@ -20,7 +25,7 @@ namespace RI.Framework.Services.Logging
 		///         If no <see cref="ILogService" /> is available, no logging is performed.
 		///     </para>
 		/// </remarks>
-		public static void Log(this ILogSource source, LogLevel severity, string format, params object[] args)
+		public static void Log (this ILogSource source, LogLevel severity, string format, params object[] args)
 		{
 			if (source == null)
 			{
@@ -29,5 +34,7 @@ namespace RI.Framework.Services.Logging
 
 			LogLocator.Log(severity, source.GetType().Name, format, args);
 		}
+
+		#endregion
 	}
 }

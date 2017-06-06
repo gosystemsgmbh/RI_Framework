@@ -94,7 +94,7 @@ namespace RI.Framework.IO.INI
 	///         Note that elements always belong to a section.
 	///         This is either the section started by the last section header or the default section if no section header appeared before the element.
 	///         When &quot;outside a section&quot; is mentioned in the description of <see cref="IniDocument" />, that default section is meant.
-	///         The default section can be identified using null or <see cref="string.Empty"/>.
+	///         The default section can be identified using null or <see cref="string.Empty" />.
 	///     </note>
 	///     <para>
 	///         <b> ESCAPING </b>

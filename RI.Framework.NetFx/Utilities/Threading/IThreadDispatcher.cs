@@ -30,6 +30,20 @@ namespace RI.Framework.Utilities.Threading
 		bool CatchExceptions { get; set; }
 
 		/// <summary>
+		///     Gets or sets the default priority.
+		/// </summary>
+		/// <value>
+		///     The default priority.
+		/// </value>
+		/// <remarks>
+		///     <note type="implement">
+		///         The default value, if not explicitly set, is expected to be half of <see cref="int.MaxValue" />.
+		///     </note>
+		/// </remarks>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="value" /> is less than zero. </exception>
+		int DefaultPriority { get; set; }
+
+		/// <summary>
 		///     Gets whether the dispatcher is running.
 		/// </summary>
 		/// <value>
@@ -38,10 +52,10 @@ namespace RI.Framework.Utilities.Threading
 		bool IsRunning { get; }
 
 		/// <summary>
-		/// Gets whether the dispatcher is shutting down.
+		///     Gets whether the dispatcher is shutting down.
 		/// </summary>
 		/// <value>
-		/// true if the dispatcher is shutting down, false otherwise.
+		///     true if the dispatcher is shutting down, false otherwise.
 		/// </value>
 		bool IsShuttingDown { get; }
 
@@ -52,20 +66,6 @@ namespace RI.Framework.Utilities.Threading
 		///     <see cref="ThreadDispatcherShutdownMode.None" /> if the dispatcher is not running or is not being shut down, <see cref="ThreadDispatcherShutdownMode.FinishPending" /> if the dispatcher is shutting down and all already pending delegates are processed before the shutdown completes, <see cref="ThreadDispatcherShutdownMode.DiscardPending" /> if the dispatcher is shutting down and all already pending delegates are discarded.
 		/// </value>
 		ThreadDispatcherShutdownMode ShutdownMode { get; }
-
-		/// <summary>
-		/// Gets or sets the default priority.
-		/// </summary>
-		/// <value>
-		/// The default priority.
-		/// </value>
-		/// <remarks>
-		/// <note type="implement">
-		/// The default value, if not explicitly set, is expected to be half of <see cref="int.MaxValue"/>.
-		/// </note>
-		/// </remarks>
-		/// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> is less than zero.</exception>
-		int DefaultPriority { get; set; }
 
 		/// <summary>
 		///     Raised when an exception occurred during execution of a enqueued delegate.
@@ -104,9 +104,9 @@ namespace RI.Framework.Utilities.Threading
 		///     The dispatcher operation object which can be used to track the execution of the enqueued delegate.
 		/// </returns>
 		/// <remarks>
-		/// <para>
-		/// The delegate is enqueued with the default priority (<see cref="DefaultPriority"/>).
-		/// </para>
+		///     <para>
+		///         The delegate is enqueued with the default priority (<see cref="DefaultPriority" />).
+		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="action" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> The dispatcher is not running or is being shut down. </exception>
@@ -115,21 +115,21 @@ namespace RI.Framework.Utilities.Threading
 		/// <summary>
 		///     Enqueues a delegate to the dispatchers queue and does not wait for its execution.
 		/// </summary>
-		/// <param name="priority">The priority.</param>
+		/// <param name="priority"> The priority. </param>
 		/// <param name="action"> The delegate. </param>
 		/// <param name="parameters"> Optional parameters of the delagate. </param>
 		/// <returns>
 		///     The dispatcher operation object which can be used to track the execution of the enqueued delegate.
 		/// </returns>
 		/// <remarks>
-		/// <para>
-		/// The higher the priority, the earlier the operation is execution (highest priority, first executed).
-		/// </para>
+		///     <para>
+		///         The higher the priority, the earlier the operation is execution (highest priority, first executed).
+		///     </para>
 		/// </remarks>
-		/// <exception cref="ArgumentOutOfRangeException"><paramref name="priority"/> is less than zero.</exception>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="priority" /> is less than zero. </exception>
 		/// <exception cref="ArgumentNullException"> <paramref name="action" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> The dispatcher is not running or is being shut down. </exception>
-		ThreadDispatcherOperation Post(int priority, Delegate action, params object[] parameters);
+		ThreadDispatcherOperation Post (int priority, Delegate action, params object[] parameters);
 
 		/// <summary>
 		///     Enqueues a delegate to the dispatchers queue and waits for its execution to be completed.
@@ -140,11 +140,11 @@ namespace RI.Framework.Utilities.Threading
 		///     The return value of the executed delegate or null if the delegate has no return value.
 		/// </returns>
 		/// <remarks>
-		/// <remarks>
-		/// <para>
-		/// The delegate is enqueued with the default priority (<see cref="DefaultPriority"/>).
-		/// </para>
-		/// </remarks>
+		///     <remarks>
+		///         <para>
+		///             The delegate is enqueued with the default priority (<see cref="DefaultPriority" />).
+		///         </para>
+		///     </remarks>
 		///     <para>
 		///         <see cref="Send(Delegate,object[])" /> blocks until all previously enqueued delegates were processed.
 		///     </para>
@@ -160,16 +160,16 @@ namespace RI.Framework.Utilities.Threading
 		/// <summary>
 		///     Enqueues a delegate to the dispatchers queue and waits for its execution to be completed.
 		/// </summary>
-		/// <param name="priority">The priority.</param>
+		/// <param name="priority"> The priority. </param>
 		/// <param name="action"> The delegate. </param>
 		/// <param name="parameters"> Optional parameters of the delagate. </param>
 		/// <returns>
 		///     The return value of the executed delegate or null if the delegate has no return value.
 		/// </returns>
 		/// <remarks>
-		/// <para>
-		/// The higher the priority, the earlier the operation is execution (highest priority, first executed).
-		/// </para>
+		///     <para>
+		///         The higher the priority, the earlier the operation is execution (highest priority, first executed).
+		///     </para>
 		///     <para>
 		///         <see cref="Send(int,Delegate,object[])" /> blocks until all previously enqueued delegates were processed.
 		///     </para>
@@ -178,7 +178,7 @@ namespace RI.Framework.Utilities.Threading
 		///         Therefore, <see cref="Send(int,Delegate,object[])" /> calls can be cascaded.
 		///     </para>
 		/// </remarks>
-		/// <exception cref="ArgumentOutOfRangeException"><paramref name="priority"/> is less than zero.</exception>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="priority" /> is less than zero. </exception>
 		/// <exception cref="ArgumentNullException"> <paramref name="action" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> The dispatcher is not running or is being shut down. </exception>
 		object Send (int priority, Delegate action, params object[] parameters);
@@ -192,11 +192,11 @@ namespace RI.Framework.Utilities.Threading
 		///     The return value of the executed delegate or null if the delegate has no return value.
 		/// </returns>
 		/// <remarks>
-		/// <remarks>
-		/// <para>
-		/// The delegate is enqueued with the default priority (<see cref="DefaultPriority"/>).
-		/// </para>
-		/// </remarks>
+		///     <remarks>
+		///         <para>
+		///             The delegate is enqueued with the default priority (<see cref="DefaultPriority" />).
+		///         </para>
+		///     </remarks>
 		///     <para>
 		///         <see cref="Send(Delegate,object[])" /> blocks until all previously enqueued delegates were processed.
 		///     </para>
@@ -212,16 +212,16 @@ namespace RI.Framework.Utilities.Threading
 		/// <summary>
 		///     Enqueues a delegate to the dispatchers queue and waits for its execution to be completed.
 		/// </summary>
-		/// <param name="priority">The priority.</param>
+		/// <param name="priority"> The priority. </param>
 		/// <param name="action"> The delegate. </param>
 		/// <param name="parameters"> Optional parameters of the delagate. </param>
 		/// <returns>
 		///     The return value of the executed delegate or null if the delegate has no return value.
 		/// </returns>
 		/// <remarks>
-		/// <para>
-		/// The higher the priority, the earlier the operation is execution (highest priority, first executed).
-		/// </para>
+		///     <para>
+		///         The higher the priority, the earlier the operation is execution (highest priority, first executed).
+		///     </para>
 		///     <para>
 		///         <see cref="Send(int,Delegate,object[])" /> blocks until all previously enqueued delegates were processed.
 		///     </para>
@@ -230,7 +230,7 @@ namespace RI.Framework.Utilities.Threading
 		///         Therefore, <see cref="Send(int,Delegate,object[])" /> calls can be cascaded.
 		///     </para>
 		/// </remarks>
-		/// <exception cref="ArgumentOutOfRangeException"><paramref name="priority"/> is less than zero.</exception>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="priority" /> is less than zero. </exception>
 		/// <exception cref="ArgumentNullException"> <paramref name="action" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> The dispatcher is not running or is being shut down. </exception>
 		Task<object> SendAsync (int priority, Delegate action, params object[] parameters);

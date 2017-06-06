@@ -15,10 +15,10 @@ namespace RI.Framework.Utilities.Threading
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         A <see cref="ThreadDispatcher" /> provides a queue for delegates, filled through <see cref="Send(Delegate,object[])" />/<see cref="Send(int,Delegate,object[])"/> and <see cref="Post(Delegate,object[])" />/<see cref="Post(int,System.Delegate,object[])"/>, which is processed on the thread where <see cref="Run" /> is called (<see cref="Run" /> blocks while executing the queue until <see cref="Shutdown" /> is called).
+	///         A <see cref="ThreadDispatcher" /> provides a queue for delegates, filled through <see cref="Send(Delegate,object[])" />/<see cref="Send(int,Delegate,object[])" /> and <see cref="Post(Delegate,object[])" />/<see cref="Post(int,System.Delegate,object[])" />, which is processed on the thread where <see cref="Run" /> is called (<see cref="Run" /> blocks while executing the queue until <see cref="Shutdown" /> is called).
 	///     </para>
 	///     <para>
-	///         The delegates are executed in the order they are added to the queue through <see cref="Send(Delegate,object[])" />/<see cref="Send(int,Delegate,object[])"/> or <see cref="Post(Delegate,object[])" />/<see cref="Post(int,System.Delegate,object[])"/>.
+	///         The delegates are executed in the order they are added to the queue through <see cref="Send(Delegate,object[])" />/<see cref="Send(int,Delegate,object[])" /> or <see cref="Post(Delegate,object[])" />/<see cref="Post(int,System.Delegate,object[])" />.
 	///         When all delegates are executed, or the queue is empty respectively, <see cref="ThreadDispatcher" /> waits for new delegates to process.
 	///     </para>
 	///     <para>
@@ -27,6 +27,21 @@ namespace RI.Framework.Utilities.Threading
 	/// </remarks>
 	public sealed class ThreadDispatcher : IThreadDispatcher, ISynchronizable
 	{
+		#region Constants
+
+		/// <summary>
+		///     Gets the default value for <see cref="DefaultPriority" /> if it is not explicitly set.
+		/// </summary>
+		/// <value>
+		///     The default value for <see cref="DefaultPriority" /> if it is not explicitly set.
+		/// </value>
+		public const int DefaultPriorityValue = int.MaxValue / 2;
+
+		#endregion
+
+
+
+
 		#region Instance Constructor/Destructor
 
 		/// <summary>
@@ -67,21 +82,12 @@ namespace RI.Framework.Utilities.Threading
 
 
 
-		/// <summary>
-		/// Gets the default value for <see cref="DefaultPriority"/> if it is not explicitly set.
-		/// </summary>
-		/// <value>
-		/// The default value for <see cref="DefaultPriority"/> if it is not explicitly set.
-		/// </value>
-		public const int DefaultPriorityValue = int.MaxValue / 2;
-
-
-
 
 		#region Instance Fields
 
-		private int _defaultPriority;
 		private bool _catchExceptions;
+
+		private int _defaultPriority;
 		private ThreadDispatcherShutdownMode _shutdownMode;
 
 		#endregion
@@ -110,7 +116,7 @@ namespace RI.Framework.Utilities.Threading
 		///     Processes the delegate queue or waits for new delegates until <see cref="Shutdown" /> is called.
 		/// </summary>
 		/// <exception cref="InvalidOperationException"> The dispatcher is already running. </exception>
-		/// <exception cref="ThreadDispatcherException"> The execution of a delegate has thrown an exception and <see cref="CatchExceptions"/> is false. </exception>
+		/// <exception cref="ThreadDispatcherException"> The execution of a delegate has thrown an exception and <see cref="CatchExceptions" /> is false. </exception>
 		public void Run ()
 		{
 			SynchronizationContext synchronizationContextBackup = SynchronizationContext.Current;
@@ -291,6 +297,30 @@ namespace RI.Framework.Utilities.Threading
 		}
 
 		/// <inheritdoc />
+		public int DefaultPriority
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._defaultPriority;
+				}
+			}
+			set
+			{
+				if (value < 0)
+				{
+					throw new ArgumentOutOfRangeException(nameof(value));
+				}
+
+				lock (this.SyncRoot)
+				{
+					this._defaultPriority = value;
+				}
+			}
+		}
+
+		/// <inheritdoc />
 		public bool IsRunning
 		{
 			get
@@ -328,30 +358,6 @@ namespace RI.Framework.Utilities.Threading
 				lock (this.SyncRoot)
 				{
 					this._shutdownMode = value;
-				}
-			}
-		}
-
-		/// <inheritdoc />
-		public int DefaultPriority
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					return this._defaultPriority;
-				}
-			}
-			set
-			{
-				if (value < 0)
-				{
-					throw new ArgumentOutOfRangeException(nameof(value));
-				}
-
-				lock (this.SyncRoot)
-				{
-					this._defaultPriority = value;
 				}
 			}
 		}

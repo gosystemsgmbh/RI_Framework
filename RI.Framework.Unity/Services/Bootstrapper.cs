@@ -326,21 +326,6 @@ namespace RI.Framework.Services
 		}
 
 		/// <summary>
-		///     Called when the bootstrapper singletons are to be configured.
-		/// </summary>
-		/// <remarks>
-		///     <note type="implement">
-		///         The default implementation sets the singleton instance for <see cref="Bootstrapper" /> and <see cref="CompositionContainer" /> (<see cref="Container" />) using <see cref="Singleton{T}" />.
-		///     </note>
-		/// </remarks>
-		protected virtual void ConfigureSingletons ()
-		{
-			Singleton<Bootstrapper>.Ensure(() => this);
-			Singleton<IBootstrapper>.Ensure(() => this);
-			Singleton<CompositionContainer>.Ensure(() => this.Container);
-		}
-
-		/// <summary>
 		///     Called when the used composition container (<see cref="Container" />) needs to be configured.
 		/// </summary>
 		/// <remarks>
@@ -424,6 +409,21 @@ namespace RI.Framework.Services
 				this.Log(LogLevel.Debug, "Using default dispatcher service");
 				this.Container.AddCatalog(new TypeCatalog(typeof(DispatcherService)));
 			}
+		}
+
+		/// <summary>
+		///     Called when the bootstrapper singletons are to be configured.
+		/// </summary>
+		/// <remarks>
+		///     <note type="implement">
+		///         The default implementation sets the singleton instance for <see cref="Bootstrapper" /> and <see cref="CompositionContainer" /> (<see cref="Container" />) using <see cref="Singleton{T}" />.
+		///     </note>
+		/// </remarks>
+		protected virtual void ConfigureSingletons ()
+		{
+			Singleton<Bootstrapper>.Ensure(() => this);
+			Singleton<IBootstrapper>.Ensure(() => this);
+			Singleton<CompositionContainer>.Ensure(() => this.Container);
 		}
 
 		/// <summary>

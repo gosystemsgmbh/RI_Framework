@@ -156,12 +156,13 @@ namespace RI.Framework.Utilities.Threading
 			}
 		}
 
-		private ThreadDispatcher Dispatcher { get; set; }
 		private Delegate Action { get; set; }
-		private object[] Parameters { get; set; }
+
+		private ThreadDispatcher Dispatcher { get; set; }
 
 		private ManualResetEvent OperationDone { get; set; }
 		private TaskCompletionSource<object> OperationDoneTask { get; set; }
+		private object[] Parameters { get; set; }
 
 		private object SyncRoot { get; set; }
 
@@ -207,9 +208,9 @@ namespace RI.Framework.Utilities.Threading
 		///     Waits indefinitely for the dispatcher operation to finish processing.
 		/// </summary>
 		/// <remarks>
-		/// <note type="note">
-		/// This method does not unwrap or rethrow operation exceptions and does not throw an exception when the operation was canceled or aborted.
-		/// </note>
+		///     <note type="note">
+		///         This method does not unwrap or rethrow operation exceptions and does not throw an exception when the operation was canceled or aborted.
+		///     </note>
 		/// </remarks>
 		public void Wait ()
 		{
@@ -221,11 +222,11 @@ namespace RI.Framework.Utilities.Threading
 		/// </summary>
 		/// <param name="cancellationToken"> The cancellation token which can be used to cancel the wait. </param>
 		/// <remarks>
-		/// <note type="note">
-		/// This method does not unwrap or rethrow operation exceptions and does not throw an exception when the operation was canceled or aborted.
-		/// </note>
+		///     <note type="note">
+		///         This method does not unwrap or rethrow operation exceptions and does not throw an exception when the operation was canceled or aborted.
+		///     </note>
 		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="cancellationToken"/> is null.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="cancellationToken" /> is null. </exception>
 		public void Wait (CancellationToken cancellationToken)
 		{
 			this.Wait(Timeout.Infinite, cancellationToken);
@@ -239,9 +240,9 @@ namespace RI.Framework.Utilities.Threading
 		///     true if the dispatcher operation finished processing within the specified timeout, false otherwise.
 		/// </returns>
 		/// <remarks>
-		/// <note type="note">
-		/// This method does not unwrap or rethrow operation exceptions and does not throw an exception when the operation was canceled or aborted.
-		/// </note>
+		///     <note type="note">
+		///         This method does not unwrap or rethrow operation exceptions and does not throw an exception when the operation was canceled or aborted.
+		///     </note>
 		/// </remarks>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="timeout" /> is negative. </exception>
 		public bool Wait (TimeSpan timeout)
@@ -258,12 +259,12 @@ namespace RI.Framework.Utilities.Threading
 		///     true if the dispatcher operation finished processing within the specified timeout or was cancelled, false otherwise.
 		/// </returns>
 		/// <remarks>
-		/// <note type="note">
-		/// This method does not unwrap or rethrow operation exceptions and does not throw an exception when the operation was canceled or aborted.
-		/// </note>
+		///     <note type="note">
+		///         This method does not unwrap or rethrow operation exceptions and does not throw an exception when the operation was canceled or aborted.
+		///     </note>
 		/// </remarks>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="timeout" /> is negative. </exception>
-		/// <exception cref="ArgumentNullException"><paramref name="cancellationToken"/> is null.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="cancellationToken" /> is null. </exception>
 		public bool Wait (TimeSpan timeout, CancellationToken cancellationToken)
 		{
 			return this.Wait((int)timeout.TotalMilliseconds, cancellationToken);
@@ -277,9 +278,9 @@ namespace RI.Framework.Utilities.Threading
 		///     true if the dispatcher operation finished processing within the specified timeout, false otherwise.
 		/// </returns>
 		/// <remarks>
-		/// <note type="note">
-		/// This method does not unwrap or rethrow operation exceptions and does not throw an exception when the operation was canceled or aborted.
-		/// </note>
+		///     <note type="note">
+		///         This method does not unwrap or rethrow operation exceptions and does not throw an exception when the operation was canceled or aborted.
+		///     </note>
 		/// </remarks>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="milliseconds" /> is negative. </exception>
 		public bool Wait (int milliseconds)
@@ -296,12 +297,12 @@ namespace RI.Framework.Utilities.Threading
 		///     true if the dispatcher operation finished processing within the specified timeout or was cancelled, false otherwise.
 		/// </returns>
 		/// <remarks>
-		/// <note type="note">
-		/// This method does not unwrap or rethrow operation exceptions and does not throw an exception when the operation was canceled or aborted.
-		/// </note>
+		///     <note type="note">
+		///         This method does not unwrap or rethrow operation exceptions and does not throw an exception when the operation was canceled or aborted.
+		///     </note>
 		/// </remarks>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="milliseconds" /> is negative. </exception>
-		/// <exception cref="ArgumentNullException"><paramref name="cancellationToken"/> is null.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="cancellationToken" /> is null. </exception>
 		public bool Wait (int milliseconds, CancellationToken cancellationToken)
 		{
 			if ((milliseconds < 0) && (milliseconds != Timeout.Infinite))
@@ -314,22 +315,18 @@ namespace RI.Framework.Utilities.Threading
 				throw new ArgumentNullException(nameof(cancellationToken));
 			}
 
-			return WaitHandle.WaitAny(new[]
-			{
-				cancellationToken.WaitHandle,
-				this.OperationDone
-			}, milliseconds) != WaitHandle.WaitTimeout;
+			return WaitHandle.WaitAny(new[] {cancellationToken.WaitHandle, this.OperationDone}, milliseconds) != WaitHandle.WaitTimeout;
 		}
 
 		/// <summary>
 		///     Waits indefinitely for the dispatcher operation to finish processing.
 		/// </summary>
 		/// <remarks>
-		/// <note type="note">
-		/// This method unwraps and rethrows operation exceptions and also throws an exception when the operation was canceled or aborted (<see cref="TaskCanceledException"/>).
-		/// </note>
+		///     <note type="note">
+		///         This method unwraps and rethrows operation exceptions and also throws an exception when the operation was canceled or aborted (<see cref="TaskCanceledException" />).
+		///     </note>
 		/// </remarks>
-		/// <exception cref="TaskCanceledException">The operation was canceled.</exception>
+		/// <exception cref="TaskCanceledException"> The operation was canceled. </exception>
 		public async Task WaitAsync ()
 		{
 			await this.WaitAsync(Timeout.Infinite);
@@ -340,12 +337,12 @@ namespace RI.Framework.Utilities.Threading
 		/// </summary>
 		/// <param name="cancellationToken"> The cancellation token which can be used to cancel the wait. </param>
 		/// <remarks>
-		/// <note type="note">
-		/// This method unwraps and rethrows operation exceptions and also throws an exception when the operation was canceled or aborted (<see cref="TaskCanceledException"/>).
-		/// </note>
+		///     <note type="note">
+		///         This method unwraps and rethrows operation exceptions and also throws an exception when the operation was canceled or aborted (<see cref="TaskCanceledException" />).
+		///     </note>
 		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="cancellationToken"/> is null.</exception>
-		/// <exception cref="TaskCanceledException">The operation was canceled.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="cancellationToken" /> is null. </exception>
+		/// <exception cref="TaskCanceledException"> The operation was canceled. </exception>
 		public async Task WaitAsync (CancellationToken cancellationToken)
 		{
 			await this.WaitAsync(Timeout.Infinite, cancellationToken);
@@ -359,12 +356,12 @@ namespace RI.Framework.Utilities.Threading
 		///     true if the dispatcher operation finished processing within the specified timeout, false otherwise.
 		/// </returns>
 		/// <remarks>
-		/// <note type="note">
-		/// This method unwraps and rethrows operation exceptions and also throws an exception when the operation was canceled or aborted (<see cref="TaskCanceledException"/>).
-		/// </note>
+		///     <note type="note">
+		///         This method unwraps and rethrows operation exceptions and also throws an exception when the operation was canceled or aborted (<see cref="TaskCanceledException" />).
+		///     </note>
 		/// </remarks>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="timeout" /> is negative. </exception>
-		/// <exception cref="TaskCanceledException">The operation was canceled.</exception>
+		/// <exception cref="TaskCanceledException"> The operation was canceled. </exception>
 		public async Task<bool> WaitAsync (TimeSpan timeout)
 		{
 			return await this.WaitAsync((int)timeout.TotalMilliseconds);
@@ -379,14 +376,14 @@ namespace RI.Framework.Utilities.Threading
 		///     true if the dispatcher operation finished processing within the specified timeout or was canceled through the cancellation token, false otherwise.
 		/// </returns>
 		/// <remarks>
-		/// <note type="note">
-		/// This method unwraps and rethrows operation exceptions and also throws an exception when the operation was canceled or aborted (<see cref="TaskCanceledException"/>).
-		/// </note>
+		///     <note type="note">
+		///         This method unwraps and rethrows operation exceptions and also throws an exception when the operation was canceled or aborted (<see cref="TaskCanceledException" />).
+		///     </note>
 		/// </remarks>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="timeout" /> is negative. </exception>
-		/// <exception cref="ArgumentNullException"><paramref name="cancellationToken"/> is null.</exception>
-		/// <exception cref="TaskCanceledException">The operation was canceled.</exception>
-		public async Task<bool> WaitAsync(TimeSpan timeout, CancellationToken cancellationToken)
+		/// <exception cref="ArgumentNullException"> <paramref name="cancellationToken" /> is null. </exception>
+		/// <exception cref="TaskCanceledException"> The operation was canceled. </exception>
+		public async Task<bool> WaitAsync (TimeSpan timeout, CancellationToken cancellationToken)
 		{
 			return await this.WaitAsync((int)timeout.TotalMilliseconds, cancellationToken);
 		}
@@ -399,12 +396,12 @@ namespace RI.Framework.Utilities.Threading
 		///     true if the dispatcher operation finished processing within the specified timeout, false otherwise.
 		/// </returns>
 		/// <remarks>
-		/// <note type="note">
-		/// This method unwraps and rethrows operation exceptions and also throws an exception when the operation was canceled or aborted (<see cref="TaskCanceledException"/>).
-		/// </note>
+		///     <note type="note">
+		///         This method unwraps and rethrows operation exceptions and also throws an exception when the operation was canceled or aborted (<see cref="TaskCanceledException" />).
+		///     </note>
 		/// </remarks>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="milliseconds" /> is negative. </exception>
-		/// <exception cref="TaskCanceledException">The operation was canceled.</exception>
+		/// <exception cref="TaskCanceledException"> The operation was canceled. </exception>
 		public async Task<bool> WaitAsync (int milliseconds)
 		{
 			return await this.WaitAsync(milliseconds, CancellationToken.None);
@@ -419,14 +416,14 @@ namespace RI.Framework.Utilities.Threading
 		///     true if the dispatcher operation finished processing within the specified timeout or was canceled through the cancellation token, false otherwise.
 		/// </returns>
 		/// <remarks>
-		/// <note type="note">
-		/// This method unwraps and rethrows operation exceptions and also throws an exception when the operation was canceled or aborted (<see cref="TaskCanceledException"/>).
-		/// </note>
+		///     <note type="note">
+		///         This method unwraps and rethrows operation exceptions and also throws an exception when the operation was canceled or aborted (<see cref="TaskCanceledException" />).
+		///     </note>
 		/// </remarks>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="milliseconds" /> is negative. </exception>
-		/// <exception cref="ArgumentNullException"><paramref name="cancellationToken"/> is null.</exception>
-		/// <exception cref="TaskCanceledException">The operation was canceled.</exception>
-		public async Task<bool> WaitAsync(int milliseconds, CancellationToken cancellationToken)
+		/// <exception cref="ArgumentNullException"> <paramref name="cancellationToken" /> is null. </exception>
+		/// <exception cref="TaskCanceledException"> The operation was canceled. </exception>
+		public async Task<bool> WaitAsync (int milliseconds, CancellationToken cancellationToken)
 		{
 			if ((milliseconds < 0) && (milliseconds != Timeout.Infinite))
 			{

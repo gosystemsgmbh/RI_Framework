@@ -66,6 +66,9 @@ namespace RI.Framework.Services.Logging
 		#region Interface: ILogService
 
 		/// <inheritdoc />
+		public ILogFilter Filter { get; set; }
+
+		/// <inheritdoc />
 		public IEnumerable<ILogWriter> Writers
 		{
 			get
@@ -81,9 +84,6 @@ namespace RI.Framework.Services.Logging
 				}
 			}
 		}
-
-		/// <inheritdoc />
-		public ILogFilter Filter { get; set; }
 
 		/// <inheritdoc />
 		public void AddWriter (ILogWriter logWriter)

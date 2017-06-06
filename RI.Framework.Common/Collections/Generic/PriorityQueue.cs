@@ -222,13 +222,13 @@ namespace RI.Framework.Collections.Generic
 		}
 
 		/// <summary>
-		/// Moves all items of this queue to another queue while keeping the assigned priorities.
+		///     Moves all items of this queue to another queue while keeping the assigned priorities.
 		/// </summary>
-		/// <param name="queue">The other queue the items are moved to.</param>
+		/// <param name="queue"> The other queue the items are moved to. </param>
 		/// <returns>
-		/// The number of moved items.
+		///     The number of moved items.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="queue"/> is null.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="queue" /> is null. </exception>
 		public int MoveTo (PriorityQueue<T> queue)
 		{
 			if (queue == null)

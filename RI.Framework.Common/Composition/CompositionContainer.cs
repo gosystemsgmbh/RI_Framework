@@ -400,6 +400,20 @@ namespace RI.Framework.Composition
 			return type.IsClass && (!type.IsAbstract);
 		}
 
+		private static object CreateArray (Type type, List<object> content)
+		{
+			Array array = Array.CreateInstance(type, content.Count);
+			((ICollection)content).CopyTo(array, 0);
+			return array;
+		}
+
+		private static Type GetEnumerableType (Type type)
+		{
+			Type genericType = type.IsGenericType ? type.GetGenericTypeDefinition() : null;
+			Type typeArgument = type.IsGenericType ? type.GetGenericArguments()[0] : null;
+			return (genericType == typeof(IEnumerable<>)) ? typeArgument : null;
+		}
+
 		private static void GetExportsOfTypeInternal (Type type, bool isSelf, HashSet<string> exports)
 		{
 			object[] attributes = type.GetCustomAttributes(typeof(ExportAttribute), false);
@@ -411,6 +425,13 @@ namespace RI.Framework.Composition
 					exports.Add(name);
 				}
 			}
+		}
+
+		private static Type GetLazyLoadDelegateType (Type type)
+		{
+			Type genericType = type.IsGenericType ? type.GetGenericTypeDefinition() : null;
+			Type typeArgument = type.IsGenericType ? type.GetGenericArguments()[0] : null;
+			return (genericType == typeof(Func<>)) ? typeArgument : null;
 		}
 
 		private static void IsExportPrivateInternal (Type type, bool isSelf, HashSet<bool> privates)
@@ -442,27 +463,6 @@ namespace RI.Framework.Composition
 #endif
 		}
 
-		private static Type GetEnumerableType (Type type)
-		{
-			Type genericType = type.IsGenericType ? type.GetGenericTypeDefinition() : null;
-			Type typeArgument = type.IsGenericType ? type.GetGenericArguments()[0] : null;
-			return (genericType == typeof(IEnumerable<>)) ? typeArgument : null;
-		}
-
-		private static Type GetLazyLoadDelegateType(Type type)
-		{
-			Type genericType = type.IsGenericType ? type.GetGenericTypeDefinition() : null;
-			Type typeArgument = type.IsGenericType ? type.GetGenericArguments()[0] : null;
-			return (genericType == typeof(Func<>)) ? typeArgument : null;
-		}
-
-		private static object CreateArray (Type type, List<object> content)
-		{
-			Array array = Array.CreateInstance(type, content.Count);
-			((ICollection)content).CopyTo(array, 0);
-			return array;
-		}
-
 		#endregion
 
 
@@ -492,15 +492,15 @@ namespace RI.Framework.Composition
 		}
 
 		/// <summary>
-		/// Creates a new instance of <see cref="CompositionContainer"/>.
+		///     Creates a new instance of <see cref="CompositionContainer" />.
 		/// </summary>
-		/// <param name="parentContainer">The used parent composition container.</param>
+		/// <param name="parentContainer"> The used parent composition container. </param>
 		/// <remarks>
-		/// <para>
-		/// The created composition container will be a child composition container with <paramref name="parentContainer"/> as its parent composition container.
-		/// </para>
+		///     <para>
+		///         The created composition container will be a child composition container with <paramref name="parentContainer" /> as its parent composition container.
+		///     </para>
 		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="parentContainer"/> is null.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="parentContainer" /> is null. </exception>
 		public CompositionContainer (CompositionContainer parentContainer)
 			: this()
 		{
@@ -560,22 +560,22 @@ namespace RI.Framework.Composition
 		public bool LoggingEnabled { get; set; }
 
 		/// <summary>
-		/// Gets the parent composition container if this composition container is a child composition container.
+		///     Gets the parent composition container if this composition container is a child composition container.
 		/// </summary>
 		/// <value>
-		/// The parent composition container or null if this composition container is not a child composition container.
+		///     The parent composition container or null if this composition container is not a child composition container.
 		/// </value>
 		public CompositionContainer ParentContainer { get; private set; }
 
 		private EventHandler CatalogRecomposeRequestHandler { get; set; }
-
-		private EventHandler ParentContainerCompositionChangedHandler { get; set; }
 
 		private List<CompositionCatalog> Catalogs { get; set; }
 
 		private Dictionary<string, CompositionItem> Composition { get; set; }
 
 		private List<CompositionCatalogItem> Instances { get; set; }
+
+		private EventHandler ParentContainerCompositionChangedHandler { get; set; }
 
 		private List<CompositionCatalogItem> Types { get; set; }
 
@@ -1003,7 +1003,7 @@ namespace RI.Framework.Composition
 		/// <summary>
 		///     Determines whether there is at least one value for importing of the specified types default name.
 		/// </summary>
-		/// <typeparam name="T">The type to check whether its default name can be resolved to at least one value for importing.</typeparam>
+		/// <typeparam name="T"> The type to check whether its default name can be resolved to at least one value for importing. </typeparam>
 		/// <returns>
 		///     true if there is at least one value for the specified types default name, false otherwise.
 		/// </returns>
@@ -1012,7 +1012,7 @@ namespace RI.Framework.Composition
 		///         The imports for the specified types default name are not actually resolved, e.g. type exports are not instantiated.
 		///     </note>
 		/// </remarks>
-		public bool HasExport<T>()
+		public bool HasExport <T> ()
 			where T : class
 		{
 			return this.HasExport(typeof(T));
@@ -1446,6 +1446,17 @@ namespace RI.Framework.Composition
 			this.Types.Add(new CompositionCatalogItem(name, type, privateExport));
 		}
 
+		private object CreateGenericLazyLoadDelegate (Type type)
+		{
+			Type enumerableType = CompositionContainer.GetEnumerableType(type);
+			string resolveName = enumerableType == null ? nameof(CompositionContainer.GetExport) : nameof(CompositionContainer.GetExports);
+			MethodInfo genericMethod = this.GetType().GetMethod(resolveName, new Type[] { });
+			MethodInfo resolveMethod = genericMethod.MakeGenericMethod(type);
+			MethodCallExpression resolveCall = Expression.Call(Expression.Constant(this), resolveMethod);
+			Delegate resolveLambda = Expression.Lambda(resolveCall).Compile();
+			return resolveLambda;
+		}
+
 		private List<object> GetExistingInstancesInternal (bool includeParentInstances)
 		{
 			List<object> instances = new List<object>();
@@ -1678,23 +1689,12 @@ namespace RI.Framework.Composition
 			return DirectLinqExtensions.Where(instances, x => compatibleType.IsAssignableFrom(x.GetType()));
 		}
 
-		private object CreateGenericLazyLoadDelegate (Type type)
-		{
-			Type enumerableType = CompositionContainer.GetEnumerableType(type);
-			string resolveName = enumerableType == null ? nameof(CompositionContainer.GetExport) : nameof(CompositionContainer.GetExports);
-			MethodInfo genericMethod = this.GetType().GetMethod(resolveName, new Type[] { });
-			MethodInfo resolveMethod = genericMethod.MakeGenericMethod(type);
-			MethodCallExpression resolveCall = Expression.Call(Expression.Constant(this), resolveMethod);
-			Delegate resolveLambda = Expression.Lambda(resolveCall).Compile();
-			return resolveLambda;
-		}
-
 		private void HandleCatalogRecomposeRequest (object sender, EventArgs e)
 		{
 			this.UpdateComposition(true);
 		}
 
-		private void HandleParentContainerCompositionChanged(object sender, EventArgs e)
+		private void HandleParentContainerCompositionChanged (object sender, EventArgs e)
 		{
 			this.UpdateComposition(true);
 		}

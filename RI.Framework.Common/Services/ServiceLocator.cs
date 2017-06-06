@@ -58,9 +58,9 @@ namespace RI.Framework.Services
 		///     true if caching is used, false otherwise.
 		/// </value>
 		/// <remarks>
-		/// <para>
-		/// The default value is true.
-		/// </para>
+		///     <para>
+		///         The default value is true.
+		///     </para>
 		/// </remarks>
 		public static bool UseCaching { get; set; } = true;
 
@@ -71,9 +71,9 @@ namespace RI.Framework.Services
 		///     true if connected to <see cref="Singleton" /> / <see cref="Singleton{T}" />, false otherwise.
 		/// </value>
 		/// <remarks>
-		/// <para>
-		/// The default value is true.
-		/// </para>
+		///     <para>
+		///         The default value is true.
+		///     </para>
 		/// </remarks>
 		public static bool UseSingletons { get; set; } = true;
 
@@ -355,10 +355,7 @@ namespace RI.Framework.Services
 				object singleton = Singleton.Get(typeHint);
 				if (singleton != null)
 				{
-					resolved = new object[]
-					{
-						singleton
-					};
+					resolved = new object[] {singleton};
 				}
 				else
 				{

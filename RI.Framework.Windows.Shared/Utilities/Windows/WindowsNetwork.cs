@@ -43,7 +43,7 @@ namespace RI.Framework.Utilities.Windows
 		///         Therefore, this method should only be seen as a &quot;hint to Windows what to do&quot;.
 		///     </note>
 		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="resource"/> is null.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="resource" /> is null. </exception>
 		public static void CloseConnection (string resource, bool force)
 		{
 			if (resource == null)
@@ -71,7 +71,7 @@ namespace RI.Framework.Utilities.Windows
 		///         This is even more true for using interactive logon (<paramref name="interactive" />).
 		///     </note>
 		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="resource"/> is null.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="resource" /> is null. </exception>
 		/// <exception cref="Win32Exception"> An unknown error occurred which could not be translated to <see cref="WindowsNetworkError" />. </exception>
 		public static WindowsNetworkError OpenConnection (string resource, string username, string password, bool interactive)
 		{

@@ -2,6 +2,9 @@
 using System.Threading;
 using System.Threading.Tasks;
 
+
+
+
 namespace RI.Framework.Utilities.Threading
 {
 	/// <summary>
@@ -41,8 +44,9 @@ namespace RI.Framework.Utilities.Threading
 
 		#region Instance Fields
 
-		private int _defaultPriority;
 		private bool _catchExceptions;
+
+		private int _defaultPriority;
 		private bool _finishPendingDelegatesOnShutdown;
 		private bool _isBackgroundThread;
 		private string _threadName;
@@ -361,18 +365,6 @@ namespace RI.Framework.Utilities.Threading
 		}
 
 		/// <inheritdoc />
-		public ThreadDispatcherShutdownMode ShutdownMode
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					return this.DispatcherInternal?.ShutdownMode ?? ThreadDispatcherShutdownMode.None;
-				}
-			}
-		}
-
-		/// <inheritdoc />
 		public int DefaultPriority
 		{
 			get
@@ -404,6 +396,18 @@ namespace RI.Framework.Utilities.Threading
 				lock (this.SyncRoot)
 				{
 					return this.DispatcherInternal.IsShuttingDown;
+				}
+			}
+		}
+
+		/// <inheritdoc />
+		public ThreadDispatcherShutdownMode ShutdownMode
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this.DispatcherInternal?.ShutdownMode ?? ThreadDispatcherShutdownMode.None;
 				}
 			}
 		}

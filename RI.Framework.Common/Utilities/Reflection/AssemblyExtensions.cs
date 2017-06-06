@@ -6,6 +6,9 @@ using System.Text;
 
 using RI.Framework.Utilities.Exceptions;
 
+
+
+
 namespace RI.Framework.Utilities.Reflection
 {
 	/// <summary>
@@ -126,6 +129,48 @@ namespace RI.Framework.Utilities.Reflection
 			}
 
 			return ((AssemblyDescriptionAttribute)attributes[0]).Description;
+		}
+
+		/// <summary>
+		///     Gets the stream of an embedded file.
+		/// </summary>
+		/// <param name="assembly"> The assembly. </param>
+		/// <param name="file"> The name of the embedded resource or the file which is embedded in the assembly respectively. </param>
+		/// <returns>
+		///     The stream to access the embedded file or null if the embedded file was not found.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="assembly" /> or <paramref name="file" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="file" /> is an empty string. </exception>
+		public static Stream GetEmbeddedFileStream (this Assembly assembly, string file)
+		{
+			if (assembly == null)
+			{
+				throw new ArgumentNullException(nameof(assembly));
+			}
+
+			if (file == null)
+			{
+				throw new ArgumentNullException(nameof(file));
+			}
+
+			if (file.IsNullOrEmptyOrWhitespace())
+			{
+				throw new EmptyStringArgumentException(nameof(file));
+			}
+
+			AssemblyName name = assembly.GetName();
+			string prefix = name.Name + ".";
+
+			if (file.StartsWith(prefix, StringComparison.InvariantCultureIgnoreCase))
+			{
+				file = file.Substring(prefix.Length);
+			}
+
+			file = file.Replace('/', '.');
+			file = file.Replace('\\', '.');
+			file = file.TrimStart('.');
+
+			return assembly.GetManifestResourceStream(prefix + file);
 		}
 
 		/// <summary>
@@ -353,48 +398,6 @@ namespace RI.Framework.Utilities.Reflection
 			}
 
 			return ((AssemblyTitleAttribute)attributes[0]).Title;
-		}
-
-		/// <summary>
-		/// Gets the stream of an embedded file.
-		/// </summary>
-		/// <param name="assembly"> The assembly. </param>
-		/// <param name="file">The name of the embedded resource or the file which is embedded in the assembly respectively.</param>
-		/// <returns>
-		/// The stream to access the embedded file or null if the embedded file was not found.
-		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="assembly"/> or <paramref name="file"/> is null.</exception>
-		/// <exception cref="EmptyStringArgumentException"><paramref name="file"/> is an empty string.</exception>
-		public static Stream GetEmbeddedFileStream(this Assembly assembly, string file)
-		{
-			if (assembly == null)
-			{
-				throw new ArgumentNullException(nameof(assembly));
-			}
-
-			if (file == null)
-			{
-				throw new ArgumentNullException(nameof(file));
-			}
-
-			if (file.IsNullOrEmptyOrWhitespace())
-			{
-				throw new EmptyStringArgumentException(nameof(file));
-			}
-
-			AssemblyName name = assembly.GetName();
-			string prefix = name.Name + ".";
-
-			if (file.StartsWith(prefix, StringComparison.InvariantCultureIgnoreCase))
-			{
-				file = file.Substring(prefix.Length);
-			}
-
-			file = file.Replace('/', '.');
-			file = file.Replace('\\', '.');
-			file = file.TrimStart('.');
-
-			return assembly.GetManifestResourceStream(prefix + file);
 		}
 
 		#endregion

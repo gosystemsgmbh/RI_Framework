@@ -1,22 +1,25 @@
 ﻿using RI.Framework.Composition;
 using RI.Framework.Composition.Model;
 
+
+
+
 namespace RI.Framework.Services
 {
 	/// <summary>
-	/// Defines the interface which makes types bootstrapper operations aware.
+	///     Defines the interface which makes types bootstrapper operations aware.
 	/// </summary>
 	/// <remarks>
-	/// <para>
-	/// <see cref="Bootstrapper"/> uses its <see cref="CompositionContainer"/> to discover <see cref="IBootstrapperOperations"/>.
-	/// The methods of all found instances of <see cref="IBootstrapperOperations"/> are then called as the bootstrapping process continues.
-	/// </para>
+	///     <para>
+	///         <see cref="Bootstrapper" /> uses its <see cref="CompositionContainer" /> to discover <see cref="IBootstrapperOperations" />.
+	///         The methods of all found instances of <see cref="IBootstrapperOperations" /> are then called as the bootstrapping process continues.
+	///     </para>
 	/// </remarks>
 	[Export]
 	public interface IBootstrapperOperations
 	{
 		/// <summary>
-		/// Called when all bootstrapping and initialization is done and actual application operations begin.
+		///     Called when all bootstrapping and initialization is done and actual application operations begin.
 		/// </summary>
 		void BeginOperations ();
 

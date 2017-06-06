@@ -43,27 +43,27 @@ namespace RI.Framework.Services
 	///         </item>
 	///         <item>
 	///             <para>
-	///                 <see cref="StartListeningForFirstChanceExceptions" /> is called (if <see cref="DebuggerAttached"/> is false).
+	///                 <see cref="StartListeningForFirstChanceExceptions" /> is called (if <see cref="DebuggerAttached" /> is false).
 	///             </para>
 	///         </item>
 	///         <item>
 	///             <para>
-	///                 <see cref="StartupCulture" /> is set to <see cref="CultureInfo.CurrentCulture"/>.
+	///                 <see cref="StartupCulture" /> is set to <see cref="CultureInfo.CurrentCulture" />.
 	///             </para>
 	///         </item>
 	///         <item>
 	///             <para>
-	///                 <see cref="StartupUICulture" /> is set to <see cref="CultureInfo.CurrentUICulture"/>.
+	///                 <see cref="StartupUICulture" /> is set to <see cref="CultureInfo.CurrentUICulture" />.
 	///             </para>
 	///         </item>
 	///         <item>
 	///             <para>
-	///                 <see cref="Machine64Bit" /> is set to <see cref="Environment.Is64BitOperatingSystem"/>.
+	///                 <see cref="Machine64Bit" /> is set to <see cref="Environment.Is64BitOperatingSystem" />.
 	///             </para>
 	///         </item>
 	///         <item>
 	///             <para>
-	///                 <see cref="Session64Bit" /> is set to <see cref="Environment.Is64BitProcess"/>.
+	///                 <see cref="Session64Bit" /> is set to <see cref="Environment.Is64BitProcess" />.
 	///             </para>
 	///         </item>
 	///         <item>
@@ -168,7 +168,7 @@ namespace RI.Framework.Services
 	///         </item>
 	///         <item>
 	///             <para>
-	///                 <see cref="CreateApplication" /> and, if necessary, <see cref="CreateDefaultApplication"/> are called and <see cref="Application" /> is set.
+	///                 <see cref="CreateApplication" /> and, if necessary, <see cref="CreateDefaultApplication" /> are called and <see cref="Application" /> is set.
 	///             </para>
 	///         </item>
 	///         <item>
@@ -213,22 +213,22 @@ namespace RI.Framework.Services
 	///         </item>
 	///         <item>
 	///             <para>
-	///                 <see cref="BeginRun" /> is called, triggering <see cref="DispatchModuleInitialization"/> and <see cref="DispatchBeginOperations"/>.
+	///                 <see cref="BeginRun" /> is called, triggering <see cref="DispatchModuleInitialization" /> and <see cref="DispatchBeginOperations" />.
 	///             </para>
 	///         </item>
 	///         <item>
 	///             <para>
-	///                 <see cref="InitiateRun" /> is called. The application is now running and <see cref="Run"/> blocks until <see cref="Shutdown" /> is called.
+	///                 <see cref="InitiateRun" /> is called. The application is now running and <see cref="Run" /> blocks until <see cref="Shutdown" /> is called.
 	///             </para>
 	///         </item>
 	///         <item>
 	///             <para>
-	///                 The application calls <see cref="Shutdown"/>.
+	///                 The application calls <see cref="Shutdown" />.
 	///             </para>
 	///         </item>
 	///         <item>
 	///             <para>
-	///                 <see cref="BeginShutdown"/> is called, triggering <see cref="DispatchStopOperations"/>.
+	///                 <see cref="BeginShutdown" /> is called, triggering <see cref="DispatchStopOperations" />.
 	///             </para>
 	///         </item>
 	///         <item>
@@ -298,11 +298,11 @@ namespace RI.Framework.Services
 		/// </value>
 		protected object Application { get; private set; }
 
-		private bool ShutdownInitiated { get; set; }
+		private UnhandledExceptionEventHandler ExceptionHandler { get; set; }
 
 		private EventHandler<FirstChanceExceptionEventArgs> FirstChanceExceptionHandler { get; set; }
 
-		private UnhandledExceptionEventHandler ExceptionHandler { get; set; }
+		private bool ShutdownInitiated { get; set; }
 
 		#endregion
 
@@ -328,98 +328,31 @@ namespace RI.Framework.Services
 			this.Log(LogLevel.Information, new string('-', 50) + (stage.IsNullOrEmptyOrWhitespace() ? string.Empty : (" " + stage + " ")) + new string('-', 150));
 		}
 
-		/// <inheritdoc />
-		[SuppressMessage("ReSharper", "EmptyGeneralCatchClause")]
-		public void StartExceptionHandling (Exception exception)
+		/// <summary>
+		///     Starts listening for and handling of first chance exceptions.
+		/// </summary>
+		/// <remarks>
+		///     <value>
+		///         See <see cref="HandleFirstChanceException" /> for details.
+		///     </value>
+		/// </remarks>
+		protected void StartListeningForFirstChanceExceptions ()
 		{
-			try
-			{
-				if (exception == null)
-				{
-					return;
-				}
-
-				string message = "[EXCEPTION]";
-				try
-				{
-					message = exception.ToDetailedString();
-				}
-				catch
-				{
-				}
-
-				try
-				{
-					this.Log(LogLevel.Fatal, "EXCEPTION: {0}", message);
-				}
-				catch
-				{
-				}
-
-				if (this.ShutdownInitiated && (exception is ThreadAbortException))
-				{
-					return;
-				}
-
-				try
-				{
-					this.HandleException(exception);
-				}
-				catch
-				{
-				}
-
-				Environment.FailFast(message, exception);
-			}
-			catch
-			{
-			}
+			this.StopListeningForFirstChanceExceptions();
+			AppDomain.CurrentDomain.FirstChanceException += this.FirstChanceExceptionHandler;
 		}
 
-		/// <inheritdoc />
-		[SuppressMessage("ReSharper", "EmptyGeneralCatchClause")]
-		public void StartFirstChanceExceptionHandling (Exception exception)
+		/// <summary>
+		///     Stops listening for and handling of first chance exceptions.
+		/// </summary>
+		/// <remarks>
+		///     <value>
+		///         See <see cref="HandleFirstChanceException" /> for details.
+		///     </value>
+		/// </remarks>
+		protected void StopListeningForFirstChanceExceptions ()
 		{
-			try
-			{
-				if (exception == null)
-				{
-					return;
-				}
-
-				string message = "[FIRST CHANCE EXCEPTION]";
-				try
-				{
-					message = exception.ToDetailedString();
-				}
-				catch
-				{
-				}
-
-				try
-				{
-					this.Log(LogLevel.Warning, "FIRST CHANCE EXCEPTION: {0}", message);
-				}
-				catch
-				{
-				}
-
-				if (this.ShutdownInitiated && (exception is ThreadAbortException))
-				{
-					return;
-				}
-
-				try
-				{
-					this.HandleFirstChanceException(exception);
-				}
-				catch
-				{
-				}
-			}
-			catch
-			{
-			}
+			AppDomain.CurrentDomain.FirstChanceException -= this.FirstChanceExceptionHandler;
 		}
 
 		#endregion
@@ -499,7 +432,7 @@ namespace RI.Framework.Services
 		/// </summary>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation uses the composition container to discover all implementations of <see cref="IBootstrapperOperations"/> and calls <see cref="IBootstrapperOperations.BeginOperations"/> on them.
+		///         The default implementation uses the composition container to discover all implementations of <see cref="IBootstrapperOperations" /> and calls <see cref="IBootstrapperOperations.BeginOperations" /> on them.
 		///     </note>
 		/// </remarks>
 		protected virtual void BeginOperations ()
@@ -507,22 +440,6 @@ namespace RI.Framework.Services
 			foreach (IBootstrapperOperations ops in this.Container.GetExports<IBootstrapperOperations>())
 			{
 				ops.BeginOperations();
-			}
-		}
-
-		/// <summary>
-		///     Called before the bootstrapper starts shutting down and everything is still initialized and available.
-		/// </summary>
-		/// <remarks>
-		///     <note type="implement">
-		///         The default implementation uses the composition container to discover all implementations of <see cref="IBootstrapperOperations"/> and calls <see cref="IBootstrapperOperations.StopOperations"/> on them.
-		///     </note>
-		/// </remarks>
-		protected virtual void StopOperations()
-		{
-			foreach (IBootstrapperOperations ops in this.Container.GetExports<IBootstrapperOperations>())
-			{
-				ops.StopOperations();
 			}
 		}
 
@@ -556,7 +473,7 @@ namespace RI.Framework.Services
 		}
 
 		/// <summary>
-		/// Called before the application begins shutdown.
+		///     Called before the application begins shutdown.
 		/// </summary>
 		/// <remarks>
 		///     <note type="implement">
@@ -600,26 +517,6 @@ namespace RI.Framework.Services
 		protected virtual void ConfigureBootstrapper ()
 		{
 			this.Container.AddCatalog(new InstanceCatalog(this));
-		}
-
-		/// <summary>
-		///     Called when the bootstrapper singletons are to be configured.
-		/// </summary>
-		/// <remarks>
-		///     <note type="implement">
-		///         The default implementation sets the singleton instance for <see cref="Bootstrapper" /> and <see cref="CompositionContainer" /> (<see cref="Container" />).
-		///     </note>
-		/// </remarks>
-		protected virtual void ConfigureSingletons ()
-		{
-			Singleton<Bootstrapper>.Ensure(() => this);
-			Singleton<IBootstrapper>.Ensure(() => this);
-			Singleton<CompositionContainer>.Ensure(() => this.Container);
-
-			if (this.Application != null)
-			{
-				Singleton.Set(this.Application.GetType(), this.Application);
-			}
 		}
 
 		/// <summary>
@@ -682,6 +579,26 @@ namespace RI.Framework.Services
 		/// </remarks>
 		protected virtual void ConfigureServices ()
 		{
+		}
+
+		/// <summary>
+		///     Called when the bootstrapper singletons are to be configured.
+		/// </summary>
+		/// <remarks>
+		///     <note type="implement">
+		///         The default implementation sets the singleton instance for <see cref="Bootstrapper" /> and <see cref="CompositionContainer" /> (<see cref="Container" />).
+		///     </note>
+		/// </remarks>
+		protected virtual void ConfigureSingletons ()
+		{
+			Singleton<Bootstrapper>.Ensure(() => this);
+			Singleton<IBootstrapper>.Ensure(() => this);
+			Singleton<CompositionContainer>.Ensure(() => this.Container);
+
+			if (this.Application != null)
+			{
+				Singleton.Set(this.Application.GetType(), this.Application);
+			}
 		}
 
 		/// <summary>
@@ -923,6 +840,22 @@ namespace RI.Framework.Services
 		}
 
 		/// <summary>
+		///     Called to determine the ID of the currently running instance of the application (<see cref="InstanceId" />).
+		/// </summary>
+		/// <returns>
+		///     The ID of the currently running instance of the application.
+		/// </returns>
+		/// <remarks>
+		///     <note type="implement">
+		///         The default implementation returns null and therefore indicates that multiple instances at the same time are not supported.
+		///     </note>
+		/// </remarks>
+		protected virtual string DetermineInstanceId ()
+		{
+			return null;
+		}
+
+		/// <summary>
 		///     Called to determine the command line of the current process (<see cref="ProcessCommandLine" />).
 		/// </summary>
 		/// <returns>
@@ -955,22 +888,6 @@ namespace RI.Framework.Services
 		}
 
 		/// <summary>
-		///     Called to determine the ID of the currently running instance of the application (<see cref="InstanceId" />).
-		/// </summary>
-		/// <returns>
-		///     The ID of the currently running instance of the application.
-		/// </returns>
-		/// <remarks>
-		///     <note type="implement">
-		///         The default implementation returns null and therefore indicates that multiple instances at the same time are not supported.
-		///     </note>
-		/// </remarks>
-		protected virtual string DetermineInstanceId()
-		{
-			return null;
-		}
-
-		/// <summary>
 		///     Called to determine the timestamp of the current session (<see cref="SessionTimestamp" />).
 		/// </summary>
 		/// <returns>
@@ -987,7 +904,7 @@ namespace RI.Framework.Services
 		}
 
 		/// <summary>
-		///     Used to dispatch <see cref="BeginOperations"/> for execution after bootstrapping completed.
+		///     Used to dispatch <see cref="BeginOperations" /> for execution after bootstrapping completed.
 		/// </summary>
 		/// <param name="action"> The delegate to execute. </param>
 		/// <param name="args"> The optional arguments for the delegate. </param>
@@ -1002,21 +919,6 @@ namespace RI.Framework.Services
 		}
 
 		/// <summary>
-		///     Used to dispatch <see cref="StopOperations"/> for execution before shutdown starts.
-		/// </summary>
-		/// <param name="action"> The delegate to execute. </param>
-		/// <param name="args"> The optional arguments for the delegate. </param>
-		/// <remarks>
-		///     <note type="implement">
-		///         The default implementation executes the delegate immediately before returning.
-		///     </note>
-		/// </remarks>
-		protected virtual void DispatchStopOperations(Delegate action, params object[] args)
-		{
-			action.DynamicInvoke(args);
-		}
-
-		/// <summary>
 		///     Used to dispatch module initialization.
 		/// </summary>
 		/// <param name="action"> The delegate to execute. </param>
@@ -1026,7 +928,22 @@ namespace RI.Framework.Services
 		///         The default implementation executes the delegate immediately before returning.
 		///     </note>
 		/// </remarks>
-		protected virtual void DispatchModuleInitialization(Delegate action, params object[] args)
+		protected virtual void DispatchModuleInitialization (Delegate action, params object[] args)
+		{
+			action.DynamicInvoke(args);
+		}
+
+		/// <summary>
+		///     Used to dispatch <see cref="StopOperations" /> for execution before shutdown starts.
+		/// </summary>
+		/// <param name="action"> The delegate to execute. </param>
+		/// <param name="args"> The optional arguments for the delegate. </param>
+		/// <remarks>
+		///     <note type="implement">
+		///         The default implementation executes the delegate immediately before returning.
+		///     </note>
+		/// </remarks>
+		protected virtual void DispatchStopOperations (Delegate action, params object[] args)
 		{
 			action.DynamicInvoke(args);
 		}
@@ -1079,6 +996,22 @@ namespace RI.Framework.Services
 		}
 
 		/// <summary>
+		///     Called when an exception occurs in the application.
+		/// </summary>
+		/// <param name="exception"> The exception. </param>
+		/// <remarks>
+		///     <para>
+		///         The default implementation does nothing.
+		///     </para>
+		///     <para>
+		///         First chance exceptions are exceptions which are handled immediately when they are thrown, regardless whether they are handled or not.
+		///     </para>
+		/// </remarks>
+		protected virtual void HandleFirstChanceException (Exception exception)
+		{
+		}
+
+		/// <summary>
 		///     Logs some relevant bootstrapper-determined variables.
 		/// </summary>
 		/// <remarks>
@@ -1125,46 +1058,19 @@ namespace RI.Framework.Services
 		}
 
 		/// <summary>
-		/// Starts listening for and handling of first chance exceptions.
+		///     Called before the bootstrapper starts shutting down and everything is still initialized and available.
 		/// </summary>
 		/// <remarks>
-		/// <value>
-		/// See <see cref="HandleFirstChanceException"/> for details.
-		/// </value>
+		///     <note type="implement">
+		///         The default implementation uses the composition container to discover all implementations of <see cref="IBootstrapperOperations" /> and calls <see cref="IBootstrapperOperations.StopOperations" /> on them.
+		///     </note>
 		/// </remarks>
-		protected void StartListeningForFirstChanceExceptions ()
+		protected virtual void StopOperations ()
 		{
-			this.StopListeningForFirstChanceExceptions();
-			AppDomain.CurrentDomain.FirstChanceException += this.FirstChanceExceptionHandler;
-		}
-
-		/// <summary>
-		/// Stops listening for and handling of first chance exceptions.
-		/// </summary>
-		/// <remarks>
-		/// <value>
-		/// See <see cref="HandleFirstChanceException"/> for details.
-		/// </value>
-		/// </remarks>
-		protected void StopListeningForFirstChanceExceptions ()
-		{
-			AppDomain.CurrentDomain.FirstChanceException -= this.FirstChanceExceptionHandler;
-		}
-
-		/// <summary>
-		///     Called when an exception occurs in the application.
-		/// </summary>
-		/// <param name="exception"> The exception. </param>
-		/// <remarks>
-		///     <para>
-		///         The default implementation does nothing.
-		///     </para>
-		///     <para>
-		///         First chance exceptions are exceptions which are handled immediately when they are thrown, regardless whether they are handled or not.
-		///     </para>
-		/// </remarks>
-		protected virtual void HandleFirstChanceException (Exception exception)
-		{
+			foreach (IBootstrapperOperations ops in this.Container.GetExports<IBootstrapperOperations>())
+			{
+				ops.StopOperations();
+			}
 		}
 
 		#endregion
@@ -1173,12 +1079,6 @@ namespace RI.Framework.Services
 
 
 		#region Interface: IBootstrapper
-
-		/// <inheritdoc />
-		public CultureInfo StartupCulture { get; private set; }
-
-		/// <inheritdoc />
-		public CultureInfo StartupUICulture { get; private set; }
 
 		/// <inheritdoc />
 		public Assembly ApplicationAssembly { get; private set; }
@@ -1217,13 +1117,13 @@ namespace RI.Framework.Services
 		public Guid DomainId { get; private set; }
 
 		/// <inheritdoc />
+		public string InstanceId { get; private set; }
+
+		/// <inheritdoc />
 		public bool Machine64Bit { get; private set; }
 
 		/// <inheritdoc />
 		public Guid MachineId { get; private set; }
-
-		/// <inheritdoc />
-		public string InstanceId { get; private set; }
 
 		/// <inheritdoc />
 		public CommandLine ProcessCommandLine { get; private set; }
@@ -1236,6 +1136,12 @@ namespace RI.Framework.Services
 
 		/// <inheritdoc />
 		public DateTime SessionTimestamp { get; private set; }
+
+		/// <inheritdoc />
+		public CultureInfo StartupCulture { get; private set; }
+
+		/// <inheritdoc />
+		public CultureInfo StartupUICulture { get; private set; }
 
 		/// <inheritdoc />
 		public BootstrapperState State { get; private set; }
@@ -1394,6 +1300,100 @@ namespace RI.Framework.Services
 
 			this.Log(LogLevel.Debug, "Initiating shutdown");
 			this.InitiateShutdown();
+		}
+
+		/// <inheritdoc />
+		[SuppressMessage("ReSharper", "EmptyGeneralCatchClause")]
+		public void StartExceptionHandling (Exception exception)
+		{
+			try
+			{
+				if (exception == null)
+				{
+					return;
+				}
+
+				string message = "[EXCEPTION]";
+				try
+				{
+					message = exception.ToDetailedString();
+				}
+				catch
+				{
+				}
+
+				try
+				{
+					this.Log(LogLevel.Fatal, "EXCEPTION: {0}", message);
+				}
+				catch
+				{
+				}
+
+				if (this.ShutdownInitiated && (exception is ThreadAbortException))
+				{
+					return;
+				}
+
+				try
+				{
+					this.HandleException(exception);
+				}
+				catch
+				{
+				}
+
+				Environment.FailFast(message, exception);
+			}
+			catch
+			{
+			}
+		}
+
+		/// <inheritdoc />
+		[SuppressMessage("ReSharper", "EmptyGeneralCatchClause")]
+		public void StartFirstChanceExceptionHandling (Exception exception)
+		{
+			try
+			{
+				if (exception == null)
+				{
+					return;
+				}
+
+				string message = "[FIRST CHANCE EXCEPTION]";
+				try
+				{
+					message = exception.ToDetailedString();
+				}
+				catch
+				{
+				}
+
+				try
+				{
+					this.Log(LogLevel.Warning, "FIRST CHANCE EXCEPTION: {0}", message);
+				}
+				catch
+				{
+				}
+
+				if (this.ShutdownInitiated && (exception is ThreadAbortException))
+				{
+					return;
+				}
+
+				try
+				{
+					this.HandleFirstChanceException(exception);
+				}
+				catch
+				{
+				}
+			}
+			catch
+			{
+			}
 		}
 
 		#endregion
