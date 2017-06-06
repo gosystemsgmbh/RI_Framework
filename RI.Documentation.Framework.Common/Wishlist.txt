@@ -311,7 +311,9 @@ Mathematic
 State machines
 --------------
 
- # (Common) Timeouts through dispatcher
+ # (Common) Intervals
+ # (Common) State enter time
+ # (Common) State duration
 
  - (Common) Cascading
 

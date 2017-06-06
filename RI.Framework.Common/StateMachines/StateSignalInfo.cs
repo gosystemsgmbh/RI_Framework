@@ -6,7 +6,7 @@
 namespace RI.Framework.StateMachines
 {
 	/// <summary>
-	///     Contains all information about a signal
+	///     Contains all information about a signal.
 	/// </summary>
 	public sealed class StateSignalInfo
 	{

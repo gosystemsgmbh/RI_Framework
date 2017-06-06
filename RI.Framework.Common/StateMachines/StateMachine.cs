@@ -405,7 +405,7 @@ namespace RI.Framework.StateMachines
 		}
 
 		/// <summary>
-		///     Called when a signal is eventually executed by the dispatcher (or by <see cref="DispatchSignal" />) if no dispatcher is available).
+		///     Called when a signal is eventually executed by the dispatcher (or by <see cref="DispatchSignal" /> if no dispatcher is available).
 		/// </summary>
 		/// <param name="signalInfo"> The signal to execute. </param>
 		protected virtual void ExecuteSignal (StateSignalInfo signalInfo)
@@ -421,7 +421,7 @@ namespace RI.Framework.StateMachines
 		}
 
 		/// <summary>
-		///     Called when a transition is eventually executed by the dispatcher (or by <see cref="DispatchTransient" />) if no dispatcher is available).
+		///     Called when a transition is eventually executed by the dispatcher (or by <see cref="DispatchTransient" /> if no dispatcher is available).
 		/// </summary>
 		/// <param name="transientInfo"> The transition to execute. </param>
 		protected virtual void ExecuteTransient (StateTransientInfo transientInfo)
