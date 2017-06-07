@@ -227,7 +227,7 @@ Services
  
  # (Common) Logging: One-file-per-day option for DirectoryLogWriter
  # (Common) Logging: Debug and Trace redirector
- # (Common) Logging: Pluffable logging
+ # (Common) Logging: Pluggable logging
  - (Common) Logging: FileLogWriter
  - (Common) Logging: ConsoleLogWriter
 

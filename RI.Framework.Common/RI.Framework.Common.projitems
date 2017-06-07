@@ -64,6 +64,15 @@
     <Compile Include="$(MSBuildThisFileDirectory)Composition\Model\ImportAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Composition\Model\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Composition\_NamespaceDoc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\CSV\CsvDocument.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\CSV\CsvParsingException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\CSV\CsvReader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\CSV\CsvReaderError.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\CSV\CsvReaderSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\CSV\CsvSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\CSV\CsvWriter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\CSV\CsvWriterSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\CSV\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\Files\TemporaryFile.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\Files\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\INI\Elements\CommentIniElement.cs" />

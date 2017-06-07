@@ -28,7 +28,7 @@ namespace RI.Framework.IO.INI
 		/// <param name="reader"> The used <see cref="TextReader" />. </param>
 		/// <remarks>
 		///     <para>
-		///         INI writer settings with default values are used.
+		///         INI reader settings with default values are used.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="reader" /> is null. </exception>
@@ -148,7 +148,7 @@ namespace RI.Framework.IO.INI
 		#region Instance Methods
 
 		/// <summary>
-		///     Closes this INI writer and its underlying <see cref="TextReader" /> (<see cref="BaseReader" />).
+		///     Closes this INI reader and its underlying <see cref="TextReader" /> (<see cref="BaseReader" />).
 		/// </summary>
 		public void Close ()
 		{
