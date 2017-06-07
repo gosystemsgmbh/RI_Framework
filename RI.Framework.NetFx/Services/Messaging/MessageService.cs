@@ -17,7 +17,7 @@ namespace RI.Framework.Services.Messaging
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         This setting service manages <see cref="IMessageDispatcher" />s  and <see cref="IMessageReceiver" />s from two sources.
+	///         This message service manages <see cref="IMessageDispatcher" />s  and <see cref="IMessageReceiver" />s from two sources.
 	///         One are the explicitly specified dispatchers and receivers added through <see cref="AddDispatcher" /> and <see cref="AddReceiver" />.
 	///         The second is a <see cref="CompositionContainer" /> if this <see cref="MessageService" /> is added as an export (the dispatchers and receivers are then imported through composition).
 	///         <see cref="Dispatchers" /> gives the sequence containing all message dispatchers from all sources and <see cref="Receivers" /> gives the sequence containing all message receivers from all sources.
