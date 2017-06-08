@@ -16,16 +16,6 @@
 		#region Constants
 
 		/// <summary>
-		///     The default whether reading is whitespace-tolerant.
-		/// </summary>
-		/// <remarks>
-		///     <para>
-		///         The default value is true.
-		///     </para>
-		/// </remarks>
-		public const bool DefaultWhitespaceTolerant = true;
-
-		/// <summary>
 		///     The default whether multiline values are allowed.
 		/// </summary>
 		/// <remarks>
@@ -35,28 +25,22 @@
 		/// </remarks>
 		public const bool DefaultAllowMultilineValues = true;
 
+		/// <summary>
+		///     The default whether reading is whitespace-tolerant.
+		/// </summary>
+		/// <remarks>
+		///     <para>
+		///         The default value is true.
+		///     </para>
+		/// </remarks>
+		public const bool DefaultWhitespaceTolerant = true;
+
 		#endregion
 
 
 
 
 		#region Instance Properties/Indexer
-
-		/// <summary>
-		///     Gets or sets whether reading is whitespace-tolerant.
-		/// </summary>
-		/// <value>
-		///     true if reading is whitespace-tolerant, false otherwise.
-		/// </value>
-		/// <remarks>
-		///     <para>
-		///         The default value is <see cref="DefaultWhitespaceTolerant" />.
-		///     </para>
-		/// <para>
-		/// Whitespace tolerance allows any whitesoace characters between a closing quote and the following next separator or line-feed.
-		/// </para>
-		/// </remarks>
-		public bool WhitespaceTolerant { get; set; } = CsvReaderSettings.DefaultWhitespaceTolerant;
 
 		/// <summary>
 		///     Gets or sets whether multiline values are allowed.
@@ -70,6 +54,22 @@
 		///     </para>
 		/// </remarks>
 		public bool AllowMultilineValues { get; set; } = CsvReaderSettings.DefaultAllowMultilineValues;
+
+		/// <summary>
+		///     Gets or sets whether reading is whitespace-tolerant.
+		/// </summary>
+		/// <value>
+		///     true if reading is whitespace-tolerant, false otherwise.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         The default value is <see cref="DefaultWhitespaceTolerant" />.
+		///     </para>
+		///     <para>
+		///         Whitespace tolerance allows any whitesoace characters between a closing quote and the following next separator or line-feed.
+		///     </para>
+		/// </remarks>
+		public bool WhitespaceTolerant { get; set; } = CsvReaderSettings.DefaultWhitespaceTolerant;
 
 		#endregion
 	}

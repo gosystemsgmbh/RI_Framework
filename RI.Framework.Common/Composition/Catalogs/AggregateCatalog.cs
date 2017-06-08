@@ -5,6 +5,9 @@ using System.Collections.Generic;
 using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Utilities.ObjectModel;
 
+
+
+
 namespace RI.Framework.Composition.Catalogs
 {
 	/// <summary>
@@ -13,19 +16,21 @@ namespace RI.Framework.Composition.Catalogs
 	/// <remarks>
 	///     <para>
 	///         Composition catalogs can be added and removed dynamically.
-	/// A recomposition is triggered whenever the contained catalogs change.
+	///         A recomposition is triggered whenever the contained catalogs change.
 	///     </para>
-	/// <para>
-	/// In addition, the <see cref="CompositionCatalogItem"/>s which are collected from all the contained catalogs can be filtered, using <see cref="FilterExport"/> and <see cref="Filter"/>.
-	/// </para>
+	///     <para>
+	///         In addition, the <see cref="CompositionCatalogItem" />s which are collected from all the contained catalogs can be filtered, using <see cref="FilterExport" /> and <see cref="Filter" />.
+	///     </para>
 	///     <para>
 	///         See <see cref="CompositionCatalog" /> for more details about composition catalogs.
 	///     </para>
 	/// </remarks>
 	public class AggregateCatalog : CompositionCatalog, ICollection, ICollection<CompositionCatalog>, ISynchronizable
 	{
+		#region Instance Constructor/Destructor
+
 		/// <summary>
-		/// Creates a new instance of <see cref="AggregateCatalog"/>.
+		///     Creates a new instance of <see cref="AggregateCatalog" />.
 		/// </summary>
 		public AggregateCatalog ()
 			: this((IEnumerable<CompositionCatalog>)null)
@@ -33,9 +38,9 @@ namespace RI.Framework.Composition.Catalogs
 		}
 
 		/// <summary>
-		/// Creates a new instance of <see cref="AggregateCatalog"/>.
+		///     Creates a new instance of <see cref="AggregateCatalog" />.
 		/// </summary>
-		/// <param name="catalogs">The sequence of catalogs which are aggregated.</param>
+		/// <param name="catalogs"> The sequence of catalogs which are aggregated. </param>
 		/// <remarks>
 		///     <para>
 		///         <paramref name="catalogs" /> is enumerated exactly once.
@@ -57,39 +62,81 @@ namespace RI.Framework.Composition.Catalogs
 		}
 
 		/// <summary>
-		/// Creates a new instance of <see cref="AggregateCatalog"/>.
+		///     Creates a new instance of <see cref="AggregateCatalog" />.
 		/// </summary>
-		/// <param name="catalogs">The array of catalogs which are aggregated.</param>
+		/// <param name="catalogs"> The array of catalogs which are aggregated. </param>
 		public AggregateCatalog (params CompositionCatalog[] catalogs)
 			: this((IEnumerable<CompositionCatalog>)catalogs)
 		{
 		}
 
-		private HashSet<CompositionCatalog> Catalogs { get; set; }
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
 
 		private EventHandler CatalogRecomposeRequestHandler { get; set; }
 
+		private HashSet<CompositionCatalog> Catalogs { get; set; }
+
 		private object SyncRoot { get; set; }
 
+		#endregion
+
+
+
+
+		#region Instance Events
+
 		/// <summary>
-		/// Called for each <see cref="CompositionCatalogItem"/> aggregated by this catalog to filter exports.
+		///     Raised when a <see cref="CompositionCatalogItem" /> needs to be filtered.
 		/// </summary>
-		/// <param name="name">The export name which is filtered.</param>
-		/// <param name="item">The catalog item which is filtered.</param>
+		/// <remarks>
+		///     <para>
+		///         See <see cref="FilterExport" /> for more details.
+		///     </para>
+		/// </remarks>
+		public event EventHandler<AggregateCatalogFilterEventArgs> Filter;
+
+		#endregion
+
+
+
+
+		#region Instance Methods
+
+		private void HandleCatalogRecomposeRequest (object sender, EventArgs e)
+		{
+			this.RequestRecompose();
+		}
+
+		#endregion
+
+
+
+
+		#region Virtuals
+
+		/// <summary>
+		///     Called for each <see cref="CompositionCatalogItem" /> aggregated by this catalog to filter exports.
+		/// </summary>
+		/// <param name="name"> The export name which is filtered. </param>
+		/// <param name="item"> The catalog item which is filtered. </param>
 		/// <returns>
-		/// true if the export is used, false if it is not used.
+		///     true if the export is used, false if it is not used.
 		/// </returns>
 		/// <remarks>
-		/// <para>
-		/// <see cref="FilterExport"/> is called during <see cref="UpdateItems"/> for each found <see cref="CompositionCatalogItem"/> in the aggregated <see cref="CompositionCatalog"/>s.
-		/// </para>
-		/// <para>
-		/// The default implementation raises <see cref="Filter"/> or, if <see cref="Filter"/> has no event handler attached, returns true.
-		/// </para>
+		///     <para>
+		///         <see cref="FilterExport" /> is called during <see cref="UpdateItems" /> for each found <see cref="CompositionCatalogItem" /> in the aggregated <see cref="CompositionCatalog" />s.
+		///     </para>
+		///     <para>
+		///         The default implementation raises <see cref="Filter" /> or, if <see cref="Filter" /> has no event handler attached, returns true.
+		///     </para>
 		/// </remarks>
 		protected virtual bool FilterExport (string name, CompositionCatalogItem item)
 		{
-
 			EventHandler<AggregateCatalogFilterEventArgs> handler = this.Filter;
 			if (handler != null)
 			{
@@ -100,20 +147,12 @@ namespace RI.Framework.Composition.Catalogs
 			return true;
 		}
 
-		/// <summary>
-		/// Raised when a <see cref="CompositionCatalogItem"/> needs to be filtered.
-		/// </summary>
-		/// <remarks>
-		/// <para>
-		/// See <see cref="FilterExport"/> for more details.
-		/// </para>
-		/// </remarks>
-		public event EventHandler<AggregateCatalogFilterEventArgs> Filter;
+		#endregion
 
-		private void HandleCatalogRecomposeRequest(object sender, EventArgs e)
-		{
-			this.RequestRecompose();
-		}
+
+
+
+		#region Overrides
 
 		/// <inheritdoc />
 		protected internal sealed override void UpdateItems ()
@@ -152,10 +191,31 @@ namespace RI.Framework.Composition.Catalogs
 			}
 		}
 
+		#endregion
+
+
+
+
+		#region Interface: ICollection
+
 		/// <inheritdoc />
-		IEnumerator<CompositionCatalog> IEnumerable<CompositionCatalog>.GetEnumerator()
+		public int Count => this.Catalogs.Count;
+
+		/// <inheritdoc />
+		bool ICollection.IsSynchronized => ((ISynchronizable)this).IsSynchronized;
+
+		/// <inheritdoc />
+		object ICollection.SyncRoot => ((ISynchronizable)this).SyncRoot;
+
+		/// <inheritdoc />
+		void ICollection.CopyTo (Array array, int index)
 		{
-			return this.Catalogs.GetEnumerator();
+			int i1 = 0;
+			foreach (CompositionCatalog item in this)
+			{
+				array.SetValue(item, index + i1);
+				i1++;
+			}
 		}
 
 		/// <inheritdoc />
@@ -163,6 +223,16 @@ namespace RI.Framework.Composition.Catalogs
 		{
 			return this.Catalogs.GetEnumerator();
 		}
+
+		#endregion
+
+
+
+
+		#region Interface: ICollection<CompositionCatalog>
+
+		/// <inheritdoc />
+		bool ICollection<CompositionCatalog>.IsReadOnly => false;
 
 		/// <inheritdoc />
 		public void Add (CompositionCatalog item)
@@ -206,6 +276,12 @@ namespace RI.Framework.Composition.Catalogs
 		}
 
 		/// <inheritdoc />
+		IEnumerator<CompositionCatalog> IEnumerable<CompositionCatalog>.GetEnumerator ()
+		{
+			return this.Catalogs.GetEnumerator();
+		}
+
+		/// <inheritdoc />
 		public bool Remove (CompositionCatalog item)
 		{
 			if (item == null)
@@ -221,19 +297,12 @@ namespace RI.Framework.Composition.Catalogs
 			return result;
 		}
 
-		/// <inheritdoc />
-		void ICollection.CopyTo (Array array, int index)
-		{
-			int i1 = 0;
-			foreach (CompositionCatalog item in this)
-			{
-				array.SetValue(item, index + i1);
-				i1++;
-			}
-		}
+		#endregion
 
-		/// <inheritdoc />
-		public int Count => this.Catalogs.Count;
+
+
+
+		#region Interface: ISynchronizable
 
 		/// <inheritdoc />
 		bool ISynchronizable.IsSynchronized => false;
@@ -241,13 +310,6 @@ namespace RI.Framework.Composition.Catalogs
 		/// <inheritdoc />
 		object ISynchronizable.SyncRoot => this.SyncRoot;
 
-		/// <inheritdoc />
-		bool ICollection.IsSynchronized => ((ISynchronizable)this).IsSynchronized;
-
-		/// <inheritdoc />
-		object ICollection.SyncRoot => ((ISynchronizable)this).SyncRoot;
-
-		/// <inheritdoc />
-		bool ICollection<CompositionCatalog>.IsReadOnly => false;
+		#endregion
 	}
 }

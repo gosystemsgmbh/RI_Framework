@@ -3,21 +3,26 @@
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 
+
+
+
 namespace RI.Framework.Composition.Catalogs
 {
 	/// <summary>
-	///     Event arguments for the <see cref="AggregateCatalog"/>.<see cref="AggregateCatalog.Filter"/> event.
+	///     Event arguments for the <see cref="AggregateCatalog" />.<see cref="AggregateCatalog.Filter" /> event.
 	/// </summary>
 	[Serializable]
 	public sealed class AggregateCatalogFilterEventArgs : EventArgs
 	{
+		#region Instance Constructor/Destructor
+
 		/// <summary>
-		/// Creates a new instance of <see cref="AggregateCatalogFilterEventArgs"/>.
+		///     Creates a new instance of <see cref="AggregateCatalogFilterEventArgs" />.
 		/// </summary>
-		/// <param name="name">The export name which is filtered.</param>
-		/// <param name="item">The catalog item which is filtered.</param>
-		/// <exception cref="ArgumentNullException"><paramref name="name"/> or <paramref name="item"/> is null.</exception>
-		/// <exception cref="EmptyStringArgumentException"><paramref name="name"/> is an empty string.</exception>
+		/// <param name="name"> The export name which is filtered. </param>
+		/// <param name="item"> The catalog item which is filtered. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="name" /> or <paramref name="item" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
 		public AggregateCatalogFilterEventArgs (string name, CompositionCatalogItem item)
 		{
 			if (name == null)
@@ -41,33 +46,42 @@ namespace RI.Framework.Composition.Catalogs
 			this.Result = true;
 		}
 
-		/// <summary>
-		/// Gets the export name which is filtered.
-		/// </summary>
-		/// <value>
-		/// The export name which is filtered.
-		/// </value>
-		public string Name { get; private set; }
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
 
 		/// <summary>
-		/// Gets the catalog item which is filtered.
+		///     Gets the catalog item which is filtered.
 		/// </summary>
 		/// <value>
-		/// The catalog item which is filtered.
+		///     The catalog item which is filtered.
 		/// </value>
 		public CompositionCatalogItem Item { get; private set; }
 
 		/// <summary>
-		/// Gets the filter result.
+		///     Gets the export name which is filtered.
 		/// </summary>
 		/// <value>
-		/// true if the export is used, false otherwise.
+		///     The export name which is filtered.
+		/// </value>
+		public string Name { get; private set; }
+
+		/// <summary>
+		///     Gets the filter result.
+		/// </summary>
+		/// <value>
+		///     true if the export is used, false otherwise.
 		/// </value>
 		/// <remarks>
-		/// <para>
-		/// The default value is true.
-		/// </para>
+		///     <para>
+		///         The default value is true.
+		///     </para>
 		/// </remarks>
 		public bool Result { get; set; }
+
+		#endregion
 	}
 }

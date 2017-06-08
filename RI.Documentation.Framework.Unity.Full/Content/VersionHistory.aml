@@ -36,6 +36,7 @@
         <!-- Added: FileCatalog -->
         <!-- Added: AppDomainCatalog -->
         <!-- Changed: ExportAttribute not required when using ScriptingCatalog -->
+        <!-- Added: StateMachine updates -->
 
         <section address="Versioning">
             <title>Versioning</title>

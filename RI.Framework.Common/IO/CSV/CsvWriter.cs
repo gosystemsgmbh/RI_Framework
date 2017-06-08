@@ -5,6 +5,9 @@ using System.IO;
 
 using RI.Framework.Utilities;
 
+
+
+
 namespace RI.Framework.IO.CSV
 {
 	/// <summary>
@@ -175,12 +178,7 @@ namespace RI.Framework.IO.CSV
 
 			this.ValueWrittenOnCurrentLine = true;
 
-			bool quote = this.Settings.AlwaysQuoteValues || (value.IndexOfAny(new []
-			{
-				this.Settings.Quote,
-				this.Settings.Separator,
-				'\n'
-			}) != -1);
+			bool quote = this.Settings.AlwaysQuoteValues || (value.IndexOfAny(new[] {this.Settings.Quote, this.Settings.Separator, '\n'}) != -1);
 
 			if (quote)
 			{

@@ -17,17 +17,17 @@ namespace RI.Framework.IO.CSV
 		None = 0,
 
 		/// <summary>
-		/// A quote was read unexpected, inside a value which was not started with a quote.
+		///     A quote was read unexpected, inside a value which was not started with a quote.
 		/// </summary>
 		UnexpectedQuote = 1,
 
 		/// <summary>
-		/// A separator was expected but another unexpected character was read.
+		///     A separator was expected but another unexpected character was read.
 		/// </summary>
 		SeparatorExpected = 2,
 
 		/// <summary>
-		/// A multiline value was read but is not allowed.
+		///     A multiline value was read but is not allowed.
 		/// </summary>
 		MultilineValueNotAllowed = 3,
 	}

@@ -8,6 +8,9 @@ using RI.Framework.Services.Logging;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 
+
+
+
 namespace RI.Framework.Composition.Catalogs
 {
 	/// <summary>
@@ -27,47 +30,7 @@ namespace RI.Framework.Composition.Catalogs
 	/// </remarks>
 	public sealed class FileCatalog : CompositionCatalog
 	{
-		/// <summary>
-		/// Creates a new instance of <see cref="FileCatalog"/>.
-		/// </summary>
-		/// <param name="file">The assembly file to load.</param>
-		/// <exception cref="ArgumentNullException"><paramref name="file"/> is null.</exception>
-		/// <exception cref="InvalidPathArgumentException"><paramref name="file"/> is not a real usable file.</exception>
-		public FileCatalog (FilePath file)
-		{
-			if (file == null)
-			{
-				throw new ArgumentNullException(nameof(file));
-			}
-
-			if (!file.IsRealFile)
-			{
-				throw new InvalidPathArgumentException(nameof(file));
-			}
-
-			this.File = file;
-
-			this.IsLoaded = false;
-			this.Failed = false;
-		}
-
-		/// <summary>
-		/// Gets the used assembly file.
-		/// </summary>
-		/// <value>
-		/// The used assembly file.
-		/// </value>
-		public FilePath File { get; private set; }
-
-		/// <summary>
-		/// Indicates whether the assembly file was successfully loaded.
-		/// </summary>
-		/// <value>
-		/// true if the assembly file was successfully loaded, false otherwise.
-		/// </value>
-		public bool Failed { get; private set; }
-
-		private bool IsLoaded { get; set; }
+		#region Static Methods
 
 		internal static Dictionary<string, List<CompositionCatalogItem>> LoadAssemblyFile (FilePath file)
 		{
@@ -107,6 +70,69 @@ namespace RI.Framework.Composition.Catalogs
 			return items;
 		}
 
+		#endregion
+
+
+
+
+		#region Instance Constructor/Destructor
+
+		/// <summary>
+		///     Creates a new instance of <see cref="FileCatalog" />.
+		/// </summary>
+		/// <param name="file"> The assembly file to load. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="file" /> is null. </exception>
+		/// <exception cref="InvalidPathArgumentException"> <paramref name="file" /> is not a real usable file. </exception>
+		public FileCatalog (FilePath file)
+		{
+			if (file == null)
+			{
+				throw new ArgumentNullException(nameof(file));
+			}
+
+			if (!file.IsRealFile)
+			{
+				throw new InvalidPathArgumentException(nameof(file));
+			}
+
+			this.File = file;
+
+			this.IsLoaded = false;
+			this.Failed = false;
+		}
+
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
+
+		/// <summary>
+		///     Indicates whether the assembly file was successfully loaded.
+		/// </summary>
+		/// <value>
+		///     true if the assembly file was successfully loaded, false otherwise.
+		/// </value>
+		public bool Failed { get; private set; }
+
+		/// <summary>
+		///     Gets the used assembly file.
+		/// </summary>
+		/// <value>
+		///     The used assembly file.
+		/// </value>
+		public FilePath File { get; private set; }
+
+		private bool IsLoaded { get; set; }
+
+		#endregion
+
+
+
+
+		#region Overrides
+
 		/// <inheritdoc />
 		protected internal override void UpdateItems ()
 		{
@@ -136,5 +162,7 @@ namespace RI.Framework.Composition.Catalogs
 				this.Failed = true;
 			}
 		}
+
+		#endregion
 	}
 }

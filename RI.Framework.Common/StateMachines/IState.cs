@@ -25,6 +25,14 @@ namespace RI.Framework.StateMachines
 		bool IsInitialized { get; }
 
 		/// <summary>
+		///     Gets the update interval in milliseconds which defines the time between two calls to <see cref="Update" />.
+		/// </summary>
+		/// <value>
+		///     The update interval in milliseconds or null if <see cref="Update" /> should not be called periodically.
+		/// </value>
+		int? UpdateInterval { get; }
+
+		/// <summary>
 		///     Gets whether the state is cacheable or can be reused respectively.
 		/// </summary>
 		/// <value>
@@ -65,5 +73,16 @@ namespace RI.Framework.StateMachines
 		/// </summary>
 		/// <param name="signalInfo"> The signal being executed. </param>
 		void Signal (StateSignalInfo signalInfo);
+
+		/// <summary>
+		///     Periodically called by <see cref="StateMachine" /> to update the state or when <see cref="StateMachine" />.<see cref="StateMachine.Update" /> is called.
+		/// </summary>
+		/// <param name="updateInfo"> The update information. </param>
+		/// <remarks>
+		///     <para>
+		///         See <see cref="UpdateInterval" /> for more details.
+		///     </para>
+		/// </remarks>
+		void Update (StateUpdateInfo updateInfo);
 	}
 }

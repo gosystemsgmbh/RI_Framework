@@ -200,6 +200,7 @@ namespace RI.Framework.StateMachines
 		/// </summary>
 		/// <param name="configuration"> The state machines configuration. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="configuration" /> is null. </exception>
+		/// <exception cref="ArgumentException"> <paramref name="configuration" /> does not specify a <see cref="IStateDispatcher" /> with its <see cref="StateMachineConfiguration.Dispatcher" /> property. </exception>
 		public StateMachine (StateMachineConfiguration configuration)
 		{
 			if (configuration == null)
@@ -207,12 +208,20 @@ namespace RI.Framework.StateMachines
 				throw new ArgumentNullException(nameof(configuration));
 			}
 
+			if (configuration.Dispatcher == null)
+			{
+				throw new ArgumentException("No state dispatcher specified.", nameof(configuration));
+			}
+
 			this.Configuration = configuration;
 
 			this.TransientDelegate = this.ExecuteTransient;
 			this.SignalDelegate = this.ExecuteSignal;
+			this.UpdateDelegate = this.ExecuteUpdate;
 
 			this.State = null;
+			this.StateEnterTimestampUtc = DateTime.UtcNow;
+			this.StateEnterTimestampLocal = this.StateEnterTimestampUtc.ToLocalTime();
 		}
 
 		#endregion
@@ -246,7 +255,13 @@ namespace RI.Framework.StateMachines
 
 		private StateMachineSignalDelegate SignalDelegate { get; set; }
 
+		private DateTime StateEnterTimestampLocal { get; set; }
+
+		private DateTime StateEnterTimestampUtc { get; set; }
+
 		private StateMachineTransientDelegate TransientDelegate { get; set; }
+
+		private StateMachineUpdateDelegate UpdateDelegate { get; set; }
 
 		#endregion
 
@@ -271,6 +286,11 @@ namespace RI.Framework.StateMachines
 		public event EventHandler<StateMachineSignalEventArgs> AfterSignal;
 
 		/// <summary>
+		///     Raised after the current state was updated.
+		/// </summary>
+		public event EventHandler<StateMachineUpdateEventArgs> AfterUpdate;
+
+		/// <summary>
 		///     Raised before the next state is entered during a transition.
 		/// </summary>
 		public event EventHandler<StateMachineTransientEventArgs> BeforeEnter;
@@ -284,6 +304,11 @@ namespace RI.Framework.StateMachines
 		///     Raised before a signal is passed to the current state.
 		/// </summary>
 		public event EventHandler<StateMachineSignalEventArgs> BeforeSignal;
+
+		/// <summary>
+		///     Raised before the current state is updated.
+		/// </summary>
+		public event EventHandler<StateMachineUpdateEventArgs> BeforeUpdate;
 
 		/// <summary>
 		///     Raised when a transition was aborted because the previous state did not match the current state.
@@ -345,6 +370,29 @@ namespace RI.Framework.StateMachines
 			this.DispatchTransient(transientInfo);
 		}
 
+		/// <summary>
+		///     Updates the current state.
+		/// </summary>
+		public void Update ()
+		{
+			this.UpdateInternal(0);
+		}
+
+		private void UpdateInternal (int delay)
+		{
+			if (delay < 0)
+			{
+				delay = 0;
+			}
+
+			StateUpdateInfo updateInfo = new StateUpdateInfo(this);
+			updateInfo.UpdateDelay = delay;
+			updateInfo.StateEnteredUtc = this.StateEnterTimestampUtc;
+			updateInfo.StateEnteredLocal = this.StateEnterTimestampLocal;
+
+			this.DispatchUpdate(updateInfo);
+		}
+
 		#endregion
 
 
@@ -358,7 +406,7 @@ namespace RI.Framework.StateMachines
 		/// <param name="signalInfo"> The signal to dispatch. </param>
 		/// <remarks>
 		///     <para>
-		///         The default implementation calls <see cref="IStateDispatcher.DispatchSignal" /> if the used <see cref="StateMachineConfiguration" /> (<see cref="Configuration" />) provides an <see cref="IStateDispatcher" /> (<see cref="StateMachineConfiguration.Dispatcher" />) or otherwise executes the signal immediately.
+		///         The default implementation calls <see cref="IStateDispatcher.DispatchSignal" />.
 		///     </para>
 		/// </remarks>
 		protected virtual void DispatchSignal (StateSignalInfo signalInfo)
@@ -368,14 +416,7 @@ namespace RI.Framework.StateMachines
 				this.Log(LogLevel.Debug, "Dispatching signal: {0}", signalInfo.Signal?.ToString() ?? "[null]");
 			}
 
-			if (this.Configuration.Dispatcher == null)
-			{
-				this.SignalDelegate(signalInfo);
-			}
-			else
-			{
-				this.Configuration.Dispatcher.DispatchSignal(this.SignalDelegate, signalInfo);
-			}
+			this.Configuration.Dispatcher.DispatchSignal(this.SignalDelegate, signalInfo);
 		}
 
 		/// <summary>
@@ -384,7 +425,7 @@ namespace RI.Framework.StateMachines
 		/// <param name="transientInfo"> The transition to dispatch. </param>
 		/// <remarks>
 		///     <para>
-		///         The default implementation calls <see cref="IStateDispatcher.DispatchTransition" /> if the used <see cref="StateMachineConfiguration" /> (<see cref="Configuration" />) provides an <see cref="IStateDispatcher" /> (<see cref="StateMachineConfiguration.Dispatcher" />) or otherwise executes the transition immediately.
+		///         The default implementation calls <see cref="IStateDispatcher.DispatchTransition" />.
 		///     </para>
 		/// </remarks>
 		protected virtual void DispatchTransient (StateTransientInfo transientInfo)
@@ -394,18 +435,25 @@ namespace RI.Framework.StateMachines
 				this.Log(LogLevel.Debug, "Dispatching transient: {0} -> {1}", transientInfo.PreviousState?.GetType().Name ?? "[null]", transientInfo.NextState?.GetType().Name ?? "[null]");
 			}
 
-			if (this.Configuration.Dispatcher == null)
-			{
-				this.TransientDelegate(transientInfo);
-			}
-			else
-			{
-				this.Configuration.Dispatcher.DispatchTransition(this.TransientDelegate, transientInfo);
-			}
+			this.Configuration.Dispatcher.DispatchTransition(this.TransientDelegate, transientInfo);
 		}
 
 		/// <summary>
-		///     Called when a signal is eventually executed by the dispatcher (or by <see cref="DispatchSignal" /> if no dispatcher is available).
+		///     Called when an update is to be dispatched.
+		/// </summary>
+		/// <param name="updateInfo"> The update to dispatch. </param>
+		/// <remarks>
+		///     <para>
+		///         The default implementation calls <see cref="IStateDispatcher.DispatchUpdate" />.
+		///     </para>
+		/// </remarks>
+		protected virtual void DispatchUpdate (StateUpdateInfo updateInfo)
+		{
+			this.Configuration.Dispatcher.DispatchUpdate(this.UpdateDelegate, updateInfo);
+		}
+
+		/// <summary>
+		///     Called when a signal is eventually executed by the dispatcher.
 		/// </summary>
 		/// <param name="signalInfo"> The signal to execute. </param>
 		protected virtual void ExecuteSignal (StateSignalInfo signalInfo)
@@ -421,7 +469,7 @@ namespace RI.Framework.StateMachines
 		}
 
 		/// <summary>
-		///     Called when a transition is eventually executed by the dispatcher (or by <see cref="DispatchTransient" /> if no dispatcher is available).
+		///     Called when a transition is eventually executed by the dispatcher.
 		/// </summary>
 		/// <param name="transientInfo"> The transition to execute. </param>
 		protected virtual void ExecuteTransient (StateTransientInfo transientInfo)
@@ -456,6 +504,8 @@ namespace RI.Framework.StateMachines
 			this.OnAfterLeave(transientInfo);
 
 			this.State = nextState;
+			this.StateEnterTimestampUtc = DateTime.UtcNow;
+			this.StateEnterTimestampLocal = this.StateEnterTimestampUtc.ToLocalTime();
 
 			this.OnBeforeEnter(transientInfo);
 			this.State?.Enter(transientInfo);
@@ -467,6 +517,29 @@ namespace RI.Framework.StateMachines
 				{
 					this.Configuration.Cache.AddState(nextState);
 				}
+			}
+
+			int? interval = nextState?.UpdateInterval;
+			if (interval.HasValue)
+			{
+				this.UpdateInternal(interval.Value);
+			}
+		}
+
+		/// <summary>
+		///     Called when an update is eventually executed by the dispatcher.
+		/// </summary>
+		/// <param name="updateInfo"> The update to execute. </param>
+		protected virtual void ExecuteUpdate (StateUpdateInfo updateInfo)
+		{
+			this.OnBeforeUpdate(updateInfo);
+			this.State?.Update(updateInfo);
+			this.OnAfterUpdate(updateInfo);
+
+			int? interval = this.State?.UpdateInterval;
+			if (interval.HasValue)
+			{
+				this.UpdateInternal(interval.Value);
 			}
 		}
 
@@ -498,6 +571,15 @@ namespace RI.Framework.StateMachines
 		}
 
 		/// <summary>
+		///     Raises <see cref="AfterUpdate" />.
+		/// </summary>
+		/// <param name="updateInfo"> The update currently being executed. </param>
+		protected virtual void OnAfterUpdate (StateUpdateInfo updateInfo)
+		{
+			this.AfterUpdate?.Invoke(this, new StateMachineUpdateEventArgs(updateInfo));
+		}
+
+		/// <summary>
 		///     Raises <see cref="BeforeEnter" />.
 		/// </summary>
 		/// <param name="transientInfo"> The transition currently being executed. </param>
@@ -522,6 +604,15 @@ namespace RI.Framework.StateMachines
 		protected virtual void OnBeforeSignal (StateSignalInfo signalInfo)
 		{
 			this.BeforeSignal?.Invoke(this, new StateMachineSignalEventArgs(signalInfo));
+		}
+
+		/// <summary>
+		///     Raises <see cref="BeforeUpdate" />.
+		/// </summary>
+		/// <param name="updateInfo"> The update currently being executed. </param>
+		protected virtual void OnBeforeUpdate (StateUpdateInfo updateInfo)
+		{
+			this.BeforeUpdate?.Invoke(this, new StateMachineUpdateEventArgs(updateInfo));
 		}
 
 		/// <summary>

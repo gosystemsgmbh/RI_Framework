@@ -145,6 +145,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\IStateResolver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Resolvers\StateResolver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Resolvers\_NamespaceDoc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\StateMachineUpdateDelegate.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\StateMachineUpdateEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\StateUpdateInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\StateMachine.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\StateMachineConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\StateMachineSignalDelegate.cs" />

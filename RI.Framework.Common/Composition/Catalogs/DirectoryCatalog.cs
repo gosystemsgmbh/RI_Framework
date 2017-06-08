@@ -62,8 +62,8 @@ namespace RI.Framework.Composition.Catalogs
 		///         The default file pattern <see cref="DefaultFilePattern" /> is used and search is performed non-recursive.
 		///     </para>
 		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="directoryPath"/> is null.</exception>
-		/// <exception cref="InvalidPathArgumentException"><paramref name="directoryPath"/> is not a real usable directory.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="directoryPath" /> is null. </exception>
+		/// <exception cref="InvalidPathArgumentException"> <paramref name="directoryPath" /> is not a real usable directory. </exception>
 		public DirectoryCatalog (DirectoryPath directoryPath)
 			: this(directoryPath, DirectoryCatalog.DefaultFilePattern, false)
 		{
@@ -75,9 +75,9 @@ namespace RI.Framework.Composition.Catalogs
 		/// <param name="directoryPath"> The directory which is searched for assemblies. </param>
 		/// <param name="filePattern"> The file pattern which is used to search for assemblies. </param>
 		/// <param name="recursive"> Specifies whether assemblies are searched recursive (including subdirectories) or not. </param>
-		/// <exception cref="ArgumentNullException"><paramref name="directoryPath"/> or <paramref name="filePattern"/> is null.</exception>
-		/// <exception cref="InvalidOperationException"><paramref name="directoryPath"/> is not a real usable directory.</exception>
-		/// <exception cref="InvalidPathArgumentException"><paramref name="filePattern"/> is an empty string.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="directoryPath" /> or <paramref name="filePattern" /> is null. </exception>
+		/// <exception cref="InvalidOperationException"> <paramref name="directoryPath" /> is not a real usable directory. </exception>
+		/// <exception cref="InvalidPathArgumentException"> <paramref name="filePattern" /> is an empty string. </exception>
 		public DirectoryCatalog (DirectoryPath directoryPath, string filePattern, bool recursive)
 		{
 			if (directoryPath == null)

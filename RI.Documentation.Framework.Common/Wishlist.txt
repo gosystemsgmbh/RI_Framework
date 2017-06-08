@@ -223,8 +223,8 @@ Services
  # (Common) Logging: One-file-per-day option for DirectoryLogWriter
  # (Common) Logging: Debug and Trace redirector
  # (Common) Logging: Pluggable logging
- - (Common) Logging: FileLogWriter
- - (Common) Logging: ConsoleLogWriter
+ # (Common) Logging: FileLogWriter
+ # (Common) Logging: ConsoleLogWriter
 
  # (.NET) Settings: SettingLocator
  # (.NET) Settings: WriteOnlyKnown for storage
@@ -234,12 +234,13 @@ Services
 
  # (.NET) Messaging: MessageLocator
  # (.NET) Messaging: ThreadDispatcherMessageDispatcher
+ # (.NET) Messaging: SynchronizationContextMessageDispatcher
 
  # (.NET) Bus: Retries
  # (.NET) Bus: Routing
 
- # (.NET) Backup (BackupService, DirectoryBackupStorage)
- # (.NET) Licensing (LicensingService, FileLicenseStorage)
+ - (.NET) Backup (BackupService, DirectoryBackupStorage)
+ - (.NET) Licensing (LicensingService, FileLicenseStorage)
 
  - (WpfToolkit) AvalonDockRegionAdapter
 
@@ -309,13 +310,6 @@ Mathematic
 
 State machines
 --------------
-
- # (Common) Intervals
- # (Common) State enter time
- # (Common) State duration
-
- # (NetFx) SynchronizationContextDispatcher
- # (NetFx) DefaultStateMachineConfiguration
 
  - (Common) Cascading
 

@@ -20,6 +20,7 @@
   - [ ] ThreadDispatcherTimer
   - [ ] ThreadDispatcher async/await
   - [ ] StateMachine.TransitionAborted
+  - [ ] StateMachine Updates
   - [ ] RuntimeEnvironment
   - [ ] Singleton (generic and non-generic)
   - [ ] AlphanumComparer

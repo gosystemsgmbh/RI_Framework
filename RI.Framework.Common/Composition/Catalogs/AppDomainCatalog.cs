@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 
 using RI.Framework.Collections;
 using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Composition.Model;
 using RI.Framework.Services.Logging;
+
+
+
 
 namespace RI.Framework.Composition.Catalogs
 {
@@ -20,13 +22,15 @@ namespace RI.Framework.Composition.Catalogs
 	/// </remarks>
 	public sealed class AppDomainCatalog : CompositionCatalog
 	{
+		#region Instance Constructor/Destructor
+
 		/// <summary>
-		/// Creates a new instance of <see cref="AppDomainCatalog"/>.
+		///     Creates a new instance of <see cref="AppDomainCatalog" />.
 		/// </summary>
 		/// <remarks>
-		/// <para>
-		/// true is used for <see cref="ExportAllTypes"/> and <see cref="AutoUpdate"/>.
-		/// </para>
+		///     <para>
+		///         true is used for <see cref="ExportAllTypes" /> and <see cref="AutoUpdate" />.
+		///     </para>
 		/// </remarks>
 		public AppDomainCatalog ()
 			: this(true, true)
@@ -34,10 +38,9 @@ namespace RI.Framework.Composition.Catalogs
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="exportAllTypes">Specifies whether all types should be exported (see <see cref="ExportAllTypes"/> for details).</param>
-		/// <param name="autoUpdate">Specifies whether the exports are automatically updated when a new assembly is loaded (see <see cref="AutoUpdate"/> for details).</param>
+		/// <param name="exportAllTypes"> Specifies whether all types should be exported (see <see cref="ExportAllTypes" /> for details). </param>
+		/// <param name="autoUpdate"> Specifies whether the exports are automatically updated when a new assembly is loaded (see <see cref="AutoUpdate" /> for details). </param>
 		public AppDomainCatalog (bool exportAllTypes, bool autoUpdate)
 		{
 			this.ExportAllTypes = exportAllTypes;
@@ -54,31 +57,47 @@ namespace RI.Framework.Composition.Catalogs
 			};
 		}
 
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
+
 		/// <summary>
-		/// Gets or sets whether all types should be exported.
+		///     Gets or sets whether the exports are automatically updated when a new assembly is loaded.
 		/// </summary>
 		/// <value>
-		/// true if all types should be exported, false otherwise.
+		///     true if exports are automatically updated when a new assembly is loaded, false otherwise.
 		/// </value>
 		/// <remarks>
-		/// <para>
-		/// If all types are exported, the exports will consist of all public, non-abstract, non-static types, even those without an <see cref="ExportAttribute"/>.
-		/// </para>
+		///     <para>
+		///         If exports are automatically updated, this catalog issues a recomposition every time an assembly is loaded into the application domain.
+		///     </para>
+		/// </remarks>
+		public bool AutoUpdate { get; set; }
+
+		/// <summary>
+		///     Gets or sets whether all types should be exported.
+		/// </summary>
+		/// <value>
+		///     true if all types should be exported, false otherwise.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         If all types are exported, the exports will consist of all public, non-abstract, non-static types, even those without an <see cref="ExportAttribute" />.
+		///     </para>
 		/// </remarks>
 		public bool ExportAllTypes { get; set; }
 
-		/// <summary>
-		/// Gets or sets whether the exports are automatically updated when a new assembly is loaded.
-		/// </summary>
-		/// <value>
-		/// true if exports are automatically updated when a new assembly is loaded, false otherwise.
-		/// </value>
-		/// <remarks>
-		/// <para>
-		/// If exports are automatically updated, this catalog issues a recomposition every time an assembly is loaded into the application domain.
-		/// </para>
-		/// </remarks>
-		public bool AutoUpdate { get; set; }
+		private HashSet<Assembly> LoadedAssemblies { get; set; }
+
+		#endregion
+
+
+
+
+		#region Instance Methods
 
 		/// <summary>
 		///     Checks the associated directory for new assemblies and loads them.
@@ -88,7 +107,12 @@ namespace RI.Framework.Composition.Catalogs
 			this.RequestRecompose();
 		}
 
-		private HashSet<Assembly> LoadedAssemblies { get; set; }
+		#endregion
+
+
+
+
+		#region Overrides
 
 		/// <inheritdoc />
 		protected internal override void UpdateItems ()
@@ -126,5 +150,7 @@ namespace RI.Framework.Composition.Catalogs
 
 			this.LoadedAssemblies.AddRange(newAssemblies);
 		}
+
+		#endregion
 	}
 }

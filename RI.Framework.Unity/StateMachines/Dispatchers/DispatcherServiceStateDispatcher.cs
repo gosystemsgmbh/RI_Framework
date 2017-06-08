@@ -105,6 +105,12 @@ namespace RI.Framework.StateMachines.Dispatchers
 			this.DispatcherService.Dispatch(DispatcherPriority.Default, (x, y) => x(y), transientDelegate, transientInfo);
 		}
 
+		/// <inheritdoc />
+		public void DispatchUpdate (StateMachineUpdateDelegate updateDelegate, StateUpdateInfo updateInfo)
+		{
+			this.DispatcherService.Dispatch(DispatcherPriority.Default, (x, y) => x(y), updateDelegate, updateInfo).Reschedule(updateInfo.UpdateDelay);
+		}
+
 		#endregion
 	}
 }

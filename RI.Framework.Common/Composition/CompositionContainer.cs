@@ -262,7 +262,7 @@ namespace RI.Framework.Composition
 		///     Gets all names under which a type is exported (using <see cref="ExportAttribute" />).
 		/// </summary>
 		/// <param name="type"> The type whose export names are to be determined. </param>
-		/// <param name="includeWithoutAttribute">Specifies whether a type is exported under its default name if it does not have an <see cref="ExportAttribute"/>.</param>
+		/// <param name="includeWithoutAttribute"> Specifies whether a type is exported under its default name if it does not have an <see cref="ExportAttribute" />. </param>
 		/// <returns>
 		///     The set of names the specified type is exported under.
 		///     The set is empty if the specified type has no exports defined.

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using RI.Framework.Utilities.Threading;
 
@@ -32,6 +33,8 @@ namespace RI.Framework.StateMachines.Dispatchers
 			}
 
 			this.ThreadDispatcher = threadDispatcher;
+
+			this.UpdateTimers = new Dictionary<StateMachine, ThreadDispatcherTimer>();
 		}
 
 		#endregion
@@ -48,6 +51,8 @@ namespace RI.Framework.StateMachines.Dispatchers
 		///     The used dispatcher.
 		/// </value>
 		public IThreadDispatcher ThreadDispatcher { get; private set; }
+
+		private Dictionary<StateMachine, ThreadDispatcherTimer> UpdateTimers { get; set; }
 
 		#endregion
 
@@ -66,6 +71,20 @@ namespace RI.Framework.StateMachines.Dispatchers
 		public void DispatchTransition (StateMachineTransientDelegate transientDelegate, StateTransientInfo transientInfo)
 		{
 			this.ThreadDispatcher.Post(new Action<StateMachineTransientDelegate, StateTransientInfo>((x, y) => x(y)), transientDelegate, transientInfo);
+		}
+
+		/// <inheritdoc />
+		public void DispatchUpdate (StateMachineUpdateDelegate updateDelegate, StateUpdateInfo updateInfo)
+		{
+			if (this.UpdateTimers.ContainsKey(updateInfo.StateMachine))
+			{
+				this.UpdateTimers[updateInfo.StateMachine].Stop();
+				this.UpdateTimers.Remove(updateInfo.StateMachine);
+			}
+
+			ThreadDispatcherTimer timer = new ThreadDispatcherTimer(this.ThreadDispatcher, ThreadDispatcherTimerMode.OneShot, this.ThreadDispatcher.DefaultPriority, updateInfo.UpdateDelay, updateDelegate, updateInfo);
+			this.UpdateTimers.Add(updateInfo.StateMachine, timer);
+			timer.Start();
 		}
 
 		#endregion

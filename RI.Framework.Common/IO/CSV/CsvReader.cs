@@ -4,6 +4,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 
+
+
+
 namespace RI.Framework.IO.CSV
 {
 	/// <summary>
@@ -125,9 +128,9 @@ namespace RI.Framework.IO.CSV
 		///     <para>
 		///         This property keeps its last value even if <see cref="ReadNext" /> returns false.
 		///     </para>
-		/// <para>
-		/// A new list instance is created for each row.
-		/// </para>
+		///     <para>
+		///         A new list instance is created for each row.
+		///     </para>
 		/// </remarks>
 		public List<string> CurrentRow { get; private set; }
 
@@ -173,7 +176,7 @@ namespace RI.Framework.IO.CSV
 		{
 			this.VerifyNotClosed();
 
-			int current = -1;
+			int current;
 			int next = this.BaseReader.Read();
 
 			ParseState state = ParseState.ExpectStart;
@@ -378,6 +381,9 @@ namespace RI.Framework.IO.CSV
 
 
 
+
+		#region Type: ParseState
+
 		private enum ParseState
 		{
 			ExpectStart = 0,
@@ -388,5 +394,7 @@ namespace RI.Framework.IO.CSV
 
 			ExpectSeparator = 3,
 		}
+
+		#endregion
 	}
 }

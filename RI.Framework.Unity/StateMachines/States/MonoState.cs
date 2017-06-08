@@ -137,6 +137,11 @@ namespace RI.Framework.StateMachines.States
 		{
 		}
 
+		/// <inheritdoc cref="IState.Update" />
+		protected virtual void Update (StateUpdateInfo updateInfo)
+		{
+		}
+
 		#endregion
 
 
@@ -146,6 +151,9 @@ namespace RI.Framework.StateMachines.States
 
 		/// <inheritdoc />
 		public bool IsInitialized { get; protected set; }
+
+		/// <inheritdoc />
+		public int? UpdateInterval { get; protected set; }
 
 		/// <inheritdoc />
 		public bool UseCaching { get; protected set; }
@@ -201,6 +209,18 @@ namespace RI.Framework.StateMachines.States
 
 			this.SetStateMachine(signalInfo.StateMachine);
 			this.Signal(signalInfo);
+		}
+
+		/// <inheritdoc />
+		void IState.Update (StateUpdateInfo updateInfo)
+		{
+			if (updateInfo == null)
+			{
+				throw new ArgumentNullException(nameof(updateInfo));
+			}
+
+			this.SetStateMachine(updateInfo.StateMachine);
+			this.Update(updateInfo);
 		}
 
 		#endregion

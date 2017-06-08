@@ -140,6 +140,8 @@
     <Compile Include="Services\Settings\SettingService.cs" />
     <Compile Include="Services\Settings\Storages\_NamespaceDoc.cs" />
     <Compile Include="Services\Settings\_NamespaceDoc.cs" />
+    <Compile Include="StateMachines\DefaultStateMachineConfiguration.cs" />
+    <Compile Include="StateMachines\Dispatchers\SynchronizationContextStateDispatcher.cs" />
     <Compile Include="StateMachines\Dispatchers\ThreadDispatcherStateDispatcher.cs" />
     <Compile Include="Utilities\Threading\HeavyThreadDispatcher.cs" />
     <Compile Include="Utilities\Threading\IThreadDispatcher.cs" />
