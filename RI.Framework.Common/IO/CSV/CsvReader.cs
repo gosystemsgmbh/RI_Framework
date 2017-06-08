@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-
-
-
+using System.Text;
 
 namespace RI.Framework.IO.CSV
 {
@@ -127,6 +125,9 @@ namespace RI.Framework.IO.CSV
 		///     <para>
 		///         This property keeps its last value even if <see cref="ReadNext" /> returns false.
 		///     </para>
+		/// <para>
+		/// A new list instance is created for each row.
+		/// </para>
 		/// </remarks>
 		public List<string> CurrentRow { get; private set; }
 
@@ -172,8 +173,174 @@ namespace RI.Framework.IO.CSV
 		{
 			this.VerifyNotClosed();
 
-			//TODO: Implement
-			return false;
+			int current = -1;
+			int next = this.BaseReader.Read();
+
+			ParseState state = ParseState.ExpectStart;
+			StringBuilder value = null;
+
+			CsvReaderError error = CsvReaderError.None;
+			List<string> row = new List<string>();
+
+			while (true)
+			{
+				current = next;
+				next = this.BaseReader.Read();
+
+				if (current == -1)
+				{
+					return false;
+				}
+
+				if (this.CurrentLineNumber <= 0)
+				{
+					this.CurrentLineNumber = 1;
+				}
+
+				char currentChar = (char)current;
+				char? nextChar = next == -1 ? (char?)null : (char)next;
+
+				if (currentChar == '\r')
+				{
+					continue;
+				}
+
+				bool isQuote = currentChar == this.Settings.Quote;
+				bool isSeparator = currentChar == this.Settings.Separator;
+				bool isNewLine = currentChar == '\n';
+				bool isDoubleQuote = isQuote && (nextChar.HasValue ? (nextChar.Value == this.Settings.Quote) : false);
+
+				bool skipNext = false;
+				bool finishValue = false;
+				bool finishRow = false;
+				string append = null;
+
+				switch (state)
+				{
+					case ParseState.ExpectStart:
+						if (isQuote)
+						{
+							state = ParseState.ExpectContentQuoted;
+						}
+						else if (isSeparator)
+						{
+							row.Add(string.Empty);
+						}
+						else if (isNewLine)
+						{
+							finishRow = true;
+						}
+						else
+						{
+							state = ParseState.ExpectContentUnquoted;
+							append = currentChar.ToString();
+						}
+						break;
+
+					case ParseState.ExpectContentQuoted:
+						if (isDoubleQuote)
+						{
+							append = this.Settings.Quote.ToString();
+							skipNext = true;
+						}
+						else if (isQuote)
+						{
+							state = ParseState.ExpectSeparator;
+							finishValue = true;
+						}
+						else if (isSeparator)
+						{
+							append = currentChar.ToString();
+						}
+						else if (isNewLine)
+						{
+							if (this.Settings.AllowMultilineValues)
+							{
+								append = Environment.NewLine;
+							}
+							else
+							{
+								error = CsvReaderError.MultilineValueNotAllowed;
+							}
+						}
+						else
+						{
+							append = currentChar.ToString();
+						}
+						break;
+
+					case ParseState.ExpectContentUnquoted:
+						if (isQuote)
+						{
+							error = CsvReaderError.UnexpectedQuote;
+						}
+						else if (isSeparator)
+						{
+							state = ParseState.ExpectStart;
+							finishValue = true;
+						}
+						else if (isNewLine)
+						{
+							finishValue = true;
+							finishRow = true;
+						}
+						else
+						{
+							append = currentChar.ToString();
+						}
+						break;
+
+					case ParseState.ExpectSeparator:
+						if (isSeparator)
+						{
+							state = ParseState.ExpectStart;
+						}
+						else if (isNewLine)
+						{
+							finishRow = true;
+						}
+						else if (this.Settings.WhitespaceTolerant && char.IsWhiteSpace(currentChar))
+						{
+						}
+						else
+						{
+							error = CsvReaderError.SeparatorExpected;
+						}
+						break;
+				}
+
+				if (isNewLine)
+				{
+					this.CurrentLineNumber++;
+				}
+
+				if (append != null)
+				{
+					value = value ?? new StringBuilder();
+					value.Append(append);
+				}
+
+				if (finishValue && (value != null))
+				{
+					row.Add(value.ToString());
+					value = null;
+				}
+
+				if (skipNext)
+				{
+					next = this.BaseReader.Read();
+				}
+
+				if (finishRow || (error != CsvReaderError.None))
+				{
+					break;
+				}
+			}
+
+			this.CurrentError = error;
+			this.CurrentRow = error == CsvReaderError.None ? row : null;
+
+			return true;
 		}
 
 		[SuppressMessage("ReSharper", "UnusedParameter.Local")]
@@ -208,5 +375,18 @@ namespace RI.Framework.IO.CSV
 		}
 
 		#endregion
+
+
+
+		private enum ParseState
+		{
+			ExpectStart = 0,
+
+			ExpectContentQuoted = 1,
+
+			ExpectContentUnquoted = 2,
+
+			ExpectSeparator = 3,
+		}
 	}
 }

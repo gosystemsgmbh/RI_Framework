@@ -320,7 +320,8 @@ namespace RI.Framework.IO.INI
 				return line;
 			}
 
-			return this.BaseReader.ReadLine();
+			string read = this.BaseReader.ReadLine();
+			return read;
 		}
 
 		private void VerifyNotClosed ()

@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
-
-
+using RI.Framework.Utilities;
 
 namespace RI.Framework.IO.CSV
 {
@@ -50,6 +49,8 @@ namespace RI.Framework.IO.CSV
 
 			this.BaseWriter = writer;
 			this.Settings = settings ?? new CsvWriterSettings();
+
+			this.ValueWrittenOnCurrentLine = false;
 		}
 
 		/// <summary>
@@ -82,6 +83,8 @@ namespace RI.Framework.IO.CSV
 		///     The used writer settings for this CSV writer.
 		/// </value>
 		public CsvWriterSettings Settings { get; private set; }
+
+		private bool ValueWrittenOnCurrentLine { get; set; }
 
 		#endregion
 
@@ -118,7 +121,9 @@ namespace RI.Framework.IO.CSV
 		{
 			this.VerifyNotClosed();
 
-			//TODO: Implement
+			this.BaseWriter.WriteLine();
+
+			this.ValueWrittenOnCurrentLine = false;
 		}
 
 		/// <summary>
@@ -163,7 +168,32 @@ namespace RI.Framework.IO.CSV
 				return;
 			}
 
-			//TODO: Implement
+			if (this.ValueWrittenOnCurrentLine)
+			{
+				this.BaseWriter.Write(this.Settings.Separator);
+			}
+
+			this.ValueWrittenOnCurrentLine = true;
+
+			bool quote = this.Settings.AlwaysQuoteValues || (value.IndexOfAny(new []
+			{
+				this.Settings.Quote,
+				this.Settings.Separator,
+				'\n'
+			}) != -1);
+
+			if (quote)
+			{
+				this.BaseWriter.Write(this.Settings.Quote);
+			}
+
+			string encoded = value.DoubleOccurrence(this.Settings.Quote);
+			this.BaseWriter.Write(encoded);
+
+			if (quote)
+			{
+				this.BaseWriter.Write(this.Settings.Quote);
+			}
 		}
 
 		[SuppressMessage("ReSharper", "UnusedParameter.Local")]
