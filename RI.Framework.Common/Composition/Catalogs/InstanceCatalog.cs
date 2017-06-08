@@ -41,7 +41,7 @@ namespace RI.Framework.Composition.Catalogs
 					{
 						if (CompositionContainer.ValidateExportInstance(obj))
 						{
-							HashSet<string> names = CompositionContainer.GetExportsOfType(obj.GetType());
+							HashSet<string> names = CompositionContainer.GetExportsOfType(obj.GetType(), true);
 							foreach (string name in names)
 							{
 								if (!this.Items.ContainsKey(name))

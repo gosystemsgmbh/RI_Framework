@@ -664,6 +664,7 @@ namespace RI.Framework.IO.Paths
 		///         <see cref="IsRealFile" /> is used to determine whether it is a real usable file.
 		///     </para>
 		/// </remarks>
+		/// <exception cref="InvalidOperationException">This directory is not a real usable file.</exception>
 		public void VerifyRealFile ()
 		{
 			if (!this.IsRealFile)

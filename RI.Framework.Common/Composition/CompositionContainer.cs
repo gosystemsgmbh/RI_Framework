@@ -262,12 +262,13 @@ namespace RI.Framework.Composition
 		///     Gets all names under which a type is exported (using <see cref="ExportAttribute" />).
 		/// </summary>
 		/// <param name="type"> The type whose export names are to be determined. </param>
+		/// <param name="includeWithoutAttribute">Specifies whether a type is exported under its default name if it does not have an <see cref="ExportAttribute"/>.</param>
 		/// <returns>
 		///     The set of names the specified type is exported under.
 		///     The set is empty if the specified type has no exports defined.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="type" /> is null. </exception>
-		public static HashSet<string> GetExportsOfType (Type type)
+		public static HashSet<string> GetExportsOfType (Type type, bool includeWithoutAttribute)
 		{
 			if (type == null)
 			{
@@ -276,18 +277,18 @@ namespace RI.Framework.Composition
 
 			HashSet<string> exports = new HashSet<string>(CompositionContainer.NameComparer);
 
-			CompositionContainer.GetExportsOfTypeInternal(type, true, exports);
+			CompositionContainer.GetExportsOfTypeInternal(type, includeWithoutAttribute, true, exports);
 
 			List<Type> inheritedTypes = type.GetInheritance(false);
 			foreach (Type inheritedType in inheritedTypes)
 			{
-				CompositionContainer.GetExportsOfTypeInternal(inheritedType, false, exports);
+				CompositionContainer.GetExportsOfTypeInternal(inheritedType, false, false, exports);
 			}
 
 			Type[] interfaceTypes = type.GetInterfaces();
 			foreach (Type interfaceType in interfaceTypes)
 			{
-				CompositionContainer.GetExportsOfTypeInternal(interfaceType, false, exports);
+				CompositionContainer.GetExportsOfTypeInternal(interfaceType, includeWithoutAttribute, false, exports);
 			}
 
 			return exports;
@@ -414,16 +415,24 @@ namespace RI.Framework.Composition
 			return (genericType == typeof(IEnumerable<>)) ? typeArgument : null;
 		}
 
-		private static void GetExportsOfTypeInternal (Type type, bool isSelf, HashSet<string> exports)
+		private static void GetExportsOfTypeInternal (Type type, bool includeWithoutAttribute, bool isSelf, HashSet<string> exports)
 		{
 			object[] attributes = type.GetCustomAttributes(typeof(ExportAttribute), false);
-			foreach (ExportAttribute attribute in attributes)
+			if (attributes.Length > 0)
 			{
-				if (attribute.Inherited || isSelf)
+				foreach (ExportAttribute attribute in attributes)
 				{
-					string name = attribute.Name ?? CompositionContainer.GetNameOfType(type);
-					exports.Add(name);
+					if (attribute.Inherited || isSelf)
+					{
+						string name = attribute.Name ?? CompositionContainer.GetNameOfType(type);
+						exports.Add(name);
+					}
 				}
+			}
+			else if (includeWithoutAttribute)
+			{
+				string name = CompositionContainer.GetNameOfType(type);
+				exports.Add(name);
 			}
 		}
 

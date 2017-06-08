@@ -306,7 +306,12 @@ namespace RI.Framework.Collections.Virtualization
 		/// <inheritdoc />
 		void ICollection.CopyTo (Array array, int index)
 		{
-			this.CopyTo((T[])array, index);
+			int i1 = 0;
+			foreach (T item in this)
+			{
+				array.SetValue(item, index + i1);
+				i1++;
+			}
 		}
 
 		/// <inheritdoc />

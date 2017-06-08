@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 
-
-
+using RI.Framework.Collections.DirectLinq;
 
 namespace RI.Framework.Composition.Catalogs
 {
@@ -18,7 +17,7 @@ namespace RI.Framework.Composition.Catalogs
 	///         See <see cref="CompositionCatalog" /> for more details about composition catalogs.
 	///     </para>
 	/// </remarks>
-	public class AssemblyCatalog : TypeCatalog
+	public class AssemblyCatalog : CompositionCatalog
 	{
 		#region Static Methods
 
@@ -57,8 +56,36 @@ namespace RI.Framework.Composition.Catalogs
 		///     </para>
 		/// </remarks>
 		public AssemblyCatalog (IEnumerable<Assembly> assemblies)
-			: base(AssemblyCatalog.GetAssemblyTypes(assemblies))
 		{
+			if (assemblies != null)
+			{
+				foreach (Assembly assembly in assemblies)
+				{
+					if (assembly != null)
+					{
+						foreach (Type type in assembly.GetTypes())
+						{
+							if (CompositionContainer.ValidateExportType(type))
+							{
+								bool privateExport = CompositionContainer.IsExportPrivate(type).GetValueOrDefault(false);
+								HashSet<string> names = CompositionContainer.GetExportsOfType(type, false);
+								foreach (string name in names)
+								{
+									if (!this.Items.ContainsKey(name))
+									{
+										this.Items.Add(name, new List<CompositionCatalogItem>());
+									}
+
+									if (!this.Items[name].Any(x => x.Type == type))
+									{
+										this.Items[name].Add(new CompositionCatalogItem(name, type, privateExport));
+									}
+								}
+							}
+						}
+					}
+				}
+			}
 		}
 
 		/// <summary>
@@ -66,7 +93,7 @@ namespace RI.Framework.Composition.Catalogs
 		/// </summary>
 		/// <param name="assemblies"> The array of assemblies whose types are used for composition. </param>
 		public AssemblyCatalog (params Assembly[] assemblies)
-			: base(AssemblyCatalog.GetAssemblyTypes(assemblies))
+			: this((IEnumerable<Assembly>)assemblies)
 		{
 		}
 

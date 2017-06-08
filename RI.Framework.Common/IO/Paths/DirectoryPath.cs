@@ -652,6 +652,7 @@ namespace RI.Framework.IO.Paths
 		///         <see cref="IsRealDirectory" /> is used to determine whether it is a real usable directory.
 		///     </para>
 		/// </remarks>
+		/// <exception cref="InvalidOperationException">This directory is not a real usable directory.</exception>
 		public void VerifyRealDirectory ()
 		{
 			if (!this.IsRealDirectory)

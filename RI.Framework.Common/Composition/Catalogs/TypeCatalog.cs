@@ -43,7 +43,7 @@ namespace RI.Framework.Composition.Catalogs
 						if (CompositionContainer.ValidateExportType(type))
 						{
 							bool privateExport = CompositionContainer.IsExportPrivate(type).GetValueOrDefault(false);
-							HashSet<string> names = CompositionContainer.GetExportsOfType(type);
+							HashSet<string> names = CompositionContainer.GetExportsOfType(type, true);
 							foreach (string name in names)
 							{
 								if (!this.Items.ContainsKey(name))

@@ -32,9 +32,10 @@
         <!-- Added: AssemblyExtensions.GetEmbeddedFileStream -->
         <!-- Fixed: Imports using the Import type were not updated after they were resolved -->
         <!-- Added: CsvDocument, CsvReader, CsvWriter -->
-        <!-- Added: xxx -->
-        <!-- Added: xxx -->
-        <!-- Added: xxx -->
+        <!-- Added: AggregateCatalog -->
+        <!-- Added: FileCatalog -->
+        <!-- Added: AppDomainCatalog -->
+        <!-- Changed: ExportAttribute not required when using ScriptingCatalog -->
 
         <section address="Versioning">
             <title>Versioning</title>

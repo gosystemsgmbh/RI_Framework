@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 
 using RI.Framework.Collections.DirectLinq;
+using RI.Framework.Composition.Model;
 using RI.Framework.Services.Logging;
 
 
@@ -24,6 +25,7 @@ namespace RI.Framework.Composition.Catalogs
 	///         See <see cref="CompositionCatalog" /> for more details about composition catalogs.
 	///     </para>
 	/// </remarks>
+	/// TODO: ExportAllTypes setting in bootstrapper
 	public sealed class ScriptingCatalog : CompositionCatalog
 	{
 		#region Constants
@@ -31,6 +33,46 @@ namespace RI.Framework.Composition.Catalogs
 		private const string ScriptingAssemblyName = "Assembly-CSharp";
 
 		#endregion
+
+
+
+		/// <summary>
+		/// Creates a new instance of <see cref="ScriptingCatalog"/>.
+		/// </summary>
+		/// <remarks>
+		/// <para>
+		/// true is used for <see cref="ExportAllTypes"/>.
+		/// </para>
+		/// </remarks>
+		public ScriptingCatalog()
+			: this(true)
+		{
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="exportAllTypes">Specifies whether all types should be exported (see <see cref="ExportAllTypes"/> for details).</param>
+		public ScriptingCatalog(bool exportAllTypes)
+		{
+			this.ExportAllTypes = exportAllTypes;
+		}
+
+
+
+
+		/// <summary>
+		/// Gets or sets whether all types should be exported.
+		/// </summary>
+		/// <value>
+		/// true if all types should be exported, false otherwise.
+		/// </value>
+		/// <remarks>
+		/// <para>
+		/// If all types are exported, the exports will consist of all non-abstract, non-static types, even those without an <see cref="ExportAttribute"/>.
+		/// </para>
+		/// </remarks>
+		public bool ExportAllTypes { get; set; }
 
 
 
@@ -70,7 +112,7 @@ namespace RI.Framework.Composition.Catalogs
 						if (CompositionContainer.ValidateExportType(type))
 						{
 							bool privateExport = CompositionContainer.IsExportPrivate(type).GetValueOrDefault(false);
-							HashSet<string> names = CompositionContainer.GetExportsOfType(type);
+							HashSet<string> names = CompositionContainer.GetExportsOfType(type, this.ExportAllTypes);
 							foreach (string name in names)
 							{
 								if (!this.Items.ContainsKey(name))

@@ -29,6 +29,8 @@
   - [ ] Filtered log service
   - [ ] Filtered log writer
   - [ ] CSV
+  - [ ] AggregateCatalog
+  - [ ] FileCatalog
 
 
 ## Backlog

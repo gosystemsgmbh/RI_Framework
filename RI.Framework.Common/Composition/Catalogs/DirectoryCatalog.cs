@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 
 using RI.Framework.Collections;
 using RI.Framework.Collections.DirectLinq;
@@ -29,8 +28,8 @@ namespace RI.Framework.Composition.Catalogs
 	///         Changes must be applied by calling <see cref="Reload" />.
 	///     </note>
 	///     <note type="note">
-	///         Assembly which were loaded cannot be unloaded.
-	///         Similarly, assembly which failed to load will not be attempted to be loaded again.
+	///         Assemblies which were loaded cannot be unloaded.
+	///         Similarly, assemblies which failed to load will not be attempted to be loaded again.
 	///     </note>
 	/// </remarks>
 	public sealed class DirectoryCatalog : CompositionCatalog
@@ -63,6 +62,8 @@ namespace RI.Framework.Composition.Catalogs
 		///         The default file pattern <see cref="DefaultFilePattern" /> is used and search is performed non-recursive.
 		///     </para>
 		/// </remarks>
+		/// <exception cref="ArgumentNullException"><paramref name="directoryPath"/> is null.</exception>
+		/// <exception cref="InvalidPathArgumentException"><paramref name="directoryPath"/> is not a real usable directory.</exception>
 		public DirectoryCatalog (DirectoryPath directoryPath)
 			: this(directoryPath, DirectoryCatalog.DefaultFilePattern, false)
 		{
@@ -74,11 +75,19 @@ namespace RI.Framework.Composition.Catalogs
 		/// <param name="directoryPath"> The directory which is searched for assemblies. </param>
 		/// <param name="filePattern"> The file pattern which is used to search for assemblies. </param>
 		/// <param name="recursive"> Specifies whether assemblies are searched recursive (including subdirectories) or not. </param>
+		/// <exception cref="ArgumentNullException"><paramref name="directoryPath"/> or <paramref name="filePattern"/> is null.</exception>
+		/// <exception cref="InvalidOperationException"><paramref name="directoryPath"/> is not a real usable directory.</exception>
+		/// <exception cref="InvalidPathArgumentException"><paramref name="filePattern"/> is an empty string.</exception>
 		public DirectoryCatalog (DirectoryPath directoryPath, string filePattern, bool recursive)
 		{
 			if (directoryPath == null)
 			{
 				throw new ArgumentNullException(nameof(directoryPath));
+			}
+
+			if (!directoryPath.IsRealDirectory)
+			{
+				throw new InvalidPathArgumentException(nameof(directoryPath));
 			}
 
 			if (filePattern == null)
@@ -196,28 +205,23 @@ namespace RI.Framework.Composition.Catalogs
 
 				try
 				{
-					Assembly assembly = Assembly.LoadFrom(newFile);
-					Type[] types = assembly.GetTypes();
-					foreach (Type type in types)
+					Dictionary<string, List<CompositionCatalogItem>> items = FileCatalog.LoadAssemblyFile(newFile);
+					foreach (KeyValuePair<string, List<CompositionCatalogItem>> item in items)
 					{
-						if (CompositionContainer.ValidateExportType(type))
+						if (!this.Items.ContainsKey(item.Key))
 						{
-							bool privateExport = CompositionContainer.IsExportPrivate(type).GetValueOrDefault(false);
-							HashSet<string> names = CompositionContainer.GetExportsOfType(type);
-							foreach (string name in names)
-							{
-								if (!this.Items.ContainsKey(name))
-								{
-									this.Items.Add(name, new List<CompositionCatalogItem>());
-								}
+							this.Items.Add(item.Key, new List<CompositionCatalogItem>());
+						}
 
-								if (!this.Items[name].Any(x => x.Type == type))
-								{
-									this.Items[name].Add(new CompositionCatalogItem(name, type, privateExport));
-								}
+						foreach (CompositionCatalogItem value in item.Value)
+						{
+							if (!this.Items[item.Key].Any(x => x.Type == value.Type))
+							{
+								this.Items[item.Key].Add(value);
 							}
 						}
 					}
+
 					suceededFiles.Add(newFile);
 				}
 				catch (Exception exception)

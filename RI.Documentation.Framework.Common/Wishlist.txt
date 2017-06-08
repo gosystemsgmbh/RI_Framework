@@ -1,7 +1,7 @@
 ﻿Priorities
 ----------
 
-+ Decoupling & Utility Framework
++ Decoupling & Utilities Framework
 # Application Framework
 * Commercium
 
@@ -202,13 +202,9 @@ Composition
  - (Common) CreateAndExport
  - (Common) AddMultiple
 
- # (Common) AggregateCatalog (including filtering)
- - (Common) FileCatalog
- - (Common) AppDomainCatalog
- - (Common) GameObjectCatalog
+ - (Unity) GameObjectCatalog
 
  - (Common) Add container to container
- - (Common) Child container support
 
  - (Common) Lazy loading
 
