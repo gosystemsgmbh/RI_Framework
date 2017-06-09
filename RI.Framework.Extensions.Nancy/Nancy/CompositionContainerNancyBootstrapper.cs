@@ -10,10 +10,10 @@ using RI.Framework.Composition;
 
 
 
-namespace RI.Framework
+namespace RI.Framework.Nancy
 {
 	/// <summary>
-	///     Nancy bootstrapper which uses a composition container.
+	///     Nancy bootstrapper which uses a <see cref="CompositionContainer"/>.
 	/// </summary>
 	public class CompositionContainerNancyBootstrapper : NancyBootstrapperWithRequestContainerBase<CompositionContainer>
 	{

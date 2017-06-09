@@ -26,9 +26,6 @@ namespace RI.Framework.Services.Logging
 	///     <para>
 	///         See <see cref="ILogService" /> for more details.
 	///     </para>
-	///     <note type="note">
-	///         The first created instance of <see cref="LogService" /> is set as the singleton instance for <see cref="Singleton{T}" />
-	///     </note>
 	/// </remarks>
 	[Export]
 	public sealed class LogService : ILogService
@@ -41,9 +38,6 @@ namespace RI.Framework.Services.Logging
 		public LogService ()
 		{
 			this.WritersManual = new List<ILogWriter>();
-
-			Singleton<LogService>.Ensure(() => this);
-			Singleton<ILogService>.Ensure(() => this);
 		}
 
 		#endregion

@@ -1,9 +1,7 @@
 ﻿using System;
 
 using RI.Framework.Services.Logging;
-
-
-
+using RI.Framework.Utilities.ObjectModel;
 
 namespace RI.Framework.StateMachines
 {
@@ -191,7 +189,7 @@ namespace RI.Framework.StateMachines
 	///  ]]>
 	///  </code>
 	/// </example>
-	public class StateMachine : ILogSource
+	public class StateMachine : ILogSource, ISynchronizable
 	{
 		#region Instance Constructor/Destructor
 
@@ -200,7 +198,7 @@ namespace RI.Framework.StateMachines
 		/// </summary>
 		/// <param name="configuration"> The state machines configuration. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="configuration" /> is null. </exception>
-		/// <exception cref="ArgumentException"> <paramref name="configuration" /> does not specify a <see cref="IStateDispatcher" /> with its <see cref="StateMachineConfiguration.Dispatcher" /> property. </exception>
+		/// <exception cref="ArgumentException"> <paramref name="configuration" /> does not specify a <see cref="IStateDispatcher" />, <see cref="IStateResolver"/>, or <see cref="IStateCache"/>. </exception>
 		public StateMachine (StateMachineConfiguration configuration)
 		{
 			if (configuration == null)
@@ -208,10 +206,27 @@ namespace RI.Framework.StateMachines
 				throw new ArgumentNullException(nameof(configuration));
 			}
 
-			if (configuration.Dispatcher == null)
+			lock (configuration.SyncRoot)
 			{
-				throw new ArgumentException("No state dispatcher specified.", nameof(configuration));
+				if (configuration.Dispatcher == null)
+				{
+					throw new ArgumentException("No state dispatcher specified.", nameof(configuration));
+				}
+
+				if (configuration.Resolver == null)
+				{
+					throw new ArgumentException("No state resolver specified.", nameof(configuration));
+				}
+
+				if (configuration.Cache == null)
+				{
+					throw new ArgumentException("No state cache specified.", nameof(configuration));
+				}
+
+				configuration.IsLocked = true;
 			}
+
+			this.SyncRoot = new object();
 
 			this.Configuration = configuration;
 
@@ -231,6 +246,8 @@ namespace RI.Framework.StateMachines
 
 		#region Instance Properties/Indexer
 
+		private StateMachineConfiguration _configuration;
+
 		/// <summary>
 		///     Gets the state machine configuration.
 		/// </summary>
@@ -243,7 +260,25 @@ namespace RI.Framework.StateMachines
 		///         See <see cref="StateMachineConfiguration" /> for more details.
 		///     </note>
 		/// </remarks>
-		public StateMachineConfiguration Configuration { get; private set; }
+		public StateMachineConfiguration Configuration
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._configuration;
+				}
+			}
+			private set
+			{
+				lock (this.SyncRoot)
+				{
+					this._configuration = value;
+				}
+			}
+		}
+
+		private IState _state;
 
 		/// <summary>
 		///     Gets the current state.
@@ -251,7 +286,23 @@ namespace RI.Framework.StateMachines
 		/// <value>
 		///     The current state or null if there is currently no state.
 		/// </value>
-		public IState State { get; private set; }
+		public IState State
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._state;
+				}
+			}
+			private set
+			{
+				lock (this.SyncRoot)
+				{
+					this._state = value;
+				}
+			}
+		}
 
 		private StateMachineSignalDelegate SignalDelegate { get; set; }
 
@@ -338,10 +389,13 @@ namespace RI.Framework.StateMachines
 		/// <param name="signal"> The signal. </param>
 		public void Signal (object signal)
 		{
-			StateSignalInfo signalInfo = new StateSignalInfo(this);
-			signalInfo.Signal = signal;
+			lock (this.SyncRoot)
+			{
+				StateSignalInfo signalInfo = new StateSignalInfo(this);
+				signalInfo.Signal = signal;
 
-			this.DispatchSignal(signalInfo);
+				this.DispatchSignal(signalInfo);
+			}
 		}
 
 		/// <summary>
@@ -360,14 +414,17 @@ namespace RI.Framework.StateMachines
 		/// <param name="state"> The type of state to transition to. </param>
 		public void Transient (Type state)
 		{
-			IState previousState = this.State;
-			IState nextState = this.Resolve(state, true);
+			lock (this.SyncRoot)
+			{
+				IState previousState = this.State;
+				IState nextState = this.Resolve(state, true);
 
-			StateTransientInfo transientInfo = new StateTransientInfo(this);
-			transientInfo.NextState = nextState;
-			transientInfo.PreviousState = previousState;
+				StateTransientInfo transientInfo = new StateTransientInfo(this);
+				transientInfo.NextState = nextState;
+				transientInfo.PreviousState = previousState;
 
-			this.DispatchTransient(transientInfo);
+				this.DispatchTransient(transientInfo);
+			}
 		}
 
 		/// <summary>
@@ -380,17 +437,20 @@ namespace RI.Framework.StateMachines
 
 		private void UpdateInternal (int delay)
 		{
-			if (delay < 0)
+			lock (this.SyncRoot)
 			{
-				delay = 0;
+				if (delay < 0)
+				{
+					delay = 0;
+				}
+
+				StateUpdateInfo updateInfo = new StateUpdateInfo(this);
+				updateInfo.UpdateDelay = delay;
+				updateInfo.StateEnteredUtc = this.StateEnterTimestampUtc;
+				updateInfo.StateEnteredLocal = this.StateEnterTimestampLocal;
+
+				this.DispatchUpdate(updateInfo);
 			}
-
-			StateUpdateInfo updateInfo = new StateUpdateInfo(this);
-			updateInfo.UpdateDelay = delay;
-			updateInfo.StateEnteredUtc = this.StateEnterTimestampUtc;
-			updateInfo.StateEnteredLocal = this.StateEnterTimestampLocal;
-
-			this.DispatchUpdate(updateInfo);
 		}
 
 		#endregion
@@ -458,14 +518,17 @@ namespace RI.Framework.StateMachines
 		/// <param name="signalInfo"> The signal to execute. </param>
 		protected virtual void ExecuteSignal (StateSignalInfo signalInfo)
 		{
-			if (this.Configuration.LoggingEnabled)
+			lock (this.SyncRoot)
 			{
-				this.Log(LogLevel.Debug, "Executing signal: {0}", signalInfo.Signal?.ToString() ?? "[null]");
-			}
+				if (this.Configuration.LoggingEnabled)
+				{
+					this.Log(LogLevel.Debug, "Executing signal: {0}", signalInfo.Signal?.ToString() ?? "[null]");
+				}
 
-			this.OnBeforeSignal(signalInfo);
-			this.State?.Signal(signalInfo);
-			this.OnAfterSignal(signalInfo);
+				this.OnBeforeSignal(signalInfo);
+				this.State?.Signal(signalInfo);
+				this.OnAfterSignal(signalInfo);
+			}
 		}
 
 		/// <summary>
@@ -474,55 +537,58 @@ namespace RI.Framework.StateMachines
 		/// <param name="transientInfo"> The transition to execute. </param>
 		protected virtual void ExecuteTransient (StateTransientInfo transientInfo)
 		{
-			if (this.Configuration.LoggingEnabled)
-			{
-				this.Log(LogLevel.Debug, "Executing transient: {0} -> {1}", transientInfo.PreviousState?.GetType().Name ?? "[null]", transientInfo.NextState?.GetType().Name ?? "[null]");
-			}
-
-			IState previousState = transientInfo.PreviousState;
-			IState nextState = transientInfo.NextState;
-
-			if (!object.ReferenceEquals(this.State, previousState))
+			lock (this.SyncRoot)
 			{
 				if (this.Configuration.LoggingEnabled)
 				{
-					this.Log(LogLevel.Debug, "Transient aborted: {0} -> {1}", transientInfo.PreviousState?.GetType().Name ?? "[null]", transientInfo.NextState?.GetType().Name ?? "[null]");
+					this.Log(LogLevel.Debug, "Executing transient: {0} -> {1}", transientInfo.PreviousState?.GetType().Name ?? "[null]", transientInfo.NextState?.GetType().Name ?? "[null]");
 				}
 
-				this.OnTransitionAborted(transientInfo);
+				IState previousState = transientInfo.PreviousState;
+				IState nextState = transientInfo.NextState;
 
-				return;
-			}
-
-			if (!((nextState?.IsInitialized).GetValueOrDefault(true)))
-			{
-				nextState?.Initialize(this);
-			}
-
-			this.OnBeforeLeave(transientInfo);
-			this.State?.Leave(transientInfo);
-			this.OnAfterLeave(transientInfo);
-
-			this.State = nextState;
-			this.StateEnterTimestampUtc = DateTime.UtcNow;
-			this.StateEnterTimestampLocal = this.StateEnterTimestampUtc.ToLocalTime();
-
-			this.OnBeforeEnter(transientInfo);
-			this.State?.Enter(transientInfo);
-			this.OnAfterEnter(transientInfo);
-
-			if ((nextState != null) && (this.Configuration.Cache != null))
-			{
-				if (nextState.UseCaching && this.Configuration.EnableAutomaticCaching)
+				if (!object.ReferenceEquals(this.State, previousState))
 				{
-					this.Configuration.Cache.AddState(nextState);
-				}
-			}
+					if (this.Configuration.LoggingEnabled)
+					{
+						this.Log(LogLevel.Debug, "Transient aborted: {0} -> {1}", transientInfo.PreviousState?.GetType().Name ?? "[null]", transientInfo.NextState?.GetType().Name ?? "[null]");
+					}
 
-			int? interval = nextState?.UpdateInterval;
-			if (interval.HasValue)
-			{
-				this.UpdateInternal(interval.Value);
+					this.OnTransitionAborted(transientInfo);
+
+					return;
+				}
+
+				if (!((nextState?.IsInitialized).GetValueOrDefault(true)))
+				{
+					nextState?.Initialize(this);
+				}
+
+				this.OnBeforeLeave(transientInfo);
+				this.State?.Leave(transientInfo);
+				this.OnAfterLeave(transientInfo);
+
+				this.State = nextState;
+				this.StateEnterTimestampUtc = DateTime.UtcNow;
+				this.StateEnterTimestampLocal = this.StateEnterTimestampUtc.ToLocalTime();
+
+				this.OnBeforeEnter(transientInfo);
+				this.State?.Enter(transientInfo);
+				this.OnAfterEnter(transientInfo);
+
+				if ((nextState != null) && (this.Configuration.Cache != null))
+				{
+					if (nextState.UseCaching && this.Configuration.EnableAutomaticCaching)
+					{
+						this.Configuration.Cache.AddState(nextState);
+					}
+				}
+
+				int? interval = nextState?.UpdateInterval;
+				if (interval.HasValue)
+				{
+					this.UpdateInternal(interval.Value);
+				}
 			}
 		}
 
@@ -532,14 +598,17 @@ namespace RI.Framework.StateMachines
 		/// <param name="updateInfo"> The update to execute. </param>
 		protected virtual void ExecuteUpdate (StateUpdateInfo updateInfo)
 		{
-			this.OnBeforeUpdate(updateInfo);
-			this.State?.Update(updateInfo);
-			this.OnAfterUpdate(updateInfo);
-
-			int? interval = this.State?.UpdateInterval;
-			if (interval.HasValue)
+			lock (this.SyncRoot)
 			{
-				this.UpdateInternal(interval.Value);
+				this.OnBeforeUpdate(updateInfo);
+				this.State?.Update(updateInfo);
+				this.OnAfterUpdate(updateInfo);
+
+				int? interval = this.State?.UpdateInterval;
+				if (interval.HasValue)
+				{
+					this.UpdateInternal(interval.Value);
+				}
 			}
 		}
 
@@ -634,9 +703,8 @@ namespace RI.Framework.StateMachines
 		/// </returns>
 		/// <remarks>
 		///     <para>
-		///         If <paramref name="useCache" /> is true, a cache is available, and the cache already contains an instance of the state type, the state instance is retrieved from the cache.
-		///         Otherwise, if the used <see cref="StateMachineConfiguration" /> (<see cref="Configuration" />) provides an <see cref="IStateResolver" /> (<see cref="StateMachineConfiguration.Resolver" />), that resolver is used.
-		///         If no resolver is provided, it is attempted to directly create a new instance of the type specified by <paramref name="type" />.
+		///         If <paramref name="useCache" /> is true and the cache already contains an instance of the state type, the state instance is retrieved from the cache.
+		///         Otherwise, the resolver as specified in the configuration is used.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="StateNotFoundException"> The state instance specified by <paramref name="type" /> cannot be resolved. </exception>
@@ -649,32 +717,28 @@ namespace RI.Framework.StateMachines
 
 			IState state;
 
-			if (useCache && (this.Configuration.Cache != null) && this.Configuration.Cache.ContainsState(type))
+			if (useCache && this.Configuration.Cache.ContainsState(type))
 			{
 				state = this.Configuration.Cache.GetState(type);
 			}
 			else
 			{
-				if (this.Configuration.Resolver == null)
-				{
-					state = Activator.CreateInstance(type) as IState;
-					if (state == null)
-					{
-						throw new StateNotFoundException(type);
-					}
-				}
-				else
-				{
-					state = this.Configuration.Resolver.ResolveState(type);
-					if (state == null)
-					{
-						throw new StateNotFoundException(type);
-					}
-				}
+				state = this.Configuration.Resolver.ResolveState(type);
+			}
+
+			if (state == null)
+			{
+				throw new StateNotFoundException(type);
 			}
 
 			return state;
 		}
+
+		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		public object SyncRoot { get; private set; }
 
 		#endregion
 	}

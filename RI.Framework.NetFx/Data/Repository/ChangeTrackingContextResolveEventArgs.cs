@@ -1,9 +1,8 @@
 ﻿using System;
 
+using RI.Framework.Data.Repository.Entities;
 
-
-
-namespace RI.Framework.Data.Repository.Entities
+namespace RI.Framework.Data.Repository
 {
 	/// <summary>
 	///     Event arguments for the entity views event which resolves the currently used change tracking context to be used with <see cref="IEntityChangeTracking" />.

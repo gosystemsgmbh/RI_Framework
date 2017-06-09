@@ -165,6 +165,32 @@ namespace RI.Framework.Utilities.Threading
 		/// </value>
 		public int Priority { get; private set; }
 
+		private int _executionCount;
+
+		/// <summary>
+		/// Gets the number of times the delegate was executed.
+		/// </summary>
+		/// <value>
+		/// The number of times the delegate was executed.
+		/// </value>
+		public int ExecutionCount
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._executionCount;
+				}
+			}
+			private set
+			{
+				lock (this.SyncRoot)
+				{
+					this._executionCount = value;
+				}
+			}
+		}
+
 		private object SyncRoot { get; set; }
 
 		private Thread TimerThread { get; set; }
@@ -194,16 +220,29 @@ namespace RI.Framework.Utilities.Threading
 					do
 					{
 						Thread.Sleep(this.Interval);
+
+						ThreadDispatcherOperation operation = null;
+
 						lock (this.SyncRoot)
 						{
 							lock (this.Dispatcher.SyncRoot)
 							{
 								if (this.Dispatcher.IsRunning)
 								{
-									this.Dispatcher.Send(this.Priority, this.Action, this.Parameters);
+									operation = this.Dispatcher.Post(this.Priority, this.Action, this.Parameters);
 								}
+							}
+						}
 
-								cont = (this.Mode == ThreadDispatcherTimerMode.Continuous) && this.Dispatcher.IsRunning;
+						operation?.Wait();
+
+						lock (this.SyncRoot)
+						{
+							lock (this.Dispatcher.SyncRoot)
+							{
+								this.ExecutionCount++;
+
+								cont = (this.Mode == ThreadDispatcherTimerMode.Continuous) && (this.Dispatcher?.IsRunning).GetValueOrDefault(false);
 							}
 						}
 					}

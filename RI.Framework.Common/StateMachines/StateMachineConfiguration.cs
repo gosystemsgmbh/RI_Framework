@@ -1,8 +1,10 @@
-﻿using RI.Framework.Services.Logging;
+﻿using System;
+
+using RI.Framework.Services.Logging;
 using RI.Framework.StateMachines.Caches;
-
-
-
+using RI.Framework.StateMachines.Dispatchers;
+using RI.Framework.StateMachines.Resolvers;
+using RI.Framework.Utilities.ObjectModel;
 
 namespace RI.Framework.StateMachines
 {
@@ -17,17 +19,21 @@ namespace RI.Framework.StateMachines
 	///         See the respective properties for their default values.
 	///     </para>
 	/// </remarks>
-	public class StateMachineConfiguration
+	public abstract class StateMachineConfiguration : ISynchronizable
 	{
 		#region Instance Constructor/Destructor
 
 		/// <summary>
 		///     Creates a new instance of <see cref="StateMachineConfiguration" />.
 		/// </summary>
-		public StateMachineConfiguration ()
+		protected StateMachineConfiguration ()
 		{
-			this.Dispatcher = null;
-			this.Resolver = null;
+			this.SyncRoot = new object();
+
+			this.IsLocked = false;
+
+			this.Dispatcher = new StateDispatcher();
+			this.Resolver = new StateResolver();
 			this.Cache = new StateCache();
 
 			this.EnableAutomaticCaching = true;
@@ -40,6 +46,8 @@ namespace RI.Framework.StateMachines
 
 
 		#region Instance Properties/Indexer
+
+		private IStateCache _cache;
 
 		/// <summary>
 		///     Gets or sets the used state instance cache.
@@ -58,7 +66,31 @@ namespace RI.Framework.StateMachines
 		///         The default value is an instance of <see cref="StateCache" />.
 		///     </para>
 		/// </remarks>
-		public IStateCache Cache { get; set; }
+		/// <exception cref="ArgumentNullException">The property is being set to null while this instance is used in a <see cref="StateMachine"/>.</exception>
+		public IStateCache Cache
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._cache;
+				}
+			}
+			set
+			{
+				lock (this.SyncRoot)
+				{
+					if (this.IsLocked && (value == null))
+					{
+						throw new ArgumentNullException(nameof(value));
+					}
+
+					this._cache = value;
+				}
+			}
+		}
+
+		private IStateDispatcher _dispatcher;
 
 		/// <summary>
 		///     Gets or sets the used dispatcher.
@@ -74,10 +106,34 @@ namespace RI.Framework.StateMachines
 		///         The dispatcher of a state machine should not be changed while the current state is not null.
 		///     </note>
 		///     <para>
-		///         The default value is null.
+		///         The default value is an instance of <see cref="StateDispatcher" />.
 		///     </para>
 		/// </remarks>
-		public IStateDispatcher Dispatcher { get; set; }
+		/// <exception cref="ArgumentNullException">The property is being set to null while this instance is used in a <see cref="StateMachine"/>.</exception>
+		public IStateDispatcher Dispatcher
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._dispatcher;
+				}
+			}
+			set
+			{
+				lock (this.SyncRoot)
+				{
+					if (this.IsLocked && (value == null))
+					{
+						throw new ArgumentNullException(nameof(value));
+					}
+
+					this._dispatcher = value;
+				}
+			}
+		}
+
+		private bool _enableAutomaticCaching;
 
 		/// <summary>
 		///     Gets or sets whether state instances are automatically added to the cache by <see cref="StateMachine" /> after they became the current state for the first time.
@@ -90,7 +146,25 @@ namespace RI.Framework.StateMachines
 		///         The default value is true.
 		///     </para>
 		/// </remarks>
-		public bool EnableAutomaticCaching { get; set; }
+		public bool EnableAutomaticCaching
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._enableAutomaticCaching;
+				}
+			}
+			set
+			{
+				lock (this.SyncRoot)
+				{
+					this._enableAutomaticCaching = value;
+				}
+			}
+		}
+
+		private bool _loggingEnabled;
 
 		/// <summary>
 		///     Gets or sets whether logging, using <see cref="LogLocator" />, is enabled.
@@ -103,7 +177,25 @@ namespace RI.Framework.StateMachines
 		///         The default value is true.
 		///     </para>
 		/// </remarks>
-		public bool LoggingEnabled { get; set; }
+		public bool LoggingEnabled
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._loggingEnabled;
+				}
+			}
+			set
+			{
+				lock (this.SyncRoot)
+				{
+					this._loggingEnabled = value;
+				}
+			}
+		}
+
+		private IStateResolver _resolver;
 
 		/// <summary>
 		///     Gets or sets the used state resolver.
@@ -119,10 +211,58 @@ namespace RI.Framework.StateMachines
 		///         The resolver of a state machine can be changed at any time.
 		///     </note>
 		///     <para>
-		///         The default value is null.
+		///         The default value is an instance of <see cref="StateResolver" />.
 		///     </para>
 		/// </remarks>
-		public IStateResolver Resolver { get; set; }
+		/// <exception cref="ArgumentNullException">The property is being set to null while this instance is used in a <see cref="StateMachine"/>.</exception>
+		public IStateResolver Resolver
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._resolver;
+				}
+			}
+			set
+			{
+				lock (this.SyncRoot)
+				{
+					if (this.IsLocked && (value == null))
+					{
+						throw new ArgumentNullException(nameof(value));
+					}
+
+					this._resolver = value;
+				}
+			}
+		}
+
+		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		public object SyncRoot { get; private set; }
+
+		private bool _isLocked;
+
+		internal bool IsLocked
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._isLocked;
+				}
+			}
+			set
+			{
+				lock (this.SyncRoot)
+				{
+					this._isLocked = value;
+				}
+			}
+		}
 
 		#endregion
 	}

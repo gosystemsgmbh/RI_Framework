@@ -29,9 +29,6 @@ namespace RI.Framework.Services.Resources
 	///     <para>
 	///         See <see cref="IResourceService" /> for more details.
 	///     </para>
-	///     <note type="note">
-	///         The first created instance of <see cref="ResourceService" /> is set as the singleton instance for <see cref="Singleton{T}" />
-	///     </note>
 	/// </remarks>
 	public sealed class ResourceService : IResourceService, IImporting, ILogSource
 	{
@@ -47,9 +44,6 @@ namespace RI.Framework.Services.Resources
 
 			this.SourcesManual = new List<IResourceSource>();
 			this.ConvertersManual = new List<IResourceConverter>();
-
-			Singleton<ResourceService>.Ensure(() => this);
-			Singleton<IResourceService>.Ensure(() => this);
 		}
 
 		#endregion

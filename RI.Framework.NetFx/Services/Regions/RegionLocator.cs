@@ -906,7 +906,7 @@ namespace RI.Framework.Services.Regions
 				return null;
 			}
 
-			return ServiceLocator.GetInstance(type) ?? Singleton.Get(type);
+			return ServiceLocator.GetInstance(type);
 		}
 
 		#endregion

@@ -26,9 +26,6 @@ namespace RI.Framework.Services.Modularization
 	///     <para>
 	///         See <see cref="IModuleService" /> for more details.
 	///     </para>
-	///     <note type="note">
-	///         The first created instance of <see cref="LogService" /> is set as the singleton instance for <see cref="Singleton{T}" />
-	///     </note>
 	/// </remarks>
 	[Export]
 	public sealed class ModuleService : IModuleService, IImporting, ILogSource
@@ -44,9 +41,6 @@ namespace RI.Framework.Services.Modularization
 
 			this.ModulesManual = new List<IModule>();
 			this.ModulesUpdated = new List<IModule>();
-
-			Singleton<ModuleService>.Ensure(() => this);
-			Singleton<IModuleService>.Ensure(() => this);
 		}
 
 		#endregion

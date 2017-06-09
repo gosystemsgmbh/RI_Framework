@@ -5,7 +5,7 @@ using System.Windows;
 
 
 
-namespace RI.Framework.Services.Resources.Converters
+namespace RI.Framework.Services.Resources
 {
 	/// <summary>
 	///     Provides WPF specific utility/extension methods for the <see cref="IResourceService" /> type.
@@ -48,6 +48,8 @@ namespace RI.Framework.Services.Resources.Converters
 			{
 				throw new ArgumentNullException(nameof(resourceDictionary));
 			}
+
+			//TODO: Use locking from service
 
 			resourceDictionary.Clear();
 			resourceDictionary.MergedDictionaries.Clear();

@@ -28,14 +28,14 @@ namespace RI.Framework.Utilities.Threading
 		/// </summary>
 		/// <remarks>
 		///     <para>
-		///         An <see cref="IDispatcherService" /> is used, retrieved using <see cref="ServiceLocator" /> or <see cref="Singleton{T}" />.
+		///         An <see cref="IDispatcherService" /> is used, retrieved using <see cref="ServiceLocator" />.
 		///     </para>
 		///     <para>
 		///         <see cref="DispatcherPriority.Default" /> is used as the priority.
 		///     </para>
 		/// </remarks>
 		public ToDispatcher ()
-			: this(ServiceLocator.GetInstance<DispatcherService>() ?? ServiceLocator.GetInstance<IDispatcherService>() ?? Singleton<DispatcherService>.Instance ?? Singleton<IDispatcherService>.Instance, DispatcherPriority.Default)
+			: this(ServiceLocator.GetInstance<DispatcherService>() ?? ServiceLocator.GetInstance<IDispatcherService>(), DispatcherPriority.Default)
 		{
 		}
 
@@ -45,11 +45,11 @@ namespace RI.Framework.Utilities.Threading
 		/// <param name="priority"> The priority to use. </param>
 		/// <remarks>
 		///     <para>
-		///         An <see cref="IDispatcherService" /> is used, retrieved using <see cref="ServiceLocator" /> or <see cref="Singleton{IDispatcherService}" />.
+		///         An <see cref="IDispatcherService" /> is used, retrieved using <see cref="ServiceLocator" />.
 		///     </para>
 		/// </remarks>
 		public ToDispatcher (DispatcherPriority priority)
-			: this(ServiceLocator.GetInstance<DispatcherService>() ?? ServiceLocator.GetInstance<IDispatcherService>() ?? Singleton<DispatcherService>.Instance ?? Singleton<IDispatcherService>.Instance, priority)
+			: this(ServiceLocator.GetInstance<DispatcherService>() ?? ServiceLocator.GetInstance<IDispatcherService>(), priority)
 		{
 		}
 

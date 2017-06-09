@@ -22,7 +22,15 @@ namespace RI.Framework.IO.Files
 	/// </remarks>
 	public sealed class TemporaryFile : IDisposable
 	{
+		static TemporaryFile ()
+		{
+			TemporaryFile.GlobalSyncRoot = new object();
+		}
+
+
 		#region Static Properties/Indexer
+
+		private static DirectoryPath _temporaryDirectory;
 
 		/// <summary>
 		///     Gets or sets the directory in which temporary files are to be created by default.
@@ -31,7 +39,23 @@ namespace RI.Framework.IO.Files
 		///     The directory in which temporary files are to be created by default or null if <see cref="DirectoryPath.GetTempDirectory" /> should be used.
 		///     The default value is null.
 		/// </value>
-		public static DirectoryPath TemporaryDirectory { get; set; }
+		public static DirectoryPath TemporaryDirectory
+		{
+			get
+			{
+				lock (TemporaryFile.GlobalSyncRoot)
+				{
+					return TemporaryFile._temporaryDirectory;
+				}
+			}
+			set
+			{
+				lock (TemporaryFile.GlobalSyncRoot)
+				{
+					TemporaryFile._temporaryDirectory = value;
+				}
+			}
+		}
 
 		#endregion
 
@@ -58,21 +82,24 @@ namespace RI.Framework.IO.Files
 		/// </remarks>
 		public static List<FilePath> DeleteTemporaryFiles ()
 		{
-			List<FilePath> files = TemporaryFile.GetTemporaryFiles();
-			List<FilePath> deletedFiles = new List<FilePath>();
-			foreach (FilePath file in files)
+			lock (TemporaryFile.GlobalSyncRoot)
 			{
-				try
+				List<FilePath> files = TemporaryFile.GetTemporaryFiles();
+				List<FilePath> deletedFiles = new List<FilePath>();
+				foreach (FilePath file in files)
 				{
-					file.Delete();
-					deletedFiles.Add(file);
+					try
+					{
+						file.Delete();
+						deletedFiles.Add(file);
+					}
+					catch (IOException)
+					{
+						//IOException most likely means that the file is still in use.
+					}
 				}
-				catch (IOException)
-				{
-					//IOException most likely means that the file is still in use.
-				}
+				return deletedFiles;
 			}
-			return deletedFiles;
 		}
 
 		/// <summary>
@@ -147,12 +174,17 @@ namespace RI.Framework.IO.Files
 		/// </remarks>
 		public static List<FilePath> GetTemporaryFiles ()
 		{
-			return TemporaryFile.GetTempDirectory().GetFiles(false, false, "*");
+			lock (TemporaryFile.GlobalSyncRoot)
+			{
+				return TemporaryFile.GetTempDirectory().GetFiles(false, false, "*");
+			}
 		}
 
 		private static string CreateTemporaryFileName () => Guid.NewGuid().ToString("N") + DirectoryPath.TemporaryExtension;
 
 		private static DirectoryPath GetTempDirectory () => TemporaryFile.TemporaryDirectory ?? DirectoryPath.GetTempDirectory();
+
+		private static object GlobalSyncRoot { get; set; }
 
 		#endregion
 
@@ -171,8 +203,12 @@ namespace RI.Framework.IO.Files
 		///     </para>
 		/// </remarks>
 		public TemporaryFile ()
-			: this(TemporaryFile.GetTempDirectory().AppendFile(TemporaryFile.CreateTemporaryFileName()))
 		{
+			lock (TemporaryFile.GlobalSyncRoot)
+			{
+				this.File = TemporaryFile.GetTempDirectory().AppendFile(TemporaryFile.CreateTemporaryFileName());
+				this.File.CreateIfNotExist();
+			}
 		}
 
 		private TemporaryFile (FilePath file)

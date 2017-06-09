@@ -25,20 +25,13 @@ namespace RI.Framework.Data.EF
 		/// <inheritdoc />
 		public object GetService (Type type, object key)
 		{
-			return ServiceLocator.GetInstance(type) ?? Singleton.Get(type);
+			return ServiceLocator.GetInstance(type);
 		}
 
 		/// <inheritdoc />
 		public IEnumerable<object> GetServices (Type type, object key)
 		{
-			List<object> values = new List<object>();
-			values.AddRange(ServiceLocator.GetInstances(type));
-			object singleton = Singleton.Get(type);
-			if (singleton != null)
-			{
-				values.Add(singleton);
-			}
-			return values;
+			return ServiceLocator.GetInstances(type);
 		}
 
 		#endregion

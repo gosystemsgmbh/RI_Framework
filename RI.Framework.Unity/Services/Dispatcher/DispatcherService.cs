@@ -22,9 +22,6 @@ namespace RI.Framework.Services.Dispatcher
 	///     <para>
 	///         See <see cref="IDispatcherService" /> for more details.
 	///     </para>
-	///     <note type="note">
-	///         The first created instance of <see cref="DispatcherService" /> is set as the singleton instance for <see cref="Singleton{T}" />
-	///     </note>
 	/// </remarks>
 	/// TODO: Correct locking
 	[Export]
@@ -57,9 +54,6 @@ namespace RI.Framework.Services.Dispatcher
 			dispatcherServiceListener.DispatcherService = this;
 
 			this.RegisterReceiver<DispatcherBroadcast>(this.HandleDispatcherBroadcast);
-
-			Singleton<DispatcherService>.Ensure(() => this);
-			Singleton<IDispatcherService>.Ensure(() => this);
 		}
 
 		#endregion
@@ -1076,6 +1070,7 @@ namespace RI.Framework.Services.Dispatcher
 		{
 			#region Constants
 
+			private static object GlobalSyncRoot = new object();
 			private static List<Action<T>> Receivers;
 			private static Action<T>[] ReceiversSafe;
 			public static readonly Action<object> Invoker = DispatcherSlots<T>.Invoke;
@@ -1096,51 +1091,63 @@ namespace RI.Framework.Services.Dispatcher
 
 			public static void RegisterReceiver (Action<T> receiver)
 			{
-				if (DispatcherSlots<T>.Receivers == null)
+				lock (DispatcherSlots<T>.GlobalSyncRoot)
 				{
-					DispatcherSlots<T>.Receivers = new List<Action<T>>();
-				}
+					if (DispatcherSlots<T>.Receivers == null)
+					{
+						DispatcherSlots<T>.Receivers = new List<Action<T>>();
+					}
 
-				if (DispatcherSlots<T>.Receivers.Contains(receiver))
-				{
-					return;
-				}
+					if (DispatcherSlots<T>.Receivers.Contains(receiver))
+					{
+						return;
+					}
 
-				DispatcherSlots<T>.Receivers.Add(receiver);
-				DispatcherSlots<T>.ReceiversSafe = null;
+					DispatcherSlots<T>.Receivers.Add(receiver);
+					DispatcherSlots<T>.ReceiversSafe = null;
+				}
 			}
 
 			public static void UnregisterReceiver (Action<T> receiver)
 			{
-				if (DispatcherSlots<T>.Receivers == null)
+				lock (DispatcherSlots<T>.GlobalSyncRoot)
 				{
-					return;
-				}
+					if (DispatcherSlots<T>.Receivers == null)
+					{
+						return;
+					}
 
-				if (!DispatcherSlots<T>.Receivers.Contains(receiver))
-				{
-					return;
-				}
+					if (!DispatcherSlots<T>.Receivers.Contains(receiver))
+					{
+						return;
+					}
 
-				DispatcherSlots<T>.Receivers.Remove(receiver);
-				DispatcherSlots<T>.ReceiversSafe = null;
+					DispatcherSlots<T>.Receivers.Remove(receiver);
+					DispatcherSlots<T>.ReceiversSafe = null;
+				}
 			}
 
 			private static void Invoke (object broadcast)
 			{
-				if (DispatcherSlots<T>.ReceiversSafe == null)
-				{
-					DispatcherSlots<T>.ReceiversSafe = DispatcherSlots<T>.Receivers?.ToArray();
-				}
+				Action<T>[] receivers;
 
-				if (DispatcherSlots<T>.ReceiversSafe == null)
+				lock (DispatcherSlots<T>.GlobalSyncRoot)
 				{
-					return;
+					if (DispatcherSlots<T>.ReceiversSafe == null)
+					{
+						DispatcherSlots<T>.ReceiversSafe = DispatcherSlots<T>.Receivers?.ToArray();
+					}
+
+					if (DispatcherSlots<T>.ReceiversSafe == null)
+					{
+						return;
+					}
+
+					receivers = DispatcherSlots<T>.ReceiversSafe;
 				}
 
 				T realBroadcast = broadcast as T;
 
-				Action<T>[] receivers = DispatcherSlots<T>.ReceiversSafe;
 				for (int i1 = 0; i1 < receivers.Length; i1++)
 				{
 					Action<T> receiver = receivers[i1];

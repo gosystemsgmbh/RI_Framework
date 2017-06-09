@@ -27,9 +27,6 @@ namespace RI.Framework.Services.Settings
 	///     <para>
 	///         See <see cref="ISettingService" /> for more details.
 	///     </para>
-	///     <note type="note">
-	///         The first created instance of <see cref="SettingService" /> is set as the singleton instance for <see cref="Singleton{T}" />
-	///     </note>
 	/// </remarks>
 	public sealed class SettingService : ISettingService, ILogSource
 	{
@@ -43,9 +40,6 @@ namespace RI.Framework.Services.Settings
 			this.StoragesManual = new List<ISettingStorage>();
 			this.ConvertersManual = new List<ISettingConverter>();
 			this.Cache = new Dictionary<string, string>(StringComparerEx.InvariantCultureIgnoreCase);
-
-			Singleton<SettingService>.Ensure(() => this);
-			Singleton<ISettingService>.Ensure(() => this);
 		}
 
 		#endregion

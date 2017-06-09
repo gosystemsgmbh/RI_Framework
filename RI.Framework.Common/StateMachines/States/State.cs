@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 
 using RI.Framework.Composition.Model;
-
-
-
+using RI.Framework.Utilities.ObjectModel;
 
 namespace RI.Framework.StateMachines.States
 {
@@ -30,6 +28,8 @@ namespace RI.Framework.StateMachines.States
 		/// </summary>
 		protected State ()
 		{
+			this.SyncRoot = new object();
+
 			this.IsInitialized = false;
 			this.UseCaching = true;
 			this.UpdateInterval = null;
@@ -46,6 +46,8 @@ namespace RI.Framework.StateMachines.States
 
 		#region Instance Properties/Indexer
 
+		private StateMachine _stateMachine;
+
 		/// <summary>
 		///     Gets the state machine associated with this state.
 		/// </summary>
@@ -57,7 +59,23 @@ namespace RI.Framework.StateMachines.States
 		///         <see cref="StateMachine" /> is updated before each signal or transition.
 		///     </para>
 		/// </remarks>
-		protected StateMachine StateMachine { get; private set; }
+		protected StateMachine StateMachine
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._stateMachine;
+				}
+			}
+			private set
+			{
+				lock (this.SyncRoot)
+				{
+					this._stateMachine = value;
+				}
+			}
+		}
 
 		private Dictionary<Type, Delegate> SignalHandlers { get; set; }
 
@@ -93,9 +111,12 @@ namespace RI.Framework.StateMachines.States
 				throw new ArgumentNullException(nameof(handler));
 			}
 
-			Type type = typeof(TSignal);
-			this.SignalHandlers.Remove(type);
-			this.SignalHandlers.Add(type, handler);
+			lock (this.SyncRoot)
+			{
+				Type type = typeof(TSignal);
+				this.SignalHandlers.Remove(type);
+				this.SignalHandlers.Add(type, handler);
+			}
 		}
 
 		/// <summary>
@@ -109,10 +130,13 @@ namespace RI.Framework.StateMachines.States
 		/// </remarks>
 		protected void UnregisterSignal <TSignal> ()
 		{
-			Type type = typeof(TSignal);
-			this.SignalHandlers.Remove(type);
+			lock (this.SyncRoot)
+			{
+				Type type = typeof(TSignal);
+				this.SignalHandlers.Remove(type);
+			}
 		}
-		
+
 		private void SetStateMachine (StateMachine stateMachine)
 		{
 			this.StateMachine = stateMachine;
@@ -183,13 +207,73 @@ namespace RI.Framework.StateMachines.States
 		#region Interface: IState
 
 		/// <inheritdoc />
-		public bool IsInitialized { get; protected set; }
+		bool ISynchronizable.IsSynchronized => true;
 
 		/// <inheritdoc />
-		public int? UpdateInterval { get; protected set; }
+		public object SyncRoot { get; private set; }
+
+		private bool _isInitialized;
 
 		/// <inheritdoc />
-		public bool UseCaching { get; protected set; }
+		public bool IsInitialized
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._isInitialized;
+				}
+			}
+			protected set
+			{
+				lock (this.SyncRoot)
+				{
+					this._isInitialized = value;
+				}
+			}
+		}
+
+		private int? _updateInterval;
+
+		/// <inheritdoc />
+		public int? UpdateInterval
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._updateInterval;
+				}
+			}
+			protected set
+			{
+				lock (this.SyncRoot)
+				{
+					this._updateInterval = value;
+				}
+			}
+		}
+
+		private bool _useCaching;
+
+		/// <inheritdoc />
+		public bool UseCaching
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._useCaching;
+				}
+			}
+			protected set
+			{
+				lock (this.SyncRoot)
+				{
+					this._useCaching = value;
+				}
+			}
+		}
 
 		/// <inheritdoc />
 		void IState.Enter (StateTransientInfo transientInfo)
@@ -199,8 +283,11 @@ namespace RI.Framework.StateMachines.States
 				throw new ArgumentNullException(nameof(transientInfo));
 			}
 
-			this.SetStateMachine(transientInfo.StateMachine);
-			this.Enter(transientInfo);
+			lock (this.SyncRoot)
+			{
+				this.SetStateMachine(transientInfo.StateMachine);
+				this.Enter(transientInfo);
+			}
 		}
 
 		/// <inheritdoc />
@@ -211,13 +298,16 @@ namespace RI.Framework.StateMachines.States
 				throw new ArgumentNullException(nameof(stateMachine));
 			}
 
-			if (!this.IsInitialized)
+			lock (this.SyncRoot)
 			{
-				this.SetStateMachine(stateMachine);
-				this.Initialize(stateMachine);
-			}
+				if (!this.IsInitialized)
+				{
+					this.SetStateMachine(stateMachine);
+					this.Initialize(stateMachine);
+				}
 
-			this.IsInitialized = true;
+				this.IsInitialized = true;
+			}
 		}
 
 		/// <inheritdoc />
@@ -228,8 +318,11 @@ namespace RI.Framework.StateMachines.States
 				throw new ArgumentNullException(nameof(transientInfo));
 			}
 
-			this.SetStateMachine(transientInfo.StateMachine);
-			this.Leave(transientInfo);
+			lock (this.SyncRoot)
+			{
+				this.SetStateMachine(transientInfo.StateMachine);
+				this.Leave(transientInfo);
+			}
 		}
 
 		/// <inheritdoc />
@@ -240,8 +333,11 @@ namespace RI.Framework.StateMachines.States
 				throw new ArgumentNullException(nameof(signalInfo));
 			}
 
-			this.SetStateMachine(signalInfo.StateMachine);
-			this.Signal(signalInfo);
+			lock (this.SyncRoot)
+			{
+				this.SetStateMachine(signalInfo.StateMachine);
+				this.Signal(signalInfo);
+			}
 		}
 
 		/// <inheritdoc />
@@ -252,8 +348,11 @@ namespace RI.Framework.StateMachines.States
 				throw new ArgumentNullException(nameof(updateInfo));
 			}
 
-			this.SetStateMachine(updateInfo.StateMachine);
-			this.Update(updateInfo);
+			lock (this.SyncRoot)
+			{
+				this.SetStateMachine(updateInfo.StateMachine);
+				this.Update(updateInfo);
+			}
 		}
 
 		#endregion

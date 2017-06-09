@@ -41,7 +41,12 @@ namespace RI.Framework.Services
 
 		static ServiceLocator ()
 		{
+			ServiceLocator.GlobalSyncRoot = new object();
 			ServiceLocator.Cache = new Dictionary<string, object[]>(CompositionContainer.NameComparer);
+			ServiceLocator.CompositionContainerBindings = new HashSet<CompositionContainer>();
+
+			ServiceLocator.UseCaching = true;
+			ServiceLocator.UseSingletons = true;
 		}
 
 		#endregion
@@ -50,6 +55,8 @@ namespace RI.Framework.Services
 
 
 		#region Static Properties/Indexer
+
+		private static bool _useCaching;
 
 		/// <summary>
 		///     Gets or sets whether cahcing is used.
@@ -62,7 +69,25 @@ namespace RI.Framework.Services
 		///         The default value is true.
 		///     </para>
 		/// </remarks>
-		public static bool UseCaching { get; set; } = true;
+		public static bool UseCaching
+		{
+			get
+			{
+				lock (ServiceLocator.GlobalSyncRoot)
+				{
+					return ServiceLocator._useCaching;
+				}
+			}
+			set
+			{
+				lock (ServiceLocator.GlobalSyncRoot)
+				{
+					ServiceLocator._useCaching = value;
+				}
+			}
+		}
+
+		private static bool _useSingletons;
 
 		/// <summary>
 		///     Gets or sets whether <see cref="ServiceLocator" /> is connected to <see cref="Singleton" /> / <see cref="Singleton{T}" />.
@@ -75,9 +100,29 @@ namespace RI.Framework.Services
 		///         The default value is true.
 		///     </para>
 		/// </remarks>
-		public static bool UseSingletons { get; set; } = true;
+		public static bool UseSingletons
+		{
+			get
+			{
+				lock (ServiceLocator.GlobalSyncRoot)
+				{
+					return ServiceLocator._useSingletons;
+				}
+			}
+			set
+			{
+				lock (ServiceLocator.GlobalSyncRoot)
+				{
+					ServiceLocator._useSingletons = value;
+				}
+			}
+		}
 
 		private static Dictionary<string, object[]> Cache { get; set; }
+
+		private static object GlobalSyncRoot { get; set; }
+
+		private static HashSet<CompositionContainer> CompositionContainerBindings { get; set; }
 
 		#endregion
 
@@ -109,11 +154,14 @@ namespace RI.Framework.Services
 		/// <summary>
 		///     Binds the service locator to a specified composition container which is then used for service lookup.
 		/// </summary>
-		/// <param name="compositionContainer"> The composition container from which the services should be looked-up. </param>
+		/// <param name="compositionContainer"> The composition container to bind to. </param>
 		/// <remarks>
 		///     <para>
-		///         <see cref="CompositionContainer.GetNameOfType" /> is used for type-to-name translation (handling the <see cref="Translate" /> event) and <see cref="CompositionContainer.GetExports{T}(string)" /> for lookup (handling the <see cref="Lookup" /> event).
+		///         <see cref="CompositionContainer.GetNameOfType" /> is used for type-to-name translation and <see cref="CompositionContainer.GetExports{T}(string)" /> for lookup.
 		///     </para>
+		/// <para>
+		/// It is possible to bind multiple composition containers to the service locator.
+		/// </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="compositionContainer" /> is null. </exception>
 		public static void BindToCompositionContainer (CompositionContainer compositionContainer)
@@ -123,9 +171,28 @@ namespace RI.Framework.Services
 				throw new ArgumentNullException(nameof(compositionContainer));
 			}
 
-			ServiceLocator.Translate += CompositionContainer.GetNameOfType;
+			lock (ServiceLocator.GlobalSyncRoot)
+			{
+				ServiceLocator.CompositionContainerBindings.Add(compositionContainer);
+			}
+		}
 
-			ServiceLocator.Lookup += compositionContainer.GetExports<object>;
+		/// <summary>
+		/// Unbinds the service locator from a specified composition container which is then no longer used for service lookup.
+		/// </summary>
+		/// <param name="compositionContainer"> The composition container to unbind from. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="compositionContainer" /> is null. </exception>
+		public static void UnbindFromCompositionContainer (CompositionContainer compositionContainer)
+		{
+			if (compositionContainer == null)
+			{
+				throw new ArgumentNullException(nameof(compositionContainer));
+			}
+
+			lock (ServiceLocator.GlobalSyncRoot)
+			{
+				ServiceLocator.CompositionContainerBindings.Remove(compositionContainer);
+			}
 		}
 
 		/// <summary>
@@ -133,7 +200,10 @@ namespace RI.Framework.Services
 		/// </summary>
 		public static void ClearCache ()
 		{
-			ServiceLocator.Cache.Clear();
+			lock (ServiceLocator.GlobalSyncRoot)
+			{
+				ServiceLocator.Cache.Clear();
+			}
 		}
 
 		/// <summary>
@@ -195,9 +265,12 @@ namespace RI.Framework.Services
 				throw new ArgumentNullException(nameof(type));
 			}
 
-			string name = ServiceLocator.TranslateTypeToName(type);
+			lock (ServiceLocator.GlobalSyncRoot)
+			{
+				string name = ServiceLocator.TranslateTypeToName(type);
 
-			return ServiceLocator.LookupService(name, type);
+				return ServiceLocator.LookupService(name, type);
+			}
 		}
 
 		/// <summary>
@@ -221,7 +294,10 @@ namespace RI.Framework.Services
 				throw new EmptyStringArgumentException(nameof(name));
 			}
 
-			return ServiceLocator.LookupService(name, null);
+			lock (ServiceLocator.GlobalSyncRoot)
+			{
+				return ServiceLocator.LookupService(name, null);
+			}
 		}
 
 		/// <summary>
@@ -287,9 +363,12 @@ namespace RI.Framework.Services
 				throw new ArgumentNullException(nameof(type));
 			}
 
-			string name = ServiceLocator.TranslateTypeToName(type);
+			lock (ServiceLocator.GlobalSyncRoot)
+			{
+				string name = ServiceLocator.TranslateTypeToName(type);
 
-			return ServiceLocator.LookupServices(name, type);
+				return ServiceLocator.LookupServices(name, type);
+			}
 		}
 
 		/// <summary>
@@ -314,7 +393,10 @@ namespace RI.Framework.Services
 				throw new EmptyStringArgumentException(nameof(name));
 			}
 
-			return ServiceLocator.LookupServices(name, null);
+			lock (ServiceLocator.GlobalSyncRoot)
+			{
+				return ServiceLocator.LookupServices(name, null);
+			}
 		}
 
 		private static object LookupService (string name, Type typeHint)
@@ -347,25 +429,23 @@ namespace RI.Framework.Services
 			}
 
 			Func<string, IList<object>> handler = ServiceLocator.Lookup;
-			IList<object> instances = handler?.Invoke(name) ?? new object[0];
+			List<object> instances = new List<object>(handler?.Invoke(name) ?? new object[0]);
 
-			object[] resolved;
-			if ((instances.Count == 0) && (typeHint != null) && ServiceLocator.UseSingletons)
+			foreach (CompositionContainer container in ServiceLocator.CompositionContainerBindings)
+			{
+				instances.AddRange(container.GetExports<object>(name));
+			}
+
+			if ((typeHint != null) && ServiceLocator.UseSingletons)
 			{
 				object singleton = Singleton.Get(typeHint);
 				if (singleton != null)
 				{
-					resolved = new object[] {singleton};
-				}
-				else
-				{
-					resolved = new object[0];
+					instances.Add(singleton);
 				}
 			}
-			else
-			{
-				resolved = instances.ToArray();
-			}
+
+			object[] resolved = instances.ToArray();
 
 			if (ServiceLocator.UseCaching && (resolved.Length > 0))
 			{
@@ -384,7 +464,7 @@ namespace RI.Framework.Services
 			}
 
 			Func<Type, string> handler = ServiceLocator.Translate;
-			return handler?.Invoke(type);
+			return handler?.Invoke(type) ?? CompositionContainer.GetNameOfType(type);
 		}
 
 		#endregion

@@ -56,7 +56,7 @@ namespace RI.Framework.Utilities.Wpf.Markup
 				return null;
 			}
 
-			object value = ServiceLocator.GetInstance(type) ?? Singleton.Get(type);
+			object value = ServiceLocator.GetInstance(type);
 			InstanceLocator.ProcessValue(value);
 			return value;
 		}

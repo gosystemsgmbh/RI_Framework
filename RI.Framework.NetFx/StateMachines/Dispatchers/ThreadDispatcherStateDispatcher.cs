@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using RI.Framework.Utilities.ObjectModel;
 using RI.Framework.Utilities.Threading;
 
 
@@ -15,6 +16,9 @@ namespace RI.Framework.StateMachines.Dispatchers
 	///     <para>
 	///         See <see cref="IStateDispatcher" /> for more details.
 	///     </para>
+	///     <note type="note">
+	///         Signals and transitions are dispatched using the <see cref="IThreadDispatcher.DefaultPriority" /> priority.
+	///     </note>
 	/// </remarks>
 	public sealed class ThreadDispatcherStateDispatcher : IStateDispatcher
 	{
@@ -31,6 +35,8 @@ namespace RI.Framework.StateMachines.Dispatchers
 			{
 				throw new ArgumentNullException(nameof(threadDispatcher));
 			}
+
+			this.SyncRoot = new object();
 
 			this.ThreadDispatcher = threadDispatcher;
 
@@ -54,6 +60,12 @@ namespace RI.Framework.StateMachines.Dispatchers
 
 		private Dictionary<StateMachine, ThreadDispatcherTimer> UpdateTimers { get; set; }
 
+		/// <inheritdoc />
+		public object SyncRoot { get; private set; }
+
+		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => true;
+
 		#endregion
 
 
@@ -76,15 +88,20 @@ namespace RI.Framework.StateMachines.Dispatchers
 		/// <inheritdoc />
 		public void DispatchUpdate (StateMachineUpdateDelegate updateDelegate, StateUpdateInfo updateInfo)
 		{
-			if (this.UpdateTimers.ContainsKey(updateInfo.StateMachine))
-			{
-				this.UpdateTimers[updateInfo.StateMachine].Stop();
-				this.UpdateTimers.Remove(updateInfo.StateMachine);
-			}
+			StateMachine stateMachine = updateInfo.StateMachine;
 
-			ThreadDispatcherTimer timer = new ThreadDispatcherTimer(this.ThreadDispatcher, ThreadDispatcherTimerMode.OneShot, this.ThreadDispatcher.DefaultPriority, updateInfo.UpdateDelay, updateDelegate, updateInfo);
-			this.UpdateTimers.Add(updateInfo.StateMachine, timer);
-			timer.Start();
+			lock (this.SyncRoot)
+			{
+				if (this.UpdateTimers.ContainsKey(stateMachine))
+				{
+					this.UpdateTimers[stateMachine].Stop();
+					this.UpdateTimers.Remove(stateMachine);
+				}
+
+				ThreadDispatcherTimer timer = this.ThreadDispatcher.PostDelayed(updateInfo.UpdateDelay, this.ThreadDispatcher.DefaultPriority, updateDelegate, updateInfo);
+				this.UpdateTimers.Add(stateMachine, timer);
+				timer.Start();
+			}
 		}
 
 		#endregion

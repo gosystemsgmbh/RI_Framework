@@ -22,9 +22,6 @@ namespace RI.Framework.Bus
 	///     <para>
 	///         See <see cref="IBusService" /> for more details.
 	///     </para>
-	///     <note type="note">
-	///         The first created instance of <see cref="BusService" /> is set as the singleton instance for <see cref="Singleton{T}" />
-	///     </note>
 	/// </remarks>
 	public sealed class BusService : IBusService, ILogSource
 	{
@@ -37,9 +34,6 @@ namespace RI.Framework.Bus
 			this.ConnectionsManual = new List<IBusConnection>();
 
 			this.LocalNodeInternal = null;
-
-			Singleton<BusService>.Ensure(() => this);
-			Singleton<IBusService>.Ensure(() => this);
 		}
 
 

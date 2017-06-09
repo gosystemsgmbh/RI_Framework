@@ -38,6 +38,7 @@ namespace RI.Framework.Utilities.ObjectModel
 
 		static Singleton ()
 		{
+			Singleton.GlobalSyncRoot = new object();
 			Singleton.Instances = new Dictionary<Type, object>();
 		}
 
@@ -47,6 +48,8 @@ namespace RI.Framework.Utilities.ObjectModel
 
 
 		#region Static Properties/Indexer
+
+		internal static object GlobalSyncRoot { get; set; }
 
 		private static Dictionary<Type, object> Instances { get; set; }
 
@@ -77,11 +80,14 @@ namespace RI.Framework.Utilities.ObjectModel
 				throw new ArgumentNullException(nameof(type));
 			}
 
-			if (!Singleton.Instances.ContainsKey(type))
+			lock (Singleton.GlobalSyncRoot)
 			{
-				Singleton.Instances.Add(type, Activator.CreateInstance(type));
+				if (!Singleton.Instances.ContainsKey(type))
+				{
+					Singleton.Instances.Add(type, Activator.CreateInstance(type));
+				}
+				return Singleton.Instances[type];
 			}
-			return Singleton.Instances[type];
 		}
 
 		/// <summary>
@@ -99,7 +105,7 @@ namespace RI.Framework.Utilities.ObjectModel
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="type" /> or <paramref name="creator" /> is null. </exception>
-		/// <exception cref="NotSupportedException"> <paramref name="creator" /> did not return a new instance of the singleton type. </exception>
+		/// <exception cref="InvalidOperationException"> <paramref name="creator" /> did not return a new instance of the singleton type. </exception>
 		public static object Ensure (Type type, Func<object> creator)
 		{
 			if (type == null)
@@ -107,16 +113,19 @@ namespace RI.Framework.Utilities.ObjectModel
 				throw new ArgumentNullException(nameof(type));
 			}
 
-			if (!Singleton.Instances.ContainsKey(type))
+			lock (Singleton.GlobalSyncRoot)
 			{
-				object instance = creator();
-				if (instance == null)
+				if (!Singleton.Instances.ContainsKey(type))
 				{
-					throw new NotSupportedException("The creator delegate did not return a new instance of the singleton.");
+					object instance = creator();
+					if (instance == null)
+					{
+						throw new InvalidOperationException("The creator delegate did not return a new instance of the singleton.");
+					}
+					Singleton.Instances.Add(type, instance);
 				}
-				Singleton.Instances.Add(type, instance);
+				return Singleton.Instances[type];
 			}
-			return Singleton.Instances[type];
 		}
 
 		/// <summary>
@@ -134,12 +143,15 @@ namespace RI.Framework.Utilities.ObjectModel
 				throw new ArgumentNullException(nameof(type));
 			}
 
-			if (Singleton.Instances.ContainsKey(type))
+			lock (Singleton.GlobalSyncRoot)
 			{
-				return Singleton.Instances[type];
-			}
+				if (Singleton.Instances.ContainsKey(type))
+				{
+					return Singleton.Instances[type];
+				}
 
-			return null;
+				return null;
+			}
 		}
 
 		/// <summary>
@@ -158,14 +170,17 @@ namespace RI.Framework.Utilities.ObjectModel
 				throw new ArgumentNullException(nameof(type));
 			}
 
-			Singleton.Instances.Remove(type);
-
-			if (instance != null)
+			lock (Singleton.GlobalSyncRoot)
 			{
-				Singleton.Instances.Add(type, instance);
-			}
+				Singleton.Instances.Remove(type);
 
-			return instance;
+				if (instance != null)
+				{
+					Singleton.Instances.Add(type, instance);
+				}
+
+				return instance;
+			}
 		}
 
 		#endregion
@@ -242,11 +257,14 @@ namespace RI.Framework.Utilities.ObjectModel
 		/// </remarks>
 		public static T Ensure ()
 		{
-			if (Singleton<T>.Instance == null)
+			lock (Singleton.GlobalSyncRoot)
 			{
-				Singleton<T>.Instance = Activator.CreateInstance<T>();
+				if (Singleton<T>.Instance == null)
+				{
+					Singleton<T>.Instance = Activator.CreateInstance<T>();
+				}
+				return Singleton<T>.Instance;
 			}
-			return Singleton<T>.Instance;
 		}
 
 		/// <summary>
@@ -263,18 +281,26 @@ namespace RI.Framework.Utilities.ObjectModel
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="creator" /> is null. </exception>
-		/// <exception cref="NotSupportedException"> <paramref name="creator" /> did not return a new instance of the singleton type. </exception>
+		/// <exception cref="InvalidOperationException"> <paramref name="creator" /> did not return a new instance of the singleton type. </exception>
 		public static T Ensure (Func<T> creator)
 		{
-			if (Singleton<T>.Instance == null)
+			if (creator == null)
 			{
-				Singleton<T>.Instance = creator();
+				throw new ArgumentNullException(nameof(creator));
+			}
+
+			lock (Singleton.GlobalSyncRoot)
+			{
 				if (Singleton<T>.Instance == null)
 				{
-					throw new NotSupportedException("The creator delegate did not return a new instance of the singleton.");
+					Singleton<T>.Instance = creator();
+					if (Singleton<T>.Instance == null)
+					{
+						throw new InvalidOperationException("The creator delegate did not return a new instance of the singleton.");
+					}
 				}
+				return Singleton<T>.Instance;
 			}
-			return Singleton<T>.Instance;
 		}
 
 		#endregion

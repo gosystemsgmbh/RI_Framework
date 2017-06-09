@@ -5,7 +5,6 @@ using System.Windows;
 using System.Windows.Threading;
 
 using RI.Framework.Composition.Catalogs;
-using RI.Framework.Composition.Model;
 using RI.Framework.Services.Logging;
 
 
@@ -21,7 +20,6 @@ namespace RI.Framework.Services
 	///         See <see cref="WindowsBootstrapper{TApplication}" /> for more details.
 	///     </para>
 	/// </remarks>
-	[Export]
 	public abstract class WpfBootstrapper <TApplication> : WindowsBootstrapper<TApplication>
 		where TApplication : Application
 	{
@@ -85,7 +83,7 @@ namespace RI.Framework.Services
 		/// </remarks>
 		protected override void DispatchBeginOperations (Delegate action, params object[] args)
 		{
-			this.Application.Dispatcher.BeginInvoke(DispatcherPriority.SystemIdle, new Action<Delegate, List<object>>((x, y) => x.DynamicInvoke(y.ToArray())), action, args.ToList());
+			this.Application.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new Action<Delegate, List<object>>((x, y) => x.DynamicInvoke(y.ToArray())), action, args.ToList());
 		}
 
 		/// <summary>

@@ -20,26 +20,6 @@ namespace RI.Framework.Services
 		#region Overrides
 
 		/// <summary>
-		///     Called when a default application object needs to be created.
-		/// </summary>
-		/// <returns>
-		///     The default application object.
-		///     Can be null if the use of an application object is not applicable.
-		/// </returns>
-		/// <remarks>
-		///     <para>
-		///         <see cref="CreateDefaultApplication" /> is called if <see cref="Bootstrapper.CreateApplication" /> returns null to use a default application object.
-		///     </para>
-		///     <note type="implement">
-		///         The default implementation returns null.
-		///     </note>
-		/// </remarks>
-		protected override object CreateDefaultApplication ()
-		{
-			return null;
-		}
-
-		/// <summary>
 		///     Called to determine the GUID of the domain this machine belongs to.
 		/// </summary>
 		/// <returns>

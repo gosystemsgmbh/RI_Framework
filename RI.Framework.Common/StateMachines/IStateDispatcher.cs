@@ -1,7 +1,6 @@
 ﻿using System;
 
-
-
+using RI.Framework.Utilities.ObjectModel;
 
 namespace RI.Framework.StateMachines
 {
@@ -13,7 +12,7 @@ namespace RI.Framework.StateMachines
 	///         See <see cref="StateMachine" /> for more details about state machines.
 	///     </para>
 	/// </remarks>
-	public interface IStateDispatcher
+	public interface IStateDispatcher : ISynchronizable
 	{
 		/// <summary>
 		///     Called when a signal needs to be dispatched.

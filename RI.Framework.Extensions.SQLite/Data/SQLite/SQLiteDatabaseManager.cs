@@ -287,8 +287,7 @@ namespace RI.Framework.Data.SQLite
 			EventHandler<DatabaseScriptEventArgs> handler = this.ExecuteScript;
 			if (handler != null)
 			{
-				DatabaseScriptEventArgs eventArgs = new DatabaseScriptEventArgs();
-				eventArgs.Script = script;
+				DatabaseScriptEventArgs eventArgs = new DatabaseScriptEventArgs(script);
 				handler(this, eventArgs);
 			}
 		}
@@ -300,8 +299,7 @@ namespace RI.Framework.Data.SQLite
 			EventHandler<DatabaseScriptEventArgs> handler = this.PrepareScript;
 			if (handler != null)
 			{
-				DatabaseScriptEventArgs eventArgs = new DatabaseScriptEventArgs();
-				eventArgs.Script = script;
+				DatabaseScriptEventArgs eventArgs = new DatabaseScriptEventArgs(script);
 				handler(this, eventArgs);
 				script = eventArgs.Script;
 			}

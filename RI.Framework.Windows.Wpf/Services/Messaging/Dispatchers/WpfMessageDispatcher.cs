@@ -79,18 +79,6 @@ namespace RI.Framework.Services.Messaging.Dispatchers
 
 
 
-		#region Instance Methods
-
-		private DispatcherPriority GetPriorityFormessage (IMessage message)
-		{
-			return ((message as IWpfMessage)?.Priority).GetValueOrDefault(DispatcherPriority.Normal);
-		}
-
-		#endregion
-
-
-
-
 		#region Interface: IMessageDispatcher
 
 		/// <inheritdoc />
@@ -106,9 +94,7 @@ namespace RI.Framework.Services.Messaging.Dispatchers
 				throw new ArgumentNullException(nameof(message));
 			}
 
-			DispatcherPriority priority = this.GetPriorityFormessage(message);
-
-			this.Dispatcher.BeginInvoke(priority, new Action<IEnumerable<IMessageReceiver>, IMessage, IMessageService>((a, b, s) =>
+			this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action<IEnumerable<IMessageReceiver>, IMessage, IMessageService>((a, b, s) =>
 			{
 				foreach (IMessageReceiver receiver in a)
 				{
@@ -130,9 +116,7 @@ namespace RI.Framework.Services.Messaging.Dispatchers
 				throw new ArgumentNullException(nameof(message));
 			}
 
-			DispatcherPriority priority = this.GetPriorityFormessage(message);
-
-			this.Dispatcher.Invoke(priority, new Action<IEnumerable<IMessageReceiver>, IMessage, IMessageService>((a, b, s) =>
+			this.Dispatcher.Invoke(DispatcherPriority.Normal, new Action<IEnumerable<IMessageReceiver>, IMessage, IMessageService>((a, b, s) =>
 			{
 				foreach (IMessageReceiver receiver in a)
 				{

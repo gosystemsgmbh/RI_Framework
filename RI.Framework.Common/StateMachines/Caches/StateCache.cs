@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-
-
+using RI.Framework.Utilities.ObjectModel;
 
 namespace RI.Framework.StateMachines.Caches
 {
@@ -26,6 +25,8 @@ namespace RI.Framework.StateMachines.Caches
 		/// </summary>
 		public StateCache ()
 		{
+			this.SyncRoot = new object();
+
 			this.States = new Dictionary<Type, IState>();
 		}
 
@@ -44,12 +45,18 @@ namespace RI.Framework.StateMachines.Caches
 		/// </value>
 		public Dictionary<Type, IState> States { get; private set; }
 
+		/// <inheritdoc />
+		public object SyncRoot { get; private set; }
+
 		#endregion
 
 
 
 
 		#region Interface: IStateCache
+
+		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => true;
 
 		/// <inheritdoc />
 		public void AddState (IState state)
@@ -59,21 +66,27 @@ namespace RI.Framework.StateMachines.Caches
 				throw new ArgumentNullException(nameof(state));
 			}
 
-			Type type = state.GetType();
-			if (this.States.ContainsKey(type))
+			lock (this.SyncRoot)
 			{
-				this.States[type] = state;
-			}
-			else
-			{
-				this.States.Add(type, state);
+				Type type = state.GetType();
+				if (this.States.ContainsKey(type))
+				{
+					this.States[type] = state;
+				}
+				else
+				{
+					this.States.Add(type, state);
+				}
 			}
 		}
 
 		/// <inheritdoc />
 		public void Clear ()
 		{
-			this.States.Clear();
+			lock (this.SyncRoot)
+			{
+				this.States.Clear();
+			}
 		}
 
 		/// <inheritdoc />
@@ -84,7 +97,10 @@ namespace RI.Framework.StateMachines.Caches
 				throw new ArgumentNullException(nameof(state));
 			}
 
-			return this.States.ContainsKey(state);
+			lock (this.SyncRoot)
+			{
+				return this.States.ContainsKey(state);
+			}
 		}
 
 		/// <inheritdoc />
@@ -95,12 +111,15 @@ namespace RI.Framework.StateMachines.Caches
 				throw new ArgumentNullException(nameof(state));
 			}
 
-			if (!this.States.ContainsKey(state))
+			lock (this.SyncRoot)
 			{
-				throw new KeyNotFoundException("The state of type " + state.Name + " could not be found in the cache.");
-			}
+				if (!this.States.ContainsKey(state))
+				{
+					throw new KeyNotFoundException("The state of type " + state.Name + " could not be found in the cache.");
+				}
 
-			return this.States[state];
+				return this.States[state];
+			}
 		}
 
 		/// <inheritdoc />
@@ -111,8 +130,11 @@ namespace RI.Framework.StateMachines.Caches
 				throw new ArgumentNullException(nameof(state));
 			}
 
-			Type type = state.GetType();
-			this.States.Remove(type);
+			lock (this.SyncRoot)
+			{
+				Type type = state.GetType();
+				this.States.Remove(type);
+			}
 		}
 
 		#endregion

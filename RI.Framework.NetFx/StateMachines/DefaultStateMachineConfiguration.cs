@@ -11,7 +11,7 @@ namespace RI.Framework.StateMachines
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         <see cref="DefaultStateMachineConfiguration" /> uses the same default values as <see cref="StateMachineConfiguration" />, except for <see cref="StateMachineConfiguration.Dispatcher" /> where an instance of <see cref="SynchronizationContextStateDispatcher" /> is used and <see cref="StateMachineConfiguration.Resolver" /> where an instance of <see cref="StateResolver" /> is used.
+	///         By default, <see cref="DefaultStateMachineConfiguration" /> uses a <see cref="StateDispatcher" /> and <see cref="StateResolver"/>.
 	///     </para>
 	///     <para>
 	///         See <see cref="StateMachineConfiguration" /> for more details.
@@ -26,8 +26,6 @@ namespace RI.Framework.StateMachines
 		/// </summary>
 		public DefaultStateMachineConfiguration ()
 		{
-			this.Dispatcher = new SynchronizationContextStateDispatcher();
-			this.Resolver = new StateResolver();
 		}
 
 		#endregion

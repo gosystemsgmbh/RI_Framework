@@ -1,7 +1,5 @@
 ﻿using RI.Framework.Composition.Model;
-
-
-
+using RI.Framework.Utilities.ObjectModel;
 
 namespace RI.Framework.StateMachines
 {
@@ -14,7 +12,7 @@ namespace RI.Framework.StateMachines
 	///     </para>
 	/// </remarks>
 	[Export]
-	public interface IState
+	public interface IState : ISynchronizable
 	{
 		/// <summary>
 		///     Gets whether the state is initialized or not.

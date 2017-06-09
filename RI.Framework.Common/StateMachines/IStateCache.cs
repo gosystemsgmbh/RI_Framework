@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-
-
+using RI.Framework.Utilities.ObjectModel;
 
 namespace RI.Framework.StateMachines
 {
@@ -14,7 +13,7 @@ namespace RI.Framework.StateMachines
 	///         See <see cref="StateMachine" /> for more details about state machines.
 	///     </para>
 	/// </remarks>
-	public interface IStateCache
+	public interface IStateCache : ISynchronizable
 	{
 		/// <summary>
 		///     Adds a state instance to the cache.

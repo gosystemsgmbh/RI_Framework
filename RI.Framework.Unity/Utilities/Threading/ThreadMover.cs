@@ -153,14 +153,17 @@ namespace RI.Framework.Utilities.Threading
 			{
 				ThreadMover.SyncRoot = new object();
 
-				ThreadMover.MoverObject = new GameObject(typeof(ThreadMover).Name);
-				ThreadMover.MoverObject.SetActive(true);
-				Object.DontDestroyOnLoad(ThreadMover.MoverObject);
+				lock (ThreadMover.SyncRoot)
+				{
+					ThreadMover.MoverObject = new GameObject(typeof(ThreadMover).Name);
+					ThreadMover.MoverObject.SetActive(true);
+					Object.DontDestroyOnLoad(ThreadMover.MoverObject);
 
-				ThreadMover.MoverHandler = ThreadMover.MoverObject.AddComponent<ThreadMoverHandler>();
-				ThreadMover.MoverHandler.StartCoroutine(ThreadMover.MoverHandler.DispatchForeground());
+					ThreadMover.MoverHandler = ThreadMover.MoverObject.AddComponent<ThreadMoverHandler>();
+					ThreadMover.MoverHandler.StartCoroutine(ThreadMover.MoverHandler.DispatchForeground());
 
-				ThreadMover.TasksToMoveToForeground = new List<MoveableTask>();
+					ThreadMover.TasksToMoveToForeground = new List<MoveableTask>();
+				}
 			}
 
 			lock (ThreadMover.SyncRoot)

@@ -9,9 +9,18 @@ namespace RI.Framework.Data.Database
 	///     Event arguments for database scripts which are executed by an implementation of <see cref="IDatabaseManager" />.
 	/// </summary>
 	[Serializable]
-	public class DatabaseScriptEventArgs : EventArgs
+	public sealed class DatabaseScriptEventArgs : EventArgs
 	{
 		#region Instance Properties/Indexer
+
+		/// <summary>
+		///     Creates a new instance of <see cref="DatabaseScriptEventArgs" />.
+		/// </summary>
+		/// <param name="script"> The database script. </param>
+		public DatabaseScriptEventArgs(string script)
+		{
+			this.Script = script;
+		}
 
 		/// <summary>
 		///     Gets or sets the database script.

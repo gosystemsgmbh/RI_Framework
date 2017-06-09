@@ -9,9 +9,6 @@
 Utilities
 ---------
 
- - (Common) Rounding extensions for double, float, and decimal (including financial rounding)
- - (Common) More NumberExtensions
-
  - (Unity) Tuples (and remove MockTuple)
 
  - (Common) RandomExtensions: NextBytes with max and min/max overload
@@ -21,6 +18,8 @@ Utilities
  - (Common) TextWriterExtensions
 
  - (Common) ComponentManager
+
+ - (Linux) LinuxShell
 
  - (Windows) WindowsMessage
  - (Windows) WindowsMessageLoop
@@ -198,17 +197,21 @@ I/O
 Composition
 ---------
 
+ + (Common) TypeCreators
+ + (Unity) MonoBehaviourTypeCreator
+
+ + (Unity) GameObjectCatalog
+
  - (Common) CreateIndependent
  - (Common) CreateAndExport
  - (Common) AddMultiple
 
- - (Unity) GameObjectCatalog
+ - (Common) Add container to container (ContainerCatalog?)
 
- - (Common) Add container to container
-
- - (Common) Lazy loading
-
+ - (Common) Lazy loading (Func<>, Lazy<>)
  - (Common) Generic Import property
+ - (Common) Enumerable import property
+ - (Common) Better platform detection
  
 
 Services
@@ -235,6 +238,8 @@ Services
  # (.NET) Messaging: MessageLocator
  # (.NET) Messaging: ThreadDispatcherMessageDispatcher
  # (.NET) Messaging: SynchronizationContextMessageDispatcher
+ 
+ # (Windows) Messaging: Remove WpfMessage and IWpfMessage
 
  # (.NET) Bus: Retries
  # (.NET) Bus: Routing
@@ -260,9 +265,14 @@ Services
  - (Unity) Audio
  - (Unity) User interface
 
+ - (Common) Make bootstrapper container-agnostic
+ - (Common) Proper unloading and unbinding of everything
+
 
 Data
 ----
+
+ # (.NET) EntityBase
 
  * (.NET) Reporting (Excel?)
 
@@ -284,6 +294,8 @@ Data
 
 Mathematic
 ----------
+
+ - (Common) Rounding extensions for double, float, and decimal (including financial rounding)
 
  - (Common) NumberExtensions: FractionAsInteger
  - (Common) NumberExtensions: FirstDigits
@@ -311,11 +323,11 @@ Mathematic
 State machines
 --------------
 
- - (Common) Cascading
-
  - (Windows) WindowsMessageLoopStateDispatcher
  - (WPF) DispatcherStateDispatcher
  - (WinForms) ApplicationStateDispatcher
+
+ - (Common) Cascading
 
 
 Behaviours
