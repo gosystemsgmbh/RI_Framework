@@ -89,6 +89,7 @@
     <Compile Include="Services\IBootstrapper.cs" />
     <Compile Include="Services\IBootstrapperOperations.cs" />
     <Compile Include="Services\Logging\LogWriter.cs" />
+    <Compile Include="Services\Logging\TraceListenerAdapterLogWriter.cs" />
     <Compile Include="Services\Messaging\Dispatchers\_NamespaceDoc.cs" />
     <Compile Include="Services\Messaging\Handlers\Triggers\TriggerMessageExtensions.cs" />
     <Compile Include="Services\Messaging\Handlers\Triggers\TriggerMessageHandler.cs" />
@@ -140,6 +141,7 @@
     <Compile Include="Services\Settings\SettingService.cs" />
     <Compile Include="Services\Settings\Storages\_NamespaceDoc.cs" />
     <Compile Include="Services\Settings\_NamespaceDoc.cs" />
+    <Compile Include="StateMachines\AsyncStateMachine.cs" />
     <Compile Include="StateMachines\DefaultStateMachineConfiguration.cs" />
     <Compile Include="StateMachines\Dispatchers\ThreadDispatcherStateDispatcher.cs" />
     <Compile Include="Utilities\Threading\HeavyThreadDispatcher.cs" />

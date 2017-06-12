@@ -44,7 +44,7 @@ namespace RI.Test.Framework.Services.Logging
 			{
 				throw new TestAssertionException();
 			}
-			if (test.Timestamp != new DateTime(1, 2, 3, 4, 5, 6, 7))
+			if (test.InitialTimestamp != new DateTime(1, 2, 3, 4, 5, 6, 7))
 			{
 				throw new TestAssertionException();
 			}
@@ -84,7 +84,7 @@ namespace RI.Test.Framework.Services.Logging
 			{
 				throw new TestAssertionException();
 			}
-			if (test.Timestamp != now)
+			if (test.InitialTimestamp != now)
 			{
 				throw new TestAssertionException();
 			}

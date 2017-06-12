@@ -1,4 +1,7 @@
-﻿namespace RI.Framework.Services.Logging
+﻿using System;
+using System.Collections.Generic;
+
+namespace RI.Framework.Services.Logging
 {
 	/// <summary>
 	///     Provides a centralized and global logging provider.
@@ -10,20 +13,39 @@
 	/// </remarks>
 	public static class LogLocator
 	{
-		#region Static Methods
+		/// <summary>
+		/// Gets whether a logging service is available and can be used by <see cref="LogLocator"/>.
+		/// </summary>
+		/// <value>
+		/// true if a logging service is available and can be used by <see cref="LogLocator"/>, false otherwise.
+		/// </value>
+		public static bool IsAvailable => LogLocator.Service != null;
 
 		/// <summary>
-		///     Logs a message.
+		/// Gets the available logging service.
 		/// </summary>
-		/// <param name="severity"> The severity of the message. </param>
-		/// <param name="source"> The source of the message. </param>
-		/// <param name="format"> The message. </param>
-		/// <param name="args"> The arguments which will be expanded into the message (comparable to <see cref="string.Format(string, object[])" />). </param>
-		public static void Log (LogLevel severity, string source, string format, params object[] args)
-		{
-			ILogService logService = ServiceLocator.GetInstance<ILogService>();
-			logService?.Log(severity, source, format, args);
-		}
+		/// <value>
+		/// The available logging service or null if no logging service is available.
+		/// </value>
+		public static ILogService Service => ServiceLocator.GetInstance<ILogService>();
+
+		/// <inheritdoc cref="ILogService.Writers"/>
+		public static IEnumerable<ILogWriter> Writers => LogLocator.Service?.Writers;
+
+
+		#region Static Methods
+
+		/// <inheritdoc cref="ILogService.Cleanup(DateTime)"/>
+		public static void Cleanup (DateTime retentionDate) => LogLocator.Service?.Cleanup(retentionDate);
+
+		/// <inheritdoc cref="ILogService.Cleanup(TimeSpan)"/>
+		public static void Cleanup (TimeSpan retentionTime) => LogLocator.Service?.Cleanup(retentionTime);
+
+		/// <inheritdoc cref="ILogService.Log(LogLevel,string,string,object[])"/>
+		public static void Log (LogLevel severity, string source, string format, params object[] args) => LogLocator.Service?.Log(severity, source, format, args);
+
+		/// <inheritdoc cref="ILogService.Log(DateTime,int,LogLevel,string,string,object[])"/>
+		public static void Log (DateTime timestamp, int threadId, LogLevel severity, string source, string format, params object[] args) => LogLocator.Service?.Log(timestamp, threadId, severity, source, format, args);
 
 		#endregion
 	}

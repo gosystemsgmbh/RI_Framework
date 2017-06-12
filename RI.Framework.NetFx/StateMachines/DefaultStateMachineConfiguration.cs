@@ -28,6 +28,18 @@ namespace RI.Framework.StateMachines
 		{
 		}
 
+		/// <inheritdoc />
+		public override StateMachineConfiguration Clone()
+		{
+			DefaultStateMachineConfiguration clone = new DefaultStateMachineConfiguration();
+			clone.Dispatcher = this.Dispatcher;
+			clone.Resolver = this.Resolver;
+			clone.Cache = this.Cache;
+			clone.EnableAutomaticCaching = this.EnableAutomaticCaching;
+			clone.LoggingEnabled = this.LoggingEnabled;
+			return clone;
+		}
+
 		#endregion
 	}
 }

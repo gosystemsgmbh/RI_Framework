@@ -217,17 +217,19 @@ Composition
 Services
 --------
 
+ # (.NET) Cleanup all service locators
+ # (.NET) Create MessageLocator
+
  - (Unity) IDispatcherOperation: OnXXX callbacks
  - (Unity) IDispatcherOperation: Stacking of all OnXXX callbacks
   
  - (WPF) WpfApplication: Handle power events using SystemEvents.PowerModeChanged
  - (WPF) WpfApplication: Handle user switching using SystemEvents.SessionSwitch
  
- # (Common) Logging: One-file-per-day option for DirectoryLogWriter
- # (Common) Logging: Debug and Trace redirector
  # (Common) Logging: Pluggable logging
  # (Common) Logging: FileLogWriter
  # (Common) Logging: ConsoleLogWriter
+ # (SQLite) Logging: LogToDbConverter
 
  # (.NET) Settings: SettingLocator
  # (.NET) Settings: WriteOnlyKnown for storage
@@ -235,12 +237,9 @@ Services
  # (.NET) Settings: XmlSettingStorage
  # (.NET) Settings: ComplexConverter (JSON?)
 
- # (.NET) Messaging: MessageLocator
  # (.NET) Messaging: ThreadDispatcherMessageDispatcher
  # (.NET) Messaging: SynchronizationContextMessageDispatcher
  
- # (Windows) Messaging: Remove WpfMessage and IWpfMessage
-
  # (.NET) Bus: Retries
  # (.NET) Bus: Routing
 

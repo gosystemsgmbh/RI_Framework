@@ -19,7 +19,7 @@ namespace RI.Framework.StateMachines
 	///         See the respective properties for their default values.
 	///     </para>
 	/// </remarks>
-	public abstract class StateMachineConfiguration : ISynchronizable
+	public abstract class StateMachineConfiguration : ISynchronizable, ICloneable<StateMachineConfiguration>, ICloneable
 	{
 		#region Instance Constructor/Destructor
 
@@ -265,5 +265,15 @@ namespace RI.Framework.StateMachines
 		}
 
 		#endregion
+
+
+		/// <inheritdoc />
+		public abstract StateMachineConfiguration Clone ();
+
+		/// <inheritdoc />
+		object ICloneable.Clone ()
+		{
+			return this.Clone();
+		}
 	}
 }
