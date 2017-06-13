@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.ComponentModel;
+using System.Xml.Serialization;
 
 using RI.Framework.Utilities;
 
@@ -23,6 +24,9 @@ namespace RI.Framework.Data.Repository.Entities
 		private DateTime? _modifyTimestamp;
 		private string _createContext;
 		private string _modifyContext;
+
+		[field: NonSerialized]
+		[field: XmlIgnore]
 		private RepositorySetErrors _errors;
 
 
@@ -160,9 +164,13 @@ namespace RI.Framework.Data.Repository.Entities
 
 
 		/// <inheritdoc />
+		[field: NonSerialized]
+		[field: XmlIgnore]
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		/// <inheritdoc />
+		[field: NonSerialized]
+		[field: XmlIgnore]
 		public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
 
 		/// <summary>

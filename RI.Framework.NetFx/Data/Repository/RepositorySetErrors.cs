@@ -21,7 +21,7 @@ namespace RI.Framework.Data.Repository
 		/// </summary>
 		/// <remarks>
 		///     <para>
-		///         <see cref="StringComparerEx.InvariantCultureIgnoreCase" /> is used for the property names and <see cref="StringComparerEx.CurrentCultureIgnoreCase" /> for the errors.
+		///         <see cref="StringComparerEx.Ordinal" /> is used for the property names and <see cref="StringComparerEx.OrdinalIgnoreCase" /> for the errors.
 		///     </para>
 		/// </remarks>
 		public RepositorySetErrors ()
@@ -33,11 +33,11 @@ namespace RI.Framework.Data.Repository
 		///     Creates anew instance of <see cref="RepositorySetErrors" />.
 		/// </summary>
 		/// <param name="propertyNameComparer"> The property name comparer used with the <see cref="PropertyErrors" /> dictionary or null to use <see cref="StringComparerEx.Ordinal" />. </param>
-		/// <param name="errorComparer"> The error comparer used with the <see cref="EntityErrors" /> and <see cref="PropertyErrors" /> sets or null to use <see cref="StringComparerEx.CurrentCultureIgnoreCase" />. </param>
+		/// <param name="errorComparer"> The error comparer used with the <see cref="EntityErrors" /> and <see cref="PropertyErrors" /> sets or null to use <see cref="StringComparerEx.OrdinalIgnoreCase" />. </param>
 		public RepositorySetErrors (IEqualityComparer<string> propertyNameComparer, IEqualityComparer<string> errorComparer)
 		{
 			this.PropertyNameComparer = propertyNameComparer ?? StringComparerEx.Ordinal;
-			this.ErrorComparer = errorComparer ?? StringComparerEx.CurrentCultureIgnoreCase;
+			this.ErrorComparer = errorComparer ?? StringComparerEx.OrdinalIgnoreCase;
 
 			this.EntityErrors = new HashSet<string>(this.ErrorComparer);
 			this.PropertyErrors = new Dictionary<string, HashSet<string>>(this.PropertyNameComparer);

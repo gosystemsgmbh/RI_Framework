@@ -40,6 +40,9 @@
       <DocumentationSource sourceFile="..\RI.Framework.Windows.Wpf\RI.Framework.Windows.Wpf.csproj" />
       <DocumentationSource sourceFile="..\RI.Framework.CrossPlatform.Shared\RI.Framework.CrossPlatform.Shared.csproj" />
       <DocumentationSource sourceFile="..\RI.Framework.Linux.Shared\RI.Framework.Linux.Shared.csproj" />
+      <DocumentationSource sourceFile="..\RI.Framework.Extensions.Nancy\RI.Framework.Extensions.Nancy.csproj" />
+      <DocumentationSource sourceFile="..\RI.Framework.Extensions.SqlServer\RI.Framework.Extensions.SqlServer.csproj" />
+      <DocumentationSource sourceFile="..\RI.Framework.Extensions.SqlServerEF6\RI.Framework.Extensions.SqlServerEF6.csproj" />
     </DocumentationSources>
     <BuildAssemblerVerbosity>OnlyWarningsAndErrors</BuildAssemblerVerbosity>
     <HelpFileFormat>HtmlHelp1, Website</HelpFileFormat>

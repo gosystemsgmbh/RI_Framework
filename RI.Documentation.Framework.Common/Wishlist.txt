@@ -271,7 +271,8 @@ Services
 Data
 ----
 
- # (.NET) Make EntityBase serializable
+ # (.NET) Binary-serializable EntityBase
+ # (JSON) Json-serializable EntityBase
 
  * (.NET) Reporting (Excel?)
 

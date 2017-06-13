@@ -1,9 +1,12 @@
 ﻿using System.Runtime.CompilerServices;
 
-namespace RI.Framework.Bus.Connections
+
+
+
+namespace RI.Framework.Nancy
 {
 	/// <summary>
-	///     Contains specialized bus connections.
+	///     Contains extensions for NancyFX.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc
