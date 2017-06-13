@@ -66,11 +66,11 @@
     <Compile Include="Data\SQLite\Collations\TrimmedOrdinalIgnoreCaseSQLiteCollation.cs" />
     <Compile Include="Data\SQLite\Collations\TrimmedOrdinalSQLiteCollation.cs" />
     <Compile Include="Data\SQLite\Collations\_NamespaceDoc.cs" />
-    <Compile Include="Data\SQLite\Functions\IsNullOrEmptySQLiteFunction.cs" />
+    <Compile Include="Data\SQLite\Functions\IsNullOrEmptyOrWhitespaceSQLiteFunction.cs" />
     <Compile Include="Data\SQLite\Functions\MatchSQLiteFunction.cs" />
     <Compile Include="Data\SQLite\Functions\RegularExpressionSQLiteFunction.cs" />
-    <Compile Include="Data\SQLite\Functions\ToEmptyIfEmptyOrNullSQLiteFunction.cs" />
-    <Compile Include="Data\SQLite\Functions\ToNullIfEmptyOrNullSQLiteFunction.cs" />
+    <Compile Include="Data\SQLite\Functions\ToEmptyIfNullOrEmptyOrWhitespace.cs" />
+    <Compile Include="Data\SQLite\Functions\ToNullIfNullOrEmptyOrWhitespace.cs" />
     <Compile Include="Data\SQLite\Functions\TrimSQLiteFunction.cs" />
     <Compile Include="Data\SQLite\Functions\_NamespaceDoc.cs" />
     <Compile Include="Data\SQLite\SQLiteConnectionExtensions.cs" />

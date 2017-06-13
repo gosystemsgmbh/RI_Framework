@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7CD5C68C-51E2-47DD-8BE3-B71848CF4964}</ProjectGuid>
+    <ProjectGuid>{FE294A9B-A865-4E83-934B-706DE84D4508}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>RI.Framework</RootNamespace>
-    <AssemblyName>RI.Framework.Extensions.EF6</AssemblyName>
+    <AssemblyName>RI.Framework.Extensions.SqlServerEF6</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -20,7 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\RI.Framework.Extensions.EF6.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\RI.Framework.Extensions.SqlServerEF6.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,7 +29,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\RI.Framework.Extensions.EF6.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\RI.Framework.Extensions.SqlServerEF6.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -51,25 +51,6 @@
     <Reference Include="System.Data" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\EF\CompositionContainerDbDependencyResolver.cs" />
-    <Compile Include="Data\EF\Configuration\ConfigurationRegistrarExtensions.cs" />
-    <Compile Include="Data\EF\Configuration\EntityConfiguration.cs" />
-    <Compile Include="Data\EF\Configuration\IEntityConfiguration.cs" />
-    <Compile Include="Data\EF\Configuration\_NamespaceDoc.cs" />
-    <Compile Include="Data\EF\DbContextExtensions.cs" />
-    <Compile Include="Data\EF\DbEntityValidationResultExtensions.cs" />
-    <Compile Include="Data\EF\Filter\EntityFilter.cs" />
-    <Compile Include="Data\EF\Filter\FilterRegistrar.cs" />
-    <Compile Include="Data\EF\Filter\IEntityFilter.cs" />
-    <Compile Include="Data\EF\Filter\_NamespaceDoc.cs" />
-    <Compile Include="Data\EF\RepositoryDbContext.cs" />
-    <Compile Include="Data\EF\RepositoryDbSet.cs" />
-    <Compile Include="Data\EF\ServiceLocatorDbDependencyResolver.cs" />
-    <Compile Include="Data\EF\Validation\EntityValidation.cs" />
-    <Compile Include="Data\EF\Validation\IEntityValidation.cs" />
-    <Compile Include="Data\EF\Validation\ValidationRegistrar.cs" />
-    <Compile Include="Data\EF\Validation\_NamespaceDoc.cs" />
-    <Compile Include="Data\EF\_NamespaceDoc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -77,6 +58,14 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\RI.Framework.Extensions.EF6\RI.Framework.Extensions.EF6.csproj">
+      <Project>{7cd5c68c-51e2-47dd-8be3-b71848cf4964}</Project>
+      <Name>RI.Framework.Extensions.EF6</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RI.Framework.Extensions.SqlServer\RI.Framework.Extensions.SqlServer.csproj">
+      <Project>{eab3a05a-77dc-4b29-b014-370e8e4c90a4}</Project>
+      <Name>RI.Framework.Extensions.SqlServer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\RI.Framework.NetFx\RI.Framework.NetFx.csproj">
       <Project>{a7f5dd2f-63bf-4032-ad1e-14d211e0d3ed}</Project>
       <Name>RI.Framework.NetFx</Name>

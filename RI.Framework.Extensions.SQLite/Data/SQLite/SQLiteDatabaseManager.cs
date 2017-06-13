@@ -326,10 +326,10 @@ namespace RI.Framework.Data.SQLite
 		private void RegisterFunctions (SQLiteConnection connection)
 		{
 			connection.BindFunction(new TrimSQLiteFunction());
-			connection.BindFunction(new ToEmptyIfEmptyOrNullSQLiteFunction());
-			connection.BindFunction(new ToNullIfEmptyOrNullSQLiteFunction());
+			connection.BindFunction(new ToEmptyIfNullOrEmptyOrWhitespace());
+			connection.BindFunction(new ToNullIfNullOrEmptyOrWhitespace());
 
-			connection.BindFunction(new IsNullOrEmptySQLiteFunction());
+			connection.BindFunction(new IsNullOrEmptyOrWhitespaceSQLiteFunction());
 
 			connection.BindFunction(new RegularExpressionSQLiteFunction());
 			connection.BindFunction(new MatchSQLiteFunction());

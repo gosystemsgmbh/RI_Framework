@@ -271,21 +271,16 @@ Services
 Data
 ----
 
- # (.NET) EntityBase
+ # (.NET) Make EntityBase serializable
 
  * (.NET) Reporting (Excel?)
 
- # (EF) Add support for IEntityConfiguration of registrar (through extension method)
- # (EF) RepositoryDbContext: Use type priority chain for GetValidator and GetFilter
-
- # (.NET) ISupportsDatabaseLogging (???)
  * (.NET) IRepositorySet: Add entity and property descriptions functionality
  - (.NET) IRepositoryContext: Add GetChanges method (return RepositoryContextChanges type)
  - (.NET) IRepositoryContext: Add GetErrors method (return RepositoryContextErrors type)
  - (.NET) EntityView: Make collection update strategy configurable (clear vs. create new)
 
  # (SQLite) SQLiteDatabaseManager: Move script chains to IDatabaseManager
- # (SQLite) Collations: Use proper naming (null, empty, whitespaces)
 
  - (.NET) IDatabaseManager: Support for creating connections when state is Old
  # (.NET) IDatabaseManager: Switch from strings in chains to actual chain objects

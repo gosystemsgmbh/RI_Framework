@@ -10,28 +10,25 @@ using RI.Framework.Utilities;
 namespace RI.Framework.Data.SQLite.Functions
 {
 	/// <summary>
-	///     Implements an SQLite function which checks whether a string is null or empty.
+	///     Implements an SQLite function which returns an empty string if a value is a string which is null or empty or consists only of whitespaces.
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         A string is considered empty if it is NULL or consists only of whitespaces.
-	///     </para>
-	///     <para>
-	///         The SQL name of the function is <c> isnullorempty </c>.
+	///         The SQL name of the function is <c> toemptyifemptyornull </c>.
 	///     </para>
 	/// </remarks>
 	/// <example>
 	///     <code language="sql">
 	/// <![CDATA[
-	/// isnullorempty(NULL)
-	/// isnullorempty(' ')
-	/// isnullorempty(column)
+	/// toemptyifnulloremptyorwhitespace(NULL)
+	/// toemptyifnulloremptyorwhitespace(' ')
+	/// toemptyifnulloremptyorwhitespace(column)
 	/// ]]>
 	/// </code>
 	/// </example>
-	[SQLiteFunction("isnullorempty", 1, FunctionType.Scalar)]
+	[SQLiteFunction("toemptyifnulloremptyorwhitespace", 1, FunctionType.Scalar)]
 	[SuppressMessage("ReSharper", "InconsistentNaming")]
-	public sealed class IsNullOrEmptySQLiteFunction : SQLiteFunction
+	public class ToEmptyIfNullOrEmptyOrWhitespace : SQLiteFunction
 	{
 		#region Static Methods
 
@@ -40,7 +37,7 @@ namespace RI.Framework.Data.SQLite.Functions
 		/// </summary>
 		public static void RegisterGlobal ()
 		{
-			SQLiteFunction.RegisterFunction(typeof(IsNullOrEmptySQLiteFunction));
+			SQLiteFunction.RegisterFunction(typeof(ToEmptyIfNullOrEmptyOrWhitespace));
 		}
 
 		#endregion
@@ -55,32 +52,32 @@ namespace RI.Framework.Data.SQLite.Functions
 		{
 			if (args == null)
 			{
-				return true;
+				return string.Empty;
 			}
 
 			if (args.Length != 1)
 			{
-				return false;
+				return string.Empty;
 			}
 
 			object arg = args[0];
 
 			if (arg == null)
 			{
-				return true;
+				return string.Empty;
 			}
 
 			if (arg == DBNull.Value)
 			{
-				return true;
+				return string.Empty;
 			}
 
 			if (!(arg is string))
 			{
-				return false;
+				return arg;
 			}
 
-			return ((string)arg).IsNullOrEmptyOrWhitespace();
+			return ((string)arg).IsNullOrEmptyOrWhitespace() ? string.Empty : arg;
 		}
 
 		#endregion

@@ -44,6 +44,7 @@
   - [ ] CSV
   - [ ] AggregateCatalog
   - [ ] FileCatalog
+- [ ] Advertisement
 
 
 ## Backlog

@@ -10,28 +10,25 @@ using RI.Framework.Utilities;
 namespace RI.Framework.Data.SQLite.Functions
 {
 	/// <summary>
-	///     Implements an SQLite function which returns an empty string if a value is an empty string or null.
+	///     Implements an SQLite function which returns null if a value is a string which is null or empty or consists only of whitespaces.
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         A string is considered empty if it is NULL or consists only of whitespaces.
-	///     </para>
-	///     <para>
-	///         The SQL name of the function is <c> toemptyifemptyornull </c>.
+	///         The SQL name of the function is <c> tonullifnulloremptyorwhitespace </c>.
 	///     </para>
 	/// </remarks>
 	/// <example>
 	///     <code language="sql">
 	/// <![CDATA[
-	/// toemptyifemptyornull(NULL)
-	/// toemptyifemptyornull(' ')
-	/// toemptyifemptyornull(column)
+	/// tonullifnulloremptyorwhitespace(NULL)
+	/// tonullifnulloremptyorwhitespace(' ')
+	/// tonullifnulloremptyorwhitespace(column)
 	/// ]]>
 	/// </code>
 	/// </example>
-	[SQLiteFunction("toemptyifemptyornull", 1, FunctionType.Scalar)]
+	[SQLiteFunction("tonullifnulloremptyorwhitespace", 1, FunctionType.Scalar)]
 	[SuppressMessage("ReSharper", "InconsistentNaming")]
-	public class ToEmptyIfEmptyOrNullSQLiteFunction : SQLiteFunction
+	public class ToNullIfNullOrEmptyOrWhitespace : SQLiteFunction
 	{
 		#region Static Methods
 
@@ -40,7 +37,7 @@ namespace RI.Framework.Data.SQLite.Functions
 		/// </summary>
 		public static void RegisterGlobal ()
 		{
-			SQLiteFunction.RegisterFunction(typeof(ToEmptyIfEmptyOrNullSQLiteFunction));
+			SQLiteFunction.RegisterFunction(typeof(ToNullIfNullOrEmptyOrWhitespace));
 		}
 
 		#endregion
@@ -55,24 +52,24 @@ namespace RI.Framework.Data.SQLite.Functions
 		{
 			if (args == null)
 			{
-				return string.Empty;
+				return null;
 			}
 
 			if (args.Length != 1)
 			{
-				return string.Empty;
+				return null;
 			}
 
 			object arg = args[0];
 
 			if (arg == null)
 			{
-				return string.Empty;
+				return null;
 			}
 
 			if (arg == DBNull.Value)
 			{
-				return string.Empty;
+				return null;
 			}
 
 			if (!(arg is string))
@@ -80,7 +77,7 @@ namespace RI.Framework.Data.SQLite.Functions
 				return arg;
 			}
 
-			return ((string)arg).IsNullOrEmptyOrWhitespace() ? string.Empty : arg;
+			return ((string)arg).IsNullOrEmptyOrWhitespace() ? null : arg;
 		}
 
 		#endregion

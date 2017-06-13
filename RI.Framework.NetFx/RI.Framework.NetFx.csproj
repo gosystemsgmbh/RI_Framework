@@ -55,6 +55,7 @@
     <Compile Include="Data\Database\_NamespaceDoc.cs" />
     <Compile Include="Data\Database\IDatabaseManager.cs" />
     <Compile Include="Data\Repository\ChangeTrackingContextResolveEventArgs.cs" />
+    <Compile Include="Data\Repository\Entities\EntityBase.cs" />
     <Compile Include="Data\Repository\Entities\IEntityChangeTracking.cs" />
     <Compile Include="Data\Repository\Entities\IEntityErrorTracking.cs" />
     <Compile Include="Data\Repository\Entities\_NamespaceDoc.cs" />

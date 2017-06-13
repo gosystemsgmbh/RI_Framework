@@ -18,9 +18,7 @@ using RI.Framework.Data.EF.Validation;
 using RI.Framework.Data.Repository;
 using RI.Framework.Data.Repository.Entities;
 using RI.Framework.Services.Logging;
-
-
-
+using RI.Framework.Utilities.Reflection;
 
 namespace RI.Framework.Data.EF
 {
@@ -103,20 +101,16 @@ namespace RI.Framework.Data.EF
 			{
 				RepositoryDbContext.CreateFilters(repository);
 
-				if (RepositoryDbContext.Filters[repository.GetType()].Contains(entityType))
+				Type[] types = RepositoryDbContext.Filters[repository.GetType()].Select(x => x.EntityType).ToArray();
+
+				Type matchingType;
+				int inheritanceDepth;
+				if (!entityType.GetBestMatchingType(out matchingType, out inheritanceDepth, types))
 				{
-					return RepositoryDbContext.Filters[repository.GetType()][entityType];
+					return null;
 				}
 
-				foreach (IEntityFilter filter in RepositoryDbContext.Filters[repository.GetType()])
-				{
-					if (filter.EntityType.IsAssignableFrom(entityType))
-					{
-						return filter;
-					}
-				}
-
-				return null;
+				return RepositoryDbContext.Filters[repository.GetType()][matchingType];
 			}
 		}
 
@@ -126,20 +120,16 @@ namespace RI.Framework.Data.EF
 			{
 				RepositoryDbContext.CreateValidators(repository);
 
-				if (RepositoryDbContext.Validators[repository.GetType()].Contains(entityType))
+				Type[] types = RepositoryDbContext.Validators[repository.GetType()].Select(x => x.EntityType).ToArray();
+
+				Type matchingType;
+				int inheritanceDepth;
+				if (!entityType.GetBestMatchingType(out matchingType, out inheritanceDepth, types))
 				{
-					return RepositoryDbContext.Validators[repository.GetType()][entityType];
+					return null;
 				}
 
-				foreach (IEntityValidation validator in RepositoryDbContext.Validators[repository.GetType()])
-				{
-					if (validator.EntityType.IsAssignableFrom(entityType))
-					{
-						return validator;
-					}
-				}
-
-				return null;
+				return RepositoryDbContext.Validators[repository.GetType()][matchingType];
 			}
 		}
 
