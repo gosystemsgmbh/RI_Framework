@@ -48,6 +48,12 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bus\Brokers\LocalBroker.cs" />
+    <Compile Include="Bus\Connections\IBusConnection.cs" />
+    <Compile Include="Bus\Context\BusContext.cs" />
+    <Compile Include="Bus\Endpoints\IEndpoint.cs" />
+    <Compile Include="Bus\Nodes\BusNode.cs" />
+    <Compile Include="Bus\Serialization\IBusSerializer.cs" />
     <Compile Include="Data\Database\DatabaseConnectionCreatedEventArgs.cs" />
     <Compile Include="Data\Database\DatabaseState.cs" />
     <Compile Include="Data\Database\DatabaseStateChangedEventArgs.cs" />
