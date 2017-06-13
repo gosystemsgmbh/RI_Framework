@@ -20,6 +20,9 @@ using RI.Framework.Data.Repository.Entities;
 using RI.Framework.Services.Logging;
 using RI.Framework.Utilities.Reflection;
 
+
+
+
 namespace RI.Framework.Data.EF
 {
 	/// <summary>
@@ -422,7 +425,7 @@ namespace RI.Framework.Data.EF
 		///         The database logging or <see cref="DbContext" /> logging respectively can be enabled/disabled using <see cref="EnableDatabaseLogging" />.
 		///     </para>
 		///     <para>
-		///         The default implementation calls <see cref="ILogSourceExtensions.Log" /> to log the message.
+		///         The default implementation calls <see cref="ILogSourceExtensions.Log(ILogSource,LogLevel,string,object[])" /> to log the message.
 		///     </para>
 		/// </remarks>
 		protected virtual void LogDatabase (string message)

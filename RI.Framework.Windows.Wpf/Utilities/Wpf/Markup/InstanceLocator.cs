@@ -7,7 +7,6 @@ using RI.Framework.Mvvm.View;
 using RI.Framework.Mvvm.ViewModel;
 using RI.Framework.Services;
 using RI.Framework.Services.Logging;
-using RI.Framework.Utilities.ObjectModel;
 
 
 

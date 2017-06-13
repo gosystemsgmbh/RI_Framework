@@ -9,7 +9,7 @@ using RI.Framework.Utilities.ObjectModel;
 namespace RI.Framework.StateMachines.Resolvers
 {
 	/// <summary>
-	///     Implements a state instance resolver which uses a <see cref="CompositionContainer"/>.
+	///     Implements a state instance resolver which uses a <see cref="CompositionContainer" />.
 	/// </summary>
 	/// <remarks>
 	///     <para>
@@ -25,7 +25,7 @@ namespace RI.Framework.StateMachines.Resolvers
 		/// </summary>
 		/// <param name="container"> </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="container" /> is null. </exception>
-		public CompositionContainerStateResolver(CompositionContainer container)
+		public CompositionContainerStateResolver (CompositionContainer container)
 		{
 			if (container == null)
 			{
@@ -46,18 +46,18 @@ namespace RI.Framework.StateMachines.Resolvers
 
 		private CompositionContainer Container { get; set; }
 
-		/// <inheritdoc />
-		bool ISynchronizable.IsSynchronized => true;
-
-		/// <inheritdoc />
-		public object SyncRoot { get; private set; }
-
 		#endregion
 
 
 
 
 		#region Interface: IStateResolver
+
+		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		public object SyncRoot { get; private set; }
 
 		/// <inheritdoc />
 		public IState ResolveState (Type type)

@@ -4,6 +4,9 @@ using System.Threading;
 
 using RI.Framework.Utilities.ObjectModel;
 
+
+
+
 namespace RI.Framework.StateMachines.Dispatchers
 {
 	/// <summary>
@@ -11,7 +14,7 @@ namespace RI.Framework.StateMachines.Dispatchers
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         <see cref="StateDispatcher" /> internally uses a <see cref="SynchronizationContext"/>, which is captured at the time of dispatching, to dispatch operations or falls back to <see cref="ThreadPool.QueueUserWorkItem(WaitCallback,object)"/> if no <see cref="SynchronizationContext"/> is available.
+	///         <see cref="StateDispatcher" /> internally uses a <see cref="SynchronizationContext" />, which is captured at the time of dispatching, to dispatch operations or falls back to <see cref="ThreadPool.QueueUserWorkItem(WaitCallback,object)" /> if no <see cref="SynchronizationContext" /> is available.
 	///     </para>
 	///     <para>
 	///         See <see cref="IStateCache" /> for more details.
@@ -19,23 +22,39 @@ namespace RI.Framework.StateMachines.Dispatchers
 	/// </remarks>
 	public sealed class StateDispatcher : IStateDispatcher
 	{
+		#region Instance Constructor/Destructor
+
 		/// <summary>
 		///     Creates a new instance of <see cref="StateDispatcher" />.
 		/// </summary>
-		public StateDispatcher()
+		public StateDispatcher ()
 		{
 			this.SyncRoot = new object();
 
 			this.UpdateTimers = new Dictionary<StateMachine, Timer>();
 		}
 
-		/// <inheritdoc />
-		public object SyncRoot { get; private set; }
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
+
+		private Dictionary<StateMachine, Timer> UpdateTimers { get; set; }
+
+		#endregion
+
+
+
+
+		#region Interface: IStateDispatcher
 
 		/// <inheritdoc />
 		bool ISynchronizable.IsSynchronized => true;
 
-		private Dictionary<StateMachine, Timer> UpdateTimers { get; set; }
+		/// <inheritdoc />
+		public object SyncRoot { get; private set; }
 
 		/// <inheritdoc />
 		public void DispatchSignal (StateMachineSignalDelegate signalDelegate, StateSignalInfo signalInfo)
@@ -65,16 +84,22 @@ namespace RI.Framework.StateMachines.Dispatchers
 					this.UpdateTimers.Remove(stateMachine);
 				}
 
-				Timer timer = new Timer(x =>
-				{
-					((DispatchCapture)x).Execute();
-				}, capture, updateInfo.UpdateDelay, Timeout.Infinite);
+				Timer timer = new Timer(x => { ((DispatchCapture)x).Execute(); }, capture, updateInfo.UpdateDelay, Timeout.Infinite);
 				this.UpdateTimers.Add(stateMachine, timer);
 			}
 		}
 
+		#endregion
+
+
+
+
+		#region Type: DispatchCapture
+
 		private sealed class DispatchCapture
 		{
+			#region Instance Constructor/Destructor
+
 			public DispatchCapture (Delegate action, object arguments)
 			{
 				if (action == null)
@@ -92,11 +117,25 @@ namespace RI.Framework.StateMachines.Dispatchers
 				this.Context = SynchronizationContext.Current;
 			}
 
+			#endregion
+
+
+
+
+			#region Instance Properties/Indexer
+
 			public Delegate Action { get; private set; }
 
 			public object Arguments { get; private set; }
 
 			public SynchronizationContext Context { get; private set; }
+
+			#endregion
+
+
+
+
+			#region Instance Methods
 
 			public void Execute ()
 			{
@@ -117,6 +156,10 @@ namespace RI.Framework.StateMachines.Dispatchers
 					}, this);
 				}
 			}
+
+			#endregion
 		}
+
+		#endregion
 	}
 }

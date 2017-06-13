@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 using RI.Framework.Utilities.ObjectModel;
 
+
+
+
 namespace RI.Framework.StateMachines.Caches
 {
 	/// <summary>
@@ -45,9 +48,6 @@ namespace RI.Framework.StateMachines.Caches
 		/// </value>
 		public Dictionary<Type, IState> States { get; private set; }
 
-		/// <inheritdoc />
-		public object SyncRoot { get; private set; }
-
 		#endregion
 
 
@@ -57,6 +57,9 @@ namespace RI.Framework.StateMachines.Caches
 
 		/// <inheritdoc />
 		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		public object SyncRoot { get; private set; }
 
 		/// <inheritdoc />
 		public void AddState (IState state)

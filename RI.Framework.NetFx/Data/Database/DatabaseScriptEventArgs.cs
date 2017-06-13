@@ -11,16 +11,23 @@ namespace RI.Framework.Data.Database
 	[Serializable]
 	public sealed class DatabaseScriptEventArgs : EventArgs
 	{
-		#region Instance Properties/Indexer
+		#region Instance Constructor/Destructor
 
 		/// <summary>
 		///     Creates a new instance of <see cref="DatabaseScriptEventArgs" />.
 		/// </summary>
 		/// <param name="script"> The database script. </param>
-		public DatabaseScriptEventArgs(string script)
+		public DatabaseScriptEventArgs (string script)
 		{
 			this.Script = script;
 		}
+
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
 
 		/// <summary>
 		///     Gets or sets the database script.

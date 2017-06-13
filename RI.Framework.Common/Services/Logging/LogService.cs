@@ -6,7 +6,6 @@ using System.Threading;
 using RI.Framework.Collections;
 using RI.Framework.Composition;
 using RI.Framework.Composition.Model;
-using RI.Framework.Utilities.ObjectModel;
 
 
 

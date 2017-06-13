@@ -3,6 +3,9 @@
 using RI.Framework.Services.Logging;
 using RI.Framework.Utilities.ObjectModel;
 
+
+
+
 namespace RI.Framework.StateMachines
 {
 	/// <summary>
@@ -198,7 +201,7 @@ namespace RI.Framework.StateMachines
 		/// </summary>
 		/// <param name="configuration"> The state machines configuration. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="configuration" /> is null. </exception>
-		/// <exception cref="ArgumentException"> <paramref name="configuration" /> does not specify a <see cref="IStateDispatcher" />, <see cref="IStateResolver"/>, or <see cref="IStateCache"/>. </exception>
+		/// <exception cref="ArgumentException"> <paramref name="configuration" /> does not specify a <see cref="IStateDispatcher" />, <see cref="IStateResolver" />, or <see cref="IStateCache" />. </exception>
 		public StateMachine (StateMachineConfiguration configuration)
 		{
 			if (configuration == null)
@@ -244,9 +247,18 @@ namespace RI.Framework.StateMachines
 
 
 
-		#region Instance Properties/Indexer
+		#region Instance Fields
 
 		private StateMachineConfiguration _configuration;
+
+		private IState _state;
+
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
 
 		/// <summary>
 		///     Gets the state machine configuration.
@@ -277,8 +289,6 @@ namespace RI.Framework.StateMachines
 				}
 			}
 		}
-
-		private IState _state;
 
 		/// <summary>
 		///     Gets the current state.
@@ -733,6 +743,13 @@ namespace RI.Framework.StateMachines
 
 			return state;
 		}
+
+		#endregion
+
+
+
+
+		#region Interface: ISynchronizable
 
 		/// <inheritdoc />
 		bool ISynchronizable.IsSynchronized => true;

@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
 
+
+
+
 namespace RI.Framework.Services.Modularization
 {
 	/// <summary>
@@ -15,26 +18,26 @@ namespace RI.Framework.Services.Modularization
 		#region Static Properties/Indexer
 
 		/// <summary>
-		/// Gets whether a module service is available and can be used by <see cref="ModuleLocator"/>.
+		///     Gets whether a module service is available and can be used by <see cref="ModuleLocator" />.
 		/// </summary>
 		/// <value>
-		/// true if a module service is available and can be used by <see cref="ModuleLocator"/>, false otherwise.
+		///     true if a module service is available and can be used by <see cref="ModuleLocator" />, false otherwise.
 		/// </value>
 		public static bool IsAvailable => ModuleLocator.Service != null;
 
-		/// <summary>
-		/// Gets the available module service.
-		/// </summary>
-		/// <value>
-		/// The available module service or null if no module service is available.
-		/// </value>
-		public static IModuleService Service => ServiceLocator.GetInstance<IModuleService>();
+		/// <inheritdoc cref="IModuleService.IsInitialized" />
+		public static bool? IsInitialized => ModuleLocator.Service?.IsInitialized;
 
-		/// <inheritdoc cref="IModuleService.Modules"/>
+		/// <inheritdoc cref="IModuleService.Modules" />
 		public static IEnumerable<IModule> Modules => ModuleLocator.Service?.Modules;
 
-		/// <inheritdoc cref="IModuleService.IsInitialized"/>
-		public static bool? IsInitialized => ModuleLocator.Service?.IsInitialized;
+		/// <summary>
+		///     Gets the available module service.
+		/// </summary>
+		/// <value>
+		///     The available module service or null if no module service is available.
+		/// </value>
+		public static IModuleService Service => ServiceLocator.GetInstance<IModuleService>();
 
 		#endregion
 
@@ -43,10 +46,10 @@ namespace RI.Framework.Services.Modularization
 
 		#region Static Methods
 
-		/// <inheritdoc cref="IModuleService.Initialize"/>
+		/// <inheritdoc cref="IModuleService.Initialize" />
 		public static void Initialize () => ModuleLocator.Service?.Initialize();
 
-		/// <inheritdoc cref="IModuleService.Unload"/>
+		/// <inheritdoc cref="IModuleService.Unload" />
 		public static void Unload () => ModuleLocator.Service?.Unload();
 
 		#endregion

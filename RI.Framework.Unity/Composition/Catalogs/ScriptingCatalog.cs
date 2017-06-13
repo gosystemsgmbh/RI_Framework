@@ -36,43 +36,51 @@ namespace RI.Framework.Composition.Catalogs
 
 
 
+
+		#region Instance Constructor/Destructor
+
 		/// <summary>
-		/// Creates a new instance of <see cref="ScriptingCatalog"/>.
+		///     Creates a new instance of <see cref="ScriptingCatalog" />.
 		/// </summary>
 		/// <remarks>
-		/// <para>
-		/// true is used for <see cref="ExportAllTypes"/>.
-		/// </para>
+		///     <para>
+		///         true is used for <see cref="ExportAllTypes" />.
+		///     </para>
 		/// </remarks>
-		public ScriptingCatalog()
+		public ScriptingCatalog ()
 			: this(true)
 		{
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="exportAllTypes">Specifies whether all types should be exported (see <see cref="ExportAllTypes"/> for details).</param>
-		public ScriptingCatalog(bool exportAllTypes)
+		/// <param name="exportAllTypes"> Specifies whether all types should be exported (see <see cref="ExportAllTypes" /> for details). </param>
+		public ScriptingCatalog (bool exportAllTypes)
 		{
 			this.ExportAllTypes = exportAllTypes;
 		}
 
+		#endregion
 
 
+
+
+		#region Instance Properties/Indexer
 
 		/// <summary>
-		/// Gets or sets whether all types should be exported.
+		///     Gets or sets whether all types should be exported.
 		/// </summary>
 		/// <value>
-		/// true if all types should be exported, false otherwise.
+		///     true if all types should be exported, false otherwise.
 		/// </value>
 		/// <remarks>
-		/// <para>
-		/// If all types are exported, the exports will consist of all non-abstract, non-static types, even those without an <see cref="ExportAttribute"/>.
-		/// </para>
+		///     <para>
+		///         If all types are exported, the exports will consist of all non-abstract, non-static types, even those without an <see cref="ExportAttribute" />.
+		///     </para>
 		/// </remarks>
 		public bool ExportAllTypes { get; set; }
+
+		#endregion
 
 
 

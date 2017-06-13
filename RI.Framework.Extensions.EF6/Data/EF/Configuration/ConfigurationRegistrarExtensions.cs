@@ -4,6 +4,9 @@ using System.Data.Entity.ModelConfiguration.Configuration;
 using System.Linq.Expressions;
 using System.Reflection;
 
+
+
+
 namespace RI.Framework.Data.EF.Configuration
 {
 	/// <summary>
@@ -11,6 +14,8 @@ namespace RI.Framework.Data.EF.Configuration
 	/// </summary>
 	public static class ConfigurationRegistrarExtensions
 	{
+		#region Static Methods
+
 		/// <summary>
 		///     Registers an entity configuration class instance.
 		/// </summary>
@@ -29,11 +34,13 @@ namespace RI.Framework.Data.EF.Configuration
 				throw new ArgumentNullException(nameof(entityTypeConfiguration));
 			}
 
-			Expression<Func<ConfigurationRegistrar, ConfigurationRegistrar>> fakeExpression = (Expression<Func<ConfigurationRegistrar, ConfigurationRegistrar>>)(x => x.Add((EntityTypeConfiguration<string>)null));
+			Expression<Func<ConfigurationRegistrar, ConfigurationRegistrar>> fakeExpression = x => x.Add((EntityTypeConfiguration<string>)null);
 			MethodInfo fakeMethod = ((MethodCallExpression)fakeExpression.Body).Method;
 			MethodInfo genericMethod = fakeMethod.GetGenericMethodDefinition();
 			MethodInfo concreteMethod = genericMethod.MakeGenericMethod(entityTypeConfiguration.EntityType);
-			concreteMethod.Invoke(registrar, new object[] { entityTypeConfiguration });
+			concreteMethod.Invoke(registrar, new object[] {entityTypeConfiguration});
 		}
+
+		#endregion
 	}
 }

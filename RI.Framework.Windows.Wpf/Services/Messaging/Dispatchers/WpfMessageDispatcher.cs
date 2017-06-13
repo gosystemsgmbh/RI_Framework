@@ -15,10 +15,7 @@ namespace RI.Framework.Services.Messaging.Dispatchers
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         A message dispatched by a <see cref="WpfMessageDispatcher" /> can implement <see cref="IWpfMessage" /> to have more control over the dispatching of the message.
-	///     </para>
-	///     <para>
-	///         If not overriden through <see cref="IWpfMessage" />, all messages are dispatched using <see cref="DispatcherPriority.Normal" /> priority.
+	///         All messages are dispatched using <see cref="DispatcherPriority.Normal" /> priority.
 	///     </para>
 	///     <para>
 	///         See <see cref="IMessageDispatcher" /> for more details.

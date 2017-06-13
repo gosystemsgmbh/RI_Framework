@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data.Entity.Infrastructure.DependencyResolution;
 
 using RI.Framework.Services;
-using RI.Framework.Utilities.ObjectModel;
 
 
 

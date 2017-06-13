@@ -3,10 +3,13 @@
 using RI.Framework.Services;
 using RI.Framework.Utilities.ObjectModel;
 
+
+
+
 namespace RI.Framework.StateMachines.Resolvers
 {
 	/// <summary>
-	///     Implements a state instance resolver which uses <see cref="ServiceLocator"/>.
+	///     Implements a state instance resolver which uses <see cref="ServiceLocator" />.
 	/// </summary>
 	/// <remarks>
 	///     <para>
@@ -20,7 +23,7 @@ namespace RI.Framework.StateMachines.Resolvers
 		/// <summary>
 		///     Creates a new instance of <see cref="ServiceLocatorStateResolver" />.
 		/// </summary>
-		public ServiceLocatorStateResolver()
+		public ServiceLocatorStateResolver ()
 		{
 			this.SyncRoot = new object();
 		}
@@ -30,7 +33,7 @@ namespace RI.Framework.StateMachines.Resolvers
 
 
 
-		#region Instance Properties/Indexer
+		#region Interface: IStateResolver
 
 		/// <inheritdoc />
 		bool ISynchronizable.IsSynchronized => true;
@@ -38,15 +41,8 @@ namespace RI.Framework.StateMachines.Resolvers
 		/// <inheritdoc />
 		public object SyncRoot { get; private set; }
 
-		#endregion
-
-
-
-
-		#region Interface: IStateResolver
-
 		/// <inheritdoc />
-		public IState ResolveState(Type type)
+		public IState ResolveState (Type type)
 		{
 			lock (this.SyncRoot)
 			{

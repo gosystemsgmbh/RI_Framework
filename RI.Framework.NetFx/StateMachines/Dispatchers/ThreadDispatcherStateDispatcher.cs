@@ -60,18 +60,18 @@ namespace RI.Framework.StateMachines.Dispatchers
 
 		private Dictionary<StateMachine, ThreadDispatcherTimer> UpdateTimers { get; set; }
 
-		/// <inheritdoc />
-		public object SyncRoot { get; private set; }
-
-		/// <inheritdoc />
-		bool ISynchronizable.IsSynchronized => true;
-
 		#endregion
 
 
 
 
 		#region Interface: IStateDispatcher
+
+		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		public object SyncRoot { get; private set; }
 
 		/// <inheritdoc />
 		public void DispatchSignal (StateMachineSignalDelegate signalDelegate, StateSignalInfo signalInfo)

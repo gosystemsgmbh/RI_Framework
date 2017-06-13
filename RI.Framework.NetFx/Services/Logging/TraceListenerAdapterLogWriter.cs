@@ -7,15 +7,18 @@ using System.Text;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.ObjectModel;
 
+
+
+
 namespace RI.Framework.Services.Logging
 {
 	/// <summary>
 	///     Implements a log writer which uses the .NET Framework tracing mechanism.
 	/// </summary>
 	/// <remarks>
-	/// <para>
-	/// <see cref="TraceListenerAdapterLogWriter"/> is a two-way adapter which writes log entries comming from <see cref="ILogService"/> to <see cref="Trace"/> but also adds a <see cref="System.Diagnostics.TraceListener"/> to <see cref="Trace"/> to write all traces written to <see cref="Trace"/> to <see cref="ILogService"/> (using <see cref="ILogSourceExtensions"/>).
-	/// </para>
+	///     <para>
+	///         <see cref="TraceListenerAdapterLogWriter" /> is a two-way adapter which writes log entries comming from <see cref="ILogService" /> to <see cref="Trace" /> but also adds a <see cref="System.Diagnostics.TraceListener" /> to <see cref="Trace" /> to write all traces written to <see cref="Trace" /> to <see cref="ILogService" /> (using <see cref="ILogSourceExtensions" />).
+	///     </para>
 	///     <para>
 	///         <see cref="Trace.WriteLine(string)" /> is used to write the log messages.
 	///     </para>
@@ -25,8 +28,10 @@ namespace RI.Framework.Services.Logging
 	/// </remarks>
 	public sealed class TraceListenerAdapterLogWriter : ILogWriter, IDisposable, ILogSource
 	{
+		#region Instance Constructor/Destructor
+
 		/// <summary>
-		/// Creates a new instance of <see cref="TraceListenerAdapterLogWriter"/>.
+		///     Creates a new instance of <see cref="TraceListenerAdapterLogWriter" />.
 		/// </summary>
 		public TraceListenerAdapterLogWriter ()
 		{
@@ -48,6 +53,37 @@ namespace RI.Framework.Services.Logging
 			this.Dispose(false);
 		}
 
+		#endregion
+
+
+
+
+		#region Instance Fields
+
+		private ILogFilter _filter;
+
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
+
+		private string Buffer { get; set; }
+		private bool IsTracing { get; set; }
+		private bool IsWriting { get; set; }
+
+		private object SyncRoot { get; set; }
+
+		private LogWriterTraceListener TraceListener { get; set; }
+
+		#endregion
+
+
+
+
+		#region Instance Methods
+
 		/// <summary>
 		///     Closes this log writer and the used trace listener.
 		/// </summary>
@@ -56,7 +92,7 @@ namespace RI.Framework.Services.Logging
 		///         After the log writer is closed, all calls to <see cref="Log" /> do not have any effect but do not fail.
 		///     </para>
 		/// </remarks>
-		public void Close()
+		public void Close ()
 		{
 			this.Dispose(true);
 			GC.SuppressFinalize(this);
@@ -64,7 +100,7 @@ namespace RI.Framework.Services.Logging
 
 		[SuppressMessage("ReSharper", "UnusedParameter.Local")]
 		[SuppressMessage("ReSharper", "EmptyGeneralCatchClause")]
-		private void Dispose(bool disposing)
+		private void Dispose (bool disposing)
 		{
 			lock (this.SyncRoot)
 			{
@@ -81,77 +117,6 @@ namespace RI.Framework.Services.Logging
 				this.IsTracing = false;
 			}
 		}
-
-		/// <inheritdoc />
-		void IDisposable.Dispose()
-		{
-			this.Close();
-		}
-
-		private ILogFilter _filter;
-
-		/// <inheritdoc />
-		public ILogFilter Filter
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					return this._filter;
-				}
-			}
-			set
-			{
-				lock (this.SyncRoot)
-				{
-					this._filter = value;
-				}
-			}
-		}
-
-		/// <inheritdoc />
-		public void Cleanup (DateTime retentionDate)
-		{
-		}
-
-		/// <inheritdoc />
-		public void Log (DateTime timestamp, int threadId, LogLevel severity, string source, string message)
-		{
-			lock (this.SyncRoot)
-			{
-				if (this.IsTracing || (this.TraceListener == null))
-				{
-					return;
-				}
-
-				try
-				{
-					this.IsWriting = true;
-
-					StringBuilder finalMessageBuilder = new StringBuilder();
-					finalMessageBuilder.Append("[");
-					finalMessageBuilder.Append(timestamp.ToSortableString());
-					finalMessageBuilder.Append("] [");
-					finalMessageBuilder.Append(threadId.ToString("D4", CultureInfo.InvariantCulture));
-					finalMessageBuilder.Append("] [");
-					finalMessageBuilder.Append(severity.ToString()[0]);
-					finalMessageBuilder.Append("] [");
-					finalMessageBuilder.Append(source);
-					finalMessageBuilder.Append("] ");
-					finalMessageBuilder.AppendLine(message);
-					string finalMessage = finalMessageBuilder.ToString();
-					Trace.WriteLine(finalMessage);
-				}
-				finally
-				{
-					this.IsWriting = false;
-				}
-			}
-		}
-
-		private string Buffer { get; set; }
-		private bool IsWriting { get; set; }
-		private bool IsTracing { get; set; }
 
 		private void WriteTrace (string message)
 		{
@@ -215,18 +180,102 @@ namespace RI.Framework.Services.Logging
 			this.WriteTrace(message + Environment.NewLine);
 		}
 
+		#endregion
+
+
+
+
+		#region Interface: IDisposable
+
+		/// <inheritdoc />
+		void IDisposable.Dispose ()
+		{
+			this.Close();
+		}
+
+		#endregion
+
+
+
+
+		#region Interface: ILogWriter
+
+		/// <inheritdoc />
+		public ILogFilter Filter
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._filter;
+				}
+			}
+			set
+			{
+				lock (this.SyncRoot)
+				{
+					this._filter = value;
+				}
+			}
+		}
+
 		/// <inheritdoc />
 		bool ISynchronizable.IsSynchronized => true;
 
 		/// <inheritdoc />
 		object ISynchronizable.SyncRoot => this.SyncRoot;
 
-		private object SyncRoot { get; set; }
+		/// <inheritdoc />
+		public void Cleanup (DateTime retentionDate)
+		{
+		}
 
-		private LogWriterTraceListener TraceListener { get; set; }
+		/// <inheritdoc />
+		public void Log (DateTime timestamp, int threadId, LogLevel severity, string source, string message)
+		{
+			lock (this.SyncRoot)
+			{
+				if (this.IsTracing || (this.TraceListener == null))
+				{
+					return;
+				}
+
+				try
+				{
+					this.IsWriting = true;
+
+					StringBuilder finalMessageBuilder = new StringBuilder();
+					finalMessageBuilder.Append("[");
+					finalMessageBuilder.Append(timestamp.ToSortableString());
+					finalMessageBuilder.Append("] [");
+					finalMessageBuilder.Append(threadId.ToString("D4", CultureInfo.InvariantCulture));
+					finalMessageBuilder.Append("] [");
+					finalMessageBuilder.Append(severity.ToString()[0]);
+					finalMessageBuilder.Append("] [");
+					finalMessageBuilder.Append(source);
+					finalMessageBuilder.Append("] ");
+					finalMessageBuilder.AppendLine(message);
+					string finalMessage = finalMessageBuilder.ToString();
+					Trace.WriteLine(finalMessage);
+				}
+				finally
+				{
+					this.IsWriting = false;
+				}
+			}
+		}
+
+		#endregion
+
+
+
+
+		#region Type: LogWriterTraceListener
 
 		private sealed class LogWriterTraceListener : TraceListener
 		{
+			#region Instance Constructor/Destructor
+
 			public LogWriterTraceListener (TraceListenerAdapterLogWriter logWriter)
 			{
 				if (logWriter == null)
@@ -239,7 +288,21 @@ namespace RI.Framework.Services.Logging
 				this.Name = this.GetType().Name;
 			}
 
+			#endregion
+
+
+
+
+			#region Instance Properties/Indexer
+
 			public TraceListenerAdapterLogWriter LogWriter { get; }
+
+			#endregion
+
+
+
+
+			#region Overrides
 
 			public override bool IsThreadSafe => false;
 
@@ -252,6 +315,10 @@ namespace RI.Framework.Services.Logging
 			{
 				this.LogWriter.WriteTraceLine(message);
 			}
+
+			#endregion
 		}
+
+		#endregion
 	}
 }

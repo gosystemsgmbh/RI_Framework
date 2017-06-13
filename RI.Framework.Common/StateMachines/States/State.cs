@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using RI.Framework.Composition.Model;
 using RI.Framework.Utilities.ObjectModel;
 
+
+
+
 namespace RI.Framework.StateMachines.States
 {
 	/// <summary>
@@ -44,9 +47,22 @@ namespace RI.Framework.StateMachines.States
 
 
 
-		#region Instance Properties/Indexer
+		#region Instance Fields
+
+		private bool _isInitialized;
 
 		private StateMachine _stateMachine;
+
+		private int? _updateInterval;
+
+		private bool _useCaching;
+
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
 
 		/// <summary>
 		///     Gets the state machine associated with this state.
@@ -207,14 +223,6 @@ namespace RI.Framework.StateMachines.States
 		#region Interface: IState
 
 		/// <inheritdoc />
-		bool ISynchronizable.IsSynchronized => true;
-
-		/// <inheritdoc />
-		public object SyncRoot { get; private set; }
-
-		private bool _isInitialized;
-
-		/// <inheritdoc />
 		public bool IsInitialized
 		{
 			get
@@ -233,7 +241,11 @@ namespace RI.Framework.StateMachines.States
 			}
 		}
 
-		private int? _updateInterval;
+		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		public object SyncRoot { get; private set; }
 
 		/// <inheritdoc />
 		public int? UpdateInterval
@@ -253,8 +265,6 @@ namespace RI.Framework.StateMachines.States
 				}
 			}
 		}
-
-		private bool _useCaching;
 
 		/// <inheritdoc />
 		public bool UseCaching

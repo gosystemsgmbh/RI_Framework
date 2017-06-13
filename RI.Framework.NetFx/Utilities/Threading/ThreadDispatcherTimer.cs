@@ -98,6 +98,15 @@ namespace RI.Framework.Utilities.Threading
 
 
 
+		#region Instance Fields
+
+		private int _executionCount;
+
+		#endregion
+
+
+
+
 		#region Instance Properties/Indexer
 
 		/// <summary>
@@ -115,6 +124,30 @@ namespace RI.Framework.Utilities.Threading
 		///     The used dispatcher.
 		/// </value>
 		public IThreadDispatcher Dispatcher { get; private set; }
+
+		/// <summary>
+		///     Gets the number of times the delegate was executed.
+		/// </summary>
+		/// <value>
+		///     The number of times the delegate was executed.
+		/// </value>
+		public int ExecutionCount
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._executionCount;
+				}
+			}
+			private set
+			{
+				lock (this.SyncRoot)
+				{
+					this._executionCount = value;
+				}
+			}
+		}
 
 		/// <summary>
 		///     Gets the used interval.
@@ -164,32 +197,6 @@ namespace RI.Framework.Utilities.Threading
 		///     The priority.
 		/// </value>
 		public int Priority { get; private set; }
-
-		private int _executionCount;
-
-		/// <summary>
-		/// Gets the number of times the delegate was executed.
-		/// </summary>
-		/// <value>
-		/// The number of times the delegate was executed.
-		/// </value>
-		public int ExecutionCount
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					return this._executionCount;
-				}
-			}
-			private set
-			{
-				lock (this.SyncRoot)
-				{
-					this._executionCount = value;
-				}
-			}
-		}
 
 		private object SyncRoot { get; set; }
 

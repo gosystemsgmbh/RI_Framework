@@ -6,6 +6,9 @@ using RI.Framework.StateMachines.Dispatchers;
 using RI.Framework.StateMachines.Resolvers;
 using RI.Framework.Utilities.ObjectModel;
 
+
+
+
 namespace RI.Framework.StateMachines
 {
 	/// <summary>
@@ -45,9 +48,26 @@ namespace RI.Framework.StateMachines
 
 
 
-		#region Instance Properties/Indexer
+		#region Instance Fields
 
 		private IStateCache _cache;
+
+		private IStateDispatcher _dispatcher;
+
+		private bool _enableAutomaticCaching;
+
+		private bool _isLocked;
+
+		private bool _loggingEnabled;
+
+		private IStateResolver _resolver;
+
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
 
 		/// <summary>
 		///     Gets or sets the used state instance cache.
@@ -66,7 +86,7 @@ namespace RI.Framework.StateMachines
 		///         The default value is an instance of <see cref="StateCache" />.
 		///     </para>
 		/// </remarks>
-		/// <exception cref="ArgumentNullException">The property is being set to null while this instance is used in a <see cref="StateMachine"/>.</exception>
+		/// <exception cref="ArgumentNullException"> The property is being set to null while this instance is used in a <see cref="StateMachine" />. </exception>
 		public IStateCache Cache
 		{
 			get
@@ -90,8 +110,6 @@ namespace RI.Framework.StateMachines
 			}
 		}
 
-		private IStateDispatcher _dispatcher;
-
 		/// <summary>
 		///     Gets or sets the used dispatcher.
 		/// </summary>
@@ -109,7 +127,7 @@ namespace RI.Framework.StateMachines
 		///         The default value is an instance of <see cref="StateDispatcher" />.
 		///     </para>
 		/// </remarks>
-		/// <exception cref="ArgumentNullException">The property is being set to null while this instance is used in a <see cref="StateMachine"/>.</exception>
+		/// <exception cref="ArgumentNullException"> The property is being set to null while this instance is used in a <see cref="StateMachine" />. </exception>
 		public IStateDispatcher Dispatcher
 		{
 			get
@@ -132,8 +150,6 @@ namespace RI.Framework.StateMachines
 				}
 			}
 		}
-
-		private bool _enableAutomaticCaching;
 
 		/// <summary>
 		///     Gets or sets whether state instances are automatically added to the cache by <see cref="StateMachine" /> after they became the current state for the first time.
@@ -164,8 +180,6 @@ namespace RI.Framework.StateMachines
 			}
 		}
 
-		private bool _loggingEnabled;
-
 		/// <summary>
 		///     Gets or sets whether logging, using <see cref="LogLocator" />, is enabled.
 		/// </summary>
@@ -195,8 +209,6 @@ namespace RI.Framework.StateMachines
 			}
 		}
 
-		private IStateResolver _resolver;
-
 		/// <summary>
 		///     Gets or sets the used state resolver.
 		/// </summary>
@@ -214,7 +226,7 @@ namespace RI.Framework.StateMachines
 		///         The default value is an instance of <see cref="StateResolver" />.
 		///     </para>
 		/// </remarks>
-		/// <exception cref="ArgumentNullException">The property is being set to null while this instance is used in a <see cref="StateMachine"/>.</exception>
+		/// <exception cref="ArgumentNullException"> The property is being set to null while this instance is used in a <see cref="StateMachine" />. </exception>
 		public IStateResolver Resolver
 		{
 			get
@@ -238,14 +250,6 @@ namespace RI.Framework.StateMachines
 			}
 		}
 
-		/// <inheritdoc />
-		bool ISynchronizable.IsSynchronized => true;
-
-		/// <inheritdoc />
-		public object SyncRoot { get; private set; }
-
-		private bool _isLocked;
-
 		internal bool IsLocked
 		{
 			get
@@ -267,6 +271,10 @@ namespace RI.Framework.StateMachines
 		#endregion
 
 
+
+
+		#region Interface: ICloneable<StateMachineConfiguration>
+
 		/// <inheritdoc />
 		public abstract StateMachineConfiguration Clone ();
 
@@ -275,5 +283,20 @@ namespace RI.Framework.StateMachines
 		{
 			return this.Clone();
 		}
+
+		#endregion
+
+
+
+
+		#region Interface: ISynchronizable
+
+		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		public object SyncRoot { get; private set; }
+
+		#endregion
 	}
 }

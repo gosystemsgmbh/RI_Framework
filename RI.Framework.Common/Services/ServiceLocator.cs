@@ -54,9 +54,18 @@ namespace RI.Framework.Services
 
 
 
-		#region Static Properties/Indexer
+		#region Static Fields
 
 		private static bool _useCaching;
+
+		private static bool _useSingletons;
+
+		#endregion
+
+
+
+
+		#region Static Properties/Indexer
 
 		/// <summary>
 		///     Gets or sets whether cahcing is used.
@@ -86,8 +95,6 @@ namespace RI.Framework.Services
 				}
 			}
 		}
-
-		private static bool _useSingletons;
 
 		/// <summary>
 		///     Gets or sets whether <see cref="ServiceLocator" /> is connected to <see cref="Singleton" /> / <see cref="Singleton{T}" />.
@@ -120,9 +127,9 @@ namespace RI.Framework.Services
 
 		private static Dictionary<string, object[]> Cache { get; set; }
 
-		private static object GlobalSyncRoot { get; set; }
-
 		private static HashSet<CompositionContainer> CompositionContainerBindings { get; set; }
+
+		private static object GlobalSyncRoot { get; set; }
 
 		#endregion
 
@@ -159,9 +166,9 @@ namespace RI.Framework.Services
 		///     <para>
 		///         <see cref="CompositionContainer.GetNameOfType" /> is used for type-to-name translation and <see cref="CompositionContainer.GetExports{T}(string)" /> for lookup.
 		///     </para>
-		/// <para>
-		/// It is possible to bind multiple composition containers to the service locator.
-		/// </para>
+		///     <para>
+		///         It is possible to bind multiple composition containers to the service locator.
+		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="compositionContainer" /> is null. </exception>
 		public static void BindToCompositionContainer (CompositionContainer compositionContainer)
@@ -174,24 +181,6 @@ namespace RI.Framework.Services
 			lock (ServiceLocator.GlobalSyncRoot)
 			{
 				ServiceLocator.CompositionContainerBindings.Add(compositionContainer);
-			}
-		}
-
-		/// <summary>
-		/// Unbinds the service locator from a specified composition container which is then no longer used for service lookup.
-		/// </summary>
-		/// <param name="compositionContainer"> The composition container to unbind from. </param>
-		/// <exception cref="ArgumentNullException"> <paramref name="compositionContainer" /> is null. </exception>
-		public static void UnbindFromCompositionContainer (CompositionContainer compositionContainer)
-		{
-			if (compositionContainer == null)
-			{
-				throw new ArgumentNullException(nameof(compositionContainer));
-			}
-
-			lock (ServiceLocator.GlobalSyncRoot)
-			{
-				ServiceLocator.CompositionContainerBindings.Remove(compositionContainer);
 			}
 		}
 
@@ -396,6 +385,24 @@ namespace RI.Framework.Services
 			lock (ServiceLocator.GlobalSyncRoot)
 			{
 				return ServiceLocator.LookupServices(name, null);
+			}
+		}
+
+		/// <summary>
+		///     Unbinds the service locator from a specified composition container which is then no longer used for service lookup.
+		/// </summary>
+		/// <param name="compositionContainer"> The composition container to unbind from. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="compositionContainer" /> is null. </exception>
+		public static void UnbindFromCompositionContainer (CompositionContainer compositionContainer)
+		{
+			if (compositionContainer == null)
+			{
+				throw new ArgumentNullException(nameof(compositionContainer));
+			}
+
+			lock (ServiceLocator.GlobalSyncRoot)
+			{
+				ServiceLocator.CompositionContainerBindings.Remove(compositionContainer);
 			}
 		}
 

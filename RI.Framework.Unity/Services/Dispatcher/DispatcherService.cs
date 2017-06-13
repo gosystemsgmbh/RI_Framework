@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 
 using RI.Framework.Composition.Model;
@@ -1070,7 +1071,9 @@ namespace RI.Framework.Services.Dispatcher
 		{
 			#region Constants
 
+			[SuppressMessage("ReSharper", "StaticMemberInGenericType")]
 			private static object GlobalSyncRoot = new object();
+
 			private static List<Action<T>> Receivers;
 			private static Action<T>[] ReceiversSafe;
 			public static readonly Action<object> Invoker = DispatcherSlots<T>.Invoke;

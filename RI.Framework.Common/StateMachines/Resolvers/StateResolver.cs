@@ -2,6 +2,9 @@
 
 using RI.Framework.Utilities.ObjectModel;
 
+
+
+
 namespace RI.Framework.StateMachines.Resolvers
 {
 	/// <summary>
@@ -9,7 +12,7 @@ namespace RI.Framework.StateMachines.Resolvers
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         <see cref="StateResolver" /> simply creates an instance of a requested states type, using <see cref="Activator"/>.
+	///         <see cref="StateResolver" /> simply creates an instance of a requested states type, using <see cref="Activator" />.
 	///     </para>
 	///     <para>
 	///         See <see cref="IStateResolver" /> for more details.
@@ -17,13 +20,20 @@ namespace RI.Framework.StateMachines.Resolvers
 	/// </remarks>
 	public sealed class StateResolver : IStateResolver
 	{
+		#region Instance Constructor/Destructor
+
 		/// <summary>
-		/// Creates a new instance of <see cref="StateResolver"/>.
+		///     Creates a new instance of <see cref="StateResolver" />.
 		/// </summary>
 		public StateResolver ()
 		{
 			this.SyncRoot = new object();
 		}
+
+		#endregion
+
+
+
 
 		#region Interface: IStateResolver
 

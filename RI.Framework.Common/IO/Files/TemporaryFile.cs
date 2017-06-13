@@ -22,15 +22,28 @@ namespace RI.Framework.IO.Files
 	/// </remarks>
 	public sealed class TemporaryFile : IDisposable
 	{
+		#region Static Constructor/Destructor
+
 		static TemporaryFile ()
 		{
 			TemporaryFile.GlobalSyncRoot = new object();
 		}
 
+		#endregion
 
-		#region Static Properties/Indexer
+
+
+
+		#region Static Fields
 
 		private static DirectoryPath _temporaryDirectory;
+
+		#endregion
+
+
+
+
+		#region Static Properties/Indexer
 
 		/// <summary>
 		///     Gets or sets the directory in which temporary files are to be created by default.
@@ -56,6 +69,8 @@ namespace RI.Framework.IO.Files
 				}
 			}
 		}
+
+		private static object GlobalSyncRoot { get; set; }
 
 		#endregion
 
@@ -183,8 +198,6 @@ namespace RI.Framework.IO.Files
 		private static string CreateTemporaryFileName () => Guid.NewGuid().ToString("N") + DirectoryPath.TemporaryExtension;
 
 		private static DirectoryPath GetTempDirectory () => TemporaryFile.TemporaryDirectory ?? DirectoryPath.GetTempDirectory();
-
-		private static object GlobalSyncRoot { get; set; }
 
 		#endregion
 

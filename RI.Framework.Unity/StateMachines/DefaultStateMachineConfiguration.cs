@@ -4,6 +4,9 @@ using RI.Framework.Services.Dispatcher;
 using RI.Framework.StateMachines.Dispatchers;
 using RI.Framework.StateMachines.Resolvers;
 
+
+
+
 namespace RI.Framework.StateMachines
 {
 	/// <summary>
@@ -11,7 +14,7 @@ namespace RI.Framework.StateMachines
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         By default, <see cref="DefaultStateMachineConfiguration" /> uses a <see cref="DispatcherServiceStateDispatcher" /> and <see cref="CompositionContainerStateResolver"/> for which it gets the required instances of <see cref="IDispatcherService"/> and <see cref="CompositionContainer"/> through <see cref="ServiceLocator"/>.
+	///         By default, <see cref="DefaultStateMachineConfiguration" /> uses a <see cref="DispatcherServiceStateDispatcher" /> and <see cref="CompositionContainerStateResolver" /> for which it gets the required instances of <see cref="IDispatcherService" /> and <see cref="CompositionContainer" /> through <see cref="ServiceLocator" />.
 	///     </para>
 	///     <para>
 	///         See <see cref="StateMachineConfiguration" /> for more details.
@@ -35,6 +38,11 @@ namespace RI.Framework.StateMachines
 
 		#endregion
 
+
+
+
+		#region Overrides
+
 		/// <inheritdoc />
 		public override StateMachineConfiguration Clone ()
 		{
@@ -46,5 +54,7 @@ namespace RI.Framework.StateMachines
 			clone.LoggingEnabled = this.LoggingEnabled;
 			return clone;
 		}
+
+		#endregion
 	}
 }

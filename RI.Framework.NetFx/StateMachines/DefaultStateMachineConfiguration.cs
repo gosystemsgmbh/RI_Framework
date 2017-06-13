@@ -11,7 +11,7 @@ namespace RI.Framework.StateMachines
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         By default, <see cref="DefaultStateMachineConfiguration" /> uses a <see cref="StateDispatcher" /> and <see cref="StateResolver"/>.
+	///         By default, <see cref="DefaultStateMachineConfiguration" /> uses a <see cref="StateDispatcher" /> and <see cref="StateResolver" />.
 	///     </para>
 	///     <para>
 	///         See <see cref="StateMachineConfiguration" /> for more details.
@@ -19,17 +19,10 @@ namespace RI.Framework.StateMachines
 	/// </remarks>
 	public sealed class DefaultStateMachineConfiguration : StateMachineConfiguration
 	{
-		#region Instance Constructor/Destructor
-
-		/// <summary>
-		///     Creates a new instance of <see cref="DefaultStateMachineConfiguration" />.
-		/// </summary>
-		public DefaultStateMachineConfiguration ()
-		{
-		}
+		#region Overrides
 
 		/// <inheritdoc />
-		public override StateMachineConfiguration Clone()
+		public override StateMachineConfiguration Clone ()
 		{
 			DefaultStateMachineConfiguration clone = new DefaultStateMachineConfiguration();
 			clone.Dispatcher = this.Dispatcher;

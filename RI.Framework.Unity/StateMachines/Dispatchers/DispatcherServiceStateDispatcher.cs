@@ -1,6 +1,5 @@
 ﻿using System;
 
-using RI.Framework.Services;
 using RI.Framework.Services.Dispatcher;
 using RI.Framework.Utilities.ObjectModel;
 
@@ -10,7 +9,7 @@ using RI.Framework.Utilities.ObjectModel;
 namespace RI.Framework.StateMachines.Dispatchers
 {
 	/// <summary>
-	///     Implements a default state machine operation dispatcher which uses <see cref="RI.Framework.Services.Dispatcher.IDispatcherService"/>.
+	///     Implements a default state machine operation dispatcher which uses <see cref="RI.Framework.Services.Dispatcher.IDispatcherService" />.
 	/// </summary>
 	/// <remarks>
 	///     <para>
@@ -56,18 +55,18 @@ namespace RI.Framework.StateMachines.Dispatchers
 		/// </value>
 		public IDispatcherService DispatcherService { get; private set; }
 
-		/// <inheritdoc />
-		public object SyncRoot { get; private set; }
-
-		/// <inheritdoc />
-		bool ISynchronizable.IsSynchronized => true;
-
 		#endregion
 
 
 
 
 		#region Interface: IStateDispatcher
+
+		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		public object SyncRoot { get; private set; }
 
 		/// <inheritdoc />
 		public void DispatchSignal (StateMachineSignalDelegate signalDelegate, StateSignalInfo signalInfo)

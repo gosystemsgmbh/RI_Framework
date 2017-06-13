@@ -1,6 +1,5 @@
 ﻿using System;
 
-using RI.Framework.Composition.Model;
 using RI.Framework.Utilities.Windows;
 
 
