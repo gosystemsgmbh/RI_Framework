@@ -80,6 +80,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Bootstrapper.cs" />
     <Compile Include="Services\BootstrapperState.cs" />
+    <Compile Include="Services\HostContext.cs" />
     <Compile Include="Services\IBootstrapper.cs" />
     <Compile Include="Services\IBootstrapperOperations.cs" />
     <Compile Include="Services\Logging\LogWriter.cs" />
@@ -135,6 +136,8 @@
     <Compile Include="Services\Settings\SettingService.cs" />
     <Compile Include="Services\Settings\Storages\_NamespaceDoc.cs" />
     <Compile Include="Services\Settings\_NamespaceDoc.cs" />
+    <Compile Include="Services\ShutdownInfo.cs" />
+    <Compile Include="Services\ShutdownMode.cs" />
     <Compile Include="StateMachines\AsyncStateMachine.cs" />
     <Compile Include="StateMachines\DefaultStateMachineConfiguration.cs" />
     <Compile Include="StateMachines\Dispatchers\ThreadDispatcherStateDispatcher.cs" />

@@ -42,7 +42,7 @@ namespace RI.Framework.Services
 				this.Application.DispatcherUnhandledException += (s, a) => this.StartExceptionHandling(a.Exception);
 			}
 
-			this.Application.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+			this.Application.ShutdownMode = System.Windows.ShutdownMode.OnExplicitShutdown;
 
 			WpfApplication wpfApplication = this.Application as WpfApplication;
 			if (wpfApplication != null)

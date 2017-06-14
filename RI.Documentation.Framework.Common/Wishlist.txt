@@ -226,9 +226,8 @@ Services
  - (WPF) WpfApplication: Handle power events using SystemEvents.PowerModeChanged
  - (WPF) WpfApplication: Handle user switching using SystemEvents.SessionSwitch
  
+ # (Common) Logging: EventLogWriter
  # (Common) Logging: Pluggable logging
- # (Common) Logging: FileLogWriter
- # (Common) Logging: ConsoleLogWriter
  # (SQLite) Logging: LogToDbConverter
 
  # (.NET) Settings: SettingLocator

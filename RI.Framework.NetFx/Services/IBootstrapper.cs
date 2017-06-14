@@ -220,6 +220,22 @@ namespace RI.Framework.Services
 		/// </value>
 		Guid UserId { get; }
 
+		/// <summary>
+		/// Gets the shutdown information.
+		/// </summary>
+		/// <value>
+		/// The shutdown information or null if no shutdown is in progress.
+		/// </value>
+		ShutdownInfo ShutdownInfo { get; }
+
+		/// <summary>
+		/// Gets the hosting environment context.
+		/// </summary>
+		/// <value>
+		/// The hosting environment context.
+		/// </value>
+		HostContext HostContext { get; }
+
 
 
 
@@ -228,27 +244,32 @@ namespace RI.Framework.Services
 		/// <summary>
 		///     Starts the bootstrapping and runs the application.
 		/// </summary>
+		/// <param name="hostContext">The hosting environment context. Can be null</param>
 		/// <returns>
-		///     The exit code of the application.
+		///     The shutdown information of the application.
 		/// </returns>
 		/// <remarks>
 		///     <note type="implement">
 		///         <see cref="Run" /> must only be called once.
 		///     </note>
+		///     <note type="implement">
+		///         <see cref="Run" /> must not return as long as the application is running (until <see cref="Shutdown" /> is called).
+		///     </note>
 		/// </remarks>
 		/// <exception cref="InvalidOperationException"> <see cref="Run" /> was called repeatedly. </exception>
-		void Run ();
+		ShutdownInfo Run (HostContext hostContext);
 
 		/// <summary>
 		///     Initiates the shutdown of the application.
 		/// </summary>
+		/// <param name="shutdownInfo">The shutdown information. Can be null to use a default instance of <see cref="ShutdownInfo"/>.</param>
 		/// <remarks>
 		///     <note type="implement">
 		///         It must be possible to call <see cref="Shutdown" /> multiple times.
 		///     </note>
 		/// </remarks>
 		/// <exception cref="InvalidOperationException"> <see cref="Run" /> was not called before. </exception>
-		void Shutdown ();
+		void Shutdown (ShutdownInfo shutdownInfo);
 
 		/// <summary>
 		///     Hides the splash screen.

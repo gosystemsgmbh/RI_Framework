@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.IO;
 using System.Text;
 
@@ -128,7 +127,7 @@ namespace RI.Framework.Services.Logging.Writers
 			this.Encoding = encoding ?? DirectoryLogWriter.DefaultEncoding;
 			this.InitialTimestamp = timestamp;
 
-			this.CurrentLengths = null;
+			this.Formatter = null;
 			this.CurrentTimestamp = timestamp;
 			this.CurrentDirectory = null;
 			this.CurrentFile = null;
@@ -281,11 +280,11 @@ namespace RI.Framework.Services.Logging.Writers
 		/// </value>
 		public bool SeparateDays { get; private set; }
 
-		private int[] CurrentLengths { get; set; }
-
 		private FileStream CurrentStream { get; set; }
 
 		private StreamWriter CurrentWriter { get; set; }
+
+		private LogFileFormatter Formatter { get; set; }
 
 		private object SyncRoot { get; set; }
 
@@ -375,7 +374,9 @@ namespace RI.Framework.Services.Logging.Writers
 
 			this.Dispose(true);
 
-			this.CurrentLengths = new int[] {0, 0, 0, 0, 0, 0,};
+			this.Formatter = this.Formatter ?? new LogFileFormatter();
+			this.Formatter.Reset();
+
 			this.CurrentTimestamp = isSeparation ? now.Date : this.InitialTimestamp;
 			this.CurrentDirectory = this.CommonDirectory.AppendDirectory(this.CurrentTimestamp.ToSortableString('-'));
 			this.CurrentFile = this.CurrentDirectory.AppendFile(this.FileName);
@@ -507,42 +508,7 @@ namespace RI.Framework.Services.Logging.Writers
 					{
 						this.InitializeCurrent(false);
 
-						message = message ?? string.Empty;
-						int newLineIndex = message.IndexOf('\n');
-						string firstLine = newLineIndex == -1 ? message.Trim() : message.Substring(0, newLineIndex).Trim();
-						string[] subsequentLines = newLineIndex == -1 ? null : message.Substring(newLineIndex + 1).Trim().SplitLines(StringSplitOptions.None);
-
-						string[] headers = new string[6];
-
-						headers[0] = "#".PadRight(this.CurrentLengths[0], ' ');
-						headers[1] = (" [" + timestamp.ToSortableString('-') + "]").PadRight(this.CurrentLengths[1], ' ');
-						headers[2] = (" [" + threadId.ToString("D", CultureInfo.InvariantCulture) + "]").PadRight(this.CurrentLengths[2], ' ');
-						headers[3] = (" [" + severity + "]").PadRight(this.CurrentLengths[3], ' ');
-						headers[4] = (" [" + (source ?? "null") + "]").PadRight(this.CurrentLengths[4], ' ');
-						headers[5] = (" ").PadRight(this.CurrentLengths[5], ' ');
-
-						int headerLength = 0;
-
-						for (int i1 = 0; i1 < headers.Length; i1++)
-						{
-							this.CurrentWriter.Write(headers[i1]);
-							this.CurrentLengths[i1] = Math.Max(headers[i1].Length, this.CurrentLengths[i1]);
-							headerLength += this.CurrentLengths[i1];
-						}
-
-						this.CurrentWriter.WriteLine(firstLine);
-
-						if (subsequentLines != null)
-						{
-							foreach (string subsequentLine in subsequentLines)
-							{
-								if (!subsequentLine.IsEmptyOrWhitespace())
-								{
-									this.CurrentWriter.Write(">".PadRight(headerLength, ' '));
-									this.CurrentWriter.WriteLine(subsequentLine);
-								}
-							}
-						}
+						this.Formatter.Write(this.CurrentWriter, timestamp, threadId, severity, source, message);
 
 						this.CurrentWriter.Flush();
 #if PLATFORM_NETFX

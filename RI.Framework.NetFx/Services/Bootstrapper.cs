@@ -274,7 +274,9 @@ namespace RI.Framework.Services
 		protected Bootstrapper ()
 		{
 			this.State = BootstrapperState.Uninitialized;
+			this.HostContext = null;
 			this.ShutdownInitiated = false;
+			this.ShutdownInfo = null;
 
 			this.Container = null;
 			this.Application = null;
@@ -483,6 +485,10 @@ namespace RI.Framework.Services
 		protected virtual void BeginShutdown ()
 		{
 			this.LogSeperator("BEGIN SHUTDOWN");
+
+			this.Log(LogLevel.Debug, "Shutdown mode: {0}", this.ShutdownInfo.Mode);
+			this.Log(LogLevel.Debug, "Exit code:     {0}", this.ShutdownInfo.ExitCode);
+			this.Log(LogLevel.Debug, "Script file:   {0}", this.ShutdownInfo.ScriptFile);
 
 			this.Log(LogLevel.Debug, "Dispatching stop operations");
 			this.DispatchStopOperations(new Action(() =>
@@ -1150,13 +1156,19 @@ namespace RI.Framework.Services
 		public Guid UserId { get; private set; }
 
 		/// <inheritdoc />
+		public ShutdownInfo ShutdownInfo { get; private set; }
+
+		/// <inheritdoc />
+		public HostContext HostContext { get; private set; }
+
+		/// <inheritdoc />
 		public virtual void HideSplashScreen ()
 		{
 		}
 
 		/// <inheritdoc />
 		[SuppressMessage("ReSharper", "EmptyGeneralCatchClause")]
-		public void Run ()
+		public ShutdownInfo Run (HostContext hostContext)
 		{
 			if (this.State != BootstrapperState.Uninitialized)
 			{
@@ -1167,6 +1179,8 @@ namespace RI.Framework.Services
 			{
 				this.Log(LogLevel.Debug, "State: Bootstrapping");
 				this.State = BootstrapperState.Bootstrapping;
+
+				this.HostContext = hostContext;
 
 				this.DebuggerAttached = this.DetermineDebuggerAttached();
 				if (!this.DebuggerAttached)
@@ -1259,6 +1273,8 @@ namespace RI.Framework.Services
 
 				this.Log(LogLevel.Debug, "State: Shut down");
 				this.State = BootstrapperState.ShutDown;
+
+				return this.ShutdownInfo;
 			}
 			finally
 			{
@@ -1281,7 +1297,7 @@ namespace RI.Framework.Services
 		}
 
 		/// <inheritdoc />
-		public void Shutdown ()
+		public void Shutdown (ShutdownInfo shutdownInfo)
 		{
 			if (this.State != BootstrapperState.Running)
 			{
@@ -1294,6 +1310,8 @@ namespace RI.Framework.Services
 			}
 
 			this.ShutdownInitiated = true;
+
+			this.ShutdownInfo = shutdownInfo ?? new ShutdownInfo();
 
 			this.Log(LogLevel.Debug, "Beginning shutdown");
 			this.BeginShutdown();
