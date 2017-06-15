@@ -26,7 +26,7 @@ namespace RI.Test.Framework.Services.Logging
 
 			bool isUnix = path.Type == PathType.Unix;
 
-			DirectoryLogWriter test = new DirectoryLogWriter(path, "Test.txt", Encoding.UTF8, new DateTime(1, 2, 3, 4, 5, 6, 7));
+			DirectoryLogWriter test = new DirectoryLogWriter(path, false, "Test.txt", Encoding.UTF8, new DateTime(1, 2, 3, 4, 5, 6, 7));
 
 			if (test.CommonDirectory != path)
 			{
@@ -66,7 +66,7 @@ namespace RI.Test.Framework.Services.Logging
 
 			DateTime now = DateTime.Now;
 
-			test = new DirectoryLogWriter(path, "Test.log", Encoding.UTF32, now);
+			test = new DirectoryLogWriter(path, false, "Test.log", Encoding.UTF32, now);
 
 			if (test.CommonDirectory != path)
 			{

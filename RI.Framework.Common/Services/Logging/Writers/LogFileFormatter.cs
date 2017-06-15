@@ -4,13 +4,50 @@ using System.IO;
 
 using RI.Framework.Utilities;
 
+
+
+
 namespace RI.Framework.Services.Logging.Writers
 {
 	internal sealed class LogFileFormatter
 	{
+		#region Constants
+
+		public const string FirstLinePrefix = "#";
+
+		public const string SubsequentLinePrefix = ">";
+
+		#endregion
+
+
+
+
+		#region Instance Constructor/Destructor
+
 		public LogFileFormatter ()
 		{
 			this.Reset();
+		}
+
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
+
+		private int[] CurrentLengths { get; set; }
+
+		#endregion
+
+
+
+
+		#region Instance Methods
+
+		public void Reset ()
+		{
+			this.CurrentLengths = new int[] {0, 0, 0, 0, 0, 0,};
 		}
 
 		public void Write (TextWriter writer, DateTime timestamp, int threadId, LogLevel severity, string source, string message)
@@ -27,7 +64,7 @@ namespace RI.Framework.Services.Logging.Writers
 
 			string[] headers = new string[6];
 
-			headers[0] = "#".PadRight(this.CurrentLengths[0], ' ');
+			headers[0] = LogFileFormatter.FirstLinePrefix.PadRight(this.CurrentLengths[0], ' ');
 			headers[1] = (" [" + timestamp.ToSortableString('-') + "]").PadRight(this.CurrentLengths[1], ' ');
 			headers[2] = (" [" + threadId.ToString("D", CultureInfo.InvariantCulture) + "]").PadRight(this.CurrentLengths[2], ' ');
 			headers[3] = (" [" + severity + "]").PadRight(this.CurrentLengths[3], ' ');
@@ -51,18 +88,13 @@ namespace RI.Framework.Services.Logging.Writers
 				{
 					if (!subsequentLine.IsEmptyOrWhitespace())
 					{
-						writer.Write(">".PadRight(headerLength, ' '));
+						writer.Write(LogFileFormatter.SubsequentLinePrefix.PadRight(headerLength, ' '));
 						writer.WriteLine(subsequentLine);
 					}
 				}
 			}
 		}
 
-		public void Reset ()
-		{
-			this.CurrentLengths = new int[] { 0, 0, 0, 0, 0, 0, };
-		}
-
-		private int[] CurrentLengths { get; set; }
+		#endregion
 	}
 }

@@ -14,7 +14,7 @@ namespace RI.Framework.Data.SQLite.Functions
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         <see cref="StringExtensions" />.<see cref="StringExtensions.Contains(string,string,StringComparison)" /> is used to match the input and the pattern.
+	///         <see cref="StringExtensions" />.<see cref="StringExtensions.Contains(string,string,StringComparison)" /> with <see cref="StringComparison.OrdinalIgnoreCase" /> is used to match the input and the pattern.
 	///     </para>
 	///     <para>
 	///         The SQL name of the function is <c> match </c>.

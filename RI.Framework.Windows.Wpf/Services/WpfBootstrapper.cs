@@ -30,7 +30,7 @@ namespace RI.Framework.Services
 		/// </summary>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation adds the application object (<see cref="Application" />) to the used composition container as an export using a <see cref="InstanceCatalog" />, configures exception handling of the application objects dispatcher to use <see cref="Bootstrapper.StartExceptionHandling" />, sets the WPF application objects <see cref="System.Windows.Application.ShutdownMode" /> property to <see cref="ShutdownMode.OnExplicitShutdown" />, and sets the WPF application objects <see cref="WpfApplication.Bootstrapper" /> property to this boottsrapper instance (if the application object derives from <see cref="WpfApplication" />).
+		///         The default implementation adds the application object (<see cref="Application" />) to the used composition container as an export using a <see cref="InstanceCatalog" />, configures exception handling of the application objects dispatcher to use <see cref="Bootstrapper.StartExceptionHandling" />, sets the WPF application objects <see cref="System.Windows.Application.ShutdownMode" /> property to <see cref="System.Windows.ShutdownMode.OnExplicitShutdown" />, and sets the WPF application objects <see cref="WpfApplication.Bootstrapper" /> property to this boottsrapper instance (if the application object derives from <see cref="WpfApplication" />).
 		///     </note>
 		/// </remarks>
 		protected override void ConfigureApplication ()

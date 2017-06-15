@@ -1,7 +1,7 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.Windows;
 
 using RI.Framework.Services;
-using RI.Framework.Services.Logging;
 using RI.Framework.Services.Regions;
 
 
@@ -78,7 +78,7 @@ namespace RI.Framework.Utilities.Wpf.Markup
 			IRegionService regionService = ServiceLocator.GetInstance<IRegionService>();
 			if (regionService == null)
 			{
-				LogLocator.Log(LogLevel.Warning, typeof(RegionBinder).Name, "No region service available while trying to assign region: Object={0}, OldRegion={1}, NewRegion={2}", obj?.GetType().Name ?? "[null]", oldRegion ?? "[null]", newRegion ?? "[null]");
+				Trace.TraceWarning("No region service available while trying to assign region: Object={0}, OldRegion={1}, NewRegion={2}", obj?.GetType().Name ?? "[null]", oldRegion ?? "[null]", newRegion ?? "[null]");
 				return;
 			}
 

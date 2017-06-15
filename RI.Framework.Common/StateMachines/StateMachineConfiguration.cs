@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 using RI.Framework.Services.Logging;
 using RI.Framework.StateMachines.Caches;
@@ -29,7 +30,7 @@ namespace RI.Framework.StateMachines
 		/// <summary>
 		///     Creates a new instance of <see cref="StateMachineConfiguration" />.
 		/// </summary>
-		protected StateMachineConfiguration ()
+		internal StateMachineConfiguration ()
 		{
 			this.SyncRoot = new object();
 
@@ -273,15 +274,27 @@ namespace RI.Framework.StateMachines
 
 
 
+		#region Abstracts
+
+		internal abstract StateMachineConfiguration CloneInternal ();
+
+		#endregion
+
+
+
+
 		#region Interface: ICloneable<StateMachineConfiguration>
 
 		/// <inheritdoc />
-		public abstract StateMachineConfiguration Clone ();
+		StateMachineConfiguration ICloneable<StateMachineConfiguration>.Clone ()
+		{
+			return this.CloneInternal();
+		}
 
 		/// <inheritdoc />
 		object ICloneable.Clone ()
 		{
-			return this.Clone();
+			return this.CloneInternal();
 		}
 
 		#endregion
@@ -296,6 +309,66 @@ namespace RI.Framework.StateMachines
 
 		/// <inheritdoc />
 		public object SyncRoot { get; private set; }
+
+		#endregion
+	}
+
+	/// <summary>
+	///     Defines the configuration of a state machine.
+	/// </summary>
+	/// <remarks>
+	///     <para>
+	///         See <see cref="StateMachine" /> for more details about state machines.
+	///     </para>
+	///     <para>
+	///         See the respective properties for their default values.
+	///     </para>
+	/// </remarks>
+	public abstract class StateMachineConfiguration <T> : StateMachineConfiguration, ICloneable<T>
+		where T : StateMachineConfiguration<T>, new()
+	{
+		#region Virtuals
+
+		/// <summary>
+		///     Called when the current instance is to be cloned.
+		/// </summary>
+		/// <param name="clone"> The clone being created. </param>
+		[SuppressMessage("ReSharper", "SuspiciousTypeConversion.Global")]
+		protected virtual void Clone (T clone)
+		{
+			clone.Dispatcher = (this.Dispatcher as ICloneable<IStateDispatcher>)?.Clone() ?? this.Dispatcher;
+			clone.Resolver = (this.Resolver as ICloneable<IStateResolver>)?.Clone() ?? this.Resolver;
+			clone.Cache = (this.Cache as ICloneable<IStateCache>)?.Clone() ?? this.Cache;
+			clone.EnableAutomaticCaching = this.EnableAutomaticCaching;
+			clone.LoggingEnabled = this.LoggingEnabled;
+		}
+
+		#endregion
+
+
+
+
+		#region Overrides
+
+		internal sealed override StateMachineConfiguration CloneInternal ()
+		{
+			return this.Clone();
+		}
+
+		#endregion
+
+
+
+
+		#region Interface: ICloneable<T>
+
+		/// <inheritdoc />
+		public T Clone ()
+		{
+			T clone = new T();
+			this.Clone(clone);
+			return clone;
+		}
 
 		#endregion
 	}

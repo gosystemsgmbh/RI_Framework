@@ -6,10 +6,13 @@ using RI.Framework.Composition.Model;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.ObjectModel;
 
+
+
+
 namespace RI.Framework.Services.Logging.Writers
 {
 	/// <summary>
-	/// Implements a log writer which writes to the process console.
+	///     Implements a log writer which writes to the process console.
 	/// </summary>
 	/// <remarks>
 	///     <para>
@@ -19,17 +22,40 @@ namespace RI.Framework.Services.Logging.Writers
 	[Export]
 	public sealed class ConsoleLogWriter : ILogWriter
 	{
+		#region Instance Constructor/Destructor
+
 		/// <summary>
-		/// Creates a new instance of <see cref="ConsoleLogWriter"/>.
+		///     Creates a new instance of <see cref="ConsoleLogWriter" />.
 		/// </summary>
 		public ConsoleLogWriter ()
 		{
 			this.SyncRoot = new object();
 		}
 
-		private object SyncRoot { get; set; }
+		#endregion
+
+
+
+
+		#region Instance Fields
 
 		private ILogFilter _filter;
+
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
+
+		private object SyncRoot { get; set; }
+
+		#endregion
+
+
+
+
+		#region Interface: ILogWriter
 
 		/// <inheritdoc />
 		public ILogFilter Filter
@@ -49,6 +75,12 @@ namespace RI.Framework.Services.Logging.Writers
 				}
 			}
 		}
+
+		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		object ISynchronizable.SyncRoot => this.SyncRoot;
 
 		/// <inheritdoc />
 		public void Cleanup (DateTime retentionDate)
@@ -87,10 +119,6 @@ namespace RI.Framework.Services.Logging.Writers
 			}
 		}
 
-		/// <inheritdoc />
-		bool ISynchronizable.IsSynchronized => true;
-
-		/// <inheritdoc />
-		object ISynchronizable.SyncRoot => this.SyncRoot;
+		#endregion
 	}
 }

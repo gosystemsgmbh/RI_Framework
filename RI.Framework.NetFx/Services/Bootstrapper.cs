@@ -1123,6 +1123,9 @@ namespace RI.Framework.Services
 		public Guid DomainId { get; private set; }
 
 		/// <inheritdoc />
+		public HostContext HostContext { get; private set; }
+
+		/// <inheritdoc />
 		public string InstanceId { get; private set; }
 
 		/// <inheritdoc />
@@ -1144,6 +1147,9 @@ namespace RI.Framework.Services
 		public DateTime SessionTimestamp { get; private set; }
 
 		/// <inheritdoc />
+		public ShutdownInfo ShutdownInfo { get; private set; }
+
+		/// <inheritdoc />
 		public CultureInfo StartupCulture { get; private set; }
 
 		/// <inheritdoc />
@@ -1154,12 +1160,6 @@ namespace RI.Framework.Services
 
 		/// <inheritdoc />
 		public Guid UserId { get; private set; }
-
-		/// <inheritdoc />
-		public ShutdownInfo ShutdownInfo { get; private set; }
-
-		/// <inheritdoc />
-		public HostContext HostContext { get; private set; }
 
 		/// <inheritdoc />
 		public virtual void HideSplashScreen ()

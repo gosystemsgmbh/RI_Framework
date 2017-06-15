@@ -2,7 +2,6 @@
 using System.Data.Common;
 
 using RI.Framework.Data.Repository;
-using RI.Framework.Utilities.Exceptions;
 
 
 
@@ -25,38 +24,29 @@ namespace RI.Framework.Data.Database
 	///         However, if the database is in the state <see cref="DatabaseState.New" /> or <see cref="DatabaseState.Old" />, the database can be made ready by upgrading to the latest known/supported version using <see cref="UpgradeDatabase" />.
 	///     </para>
 	///     <para>
+	///         Database upgrades are handled using <see cref="DatabaseMigrationStep" />. See <see cref="DatabaseMigrationStep" /> for more details.
+	///     </para>
+	///     <para>
 	///         If the database supports connection tracking (see <see cref="SupportsConnectionTracking" />), <see cref="UnloadDatabase" /> or <see cref="CloseConnections" /> will close all currently non-closed connections which were created using <see cref="CreateConnection" />.
 	///     </para>
 	/// </remarks>
 	public interface IDatabaseManager : IDisposable
 	{
 		/// <summary>
-		///     Gets or sets the connection string.
+		///     Gets the database configuration.
 		/// </summary>
 		/// <value>
-		///     The connection string.
+		///     The database configuration.
 		/// </value>
-		/// <remarks>
-		///     <note type="note">
-		///         Changes to the connection string only takes effect when calling <see cref="InitializeDatabase" />.
-		///     </note>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="value" /> is null. </exception>
-		/// <exception cref="EmptyStringArgumentException"> <paramref name="value" /> is an empty string. </exception>
-		string ConnectionString { get; set; }
+		DatabaseConfiguration Configuration { get; }
 
 		/// <summary>
-		///     Gets the connection string builder.
+		///     Gets the current state of the database.
 		/// </summary>
 		/// <value>
-		///     The connection string builder.
+		///     The current state of the database.
 		/// </value>
-		/// <remarks>
-		///     <note type="note">
-		///         Changes to the connection string only takes effect when calling <see cref="InitializeDatabase" />.
-		///     </note>
-		/// </remarks>
-		DbConnectionStringBuilder ConnectionStringBuilder { get; }
+		DatabaseState CurrentState { get; }
 
 		/// <summary>
 		///     Gets the current version of the database.
@@ -72,30 +62,12 @@ namespace RI.Framework.Data.Database
 		int CurrentVersion { get; }
 
 		/// <summary>
-		///     Gets whether the database was new after initialization.
+		///     Gets the initial state of the database after initialization.
 		/// </summary>
 		/// <value>
-		///     true if the database was new after initialization.
+		///     The initial state of the database after initialization.
 		/// </value>
-		/// <remarks>
-		///     <note type="note">
-		///         This property is only set during <see cref="InitializeDatabase" />.
-		///     </note>
-		/// </remarks>
-		bool InitialNew { get; }
-
-		/// <summary>
-		///     Gets whether the database was old after initialization.
-		/// </summary>
-		/// <value>
-		///     true if the database was old after initialization.
-		/// </value>
-		/// <remarks>
-		///     <note type="note">
-		///         This property is only set during <see cref="InitializeDatabase" />.
-		///     </note>
-		/// </remarks>
-		bool InitialOld { get; }
+		DatabaseState InitialState { get; }
 
 		/// <summary>
 		///     Gets the initial version of the database after initialization.
@@ -114,7 +86,7 @@ namespace RI.Framework.Data.Database
 		///     Gets the latest known/supported version of the database which can be applied through an upgrade.
 		/// </summary>
 		/// <value>
-		///     The latest known/supported version of the database which can be applied through an upgrade or 0 if the database state is <see cref="DatabaseState.Uninitialized" />
+		///     The latest known/supported version of the database which can be applied through an upgrade or 0 if the database state is <see cref="DatabaseState.Uninitialized" />.
 		/// </value>
 		/// <remarks>
 		///     <note type="note">
@@ -127,7 +99,7 @@ namespace RI.Framework.Data.Database
 		///     Gets the earliest known/supported version of the database which can be upgraded from.
 		/// </summary>
 		/// <value>
-		///     The earliest known/supported version of the database which can be upgraded from or 0 if the database state is <see cref="DatabaseState.Uninitialized" />
+		///     The earliest known/supported version of the database which can be upgraded from or 0 if the database state is <see cref="DatabaseState.Uninitialized" />.
 		/// </value>
 		/// <remarks>
 		///     <note type="note">
@@ -135,14 +107,6 @@ namespace RI.Framework.Data.Database
 		///     </note>
 		/// </remarks>
 		int MinVersion { get; }
-
-		/// <summary>
-		///     Gets the current state of the database.
-		/// </summary>
-		/// <value>
-		///     The current state of the database.
-		/// </value>
-		DatabaseState State { get; }
 
 		/// <summary>
 		///     Gets whether the database supports connection tracking.
@@ -166,26 +130,6 @@ namespace RI.Framework.Data.Database
 		event EventHandler<DatabaseConnectionCreatedEventArgs> ConnectionCreated;
 
 		/// <summary>
-		///     Raised when a database script is about being executed.
-		/// </summary>
-		/// <remarks>
-		///     <note note="note">
-		///         This event is only raised for scripts executed by the database manager itself (<see cref="InitializeDatabase" />, <see cref="UpgradeDatabase" />, <see cref="CleanupDatabase" />) but not for scripts or commands executed by connections created through <see cref="CreateConnection" />.
-		///     </note>
-		/// </remarks>
-		event EventHandler<DatabaseScriptEventArgs> ExecuteScript;
-
-		/// <summary>
-		///     Raised when a database script is prepared for execution.
-		/// </summary>
-		/// <remarks>
-		///     <note note="note">
-		///         This event is only raised for scripts executed by the database manager itself (<see cref="InitializeDatabase" />, <see cref="UpgradeDatabase" />, <see cref="CleanupDatabase" />) but not for scripts or commands executed by connections created through <see cref="CreateConnection" />.
-		///     </note>
-		/// </remarks>
-		event EventHandler<DatabaseScriptEventArgs> PrepareScript;
-
-		/// <summary>
 		///     Raised when the current state of the database has changed.
 		/// </summary>
 		event EventHandler<DatabaseStateChangedEventArgs> StateChanged;
@@ -195,7 +139,7 @@ namespace RI.Framework.Data.Database
 		/// </summary>
 		/// <remarks>
 		///     <para>
-		///         <see cref="State" /> is set to <see cref="DatabaseState.Ready" /> or <see cref="DatabaseState.DamagedOrInvalid" />.
+		///         <see cref="CurrentState" /> is set to <see cref="DatabaseState.Ready" /> or <see cref="DatabaseState.DamagedOrInvalid" />.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="InvalidOperationException"> The database is not in the <see cref="DatabaseState.Ready" /> state. </exception>
@@ -222,6 +166,7 @@ namespace RI.Framework.Data.Database
 		///     </para>
 		/// </remarks>
 		/// <exception cref="InvalidOperationException"> The database is not in the <see cref="DatabaseState.Ready" /> state. </exception>
+		/// <exception cref="NotSupportedException"> <paramref name="readOnly" /> is true and this database does not support read-only connections (see <see cref="SupportsReadOnlyConnections" />). </exception>
 		DbConnection CreateConnection (bool readOnly);
 
 		/// <summary>
@@ -229,14 +174,14 @@ namespace RI.Framework.Data.Database
 		/// </summary>
 		/// <remarks>
 		///     <para>
-		///         <see cref="State" /> is set to <see cref="DatabaseState.Ready" />, <see cref="DatabaseState.New" />, <see cref="DatabaseState.Old" />, <see cref="DatabaseState.TooNew" />, <see cref="DatabaseState.TooOld" />, or <see cref="DatabaseState.DamagedOrInvalid" />.
+		///         <see cref="CurrentState" /> is set to <see cref="DatabaseState.Ready" />, <see cref="DatabaseState.New" />, <see cref="DatabaseState.Old" />, <see cref="DatabaseState.TooNew" />, <see cref="DatabaseState.TooOld" />, or <see cref="DatabaseState.DamagedOrInvalid" />.
 		///     </para>
 		///     <para>
 		///         <see cref="InitializeDatabase" /> can be called in any state of the database.
 		///         If the database is not in the <see cref="DatabaseState.Uninitialized" /> state, the database is unloaded first.
 		///     </para>
 		/// </remarks>
-		/// <exception cref="InvalidOperationException"> The database manager has invalid configuration or an invalid connection string. </exception>
+		/// <exception cref="InvalidDatabaseConfigurationException"> The database manager has invalid configuration. </exception>
 		void InitializeDatabase ();
 
 		/// <summary>
@@ -244,7 +189,7 @@ namespace RI.Framework.Data.Database
 		/// </summary>
 		/// <remarks>
 		///     <para>
-		///         <see cref="State" /> is set to <see cref="DatabaseState.Uninitialized" />.
+		///         <see cref="CurrentState" /> is set to <see cref="DatabaseState.Uninitialized" />.
 		///     </para>
 		///     <para>
 		///         Nothing happens if the database is already in the <see cref="DatabaseState.Uninitialized" /> state.
@@ -257,7 +202,7 @@ namespace RI.Framework.Data.Database
 		/// </summary>
 		/// <remarks>
 		///     <para>
-		///         <see cref="State" /> is set to <see cref="DatabaseState.Ready" /> or <see cref="DatabaseState.DamagedOrInvalid" />.
+		///         <see cref="CurrentState" /> is set to <see cref="DatabaseState.Ready" /> or <see cref="DatabaseState.DamagedOrInvalid" />.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="InvalidOperationException"> The database is not in the <see cref="DatabaseState.New" /> or <see cref="DatabaseState.Old" /> state. </exception>

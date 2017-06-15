@@ -125,11 +125,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\ILogWriter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\LogLevel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\LogService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\Readers\LogFileEntry.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\Readers\LogFileReader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\Readers\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\Writers\ConsoleLogWriter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\Writers\DirectoryLogWriter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\Writers\FileLogWriter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\Writers\LogFileFormatter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\Writers\LogFileReader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\Writers\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Modularization\IModule.cs" />

@@ -5,25 +5,29 @@ using System.Text;
 
 using RI.Framework.Composition.Model;
 using RI.Framework.IO.Paths;
+using RI.Framework.Services.Logging.Readers;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.ObjectModel;
+
+
+
 
 namespace RI.Framework.Services.Logging.Writers
 {
 	/// <summary>
-	/// Implements a log writer which writes to a specified text log file.
+	///     Implements a log writer which writes to a specified text log file.
 	/// </summary>
 	/// <remarks>
 	///     <para>
 	///         A maximum log file size can be specified.
-	/// If no maximum size is specified, the log file has no maximum size and will grow indefinitely.
+	///         If no maximum size is specified, the log file has no maximum size and will grow indefinitely.
 	///     </para>
-	/// <para>
-	/// If a maximum size is specified and when this maximum size is reached, the log file &quot; rolls over&quot; and begins to overwrite the existing entries without clearing the file.
-	/// </para>
-	/// <note type="note">
-	/// The maximum log file size is used as an approximate value, the log file might still exceed the size by hundreds of bytes.
-	/// </note>
+	///     <para>
+	///         If a maximum size is specified and when this maximum size is reached, the log file &quot; rolls over&quot; and begins to overwrite the existing entries without clearing the file.
+	///     </para>
+	///     <note type="note">
+	///         The maximum log file size is used as an approximate value, the log file might still exceed the size by hundreds of bytes.
+	///     </note>
 	///     <para>
 	///         See <see cref="ILogWriter" /> for more details.
 	///     </para>
@@ -31,6 +35,8 @@ namespace RI.Framework.Services.Logging.Writers
 	[Export]
 	public sealed class FileLogWriter : ILogWriter, IDisposable
 	{
+		#region Constants
+
 		/// <summary>
 		///     The default text encoding which is used to write the log files.
 		/// </summary>
@@ -40,6 +46,11 @@ namespace RI.Framework.Services.Logging.Writers
 		///     </para>
 		/// </remarks>
 		public static readonly Encoding DefaultEncoding = Encoding.UTF8;
+
+		#endregion
+
+
+
 
 		#region Instance Constructor/Destructor
 
@@ -58,7 +69,7 @@ namespace RI.Framework.Services.Logging.Writers
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="file" /> is null. </exception>
 		/// <exception cref="InvalidPathArgumentException"> <paramref name="file" /> contains wildcards. </exception>
-		public FileLogWriter(FilePath file, bool append)
+		public FileLogWriter (FilePath file, bool append)
 			: this(file, append, null, null)
 		{
 		}
@@ -68,12 +79,12 @@ namespace RI.Framework.Services.Logging.Writers
 		/// </summary>
 		/// <param name="file"> The log file. </param>
 		/// <param name="append"> Specifies whether log entries are appended to existing entries (true) or the file is cleared and overwritten (false). </param>
-		/// <param name="maxSize"> The maximum size of the log file in bytes. Can be null or zero to indicate no maximum.</param>
+		/// <param name="maxSize"> The maximum size of the log file in bytes. Can be null or zero to indicate no maximum. </param>
 		/// <param name="encoding"> The text encoding which is used to write the log file (can be null to use <see cref="DefaultEncoding" />). </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="file" /> is null. </exception>
 		/// <exception cref="InvalidPathArgumentException"> <paramref name="file" /> contains wildcards. </exception>
-		/// <exception cref="ArgumentOutOfRangeException"><paramref name="maxSize"/> is less than zero.</exception>
-		public FileLogWriter(FilePath file, bool append, long? maxSize, Encoding encoding)
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="maxSize" /> is less than zero. </exception>
+		public FileLogWriter (FilePath file, bool append, long? maxSize, Encoding encoding)
 		{
 			if (file == null)
 			{
@@ -116,20 +127,34 @@ namespace RI.Framework.Services.Logging.Writers
 		/// <summary>
 		///     Garbage collects this instance of <see cref="FileLogWriter" />.
 		/// </summary>
-		~FileLogWriter()
+		~FileLogWriter ()
 		{
 			this.Dispose(false);
 		}
 
 		#endregion
 
+
+
+
+		#region Instance Fields
+
+		private ILogFilter _filter;
+
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
+
 		/// <summary>
-		///     Gets the log file.
+		///     Gets whether log entries are appended to existing entries or the file is cleared and overwritten.
 		/// </summary>
 		/// <value>
-		///     The log file.
+		///     true if log entries are appended to existing entries, false otherwise.
 		/// </value>
-		public FilePath File { get; private set; }
+		public bool Append { get; private set; }
 
 		/// <summary>
 		///     Gets the used text encoding which is used to write log files.
@@ -140,32 +165,37 @@ namespace RI.Framework.Services.Logging.Writers
 		public Encoding Encoding { get; private set; }
 
 		/// <summary>
-		/// Gets whether log entries are appended to existing entries or the file is cleared and overwritten.
+		///     Gets the log file.
 		/// </summary>
 		/// <value>
-		/// true if log entries are appended to existing entries, false otherwise.
+		///     The log file.
 		/// </value>
-		public bool Append { get; private set; }
+		public FilePath File { get; private set; }
 
 		/// <summary>
-		/// Gets the maximum size of the log file in bytes.
+		///     Gets the maximum size of the log file in bytes.
 		/// </summary>
 		/// <value>
-		/// The maximum log file size in bytes or null if no maximum is specified.
+		///     The maximum log file size in bytes or null if no maximum is specified.
 		/// </value>
 		public long? MaxSize { get; private set; }
 
-		private FileStream Stream { get; set; }
-
-		private StreamWriter Writer { get; set; }
-
 		private LogFileFormatter Formatter { get; set; }
-
-		private object SyncRoot { get; set; }
 
 		private bool RolledOver { get; set; }
 
-		private ILogFilter _filter;
+		private FileStream Stream { get; set; }
+
+		private object SyncRoot { get; set; }
+
+		private StreamWriter Writer { get; set; }
+
+		#endregion
+
+
+
+
+		#region Instance Methods
 
 		/// <summary>
 		///     Closes this log writer and all used underlying streams.
@@ -175,7 +205,7 @@ namespace RI.Framework.Services.Logging.Writers
 		///         After the log writer is closed, all calls to <see cref="Log" /> do not have any effect but do not fail.
 		///     </para>
 		/// </remarks>
-		public void Close()
+		public void Close ()
 		{
 			this.Dispose(true);
 			GC.SuppressFinalize(this);
@@ -183,7 +213,7 @@ namespace RI.Framework.Services.Logging.Writers
 
 		[SuppressMessage("ReSharper", "UnusedParameter.Local")]
 		[SuppressMessage("ReSharper", "EmptyGeneralCatchClause")]
-		private void Dispose(bool disposing)
+		private void Dispose (bool disposing)
 		{
 			lock (this.SyncRoot)
 			{
@@ -231,7 +261,7 @@ namespace RI.Framework.Services.Logging.Writers
 			}
 		}
 
-		private void Initialize(bool construction)
+		private void Initialize (bool construction)
 		{
 			bool isRollover = (!construction) && ((this.MaxSize.HasValue && (this.Stream != null)) ? (this.Stream.Length > this.MaxSize.Value) : false);
 			bool requiresInitialize = construction || isRollover;
@@ -283,12 +313,25 @@ namespace RI.Framework.Services.Logging.Writers
 			}
 		}
 
+		#endregion
+
+
+
+
+		#region Interface: IDisposable
 
 		/// <inheritdoc />
-		void IDisposable.Dispose()
+		void IDisposable.Dispose ()
 		{
 			this.Close();
 		}
+
+		#endregion
+
+
+
+
+		#region Interface: ILogWriter
 
 		/// <inheritdoc />
 		public ILogFilter Filter
@@ -316,13 +359,13 @@ namespace RI.Framework.Services.Logging.Writers
 		object ISynchronizable.SyncRoot => this.SyncRoot;
 
 		/// <inheritdoc />
-		public void Cleanup(DateTime retentionDate)
+		public void Cleanup (DateTime retentionDate)
 		{
 		}
 
 		/// <inheritdoc />
 		[SuppressMessage("ReSharper", "EmptyGeneralCatchClause")]
-		public void Log(DateTime timestamp, int threadId, LogLevel severity, string source, string message)
+		public void Log (DateTime timestamp, int threadId, LogLevel severity, string source, string message)
 		{
 			ILogFilter filter = this.Filter;
 			if (filter != null)
@@ -375,5 +418,7 @@ namespace RI.Framework.Services.Logging.Writers
 				}
 			}
 		}
+
+		#endregion
 	}
 }

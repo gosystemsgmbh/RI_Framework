@@ -6,8 +6,8 @@ using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using RI.Framework.Composition;
+using RI.Framework.Services;
 using RI.Framework.StateMachines;
-using RI.Framework.StateMachines.Caches;
 using RI.Framework.StateMachines.Dispatchers;
 using RI.Framework.StateMachines.Resolvers;
 #if PLATFORM_UNITY
@@ -31,8 +31,7 @@ namespace RI.Test.Framework.StateMachines
 		{
 			Mock_State.TestValue = "";
 
-			StateMachineConfiguration config = new StateMachineConfiguration();
-			config.Cache = new StateCache();
+			StateMachineConfiguration config = new DefaultStateMachineConfiguration();
 			StateMachine test = new StateMachine(config);
 
 			config.EnableAutomaticCaching = false;
@@ -119,7 +118,7 @@ namespace RI.Test.Framework.StateMachines
 			}
 
 			CompositionContainer container = new CompositionContainer();
-			config.Resolver = new StateResolver(container);
+			config.Resolver = new CompositionContainerStateResolver(container);
 			config.EnableAutomaticCaching = false;
 
 			test.Transient(null);
@@ -185,12 +184,12 @@ namespace RI.Test.Framework.StateMachines
 			});
 #endif
 #if PLATFORM_UNITY
-			DispatcherServiceStateDispatcher dispatcher = new DispatcherServiceStateDispatcher();
+			DispatcherServiceStateDispatcher dispatcher = new DispatcherServiceStateDispatcher(ServiceLocator.GetInstance<IDispatcherService>());
 
 			Action<Action> cont = new Action<Action>(x => dispatcher.DispatcherService.Dispatch(DispatcherPriority.Idle, x));
 #endif
 
-			StateMachineConfiguration config = new StateMachineConfiguration();
+			StateMachineConfiguration config = new DefaultStateMachineConfiguration();
 			config.Dispatcher = dispatcher;
 			config.EnableAutomaticCaching = false;
 			StateMachine test = new StateMachine(config);
@@ -268,7 +267,7 @@ namespace RI.Test.Framework.StateMachines
 		{
 			Mock_State.TestValue = "";
 
-			StateMachineConfiguration config = new StateMachineConfiguration();
+			StateMachineConfiguration config = new DefaultStateMachineConfiguration();
 			StateMachine test = new StateMachine(config);
 
 			test.Transient<Mock_State_E>();
@@ -336,12 +335,12 @@ namespace RI.Test.Framework.StateMachines
 			});
 #endif
 #if PLATFORM_UNITY
-			DispatcherServiceStateDispatcher dispatcher = new DispatcherServiceStateDispatcher();
+			DispatcherServiceStateDispatcher dispatcher = new DispatcherServiceStateDispatcher(ServiceLocator.GetInstance<IDispatcherService>());
 
 			Action<Action> cont = new Action<Action>(x => dispatcher.DispatcherService.Dispatch(DispatcherPriority.Idle, x));
 #endif
 
-			StateMachineConfiguration config = new StateMachineConfiguration();
+			StateMachineConfiguration config = new DefaultStateMachineConfiguration();
 			config.Dispatcher = dispatcher;
 			StateMachine test = new StateMachine(config);
 
@@ -466,7 +465,7 @@ namespace RI.Test.Framework.StateMachines
 		{
 			Mock_State.TestValue = "";
 
-			StateMachineConfiguration config = new StateMachineConfiguration();
+			StateMachineConfiguration config = new DefaultStateMachineConfiguration();
 			StateMachine test = new StateMachine(config);
 
 			if (test.State != null)

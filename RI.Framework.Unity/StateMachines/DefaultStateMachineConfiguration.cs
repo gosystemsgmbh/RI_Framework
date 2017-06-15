@@ -20,7 +20,7 @@ namespace RI.Framework.StateMachines
 	///         See <see cref="StateMachineConfiguration" /> for more details.
 	///     </para>
 	/// </remarks>
-	public sealed class DefaultStateMachineConfiguration : StateMachineConfiguration
+	public sealed class DefaultStateMachineConfiguration : StateMachineConfiguration<DefaultStateMachineConfiguration>
 	{
 		#region Instance Constructor/Destructor
 
@@ -34,25 +34,6 @@ namespace RI.Framework.StateMachines
 
 			this.Dispatcher = dispatcherService == null ? null : new DispatcherServiceStateDispatcher(dispatcherService);
 			this.Resolver = compositionContainer == null ? null : new CompositionContainerStateResolver(compositionContainer);
-		}
-
-		#endregion
-
-
-
-
-		#region Overrides
-
-		/// <inheritdoc />
-		public override StateMachineConfiguration Clone ()
-		{
-			DefaultStateMachineConfiguration clone = new DefaultStateMachineConfiguration();
-			clone.Dispatcher = this.Dispatcher;
-			clone.Resolver = this.Resolver;
-			clone.Cache = this.Cache;
-			clone.EnableAutomaticCaching = this.EnableAutomaticCaching;
-			clone.LoggingEnabled = this.LoggingEnabled;
-			return clone;
 		}
 
 		#endregion
