@@ -3,7 +3,6 @@
 ## 1.1.0.0
 
 - [ ] Packages
-- [ ] Wishlist
 - [ ] Cleanup
   - [ ] Warnings
   - [ ] TODOs

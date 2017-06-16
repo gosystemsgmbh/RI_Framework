@@ -27,14 +27,15 @@ Utilities
 
  - (Windows) WindowsMessage
  - (Windows) WindowsMessageLoop
+ - (Windows) WindowsMessageLoopTimer
  - (Windows) WindowsMessageLoopSynchronizationContext
  - (Windows) WindowsMessageLoop: Priority queue
 
  - (Windows) Screen
  - (Windows) SystemKeyboard
  - (Windows) OnScreenKeyboard
- - (Windows) WindowsVersion
- - (Windows) SystemInformation
+ * (Windows) WindowsVersion
+ * (Windows) SystemInformation
 
  - (WinForms) FormExtensions
  - (WinForms) TemporaryCursor
@@ -44,9 +45,9 @@ Utilities
 Collections
 -----------
 
- - (Common) IPriorityQueue
+ + (Common) IPriorityQueue
 
- - (Common) Enumeration of items in a IWarehouse
+ + (Common) Enumeration of items in a IWarehouse
 
  - (Common) DirectLinq: Compare with IEnumerable/IEnumerable<> documentation
  - (Common) DirectLinq: Aggregate
@@ -99,6 +100,10 @@ Collections
  - (Common) ITreeNodeExtensions: Check symmetry of extensions
  - (Common) IPoolExtensions: Check symmetry of extensions
 
+ - (Common) IEnumerableExtensions: Backward enumerator
+ - (Common) IEnumerableExtensions: Forward enumerator
+ - (Common) IEnumerableExtensions: GetIndexOrDefault
+
  - (Common) IListExtensions: Backward enumerator
  - (Common) IListExtensions: Forward enumerator
  - (Common) IListExtensions: GetIndexOrDefault
@@ -117,10 +122,10 @@ Collections
  - (Common) ITreeNodeExtensions: AddChildRange
  - (Common) ITreeNodeExtensions: Path building and deflating
 
- - (Common) ReadOnlyXXX (Collection, List, Dictionary, Queue, Stack, HashSet)
- - (Common) SynchronizedXXX (Collection, List, Dictionary, Queue, Stack, HashSet)
- - (Common) WatchableXXX (Collection, List, Dictionary, Queue, Stack, HashSet)
- - (Common) ObservableXXX (Collection, List, Dictionary, Queue, Stack, HashSet)
+ - (Common) ReadOnlyXXX (Collection, List, Dictionary, Queue, Stack, HashSet, LinkedList)
+ - (Common) SynchronizedXXX (Collection, List, Dictionary, Queue, Stack, HashSet, LinkedList)
+ - (Common) WatchableXXX (Collection, List, Dictionary, Queue, Stack, HashSet, LinkedList)
+ - (Common) ObservableXXX (Collection, List, Dictionary, Queue, Stack, HashSet, LinkedList)
 
  - (Common) RingBuffer
  - (Common) SortedQueue
@@ -179,7 +184,7 @@ I/O
  - (Common) FilePath: WriteConcurrent
 
  - (Common) StreamExtensions
- - (Common) UncloseableStream
+ # (Common) UncloseableStream
  - (Common) RandomStream
 
  - (Common) EndianessConverter
@@ -214,9 +219,9 @@ Composition
  - (Common) Add container to container (ContainerCatalog?)
 
  - (Common) Lazy loading (Func<>, Lazy<>)
- - (Common) Generic Import property
- - (Common) Enumerable import property
- - (Common) Better platform detection
+ + (Common) Generic Import property
+ + (Common) Enumerable import property
+ + (Common) Better platform detection
  
 
 Services
@@ -246,8 +251,8 @@ Services
  # (.NET) Bus: Retries
  # (.NET) Bus: Routing
 
- - (.NET) Backup (BackupService, DirectoryBackupStorage)
- - (.NET) Licensing (LicensingService, FileLicenseStorage)
+ * (.NET) Backup (BackupService, DirectoryBackupStorage)
+ * (.NET) Licensing (LicensingService, FileLicenseStorage)
 
  - (WpfToolkit) AvalonDockRegionAdapter
 
@@ -268,7 +273,7 @@ Services
  - (Unity) User interface
 
  - (Common) Make bootstrapper container-agnostic
- - (Common) Proper unloading and unbinding of everything
+ - (Common) Proper unloading and unbinding of everything in bootstrapper
 
 
 Data
@@ -284,10 +289,10 @@ Data
  - (.NET) IRepositoryContext: Add GetErrors method (return RepositoryContextErrors type)
  - (.NET) EntityView: Make collection update strategy configurable (clear vs. create new)
 
- # (SQLite) SQLiteDatabaseManager: Move script chains to IDatabaseManager
+ # (.NET) Implementations for providers
+ # (.NET) SQL script helpers
 
  - (.NET) IDatabaseManager: Support for creating connections when state is Old
- # (.NET) IDatabaseManager: Switch from strings in chains to actual chain objects
 
 
 Mathematic
@@ -322,7 +327,7 @@ State machines
 --------------
 
  - (Windows) WindowsMessageLoopStateDispatcher
- - (WPF) DispatcherStateDispatcher
+ * (WPF) DispatcherStateDispatcher
  - (WinForms) ApplicationStateDispatcher
 
  - (Common) Cascading
