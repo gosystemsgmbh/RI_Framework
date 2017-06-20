@@ -12,7 +12,7 @@ using RI.Framework.Utilities.ObjectModel;
 namespace RI.Framework.Data.Database
 {
 	/// <summary>
-	///     Stores the database configuration used by an implementation of <see cref="IDatabaseManager" />.
+	///     Implements the base class for storing the database configuration used by implementations of <see cref="IDatabaseManager" />.
 	/// </summary>
 	public abstract class DatabaseConfiguration : ICloneable<DatabaseConfiguration>, ICloneable
 	{
@@ -97,7 +97,7 @@ namespace RI.Framework.Data.Database
 	}
 
 	/// <summary>
-	///     Stores the database configuration used by an implementation of <see cref="IDatabaseManager" />.
+	///     Implements the base class for storing the database configuration used by implementations of <see cref="IDatabaseManager" />.
 	/// </summary>
 	/// <typeparam name="T"> </typeparam>
 	public abstract class DatabaseConfiguration <T> : DatabaseConfiguration, ICloneable<T>

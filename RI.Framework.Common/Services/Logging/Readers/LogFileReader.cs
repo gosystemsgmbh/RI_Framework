@@ -308,7 +308,7 @@ namespace RI.Framework.Services.Logging.Readers
 				{
 					this.ReadLine();
 
-					if (trimmedLine.StartsWith(LogFileFormatter.FirstLinePrefix))
+					if (trimmedLine.StartsWith(LogFileFormatter.FirstLinePrefix, StringComparison.Ordinal))
 					{
 						firstLine = trimmedLine.Substring(1);
 					}
@@ -321,11 +321,11 @@ namespace RI.Framework.Services.Logging.Readers
 				}
 				else
 				{
-					if (trimmedLine.StartsWith(LogFileFormatter.FirstLinePrefix))
+					if (trimmedLine.StartsWith(LogFileFormatter.FirstLinePrefix, StringComparison.Ordinal))
 					{
 						break;
 					}
-					else if (trimmedLine.StartsWith(LogFileFormatter.SubsequentLinePrefix))
+					else if (trimmedLine.StartsWith(LogFileFormatter.SubsequentLinePrefix, StringComparison.Ordinal))
 					{
 						this.ReadLine();
 						subsequentLines.Add(trimmedLine.Substring(1));

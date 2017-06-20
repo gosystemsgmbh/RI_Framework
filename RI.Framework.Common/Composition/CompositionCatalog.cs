@@ -10,7 +10,7 @@ using RI.Framework.Services.Logging;
 namespace RI.Framework.Composition
 {
 	/// <summary>
-	///     Implements a base class for composition catalogs.
+	///     Implements the base class for composition catalogs.
 	/// </summary>
 	/// <remarks>
 	///     <para>

@@ -63,46 +63,6 @@ namespace RI.Framework.Collections.ObjectModel
 
 
 
-		#region Instance Methods
-
-		/// <summary>
-		///     Returns an item to the pool as a free item so that it can be recycled by <see cref="IPool{T}.Take" />.
-		/// </summary>
-		/// <param name="item"> The item to return to the pool. </param>
-		/// <returns>
-		///     true if the item was returned, false if it was already returned.
-		/// </returns>
-		/// <remarks>
-		///     <para>
-		///         This is a O(n) operation where n is the number of free items in the pool.
-		///     </para>
-		///     <note type="important">
-		///         This return operation does check whether the item to be returned has already been returned to ensure consistency of the free and taken items.
-		///         If a more performant return operation is required, use <see cref="Return(T)" /> instead.
-		///     </note>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="item" /> is null. </exception>
-		public bool ReturnSafe (T item)
-		{
-			if (item == null)
-			{
-				throw new ArgumentNullException(nameof(item));
-			}
-
-			if (this.Contains(item))
-			{
-				return false;
-			}
-
-			this.Return(item);
-			return true;
-		}
-
-		#endregion
-
-
-
-
 		#region Abstracts
 
 		/// <summary>

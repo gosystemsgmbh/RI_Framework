@@ -421,17 +421,13 @@ namespace RI.Framework.Utilities.Threading
 							Thread currentThread = Thread.CurrentThread;
 
 							this.Thread.IsBackground = true;
-							this.Thread.Priority = ThreadPriority.Normal;
+							this.Thread.Priority = currentThread.Priority;
 							this.Thread.CurrentCulture = currentThread.CurrentCulture;
 							this.Thread.CurrentUICulture = currentThread.CurrentUICulture;
+							this.Thread.Name = this.GetType().Name;
 							this.Thread.SetApartmentState(ApartmentState.STA);
 
 							this.OnStarting();
-
-							if (this.Thread.Name == null)
-							{
-								this.Thread.Name = this.GetType().Name;
-							}
 
 							this.Thread.Start();
 						}

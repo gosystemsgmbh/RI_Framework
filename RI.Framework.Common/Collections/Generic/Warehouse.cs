@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 
-
-
+using RI.Framework.Utilities.ObjectModel;
 
 namespace RI.Framework.Collections.Generic
 {
@@ -10,11 +11,6 @@ namespace RI.Framework.Collections.Generic
 	/// </summary>
 	/// <typeparam name="T"> The type of items stored in the warehouse. </typeparam>
 	/// <remarks>
-	///     <para>
-	///         A <see cref="Warehouse{T}" /> only manages the bays and provides the storage.
-	///         The items themselves must be managed by whatever uses the <see cref="Warehouse{T}" />.
-	///         <see cref="Warehouse{T}" /> never touches the contents of <see cref="Storage" />.
-	///     </para>
 	///     <para>
 	///         See <see cref="IWarehouse{T}" /> for more details.
 	///     </para>
@@ -55,6 +51,8 @@ namespace RI.Framework.Collections.Generic
 				throw new ArgumentOutOfRangeException(nameof(size));
 			}
 
+			this.SyncRoot = new object();
+
 			this.Size = size;
 			this.Storage = new T[size + 1];
 
@@ -77,6 +75,72 @@ namespace RI.Framework.Collections.Generic
 		private int _bayIndex;
 
 		private readonly int[] _bays;
+
+		private object SyncRoot { get; set; }
+
+		#endregion
+
+
+
+
+		#region Interface: ICollection
+
+		/// <inheritdoc />
+		public int Count => (this.Size - 1) - this._bayIndex;
+
+		/// <inheritdoc />
+		bool ICollection.IsSynchronized => ((ISynchronizable)this).IsSynchronized;
+
+		/// <inheritdoc />
+		object ICollection.SyncRoot => ((ISynchronizable)this).SyncRoot;
+
+		/// <inheritdoc />
+		void ICollection.CopyTo(Array array, int index)
+		{
+			int i1 = 0;
+			foreach (T item in this)
+			{
+				array.SetValue(item, index + i1);
+				i1++;
+			}
+		}
+
+		/// <inheritdoc />
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return this.GetEnumerator();
+		}
+
+		#endregion
+
+
+
+
+		#region Interface: IEnumerable<T>
+
+		/// <inheritdoc />
+		public IEnumerator<T> GetEnumerator()
+		{
+			for (int i1 = this.Size - 1; i1 > this._bayIndex; i1--)
+			{
+				int index = this._bays[i1];
+				T item = this.Storage[index];
+				yield return item;
+			}
+		}
+
+		#endregion
+
+
+
+
+		#region Interface: ISynchronizable
+
+		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => false;
+
+		/// <inheritdoc />
+		object ISynchronizable.SyncRoot => this.SyncRoot;
 
 		#endregion
 

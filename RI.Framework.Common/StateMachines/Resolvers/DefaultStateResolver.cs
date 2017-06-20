@@ -12,20 +12,20 @@ namespace RI.Framework.StateMachines.Resolvers
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         <see cref="StateResolver" /> simply creates an instance of a requested states type, using <see cref="Activator" />.
+	///         <see cref="DefaultStateResolver" /> simply creates an instance of a requested states type, using <see cref="Activator" />.
 	///     </para>
 	///     <para>
 	///         See <see cref="IStateResolver" /> for more details.
 	///     </para>
 	/// </remarks>
-	public sealed class StateResolver : IStateResolver
+	public sealed class DefaultStateResolver : IStateResolver
 	{
 		#region Instance Constructor/Destructor
 
 		/// <summary>
-		///     Creates a new instance of <see cref="StateResolver" />.
+		///     Creates a new instance of <see cref="DefaultStateResolver" />.
 		/// </summary>
-		public StateResolver ()
+		public DefaultStateResolver ()
 		{
 			this.SyncRoot = new object();
 		}

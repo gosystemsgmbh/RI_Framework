@@ -13,7 +13,7 @@ using RI.Framework.Utilities.ObjectModel;
 namespace RI.Framework.StateMachines
 {
 	/// <summary>
-	///     Defines the configuration of a state machine.
+	///     Implements the base class which defines the configuration of a state machine.
 	/// </summary>
 	/// <remarks>
 	///     <para>
@@ -36,9 +36,9 @@ namespace RI.Framework.StateMachines
 
 			this.IsLocked = false;
 
-			this.Dispatcher = new StateDispatcher();
-			this.Resolver = new StateResolver();
-			this.Cache = new StateCache();
+			this.Dispatcher = new DefaultStateDispatcher();
+			this.Resolver = new DefaultStateResolver();
+			this.Cache = new DefaultStateCache();
 
 			this.EnableAutomaticCaching = true;
 			this.LoggingEnabled = true;
@@ -84,7 +84,7 @@ namespace RI.Framework.StateMachines
 		///         The state cache of a state machine should not be changed while the current state is not null.
 		///     </note>
 		///     <para>
-		///         The default value is an instance of <see cref="StateCache" />.
+		///         The default value is an instance of <see cref="DefaultStateCache" />.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> The property is being set to null while this instance is used in a <see cref="StateMachine" />. </exception>
@@ -125,7 +125,7 @@ namespace RI.Framework.StateMachines
 		///         The dispatcher of a state machine should not be changed while the current state is not null.
 		///     </note>
 		///     <para>
-		///         The default value is an instance of <see cref="StateDispatcher" />.
+		///         The default value is an instance of <see cref="DefaultStateDispatcher" />.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> The property is being set to null while this instance is used in a <see cref="StateMachine" />. </exception>
@@ -224,7 +224,7 @@ namespace RI.Framework.StateMachines
 		///         The resolver of a state machine can be changed at any time.
 		///     </note>
 		///     <para>
-		///         The default value is an instance of <see cref="StateResolver" />.
+		///         The default value is an instance of <see cref="DefaultStateResolver" />.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> The property is being set to null while this instance is used in a <see cref="StateMachine" />. </exception>
@@ -314,7 +314,7 @@ namespace RI.Framework.StateMachines
 	}
 
 	/// <summary>
-	///     Defines the configuration of a state machine.
+	///     Implements the base class which defines the configuration of a state machine.
 	/// </summary>
 	/// <remarks>
 	///     <para>

@@ -13,20 +13,20 @@ namespace RI.Framework.StateMachines.Caches
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         <see cref="StateCache" /> internally uses a simple dictionary with the state type as key.
+	///         <see cref="DefaultStateCache" /> internally uses a simple dictionary with the state type as key.
 	///     </para>
 	///     <para>
 	///         See <see cref="IStateCache" /> for more details.
 	///     </para>
 	/// </remarks>
-	public sealed class StateCache : IStateCache
+	public sealed class DefaultStateCache : IStateCache
 	{
 		#region Instance Constructor/Destructor
 
 		/// <summary>
-		///     Creates a new instance of <see cref="StateCache" />.
+		///     Creates a new instance of <see cref="DefaultStateCache" />.
 		/// </summary>
-		public StateCache ()
+		public DefaultStateCache ()
 		{
 			this.SyncRoot = new object();
 

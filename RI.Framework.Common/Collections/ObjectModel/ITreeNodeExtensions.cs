@@ -14,6 +14,63 @@ namespace RI.Framework.Collections.ObjectModel
 		#region Static Methods
 
 		/// <summary>
+		///     Creates and adds a new child node to a tree node.
+		/// </summary>
+		/// <typeparam name="T"> The type of the tree nodes in the tree. </typeparam>
+		/// <param name="treeNode"> The tree node. </param>
+		/// <returns>
+		///     The newly created and added child node.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="treeNode" /> is null. </exception>
+		public static T AddChild <T> (this ITreeNode<T> treeNode)
+			where T : class, ITreeNode<T>, new()
+		{
+			if (treeNode == null)
+			{
+				throw new ArgumentNullException(nameof(treeNode));
+			}
+
+			T child = new T();
+			treeNode.Children.Add(child);
+			return child;
+		}
+
+		/// <summary>
+		///     Creates and adds a number of new child nodes to a tree node.
+		/// </summary>
+		/// <typeparam name="T"> The type of the tree nodes in the tree. </typeparam>
+		/// <param name="treeNode"> The tree node. </param>
+		/// <param name="numChildren"> The number of child nodes to add. </param>
+		/// <returns>
+		///     The list of newly created and added child nodes.
+		///     The list is empty if <paramref name="numChildren" /> is zero.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="treeNode" /> is null. </exception>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="numChildren" /> is less than zero. </exception>
+		public static List<T> AddChildren <T> (this ITreeNode<T> treeNode, int numChildren)
+			where T : class, ITreeNode<T>, new()
+		{
+			if (treeNode == null)
+			{
+				throw new ArgumentNullException(nameof(treeNode));
+			}
+
+			if (numChildren < 0)
+			{
+				throw new ArgumentOutOfRangeException(nameof(numChildren));
+			}
+
+			List<T> children = new List<T>();
+			for (int i1 = 0; i1 < numChildren; i1++)
+			{
+				T child = new T();
+				treeNode.Children.Add(child);
+				children.Add(child);
+			}
+			return children;
+		}
+
+		/// <summary>
 		///     Gets a list of all child nodes of a tree node.
 		/// </summary>
 		/// <typeparam name="T"> The type of the tree nodes in the tree. </typeparam>

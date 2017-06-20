@@ -86,6 +86,11 @@ namespace RI.Framework.Mathematic.Controllers
 		public float Integral;
 
 		/// <summary>
+		///     The current differential value used for the differential component.
+		/// </summary>
+		public float Differential;
+
+		/// <summary>
 		///     The differential coefficient.
 		/// </summary>
 		public float KD;
@@ -218,6 +223,7 @@ namespace RI.Framework.Mathematic.Controllers
 			this.OutputUnclamped = outputUnclamped;
 			this.Error = error;
 			this.Integral = integral;
+			this.Differential = differential;
 
 			return output;
 		}
@@ -243,6 +249,7 @@ namespace RI.Framework.Mathematic.Controllers
 
 			this.Error = 0.0f;
 			this.Integral = 0.0f;
+			this.Differential = 0.0f;
 		}
 
 		#endregion

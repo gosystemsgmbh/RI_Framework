@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -30,8 +32,12 @@ namespace RI.Framework.Utilities.Threading
 			this.CatchExceptions = false;
 			this.FinishPendingDelegatesOnShutdown = false;
 			this.ThreadName = this.GetType().Name;
-			this.ThreadPriority = ThreadPriority.Normal;
 			this.IsBackgroundThread = true;
+
+			Thread currentThread = Thread.CurrentThread;
+			this.ThreadPriority = currentThread.Priority;
+			this.ThreadCulture = currentThread.CurrentCulture;
+			this.ThreadUICulture = currentThread.CurrentUICulture;
 
 			this.StartedEvent = null;
 			this.DispatcherInternal = null;
@@ -51,6 +57,8 @@ namespace RI.Framework.Utilities.Threading
 		private bool _isBackgroundThread;
 		private string _threadName;
 		private ThreadPriority _threadPriority;
+		private CultureInfo _threadCulture;
+		private CultureInfo _threadUICulture;
 
 		#endregion
 
@@ -192,6 +200,65 @@ namespace RI.Framework.Utilities.Threading
 			}
 		}
 
+		/// <summary>
+		///     Gets or sets the formatting culture of the thread.
+		/// </summary>
+		/// <value>
+		///     The formatting culture of the thread.
+		/// </value>
+		public CultureInfo ThreadCulture
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._threadCulture;
+				}
+			}
+			set
+			{
+				lock (this.SyncRoot)
+				{
+					this._threadCulture = value;
+
+					if (this.Thread != null)
+					{
+						this.Thread.CurrentCulture = value;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		///     Gets or sets the UI culture of the thread.
+		/// </summary>
+		/// <value>
+		///     The UI culture of the thread.
+		/// </value>
+		[SuppressMessage("ReSharper", "InconsistentNaming")]
+		public CultureInfo ThreadUICulture
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._threadUICulture;
+				}
+			}
+			set
+			{
+				lock (this.SyncRoot)
+				{
+					this._threadUICulture = value;
+
+					if (this.Thread != null)
+					{
+						this.Thread.CurrentUICulture = value;
+					}
+				}
+			}
+		}
+
 		private EventHandler<ThreadDispatcherExceptionEventArgs> DispatcherExceptionHandlerDelegate { get; set; }
 
 		private ThreadDispatcher DispatcherInternal { get; set; }
@@ -320,6 +387,8 @@ namespace RI.Framework.Utilities.Threading
 			this.Thread.Name = this.ThreadName;
 			this.Thread.Priority = this.ThreadPriority;
 			this.Thread.IsBackground = this.IsBackgroundThread;
+			this.Thread.CurrentCulture = this.ThreadCulture;
+			this.Thread.CurrentUICulture = this.ThreadUICulture;
 		}
 
 		/// <inheritdoc />

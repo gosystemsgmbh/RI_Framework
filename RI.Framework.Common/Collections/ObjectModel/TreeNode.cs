@@ -108,19 +108,6 @@ namespace RI.Framework.Collections.ObjectModel
 		/// <summary>
 		///     Creates and adds a new child node to this tree node.
 		/// </summary>
-		/// <returns>
-		///     The newly created and added child node.
-		/// </returns>
-		public TreeNode<TValue> AddChild ()
-		{
-			TreeNode<TValue> child = new TreeNode<TValue>();
-			this.Children.Add(child);
-			return child;
-		}
-
-		/// <summary>
-		///     Creates and adds a new child node to this tree node.
-		/// </summary>
 		/// <param name="value"> The value to be assigned to the new child node. </param>
 		/// <returns>
 		///     The newly created and added child node.
@@ -130,32 +117,6 @@ namespace RI.Framework.Collections.ObjectModel
 			TreeNode<TValue> child = new TreeNode<TValue>(value);
 			this.Children.Add(child);
 			return child;
-		}
-
-		/// <summary>
-		///     Creates and adds a number of new child nodes to this tree node.
-		/// </summary>
-		/// <param name="numChildren"> The number of child nodes to add. </param>
-		/// <returns>
-		///     The list of newly created and added child nodes.
-		///     The list is empty if <paramref name="numChildren" /> is zero.
-		/// </returns>
-		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="numChildren" /> is less than zero. </exception>
-		public List<TreeNode<TValue>> AddChildren (int numChildren)
-		{
-			if (numChildren < 0)
-			{
-				throw new ArgumentOutOfRangeException(nameof(numChildren));
-			}
-
-			List<TreeNode<TValue>> children = new List<TreeNode<TValue>>();
-			for (int i1 = 0; i1 < numChildren; i1++)
-			{
-				TreeNode<TValue> child = new TreeNode<TValue>();
-				this.Children.Add(child);
-				children.Add(child);
-			}
-			return children;
 		}
 
 		/// <summary>

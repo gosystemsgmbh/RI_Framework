@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 
-
-
+using RI.Framework.Utilities.ObjectModel;
 
 namespace RI.Framework.Collections.Generic
 {
@@ -24,8 +25,13 @@ namespace RI.Framework.Collections.Generic
 	///         This allows to use <see cref="int" />s instead of object references for the items.
 	///         It also allows to provide a very efficient way to allocate and deallocate collection storage for items.
 	///     </para>
+	///     <para>
+	///         An <see cref="IWarehouse{T}" /> only manages the bays and provides the storage.
+	///         The items themselves must be managed by whatever uses the <see cref="IWarehouse{T}" />.
+	///         <see cref="IWarehouse{T}" /> never touches the contents of <see cref="Storage" />, except for enumerating them as provided by <see cref="IEnumerable{T}"/>
+	///     </para>
 	/// </remarks>
-	public interface IWarehouse <out T>
+	public interface IWarehouse <out T> : ICollection, IEnumerable<T>, IEnumerable, ISynchronizable
 	{
 		/// <summary>
 		///     Gets the amount of free bays.

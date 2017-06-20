@@ -122,7 +122,7 @@ namespace RI.Framework.Utilities.Threading
 		private static ThreadMoverHandler MoverHandler;
 		private static GameObject MoverObject;
 
-		private static object SyncRoot;
+		private static object GlobalSyncRoot;
 		private static List<MoveableTask> TasksToMoveToForeground;
 
 		#endregion
@@ -149,11 +149,11 @@ namespace RI.Framework.Utilities.Threading
 				throw new ArgumentNullException(nameof(task));
 			}
 
-			if (ThreadMover.SyncRoot == null)
+			if (ThreadMover.GlobalSyncRoot == null)
 			{
-				ThreadMover.SyncRoot = new object();
+				ThreadMover.GlobalSyncRoot = new object();
 
-				lock (ThreadMover.SyncRoot)
+				lock (ThreadMover.GlobalSyncRoot)
 				{
 					ThreadMover.MoverObject = new GameObject(typeof(ThreadMover).Name);
 					ThreadMover.MoverObject.SetActive(true);
@@ -166,7 +166,7 @@ namespace RI.Framework.Utilities.Threading
 				}
 			}
 
-			lock (ThreadMover.SyncRoot)
+			lock (ThreadMover.GlobalSyncRoot)
 			{
 				ThreadMover.TasksToMoveToForeground.Add(new MoveableTask(task));
 			}
@@ -308,7 +308,7 @@ namespace RI.Framework.Utilities.Threading
 					return;
 				}
 
-				lock (ThreadMover.SyncRoot)
+				lock (ThreadMover.GlobalSyncRoot)
 				{
 					ThreadMover.TasksToMoveToForeground.Add(this);
 				}
@@ -403,7 +403,7 @@ namespace RI.Framework.Utilities.Threading
 					yield return null;
 
 					MoveableTask[] tasksToMove = null;
-					lock (ThreadMover.SyncRoot)
+					lock (ThreadMover.GlobalSyncRoot)
 					{
 						if (ThreadMover.TasksToMoveToForeground.Count > 0)
 						{

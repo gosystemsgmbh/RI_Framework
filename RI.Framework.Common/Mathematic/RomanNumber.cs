@@ -65,7 +65,8 @@ namespace RI.Framework.Mathematic
 	/// ]]>
 	/// </code>
 	/// </example>
-	public struct RomanNumber : IEquatable<RomanNumber>, IComparable<RomanNumber>, IComparable
+	[Serializable]
+	public struct RomanNumber : IEquatable<RomanNumber>, IComparable<RomanNumber>, IComparable, IFormattable
 	{
 		#region Static Constructor/Destructor
 
@@ -679,6 +680,9 @@ namespace RI.Framework.Mathematic
 		{
 			return this.DecimalValue;
 		}
+
+		/// <inheritdoc />
+		public string ToString (string format, IFormatProvider formatProvider) => this.DecimalValue.ToString(format, formatProvider);
 
 		/// <inheritdoc />
 		public override string ToString ()

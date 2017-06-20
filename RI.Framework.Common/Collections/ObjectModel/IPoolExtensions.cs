@@ -196,6 +196,43 @@ namespace RI.Framework.Collections.ObjectModel
 			return items;
 		}
 
+		/// <summary>
+		///     Returns an item to a pool as a free item so that it can be recycled by <see cref="IPool{T}.Take" />.
+		/// </summary>
+		/// <typeparam name="T"> The type of the items in <paramref name="pool" />. </typeparam>
+		/// <param name="pool"> The pool. </param>
+		/// <param name="item"> The item to return to the pool. </param>
+		/// <returns>
+		///     true if the item was returned, false if it was already returned.
+		/// </returns>
+		/// <remarks>
+		///     <note type="important">
+		///         This return operation does check whether the item to be returned has already been returned to ensure consistency of the free and taken items.
+		///         If a more performant return operation is required, use <see cref="IPool{T}.Return" /> instead.
+		///     </note>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"><paramref name="pool"/> or <paramref name="item" /> is null. </exception>
+		public static bool ReturnSafe <T> (this IPool<T> pool, T item)
+		{
+			if (pool == null)
+			{
+				throw new ArgumentNullException(nameof(pool));
+			}
+
+			if (item == null)
+			{
+				throw new ArgumentNullException(nameof(item));
+			}
+
+			if (pool.Contains(item))
+			{
+				return false;
+			}
+
+			pool.Return(item);
+			return true;
+		}
+
 		#endregion
 	}
 }

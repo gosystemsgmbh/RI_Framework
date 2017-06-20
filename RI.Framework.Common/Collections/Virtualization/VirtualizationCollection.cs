@@ -246,6 +246,7 @@ namespace RI.Framework.Collections.Virtualization
 				((INotifyItemsProvider<T>)this.ItemsProvider).ItemsChanged -= this.ItemsChangedHandler;
 			}
 
+			(this.ItemsProvider as IDisposable)?.Dispose();
 			this.ItemsProvider = null;
 		}
 

@@ -70,7 +70,7 @@ namespace RI.Framework.Composition.Catalogs
 		public string Name { get; private set; }
 
 		/// <summary>
-		///     Gets the filter result.
+		///     Gets or sets the filter result.
 		/// </summary>
 		/// <value>
 		///     true if the export is used, false otherwise.

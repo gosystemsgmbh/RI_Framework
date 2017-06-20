@@ -11,22 +11,16 @@ using RI.Framework.Utilities.ObjectModel;
 namespace RI.Framework.Collections.Generic
 {
 	/// <summary>
-	///     Implements a priority queue.
+	///     Implements a simple priority queue.
 	/// </summary>
 	/// <typeparam name="T"> The type of items stored in the priority queue. </typeparam>
 	/// <remarks>
 	///     <para>
-	///         A priority queue stores items sorted by their assigned priority.
-	///         The priority is assigned to an item when the item is added to the priority queue using <see cref="Enqueue" />.
-	///         The higher the priority, the earlier the item is dequeued (highest priority, first out).
-	///         For items of the same priority, the order in which they are added is maintained (first in, first out).
-	///     </para>
-	///     <para>
-	///         null are valid item values if <typeparamref name="T" /> is a reference type.
-	///     </para>
-	///     <para>
 	///         The performance of the priority queue degrades with the number of different priorities used.
 	///         Regardless of the actual numeric priority values or the distribution of the priority values respectively, a priority queue with, for example, 10 used priorities is on average 10 times faster than a priority queue with 100 used priorities.
+	///     </para>
+	///     <para>
+	///         See <see cref="IPriorityQueue{T}" /> for more details.
 	///     </para>
 	/// </remarks>
 	/// TODO: Fix example
@@ -50,7 +44,7 @@ namespace RI.Framework.Collections.Generic
 	///  ]]>
 	///  </code>
 	/// </example>
-	public sealed class PriorityQueue <T> : ICollection, IEnumerable<T>, IEnumerable, ISynchronizable
+	public sealed class PriorityQueue <T> : IPriorityQueue<T>
 	{
 		#region Instance Constructor/Destructor
 
@@ -84,14 +78,7 @@ namespace RI.Framework.Collections.Generic
 
 		#region Instance Methods
 
-		/// <summary>
-		///     Removes all items from the priority queue.
-		/// </summary>
-		/// <remarks>
-		///     <para>
-		///         This is a O(1) operation.
-		///     </para>
-		/// </remarks>
+		/// <inheritdoc />
 		public void Clear ()
 		{
 			this.Chain.Clear();
@@ -108,53 +95,20 @@ namespace RI.Framework.Collections.Generic
 			}
 		}
 
-		/// <summary>
-		///     Gets the next item in the queue and removes it.
-		/// </summary>
-		/// <returns>
-		///     The item.
-		/// </returns>
-		/// <remarks>
-		///     <para>
-		///         This is a O(1) operation.
-		///     </para>
-		/// </remarks>
-		/// <exception cref="InvalidOperationException"> The priority queue is empty. </exception>
+		/// <inheritdoc />
 		public T Dequeue ()
 		{
 			int priority;
 			return this.Get(true, out priority);
 		}
 
-		/// <summary>
-		///     Gets the next item in the queue and removes it.
-		/// </summary>
-		/// <param name="priority"> The priority of the item. </param>
-		/// <returns>
-		///     The item.
-		/// </returns>
-		/// <remarks>
-		///     <para>
-		///         This is a O(1) operation.
-		///     </para>
-		/// </remarks>
-		/// <exception cref="InvalidOperationException"> The priority queue is empty. </exception>
+		/// <inheritdoc />
 		public T Dequeue (out int priority)
 		{
 			return this.Get(true, out priority);
 		}
 
-		/// <summary>
-		///     Adds an item to the queue.
-		/// </summary>
-		/// <param name="item"> The item. </param>
-		/// <param name="priority"> The priority of the item. </param>
-		/// <remarks>
-		///     <para>
-		///         This is a O(x) operation, where x is the number of priorities currently in use, if <paramref name="priority" /> is currently not yet in use, or a O(1) operation if there are already other items of the same priority.
-		///     </para>
-		/// </remarks>
-		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="priority" /> is less than zero. </exception>
+		/// <inheritdoc />
 		[SuppressMessage("ReSharper", "PossibleNullReferenceException")]
 		public void Enqueue (T item, int priority)
 		{
@@ -221,14 +175,7 @@ namespace RI.Framework.Collections.Generic
 			priorityItem.Enqueue(item);
 		}
 
-		/// <summary>
-		///     Moves all items of this queue to another queue while keeping the assigned priorities.
-		/// </summary>
-		/// <param name="queue"> The other queue the items are moved to. </param>
-		/// <returns>
-		///     The number of moved items.
-		/// </returns>
-		/// <exception cref="ArgumentNullException"> <paramref name="queue" /> is null. </exception>
+		/// <inheritdoc />
 		public int MoveTo (PriorityQueue<T> queue)
 		{
 			if (queue == null)
@@ -248,37 +195,14 @@ namespace RI.Framework.Collections.Generic
 			return count;
 		}
 
-		/// <summary>
-		///     Gets the next item in the queue without removing it.
-		/// </summary>
-		/// <returns>
-		///     The item.
-		/// </returns>
-		/// <remarks>
-		///     <para>
-		///         This is a O(1) operation.
-		///     </para>
-		/// </remarks>
-		/// <exception cref="InvalidOperationException"> The priority queue is empty. </exception>
+		/// <inheritdoc />
 		public T Peek ()
 		{
 			int priority;
 			return this.Get(false, out priority);
 		}
 
-		/// <summary>
-		///     Gets the next item in the queue without removing it.
-		/// </summary>
-		/// <param name="priority"> The priority of the item. </param>
-		/// <returns>
-		///     The item.
-		/// </returns>
-		/// <remarks>
-		///     <para>
-		///         This is a O(1) operation.
-		///     </para>
-		/// </remarks>
-		/// <exception cref="InvalidOperationException"> The priority queue is empty. </exception>
+		/// <inheritdoc />
 		public T Peek (out int priority)
 		{
 			return this.Get(false, out priority);

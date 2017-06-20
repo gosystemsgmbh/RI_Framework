@@ -129,9 +129,9 @@ Collections
 
  - (Common) RingBuffer
  - (Common) SortedQueue
- - (Common) WrappingCollection
+ - (Common) WrappingCollection (warpping multiple collections in a sequence)
 
- - (Common) InheritingTreeNodeBase, InheritingTreeNode
+ - (Common) IInheritingTreeNode, IInheritingTreeNodeExtensions, InheritingTreeNodeBase, InheritingTreeNode
 
 
 I/O
@@ -211,6 +211,8 @@ Composition
  + (Unity) MonoBehaviourTypeCreator
 
  + (Unity) GameObjectCatalog
+
+ + (Common) CreateGlobal
 
  - (Common) CreateIndependent
  - (Common) CreateAndExport

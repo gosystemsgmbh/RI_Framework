@@ -28,6 +28,7 @@ namespace RI.Framework.Mathematic
 	///         </note>
 	///     </remarks>
 	/// </remarks>
+	[Serializable]
 	public struct Statistics : ICloneable<Statistics>, ICloneable
 	{
 		#region Instance Constructor/Destructor

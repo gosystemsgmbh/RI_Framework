@@ -11,7 +11,7 @@ namespace RI.Framework.StateMachines
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         By default, <see cref="DefaultStateMachineConfiguration" /> uses a <see cref="StateDispatcher" /> and <see cref="StateResolver" />.
+	///         By default, <see cref="DefaultStateMachineConfiguration" /> uses a <see cref="DefaultStateDispatcher" /> and <see cref="DefaultStateResolver" />.
 	///     </para>
 	///     <para>
 	///         See <see cref="StateMachineConfiguration" /> for more details.

@@ -14,20 +14,20 @@ namespace RI.Framework.StateMachines.Dispatchers
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         <see cref="StateDispatcher" /> internally uses a <see cref="SynchronizationContext" />, which is captured at the time of dispatching, to dispatch operations or falls back to <see cref="ThreadPool.QueueUserWorkItem(WaitCallback,object)" /> if no <see cref="SynchronizationContext" /> is available.
+	///         <see cref="DefaultStateDispatcher" /> internally uses a <see cref="SynchronizationContext" />, which is captured at the time of dispatching, to dispatch operations or falls back to <see cref="ThreadPool.QueueUserWorkItem(WaitCallback,object)" /> if no <see cref="SynchronizationContext" /> is available.
 	///     </para>
 	///     <para>
 	///         See <see cref="IStateCache" /> for more details.
 	///     </para>
 	/// </remarks>
-	public sealed class StateDispatcher : IStateDispatcher
+	public sealed class DefaultStateDispatcher : IStateDispatcher
 	{
 		#region Instance Constructor/Destructor
 
 		/// <summary>
-		///     Creates a new instance of <see cref="StateDispatcher" />.
+		///     Creates a new instance of <see cref="DefaultStateDispatcher" />.
 		/// </summary>
-		public StateDispatcher ()
+		public DefaultStateDispatcher ()
 		{
 			this.SyncRoot = new object();
 

@@ -12,6 +12,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Collections\Comparison\CollectionComparer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\Comparison\CollectionComparerFlags.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\Comparison\_NamespaceDoc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Generic\IPriorityQueue.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\Generic\IWarehouse.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\Generic\PriorityQueue.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\Generic\Warehouse.cs" />
@@ -142,9 +143,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Services\Modularization\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\ServiceLocator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\_NamespaceDoc.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Caches\StateCache.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Caches\DefaultStateCache.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Caches\_NamespaceDoc.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Dispatchers\StateDispatcher.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Dispatchers\DefaultStateDispatcher.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Dispatchers\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\IState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\IStateCache.cs" />
@@ -152,7 +153,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\IStateResolver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Resolvers\CompositionContainerStateResolver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Resolvers\ServiceLocatorStateResolver.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Resolvers\StateResolver.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Resolvers\DefaultStateResolver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Resolvers\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\StateMachineUpdateDelegate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\StateMachineUpdateEventArgs.cs" />

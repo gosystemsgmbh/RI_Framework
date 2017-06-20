@@ -19,6 +19,7 @@ namespace RI.Framework.Mathematic
 	///         For performance sensitive scenarios, consider using <see cref="RunningValues" />.
 	///     </note>
 	/// </remarks>
+	[Serializable]
 	public struct StatisticValues : ICloneable<StatisticValues>, ICloneable
 	{
 		#region Instance Constructor/Destructor

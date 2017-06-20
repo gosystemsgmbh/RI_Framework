@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
+using RI.Framework.Collections;
 using RI.Framework.Utilities.ObjectModel;
 
 
@@ -75,7 +76,7 @@ namespace RI.Framework.IO.CSV
 		/// </summary>
 		public CsvDocument ()
 		{
-			this.Data = new List<List<string>>();
+			this.Data = new List<IList<string>>();
 		}
 
 		#endregion
@@ -91,7 +92,7 @@ namespace RI.Framework.IO.CSV
 		/// <value>
 		///     The CSV data.
 		/// </value>
-		public List<List<string>> Data { get; private set; }
+		public IList<IList<string>> Data { get; private set; }
 
 		#endregion
 

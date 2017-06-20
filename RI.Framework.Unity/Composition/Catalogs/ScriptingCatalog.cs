@@ -26,6 +26,7 @@ namespace RI.Framework.Composition.Catalogs
 	///     </para>
 	/// </remarks>
 	/// TODO: ExportAllTypes setting in bootstrapper
+	/// TODO: Prevent from loading the same assembly twice
 	public sealed class ScriptingCatalog : CompositionCatalog
 	{
 		#region Constants

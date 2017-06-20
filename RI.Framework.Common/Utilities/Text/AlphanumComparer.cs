@@ -106,7 +106,7 @@ namespace RI.Framework.Utilities.Text
 		/// <param name="ignoreCase"> Specifies whether a characters case is ignored for comparison. </param>
 		/// <param name="trimmed"> Specifies whether the strings are trimmed before the comparison. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="culture" /> is null. </exception>
-		public AlphaNumComparer (CultureInfo culture, bool ignoreCase, bool trimmed)
+		public AlphaNumComparer (CultureInfo culture, bool ignoreCase, bool trimmed, bool pureNumbers)
 		{
 			if (culture == null)
 			{
@@ -116,12 +116,16 @@ namespace RI.Framework.Utilities.Text
 			this.Culture = culture;
 			this.IgnoreCase = ignoreCase;
 			this.Trimmed = trimmed;
+			this.PureNumbers = pureNumbers;
 
 			this.NumberCharacters = new HashSet<string>(StringComparerEx.Ordinal);
-			this.NumberCharacters.Add(this.Culture.NumberFormat.NumberDecimalSeparator);
-			this.NumberCharacters.Add(this.Culture.NumberFormat.PositiveSign);
-			this.NumberCharacters.Add(this.Culture.NumberFormat.NegativeSign);
-			this.NumberCharacters.Add(this.Culture.NumberFormat.NumberGroupSeparator);
+			if (!this.PureNumbers)
+			{
+				this.NumberCharacters.Add(this.Culture.NumberFormat.NumberDecimalSeparator);
+				this.NumberCharacters.Add(this.Culture.NumberFormat.PositiveSign);
+				this.NumberCharacters.Add(this.Culture.NumberFormat.NegativeSign);
+				this.NumberCharacters.Add(this.Culture.NumberFormat.NumberGroupSeparator);
+			}
 		}
 
 		#endregion
@@ -153,7 +157,17 @@ namespace RI.Framework.Utilities.Text
 		/// <value>
 		///     true if the strings are trimmed before comparison, false otherwise.
 		/// </value>
-		public bool Trimmed { get; set; }
+		public bool Trimmed { get; }
+
+		/// <summary>
+		/// Gets whether numbers are only used when they are pure numbers.
+		/// </summary>
+		/// <value>
+		/// true if numbers are only used when they are pure numbers, false otherwise.
+		/// </value>
+		public bool PureNumbers { get; }
+
+
 
 		private HashSet<string> NumberCharacters { get; set; }
 
