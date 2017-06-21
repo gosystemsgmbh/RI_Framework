@@ -52,7 +52,15 @@ namespace RI.Framework.Utilities.Text
 	{
 		#region Constants
 
-		private static readonly IEqualityComparer<string> DefaultParameterNameComparer = StringComparerEx.InvariantCultureIgnoreCase;
+		/// <summary>
+		///     The default string comparer used to distinguish parameter names.
+		/// </summary>
+		/// <remarks>
+		///     <para>
+		///         The default comparer is <see cref="StringComparerEx.InvariantCultureIgnoreCase"/>.
+		///     </para>
+		/// </remarks>
+		public static readonly IEqualityComparer<string> DefaultParameterNameComparer = StringComparerEx.InvariantCultureIgnoreCase;
 
 		#endregion
 
@@ -79,7 +87,7 @@ namespace RI.Framework.Utilities.Text
 		///         For example, on Windows, a full process command line (e.g. as retrieved using <see cref="Environment.CommandLine" />) usually starts with the executable of the process.
 		///     </para>
 		///     <para>
-		///         <see cref="StringComparerEx" />.<see cref="StringComparerEx.InvariantCultureIgnoreCase" /> is used to distinguish parameter names.
+		///         <see cref="DefaultParameterNameComparer"/> is used to distinguish parameter names.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="commandLine" /> is null. </exception>
@@ -93,7 +101,7 @@ namespace RI.Framework.Utilities.Text
 		/// </summary>
 		/// <param name="commandLine"> The command line string to parse. </param>
 		/// <param name="startsWithExecutable"> Indicates whether the command line string starts with an executable. </param>
-		/// <param name="parameterNameComparer"> A string comparer used to distinguish parameter names or null if the default string comparer should be used (see <see cref="CommandLine.Parse(string,bool)" />). </param>
+		/// <param name="parameterNameComparer"> A string comparer used to distinguish parameter names (can be null to use <see cref="DefaultParameterNameComparer"/>). </param>
 		/// <returns>
 		///     The <see cref="CommandLine" /> created by parsing the command line string.
 		/// </returns>

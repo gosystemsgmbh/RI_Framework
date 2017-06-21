@@ -10,7 +10,7 @@ namespace RI.Framework.IO.INI
 	///     The <see cref="IniParsingException" /> is thrown when invalid INI elements are encountered while parsing INI data.
 	/// </summary>
 	[Serializable]
-	public sealed class IniParsingException : Exception
+	public class IniParsingException : Exception
 	{
 		#region Constants
 

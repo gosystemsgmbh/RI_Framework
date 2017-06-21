@@ -5,6 +5,7 @@ using RI.Framework.Composition.Catalogs;
 using RI.Framework.Composition.Model;
 using RI.Framework.Services.Dispatcher;
 using RI.Framework.Services.Logging;
+using RI.Framework.Services.Logging.Writers;
 using RI.Framework.Services.Modularization;
 using RI.Framework.Utilities.ObjectModel;
 
@@ -151,7 +152,7 @@ namespace RI.Framework.Services
 		/// </summary>
 		/// <remarks>
 		///     <para>
-		///         If true, <see cref="LogService" /> and <see cref="LogWriter" /> are added automatically, providing logging through Unitys logging mechanism.
+		///         If true, <see cref="LogService" /> and <see cref="DebugLogWriter" /> are added automatically, providing logging through Unitys logging mechanism.
 		///     </para>
 		///     <para>
 		///         The default value is false.
@@ -349,7 +350,7 @@ namespace RI.Framework.Services
 		/// </summary>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation adds <see cref="LogService" /> and <see cref="LogWriter" /> to the composition container if <see cref="LoggingService" /> is true, otherwise it does nothing.
+		///         The default implementation adds <see cref="LogService" /> and <see cref="DebugLogWriter" /> to the composition container if <see cref="LoggingService" /> is true, otherwise it does nothing.
 		///     </note>
 		/// </remarks>
 		protected virtual void ConfigureLogging ()
@@ -357,7 +358,7 @@ namespace RI.Framework.Services
 			if (this.LoggingService)
 			{
 				this.Log(LogLevel.Debug, "Using default logging service");
-				this.Container.AddCatalog(new TypeCatalog(typeof(LogService), typeof(LogWriter)));
+				this.Container.AddCatalog(new TypeCatalog(typeof(LogService), typeof(DebugLogWriter)));
 			}
 		}
 

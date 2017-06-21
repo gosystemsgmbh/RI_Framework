@@ -313,6 +313,14 @@ namespace RI.Framework.Services.Logging.Writers
 			}
 		}
 
+		private void VerifyNotClosed()
+		{
+			if (this.Writer == null)
+			{
+				throw new ObjectDisposedException(nameof(FileLogWriter));
+			}
+		}
+
 		#endregion
 
 

@@ -1,13 +1,13 @@
 ﻿using System.ComponentModel;
 
-
-
+using RI.Framework.Composition.Model;
 
 namespace RI.Framework.Mvvm.ViewModel
 {
 	/// <summary>
 	///     Defines an interface for view models.
 	/// </summary>
+	[Export]
 	public interface IViewModel : INotifyPropertyChanged
 	{
 		/// <summary>

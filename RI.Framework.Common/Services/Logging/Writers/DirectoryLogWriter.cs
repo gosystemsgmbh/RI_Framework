@@ -404,6 +404,14 @@ namespace RI.Framework.Services.Logging.Writers
 			}
 		}
 
+		private void VerifyNotClosed()
+		{
+			if ((this.CurrentWriter == null) || (this.CurrentStream == null))
+			{
+				throw new ObjectDisposedException(nameof(DirectoryLogWriter));
+			}
+		}
+
 		#endregion
 
 
@@ -454,10 +462,7 @@ namespace RI.Framework.Services.Logging.Writers
 		{
 			lock (this.SyncRoot)
 			{
-				if ((this.CurrentWriter == null) || (this.CurrentStream == null))
-				{
-					throw new ObjectDisposedException(nameof(DirectoryLogWriter));
-				}
+				this.VerifyNotClosed();
 
 				List<DirectoryPath> directories = this.CommonDirectory.GetSubdirectories(false, false);
 				foreach (DirectoryPath directory in directories)

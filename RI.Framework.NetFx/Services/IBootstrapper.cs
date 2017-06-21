@@ -244,7 +244,7 @@ namespace RI.Framework.Services
 		/// <summary>
 		///     Starts the bootstrapping and runs the application.
 		/// </summary>
-		/// <param name="hostContext"> The hosting environment context. Can be null </param>
+		/// <param name="hostContext"> The hosting environment context. Can be null to use a default instance of <see cref="HostContext" />. </param>
 		/// <returns>
 		///     The shutdown information of the application.
 		/// </returns>

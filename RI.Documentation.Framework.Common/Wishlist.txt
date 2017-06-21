@@ -19,6 +19,9 @@ Utilities
 
  - (Common) ComponentManager
 
+ - (Common) ObjectExtensions.TryClone
+ - (Common) Transitive cloning for all implementations of ICloneable<T>
+
  * (WPF) EventToCommandBinder
  * (WPF) IView Init
  * (WPF) IViewModel Init
@@ -276,6 +279,9 @@ Services
 
  - (Common) Make bootstrapper container-agnostic
  - (Common) Proper unloading and unbinding of everything in bootstrapper
+
+ - (SQLite) SQLiteLogWriter
+ - (SQLIte) SQLiteLogConfiguration (use in SQLiteLogWriter and LogFileToDbConverter)
 
 
 Data

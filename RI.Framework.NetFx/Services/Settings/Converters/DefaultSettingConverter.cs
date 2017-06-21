@@ -2,13 +2,11 @@
 using System.Globalization;
 using System.Linq;
 
+using RI.Framework.Composition.Model;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 
-
-
-
-namespace RI.Framework.Services.Settings
+namespace RI.Framework.Services.Settings.Converters
 {
 	/// <summary>
 	///     Implements a default setting converter which can convert to and from the basic types used in .NET.
@@ -22,7 +20,8 @@ namespace RI.Framework.Services.Settings
 	///         See <see cref="ISettingConverter" /> for more details.
 	///     </para>
 	/// </remarks>
-	public sealed class SettingConverter : ISettingConverter
+	[Export]
+	public sealed class DefaultSettingConverter : ISettingConverter
 	{
 		#region Instance Fields
 

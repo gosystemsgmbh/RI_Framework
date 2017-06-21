@@ -2,14 +2,12 @@
 using System.Xml;
 using System.Xml.Linq;
 
+using RI.Framework.Composition.Model;
 using RI.Framework.IO.INI;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 
-
-
-
-namespace RI.Framework.Services.Resources
+namespace RI.Framework.Services.Resources.Converters
 {
 	/// <summary>
 	///     Implements a default resource converter which can convert to and from the basic types used in .NET.
@@ -23,7 +21,8 @@ namespace RI.Framework.Services.Resources
 	///         See <see cref="IResourceConverter" /> for more details.
 	///     </para>
 	/// </remarks>
-	public sealed class ResourceConverter : IResourceConverter
+	[Export]
+	public sealed class DefaultResourceConverter : IResourceConverter
 	{
 		#region Interface: IResourceConverter
 

@@ -7,7 +7,7 @@ using System.Runtime.Serialization;
 namespace RI.Test.Framework
 {
 	[Serializable]
-	public sealed class TestAssertionException : Exception
+	public class TestAssertionException : Exception
 	{
 		#region Instance Constructor/Destructor
 

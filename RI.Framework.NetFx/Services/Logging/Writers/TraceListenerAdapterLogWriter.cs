@@ -4,13 +4,11 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
 
+using RI.Framework.Composition.Model;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.ObjectModel;
 
-
-
-
-namespace RI.Framework.Services.Logging
+namespace RI.Framework.Services.Logging.Writers
 {
 	/// <summary>
 	///     Implements a log writer which uses the .NET Framework tracing mechanism.
@@ -26,6 +24,7 @@ namespace RI.Framework.Services.Logging
 	///         See <see cref="ILogWriter" /> for more details.
 	///     </para>
 	/// </remarks>
+	[Export]
 	public sealed class TraceListenerAdapterLogWriter : ILogWriter, IDisposable, ILogSource
 	{
 		#region Instance Constructor/Destructor
@@ -178,6 +177,14 @@ namespace RI.Framework.Services.Logging
 		private void WriteTraceLine (string message)
 		{
 			this.WriteTrace(message + Environment.NewLine);
+		}
+
+		private void VerifyNotClosed()
+		{
+			if (this.TraceListener == null)
+			{
+				throw new ObjectDisposedException(nameof(TraceListenerAdapterLogWriter));
+			}
 		}
 
 		#endregion

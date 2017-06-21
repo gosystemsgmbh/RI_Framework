@@ -12,11 +12,11 @@ namespace RI.Framework.Services.Logging.Readers
 	/// <summary>
 	///     Holds conversion results from a single conversion performed by <see cref="LogFileToDbConverter" />.
 	/// </summary>
-	public sealed class LogFileDbConverterResults
+	public sealed class LogFileToDbConverterResults
 	{
 		#region Instance Constructor/Destructor
 
-		internal LogFileDbConverterResults ()
+		internal LogFileToDbConverterResults ()
 		{
 			this.Files = new List<FilePath>();
 			this.Errors = new List<Tuple<FilePath, int>>();

@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
-
-
+using RI.Framework.Utilities.ObjectModel;
 
 namespace RI.Framework.Utilities.Text
 {
@@ -24,73 +23,73 @@ namespace RI.Framework.Utilities.Text
 	///         Because this kind of sorting depends on the used culture, the used culture must be specified.
 	///     </para>
 	/// </remarks>
-	public sealed class AlphaNumComparer : IComparer<string>
+	public sealed class AlphanumComparer : IComparer<string>, ICloneable<AlphanumComparer>, ICloneable
 	{
 		#region Static Methods
 
 		/// <summary>
-		///     Creates a natural alphanumeric comparer for the current thread culture (case matters; strings are not trimmed before comparison).
+		///     Creates a natural alphanumeric comparer for the current thread culture (case matters; strings are not trimmed before comparison; only pure numbers).
 		/// </summary>
 		/// <returns>
 		///     The comparer.
 		/// </returns>
-		public static AlphaNumComparer CurrentCulture () => new AlphaNumComparer(CultureInfo.CurrentCulture, false, false);
+		public static AlphanumComparer CurrentCulture () => new AlphanumComparer(CultureInfo.CurrentCulture, AlphanumComparerFlags.PureNumbers);
 
 		/// <summary>
-		///     Creates a natural alphanumeric comparer for the current thread culture (case is ignored; strings are not trimmed before comparison).
+		///     Creates a natural alphanumeric comparer for the current thread culture (case is ignored; strings are not trimmed before comparison; only pure numbers).
 		/// </summary>
 		/// <returns>
 		///     The comparer.
 		/// </returns>
-		public static AlphaNumComparer CurrentCultureIgnoreCase () => new AlphaNumComparer(CultureInfo.CurrentCulture, true, false);
+		public static AlphanumComparer CurrentCultureIgnoreCase () => new AlphanumComparer(CultureInfo.CurrentCulture, AlphanumComparerFlags.PureNumbers | AlphanumComparerFlags.IgnoreCase);
 
 		/// <summary>
-		///     Creates a natural alphanumeric comparer for the invariant culture (case matters; strings are not trimmed before comparison).
+		///     Creates a natural alphanumeric comparer for the invariant culture (case matters; strings are not trimmed before comparison; only pure numbers).
 		/// </summary>
 		/// <returns>
 		///     The comparer.
 		/// </returns>
-		public static AlphaNumComparer InvariantCulture () => new AlphaNumComparer(CultureInfo.InvariantCulture, false, false);
+		public static AlphanumComparer InvariantCulture () => new AlphanumComparer(CultureInfo.InvariantCulture, AlphanumComparerFlags.PureNumbers);
 
 		/// <summary>
-		///     Creates a natural alphanumeric comparer for the invariant culture (case is ignored; strings are not trimmed before comparison).
+		///     Creates a natural alphanumeric comparer for the invariant culture (case is ignored; strings are not trimmed before comparison; only pure numbers).
 		/// </summary>
 		/// <returns>
 		///     The comparer.
 		/// </returns>
-		public static AlphaNumComparer InvariantCultureIgnoreCase () => new AlphaNumComparer(CultureInfo.InvariantCulture, true, false);
+		public static AlphanumComparer InvariantCultureIgnoreCase () => new AlphanumComparer(CultureInfo.InvariantCulture, AlphanumComparerFlags.PureNumbers | AlphanumComparerFlags.IgnoreCase);
 
 		/// <summary>
-		///     Creates a natural alphanumeric comparer for the current thread culture (case matters; strings are trimmed before comparison).
+		///     Creates a natural alphanumeric comparer for the current thread culture (case matters; strings are trimmed before comparison; only pure numbers).
 		/// </summary>
 		/// <returns>
 		///     The comparer.
 		/// </returns>
-		public static AlphaNumComparer TrimmedCurrentCulture () => new AlphaNumComparer(CultureInfo.CurrentCulture, false, true);
+		public static AlphanumComparer TrimmedCurrentCulture () => new AlphanumComparer(CultureInfo.CurrentCulture, AlphanumComparerFlags.PureNumbers | AlphanumComparerFlags.Trimmed);
 
 		/// <summary>
-		///     Creates a natural alphanumeric comparer for the current thread culture (case is ignored; strings are trimmed before comparison).
+		///     Creates a natural alphanumeric comparer for the current thread culture (case is ignored; strings are trimmed before comparison; only pure numbers).
 		/// </summary>
 		/// <returns>
 		///     The comparer.
 		/// </returns>
-		public static AlphaNumComparer TrimmedCurrentCultureIgnoreCase () => new AlphaNumComparer(CultureInfo.CurrentCulture, true, true);
+		public static AlphanumComparer TrimmedCurrentCultureIgnoreCase () => new AlphanumComparer(CultureInfo.CurrentCulture, AlphanumComparerFlags.PureNumbers | AlphanumComparerFlags.Trimmed | AlphanumComparerFlags.IgnoreCase);
 
 		/// <summary>
-		///     Creates a natural alphanumeric comparer for the invariant culture (case matters; strings are trimmed before comparison).
+		///     Creates a natural alphanumeric comparer for the invariant culture (case matters; strings are trimmed before comparison; only pure numbers).
 		/// </summary>
 		/// <returns>
 		///     The comparer.
 		/// </returns>
-		public static AlphaNumComparer TrimmedInvariantCulture () => new AlphaNumComparer(CultureInfo.InvariantCulture, false, true);
+		public static AlphanumComparer TrimmedInvariantCulture () => new AlphanumComparer(CultureInfo.InvariantCulture, AlphanumComparerFlags.PureNumbers | AlphanumComparerFlags.Trimmed);
 
 		/// <summary>
-		///     Creates a natural alphanumeric comparer for the invariant culture (case is ignored; strings are trimmed before comparison).
+		///     Creates a natural alphanumeric comparer for the invariant culture (case is ignored; strings are trimmed before comparison; only pure numbers).
 		/// </summary>
 		/// <returns>
 		///     The comparer.
 		/// </returns>
-		public static AlphaNumComparer TrimmedInvariantCultureIgnoreCase () => new AlphaNumComparer(CultureInfo.InvariantCulture, true, true);
+		public static AlphanumComparer TrimmedInvariantCultureIgnoreCase () => new AlphanumComparer(CultureInfo.InvariantCulture, AlphanumComparerFlags.PureNumbers | AlphanumComparerFlags.Trimmed | AlphanumComparerFlags.IgnoreCase);
 
 		#endregion
 
@@ -100,13 +99,12 @@ namespace RI.Framework.Utilities.Text
 		#region Instance Constructor/Destructor
 
 		/// <summary>
-		///     Creates a new instance of <see cref="AlphaNumComparer" />.
+		///     Creates a new instance of <see cref="AlphanumComparer" />.
 		/// </summary>
 		/// <param name="culture"> The used culture. </param>
-		/// <param name="ignoreCase"> Specifies whether a characters case is ignored for comparison. </param>
-		/// <param name="trimmed"> Specifies whether the strings are trimmed before the comparison. </param>
+		/// <param name="options"> The used comparison options. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="culture" /> is null. </exception>
-		public AlphaNumComparer (CultureInfo culture, bool ignoreCase, bool trimmed, bool pureNumbers)
+		public AlphanumComparer (CultureInfo culture, AlphanumComparerFlags options)
 		{
 			if (culture == null)
 			{
@@ -114,16 +112,24 @@ namespace RI.Framework.Utilities.Text
 			}
 
 			this.Culture = culture;
-			this.IgnoreCase = ignoreCase;
-			this.Trimmed = trimmed;
-			this.PureNumbers = pureNumbers;
+			this.Options = options;
 
 			this.NumberCharacters = new HashSet<string>(StringComparerEx.Ordinal);
-			if (!this.PureNumbers)
+
+			if ((options & AlphanumComparerFlags.NumberDecimalSeparator) == AlphanumComparerFlags.NumberDecimalSeparator)
 			{
 				this.NumberCharacters.Add(this.Culture.NumberFormat.NumberDecimalSeparator);
+			}
+			if ((options & AlphanumComparerFlags.PositiveSign) == AlphanumComparerFlags.PositiveSign)
+			{
 				this.NumberCharacters.Add(this.Culture.NumberFormat.PositiveSign);
+			}
+			if ((options & AlphanumComparerFlags.NegativeSign) == AlphanumComparerFlags.NegativeSign)
+			{
 				this.NumberCharacters.Add(this.Culture.NumberFormat.NegativeSign);
+			}
+			if ((options & AlphanumComparerFlags.NumberGroupSeparator) == AlphanumComparerFlags.NumberGroupSeparator)
+			{
 				this.NumberCharacters.Add(this.Culture.NumberFormat.NumberGroupSeparator);
 			}
 		}
@@ -144,30 +150,28 @@ namespace RI.Framework.Utilities.Text
 		public CultureInfo Culture { get; }
 
 		/// <summary>
-		///     Gets whether a characters case is ignored for comparison.
+		///     Gets the used comparison options.
 		/// </summary>
 		/// <value>
-		///     true if lowercase and uppercase of the same characters are considered equal, false otherwise.
+		///     The used comparison options.
 		/// </value>
-		public bool IgnoreCase { get; }
+		public AlphanumComparerFlags Options { get; }
 
 		/// <summary>
-		///     Gets whether the strings are trimmed before the comparison.
+		/// Gets whether comparison is performed case-insensitive.
 		/// </summary>
 		/// <value>
-		///     true if the strings are trimmed before comparison, false otherwise.
+		/// true if the case is ignored, false otherwise.
 		/// </value>
-		public bool Trimmed { get; }
+		public bool IgnoreCase => (this.Options & AlphanumComparerFlags.IgnoreCase) == AlphanumComparerFlags.IgnoreCase;
 
 		/// <summary>
-		/// Gets whether numbers are only used when they are pure numbers.
+		/// Gets whether comparison is performed trimmed.
 		/// </summary>
 		/// <value>
-		/// true if numbers are only used when they are pure numbers, false otherwise.
+		/// true if the values are trimmed of whitespaces before being compared.
 		/// </value>
-		public bool PureNumbers { get; }
-
-
+		public bool Trimmed => (this.Options & AlphanumComparerFlags.Trimmed) == AlphanumComparerFlags.Trimmed;
 
 		private HashSet<string> NumberCharacters { get; set; }
 
@@ -309,5 +313,20 @@ namespace RI.Framework.Utilities.Text
 		}
 
 		#endregion
+
+
+		/// <inheritdoc />
+		public AlphanumComparer Clone ()
+		{
+			CultureInfo culture = (CultureInfo)this.Culture.Clone();
+			AlphanumComparer clone = new AlphanumComparer(culture, this.Options);
+			return clone;
+		}
+
+		/// <inheritdoc />
+		object ICloneable.Clone ()
+		{
+			return this.Clone();
+		}
 	}
 }

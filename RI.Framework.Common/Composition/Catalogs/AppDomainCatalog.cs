@@ -87,6 +87,9 @@ namespace RI.Framework.Composition.Catalogs
 		///     <para>
 		///         If all types are exported, the exports will consist of all public, non-abstract, non-static types, even those without an <see cref="ExportAttribute" />.
 		///     </para>
+		/// <note type="note">
+		/// Already exported types will not be affected when this property is changed.
+		/// </note>
 		/// </remarks>
 		public bool ExportAllTypes { get; set; }
 

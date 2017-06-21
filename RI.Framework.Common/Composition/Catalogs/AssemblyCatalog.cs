@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 
 using RI.Framework.Collections.DirectLinq;
-
-
-
+using RI.Framework.Composition.Model;
 
 namespace RI.Framework.Composition.Catalogs
 {
@@ -46,20 +44,38 @@ namespace RI.Framework.Composition.Catalogs
 
 
 
+		/// <summary>
+		///     Gets whether all types should be exported.
+		/// </summary>
+		/// <value>
+		///     true if all types should be exported, false otherwise.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         If all types are exported, the exports will consist of all public, non-abstract, non-static types, even those without an <see cref="ExportAttribute" />.
+		///     </para>
+		/// </remarks>
+		public bool ExportAllTypes { get; }
+
+
+
 
 		#region Instance Constructor/Destructor
 
 		/// <summary>
 		///     Creates a new instance of <see cref="AssemblyCatalog" />.
 		/// </summary>
+		/// <param name="exportAllTypes"> Specifies whether all types should be exported (see <see cref="ExportAllTypes" /> for details). </param>
 		/// <param name="assemblies"> The sequence of assemblies whose types are used for composition. </param>
 		/// <remarks>
 		///     <para>
 		///         <paramref name="assemblies" /> is enumerated exactly once.
 		///     </para>
 		/// </remarks>
-		public AssemblyCatalog (IEnumerable<Assembly> assemblies)
+		public AssemblyCatalog (bool exportAllTypes, IEnumerable<Assembly> assemblies)
 		{
+			this.ExportAllTypes = exportAllTypes;
+
 			if (assemblies != null)
 			{
 				foreach (Assembly assembly in assemblies)
@@ -71,7 +87,7 @@ namespace RI.Framework.Composition.Catalogs
 							if (CompositionContainer.ValidateExportType(type))
 							{
 								bool privateExport = CompositionContainer.IsExportPrivate(type).GetValueOrDefault(false);
-								HashSet<string> names = CompositionContainer.GetExportsOfType(type, false);
+								HashSet<string> names = CompositionContainer.GetExportsOfType(type, this.ExportAllTypes);
 								foreach (string name in names)
 								{
 									if (!this.Items.ContainsKey(name))
@@ -94,9 +110,10 @@ namespace RI.Framework.Composition.Catalogs
 		/// <summary>
 		///     Creates a new instance of <see cref="AssemblyCatalog" />.
 		/// </summary>
+		/// <param name="exportAllTypes"> Specifies whether all types should be exported (see <see cref="ExportAllTypes" /> for details). </param>
 		/// <param name="assemblies"> The array of assemblies whose types are used for composition. </param>
-		public AssemblyCatalog (params Assembly[] assemblies)
-			: this((IEnumerable<Assembly>)assemblies)
+		public AssemblyCatalog (bool exportAllTypes, params Assembly[] assemblies)
+			: this(exportAllTypes, (IEnumerable<Assembly>)assemblies)
 		{
 		}
 

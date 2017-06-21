@@ -1,36 +1,34 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Globalization;
 using System.Text;
 
 using RI.Framework.Composition.Model;
+using RI.Framework.Utilities;
 using RI.Framework.Utilities.ObjectModel;
 
-using UnityEngine;
-
-
-
-
-namespace RI.Framework.Services.Logging
+namespace RI.Framework.Services.Logging.Writers
 {
 	/// <summary>
-	///     Implements a default log writer which is suitable for most scenarios.
+	///     Implements a log writer which writes to <see cref="Debugger"/>.
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         <c> Debug.Log </c>, <c> Debug.LogWarning </c>, or <c> Debug.LogError </c> is used to write the log messages, depending on the severity of the message.
+	///         <see cref="Debugger.Log" /> is used to write the log messages.
 	///     </para>
 	///     <para>
 	///         See <see cref="ILogWriter" /> for more details.
 	///     </para>
 	/// </remarks>
 	[Export]
-	public sealed class LogWriter : ILogWriter
+	public sealed class DebuggerLogWriter : ILogWriter
 	{
 		#region Instance Constructor/Destructor
 
 		/// <summary>
-		///     Creates a new instance of <see cref="LogWriter" />.
+		///     Creates a new instance of <see cref="DebuggerLogWriter" />.
 		/// </summary>
-		public LogWriter ()
+		public DebuggerLogWriter ()
 		{
 			this.SyncRoot = new object();
 		}
@@ -103,45 +101,22 @@ namespace RI.Framework.Services.Logging
 
 			lock (this.SyncRoot)
 			{
+				source = source ?? "null";
+				message = message ?? string.Empty;
+
 				StringBuilder finalMessageBuilder = new StringBuilder();
 				finalMessageBuilder.Append("[");
-				finalMessageBuilder.Append(source ?? "null");
+				finalMessageBuilder.Append(timestamp.ToSortableString());
+				finalMessageBuilder.Append("] [");
+				finalMessageBuilder.Append(threadId.ToString("D4", CultureInfo.InvariantCulture));
+				finalMessageBuilder.Append("] [");
+				finalMessageBuilder.Append(severity.ToString()[0]);
+				finalMessageBuilder.Append("] [");
+				finalMessageBuilder.Append(source);
 				finalMessageBuilder.Append("] ");
-				finalMessageBuilder.Append(message ?? string.Empty);
+				finalMessageBuilder.AppendLine(message);
 				string finalMessage = finalMessageBuilder.ToString();
-
-				switch (severity)
-				{
-					case LogLevel.Debug:
-					{
-						Debug.Log(finalMessage);
-						break;
-					}
-
-					case LogLevel.Information:
-					{
-						Debug.Log(finalMessage);
-						break;
-					}
-
-					case LogLevel.Warning:
-					{
-						Debug.LogWarning(finalMessage);
-						break;
-					}
-
-					case LogLevel.Error:
-					{
-						Debug.LogError(finalMessage);
-						break;
-					}
-
-					case LogLevel.Fatal:
-					{
-						Debug.LogError(finalMessage);
-						break;
-					}
-				}
+				Debugger.Log((int)severity, source, finalMessage);
 			}
 		}
 

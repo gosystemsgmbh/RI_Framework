@@ -69,8 +69,8 @@
     <Compile Include="Data\SQLite\Functions\IsNullOrEmptyOrWhitespaceSQLiteFunction.cs" />
     <Compile Include="Data\SQLite\Functions\MatchSQLiteFunction.cs" />
     <Compile Include="Data\SQLite\Functions\RegularExpressionSQLiteFunction.cs" />
-    <Compile Include="Data\SQLite\Functions\ToEmptyIfNullOrEmptyOrWhitespace.cs" />
-    <Compile Include="Data\SQLite\Functions\ToNullIfNullOrEmptyOrWhitespace.cs" />
+    <Compile Include="Data\SQLite\Functions\ToEmptyIfNullOrEmptyOrWhitespaceSQLiteFunction.cs" />
+    <Compile Include="Data\SQLite\Functions\ToNullIfNullOrEmptyOrWhitespaceSQLiteFunction.cs" />
     <Compile Include="Data\SQLite\Functions\TrimSQLiteFunction.cs" />
     <Compile Include="Data\SQLite\Functions\_NamespaceDoc.cs" />
     <Compile Include="Data\SQLite\SQLiteConnectionExtensions.cs" />
@@ -78,7 +78,7 @@
     <Compile Include="Data\SQLite\SQLiteDatabaseManager.cs" />
     <Compile Include="Data\SQLite\_NamespaceDoc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\Logging\Readers\LogFileDbConverterResults.cs" />
+    <Compile Include="Services\Logging\Readers\LogFileToDbConverterResults.cs" />
     <Compile Include="Services\Logging\Readers\LogFileToDbConverter.cs" />
   </ItemGroup>
   <ItemGroup>

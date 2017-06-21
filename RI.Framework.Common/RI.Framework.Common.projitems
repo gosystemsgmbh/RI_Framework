@@ -202,6 +202,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\StringExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\StringSplitPredicate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Text\AlphanumComparer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Text\AlphanumComparerFlags.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Text\CommandLine.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Text\IndentedTextWriter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Text\_NamespaceDoc.cs" />

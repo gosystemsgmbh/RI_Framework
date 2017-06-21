@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 
 using RI.Framework.Collections.DirectLinq;
+using RI.Framework.Composition.Model;
 using RI.Framework.IO.Paths;
 using RI.Framework.Services.Logging;
 using RI.Framework.Utilities;
@@ -32,7 +33,7 @@ namespace RI.Framework.Composition.Catalogs
 	{
 		#region Static Methods
 
-		internal static Dictionary<string, List<CompositionCatalogItem>> LoadAssemblyFile (FilePath file)
+		internal static Dictionary<string, List<CompositionCatalogItem>> LoadAssemblyFile (FilePath file, bool exportAllTypes)
 		{
 			if (file == null)
 			{
@@ -52,7 +53,7 @@ namespace RI.Framework.Composition.Catalogs
 				if (CompositionContainer.ValidateExportType(type))
 				{
 					bool privateExport = CompositionContainer.IsExportPrivate(type).GetValueOrDefault(false);
-					HashSet<string> names = CompositionContainer.GetExportsOfType(type, false);
+					HashSet<string> names = CompositionContainer.GetExportsOfType(type, exportAllTypes);
 					foreach (string name in names)
 					{
 						if (!items.ContainsKey(name))
@@ -81,9 +82,10 @@ namespace RI.Framework.Composition.Catalogs
 		///     Creates a new instance of <see cref="FileCatalog" />.
 		/// </summary>
 		/// <param name="file"> The assembly file to load. </param>
+		/// <param name="exportAllTypes"> Specifies whether all types should be exported (see <see cref="ExportAllTypes" /> for details). </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="file" /> is null. </exception>
 		/// <exception cref="InvalidPathArgumentException"> <paramref name="file" /> is not a real usable file. </exception>
-		public FileCatalog (FilePath file)
+		public FileCatalog (FilePath file, bool exportAllTypes)
 		{
 			if (file == null)
 			{
@@ -96,6 +98,7 @@ namespace RI.Framework.Composition.Catalogs
 			}
 
 			this.File = file;
+			this.ExportAllTypes = exportAllTypes;
 
 			this.IsLoaded = false;
 			this.Failed = false;
@@ -107,6 +110,19 @@ namespace RI.Framework.Composition.Catalogs
 
 
 		#region Instance Properties/Indexer
+
+		/// <summary>
+		///     Gets whether all types should be exported.
+		/// </summary>
+		/// <value>
+		///     true if all types should be exported, false otherwise.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         If all types are exported, the exports will consist of all public, non-abstract, non-static types, even those without an <see cref="ExportAttribute" />.
+		///     </para>
+		/// </remarks>
+		public bool ExportAllTypes { get; }
 
 		/// <summary>
 		///     Indicates whether the assembly file was successfully loaded.
@@ -149,7 +165,7 @@ namespace RI.Framework.Composition.Catalogs
 
 			try
 			{
-				Dictionary<string, List<CompositionCatalogItem>> items = FileCatalog.LoadAssemblyFile(this.File);
+				Dictionary<string, List<CompositionCatalogItem>> items = FileCatalog.LoadAssemblyFile(this.File, this.ExportAllTypes);
 				foreach (KeyValuePair<string, List<CompositionCatalogItem>> item in items)
 				{
 					this.Items.Add(item.Key, item.Value);

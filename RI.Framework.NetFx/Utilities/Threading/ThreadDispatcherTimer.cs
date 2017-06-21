@@ -221,6 +221,8 @@ namespace RI.Framework.Utilities.Threading
 					return;
 				}
 
+				GC.ReRegisterForFinalize(this);
+
 				this.TimerThread = new Thread(() =>
 				{
 					bool cont;

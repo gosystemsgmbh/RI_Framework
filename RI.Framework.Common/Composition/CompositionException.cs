@@ -16,7 +16,7 @@ namespace RI.Framework.Composition
 	///     </note>
 	/// </remarks>
 	[Serializable]
-	public sealed class CompositionException : InvalidOperationException
+	public class CompositionException : Exception
 	{
 		#region Constants
 

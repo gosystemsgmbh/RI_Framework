@@ -80,8 +80,8 @@ namespace RI.Framework.Services.Settings.Storages
 		///     Creates a new instance of <see cref="IniFileSettingStorage" />.
 		/// </summary>
 		/// <param name="filePath"> The path to the INI file. </param>
-		/// <param name="fileEncoding"> The text encoding of the INI file. </param>
-		/// <param name="sectionName"> The INI section name where all the values are read/written from/to. </param>
+		/// <param name="fileEncoding"> The text encoding of the INI file (can be null to use <see cref="DefaultEncoding"/>). </param>
+		/// <param name="sectionName"> The INI section name where all the values are read/written from/to (can be null to use <see cref="DefaultSectionName"/>). </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="filePath" /> is null. </exception>
 		/// <exception cref="InvalidPathArgumentException"> <paramref name="filePath" /> contains wildcards. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="sectionName" /> is an empty string. </exception>

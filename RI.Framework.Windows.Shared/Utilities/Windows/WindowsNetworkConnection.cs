@@ -83,7 +83,7 @@ namespace RI.Framework.Utilities.Windows
 		/// <value>
 		///     true if the connection is open, false otherwise.
 		/// </value>
-		public bool Open { get; private set; }
+		public bool IsOpen { get; private set; }
 
 		/// <summary>
 		///     Gets the password for the logon
@@ -127,15 +127,15 @@ namespace RI.Framework.Utilities.Windows
 
 		private void Connect ()
 		{
-			this.Open = false;
+			this.IsOpen = false;
 			this.Error = WindowsNetwork.OpenConnection(this.Resource, this.Username, this.Password, this.Interactive);
-			this.Open = true;
+			this.IsOpen = true;
 		}
 
 		[SuppressMessage("ReSharper", "UnusedParameter.Local")]
 		private void Dispose (bool disposing)
 		{
-			this.Open = false;
+			this.IsOpen = false;
 			WindowsNetwork.CloseConnection(this.Resource, true);
 		}
 

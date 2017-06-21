@@ -1,7 +1,6 @@
 ﻿using System;
 
-
-
+using RI.Framework.Services.Logging.Writers;
 
 namespace RI.Framework.Services.Logging
 {
@@ -10,7 +9,7 @@ namespace RI.Framework.Services.Logging
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         A log filter can be used to filter log messages to only let certain messages reach the <see cref="LogWriter" />s for actual logging.
+	///         A log filter can be used to filter log messages to only let certain messages reach the <see cref="DebugLogWriter" />s for actual logging.
 	///     </para>
 	///     <para>
 	///         Log filters can be applied globally (to a <see cref="ILogService" />) or to specific log writers (<see cref="ILogWriter" />).

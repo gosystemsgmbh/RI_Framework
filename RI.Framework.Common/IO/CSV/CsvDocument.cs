@@ -158,7 +158,7 @@ namespace RI.Framework.IO.CSV
 				throw new ArgumentNullException(nameof(reader));
 			}
 
-			List<List<string>> rows = new List<List<string>>();
+			List<IList<string>> rows = new List<IList<string>>();
 			while (reader.ReadNext())
 			{
 				if (reader.CurrentError != CsvReaderError.None)

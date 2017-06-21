@@ -49,10 +49,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bus\Brokers\LocalBroker.cs" />
+    <Compile Include="Bus\BusTransmission.cs" />
     <Compile Include="Bus\Connections\IBusConnection.cs" />
-    <Compile Include="Bus\Context\BusContext.cs" />
-    <Compile Include="Bus\Endpoints\IEndpoint.cs" />
-    <Compile Include="Bus\Nodes\BusNode.cs" />
+    <Compile Include="Bus\BusContext.cs" />
+    <Compile Include="Bus\Containers\IBusContainer.cs" />
+    <Compile Include="Bus\Dispatchers\IBusDispatcher.cs" />
+    <Compile Include="Bus\Endpoints\IBusEndpoint.cs" />
+    <Compile Include="Bus\BusNode.cs" />
+    <Compile Include="Bus\InvalidBusConfigurationException.cs" />
+    <Compile Include="Bus\Pipelines\DefaultBusPipeline.cs" />
+    <Compile Include="Bus\Pipelines\IBusPipeline.cs" />
     <Compile Include="Bus\Serialization\IBusSerializer.cs" />
     <Compile Include="Data\Database\Cleanup\_NamespaceDoc.cs" />
     <Compile Include="Data\Database\DatabaseConfiguration.cs" />
@@ -93,8 +99,8 @@
     <Compile Include="Services\HostContext.cs" />
     <Compile Include="Services\IBootstrapper.cs" />
     <Compile Include="Services\IBootstrapperOperations.cs" />
-    <Compile Include="Services\Logging\LogWriter.cs" />
-    <Compile Include="Services\Logging\TraceListenerAdapterLogWriter.cs" />
+    <Compile Include="Services\Logging\Writers\DebuggerLogWriter.cs" />
+    <Compile Include="Services\Logging\Writers\TraceListenerAdapterLogWriter.cs" />
     <Compile Include="Services\Messaging\Dispatchers\_NamespaceDoc.cs" />
     <Compile Include="Services\Messaging\Handlers\Triggers\TriggerMessageExtensions.cs" />
     <Compile Include="Services\Messaging\Handlers\Triggers\TriggerMessageHandler.cs" />
@@ -113,7 +119,7 @@
     <Compile Include="Services\Regions\IRegionAdapter.cs" />
     <Compile Include="Services\Regions\IRegionElement.cs" />
     <Compile Include="Services\Regions\IRegionService.cs" />
-    <Compile Include="Services\Regions\RegionAdapterBase.cs" />
+    <Compile Include="Services\Regions\Adapters\RegionAdapterBase.cs" />
     <Compile Include="Services\Regions\RegionElementSortHintAttribute.cs" />
     <Compile Include="Services\Regions\RegionLocator.cs" />
     <Compile Include="Services\Regions\RegionNotFoundException.cs" />
@@ -125,7 +131,7 @@
     <Compile Include="Services\Resources\IResourceService.cs" />
     <Compile Include="Services\Resources\IResourceSet.cs" />
     <Compile Include="Services\Resources\IResourceSource.cs" />
-    <Compile Include="Services\Resources\ResourceConverter.cs" />
+    <Compile Include="Services\Resources\Converters\DefaultResourceConverter.cs" />
     <Compile Include="Services\Resources\ResourceLoadingInfo.cs" />
     <Compile Include="Services\Resources\ResourceLocator.cs" />
     <Compile Include="Services\Resources\ResourceService.cs" />
@@ -142,7 +148,7 @@
     <Compile Include="Services\Settings\ISettingConverter.cs" />
     <Compile Include="Services\Settings\ISettingService.cs" />
     <Compile Include="Services\Settings\ISettingStorage.cs" />
-    <Compile Include="Services\Settings\SettingConverter.cs" />
+    <Compile Include="Services\Settings\Converters\DefaultSettingConverter.cs" />
     <Compile Include="Services\Settings\SettingService.cs" />
     <Compile Include="Services\Settings\Storages\_NamespaceDoc.cs" />
     <Compile Include="Services\Settings\_NamespaceDoc.cs" />

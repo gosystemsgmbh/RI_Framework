@@ -285,10 +285,7 @@ namespace RI.Framework.Services.Logging.Readers
 		/// <exception cref="ObjectDisposedException"> The log file reader has been closed/disposed. </exception>
 		public bool ReadNext ()
 		{
-			if (this.Reader == null)
-			{
-				throw new ObjectDisposedException(nameof(LogFileReader));
-			}
+			this.VerifyNotClosed();
 
 			string firstLine = null;
 			List<string> subsequentLines = new List<string>();
@@ -463,6 +460,14 @@ namespace RI.Framework.Services.Logging.Readers
 
 			string read = this.Reader.ReadLine();
 			return read;
+		}
+
+		private void VerifyNotClosed()
+		{
+			if (this.Reader == null)
+			{
+				throw new ObjectDisposedException(nameof(LogFileReader));
+			}
 		}
 
 		#endregion

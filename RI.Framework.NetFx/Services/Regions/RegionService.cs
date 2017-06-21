@@ -27,6 +27,7 @@ namespace RI.Framework.Services.Regions
 	///         See <see cref="IRegionService" /> for more details.
 	///     </para>
 	/// </remarks>
+	[Export]
 	public sealed class RegionService : IRegionService, ILogSource
 	{
 		#region Instance Constructor/Destructor

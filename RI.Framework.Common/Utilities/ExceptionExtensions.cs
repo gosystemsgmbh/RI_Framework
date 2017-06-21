@@ -136,12 +136,19 @@ namespace RI.Framework.Utilities
 									continue;
 								}
 
-								string type = propertyValue?.GetType()?.Name ?? property.PropertyType.Name;
+								string propertyType = property.PropertyType.Name;
+								string valueType = propertyValue?.GetType()?.Name;
+
+								string type = propertyType + (valueType == null ? string.Empty : ("[" + valueType + "]"));
 								string stringValue = ExceptionExtensions.NullString;
 
 								if (propertyValue != null)
 								{
-									if (propertyValue is IDictionary)
+									if (propertyValue is string)
+									{
+										stringValue = (string)propertyValue;
+									}
+									else if (propertyValue is IDictionary)
 									{
 										stringValue = (from DictionaryEntry x in ((IDictionary)propertyValue) select "[" + x.Key + "]=[" + x.Value + "]").Join(";");
 									}

@@ -26,10 +26,10 @@ namespace RI.Framework.Services.Modularization
 		public static bool IsAvailable => ModuleLocator.Service != null;
 
 		/// <inheritdoc cref="IModuleService.IsInitialized" />
-		public static bool? IsInitialized => ModuleLocator.Service?.IsInitialized;
+		public static bool IsInitialized => (ModuleLocator.Service?.IsInitialized).GetValueOrDefault(false);
 
 		/// <inheritdoc cref="IModuleService.Modules" />
-		public static IEnumerable<IModule> Modules => ModuleLocator.Service?.Modules;
+		public static IEnumerable<IModule> Modules => ModuleLocator.Service?.Modules ?? new IModule[0];
 
 		/// <summary>
 		///     Gets the available module service.

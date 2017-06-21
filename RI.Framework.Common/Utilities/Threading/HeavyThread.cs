@@ -183,6 +183,9 @@ namespace RI.Framework.Utilities.Threading
 		///     <para>
 		///         This timeout is used during <see cref="Start" /> while waiting for <see cref="OnBegin" /> to finish and during <see cref="Dispose(bool)" /> or <see cref="Stop" /> while waiting for <see cref="OnStop" /> to take effect.
 		///     </para>
+		/// <para>
+		/// The default value is <see cref="DefaultThreadTimeout"/>.
+		/// </para>
 		/// </remarks>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="value" /> is less than zero. </exception>
 		public int Timeout
@@ -375,6 +378,8 @@ namespace RI.Framework.Utilities.Threading
 				bool success = false;
 				try
 				{
+					GC.ReRegisterForFinalize(this);
+
 					using (ManualResetEvent startEvent = new ManualResetEvent(false))
 					{
 						bool startEventSet = false;

@@ -27,6 +27,7 @@ namespace RI.Framework.Services.Settings
 	///         See <see cref="ISettingService" /> for more details.
 	///     </para>
 	/// </remarks>
+	[Export]
 	public sealed class SettingService : ISettingService, ILogSource
 	{
 		#region Instance Constructor/Destructor

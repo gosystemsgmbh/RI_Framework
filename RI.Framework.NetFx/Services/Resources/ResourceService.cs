@@ -29,6 +29,7 @@ namespace RI.Framework.Services.Resources
 	///         See <see cref="IResourceService" /> for more details.
 	///     </para>
 	/// </remarks>
+	[Export]
 	public sealed class ResourceService : IResourceService, IImporting, ILogSource
 	{
 		#region Instance Constructor/Destructor

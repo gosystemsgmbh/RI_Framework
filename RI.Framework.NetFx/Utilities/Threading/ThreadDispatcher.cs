@@ -30,11 +30,13 @@ namespace RI.Framework.Utilities.Threading
 		#region Constants
 
 		/// <summary>
-		///     Gets the default value for <see cref="DefaultPriority" /> if it is not explicitly set.
-		/// </summary>
-		/// <value>
 		///     The default value for <see cref="DefaultPriority" /> if it is not explicitly set.
-		/// </value>
+		/// </summary>
+		/// <remarks>
+		///     <para>
+		///         The default value is <c>int.MaxValue / 2</c>.
+		///     </para>
+		/// </remarks>
 		public const int DefaultPriorityValue = int.MaxValue / 2;
 
 		#endregion

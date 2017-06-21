@@ -168,8 +168,8 @@ namespace RI.Framework.Data.SQLite
 		{
 			connection.BindFunction(new TrimSQLiteFunction());
 
-			connection.BindFunction(new ToEmptyIfNullOrEmptyOrWhitespace());
-			connection.BindFunction(new ToNullIfNullOrEmptyOrWhitespace());
+			connection.BindFunction(new ToEmptyIfNullOrEmptyOrWhitespaceSQLiteFunction());
+			connection.BindFunction(new ToNullIfNullOrEmptyOrWhitespaceSQLiteFunction());
 
 			connection.BindFunction(new IsNullOrEmptyOrWhitespaceSQLiteFunction());
 

@@ -25,6 +25,7 @@ namespace RI.Framework.Services.Messaging
 	///         See <see cref="IMessageService" /> for more details.
 	///     </para>
 	/// </remarks>
+	[Export]
 	public sealed class MessageService : IMessageService, ILogSource
 	{
 		#region Instance Constructor/Destructor

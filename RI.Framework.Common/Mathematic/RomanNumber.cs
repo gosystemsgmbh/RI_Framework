@@ -5,9 +5,7 @@ using System.Text;
 
 using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Utilities;
-
-
-
+using RI.Framework.Utilities.ObjectModel;
 
 namespace RI.Framework.Mathematic
 {
@@ -66,7 +64,7 @@ namespace RI.Framework.Mathematic
 	/// </code>
 	/// </example>
 	[Serializable]
-	public struct RomanNumber : IEquatable<RomanNumber>, IComparable<RomanNumber>, IComparable, IFormattable
+	public struct RomanNumber : IEquatable<RomanNumber>, IComparable<RomanNumber>, IComparable, IFormattable, ICloneable<RomanNumber>, ICloneable
 	{
 		#region Static Constructor/Destructor
 
@@ -682,7 +680,19 @@ namespace RI.Framework.Mathematic
 		}
 
 		/// <inheritdoc />
+		object ICloneable.Clone ()
+		{
+			return this.Clone();
+		}
+
+		/// <inheritdoc />
 		public string ToString (string format, IFormatProvider formatProvider) => this.DecimalValue.ToString(format, formatProvider);
+
+		/// <inheritdoc />
+		public RomanNumber Clone ()
+		{
+			return new RomanNumber(this.DecimalValue);
+		}
 
 		/// <inheritdoc />
 		public override string ToString ()

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using RI.Framework.Collections;
 using RI.Framework.Collections.DirectLinq;
+using RI.Framework.Composition.Model;
 using RI.Framework.IO.Paths;
 using RI.Framework.Services.Logging;
 using RI.Framework.Utilities;
@@ -57,6 +58,7 @@ namespace RI.Framework.Composition.Catalogs
 		///     Creates a new instance of <see cref="DirectoryCatalog" />.
 		/// </summary>
 		/// <param name="directoryPath"> The directory which is searched for assemblies. </param>
+		/// <param name="exportAllTypes"> Specifies whether all types should be exported (see <see cref="ExportAllTypes" /> for details). </param>
 		/// <remarks>
 		///     <para>
 		///         The default file pattern <see cref="DefaultFilePattern" /> is used and search is performed non-recursive.
@@ -64,8 +66,8 @@ namespace RI.Framework.Composition.Catalogs
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="directoryPath" /> is null. </exception>
 		/// <exception cref="InvalidPathArgumentException"> <paramref name="directoryPath" /> is not a real usable directory. </exception>
-		public DirectoryCatalog (DirectoryPath directoryPath)
-			: this(directoryPath, DirectoryCatalog.DefaultFilePattern, false)
+		public DirectoryCatalog (DirectoryPath directoryPath, bool exportAllTypes)
+			: this(directoryPath, exportAllTypes, DirectoryCatalog.DefaultFilePattern, false)
 		{
 		}
 
@@ -73,12 +75,13 @@ namespace RI.Framework.Composition.Catalogs
 		///     Creates a new instance of <see cref="DirectoryCatalog" />.
 		/// </summary>
 		/// <param name="directoryPath"> The directory which is searched for assemblies. </param>
-		/// <param name="filePattern"> The file pattern which is used to search for assemblies. </param>
+		/// <param name="exportAllTypes"> Specifies whether all types should be exported (see <see cref="ExportAllTypes" /> for details). </param>
+		/// <param name="filePattern"> The file pattern which is used to search for assemblies (can be null to use <see cref="DefaultFilePattern"/>). </param>
 		/// <param name="recursive"> Specifies whether assemblies are searched recursive (including subdirectories) or not. </param>
-		/// <exception cref="ArgumentNullException"> <paramref name="directoryPath" /> or <paramref name="filePattern" /> is null. </exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="directoryPath" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> <paramref name="directoryPath" /> is not a real usable directory. </exception>
 		/// <exception cref="InvalidPathArgumentException"> <paramref name="filePattern" /> is an empty string. </exception>
-		public DirectoryCatalog (DirectoryPath directoryPath, string filePattern, bool recursive)
+		public DirectoryCatalog (DirectoryPath directoryPath, bool exportAllTypes, string filePattern, bool recursive)
 		{
 			if (directoryPath == null)
 			{
@@ -90,18 +93,17 @@ namespace RI.Framework.Composition.Catalogs
 				throw new InvalidPathArgumentException(nameof(directoryPath));
 			}
 
-			if (filePattern == null)
+			if (filePattern != null)
 			{
-				throw new ArgumentNullException(nameof(filePattern));
-			}
-
-			if (filePattern.IsEmptyOrWhitespace())
-			{
-				throw new EmptyStringArgumentException(nameof(filePattern));
+				if (filePattern.IsEmptyOrWhitespace())
+				{
+					throw new EmptyStringArgumentException(nameof(filePattern));
+				}
 			}
 
 			this.DirectoryPath = directoryPath;
-			this.FilePattern = filePattern;
+			this.ExportAllTypes = exportAllTypes;
+			this.FilePattern = filePattern ?? DirectoryCatalog.DefaultFilePattern;
 			this.Recursive = recursive;
 
 			this.LoadedFiles = new HashSet<FilePath>();
@@ -114,6 +116,19 @@ namespace RI.Framework.Composition.Catalogs
 
 
 		#region Instance Properties/Indexer
+
+		/// <summary>
+		///     Gets whether all types should be exported.
+		/// </summary>
+		/// <value>
+		///     true if all types should be exported, false otherwise.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         If all types are exported, the exports will consist of all public, non-abstract, non-static types, even those without an <see cref="ExportAttribute" />.
+		///     </para>
+		/// </remarks>
+		public bool ExportAllTypes { get; }
 
 		/// <summary>
 		///     Gets the directory which is searched for assemblies.
@@ -205,7 +220,7 @@ namespace RI.Framework.Composition.Catalogs
 
 				try
 				{
-					Dictionary<string, List<CompositionCatalogItem>> items = FileCatalog.LoadAssemblyFile(newFile);
+					Dictionary<string, List<CompositionCatalogItem>> items = FileCatalog.LoadAssemblyFile(newFile, this.ExportAllTypes);
 					foreach (KeyValuePair<string, List<CompositionCatalogItem>> item in items)
 					{
 						if (!this.Items.ContainsKey(item.Key))

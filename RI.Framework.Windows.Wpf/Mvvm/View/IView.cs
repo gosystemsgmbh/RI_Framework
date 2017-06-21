@@ -1,8 +1,11 @@
-﻿namespace RI.Framework.Mvvm.View
+﻿using RI.Framework.Composition.Model;
+
+namespace RI.Framework.Mvvm.View
 {
 	/// <summary>
 	///     Defines an interface for views.
 	/// </summary>
+	[Export]
 	public interface IView
 	{
 		/// <summary>

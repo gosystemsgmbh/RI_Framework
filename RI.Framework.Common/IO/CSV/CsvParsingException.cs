@@ -10,7 +10,7 @@ namespace RI.Framework.IO.CSV
 	///     The <see cref="CsvParsingException" /> is thrown when invalid CSV data is encountered while parsing CSV data.
 	/// </summary>
 	[Serializable]
-	public sealed class CsvParsingException : Exception
+	public class CsvParsingException : Exception
 	{
 		#region Constants
 

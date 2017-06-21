@@ -7,10 +7,7 @@ using RI.Framework.Collections.Comparison;
 using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Utilities.Reflection;
 
-
-
-
-namespace RI.Framework.Services.Regions
+namespace RI.Framework.Services.Regions.Adapters
 {
 	/// <summary>
 	///     Implements a base class for region adapters which provides some commonly used base functionality.

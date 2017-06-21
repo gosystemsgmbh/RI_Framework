@@ -35,7 +35,10 @@ namespace RI.Framework.Services.Logging
 		public static ILogService Service => ServiceLocator.GetInstance<ILogService>();
 
 		/// <inheritdoc cref="ILogService.Writers" />
-		public static IEnumerable<ILogWriter> Writers => LogLocator.Service?.Writers;
+		public static IEnumerable<ILogWriter> Writers => LogLocator.Service?.Writers ?? new ILogWriter[0];
+
+		/// <inheritdoc cref="ILogService.Filter" />
+		public static ILogFilter Filter => LogLocator.Service?.Filter;
 
 		#endregion
 
