@@ -103,20 +103,6 @@ namespace RI.Framework.Data.Database
 	public abstract class DatabaseConfiguration <T> : DatabaseConfiguration, ICloneable<T>
 		where T : DatabaseConfiguration<T>, new()
 	{
-		#region Instance Constructor/Destructor
-
-		/// <summary>
-		///     Creates a new instance of <see cref="DatabaseConfiguration{T}" />.
-		/// </summary>
-		protected DatabaseConfiguration ()
-		{
-		}
-
-		#endregion
-
-
-
-
 		#region Virtuals
 
 		/// <summary>

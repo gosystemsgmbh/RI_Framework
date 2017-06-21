@@ -24,9 +24,6 @@ namespace RI.Framework.Data.Database
 	///         However, if the database is in the state <see cref="DatabaseState.New" /> or <see cref="DatabaseState.Old" />, the database can be made ready by upgrading to the latest known/supported version using <see cref="UpgradeDatabase" />.
 	///     </para>
 	///     <para>
-	///         Database upgrades are handled using <see cref="DatabaseMigrationStep" />. See <see cref="DatabaseMigrationStep" /> for more details.
-	///     </para>
-	///     <para>
 	///         If the database supports connection tracking (see <see cref="SupportsConnectionTracking" />), <see cref="UnloadDatabase" /> or <see cref="CloseConnections" /> will close all currently non-closed connections which were created using <see cref="CreateConnection" />.
 	///     </para>
 	/// </remarks>

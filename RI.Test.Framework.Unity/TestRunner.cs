@@ -135,7 +135,7 @@ namespace RI.Test.Framework
 
 			this.Log(LogLevel.Debug, "Searching for available tests");
 
-			ServiceLocator.GetInstance<CompositionContainer>().AddCatalog(new AssemblyCatalog(Assembly.GetExecutingAssembly()));
+			ServiceLocator.GetInstance<CompositionContainer>().AddCatalog(new AssemblyCatalog(false, Assembly.GetExecutingAssembly()));
 
 			this.ProcessedTestMethods = 0;
 			this.TestMethods = new List<object[]>();

@@ -4,6 +4,11 @@ using System.Text;
 using RI.Framework.Composition.Model;
 using RI.Framework.Utilities.ObjectModel;
 
+using UnityEngine;
+
+
+
+
 namespace RI.Framework.Services.Logging.Writers
 {
 	/// <summary>

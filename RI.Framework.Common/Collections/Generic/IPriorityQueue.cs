@@ -2,8 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-using RI.Framework.Utilities.ObjectModel;
-
 namespace RI.Framework.Collections.Generic
 {
 	/// <summary>
@@ -21,7 +19,7 @@ namespace RI.Framework.Collections.Generic
 	///         null are valid item values if <typeparamref name="T" /> is a reference type.
 	///     </para>
 	/// </remarks>
-	public interface IPriorityQueue<T> : ICollection, IEnumerable<T>, IEnumerable, ISynchronizable
+	public interface IPriorityQueue<T> : ICollection, IEnumerable<T>, IEnumerable
 	{
 		/// <summary>
 		///     Removes all items from the priority queue.

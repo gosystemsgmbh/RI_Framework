@@ -35,7 +35,7 @@ namespace RI.Framework.Collections.Generic
 	/// ]]>
 	/// </code>
 	/// </example>
-	public sealed class Warehouse <T> : IWarehouse<T>
+	public sealed class Warehouse <T> : IWarehouse<T>, ISynchronizable
 	{
 		#region Instance Constructor/Destructor
 

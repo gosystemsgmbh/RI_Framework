@@ -2,8 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 
-using RI.Framework.Utilities.ObjectModel;
-
 namespace RI.Framework.Collections.Generic
 {
 	/// <summary>
@@ -31,7 +29,7 @@ namespace RI.Framework.Collections.Generic
 	///         <see cref="IWarehouse{T}" /> never touches the contents of <see cref="Storage" />, except for enumerating them as provided by <see cref="IEnumerable{T}"/>
 	///     </para>
 	/// </remarks>
-	public interface IWarehouse <T> : ICollection, IEnumerable<T>, IEnumerable, ISynchronizable
+	public interface IWarehouse <T> : ICollection, IEnumerable<T>, IEnumerable
 	{
 		/// <summary>
 		///     Gets the amount of free bays.

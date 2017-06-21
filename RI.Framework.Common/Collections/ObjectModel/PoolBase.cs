@@ -234,7 +234,7 @@ namespace RI.Framework.Collections.ObjectModel
 		///     <note type="important">
 		///         To increase performance, this return operation does not check whether the item to be returned has already been returned previously.
 		///         Returning an item which is already been returned leads to unpredictable behaviour.
-		///         If a safe return operation, checking whether an item has already been returned or not, at the cost of performance, is required, use <see cref="ReturnSafe(T)" /> instead.
+		///         If a safe return operation, checking whether an item has already been returned or not, at the cost of performance, is required, use <see cref="IPoolExtensions.ReturnSafe{T}" /> instead.
 		///     </note>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="item" /> is null. </exception>

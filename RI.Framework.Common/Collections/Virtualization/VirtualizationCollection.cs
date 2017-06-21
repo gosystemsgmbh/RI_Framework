@@ -239,6 +239,7 @@ namespace RI.Framework.Collections.Virtualization
 		#region Interface: IDisposable
 
 		/// <inheritdoc />
+		[SuppressMessage("ReSharper", "SuspiciousTypeConversion.Global")]
 		public void Dispose ()
 		{
 			if (this.ItemsProvider is INotifyItemsProvider<T>)

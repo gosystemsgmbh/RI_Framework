@@ -73,7 +73,7 @@ namespace RI.Test.Framework.Composition
 		public void ConstructorCreator_Test ()
 		{
 			CompositionContainer test = new CompositionContainer();
-			test.AddCatalog(new AssemblyCatalog(Assembly.GetExecutingAssembly()));
+			test.AddCatalog(new AssemblyCatalog(false, Assembly.GetExecutingAssembly()));
 
 			Mock_Exports_7 m7 = test.GetExport<Mock_Exports_7>();
 			if (m7 == null)
@@ -106,7 +106,7 @@ namespace RI.Test.Framework.Composition
 		public void Inheritance_Test ()
 		{
 			CompositionContainer test = new CompositionContainer();
-			test.AddCatalog(new AssemblyCatalog(Assembly.GetExecutingAssembly()));
+			test.AddCatalog(new AssemblyCatalog(false, Assembly.GetExecutingAssembly()));
 
 			Mock_Imports imports = test.GetExport<Mock_Imports>();
 
@@ -207,7 +207,7 @@ namespace RI.Test.Framework.Composition
 		public void ModelExportImport_Test ()
 		{
 			CompositionContainer test = new CompositionContainer();
-			test.AddCatalog(new AssemblyCatalog(Assembly.GetExecutingAssembly()));
+			test.AddCatalog(new AssemblyCatalog(false, Assembly.GetExecutingAssembly()));
 
 			Mock_Imports imports1 = new Mock_Imports();
 			test.ResolveImports(imports1, CompositionFlags.Normal);

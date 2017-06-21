@@ -44,7 +44,7 @@ namespace RI.Framework.Collections.Generic
 	///  ]]>
 	///  </code>
 	/// </example>
-	public sealed class PriorityQueue <T> : IPriorityQueue<T>
+	public sealed class PriorityQueue <T> : IPriorityQueue<T>, ISynchronizable
 	{
 		#region Instance Constructor/Destructor
 

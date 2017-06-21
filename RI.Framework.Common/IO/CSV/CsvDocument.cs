@@ -294,7 +294,7 @@ namespace RI.Framework.IO.CSV
 				throw new ArgumentNullException(nameof(writer));
 			}
 
-			foreach (List<string> row in this.Data)
+			foreach (IList<string> row in this.Data)
 			{
 				writer.WriteRow(row);
 			}
