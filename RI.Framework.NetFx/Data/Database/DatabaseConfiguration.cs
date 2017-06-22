@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.Common;
 
 using RI.Framework.Data.Database.Cleanup;
 using RI.Framework.Data.Database.Scripts;
@@ -99,10 +100,21 @@ namespace RI.Framework.Data.Database
 	/// <summary>
 	///     Implements the base class for storing the database configuration used by implementations of <see cref="IDatabaseManager" />.
 	/// </summary>
-	/// <typeparam name="T"> </typeparam>
+	/// <typeparam name="T">The database configuration type.</typeparam>
 	public abstract class DatabaseConfiguration <T> : DatabaseConfiguration, ICloneable<T>
 		where T : DatabaseConfiguration<T>, new()
 	{
+		#region Instance Constructor/Destructor
+
+		internal DatabaseConfiguration()
+		{
+		}
+
+		#endregion
+
+
+
+
 		#region Virtuals
 
 		/// <summary>
@@ -142,6 +154,58 @@ namespace RI.Framework.Data.Database
 			T clone = new T();
 			this.Clone(clone);
 			return clone;
+		}
+
+		#endregion
+	}
+
+	/// <summary>
+	///     Implements the base class for storing the database configuration used by implementations of <see cref="IDatabaseManager" />.
+	/// </summary>
+	/// <typeparam name="TConnectionStringBuilder">The type of the used connection string builder.</typeparam>
+	/// <typeparam name="TConfiguration">The database configuration type.</typeparam>
+	public abstract class DatabaseConfiguration<TConnectionStringBuilder, TConfiguration> : DatabaseConfiguration<TConfiguration>
+		where TConnectionStringBuilder : DbConnectionStringBuilder, new()
+		where TConfiguration : DatabaseConfiguration<TConnectionStringBuilder, TConfiguration>, new()
+	{
+		#region Instance Constructor/Destructor
+
+		/// <summary>
+		///     Creates a new instance of <see cref="DatabaseConfiguration{TConnectionStringBuilder,TConfiguration}" />.
+		/// </summary>
+		protected DatabaseConfiguration()
+		{
+			this.ConnectionString = new TConnectionStringBuilder();
+		}
+
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
+
+		/// <summary>
+		///     Gets the connection string builder.
+		/// </summary>
+		/// <value>
+		///     The connection string builder.
+		/// </value>
+		public TConnectionStringBuilder ConnectionString { get; private set; }
+
+		#endregion
+
+
+
+
+		#region Overrides
+
+		/// <inheritdoc />
+		protected override void Clone (TConfiguration clone)
+		{
+			base.Clone(clone);
+
+			clone.ConnectionString.ConnectionString = this.ConnectionString.ConnectionString;
 		}
 
 		#endregion

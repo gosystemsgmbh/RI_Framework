@@ -27,7 +27,7 @@ namespace RI.Framework.Data.EF
 	///         See <see cref="RepositoryDbSet{T}" /> for more details.
 	///     </para>
 	/// </remarks>
-	public abstract class RepositoryDbSet : IRepositorySet
+	public abstract class RepositoryDbSet : IRepositorySet, ILogSource
 	{
 		#region Instance Constructor/Destructor
 
@@ -282,7 +282,7 @@ namespace RI.Framework.Data.EF
 	///         See <see cref="IRepositorySet{T}" /> and <see cref="DbSet{TEntity}" /> for more details.
 	///     </para>
 	/// </remarks>
-	public class RepositoryDbSet <T> : RepositoryDbSet, IRepositorySet<T>, ILogSource
+	public class RepositoryDbSet <T> : RepositoryDbSet, IRepositorySet<T>
 		where T : class
 	{
 		#region Instance Constructor/Destructor

@@ -36,7 +36,7 @@ namespace RI.Framework.Data.Repository
 		///         If both are providing a value (meaning: not null), the value from <see cref="ChangeTrackingContext" /> is used.
 		///     </para>
 		///     <para>
-		///         If <see cref="ChangeTrackingContext" /> is null and <see cref="ChangeTrackingContextResolve" /> resolves a context, <see cref="ChangeTrackingContext" /> is also set to the context.
+		///         If <see cref="ChangeTrackingContext" /> is null and <see cref="ChangeTrackingContextResolve" /> resolves a context, <see cref="ChangeTrackingContext" /> is also set to the resolved context.
 		///     </para>
 		/// </remarks>
 		object ChangeTrackingContext { get; set; }

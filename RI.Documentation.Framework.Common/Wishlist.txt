@@ -1,6 +1,7 @@
 ﻿Priorities
 ----------
 
+= VWA
 + Decoupling & Utilities Framework
 # Application Framework
 * Commercium
@@ -47,10 +48,6 @@ Utilities
 
 Collections
 -----------
-
- + (Common) IPriorityQueue
-
- + (Common) Enumeration of items in a IWarehouse
 
  - (Common) DirectLinq: Compare with IEnumerable/IEnumerable<> documentation
  - (Common) DirectLinq: Aggregate
@@ -213,7 +210,7 @@ Composition
 
  + (Unity) GameObjectCatalog
 
- + (Common) CreateGlobal
+ = (Common) CreateGlobal
 
  - (Common) CreateIndependent
  - (Common) CreateAndExport
@@ -221,10 +218,10 @@ Composition
 
  - (Common) Add container to container (ContainerCatalog?)
 
- - (Common) Lazy loading (Func<>, Lazy<>)
- + (Common) Generic Import property
- + (Common) Enumerable import property
- + (Common) Better platform detection
+ = (Common) Lazy loading (Func<>, Lazy<>)
+ = (Common) Generic Import property
+ = (Common) Enumerable import property
+ = (Common) Better platform detection
  
 
 Services
@@ -247,7 +244,7 @@ Services
  # (.NET) Settings: ComplexConverter (JSON?)
 
  # (.NET) Messaging: ThreadDispatcherMessageDispatcher
- # (.NET) Messaging: SynchronizationContextMessageDispatcher
+ # (.NET) Messaging: SynchronizationContextMessageDispatcher (DefaultMessageDispatcher?)
  
  # (.NET) Bus
 
@@ -275,8 +272,8 @@ Services
  - (Common) Make bootstrapper container-agnostic
  - (Common) Proper unloading and unbinding of everything in bootstrapper
 
- - (SQLite) SQLiteLogWriter
- - (SQLIte) SQLiteLogConfiguration (use in SQLiteLogWriter and LogFileToDbConverter)
+ # (SQLite) SQLiteLogWriter
+ # (SQLIte) SQLiteLogConfiguration (use in SQLiteLogWriter and LogFileToDbConverter)
 
 
 Data
@@ -292,8 +289,9 @@ Data
  - (.NET) IRepositoryContext: Add GetErrors method (return RepositoryContextErrors type)
  - (.NET) EntityView: Make collection update strategy configurable (clear vs. create new)
 
- # (.NET) Implementations for providers
- # (.NET) SQL script helpers
+ = (.NET) Implementations for providers
+ = (.NET) SQL script helpers
+ = (.NET) Convert IDatabaseManager to DatabaseManager
 
  - (.NET) IDatabaseManager: Support for creating connections when state is Old
 

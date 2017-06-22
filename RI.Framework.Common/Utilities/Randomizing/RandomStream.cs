@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
 namespace RI.Framework.Utilities.Randomizing
@@ -111,6 +112,7 @@ namespace RI.Framework.Utilities.Randomizing
 		}
 
 		/// <inheritdoc />
+		[SuppressMessage("ReSharper", "ValueParameterNotUsed")]
 		public override int ReadTimeout
 		{
 			get
@@ -125,6 +127,7 @@ namespace RI.Framework.Utilities.Randomizing
 		}
 
 		/// <inheritdoc />
+		[SuppressMessage("ReSharper", "ValueParameterNotUsed")]
 		public override int WriteTimeout
 		{
 			get
@@ -149,6 +152,7 @@ namespace RI.Framework.Utilities.Randomizing
 		}
 
 		/// <inheritdoc />
+		[SuppressMessage("ReSharper", "ValueParameterNotUsed")]
 		public override long Position
 		{
 			get
