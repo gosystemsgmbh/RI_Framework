@@ -130,7 +130,7 @@ Collections
  - (Common) WatchableXXX (Collection, List, Dictionary, Queue, Stack, HashSet, LinkedList)
  - (Common) ObservableXXX (Collection, List, Dictionary, Queue, Stack, HashSet, LinkedList)
 
- - (Common) RingBuffer
+ - (Common) RingQueue
  - (Common) SortedQueue
  - (Common) WrappingCollection (warpping multiple collections in a sequence)
 
@@ -187,8 +187,6 @@ I/O
  - (Common) FilePath: WriteConcurrent
 
  - (Common) StreamExtensions
- # (Common) UncloseableStream
- - (Common) RandomStream
 
  - (Common) EndianessConverter
 
@@ -232,8 +230,10 @@ Composition
 Services
 --------
 
+ # (Common) Logging: Pluggable logging
  # (.NET) Cleanup all service locators
  # (.NET) Create MessageLocator
+ # (.NET) Create SettingLocator
 
  - (Unity) IDispatcherOperation: OnXXX callbacks
  - (Unity) IDispatcherOperation: Stacking of all OnXXX callbacks
@@ -241,10 +241,6 @@ Services
  - (WPF) WpfApplication: Handle power events using SystemEvents.PowerModeChanged
  - (WPF) WpfApplication: Handle user switching using SystemEvents.SessionSwitch
  
- # (Windows) Logging: EventLogWriter
- # (Common) Logging: Pluggable logging
-
- # (.NET) Settings: SettingLocator
  # (.NET) Settings: WriteOnlyKnown for storage
  # (.NET) Settings: PrefixAffinity for storage
  # (.NET) Settings: XmlSettingStorage
@@ -253,8 +249,7 @@ Services
  # (.NET) Messaging: ThreadDispatcherMessageDispatcher
  # (.NET) Messaging: SynchronizationContextMessageDispatcher
  
- # (.NET) Bus: Retries
- # (.NET) Bus: Routing
+ # (.NET) Bus
 
  * (.NET) Backup (BackupService, DirectoryBackupStorage)
  * (.NET) Licensing (LicensingService, FileLicenseStorage)

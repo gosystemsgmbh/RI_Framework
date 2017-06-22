@@ -103,6 +103,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)IO\Paths\PathString.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\Paths\PathType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\Paths\_NamespaceDoc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\Streams\SynchronizedStream.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\Streams\UncloseableStream.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\Streams\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mathematic\Controllers\PIDController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mathematic\Controllers\_NamespaceDoc.cs" />
@@ -189,6 +192,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObjectModel\ISynchronizable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObjectModel\Singleton.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Randomizing\RandomExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Randomizing\RandomStream.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Randomizing\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Runtime\RuntimeEnvironment.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Runtime\_NamespaceDoc.cs" />
