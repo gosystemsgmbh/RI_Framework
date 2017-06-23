@@ -241,5 +241,13 @@ namespace RI.Framework.Utilities.Threading
 		/// <param name="finishPendingDelegates"> Specifies whether already pending delegates should be processed before the dispatcher is shut down. </param>
 		/// <exception cref="InvalidOperationException"> The dispatcher is not running or it is already being shut down. </exception>
 		void Shutdown (bool finishPendingDelegates);
+
+		/// <summary>
+		/// Determines under which priority the current code is executed.
+		/// </summary>
+		/// <returns>
+		/// The priority of the currently executed code or null if the current code is not executed by the dispatcher.
+		/// </returns>
+		int? GetCurrentPriority ();
 	}
 }

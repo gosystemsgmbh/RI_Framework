@@ -554,6 +554,12 @@ namespace RI.Framework.Utilities.Threading
 			this.Stop(finishPendingDelegates);
 		}
 
+		/// <inheritdoc />
+		public int? GetCurrentPriority()
+		{
+			return this.DispatcherInternal.GetCurrentPriority();
+		}
+
 		#endregion
 	}
 }

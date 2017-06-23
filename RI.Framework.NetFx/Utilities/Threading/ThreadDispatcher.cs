@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -56,6 +57,7 @@ namespace RI.Framework.Utilities.Threading
 			this.Thread = null;
 			this.Queue = null;
 			this.Posted = null;
+			this.CurrentPriority = null;
 
 			this.PreRunQueue = new PriorityQueue<ThreadDispatcherOperation>();
 
@@ -103,6 +105,7 @@ namespace RI.Framework.Utilities.Threading
 		private ManualResetEvent Posted { get; set; }
 		private PriorityQueue<ThreadDispatcherOperation> PreRunQueue { get; set; }
 		private PriorityQueue<ThreadDispatcherOperation> Queue { get; set; }
+		private Stack<int> CurrentPriority { get; set; }
 
 		private object SyncRoot { get; set; }
 		private Thread Thread { get; set; }
@@ -134,6 +137,7 @@ namespace RI.Framework.Utilities.Threading
 					this.Thread = Thread.CurrentThread;
 					this.Queue = new PriorityQueue<ThreadDispatcherOperation>();
 					this.Posted = new ManualResetEvent(this.PreRunQueue.Count > 0);
+					this.CurrentPriority = new Stack<int>();
 					this.ShutdownMode = ThreadDispatcherShutdownMode.None;
 
 					this.PreRunQueue.MoveTo(this.Queue);
@@ -149,9 +153,11 @@ namespace RI.Framework.Utilities.Threading
 				{
 					SynchronizationContext.SetSynchronizationContext(synchronizationContextBackup);
 
+					this.CurrentPriority?.Clear();
 					this.Posted?.Close();
 					this.Queue?.Clear();
 
+					this.CurrentPriority = null;
 					this.Posted = null;
 					this.Queue = null;
 					this.Thread = null;
@@ -172,6 +178,7 @@ namespace RI.Framework.Utilities.Threading
 
 				while (true)
 				{
+					int priority = 0;
 					ThreadDispatcherOperation operation = null;
 
 					lock (this.SyncRoot)
@@ -198,8 +205,9 @@ namespace RI.Framework.Utilities.Threading
 
 						if (this.Queue.Count > 0)
 						{
-							operation = this.Queue.Dequeue();
+							operation = this.Queue.Dequeue(out priority);
 							this.OperationInProgress = operation;
+							this.CurrentPriority.Push(priority);
 						}
 					}
 
@@ -212,6 +220,7 @@ namespace RI.Framework.Utilities.Threading
 
 					lock (this.SyncRoot)
 					{
+						this.CurrentPriority.Pop();
 						this.OperationInProgress = null;
 					}
 
@@ -555,6 +564,25 @@ namespace RI.Framework.Utilities.Threading
 
 				this.ShutdownMode = finishPendingDelegates ? ThreadDispatcherShutdownMode.FinishPending : ThreadDispatcherShutdownMode.DiscardPending;
 				this.Posted.Set();
+			}
+		}
+
+		/// <inheritdoc />
+		public int? GetCurrentPriority ()
+		{
+			lock (this.SyncRoot)
+			{
+				if (this.CurrentPriority == null)
+				{
+					return null;
+				}
+
+				if (this.CurrentPriority.Count == 0)
+				{
+					return null;
+				}
+
+				return this.CurrentPriority.Peek();
 			}
 		}
 

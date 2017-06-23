@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -456,27 +457,52 @@ namespace RI.Framework.Utilities.Threading
 
 			object result = null;
 			Exception exception = null;
-			try
+
+			if (Debugger.IsAttached)
 			{
-				result = this.Action.DynamicInvoke(this.Parameters);
-			}
-			catch (ThreadAbortException)
-			{
-				lock (this.SyncRoot)
+				try
 				{
-					this.State = ThreadDispatcherOperationState.Aborted;
-					this.Exception = null;
-					this.Result = null;
-
-					this.OperationDone.Set();
-					this.OperationDoneTask.SetCanceled();
+					result = this.Action.DynamicInvoke(this.Parameters);
 				}
+				catch (ThreadAbortException)
+				{
+					lock (this.SyncRoot)
+					{
+						this.State = ThreadDispatcherOperationState.Aborted;
+						this.Exception = null;
+						this.Result = null;
 
-				throw;
+						this.OperationDone.Set();
+						this.OperationDoneTask.SetCanceled();
+					}
+
+					throw;
+				}
 			}
-			catch (Exception ex)
+			else
 			{
-				exception = ex;
+				try
+				{
+					result = this.Action.DynamicInvoke(this.Parameters);
+				}
+				catch (ThreadAbortException)
+				{
+					lock (this.SyncRoot)
+					{
+						this.State = ThreadDispatcherOperationState.Aborted;
+						this.Exception = null;
+						this.Result = null;
+
+						this.OperationDone.Set();
+						this.OperationDoneTask.SetCanceled();
+					}
+
+					throw;
+				}
+				catch (Exception ex)
+				{
+					exception = ex;
+				}
 			}
 
 			lock (this.SyncRoot)
