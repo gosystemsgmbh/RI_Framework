@@ -123,7 +123,7 @@ namespace RI.Framework.Utilities.Threading
 		/// </returns>
 		/// <remarks>
 		///     <para>
-		///         The higher the priority, the earlier the operation is execution (highest priority, first executed).
+		///         The higher the priority, the earlier the operation is executed (highest priority, first executed).
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="priority" /> is less than zero. </exception>
@@ -168,7 +168,7 @@ namespace RI.Framework.Utilities.Threading
 		/// </returns>
 		/// <remarks>
 		///     <para>
-		///         The higher the priority, the earlier the operation is execution (highest priority, first executed).
+		///         The higher the priority, the earlier the operation is executed (highest priority, first executed).
 		///     </para>
 		///     <para>
 		///         <see cref="Send(int,Delegate,object[])" /> blocks until all previously enqueued delegates were processed.
@@ -220,7 +220,7 @@ namespace RI.Framework.Utilities.Threading
 		/// </returns>
 		/// <remarks>
 		///     <para>
-		///         The higher the priority, the earlier the operation is execution (highest priority, first executed).
+		///         The higher the priority, the earlier the operation is executed (highest priority, first executed).
 		///     </para>
 		///     <para>
 		///         <see cref="Send(int,Delegate,object[])" /> blocks until all previously enqueued delegates were processed.

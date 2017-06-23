@@ -35,10 +35,5 @@ namespace RI.Framework.Utilities.Threading
 		///     The operation has finished processing but an exception ocurred during processing.
 		/// </summary>
 		Exception = 4,
-
-		/// <summary>
-		///     The thread, in which the operation was supposed to be executed, was aborted during the execution of the delegate.
-		/// </summary>
-		Aborted = 5,
 	}
 }

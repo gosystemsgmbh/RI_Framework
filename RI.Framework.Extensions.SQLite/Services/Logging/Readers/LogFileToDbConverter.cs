@@ -165,9 +165,9 @@ namespace RI.Framework.Services.Logging.Readers
 		/// <exception cref="ArgumentNullException"> <paramref name="logDirectory" /> or <paramref name="dbFile" /> is null. </exception>
 		/// <exception cref="InvalidPathArgumentException"> <paramref name="logDirectory" /> or <paramref name="dbFile" /> contains wildcards. </exception>
 		/// <exception cref="DirectoryNotFoundException"> The log directory as specified by <paramref name="logDirectory" /> does not exist. </exception>
-		public async Task<LogFileToDbConverterResults> ConvertDirectoriesAsync (DirectoryPath logDirectory, FilePath dbFile)
+		public Task<LogFileToDbConverterResults> ConvertDirectoriesAsync (DirectoryPath logDirectory, FilePath dbFile)
 		{
-			return await this.ConvertDirectoriesAsync(logDirectory, dbFile, null);
+			return this.ConvertDirectoriesAsync(logDirectory, dbFile, null);
 		}
 
 		/// <summary>
@@ -182,7 +182,7 @@ namespace RI.Framework.Services.Logging.Readers
 		/// <exception cref="ArgumentNullException"> <paramref name="logDirectory" /> or <paramref name="dbFile" /> is null. </exception>
 		/// <exception cref="InvalidPathArgumentException"> <paramref name="logDirectory" /> or <paramref name="dbFile" /> contains wildcards or <paramref name="fileName" /> is not a valid file name. </exception>
 		/// <exception cref="DirectoryNotFoundException"> The log directory as specified by <paramref name="logDirectory" /> does not exist. </exception>
-		public async Task<LogFileToDbConverterResults> ConvertDirectoriesAsync (DirectoryPath logDirectory, FilePath dbFile, string fileName)
+		public Task<LogFileToDbConverterResults> ConvertDirectoriesAsync (DirectoryPath logDirectory, FilePath dbFile, string fileName)
 		{
 			if (logDirectory == null)
 			{
@@ -219,11 +219,11 @@ namespace RI.Framework.Services.Logging.Readers
 				throw new InvalidPathArgumentException(nameof(fileName), "Invalid file name.");
 			}
 
-			return await Task<LogFileToDbConverterResults>.Factory.StartNew(x =>
+			return Task<LogFileToDbConverterResults>.Factory.StartNew(x =>
 			{
 				Tuple<DirectoryPath, FilePath, string> state = (Tuple<DirectoryPath, FilePath, string>)x;
 				return this.ConvertDirectories(state.Item1, state.Item2, state.Item3);
-			}, new Tuple<DirectoryPath, FilePath, string>(logDirectory, dbFile, fileNamePath));
+			}, new Tuple<DirectoryPath, FilePath, string>(logDirectory, dbFile, fileNamePath), TaskCreationOptions.LongRunning);
 		}
 
 		/// <summary>
@@ -279,7 +279,7 @@ namespace RI.Framework.Services.Logging.Readers
 		/// <exception cref="ArgumentNullException"> <paramref name="logFile" /> or <paramref name="dbFile" /> is null. </exception>
 		/// <exception cref="InvalidPathArgumentException"> <paramref name="logFile" /> or <paramref name="dbFile" /> contains wildcards. </exception>
 		/// <exception cref="FileNotFoundException"> The log file as specified by <paramref name="logFile" /> does not exist. </exception>
-		public async Task<LogFileToDbConverterResults> ConvertFileAsync (FilePath logFile, FilePath dbFile)
+		public Task<LogFileToDbConverterResults> ConvertFileAsync (FilePath logFile, FilePath dbFile)
 		{
 			if (logFile == null)
 			{
@@ -306,11 +306,11 @@ namespace RI.Framework.Services.Logging.Readers
 				throw new InvalidPathArgumentException(nameof(dbFile), "Wildcards are not allowed.");
 			}
 
-			return await Task<LogFileToDbConverterResults>.Factory.StartNew(x =>
+			return Task<LogFileToDbConverterResults>.Factory.StartNew(x =>
 			{
 				Tuple<FilePath, FilePath> state = (Tuple<FilePath, FilePath>)x;
 				return this.ConvertFile(state.Item1, state.Item2);
-			}, new Tuple<FilePath, FilePath>(logFile, dbFile));
+			}, new Tuple<FilePath, FilePath>(logFile, dbFile), TaskCreationOptions.LongRunning);
 		}
 
 		private LogFileToDbConverterResults ConvertFiles (IEnumerable<FilePath> files, FilePath dbFile)

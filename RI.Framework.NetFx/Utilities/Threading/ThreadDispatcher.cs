@@ -57,6 +57,7 @@ namespace RI.Framework.Utilities.Threading
 			this.Thread = null;
 			this.Queue = null;
 			this.Posted = null;
+			this.IdleSignals = null;
 			this.CurrentPriority = null;
 
 			this.PreRunQueue = new PriorityQueue<ThreadDispatcherOperation>();
@@ -103,6 +104,7 @@ namespace RI.Framework.Utilities.Threading
 
 		private ThreadDispatcherOperation OperationInProgress { get; set; }
 		private ManualResetEvent Posted { get; set; }
+		private List<TaskCompletionSource<object>> IdleSignals { get; set; }
 		private PriorityQueue<ThreadDispatcherOperation> PreRunQueue { get; set; }
 		private PriorityQueue<ThreadDispatcherOperation> Queue { get; set; }
 		private Stack<int> CurrentPriority { get; set; }
@@ -137,6 +139,7 @@ namespace RI.Framework.Utilities.Threading
 					this.Thread = Thread.CurrentThread;
 					this.Queue = new PriorityQueue<ThreadDispatcherOperation>();
 					this.Posted = new ManualResetEvent(this.PreRunQueue.Count > 0);
+					this.IdleSignals = new List<TaskCompletionSource<object>>();
 					this.CurrentPriority = new Stack<int>();
 					this.ShutdownMode = ThreadDispatcherShutdownMode.None;
 
@@ -154,14 +157,25 @@ namespace RI.Framework.Utilities.Threading
 					SynchronizationContext.SetSynchronizationContext(synchronizationContextBackup);
 
 					this.CurrentPriority?.Clear();
+					this.IdleSignals?.Clear();
 					this.Posted?.Close();
 					this.Queue?.Clear();
 
 					this.CurrentPriority = null;
+					this.IdleSignals = null;
 					this.Posted = null;
 					this.Queue = null;
 					this.Thread = null;
 				}
+			}
+		}
+
+		private void SignalIdle ()
+		{
+			lock (this.SyncRoot)
+			{
+				this.IdleSignals.ForEach(x => x.SetResult(null));
+				this.IdleSignals.Clear();
 			}
 		}
 
@@ -195,11 +209,13 @@ namespace RI.Framework.Utilities.Threading
 								}
 							}
 							this.Queue.Clear();
+							this.SignalIdle();
 							return;
 						}
 
 						if ((this.ShutdownMode == ThreadDispatcherShutdownMode.FinishPending) && (this.Queue.Count == 0))
 						{
+							this.SignalIdle();
 							return;
 						}
 
@@ -213,6 +229,7 @@ namespace RI.Framework.Utilities.Threading
 
 					if (operation == null)
 					{
+						this.SignalIdle();
 						break;
 					}
 
@@ -382,35 +399,31 @@ namespace RI.Framework.Utilities.Threading
 		/// <inheritdoc />
 		public void DoProcessing ()
 		{
-			while (true)
-			{
-				this.Send(0, new Action(() => { }));
-
-				lock (this.SyncRoot)
-				{
-					if ((this.Queue.Count == 0) && (this.OperationInProgress == null))
-					{
-						return;
-					}
-				}
-			}
+			this.DoProcessingAsync().Wait();
 		}
 
 		/// <inheritdoc />
-		public async Task DoProcessingAsync ()
+		public Task DoProcessingAsync ()
 		{
-			while (true)
-			{
-				await this.SendAsync(0, new Action(() => { }));
+			Task task = null;
 
-				lock (this.SyncRoot)
+			lock (this.SyncRoot)
+			{
+				this.VerifyRunning();
+
+				if ((this.Queue.Count == 0) && (this.OperationInProgress == null))
 				{
-					if ((this.Queue.Count == 0) && (this.OperationInProgress == null))
-					{
-						return;
-					}
+					task = Task.CompletedTask;
+				}
+				else
+				{
+					TaskCompletionSource<object> idleSignal = new TaskCompletionSource<object>();
+					this.IdleSignals.Add(idleSignal);
+					task = idleSignal.Task;
 				}
 			}
+
+			return task;
 		}
 
 		/// <inheritdoc />
@@ -519,13 +532,13 @@ namespace RI.Framework.Utilities.Threading
 		}
 
 		/// <inheritdoc />
-		public async Task<object> SendAsync (Delegate action, params object[] parameters)
+		public Task<object> SendAsync (Delegate action, params object[] parameters)
 		{
-			return await this.SendAsync(this.DefaultPriority, action, parameters);
+			return this.SendAsync(this.DefaultPriority, action, parameters);
 		}
 
 		/// <inheritdoc />
-		public async Task<object> SendAsync (int priority, Delegate action, params object[] parameters)
+		public Task<object> SendAsync (int priority, Delegate action, params object[] parameters)
 		{
 			if (priority < 0)
 			{
@@ -549,9 +562,18 @@ namespace RI.Framework.Utilities.Threading
 				operation = this.Post(priority, action, parameters);
 			}
 
-			await operation.WaitAsync();
+			Task completed = operation.WaitAsync();
+			Task<object> result = completed.ContinueWith((task, state) =>
+			{
+				ThreadDispatcherOperation op = (ThreadDispatcherOperation)state;
+				if (op.Exception != null)
+				{
+					throw new ThreadDispatcherException(op.Exception);
+				}
+				return op.Result;
+			}, operation);
 
-			return operation.Result;
+			return result;
 		}
 
 		/// <inheritdoc />

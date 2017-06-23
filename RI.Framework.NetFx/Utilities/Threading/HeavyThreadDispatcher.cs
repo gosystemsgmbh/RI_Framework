@@ -493,11 +493,11 @@ namespace RI.Framework.Utilities.Threading
 		}
 
 		/// <inheritdoc />
-		public async Task DoProcessingAsync ()
+		public Task DoProcessingAsync ()
 		{
 			this.VerifyRunning();
 
-			await this.DispatcherInternal.DoProcessingAsync();
+			return this.DispatcherInternal.DoProcessingAsync();
 		}
 
 		/// <inheritdoc />
@@ -533,19 +533,19 @@ namespace RI.Framework.Utilities.Threading
 		}
 
 		/// <inheritdoc />
-		public async Task<object> SendAsync (Delegate action, params object[] parameters)
+		public Task<object> SendAsync (Delegate action, params object[] parameters)
 		{
 			this.VerifyRunning();
 
-			return await this.DispatcherInternal.SendAsync(action, parameters);
+			return this.DispatcherInternal.SendAsync(action, parameters);
 		}
 
 		/// <inheritdoc />
-		public async Task<object> SendAsync (int priority, Delegate action, params object[] parameters)
+		public Task<object> SendAsync (int priority, Delegate action, params object[] parameters)
 		{
 			this.VerifyRunning();
 
-			return await this.DispatcherInternal.SendAsync(priority, action, parameters);
+			return this.DispatcherInternal.SendAsync(priority, action, parameters);
 		}
 
 		/// <inheritdoc />

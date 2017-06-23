@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 using RI.Framework.Utilities;
 
@@ -153,6 +154,16 @@ namespace RI.Framework.RotenInformatik
 		{
 			//TODO: Implement
 			//TODO: Log
+		}
+
+		/// <summary>
+		///     Sends the report.
+		/// </summary>
+		public Task SendAsync ()
+		{
+			//TODO: Implement
+			//TODO: Log
+			return null;
 		}
 
 		#endregion
