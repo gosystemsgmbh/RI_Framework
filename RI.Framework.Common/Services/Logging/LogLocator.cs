@@ -14,6 +14,7 @@ namespace RI.Framework.Services.Logging
 	///         <see cref="LogLocator" /> is merely a convenience utility as it uses <see cref="ServiceLocator" /> to retrieve and use a <see cref="ILogService" />.
 	///     </para>
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	public static class LogLocator
 	{
 		#region Static Properties/Indexer

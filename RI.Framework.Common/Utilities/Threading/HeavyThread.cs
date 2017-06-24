@@ -20,6 +20,7 @@ namespace RI.Framework.Utilities.Threading
 	///         See <see cref="Start" /> and <see cref="Stop" /> for a description of the thread execution sequence.
 	///     </para>
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	public abstract class HeavyThread : IDisposable, ISynchronizable
 	{
 		#region Constants
@@ -48,11 +49,14 @@ namespace RI.Framework.Utilities.Threading
 		{
 			this.SyncRoot = new object();
 			this.StartStopSyncRoot = new object();
-			this.Thread = null;
+
 			this.ThreadException = null;
 			this.IsRunning = false;
 			this.HasStoppedGracefully = null;
+
 			this.Timeout = HeavyThread.DefaultThreadTimeout;
+
+			this.Thread = null;
 			this.StopRequested = false;
 			this.StopEvent = null;
 		}
@@ -72,17 +76,19 @@ namespace RI.Framework.Utilities.Threading
 
 		#region Instance Fields
 
-		private Exception _exception;
+		private Exception _threadException;
 
 		private bool? _hasStoppedGracefully;
 
 		private bool _isRunning;
 
+		private int _timeout;
+
 		private ManualResetEvent _stopEvent;
 
 		private bool _stopRequested;
 
-		private int _timeout;
+		private Thread _thread;
 
 		#endregion
 
@@ -161,14 +167,14 @@ namespace RI.Framework.Utilities.Threading
 			{
 				lock (this.SyncRoot)
 				{
-					return this._exception;
+					return this._threadException;
 				}
 			}
 			private set
 			{
 				lock (this.SyncRoot)
 				{
-					this._exception = value;
+					this._threadException = value;
 				}
 			}
 		}
@@ -260,22 +266,38 @@ namespace RI.Framework.Utilities.Threading
 		}
 
 		/// <summary>
-		///     Gets the synchronization object which can be used to synchronize thread operations.
-		/// </summary>
-		/// <value>
-		///     The synchronization object which can be used to synchronize thread operations.
-		/// </value>
-		protected object SyncRoot { get; private set; }
-
-		/// <summary>
 		///     Gets the actual thread instance used to run the thread.
 		/// </summary>
 		/// <value>
 		///     The actual thread instance used to run the thread.
 		/// </value>
-		protected Thread Thread { get; private set; }
+		protected Thread Thread
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._thread;
+				}
+			}
+			private set
+			{
+				lock (this.SyncRoot)
+				{
+					this._thread = value;
+				}
+			}
+		}
 
-		private object StartStopSyncRoot { get; set; }
+		/// <summary>
+		///     Gets the synchronization object which can be used to synchronize thread operations.
+		/// </summary>
+		/// <value>
+		///     The synchronization object which can be used to synchronize thread operations.
+		/// </value>
+		public object SyncRoot { get; }
+
+		private object StartStopSyncRoot { get; }
 
 		#endregion
 
@@ -357,12 +379,10 @@ namespace RI.Framework.Utilities.Threading
 		///                 <see cref="Start" /> returns while <see cref="OnRun" /> is executed inside the thread.
 		///             </para>
 		///         </item>
-		///         <item>
-		///             <para>
-		///                 As soon as <see cref="OnRun" /> finishes, <see cref="OnEnd" /> is executed inside the thread and the thread ends afterwards.
-		///             </para>
-		///         </item>
 		///     </list>
+		/// <note type="note">
+		/// If <see cref="OnRun"/> returns before <see cref="Stop"/> was called, the thread sleeps and <see cref="OnEnd"/> is not executed until <see cref="Stop"/> is called.
+		/// </note>
 		/// </remarks>
 		/// <exception cref="InvalidOperationException"> The thread is already running. </exception>
 		/// <exception cref="TimeoutException"> The thread failed to return from <see cref="OnBegin" /> within <see cref="Timeout" />. </exception>
@@ -386,11 +406,16 @@ namespace RI.Framework.Utilities.Threading
 
 						lock (this.SyncRoot)
 						{
+							this.IsRunning = false;
+							this.HasStoppedGracefully = null;
+							this.ThreadException = null;
+
 							this.StopRequested = false;
 							this.StopEvent = new ManualResetEvent(false);
 
 							this.Thread = new Thread(() =>
 							{
+								ManualResetEvent stopEvent = this.StopEvent;
 								bool running = false;
 								try
 								{
@@ -399,6 +424,7 @@ namespace RI.Framework.Utilities.Threading
 									startEvent.Set();
 									startEventSet = true;
 									this.OnRun();
+									stopEvent.WaitOne();
 									this.OnEnd();
 								}
 								catch (ThreadAbortException)
@@ -471,10 +497,10 @@ namespace RI.Framework.Utilities.Threading
 							}
 
 							this.IsRunning = true;
+
+							this.OnStarted();
 						}
 					}
-
-					this.OnStarted();
 
 					success = true;
 				}
@@ -586,6 +612,9 @@ namespace RI.Framework.Utilities.Threading
 			{
 				this.VerifyNotFromThread(nameof(this.Dispose));
 
+				Thread thread;
+				int timeout;
+
 				lock (this.SyncRoot)
 				{
 					if (!this.IsRunning)
@@ -594,36 +623,40 @@ namespace RI.Framework.Utilities.Threading
 					}
 
 					this.OnStop();
+
+					thread = this.Thread;
+					timeout = this.Timeout;
 				}
 
 				bool terminated;
 				try
 				{
-					terminated = this.Thread.Join(this.Timeout);
+					terminated = thread.Join(timeout);
 				}
 				catch
 				{
 					terminated = false;
 				}
 
+				if (!terminated)
+				{
+					try
+					{
+						thread.Abort();
+					}
+					catch
+					{
+					}
+				}
+
 				lock (this.SyncRoot)
 				{
-					if (!terminated)
-					{
-						try
-						{
-							this.Thread.Abort();
-						}
-						catch
-						{
-						}
-					}
-
 					this.StopEvent?.Close();
 					this.StopEvent = null;
 
 					this.StopRequested = false;
 					this.Thread = null;
+
 					this.HasStoppedGracefully = terminated && (this.ThreadException == null);
 					this.IsRunning = false;
 				}
@@ -762,9 +795,6 @@ namespace RI.Framework.Utilities.Threading
 
 		/// <inheritdoc />
 		bool ISynchronizable.IsSynchronized => true;
-
-		/// <inheritdoc />
-		object ISynchronizable.SyncRoot => this.SyncRoot;
 
 		#endregion
 	}

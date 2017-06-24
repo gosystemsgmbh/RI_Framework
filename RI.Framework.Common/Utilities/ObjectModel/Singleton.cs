@@ -14,6 +14,7 @@ namespace RI.Framework.Utilities.ObjectModel
 	///         <see cref="Singleton" /> shares its singleton instances with <see cref="Singleton{T}" />.
 	///     </note>
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	/// <example>
 	///     <code language="cs">
 	/// <![CDATA[

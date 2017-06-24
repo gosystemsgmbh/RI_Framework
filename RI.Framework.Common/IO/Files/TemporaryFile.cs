@@ -20,6 +20,7 @@ namespace RI.Framework.IO.Files
 	///         <see cref="TemporaryFile" /> implements <see cref="IDisposable" /> which attempts to delete the file when <see cref="IDisposable.Dispose" /> is called (but does not fail if not successful).
 	///     </para>
 	/// </remarks>
+	/// <threadsafety static="true" instance="false" />
 	public sealed class TemporaryFile : IDisposable
 	{
 		#region Static Constructor/Destructor
@@ -108,9 +109,9 @@ namespace RI.Framework.IO.Files
 						file.Delete();
 						deletedFiles.Add(file);
 					}
-					catch (IOException)
+					catch
 					{
-						//IOException most likely means that the file is still in use.
+						//This means that we have no access to the file or it is still in use.
 					}
 				}
 				return deletedFiles;

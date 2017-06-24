@@ -24,6 +24,7 @@ namespace RI.Framework.Services.Logging.Writers
 	///         See <see cref="ILogWriter" /> for more details.
 	///     </para>
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	[Export]
 	public sealed class TraceListenerAdapterLogWriter : ILogWriter, IDisposable, ILogSource
 	{
@@ -110,10 +111,6 @@ namespace RI.Framework.Services.Logging.Writers
 					this.TraceListener.Close();
 					this.TraceListener = null;
 				}
-
-				this.Buffer = null;
-				this.IsWriting = false;
-				this.IsTracing = false;
 			}
 		}
 
@@ -179,14 +176,6 @@ namespace RI.Framework.Services.Logging.Writers
 			this.WriteTrace(message + Environment.NewLine);
 		}
 
-		private void VerifyNotClosed()
-		{
-			if (this.TraceListener == null)
-			{
-				throw new ObjectDisposedException(nameof(TraceListenerAdapterLogWriter));
-			}
-		}
-
 		#endregion
 
 
@@ -233,13 +222,22 @@ namespace RI.Framework.Services.Logging.Writers
 		object ISynchronizable.SyncRoot => this.SyncRoot;
 
 		/// <inheritdoc />
-		public void Cleanup (DateTime retentionDate)
+		void ILogWriter.Cleanup(DateTime retentionDate)
 		{
 		}
 
 		/// <inheritdoc />
 		public void Log (DateTime timestamp, int threadId, LogLevel severity, string source, string message)
 		{
+			ILogFilter filter = this.Filter;
+			if (filter != null)
+			{
+				if (!filter.Filter(timestamp, threadId, severity, source))
+				{
+					return;
+				}
+			}
+
 			lock (this.SyncRoot)
 			{
 				if (this.IsTracing || (this.TraceListener == null))
@@ -250,6 +248,9 @@ namespace RI.Framework.Services.Logging.Writers
 				try
 				{
 					this.IsWriting = true;
+
+					source = source ?? "null";
+					message = message ?? string.Empty;
 
 					StringBuilder finalMessageBuilder = new StringBuilder();
 					finalMessageBuilder.Append("[");
@@ -263,6 +264,7 @@ namespace RI.Framework.Services.Logging.Writers
 					finalMessageBuilder.Append("] ");
 					finalMessageBuilder.AppendLine(message);
 					string finalMessage = finalMessageBuilder.ToString();
+
 					Trace.WriteLine(finalMessage);
 				}
 				finally

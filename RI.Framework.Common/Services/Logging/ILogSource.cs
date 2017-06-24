@@ -8,6 +8,7 @@
 	///         See <see cref="ILogSourceExtensions" /> for more details.
 	///     </para>
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	public interface ILogSource
 	{
 	}

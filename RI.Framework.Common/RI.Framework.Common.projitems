@@ -111,7 +111,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Mathematic\Controllers\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mathematic\MathConstD.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mathematic\MathConstF.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Mathematic\MathUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mathematic\NumberExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mathematic\RomanNumber.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mathematic\RunningValues.cs" />

@@ -15,6 +15,11 @@ namespace RI.Framework.Services.Logging
 	///     <para>
 	///         A logging service provides logging to one or more targets, represented as <see cref="ILogWriter" />s.
 	///     </para>
+	/// <note type="implement">
+	/// Note that logging is usually to be used from any thread.
+	/// Therefore, the logging service must be partially thread-safe, at least for the actual log and cleanup operations.
+	/// However, logging service implementations can rely upon the thread-safety of <see cref="ILogWriter"/>.
+	/// </note>
 	/// </remarks>
 	[Export]
 	public interface ILogService

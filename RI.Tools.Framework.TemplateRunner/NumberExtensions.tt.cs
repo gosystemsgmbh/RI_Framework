@@ -102,6 +102,46 @@ namespace RI.Framework.Mathematic
 		public static sbyte Quantize (this sbyte value, sbyte multiple, MidpointRounding rounding) => (sbyte)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
 
 		/// <summary>
+		/// Adds a number to a value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="addition">The number to add.</param>
+		/// <returns>
+		/// The result of: value + addition.
+		/// </returns>
+		public static sbyte Add (this sbyte value, sbyte addition) => (sbyte)(value + addition);
+
+		/// <summary>
+		/// Subtracts a number from a value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="subtract">The number to subtract.</param>
+		/// <returns>
+		/// The result of: value - subtract.
+		/// </returns>
+		public static sbyte Subtract (this sbyte value, sbyte subtract) => (sbyte)(value - subtract);
+
+		/// <summary>
+		/// Subtracts a value from a number.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="subtractFrom">The number to subtract from.</param>
+		/// <returns>
+		/// The result of: subtractFrom - value.
+		/// </returns>
+		public static sbyte SubtractFrom (this sbyte value, sbyte subtractFrom) => (sbyte)(subtractFrom - value);
+
+		/// <summary>
+		/// Multiplies a value by a factor.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="factor">The factor to multiply with.</param>
+		/// <returns>
+		/// The result of: value * factor.
+		/// </returns>
+		public static sbyte Multiply (this sbyte value, sbyte factor) => (sbyte)(value * factor);
+
+		/// <summary>
 		/// Clamps a value between an inclusive minimum and maximum value.
 		/// </summary>
 		/// <param name="value">The value.</param>
@@ -182,6 +222,46 @@ namespace RI.Framework.Mathematic
 		/// The quantized value.
 		/// </returns>
 		public static byte Quantize (this byte value, byte multiple, MidpointRounding rounding) => (byte)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
+
+		/// <summary>
+		/// Adds a number to a value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="addition">The number to add.</param>
+		/// <returns>
+		/// The result of: value + addition.
+		/// </returns>
+		public static byte Add (this byte value, byte addition) => (byte)(value + addition);
+
+		/// <summary>
+		/// Subtracts a number from a value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="subtract">The number to subtract.</param>
+		/// <returns>
+		/// The result of: value - subtract.
+		/// </returns>
+		public static byte Subtract (this byte value, byte subtract) => (byte)(value - subtract);
+
+		/// <summary>
+		/// Subtracts a value from a number.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="subtractFrom">The number to subtract from.</param>
+		/// <returns>
+		/// The result of: subtractFrom - value.
+		/// </returns>
+		public static byte SubtractFrom (this byte value, byte subtractFrom) => (byte)(subtractFrom - value);
+
+		/// <summary>
+		/// Multiplies a value by a factor.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="factor">The factor to multiply with.</param>
+		/// <returns>
+		/// The result of: value * factor.
+		/// </returns>
+		public static byte Multiply (this byte value, byte factor) => (byte)(value * factor);
 
 		/// <summary>
 		/// Clamps a value between an inclusive minimum and maximum value.
@@ -266,6 +346,46 @@ namespace RI.Framework.Mathematic
 		public static short Quantize (this short value, short multiple, MidpointRounding rounding) => (short)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
 
 		/// <summary>
+		/// Adds a number to a value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="addition">The number to add.</param>
+		/// <returns>
+		/// The result of: value + addition.
+		/// </returns>
+		public static short Add (this short value, short addition) => (short)(value + addition);
+
+		/// <summary>
+		/// Subtracts a number from a value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="subtract">The number to subtract.</param>
+		/// <returns>
+		/// The result of: value - subtract.
+		/// </returns>
+		public static short Subtract (this short value, short subtract) => (short)(value - subtract);
+
+		/// <summary>
+		/// Subtracts a value from a number.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="subtractFrom">The number to subtract from.</param>
+		/// <returns>
+		/// The result of: subtractFrom - value.
+		/// </returns>
+		public static short SubtractFrom (this short value, short subtractFrom) => (short)(subtractFrom - value);
+
+		/// <summary>
+		/// Multiplies a value by a factor.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="factor">The factor to multiply with.</param>
+		/// <returns>
+		/// The result of: value * factor.
+		/// </returns>
+		public static short Multiply (this short value, short factor) => (short)(value * factor);
+
+		/// <summary>
 		/// Clamps a value between an inclusive minimum and maximum value.
 		/// </summary>
 		/// <param name="value">The value.</param>
@@ -346,6 +466,46 @@ namespace RI.Framework.Mathematic
 		/// The quantized value.
 		/// </returns>
 		public static ushort Quantize (this ushort value, ushort multiple, MidpointRounding rounding) => (ushort)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
+
+		/// <summary>
+		/// Adds a number to a value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="addition">The number to add.</param>
+		/// <returns>
+		/// The result of: value + addition.
+		/// </returns>
+		public static ushort Add (this ushort value, ushort addition) => (ushort)(value + addition);
+
+		/// <summary>
+		/// Subtracts a number from a value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="subtract">The number to subtract.</param>
+		/// <returns>
+		/// The result of: value - subtract.
+		/// </returns>
+		public static ushort Subtract (this ushort value, ushort subtract) => (ushort)(value - subtract);
+
+		/// <summary>
+		/// Subtracts a value from a number.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="subtractFrom">The number to subtract from.</param>
+		/// <returns>
+		/// The result of: subtractFrom - value.
+		/// </returns>
+		public static ushort SubtractFrom (this ushort value, ushort subtractFrom) => (ushort)(subtractFrom - value);
+
+		/// <summary>
+		/// Multiplies a value by a factor.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="factor">The factor to multiply with.</param>
+		/// <returns>
+		/// The result of: value * factor.
+		/// </returns>
+		public static ushort Multiply (this ushort value, ushort factor) => (ushort)(value * factor);
 
 		/// <summary>
 		/// Clamps a value between an inclusive minimum and maximum value.
@@ -430,6 +590,46 @@ namespace RI.Framework.Mathematic
 		public static int Quantize (this int value, int multiple, MidpointRounding rounding) => (int)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
 
 		/// <summary>
+		/// Adds a number to a value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="addition">The number to add.</param>
+		/// <returns>
+		/// The result of: value + addition.
+		/// </returns>
+		public static int Add (this int value, int addition) => (int)(value + addition);
+
+		/// <summary>
+		/// Subtracts a number from a value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="subtract">The number to subtract.</param>
+		/// <returns>
+		/// The result of: value - subtract.
+		/// </returns>
+		public static int Subtract (this int value, int subtract) => (int)(value - subtract);
+
+		/// <summary>
+		/// Subtracts a value from a number.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="subtractFrom">The number to subtract from.</param>
+		/// <returns>
+		/// The result of: subtractFrom - value.
+		/// </returns>
+		public static int SubtractFrom (this int value, int subtractFrom) => (int)(subtractFrom - value);
+
+		/// <summary>
+		/// Multiplies a value by a factor.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="factor">The factor to multiply with.</param>
+		/// <returns>
+		/// The result of: value * factor.
+		/// </returns>
+		public static int Multiply (this int value, int factor) => (int)(value * factor);
+
+		/// <summary>
 		/// Clamps a value between an inclusive minimum and maximum value.
 		/// </summary>
 		/// <param name="value">The value.</param>
@@ -510,6 +710,46 @@ namespace RI.Framework.Mathematic
 		/// The quantized value.
 		/// </returns>
 		public static uint Quantize (this uint value, uint multiple, MidpointRounding rounding) => (uint)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
+
+		/// <summary>
+		/// Adds a number to a value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="addition">The number to add.</param>
+		/// <returns>
+		/// The result of: value + addition.
+		/// </returns>
+		public static uint Add (this uint value, uint addition) => (uint)(value + addition);
+
+		/// <summary>
+		/// Subtracts a number from a value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="subtract">The number to subtract.</param>
+		/// <returns>
+		/// The result of: value - subtract.
+		/// </returns>
+		public static uint Subtract (this uint value, uint subtract) => (uint)(value - subtract);
+
+		/// <summary>
+		/// Subtracts a value from a number.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="subtractFrom">The number to subtract from.</param>
+		/// <returns>
+		/// The result of: subtractFrom - value.
+		/// </returns>
+		public static uint SubtractFrom (this uint value, uint subtractFrom) => (uint)(subtractFrom - value);
+
+		/// <summary>
+		/// Multiplies a value by a factor.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="factor">The factor to multiply with.</param>
+		/// <returns>
+		/// The result of: value * factor.
+		/// </returns>
+		public static uint Multiply (this uint value, uint factor) => (uint)(value * factor);
 
 		/// <summary>
 		/// Clamps a value between an inclusive minimum and maximum value.
@@ -594,6 +834,46 @@ namespace RI.Framework.Mathematic
 		public static long Quantize (this long value, long multiple, MidpointRounding rounding) => (long)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
 
 		/// <summary>
+		/// Adds a number to a value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="addition">The number to add.</param>
+		/// <returns>
+		/// The result of: value + addition.
+		/// </returns>
+		public static long Add (this long value, long addition) => (long)(value + addition);
+
+		/// <summary>
+		/// Subtracts a number from a value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="subtract">The number to subtract.</param>
+		/// <returns>
+		/// The result of: value - subtract.
+		/// </returns>
+		public static long Subtract (this long value, long subtract) => (long)(value - subtract);
+
+		/// <summary>
+		/// Subtracts a value from a number.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="subtractFrom">The number to subtract from.</param>
+		/// <returns>
+		/// The result of: subtractFrom - value.
+		/// </returns>
+		public static long SubtractFrom (this long value, long subtractFrom) => (long)(subtractFrom - value);
+
+		/// <summary>
+		/// Multiplies a value by a factor.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="factor">The factor to multiply with.</param>
+		/// <returns>
+		/// The result of: value * factor.
+		/// </returns>
+		public static long Multiply (this long value, long factor) => (long)(value * factor);
+
+		/// <summary>
 		/// Clamps a value between an inclusive minimum and maximum value.
 		/// </summary>
 		/// <param name="value">The value.</param>
@@ -674,6 +954,46 @@ namespace RI.Framework.Mathematic
 		/// The quantized value.
 		/// </returns>
 		public static ulong Quantize (this ulong value, ulong multiple, MidpointRounding rounding) => (ulong)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
+
+		/// <summary>
+		/// Adds a number to a value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="addition">The number to add.</param>
+		/// <returns>
+		/// The result of: value + addition.
+		/// </returns>
+		public static ulong Add (this ulong value, ulong addition) => (ulong)(value + addition);
+
+		/// <summary>
+		/// Subtracts a number from a value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="subtract">The number to subtract.</param>
+		/// <returns>
+		/// The result of: value - subtract.
+		/// </returns>
+		public static ulong Subtract (this ulong value, ulong subtract) => (ulong)(value - subtract);
+
+		/// <summary>
+		/// Subtracts a value from a number.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="subtractFrom">The number to subtract from.</param>
+		/// <returns>
+		/// The result of: subtractFrom - value.
+		/// </returns>
+		public static ulong SubtractFrom (this ulong value, ulong subtractFrom) => (ulong)(subtractFrom - value);
+
+		/// <summary>
+		/// Multiplies a value by a factor.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="factor">The factor to multiply with.</param>
+		/// <returns>
+		/// The result of: value * factor.
+		/// </returns>
+		public static ulong Multiply (this ulong value, ulong factor) => (ulong)(value * factor);
 
 		/// <summary>
 		/// Clamps a value between an inclusive minimum and maximum value.
@@ -758,6 +1078,46 @@ namespace RI.Framework.Mathematic
 		public static float Quantize (this float value, float multiple, MidpointRounding rounding) => (float)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
 
 		/// <summary>
+		/// Adds a number to a value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="addition">The number to add.</param>
+		/// <returns>
+		/// The result of: value + addition.
+		/// </returns>
+		public static float Add (this float value, float addition) => (float)(value + addition);
+
+		/// <summary>
+		/// Subtracts a number from a value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="subtract">The number to subtract.</param>
+		/// <returns>
+		/// The result of: value - subtract.
+		/// </returns>
+		public static float Subtract (this float value, float subtract) => (float)(value - subtract);
+
+		/// <summary>
+		/// Subtracts a value from a number.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="subtractFrom">The number to subtract from.</param>
+		/// <returns>
+		/// The result of: subtractFrom - value.
+		/// </returns>
+		public static float SubtractFrom (this float value, float subtractFrom) => (float)(subtractFrom - value);
+
+		/// <summary>
+		/// Multiplies a value by a factor.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="factor">The factor to multiply with.</param>
+		/// <returns>
+		/// The result of: value * factor.
+		/// </returns>
+		public static float Multiply (this float value, float factor) => (float)(value * factor);
+
+		/// <summary>
 		/// Clamps a value between an inclusive minimum and maximum value.
 		/// </summary>
 		/// <param name="value">The value.</param>
@@ -840,6 +1200,46 @@ namespace RI.Framework.Mathematic
 		public static double Quantize (this double value, double multiple, MidpointRounding rounding) => (double)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
 
 		/// <summary>
+		/// Adds a number to a value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="addition">The number to add.</param>
+		/// <returns>
+		/// The result of: value + addition.
+		/// </returns>
+		public static double Add (this double value, double addition) => (double)(value + addition);
+
+		/// <summary>
+		/// Subtracts a number from a value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="subtract">The number to subtract.</param>
+		/// <returns>
+		/// The result of: value - subtract.
+		/// </returns>
+		public static double Subtract (this double value, double subtract) => (double)(value - subtract);
+
+		/// <summary>
+		/// Subtracts a value from a number.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="subtractFrom">The number to subtract from.</param>
+		/// <returns>
+		/// The result of: subtractFrom - value.
+		/// </returns>
+		public static double SubtractFrom (this double value, double subtractFrom) => (double)(subtractFrom - value);
+
+		/// <summary>
+		/// Multiplies a value by a factor.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="factor">The factor to multiply with.</param>
+		/// <returns>
+		/// The result of: value * factor.
+		/// </returns>
+		public static double Multiply (this double value, double factor) => (double)(value * factor);
+
+		/// <summary>
 		/// Clamps a value between an inclusive minimum and maximum value.
 		/// </summary>
 		/// <param name="value">The value.</param>
@@ -920,6 +1320,46 @@ namespace RI.Framework.Mathematic
 		/// The quantized value.
 		/// </returns>
 		public static decimal Quantize (this decimal value, decimal multiple, MidpointRounding rounding) => (decimal)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
+
+		/// <summary>
+		/// Adds a number to a value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="addition">The number to add.</param>
+		/// <returns>
+		/// The result of: value + addition.
+		/// </returns>
+		public static decimal Add (this decimal value, decimal addition) => (decimal)(value + addition);
+
+		/// <summary>
+		/// Subtracts a number from a value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="subtract">The number to subtract.</param>
+		/// <returns>
+		/// The result of: value - subtract.
+		/// </returns>
+		public static decimal Subtract (this decimal value, decimal subtract) => (decimal)(value - subtract);
+
+		/// <summary>
+		/// Subtracts a value from a number.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="subtractFrom">The number to subtract from.</param>
+		/// <returns>
+		/// The result of: subtractFrom - value.
+		/// </returns>
+		public static decimal SubtractFrom (this decimal value, decimal subtractFrom) => (decimal)(subtractFrom - value);
+
+		/// <summary>
+		/// Multiplies a value by a factor.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="factor">The factor to multiply with.</param>
+		/// <returns>
+		/// The result of: value * factor.
+		/// </returns>
+		public static decimal Multiply (this decimal value, decimal factor) => (decimal)(value * factor);
 
 		/// <summary>
 		/// Gets the absolute number of a value.
@@ -1276,6 +1716,28 @@ namespace RI.Framework.Mathematic
 			}
 
 			return (decimal)(Math.Floor(Math.Log10((double)Math.Abs(value)) + 1.0) * (double)Math.Sign(value));
+		}
+
+		/// <summary>
+		/// Gets the remainder of a division.
+		/// </summary>
+		/// <param name="dividend">The dividend.</param>
+		/// <param name="divisor">The divisor.</param>
+		/// <returns>
+		/// The remainder of  dividend / divisor.
+		/// </returns>
+		/// <remarks>
+		/// <note type="important">
+		/// This is not the same as simply applying the module operator.
+		/// The remainder is calculated, allowing the operation for floating point values.
+		/// </note>
+		/// </remarks>
+		public static float DivRem (this float dividend, float divisor)
+		{
+			float dividendAbs = dividend.Abs();
+			float divisorAbs = divisor.Abs();
+			float sign = dividend.Sign();
+			return (dividendAbs - (divisorAbs * ((float)Math.Floor(dividendAbs / divisorAbs)))) * sign;
 		}
 
 		/// <summary>
@@ -1675,6 +2137,86 @@ namespace RI.Framework.Mathematic
 		}
 
 		/// <summary>
+		/// Converts a radian value to degrees.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The result.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// The result is not clamped to a single full circle value (-359...0...+359).
+		/// Use <see cref="CircularClampDeg(float)" /> to clamp to a single full circle value.
+		/// </para>
+		/// </remarks>
+		public static float ToDeg (this float value) => value * 57.295779513f;
+
+		/// <summary>
+		/// Converts a degree value to radians.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The result.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// The result is not clamped to a single full circle value (-2π...0...+2π).
+		/// Use <see cref="CircularClampRad(float)" /> to clamp to a single full circle value.
+		/// </para>
+		/// </remarks>
+		public static float ToRad (this float value) => value * 0.01745329252f;
+
+		/// <summary>
+		/// Clamps a degree value to a single full circle (-359...0...+359).
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The result.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// Examples: 0 -> 0; 350 -> 350; 360 -> 0; 370 -> 10; etc.
+		/// </para>
+		/// </remarks>
+		public static float CircularClampDeg (this float value) => value.DivRem(360.0f);
+
+		/// <summary>
+		/// Clamps a radian value to a single full circle (-2π...0...+2π).
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The result.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// Examples: 0 -> 0; 1.5 -> 1.5; 2π -> 0; 3π -> π; etc.
+		/// </para>
+		/// </remarks>
+		public static float CircularClampRad (this float value) => value.DivRem(2.0f*3.1415926535897932384626433832795028841971693993751f);
+
+		/// <summary>
+		/// Gets the remainder of a division.
+		/// </summary>
+		/// <param name="dividend">The dividend.</param>
+		/// <param name="divisor">The divisor.</param>
+		/// <returns>
+		/// The remainder of  dividend / divisor.
+		/// </returns>
+		/// <remarks>
+		/// <note type="important">
+		/// This is not the same as simply applying the module operator.
+		/// The remainder is calculated, allowing the operation for floating point values.
+		/// </note>
+		/// </remarks>
+		public static double DivRem (this double dividend, double divisor)
+		{
+			double dividendAbs = dividend.Abs();
+			double divisorAbs = divisor.Abs();
+			double sign = dividend.Sign();
+			return (dividendAbs - (divisorAbs * ((double)Math.Floor(dividendAbs / divisorAbs)))) * sign;
+		}
+
+		/// <summary>
 		/// Determines whether a value is almost equal to another value.
 		/// </summary>
 		/// <param name="value">The value.</param>
@@ -2069,6 +2611,64 @@ namespace RI.Framework.Mathematic
 			double e2 = Math.Exp(-value);
 			return (double)((e1 + e2) / (e1 - e2));
 		}
+
+		/// <summary>
+		/// Converts a radian value to degrees.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The result.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// The result is not clamped to a single full circle value (-359...0...+359).
+		/// Use <see cref="CircularClampDeg(double)" /> to clamp to a single full circle value.
+		/// </para>
+		/// </remarks>
+		public static double ToDeg (this double value) => value * 57.295779513;
+
+		/// <summary>
+		/// Converts a degree value to radians.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The result.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// The result is not clamped to a single full circle value (-2π...0...+2π).
+		/// Use <see cref="CircularClampRad(double)" /> to clamp to a single full circle value.
+		/// </para>
+		/// </remarks>
+		public static double ToRad (this double value) => value * 0.01745329252;
+
+		/// <summary>
+		/// Clamps a degree value to a single full circle (-359...0...+359).
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The result.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// Examples: 0 -> 0; 350 -> 350; 360 -> 0; 370 -> 10; etc.
+		/// </para>
+		/// </remarks>
+		public static double CircularClampDeg (this double value) => value.DivRem(360.0);
+
+		/// <summary>
+		/// Clamps a radian value to a single full circle (-2π...0...+2π).
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The result.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// Examples: 0 -> 0; 1.5 -> 1.5; 2π -> 0; 3π -> π; etc.
+		/// </para>
+		/// </remarks>
+		public static double CircularClampRad (this double value) => value.DivRem(2.0*3.1415926535897932384626433832795028841971693993751);
 	}
 }
 

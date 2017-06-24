@@ -3,6 +3,7 @@
 	/// <summary>
 	///     Defines an interface to implement detection of synchronization/thread-safety.
 	/// </summary>
+	/// <threadsafety static="true" instance="true" />
 	public interface ISynchronizable
 	{
 		/// <summary>

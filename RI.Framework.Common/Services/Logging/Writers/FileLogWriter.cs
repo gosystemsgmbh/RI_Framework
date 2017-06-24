@@ -32,8 +32,9 @@ namespace RI.Framework.Services.Logging.Writers
 	///         See <see cref="ILogWriter" /> for more details.
 	///     </para>
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	[Export]
-	public sealed class FileLogWriter : ILogWriter, IDisposable
+	public sealed class FileLogWriter : ILogWriter, IDisposable, ILogSource
 	{
 		#region Constants
 
@@ -154,7 +155,7 @@ namespace RI.Framework.Services.Logging.Writers
 		/// <value>
 		///     true if log entries are appended to existing entries, false otherwise.
 		/// </value>
-		public bool Append { get; private set; }
+		public bool Append { get; }
 
 		/// <summary>
 		///     Gets the used text encoding which is used to write log files.
@@ -162,7 +163,7 @@ namespace RI.Framework.Services.Logging.Writers
 		/// <value>
 		///     The used text encoding which is used to write log files.
 		/// </value>
-		public Encoding Encoding { get; private set; }
+		public Encoding Encoding { get; }
 
 		/// <summary>
 		///     Gets the log file.
@@ -170,7 +171,7 @@ namespace RI.Framework.Services.Logging.Writers
 		/// <value>
 		///     The log file.
 		/// </value>
-		public FilePath File { get; private set; }
+		public FilePath File { get; }
 
 		/// <summary>
 		///     Gets the maximum size of the log file in bytes.
@@ -178,7 +179,7 @@ namespace RI.Framework.Services.Logging.Writers
 		/// <value>
 		///     The maximum log file size in bytes or null if no maximum is specified.
 		/// </value>
-		public long? MaxSize { get; private set; }
+		public long? MaxSize { get; }
 
 		private LogFileFormatter Formatter { get; set; }
 
@@ -313,14 +314,6 @@ namespace RI.Framework.Services.Logging.Writers
 			}
 		}
 
-		private void VerifyNotClosed()
-		{
-			if (this.Writer == null)
-			{
-				throw new ObjectDisposedException(nameof(FileLogWriter));
-			}
-		}
-
 		#endregion
 
 
@@ -367,7 +360,7 @@ namespace RI.Framework.Services.Logging.Writers
 		object ISynchronizable.SyncRoot => this.SyncRoot;
 
 		/// <inheritdoc />
-		public void Cleanup (DateTime retentionDate)
+		void ILogWriter.Cleanup(DateTime retentionDate)
 		{
 		}
 
@@ -386,13 +379,33 @@ namespace RI.Framework.Services.Logging.Writers
 
 			lock (this.SyncRoot)
 			{
-				if ((this.Writer != null) && (this.Stream != null))
+				if ((this.Writer == null) && (this.Stream == null))
 				{
-					try
-					{
-						this.Initialize(false);
+					return;
+				}
 
-						this.Formatter.Write(this.Writer, timestamp, threadId, severity, source, message);
+				try
+				{
+					this.Initialize(false);
+
+					this.Formatter.Write(this.Writer, timestamp, threadId, severity, source, message);
+
+					this.Writer.Flush();
+#if PLATFORM_NETFX
+					this.Stream.Flush(true);
+#endif
+#if PLATFORM_UNITY
+						this.Stream.Flush();
+#endif
+
+					if (this.RolledOver)
+					{
+						string newLine = Environment.NewLine;
+						int moved = LogFileReader.MoveToNextEntryInStream(this.Stream, newLine.Length * 2);
+						this.Stream.Seek(moved * -1, SeekOrigin.Current);
+						string padding = newLine + string.Empty.PadRight(moved - (newLine.Length * 2), ' ') + newLine;
+
+						this.Writer.Write(padding);
 
 						this.Writer.Flush();
 #if PLATFORM_NETFX
@@ -401,28 +414,10 @@ namespace RI.Framework.Services.Logging.Writers
 #if PLATFORM_UNITY
 						this.Stream.Flush();
 #endif
-
-						if (this.RolledOver)
-						{
-							string newLine = Environment.NewLine;
-							int moved = LogFileReader.MoveToNextEntryInStream(this.Stream, newLine.Length * 2);
-							this.Stream.Seek(moved * -1, SeekOrigin.Current);
-							string padding = newLine + string.Empty.PadRight(moved - (newLine.Length * 2), ' ') + newLine;
-
-							this.Writer.Write(padding);
-
-							this.Writer.Flush();
-#if PLATFORM_NETFX
-							this.Stream.Flush(true);
-#endif
-#if PLATFORM_UNITY
-						this.Stream.Flush();
-#endif
-						}
 					}
-					catch
-					{
-					}
+				}
+				catch
+				{
 				}
 			}
 		}

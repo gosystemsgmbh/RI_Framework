@@ -113,10 +113,8 @@ namespace RI.Framework.Mathematic
 		#region Static Properties/Indexer
 
 		private static Dictionary<string, int> SpecialCasesToDecimal { get; set; }
-
 		private static Dictionary<int, string> SpecialCasesToRoman { get; set; }
 		private static Dictionary<char, int> ValuesToDecimal { get; set; }
-
 		private static Dictionary<int, char> ValuesToRoman { get; set; }
 
 		#endregion

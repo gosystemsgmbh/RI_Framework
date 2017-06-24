@@ -36,6 +36,7 @@ namespace RI.Framework.Services.Logging
 		/// </summary>
 		public LogService ()
 		{
+			this.LogSyncRoot = new object();
 			this.WritersManual = new List<ILogWriter>();
 		}
 
@@ -49,7 +50,9 @@ namespace RI.Framework.Services.Logging
 		[Import(typeof(ILogWriter), Recomposable = true)]
 		private Import WritersImported { get; set; }
 
-		private List<ILogWriter> WritersManual { get; set; }
+		private List<ILogWriter> WritersManual { get; }
+
+		private object LogSyncRoot { get; }
 
 		#endregion
 
@@ -97,9 +100,12 @@ namespace RI.Framework.Services.Logging
 		/// <inheritdoc />
 		public void Cleanup (DateTime retentionDate)
 		{
-			foreach (ILogWriter logWriter in this.Writers)
+			lock (this.LogSyncRoot)
 			{
-				logWriter.Cleanup(retentionDate);
+				foreach (ILogWriter logWriter in this.Writers)
+				{
+					logWriter.Cleanup(retentionDate);
+				}
 			}
 		}
 
@@ -120,38 +126,56 @@ namespace RI.Framework.Services.Logging
 			DateTime timestamp = DateTime.Now;
 			int threadId = Thread.CurrentThread.ManagedThreadId;
 
-			if (this.Filter != null)
+			ILogFilter filter;
+			lock (this.LogSyncRoot)
 			{
-				if (!this.Filter.Filter(timestamp, threadId, severity, source))
+				filter = this.Filter;
+			}
+
+			if (filter != null)
+			{
+				if (!filter.Filter(timestamp, threadId, severity, source))
 				{
 					return;
 				}
 			}
 
-			string message = string.Format(CultureInfo.InvariantCulture, format ?? string.Empty, args ?? new object[0]);
-
-			foreach (ILogWriter logWriter in this.Writers)
+			lock (this.LogSyncRoot)
 			{
-				logWriter.Log(timestamp, threadId, severity, source, message);
+				string message = string.Format(CultureInfo.InvariantCulture, format ?? string.Empty, args ?? new object[0]);
+
+				foreach (ILogWriter logWriter in this.Writers)
+				{
+					logWriter.Log(timestamp, threadId, severity, source, message);
+				}
 			}
 		}
 
 		/// <inheritdoc />
 		public void Log (DateTime timestamp, int threadId, LogLevel severity, string source, string format, params object[] args)
 		{
-			if (this.Filter != null)
+			ILogFilter filter;
+			lock (this.LogSyncRoot)
 			{
-				if (!this.Filter.Filter(timestamp, threadId, severity, source))
+				filter = this.Filter;
+			}
+
+			if (filter != null)
+			{
+				if (!filter.Filter(timestamp, threadId, severity, source))
 				{
 					return;
 				}
 			}
 
-			string message = string.Format(CultureInfo.InvariantCulture, format ?? string.Empty, args ?? new object[0]);
-
-			foreach (ILogWriter logWriter in this.Writers)
+			lock (this.LogSyncRoot)
 			{
-				logWriter.Log(timestamp, threadId, severity, source, message);
+				string message = string.Format(CultureInfo.InvariantCulture, format ?? string.Empty, args ?? new object[0]);
+
+				foreach (ILogWriter logWriter in this.Writers)
+				{
+					logWriter.Log(timestamp, threadId, severity, source, message);
+				}
 			}
 		}
 

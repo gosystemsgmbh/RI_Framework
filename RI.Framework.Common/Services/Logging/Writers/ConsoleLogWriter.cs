@@ -19,6 +19,7 @@ namespace RI.Framework.Services.Logging.Writers
 	///         See <see cref="ILogWriter" /> for more details.
 	///     </para>
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	[Export]
 	public sealed class ConsoleLogWriter : ILogWriter
 	{
@@ -83,16 +84,17 @@ namespace RI.Framework.Services.Logging.Writers
 		object ISynchronizable.SyncRoot => this.SyncRoot;
 
 		/// <inheritdoc />
-		public void Cleanup (DateTime retentionDate)
+		void ILogWriter.Cleanup(DateTime retentionDate)
 		{
 		}
 
 		/// <inheritdoc />
 		public void Log (DateTime timestamp, int threadId, LogLevel severity, string source, string message)
 		{
-			if (this.Filter != null)
+			ILogFilter filter = this.Filter;
+			if (filter != null)
 			{
-				if (!this.Filter.Filter(timestamp, threadId, severity, source))
+				if (!filter.Filter(timestamp, threadId, severity, source))
 				{
 					return;
 				}
@@ -115,6 +117,7 @@ namespace RI.Framework.Services.Logging.Writers
 				finalMessageBuilder.Append("] ");
 				finalMessageBuilder.AppendLine(message);
 				string finalMessage = finalMessageBuilder.ToString();
+
 				Console.WriteLine(finalMessage);
 			}
 		}

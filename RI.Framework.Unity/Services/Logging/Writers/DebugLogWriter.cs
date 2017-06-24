@@ -22,6 +22,7 @@ namespace RI.Framework.Services.Logging.Writers
 	///         See <see cref="ILogWriter" /> for more details.
 	///     </para>
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	[Export]
 	public sealed class DebugLogWriter : ILogWriter
 	{
@@ -93,9 +94,10 @@ namespace RI.Framework.Services.Logging.Writers
 		/// <inheritdoc />
 		public void Log (DateTime timestamp, int threadId, LogLevel severity, string source, string message)
 		{
-			if (this.Filter != null)
+			ILogFilter filter = this.Filter;
+			if (filter != null)
 			{
-				if (!this.Filter.Filter(timestamp, threadId, severity, source))
+				if (!filter.Filter(timestamp, threadId, severity, source))
 				{
 					return;
 				}
@@ -103,11 +105,14 @@ namespace RI.Framework.Services.Logging.Writers
 
 			lock (this.SyncRoot)
 			{
+				source = source ?? "null";
+				message = message ?? string.Empty;
+
 				StringBuilder finalMessageBuilder = new StringBuilder();
 				finalMessageBuilder.Append("[");
-				finalMessageBuilder.Append(source ?? "null");
+				finalMessageBuilder.Append(source);
 				finalMessageBuilder.Append("] ");
-				finalMessageBuilder.Append(message ?? string.Empty);
+				finalMessageBuilder.Append(message);
 				string finalMessage = finalMessageBuilder.ToString();
 
 				switch (severity)

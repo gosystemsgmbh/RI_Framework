@@ -22,8 +22,9 @@ namespace RI.Framework.Services.Logging.Writers
 	///         See <see cref="ILogWriter" /> for more details.
 	///     </para>
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	[Export]
-	public sealed class EventLogWriter : ILogWriter, ILogSource
+	public sealed class EventLogWriter : ILogWriter, IDisposable, ILogSource
 	{
 		/// <summary>
 		/// Gets the used event log.
@@ -32,6 +33,15 @@ namespace RI.Framework.Services.Logging.Writers
 		/// The used event log.
 		/// </value>
 		public EventLog EventLog { get; }
+
+		private bool Disposed { get; set; }
+
+		private EventHandler DisposedEventHandler { get; set; }
+
+		private void DisposedEvent (object sender, EventArgs args)
+		{
+			this.Close();
+		}
 
 		/// <summary>
 		///     Creates a new instance of <see cref="EventLogWriter" />.
@@ -47,8 +57,46 @@ namespace RI.Framework.Services.Logging.Writers
 
 			this.SyncRoot = new object();
 
+			this.Disposed = false;
+			this.DisposedEventHandler = this.DisposedEvent;
+
 			this.EventLog = eventLog;
+			this.EventLog.Disposed += this.DisposedEventHandler;
 		}
+
+		/// <summary>
+		///     Garbage collects this instance of <see cref="EventLogWriter" />.
+		/// </summary>
+		~EventLogWriter()
+		{
+			this.Dispose(false);
+		}
+
+		/// <summary>
+		///     Closes this log writer and all used underlying streams.
+		/// </summary>
+		/// <remarks>
+		///     <para>
+		///         After the log writer is closed, all calls to <see cref="Log" /> do not have any effect but do not fail.
+		///     </para>
+		/// </remarks>
+		public void Close()
+		{
+			this.Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		[SuppressMessage("ReSharper", "UnusedParameter.Local")]
+		[SuppressMessage("ReSharper", "EmptyGeneralCatchClause")]
+		private void Dispose (bool disposing)
+		{
+			lock (this.SyncRoot)
+			{
+				this.EventLog.Disposed -= this.DisposedEventHandler;
+				this.Disposed = true;
+			}
+		}
+
 
 
 
@@ -64,6 +112,19 @@ namespace RI.Framework.Services.Logging.Writers
 		#region Instance Properties/Indexer
 
 		private object SyncRoot { get; set; }
+
+		#endregion
+
+
+
+
+		#region Interface: IDisposable
+
+		/// <inheritdoc />
+		void IDisposable.Dispose()
+		{
+			this.Close();
+		}
 
 		#endregion
 
@@ -102,14 +163,21 @@ namespace RI.Framework.Services.Logging.Writers
 		{
 			lock (this.SyncRoot)
 			{
+				if (this.Disposed)
+				{
+					return;
+				}
+
 				int retentionDays = (int)DateTime.Now.Date.Subtract(retentionDate.Date).TotalDays + 1;
 				retentionDays = retentionDays.Clamp(1, 365);
+
+				this.Log(LogLevel.Information, "Cleaning up event log; retention days: {0}", retentionDays);
 
 				try
 				{
 					this.EventLog.ModifyOverflowPolicy(OverflowAction.OverwriteOlder, retentionDays);
 				}
-				catch (InvalidOperationException exception)
+				catch (Exception exception)
 				{
 					this.Log(LogLevel.Warning, "Could not cleanup event log: {0}", exception.ToDetailedString());
 				}
@@ -120,9 +188,10 @@ namespace RI.Framework.Services.Logging.Writers
 		[SuppressMessage("ReSharper", "EmptyGeneralCatchClause")]
 		public void Log(DateTime timestamp, int threadId, LogLevel severity, string source, string message)
 		{
-			if (this.Filter != null)
+			ILogFilter filter = this.Filter;
+			if (filter != null)
 			{
-				if (!this.Filter.Filter(timestamp, threadId, severity, source))
+				if (!filter.Filter(timestamp, threadId, severity, source))
 				{
 					return;
 				}
@@ -130,6 +199,11 @@ namespace RI.Framework.Services.Logging.Writers
 
 			lock (this.SyncRoot)
 			{
+				if (this.Disposed)
+				{
+					return;
+				}
+
 				source = source ?? "null";
 				message = message ?? string.Empty;
 

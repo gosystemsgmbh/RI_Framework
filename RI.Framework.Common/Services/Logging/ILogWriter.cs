@@ -16,6 +16,7 @@ namespace RI.Framework.Services.Logging
 	///         A log writer acts as an actual target for writing log messages as produced by an <see cref="ILogService" />.
 	///     </para>
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	[Export]
 	public interface ILogWriter : ISynchronizable
 	{

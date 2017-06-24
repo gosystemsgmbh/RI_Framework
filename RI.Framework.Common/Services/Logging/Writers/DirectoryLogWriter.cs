@@ -32,6 +32,7 @@ namespace RI.Framework.Services.Logging.Writers
 	///         See <see cref="ILogWriter" /> for more details.
 	///     </para>
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	[Export]
 	public sealed class DirectoryLogWriter : ILogWriter, IDisposable, ILogSource
 	{
@@ -174,7 +175,7 @@ namespace RI.Framework.Services.Logging.Writers
 		/// <value>
 		///     The common log directory.
 		/// </value>
-		public DirectoryPath CommonDirectory { get; private set; }
+		public DirectoryPath CommonDirectory { get; }
 
 		/// <summary>
 		///     Gets the current log directory which is a subdirectory of the common log directory (<see cref="CommonDirectory" />).
@@ -254,7 +255,7 @@ namespace RI.Framework.Services.Logging.Writers
 		/// <value>
 		///     The used text encoding which is used to write log files.
 		/// </value>
-		public Encoding Encoding { get; private set; }
+		public Encoding Encoding { get; }
 
 		/// <summary>
 		///     Gets the file name of the text log file in the current log directory.
@@ -262,7 +263,7 @@ namespace RI.Framework.Services.Logging.Writers
 		/// <value>
 		///     The file name of the text log file in the current log directory.
 		/// </value>
-		public FilePath FileName { get; private set; }
+		public FilePath FileName { get; }
 
 		/// <summary>
 		///     Gets the initial timestamp this <see cref="DirectoryLogWriter" /> was created with.
@@ -270,7 +271,7 @@ namespace RI.Framework.Services.Logging.Writers
 		/// <value>
 		///     The initial timestamp this <see cref="DirectoryLogWriter" /> was created with.
 		/// </value>
-		public DateTime InitialTimestamp { get; private set; }
+		public DateTime InitialTimestamp { get; }
 
 		/// <summary>
 		///     Gets whether each day has its own current log directory and current log file or all log entries should be written in only one log file.
@@ -278,7 +279,7 @@ namespace RI.Framework.Services.Logging.Writers
 		/// <value>
 		///     true if each day has its own current log directory and current log file, false if all log entries should be written in only one log file.
 		/// </value>
-		public bool SeparateDays { get; private set; }
+		public bool SeparateDays { get; }
 
 		private FileStream CurrentStream { get; set; }
 
@@ -404,14 +405,6 @@ namespace RI.Framework.Services.Logging.Writers
 			}
 		}
 
-		private void VerifyNotClosed()
-		{
-			if ((this.CurrentWriter == null) || (this.CurrentStream == null))
-			{
-				throw new ObjectDisposedException(nameof(DirectoryLogWriter));
-			}
-		}
-
 		#endregion
 
 
@@ -462,7 +455,10 @@ namespace RI.Framework.Services.Logging.Writers
 		{
 			lock (this.SyncRoot)
 			{
-				this.VerifyNotClosed();
+				if ((this.CurrentWriter == null) || (this.CurrentStream == null))
+				{
+					return;
+				}
 
 				List<DirectoryPath> directories = this.CommonDirectory.GetSubdirectories(false, false);
 				foreach (DirectoryPath directory in directories)
@@ -487,7 +483,14 @@ namespace RI.Framework.Services.Logging.Writers
 
 					this.Log(LogLevel.Information, "Cleaning up old log directory: {0}", directory);
 
-					Directory.Delete(directory, true);
+					try
+					{
+						Directory.Delete(directory, true);
+					}
+					catch (Exception exception)
+					{
+						this.Log(LogLevel.Warning, "Could not cleanup log directory: {0}", exception.ToDetailedString());
+					}
 				}
 			}
 		}
@@ -507,25 +510,27 @@ namespace RI.Framework.Services.Logging.Writers
 
 			lock (this.SyncRoot)
 			{
-				if ((this.CurrentWriter != null) && (this.CurrentStream != null))
+				if ((this.CurrentWriter == null) || (this.CurrentStream == null))
 				{
-					try
-					{
-						this.InitializeCurrent(false);
+					return;
+				}
 
-						this.Formatter.Write(this.CurrentWriter, timestamp, threadId, severity, source, message);
+				try
+				{
+					this.InitializeCurrent(false);
 
-						this.CurrentWriter.Flush();
+					this.Formatter.Write(this.CurrentWriter, timestamp, threadId, severity, source, message);
+
+					this.CurrentWriter.Flush();
 #if PLATFORM_NETFX
-						this.CurrentStream.Flush(true);
+					this.CurrentStream.Flush(true);
 #endif
 #if PLATFORM_UNITY
 						this.CurrentStream.Flush();
 #endif
-					}
-					catch
-					{
-					}
+				}
+				catch
+				{
 				}
 			}
 		}

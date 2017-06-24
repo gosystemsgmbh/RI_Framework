@@ -299,9 +299,6 @@ Data
 Mathematic
 ----------
 
- - (Common) Rounding extensions for double, float, and decimal (including financial rounding)
- - (Common) Merge MathUtils into NumberExtensions
-
  - (Common) NumberExtensions: FractionAsInteger
  - (Common) NumberExtensions: FirstDigits
  - (Common) NumberExtensions: LastDigits

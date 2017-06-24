@@ -118,6 +118,46 @@ string minusOne = minusOnes[i1];
 		/// The quantized value.
 		/// </returns>
 		public static <#=type#> Quantize (this <#=type#> value, <#=type#> multiple, MidpointRounding rounding) => (<#=type#>)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
+
+		/// <summary>
+		/// Adds a number to a value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="addition">The number to add.</param>
+		/// <returns>
+		/// The result of: value + addition.
+		/// </returns>
+		public static <#=type#> Add (this <#=type#> value, <#=type#> addition) => (<#=type#>)(value + addition);
+
+		/// <summary>
+		/// Subtracts a number from a value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="subtract">The number to subtract.</param>
+		/// <returns>
+		/// The result of: value - subtract.
+		/// </returns>
+		public static <#=type#> Subtract (this <#=type#> value, <#=type#> subtract) => (<#=type#>)(value - subtract);
+
+		/// <summary>
+		/// Subtracts a value from a number.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="subtractFrom">The number to subtract from.</param>
+		/// <returns>
+		/// The result of: subtractFrom - value.
+		/// </returns>
+		public static <#=type#> SubtractFrom (this <#=type#> value, <#=type#> subtractFrom) => (<#=type#>)(subtractFrom - value);
+
+		/// <summary>
+		/// Multiplies a value by a factor.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <param name="factor">The factor to multiply with.</param>
+		/// <returns>
+		/// The result of: value * factor.
+		/// </returns>
+		public static <#=type#> Multiply (this <#=type#> value, <#=type#> factor) => (<#=type#>)(value * factor);
 <#
 }
 types = new string[]		{	"sbyte",	"short",	"int",	"long",		"float",	"double",	"decimal"	};
@@ -184,11 +224,15 @@ string minusOne = minusOnes[i1];
 		}
 <#
 }
-types = new string[]				{	"float",					"double"					};
-zeros = new string[]				{	"0.0f",						"0.0"						};
-plusOnes = new string[]				{	"1.0f",						"1.0"						};
-minusOnes = new string[]			{	"-1.0f",					"-1.0"						};
-string[] accuracies = new string[]	{	"5.96046447753906E-07f",	"1.11022302462516E-15"		};
+types = new string[]					{	"float",														"double"																};
+zeros = new string[]					{	"0.0f",															"0.0"																	};
+plusOnes = new string[]					{	"1.0f",															"1.0"																	};
+minusOnes = new string[]				{	"-1.0f",														"-1.0"																	};
+string[] accuracies = new string[]		{	"5.96046447753906E-07f",										"1.11022302462516E-15"													};
+string[] toDegFactors = new string[]	{	"57.295779513f",												"57.295779513"															};
+string[] toRadFactors = new string[]	{	"0.01745329252f",												"0.01745329252"															};
+string[] degCircles = new string[]		{	"360.0f",														"360.0"																	};
+string[] radCircles = new string[]		{	"2.0f*3.1415926535897932384626433832795028841971693993751f",	"2.0*3.1415926535897932384626433832795028841971693993751"				};
 for (int i1 = 0; i1 < types.Length; i1++)
 {
 string type = types[i1];
@@ -196,7 +240,33 @@ string zero = zeros[i1];
 string plusOne = plusOnes[i1];
 string minusOne = minusOnes[i1];
 string accuracy = accuracies[i1];
+string toDegFactor = toDegFactors[i1];
+string toRadFactor = toRadFactors[i1];
+string degCircle = degCircles[i1];
+string radCircle = radCircles[i1];
 #>
+
+		/// <summary>
+		/// Gets the remainder of a division.
+		/// </summary>
+		/// <param name="dividend">The dividend.</param>
+		/// <param name="divisor">The divisor.</param>
+		/// <returns>
+		/// The remainder of  dividend / divisor.
+		/// </returns>
+		/// <remarks>
+		/// <note type="important">
+		/// This is not the same as simply applying the module operator.
+		/// The remainder is calculated, allowing the operation for floating point values.
+		/// </note>
+		/// </remarks>
+		public static <#=type#> DivRem (this <#=type#> dividend, <#=type#> divisor)
+		{
+			<#=type#> dividendAbs = dividend.Abs();
+			<#=type#> divisorAbs = divisor.Abs();
+			<#=type#> sign = dividend.Sign();
+			return (dividendAbs - (divisorAbs * ((<#=type#>)Math.Floor(dividendAbs / divisorAbs)))) * sign;
+		}
 
 		/// <summary>
 		/// Determines whether a value is almost equal to another value.
@@ -593,6 +663,64 @@ string accuracy = accuracies[i1];
 			double e2 = Math.Exp(-value);
 			return (<#=type#>)((e1 + e2) / (e1 - e2));
 		}
+
+		/// <summary>
+		/// Converts a radian value to degrees.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The result.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// The result is not clamped to a single full circle value (-359...0...+359).
+		/// Use <see cref="CircularClampDeg(<#=type#>)" /> to clamp to a single full circle value.
+		/// </para>
+		/// </remarks>
+		public static <#=type#> ToDeg (this <#=type#> value) => value * <#=toDegFactor#>;
+
+		/// <summary>
+		/// Converts a degree value to radians.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The result.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// The result is not clamped to a single full circle value (-2π...0...+2π).
+		/// Use <see cref="CircularClampRad(<#=type#>)" /> to clamp to a single full circle value.
+		/// </para>
+		/// </remarks>
+		public static <#=type#> ToRad (this <#=type#> value) => value * <#=toRadFactor#>;
+
+		/// <summary>
+		/// Clamps a degree value to a single full circle (-359...0...+359).
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The result.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// Examples: 0 -> 0; 350 -> 350; 360 -> 0; 370 -> 10; etc.
+		/// </para>
+		/// </remarks>
+		public static <#=type#> CircularClampDeg (this <#=type#> value) => value.DivRem(<#=degCircle#>);
+
+		/// <summary>
+		/// Clamps a radian value to a single full circle (-2π...0...+2π).
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The result.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// Examples: 0 -> 0; 1.5 -> 1.5; 2π -> 0; 3π -> π; etc.
+		/// </para>
+		/// </remarks>
+		public static <#=type#> CircularClampRad (this <#=type#> value) => value.DivRem(<#=radCircle#>);
 <#
 }
 #>

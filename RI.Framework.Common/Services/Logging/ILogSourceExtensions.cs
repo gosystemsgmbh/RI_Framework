@@ -13,11 +13,12 @@ namespace RI.Framework.Services.Logging
 	///         <see cref="ILogSourceExtensions" /> uses <see cref="LogLocator" />.
 	///     </para>
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	public static class ILogSourceExtensions
 	{
 		#region Static Methods
 
-		/// <inheritdoc cref="ILogService.Log(LogLevel,string,string,object[])" />
+		/// <inheritdoc cref="LogLocator.Log(LogLevel,string,string,object[])" />
 		public static void Log (this ILogSource source, LogLevel severity, string format, params object[] args)
 		{
 			if (source == null)
@@ -28,7 +29,7 @@ namespace RI.Framework.Services.Logging
 			LogLocator.Log(severity, source.GetType().Name, format, args);
 		}
 
-		/// <inheritdoc cref="ILogService.Log(DateTime,int,LogLevel,string,string,object[])" />
+		/// <inheritdoc cref="LogLocator.Log(DateTime,int,LogLevel,string,string,object[])" />
 		public static void Log (this ILogSource source, DateTime timestamp, int threadId, LogLevel severity, string format, params object[] args)
 		{
 			if (source == null)
