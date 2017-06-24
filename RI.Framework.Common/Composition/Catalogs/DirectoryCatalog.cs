@@ -33,6 +33,7 @@ namespace RI.Framework.Composition.Catalogs
 	///         Similarly, assemblies which failed to load will not be attempted to be loaded again.
 	///     </note>
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	public sealed class DirectoryCatalog : CompositionCatalog
 	{
 		#region Constants
@@ -136,7 +137,7 @@ namespace RI.Framework.Composition.Catalogs
 		/// <value>
 		///     The directory which is searched for assemblies.
 		/// </value>
-		public DirectoryPath DirectoryPath { get; private set; }
+		public DirectoryPath DirectoryPath { get; }
 
 		/// <summary>
 		///     Gets the file pattern which is used to search for assemblies.
@@ -144,7 +145,7 @@ namespace RI.Framework.Composition.Catalogs
 		/// <value>
 		///     The file pattern which is used to search for assemblies.
 		/// </value>
-		public string FilePattern { get; private set; }
+		public string FilePattern { get; }
 
 		/// <summary>
 		///     Gets whether assemblies are searched recursive (including subdirectories) or not.
@@ -152,7 +153,29 @@ namespace RI.Framework.Composition.Catalogs
 		/// <value>
 		///     true if subdirectories of <see cref="DirectoryPath" /> are searched for assemblies, false otherwise.
 		/// </value>
-		public bool Recursive { get; private set; }
+		public bool Recursive { get; }
+
+		/// <summary>
+		///     Indicates whether there were assembly files which could not be loaded.
+		/// </summary>
+		/// <value>
+		///     true if there was at least one assembly file which could not be loaded, false otherwise.
+		/// </value>
+		/// <remarks>
+		/// <para>
+		/// The list of failed assembly files which could not be loaded can be retrieved using <see cref="GetFailedFiles"/>.
+		/// </para>
+		/// </remarks>
+		public bool Failed
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this.FailedFiles.Count > 0;
+				}
+			}
+		}
 
 		private HashSet<FilePath> FailedFiles { get; set; }
 
@@ -174,7 +197,10 @@ namespace RI.Framework.Composition.Catalogs
 		/// </returns>
 		public FilePath[] GetFailedFiles ()
 		{
-			return this.FailedFiles.ToArray();
+			lock (this.SyncRoot)
+			{
+				return this.FailedFiles.ToArray();
+			}
 		}
 
 		/// <summary>
@@ -186,7 +212,10 @@ namespace RI.Framework.Composition.Catalogs
 		/// </returns>
 		public FilePath[] GetLoadedFiles ()
 		{
-			return this.LoadedFiles.ToArray();
+			lock (this.SyncRoot)
+			{
+				return this.LoadedFiles.ToArray();
+			}
 		}
 
 		/// <summary>
@@ -209,46 +238,49 @@ namespace RI.Framework.Composition.Catalogs
 		{
 			base.UpdateItems();
 
-			HashSet<FilePath> allFiles = new HashSet<FilePath>(this.DirectoryPath.GetFiles(false, this.Recursive, this.FilePattern), this.LoadedFiles.Comparer);
-			HashSet<FilePath> newFiles = allFiles.Except(this.LoadedFiles, this.LoadedFiles.Comparer).Except(this.FailedFiles, this.LoadedFiles.Comparer);
-			HashSet<FilePath> suceededFiles = new HashSet<FilePath>(this.LoadedFiles.Comparer);
-			HashSet<FilePath> failedFiles = new HashSet<FilePath>(this.LoadedFiles.Comparer);
-
-			foreach (FilePath newFile in newFiles)
+			lock (this.SyncRoot)
 			{
-				this.Log(LogLevel.Debug, "Trying to load assembly: {0}", newFile);
+				HashSet<FilePath> allFiles = new HashSet<FilePath>(this.DirectoryPath.GetFiles(false, this.Recursive, this.FilePattern), this.LoadedFiles.Comparer);
+				HashSet<FilePath> newFiles = allFiles.Except(this.LoadedFiles, this.LoadedFiles.Comparer).Except(this.FailedFiles, this.LoadedFiles.Comparer);
+				HashSet<FilePath> suceededFiles = new HashSet<FilePath>(this.LoadedFiles.Comparer);
+				HashSet<FilePath> failedFiles = new HashSet<FilePath>(this.LoadedFiles.Comparer);
 
-				try
+				foreach (FilePath newFile in newFiles)
 				{
-					Dictionary<string, List<CompositionCatalogItem>> items = FileCatalog.LoadAssemblyFile(newFile, this.ExportAllTypes);
-					foreach (KeyValuePair<string, List<CompositionCatalogItem>> item in items)
-					{
-						if (!this.Items.ContainsKey(item.Key))
-						{
-							this.Items.Add(item.Key, new List<CompositionCatalogItem>());
-						}
+					this.Log(LogLevel.Debug, "Trying to load assembly: {0}", newFile);
 
-						foreach (CompositionCatalogItem value in item.Value)
+					try
+					{
+						Dictionary<string, List<CompositionCatalogItem>> items = FileCatalog.LoadAssemblyFile(newFile, this.ExportAllTypes);
+						foreach (KeyValuePair<string, List<CompositionCatalogItem>> item in items)
 						{
-							if (!this.Items[item.Key].Any(x => x.Type == value.Type))
+							if (!this.Items.ContainsKey(item.Key))
 							{
-								this.Items[item.Key].Add(value);
+								this.Items.Add(item.Key, new List<CompositionCatalogItem>());
+							}
+
+							foreach (CompositionCatalogItem value in item.Value)
+							{
+								if (!this.Items[item.Key].Any(x => x.Type == value.Type))
+								{
+									this.Items[item.Key].Add(value);
+								}
 							}
 						}
+
+						suceededFiles.Add(newFile);
 					}
+					catch (Exception exception)
+					{
+						this.Log(LogLevel.Error, "Load assembly failed: {0}{1}{2}", newFile, Environment.NewLine, exception.ToDetailedString());
 
-					suceededFiles.Add(newFile);
+						failedFiles.Add(newFile);
+					}
 				}
-				catch (Exception exception)
-				{
-					this.Log(LogLevel.Error, "Load assembly failed: {0}{1}{2}", newFile, Environment.NewLine, exception.ToDetailedString());
 
-					failedFiles.Add(newFile);
-				}
+				this.LoadedFiles.AddRange(suceededFiles);
+				this.FailedFiles.AddRange(failedFiles);
 			}
-
-			this.LoadedFiles.AddRange(suceededFiles);
-			this.FailedFiles.AddRange(failedFiles);
 		}
 
 		#endregion

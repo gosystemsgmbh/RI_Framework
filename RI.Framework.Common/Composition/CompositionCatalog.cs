@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using RI.Framework.Composition.Model;
 using RI.Framework.Services.Logging;
+using RI.Framework.Utilities.ObjectModel;
 
 
 
@@ -30,7 +31,8 @@ namespace RI.Framework.Composition
 	///         See <see cref="CompositionContainer" /> for more details about composition.
 	///     </para>
 	/// </remarks>
-	public abstract class CompositionCatalog : ILogSource
+	/// <threadsafety static="true" instance="true" />
+	public abstract class CompositionCatalog : ILogSource, IDisposable, ISynchronizable
 	{
 		#region Instance Constructor/Destructor
 
@@ -39,7 +41,16 @@ namespace RI.Framework.Composition
 		/// </summary>
 		protected CompositionCatalog ()
 		{
+			this.SyncRoot = new object();
 			this.Items = new Dictionary<string, List<CompositionCatalogItem>>(CompositionContainer.NameComparer);
+		}
+
+		/// <summary>
+		///     Garbage collects this instance of <see cref="CompositionCatalog" />.
+		/// </summary>
+		~CompositionCatalog ()
+		{
+			this.Dispose();
 		}
 
 		#endregion
@@ -68,6 +79,21 @@ namespace RI.Framework.Composition
 		///     </note>
 		/// </remarks>
 		protected internal Dictionary<string, List<CompositionCatalogItem>> Items { get; private set; }
+
+		/// <summary>
+		/// Gets a thread-safe snapshot of the current exports in <see cref="Items"/>.
+		/// </summary>
+		/// <returns>
+		/// The thread-safe snapshot of the current exports in <see cref="Items"/>.
+		/// If no exports are available, an empty dictionary is returned.
+		/// </returns>
+		protected internal Dictionary<string, List<CompositionCatalogItem>> GetItemsSnapshot ()
+		{
+			lock (this.SyncRoot)
+			{
+				return new Dictionary<string, List<CompositionCatalogItem>>(this.Items, this.Items.Comparer);
+			}
+		}
 
 		#endregion
 
@@ -122,6 +148,26 @@ namespace RI.Framework.Composition
 		{
 		}
 
+		/// <inheritdoc cref="IDisposable.Dispose"/>
+		protected virtual void Dispose ()
+		{
+		}
+
+		/// <inheritdoc />
+		void IDisposable.Dispose ()
+		{
+			this.Dispose();
+		}
+
 		#endregion
+
+
+
+
+		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		public object SyncRoot { get; }
 	}
 }

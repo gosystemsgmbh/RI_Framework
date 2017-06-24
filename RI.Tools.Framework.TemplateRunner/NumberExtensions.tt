@@ -4,6 +4,9 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".tt.cs" #>
+
+#if !TEMPLATE_RUNNER
+
 using System;
 using System.Diagnostics.CodeAnalysis;
 
@@ -595,3 +598,5 @@ string accuracy = accuracies[i1];
 #>
 	}
 }
+
+#endif

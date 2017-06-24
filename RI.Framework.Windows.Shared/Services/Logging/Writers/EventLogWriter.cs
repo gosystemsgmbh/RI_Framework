@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
 
@@ -116,6 +117,7 @@ namespace RI.Framework.Services.Logging.Writers
 		}
 
 		/// <inheritdoc />
+		[SuppressMessage("ReSharper", "EmptyGeneralCatchClause")]
 		public void Log(DateTime timestamp, int threadId, LogLevel severity, string source, string message)
 		{
 			if (this.Filter != null)

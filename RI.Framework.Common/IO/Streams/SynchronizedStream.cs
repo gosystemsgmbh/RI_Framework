@@ -17,6 +17,7 @@ namespace RI.Framework.IO.Streams
 	/// Repeated access (e.g. a <see cref="Seek"/> followed by a <see cref="Write"/>), which rely on to be of atomic nature, must be synchronized on a higher level, by the users of <see cref="SynchronizedStream"/>, using <see cref="SyncRoot"/>.
 	/// </note>
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	public sealed class SynchronizedStream : Stream, ISynchronizable
 	{
 		/// <summary>

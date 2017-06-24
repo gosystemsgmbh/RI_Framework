@@ -18,6 +18,7 @@ namespace RI.Framework.Composition.Catalogs
 	///         See <see cref="CompositionCatalog" /> for more details about composition catalogs.
 	///     </para>
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	public class InstanceCatalog : CompositionCatalog
 	{
 		#region Instance Constructor/Destructor

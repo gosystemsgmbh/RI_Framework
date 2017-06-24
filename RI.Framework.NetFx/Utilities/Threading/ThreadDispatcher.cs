@@ -192,7 +192,7 @@ namespace RI.Framework.Utilities.Threading
 
 				while (true)
 				{
-					int priority = 0;
+					int priority;
 					ThreadDispatcherOperation operation = null;
 
 					lock (this.SyncRoot)
@@ -405,7 +405,7 @@ namespace RI.Framework.Utilities.Threading
 		/// <inheritdoc />
 		public Task DoProcessingAsync ()
 		{
-			Task task = null;
+			Task task;
 
 			lock (this.SyncRoot)
 			{

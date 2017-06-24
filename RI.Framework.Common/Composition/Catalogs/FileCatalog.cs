@@ -29,8 +29,14 @@ namespace RI.Framework.Composition.Catalogs
 	///         If the load fails, it will not be attempted again.
 	///     </note>
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	public sealed class FileCatalog : CompositionCatalog
 	{
+		private bool _failed;
+
+
+
+
 		#region Static Methods
 
 		internal static Dictionary<string, List<CompositionCatalogItem>> LoadAssemblyFile (FilePath file, bool exportAllTypes)
@@ -128,9 +134,25 @@ namespace RI.Framework.Composition.Catalogs
 		///     Indicates whether the assembly file was successfully loaded.
 		/// </summary>
 		/// <value>
-		///     true if the assembly file was successfully loaded, false otherwise.
+		///     true if the assembly filefailed to load, false otherwise.
 		/// </value>
-		public bool Failed { get; private set; }
+		public bool Failed
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._failed;
+				}
+			}
+			private set
+			{
+				lock (this.SyncRoot)
+				{
+					this._failed = value;
+				}
+			}
+		}
 
 		/// <summary>
 		///     Gets the used assembly file.
@@ -138,7 +160,7 @@ namespace RI.Framework.Composition.Catalogs
 		/// <value>
 		///     The used assembly file.
 		/// </value>
-		public FilePath File { get; private set; }
+		public FilePath File { get; }
 
 		private bool IsLoaded { get; set; }
 
@@ -154,28 +176,31 @@ namespace RI.Framework.Composition.Catalogs
 		{
 			base.UpdateItems();
 
-			if (this.IsLoaded)
+			lock (this.SyncRoot)
 			{
-				return;
-			}
-
-			this.IsLoaded = true;
-
-			this.Log(LogLevel.Debug, "Trying to load assembly: {0}", this.File);
-
-			try
-			{
-				Dictionary<string, List<CompositionCatalogItem>> items = FileCatalog.LoadAssemblyFile(this.File, this.ExportAllTypes);
-				foreach (KeyValuePair<string, List<CompositionCatalogItem>> item in items)
+				if (this.IsLoaded)
 				{
-					this.Items.Add(item.Key, item.Value);
+					return;
 				}
-				this.Failed = false;
-			}
-			catch (Exception exception)
-			{
-				this.Log(LogLevel.Error, "Load assembly failed: {0}{1}{2}", this.File, Environment.NewLine, exception.ToDetailedString());
-				this.Failed = true;
+
+				this.IsLoaded = true;
+
+				this.Log(LogLevel.Debug, "Trying to load assembly: {0}", this.File);
+
+				try
+				{
+					Dictionary<string, List<CompositionCatalogItem>> items = FileCatalog.LoadAssemblyFile(this.File, this.ExportAllTypes);
+					foreach (KeyValuePair<string, List<CompositionCatalogItem>> item in items)
+					{
+						this.Items.Add(item.Key, item.Value);
+					}
+					this.Failed = false;
+				}
+				catch (Exception exception)
+				{
+					this.Log(LogLevel.Error, "Load assembly failed: {0}{1}{2}", this.File, Environment.NewLine, exception.ToDetailedString());
+					this.Failed = true;
+				}
 			}
 		}
 

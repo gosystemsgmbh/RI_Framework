@@ -122,10 +122,10 @@ Collections
  - (Common) ITreeNodeExtensions: AddChildRange
  - (Common) ITreeNodeExtensions: Path building and deflating
 
- - (Common) ReadOnlyXXX (Collection, List, Dictionary, Queue, Stack, HashSet, LinkedList)
- - (Common) SynchronizedXXX (Collection, List, Dictionary, Queue, Stack, HashSet, LinkedList)
- - (Common) WatchableXXX (Collection, List, Dictionary, Queue, Stack, HashSet, LinkedList)
- - (Common) ObservableXXX (Collection, List, Dictionary, Queue, Stack, HashSet, LinkedList)
+ - (Common) ReadOnlyXXX (Collection, List, Dictionary, Queue, Stack, HashSet, LinkedList, Pool, Warehouse, PriorityQueue)
+ - (Common) SynchronizedXXX (Collection, List, Dictionary, Queue, Stack, HashSet, LinkedList, Pool, Warehouse, PriorityQueue)
+ - (Common) WatchableXXX (Collection, List, Dictionary, Queue, Stack, HashSet, LinkedList, Pool, Warehouse, PriorityQueue)
+ - (Common) ObservableXXX (Collection, List, Dictionary, Queue, Stack, HashSet, LinkedList, Pool, Warehouse, PriorityQueue)
 
  - (Common) RingQueue
  - (Common) SortedQueue

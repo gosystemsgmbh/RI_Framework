@@ -258,6 +258,7 @@ namespace RI.Framework.Composition
 	/// TODO: Consistent parameter import handling
 	/// TODO: Check platform differences
 	/// TODO: Update version history
+	/// TODO: Make thread-safe
 	[Export]
 	public sealed class CompositionContainer : IDisposable, ILogSource
 	{
@@ -1373,12 +1374,11 @@ namespace RI.Framework.Composition
 
 							List<object> instances = this.GetOrCreateInstancesInternal(importName, typeof(object));
 
-							newValue = new Import();
-							((Import)newValue).Instances = instances.Count == 0 ? null : instances.ToArray();
+							newValue = new Import(instances.Count == 0 ? null : instances.ToArray());
 
 							Import oldImport = oldValue as Import;
 							Import newImport = newValue as Import;
-							IEnumerable<object> oldValues = oldImport?.Instances;
+							IEnumerable<object> oldValues = oldImport?.GetInstancesSnapshot();
 							IEnumerable<object> newValues = newImport?.Instances;
 
 							updateValue = !CollectionComparer<object>.ReferenceEquality.Equals(oldValues, newValues);
@@ -1766,7 +1766,7 @@ namespace RI.Framework.Composition
 			{
 				catalog.UpdateItems();
 
-				foreach (KeyValuePair<string, List<CompositionCatalogItem>> item in catalog.Items)
+				foreach (KeyValuePair<string, List<CompositionCatalogItem>> item in catalog.GetItemsSnapshot())
 				{
 					items.AddRange(item.Value);
 				}

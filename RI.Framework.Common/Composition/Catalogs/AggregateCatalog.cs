@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
+using RI.Framework.Collections;
 using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Utilities.ObjectModel;
 
@@ -25,7 +26,8 @@ namespace RI.Framework.Composition.Catalogs
 	///         See <see cref="CompositionCatalog" /> for more details about composition catalogs.
 	///     </para>
 	/// </remarks>
-	public class AggregateCatalog : CompositionCatalog, ICollection, ICollection<CompositionCatalog>, ISynchronizable
+	/// <threadsafety static="true" instance="true" />
+	public class AggregateCatalog : CompositionCatalog, ICollection<CompositionCatalog>, ICollection
 	{
 		#region Instance Constructor/Destructor
 
@@ -48,7 +50,6 @@ namespace RI.Framework.Composition.Catalogs
 		/// </remarks>
 		public AggregateCatalog (IEnumerable<CompositionCatalog> catalogs)
 		{
-			this.SyncRoot = new object();
 			this.Catalogs = new HashSet<CompositionCatalog>();
 			this.CatalogRecomposeRequestHandler = this.HandleCatalogRecomposeRequest;
 
@@ -80,8 +81,6 @@ namespace RI.Framework.Composition.Catalogs
 		private EventHandler CatalogRecomposeRequestHandler { get; set; }
 
 		private HashSet<CompositionCatalog> Catalogs { get; set; }
-
-		private object SyncRoot { get; set; }
 
 		#endregion
 
@@ -159,16 +158,22 @@ namespace RI.Framework.Composition.Catalogs
 		{
 			base.UpdateItems();
 
-			foreach (CompositionCatalog catalog in this.Catalogs)
+			List<CompositionCatalog> catalogs = new List<CompositionCatalog>();
+			lock (this.SyncRoot)
+			{
+				catalogs.AddRange(this.Catalogs);
+			}
+
+			Dictionary<string, List<CompositionCatalogItem>> items = new Dictionary<string, List<CompositionCatalogItem>>(CompositionContainer.NameComparer);
+
+			foreach (CompositionCatalog catalog in catalogs)
 			{
 				catalog.UpdateItems();
 			}
 
-			this.Items.Clear();
-
-			foreach (CompositionCatalog catalog in this.Catalogs)
+			foreach (CompositionCatalog catalog in catalogs)
 			{
-				foreach (KeyValuePair<string, List<CompositionCatalogItem>> item in catalog.Items)
+				foreach (KeyValuePair<string, List<CompositionCatalogItem>> item in catalog.GetItemsSnapshot())
 				{
 					foreach (CompositionCatalogItem value in item.Value)
 					{
@@ -177,17 +182,23 @@ namespace RI.Framework.Composition.Catalogs
 							continue;
 						}
 
-						if (!this.Items.ContainsKey(item.Key))
+						if (!items.ContainsKey(item.Key))
 						{
-							this.Items.Add(item.Key, new List<CompositionCatalogItem>());
+							items.Add(item.Key, new List<CompositionCatalogItem>());
 						}
 
-						if (!this.Items[item.Key].Any(x => x.Type == value.Type))
+						if (!items[item.Key].Any(x => x.Type == value.Type))
 						{
-							this.Items[item.Key].Add(value);
+							items[item.Key].Add(value);
 						}
 					}
 				}
+			}
+
+			lock (this.SyncRoot)
+			{
+				this.Items.Clear();
+				this.Items.AddRange(items);
 			}
 		}
 
@@ -199,7 +210,16 @@ namespace RI.Framework.Composition.Catalogs
 		#region Interface: ICollection
 
 		/// <inheritdoc />
-		public int Count => this.Catalogs.Count;
+		public int Count
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this.Catalogs.Count;
+				}
+			}
+		}
 
 		/// <inheritdoc />
 		bool ICollection.IsSynchronized => ((ISynchronizable)this).IsSynchronized;
@@ -210,18 +230,21 @@ namespace RI.Framework.Composition.Catalogs
 		/// <inheritdoc />
 		void ICollection.CopyTo (Array array, int index)
 		{
-			int i1 = 0;
-			foreach (CompositionCatalog item in this)
+			lock (this.SyncRoot)
 			{
-				array.SetValue(item, index + i1);
-				i1++;
+				int i1 = 0;
+				foreach (CompositionCatalog item in this)
+				{
+					array.SetValue(item, index + i1);
+					i1++;
+				}
 			}
 		}
 
 		/// <inheritdoc />
 		IEnumerator IEnumerable.GetEnumerator ()
 		{
-			return this.Catalogs.GetEnumerator();
+			return this.GetEnumerator();
 		}
 
 		#endregion
@@ -242,9 +265,16 @@ namespace RI.Framework.Composition.Catalogs
 				throw new ArgumentNullException(nameof(item));
 			}
 
-			if (this.Catalogs.Add(item))
+			lock (this.SyncRoot)
 			{
-				item.RecomposeRequested += this.CatalogRecomposeRequestHandler;
+				if (this.Catalogs.Add(item))
+				{
+					item.RecomposeRequested += this.CatalogRecomposeRequestHandler;
+				}
+				else
+				{
+					return;
+				}
 			}
 
 			this.RequestRecompose();
@@ -253,12 +283,15 @@ namespace RI.Framework.Composition.Catalogs
 		/// <inheritdoc />
 		public void Clear ()
 		{
-			foreach (CompositionCatalog catalog in this.Catalogs)
+			lock (this.SyncRoot)
 			{
-				catalog.RecomposeRequested -= this.CatalogRecomposeRequestHandler;
-			}
+				foreach (CompositionCatalog catalog in this.Catalogs)
+				{
+					catalog.RecomposeRequested -= this.CatalogRecomposeRequestHandler;
+				}
 
-			this.Catalogs.Clear();
+				this.Catalogs.Clear();
+			}
 
 			this.RequestRecompose();
 		}
@@ -266,19 +299,28 @@ namespace RI.Framework.Composition.Catalogs
 		/// <inheritdoc />
 		public bool Contains (CompositionCatalog item)
 		{
-			return this.Catalogs.Contains(item);
+			lock (this.SyncRoot)
+			{
+				return this.Catalogs.Contains(item);
+			}
 		}
 
 		/// <inheritdoc />
 		void ICollection<CompositionCatalog>.CopyTo (CompositionCatalog[] array, int arrayIndex)
 		{
-			this.Catalogs.CopyTo(array, arrayIndex);
+			lock (this.SyncRoot)
+			{
+				this.Catalogs.CopyTo(array, arrayIndex);
+			}
 		}
 
 		/// <inheritdoc />
-		IEnumerator<CompositionCatalog> IEnumerable<CompositionCatalog>.GetEnumerator ()
+		public IEnumerator<CompositionCatalog> GetEnumerator ()
 		{
-			return this.Catalogs.GetEnumerator();
+			lock (this.SyncRoot)
+			{
+				return this.Catalogs.GetEnumerator();
+			}
 		}
 
 		/// <inheritdoc />
@@ -289,26 +331,17 @@ namespace RI.Framework.Composition.Catalogs
 				throw new ArgumentNullException(nameof(item));
 			}
 
-			bool result = this.Catalogs.Remove(item);
-			item.RecomposeRequested -= this.CatalogRecomposeRequestHandler;
+			bool result;
+			lock (this.SyncRoot)
+			{
+				result = this.Catalogs.Remove(item);
+				item.RecomposeRequested -= this.CatalogRecomposeRequestHandler;
+			}
 
 			this.RequestRecompose();
 
 			return result;
 		}
-
-		#endregion
-
-
-
-
-		#region Interface: ISynchronizable
-
-		/// <inheritdoc />
-		bool ISynchronizable.IsSynchronized => false;
-
-		/// <inheritdoc />
-		object ISynchronizable.SyncRoot => this.SyncRoot;
 
 		#endregion
 	}

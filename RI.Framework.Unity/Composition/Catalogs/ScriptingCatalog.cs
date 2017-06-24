@@ -25,6 +25,7 @@ namespace RI.Framework.Composition.Catalogs
 	///         See <see cref="CompositionCatalog" /> for more details about composition catalogs.
 	///     </para>
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	/// TODO: ExportAllTypes setting in bootstrapper
 	/// TODO: Prevent from loading the same assembly twice
 	public sealed class ScriptingCatalog : CompositionCatalog
@@ -108,30 +109,33 @@ namespace RI.Framework.Composition.Catalogs
 		{
 			base.UpdateItems();
 
-			Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
-			foreach (Assembly assembly in assemblies)
+			lock (this.SyncRoot)
 			{
-				AssemblyName assemblyName = assembly.GetName();
-				if (assemblyName.Name.StartsWith(ScriptingCatalog.ScriptingAssemblyName, StringComparison.InvariantCultureIgnoreCase))
+				Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+				foreach (Assembly assembly in assemblies)
 				{
-					this.Log(LogLevel.Debug, "Loading assembly: {0}", assemblyName.FullName);
-					Type[] types = assembly.GetTypes();
-					foreach (Type type in types)
+					AssemblyName assemblyName = assembly.GetName();
+					if (assemblyName.Name.StartsWith(ScriptingCatalog.ScriptingAssemblyName, StringComparison.InvariantCultureIgnoreCase))
 					{
-						if (CompositionContainer.ValidateExportType(type))
+						this.Log(LogLevel.Debug, "Loading assembly: {0}", assemblyName.FullName);
+						Type[] types = assembly.GetTypes();
+						foreach (Type type in types)
 						{
-							bool privateExport = CompositionContainer.IsExportPrivate(type).GetValueOrDefault(false);
-							HashSet<string> names = CompositionContainer.GetExportsOfType(type, this.ExportAllTypes);
-							foreach (string name in names)
+							if (CompositionContainer.ValidateExportType(type))
 							{
-								if (!this.Items.ContainsKey(name))
+								bool privateExport = CompositionContainer.IsExportPrivate(type).GetValueOrDefault(false);
+								HashSet<string> names = CompositionContainer.GetExportsOfType(type, this.ExportAllTypes);
+								foreach (string name in names)
 								{
-									this.Items.Add(name, new List<CompositionCatalogItem>());
-								}
+									if (!this.Items.ContainsKey(name))
+									{
+										this.Items.Add(name, new List<CompositionCatalogItem>());
+									}
 
-								if (!this.Items[name].Any(x => x.Type == type))
-								{
-									this.Items[name].Add(new CompositionCatalogItem(name, type, privateExport));
+									if (!this.Items[name].Any(x => x.Type == type))
+									{
+										this.Items[name].Add(new CompositionCatalogItem(name, type, privateExport));
+									}
 								}
 							}
 						}

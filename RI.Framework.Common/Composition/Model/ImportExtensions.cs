@@ -54,15 +54,15 @@ namespace RI.Framework.Composition.Model
 				return new List<T>();
 			}
 
-			object[] instances = import.Instances;
+			List<object> instances = import.GetInstancesSnapshot();
 
 			if (instances == null)
 			{
 				return new List<T>();
 			}
 
-			List<T> list = new List<T>(instances.Length);
-			for (int i1 = 0; i1 < instances.Length; i1++)
+			List<T> list = new List<T>(instances.Count);
+			for (int i1 = 0; i1 < instances.Count; i1++)
 			{
 				object instance = instances[i1];
 				T value = instance as T;
@@ -90,14 +90,14 @@ namespace RI.Framework.Composition.Model
 		public static T Value <T> (this Import import)
 			where T : class
 		{
-			object[] instances = import?.Instances;
+			List<object> instances = import?.GetInstancesSnapshot();
 
 			if (instances == null)
 			{
 				return null;
 			}
 
-			for (int i1 = 0; i1 < instances.Length; i1++)
+			for (int i1 = 0; i1 < instances.Count; i1++)
 			{
 				object instance = instances[i1];
 				T value = instance as T;
@@ -122,14 +122,14 @@ namespace RI.Framework.Composition.Model
 		public static IEnumerable<T> Values <T> (this Import import)
 			where T : class
 		{
-			object[] instances = import?.Instances;
+			List<object> instances = import?.GetInstancesSnapshot();
 
 			if (instances == null)
 			{
 				yield break;
 			}
 
-			for (int i1 = 0; i1 < instances.Length; i1++)
+			for (int i1 = 0; i1 < instances.Count; i1++)
 			{
 				object instance = instances[i1];
 				T value = instance as T;

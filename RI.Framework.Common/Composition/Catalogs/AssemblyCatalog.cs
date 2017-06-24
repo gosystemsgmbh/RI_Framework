@@ -18,32 +18,9 @@ namespace RI.Framework.Composition.Catalogs
 	///         See <see cref="CompositionCatalog" /> for more details about composition catalogs.
 	///     </para>
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	public class AssemblyCatalog : CompositionCatalog
 	{
-		#region Static Methods
-
-		private static IEnumerable<Type> GetAssemblyTypes (IEnumerable<Assembly> assemblies)
-		{
-			List<Type> types = new List<Type>();
-
-			if (assemblies != null)
-			{
-				foreach (Assembly assembly in assemblies)
-				{
-					if (assembly != null)
-					{
-						types.AddRange(assembly.GetTypes());
-					}
-				}
-			}
-
-			return types;
-		}
-
-		#endregion
-
-
-
 		/// <summary>
 		///     Gets whether all types should be exported.
 		/// </summary>
