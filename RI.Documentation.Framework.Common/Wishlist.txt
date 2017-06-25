@@ -20,8 +20,8 @@ Utilities
 
  - (Common) ComponentManager
 
- - (Common) ObjectExtensions.TryClone
- - (Common) Transitive cloning for all implementations of ICloneable<T>
+ # (Common) ObjectExtensions.TryClone
+ # (Common) Transitive cloning for all implementations of ICloneable<T>
 
  * (WPF) EventToCommandBinder
  * (WPF) IView Init
@@ -182,6 +182,7 @@ I/O
  - (Common) FilePath: ExistConcurrent
  - (Common) FilePath: ReadConcurrent
  - (Common) FilePath: WriteConcurrent
+ - (Common) FilePath: CreateConcurrent
 
  - (Common) StreamExtensions
 
@@ -289,11 +290,15 @@ Data
  * (.NET) IRepositorySet: Add entity and property descriptions functionality
  - (.NET) IRepositoryContext: Add GetChanges method (return RepositoryContextChanges type)
  - (.NET) IRepositoryContext: Add GetErrors method (return RepositoryContextErrors type)
+
  - (.NET) EntityView: Make collection update strategy configurable (clear vs. create new)
 
  = (.NET) Implementations for providers
  = (.NET) SQL script helpers
  = (.NET) Convert IDatabaseManager to DatabaseManager
+
+ = (SQL Server) SqlServerDatabaseManager
+ = (SQLite) SQLiteDatabaseManager
 
  - (.NET) IDatabaseManager: Support for creating connections when state is Old
 
@@ -326,8 +331,6 @@ Mathematic
 
 State machines
 --------------
-
- # (.NET) Fix async
 
  - (Windows) WindowsMessageLoopStateDispatcher
  * (WPF) DispatcherStateDispatcher
