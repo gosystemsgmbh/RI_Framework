@@ -15,6 +15,9 @@ using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.ObjectModel;
 using RI.Framework.Utilities.Threading;
 
+
+
+
 namespace RI.Framework.Bus
 {
 	//TODO: Document
@@ -22,20 +25,38 @@ namespace RI.Framework.Bus
 	//TODO: Dispatcher configuration
 	public sealed class BusContext : ISynchronizable, IDisposable, ILogSource
 	{
+		#region Constants
+
 		public static readonly IEqualityComparer<string> BusNameComparer = StringComparerEx.TrimmedInvariantCultureIgnoreCase;
 		public static readonly IEqualityComparer<string> NodeIdComparer = StringComparerEx.TrimmedInvariantCultureIgnoreCase;
 
+		#endregion
 
 
 
-		private static object StartStopSyncRoot { get; set; }
+
+		#region Static Constructor/Destructor
+
 		static BusContext ()
 		{
 			BusContext.StartStopSyncRoot = new object();
 		}
 
+		#endregion
 
 
+
+
+		#region Static Properties/Indexer
+
+		private static object StartStopSyncRoot { get; set; }
+
+		#endregion
+
+
+
+
+		#region Instance Constructor/Destructor
 
 		public BusContext ()
 		{
@@ -51,30 +72,31 @@ namespace RI.Framework.Bus
 			this.DispatcherInternal = new HeavyThreadDispatcher();
 			this.SessionId = null;
 		}
+
 		~BusContext ()
 		{
 			this.Stop();
 		}
-		void IDisposable.Dispose ()
-		{
-			this.Stop();
-		}
+
+		#endregion
 
 
 
+
+		#region Instance Fields
 
 		private Guid? _sessionId;
 
-		public object SyncRoot { get; }
+		#endregion
 
-		private NodeCollection Nodes { get; }
-		private Dictionary<string, HashSet<IBusConnection>> Connections { get; }
-		private HashSet<IBusSerializer> Serializers { get; }
-		private HashSet<IBusContainer> Containers { get; }
-		private HashSet<IBusDispatcher> Dispatchers { get; }
-		private HashSet<IBusPipeline> Pipelines { get; }
 
-		private HeavyThreadDispatcher DispatcherInternal { get; }
+
+
+		#region Instance Properties/Indexer
+
+		public IThreadDispatcher ContextDispatcher => this.DispatcherInternal;
+		public bool IsStarted => this.SessionId.HasValue;
+
 		public Guid? SessionId
 		{
 			get
@@ -93,17 +115,28 @@ namespace RI.Framework.Bus
 			}
 		}
 
-		bool ISynchronizable.IsSynchronized => true;
-		public bool IsStarted => this.SessionId.HasValue;
-		public IThreadDispatcher ContextDispatcher => this.DispatcherInternal;
+		private Dictionary<string, HashSet<IBusConnection>> Connections { get; }
+		private HashSet<IBusContainer> Containers { get; }
+
+		private HeavyThreadDispatcher DispatcherInternal { get; }
+		private HashSet<IBusDispatcher> Dispatchers { get; }
+
+		private NodeCollection Nodes { get; }
+		private HashSet<IBusPipeline> Pipelines { get; }
+		private HashSet<IBusSerializer> Serializers { get; }
+
+		#endregion
 
 
 
+
+		#region Instance Methods
 
 		public void AddConnection (IBusConnection connection, params string[] busNames)
 		{
 			this.AddConnection(connection, (IEnumerable<string>)busNames);
 		}
+
 		public void AddConnection (IBusConnection connection, IEnumerable<string> busNames)
 		{
 			if (connection == null)
@@ -142,20 +175,7 @@ namespace RI.Framework.Bus
 				}
 			}
 		}
-		public void AddSerializer (IBusSerializer serializer)
-		{
-			if (serializer == null)
-			{
-				throw new ArgumentNullException(nameof(serializer));
-			}
 
-			lock (this.SyncRoot)
-			{
-				this.VerifyNotStarted();
-
-				this.Serializers.Add(serializer);
-			}
-		}
 		public void AddContainer (IBusContainer container)
 		{
 			if (container == null)
@@ -170,6 +190,7 @@ namespace RI.Framework.Bus
 				this.Containers.Add(container);
 			}
 		}
+
 		public void AddDispatcher (IBusDispatcher dispatcher)
 		{
 			if (dispatcher == null)
@@ -184,6 +205,7 @@ namespace RI.Framework.Bus
 				this.Dispatchers.Add(dispatcher);
 			}
 		}
+
 		public void AddPipeline (IBusPipeline pipeline)
 		{
 			if (pipeline == null)
@@ -199,19 +221,74 @@ namespace RI.Framework.Bus
 			}
 		}
 
-
-
-
-		public HashSet<BusNode> GetNodes()
+		public void AddSerializer (IBusSerializer serializer)
 		{
+			if (serializer == null)
+			{
+				throw new ArgumentNullException(nameof(serializer));
+			}
+
 			lock (this.SyncRoot)
 			{
-				HashSet<BusNode> nodes = new HashSet<BusNode>();
-				nodes.AddRange(this.Nodes);
-				return nodes;
+				this.VerifyNotStarted();
+
+				this.Serializers.Add(serializer);
 			}
 		}
-		public HashSet<IBusConnection> GetConnections()
+
+		public BusNode CreateNode (string nodeName)
+		{
+			if (nodeName == null)
+			{
+				throw new ArgumentNullException(nameof(nodeName));
+			}
+
+			if (nodeName.IsNullOrEmptyOrWhitespace())
+			{
+				throw new EmptyStringArgumentException(nameof(nodeName));
+			}
+
+			lock (BusContext.StartStopSyncRoot)
+			{
+				IThreadDispatcher dispatcher = null;
+				HashSet<IBusPipeline> pipelines = null;
+
+				lock (this.SyncRoot)
+				{
+					this.VerifyStarted();
+
+					if (this.Nodes.Contains(nodeName))
+					{
+						return this.Nodes[nodeName];
+					}
+
+					dispatcher = this.DispatcherInternal;
+					pipelines = this.GetPipelines();
+				}
+
+				BusNode node = dispatcher.Send(new Func<string, BusNode>(x => new BusNode(this, x)), nodeName) as BusNode;
+				if (node == null)
+				{
+					throw new InvalidOperationException("Node creation failed.");
+				}
+
+				dispatcher.Send(new Action<BusNode>(x =>
+				{
+					foreach (IBusPipeline pipeline in pipelines)
+					{
+						pipeline.InitializeNode(this, node);
+					}
+				}), node);
+
+				lock (this.SyncRoot)
+				{
+					this.Nodes.Add(node);
+					return node;
+				}
+			}
+		}
+
+		public HashSet<IBusConnection> GetConnections ()
 		{
 			lock (this.SyncRoot)
 			{
@@ -220,6 +297,51 @@ namespace RI.Framework.Bus
 				return connections;
 			}
 		}
+
+		public HashSet<IBusContainer> GetContainers ()
+		{
+			lock (this.SyncRoot)
+			{
+				HashSet<IBusContainer> containers = new HashSet<IBusContainer>();
+				containers.AddRange(this.Containers);
+				containers.AddRange(this.Resolve<IBusContainer>());
+				return containers;
+			}
+		}
+
+		public HashSet<IBusDispatcher> GetDispatchers ()
+		{
+			lock (this.SyncRoot)
+			{
+				HashSet<IBusDispatcher> dispatchers = new HashSet<IBusDispatcher>();
+				dispatchers.AddRange(this.Dispatchers);
+				dispatchers.AddRange(this.Resolve<IBusDispatcher>());
+				return dispatchers;
+			}
+		}
+
+
+		public HashSet<BusNode> GetNodes ()
+		{
+			lock (this.SyncRoot)
+			{
+				HashSet<BusNode> nodes = new HashSet<BusNode>();
+				nodes.AddRange(this.Nodes);
+				return nodes;
+			}
+		}
+
+		public HashSet<IBusPipeline> GetPipelines ()
+		{
+			lock (this.SyncRoot)
+			{
+				HashSet<IBusPipeline> pipelines = new HashSet<IBusPipeline>();
+				pipelines.AddRange(this.Pipelines);
+				pipelines.AddRange(this.Resolve<IBusPipeline>());
+				return pipelines;
+			}
+		}
+
 		public HashSet<IBusSerializer> GetSerializers ()
 		{
 			lock (this.SyncRoot)
@@ -230,36 +352,7 @@ namespace RI.Framework.Bus
 				return serializers;
 			}
 		}
-		public HashSet<IBusContainer> GetContainers()
-		{
-			lock (this.SyncRoot)
-			{
-				HashSet<IBusContainer> containers = new HashSet<IBusContainer>();
-				containers.AddRange(this.Containers);
-				containers.AddRange(this.Resolve<IBusContainer>());
-				return containers;
-			}
-		}
-		public HashSet<IBusDispatcher> GetDispatchers()
-		{
-			lock (this.SyncRoot)
-			{
-				HashSet<IBusDispatcher> dispatchers = new HashSet<IBusDispatcher>();
-				dispatchers.AddRange(this.Dispatchers);
-				dispatchers.AddRange(this.Resolve<IBusDispatcher>());
-				return dispatchers;
-			}
-		}
-		public HashSet<IBusPipeline> GetPipelines()
-		{
-			lock (this.SyncRoot)
-			{
-				HashSet<IBusPipeline> pipelines = new HashSet<IBusPipeline>();
-				pipelines.AddRange(this.Pipelines);
-				pipelines.AddRange(this.Resolve<IBusPipeline>());
-				return pipelines;
-			}
-		}
+
 		public HashSet<T> Resolve <T> ()
 		{
 			lock (this.SyncRoot)
@@ -278,8 +371,6 @@ namespace RI.Framework.Bus
 				return instances;
 			}
 		}
-
-
 
 
 		public void Start ()
@@ -344,6 +435,7 @@ namespace RI.Framework.Bus
 				}
 			}
 		}
+
 		public void Stop ()
 		{
 			lock (BusContext.StartStopSyncRoot)
@@ -385,55 +477,12 @@ namespace RI.Framework.Bus
 				}
 			}
 		}
-		public BusNode CreateNode (string nodeName)
+
+		private void VerifyNotStarted ()
 		{
-			if (nodeName == null)
+			if (this.IsStarted)
 			{
-				throw new ArgumentNullException(nameof(nodeName));
-			}
-
-			if (nodeName.IsNullOrEmptyOrWhitespace())
-			{
-				throw new EmptyStringArgumentException(nameof(nodeName));
-			}
-
-			lock (BusContext.StartStopSyncRoot)
-			{
-				IThreadDispatcher dispatcher = null;
-				HashSet<IBusPipeline> pipelines = null;
-
-				lock (this.SyncRoot)
-				{
-					this.VerifyStarted();
-
-					if (this.Nodes.Contains(nodeName))
-					{
-						return this.Nodes[nodeName];
-					}
-
-					dispatcher = this.DispatcherInternal;
-					pipelines = this.GetPipelines();
-				}
-
-				BusNode node = dispatcher.Send(new Func<string, BusNode>(x => new BusNode(this, x)), nodeName) as BusNode;
-				if (node == null)
-				{
-					throw new InvalidOperationException("Node creation failed.");
-				}
-
-				dispatcher.Send(new Action<BusNode>(x =>
-				{
-					foreach (IBusPipeline pipeline in pipelines)
-					{
-						pipeline.InitializeNode(this, node);
-					}
-				}), node);
-
-				lock (this.SyncRoot)
-				{
-					this.Nodes.Add(node);
-					return node;
-				}
+				throw new InvalidOperationException("The bus context is started.");
 			}
 		}
 
@@ -444,23 +493,58 @@ namespace RI.Framework.Bus
 				throw new InvalidOperationException("The bus context is not started.");
 			}
 		}
-		private void VerifyNotStarted ()
+
+		#endregion
+
+
+
+
+		#region Interface: IDisposable
+
+		void IDisposable.Dispose ()
 		{
-			if (this.IsStarted)
-			{
-				throw new InvalidOperationException("The bus context is started.");
-			}
+			this.Stop();
 		}
 
+		#endregion
+
+
+
+
+		#region Interface: ISynchronizable
+
+		bool ISynchronizable.IsSynchronized => true;
+
+		public object SyncRoot { get; }
+
+		#endregion
+
+
+
+
+		#region Type: NodeCollection
 
 		private sealed class NodeCollection : KeyedCollection<string, BusNode>
 		{
+			#region Instance Constructor/Destructor
+
 			public NodeCollection ()
 				: base(BusContext.NodeIdComparer)
 			{
 			}
 
+			#endregion
+
+
+
+
+			#region Overrides
+
 			protected override string GetKeyForItem (BusNode item) => item.Id;
+
+			#endregion
 		}
+
+		#endregion
 	}
 }

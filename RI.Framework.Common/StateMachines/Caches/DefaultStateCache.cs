@@ -49,6 +49,28 @@ namespace RI.Framework.StateMachines.Caches
 
 
 
+		#region Instance Methods
+
+		/// <summary>
+		///     Gets a list of states cached in this cache.
+		/// </summary>
+		/// <returns>
+		///     The list of states cached in this cache.
+		///     An empty list is returned if no states are cached in this cache.
+		/// </returns>
+		public List<IState> GetStates ()
+		{
+			lock (this.SyncRoot)
+			{
+				return new List<IState>(this.States.Values);
+			}
+		}
+
+		#endregion
+
+
+
+
 		#region Interface: IStateCache
 
 		/// <inheritdoc />
@@ -133,21 +155,6 @@ namespace RI.Framework.StateMachines.Caches
 			{
 				Type type = state.GetType();
 				this.States.Remove(type);
-			}
-		}
-
-		/// <summary>
-		/// Gets a list of states cached in this cache.
-		/// </summary>
-		/// <returns>
-		/// The list of states cached in this cache.
-		/// An empty list is returned if no states are cached in this cache.
-		/// </returns>
-		public List<IState> GetStates ()
-		{
-			lock (this.SyncRoot)
-			{
-				return new List<IState>(this.States.Values);
 			}
 		}
 

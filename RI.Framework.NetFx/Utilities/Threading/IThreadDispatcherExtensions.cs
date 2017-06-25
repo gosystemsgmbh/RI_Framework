@@ -14,6 +14,49 @@ namespace RI.Framework.Utilities.Threading
 		#region Static Methods
 
 		/// <summary>
+		///     Determines under which priority the current code is executed.
+		/// </summary>
+		/// <param name="dispatcher"> The dispatcher. </param>
+		/// <returns>
+		///     The priority of the currently executed code or the default priority of the dispatcher if the current code is not executed by the dispatcher.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" />  is null. </exception>
+		public static int GetCurrentPriorityOrDefault (this IThreadDispatcher dispatcher)
+		{
+			if (dispatcher == null)
+			{
+				throw new ArgumentNullException(nameof(dispatcher));
+			}
+
+			return dispatcher.GetCurrentPriorityOrDefault(dispatcher.DefaultPriority);
+		}
+
+		/// <summary>
+		///     Determines under which priority the current code is executed.
+		/// </summary>
+		/// <param name="dispatcher"> The dispatcher. </param>
+		/// <param name="defaultPriority"> The default priority to return if the current code is not executed by the dispatcher. </param>
+		/// <returns>
+		///     The priority of the currently executed code or <paramref name="defaultPriority" /> if the current code is not executed by the dispatcher.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" />  is null. </exception>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="defaultPriority" /> is less than zero. </exception>
+		public static int GetCurrentPriorityOrDefault (this IThreadDispatcher dispatcher, int defaultPriority)
+		{
+			if (dispatcher == null)
+			{
+				throw new ArgumentNullException(nameof(dispatcher));
+			}
+
+			if (defaultPriority < 0)
+			{
+				throw new ArgumentOutOfRangeException(nameof(defaultPriority));
+			}
+
+			return dispatcher.GetCurrentPriority().GetValueOrDefault(defaultPriority);
+		}
+
+		/// <summary>
 		///     Enqueues a delegate to the dispatchers queue for delayed execution.
 		/// </summary>
 		/// <param name="dispatcher"> The dispatcher. </param>
@@ -121,49 +164,6 @@ namespace RI.Framework.Utilities.Threading
 		public static ThreadDispatcherTimer PostDelayed (this IThreadDispatcher dispatcher, TimeSpan delay, int priority, Delegate action, params object[] parameters)
 		{
 			return dispatcher.PostDelayed((int)delay.TotalMilliseconds, priority, action, parameters);
-		}
-
-		/// <summary>
-		/// Determines under which priority the current code is executed.
-		/// </summary>
-		/// <param name="dispatcher"> The dispatcher. </param>
-		/// <returns>
-		/// The priority of the currently executed code or the default priority of the dispatcher if the current code is not executed by the dispatcher.
-		/// </returns>
-		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" />  is null. </exception>
-		public static int GetCurrentPriorityOrDefault (this IThreadDispatcher dispatcher)
-		{
-			if (dispatcher == null)
-			{
-				throw new ArgumentNullException(nameof(dispatcher));
-			}
-
-			return dispatcher.GetCurrentPriorityOrDefault(dispatcher.DefaultPriority);
-		}
-
-		/// <summary>
-		/// Determines under which priority the current code is executed.
-		/// </summary>
-		/// <param name="dispatcher"> The dispatcher. </param>
-		/// <param name="defaultPriority">The default priority to return if the current code is not executed by the dispatcher.</param>
-		/// <returns>
-		/// The priority of the currently executed code or <paramref name="defaultPriority"/> if the current code is not executed by the dispatcher.
-		/// </returns>
-		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" />  is null. </exception>
-		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="defaultPriority" /> is less than zero. </exception>
-		public static int GetCurrentPriorityOrDefault(this IThreadDispatcher dispatcher, int defaultPriority)
-		{
-			if (dispatcher == null)
-			{
-				throw new ArgumentNullException(nameof(dispatcher));
-			}
-
-			if (defaultPriority < 0)
-			{
-				throw new ArgumentOutOfRangeException(nameof(defaultPriority));
-			}
-
-			return dispatcher.GetCurrentPriority().GetValueOrDefault(defaultPriority);
 		}
 
 		#endregion

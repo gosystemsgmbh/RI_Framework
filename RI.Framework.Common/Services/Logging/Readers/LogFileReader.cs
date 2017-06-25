@@ -462,7 +462,7 @@ namespace RI.Framework.Services.Logging.Readers
 			return read;
 		}
 
-		private void VerifyNotClosed()
+		private void VerifyNotClosed ()
 		{
 			if (this.Reader == null)
 			{

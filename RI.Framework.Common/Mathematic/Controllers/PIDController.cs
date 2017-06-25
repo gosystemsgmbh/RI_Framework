@@ -76,6 +76,11 @@ namespace RI.Framework.Mathematic.Controllers
 		#region Instance Fields
 
 		/// <summary>
+		///     The current differential value used for the differential component.
+		/// </summary>
+		public float Differential;
+
+		/// <summary>
 		///     The current error (set point minus process variable).
 		/// </summary>
 		public float Error;
@@ -84,11 +89,6 @@ namespace RI.Framework.Mathematic.Controllers
 		///     The current integral value used for the integral component.
 		/// </summary>
 		public float Integral;
-
-		/// <summary>
-		///     The current differential value used for the differential component.
-		/// </summary>
-		public float Differential;
 
 		/// <summary>
 		///     The differential coefficient.

@@ -527,7 +527,7 @@ namespace RI.Framework.Services.Logging.Writers
 					this.CurrentStream.Flush(true);
 #endif
 #if PLATFORM_UNITY
-						this.CurrentStream.Flush();
+					this.CurrentStream.Flush();
 #endif
 				}
 				catch

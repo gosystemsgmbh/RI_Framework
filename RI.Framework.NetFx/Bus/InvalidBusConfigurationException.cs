@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
+
+
+
 namespace RI.Framework.Bus
 {
 	/// <summary>
@@ -24,7 +27,7 @@ namespace RI.Framework.Bus
 		/// <summary>
 		///     Creates a new instance of <see cref="InvalidBusConfigurationException" />.
 		/// </summary>
-		public InvalidBusConfigurationException()
+		public InvalidBusConfigurationException ()
 			: base(InvalidBusConfigurationException.ExceptionMessageWithoutMessage)
 		{
 		}
@@ -33,7 +36,7 @@ namespace RI.Framework.Bus
 		///     Creates a new instance of <see cref="InvalidBusConfigurationException" />.
 		/// </summary>
 		/// <param name="message"> The message which describes the exception. </param>
-		public InvalidBusConfigurationException(string message)
+		public InvalidBusConfigurationException (string message)
 			: base(string.Format(InvalidBusConfigurationException.ExceptionMessageWithMessage, message))
 		{
 		}
@@ -42,7 +45,7 @@ namespace RI.Framework.Bus
 		///     Creates a new instance of <see cref="InvalidBusConfigurationException" />.
 		/// </summary>
 		/// <param name="innerException"> The exception which triggered this exception. </param>
-		public InvalidBusConfigurationException(Exception innerException)
+		public InvalidBusConfigurationException (Exception innerException)
 			: base(string.Format(InvalidBusConfigurationException.ExceptionMessageWithMessage, innerException.Message), innerException)
 		{
 		}
@@ -52,7 +55,7 @@ namespace RI.Framework.Bus
 		/// </summary>
 		/// <param name="message"> The message which describes the exception. </param>
 		/// <param name="innerException"> The exception which triggered this exception. </param>
-		public InvalidBusConfigurationException(string message, Exception innerException)
+		public InvalidBusConfigurationException (string message, Exception innerException)
 			: base(string.Format(InvalidBusConfigurationException.ExceptionMessageWithMessage, message), innerException)
 		{
 		}
@@ -62,7 +65,7 @@ namespace RI.Framework.Bus
 		/// </summary>
 		/// <param name="info"> The serialization data. </param>
 		/// <param name="context"> The type of the source of the serialization data. </param>
-		protected InvalidBusConfigurationException(SerializationInfo info, StreamingContext context)
+		protected InvalidBusConfigurationException (SerializationInfo info, StreamingContext context)
 			: base(info, context)
 		{
 		}

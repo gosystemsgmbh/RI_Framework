@@ -30,11 +30,11 @@ namespace RI.Framework.Services.Messaging
 	///         A message service is explicitly made to support sending from different threads.
 	///         The receiving however depends on the used message dispatchers.
 	///     </para>
-	/// <note type="implement">
-	/// Note that messaging is usually to be used from any thread.
-	/// Therefore, the messaging service must be partially thread-safe, at least for the actual send and receive operations.
-	/// However, messaging service implementations can rely upon the thread-safety of <see cref="IMessageDispatcher"/>.
-	/// </note>
+	///     <note type="implement">
+	///         Note that messaging is usually to be used from any thread.
+	///         Therefore, the messaging service must be partially thread-safe, at least for the actual send and receive operations.
+	///         However, messaging service implementations can rely upon the thread-safety of <see cref="IMessageDispatcher" />.
+	///     </note>
 	/// </remarks>
 	[Export]
 	public interface IMessageService

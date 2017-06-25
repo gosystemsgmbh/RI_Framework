@@ -77,7 +77,7 @@ namespace RI.Framework.Composition.Catalogs
 		/// </summary>
 		/// <param name="directoryPath"> The directory which is searched for assemblies. </param>
 		/// <param name="exportAllTypes"> Specifies whether all types should be exported (see <see cref="ExportAllTypes" /> for details). </param>
-		/// <param name="filePattern"> The file pattern which is used to search for assemblies (can be null to use <see cref="DefaultFilePattern"/>). </param>
+		/// <param name="filePattern"> The file pattern which is used to search for assemblies (can be null to use <see cref="DefaultFilePattern" />). </param>
 		/// <param name="recursive"> Specifies whether assemblies are searched recursive (including subdirectories) or not. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="directoryPath" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> <paramref name="directoryPath" /> is not a real usable directory. </exception>
@@ -119,6 +119,14 @@ namespace RI.Framework.Composition.Catalogs
 		#region Instance Properties/Indexer
 
 		/// <summary>
+		///     Gets the directory which is searched for assemblies.
+		/// </summary>
+		/// <value>
+		///     The directory which is searched for assemblies.
+		/// </value>
+		public DirectoryPath DirectoryPath { get; }
+
+		/// <summary>
 		///     Gets whether all types should be exported.
 		/// </summary>
 		/// <value>
@@ -132,12 +140,26 @@ namespace RI.Framework.Composition.Catalogs
 		public bool ExportAllTypes { get; }
 
 		/// <summary>
-		///     Gets the directory which is searched for assemblies.
+		///     Indicates whether there were assembly files which could not be loaded.
 		/// </summary>
 		/// <value>
-		///     The directory which is searched for assemblies.
+		///     true if there was at least one assembly file which could not be loaded, false otherwise.
 		/// </value>
-		public DirectoryPath DirectoryPath { get; }
+		/// <remarks>
+		///     <para>
+		///         The list of failed assembly files which could not be loaded can be retrieved using <see cref="GetFailedFiles" />.
+		///     </para>
+		/// </remarks>
+		public bool Failed
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this.FailedFiles.Count > 0;
+				}
+			}
+		}
 
 		/// <summary>
 		///     Gets the file pattern which is used to search for assemblies.
@@ -154,28 +176,6 @@ namespace RI.Framework.Composition.Catalogs
 		///     true if subdirectories of <see cref="DirectoryPath" /> are searched for assemblies, false otherwise.
 		/// </value>
 		public bool Recursive { get; }
-
-		/// <summary>
-		///     Indicates whether there were assembly files which could not be loaded.
-		/// </summary>
-		/// <value>
-		///     true if there was at least one assembly file which could not be loaded, false otherwise.
-		/// </value>
-		/// <remarks>
-		/// <para>
-		/// The list of failed assembly files which could not be loaded can be retrieved using <see cref="GetFailedFiles"/>.
-		/// </para>
-		/// </remarks>
-		public bool Failed
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					return this.FailedFiles.Count > 0;
-				}
-			}
-		}
 
 		private HashSet<FilePath> FailedFiles { get; set; }
 

@@ -57,7 +57,7 @@ namespace RI.Framework.Utilities.Text
 		/// </summary>
 		/// <remarks>
 		///     <para>
-		///         The default comparer is <see cref="StringComparerEx.InvariantCultureIgnoreCase"/>.
+		///         The default comparer is <see cref="StringComparerEx.InvariantCultureIgnoreCase" />.
 		///     </para>
 		/// </remarks>
 		public static readonly IEqualityComparer<string> DefaultParameterNameComparer = StringComparerEx.InvariantCultureIgnoreCase;
@@ -87,7 +87,7 @@ namespace RI.Framework.Utilities.Text
 		///         For example, on Windows, a full process command line (e.g. as retrieved using <see cref="Environment.CommandLine" />) usually starts with the executable of the process.
 		///     </para>
 		///     <para>
-		///         <see cref="DefaultParameterNameComparer"/> is used to distinguish parameter names.
+		///         <see cref="DefaultParameterNameComparer" /> is used to distinguish parameter names.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="commandLine" /> is null. </exception>
@@ -101,7 +101,7 @@ namespace RI.Framework.Utilities.Text
 		/// </summary>
 		/// <param name="commandLine"> The command line string to parse. </param>
 		/// <param name="startsWithExecutable"> Indicates whether the command line string starts with an executable. </param>
-		/// <param name="parameterNameComparer"> A string comparer used to distinguish parameter names (can be null to use <see cref="DefaultParameterNameComparer"/>). </param>
+		/// <param name="parameterNameComparer"> A string comparer used to distinguish parameter names (can be null to use <see cref="DefaultParameterNameComparer" />). </param>
 		/// <returns>
 		///     The <see cref="CommandLine" /> created by parsing the command line string.
 		/// </returns>

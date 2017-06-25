@@ -5,6 +5,9 @@ using System.Reflection;
 using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Composition.Model;
 
+
+
+
 namespace RI.Framework.Composition.Catalogs
 {
 	/// <summary>
@@ -21,22 +24,6 @@ namespace RI.Framework.Composition.Catalogs
 	/// <threadsafety static="true" instance="true" />
 	public class AssemblyCatalog : CompositionCatalog
 	{
-		/// <summary>
-		///     Gets whether all types should be exported.
-		/// </summary>
-		/// <value>
-		///     true if all types should be exported, false otherwise.
-		/// </value>
-		/// <remarks>
-		///     <para>
-		///         If all types are exported, the exports will consist of all public, non-abstract, non-static types, even those without an <see cref="ExportAttribute" />.
-		///     </para>
-		/// </remarks>
-		public bool ExportAllTypes { get; }
-
-
-
-
 		#region Instance Constructor/Destructor
 
 		/// <summary>
@@ -93,6 +80,26 @@ namespace RI.Framework.Composition.Catalogs
 			: this(exportAllTypes, (IEnumerable<Assembly>)assemblies)
 		{
 		}
+
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
+
+		/// <summary>
+		///     Gets whether all types should be exported.
+		/// </summary>
+		/// <value>
+		///     true if all types should be exported, false otherwise.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         If all types are exported, the exports will consist of all public, non-abstract, non-static types, even those without an <see cref="ExportAttribute" />.
+		///     </para>
+		/// </remarks>
+		public bool ExportAllTypes { get; }
 
 		#endregion
 	}

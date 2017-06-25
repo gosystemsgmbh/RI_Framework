@@ -76,19 +76,19 @@ namespace RI.Framework.Utilities.Threading
 
 		#region Instance Fields
 
-		private Exception _threadException;
-
 		private bool? _hasStoppedGracefully;
 
 		private bool _isRunning;
-
-		private int _timeout;
 
 		private ManualResetEvent _stopEvent;
 
 		private bool _stopRequested;
 
 		private Thread _thread;
+
+		private Exception _threadException;
+
+		private int _timeout;
 
 		#endregion
 
@@ -189,9 +189,9 @@ namespace RI.Framework.Utilities.Threading
 		///     <para>
 		///         This timeout is used during <see cref="Start" /> while waiting for <see cref="OnBegin" /> to finish and during <see cref="Dispose(bool)" /> or <see cref="Stop" /> while waiting for <see cref="OnStop" /> to take effect.
 		///     </para>
-		/// <para>
-		/// The default value is <see cref="DefaultThreadTimeout"/>.
-		/// </para>
+		///     <para>
+		///         The default value is <see cref="DefaultThreadTimeout" />.
+		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="value" /> is less than zero. </exception>
 		public int Timeout
@@ -289,14 +289,6 @@ namespace RI.Framework.Utilities.Threading
 			}
 		}
 
-		/// <summary>
-		///     Gets the synchronization object which can be used to synchronize thread operations.
-		/// </summary>
-		/// <value>
-		///     The synchronization object which can be used to synchronize thread operations.
-		/// </value>
-		public object SyncRoot { get; }
-
 		private object StartStopSyncRoot { get; }
 
 		#endregion
@@ -385,9 +377,9 @@ namespace RI.Framework.Utilities.Threading
 		///             </para>
 		///         </item>
 		///     </list>
-		/// <note type="note">
-		/// If <see cref="OnRun"/> returns before <see cref="Stop"/> was called, the thread sleeps and <see cref="OnEnd"/> is not executed until <see cref="Stop"/> is called.
-		/// </note>
+		///     <note type="note">
+		///         If <see cref="OnRun" /> returns before <see cref="Stop" /> was called, the thread sleeps and <see cref="OnEnd" /> is not executed until <see cref="Stop" /> is called.
+		///     </note>
 		/// </remarks>
 		/// <exception cref="InvalidOperationException"> The thread is already running. </exception>
 		/// <exception cref="TimeoutException"> The thread failed to return from <see cref="OnBegin" /> within <see cref="Timeout" />. </exception>
@@ -568,11 +560,11 @@ namespace RI.Framework.Utilities.Threading
 		///             </para>
 		///         </item>
 		///     </list>
-		/// <note type="important">
-		/// The thread cannot be stopped from inside itself (e.g. you cannot call <see cref="Stop"/> from <see cref="OnRun"/>).
-		/// This means that the eventual stop has to be controlled by what ever uses <see cref="HeavyThread"/>.
-		/// This ensures symmetry of start/stop (only who can start <see cref="HeavyThread"/> can also stop it).
-		/// </note>
+		///     <note type="important">
+		///         The thread cannot be stopped from inside itself (e.g. you cannot call <see cref="Stop" /> from <see cref="OnRun" />).
+		///         This means that the eventual stop has to be controlled by what ever uses <see cref="HeavyThread" />.
+		///         This ensures symmetry of start/stop (only who can start <see cref="HeavyThread" /> can also stop it).
+		///     </note>
 		/// </remarks>
 		/// <exception cref="InvalidOperationException"> This function was called from inside the thread. </exception>
 		public void Stop ()
@@ -825,6 +817,14 @@ namespace RI.Framework.Utilities.Threading
 
 		/// <inheritdoc />
 		bool ISynchronizable.IsSynchronized => true;
+
+		/// <summary>
+		///     Gets the synchronization object which can be used to synchronize thread operations.
+		/// </summary>
+		/// <value>
+		///     The synchronization object which can be used to synchronize thread operations.
+		/// </value>
+		public object SyncRoot { get; }
 
 		#endregion
 	}

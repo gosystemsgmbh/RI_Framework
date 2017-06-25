@@ -242,17 +242,17 @@ namespace RI.Framework.Composition
 	///     <para>
 	///         <b> EXPORT OF ALL TYPES </b>
 	///     </para>
-	/// <para>
-	/// A <see cref="CompositionCatalog"/> could also explicitly export all eligible types, even if they do not have any <see cref="ExportAttribute"/> defined.
-	/// The effect is that all types which are visible to the catalog and which can be exported are either exported as described above, respecting their <see cref="ExportAttribute"/>, or using default names if a type has no <see cref="ExportAttribute"/> defined.
-	/// </para>
-	/// <para>
-	/// Whether a <see cref="CompositionCatalog"/> provides the functionality to export all types depends on the particular implementation of <see cref="CompositionCatalog"/>.
-	/// See the description of the <see cref="CompositionCatalog"/> implementations for more details.
-	/// </para>
-	/// <para>
-	/// This can help with exporting/importing types which are not under your control, where you cannot apply a <see cref="ExportAttribute"/> and you do not want to explicitly create instances of those types.
-	/// </para>
+	///     <para>
+	///         A <see cref="CompositionCatalog" /> could also explicitly export all eligible types, even if they do not have any <see cref="ExportAttribute" /> defined.
+	///         The effect is that all types which are visible to the catalog and which can be exported are either exported as described above, respecting their <see cref="ExportAttribute" />, or using default names if a type has no <see cref="ExportAttribute" /> defined.
+	///     </para>
+	///     <para>
+	///         Whether a <see cref="CompositionCatalog" /> provides the functionality to export all types depends on the particular implementation of <see cref="CompositionCatalog" />.
+	///         See the description of the <see cref="CompositionCatalog" /> implementations for more details.
+	///     </para>
+	///     <para>
+	///         This can help with exporting/importing types which are not under your control, where you cannot apply a <see cref="ExportAttribute" /> and you do not want to explicitly create instances of those types.
+	///     </para>
 	/// </remarks>
 	/// TODO: Lazy loading
 	/// TODO: Consistent parameter import handling

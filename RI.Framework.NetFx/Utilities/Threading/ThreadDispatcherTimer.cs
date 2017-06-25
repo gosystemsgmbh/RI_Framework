@@ -133,9 +133,9 @@ namespace RI.Framework.Utilities.Threading
 		///     The number of times the delegate was executed.
 		/// </value>
 		/// <remarks>
-		/// <para>
-		/// <see cref="ExecutionCount"/> is reset to zero whenever the timer is started after it is stopped.
-		/// </para>
+		///     <para>
+		///         <see cref="ExecutionCount" /> is reset to zero whenever the timer is started after it is stopped.
+		///     </para>
 		/// </remarks>
 		public int ExecutionCount
 		{
@@ -203,9 +203,6 @@ namespace RI.Framework.Utilities.Threading
 		///     The priority.
 		/// </value>
 		public int Priority { get; }
-
-		/// <inheritdoc />
-		public object SyncRoot { get; }
 
 		private Thread TimerThread { get; set; }
 
@@ -328,6 +325,9 @@ namespace RI.Framework.Utilities.Threading
 
 		/// <inheritdoc />
 		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		public object SyncRoot { get; }
 
 		#endregion
 	}

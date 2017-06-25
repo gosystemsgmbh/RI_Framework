@@ -13,7 +13,7 @@ using UnityEngine;
 namespace RI.Framework.Services.Logging.Writers
 {
 	/// <summary>
-	///     Implements a log writer which writes to <c>Debug</c>.
+	///     Implements a log writer which writes to <c> Debug </c>.
 	/// </summary>
 	/// <remarks>
 	///     <para>

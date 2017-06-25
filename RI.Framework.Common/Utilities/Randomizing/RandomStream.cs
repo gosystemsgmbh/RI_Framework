@@ -2,23 +2,28 @@
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
+
+
+
 namespace RI.Framework.Utilities.Randomizing
 {
 	/// <summary>
-	/// Implements a stream which reads random bytes.
+	///     Implements a stream which reads random bytes.
 	/// </summary>
 	/// <value>
-	/// <see cref="RandomStream"/> is only readable and cannot be written or seeked.
+	///     <see cref="RandomStream" /> is only readable and cannot be written or seeked.
 	/// </value>
 	public sealed class RandomStream : Stream
 	{
+		#region Instance Constructor/Destructor
+
 		/// <summary>
-		/// Creates a new instance of <see cref="RandomStream"/>.
+		///     Creates a new instance of <see cref="RandomStream" />.
 		/// </summary>
 		/// <remarks>
-		/// <para>
-		/// A new default randomizer is used.
-		/// </para>
+		///     <para>
+		///         A new default randomizer is used.
+		///     </para>
 		/// </remarks>
 		public RandomStream ()
 			: this(null)
@@ -26,9 +31,9 @@ namespace RI.Framework.Utilities.Randomizing
 		}
 
 		/// <summary>
-		/// Creates a new instance of <see cref="RandomStream"/>.
+		///     Creates a new instance of <see cref="RandomStream" />.
 		/// </summary>
-		/// <param name="randomizer">The used randomizer. Can be null to use a new default randomizer.</param>
+		/// <param name="randomizer"> The used randomizer. Can be null to use a new default randomizer. </param>
 		public RandomStream (Random randomizer)
 		{
 			this.Randomizer = randomizer ?? new Random();
@@ -37,61 +42,32 @@ namespace RI.Framework.Utilities.Randomizing
 		/// <summary>
 		///     Garbage collects this instance of <see cref="RandomStream" />.
 		/// </summary>
-		~RandomStream()
+		~RandomStream ()
 		{
 			this.Close();
 		}
 
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
+
 		/// <summary>
-		/// Gets the used randomizer.
+		///     Gets the used randomizer.
 		/// </summary>
 		/// <value>
-		/// The used randomizer.
+		///     The used randomizer.
 		/// </value>
 		public Random Randomizer { get; private set; }
 
-		/// <inheritdoc />
-		public override void Flush ()
-		{
-		}
+		#endregion
 
-		/// <inheritdoc />
-		public override int Read (byte[] buffer, int offset, int count)
-		{
-			this.Randomizer.NextBytes(buffer, offset, count);
-			return count;
-		}
 
-		/// <inheritdoc />
-		public override long Seek (long offset, SeekOrigin origin)
-		{
-			this.ThrowNotSeekable();
-			return 0;
-		}
 
-		/// <inheritdoc />
-		public override void SetLength (long value)
-		{
-			this.ThrowNotSeekable();
-		}
 
-		/// <inheritdoc />
-		public override void Write (byte[] buffer, int offset, int count)
-		{
-			this.ThrowNotWriteable();
-		}
-
-		/// <inheritdoc />
-		public override bool CanRead => true;
-
-		/// <inheritdoc />
-		public override bool CanSeek => false;
-
-		/// <inheritdoc />
-		public override bool CanWrite => false;
-
-		/// <inheritdoc />
-		public override bool CanTimeout => false;
+		#region Instance Methods
 
 		/// <inheritdoc />
 		private void ThrowNotSeekable ()
@@ -100,15 +76,59 @@ namespace RI.Framework.Utilities.Randomizing
 		}
 
 		/// <inheritdoc />
+		private void ThrowNotTimeoutable ()
+		{
+			throw new InvalidOperationException(this.GetType().Name + " does not support timing out.");
+		}
+
+		/// <inheritdoc />
 		private void ThrowNotWriteable ()
 		{
 			throw new NotSupportedException(this.GetType().Name + " does not support writing.");
 		}
 
+		#endregion
+
+
+
+
+		#region Overrides
+
 		/// <inheritdoc />
-		private void ThrowNotTimeoutable ()
+		public override bool CanRead => true;
+
+		/// <inheritdoc />
+		public override bool CanSeek => false;
+
+		/// <inheritdoc />
+		public override bool CanTimeout => false;
+
+		/// <inheritdoc />
+		public override bool CanWrite => false;
+
+		/// <inheritdoc />
+		public override long Length
 		{
-			throw new InvalidOperationException(this.GetType().Name + " does not support timing out.");
+			get
+			{
+				this.ThrowNotSeekable();
+				return 0;
+			}
+		}
+
+		/// <inheritdoc />
+		[SuppressMessage("ReSharper", "ValueParameterNotUsed")]
+		public override long Position
+		{
+			get
+			{
+				this.ThrowNotSeekable();
+				return 0;
+			}
+			set
+			{
+				this.ThrowNotSeekable();
+			}
 		}
 
 		/// <inheritdoc />
@@ -142,28 +162,36 @@ namespace RI.Framework.Utilities.Randomizing
 		}
 
 		/// <inheritdoc />
-		public override long Length
+		public override void Flush ()
 		{
-			get
-			{
-				this.ThrowNotSeekable();
-				return 0;
-			}
 		}
 
 		/// <inheritdoc />
-		[SuppressMessage("ReSharper", "ValueParameterNotUsed")]
-		public override long Position
+		public override int Read (byte[] buffer, int offset, int count)
 		{
-			get
-			{
-				this.ThrowNotSeekable();
-				return 0;
-			}
-			set
-			{
-				this.ThrowNotSeekable();
-			}
+			this.Randomizer.NextBytes(buffer, offset, count);
+			return count;
 		}
+
+		/// <inheritdoc />
+		public override long Seek (long offset, SeekOrigin origin)
+		{
+			this.ThrowNotSeekable();
+			return 0;
+		}
+
+		/// <inheritdoc />
+		public override void SetLength (long value)
+		{
+			this.ThrowNotSeekable();
+		}
+
+		/// <inheritdoc />
+		public override void Write (byte[] buffer, int offset, int count)
+		{
+			this.ThrowNotWriteable();
+		}
+
+		#endregion
 	}
 }

@@ -155,15 +155,13 @@ namespace RI.Framework.Utilities.Threading
 			}
 		}
 
-		private ThreadDispatcher Dispatcher { get; }
 		private Delegate Action { get; }
-		private object[] Parameters { get; }
+
+		private ThreadDispatcher Dispatcher { get; }
 
 		private ManualResetEvent OperationDone { get; set; }
 		private TaskCompletionSource<object> OperationDoneTask { get; set; }
-
-		/// <inheritdoc />
-		public object SyncRoot { get; }
+		private object[] Parameters { get; }
 
 		#endregion
 
@@ -451,6 +449,9 @@ namespace RI.Framework.Utilities.Threading
 
 		/// <inheritdoc />
 		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		public object SyncRoot { get; }
 
 		#endregion
 	}

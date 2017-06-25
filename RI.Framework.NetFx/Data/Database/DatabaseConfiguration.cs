@@ -100,13 +100,13 @@ namespace RI.Framework.Data.Database
 	/// <summary>
 	///     Implements the base class for storing the database configuration used by implementations of <see cref="IDatabaseManager" />.
 	/// </summary>
-	/// <typeparam name="T">The database configuration type.</typeparam>
+	/// <typeparam name="T"> The database configuration type. </typeparam>
 	public abstract class DatabaseConfiguration <T> : DatabaseConfiguration, ICloneable<T>
 		where T : DatabaseConfiguration<T>, new()
 	{
 		#region Instance Constructor/Destructor
 
-		internal DatabaseConfiguration()
+		internal DatabaseConfiguration ()
 		{
 		}
 
@@ -162,9 +162,9 @@ namespace RI.Framework.Data.Database
 	/// <summary>
 	///     Implements the base class for storing the database configuration used by implementations of <see cref="IDatabaseManager" />.
 	/// </summary>
-	/// <typeparam name="TConnectionStringBuilder">The type of the used connection string builder.</typeparam>
-	/// <typeparam name="TConfiguration">The database configuration type.</typeparam>
-	public abstract class DatabaseConfiguration<TConnectionStringBuilder, TConfiguration> : DatabaseConfiguration<TConfiguration>
+	/// <typeparam name="TConnectionStringBuilder"> The type of the used connection string builder. </typeparam>
+	/// <typeparam name="TConfiguration"> The database configuration type. </typeparam>
+	public abstract class DatabaseConfiguration <TConnectionStringBuilder, TConfiguration> : DatabaseConfiguration<TConfiguration>
 		where TConnectionStringBuilder : DbConnectionStringBuilder, new()
 		where TConfiguration : DatabaseConfiguration<TConnectionStringBuilder, TConfiguration>, new()
 	{
@@ -173,7 +173,7 @@ namespace RI.Framework.Data.Database
 		/// <summary>
 		///     Creates a new instance of <see cref="DatabaseConfiguration{TConnectionStringBuilder,TConfiguration}" />.
 		/// </summary>
-		protected DatabaseConfiguration()
+		protected DatabaseConfiguration ()
 		{
 			this.ConnectionString = new TConnectionStringBuilder();
 		}

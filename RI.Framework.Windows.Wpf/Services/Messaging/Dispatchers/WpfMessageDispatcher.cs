@@ -74,12 +74,21 @@ namespace RI.Framework.Services.Messaging.Dispatchers
 		/// </value>
 		public Dispatcher Dispatcher { get; private set; }
 
+
+		private object SyncRoot { get; set; }
+
 		#endregion
 
 
 
 
 		#region Interface: IMessageDispatcher
+
+		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		object ISynchronizable.SyncRoot => this.SyncRoot;
 
 		/// <inheritdoc />
 		public void Post (IEnumerable<IMessageReceiver> receivers, IMessage message, IMessageService messageService)
@@ -107,14 +116,5 @@ namespace RI.Framework.Services.Messaging.Dispatchers
 		}
 
 		#endregion
-
-
-		private object SyncRoot { get; set; }
-
-		/// <inheritdoc />
-		bool ISynchronizable.IsSynchronized => true;
-
-		/// <inheritdoc />
-		object ISynchronizable.SyncRoot => this.SyncRoot;
 	}
 }

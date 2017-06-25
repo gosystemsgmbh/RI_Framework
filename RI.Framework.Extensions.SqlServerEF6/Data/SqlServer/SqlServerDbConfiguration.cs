@@ -25,7 +25,7 @@ namespace RI.Framework.Data.SqlServer
 		/// <summary>
 		///     Creates a new instance of <see cref="SqlServerDbConfiguration" />.
 		/// </summary>
-		public SqlServerDbConfiguration()
+		public SqlServerDbConfiguration ()
 		{
 			this.SetDefaultConnectionFactory(new System.Data.Entity.Infrastructure.SqlConnectionFactory());
 

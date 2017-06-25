@@ -8,10 +8,13 @@ using RI.Framework.Services.Logging.Filters;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.ObjectModel;
 
+
+
+
 namespace RI.Framework.Services.Logging.Writers
 {
 	/// <summary>
-	///     Implements a log writer which writes to <see cref="Debugger"/>.
+	///     Implements a log writer which writes to <see cref="Debugger" />.
 	/// </summary>
 	/// <remarks>
 	///     <para>

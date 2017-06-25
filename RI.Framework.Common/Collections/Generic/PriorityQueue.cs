@@ -78,13 +78,6 @@ namespace RI.Framework.Collections.Generic
 
 		#region Instance Methods
 
-		/// <inheritdoc />
-		public void Clear ()
-		{
-			this.Chain.Clear();
-			this.Table.Clear();
-		}
-
 		/// <inheritdoc cref="ICollection.CopyTo" />
 		public void CopyTo (T[] array, int index)
 		{
@@ -92,6 +85,74 @@ namespace RI.Framework.Collections.Generic
 			{
 				array[index] = item;
 				index++;
+			}
+		}
+
+		private T Get (bool remove, out int priority)
+		{
+			if (this.Chain.Count == 0)
+			{
+				throw new InvalidOperationException("The priority queue is empty.");
+			}
+
+			PriorityItem priorityItem = this.Chain.Last.Value;
+			priority = priorityItem.Priority;
+			T item = remove ? priorityItem.Dequeue() : priorityItem.Peek();
+			if (priorityItem.Count == 0)
+			{
+				this.Chain.RemoveLast();
+				this.Table.Remove(priority);
+			}
+			return item;
+		}
+
+		#endregion
+
+
+
+
+		#region Interface: IPriorityQueue<T>
+
+		/// <inheritdoc />
+		/// <remarks>
+		///     <para>
+		///         This is a O(x) operation where x is the number of priorities currently in use.
+		///     </para>
+		/// </remarks>
+		public int Count
+		{
+			get
+			{
+				int count = 0;
+				foreach (PriorityItem chainItem in this.Chain)
+				{
+					count += chainItem.Count;
+				}
+				return count;
+			}
+		}
+
+		/// <inheritdoc />
+		bool ICollection.IsSynchronized => ((ISynchronizable)this).IsSynchronized;
+
+		/// <inheritdoc />
+		object ICollection.SyncRoot => ((ISynchronizable)this).SyncRoot;
+
+		/// <inheritdoc />
+		public void Clear ()
+		{
+			this.Chain.Clear();
+			this.Table.Clear();
+		}
+
+		/// <inheritdoc />
+		void ICollection.CopyTo (Array array, int index)
+		{
+			int i1 = 0;
+			foreach (T item in this)
+			{
+				array.SetValue(item, index + i1);
+				i1++;
 			}
 		}
 
@@ -176,6 +237,26 @@ namespace RI.Framework.Collections.Generic
 		}
 
 		/// <inheritdoc />
+		IEnumerator IEnumerable.GetEnumerator ()
+		{
+			return this.GetEnumerator();
+		}
+
+		/// <inheritdoc />
+		public IEnumerator<T> GetEnumerator ()
+		{
+			LinkedListNode<PriorityItem> node = this.Chain.Last;
+			while (node != null)
+			{
+				foreach (T item in node.Value)
+				{
+					yield return item;
+				}
+				node = node.Previous;
+			}
+		}
+
+		/// <inheritdoc />
 		public int MoveTo (PriorityQueue<T> queue)
 		{
 			if (queue == null)
@@ -206,94 +287,6 @@ namespace RI.Framework.Collections.Generic
 		public T Peek (out int priority)
 		{
 			return this.Get(false, out priority);
-		}
-
-		private T Get (bool remove, out int priority)
-		{
-			if (this.Chain.Count == 0)
-			{
-				throw new InvalidOperationException("The priority queue is empty.");
-			}
-
-			PriorityItem priorityItem = this.Chain.Last.Value;
-			priority = priorityItem.Priority;
-			T item = remove ? priorityItem.Dequeue() : priorityItem.Peek();
-			if (priorityItem.Count == 0)
-			{
-				this.Chain.RemoveLast();
-				this.Table.Remove(priority);
-			}
-			return item;
-		}
-
-		#endregion
-
-
-
-
-		#region Interface: ICollection
-
-		/// <inheritdoc />
-		/// <remarks>
-		///     <para>
-		///         This is a O(x) operation where x is the number of priorities currently in use.
-		///     </para>
-		/// </remarks>
-		public int Count
-		{
-			get
-			{
-				int count = 0;
-				foreach (PriorityItem chainItem in this.Chain)
-				{
-					count += chainItem.Count;
-				}
-				return count;
-			}
-		}
-
-		/// <inheritdoc />
-		bool ICollection.IsSynchronized => ((ISynchronizable)this).IsSynchronized;
-
-		/// <inheritdoc />
-		object ICollection.SyncRoot => ((ISynchronizable)this).SyncRoot;
-
-		/// <inheritdoc />
-		void ICollection.CopyTo (Array array, int index)
-		{
-			int i1 = 0;
-			foreach (T item in this)
-			{
-				array.SetValue(item, index + i1);
-				i1++;
-			}
-		}
-
-		/// <inheritdoc />
-		IEnumerator IEnumerable.GetEnumerator ()
-		{
-			return this.GetEnumerator();
-		}
-
-		#endregion
-
-
-
-
-		#region Interface: IEnumerable<T>
-
-		/// <inheritdoc />
-		public IEnumerator<T> GetEnumerator ()
-		{
-			LinkedListNode<PriorityItem> node = this.Chain.Last;
-			while (node != null)
-			{
-				foreach (T item in node.Value)
-				{
-					yield return item;
-				}
-				node = node.Previous;
-			}
 		}
 
 		#endregion

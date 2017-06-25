@@ -10,10 +10,13 @@ using RI.Framework.Services.Logging.Filters;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.ObjectModel;
 
+
+
+
 namespace RI.Framework.Services.Logging.Writers
 {
 	/// <summary>
-	///     Implements a log writer which writes to <see cref="System.Diagnostics.EventLog"/>.
+	///     Implements a log writer which writes to <see cref="System.Diagnostics.EventLog" />.
 	/// </summary>
 	/// <remarks>
 	///     <para>
@@ -27,29 +30,14 @@ namespace RI.Framework.Services.Logging.Writers
 	[Export]
 	public sealed class EventLogWriter : ILogWriter, IDisposable, ILogSource
 	{
-		/// <summary>
-		/// Gets the used event log.
-		/// </summary>
-		/// <value>
-		/// The used event log.
-		/// </value>
-		public EventLog EventLog { get; }
-
-		private bool Disposed { get; set; }
-
-		private EventHandler DisposedEventHandler { get; set; }
-
-		private void DisposedEvent (object sender, EventArgs args)
-		{
-			this.Close();
-		}
+		#region Instance Constructor/Destructor
 
 		/// <summary>
 		///     Creates a new instance of <see cref="EventLogWriter" />.
 		/// </summary>
-		/// <param name="eventLog">The event log to use.</param>
-		/// <exception cref="ArgumentNullException"><paramref name="eventLog"/> is null.</exception>
-		public EventLogWriter(EventLog eventLog)
+		/// <param name="eventLog"> The event log to use. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="eventLog" /> is null. </exception>
+		public EventLogWriter (EventLog eventLog)
 		{
 			if (eventLog == null)
 			{
@@ -68,10 +56,47 @@ namespace RI.Framework.Services.Logging.Writers
 		/// <summary>
 		///     Garbage collects this instance of <see cref="EventLogWriter" />.
 		/// </summary>
-		~EventLogWriter()
+		~EventLogWriter ()
 		{
 			this.Dispose(false);
 		}
+
+		#endregion
+
+
+
+
+		#region Instance Fields
+
+		private ILogFilter _filter;
+
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
+
+		/// <summary>
+		///     Gets the used event log.
+		/// </summary>
+		/// <value>
+		///     The used event log.
+		/// </value>
+		public EventLog EventLog { get; }
+
+		private bool Disposed { get; set; }
+
+		private EventHandler DisposedEventHandler { get; set; }
+
+		private object SyncRoot { get; set; }
+
+		#endregion
+
+
+
+
+		#region Instance Methods
 
 		/// <summary>
 		///     Closes this log writer and all used underlying streams.
@@ -81,7 +106,7 @@ namespace RI.Framework.Services.Logging.Writers
 		///         After the log writer is closed, all calls to <see cref="Log" /> do not have any effect but do not fail.
 		///     </para>
 		/// </remarks>
-		public void Close()
+		public void Close ()
 		{
 			this.Dispose(true);
 			GC.SuppressFinalize(this);
@@ -98,21 +123,10 @@ namespace RI.Framework.Services.Logging.Writers
 			}
 		}
 
-
-
-
-		#region Instance Fields
-
-		private ILogFilter _filter;
-
-		#endregion
-
-
-
-
-		#region Instance Properties/Indexer
-
-		private object SyncRoot { get; set; }
+		private void DisposedEvent (object sender, EventArgs args)
+		{
+			this.Close();
+		}
 
 		#endregion
 
@@ -122,7 +136,7 @@ namespace RI.Framework.Services.Logging.Writers
 		#region Interface: IDisposable
 
 		/// <inheritdoc />
-		void IDisposable.Dispose()
+		void IDisposable.Dispose ()
 		{
 			this.Close();
 		}
@@ -160,7 +174,7 @@ namespace RI.Framework.Services.Logging.Writers
 		object ISynchronizable.SyncRoot => this.SyncRoot;
 
 		/// <inheritdoc />
-		public void Cleanup(DateTime retentionDate)
+		public void Cleanup (DateTime retentionDate)
 		{
 			lock (this.SyncRoot)
 			{
@@ -187,7 +201,7 @@ namespace RI.Framework.Services.Logging.Writers
 
 		/// <inheritdoc />
 		[SuppressMessage("ReSharper", "EmptyGeneralCatchClause")]
-		public void Log(DateTime timestamp, int threadId, LogLevel severity, string source, string message)
+		public void Log (DateTime timestamp, int threadId, LogLevel severity, string source, string message)
 		{
 			ILogFilter filter = this.Filter;
 			if (filter != null)

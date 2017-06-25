@@ -85,7 +85,7 @@ namespace RI.Framework.Services.Logging.Writers
 		object ISynchronizable.SyncRoot => this.SyncRoot;
 
 		/// <inheritdoc />
-		void ILogWriter.Cleanup(DateTime retentionDate)
+		void ILogWriter.Cleanup (DateTime retentionDate)
 		{
 		}
 

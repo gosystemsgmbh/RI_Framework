@@ -772,7 +772,7 @@ namespace RI.Framework.StateMachines
 			IStateCache cache;
 			IStateResolver resolver;
 			IState state = null;
-			
+
 			lock (this.Configuration.SyncRoot)
 			{
 				cache = this.Configuration.Cache;
@@ -787,7 +787,7 @@ namespace RI.Framework.StateMachines
 				}
 			}
 
-			if(state == null)
+			if (state == null)
 			{
 				lock (resolver.SyncRoot)
 				{

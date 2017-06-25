@@ -55,10 +55,10 @@ namespace RI.Framework.Utilities.Threading
 		private int _defaultPriority;
 		private bool _finishPendingDelegatesOnShutdown;
 		private bool _isBackgroundThread;
+		private CultureInfo _threadCulture;
 		private string _threadName;
 
 		private ThreadPriority _threadPriority;
-		private CultureInfo _threadCulture;
 		private CultureInfo _threadUICulture;
 
 		#endregion
@@ -144,6 +144,35 @@ namespace RI.Framework.Utilities.Threading
 		}
 
 		/// <summary>
+		///     Gets or sets the formatting culture of the thread.
+		/// </summary>
+		/// <value>
+		///     The formatting culture of the thread.
+		/// </value>
+		public CultureInfo ThreadCulture
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._threadCulture;
+				}
+			}
+			set
+			{
+				lock (this.SyncRoot)
+				{
+					this._threadCulture = value;
+
+					if (this.Thread != null)
+					{
+						this.Thread.CurrentCulture = value;
+					}
+				}
+			}
+		}
+
+		/// <summary>
 		///     Gets or sets the name of the thread.
 		/// </summary>
 		/// <value>
@@ -196,35 +225,6 @@ namespace RI.Framework.Utilities.Threading
 					if (this.Thread != null)
 					{
 						this.Thread.Priority = value;
-					}
-				}
-			}
-		}
-
-		/// <summary>
-		///     Gets or sets the formatting culture of the thread.
-		/// </summary>
-		/// <value>
-		///     The formatting culture of the thread.
-		/// </value>
-		public CultureInfo ThreadCulture
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					return this._threadCulture;
-				}
-			}
-			set
-			{
-				lock (this.SyncRoot)
-				{
-					this._threadCulture = value;
-
-					if (this.Thread != null)
-					{
-						this.Thread.CurrentCulture = value;
 					}
 				}
 			}
@@ -522,6 +522,15 @@ namespace RI.Framework.Utilities.Threading
 		}
 
 		/// <inheritdoc />
+		public int? GetCurrentPriority ()
+		{
+			lock (this.SyncRoot)
+			{
+				return this.DispatcherInternal?.GetCurrentPriority();
+			}
+		}
+
+		/// <inheritdoc />
 		public ThreadDispatcherOperation Post (Delegate action, params object[] parameters)
 		{
 			ThreadDispatcher dispatcher;
@@ -603,15 +612,6 @@ namespace RI.Framework.Utilities.Threading
 		void IThreadDispatcher.Shutdown (bool finishPendingDelegates)
 		{
 			this.Stop(finishPendingDelegates);
-		}
-
-		/// <inheritdoc />
-		public int? GetCurrentPriority()
-		{
-			lock (this.SyncRoot)
-			{
-				return this.DispatcherInternal?.GetCurrentPriority();
-			}
 		}
 
 		#endregion

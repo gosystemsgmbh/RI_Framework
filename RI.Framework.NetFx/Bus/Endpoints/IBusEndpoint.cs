@@ -3,8 +3,5 @@
 	public interface IBusEndpoint
 	{
 		string Id { get; }
-
-
-
 	}
 }

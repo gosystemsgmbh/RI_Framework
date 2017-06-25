@@ -30,11 +30,6 @@ namespace RI.Framework.Composition.Catalogs
 	/// TODO: Prevent from loading the same assembly twice
 	public sealed class ScriptingCatalog : CompositionCatalog
 	{
-		private bool _exportAllTypes;
-
-
-
-
 		#region Constants
 
 		private const string ScriptingAssemblyName = "Assembly-CSharp";
@@ -66,6 +61,15 @@ namespace RI.Framework.Composition.Catalogs
 		{
 			this.ExportAllTypes = exportAllTypes;
 		}
+
+		#endregion
+
+
+
+
+		#region Instance Fields
+
+		private bool _exportAllTypes;
 
 		#endregion
 

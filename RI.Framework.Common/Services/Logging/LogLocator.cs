@@ -22,6 +22,9 @@ namespace RI.Framework.Services.Logging
 	{
 		#region Static Properties/Indexer
 
+		/// <inheritdoc cref="ILogService.Filter" />
+		public static ILogFilter Filter => LogLocator.Service?.Filter;
+
 		/// <summary>
 		///     Gets whether a logging service is available and can be used by <see cref="LogLocator" />.
 		/// </summary>
@@ -40,9 +43,6 @@ namespace RI.Framework.Services.Logging
 
 		/// <inheritdoc cref="ILogService.Writers" />
 		public static IEnumerable<ILogWriter> Writers => LogLocator.Service?.Writers ?? new ILogWriter[0];
-
-		/// <inheritdoc cref="ILogService.Filter" />
-		public static ILogFilter Filter => LogLocator.Service?.Filter;
 
 		#endregion
 

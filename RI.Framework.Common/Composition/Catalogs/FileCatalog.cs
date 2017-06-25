@@ -32,11 +32,6 @@ namespace RI.Framework.Composition.Catalogs
 	/// <threadsafety static="true" instance="true" />
 	public sealed class FileCatalog : CompositionCatalog
 	{
-		private bool _failed;
-
-
-
-
 		#region Static Methods
 
 		internal static Dictionary<string, List<CompositionCatalogItem>> LoadAssemblyFile (FilePath file, bool exportAllTypes)
@@ -109,6 +104,15 @@ namespace RI.Framework.Composition.Catalogs
 			this.IsLoaded = false;
 			this.Failed = false;
 		}
+
+		#endregion
+
+
+
+
+		#region Instance Fields
+
+		private bool _failed;
 
 		#endregion
 

@@ -361,7 +361,7 @@ namespace RI.Framework.Services.Logging.Writers
 		object ISynchronizable.SyncRoot => this.SyncRoot;
 
 		/// <inheritdoc />
-		void ILogWriter.Cleanup(DateTime retentionDate)
+		void ILogWriter.Cleanup (DateTime retentionDate)
 		{
 		}
 
@@ -396,7 +396,7 @@ namespace RI.Framework.Services.Logging.Writers
 					this.Stream.Flush(true);
 #endif
 #if PLATFORM_UNITY
-						this.Stream.Flush();
+					this.Stream.Flush();
 #endif
 
 					if (this.RolledOver)

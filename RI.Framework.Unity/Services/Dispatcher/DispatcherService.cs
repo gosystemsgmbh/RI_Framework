@@ -311,6 +311,12 @@ namespace RI.Framework.Services.Dispatcher
 		#region Interface: IDispatcherService
 
 		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		public object SyncRoot { get; }
+
+		/// <inheritdoc />
 		public IDispatcherOperation Broadcast <T> (DispatcherPriority priority, T broadcast)
 			where T : class
 		{
@@ -559,19 +565,6 @@ namespace RI.Framework.Services.Dispatcher
 
 			DispatcherSlots<T>.UnregisterReceiver(receiver);
 		}
-
-		#endregion
-
-
-
-
-		#region Interface: ISynchronizable
-
-		/// <inheritdoc />
-		bool ISynchronizable.IsSynchronized => true;
-
-		/// <inheritdoc />
-		public object SyncRoot { get; }
 
 		#endregion
 
@@ -965,10 +958,17 @@ namespace RI.Framework.Services.Dispatcher
 
 		private sealed class DispatcherOperation : IDispatcherOperation
 		{
+			#region Instance Constructor/Destructor
+
 			public DispatcherOperation ()
 			{
 				this.SyncRoot = new object();
 			}
+
+			#endregion
+
+
+
 
 			#region Instance Fields
 
@@ -997,6 +997,8 @@ namespace RI.Framework.Services.Dispatcher
 
 			#region Interface: IDispatcherOperation
 
+			bool ISynchronizable.IsSynchronized => true;
+
 			object IDispatcherOperation.Result
 			{
 				get
@@ -1012,6 +1014,8 @@ namespace RI.Framework.Services.Dispatcher
 					return this.StatusInternal;
 				}
 			}
+
+			public object SyncRoot { get; }
 
 			bool IDispatcherOperation.Cancel ()
 			{
@@ -1062,13 +1066,6 @@ namespace RI.Framework.Services.Dispatcher
 			}
 
 			#endregion
-
-
-
-
-			bool ISynchronizable.IsSynchronized => true;
-
-			public object SyncRoot { get; }
 		}
 
 		#endregion

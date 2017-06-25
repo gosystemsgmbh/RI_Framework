@@ -77,7 +77,7 @@ namespace RI.Framework.Services.Resources.Sources
 		///     Creates a new instance of <see cref="DirectoryResourceSource" />.
 		/// </summary>
 		/// <param name="directory"> The directory which contains the resource set subdirectories. </param>
-		/// <param name="fileEncoding"> The text encoding used for reading text files (can be null to use <see cref="DefaultEncoding"/>). </param>
+		/// <param name="fileEncoding"> The text encoding used for reading text files (can be null to use <see cref="DefaultEncoding" />). </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="directory" /> is null. </exception>
 		/// <exception cref="InvalidPathArgumentException"> <paramref name="directory" /> contains wildcards. </exception>
 		public DirectoryResourceSource (DirectoryPath directory, Encoding fileEncoding)

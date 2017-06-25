@@ -49,12 +49,12 @@ namespace RI.Framework.Services.Logging
 
 		#region Instance Properties/Indexer
 
+		private object LogSyncRoot { get; }
+
 		[Import(typeof(ILogWriter), Recomposable = true)]
 		private Import WritersImported { get; set; }
 
 		private List<ILogWriter> WritersManual { get; }
-
-		private object LogSyncRoot { get; }
 
 		#endregion
 

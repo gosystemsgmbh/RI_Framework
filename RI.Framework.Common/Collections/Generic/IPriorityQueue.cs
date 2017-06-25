@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
+
+
+
 namespace RI.Framework.Collections.Generic
 {
 	/// <summary>
-	/// Defines a generic interface for priority queues.
+	///     Defines a generic interface for priority queues.
 	/// </summary>
 	/// <typeparam name="T"> The type of items stored in the priority queue. </typeparam>
 	/// <remarks>
@@ -19,7 +22,7 @@ namespace RI.Framework.Collections.Generic
 	///         null are valid item values if <typeparamref name="T" /> is a reference type.
 	///     </para>
 	/// </remarks>
-	public interface IPriorityQueue<T> : ICollection, IEnumerable<T>, IEnumerable
+	public interface IPriorityQueue <T> : ICollection, IEnumerable<T>, IEnumerable
 	{
 		/// <summary>
 		///     Removes all items from the priority queue.
@@ -81,9 +84,9 @@ namespace RI.Framework.Collections.Generic
 		///     The number of moved items.
 		/// </returns>
 		/// <remarks>
-		/// <note type="important">
-		/// As the name of this method implies, the items are moved to the other queue, dequeueing all items from this queue.
-		/// </note>
+		///     <note type="important">
+		///         As the name of this method implies, the items are moved to the other queue, dequeueing all items from this queue.
+		///     </note>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="queue" /> is null. </exception>
 		int MoveTo (PriorityQueue<T> queue);

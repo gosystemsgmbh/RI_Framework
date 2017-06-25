@@ -210,18 +210,6 @@ namespace RI.Framework.Composition.Catalogs
 		#region Interface: ICollection
 
 		/// <inheritdoc />
-		public int Count
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					return this.Catalogs.Count;
-				}
-			}
-		}
-
-		/// <inheritdoc />
 		bool ICollection.IsSynchronized => ((ISynchronizable)this).IsSynchronized;
 
 		/// <inheritdoc />
@@ -241,18 +229,24 @@ namespace RI.Framework.Composition.Catalogs
 			}
 		}
 
-		/// <inheritdoc />
-		IEnumerator IEnumerable.GetEnumerator ()
-		{
-			return this.GetEnumerator();
-		}
-
 		#endregion
 
 
 
 
 		#region Interface: ICollection<CompositionCatalog>
+
+		/// <inheritdoc />
+		public int Count
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this.Catalogs.Count;
+				}
+			}
+		}
 
 		/// <inheritdoc />
 		bool ICollection<CompositionCatalog>.IsReadOnly => false;
@@ -312,6 +306,12 @@ namespace RI.Framework.Composition.Catalogs
 			{
 				this.Catalogs.CopyTo(array, arrayIndex);
 			}
+		}
+
+		/// <inheritdoc />
+		IEnumerator IEnumerable.GetEnumerator ()
+		{
+			return this.GetEnumerator();
 		}
 
 		/// <inheritdoc />

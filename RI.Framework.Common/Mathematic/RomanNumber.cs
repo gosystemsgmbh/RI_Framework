@@ -7,6 +7,9 @@ using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.ObjectModel;
 
+
+
+
 namespace RI.Framework.Mathematic
 {
 	/// <summary>
@@ -678,24 +681,28 @@ namespace RI.Framework.Mathematic
 		}
 
 		/// <inheritdoc />
+		public override string ToString ()
+		{
+			return this.RomanValue;
+		}
+
+		#endregion
+
+
+
+
+		#region Interface: ICloneable<RomanNumber>
+
+		/// <inheritdoc />
 		object ICloneable.Clone ()
 		{
 			return this.Clone();
 		}
 
 		/// <inheritdoc />
-		public string ToString (string format, IFormatProvider formatProvider) => this.DecimalValue.ToString(format, formatProvider);
-
-		/// <inheritdoc />
 		public RomanNumber Clone ()
 		{
 			return new RomanNumber(this.DecimalValue);
-		}
-
-		/// <inheritdoc />
-		public override string ToString ()
-		{
-			return this.RomanValue;
 		}
 
 		#endregion
@@ -740,6 +747,16 @@ namespace RI.Framework.Mathematic
 		{
 			return this.DecimalValue == other.DecimalValue;
 		}
+
+		#endregion
+
+
+
+
+		#region Interface: IFormattable
+
+		/// <inheritdoc />
+		public string ToString (string format, IFormatProvider formatProvider) => this.DecimalValue.ToString(format, formatProvider);
 
 		#endregion
 	}

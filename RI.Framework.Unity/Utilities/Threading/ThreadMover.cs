@@ -120,10 +120,10 @@ namespace RI.Framework.Utilities.Threading
 	{
 		#region Static Fields
 
+		private static object GlobalSyncRoot;
+
 		private static ThreadMoverHandler MoverHandler;
 		private static GameObject MoverObject;
-
-		private static object GlobalSyncRoot;
 		private static List<MoveableTask> TasksToMoveToForeground;
 
 		#endregion

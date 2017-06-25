@@ -5,10 +5,15 @@ using RI.Framework.Bus.Endpoints;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 
+
+
+
 namespace RI.Framework.Bus
 {
 	public sealed class BusNode
 	{
+		#region Instance Constructor/Destructor
+
 		internal BusNode (BusContext context, string name)
 		{
 			if (context == null)
@@ -30,20 +35,24 @@ namespace RI.Framework.Bus
 			this.Id = name.Trim();
 		}
 
+		#endregion
 
 
+
+
+		#region Instance Properties/Indexer
 
 		public BusContext Context { get; }
 		public string Id { get; }
 
+		#endregion
 
 
+
+
+		#region Instance Methods
 
 		public void RegisterReceiver (IBusEndpoint receiver, Type messageType)
-		{
-		}
-
-		public void UnregisterReceiver (IBusEndpoint receiver, Type messageType)
 		{
 		}
 
@@ -56,5 +65,11 @@ namespace RI.Framework.Bus
 		{
 			return null;
 		}
+
+		public void UnregisterReceiver (IBusEndpoint receiver, Type messageType)
+		{
+		}
+
+		#endregion
 	}
 }

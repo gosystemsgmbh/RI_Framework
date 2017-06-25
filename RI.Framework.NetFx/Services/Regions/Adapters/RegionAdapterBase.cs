@@ -7,6 +7,9 @@ using RI.Framework.Collections.Comparison;
 using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Utilities.Reflection;
 
+
+
+
 namespace RI.Framework.Services.Regions.Adapters
 {
 	/// <summary>

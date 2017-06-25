@@ -9,6 +9,9 @@ using RI.Framework.Services.Logging.Filters;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.ObjectModel;
 
+
+
+
 namespace RI.Framework.Services.Logging.Writers
 {
 	/// <summary>
@@ -223,7 +226,7 @@ namespace RI.Framework.Services.Logging.Writers
 		object ISynchronizable.SyncRoot => this.SyncRoot;
 
 		/// <inheritdoc />
-		void ILogWriter.Cleanup(DateTime retentionDate)
+		void ILogWriter.Cleanup (DateTime retentionDate)
 		{
 		}
 

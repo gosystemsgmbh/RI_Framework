@@ -5,6 +5,9 @@ using System.Text;
 
 using RI.Framework.Utilities.ObjectModel;
 
+
+
+
 namespace RI.Framework.Utilities.Text
 {
 	/// <summary>
@@ -150,6 +153,14 @@ namespace RI.Framework.Utilities.Text
 		public CultureInfo Culture { get; }
 
 		/// <summary>
+		///     Gets whether comparison is performed case-insensitive.
+		/// </summary>
+		/// <value>
+		///     true if the case is ignored, false otherwise.
+		/// </value>
+		public bool IgnoreCase => (this.Options & AlphanumComparerFlags.IgnoreCase) == AlphanumComparerFlags.IgnoreCase;
+
+		/// <summary>
 		///     Gets the used comparison options.
 		/// </summary>
 		/// <value>
@@ -158,18 +169,10 @@ namespace RI.Framework.Utilities.Text
 		public AlphanumComparerFlags Options { get; }
 
 		/// <summary>
-		/// Gets whether comparison is performed case-insensitive.
+		///     Gets whether comparison is performed trimmed.
 		/// </summary>
 		/// <value>
-		/// true if the case is ignored, false otherwise.
-		/// </value>
-		public bool IgnoreCase => (this.Options & AlphanumComparerFlags.IgnoreCase) == AlphanumComparerFlags.IgnoreCase;
-
-		/// <summary>
-		/// Gets whether comparison is performed trimmed.
-		/// </summary>
-		/// <value>
-		/// true if the values are trimmed of whitespaces before being compared.
+		///     true if the values are trimmed of whitespaces before being compared.
 		/// </value>
 		public bool Trimmed => (this.Options & AlphanumComparerFlags.Trimmed) == AlphanumComparerFlags.Trimmed;
 
@@ -225,6 +228,27 @@ namespace RI.Framework.Utilities.Text
 				}
 			}
 			return readCount;
+		}
+
+		#endregion
+
+
+
+
+		#region Interface: ICloneable<AlphanumComparer>
+
+		/// <inheritdoc />
+		public AlphanumComparer Clone ()
+		{
+			CultureInfo culture = (CultureInfo)this.Culture.Clone();
+			AlphanumComparer clone = new AlphanumComparer(culture, this.Options);
+			return clone;
+		}
+
+		/// <inheritdoc />
+		object ICloneable.Clone ()
+		{
+			return this.Clone();
 		}
 
 		#endregion
@@ -313,20 +337,5 @@ namespace RI.Framework.Utilities.Text
 		}
 
 		#endregion
-
-
-		/// <inheritdoc />
-		public AlphanumComparer Clone ()
-		{
-			CultureInfo culture = (CultureInfo)this.Culture.Clone();
-			AlphanumComparer clone = new AlphanumComparer(culture, this.Options);
-			return clone;
-		}
-
-		/// <inheritdoc />
-		object ICloneable.Clone ()
-		{
-			return this.Clone();
-		}
 	}
 }

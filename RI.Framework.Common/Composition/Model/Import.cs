@@ -29,8 +29,18 @@ namespace RI.Framework.Composition.Model
 		#endregion
 
 
-		
+
+
+		#region Instance Properties/Indexer
+
 		internal object[] Instances { get; }
+
+		#endregion
+
+
+
+
+		#region Instance Methods
 
 		internal List<object> GetInstancesSnapshot ()
 		{
@@ -45,11 +55,19 @@ namespace RI.Framework.Composition.Model
 			}
 		}
 
+		#endregion
+
+
+
+
+		#region Interface: ISynchronizable
 
 		/// <inheritdoc />
 		bool ISynchronizable.IsSynchronized => true;
 
 		/// <inheritdoc />
 		public object SyncRoot { get; }
+
+		#endregion
 	}
 }

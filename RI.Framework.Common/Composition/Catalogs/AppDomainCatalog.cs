@@ -23,12 +23,6 @@ namespace RI.Framework.Composition.Catalogs
 	/// <threadsafety static="true" instance="true" />
 	public sealed class AppDomainCatalog : CompositionCatalog
 	{
-		private bool _autoUpdate;
-		private bool _exportAllTypes;
-
-
-
-
 		#region Instance Constructor/Destructor
 
 		/// <summary>
@@ -58,6 +52,16 @@ namespace RI.Framework.Composition.Catalogs
 
 			AppDomain.CurrentDomain.AssemblyLoad += this.AssemblyLoadEventHandler;
 		}
+
+		#endregion
+
+
+
+
+		#region Instance Fields
+
+		private bool _autoUpdate;
+		private bool _exportAllTypes;
 
 		#endregion
 
@@ -105,9 +109,9 @@ namespace RI.Framework.Composition.Catalogs
 		///     <para>
 		///         If all types are exported, the exports will consist of all public, non-abstract, non-static types, even those without an <see cref="ExportAttribute" />.
 		///     </para>
-		/// <note type="note">
-		/// Already exported types will not be affected when this property is changed.
-		/// </note>
+		///     <note type="note">
+		///         Already exported types will not be affected when this property is changed.
+		///     </note>
 		/// </remarks>
 		public bool ExportAllTypes
 		{
@@ -127,17 +131,9 @@ namespace RI.Framework.Composition.Catalogs
 			}
 		}
 
-		private HashSet<Assembly> LoadedAssemblies { get; set; }
-
 		private AssemblyLoadEventHandler AssemblyLoadEventHandler { get; set; }
 
-		private void AssemblyLoadEvent (object sender, AssemblyLoadEventArgs args)
-		{
-			if (this.AutoUpdate)
-			{
-				this.Reload();
-			}
-		}
+		private HashSet<Assembly> LoadedAssemblies { get; set; }
 
 		#endregion
 
@@ -154,12 +150,28 @@ namespace RI.Framework.Composition.Catalogs
 			this.RequestRecompose();
 		}
 
+		private void AssemblyLoadEvent (object sender, AssemblyLoadEventArgs args)
+		{
+			if (this.AutoUpdate)
+			{
+				this.Reload();
+			}
+		}
+
 		#endregion
 
 
 
 
 		#region Overrides
+
+		/// <inheritdoc />
+		protected override void Dispose ()
+		{
+			AppDomain.CurrentDomain.AssemblyLoad -= this.AssemblyLoadEventHandler;
+
+			base.Dispose();
+		}
 
 		/// <inheritdoc />
 		protected internal override void UpdateItems ()
@@ -199,14 +211,6 @@ namespace RI.Framework.Composition.Catalogs
 
 				this.LoadedAssemblies.AddRange(newAssemblies);
 			}
-		}
-
-		/// <inheritdoc />
-		protected override void Dispose ()
-		{
-			AppDomain.CurrentDomain.AssemblyLoad -= this.AssemblyLoadEventHandler;
-
-			base.Dispose();
 		}
 
 		#endregion

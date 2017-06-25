@@ -36,7 +36,7 @@ namespace RI.Framework.Utilities.Threading
 		/// </summary>
 		/// <remarks>
 		///     <para>
-		///         The default value is <c>int.MaxValue / 2</c>.
+		///         The default value is <c> int.MaxValue / 2 </c>.
 		///     </para>
 		/// </remarks>
 		public const int DefaultPriorityValue = int.MaxValue / 2;
@@ -96,17 +96,15 @@ namespace RI.Framework.Utilities.Threading
 
 		#region Instance Properties/Indexer
 
-		/// <inheritdoc />
-		public object SyncRoot { get; }
+		private Stack<int> CurrentPriority { get; set; }
+		private List<TaskCompletionSource<object>> IdleSignals { get; set; }
+		private ThreadDispatcherOperation OperationInProgress { get; set; }
+		private ManualResetEvent Posted { get; set; }
 
 		private PriorityQueue<ThreadDispatcherOperation> PreRunQueue { get; set; }
-		private ThreadDispatcherOperation OperationInProgress { get; set; }
+		private PriorityQueue<ThreadDispatcherOperation> Queue { get; set; }
 
 		private Thread Thread { get; set; }
-		private PriorityQueue<ThreadDispatcherOperation> Queue { get; set; }
-		private ManualResetEvent Posted { get; set; }
-		private List<TaskCompletionSource<object>> IdleSignals { get; set; }
-		private Stack<int> CurrentPriority { get; set; }
 
 		#endregion
 
@@ -170,12 +168,6 @@ namespace RI.Framework.Utilities.Threading
 					this.Thread = null;
 				}
 			}
-		}
-
-		private void SignalIdle ()
-		{
-			this.IdleSignals?.ForEach(x => x.SetResult(null));
-			this.IdleSignals?.Clear();
 		}
 
 		private void ExecuteFrame (ThreadDispatcherOperation returnTrigger)
@@ -267,6 +259,12 @@ namespace RI.Framework.Utilities.Threading
 		private void OnException (Exception exception, bool canContinue)
 		{
 			this.Exception?.Invoke(this, new ThreadDispatcherExceptionEventArgs(exception, canContinue));
+		}
+
+		private void SignalIdle ()
+		{
+			this.IdleSignals?.ForEach(x => x.SetResult(null));
+			this.IdleSignals?.Clear();
 		}
 
 		private void VerifyNotRunning ()
@@ -386,7 +384,22 @@ namespace RI.Framework.Utilities.Threading
 		}
 
 		/// <inheritdoc />
+		public object SyncRoot { get; }
+
+		/// <inheritdoc />
 		public event EventHandler<ThreadDispatcherExceptionEventArgs> Exception;
+
+		/// <inheritdoc />
+		void IDisposable.Dispose ()
+		{
+			lock (this.SyncRoot)
+			{
+				if (this.IsRunning && (!this.IsShuttingDown))
+				{
+					this.Shutdown(false);
+				}
+			}
+		}
 
 		/// <inheritdoc />
 		public void DoProcessing ()
@@ -416,6 +429,25 @@ namespace RI.Framework.Utilities.Threading
 			}
 
 			return task;
+		}
+
+		/// <inheritdoc />
+		public int? GetCurrentPriority ()
+		{
+			lock (this.SyncRoot)
+			{
+				if (this.CurrentPriority == null)
+				{
+					return null;
+				}
+
+				if (this.CurrentPriority.Count == 0)
+				{
+					return null;
+				}
+
+				return this.CurrentPriority.Peek();
+			}
 		}
 
 		/// <inheritdoc />
@@ -581,37 +613,6 @@ namespace RI.Framework.Utilities.Threading
 
 				this.ShutdownMode = finishPendingDelegates ? ThreadDispatcherShutdownMode.FinishPending : ThreadDispatcherShutdownMode.DiscardPending;
 				this.Posted.Set();
-			}
-		}
-
-		/// <inheritdoc />
-		public int? GetCurrentPriority ()
-		{
-			lock (this.SyncRoot)
-			{
-				if (this.CurrentPriority == null)
-				{
-					return null;
-				}
-
-				if (this.CurrentPriority.Count == 0)
-				{
-					return null;
-				}
-
-				return this.CurrentPriority.Peek();
-			}
-		}
-
-		/// <inheritdoc />
-		void IDisposable.Dispose ()
-		{
-			lock (this.SyncRoot)
-			{
-				if (this.IsRunning && (!this.IsShuttingDown))
-				{
-					this.Shutdown(false);
-				}
 			}
 		}
 
