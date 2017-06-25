@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 
 using RI.Framework.Composition.Model;
+using RI.Framework.Services.Resources.Converters;
 
 
 
 
-namespace RI.Framework.Services.Resources
+namespace RI.Framework.Services.Resources.Sources
 {
 	/// <summary>
 	///     Defines the interface for a resource source used by a resource service.

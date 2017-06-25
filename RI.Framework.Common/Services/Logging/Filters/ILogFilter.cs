@@ -1,6 +1,11 @@
 ﻿using System;
 
-namespace RI.Framework.Services.Logging
+using RI.Framework.Services.Logging.Writers;
+
+
+
+
+namespace RI.Framework.Services.Logging.Filters
 {
 	/// <summary>
 	///     Defines the interface for a log filter.

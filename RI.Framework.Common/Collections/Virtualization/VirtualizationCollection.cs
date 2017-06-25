@@ -579,10 +579,7 @@ namespace RI.Framework.Collections.Virtualization
 		{
 			#region Overrides
 
-			protected override int GetKeyForItem (Page item)
-			{
-				return item.PageIndex;
-			}
+			protected override int GetKeyForItem (Page item) => item.PageIndex;
 
 			#endregion
 		}

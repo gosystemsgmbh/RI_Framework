@@ -259,6 +259,7 @@ namespace RI.Framework.Composition
 	/// TODO: Check platform differences
 	/// TODO: Update version history
 	/// TODO: Make thread-safe
+	/// TODO: Check disposing
 	[Export]
 	public sealed class CompositionContainer : IDisposable, ILogSource
 	{

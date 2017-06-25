@@ -153,6 +153,11 @@ namespace RI.Framework.Utilities.Threading
 				{
 					SynchronizationContext.SetSynchronizationContext(synchronizationContextBackup);
 
+					foreach (ThreadDispatcherOperation operation in this.Queue)
+					{
+						operation.Cancel();
+					}
+
 					this.CurrentPriority?.Clear();
 					this.IdleSignals?.Clear();
 					this.Posted?.Close();
@@ -197,10 +202,7 @@ namespace RI.Framework.Utilities.Threading
 						{
 							foreach (ThreadDispatcherOperation operationToCancel in this.Queue)
 							{
-								if (operationToCancel.State == ThreadDispatcherOperationState.Waiting)
-								{
-									operationToCancel.Cancel();
-								}
+								operationToCancel.Cancel();
 							}
 							this.Queue.Clear();
 							this.SignalIdle();

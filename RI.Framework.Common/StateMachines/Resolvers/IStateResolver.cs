@@ -1,11 +1,12 @@
 ﻿using System;
 
+using RI.Framework.StateMachines.States;
 using RI.Framework.Utilities.ObjectModel;
 
 
 
 
-namespace RI.Framework.StateMachines
+namespace RI.Framework.StateMachines.Resolvers
 {
 	/// <summary>
 	///     Defines the interface for a state instance resolver.

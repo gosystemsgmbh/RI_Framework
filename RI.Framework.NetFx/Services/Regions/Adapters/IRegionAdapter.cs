@@ -7,7 +7,7 @@ using RI.Framework.Utilities.Exceptions;
 
 
 
-namespace RI.Framework.Services.Regions
+namespace RI.Framework.Services.Regions.Adapters
 {
 	/// <summary>
 	///     Defines the interface for a region adapter.

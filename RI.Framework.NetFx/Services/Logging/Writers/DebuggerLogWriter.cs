@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Text;
 
 using RI.Framework.Composition.Model;
+using RI.Framework.Services.Logging.Filters;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.ObjectModel;
 

@@ -245,6 +245,7 @@ Services
 
  # (.NET) Messaging: ThreadDispatcherMessageDispatcher
  # (.NET) Messaging: DefaultMessageDispatcher
+ - (.NET) Messaging: Use shared string comparers for Triger message handler
  
  # (.NET) Bus
 

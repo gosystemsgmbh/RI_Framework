@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using RI.Framework.StateMachines.States;
 using RI.Framework.Utilities.ObjectModel;
 
 
 
 
-namespace RI.Framework.StateMachines
+namespace RI.Framework.StateMachines.Caches
 {
 	/// <summary>
 	///     Defines the interface for a state instance cache.

@@ -5,6 +5,8 @@ using RI.Framework.Collections;
 using RI.Framework.Composition;
 using RI.Framework.Composition.Model;
 using RI.Framework.Services.Logging;
+using RI.Framework.Services.Settings.Converters;
+using RI.Framework.Services.Settings.Storages;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 

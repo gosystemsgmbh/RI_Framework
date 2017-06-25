@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 
 using RI.Framework.Composition.Model;
+using RI.Framework.Services.Logging.Filters;
+using RI.Framework.Services.Logging.Writers;
 
 
 

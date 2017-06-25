@@ -25,7 +25,7 @@ namespace RI.Framework.Services.Dispatcher
 	///     </para>
 	/// </remarks>
 	/// TODO: Correct locking
-	/// TOO: Make thread-safe
+	/// TODO: Make thread-safe
 	[Export]
 	public sealed class DispatcherService : IDispatcherService
 	{
@@ -36,7 +36,8 @@ namespace RI.Framework.Services.Dispatcher
 		/// </summary>
 		public DispatcherService ()
 		{
-			this._syncRoot = new object();
+			this.SyncRoot = new object();
+
 			this._backgroundInvoker = this.BackgroundInvoke;
 
 			this._nowTicks = DateTime.UtcNow.Ticks;
@@ -72,8 +73,6 @@ namespace RI.Framework.Services.Dispatcher
 		private long _nowTicks;
 
 		private readonly List<LinkedList<DispatcherOperation>> _pendingOperations;
-
-		private object _syncRoot;
 
 		#endregion
 
@@ -113,7 +112,7 @@ namespace RI.Framework.Services.Dispatcher
 				dispatcherBroadcast.Operation = operation;
 			}
 
-			lock (this._syncRoot)
+			lock (this.SyncRoot)
 			{
 				if (operation.Priority == DispatcherPriority.Now)
 				{
@@ -326,7 +325,7 @@ namespace RI.Framework.Services.Dispatcher
 		/// <inheritdoc />
 		public void CancelAllOperations ()
 		{
-			lock (this._syncRoot)
+			lock (this.SyncRoot)
 			{
 				foreach (LinkedList<DispatcherOperation> priority in this._pendingOperations)
 				{
@@ -572,7 +571,7 @@ namespace RI.Framework.Services.Dispatcher
 		bool ISynchronizable.IsSynchronized => true;
 
 		/// <inheritdoc />
-		object ISynchronizable.SyncRoot => this._syncRoot;
+		public object SyncRoot { get; }
 
 		#endregion
 
@@ -966,6 +965,11 @@ namespace RI.Framework.Services.Dispatcher
 
 		private sealed class DispatcherOperation : IDispatcherOperation
 		{
+			public DispatcherOperation ()
+			{
+				this.SyncRoot = new object();
+			}
+
 			#region Instance Fields
 
 			public object Broadcast;
@@ -1062,7 +1066,7 @@ namespace RI.Framework.Services.Dispatcher
 
 
 
-			public bool IsSynchronized { get; }
+			bool ISynchronizable.IsSynchronized => true;
 
 			public object SyncRoot { get; }
 		}

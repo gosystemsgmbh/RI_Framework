@@ -291,10 +291,7 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 
 			#region Overrides
 
-			protected override string GetKeyForItem (Trigger item)
-			{
-				return item?.Name;
-			}
+			protected override string GetKeyForItem (Trigger item) => item?.Name;
 
 			#endregion
 		}

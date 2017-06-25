@@ -677,10 +677,7 @@ namespace RI.Framework.Data.EF
 		{
 			#region Overrides
 
-			protected override Type GetKeyForItem (IEntityFilter item)
-			{
-				return item.EntityType;
-			}
+			protected override Type GetKeyForItem (IEntityFilter item) => item.EntityType;
 
 			#endregion
 		}
@@ -696,10 +693,7 @@ namespace RI.Framework.Data.EF
 		{
 			#region Overrides
 
-			protected override Type GetKeyForItem (RepositoryDbSet item)
-			{
-				return item.EntityType;
-			}
+			protected override Type GetKeyForItem (RepositoryDbSet item) => item.EntityType;
 
 			#endregion
 		}
@@ -715,10 +709,7 @@ namespace RI.Framework.Data.EF
 		{
 			#region Overrides
 
-			protected override Type GetKeyForItem (IEntityValidation item)
-			{
-				return item.EntityType;
-			}
+			protected override Type GetKeyForItem (IEntityValidation item) => item.EntityType;
 
 			#endregion
 		}

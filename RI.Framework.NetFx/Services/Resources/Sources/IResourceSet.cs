@@ -7,7 +7,7 @@ using RI.Framework.Utilities.Exceptions;
 
 
 
-namespace RI.Framework.Services.Resources
+namespace RI.Framework.Services.Resources.Sources
 {
 	/// <summary>
 	///     Defines the interface for a resource set.

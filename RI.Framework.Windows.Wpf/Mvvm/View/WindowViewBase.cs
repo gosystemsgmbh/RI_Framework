@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows;
 
+using RI.Framework.Services.Logging;
+
 
 
 
@@ -9,7 +11,7 @@ namespace RI.Framework.Mvvm.View
 	/// <summary>
 	///     Implements a base class for Window-based views
 	/// </summary>
-	public class WindowViewBase : Window, IView
+	public class WindowViewBase : Window, IView, ILogSource
 	{
 		#region Instance Properties/Indexer
 

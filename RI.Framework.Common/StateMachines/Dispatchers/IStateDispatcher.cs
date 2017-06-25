@@ -5,7 +5,7 @@ using RI.Framework.Utilities.ObjectModel;
 
 
 
-namespace RI.Framework.StateMachines
+namespace RI.Framework.StateMachines.Dispatchers
 {
 	/// <summary>
 	///     Defines the interface for a state machine operation dispatcher.

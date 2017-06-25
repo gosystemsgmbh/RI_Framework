@@ -109,12 +109,12 @@ namespace RI.Framework.Services.Messaging.Dispatchers
 		#endregion
 
 
-
+		private object SyncRoot { get; set; }
 
 		/// <inheritdoc />
 		bool ISynchronizable.IsSynchronized => true;
 
 		/// <inheritdoc />
-		public object SyncRoot { get; }
+		object ISynchronizable.SyncRoot => this.SyncRoot;
 	}
 }

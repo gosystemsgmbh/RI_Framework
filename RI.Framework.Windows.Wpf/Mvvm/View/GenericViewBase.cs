@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows.Controls;
 
+using RI.Framework.Services.Logging;
+
 
 
 
@@ -9,7 +11,7 @@ namespace RI.Framework.Mvvm.View
 	/// <summary>
 	///     Implements a base class for generic views which are hosted inside another WPF element.
 	/// </summary>
-	public class GenericViewBase : UserControl, IView
+	public class GenericViewBase : UserControl, IView, ILogSource
 	{
 		#region Instance Properties/Indexer
 

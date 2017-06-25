@@ -1,12 +1,13 @@
 ﻿using System;
 
 using RI.Framework.Composition.Model;
+using RI.Framework.Services.Resources.Sources;
 using RI.Framework.Utilities.Exceptions;
 
 
 
 
-namespace RI.Framework.Services.Resources
+namespace RI.Framework.Services.Resources.Converters
 {
 	/// <summary>
 	///     Defines the interface for a resource converter used by a resource service.

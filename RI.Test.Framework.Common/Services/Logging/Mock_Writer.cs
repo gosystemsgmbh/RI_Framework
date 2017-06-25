@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 using RI.Framework.Collections;
 using RI.Framework.Services.Logging;
+using RI.Framework.Services.Logging.Filters;
+using RI.Framework.Services.Logging.Writers;
 using RI.Test.Framework.Mocks;
 
 

@@ -1,6 +1,7 @@
 ﻿using System;
 
 using RI.Framework.Composition.Model;
+using RI.Framework.Services.Messaging.Dispatchers;
 
 
 

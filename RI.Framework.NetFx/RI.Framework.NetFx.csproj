@@ -108,7 +108,7 @@
     <Compile Include="Services\Messaging\Handlers\Triggers\_NamespaceDoc.cs" />
     <Compile Include="Services\Messaging\Handlers\_NamespaceDoc.cs" />
     <Compile Include="Services\Messaging\IMessage.cs" />
-    <Compile Include="Services\Messaging\IMessageDispatcher.cs" />
+    <Compile Include="Services\Messaging\Dispatchers\IMessageDispatcher.cs" />
     <Compile Include="Services\Messaging\IMessageExtensions.cs" />
     <Compile Include="Services\Messaging\IMessageReceiver.cs" />
     <Compile Include="Services\Messaging\IMessageService.cs" />
@@ -116,7 +116,7 @@
     <Compile Include="Services\Messaging\MessageService.cs" />
     <Compile Include="Services\Messaging\_NamespaceDoc.cs" />
     <Compile Include="Services\Regions\Adapters\_NamespaceDoc.cs" />
-    <Compile Include="Services\Regions\IRegionAdapter.cs" />
+    <Compile Include="Services\Regions\Adapters\IRegionAdapter.cs" />
     <Compile Include="Services\Regions\IRegionElement.cs" />
     <Compile Include="Services\Regions\IRegionService.cs" />
     <Compile Include="Services\Regions\Adapters\RegionAdapterBase.cs" />
@@ -126,11 +126,11 @@
     <Compile Include="Services\Regions\RegionService.cs" />
     <Compile Include="Services\Regions\_NamespaceDoc.cs" />
     <Compile Include="Services\Resources\Converters\_NamespaceDoc.cs" />
-    <Compile Include="Services\Resources\IResourceConverter.cs" />
+    <Compile Include="Services\Resources\Converters\IResourceConverter.cs" />
     <Compile Include="Services\Resources\ResourceLoadingType.cs" />
     <Compile Include="Services\Resources\IResourceService.cs" />
-    <Compile Include="Services\Resources\IResourceSet.cs" />
-    <Compile Include="Services\Resources\IResourceSource.cs" />
+    <Compile Include="Services\Resources\Sources\IResourceSet.cs" />
+    <Compile Include="Services\Resources\Sources\IResourceSource.cs" />
     <Compile Include="Services\Resources\Converters\DefaultResourceConverter.cs" />
     <Compile Include="Services\Resources\ResourceLoadingInfo.cs" />
     <Compile Include="Services\Resources\ResourceLocator.cs" />
@@ -145,9 +145,9 @@
     <Compile Include="Services\Settings\Storages\CommandLineSettingStorage.cs" />
     <Compile Include="Services\Settings\Storages\EnvironmentVariableSettingStorage.cs" />
     <Compile Include="Services\Settings\Storages\IniFileSettingStorage.cs" />
-    <Compile Include="Services\Settings\ISettingConverter.cs" />
+    <Compile Include="Services\Settings\Converters\ISettingConverter.cs" />
     <Compile Include="Services\Settings\ISettingService.cs" />
-    <Compile Include="Services\Settings\ISettingStorage.cs" />
+    <Compile Include="Services\Settings\Storages\ISettingStorage.cs" />
     <Compile Include="Services\Settings\Converters\DefaultSettingConverter.cs" />
     <Compile Include="Services\Settings\SettingService.cs" />
     <Compile Include="Services\Settings\Storages\_NamespaceDoc.cs" />

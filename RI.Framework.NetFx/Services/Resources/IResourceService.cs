@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 
 using RI.Framework.Composition.Model;
+using RI.Framework.Services.Resources.Converters;
+using RI.Framework.Services.Resources.Sources;
 using RI.Framework.Utilities.Exceptions;
 
 

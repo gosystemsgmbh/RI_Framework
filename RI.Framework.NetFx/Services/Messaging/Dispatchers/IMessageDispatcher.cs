@@ -7,7 +7,7 @@ using RI.Framework.Utilities.ObjectModel;
 
 
 
-namespace RI.Framework.Services.Messaging
+namespace RI.Framework.Services.Messaging.Dispatchers
 {
 	/// <summary>
 	///     Defines the interface for a message dispatcher.

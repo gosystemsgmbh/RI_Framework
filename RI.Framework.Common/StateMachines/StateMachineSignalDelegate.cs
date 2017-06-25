@@ -1,4 +1,9 @@
-﻿namespace RI.Framework.StateMachines
+﻿using RI.Framework.StateMachines.Dispatchers;
+
+
+
+
+namespace RI.Framework.StateMachines
 {
 	/// <summary>
 	///     The execution callback which is handed to <see cref="IStateDispatcher" />.<see cref="IStateDispatcher.DispatchSignal" />.

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using RI.Framework.Services.Resources.Sources;
 using RI.Framework.Utilities;
 
 

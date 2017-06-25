@@ -6,7 +6,7 @@ using RI.Framework.Utilities.Exceptions;
 
 
 
-namespace RI.Framework.Services.Settings
+namespace RI.Framework.Services.Settings.Storages
 {
 	/// <summary>
 	///     Defines the interface for a setting storage used by a setting service.

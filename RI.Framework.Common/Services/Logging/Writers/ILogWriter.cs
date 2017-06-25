@@ -1,12 +1,13 @@
 ﻿using System;
 
 using RI.Framework.Composition.Model;
+using RI.Framework.Services.Logging.Filters;
 using RI.Framework.Utilities.ObjectModel;
 
 
 
 
-namespace RI.Framework.Services.Logging
+namespace RI.Framework.Services.Logging.Writers
 {
 	/// <summary>
 	///     Defines the interface for a log writer.

@@ -111,7 +111,7 @@ namespace RI.Framework.IO.Files
 					}
 					catch
 					{
-						//This means that we have no access to the file or it is still in use.
+						//This means that we have no access to the file or it is still in use
 					}
 				}
 				return deletedFiles;
@@ -273,9 +273,9 @@ namespace RI.Framework.IO.Files
 			{
 				return this.File.Delete();
 			}
-			catch (IOException)
+			catch
 			{
-				//IOException most likely means that the file is still in use.
+				//This means that we have no access to the file or it is still in use
 				return false;
 			}
 		}

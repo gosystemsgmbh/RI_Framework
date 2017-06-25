@@ -72,13 +72,28 @@ namespace RI.Framework.Services
 		}
 
 		/// <summary>
-		///     Dispatches a bootstrapper-specific operation for execution after bootstrapping completed.
+		///     Used to dispatch <see cref="Bootstrapper.StopOperations" /> for execution before shutdown starts.
 		/// </summary>
 		/// <param name="action"> The delegate to execute. </param>
 		/// <param name="args"> The optional arguments for the delegate. </param>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation posts the delegate to the application objects dispatcher.
+		///         The default implementation executes the delegate with the applications dispatcher.
+		///     </note>
+		/// </remarks>
+		protected override void DispatchStopOperations (Delegate action, params object[] args)
+		{
+			this.Application.Dispatcher.BeginInvoke(DispatcherPriority.SystemIdle, new Action<Delegate, List<object>>((x, y) => x.DynamicInvoke(y.ToArray())), action, args.ToList());
+		}
+
+		/// <summary>
+		///     Used to dispatch <see cref="Bootstrapper.BeginOperations" /> for execution after bootstrapping completed.
+		/// </summary>
+		/// <param name="action"> The delegate to execute. </param>
+		/// <param name="args"> The optional arguments for the delegate. </param>
+		/// <remarks>
+		///     <note type="implement">
+		///         The default implementation executes the delegate with the applications dispatcher.
 		///     </note>
 		/// </remarks>
 		protected override void DispatchBeginOperations (Delegate action, params object[] args)
@@ -87,13 +102,13 @@ namespace RI.Framework.Services
 		}
 
 		/// <summary>
-		///     Dispatches a bootstrapper-specific operation for execution after bootstrapping completed.
+		///     Used to dispatch module initialization.
 		/// </summary>
 		/// <param name="action"> The delegate to execute. </param>
 		/// <param name="args"> The optional arguments for the delegate. </param>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation posts the delegate to the application objects dispatcher.
+		///         The default implementation executes the delegate with the applications dispatcher.
 		///     </note>
 		/// </remarks>
 		protected override void DispatchModuleInitialization (Delegate action, params object[] args)

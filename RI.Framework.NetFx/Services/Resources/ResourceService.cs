@@ -7,6 +7,8 @@ using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Composition;
 using RI.Framework.Composition.Model;
 using RI.Framework.Services.Logging;
+using RI.Framework.Services.Resources.Converters;
+using RI.Framework.Services.Resources.Sources;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 

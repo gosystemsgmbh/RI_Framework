@@ -6,7 +6,7 @@ using RI.Framework.Utilities.Exceptions;
 
 
 
-namespace RI.Framework.Services.Settings
+namespace RI.Framework.Services.Settings.Converters
 {
 	/// <summary>
 	///     Defines the interface for a setting converter used by a setting service.
