@@ -616,6 +616,16 @@ namespace RI.Framework.Utilities.Threading
 			}
 		}
 
+		/// <inheritdoc />
+		public Task ShutdownAsync (bool finishPendingDelegates)
+		{
+			lock (this.SyncRoot)
+			{
+				this.Shutdown(finishPendingDelegates);
+				return this.DoProcessingAsync();
+			}
+		}
+
 		#endregion
 	}
 }

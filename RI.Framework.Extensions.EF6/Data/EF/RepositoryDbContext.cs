@@ -160,8 +160,10 @@ namespace RI.Framework.Data.EF
 			this.EnableDatabaseLogging = true;
 			this.FixOnValidateEnabled = true;
 			this.FixOnSaveEnabled = true;
+
 			this.EntitySelfErrorTrackingEnabled = true;
 			this.EntitySelfChangeTrackingEnabled = true;
+			this.ChangeTrackingContext = null;
 
 			this.Sets = new SetCollection();
 
@@ -343,6 +345,22 @@ namespace RI.Framework.Data.EF
 
 
 		#region Virtuals
+
+		/// <summary>
+		///     Called before changes are saved to the database.
+		/// </summary>
+		protected virtual void BeforeSave ()
+		{
+			if (this.FixOnSaveEnabled)
+			{
+				this.FixEntities();
+			}
+
+			if (this.EntitySelfChangeTrackingEnabled)
+			{
+				this.PerformEntitySelfChangeTracking();
+			}
+		}
 
 		/// <summary>
 		///     Called when a <see cref="RepositoryDbSet{T}" /> is required which does not yet exist.
@@ -530,15 +548,7 @@ namespace RI.Framework.Data.EF
 		/// <inheritdoc />
 		public override int SaveChanges ()
 		{
-			if (this.FixOnSaveEnabled)
-			{
-				this.FixEntities();
-			}
-
-			if (this.EntitySelfChangeTrackingEnabled)
-			{
-				this.PerformEntitySelfChangeTracking();
-			}
+			this.BeforeSave();
 
 			return base.SaveChanges();
 		}
@@ -546,15 +556,7 @@ namespace RI.Framework.Data.EF
 		/// <inheritdoc />
 		public override Task<int> SaveChangesAsync (CancellationToken cancellationToken)
 		{
-			if (this.FixOnSaveEnabled)
-			{
-				this.FixEntities();
-			}
-
-			if (this.EntitySelfChangeTrackingEnabled)
-			{
-				this.PerformEntitySelfChangeTracking();
-			}
+			this.BeforeSave();
 
 			return base.SaveChangesAsync(cancellationToken);
 		}
@@ -581,9 +583,11 @@ namespace RI.Framework.Data.EF
 		{
 			base.Dispose(disposing);
 
+			this.Database.Log = null;
+
 			this.Sets.Clear();
 
-			this.Database.Log = null;
+			this.ChangeTrackingContext = null;
 		}
 
 		/// <inheritdoc />

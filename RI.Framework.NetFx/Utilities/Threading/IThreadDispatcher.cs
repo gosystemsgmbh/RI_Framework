@@ -250,5 +250,12 @@ namespace RI.Framework.Utilities.Threading
 		/// <param name="finishPendingDelegates"> Specifies whether already pending delegates should be processed before the dispatcher is shut down. </param>
 		/// <exception cref="InvalidOperationException"> The dispatcher is not running or it is already being shut down. </exception>
 		void Shutdown (bool finishPendingDelegates);
+
+		/// <summary>
+		///     Stops processing the delegate queue and waits for its shutdown
+		/// </summary>
+		/// <param name="finishPendingDelegates"> Specifies whether already pending delegates should be processed before the dispatcher is shut down. </param>
+		/// <exception cref="InvalidOperationException"> The dispatcher is not running or it is already being shut down. </exception>
+		Task ShutdownAsync (bool finishPendingDelegates);
 	}
 }

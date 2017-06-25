@@ -609,9 +609,18 @@ namespace RI.Framework.Utilities.Threading
 		}
 
 		/// <inheritdoc />
-		void IThreadDispatcher.Shutdown (bool finishPendingDelegates)
+		public void Shutdown (bool finishPendingDelegates)
 		{
 			this.Stop(finishPendingDelegates);
+		}
+
+		/// <inheritdoc />
+		public Task ShutdownAsync (bool finishPendingDelegates)
+		{
+			lock (this.SyncRoot)
+			{
+				return Task.Factory.StartNew(() => this.Shutdown(finishPendingDelegates));
+			}
 		}
 
 		#endregion

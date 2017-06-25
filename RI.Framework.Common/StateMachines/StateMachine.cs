@@ -381,6 +381,11 @@ namespace RI.Framework.StateMachines
 		/// </summary>
 		public event EventHandler<StateMachineTransientEventArgs> TransitionAborted;
 
+		/// <summary>
+		///     Raised when an update was aborted because the current state did not match the state the update was intented for.
+		/// </summary>
+		public event EventHandler<StateMachineUpdateEventArgs> UpdateAborted;
+
 		#endregion
 
 
@@ -461,8 +466,8 @@ namespace RI.Framework.StateMachines
 			lock (this.SyncRoot)
 			{
 				StateUpdateInfo updateInfo = new StateUpdateInfo(this);
-				//TODO: add and check current state at time of dispatch
 				//TODO: use state entered time from state/statemachine
+				updateInfo.UpdateState = this.State;
 				updateInfo.UpdateDelay = delay;
 				updateInfo.StateEnteredUtc = this.StateEnterTimestampUtc;
 				updateInfo.StateEnteredLocal = this.StateEnterTimestampLocal;
@@ -650,6 +655,36 @@ namespace RI.Framework.StateMachines
 		/// <param name="updateInfo"> The update to execute. </param>
 		protected virtual void ExecuteUpdate (StateUpdateInfo updateInfo)
 		{
+			IState updateState = updateInfo.UpdateState;
+
+			bool loggingEnabled;
+
+			lock (this.Configuration.SyncRoot)
+			{
+				loggingEnabled = this.Configuration.LoggingEnabled;
+			}
+
+			bool aborted = false;
+
+			lock (this.SyncRoot)
+			{
+				if (!object.ReferenceEquals(this.State, updateState))
+				{
+					if (loggingEnabled)
+					{
+						this.Log(LogLevel.Debug, "Update aborted: {0} ", updateInfo.UpdateState?.GetType().Name ?? "[null]");
+					}
+
+					aborted = true;
+				}
+			}
+
+			if (aborted)
+			{
+				this.OnUpdateAborted(updateInfo);
+				return;
+			}
+
 			this.OnBeforeUpdate(updateInfo);
 
 			lock (this.SyncRoot)
@@ -745,6 +780,15 @@ namespace RI.Framework.StateMachines
 		protected virtual void OnTransitionAborted (StateTransientInfo transientInfo)
 		{
 			this.TransitionAborted?.Invoke(this, new StateMachineTransientEventArgs(transientInfo));
+		}
+
+		/// <summary>
+		///     Raises <see cref="UpdateAborted" />.
+		/// </summary>
+		/// <param name="updateInfo"> The aborted update. </param>
+		protected virtual void OnUpdateAborted (StateUpdateInfo updateInfo)
+		{
+			this.UpdateAborted?.Invoke(this, new StateMachineUpdateEventArgs(updateInfo));
 		}
 
 		/// <summary>

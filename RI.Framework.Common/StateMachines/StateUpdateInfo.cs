@@ -1,5 +1,7 @@
 ﻿using System;
 
+using RI.Framework.StateMachines.States;
+
 
 
 
@@ -61,6 +63,14 @@ namespace RI.Framework.StateMachines
 		///     Zero if the update is to be executed immediately.
 		/// </value>
 		public int UpdateDelay { get; internal set; }
+
+		/// <summary>
+		///     Gets the state for which this update is intented.
+		/// </summary>
+		/// <value>
+		///     The state for which this update is intented.
+		/// </value>
+		public IState UpdateState { get; internal set; }
 
 		#endregion
 	}

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -65,7 +66,7 @@ namespace RI.Framework.Services.Logging.Readers
 		/// <value>
 		///     The encoding to read the log file.
 		/// </value>
-		public Encoding Encoding { get; private set; }
+		public Encoding Encoding { get; }
 
 		#endregion
 
@@ -145,7 +146,7 @@ namespace RI.Framework.Services.Logging.Readers
 			}
 
 			HashSet<FilePath> files = this.GetLogFilesFromDirectory(logDirectory, fileNamePath);
-			LogFileToDbConverterResults results = this.ConvertFiles(files, dbFile);
+			LogFileToDbConverterResults results = this.ConvertFilesInternal(files, dbFile);
 			return results;
 		}
 
@@ -264,7 +265,7 @@ namespace RI.Framework.Services.Logging.Readers
 				throw new InvalidPathArgumentException(nameof(dbFile), "Wildcards are not allowed.");
 			}
 
-			LogFileToDbConverterResults results = this.ConvertFiles(new[] {logFile}, dbFile);
+			LogFileToDbConverterResults results = this.ConvertFilesInternal(new[] {logFile}, dbFile);
 			return results;
 		}
 
@@ -313,7 +314,114 @@ namespace RI.Framework.Services.Logging.Readers
 			}, new Tuple<FilePath, FilePath>(logFile, dbFile), TaskCreationOptions.LongRunning);
 		}
 
-		private LogFileToDbConverterResults ConvertFiles (IEnumerable<FilePath> files, FilePath dbFile)
+		/// <summary>
+		///     Converts one or more log files and adds them to a log database.
+		/// </summary>
+		/// <param name="logFiles"> The log files. </param>
+		/// <param name="dbFile"> The log database. </param>
+		/// <returns>
+		///     The conversion results.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         <paramref name="logFiles" /> is enumerated only once.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="logFiles" /> or <paramref name="dbFile" /> is null. </exception>
+		/// <exception cref="InvalidPathArgumentException"> <paramref name="logFiles" /> or <paramref name="dbFile" /> contains wildcards. </exception>
+		/// <exception cref="FileNotFoundException"> At least one log file as specified by <paramref name="logFiles" /> does not exist. </exception>
+		public LogFileToDbConverterResults ConvertFiles (IEnumerable<FilePath> logFiles, FilePath dbFile)
+		{
+			if (logFiles == null)
+			{
+				throw new ArgumentNullException(nameof(logFiles));
+			}
+
+			List<FilePath> logFileList = logFiles.ToList();
+
+			foreach (FilePath logFile in logFileList)
+			{
+				if (logFile.HasWildcards)
+				{
+					throw new InvalidPathArgumentException(nameof(logFiles), "Wildcards are not allowed.");
+				}
+
+				if (!logFile.Exists)
+				{
+					throw new FileNotFoundException("The log file does not exist: " + logFile + ".", logFile);
+				}
+			}
+
+			if (dbFile == null)
+			{
+				throw new ArgumentNullException(nameof(dbFile));
+			}
+
+			if (dbFile.HasWildcards)
+			{
+				throw new InvalidPathArgumentException(nameof(dbFile), "Wildcards are not allowed.");
+			}
+
+			LogFileToDbConverterResults results = this.ConvertFilesInternal(logFileList, dbFile);
+			return results;
+		}
+
+		/// <summary>
+		///     Converts one or more log files and adds them to a log database.
+		/// </summary>
+		/// <param name="logFiles"> The log files. </param>
+		/// <param name="dbFile"> The log database. </param>
+		/// <returns>
+		///     The conversion results.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         <paramref name="logFiles" /> is enumerated only once.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="logFiles" /> or <paramref name="dbFile" /> is null. </exception>
+		/// <exception cref="InvalidPathArgumentException"> <paramref name="logFiles" /> or <paramref name="dbFile" /> contains wildcards. </exception>
+		/// <exception cref="FileNotFoundException"> At least one log file as specified by <paramref name="logFiles" /> does not exist. </exception>
+		public Task<LogFileToDbConverterResults> ConvertFilesAsync (IEnumerable<FilePath> logFiles, FilePath dbFile)
+		{
+			if (logFiles == null)
+			{
+				throw new ArgumentNullException(nameof(logFiles));
+			}
+
+			List<FilePath> logFileList = logFiles.ToList();
+
+			foreach (FilePath logFile in logFileList)
+			{
+				if (logFile.HasWildcards)
+				{
+					throw new InvalidPathArgumentException(nameof(logFiles), "Wildcards are not allowed.");
+				}
+
+				if (!logFile.Exists)
+				{
+					throw new FileNotFoundException("The log file does not exist: " + logFile + ".", logFile);
+				}
+			}
+
+			if (dbFile == null)
+			{
+				throw new ArgumentNullException(nameof(dbFile));
+			}
+
+			if (dbFile.HasWildcards)
+			{
+				throw new InvalidPathArgumentException(nameof(dbFile), "Wildcards are not allowed.");
+			}
+
+			return Task<LogFileToDbConverterResults>.Factory.StartNew(x =>
+			{
+				Tuple<IEnumerable<FilePath>, FilePath> state = (Tuple<IEnumerable<FilePath>, FilePath>)x;
+				return this.ConvertFiles(state.Item1, state.Item2);
+			}, new Tuple<IEnumerable<FilePath>, FilePath>(logFileList, dbFile), TaskCreationOptions.LongRunning);
+		}
+
+		private LogFileToDbConverterResults ConvertFilesInternal (IEnumerable<FilePath> files, FilePath dbFile)
 		{
 			SQLiteConnectionStringBuilder builder = new SQLiteConnectionStringBuilder();
 			builder.DataSource = dbFile.PathResolved;
