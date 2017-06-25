@@ -23,6 +23,7 @@ namespace RI.Framework.StateMachines
 	///         See the respective properties for their default values.
 	///     </para>
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	public abstract class StateMachineConfiguration : ISynchronizable, ICloneable<StateMachineConfiguration>, ICloneable
 	{
 		#region Instance Constructor/Destructor
@@ -308,7 +309,7 @@ namespace RI.Framework.StateMachines
 		bool ISynchronizable.IsSynchronized => true;
 
 		/// <inheritdoc />
-		public object SyncRoot { get; private set; }
+		public object SyncRoot { get; }
 
 		#endregion
 	}
@@ -339,6 +340,7 @@ namespace RI.Framework.StateMachines
 			clone.Dispatcher = (this.Dispatcher as ICloneable<IStateDispatcher>)?.Clone() ?? this.Dispatcher;
 			clone.Resolver = (this.Resolver as ICloneable<IStateResolver>)?.Clone() ?? this.Resolver;
 			clone.Cache = (this.Cache as ICloneable<IStateCache>)?.Clone() ?? this.Cache;
+
 			clone.EnableAutomaticCaching = this.EnableAutomaticCaching;
 			clone.LoggingEnabled = this.LoggingEnabled;
 		}
@@ -365,9 +367,12 @@ namespace RI.Framework.StateMachines
 		/// <inheritdoc />
 		public T Clone ()
 		{
-			T clone = new T();
-			this.Clone(clone);
-			return clone;
+			lock (this.SyncRoot)
+			{
+				T clone = new T();
+				this.Clone(clone);
+				return clone;
+			}
 		}
 
 		#endregion

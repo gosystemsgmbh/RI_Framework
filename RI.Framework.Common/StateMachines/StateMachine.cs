@@ -82,6 +82,7 @@ namespace RI.Framework.StateMachines
 	///         This guarantees, for example, that all state code executed in <see cref="IState.Signal" />, <see cref="IState.Enter" /> or <see cref="IState.Leave" /> is executed under the same current state, even if the state issues a signal or a transient.
 	///     </para>
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	/// <example>
 	///     <code language="cs">
 	///  <![CDATA[
@@ -424,10 +425,11 @@ namespace RI.Framework.StateMachines
 		/// <param name="state"> The type of state to transition to. </param>
 		public void Transient (Type state)
 		{
+			IState nextState = this.Resolve(state, true);
+
 			lock (this.SyncRoot)
 			{
 				IState previousState = this.State;
-				IState nextState = this.Resolve(state, true);
 
 				StateTransientInfo transientInfo = new StateTransientInfo(this);
 				transientInfo.NextState = nextState;
@@ -447,14 +449,16 @@ namespace RI.Framework.StateMachines
 
 		private void UpdateInternal (int delay)
 		{
+			if (delay < 0)
+			{
+				delay = 0;
+			}
+
 			lock (this.SyncRoot)
 			{
-				if (delay < 0)
-				{
-					delay = 0;
-				}
-
 				StateUpdateInfo updateInfo = new StateUpdateInfo(this);
+				//TODO: add and check current state at time of dispatch
+				//TODO: use state entered time from state/statemachine
 				updateInfo.UpdateDelay = delay;
 				updateInfo.StateEnteredUtc = this.StateEnterTimestampUtc;
 				updateInfo.StateEnteredLocal = this.StateEnterTimestampLocal;
@@ -534,11 +538,16 @@ namespace RI.Framework.StateMachines
 				{
 					this.Log(LogLevel.Debug, "Executing signal: {0}", signalInfo.Signal?.ToString() ?? "[null]");
 				}
-
-				this.OnBeforeSignal(signalInfo);
-				this.State?.Signal(signalInfo);
-				this.OnAfterSignal(signalInfo);
 			}
+
+			this.OnBeforeSignal(signalInfo);
+
+			lock (this.SyncRoot)
+			{
+				this.State?.Signal(signalInfo);
+			}
+
+			this.OnAfterSignal(signalInfo);
 		}
 
 		/// <summary>
@@ -547,52 +556,80 @@ namespace RI.Framework.StateMachines
 		/// <param name="transientInfo"> The transition to execute. </param>
 		protected virtual void ExecuteTransient (StateTransientInfo transientInfo)
 		{
+			IState previousState = transientInfo.PreviousState;
+			IState nextState = transientInfo.NextState;
+
+			bool loggingEnabled = false;
+			bool cacheEnabled = false;
+			IStateCache cache = null;
+
+			lock (this.Configuration.SyncRoot)
+			{
+				loggingEnabled = this.Configuration.LoggingEnabled;
+				cacheEnabled = this.Configuration.EnableAutomaticCaching;
+				cache = this.Configuration.Cache;
+			}
+
+			bool aborted = false;
+
 			lock (this.SyncRoot)
 			{
-				if (this.Configuration.LoggingEnabled)
+				if (loggingEnabled)
 				{
 					this.Log(LogLevel.Debug, "Executing transient: {0} -> {1}", transientInfo.PreviousState?.GetType().Name ?? "[null]", transientInfo.NextState?.GetType().Name ?? "[null]");
 				}
 
-				IState previousState = transientInfo.PreviousState;
-				IState nextState = transientInfo.NextState;
-
 				if (!object.ReferenceEquals(this.State, previousState))
 				{
-					if (this.Configuration.LoggingEnabled)
+					if (loggingEnabled)
 					{
 						this.Log(LogLevel.Debug, "Transient aborted: {0} -> {1}", transientInfo.PreviousState?.GetType().Name ?? "[null]", transientInfo.NextState?.GetType().Name ?? "[null]");
 					}
 
-					this.OnTransitionAborted(transientInfo);
-
-					return;
+					aborted = true;
 				}
+			}
 
+			if (aborted)
+			{
+				this.OnTransitionAborted(transientInfo);
+				return;
+			}
+
+			lock (this.SyncRoot)
+			{
 				if (!((nextState?.IsInitialized).GetValueOrDefault(true)))
 				{
 					nextState?.Initialize(this);
 				}
 
-				this.OnBeforeLeave(transientInfo);
-				this.State?.Leave(transientInfo);
-				this.OnAfterLeave(transientInfo);
+				if (nextState != null)
+				{
+					if (nextState.UseCaching && cacheEnabled)
+					{
+						cache.AddState(nextState);
+					}
+				}
+			}
 
+			this.OnBeforeLeave(transientInfo);
+			lock (this.SyncRoot)
+			{
+				previousState?.Leave(transientInfo);
+			}
+			this.OnAfterLeave(transientInfo);
+
+			lock (this.SyncRoot)
+			{
 				this.State = nextState;
 				this.StateEnterTimestampUtc = DateTime.UtcNow;
 				this.StateEnterTimestampLocal = this.StateEnterTimestampUtc.ToLocalTime();
+			}
 
-				this.OnBeforeEnter(transientInfo);
-				this.State?.Enter(transientInfo);
-				this.OnAfterEnter(transientInfo);
-
-				if ((nextState != null) && (this.Configuration.Cache != null))
-				{
-					if (nextState.UseCaching && this.Configuration.EnableAutomaticCaching)
-					{
-						this.Configuration.Cache.AddState(nextState);
-					}
-				}
+			this.OnBeforeEnter(transientInfo);
+			lock (this.SyncRoot)
+			{
+				nextState?.Enter(transientInfo);
 
 				int? interval = nextState?.UpdateInterval;
 				if (interval.HasValue)
@@ -600,6 +637,7 @@ namespace RI.Framework.StateMachines
 					this.UpdateInternal(interval.Value);
 				}
 			}
+			this.OnAfterEnter(transientInfo);
 		}
 
 		/// <summary>
@@ -608,11 +646,11 @@ namespace RI.Framework.StateMachines
 		/// <param name="updateInfo"> The update to execute. </param>
 		protected virtual void ExecuteUpdate (StateUpdateInfo updateInfo)
 		{
+			this.OnBeforeUpdate(updateInfo);
+
 			lock (this.SyncRoot)
 			{
-				this.OnBeforeUpdate(updateInfo);
 				this.State?.Update(updateInfo);
-				this.OnAfterUpdate(updateInfo);
 
 				int? interval = this.State?.UpdateInterval;
 				if (interval.HasValue)
@@ -620,6 +658,8 @@ namespace RI.Framework.StateMachines
 					this.UpdateInternal(interval.Value);
 				}
 			}
+
+			this.OnAfterUpdate(updateInfo);
 		}
 
 		/// <summary>
@@ -725,15 +765,30 @@ namespace RI.Framework.StateMachines
 				return null;
 			}
 
-			IState state;
-
-			if (useCache && this.Configuration.Cache.ContainsState(type))
+			IStateCache cache = null;
+			IStateResolver resolver = null;
+			IState state = null;
+			
+			lock (this.Configuration.SyncRoot)
 			{
-				state = this.Configuration.Cache.GetState(type);
+				cache = this.Configuration.Cache;
+				resolver = this.Configuration.Resolver;
 			}
-			else
+
+			lock (cache.SyncRoot)
 			{
-				state = this.Configuration.Resolver.ResolveState(type);
+				if (useCache && cache.ContainsState(type))
+				{
+					state = cache.GetState(type);
+				}
+			}
+
+			if(state == null)
+			{
+				lock (resolver.SyncRoot)
+				{
+					state = resolver.ResolveState(type);
+				}
 			}
 
 			if (state == null)
@@ -755,7 +810,7 @@ namespace RI.Framework.StateMachines
 		bool ISynchronizable.IsSynchronized => true;
 
 		/// <inheritdoc />
-		public object SyncRoot { get; private set; }
+		public object SyncRoot { get; }
 
 		#endregion
 	}

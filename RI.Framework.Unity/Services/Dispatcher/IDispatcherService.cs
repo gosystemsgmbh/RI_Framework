@@ -18,6 +18,7 @@ namespace RI.Framework.Services.Dispatcher
 	///         All broadcasts and dispatches must be executed in the order they were issued, depending on their priority.
 	///     </note>
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	[Export]
 	public interface IDispatcherService
 	{

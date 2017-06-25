@@ -19,6 +19,7 @@ namespace RI.Framework.StateMachines.Caches
 	///         See <see cref="IStateCache" /> for more details.
 	///     </para>
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	public sealed class DefaultStateCache : IStateCache
 	{
 		#region Instance Constructor/Destructor
@@ -40,13 +41,7 @@ namespace RI.Framework.StateMachines.Caches
 
 		#region Instance Properties/Indexer
 
-		/// <summary>
-		///     Gets the dictionary with all cached state instances.
-		/// </summary>
-		/// <value>
-		///     The dictionary with all cached state instances.
-		/// </value>
-		public Dictionary<Type, IState> States { get; private set; }
+		private Dictionary<Type, IState> States { get; }
 
 		#endregion
 
@@ -59,7 +54,7 @@ namespace RI.Framework.StateMachines.Caches
 		bool ISynchronizable.IsSynchronized => true;
 
 		/// <inheritdoc />
-		public object SyncRoot { get; private set; }
+		public object SyncRoot { get; }
 
 		/// <inheritdoc />
 		public void AddState (IState state)
@@ -137,6 +132,21 @@ namespace RI.Framework.StateMachines.Caches
 			{
 				Type type = state.GetType();
 				this.States.Remove(type);
+			}
+		}
+
+		/// <summary>
+		/// Gets a list of states cached in this cache.
+		/// </summary>
+		/// <returns>
+		/// The list of states cached in this cache.
+		/// An empty list is returned if no states are cached in this cache.
+		/// </returns>
+		public List<IState> GetStates ()
+		{
+			lock (this.SyncRoot)
+			{
+				return new List<IState>(this.States.Values);
 			}
 		}
 

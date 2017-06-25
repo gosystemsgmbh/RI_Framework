@@ -20,6 +20,7 @@ namespace RI.Framework.StateMachines
 	///         See <see cref="StateMachineConfiguration" /> for more details.
 	///     </para>
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	public sealed class DefaultStateMachineConfiguration : StateMachineConfiguration<DefaultStateMachineConfiguration>
 	{
 		#region Instance Constructor/Destructor

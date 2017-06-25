@@ -57,6 +57,7 @@ namespace RI.Framework.Utilities.Threading
 	///         If the coroutine is already executed in a <see cref="HeavyThread" />, a new thread is created and the execution moved to that new thread.
 	///     </para>
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	/// <example>
 	///     <code language="cs">
 	///  <![CDATA[

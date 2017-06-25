@@ -29,6 +29,7 @@ namespace RI.Framework.StateMachines.States
 	///         Instances of <see cref="MonoState" />s can only be used with a <see cref="IStateResolver" /> which uses a <see cref="CompositionContainer" /> (e.g. <see cref="CompositionContainerStateResolver" />) because <see cref="MonoState" />s cannot be instantiated directly (see note above).
 	///     </note>
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	[Export]
 	public abstract class MonoState : MonoBehaviour, IState, ILogSource
 	{
@@ -76,6 +77,7 @@ namespace RI.Framework.StateMachines.States
 
 			this.IsInitialized = false;
 			this.UseCaching = true;
+			this.UpdateInterval = null;
 
 			this.StateMachine = null;
 		}
@@ -206,7 +208,7 @@ namespace RI.Framework.StateMachines.States
 		bool ISynchronizable.IsSynchronized => true;
 
 		/// <inheritdoc />
-		public object SyncRoot { get; private set; }
+		public object SyncRoot { get; }
 
 		/// <inheritdoc />
 		public int? UpdateInterval

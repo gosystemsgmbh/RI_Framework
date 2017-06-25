@@ -30,6 +30,11 @@ namespace RI.Framework.Composition.Catalogs
 	/// TODO: Prevent from loading the same assembly twice
 	public sealed class ScriptingCatalog : CompositionCatalog
 	{
+		private bool _exportAllTypes;
+
+
+
+
 		#region Constants
 
 		private const string ScriptingAssemblyName = "Assembly-CSharp";
@@ -80,7 +85,23 @@ namespace RI.Framework.Composition.Catalogs
 		///         If all types are exported, the exports will consist of all non-abstract, non-static types, even those without an <see cref="ExportAttribute" />.
 		///     </para>
 		/// </remarks>
-		public bool ExportAllTypes { get; set; }
+		public bool ExportAllTypes
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._exportAllTypes;
+				}
+			}
+			set
+			{
+				lock (this.SyncRoot)
+				{
+					this._exportAllTypes = value;
+				}
+			}
+		}
 
 		#endregion
 

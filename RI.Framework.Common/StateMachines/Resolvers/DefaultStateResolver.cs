@@ -18,6 +18,7 @@ namespace RI.Framework.StateMachines.Resolvers
 	///         See <see cref="IStateResolver" /> for more details.
 	///     </para>
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	public sealed class DefaultStateResolver : IStateResolver
 	{
 		#region Instance Constructor/Destructor
@@ -41,7 +42,7 @@ namespace RI.Framework.StateMachines.Resolvers
 		bool ISynchronizable.IsSynchronized => true;
 
 		/// <inheritdoc />
-		public object SyncRoot { get; private set; }
+		public object SyncRoot { get; }
 
 		/// <inheritdoc />
 		public IState ResolveState (Type type)

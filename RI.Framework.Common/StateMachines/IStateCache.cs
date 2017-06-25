@@ -16,6 +16,7 @@ namespace RI.Framework.StateMachines
 	///         See <see cref="StateMachine" /> for more details about state machines.
 	///     </para>
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	public interface IStateCache : ISynchronizable
 	{
 		/// <summary>

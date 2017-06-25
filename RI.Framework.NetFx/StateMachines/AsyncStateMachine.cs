@@ -18,6 +18,7 @@ namespace RI.Framework.StateMachines
 	///         See <see cref="StateMachine" /> for more details about state machines.
 	///     </para>
 	/// </remarks>
+	/// TODO: Make thread-safe
 	public class AsyncStateMachine : StateMachine
 	{
 		#region Instance Constructor/Destructor

@@ -20,6 +20,7 @@ namespace RI.Framework.StateMachines.Dispatchers
 	///         See <see cref="IStateCache" /> for more details.
 	///     </para>
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	public sealed class DefaultStateDispatcher : IStateDispatcher
 	{
 		#region Instance Constructor/Destructor
@@ -41,7 +42,7 @@ namespace RI.Framework.StateMachines.Dispatchers
 
 		#region Instance Properties/Indexer
 
-		private Dictionary<StateMachine, Timer> UpdateTimers { get; set; }
+		private Dictionary<StateMachine, Timer> UpdateTimers { get; }
 
 		#endregion
 
@@ -54,7 +55,7 @@ namespace RI.Framework.StateMachines.Dispatchers
 		bool ISynchronizable.IsSynchronized => true;
 
 		/// <inheritdoc />
-		public object SyncRoot { get; private set; }
+		public object SyncRoot { get; }
 
 		/// <inheritdoc />
 		public void DispatchSignal (StateMachineSignalDelegate signalDelegate, StateSignalInfo signalInfo)

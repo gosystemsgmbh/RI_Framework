@@ -19,6 +19,7 @@ namespace RI.Framework.StateMachines.Dispatchers
 	///         Signals and transitions are dispatched using the <see cref="DispatcherPriority.Default" /> priority.
 	///     </note>
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	public sealed class DispatcherServiceStateDispatcher : IStateDispatcher
 	{
 		#region Instance Constructor/Destructor
@@ -53,7 +54,7 @@ namespace RI.Framework.StateMachines.Dispatchers
 		/// <value>
 		///     The used dispatcher service.
 		/// </value>
-		public IDispatcherService DispatcherService { get; private set; }
+		public IDispatcherService DispatcherService { get; }
 
 		#endregion
 
@@ -66,7 +67,7 @@ namespace RI.Framework.StateMachines.Dispatchers
 		bool ISynchronizable.IsSynchronized => true;
 
 		/// <inheritdoc />
-		public object SyncRoot { get; private set; }
+		public object SyncRoot { get; }
 
 		/// <inheritdoc />
 		public void DispatchSignal (StateMachineSignalDelegate signalDelegate, StateSignalInfo signalInfo)

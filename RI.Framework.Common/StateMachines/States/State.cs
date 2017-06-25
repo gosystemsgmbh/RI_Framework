@@ -21,6 +21,7 @@ namespace RI.Framework.StateMachines.States
 	///         See <see cref="RegisterSignal{TSignal}" /> for details.
 	///     </note>
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	[Export]
 	public abstract class State : IState
 	{
@@ -245,7 +246,7 @@ namespace RI.Framework.StateMachines.States
 		bool ISynchronizable.IsSynchronized => true;
 
 		/// <inheritdoc />
-		public object SyncRoot { get; private set; }
+		public object SyncRoot { get; }
 
 		/// <inheritdoc />
 		public int? UpdateInterval

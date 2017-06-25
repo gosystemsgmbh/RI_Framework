@@ -1379,7 +1379,7 @@ namespace RI.Framework.Composition
 							Import oldImport = oldValue as Import;
 							Import newImport = newValue as Import;
 							IEnumerable<object> oldValues = oldImport?.GetInstancesSnapshot();
-							IEnumerable<object> newValues = newImport?.Instances;
+							IEnumerable<object> newValues = newImport?.GetInstancesSnapshot();
 
 							updateValue = !CollectionComparer<object>.ReferenceEquality.Equals(oldValues, newValues);
 							currentComposed = updateValue;

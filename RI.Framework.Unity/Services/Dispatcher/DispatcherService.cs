@@ -25,6 +25,7 @@ namespace RI.Framework.Services.Dispatcher
 	///     </para>
 	/// </remarks>
 	/// TODO: Correct locking
+	/// TOO: Make thread-safe
 	[Export]
 	public sealed class DispatcherService : IDispatcherService, ISynchronizable
 	{

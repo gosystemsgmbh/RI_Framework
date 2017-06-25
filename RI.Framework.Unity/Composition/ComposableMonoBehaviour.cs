@@ -4,6 +4,8 @@ using RI.Framework.Composition.Model;
 
 using UnityEngine;
 
+using Object = UnityEngine.Object;
+
 
 
 
@@ -30,7 +32,7 @@ namespace RI.Framework.Composition
 		/// <remarks>
 		///     <para>
 		///         To instantiate a <see cref="ComposableMonoBehaviour" />, a new <c> GameObject </c> is created to which the <see cref="ComposableMonoBehaviour" /> is added as a component using <c> AddComponent </c>.
-		///         The created <c> GameObject </c> has not called <c> Object.DontDestroyOnLoad </c> on it.
+		///         The created <c> GameObject </c> has also called <c> Object.DontDestroyOnLoad </c> on it.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="type" /> is null. </exception>
@@ -45,6 +47,7 @@ namespace RI.Framework.Composition
 			GameObject gameObject = new GameObject();
 			gameObject.name = type.Name;
 			ComposableMonoBehaviour instance = gameObject.AddComponent(type) as ComposableMonoBehaviour;
+			Object.DontDestroyOnLoad(gameObject);
 			return instance;
 		}
 

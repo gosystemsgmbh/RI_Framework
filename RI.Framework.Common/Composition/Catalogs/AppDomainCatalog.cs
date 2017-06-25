@@ -23,6 +23,12 @@ namespace RI.Framework.Composition.Catalogs
 	/// <threadsafety static="true" instance="true" />
 	public sealed class AppDomainCatalog : CompositionCatalog
 	{
+		private bool _autoUpdate;
+		private bool _exportAllTypes;
+
+
+
+
 		#region Instance Constructor/Destructor
 
 		/// <summary>
@@ -71,7 +77,23 @@ namespace RI.Framework.Composition.Catalogs
 		///         If exports are automatically updated, this catalog issues a recomposition every time an assembly is loaded into the application domain.
 		///     </para>
 		/// </remarks>
-		public bool AutoUpdate { get; set; }
+		public bool AutoUpdate
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._autoUpdate;
+				}
+			}
+			set
+			{
+				lock (this.SyncRoot)
+				{
+					this._autoUpdate = value;
+				}
+			}
+		}
 
 		/// <summary>
 		///     Gets or sets whether all types should be exported.
@@ -87,7 +109,23 @@ namespace RI.Framework.Composition.Catalogs
 		/// Already exported types will not be affected when this property is changed.
 		/// </note>
 		/// </remarks>
-		public bool ExportAllTypes { get; set; }
+		public bool ExportAllTypes
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._exportAllTypes;
+				}
+			}
+			set
+			{
+				lock (this.SyncRoot)
+				{
+					this._exportAllTypes = value;
+				}
+			}
+		}
 
 		private HashSet<Assembly> LoadedAssemblies { get; set; }
 

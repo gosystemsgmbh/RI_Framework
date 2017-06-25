@@ -8,6 +8,7 @@ namespace RI.Framework.Services.Dispatcher
 	/// <summary>
 	///     Provides utility/extension methods for the <see cref="IDispatcherService" /> type and its implementations.
 	/// </summary>
+	/// <threadsafety static="true" instance="true" />
 	public static class IDispatcherServiceExtensions
 	{
 		#region Static Methods

@@ -13,6 +13,7 @@ namespace RI.Framework.Services.Dispatcher
 	///         A dispatcher operation is issued by a <see cref="IDispatcherService" /> when broadcasting or dispatching.
 	///     </para>
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	public interface IDispatcherOperation
 	{
 		/// <summary>

@@ -20,6 +20,7 @@ namespace RI.Framework.StateMachines.Dispatchers
 	///         Signals and transitions are dispatched using the <see cref="IThreadDispatcher.DefaultPriority" /> priority.
 	///     </note>
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	public sealed class ThreadDispatcherStateDispatcher : IStateDispatcher
 	{
 		#region Instance Constructor/Destructor
@@ -56,9 +57,9 @@ namespace RI.Framework.StateMachines.Dispatchers
 		/// <value>
 		///     The used dispatcher.
 		/// </value>
-		public IThreadDispatcher ThreadDispatcher { get; private set; }
+		public IThreadDispatcher ThreadDispatcher { get; }
 
-		private Dictionary<StateMachine, ThreadDispatcherTimer> UpdateTimers { get; set; }
+		private Dictionary<StateMachine, ThreadDispatcherTimer> UpdateTimers { get; }
 
 		#endregion
 
@@ -71,7 +72,7 @@ namespace RI.Framework.StateMachines.Dispatchers
 		bool ISynchronizable.IsSynchronized => true;
 
 		/// <inheritdoc />
-		public object SyncRoot { get; private set; }
+		public object SyncRoot { get; }
 
 		/// <inheritdoc />
 		public void DispatchSignal (StateMachineSignalDelegate signalDelegate, StateSignalInfo signalInfo)
