@@ -263,6 +263,7 @@ namespace RI.Framework.Services
 	///         </item>
 	///     </list>
 	/// </remarks>
+	/// TODO: make thread-safe (incl. interface and subclasses)
 	[Export]
 	public abstract class Bootstrapper : IBootstrapper, ILogSource
 	{

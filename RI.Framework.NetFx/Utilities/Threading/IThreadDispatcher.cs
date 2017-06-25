@@ -11,7 +11,8 @@ namespace RI.Framework.Utilities.Threading
 	/// <summary>
 	///     Defines the interface for thread-bound dispatchers.
 	/// </summary>
-	public interface IThreadDispatcher : ISynchronizable
+	/// <threadsafety static="true" instance="true" />
+	public interface IThreadDispatcher : IDisposable, ISynchronizable
 	{
 		/// <summary>
 		///     Gets or sets whether exceptions, thrown when executing delegates, are catched and the dispatcher continues its operations.

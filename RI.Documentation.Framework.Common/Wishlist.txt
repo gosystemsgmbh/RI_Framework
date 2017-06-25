@@ -244,7 +244,7 @@ Services
  # (.NET) Settings: ComplexConverter (JSON?)
 
  # (.NET) Messaging: ThreadDispatcherMessageDispatcher
- # (.NET) Messaging: SynchronizationContextMessageDispatcher (DefaultMessageDispatcher?)
+ # (.NET) Messaging: DefaultMessageDispatcher
  
  # (.NET) Bus
 

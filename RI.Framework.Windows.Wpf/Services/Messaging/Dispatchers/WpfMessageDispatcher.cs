@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Threading;
 
 using RI.Framework.Composition.Model;
+using RI.Framework.Utilities.ObjectModel;
 
 
 
@@ -38,6 +39,7 @@ namespace RI.Framework.Services.Messaging.Dispatchers
 				throw new ArgumentNullException(nameof(application));
 			}
 
+			this.SyncRoot = new object();
 			this.Dispatcher = application.Dispatcher;
 		}
 
@@ -53,6 +55,7 @@ namespace RI.Framework.Services.Messaging.Dispatchers
 				throw new ArgumentNullException(nameof(dispatcher));
 			}
 
+			this.SyncRoot = new object();
 			this.Dispatcher = dispatcher;
 		}
 
@@ -91,37 +94,27 @@ namespace RI.Framework.Services.Messaging.Dispatchers
 				throw new ArgumentNullException(nameof(message));
 			}
 
-			this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action<IEnumerable<IMessageReceiver>, IMessage, IMessageService>((a, b, s) =>
+			lock (this.SyncRoot)
 			{
-				foreach (IMessageReceiver receiver in a)
+				this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action<IEnumerable<IMessageReceiver>, IMessage, IMessageService>((a, b, s) =>
 				{
-					receiver.ReceiveMessage(b, s);
-				}
-			}), receivers, message, messageService);
-		}
-
-		/// <inheritdoc />
-		public void Send (IEnumerable<IMessageReceiver> receivers, IMessage message, IMessageService messageService)
-		{
-			if (receivers == null)
-			{
-				throw new ArgumentNullException(nameof(receivers));
+					foreach (IMessageReceiver receiver in a)
+					{
+						receiver.ReceiveMessage(b, s);
+					}
+				}), receivers, message, messageService);
 			}
-
-			if (message == null)
-			{
-				throw new ArgumentNullException(nameof(message));
-			}
-
-			this.Dispatcher.Invoke(DispatcherPriority.Normal, new Action<IEnumerable<IMessageReceiver>, IMessage, IMessageService>((a, b, s) =>
-			{
-				foreach (IMessageReceiver receiver in a)
-				{
-					receiver.ReceiveMessage(b, s);
-				}
-			}), receivers, message, messageService);
 		}
 
 		#endregion
+
+
+
+
+		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		public object SyncRoot { get; }
 	}
 }

@@ -376,6 +376,11 @@ namespace RI.Framework.Utilities.Threading
 		///         </item>
 		///         <item>
 		///             <para>
+		///                 <see cref="OnStarted" /> is called.
+		///             </para>
+		///         </item>
+		///         <item>
+		///             <para>
 		///                 <see cref="Start" /> returns while <see cref="OnRun" /> is executed inside the thread.
 		///             </para>
 		///         </item>
@@ -417,14 +422,16 @@ namespace RI.Framework.Utilities.Threading
 							{
 								ManualResetEvent stopEvent = this.StopEvent;
 								bool running = false;
+								bool ended = false;
 								try
 								{
 									this.OnBegin();
-									running = true;
 									startEvent.Set();
 									startEventSet = true;
+									running = true;
 									this.OnRun();
 									stopEvent.WaitOne();
+									ended = true;
 									this.OnEnd();
 								}
 								catch (ThreadAbortException)
@@ -442,6 +449,23 @@ namespace RI.Framework.Utilities.Threading
 									try
 									{
 										this.OnException(exception, running, false);
+									}
+									catch
+									{
+									}
+									try
+									{
+										stopEvent.WaitOne();
+									}
+									catch
+									{
+									}
+									try
+									{
+										if (!ended)
+										{
+											this.OnEnd();
+										}
 									}
 									catch
 									{
@@ -544,7 +568,13 @@ namespace RI.Framework.Utilities.Threading
 		///             </para>
 		///         </item>
 		///     </list>
+		/// <note type="important">
+		/// The thread cannot be stopped from inside itself (e.g. you cannot call <see cref="Stop"/> from <see cref="OnRun"/>).
+		/// This means that the eventual stop has to be controlled by what ever uses <see cref="HeavyThread"/>.
+		/// This ensures symmetry of start/stop (only who can start <see cref="HeavyThread"/> can also stop it).
+		/// </note>
 		/// </remarks>
+		/// <exception cref="InvalidOperationException"> This function was called from inside the thread. </exception>
 		public void Stop ()
 		{
 			this.Dispose(true);

@@ -27,7 +27,7 @@ namespace RI.Framework.Services.Dispatcher
 	/// TODO: Correct locking
 	/// TOO: Make thread-safe
 	[Export]
-	public sealed class DispatcherService : IDispatcherService, ISynchronizable
+	public sealed class DispatcherService : IDispatcherService
 	{
 		#region Instance Constructor/Destructor
 
@@ -1058,6 +1058,13 @@ namespace RI.Framework.Services.Dispatcher
 			}
 
 			#endregion
+
+
+
+
+			public bool IsSynchronized { get; }
+
+			public object SyncRoot { get; }
 		}
 
 		#endregion

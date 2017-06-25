@@ -559,9 +559,9 @@ namespace RI.Framework.StateMachines
 			IState previousState = transientInfo.PreviousState;
 			IState nextState = transientInfo.NextState;
 
-			bool loggingEnabled = false;
-			bool cacheEnabled = false;
-			IStateCache cache = null;
+			bool loggingEnabled;
+			bool cacheEnabled;
+			IStateCache cache;
 
 			lock (this.Configuration.SyncRoot)
 			{
@@ -765,8 +765,8 @@ namespace RI.Framework.StateMachines
 				return null;
 			}
 
-			IStateCache cache = null;
-			IStateResolver resolver = null;
+			IStateCache cache;
+			IStateResolver resolver;
 			IState state = null;
 			
 			lock (this.Configuration.SyncRoot)

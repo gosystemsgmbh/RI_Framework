@@ -1,6 +1,7 @@
 ﻿using System;
 
 using RI.Framework.Composition.Model;
+using RI.Framework.Utilities.ObjectModel;
 
 
 
@@ -20,7 +21,7 @@ namespace RI.Framework.Services.Dispatcher
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	[Export]
-	public interface IDispatcherService
+	public interface IDispatcherService : ISynchronizable
 	{
 		/// <summary>
 		///     Broadcasts an object of a specified type to all receivers registered for that type.

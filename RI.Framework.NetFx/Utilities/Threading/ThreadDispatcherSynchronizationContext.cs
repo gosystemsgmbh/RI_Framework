@@ -40,7 +40,7 @@ namespace RI.Framework.Utilities.Threading
 		/// <value>
 		///     The used dispatcher.
 		/// </value>
-		public IThreadDispatcher Dispatcher { get; private set; }
+		public IThreadDispatcher Dispatcher { get; }
 
 		#endregion
 

@@ -26,7 +26,8 @@ namespace RI.Framework.Utilities.Threading
 	///         During <see cref="Run" />, the current <see cref="SynchronizationContext" /> is replaced by an instance of <see cref="ThreadDispatcherSynchronizationContext" /> and restored afterwards.
 	///     </para>
 	/// </remarks>
-	public sealed class ThreadDispatcher : IThreadDispatcher, ISynchronizable
+	/// <threadsafety static="true" instance="true" />
+	public sealed class ThreadDispatcher : IThreadDispatcher
 	{
 		#region Constants
 
@@ -60,10 +61,10 @@ namespace RI.Framework.Utilities.Threading
 			this.IdleSignals = null;
 			this.CurrentPriority = null;
 
+			this.OperationInProgress = null;
 			this.PreRunQueue = new PriorityQueue<ThreadDispatcherOperation>();
 
 			this.ShutdownMode = ThreadDispatcherShutdownMode.None;
-
 			this.DefaultPriority = ThreadDispatcher.DefaultPriorityValue;
 			this.CatchExceptions = false;
 		}
@@ -73,14 +74,7 @@ namespace RI.Framework.Utilities.Threading
 		/// </summary>
 		~ThreadDispatcher ()
 		{
-			this.Posted?.Close();
-			this.Posted = null;
-
-			this.Queue?.Clear();
-			this.Queue = null;
-
-			this.PreRunQueue?.Clear();
-			this.PreRunQueue = null;
+			((IDisposable)this).Dispose();
 		}
 
 		#endregion
@@ -102,15 +96,17 @@ namespace RI.Framework.Utilities.Threading
 
 		#region Instance Properties/Indexer
 
+		/// <inheritdoc />
+		public object SyncRoot { get; }
+
+		private PriorityQueue<ThreadDispatcherOperation> PreRunQueue { get; set; }
 		private ThreadDispatcherOperation OperationInProgress { get; set; }
+
+		private Thread Thread { get; set; }
+		private PriorityQueue<ThreadDispatcherOperation> Queue { get; set; }
 		private ManualResetEvent Posted { get; set; }
 		private List<TaskCompletionSource<object>> IdleSignals { get; set; }
-		private PriorityQueue<ThreadDispatcherOperation> PreRunQueue { get; set; }
-		private PriorityQueue<ThreadDispatcherOperation> Queue { get; set; }
 		private Stack<int> CurrentPriority { get; set; }
-
-		private object SyncRoot { get; set; }
-		private Thread Thread { get; set; }
 
 		#endregion
 
@@ -141,6 +137,7 @@ namespace RI.Framework.Utilities.Threading
 					this.Posted = new ManualResetEvent(this.PreRunQueue.Count > 0);
 					this.IdleSignals = new List<TaskCompletionSource<object>>();
 					this.CurrentPriority = new Stack<int>();
+
 					this.ShutdownMode = ThreadDispatcherShutdownMode.None;
 
 					this.PreRunQueue.MoveTo(this.Queue);
@@ -172,11 +169,8 @@ namespace RI.Framework.Utilities.Threading
 
 		private void SignalIdle ()
 		{
-			lock (this.SyncRoot)
-			{
-				this.IdleSignals.ForEach(x => x.SetResult(null));
-				this.IdleSignals.Clear();
-			}
+			this.IdleSignals?.ForEach(x => x.SetResult(null));
+			this.IdleSignals?.Clear();
 		}
 
 		private void ExecuteFrame (ThreadDispatcherOperation returnTrigger)
@@ -225,25 +219,32 @@ namespace RI.Framework.Utilities.Threading
 							this.OperationInProgress = operation;
 							this.CurrentPriority.Push(priority);
 						}
+						else
+						{
+							this.SignalIdle();
+						}
 					}
 
 					if (operation == null)
 					{
-						this.SignalIdle();
 						break;
 					}
 
 					operation.Execute();
 
+					bool catchExceptions;
+
 					lock (this.SyncRoot)
 					{
 						this.CurrentPriority.Pop();
 						this.OperationInProgress = null;
+
+						catchExceptions = this.CatchExceptions;
 					}
 
 					if (operation.State == ThreadDispatcherOperationState.Exception)
 					{
-						bool canContinue = this.CatchExceptions;
+						bool canContinue = catchExceptions;
 
 						this.OnException(operation.Exception, canContinue);
 
@@ -287,14 +288,6 @@ namespace RI.Framework.Utilities.Threading
 			if (!this.IsRunning)
 			{
 				throw new InvalidOperationException(nameof(ThreadDispatcher) + " is not running.");
-			}
-		}
-
-		private void VerifyShuttingDown ()
-		{
-			if (this.ShutdownMode == ThreadDispatcherShutdownMode.None)
-			{
-				throw new InvalidOperationException(nameof(ThreadDispatcher) + " is not shutting down.");
 			}
 		}
 
@@ -389,9 +382,6 @@ namespace RI.Framework.Utilities.Threading
 				}
 			}
 		}
-
-		/// <inheritdoc />
-		object ISynchronizable.SyncRoot => this.SyncRoot;
 
 		/// <inheritdoc />
 		public event EventHandler<ThreadDispatcherExceptionEventArgs> Exception;
@@ -528,6 +518,8 @@ namespace RI.Framework.Utilities.Threading
 				throw new ThreadDispatcherException(operation.Exception);
 			}
 
+			//TODO: Cancelation exception
+
 			return operation.Result;
 		}
 
@@ -570,6 +562,7 @@ namespace RI.Framework.Utilities.Threading
 				{
 					throw new ThreadDispatcherException(op.Exception);
 				}
+				//TODO: Cancelation exception
 				return op.Result;
 			}, operation);
 
@@ -605,6 +598,18 @@ namespace RI.Framework.Utilities.Threading
 				}
 
 				return this.CurrentPriority.Peek();
+			}
+		}
+
+		/// <inheritdoc />
+		void IDisposable.Dispose ()
+		{
+			lock (this.SyncRoot)
+			{
+				if (this.IsRunning && (!this.IsShuttingDown))
+				{
+					this.Shutdown(false);
+				}
 			}
 		}
 

@@ -29,6 +29,11 @@ namespace RI.Framework.Services.Messaging
 	///         A message service is explicitly made to support sending from different threads.
 	///         The receiving however depends on the used message dispatchers.
 	///     </para>
+	/// <note type="implement">
+	/// Note that messaging is usually to be used from any thread.
+	/// Therefore, the messaging service must be partially thread-safe, at least for the actual send and receive operations.
+	/// However, messaging service implementations can rely upon the thread-safety of <see cref="IMessageDispatcher"/>.
+	/// </note>
 	/// </remarks>
 	[Export]
 	public interface IMessageService
@@ -118,17 +123,5 @@ namespace RI.Framework.Services.Messaging
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="messageReceiver" /> is null. </exception>
 		void RemoveReceiver (IMessageReceiver messageReceiver);
-
-		/// <summary>
-		///     Sends a message synchronously.
-		/// </summary>
-		/// <param name="message"> The message to send. </param>
-		/// <remarks>
-		///     <para>
-		///         The message is delivered after all previously sent or posted messages but this method does not return until the message has been delivered to all receivers.
-		///     </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="message" /> is null. </exception>
-		void Send (IMessage message);
 	}
 }

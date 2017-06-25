@@ -18,6 +18,7 @@ namespace RI.Framework.Utilities.Threading
 	///         See <see cref="IThreadDispatcher" /> for more information.
 	///     </para>
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	public sealed class ThreadDispatcherOperation : ISynchronizable
 	{
 		#region Instance Constructor/Destructor
@@ -45,9 +46,6 @@ namespace RI.Framework.Utilities.Threading
 		{
 			this.OperationDone?.Close();
 			this.OperationDone = null;
-
-			this.OperationDoneTask?.TrySetCanceled();
-			this.OperationDoneTask = null;
 		}
 
 		#endregion
@@ -157,14 +155,15 @@ namespace RI.Framework.Utilities.Threading
 			}
 		}
 
-		private ThreadDispatcher Dispatcher { get; set; }
-		private Delegate Action { get; set; }
-		private object[] Parameters { get; set; }
+		private ThreadDispatcher Dispatcher { get; }
+		private Delegate Action { get; }
+		private object[] Parameters { get; }
 
 		private ManualResetEvent OperationDone { get; set; }
 		private TaskCompletionSource<object> OperationDoneTask { get; set; }
 
-		private object SyncRoot { get; set; }
+		/// <inheritdoc />
+		public object SyncRoot { get; }
 
 		#endregion
 
@@ -452,9 +451,6 @@ namespace RI.Framework.Utilities.Threading
 
 		/// <inheritdoc />
 		bool ISynchronizable.IsSynchronized => true;
-
-		/// <inheritdoc />
-		object ISynchronizable.SyncRoot => this.SyncRoot;
 
 		#endregion
 	}

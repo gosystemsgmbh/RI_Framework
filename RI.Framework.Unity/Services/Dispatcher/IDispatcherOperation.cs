@@ -1,5 +1,7 @@
 ﻿using System;
 
+using RI.Framework.Utilities.ObjectModel;
+
 
 
 
@@ -14,7 +16,7 @@ namespace RI.Framework.Services.Dispatcher
 	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
-	public interface IDispatcherOperation
+	public interface IDispatcherOperation : ISynchronizable
 	{
 		/// <summary>
 		///     Gets the result of the operation.

@@ -27,6 +27,7 @@ namespace RI.Framework.Utilities.Threading
 	///         <see cref="ThreadDispatcherTimer" /> is relatively heavy-weighted as it uses its own thread (one per instance) to deliver the delegate to the dispatcher.
 	///     </note>
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	public sealed class ThreadDispatcherTimer : IDisposable, ISynchronizable
 	{
 		#region Instance Constructor/Destructor
@@ -115,7 +116,7 @@ namespace RI.Framework.Utilities.Threading
 		/// <value>
 		///     The used delegate.
 		/// </value>
-		public Delegate Action { get; private set; }
+		public Delegate Action { get; }
 
 		/// <summary>
 		///     Gets the used dispatcher.
@@ -123,7 +124,7 @@ namespace RI.Framework.Utilities.Threading
 		/// <value>
 		///     The used dispatcher.
 		/// </value>
-		public IThreadDispatcher Dispatcher { get; private set; }
+		public IThreadDispatcher Dispatcher { get; }
 
 		/// <summary>
 		///     Gets the number of times the delegate was executed.
@@ -131,6 +132,11 @@ namespace RI.Framework.Utilities.Threading
 		/// <value>
 		///     The number of times the delegate was executed.
 		/// </value>
+		/// <remarks>
+		/// <para>
+		/// <see cref="ExecutionCount"/> is reset to zero whenever the timer is started after it is stopped.
+		/// </para>
+		/// </remarks>
 		public int ExecutionCount
 		{
 			get
@@ -155,7 +161,7 @@ namespace RI.Framework.Utilities.Threading
 		/// <value>
 		///     The used interval.
 		/// </value>
-		public TimeSpan Interval { get; private set; }
+		public TimeSpan Interval { get; }
 
 		/// <summary>
 		///     Gets whether the timer is currently running.
@@ -180,7 +186,7 @@ namespace RI.Framework.Utilities.Threading
 		/// <value>
 		///     The timer mode.
 		/// </value>
-		public ThreadDispatcherTimerMode Mode { get; private set; }
+		public ThreadDispatcherTimerMode Mode { get; }
 
 		/// <summary>
 		///     Gets the optional parameters of the delagate.
@@ -188,7 +194,7 @@ namespace RI.Framework.Utilities.Threading
 		/// <value>
 		///     The optional parameters of the delagate.
 		/// </value>
-		public object[] Parameters { get; private set; }
+		public object[] Parameters { get; }
 
 		/// <summary>
 		///     Gets the priority.
@@ -196,9 +202,10 @@ namespace RI.Framework.Utilities.Threading
 		/// <value>
 		///     The priority.
 		/// </value>
-		public int Priority { get; private set; }
+		public int Priority { get; }
 
-		private object SyncRoot { get; set; }
+		/// <inheritdoc />
+		public object SyncRoot { get; }
 
 		private Thread TimerThread { get; set; }
 
@@ -222,6 +229,8 @@ namespace RI.Framework.Utilities.Threading
 				}
 
 				GC.ReRegisterForFinalize(this);
+
+				this.ExecutionCount = 0;
 
 				this.TimerThread = new Thread(() =>
 				{
@@ -282,19 +291,18 @@ namespace RI.Framework.Utilities.Threading
 		{
 			lock (this.SyncRoot)
 			{
-				if (this.TimerThread == null)
+				if (this.TimerThread != null)
 				{
-					return;
-				}
+					try
+					{
+						this.TimerThread.Abort();
+					}
+					catch
+					{
+					}
 
-				try
-				{
-					this.TimerThread.Abort();
+					this.TimerThread = null;
 				}
-				catch
-				{
-				}
-				this.TimerThread = null;
 			}
 		}
 
@@ -320,9 +328,6 @@ namespace RI.Framework.Utilities.Threading
 
 		/// <inheritdoc />
 		bool ISynchronizable.IsSynchronized => true;
-
-		/// <inheritdoc />
-		object ISynchronizable.SyncRoot => this.SyncRoot;
 
 		#endregion
 	}

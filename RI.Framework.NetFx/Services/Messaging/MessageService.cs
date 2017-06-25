@@ -35,6 +35,7 @@ namespace RI.Framework.Services.Messaging
 		/// </summary>
 		public MessageService ()
 		{
+			this.SendSyncRoot = new object();
 			this.DispatchersManual = new List<IMessageDispatcher>();
 			this.ReceiversManual = new List<IMessageReceiver>();
 		}
@@ -55,6 +56,8 @@ namespace RI.Framework.Services.Messaging
 		private Import ReceiversImported { get; set; }
 
 		private List<IMessageReceiver> ReceiversManual { get; set; }
+
+		private object SendSyncRoot { get; }
 
 		#endregion
 
@@ -137,9 +140,12 @@ namespace RI.Framework.Services.Messaging
 				throw new ArgumentNullException(nameof(message));
 			}
 
-			foreach (IMessageDispatcher dispatcher in this.Dispatchers)
+			lock (this.SendSyncRoot)
 			{
-				dispatcher.Post(this.Receivers, message, this);
+				foreach (IMessageDispatcher dispatcher in this.Dispatchers)
+				{
+					dispatcher.Post(this.Receivers, message, this);
+				}
 			}
 		}
 
@@ -173,20 +179,6 @@ namespace RI.Framework.Services.Messaging
 			}
 
 			this.ReceiversManual.RemoveAll(messageReceiver);
-		}
-
-		/// <inheritdoc />
-		public void Send (IMessage message)
-		{
-			if (message == null)
-			{
-				throw new ArgumentNullException(nameof(message));
-			}
-
-			foreach (IMessageDispatcher dispatcher in this.Dispatchers)
-			{
-				dispatcher.Send(this.Receivers, message, this);
-			}
 		}
 
 		#endregion

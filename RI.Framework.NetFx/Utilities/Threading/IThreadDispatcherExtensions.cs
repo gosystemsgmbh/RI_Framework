@@ -8,6 +8,7 @@ namespace RI.Framework.Utilities.Threading
 	/// <summary>
 	///     Provides utility/extension methods for the <see cref="IThreadDispatcher" /> type.
 	/// </summary>
+	/// <threadsafety static="true" instance="true" />
 	public static class IThreadDispatcherExtensions
 	{
 		#region Static Methods
