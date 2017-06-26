@@ -50,9 +50,9 @@ namespace RI.Framework.Utilities.ObjectModel
 
 		#region Static Properties/Indexer
 
-		internal static object GlobalSyncRoot { get; set; }
+		internal static object GlobalSyncRoot { get; }
 
-		private static Dictionary<Type, object> Instances { get; set; }
+		private static Dictionary<Type, object> Instances { get; }
 
 		#endregion
 

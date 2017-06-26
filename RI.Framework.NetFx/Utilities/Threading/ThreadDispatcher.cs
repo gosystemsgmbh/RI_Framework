@@ -87,6 +87,7 @@ namespace RI.Framework.Utilities.Threading
 		private bool _catchExceptions;
 
 		private int _defaultPriority;
+
 		private ThreadDispatcherShutdownMode _shutdownMode;
 
 		#endregion
@@ -126,9 +127,9 @@ namespace RI.Framework.Utilities.Threading
 			{
 				lock (this.SyncRoot)
 				{
-					synchronizationContextBackup = SynchronizationContext.Current;
-
 					this.VerifyNotRunning();
+
+					synchronizationContextBackup = SynchronizationContext.Current;
 
 					this.Thread = Thread.CurrentThread;
 					this.Queue = new PriorityQueue<ThreadDispatcherOperation>();
@@ -137,7 +138,6 @@ namespace RI.Framework.Utilities.Threading
 					this.CurrentPriority = new Stack<int>();
 
 					this.ShutdownMode = ThreadDispatcherShutdownMode.None;
-
 					this.PreRunQueue.MoveTo(this.Queue);
 
 					SynchronizationContext.SetSynchronizationContext(new ThreadDispatcherSynchronizationContext(this));
@@ -154,6 +154,11 @@ namespace RI.Framework.Utilities.Threading
 					foreach (ThreadDispatcherOperation operation in this.Queue)
 					{
 						operation.Cancel();
+					}
+
+					foreach (TaskCompletionSource<object> idleSignal in this.IdleSignals)
+					{
+						idleSignal.TrySetResult(null);
 					}
 
 					this.CurrentPriority?.Clear();
@@ -263,7 +268,7 @@ namespace RI.Framework.Utilities.Threading
 
 		private void SignalIdle ()
 		{
-			this.IdleSignals?.ForEach(x => x.SetResult(null));
+			this.IdleSignals?.ForEach(x => x.TrySetResult(null));
 			this.IdleSignals?.Clear();
 		}
 
@@ -354,7 +359,21 @@ namespace RI.Framework.Utilities.Threading
 		}
 
 		/// <inheritdoc />
-		public bool IsShuttingDown => this.ShutdownMode != ThreadDispatcherShutdownMode.None;
+		public bool IsShuttingDown
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					if (this.Thread == null)
+					{
+						return false;
+					}
+
+					return this.ShutdownMode != ThreadDispatcherShutdownMode.None;
+				}
+			}
+		}
 
 		/// <inheritdoc />
 		bool ISynchronizable.IsSynchronized => true;
@@ -366,7 +385,7 @@ namespace RI.Framework.Utilities.Threading
 			{
 				lock (this.SyncRoot)
 				{
-					if (!this.IsRunning)
+					if (this.Thread == null)
 					{
 						return ThreadDispatcherShutdownMode.None;
 					}
@@ -622,6 +641,7 @@ namespace RI.Framework.Utilities.Threading
 			lock (this.SyncRoot)
 			{
 				this.Shutdown(finishPendingDelegates);
+
 				return this.DoProcessingAsync();
 			}
 		}

@@ -285,6 +285,11 @@ namespace RI.Framework.Utilities.Threading
 				throw new ArgumentNullException(nameof(cancellationToken));
 			}
 
+			if (this.IsDone)
+			{
+				return true;
+			}
+
 			bool result = WaitHandle.WaitAny(new[] {cancellationToken.WaitHandle, this.OperationDone}, milliseconds) == 1;
 			return result;
 		}
@@ -371,6 +376,11 @@ namespace RI.Framework.Utilities.Threading
 			if (cancellationToken == null)
 			{
 				throw new ArgumentNullException(nameof(cancellationToken));
+			}
+
+			if (this.IsDone)
+			{
+				return Task.FromResult(true);
 			}
 
 			Task operationTask = this.OperationDoneTask.Task;

@@ -54,7 +54,7 @@ namespace RI.Framework.Services.Logging.Writers
 
 		#region Instance Properties/Indexer
 
-		private object SyncRoot { get; set; }
+		private object SyncRoot { get; }
 
 		#endregion
 

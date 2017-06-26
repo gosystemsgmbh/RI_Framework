@@ -55,6 +55,7 @@ namespace RI.Framework.IO.Streams
 
 			this.BaseStream = stream;
 			this.SyncRoot = syncRoot ?? new object();
+			this.InternalSyncRoot = new object();
 		}
 
 		/// <summary>
@@ -80,6 +81,8 @@ namespace RI.Framework.IO.Streams
 		/// </value>
 		public Stream BaseStream { get; }
 
+		private object InternalSyncRoot { get; }
+
 		#endregion
 
 
@@ -94,7 +97,10 @@ namespace RI.Framework.IO.Streams
 			{
 				lock (this.SyncRoot)
 				{
-					return this.BaseStream.CanRead;
+					lock (this.InternalSyncRoot)
+					{
+						return this.BaseStream.CanRead;
+					}
 				}
 			}
 		}
@@ -106,7 +112,10 @@ namespace RI.Framework.IO.Streams
 			{
 				lock (this.SyncRoot)
 				{
-					return this.BaseStream.CanSeek;
+					lock (this.InternalSyncRoot)
+					{
+						return this.BaseStream.CanSeek;
+					}
 				}
 			}
 		}
@@ -118,7 +127,10 @@ namespace RI.Framework.IO.Streams
 			{
 				lock (this.SyncRoot)
 				{
-					return this.BaseStream.CanTimeout;
+					lock (this.InternalSyncRoot)
+					{
+						return this.BaseStream.CanTimeout;
+					}
 				}
 			}
 		}
@@ -130,7 +142,10 @@ namespace RI.Framework.IO.Streams
 			{
 				lock (this.SyncRoot)
 				{
-					return this.BaseStream.CanWrite;
+					lock (this.InternalSyncRoot)
+					{
+						return this.BaseStream.CanWrite;
+					}
 				}
 			}
 		}
@@ -142,7 +157,10 @@ namespace RI.Framework.IO.Streams
 			{
 				lock (this.SyncRoot)
 				{
-					return this.BaseStream.Length;
+					lock (this.InternalSyncRoot)
+					{
+						return this.BaseStream.Length;
+					}
 				}
 			}
 		}
@@ -154,14 +172,20 @@ namespace RI.Framework.IO.Streams
 			{
 				lock (this.SyncRoot)
 				{
-					return this.BaseStream.Position;
+					lock (this.InternalSyncRoot)
+					{
+						return this.BaseStream.Position;
+					}
 				}
 			}
 			set
 			{
 				lock (this.SyncRoot)
 				{
-					this.BaseStream.Position = value;
+					lock (this.InternalSyncRoot)
+					{
+						this.BaseStream.Position = value;
+					}
 				}
 			}
 		}
@@ -173,14 +197,20 @@ namespace RI.Framework.IO.Streams
 			{
 				lock (this.SyncRoot)
 				{
-					return this.BaseStream.ReadTimeout;
+					lock (this.InternalSyncRoot)
+					{
+						return this.BaseStream.ReadTimeout;
+					}
 				}
 			}
 			set
 			{
 				lock (this.SyncRoot)
 				{
-					this.BaseStream.ReadTimeout = value;
+					lock (this.InternalSyncRoot)
+					{
+						this.BaseStream.ReadTimeout = value;
+					}
 				}
 			}
 		}
@@ -192,14 +222,20 @@ namespace RI.Framework.IO.Streams
 			{
 				lock (this.SyncRoot)
 				{
-					return this.BaseStream.WriteTimeout;
+					lock (this.InternalSyncRoot)
+					{
+						return this.BaseStream.WriteTimeout;
+					}
 				}
 			}
 			set
 			{
 				lock (this.SyncRoot)
 				{
-					this.BaseStream.WriteTimeout = value;
+					lock (this.InternalSyncRoot)
+					{
+						this.BaseStream.WriteTimeout = value;
+					}
 				}
 			}
 		}
@@ -209,7 +245,10 @@ namespace RI.Framework.IO.Streams
 		{
 			lock (this.SyncRoot)
 			{
-				return this.BaseStream.BeginRead(buffer, offset, count, callback, state);
+				lock (this.InternalSyncRoot)
+				{
+					return this.BaseStream.BeginRead(buffer, offset, count, callback, state);
+				}
 			}
 		}
 
@@ -218,7 +257,10 @@ namespace RI.Framework.IO.Streams
 		{
 			lock (this.SyncRoot)
 			{
-				return this.BaseStream.BeginWrite(buffer, offset, count, callback, state);
+				lock (this.InternalSyncRoot)
+				{
+					return this.BaseStream.BeginWrite(buffer, offset, count, callback, state);
+				}
 			}
 		}
 
@@ -227,15 +269,18 @@ namespace RI.Framework.IO.Streams
 		{
 			lock (this.SyncRoot)
 			{
-				this.BaseStream.Close();
-				base.Close();
+				lock (this.InternalSyncRoot)
+				{
+					base.Close();
+					this.BaseStream.Close();
+				}
 			}
 		}
 
 		/// <inheritdoc />
 		public override int EndRead (IAsyncResult asyncResult)
 		{
-			lock (this.SyncRoot)
+			lock (this.InternalSyncRoot)
 			{
 				return this.BaseStream.EndRead(asyncResult);
 			}
@@ -244,7 +289,7 @@ namespace RI.Framework.IO.Streams
 		/// <inheritdoc />
 		public override void EndWrite (IAsyncResult asyncResult)
 		{
-			lock (this.SyncRoot)
+			lock (this.InternalSyncRoot)
 			{
 				this.BaseStream.EndWrite(asyncResult);
 			}
@@ -255,7 +300,10 @@ namespace RI.Framework.IO.Streams
 		{
 			lock (this.SyncRoot)
 			{
-				this.BaseStream.Flush();
+				lock (this.InternalSyncRoot)
+				{
+					this.BaseStream.Flush();
+				}
 			}
 		}
 
@@ -264,7 +312,10 @@ namespace RI.Framework.IO.Streams
 		{
 			lock (this.SyncRoot)
 			{
-				return this.BaseStream.Read(buffer, offset, count);
+				lock (this.InternalSyncRoot)
+				{
+					return this.BaseStream.Read(buffer, offset, count);
+				}
 			}
 		}
 
@@ -273,7 +324,10 @@ namespace RI.Framework.IO.Streams
 		{
 			lock (this.SyncRoot)
 			{
-				return this.BaseStream.ReadByte();
+				lock (this.InternalSyncRoot)
+				{
+					return this.BaseStream.ReadByte();
+				}
 			}
 		}
 
@@ -282,7 +336,10 @@ namespace RI.Framework.IO.Streams
 		{
 			lock (this.SyncRoot)
 			{
-				return this.BaseStream.Seek(offset, origin);
+				lock (this.InternalSyncRoot)
+				{
+					return this.BaseStream.Seek(offset, origin);
+				}
 			}
 		}
 
@@ -291,7 +348,10 @@ namespace RI.Framework.IO.Streams
 		{
 			lock (this.SyncRoot)
 			{
-				this.BaseStream.SetLength(value);
+				lock (this.InternalSyncRoot)
+				{
+					this.BaseStream.SetLength(value);
+				}
 			}
 		}
 
@@ -300,7 +360,10 @@ namespace RI.Framework.IO.Streams
 		{
 			lock (this.SyncRoot)
 			{
-				this.BaseStream.Write(buffer, offset, count);
+				lock (this.InternalSyncRoot)
+				{
+					this.BaseStream.Write(buffer, offset, count);
+				}
 			}
 		}
 
@@ -309,7 +372,10 @@ namespace RI.Framework.IO.Streams
 		{
 			lock (this.SyncRoot)
 			{
-				this.BaseStream.WriteByte(value);
+				lock (this.InternalSyncRoot)
+				{
+					this.BaseStream.WriteByte(value);
+				}
 			}
 		}
 
@@ -318,8 +384,11 @@ namespace RI.Framework.IO.Streams
 		{
 			lock (this.SyncRoot)
 			{
-				this.BaseStream.Close();
-				base.Dispose(disposing);
+				lock (this.InternalSyncRoot)
+				{
+					base.Dispose(disposing);
+					this.BaseStream.Close();
+				}
 			}
 		}
 

@@ -50,7 +50,7 @@ namespace RI.Framework.Composition
 		/// </summary>
 		~CompositionCatalog ()
 		{
-			this.Dispose();
+			this.Dispose(false);
 		}
 
 		#endregion
@@ -78,7 +78,7 @@ namespace RI.Framework.Composition
 		///         Furthermore, if the <see cref="CompositionCatalog" /> itself detects a change of available exports, it must not update this property directly but instead request a proper recomposition from the <see cref="CompositionContainer" /> by calling <see cref="RequestRecompose" /> (which in turn will call <see cref="UpdateItems" />).
 		///     </note>
 		/// </remarks>
-		protected internal Dictionary<string, List<CompositionCatalogItem>> Items { get; private set; }
+		protected Dictionary<string, List<CompositionCatalogItem>> Items { get; }
 
 		#endregion
 
@@ -131,8 +131,11 @@ namespace RI.Framework.Composition
 
 		#region Virtuals
 
-		/// <inheritdoc cref="IDisposable.Dispose" />
-		protected virtual void Dispose ()
+		/// <summary>
+		///     Disposes this catalog and frees all resources.
+		/// </summary>
+		/// <param name="disposing"> true if called from <see cref="IDisposable.Dispose" />, false if called from the destructor. </param>
+		protected virtual void Dispose (bool disposing)
 		{
 		}
 
@@ -163,7 +166,7 @@ namespace RI.Framework.Composition
 		/// <inheritdoc />
 		void IDisposable.Dispose ()
 		{
-			this.Dispose();
+			this.Dispose(true);
 		}
 
 		#endregion

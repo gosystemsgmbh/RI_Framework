@@ -77,7 +77,7 @@ namespace RI.Framework.Services.Logging.Writers
 		private bool IsTracing { get; set; }
 		private bool IsWriting { get; set; }
 
-		private object SyncRoot { get; set; }
+		private object SyncRoot { get; }
 
 		private LogWriterTraceListener TraceListener { get; set; }
 
@@ -122,7 +122,7 @@ namespace RI.Framework.Services.Logging.Writers
 		{
 			lock (this.SyncRoot)
 			{
-				if (this.IsWriting || (this.TraceListener == null))
+				if (this.IsWriting || this.IsTracing || (this.TraceListener == null))
 				{
 					return;
 				}
@@ -244,7 +244,7 @@ namespace RI.Framework.Services.Logging.Writers
 
 			lock (this.SyncRoot)
 			{
-				if (this.IsTracing || (this.TraceListener == null))
+				if (this.IsWriting || this.IsTracing || (this.TraceListener == null))
 				{
 					return;
 				}
@@ -298,6 +298,9 @@ namespace RI.Framework.Services.Logging.Writers
 
 				this.LogWriter = logWriter;
 
+				//TODO: this.TraceOutputOptions
+				//TODO: this.Filter
+				this.NeedIndent = false;
 				this.Name = this.GetType().Name;
 			}
 

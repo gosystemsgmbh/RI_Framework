@@ -243,6 +243,7 @@ namespace RI.Framework.StateMachines
 			this.UpdateDelegate = this.ExecuteUpdate;
 
 			this.State = null;
+
 			this.StateEnterTimestampUtc = DateTime.UtcNow;
 			this.StateEnterTimestampLocal = this.StateEnterTimestampUtc.ToLocalTime();
 		}
@@ -253,8 +254,6 @@ namespace RI.Framework.StateMachines
 
 
 		#region Instance Fields
-
-		private StateMachineConfiguration _configuration;
 
 		private IState _state;
 
@@ -277,23 +276,7 @@ namespace RI.Framework.StateMachines
 		///         See <see cref="StateMachineConfiguration" /> for more details.
 		///     </note>
 		/// </remarks>
-		public StateMachineConfiguration Configuration
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					return this._configuration;
-				}
-			}
-			private set
-			{
-				lock (this.SyncRoot)
-				{
-					this._configuration = value;
-				}
-			}
-		}
+		public StateMachineConfiguration Configuration { get; }
 
 		/// <summary>
 		///     Gets the current state.
@@ -319,72 +302,15 @@ namespace RI.Framework.StateMachines
 			}
 		}
 
-		private StateMachineSignalDelegate SignalDelegate { get; set; }
+		private StateMachineSignalDelegate SignalDelegate { get; }
+
+		private StateMachineTransientDelegate TransientDelegate { get; }
+
+		private StateMachineUpdateDelegate UpdateDelegate { get; }
 
 		private DateTime StateEnterTimestampLocal { get; set; }
 
 		private DateTime StateEnterTimestampUtc { get; set; }
-
-		private StateMachineTransientDelegate TransientDelegate { get; set; }
-
-		private StateMachineUpdateDelegate UpdateDelegate { get; set; }
-
-		#endregion
-
-
-
-
-		#region Instance Events
-
-		/// <summary>
-		///     Raised after the next state was entered during a transition.
-		/// </summary>
-		public event EventHandler<StateMachineTransientEventArgs> AfterEnter;
-
-		/// <summary>
-		///     Raised after the previous state was left during a transition.
-		/// </summary>
-		public event EventHandler<StateMachineTransientEventArgs> AfterLeave;
-
-		/// <summary>
-		///     Raised after a signal was passed to the current state.
-		/// </summary>
-		public event EventHandler<StateMachineSignalEventArgs> AfterSignal;
-
-		/// <summary>
-		///     Raised after the current state was updated.
-		/// </summary>
-		public event EventHandler<StateMachineUpdateEventArgs> AfterUpdate;
-
-		/// <summary>
-		///     Raised before the next state is entered during a transition.
-		/// </summary>
-		public event EventHandler<StateMachineTransientEventArgs> BeforeEnter;
-
-		/// <summary>
-		///     Raised before the previous state is left during a transition.
-		/// </summary>
-		public event EventHandler<StateMachineTransientEventArgs> BeforeLeave;
-
-		/// <summary>
-		///     Raised before a signal is passed to the current state.
-		/// </summary>
-		public event EventHandler<StateMachineSignalEventArgs> BeforeSignal;
-
-		/// <summary>
-		///     Raised before the current state is updated.
-		/// </summary>
-		public event EventHandler<StateMachineUpdateEventArgs> BeforeUpdate;
-
-		/// <summary>
-		///     Raised when a transition was aborted because the previous state did not match the current state.
-		/// </summary>
-		public event EventHandler<StateMachineTransientEventArgs> TransitionAborted;
-
-		/// <summary>
-		///     Raised when an update was aborted because the current state did not match the state the update was intented for.
-		/// </summary>
-		public event EventHandler<StateMachineUpdateEventArgs> UpdateAborted;
 
 		#endregion
 
@@ -411,11 +337,16 @@ namespace RI.Framework.StateMachines
 		{
 			lock (this.SyncRoot)
 			{
-				StateSignalInfo signalInfo = new StateSignalInfo(this);
-				signalInfo.Signal = signal;
-
-				this.DispatchSignal(signalInfo);
+				this.SignalInternal(signal);
 			}
+		}
+
+		protected void SignalInternal (object signal)
+		{
+			StateSignalInfo signalInfo = new StateSignalInfo(this);
+			signalInfo.Signal = signal;
+
+			this.DispatchSignal(signalInfo);
 		}
 
 		/// <summary>
@@ -438,14 +369,19 @@ namespace RI.Framework.StateMachines
 
 			lock (this.SyncRoot)
 			{
-				IState previousState = this.State;
-
-				StateTransientInfo transientInfo = new StateTransientInfo(this);
-				transientInfo.NextState = nextState;
-				transientInfo.PreviousState = previousState;
-
-				this.DispatchTransient(transientInfo);
+				this.TransientInternal(nextState);
 			}
+		}
+
+		protected void TransientInternal (IState nextState)
+		{
+			IState previousState = this.State;
+
+			StateTransientInfo transientInfo = new StateTransientInfo(this);
+			transientInfo.NextState = nextState;
+			transientInfo.PreviousState = previousState;
+
+			this.DispatchTransient(transientInfo);
 		}
 
 		/// <summary>
@@ -453,27 +389,26 @@ namespace RI.Framework.StateMachines
 		/// </summary>
 		public void Update ()
 		{
-			this.UpdateInternal(0);
+			lock (this.SyncRoot)
+			{
+				this.UpdateInternal(0);
+			}
 		}
 
-		private void UpdateInternal (int delay)
+		protected void UpdateInternal (int delay)
 		{
 			if (delay < 0)
 			{
 				delay = 0;
 			}
 
-			lock (this.SyncRoot)
-			{
-				StateUpdateInfo updateInfo = new StateUpdateInfo(this);
-				//TODO: use state entered time from state/statemachine
-				updateInfo.UpdateState = this.State;
-				updateInfo.UpdateDelay = delay;
-				updateInfo.StateEnteredUtc = this.StateEnterTimestampUtc;
-				updateInfo.StateEnteredLocal = this.StateEnterTimestampLocal;
+			StateUpdateInfo updateInfo = new StateUpdateInfo(this);
+			updateInfo.UpdateDelay = delay;
+			updateInfo.UpdateState = this.State;
+			updateInfo.StateEnteredUtc = this.StateEnterTimestampUtc;
+			updateInfo.StateEnteredLocal = this.StateEnterTimestampLocal;
 
-				this.DispatchUpdate(updateInfo);
-			}
+			this.DispatchUpdate(updateInfo);
 		}
 
 		#endregion
@@ -541,22 +476,24 @@ namespace RI.Framework.StateMachines
 		/// <param name="signalInfo"> The signal to execute. </param>
 		protected virtual void ExecuteSignal (StateSignalInfo signalInfo)
 		{
+			bool loggingEnabled;
+
+			lock (this.Configuration.SyncRoot)
+			{
+				loggingEnabled = this.Configuration.LoggingEnabled;
+			}
+
 			lock (this.SyncRoot)
 			{
-				if (this.Configuration.LoggingEnabled)
+				if (loggingEnabled)
 				{
 					this.Log(LogLevel.Debug, "Executing signal: {0}", signalInfo.Signal?.ToString() ?? "[null]");
 				}
-			}
 
-			this.OnBeforeSignal(signalInfo);
-
-			lock (this.SyncRoot)
-			{
+				this.OnBeforeSignal(signalInfo);
 				this.State?.Signal(signalInfo);
+				this.OnAfterSignal(signalInfo);
 			}
-
-			this.OnAfterSignal(signalInfo);
 		}
 
 		/// <summary>
@@ -575,11 +512,9 @@ namespace RI.Framework.StateMachines
 			lock (this.Configuration.SyncRoot)
 			{
 				loggingEnabled = this.Configuration.LoggingEnabled;
-				cacheEnabled = this.Configuration.EnableAutomaticCaching;
+				cacheEnabled = this.Configuration.CachingEnabled;
 				cache = this.Configuration.Cache;
 			}
-
-			bool aborted = false;
 
 			lock (this.SyncRoot)
 			{
@@ -595,49 +530,31 @@ namespace RI.Framework.StateMachines
 						this.Log(LogLevel.Debug, "Transient aborted: {0} -> {1}", transientInfo.PreviousState?.GetType().Name ?? "[null]", transientInfo.NextState?.GetType().Name ?? "[null]");
 					}
 
-					aborted = true;
+					this.OnTransitionAborted(transientInfo);
+
+					return;
 				}
-			}
 
-			if (aborted)
-			{
-				this.OnTransitionAborted(transientInfo);
-				return;
-			}
-
-			lock (this.SyncRoot)
-			{
 				if (!((nextState?.IsInitialized).GetValueOrDefault(true)))
 				{
 					nextState?.Initialize(this);
 				}
 
-				if (nextState != null)
+				if ((nextState != null) && nextState.UseCaching && cacheEnabled)
 				{
-					if (nextState.UseCaching && cacheEnabled)
-					{
-						cache.AddState(nextState);
-					}
+					cache.AddState(nextState);
 				}
-			}
 
-			this.OnBeforeLeave(transientInfo);
-			lock (this.SyncRoot)
-			{
+				this.OnBeforeLeave(transientInfo);
 				previousState?.Leave(transientInfo);
-			}
-			this.OnAfterLeave(transientInfo);
+				this.OnAfterLeave(transientInfo);
 
-			lock (this.SyncRoot)
-			{
 				this.State = nextState;
 				this.StateEnterTimestampUtc = DateTime.UtcNow;
 				this.StateEnterTimestampLocal = this.StateEnterTimestampUtc.ToLocalTime();
-			}
 
-			this.OnBeforeEnter(transientInfo);
-			lock (this.SyncRoot)
-			{
+				this.OnBeforeEnter(transientInfo);
+
 				nextState?.Enter(transientInfo);
 
 				int? interval = nextState?.UpdateInterval;
@@ -645,8 +562,9 @@ namespace RI.Framework.StateMachines
 				{
 					this.UpdateInternal(interval.Value);
 				}
+
+				this.OnAfterEnter(transientInfo);
 			}
-			this.OnAfterEnter(transientInfo);
 		}
 
 		/// <summary>
@@ -664,8 +582,6 @@ namespace RI.Framework.StateMachines
 				loggingEnabled = this.Configuration.LoggingEnabled;
 			}
 
-			bool aborted = false;
-
 			lock (this.SyncRoot)
 			{
 				if (!object.ReferenceEquals(this.State, updateState))
@@ -675,20 +591,13 @@ namespace RI.Framework.StateMachines
 						this.Log(LogLevel.Debug, "Update aborted: {0} ", updateInfo.UpdateState?.GetType().Name ?? "[null]");
 					}
 
-					aborted = true;
+					this.OnUpdateAborted(updateInfo);
+
+					return;
 				}
-			}
 
-			if (aborted)
-			{
-				this.OnUpdateAborted(updateInfo);
-				return;
-			}
+				this.OnBeforeUpdate(updateInfo);
 
-			this.OnBeforeUpdate(updateInfo);
-
-			lock (this.SyncRoot)
-			{
 				this.State?.Update(updateInfo);
 
 				int? interval = this.State?.UpdateInterval;
@@ -696,99 +605,89 @@ namespace RI.Framework.StateMachines
 				{
 					this.UpdateInternal(interval.Value);
 				}
-			}
 
-			this.OnAfterUpdate(updateInfo);
+				this.OnAfterUpdate(updateInfo);
+			}
 		}
 
 		/// <summary>
-		///     Raises <see cref="AfterEnter" />.
+		///     Called after a state was entered.
 		/// </summary>
 		/// <param name="transientInfo"> The transition currently being executed. </param>
 		protected virtual void OnAfterEnter (StateTransientInfo transientInfo)
 		{
-			this.AfterEnter?.Invoke(this, new StateMachineTransientEventArgs(transientInfo));
 		}
 
 		/// <summary>
-		///     Raises <see cref="AfterLeave" />.
+		///     Called after a state was left.
 		/// </summary>
 		/// <param name="transientInfo"> The transition currently being executed. </param>
 		protected virtual void OnAfterLeave (StateTransientInfo transientInfo)
 		{
-			this.AfterLeave?.Invoke(this, new StateMachineTransientEventArgs(transientInfo));
 		}
 
 		/// <summary>
-		///     Raises <see cref="AfterSignal" />.
+		///     Called after a signal was processed.
 		/// </summary>
 		/// <param name="signalInfo"> The signal currently being executed. </param>
 		protected virtual void OnAfterSignal (StateSignalInfo signalInfo)
 		{
-			this.AfterSignal?.Invoke(this, new StateMachineSignalEventArgs(signalInfo));
 		}
 
 		/// <summary>
-		///     Raises <see cref="AfterUpdate" />.
+		///     Called after an update was processed.
 		/// </summary>
 		/// <param name="updateInfo"> The update currently being executed. </param>
 		protected virtual void OnAfterUpdate (StateUpdateInfo updateInfo)
 		{
-			this.AfterUpdate?.Invoke(this, new StateMachineUpdateEventArgs(updateInfo));
 		}
 
 		/// <summary>
-		///     Raises <see cref="BeforeEnter" />.
+		///     Called before a state is entered.
 		/// </summary>
 		/// <param name="transientInfo"> The transition currently being executed. </param>
 		protected virtual void OnBeforeEnter (StateTransientInfo transientInfo)
 		{
-			this.BeforeEnter?.Invoke(this, new StateMachineTransientEventArgs(transientInfo));
 		}
 
 		/// <summary>
-		///     Raises <see cref="BeforeLeave" />.
+		///     Called before a state is left.
 		/// </summary>
 		/// <param name="transientInfo"> The transition currently being executed. </param>
 		protected virtual void OnBeforeLeave (StateTransientInfo transientInfo)
 		{
-			this.BeforeLeave?.Invoke(this, new StateMachineTransientEventArgs(transientInfo));
 		}
 
 		/// <summary>
-		///     Raises <see cref="BeforeSignal" />.
+		///     Called before a signal is processed.
 		/// </summary>
 		/// <param name="signalInfo"> The signal currently being executed. </param>
 		protected virtual void OnBeforeSignal (StateSignalInfo signalInfo)
 		{
-			this.BeforeSignal?.Invoke(this, new StateMachineSignalEventArgs(signalInfo));
 		}
 
 		/// <summary>
-		///     Raises <see cref="BeforeUpdate" />.
+		///     Called before an update is processed.
 		/// </summary>
 		/// <param name="updateInfo"> The update currently being executed. </param>
 		protected virtual void OnBeforeUpdate (StateUpdateInfo updateInfo)
 		{
-			this.BeforeUpdate?.Invoke(this, new StateMachineUpdateEventArgs(updateInfo));
 		}
 
 		/// <summary>
-		///     Raises <see cref="TransitionAborted" />.
+		///     Called when a transition was aborted because the source/previous state does not match the current state at the time the transition was eventually executed by the dispatcher.
 		/// </summary>
 		/// <param name="transientInfo"> The aborted transition. </param>
 		protected virtual void OnTransitionAborted (StateTransientInfo transientInfo)
 		{
-			this.TransitionAborted?.Invoke(this, new StateMachineTransientEventArgs(transientInfo));
 		}
 
 		/// <summary>
-		///     Raises <see cref="UpdateAborted" />.
+		///     Called when an update was aborted because the intented state does not match the current state at the time the update was eventually executed by the dispatcher.
 		/// </summary>
 		/// <param name="updateInfo"> The aborted update. </param>
 		protected virtual void OnUpdateAborted (StateUpdateInfo updateInfo)
 		{
-			this.UpdateAborted?.Invoke(this, new StateMachineUpdateEventArgs(updateInfo));
 		}
 
 		/// <summary>
@@ -815,7 +714,6 @@ namespace RI.Framework.StateMachines
 
 			IStateCache cache;
 			IStateResolver resolver;
-			IState state = null;
 
 			lock (this.Configuration.SyncRoot)
 			{
@@ -823,11 +721,16 @@ namespace RI.Framework.StateMachines
 				resolver = this.Configuration.Resolver;
 			}
 
-			lock (cache.SyncRoot)
+			IState state = null;
+
+			if (useCache)
 			{
-				if (useCache && cache.ContainsState(type))
+				lock (cache.SyncRoot)
 				{
-					state = cache.GetState(type);
+					if (cache.ContainsState(type))
+					{
+						state = cache.GetState(type);
+					}
 				}
 			}
 

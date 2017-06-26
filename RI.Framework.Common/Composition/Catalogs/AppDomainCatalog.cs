@@ -131,9 +131,9 @@ namespace RI.Framework.Composition.Catalogs
 			}
 		}
 
-		private AssemblyLoadEventHandler AssemblyLoadEventHandler { get; set; }
+		private AssemblyLoadEventHandler AssemblyLoadEventHandler { get; }
 
-		private HashSet<Assembly> LoadedAssemblies { get; set; }
+		private HashSet<Assembly> LoadedAssemblies { get; }
 
 		#endregion
 
@@ -166,11 +166,14 @@ namespace RI.Framework.Composition.Catalogs
 		#region Overrides
 
 		/// <inheritdoc />
-		protected override void Dispose ()
+		protected override void Dispose (bool disposing)
 		{
-			AppDomain.CurrentDomain.AssemblyLoad -= this.AssemblyLoadEventHandler;
+			lock (this.SyncRoot)
+			{
+				AppDomain.CurrentDomain.AssemblyLoad -= this.AssemblyLoadEventHandler;
+			}
 
-			base.Dispose();
+			base.Dispose(disposing);
 		}
 
 		/// <inheritdoc />

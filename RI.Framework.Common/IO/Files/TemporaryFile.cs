@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 
 using RI.Framework.IO.Paths;
-
-
-
+using RI.Framework.Utilities.ObjectModel;
 
 namespace RI.Framework.IO.Files
 {
@@ -20,8 +18,8 @@ namespace RI.Framework.IO.Files
 	///         <see cref="TemporaryFile" /> implements <see cref="IDisposable" /> which attempts to delete the file when <see cref="IDisposable.Dispose" /> is called (but does not fail if not successful).
 	///     </para>
 	/// </remarks>
-	/// <threadsafety static="true" instance="false" />
-	public sealed class TemporaryFile : IDisposable
+	/// <threadsafety static="true" instance="true" />
+	public sealed class TemporaryFile : IDisposable, ISynchronizable
 	{
 		#region Static Constructor/Destructor
 
@@ -218,15 +216,20 @@ namespace RI.Framework.IO.Files
 		/// </remarks>
 		public TemporaryFile ()
 		{
+			this.SyncRoot = new object();
+
 			lock (TemporaryFile.GlobalSyncRoot)
 			{
 				this.File = TemporaryFile.GetTempDirectory().AppendFile(TemporaryFile.CreateTemporaryFileName());
-				this.File.CreateIfNotExist();
 			}
+
+			this.File.CreateIfNotExist();
 		}
 
 		private TemporaryFile (FilePath file)
 		{
+			this.SyncRoot = new object();
+
 			this.File = file;
 			this.File.CreateIfNotExist();
 		}
@@ -252,7 +255,7 @@ namespace RI.Framework.IO.Files
 		/// <value>
 		///     The temporary file.
 		/// </value>
-		public FilePath File { get; private set; }
+		public FilePath File { get; }
 
 		#endregion
 
@@ -271,7 +274,10 @@ namespace RI.Framework.IO.Files
 		{
 			try
 			{
-				return this.File.Delete();
+				lock (this.SyncRoot)
+				{
+					return this.File.Delete();
+				}
 			}
 			catch
 			{
@@ -294,5 +300,12 @@ namespace RI.Framework.IO.Files
 		}
 
 		#endregion
+
+
+		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		public object SyncRoot { get; }
 	}
 }

@@ -51,12 +51,12 @@ namespace RI.Framework.Services.Messaging
 		[Import(typeof(IMessageDispatcher), Recomposable = true)]
 		private Import DispatchersImported { get; set; }
 
-		private List<IMessageDispatcher> DispatchersManual { get; set; }
+		private List<IMessageDispatcher> DispatchersManual { get; }
 
 		[Import(typeof(IMessageReceiver), Recomposable = true)]
 		private Import ReceiversImported { get; set; }
 
-		private List<IMessageReceiver> ReceiversManual { get; set; }
+		private List<IMessageReceiver> ReceiversManual { get; }
 
 		private object SendSyncRoot { get; }
 

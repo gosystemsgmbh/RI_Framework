@@ -33,7 +33,7 @@ namespace RI.Framework.Composition.Model
 
 		#region Instance Properties/Indexer
 
-		internal object[] Instances { get; }
+		private object[] Instances { get; }
 
 		#endregion
 

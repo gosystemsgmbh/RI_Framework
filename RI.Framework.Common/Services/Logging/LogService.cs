@@ -63,8 +63,26 @@ namespace RI.Framework.Services.Logging
 
 		#region Interface: ILogService
 
+		private ILogFilter _filter;
+
 		/// <inheritdoc />
-		public ILogFilter Filter { get; set; }
+		public ILogFilter Filter
+		{
+			get
+			{
+				lock (this.LogSyncRoot)
+				{
+					return this._filter;
+				}
+			}
+			set
+			{
+				lock (this.LogSyncRoot)
+				{
+					this._filter = value;
+				}
+			}
+		}
 
 		/// <inheritdoc />
 		public IEnumerable<ILogWriter> Writers
@@ -128,12 +146,7 @@ namespace RI.Framework.Services.Logging
 			DateTime timestamp = DateTime.Now;
 			int threadId = Thread.CurrentThread.ManagedThreadId;
 
-			ILogFilter filter;
-			lock (this.LogSyncRoot)
-			{
-				filter = this.Filter;
-			}
-
+			ILogFilter filter = this.Filter;
 			if (filter != null)
 			{
 				if (!filter.Filter(timestamp, threadId, severity, source))
@@ -156,12 +169,7 @@ namespace RI.Framework.Services.Logging
 		/// <inheritdoc />
 		public void Log (DateTime timestamp, int threadId, LogLevel severity, string source, string format, params object[] args)
 		{
-			ILogFilter filter;
-			lock (this.LogSyncRoot)
-			{
-				filter = this.Filter;
-			}
-
+			ILogFilter filter = this.Filter;
 			if (filter != null)
 			{
 				if (!filter.Filter(timestamp, threadId, severity, source))

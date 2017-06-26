@@ -87,9 +87,9 @@ namespace RI.Framework.Services.Logging.Writers
 
 		private bool Disposed { get; set; }
 
-		private EventHandler DisposedEventHandler { get; set; }
+		private EventHandler DisposedEventHandler { get; }
 
-		private object SyncRoot { get; set; }
+		private object SyncRoot { get; }
 
 		#endregion
 

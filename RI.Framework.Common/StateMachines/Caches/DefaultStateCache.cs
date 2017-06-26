@@ -52,17 +52,17 @@ namespace RI.Framework.StateMachines.Caches
 		#region Instance Methods
 
 		/// <summary>
-		///     Gets a list of states cached in this cache.
+		///     Gets a set of states cached in this cache.
 		/// </summary>
 		/// <returns>
-		///     The list of states cached in this cache.
-		///     An empty list is returned if no states are cached in this cache.
+		///     The set of states cached in this cache.
+		///     An empty set is returned if no states are cached in this cache.
 		/// </returns>
-		public List<IState> GetStates ()
+		public HashSet<IState> GetStates ()
 		{
 			lock (this.SyncRoot)
 			{
-				return new List<IState>(this.States.Values);
+				return new HashSet<IState>(this.States.Values);
 			}
 		}
 

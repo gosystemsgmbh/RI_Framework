@@ -260,7 +260,7 @@ namespace RI.Framework.Utilities.Threading
 			}
 		}
 
-		private EventHandler<ThreadDispatcherExceptionEventArgs> DispatcherExceptionHandlerDelegate { get; set; }
+		private EventHandler<ThreadDispatcherExceptionEventArgs> DispatcherExceptionHandlerDelegate { get; }
 
 		private ThreadDispatcher DispatcherInternal { get; set; }
 
@@ -498,27 +498,27 @@ namespace RI.Framework.Utilities.Threading
 		/// <inheritdoc />
 		public void DoProcessing ()
 		{
-			ThreadDispatcher dispatcher;
+			Task waitTask;
 			lock (this.SyncRoot)
 			{
 				this.VerifyRunning();
-				dispatcher = this.DispatcherInternal;
+				waitTask = this.DispatcherInternal.DoProcessingAsync();
 			}
 
-			dispatcher.DoProcessing();
+			waitTask.Wait();
 		}
 
 		/// <inheritdoc />
 		public Task DoProcessingAsync ()
 		{
-			ThreadDispatcher dispatcher;
+			Task waitTask;
 			lock (this.SyncRoot)
 			{
 				this.VerifyRunning();
-				dispatcher = this.DispatcherInternal;
+				waitTask = this.DispatcherInternal.DoProcessingAsync();
 			}
 
-			return dispatcher.DoProcessingAsync();
+			return waitTask;
 		}
 
 		/// <inheritdoc />
@@ -617,10 +617,7 @@ namespace RI.Framework.Utilities.Threading
 		/// <inheritdoc />
 		public Task ShutdownAsync (bool finishPendingDelegates)
 		{
-			lock (this.SyncRoot)
-			{
-				return Task.Factory.StartNew(() => this.Shutdown(finishPendingDelegates));
-			}
+			return Task.Factory.StartNew(() => this.Stop(finishPendingDelegates), TaskCreationOptions.LongRunning);
 		}
 
 		#endregion

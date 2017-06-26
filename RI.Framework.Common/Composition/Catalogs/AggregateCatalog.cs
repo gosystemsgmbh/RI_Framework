@@ -50,6 +50,7 @@ namespace RI.Framework.Composition.Catalogs
 		/// </remarks>
 		public AggregateCatalog (IEnumerable<CompositionCatalog> catalogs)
 		{
+			this.ItemsVersion = 0;
 			this.Catalogs = new HashSet<CompositionCatalog>();
 			this.CatalogRecomposeRequestHandler = this.HandleCatalogRecomposeRequest;
 
@@ -78,9 +79,11 @@ namespace RI.Framework.Composition.Catalogs
 
 		#region Instance Properties/Indexer
 
-		private EventHandler CatalogRecomposeRequestHandler { get; set; }
+		private EventHandler CatalogRecomposeRequestHandler { get; }
 
-		private HashSet<CompositionCatalog> Catalogs { get; set; }
+		private HashSet<CompositionCatalog> Catalogs { get; }
+
+		private int ItemsVersion { get; set; }
 
 		#endregion
 
@@ -158,47 +161,59 @@ namespace RI.Framework.Composition.Catalogs
 		{
 			base.UpdateItems();
 
-			List<CompositionCatalog> catalogs = new List<CompositionCatalog>();
-			lock (this.SyncRoot)
+			//In case you wonder what this loop is for: it ensures reentrancy (preservation of the manipulated state / the final results) when UpdateItems is called concurrently from multiple threads
+			bool cont = true;
+			while (cont)
 			{
-				catalogs.AddRange(this.Catalogs);
-			}
+				int itemsVersion = 0;
+				List<CompositionCatalog> catalogs = new List<CompositionCatalog>();
 
-			Dictionary<string, List<CompositionCatalogItem>> items = new Dictionary<string, List<CompositionCatalogItem>>(CompositionContainer.NameComparer);
-
-			foreach (CompositionCatalog catalog in catalogs)
-			{
-				catalog.UpdateItems();
-			}
-
-			foreach (CompositionCatalog catalog in catalogs)
-			{
-				foreach (KeyValuePair<string, List<CompositionCatalogItem>> item in catalog.GetItemsSnapshot())
+				lock (this.SyncRoot)
 				{
-					foreach (CompositionCatalogItem value in item.Value)
+					this.ItemsVersion += 1;
+
+					itemsVersion = this.ItemsVersion;
+					catalogs.AddRange(this.Catalogs);
+				}
+
+				Dictionary<string, List<CompositionCatalogItem>> items = new Dictionary<string, List<CompositionCatalogItem>>(CompositionContainer.NameComparer);
+
+				foreach (CompositionCatalog catalog in catalogs)
+				{
+					catalog.UpdateItems();
+				}
+
+				foreach (CompositionCatalog catalog in catalogs)
+				{
+					foreach (KeyValuePair<string, List<CompositionCatalogItem>> item in catalog.GetItemsSnapshot())
 					{
-						if (!this.FilterExport(item.Key, value))
+						foreach (CompositionCatalogItem value in item.Value)
 						{
-							continue;
-						}
+							if (!this.FilterExport(item.Key, value))
+							{
+								continue;
+							}
 
-						if (!items.ContainsKey(item.Key))
-						{
-							items.Add(item.Key, new List<CompositionCatalogItem>());
-						}
+							if (!items.ContainsKey(item.Key))
+							{
+								items.Add(item.Key, new List<CompositionCatalogItem>());
+							}
 
-						if (!items[item.Key].Any(x => x.Type == value.Type))
-						{
-							items[item.Key].Add(value);
+							if (!items[item.Key].Any(x => x.Type == value.Type))
+							{
+								items[item.Key].Add(value);
+							}
 						}
 					}
 				}
-			}
 
-			lock (this.SyncRoot)
-			{
-				this.Items.Clear();
-				this.Items.AddRange(items);
+				lock (this.SyncRoot)
+				{
+					this.Items.Clear();
+					this.Items.AddRange(items);
+
+					cont = this.ItemsVersion != itemsVersion;
+				}
 			}
 		}
 
@@ -277,8 +292,11 @@ namespace RI.Framework.Composition.Catalogs
 		/// <inheritdoc />
 		public void Clear ()
 		{
+			int count;
 			lock (this.SyncRoot)
 			{
+				count = this.Catalogs.Count;
+
 				foreach (CompositionCatalog catalog in this.Catalogs)
 				{
 					catalog.RecomposeRequested -= this.CatalogRecomposeRequestHandler;
@@ -287,7 +305,10 @@ namespace RI.Framework.Composition.Catalogs
 				this.Catalogs.Clear();
 			}
 
-			this.RequestRecompose();
+			if (count > 0)
+			{
+				this.RequestRecompose();
+			}
 		}
 
 		/// <inheritdoc />
@@ -338,7 +359,10 @@ namespace RI.Framework.Composition.Catalogs
 				item.RecomposeRequested -= this.CatalogRecomposeRequestHandler;
 			}
 
-			this.RequestRecompose();
+			if (result)
+			{
+				this.RequestRecompose();
+			}
 
 			return result;
 		}

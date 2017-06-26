@@ -72,10 +72,10 @@ namespace RI.Framework.Services.Messaging.Dispatchers
 		/// <value>
 		///     The used dispatcher.
 		/// </value>
-		public Dispatcher Dispatcher { get; private set; }
+		public Dispatcher Dispatcher { get; }
 
 
-		private object SyncRoot { get; set; }
+		private object SyncRoot { get; }
 
 		#endregion
 
@@ -105,11 +105,11 @@ namespace RI.Framework.Services.Messaging.Dispatchers
 
 			lock (this.SyncRoot)
 			{
-				this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action<IEnumerable<IMessageReceiver>, IMessage, IMessageService>((a, b, s) =>
+				this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action<IEnumerable<IMessageReceiver>, IMessage, IMessageService>((r, m, s) =>
 				{
-					foreach (IMessageReceiver receiver in a)
+					foreach (IMessageReceiver receiver in r)
 					{
-						receiver.ReceiveMessage(b, s);
+						receiver.ReceiveMessage(m, s);
 					}
 				}), receivers, message, messageService);
 			}

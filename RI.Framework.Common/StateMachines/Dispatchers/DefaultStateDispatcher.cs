@@ -22,6 +22,7 @@ namespace RI.Framework.StateMachines.Dispatchers
 	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
+	/// TODO: Add IDisposable
 	public sealed class DefaultStateDispatcher : IStateDispatcher
 	{
 		#region Instance Constructor/Destructor
@@ -126,11 +127,11 @@ namespace RI.Framework.StateMachines.Dispatchers
 
 			#region Instance Properties/Indexer
 
-			public Delegate Action { get; private set; }
+			public Delegate Action { get; }
 
-			public object Arguments { get; private set; }
+			public object Arguments { get; }
 
-			public SynchronizationContext Context { get; private set; }
+			public SynchronizationContext Context { get; }
 
 			#endregion
 

@@ -46,7 +46,7 @@ namespace RI.Framework.StateMachines.Resolvers
 
 		#region Instance Properties/Indexer
 
-		private CompositionContainer Container { get; set; }
+		private CompositionContainer Container { get; }
 
 		#endregion
 

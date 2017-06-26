@@ -101,7 +101,6 @@ namespace RI.Framework.StateMachines.Dispatchers
 
 				ThreadDispatcherTimer timer = this.ThreadDispatcher.PostDelayed(updateInfo.UpdateDelay, this.ThreadDispatcher.DefaultPriority, updateDelegate, updateInfo);
 				this.UpdateTimers.Add(stateMachine, timer);
-				timer.Start();
 			}
 		}
 

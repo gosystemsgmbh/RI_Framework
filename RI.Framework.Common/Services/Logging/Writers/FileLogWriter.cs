@@ -188,7 +188,7 @@ namespace RI.Framework.Services.Logging.Writers
 
 		private FileStream Stream { get; set; }
 
-		private object SyncRoot { get; set; }
+		private object SyncRoot { get; }
 
 		private StreamWriter Writer { get; set; }
 
@@ -380,7 +380,7 @@ namespace RI.Framework.Services.Logging.Writers
 
 			lock (this.SyncRoot)
 			{
-				if ((this.Writer == null) && (this.Stream == null))
+				if ((this.Writer == null) || (this.Stream == null))
 				{
 					return;
 				}

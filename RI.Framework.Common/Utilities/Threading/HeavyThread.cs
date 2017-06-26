@@ -310,8 +310,6 @@ namespace RI.Framework.Utilities.Threading
 		/// <exception cref="HeavyThreadException"> An exception occured in this thread. </exception>
 		public void CheckForException ()
 		{
-			this.VerifyNotFromThread(nameof(this.CheckForException));
-
 			Exception threadException = this.ThreadException;
 			if (threadException != null)
 			{
@@ -400,6 +398,7 @@ namespace RI.Framework.Utilities.Threading
 					using (ManualResetEvent startEvent = new ManualResetEvent(false))
 					{
 						bool startEventSet = false;
+						int timeout = 0;
 
 						lock (this.SyncRoot)
 						{
@@ -409,6 +408,8 @@ namespace RI.Framework.Utilities.Threading
 
 							this.StopRequested = false;
 							this.StopEvent = new ManualResetEvent(false);
+
+							timeout = this.Timeout;
 
 							this.Thread = new Thread(() =>
 							{
@@ -480,7 +481,7 @@ namespace RI.Framework.Utilities.Threading
 						}
 
 #if PLATFORM_NETFX
-						bool started = startEvent.WaitOne(this.Timeout);
+						bool started = startEvent.WaitOne(timeout);
 						GC.KeepAlive(startEventSet);
 #endif
 #if PLATFORM_UNITY
@@ -489,7 +490,7 @@ namespace RI.Framework.Utilities.Threading
 						while (!startEventSet)
 						{
 							Thread.Sleep(1);
-							if (DateTime.UtcNow.Subtract(start).TotalMilliseconds > this.Timeout)
+							if (DateTime.UtcNow.Subtract(start).TotalMilliseconds > timeout)
 							{
 								started = false;
 								break;

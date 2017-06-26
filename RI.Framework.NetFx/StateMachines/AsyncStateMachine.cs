@@ -48,11 +48,11 @@ namespace RI.Framework.StateMachines
 
 		#region Instance Properties/Indexer
 
-		private List<Tuple<object, TaskCompletionSource<object>>> SignalTasks { get; set; }
+		private List<Tuple<object, TaskCompletionSource<object>>> SignalTasks { get; }
 
-		private List<Tuple<Type, TaskCompletionSource<object>>> TransitionTasks { get; set; }
+		private List<Tuple<Type, TaskCompletionSource<object>>> TransitionTasks { get; }
 
-		private List<Tuple<Type, TaskCompletionSource<object>>> UpdateTasks { get; set; }
+		private List<Tuple<Type, TaskCompletionSource<object>>> UpdateTasks { get; }
 
 		#endregion
 
@@ -88,8 +88,8 @@ namespace RI.Framework.StateMachines
 			Task<bool> waitTask;
 			lock (this.SyncRoot)
 			{
-				waitTask = this.WaitForSignalAsync(signal, timeout);
-				this.Signal(signal);
+				waitTask = this.WaitForSignalAsync(signal, timeout, CancellationToken.None);
+				this.SignalInternal(signal);
 			}
 
 			return waitTask;
@@ -131,11 +131,13 @@ namespace RI.Framework.StateMachines
 		/// <exception cref="TaskCanceledException"> The state transition was aborted. </exception>
 		public Task<bool> TransientAsync (Type state, int timeout)
 		{
+			IState nextState = this.Resolve(state, true);
+
 			Task<bool> waitTask;
 			lock (this.SyncRoot)
 			{
 				waitTask = this.WaitForStateAsyncInternal(state, timeout, true, CancellationToken.None);
-				this.Transient(state);
+				this.TransientInternal(nextState);
 			}
 
 			return waitTask;
@@ -153,8 +155,8 @@ namespace RI.Framework.StateMachines
 			Task<bool> waitTask;
 			lock (this.SyncRoot)
 			{
-				waitTask = this.WaitForUpdateAsync(timeout);
-				this.Update();
+				waitTask = this.WaitForUpdateAsync(this.State?.GetType(), timeout, CancellationToken.None);
+				this.UpdateInternal(0);
 			}
 
 			return waitTask;
@@ -224,7 +226,7 @@ namespace RI.Framework.StateMachines
 			Task timeoutTask = Task.Delay(timeout, cancellationToken);
 
 			Task<Task> completed = Task.WhenAny(signalTask, timeoutTask);
-			Task<bool> result = completed.ContinueWith((task, state) => object.ReferenceEquals(task.Result, state), signalTask);
+			Task<bool> result = completed.ContinueWith((task, obj) => object.ReferenceEquals(task.Result, obj), signalTask);
 
 			return result;
 		}
@@ -286,7 +288,7 @@ namespace RI.Framework.StateMachines
 		public Task<bool> WaitForStateAsync <TState> (int timeout, CancellationToken cancellationToken)
 			where TState : IState
 		{
-			return this.WaitForStateAsyncInternal(typeof(TState), timeout, false, cancellationToken);
+			return this.WaitForStateAsync(typeof(TState), timeout, cancellationToken);
 		}
 
 		/// <summary>
@@ -306,7 +308,10 @@ namespace RI.Framework.StateMachines
 		/// <exception cref="TaskCanceledException"> The state transition was aborted. </exception>
 		public Task<bool> WaitForStateAsync (Type state, int timeout, CancellationToken cancellationToken)
 		{
-			return this.WaitForStateAsyncInternal(state, timeout, false, cancellationToken);
+			lock (this.SyncRoot)
+			{
+				return this.WaitForStateAsyncInternal(state, timeout, false, cancellationToken);
+			}
 		}
 
 		/// <summary>
@@ -316,9 +321,9 @@ namespace RI.Framework.StateMachines
 		/// <returns>
 		///     true if the update was executed within the specified timeout, false otherwise.
 		/// </returns>
-		public Task<bool> WaitForUpdateAsync (int timeout)
+		public Task<bool> WaitForUpdateAsync (Type state, int timeout)
 		{
-			return this.WaitForUpdateAsync(timeout, CancellationToken.None);
+			return this.WaitForUpdateAsync(state, timeout, CancellationToken.None);
 		}
 
 		/// <summary>
@@ -329,44 +334,44 @@ namespace RI.Framework.StateMachines
 		/// <returns>
 		///     true if the update was executed within the specified timeout, false otherwise.
 		/// </returns>
-		public Task<bool> WaitForUpdateAsync (int timeout, CancellationToken cancellationToken)
+		public Task<bool> WaitForUpdateAsync (Type state, int timeout, CancellationToken cancellationToken)
 		{
 			TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
 
 			lock (this.SyncRoot)
 			{
-				this.UpdateTasks.Add(new Tuple<Type, TaskCompletionSource<object>>(this.State?.GetType(), tcs));
+				this.UpdateTasks.Add(new Tuple<Type, TaskCompletionSource<object>>(state, tcs));
 			}
 
 			Task updateTask = tcs.Task;
 			Task timeoutTask = Task.Delay(timeout, cancellationToken);
 
 			Task<Task> completed = Task.WhenAny(updateTask, timeoutTask);
-			Task<bool> result = completed.ContinueWith((task, state) => object.ReferenceEquals(task.Result, state), updateTask);
+			Task<bool> result = completed.ContinueWith((task, obj) => object.ReferenceEquals(task.Result, obj), updateTask);
 
 			return result;
 		}
 
-		private Task<bool> WaitForStateAsyncInternal (Type desiredState, int timeout, bool ignoreCurrentState, CancellationToken cancellationToken)
+		private Task<bool> WaitForStateAsyncInternal (Type state, int timeout, bool ignoreCurrentState, CancellationToken cancellationToken)
 		{
 			TaskCompletionSource<object> tcs;
 
 			lock (this.SyncRoot)
 			{
-				if ((!ignoreCurrentState) && (this.State?.GetType() == desiredState))
+				if ((!ignoreCurrentState) && (this.State?.GetType() == state))
 				{
 					return Task.FromResult(true);
 				}
 
 				tcs = new TaskCompletionSource<object>();
-				this.TransitionTasks.Add(new Tuple<Type, TaskCompletionSource<object>>(desiredState, tcs));
+				this.TransitionTasks.Add(new Tuple<Type, TaskCompletionSource<object>>(state, tcs));
 			}
 
 			Task transitionTask = tcs.Task;
 			Task timeoutTask = Task.Delay(timeout, cancellationToken);
 
 			Task<Task> completed = Task.WhenAny(transitionTask, timeoutTask);
-			Task<bool> result = completed.ContinueWith((task, state) => object.ReferenceEquals(task.Result, state), transitionTask);
+			Task<bool> result = completed.ContinueWith((task, obj) => object.ReferenceEquals(task.Result, obj), transitionTask);
 
 			return result;
 		}
@@ -383,13 +388,10 @@ namespace RI.Framework.StateMachines
 		{
 			base.OnAfterEnter(transientInfo);
 
-			lock (this.SyncRoot)
+			List<Tuple<Type, TaskCompletionSource<object>>> tasks = this.TransitionTasks.RemoveWhere(x => x.Item1 == transientInfo.NextState?.GetType());
+			foreach (Tuple<Type, TaskCompletionSource<object>> task in tasks)
 			{
-				List<Tuple<Type, TaskCompletionSource<object>>> tasks = this.TransitionTasks.RemoveWhere(x => x.Item1 == transientInfo.NextState?.GetType());
-				foreach (Tuple<Type, TaskCompletionSource<object>> task in tasks)
-				{
-					task.Item2.SetResult(true);
-				}
+				task.Item2.SetResult(true);
 			}
 		}
 
@@ -398,13 +400,10 @@ namespace RI.Framework.StateMachines
 		{
 			base.OnAfterSignal(signalInfo);
 
-			lock (this.SyncRoot)
+			List<Tuple<object, TaskCompletionSource<object>>> tasks = this.SignalTasks.RemoveWhere(x => object.ReferenceEquals(x.Item1, signalInfo.Signal));
+			foreach (Tuple<object, TaskCompletionSource<object>> task in tasks)
 			{
-				List<Tuple<object, TaskCompletionSource<object>>> tasks = this.SignalTasks.RemoveWhere(x => object.ReferenceEquals(x.Item1, signalInfo.Signal));
-				foreach (Tuple<object, TaskCompletionSource<object>> task in tasks)
-				{
-					task.Item2.SetResult(true);
-				}
+				task.Item2.SetResult(true);
 			}
 		}
 
@@ -413,13 +412,10 @@ namespace RI.Framework.StateMachines
 		{
 			base.OnAfterUpdate(updateInfo);
 
-			lock (this.SyncRoot)
+			List<Tuple<Type, TaskCompletionSource<object>>> tasks = this.UpdateTasks.RemoveWhere(x => x.Item1 == updateInfo.UpdateState?.GetType());
+			foreach (Tuple<Type, TaskCompletionSource<object>> task in tasks)
 			{
-				List<Tuple<Type, TaskCompletionSource<object>>> tasks = this.UpdateTasks.RemoveWhere(x => x.Item1 == updateInfo.UpdateState?.GetType());
-				foreach (Tuple<Type, TaskCompletionSource<object>> task in tasks)
-				{
-					task.Item2.SetResult(true);
-				}
+				task.Item2.SetResult(true);
 			}
 		}
 
@@ -428,13 +424,10 @@ namespace RI.Framework.StateMachines
 		{
 			base.OnTransitionAborted(transientInfo);
 
-			lock (this.SyncRoot)
+			List<Tuple<Type, TaskCompletionSource<object>>> tasks = this.TransitionTasks.RemoveWhere(x => x.Item1 == transientInfo.NextState?.GetType());
+			foreach (Tuple<Type, TaskCompletionSource<object>> task in tasks)
 			{
-				List<Tuple<Type, TaskCompletionSource<object>>> tasks = this.TransitionTasks.RemoveWhere(x => x.Item1 == transientInfo.NextState?.GetType());
-				foreach (Tuple<Type, TaskCompletionSource<object>> task in tasks)
-				{
-					task.Item2.SetCanceled();
-				}
+				task.Item2.SetCanceled();
 			}
 		}
 
@@ -443,13 +436,10 @@ namespace RI.Framework.StateMachines
 		{
 			base.OnUpdateAborted(updateInfo);
 
-			lock (this.SyncRoot)
+			List<Tuple<Type, TaskCompletionSource<object>>> tasks = this.UpdateTasks.RemoveWhere(x => x.Item1 == updateInfo.UpdateState?.GetType());
+			foreach (Tuple<Type, TaskCompletionSource<object>> task in tasks)
 			{
-				List<Tuple<Type, TaskCompletionSource<object>>> tasks = this.UpdateTasks.RemoveWhere(x => x.Item1 == updateInfo.UpdateState?.GetType());
-				foreach (Tuple<Type, TaskCompletionSource<object>> task in tasks)
-				{
-					task.Item2.SetCanceled();
-				}
+				task.Item2.SetCanceled();
 			}
 		}
 

@@ -42,7 +42,7 @@ namespace RI.Framework.StateMachines
 			this.Resolver = new DefaultStateResolver();
 			this.Cache = new DefaultStateCache();
 
-			this.EnableAutomaticCaching = true;
+			this.CachingEnabled = true;
 			this.LoggingEnabled = true;
 		}
 
@@ -57,7 +57,7 @@ namespace RI.Framework.StateMachines
 
 		private IStateDispatcher _dispatcher;
 
-		private bool _enableAutomaticCaching;
+		private bool _cachingEnabled;
 
 		private bool _isLocked;
 
@@ -165,20 +165,20 @@ namespace RI.Framework.StateMachines
 		///         The default value is true.
 		///     </para>
 		/// </remarks>
-		public bool EnableAutomaticCaching
+		public bool CachingEnabled
 		{
 			get
 			{
 				lock (this.SyncRoot)
 				{
-					return this._enableAutomaticCaching;
+					return this._cachingEnabled;
 				}
 			}
 			set
 			{
 				lock (this.SyncRoot)
 				{
-					this._enableAutomaticCaching = value;
+					this._cachingEnabled = value;
 				}
 			}
 		}
@@ -288,7 +288,7 @@ namespace RI.Framework.StateMachines
 		#region Interface: ICloneable<StateMachineConfiguration>
 
 		/// <inheritdoc />
-		StateMachineConfiguration ICloneable<StateMachineConfiguration>.Clone ()
+		public StateMachineConfiguration Clone ()
 		{
 			return this.CloneInternal();
 		}
@@ -342,7 +342,7 @@ namespace RI.Framework.StateMachines
 			clone.Resolver = (this.Resolver as ICloneable<IStateResolver>)?.Clone() ?? this.Resolver;
 			clone.Cache = (this.Cache as ICloneable<IStateCache>)?.Clone() ?? this.Cache;
 
-			clone.EnableAutomaticCaching = this.EnableAutomaticCaching;
+			clone.CachingEnabled = this.CachingEnabled;
 			clone.LoggingEnabled = this.LoggingEnabled;
 		}
 
@@ -366,7 +366,7 @@ namespace RI.Framework.StateMachines
 		#region Interface: ICloneable<T>
 
 		/// <inheritdoc />
-		public T Clone ()
+		public new T Clone ()
 		{
 			lock (this.SyncRoot)
 			{

@@ -288,7 +288,7 @@ namespace RI.Framework.Services.Logging.Writers
 
 		private LogFileFormatter Formatter { get; set; }
 
-		private object SyncRoot { get; set; }
+		private object SyncRoot { get; }
 
 		#endregion
 

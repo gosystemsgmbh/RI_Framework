@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using RI.Framework.Collections;
 using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Composition;
 using RI.Framework.Utilities;
@@ -36,6 +37,7 @@ namespace RI.Framework.Services
 	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
+	/// TODO: Create proper events for translation and lookup
 	public static class ServiceLocator
 	{
 		#region Static Constructor/Destructor
@@ -49,6 +51,8 @@ namespace RI.Framework.Services
 
 			ServiceLocator.UseCaching = true;
 			ServiceLocator.UseSingletons = true;
+
+			ServiceLocator.CacheVersion = 0;
 		}
 
 		#endregion
@@ -127,11 +131,13 @@ namespace RI.Framework.Services
 			}
 		}
 
-		private static Dictionary<string, object[]> Cache { get; set; }
+		private static Dictionary<string, object[]> Cache { get; }
 
-		private static HashSet<CompositionContainer> CompositionContainerBindings { get; set; }
+		private static HashSet<CompositionContainer> CompositionContainerBindings { get; }
 
-		private static object GlobalSyncRoot { get; set; }
+		private static object GlobalSyncRoot { get; }
+
+		private static int CacheVersion { get; set; }
 
 		#endregion
 
@@ -143,7 +149,7 @@ namespace RI.Framework.Services
 		/// <summary>
 		///     Raised when a service is to be looked-up by its name.
 		/// </summary>
-		public static event Func<string, IList<object>> Lookup;
+		public static event Func<string, IEnumerable<object>> Lookup;
 
 		/// <summary>
 		///     Raised when a type needs to be translated to a name.
@@ -194,6 +200,7 @@ namespace RI.Framework.Services
 			lock (ServiceLocator.GlobalSyncRoot)
 			{
 				ServiceLocator.Cache.Clear();
+				ServiceLocator.CacheVersion += 1;
 			}
 		}
 
@@ -348,7 +355,6 @@ namespace RI.Framework.Services
 			}
 
 			string name = ServiceLocator.TranslateTypeToName(type);
-
 			return ServiceLocator.LookupServices(name, type);
 		}
 
@@ -419,43 +425,58 @@ namespace RI.Framework.Services
 
 		private static object[] Resolve (string name, Type typeHint)
 		{
-			bool useSingletons;
-			lock (ServiceLocator.GlobalSyncRoot)
+			object[] resolved = null;
+			bool cont = true;
+
+			while (cont)
 			{
-				useSingletons = ServiceLocator.UseSingletons;
-				if (ServiceLocator.UseCaching && ServiceLocator.Cache.ContainsKey(name))
+				int cacheVersion;
+				bool useSingletons;
+				bool useCaching;
+				HashSet<CompositionContainer> containerBindings;
+
+				lock (ServiceLocator.GlobalSyncRoot)
 				{
-					return ServiceLocator.Cache[name];
+					if (ServiceLocator.UseCaching && ServiceLocator.Cache.ContainsKey(name))
+					{
+						return ServiceLocator.Cache[name];
+					}
+
+					ServiceLocator.CacheVersion += 1;
+
+					cacheVersion = ServiceLocator.CacheVersion;
+					useSingletons = ServiceLocator.UseSingletons;
+					useCaching = ServiceLocator.UseCaching;
+					containerBindings = new HashSet<CompositionContainer>(ServiceLocator.CompositionContainerBindings);
 				}
-			}
 
-			List<object> instances = new List<object>(ServiceLocator.Lookup?.Invoke(name) ?? new object[0]);
+				HashSet<object> instances = new HashSet<object>(ServiceLocator.Lookup?.Invoke(name) ?? new object[0]);
 
-			lock (ServiceLocator.GlobalSyncRoot)
-			{
-				foreach (CompositionContainer container in ServiceLocator.CompositionContainerBindings)
+				foreach (CompositionContainer container in containerBindings)
 				{
 					instances.AddRange(container.GetExports<object>(name));
 				}
-			}
 
-			if ((typeHint != null) && useSingletons)
-			{
-				object singleton = Singleton.Get(typeHint);
-				if (singleton != null)
+				if ((typeHint != null) && useSingletons)
 				{
-					instances.Add(singleton);
+					object singleton = Singleton.Get(typeHint);
+					if (singleton != null)
+					{
+						instances.Add(singleton);
+					}
 				}
-			}
 
-			object[] resolved = instances.ToArray();
+				resolved = instances.ToArray();
 
-			lock (ServiceLocator.GlobalSyncRoot)
-			{
-				if (ServiceLocator.UseCaching && (resolved.Length > 0))
+				lock (ServiceLocator.GlobalSyncRoot)
 				{
-					ServiceLocator.Cache.Remove(name);
-					ServiceLocator.Cache.Add(name, resolved);
+					if (useCaching && (resolved.Length > 0))
+					{
+						ServiceLocator.Cache.Remove(name);
+						ServiceLocator.Cache.Add(name, resolved);
+					}
+
+					cont = cacheVersion != ServiceLocator.CacheVersion;
 				}
 			}
 
