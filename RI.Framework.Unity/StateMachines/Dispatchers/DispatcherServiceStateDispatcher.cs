@@ -37,8 +37,8 @@ namespace RI.Framework.StateMachines.Dispatchers
 			}
 
 			this.SyncRoot = new object();
-
 			this.DispatcherService = dispatcherService;
+			this.Priority = DispatcherPriority.Default;
 		}
 
 		#endregion
@@ -56,6 +56,37 @@ namespace RI.Framework.StateMachines.Dispatchers
 		/// </value>
 		public IDispatcherService DispatcherService { get; }
 
+		private DispatcherPriority _priority;
+
+		/// <summary>
+		/// Gets or sets the priority used for dispatching state machine operations.
+		/// </summary>
+		/// <value>
+		/// The priority used for dispatching state machine operations.
+		/// </value>
+		/// <remarks>
+		/// <para>
+		/// The default value is <see cref="DispatcherPriority.Default"/>.
+		/// </para>
+		/// </remarks>
+		public DispatcherPriority Priority
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._priority;
+				}
+			}
+			set
+			{
+				lock (this.SyncRoot)
+				{
+					this._priority = value;
+				}
+			}
+		}
+
 		#endregion
 
 
@@ -72,19 +103,19 @@ namespace RI.Framework.StateMachines.Dispatchers
 		/// <inheritdoc />
 		public void DispatchSignal (StateMachineSignalDelegate signalDelegate, StateSignalInfo signalInfo)
 		{
-			this.DispatcherService.Dispatch(DispatcherPriority.Default, (x, y) => x(y), signalDelegate, signalInfo);
+			this.DispatcherService.Dispatch(this.Priority, (x, y) => x(y), signalDelegate, signalInfo);
 		}
 
 		/// <inheritdoc />
 		public void DispatchTransition (StateMachineTransientDelegate transientDelegate, StateTransientInfo transientInfo)
 		{
-			this.DispatcherService.Dispatch(DispatcherPriority.Default, (x, y) => x(y), transientDelegate, transientInfo);
+			this.DispatcherService.Dispatch(this.Priority, (x, y) => x(y), transientDelegate, transientInfo);
 		}
 
 		/// <inheritdoc />
 		public void DispatchUpdate (StateMachineUpdateDelegate updateDelegate, StateUpdateInfo updateInfo)
 		{
-			this.DispatcherService.Dispatch(DispatcherPriority.Default, (x, y) => x(y), updateDelegate, updateInfo).Reschedule(updateInfo.UpdateDelay);
+			this.DispatcherService.Dispatch(this.Priority, (x, y) => x(y), updateDelegate, updateInfo).Reschedule(updateInfo.UpdateDelay);
 		}
 
 		#endregion

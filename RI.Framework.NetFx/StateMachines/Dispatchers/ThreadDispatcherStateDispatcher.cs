@@ -38,9 +38,8 @@ namespace RI.Framework.StateMachines.Dispatchers
 			}
 
 			this.SyncRoot = new object();
-
 			this.ThreadDispatcher = threadDispatcher;
-
+			this.Priority = null;
 			this.UpdateTimers = new Dictionary<StateMachine, ThreadDispatcherTimer>();
 		}
 
@@ -61,6 +60,81 @@ namespace RI.Framework.StateMachines.Dispatchers
 
 		private Dictionary<StateMachine, ThreadDispatcherTimer> UpdateTimers { get; }
 
+		private int? _priority;
+
+		private ThreadDispatcherOptions? _options;
+
+		/// <summary>
+		/// Gets or sets the priority used for dispatching state machine operations.
+		/// </summary>
+		/// <value>
+		/// The priority used for dispatching state machine operations or null if the default priority of the used dispatcher should be used (<see cref="IThreadDispatcher.DefaultPriority"/>).
+		/// </value>
+		/// <remarks>
+		/// <para>
+		/// The default value is null.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> is less than zero.</exception>
+		public int? Priority
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._priority;
+				}
+			}
+			set
+			{
+				if (value.HasValue)
+				{
+					if (value.Value < 0)
+					{
+						throw new ArgumentOutOfRangeException(nameof(value));
+					}
+				}
+
+				lock (this.SyncRoot)
+				{
+					this._priority = value;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the options used for dispatching state machine operations.
+		/// </summary>
+		/// <value>
+		/// The options used for dispatching state machine operations or null if the default options of the used dispatcher should be used (<see cref="IThreadDispatcher.DefaultOptions"/>).
+		/// </value>
+		/// <remarks>
+		/// <para>
+		/// The default value is null.
+		/// </para>
+		/// </remarks>
+		public ThreadDispatcherOptions? Options
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._options;
+				}
+			}
+			set
+			{
+				lock (this.SyncRoot)
+				{
+					this._options = value;
+				}
+			}
+		}
+
+		private int UsedPriority => this.Priority.GetValueOrDefault(this.ThreadDispatcher.DefaultPriority);
+
+		private ThreadDispatcherOptions UsedOptions => this.Options.GetValueOrDefault(this.ThreadDispatcher.DefaultOptions);
+
 		#endregion
 
 
@@ -77,13 +151,13 @@ namespace RI.Framework.StateMachines.Dispatchers
 		/// <inheritdoc />
 		public void DispatchSignal (StateMachineSignalDelegate signalDelegate, StateSignalInfo signalInfo)
 		{
-			this.ThreadDispatcher.Post(new Action<StateMachineSignalDelegate, StateSignalInfo>((x, y) => x(y)), signalDelegate, signalInfo);
+			this.ThreadDispatcher.Post(this.UsedPriority, this.UsedOptions, new Action<StateMachineSignalDelegate, StateSignalInfo>((x, y) => x(y)), signalDelegate, signalInfo);
 		}
 
 		/// <inheritdoc />
 		public void DispatchTransition (StateMachineTransientDelegate transientDelegate, StateTransientInfo transientInfo)
 		{
-			this.ThreadDispatcher.Post(new Action<StateMachineTransientDelegate, StateTransientInfo>((x, y) => x(y)), transientDelegate, transientInfo);
+			this.ThreadDispatcher.Post(this.UsedPriority, this.UsedOptions, new Action<StateMachineTransientDelegate, StateTransientInfo>((x, y) => x(y)), transientDelegate, transientInfo);
 		}
 
 		/// <inheritdoc />
@@ -99,7 +173,7 @@ namespace RI.Framework.StateMachines.Dispatchers
 					this.UpdateTimers.Remove(stateMachine);
 				}
 
-				ThreadDispatcherTimer timer = this.ThreadDispatcher.PostDelayed(updateInfo.UpdateDelay, this.ThreadDispatcher.DefaultPriority, updateDelegate, updateInfo);
+				ThreadDispatcherTimer timer = this.ThreadDispatcher.PostDelayed(updateInfo.UpdateDelay, this.UsedPriority, this.UsedOptions, updateDelegate, updateInfo);
 				this.UpdateTimers.Add(stateMachine, timer);
 			}
 		}

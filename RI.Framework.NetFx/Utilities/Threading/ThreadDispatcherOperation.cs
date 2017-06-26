@@ -23,11 +23,12 @@ namespace RI.Framework.Utilities.Threading
 	{
 		#region Instance Constructor/Destructor
 
-		internal ThreadDispatcherOperation (ThreadDispatcher dispatcher, Delegate action, object[] parameters)
+		internal ThreadDispatcherOperation (ThreadDispatcher dispatcher, ThreadDispatcherOptions options, Delegate action, object[] parameters)
 		{
 			this.SyncRoot = new object();
 
 			this.Dispatcher = dispatcher;
+			this.Options = options;
 			this.Action = action;
 			this.Parameters = parameters;
 
@@ -37,6 +38,9 @@ namespace RI.Framework.Utilities.Threading
 
 			this.OperationDone = new ManualResetEvent(false);
 			this.OperationDoneTask = new TaskCompletionSource<object>();
+
+			//TODO: Use real
+			ThreadDispatcherOperation.Capture();
 		}
 
 		/// <summary>
@@ -46,6 +50,11 @@ namespace RI.Framework.Utilities.Threading
 		{
 			this.OperationDone?.Close();
 			this.OperationDone = null;
+		}
+
+		internal static void Capture ()
+		{
+			//TODO: Implement
 		}
 
 		#endregion
@@ -156,12 +165,12 @@ namespace RI.Framework.Utilities.Threading
 		}
 
 		private Delegate Action { get; }
-
 		private ThreadDispatcher Dispatcher { get; }
+		private object[] Parameters { get; }
+		private ThreadDispatcherOptions Options { get; }
 
 		private ManualResetEvent OperationDone { get; set; }
 		private TaskCompletionSource<object> OperationDoneTask { get; set; }
-		private object[] Parameters { get; }
 
 		#endregion
 

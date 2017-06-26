@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using RI.Framework.Collections;
+using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Composition;
 using RI.Framework.Composition.Model;
 using RI.Framework.Services.Logging;
@@ -27,7 +28,7 @@ namespace RI.Framework.Services.Messaging
 	///     </para>
 	/// </remarks>
 	[Export]
-	public sealed class MessageService : IMessageService, ILogSource
+	public sealed class MessageService : IMessageService, IImporting, ILogSource
 	{
 		#region Instance Constructor/Destructor
 
@@ -37,6 +38,10 @@ namespace RI.Framework.Services.Messaging
 		public MessageService ()
 		{
 			this.SendSyncRoot = new object();
+
+			this.DispatchersUpdated = new List<IMessageDispatcher>();
+			this.ReceiversUpdated = new List<IMessageReceiver>();
+
 			this.DispatchersManual = new List<IMessageDispatcher>();
 			this.ReceiversManual = new List<IMessageReceiver>();
 		}
@@ -60,12 +65,79 @@ namespace RI.Framework.Services.Messaging
 
 		private object SendSyncRoot { get; }
 
+		private List<IMessageDispatcher> DispatchersUpdated { get; set; }
+
+		private List<IMessageReceiver> ReceiversUpdated { get; set; }
+
+		private void UpdateDispatchers()
+		{
+			this.Log(LogLevel.Debug, "Updating dispatchers");
+
+			HashSet<IMessageDispatcher> currentDispatchers = new HashSet<IMessageDispatcher>(this.Dispatchers);
+			HashSet<IMessageDispatcher> lastDispatchers = new HashSet<IMessageDispatcher>(this.DispatchersUpdated);
+
+			HashSet<IMessageDispatcher> newDispatchers = currentDispatchers.Except(lastDispatchers);
+			HashSet<IMessageDispatcher> oldDispatchers = lastDispatchers.Except(currentDispatchers);
+
+			this.DispatchersUpdated.Clear();
+			this.DispatchersUpdated.AddRange(currentDispatchers);
+
+			foreach (IMessageDispatcher dispatcher in newDispatchers)
+			{
+				this.Log(LogLevel.Debug, "Dispatcher added: {0}", dispatcher.GetType().Name);
+			}
+
+			foreach (IMessageDispatcher dispatcher in oldDispatchers)
+			{
+				this.Log(LogLevel.Debug, "Dispatcher removed: {0}", dispatcher.GetType().Name);
+			}
+		}
+
+		private void UpdateReceivers()
+		{
+			this.Log(LogLevel.Debug, "Updating receivers");
+
+			HashSet<IMessageReceiver> currentReceivers = new HashSet<IMessageReceiver>(this.Receivers);
+			HashSet<IMessageReceiver> lastReceivers = new HashSet<IMessageReceiver>(this.ReceiversUpdated);
+
+			HashSet<IMessageReceiver> newReceivers = currentReceivers.Except(lastReceivers);
+			HashSet<IMessageReceiver> oldReceivers = lastReceivers.Except(currentReceivers);
+
+			this.ReceiversUpdated.Clear();
+			this.ReceiversUpdated.AddRange(currentReceivers);
+
+			foreach (IMessageReceiver receiver in newReceivers)
+			{
+				this.Log(LogLevel.Debug, "Receiver added: {0}", receiver.GetType().Name);
+			}
+
+			foreach (IMessageReceiver receiver in oldReceivers)
+			{
+				this.Log(LogLevel.Debug, "Receiver removed: {0}", receiver.GetType().Name);
+			}
+		}
+
 		#endregion
 
 
 
 
 		#region Interface: IMessageService
+
+		/// <inheritdoc />
+		void IImporting.ImportsResolved(CompositionFlags composition, bool updated)
+		{
+			if (updated)
+			{
+				this.UpdateDispatchers();
+				this.UpdateReceivers();
+			}
+		}
+
+		/// <inheritdoc />
+		void IImporting.ImportsResolving(CompositionFlags composition)
+		{
+		}
 
 		/// <inheritdoc />
 		public IEnumerable<IMessageDispatcher> Dispatchers
@@ -115,6 +187,8 @@ namespace RI.Framework.Services.Messaging
 			}
 
 			this.DispatchersManual.Add(messageDispatcher);
+
+			this.UpdateDispatchers();
 		}
 
 		/// <inheritdoc />
@@ -131,6 +205,8 @@ namespace RI.Framework.Services.Messaging
 			}
 
 			this.ReceiversManual.Add(messageReceiver);
+
+			this.UpdateReceivers();
 		}
 
 		/// <inheritdoc />
@@ -164,6 +240,8 @@ namespace RI.Framework.Services.Messaging
 			}
 
 			this.DispatchersManual.RemoveAll(messageDispatcher);
+
+			this.UpdateDispatchers();
 		}
 
 		/// <inheritdoc />
@@ -180,6 +258,8 @@ namespace RI.Framework.Services.Messaging
 			}
 
 			this.ReceiversManual.RemoveAll(messageReceiver);
+
+			this.UpdateReceivers();
 		}
 
 		#endregion

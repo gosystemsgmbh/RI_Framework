@@ -38,13 +38,14 @@ namespace RI.Framework.Utilities.Threading
 		/// <param name="dispatcher"> The used dispatcher. </param>
 		/// <param name="mode"> The timer mode. </param>
 		/// <param name="priority"> The priority. </param>
+		/// <param name="options">The used execution options.</param>
 		/// <param name="interval"> The interval between executions in milliseconds. </param>
 		/// <param name="action"> The delegate. </param>
 		/// <param name="parameters"> Optional parameters of the delagate. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" /> or <paramref name="action" /> is null. </exception>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="priority" /> is less than zero. </exception>
-		public ThreadDispatcherTimer (IThreadDispatcher dispatcher, ThreadDispatcherTimerMode mode, int priority, int interval, Delegate action, params object[] parameters)
-			: this(dispatcher, mode, priority, TimeSpan.FromMilliseconds(interval), action, parameters)
+		public ThreadDispatcherTimer (IThreadDispatcher dispatcher, ThreadDispatcherTimerMode mode, int priority, ThreadDispatcherOptions options, int interval, Delegate action, params object[] parameters)
+			: this(dispatcher, mode, priority, options, TimeSpan.FromMilliseconds(interval), action, parameters)
 		{
 		}
 
@@ -54,12 +55,13 @@ namespace RI.Framework.Utilities.Threading
 		/// <param name="dispatcher"> The used dispatcher. </param>
 		/// <param name="mode"> The timer mode. </param>
 		/// <param name="priority"> The priority. </param>
+		/// <param name="options">The used execution options.</param>
 		/// <param name="interval"> The interval between executions. </param>
 		/// <param name="action"> The delegate. </param>
 		/// <param name="parameters"> Optional parameters of the delagate. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" /> or <paramref name="action" /> is null. </exception>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="priority" /> is less than zero. </exception>
-		public ThreadDispatcherTimer (IThreadDispatcher dispatcher, ThreadDispatcherTimerMode mode, int priority, TimeSpan interval, Delegate action, params object[] parameters)
+		public ThreadDispatcherTimer (IThreadDispatcher dispatcher, ThreadDispatcherTimerMode mode, int priority, ThreadDispatcherOptions options, TimeSpan interval, Delegate action, params object[] parameters)
 		{
 			if (dispatcher == null)
 			{
@@ -81,9 +83,13 @@ namespace RI.Framework.Utilities.Threading
 			this.Dispatcher = dispatcher;
 			this.Mode = mode;
 			this.Priority = priority;
+			this.Options = options;
 			this.Interval = interval;
 			this.Action = action;
 			this.Parameters = parameters;
+
+			//TODO: Use real
+			ThreadDispatcherOperation.Capture();
 		}
 
 		/// <summary>
@@ -162,6 +168,14 @@ namespace RI.Framework.Utilities.Threading
 		///     The used interval.
 		/// </value>
 		public TimeSpan Interval { get; }
+
+		/// <summary>
+		///     Gets the used execution options.
+		/// </summary>
+		/// <value>
+		///     The used execution options.
+		/// </value>
+		public ThreadDispatcherOptions Options { get; }
 
 		/// <summary>
 		///     Gets whether the timer is currently running.

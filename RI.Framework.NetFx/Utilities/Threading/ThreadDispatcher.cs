@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -25,6 +26,9 @@ namespace RI.Framework.Utilities.Threading
 	///     <para>
 	///         During <see cref="Run" />, the current <see cref="SynchronizationContext" /> is replaced by an instance of <see cref="ThreadDispatcherSynchronizationContext" /> and restored afterwards.
 	///     </para>
+	///     <note type="important">
+	///         Whether <see cref="ExecutionContext"/> and/or <see cref="CultureInfo"/> flows, depends on the used <see cref="ThreadDispatcherOptions"/>.
+	///     </note>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	public sealed class ThreadDispatcher : IThreadDispatcher
@@ -40,6 +44,16 @@ namespace RI.Framework.Utilities.Threading
 		///     </para>
 		/// </remarks>
 		public const int DefaultPriorityValue = int.MaxValue / 2;
+
+		/// <summary>
+		///     The default value for <see cref="DefaultOptions" /> if it is not explicitly set.
+		/// </summary>
+		/// <remarks>
+		///     <para>
+		///         The default value is <see cref="ThreadDispatcherOptions.None"/>.
+		///     </para>
+		/// </remarks>
+		public const ThreadDispatcherOptions DefaultOptionsValue = ThreadDispatcherOptions.None;
 
 		#endregion
 
@@ -66,6 +80,7 @@ namespace RI.Framework.Utilities.Threading
 
 			this.ShutdownMode = ThreadDispatcherShutdownMode.None;
 			this.DefaultPriority = ThreadDispatcher.DefaultPriorityValue;
+			this.DefaultOptions = ThreadDispatcher.DefaultOptionsValue;
 			this.CatchExceptions = false;
 		}
 
@@ -87,6 +102,8 @@ namespace RI.Framework.Utilities.Threading
 		private bool _catchExceptions;
 
 		private int _defaultPriority;
+
+		private ThreadDispatcherOptions _defaultOptions;
 
 		private ThreadDispatcherShutdownMode _shutdownMode;
 
@@ -347,6 +364,25 @@ namespace RI.Framework.Utilities.Threading
 		}
 
 		/// <inheritdoc />
+		public ThreadDispatcherOptions DefaultOptions
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._defaultOptions;
+				}
+			}
+			set
+			{
+				lock (this.SyncRoot)
+				{
+					this._defaultOptions = value;
+				}
+			}
+		}
+
+		/// <inheritdoc />
 		public bool IsRunning
 		{
 			get
@@ -486,11 +522,17 @@ namespace RI.Framework.Utilities.Threading
 		/// <inheritdoc />
 		public ThreadDispatcherOperation Post (Delegate action, params object[] parameters)
 		{
-			return this.Post(this.DefaultPriority, action, parameters);
+			return this.Post(this.DefaultPriority, this.DefaultOptions, action, parameters);
 		}
 
 		/// <inheritdoc />
 		public ThreadDispatcherOperation Post (int priority, Delegate action, params object[] parameters)
+		{
+			return this.Post(priority, this.DefaultOptions, action, parameters);
+		}
+
+		/// <inheritdoc />
+		public ThreadDispatcherOperation Post(int priority, ThreadDispatcherOptions options, Delegate action, params object[] parameters)
 		{
 			if (priority < 0)
 			{
@@ -508,7 +550,7 @@ namespace RI.Framework.Utilities.Threading
 			{
 				this.VerifyNotShuttingDown();
 
-				ThreadDispatcherOperation operation = new ThreadDispatcherOperation(this, action, parameters);
+				ThreadDispatcherOperation operation = new ThreadDispatcherOperation(this, options, action, parameters);
 
 				if (this.IsRunning)
 				{
@@ -527,11 +569,17 @@ namespace RI.Framework.Utilities.Threading
 		/// <inheritdoc />
 		public object Send (Delegate action, params object[] parameters)
 		{
-			return this.Send(this.DefaultPriority, action, parameters);
+			return this.Send(this.DefaultPriority, this.DefaultOptions, action, parameters);
 		}
 
 		/// <inheritdoc />
 		public object Send (int priority, Delegate action, params object[] parameters)
+		{
+			return this.Send(priority, this.DefaultOptions, action, parameters);
+		}
+
+		/// <inheritdoc />
+		public object Send(int priority, ThreadDispatcherOptions options, Delegate action, params object[] parameters)
 		{
 			if (priority < 0)
 			{
@@ -554,7 +602,7 @@ namespace RI.Framework.Utilities.Threading
 				this.VerifyNotShuttingDown();
 
 				isInThread = this.IsInThread();
-				operation = this.Post(priority, action, parameters);
+				operation = this.Post(priority, options, action, parameters);
 			}
 
 			if (isInThread)
@@ -579,11 +627,17 @@ namespace RI.Framework.Utilities.Threading
 		/// <inheritdoc />
 		public Task<object> SendAsync (Delegate action, params object[] parameters)
 		{
-			return this.SendAsync(this.DefaultPriority, action, parameters);
+			return this.SendAsync(this.DefaultPriority, this.DefaultOptions, action, parameters);
 		}
 
 		/// <inheritdoc />
 		public Task<object> SendAsync (int priority, Delegate action, params object[] parameters)
+		{
+			return this.SendAsync(priority, this.DefaultOptions, action, parameters);
+		}
+
+		/// <inheritdoc />
+		public Task<object> SendAsync(int priority, ThreadDispatcherOptions options, Delegate action, params object[] parameters)
 		{
 			if (priority < 0)
 			{
@@ -604,7 +658,7 @@ namespace RI.Framework.Utilities.Threading
 				this.VerifyRunning();
 				this.VerifyNotShuttingDown();
 
-				operation = this.Post(priority, action, parameters);
+				operation = this.Post(priority, options, action, parameters);
 			}
 
 			Task completed = operation.WaitAsync();

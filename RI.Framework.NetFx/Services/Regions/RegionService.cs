@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using RI.Framework.Collections;
+using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Composition;
 using RI.Framework.Composition.Model;
 using RI.Framework.Services.Logging;
@@ -29,7 +30,7 @@ namespace RI.Framework.Services.Regions
 	///     </para>
 	/// </remarks>
 	[Export]
-	public sealed class RegionService : IRegionService, ILogSource
+	public sealed class RegionService : IRegionService, IImporting, ILogSource
 	{
 		#region Instance Constructor/Destructor
 
@@ -38,7 +39,9 @@ namespace RI.Framework.Services.Regions
 		/// </summary>
 		public RegionService ()
 		{
+			this.AdaptersUpdated = new List<IRegionAdapter>();
 			this.AdaptersManual = new List<IRegionAdapter>();
+
 			this.RegionDictionary = new Dictionary<string, Tuple<object, IRegionAdapter>>(StringComparerEx.InvariantCultureIgnoreCase);
 		}
 
@@ -56,12 +59,52 @@ namespace RI.Framework.Services.Regions
 
 		private Dictionary<string, Tuple<object, IRegionAdapter>> RegionDictionary { get; set; }
 
+		private List<IRegionAdapter> AdaptersUpdated { get; set; }
+
+		private void UpdateAdapters()
+		{
+			this.Log(LogLevel.Debug, "Updating adapters");
+
+			HashSet<IRegionAdapter> currentAdapters = new HashSet<IRegionAdapter>(this.Adapters);
+			HashSet<IRegionAdapter> lastAdapters = new HashSet<IRegionAdapter>(this.AdaptersUpdated);
+
+			HashSet<IRegionAdapter> newAdapters = currentAdapters.Except(lastAdapters);
+			HashSet<IRegionAdapter> oldAdapters = lastAdapters.Except(currentAdapters);
+
+			this.AdaptersUpdated.Clear();
+			this.AdaptersUpdated.AddRange(currentAdapters);
+
+			foreach (IRegionAdapter adapter in newAdapters)
+			{
+				this.Log(LogLevel.Debug, "Receiver added: {0}", adapter.GetType().Name);
+			}
+
+			foreach (IRegionAdapter adapter in oldAdapters)
+			{
+				this.Log(LogLevel.Debug, "Receiver removed: {0}", adapter.GetType().Name);
+			}
+		}
+
 		#endregion
 
 
 
 
 		#region Interface: IRegionService
+
+		/// <inheritdoc />
+		void IImporting.ImportsResolved(CompositionFlags composition, bool updated)
+		{
+			if (updated)
+			{
+				this.UpdateAdapters();
+			}
+		}
+
+		/// <inheritdoc />
+		void IImporting.ImportsResolving(CompositionFlags composition)
+		{
+		}
 
 		/// <inheritdoc />
 		public IEnumerable<IRegionAdapter> Adapters
@@ -135,6 +178,8 @@ namespace RI.Framework.Services.Regions
 			}
 
 			this.AdaptersManual.Add(regionAdapter);
+
+			this.UpdateAdapters();
 		}
 
 		/// <inheritdoc />
@@ -505,6 +550,8 @@ namespace RI.Framework.Services.Regions
 			}
 
 			this.AdaptersManual.RemoveAll(regionAdapter);
+
+			this.UpdateAdapters();
 		}
 
 		/// <inheritdoc />

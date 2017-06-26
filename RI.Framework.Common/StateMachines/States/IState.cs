@@ -42,7 +42,7 @@ namespace RI.Framework.StateMachines.States
 		/// </value>
 		/// <remarks>
 		///     <para>
-		///         If <see cref="UseCaching" /> is false, the state is never cached, regardless of the state machine configurations <see cref="StateMachineConfiguration.EnableAutomaticCaching" /> setting.
+		///         If <see cref="UseCaching" /> is false, the state is never cached, regardless of the state machine configurations <see cref="StateMachineConfiguration.CachingEnabled" /> setting.
 		///     </para>
 		/// </remarks>
 		bool UseCaching { get; }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using RI.Framework.Collections;
+using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Composition;
 using RI.Framework.Composition.Model;
 using RI.Framework.Services.Logging;
@@ -30,7 +31,7 @@ namespace RI.Framework.Services.Settings
 	///     </para>
 	/// </remarks>
 	[Export]
-	public sealed class SettingService : ISettingService, ILogSource
+	public sealed class SettingService : ISettingService, IImporting, ILogSource
 	{
 		#region Instance Constructor/Destructor
 
@@ -39,8 +40,12 @@ namespace RI.Framework.Services.Settings
 		/// </summary>
 		public SettingService ()
 		{
+			this.StoragesUpdated = new List<ISettingStorage>();
+			this.ConvertersUpdated = new List<ISettingConverter>();
+
 			this.StoragesManual = new List<ISettingStorage>();
 			this.ConvertersManual = new List<ISettingConverter>();
+
 			this.Cache = new Dictionary<string, string>(StringComparerEx.InvariantCultureIgnoreCase);
 		}
 
@@ -63,6 +68,10 @@ namespace RI.Framework.Services.Settings
 
 		private List<ISettingStorage> StoragesManual { get; set; }
 
+		private List<ISettingConverter> ConvertersUpdated { get; set; }
+
+		private List<ISettingStorage> StoragesUpdated { get; set; }
+
 		#endregion
 
 
@@ -83,12 +92,75 @@ namespace RI.Framework.Services.Settings
 			return null;
 		}
 
+		private void UpdateConverters()
+		{
+			this.Log(LogLevel.Debug, "Updating converters");
+
+			HashSet<ISettingConverter> currentConverters = new HashSet<ISettingConverter>(this.Converters);
+			HashSet<ISettingConverter> lastConverters = new HashSet<ISettingConverter>(this.ConvertersUpdated);
+
+			HashSet<ISettingConverter> newConverters = currentConverters.Except(lastConverters);
+			HashSet<ISettingConverter> oldConverters = lastConverters.Except(currentConverters);
+
+			this.ConvertersUpdated.Clear();
+			this.ConvertersUpdated.AddRange(currentConverters);
+
+			foreach (ISettingConverter converter in newConverters)
+			{
+				this.Log(LogLevel.Debug, "Converter added: {0}", converter.GetType().Name);
+			}
+
+			foreach (ISettingConverter converter in oldConverters)
+			{
+				this.Log(LogLevel.Debug, "Converter removed: {0}", converter.GetType().Name);
+			}
+		}
+
+		private void UpdateStorages()
+		{
+			this.Log(LogLevel.Debug, "Updating storages");
+
+			HashSet<ISettingStorage> currentStorages = new HashSet<ISettingStorage>(this.Storages);
+			HashSet<ISettingStorage> lastStorages = new HashSet<ISettingStorage>(this.StoragesUpdated);
+
+			HashSet<ISettingStorage> newStorages = currentStorages.Except(lastStorages);
+			HashSet<ISettingStorage> oldStorages = lastStorages.Except(currentStorages);
+
+			this.StoragesUpdated.Clear();
+			this.StoragesUpdated.AddRange(currentStorages);
+
+			foreach (ISettingStorage storage in newStorages)
+			{
+				this.Log(LogLevel.Debug, "Storage added: {0}", storage.GetType().Name);
+			}
+
+			foreach (ISettingStorage storage in oldStorages)
+			{
+				this.Log(LogLevel.Debug, "Storage removed: {0}", storage.GetType().Name);
+			}
+		}
+
 		#endregion
 
 
 
 
 		#region Interface: ISettingService
+
+		/// <inheritdoc />
+		void IImporting.ImportsResolved(CompositionFlags composition, bool updated)
+		{
+			if (updated)
+			{
+				this.UpdateConverters();
+				this.UpdateStorages();
+			}
+		}
+
+		/// <inheritdoc />
+		void IImporting.ImportsResolving(CompositionFlags composition)
+		{
+		}
 
 		/// <inheritdoc />
 		public IEnumerable<ISettingConverter> Converters
@@ -138,6 +210,8 @@ namespace RI.Framework.Services.Settings
 			}
 
 			this.ConvertersManual.Add(settingConverter);
+
+			this.UpdateConverters();
 		}
 
 		/// <inheritdoc />
@@ -154,6 +228,8 @@ namespace RI.Framework.Services.Settings
 			}
 
 			this.StoragesManual.Add(settingStorage);
+
+			this.UpdateStorages();
 		}
 
 		/// <inheritdoc />
@@ -379,6 +455,8 @@ namespace RI.Framework.Services.Settings
 			}
 
 			this.ConvertersManual.RemoveAll(settingConverter);
+
+			this.UpdateConverters();
 		}
 
 		/// <inheritdoc />
@@ -395,6 +473,8 @@ namespace RI.Framework.Services.Settings
 			}
 
 			this.StoragesManual.RemoveAll(settingStorage);
+
+			this.UpdateStorages();
 		}
 
 		/// <inheritdoc />

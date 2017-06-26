@@ -398,7 +398,7 @@ namespace RI.Framework.Utilities.Threading
 					using (ManualResetEvent startEvent = new ManualResetEvent(false))
 					{
 						bool startEventSet = false;
-						int timeout = 0;
+						int timeout;
 
 						lock (this.SyncRoot)
 						{

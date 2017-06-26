@@ -341,6 +341,10 @@ namespace RI.Framework.StateMachines
 			}
 		}
 
+		/// <summary>
+		///     Sends a signal to the current state.
+		/// </summary>
+		/// <param name="signal"> The signal. </param>
 		protected void SignalInternal (object signal)
 		{
 			StateSignalInfo signalInfo = new StateSignalInfo(this);
@@ -373,6 +377,10 @@ namespace RI.Framework.StateMachines
 			}
 		}
 
+		/// <summary>
+		///     Initiates a transition to another state.
+		/// </summary>
+		/// <param name="nextState"> The state instance to transition to. </param>
 		protected void TransientInternal (IState nextState)
 		{
 			IState previousState = this.State;
@@ -395,6 +403,10 @@ namespace RI.Framework.StateMachines
 			}
 		}
 
+		/// <summary>
+		///     Updates the current state.
+		/// </summary>
+		/// <param name="delay"> The delay after which the update is executed. Use zero to indicate "as soon as possible". </param>
 		protected void UpdateInternal (int delay)
 		{
 			if (delay < 0)

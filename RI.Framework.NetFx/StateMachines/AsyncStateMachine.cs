@@ -317,6 +317,7 @@ namespace RI.Framework.StateMachines
 		/// <summary>
 		///     Waits until the state has been updated.
 		/// </summary>
+		/// <param name="state"> The type of state to wait for its update. </param>
 		/// <param name="timeout"> The timeout in milliseconds the method should wait for the update to be executed. </param>
 		/// <returns>
 		///     true if the update was executed within the specified timeout, false otherwise.
@@ -329,6 +330,21 @@ namespace RI.Framework.StateMachines
 		/// <summary>
 		///     Waits until the state has been updated.
 		/// </summary>
+		/// <typeparam name="TState"> The type of state to wait for its update. </typeparam>
+		/// <param name="timeout"> The timeout in milliseconds the method should wait for the update to be executed. </param>
+		/// <returns>
+		///     true if the update was executed within the specified timeout, false otherwise.
+		/// </returns>
+		public Task<bool> WaitForUpdateAsync<TState>(int timeout)
+			where TState : IState
+		{
+			return this.WaitForUpdateAsync(typeof(TState), timeout, CancellationToken.None);
+		}
+
+		/// <summary>
+		///     Waits until the state has been updated.
+		/// </summary>
+		/// <param name="state"> The type of state to wait for its update. </param>
 		/// <param name="timeout"> The timeout in milliseconds the method should wait for the update to be executed. </param>
 		/// <param name="cancellationToken"> The token which can be used to cancel the wait. </param>
 		/// <returns>
@@ -350,6 +366,21 @@ namespace RI.Framework.StateMachines
 			Task<bool> result = completed.ContinueWith((task, obj) => object.ReferenceEquals(task.Result, obj), updateTask);
 
 			return result;
+		}
+
+		/// <summary>
+		///     Waits until the state has been updated.
+		/// </summary>
+		/// <typeparam name="TState"> The type of state to wait for its update. </typeparam>
+		/// <param name="timeout"> The timeout in milliseconds the method should wait for the update to be executed. </param>
+		/// <param name="cancellationToken"> The token which can be used to cancel the wait. </param>
+		/// <returns>
+		///     true if the update was executed within the specified timeout, false otherwise.
+		/// </returns>
+		public Task<bool> WaitForUpdateAsync<TState>(int timeout, CancellationToken cancellationToken)
+			where TState : IState
+		{
+			return this.WaitForUpdateAsync(typeof(TState), timeout, cancellationToken);
 		}
 
 		private Task<bool> WaitForStateAsyncInternal (Type state, int timeout, bool ignoreCurrentState, CancellationToken cancellationToken)

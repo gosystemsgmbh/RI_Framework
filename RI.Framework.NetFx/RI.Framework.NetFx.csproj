@@ -165,6 +165,7 @@
     <Compile Include="Utilities\Threading\ThreadDispatcherExceptionEventArgs.cs" />
     <Compile Include="Utilities\Threading\ThreadDispatcherOperation.cs" />
     <Compile Include="Utilities\Threading\ThreadDispatcherOperationState.cs" />
+    <Compile Include="Utilities\Threading\ThreadDispatcherOptions.cs" />
     <Compile Include="Utilities\Threading\ThreadDispatcherShutdownMode.cs" />
     <Compile Include="Utilities\Threading\ThreadDispatcherSynchronizationContext.cs" />
     <Compile Include="Utilities\Threading\ThreadDispatcherTimer.cs" />

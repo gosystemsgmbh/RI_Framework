@@ -30,6 +30,7 @@ namespace RI.Framework.Utilities.Threading
 			this.DispatcherExceptionHandlerDelegate = this.DispatcherExceptionHandler;
 
 			this.DefaultPriority = ThreadDispatcher.DefaultPriorityValue;
+			this.DefaultOptions = ThreadDispatcher.DefaultOptionsValue;
 			this.CatchExceptions = false;
 			this.FinishPendingDelegatesOnShutdown = false;
 			this.ThreadName = this.GetType().Name;
@@ -53,6 +54,7 @@ namespace RI.Framework.Utilities.Threading
 
 		private bool _catchExceptions;
 		private int _defaultPriority;
+		private ThreadDispatcherOptions _defaultOptions;
 		private bool _finishPendingDelegatesOnShutdown;
 		private bool _isBackgroundThread;
 		private CultureInfo _threadCulture;
@@ -333,6 +335,7 @@ namespace RI.Framework.Utilities.Threading
 			this.DispatcherInternal.Exception += this.DispatcherExceptionHandlerDelegate;
 			this.DispatcherInternal.CatchExceptions = this.CatchExceptions;
 			this.DispatcherInternal.DefaultPriority = this.DefaultPriority;
+			this.DispatcherInternal.DefaultOptions = this.DefaultOptions;
 		}
 
 		/// <inheritdoc />
@@ -469,6 +472,35 @@ namespace RI.Framework.Utilities.Threading
 		}
 
 		/// <inheritdoc />
+		public ThreadDispatcherOptions DefaultOptions
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					if (this.DispatcherInternal != null)
+					{
+						this._defaultOptions = this.DispatcherInternal.DefaultOptions;
+					}
+
+					return this._defaultOptions;
+				}
+			}
+			set
+			{
+				lock (this.SyncRoot)
+				{
+					this._defaultOptions = value;
+
+					if (this.DispatcherInternal != null)
+					{
+						this.DispatcherInternal.DefaultOptions = value;
+					}
+				}
+			}
+		}
+
+		/// <inheritdoc />
 		public bool IsShuttingDown
 		{
 			get
@@ -557,6 +589,19 @@ namespace RI.Framework.Utilities.Threading
 		}
 
 		/// <inheritdoc />
+		public ThreadDispatcherOperation Post(int priority, ThreadDispatcherOptions options, Delegate action, params object[] parameters)
+		{
+			ThreadDispatcher dispatcher;
+			lock (this.SyncRoot)
+			{
+				this.VerifyRunning();
+				dispatcher = this.DispatcherInternal;
+			}
+
+			return dispatcher.Post(priority, options, action, parameters);
+		}
+
+		/// <inheritdoc />
 		public object Send (Delegate action, params object[] parameters)
 		{
 			ThreadDispatcher dispatcher;
@@ -583,6 +628,19 @@ namespace RI.Framework.Utilities.Threading
 		}
 
 		/// <inheritdoc />
+		public object Send(int priority, ThreadDispatcherOptions options, Delegate action, params object[] parameters)
+		{
+			ThreadDispatcher dispatcher;
+			lock (this.SyncRoot)
+			{
+				this.VerifyRunning();
+				dispatcher = this.DispatcherInternal;
+			}
+
+			return dispatcher.Send(priority, options, action, parameters);
+		}
+
+		/// <inheritdoc />
 		public Task<object> SendAsync (Delegate action, params object[] parameters)
 		{
 			ThreadDispatcher dispatcher;
@@ -606,6 +664,19 @@ namespace RI.Framework.Utilities.Threading
 			}
 
 			return dispatcher.SendAsync(priority, action, parameters);
+		}
+
+		/// <inheritdoc />
+		public Task<object> SendAsync(int priority, ThreadDispatcherOptions options, Delegate action, params object[] parameters)
+		{
+			ThreadDispatcher dispatcher;
+			lock (this.SyncRoot)
+			{
+				this.VerifyRunning();
+				dispatcher = this.DispatcherInternal;
+			}
+
+			return dispatcher.SendAsync(priority, options, action, parameters);
 		}
 
 		/// <inheritdoc />

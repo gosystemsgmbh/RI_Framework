@@ -25,6 +25,11 @@ namespace RI.Framework.Services.Messaging.Dispatchers
 	[Export]
 	public sealed class WpfMessageDispatcher : IMessageDispatcher
 	{
+		private DispatcherPriority _priority;
+
+
+
+
 		#region Instance Constructor/Destructor
 
 		/// <summary>
@@ -41,6 +46,7 @@ namespace RI.Framework.Services.Messaging.Dispatchers
 
 			this.SyncRoot = new object();
 			this.Dispatcher = application.Dispatcher;
+			this.Priority = DispatcherPriority.Normal;
 		}
 
 		/// <summary>
@@ -57,6 +63,7 @@ namespace RI.Framework.Services.Messaging.Dispatchers
 
 			this.SyncRoot = new object();
 			this.Dispatcher = dispatcher;
+			this.Priority = DispatcherPriority.Normal;
 		}
 
 		#endregion
@@ -74,6 +81,34 @@ namespace RI.Framework.Services.Messaging.Dispatchers
 		/// </value>
 		public Dispatcher Dispatcher { get; }
 
+		/// <summary>
+		/// Gets or sets the priority used for dispatching messages.
+		/// </summary>
+		/// <value>
+		/// The priority used for dispatching messages.
+		/// </value>
+		/// <remarks>
+		/// <para>
+		/// The default value is <see cref="DispatcherPriority.Normal"/>.
+		/// </para>
+		/// </remarks>
+		public DispatcherPriority Priority
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._priority;
+				}
+			}
+			set
+			{
+				lock (this.SyncRoot)
+				{
+					this._priority = value;
+				}
+			}
+		}
 
 		private object SyncRoot { get; }
 
@@ -105,7 +140,7 @@ namespace RI.Framework.Services.Messaging.Dispatchers
 
 			lock (this.SyncRoot)
 			{
-				this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action<IEnumerable<IMessageReceiver>, IMessage, IMessageService>((r, m, s) =>
+				this.Dispatcher.BeginInvoke(this.Priority, new Action<IEnumerable<IMessageReceiver>, IMessage, IMessageService>((r, m, s) =>
 				{
 					foreach (IMessageReceiver receiver in r)
 					{

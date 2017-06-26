@@ -33,7 +33,6 @@ namespace RI.Framework.StateMachines.Dispatchers
 		public DefaultStateDispatcher ()
 		{
 			this.SyncRoot = new object();
-
 			this.UpdateTimers = new Dictionary<StateMachine, Timer>();
 		}
 

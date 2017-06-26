@@ -165,7 +165,7 @@ namespace RI.Framework.Composition.Catalogs
 			bool cont = true;
 			while (cont)
 			{
-				int itemsVersion = 0;
+				int itemsVersion;
 				List<CompositionCatalog> catalogs = new List<CompositionCatalog>();
 
 				lock (this.SyncRoot)
