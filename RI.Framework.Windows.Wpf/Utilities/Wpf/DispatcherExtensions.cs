@@ -42,9 +42,9 @@ namespace RI.Framework.Utilities.Wpf
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" /> is null. </exception>
-		public static Task DoAllEventsAsync (this Dispatcher dispatcher)
+		public static async Task DoAllEventsAsync (this Dispatcher dispatcher)
 		{
-			return dispatcher.DoEventsAsync(DispatcherPriority.SystemIdle);
+			await dispatcher.DoEventsAsync(DispatcherPriority.SystemIdle);
 		}
 
 		/// <summary>
@@ -82,7 +82,7 @@ namespace RI.Framework.Utilities.Wpf
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" /> is null. </exception>
-		public static Task DoEventsAsync (this Dispatcher dispatcher, DispatcherPriority priority)
+		public static async Task DoEventsAsync (this Dispatcher dispatcher, DispatcherPriority priority)
 		{
 			if (dispatcher == null)
 			{
@@ -90,7 +90,7 @@ namespace RI.Framework.Utilities.Wpf
 			}
 
 			DispatcherOperation operation = dispatcher.InvokeAsync(() => { }, priority);
-			return operation.Task;
+			await operation.Task;
 		}
 
 		#endregion

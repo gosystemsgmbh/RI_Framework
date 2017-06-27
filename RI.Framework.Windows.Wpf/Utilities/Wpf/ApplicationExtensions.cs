@@ -48,14 +48,14 @@ namespace RI.Framework.Utilities.Wpf
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="application" /> is null. </exception>
-		public static Task DoAllEventsAsync (this Application application)
+		public static async Task DoAllEventsAsync (this Application application)
 		{
 			if (application == null)
 			{
 				throw new ArgumentNullException(nameof(application));
 			}
 
-			return application.Dispatcher.DoAllEventsAsync();
+			await application.Dispatcher.DoAllEventsAsync();
 		}
 
 		/// <summary>
@@ -93,14 +93,14 @@ namespace RI.Framework.Utilities.Wpf
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="application" /> is null. </exception>
-		public static Task DoEventsAsync (this Application application, DispatcherPriority priority)
+		public static async Task DoEventsAsync (this Application application, DispatcherPriority priority)
 		{
 			if (application == null)
 			{
 				throw new ArgumentNullException(nameof(application));
 			}
 
-			return application.Dispatcher.DoEventsAsync(priority);
+			await application.Dispatcher.DoEventsAsync(priority);
 		}
 
 		#endregion

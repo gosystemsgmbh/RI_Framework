@@ -554,15 +554,15 @@ namespace RI.Framework.Data.EF
 		}
 
 		/// <inheritdoc />
-		public override Task<int> SaveChangesAsync (CancellationToken cancellationToken)
+		public override async Task<int> SaveChangesAsync (CancellationToken cancellationToken)
 		{
 			this.BeforeSave();
 
-			return base.SaveChangesAsync(cancellationToken);
+			return await base.SaveChangesAsync(cancellationToken);
 		}
 
 		/// <inheritdoc />
-		public sealed override Task<int> SaveChangesAsync () => base.SaveChangesAsync();
+		public sealed override async Task<int> SaveChangesAsync () => await base.SaveChangesAsync();
 
 		/// <inheritdoc />
 		public sealed override DbSet Set (Type entityType)
