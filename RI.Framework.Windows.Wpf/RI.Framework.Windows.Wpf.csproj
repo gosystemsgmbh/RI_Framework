@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Mvvm\View\GenericViewBase.cs" />
     <Compile Include="Mvvm\View\WindowViewBase.cs" />
+    <Compile Include="StateMachines\Dispatchers\WpfStateDispatcher.cs" />
     <Compile Include="Utilities\Wpf\Controls\ComboBoxChecker.cs" />
     <Compile Include="Utilities\Wpf\Controls\_NamespaceDoc.cs" />
     <Compile Include="Utilities\Wpf\Converters\InvertedBoolVisibilityConverter.cs" />

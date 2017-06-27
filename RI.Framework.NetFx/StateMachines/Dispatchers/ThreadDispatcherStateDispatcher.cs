@@ -10,17 +10,18 @@ using RI.Framework.Utilities.Threading;
 namespace RI.Framework.StateMachines.Dispatchers
 {
 	/// <summary>
-	///     Implements a state machine operation dispatcher which uses a <see cref="IThreadDispatcher" />.
+	///     Implements a state machine operation dispatcher which uses <see cref="IThreadDispatcher" />.
 	/// </summary>
 	/// <remarks>
 	///     <para>
 	///         See <see cref="IStateDispatcher" /> for more details.
 	///     </para>
-	///     <note type="note">
-	///         Signals and transitions are dispatched using the <see cref="IThreadDispatcher.DefaultPriority" /> priority.
-	///     </note>
+	///     <para>
+	///         State machine operations are dispatched using <see cref="IThreadDispatcher.Post(int,ThreadDispatcherOptions,Delegate,object[])" />.
+	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
+	/// TODO: Add IDisposable
 	public sealed class ThreadDispatcherStateDispatcher : IStateDispatcher
 	{
 		#region Instance Constructor/Destructor
@@ -39,8 +40,10 @@ namespace RI.Framework.StateMachines.Dispatchers
 
 			this.SyncRoot = new object();
 			this.ThreadDispatcher = threadDispatcher;
-			this.Priority = null;
 			this.UpdateTimers = new Dictionary<StateMachine, ThreadDispatcherTimer>();
+
+			this.Priority = null;
+			this.Options = null;
 		}
 
 		#endregion
@@ -151,13 +154,19 @@ namespace RI.Framework.StateMachines.Dispatchers
 		/// <inheritdoc />
 		public void DispatchSignal (StateMachineSignalDelegate signalDelegate, StateSignalInfo signalInfo)
 		{
-			this.ThreadDispatcher.Post(this.UsedPriority, this.UsedOptions, new Action<StateMachineSignalDelegate, StateSignalInfo>((x, y) => x(y)), signalDelegate, signalInfo);
+			lock (this.SyncRoot)
+			{
+				this.ThreadDispatcher.Post(this.UsedPriority, this.UsedOptions, signalDelegate, signalInfo);
+			}
 		}
 
 		/// <inheritdoc />
 		public void DispatchTransition (StateMachineTransientDelegate transientDelegate, StateTransientInfo transientInfo)
 		{
-			this.ThreadDispatcher.Post(this.UsedPriority, this.UsedOptions, new Action<StateMachineTransientDelegate, StateTransientInfo>((x, y) => x(y)), transientDelegate, transientInfo);
+			lock (this.SyncRoot)
+			{
+				this.ThreadDispatcher.Post(this.UsedPriority, this.UsedOptions, transientDelegate, transientInfo);
+			}
 		}
 
 		/// <inheritdoc />

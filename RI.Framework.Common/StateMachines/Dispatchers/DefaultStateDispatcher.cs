@@ -11,14 +11,14 @@ using RI.Framework.Utilities.ObjectModel;
 namespace RI.Framework.StateMachines.Dispatchers
 {
 	/// <summary>
-	///     Implements a default state machine operation dispatcher suitable for most scenarios.
+	///     Implements a default state machine operation dispatcher.
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         <see cref="DefaultStateDispatcher" /> internally uses a <see cref="SynchronizationContext" />, which is captured at the time of dispatching, to dispatch operations or falls back to <see cref="ThreadPool.QueueUserWorkItem(WaitCallback,object)" /> if no <see cref="SynchronizationContext" /> is available.
+	///         See <see cref="IStateCache" /> for more details.
 	///     </para>
 	///     <para>
-	///         See <see cref="IStateCache" /> for more details.
+	///         <see cref="DefaultStateDispatcher" /> uses <see cref="SynchronizationContext" />, which is captured at the time of dispatching, to dispatch operations or falls back to <see cref="ThreadPool.QueueUserWorkItem(WaitCallback,object)" /> if no <see cref="SynchronizationContext" /> is available.
 	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
@@ -61,15 +61,21 @@ namespace RI.Framework.StateMachines.Dispatchers
 		/// <inheritdoc />
 		public void DispatchSignal (StateMachineSignalDelegate signalDelegate, StateSignalInfo signalInfo)
 		{
-			DispatchCapture capture = new DispatchCapture(signalDelegate, signalInfo);
-			capture.Execute();
+			lock (this.SyncRoot)
+			{
+				DispatchCapture capture = new DispatchCapture(signalDelegate, signalInfo);
+				capture.Execute();
+			}
 		}
 
 		/// <inheritdoc />
 		public void DispatchTransition (StateMachineTransientDelegate transientDelegate, StateTransientInfo transientInfo)
 		{
-			DispatchCapture capture = new DispatchCapture(transientDelegate, transientInfo);
-			capture.Execute();
+			lock (this.SyncRoot)
+			{
+				DispatchCapture capture = new DispatchCapture(transientDelegate, transientInfo);
+				capture.Execute();
+			}
 		}
 
 		/// <inheritdoc />

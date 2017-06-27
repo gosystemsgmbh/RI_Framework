@@ -75,6 +75,9 @@ namespace RI.Framework.Utilities.Threading
 			this.IdleSignals = null;
 			this.CurrentPriority = null;
 
+			this.Scheduler = null;
+			this.Context = null;
+
 			this.OperationInProgress = null;
 			this.PreRunQueue = new PriorityQueue<ThreadDispatcherOperation>();
 
@@ -106,6 +109,8 @@ namespace RI.Framework.Utilities.Threading
 		private ThreadDispatcherOptions _defaultOptions;
 
 		private ThreadDispatcherShutdownMode _shutdownMode;
+		private TaskScheduler _scheduler;
+		private SynchronizationContext _context;
 
 		#endregion
 
@@ -123,6 +128,42 @@ namespace RI.Framework.Utilities.Threading
 		private PriorityQueue<ThreadDispatcherOperation> Queue { get; set; }
 
 		private Thread Thread { get; set; }
+
+		internal TaskScheduler Scheduler
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._scheduler;
+				}
+			}
+			private set
+			{
+				lock (this.SyncRoot)
+				{
+					this._scheduler = value;
+				}
+			}
+		}
+
+		internal SynchronizationContext Context
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._context;
+				}
+			}
+			private set
+			{
+				lock (this.SyncRoot)
+				{
+					this._context = value;
+				}
+			}
+		}
 
 		#endregion
 
@@ -154,10 +195,13 @@ namespace RI.Framework.Utilities.Threading
 					this.IdleSignals = new List<TaskCompletionSource<object>>();
 					this.CurrentPriority = new Stack<int>();
 
+					this.Scheduler = null; //TODO: Implement TaskScheduler
+					this.Context = new ThreadDispatcherSynchronizationContext(this);
+
 					this.ShutdownMode = ThreadDispatcherShutdownMode.None;
 					this.PreRunQueue.MoveTo(this.Queue);
 
-					SynchronizationContext.SetSynchronizationContext(new ThreadDispatcherSynchronizationContext(this));
+					SynchronizationContext.SetSynchronizationContext(this.Context);
 				}
 
 				this.ExecuteFrame(null);
@@ -166,8 +210,6 @@ namespace RI.Framework.Utilities.Threading
 			{
 				lock (this.SyncRoot)
 				{
-					SynchronizationContext.SetSynchronizationContext(synchronizationContextBackup);
-
 					foreach (ThreadDispatcherOperation operation in this.Queue)
 					{
 						operation.Cancel();
@@ -177,6 +219,11 @@ namespace RI.Framework.Utilities.Threading
 					{
 						idleSignal.TrySetResult(null);
 					}
+
+					SynchronizationContext.SetSynchronizationContext(synchronizationContextBackup);
+
+					this.Context = null;
+					this.Scheduler = null;
 
 					this.CurrentPriority?.Clear();
 					this.IdleSignals?.Clear();

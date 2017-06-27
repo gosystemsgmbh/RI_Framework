@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 
 
@@ -23,11 +25,6 @@ namespace RI.Framework.Utilities.Threading
 		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" />  is null. </exception>
 		public static int GetCurrentPriorityOrDefault (this IThreadDispatcher dispatcher)
 		{
-			if (dispatcher == null)
-			{
-				throw new ArgumentNullException(nameof(dispatcher));
-			}
-
 			return dispatcher.GetCurrentPriorityOrDefault(dispatcher.DefaultPriority);
 		}
 
@@ -76,12 +73,7 @@ namespace RI.Framework.Utilities.Threading
 		/// <exception cref="InvalidOperationException"> The dispatcher is not running or is being shut down. </exception>
 		public static ThreadDispatcherTimer PostDelayed (this IThreadDispatcher dispatcher, int milliseconds, Delegate action, params object[] parameters)
 		{
-			if (dispatcher == null)
-			{
-				throw new ArgumentNullException(nameof(dispatcher));
-			}
-
-			return dispatcher.PostDelayed(milliseconds, dispatcher.DefaultPriority, action, parameters);
+			return dispatcher.PostDelayed(milliseconds, dispatcher.DefaultPriority, dispatcher.DefaultOptions, action, parameters);
 		}
 
 		/// <summary>
@@ -100,29 +92,7 @@ namespace RI.Framework.Utilities.Threading
 		/// <exception cref="InvalidOperationException"> The dispatcher is not running or is being shut down. </exception>
 		public static ThreadDispatcherTimer PostDelayed (this IThreadDispatcher dispatcher, int milliseconds, int priority, Delegate action, params object[] parameters)
 		{
-			if (dispatcher == null)
-			{
-				throw new ArgumentNullException(nameof(dispatcher));
-			}
-
-			if (milliseconds < 0)
-			{
-				throw new ArgumentOutOfRangeException(nameof(milliseconds));
-			}
-
-			if (priority < 0)
-			{
-				throw new ArgumentOutOfRangeException(nameof(priority));
-			}
-
-			if (action == null)
-			{
-				throw new ArgumentNullException(nameof(action));
-			}
-
-			ThreadDispatcherTimer timer = new ThreadDispatcherTimer(dispatcher, ThreadDispatcherTimerMode.OneShot, priority, dispatcher.DefaultOptions, milliseconds, action, parameters);
-			timer.Start();
-			return timer;
+			return dispatcher.PostDelayed(milliseconds, priority, dispatcher.DefaultOptions, action, parameters);
 		}
 
 		/// <summary>
@@ -226,6 +196,61 @@ namespace RI.Framework.Utilities.Threading
 		public static ThreadDispatcherTimer PostDelayed(this IThreadDispatcher dispatcher, TimeSpan delay, int priority, ThreadDispatcherOptions options, Delegate action, params object[] parameters)
 		{
 			return dispatcher.PostDelayed((int)delay.TotalMilliseconds, priority, options, action, parameters);
+		}
+
+		/// <summary>
+		/// Gets the <see cref="SynchronizationContext"/> associated with the dispatcher.
+		/// </summary>
+		/// <param name="dispatcher"> The dispatcher. </param>
+		/// <returns>
+		/// The <see cref="SynchronizationContext"/> associated with the dispatcher.
+		/// </returns>
+		public static SynchronizationContext GetSynchronizationContext (this IThreadDispatcher dispatcher)
+		{
+			if (dispatcher == null)
+			{
+				throw new ArgumentNullException(nameof(dispatcher));
+			}
+
+			if (dispatcher is ThreadDispatcher)
+			{
+				return ((ThreadDispatcher)dispatcher).Context;
+			}
+
+			if (dispatcher is HeavyThreadDispatcher)
+			{
+				return ((HeavyThreadDispatcher)dispatcher).Dispatcher.Context;
+			}
+
+			return new ThreadDispatcherSynchronizationContext(dispatcher);
+		}
+
+		/// <summary>
+		/// Gets the <see cref="TaskScheduler"/> associated with the dispatcher.
+		/// </summary>
+		/// <param name="dispatcher"> The dispatcher. </param>
+		/// <returns>
+		/// The <see cref="TaskScheduler"/> associated with the dispatcher.
+		/// </returns>
+		public static TaskScheduler GetTaskScheduler (this IThreadDispatcher dispatcher)
+		{
+			if (dispatcher == null)
+			{
+				throw new ArgumentNullException(nameof(dispatcher));
+			}
+
+			if (dispatcher is ThreadDispatcher)
+			{
+				return ((ThreadDispatcher)dispatcher).Scheduler;
+			}
+
+			if (dispatcher is HeavyThreadDispatcher)
+			{
+				return ((HeavyThreadDispatcher)dispatcher).Dispatcher.Scheduler;
+			}
+
+			//TODO: Implement TaskScheduler
+			return null;
 		}
 
 		#endregion

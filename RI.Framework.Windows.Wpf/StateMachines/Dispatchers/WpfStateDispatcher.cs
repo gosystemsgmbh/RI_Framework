@@ -1,44 +1,36 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Threading;
 
-using RI.Framework.Composition.Model;
 using RI.Framework.Utilities.ObjectModel;
 
 
 
 
-namespace RI.Framework.Services.Messaging.Dispatchers
+namespace RI.Framework.StateMachines.Dispatchers
 {
 	/// <summary>
-	///     Implements a message dispatcher which uses <see cref="System.Windows.Threading.Dispatcher" />.
+	///     Implements a state machine operation dispatcher which uses <see cref="System.Windows.Threading.Dispatcher" />.
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         See <see cref="IMessageDispatcher" /> for more details.
+	///         See <see cref="IStateDispatcher" /> for more details.
 	///     </para>
 	///     <para>
-	///         Messages are dispatched using <see cref="System.Windows.Threading.Dispatcher.BeginInvoke(DispatcherPriority,Delegate,object)" />.
+	///         State machine operations are dispatched using <see cref="System.Windows.Threading.Dispatcher.BeginInvoke(DispatcherPriority,Delegate,object)" />.
 	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
-	[Export]
-	public sealed class WpfMessageDispatcher : IMessageDispatcher
+	public sealed class WpfStateDispatcher : IStateDispatcher
 	{
-		private DispatcherPriority _priority;
-
-
-
-
 		#region Instance Constructor/Destructor
 
 		/// <summary>
-		///     Creates a new instance of <see cref="WpfMessageDispatcher" />.
+		///     Creates a new instance of <see cref="WpfStateDispatcher" />.
 		/// </summary>
 		/// <param name="application"> The application object to get the dispatcher from. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="application" /> is null. </exception>
-		public WpfMessageDispatcher (Application application)
+		public WpfStateDispatcher(Application application)
 		{
 			if (application == null)
 			{
@@ -51,11 +43,11 @@ namespace RI.Framework.Services.Messaging.Dispatchers
 		}
 
 		/// <summary>
-		///     Creates a new instance of <see cref="WpfMessageDispatcher" />.
+		///     Creates a new instance of <see cref="WpfStateDispatcher" />.
 		/// </summary>
 		/// <param name="dispatcher"> The dispatcher to use. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" /> is null. </exception>
-		public WpfMessageDispatcher (Dispatcher dispatcher)
+		public WpfStateDispatcher(Dispatcher dispatcher)
 		{
 			if (dispatcher == null)
 			{
@@ -81,6 +73,8 @@ namespace RI.Framework.Services.Messaging.Dispatchers
 		///     The used dispatcher.
 		/// </value>
 		public Dispatcher Dispatcher { get; }
+
+		private DispatcherPriority _priority;
 
 		/// <summary>
 		/// Gets or sets the priority used for dispatching messages.
@@ -111,43 +105,43 @@ namespace RI.Framework.Services.Messaging.Dispatchers
 			}
 		}
 
-		private object SyncRoot { get; }
-
 		#endregion
 
 
 
 
-		#region Interface: IMessageDispatcher
+		#region Interface: IStateDispatcher
 
 		/// <inheritdoc />
 		bool ISynchronizable.IsSynchronized => true;
 
 		/// <inheritdoc />
-		object ISynchronizable.SyncRoot => this.SyncRoot;
+		public object SyncRoot { get; }
 
 		/// <inheritdoc />
-		public void Post (IEnumerable<IMessageReceiver> receivers, IMessage message, IMessageService messageService)
+		public void DispatchSignal(StateMachineSignalDelegate signalDelegate, StateSignalInfo signalInfo)
 		{
-			if (receivers == null)
-			{
-				throw new ArgumentNullException(nameof(receivers));
-			}
-
-			if (message == null)
-			{
-				throw new ArgumentNullException(nameof(message));
-			}
-
 			lock (this.SyncRoot)
 			{
-				this.Dispatcher.BeginInvoke(this.Priority, new Action<IEnumerable<IMessageReceiver>, IMessage, IMessageService>((r, m, s) =>
-				{
-					foreach (IMessageReceiver receiver in r)
-					{
-						receiver.ReceiveMessage(m, s);
-					}
-				}), receivers, message, messageService);
+				this.Dispatcher.BeginInvoke(this.Priority, signalDelegate, signalInfo);
+			}
+		}
+
+		/// <inheritdoc />
+		public void DispatchTransition(StateMachineTransientDelegate transientDelegate, StateTransientInfo transientInfo)
+		{
+			lock (this.SyncRoot)
+			{
+				this.Dispatcher.BeginInvoke(this.Priority, transientDelegate, transientInfo);
+			}
+		}
+
+		/// <inheritdoc />
+		public void DispatchUpdate(StateMachineUpdateDelegate updateDelegate, StateUpdateInfo updateInfo)
+		{
+			lock (this.SyncRoot)
+			{
+				this.Dispatcher.BeginInvoke(this.Priority, updateDelegate, updateInfo);
 			}
 		}
 

@@ -13,11 +13,7 @@ namespace RI.Framework.Utilities.Threading
 	{
 		#region Instance Constructor/Destructor
 
-		/// <summary>
-		///     Creates a new instance of <see cref="ThreadDispatcherSynchronizationContext" />.
-		/// </summary>
-		/// <param name="dispatcher"> The used dispatcher. </param>
-		public ThreadDispatcherSynchronizationContext (IThreadDispatcher dispatcher)
+		internal ThreadDispatcherSynchronizationContext (IThreadDispatcher dispatcher)
 		{
 			if (dispatcher == null)
 			{

@@ -14,18 +14,16 @@ namespace RI.Framework.Utilities.Threading
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         <see cref="ThreadDispatcherTimer" /> enqueues a delegate to the specified dispatchers queue (using <see cref="IThreadDispatcher.Send(int,Delegate,object[])" />) in a specified interval.
+	///         <see cref="ThreadDispatcherTimer" /> enqueues a delegate to the specified dispatchers queue (using <see cref="IThreadDispatcher.Post(int,ThreadDispatcherOptions,Delegate,object[])" />) in a specified interval.
 	///     </para>
 	///     <para>
 	///         The interval is awaited before the timer is executed for the first time. Afterwards, the delegate is posted to the dispatcher in the specified interval.
-	///         However, to prevent congestion in cases the execution of the delegate takes longer than the interval, the interval is not restarted before the delegate has finished processing.
+	///         The interval is strictly observed.
+	///         This means that if a previous interval has not yet finished executing the delegate, it is not dispatched for execution until the next interval.
 	///     </para>
 	///     <para>
 	///         The timer is initially stopped and needs to be started explicitly using <see cref="Start" />.
 	///     </para>
-	///     <note type="note">
-	///         <see cref="ThreadDispatcherTimer" /> is relatively heavy-weighted as it uses its own thread (one per instance) to deliver the delegate to the dispatcher.
-	///     </note>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	public sealed class ThreadDispatcherTimer : IDisposable, ISynchronizable
@@ -88,6 +86,9 @@ namespace RI.Framework.Utilities.Threading
 			this.Action = action;
 			this.Parameters = parameters;
 
+			this.Timer = null;
+			this.PreviousOperation = null;
+
 			//TODO: Use real
 			ThreadDispatcherOperation.Capture();
 		}
@@ -109,20 +110,14 @@ namespace RI.Framework.Utilities.Threading
 
 		private int _executionCount;
 
+		private int _missCount;
+
 		#endregion
 
 
 
 
 		#region Instance Properties/Indexer
-
-		/// <summary>
-		///     Gets the used delegate.
-		/// </summary>
-		/// <value>
-		///     The used delegate.
-		/// </value>
-		public Delegate Action { get; }
 
 		/// <summary>
 		///     Gets the used dispatcher.
@@ -133,6 +128,91 @@ namespace RI.Framework.Utilities.Threading
 		public IThreadDispatcher Dispatcher { get; }
 
 		/// <summary>
+		///     Gets the timer mode.
+		/// </summary>
+		/// <value>
+		///     The timer mode.
+		/// </value>
+		public ThreadDispatcherTimerMode Mode { get; }
+
+		/// <summary>
+		///     Gets the priority.
+		/// </summary>
+		/// <value>
+		///     The priority.
+		/// </value>
+		public int Priority { get; }
+
+		/// <summary>
+		///     Gets the used execution options.
+		/// </summary>
+		/// <value>
+		///     The used execution options.
+		/// </value>
+		public ThreadDispatcherOptions Options { get; }
+
+		/// <summary>
+		///     Gets the used interval.
+		/// </summary>
+		/// <value>
+		///     The used interval.
+		/// </value>
+		public TimeSpan Interval { get; }
+
+		/// <summary>
+		///     Gets the used delegate.
+		/// </summary>
+		/// <value>
+		///     The used delegate.
+		/// </value>
+		public Delegate Action { get; }
+
+		/// <summary>
+		///     Gets the optional parameters of the delagate.
+		/// </summary>
+		/// <value>
+		///     The optional parameters of the delagate.
+		/// </value>
+		public object[] Parameters { get; }
+
+		private Timer Timer { get; set; }
+
+		private ThreadDispatcherOperation PreviousOperation { get; set; }
+
+
+
+
+
+		/// <summary>
+		///     Gets the number of times the delegate was not executed because the previous execution was not yet finished.
+		/// </summary>
+		/// <value>
+		///     The number of times the delegate was not executed because the previous execution was not yet finished
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         <see cref="MissCount" /> is reset to zero whenever the timer is started after it was stopped.
+		///     </para>
+		/// </remarks>
+		public int MissCount
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._missCount;
+				}
+			}
+			private set
+			{
+				lock (this.SyncRoot)
+				{
+					this._missCount = value;
+				}
+			}
+		}
+
+		/// <summary>
 		///     Gets the number of times the delegate was executed.
 		/// </summary>
 		/// <value>
@@ -140,7 +220,7 @@ namespace RI.Framework.Utilities.Threading
 		/// </value>
 		/// <remarks>
 		///     <para>
-		///         <see cref="ExecutionCount" /> is reset to zero whenever the timer is started after it is stopped.
+		///         <see cref="ExecutionCount" /> is reset to zero whenever the timer is started after it was stopped.
 		///     </para>
 		/// </remarks>
 		public int ExecutionCount
@@ -162,22 +242,6 @@ namespace RI.Framework.Utilities.Threading
 		}
 
 		/// <summary>
-		///     Gets the used interval.
-		/// </summary>
-		/// <value>
-		///     The used interval.
-		/// </value>
-		public TimeSpan Interval { get; }
-
-		/// <summary>
-		///     Gets the used execution options.
-		/// </summary>
-		/// <value>
-		///     The used execution options.
-		/// </value>
-		public ThreadDispatcherOptions Options { get; }
-
-		/// <summary>
 		///     Gets whether the timer is currently running.
 		/// </summary>
 		/// <value>
@@ -189,36 +253,10 @@ namespace RI.Framework.Utilities.Threading
 			{
 				lock (this.SyncRoot)
 				{
-					return this.TimerThread != null;
+					return this.Timer != null;
 				}
 			}
 		}
-
-		/// <summary>
-		///     Gets the timer mode.
-		/// </summary>
-		/// <value>
-		///     The timer mode.
-		/// </value>
-		public ThreadDispatcherTimerMode Mode { get; }
-
-		/// <summary>
-		///     Gets the optional parameters of the delagate.
-		/// </summary>
-		/// <value>
-		///     The optional parameters of the delagate.
-		/// </value>
-		public object[] Parameters { get; }
-
-		/// <summary>
-		///     Gets the priority.
-		/// </summary>
-		/// <value>
-		///     The priority.
-		/// </value>
-		public int Priority { get; }
-
-		private Thread TimerThread { get; set; }
 
 		#endregion
 
@@ -234,7 +272,7 @@ namespace RI.Framework.Utilities.Threading
 		{
 			lock (this.SyncRoot)
 			{
-				if (this.TimerThread != null)
+				if (this.Timer != null)
 				{
 					return;
 				}
@@ -242,48 +280,44 @@ namespace RI.Framework.Utilities.Threading
 				GC.ReRegisterForFinalize(this);
 
 				this.ExecutionCount = 0;
+				this.MissCount = 0;
 
-				this.TimerThread = new Thread(() =>
+				this.Timer = new Timer(x =>
 				{
-					bool cont;
-					do
+					ThreadDispatcherTimer self = (ThreadDispatcherTimer)x;
+					lock (self.SyncRoot)
 					{
-						Thread.Sleep(this.Interval);
-
-						ThreadDispatcherOperation operation = null;
-
-						lock (this.SyncRoot)
+						if (self.Timer == null)
 						{
-							lock (this.Dispatcher.SyncRoot)
+							return;
+						}
+
+						if (self.PreviousOperation != null)
+						{
+							if (!self.PreviousOperation.IsDone)
 							{
-								if (this.Dispatcher.IsRunning)
-								{
-									operation = this.Dispatcher.Post(this.Priority, this.Action, this.Parameters);
-								}
+								self.MissCount++;
+								return;
 							}
 						}
 
-						operation?.Wait();
-
-						lock (this.SyncRoot)
+						bool isRunning;
+						lock (self.Dispatcher.SyncRoot)
 						{
-							lock (this.Dispatcher.SyncRoot)
+							isRunning = self.Dispatcher.IsRunning;
+							if (isRunning)
 							{
-								this.ExecutionCount++;
-
-								cont = (this.Mode == ThreadDispatcherTimerMode.Continuous) && (this.Dispatcher?.IsRunning).GetValueOrDefault(false);
+								self.PreviousOperation = self.Dispatcher.Post(self.Priority, self.Options, self.Action, self.Parameters);
+								self.ExecutionCount++;
 							}
 						}
-					}
-					while (cont);
 
-					lock (this.SyncRoot)
-					{
-						this.TimerThread = null;
+						if ((self.Mode == ThreadDispatcherTimerMode.OneShot) || (!isRunning))
+						{
+							self.Stop();
+						}
 					}
-				});
-
-				this.TimerThread.Start();
+				}, this, (int)this.Interval.TotalMilliseconds, this.Mode == ThreadDispatcherTimerMode.OneShot ? -1 : (int)this.Interval.TotalMilliseconds);
 			}
 		}
 
@@ -302,18 +336,8 @@ namespace RI.Framework.Utilities.Threading
 		{
 			lock (this.SyncRoot)
 			{
-				if (this.TimerThread != null)
-				{
-					try
-					{
-						this.TimerThread.Abort();
-					}
-					catch
-					{
-					}
-
-					this.TimerThread = null;
-				}
+				this.Timer?.Dispose();
+				this.Timer = null;
 			}
 		}
 

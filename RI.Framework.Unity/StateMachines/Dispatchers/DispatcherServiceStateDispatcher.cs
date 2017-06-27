@@ -9,15 +9,15 @@ using RI.Framework.Utilities.ObjectModel;
 namespace RI.Framework.StateMachines.Dispatchers
 {
 	/// <summary>
-	///     Implements a default state machine operation dispatcher which uses <see cref="RI.Framework.Services.Dispatcher.IDispatcherService" />.
+	///     Implements a state machine operation dispatcher which uses <see cref="RI.Framework.Services.Dispatcher.IDispatcherService" />.
 	/// </summary>
 	/// <remarks>
 	///     <para>
 	///         See <see cref="IStateDispatcher" /> for more details.
 	///     </para>
-	///     <note type="note">
-	///         Signals and transitions are dispatched using the <see cref="DispatcherPriority.Default" /> priority.
-	///     </note>
+	///     <para>
+	///         State machine operations are dispatched using <see cref="IDispatcherService.Dispatch{T1,T2}(DispatcherPriority,Action{T1,T2},T1,T2)" />.
+	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	public sealed class DispatcherServiceStateDispatcher : IStateDispatcher
