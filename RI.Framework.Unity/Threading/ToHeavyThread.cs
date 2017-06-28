@@ -1,11 +1,9 @@
-﻿using UnityEngine;
-
-using ThreadPriority = System.Threading.ThreadPriority;
+﻿using ThreadPriority = System.Threading.ThreadPriority;
 
 
 
 
-namespace RI.Framework.Utilities.Threading
+namespace RI.Framework.Threading
 {
 	/// <summary>
 	///     Yield instruction to move a task to a <see cref="HeavyThread" />.

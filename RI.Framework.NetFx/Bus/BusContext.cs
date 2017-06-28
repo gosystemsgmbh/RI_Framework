@@ -10,13 +10,10 @@ using RI.Framework.Bus.Pipelines;
 using RI.Framework.Bus.Serialization;
 using RI.Framework.Collections;
 using RI.Framework.Services.Logging;
+using RI.Framework.Threading;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.ObjectModel;
-using RI.Framework.Utilities.Threading;
-
-
-
 
 namespace RI.Framework.Bus
 {

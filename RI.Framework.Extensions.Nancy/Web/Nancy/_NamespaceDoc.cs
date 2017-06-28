@@ -3,10 +3,10 @@
 
 
 
-namespace RI.Framework.Utilities.Threading
+namespace RI.Framework.Web.Nancy
 {
 	/// <summary>
-	///     Contains thread utilities.
+	///     Contains extensions for NancyFX.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

@@ -1,12 +1,9 @@
 ﻿using System.Runtime.CompilerServices;
 
-
-
-
-namespace RI.Framework.Nancy
+namespace RI.Framework.Threading
 {
 	/// <summary>
-	///     Contains extensions for NancyFX.
+	///     Contains utilities to work with threads.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

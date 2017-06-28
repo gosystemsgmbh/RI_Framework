@@ -298,8 +298,8 @@ namespace RI.Framework.Services.Logging.Writers
 
 				this.LogWriter = logWriter;
 
-				//TODO: this.TraceOutputOptions
-				//TODO: this.Filter
+				this.TraceOutputOptions = TraceOptions.None;
+				this.Filter = null;
 				this.NeedIndent = false;
 				this.Name = this.GetType().Name;
 			}

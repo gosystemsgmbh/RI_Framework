@@ -5,10 +5,7 @@ using System.Threading.Tasks;
 
 using RI.Framework.Utilities.ObjectModel;
 
-
-
-
-namespace RI.Framework.Utilities.Threading
+namespace RI.Framework.Threading
 {
 	/// <summary>
 	///     Used to track <see cref="IThreadDispatcher" /> operations or the processing of enqueued delegates respectively.
@@ -23,11 +20,12 @@ namespace RI.Framework.Utilities.Threading
 	{
 		#region Instance Constructor/Destructor
 
-		internal ThreadDispatcherOperation (ThreadDispatcher dispatcher, ThreadDispatcherOptions options, Delegate action, object[] parameters)
+		internal ThreadDispatcherOperation (ThreadDispatcher dispatcher, int priority, ThreadDispatcherOptions options, Delegate action, object[] parameters)
 		{
 			this.SyncRoot = new object();
 
 			this.Dispatcher = dispatcher;
+			this.Priority = priority;
 			this.Options = options;
 			this.Action = action;
 			this.Parameters = parameters;
@@ -164,10 +162,11 @@ namespace RI.Framework.Utilities.Threading
 			}
 		}
 
-		private Delegate Action { get; }
-		private ThreadDispatcher Dispatcher { get; }
-		private object[] Parameters { get; }
-		private ThreadDispatcherOptions Options { get; }
+		internal Delegate Action { get; }
+		internal ThreadDispatcher Dispatcher { get; }
+		internal object[] Parameters { get; }
+		internal ThreadDispatcherOptions Options { get; }
+		internal int Priority { get; }
 
 		private ManualResetEvent OperationDone { get; set; }
 		private TaskCompletionSource<object> OperationDoneTask { get; set; }
@@ -215,7 +214,7 @@ namespace RI.Framework.Utilities.Threading
 		/// </summary>
 		public void Wait ()
 		{
-			this.Wait(Timeout.Infinite);
+			this.Wait(Timeout.Infinite, CancellationToken.None);
 		}
 
 		/// <summary>
@@ -241,7 +240,7 @@ namespace RI.Framework.Utilities.Threading
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="timeout" /> is negative. </exception>
 		public bool Wait (TimeSpan timeout)
 		{
-			return this.Wait((int)timeout.TotalMilliseconds);
+			return this.Wait((int)timeout.TotalMilliseconds, CancellationToken.None);
 		}
 
 		/// <summary>
@@ -306,9 +305,12 @@ namespace RI.Framework.Utilities.Threading
 		/// <summary>
 		///     Waits indefinitely for the dispatcher operation to finish processing.
 		/// </summary>
-		public Task WaitAsync ()
+		/// <returns>
+		/// The task which can be used to await the finish of the processing.
+		/// </returns>
+		public async Task WaitAsync ()
 		{
-			return this.WaitAsync(Timeout.Infinite);
+			await this.WaitAsync(Timeout.Infinite, CancellationToken.None);
 		}
 
 		/// <summary>
@@ -319,9 +321,9 @@ namespace RI.Framework.Utilities.Threading
 		///     true if the dispatcher operation finished processing, false if the wait was cancelled.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="cancellationToken" /> is null. </exception>
-		public Task<bool> WaitAsync (CancellationToken cancellationToken)
+		public async Task<bool> WaitAsync (CancellationToken cancellationToken)
 		{
-			return this.WaitAsync(Timeout.Infinite, cancellationToken);
+			return await this.WaitAsync(Timeout.Infinite, cancellationToken);
 		}
 
 		/// <summary>
@@ -332,9 +334,9 @@ namespace RI.Framework.Utilities.Threading
 		///     true if the dispatcher operation finished processing within the specified timeout, false otherwise.
 		/// </returns>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="timeout" /> is negative. </exception>
-		public Task<bool> WaitAsync (TimeSpan timeout)
+		public async Task<bool> WaitAsync (TimeSpan timeout)
 		{
-			return this.WaitAsync((int)timeout.TotalMilliseconds);
+			return await this.WaitAsync((int)timeout.TotalMilliseconds, CancellationToken.None);
 		}
 
 		/// <summary>
@@ -347,9 +349,9 @@ namespace RI.Framework.Utilities.Threading
 		/// </returns>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="timeout" /> is negative. </exception>
 		/// <exception cref="ArgumentNullException"> <paramref name="cancellationToken" /> is null. </exception>
-		public Task<bool> WaitAsync (TimeSpan timeout, CancellationToken cancellationToken)
+		public async Task<bool> WaitAsync (TimeSpan timeout, CancellationToken cancellationToken)
 		{
-			return this.WaitAsync((int)timeout.TotalMilliseconds, cancellationToken);
+			return await this.WaitAsync((int)timeout.TotalMilliseconds, cancellationToken);
 		}
 
 		/// <summary>
@@ -360,9 +362,9 @@ namespace RI.Framework.Utilities.Threading
 		///     true if the dispatcher operation finished processing within the specified timeout, false otherwise.
 		/// </returns>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="milliseconds" /> is negative. </exception>
-		public Task<bool> WaitAsync (int milliseconds)
+		public async Task<bool> WaitAsync (int milliseconds)
 		{
-			return this.WaitAsync(milliseconds, CancellationToken.None);
+			return await this.WaitAsync(milliseconds, CancellationToken.None);
 		}
 
 		/// <summary>
@@ -375,7 +377,7 @@ namespace RI.Framework.Utilities.Threading
 		/// </returns>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="milliseconds" /> is negative. </exception>
 		/// <exception cref="ArgumentNullException"> <paramref name="cancellationToken" /> is null. </exception>
-		public Task<bool> WaitAsync (int milliseconds, CancellationToken cancellationToken)
+		public async Task<bool> WaitAsync (int milliseconds, CancellationToken cancellationToken)
 		{
 			if ((milliseconds < 0) && (milliseconds != Timeout.Infinite))
 			{
@@ -389,16 +391,14 @@ namespace RI.Framework.Utilities.Threading
 
 			if (this.IsDone)
 			{
-				return Task.FromResult(true);
+				return true;
 			}
 
 			Task operationTask = this.OperationDoneTask.Task;
 			Task timeoutTask = Task.Delay(milliseconds, cancellationToken);
 
-			Task<Task> completed = Task.WhenAny(operationTask, timeoutTask);
-			Task<bool> result = completed.ContinueWith((task, state) => object.ReferenceEquals(state, task.Result), operationTask);
-
-			return result;
+			Task completed = await Task.WhenAny(operationTask, timeoutTask);
+			return object.ReferenceEquals(completed, operationTask);
 		}
 
 		internal void Execute ()

@@ -22,8 +22,7 @@ namespace RI.Framework.StateMachines.Dispatchers
 	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
-	/// TODO: Add IDisposable
-	public sealed class DefaultStateDispatcher : IStateDispatcher
+	public sealed class DefaultStateDispatcher : IStateDispatcher, IDisposable
 	{
 		#region Instance Constructor/Destructor
 
@@ -34,6 +33,32 @@ namespace RI.Framework.StateMachines.Dispatchers
 		{
 			this.SyncRoot = new object();
 			this.UpdateTimers = new Dictionary<StateMachine, Timer>();
+		}
+
+		/// <summary>
+		///     Garbage collects this instance of <see cref="DefaultStateDispatcher" />.
+		/// </summary>
+		~DefaultStateDispatcher()
+		{
+			this.Dispose(false);
+		}
+
+		/// <inheritdoc />
+		public void Dispose()
+		{
+			this.Dispose(true);
+		}
+
+		private void Dispose(bool disposing)
+		{
+			lock (this.SyncRoot)
+			{
+				foreach (KeyValuePair<StateMachine, Timer> timer in this.UpdateTimers)
+				{
+					timer.Value.Dispose();
+				}
+				this.UpdateTimers.Clear();
+			}
 		}
 
 		#endregion

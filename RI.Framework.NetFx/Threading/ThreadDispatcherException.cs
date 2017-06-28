@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-
-
-
-namespace RI.Framework.Utilities.Threading
+namespace RI.Framework.Threading
 {
 	/// <summary>
 	///     The <see cref="ThreadDispatcherException" /> is thrown when an operation of a <see cref="IThreadDispatcher" /> had an exception.

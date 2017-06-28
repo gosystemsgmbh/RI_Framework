@@ -70,9 +70,9 @@ namespace RI.Framework.StateMachines
 		/// <returns>
 		///     true if the signal was executed within the specified timeout, false otherwise.
 		/// </returns>
-		public Task<bool> SignalAsync <TSignal> (TSignal signal, int timeout)
+		public async Task<bool> SignalAsync <TSignal> (TSignal signal)
 		{
-			return this.SignalAsync((object)signal, timeout);
+			return await this.SignalAsync((object)signal);
 		}
 
 		/// <summary>
@@ -83,16 +83,16 @@ namespace RI.Framework.StateMachines
 		/// <returns>
 		///     true if the signal was executed within the specified timeout, false otherwise.
 		/// </returns>
-		public Task<bool> SignalAsync (object signal, int timeout)
+		public async Task<bool> SignalAsync (object signal)
 		{
 			Task<bool> waitTask;
 			lock (this.SyncRoot)
 			{
-				waitTask = this.WaitForSignalAsync(signal, timeout, CancellationToken.None);
+				waitTask = this.WaitForSignalAsync(signal, Timeout.Infinite, CancellationToken.None);
 				this.SignalInternal(signal);
 			}
 
-			return waitTask;
+			return await waitTask;
 		}
 
 		/// <summary>
@@ -109,10 +109,10 @@ namespace RI.Framework.StateMachines
 		///     </para>
 		/// </remarks>
 		/// <exception cref="TaskCanceledException"> The state transition was aborted. </exception>
-		public Task<bool> TransientAsync <TState> (int timeout)
+		public async Task<bool> TransientAsync <TState> ()
 			where TState : IState
 		{
-			return this.TransientAsync(typeof(TState), timeout);
+			return await this.TransientAsync(typeof(TState));
 		}
 
 		/// <summary>
@@ -129,18 +129,18 @@ namespace RI.Framework.StateMachines
 		///     </para>
 		/// </remarks>
 		/// <exception cref="TaskCanceledException"> The state transition was aborted. </exception>
-		public Task<bool> TransientAsync (Type state, int timeout)
+		public async Task<bool> TransientAsync (Type state)
 		{
 			IState nextState = this.Resolve(state, true);
 
 			Task<bool> waitTask;
 			lock (this.SyncRoot)
 			{
-				waitTask = this.WaitForStateAsyncInternal(state, timeout, true, CancellationToken.None);
+				waitTask = this.WaitForTransient(state, Timeout.Infinite, CancellationToken.None);
 				this.TransientInternal(nextState);
 			}
 
-			return waitTask;
+			return await waitTask;
 		}
 
 		/// <summary>
@@ -150,16 +150,16 @@ namespace RI.Framework.StateMachines
 		/// <returns>
 		///     true if the update was executed within the specified timeout, false otherwise.
 		/// </returns>
-		public Task<bool> UpdateAsync (int timeout)
+		public async Task<bool> UpdateAsync ()
 		{
 			Task<bool> waitTask;
 			lock (this.SyncRoot)
 			{
-				waitTask = this.WaitForUpdateAsync(this.State?.GetType(), timeout, CancellationToken.None);
+				waitTask = this.WaitForUpdateAsync(Timeout.Infinite, CancellationToken.None);
 				this.UpdateInternal(0);
 			}
 
-			return waitTask;
+			return await waitTask;
 		}
 
 		/// <summary>
@@ -171,9 +171,9 @@ namespace RI.Framework.StateMachines
 		/// <returns>
 		///     true if the signal was executed within the specified timeout, false otherwise.
 		/// </returns>
-		public Task<bool> WaitForSignalAsync <TSignal> (TSignal signal, int timeout)
+		public async Task<bool> WaitForSignalAsync <TSignal> (TSignal signal, int timeout)
 		{
-			return this.WaitForSignalAsync(signal, timeout, CancellationToken.None);
+			return await this.WaitForSignalAsync(signal, timeout, CancellationToken.None);
 		}
 
 		/// <summary>
@@ -184,9 +184,9 @@ namespace RI.Framework.StateMachines
 		/// <returns>
 		///     true if the signal was executed within the specified timeout, false otherwise.
 		/// </returns>
-		public Task<bool> WaitForSignalAsync (object signal, int timeout)
+		public async Task<bool> WaitForSignalAsync (object signal, int timeout)
 		{
-			return this.WaitForSignalAsync(signal, timeout, CancellationToken.None);
+			return await this.WaitForSignalAsync(signal, timeout, CancellationToken.None);
 		}
 
 		/// <summary>
@@ -199,9 +199,9 @@ namespace RI.Framework.StateMachines
 		/// <returns>
 		///     true if the signal was executed within the specified timeout, false otherwise.
 		/// </returns>
-		public Task<bool> WaitForSignalAsync <TSignal> (TSignal signal, int timeout, CancellationToken cancellationToken)
+		public async Task<bool> WaitForSignalAsync <TSignal> (TSignal signal, int timeout, CancellationToken cancellationToken)
 		{
-			return this.WaitForSignalAsync((object)signal, timeout, cancellationToken);
+			return await this.WaitForSignalAsync((object)signal, timeout, cancellationToken);
 		}
 
 		/// <summary>
@@ -213,7 +213,7 @@ namespace RI.Framework.StateMachines
 		/// <returns>
 		///     true if the signal was executed within the specified timeout, false otherwise.
 		/// </returns>
-		public Task<bool> WaitForSignalAsync (object signal, int timeout, CancellationToken cancellationToken)
+		public async Task<bool> WaitForSignalAsync (object signal, int timeout, CancellationToken cancellationToken)
 		{
 			TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
 
@@ -225,14 +225,12 @@ namespace RI.Framework.StateMachines
 			Task signalTask = tcs.Task;
 			Task timeoutTask = Task.Delay(timeout, cancellationToken);
 
-			Task<Task> completed = Task.WhenAny(signalTask, timeoutTask);
-			Task<bool> result = completed.ContinueWith((task, obj) => object.ReferenceEquals(task.Result, obj), signalTask);
-
-			return result;
+			Task completed = await Task.WhenAny(signalTask, timeoutTask);
+			return object.ReferenceEquals(completed, signalTask);
 		}
 
 		/// <summary>
-		///     Waits until a specified state becomes the current/active state.
+		///     Waits until a transient to a specified state has been processed.
 		/// </summary>
 		/// <typeparam name="TState"> The type of state to wait for. </typeparam>
 		/// <param name="timeout"> The timeout in milliseconds the method should wait for the state. </param>
@@ -241,18 +239,18 @@ namespace RI.Framework.StateMachines
 		/// </returns>
 		/// <remarks>
 		///     <para>
-		///         The method does not wait and returns immediately if the current state is the requested state.
+		///         The method always waits for the specified transient to happen, even if the current state is the same state as to transient to.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="TaskCanceledException"> The state transition was aborted. </exception>
-		public Task<bool> WaitForStateAsync <TState> (int timeout)
+		public async Task<bool> WaitForTransient <TState> (int timeout)
 			where TState : IState
 		{
-			return this.WaitForStateAsync<TState>(timeout, CancellationToken.None);
+			return await this.WaitForTransient<TState>(timeout, CancellationToken.None);
 		}
 
 		/// <summary>
-		///     Waits until a specified state becomes the current/active state.
+		///     Waits until a transient to a specified state has been processed.
 		/// </summary>
 		/// <param name="state"> The type of state to wait for. </param>
 		/// <param name="timeout"> The timeout in milliseconds the method should wait for the state. </param>
@@ -261,17 +259,17 @@ namespace RI.Framework.StateMachines
 		/// </returns>
 		/// <remarks>
 		///     <para>
-		///         The method does not wait and returns immediately if the current state is the requested state.
+		///         The method always waits for the specified transient to happen, even if the current state is the same state as to transient to.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="TaskCanceledException"> The state transition was aborted. </exception>
-		public Task<bool> WaitForStateAsync (Type state, int timeout)
+		public async Task<bool> WaitForTransient(Type state, int timeout)
 		{
-			return this.WaitForStateAsync(state, timeout, CancellationToken.None);
+			return await this.WaitForTransient(state, timeout, CancellationToken.None);
 		}
 
 		/// <summary>
-		///     Waits until a specified state becomes the current/active state.
+		///     Waits until a transient to a specified state has been processed.
 		/// </summary>
 		/// <typeparam name="TState"> The type of state to wait for. </typeparam>
 		/// <param name="timeout"> The timeout in milliseconds the method should wait for the state. </param>
@@ -281,18 +279,18 @@ namespace RI.Framework.StateMachines
 		/// </returns>
 		/// <remarks>
 		///     <para>
-		///         The method does not wait and returns immediately if the current state is the requested state.
+		///         The method always waits for the specified transient to happen, even if the current state is the same state as to transient to.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="TaskCanceledException"> The state transition was aborted. </exception>
-		public Task<bool> WaitForStateAsync <TState> (int timeout, CancellationToken cancellationToken)
+		public async Task<bool> WaitForTransient<TState> (int timeout, CancellationToken cancellationToken)
 			where TState : IState
 		{
-			return this.WaitForStateAsync(typeof(TState), timeout, cancellationToken);
+			return await this.WaitForTransient(typeof(TState), timeout, cancellationToken);
 		}
 
 		/// <summary>
-		///     Waits until a specified state becomes the current/active state.
+		///     Waits until a transient to a specified state has been processed.
 		/// </summary>
 		/// <param name="state"> The type of state to wait for. </param>
 		/// <param name="timeout"> The timeout in milliseconds the method should wait for the state. </param>
@@ -302,109 +300,60 @@ namespace RI.Framework.StateMachines
 		/// </returns>
 		/// <remarks>
 		///     <para>
-		///         The method does not wait and returns immediately if the current state is the requested state.
+		///         The method always waits for the specified transient to happen, even if the current state is the same state as to transient to.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="TaskCanceledException"> The state transition was aborted. </exception>
-		public Task<bool> WaitForStateAsync (Type state, int timeout, CancellationToken cancellationToken)
-		{
-			lock (this.SyncRoot)
-			{
-				return this.WaitForStateAsyncInternal(state, timeout, false, cancellationToken);
-			}
-		}
-
-		/// <summary>
-		///     Waits until the state has been updated.
-		/// </summary>
-		/// <param name="state"> The type of state to wait for its update. </param>
-		/// <param name="timeout"> The timeout in milliseconds the method should wait for the update to be executed. </param>
-		/// <returns>
-		///     true if the update was executed within the specified timeout, false otherwise.
-		/// </returns>
-		public Task<bool> WaitForUpdateAsync (Type state, int timeout)
-		{
-			return this.WaitForUpdateAsync(state, timeout, CancellationToken.None);
-		}
-
-		/// <summary>
-		///     Waits until the state has been updated.
-		/// </summary>
-		/// <typeparam name="TState"> The type of state to wait for its update. </typeparam>
-		/// <param name="timeout"> The timeout in milliseconds the method should wait for the update to be executed. </param>
-		/// <returns>
-		///     true if the update was executed within the specified timeout, false otherwise.
-		/// </returns>
-		public Task<bool> WaitForUpdateAsync<TState>(int timeout)
-			where TState : IState
-		{
-			return this.WaitForUpdateAsync(typeof(TState), timeout, CancellationToken.None);
-		}
-
-		/// <summary>
-		///     Waits until the state has been updated.
-		/// </summary>
-		/// <param name="state"> The type of state to wait for its update. </param>
-		/// <param name="timeout"> The timeout in milliseconds the method should wait for the update to be executed. </param>
-		/// <param name="cancellationToken"> The token which can be used to cancel the wait. </param>
-		/// <returns>
-		///     true if the update was executed within the specified timeout, false otherwise.
-		/// </returns>
-		public Task<bool> WaitForUpdateAsync (Type state, int timeout, CancellationToken cancellationToken)
+		public async Task<bool> WaitForTransient(Type state, int timeout, CancellationToken cancellationToken)
 		{
 			TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
 
 			lock (this.SyncRoot)
 			{
-				this.UpdateTasks.Add(new Tuple<Type, TaskCompletionSource<object>>(state, tcs));
-			}
-
-			Task updateTask = tcs.Task;
-			Task timeoutTask = Task.Delay(timeout, cancellationToken);
-
-			Task<Task> completed = Task.WhenAny(updateTask, timeoutTask);
-			Task<bool> result = completed.ContinueWith((task, obj) => object.ReferenceEquals(task.Result, obj), updateTask);
-
-			return result;
-		}
-
-		/// <summary>
-		///     Waits until the state has been updated.
-		/// </summary>
-		/// <typeparam name="TState"> The type of state to wait for its update. </typeparam>
-		/// <param name="timeout"> The timeout in milliseconds the method should wait for the update to be executed. </param>
-		/// <param name="cancellationToken"> The token which can be used to cancel the wait. </param>
-		/// <returns>
-		///     true if the update was executed within the specified timeout, false otherwise.
-		/// </returns>
-		public Task<bool> WaitForUpdateAsync<TState>(int timeout, CancellationToken cancellationToken)
-			where TState : IState
-		{
-			return this.WaitForUpdateAsync(typeof(TState), timeout, cancellationToken);
-		}
-
-		private Task<bool> WaitForStateAsyncInternal (Type state, int timeout, bool ignoreCurrentState, CancellationToken cancellationToken)
-		{
-			TaskCompletionSource<object> tcs;
-
-			lock (this.SyncRoot)
-			{
-				if ((!ignoreCurrentState) && (this.State?.GetType() == state))
-				{
-					return Task.FromResult(true);
-				}
-
-				tcs = new TaskCompletionSource<object>();
 				this.TransitionTasks.Add(new Tuple<Type, TaskCompletionSource<object>>(state, tcs));
 			}
 
 			Task transitionTask = tcs.Task;
 			Task timeoutTask = Task.Delay(timeout, cancellationToken);
 
-			Task<Task> completed = Task.WhenAny(transitionTask, timeoutTask);
-			Task<bool> result = completed.ContinueWith((task, obj) => object.ReferenceEquals(task.Result, obj), transitionTask);
+			Task completed = await Task.WhenAny(transitionTask, timeoutTask);
+			return object.ReferenceEquals(completed, transitionTask);
+		}
 
-			return result;
+		/// <summary>
+		///     Waits until the current state has been updated.
+		/// </summary>
+		/// <param name="timeout"> The timeout in milliseconds the method should wait for the update to be executed. </param>
+		/// <returns>
+		///     true if the update was executed within the specified timeout, false otherwise.
+		/// </returns>
+		public async Task<bool> WaitForUpdateAsync (int timeout)
+		{
+			return await this.WaitForUpdateAsync(timeout, CancellationToken.None);
+		}
+
+		/// <summary>
+		///     Waits until the current state has been updated.
+		/// </summary>
+		/// <param name="timeout"> The timeout in milliseconds the method should wait for the update to be executed. </param>
+		/// <param name="cancellationToken"> The token which can be used to cancel the wait. </param>
+		/// <returns>
+		///     true if the update was executed within the specified timeout, false otherwise.
+		/// </returns>
+		public async Task<bool> WaitForUpdateAsync(int timeout, CancellationToken cancellationToken)
+		{
+			TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
+
+			lock (this.SyncRoot)
+			{
+				this.UpdateTasks.Add(new Tuple<Type, TaskCompletionSource<object>>(this.State?.GetType(), tcs));
+			}
+
+			Task updateTask = tcs.Task;
+			Task timeoutTask = Task.Delay(timeout, cancellationToken);
+
+			Task completed = await Task.WhenAny(updateTask, timeoutTask);
+			return object.ReferenceEquals(completed, updateTask);
 		}
 
 		#endregion

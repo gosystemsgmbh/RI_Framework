@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -21,7 +22,7 @@ namespace RI.Framework.StateMachines.Dispatchers
 	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
-	public sealed class WpfStateDispatcher : IStateDispatcher
+	public sealed class WpfStateDispatcher : IStateDispatcher, IDisposable
 	{
 		#region Instance Constructor/Destructor
 
@@ -39,6 +40,9 @@ namespace RI.Framework.StateMachines.Dispatchers
 
 			this.SyncRoot = new object();
 			this.Dispatcher = application.Dispatcher;
+			this.UpdateTimers = new Dictionary<StateMachine, DispatcherTimer>();
+			this.UpdateCallbackHandler = this.UpdateCallback;
+
 			this.Priority = DispatcherPriority.Normal;
 		}
 
@@ -56,7 +60,36 @@ namespace RI.Framework.StateMachines.Dispatchers
 
 			this.SyncRoot = new object();
 			this.Dispatcher = dispatcher;
+			this.UpdateTimers = new Dictionary<StateMachine, DispatcherTimer>();
+			this.UpdateCallbackHandler = this.UpdateCallback;
+
 			this.Priority = DispatcherPriority.Normal;
+		}
+
+		/// <summary>
+		///     Garbage collects this instance of <see cref="WpfStateDispatcher" />.
+		/// </summary>
+		~WpfStateDispatcher()
+		{
+			this.Dispose(false);
+		}
+
+		/// <inheritdoc />
+		public void Dispose ()
+		{
+			this.Dispose(true);
+		}
+
+		private void Dispose (bool disposing)
+		{
+			lock (this.SyncRoot)
+			{
+				foreach (KeyValuePair<StateMachine, DispatcherTimer> timer in this.UpdateTimers)
+				{
+					timer.Value.Stop();
+				}
+				this.UpdateTimers.Clear();
+			}
 		}
 
 		#endregion
@@ -73,6 +106,10 @@ namespace RI.Framework.StateMachines.Dispatchers
 		///     The used dispatcher.
 		/// </value>
 		public Dispatcher Dispatcher { get; }
+
+		private Dictionary<StateMachine, DispatcherTimer> UpdateTimers { get; }
+
+		private EventHandler UpdateCallbackHandler { get; set; }
 
 		private DispatcherPriority _priority;
 
@@ -139,10 +176,28 @@ namespace RI.Framework.StateMachines.Dispatchers
 		/// <inheritdoc />
 		public void DispatchUpdate(StateMachineUpdateDelegate updateDelegate, StateUpdateInfo updateInfo)
 		{
+			StateMachine stateMachine = updateInfo.StateMachine;
+
 			lock (this.SyncRoot)
 			{
-				this.Dispatcher.BeginInvoke(this.Priority, updateDelegate, updateInfo);
+				if (this.UpdateTimers.ContainsKey(stateMachine))
+				{
+					this.UpdateTimers[stateMachine].Stop();
+					this.UpdateTimers.Remove(stateMachine);
+				}
+
+				DispatcherTimer timer = new DispatcherTimer(TimeSpan.FromMilliseconds(updateInfo.UpdateDelay), this.Priority, this.UpdateCallbackHandler, this.Dispatcher);
+				timer.Tag = new Tuple<StateMachineUpdateDelegate, StateUpdateInfo>(updateDelegate, updateInfo);
+				this.UpdateTimers.Add(stateMachine, timer);
+				timer.Start();
 			}
+		}
+
+		private void UpdateCallback (object sender, object args)
+		{
+			DispatcherTimer timer = (DispatcherTimer)sender;
+			Tuple<StateMachineUpdateDelegate, StateUpdateInfo> tag = (Tuple<StateMachineUpdateDelegate, StateUpdateInfo>)timer.Tag;
+			tag.Item1.Invoke(tag.Item2);
 		}
 
 		#endregion

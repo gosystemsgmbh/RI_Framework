@@ -1,9 +1,6 @@
 using System;
 
-
-
-
-namespace RI.Framework.Utilities.Threading
+namespace RI.Framework.Threading
 {
 	/// <summary>
 	///     Describes the current shutdown mode of a <see cref="IThreadDispatcher" />.

@@ -7,10 +7,7 @@ using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using RI.Framework.Collections.DirectLinq;
-using RI.Framework.Utilities.Threading;
-
-
-
+using RI.Framework.Threading;
 
 namespace RI.Test.Framework.Utilities.Threading
 {

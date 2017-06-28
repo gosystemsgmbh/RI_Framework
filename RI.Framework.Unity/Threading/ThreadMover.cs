@@ -6,15 +6,12 @@ using System.Threading;
 
 using RI.Framework.Services.Dispatcher;
 
-using UnityEngine;
-
-using Object = UnityEngine.Object;
 using ThreadPriority = System.Threading.ThreadPriority;
 
 
 
 
-namespace RI.Framework.Utilities.Threading
+namespace RI.Framework.Threading
 {
 	/// <summary>
 	///     Provides functionality to move execution of tasks (or coroutines respectively) between threads and dispatchers.

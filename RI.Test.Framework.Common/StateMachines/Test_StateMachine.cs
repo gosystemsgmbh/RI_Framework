@@ -1,5 +1,4 @@
 ﻿#if PLATFORM_NETFX
-using RI.Framework.Utilities.Threading;
 #endif
 using System;
 
@@ -10,6 +9,8 @@ using RI.Framework.Services;
 using RI.Framework.StateMachines;
 using RI.Framework.StateMachines.Dispatchers;
 using RI.Framework.StateMachines.Resolvers;
+using RI.Framework.Threading;
+
 #if PLATFORM_UNITY
 using RI.Framework.Services.Dispatcher;
 

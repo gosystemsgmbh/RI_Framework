@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-using RI.Framework.Utilities.Threading;
-
-
-
+using RI.Framework.Threading;
 
 namespace RI.Test.Framework.Utilities.Threading
 {

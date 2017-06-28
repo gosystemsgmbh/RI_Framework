@@ -23,7 +23,6 @@ namespace RI.Framework.Collections.Generic
 	///         See <see cref="IPriorityQueue{T}" /> for more details.
 	///     </para>
 	/// </remarks>
-	/// TODO: Fix example
 	/// <example>
 	///     <code language="cs">
 	///  <![CDATA[
@@ -31,10 +30,10 @@ namespace RI.Framework.Collections.Generic
 	///  var queue = new PriorityQueue<string>();
 	///  
 	///  // add some items with different priorities
-	///  queue.Enqueue("this", 0);
-	///  queue.Enqueue("queue", 101);
-	///  queue.Enqueue("is", 10);
-	///  queue.Enqueue("a", 100);
+	///  queue.Enqueue("queue", 0);
+	///  queue.Enqueue("this", 101);
+	///  queue.Enqueue("a", 10);
+	///  queue.Enqueue("is", 100);
 	///  
 	///  // dequeue items, we get: this, is, a, queue
 	///  while(queue.Count > 0)

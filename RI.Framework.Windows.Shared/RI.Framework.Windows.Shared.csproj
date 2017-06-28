@@ -58,11 +58,11 @@
     <Compile Include="Utilities\Windows\LocalEncryption.cs" />
     <Compile Include="Utilities\Windows\NativeWindows.cs" />
     <Compile Include="Utilities\Windows\UniqueIdentification.cs" />
-    <Compile Include="Utilities\Windows\WindowsMessage.cs" />
-    <Compile Include="Utilities\Windows\WindowsMessageLoop.cs" />
-    <Compile Include="Utilities\Windows\WindowsMessageLoopOperation.cs" />
-    <Compile Include="Utilities\Windows\WindowsMessageLoopOperationState.cs" />
-    <Compile Include="Utilities\Windows\WindowsMessageLoopShutdownMode.cs" />
+    <None Include="Utilities\Windows\MessageLoop\WindowsMessage.cs" />
+    <None Include="Utilities\Windows\MessageLoop\WindowsMessageLoop.cs" />
+    <None Include="Utilities\Windows\MessageLoop\WindowsMessageLoopOperation.cs" />
+    <None Include="Utilities\Windows\MessageLoop\WindowsMessageLoopOperationState.cs" />
+    <None Include="Utilities\Windows\MessageLoop\WindowsMessageLoopShutdownMode.cs" />
     <Compile Include="Utilities\Windows\WindowsNetwork.cs" />
     <Compile Include="Utilities\Windows\WindowsNetworkConnection.cs" />
     <Compile Include="Utilities\Windows\WindowsNetworkError.cs" />

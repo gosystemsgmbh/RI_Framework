@@ -3,12 +3,7 @@
 using RI.Framework.Services;
 using RI.Framework.Services.Dispatcher;
 
-using UnityEngine;
-
-
-
-
-namespace RI.Framework.Utilities.Threading
+namespace RI.Framework.Threading
 {
 	/// <summary>
 	///     Yield instruction to move a task to an <see cref="IDispatcherService" />.

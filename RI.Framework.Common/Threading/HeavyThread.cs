@@ -4,10 +4,7 @@ using System.Threading;
 
 using RI.Framework.Utilities.ObjectModel;
 
-
-
-
-namespace RI.Framework.Utilities.Threading
+namespace RI.Framework.Threading
 {
 	/// <summary>
 	///     Implements a heavy-weight thread which encapsulates thread setup and execution and also captures exceptions.

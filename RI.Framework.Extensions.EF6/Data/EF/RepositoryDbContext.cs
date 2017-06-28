@@ -44,6 +44,9 @@ namespace RI.Framework.Data.EF
 
 			RepositoryDbContext.FiltersSyncRoot = new object();
 			RepositoryDbContext.Filters = new Dictionary<Type, FilterCollection>();
+
+			RepositoryDbContext.SetCreatorsSyncRoot = new object();
+			RepositoryDbContext.SetCreators = new Dictionary<Type, Dictionary<Type, MethodInfo>>();
 		}
 
 		#endregion
@@ -60,6 +63,10 @@ namespace RI.Framework.Data.EF
 		private static Dictionary<Type, ValidatorCollection> Validators { get; set; }
 
 		private static object ValidatorsSyncRoot { get; set; }
+
+		private static Dictionary<Type, Dictionary<Type, MethodInfo>> SetCreators { get; set; }
+
+		private static object SetCreatorsSyncRoot { get; set; }
 
 		#endregion
 
@@ -133,6 +140,26 @@ namespace RI.Framework.Data.EF
 				}
 
 				return RepositoryDbContext.Validators[repository.GetType()][matchingType];
+			}
+		}
+
+		private static MethodInfo GetSetCreator (RepositoryDbContext repository, Type entityType)
+		{
+			lock (RepositoryDbContext.SetCreatorsSyncRoot)
+			{
+				Type repositoryType = repository.GetType();
+				if (!RepositoryDbContext.SetCreators.ContainsKey(repositoryType))
+				{
+					RepositoryDbContext.SetCreators.Add(repositoryType, new Dictionary<Type, MethodInfo>());
+				}
+				Dictionary<Type, MethodInfo> creatorDictionary = RepositoryDbContext.SetCreators[repositoryType];
+				if (!creatorDictionary.ContainsKey(entityType))
+				{
+					MethodInfo method = repositoryType.GetMethod(nameof(RepositoryDbContext.CreateSet), BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+					MethodInfo genericMethod = method.MakeGenericMethod(entityType);
+					creatorDictionary.Add(entityType, genericMethod);
+				}
+				return creatorDictionary[entityType];
 			}
 		}
 
@@ -308,10 +335,8 @@ namespace RI.Framework.Data.EF
 
 		private RepositoryDbSet CreateSetInternal (Type type)
 		{
-			//TODO: Store created method in static dictionary
-			MethodInfo method = this.GetType().GetMethod(nameof(this.CreateSet), BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-			MethodInfo genericMethod = method.MakeGenericMethod(type);
-			return (RepositoryDbSet)genericMethod.Invoke(this, null);
+			MethodInfo method = RepositoryDbContext.GetSetCreator(this, type);
+			return (RepositoryDbSet)method.Invoke(this, null);
 		}
 
 		private void PerformEntitySelfChangeTracking ()

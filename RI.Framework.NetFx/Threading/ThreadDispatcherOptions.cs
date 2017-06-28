@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-
-
-
-namespace RI.Framework.Utilities.Threading
+namespace RI.Framework.Threading
 {
 	/// <summary>
 	/// Describes execution options for enqueued delegates.

@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using RI.Framework.Threading;
 using RI.Framework.Utilities.ObjectModel;
-using RI.Framework.Utilities.Threading;
-
-
-
 
 namespace RI.Framework.StateMachines.Dispatchers
 {
@@ -21,8 +18,7 @@ namespace RI.Framework.StateMachines.Dispatchers
 	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
-	/// TODO: Add IDisposable
-	public sealed class ThreadDispatcherStateDispatcher : IStateDispatcher
+	public sealed class ThreadDispatcherStateDispatcher : IStateDispatcher, IDisposable
 	{
 		#region Instance Constructor/Destructor
 
@@ -44,6 +40,32 @@ namespace RI.Framework.StateMachines.Dispatchers
 
 			this.Priority = null;
 			this.Options = null;
+		}
+
+		/// <summary>
+		///     Garbage collects this instance of <see cref="ThreadDispatcherStateDispatcher" />.
+		/// </summary>
+		~ThreadDispatcherStateDispatcher()
+		{
+			this.Dispose(false);
+		}
+
+		/// <inheritdoc />
+		public void Dispose()
+		{
+			this.Dispose(true);
+		}
+
+		private void Dispose(bool disposing)
+		{
+			lock (this.SyncRoot)
+			{
+				foreach (KeyValuePair<StateMachine, ThreadDispatcherTimer> timer in this.UpdateTimers)
+				{
+					timer.Value.Stop();
+				}
+				this.UpdateTimers.Clear();
+			}
 		}
 
 		#endregion

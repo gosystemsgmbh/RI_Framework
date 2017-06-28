@@ -21,6 +21,7 @@
   - [ ] Logging
   - [ ] Modularization
 - [ ] Documentation
+  - [ ] Namespace descriptions
   - [ ] NetFx: Simple documentation
   - [ ] Unity: Uncomments after implementation
   - [ ] Unity: AOT/IL2CPP
@@ -49,6 +50,7 @@
 ## Backlog
 
 - [ ] Wishlist
+- [ ] Provide all possible overloads for timeout and cancellation token
 
 ## Proposals
 

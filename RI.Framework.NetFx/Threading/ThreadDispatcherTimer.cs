@@ -4,10 +4,7 @@ using System.Threading;
 
 using RI.Framework.Utilities.ObjectModel;
 
-
-
-
-namespace RI.Framework.Utilities.Threading
+namespace RI.Framework.Threading
 {
 	/// <summary>
 	///     Implements a timer which can be used with <see cref="IThreadDispatcher" />.

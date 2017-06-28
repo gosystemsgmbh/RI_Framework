@@ -49,8 +49,6 @@ namespace RI.Framework.Services.Resources
 				throw new ArgumentNullException(nameof(resourceDictionary));
 			}
 
-			//TODO: Use locking from service
-
 			resourceDictionary.Clear();
 			resourceDictionary.MergedDictionaries.Clear();
 

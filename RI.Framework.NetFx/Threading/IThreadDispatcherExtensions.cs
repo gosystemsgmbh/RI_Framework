@@ -2,10 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-
-
-
-namespace RI.Framework.Utilities.Threading
+namespace RI.Framework.Threading
 {
 	/// <summary>
 	///     Provides utility/extension methods for the <see cref="IThreadDispatcher" /> type.

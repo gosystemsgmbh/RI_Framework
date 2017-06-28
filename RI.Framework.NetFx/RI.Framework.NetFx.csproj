@@ -48,18 +48,18 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Bus\Brokers\LocalBroker.cs" />
-    <Compile Include="Bus\BusTransmission.cs" />
-    <Compile Include="Bus\Connections\IBusConnection.cs" />
-    <Compile Include="Bus\BusContext.cs" />
-    <Compile Include="Bus\Containers\IBusContainer.cs" />
-    <Compile Include="Bus\Dispatchers\IBusDispatcher.cs" />
-    <Compile Include="Bus\Endpoints\IBusEndpoint.cs" />
-    <Compile Include="Bus\BusNode.cs" />
-    <Compile Include="Bus\InvalidBusConfigurationException.cs" />
-    <Compile Include="Bus\Pipelines\DefaultBusPipeline.cs" />
-    <Compile Include="Bus\Pipelines\IBusPipeline.cs" />
-    <Compile Include="Bus\Serialization\IBusSerializer.cs" />
+    <None Include="Bus\Brokers\LocalBroker.cs" />
+    <None Include="Bus\BusTransmission.cs" />
+    <None Include="Bus\Connections\IBusConnection.cs" />
+    <None Include="Bus\BusContext.cs" />
+    <None Include="Bus\Containers\IBusContainer.cs" />
+    <None Include="Bus\Dispatchers\IBusDispatcher.cs" />
+    <None Include="Bus\Endpoints\IBusEndpoint.cs" />
+    <None Include="Bus\BusNode.cs" />
+    <None Include="Bus\InvalidBusConfigurationException.cs" />
+    <None Include="Bus\Pipelines\DefaultBusPipeline.cs" />
+    <None Include="Bus\Pipelines\IBusPipeline.cs" />
+    <None Include="Bus\Serialization\IBusSerializer.cs" />
     <Compile Include="Data\Database\Cleanup\_NamespaceDoc.cs" />
     <Compile Include="Data\Database\DatabaseConfiguration.cs" />
     <Compile Include="Data\Database\DatabaseConnectionCreatedEventArgs.cs" />
@@ -157,19 +157,20 @@
     <Compile Include="StateMachines\AsyncStateMachine.cs" />
     <Compile Include="StateMachines\DefaultStateMachineConfiguration.cs" />
     <Compile Include="StateMachines\Dispatchers\ThreadDispatcherStateDispatcher.cs" />
-    <Compile Include="Utilities\Threading\HeavyThreadDispatcher.cs" />
-    <Compile Include="Utilities\Threading\IThreadDispatcher.cs" />
-    <Compile Include="Utilities\Threading\IThreadDispatcherExtensions.cs" />
-    <Compile Include="Utilities\Threading\ThreadDispatcher.cs" />
-    <Compile Include="Utilities\Threading\ThreadDispatcherException.cs" />
-    <Compile Include="Utilities\Threading\ThreadDispatcherExceptionEventArgs.cs" />
-    <Compile Include="Utilities\Threading\ThreadDispatcherOperation.cs" />
-    <Compile Include="Utilities\Threading\ThreadDispatcherOperationState.cs" />
-    <Compile Include="Utilities\Threading\ThreadDispatcherOptions.cs" />
-    <Compile Include="Utilities\Threading\ThreadDispatcherShutdownMode.cs" />
-    <Compile Include="Utilities\Threading\ThreadDispatcherSynchronizationContext.cs" />
-    <Compile Include="Utilities\Threading\ThreadDispatcherTimer.cs" />
-    <Compile Include="Utilities\Threading\ThreadDispatcherTimerMode.cs" />
+    <Compile Include="Threading\HeavyThreadDispatcher.cs" />
+    <Compile Include="Threading\IThreadDispatcher.cs" />
+    <Compile Include="Threading\IThreadDispatcherExtensions.cs" />
+    <Compile Include="Threading\ThreadDispatcher.cs" />
+    <Compile Include="Threading\ThreadDispatcherException.cs" />
+    <Compile Include="Threading\ThreadDispatcherExceptionEventArgs.cs" />
+    <Compile Include="Threading\ThreadDispatcherOperation.cs" />
+    <Compile Include="Threading\ThreadDispatcherOperationState.cs" />
+    <Compile Include="Threading\ThreadDispatcherOptions.cs" />
+    <Compile Include="Threading\ThreadDispatcherShutdownMode.cs" />
+    <Compile Include="Threading\ThreadDispatcherSynchronizationContext.cs" />
+    <Compile Include="Threading\ThreadDispatcherTimer.cs" />
+    <Compile Include="Threading\ThreadDispatcherTimerMode.cs" />
+    <Compile Include="Web\_NamespaceDoc.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\AssemblyName.snk" />

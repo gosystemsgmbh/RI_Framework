@@ -1,9 +1,4 @@
-﻿using UnityEngine;
-
-
-
-
-namespace RI.Framework.Utilities.Threading
+﻿namespace RI.Framework.Threading
 {
 	/// <summary>
 	///     Yield instruction to move a task to Unitys main/foreground thread.

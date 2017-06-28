@@ -144,6 +144,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Services\Modularization\ModuleService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Modularization\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\ServiceLocator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\ServiceLocatorLookupEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\ServiceLocatorTranslationEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Caches\DefaultStateCache.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Caches\IStateCache.cs" />
@@ -172,6 +174,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\States\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\StateTransientInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\_NamespaceDoc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Threading\HeavyThread.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Threading\HeavyThreadException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Threading\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Comparison\EqualityComparison.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Comparison\OrderComparison.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Comparison\_NamespaceDoc.cs" />
@@ -209,9 +214,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Text\CommandLine.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Text\IndentedTextWriter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Text\_NamespaceDoc.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Threading\HeavyThread.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Threading\HeavyThreadException.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Threading\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\TimeSpanExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\_NamespaceDoc.cs" />
   </ItemGroup>

@@ -10,7 +10,7 @@ using RI.Framework.Composition;
 
 
 
-namespace RI.Framework.Nancy
+namespace RI.Framework.Web.Nancy
 {
 	/// <summary>
 	///     Nancy bootstrapper which uses a <see cref="CompositionContainer" />.

@@ -1,9 +1,6 @@
 ﻿using System;
 
-
-
-
-namespace RI.Framework.Utilities.Threading
+namespace RI.Framework.Threading
 {
 	/// <summary>
 	///     Event arguments for the <see cref="IThreadDispatcher" />.<see cref="IThreadDispatcher.Exception" /> event.

@@ -49,8 +49,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Nancy\CompositionContainerNancyBootstrapper.cs" />
-    <Compile Include="Nancy\_NamespaceDoc.cs" />
+    <Compile Include="Web\Nancy\CompositionContainerNancyBootstrapper.cs" />
+    <Compile Include="Web\Nancy\_NamespaceDoc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

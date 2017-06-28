@@ -60,11 +60,11 @@
     <Compile Include="StateMachines\States\MonoState.cs" />
     <Compile Include="StateMachines\Dispatchers\DispatcherServiceStateDispatcher.cs" />
     <Compile Include="Utilities\GameObjectExtensions.cs" />
-    <Compile Include="Utilities\Threading\ThreadMover.cs" />
-    <Compile Include="Utilities\Threading\ToBackground.cs" />
-    <Compile Include="Utilities\Threading\ToDispatcher.cs" />
-    <Compile Include="Utilities\Threading\ToForeground.cs" />
-    <Compile Include="Utilities\Threading\ToHeavyThread.cs" />
+    <Compile Include="Threading\ThreadMover.cs" />
+    <Compile Include="Threading\ToBackground.cs" />
+    <Compile Include="Threading\ToDispatcher.cs" />
+    <Compile Include="Threading\ToForeground.cs" />
+    <Compile Include="Threading\ToHeavyThread.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="..\RI.Framework.Common\RI.Framework.Common.projitems" Label="Shared" />

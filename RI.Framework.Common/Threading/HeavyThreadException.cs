@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-
-
-
-namespace RI.Framework.Utilities.Threading
+namespace RI.Framework.Threading
 {
 	/// <summary>
 	///     The <see cref="HeavyThreadException" /> is thrown when the thread of a <see cref="HeavyThread" /> had an exception.

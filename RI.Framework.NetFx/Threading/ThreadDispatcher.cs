@@ -7,10 +7,7 @@ using System.Threading.Tasks;
 using RI.Framework.Collections.Generic;
 using RI.Framework.Utilities.ObjectModel;
 
-
-
-
-namespace RI.Framework.Utilities.Threading
+namespace RI.Framework.Threading
 {
 	/// <summary>
 	///     Implements a delegate dispatcher which can be run on any thread.
@@ -69,22 +66,22 @@ namespace RI.Framework.Utilities.Threading
 		{
 			this.SyncRoot = new object();
 
+			this.CatchExceptions = false;
+			this.DefaultPriority = ThreadDispatcher.DefaultPriorityValue;
+			this.DefaultOptions = ThreadDispatcher.DefaultOptionsValue;
+			this.ShutdownMode = ThreadDispatcherShutdownMode.None;
+
 			this.Thread = null;
 			this.Queue = null;
 			this.Posted = null;
 			this.IdleSignals = null;
 			this.CurrentPriority = null;
-
+			this.CurrentOptions = null;
 			this.Scheduler = null;
 			this.Context = null;
 
 			this.OperationInProgress = null;
 			this.PreRunQueue = new PriorityQueue<ThreadDispatcherOperation>();
-
-			this.ShutdownMode = ThreadDispatcherShutdownMode.None;
-			this.DefaultPriority = ThreadDispatcher.DefaultPriorityValue;
-			this.DefaultOptions = ThreadDispatcher.DefaultOptionsValue;
-			this.CatchExceptions = false;
 		}
 
 		/// <summary>
@@ -102,15 +99,13 @@ namespace RI.Framework.Utilities.Threading
 
 		#region Instance Fields
 
-		private bool _catchExceptions;
-
-		private int _defaultPriority;
-
-		private ThreadDispatcherOptions _defaultOptions;
-
-		private ThreadDispatcherShutdownMode _shutdownMode;
 		private TaskScheduler _scheduler;
 		private SynchronizationContext _context;
+
+		private bool _catchExceptions;
+		private int _defaultPriority;
+		private ThreadDispatcherOptions _defaultOptions;
+		private ThreadDispatcherShutdownMode _shutdownMode;
 
 		#endregion
 
@@ -118,16 +113,6 @@ namespace RI.Framework.Utilities.Threading
 
 
 		#region Instance Properties/Indexer
-
-		private Stack<int> CurrentPriority { get; set; }
-		private List<TaskCompletionSource<object>> IdleSignals { get; set; }
-		private ThreadDispatcherOperation OperationInProgress { get; set; }
-		private ManualResetEvent Posted { get; set; }
-
-		private PriorityQueue<ThreadDispatcherOperation> PreRunQueue { get; set; }
-		private PriorityQueue<ThreadDispatcherOperation> Queue { get; set; }
-
-		private Thread Thread { get; set; }
 
 		internal TaskScheduler Scheduler
 		{
@@ -146,7 +131,6 @@ namespace RI.Framework.Utilities.Threading
 				}
 			}
 		}
-
 		internal SynchronizationContext Context
 		{
 			get
@@ -164,6 +148,16 @@ namespace RI.Framework.Utilities.Threading
 				}
 			}
 		}
+
+		private ThreadDispatcherOperation OperationInProgress { get; set; }
+		private PriorityQueue<ThreadDispatcherOperation> PreRunQueue { get; set; }
+
+		private Thread Thread { get; set; }
+		private PriorityQueue<ThreadDispatcherOperation> Queue { get; set; }
+		private ManualResetEvent Posted { get; set; }
+		private List<TaskCompletionSource<object>> IdleSignals { get; set; }
+		private Stack<int> CurrentPriority { get; set; }
+		private Stack<ThreadDispatcherOptions> CurrentOptions { get; set; }
 
 		#endregion
 
@@ -194,10 +188,11 @@ namespace RI.Framework.Utilities.Threading
 					this.Posted = new ManualResetEvent(this.PreRunQueue.Count > 0);
 					this.IdleSignals = new List<TaskCompletionSource<object>>();
 					this.CurrentPriority = new Stack<int>();
-
+					this.CurrentOptions = new Stack<ThreadDispatcherOptions>();
 					this.Scheduler = null; //TODO: Implement TaskScheduler
 					this.Context = new ThreadDispatcherSynchronizationContext(this);
 
+					this.OperationInProgress = null;
 					this.ShutdownMode = ThreadDispatcherShutdownMode.None;
 					this.PreRunQueue.MoveTo(this.Queue);
 
@@ -222,14 +217,19 @@ namespace RI.Framework.Utilities.Threading
 
 					SynchronizationContext.SetSynchronizationContext(synchronizationContextBackup);
 
-					this.Context = null;
-					this.Scheduler = null;
+					this.PreRunQueue.Clear();
+					this.ShutdownMode = ThreadDispatcherShutdownMode.None;
+					this.OperationInProgress = null;
 
+					this.CurrentOptions?.Clear();
 					this.CurrentPriority?.Clear();
 					this.IdleSignals?.Clear();
 					this.Posted?.Close();
 					this.Queue?.Clear();
 
+					this.Context = null;
+					this.Scheduler = null;
+					this.CurrentOptions = null;
 					this.CurrentPriority = null;
 					this.IdleSignals = null;
 					this.Posted = null;
@@ -252,7 +252,6 @@ namespace RI.Framework.Utilities.Threading
 
 				while (true)
 				{
-					int priority;
 					ThreadDispatcherOperation operation = null;
 
 					lock (this.SyncRoot)
@@ -278,9 +277,10 @@ namespace RI.Framework.Utilities.Threading
 
 						if (this.Queue.Count > 0)
 						{
-							operation = this.Queue.Dequeue(out priority);
+							operation = this.Queue.Dequeue();
 							this.OperationInProgress = operation;
-							this.CurrentPriority.Push(priority);
+							this.CurrentPriority.Push(operation.Priority);
+							this.CurrentOptions.Push(operation.Options);
 						}
 						else
 						{
@@ -299,19 +299,18 @@ namespace RI.Framework.Utilities.Threading
 
 					lock (this.SyncRoot)
 					{
+						this.CurrentOptions.Pop();
 						this.CurrentPriority.Pop();
 						this.OperationInProgress = null;
 
 						catchExceptions = this.CatchExceptions;
 					}
 
-					if (operation.State == ThreadDispatcherOperationState.Exception)
+					if (operation.Exception != null)
 					{
-						bool canContinue = catchExceptions;
+						this.OnException(operation.Exception, catchExceptions);
 
-						this.OnException(operation.Exception, canContinue);
-
-						if (!canContinue)
+						if (!catchExceptions)
 						{
 							throw new ThreadDispatcherException(operation.Exception);
 						}
@@ -498,7 +497,7 @@ namespace RI.Framework.Utilities.Threading
 			{
 				if (this.IsRunning && (!this.IsShuttingDown))
 				{
-					this.Shutdown(false);
+					this.BeginShutdown(false);
 				}
 			}
 		}
@@ -510,9 +509,9 @@ namespace RI.Framework.Utilities.Threading
 		}
 
 		/// <inheritdoc />
-		public Task DoProcessingAsync ()
+		public async Task DoProcessingAsync ()
 		{
-			Task task;
+			Task idleTask;
 
 			lock (this.SyncRoot)
 			{
@@ -520,17 +519,51 @@ namespace RI.Framework.Utilities.Threading
 
 				if ((this.Queue.Count == 0) && (this.OperationInProgress == null))
 				{
-					task = Task.CompletedTask;
+					return;
 				}
-				else
-				{
-					TaskCompletionSource<object> idleSignal = new TaskCompletionSource<object>();
-					this.IdleSignals.Add(idleSignal);
-					task = idleSignal.Task;
-				}
+
+				TaskCompletionSource<object> idleSignal = new TaskCompletionSource<object>();
+				this.IdleSignals.Add(idleSignal);
+				idleTask = idleSignal.Task;
 			}
 
-			return task;
+			await idleTask;
+		}
+
+		/// <inheritdoc />
+		public void DoProcessing(int priority)
+		{
+			this.DoProcessingAsync(priority).Wait();
+		}
+
+		/// <inheritdoc />
+		public async Task DoProcessingAsync(int priority)
+		{
+			if (priority < 0)
+			{
+				throw new ArgumentOutOfRangeException(nameof(priority));
+			}
+
+			Task idleTask;
+			Task priorityTask;
+
+			lock (this.SyncRoot)
+			{
+				this.VerifyRunning();
+
+				if ((this.Queue.Count == 0) && (this.OperationInProgress == null))
+				{
+					return;
+				}
+
+				TaskCompletionSource<object> idleSignal = new TaskCompletionSource<object>();
+				this.IdleSignals.Add(idleSignal);
+				idleTask = idleSignal.Task;
+
+				priorityTask = this.SendAsync(priority, new Action(() => { }));
+			}
+
+			await Task.WhenAny(idleTask, priorityTask);
 		}
 
 		/// <inheritdoc />
@@ -549,6 +582,25 @@ namespace RI.Framework.Utilities.Threading
 				}
 
 				return this.CurrentPriority.Peek();
+			}
+		}
+
+		/// <inheritdoc />
+		public ThreadDispatcherOptions? GetCurrentOptions()
+		{
+			lock (this.SyncRoot)
+			{
+				if (this.CurrentOptions == null)
+				{
+					return null;
+				}
+
+				if (this.CurrentOptions.Count == 0)
+				{
+					return null;
+				}
+
+				return this.CurrentOptions.Peek();
 			}
 		}
 
@@ -597,7 +649,7 @@ namespace RI.Framework.Utilities.Threading
 			{
 				this.VerifyNotShuttingDown();
 
-				ThreadDispatcherOperation operation = new ThreadDispatcherOperation(this, options, action, parameters);
+				ThreadDispatcherOperation operation = new ThreadDispatcherOperation(this, priority, options, action, parameters);
 
 				if (this.IsRunning)
 				{
@@ -666,25 +718,28 @@ namespace RI.Framework.Utilities.Threading
 				throw new ThreadDispatcherException(operation.Exception);
 			}
 
-			//TODO: Cancelation exception
+			if (operation.State == ThreadDispatcherOperationState.Canceled)
+			{
+				throw new OperationCanceledException();
+			}
 
 			return operation.Result;
 		}
 
 		/// <inheritdoc />
-		public Task<object> SendAsync (Delegate action, params object[] parameters)
+		public async Task<object> SendAsync (Delegate action, params object[] parameters)
 		{
-			return this.SendAsync(this.DefaultPriority, this.DefaultOptions, action, parameters);
+			return await this.SendAsync(this.DefaultPriority, this.DefaultOptions, action, parameters);
 		}
 
 		/// <inheritdoc />
-		public Task<object> SendAsync (int priority, Delegate action, params object[] parameters)
+		public async Task<object> SendAsync (int priority, Delegate action, params object[] parameters)
 		{
-			return this.SendAsync(priority, this.DefaultOptions, action, parameters);
+			return await this.SendAsync(priority, this.DefaultOptions, action, parameters);
 		}
 
 		/// <inheritdoc />
-		public Task<object> SendAsync(int priority, ThreadDispatcherOptions options, Delegate action, params object[] parameters)
+		public async Task<object> SendAsync(int priority, ThreadDispatcherOptions options, Delegate action, params object[] parameters)
 		{
 			if (priority < 0)
 			{
@@ -708,23 +763,34 @@ namespace RI.Framework.Utilities.Threading
 				operation = this.Post(priority, options, action, parameters);
 			}
 
-			Task completed = operation.WaitAsync();
-			Task<object> result = completed.ContinueWith((task, state) =>
+			try
 			{
-				ThreadDispatcherOperation op = (ThreadDispatcherOperation)state;
-				if (op.Exception != null)
-				{
-					throw new ThreadDispatcherException(op.Exception);
-				}
-				//TODO: Cancelation exception
-				return op.Result;
-			}, operation);
+				await operation.WaitAsync();
+			}
+			catch (TaskCanceledException)
+			{
+				throw new OperationCanceledException();
+			}
+			catch (Exception ex)
+			{
+				throw new ThreadDispatcherException(ex);
+			}
 
-			return result;
+			if (operation.Exception != null)
+			{
+				throw new ThreadDispatcherException(operation.Exception);
+			}
+
+			if (operation.State == ThreadDispatcherOperationState.Canceled)
+			{
+				throw new OperationCanceledException();
+			}
+
+			return operation.Result;
 		}
 
 		/// <inheritdoc />
-		public void Shutdown (bool finishPendingDelegates)
+		public void BeginShutdown (bool finishPendingDelegates)
 		{
 			lock (this.SyncRoot)
 			{
@@ -737,14 +803,27 @@ namespace RI.Framework.Utilities.Threading
 		}
 
 		/// <inheritdoc />
-		public Task ShutdownAsync (bool finishPendingDelegates)
+		public void Shutdown (bool finishPendingDelegates)
 		{
+			this.ShutdownAsync(finishPendingDelegates).Wait();
+		}
+
+		/// <inheritdoc />
+		public async Task ShutdownAsync (bool finishPendingDelegates)
+		{
+			Task idleTask;
+
 			lock (this.SyncRoot)
 			{
-				this.Shutdown(finishPendingDelegates);
+				this.VerifyRunning();
+				this.VerifyNotShuttingDown();
 
-				return this.DoProcessingAsync();
+				this.BeginShutdown(finishPendingDelegates);
+
+				idleTask = this.DoProcessingAsync();
 			}
+
+			await idleTask;
 		}
 
 		#endregion

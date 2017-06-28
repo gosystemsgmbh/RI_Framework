@@ -1,9 +1,6 @@
 using System;
 
-
-
-
-namespace RI.Framework.Utilities.Threading
+namespace RI.Framework.Threading
 {
 	/// <summary>
 	///     Describes the current processing state of a <see cref="ThreadDispatcherOperation" />.

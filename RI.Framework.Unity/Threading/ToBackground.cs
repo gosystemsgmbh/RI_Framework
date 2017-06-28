@@ -1,11 +1,6 @@
 ﻿using System.Threading;
 
-using UnityEngine;
-
-
-
-
-namespace RI.Framework.Utilities.Threading
+namespace RI.Framework.Threading
 {
 	/// <summary>
 	///     Yield instruction to move a task to a <see cref="ThreadPool" /> thread.

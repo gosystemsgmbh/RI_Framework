@@ -27,6 +27,8 @@ Utilities
  * (WPF) IView Init
  * (WPF) IViewModel Init
 
+ # (Windows) Sub-namespaces for Windows utilities (including Native or Interop)
+
  - (Linux) LinuxShell
 
  - (Windows) WindowsMessage
@@ -247,6 +249,7 @@ Services
  # (.NET) Messaging: ThreadDispatcherMessageDispatcher
  # (.NET) Messaging: DefaultMessageDispatcher
  - (.NET) Messaging: Use shared string comparers for Triger message handler
+ - (.NET) Messaging: Async functionality?
  
  # (.NET) Bus
 

@@ -37,7 +37,6 @@ namespace RI.Framework.Services
 	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
-	/// TODO: Create proper events for translation and lookup
 	public static class ServiceLocator
 	{
 		#region Static Constructor/Destructor
@@ -149,7 +148,7 @@ namespace RI.Framework.Services
 		/// <summary>
 		///     Raised when a service is to be looked-up by its name.
 		/// </summary>
-		public static event Func<string, IEnumerable<object>> Lookup;
+		public static event EventHandler<ServiceLocatorLookupEventArgs> Lookup;
 
 		/// <summary>
 		///     Raised when a type needs to be translated to a name.
@@ -157,7 +156,7 @@ namespace RI.Framework.Services
 		/// <remarks>
 		///     This event is raised before <see cref="Lookup" /> in case the lookup is specified using a type instead of a name so that the type needs to be translated into a name which then can be used for the actual lookup using <see cref="Lookup" />.
 		/// </remarks>
-		public static event Func<Type, string> Translate;
+		public static event EventHandler<ServiceLocatorTranslationEventArgs> Translate;
 
 		#endregion
 
@@ -450,7 +449,9 @@ namespace RI.Framework.Services
 					containerBindings = new HashSet<CompositionContainer>(ServiceLocator.CompositionContainerBindings);
 				}
 
-				HashSet<object> instances = new HashSet<object>(ServiceLocator.Lookup?.Invoke(name) ?? new object[0]);
+				ServiceLocatorLookupEventArgs args = new ServiceLocatorLookupEventArgs(name);
+				ServiceLocator.Lookup?.Invoke(null, args);
+				HashSet<object> instances = new HashSet<object>(args.Instances);
 
 				foreach (CompositionContainer container in containerBindings)
 				{
@@ -490,7 +491,10 @@ namespace RI.Framework.Services
 				return null;
 			}
 
-			return ServiceLocator.Translate?.Invoke(type) ?? CompositionContainer.GetNameOfType(type);
+			ServiceLocatorTranslationEventArgs args = new ServiceLocatorTranslationEventArgs(type);
+			args.Name = CompositionContainer.GetNameOfType(type);
+			ServiceLocator.Translate?.Invoke(null, args);
+			return args.Name;
 		}
 
 		#endregion
