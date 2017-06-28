@@ -689,6 +689,7 @@ namespace RI.Framework.Threading
 		}
 
 		/// <inheritdoc />
+		[SuppressMessage("ReSharper", "UnusedVariable")]
 		public void BeginShutdown (bool finishPendingDelegates)
 		{
 			Task t = this.ShutdownAsync(finishPendingDelegates);

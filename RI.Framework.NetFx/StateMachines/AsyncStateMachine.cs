@@ -66,7 +66,6 @@ namespace RI.Framework.StateMachines
 		/// </summary>
 		/// <typeparam name="TSignal"> The type of the signal. </typeparam>
 		/// <param name="signal"> The signal. </param>
-		/// <param name="timeout"> The timeout in milliseconds the method should wait for the signal to be sent. </param>
 		/// <returns>
 		///     true if the signal was executed within the specified timeout, false otherwise.
 		/// </returns>
@@ -79,7 +78,6 @@ namespace RI.Framework.StateMachines
 		///     Sends a signal to the current state.
 		/// </summary>
 		/// <param name="signal"> The signal. </param>
-		/// <param name="timeout"> The timeout in milliseconds the method should wait for the signal to be sent. </param>
 		/// <returns>
 		///     true if the signal was executed within the specified timeout, false otherwise.
 		/// </returns>
@@ -99,7 +97,6 @@ namespace RI.Framework.StateMachines
 		///     Initiates a transition to another state.
 		/// </summary>
 		/// <typeparam name="TState"> The type of state to transition to. </typeparam>
-		/// <param name="timeout"> The timeout in milliseconds the method should wait for the transition to be finished. </param>
 		/// <returns>
 		///     true if the transition was executed within the specified timeout, false otherwise.
 		/// </returns>
@@ -119,7 +116,6 @@ namespace RI.Framework.StateMachines
 		///     Initiates a transition to another state.
 		/// </summary>
 		/// <param name="state"> The type of state to transition to. </param>
-		/// <param name="timeout"> The timeout in milliseconds the method should wait for the transition to be finished. </param>
 		/// <returns>
 		///     true if the transition was executed within the specified timeout, false otherwise.
 		/// </returns>
@@ -146,7 +142,6 @@ namespace RI.Framework.StateMachines
 		/// <summary>
 		///     Updates the current state.
 		/// </summary>
-		/// <param name="timeout"> The timeout in milliseconds the method should wait for the update to be executed. </param>
 		/// <returns>
 		///     true if the update was executed within the specified timeout, false otherwise.
 		/// </returns>

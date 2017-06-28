@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 
+using RI.Framework.Collections;
 using RI.Framework.Collections.Generic;
 using RI.Framework.Utilities.ObjectModel;
 
@@ -82,6 +83,8 @@ namespace RI.Framework.Threading
 
 			this.OperationInProgress = null;
 			this.PreRunQueue = new PriorityQueue<ThreadDispatcherOperation>();
+			this.Finished = new ManualResetEvent(false);
+			this.FinishedSignals = new List<TaskCompletionSource<object>>();
 		}
 
 		/// <summary>
@@ -90,6 +93,16 @@ namespace RI.Framework.Threading
 		~ThreadDispatcher ()
 		{
 			((IDisposable)this).Dispose();
+
+			//TODO: Move this to Dispose() ???
+
+			this.PreRunQueue?.ForEach(x => x.Cancel()); //TODO: Force
+			this.PreRunQueue?.Clear();
+
+			this.FinishedSignals?.ForEach(x => x.TrySetCanceled());
+			this.FinishedSignals?.Clear();
+
+			this.Finished?.Close();
 		}
 
 		#endregion
@@ -151,6 +164,8 @@ namespace RI.Framework.Threading
 
 		private ThreadDispatcherOperation OperationInProgress { get; set; }
 		private PriorityQueue<ThreadDispatcherOperation> PreRunQueue { get; set; }
+		private ManualResetEvent Finished { get; set; }
+		private List<TaskCompletionSource<object>> FinishedSignals { get; set; }
 
 		private Thread Thread { get; set; }
 		private PriorityQueue<ThreadDispatcherOperation> Queue { get; set; }
@@ -197,6 +212,9 @@ namespace RI.Framework.Threading
 					this.PreRunQueue.MoveTo(this.Queue);
 
 					SynchronizationContext.SetSynchronizationContext(this.Context);
+
+					this.Finished.Reset();
+					this.FinishedSignals.Clear();
 				}
 
 				this.ExecuteFrame(null);
@@ -207,7 +225,7 @@ namespace RI.Framework.Threading
 				{
 					foreach (ThreadDispatcherOperation operation in this.Queue)
 					{
-						operation.Cancel();
+						operation.Cancel(); //TODO: Force
 					}
 
 					foreach (TaskCompletionSource<object> idleSignal in this.IdleSignals)
@@ -235,6 +253,10 @@ namespace RI.Framework.Threading
 					this.Posted = null;
 					this.Queue = null;
 					this.Thread = null;
+
+					this.Finished.Set();
+					this.FinishedSignals.ForEach(x => x.TrySetResult(null));
+					this.FinishedSignals.Clear();
 				}
 			}
 		}
@@ -348,6 +370,14 @@ namespace RI.Framework.Threading
 			if (this.ShutdownMode != ThreadDispatcherShutdownMode.None)
 			{
 				throw new InvalidOperationException(nameof(ThreadDispatcher) + " is already shutting down.");
+			}
+		}
+
+		private void VerifyNotFromDispatcher(string methodName)
+		{
+			if (this.IsInThread())
+			{
+				throw new InvalidOperationException(methodName + " cannot be called from inside the dispatcher.");
 			}
 		}
 
@@ -805,13 +835,7 @@ namespace RI.Framework.Threading
 		/// <inheritdoc />
 		public void Shutdown (bool finishPendingDelegates)
 		{
-			this.ShutdownAsync(finishPendingDelegates).Wait();
-		}
-
-		/// <inheritdoc />
-		public async Task ShutdownAsync (bool finishPendingDelegates)
-		{
-			Task idleTask;
+			bool isInThread;
 
 			lock (this.SyncRoot)
 			{
@@ -820,10 +844,50 @@ namespace RI.Framework.Threading
 
 				this.BeginShutdown(finishPendingDelegates);
 
-				idleTask = this.DoProcessingAsync();
+				isInThread = this.IsInThread();
 			}
 
-			await idleTask;
+			if (isInThread)
+			{
+				this.ExecuteFrame(null);
+			}
+			else
+			{
+				this.Finished.WaitOne();
+			}
+		}
+
+		/// <inheritdoc />
+		public async Task ShutdownAsync (bool finishPendingDelegates)
+		{
+			bool isInThread;
+			Task finishTask = null;
+
+			lock (this.SyncRoot)
+			{
+				this.VerifyRunning();
+				this.VerifyNotShuttingDown();
+
+				this.BeginShutdown(finishPendingDelegates);
+
+				isInThread = this.IsInThread();
+
+				if (!isInThread)
+				{
+					TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
+					this.FinishedSignals.Add(tcs);
+					finishTask = tcs.Task;
+				}
+			}
+
+			if (isInThread)
+			{
+				
+			}
+			else
+			{
+				await finishTask;
+			}
 		}
 
 		#endregion

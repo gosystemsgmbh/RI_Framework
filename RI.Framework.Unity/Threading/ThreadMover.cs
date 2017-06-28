@@ -6,6 +6,9 @@ using System.Threading;
 
 using RI.Framework.Services.Dispatcher;
 
+using UnityEngine;
+
+using Object = UnityEngine.Object;
 using ThreadPriority = System.Threading.ThreadPriority;
 
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -80,6 +81,7 @@ namespace RI.Framework.StateMachines.Dispatchers
 			this.Dispose(true);
 		}
 
+		[SuppressMessage("ReSharper", "UnusedParameter.Local")]
 		private void Dispose (bool disposing)
 		{
 			lock (this.SyncRoot)
