@@ -178,19 +178,9 @@ namespace RI.Framework.Threading
 
 		#region Instance Methods
 
-		/// <summary>
-		///     Cancels the processing of the dispatcher operation.
-		/// </summary>
-		/// <returns>
-		///     true if the operation could be canceled, false otherwise.
-		/// </returns>
-		/// <remarks>
-		///     <para>
-		///         A dispatcher operation can only be canceled if its is still pending <see cref="State" /> is <see cref="ThreadDispatcherOperationState.Waiting" />).
-		///     </para>
-		/// </remarks>
-		public bool Cancel ()
+		private bool CancelInternal (bool hard)
 		{
+			//TODO: Implement hard cancelation
 			lock (this.SyncRoot)
 			{
 				if (this.State != ThreadDispatcherOperationState.Waiting)
@@ -207,6 +197,27 @@ namespace RI.Framework.Threading
 
 				return true;
 			}
+		}
+
+		internal bool CancelHard ()
+		{
+			return this.CancelInternal(true);
+		}
+
+		/// <summary>
+		///     Cancels the processing of the dispatcher operation.
+		/// </summary>
+		/// <returns>
+		///     true if the operation could be canceled, false otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         A dispatcher operation can only be canceled if its is still pending <see cref="State" /> is <see cref="ThreadDispatcherOperationState.Waiting" />).
+		///     </para>
+		/// </remarks>
+		public bool Cancel ()
+		{
+			return this.CancelInternal(false);
 		}
 
 		/// <summary>

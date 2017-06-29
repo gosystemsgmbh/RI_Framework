@@ -241,6 +241,7 @@ Services
  - (WPF) WpfApplication: Handle power events using SystemEvents.PowerModeChanged
  - (WPF) WpfApplication: Handle user switching using SystemEvents.SessionSwitch
  
+ # (.NET) Settings: Support for multiple values of the same name
  # (.NET) Settings: WriteOnlyKnown for storage
  # (.NET) Settings: PrefixAffinity for storage
  # (.NET) Settings: XmlSettingStorage

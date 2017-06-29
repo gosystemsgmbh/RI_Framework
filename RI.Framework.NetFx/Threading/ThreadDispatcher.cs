@@ -96,7 +96,7 @@ namespace RI.Framework.Threading
 
 			//TODO: Move this to Dispose() ???
 
-			this.PreRunQueue?.ForEach(x => x.Cancel()); //TODO: Force
+			this.PreRunQueue?.ForEach(x => x.CancelHard());
 			this.PreRunQueue?.Clear();
 
 			this.FinishedSignals?.ForEach(x => x.TrySetCanceled());
@@ -223,9 +223,11 @@ namespace RI.Framework.Threading
 			{
 				lock (this.SyncRoot)
 				{
+					this.OperationInProgress?.CancelHard();
+
 					foreach (ThreadDispatcherOperation operation in this.Queue)
 					{
-						operation.Cancel(); //TODO: Force
+						operation.CancelHard();
 					}
 
 					foreach (TaskCompletionSource<object> idleSignal in this.IdleSignals)
