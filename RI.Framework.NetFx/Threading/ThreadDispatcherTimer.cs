@@ -21,6 +21,10 @@ namespace RI.Framework.Threading
 	///     <para>
 	///         The timer is initially stopped and needs to be started explicitly using <see cref="Start" />.
 	///     </para>
+	/// <note type="important">
+	/// If an instance of <see cref="ThreadDispatcherTimer"/> is garbage collected before the delegate is executed, the delegate will not be executed as the timer is stopped and disposed when its finalizer is called.
+	/// Therefore, to guarantee the execution of the delegate, you must hold on to the timer instance as long as you want the timer to work.
+	/// </note>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	public sealed class ThreadDispatcherTimer : IDisposable, ISynchronizable
@@ -105,9 +109,9 @@ namespace RI.Framework.Threading
 
 		#region Instance Fields
 
-		private int _executionCount;
+		private long _executionCount;
 
-		private int _missCount;
+		private long _missCount;
 
 		#endregion
 
@@ -191,7 +195,7 @@ namespace RI.Framework.Threading
 		///         <see cref="MissCount" /> is reset to zero whenever the timer is started after it was stopped.
 		///     </para>
 		/// </remarks>
-		public int MissCount
+		public long MissCount
 		{
 			get
 			{
@@ -220,7 +224,7 @@ namespace RI.Framework.Threading
 		///         <see cref="ExecutionCount" /> is reset to zero whenever the timer is started after it was stopped.
 		///     </para>
 		/// </remarks>
-		public int ExecutionCount
+		public long ExecutionCount
 		{
 			get
 			{
@@ -304,6 +308,7 @@ namespace RI.Framework.Threading
 							isRunning = self.Dispatcher.IsRunning;
 							if (isRunning)
 							{
+								//TODO: Use captured context
 								self.PreviousOperation = self.Dispatcher.Post(self.Priority, self.Options, self.Action, self.Parameters);
 								self.ExecutionCount++;
 							}

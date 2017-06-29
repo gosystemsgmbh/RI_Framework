@@ -51,6 +51,38 @@ namespace RI.Framework.Threading
 		}
 
 		/// <summary>
+		///     Determines under which options the current code is executed.
+		/// </summary>
+		/// <param name="dispatcher"> The dispatcher. </param>
+		/// <returns>
+		///     The options of the currently executed code or the default options of the dispatcher if the current code is not executed by the dispatcher.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" />  is null. </exception>
+		public static ThreadDispatcherOptions GetCurrentOptionsOrDefault(this IThreadDispatcher dispatcher)
+		{
+			return dispatcher.GetCurrentOptionsOrDefault(dispatcher.DefaultOptions);
+		}
+
+		/// <summary>
+		///     Determines under which options the current code is executed.
+		/// </summary>
+		/// <param name="dispatcher"> The dispatcher. </param>
+		/// <param name="defaultOptions"> The default options to return if the current code is not executed by the dispatcher. </param>
+		/// <returns>
+		///     The options of the currently executed code or <paramref name="defaultOptions" /> if the current code is not executed by the dispatcher.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" />  is null. </exception>
+		public static ThreadDispatcherOptions GetCurrentOptionsOrDefault(this IThreadDispatcher dispatcher, ThreadDispatcherOptions defaultOptions)
+		{
+			if (dispatcher == null)
+			{
+				throw new ArgumentNullException(nameof(dispatcher));
+			}
+
+			return dispatcher.GetCurrentOptions().GetValueOrDefault(defaultOptions);
+		}
+
+		/// <summary>
 		///     Enqueues a delegate to the dispatchers queue for delayed execution.
 		/// </summary>
 		/// <param name="dispatcher"> The dispatcher. </param>
@@ -107,7 +139,7 @@ namespace RI.Framework.Threading
 		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" /> or <paramref name="action" /> is null. </exception>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="milliseconds" /> or <paramref name="priority" /> is less than zero. </exception>
 		/// <exception cref="InvalidOperationException"> The dispatcher is not running or is being shut down. </exception>
-		public static ThreadDispatcherTimer PostDelayed(this IThreadDispatcher dispatcher, int milliseconds, int priority, ThreadDispatcherOptions options, Delegate action, params object[] parameters)
+		public static ThreadDispatcherTimer PostDelayed (this IThreadDispatcher dispatcher, int milliseconds, int priority, ThreadDispatcherOptions options, Delegate action, params object[] parameters)
 		{
 			if (dispatcher == null)
 			{
@@ -190,7 +222,7 @@ namespace RI.Framework.Threading
 		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" /> or <paramref name="action" /> is null. </exception>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="priority" /> is less than zero. </exception>
 		/// <exception cref="InvalidOperationException"> The dispatcher is not running or is being shut down. </exception>
-		public static ThreadDispatcherTimer PostDelayed(this IThreadDispatcher dispatcher, TimeSpan delay, int priority, ThreadDispatcherOptions options, Delegate action, params object[] parameters)
+		public static ThreadDispatcherTimer PostDelayed (this IThreadDispatcher dispatcher, TimeSpan delay, int priority, ThreadDispatcherOptions options, Delegate action, params object[] parameters)
 		{
 			return dispatcher.PostDelayed((int)delay.TotalMilliseconds, priority, options, action, parameters);
 		}
@@ -246,8 +278,7 @@ namespace RI.Framework.Threading
 				return ((HeavyThreadDispatcher)dispatcher).Dispatcher.Scheduler;
 			}
 
-			//TODO: Implement TaskScheduler
-			return null;
+			return new ThreadDispatcherTaskScheduler(dispatcher);
 		}
 
 		#endregion

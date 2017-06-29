@@ -10,7 +10,12 @@ namespace RI.Framework.Threading
 	{
 		#region Instance Constructor/Destructor
 
-		internal ThreadDispatcherSynchronizationContext (IThreadDispatcher dispatcher)
+		/// <summary>
+		/// Creates a new instance of <see cref="ThreadDispatcherSynchronizationContext"/>.
+		/// </summary>
+		/// <param name="dispatcher">The used dispatcher.</param>
+		/// <exception cref="ArgumentNullException"><paramref name="dispatcher"/> is null.</exception>
+		public ThreadDispatcherSynchronizationContext (IThreadDispatcher dispatcher)
 		{
 			if (dispatcher == null)
 			{

@@ -180,20 +180,29 @@ namespace RI.Framework.Threading
 
 		private bool CancelInternal (bool hard)
 		{
-			//TODO: Implement hard cancelation
 			lock (this.SyncRoot)
 			{
-				if (this.State != ThreadDispatcherOperationState.Waiting)
+				if (hard)
 				{
-					return false;
+					if ((this.State != ThreadDispatcherOperationState.Waiting) && (this.State != ThreadDispatcherOperationState.Executing))
+					{
+						return false;
+					}
+				}
+				else
+				{
+					if (this.State != ThreadDispatcherOperationState.Waiting)
+					{
+						return false;
+					}
 				}
 
-				this.State = ThreadDispatcherOperationState.Canceled;
+				this.OperationDone.Set();
+				this.OperationDoneTask.TrySetCanceled();
+
 				this.Exception = null;
 				this.Result = null;
-
-				this.OperationDone.Set();
-				this.OperationDoneTask.SetCanceled();
+				this.State = ThreadDispatcherOperationState.Canceled;
 
 				return true;
 			}
@@ -451,21 +460,21 @@ namespace RI.Framework.Threading
 			{
 				if (exception == null)
 				{
-					this.State = ThreadDispatcherOperationState.Finished;
+					this.OperationDone.Set();
+					this.OperationDoneTask.TrySetResult(this.Result);
+
 					this.Exception = null;
 					this.Result = result;
-
-					this.OperationDone.Set();
-					this.OperationDoneTask.SetResult(this.Result);
+					this.State = ThreadDispatcherOperationState.Finished;
 				}
 				else
 				{
-					this.State = ThreadDispatcherOperationState.Exception;
+					this.OperationDone.Set();
+					this.OperationDoneTask.TrySetException(this.Exception);
+
 					this.Exception = exception;
 					this.Result = null;
-
-					this.OperationDone.Set();
-					this.OperationDoneTask.SetException(this.Exception);
+					this.State = ThreadDispatcherOperationState.Exception;
 				}
 			}
 		}

@@ -168,6 +168,7 @@
     <Compile Include="Threading\ThreadDispatcherOptions.cs" />
     <Compile Include="Threading\ThreadDispatcherShutdownMode.cs" />
     <Compile Include="Threading\ThreadDispatcherSynchronizationContext.cs" />
+    <Compile Include="Threading\ThreadDispatcherTaskScheduler.cs" />
     <Compile Include="Threading\ThreadDispatcherTimer.cs" />
     <Compile Include="Threading\ThreadDispatcherTimerMode.cs" />
     <Compile Include="Web\_NamespaceDoc.cs" />

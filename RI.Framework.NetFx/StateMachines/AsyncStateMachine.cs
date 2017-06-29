@@ -366,7 +366,7 @@ namespace RI.Framework.StateMachines
 			List<Tuple<Type, TaskCompletionSource<object>>> tasks = this.TransitionTasks.RemoveWhere(x => x.Item1 == transientInfo.NextState?.GetType());
 			foreach (Tuple<Type, TaskCompletionSource<object>> task in tasks)
 			{
-				task.Item2.SetResult(true);
+				task.Item2.TrySetResult(true);
 			}
 		}
 
@@ -378,7 +378,7 @@ namespace RI.Framework.StateMachines
 			List<Tuple<object, TaskCompletionSource<object>>> tasks = this.SignalTasks.RemoveWhere(x => object.ReferenceEquals(x.Item1, signalInfo.Signal));
 			foreach (Tuple<object, TaskCompletionSource<object>> task in tasks)
 			{
-				task.Item2.SetResult(true);
+				task.Item2.TrySetResult(true);
 			}
 		}
 
@@ -390,7 +390,7 @@ namespace RI.Framework.StateMachines
 			List<Tuple<Type, TaskCompletionSource<object>>> tasks = this.UpdateTasks.RemoveWhere(x => x.Item1 == updateInfo.UpdateState?.GetType());
 			foreach (Tuple<Type, TaskCompletionSource<object>> task in tasks)
 			{
-				task.Item2.SetResult(true);
+				task.Item2.TrySetResult(true);
 			}
 		}
 
@@ -402,7 +402,7 @@ namespace RI.Framework.StateMachines
 			List<Tuple<Type, TaskCompletionSource<object>>> tasks = this.TransitionTasks.RemoveWhere(x => x.Item1 == transientInfo.NextState?.GetType());
 			foreach (Tuple<Type, TaskCompletionSource<object>> task in tasks)
 			{
-				task.Item2.SetCanceled();
+				task.Item2.TrySetCanceled();
 			}
 		}
 
@@ -414,7 +414,7 @@ namespace RI.Framework.StateMachines
 			List<Tuple<Type, TaskCompletionSource<object>>> tasks = this.UpdateTasks.RemoveWhere(x => x.Item1 == updateInfo.UpdateState?.GetType());
 			foreach (Tuple<Type, TaskCompletionSource<object>> task in tasks)
 			{
-				task.Item2.SetCanceled();
+				task.Item2.TrySetCanceled();
 			}
 		}
 

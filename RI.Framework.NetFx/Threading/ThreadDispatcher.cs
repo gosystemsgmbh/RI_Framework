@@ -99,7 +99,7 @@ namespace RI.Framework.Threading
 			this.PreRunQueue?.ForEach(x => x.CancelHard());
 			this.PreRunQueue?.Clear();
 
-			this.FinishedSignals?.ForEach(x => x.TrySetCanceled());
+			this.FinishedSignals?.ForEach(x => x.TrySetResult(null));
 			this.FinishedSignals?.Clear();
 
 			this.Finished?.Close();
@@ -204,7 +204,7 @@ namespace RI.Framework.Threading
 					this.IdleSignals = new List<TaskCompletionSource<object>>();
 					this.CurrentPriority = new Stack<int>();
 					this.CurrentOptions = new Stack<ThreadDispatcherOptions>();
-					this.Scheduler = null; //TODO: Implement TaskScheduler
+					this.Scheduler = new ThreadDispatcherTaskScheduler(this);
 					this.Context = new ThreadDispatcherSynchronizationContext(this);
 
 					this.OperationInProgress = null;
@@ -224,16 +224,8 @@ namespace RI.Framework.Threading
 				lock (this.SyncRoot)
 				{
 					this.OperationInProgress?.CancelHard();
-
-					foreach (ThreadDispatcherOperation operation in this.Queue)
-					{
-						operation.CancelHard();
-					}
-
-					foreach (TaskCompletionSource<object> idleSignal in this.IdleSignals)
-					{
-						idleSignal.TrySetResult(null);
-					}
+					this.Queue.ForEach(x => x.CancelHard());
+					this.IdleSignals.ForEach(x => x.TrySetResult(null));
 
 					SynchronizationContext.SetSynchronizationContext(synchronizationContextBackup);
 
