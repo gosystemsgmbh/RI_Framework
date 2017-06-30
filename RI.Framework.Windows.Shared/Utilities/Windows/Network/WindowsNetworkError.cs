@@ -1,9 +1,6 @@
 ﻿using System;
 
-
-
-
-namespace RI.Framework.Utilities.Windows
+namespace RI.Framework.Utilities.Windows.Network
 {
 	/// <summary>
 	///     Describes the result of a network resource operation performed by <see cref="WindowsNetwork" />.

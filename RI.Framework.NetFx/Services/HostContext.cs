@@ -1,5 +1,6 @@
 ﻿using System;
 
+using RI.Framework.Utilities;
 using RI.Framework.Utilities.ObjectModel;
 
 
@@ -33,7 +34,7 @@ namespace RI.Framework.Services
 		public virtual HostContext Clone ()
 		{
 			HostContext clone = new HostContext();
-			clone.Logger = (this.Logger as ICloneable)?.Clone() ?? this.Logger;
+			clone.Logger = this.Logger?.CloneOrSelf();
 			return clone;
 		}
 

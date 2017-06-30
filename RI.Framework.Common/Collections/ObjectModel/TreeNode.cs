@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using RI.Framework.Utilities;
 using RI.Framework.Utilities.ObjectModel;
 
 
@@ -152,31 +153,11 @@ namespace RI.Framework.Collections.ObjectModel
 
 		private TValue CloneValue ()
 		{
-			object value = null;
-
-			ICloneable<TValue> cloneable1 = this.Value as ICloneable<TValue>;
-			if (cloneable1 != null)
+			if (this.Value == null)
 			{
-				value = cloneable1.Clone();
+				return default(TValue);
 			}
-
-			if (value != null)
-			{
-				return (TValue)value;
-			}
-
-			ICloneable cloneable2 = this.Value as ICloneable;
-			if (cloneable2 != null)
-			{
-				value = cloneable2.Clone();
-			}
-
-			if (value is TValue)
-			{
-				return (TValue)value;
-			}
-
-			return this.Value;
+			return this.Value.CloneOrSelf();
 		}
 
 		#endregion

@@ -6,6 +6,7 @@ using RI.Framework.StateMachines.Caches;
 using RI.Framework.StateMachines.Dispatchers;
 using RI.Framework.StateMachines.Resolvers;
 using RI.Framework.StateMachines.States;
+using RI.Framework.Utilities;
 using RI.Framework.Utilities.ObjectModel;
 
 
@@ -338,9 +339,9 @@ namespace RI.Framework.StateMachines
 		[SuppressMessage("ReSharper", "SuspiciousTypeConversion.Global")]
 		protected virtual void Clone (T clone)
 		{
-			clone.Dispatcher = (this.Dispatcher as ICloneable<IStateDispatcher>)?.Clone() ?? this.Dispatcher;
-			clone.Resolver = (this.Resolver as ICloneable<IStateResolver>)?.Clone() ?? this.Resolver;
-			clone.Cache = (this.Cache as ICloneable<IStateCache>)?.Clone() ?? this.Cache;
+			clone.Dispatcher = this.Dispatcher?.CloneOrSelf();
+			clone.Resolver = this.Resolver?.CloneOrSelf();
+			clone.Cache = this.Cache?.CloneOrSelf();
 
 			clone.CachingEnabled = this.CachingEnabled;
 			clone.LoggingEnabled = this.LoggingEnabled;

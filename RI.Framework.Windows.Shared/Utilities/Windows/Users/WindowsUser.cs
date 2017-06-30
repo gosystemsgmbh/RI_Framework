@@ -9,11 +9,9 @@ using System.Security.Principal;
 using System.Text;
 
 using RI.Framework.Utilities.Exceptions;
+using RI.Framework.Utilities.Windows.Interop;
 
-
-
-
-namespace RI.Framework.Utilities.Windows
+namespace RI.Framework.Utilities.Windows.Users
 {
 	/// <summary>
 	///     Provides utilities for working with Windows user contexts.

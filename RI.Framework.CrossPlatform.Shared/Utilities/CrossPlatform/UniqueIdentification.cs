@@ -27,7 +27,7 @@ namespace RI.Framework.Utilities.CrossPlatform
 		/// </remarks>
 		public static Guid GetDomainId ()
 		{
-			return RuntimeEnvironment.IsUnixPlatform() ? Guid.Empty : Windows.UniqueIdentification.GetDomainId();
+			return RuntimeEnvironment.IsUnixPlatform() ? Guid.Empty : Windows.Cryptography.UniqueIdentification.GetDomainId();
 		}
 
 		/// <summary>
@@ -38,7 +38,7 @@ namespace RI.Framework.Utilities.CrossPlatform
 		/// </returns>
 		public static Guid GetMachineId ()
 		{
-			return RuntimeEnvironment.IsUnixPlatform() ? Linux.UniqueIdentification.GetMachineId() : Windows.UniqueIdentification.GetMachineId();
+			return RuntimeEnvironment.IsUnixPlatform() ? Linux.UniqueIdentification.GetMachineId() : Windows.Cryptography.UniqueIdentification.GetMachineId();
 		}
 
 		/// <summary>
@@ -49,7 +49,7 @@ namespace RI.Framework.Utilities.CrossPlatform
 		/// </returns>
 		public static Guid GetUserId ()
 		{
-			return RuntimeEnvironment.IsUnixPlatform() ? Linux.UniqueIdentification.GetUserId() : Windows.UniqueIdentification.GetUserId();
+			return RuntimeEnvironment.IsUnixPlatform() ? Linux.UniqueIdentification.GetUserId() : Windows.Cryptography.UniqueIdentification.GetUserId();
 		}
 
 		#endregion

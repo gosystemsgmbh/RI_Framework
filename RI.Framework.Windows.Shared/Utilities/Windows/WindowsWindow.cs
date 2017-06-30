@@ -19,7 +19,7 @@ namespace RI.Framework.Utilities.Windows
 	///         Native windows are represented using their window handle (HWND).
 	///     </para>
 	/// </remarks>
-	public static class NativeWindows
+	public static class WindowsWindow
 	{
 		#region Constants
 
@@ -58,10 +58,10 @@ namespace RI.Framework.Utilities.Windows
 
 		#region Static Constructor/Destructor
 
-		static NativeWindows ()
+		static WindowsWindow ()
 		{
-			NativeWindows.FindChildWindowsSyncRoot = new object();
-			NativeWindows.FindWindowsSyncRoot = new object();
+			WindowsWindow.FindChildWindowsSyncRoot = new object();
+			WindowsWindow.FindWindowsSyncRoot = new object();
 		}
 
 		#endregion
@@ -103,7 +103,7 @@ namespace RI.Framework.Utilities.Windows
 				return;
 			}
 
-			NativeWindows.EnableWindowInternal(hWnd, enable);
+			WindowsWindow.EnableWindowInternal(hWnd, enable);
 		}
 
 		/// <summary>
@@ -121,16 +121,16 @@ namespace RI.Framework.Utilities.Windows
 				return new IntPtr[0];
 			}
 
-			lock (NativeWindows.FindChildWindowsSyncRoot)
+			lock (WindowsWindow.FindChildWindowsSyncRoot)
 			{
-				if (NativeWindows.FindChildWindowsWindows == null)
+				if (WindowsWindow.FindChildWindowsWindows == null)
 				{
-					NativeWindows.FindChildWindowsWindows = new List<IntPtr>();
+					WindowsWindow.FindChildWindowsWindows = new List<IntPtr>();
 				}
 
-				NativeWindows.FindChildWindowsWindows.Clear();
-				NativeWindows.EnumChildWindows(hWnd, NativeWindows.FindChildWindowsProc, IntPtr.Zero);
-				return NativeWindows.FindChildWindowsWindows.ToArray();
+				WindowsWindow.FindChildWindowsWindows.Clear();
+				WindowsWindow.EnumChildWindows(hWnd, WindowsWindow.FindChildWindowsProc, IntPtr.Zero);
+				return WindowsWindow.FindChildWindowsWindows.ToArray();
 			}
 		}
 
@@ -143,16 +143,16 @@ namespace RI.Framework.Utilities.Windows
 		/// </returns>
 		public static IntPtr[] FindTopWindows ()
 		{
-			lock (NativeWindows.FindWindowsSyncRoot)
+			lock (WindowsWindow.FindWindowsSyncRoot)
 			{
-				if (NativeWindows.FindWindowsWindows == null)
+				if (WindowsWindow.FindWindowsWindows == null)
 				{
-					NativeWindows.FindWindowsWindows = new List<IntPtr>();
+					WindowsWindow.FindWindowsWindows = new List<IntPtr>();
 				}
 
-				NativeWindows.FindWindowsWindows.Clear();
-				NativeWindows.EnumWindows(NativeWindows.FindWindowsProc, IntPtr.Zero);
-				return NativeWindows.FindWindowsWindows.ToArray();
+				WindowsWindow.FindWindowsWindows.Clear();
+				WindowsWindow.EnumWindows(WindowsWindow.FindWindowsProc, IntPtr.Zero);
+				return WindowsWindow.FindWindowsWindows.ToArray();
 			}
 		}
 
@@ -172,7 +172,7 @@ namespace RI.Framework.Utilities.Windows
 		{
 			LASTINPUTINFO info = new LASTINPUTINFO();
 			info.cbSize = (uint)Marshal.SizeOf(info);
-			NativeWindows.GetLastInputInfo(ref info);
+			WindowsWindow.GetLastInputInfo(ref info);
 
 			double idleTicks = (Environment.TickCount - info.dwTime) * (-1.0);
 			DateTime inputTimestamp = DateTime.Now.AddMilliseconds(idleTicks);
@@ -194,7 +194,7 @@ namespace RI.Framework.Utilities.Windows
 			}
 
 			int processId = 0;
-			NativeWindows.GetWindowThreadProcessId(hWnd, ref processId);
+			WindowsWindow.GetWindowThreadProcessId(hWnd, ref processId);
 
 			Process[] processes = Process.GetProcesses();
 			Process process = (from p in processes where p.Id == processId select p).FirstOrDefault();
@@ -217,8 +217,8 @@ namespace RI.Framework.Utilities.Windows
 				throw new ArgumentNullException(nameof(process));
 			}
 
-			IntPtr[] allWindows = NativeWindows.FindTopWindows();
-			IntPtr[] foundWindows = (from w in allWindows where NativeWindows.GetProcess(w).Id == process.Id select w).ToArray();
+			IntPtr[] allWindows = WindowsWindow.FindTopWindows();
+			IntPtr[] foundWindows = (from w in allWindows where WindowsWindow.GetProcess(w).Id == process.Id select w).ToArray();
 			return foundWindows;
 		}
 
@@ -242,7 +242,7 @@ namespace RI.Framework.Utilities.Windows
 			}
 
 			int length = -1;
-			NativeWindows.SendMessageTimeout1(hWnd, NativeWindows.WmGettextlength, IntPtr.Zero, IntPtr.Zero, NativeWindows.SmtoAbortifhung | NativeWindows.SmtoNormal, 1000, ref length);
+			WindowsWindow.SendMessageTimeout1(hWnd, WindowsWindow.WmGettextlength, IntPtr.Zero, IntPtr.Zero, WindowsWindow.SmtoAbortifhung | WindowsWindow.SmtoNormal, 1000, ref length);
 
 			if (length == -1)
 			{
@@ -262,7 +262,7 @@ namespace RI.Framework.Utilities.Windows
 			StringBuilder sb = new StringBuilder(length + 1);
 
 			IntPtr temp = new IntPtr();
-			NativeWindows.SendMessageTimeout2(hWnd, NativeWindows.WmGettext, new IntPtr(sb.Capacity), sb, NativeWindows.SmtoAbortifhung | NativeWindows.SmtoNormal, 1000, ref temp);
+			WindowsWindow.SendMessageTimeout2(hWnd, WindowsWindow.WmGettext, new IntPtr(sb.Capacity), sb, WindowsWindow.SmtoAbortifhung | WindowsWindow.SmtoNormal, 1000, ref temp);
 
 			if (temp.ToInt64() == -1)
 			{
@@ -294,7 +294,7 @@ namespace RI.Framework.Utilities.Windows
 				return;
 			}
 
-			NativeWindows.ShowWindow(hWnd, (int)NativeWindows.SwHide);
+			WindowsWindow.ShowWindow(hWnd, (int)WindowsWindow.SwHide);
 		}
 
 		/// <summary>
@@ -313,7 +313,7 @@ namespace RI.Framework.Utilities.Windows
 				return;
 			}
 
-			NativeWindows.ShowWindow(hWnd, (int)NativeWindows.SwShowmaximized);
+			WindowsWindow.ShowWindow(hWnd, (int)WindowsWindow.SwShowmaximized);
 		}
 
 		/// <summary>
@@ -332,7 +332,7 @@ namespace RI.Framework.Utilities.Windows
 				return;
 			}
 
-			NativeWindows.ShowWindow(hWnd, (int)NativeWindows.SwShowminimized);
+			WindowsWindow.ShowWindow(hWnd, (int)WindowsWindow.SwShowminimized);
 		}
 
 		/// <summary>
@@ -351,7 +351,7 @@ namespace RI.Framework.Utilities.Windows
 				return;
 			}
 
-			NativeWindows.SetWindowPos(hWnd, NativeWindows.HwndBottom, 0, 0, 0, 0, NativeWindows.SwpNosize | NativeWindows.SwpNomove | NativeWindows.SwpNoactivate);
+			WindowsWindow.SetWindowPos(hWnd, WindowsWindow.HwndBottom, 0, 0, 0, 0, WindowsWindow.SwpNosize | WindowsWindow.SwpNomove | WindowsWindow.SwpNoactivate);
 		}
 
 		/// <summary>
@@ -370,9 +370,9 @@ namespace RI.Framework.Utilities.Windows
 				return;
 			}
 
-			NativeWindows.SetForegroundWindow(hWnd);
-			NativeWindows.BringWindowToTop(hWnd);
-			NativeWindows.SetActiveWindow(hWnd);
+			WindowsWindow.SetForegroundWindow(hWnd);
+			WindowsWindow.BringWindowToTop(hWnd);
+			WindowsWindow.SetActiveWindow(hWnd);
 		}
 
 		/// <summary>
@@ -391,7 +391,7 @@ namespace RI.Framework.Utilities.Windows
 				return;
 			}
 
-			NativeWindows.ShowWindow(hWnd, (int)NativeWindows.SwShownormal);
+			WindowsWindow.ShowWindow(hWnd, (int)WindowsWindow.SwShownormal);
 		}
 
 		/// <summary>
@@ -425,7 +425,7 @@ namespace RI.Framework.Utilities.Windows
 				return;
 			}
 
-			NativeWindows.MoveWindow(hWnd, x, y, width, height, true);
+			WindowsWindow.MoveWindow(hWnd, x, y, width, height, true);
 		}
 
 		/// <summary>
@@ -444,7 +444,7 @@ namespace RI.Framework.Utilities.Windows
 				return;
 			}
 
-			NativeWindows.ShowWindow(hWnd, (int)NativeWindows.SwShow);
+			WindowsWindow.ShowWindow(hWnd, (int)WindowsWindow.SwShow);
 		}
 
 		[DllImport("user32.dll", SetLastError = false)]
@@ -465,13 +465,13 @@ namespace RI.Framework.Utilities.Windows
 
 		private static bool FindChildWindowsProc (IntPtr hWnd, ref IntPtr lParam)
 		{
-			NativeWindows.FindChildWindowsWindows.Add(hWnd);
+			WindowsWindow.FindChildWindowsWindows.Add(hWnd);
 			return true;
 		}
 
 		private static bool FindWindowsProc (IntPtr hWnd, ref IntPtr lParam)
 		{
-			NativeWindows.FindWindowsWindows.Add(hWnd);
+			WindowsWindow.FindWindowsWindows.Add(hWnd);
 			return true;
 		}
 

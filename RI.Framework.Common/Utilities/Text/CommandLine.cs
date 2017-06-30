@@ -552,8 +552,11 @@ namespace RI.Framework.Utilities.Text
 
 			CommandLine clone = new CommandLine();
 			clone.Executable = this.Executable;
-			clone.ParameterNameComparer = parameterNameComparer ?? this.ParameterNameComparer;
-			clone.Parameters.AddRange(this.Parameters);
+			clone.ParameterNameComparer = this.ParameterNameComparer?.CloneOrSelf();
+			foreach (KeyValuePair<string, List<string>> parameter in this.Parameters)
+			{
+				clone.Parameters.Add(parameter.Key, new List<string>(parameter.Value));
+			}
 			clone.Literals.AddRange(this.Literals);
 			return clone;
 		}

@@ -2,10 +2,9 @@
 using System.Security.Cryptography;
 using System.Text;
 
+using RI.Framework.Utilities.Windows.Users;
 
-
-
-namespace RI.Framework.Utilities.Windows
+namespace RI.Framework.Utilities.Windows.Cryptography
 {
 	/// <summary>
 	///     Provides functionality to obtain various unique IDs.

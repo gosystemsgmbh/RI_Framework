@@ -193,6 +193,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Exceptions\NotWriteableStreamArgumentException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Exceptions\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Globalization\CultureInfoExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObjectExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObjectModel\ISynchronizable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObjectModel\Singleton.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Randomizing\RandomExtensions.cs" />

@@ -55,26 +55,26 @@
     <Compile Include="IO\Serial\_NamespaceDoc.cs" />
     <Compile Include="Services\Logging\Writers\EventLogWriter.cs" />
     <Compile Include="Services\WindowsBootstrapper.cs" />
-    <Compile Include="Utilities\Windows\LocalEncryption.cs" />
-    <Compile Include="Utilities\Windows\NativeWindows.cs" />
-    <Compile Include="Utilities\Windows\UniqueIdentification.cs" />
-    <None Include="Utilities\Windows\MessageLoop\WindowsMessage.cs" />
-    <None Include="Utilities\Windows\MessageLoop\WindowsMessageLoop.cs" />
-    <None Include="Utilities\Windows\MessageLoop\WindowsMessageLoopOperation.cs" />
-    <None Include="Utilities\Windows\MessageLoop\WindowsMessageLoopOperationState.cs" />
-    <None Include="Utilities\Windows\MessageLoop\WindowsMessageLoopShutdownMode.cs" />
-    <Compile Include="Utilities\Windows\WindowsNetwork.cs" />
-    <Compile Include="Utilities\Windows\WindowsNetworkConnection.cs" />
-    <Compile Include="Utilities\Windows\WindowsNetworkError.cs" />
-    <Compile Include="Utilities\Windows\Privileges.cs" />
-    <Compile Include="Utilities\Windows\SecurityEntity.cs" />
+    <Compile Include="Utilities\Windows\Cryptography\LocalEncryption.cs" />
+    <Compile Include="Utilities\Windows\WindowsWindow.cs" />
+    <Compile Include="Utilities\Windows\Cryptography\UniqueIdentification.cs" />
+    <None Include="Utilities\Windows\Messages\WindowsMessage.cs" />
+    <None Include="Utilities\Windows\Messages\WindowsMessageLoop.cs" />
+    <None Include="Utilities\Windows\Messages\WindowsMessageLoopOperation.cs" />
+    <None Include="Utilities\Windows\Messages\WindowsMessageLoopOperationState.cs" />
+    <None Include="Utilities\Windows\Messages\WindowsMessageLoopShutdownMode.cs" />
+    <Compile Include="Utilities\Windows\Network\WindowsNetwork.cs" />
+    <Compile Include="Utilities\Windows\Network\WindowsNetworkConnection.cs" />
+    <Compile Include="Utilities\Windows\Network\WindowsNetworkError.cs" />
+    <Compile Include="Utilities\Windows\Interop\Privileges.cs" />
+    <Compile Include="Utilities\Windows\Interop\SecurityEntity.cs" />
     <Compile Include="Utilities\Windows\WindowsApi.cs" />
-    <Compile Include="Utilities\Windows\WindowsError.cs" />
+    <Compile Include="Utilities\Windows\Interop\WindowsError.cs" />
     <Compile Include="Utilities\Windows\WindowsSession.cs" />
     <Compile Include="Utilities\Windows\WindowsShell.cs" />
-    <Compile Include="Utilities\Windows\WindowsUser.cs" />
-    <Compile Include="Utilities\Windows\WindowsUserImpersonation.cs" />
-    <Compile Include="Utilities\Windows\WindowsUserProfile.cs" />
+    <Compile Include="Utilities\Windows\Users\WindowsUser.cs" />
+    <Compile Include="Utilities\Windows\Users\WindowsUserImpersonation.cs" />
+    <Compile Include="Utilities\Windows\Users\WindowsUserProfile.cs" />
     <Compile Include="Utilities\Windows\_NamespaceDoc.cs" />
     <None Include="Properties\AssemblyName.snk" />
     <Compile Include="IO\Paths\DirectoryPathExtensions.cs" />
@@ -87,6 +87,7 @@
       <Name>RI.Framework.NetFx</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>@"$(SolutionDir)_Input\VersionUpdater.exe" "$(ProjectDir)Properties" "nr" "file" "$(SolutionDir)RI.Framework.Property.Version.txt" "$(SolutionDir)RI.Framework.Property.Company.txt" "$(SolutionDir)RI.Framework.Property.Copyright.txt"</PreBuildEvent>

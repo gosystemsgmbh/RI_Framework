@@ -1,9 +1,6 @@
 using System;
 
-
-
-
-namespace RI.Framework.Utilities.Windows
+namespace RI.Framework.Utilities.Windows.Interop
 {
 	[Serializable]
 	internal enum SecurityEntity

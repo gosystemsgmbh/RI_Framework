@@ -20,14 +20,9 @@ Utilities
 
  - (Common) ComponentManager
 
- # (Common) ObjectExtensions.TryClone
- # (Common) Transitive cloning for all implementations of ICloneable<T>
-
  * (WPF) EventToCommandBinder
  * (WPF) IView Init
  * (WPF) IViewModel Init
-
- # (Windows) Sub-namespaces for Windows utilities (including Native or Interop)
 
  - (Linux) LinuxShell
 
@@ -337,7 +332,6 @@ State machines
 --------------
 
  - (Windows) WindowsMessageLoopStateDispatcher
- * (WPF) DispatcherStateDispatcher
  - (WinForms) ApplicationStateDispatcher
 
  - (Common) Cascading

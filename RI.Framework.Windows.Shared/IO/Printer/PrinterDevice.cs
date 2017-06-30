@@ -6,9 +6,7 @@ using System.Runtime.InteropServices;
 
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Windows;
-
-
-
+using RI.Framework.Utilities.Windows.Interop;
 
 namespace RI.Framework.IO.Printer
 {

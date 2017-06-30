@@ -57,7 +57,7 @@ namespace RI.Framework.Services
 			ShutdownInfo clone = new ShutdownInfo();
 			clone.Mode = this.Mode;
 			clone.ExitCode = this.ExitCode;
-			clone.ScriptFile = this.ScriptFile;
+			clone.ScriptFile = this.ScriptFile?.Clone();
 			return clone;
 		}
 

@@ -1,8 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-
-
+using RI.Framework.Utilities.Windows.Interop;
 
 namespace RI.Framework.Utilities.Windows
 {

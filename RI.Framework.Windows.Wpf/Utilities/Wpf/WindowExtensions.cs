@@ -31,7 +31,7 @@ namespace RI.Framework.Utilities.Wpf
 
 			IntPtr hWnd = window.GetWindowHandle();
 
-			NativeWindows.EnableWindow(hWnd, enable);
+			WindowsWindow.EnableWindow(hWnd, enable);
 		}
 
 		/// <summary>
@@ -67,7 +67,7 @@ namespace RI.Framework.Utilities.Wpf
 
 			IntPtr hWnd = window.GetWindowHandle();
 
-			NativeWindows.HideWindow(hWnd);
+			WindowsWindow.HideWindow(hWnd);
 		}
 
 		/// <summary>
@@ -84,7 +84,7 @@ namespace RI.Framework.Utilities.Wpf
 
 			IntPtr hWnd = window.GetWindowHandle();
 
-			NativeWindows.MaximizeWindow(hWnd);
+			WindowsWindow.MaximizeWindow(hWnd);
 		}
 
 		/// <summary>
@@ -101,7 +101,7 @@ namespace RI.Framework.Utilities.Wpf
 
 			IntPtr hWnd = window.GetWindowHandle();
 
-			NativeWindows.MinimizeWindow(hWnd);
+			WindowsWindow.MinimizeWindow(hWnd);
 		}
 
 		/// <summary>
@@ -118,7 +118,7 @@ namespace RI.Framework.Utilities.Wpf
 
 			IntPtr hWnd = window.GetWindowHandle();
 
-			NativeWindows.MoveWindowToBackground(hWnd);
+			WindowsWindow.MoveWindowToBackground(hWnd);
 		}
 
 		/// <summary>
@@ -135,7 +135,7 @@ namespace RI.Framework.Utilities.Wpf
 
 			IntPtr hWnd = window.GetWindowHandle();
 
-			NativeWindows.MoveWindowToForeground(hWnd);
+			WindowsWindow.MoveWindowToForeground(hWnd);
 		}
 
 		/// <summary>
@@ -152,7 +152,7 @@ namespace RI.Framework.Utilities.Wpf
 
 			IntPtr hWnd = window.GetWindowHandle();
 
-			NativeWindows.NormalizeWindow(hWnd);
+			WindowsWindow.NormalizeWindow(hWnd);
 		}
 
 		/// <summary>
@@ -184,7 +184,7 @@ namespace RI.Framework.Utilities.Wpf
 
 			IntPtr hWnd = window.GetWindowHandle();
 
-			NativeWindows.RelocateWindow(hWnd, x, y, width, height);
+			WindowsWindow.RelocateWindow(hWnd, x, y, width, height);
 		}
 
 		/// <summary>
@@ -201,7 +201,7 @@ namespace RI.Framework.Utilities.Wpf
 
 			IntPtr hWnd = window.GetWindowHandle();
 
-			NativeWindows.ShowWindow(hWnd);
+			WindowsWindow.ShowWindow(hWnd);
 		}
 
 		#endregion

@@ -3,10 +3,9 @@ using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
+using RI.Framework.Utilities.Windows.Interop;
 
-
-
-namespace RI.Framework.Utilities.Windows
+namespace RI.Framework.Utilities.Windows.Network
 {
 	/// <summary>
 	///     Provides utilities for managing Windows network resources.

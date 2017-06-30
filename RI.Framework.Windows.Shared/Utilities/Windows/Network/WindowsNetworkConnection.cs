@@ -2,10 +2,7 @@
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 
-
-
-
-namespace RI.Framework.Utilities.Windows
+namespace RI.Framework.Utilities.Windows.Network
 {
 	/// <summary>
 	///     Implements a connection to a Windows network resource.

@@ -1,4 +1,4 @@
-﻿namespace RI.Framework.Utilities.Windows
+﻿namespace RI.Framework.Utilities.Windows.Users
 {
 	/// <summary>
 	///     Contains the user profile of a Windows user.
