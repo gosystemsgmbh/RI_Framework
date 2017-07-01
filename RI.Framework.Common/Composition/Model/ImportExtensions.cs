@@ -1,10 +1,5 @@
 ﻿using System.Collections.Generic;
 
-using RI.Framework.Collections.DirectLinq;
-
-
-
-
 namespace RI.Framework.Composition.Model
 {
 	/// <summary>
@@ -34,7 +29,7 @@ namespace RI.Framework.Composition.Model
 		public static T[] ToArray <T> (this Import import)
 			where T : class
 		{
-			return import.ToList<T>().ToArray<T>();
+			return import.ToList<T>().ToArray();
 		}
 
 		/// <summary>
@@ -49,12 +44,7 @@ namespace RI.Framework.Composition.Model
 		public static List<T> ToList <T> (this Import import)
 			where T : class
 		{
-			if (import == null)
-			{
-				return new List<T>();
-			}
-
-			List<object> instances = import.GetInstancesSnapshot();
+			List<object> instances = import?.GetInstancesSnapshot();
 
 			if (instances == null)
 			{

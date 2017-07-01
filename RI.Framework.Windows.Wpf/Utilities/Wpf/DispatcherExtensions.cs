@@ -44,7 +44,7 @@ namespace RI.Framework.Utilities.Wpf
 		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" /> is null. </exception>
 		public static async Task DoAllEventsAsync (this Dispatcher dispatcher)
 		{
-			await dispatcher.DoEventsAsync(DispatcherPriority.SystemIdle);
+			await dispatcher.DoEventsAsync(DispatcherPriority.SystemIdle).ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -90,7 +90,7 @@ namespace RI.Framework.Utilities.Wpf
 			}
 
 			DispatcherOperation operation = dispatcher.InvokeAsync(() => { }, priority);
-			await operation.Task;
+			await operation.Task.ConfigureAwait(false);
 		}
 
 		#endregion

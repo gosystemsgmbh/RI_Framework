@@ -13,6 +13,10 @@ namespace RI.Framework.Threading
 	///     <para>
 	///         See <see cref="HeavyThread" /> and <see cref="ThreadDispatcher" /> for more details.
 	///     </para>
+	/// <note type="important">
+	/// Some virtual methods are called from within locks to <see cref="HeavyThread.SyncRoot"/>.
+	/// Be caruful in inheriting classes when calling outside code from those methods (e.g. through events, callbacks, or other virtual methods) to not produce deadlocks!
+	/// </note>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	public sealed class HeavyThreadDispatcher : HeavyThread, IThreadDispatcher
@@ -540,7 +544,7 @@ namespace RI.Framework.Threading
 				waitTask = this.DispatcherInternal.DoProcessingAsync();
 			}
 
-			await waitTask;
+			await waitTask.ConfigureAwait(false);
 		}
 
 		/// <inheritdoc />
@@ -559,7 +563,7 @@ namespace RI.Framework.Threading
 				waitTask = this.DispatcherInternal.DoProcessingAsync(priority);
 			}
 
-			await waitTask;
+			await waitTask.ConfigureAwait(false);
 		}
 
 		/// <inheritdoc />
@@ -659,7 +663,7 @@ namespace RI.Framework.Threading
 				sendTask = this.DispatcherInternal.SendAsync(action, parameters);
 			}
 
-			return await sendTask;
+			return await sendTask.ConfigureAwait(false);
 		}
 
 		/// <inheritdoc />
@@ -672,7 +676,7 @@ namespace RI.Framework.Threading
 				sendTask = this.DispatcherInternal.SendAsync(priority, action, parameters);
 			}
 
-			return await sendTask;
+			return await sendTask.ConfigureAwait(false);
 		}
 
 		/// <inheritdoc />
@@ -685,7 +689,7 @@ namespace RI.Framework.Threading
 				sendTask = this.DispatcherInternal.SendAsync(priority, options, action, parameters);
 			}
 
-			return await sendTask;
+			return await sendTask.ConfigureAwait(false);
 		}
 
 		/// <inheritdoc />
@@ -704,7 +708,7 @@ namespace RI.Framework.Threading
 		/// <inheritdoc />
 		public async Task ShutdownAsync (bool finishPendingDelegates)
 		{
-			await Task.Factory.StartNew(() => this.Stop(finishPendingDelegates), CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default);
+			await Task.Factory.StartNew(() => this.Stop(finishPendingDelegates), CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default).ConfigureAwait(false);
 		}
 
 		#endregion

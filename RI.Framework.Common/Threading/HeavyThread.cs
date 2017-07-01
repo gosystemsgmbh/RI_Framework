@@ -4,6 +4,16 @@ using System.Threading;
 
 using RI.Framework.Utilities.ObjectModel;
 
+
+
+
+#if PLATFORM_NETFX
+using RI.Framework.Collections;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+#endif
+
+
 namespace RI.Framework.Threading
 {
 	/// <summary>
@@ -16,6 +26,10 @@ namespace RI.Framework.Threading
 	///     <para>
 	///         See <see cref="Start" /> and <see cref="Stop" /> for a description of the thread execution sequence.
 	///     </para>
+	///     <note type="important">
+	///         Some virtual methods are called from within locks to <see cref="SyncRoot" />.
+	///         Be caruful in inheriting classes when calling outside code from those methods (e.g. through events, callbacks, or other virtual methods) to not produce deadlocks!
+	///     </note>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	public abstract class HeavyThread : IDisposable, ISynchronizable
@@ -56,6 +70,9 @@ namespace RI.Framework.Threading
 			this.Thread = null;
 			this.StopRequested = false;
 			this.StopEvent = null;
+#if PLATFORM_NETFX
+			this.StopTasks = null;
+#endif
 		}
 
 		/// <summary>
@@ -288,12 +305,58 @@ namespace RI.Framework.Threading
 
 		private object StartStopSyncRoot { get; }
 
+#if PLATFORM_NETFX
+		private HashSet<TaskCompletionSource<object>> StopTasks { get; set; }
+#endif
+
 		#endregion
 
 
 
 
 		#region Instance Methods
+
+#if PLATFORM_NETFX
+/// <summary>
+///     Adds a <see cref="TaskCompletionSource{T}" /> to this thread which is completed when the thread is requested to stop (using <see cref="Stop" />).
+/// </summary>
+/// <param name="tcs"> The <see cref="TaskCompletionSource{T}" /> to add. </param>
+/// <remarks>
+/// <para>
+/// A task can be added multiple times but will only be completed once.
+/// </para>
+/// </remarks>
+/// <exception cref="ArgumentNullException"> <paramref name="tcs" /> is null. </exception>
+		protected void AddStopTask (TaskCompletionSource<object> tcs)
+		{
+			if (tcs == null)
+			{
+				throw new ArgumentNullException(nameof(tcs));
+			}
+
+			this.StopTasks.Add(tcs);
+		}
+
+		/// <summary>
+		/// Removes a previously added <see cref="TaskCompletionSource{T}" /> using <see cref="AddStopTask"/>.
+		/// </summary>
+		/// <param name="tcs"> The <see cref="TaskCompletionSource{T}" /> to remove. </param>
+		/// <remarks>
+		/// <para>
+		/// Removing a task which was not previously added has no effect.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="tcs" /> is null. </exception>
+		protected void RemoveStopTask (TaskCompletionSource<object> tcs)
+		{
+			if (tcs == null)
+			{
+				throw new ArgumentNullException(nameof(tcs));
+			}
+
+			this.StopTasks.Remove(tcs);
+		}
+#endif
 
 		/// <summary>
 		///     Checks and rethrows any exception occurred in this thread.
@@ -405,6 +468,9 @@ namespace RI.Framework.Threading
 
 							this.StopRequested = false;
 							this.StopEvent = new ManualResetEvent(false);
+#if PLATFORM_NETFX
+							this.StopTasks = new HashSet<TaskCompletionSource<object>>();
+#endif
 
 							timeout = this.Timeout;
 
@@ -674,6 +740,11 @@ namespace RI.Framework.Threading
 					this.StopEvent?.Close();
 					this.StopEvent = null;
 
+#if PLATFORM_NETFX
+					this.StopTasks?.Clear();
+					this.StopTasks = null;
+#endif
+
 					this.StopRequested = false;
 					this.Thread = null;
 
@@ -689,7 +760,7 @@ namespace RI.Framework.Threading
 		/// <remarks>
 		///     <note type="important">
 		///         Do not execute the actual operations of the thread inside <see cref="OnBegin" /> as this might trigger a timeout.
-		///         See <see cref="Start" /> for more details.
+		///         See <see cref="Start" /> and <see cref="Stop" /> for more details.
 		///     </note>
 		///     <note type="note">
 		///         This method is called inside the thread.
@@ -700,11 +771,12 @@ namespace RI.Framework.Threading
 		}
 
 		/// <summary>
-		///     Called when the thread ends.
+		///     Called when the thread ends execution.
 		/// </summary>
 		/// <remarks>
 		///     <para>
 		///         The thread ends as soon as <see cref="OnEnd" /> returns.
+		///         See <see cref="Start" /> and <see cref="Stop" /> for more details.
 		///     </para>
 		///     <note type="note">
 		///         This method is called inside the thread.
@@ -751,6 +823,9 @@ namespace RI.Framework.Threading
 		///     <note type="note">
 		///         This method is called by <see cref="Start" />.
 		///     </note>
+		///     <note type="important">
+		///         This method is called inside a lock to <see cref="SyncRoot" />.
+		///     </note>
 		/// </remarks>
 		protected virtual void OnStarted ()
 		{
@@ -766,6 +841,9 @@ namespace RI.Framework.Threading
 		///     <note type="note">
 		///         This method is called by <see cref="Start" />.
 		///     </note>
+		///     <note type="important">
+		///         This method is called inside a lock to <see cref="SyncRoot" />.
+		///     </note>
 		/// </remarks>
 		protected virtual void OnStarting ()
 		{
@@ -777,20 +855,32 @@ namespace RI.Framework.Threading
 		/// <remarks>
 		///     <para>
 		///         This method can be used to signalize the thread to end and return from <see cref="OnRun" />.
+#if PLATFORM_NETFX
+		///         Therefore, the default implementation sets <see cref="StopRequested" /> to true, signals <see cref="StopEvent" />, and completes all tasks added by <see cref="AddStopTask" /> using <see cref="TaskCompletionSource{T}.TrySetResult" /> (setting its result to this instance of <see cref="HeavyThread" />).
+#endif
+#if PLATFORM_UNITY
 		///         Therefore, the default implementation sets <see cref="StopRequested" /> to true and signals <see cref="StopEvent" />.
+#endif
 		///     </para>
-		///     <note type="important">
-		///         If the thread does not end on its own after <see cref="OnStop" /> was called, the thread is terminated.
-		///         See <see cref="Stop" /> for more details.
-		///     </note>
 		///     <note type="note">
 		///         This method is called by <see cref="Stop" />.
+		///     </note>
+		///     <note type="important">
+		///         This method is called inside a lock to <see cref="SyncRoot" />.
+		///     </note>
+		///     <note type="important">
+		///         If the thread does not end on its own after <see cref="OnStop" /> was called, plus the time specified by <see cref="Timeout" />, the thread is terminated.
+		///         See <see cref="Stop" /> for more details.
 		///     </note>
 		/// </remarks>
 		protected virtual void OnStop ()
 		{
 			this.StopRequested = true;
 			this.StopEvent.Set();
+#if PLATFORM_NETFX
+			this.StopTasks.ForEach(x => x.TrySetResult(this));
+			this.StopTasks.Clear();
+#endif
 		}
 
 		#endregion

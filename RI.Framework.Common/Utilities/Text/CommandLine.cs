@@ -535,21 +535,6 @@ namespace RI.Framework.Utilities.Text
 		[SuppressMessage("ReSharper", "SuspiciousTypeConversion.Global")]
 		public CommandLine Clone ()
 		{
-			IEqualityComparer<string> parameterNameComparer = null;
-			ICloneable<IEqualityComparer<string>> cloneable1 = this.ParameterNameComparer as ICloneable<IEqualityComparer<string>>;
-			if (cloneable1 != null)
-			{
-				parameterNameComparer = cloneable1.Clone();
-			}
-			if (parameterNameComparer == null)
-			{
-				ICloneable cloneable2 = this.ParameterNameComparer as ICloneable;
-				if (cloneable2 != null)
-				{
-					parameterNameComparer = cloneable2.Clone() as IEqualityComparer<string>;
-				}
-			}
-
 			CommandLine clone = new CommandLine();
 			clone.Executable = this.Executable;
 			clone.ParameterNameComparer = this.ParameterNameComparer?.CloneOrSelf();

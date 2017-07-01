@@ -583,11 +583,11 @@ namespace RI.Framework.Data.EF
 		{
 			this.BeforeSave();
 
-			return await base.SaveChangesAsync(cancellationToken);
+			return await base.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 		}
 
 		/// <inheritdoc />
-		public sealed override async Task<int> SaveChangesAsync () => await base.SaveChangesAsync();
+		public sealed override async Task<int> SaveChangesAsync () => await base.SaveChangesAsync().ConfigureAwait(false);
 
 		/// <inheritdoc />
 		public sealed override DbSet Set (Type entityType)

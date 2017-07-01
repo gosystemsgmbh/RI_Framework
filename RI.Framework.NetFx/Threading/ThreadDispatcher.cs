@@ -551,7 +551,7 @@ namespace RI.Framework.Threading
 				idleTask = idleSignal.Task;
 			}
 
-			await idleTask;
+			await idleTask.ConfigureAwait(false);
 		}
 
 		/// <inheritdoc />
@@ -587,7 +587,7 @@ namespace RI.Framework.Threading
 				priorityTask = this.SendAsync(priority, new Action(() => { }));
 			}
 
-			await Task.WhenAny(idleTask, priorityTask);
+			await Task.WhenAny(idleTask, priorityTask).ConfigureAwait(false);
 		}
 
 		/// <inheritdoc />
@@ -753,13 +753,13 @@ namespace RI.Framework.Threading
 		/// <inheritdoc />
 		public async Task<object> SendAsync (Delegate action, params object[] parameters)
 		{
-			return await this.SendAsync(this.DefaultPriority, this.DefaultOptions, action, parameters);
+			return await this.SendAsync(this.DefaultPriority, this.DefaultOptions, action, parameters).ConfigureAwait(false);
 		}
 
 		/// <inheritdoc />
 		public async Task<object> SendAsync (int priority, Delegate action, params object[] parameters)
 		{
-			return await this.SendAsync(priority, this.DefaultOptions, action, parameters);
+			return await this.SendAsync(priority, this.DefaultOptions, action, parameters).ConfigureAwait(false);
 		}
 
 		/// <inheritdoc />
@@ -789,7 +789,7 @@ namespace RI.Framework.Threading
 
 			try
 			{
-				await operation.WaitAsync();
+				await operation.WaitAsync().ConfigureAwait(false);
 			}
 			catch (TaskCanceledException)
 			{
@@ -880,7 +880,7 @@ namespace RI.Framework.Threading
 			}
 			else
 			{
-				await finishTask;
+				await finishTask.ConfigureAwait(false);
 			}
 		}
 

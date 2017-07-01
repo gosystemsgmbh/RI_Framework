@@ -24,6 +24,10 @@ namespace RI.Framework.StateMachines
 	///     <para>
 	///         See the respective properties for their default values.
 	///     </para>
+	/// <note type="important">
+	/// Some virtual methods are called from within locks to <see cref="SyncRoot"/>.
+	/// Be caruful in inheriting classes when calling outside code from those methods (e.g. through events, callbacks, or other virtual methods) to not produce deadlocks!
+	/// </note>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	public abstract class StateMachineConfiguration : ISynchronizable, ICloneable<StateMachineConfiguration>, ICloneable
@@ -336,6 +340,11 @@ namespace RI.Framework.StateMachines
 		///     Called when the current instance is to be cloned.
 		/// </summary>
 		/// <param name="clone"> The clone being created. </param>
+		/// <remarks>
+		/// <note type="important">
+		/// This method is called inside a lock to <see cref="StateMachineConfiguration.SyncRoot"/>.
+		/// </note>
+		/// </remarks>
 		[SuppressMessage("ReSharper", "SuspiciousTypeConversion.Global")]
 		protected virtual void Clone (T clone)
 		{

@@ -22,7 +22,15 @@ namespace RI.Framework.Threading
 		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" />  is null. </exception>
 		public static int GetCurrentPriorityOrDefault (this IThreadDispatcher dispatcher)
 		{
-			return dispatcher.GetCurrentPriorityOrDefault(dispatcher.DefaultPriority);
+			if (dispatcher == null)
+			{
+				throw new ArgumentNullException(nameof(dispatcher));
+			}
+
+			lock (dispatcher.SyncRoot)
+			{
+				return dispatcher.GetCurrentPriorityOrDefault(dispatcher.DefaultPriority);
+			}
 		}
 
 		/// <summary>
@@ -47,7 +55,10 @@ namespace RI.Framework.Threading
 				throw new ArgumentOutOfRangeException(nameof(defaultPriority));
 			}
 
-			return dispatcher.GetCurrentPriority().GetValueOrDefault(defaultPriority);
+			lock (dispatcher.SyncRoot)
+			{
+				return dispatcher.GetCurrentPriority().GetValueOrDefault(defaultPriority);
+			}
 		}
 
 		/// <summary>
@@ -60,7 +71,15 @@ namespace RI.Framework.Threading
 		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" />  is null. </exception>
 		public static ThreadDispatcherOptions GetCurrentOptionsOrDefault(this IThreadDispatcher dispatcher)
 		{
-			return dispatcher.GetCurrentOptionsOrDefault(dispatcher.DefaultOptions);
+			if (dispatcher == null)
+			{
+				throw new ArgumentNullException(nameof(dispatcher));
+			}
+
+			lock (dispatcher.SyncRoot)
+			{
+				return dispatcher.GetCurrentOptionsOrDefault(dispatcher.DefaultOptions);
+			}
 		}
 
 		/// <summary>
@@ -79,7 +98,10 @@ namespace RI.Framework.Threading
 				throw new ArgumentNullException(nameof(dispatcher));
 			}
 
-			return dispatcher.GetCurrentOptions().GetValueOrDefault(defaultOptions);
+			lock (dispatcher.SyncRoot)
+			{
+				return dispatcher.GetCurrentOptions().GetValueOrDefault(defaultOptions);
+			}
 		}
 
 		/// <summary>
@@ -102,7 +124,15 @@ namespace RI.Framework.Threading
 		/// <exception cref="InvalidOperationException"> The dispatcher is not running or is being shut down. </exception>
 		public static ThreadDispatcherTimer PostDelayed (this IThreadDispatcher dispatcher, int milliseconds, Delegate action, params object[] parameters)
 		{
-			return dispatcher.PostDelayed(milliseconds, dispatcher.DefaultPriority, dispatcher.DefaultOptions, action, parameters);
+			if (dispatcher == null)
+			{
+				throw new ArgumentNullException(nameof(dispatcher));
+			}
+
+			lock (dispatcher.SyncRoot)
+			{
+				return dispatcher.PostDelayed(milliseconds, dispatcher.DefaultPriority, dispatcher.DefaultOptions, action, parameters);
+			}
 		}
 
 		/// <summary>
@@ -121,7 +151,15 @@ namespace RI.Framework.Threading
 		/// <exception cref="InvalidOperationException"> The dispatcher is not running or is being shut down. </exception>
 		public static ThreadDispatcherTimer PostDelayed (this IThreadDispatcher dispatcher, int milliseconds, int priority, Delegate action, params object[] parameters)
 		{
-			return dispatcher.PostDelayed(milliseconds, priority, dispatcher.DefaultOptions, action, parameters);
+			if (dispatcher == null)
+			{
+				throw new ArgumentNullException(nameof(dispatcher));
+			}
+
+			lock (dispatcher.SyncRoot)
+			{
+				return dispatcher.PostDelayed(milliseconds, priority, dispatcher.DefaultOptions, action, parameters);
+			}
 		}
 
 		/// <summary>
@@ -161,9 +199,22 @@ namespace RI.Framework.Threading
 				throw new ArgumentNullException(nameof(action));
 			}
 
-			ThreadDispatcherTimer timer = new ThreadDispatcherTimer(dispatcher, ThreadDispatcherTimerMode.OneShot, priority, options, milliseconds, action, parameters);
-			timer.Start();
-			return timer;
+			lock (dispatcher.SyncRoot)
+			{
+				if (!dispatcher.IsRunning)
+				{
+					throw new InvalidOperationException(nameof(ThreadDispatcher) + " is not running.");
+				}
+
+				if (dispatcher.ShutdownMode != ThreadDispatcherShutdownMode.None)
+				{
+					throw new InvalidOperationException(nameof(ThreadDispatcher) + " is already shutting down.");
+				}
+
+				ThreadDispatcherTimer timer = new ThreadDispatcherTimer(dispatcher, ThreadDispatcherTimerMode.OneShot, priority, options, milliseconds, action, parameters);
+				timer.Start();
+				return timer;
+			}
 		}
 
 		/// <summary>
@@ -185,7 +236,15 @@ namespace RI.Framework.Threading
 		/// <exception cref="InvalidOperationException"> The dispatcher is not running or is being shut down. </exception>
 		public static ThreadDispatcherTimer PostDelayed (this IThreadDispatcher dispatcher, TimeSpan delay, Delegate action, params object[] parameters)
 		{
-			return dispatcher.PostDelayed((int)delay.TotalMilliseconds, action, parameters);
+			if (dispatcher == null)
+			{
+				throw new ArgumentNullException(nameof(dispatcher));
+			}
+
+			lock (dispatcher.SyncRoot)
+			{
+				return dispatcher.PostDelayed((int)delay.TotalMilliseconds, action, parameters);
+			}
 		}
 
 		/// <summary>
@@ -204,7 +263,15 @@ namespace RI.Framework.Threading
 		/// <exception cref="InvalidOperationException"> The dispatcher is not running or is being shut down. </exception>
 		public static ThreadDispatcherTimer PostDelayed (this IThreadDispatcher dispatcher, TimeSpan delay, int priority, Delegate action, params object[] parameters)
 		{
-			return dispatcher.PostDelayed((int)delay.TotalMilliseconds, priority, action, parameters);
+			if (dispatcher == null)
+			{
+				throw new ArgumentNullException(nameof(dispatcher));
+			}
+
+			lock (dispatcher.SyncRoot)
+			{
+				return dispatcher.PostDelayed((int)delay.TotalMilliseconds, priority, action, parameters);
+			}
 		}
 
 		/// <summary>
@@ -224,7 +291,15 @@ namespace RI.Framework.Threading
 		/// <exception cref="InvalidOperationException"> The dispatcher is not running or is being shut down. </exception>
 		public static ThreadDispatcherTimer PostDelayed (this IThreadDispatcher dispatcher, TimeSpan delay, int priority, ThreadDispatcherOptions options, Delegate action, params object[] parameters)
 		{
-			return dispatcher.PostDelayed((int)delay.TotalMilliseconds, priority, options, action, parameters);
+			if (dispatcher == null)
+			{
+				throw new ArgumentNullException(nameof(dispatcher));
+			}
+
+			lock (dispatcher.SyncRoot)
+			{
+				return dispatcher.PostDelayed((int)delay.TotalMilliseconds, priority, options, action, parameters);
+			}
 		}
 
 		/// <summary>
@@ -232,8 +307,9 @@ namespace RI.Framework.Threading
 		/// </summary>
 		/// <param name="dispatcher"> The dispatcher. </param>
 		/// <returns>
-		/// The <see cref="SynchronizationContext"/> associated with the dispatcher.
+		/// The <see cref="SynchronizationContext"/> associated with the dispatcher or null if the dispatcher is not running.
 		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" /> is null. </exception>
 		public static SynchronizationContext GetSynchronizationContext (this IThreadDispatcher dispatcher)
 		{
 			if (dispatcher == null)
@@ -241,17 +317,25 @@ namespace RI.Framework.Threading
 				throw new ArgumentNullException(nameof(dispatcher));
 			}
 
-			if (dispatcher is ThreadDispatcher)
+			lock (dispatcher.SyncRoot)
 			{
-				return ((ThreadDispatcher)dispatcher).Context;
-			}
+				if (!dispatcher.IsRunning)
+				{
+					return null;
+				}
 
-			if (dispatcher is HeavyThreadDispatcher)
-			{
-				return ((HeavyThreadDispatcher)dispatcher).Dispatcher.Context;
-			}
+				if (dispatcher is ThreadDispatcher)
+				{
+					return ((ThreadDispatcher)dispatcher).Context;
+				}
 
-			return new ThreadDispatcherSynchronizationContext(dispatcher);
+				if (dispatcher is HeavyThreadDispatcher)
+				{
+					return ((HeavyThreadDispatcher)dispatcher).Dispatcher.Context;
+				}
+
+				return new ThreadDispatcherSynchronizationContext(dispatcher);
+			}
 		}
 
 		/// <summary>
@@ -259,8 +343,9 @@ namespace RI.Framework.Threading
 		/// </summary>
 		/// <param name="dispatcher"> The dispatcher. </param>
 		/// <returns>
-		/// The <see cref="TaskScheduler"/> associated with the dispatcher.
+		/// The <see cref="TaskScheduler"/> associated with the dispatcher or null if the dispatcher is not running.
 		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" /> is null. </exception>
 		public static TaskScheduler GetTaskScheduler (this IThreadDispatcher dispatcher)
 		{
 			if (dispatcher == null)
@@ -268,17 +353,25 @@ namespace RI.Framework.Threading
 				throw new ArgumentNullException(nameof(dispatcher));
 			}
 
-			if (dispatcher is ThreadDispatcher)
+			lock (dispatcher.SyncRoot)
 			{
-				return ((ThreadDispatcher)dispatcher).Scheduler;
-			}
+				if (!dispatcher.IsRunning)
+				{
+					return null;
+				}
 
-			if (dispatcher is HeavyThreadDispatcher)
-			{
-				return ((HeavyThreadDispatcher)dispatcher).Dispatcher.Scheduler;
-			}
+				if (dispatcher is ThreadDispatcher)
+				{
+					return ((ThreadDispatcher)dispatcher).Scheduler;
+				}
 
-			return new ThreadDispatcherTaskScheduler(dispatcher);
+				if (dispatcher is HeavyThreadDispatcher)
+				{
+					return ((HeavyThreadDispatcher)dispatcher).Dispatcher.Scheduler;
+				}
+
+				return new ThreadDispatcherTaskScheduler(dispatcher);
+			}
 		}
 
 		#endregion

@@ -55,7 +55,7 @@ namespace RI.Framework.Utilities.Wpf
 				throw new ArgumentNullException(nameof(application));
 			}
 
-			await application.Dispatcher.DoAllEventsAsync();
+			await application.Dispatcher.DoAllEventsAsync().ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -100,7 +100,7 @@ namespace RI.Framework.Utilities.Wpf
 				throw new ArgumentNullException(nameof(application));
 			}
 
-			await application.Dispatcher.DoEventsAsync(priority);
+			await application.Dispatcher.DoEventsAsync(priority).ConfigureAwait(false);
 		}
 
 		#endregion

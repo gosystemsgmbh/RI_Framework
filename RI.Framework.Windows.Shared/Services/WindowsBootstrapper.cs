@@ -1,6 +1,5 @@
 ﻿using System;
 
-using RI.Framework.Utilities.Windows;
 using RI.Framework.Utilities.Windows.Cryptography;
 
 namespace RI.Framework.Services

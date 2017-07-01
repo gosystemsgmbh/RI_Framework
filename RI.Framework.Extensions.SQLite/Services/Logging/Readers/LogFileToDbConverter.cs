@@ -169,7 +169,7 @@ namespace RI.Framework.Services.Logging.Readers
 		/// <exception cref="DirectoryNotFoundException"> The log directory as specified by <paramref name="logDirectory" /> does not exist. </exception>
 		public async Task<LogFileToDbConverterResults> ConvertDirectoriesAsync (DirectoryPath logDirectory, FilePath dbFile)
 		{
-			return await this.ConvertDirectoriesAsync(logDirectory, dbFile, null);
+			return await this.ConvertDirectoriesAsync(logDirectory, dbFile, null).ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -225,7 +225,7 @@ namespace RI.Framework.Services.Logging.Readers
 			{
 				Tuple<DirectoryPath, FilePath, string> state = (Tuple<DirectoryPath, FilePath, string>)x;
 				return this.ConvertDirectories(state.Item1, state.Item2, state.Item3);
-			}, new Tuple<DirectoryPath, FilePath, string>(logDirectory, dbFile, fileNamePath), CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default);
+			}, new Tuple<DirectoryPath, FilePath, string>(logDirectory, dbFile, fileNamePath), CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default).ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -312,7 +312,7 @@ namespace RI.Framework.Services.Logging.Readers
 			{
 				Tuple<FilePath, FilePath> state = (Tuple<FilePath, FilePath>)x;
 				return this.ConvertFile(state.Item1, state.Item2);
-			}, new Tuple<FilePath, FilePath>(logFile, dbFile), CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default);
+			}, new Tuple<FilePath, FilePath>(logFile, dbFile), CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default).ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -419,7 +419,7 @@ namespace RI.Framework.Services.Logging.Readers
 			{
 				Tuple<IEnumerable<FilePath>, FilePath> state = (Tuple<IEnumerable<FilePath>, FilePath>)x;
 				return this.ConvertFiles(state.Item1, state.Item2);
-			}, new Tuple<IEnumerable<FilePath>, FilePath>(logFileList, dbFile), CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default);
+			}, new Tuple<IEnumerable<FilePath>, FilePath>(logFileList, dbFile), CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default).ConfigureAwait(false);
 		}
 
 		private LogFileToDbConverterResults ConvertFilesInternal (IEnumerable<FilePath> files, FilePath dbFile)

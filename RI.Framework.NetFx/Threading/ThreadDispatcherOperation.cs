@@ -330,7 +330,7 @@ namespace RI.Framework.Threading
 		/// </returns>
 		public async Task WaitAsync ()
 		{
-			await this.WaitAsync(Timeout.Infinite, CancellationToken.None);
+			await this.WaitAsync(Timeout.Infinite, CancellationToken.None).ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -343,7 +343,7 @@ namespace RI.Framework.Threading
 		/// <exception cref="ArgumentNullException"> <paramref name="cancellationToken" /> is null. </exception>
 		public async Task<bool> WaitAsync (CancellationToken cancellationToken)
 		{
-			return await this.WaitAsync(Timeout.Infinite, cancellationToken);
+			return await this.WaitAsync(Timeout.Infinite, cancellationToken).ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -356,7 +356,7 @@ namespace RI.Framework.Threading
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="timeout" /> is negative. </exception>
 		public async Task<bool> WaitAsync (TimeSpan timeout)
 		{
-			return await this.WaitAsync((int)timeout.TotalMilliseconds, CancellationToken.None);
+			return await this.WaitAsync((int)timeout.TotalMilliseconds, CancellationToken.None).ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -371,7 +371,7 @@ namespace RI.Framework.Threading
 		/// <exception cref="ArgumentNullException"> <paramref name="cancellationToken" /> is null. </exception>
 		public async Task<bool> WaitAsync (TimeSpan timeout, CancellationToken cancellationToken)
 		{
-			return await this.WaitAsync((int)timeout.TotalMilliseconds, cancellationToken);
+			return await this.WaitAsync((int)timeout.TotalMilliseconds, cancellationToken).ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -384,7 +384,7 @@ namespace RI.Framework.Threading
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="milliseconds" /> is negative. </exception>
 		public async Task<bool> WaitAsync (int milliseconds)
 		{
-			return await this.WaitAsync(milliseconds, CancellationToken.None);
+			return await this.WaitAsync(milliseconds, CancellationToken.None).ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -417,7 +417,7 @@ namespace RI.Framework.Threading
 			Task operationTask = this.OperationDoneTask.Task;
 			Task timeoutTask = Task.Delay(milliseconds, cancellationToken);
 
-			Task completed = await Task.WhenAny(operationTask, timeoutTask);
+			Task completed = await Task.WhenAny(operationTask, timeoutTask).ConfigureAwait(false);
 			return object.ReferenceEquals(completed, operationTask);
 		}
 
