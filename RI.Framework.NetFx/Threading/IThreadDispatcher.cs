@@ -402,14 +402,26 @@ namespace RI.Framework.Threading
 		///     Stops processing the delegate queue and waits for its shutdown.
 		/// </summary>
 		/// <param name="finishPendingDelegates"> Specifies whether already pending delegates should be processed before the dispatcher is shut down. </param>
-		/// <exception cref="InvalidOperationException"> The dispatcher is not running or it is already being shut down. </exception>
+		/// <remarks>
+		/// <note type="note">
+		/// <see cref="Shutdown"/> cannot be called from inside the dispatcher thread while the dispatcher is running.
+		/// Use <see cref="BeginShutdown"/> from inside the dispatcher thread instead.
+		/// </note>
+		/// </remarks>
+		/// <exception cref="InvalidOperationException"> The dispatcher is not running, is already being shut down, or the method was called from the dispatcher thread. </exception>
 		void Shutdown (bool finishPendingDelegates);
 
 		/// <summary>
 		///     Stops processing the delegate queue and waits for its shutdown
 		/// </summary>
 		/// <param name="finishPendingDelegates"> Specifies whether already pending delegates should be processed before the dispatcher is shut down. </param>
-		/// <exception cref="InvalidOperationException"> The dispatcher is not running or it is already being shut down. </exception>
+		/// <remarks>
+		/// <note type="note">
+		/// <see cref="Shutdown"/> cannot be called from inside the dispatcher thread while the dispatcher is running.
+		/// Use <see cref="BeginShutdown"/> from inside the dispatcher thread instead.
+		/// </note>
+		/// </remarks>
+		/// <exception cref="InvalidOperationException"> The dispatcher is not running, is already being shut down, or the method was called from the dispatcher thread. </exception>
 		Task ShutdownAsync (bool finishPendingDelegates);
 	}
 }

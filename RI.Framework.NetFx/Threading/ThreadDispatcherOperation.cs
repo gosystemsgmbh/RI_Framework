@@ -438,13 +438,13 @@ namespace RI.Framework.Threading
 
 			if (Debugger.IsAttached)
 			{
-				result = this.Action.DynamicInvoke(this.Parameters);
+				result = this.ExecuteCore();
 			}
 			else
 			{
 				try
 				{
-					result = this.Action.DynamicInvoke(this.Parameters);
+					result = this.ExecuteCore();
 				}
 				catch (ThreadAbortException)
 				{
@@ -477,6 +477,13 @@ namespace RI.Framework.Threading
 					this.State = ThreadDispatcherOperationState.Exception;
 				}
 			}
+		}
+
+		private object ExecuteCore ()
+		{
+			//TODO: We might want to provide an async root with continuations on the associated dispatcher
+			//Use the following flags: DenyChildAttach | LazyCancellation | RunContinuationsAsynchronously
+			return this.Action.DynamicInvoke(this.Parameters);
 		}
 
 		#endregion

@@ -21,6 +21,10 @@ namespace RI.Framework.Threading
 	///     <para>
 	///         The timer is initially stopped and needs to be started explicitly using <see cref="Start" />.
 	///     </para>
+	///     <para>
+	///         The associated dispatcher does not need to be started.
+	/// However, the timer is stopped on an interval if the dispatcher is not running.
+	///     </para>
 	/// <note type="important">
 	/// If an instance of <see cref="ThreadDispatcherTimer"/> is garbage collected before the delegate is executed, the delegate will not be executed as the timer is stopped and disposed when its finalizer is called.
 	/// Therefore, to guarantee the execution of the delegate, you must hold on to the timer instance as long as you want the timer to work.

@@ -119,5 +119,21 @@ namespace RI.Framework.Collections.Generic
 		/// </remarks>
 		/// <exception cref="InvalidOperationException"> The priority queue is empty. </exception>
 		T Peek (out int priority);
+
+		/// <summary>
+		/// Gets the highest priority currently in the queue.
+		/// </summary>
+		/// <value>
+		/// The highest priority currently in the queue or -1 if the queue is empty.
+		/// </value>
+		int HighestPriority { get; }
+
+		/// <summary>
+		/// Gets the lowest priority currently in the queue.
+		/// </summary>
+		/// <value>
+		/// The lowest priority currently in the queue or -1 if the queue is empty.
+		/// </value>
+		int LowestPriority { get; }
 	}
 }
