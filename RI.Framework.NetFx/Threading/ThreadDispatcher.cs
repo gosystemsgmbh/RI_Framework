@@ -695,6 +695,11 @@ namespace RI.Framework.Threading
 		{
 			lock (this.SyncRoot)
 			{
+				if (!this.IsInThread())
+				{
+					return null;
+				}
+
 				if (this.CurrentPriority == null)
 				{
 					return null;
@@ -714,6 +719,11 @@ namespace RI.Framework.Threading
 		{
 			lock (this.SyncRoot)
 			{
+				if (!this.IsInThread())
+				{
+					return null;
+				}
+
 				if (this.CurrentOptions == null)
 				{
 					return null;

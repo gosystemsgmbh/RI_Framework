@@ -30,19 +30,19 @@ namespace RI.Framework.Threading
 		{
 			this.DispatcherExceptionHandlerDelegate = this.DispatcherExceptionHandler;
 
+			this.CatchExceptions = false;
 			this.DefaultPriority = ThreadDispatcher.DefaultPriorityValue;
 			this.DefaultOptions = ThreadDispatcher.DefaultOptionsValue;
-			this.CatchExceptions = false;
+
 			this.FinishPendingDelegatesOnShutdown = false;
-			this.ThreadName = this.GetType().Name;
 			this.IsBackgroundThread = true;
+			this.ThreadName = this.GetType().Name;
 
 			Thread currentThread = Thread.CurrentThread;
 			this.ThreadPriority = currentThread.Priority;
 			this.ThreadCulture = currentThread.CurrentCulture;
 			this.ThreadUICulture = currentThread.CurrentUICulture;
 
-			this.StartedEvent = null;
 			this.DispatcherInternal = null;
 		}
 
@@ -56,11 +56,12 @@ namespace RI.Framework.Threading
 		private bool _catchExceptions;
 		private int _defaultPriority;
 		private ThreadDispatcherOptions _defaultOptions;
+
 		private bool _finishPendingDelegatesOnShutdown;
 		private bool _isBackgroundThread;
-		private CultureInfo _threadCulture;
 		private string _threadName;
 
+		private CultureInfo _threadCulture;
 		private ThreadPriority _threadPriority;
 		private CultureInfo _threadUICulture;
 
@@ -89,10 +90,10 @@ namespace RI.Framework.Threading
 		}
 
 		/// <summary>
-		///     Gets or sets whether pending delegates should be processed when shutting down (<see cref="HeavyThread.Stop" />).
+		///     Gets or sets whether pending delegates should be processed when shutting down.
 		/// </summary>
 		/// <value>
-		///     true if pending delegates should be processed during shutdown, false if pending delegates should be discarded when <see cref="HeavyThread.Stop" /> is called.
+		///     true if pending delegates should be processed during shutdown, false if pending delegates should be discarded during shutdown.
 		/// </value>
 		/// <remarks>
 		///     <para>
@@ -123,12 +124,22 @@ namespace RI.Framework.Threading
 		/// <value>
 		///     true if the thread is a background thread, false otherwise.
 		/// </value>
+		/// <remarks>
+		///     <para>
+		///         The default value is true.
+		///     </para>
+		/// </remarks>
 		public bool IsBackgroundThread
 		{
 			get
 			{
 				lock (this.SyncRoot)
 				{
+					if (this.Thread != null)
+					{
+						this._isBackgroundThread = this.Thread.IsBackground;
+					}
+
 					return this._isBackgroundThread;
 				}
 			}
@@ -152,12 +163,22 @@ namespace RI.Framework.Threading
 		/// <value>
 		///     The formatting culture of the thread.
 		/// </value>
+		/// <remarks>
+		///     <para>
+		///         The default value is the formatting culture of the thread this instance was created on.
+		///     </para>
+		/// </remarks>
 		public CultureInfo ThreadCulture
 		{
 			get
 			{
 				lock (this.SyncRoot)
 				{
+					if (this.Thread != null)
+					{
+						this._threadCulture = this.Thread.CurrentCulture;
+					}
+
 					return this._threadCulture;
 				}
 			}
@@ -181,12 +202,22 @@ namespace RI.Framework.Threading
 		/// <value>
 		///     The name of the thread.
 		/// </value>
+		/// <remarks>
+		///     <para>
+		///         The default value is the name of this type.
+		///     </para>
+		/// </remarks>
 		public string ThreadName
 		{
 			get
 			{
 				lock (this.SyncRoot)
 				{
+					if (this.Thread != null)
+					{
+						this._threadName = this.Thread.Name;
+					}
+
 					return this._threadName;
 				}
 			}
@@ -210,12 +241,22 @@ namespace RI.Framework.Threading
 		/// <value>
 		///     The priority of the thread.
 		/// </value>
+		/// <remarks>
+		///     <para>
+		///         The default value is the priority of the thread this instance was created on.
+		///     </para>
+		/// </remarks>
 		public ThreadPriority ThreadPriority
 		{
 			get
 			{
 				lock (this.SyncRoot)
 				{
+					if (this.Thread != null)
+					{
+						this._threadPriority = this.Thread.Priority;
+					}
+
 					return this._threadPriority;
 				}
 			}
@@ -239,6 +280,11 @@ namespace RI.Framework.Threading
 		/// <value>
 		///     The UI culture of the thread.
 		/// </value>
+		/// <remarks>
+		///     <para>
+		///         The default value is the UI culture of the thread this instance was created on.
+		///     </para>
+		/// </remarks>
 		[SuppressMessage("ReSharper", "InconsistentNaming")]
 		public CultureInfo ThreadUICulture
 		{
@@ -246,6 +292,11 @@ namespace RI.Framework.Threading
 			{
 				lock (this.SyncRoot)
 				{
+					if (this.Thread != null)
+					{
+						this._threadUICulture = this.Thread.CurrentUICulture;
+					}
+
 					return this._threadUICulture;
 				}
 			}
@@ -266,8 +317,6 @@ namespace RI.Framework.Threading
 		private EventHandler<ThreadDispatcherExceptionEventArgs> DispatcherExceptionHandlerDelegate { get; }
 
 		private ThreadDispatcher DispatcherInternal { get; set; }
-
-		private ManualResetEvent StartedEvent { get; set; }
 
 		#endregion
 
@@ -292,12 +341,10 @@ namespace RI.Framework.Threading
 
 		private void DispatcherExceptionHandler (object sender, ThreadDispatcherExceptionEventArgs args)
 		{
-			this.OnException(args.Exception, true, args.CanContinue);
-		}
-
-		private void OnException (Exception exception, bool canContinue)
-		{
-			this.Exception?.Invoke(this, new ThreadDispatcherExceptionEventArgs(exception, canContinue));
+			if (args.CanContinue)
+			{
+				this.OnException(args.Exception, args.CanContinue);
+			}
 		}
 
 		#endregion
@@ -317,20 +364,12 @@ namespace RI.Framework.Threading
 				this.DispatcherInternal.Exception -= this.DispatcherExceptionHandlerDelegate;
 				this.DispatcherInternal = null;
 			}
-
-			if (this.StartedEvent != null)
-			{
-				this.StartedEvent.Dispose();
-				this.StartedEvent = null;
-			}
 		}
 
 		/// <inheritdoc />
 		protected override void OnBegin ()
 		{
 			base.OnBegin();
-
-			this.StartedEvent = new ManualResetEvent(false);
 
 			this.DispatcherInternal = new ThreadDispatcher();
 			this.DispatcherInternal.Exception += this.DispatcherExceptionHandlerDelegate;
@@ -340,11 +379,23 @@ namespace RI.Framework.Threading
 		}
 
 		/// <inheritdoc />
-		protected override void OnException (Exception exception, bool running, bool canContinue)
+		protected override void OnEnd ()
 		{
-			base.OnException(exception, running, canContinue);
+			base.OnEnd();
 
-			this.OnException(exception, canContinue);
+			if (this.DispatcherInternal != null)
+			{
+				this.DispatcherInternal.Exception -= this.DispatcherExceptionHandlerDelegate;
+				this.DispatcherInternal = null;
+			}
+		}
+
+		/// <inheritdoc />
+		protected override void OnException (Exception exception, bool canContinue)
+		{
+			base.OnException(exception, canContinue);
+
+			this.Exception?.Invoke(this, new ThreadDispatcherExceptionEventArgs(exception, canContinue));
 		}
 
 		/// <inheritdoc />
@@ -352,36 +403,7 @@ namespace RI.Framework.Threading
 		{
 			base.OnRun();
 
-			this.StartedEvent.Set();
-
 			this.DispatcherInternal.Run();
-		}
-
-		/// <inheritdoc />
-		protected override void OnStarted ()
-		{
-			base.OnStarted();
-
-			bool started = this.StartedEvent.WaitOne(this.Timeout);
-
-			if (started)
-			{
-				DateTime start = DateTime.UtcNow;
-				while (!this.DispatcherInternal.IsRunning)
-				{
-					Thread.Sleep(1);
-					if (DateTime.UtcNow.Subtract(start).TotalMilliseconds > this.Timeout)
-					{
-						started = false;
-						break;
-					}
-				}
-			}
-
-			if (!started)
-			{
-				throw new TimeoutException("Timeout while waiting for dispatcher to start running.");
-			}
 		}
 
 		/// <inheritdoc />
@@ -401,7 +423,7 @@ namespace RI.Framework.Threading
 		{
 			if (this.DispatcherInternal.IsRunning)
 			{
-				this.DispatcherInternal.Shutdown(this.FinishPendingDelegatesOnShutdown);
+				this.DispatcherInternal.BeginShutdown(this.FinishPendingDelegatesOnShutdown);
 			}
 
 			base.OnStop();

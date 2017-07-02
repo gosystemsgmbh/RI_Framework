@@ -112,15 +112,18 @@ namespace RI.Framework.Threading
 		#region Instance Properties/Indexer
 
 		/// <summary>
-		///     Gets whether the thread has gracefully ended or was forcibly terminated.
+		///     Gets whether the thread has gracefully stopped without exception.
 		/// </summary>
 		/// <value>
-		///     true if the thread ended gracefully, false if the thread was forcibly terminated, or null if the thread was not started or is still running.
+		///     true if the thread stopped gracefully and had no exception, false if the thread was forcibly terminated and/or had an exception, or null if the thread was not started or is still running.
 		/// </value>
 		/// <remarks>
-		///     <para>
-		///         See <see cref="Stop" /> for more details.
-		///     </para>
+		/// <para>
+		/// The value of <see cref="HasStoppedGracefully"/> is reset to null by <see cref="Start"/> and set by <see cref="Stop"/>.
+		/// </para>
+		/// <para>
+		/// A &quot;graceful&quot; stop is when <see cref="OnRun"/> returns upon stop signaling by <see cref="OnStop"/>, instead of the thread being aborted by <see cref="Stop"/> after <see cref="Timeout"/>.
+		/// </para>
 		/// </remarks>
 		public bool? HasStoppedGracefully
 		{
@@ -168,11 +171,14 @@ namespace RI.Framework.Threading
 		///     Gets the exception of the thread.
 		/// </summary>
 		/// <value>
-		///     The exception of the thread or null if no exception occurred.
+		///     The exception of the thread or null if no exception occurred, the thread was not started, or the thread is still running.
 		/// </value>
 		/// <remarks>
+		/// <para>
+		/// The value of <see cref="ThreadException"/> is reset to null by <see cref="Start"/> and set during the execution of the thread if an exception occurs.
+		/// </para>
 		///     <para>
-		///         <see cref="ThreadException" /> is set for any exception of the thread, at any stage during start, run, and stop, except for <see cref="ThreadAbortException" />s, which are silently ignored.
+		///         <see cref="ThreadException" /> is set for any unhandled exception which occurs in the thread (<see cref="OnBegin"/>, <see cref="OnRun"/>, <see cref="OnEnd"/>), except for <see cref="ThreadAbortException" />s.
 		///     </para>
 		/// </remarks>
 		public Exception ThreadException
@@ -201,7 +207,7 @@ namespace RI.Framework.Threading
 		/// </value>
 		/// <remarks>
 		///     <para>
-		///         This timeout is used during <see cref="Start" /> while waiting for <see cref="OnBegin" /> to finish and during <see cref="Dispose(bool)" /> or <see cref="Stop" /> while waiting for <see cref="OnStop" /> to take effect.
+		///         This timeout is used during <see cref="Start" /> while waiting for <see cref="OnBegin" /> to return and during <see cref="Stop" /> while waiting for <see cref="OnStop" /> to take effect (signaling <see cref="OnRun"/> to return).
 		///     </para>
 		///     <para>
 		///         The default value is <see cref="DefaultThreadTimeout" />.
@@ -232,58 +238,10 @@ namespace RI.Framework.Threading
 		}
 
 		/// <summary>
-		///     Gets the event which is signaled when the thread is requested to stop (using <see cref="Stop" />).
-		/// </summary>
-		/// <value>
-		///     The event which is signaled when the thread is requested to stop.
-		/// </value>
-		protected ManualResetEvent StopEvent
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					return this._stopEvent;
-				}
-			}
-			private set
-			{
-				lock (this.SyncRoot)
-				{
-					this._stopEvent = value;
-				}
-			}
-		}
-
-		/// <summary>
-		///     Gets whether the thread has been requested to stop (using <see cref="Stop" />).
-		/// </summary>
-		/// <value>
-		///     true if the thread has been requested to stop, false otherwise or the thread is not running.
-		/// </value>
-		protected bool StopRequested
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					return this._stopRequested;
-				}
-			}
-			private set
-			{
-				lock (this.SyncRoot)
-				{
-					this._stopRequested = value;
-				}
-			}
-		}
-
-		/// <summary>
 		///     Gets the actual thread instance used to run the thread.
 		/// </summary>
 		/// <value>
-		///     The actual thread instance used to run the thread.
+		///     The actual thread instance used to run the thread or null if the thread is not running.
 		/// </value>
 		protected Thread Thread
 		{
@@ -303,6 +261,64 @@ namespace RI.Framework.Threading
 			}
 		}
 
+		/// <summary>
+		///     Gets whether the thread has been requested to stop.
+		/// </summary>
+		/// <value>
+		///     true if the thread has been requested to stop, false otherwise or if the thread is not running.
+		/// </value>
+		/// <remarks>
+		/// <para>
+		/// The value of <see cref="StopRequested"/> is reset to false by <see cref="Start"/> and set to true by the default implementation of <see cref="OnStop"/>.
+		/// </para>
+		/// </remarks>
+		protected bool StopRequested
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._stopRequested;
+				}
+			}
+			private set
+			{
+				lock (this.SyncRoot)
+				{
+					this._stopRequested = value;
+				}
+			}
+		}
+
+		/// <summary>
+		///     Gets the event which is signaled when the thread is requested to stop.
+		/// </summary>
+		/// <value>
+		///     The event which is signaled when the thread is requested to stop or null if the thread is not running.
+		/// </value>
+		/// <remarks>
+		/// <para>
+		/// <see cref="StopEvent"/> is reset by <see cref="Start"/> and set by the default implementation of <see cref="OnStop"/>.
+		/// </para>
+		/// </remarks>
+		protected ManualResetEvent StopEvent
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._stopEvent;
+				}
+			}
+			private set
+			{
+				lock (this.SyncRoot)
+				{
+					this._stopEvent = value;
+				}
+			}
+		}
+
 		private object StartStopSyncRoot { get; }
 
 #if PLATFORM_NETFX
@@ -317,16 +333,20 @@ namespace RI.Framework.Threading
 		#region Instance Methods
 
 #if PLATFORM_NETFX
-/// <summary>
-///     Adds a <see cref="TaskCompletionSource{T}" /> to this thread which is completed when the thread is requested to stop (using <see cref="Stop" />).
-/// </summary>
-/// <param name="tcs"> The <see cref="TaskCompletionSource{T}" /> to add. </param>
-/// <remarks>
-/// <para>
-/// A task can be added multiple times but will only be completed once.
-/// </para>
-/// </remarks>
-/// <exception cref="ArgumentNullException"> <paramref name="tcs" /> is null. </exception>
+		/// <summary>
+		///     Adds a <see cref="TaskCompletionSource{T}" /> to this thread which is completed when the thread is requested to stop.
+		/// </summary>
+		/// <param name="tcs"> The <see cref="TaskCompletionSource{T}" /> to add. </param>
+		/// <remarks>
+		/// <para>
+		/// A task can be added multiple times but will only be completed once.
+		/// </para>
+		/// <para>
+		/// All added tasks will be completed using <see cref="TaskCompletionSource{T}.TrySetResult"/> by the default implementation of <see cref="OnStop"/>.
+		/// Therefore, no tasks added after <see cref="OnStop"/> was called will be completed.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="tcs" /> is null. </exception>
 		protected void AddStopTask (TaskCompletionSource<object> tcs)
 		{
 			if (tcs == null)
@@ -338,7 +358,7 @@ namespace RI.Framework.Threading
 		}
 
 		/// <summary>
-		/// Removes a previously added <see cref="TaskCompletionSource{T}" /> using <see cref="AddStopTask"/>.
+		/// Removes a <see cref="TaskCompletionSource{T}" /> which was previously added using <see cref="AddStopTask"/>.
 		/// </summary>
 		/// <param name="tcs"> The <see cref="TaskCompletionSource{T}" /> to remove. </param>
 		/// <remarks>
@@ -357,25 +377,6 @@ namespace RI.Framework.Threading
 			this.StopTasks.Remove(tcs);
 		}
 #endif
-
-		/// <summary>
-		///     Checks and rethrows any exception occurred in this thread.
-		/// </summary>
-		/// <remarks>
-		///     <para>
-		///         This method returns without any effect if no exception occurred.
-		///     </para>
-		/// </remarks>
-		/// <exception cref="InvalidOperationException"> This function was called from inside the thread. </exception>
-		/// <exception cref="HeavyThreadException"> An exception occured in this thread. </exception>
-		public void CheckForException ()
-		{
-			Exception threadException = this.ThreadException;
-			if (threadException != null)
-			{
-				throw new HeavyThreadException(this.ThreadException);
-			}
-		}
 
 		/// <summary>
 		///     Determines whether the caller of this function is executed inside the thread or not.
@@ -462,6 +463,8 @@ namespace RI.Framework.Threading
 
 						lock (this.SyncRoot)
 						{
+							timeout = this.Timeout;
+
 							this.IsRunning = false;
 							this.HasStoppedGracefully = null;
 							this.ThreadException = null;
@@ -472,26 +475,29 @@ namespace RI.Framework.Threading
 							this.StopTasks = new HashSet<TaskCompletionSource<object>>();
 #endif
 
-							timeout = this.Timeout;
-
 							this.Thread = new Thread(() =>
 							{
-								ManualResetEvent stopEvent = this.StopEvent;
-								bool running = false;
-								bool ended = false;
+								ManualResetEvent stopEvent = null;
 								try
 								{
+									stopEvent = this.StopEvent;
 									this.OnBegin();
-									startEvent.Set();
 									startEventSet = true;
-									running = true;
+									startEvent.Set();
 									this.OnRun();
 									stopEvent.WaitOne();
-									ended = true;
 									this.OnEnd();
 								}
 								catch (ThreadAbortException)
 								{
+									try
+									{
+										this.OnEnd();
+									}
+									catch
+									{
+									}
+									throw;
 								}
 								catch (Exception exception)
 								{
@@ -504,24 +510,29 @@ namespace RI.Framework.Threading
 									}
 									try
 									{
-										this.OnException(exception, running, false);
+										this.OnException(exception, false);
 									}
 									catch
 									{
 									}
 									try
 									{
-										stopEvent.WaitOne();
+										startEventSet = true;
+										startEvent.Set();
 									}
 									catch
 									{
 									}
 									try
 									{
-										if (!ended)
-										{
-											this.OnEnd();
-										}
+										stopEvent?.WaitOne();
+									}
+									catch
+									{
+									}
+									try
+									{
+										this.OnEnd();
 									}
 									catch
 									{
@@ -560,11 +571,10 @@ namespace RI.Framework.Threading
 							}
 						}
 #endif
-
-
+						
 						lock (this.SyncRoot)
 						{
-							if (!started)
+							if (!(startEventSet && started))
 							{
 								if (this.ThreadException != null)
 								{
@@ -646,7 +656,7 @@ namespace RI.Framework.Threading
 		{
 			if (this.IsInThread())
 			{
-				throw new InvalidOperationException(operation + " cannot be used from inside the thread of " + this.GetType().Name + ".");
+				throw new InvalidOperationException(operation + " cannot be called from inside the thread of " + this.GetType().Name + ".");
 			}
 		}
 
@@ -690,7 +700,7 @@ namespace RI.Framework.Threading
 		///         See <see cref="Stop" /> for a description of the sequence when stopping/disposing the thread.
 		///     </para>
 		/// </remarks>
-		/// <exception cref="InvalidOperationException"> This function was called from inside the thread. </exception>
+		/// <exception cref="InvalidOperationException"> This function was called from the thread. </exception>
 		[SuppressMessage("ReSharper", "EmptyGeneralCatchClause")]
 		protected virtual void Dispose (bool disposing)
 		{
@@ -703,12 +713,10 @@ namespace RI.Framework.Threading
 
 				lock (this.SyncRoot)
 				{
-					if (!this.IsRunning)
+					if (this.IsRunning)
 					{
-						return;
+						this.OnStop();
 					}
-
-					this.OnStop();
 
 					thread = this.Thread;
 					timeout = this.Timeout;
@@ -717,7 +725,7 @@ namespace RI.Framework.Threading
 				bool terminated;
 				try
 				{
-					terminated = thread.Join(timeout);
+					terminated = thread?.Join(timeout) ?? true;
 				}
 				catch
 				{
@@ -728,7 +736,7 @@ namespace RI.Framework.Threading
 				{
 					try
 					{
-						thread.Abort();
+						thread?.Abort();
 					}
 					catch
 					{
@@ -759,11 +767,12 @@ namespace RI.Framework.Threading
 		/// </summary>
 		/// <remarks>
 		///     <note type="important">
-		///         Do not execute the actual operations of the thread inside <see cref="OnBegin" /> as this might trigger a timeout.
+		///         This method is intended for on-thread preparation of the threads operation.
+		///         Do not execute the actual operation of the thread inside <see cref="OnBegin" />.
 		///         See <see cref="Start" /> and <see cref="Stop" /> for more details.
 		///     </note>
 		///     <note type="note">
-		///         This method is called inside the thread.
+		///         This method is called from the thread.
 		///     </note>
 		/// </remarks>
 		protected virtual void OnBegin ()
@@ -775,11 +784,16 @@ namespace RI.Framework.Threading
 		/// </summary>
 		/// <remarks>
 		///     <para>
+		///         This method is intended for on-thread cleanup of the threads operation.
 		///         The thread ends as soon as <see cref="OnEnd" /> returns.
 		///         See <see cref="Start" /> and <see cref="Stop" /> for more details.
 		///     </para>
 		///     <note type="note">
-		///         This method is called inside the thread.
+		///         This method is called from the thread.
+		///     </note>
+		///     <note type="important">
+		///         Under very rare circumstances, this method is called twice.
+		///         Therefore, overrides of this method must be designed accordingly.
 		///     </note>
 		/// </remarks>
 		protected virtual void OnEnd ()
@@ -790,17 +804,17 @@ namespace RI.Framework.Threading
 		///     Called when an exception occurred inside the thread.
 		/// </summary>
 		/// <param name="exception"> The exception. </param>
-		/// <param name="running"> Indicates whether the exception occured during the actual run (true; inside <see cref="OnRun" /> or <see cref="OnEnd" />) or during start (false; inside <see cref="OnBegin" />). </param>
 		/// <param name="canContinue"> Indicates whether the thread is able to continue or not after the exception was handled by <see cref="OnException" />. </param>
 		/// <remarks>
 		///     <note type="note">
-		///         This method is called inside the thread.
+		///         This method is called from the thread.
 		///     </note>
 		///     <para>
 		///         <paramref name="canContinue" /> is only true if you call <see cref="OnException" /> yourself with <paramref name="canContinue" /> set to true.
+		///         It is false for any unhandled exception which is thrown inside the thread.
 		///     </para>
 		/// </remarks>
-		protected virtual void OnException (Exception exception, bool running, bool canContinue)
+		protected virtual void OnException (Exception exception, bool canContinue)
 		{
 		}
 
@@ -809,7 +823,7 @@ namespace RI.Framework.Threading
 		/// </summary>
 		/// <remarks>
 		///     <note type="note">
-		///         This method is called inside the thread.
+		///         This method is called from the thread.
 		///     </note>
 		/// </remarks>
 		protected virtual void OnRun ()
@@ -836,7 +850,7 @@ namespace RI.Framework.Threading
 		/// </summary>
 		/// <remarks>
 		///     <para>
-		///         Thread execution configuration, such as priority or apartment state, must be configured in this method.
+		///         This method is intended for configuring the thread (priority, culture, etc.) before the actual thread is started.
 		///     </para>
 		///     <note type="note">
 		///         This method is called by <see cref="Start" />.
@@ -854,13 +868,7 @@ namespace RI.Framework.Threading
 		/// </summary>
 		/// <remarks>
 		///     <para>
-		///         This method can be used to signalize the thread to end and return from <see cref="OnRun" />.
-#if PLATFORM_NETFX
-		///         Therefore, the default implementation sets <see cref="StopRequested" /> to true, signals <see cref="StopEvent" />, and completes all tasks added by <see cref="AddStopTask" /> using <see cref="TaskCompletionSource{T}.TrySetResult" /> (setting its result to this instance of <see cref="HeavyThread" />).
-#endif
-#if PLATFORM_UNITY
-		///         Therefore, the default implementation sets <see cref="StopRequested" /> to true and signals <see cref="StopEvent" />.
-#endif
+		///         This method is intended to signalize the thread to end and return from <see cref="OnRun" />.
 		///     </para>
 		///     <note type="note">
 		///         This method is called by <see cref="Stop" />.
@@ -869,8 +877,7 @@ namespace RI.Framework.Threading
 		///         This method is called inside a lock to <see cref="SyncRoot" />.
 		///     </note>
 		///     <note type="important">
-		///         If the thread does not end on its own after <see cref="OnStop" /> was called, plus the time specified by <see cref="Timeout" />, the thread is terminated.
-		///         See <see cref="Stop" /> for more details.
+		///         If the thread does not end on its own (that is: return from <see cref="OnRun"/>) after <see cref="OnStop" /> was called, plus the time specified by <see cref="Timeout" />, the thread is terminated.
 		///     </note>
 		/// </remarks>
 		protected virtual void OnStop ()
