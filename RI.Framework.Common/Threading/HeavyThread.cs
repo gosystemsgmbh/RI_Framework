@@ -571,25 +571,27 @@ namespace RI.Framework.Threading
 							}
 						}
 #endif
-						
+
 						lock (this.SyncRoot)
 						{
 							if (!(startEventSet && started))
 							{
 								if (this.ThreadException != null)
 								{
-									throw new HeavyThreadException(this.GetType().Name + " failed to start (exception).", this.ThreadException);
+									throw new HeavyThreadException(this.GetType().Name + " failed to start (exception occurred).", this.ThreadException);
 								}
 								else
 								{
-									throw new TimeoutException(this.GetType().Name + " failed to start (timeout).");
+									throw new TimeoutException(this.GetType().Name + " failed to start (timeout while waiting for start event).");
 								}
 							}
 
 							this.IsRunning = true;
 
-							this.OnStarted();
+							this.OnStarted(true);
 						}
+
+						this.OnStarted(false);
 					}
 
 					success = true;
@@ -643,6 +645,7 @@ namespace RI.Framework.Threading
 		/// <exception cref="InvalidOperationException"> This function was called from inside the thread. </exception>
 		public void Stop ()
 		{
+			this.VerifyNotFromThread(nameof(this.Stop));
 			this.Dispose(true);
 			GC.SuppressFinalize(this);
 		}
@@ -833,7 +836,12 @@ namespace RI.Framework.Threading
 		/// <summary>
 		///     Called after the thread was started.
 		/// </summary>
+		/// <param name="withLock">Indicates whether the method is called inside a lock to <see cref="SyncRoot"/>.</param>
 		/// <remarks>
+		///     <para>
+		///         After the thread was started, this method is called twice:
+		///         Once inside a lock to <see cref="SyncRoot"/> (<paramref name="withLock"/> is true) and then once outside (<paramref name="withLock"/> is false).
+		///     </para>
 		///     <note type="note">
 		///         This method is called by <see cref="Start" />.
 		///     </note>
@@ -841,7 +849,7 @@ namespace RI.Framework.Threading
 		///         This method is called inside a lock to <see cref="SyncRoot" />.
 		///     </note>
 		/// </remarks>
-		protected virtual void OnStarted ()
+		protected virtual void OnStarted (bool withLock)
 		{
 		}
 
