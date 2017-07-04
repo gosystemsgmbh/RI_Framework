@@ -26,11 +26,6 @@ namespace RI.Framework.Services.Messaging.Dispatchers
 	[Export]
 	public sealed class WpfMessageDispatcher : IMessageDispatcher
 	{
-		private DispatcherPriority _priority;
-
-
-
-
 		#region Instance Constructor/Destructor
 
 		/// <summary>
@@ -72,6 +67,15 @@ namespace RI.Framework.Services.Messaging.Dispatchers
 
 
 
+		#region Instance Fields
+
+		private DispatcherPriority _priority;
+
+		#endregion
+
+
+
+
 		#region Instance Properties/Indexer
 
 		/// <summary>
@@ -83,15 +87,15 @@ namespace RI.Framework.Services.Messaging.Dispatchers
 		public Dispatcher Dispatcher { get; }
 
 		/// <summary>
-		/// Gets or sets the priority used for dispatching messages.
+		///     Gets or sets the priority used for dispatching messages.
 		/// </summary>
 		/// <value>
-		/// The priority used for dispatching messages.
+		///     The priority used for dispatching messages.
 		/// </value>
 		/// <remarks>
-		/// <para>
-		/// The default value is <see cref="DispatcherPriority.Normal"/>.
-		/// </para>
+		///     <para>
+		///         The default value is <see cref="DispatcherPriority.Normal" />.
+		///     </para>
 		/// </remarks>
 		public DispatcherPriority Priority
 		{

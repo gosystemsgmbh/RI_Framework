@@ -24,10 +24,10 @@ namespace RI.Framework.StateMachines
 	///     <para>
 	///         See the respective properties for their default values.
 	///     </para>
-	/// <note type="important">
-	/// Some virtual methods are called from within locks to <see cref="SyncRoot"/>.
-	/// Be caruful in inheriting classes when calling outside code from those methods (e.g. through events, callbacks, or other virtual methods) to not produce deadlocks!
-	/// </note>
+	///     <note type="important">
+	///         Some virtual methods are called from within locks to <see cref="SyncRoot" />.
+	///         Be caruful in inheriting classes when calling outside code from those methods (e.g. through events, callbacks, or other virtual methods) to not produce deadlocks!
+	///     </note>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	public abstract class StateMachineConfiguration : ISynchronizable, ICloneable<StateMachineConfiguration>, ICloneable
@@ -60,9 +60,9 @@ namespace RI.Framework.StateMachines
 
 		private IStateCache _cache;
 
-		private IStateDispatcher _dispatcher;
-
 		private bool _cachingEnabled;
+
+		private IStateDispatcher _dispatcher;
 
 		private bool _isLocked;
 
@@ -119,6 +119,35 @@ namespace RI.Framework.StateMachines
 		}
 
 		/// <summary>
+		///     Gets or sets whether state instances are automatically added to the cache by <see cref="StateMachine" /> after they became the current state for the first time.
+		/// </summary>
+		/// <value>
+		///     true if a state instance is added to the cache after it became the current state for the first time, false if the state instances must be added manually.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         The default value is true.
+		///     </para>
+		/// </remarks>
+		public bool CachingEnabled
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._cachingEnabled;
+				}
+			}
+			set
+			{
+				lock (this.SyncRoot)
+				{
+					this._cachingEnabled = value;
+				}
+			}
+		}
+
+		/// <summary>
 		///     Gets or sets the used dispatcher.
 		/// </summary>
 		/// <value>
@@ -155,35 +184,6 @@ namespace RI.Framework.StateMachines
 					}
 
 					this._dispatcher = value;
-				}
-			}
-		}
-
-		/// <summary>
-		///     Gets or sets whether state instances are automatically added to the cache by <see cref="StateMachine" /> after they became the current state for the first time.
-		/// </summary>
-		/// <value>
-		///     true if a state instance is added to the cache after it became the current state for the first time, false if the state instances must be added manually.
-		/// </value>
-		/// <remarks>
-		///     <para>
-		///         The default value is true.
-		///     </para>
-		/// </remarks>
-		public bool CachingEnabled
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					return this._cachingEnabled;
-				}
-			}
-			set
-			{
-				lock (this.SyncRoot)
-				{
-					this._cachingEnabled = value;
 				}
 			}
 		}
@@ -341,9 +341,9 @@ namespace RI.Framework.StateMachines
 		/// </summary>
 		/// <param name="clone"> The clone being created. </param>
 		/// <remarks>
-		/// <note type="important">
-		/// This method is called inside a lock to <see cref="StateMachineConfiguration.SyncRoot"/>.
-		/// </note>
+		///     <note type="important">
+		///         This method is called inside a lock to <see cref="StateMachineConfiguration.SyncRoot" />.
+		///     </note>
 		/// </remarks>
 		[SuppressMessage("ReSharper", "SuspiciousTypeConversion.Global")]
 		protected virtual void Clone (T clone)

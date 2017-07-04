@@ -2,6 +2,9 @@
 using System.Threading;
 using System.Threading.Tasks;
 
+
+
+
 namespace RI.Framework.Threading
 {
 	/// <summary>
@@ -11,6 +14,49 @@ namespace RI.Framework.Threading
 	public static class IThreadDispatcherExtensions
 	{
 		#region Static Methods
+
+		/// <summary>
+		///     Determines under which options the current code is executed.
+		/// </summary>
+		/// <param name="dispatcher"> The dispatcher. </param>
+		/// <returns>
+		///     The options of the currently executed code or the default options of the dispatcher if the current code is not executed by the dispatcher.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" />  is null. </exception>
+		public static ThreadDispatcherOptions GetCurrentOptionsOrDefault (this IThreadDispatcher dispatcher)
+		{
+			if (dispatcher == null)
+			{
+				throw new ArgumentNullException(nameof(dispatcher));
+			}
+
+			lock (dispatcher.SyncRoot)
+			{
+				return dispatcher.GetCurrentOptionsOrDefault(dispatcher.DefaultOptions);
+			}
+		}
+
+		/// <summary>
+		///     Determines under which options the current code is executed.
+		/// </summary>
+		/// <param name="dispatcher"> The dispatcher. </param>
+		/// <param name="defaultOptions"> The default options to return if the current code is not executed by the dispatcher. </param>
+		/// <returns>
+		///     The options of the currently executed code or <paramref name="defaultOptions" /> if the current code is not executed by the dispatcher.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" />  is null. </exception>
+		public static ThreadDispatcherOptions GetCurrentOptionsOrDefault (this IThreadDispatcher dispatcher, ThreadDispatcherOptions defaultOptions)
+		{
+			if (dispatcher == null)
+			{
+				throw new ArgumentNullException(nameof(dispatcher));
+			}
+
+			lock (dispatcher.SyncRoot)
+			{
+				return dispatcher.GetCurrentOptions().GetValueOrDefault(defaultOptions);
+			}
+		}
 
 		/// <summary>
 		///     Determines under which priority the current code is executed.
@@ -62,14 +108,14 @@ namespace RI.Framework.Threading
 		}
 
 		/// <summary>
-		///     Determines under which options the current code is executed.
+		///     Gets the <see cref="SynchronizationContext" /> associated with the dispatcher.
 		/// </summary>
 		/// <param name="dispatcher"> The dispatcher. </param>
 		/// <returns>
-		///     The options of the currently executed code or the default options of the dispatcher if the current code is not executed by the dispatcher.
+		///     The <see cref="SynchronizationContext" /> associated with the dispatcher or null if the dispatcher is not running.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" />  is null. </exception>
-		public static ThreadDispatcherOptions GetCurrentOptionsOrDefault(this IThreadDispatcher dispatcher)
+		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" /> is null. </exception>
+		public static SynchronizationContext GetSynchronizationContext (this IThreadDispatcher dispatcher)
 		{
 			if (dispatcher == null)
 			{
@@ -78,20 +124,34 @@ namespace RI.Framework.Threading
 
 			lock (dispatcher.SyncRoot)
 			{
-				return dispatcher.GetCurrentOptionsOrDefault(dispatcher.DefaultOptions);
+				if (!dispatcher.IsRunning)
+				{
+					return null;
+				}
+
+				if (dispatcher is ThreadDispatcher)
+				{
+					return ((ThreadDispatcher)dispatcher).Context;
+				}
+
+				if (dispatcher is HeavyThreadDispatcher)
+				{
+					return ((HeavyThreadDispatcher)dispatcher).Dispatcher.Context;
+				}
+
+				return new ThreadDispatcherSynchronizationContext(dispatcher);
 			}
 		}
 
 		/// <summary>
-		///     Determines under which options the current code is executed.
+		///     Gets the <see cref="TaskScheduler" /> associated with the dispatcher.
 		/// </summary>
 		/// <param name="dispatcher"> The dispatcher. </param>
-		/// <param name="defaultOptions"> The default options to return if the current code is not executed by the dispatcher. </param>
 		/// <returns>
-		///     The options of the currently executed code or <paramref name="defaultOptions" /> if the current code is not executed by the dispatcher.
+		///     The <see cref="TaskScheduler" /> associated with the dispatcher or null if the dispatcher is not running.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" />  is null. </exception>
-		public static ThreadDispatcherOptions GetCurrentOptionsOrDefault(this IThreadDispatcher dispatcher, ThreadDispatcherOptions defaultOptions)
+		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" /> is null. </exception>
+		public static TaskScheduler GetTaskScheduler (this IThreadDispatcher dispatcher)
 		{
 			if (dispatcher == null)
 			{
@@ -100,7 +160,22 @@ namespace RI.Framework.Threading
 
 			lock (dispatcher.SyncRoot)
 			{
-				return dispatcher.GetCurrentOptions().GetValueOrDefault(defaultOptions);
+				if (!dispatcher.IsRunning)
+				{
+					return null;
+				}
+
+				if (dispatcher is ThreadDispatcher)
+				{
+					return ((ThreadDispatcher)dispatcher).Scheduler;
+				}
+
+				if (dispatcher is HeavyThreadDispatcher)
+				{
+					return ((HeavyThreadDispatcher)dispatcher).Dispatcher.Scheduler;
+				}
+
+				return new ThreadDispatcherTaskScheduler(dispatcher);
 			}
 		}
 
@@ -168,7 +243,7 @@ namespace RI.Framework.Threading
 		/// <param name="dispatcher"> The dispatcher. </param>
 		/// <param name="milliseconds"> The delay of the execution in milliseconds. </param>
 		/// <param name="priority"> The priority. </param>
-		/// <param name="options">The used execution options.</param>
+		/// <param name="options"> The used execution options. </param>
 		/// <param name="action"> The delegate. </param>
 		/// <param name="parameters"> Optional parameters of the delagate. </param>
 		/// <returns>
@@ -280,7 +355,7 @@ namespace RI.Framework.Threading
 		/// <param name="dispatcher"> The dispatcher. </param>
 		/// <param name="delay"> The delay of the execution. </param>
 		/// <param name="priority"> The priority. </param>
-		/// <param name="options">The used execution options.</param>
+		/// <param name="options"> The used execution options. </param>
 		/// <param name="action"> The delegate. </param>
 		/// <param name="parameters"> Optional parameters of the delagate. </param>
 		/// <returns>
@@ -299,78 +374,6 @@ namespace RI.Framework.Threading
 			lock (dispatcher.SyncRoot)
 			{
 				return dispatcher.PostDelayed((int)delay.TotalMilliseconds, priority, options, action, parameters);
-			}
-		}
-
-		/// <summary>
-		/// Gets the <see cref="SynchronizationContext"/> associated with the dispatcher.
-		/// </summary>
-		/// <param name="dispatcher"> The dispatcher. </param>
-		/// <returns>
-		/// The <see cref="SynchronizationContext"/> associated with the dispatcher or null if the dispatcher is not running.
-		/// </returns>
-		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" /> is null. </exception>
-		public static SynchronizationContext GetSynchronizationContext (this IThreadDispatcher dispatcher)
-		{
-			if (dispatcher == null)
-			{
-				throw new ArgumentNullException(nameof(dispatcher));
-			}
-
-			lock (dispatcher.SyncRoot)
-			{
-				if (!dispatcher.IsRunning)
-				{
-					return null;
-				}
-
-				if (dispatcher is ThreadDispatcher)
-				{
-					return ((ThreadDispatcher)dispatcher).Context;
-				}
-
-				if (dispatcher is HeavyThreadDispatcher)
-				{
-					return ((HeavyThreadDispatcher)dispatcher).Dispatcher.Context;
-				}
-
-				return new ThreadDispatcherSynchronizationContext(dispatcher);
-			}
-		}
-
-		/// <summary>
-		/// Gets the <see cref="TaskScheduler"/> associated with the dispatcher.
-		/// </summary>
-		/// <param name="dispatcher"> The dispatcher. </param>
-		/// <returns>
-		/// The <see cref="TaskScheduler"/> associated with the dispatcher or null if the dispatcher is not running.
-		/// </returns>
-		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" /> is null. </exception>
-		public static TaskScheduler GetTaskScheduler (this IThreadDispatcher dispatcher)
-		{
-			if (dispatcher == null)
-			{
-				throw new ArgumentNullException(nameof(dispatcher));
-			}
-
-			lock (dispatcher.SyncRoot)
-			{
-				if (!dispatcher.IsRunning)
-				{
-					return null;
-				}
-
-				if (dispatcher is ThreadDispatcher)
-				{
-					return ((ThreadDispatcher)dispatcher).Scheduler;
-				}
-
-				if (dispatcher is HeavyThreadDispatcher)
-				{
-					return ((HeavyThreadDispatcher)dispatcher).Dispatcher.Scheduler;
-				}
-
-				return new ThreadDispatcherTaskScheduler(dispatcher);
 			}
 		}
 

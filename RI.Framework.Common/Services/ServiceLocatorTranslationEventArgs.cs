@@ -3,6 +3,9 @@
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 
+
+
+
 namespace RI.Framework.Services
 {
 	/// <summary>
@@ -10,11 +13,13 @@ namespace RI.Framework.Services
 	/// </summary>
 	public sealed class ServiceLocatorTranslationEventArgs : EventArgs
 	{
+		#region Instance Constructor/Destructor
+
 		/// <summary>
-		/// Creates a new instance of <see cref="ServiceLocatorTranslationEventArgs"/>.
+		///     Creates a new instance of <see cref="ServiceLocatorTranslationEventArgs" />.
 		/// </summary>
-		/// <param name="type">The type to translate into a name for subsequent lookup.</param>
-		/// <exception cref="ArgumentNullException"><paramref name="type"/> is null.</exception>
+		/// <param name="type"> The type to translate into a name for subsequent lookup. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="type" /> is null. </exception>
 		public ServiceLocatorTranslationEventArgs (Type type)
 		{
 			if (type == null)
@@ -26,23 +31,29 @@ namespace RI.Framework.Services
 			this.Name = null;
 		}
 
-		/// <summary>
-		/// Gets the type to translate into a name for subsequent lookup.
-		/// </summary>
-		/// <value>
-		/// The type to translate into a name for subsequent lookup.
-		/// </value>
-		public Type Type { get; }
+		#endregion
+
+
+
+
+		#region Instance Fields
 
 		private string _name;
 
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
+
 		/// <summary>
-		/// Gets or sets the translated name.
+		///     Gets or sets the translated name.
 		/// </summary>
 		/// <value>
-		/// The translated name or null if the type could not be translated.
+		///     The translated name or null if the type could not be translated.
 		/// </value>
-		/// <exception cref="EmptyStringArgumentException"><paramref name="value"/> is an empty string.</exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="value" /> is an empty string. </exception>
 		public string Name
 		{
 			get
@@ -62,5 +73,15 @@ namespace RI.Framework.Services
 				this._name = value;
 			}
 		}
+
+		/// <summary>
+		///     Gets the type to translate into a name for subsequent lookup.
+		/// </summary>
+		/// <value>
+		///     The type to translate into a name for subsequent lookup.
+		/// </value>
+		public Type Type { get; }
+
+		#endregion
 	}
 }

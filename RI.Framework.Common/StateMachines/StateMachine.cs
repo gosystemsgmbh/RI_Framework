@@ -85,10 +85,10 @@ namespace RI.Framework.StateMachines
 	///         The reason why dispatching is important for a logical behaviour is the requirement that all state machine operations (signals and transitions) are completed before another operation is executed.
 	///         This guarantees, for example, that all state code executed in <see cref="IState.Signal" />, <see cref="IState.Enter" /> or <see cref="IState.Leave" /> is executed under the same current state, even if the state issues a signal or a transient.
 	///     </para>
-	/// <note type="important">
-	/// Some virtual methods are called from within locks to <see cref="SyncRoot"/>.
-	/// Be caruful in inheriting classes when calling outside code from those methods (e.g. through events, callbacks, or other virtual methods) to not produce deadlocks!
-	/// </note>
+	///     <note type="important">
+	///         Some virtual methods are called from within locks to <see cref="SyncRoot" />.
+	///         Be caruful in inheriting classes when calling outside code from those methods (e.g. through events, callbacks, or other virtual methods) to not produce deadlocks!
+	///     </note>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	/// <example>
@@ -308,13 +308,13 @@ namespace RI.Framework.StateMachines
 
 		private StateMachineSignalDelegate SignalDelegate { get; }
 
-		private StateMachineTransientDelegate TransientDelegate { get; }
-
-		private StateMachineUpdateDelegate UpdateDelegate { get; }
-
 		private DateTime StateEnterTimestampLocal { get; set; }
 
 		private DateTime StateEnterTimestampUtc { get; set; }
+
+		private StateMachineTransientDelegate TransientDelegate { get; }
+
+		private StateMachineUpdateDelegate UpdateDelegate { get; }
 
 		#endregion
 
@@ -346,18 +346,6 @@ namespace RI.Framework.StateMachines
 		}
 
 		/// <summary>
-		///     Sends a signal to the current state.
-		/// </summary>
-		/// <param name="signal"> The signal. </param>
-		protected void SignalInternal (object signal)
-		{
-			StateSignalInfo signalInfo = new StateSignalInfo(this);
-			signalInfo.Signal = signal;
-
-			this.DispatchSignal(signalInfo);
-		}
-
-		/// <summary>
 		///     Initiates a transition to another state.
 		/// </summary>
 		/// <typeparam name="TState"> The type of state to transition to. </typeparam>
@@ -382,6 +370,29 @@ namespace RI.Framework.StateMachines
 		}
 
 		/// <summary>
+		///     Updates the current state.
+		/// </summary>
+		public void Update ()
+		{
+			lock (this.SyncRoot)
+			{
+				this.UpdateInternal(0);
+			}
+		}
+
+		/// <summary>
+		///     Sends a signal to the current state.
+		/// </summary>
+		/// <param name="signal"> The signal. </param>
+		protected void SignalInternal (object signal)
+		{
+			StateSignalInfo signalInfo = new StateSignalInfo(this);
+			signalInfo.Signal = signal;
+
+			this.DispatchSignal(signalInfo);
+		}
+
+		/// <summary>
 		///     Initiates a transition to another state.
 		/// </summary>
 		/// <param name="nextState"> The state instance to transition to. </param>
@@ -394,17 +405,6 @@ namespace RI.Framework.StateMachines
 			transientInfo.PreviousState = previousState;
 
 			this.DispatchTransient(transientInfo);
-		}
-
-		/// <summary>
-		///     Updates the current state.
-		/// </summary>
-		public void Update ()
-		{
-			lock (this.SyncRoot)
-			{
-				this.UpdateInternal(0);
-			}
 		}
 
 		/// <summary>
@@ -442,9 +442,9 @@ namespace RI.Framework.StateMachines
 		///     <para>
 		///         The default implementation calls <see cref="IStateDispatcher.DispatchSignal" />.
 		///     </para>
-		/// <note type="important">
-		/// This method is called inside a lock to <see cref="SyncRoot"/>.
-		/// </note>
+		///     <note type="important">
+		///         This method is called inside a lock to <see cref="SyncRoot" />.
+		///     </note>
 		/// </remarks>
 		protected virtual void DispatchSignal (StateSignalInfo signalInfo)
 		{
@@ -464,9 +464,9 @@ namespace RI.Framework.StateMachines
 		///     <para>
 		///         The default implementation calls <see cref="IStateDispatcher.DispatchTransition" />.
 		///     </para>
-		/// <note type="important">
-		/// This method is called inside a lock to <see cref="SyncRoot"/>.
-		/// </note>
+		///     <note type="important">
+		///         This method is called inside a lock to <see cref="SyncRoot" />.
+		///     </note>
 		/// </remarks>
 		protected virtual void DispatchTransient (StateTransientInfo transientInfo)
 		{
@@ -486,9 +486,9 @@ namespace RI.Framework.StateMachines
 		///     <para>
 		///         The default implementation calls <see cref="IStateDispatcher.DispatchUpdate" />.
 		///     </para>
-		/// <note type="important">
-		/// This method is called inside a lock to <see cref="SyncRoot"/>.
-		/// </note>
+		///     <note type="important">
+		///         This method is called inside a lock to <see cref="SyncRoot" />.
+		///     </note>
 		/// </remarks>
 		protected virtual void DispatchUpdate (StateUpdateInfo updateInfo)
 		{
@@ -640,9 +640,9 @@ namespace RI.Framework.StateMachines
 		/// </summary>
 		/// <param name="transientInfo"> The transition currently being executed. </param>
 		/// <remarks>
-		/// <note type="important">
-		/// This method is called inside a lock to <see cref="SyncRoot"/>.
-		/// </note>
+		///     <note type="important">
+		///         This method is called inside a lock to <see cref="SyncRoot" />.
+		///     </note>
 		/// </remarks>
 		protected virtual void OnAfterEnter (StateTransientInfo transientInfo)
 		{
@@ -653,9 +653,9 @@ namespace RI.Framework.StateMachines
 		/// </summary>
 		/// <param name="transientInfo"> The transition currently being executed. </param>
 		/// <remarks>
-		/// <note type="important">
-		/// This method is called inside a lock to <see cref="SyncRoot"/>.
-		/// </note>
+		///     <note type="important">
+		///         This method is called inside a lock to <see cref="SyncRoot" />.
+		///     </note>
 		/// </remarks>
 		protected virtual void OnAfterLeave (StateTransientInfo transientInfo)
 		{
@@ -666,9 +666,9 @@ namespace RI.Framework.StateMachines
 		/// </summary>
 		/// <param name="signalInfo"> The signal currently being executed. </param>
 		/// <remarks>
-		/// <note type="important">
-		/// This method is called inside a lock to <see cref="SyncRoot"/>.
-		/// </note>
+		///     <note type="important">
+		///         This method is called inside a lock to <see cref="SyncRoot" />.
+		///     </note>
 		/// </remarks>
 		protected virtual void OnAfterSignal (StateSignalInfo signalInfo)
 		{
@@ -679,9 +679,9 @@ namespace RI.Framework.StateMachines
 		/// </summary>
 		/// <param name="updateInfo"> The update currently being executed. </param>
 		/// <remarks>
-		/// <note type="important">
-		/// This method is called inside a lock to <see cref="SyncRoot"/>.
-		/// </note>
+		///     <note type="important">
+		///         This method is called inside a lock to <see cref="SyncRoot" />.
+		///     </note>
 		/// </remarks>
 		protected virtual void OnAfterUpdate (StateUpdateInfo updateInfo)
 		{
@@ -692,9 +692,9 @@ namespace RI.Framework.StateMachines
 		/// </summary>
 		/// <param name="transientInfo"> The transition currently being executed. </param>
 		/// <remarks>
-		/// <note type="important">
-		/// This method is called inside a lock to <see cref="SyncRoot"/>.
-		/// </note>
+		///     <note type="important">
+		///         This method is called inside a lock to <see cref="SyncRoot" />.
+		///     </note>
 		/// </remarks>
 		protected virtual void OnBeforeEnter (StateTransientInfo transientInfo)
 		{
@@ -705,9 +705,9 @@ namespace RI.Framework.StateMachines
 		/// </summary>
 		/// <param name="transientInfo"> The transition currently being executed. </param>
 		/// <remarks>
-		/// <note type="important">
-		/// This method is called inside a lock to <see cref="SyncRoot"/>.
-		/// </note>
+		///     <note type="important">
+		///         This method is called inside a lock to <see cref="SyncRoot" />.
+		///     </note>
 		/// </remarks>
 		protected virtual void OnBeforeLeave (StateTransientInfo transientInfo)
 		{
@@ -718,9 +718,9 @@ namespace RI.Framework.StateMachines
 		/// </summary>
 		/// <param name="signalInfo"> The signal currently being executed. </param>
 		/// <remarks>
-		/// <note type="important">
-		/// This method is called inside a lock to <see cref="SyncRoot"/>.
-		/// </note>
+		///     <note type="important">
+		///         This method is called inside a lock to <see cref="SyncRoot" />.
+		///     </note>
 		/// </remarks>
 		protected virtual void OnBeforeSignal (StateSignalInfo signalInfo)
 		{
@@ -731,9 +731,9 @@ namespace RI.Framework.StateMachines
 		/// </summary>
 		/// <param name="updateInfo"> The update currently being executed. </param>
 		/// <remarks>
-		/// <note type="important">
-		/// This method is called inside a lock to <see cref="SyncRoot"/>.
-		/// </note>
+		///     <note type="important">
+		///         This method is called inside a lock to <see cref="SyncRoot" />.
+		///     </note>
 		/// </remarks>
 		protected virtual void OnBeforeUpdate (StateUpdateInfo updateInfo)
 		{
@@ -744,9 +744,9 @@ namespace RI.Framework.StateMachines
 		/// </summary>
 		/// <param name="transientInfo"> The aborted transition. </param>
 		/// <remarks>
-		/// <note type="important">
-		/// This method is called inside a lock to <see cref="SyncRoot"/>.
-		/// </note>
+		///     <note type="important">
+		///         This method is called inside a lock to <see cref="SyncRoot" />.
+		///     </note>
 		/// </remarks>
 		protected virtual void OnTransitionAborted (StateTransientInfo transientInfo)
 		{
@@ -757,9 +757,9 @@ namespace RI.Framework.StateMachines
 		/// </summary>
 		/// <param name="updateInfo"> The aborted update. </param>
 		/// <remarks>
-		/// <note type="important">
-		/// This method is called inside a lock to <see cref="SyncRoot"/>.
-		/// </note>
+		///     <note type="important">
+		///         This method is called inside a lock to <see cref="SyncRoot" />.
+		///     </note>
 		/// </remarks>
 		protected virtual void OnUpdateAborted (StateUpdateInfo updateInfo)
 		{

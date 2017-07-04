@@ -13,10 +13,10 @@ namespace RI.Framework.StateMachines.States
 	///     <para>
 	///         See <see cref="StateMachine" /> for more details about state machines.
 	///     </para>
-	/// <note type="important">
-	/// Some methods are called by <see cref="StateMachine"/> while in a lock to its <see cref="StateMachine.SyncRoot"/>.
-	/// Be caruful in implementing classes when calling outside code from those methods (e.g. through events, callbacks, or other virtual methods) to not produce deadlocks!
-	/// </note>
+	///     <note type="important">
+	///         Some methods are called by <see cref="StateMachine" /> while in a lock to its <see cref="StateMachine.SyncRoot" />.
+	///         Be caruful in implementing classes when calling outside code from those methods (e.g. through events, callbacks, or other virtual methods) to not produce deadlocks!
+	///     </note>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	[Export]
@@ -56,9 +56,9 @@ namespace RI.Framework.StateMachines.States
 		/// </summary>
 		/// <param name="transientInfo"> The transition being executed. </param>
 		/// <remarks>
-		/// <note type="important">
-		/// This method is called by <see cref="StateMachine"/> while in a lock to its <see cref="StateMachine.SyncRoot"/>.
-		/// </note>
+		///     <note type="important">
+		///         This method is called by <see cref="StateMachine" /> while in a lock to its <see cref="StateMachine.SyncRoot" />.
+		///     </note>
 		/// </remarks>
 		void Enter (StateTransientInfo transientInfo);
 
@@ -70,9 +70,9 @@ namespace RI.Framework.StateMachines.States
 		///     <para>
 		///         <see cref="Initialize" /> is called during the transition for a next state, before the previous state is left, but only if <see cref="IsInitialized" /> is false.
 		///     </para>
-		/// <note type="important">
-		/// This method is called by <see cref="StateMachine"/> while in a lock to its <see cref="StateMachine.SyncRoot"/>.
-		/// </note>
+		///     <note type="important">
+		///         This method is called by <see cref="StateMachine" /> while in a lock to its <see cref="StateMachine.SyncRoot" />.
+		///     </note>
 		/// </remarks>
 		void Initialize (StateMachine stateMachine);
 
@@ -81,9 +81,9 @@ namespace RI.Framework.StateMachines.States
 		/// </summary>
 		/// <param name="transientInfo"> The transition being executed. </param>
 		/// <remarks>
-		/// <note type="important">
-		/// This method is called by <see cref="StateMachine"/> while in a lock to its <see cref="StateMachine.SyncRoot"/>.
-		/// </note>
+		///     <note type="important">
+		///         This method is called by <see cref="StateMachine" /> while in a lock to its <see cref="StateMachine.SyncRoot" />.
+		///     </note>
 		/// </remarks>
 		void Leave (StateTransientInfo transientInfo);
 
@@ -92,9 +92,9 @@ namespace RI.Framework.StateMachines.States
 		/// </summary>
 		/// <param name="signalInfo"> The signal being executed. </param>
 		/// <remarks>
-		/// <note type="important">
-		/// This method is called by <see cref="StateMachine"/> while in a lock to its <see cref="StateMachine.SyncRoot"/>.
-		/// </note>
+		///     <note type="important">
+		///         This method is called by <see cref="StateMachine" /> while in a lock to its <see cref="StateMachine.SyncRoot" />.
+		///     </note>
 		/// </remarks>
 		void Signal (StateSignalInfo signalInfo);
 
@@ -106,9 +106,9 @@ namespace RI.Framework.StateMachines.States
 		///     <para>
 		///         See <see cref="UpdateInterval" /> for more details.
 		///     </para>
-		/// <note type="important">
-		/// This method is called by <see cref="StateMachine"/> while in a lock to its <see cref="StateMachine.SyncRoot"/>.
-		/// </note>
+		///     <note type="important">
+		///         This method is called by <see cref="StateMachine" /> while in a lock to its <see cref="StateMachine.SyncRoot" />.
+		///     </note>
 		/// </remarks>
 		void Update (StateUpdateInfo updateInfo);
 	}

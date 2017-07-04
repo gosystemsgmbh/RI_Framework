@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
+
+
+
 namespace RI.Framework.Threading
 {
 	/// <summary>

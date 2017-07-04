@@ -4,6 +4,9 @@ using System.Threading;
 
 using RI.Framework.Utilities.ObjectModel;
 
+
+
+
 namespace RI.Framework.Threading
 {
 	/// <summary>
@@ -23,12 +26,12 @@ namespace RI.Framework.Threading
 	///     </para>
 	///     <para>
 	///         The associated dispatcher does not need to be started.
-	/// However, the timer is stopped on an interval if the dispatcher is not running.
+	///         However, the timer is stopped on an interval if the dispatcher is not running.
 	///     </para>
-	/// <note type="important">
-	/// If an instance of <see cref="ThreadDispatcherTimer"/> is garbage collected before the delegate is executed, the delegate will not be executed as the timer is stopped and disposed when its finalizer is called.
-	/// Therefore, to guarantee the execution of the delegate, you must hold on to the timer instance as long as you want the timer to work.
-	/// </note>
+	///     <note type="important">
+	///         If an instance of <see cref="ThreadDispatcherTimer" /> is garbage collected before the delegate is executed, the delegate will not be executed as the timer is stopped and disposed when its finalizer is called.
+	///         Therefore, to guarantee the execution of the delegate, you must hold on to the timer instance as long as you want the timer to work.
+	///     </note>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	public sealed class ThreadDispatcherTimer : IDisposable, ISynchronizable
@@ -41,7 +44,7 @@ namespace RI.Framework.Threading
 		/// <param name="dispatcher"> The used dispatcher. </param>
 		/// <param name="mode"> The timer mode. </param>
 		/// <param name="priority"> The priority. </param>
-		/// <param name="options">The used execution options.</param>
+		/// <param name="options"> The used execution options. </param>
 		/// <param name="interval"> The interval between executions in milliseconds. </param>
 		/// <param name="action"> The delegate. </param>
 		/// <param name="parameters"> Optional parameters of the delagate. </param>
@@ -58,7 +61,7 @@ namespace RI.Framework.Threading
 		/// <param name="dispatcher"> The used dispatcher. </param>
 		/// <param name="mode"> The timer mode. </param>
 		/// <param name="priority"> The priority. </param>
-		/// <param name="options">The used execution options.</param>
+		/// <param name="options"> The used execution options. </param>
 		/// <param name="interval"> The interval between executions. </param>
 		/// <param name="action"> The delegate. </param>
 		/// <param name="parameters"> Optional parameters of the delagate. </param>
@@ -125,6 +128,14 @@ namespace RI.Framework.Threading
 		#region Instance Properties/Indexer
 
 		/// <summary>
+		///     Gets the used delegate.
+		/// </summary>
+		/// <value>
+		///     The used delegate.
+		/// </value>
+		public Delegate Action { get; }
+
+		/// <summary>
 		///     Gets the used dispatcher.
 		/// </summary>
 		/// <value>
@@ -133,28 +144,33 @@ namespace RI.Framework.Threading
 		public IThreadDispatcher Dispatcher { get; }
 
 		/// <summary>
-		///     Gets the timer mode.
+		///     Gets the number of times the delegate was executed.
 		/// </summary>
 		/// <value>
-		///     The timer mode.
+		///     The number of times the delegate was executed.
 		/// </value>
-		public ThreadDispatcherTimerMode Mode { get; }
-
-		/// <summary>
-		///     Gets the priority.
-		/// </summary>
-		/// <value>
-		///     The priority.
-		/// </value>
-		public int Priority { get; }
-
-		/// <summary>
-		///     Gets the used execution options.
-		/// </summary>
-		/// <value>
-		///     The used execution options.
-		/// </value>
-		public ThreadDispatcherOptions Options { get; }
+		/// <remarks>
+		///     <para>
+		///         <see cref="ExecutionCount" /> is reset to zero whenever the timer is started after it was stopped.
+		///     </para>
+		/// </remarks>
+		public long ExecutionCount
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._executionCount;
+				}
+			}
+			private set
+			{
+				lock (this.SyncRoot)
+				{
+					this._executionCount = value;
+				}
+			}
+		}
 
 		/// <summary>
 		///     Gets the used interval.
@@ -165,27 +181,21 @@ namespace RI.Framework.Threading
 		public TimeSpan Interval { get; }
 
 		/// <summary>
-		///     Gets the used delegate.
+		///     Gets whether the timer is currently running.
 		/// </summary>
 		/// <value>
-		///     The used delegate.
+		///     true if the timer is running, false otherwise.
 		/// </value>
-		public Delegate Action { get; }
-
-		/// <summary>
-		///     Gets the optional parameters of the delagate.
-		/// </summary>
-		/// <value>
-		///     The optional parameters of the delagate.
-		/// </value>
-		public object[] Parameters { get; }
-
-		private Timer Timer { get; set; }
-
-		private ThreadDispatcherOperation PreviousOperation { get; set; }
-
-
-
+		public bool IsRunning
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this.Timer != null;
+				}
+			}
+		}
 
 
 		/// <summary>
@@ -218,50 +228,40 @@ namespace RI.Framework.Threading
 		}
 
 		/// <summary>
-		///     Gets the number of times the delegate was executed.
+		///     Gets the timer mode.
 		/// </summary>
 		/// <value>
-		///     The number of times the delegate was executed.
+		///     The timer mode.
 		/// </value>
-		/// <remarks>
-		///     <para>
-		///         <see cref="ExecutionCount" /> is reset to zero whenever the timer is started after it was stopped.
-		///     </para>
-		/// </remarks>
-		public long ExecutionCount
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					return this._executionCount;
-				}
-			}
-			private set
-			{
-				lock (this.SyncRoot)
-				{
-					this._executionCount = value;
-				}
-			}
-		}
+		public ThreadDispatcherTimerMode Mode { get; }
 
 		/// <summary>
-		///     Gets whether the timer is currently running.
+		///     Gets the used execution options.
 		/// </summary>
 		/// <value>
-		///     true if the timer is running, false otherwise.
+		///     The used execution options.
 		/// </value>
-		public bool IsRunning
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					return this.Timer != null;
-				}
-			}
-		}
+		public ThreadDispatcherOptions Options { get; }
+
+		/// <summary>
+		///     Gets the optional parameters of the delagate.
+		/// </summary>
+		/// <value>
+		///     The optional parameters of the delagate.
+		/// </value>
+		public object[] Parameters { get; }
+
+		/// <summary>
+		///     Gets the priority.
+		/// </summary>
+		/// <value>
+		///     The priority.
+		/// </value>
+		public int Priority { get; }
+
+		private ThreadDispatcherOperation PreviousOperation { get; set; }
+
+		private Timer Timer { get; set; }
 
 		#endregion
 

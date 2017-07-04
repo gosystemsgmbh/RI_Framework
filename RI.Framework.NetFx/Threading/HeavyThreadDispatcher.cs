@@ -4,6 +4,9 @@ using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 
+
+
+
 namespace RI.Framework.Threading
 {
 	/// <summary>
@@ -13,10 +16,10 @@ namespace RI.Framework.Threading
 	///     <para>
 	///         See <see cref="HeavyThread" /> and <see cref="ThreadDispatcher" /> for more details.
 	///     </para>
-	/// <note type="important">
-	/// Some virtual methods are called from within locks to <see cref="HeavyThread.SyncRoot"/>.
-	/// Be caruful in inheriting classes when calling outside code from those methods (e.g. through events, callbacks, or other virtual methods) to not produce deadlocks!
-	/// </note>
+	///     <note type="important">
+	///         Some virtual methods are called from within locks to <see cref="HeavyThread.SyncRoot" />.
+	///         Be caruful in inheriting classes when calling outside code from those methods (e.g. through events, callbacks, or other virtual methods) to not produce deadlocks!
+	///     </note>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	public sealed class HeavyThreadDispatcher : HeavyThread, IThreadDispatcher
@@ -55,14 +58,14 @@ namespace RI.Framework.Threading
 		#region Instance Fields
 
 		private bool _catchExceptions;
-		private int _defaultPriority;
 		private ThreadDispatcherOptions _defaultOptions;
+		private int _defaultPriority;
 
 		private bool _finishPendingDelegatesOnShutdown;
 		private bool _isBackgroundThread;
-		private string _threadName;
 
 		private CultureInfo _threadCulture;
+		private string _threadName;
 		private ThreadPriority _threadPriority;
 		private CultureInfo _threadUICulture;
 
@@ -142,45 +145,6 @@ namespace RI.Framework.Threading
 		}
 
 		/// <summary>
-		///     Gets or sets the name of the thread.
-		/// </summary>
-		/// <value>
-		///     The name of the thread.
-		/// </value>
-		/// <remarks>
-		///     <para>
-		///         The default value is the name of this type.
-		///     </para>
-		/// </remarks>
-		public string ThreadName
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					if (this.Thread != null)
-					{
-						this._threadName = this.Thread.Name;
-					}
-
-					return this._threadName;
-				}
-			}
-			set
-			{
-				lock (this.SyncRoot)
-				{
-					this._threadName = value;
-
-					if (this.Thread != null)
-					{
-						this.Thread.Name = value;
-					}
-				}
-			}
-		}
-
-		/// <summary>
 		///     Gets or sets the formatting culture of the thread.
 		/// </summary>
 		/// <value>
@@ -214,6 +178,45 @@ namespace RI.Framework.Threading
 					if (this.Thread != null)
 					{
 						this.Thread.CurrentCulture = value;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		///     Gets or sets the name of the thread.
+		/// </summary>
+		/// <value>
+		///     The name of the thread.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         The default value is the name of this type.
+		///     </para>
+		/// </remarks>
+		public string ThreadName
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					if (this.Thread != null)
+					{
+						this._threadName = this.Thread.Name;
+					}
+
+					return this._threadName;
+				}
+			}
+			set
+			{
+				lock (this.SyncRoot)
+				{
+					this._threadName = value;
+
+					if (this.Thread != null)
+					{
+						this.Thread.Name = value;
 					}
 				}
 			}
@@ -298,11 +301,11 @@ namespace RI.Framework.Threading
 			}
 		}
 
+		internal ThreadDispatcher Dispatcher { get; private set; }
+
 		private EventHandler<ThreadDispatcherExceptionEventArgs> DispatcherExceptionHandlerDelegate { get; }
 
 		private ThreadDispatcherOperation DispatcherStartOperation { get; set; }
-
-		internal ThreadDispatcher Dispatcher { get; private set; }
 
 		#endregion
 
@@ -323,6 +326,11 @@ namespace RI.Framework.Threading
 			this.VerifyNotFromThread(nameof(this.Stop));
 			this.FinishPendingDelegatesOnShutdown = finishPendingDelegates;
 			this.Stop();
+		}
+
+		private Task BeginShutdownInternal (bool finishPendingDelegates)
+		{
+			return Task.Factory.StartNew(() => this.Stop(finishPendingDelegates), CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default);
 		}
 
 		private void DispatcherExceptionHandler (object sender, ThreadDispatcherExceptionEventArgs args)
@@ -417,19 +425,7 @@ namespace RI.Framework.Threading
 		}
 
 		/// <inheritdoc />
-		protected override void OnStarting ()
-		{
-			base.OnStarting();
-
-			this.Thread.Name = this.ThreadName;
-			this.Thread.Priority = this.ThreadPriority;
-			this.Thread.IsBackground = this.IsBackgroundThread;
-			this.Thread.CurrentCulture = this.ThreadCulture;
-			this.Thread.CurrentUICulture = this.ThreadUICulture;
-		}
-
-		/// <inheritdoc />
-		protected override void OnStarted(bool withLock)
+		protected override void OnStarted (bool withLock)
 		{
 			base.OnStarted(withLock);
 
@@ -442,6 +438,18 @@ namespace RI.Framework.Threading
 			{
 				throw new TimeoutException(this.GetType().Name + " failed to start (timeout while waiting for dispatcher processing).");
 			}
+		}
+
+		/// <inheritdoc />
+		protected override void OnStarting ()
+		{
+			base.OnStarting();
+
+			this.Thread.Name = this.ThreadName;
+			this.Thread.Priority = this.ThreadPriority;
+			this.Thread.IsBackground = this.IsBackgroundThread;
+			this.Thread.CurrentCulture = this.ThreadCulture;
+			this.Thread.CurrentUICulture = this.ThreadUICulture;
 		}
 
 		/// <inheritdoc />
@@ -492,35 +500,6 @@ namespace RI.Framework.Threading
 		}
 
 		/// <inheritdoc />
-		public int DefaultPriority
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					if (this.Dispatcher != null)
-					{
-						this._defaultPriority = this.Dispatcher.DefaultPriority;
-					}
-
-					return this._defaultPriority;
-				}
-			}
-			set
-			{
-				lock (this.SyncRoot)
-				{
-					this._defaultPriority = value;
-
-					if (this.Dispatcher != null)
-					{
-						this.Dispatcher.DefaultPriority = value;
-					}
-				}
-			}
-		}
-
-		/// <inheritdoc />
 		public ThreadDispatcherOptions DefaultOptions
 		{
 			get
@@ -544,6 +523,35 @@ namespace RI.Framework.Threading
 					if (this.Dispatcher != null)
 					{
 						this.Dispatcher.DefaultOptions = value;
+					}
+				}
+			}
+		}
+
+		/// <inheritdoc />
+		public int DefaultPriority
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					if (this.Dispatcher != null)
+					{
+						this._defaultPriority = this.Dispatcher.DefaultPriority;
+					}
+
+					return this._defaultPriority;
+				}
+			}
+			set
+			{
+				lock (this.SyncRoot)
+				{
+					this._defaultPriority = value;
+
+					if (this.Dispatcher != null)
+					{
+						this.Dispatcher.DefaultPriority = value;
 					}
 				}
 			}
@@ -577,6 +585,18 @@ namespace RI.Framework.Threading
 		public event EventHandler<ThreadDispatcherExceptionEventArgs> Exception;
 
 		/// <inheritdoc />
+		[SuppressMessage("ReSharper", "UnusedVariable")]
+		public void BeginShutdown (bool finishPendingDelegates)
+		{
+			lock (this.SyncRoot)
+			{
+				this.VerifyRunningDispatcher();
+			}
+
+			this.BeginShutdownInternal(finishPendingDelegates);
+		}
+
+		/// <inheritdoc />
 		public void DoProcessing ()
 		{
 			ThreadDispatcher dispatcher;
@@ -586,6 +606,18 @@ namespace RI.Framework.Threading
 				dispatcher = this.Dispatcher;
 			}
 			dispatcher.DoProcessing();
+		}
+
+		/// <inheritdoc />
+		public void DoProcessing (int priority)
+		{
+			ThreadDispatcher dispatcher;
+			lock (this.SyncRoot)
+			{
+				this.VerifyRunningDispatcher();
+				dispatcher = this.Dispatcher;
+			}
+			dispatcher.DoProcessing(priority);
 		}
 
 		/// <inheritdoc />
@@ -601,19 +633,7 @@ namespace RI.Framework.Threading
 		}
 
 		/// <inheritdoc />
-		public void DoProcessing(int priority)
-		{
-			ThreadDispatcher dispatcher;
-			lock (this.SyncRoot)
-			{
-				this.VerifyRunningDispatcher();
-				dispatcher = this.Dispatcher;
-			}
-			dispatcher.DoProcessing(priority);
-		}
-
-		/// <inheritdoc />
-		public async Task DoProcessingAsync(int priority)
+		public async Task DoProcessingAsync (int priority)
 		{
 			ThreadDispatcher dispatcher;
 			lock (this.SyncRoot)
@@ -625,20 +645,20 @@ namespace RI.Framework.Threading
 		}
 
 		/// <inheritdoc />
-		public int? GetCurrentPriority ()
-		{
-			lock (this.SyncRoot)
-			{
-				return this.Dispatcher?.GetCurrentPriority();
-			}
-		}
-
-		/// <inheritdoc />
 		public ThreadDispatcherOptions? GetCurrentOptions ()
 		{
 			lock (this.SyncRoot)
 			{
 				return this.Dispatcher?.GetCurrentOptions();
+			}
+		}
+
+		/// <inheritdoc />
+		public int? GetCurrentPriority ()
+		{
+			lock (this.SyncRoot)
+			{
+				return this.Dispatcher?.GetCurrentPriority();
 			}
 		}
 
@@ -667,7 +687,7 @@ namespace RI.Framework.Threading
 		}
 
 		/// <inheritdoc />
-		public ThreadDispatcherOperation Post(int priority, ThreadDispatcherOptions options, Delegate action, params object[] parameters)
+		public ThreadDispatcherOperation Post (int priority, ThreadDispatcherOptions options, Delegate action, params object[] parameters)
 		{
 			ThreadDispatcher dispatcher;
 			lock (this.SyncRoot)
@@ -703,7 +723,7 @@ namespace RI.Framework.Threading
 		}
 
 		/// <inheritdoc />
-		public object Send(int priority, ThreadDispatcherOptions options, Delegate action, params object[] parameters)
+		public object Send (int priority, ThreadDispatcherOptions options, Delegate action, params object[] parameters)
 		{
 			ThreadDispatcher dispatcher;
 			lock (this.SyncRoot)
@@ -739,7 +759,7 @@ namespace RI.Framework.Threading
 		}
 
 		/// <inheritdoc />
-		public async Task<object> SendAsync(int priority, ThreadDispatcherOptions options, Delegate action, params object[] parameters)
+		public async Task<object> SendAsync (int priority, ThreadDispatcherOptions options, Delegate action, params object[] parameters)
 		{
 			ThreadDispatcher dispatcher;
 			lock (this.SyncRoot)
@@ -748,18 +768,6 @@ namespace RI.Framework.Threading
 				dispatcher = this.Dispatcher;
 			}
 			return await dispatcher.SendAsync(priority, options, action, parameters).ConfigureAwait(false);
-		}
-
-		/// <inheritdoc />
-		[SuppressMessage("ReSharper", "UnusedVariable")]
-		public void BeginShutdown (bool finishPendingDelegates)
-		{
-			lock (this.SyncRoot)
-			{
-				this.VerifyRunningDispatcher();
-			}
-
-			this.BeginShutdownInternal(finishPendingDelegates);
 		}
 
 		/// <inheritdoc />
@@ -784,11 +792,6 @@ namespace RI.Framework.Threading
 			}
 
 			await this.BeginShutdownInternal(finishPendingDelegates).ConfigureAwait(false);
-		}
-
-		private Task BeginShutdownInternal (bool finishPendingDelegates)
-		{
-			return Task.Factory.StartNew(() => this.Stop(finishPendingDelegates), CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default);
 		}
 
 		#endregion

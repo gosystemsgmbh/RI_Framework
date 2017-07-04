@@ -9,8 +9,13 @@ using RI.Framework.Utilities.ObjectModel;
 
 #if PLATFORM_NETFX
 using RI.Framework.Collections;
+
 using System.Collections.Generic;
 using System.Threading.Tasks;
+
+
+
+
 #endif
 
 
@@ -118,12 +123,12 @@ namespace RI.Framework.Threading
 		///     true if the thread stopped gracefully and had no exception, false if the thread was forcibly terminated and/or had an exception, or null if the thread was not started or is still running.
 		/// </value>
 		/// <remarks>
-		/// <para>
-		/// The value of <see cref="HasStoppedGracefully"/> is reset to null by <see cref="Start"/> and set by <see cref="Stop"/>.
-		/// </para>
-		/// <para>
-		/// A &quot;graceful&quot; stop is when <see cref="OnRun"/> returns upon stop signaling by <see cref="OnStop"/>, instead of the thread being aborted by <see cref="Stop"/> after <see cref="Timeout"/>.
-		/// </para>
+		///     <para>
+		///         The value of <see cref="HasStoppedGracefully" /> is reset to null by <see cref="Start" /> and set by <see cref="Stop" />.
+		///     </para>
+		///     <para>
+		///         A &quot;graceful&quot; stop is when <see cref="OnRun" /> returns upon stop signaling by <see cref="OnStop" />, instead of the thread being aborted by <see cref="Stop" /> after <see cref="Timeout" />.
+		///     </para>
 		/// </remarks>
 		public bool? HasStoppedGracefully
 		{
@@ -174,11 +179,11 @@ namespace RI.Framework.Threading
 		///     The exception of the thread or null if no exception occurred, the thread was not started, or the thread is still running.
 		/// </value>
 		/// <remarks>
-		/// <para>
-		/// The value of <see cref="ThreadException"/> is reset to null by <see cref="Start"/> and set during the execution of the thread if an exception occurs.
-		/// </para>
 		///     <para>
-		///         <see cref="ThreadException" /> is set for any unhandled exception which occurs in the thread (<see cref="OnBegin"/>, <see cref="OnRun"/>, <see cref="OnEnd"/>), except for <see cref="ThreadAbortException" />s.
+		///         The value of <see cref="ThreadException" /> is reset to null by <see cref="Start" /> and set during the execution of the thread if an exception occurs.
+		///     </para>
+		///     <para>
+		///         <see cref="ThreadException" /> is set for any unhandled exception which occurs in the thread (<see cref="OnBegin" />, <see cref="OnRun" />, <see cref="OnEnd" />), except for <see cref="ThreadAbortException" />s.
 		///     </para>
 		/// </remarks>
 		public Exception ThreadException
@@ -207,7 +212,7 @@ namespace RI.Framework.Threading
 		/// </value>
 		/// <remarks>
 		///     <para>
-		///         This timeout is used during <see cref="Start" /> while waiting for <see cref="OnBegin" /> to return and during <see cref="Stop" /> while waiting for <see cref="OnStop" /> to take effect (signaling <see cref="OnRun"/> to return).
+		///         This timeout is used during <see cref="Start" /> while waiting for <see cref="OnBegin" /> to return and during <see cref="Stop" /> while waiting for <see cref="OnStop" /> to take effect (signaling <see cref="OnRun" /> to return).
 		///     </para>
 		///     <para>
 		///         The default value is <see cref="DefaultThreadTimeout" />.
@@ -238,6 +243,64 @@ namespace RI.Framework.Threading
 		}
 
 		/// <summary>
+		///     Gets the event which is signaled when the thread is requested to stop.
+		/// </summary>
+		/// <value>
+		///     The event which is signaled when the thread is requested to stop or null if the thread is not running.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         <see cref="StopEvent" /> is reset by <see cref="Start" /> and set by the default implementation of <see cref="OnStop" />.
+		///     </para>
+		/// </remarks>
+		protected ManualResetEvent StopEvent
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._stopEvent;
+				}
+			}
+			private set
+			{
+				lock (this.SyncRoot)
+				{
+					this._stopEvent = value;
+				}
+			}
+		}
+
+		/// <summary>
+		///     Gets whether the thread has been requested to stop.
+		/// </summary>
+		/// <value>
+		///     true if the thread has been requested to stop, false otherwise or if the thread is not running.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         The value of <see cref="StopRequested" /> is reset to false by <see cref="Start" /> and set to true by the default implementation of <see cref="OnStop" />.
+		///     </para>
+		/// </remarks>
+		protected bool StopRequested
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._stopRequested;
+				}
+			}
+			private set
+			{
+				lock (this.SyncRoot)
+				{
+					this._stopRequested = value;
+				}
+			}
+		}
+
+		/// <summary>
 		///     Gets the actual thread instance used to run the thread.
 		/// </summary>
 		/// <value>
@@ -261,64 +324,6 @@ namespace RI.Framework.Threading
 			}
 		}
 
-		/// <summary>
-		///     Gets whether the thread has been requested to stop.
-		/// </summary>
-		/// <value>
-		///     true if the thread has been requested to stop, false otherwise or if the thread is not running.
-		/// </value>
-		/// <remarks>
-		/// <para>
-		/// The value of <see cref="StopRequested"/> is reset to false by <see cref="Start"/> and set to true by the default implementation of <see cref="OnStop"/>.
-		/// </para>
-		/// </remarks>
-		protected bool StopRequested
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					return this._stopRequested;
-				}
-			}
-			private set
-			{
-				lock (this.SyncRoot)
-				{
-					this._stopRequested = value;
-				}
-			}
-		}
-
-		/// <summary>
-		///     Gets the event which is signaled when the thread is requested to stop.
-		/// </summary>
-		/// <value>
-		///     The event which is signaled when the thread is requested to stop or null if the thread is not running.
-		/// </value>
-		/// <remarks>
-		/// <para>
-		/// <see cref="StopEvent"/> is reset by <see cref="Start"/> and set by the default implementation of <see cref="OnStop"/>.
-		/// </para>
-		/// </remarks>
-		protected ManualResetEvent StopEvent
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					return this._stopEvent;
-				}
-			}
-			private set
-			{
-				lock (this.SyncRoot)
-				{
-					this._stopEvent = value;
-				}
-			}
-		}
-
 		private object StartStopSyncRoot { get; }
 
 #if PLATFORM_NETFX
@@ -331,52 +336,6 @@ namespace RI.Framework.Threading
 
 
 		#region Instance Methods
-
-#if PLATFORM_NETFX
-		/// <summary>
-		///     Adds a <see cref="TaskCompletionSource{T}" /> to this thread which is completed when the thread is requested to stop.
-		/// </summary>
-		/// <param name="tcs"> The <see cref="TaskCompletionSource{T}" /> to add. </param>
-		/// <remarks>
-		/// <para>
-		/// A task can be added multiple times but will only be completed once.
-		/// </para>
-		/// <para>
-		/// All added tasks will be completed using <see cref="TaskCompletionSource{T}.TrySetResult"/> by the default implementation of <see cref="OnStop"/>.
-		/// Therefore, no tasks added after <see cref="OnStop"/> was called will be completed.
-		/// </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="tcs" /> is null. </exception>
-		protected void AddStopTask (TaskCompletionSource<object> tcs)
-		{
-			if (tcs == null)
-			{
-				throw new ArgumentNullException(nameof(tcs));
-			}
-
-			this.StopTasks.Add(tcs);
-		}
-
-		/// <summary>
-		/// Removes a <see cref="TaskCompletionSource{T}" /> which was previously added using <see cref="AddStopTask"/>.
-		/// </summary>
-		/// <param name="tcs"> The <see cref="TaskCompletionSource{T}" /> to remove. </param>
-		/// <remarks>
-		/// <para>
-		/// Removing a task which was not previously added has no effect.
-		/// </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="tcs" /> is null. </exception>
-		protected void RemoveStopTask (TaskCompletionSource<object> tcs)
-		{
-			if (tcs == null)
-			{
-				throw new ArgumentNullException(nameof(tcs));
-			}
-
-			this.StopTasks.Remove(tcs);
-		}
-#endif
 
 		/// <summary>
 		///     Determines whether the caller of this function is executed inside the thread or not.
@@ -836,11 +795,11 @@ namespace RI.Framework.Threading
 		/// <summary>
 		///     Called after the thread was started.
 		/// </summary>
-		/// <param name="withLock">Indicates whether the method is called inside a lock to <see cref="SyncRoot"/>.</param>
+		/// <param name="withLock"> Indicates whether the method is called inside a lock to <see cref="SyncRoot" />. </param>
 		/// <remarks>
 		///     <para>
 		///         After the thread was started, this method is called twice:
-		///         Once inside a lock to <see cref="SyncRoot"/> (<paramref name="withLock"/> is true) and then once outside (<paramref name="withLock"/> is false).
+		///         Once inside a lock to <see cref="SyncRoot" /> (<paramref name="withLock" /> is true) and then once outside (<paramref name="withLock" /> is false).
 		///     </para>
 		///     <note type="note">
 		///         This method is called by <see cref="Start" />.
@@ -885,7 +844,7 @@ namespace RI.Framework.Threading
 		///         This method is called inside a lock to <see cref="SyncRoot" />.
 		///     </note>
 		///     <note type="important">
-		///         If the thread does not end on its own (that is: return from <see cref="OnRun"/>) after <see cref="OnStop" /> was called, plus the time specified by <see cref="Timeout" />, the thread is terminated.
+		///         If the thread does not end on its own (that is: return from <see cref="OnRun" />) after <see cref="OnStop" /> was called, plus the time specified by <see cref="Timeout" />, the thread is terminated.
 		///     </note>
 		/// </remarks>
 		protected virtual void OnStop ()
@@ -930,5 +889,55 @@ namespace RI.Framework.Threading
 		public object SyncRoot { get; }
 
 		#endregion
+
+
+
+
+#if PLATFORM_NETFX
+/// <summary>
+///     Adds a <see cref="TaskCompletionSource{T}" /> to this thread which is completed when the thread is requested to stop.
+/// </summary>
+/// <param name="tcs"> The <see cref="TaskCompletionSource{T}" /> to add. </param>
+/// <remarks>
+///     <para>
+///         A task can be added multiple times but will only be completed once.
+///     </para>
+///     <para>
+///         All added tasks will be completed using <see cref="TaskCompletionSource{T}.TrySetResult" /> by the default implementation of <see cref="OnStop" />.
+///         Therefore, no tasks added after <see cref="OnStop" /> was called will be completed.
+///     </para>
+/// </remarks>
+/// <exception cref="ArgumentNullException"> <paramref name="tcs" /> is null. </exception>
+		protected void AddStopTask (TaskCompletionSource<object> tcs)
+		{
+			if (tcs == null)
+			{
+				throw new ArgumentNullException(nameof(tcs));
+			}
+
+			this.StopTasks.Add(tcs);
+		}
+
+		/// <summary>
+		///     Removes a <see cref="TaskCompletionSource{T}" /> which was previously added using <see cref="AddStopTask" />.
+		/// </summary>
+		/// <param name="tcs"> The <see cref="TaskCompletionSource{T}" /> to remove. </param>
+		/// <remarks>
+		///     <para>
+		///         Removing a task which was not previously added has no effect.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="tcs" /> is null. </exception>
+		protected void RemoveStopTask (TaskCompletionSource<object> tcs)
+		{
+			if (tcs == null)
+			{
+				throw new ArgumentNullException(nameof(tcs));
+			}
+
+			this.StopTasks.Remove(tcs);
+		}
+
+#endif
 	}
 }

@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Threading;
 
+
+
+
 namespace RI.Framework.Threading
 {
 	/// <summary>
@@ -11,10 +14,10 @@ namespace RI.Framework.Threading
 		#region Instance Constructor/Destructor
 
 		/// <summary>
-		/// Creates a new instance of <see cref="ThreadDispatcherSynchronizationContext"/>.
+		///     Creates a new instance of <see cref="ThreadDispatcherSynchronizationContext" />.
 		/// </summary>
-		/// <param name="dispatcher">The used dispatcher.</param>
-		/// <exception cref="ArgumentNullException"><paramref name="dispatcher"/> is null.</exception>
+		/// <param name="dispatcher"> The used dispatcher. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" /> is null. </exception>
 		public ThreadDispatcherSynchronizationContext (IThreadDispatcher dispatcher)
 		{
 			if (dispatcher == null)

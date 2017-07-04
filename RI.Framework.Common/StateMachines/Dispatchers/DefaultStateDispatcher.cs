@@ -39,19 +39,29 @@ namespace RI.Framework.StateMachines.Dispatchers
 		/// <summary>
 		///     Garbage collects this instance of <see cref="DefaultStateDispatcher" />.
 		/// </summary>
-		~DefaultStateDispatcher()
+		~DefaultStateDispatcher ()
 		{
 			this.Dispose(false);
 		}
 
-		/// <inheritdoc />
-		public void Dispose()
-		{
-			this.Dispose(true);
-		}
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
+
+		private Dictionary<StateMachine, Timer> UpdateTimers { get; }
+
+		#endregion
+
+
+
+
+		#region Instance Methods
 
 		[SuppressMessage("ReSharper", "UnusedParameter.Local")]
-		private void Dispose(bool disposing)
+		private void Dispose (bool disposing)
 		{
 			lock (this.SyncRoot)
 			{
@@ -68,9 +78,13 @@ namespace RI.Framework.StateMachines.Dispatchers
 
 
 
-		#region Instance Properties/Indexer
+		#region Interface: IDisposable
 
-		private Dictionary<StateMachine, Timer> UpdateTimers { get; }
+		/// <inheritdoc />
+		public void Dispose ()
+		{
+			this.Dispose(true);
+		}
 
 		#endregion
 

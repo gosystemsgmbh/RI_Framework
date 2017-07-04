@@ -4,6 +4,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Runtime.InteropServices;
 
+
+
+
 namespace RI.Framework.Utilities.Windows.Interop
 {
 	internal static class Privileges

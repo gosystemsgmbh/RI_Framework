@@ -3,15 +3,18 @@ using System.Threading.Tasks;
 
 using RI.Framework.Utilities.ObjectModel;
 
+
+
+
 namespace RI.Framework.Threading
 {
 	/// <summary>
 	///     Defines the interface for thread-bound dispatchers.
 	/// </summary>
 	/// <remarks>
-	/// <para>
-	/// See <see cref="ThreadDispatcher"/> for more details.
-	/// </para>
+	///     <para>
+	///         See <see cref="ThreadDispatcher" /> for more details.
+	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	public interface IThreadDispatcher : IDisposable, ISynchronizable
@@ -33,20 +36,6 @@ namespace RI.Framework.Threading
 		bool CatchExceptions { get; set; }
 
 		/// <summary>
-		///     Gets or sets the default priority.
-		/// </summary>
-		/// <value>
-		///     The default priority.
-		/// </value>
-		/// <remarks>
-		///     <note type="implement">
-		///         The default value is expected to be <c>int.MaxValue / 2</c>.
-		///     </note>
-		/// </remarks>
-		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="value" /> is less than zero. </exception>
-		int DefaultPriority { get; set; }
-
-		/// <summary>
 		///     Gets or sets the default options.
 		/// </summary>
 		/// <value>
@@ -54,10 +43,24 @@ namespace RI.Framework.Threading
 		/// </value>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default value is expected to be <see cref="ThreadDispatcherOptions.None"/>.
+		///         The default value is expected to be <see cref="ThreadDispatcherOptions.None" />.
 		///     </note>
 		/// </remarks>
 		ThreadDispatcherOptions DefaultOptions { get; set; }
+
+		/// <summary>
+		///     Gets or sets the default priority.
+		/// </summary>
+		/// <value>
+		///     The default priority.
+		/// </value>
+		/// <remarks>
+		///     <note type="implement">
+		///         The default value is expected to be <c> int.MaxValue / 2 </c>.
+		///     </note>
+		/// </remarks>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="value" /> is less than zero. </exception>
+		int DefaultPriority { get; set; }
 
 		/// <summary>
 		///     Gets whether the dispatcher is running.
@@ -80,8 +83,8 @@ namespace RI.Framework.Threading
 		///     Gets the active shutdown mode.
 		/// </summary>
 		/// <value>
-		///     The active shutdown mode or <see cref="ThreadDispatcherShutdownMode.None"/> if the dispatcher is not shutting down.
-		///     <see cref="ThreadDispatcherShutdownMode.None"/> is also returned if the dispatcher is not running.
+		///     The active shutdown mode or <see cref="ThreadDispatcherShutdownMode.None" /> if the dispatcher is not shutting down.
+		///     <see cref="ThreadDispatcherShutdownMode.None" /> is also returned if the dispatcher is not running.
 		/// </value>
 		ThreadDispatcherShutdownMode ShutdownMode { get; }
 
@@ -96,38 +99,54 @@ namespace RI.Framework.Threading
 		event EventHandler<ThreadDispatcherExceptionEventArgs> Exception;
 
 		/// <summary>
+		///     Stops processing the delegate queue but does not wait for its shutdown.
+		/// </summary>
+		/// <param name="finishPendingDelegates"> Specifies whether already pending delegates should be processed before the dispatcher is shut down. </param>
+		/// <exception cref="InvalidOperationException"> The dispatcher is not running or it is already being shut down. </exception>
+		void BeginShutdown (bool finishPendingDelegates);
+
+		/// <summary>
 		///     Waits until all queued operations have been processed.
 		/// </summary>
-		/// <exception cref="InvalidOperationException">The dispatcher is not running.</exception>
+		/// <exception cref="InvalidOperationException"> The dispatcher is not running. </exception>
 		void DoProcessing ();
+
+		/// <summary>
+		///     Waits until all queued operations of a specified priority have been processed.
+		/// </summary>
+		/// <param name="priority"> The priority. </param>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="priority" /> is less than zero. </exception>
+		/// <exception cref="InvalidOperationException"> The dispatcher is not running. </exception>
+		void DoProcessing (int priority);
 
 		/// <summary>
 		///     Waits until all queued operations have been processed.
 		/// </summary>
 		/// <returns>
-		/// The task which can be used to await the completion of the processing.
+		///     The task which can be used to await the completion of the processing.
 		/// </returns>
-		/// <exception cref="InvalidOperationException">The dispatcher is not running.</exception>
+		/// <exception cref="InvalidOperationException"> The dispatcher is not running. </exception>
 		Task DoProcessingAsync ();
 
 		/// <summary>
 		///     Waits until all queued operations of a specified priority have been processed.
 		/// </summary>
-		/// <param name="priority">The priority.</param>
-		/// <exception cref="ArgumentOutOfRangeException"><paramref name="priority"/> is less than zero.</exception>
-		/// <exception cref="InvalidOperationException">The dispatcher is not running.</exception>
-		void DoProcessing(int priority);
+		/// <param name="priority"> The priority. </param>
+		/// <returns>
+		///     The task which can be used to await the completion of the processing.
+		/// </returns>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="priority" /> is less than zero. </exception>
+		/// <exception cref="InvalidOperationException"> The dispatcher is not running. </exception>
+		Task DoProcessingAsync (int priority);
 
 		/// <summary>
-		///     Waits until all queued operations of a specified priority have been processed.
+		///     Determines under which options the current code is executed.
 		/// </summary>
-		/// <param name="priority">The priority.</param>
 		/// <returns>
-		/// The task which can be used to await the completion of the processing.
+		///     The options of the currently executed code or null if the current code is not executed by the dispatcher.
+		///     null is returned if the dispatcher is not running.
 		/// </returns>
-		/// <exception cref="ArgumentOutOfRangeException"><paramref name="priority"/> is less than zero.</exception>
-		/// <exception cref="InvalidOperationException">The dispatcher is not running.</exception>
-		Task DoProcessingAsync(int priority);
+		ThreadDispatcherOptions? GetCurrentOptions ();
 
 		/// <summary>
 		///     Determines under which priority the current code is executed.
@@ -137,15 +156,6 @@ namespace RI.Framework.Threading
 		///     null is returned if the dispatcher is not running.
 		/// </returns>
 		int? GetCurrentPriority ();
-
-		/// <summary>
-		///     Determines under which options the current code is executed.
-		/// </summary>
-		/// <returns>
-		///     The options of the currently executed code or null if the current code is not executed by the dispatcher.
-		///     null is returned if the dispatcher is not running.
-		/// </returns>
-		ThreadDispatcherOptions? GetCurrentOptions();
 
 		/// <summary>
 		///     Determines whether the caller of this function is executed inside the dispatchers thread or not.
@@ -168,9 +178,9 @@ namespace RI.Framework.Threading
 		///     <para>
 		///         The delegate is enqueued with the default priority (<see cref="DefaultPriority" />).
 		///     </para>
-		/// <note type="important">
-		/// A delegate can be enqueued before the dispatcher is run.
-		/// </note>
+		///     <note type="important">
+		///         A delegate can be enqueued before the dispatcher is run.
+		///     </note>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="action" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> The dispatcher is being shut down. </exception>
@@ -189,9 +199,9 @@ namespace RI.Framework.Threading
 		///     <para>
 		///         The higher the priority, the earlier the operation is executed (highest priority, first executed).
 		///     </para>
-		/// <note type="important">
-		/// A delegate can be enqueued before the dispatcher is run.
-		/// </note>
+		///     <note type="important">
+		///         A delegate can be enqueued before the dispatcher is run.
+		///     </note>
 		/// </remarks>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="priority" /> is less than zero. </exception>
 		/// <exception cref="ArgumentNullException"> <paramref name="action" /> is null. </exception>
@@ -202,7 +212,7 @@ namespace RI.Framework.Threading
 		///     Enqueues a delegate to the dispatchers queue and does not wait for its execution.
 		/// </summary>
 		/// <param name="priority"> The priority. </param>
-		/// <param name="options">The used execution options.</param>
+		/// <param name="options"> The used execution options. </param>
 		/// <param name="action"> The delegate. </param>
 		/// <param name="parameters"> Optional parameters of the delagate. </param>
 		/// <returns>
@@ -212,9 +222,9 @@ namespace RI.Framework.Threading
 		///     <para>
 		///         The higher the priority, the earlier the operation is executed (highest priority, first executed).
 		///     </para>
-		/// <note type="important">
-		/// A delegate can be enqueued before the dispatcher is run.
-		/// </note>
+		///     <note type="important">
+		///         A delegate can be enqueued before the dispatcher is run.
+		///     </note>
 		/// </remarks>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="priority" /> is less than zero. </exception>
 		/// <exception cref="ArgumentNullException"> <paramref name="action" /> is null. </exception>
@@ -245,8 +255,8 @@ namespace RI.Framework.Threading
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="action" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> The dispatcher is not running or is being shut down. </exception>
-		/// <exception cref="ThreadDispatcherException">An exception occurred during execution of the delegate.</exception>
-		/// <exception cref="OperationCanceledException">The execution of the delegate was canceled.</exception>
+		/// <exception cref="ThreadDispatcherException"> An exception occurred during execution of the delegate. </exception>
+		/// <exception cref="OperationCanceledException"> The execution of the delegate was canceled. </exception>
 		object Send (Delegate action, params object[] parameters);
 
 		/// <summary>
@@ -273,15 +283,15 @@ namespace RI.Framework.Threading
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="priority" /> is less than zero. </exception>
 		/// <exception cref="ArgumentNullException"> <paramref name="action" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> The dispatcher is not running or is being shut down. </exception>
-		/// <exception cref="ThreadDispatcherException">An exception occurred during execution of the delegate.</exception>
-		/// <exception cref="OperationCanceledException">The execution of the delegate was canceled.</exception>
+		/// <exception cref="ThreadDispatcherException"> An exception occurred during execution of the delegate. </exception>
+		/// <exception cref="OperationCanceledException"> The execution of the delegate was canceled. </exception>
 		object Send (int priority, Delegate action, params object[] parameters);
 
 		/// <summary>
 		///     Enqueues a delegate to the dispatchers queue and waits for its execution to be completed.
 		/// </summary>
 		/// <param name="priority"> The priority. </param>
-		/// <param name="options">The used execution options.</param>
+		/// <param name="options"> The used execution options. </param>
 		/// <param name="action"> The delegate. </param>
 		/// <param name="parameters"> Optional parameters of the delagate. </param>
 		/// <returns>
@@ -302,8 +312,8 @@ namespace RI.Framework.Threading
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="priority" /> is less than zero. </exception>
 		/// <exception cref="ArgumentNullException"> <paramref name="action" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> The dispatcher is not running or is being shut down. </exception>
-		/// <exception cref="ThreadDispatcherException">An exception occurred during execution of the delegate.</exception>
-		/// <exception cref="OperationCanceledException">The execution of the delegate was canceled.</exception>
+		/// <exception cref="ThreadDispatcherException"> An exception occurred during execution of the delegate. </exception>
+		/// <exception cref="OperationCanceledException"> The execution of the delegate was canceled. </exception>
 		object Send (int priority, ThreadDispatcherOptions options, Delegate action, params object[] parameters);
 
 		/// <summary>
@@ -330,8 +340,8 @@ namespace RI.Framework.Threading
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="action" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> The dispatcher is not running or is being shut down. </exception>
-		/// <exception cref="ThreadDispatcherException">An exception occurred during execution of the delegate.</exception>
-		/// <exception cref="OperationCanceledException">The execution of the delegate was canceled.</exception>
+		/// <exception cref="ThreadDispatcherException"> An exception occurred during execution of the delegate. </exception>
+		/// <exception cref="OperationCanceledException"> The execution of the delegate was canceled. </exception>
 		Task<object> SendAsync (Delegate action, params object[] parameters);
 
 		/// <summary>
@@ -358,15 +368,15 @@ namespace RI.Framework.Threading
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="priority" /> is less than zero. </exception>
 		/// <exception cref="ArgumentNullException"> <paramref name="action" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> The dispatcher is not running or is being shut down. </exception>
-		/// <exception cref="ThreadDispatcherException">An exception occurred during execution of the delegate.</exception>
-		/// <exception cref="OperationCanceledException">The execution of the delegate was canceled.</exception>
+		/// <exception cref="ThreadDispatcherException"> An exception occurred during execution of the delegate. </exception>
+		/// <exception cref="OperationCanceledException"> The execution of the delegate was canceled. </exception>
 		Task<object> SendAsync (int priority, Delegate action, params object[] parameters);
 
 		/// <summary>
 		///     Enqueues a delegate to the dispatchers queue and waits for its execution to be completed.
 		/// </summary>
 		/// <param name="priority"> The priority. </param>
-		/// <param name="options">The used execution options.</param>
+		/// <param name="options"> The used execution options. </param>
 		/// <param name="action"> The delegate. </param>
 		/// <param name="parameters"> Optional parameters of the delagate. </param>
 		/// <returns>
@@ -387,26 +397,19 @@ namespace RI.Framework.Threading
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="priority" /> is less than zero. </exception>
 		/// <exception cref="ArgumentNullException"> <paramref name="action" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> The dispatcher is not running or is being shut down. </exception>
-		/// <exception cref="ThreadDispatcherException">An exception occurred during execution of the delegate.</exception>
-		/// <exception cref="OperationCanceledException">The execution of the delegate was canceled.</exception>
+		/// <exception cref="ThreadDispatcherException"> An exception occurred during execution of the delegate. </exception>
+		/// <exception cref="OperationCanceledException"> The execution of the delegate was canceled. </exception>
 		Task<object> SendAsync (int priority, ThreadDispatcherOptions options, Delegate action, params object[] parameters);
-
-		/// <summary>
-		/// Stops processing the delegate queue but does not wait for its shutdown.
-		/// </summary>
-		/// <param name="finishPendingDelegates"> Specifies whether already pending delegates should be processed before the dispatcher is shut down. </param>
-		/// <exception cref="InvalidOperationException"> The dispatcher is not running or it is already being shut down. </exception>
-		void BeginShutdown (bool finishPendingDelegates);
 
 		/// <summary>
 		///     Stops processing the delegate queue and waits for its shutdown.
 		/// </summary>
 		/// <param name="finishPendingDelegates"> Specifies whether already pending delegates should be processed before the dispatcher is shut down. </param>
 		/// <remarks>
-		/// <note type="note">
-		/// <see cref="Shutdown"/> cannot be called from inside the dispatcher thread while the dispatcher is running.
-		/// Use <see cref="BeginShutdown"/> from inside the dispatcher thread instead.
-		/// </note>
+		///     <note type="note">
+		///         <see cref="Shutdown" /> cannot be called from inside the dispatcher thread while the dispatcher is running.
+		///         Use <see cref="BeginShutdown" /> from inside the dispatcher thread instead.
+		///     </note>
 		/// </remarks>
 		/// <exception cref="InvalidOperationException"> The dispatcher is not running, is already being shut down, or the method was called from the dispatcher thread. </exception>
 		void Shutdown (bool finishPendingDelegates);
@@ -416,10 +419,10 @@ namespace RI.Framework.Threading
 		/// </summary>
 		/// <param name="finishPendingDelegates"> Specifies whether already pending delegates should be processed before the dispatcher is shut down. </param>
 		/// <remarks>
-		/// <note type="note">
-		/// <see cref="Shutdown"/> cannot be called from inside the dispatcher thread while the dispatcher is running.
-		/// Use <see cref="BeginShutdown"/> from inside the dispatcher thread instead.
-		/// </note>
+		///     <note type="note">
+		///         <see cref="Shutdown" /> cannot be called from inside the dispatcher thread while the dispatcher is running.
+		///         Use <see cref="BeginShutdown" /> from inside the dispatcher thread instead.
+		///     </note>
 		/// </remarks>
 		/// <exception cref="InvalidOperationException"> The dispatcher is not running, is already being shut down, or the method was called from the dispatcher thread. </exception>
 		Task ShutdownAsync (bool finishPendingDelegates);

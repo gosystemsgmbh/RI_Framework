@@ -5,6 +5,9 @@ using System.IO;
 using RI.Framework.IO.Paths;
 using RI.Framework.Utilities.ObjectModel;
 
+
+
+
 namespace RI.Framework.IO.Files
 {
 	/// <summary>
@@ -302,10 +305,16 @@ namespace RI.Framework.IO.Files
 		#endregion
 
 
+
+
+		#region Interface: ISynchronizable
+
 		/// <inheritdoc />
 		bool ISynchronizable.IsSynchronized => true;
 
 		/// <inheritdoc />
 		public object SyncRoot { get; }
+
+		#endregion
 	}
 }

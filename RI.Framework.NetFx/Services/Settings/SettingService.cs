@@ -63,12 +63,12 @@ namespace RI.Framework.Services.Settings
 
 		private List<ISettingConverter> ConvertersManual { get; set; }
 
+		private List<ISettingConverter> ConvertersUpdated { get; set; }
+
 		[Import(typeof(ISettingStorage), Recomposable = true)]
 		private Import StoragesImported { get; set; }
 
 		private List<ISettingStorage> StoragesManual { get; set; }
-
-		private List<ISettingConverter> ConvertersUpdated { get; set; }
 
 		private List<ISettingStorage> StoragesUpdated { get; set; }
 
@@ -92,7 +92,7 @@ namespace RI.Framework.Services.Settings
 			return null;
 		}
 
-		private void UpdateConverters()
+		private void UpdateConverters ()
 		{
 			this.Log(LogLevel.Debug, "Updating converters");
 
@@ -116,7 +116,7 @@ namespace RI.Framework.Services.Settings
 			}
 		}
 
-		private void UpdateStorages()
+		private void UpdateStorages ()
 		{
 			this.Log(LogLevel.Debug, "Updating storages");
 
@@ -145,10 +145,10 @@ namespace RI.Framework.Services.Settings
 
 
 
-		#region Interface: ISettingService
+		#region Interface: IImporting
 
 		/// <inheritdoc />
-		void IImporting.ImportsResolved(CompositionFlags composition, bool updated)
+		void IImporting.ImportsResolved (CompositionFlags composition, bool updated)
 		{
 			if (updated)
 			{
@@ -158,9 +158,16 @@ namespace RI.Framework.Services.Settings
 		}
 
 		/// <inheritdoc />
-		void IImporting.ImportsResolving(CompositionFlags composition)
+		void IImporting.ImportsResolving (CompositionFlags composition)
 		{
 		}
+
+		#endregion
+
+
+
+
+		#region Interface: ISettingService
 
 		/// <inheritdoc />
 		public IEnumerable<ISettingConverter> Converters

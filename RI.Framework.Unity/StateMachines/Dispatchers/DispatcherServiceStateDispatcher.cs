@@ -46,6 +46,15 @@ namespace RI.Framework.StateMachines.Dispatchers
 
 
 
+		#region Instance Fields
+
+		private DispatcherPriority _priority;
+
+		#endregion
+
+
+
+
 		#region Instance Properties/Indexer
 
 		/// <summary>
@@ -56,18 +65,16 @@ namespace RI.Framework.StateMachines.Dispatchers
 		/// </value>
 		public IDispatcherService DispatcherService { get; }
 
-		private DispatcherPriority _priority;
-
 		/// <summary>
-		/// Gets or sets the priority used for dispatching state machine operations.
+		///     Gets or sets the priority used for dispatching state machine operations.
 		/// </summary>
 		/// <value>
-		/// The priority used for dispatching state machine operations.
+		///     The priority used for dispatching state machine operations.
 		/// </value>
 		/// <remarks>
-		/// <para>
-		/// The default value is <see cref="DispatcherPriority.Default"/>.
-		/// </para>
+		///     <para>
+		///         The default value is <see cref="DispatcherPriority.Default" />.
+		///     </para>
 		/// </remarks>
 		public DispatcherPriority Priority
 		{

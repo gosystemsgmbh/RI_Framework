@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 
 using RI.Framework.Utilities.ObjectModel;
 
+
+
+
 namespace RI.Framework.Threading
 {
 	/// <summary>
@@ -18,6 +21,18 @@ namespace RI.Framework.Threading
 	/// <threadsafety static="true" instance="true" />
 	public sealed class ThreadDispatcherOperation : ISynchronizable
 	{
+		#region Static Methods
+
+		internal static void Capture ()
+		{
+			//TODO: Implement
+		}
+
+		#endregion
+
+
+
+
 		#region Instance Constructor/Destructor
 
 		internal ThreadDispatcherOperation (ThreadDispatcher dispatcher, int priority, ThreadDispatcherOptions options, Delegate action, object[] parameters)
@@ -48,11 +63,6 @@ namespace RI.Framework.Threading
 		{
 			this.OperationDone?.Close();
 			this.OperationDone = null;
-		}
-
-		internal static void Capture ()
-		{
-			//TODO: Implement
 		}
 
 		#endregion
@@ -164,8 +174,8 @@ namespace RI.Framework.Threading
 
 		internal Delegate Action { get; }
 		internal ThreadDispatcher Dispatcher { get; }
-		internal object[] Parameters { get; }
 		internal ThreadDispatcherOptions Options { get; }
+		internal object[] Parameters { get; }
 		internal int Priority { get; }
 
 		private ManualResetEvent OperationDone { get; set; }
@@ -177,41 +187,6 @@ namespace RI.Framework.Threading
 
 
 		#region Instance Methods
-
-		private bool CancelInternal (bool hard)
-		{
-			lock (this.SyncRoot)
-			{
-				if (hard)
-				{
-					if ((this.State != ThreadDispatcherOperationState.Waiting) && (this.State != ThreadDispatcherOperationState.Executing))
-					{
-						return false;
-					}
-				}
-				else
-				{
-					if (this.State != ThreadDispatcherOperationState.Waiting)
-					{
-						return false;
-					}
-				}
-
-				this.OperationDone.Set();
-				this.OperationDoneTask.TrySetCanceled();
-
-				this.Exception = null;
-				this.Result = null;
-				this.State = ThreadDispatcherOperationState.Canceled;
-
-				return true;
-			}
-		}
-
-		internal bool CancelHard ()
-		{
-			return this.CancelInternal(true);
-		}
 
 		/// <summary>
 		///     Cancels the processing of the dispatcher operation.
@@ -326,7 +301,7 @@ namespace RI.Framework.Threading
 		///     Waits indefinitely for the dispatcher operation to finish processing.
 		/// </summary>
 		/// <returns>
-		/// The task which can be used to await the finish of the processing.
+		///     The task which can be used to await the finish of the processing.
 		/// </returns>
 		public async Task WaitAsync ()
 		{
@@ -421,6 +396,11 @@ namespace RI.Framework.Threading
 			return object.ReferenceEquals(completed, operationTask);
 		}
 
+		internal bool CancelHard ()
+		{
+			return this.CancelInternal(true);
+		}
+
 		internal void Execute ()
 		{
 			lock (this.SyncRoot)
@@ -476,6 +456,36 @@ namespace RI.Framework.Threading
 					this.Result = null;
 					this.State = ThreadDispatcherOperationState.Exception;
 				}
+			}
+		}
+
+		private bool CancelInternal (bool hard)
+		{
+			lock (this.SyncRoot)
+			{
+				if (hard)
+				{
+					if ((this.State != ThreadDispatcherOperationState.Waiting) && (this.State != ThreadDispatcherOperationState.Executing))
+					{
+						return false;
+					}
+				}
+				else
+				{
+					if (this.State != ThreadDispatcherOperationState.Waiting)
+					{
+						return false;
+					}
+				}
+
+				this.OperationDone.Set();
+				this.OperationDoneTask.TrySetCanceled();
+
+				this.Exception = null;
+				this.Result = null;
+				this.State = ThreadDispatcherOperationState.Canceled;
+
+				return true;
 			}
 		}
 

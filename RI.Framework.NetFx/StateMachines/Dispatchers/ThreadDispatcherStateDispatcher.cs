@@ -5,6 +5,9 @@ using System.Diagnostics.CodeAnalysis;
 using RI.Framework.Threading;
 using RI.Framework.Utilities.ObjectModel;
 
+
+
+
 namespace RI.Framework.StateMachines.Dispatchers
 {
 	/// <summary>
@@ -46,29 +49,21 @@ namespace RI.Framework.StateMachines.Dispatchers
 		/// <summary>
 		///     Garbage collects this instance of <see cref="ThreadDispatcherStateDispatcher" />.
 		/// </summary>
-		~ThreadDispatcherStateDispatcher()
+		~ThreadDispatcherStateDispatcher ()
 		{
 			this.Dispose(false);
 		}
 
-		/// <inheritdoc />
-		public void Dispose()
-		{
-			this.Dispose(true);
-		}
+		#endregion
 
-		[SuppressMessage("ReSharper", "UnusedParameter.Local")]
-		private void Dispose(bool disposing)
-		{
-			lock (this.SyncRoot)
-			{
-				foreach (KeyValuePair<StateMachine, ThreadDispatcherTimer> timer in this.UpdateTimers)
-				{
-					timer.Value.Stop();
-				}
-				this.UpdateTimers.Clear();
-			}
-		}
+
+
+
+		#region Instance Fields
+
+		private ThreadDispatcherOptions? _options;
+
+		private int? _priority;
 
 		#endregion
 
@@ -78,31 +73,46 @@ namespace RI.Framework.StateMachines.Dispatchers
 		#region Instance Properties/Indexer
 
 		/// <summary>
-		///     Gets the used dispatcher.
+		///     Gets or sets the options used for dispatching state machine operations.
 		/// </summary>
 		/// <value>
-		///     The used dispatcher.
-		/// </value>
-		public IThreadDispatcher ThreadDispatcher { get; }
-
-		private Dictionary<StateMachine, ThreadDispatcherTimer> UpdateTimers { get; }
-
-		private int? _priority;
-
-		private ThreadDispatcherOptions? _options;
-
-		/// <summary>
-		/// Gets or sets the priority used for dispatching state machine operations.
-		/// </summary>
-		/// <value>
-		/// The priority used for dispatching state machine operations or null if the default priority of the used dispatcher should be used (<see cref="IThreadDispatcher.DefaultPriority"/>).
+		///     The options used for dispatching state machine operations or null if the default options of the used dispatcher should be used (<see cref="IThreadDispatcher.DefaultOptions" />).
 		/// </value>
 		/// <remarks>
-		/// <para>
-		/// The default value is null.
-		/// </para>
+		///     <para>
+		///         The default value is null.
+		///     </para>
 		/// </remarks>
-		/// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> is less than zero.</exception>
+		public ThreadDispatcherOptions? Options
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._options;
+				}
+			}
+			set
+			{
+				lock (this.SyncRoot)
+				{
+					this._options = value;
+				}
+			}
+		}
+
+		/// <summary>
+		///     Gets or sets the priority used for dispatching state machine operations.
+		/// </summary>
+		/// <value>
+		///     The priority used for dispatching state machine operations or null if the default priority of the used dispatcher should be used (<see cref="IThreadDispatcher.DefaultPriority" />).
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         The default value is null.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="value" /> is less than zero. </exception>
 		public int? Priority
 		{
 			get
@@ -130,37 +140,51 @@ namespace RI.Framework.StateMachines.Dispatchers
 		}
 
 		/// <summary>
-		/// Gets or sets the options used for dispatching state machine operations.
+		///     Gets the used dispatcher.
 		/// </summary>
 		/// <value>
-		/// The options used for dispatching state machine operations or null if the default options of the used dispatcher should be used (<see cref="IThreadDispatcher.DefaultOptions"/>).
+		///     The used dispatcher.
 		/// </value>
-		/// <remarks>
-		/// <para>
-		/// The default value is null.
-		/// </para>
-		/// </remarks>
-		public ThreadDispatcherOptions? Options
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					return this._options;
-				}
-			}
-			set
-			{
-				lock (this.SyncRoot)
-				{
-					this._options = value;
-				}
-			}
-		}
+		public IThreadDispatcher ThreadDispatcher { get; }
+
+		private Dictionary<StateMachine, ThreadDispatcherTimer> UpdateTimers { get; }
+
+		private ThreadDispatcherOptions UsedOptions => this.Options.GetValueOrDefault(this.ThreadDispatcher.DefaultOptions);
 
 		private int UsedPriority => this.Priority.GetValueOrDefault(this.ThreadDispatcher.DefaultPriority);
 
-		private ThreadDispatcherOptions UsedOptions => this.Options.GetValueOrDefault(this.ThreadDispatcher.DefaultOptions);
+		#endregion
+
+
+
+
+		#region Instance Methods
+
+		[SuppressMessage("ReSharper", "UnusedParameter.Local")]
+		private void Dispose (bool disposing)
+		{
+			lock (this.SyncRoot)
+			{
+				foreach (KeyValuePair<StateMachine, ThreadDispatcherTimer> timer in this.UpdateTimers)
+				{
+					timer.Value.Stop();
+				}
+				this.UpdateTimers.Clear();
+			}
+		}
+
+		#endregion
+
+
+
+
+		#region Interface: IDisposable
+
+		/// <inheritdoc />
+		public void Dispose ()
+		{
+			this.Dispose(true);
+		}
 
 		#endregion
 

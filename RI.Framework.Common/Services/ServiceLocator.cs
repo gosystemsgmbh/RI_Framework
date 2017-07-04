@@ -132,11 +132,11 @@ namespace RI.Framework.Services
 
 		private static Dictionary<string, object[]> Cache { get; }
 
+		private static int CacheVersion { get; set; }
+
 		private static HashSet<CompositionContainer> CompositionContainerBindings { get; }
 
 		private static object GlobalSyncRoot { get; }
-
-		private static int CacheVersion { get; set; }
 
 		#endregion
 

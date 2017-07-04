@@ -58,18 +58,25 @@ namespace RI.Framework.Services.Messaging
 
 		private List<IMessageDispatcher> DispatchersManual { get; }
 
+		private List<IMessageDispatcher> DispatchersUpdated { get; set; }
+
 		[Import(typeof(IMessageReceiver), Recomposable = true)]
 		private Import ReceiversImported { get; set; }
 
 		private List<IMessageReceiver> ReceiversManual { get; }
 
-		private object SendSyncRoot { get; }
-
-		private List<IMessageDispatcher> DispatchersUpdated { get; set; }
-
 		private List<IMessageReceiver> ReceiversUpdated { get; set; }
 
-		private void UpdateDispatchers()
+		private object SendSyncRoot { get; }
+
+		#endregion
+
+
+
+
+		#region Instance Methods
+
+		private void UpdateDispatchers ()
 		{
 			this.Log(LogLevel.Debug, "Updating dispatchers");
 
@@ -93,7 +100,7 @@ namespace RI.Framework.Services.Messaging
 			}
 		}
 
-		private void UpdateReceivers()
+		private void UpdateReceivers ()
 		{
 			this.Log(LogLevel.Debug, "Updating receivers");
 
@@ -122,10 +129,10 @@ namespace RI.Framework.Services.Messaging
 
 
 
-		#region Interface: IMessageService
+		#region Interface: IImporting
 
 		/// <inheritdoc />
-		void IImporting.ImportsResolved(CompositionFlags composition, bool updated)
+		void IImporting.ImportsResolved (CompositionFlags composition, bool updated)
 		{
 			if (updated)
 			{
@@ -135,9 +142,16 @@ namespace RI.Framework.Services.Messaging
 		}
 
 		/// <inheritdoc />
-		void IImporting.ImportsResolving(CompositionFlags composition)
+		void IImporting.ImportsResolving (CompositionFlags composition)
 		{
 		}
+
+		#endregion
+
+
+
+
+		#region Interface: IMessageService
 
 		/// <inheritdoc />
 		public IEnumerable<IMessageDispatcher> Dispatchers

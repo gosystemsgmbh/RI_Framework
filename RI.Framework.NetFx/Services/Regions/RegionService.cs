@@ -57,11 +57,18 @@ namespace RI.Framework.Services.Regions
 
 		private List<IRegionAdapter> AdaptersManual { get; set; }
 
-		private Dictionary<string, Tuple<object, IRegionAdapter>> RegionDictionary { get; set; }
-
 		private List<IRegionAdapter> AdaptersUpdated { get; set; }
 
-		private void UpdateAdapters()
+		private Dictionary<string, Tuple<object, IRegionAdapter>> RegionDictionary { get; set; }
+
+		#endregion
+
+
+
+
+		#region Instance Methods
+
+		private void UpdateAdapters ()
 		{
 			this.Log(LogLevel.Debug, "Updating adapters");
 
@@ -90,10 +97,10 @@ namespace RI.Framework.Services.Regions
 
 
 
-		#region Interface: IRegionService
+		#region Interface: IImporting
 
 		/// <inheritdoc />
-		void IImporting.ImportsResolved(CompositionFlags composition, bool updated)
+		void IImporting.ImportsResolved (CompositionFlags composition, bool updated)
 		{
 			if (updated)
 			{
@@ -102,9 +109,16 @@ namespace RI.Framework.Services.Regions
 		}
 
 		/// <inheritdoc />
-		void IImporting.ImportsResolving(CompositionFlags composition)
+		void IImporting.ImportsResolving (CompositionFlags composition)
 		{
 		}
+
+		#endregion
+
+
+
+
+		#region Interface: IRegionService
 
 		/// <inheritdoc />
 		public IEnumerable<IRegionAdapter> Adapters

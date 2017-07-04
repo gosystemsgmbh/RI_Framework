@@ -32,7 +32,7 @@ namespace RI.Framework.StateMachines.Dispatchers
 		/// </summary>
 		/// <param name="application"> The application object to get the dispatcher from. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="application" /> is null. </exception>
-		public WpfStateDispatcher(Application application)
+		public WpfStateDispatcher (Application application)
 		{
 			if (application == null)
 			{
@@ -52,7 +52,7 @@ namespace RI.Framework.StateMachines.Dispatchers
 		/// </summary>
 		/// <param name="dispatcher"> The dispatcher to use. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" /> is null. </exception>
-		public WpfStateDispatcher(Dispatcher dispatcher)
+		public WpfStateDispatcher (Dispatcher dispatcher)
 		{
 			if (dispatcher == null)
 			{
@@ -70,29 +70,19 @@ namespace RI.Framework.StateMachines.Dispatchers
 		/// <summary>
 		///     Garbage collects this instance of <see cref="WpfStateDispatcher" />.
 		/// </summary>
-		~WpfStateDispatcher()
+		~WpfStateDispatcher ()
 		{
 			this.Dispose(false);
 		}
 
-		/// <inheritdoc />
-		public void Dispose ()
-		{
-			this.Dispose(true);
-		}
+		#endregion
 
-		[SuppressMessage("ReSharper", "UnusedParameter.Local")]
-		private void Dispose (bool disposing)
-		{
-			lock (this.SyncRoot)
-			{
-				foreach (KeyValuePair<StateMachine, DispatcherTimer> timer in this.UpdateTimers)
-				{
-					timer.Value.Stop();
-				}
-				this.UpdateTimers.Clear();
-			}
-		}
+
+
+
+		#region Instance Fields
+
+		private DispatcherPriority _priority;
 
 		#endregion
 
@@ -109,22 +99,16 @@ namespace RI.Framework.StateMachines.Dispatchers
 		/// </value>
 		public Dispatcher Dispatcher { get; }
 
-		private Dictionary<StateMachine, DispatcherTimer> UpdateTimers { get; }
-
-		private EventHandler UpdateCallbackHandler { get; set; }
-
-		private DispatcherPriority _priority;
-
 		/// <summary>
-		/// Gets or sets the priority used for dispatching messages.
+		///     Gets or sets the priority used for dispatching messages.
 		/// </summary>
 		/// <value>
-		/// The priority used for dispatching messages.
+		///     The priority used for dispatching messages.
 		/// </value>
 		/// <remarks>
-		/// <para>
-		/// The default value is <see cref="DispatcherPriority.Normal"/>.
-		/// </para>
+		///     <para>
+		///         The default value is <see cref="DispatcherPriority.Normal" />.
+		///     </para>
 		/// </remarks>
 		public DispatcherPriority Priority
 		{
@@ -144,6 +128,50 @@ namespace RI.Framework.StateMachines.Dispatchers
 			}
 		}
 
+		private EventHandler UpdateCallbackHandler { get; set; }
+
+		private Dictionary<StateMachine, DispatcherTimer> UpdateTimers { get; }
+
+		#endregion
+
+
+
+
+		#region Instance Methods
+
+		[SuppressMessage("ReSharper", "UnusedParameter.Local")]
+		private void Dispose (bool disposing)
+		{
+			lock (this.SyncRoot)
+			{
+				foreach (KeyValuePair<StateMachine, DispatcherTimer> timer in this.UpdateTimers)
+				{
+					timer.Value.Stop();
+				}
+				this.UpdateTimers.Clear();
+			}
+		}
+
+		private void UpdateCallback (object sender, object args)
+		{
+			DispatcherTimer timer = (DispatcherTimer)sender;
+			Tuple<StateMachineUpdateDelegate, StateUpdateInfo> tag = (Tuple<StateMachineUpdateDelegate, StateUpdateInfo>)timer.Tag;
+			tag.Item1.Invoke(tag.Item2);
+		}
+
+		#endregion
+
+
+
+
+		#region Interface: IDisposable
+
+		/// <inheritdoc />
+		public void Dispose ()
+		{
+			this.Dispose(true);
+		}
+
 		#endregion
 
 
@@ -158,7 +186,7 @@ namespace RI.Framework.StateMachines.Dispatchers
 		public object SyncRoot { get; }
 
 		/// <inheritdoc />
-		public void DispatchSignal(StateMachineSignalDelegate signalDelegate, StateSignalInfo signalInfo)
+		public void DispatchSignal (StateMachineSignalDelegate signalDelegate, StateSignalInfo signalInfo)
 		{
 			lock (this.SyncRoot)
 			{
@@ -167,7 +195,7 @@ namespace RI.Framework.StateMachines.Dispatchers
 		}
 
 		/// <inheritdoc />
-		public void DispatchTransition(StateMachineTransientDelegate transientDelegate, StateTransientInfo transientInfo)
+		public void DispatchTransition (StateMachineTransientDelegate transientDelegate, StateTransientInfo transientInfo)
 		{
 			lock (this.SyncRoot)
 			{
@@ -176,7 +204,7 @@ namespace RI.Framework.StateMachines.Dispatchers
 		}
 
 		/// <inheritdoc />
-		public void DispatchUpdate(StateMachineUpdateDelegate updateDelegate, StateUpdateInfo updateInfo)
+		public void DispatchUpdate (StateMachineUpdateDelegate updateDelegate, StateUpdateInfo updateInfo)
 		{
 			StateMachine stateMachine = updateInfo.StateMachine;
 
@@ -193,13 +221,6 @@ namespace RI.Framework.StateMachines.Dispatchers
 				this.UpdateTimers.Add(stateMachine, timer);
 				timer.Start();
 			}
-		}
-
-		private void UpdateCallback (object sender, object args)
-		{
-			DispatcherTimer timer = (DispatcherTimer)sender;
-			Tuple<StateMachineUpdateDelegate, StateUpdateInfo> tag = (Tuple<StateMachineUpdateDelegate, StateUpdateInfo>)timer.Tag;
-			tag.Item1.Invoke(tag.Item2);
 		}
 
 		#endregion

@@ -132,7 +132,35 @@ namespace RI.Framework.Collections.Generic
 		}
 
 		/// <inheritdoc />
+		public int HighestPriority
+		{
+			get
+			{
+				if (this.Chain.Count == 0)
+				{
+					return -1;
+				}
+
+				return this.Chain.Last.Value.Priority;
+			}
+		}
+
+		/// <inheritdoc />
 		bool ICollection.IsSynchronized => ((ISynchronizable)this).IsSynchronized;
+
+		/// <inheritdoc />
+		public int LowestPriority
+		{
+			get
+			{
+				if (this.Chain.Count == 0)
+				{
+					return -1;
+				}
+
+				return this.Chain.First.Value.Priority;
+			}
+		}
 
 		/// <inheritdoc />
 		object ICollection.SyncRoot => ((ISynchronizable)this).SyncRoot;
@@ -286,34 +314,6 @@ namespace RI.Framework.Collections.Generic
 		public T Peek (out int priority)
 		{
 			return this.Get(false, out priority);
-		}
-
-		/// <inheritdoc />
-		public int HighestPriority
-		{
-			get
-			{
-				if (this.Chain.Count == 0)
-				{
-					return -1;
-				}
-
-				return this.Chain.Last.Value.Priority;
-			}
-		}
-
-		/// <inheritdoc />
-		public int LowestPriority
-		{
-			get
-			{
-				if (this.Chain.Count == 0)
-				{
-					return -1;
-				}
-
-				return this.Chain.First.Value.Priority;
-			}
 		}
 
 		#endregion

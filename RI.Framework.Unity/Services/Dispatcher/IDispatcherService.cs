@@ -21,9 +21,9 @@ namespace RI.Framework.Services.Dispatcher
 	///         All broadcasts and dispatches must be executed in the order they were issued, depending on their priority.
 	///     </note>
 	///     <note type="important">
-	///         A dispatcher service is not intended to flow <see cref="ExecutionContext"/> or <see cref="CultureInfo"/>.
+	///         A dispatcher service is not intended to flow <see cref="ExecutionContext" /> or <see cref="CultureInfo" />.
 	///         The execution context and thread culture of the target thread, where the broadcasts and method dispatches are executed, shall be used.
-	///         This will be Unitys main/foreground thread or, depending on the used <see cref="DispatcherPriority"/>, a thread pool thread.
+	///         This will be Unitys main/foreground thread or, depending on the used <see cref="DispatcherPriority" />, a thread pool thread.
 	///         Therefore, especially for thread pool threads, you must manually set a threads culture at the beginning of a dispatched method if thread cultures are relevant for its operation.
 	///     </note>
 	/// </remarks>

@@ -60,13 +60,13 @@ namespace RI.Framework.Data.EF
 
 		private static object FiltersSyncRoot { get; set; }
 
-		private static Dictionary<Type, ValidatorCollection> Validators { get; set; }
-
-		private static object ValidatorsSyncRoot { get; set; }
-
 		private static Dictionary<Type, Dictionary<Type, MethodInfo>> SetCreators { get; set; }
 
 		private static object SetCreatorsSyncRoot { get; set; }
+
+		private static Dictionary<Type, ValidatorCollection> Validators { get; set; }
+
+		private static object ValidatorsSyncRoot { get; set; }
 
 		#endregion
 
@@ -124,25 +124,6 @@ namespace RI.Framework.Data.EF
 			}
 		}
 
-		private static IEntityValidation GetValidator (RepositoryDbContext repository, Type entityType)
-		{
-			lock (RepositoryDbContext.ValidatorsSyncRoot)
-			{
-				RepositoryDbContext.CreateValidators(repository);
-
-				Type[] types = RepositoryDbContext.Validators[repository.GetType()].Select(x => x.EntityType).ToArray();
-
-				Type matchingType;
-				int inheritanceDepth;
-				if (!entityType.GetBestMatchingType(out matchingType, out inheritanceDepth, types))
-				{
-					return null;
-				}
-
-				return RepositoryDbContext.Validators[repository.GetType()][matchingType];
-			}
-		}
-
 		private static MethodInfo GetSetCreator (RepositoryDbContext repository, Type entityType)
 		{
 			lock (RepositoryDbContext.SetCreatorsSyncRoot)
@@ -160,6 +141,25 @@ namespace RI.Framework.Data.EF
 					creatorDictionary.Add(entityType, genericMethod);
 				}
 				return creatorDictionary[entityType];
+			}
+		}
+
+		private static IEntityValidation GetValidator (RepositoryDbContext repository, Type entityType)
+		{
+			lock (RepositoryDbContext.ValidatorsSyncRoot)
+			{
+				RepositoryDbContext.CreateValidators(repository);
+
+				Type[] types = RepositoryDbContext.Validators[repository.GetType()].Select(x => x.EntityType).ToArray();
+
+				Type matchingType;
+				int inheritanceDepth;
+				if (!entityType.GetBestMatchingType(out matchingType, out inheritanceDepth, types))
+				{
+					return null;
+				}
+
+				return RepositoryDbContext.Validators[repository.GetType()][matchingType];
 			}
 		}
 
