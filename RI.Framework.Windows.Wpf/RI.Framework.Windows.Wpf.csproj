@@ -60,6 +60,7 @@
     <Compile Include="Utilities\Wpf\Converters\NormalObjectBoolConverter.cs" />
     <Compile Include="Utilities\Wpf\Converters\InvertedObjectVisibilityConverter.cs" />
     <Compile Include="Utilities\Wpf\Converters\NormalObjectVisibilityConverter.cs" />
+    <Compile Include="Utilities\Wpf\DispatcherAwaiter.cs" />
     <Compile Include="Utilities\Wpf\Markup\EventBinder.cs" />
     <Compile Include="Mvvm\ViewModel\NotificationObject.cs" />
     <Compile Include="Mvvm\ViewModel\DelegateCommand.cs" />
@@ -86,6 +87,7 @@
     <Compile Include="Utilities\Wpf\Markup\_NamespaceDoc.cs" />
     <Compile Include="Utilities\Wpf\TemporaryCursor.cs" />
     <Compile Include="Utilities\Wpf\WindowExtensions.cs" />
+    <Compile Include="Utilities\Wpf\WpfThreadSwitcher.cs" />
     <Compile Include="Utilities\Wpf\_NamespaceDoc.cs" />
   </ItemGroup>
   <ItemGroup>
