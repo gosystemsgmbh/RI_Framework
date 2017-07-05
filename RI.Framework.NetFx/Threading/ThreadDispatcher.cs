@@ -85,6 +85,7 @@ namespace RI.Framework.Threading
 
 			this.Scheduler = new ThreadDispatcherTaskScheduler(this);
 			this.Context = new ThreadDispatcherSynchronizationContext(this);
+			this.Awaiter = new ThreadDispatcherAwaiter(this);
 
 			this.PreRunQueue = new PriorityQueue<ThreadDispatcherOperation>();
 			this.Finished = new ManualResetEvent(false);
@@ -113,9 +114,9 @@ namespace RI.Framework.Threading
 
 		private bool _catchExceptions;
 		private SynchronizationContext _context;
+		private ThreadDispatcherAwaiter _awaiter;
 		private ThreadDispatcherOptions _defaultOptions;
 		private int _defaultPriority;
-
 		private TaskScheduler _scheduler;
 		private ThreadDispatcherShutdownMode _shutdownMode;
 
@@ -143,7 +144,6 @@ namespace RI.Framework.Threading
 				}
 			}
 		}
-
 		internal TaskScheduler Scheduler
 		{
 			get
@@ -158,6 +158,23 @@ namespace RI.Framework.Threading
 				lock (this.SyncRoot)
 				{
 					this._scheduler = value;
+				}
+			}
+		}
+		internal ThreadDispatcherAwaiter Awaiter
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._awaiter;
+				}
+			}
+			private set
+			{
+				lock (this.SyncRoot)
+				{
+					this._awaiter = value;
 				}
 			}
 		}

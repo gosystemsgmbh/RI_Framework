@@ -1,65 +1,40 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
 using System.Threading;
-
-
-
 
 namespace RI.Framework.Threading
 {
 	/// <summary>
 	///     Implements an awaiter which continues on the <see cref="ThreadPool" />.
 	/// </summary>
-	public sealed class ThreadPoolAwaiter : INotifyCompletion
+	public sealed class ThreadPoolAwaiter : CustomAwaiter
 	{
 		#region Instance Constructor/Destructor
 
-		internal ThreadPoolAwaiter ()
+		/// <summary>
+		/// Creates a new instance of <see cref="ThreadPoolAwaiter"/>.
+		/// </summary>
+		public ThreadPoolAwaiter ()
 		{
 		}
 
 		#endregion
 
 
-
-
-		#region Instance Properties/Indexer
-
 		/// <summary>
-		///     Gets whether the continuation action has already completed.
+		/// Gets a default instance of <see cref="ThreadPoolAwaiter"/> which can be used with async/await.
 		/// </summary>
 		/// <value>
-		///     true if the continuation action has already completed and does not need to be scheduled, false otherwise.
+		/// A default instance of <see cref="ThreadPoolAwaiter"/>.
 		/// </value>
-		public bool IsCompleted => false;
-
-		#endregion
-
-
-
-
-		#region Instance Methods
-
-		/// <summary>
-		///     Gets the result of the scheduled continuation action.
-		/// </summary>
-		public void GetResult ()
-		{
-		}
-
-		#endregion
+		public static ThreadPoolAwaiter SwitchTo => new ThreadPoolAwaiter();
 
 
 
 
 		#region Interface: INotifyCompletion
 
-		/// <summary>
-		///     Schedules the continuation action on the thread pool.
-		/// </summary>
-		/// <param name="continuation"> The continuation action. </param>
-		/// <exception cref="ArgumentNullException"> <paramref name="continuation" /> is null. </exception>
-		public void OnCompleted (Action continuation)
+		/// <inheritdoc />
+		public override void OnCompleted (Action continuation)
 		{
 			if (continuation == null)
 			{

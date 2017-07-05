@@ -1,20 +1,24 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
 using System.Windows.Threading;
 
-
-
+using RI.Framework.Threading;
 
 namespace RI.Framework.Utilities.Wpf
 {
 	/// <summary>
 	///     Implements an awaiter which continues on a specified <see cref="System.Windows.Threading.Dispatcher" />.
 	/// </summary>
-	public sealed class DispatcherAwaiter : INotifyCompletion
+	/// <threadsafety static="true" instance="true" />
+	public sealed class DispatcherAwaiter : CustomAwaiter
 	{
 		#region Instance Constructor/Destructor
 
-		internal DispatcherAwaiter (Dispatcher dispatcher)
+		/// <summary>
+		/// Creates a new instance of <see cref="DispatcherAwaiter"/>.
+		/// </summary>
+		/// <param name="dispatcher">The used <see cref="System.Windows.Threading.Dispatcher" />.</param>
+		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" /> is null. </exception>
+		public DispatcherAwaiter (Dispatcher dispatcher)
 		{
 			if (dispatcher == null)
 			{
@@ -39,28 +43,6 @@ namespace RI.Framework.Utilities.Wpf
 		/// </value>
 		public Dispatcher Dispatcher { get; }
 
-		/// <summary>
-		///     Gets whether the continuation action has already completed.
-		/// </summary>
-		/// <value>
-		///     true if the continuation action has already completed and does not need to be scheduled, false otherwise.
-		/// </value>
-		public bool IsCompleted => false;
-
-		#endregion
-
-
-
-
-		#region Instance Methods
-
-		/// <summary>
-		///     Gets the result of the scheduled continuation action.
-		/// </summary>
-		public void GetResult ()
-		{
-		}
-
 		#endregion
 
 
@@ -68,12 +50,8 @@ namespace RI.Framework.Utilities.Wpf
 
 		#region Interface: INotifyCompletion
 
-		/// <summary>
-		///     Schedules the continuation action on the dispatcher.
-		/// </summary>
-		/// <param name="continuation"> The continuation action. </param>
-		/// <exception cref="ArgumentNullException"> <paramref name="continuation" /> is null. </exception>
-		public void OnCompleted (Action continuation)
+		/// <inheritdoc />
+		public override void OnCompleted (Action continuation)
 		{
 			if (continuation == null)
 			{

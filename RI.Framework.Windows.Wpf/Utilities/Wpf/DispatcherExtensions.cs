@@ -10,6 +10,7 @@ namespace RI.Framework.Utilities.Wpf
 	/// <summary>
 	///     Provides utility/extension methods for the <see cref="Dispatcher" /> type.
 	/// </summary>
+	/// <threadsafety static="true" instance="true" />
 	public static class DispatcherExtensions
 	{
 		#region Static Methods
@@ -91,6 +92,24 @@ namespace RI.Framework.Utilities.Wpf
 
 			DispatcherOperation operation = dispatcher.InvokeAsync(() => { }, priority);
 			await operation.Task.ConfigureAwait(false);
+		}
+
+		/// <summary>
+		/// Creates an awaiter for a dispatcher.
+		/// </summary>
+		/// <param name="dispatcher">The dispatcher to use in the awaiter.</param>
+		/// <returns>
+		/// The created awaiter.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" /> is null. </exception>
+		public static DispatcherAwaiter GetAwaiter (this Dispatcher dispatcher)
+		{
+			if (dispatcher == null)
+			{
+				throw new ArgumentNullException(nameof(dispatcher));
+			}
+
+			return new DispatcherAwaiter(dispatcher);
 		}
 
 		#endregion

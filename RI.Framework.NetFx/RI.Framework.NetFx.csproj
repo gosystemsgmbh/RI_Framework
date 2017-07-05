@@ -157,10 +157,12 @@
     <Compile Include="StateMachines\AsyncStateMachine.cs" />
     <Compile Include="StateMachines\DefaultStateMachineConfiguration.cs" />
     <Compile Include="StateMachines\Dispatchers\ThreadDispatcherStateDispatcher.cs" />
+    <Compile Include="Threading\CustomAwaiter.cs" />
     <Compile Include="Threading\HeavyThreadDispatcher.cs" />
     <Compile Include="Threading\IThreadDispatcher.cs" />
     <Compile Include="Threading\IThreadDispatcherExtensions.cs" />
     <Compile Include="Threading\SynchronizationContextAwaiter.cs" />
+    <Compile Include="Threading\SynchronizationContextExtensions.cs" />
     <Compile Include="Threading\ThreadDispatcher.cs" />
     <Compile Include="Threading\ThreadDispatcherAwaiter.cs" />
     <Compile Include="Threading\ThreadDispatcherException.cs" />
@@ -174,7 +176,6 @@
     <Compile Include="Threading\ThreadDispatcherTimer.cs" />
     <Compile Include="Threading\ThreadDispatcherTimerMode.cs" />
     <Compile Include="Threading\ThreadPoolAwaiter.cs" />
-    <Compile Include="Threading\ThreadSwitcher.cs" />
     <Compile Include="Web\_NamespaceDoc.cs" />
   </ItemGroup>
   <ItemGroup>

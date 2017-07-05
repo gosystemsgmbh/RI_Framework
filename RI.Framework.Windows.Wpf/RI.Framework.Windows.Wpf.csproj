@@ -87,7 +87,6 @@
     <Compile Include="Utilities\Wpf\Markup\_NamespaceDoc.cs" />
     <Compile Include="Utilities\Wpf\TemporaryCursor.cs" />
     <Compile Include="Utilities\Wpf\WindowExtensions.cs" />
-    <Compile Include="Utilities\Wpf\WpfThreadSwitcher.cs" />
     <Compile Include="Utilities\Wpf\_NamespaceDoc.cs" />
   </ItemGroup>
   <ItemGroup>

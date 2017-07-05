@@ -1,19 +1,21 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
-
-
-
 
 namespace RI.Framework.Threading
 {
 	/// <summary>
 	///     Implements an awaiter which continues on a specified <see cref="IThreadDispatcher" />.
 	/// </summary>
-	public sealed class ThreadDispatcherAwaiter : INotifyCompletion
+	/// <threadsafety static="true" instance="true" />
+	public sealed class ThreadDispatcherAwaiter : CustomAwaiter
 	{
 		#region Instance Constructor/Destructor
 
-		internal ThreadDispatcherAwaiter (IThreadDispatcher dispatcher)
+		/// <summary>
+		/// Creates a new instance of <see cref="ThreadDispatcherAwaiter"/>.
+		/// </summary>
+		/// <param name="dispatcher">The used <see cref="IThreadDispatcher" />.</param>
+		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" /> is null. </exception>
+		public ThreadDispatcherAwaiter (IThreadDispatcher dispatcher)
 		{
 			if (dispatcher == null)
 			{
@@ -38,28 +40,6 @@ namespace RI.Framework.Threading
 		/// </value>
 		public IThreadDispatcher Dispatcher { get; }
 
-		/// <summary>
-		///     Gets whether the continuation action has already completed.
-		/// </summary>
-		/// <value>
-		///     true if the continuation action has already completed and does not need to be scheduled, false otherwise.
-		/// </value>
-		public bool IsCompleted => false;
-
-		#endregion
-
-
-
-
-		#region Instance Methods
-
-		/// <summary>
-		///     Gets the result of the scheduled continuation action.
-		/// </summary>
-		public void GetResult ()
-		{
-		}
-
 		#endregion
 
 
@@ -67,12 +47,8 @@ namespace RI.Framework.Threading
 
 		#region Interface: INotifyCompletion
 
-		/// <summary>
-		///     Schedules the continuation action on the dispatcher.
-		/// </summary>
-		/// <param name="continuation"> The continuation action. </param>
-		/// <exception cref="ArgumentNullException"> <paramref name="continuation" /> is null. </exception>
-		public void OnCompleted (Action continuation)
+		/// <inheritdoc />
+		public override void OnCompleted (Action continuation)
 		{
 			if (continuation == null)
 			{

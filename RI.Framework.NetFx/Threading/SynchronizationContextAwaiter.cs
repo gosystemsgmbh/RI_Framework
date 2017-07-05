@@ -1,20 +1,22 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
 using System.Threading;
-
-
-
 
 namespace RI.Framework.Threading
 {
 	/// <summary>
 	///     Implements an awaiter which continues on a specified <see cref="SynchronizationContext" />.
 	/// </summary>
-	public sealed class SynchronizationContextAwaiter : INotifyCompletion
+	/// <threadsafety static="true" instance="true" />
+	public sealed class SynchronizationContextAwaiter : CustomAwaiter
 	{
 		#region Instance Constructor/Destructor
 
-		internal SynchronizationContextAwaiter (SynchronizationContext synchronizationContext)
+		/// <summary>
+		/// Creates a new instance of <see cref="SynchronizationContextAwaiter"/>.
+		/// </summary>
+		/// <param name="synchronizationContext">The used <see cref="SynchronizationContext" />.</param>
+		/// <exception cref="ArgumentNullException"> <paramref name="synchronizationContext" /> is null. </exception>
+		public SynchronizationContextAwaiter (SynchronizationContext synchronizationContext)
 		{
 			if (synchronizationContext == null)
 			{
@@ -32,14 +34,6 @@ namespace RI.Framework.Threading
 		#region Instance Properties/Indexer
 
 		/// <summary>
-		///     Gets whether the continuation action has already completed.
-		/// </summary>
-		/// <value>
-		///     true if the continuation action has already completed and does not need to be scheduled, false otherwise.
-		/// </value>
-		public bool IsCompleted => false;
-
-		/// <summary>
 		///     Gets the used <see cref="SynchronizationContext" />.
 		/// </summary>
 		/// <value>
@@ -52,28 +46,10 @@ namespace RI.Framework.Threading
 
 
 
-		#region Instance Methods
-
-		/// <summary>
-		///     Gets the result of the scheduled continuation action.
-		/// </summary>
-		public void GetResult ()
-		{
-		}
-
-		#endregion
-
-
-
-
 		#region Interface: INotifyCompletion
 
-		/// <summary>
-		///     Schedules the continuation action on the synchronization context.
-		/// </summary>
-		/// <param name="continuation"> The continuation action. </param>
-		/// <exception cref="ArgumentNullException"> <paramref name="continuation" /> is null. </exception>
-		public void OnCompleted (Action continuation)
+		/// <inheritdoc />
+		public override void OnCompleted (Action continuation)
 		{
 			if (continuation == null)
 			{
