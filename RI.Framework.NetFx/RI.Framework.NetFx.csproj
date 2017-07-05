@@ -165,6 +165,7 @@
     <Compile Include="Threading\SynchronizationContextExtensions.cs" />
     <Compile Include="Threading\ThreadDispatcher.cs" />
     <Compile Include="Threading\ThreadDispatcherAwaiter.cs" />
+    <Compile Include="Threading\ThreadDispatcherExecutionContext.cs" />
     <Compile Include="Threading\ThreadDispatcherException.cs" />
     <Compile Include="Threading\ThreadDispatcherExceptionEventArgs.cs" />
     <Compile Include="Threading\ThreadDispatcherOperation.cs" />

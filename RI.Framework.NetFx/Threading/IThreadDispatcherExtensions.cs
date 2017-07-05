@@ -16,6 +16,42 @@ namespace RI.Framework.Threading
 		#region Static Methods
 
 		/// <summary>
+		///     Creates an awaiter for a dispatcher.
+		/// </summary>
+		/// <param name="dispatcher"> The dispatcher to use in the awaiter. </param>
+		/// <returns>
+		///     The created awaiter.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" /> is null. </exception>
+		public static ThreadDispatcherAwaiter GetAwaiter (this IThreadDispatcher dispatcher)
+		{
+			if (dispatcher == null)
+			{
+				throw new ArgumentNullException(nameof(dispatcher));
+			}
+
+			lock (dispatcher.SyncRoot)
+			{
+				if (!dispatcher.IsRunning)
+				{
+					return null;
+				}
+
+				if (dispatcher is ThreadDispatcher)
+				{
+					return ((ThreadDispatcher)dispatcher).Awaiter;
+				}
+
+				if (dispatcher is HeavyThreadDispatcher)
+				{
+					return ((HeavyThreadDispatcher)dispatcher).Dispatcher.Awaiter;
+				}
+
+				return new ThreadDispatcherAwaiter(dispatcher);
+			}
+		}
+
+		/// <summary>
 		///     Determines under which options the current code is executed.
 		/// </summary>
 		/// <param name="dispatcher"> The dispatcher. </param>
@@ -374,42 +410,6 @@ namespace RI.Framework.Threading
 			lock (dispatcher.SyncRoot)
 			{
 				return dispatcher.PostDelayed((int)delay.TotalMilliseconds, priority, options, action, parameters);
-			}
-		}
-
-		/// <summary>
-		/// Creates an awaiter for a dispatcher.
-		/// </summary>
-		/// <param name="dispatcher">The dispatcher to use in the awaiter.</param>
-		/// <returns>
-		/// The created awaiter.
-		/// </returns>
-		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" /> is null. </exception>
-		public static ThreadDispatcherAwaiter GetAwaiter(this IThreadDispatcher dispatcher)
-		{
-			if (dispatcher == null)
-			{
-				throw new ArgumentNullException(nameof(dispatcher));
-			}
-
-			lock (dispatcher.SyncRoot)
-			{
-				if (!dispatcher.IsRunning)
-				{
-					return null;
-				}
-
-				if (dispatcher is ThreadDispatcher)
-				{
-					return ((ThreadDispatcher)dispatcher).Awaiter;
-				}
-
-				if (dispatcher is HeavyThreadDispatcher)
-				{
-					return ((HeavyThreadDispatcher)dispatcher).Dispatcher.Awaiter;
-				}
-
-				return new ThreadDispatcherAwaiter(dispatcher);
 			}
 		}
 

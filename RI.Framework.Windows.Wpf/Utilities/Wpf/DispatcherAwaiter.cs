@@ -3,6 +3,9 @@ using System.Windows.Threading;
 
 using RI.Framework.Threading;
 
+
+
+
 namespace RI.Framework.Utilities.Wpf
 {
 	/// <summary>
@@ -14,9 +17,9 @@ namespace RI.Framework.Utilities.Wpf
 		#region Instance Constructor/Destructor
 
 		/// <summary>
-		/// Creates a new instance of <see cref="DispatcherAwaiter"/>.
+		///     Creates a new instance of <see cref="DispatcherAwaiter" />.
 		/// </summary>
-		/// <param name="dispatcher">The used <see cref="System.Windows.Threading.Dispatcher" />.</param>
+		/// <param name="dispatcher"> The used <see cref="System.Windows.Threading.Dispatcher" />. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" /> is null. </exception>
 		public DispatcherAwaiter (Dispatcher dispatcher)
 		{
@@ -48,7 +51,7 @@ namespace RI.Framework.Utilities.Wpf
 
 
 
-		#region Interface: INotifyCompletion
+		#region Overrides
 
 		/// <inheritdoc />
 		public override void OnCompleted (Action continuation)

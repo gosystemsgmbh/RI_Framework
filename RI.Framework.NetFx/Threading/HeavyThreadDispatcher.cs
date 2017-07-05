@@ -383,7 +383,7 @@ namespace RI.Framework.Threading
 				this.Dispatcher.DefaultPriority = this.DefaultPriority;
 				this.Dispatcher.DefaultOptions = this.DefaultOptions;
 
-				this.DispatcherStartOperation = this.Dispatcher.Post(0, new Action(() => { }));
+				this.DispatcherStartOperation = this.Dispatcher.Post(0, ThreadDispatcherOptions.None, new Action(() => { }));
 			}
 		}
 
@@ -696,6 +696,18 @@ namespace RI.Framework.Threading
 				dispatcher = this.Dispatcher;
 			}
 			return dispatcher.Post(priority, options, action, parameters);
+		}
+
+		/// <inheritdoc />
+		public ThreadDispatcherOperation Post (ThreadDispatcherExecutionContext context, int priority, ThreadDispatcherOptions options, Delegate action, params object[] parameters)
+		{
+			ThreadDispatcher dispatcher;
+			lock (this.SyncRoot)
+			{
+				this.VerifyRunningDispatcher();
+				dispatcher = this.Dispatcher;
+			}
+			return dispatcher.Post(context, priority, options, action, parameters);
 		}
 
 		/// <inheritdoc />

@@ -112,9 +112,10 @@ namespace RI.Framework.Threading
 
 		#region Instance Fields
 
+		private ThreadDispatcherAwaiter _awaiter;
+
 		private bool _catchExceptions;
 		private SynchronizationContext _context;
-		private ThreadDispatcherAwaiter _awaiter;
 		private ThreadDispatcherOptions _defaultOptions;
 		private int _defaultPriority;
 		private TaskScheduler _scheduler;
@@ -126,6 +127,24 @@ namespace RI.Framework.Threading
 
 
 		#region Instance Properties/Indexer
+
+		internal ThreadDispatcherAwaiter Awaiter
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._awaiter;
+				}
+			}
+			private set
+			{
+				lock (this.SyncRoot)
+				{
+					this._awaiter = value;
+				}
+			}
+		}
 
 		internal SynchronizationContext Context
 		{
@@ -144,6 +163,7 @@ namespace RI.Framework.Threading
 				}
 			}
 		}
+
 		internal TaskScheduler Scheduler
 		{
 			get
@@ -158,23 +178,6 @@ namespace RI.Framework.Threading
 				lock (this.SyncRoot)
 				{
 					this._scheduler = value;
-				}
-			}
-		}
-		internal ThreadDispatcherAwaiter Awaiter
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					return this._awaiter;
-				}
-			}
-			private set
-			{
-				lock (this.SyncRoot)
-				{
-					this._awaiter = value;
 				}
 			}
 		}
@@ -591,7 +594,7 @@ namespace RI.Framework.Threading
 					}
 
 					isInThread = this.IsInThread();
-					operation = this.Post(0, new Action(() => { }));
+					operation = this.Post(0, ThreadDispatcherOptions.None, new Action(() => { }));
 				}
 
 				if (isInThread)
@@ -640,7 +643,7 @@ namespace RI.Framework.Threading
 					}
 
 					isInThread = this.IsInThread();
-					operation = this.Post(priority, new Action(() => { }));
+					operation = this.Post(priority, ThreadDispatcherOptions.None, new Action(() => { }));
 				}
 
 				if (isInThread)
@@ -677,7 +680,7 @@ namespace RI.Framework.Threading
 						return;
 					}
 
-					operation = this.Post(0, new Action(() => { }));
+					operation = this.Post(0, ThreadDispatcherOptions.None, new Action(() => { }));
 				}
 
 				await operation.WaitAsync().ConfigureAwait(false);
@@ -717,7 +720,7 @@ namespace RI.Framework.Threading
 						return;
 					}
 
-					operation = this.Post(priority, new Action(() => { }));
+					operation = this.Post(priority, ThreadDispatcherOptions.None, new Action(() => { }));
 				}
 
 				await operation.WaitAsync().ConfigureAwait(false);
@@ -801,6 +804,13 @@ namespace RI.Framework.Threading
 		/// <inheritdoc />
 		public ThreadDispatcherOperation Post (int priority, ThreadDispatcherOptions options, Delegate action, params object[] parameters)
 		{
+			ThreadDispatcherExecutionContext executionContext = ThreadDispatcherExecutionContext.Capture(options);
+			return this.Post(executionContext, priority, options, action, parameters);
+		}
+
+		/// <inheritdoc />
+		public ThreadDispatcherOperation Post (ThreadDispatcherExecutionContext executionContext, int priority, ThreadDispatcherOptions options, Delegate action, params object[] parameters)
+		{
 			if (priority < 0)
 			{
 				throw new ArgumentOutOfRangeException(nameof(priority));
@@ -817,7 +827,7 @@ namespace RI.Framework.Threading
 			{
 				this.VerifyNotShuttingDown();
 
-				ThreadDispatcherOperation operation = new ThreadDispatcherOperation(this, priority, options, action, parameters);
+				ThreadDispatcherOperation operation = new ThreadDispatcherOperation(this, executionContext, priority, options, action, parameters);
 
 				if (this.IsRunning)
 				{

@@ -232,6 +232,30 @@ namespace RI.Framework.Threading
 		ThreadDispatcherOperation Post (int priority, ThreadDispatcherOptions options, Delegate action, params object[] parameters);
 
 		/// <summary>
+		///     Enqueues a delegate to the dispatchers queue and does not wait for its execution.
+		/// </summary>
+		/// <param name="executionContext"> The context under which the delegate is executed. Can be null to use the executing threads context. </param>
+		/// <param name="priority"> The priority. </param>
+		/// <param name="options"> The used execution options. </param>
+		/// <param name="action"> The delegate. </param>
+		/// <param name="parameters"> Optional parameters of the delagate. </param>
+		/// <returns>
+		///     The dispatcher operation object which can be used to track the execution of the enqueued delegate.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         The higher the priority, the earlier the operation is executed (highest priority, first executed).
+		///     </para>
+		///     <note type="important">
+		///         A delegate can be enqueued before the dispatcher is run.
+		///     </note>
+		/// </remarks>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="priority" /> is less than zero. </exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="action" /> is null. </exception>
+		/// <exception cref="InvalidOperationException"> The dispatcher is being shut down. </exception>
+		ThreadDispatcherOperation Post (ThreadDispatcherExecutionContext executionContext, int priority, ThreadDispatcherOptions options, Delegate action, params object[] parameters);
+
+		/// <summary>
 		///     Enqueues a delegate to the dispatchers queue and waits for its execution to be completed.
 		/// </summary>
 		/// <param name="action"> The delegate. </param>

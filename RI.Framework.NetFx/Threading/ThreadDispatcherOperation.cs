@@ -35,11 +35,22 @@ namespace RI.Framework.Threading
 
 		#region Instance Constructor/Destructor
 
-		internal ThreadDispatcherOperation (ThreadDispatcher dispatcher, int priority, ThreadDispatcherOptions options, Delegate action, object[] parameters)
+		internal ThreadDispatcherOperation (ThreadDispatcher dispatcher, ThreadDispatcherExecutionContext executionContext, int priority, ThreadDispatcherOptions options, Delegate action, object[] parameters)
 		{
+			if (dispatcher == null)
+			{
+				throw new ArgumentNullException(nameof(dispatcher));
+			}
+
+			if (action == null)
+			{
+				throw new ArgumentNullException(nameof(action));
+			}
+
 			this.SyncRoot = new object();
 
 			this.Dispatcher = dispatcher;
+			this.ExecutionContext = executionContext;
 			this.Priority = priority;
 			this.Options = options;
 			this.Action = action;
@@ -63,6 +74,9 @@ namespace RI.Framework.Threading
 		{
 			this.OperationDone?.Close();
 			this.OperationDone = null;
+
+			this.ExecutionContext?.Dispose();
+			this.ExecutionContext = null;
 		}
 
 		#endregion
@@ -174,6 +188,7 @@ namespace RI.Framework.Threading
 
 		internal Delegate Action { get; }
 		internal ThreadDispatcher Dispatcher { get; }
+		internal ThreadDispatcherExecutionContext ExecutionContext { get; set; }
 		internal ThreadDispatcherOptions Options { get; }
 		internal object[] Parameters { get; }
 		internal int Priority { get; }
@@ -493,7 +508,14 @@ namespace RI.Framework.Threading
 		{
 			//TODO: We might want to provide an async root with continuations on the associated dispatcher
 			//Use the following flags: DenyChildAttach | LazyCancellation | RunContinuationsAsynchronously
-			return this.Action.DynamicInvoke(this.Parameters);
+			if ((this.ExecutionContext != null) && (this.Options != ThreadDispatcherOptions.None))
+			{
+				return this.ExecutionContext.Run(this.Options, this.Action, this.Parameters);
+			}
+			else
+			{
+				return this.Action.DynamicInvoke(this.Parameters);
+			}
 		}
 
 		#endregion

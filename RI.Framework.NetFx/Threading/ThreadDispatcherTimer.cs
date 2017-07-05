@@ -94,6 +94,8 @@ namespace RI.Framework.Threading
 			this.Action = action;
 			this.Parameters = parameters;
 
+			this.ExecutionContext = ThreadDispatcherExecutionContext.Capture(this.Options);
+
 			this.Timer = null;
 			this.PreviousOperation = null;
 
@@ -259,6 +261,8 @@ namespace RI.Framework.Threading
 		/// </value>
 		public int Priority { get; }
 
+		private ThreadDispatcherExecutionContext ExecutionContext { get; set; }
+
 		private ThreadDispatcherOperation PreviousOperation { get; set; }
 
 		private Timer Timer { get; set; }
@@ -312,7 +316,6 @@ namespace RI.Framework.Threading
 							isRunning = self.Dispatcher.IsRunning;
 							if (isRunning)
 							{
-								//TODO: Use captured context
 								self.PreviousOperation = self.Dispatcher.Post(self.Priority, self.Options, self.Action, self.Parameters);
 								self.ExecutionCount++;
 							}
@@ -344,6 +347,9 @@ namespace RI.Framework.Threading
 			{
 				this.Timer?.Dispose();
 				this.Timer = null;
+
+				this.ExecutionContext?.Dispose();
+				this.ExecutionContext = null;
 			}
 		}
 

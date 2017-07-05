@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Threading;
 
+
+
+
 namespace RI.Framework.Threading
 {
 	/// <summary>
@@ -8,30 +11,22 @@ namespace RI.Framework.Threading
 	/// </summary>
 	public sealed class ThreadPoolAwaiter : CustomAwaiter
 	{
-		#region Instance Constructor/Destructor
+		#region Static Properties/Indexer
 
 		/// <summary>
-		/// Creates a new instance of <see cref="ThreadPoolAwaiter"/>.
+		///     Gets a default instance of <see cref="ThreadPoolAwaiter" /> which can be used with async/await.
 		/// </summary>
-		public ThreadPoolAwaiter ()
-		{
-		}
+		/// <value>
+		///     A default instance of <see cref="ThreadPoolAwaiter" />.
+		/// </value>
+		public static ThreadPoolAwaiter SwitchTo => new ThreadPoolAwaiter();
 
 		#endregion
 
 
-		/// <summary>
-		/// Gets a default instance of <see cref="ThreadPoolAwaiter"/> which can be used with async/await.
-		/// </summary>
-		/// <value>
-		/// A default instance of <see cref="ThreadPoolAwaiter"/>.
-		/// </value>
-		public static ThreadPoolAwaiter SwitchTo => new ThreadPoolAwaiter();
 
 
-
-
-		#region Interface: INotifyCompletion
+		#region Overrides
 
 		/// <inheritdoc />
 		public override void OnCompleted (Action continuation)

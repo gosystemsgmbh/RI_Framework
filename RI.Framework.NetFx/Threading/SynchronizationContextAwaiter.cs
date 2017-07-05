@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Threading;
 
+
+
+
 namespace RI.Framework.Threading
 {
 	/// <summary>
@@ -12,9 +15,9 @@ namespace RI.Framework.Threading
 		#region Instance Constructor/Destructor
 
 		/// <summary>
-		/// Creates a new instance of <see cref="SynchronizationContextAwaiter"/>.
+		///     Creates a new instance of <see cref="SynchronizationContextAwaiter" />.
 		/// </summary>
-		/// <param name="synchronizationContext">The used <see cref="SynchronizationContext" />.</param>
+		/// <param name="synchronizationContext"> The used <see cref="SynchronizationContext" />. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="synchronizationContext" /> is null. </exception>
 		public SynchronizationContextAwaiter (SynchronizationContext synchronizationContext)
 		{
@@ -46,7 +49,7 @@ namespace RI.Framework.Threading
 
 
 
-		#region Interface: INotifyCompletion
+		#region Overrides
 
 		/// <inheritdoc />
 		public override void OnCompleted (Action continuation)

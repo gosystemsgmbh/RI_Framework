@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Threading;
 
+
+
+
 namespace RI.Framework.Threading
 {
 	/// <summary>
@@ -9,15 +12,17 @@ namespace RI.Framework.Threading
 	/// <threadsafety static="true" instance="true" />
 	public static class SynchronizationContextExtensions
 	{
+		#region Static Methods
+
 		/// <summary>
-		/// Creates an awaiter for a synchronization context.
+		///     Creates an awaiter for a synchronization context.
 		/// </summary>
-		/// <param name="synchronizationContext">The synchronization context to use in the awaiter.</param>
+		/// <param name="synchronizationContext"> The synchronization context to use in the awaiter. </param>
 		/// <returns>
-		/// The created awaiter.
+		///     The created awaiter.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="synchronizationContext" /> is null. </exception>
-		public static SynchronizationContextAwaiter GetAwaiter(this SynchronizationContext synchronizationContext)
+		public static SynchronizationContextAwaiter GetAwaiter (this SynchronizationContext synchronizationContext)
 		{
 			if (synchronizationContext == null)
 			{
@@ -26,5 +31,7 @@ namespace RI.Framework.Threading
 
 			return new SynchronizationContextAwaiter(synchronizationContext);
 		}
+
+		#endregion
 	}
 }

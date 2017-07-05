@@ -95,11 +95,11 @@ namespace RI.Framework.Utilities.Wpf
 		}
 
 		/// <summary>
-		/// Creates an awaiter for a dispatcher.
+		///     Creates an awaiter for a dispatcher.
 		/// </summary>
-		/// <param name="dispatcher">The dispatcher to use in the awaiter.</param>
+		/// <param name="dispatcher"> The dispatcher to use in the awaiter. </param>
 		/// <returns>
-		/// The created awaiter.
+		///     The created awaiter.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" /> is null. </exception>
 		public static DispatcherAwaiter GetAwaiter (this Dispatcher dispatcher)

@@ -1,5 +1,8 @@
 ﻿using System;
 
+
+
+
 namespace RI.Framework.Threading
 {
 	/// <summary>
@@ -11,9 +14,9 @@ namespace RI.Framework.Threading
 		#region Instance Constructor/Destructor
 
 		/// <summary>
-		/// Creates a new instance of <see cref="ThreadDispatcherAwaiter"/>.
+		///     Creates a new instance of <see cref="ThreadDispatcherAwaiter" />.
 		/// </summary>
-		/// <param name="dispatcher">The used <see cref="IThreadDispatcher" />.</param>
+		/// <param name="dispatcher"> The used <see cref="IThreadDispatcher" />. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" /> is null. </exception>
 		public ThreadDispatcherAwaiter (IThreadDispatcher dispatcher)
 		{
@@ -45,7 +48,7 @@ namespace RI.Framework.Threading
 
 
 
-		#region Interface: INotifyCompletion
+		#region Overrides
 
 		/// <inheritdoc />
 		public override void OnCompleted (Action continuation)
