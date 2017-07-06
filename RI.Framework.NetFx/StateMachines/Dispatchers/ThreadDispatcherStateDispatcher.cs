@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
-using RI.Framework.Threading;
+using RI.Framework.Threading.Dispatcher;
 using RI.Framework.Utilities.ObjectModel;
 
 

@@ -4,7 +4,7 @@ using System.Threading;
 
 
 
-namespace RI.Framework.Threading
+namespace RI.Framework.Threading.Tasks
 {
 	/// <summary>
 	///     Implements an awaiter which continues on a specified <see cref="SynchronizationContext" />.

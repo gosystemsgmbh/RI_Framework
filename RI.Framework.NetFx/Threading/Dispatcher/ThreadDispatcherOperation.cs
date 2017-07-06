@@ -8,7 +8,7 @@ using RI.Framework.Utilities.ObjectModel;
 
 
 
-namespace RI.Framework.Threading
+namespace RI.Framework.Threading.Dispatcher
 {
 	/// <summary>
 	///     Used to track <see cref="IThreadDispatcher" /> operations or the processing of enqueued delegates respectively.
@@ -21,18 +21,6 @@ namespace RI.Framework.Threading
 	/// <threadsafety static="true" instance="true" />
 	public sealed class ThreadDispatcherOperation : ISynchronizable
 	{
-		#region Static Methods
-
-		internal static void Capture ()
-		{
-			//TODO: Implement
-		}
-
-		#endregion
-
-
-
-
 		#region Instance Constructor/Destructor
 
 		internal ThreadDispatcherOperation (ThreadDispatcher dispatcher, ThreadDispatcherExecutionContext executionContext, int priority, ThreadDispatcherOptions options, Delegate action, object[] parameters)
@@ -62,9 +50,6 @@ namespace RI.Framework.Threading
 
 			this.OperationDone = new ManualResetEvent(false);
 			this.OperationDoneTask = new TaskCompletionSource<object>();
-
-			//TODO: Use real
-			ThreadDispatcherOperation.Capture();
 		}
 
 		/// <summary>

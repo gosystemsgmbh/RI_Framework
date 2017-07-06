@@ -165,7 +165,7 @@ namespace RI.Framework.Services
 		/// </summary>
 		/// <remarks>
 		///     <para>
-		///         If true, the used <see cref="IModuleService" /> initializes all modules during <see cref="BeginRun" /> (using <see cref="IModuleService.Initialize" />).
+		///         If true, the used <see cref="IModuleService" />, if any, initializes all modules during <see cref="BeginRun" /> (using <see cref="IModuleService.Initialize" />).
 		///     </para>
 		///     <para>
 		///         The default value is true.
@@ -178,7 +178,7 @@ namespace RI.Framework.Services
 		/// </summary>
 		/// <remarks>
 		///     <para>
-		///         If true, <see cref="Modularization.ModuleService" /> is added automatically, providing a default modularization service using <see cref="IModule" /> or <see cref="MonoModule" />.
+		///         If true, <see cref="Modularization.ModuleService" /> is added automatically, providing a default modularization service using <see cref="IModule" /> (<see cref="MonoModule" />, <see cref="Module" />, or a custom implementation of <see cref="IModule" />).
 		///     </para>
 		///     <para>
 		///         The default value is true.
@@ -191,7 +191,7 @@ namespace RI.Framework.Services
 		/// </summary>
 		/// <remarks>
 		///     <para>
-		///         If true, the used <see cref="IModuleService" /> unloads all modules during <see cref="EndRun" /> (using <see cref="IModuleService.Unload" />).
+		///         If true, the used <see cref="IModuleService" />, if any, unloads all modules during <see cref="EndRun" /> (using <see cref="IModuleService.Unload" />).
 		///     </para>
 		///     <para>
 		///         The default value is true.
@@ -200,7 +200,7 @@ namespace RI.Framework.Services
 		public bool ModuleUnloading = true;
 
 		/// <summary>
-		///     Specifies whether the default scripting container should be used or not.
+		///     Specifies whether the default scripting catalog should be used or not.
 		/// </summary>
 		/// <remarks>
 		///     <para>
@@ -211,6 +211,19 @@ namespace RI.Framework.Services
 		///     </para>
 		/// </remarks>
 		public bool ScriptingCatalog = true;
+
+		/// <summary>
+		///     Specifies whether the default scripting catalog, if used, should export all types.
+		/// </summary>
+		/// <remarks>
+		///     <para>
+		///         If true, all non-abstract, non-static types, even those without an <see cref="ExportAttribute" /> are exported by the default scripting catalog.
+		///     </para>
+		///     <para>
+		///         The default value is true.
+		///     </para>
+		/// </remarks>
+		public bool ScriptingCatalogWithAllTypes = true;
 
 		/// <summary>
 		///     Specifies whether the <see cref="ServiceLocator" /> should be bound to <see cref="Container" /> or not.
@@ -340,8 +353,8 @@ namespace RI.Framework.Services
 
 			if (this.ScriptingCatalog)
 			{
-				this.Log(LogLevel.Debug, "Using default scripting catalog");
-				this.Container.AddCatalog(new ScriptingCatalog());
+				this.Log(LogLevel.Debug, "Using default scripting catalog ({0})", this.ScriptingCatalogWithAllTypes ? "all types" : "explicitly exported types only");
+				this.Container.AddCatalog(new ScriptingCatalog(this.ScriptingCatalogWithAllTypes));
 			}
 		}
 

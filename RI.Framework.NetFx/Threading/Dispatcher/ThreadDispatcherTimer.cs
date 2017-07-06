@@ -7,7 +7,7 @@ using RI.Framework.Utilities.ObjectModel;
 
 
 
-namespace RI.Framework.Threading
+namespace RI.Framework.Threading.Dispatcher
 {
 	/// <summary>
 	///     Implements a timer which can be used with <see cref="IThreadDispatcher" />.
@@ -98,9 +98,6 @@ namespace RI.Framework.Threading
 
 			this.Timer = null;
 			this.PreviousOperation = null;
-
-			//TODO: Use real
-			ThreadDispatcherOperation.Capture();
 		}
 
 		/// <summary>

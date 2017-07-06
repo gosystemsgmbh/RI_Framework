@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 
 using RI.Framework.Collections;
 using RI.Framework.Collections.Generic;
+using RI.Framework.Threading.Tasks;
 using RI.Framework.Utilities.ObjectModel;
 
 
 
 
-namespace RI.Framework.Threading
+namespace RI.Framework.Threading.Dispatcher
 {
 	/// <summary>
 	///     Implements a delegate dispatcher which can be run on any thread.

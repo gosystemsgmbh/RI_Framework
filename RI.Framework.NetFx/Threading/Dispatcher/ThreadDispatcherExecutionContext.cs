@@ -8,7 +8,7 @@ using RI.Framework.Utilities.ObjectModel;
 
 
 
-namespace RI.Framework.Threading
+namespace RI.Framework.Threading.Dispatcher
 {
 	/// <summary>
 	///     Represents the execution context under which a delegate is executed by a dispatcher.

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 
 
-namespace RI.Framework.Threading
+namespace RI.Framework.Threading.Dispatcher
 {
 	/// <summary>
 	///     Combines a <see cref="HeavyThread" /> and a <see cref="ThreadDispatcher" /> which is run inside the <see cref="HeavyThread" />.

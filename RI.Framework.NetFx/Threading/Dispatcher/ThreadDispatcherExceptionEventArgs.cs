@@ -3,7 +3,7 @@
 
 
 
-namespace RI.Framework.Threading
+namespace RI.Framework.Threading.Dispatcher
 {
 	/// <summary>
 	///     Event arguments for the <see cref="IThreadDispatcher" />.<see cref="IThreadDispatcher.Exception" /> event.

@@ -4,7 +4,7 @@ using System.Threading;
 
 
 
-namespace RI.Framework.Threading
+namespace RI.Framework.Threading.Dispatcher
 {
 	/// <summary>
 	///     Implements a <see cref="SynchronizationContext" /> which uses a <see cref="IThreadDispatcher" /> for execution.

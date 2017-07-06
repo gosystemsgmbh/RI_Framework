@@ -3,7 +3,7 @@ using System;
 
 
 
-namespace RI.Framework.Threading
+namespace RI.Framework.Threading.Dispatcher
 {
 	/// <summary>
 	///     Describes the current shutdown mode of a <see cref="IThreadDispatcher" />.

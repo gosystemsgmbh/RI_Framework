@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Windows.Threading;
-
-using RI.Framework.Threading;
 
 
 
 
-namespace RI.Framework.Utilities.Wpf
+namespace RI.Framework.Threading.Tasks
 {
 	/// <summary>
 	///     Implements an awaiter which continues on a specified <see cref="System.Windows.Threading.Dispatcher" />.
@@ -21,7 +18,7 @@ namespace RI.Framework.Utilities.Wpf
 		/// </summary>
 		/// <param name="dispatcher"> The used <see cref="System.Windows.Threading.Dispatcher" />. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" /> is null. </exception>
-		public DispatcherAwaiter (Dispatcher dispatcher)
+		public DispatcherAwaiter (System.Windows.Threading.Dispatcher dispatcher)
 		{
 			if (dispatcher == null)
 			{
@@ -44,7 +41,7 @@ namespace RI.Framework.Utilities.Wpf
 		/// <value>
 		///     The used <see cref="System.Windows.Threading.Dispatcher" />.
 		/// </value>
-		public Dispatcher Dispatcher { get; }
+		public System.Windows.Threading.Dispatcher Dispatcher { get; }
 
 		#endregion
 

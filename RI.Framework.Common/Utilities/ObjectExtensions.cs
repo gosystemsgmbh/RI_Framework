@@ -6,7 +6,9 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 
+using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Utilities.ObjectModel;
+using RI.Framework.Utilities.Reflection;
 
 
 
@@ -23,8 +25,12 @@ namespace RI.Framework.Utilities
 		static ObjectExtensions ()
 		{
 			ObjectExtensions.GetSyncRootSyncRoot = new object();
+			ObjectExtensions.CloneSyncRoot = new object();
+
 			ObjectExtensions.IsSynchronizedGetters = new Dictionary<Type, MethodInfo>();
 			ObjectExtensions.SyncRootGetters = new Dictionary<Type, MethodInfo>();
+
+			ObjectExtensions.CloneMethods = new Dictionary<Type, Dictionary<Type, MethodInfo>>();
 		}
 
 		#endregion
@@ -33,6 +39,9 @@ namespace RI.Framework.Utilities
 
 
 		#region Static Properties/Indexer
+
+		private static Dictionary<Type, Dictionary<Type, MethodInfo>> CloneMethods { get; }
+		private static object CloneSyncRoot { get; }
 
 		private static object GetSyncRootSyncRoot { get; }
 		private static Dictionary<Type, MethodInfo> IsSynchronizedGetters { get; }
@@ -124,6 +133,11 @@ namespace RI.Framework.Utilities
 		///         2. If <paramref name="obj" /> implements <see cref="ICloneable" />, <see cref="ICloneable.Clone" /> is called and its return value returned.
 		///     </para>
 		///     <para>
+		///         3. Reflection is used to determine whether the object implements the following public instance method:
+		///         <c> public T Clone () </c>, where <c> T </c> is a type which must be assignable to <typeparamref name="T" />.
+		///         If so, <c> Clone </c> is called and its return value returned.
+		///     </para>
+		///     <para>
 		///         3. If none of the above is implemented, <paramref name="defaultValue" /> is returned.
 		///     </para>
 		///     <note type="note">
@@ -152,7 +166,49 @@ namespace RI.Framework.Utilities
 				return (T)cloneable2.Clone();
 			}
 
-			//TODO: USe reflection
+			lock (ObjectExtensions.CloneSyncRoot)
+			{
+				Type objType = obj.GetType();
+				Type cloneType = typeof(T);
+				MethodInfo cloneMethod = null;
+
+				if (ObjectExtensions.CloneMethods.ContainsKey(objType))
+				{
+					if (ObjectExtensions.CloneMethods[objType].ContainsKey(cloneType))
+					{
+						cloneMethod = ObjectExtensions.CloneMethods[objType][cloneType];
+					}
+				}
+
+				if (cloneMethod == null)
+				{
+					List<MethodInfo> candidates = objType.GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(x => x.Name.Equals(nameof(ICloneable.Clone), StringComparison.InvariantCultureIgnoreCase) && cloneType.IsAssignableFrom(x.ReturnType) && (x.GetParameters().Length == 0));
+					List<Type> candidateTypes = candidates.Select(x => x.ReturnType);
+
+					Type matchingType;
+					int matchingDepth;
+					cloneType.GetBestMatchingType(out matchingType, out matchingDepth, candidateTypes.ToArray());
+
+					if (matchingType != null)
+					{
+						cloneMethod = candidates.FirstOrDefault(x => x.ReturnType == matchingType);
+						if (cloneMethod != null)
+						{
+							if (!ObjectExtensions.CloneMethods.ContainsKey(objType))
+							{
+								ObjectExtensions.CloneMethods.Add(objType, new Dictionary<Type, MethodInfo>());
+							}
+							ObjectExtensions.CloneMethods[objType].Add(cloneType, cloneMethod);
+						}
+					}
+				}
+
+				if (cloneMethod != null)
+				{
+					T clone = (T)cloneMethod.Invoke(obj, null);
+					return clone;
+				}
+			}
 
 			return defaultValue;
 		}

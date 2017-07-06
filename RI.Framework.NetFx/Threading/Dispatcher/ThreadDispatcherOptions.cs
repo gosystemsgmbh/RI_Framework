@@ -4,7 +4,7 @@ using System.Threading;
 
 
 
-namespace RI.Framework.Threading
+namespace RI.Framework.Threading.Dispatcher
 {
 	/// <summary>
 	///     Describes execution options for enqueued delegates.

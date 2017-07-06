@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 
+using RI.Framework.Collections;
 using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Composition.Model;
 using RI.Framework.Services.Logging;
@@ -26,8 +27,6 @@ namespace RI.Framework.Composition.Catalogs
 	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
-	/// TODO: ExportAllTypes setting in bootstrapper
-	/// TODO: Prevent from loading the same assembly twice
 	public sealed class ScriptingCatalog : CompositionCatalog
 	{
 		#region Constants
@@ -60,6 +59,8 @@ namespace RI.Framework.Composition.Catalogs
 		public ScriptingCatalog (bool exportAllTypes)
 		{
 			this.ExportAllTypes = exportAllTypes;
+
+			this.LoadedAssemblies = new HashSet<Assembly>();
 		}
 
 		#endregion
@@ -107,6 +108,8 @@ namespace RI.Framework.Composition.Catalogs
 			}
 		}
 
+		private HashSet<Assembly> LoadedAssemblies { get; }
+
 		#endregion
 
 
@@ -136,14 +139,16 @@ namespace RI.Framework.Composition.Catalogs
 
 			lock (this.SyncRoot)
 			{
-				Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
-				foreach (Assembly assembly in assemblies)
+				HashSet<Assembly> allAssemblies = new HashSet<Assembly>(AppDomain.CurrentDomain.GetAssemblies(), this.LoadedAssemblies.Comparer);
+				HashSet<Assembly> newAssemblies = allAssemblies.Except(this.LoadedAssemblies, this.LoadedAssemblies.Comparer);
+
+				foreach (Assembly newAssembly in newAssemblies)
 				{
-					AssemblyName assemblyName = assembly.GetName();
+					AssemblyName assemblyName = newAssembly.GetName();
 					if (assemblyName.Name.StartsWith(ScriptingCatalog.ScriptingAssemblyName, StringComparison.InvariantCultureIgnoreCase))
 					{
 						this.Log(LogLevel.Debug, "Loading assembly: {0}", assemblyName.FullName);
-						Type[] types = assembly.GetTypes();
+						List<Type> types = newAssembly.GetTypes().Where(x => x.IsClass && x.IsPublic && (!x.IsAbstract)).ToList();
 						foreach (Type type in types)
 						{
 							if (CompositionContainer.ValidateExportType(type))
@@ -166,6 +171,8 @@ namespace RI.Framework.Composition.Catalogs
 						}
 					}
 				}
+
+				this.LoadedAssemblies.AddRange(newAssemblies);
 			}
 		}
 

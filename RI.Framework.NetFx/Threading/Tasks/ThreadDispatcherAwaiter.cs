@@ -1,9 +1,11 @@
 ﻿using System;
 
+using RI.Framework.Threading.Dispatcher;
 
 
 
-namespace RI.Framework.Threading
+
+namespace RI.Framework.Threading.Tasks
 {
 	/// <summary>
 	///     Implements an awaiter which continues on a specified <see cref="IThreadDispatcher" />.

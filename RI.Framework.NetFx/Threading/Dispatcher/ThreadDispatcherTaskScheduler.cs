@@ -9,7 +9,7 @@ using RI.Framework.Utilities.ObjectModel;
 
 
 
-namespace RI.Framework.Threading
+namespace RI.Framework.Threading.Dispatcher
 {
 	/// <summary>
 	///     Implements a <see cref="TaskScheduler" /> which uses a <see cref="IThreadDispatcher" /> for execution.

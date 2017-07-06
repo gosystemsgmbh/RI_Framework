@@ -331,16 +331,18 @@ namespace RI.Framework.Services.Dispatcher
 		/// <inheritdoc />
 		public void CancelAllOperations ()
 		{
+			List<IDispatcherOperation> operationsToCancel = new List<IDispatcherOperation>();
 			lock (this.SyncRoot)
 			{
 				foreach (LinkedList<DispatcherOperation> priority in this._pendingOperations)
 				{
 					foreach (DispatcherOperation operation in priority)
 					{
-						((IDispatcherOperation)operation).Cancel();
+						operationsToCancel.Add(operation);
 					}
 				}
 			}
+			operationsToCancel.ForEach(x => x.Cancel());
 		}
 
 		/// <inheritdoc />
@@ -357,7 +359,6 @@ namespace RI.Framework.Services.Dispatcher
 			};
 
 			DispatcherOperation operation = this.BroadcastInternal(priority, broadcast);
-			broadcast.Operation = operation;
 			return operation;
 		}
 
@@ -376,7 +377,6 @@ namespace RI.Framework.Services.Dispatcher
 			};
 
 			DispatcherOperation operation = this.BroadcastInternal(priority, broadcast);
-			broadcast.Operation = operation;
 			return operation;
 		}
 
@@ -396,7 +396,6 @@ namespace RI.Framework.Services.Dispatcher
 			};
 
 			DispatcherOperation operation = this.BroadcastInternal(priority, broadcast);
-			broadcast.Operation = operation;
 			return operation;
 		}
 
@@ -417,7 +416,6 @@ namespace RI.Framework.Services.Dispatcher
 			};
 
 			DispatcherOperation operation = this.BroadcastInternal(priority, broadcast);
-			broadcast.Operation = operation;
 			return operation;
 		}
 
@@ -439,7 +437,6 @@ namespace RI.Framework.Services.Dispatcher
 			};
 
 			DispatcherOperation operation = this.BroadcastInternal(priority, broadcast);
-			broadcast.Operation = operation;
 			return operation;
 		}
 
@@ -457,7 +454,6 @@ namespace RI.Framework.Services.Dispatcher
 			};
 
 			DispatcherOperation operation = this.BroadcastInternal(priority, broadcast);
-			broadcast.Operation = operation;
 			return operation;
 		}
 
@@ -476,7 +472,6 @@ namespace RI.Framework.Services.Dispatcher
 			};
 
 			DispatcherOperation operation = this.BroadcastInternal(priority, broadcast);
-			broadcast.Operation = operation;
 			return operation;
 		}
 
@@ -496,7 +491,6 @@ namespace RI.Framework.Services.Dispatcher
 			};
 
 			DispatcherOperation operation = this.BroadcastInternal(priority, broadcast);
-			broadcast.Operation = operation;
 			return operation;
 		}
 
@@ -517,7 +511,6 @@ namespace RI.Framework.Services.Dispatcher
 			};
 
 			DispatcherOperation operation = this.BroadcastInternal(priority, broadcast);
-			broadcast.Operation = operation;
 			return operation;
 		}
 
@@ -551,7 +544,10 @@ namespace RI.Framework.Services.Dispatcher
 				throw new ArgumentNullException(nameof(receiver));
 			}
 
-			DispatcherSlots<T>.RegisterReceiver(receiver);
+			lock (this.SyncRoot)
+			{
+				DispatcherSlots<T>.RegisterReceiver(receiver);
+			}
 		}
 
 		/// <inheritdoc />
@@ -563,7 +559,10 @@ namespace RI.Framework.Services.Dispatcher
 				throw new ArgumentNullException(nameof(receiver));
 			}
 
-			DispatcherSlots<T>.UnregisterReceiver(receiver);
+			lock (this.SyncRoot)
+			{
+				DispatcherSlots<T>.UnregisterReceiver(receiver);
+			}
 		}
 
 		#endregion

@@ -20,7 +20,6 @@ namespace RI.Framework.Composition
 	///         See <see cref="CompositionContainer" /> for details about managing exports and performing composition.
 	///     </para>
 	/// </remarks>
-	/// TODO: Is everything here what is also in CompositionContainer?
 	public sealed class CompositionBatch
 	{
 		#region Instance Constructor/Destructor

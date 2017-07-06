@@ -43,6 +43,16 @@ Utilities
  - (WinForms) WindowWrapper
 
 
+Threading
+---------
+
+ - (.NET) TaskExtensions: Awaiter for IEnumerable<Task>
+ - (.NET) TaskExtensions: Awaiter for int
+ - (.NET) TaskExtensions: Awaiter for TimeSpan
+ - (.NET) TaskExtensions: Awaiter for CancellationToken
+ - (.NET) TaskExtensions: Awaiter for Process
+
+
 Collections
 -----------
 
