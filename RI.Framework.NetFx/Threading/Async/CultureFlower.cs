@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 
 
-namespace RI.Framework.Threading.Tasks
+namespace RI.Framework.Threading.Async
 {
 	/// <summary>
 	///     Implements an awaiter which flows the current <see cref="CultureInfo" /> around the execution of a <see cref="Task" />.

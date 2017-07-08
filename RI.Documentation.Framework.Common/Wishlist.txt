@@ -144,6 +144,8 @@ Collections
 I/O
 ---
 
+ - (Common) CsvDocument: Add header support
+
  - (Common) PathProperties: ChangeType
  - (Common) PathString: IsCompatible
 

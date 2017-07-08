@@ -6,7 +6,7 @@ using RI.Framework.Utilities.ObjectModel;
 
 
 
-namespace RI.Framework.Threading.Tasks
+namespace RI.Framework.Threading.Async
 {
 	/// <summary>
 	///     Implements a base class to implement custom awaiters.

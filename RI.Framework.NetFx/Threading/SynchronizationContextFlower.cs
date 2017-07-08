@@ -2,10 +2,12 @@
 using System.Threading;
 using System.Threading.Tasks;
 
+using RI.Framework.Threading.Async;
 
 
 
-namespace RI.Framework.Threading.Tasks
+
+namespace RI.Framework.Threading
 {
 	/// <summary>
 	///     Implements an awaiter which flows the current <see cref="SynchronizationContext" /> around the execution of a <see cref="Task" />.

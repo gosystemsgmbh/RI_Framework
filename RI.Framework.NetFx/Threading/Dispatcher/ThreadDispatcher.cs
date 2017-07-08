@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 using RI.Framework.Collections;
 using RI.Framework.Collections.Generic;
-using RI.Framework.Threading.Tasks;
 using RI.Framework.Utilities.ObjectModel;
 
 

@@ -103,6 +103,24 @@ namespace RI.Framework.Utilities.Wpf
 			await application.Dispatcher.DoEventsAsync(priority).ConfigureAwait(false);
 		}
 
+		/// <summary>
+		///     Creates an awaiter for an application.
+		/// </summary>
+		/// <param name="application"> The application. </param>
+		/// <returns>
+		///     The created awaiter.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="application" /> is null. </exception>
+		public static DispatcherAwaiter GetAwaiter (this Application application)
+		{
+			if (application == null)
+			{
+				throw new ArgumentNullException(nameof(application));
+			}
+
+			return application.Dispatcher.GetAwaiter();
+		}
+
 		#endregion
 	}
 }

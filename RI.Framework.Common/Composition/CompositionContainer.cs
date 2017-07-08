@@ -14,12 +14,12 @@ using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.ObjectModel;
 using RI.Framework.Utilities.Reflection;
-
-
-
-
 #if PLATFORM_NETFX
 using System.Linq.Expressions;
+
+
+
+
 #endif
 
 
@@ -261,6 +261,16 @@ namespace RI.Framework.Composition
 	///     <para>
 	///         This can help with exporting/importing types which are not under your control, where you cannot apply a <see cref="ExportAttribute" /> and you do not want to explicitly create instances of those types.
 	///     </para>
+	///     <para>
+	///         <b> PARENT CONTAINER </b>
+	///     </para>
+	///     <para>
+	///         When constructing a <see cref="CompositionContainer" />, a parent container can be specified (see <see cref="CompositionContainer(CompositionContainer)" />).
+	///         The constructed <see cref="CompositionContainer" /> then inherits all exports of its parent container and also reflects the changes in composition of its parent container.
+	///     </para>
+	///     <para>
+	///         The only way to detach from a parent container is through <see cref="Dispose" /> but no other parent container can be attached afterwards.
+	///     </para>
 	///     <note type="important">
 	///         <see cref="CompositionContainer" /> is thread-safe.
 	///         It uses exclusive locks for its composition operations.
@@ -275,9 +285,6 @@ namespace RI.Framework.Composition
 		#region Constants
 
 		internal static readonly StringComparerEx NameComparer = StringComparerEx.Ordinal;
-		private bool _autoDispose;
-		private bool _loggingEnabled;
-		private CompositionContainer _parentContainer;
 
 		#endregion
 
@@ -429,13 +436,6 @@ namespace RI.Framework.Composition
 			return type.IsClass && (!type.IsAbstract);
 		}
 
-		private object CreateArray (Type type, List<object> content)
-		{
-			Array array = Array.CreateInstance(type, content.Count);
-			((ICollection)content).CopyTo(array, 0);
-			return array;
-		}
-
 		private static Type GetEnumerableType (Type type)
 		{
 			Type genericType = type.IsGenericType ? type.GetGenericTypeDefinition() : null;
@@ -561,6 +561,17 @@ namespace RI.Framework.Composition
 		{
 			this.Dispose();
 		}
+
+		#endregion
+
+
+
+
+		#region Instance Fields
+
+		private bool _autoDispose;
+		private bool _loggingEnabled;
+		private CompositionContainer _parentContainer;
 
 		#endregion
 
@@ -1464,10 +1475,10 @@ namespace RI.Framework.Composition
 							}
 
 #if PLATFORM_NETFX
-						Type genericType = propertyType.IsGenericType ? propertyType.GetGenericTypeDefinition() : null;
-						Type typeArgument = propertyType.IsGenericType ? propertyType.GetGenericArguments()[0] : propertyType;
-						propertyType = typeArgument;
-						asArray = genericType != null;
+							Type genericType = propertyType.IsGenericType ? propertyType.GetGenericTypeDefinition() : null;
+							Type typeArgument = propertyType.IsGenericType ? propertyType.GetGenericArguments()[0] : propertyType;
+							propertyType = typeArgument;
+							asArray = genericType != null;
 #endif
 
 							if (propertyType == typeof(Import))
@@ -1544,20 +1555,6 @@ namespace RI.Framework.Composition
 			}
 		}
 
-		private void ClearInternal ()
-		{
-			foreach (CompositionCatalog catalog in this.Catalogs)
-			{
-				catalog.RecomposeRequested -= this.CatalogRecomposeRequestHandler;
-			}
-
-			this.Catalogs.Clear();
-			this.Instances.Clear();
-			this.Types.Clear();
-
-			this.UpdateComposition(true);
-		}
-
 		private void AddCatalogInternal (CompositionCatalog catalog)
 		{
 			if (this.Catalogs.Contains(catalog))
@@ -1590,7 +1587,29 @@ namespace RI.Framework.Composition
 			this.Types.Add(new CompositionCatalogItem(name, type, privateExport));
 		}
 
+		private void ClearInternal ()
+		{
+			foreach (CompositionCatalog catalog in this.Catalogs)
+			{
+				catalog.RecomposeRequested -= this.CatalogRecomposeRequestHandler;
+			}
+
+			this.Catalogs.Clear();
+			this.Instances.Clear();
+			this.Types.Clear();
+
+			this.UpdateComposition(true);
+		}
+
+		private object CreateArray (Type type, List<object> content)
+		{
+			Array array = Array.CreateInstance(type, content.Count);
+			((ICollection)content).CopyTo(array, 0);
+			return array;
+		}
+
 #if PLATFORM_NETFX
+
 		private object CreateGenericLazyLoadDelegate (Type type)
 		{
 			Type enumerableType = CompositionContainer.GetEnumerableType(type);
@@ -1601,6 +1620,7 @@ namespace RI.Framework.Composition
 			Delegate resolveLambda = Expression.Lambda(resolveCall).Compile();
 			return resolveLambda;
 		}
+
 #endif
 
 		private List<object> GetExistingInstancesInternal (bool includeParentInstances)
@@ -2034,6 +2054,19 @@ namespace RI.Framework.Composition
 
 
 
+		#region Interface: ISynchronizable
+
+		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		public object SyncRoot { get; }
+
+		#endregion
+
+
+
+
 		#region Type: CompositionInstanceItem
 
 		private sealed class CompositionInstanceItem
@@ -2153,14 +2186,5 @@ namespace RI.Framework.Composition
 		}
 
 		#endregion
-
-
-
-
-		/// <inheritdoc />
-		bool ISynchronizable.IsSynchronized => true;
-
-		/// <inheritdoc />
-		public object SyncRoot { get; }
 	}
 }

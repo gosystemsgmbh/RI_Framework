@@ -4,7 +4,7 @@ using System.Threading;
 
 
 
-namespace RI.Framework.Threading.Tasks
+namespace RI.Framework.Threading.Async
 {
 	/// <summary>
 	///     Implements an awaiter which continues on the <see cref="ThreadPool" />.

@@ -60,7 +60,7 @@
     <Compile Include="Utilities\Wpf\Converters\NormalObjectBoolConverter.cs" />
     <Compile Include="Utilities\Wpf\Converters\InvertedObjectVisibilityConverter.cs" />
     <Compile Include="Utilities\Wpf\Converters\NormalObjectVisibilityConverter.cs" />
-    <Compile Include="Threading\Tasks\DispatcherAwaiter.cs" />
+    <Compile Include="Utilities\Wpf\DispatcherAwaiter.cs" />
     <Compile Include="Utilities\Wpf\Markup\EventBinder.cs" />
     <Compile Include="Mvvm\ViewModel\NotificationObject.cs" />
     <Compile Include="Mvvm\ViewModel\DelegateCommand.cs" />
@@ -102,6 +102,7 @@
       <Name>RI.Framework.Windows.Shared</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>@"$(SolutionDir)_Input\VersionUpdater.exe" "$(ProjectDir)Properties" "nr" "file" "$(SolutionDir)RI.Framework.Property.Version.txt" "$(SolutionDir)RI.Framework.Property.Company.txt" "$(SolutionDir)RI.Framework.Property.Copyright.txt"</PreBuildEvent>

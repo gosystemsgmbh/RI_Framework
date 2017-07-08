@@ -157,18 +157,18 @@
     <Compile Include="StateMachines\AsyncStateMachine.cs" />
     <Compile Include="StateMachines\DefaultStateMachineConfiguration.cs" />
     <Compile Include="StateMachines\Dispatchers\ThreadDispatcherStateDispatcher.cs" />
-    <Compile Include="Threading\Tasks\CultureFlower.cs" />
-    <Compile Include="Threading\Tasks\CustomAwaiter.cs" />
+    <Compile Include="Threading\Async\CultureFlower.cs" />
+    <Compile Include="Threading\Async\CustomAwaiter.cs" />
     <Compile Include="Threading\Dispatcher\HeavyThreadDispatcher.cs" />
     <Compile Include="Threading\Dispatcher\IThreadDispatcher.cs" />
     <Compile Include="Threading\Dispatcher\IThreadDispatcherExtensions.cs" />
-    <Compile Include="Threading\Tasks\CustomFlower.cs" />
-    <Compile Include="Threading\Tasks\SynchronizationContextAwaiter.cs" />
+    <Compile Include="Threading\Async\CustomFlower.cs" />
+    <Compile Include="Threading\SynchronizationContextAwaiter.cs" />
     <Compile Include="Threading\SynchronizationContextExtensions.cs" />
-    <Compile Include="Threading\Tasks\SynchronizationContextFlower.cs" />
+    <Compile Include="Threading\SynchronizationContextFlower.cs" />
     <Compile Include="Threading\Tasks\TaskExtensions.cs" />
     <Compile Include="Threading\Dispatcher\ThreadDispatcher.cs" />
-    <Compile Include="Threading\Tasks\ThreadDispatcherAwaiter.cs" />
+    <Compile Include="Threading\Dispatcher\ThreadDispatcherAwaiter.cs" />
     <Compile Include="Threading\Dispatcher\ThreadDispatcherExecutionContext.cs" />
     <Compile Include="Threading\Dispatcher\ThreadDispatcherException.cs" />
     <Compile Include="Threading\Dispatcher\ThreadDispatcherExceptionEventArgs.cs" />
@@ -180,7 +180,7 @@
     <Compile Include="Threading\Dispatcher\ThreadDispatcherTaskScheduler.cs" />
     <Compile Include="Threading\Dispatcher\ThreadDispatcherTimer.cs" />
     <Compile Include="Threading\Dispatcher\ThreadDispatcherTimerMode.cs" />
-    <Compile Include="Threading\Tasks\ThreadPoolAwaiter.cs" />
+    <Compile Include="Threading\Async\ThreadPoolAwaiter.cs" />
     <Compile Include="Web\_NamespaceDoc.cs" />
   </ItemGroup>
   <ItemGroup>
