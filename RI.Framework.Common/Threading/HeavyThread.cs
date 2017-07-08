@@ -12,10 +12,6 @@ using RI.Framework.Collections;
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
-
-
-
-
 #endif
 
 
@@ -33,7 +29,7 @@ namespace RI.Framework.Threading
 	///     </para>
 	///     <note type="important">
 	///         Some virtual methods are called from within locks to <see cref="SyncRoot" />.
-	///         Be caruful in inheriting classes when calling outside code from those methods (e.g. through events, callbacks, or other virtual methods) to not produce deadlocks!
+	///         Be careful in inheriting classes when calling outside code from those methods (e.g. through events, callbacks, or other virtual methods) to not produce deadlocks!
 	///     </note>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
@@ -894,20 +890,20 @@ namespace RI.Framework.Threading
 
 
 #if PLATFORM_NETFX
-/// <summary>
-///     Adds a <see cref="TaskCompletionSource{T}" /> to this thread which is completed when the thread is requested to stop.
-/// </summary>
-/// <param name="tcs"> The <see cref="TaskCompletionSource{T}" /> to add. </param>
-/// <remarks>
-///     <para>
-///         A task can be added multiple times but will only be completed once.
-///     </para>
-///     <para>
-///         All added tasks will be completed using <see cref="TaskCompletionSource{T}.TrySetResult" /> by the default implementation of <see cref="OnStop" />.
-///         Therefore, no tasks added after <see cref="OnStop" /> was called will be completed.
-///     </para>
-/// </remarks>
-/// <exception cref="ArgumentNullException"> <paramref name="tcs" /> is null. </exception>
+		/// <summary>
+		///     Adds a <see cref="TaskCompletionSource{T}" /> to this thread which is completed when the thread is requested to stop.
+		/// </summary>
+		/// <param name="tcs"> The <see cref="TaskCompletionSource{T}" /> to add. </param>
+		/// <remarks>
+		///     <para>
+		///         A task can be added multiple times but will only be completed once.
+		///     </para>
+		///     <para>
+		///         All added tasks will be completed using <see cref="TaskCompletionSource{T}.TrySetResult" /> by the default implementation of <see cref="OnStop" />.
+		///         Therefore, no tasks added after <see cref="OnStop" /> was called will be completed.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="tcs" /> is null. </exception>
 		protected void AddStopTask (TaskCompletionSource<object> tcs)
 		{
 			if (tcs == null)
@@ -937,7 +933,6 @@ namespace RI.Framework.Threading
 
 			this.StopTasks.Remove(tcs);
 		}
-
 #endif
 	}
 }

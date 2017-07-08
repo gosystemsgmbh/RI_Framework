@@ -30,6 +30,10 @@ namespace RI.Framework.Composition
 	///     <para>
 	///         See <see cref="CompositionContainer" /> for more details about composition.
 	///     </para>
+	///     <note type="important">
+	///         Some virtual methods are called from within locks to <see cref="SyncRoot" /> and/or <see cref="CompositionContainer.SyncRoot" />.
+	///         Be careful in inheriting classes when calling outside code from those methods (e.g. through events, callbacks, or other virtual methods) to not produce deadlocks!
+	///     </note>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	public abstract class CompositionCatalog : ILogSource, IDisposable, ISynchronizable
@@ -150,6 +154,9 @@ namespace RI.Framework.Composition
 		///         <see cref="UpdateItems" /> can be repeatedly called, depending on the operations of the <see cref="CompositionContainer" />.
 		///         Therefore, overloading <see cref="UpdateItems" /> shall not do anything in cases the exports have not changed.
 		///         This requires proper determination on each <see cref="UpdateItems" /> call whether <see cref="Items" /> is up-to-date or not.
+		///     </note>
+		///     <note type="important">
+		///         This method is called by <see cref="CompositionContainer" /> while inside a lock to <see cref="CompositionContainer.SyncRoot" />.
 		///     </note>
 		/// </remarks>
 		protected internal virtual void UpdateItems ()

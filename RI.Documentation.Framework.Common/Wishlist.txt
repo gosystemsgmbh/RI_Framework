@@ -218,18 +218,19 @@ Composition
 
  + (Unity) GameObjectCatalog
 
- = (Common) CreateGlobal
-
- - (Common) CreateIndependent
- - (Common) CreateAndExport
- - (Common) AddMultiple
-
- - (Common) Add container to container (ContainerCatalog?)
+ + (Common) CreateGlobal
+ + (Common) Register, Resolve
 
  = (Common) Lazy loading (Func<>, Lazy<>)
  = (Common) Generic Import property
  = (Common) Enumerable import property
  = (Common) Better platform detection
+
+ - (Common) CreateIndependent
+ - (Common) CreateAndExport
+
+ - (Common) Add container to container (ContainerCatalog?)
+ - (Common) Consistent parameter import handling
  
 
 Services

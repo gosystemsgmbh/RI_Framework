@@ -15,7 +15,7 @@ namespace RI.Framework.StateMachines.States
 	///     </para>
 	///     <note type="important">
 	///         Some methods are called by <see cref="StateMachine" /> while in a lock to its <see cref="StateMachine.SyncRoot" />.
-	///         Be caruful in implementing classes when calling outside code from those methods (e.g. through events, callbacks, or other virtual methods) to not produce deadlocks!
+	///         Be careful in implementing classes when calling outside code from those methods (e.g. through events, callbacks, or other virtual methods) to not produce deadlocks!
 	///     </note>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />

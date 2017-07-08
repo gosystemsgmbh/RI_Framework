@@ -23,7 +23,7 @@ namespace RI.Framework.StateMachines
 	///     </para>
 	///     <note type="important">
 	///         Some virtual methods are called from within locks to <see cref="StateMachine.SyncRoot" />.
-	///         Be caruful in inheriting classes when calling outside code from those methods (e.g. through events, callbacks, or other virtual methods) to not produce deadlocks!
+	///         Be careful in inheriting classes when calling outside code from those methods (e.g. through events, callbacks, or other virtual methods) to not produce deadlocks!
 	///     </note>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />

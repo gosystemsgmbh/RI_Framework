@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq.Expressions;
 using System.Reflection;
 
 using RI.Framework.Collections;
@@ -13,9 +12,15 @@ using RI.Framework.Composition.Model;
 using RI.Framework.Services.Logging;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
+using RI.Framework.Utilities.ObjectModel;
 using RI.Framework.Utilities.Reflection;
 
 
+
+
+#if PLATFORM_NETFX
+using System.Linq.Expressions;
+#endif
 
 
 namespace RI.Framework.Composition
@@ -45,21 +50,21 @@ namespace RI.Framework.Composition
 	///         &quot;Import&quot; means that &quot;a value of a given type or name is required or requested in some way&quot; (manual or model-based import) and the <see cref="CompositionContainer" /> provides that value (or &quot;imports it for use&quot;) by searching its known exports for an export of the same name as the import.
 	///     </para>
 	///     <para>
-	///         The search and provisioning of exports (of the same name as the import) is called &quot;resolving imports&quot; or simply &quot;resolving&quot;.
+	///         The search and provisioning of exports (of the same name as the required import) is called &quot;resolving imports&quot; or simply &quot;resolving&quot;.
 	///     </para>
 	///     <para>
 	///         <b> NAMES </b>
 	///     </para>
 	///     <para>
 	///         What also might be confusing a little bit is the &quot;name&quot; of imports and exports.
-	///         Especially because sometimes a type and sometimes a name is mentioned.
+	///         Especially because sometimes a type and sometimes a name is mentioned/used.
 	///         When exports are managed by a <see cref="CompositionContainer" />, or a <see cref="CompositionCatalog" />, they are always identified using their name.
 	///         Resolving of imports is also always done using the name of the import.
 	///         Now, when types are used instead of names, the types are simply translated into what is called &quot;the types default name&quot;.
 	///         After the translation, the types are ignored and the exports and imports are continued to be handled using their translated names.
 	///         For example, the method <see cref="AddExport(object, Type)" /> does nothing else than determine the types default name and then call <see cref="AddExport(object, string)" /> with that name.
 	///         This allows you to mix type-based import and export (using their types default names) and also name-based import and export (using any custom names you specify).
-	///         Finally, a types default name is simply its namespace and type name, e.g. the string &quot;RI.Framework.Composition.CompositionContainer&quot; for <see cref="CompositionContainer" />.
+	///         Finally, a types default name is simply its namespace and type name, e.g. the name &quot;RI.Framework.Composition.CompositionContainer&quot; for the type <see cref="CompositionContainer" />.
 	///     </para>
 	///     <para>
 	///         Note that names are always case-sensitive.
@@ -75,7 +80,10 @@ namespace RI.Framework.Composition
 	///     <para>
 	///         This is how Dependency Injection is implemented using <see cref="CompositionContainer" />.
 	///         If you have a cascade of objects, with all kind of dependencies, you do not need to resolve them all by yourself by creating instances, dealing with singletons, or getting manual imports.
-	///         You just make the <see cref="CompositionContainer" /> aware where to find all the possibly required objects or types (the simplest way to do this is to use an <see cref="AssemblyCatalog" />) and then start to pull the objects from the <see cref="CompositionContainer" /> as you need them.
+	///         You just make the <see cref="CompositionContainer" /> aware where to find all the possibly required objects or types (using the various concrete implementations of <see cref="CompositionCatalog" />) and then start to pull the objects from the <see cref="CompositionContainer" /> as you need them.
+	///     </para>
+	///     <para>
+	///         It is a dangerous comparison but you could view a <see cref="CompositionContainer" /> as a kind of very advanced singleton manager which also resolves the dependencies of its managed singletons.
 	///     </para>
 	///     <para>
 	///         <b> MANUAL &amp; MODEL-BASED EXPORTING </b>
@@ -85,13 +93,13 @@ namespace RI.Framework.Composition
 	///     </para>
 	///     <para>
 	///         Manual export is done by calling one of the <c> AddExport </c> methods explicitly and stating a type or object and under which name it is exported.
-	///         Advantage: A type or object does not need any special preparation in order to be exported manually, any type or object can be exported (restrictions apply, see below).
+	///         Advantage: A type or object does not need any special preparation in order to be exported manually, any type or object can be exported (restrictions apply, see below), even those which requires complex construction which could not be handled by a <see cref="CompositionContainer" />.
 	///         Disadvantage: The type or object to be manually exported must be known and explicitly added to the <see cref="CompositionContainer" />, adding a strong dependency to that type or object and/or a lot of boilerplate code just to discover the type or object.
 	///     </para>
 	///     <para>
 	///         Model-based export is done by using a <see cref="CompositionCatalog" /> and adding it to the <see cref="CompositionContainer" /> using the <see cref="AddCatalog(CompositionCatalog)" /> method.
-	///         Advantage: No dependencies or references to the exported types or objects are required at compile time because, depending on the used <see cref="CompositionCatalog" />, the composition catalog can collect all exports by itself (e.g. all prepared types in an <see cref="Assembly" /> when using <see cref="AssemblyCatalog" />).
-	///         Disadvantage: A type or object needs special preparation in order to be model-based exported, namely at least one or more <see cref="ExportAttribute" /> applied to it.
+	///         Advantage: No dependencies or references to the exported types or objects are required at compile time because, depending on the used <see cref="CompositionCatalog" />, the composition catalog can collect all exports by itself (e.g. all eligible types in an <see cref="Assembly" /> when using <see cref="AssemblyCatalog" />).
+	///         Disadvantage: A type or object needs special preparation in order to be model-based exported, namely at least one or more <see cref="ExportAttribute" /> applied to it (for some <see cref="CompositionCatalog" />s) or simple constructors.
 	///     </para>
 	///     <para>
 	///         <b> TYPE &amp; OBJECT EXPORTS </b>
@@ -102,11 +110,11 @@ namespace RI.Framework.Composition
 	///     </para>
 	///     <para>
 	///         A type can be exported by specifying the <see cref="Type" /> and under which name it is exported.
-	///         When an import is resolved to such a type export, a new instance of that type is created (if not yet created) or the previously created instance of that type is used and provided as the import value.
+	///         When an import is resolved to such a type export, a new instance of that type is created (if not yet created) or the previously created instance of that type is used and provided as the import value (except for private exports, see below).
 	///         A type can be exported multiple times under different names.
 	///         It is important to know that the same type is only instantiated once in a <see cref="CompositionContainer" />.
 	///         That means that the one instance of a particular type is used for all exports of that type, even if exported under different names.
-	///         Therefore, type exports are always shared, singleton-like exports.
+	///         Therefore, type exports are always shared, singleton-like exports (except for private exports, see below).
 	///         <see cref="ExportConstructorAttribute" /> and <see cref="ExportCreatorAttribute" /> are used to help with the construction of instances for type exports.
 	///         <see cref="ExportCreatorAttribute" />s have higher priority than <see cref="ExportConstructorAttribute" />s when determining how an instance of a type export is to be created.
 	///         Only if the <see cref="ExportCreatorAttribute" />s yield no usable results or are not used, <see cref="ExportConstructorAttribute" /> is used.
@@ -116,6 +124,7 @@ namespace RI.Framework.Composition
 	///         When an import is resolved to such an object export, the specified object itself is provided as the import value.
 	///         An object can be exported multiple times under different names.
 	///         Unlike type exports, object exports using different instances of the same type are possible.
+	///         However, object exports cannot be private exports (see below).
 	///     </para>
 	///     <para>
 	///         Although type exports share one instance for the same type, it is possible to have type exports of a particular type and also one or more object exports with instances of that same type.
@@ -136,11 +145,10 @@ namespace RI.Framework.Composition
 	///     <para>
 	///         Private exports behave more or less also the same as described above, with one exception:
 	///         For type exports, imports will receive their own (private) instance each time (!) an import is resolved.
-	///         Object exports cannot be private.
+	///         Object exports cannot be private and are always shared.
 	///     </para>
 	///     <para>
 	///         An export can be made private through the <see cref="ExportAttribute.Private" /> property of <see cref="ExportAttribute" />.
-	///         Therefore, private exports are only available for type and model based exports.
 	///     </para>
 	///     <para>
 	///         <b> MANUAL &amp; MODEL-BASED IMPORTING </b>
@@ -154,7 +162,7 @@ namespace RI.Framework.Composition
 	///     </para>
 	///     <para>
 	///         Model-based import is done by decorating properties of composed types or objects with <see cref="ImportAttribute" />.
-	///         This is usually used for implementing Dependency Injection (DI).
+	///         This is usually used for implementing Dependency Injection (DI) or to retrieve an export from the <see cref="CompositionContainer" /> declaratively.
 	///     </para>
 	///     <para>
 	///         <b> IMPLICIT &amp; EXPLICIT MODEL-BASED IMPORTING </b>
@@ -185,7 +193,7 @@ namespace RI.Framework.Composition
 	///     <para>
 	///         A multiple import is when one of the <c> GetExports </c> methods is used or when an <see cref="ImportAttribute" /> is applied to a property of the type <see cref="Import" />.
 	///         In such cases, all the resolved import values are provided or assigned respectively.
-	///         Therefore, multiple types or object can be exported under the same name.
+	///         Therefore, multiple types or objects can be exported under the same name.
 	///     </para>
 	///     <para>
 	///         <b> ELIGIBLE TYPES </b>
@@ -253,19 +261,23 @@ namespace RI.Framework.Composition
 	///     <para>
 	///         This can help with exporting/importing types which are not under your control, where you cannot apply a <see cref="ExportAttribute" /> and you do not want to explicitly create instances of those types.
 	///     </para>
+	///     <note type="important">
+	///         <see cref="CompositionContainer" /> is thread-safe.
+	///         It uses exclusive locks for its composition operations.
+	///         It is important to know that the <see cref="CompositionCatalog" />s used by a <see cref="CompositionContainer" /> are accessed from inside locks to <see cref="SyncRoot" />!
+	///         Be careful when explicitly dealing with catalogs in multithreaded scenarios to not produce deadlocks!
+	///     </note>
 	/// </remarks>
-	/// TODO: Lazy loading
-	/// TODO: Consistent parameter import handling
-	/// TODO: Check platform differences
-	/// TODO: Update version history
-	/// TODO: Make thread-safe
-	/// TODO: Check disposing
+	/// <threadsafety static="true" instance="true" />
 	[Export]
-	public sealed class CompositionContainer : IDisposable, ILogSource
+	public sealed class CompositionContainer : IDisposable, ISynchronizable, ILogSource
 	{
 		#region Constants
 
 		internal static readonly StringComparerEx NameComparer = StringComparerEx.Ordinal;
+		private bool _autoDispose;
+		private bool _loggingEnabled;
+		private CompositionContainer _parentContainer;
 
 		#endregion
 
@@ -417,7 +429,7 @@ namespace RI.Framework.Composition
 			return type.IsClass && (!type.IsAbstract);
 		}
 
-		private static object CreateArray (Type type, List<object> content)
+		private object CreateArray (Type type, List<object> content)
 		{
 			Array array = Array.CreateInstance(type, content.Count);
 			((ICollection)content).CopyTo(array, 0);
@@ -500,6 +512,8 @@ namespace RI.Framework.Composition
 		/// </summary>
 		public CompositionContainer ()
 		{
+			this.SyncRoot = new object();
+
 			this.CatalogRecomposeRequestHandler = this.HandleCatalogRecomposeRequest;
 			this.ParentContainerCompositionChangedHandler = this.HandleParentContainerCompositionChanged;
 
@@ -569,7 +583,23 @@ namespace RI.Framework.Composition
 		///         The default value is true.
 		///     </para>
 		/// </rermarks>
-		public bool AutoDispose { get; set; }
+		public bool AutoDispose
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._autoDispose;
+				}
+			}
+			set
+			{
+				lock (this.SyncRoot)
+				{
+					this._autoDispose = value;
+				}
+			}
+		}
 
 		/// <summary>
 		///     Gets or sets whether logging, using <see cref="LogLocator" />, is enabled.
@@ -582,7 +612,23 @@ namespace RI.Framework.Composition
 		///         The default value is true.
 		///     </para>
 		/// </remarks>
-		public bool LoggingEnabled { get; set; }
+		public bool LoggingEnabled
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._loggingEnabled;
+				}
+			}
+			set
+			{
+				lock (this.SyncRoot)
+				{
+					this._loggingEnabled = value;
+				}
+			}
+		}
 
 		/// <summary>
 		///     Gets the parent composition container if this composition container is a child composition container.
@@ -590,7 +636,23 @@ namespace RI.Framework.Composition
 		/// <value>
 		///     The parent composition container or null if this composition container is not a child composition container.
 		/// </value>
-		public CompositionContainer ParentContainer { get; private set; }
+		public CompositionContainer ParentContainer
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._parentContainer;
+				}
+			}
+			private set
+			{
+				lock (this.SyncRoot)
+				{
+					this._parentContainer = value;
+				}
+			}
+		}
 
 		private EventHandler CatalogRecomposeRequestHandler { get; set; }
 
@@ -650,8 +712,13 @@ namespace RI.Framework.Composition
 				throw new ArgumentNullException(nameof(catalog));
 			}
 
-			this.AddCatalogInternal(catalog);
-			this.UpdateComposition(true);
+			lock (this.SyncRoot)
+			{
+				this.AddCatalogInternal(catalog);
+				this.UpdateComposition(true);
+			}
+
+			this.RaiseCompositionChanged();
 		}
 
 		/// <summary>
@@ -726,8 +793,13 @@ namespace RI.Framework.Composition
 				throw new EmptyStringArgumentException(nameof(exportName));
 			}
 
-			this.AddInstanceInternal(instance, exportName);
-			this.UpdateComposition(true);
+			lock (this.SyncRoot)
+			{
+				this.AddInstanceInternal(instance, exportName);
+				this.UpdateComposition(true);
+			}
+
+			this.RaiseCompositionChanged();
 		}
 
 		/// <summary>
@@ -804,8 +876,13 @@ namespace RI.Framework.Composition
 				throw new EmptyStringArgumentException(nameof(exportName));
 			}
 
-			this.AddTypeInternal(type, exportName, privateExport);
-			this.UpdateComposition(true);
+			lock (this.SyncRoot)
+			{
+				this.AddTypeInternal(type, exportName, privateExport);
+				this.UpdateComposition(true);
+			}
+
+			this.RaiseCompositionChanged();
 		}
 
 		/// <summary>
@@ -819,16 +896,12 @@ namespace RI.Framework.Composition
 		/// <exception cref="CompositionException"> The internal recomposition failed. </exception>
 		public void Clear ()
 		{
-			foreach (CompositionCatalog catalog in this.Catalogs)
+			lock (this.SyncRoot)
 			{
-				catalog.RecomposeRequested -= this.CatalogRecomposeRequestHandler;
+				this.ClearInternal();
 			}
 
-			this.Catalogs.Clear();
-			this.Instances.Clear();
-			this.Types.Clear();
-
-			this.UpdateComposition(true);
+			this.RaiseCompositionChanged();
 		}
 
 		/// <summary>
@@ -850,50 +923,53 @@ namespace RI.Framework.Composition
 				throw new ArgumentNullException(nameof(batch));
 			}
 
-			foreach (CompositionCatalogItem item in batch.ItemsToAdd)
+			lock (this.SyncRoot)
 			{
-				if (item.Value != null)
+				foreach (CompositionCatalogItem item in batch.ItemsToAdd)
 				{
-					this.AddInstanceInternal(item.Value, item.Name);
+					if (item.Value != null)
+					{
+						this.AddInstanceInternal(item.Value, item.Name);
+					}
+					else if (item.Type != null)
+					{
+						this.AddTypeInternal(item.Type, item.Name, item.PrivateExport);
+					}
 				}
-				else if (item.Type != null)
+
+				foreach (CompositionCatalogItem item in batch.ItemsToRemove)
 				{
-					this.AddTypeInternal(item.Type, item.Name, item.PrivateExport);
+					if (item.Value != null)
+					{
+						this.RemoveInstanceInternal(item.Value, item.Name);
+					}
+					else if (item.Type != null)
+					{
+						this.RemoveTypeInternal(item.Type, item.Name);
+					}
+				}
+
+				foreach (CompositionCatalog catalog in batch.CatalogsToAdd)
+				{
+					this.AddCatalogInternal(catalog);
+				}
+
+				foreach (CompositionCatalog catalog in batch.CatalogsToRemove)
+				{
+					this.RemoveCatalogInternal(catalog);
+				}
+
+				this.UpdateComposition(false);
+
+				this.Recompose(batch.Composition | CompositionFlags.Normal);
+
+				foreach (KeyValuePair<object, CompositionFlags> obj in batch.ObjectsToSatisfy)
+				{
+					this.ResolveImports(obj.Key, obj.Value);
 				}
 			}
-
-			foreach (CompositionCatalogItem item in batch.ItemsToRemove)
-			{
-				if (item.Value != null)
-				{
-					this.RemoveInstanceInternal(item.Value, item.Name);
-				}
-				else if (item.Type != null)
-				{
-					this.RemoveTypeInternal(item.Type, item.Name);
-				}
-			}
-
-			foreach (CompositionCatalog catalog in batch.CatalogsToAdd)
-			{
-				this.AddCatalogInternal(catalog);
-			}
-
-			foreach (CompositionCatalog catalog in batch.CatalogsToRemove)
-			{
-				this.RemoveCatalogInternal(catalog);
-			}
-
-			this.UpdateComposition(false);
-
-			this.Recompose(batch.Composition | CompositionFlags.Normal);
 
 			this.RaiseCompositionChanged();
-
-			foreach (KeyValuePair<object, CompositionFlags> obj in batch.ObjectsToSatisfy)
-			{
-				this.ResolveImports(obj.Key, obj.Value);
-			}
 		}
 
 		/// <summary>
@@ -955,8 +1031,11 @@ namespace RI.Framework.Composition
 				throw new EmptyStringArgumentException(nameof(exportName));
 			}
 
-			List<object> instances = this.GetOrCreateInstancesInternal(exportName, typeof(T));
-			return instances.Count == 0 ? null : (T)instances[0];
+			lock (this.SyncRoot)
+			{
+				List<object> instances = this.GetOrCreateInstancesInternal(exportName, typeof(T));
+				return instances.Count == 0 ? null : (T)instances[0];
+			}
 		}
 
 		/// <summary>
@@ -1021,8 +1100,11 @@ namespace RI.Framework.Composition
 				throw new EmptyStringArgumentException(nameof(exportName));
 			}
 
-			List<object> instances = this.GetOrCreateInstancesInternal(exportName, typeof(T));
-			return DirectLinqExtensions.Select(instances, x => (T)x);
+			lock (this.SyncRoot)
+			{
+				List<object> instances = this.GetOrCreateInstancesInternal(exportName, typeof(T));
+				return DirectLinqExtensions.Select(instances, x => (T)x);
+			}
 		}
 
 		/// <summary>
@@ -1087,15 +1169,18 @@ namespace RI.Framework.Composition
 				throw new EmptyStringArgumentException(nameof(exportName));
 			}
 
-			if (this.ParentContainer != null)
+			lock (this.SyncRoot)
 			{
-				if (this.ParentContainer.HasExport(exportName))
+				if (this.ParentContainer != null)
 				{
-					return true;
+					if (this.ParentContainer.HasExport(exportName))
+					{
+						return true;
+					}
 				}
-			}
 
-			return this.Composition.ContainsKey(exportName);
+				return this.Composition.ContainsKey(exportName);
+			}
 		}
 
 		/// <summary>
@@ -1115,16 +1200,19 @@ namespace RI.Framework.Composition
 		/// <exception cref="CompositionException"> One or more imports cannot be resolved. </exception>
 		public bool Recompose (CompositionFlags composition)
 		{
-			bool recomposed = false;
-			List<object> instances = this.GetExistingInstancesInternal(false);
-			foreach (object instance in instances)
+			lock (this.SyncRoot)
 			{
-				if (this.ResolveImports(instance, composition))
+				bool recomposed = false;
+				List<object> instances = this.GetExistingInstancesInternal(false);
+				foreach (object instance in instances)
 				{
-					recomposed = true;
+					if (this.ResolveImports(instance, composition))
+					{
+						recomposed = true;
+					}
 				}
+				return recomposed;
 			}
-			return recomposed;
 		}
 
 		/// <summary>
@@ -1146,8 +1234,13 @@ namespace RI.Framework.Composition
 				throw new ArgumentNullException(nameof(catalog));
 			}
 
-			this.RemoveCatalogInternal(catalog);
-			this.UpdateComposition(true);
+			lock (this.SyncRoot)
+			{
+				this.RemoveCatalogInternal(catalog);
+				this.UpdateComposition(true);
+			}
+
+			this.RaiseCompositionChanged();
 		}
 
 		/// <summary>
@@ -1217,8 +1310,13 @@ namespace RI.Framework.Composition
 				throw new EmptyStringArgumentException(nameof(exportName));
 			}
 
-			this.RemoveInstanceInternal(instance, exportName);
-			this.UpdateComposition(true);
+			lock (this.SyncRoot)
+			{
+				this.RemoveInstanceInternal(instance, exportName);
+				this.UpdateComposition(true);
+			}
+
+			this.RaiseCompositionChanged();
 		}
 
 		/// <summary>
@@ -1288,8 +1386,13 @@ namespace RI.Framework.Composition
 				throw new EmptyStringArgumentException(nameof(exportName));
 			}
 
-			this.RemoveTypeInternal(type, exportName);
-			this.UpdateComposition(true);
+			lock (this.SyncRoot)
+			{
+				this.RemoveTypeInternal(type, exportName);
+				this.UpdateComposition(true);
+			}
+
+			this.RaiseCompositionChanged();
 		}
 
 		/// <summary>
@@ -1324,39 +1427,41 @@ namespace RI.Framework.Composition
 				throw new InvalidTypeArgumentException(nameof(obj));
 			}
 
-			IImporting importing = obj as IImporting;
-
-			importing?.ImportsResolving(composition);
-
-			bool composed = false;
-
-			bool isConstructing = (composition & CompositionFlags.Constructing) == CompositionFlags.Constructing;
-			bool updateMissing = (composition & CompositionFlags.Missing) == CompositionFlags.Missing;
-			bool updateRecomposable = (composition & CompositionFlags.Recomposable) == CompositionFlags.Recomposable;
-			bool updateComposed = (composition & CompositionFlags.Composed) == CompositionFlags.Composed;
-
-			Type type = obj.GetType();
-			PropertyInfo[] properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-			foreach (PropertyInfo property in properties)
+			lock (this.SyncRoot)
 			{
-				object[] attributes = property.GetCustomAttributes(typeof(ImportAttribute), false);
-				foreach (ImportAttribute attribute in attributes)
+				IImporting importing = obj as IImporting;
+
+				importing?.ImportsResolving(composition);
+
+				bool composed = false;
+
+				bool isConstructing = (composition & CompositionFlags.Constructing) == CompositionFlags.Constructing;
+				bool updateMissing = (composition & CompositionFlags.Missing) == CompositionFlags.Missing;
+				bool updateRecomposable = (composition & CompositionFlags.Recomposable) == CompositionFlags.Recomposable;
+				bool updateComposed = (composition & CompositionFlags.Composed) == CompositionFlags.Composed;
+
+				Type type = obj.GetType();
+				PropertyInfo[] properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+				foreach (PropertyInfo property in properties)
 				{
-					bool canRecompose = attribute.Recomposable;
-					object oldValue = property.GetGetMethod(true).Invoke(obj, null);
-
-					if (isConstructing || (updateMissing && (oldValue == null)) || (updateRecomposable && canRecompose) || (updateComposed && (oldValue != null)))
+					object[] attributes = property.GetCustomAttributes(typeof(ImportAttribute), false);
+					foreach (ImportAttribute attribute in attributes)
 					{
-						object newValue = null;
-						bool updateValue = false;
-						bool currentComposed = false;
-						bool asArray = false;
+						bool canRecompose = attribute.Recomposable;
+						object oldValue = property.GetGetMethod(true).Invoke(obj, null);
 
-						Type propertyType = property.PropertyType;
-						if (!CompositionContainer.ValidateImportType(propertyType))
+						if (isConstructing || (updateMissing && (oldValue == null)) || (updateRecomposable && canRecompose) || (updateComposed && (oldValue != null)))
 						{
-							throw new CompositionException("Invalid import type for property: " + propertyType.Name + " @ " + property.Name + " @ " + type.FullName);
-						}
+							object newValue = null;
+							bool updateValue = false;
+							bool currentComposed = false;
+							bool asArray = false;
+
+							Type propertyType = property.PropertyType;
+							if (!CompositionContainer.ValidateImportType(propertyType))
+							{
+								throw new CompositionException("Invalid import type for property: " + propertyType.Name + " @ " + property.Name + " @ " + type.FullName);
+							}
 
 #if PLATFORM_NETFX
 						Type genericType = propertyType.IsGenericType ? propertyType.GetGenericTypeDefinition() : null;
@@ -1365,77 +1470,92 @@ namespace RI.Framework.Composition
 						asArray = genericType != null;
 #endif
 
-						if (propertyType == typeof(Import))
-						{
-							string importName = attribute.Name;
-							if (importName == null)
+							if (propertyType == typeof(Import))
 							{
-								throw new CompositionException("Missing export type or export name for property: " + propertyType.Name + " @ " + property.Name + " @ " + type.FullName);
-							}
+								string importName = attribute.Name;
+								if (importName == null)
+								{
+									throw new CompositionException("Missing export type or export name for property: " + propertyType.Name + " @ " + property.Name + " @ " + type.FullName);
+								}
 
-							List<object> instances = this.GetOrCreateInstancesInternal(importName, typeof(object));
+								List<object> instances = this.GetOrCreateInstancesInternal(importName, typeof(object));
 
-							newValue = new Import(instances.Count == 0 ? null : instances.ToArray());
+								newValue = new Import(instances.Count == 0 ? null : instances.ToArray());
 
-							Import oldImport = oldValue as Import;
-							Import newImport = newValue as Import;
-							IEnumerable<object> oldValues = oldImport?.GetInstancesSnapshot();
-							IEnumerable<object> newValues = newImport?.GetInstancesSnapshot();
+								Import oldImport = oldValue as Import;
+								Import newImport = newValue as Import;
+								IEnumerable<object> oldValues = oldImport?.GetInstancesSnapshot();
+								IEnumerable<object> newValues = newImport?.GetInstancesSnapshot();
 
-							updateValue = !CollectionComparer<object>.ReferenceEquality.Equals(oldValues, newValues);
-							currentComposed = updateValue;
-						}
-						else
-						{
-							string importName = attribute.Name ?? CompositionContainer.GetNameOfType(propertyType);
-
-							List<object> instances = this.GetOrCreateInstancesInternal(importName, propertyType);
-
-							if (instances.Count == 0)
-							{
-								newValue = null;
+								updateValue = !CollectionComparer<object>.ReferenceEquality.Equals(oldValues, newValues);
+								currentComposed = updateValue;
 							}
 							else
 							{
-								if (asArray)
+								string importName = attribute.Name ?? CompositionContainer.GetNameOfType(propertyType);
+
+								List<object> instances = this.GetOrCreateInstancesInternal(importName, propertyType);
+
+								if (instances.Count == 0)
 								{
-									newValue = CompositionContainer.CreateArray(propertyType, instances);
+									newValue = null;
 								}
 								else
 								{
-									newValue = instances[0];
+									if (asArray)
+									{
+										newValue = this.CreateArray(propertyType, instances);
+									}
+									else
+									{
+										newValue = instances[0];
+									}
+								}
+
+								updateValue = !object.ReferenceEquals(oldValue, newValue);
+								currentComposed = updateValue;
+							}
+
+							if (updateValue)
+							{
+								MethodInfo setMethod = property.GetSetMethod(true);
+								if (setMethod == null)
+								{
+									throw new CompositionException("Cannot set value for property because set accessor is missing/unavailable: " + propertyType.Name + " @ " + property.Name + " @ " + type.FullName);
+								}
+								else
+								{
+									this.Log(LogLevel.Debug, "Updating import ({0}): {1} @ {2}", composition, property.Name, obj.GetType().FullName);
+									setMethod.Invoke(obj, new[] {newValue});
 								}
 							}
 
-							updateValue = !object.ReferenceEquals(oldValue, newValue);
-							currentComposed = updateValue;
-						}
-
-						if (updateValue)
-						{
-							MethodInfo setMethod = property.GetSetMethod(true);
-							if (setMethod == null)
+							if (currentComposed)
 							{
-								throw new CompositionException("Cannot set value for property because set accessor is missing/unavailable: " + propertyType.Name + " @ " + property.Name + " @ " + type.FullName);
+								composed = true;
 							}
-							else
-							{
-								this.Log(LogLevel.Debug, "Updating import ({0}): {1} @ {2}", composition, property.Name, obj.GetType().FullName);
-								setMethod.Invoke(obj, new[] {newValue});
-							}
-						}
-
-						if (currentComposed)
-						{
-							composed = true;
 						}
 					}
 				}
+
+				importing?.ImportsResolved(composition, composed);
+
+				return composed;
+			}
+		}
+
+		private void ClearInternal ()
+		{
+			foreach (CompositionCatalog catalog in this.Catalogs)
+			{
+				catalog.RecomposeRequested -= this.CatalogRecomposeRequestHandler;
 			}
 
-			importing?.ImportsResolved(composition, composed);
+			this.Catalogs.Clear();
+			this.Instances.Clear();
+			this.Types.Clear();
 
-			return composed;
+			this.UpdateComposition(true);
 		}
 
 		private void AddCatalogInternal (CompositionCatalog catalog)
@@ -1470,6 +1590,7 @@ namespace RI.Framework.Composition
 			this.Types.Add(new CompositionCatalogItem(name, type, privateExport));
 		}
 
+#if PLATFORM_NETFX
 		private object CreateGenericLazyLoadDelegate (Type type)
 		{
 			Type enumerableType = CompositionContainer.GetEnumerableType(type);
@@ -1480,6 +1601,7 @@ namespace RI.Framework.Composition
 			Delegate resolveLambda = Expression.Lambda(resolveCall).Compile();
 			return resolveLambda;
 		}
+#endif
 
 		private List<object> GetExistingInstancesInternal (bool includeParentInstances)
 		{
@@ -1506,7 +1628,10 @@ namespace RI.Framework.Composition
 
 			if (includeParentInstances && (this.ParentContainer != null))
 			{
-				instances.AddRange(this.ParentContainer.GetExistingInstancesInternal(true));
+				lock (this.ParentContainer.SyncRoot)
+				{
+					instances.AddRange(this.ParentContainer.GetExistingInstancesInternal(true));
+				}
 			}
 
 			return instances;
@@ -1514,7 +1639,7 @@ namespace RI.Framework.Composition
 
 		private List<object> GetOrCreateInstancesInternal (string name, Type compatibleType)
 		{
-			if ((!this.Composition.ContainsKey(name)) && (!(this.ParentContainer?.Composition.ContainsKey(name)).GetValueOrDefault(false)))
+			if (!this.HasExport(name))
 			{
 				return new List<object>();
 			}
@@ -1549,8 +1674,11 @@ namespace RI.Framework.Composition
 
 			if (this.ParentContainer != null)
 			{
-				List<object> parentInstances = this.ParentContainer.GetOrCreateInstancesInternal(name, compatibleType);
-				instances.AddRange(parentInstances);
+				lock (this.ParentContainer.SyncRoot)
+				{
+					List<object> parentInstances = this.ParentContainer.GetOrCreateInstancesInternal(name, compatibleType);
+					instances.AddRange(parentInstances);
+				}
 			}
 
 			List<object> newInstances = new List<object>();
@@ -1590,7 +1718,7 @@ namespace RI.Framework.Composition
 							}
 
 							List<object> parameterValues = this.GetOrCreateInstancesInternal(CompositionContainer.GetNameOfType(parameterType), parameterType);
-							parameters[i1] = parameterValues.Count == 0 ? null : ((enumerableType == null) ? parameterValues[0] : CompositionContainer.CreateArray(parameterType, parameterValues));
+							parameters[i1] = parameterValues.Count == 0 ? null : ((enumerableType == null) ? parameterValues[0] : this.CreateArray(parameterType, parameterValues));
 						}
 
 						newInstance = method.Invoke(null, parameters);
@@ -1657,15 +1785,18 @@ namespace RI.Framework.Composition
 
 						List<object> parameterValues = this.GetOrCreateInstancesInternal(CompositionContainer.GetNameOfType(parameterType), parameterType);
 
+#if PLATFORM_NETFX
 						if (lazyLoadDelegateType != null)
 						{
 							parameters[i1] = this.CreateGenericLazyLoadDelegate(parameterType);
 						}
 						else if (enumerableType != null)
 						{
-							parameters[i1] = CompositionContainer.CreateArray(parameterType, parameterValues);
+							parameters[i1] = this.CreateArray(parameterType, parameterValues);
 						}
-						else if (parameterValues.Count > 0)
+						else
+#endif
+						if (parameterValues.Count > 0)
 						{
 							parameters[i1] = parameterValues[0];
 						}
@@ -1715,12 +1846,22 @@ namespace RI.Framework.Composition
 
 		private void HandleCatalogRecomposeRequest (object sender, EventArgs e)
 		{
-			this.UpdateComposition(true);
+			lock (this.SyncRoot)
+			{
+				this.UpdateComposition(true);
+			}
+
+			this.RaiseCompositionChanged();
 		}
 
 		private void HandleParentContainerCompositionChanged (object sender, EventArgs e)
 		{
-			this.UpdateComposition(true);
+			lock (this.SyncRoot)
+			{
+				this.UpdateComposition(true);
+			}
+
+			this.RaiseCompositionChanged();
 		}
 
 		private void RaiseCompositionChanged ()
@@ -1861,8 +2002,6 @@ namespace RI.Framework.Composition
 			if (recompose)
 			{
 				this.Recompose(CompositionFlags.Normal);
-
-				this.RaiseCompositionChanged();
 			}
 		}
 
@@ -1876,13 +2015,18 @@ namespace RI.Framework.Composition
 		/// <inheritdoc />
 		public void Dispose ()
 		{
-			this.Clear();
-
-			if (this.ParentContainer != null)
+			lock (this.SyncRoot)
 			{
-				this.ParentContainer.CompositionChanged -= this.ParentContainerCompositionChangedHandler;
-				this.ParentContainer = null;
+				if (this.ParentContainer != null)
+				{
+					this.ParentContainer.CompositionChanged -= this.ParentContainerCompositionChangedHandler;
+					this.ParentContainer = null;
+				}
+
+				this.ClearInternal();
 			}
+
+			this.RaiseCompositionChanged();
 		}
 
 		#endregion
@@ -2009,5 +2153,14 @@ namespace RI.Framework.Composition
 		}
 
 		#endregion
+
+
+
+
+		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		public object SyncRoot { get; }
 	}
 }
