@@ -1,5 +1,6 @@
 ﻿using System;
 
+using RI.Framework.Composition;
 using RI.Framework.Composition.Model;
 
 
@@ -41,6 +42,22 @@ namespace RI.Framework.Services
 		/// </remarks>
 		/// <exception cref="InvalidOperationException"> <see cref="Run" /> was not called before. </exception>
 		void Shutdown ();
+
+		/// <summary>
+		///     Gets the used composition container.
+		/// </summary>
+		/// <value>
+		///     The used composition container.
+		/// </value>
+		CompositionContainer Container { get; }
+
+		/// <summary>
+		///     Gets the current state of the bootstrapper.
+		/// </summary>
+		/// <value>
+		///     The current state of the bootstrapper.
+		/// </value>
+		BootstrapperState State { get; }
 
 		#endregion
 	}

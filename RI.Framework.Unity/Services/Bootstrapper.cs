@@ -245,22 +245,6 @@ namespace RI.Framework.Services
 
 		#region Instance Properties/Indexer
 
-		/// <summary>
-		///     Gets the used composition container.
-		/// </summary>
-		/// <value>
-		///     The used composition container.
-		/// </value>
-		public CompositionContainer Container { get; private set; } = null;
-
-		/// <summary>
-		///     Gets the current state of the bootstrapper.
-		/// </summary>
-		/// <value>
-		///     The current state of the bootstrapper.
-		/// </value>
-		public BootstrapperState State { get; private set; } = BootstrapperState.Uninitialized;
-
 		private bool ShutdownFinished { get; set; } = false;
 
 		#endregion
@@ -492,6 +476,12 @@ namespace RI.Framework.Services
 
 
 		#region Interface: IBootstrapper
+
+		/// <inheritdoc />
+		public CompositionContainer Container { get; private set; } = null;
+
+		/// <inheritdoc />
+		public BootstrapperState State { get; private set; } = BootstrapperState.Uninitialized;
 
 		/// <inheritdoc />
 		void IBootstrapper.Run ()

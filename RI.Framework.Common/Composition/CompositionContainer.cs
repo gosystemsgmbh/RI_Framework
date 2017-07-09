@@ -9,6 +9,7 @@ using RI.Framework.Collections.Comparison;
 using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Composition.Catalogs;
 using RI.Framework.Composition.Model;
+using RI.Framework.Services;
 using RI.Framework.Services.Logging;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
@@ -56,7 +57,7 @@ namespace RI.Framework.Composition
 	///         <b> NAMES </b>
 	///     </para>
 	///     <para>
-	///         What also might be confusing a little bit is the &quot;name&quot; of imports and exports.
+	///         What also might be unclear at first is the &quot;name&quot; of imports and exports.
 	///         Especially because sometimes a type and sometimes a name is mentioned/used.
 	///         When exports are managed by a <see cref="CompositionContainer" />, or a <see cref="CompositionCatalog" />, they are always identified using their name.
 	///         Resolving of imports is also always done using the name of the import.
@@ -271,6 +272,35 @@ namespace RI.Framework.Composition
 	///     <para>
 	///         The only way to detach from a parent container is through <see cref="Dispose" /> but no other parent container can be attached afterwards.
 	///     </para>
+	///     <para> SIMPLE USAGE / ROOT SINGLETON </para>
+	///     <para>
+	///         A very simple usage of <see cref="CompositionContainer" /> and the principles of Dependency Injection is the creation of one <see cref="CompositionContainer" /> instance and use it wehere necessary.
+	///     </para>
+	///     <para>
+	///         This can be done using your own mechanism to create, store, and distribute instances of <see cref="CompositionContainer" /> or you can use the built-in singleton mechanism.
+	///         By calling the static <see cref="CreateSingleton" /> method, you create a globally available singleton instance of <see cref="CompositionContainer" /> which can be retrieved by the static property <see cref="Singleton" />.
+	///         Instead of <see cref="Singleton" /> you can also always use <see cref="CreateSingleton" /> to create the singleton if it does not exis (the first call to <see cref="CreateSingleton" /> will create it and all subsequent calls will retrieve the created singleton).
+	///         Therefore, you might want to use a <see cref="CompositionContainer" /> singleton as a sole &quot;root&quot; singleton which is used to retrieve all kind of instances and dependencies you need, practically avoiding the implementation of the singleton pattern except for <see cref="CompositionContainer" /> itself.
+	///     </para>
+	///     <para>
+	///         Note that you can have full control over the creation and management of the singleton.
+	///         See <see cref="Singleton" /> and <see cref="CreateSingleton" /> for more details.
+	///     </para>
+	///     <para>
+	///         This approach (simple usage with a root singleton) is supported by the extension methods provided by <see cref="CompositionExtensions" />.
+	///         In the simplest case, depending on the used extension methods, you would not need to deal with <see cref="CompositionContainer" /> at all.
+	///     </para>
+	///     <para> ADVANCED USAGE / BOOTSTRAPPER </para>
+	///     <para>
+	///         In more advanced scenarios, where the application or game requires bootstrapping of its various components and subsystems, a <see cref="CompositionContainer" /> is one of the core components for bootstrappers, as implemented by <see cref="Bootstrapper" /> / <see cref="IBootstrapper" />.
+	///         See <see cref="Bootstrapper" /> and <see cref="IBootstrapper" /> for more information about bootstrappers and their use of <see cref="CompositionContainer" />.
+	///     </para>
+	///     <para> PERFORMANCE </para>
+	///     <para>
+	///         Be aware that doing composition is a costly operation.
+	///         Therefore, composition is usually done during startup to bring everything in place (or resolving all dependencies respectively).
+	///         The performance impact for composition operations depend on various factors, including the used <see cref="CompositionCatalog" />s, and cannot be generally stated.
+	///     </para>
 	///     <note type="important">
 	///         <see cref="CompositionContainer" /> is thread-safe.
 	///         It uses exclusive locks for its composition operations.
@@ -291,7 +321,99 @@ namespace RI.Framework.Composition
 
 
 
+		#region Static Constructor/Destructor
+
+		static CompositionContainer ()
+		{
+			CompositionContainer.GlobalSyncRoot = new object();
+		}
+
+		#endregion
+
+
+
+
+		#region Static Properties/Indexer
+
+		/// <summary>
+		///     Gets the current composition container singleton.
+		/// </summary>
+		/// <value>
+		///     The current composition container singleton or null if no singleton exists.
+		/// </value>
+		/// <remarks>
+		///     <note type="note">
+		///         A <see cref="CompositionContainer" /> singleton is not automatically created when accessing this property.
+		///         <see cref="Singleton" /> internally uses <see cref="Singleton{CompositionContainer}" /> to retrieve singleton instances.
+		///         Therefore, you can either create and assign an instance yourself using <see cref="Singleton{CompositionContainer}" /> or use <see cref="CreateSingleton" /> to do it for you.
+		///     </note>
+		/// </remarks>
+		public static CompositionContainer Singleton
+		{
+			get
+			{
+				lock (CompositionContainer.GlobalSyncRoot)
+				{
+					return Singleton<CompositionContainer>.Instance;
+				}
+			}
+		}
+
+		private static object GlobalSyncRoot { get; }
+
+		#endregion
+
+
+
+
 		#region Static Methods
+
+		/// <summary>
+		///     Gets the current composition container singleton or creates a new one if none exists.
+		/// </summary>
+		/// <returns>
+		///     The current composition container singleton or the newly created one if no singleton exists.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         If a singleton instance already exists, that instance is returned without changes.
+		///         If no singleton instance exists, one is created, added as an export to itself, and bound to the <see cref="ServiceLocator" />.
+		///     </para>
+		///     <note type="note">
+		///         <see cref="CreateSingleton" /> internally uses <see cref="Singleton{CompositionContainer}" /> to retrieve and create singleton instances.
+		///         Therefore, you have full control over the created singleton through <see cref="Singleton{CompositionContainer}" />.
+		///         That also means that if you create the singleton instance yourself using <see cref="Singleton{CompositionContainer}" />, you are responsible for adding the <see cref="CompositionContainer" /> as an export to itself and binding it to the <see cref="ServiceLocator" />.
+		///     </note>
+		/// </remarks>
+		public static CompositionContainer CreateSingleton ()
+		{
+			lock (CompositionContainer.GlobalSyncRoot)
+			{
+				return CompositionContainer.CreateSingletonInternal(false);
+			}
+		}
+
+		/// <summary>
+		///     Gets the current composition container singleton or creates a new one if none exists.
+		/// </summary>
+		/// <returns>
+		///     The current composition container singleton or the newly created one if no singleton exists.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         <see cref="CreateSingletonWithEverything" /> does the same as <see cref="CreateSingleton" /> except that, if a singleton instance is created, it also adds an <see cref="AppDomainCatalog" /> to immediately get all types in the current application domain as exports.
+		///     </para>
+		///     <para>
+		///         See <see cref="CreateSingleton" /> for more details.
+		///     </para>
+		/// </remarks>
+		public static CompositionContainer CreateSingletonWithEverything ()
+		{
+			lock (CompositionContainer.GlobalSyncRoot)
+			{
+				return CompositionContainer.CreateSingletonInternal(true);
+			}
+		}
 
 		/// <summary>
 		///     Gets all names under which a type is exported (using <see cref="ExportAttribute" />).
@@ -436,6 +558,22 @@ namespace RI.Framework.Composition
 			return type.IsClass && (!type.IsAbstract);
 		}
 
+		private static CompositionContainer CreateSingletonInternal (bool addAppDomainCatalog)
+		{
+			CompositionContainer container = Singleton<CompositionContainer>.Instance;
+			if (container == null)
+			{
+				container = Singleton<CompositionContainer>.Ensure();
+				container.AddExport(container, typeof(CompositionContainer));
+				if (addAppDomainCatalog)
+				{
+					container.AddCatalog(new AppDomainCatalog(true, true));
+				}
+				ServiceLocator.BindToCompositionContainer(container);
+			}
+			return container;
+		}
+
 		private static Type GetEnumerableType (Type type)
 		{
 			Type genericType = type.IsGenericType ? type.GetGenericTypeDefinition() : null;
@@ -525,6 +663,7 @@ namespace RI.Framework.Composition
 			this.Instances = new List<CompositionCatalogItem>();
 			this.Types = new List<CompositionCatalogItem>();
 			this.Catalogs = new List<CompositionCatalog>();
+			this.Creators = new HashSet<CompositionCreator>();
 			this.Composition = new Dictionary<string, CompositionItem>(CompositionContainer.NameComparer);
 
 			this.UpdateComposition(true);
@@ -665,17 +804,17 @@ namespace RI.Framework.Composition
 			}
 		}
 
-		private EventHandler CatalogRecomposeRequestHandler { get; set; }
+		private EventHandler CatalogRecomposeRequestHandler { get; }
 
-		private List<CompositionCatalog> Catalogs { get; set; }
+		private List<CompositionCatalog> Catalogs { get; }
 
-		private Dictionary<string, CompositionItem> Composition { get; set; }
+		private Dictionary<string, CompositionItem> Composition { get; }
 
-		private List<CompositionCatalogItem> Instances { get; set; }
+		private List<CompositionCatalogItem> Instances { get; }
 
-		private EventHandler ParentContainerCompositionChangedHandler { get; set; }
+		private EventHandler ParentContainerCompositionChangedHandler { get; }
 
-		private List<CompositionCatalogItem> Types { get; set; }
+		private List<CompositionCatalogItem> Types { get; }
 
 		#endregion
 
@@ -981,6 +1120,15 @@ namespace RI.Framework.Composition
 			}
 
 			this.RaiseCompositionChanged();
+		}
+
+		/// <summary>
+		///     Creates a new <see cref="CompositionContainer" /> with this container as its parent container.
+		/// </summary>
+		/// <returns> </returns>
+		public CompositionContainer CreateChildContainer ()
+		{
+			return new CompositionContainer(this);
 		}
 
 		/// <summary>
@@ -1657,6 +1805,8 @@ namespace RI.Framework.Composition
 			return instances;
 		}
 
+		private HashSet<CompositionCreator> Creators { get; }
+
 		private List<object> GetOrCreateInstancesInternal (string name, Type compatibleType)
 		{
 			if (!this.HasExport(name))
@@ -1704,14 +1854,17 @@ namespace RI.Framework.Composition
 			List<object> newInstances = new List<object>();
 			foreach (Type type in types)
 			{
+				bool supportedByCreators = this.Creators.Any(x => x.CanCreateInstance(type, compatibleType, name));
+
 				object newInstance = null;
 				{
 					MethodInfo[] allMethods = type.GetMethods(BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.FlattenHierarchy);
+
 					List<MethodInfo> methods = DirectLinqExtensions.Where(allMethods, x => (x.GetCustomAttributes(typeof(ExportCreatorAttribute), true).Length > 0) && (x.ReturnType != typeof(void)) && (x.GetParameters().Length >= 1) && (x.GetParameters()[0].ParameterType == typeof(Type)));
 
 					if (methods.Count > 1)
 					{
-						throw new CompositionException("Too many import methods defined for type: " + type.FullName);
+						throw new CompositionException("Too many export creators defined for type: " + type.FullName);
 					}
 
 					if (methods.Count == 1)
@@ -1725,20 +1878,40 @@ namespace RI.Framework.Composition
 						for (int i1 = 1; i1 < methodParameters.Length; i1++)
 						{
 							ParameterInfo methodParameter = methodParameters[i1];
+							Type lazyLoadDelegateType = CompositionContainer.GetLazyLoadDelegateType(methodParameter.ParameterType);
 							Type enumerableType = CompositionContainer.GetEnumerableType(methodParameter.ParameterType);
-							Type parameterType = enumerableType ?? methodParameter.ParameterType;
+							Type parameterType = lazyLoadDelegateType ?? enumerableType ?? methodParameter.ParameterType;
 
 							if (!CompositionContainer.ValidateImportType(parameterType))
 							{
-								throw new CompositionException("Invalid import type in import method parameter: " + parameterType.Name + " @ " + methodParameter.Name + " @ " + type.FullName);
+								throw new CompositionException("Invalid import type in export creator parameter: " + parameterType.Name + " @ " + methodParameter.Name + " @ " + type.FullName);
 							}
 							if (parameterType == typeof(Import))
 							{
-								throw new CompositionException("Import method cannot have parameter of type " + typeof(Import).FullName + ": " + parameterType.Name + " @ " + methodParameter.Name + " @ " + type.FullName);
+								throw new CompositionException("Export creator cannot have parameter of type " + typeof(Import).FullName + ": " + parameterType.Name + " @ " + methodParameter.Name + " @ " + type.FullName);
 							}
 
 							List<object> parameterValues = this.GetOrCreateInstancesInternal(CompositionContainer.GetNameOfType(parameterType), parameterType);
-							parameters[i1] = parameterValues.Count == 0 ? null : ((enumerableType == null) ? parameterValues[0] : this.CreateArray(parameterType, parameterValues));
+
+#if PLATFORM_NETFX
+							if (lazyLoadDelegateType != null)
+							{
+								parameters[i1] = this.CreateGenericLazyLoadDelegate(parameterType);
+							}
+							else if (enumerableType != null)
+							{
+								parameters[i1] = this.CreateArray(parameterType, parameterValues);
+							}
+							else
+#endif
+							if (parameterValues.Count > 0)
+							{
+								parameters[i1] = parameterValues[0];
+							}
+							else
+							{
+								parameters[i1] = null;
+							}
 						}
 
 						newInstance = method.Invoke(null, parameters);
@@ -1750,12 +1923,13 @@ namespace RI.Framework.Composition
 					ConstructorInfo[] allConstructors = type.GetConstructors(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
 					List<ConstructorInfo> declaredConstructors = DirectLinqExtensions.Where(allConstructors, x => x.GetCustomAttributes(typeof(ExportConstructorAttribute), false).Length > 0);
+
 					if (declaredConstructors.Count > 1)
 					{
-						throw new CompositionException("Too many import constructors defined for type: " + type.FullName);
+						throw new CompositionException("Too many export constructors defined for type: " + type.FullName);
 					}
 
-					List<ConstructorInfo> greedyConstructors = new List<ConstructorInfo>(allConstructors);
+					List<ConstructorInfo> greedyConstructors = supportedByCreators ? new List<ConstructorInfo>() : new List<ConstructorInfo>(allConstructors);
 					greedyConstructors.RemoveAll(x =>
 					{
 						ParameterInfo[] parameterCandidates = x.GetParameters();
@@ -1764,7 +1938,7 @@ namespace RI.Framework.Composition
 							Type lazyLoadDelegateType = CompositionContainer.GetLazyLoadDelegateType(parameterCandidate.ParameterType);
 							Type enumerableType = CompositionContainer.GetEnumerableType(parameterCandidate.ParameterType);
 							Type parameterType = lazyLoadDelegateType ?? enumerableType ?? parameterCandidate.ParameterType;
-							if ((!this.HasExport(parameterType)) && (lazyLoadDelegateType == null) && (enumerableType == null))
+							if (!this.HasExport(parameterType))
 							{
 								return true;
 							}
@@ -1778,69 +1952,84 @@ namespace RI.Framework.Composition
 					constructors.AddRange(declaredConstructors);
 					constructors.AddRange(greedyConstructors);
 
-					if (constructors.Count == 0)
+					if (constructors.Count > 0)
 					{
-						throw new CompositionException("No import method or constructor could be resolved for type: " + type.FullName);
-					}
+						ConstructorInfo constructor = constructors[0];
+						ParameterInfo[] constructorParameters = constructor.GetParameters();
+						object[] parameters = new object[constructorParameters.Length];
 
-					ConstructorInfo constructor = constructors[0];
-					ParameterInfo[] constructorParameters = constructor.GetParameters();
-					object[] parameters = new object[constructorParameters.Length];
-
-					for (int i1 = 0; i1 < constructorParameters.Length; i1++)
-					{
-						ParameterInfo constructorParameter = constructorParameters[i1];
-						Type lazyLoadDelegateType = CompositionContainer.GetLazyLoadDelegateType(constructorParameter.ParameterType);
-						Type enumerableType = CompositionContainer.GetEnumerableType(constructorParameter.ParameterType);
-						Type parameterType = lazyLoadDelegateType ?? enumerableType ?? constructorParameter.ParameterType;
-
-						if (!CompositionContainer.ValidateImportType(parameterType))
+						for (int i1 = 0; i1 < constructorParameters.Length; i1++)
 						{
-							throw new CompositionException("Invalid import type in import constructor parameter: " + parameterType.Name + " @ " + constructorParameter.Name + " @ " + type.FullName);
-						}
-						if (parameterType == typeof(Import))
-						{
-							throw new CompositionException("Import constructor cannot have parameter of type " + typeof(Import).FullName + ": " + parameterType.Name + " @ " + constructorParameter.Name + " @ " + type.FullName);
-						}
+							ParameterInfo constructorParameter = constructorParameters[i1];
+							Type lazyLoadDelegateType = CompositionContainer.GetLazyLoadDelegateType(constructorParameter.ParameterType);
+							Type enumerableType = CompositionContainer.GetEnumerableType(constructorParameter.ParameterType);
+							Type parameterType = lazyLoadDelegateType ?? enumerableType ?? constructorParameter.ParameterType;
 
-						List<object> parameterValues = this.GetOrCreateInstancesInternal(CompositionContainer.GetNameOfType(parameterType), parameterType);
+							if (!CompositionContainer.ValidateImportType(parameterType))
+							{
+								throw new CompositionException("Invalid import type in export constructor parameter: " + parameterType.Name + " @ " + constructorParameter.Name + " @ " + type.FullName);
+							}
+							if (parameterType == typeof(Import))
+							{
+								throw new CompositionException("Export constructor cannot have parameter of type " + typeof(Import).FullName + ": " + parameterType.Name + " @ " + constructorParameter.Name + " @ " + type.FullName);
+							}
+
+							List<object> parameterValues = this.GetOrCreateInstancesInternal(CompositionContainer.GetNameOfType(parameterType), parameterType);
 
 #if PLATFORM_NETFX
-						if (lazyLoadDelegateType != null)
-						{
-							parameters[i1] = this.CreateGenericLazyLoadDelegate(parameterType);
-						}
-						else if (enumerableType != null)
-						{
-							parameters[i1] = this.CreateArray(parameterType, parameterValues);
-						}
-						else
+							if (lazyLoadDelegateType != null)
+							{
+								parameters[i1] = this.CreateGenericLazyLoadDelegate(parameterType);
+							}
+							else if (enumerableType != null)
+							{
+								parameters[i1] = this.CreateArray(parameterType, parameterValues);
+							}
+							else
 #endif
-						if (parameterValues.Count > 0)
-						{
-							parameters[i1] = parameterValues[0];
+							if (parameterValues.Count > 0)
+							{
+								parameters[i1] = parameterValues[0];
+							}
+							else
+							{
+								parameters[i1] = null;
+							}
 						}
-						else
-						{
-							parameters[i1] = null;
-						}
-					}
 
-					newInstance = constructor.Invoke(parameters);
+						newInstance = constructor.Invoke(parameters);
+					}
 				}
 
-				if (newInstance != null)
+				if ((newInstance == null) && supportedByCreators)
 				{
-					newInstances.Add(newInstance);
-
-					foreach (KeyValuePair<string, CompositionItem> compositionItem in this.Composition)
+					foreach (CompositionCreator creator in this.Creators)
 					{
-						foreach (CompositionTypeItem typeItem in compositionItem.Value.Types)
+						if (creator.CanCreateInstance(type, compatibleType, name))
 						{
-							if ((typeItem.Type == type) && (typeItem.Instance == null) && (!typeItem.PrivateExport))
+							newInstance = creator.CreateInstance(type, compatibleType, name);
+							if (newInstance != null)
 							{
-								typeItem.Instance = newInstance;
+								break;
 							}
+						}
+					}
+				}
+
+				if (newInstance == null)
+				{
+					throw new CompositionException("No export creators, export constructors, or composition creators could be resolved for type: " + type.FullName);
+				}
+
+				newInstances.Add(newInstance);
+
+				foreach (KeyValuePair<string, CompositionItem> compositionItem in this.Composition)
+				{
+					foreach (CompositionTypeItem typeItem in compositionItem.Value.Types)
+					{
+						if ((typeItem.Type == type) && (typeItem.Instance == null) && (!typeItem.PrivateExport))
+						{
+							typeItem.Instance = newInstance;
 						}
 					}
 				}

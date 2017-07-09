@@ -218,11 +218,6 @@ Composition
  + (Common) TypeCreators
  + (Unity) MonoBehaviourTypeCreator
 
- + (Unity) GameObjectCatalog
-
- + (Common) CreateGlobal
- + (Common) Register, Resolve
-
  = (Common) Lazy loading (Func<>, Lazy<>)
  = (Common) Generic Import property
  = (Common) Enumerable import property

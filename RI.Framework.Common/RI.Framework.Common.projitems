@@ -57,8 +57,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)Composition\CompositionCatalog.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Composition\CompositionCatalogItem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Composition\CompositionContainer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\CompositionCreator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Composition\CompositionException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\CompositionExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Composition\CompositionFlags.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\Creators\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Composition\Model\ExportAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Composition\Model\ExportConstructorAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Composition\Model\ExportCreatorAttribute.cs" />
