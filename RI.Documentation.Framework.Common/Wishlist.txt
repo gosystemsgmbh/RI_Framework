@@ -220,7 +220,6 @@ Composition
 
  = (Common) Lazy loading (Func<>, Lazy<>)
  = (Common) Generic Import property
- = (Common) Enumerable import property
  = (Common) Better platform detection
 
  - (Common) CreateIndependent
