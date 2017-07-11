@@ -24,8 +24,7 @@ namespace RI.Framework.Services.Dispatcher
 	///         See <see cref="IDispatcherService" /> for more details.
 	///     </para>
 	/// </remarks>
-	/// TODO: Correct locking
-	/// TODO: Make thread-safe
+	/// <threadsafety static="true" instance="true" />
 	[Export]
 	public sealed class DispatcherService : IDispatcherService
 	{
@@ -87,7 +86,7 @@ namespace RI.Framework.Services.Dispatcher
 			operation.Invoker(operation.Broadcast);
 			this.Dispatch(DispatcherPriority.Frame, x =>
 			{
-				x.StatusInternal = DispatcherStatus.Processed;
+				x.Status = DispatcherStatus.Processed;
 				this.InvokeOnFinished(x);
 			}, operation);
 		}
@@ -102,8 +101,8 @@ namespace RI.Framework.Services.Dispatcher
 			operation.Broadcast = broadcast;
 			operation.StatusInternal = DispatcherStatus.Queued;
 			operation.ResultInternal = null;
-			operation.TickTrigger = null;
-			operation.TickTimeout = null;
+			operation.TickTrigger = -1;
+			operation.TickTimeout = -1;
 			operation.FinishedCallback = null;
 
 			DispatcherBroadcast dispatcherBroadcast = broadcast as DispatcherBroadcast;
@@ -112,18 +111,21 @@ namespace RI.Framework.Services.Dispatcher
 				dispatcherBroadcast.Operation = operation;
 			}
 
-			lock (this.SyncRoot)
+			if (operation.Priority == DispatcherPriority.Now)
 			{
-				if (operation.Priority == DispatcherPriority.Now)
-				{
-					this.Invoke(operation);
-					this._framesWithoutOperations = 0;
-				}
-				else if (operation.Priority == DispatcherPriority.Background)
+				this.Invoke(operation);
+				this._framesWithoutOperations = 0;
+			}
+			else if (operation.Priority == DispatcherPriority.Background)
+			{
+				lock (this.SyncRoot)
 				{
 					this._pendingOperations[(int)DispatcherPriority.Frame].AddLast(operation);
 				}
-				else
+			}
+			else
+			{
+				lock (this.SyncRoot)
 				{
 					this._pendingOperations[(int)operation.Priority].AddLast(operation);
 				}
@@ -134,12 +136,15 @@ namespace RI.Framework.Services.Dispatcher
 
 		private bool Cancel (DispatcherOperation operation)
 		{
-			if (operation.StatusInternal != DispatcherStatus.Queued)
+			lock (operation.SyncRoot)
 			{
-				return false;
-			}
+				if (operation.StatusInternal != DispatcherStatus.Queued)
+				{
+					return false;
+				}
 
-			operation.StatusInternal = DispatcherStatus.Canceled;
+				operation.StatusInternal = DispatcherStatus.Canceled;
+			}
 
 			return true;
 		}
@@ -151,92 +156,131 @@ namespace RI.Framework.Services.Dispatcher
 
 		private bool Invoke (DispatcherOperation operation)
 		{
-			if (operation.StatusInternal != DispatcherStatus.Queued)
+			bool invokeOnFinished = false;
+			bool quit = false;
+
+			lock (operation.SyncRoot)
 			{
-				if ((operation.StatusInternal == DispatcherStatus.Canceled) || (operation.StatusInternal == DispatcherStatus.Timeout))
+				if (operation.StatusInternal != DispatcherStatus.Queued)
 				{
-					this.InvokeOnFinished(operation);
+					if ((operation.StatusInternal == DispatcherStatus.Canceled) || (operation.StatusInternal == DispatcherStatus.Timeout))
+					{
+						invokeOnFinished = true;
+					}
+					quit = true;
 				}
+
+				if (!quit)
+				{
+					operation.StatusInternal = DispatcherStatus.Processing;
+				}
+			}
+
+			if (invokeOnFinished)
+			{
+				this.InvokeOnFinished(operation);
+			}
+
+			if (quit)
+			{
 				return false;
 			}
 
 			if (operation.Priority == DispatcherPriority.Background)
 			{
-				operation.StatusInternal = DispatcherStatus.Processing;
 				ThreadPool.QueueUserWorkItem(this._backgroundInvoker, operation);
+				return false;
 			}
 			else
 			{
-				operation.StatusInternal = DispatcherStatus.Processing;
 				operation.Invoker(operation.Broadcast);
-				operation.StatusInternal = DispatcherStatus.Processed;
+				operation.Status = DispatcherStatus.Processed;
 				this.InvokeOnFinished(operation);
+				return true;
 			}
-
-			return true;
 		}
 
 		private void InvokeOnFinished (DispatcherOperation operation)
 		{
-			if (operation.FinishedCallback == null)
+			Action<IDispatcherOperation, object[]> callback;
+			lock (operation.SyncRoot)
+			{
+				callback = operation.FinishedCallback;
+			}
+
+			if (callback == null)
 			{
 				return;
 			}
 
 			object[] arguments = operation.Broadcast is DispatcherBroadcast ? ((DispatcherBroadcast)operation.Broadcast).GetArguments() : new[] {operation.Broadcast};
-			operation.FinishedCallback(operation, arguments);
+			callback(operation, arguments);
 		}
 
 		private void InvokePendingOperations ()
 		{
-			this._nowTicks = DateTime.UtcNow.Ticks;
+			long nowTicks = DateTime.UtcNow.Ticks;
+			Interlocked.Exchange(ref this._nowTicks, nowTicks);
 
 			bool operationsDispatched = false;
+			int framesWithoutOperations = this._framesWithoutOperations;
 
 			for (int i1 = (int)DispatcherPriority.Highest; i1 <= (int)DispatcherPriority.Lowest; i1++)
 			{
-				if ((((DispatcherPriority)i1) >= DispatcherPriority.Idle) && (this._framesWithoutOperations < 1))
+				if ((((DispatcherPriority)i1) >= DispatcherPriority.Idle) && (framesWithoutOperations < 1))
 				{
 					break;
 				}
 
-				LinkedList<DispatcherOperation> operations = this._pendingOperations[i1];
+				LinkedList<DispatcherOperation> operations;
+				LinkedListNode<DispatcherOperation> currentNode;
+				LinkedListNode<DispatcherOperation> nextNode;
 
-				LinkedListNode<DispatcherOperation> currentNode = operations.First;
-				LinkedListNode<DispatcherOperation> nextNode = currentNode;
+				lock (this.SyncRoot)
+				{
+					operations = this._pendingOperations[i1];
+					currentNode = operations.First;
+					nextNode = currentNode;
+				}
 
 				while (nextNode != null)
 				{
-					currentNode = nextNode;
-					nextNode = currentNode.Next;
-
-					DispatcherOperation operation = currentNode.Value;
-
-					bool isProcessable = operation.StatusInternal != DispatcherStatus.Processing;
-
-					if ((operation.StatusInternal == DispatcherStatus.Queued) && operation.TickTimeout.HasValue)
+					lock (this.SyncRoot)
 					{
-						if (this._nowTicks > operation.TickTimeout.Value)
-						{
-							operation.StatusInternal = DispatcherStatus.Timeout;
-						}
+						currentNode = nextNode;
+						nextNode = currentNode.Next;
 					}
 
-					if ((operation.StatusInternal == DispatcherStatus.Queued) && operation.TickTrigger.HasValue)
+					DispatcherOperation operation = currentNode.Value;
+					DispatcherStatus status = operation.Status;
+					long tickTimeout = Interlocked.Read(ref operation.TickTimeout);
+					long tickTrigger = Interlocked.Read(ref operation.TickTrigger);
+
+					bool isProcessable = status != DispatcherStatus.Processing;
+
+					if ((status == DispatcherStatus.Queued) && (tickTimeout != -1) && (nowTicks > tickTimeout))
 					{
-						isProcessable = this._nowTicks >= operation.TickTrigger.Value;
+						operation.Status = DispatcherStatus.Timeout;
+					}
+
+					if ((status == DispatcherStatus.Queued) && (tickTrigger != -1))
+					{
+						isProcessable = nowTicks >= tickTrigger;
 					}
 
 					if (isProcessable)
 					{
 						if (this.Invoke(operation))
 						{
-							operationsDispatched = operationsDispatched || (operation.Priority != DispatcherPriority.Background);
+							operationsDispatched = true;
 						}
 
-						if (operation.StatusInternal != DispatcherStatus.Processing)
+						if (status != DispatcherStatus.Processing)
 						{
-							operations.Remove(currentNode);
+							lock (this.SyncRoot)
+							{
+								operations.Remove(currentNode);
+							}
 						}
 					}
 				}
@@ -259,48 +303,61 @@ namespace RI.Framework.Services.Dispatcher
 
 		private bool OnFinished (DispatcherOperation operation, Action<IDispatcherOperation, object[]> callback)
 		{
-			if (operation.StatusInternal != DispatcherStatus.Queued)
+			if (operation.Status != DispatcherStatus.Queued)
 			{
 				return false;
 			}
 
-			operation.FinishedCallback = callback;
+			lock (operation.SyncRoot)
+			{
+				operation.FinishedCallback = callback;
+			}
 
 			return true;
 		}
 
 		private bool Reschedule (DispatcherOperation operation, int millisecondsFromNow)
 		{
-			if (operation.StatusInternal != DispatcherStatus.Queued)
+			if (millisecondsFromNow < 0)
+			{
+				throw new ArgumentOutOfRangeException(nameof(millisecondsFromNow));
+			}
+
+			if (operation.Status != DispatcherStatus.Queued)
 			{
 				return false;
 			}
 
-			operation.TickTrigger = this._nowTicks + (millisecondsFromNow * 10000L);
+			Interlocked.Exchange(ref operation.TickTrigger, Interlocked.Read(ref this._nowTicks) + (millisecondsFromNow * 10000L));
 
 			return true;
 		}
 
 		private bool Reschedule (DispatcherOperation operation, DateTime timestamp)
 		{
-			return this.Reschedule(operation, Math.Max((int)((timestamp.ToUniversalTime().Ticks - this._nowTicks) / 10000), 0));
+			return this.Reschedule(operation, Math.Max((int)((timestamp.ToUniversalTime().Ticks - Interlocked.Read(ref this._nowTicks)) / 10000), 0));
 		}
 
 		private bool Timeout (DispatcherOperation operation, int millisecondsFromNow)
 		{
-			if (operation.StatusInternal != DispatcherStatus.Queued)
+			if (millisecondsFromNow < 0)
+			{
+				throw new ArgumentOutOfRangeException(nameof(millisecondsFromNow));
+			}
+
+			if (operation.Status != DispatcherStatus.Queued)
 			{
 				return false;
 			}
 
-			operation.TickTimeout = this._nowTicks + (millisecondsFromNow * 10000L);
+			Interlocked.Exchange(ref operation.TickTimeout, Interlocked.Read(ref this._nowTicks) + (millisecondsFromNow * 10000L));
 
 			return true;
 		}
 
 		private bool Timeout (DispatcherOperation operation, DateTime timestamp)
 		{
-			return this.Timeout(operation, Math.Max((int)((timestamp.ToUniversalTime().Ticks - this._nowTicks) / 10000), 0));
+			return this.Timeout(operation, Math.Max((int)((timestamp.ToUniversalTime().Ticks - Interlocked.Read(ref this._nowTicks)) / 10000), 0));
 		}
 
 		#endregion
@@ -780,7 +837,7 @@ namespace RI.Framework.Services.Dispatcher
 
 			public override void Invoke ()
 			{
-				this.Operation.ResultInternal = this.Func();
+				this.Operation.Result = this.Func();
 			}
 
 			#endregion
@@ -809,7 +866,7 @@ namespace RI.Framework.Services.Dispatcher
 
 			public override void Invoke ()
 			{
-				this.Operation.ResultInternal = this.Func(this.Arg);
+				this.Operation.Result = this.Func(this.Arg);
 			}
 
 			#endregion
@@ -840,7 +897,7 @@ namespace RI.Framework.Services.Dispatcher
 
 			public override void Invoke ()
 			{
-				this.Operation.ResultInternal = this.Func(this.Arg1, this.Arg2);
+				this.Operation.Result = this.Func(this.Arg1, this.Arg2);
 			}
 
 			#endregion
@@ -873,7 +930,7 @@ namespace RI.Framework.Services.Dispatcher
 
 			public override void Invoke ()
 			{
-				this.Operation.ResultInternal = this.Func(this.Arg1, this.Arg2, this.Arg3);
+				this.Operation.Result = this.Func(this.Arg1, this.Arg2, this.Arg3);
 			}
 
 			#endregion
@@ -908,7 +965,7 @@ namespace RI.Framework.Services.Dispatcher
 
 			public override void Invoke ()
 			{
-				this.Operation.ResultInternal = this.Func(this.Arg1, this.Arg2, this.Arg3, this.Arg4);
+				this.Operation.Result = this.Func(this.Arg1, this.Arg2, this.Arg3, this.Arg4);
 			}
 
 			#endregion
@@ -985,9 +1042,9 @@ namespace RI.Framework.Services.Dispatcher
 
 			public DispatcherStatus StatusInternal = DispatcherStatus.Queued;
 
-			public long? TickTimeout;
+			public long TickTimeout;
 
-			public long? TickTrigger;
+			public long TickTrigger;
 
 			#endregion
 
@@ -998,71 +1055,59 @@ namespace RI.Framework.Services.Dispatcher
 
 			bool ISynchronizable.IsSynchronized => true;
 
-			object IDispatcherOperation.Result
+			public object Result
 			{
 				get
 				{
-					return this.ResultInternal;
+					lock (this.SyncRoot)
+					{
+						return this.ResultInternal;
+					}
+				}
+				set
+				{
+					lock (this.SyncRoot)
+					{
+						this.ResultInternal = value;
+					}
 				}
 			}
 
-			DispatcherStatus IDispatcherOperation.Status
+			public DispatcherStatus Status
 			{
 				get
 				{
-					return this.StatusInternal;
+					lock (this.SyncRoot)
+					{
+						return this.StatusInternal;
+					}
+				}
+				set
+				{
+					lock (this.SyncRoot)
+					{
+						this.StatusInternal = value;
+					}
 				}
 			}
 
 			public object SyncRoot { get; }
 
-			bool IDispatcherOperation.Cancel ()
-			{
-				return this.Dispatcher.Cancel(this);
-			}
+			bool IDispatcherOperation.Cancel () => this.Dispatcher.Cancel(this);
 
-			IDispatcherOperation IDispatcherOperation.OnFinished (Action<IDispatcherOperation, object[]> callback)
-			{
-				return this.Dispatcher.OnFinished(this, callback) ? this : null;
-			}
+			IDispatcherOperation IDispatcherOperation.OnFinished (Action<IDispatcherOperation, object[]> callback) => this.Dispatcher.OnFinished(this, callback) ? this : null;
 
-			IDispatcherOperation IDispatcherOperation.Reschedule (int millisecondsFromNow)
-			{
-				if (millisecondsFromNow < 0)
-				{
-					throw new ArgumentOutOfRangeException(nameof(millisecondsFromNow));
-				}
-				return this.Dispatcher.Reschedule(this, millisecondsFromNow) ? this : null;
-			}
+			IDispatcherOperation IDispatcherOperation.Reschedule (int millisecondsFromNow) => this.Dispatcher.Reschedule(this, millisecondsFromNow) ? this : null;
 
-			IDispatcherOperation IDispatcherOperation.Reschedule (TimeSpan timeFromNow)
-			{
-				return ((IDispatcherOperation)this).Reschedule((int)timeFromNow.TotalMilliseconds);
-			}
+			IDispatcherOperation IDispatcherOperation.Reschedule (TimeSpan timeFromNow) => ((IDispatcherOperation)this).Reschedule((int)timeFromNow.TotalMilliseconds);
 
-			IDispatcherOperation IDispatcherOperation.Reschedule (DateTime timestamp)
-			{
-				return this.Dispatcher.Reschedule(this, timestamp) ? this : null;
-			}
+			IDispatcherOperation IDispatcherOperation.Reschedule (DateTime timestamp) => this.Dispatcher.Reschedule(this, timestamp) ? this : null;
 
-			IDispatcherOperation IDispatcherOperation.Timeout (int millisecondsFromNow)
-			{
-				if (millisecondsFromNow < 0)
-				{
-					throw new ArgumentOutOfRangeException(nameof(millisecondsFromNow));
-				}
-				return this.Dispatcher.Timeout(this, millisecondsFromNow) ? this : null;
-			}
+			IDispatcherOperation IDispatcherOperation.Timeout (int millisecondsFromNow) => this.Dispatcher.Timeout(this, millisecondsFromNow) ? this : null;
 
-			IDispatcherOperation IDispatcherOperation.Timeout (TimeSpan timeFromNow)
-			{
-				return ((IDispatcherOperation)this).Timeout((int)timeFromNow.TotalMilliseconds);
-			}
+			IDispatcherOperation IDispatcherOperation.Timeout (TimeSpan timeFromNow) => ((IDispatcherOperation)this).Timeout((int)timeFromNow.TotalMilliseconds);
 
-			IDispatcherOperation IDispatcherOperation.Timeout (DateTime timestamp)
-			{
-				return this.Dispatcher.Timeout(this, timestamp) ? this : null;
-			}
+			IDispatcherOperation IDispatcherOperation.Timeout (DateTime timestamp) => this.Dispatcher.Timeout(this, timestamp) ? this : null;
 
 			#endregion
 		}

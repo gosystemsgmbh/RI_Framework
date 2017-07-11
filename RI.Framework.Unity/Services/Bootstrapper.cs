@@ -2,6 +2,7 @@
 
 using RI.Framework.Composition;
 using RI.Framework.Composition.Catalogs;
+using RI.Framework.Composition.Creators;
 using RI.Framework.Composition.Model;
 using RI.Framework.Services.Dispatcher;
 using RI.Framework.Services.Logging;
@@ -200,6 +201,19 @@ namespace RI.Framework.Services
 		public bool ModuleUnloading = true;
 
 		/// <summary>
+		///     Specifies whether the <c> MonoBehaviour </c> composition creator should be used or not.
+		/// </summary>
+		/// <remarks>
+		///     <para>
+		///         If true, <see cref="Composition.Creators.MonoBehaviourCreator" /> is added automatically to <see cref="Container" />, making it possible to retrieve properly constructed instances of <c> MonoBehaviour </c>s from the container.
+		///     </para>
+		///     <para>
+		///         The default value is true.
+		///     </para>
+		/// </remarks>
+		public bool MonoBehaviourCreator = true;
+
+		/// <summary>
 		///     Specifies whether the default scripting catalog should be used or not.
 		/// </summary>
 		/// <remarks>
@@ -334,6 +348,12 @@ namespace RI.Framework.Services
 		protected virtual void ConfigureContainer ()
 		{
 			this.Container.AddCatalog(new InstanceCatalog(this.Container));
+
+			if (this.MonoBehaviourCreator)
+			{
+				this.Log(LogLevel.Debug, "Using MonoBehaviour composition creator");
+				this.Container.AddCreator(new MonoBehaviourCreator());
+			}
 
 			if (this.ScriptingCatalog)
 			{

@@ -215,9 +215,6 @@ I/O
 Composition
 ---------
 
- + (Common) TypeCreators
- + (Unity) MonoBehaviourTypeCreator
-
  = (Common) Lazy loading (Func<>, Lazy<>)
  = (Common) Generic Import property
  = (Common) Better platform detection

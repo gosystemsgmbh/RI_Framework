@@ -66,7 +66,29 @@ namespace RI.Framework.IO.CSV
 	///         For example, the value <c> Test&quot;123 </c> is written as <c> &quot;Test&quot;&quot;123&quot; </c> and <c> &quot;&quot;Hello </c> is written as <c> &quot;&quot;&quot;&quot;&quot;Hello&quot; </c>.
 	///     </para>
 	/// </remarks>
-	/// TODO: Example
+	/// <example>
+	///     <code language="cs">
+	/// <![CDATA[
+	/// // create an empty CSV document
+	/// var doc = new CsvDocument();
+	/// 
+	/// // load a CSV file
+	/// doc.Load("data.csv");
+	/// 
+	/// // get column headers
+	/// var headers = doc.Data[0];
+	/// 
+	/// // iterate through all rows, except the column headers
+	/// for (int index = 1; index < doc.Data.Count; index++)
+	/// {
+	///    ...
+	/// }
+	/// 
+	/// // save back into the CSV file
+	/// doc.Save("data.csv");
+	/// ]]>
+	/// </code>
+	/// </example>
 	public sealed class CsvDocument : ICloneable, ICloneable<CsvDocument>
 	{
 		#region Instance Constructor/Destructor

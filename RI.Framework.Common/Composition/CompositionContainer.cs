@@ -810,6 +810,8 @@ namespace RI.Framework.Composition
 
 		private Dictionary<string, CompositionItem> Composition { get; }
 
+		private HashSet<CompositionCreator> Creators { get; }
+
 		private List<CompositionCatalogItem> Instances { get; }
 
 		private EventHandler ParentContainerCompositionChangedHandler { get; }
@@ -841,7 +843,7 @@ namespace RI.Framework.Composition
 		#region Instance Methods
 
 		/// <summary>
-		///     Model-based export: Adds a composition catalog to use its exports for composition, using <see cref="ExportAttribute" />.
+		///     Model-based export: Adds a composition catalog to use its exports for composition.
 		/// </summary>
 		/// <param name="catalog"> The composition catalog to add. </param>
 		/// <remarks>
@@ -865,6 +867,35 @@ namespace RI.Framework.Composition
 			lock (this.SyncRoot)
 			{
 				this.AddCatalogInternal(catalog);
+				this.UpdateComposition(true);
+			}
+
+			this.RaiseCompositionChanged();
+		}
+
+		/// <summary>
+		///     Adds a composition creator to use it to create instances of exported types.
+		/// </summary>
+		/// <param name="creator"> The composition creator to add. </param>
+		/// <remarks>
+		///     <para>
+		///         If the specified creator is already added, the composition remains unchanged.
+		///     </para>
+		///     <para>
+		///         This triggers an internal recomposition using <see cref="CompositionFlags" />.<see cref="CompositionFlags.Normal" />.
+		///         See <see cref="Recompose(CompositionFlags)" /> for details.
+		///     </para>
+		/// </remarks>
+		public void AddCreator (CompositionCreator creator)
+		{
+			if (creator == null)
+			{
+				throw new ArgumentNullException(nameof(creator));
+			}
+
+			lock (this.SyncRoot)
+			{
+				this.AddCreatorInternal(creator);
 				this.UpdateComposition(true);
 			}
 
@@ -1075,6 +1106,16 @@ namespace RI.Framework.Composition
 
 			lock (this.SyncRoot)
 			{
+				foreach (CompositionCreator creator in batch.CreatorsToAdd)
+				{
+					this.AddCreatorInternal(creator);
+				}
+
+				foreach (CompositionCreator creator in batch.CreatorsToRemove)
+				{
+					this.RemoveCreatorInternal(creator);
+				}
+
 				foreach (CompositionCatalogItem item in batch.ItemsToAdd)
 				{
 					if (item.Value != null)
@@ -1403,6 +1444,35 @@ namespace RI.Framework.Composition
 		}
 
 		/// <summary>
+		///     Removes a composition creator so taht it is no longer used to create instances of exported types.
+		/// </summary>
+		/// <param name="creator"> The composition creator to remove. </param>
+		/// <remarks>
+		///     <note type="note">
+		///         Instances of exported types which were created with the composition creator to remove are not removed from the composition container and are continued to be used for composition.
+		///     </note>
+		///     <para>
+		///         This triggers an internal recomposition using <see cref="CompositionFlags" />.<see cref="CompositionFlags.Normal" />.
+		///         See <see cref="Recompose(CompositionFlags)" /> for details.
+		///     </para>
+		/// </remarks>
+		public void RemoveCreator (CompositionCreator creator)
+		{
+			if (creator == null)
+			{
+				throw new ArgumentNullException(nameof(creator));
+			}
+
+			lock (this.SyncRoot)
+			{
+				this.RemoveCreatorInternal(creator);
+				this.UpdateComposition(true);
+			}
+
+			this.RaiseCompositionChanged();
+		}
+
+		/// <summary>
 		///     Manual export: Removes an object exported under the specified types default name so that it is no longer used for composition.
 		/// </summary>
 		/// <param name="instance"> The exported object. </param>
@@ -1715,6 +1785,16 @@ namespace RI.Framework.Composition
 			catalog.RecomposeRequested += this.CatalogRecomposeRequestHandler;
 		}
 
+		private void AddCreatorInternal (CompositionCreator creator)
+		{
+			if (this.Creators.Contains(creator))
+			{
+				return;
+			}
+
+			this.Creators.Add(creator);
+		}
+
 		private void AddInstanceInternal (object instance, string name)
 		{
 			if (DirectLinqExtensions.Any(this.Instances, x => object.ReferenceEquals(x.Value, instance) && CompositionContainer.NameComparer.Equals(x.Name, name)))
@@ -1804,8 +1884,6 @@ namespace RI.Framework.Composition
 
 			return instances;
 		}
-
-		private HashSet<CompositionCreator> Creators { get; }
 
 		private List<object> GetOrCreateInstancesInternal (string name, Type compatibleType)
 		{
@@ -2088,6 +2166,16 @@ namespace RI.Framework.Composition
 			catalog.RecomposeRequested -= this.CatalogRecomposeRequestHandler;
 
 			ICollectionExtensions.RemoveAll(this.Catalogs, catalog);
+		}
+
+		private void RemoveCreatorInternal (CompositionCreator creator)
+		{
+			if (!this.Creators.Contains(creator))
+			{
+				return;
+			}
+
+			ICollectionExtensions.RemoveAll(this.Creators, creator);
 		}
 
 		private void RemoveInstanceInternal (object instance, string name)

@@ -31,6 +31,8 @@ namespace RI.Framework.Composition
 		{
 			this.ItemsToAdd = new List<CompositionCatalogItem>();
 			this.ItemsToRemove = new List<CompositionCatalogItem>();
+			this.CreatorsToAdd = new List<CompositionCreator>();
+			this.CreatorsToRemove = new List<CompositionCreator>();
 			this.CatalogsToAdd = new List<CompositionCatalog>();
 			this.CatalogsToRemove = new List<CompositionCatalog>();
 			this.ObjectsToSatisfy = new Dictionary<object, CompositionFlags>();
@@ -44,17 +46,21 @@ namespace RI.Framework.Composition
 
 		#region Instance Properties/Indexer
 
-		internal List<CompositionCatalog> CatalogsToAdd { get; private set; }
+		internal List<CompositionCatalog> CatalogsToAdd { get; }
 
-		internal List<CompositionCatalog> CatalogsToRemove { get; private set; }
+		internal List<CompositionCatalog> CatalogsToRemove { get; }
 
 		internal CompositionFlags Composition { get; private set; }
 
-		internal List<CompositionCatalogItem> ItemsToAdd { get; private set; }
+		internal List<CompositionCreator> CreatorsToAdd { get; }
 
-		internal List<CompositionCatalogItem> ItemsToRemove { get; private set; }
+		internal List<CompositionCreator> CreatorsToRemove { get; }
 
-		internal Dictionary<object, CompositionFlags> ObjectsToSatisfy { get; private set; }
+		internal List<CompositionCatalogItem> ItemsToAdd { get; }
+
+		internal List<CompositionCatalogItem> ItemsToRemove { get; }
+
+		internal Dictionary<object, CompositionFlags> ObjectsToSatisfy { get; }
 
 		#endregion
 
@@ -73,6 +79,18 @@ namespace RI.Framework.Composition
 
 			this.CatalogsToAdd.Add(catalog);
 			this.CatalogsToRemove.Remove(catalog);
+		}
+
+		/// <inheritdoc cref="CompositionContainer.AddCreator" />
+		public void AddCreator (CompositionCreator creator)
+		{
+			if (creator == null)
+			{
+				throw new ArgumentNullException(nameof(creator));
+			}
+
+			this.CreatorsToAdd.Add(creator);
+			this.CreatorsToRemove.Remove(creator);
 		}
 
 		/// <inheritdoc cref="CompositionContainer.AddExport(object, Type)" />
@@ -188,6 +206,18 @@ namespace RI.Framework.Composition
 
 			this.CatalogsToRemove.Add(catalog);
 			this.CatalogsToAdd.Remove(catalog);
+		}
+
+		/// <inheritdoc cref="CompositionContainer.RemoveCreator" />
+		public void RemoveCreator (CompositionCreator creator)
+		{
+			if (creator == null)
+			{
+				throw new ArgumentNullException(nameof(creator));
+			}
+
+			this.CreatorsToRemove.Add(creator);
+			this.CreatorsToAdd.Remove(creator);
 		}
 
 		/// <inheritdoc cref="CompositionContainer.RemoveExport(object, Type)" />
