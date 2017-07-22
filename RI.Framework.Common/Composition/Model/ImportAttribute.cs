@@ -19,7 +19,7 @@ namespace RI.Framework.Composition.Model
 	///         In cases where multiple values need to be imported, the property type (of the property <see cref="ImportAttribute" /> is applied to) must be <see cref="Import" /> and <see cref="ImportExtensions" /> must be used to access the actual imported values.
 	///     </para>
 	/// </remarks>
-	[AttributeUsage(AttributeTargets.Property)]
+	[AttributeUsage(AttributeTargets.Property | AttributeTargets.Parameter, AllowMultiple = false)]
 	public sealed class ImportAttribute : Attribute
 	{
 		#region Instance Constructor/Destructor

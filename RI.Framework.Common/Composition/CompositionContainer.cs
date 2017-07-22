@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
@@ -15,12 +14,10 @@ using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.ObjectModel;
 using RI.Framework.Utilities.Reflection;
+
 #if PLATFORM_NETFX
+using System.Collections;
 using System.Linq.Expressions;
-
-
-
-
 #endif
 
 
@@ -627,6 +624,8 @@ namespace RI.Framework.Composition
 			{
 				throw new ArgumentNullException(nameof(type));
 			}
+
+			//TODO: Is this correct?
 
 #if PLATFORM_NETFX
 			Type genericType = type.IsGenericType ? type.GetGenericTypeDefinition() : null;
@@ -1673,96 +1672,49 @@ namespace RI.Framework.Composition
 				PropertyInfo[] properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 				foreach (PropertyInfo property in properties)
 				{
-					object[] attributes = property.GetCustomAttributes(typeof(ImportAttribute), false);
-					foreach (ImportAttribute attribute in attributes)
+					List<ImportAttribute> attributes = property.GetCustomAttributes(typeof(ImportAttribute), false).OfType<ImportAttribute>().ToList();
+					bool canRecompose = attributes.Any(x => x.Recomposable);
+					object oldValue = property.GetGetMethod(true).Invoke(obj, null);
+
+					if ((isConstructing || (updateMissing && (oldValue == null)) || (updateRecomposable && canRecompose) || (updateComposed && (oldValue != null))) && (attributes.Count > 0))
 					{
-						bool canRecompose = attribute.Recomposable;
-						object oldValue = property.GetGetMethod(true).Invoke(obj, null);
+						string importName = attributes.FirstOrDefault(null, x => !x.Name.IsNullOrEmptyOrWhitespace())?.Name;
+						Type importType = property.PropertyType;
 
-						if (isConstructing || (updateMissing && (oldValue == null)) || (updateRecomposable && canRecompose) || (updateComposed && (oldValue != null)))
+						ImportKind importKind;
+						object newValue = this.GetImportValueFromNameOrType(importName, importType, out importKind);
+
+						bool updateValue = false;
+
+						//TODO: Handle update necessity based on import kind
+						if (importKind == ImportKind.Special)
 						{
-							object newValue = null;
-							bool updateValue = false;
-							bool currentComposed = false;
-							bool asArray = false;
+							Import oldImport = oldValue as Import;
+							Import newImport = newValue as Import;
+							IEnumerable<object> oldValues = oldImport?.GetInstancesSnapshot();
+							IEnumerable<object> newValues = newImport?.GetInstancesSnapshot();
 
-							Type propertyType = property.PropertyType;
-							if (!CompositionContainer.ValidateImportType(propertyType))
+							updateValue = !CollectionComparer<object>.ReferenceEquality.Equals(oldValues, newValues);
+						}
+						else
+						{
+							updateValue = !object.ReferenceEquals(oldValue, newValue);
+						}
+
+						if (updateValue)
+						{
+							MethodInfo setMethod = property.GetSetMethod(true);
+							if (setMethod == null)
 							{
-								throw new CompositionException("Invalid import type for property: " + propertyType.Name + " @ " + property.Name + " @ " + type.FullName);
-							}
-
-#if PLATFORM_NETFX
-							Type genericType = propertyType.IsGenericType ? propertyType.GetGenericTypeDefinition() : null;
-							Type typeArgument = propertyType.IsGenericType ? propertyType.GetGenericArguments()[0] : propertyType;
-							propertyType = typeArgument;
-							asArray = genericType != null;
-#endif
-
-							if (propertyType == typeof(Import))
-							{
-								string importName = attribute.Name;
-								if (importName == null)
-								{
-									throw new CompositionException("Missing export type or export name for property: " + propertyType.Name + " @ " + property.Name + " @ " + type.FullName);
-								}
-
-								List<object> instances = this.GetOrCreateInstancesInternal(importName, typeof(object));
-
-								newValue = new Import(instances.Count == 0 ? null : instances.ToArray());
-
-								Import oldImport = oldValue as Import;
-								Import newImport = newValue as Import;
-								IEnumerable<object> oldValues = oldImport?.GetInstancesSnapshot();
-								IEnumerable<object> newValues = newImport?.GetInstancesSnapshot();
-
-								updateValue = !CollectionComparer<object>.ReferenceEquality.Equals(oldValues, newValues);
-								currentComposed = updateValue;
+								throw new CompositionException("Cannot set value for property because set accessor is missing/unavailable: " + type.FullName + "." + property.Name);
 							}
 							else
 							{
-								string importName = attribute.Name ?? CompositionContainer.GetNameOfType(propertyType);
-
-								List<object> instances = this.GetOrCreateInstancesInternal(importName, propertyType);
-
-								if (instances.Count == 0)
-								{
-									newValue = null;
-								}
-								else
-								{
-									if (asArray)
-									{
-										newValue = this.CreateArray(propertyType, instances);
-									}
-									else
-									{
-										newValue = instances[0];
-									}
-								}
-
-								updateValue = !object.ReferenceEquals(oldValue, newValue);
-								currentComposed = updateValue;
+								this.Log(LogLevel.Debug, "Updating import ({0}): {1}", composition, type.FullName + "." + property.Name);
+								setMethod.Invoke(obj, new[] { newValue });
 							}
 
-							if (updateValue)
-							{
-								MethodInfo setMethod = property.GetSetMethod(true);
-								if (setMethod == null)
-								{
-									throw new CompositionException("Cannot set value for property because set accessor is missing/unavailable: " + propertyType.Name + " @ " + property.Name + " @ " + type.FullName);
-								}
-								else
-								{
-									this.Log(LogLevel.Debug, "Updating import ({0}): {1} @ {2}", composition, property.Name, obj.GetType().FullName);
-									setMethod.Invoke(obj, new[] {newValue});
-								}
-							}
-
-							if (currentComposed)
-							{
-								composed = true;
-							}
+							composed = true;
 						}
 					}
 				}
@@ -1829,14 +1781,14 @@ namespace RI.Framework.Composition
 			this.UpdateComposition(true);
 		}
 
-		private object CreateArray (Type type, List<object> content)
+#if PLATFORM_NETFX
+
+		private object CreateArray(Type type, List<object> content)
 		{
 			Array array = Array.CreateInstance(type, content.Count);
 			((ICollection)content).CopyTo(array, 0);
 			return array;
 		}
-
-#if PLATFORM_NETFX
 
 		private object CreateGenericLazyLoadDelegate (Type type)
 		{
@@ -1883,6 +1835,87 @@ namespace RI.Framework.Composition
 			}
 
 			return instances;
+		}
+
+		private enum ImportKind
+		{
+			Special,
+			Single,
+			Enumerable,
+			LazyFunc,
+			LazyObject,
+		}
+
+		private Type GetImportTypeFromType (Type type, out ImportKind kind)
+		{
+			if (type == typeof(Import))
+			{
+				kind = ImportKind.Special;
+				return typeof(object);
+			}
+
+			Type lazyLoadFuncType = CompositionContainer.GetLazyLoadDelegateType(type);
+			if (lazyLoadFuncType != null)
+			{
+				kind = ImportKind.LazyFunc;
+				return lazyLoadFuncType;
+			}
+
+			//TODO: Add support for Lazy<>
+
+			Type enumerableType = CompositionContainer.GetEnumerableType(type);
+			if (enumerableType != null)
+			{
+				kind = ImportKind.Enumerable;
+				return enumerableType;
+			}
+
+			kind = ImportKind.Single;
+			return type;
+		}
+
+		private object GetImportValueFromNameOrType (string name, Type type, out ImportKind kind)
+		{
+			Type importType = this.GetImportTypeFromType(type, out kind);
+			
+			if ((kind == ImportKind.Special) && name.IsNullOrEmptyOrWhitespace())
+			{
+				throw new CompositionException("No import name specified for import using the " + nameof(Import) + " type.");
+			}
+
+			if (!CompositionContainer.ValidateImportType(importType))
+			{
+				throw new CompositionException("Invalid import type: " + importType.Name);
+			}
+
+			string importName = name ?? CompositionContainer.GetNameOfType(importType);
+
+			List<object> importValues = this.GetOrCreateInstancesInternal(importName, importType);
+
+			if (kind == ImportKind.Special)
+			{
+				return new Import(importValues.Count == 0 ? null : importValues.ToArray());
+			}
+
+#if PLATFORM_NETFX
+			if (kind == ImportKind.Enumerable)
+			{
+				return this.CreateArray(importType, importValues);
+			}
+
+			if (kind == ImportKind.LazyFunc)
+			{
+				//TODO: Add support for names
+				return this.CreateGenericLazyLoadDelegate(importType);
+			}
+#endif
+
+			if (importValues.Count > 0)
+			{
+				return importValues[0];
+			}
+
+			return null;
 		}
 
 		private List<object> GetOrCreateInstancesInternal (string name, Type compatibleType)
@@ -1932,7 +1965,7 @@ namespace RI.Framework.Composition
 			List<object> newInstances = new List<object>();
 			foreach (Type type in types)
 			{
-				bool supportedByCreators = this.Creators.Any(x => x.CanCreateInstance(type, compatibleType, name));
+				bool supportedByCreators = this.Creators.Any(x => x.CanCreateInstance(this, type, compatibleType, name));
 
 				object newInstance = null;
 				{
@@ -1945,7 +1978,7 @@ namespace RI.Framework.Composition
 						throw new CompositionException("Too many export creators defined for type: " + type.FullName);
 					}
 
-					if (methods.Count == 1)
+					if (methods.Count > 0)
 					{
 						MethodInfo method = methods[0];
 						ParameterInfo[] methodParameters = method.GetParameters();
@@ -1955,41 +1988,11 @@ namespace RI.Framework.Composition
 
 						for (int i1 = 1; i1 < methodParameters.Length; i1++)
 						{
-							ParameterInfo methodParameter = methodParameters[i1];
-							Type lazyLoadDelegateType = CompositionContainer.GetLazyLoadDelegateType(methodParameter.ParameterType);
-							Type enumerableType = CompositionContainer.GetEnumerableType(methodParameter.ParameterType);
-							Type parameterType = lazyLoadDelegateType ?? enumerableType ?? methodParameter.ParameterType;
+							string importName = methodParameters[i1].GetCustomAttributes(typeof(ImportAttribute), false).OfType<ImportAttribute>().FirstOrDefault(null, x => !x.Name.IsNullOrEmptyOrWhitespace())?.Name;
+							Type importType = methodParameters[i1].ParameterType;
 
-							if (!CompositionContainer.ValidateImportType(parameterType))
-							{
-								throw new CompositionException("Invalid import type in export creator parameter: " + parameterType.Name + " @ " + methodParameter.Name + " @ " + type.FullName);
-							}
-							if (parameterType == typeof(Import))
-							{
-								throw new CompositionException("Export creator cannot have parameter of type " + typeof(Import).FullName + ": " + parameterType.Name + " @ " + methodParameter.Name + " @ " + type.FullName);
-							}
-
-							List<object> parameterValues = this.GetOrCreateInstancesInternal(CompositionContainer.GetNameOfType(parameterType), parameterType);
-
-#if PLATFORM_NETFX
-							if (lazyLoadDelegateType != null)
-							{
-								parameters[i1] = this.CreateGenericLazyLoadDelegate(parameterType);
-							}
-							else if (enumerableType != null)
-							{
-								parameters[i1] = this.CreateArray(parameterType, parameterValues);
-							}
-							else
-#endif
-							if (parameterValues.Count > 0)
-							{
-								parameters[i1] = parameterValues[0];
-							}
-							else
-							{
-								parameters[i1] = null;
-							}
+							ImportKind importKind;
+							parameters[i1] = this.GetImportValueFromNameOrType(importName, importType, out importKind);
 						}
 
 						newInstance = method.Invoke(null, parameters);
@@ -2013,10 +2016,10 @@ namespace RI.Framework.Composition
 						ParameterInfo[] parameterCandidates = x.GetParameters();
 						foreach (ParameterInfo parameterCandidate in parameterCandidates)
 						{
-							Type lazyLoadDelegateType = CompositionContainer.GetLazyLoadDelegateType(parameterCandidate.ParameterType);
-							Type enumerableType = CompositionContainer.GetEnumerableType(parameterCandidate.ParameterType);
-							Type parameterType = lazyLoadDelegateType ?? enumerableType ?? parameterCandidate.ParameterType;
-							if (!this.HasExport(parameterType))
+							ImportKind importKind;
+							Type importType = this.GetImportTypeFromType(parameterCandidate.ParameterType, out importKind);
+							//TODO: Handle Import types and kinds correctly
+							if (!this.HasExport(importType))
 							{
 								return true;
 							}
@@ -2038,41 +2041,11 @@ namespace RI.Framework.Composition
 
 						for (int i1 = 0; i1 < constructorParameters.Length; i1++)
 						{
-							ParameterInfo constructorParameter = constructorParameters[i1];
-							Type lazyLoadDelegateType = CompositionContainer.GetLazyLoadDelegateType(constructorParameter.ParameterType);
-							Type enumerableType = CompositionContainer.GetEnumerableType(constructorParameter.ParameterType);
-							Type parameterType = lazyLoadDelegateType ?? enumerableType ?? constructorParameter.ParameterType;
+							string importName = constructorParameters[i1].GetCustomAttributes(typeof(ImportAttribute), false).OfType<ImportAttribute>().FirstOrDefault(null, x => !x.Name.IsNullOrEmptyOrWhitespace())?.Name;
+							Type importType = constructorParameters[i1].ParameterType;
 
-							if (!CompositionContainer.ValidateImportType(parameterType))
-							{
-								throw new CompositionException("Invalid import type in export constructor parameter: " + parameterType.Name + " @ " + constructorParameter.Name + " @ " + type.FullName);
-							}
-							if (parameterType == typeof(Import))
-							{
-								throw new CompositionException("Export constructor cannot have parameter of type " + typeof(Import).FullName + ": " + parameterType.Name + " @ " + constructorParameter.Name + " @ " + type.FullName);
-							}
-
-							List<object> parameterValues = this.GetOrCreateInstancesInternal(CompositionContainer.GetNameOfType(parameterType), parameterType);
-
-#if PLATFORM_NETFX
-							if (lazyLoadDelegateType != null)
-							{
-								parameters[i1] = this.CreateGenericLazyLoadDelegate(parameterType);
-							}
-							else if (enumerableType != null)
-							{
-								parameters[i1] = this.CreateArray(parameterType, parameterValues);
-							}
-							else
-#endif
-							if (parameterValues.Count > 0)
-							{
-								parameters[i1] = parameterValues[0];
-							}
-							else
-							{
-								parameters[i1] = null;
-							}
+							ImportKind importKind;
+							parameters[i1] = this.GetImportValueFromNameOrType(importName, importType, out importKind);
 						}
 
 						newInstance = constructor.Invoke(parameters);
@@ -2083,9 +2056,9 @@ namespace RI.Framework.Composition
 				{
 					foreach (CompositionCreator creator in this.Creators)
 					{
-						if (creator.CanCreateInstance(type, compatibleType, name))
+						if (creator.CanCreateInstance(this, type, compatibleType, name))
 						{
-							newInstance = creator.CreateInstance(type, compatibleType, name);
+							newInstance = creator.CreateInstance(this, type, compatibleType, name);
 							if (newInstance != null)
 							{
 								break;

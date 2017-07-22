@@ -29,15 +29,15 @@ namespace RI.Framework.Composition.Creators
 		#region Overrides
 
 		/// <inheritdoc />
-		protected internal override bool CanCreateInstance (Type type, Type compatibleType, string exportName)
+		protected internal override bool CanCreateInstance (CompositionContainer container, Type type, Type compatibleType, string exportName)
 		{
 			return typeof(MonoBehaviour).IsAssignableFrom(type);
 		}
 
 		/// <inheritdoc />
-		protected internal override object CreateInstance (Type type, Type compatibleType, string exportName)
+		protected internal override object CreateInstance (CompositionContainer container, Type type, Type compatibleType, string exportName)
 		{
-			if (!this.CanCreateInstance(type, compatibleType, exportName))
+			if (!this.CanCreateInstance(container, type, compatibleType, exportName))
 			{
 				return null;
 			}
