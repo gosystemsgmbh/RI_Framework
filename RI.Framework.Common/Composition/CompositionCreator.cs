@@ -65,7 +65,7 @@ namespace RI.Framework.Composition
 		/// <summary>
 		///     Determines whether this composition creator can create an instance of a specified type.
 		/// </summary>
-		/// <param name="container"> The composition container which is currently using this composition creator to create an instance of <paramref name="type"/>. </param>
+		/// <param name="container"> The composition container which is currently using this composition creator to create an instance of <paramref name="type" />. </param>
 		/// <param name="type"> The type to create an instance of. </param>
 		/// <param name="compatibleType"> The type to which the created instance is eventually assigned. </param>
 		/// <param name="exportName"> The name under which the type is exported. </param>
@@ -79,7 +79,7 @@ namespace RI.Framework.Composition
 		/// <summary>
 		///     Attempts to create an instance of a specified type
 		/// </summary>
-		/// <param name="container"> The composition container which is currently using this composition creator to create an instance of <paramref name="type"/>. </param>
+		/// <param name="container"> The composition container which is currently using this composition creator to create an instance of <paramref name="type" />. </param>
 		/// <param name="type"> The type to create an instance of. </param>
 		/// <param name="compatibleType"> The type to which the created instance is eventually assigned. </param>
 		/// <param name="exportName"> The name under which the type is exported. </param>

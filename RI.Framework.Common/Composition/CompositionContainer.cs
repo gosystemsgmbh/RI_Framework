@@ -15,6 +15,9 @@ using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.ObjectModel;
 using RI.Framework.Utilities.Reflection;
 
+
+
+
 #if PLATFORM_NETFX
 using System.Collections;
 using System.Linq.Expressions;
@@ -599,12 +602,21 @@ namespace RI.Framework.Composition
 			}
 		}
 
-		private static Type GetLazyLoadDelegateType (Type type)
+#if PLATFORM_NETFX
+		private static Type GetLazyLoadFuncType (Type type)
 		{
 			Type genericType = type.IsGenericType ? type.GetGenericTypeDefinition() : null;
 			Type typeArgument = type.IsGenericType ? type.GetGenericArguments()[0] : null;
 			return (genericType == typeof(Func<>)) ? typeArgument : null;
 		}
+
+		private static Type GetLazyLoadObjectType(Type type)
+		{
+			Type genericType = type.IsGenericType ? type.GetGenericTypeDefinition() : null;
+			Type typeArgument = type.IsGenericType ? type.GetGenericArguments()[0] : null;
+			return (genericType == typeof(Lazy<>)) ? typeArgument : null;
+		}
+#endif
 
 		private static void IsExportPrivateInternal (Type type, bool isSelf, HashSet<bool> privates)
 		{
@@ -664,6 +676,7 @@ namespace RI.Framework.Composition
 			this.Catalogs = new List<CompositionCatalog>();
 			this.Creators = new HashSet<CompositionCreator>();
 			this.Composition = new Dictionary<string, CompositionItem>(CompositionContainer.NameComparer);
+			this.LazyInvokers = new Dictionary<string, Dictionary<Type, LazyInvoker>>(CompositionContainer.NameComparer);
 
 			this.UpdateComposition(true);
 		}
@@ -816,6 +829,9 @@ namespace RI.Framework.Composition
 		private EventHandler ParentContainerCompositionChangedHandler { get; }
 
 		private List<CompositionCatalogItem> Types { get; }
+
+		[SuppressMessage("ReSharper", "CollectionNeverUpdated.Local")]
+		private Dictionary<string, Dictionary<Type, LazyInvoker>> LazyInvokers { get; }
 
 		#endregion
 
@@ -1401,7 +1417,7 @@ namespace RI.Framework.Composition
 		{
 			lock (this.SyncRoot)
 			{
-				bool recomposed = false;
+				bool recomposed = this.ParentContainer?.Recompose(composition) ?? false;
 				List<object> instances = this.GetExistingInstancesInternal(false);
 				foreach (object instance in instances)
 				{
@@ -1685,18 +1701,27 @@ namespace RI.Framework.Composition
 						object newValue = this.GetImportValueFromNameOrType(importName, importType, out importKind);
 
 						bool updateValue = false;
-
-						//TODO: Handle update necessity based on import kind
 						if (importKind == ImportKind.Special)
 						{
 							Import oldImport = oldValue as Import;
 							Import newImport = newValue as Import;
-							IEnumerable<object> oldValues = oldImport?.GetInstancesSnapshot();
-							IEnumerable<object> newValues = newImport?.GetInstancesSnapshot();
-
+							List<object> oldValues = oldImport?.GetInstancesSnapshot();
+							List<object> newValues = newImport?.GetInstancesSnapshot();
 							updateValue = !CollectionComparer<object>.ReferenceEquality.Equals(oldValues, newValues);
 						}
-						else
+#if PLATFORM_NETFX
+						else if (importKind == ImportKind.Enumerable)
+						{
+							List<object> oldValues = (oldValue as IEnumerable)?.ToList();
+							List<object> newValues = (newValue as IEnumerable)?.ToList();
+							updateValue = !CollectionComparer<object>.ReferenceEquality.Equals(oldValues, newValues);
+						}
+#endif
+						else if ((importKind == ImportKind.LazyFunc) || (importKind == ImportKind.LazyObject))
+						{
+							updateValue = oldValue == null;
+						}
+						else if (importKind == ImportKind.Single)
 						{
 							updateValue = !object.ReferenceEquals(oldValue, newValue);
 						}
@@ -1711,7 +1736,7 @@ namespace RI.Framework.Composition
 							else
 							{
 								this.Log(LogLevel.Debug, "Updating import ({0}): {1}", composition, type.FullName + "." + property.Name);
-								setMethod.Invoke(obj, new[] { newValue });
+								setMethod.Invoke(obj, new[] {newValue});
 							}
 
 							composed = true;
@@ -1790,15 +1815,42 @@ namespace RI.Framework.Composition
 			return array;
 		}
 
-		private object CreateGenericLazyLoadDelegate (Type type)
+		private object CreateGenericLazyLoadFunc (string name, Type type)
 		{
-			Type enumerableType = CompositionContainer.GetEnumerableType(type);
-			string resolveName = enumerableType == null ? nameof(CompositionContainer.GetExport) : nameof(CompositionContainer.GetExports);
-			MethodInfo genericMethod = this.GetType().GetMethod(resolveName, new Type[] { });
-			MethodInfo resolveMethod = genericMethod.MakeGenericMethod(type);
-			MethodCallExpression resolveCall = Expression.Call(Expression.Constant(this), resolveMethod);
-			Delegate resolveLambda = Expression.Lambda(resolveCall).Compile();
-			return resolveLambda;
+			LazyInvoker invoker = null;
+			if (this.LazyInvokers.ContainsKey(name))
+			{
+				if (this.LazyInvokers[name].ContainsKey(type))
+				{
+					invoker = this.LazyInvokers[name][type];
+				}
+				else
+				{
+					this.LazyInvokers[name].Add(type, null);
+				}
+			}
+			else
+			{
+				this.LazyInvokers.Add(name, new Dictionary<Type, LazyInvoker>());
+				this.LazyInvokers[name].Add(type, null);
+			}
+
+			if (invoker == null)
+			{
+				invoker = new LazyInvoker(this, name, type);
+				this.LazyInvokers[name][type] = invoker;
+			}
+
+			return invoker.Resolver;
+		}
+
+		private object CreateGenericLazyLoadObject (string name, Type type)
+		{
+			object lazyLoadFunc = this.CreateGenericLazyLoadFunc(name, type);
+			Type genericType = typeof(Lazy<>);
+			Type concreteType = genericType.MakeGenericType(type);
+			object lazyLoadObject = Activator.CreateInstance(concreteType, BindingFlags.Default, null, lazyLoadFunc);
+			return lazyLoadObject;
 		}
 
 #endif
@@ -1840,10 +1892,10 @@ namespace RI.Framework.Composition
 		private enum ImportKind
 		{
 			Special,
-			Single,
 			Enumerable,
 			LazyFunc,
 			LazyObject,
+			Single,
 		}
 
 		private Type GetImportTypeFromType (Type type, out ImportKind kind)
@@ -1854,21 +1906,28 @@ namespace RI.Framework.Composition
 				return typeof(object);
 			}
 
-			Type lazyLoadFuncType = CompositionContainer.GetLazyLoadDelegateType(type);
-			if (lazyLoadFuncType != null)
-			{
-				kind = ImportKind.LazyFunc;
-				return lazyLoadFuncType;
-			}
-
-			//TODO: Add support for Lazy<>
-
+#if PLATFORM_NETFX
 			Type enumerableType = CompositionContainer.GetEnumerableType(type);
 			if (enumerableType != null)
 			{
 				kind = ImportKind.Enumerable;
 				return enumerableType;
 			}
+
+			Type lazyLoadFuncType = CompositionContainer.GetLazyLoadFuncType(type);
+			if (lazyLoadFuncType != null)
+			{
+				kind = ImportKind.LazyFunc;
+				return lazyLoadFuncType;
+			}
+			
+			Type lazyLoadObjectType = CompositionContainer.GetLazyLoadObjectType(type);
+			if (lazyLoadObjectType != null)
+			{
+				kind = ImportKind.LazyObject;
+				return lazyLoadObjectType;
+			}
+#endif
 
 			kind = ImportKind.Single;
 			return type;
@@ -1877,7 +1936,7 @@ namespace RI.Framework.Composition
 		private object GetImportValueFromNameOrType (string name, Type type, out ImportKind kind)
 		{
 			Type importType = this.GetImportTypeFromType(type, out kind);
-			
+
 			if ((kind == ImportKind.Special) && name.IsNullOrEmptyOrWhitespace())
 			{
 				throw new CompositionException("No import name specified for import using the " + nameof(Import) + " type.");
@@ -1888,13 +1947,17 @@ namespace RI.Framework.Composition
 				throw new CompositionException("Invalid import type: " + importType.Name);
 			}
 
-			string importName = name ?? CompositionContainer.GetNameOfType(importType);
+			string importName = name.IsNullOrEmptyOrWhitespace() ? CompositionContainer.GetNameOfType(importType) : name;
 
-			List<object> importValues = this.GetOrCreateInstancesInternal(importName, importType);
+			List<object> importValues = null;
+			if ((kind != ImportKind.LazyFunc) && (kind != ImportKind.LazyObject))
+			{
+				importValues = this.GetOrCreateInstancesInternal(importName, importType);
+			}
 
 			if (kind == ImportKind.Special)
 			{
-				return new Import(importValues.Count == 0 ? null : importValues.ToArray());
+				return new Import(importValues?.Count == 0 ? null : importValues?.ToArray());
 			}
 
 #if PLATFORM_NETFX
@@ -1905,12 +1968,16 @@ namespace RI.Framework.Composition
 
 			if (kind == ImportKind.LazyFunc)
 			{
-				//TODO: Add support for names
-				return this.CreateGenericLazyLoadDelegate(importType);
+				return this.CreateGenericLazyLoadFunc(importName, importType);
+			}
+
+			if (kind == ImportKind.LazyObject)
+			{
+				return this.CreateGenericLazyLoadObject(importName, importType);
 			}
 #endif
 
-			if (importValues.Count > 0)
+			if (importValues?.Count > 0)
 			{
 				return importValues[0];
 			}
@@ -2018,8 +2085,19 @@ namespace RI.Framework.Composition
 						{
 							ImportKind importKind;
 							Type importType = this.GetImportTypeFromType(parameterCandidate.ParameterType, out importKind);
-							//TODO: Handle Import types and kinds correctly
-							if (!this.HasExport(importType))
+							string importName = parameterCandidate.GetCustomAttributes(typeof(ImportAttribute), false).OfType<ImportAttribute>().FirstOrDefault(null, y => !y.Name.IsNullOrEmptyOrWhitespace())?.Name;
+
+							if ((importKind == ImportKind.Special) && importName.IsNullOrEmptyOrWhitespace())
+							{
+								return true;
+							}
+
+							if ((!importName.IsNullOrEmptyOrWhitespace()) && (!this.HasExport(importName)))
+							{
+								return true;
+							}
+
+							if ((importKind != ImportKind.Special) && (!this.HasExport(importType)))
 							{
 								return true;
 							}
@@ -2294,6 +2372,8 @@ namespace RI.Framework.Composition
 				}
 
 				this.ClearInternal();
+
+				this.LazyInvokers.Clear();
 			}
 
 			this.RaiseCompositionChanged();
@@ -2436,5 +2516,54 @@ namespace RI.Framework.Composition
 		}
 
 		#endregion
+
+
+
+
+		private sealed class LazyInvoker
+		{
+			#region Instance Constructor/Destructor
+
+			public LazyInvoker (CompositionContainer container, string name, Type type)
+			{
+				this.Container = container;
+				this.Name = name;
+				this.Type = type;
+				this.Resolver = null;
+
+#if PLATFORM_NETFX
+				bool useName = !name.IsNullOrEmptyOrWhitespace();
+
+				Type enumerableType = CompositionContainer.GetEnumerableType(type);
+				string resolveName = enumerableType == null ? nameof(CompositionContainer.GetExport) : nameof(CompositionContainer.GetExports);
+
+				MethodInfo genericMethod = container.GetType().GetMethod(resolveName, useName ? new [] { typeof(string) } : new Type[] { });
+				MethodInfo resolveMethod = genericMethod.MakeGenericMethod(type);
+
+				//TODO: Is this correct?
+				MethodCallExpression resolveCall = useName ? Expression.Call(Expression.Constant(this.Container), resolveMethod, Expression.Constant(this.Name)) : Expression.Call(Expression.Constant(this.Container), resolveMethod);
+				Delegate resolveLambda = Expression.Lambda(resolveCall).Compile();
+
+				this.Resolver = resolveLambda;
+#endif
+			}
+
+			#endregion
+
+
+
+
+			#region Instance Properties/Indexer
+
+			public Delegate Resolver { get; }
+
+			private CompositionContainer Container { get; }
+
+			private string Name { get; }
+
+			private Type Type { get; }
+
+			#endregion
+		}
 	}
 }

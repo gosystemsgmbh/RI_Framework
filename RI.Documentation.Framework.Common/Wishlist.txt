@@ -215,15 +215,9 @@ I/O
 Composition
 ---------
 
- = (Common) Lazy loading (Func<>, Lazy<>)
  = (Common) Generic Import property
  = (Common) Better platform detection
-
- - (Common) CreateIndependent
- - (Common) CreateAndExport
-
- - (Common) Add container to container (ContainerCatalog?)
- - (Common) Consistent parameter import handling
+ = (Common) Add container to container (ContainerCatalog?)
  
 
 Services
