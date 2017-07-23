@@ -48,6 +48,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Composition\Catalogs\AggregateCatalogFilterEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Composition\Catalogs\AppDomainCatalog.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Composition\Catalogs\AssemblyCatalog.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\Catalogs\ContainerCatalog.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Composition\Catalogs\DirectoryCatalog.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Composition\Catalogs\FileCatalog.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Composition\Catalogs\InstanceCatalog.cs" />

@@ -214,10 +214,6 @@ I/O
 
 Composition
 ---------
-
- = (Common) Generic Import property
- = (Common) Better platform detection
- = (Common) Add container to container (ContainerCatalog?)
  
 
 Services

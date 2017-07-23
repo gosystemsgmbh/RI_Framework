@@ -574,13 +574,6 @@ namespace RI.Framework.Composition
 			return container;
 		}
 
-		private static Type GetEnumerableType (Type type)
-		{
-			Type genericType = type.IsGenericType ? type.GetGenericTypeDefinition() : null;
-			Type typeArgument = type.IsGenericType ? type.GetGenericArguments()[0] : null;
-			return (genericType == typeof(IEnumerable<>)) ? typeArgument : null;
-		}
-
 		private static void GetExportsOfTypeInternal (Type type, bool includeWithoutAttribute, bool isSelf, HashSet<string> exports)
 		{
 			object[] attributes = type.GetCustomAttributes(typeof(ExportAttribute), false);
@@ -603,11 +596,19 @@ namespace RI.Framework.Composition
 		}
 
 #if PLATFORM_NETFX
+		private static Type GetEnumerableType (Type type)
+		{
+			Type genericType = type.IsGenericType ? type.GetGenericTypeDefinition() : null;
+			Type typeArgument = type.IsGenericType ? type.GetGenericArguments()[0] : null;
+			return (genericType == typeof(IEnumerable<>)) ? typeArgument : null;
+		}
+
 		private static Type GetLazyLoadFuncType (Type type)
 		{
 			Type genericType = type.IsGenericType ? type.GetGenericTypeDefinition() : null;
 			Type typeArgument = type.IsGenericType ? type.GetGenericArguments()[0] : null;
-			return (genericType == typeof(Func<>)) ? typeArgument : null;
+			int typeArgumentCount = type.IsGenericType ? type.GetGenericArguments().Length : 0;
+			return ((genericType == typeof(Func<>)) && (typeArgumentCount == 1)) ? typeArgument : null;
 		}
 
 		private static Type GetLazyLoadObjectType(Type type)
@@ -637,12 +638,11 @@ namespace RI.Framework.Composition
 				throw new ArgumentNullException(nameof(type));
 			}
 
-			//TODO: Is this correct?
-
 #if PLATFORM_NETFX
 			Type genericType = type.IsGenericType ? type.GetGenericTypeDefinition() : null;
 			Type typeArgument = type.IsGenericType ? type.GetGenericArguments()[0] : type;
-			return (typeArgument.IsClass || typeArgument.IsInterface) && ((genericType == null) || (genericType == typeof(IEnumerable<>)));
+			int typeArgumentCount = type.IsGenericType ? type.GetGenericArguments().Length : 0;
+			return (typeArgument.IsClass || typeArgument.IsInterface) && ((genericType == null) || (genericType == typeof(IEnumerable<>)) || ((genericType == typeof(Func<>)) && (typeArgumentCount == 1)) || (genericType == typeof(Lazy<>)));
 #endif
 #if PLATFORM_UNITY
 			return (type.IsClass || type.IsInterface) && (!type.IsGenericType);
@@ -1716,11 +1716,11 @@ namespace RI.Framework.Composition
 							List<object> newValues = (newValue as IEnumerable)?.ToList();
 							updateValue = !CollectionComparer<object>.ReferenceEquality.Equals(oldValues, newValues);
 						}
-#endif
 						else if ((importKind == ImportKind.LazyFunc) || (importKind == ImportKind.LazyObject))
 						{
 							updateValue = oldValue == null;
 						}
+#endif
 						else if (importKind == ImportKind.Single)
 						{
 							updateValue = !object.ReferenceEquals(oldValue, newValue);
@@ -1747,6 +1747,39 @@ namespace RI.Framework.Composition
 				importing?.ImportsResolved(composition, composed);
 
 				return composed;
+			}
+		}
+
+		internal Dictionary<string, List<CompositionCatalogItem>> GetCompositionSnapshot ()
+		{
+			lock (this.SyncRoot)
+			{
+				Dictionary<string, List<CompositionCatalogItem>> snapshot = new Dictionary<string, List<CompositionCatalogItem>>(CompositionContainer.NameComparer);
+				foreach (KeyValuePair<string, CompositionItem> composition in this.Composition)
+				{
+					string name = composition.Value.Name;
+
+					List<CompositionCatalogItem> items = new List<CompositionCatalogItem>();
+					snapshot.Add(name, items);
+
+					foreach (CompositionTypeItem type in composition.Value.Types)
+					{
+						if (type.Instance != null)
+						{
+							items.Add(new CompositionCatalogItem(name, type.Instance));
+						}
+						else
+						{
+							items.Add(new CompositionCatalogItem(name, type.Type, type.PrivateExport));
+						}
+					}
+
+					foreach (CompositionInstanceItem instance in composition.Value.Instances)
+					{
+						items.Add(new CompositionCatalogItem(name, instance.Instance));
+					}
+				}
+				return snapshot;
 			}
 		}
 
@@ -2083,9 +2116,9 @@ namespace RI.Framework.Composition
 						ParameterInfo[] parameterCandidates = x.GetParameters();
 						foreach (ParameterInfo parameterCandidate in parameterCandidates)
 						{
+							string importName = parameterCandidate.GetCustomAttributes(typeof(ImportAttribute), false).OfType<ImportAttribute>().FirstOrDefault(null, y => !y.Name.IsNullOrEmptyOrWhitespace())?.Name;
 							ImportKind importKind;
 							Type importType = this.GetImportTypeFromType(parameterCandidate.ParameterType, out importKind);
-							string importName = parameterCandidate.GetCustomAttributes(typeof(ImportAttribute), false).OfType<ImportAttribute>().FirstOrDefault(null, y => !y.Name.IsNullOrEmptyOrWhitespace())?.Name;
 
 							if ((importKind == ImportKind.Special) && importName.IsNullOrEmptyOrWhitespace())
 							{
@@ -2540,7 +2573,6 @@ namespace RI.Framework.Composition
 				MethodInfo genericMethod = container.GetType().GetMethod(resolveName, useName ? new [] { typeof(string) } : new Type[] { });
 				MethodInfo resolveMethod = genericMethod.MakeGenericMethod(type);
 
-				//TODO: Is this correct?
 				MethodCallExpression resolveCall = useName ? Expression.Call(Expression.Constant(this.Container), resolveMethod, Expression.Constant(this.Name)) : Expression.Call(Expression.Constant(this.Container), resolveMethod);
 				Delegate resolveLambda = Expression.Lambda(resolveCall).Compile();
 
