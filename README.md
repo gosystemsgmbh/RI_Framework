@@ -30,7 +30,8 @@
 - [ ] Testing
   - [ ] ThreadDispatcher with priority queue
   - [ ] ThreadDispatcherTimer
-  - [ ] ThreadDispatcher async/await
+  - [ ] ThreadDispatcher with async/await
+  - [ ] ThreadDispatcher with Task
   - [ ] StateMachine.TransitionAborted
   - [ ] StateMachine Updates
   - [ ] RuntimeEnvironment
@@ -39,11 +40,13 @@
   - [ ] TemporaryFile
   - [ ] CultureInfoExtensions
   - [ ] CompositionContainer with parent container
+  - [ ] CompositionContainer imports/exports
   - [ ] Filtered log service
   - [ ] Filtered log writer
   - [ ] CSV
   - [ ] AggregateCatalog
   - [ ] FileCatalog
+  - [ ] - [ ] ContainerCatalog
 - [ ] Advertisement
 
 

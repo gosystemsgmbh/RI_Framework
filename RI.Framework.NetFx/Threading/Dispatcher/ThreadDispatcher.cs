@@ -82,6 +82,7 @@ namespace RI.Framework.Threading.Dispatcher
 			this.CurrentPriority = null;
 			this.CurrentOptions = null;
 			this.CurrentOperation = null;
+			this.KeepAlives = null;
 
 			this.Scheduler = new ThreadDispatcherTaskScheduler(this);
 			this.Context = new ThreadDispatcherSynchronizationContext(this);
@@ -182,6 +183,7 @@ namespace RI.Framework.Threading.Dispatcher
 			}
 		}
 
+		private HashSet<object> KeepAlives { get; set; }
 		private Stack<ThreadDispatcherOperation> CurrentOperation { get; set; }
 		private Stack<ThreadDispatcherOptions> CurrentOptions { get; set; }
 		private Stack<int> CurrentPriority { get; set; }
@@ -226,6 +228,7 @@ namespace RI.Framework.Threading.Dispatcher
 					this.CurrentPriority = new Stack<int>();
 					this.CurrentOptions = new Stack<ThreadDispatcherOptions>();
 					this.CurrentOperation = new Stack<ThreadDispatcherOperation>();
+					this.KeepAlives = new HashSet<object>();
 
 					this.ShutdownMode = ThreadDispatcherShutdownMode.None;
 					this.PreRunQueue.MoveTo(this.Queue);
@@ -251,6 +254,7 @@ namespace RI.Framework.Threading.Dispatcher
 					this.PreRunQueue?.Clear();
 					this.ShutdownMode = ThreadDispatcherShutdownMode.None;
 
+					this.KeepAlives?.Clear();
 					this.CurrentOperation?.Clear();
 					this.CurrentPriority?.Clear();
 					this.CurrentOptions?.Clear();
@@ -258,6 +262,7 @@ namespace RI.Framework.Threading.Dispatcher
 					this.Posted?.Close();
 					this.Queue?.Clear();
 
+					this.KeepAlives = null;
 					this.CurrentOperation = null;
 					this.CurrentPriority = null;
 					this.CurrentOptions = null;
@@ -273,15 +278,42 @@ namespace RI.Framework.Threading.Dispatcher
 			}
 		}
 
-		private void EnqueueInternal (ThreadDispatcherOperation operation)
+		internal void EnqueueOperation (ThreadDispatcherOperation operation)
 		{
+			if (operation == null)
+			{
+				throw new ArgumentNullException(nameof(operation));
+			}
+
 			lock (this.SyncRoot)
 			{
 				this.VerifyRunning();
 
+				this.AddKeepAlive(operation);
+
 				this.Queue.Enqueue(operation, operation.Priority);
 				this.Posted.Set();
 			}
+		}
+
+		internal void AddKeepAlive (object obj)
+		{
+			if (obj == null)
+			{
+				throw new ArgumentNullException(nameof(obj));
+			}
+
+			this.KeepAlives.Add(obj);
+		}
+
+		internal void RemoveKeepAlive (object obj)
+		{
+			if (obj == null)
+			{
+				throw new ArgumentNullException(nameof(obj));
+			}
+
+			this.KeepAlives.Remove(obj);
 		}
 
 		private void ExecuteFrame (ThreadDispatcherOperation returnTrigger)
@@ -831,7 +863,7 @@ namespace RI.Framework.Threading.Dispatcher
 
 				if (this.IsRunning)
 				{
-					this.EnqueueInternal(operation);
+					this.EnqueueOperation(operation);
 				}
 				else
 				{

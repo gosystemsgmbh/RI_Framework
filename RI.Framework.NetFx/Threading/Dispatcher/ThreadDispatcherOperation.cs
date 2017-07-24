@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -44,12 +45,17 @@ namespace RI.Framework.Threading.Dispatcher
 			this.Action = action;
 			this.Parameters = parameters;
 
+			this.Stage = 0;
+			this.Task = null;
+
 			this.State = ThreadDispatcherOperationState.Waiting;
 			this.Result = null;
 			this.Exception = null;
 
 			this.OperationDone = new ManualResetEvent(false);
 			this.OperationDoneTask = new TaskCompletionSource<object>();
+
+			this.Dispatcher.AddKeepAlive(this);
 		}
 
 		/// <summary>
@@ -178,6 +184,8 @@ namespace RI.Framework.Threading.Dispatcher
 		internal object[] Parameters { get; }
 		internal int Priority { get; }
 
+		private int Stage { get; set; }
+		private Task Task { get; set; }
 		private ManualResetEvent OperationDone { get; set; }
 		private TaskCompletionSource<object> OperationDoneTask { get; set; }
 
@@ -405,7 +413,12 @@ namespace RI.Framework.Threading.Dispatcher
 		{
 			lock (this.SyncRoot)
 			{
-				if (this.State != ThreadDispatcherOperationState.Waiting)
+				if ((this.State != ThreadDispatcherOperationState.Waiting) && (this.Stage == 0))
+				{
+					return;
+				}
+
+				if ((this.State != ThreadDispatcherOperationState.Executing) && (this.Stage != 0))
 				{
 					return;
 				}
@@ -413,18 +426,20 @@ namespace RI.Framework.Threading.Dispatcher
 				this.State = ThreadDispatcherOperationState.Executing;
 			}
 
+			bool finished = false;
 			object result = null;
 			Exception exception = null;
+			bool canceled = false;
 
 			if (Debugger.IsAttached)
 			{
-				result = this.ExecuteCore();
+				finished = this.ExecuteCore(out result, out exception, out canceled);
 			}
 			else
 			{
 				try
 				{
-					result = this.ExecuteCore();
+					finished = this.ExecuteCore(out result, out exception, out canceled);
 				}
 				catch (ThreadAbortException)
 				{
@@ -438,23 +453,38 @@ namespace RI.Framework.Threading.Dispatcher
 
 			lock (this.SyncRoot)
 			{
-				if (exception == null)
+				if (canceled)
 				{
-					this.OperationDone.Set();
-					this.OperationDoneTask.TrySetResult(this.Result);
-
 					this.Exception = null;
-					this.Result = result;
-					this.State = ThreadDispatcherOperationState.Finished;
-				}
-				else
-				{
-					this.OperationDone.Set();
-					this.OperationDoneTask.TrySetException(this.Exception);
+					this.Result = null;
+					this.State = ThreadDispatcherOperationState.Canceled;
 
+					this.Dispatcher.RemoveKeepAlive(this);
+
+					this.OperationDone.Set();
+					this.OperationDoneTask.TrySetCanceled();
+				}
+				else if (exception != null)
+				{
 					this.Exception = exception;
 					this.Result = null;
 					this.State = ThreadDispatcherOperationState.Exception;
+
+					this.Dispatcher.RemoveKeepAlive(this);
+
+					this.OperationDone.Set();
+					this.OperationDoneTask.TrySetException(this.Exception);
+				}
+				else if (finished)
+				{
+					this.Exception = null;
+					this.Result = result;
+					this.State = ThreadDispatcherOperationState.Finished;
+
+					this.Dispatcher.RemoveKeepAlive(this);
+
+					this.OperationDone.Set();
+					this.OperationDoneTask.TrySetResult(this.Result);
 				}
 			}
 		}
@@ -478,21 +508,85 @@ namespace RI.Framework.Threading.Dispatcher
 					}
 				}
 
-				this.OperationDone.Set();
-				this.OperationDoneTask.TrySetCanceled();
-
 				this.Exception = null;
 				this.Result = null;
 				this.State = ThreadDispatcherOperationState.Canceled;
+
+				this.Dispatcher.RemoveKeepAlive(this);
+
+				this.OperationDone.Set();
+				this.OperationDoneTask.TrySetCanceled();
 
 				return true;
 			}
 		}
 
-		private object ExecuteCore ()
+		private bool ExecuteCore (out object result, out Exception exception, out bool canceled)
 		{
-			//TODO: We might want to provide an async root with continuations on the associated dispatcher
-			//Use the following flags: DenyChildAttach | LazyCancellation | RunContinuationsAsynchronously
+			if (this.Stage == 0)
+			{
+				Type returnType = this.Action.Method.ReturnType;
+				bool isTask = typeof(Task).IsAssignableFrom(returnType);
+
+				if (isTask)
+				{
+					this.Task = (Task)this.ExecuteCoreAction();
+
+					if (this.Task.IsCompleted)
+					{
+						this.EvaluateTask(out result, out exception, out canceled);
+						return true;
+					}
+					else
+					{
+						this.Stage = 1;
+
+						this.Task.ContinueWith((t, s) =>
+						{
+							this.Dispatcher.EnqueueOperation(this);
+						}, null, TaskContinuationOptions.DenyChildAttach | TaskContinuationOptions.LazyCancellation | TaskContinuationOptions.RunContinuationsAsynchronously);
+
+						result = null;
+						exception = null;
+						canceled = false;
+						return false;
+					}
+				}
+				else
+				{
+					result = this.ExecuteCoreAction();
+					exception = null;
+					canceled = false;
+					return true;
+				}
+			}
+
+			if (this.Stage == 1)
+			{
+				this.EvaluateTask(out result, out exception, out canceled);
+				return true;
+			}
+
+			throw new InvalidOperationException("Invalid stage: " + this.Stage);
+		}
+
+		private void EvaluateTask (out object result, out Exception exception, out bool canceled)
+		{
+			result = null;
+			exception = this.Task.Exception;
+			canceled = this.Task.IsCanceled;
+
+			if (this.Task.Status == TaskStatus.RanToCompletion)
+			{
+				Type taskType = this.Task.GetType();
+				PropertyInfo resultProperty = taskType.GetProperty(nameof(Task<object>.Result), BindingFlags.Instance | BindingFlags.Public);
+				MethodInfo resultGetter = resultProperty?.GetGetMethod(false);
+				result = resultGetter?.Invoke(this.Task, null);
+			}
+		}
+
+		private object ExecuteCoreAction ()
+		{
 			if ((this.ExecutionContext != null) && (this.Options != ThreadDispatcherOptions.None))
 			{
 				return this.ExecutionContext.Run(this.Options, this.Action, this.Parameters);
