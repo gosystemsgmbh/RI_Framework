@@ -6,6 +6,7 @@ using System.Reflection;
 using RI.Framework.Composition;
 using RI.Framework.Composition.Model;
 using RI.Framework.IO.Paths;
+using RI.Framework.Utilities.ObjectModel;
 using RI.Framework.Utilities.Text;
 
 
@@ -22,7 +23,7 @@ namespace RI.Framework.Services
 	///     </para>
 	/// </remarks>
 	[Export]
-	public interface IBootstrapper
+	public interface IBootstrapper : ISynchronizable
 	{
 		/// <summary>
 		///     Gets the main assembly of the application.

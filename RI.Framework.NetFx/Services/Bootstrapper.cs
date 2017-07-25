@@ -263,7 +263,6 @@ namespace RI.Framework.Services
 	///         </item>
 	///     </list>
 	/// </remarks>
-	/// TODO: make thread-safe (incl. interface and subclasses)
 	[Export]
 	public abstract class Bootstrapper : IBootstrapper, ILogSource
 	{
@@ -274,6 +273,8 @@ namespace RI.Framework.Services
 		/// </summary>
 		protected Bootstrapper ()
 		{
+			this.SyncRoot = new object();
+
 			this.State = BootstrapperState.Uninitialized;
 			this.HostContext = null;
 			this.ShutdownInitiated = false;
@@ -301,9 +302,9 @@ namespace RI.Framework.Services
 		/// </value>
 		protected object Application { get; private set; }
 
-		private UnhandledExceptionEventHandler ExceptionHandler { get; set; }
+		private UnhandledExceptionEventHandler ExceptionHandler { get; }
 
-		private EventHandler<FirstChanceExceptionEventArgs> FirstChanceExceptionHandler { get; set; }
+		private EventHandler<FirstChanceExceptionEventArgs> FirstChanceExceptionHandler { get; }
 
 		private bool ShutdownInitiated { get; set; }
 
@@ -510,7 +511,10 @@ namespace RI.Framework.Services
 		/// </remarks>
 		protected virtual void ConfigureApplication ()
 		{
-			this.Container.AddCatalog(new InstanceCatalog(this.Application));
+			if (this.Application != null)
+			{
+				this.Container.AddCatalog(new InstanceCatalog(this.Application));
+			}
 		}
 
 		/// <summary>
@@ -600,6 +604,7 @@ namespace RI.Framework.Services
 		{
 			Singleton<Bootstrapper>.Ensure(() => this);
 			Singleton<IBootstrapper>.Ensure(() => this);
+
 			Singleton<CompositionContainer>.Ensure(() => this.Container);
 
 			if (this.Application != null)
@@ -1147,8 +1152,26 @@ namespace RI.Framework.Services
 		/// <inheritdoc />
 		public DateTime SessionTimestamp { get; private set; }
 
+		private ShutdownInfo _shutdownInfo;
+
 		/// <inheritdoc />
-		public ShutdownInfo ShutdownInfo { get; private set; }
+		public ShutdownInfo ShutdownInfo
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._shutdownInfo;
+				}
+			}
+			private set
+			{
+				lock (this.SyncRoot)
+				{
+					this._shutdownInfo = value;
+				}
+			}
+		}
 
 		/// <inheritdoc />
 		public CultureInfo StartupCulture { get; private set; }
@@ -1156,8 +1179,26 @@ namespace RI.Framework.Services
 		/// <inheritdoc />
 		public CultureInfo StartupUICulture { get; private set; }
 
+		private BootstrapperState _state;
+
 		/// <inheritdoc />
-		public BootstrapperState State { get; private set; }
+		public BootstrapperState State
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._state;
+				}
+			}
+			private set
+			{
+				lock (this.SyncRoot)
+				{
+					this._state = value;
+				}
+			}
+		}
 
 		/// <inheritdoc />
 		public Guid UserId { get; private set; }
@@ -1171,16 +1212,19 @@ namespace RI.Framework.Services
 		[SuppressMessage("ReSharper", "EmptyGeneralCatchClause")]
 		public ShutdownInfo Run (HostContext hostContext)
 		{
-			if (this.State != BootstrapperState.Uninitialized)
+			lock (this.SyncRoot)
 			{
-				throw new InvalidOperationException(this.GetType().Name + " is already running.");
+				if (this.State != BootstrapperState.Uninitialized)
+				{
+					throw new InvalidOperationException(this.GetType().Name + " is already running.");
+				}
+
+				this.Log(LogLevel.Debug, "State: Bootstrapping");
+				this.State = BootstrapperState.Bootstrapping;
 			}
 
 			try
 			{
-				this.Log(LogLevel.Debug, "State: Bootstrapping");
-				this.State = BootstrapperState.Bootstrapping;
-
 				this.HostContext = hostContext;
 
 				this.DebuggerAttached = this.DetermineDebuggerAttached();
@@ -1300,19 +1344,22 @@ namespace RI.Framework.Services
 		/// <inheritdoc />
 		public void Shutdown (ShutdownInfo shutdownInfo)
 		{
-			if (this.State != BootstrapperState.Running)
+			lock (this.SyncRoot)
 			{
-				throw new InvalidOperationException(this.GetType().Name + " is not running.");
+				if (this.State != BootstrapperState.Running)
+				{
+					throw new InvalidOperationException(this.GetType().Name + " is not running.");
+				}
+
+				if (this.ShutdownInitiated)
+				{
+					return;
+				}
+
+				this.ShutdownInitiated = true;
+
+				this.ShutdownInfo = shutdownInfo ?? new ShutdownInfo();
 			}
-
-			if (this.ShutdownInitiated)
-			{
-				return;
-			}
-
-			this.ShutdownInitiated = true;
-
-			this.ShutdownInfo = shutdownInfo ?? new ShutdownInfo();
 
 			this.Log(LogLevel.Debug, "Beginning shutdown");
 			this.BeginShutdown();
@@ -1349,17 +1396,20 @@ namespace RI.Framework.Services
 				{
 				}
 
-				if (this.ShutdownInitiated && (exception is ThreadAbortException))
+				lock (this.SyncRoot)
 				{
-					return;
-				}
+					if (this.ShutdownInitiated && (exception is ThreadAbortException))
+					{
+						return;
+					}
 
-				try
-				{
-					this.HandleException(exception);
-				}
-				catch
-				{
+					try
+					{
+						this.HandleException(exception);
+					}
+					catch
+					{
+					}
 				}
 
 				Environment.FailFast(message, exception);
@@ -1397,17 +1447,20 @@ namespace RI.Framework.Services
 				{
 				}
 
-				if (this.ShutdownInitiated && (exception is ThreadAbortException))
+				lock (this.SyncRoot)
 				{
-					return;
-				}
+					if (this.ShutdownInitiated && (exception is ThreadAbortException))
+					{
+						return;
+					}
 
-				try
-				{
-					this.HandleFirstChanceException(exception);
-				}
-				catch
-				{
+					try
+					{
+						this.HandleFirstChanceException(exception);
+					}
+					catch
+					{
+					}
 				}
 			}
 			catch
@@ -1416,6 +1469,13 @@ namespace RI.Framework.Services
 		}
 
 		#endregion
+
+
+		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		public object SyncRoot { get; }
 	}
 
 	/// <inheritdoc cref="Bootstrapper" />

@@ -497,22 +497,50 @@ namespace RI.Framework.Services
 
 		#region Interface: IBootstrapper
 
+
+		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		public object SyncRoot { get; } = new object();
+
 		/// <inheritdoc />
 		public CompositionContainer Container { get; private set; } = null;
 
+		private BootstrapperState _state = BootstrapperState.Uninitialized;
+
 		/// <inheritdoc />
-		public BootstrapperState State { get; private set; } = BootstrapperState.Uninitialized;
+		public BootstrapperState State
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._state;
+				}
+			}
+			private set
+			{
+				lock (this.SyncRoot)
+				{
+					this._state = value;
+				}
+			}
+		}
 
 		/// <inheritdoc />
 		void IBootstrapper.Run ()
 		{
-			if (this.State != BootstrapperState.Uninitialized)
+			lock (this.SyncRoot)
 			{
-				throw new InvalidOperationException(this.GetType().Name + " is already running.");
-			}
+				if (this.State != BootstrapperState.Uninitialized)
+				{
+					throw new InvalidOperationException(this.GetType().Name + " is already running.");
+				}
 
-			this.Log(LogLevel.Debug, "State: Bootstrapping");
-			this.State = BootstrapperState.Bootstrapping;
+				this.Log(LogLevel.Debug, "State: Bootstrapping");
+				this.State = BootstrapperState.Bootstrapping;
+			}
 
 			Object.DontDestroyOnLoad(this.gameObject);
 			this.gameObject.name = this.GetType().Name;

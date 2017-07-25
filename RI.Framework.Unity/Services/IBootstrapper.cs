@@ -2,9 +2,7 @@
 
 using RI.Framework.Composition;
 using RI.Framework.Composition.Model;
-
-
-
+using RI.Framework.Utilities.ObjectModel;
 
 namespace RI.Framework.Services
 {
@@ -17,7 +15,7 @@ namespace RI.Framework.Services
 	///     </para>
 	/// </remarks>
 	[Export]
-	public interface IBootstrapper
+	public interface IBootstrapper : ISynchronizable
 	{
 		#region Abstracts
 

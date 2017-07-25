@@ -69,7 +69,6 @@ namespace RI.Framework.RotenInformatik
 		public CrashReport (string error)
 			: this(error, null)
 		{
-			this.Exception = null;
 		}
 
 		/// <summary>
@@ -98,7 +97,7 @@ namespace RI.Framework.RotenInformatik
 		/// <value>
 		///     The additional data sent with the report or null if no additional data is available.
 		/// </value>
-		public Dictionary<string, string> AdditionalData { get; private set; }
+		public Dictionary<string, string> AdditionalData { get; }
 
 		/// <summary>
 		///     Gets the error of this crash report.
@@ -111,7 +110,7 @@ namespace RI.Framework.RotenInformatik
 		///         If the crash report is an exception report, this property returns the exception details.
 		///     </para>
 		/// </remarks>
-		public string Error { get; private set; }
+		public string Error { get; }
 
 		/// <summary>
 		///     Gets the exception on which this crash report is based.
@@ -119,7 +118,7 @@ namespace RI.Framework.RotenInformatik
 		/// <value>
 		///     The exception on which this crash report is based or null if it is not an exception report.
 		/// </value>
-		public Exception Exception { get; private set; }
+		public Exception Exception { get; }
 
 		#endregion
 
