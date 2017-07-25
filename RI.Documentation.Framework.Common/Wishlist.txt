@@ -33,8 +33,8 @@ Utilities
  - (Windows) WindowsMessageLoop: Priority queue
 
  - (Windows) Screen
- - (Windows) SystemKeyboard
  - (Windows) OnScreenKeyboard
+ * (Windows) SystemKeyboard
  * (Windows) WindowsVersion
  * (Windows) SystemInformation
 
@@ -193,6 +193,9 @@ I/O
  - (Common) FilePath: WriteConcurrent
  - (Common) FilePath: CreateConcurrent
 
+ - (Common) ConcurrencyExtensions
+ - (Common) TransactiveExtensions
+
  - (Common) StreamExtensions
 
  - (Common) EndianessConverter
@@ -204,9 +207,6 @@ I/O
  - (Common) IniDocument: RemoveSections with predicate
 
  - (Common) ZIP reader, writer, document
-
- - (Common) ConcurrencyExtensions
- - (Common) TransactiveExtensions
 
  - (Unity) OBJ mesh loader
  - (Unity) JSON mesh loader (babylon.JS)
