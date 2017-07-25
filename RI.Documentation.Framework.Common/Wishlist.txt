@@ -275,25 +275,26 @@ Services
 Data
 ----
 
+ = (.NET) Implementations for providers
+ = (.NET) SQL script helpers
+ = (.NET) Convert IDatabaseManager to DatabaseManager
+ = (.NET) IDatabaseManager: Support for creating connections when state is Old
+
+ = (SQL Server) SqlServerDatabaseManager
+ = (SQLite) SQLiteDatabaseManager
+
  # (.NET) Binary-serializable EntityBase
  # (JSON) Json-serializable EntityBase
 
  * (.NET) Reporting (Excel?)
 
- * (.NET) IRepositorySet: Add entity and property descriptions functionality
+ - (.NET) IRepositorySet: Add entity and property descriptions functionality
+
+ - (.NET) IRepositorySet: Add GetChanges method (return RepositorySetChanges type)
  - (.NET) IRepositoryContext: Add GetChanges method (return RepositoryContextChanges type)
  - (.NET) IRepositoryContext: Add GetErrors method (return RepositoryContextErrors type)
 
  - (.NET) EntityView: Make collection update strategy configurable (clear vs. create new)
-
- = (.NET) Implementations for providers
- = (.NET) SQL script helpers
- = (.NET) Convert IDatabaseManager to DatabaseManager
-
- = (SQL Server) SqlServerDatabaseManager
- = (SQLite) SQLiteDatabaseManager
-
- - (.NET) IDatabaseManager: Support for creating connections when state is Old
 
 
 Mathematic
