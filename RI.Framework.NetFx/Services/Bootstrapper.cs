@@ -263,6 +263,7 @@ namespace RI.Framework.Services
 	///         </item>
 	///     </list>
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	[Export]
 	public abstract class Bootstrapper : IBootstrapper, ILogSource
 	{

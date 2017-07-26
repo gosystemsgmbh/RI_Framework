@@ -15,6 +15,7 @@ namespace RI.Framework.Services
 	///         See <see cref="Bootstrapper{TApplication}" /> for more details.
 	///     </para>
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	public abstract class WindowsBootstrapper <TApplication> : Bootstrapper<TApplication>
 		where TApplication : class
 	{

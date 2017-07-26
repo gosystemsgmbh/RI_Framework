@@ -14,6 +14,7 @@ namespace RI.Framework.Services
 	///         An application and service bootstrapper sets up the composition, initializes the services, and then runs the application.
 	///     </para>
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	[Export]
 	public interface IBootstrapper : ISynchronizable
 	{

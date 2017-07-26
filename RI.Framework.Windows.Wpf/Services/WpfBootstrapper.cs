@@ -20,6 +20,7 @@ namespace RI.Framework.Services
 	///         See <see cref="WindowsBootstrapper{TApplication}" /> for more details.
 	///     </para>
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	public abstract class WpfBootstrapper <TApplication> : WindowsBootstrapper<TApplication>
 		where TApplication : Application
 	{

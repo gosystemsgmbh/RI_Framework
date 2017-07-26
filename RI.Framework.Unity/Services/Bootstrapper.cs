@@ -146,6 +146,7 @@ namespace RI.Framework.Services
 		///         The default value is true.
 		///     </para>
 		/// </remarks>
+		/// <threadsafety static="true" instance="true" />
 		public bool DispatcherService = true;
 
 		/// <summary>

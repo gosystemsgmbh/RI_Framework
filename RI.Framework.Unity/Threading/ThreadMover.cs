@@ -47,7 +47,7 @@ namespace RI.Framework.Threading
 	///         If the coroutine is already executed in a <see cref="ThreadPool" /> thread, it is re-queued.
 	///     </para>
 	///     <para>
-	///         <see cref="ToDispatcher" /> dispatches the continuation of the coroutine to a <see cref="DispatcherService" />.
+	///         <see cref="ToDispatcher" /> dispatches the continuation of the coroutine to an <see cref="IDispatcherService" />.
 	///         If the coroutine is already executed by a dispatcher, its continuation is re-dispatched.
 	///     </para>
 	///     <para>

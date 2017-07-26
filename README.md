@@ -9,13 +9,12 @@
   - [ ] NuGet updates
   - [ ] Code cleanup
   - [ ] Check usage of IModuleService and IDispatcherService and ILogService in documentation
-- [ ] Reduce dependencies (Locators, DispatcherService, IThreadDispatcher, Logging) and check threading
+- [ ] Reduce dependencies (Locators, CompositionContainer/ICompositionContainer, Logging) and check threading
   - [ ] CompositionContainer
     - [ ] Make bootstrapper container-agnostic
     - [ ] ResolveImports event for InstanceLocator
     - [ ] ResolveExport event for InstanceLocator
     - [ ] CompositionContainer property for InstanceLocator
-    - [ ] Locking
   - [ ] IRegionService
     - [ ] Global property in RegionBinder
   - [ ] Logging
