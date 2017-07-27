@@ -8,6 +8,7 @@ using RI.Framework.Services.Dispatcher;
 using RI.Framework.Services.Logging;
 using RI.Framework.Services.Logging.Writers;
 using RI.Framework.Services.Modularization;
+using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.ObjectModel;
 
 using UnityEngine;
@@ -130,6 +131,7 @@ namespace RI.Framework.Services
 	///         </para>
 	///     </note>
 	/// </remarks>
+		/// <threadsafety static="true" instance="true" />
 	[Export]
 	public class Bootstrapper : MonoBehaviour, IBootstrapper, ILogSource
 	{
@@ -146,7 +148,6 @@ namespace RI.Framework.Services
 		///         The default value is true.
 		///     </para>
 		/// </remarks>
-		/// <threadsafety static="true" instance="true" />
 		public bool DispatcherService = true;
 
 		/// <summary>
@@ -245,7 +246,7 @@ namespace RI.Framework.Services
 		/// </summary>
 		/// <remarks>
 		///     <para>
-		///         If true, <see cref="Container" /> is bound to <see cref="ServiceLocator" /> using <see cref="ServiceLocator.BindToCompositionContainer" />.
+		///         If true, <see cref="Container" /> is bound to <see cref="ServiceLocator" /> using <see cref="ServiceLocator.BindToDependencyResolver" />.
 		///     </para>
 		///     <para>
 		///         The default value is true.
@@ -402,14 +403,14 @@ namespace RI.Framework.Services
 		/// </summary>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation calls <see cref="ServiceLocator.BindToCompositionContainer" /> using the used composition container (<see cref="Container" />) if <see cref="ServiceLocatorBinding" /> is true, otherwise it does nothing.
+		///         The default implementation calls <see cref="ServiceLocator.BindToDependencyResolver" /> using the used composition container (<see cref="Container" />) if <see cref="ServiceLocatorBinding" /> is true, otherwise it does nothing.
 		///     </note>
 		/// </remarks>
 		protected virtual void ConfigureServiceLocator ()
 		{
 			if (this.ServiceLocatorBinding)
 			{
-				ServiceLocator.BindToCompositionContainer(this.Container);
+				ServiceLocator.BindToDependencyResolver(this.Container);
 			}
 		}
 
@@ -442,7 +443,9 @@ namespace RI.Framework.Services
 		{
 			Singleton<Bootstrapper>.Ensure(() => this);
 			Singleton<IBootstrapper>.Ensure(() => this);
+
 			Singleton<CompositionContainer>.Ensure(() => this.Container);
+			Singleton<IDependencyResolver>.Ensure(() => this.Container);
 		}
 
 		/// <summary>

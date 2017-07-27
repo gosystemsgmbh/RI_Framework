@@ -56,6 +56,7 @@ namespace RI.Framework.StateMachines.States
 			}
 
 			GameObject gameObject = new GameObject();
+			gameObject.name = type.Name;
 			MonoState instance = gameObject.AddComponent(type) as MonoState;
 			Object.DontDestroyOnLoad(gameObject);
 			return instance;

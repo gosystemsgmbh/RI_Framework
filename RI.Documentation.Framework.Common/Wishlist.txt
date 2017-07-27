@@ -52,6 +52,8 @@ Threading
  - (.NET) TaskExtensions: Awaiter for CancellationToken
  - (.NET) TaskExtensions: Awaiter for Process
 
+ - (.NET) ThreadDispatcherExtensions: Extension methods supporting various Actions and Funcs
+
 
 Collections
 -----------
@@ -240,6 +242,9 @@ Services
  # (.NET) Messaging: DefaultMessageDispatcher
  - (.NET) Messaging: Use shared string comparers for Triger message handler
  - (.NET) Messaging: Async functionality?
+
+ - (Windows) Messaging: WindowsMessageLoopMessageDispatcher
+ - (WinForms) Messaging: ApplicationMessageDispatcher
  
  # (.NET) Bus
 

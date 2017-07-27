@@ -1,7 +1,6 @@
 ﻿using System;
 
-
-
+using RI.Framework.Utilities.Logging;
 
 namespace RI.Framework.Services.Logging.Filters
 {

@@ -12,9 +12,7 @@ using RI.Framework.Data.SQLite.Collations;
 using RI.Framework.Data.SQLite.Functions;
 using RI.Framework.Services.Logging;
 using RI.Framework.Utilities;
-
-
-
+using RI.Framework.Utilities.Logging;
 
 namespace RI.Framework.Data.SQLite
 {

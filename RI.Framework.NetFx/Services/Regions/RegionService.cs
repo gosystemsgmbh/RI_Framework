@@ -9,9 +9,7 @@ using RI.Framework.Services.Logging;
 using RI.Framework.Services.Regions.Adapters;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
-
-
-
+using RI.Framework.Utilities.Logging;
 
 namespace RI.Framework.Services.Regions
 {

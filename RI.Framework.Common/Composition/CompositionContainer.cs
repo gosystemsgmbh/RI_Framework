@@ -12,6 +12,7 @@ using RI.Framework.Services;
 using RI.Framework.Services.Logging;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
+using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.ObjectModel;
 using RI.Framework.Utilities.Reflection;
 
@@ -310,7 +311,7 @@ namespace RI.Framework.Composition
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	[Export]
-	public sealed class CompositionContainer : IDisposable, ISynchronizable, ILogSource
+	public sealed class CompositionContainer : IDependencyResolver, IDisposable, ISynchronizable, ILogSource
 	{
 		#region Constants
 
@@ -569,7 +570,7 @@ namespace RI.Framework.Composition
 				{
 					container.AddCatalog(new AppDomainCatalog(true, true));
 				}
-				ServiceLocator.BindToCompositionContainer(container);
+				ServiceLocator.BindToDependencyResolver(container);
 			}
 			return container;
 		}
@@ -1322,6 +1323,84 @@ namespace RI.Framework.Composition
 			}
 		}
 
+		/// <inheritdoc />
+		public object GetInstance(Type type)
+		{
+			if (type == null)
+			{
+				throw new ArgumentNullException(nameof(type));
+			}
+
+			if ((!type.IsClass) && (!type.IsInterface))
+			{
+				throw new InvalidTypeArgumentException(nameof(type));
+			}
+
+			return this.GetExport<object>(type);
+		}
+
+		/// <inheritdoc />
+		public object GetInstance(string name)
+		{
+			if (name == null)
+			{
+				throw new ArgumentNullException(nameof(name));
+			}
+
+			if (name.IsNullOrEmptyOrWhitespace())
+			{
+				throw new EmptyStringArgumentException(nameof(name));
+			}
+
+			return this.GetExport<object>(name);
+		}
+
+		/// <inheritdoc />
+		public T GetInstance<T>()
+			where T : class
+		{
+			return (T)this.GetInstance(typeof(T));
+		}
+
+		/// <inheritdoc />
+		public List<object> GetInstances(Type type)
+		{
+			if (type == null)
+			{
+				throw new ArgumentNullException(nameof(type));
+			}
+
+			if ((!type.IsClass) && (!type.IsInterface))
+			{
+				throw new InvalidTypeArgumentException(nameof(type));
+			}
+
+			return this.GetExports<object>(type);
+		}
+
+		/// <inheritdoc />
+		public List<object> GetInstances(string name)
+		{
+			if (name == null)
+			{
+				throw new ArgumentNullException(nameof(name));
+			}
+
+			if (name.IsNullOrEmptyOrWhitespace())
+			{
+				throw new EmptyStringArgumentException(nameof(name));
+			}
+
+			return this.GetExports<object>(name);
+		}
+
+		/// <inheritdoc />
+		public List<T> GetInstances<T>()
+			where T : class
+		{
+			return this.GetInstances(typeof(T)).Cast<T>();
+		}
+
 		/// <summary>
 		///     Determines whether there is at least one value for importing of the specified types default name.
 		/// </summary>
@@ -1953,7 +2032,7 @@ namespace RI.Framework.Composition
 				kind = ImportKind.LazyFunc;
 				return lazyLoadFuncType;
 			}
-			
+
 			Type lazyLoadObjectType = CompositionContainer.GetLazyLoadObjectType(type);
 			if (lazyLoadObjectType != null)
 			{

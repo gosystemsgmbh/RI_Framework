@@ -1,12 +1,9 @@
-﻿using RI.Framework.Services;
-
-
-
+﻿using RI.Framework.Utilities.ObjectModel;
 
 namespace RI.Framework.StateMachines.Resolvers
 {
 	/// <summary>
-	///     Implements a state instance resolver which uses <see cref="ServiceLocator" />.
+	///     Implements a state instance resolver which uses <see cref="Singleton" />.
 	/// </summary>
 	/// <remarks>
 	///     <para>
@@ -14,15 +11,15 @@ namespace RI.Framework.StateMachines.Resolvers
 	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
-	public sealed class ServiceLocatorStateResolver : DependencyResolverStateResolver
+	public sealed class SingletonStateResolver : DependencyResolverStateResolver
 	{
 		#region Instance Constructor/Destructor
 
 		/// <summary>
-		///     Creates a new instance of <see cref="ServiceLocatorStateResolver" />.
+		///     Creates a new instance of <see cref="SingletonStateResolver" />.
 		/// </summary>
-		public ServiceLocatorStateResolver ()
-			:base(ServiceLocator.Resolver)
+		public SingletonStateResolver()
+			: base(Singleton.Resolver)
 		{
 		}
 

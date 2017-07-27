@@ -129,7 +129,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\ILogSourceExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\LogLocator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\ILogService.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\LogLevel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\LogService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\Readers\LogFileEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\Readers\LogFileReader.cs" />
@@ -158,9 +157,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Dispatchers\IStateDispatcher.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Dispatchers\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Resolvers\CompositionContainerStateResolver.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Resolvers\DependencyResolverStateResolver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Resolvers\IStateResolver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Resolvers\ServiceLocatorStateResolver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Resolvers\DefaultStateResolver.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Resolvers\SingletonStateResolver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Resolvers\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\StateMachineUpdateDelegate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\StateMachineUpdateEventArgs.cs" />
@@ -197,7 +198,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Exceptions\NotWriteableStreamArgumentException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Exceptions\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Globalization\CultureInfoExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Logging\ILogger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Logging\LogLevel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Logging\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObjectExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObjectModel\IDependencyResolver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObjectModel\ISynchronizable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObjectModel\Singleton.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Randomizing\RandomExtensions.cs" />

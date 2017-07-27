@@ -428,7 +428,7 @@ namespace RI.Framework.Threading.Dispatcher
 
 			bool finished = false;
 			object result = null;
-			Exception exception = null;
+			Exception exception;
 			bool canceled = false;
 
 			if (Debugger.IsAttached)

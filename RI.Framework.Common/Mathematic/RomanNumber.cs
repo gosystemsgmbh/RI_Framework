@@ -61,7 +61,7 @@ namespace RI.Framework.Mathematic
 	/// RomanNumber num3 = num1 + num2;
 	/// 
 	/// // get explicit values
-	/// var romanValue = num3.RomanValue; // "CCLXXVII" 
+	/// var romanValue = num3.RomanValue; // "CCLXXVII"
 	/// var decimalValue = num3.DecimalValue; // 277
 	/// ]]>
 	/// </code>

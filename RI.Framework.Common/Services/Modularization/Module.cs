@@ -1,8 +1,6 @@
 ﻿using RI.Framework.Composition.Model;
 using RI.Framework.Services.Logging;
-
-
-
+using RI.Framework.Utilities.Logging;
 
 namespace RI.Framework.Services.Modularization
 {

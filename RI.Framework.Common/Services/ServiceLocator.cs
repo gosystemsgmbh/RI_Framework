@@ -35,7 +35,11 @@ namespace RI.Framework.Services
 	///         It can only be used when working with types, not with names.
 	///         The connection to the singletons is enabled by default.
 	///     </para>
+	/// <para>
+	/// By default, if <see cref="Translate"/> is not handled, <see cref="CompositionContainer.GetNameOfType"/> is used to translate a type to a name.
+	/// </para>
 	/// </remarks>
+	/// TODO: Add BindToDependencyResolver
 	/// <threadsafety static="true" instance="true" />
 	public static class ServiceLocator
 	{
@@ -46,12 +50,14 @@ namespace RI.Framework.Services
 			ServiceLocator.GlobalSyncRoot = new object();
 
 			ServiceLocator.Cache = new Dictionary<string, object[]>(CompositionContainer.NameComparer);
-			ServiceLocator.CompositionContainerBindings = new HashSet<CompositionContainer>();
+			ServiceLocator.DependencyResolverBindings = new HashSet<IDependencyResolver>();
 
 			ServiceLocator.UseCaching = true;
 			ServiceLocator.UseSingletons = true;
 
 			ServiceLocator.CacheVersion = 0;
+
+			ServiceLocator.Resolver = new ServiceLocatorResolver();
 		}
 
 		#endregion
@@ -71,6 +77,14 @@ namespace RI.Framework.Services
 
 
 		#region Static Properties/Indexer
+
+		/// <summary>
+		/// Gets a dependency resolver which uses <see cref="ServiceLocator"/>.
+		/// </summary>
+		/// <value>
+		/// A dependency resolver which uses <see cref="ServiceLocator"/>.
+		/// </value>
+		public static IDependencyResolver Resolver { get; }
 
 		/// <summary>
 		///     Gets or sets whether cahcing is used.
@@ -134,7 +148,7 @@ namespace RI.Framework.Services
 
 		private static int CacheVersion { get; set; }
 
-		private static HashSet<CompositionContainer> CompositionContainerBindings { get; }
+		private static HashSet<IDependencyResolver> DependencyResolverBindings { get; }
 
 		private static object GlobalSyncRoot { get; }
 
@@ -166,28 +180,25 @@ namespace RI.Framework.Services
 		#region Static Methods
 
 		/// <summary>
-		///     Binds the service locator to a specified composition container which is then used for service lookup.
+		///     Binds the service locator to a specified dependency resolver (e.g. <see cref="CompositionContainer"/>) which is then used for service lookup.
 		/// </summary>
-		/// <param name="compositionContainer"> The composition container to bind to. </param>
+		/// <param name="dependencyResolver"> The dependency resolver to bind to. </param>
 		/// <remarks>
 		///     <para>
-		///         <see cref="CompositionContainer.GetNameOfType" /> is used for type-to-name translation and <see cref="CompositionContainer.GetExports{T}(string)" /> for lookup.
-		///     </para>
-		///     <para>
-		///         It is possible to bind multiple composition containers to the service locator.
+		///         It is possible to bind multiple dependency resolvers to the service locator.
 		///     </para>
 		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="compositionContainer" /> is null. </exception>
-		public static void BindToCompositionContainer (CompositionContainer compositionContainer)
+		/// <exception cref="ArgumentNullException"> <paramref name="dependencyResolver" /> is null. </exception>
+		public static void BindToDependencyResolver (IDependencyResolver dependencyResolver)
 		{
-			if (compositionContainer == null)
+			if (dependencyResolver == null)
 			{
-				throw new ArgumentNullException(nameof(compositionContainer));
+				throw new ArgumentNullException(nameof(dependencyResolver));
 			}
 
 			lock (ServiceLocator.GlobalSyncRoot)
 			{
-				ServiceLocator.CompositionContainerBindings.Add(compositionContainer);
+				ServiceLocator.DependencyResolverBindings.Add(dependencyResolver);
 			}
 		}
 
@@ -383,20 +394,20 @@ namespace RI.Framework.Services
 		}
 
 		/// <summary>
-		///     Unbinds the service locator from a specified composition container which is then no longer used for service lookup.
+		///     Unbinds the service locator from a specified dependency resolver (e.g. <see cref="CompositionContainer"/>) which is then no longer used for service lookup.
 		/// </summary>
-		/// <param name="compositionContainer"> The composition container to unbind from. </param>
-		/// <exception cref="ArgumentNullException"> <paramref name="compositionContainer" /> is null. </exception>
-		public static void UnbindFromCompositionContainer (CompositionContainer compositionContainer)
+		/// <param name="dependencyResolver"> The dependency resolver to unbind from. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="dependencyResolver" /> is null. </exception>
+		public static void UnbindFromDependencyResolver (IDependencyResolver dependencyResolver)
 		{
-			if (compositionContainer == null)
+			if (dependencyResolver == null)
 			{
-				throw new ArgumentNullException(nameof(compositionContainer));
+				throw new ArgumentNullException(nameof(dependencyResolver));
 			}
 
 			lock (ServiceLocator.GlobalSyncRoot)
 			{
-				ServiceLocator.CompositionContainerBindings.Remove(compositionContainer);
+				ServiceLocator.DependencyResolverBindings.Remove(dependencyResolver);
 			}
 		}
 
@@ -432,7 +443,7 @@ namespace RI.Framework.Services
 				int cacheVersion;
 				bool useSingletons;
 				bool useCaching;
-				HashSet<CompositionContainer> containerBindings;
+				HashSet<IDependencyResolver> resolverBindings;
 
 				lock (ServiceLocator.GlobalSyncRoot)
 				{
@@ -446,16 +457,16 @@ namespace RI.Framework.Services
 					cacheVersion = ServiceLocator.CacheVersion;
 					useSingletons = ServiceLocator.UseSingletons;
 					useCaching = ServiceLocator.UseCaching;
-					containerBindings = new HashSet<CompositionContainer>(ServiceLocator.CompositionContainerBindings);
+					resolverBindings = new HashSet<IDependencyResolver>(ServiceLocator.DependencyResolverBindings);
 				}
 
 				ServiceLocatorLookupEventArgs args = new ServiceLocatorLookupEventArgs(name);
 				ServiceLocator.Lookup?.Invoke(null, args);
 				HashSet<object> instances = new HashSet<object>(args.Instances);
 
-				foreach (CompositionContainer container in containerBindings)
+				foreach (IDependencyResolver resolver in resolverBindings)
 				{
-					instances.AddRange(container.GetExports<object>(name));
+					instances.AddRange(resolver.GetInstances(name));
 				}
 
 				if ((typeHint != null) && useSingletons)
@@ -498,5 +509,79 @@ namespace RI.Framework.Services
 		}
 
 		#endregion
+
+
+		private sealed class ServiceLocatorResolver : IDependencyResolver
+		{
+			object IDependencyResolver.GetInstance(Type type)
+			{
+				if (type == null)
+				{
+					throw new ArgumentNullException(nameof(type));
+				}
+
+				if ((!type.IsClass) && (!type.IsInterface))
+				{
+					throw new InvalidTypeArgumentException(nameof(type));
+				}
+
+				return ServiceLocator.GetInstance(type);
+			}
+
+			object IDependencyResolver.GetInstance(string name)
+			{
+				if (name == null)
+				{
+					throw new ArgumentNullException(nameof(name));
+				}
+
+				if (name.IsNullOrEmptyOrWhitespace())
+				{
+					throw new EmptyStringArgumentException(nameof(name));
+				}
+
+				return ServiceLocator.GetInstance(name);
+			}
+
+			T IDependencyResolver.GetInstance<T>()
+			{
+				return (T)((IDependencyResolver)this).GetInstance(typeof(T));
+			}
+
+			List<object> IDependencyResolver.GetInstances(Type type)
+			{
+				if (type == null)
+				{
+					throw new ArgumentNullException(nameof(type));
+				}
+
+				if ((!type.IsClass) && (!type.IsInterface))
+				{
+					throw new InvalidTypeArgumentException(nameof(type));
+				}
+
+				return new List<object>(ServiceLocator.GetInstances(type));
+			}
+
+			List<object> IDependencyResolver.GetInstances(string name)
+			{
+				if (name == null)
+				{
+					throw new ArgumentNullException(nameof(name));
+				}
+
+				if (name.IsNullOrEmptyOrWhitespace())
+				{
+					throw new EmptyStringArgumentException(nameof(name));
+				}
+
+				return new List<object>(ServiceLocator.GetInstances(name));
+			}
+
+			List<T> IDependencyResolver.GetInstances<T>()
+			{
+				return ((IDependencyResolver)this).GetInstances(typeof(T)).Cast<T>();
+			}
+		}
 	}
 }

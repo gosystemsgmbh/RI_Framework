@@ -2,6 +2,7 @@
 
 using RI.Framework.Composition.Model;
 using RI.Framework.Services.Logging.Filters;
+using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.ObjectModel;
 
 

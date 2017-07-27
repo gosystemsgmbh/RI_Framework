@@ -167,7 +167,7 @@ namespace RI.Tools.Framework.VersionUpdater
 					replacement = "${part1}" + newVersionDot + "${part2}";
 					VersionUpdater.PerformReplacementRegex(file, search, replacement, Encoding.UTF8);
 
-					//HINT: Replaced with version-dependend GUID to always get the same GUID for the same version (prevents new installer IDs inter-version)		
+					//HINT: Replaced with version-dependend GUID to always get the same GUID for the same version (prevents new installer IDs inter-version)
 					search = "(?'part1'Property\\s*=\\s*\"\\s*ProductCode\\s*\"\\s+Value\\s*=\\s*\"\\s*[0-9]*?[:]*)[\\{]*[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}[\\}]*(?'part2'\\s*\")";
 					replacement = "${part1}" + versionGuid.ToString("B", CultureInfo.InvariantCulture).ToUpperInvariant() + "${part2}";
 					VersionUpdater.PerformReplacementRegex(file, search, replacement, Encoding.UTF8);
@@ -183,7 +183,7 @@ namespace RI.Tools.Framework.VersionUpdater
 					replacement = "${part1}" + newVersionDot + "${part2}";
 					VersionUpdater.PerformReplacementRegex(file, search, replacement, Encoding.UTF8);
 
-					//HINT: Replaced with version-dependend GUID to always get the same GUID for the same version (prevents new installer IDs inter-version)		
+					//HINT: Replaced with version-dependend GUID to always get the same GUID for the same version (prevents new installer IDs inter-version)
 					//search = "(?'part1'Property\\s*=\\s*\"\\s*ProductCode\\s*\"\\s+Value\\s*=\\s*\"\\s*[0-9]*?[:]*)[\\{]*[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}[\\}]*(?'part2'\\s*\")";
 					search = "(?'part1'<\\?define\\s+InstallerProductCode\\s*=\\s*)[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}(?'part2'\\s+\\?>)";
 					replacement = "${part1}" + versionGuid.ToString("D", CultureInfo.InvariantCulture).ToUpperInvariant() + "${part2}";

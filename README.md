@@ -16,9 +16,8 @@
     - [ ] ResolveExport event for InstanceLocator
     - [ ] CompositionContainer property for InstanceLocator
   - [ ] IRegionService
-    - [ ] Global property in RegionBinder
+    - [ ] Decoupling in RegionBinder
   - [ ] Logging
-  - [ ] Modularization
 - [ ] Documentation
   - [ ] Namespace descriptions
   - [ ] NetFx: Simple documentation

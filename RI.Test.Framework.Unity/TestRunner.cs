@@ -10,6 +10,7 @@ using RI.Framework.Services;
 using RI.Framework.Services.Dispatcher;
 using RI.Framework.Services.Logging;
 using RI.Framework.Utilities;
+using RI.Framework.Utilities.Logging;
 
 using UnityEngine;
 

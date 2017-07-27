@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-
-
-
+using System.Diagnostics.CodeAnalysis;
 
 namespace RI.Framework.Collections.Generic
 {
@@ -32,6 +30,7 @@ namespace RI.Framework.Collections.Generic
 	///         <see cref="IWarehouse{T}" /> never touches the contents of <see cref="Storage" />, except for enumerating them as provided by <see cref="IEnumerable{T}" />
 	///     </para>
 	/// </remarks>
+	[SuppressMessage("ReSharper", "TypeParameterCanBeVariant")]
 	public interface IWarehouse <T> : ICollection, IEnumerable<T>, IEnumerable
 	{
 		/// <summary>

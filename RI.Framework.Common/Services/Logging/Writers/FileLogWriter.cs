@@ -8,6 +8,7 @@ using RI.Framework.IO.Paths;
 using RI.Framework.Services.Logging.Filters;
 using RI.Framework.Services.Logging.Readers;
 using RI.Framework.Utilities.Exceptions;
+using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.ObjectModel;
 
 

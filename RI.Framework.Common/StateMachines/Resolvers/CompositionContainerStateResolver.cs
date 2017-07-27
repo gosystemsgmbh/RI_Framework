@@ -1,8 +1,6 @@
 ﻿using System;
 
 using RI.Framework.Composition;
-using RI.Framework.StateMachines.States;
-using RI.Framework.Utilities.ObjectModel;
 
 
 
@@ -18,16 +16,17 @@ namespace RI.Framework.StateMachines.Resolvers
 	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
-	public sealed class CompositionContainerStateResolver : IStateResolver
+	public sealed class CompositionContainerStateResolver : DependencyResolverStateResolver
 	{
 		#region Instance Constructor/Destructor
 
 		/// <summary>
 		///     Creates a new instance of <see cref="CompositionContainerStateResolver" />.
 		/// </summary>
-		/// <param name="container"> </param>
+		/// <param name="container"> The used composition container </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="container" /> is null. </exception>
 		public CompositionContainerStateResolver (CompositionContainer container)
+			:base(container)
 		{
 			if (container == null)
 			{
@@ -35,8 +34,6 @@ namespace RI.Framework.StateMachines.Resolvers
 			}
 
 			this.Container = container;
-
-			this.SyncRoot = new object();
 		}
 
 		#endregion
@@ -47,28 +44,6 @@ namespace RI.Framework.StateMachines.Resolvers
 		#region Instance Properties/Indexer
 
 		private CompositionContainer Container { get; }
-
-		#endregion
-
-
-
-
-		#region Interface: IStateResolver
-
-		/// <inheritdoc />
-		bool ISynchronizable.IsSynchronized => true;
-
-		/// <inheritdoc />
-		public object SyncRoot { get; }
-
-		/// <inheritdoc />
-		public IState ResolveState (Type type)
-		{
-			lock (this.SyncRoot)
-			{
-				return this.Container.GetExport<IState>(type);
-			}
-		}
 
 		#endregion
 	}

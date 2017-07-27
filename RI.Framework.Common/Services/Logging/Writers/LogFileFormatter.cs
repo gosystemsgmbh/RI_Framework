@@ -3,9 +3,7 @@ using System.Globalization;
 using System.IO;
 
 using RI.Framework.Utilities;
-
-
-
+using RI.Framework.Utilities.Logging;
 
 namespace RI.Framework.Services.Logging.Writers
 {
@@ -47,7 +45,7 @@ namespace RI.Framework.Services.Logging.Writers
 
 		public void Reset ()
 		{
-			this.CurrentLengths = new int[] {0, 0, 0, 0, 0, 0,};
+			this.CurrentLengths = new [] {0, 0, 0, 0, 0, 0,};
 		}
 
 		public void Write (TextWriter writer, DateTime timestamp, int threadId, LogLevel severity, string source, string message)

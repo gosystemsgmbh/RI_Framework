@@ -18,6 +18,7 @@ using RI.Framework.Data.EF.Validation;
 using RI.Framework.Data.Repository;
 using RI.Framework.Data.Repository.Entities;
 using RI.Framework.Services.Logging;
+using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.Reflection;
 
 
@@ -176,7 +177,7 @@ namespace RI.Framework.Data.EF
 		/// <param name="connection"> The database connection to be used by the underlying <see cref="DbContext" />. </param>
 		/// <param name="ownConnection"> Specifies whether the underlying <see cref="DbContext" /> owns the connection or not. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="connection" /> is null. </exception>
-		public RepositoryDbContext (DbConnection connection, bool ownConnection)
+		protected RepositoryDbContext (DbConnection connection, bool ownConnection)
 			: base(connection, ownConnection)
 		{
 			if (connection == null)

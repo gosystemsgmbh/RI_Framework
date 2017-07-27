@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
-
-
+using RI.Framework.Collections.DirectLinq;
+using RI.Framework.Utilities.Exceptions;
 
 namespace RI.Framework.Utilities.ObjectModel
 {
@@ -41,6 +41,7 @@ namespace RI.Framework.Utilities.ObjectModel
 		{
 			Singleton.GlobalSyncRoot = new object();
 			Singleton.Instances = new Dictionary<Type, object>();
+			Singleton.Resolver = new SingletonResolver();
 		}
 
 		#endregion
@@ -49,6 +50,14 @@ namespace RI.Framework.Utilities.ObjectModel
 
 
 		#region Static Properties/Indexer
+
+		/// <summary>
+		/// Gets a dependency resolver which uses <see cref="Singleton"/>.
+		/// </summary>
+		/// <value>
+		/// A dependency resolver which uses <see cref="Singleton"/>.
+		/// </value>
+		public static IDependencyResolver Resolver { get; }
 
 		internal static object GlobalSyncRoot { get; }
 
@@ -185,6 +194,92 @@ namespace RI.Framework.Utilities.ObjectModel
 		}
 
 		#endregion
+
+
+		private sealed class SingletonResolver : IDependencyResolver
+		{
+			public object GetInstance (Type type)
+			{
+				if (type == null)
+				{
+					throw new ArgumentNullException(nameof(type));
+				}
+
+				if ((!type.IsClass) && (!type.IsInterface))
+				{
+					throw new InvalidTypeArgumentException(nameof(type));
+				}
+
+				return Singleton.Get(type);
+			}
+
+			public object GetInstance (string name)
+			{
+				if (name == null)
+				{
+					throw new ArgumentNullException(nameof(name));
+				}
+
+				if (name.IsNullOrEmptyOrWhitespace())
+				{
+					throw new EmptyStringArgumentException(nameof(name));
+				}
+
+				Type type = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes()).FirstOrDefault(x => string.Equals(x.FullName, name, StringComparison.Ordinal));
+				if (type == null)
+				{
+					return null;
+				}
+
+				return this.GetInstance(type);
+			}
+
+			public T GetInstance<T> ()
+				where T : class
+			{
+				return (T)this.GetInstance(typeof(T));
+			}
+
+			public List<object> GetInstances (Type type)
+			{
+				if (type == null)
+				{
+					throw new ArgumentNullException(nameof(type));
+				}
+
+				if ((!type.IsClass) && (!type.IsInterface))
+				{
+					throw new InvalidTypeArgumentException(nameof(type));
+				}
+
+				List<object> instances = new List<object>();
+				instances.Add(this.GetInstance(type));
+				return instances;
+			}
+
+			public List<object> GetInstances (string name)
+			{
+				if (name == null)
+				{
+					throw new ArgumentNullException(nameof(name));
+				}
+
+				if (name.IsNullOrEmptyOrWhitespace())
+				{
+					throw new EmptyStringArgumentException(nameof(name));
+				}
+
+				List<object> instances = new List<object>();
+				instances.Add(this.GetInstance(name));
+				return instances;
+			}
+
+			public List<T> GetInstances<T> ()
+				where T : class
+			{
+				return this.GetInstances(typeof(T)).Cast<T>();
+			}
+		}
 	}
 
 
@@ -237,6 +332,9 @@ namespace RI.Framework.Utilities.ObjectModel
 				Singleton.Set(typeof(T), value);
 			}
 		}
+
+		/// <inheritdoc cref="Singleton.Resolver"/>
+		public static IDependencyResolver Resolver => Singleton.Resolver;
 
 		#endregion
 

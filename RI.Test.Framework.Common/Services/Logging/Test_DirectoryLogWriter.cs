@@ -7,9 +7,7 @@ using RI.Framework.IO.Paths;
 using RI.Framework.Services.Logging;
 using RI.Framework.Services.Logging.Writers;
 using RI.Framework.Utilities;
-
-
-
+using RI.Framework.Utilities.Logging;
 
 namespace RI.Test.Framework.Services.Logging
 {

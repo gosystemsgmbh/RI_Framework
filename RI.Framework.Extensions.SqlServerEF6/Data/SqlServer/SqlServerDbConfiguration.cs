@@ -1,10 +1,7 @@
 ﻿using System.Data.Entity;
 using System.Diagnostics.CodeAnalysis;
 
-using RI.Framework.Data.EF;
-
-
-
+using RI.Framework.Data.EF.Resolvers;
 
 namespace RI.Framework.Data.SqlServer
 {
@@ -25,7 +22,7 @@ namespace RI.Framework.Data.SqlServer
 		/// <summary>
 		///     Creates a new instance of <see cref="SqlServerDbConfiguration" />.
 		/// </summary>
-		public SqlServerDbConfiguration ()
+		protected SqlServerDbConfiguration ()
 		{
 			this.SetDefaultConnectionFactory(new System.Data.Entity.Infrastructure.SqlConnectionFactory());
 

@@ -14,6 +14,7 @@ using RI.Framework.IO.Paths;
 using RI.Framework.Services.Logging;
 using RI.Framework.Services.Modularization;
 using RI.Framework.Utilities;
+using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.ObjectModel;
 using RI.Framework.Utilities.Reflection;
 using RI.Framework.Utilities.Text;
@@ -573,12 +574,12 @@ namespace RI.Framework.Services
 		/// </summary>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation calls <see cref="ServiceLocator.BindToCompositionContainer" /> using the used composition container (<see cref="Container" />).
+		///         The default implementation calls <see cref="ServiceLocator.BindToDependencyResolver" /> using the used composition container (<see cref="Container" />).
 		///     </note>
 		/// </remarks>
 		protected virtual void ConfigureServiceLocator ()
 		{
-			ServiceLocator.BindToCompositionContainer(this.Container);
+			ServiceLocator.BindToDependencyResolver(this.Container);
 		}
 
 		/// <summary>
@@ -607,6 +608,7 @@ namespace RI.Framework.Services
 			Singleton<IBootstrapper>.Ensure(() => this);
 
 			Singleton<CompositionContainer>.Ensure(() => this.Container);
+			Singleton<IDependencyResolver>.Ensure(() => this.Container);
 
 			if (this.Application != null)
 			{

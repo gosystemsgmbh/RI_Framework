@@ -4,10 +4,7 @@ using System.Data.SQLite;
 using System.Data.SQLite.EF6;
 using System.Diagnostics.CodeAnalysis;
 
-using RI.Framework.Data.EF;
-
-
-
+using RI.Framework.Data.EF.Resolvers;
 
 namespace RI.Framework.Data.SQLite
 {
@@ -28,7 +25,7 @@ namespace RI.Framework.Data.SQLite
 		/// <summary>
 		///     Creates a new instance of <see cref="SQLiteDbConfiguration" />.
 		/// </summary>
-		public SQLiteDbConfiguration ()
+		protected SQLiteDbConfiguration ()
 		{
 			this.SetProviderFactory("System.Data.SQLite", SQLiteFactory.Instance);
 			this.SetProviderFactory("System.Data.SQLite.EF6", SQLiteProviderFactory.Instance);

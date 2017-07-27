@@ -3,7 +3,7 @@
 
 
 
-namespace RI.Framework.Services.Logging
+namespace RI.Framework.Utilities.Logging
 {
 	/// <summary>
 	///     Defines the severity of a log message.

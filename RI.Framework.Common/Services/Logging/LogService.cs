@@ -8,9 +8,7 @@ using RI.Framework.Composition;
 using RI.Framework.Composition.Model;
 using RI.Framework.Services.Logging.Filters;
 using RI.Framework.Services.Logging.Writers;
-
-
-
+using RI.Framework.Utilities.Logging;
 
 namespace RI.Framework.Services.Logging
 {

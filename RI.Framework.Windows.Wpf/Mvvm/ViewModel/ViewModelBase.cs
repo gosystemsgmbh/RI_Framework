@@ -1,8 +1,6 @@
 ﻿using RI.Framework.Services.Logging;
 using RI.Framework.Services.Regions;
-
-
-
+using RI.Framework.Utilities.Logging;
 
 namespace RI.Framework.Mvvm.ViewModel
 {
