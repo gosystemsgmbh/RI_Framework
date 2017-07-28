@@ -1,8 +1,8 @@
 ﻿using System;
 
 using RI.Framework.Composition.Model;
-using RI.Framework.Services.Logging;
 using RI.Framework.Utilities.Exceptions;
+using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.ObjectModel;
 
 
@@ -35,7 +35,7 @@ namespace RI.Framework.Composition
 	///     </note>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
-	public abstract class CompositionCreator : ILogSource, IDisposable, ISynchronizable
+	public abstract class CompositionCreator : LogSource, IDisposable, ISynchronizable
 	{
 		#region Instance Constructor/Destructor
 

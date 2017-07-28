@@ -322,7 +322,6 @@ namespace RI.Framework.Threading.Dispatcher
 					throw new InvalidOperationException(nameof(IThreadDispatcher) + " is already shutting down.");
 				}
 
-				//TODO: Add to KeepAlives and remove when OneSHot is over or disposed (also modify documentation)
 				ThreadDispatcherTimer timer = new ThreadDispatcherTimer(dispatcher, ThreadDispatcherTimerMode.OneShot, priority, options, milliseconds, action, parameters);
 				timer.Start();
 				return timer;

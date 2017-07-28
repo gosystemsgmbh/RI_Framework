@@ -6,7 +6,6 @@ using RI.Framework.Collections;
 using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Composition;
 using RI.Framework.Composition.Model;
-using RI.Framework.Services.Logging;
 using RI.Framework.Services.Resources.Converters;
 using RI.Framework.Services.Resources.Sources;
 using RI.Framework.Utilities;
@@ -30,7 +29,7 @@ namespace RI.Framework.Services.Resources
 	///     </para>
 	/// </remarks>
 	[Export]
-	public sealed class ResourceService : IResourceService, IImporting, ILogSource
+	public sealed class ResourceService : LogSource, IResourceService, IImporting
 	{
 		#region Instance Constructor/Destructor
 

@@ -18,7 +18,20 @@ namespace RI.Framework.Services.Logging
 	/// <threadsafety static="true" instance="true" />
 	public static class LogLocator
 	{
+		static LogLocator ()
+		{
+			LogLocator.Logger = new LogLocatorLogger();
+		}
+
 		#region Static Properties/Indexer
+
+		/// <summary>
+		/// Gets a logger which uses <see cref="LogLocator"/>.
+		/// </summary>
+		/// <value>
+		/// A logger which uses <see cref="LogLocator"/>.
+		/// </value>
+		public static ILogger Logger { get; }
 
 		/// <inheritdoc cref="ILogService.Filter" />
 		public static ILogFilter Filter => LogLocator.Service?.Filter;
@@ -55,12 +68,26 @@ namespace RI.Framework.Services.Logging
 		/// <inheritdoc cref="ILogService.Cleanup(TimeSpan)" />
 		public static void Cleanup (TimeSpan retentionTime) => LogLocator.Service?.Cleanup(retentionTime);
 
-		/// <inheritdoc cref="ILogService.Log(LogLevel,string,string,object[])" />
+		/// <inheritdoc cref="ILogger.Log(LogLevel,string,string,object[])" />
 		public static void Log (LogLevel severity, string source, string format, params object[] args) => LogLocator.Service?.Log(severity, source, format, args);
 
-		/// <inheritdoc cref="ILogService.Log(DateTime,int,LogLevel,string,string,object[])" />
+		/// <inheritdoc cref="ILogger.Log(DateTime,int,LogLevel,string,string,object[])" />
 		public static void Log (DateTime timestamp, int threadId, LogLevel severity, string source, string format, params object[] args) => LogLocator.Service?.Log(timestamp, threadId, severity, source, format, args);
 
 		#endregion
+
+
+		private sealed class LogLocatorLogger : ILogger
+		{
+			void ILogger.Log(LogLevel severity, string source, string format, params object[] args)
+			{
+				LogLocator.Log(severity, source, format, args);
+			}
+
+			void ILogger.Log(DateTime timestamp, int threadId, LogLevel severity, string source, string format, params object[] args)
+			{
+				LogLocator.Log(timestamp, threadId, severity, source, format, args);
+			}
+		}
 	}
 }

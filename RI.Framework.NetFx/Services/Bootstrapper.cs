@@ -266,7 +266,7 @@ namespace RI.Framework.Services
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	[Export]
-	public abstract class Bootstrapper : IBootstrapper, ILogSource
+	public abstract class Bootstrapper : LogSource, IBootstrapper
 	{
 		#region Instance Constructor/Destructor
 

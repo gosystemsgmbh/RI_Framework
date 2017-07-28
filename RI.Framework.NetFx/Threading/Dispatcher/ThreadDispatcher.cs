@@ -296,24 +296,44 @@ namespace RI.Framework.Threading.Dispatcher
 			}
 		}
 
-		internal void AddKeepAlive (object obj)
+		/// <inheritdoc />
+		public bool AddKeepAlive (object obj)
 		{
 			if (obj == null)
 			{
 				throw new ArgumentNullException(nameof(obj));
 			}
 
-			this.KeepAlives.Add(obj);
+			lock (this.SyncRoot)
+			{
+				if (this.KeepAlives == null)
+				{
+					return false;
+				}
+
+				this.KeepAlives.Add(obj);
+				return true;
+			}
 		}
 
-		internal void RemoveKeepAlive (object obj)
+		/// <inheritdoc />
+		public bool RemoveKeepAlive (object obj)
 		{
 			if (obj == null)
 			{
 				throw new ArgumentNullException(nameof(obj));
 			}
 
-			this.KeepAlives.Remove(obj);
+			lock (this.SyncRoot)
+			{
+				if (this.KeepAlives == null)
+				{
+					return false;
+				}
+
+				this.KeepAlives.Remove(obj);
+				return true;
+			}
 		}
 
 		private void ExecuteFrame (ThreadDispatcherOperation returnTrigger)
@@ -595,6 +615,8 @@ namespace RI.Framework.Threading.Dispatcher
 				{
 					this.BeginShutdown(false);
 				}
+
+				this.KeepAlives?.Clear();
 
 				this.PreRunQueue?.ForEach(x => x.CancelHard());
 				this.PreRunQueue?.Clear();

@@ -9,10 +9,7 @@ using System.Linq;
 using RI.Framework.Data.EF.Filter;
 using RI.Framework.Data.EF.Validation;
 using RI.Framework.Data.Repository;
-using RI.Framework.Services.Logging;
-
-
-
+using RI.Framework.Utilities.Logging;
 
 namespace RI.Framework.Data.EF
 {
@@ -27,7 +24,7 @@ namespace RI.Framework.Data.EF
 	///         See <see cref="RepositoryDbSet{T}" /> for more details.
 	///     </para>
 	/// </remarks>
-	public abstract class RepositoryDbSet : IRepositorySet, ILogSource
+	public abstract class RepositoryDbSet : LogSource, IRepositorySet
 	{
 		#region Instance Constructor/Destructor
 

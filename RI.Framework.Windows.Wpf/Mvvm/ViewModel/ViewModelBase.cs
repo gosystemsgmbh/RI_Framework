@@ -16,6 +16,13 @@ namespace RI.Framework.Mvvm.ViewModel
 		{
 		}
 
+
+		/// <inheritdoc />
+		public bool LoggingEnabled { get; set; } = true;
+
+		/// <inheritdoc />
+		public ILogger Logger { get; set; } = LogLocator.Logger;
+
 		#endregion
 
 

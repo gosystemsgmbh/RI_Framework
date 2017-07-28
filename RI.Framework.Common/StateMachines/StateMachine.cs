@@ -1,6 +1,5 @@
 ﻿using System;
 
-using RI.Framework.Services.Logging;
 using RI.Framework.StateMachines.Caches;
 using RI.Framework.StateMachines.Dispatchers;
 using RI.Framework.StateMachines.Resolvers;
@@ -202,7 +201,7 @@ namespace RI.Framework.StateMachines
 	///  ]]>
 	///  </code>
 	/// </example>
-	public class StateMachine : ILogSource, ISynchronizable
+	public class StateMachine : LogSource, ISynchronizable
 	{
 		#region Instance Constructor/Destructor
 
@@ -449,10 +448,7 @@ namespace RI.Framework.StateMachines
 		/// </remarks>
 		protected virtual void DispatchSignal (StateSignalInfo signalInfo)
 		{
-			if (this.Configuration.LoggingEnabled)
-			{
-				this.Log(LogLevel.Debug, "Dispatching signal: {0}", signalInfo.Signal?.ToString() ?? "[null]");
-			}
+			this.Log(LogLevel.Debug, "Dispatching signal: {0}", signalInfo.Signal?.ToString() ?? "[null]");
 
 			this.Configuration.Dispatcher.DispatchSignal(this.SignalDelegate, signalInfo);
 		}
@@ -471,10 +467,7 @@ namespace RI.Framework.StateMachines
 		/// </remarks>
 		protected virtual void DispatchTransient (StateTransientInfo transientInfo)
 		{
-			if (this.Configuration.LoggingEnabled)
-			{
-				this.Log(LogLevel.Debug, "Dispatching transient: {0} -> {1}", transientInfo.PreviousState?.GetType().Name ?? "[null]", transientInfo.NextState?.GetType().Name ?? "[null]");
-			}
+			this.Log(LogLevel.Debug, "Dispatching transient: {0} -> {1}", transientInfo.PreviousState?.GetType().Name ?? "[null]", transientInfo.NextState?.GetType().Name ?? "[null]");
 
 			this.Configuration.Dispatcher.DispatchTransition(this.TransientDelegate, transientInfo);
 		}
@@ -502,19 +495,9 @@ namespace RI.Framework.StateMachines
 		/// <param name="signalInfo"> The signal to execute. </param>
 		protected virtual void ExecuteSignal (StateSignalInfo signalInfo)
 		{
-			bool loggingEnabled;
-
-			lock (this.Configuration.SyncRoot)
-			{
-				loggingEnabled = this.Configuration.LoggingEnabled;
-			}
-
 			lock (this.SyncRoot)
 			{
-				if (loggingEnabled)
-				{
-					this.Log(LogLevel.Debug, "Executing signal: {0}", signalInfo.Signal?.ToString() ?? "[null]");
-				}
+				this.Log(LogLevel.Debug, "Executing signal: {0}", signalInfo.Signal?.ToString() ?? "[null]");
 
 				this.OnBeforeSignal(signalInfo);
 				this.State?.Signal(signalInfo);
@@ -531,30 +514,22 @@ namespace RI.Framework.StateMachines
 			IState previousState = transientInfo.PreviousState;
 			IState nextState = transientInfo.NextState;
 
-			bool loggingEnabled;
 			bool cacheEnabled;
 			IStateCache cache;
 
 			lock (this.Configuration.SyncRoot)
 			{
-				loggingEnabled = this.Configuration.LoggingEnabled;
 				cacheEnabled = this.Configuration.CachingEnabled;
 				cache = this.Configuration.Cache;
 			}
 
 			lock (this.SyncRoot)
 			{
-				if (loggingEnabled)
-				{
-					this.Log(LogLevel.Debug, "Executing transient: {0} -> {1}", transientInfo.PreviousState?.GetType().Name ?? "[null]", transientInfo.NextState?.GetType().Name ?? "[null]");
-				}
+				this.Log(LogLevel.Debug, "Executing transient: {0} -> {1}", transientInfo.PreviousState?.GetType().Name ?? "[null]", transientInfo.NextState?.GetType().Name ?? "[null]");
 
 				if (!object.ReferenceEquals(this.State, previousState))
 				{
-					if (loggingEnabled)
-					{
-						this.Log(LogLevel.Debug, "Transient aborted: {0} -> {1}", transientInfo.PreviousState?.GetType().Name ?? "[null]", transientInfo.NextState?.GetType().Name ?? "[null]");
-					}
+					this.Log(LogLevel.Debug, "Transient aborted: {0} -> {1}", transientInfo.PreviousState?.GetType().Name ?? "[null]", transientInfo.NextState?.GetType().Name ?? "[null]");
 
 					this.OnTransitionAborted(transientInfo);
 
@@ -601,21 +576,11 @@ namespace RI.Framework.StateMachines
 		{
 			IState updateState = updateInfo.UpdateState;
 
-			bool loggingEnabled;
-
-			lock (this.Configuration.SyncRoot)
-			{
-				loggingEnabled = this.Configuration.LoggingEnabled;
-			}
-
 			lock (this.SyncRoot)
 			{
 				if (!object.ReferenceEquals(this.State, updateState))
 				{
-					if (loggingEnabled)
-					{
-						this.Log(LogLevel.Debug, "Update aborted: {0} ", updateInfo.UpdateState?.GetType().Name ?? "[null]");
-					}
+					this.Log(LogLevel.Debug, "Update aborted: {0} ", updateInfo.UpdateState?.GetType().Name ?? "[null]");
 
 					this.OnUpdateAborted(updateInfo);
 

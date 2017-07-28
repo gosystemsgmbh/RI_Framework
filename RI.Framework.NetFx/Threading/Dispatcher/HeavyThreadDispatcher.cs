@@ -806,6 +806,24 @@ namespace RI.Framework.Threading.Dispatcher
 			await this.BeginShutdownInternal(finishPendingDelegates).ConfigureAwait(false);
 		}
 
+		/// <inheritdoc />
+		public bool AddKeepAlive (object obj)
+		{
+			lock (this.SyncRoot)
+			{
+				return this.Dispatcher?.AddKeepAlive(obj) ?? false;
+			}
+		}
+
+		/// <inheritdoc />
+		public bool RemoveKeepAlive (object obj)
+		{
+			lock (this.SyncRoot)
+			{
+				return this.Dispatcher?.RemoveKeepAlive(obj) ?? false;
+			}
+		}
+
 		#endregion
 	}
 }

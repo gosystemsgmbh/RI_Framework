@@ -1,6 +1,8 @@
 ﻿using System;
 
 using RI.Framework.Composition.Model;
+using RI.Framework.Services.Logging;
+using RI.Framework.Utilities.Logging;
 
 using UnityEngine;
 
@@ -21,7 +23,7 @@ namespace RI.Framework.Composition
 	///     </note>
 	/// </remarks>
 	[Export]
-	public abstract class ComposableMonoBehaviour : MonoBehaviour
+	public abstract class ComposableMonoBehaviour : MonoBehaviour, ILogSource
 	{
 		#region Static Methods
 
@@ -51,6 +53,13 @@ namespace RI.Framework.Composition
 			Object.DontDestroyOnLoad(gameObject);
 			return instance;
 		}
+
+
+		/// <inheritdoc />
+		public bool LoggingEnabled { get; set; } = true;
+
+		/// <inheritdoc />
+		public Utilities.Logging.ILogger Logger { get; set; } = LogLocator.Logger;
 
 		#endregion
 	}

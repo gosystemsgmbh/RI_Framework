@@ -1,19 +1,11 @@
 ﻿using System;
 using System.Threading;
 
-using RI.Framework.Services.Logging;
-
 namespace RI.Framework.Utilities.Logging
 {
 	/// <summary>
-	/// Defines the interface for a logger which can be used for writing log messages.
+	/// Defines the interface for a logger which can be used for writing and/or persisting log messages.
 	/// </summary>
-	/// <remarks>
-	/// <para>
-	/// The framework itself uses <see cref="ILogger"/> for its logging.
-	/// A default implementation is provided using the <see cref="ILogService"/> logging service.
-	/// </para>
-	/// </remarks>
 	public interface ILogger
 	{
 		/// <summary>

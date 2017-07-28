@@ -1,5 +1,4 @@
 ﻿using RI.Framework.Composition.Model;
-using RI.Framework.Services.Logging;
 using RI.Framework.Utilities.Logging;
 
 namespace RI.Framework.Services.Modularization
@@ -11,7 +10,7 @@ namespace RI.Framework.Services.Modularization
 	///     See <see cref="IModule" /> for more details.
 	/// </para>
 	[Export]
-	public abstract class Module : IModule, ILogSource
+	public abstract class Module : LogSource, IModule
 	{
 		#region Virtuals
 

@@ -5,7 +5,6 @@ using RI.Framework.Collections;
 using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Composition;
 using RI.Framework.Composition.Model;
-using RI.Framework.Services.Logging;
 using RI.Framework.Utilities.Logging;
 
 namespace RI.Framework.Services.Modularization
@@ -25,7 +24,7 @@ namespace RI.Framework.Services.Modularization
 	///     </para>
 	/// </remarks>
 	[Export]
-	public sealed class ModuleService : IModuleService, IImporting, ILogSource
+	public sealed class ModuleService : LogSource, IModuleService, IImporting
 	{
 		#region Instance Constructor/Destructor
 

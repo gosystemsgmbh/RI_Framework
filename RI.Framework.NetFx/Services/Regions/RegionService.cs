@@ -5,7 +5,6 @@ using RI.Framework.Collections;
 using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Composition;
 using RI.Framework.Composition.Model;
-using RI.Framework.Services.Logging;
 using RI.Framework.Services.Regions.Adapters;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
@@ -28,7 +27,7 @@ namespace RI.Framework.Services.Regions
 	///     </para>
 	/// </remarks>
 	[Export]
-	public sealed class RegionService : IRegionService, IImporting, ILogSource
+	public sealed class RegionService : LogSource, IRegionService, IImporting
 	{
 		#region Instance Constructor/Destructor
 

@@ -36,7 +36,7 @@ namespace RI.Framework.Services.Logging.Writers
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	[Export]
-	public sealed class FileLogWriter : ILogWriter, IDisposable, ILogSource
+	public sealed class FileLogWriter : LogSource, ILogWriter, IDisposable
 	{
 		#region Constants
 

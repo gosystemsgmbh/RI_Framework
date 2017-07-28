@@ -185,7 +185,6 @@ namespace RI.Framework.Data.EF
 				throw new ArgumentNullException(nameof(connection));
 			}
 
-			this.EnableDatabaseLogging = true;
 			this.FixOnValidateEnabled = true;
 			this.FixOnSaveEnabled = true;
 
@@ -214,22 +213,6 @@ namespace RI.Framework.Data.EF
 		#region Instance Properties/Indexer
 
 		/// <summary>
-		///     Gets or sets whether database logging is enabled or not.
-		/// </summary>
-		/// <value>
-		///     true if database logging is enabled, false otherwise.
-		/// </value>
-		/// <remarks>
-		///     <para>
-		///         The default value is true.
-		///     </para>
-		///     <para>
-		///         See <see cref="LogDatabase" /> for more details.
-		///     </para>
-		/// </remarks>
-		public bool EnableDatabaseLogging { get; set; }
-
-		/// <summary>
 		///     Gets or sets whether entity fixing is enabled before pending changes are saved or committed.
 		/// </summary>
 		/// <value>
@@ -254,6 +237,13 @@ namespace RI.Framework.Data.EF
 		///     </para>
 		/// </remarks>
 		public bool FixOnValidateEnabled { get; set; }
+
+
+		/// <inheritdoc />
+		public bool LoggingEnabled { get; set; } = true;
+
+		/// <inheritdoc />
+		public ILogger Logger { get; set; } = LogLocator.Logger;
 
 		private SetCollection Sets { get; set; }
 
@@ -466,18 +456,12 @@ namespace RI.Framework.Data.EF
 		///         The messages coming from <see cref="DbContext" /> are mostly SQL commands sent to the database.
 		///     </para>
 		///     <para>
-		///         The database logging or <see cref="DbContext" /> logging respectively can be enabled/disabled using <see cref="EnableDatabaseLogging" />.
-		///     </para>
-		///     <para>
 		///         The default implementation calls <see cref="ILogSourceExtensions.Log(ILogSource,LogLevel,string,object[])" /> to log the message.
 		///     </para>
 		/// </remarks>
 		protected virtual void LogDatabase (string message)
 		{
-			if (this.EnableDatabaseLogging)
-			{
-				this.Log(LogLevel.Debug, "Database activity: {0}", message.Trim());
-			}
+			this.Log(LogLevel.Debug, "Database activity: {0}", message.Trim());
 		}
 
 		/// <summary>

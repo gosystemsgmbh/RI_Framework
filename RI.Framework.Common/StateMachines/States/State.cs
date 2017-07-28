@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using RI.Framework.Composition.Model;
 using RI.Framework.Services.Logging;
+using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.ObjectModel;
 
 
@@ -63,6 +64,13 @@ namespace RI.Framework.StateMachines.States
 		#region Instance Properties/Indexer
 
 		private Dictionary<Type, Delegate> SignalHandlers { get; }
+
+
+		/// <inheritdoc />
+		public bool LoggingEnabled { get; set; } = true;
+
+		/// <inheritdoc />
+		public ILogger Logger { get; set; } = LogLocator.Logger;
 
 		#endregion
 

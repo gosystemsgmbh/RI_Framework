@@ -5,7 +5,6 @@ using System.Reflection;
 using RI.Framework.Collections;
 using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Composition.Model;
-using RI.Framework.Services.Logging;
 using RI.Framework.Utilities.Logging;
 
 namespace RI.Framework.Composition.Catalogs

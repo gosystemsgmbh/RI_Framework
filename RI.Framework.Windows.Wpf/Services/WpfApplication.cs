@@ -2,9 +2,7 @@
 
 using RI.Framework.Composition.Model;
 using RI.Framework.Services.Logging;
-
-
-
+using RI.Framework.Utilities.Logging;
 
 namespace RI.Framework.Services
 {
@@ -30,5 +28,12 @@ namespace RI.Framework.Services
 		public Bootstrapper Bootstrapper { get; internal set; }
 
 		#endregion
+
+
+		/// <inheritdoc />
+		public bool LoggingEnabled { get; set; } = true;
+
+		/// <inheritdoc />
+		public ILogger Logger { get; set; } = LogLocator.Logger;
 	}
 }

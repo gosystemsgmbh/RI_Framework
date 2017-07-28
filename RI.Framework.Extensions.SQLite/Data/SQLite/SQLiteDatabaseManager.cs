@@ -10,7 +10,6 @@ using System.Linq;
 using RI.Framework.Data.Database;
 using RI.Framework.Data.SQLite.Collations;
 using RI.Framework.Data.SQLite.Functions;
-using RI.Framework.Services.Logging;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Logging;
 
@@ -25,7 +24,7 @@ namespace RI.Framework.Data.SQLite
 	///     </para>
 	/// </remarks>
 	[SuppressMessage("ReSharper", "InconsistentNaming")]
-	public sealed class SQLiteDatabaseManager : IDatabaseManager, ILogSource
+	public sealed class SQLiteDatabaseManager : LogSource, IDatabaseManager
 	{
 		#region Instance Constructor/Destructor
 

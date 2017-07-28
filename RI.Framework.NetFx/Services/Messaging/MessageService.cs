@@ -5,7 +5,6 @@ using RI.Framework.Collections;
 using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Composition;
 using RI.Framework.Composition.Model;
-using RI.Framework.Services.Logging;
 using RI.Framework.Services.Messaging.Dispatchers;
 using RI.Framework.Utilities.Logging;
 
@@ -26,7 +25,7 @@ namespace RI.Framework.Services.Messaging
 	///     </para>
 	/// </remarks>
 	[Export]
-	public sealed class MessageService : IMessageService, IImporting, ILogSource
+	public sealed class MessageService : LogSource, IMessageService, IImporting
 	{
 		#region Instance Constructor/Destructor
 

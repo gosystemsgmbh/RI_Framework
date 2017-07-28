@@ -29,7 +29,7 @@ namespace RI.Framework.Services.Logging.Writers
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	[Export]
-	public sealed class EventLogWriter : ILogWriter, IDisposable, ILogSource
+	public sealed class EventLogWriter : LogSource, ILogWriter, IDisposable
 	{
 		#region Instance Constructor/Destructor
 

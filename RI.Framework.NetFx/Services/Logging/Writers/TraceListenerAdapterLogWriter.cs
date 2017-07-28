@@ -31,7 +31,7 @@ namespace RI.Framework.Services.Logging.Writers
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	[Export]
-	public sealed class TraceListenerAdapterLogWriter : ILogWriter, IDisposable, ILogSource
+	public sealed class TraceListenerAdapterLogWriter : LogSource, ILogWriter, IDisposable
 	{
 		#region Instance Constructor/Destructor
 

@@ -6,16 +6,15 @@ using Nancy.Bootstrapper;
 using Nancy.Diagnostics;
 
 using RI.Framework.Composition;
-
-
-
+using RI.Framework.Services.Logging;
+using RI.Framework.Utilities.Logging;
 
 namespace RI.Framework.Web.Nancy
 {
 	/// <summary>
 	///     Nancy bootstrapper which uses a <see cref="CompositionContainer" />.
 	/// </summary>
-	public class CompositionContainerNancyBootstrapper : NancyBootstrapperWithRequestContainerBase<CompositionContainer>
+	public class CompositionContainerNancyBootstrapper : NancyBootstrapperWithRequestContainerBase<CompositionContainer>, ILogSource
 	{
 		#region Instance Constructor/Destructor
 
@@ -48,6 +47,13 @@ namespace RI.Framework.Web.Nancy
 		///     The used composition container.
 		/// </value>
 		protected CompositionContainer CompositionContainer { get; private set; }
+
+
+		/// <inheritdoc />
+		public bool LoggingEnabled { get; set; } = true;
+
+		/// <inheritdoc />
+		public ILogger Logger { get; set; } = LogLocator.Logger;
 
 		#endregion
 

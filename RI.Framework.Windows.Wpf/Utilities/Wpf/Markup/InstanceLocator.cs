@@ -150,6 +150,13 @@ namespace RI.Framework.Utilities.Wpf.Markup
 		/// </summary>
 		public Type Type { get; set; }
 
+
+		/// <inheritdoc />
+		public bool LoggingEnabled { get; set; } = true;
+
+		/// <inheritdoc />
+		public ILogger Logger { get; set; } = LogLocator.Logger;
+
 		#endregion
 
 

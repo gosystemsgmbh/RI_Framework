@@ -263,6 +263,13 @@ namespace RI.Framework.Services
 
 		private bool ShutdownFinished { get; set; } = false;
 
+
+		/// <inheritdoc />
+		public bool LoggingEnabled { get; set; } = true;
+
+		/// <inheritdoc />
+		public Utilities.Logging.ILogger Logger { get; set; } = LogLocator.Logger;
+
 		#endregion
 
 

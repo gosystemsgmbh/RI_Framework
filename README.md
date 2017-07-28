@@ -2,29 +2,16 @@
 
 ## 1.1.0.0
 
-- [ ] Packages
+- [ ] Reduce dependencies
+  - [ ] InstanceLocator
+  - [ ] RegionBinder
 - [ ] Cleanup
   - [ ] Warnings
   - [ ] TODOs
   - [ ] NuGet updates
   - [ ] Code cleanup
   - [ ] Check usage of IModuleService and IDispatcherService and ILogService in documentation
-- [ ] Reduce dependencies (Locators, CompositionContainer/ICompositionContainer, Logging) and check threading
-  - [ ] CompositionContainer
-    - [ ] Make bootstrapper container-agnostic
-    - [ ] ResolveImports event for InstanceLocator
-    - [ ] ResolveExport event for InstanceLocator
-    - [ ] CompositionContainer property for InstanceLocator
-  - [ ] IRegionService
-    - [ ] Decoupling in RegionBinder
-  - [ ] Logging
-- [ ] Documentation
-  - [ ] Namespace descriptions
-  - [ ] NetFx: Simple documentation
-  - [ ] Unity: Uncomments after implementation
-  - [ ] Unity: AOT/IL2CPP
-  - [ ] Unity: Performance
-  - [ ] Unity: Thread Safety
+  - [ ] Packages
 - [ ] Testing
   - [ ] ThreadDispatcher with priority queue
   - [ ] ThreadDispatcherTimer
@@ -44,7 +31,14 @@
   - [ ] CSV
   - [ ] AggregateCatalog
   - [ ] FileCatalog
-  - [ ] - [ ] ContainerCatalog
+  - [ ] ContainerCatalog
+- [ ] Documentation
+  - [ ] Namespace descriptions
+  - [ ] NetFx: Simple documentation
+  - [ ] Unity: Uncomments after implementation
+  - [ ] Unity: AOT/IL2CPP
+  - [ ] Unity: Performance
+  - [ ] Unity: Thread Safety
 - [ ] Advertisement
 
 

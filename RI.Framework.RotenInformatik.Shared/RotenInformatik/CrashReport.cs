@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using RI.Framework.Utilities;
-
-
-
+using RI.Framework.Utilities.Logging;
 
 namespace RI.Framework.RotenInformatik
 {
@@ -28,7 +26,7 @@ namespace RI.Framework.RotenInformatik
 	///         Make sure that no sensitive data is included in the crash report and that the users privacy and their secrets are kept!
 	///     </note>
 	/// </remarks>
-	public sealed class CrashReport
+	public sealed class CrashReport : LogSource
 	{
 		#region Constants
 

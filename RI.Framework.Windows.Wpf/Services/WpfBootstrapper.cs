@@ -5,7 +5,6 @@ using System.Windows;
 using System.Windows.Threading;
 
 using RI.Framework.Composition.Catalogs;
-using RI.Framework.Services.Logging;
 using RI.Framework.Utilities.Logging;
 
 namespace RI.Framework.Services

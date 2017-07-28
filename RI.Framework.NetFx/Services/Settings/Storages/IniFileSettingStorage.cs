@@ -4,7 +4,6 @@ using System.Text;
 using RI.Framework.Composition.Model;
 using RI.Framework.IO.INI;
 using RI.Framework.IO.Paths;
-using RI.Framework.Services.Logging;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Logging;
@@ -24,7 +23,7 @@ namespace RI.Framework.Services.Settings.Storages
 	///     </para>
 	/// </remarks>
 	[Export]
-	public sealed class IniFileSettingStorage : ISettingStorage, ILogSource
+	public sealed class IniFileSettingStorage : LogSource, ISettingStorage
 	{
 		#region Constants
 

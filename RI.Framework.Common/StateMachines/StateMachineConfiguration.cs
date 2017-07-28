@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 
-using RI.Framework.Services.Logging;
 using RI.Framework.StateMachines.Caches;
 using RI.Framework.StateMachines.Dispatchers;
 using RI.Framework.StateMachines.Resolvers;
@@ -48,7 +47,6 @@ namespace RI.Framework.StateMachines
 			this.Cache = new DefaultStateCache();
 
 			this.CachingEnabled = true;
-			this.LoggingEnabled = true;
 		}
 
 		#endregion
@@ -65,8 +63,6 @@ namespace RI.Framework.StateMachines
 		private IStateDispatcher _dispatcher;
 
 		private bool _isLocked;
-
-		private bool _loggingEnabled;
 
 		private IStateResolver _resolver;
 
@@ -184,35 +180,6 @@ namespace RI.Framework.StateMachines
 					}
 
 					this._dispatcher = value;
-				}
-			}
-		}
-
-		/// <summary>
-		///     Gets or sets whether logging, using <see cref="LogLocator" />, is enabled.
-		/// </summary>
-		/// <value>
-		///     true if logging is enabled, false otherwise.
-		/// </value>
-		/// <remarks>
-		///     <para>
-		///         The default value is true.
-		///     </para>
-		/// </remarks>
-		public bool LoggingEnabled
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					return this._loggingEnabled;
-				}
-			}
-			set
-			{
-				lock (this.SyncRoot)
-				{
-					this._loggingEnabled = value;
 				}
 			}
 		}
@@ -353,7 +320,6 @@ namespace RI.Framework.StateMachines
 			clone.Cache = this.Cache?.CloneOrSelf();
 
 			clone.CachingEnabled = this.CachingEnabled;
-			clone.LoggingEnabled = this.LoggingEnabled;
 		}
 
 		#endregion

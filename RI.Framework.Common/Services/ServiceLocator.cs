@@ -39,7 +39,6 @@ namespace RI.Framework.Services
 	/// By default, if <see cref="Translate"/> is not handled, <see cref="CompositionContainer.GetNameOfType"/> is used to translate a type to a name.
 	/// </para>
 	/// </remarks>
-	/// TODO: Add BindToDependencyResolver
 	/// <threadsafety static="true" instance="true" />
 	public static class ServiceLocator
 	{

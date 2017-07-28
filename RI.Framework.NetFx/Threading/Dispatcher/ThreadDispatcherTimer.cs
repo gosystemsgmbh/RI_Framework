@@ -98,6 +98,8 @@ namespace RI.Framework.Threading.Dispatcher
 
 			this.Timer = null;
 			this.PreviousOperation = null;
+
+			this.Dispatcher.AddKeepAlive(this);
 		}
 
 		/// <summary>
@@ -288,6 +290,8 @@ namespace RI.Framework.Threading.Dispatcher
 				this.ExecutionCount = 0;
 				this.MissCount = 0;
 
+				this.Dispatcher.AddKeepAlive(this);
+
 				this.Timer = new Timer(x =>
 				{
 					ThreadDispatcherTimer self = (ThreadDispatcherTimer)x;
@@ -313,7 +317,7 @@ namespace RI.Framework.Threading.Dispatcher
 							isRunning = self.Dispatcher.IsRunning;
 							if (isRunning)
 							{
-								self.PreviousOperation = self.Dispatcher.Post(self.Priority, self.Options, self.Action, self.Parameters);
+								self.PreviousOperation = self.Dispatcher.Post(self.ExecutionContext, self.Priority, self.Options, self.Action, self.Parameters);
 								self.ExecutionCount++;
 							}
 						}
@@ -342,6 +346,8 @@ namespace RI.Framework.Threading.Dispatcher
 		{
 			lock (this.SyncRoot)
 			{
+				this.Dispatcher?.RemoveKeepAlive(this);
+
 				this.Timer?.Dispose();
 				this.Timer = null;
 

@@ -6,7 +6,6 @@ using System.Text;
 using RI.Framework.Collections.DirectLinq;
 using RI.Framework.IO.INI;
 using RI.Framework.IO.Paths;
-using RI.Framework.Services.Logging;
 using RI.Framework.Services.Resources.Converters;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
@@ -22,7 +21,7 @@ namespace RI.Framework.Services.Resources.Sources
 	///         See <see cref="IResourceSet" /> and <see cref="DirectoryResourceSource" /> for more details.
 	///     </para>
 	/// </remarks>
-	public sealed class DirectoryResourceSet : IResourceSet, ILogSource
+	public sealed class DirectoryResourceSet : LogSource, IResourceSet
 	{
 		#region Constants
 

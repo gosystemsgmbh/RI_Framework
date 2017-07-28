@@ -114,6 +114,7 @@
     <Compile Include="Services\Messaging\IMessageService.cs" />
     <Compile Include="Services\Messaging\Message.cs" />
     <Compile Include="Services\Messaging\MessageService.cs" />
+    <Compile Include="Services\Messaging\MessageLocator.cs" />
     <Compile Include="Services\Messaging\_NamespaceDoc.cs" />
     <Compile Include="Services\Regions\Adapters\_NamespaceDoc.cs" />
     <Compile Include="Services\Regions\Adapters\IRegionAdapter.cs" />
@@ -141,6 +142,7 @@
     <Compile Include="Services\Resources\Sources\_NamespaceDoc.cs" />
     <Compile Include="Services\Resources\_NamespaceDoc.cs" />
     <Compile Include="Services\Settings\Converters\_NamespaceDoc.cs" />
+    <Compile Include="Services\Settings\SettingLocator.cs" />
     <Compile Include="Services\Settings\Storages\AppConfigSettingStorage.cs" />
     <Compile Include="Services\Settings\Storages\CommandLineSettingStorage.cs" />
     <Compile Include="Services\Settings\Storages\EnvironmentVariableSettingStorage.cs" />

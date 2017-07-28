@@ -221,11 +221,6 @@ Composition
 Services
 --------
 
- # (Common) Logging: Pluggable logging
- # (.NET) Cleanup all service locators
- # (.NET) Create MessageLocator
- # (.NET) Create SettingLocator
-
  - (Unity) IDispatcherOperation: OnXXX callbacks
  - (Unity) IDispatcherOperation: Stacking of all OnXXX callbacks
   

@@ -9,7 +9,6 @@ using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Composition.Catalogs;
 using RI.Framework.Composition.Model;
 using RI.Framework.Services;
-using RI.Framework.Services.Logging;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Logging;
@@ -241,15 +240,6 @@ namespace RI.Framework.Composition
 	///         They can also share the same exports and <see cref="CompositionCatalog" />s.
 	///     </para>
 	///     <para>
-	///         <b> LOGGING </b>
-	///     </para>
-	///     <para>
-	///         A <see cref="CompositionContainer" /> logs all composition operations.
-	///         <see cref="ILogService" /> is used for logging, obtained through <see cref="LogLocator" />.
-	///         If no <see cref="ILogService" /> is available, no logging is performed.
-	///         If logging is not desired, it can be disabled using <see cref="LoggingEnabled" />.
-	///     </para>
-	///     <para>
 	///         <b> EXPORT OF ALL TYPES </b>
 	///     </para>
 	///     <para>
@@ -311,7 +301,7 @@ namespace RI.Framework.Composition
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	[Export]
-	public sealed class CompositionContainer : IDependencyResolver, IDisposable, ISynchronizable, ILogSource
+	public sealed class CompositionContainer : LogSource, IDependencyResolver, IDisposable, ISynchronizable
 	{
 		#region Constants
 
@@ -668,7 +658,6 @@ namespace RI.Framework.Composition
 			this.ParentContainerCompositionChangedHandler = this.HandleParentContainerCompositionChanged;
 
 			this.AutoDispose = true;
-			this.LoggingEnabled = true;
 
 			this.ParentContainer = null;
 
@@ -722,7 +711,6 @@ namespace RI.Framework.Composition
 		#region Instance Fields
 
 		private bool _autoDispose;
-		private bool _loggingEnabled;
 		private CompositionContainer _parentContainer;
 
 		#endregion
@@ -760,35 +748,6 @@ namespace RI.Framework.Composition
 				lock (this.SyncRoot)
 				{
 					this._autoDispose = value;
-				}
-			}
-		}
-
-		/// <summary>
-		///     Gets or sets whether logging, using <see cref="LogLocator" />, is enabled.
-		/// </summary>
-		/// <value>
-		///     true if logging is enabled, false otherwise.
-		/// </value>
-		/// <remarks>
-		///     <para>
-		///         The default value is true.
-		///     </para>
-		/// </remarks>
-		public bool LoggingEnabled
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					return this._loggingEnabled;
-				}
-			}
-			set
-			{
-				lock (this.SyncRoot)
-				{
-					this._loggingEnabled = value;
 				}
 			}
 		}
@@ -2283,7 +2242,7 @@ namespace RI.Framework.Composition
 
 			foreach (object newInstance in newInstances)
 			{
-				this.Log(LogLevel.Debug, "Type added to container: {0} / {1}", name, newInstance.GetType().FullName);
+				this.Log(LogLevel.Debug, "Type added to container: {0} / {1}", name, newInstance.GetType().AssemblyQualifiedName);
 
 				IExporting exportingInstance = newInstance as IExporting;
 				exportingInstance?.AddedToContainer(name, this);
@@ -2427,7 +2386,7 @@ namespace RI.Framework.Composition
 			{
 				compositionItem.Value.Instances.RemoveWhere(x => !x.Checked).ForEach(x =>
 				{
-					this.Log(LogLevel.Debug, "Instance removed from container: {0} / {1}", compositionItem.Key, x?.Instance?.GetType()?.FullName ?? "[null]");
+					this.Log(LogLevel.Debug, "Instance removed from container: {0} / {1}", compositionItem.Key, x?.Instance?.GetType()?.AssemblyQualifiedName ?? "[null]");
 					(x?.Instance as IExporting)?.RemovedFromContainer(compositionItem.Key, this);
 					if (this.AutoDispose && (!object.ReferenceEquals(x?.Instance, this)))
 					{
@@ -2436,7 +2395,7 @@ namespace RI.Framework.Composition
 				});
 				compositionItem.Value.Types.RemoveWhere(x => !x.Checked).ForEach(x =>
 				{
-					this.Log(LogLevel.Debug, "Type removed from container: {0} / {1}", compositionItem.Key, x?.Instance?.GetType()?.FullName ?? "[null]");
+					this.Log(LogLevel.Debug, "Type removed from container: {0} / {1}", compositionItem.Key, x?.Instance?.GetType()?.AssemblyQualifiedName ?? "[null]");
 					(x?.Instance as IExporting)?.RemovedFromContainer(compositionItem.Key, this);
 					if (this.AutoDispose && (!object.ReferenceEquals(x?.Instance, this)))
 					{
@@ -2446,13 +2405,13 @@ namespace RI.Framework.Composition
 				compositionItem.Value.ResetChecked();
 			}
 
-			IDictionaryExtensions.RemoveWhere(this.Composition, x => (x.Value.Instances.Count == 0) && (x.Value.Types.Count == 0)).ForEach(x => this.Log(LogLevel.Debug, "Removing export: {0}", x));
+			IDictionaryExtensions.RemoveWhere(this.Composition, x => (x.Value.Instances.Count == 0) && (x.Value.Types.Count == 0)).ForEach(x => this.Log(LogLevel.Debug, "Removing export: {0}", x.Key));
 
 			foreach (KeyValuePair<object, HashSet<string>> newInstance in newInstances)
 			{
 				foreach (string name in newInstance.Value)
 				{
-					this.Log(LogLevel.Debug, "Instance added to container: {0} / {1}", name, newInstance.Key.GetType().FullName);
+					this.Log(LogLevel.Debug, "Instance added to container: {0} / {1}", name, newInstance.Key.GetType().AssemblyQualifiedName);
 
 					IExporting exportingInstance = newInstance.Key as IExporting;
 					exportingInstance?.AddedToContainer(name, this);

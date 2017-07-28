@@ -63,6 +63,8 @@ namespace RI.Framework.Threading.Dispatcher
 		/// </summary>
 		~ThreadDispatcherOperation ()
 		{
+			this.Dispatcher?.RemoveKeepAlive(this);
+
 			this.OperationDone?.Close();
 			this.OperationDone = null;
 

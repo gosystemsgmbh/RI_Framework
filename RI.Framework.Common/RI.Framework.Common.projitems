@@ -125,8 +125,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\Filters\PredicateLogFilter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\Filters\SeverityLogFilter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\Filters\_NamespaceDoc.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\ILogSource.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\ILogSourceExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\LogLocator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\ILogService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\LogService.cs" />
@@ -199,7 +197,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Exceptions\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Globalization\CultureInfoExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Logging\ILogger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Logging\ILogSource.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Logging\ILogSourceExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Logging\LogLevel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Logging\LogSource.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Logging\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObjectExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObjectModel\IDependencyResolver.cs" />

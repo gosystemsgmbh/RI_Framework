@@ -4,6 +4,7 @@ using RI.Framework.Composition;
 using RI.Framework.Composition.Model;
 using RI.Framework.Services.Logging;
 using RI.Framework.StateMachines.Resolvers;
+using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.ObjectModel;
 
 using UnityEngine;
@@ -80,6 +81,13 @@ namespace RI.Framework.StateMachines.States
 			this.UseCaching = true;
 			this.UpdateInterval = null;
 		}
+
+
+		/// <inheritdoc />
+		public bool LoggingEnabled { get; set; } = true;
+
+		/// <inheritdoc />
+		public Utilities.Logging.ILogger Logger { get; set; } = LogLocator.Logger;
 
 		#endregion
 

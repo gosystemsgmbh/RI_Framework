@@ -5,7 +5,6 @@ using System.Linq;
 
 using RI.Framework.Collections;
 using RI.Framework.Composition.Model;
-using RI.Framework.Services.Logging;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Logging;
@@ -35,7 +34,7 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 	///     </note>
 	/// </remarks>
 	[Export]
-	public sealed class TriggerMessageHandler : IMessageReceiver, ILogSource
+	public sealed class TriggerMessageHandler : LogSource, IMessageReceiver
 	{
 		#region Instance Constructor/Destructor
 

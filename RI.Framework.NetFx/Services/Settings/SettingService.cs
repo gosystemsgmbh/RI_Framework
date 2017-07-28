@@ -5,7 +5,6 @@ using RI.Framework.Collections;
 using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Composition;
 using RI.Framework.Composition.Model;
-using RI.Framework.Services.Logging;
 using RI.Framework.Services.Settings.Converters;
 using RI.Framework.Services.Settings.Storages;
 using RI.Framework.Utilities;
@@ -29,7 +28,7 @@ namespace RI.Framework.Services.Settings
 	///     </para>
 	/// </remarks>
 	[Export]
-	public sealed class SettingService : ISettingService, IImporting, ILogSource
+	public sealed class SettingService : LogSource, ISettingService, IImporting
 	{
 		#region Instance Constructor/Destructor
 

@@ -56,6 +56,13 @@ namespace RI.Framework.Services.Modularization
 			return instance;
 		}
 
+
+		/// <inheritdoc />
+		public bool LoggingEnabled { get; set; } = true;
+
+		/// <inheritdoc />
+		public Utilities.Logging.ILogger Logger { get; set; } = LogLocator.Logger;
+
 		#endregion
 
 
