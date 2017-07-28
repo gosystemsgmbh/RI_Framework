@@ -38,6 +38,7 @@ namespace RI.Framework.Data.EF.Filter
 		/// <param name="set"> The repository set to filter. </param>
 		/// <param name="customSequence"> The custom sequence of entities to be filtered or null if all entities from <paramref name="set" /> should be filtered. </param>
 		/// <param name="filter"> The filter object passed to the sets filter method. </param>
+		/// <param name="sort"> The sorting object passed to the sets filter method. </param>
 		/// <returns>
 		///     The query provider which does the filtering or null if no filter shall be applied.
 		/// </returns>
@@ -47,6 +48,6 @@ namespace RI.Framework.Data.EF.Filter
 		///         This is also why <see cref="Filter" /> returns an <see cref="IOrderedQueryable" /> instead of an <see cref="IQueryable" />.
 		///     </para>
 		/// </remarks>
-		IOrderedQueryable Filter (RepositoryDbContext repository, RepositoryDbSet set, IEnumerable customSequence, object filter);
+		IOrderedQueryable Filter (RepositoryDbContext repository, RepositoryDbSet set, IEnumerable customSequence, object filter, object sort);
 	}
 }

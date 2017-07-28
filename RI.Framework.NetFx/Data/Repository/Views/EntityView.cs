@@ -87,6 +87,7 @@ namespace RI.Framework.Data.Repository.Views
 			this.PageFilteredCount = 0;
 
 			this.Filter = null;
+			this.Sort = null;
 			this.PageSize = 0;
 			this.PageNumber = 0;
 
@@ -107,6 +108,8 @@ namespace RI.Framework.Data.Repository.Views
 		private bool _allowSelect;
 
 		private object _filter;
+
+		private object _sort;
 
 		private bool _isUpdating;
 
@@ -296,7 +299,7 @@ namespace RI.Framework.Data.Repository.Views
 		///         Note that the filter is applied before pagination is performed.
 		///     </para>
 		///     <para>
-		///         The filter object itself is used by <see cref="IRepositorySet{T}.GetFiltered(object, int, int, out int, out int, out int)" /> and therefore depends on its implementation.
+		///         The filter object itself is used by <see cref="IRepositorySet{T}.GetFiltered(object, object, int, int, out int, out int, out int)" /> and therefore depends on its implementation.
 		///         The filter object itself is not directly used by the view.
 		///     </para>
 		///     <para>
@@ -312,6 +315,41 @@ namespace RI.Framework.Data.Repository.Views
 			set
 			{
 				this._filter = value;
+				this.Update(true);
+			}
+		}
+
+		/// <summary>
+		///     Gets or sets the entity sorting.
+		/// </summary>
+		/// <value>
+		///     The entity sorting.
+		/// </value>
+		/// <remarks>
+		///     <note type="important">
+		///         Changing <see cref="Sort" /> calls <see cref="Update()" /> and resets <see cref="PageNumber" /> to 1 (if current page number is higher than 1).
+		///     </note>
+		///     <para>
+		///         The entity sorting is an arbitrary sorting object which is used to sort the data source before its entities are presented by the view.
+		///         Note that the sorting is applied before pagination is performed.
+		///     </para>
+		///     <para>
+		///         The sorting object itself is used by <see cref="IRepositorySet{T}.GetFiltered(object, object, int, int, out int, out int, out int)" /> and therefore depends on its implementation.
+		///         The sorting object itself is not directly used by the view.
+		///     </para>
+		///     <para>
+		///         The default value is null.
+		///     </para>
+		/// </remarks>
+		public object Sort
+		{
+			get
+			{
+				return this._sort;
+			}
+			set
+			{
+				this._sort = value;
 				this.Update(true);
 			}
 		}
@@ -775,7 +813,7 @@ namespace RI.Framework.Data.Repository.Views
 		///         <see cref="Update()" /> should only be called if fundamental characteristics of the view have changed and which are not automatically handled by the view itself.
 		///     </para>
 		///     <para>
-		///         <see cref="Update()" /> is automatically called by changing the following properties: <see cref="Filter" />, <see cref="PageNumber" />, <see cref="PageSize" />, <see cref="Source" />.
+		///         <see cref="Update()" /> is automatically called by changing the following properties: <see cref="Filter" />, <see cref="Sort" />, <see cref="PageNumber" />, <see cref="PageSize" />, <see cref="Source" />.
 		///     </para>
 		/// </remarks>
 		public void Update ()
@@ -997,7 +1035,7 @@ namespace RI.Framework.Data.Repository.Views
 				int entityFilteredCount = 0;
 				int pageFilteredCount = 0;
 
-				List<TEntity> entities = this.PageNumber == 0 ? new List<TEntity>() : this.Set.GetFiltered(this.Source, this.Filter, this.PageNumber - 1, this.PageSize, out entityTotalCount, out entityFilteredCount, out pageFilteredCount).ToList();
+				List<TEntity> entities = this.PageNumber == 0 ? new List<TEntity>() : this.Set.GetFiltered(this.Source, this.Filter, this.Sort, this.PageNumber - 1, this.PageSize, out entityTotalCount, out entityFilteredCount, out pageFilteredCount).ToList();
 				List<TViewObject> viewObjects = (from x in entities select this.PrepareViewObject(null, x)).ToList();
 
 				int pageTotalCount = this.PageNumber == 0 ? 0 : (this.PageSize == 0 ? 1 : ((entityTotalCount / this.PageSize) + (((entityTotalCount % this.PageSize) == 0) ? 0 : 1)));
@@ -1033,6 +1071,7 @@ namespace RI.Framework.Data.Repository.Views
 				this.OnPropertyChanged(nameof(this.EditedViewObject));
 
 				this.OnPropertyChanged(nameof(this.Filter));
+				this.OnPropertyChanged(nameof(this.Sort));
 				this.OnPropertyChanged(nameof(this.PageSize));
 				this.OnPropertyChanged(nameof(this.PageNumber));
 
