@@ -6,8 +6,7 @@ using RI.Framework.Composition;
 using RI.Framework.Mvvm.View;
 using RI.Framework.Mvvm.ViewModel;
 using RI.Framework.Services;
-using RI.Framework.Services.Logging;
-using RI.Framework.Utilities.Logging;
+using RI.Framework.Utilities.ObjectModel;
 
 namespace RI.Framework.Utilities.Wpf.Markup
 {
@@ -16,61 +15,72 @@ namespace RI.Framework.Utilities.Wpf.Markup
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         The <see cref="InstanceLocator" /> is used in XAML to get instances from <see cref="ServiceLocator" /> and assign them to properties in XAML.
+	///         The <see cref="InstanceLocator" /> is used in XAML to get instances from <see cref="IDependencyResolver" /> and assign them to properties in XAML.
 	///         For example, this can be used to retrieve and attach a view model to a <see cref="FrameworkElement.DataContext" /> in MVVM scenarios.
 	///     </para>
 	///     <para>
 	///         The instance to obtain can be either specified by its name, using the <see cref="Name" /> property, or its type, using the <see cref="Type" /> property.
-	///         See <see cref="ServiceLocator" /> for more details.
+	///         The used <see cref="IDependencyResolver"/> can also explicitly defined through the <see cref="Resolver"/> property.
 	///     </para>
+	/// <para>
+	/// The used <see cref="IDependencyResolver"/> is determined in the following order:
+	/// If <see cref="Resolver"/> is not null, that instance is used.
+	/// If <see cref="DefaultResolver"/> is not null, that instance is used.
+	/// <see cref="ServiceLocator"/> is used if neither <see cref="Resolver"/> nor <see cref="DefaultResolver"/> is set.
+	/// </para>
 	/// </remarks>
 	[MarkupExtensionReturnType(typeof(object))]
-	public sealed class InstanceLocator : MarkupExtension, ILogSource
+	public sealed class InstanceLocator : MarkupExtension
 	{
+		/// <summary>
+		/// Gets or sets the default dependency resolver to use.
+		/// </summary>
+		/// <value>
+		/// The default dependency resolver to use.
+		/// </value>
+		/// <remarks>
+		/// <para>
+		/// The default value is null.
+		/// </para>
+		/// </remarks>
+		public static IDependencyResolver DefaultResolver { get; set; }
+
 		#region Static Methods
 
-		private static object GetValue (string name)
+		private object GetValue (string name)
 		{
-			if (name == null)
+			if (name.IsNullOrEmptyOrWhitespace())
 			{
 				return null;
 			}
 
-			if (name.IsEmptyOrWhitespace())
-			{
-				return null;
-			}
-
-			object value = ServiceLocator.GetInstance(name);
-			InstanceLocator.ProcessValue(value);
-			return value;
+			return this.UsedResolver.GetInstance(name);
 		}
 
-		private static object GetValue (Type type)
+		private object GetValue (Type type)
 		{
 			if (type == null)
 			{
 				return null;
 			}
 
-			object value = ServiceLocator.GetInstance(type);
-			InstanceLocator.ProcessValue(value);
-			return value;
+			return this.UsedResolver.GetInstance(type);
 		}
 
-		private static void ProcessValue (object value)
+		private void ProcessValue (object value)
 		{
 			if (value == null)
 			{
 				return;
 			}
 
-			CompositionContainer container = ServiceLocator.GetInstance<CompositionContainer>();
+			CompositionContainer container = this.UsedResolver.GetInstance<CompositionContainer>();
 
 			if (container != null)
 			{
 				container.ResolveImports(value, CompositionFlags.Normal);
 			}
+
 			if (value is IViewModel)
 			{
 				IViewModel viewModel = (IViewModel)value;
@@ -79,6 +89,7 @@ namespace RI.Framework.Utilities.Wpf.Markup
 					viewModel.Initialize();
 				}
 			}
+
 			if (value is IView)
 			{
 				IView view = (IView)value;
@@ -97,21 +108,23 @@ namespace RI.Framework.Utilities.Wpf.Markup
 					{
 						container.ResolveImports(frameworkElement.DataContext, CompositionFlags.Normal);
 					}
-				}
-				if (frameworkElement.DataContext is IViewModel)
-				{
-					IViewModel viewModel = (IViewModel)frameworkElement.DataContext;
-					if (!viewModel.IsInitialized)
+
+					if (frameworkElement.DataContext is IViewModel)
 					{
-						viewModel.Initialize();
+						IViewModel viewModel = (IViewModel)frameworkElement.DataContext;
+						if (!viewModel.IsInitialized)
+						{
+							viewModel.Initialize();
+						}
 					}
-				}
-				if (frameworkElement.DataContext is IView)
-				{
-					IView view = (IView)frameworkElement.DataContext;
-					if (!view.IsInitialized)
+
+					if (frameworkElement.DataContext is IView)
 					{
-						view.Initialize();
+						IView view = (IView)frameworkElement.DataContext;
+						if (!view.IsInitialized)
+						{
+							view.Initialize();
+						}
 					}
 				}
 			}
@@ -129,6 +142,7 @@ namespace RI.Framework.Utilities.Wpf.Markup
 		/// </summary>
 		public InstanceLocator ()
 		{
+			this.Resolver = null;
 			this.Name = null;
 			this.Type = null;
 		}
@@ -141,21 +155,30 @@ namespace RI.Framework.Utilities.Wpf.Markup
 		#region Instance Properties/Indexer
 
 		/// <summary>
-		///     The name of the instance to obtain.
+		/// Gets or sets the name of the instance to obtain.
 		/// </summary>
+		/// <value>
+		/// The name of the instance to obtain.
+		/// </value>
 		public string Name { get; set; }
 
 		/// <summary>
-		///     The type of the instance to obtain.
+		/// Gets or sets the type of the instance to obtain.
 		/// </summary>
+		/// <value>
+		/// The type of the instance to obtain.
+		/// </value>
 		public Type Type { get; set; }
 
+		/// <summary>
+		/// Gets or sets the dependency resolver to use.
+		/// </summary>
+		/// <value>
+		/// The dependency resolver to use.
+		/// </value>
+		public IDependencyResolver Resolver { get; set; }
 
-		/// <inheritdoc />
-		public bool LoggingEnabled { get; set; } = true;
-
-		/// <inheritdoc />
-		public ILogger Logger { get; set; } = LogLocator.Logger;
+		private IDependencyResolver UsedResolver => this.Resolver ?? InstanceLocator.DefaultResolver ?? ServiceLocator.Resolver;
 
 		#endregion
 
@@ -167,18 +190,15 @@ namespace RI.Framework.Utilities.Wpf.Markup
 		/// <inheritdoc />
 		public override object ProvideValue (IServiceProvider serviceProvider)
 		{
-			object value = InstanceLocator.GetValue(this.Name) ?? InstanceLocator.GetValue(this.Type);
-			if (value == null)
-			{
-				this.Log(LogLevel.Warning, "No value available while trying obtain instance: Name={0}, Type={1}", this.Name ?? "[null]", this.Type?.Name ?? "[null]");
-			}
-
 			IProvideValueTarget targetProvider = serviceProvider.GetService(typeof(IProvideValueTarget)) as IProvideValueTarget;
 			if (targetProvider != null)
 			{
 				object target = targetProvider.TargetObject;
-				InstanceLocator.ProcessValue(target);
+				this.ProcessValue(target);
 			}
+
+			object value = this.GetValue(this.Name) ?? this.GetValue(this.Type);
+			this.ProcessValue(value);
 
 			return value;
 		}

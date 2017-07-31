@@ -29,6 +29,16 @@ namespace RI.Framework.Services.Regions
 	[Export]
 	public sealed class RegionService : LogSource, IRegionService, IImporting
 	{
+		/// <summary>
+		/// Gets the used string comparer used to compare region names for equality.
+		/// </summary>
+		/// <value>
+		/// The used string comparer used to compare region names for equality.
+		/// </value>
+		public static readonly StringComparerEx RegionNameComparer = StringComparerEx.InvariantCultureIgnoreCase;
+
+
+
 		#region Instance Constructor/Destructor
 
 		/// <summary>
@@ -39,7 +49,7 @@ namespace RI.Framework.Services.Regions
 			this.AdaptersUpdated = new List<IRegionAdapter>();
 			this.AdaptersManual = new List<IRegionAdapter>();
 
-			this.RegionDictionary = new Dictionary<string, Tuple<object, IRegionAdapter>>(StringComparerEx.InvariantCultureIgnoreCase);
+			this.RegionDictionary = new Dictionary<string, Tuple<object, IRegionAdapter>>(RegionService.RegionNameComparer);
 		}
 
 		#endregion

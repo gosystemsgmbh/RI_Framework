@@ -61,7 +61,11 @@
     <Compile Include="Utilities\Wpf\Converters\InvertedObjectVisibilityConverter.cs" />
     <Compile Include="Utilities\Wpf\Converters\NormalObjectVisibilityConverter.cs" />
     <Compile Include="Utilities\Wpf\DispatcherAwaiter.cs" />
-    <Compile Include="Utilities\Wpf\Markup\EventBinder.cs" />
+    <Compile Include="Utilities\Wpf\Markup\EventBinder.tt.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EventBinder.tt</DependentUpon>
+    </Compile>
     <Compile Include="Mvvm\ViewModel\NotificationObject.cs" />
     <Compile Include="Mvvm\ViewModel\DelegateCommand.cs" />
     <Compile Include="Utilities\Wpf\Markup\InstanceLocator.cs" />
@@ -102,7 +106,15 @@
       <Name>RI.Framework.Windows.Shared</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Utilities\Wpf\Markup\EventBinder.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>EventBinder.tt.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>@"$(SolutionDir)_Input\VersionUpdater.exe" "$(ProjectDir)Properties" "nr" "file" "$(SolutionDir)RI.Framework.Property.Version.txt" "$(SolutionDir)RI.Framework.Property.Company.txt" "$(SolutionDir)RI.Framework.Property.Copyright.txt"</PreBuildEvent>

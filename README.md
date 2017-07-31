@@ -2,9 +2,6 @@
 
 ## 1.1.0.0
 
-- [ ] Reduce dependencies
-  - [ ] InstanceLocator
-  - [ ] RegionBinder
 - [ ] Cleanup
   - [ ] Warnings
   - [ ] TODOs

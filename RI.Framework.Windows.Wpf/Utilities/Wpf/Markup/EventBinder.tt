@@ -1,0 +1,132 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".tt.cs" #>
+
+<#
+string[][] bindings = new string[][]
+{
+	new string[] { "Closing",					"Window",		"Closing",						"CancelEventHandler"		},
+	new string[] { "PreviewMouseDoubleClick",	"Control",		"PreviewMouseDoubleClick",		"MouseButtonEventHandler"	},
+	new string[] { "MouseDoubleClick",			"Control",		"MouseDoubleClick",				"MouseButtonEventHandler"	},
+	new string[] { "PreviewMouseDown",			"UIElement",	"PreviewMouseDown",				"MouseButtonEventHandler"	},
+	new string[] { "PreviewMouseUp",			"UIElement",	"PreviewMouseUp",				"MouseButtonEventHandler"	},
+	new string[] { "MouseDown",					"UIElement",	"MouseDown",					"MouseButtonEventHandler"	},
+	new string[] { "MouseUp",					"UIElement",	"MouseUp",						"MouseButtonEventHandler"	},
+	new string[] { "PreviewKeyDown",			"UIElement",	"PreviewKeyDown",				"KeyEventHandler"			},
+	new string[] { "PreviewKeyUp",				"UIElement",	"PreviewKeyUp",					"KeyEventHandler"			},
+	new string[] { "KeyDown",					"UIElement",	"KeyDown",						"KeyEventHandler"			},
+	new string[] { "KeyUp",						"UIElement",	"KeyUp",						"KeyEventHandler"			},
+};
+#>
+
+using System.ComponentModel;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+
+namespace RI.Framework.Utilities.Wpf.Markup
+{
+	/// <summary>
+	///     Provides attached properties to bind specific events of WPF objects to commands.
+	/// </summary>
+	/// <remarks>
+	///     <para>
+	///         The attached properties provided by this class can be used to bind various events to <see cref="ICommand" />s, usually provided by the view model.
+	///     </para>
+	/// </remarks>
+	public static class EventBinder
+	{
+
+<#
+foreach(string[] binding in bindings)
+{
+string name = binding[0];
+string type = binding[1];
+string evt = binding[2];
+string arg = binding[3];
+#>
+
+		/// <summary>
+		///     Binds the <see cref="<#=type#>.<#=evt#>" /> event to a command.
+		/// </summary>
+		public static readonly DependencyProperty <#=name#>EventProperty = DependencyProperty.RegisterAttached("<#=name#>Event", typeof(ICommand), typeof(EventBinder), new FrameworkPropertyMetadata(EventBinder.On<#=type#><#=evt#>EventChanged));
+
+		private static <#=arg#> <#=type#><#=evt#>EventHandler { get; set; } = (s, e) =>
+		{
+			ICommand command = EventBinder.Get<#=name#>Event(s as DependencyObject);
+			if (command != null)
+			{
+				if (command.CanExecute(e))
+				{
+					command.Execute(e);
+				}
+			}
+		};
+
+		/// <summary>
+		///     Gets the command bound to the <see cref="<#=type#>.<#=evt#>" /> event.
+		/// </summary>
+		/// <param name="obj"> The container. </param>
+		/// <returns>
+		///     The command bound to the <see cref="<#=type#>.<#=evt#>" /> event.
+		/// </returns>
+		/// <remarks>
+		///     <note type="note">
+		///         This method is for supporting the XAML designer and not intended to be used by your code.
+		///     </note>
+		/// </remarks>
+		public static ICommand Get<#=name#>Event (DependencyObject obj)
+		{
+			return obj?.GetValue(EventBinder.<#=name#>EventProperty) as ICommand;
+		}
+
+		/// <summary>
+		///     Sets the command bound to the <see cref="<#=type#>.<#=evt#>" /> event.
+		/// </summary>
+		/// <param name="obj"> The container. </param>
+		/// <param name="value"> The command to bind to the <see cref="<#=type#>.<#=evt#>" /> event. </param>
+		/// <remarks>
+		///     <note type="note">
+		///         This method is for supporting the XAML designer and not intended to be used by your code.
+		///     </note>
+		/// </remarks>
+		public static void Set<#=name#>Event (DependencyObject obj, ICommand value)
+		{
+			obj?.SetValue(EventBinder.<#=name#>EventProperty, value);
+		}
+
+		private static void On<#=type#><#=evt#>EventChanged (DependencyObject obj, DependencyPropertyChangedEventArgs args)
+		{
+			ICommand oldCommand = args.OldValue as ICommand;
+			ICommand newCommand = args.NewValue as ICommand;
+			<#=type#> control = obj as <#=type#>;
+
+			if (control == null)
+			{
+				return;
+			}
+
+			if (object.ReferenceEquals(oldCommand, newCommand))
+			{
+				return;
+			}
+
+			if (oldCommand != null)
+			{
+				control.<#=evt#> -= EventBinder.<#=type#><#=evt#>EventHandler;
+			}
+
+			if (newCommand != null)
+			{
+				control.<#=evt#> += EventBinder.<#=type#><#=evt#>EventHandler;
+			}
+		}
+
+<#
+}
+#>
+	}
+}
