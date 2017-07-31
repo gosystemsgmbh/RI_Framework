@@ -12,38 +12,43 @@ namespace RI.Framework.Data.Database
 	public enum DatabaseState
 	{
 		/// <summary>
-		///     The database is not initialized.
+		/// The database is not initialized.
 		/// </summary>
 		Uninitialized = 0,
 
 		/// <summary>
-		///     The database is initialized and ready for use.
+		/// The database is initialized and ready for use, using the newest known/supported version.
 		/// </summary>
-		Ready = 1,
+		ReadyNew = 1,
+
+		/// <summary>
+		/// The database is initialized and ready for use, using an older known/supported version.
+		/// </summary>
+		ReadyOld = 2,
 
 		/// <summary>
 		///     The database is initialized but is not ready for use because it was just created and requires an upgrade.
 		/// </summary>
-		New = 2,
+		New = 3,
 
 		/// <summary>
 		///     The database is initialized but is not ready for use because its version is old and requires an upgrade.
 		/// </summary>
-		Old = 3,
+		Old = 4,
 
 		/// <summary>
-		///     The database is initialized but is not ready for use because its version is newer than the newest version known/supported by the used <see cref="IDatabaseManager" />.
+		///     The database is initialized but is not ready for use because its version is newer than the newest version known/supported.
 		/// </summary>
-		TooNew = 4,
+		TooNew = 5,
 
 		/// <summary>
-		///     The database is initialized but is not ready for use because its version is too old and cannot be upgraded by the used <see cref="IDatabaseManager" />.
+		///     The database is initialized but is not ready for use because its version is too old and cannot be upgraded.
 		/// </summary>
-		TooOld = 5,
+		TooOld = 6,
 
 		/// <summary>
 		///     The database is initialized but is not ready for use because it is damaged or invalid.
 		/// </summary>
-		DamagedOrInvalid = 6,
+		DamagedOrInvalid = 7,
 	}
 }
