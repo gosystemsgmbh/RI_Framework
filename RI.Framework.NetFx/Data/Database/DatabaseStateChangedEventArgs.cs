@@ -1,8 +1,5 @@
 ﻿using System;
 
-
-
-
 namespace RI.Framework.Data.Database
 {
 	/// <summary>

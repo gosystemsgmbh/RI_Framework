@@ -6,7 +6,7 @@ namespace RI.Framework.Data.Database.Versioning
 {
 	public interface IDatabaseVersionDetector : ILogSource
 	{
-		int Detect (IDatabaseManager manager);
+		bool Detect (IDatabaseManager manager, out DatabaseState? state, out int version);
 	}
 
 	public interface IDatabaseVersionDetector<TConnection, TConnectionStringBuilder, TManager> : IDatabaseVersionDetector
@@ -14,6 +14,6 @@ namespace RI.Framework.Data.Database.Versioning
 		where TConnectionStringBuilder : DbConnectionStringBuilder
 		where TManager : IDatabaseManager<TConnection, TConnectionStringBuilder, TManager>
 	{
-		int Detect (TManager manager);
+		bool Detect (TManager manager, out DatabaseState? state, out int version);
 	}
 }

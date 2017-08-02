@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
@@ -18,11 +19,15 @@ namespace RI.Framework.Data.Database
 		where TManager : DatabaseManager<TConnection, TConnectionStringBuilder, TManager, TConfiguration>
 		where TConfiguration : IDatabaseManagerConfiguration<TConnection, TConnectionStringBuilder, TManager>, new()
 	{
-		public IDatabaseManagerConfiguration<TConnection, TConnectionStringBuilder, TManager> Configuration { get; }
+		public TConfiguration Configuration { get; }
+		IDatabaseManagerConfiguration<TConnection, TConnectionStringBuilder, TManager> IDatabaseManager<TConnection, TConnectionStringBuilder, TManager>.Configuration => this.Configuration;
 		IDatabaseManagerConfiguration IDatabaseManager.Configuration => this.Configuration;
 
 		public DatabaseState State { get; private set; }
 		public int Version { get; private set; }
+
+		public DatabaseState InitialState { get; private set; }
+		public int InitialVersion { get; private set; }
 
 		private List<TConnection> TrackedConnections { get; }
 		private StateChangeEventHandler ConnectionStateChangedHandler { get; }
@@ -33,7 +38,8 @@ namespace RI.Framework.Data.Database
 		protected abstract bool SupportsCleanupImpl { get; }
 		protected abstract bool SupportsBackupImpl { get; }
 		protected abstract bool SupportsRestoreImpl { get; }
-		protected abstract string DebugDetails { get; }
+
+		protected virtual string DebugDetails => string.Format(CultureInfo.InvariantCulture, "{0}; State={1}; Version={2}; MinVersion={3}; MaxVersion={4}; Connections={5}; ConnectionString=[{6}]", this.GetType().Name, this.State, this.Version, this.MinVersion, this.MaxVersion, this.TrackedConnections.Count, this?.Configuration.ConnectionString?.ConnectionString ?? "[null]");
 
 		public bool SupportsConnectionTracking => this.SupportsConnectionTrackingImpl;
 		public bool SupportsReadOnly => this.SupportsReadOnlyImpl;
@@ -42,7 +48,7 @@ namespace RI.Framework.Data.Database
 		public bool SupportsBackup => this.SupportsBackupImpl && this.Configuration.BackupCreator != null;
 		public bool SupportsRestore => this.SupportsRestoreImpl && (this.Configuration.BackupCreator?.SupportsRestore ?? false);
 
-		public bool IsReady => (this.State == DatabaseState.ReadyNew) || (this.State == DatabaseState.ReadyOld);
+		public bool IsReady => (this.State == DatabaseState.ReadyNew) || (this.State == DatabaseState.ReadyOld) || (this.State == DatabaseState.ReadyUnknown);
 		public int MinVersion => this.SupportsUpgrade ? this.Configuration.VersionUpgrader.MinVersion : -1;
 		public int MaxVersion => this.SupportsUpgrade ? this.Configuration.VersionUpgrader.MaxVersion : -1;
 		public bool CanUpgrade => this.SupportsUpgrade && (this.Version >= 0) && (this.Version < this.MaxVersion);
@@ -79,14 +85,16 @@ namespace RI.Framework.Data.Database
 		{
 			this.Configuration = new TConfiguration();
 
-			this.State = DatabaseState.Uninitialized;
-			this.Version = -1;
-
 			this.TrackedConnections = new List<TConnection>();
 			this.ConnectionStateChangedHandler = this.ConnectionStateChangedMethod;
 
 			((ILogSource)this).Logger = null;
 			((ILogSource)this).LoggingEnabled = true;
+
+			this.InitialState = DatabaseState.Uninitialized;
+			this.InitialVersion = -1;
+
+			this.SetStateAndVersion(DatabaseState.Uninitialized, -1);
 		}
 
 		~DatabaseManager ()
@@ -127,28 +135,97 @@ namespace RI.Framework.Data.Database
 
 
 
-		protected void PrepareConfiguration ()
+		protected virtual void PrepareConfiguration ()
 		{
-			//TODO: Implement
-			this.Configuration.VerifyConfiguration();
-			this.Configuration.InheritLogger();
+			this.PrepareConfigurationImpl();
 		}
-		protected void DetectVersionAndState ()
+		protected void DetectStateAndVersion ()
 		{
-			//TODO: Implement
-			this.Version = this.Configuration.VersionDetector.Detect(this);
+			DatabaseState? state;
+			int version;
+
+			bool valid = this.DetectStateAndVersionImpl(out state, out version);
+
+			if ((!valid) || (version < 0) || (state.GetValueOrDefault(DatabaseState.Uninitialized) == DatabaseState.DamagedOrInvalid) || (state.GetValueOrDefault(DatabaseState.ReadyUnknown) == DatabaseState.DamagedOrInvalid))
+			{
+				state = DatabaseState.DamagedOrInvalid;
+				version = -1;
+			}
+			else if (!state.HasValue)
+			{
+				if (this.SupportsUpgrade)
+				{
+					if (version == 0)
+					{
+						state = DatabaseState.New;
+					}
+					else if (version < this.MinVersion)
+					{
+						state = DatabaseState.TooOld;
+					}
+					else if((version >= this.MinVersion) && (version < this.MaxVersion))
+					{
+						state = DatabaseState.ReadyOld;
+					}
+					else if (version == this.MaxVersion)
+					{
+						state = DatabaseState.ReadyNew;
+					}
+					else if (version > this.MaxVersion)
+					{
+						state = DatabaseState.TooNew;
+					}
+					else
+					{
+						state = DatabaseState.ReadyUnknown;
+					}
+				}
+				else
+				{
+					state = version == 0 ? DatabaseState.Unavailable : DatabaseState.ReadyUnknown;
+				}
+			}
+
+			this.SetStateAndVersion(state.Value, version);
 		}
 
+		private void SetStateAndVersion (DatabaseState state, int version)
+		{
+			DatabaseState oldState = this.State;
+			int oldVersion = this.Version;
+
+			this.State = state;
+			this.Version = version;
+
+			if (oldState != state)
+			{
+				this.Log(LogLevel.Information, "Database state changed: {0} -> {1}: {2}", oldState, state, this.DebugDetails);
+				this.OnStateChanged(oldState, state);
+			}
+
+			if (oldVersion != version)
+			{
+				this.Log(LogLevel.Information, "Database version changed: {0} -> {1}: {2}", oldVersion, version, this.DebugDetails);
+				this.OnVersionChanged(oldVersion, version);
+			}
+		}
 		private void ConnectionStateChangedMethod (object sender, StateChangeEventArgs e)
 		{
-			TConnection connection = (TConnection)sender;
-
-			//TODO: Raise event for handling connection state changes
+			TConnection connection = sender as TConnection;
+			if (connection == null)
+			{
+				return;
+			}
 
 			if ((e.CurrentState == ConnectionState.Broken) || (e.CurrentState == ConnectionState.Closed))
 			{
 				connection.StateChange -= this.ConnectionStateChangedHandler;
 				this.TrackedConnections.Remove(connection);
+			}
+
+			if (e.OriginalState != e.CurrentState)
+			{
+				this.OnConnectionChanged(connection, e.OriginalState, e.CurrentState);
 			}
 		}
 		public void CloseTrackedConnections ()
@@ -178,11 +255,92 @@ namespace RI.Framework.Data.Database
 			return new List<TConnection>(this.TrackedConnections ?? new List<TConnection>());
 		}
 
+		public event EventHandler<DatabaseStateChangedEventArgs> StateChanged;
+		public event EventHandler<DatabaseVersionChangedEventArgs> VersionChanged;
+		public event EventHandler<DatabaseConnectionChangedEventArgs<TConnection>> ConnectionChanged
+		{
+			add
+			{
+				this.ConnectionChangedInternal2 += value;
+			}
+			remove
+			{
+				this.ConnectionChangedInternal2 -= value;
+			}
+		}
+		event EventHandler<DatabaseConnectionChangedEventArgs> IDatabaseManager.ConnectionChanged
+		{
+			add
+			{
+				this.ConnectionChangedInternal1 += value;
+			}
+			remove
+			{
+				this.ConnectionChangedInternal1 -= value;
+			}
+		}
+		private event EventHandler<DatabaseConnectionChangedEventArgs> ConnectionChangedInternal1;
+		private event EventHandler<DatabaseConnectionChangedEventArgs<TConnection>> ConnectionChangedInternal2;
+		public event EventHandler<DatabaseConnectionCreatedEventArgs<TConnection>> ConnectionCreated
+		{
+			add
+			{
+				this.ConnectionCreatedInternal2 += value;
+			}
+			remove
+			{
+				this.ConnectionCreatedInternal2 -= value;
+			}
+		}
+		event EventHandler<DatabaseConnectionCreatedEventArgs> IDatabaseManager.ConnectionCreated
+		{
+			add
+			{
+				this.ConnectionCreatedInternal1 += value;
+			}
+			remove
+			{
+				this.ConnectionCreatedInternal1 -= value;
+			}
+		}
+		private event EventHandler<DatabaseConnectionCreatedEventArgs> ConnectionCreatedInternal1;
+		private event EventHandler<DatabaseConnectionCreatedEventArgs<TConnection>> ConnectionCreatedInternal2;
+
+		protected virtual void OnStateChanged (DatabaseState oldState, DatabaseState newState)
+		{
+			this.StateChanged?.Invoke(this, new DatabaseStateChangedEventArgs(oldState, newState));
+		}
+		protected virtual void OnVersionChanged (int oldVersion, int newVersion)
+		{
+			this.VersionChanged?.Invoke(this, new DatabaseVersionChangedEventArgs(oldVersion, newVersion));
+		}
+		protected virtual void OnConnectionChanged (TConnection connection, ConnectionState oldState, ConnectionState newState)
+		{
+			DatabaseConnectionChangedEventArgs<TConnection> args = new DatabaseConnectionChangedEventArgs<TConnection>(connection, oldState, newState);
+			this.ConnectionChangedInternal1?.Invoke(this, args);
+			this.ConnectionChangedInternal2?.Invoke(this, args);
+		}
+		protected virtual void OnConnectionCreated (TConnection connection)
+		{
+			DatabaseConnectionCreatedEventArgs<TConnection> args = new DatabaseConnectionCreatedEventArgs<TConnection>(connection);
+			this.ConnectionCreatedInternal1?.Invoke(this, args);
+			this.ConnectionCreatedInternal2?.Invoke(this, args);
+		}
 
 
 
 
 
+
+		protected virtual bool DetectStateAndVersionImpl (out DatabaseState? state, out int version)
+		{
+			return this.Configuration.VersionDetector.Detect(this, out state, out version);
+		}
+		protected virtual void PrepareConfigurationImpl ()
+		{
+			this.Configuration.VerifyConfiguration();
+			this.Configuration.InheritLogger();
+		}
 		protected virtual void InitializeImpl ()
 		{
 		}
@@ -219,7 +377,10 @@ namespace RI.Framework.Data.Database
 		{
 			this.Log(LogLevel.Information, "Initializing database: {0}", this.DebugDetails);
 
-			this.Close();
+			if (this.State != DatabaseState.Uninitialized)
+			{
+				this.Close();
+			}
 
 			GC.ReRegisterForFinalize(this);
 
@@ -227,7 +388,10 @@ namespace RI.Framework.Data.Database
 
 			this.InitializeImpl();
 
-			this.DetectVersionAndState();
+			this.DetectStateAndVersion();
+
+			this.InitialState = this.State;
+			this.InitialVersion = this.Version;
 		}
 		protected void Dispose (bool disposing)
 		{
@@ -237,8 +401,10 @@ namespace RI.Framework.Data.Database
 
 			this.CloseTrackedConnections();
 
-			this.State = DatabaseState.Uninitialized;
-			this.Version = -1;
+			this.InitialState = DatabaseState.Uninitialized;
+			this.InitialVersion = -1;
+
+			this.SetStateAndVersion(DatabaseState.Uninitialized, -1);
 		}
 		public TConnection CreateConnection (bool readOnly, bool track)
 		{
@@ -267,13 +433,15 @@ namespace RI.Framework.Data.Database
 				connection.StateChange += this.ConnectionStateChangedHandler;
 			}
 
+			this.OnConnectionCreated(connection);
+
 			return connection;
 		}
 		public void Upgrade (int version)
 		{
-			if (!this.IsReady)
+			if ((!this.IsReady) && (this.State != DatabaseState.New))
 			{
-				throw new InvalidOperationException(this.GetType().Name + " must be in a ready state to perform an upgrade, current state is " + this.State + ".");
+				throw new InvalidOperationException(this.GetType().Name + " must be in a ready state or the new state to perform an upgrade, current state is " + this.State + ".");
 			}
 
 			if (!this.SupportsUpgrade)
@@ -302,13 +470,17 @@ namespace RI.Framework.Data.Database
 			{
 				this.UpgradeImpl(version);
 
-				this.DetectVersionAndState();
+				this.DetectStateAndVersion();
 
 				if (!this.IsReady)
 				{
 					break;
 				}
 			}
+		}
+		public void Upgrade ()
+		{
+			this.Upgrade(this.MaxVersion);
 		}
 		public void Backup (FilePath backupFile)
 		{
@@ -336,7 +508,7 @@ namespace RI.Framework.Data.Database
 
 			this.BackupImpl(backupFile);
 
-			this.DetectVersionAndState();
+			this.DetectStateAndVersion();
 		}
 		public void Restore (FilePath backupFile)
 		{
@@ -350,9 +522,9 @@ namespace RI.Framework.Data.Database
 				throw new InvalidPathArgumentException(nameof(backupFile));
 			}
 
-			if (!this.IsReady)
+			if (this.State == DatabaseState.Uninitialized)
 			{
-				throw new InvalidOperationException(this.GetType().Name + " must be in a ready state to perform a restore, current state is " + this.State + ".");
+				throw new InvalidOperationException(this.GetType().Name + " must be initialized to perform a restore, current state is " + this.State + ".");
 			}
 
 			if (!this.SupportsRestore)
@@ -364,7 +536,7 @@ namespace RI.Framework.Data.Database
 
 			this.RestoreImpl(backupFile);
 
-			this.DetectVersionAndState();
+			this.DetectStateAndVersion();
 		}
 		public void Cleanup ()
 		{
@@ -382,7 +554,7 @@ namespace RI.Framework.Data.Database
 
 			this.CleanupImpl();
 
-			this.DetectVersionAndState();
+			this.DetectStateAndVersion();
 		}
 	}
 }

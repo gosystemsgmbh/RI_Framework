@@ -64,9 +64,13 @@
     <Compile Include="Data\Database\Backup\IDatabaseBackupCreator.cs" />
     <Compile Include="Data\Database\Cleanup\DatabaseCleanupProcessor.cs" />
     <Compile Include="Data\Database\Cleanup\IDatabaseCleanupProcessor.cs" />
+    <Compile Include="Data\Database\DatabaseConnectionChangedEventArgs.cs" />
+    <Compile Include="Data\Database\DatabaseConnectionCreatedEventArgs.cs" />
     <Compile Include="Data\Database\DatabaseManagerConfiguration.cs" />
+    <Compile Include="Data\Database\DatabaseVersionChangedEventArgs.cs" />
     <Compile Include="Data\Database\IDatabaseManager.cs" />
     <Compile Include="Data\Database\IDatabaseManagerConfiguration.cs" />
+    <Compile Include="Data\Database\InvalidDatabaseConfigurationException.cs" />
     <Compile Include="Data\Database\Upgrading\DatabaseVersionUpgrader.cs" />
     <Compile Include="Data\Database\Upgrading\IDatabaseVersionUpgrader.cs" />
     <Compile Include="Data\Database\Versioning\DatabaseVersionDetector.cs" />

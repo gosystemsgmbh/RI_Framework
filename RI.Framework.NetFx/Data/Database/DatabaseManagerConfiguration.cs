@@ -169,12 +169,25 @@ namespace RI.Framework.Data.Database
 		{
 			if (this.ConnectionString == null)
 			{
-				//TODO: Exception
+				throw new InvalidDatabaseConfigurationException("No connection string specified.");
 			}
 
 			if (this.VersionDetector == null)
 			{
-				//TODO: Exception
+				throw new InvalidDatabaseConfigurationException("No version detector specified.");
+			}
+
+			if (this.VersionUpgrader != null)
+			{
+				if (this.VersionUpgrader.MinVersion < 0)
+				{
+					throw new InvalidDatabaseConfigurationException("Invalid version upgrader minimum version.");
+				}
+
+				if (this.VersionUpgrader.MaxVersion < this.VersionUpgrader.MinVersion)
+				{
+					throw new InvalidDatabaseConfigurationException("Invalid version upgrader maximum version.");
+				}
 			}
 		}
 

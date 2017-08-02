@@ -74,7 +74,8 @@
     <Compile Include="Data\SQLite\Functions\TrimSQLiteFunction.cs" />
     <Compile Include="Data\SQLite\Functions\_NamespaceDoc.cs" />
     <Compile Include="Data\SQLite\SQLiteConnectionExtensions.cs" />
-    <Compile Include="Data\SQLite\SQLiteDatabaseConfiguration.cs" />
+    <Compile Include="Data\SQLite\SQLiteDatabaseManagerConfiguration.cs" />
+    <None Include="Data\SQLite\SQLiteDatabaseManager2.cs" />
     <Compile Include="Data\SQLite\SQLiteDatabaseManager.cs" />
     <Compile Include="Data\SQLite\_NamespaceDoc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

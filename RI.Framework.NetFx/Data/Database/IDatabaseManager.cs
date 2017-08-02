@@ -14,6 +14,9 @@ namespace RI.Framework.Data.Database
 		DatabaseState State { get; }
 		int Version { get; }
 
+		DatabaseState InitialState { get; }
+		int InitialVersion { get; }
+
 		bool IsReady { get; }
 		bool CanUpgrade { get; }
 		int MinVersion { get; }
@@ -35,9 +38,15 @@ namespace RI.Framework.Data.Database
 		void Backup (FilePath backupFile);
 		void Restore (FilePath backupFile);
 		void Upgrade (int version);
+		void Upgrade ();
 
 		List<DbConnection> GetTrackedConnections ();
 		void CloseTrackedConnections ();
+
+		event EventHandler<DatabaseStateChangedEventArgs> StateChanged;
+		event EventHandler<DatabaseVersionChangedEventArgs> VersionChanged;
+		event EventHandler<DatabaseConnectionChangedEventArgs> ConnectionChanged;
+		event EventHandler<DatabaseConnectionCreatedEventArgs> ConnectionCreated;
 	}
 
 	public interface IDatabaseManager<TConnection, TConnectionStringBuilder, TManager> : IDatabaseManager
@@ -50,5 +59,8 @@ namespace RI.Framework.Data.Database
 		new TConnection CreateConnection (bool readOnly, bool track);
 
 		new List<TConnection> GetTrackedConnections();
+
+		new event EventHandler<DatabaseConnectionChangedEventArgs<TConnection>> ConnectionChanged;
+		new event EventHandler<DatabaseConnectionCreatedEventArgs<TConnection>> ConnectionCreated;
 	}
 }

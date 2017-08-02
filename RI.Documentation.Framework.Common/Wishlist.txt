@@ -275,13 +275,12 @@ Services
 Data
 ----
 
- = (.NET) Implementations for providers
+ = (.NET) Reorganize Data namespaces
  = (.NET) SQL script helpers
- = (.NET) Convert IDatabaseManager to DatabaseManager
- = (.NET) IDatabaseManager: Support for creating connections when state is Old
+ = (SQLite) Implementations for SQLite providers
 
+ = (SQL Server) Implementations for SQL Server providers
  = (SQL Server) SqlServerDatabaseManager
- = (SQLite) SQLiteDatabaseManager
 
  # (.NET) Binary-serializable EntityBase
  # (JSON) Json-serializable EntityBase
@@ -289,7 +288,6 @@ Data
  * (.NET) Reporting (Excel?)
 
  - (.NET) IRepositorySet: Add entity and property descriptions functionality
-
  - (.NET) IRepositorySet: Add GetChanges method (return RepositorySetChanges type)
  - (.NET) IRepositoryContext: Add GetChanges method (return RepositoryContextChanges type)
  - (.NET) IRepositoryContext: Add GetErrors method (return RepositoryContextErrors type)

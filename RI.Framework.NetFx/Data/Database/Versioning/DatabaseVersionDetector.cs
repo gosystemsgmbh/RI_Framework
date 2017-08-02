@@ -9,11 +9,11 @@ namespace RI.Framework.Data.Database.Versioning
 		where TConnectionStringBuilder : DbConnectionStringBuilder
 		where TManager : IDatabaseManager<TConnection, TConnectionStringBuilder, TManager>
 	{
-		public abstract int Detect (TManager manager);
+		public abstract bool Detect (TManager manager, out DatabaseState? state, out int version);
 
-		int IDatabaseVersionDetector.Detect(IDatabaseManager manager)
+		bool IDatabaseVersionDetector.Detect(IDatabaseManager manager, out DatabaseState? state, out int version)
 		{
-			return this.Detect((TManager)manager);
+			return this.Detect((TManager)manager, out state, out version);
 		}
 
 		private bool _loggingEnabled;
