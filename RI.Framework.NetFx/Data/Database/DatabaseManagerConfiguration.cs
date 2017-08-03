@@ -8,6 +8,20 @@ using RI.Framework.Utilities.Logging;
 
 namespace RI.Framework.Data.Database
 {
+	/// <summary>
+	/// Implements a base class for database manager configurations.
+	/// </summary>
+	/// <typeparam name="TConnection">The database connection type, subclass of <see cref="DbConnection"/>.</typeparam>
+	/// <typeparam name="TConnectionStringBuilder">The connection string builder type, subclass of <see cref="DbConnectionStringBuilder"/>.</typeparam>
+	/// <typeparam name="TManager">The type of the database manager which is using this configuration.</typeparam>
+	/// <remarks>
+	/// <para>
+	/// It is recommended that database manager configuration implementations use this base class as it already implements most of the logic which is database-independent.
+	/// </para>
+	/// <para>
+	/// See <see cref="IDatabaseManagerConfiguration"/> for more details.
+	/// </para>
+	/// </remarks>
 	public abstract class DatabaseManagerConfiguration<TConnection, TConnectionStringBuilder, TManager> : IDatabaseManagerConfiguration<TConnection, TConnectionStringBuilder, TManager>
 		where TConnection : DbConnection
 		where TConnectionStringBuilder : DbConnectionStringBuilder
@@ -15,6 +29,7 @@ namespace RI.Framework.Data.Database
 	{
 		private IDatabaseVersionDetector<TConnection, TConnectionStringBuilder, TManager> _versionDetector;
 
+		/// <inheritdoc />
 		public IDatabaseVersionDetector<TConnection, TConnectionStringBuilder, TManager> VersionDetector
 		{
 			get
@@ -31,6 +46,7 @@ namespace RI.Framework.Data.Database
 
 		private IDatabaseVersionUpgrader<TConnection, TConnectionStringBuilder, TManager> _versionUpgrader;
 
+		/// <inheritdoc />
 		public IDatabaseVersionUpgrader<TConnection, TConnectionStringBuilder, TManager> VersionUpgrader
 		{
 			get
@@ -47,6 +63,7 @@ namespace RI.Framework.Data.Database
 
 		private IDatabaseBackupCreator<TConnection, TConnectionStringBuilder, TManager> _backupCreator;
 
+		/// <inheritdoc />
 		public IDatabaseBackupCreator<TConnection, TConnectionStringBuilder, TManager> BackupCreator
 		{
 			get
@@ -63,6 +80,7 @@ namespace RI.Framework.Data.Database
 
 		private IDatabaseCleanupProcessor<TConnection, TConnectionStringBuilder, TManager> _cleanupProcessor;
 
+		/// <inheritdoc />
 		public IDatabaseCleanupProcessor<TConnection, TConnectionStringBuilder, TManager> CleanupProcessor
 		{
 			get
@@ -79,6 +97,7 @@ namespace RI.Framework.Data.Database
 
 		private TConnectionStringBuilder _connectionString;
 
+		/// <inheritdoc />
 		public TConnectionStringBuilder ConnectionString
 		{
 			get
@@ -91,18 +110,24 @@ namespace RI.Framework.Data.Database
 			}
 		}
 
+		/// <inheritdoc />
 		IDatabaseVersionDetector IDatabaseManagerConfiguration.VersionDetector => this.VersionDetector;
 
+		/// <inheritdoc />
 		IDatabaseVersionUpgrader IDatabaseManagerConfiguration.VersionUpgrader => this.VersionUpgrader;
 
+		/// <inheritdoc />
 		IDatabaseBackupCreator IDatabaseManagerConfiguration.BackupCreator => this.BackupCreator;
 
+		/// <inheritdoc />
 		IDatabaseCleanupProcessor IDatabaseManagerConfiguration.CleanupProcessor => this.CleanupProcessor;
 
+		/// <inheritdoc />
 		DbConnectionStringBuilder IDatabaseManagerConfiguration.ConnectionString => this.ConnectionString;
 
 		private bool _loggingEnabled;
 
+		/// <inheritdoc />
 		public bool LoggingEnabled
 		{
 			get
@@ -119,6 +144,7 @@ namespace RI.Framework.Data.Database
 
 		private ILogger _logger;
 
+		/// <inheritdoc />
 		public ILogger Logger
 		{
 			get
@@ -133,6 +159,7 @@ namespace RI.Framework.Data.Database
 			}
 		}
 
+		/// <inheritdoc cref="IDatabaseManagerConfiguration.InheritLogger"/>
 		protected virtual void InheritLogger ()
 		{
 			if (this.VersionDetector != null)
@@ -160,11 +187,13 @@ namespace RI.Framework.Data.Database
 			}
 		}
 
+		/// <inheritdoc />
 		void IDatabaseManagerConfiguration.InheritLogger()
 		{
 			this.InheritLogger();
 		}
 
+		/// <inheritdoc cref="IDatabaseManagerConfiguration.VerifyConfiguration"/>
 		protected virtual void VerifyConfiguration()
 		{
 			if (this.ConnectionString == null)
@@ -191,6 +220,7 @@ namespace RI.Framework.Data.Database
 			}
 		}
 
+		/// <inheritdoc />
 		void IDatabaseManagerConfiguration.VerifyConfiguration()
 		{
 			this.VerifyConfiguration();

@@ -2,10 +2,14 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Linq;
-using System.Runtime.CompilerServices;
+using System.IO;
 
+using RI.Framework.Data.Database.Backup;
+using RI.Framework.Data.Database.Cleanup;
+using RI.Framework.Data.Database.Upgrading;
+using RI.Framework.Data.Database.Versioning;
 using RI.Framework.IO.Paths;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
@@ -13,46 +17,139 @@ using RI.Framework.Utilities.Logging;
 
 namespace RI.Framework.Data.Database
 {
+	/// <summary>
+	/// Implements a base class for database managers.
+	/// </summary>
+	/// <typeparam name="TConnection">The database connection type, subclass of <see cref="DbConnection"/>.</typeparam>
+	/// <typeparam name="TConnectionStringBuilder">The connection string builder type, subclass of <see cref="DbConnectionStringBuilder"/>.</typeparam>
+	/// <typeparam name="TManager">The type of the database manager which is implementing this base class.</typeparam>
+	/// <typeparam name="TConfiguration">The type of database configuration which is required by this database manager.</typeparam>
+	/// <remarks>
+	/// <para>
+	/// It is recommended that database manager implementations use this base class as it already implements most of the logic which is database-independent.
+	/// </para>
+	/// <para>
+	/// See <see cref="IDatabaseManager"/> for more details.
+	/// </para>
+	/// </remarks>
 	public abstract class DatabaseManager<TConnection, TConnectionStringBuilder, TManager, TConfiguration> : IDatabaseManager<TConnection, TConnectionStringBuilder, TManager>
 		where TConnection : DbConnection
 		where TConnectionStringBuilder : DbConnectionStringBuilder
 		where TManager : DatabaseManager<TConnection, TConnectionStringBuilder, TManager, TConfiguration>
-		where TConfiguration : IDatabaseManagerConfiguration<TConnection, TConnectionStringBuilder, TManager>, new()
+		where TConfiguration : class, IDatabaseManagerConfiguration<TConnection, TConnectionStringBuilder, TManager>, new()
 	{
+		/// <inheritdoc cref="IDatabaseManager.Configuration"/>
 		public TConfiguration Configuration { get; }
+
+		/// <inheritdoc />
 		IDatabaseManagerConfiguration<TConnection, TConnectionStringBuilder, TManager> IDatabaseManager<TConnection, TConnectionStringBuilder, TManager>.Configuration => this.Configuration;
+
+		/// <inheritdoc />
 		IDatabaseManagerConfiguration IDatabaseManager.Configuration => this.Configuration;
 
+		/// <inheritdoc />
 		public DatabaseState State { get; private set; }
+
+		/// <inheritdoc />
 		public int Version { get; private set; }
 
+		/// <inheritdoc />
 		public DatabaseState InitialState { get; private set; }
+
+		/// <inheritdoc />
 		public int InitialVersion { get; private set; }
 
 		private List<TConnection> TrackedConnections { get; }
+
 		private StateChangeEventHandler ConnectionStateChangedHandler { get; }
 
+		/// <summary>
+		/// Gets whether this database manager implementation supports connection tracking.
+		/// </summary>
+		/// <value>
+		/// true if connection tracking is supported, false otherwise.
+		/// </value>
 		protected abstract bool SupportsConnectionTrackingImpl { get; }
+
+		/// <summary>
+		/// Gets whether this database manager implementation supports read-only connections.
+		/// </summary>
+		/// <value>
+		/// true if read-only connections are supported, false otherwise.
+		/// </value>
 		protected abstract bool SupportsReadOnlyImpl { get; }
+
+		/// <summary>
+		/// Gets whether this database manager implementation supports upgrading.
+		/// </summary>
+		/// <value>
+		/// true if upgrading is supported, false otherwise.
+		/// </value>
 		protected abstract bool SupportsUpgradeImpl { get; }
+
+		/// <summary>
+		/// Gets whether this database manager implementation supports cleanup.
+		/// </summary>
+		/// <value>
+		/// true if cleanup is supported, false otherwise.
+		/// </value>
 		protected abstract bool SupportsCleanupImpl { get; }
+
+		/// <summary>
+		/// Gets whether this database manager implementation supports backup.
+		/// </summary>
+		/// <value>
+		/// true if backup is supported, false otherwise.
+		/// </value>
 		protected abstract bool SupportsBackupImpl { get; }
+
+		/// <summary>
+		/// Gets whether this database manager implementation supports restore.
+		/// </summary>
+		/// <value>
+		/// true if restore is supported, false otherwise.
+		/// </value>
 		protected abstract bool SupportsRestoreImpl { get; }
 
-		protected virtual string DebugDetails => string.Format(CultureInfo.InvariantCulture, "{0}; State={1}; Version={2}; MinVersion={3}; MaxVersion={4}; Connections={5}; ConnectionString=[{6}]", this.GetType().Name, this.State, this.Version, this.MinVersion, this.MaxVersion, this.TrackedConnections.Count, this?.Configuration.ConnectionString?.ConnectionString ?? "[null]");
+		/// <summary>
+		/// Gets a string which describes the current database manager instance and can be used for logging debugging details.
+		/// </summary>
+		/// <value>
+		/// A string which describes the current database manager instance
+		/// </value>
+		protected virtual string DebugDetails => string.Format(CultureInfo.InvariantCulture, "{0}; State={1}; Version={2}; MinVersion={3}; MaxVersion={4}; Connections={5}; ConnectionString=[{6}]", this.GetType().Name, this.State, this.Version, this.MinVersion, this.MaxVersion, this.TrackedConnections.Count, this.Configuration.ConnectionString?.ConnectionString ?? "[null]");
 
+		/// <inheritdoc />
 		public bool SupportsConnectionTracking => this.SupportsConnectionTrackingImpl;
+
+		/// <inheritdoc />
 		public bool SupportsReadOnly => this.SupportsReadOnlyImpl;
-		public bool SupportsUpgrade => this.SupportsUpgradeImpl && this.Configuration.VersionUpgrader != null;
-		public bool SupportsCleanup => this.SupportsCleanupImpl && this.Configuration.CleanupProcessor != null;
-		public bool SupportsBackup => this.SupportsBackupImpl && this.Configuration.BackupCreator != null;
+
+		/// <inheritdoc />
+		public bool SupportsUpgrade => this.SupportsUpgradeImpl && (this.Configuration.VersionUpgrader != null);
+
+		/// <inheritdoc />
+		public bool SupportsCleanup => this.SupportsCleanupImpl && (this.Configuration.CleanupProcessor != null);
+
+		/// <inheritdoc />
+		public bool SupportsBackup => this.SupportsBackupImpl && (this.Configuration.BackupCreator != null);
+
+		/// <inheritdoc />
 		public bool SupportsRestore => this.SupportsRestoreImpl && (this.Configuration.BackupCreator?.SupportsRestore ?? false);
 
+		/// <inheritdoc />
 		public bool IsReady => (this.State == DatabaseState.ReadyNew) || (this.State == DatabaseState.ReadyOld) || (this.State == DatabaseState.ReadyUnknown);
-		public int MinVersion => this.SupportsUpgrade ? this.Configuration.VersionUpgrader.MinVersion : -1;
-		public int MaxVersion => this.SupportsUpgrade ? this.Configuration.VersionUpgrader.MaxVersion : -1;
-		public bool CanUpgrade => this.SupportsUpgrade && (this.Version >= 0) && (this.Version < this.MaxVersion);
 
+		/// <inheritdoc />
+		public int MinVersion => this.SupportsUpgrade ? this.Configuration.VersionUpgrader.MinVersion : -1;
+
+		/// <inheritdoc />
+		public int MaxVersion => this.SupportsUpgrade ? this.Configuration.VersionUpgrader.MaxVersion : -1;
+
+		/// <inheritdoc />
+		public bool CanUpgrade => this.SupportsUpgrade && (this.IsReady || (this.State == DatabaseState.New)) && (this.Version >= 0) && (this.Version < this.MaxVersion);
+
+		/// <inheritdoc />
 		bool ILogSource.LoggingEnabled
 		{
 			get
@@ -64,6 +161,8 @@ namespace RI.Framework.Data.Database
 				this.Configuration.LoggingEnabled = value;
 			}
 		}
+
+		/// <inheritdoc />
 		ILogger ILogSource.Logger
 		{
 			get
@@ -80,8 +179,10 @@ namespace RI.Framework.Data.Database
 
 
 
-
-		public DatabaseManager ()
+		/// <summary>
+		/// Creates a new instance of <see cref="DatabaseManager{TConnection,TConnectionStringBuilder,TManager,TConfiguration}"/>.
+		/// </summary>
+		protected DatabaseManager ()
 		{
 			this.Configuration = new TConfiguration();
 
@@ -97,48 +198,71 @@ namespace RI.Framework.Data.Database
 			this.SetStateAndVersion(DatabaseState.Uninitialized, -1);
 		}
 
+		/// <summary>
+		///     Garbage collects this instance of <see cref="DatabaseManager{TConnection,TConnectionStringBuilder,TManager,TConfiguration}"/>.
+		/// </summary>
 		~DatabaseManager ()
 		{
 			this.Dispose(false);
 		}
+
+		/// <inheritdoc />
 		public void Close ()
 		{
 			this.Dispose(true);
 			GC.SuppressFinalize(this);
 		}
+
+		/// <inheritdoc />
 		void IDisposable.Dispose ()
 		{
 			this.Close();
 		}
 
+		/// <inheritdoc />
 		DbConnection IDatabaseManager.CreateConnection (bool readOnly, bool track)
 		{
 			return this.CreateConnection(readOnly, track);
 		}
+
+		/// <inheritdoc />
 		List<DbConnection> IDatabaseManager.GetTrackedConnections ()
 		{
-			return new List<DbConnection>(this.GetTrackedConnections().Cast<TConnection>());
+			return new List<DbConnection>(this.GetTrackedConnections());
 		}
 
+		/// <inheritdoc />
+		[SuppressMessage("ReSharper", "BaseObjectEqualsIsObjectEquals")]
 		public sealed override bool Equals (object obj)
 		{
 			return base.Equals(obj);
 		}
+
+		/// <inheritdoc />
+		[SuppressMessage("ReSharper", "BaseObjectGetHashCodeCallInGetHashCode")]
 		public sealed override int GetHashCode ()
 		{
 			return base.GetHashCode();
 		}
+
+		/// <inheritdoc />
 		public sealed override string ToString () => this.DebugDetails;
 
 
 
 
 
-
-		protected virtual void PrepareConfiguration ()
+		/// <summary>
+		/// Prepares and verifies the database configuration (<see cref="Configuration"/>) before it is used for operations.
+		/// </summary>
+		protected void PrepareConfiguration ()
 		{
 			this.PrepareConfigurationImpl();
 		}
+
+		/// <summary>
+		/// Performs a database state and version detection and updates <see cref="State"/> and <see cref="Version"/>.
+		/// </summary>
 		protected void DetectStateAndVersion ()
 		{
 			DatabaseState? state;
@@ -209,6 +333,7 @@ namespace RI.Framework.Data.Database
 				this.OnVersionChanged(oldVersion, version);
 			}
 		}
+
 		private void ConnectionStateChangedMethod (object sender, StateChangeEventArgs e)
 		{
 			TConnection connection = sender as TConnection;
@@ -228,9 +353,11 @@ namespace RI.Framework.Data.Database
 				this.OnConnectionChanged(connection, e.OriginalState, e.CurrentState);
 			}
 		}
+
+		/// <inheritdoc />
 		public void CloseTrackedConnections ()
 		{
-			List<TConnection> connections = this.GetTrackedConnections();
+			List<TConnection> connections = this.GetTrackedConnections() ?? new List<TConnection>();
 			connections.ForEach(x =>
 			{
 				try
@@ -250,13 +377,25 @@ namespace RI.Framework.Data.Database
 
 			this.TrackedConnections?.Clear();
 		}
+
+		/// <inheritdoc />
 		public List<TConnection> GetTrackedConnections ()
 		{
+			if (!this.SupportsConnectionTracking)
+			{
+				return null;
+			}
+
 			return new List<TConnection>(this.TrackedConnections ?? new List<TConnection>());
 		}
 
+		/// <inheritdoc />
 		public event EventHandler<DatabaseStateChangedEventArgs> StateChanged;
+
+		/// <inheritdoc />
 		public event EventHandler<DatabaseVersionChangedEventArgs> VersionChanged;
+
+		/// <inheritdoc />
 		public event EventHandler<DatabaseConnectionChangedEventArgs<TConnection>> ConnectionChanged
 		{
 			add
@@ -268,6 +407,8 @@ namespace RI.Framework.Data.Database
 				this.ConnectionChangedInternal2 -= value;
 			}
 		}
+
+		/// <inheritdoc />
 		event EventHandler<DatabaseConnectionChangedEventArgs> IDatabaseManager.ConnectionChanged
 		{
 			add
@@ -279,8 +420,12 @@ namespace RI.Framework.Data.Database
 				this.ConnectionChangedInternal1 -= value;
 			}
 		}
+
 		private event EventHandler<DatabaseConnectionChangedEventArgs> ConnectionChangedInternal1;
+
 		private event EventHandler<DatabaseConnectionChangedEventArgs<TConnection>> ConnectionChangedInternal2;
+
+		/// <inheritdoc />
 		public event EventHandler<DatabaseConnectionCreatedEventArgs<TConnection>> ConnectionCreated
 		{
 			add
@@ -292,6 +437,8 @@ namespace RI.Framework.Data.Database
 				this.ConnectionCreatedInternal2 -= value;
 			}
 		}
+
+		/// <inheritdoc />
 		event EventHandler<DatabaseConnectionCreatedEventArgs> IDatabaseManager.ConnectionCreated
 		{
 			add
@@ -303,26 +450,73 @@ namespace RI.Framework.Data.Database
 				this.ConnectionCreatedInternal1 -= value;
 			}
 		}
+
 		private event EventHandler<DatabaseConnectionCreatedEventArgs> ConnectionCreatedInternal1;
+
 		private event EventHandler<DatabaseConnectionCreatedEventArgs<TConnection>> ConnectionCreatedInternal2;
 
+		/// <summary>
+		/// Called when the current database state has changed.
+		/// </summary>
+		/// <param name="oldState">The previous state.</param>
+		/// <param name="newState">The new current state.</param>
+		/// <remarks>
+		/// <para>
+		/// The default implementation raises the <see cref="StateChanged"/> event.
+		/// </para>
+		/// </remarks>
 		protected virtual void OnStateChanged (DatabaseState oldState, DatabaseState newState)
 		{
 			this.StateChanged?.Invoke(this, new DatabaseStateChangedEventArgs(oldState, newState));
 		}
+
+		/// <summary>
+		/// Called when the current database version has changed.
+		/// </summary>
+		/// <param name="oldVersion">The previous version.</param>
+		/// <param name="newVersion">The new current version.</param>
+		/// <remarks>
+		/// <para>
+		/// The default implementation raises the <see cref="VersionChanged"/> event.
+		/// </para>
+		/// </remarks>
 		protected virtual void OnVersionChanged (int oldVersion, int newVersion)
 		{
 			this.VersionChanged?.Invoke(this, new DatabaseVersionChangedEventArgs(oldVersion, newVersion));
 		}
+
+		/// <summary>
+		/// Called when the state of a tracked connection has changed.
+		/// </summary>
+		/// <param name="connection">The tracked connection.</param>
+		/// <param name="oldState">The previous state.</param>
+		/// <param name="newState">The new current state.</param>
+		/// <remarks>
+		/// <para>
+		/// The default implementation raises the <see cref="ConnectionChanged"/> event.
+		/// </para>
+		/// </remarks>
 		protected virtual void OnConnectionChanged (TConnection connection, ConnectionState oldState, ConnectionState newState)
 		{
 			DatabaseConnectionChangedEventArgs<TConnection> args = new DatabaseConnectionChangedEventArgs<TConnection>(connection, oldState, newState);
 			this.ConnectionChangedInternal1?.Invoke(this, args);
 			this.ConnectionChangedInternal2?.Invoke(this, args);
 		}
-		protected virtual void OnConnectionCreated (TConnection connection)
+
+		/// <summary>
+		/// Called when a connection has been created.
+		/// </summary>
+		/// <param name="connection">The tracked connection.</param>
+		/// <param name="readOnly">Indicates whether the connection is read-only.</param>
+		/// <param name="tracked">Indicates whether the connection is going to be tracked.</param>
+		/// <remarks>
+		/// <para>
+		/// The default implementation raises the <see cref="ConnectionCreated"/> event.
+		/// </para>
+		/// </remarks>
+		protected virtual void OnConnectionCreated (TConnection connection, bool readOnly, bool tracked)
 		{
-			DatabaseConnectionCreatedEventArgs<TConnection> args = new DatabaseConnectionCreatedEventArgs<TConnection>(connection);
+			DatabaseConnectionCreatedEventArgs<TConnection> args = new DatabaseConnectionCreatedEventArgs<TConnection>(connection, readOnly, tracked);
 			this.ConnectionCreatedInternal1?.Invoke(this, args);
 			this.ConnectionCreatedInternal2?.Invoke(this, args);
 		}
@@ -331,38 +525,127 @@ namespace RI.Framework.Data.Database
 
 
 
-
+		/// <summary>
+		/// Performs the actual state and version detection as required by this database manager implementation.
+		/// </summary>
+		/// <param name="state">Returns the state of the database. Can be null to perform state detection based on <paramref name="version"/> as implemented in <see cref="DatabaseManager{TConnection,TConnectionStringBuilder,TManager,TConfiguration}"/>.</param>
+		/// <param name="version">Returns the version of the database.</param>
+		/// <returns>
+		/// true if the state and version could be successfully determined, false if the database is damaged or in an invalid state.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// The default implementation calls <see cref="IDatabaseVersionDetector.Detect"/>.
+		/// </para>
+		/// </remarks>
 		protected virtual bool DetectStateAndVersionImpl (out DatabaseState? state, out int version)
 		{
 			return this.Configuration.VersionDetector.Detect(this, out state, out version);
 		}
+
+		/// <summary>
+		/// Prepares and verifies the database configuration (<see cref="Configuration"/>) before it is used for operations, as it is required by this database manager implementation.
+		/// </summary>
+		/// <remarks>
+		/// <para>
+		/// The default implementation calls <see cref="IDatabaseManagerConfiguration.VerifyConfiguration"/> and <see cref="IDatabaseManagerConfiguration.InheritLogger"/>.
+		/// </para>
+		/// </remarks>
 		protected virtual void PrepareConfigurationImpl ()
 		{
 			this.Configuration.VerifyConfiguration();
 			this.Configuration.InheritLogger();
 		}
+
+		/// <summary>
+		/// Performs initialization specific to this database manager implementation.
+		/// </summary>
+		/// <remarks>
+		/// <para>
+		/// The default implementation does nothing.
+		/// </para>
+		/// </remarks>
 		protected virtual void InitializeImpl ()
 		{
 		}
+
+		/// <summary>
+		/// Performs disposing specific to this database manager implementation.
+		/// </summary>
+		/// <remarks>
+		/// <para>
+		/// The default implementation does nothing.
+		/// </para>
+		/// </remarks>
 		protected virtual void DisposeImpl (bool disposing)
 		{
 		}
+
+		/// <summary>
+		/// Creates a new database connection.
+		/// </summary>
+		/// <param name="readOnly">Specifies whether the connection should be read-only.</param>
+		/// <returns>
+		/// The newly created and already opened connection.
+		/// </returns>
 		protected abstract TConnection CreateConnectionImpl (bool readOnly);
+
+		/// <summary>
+		/// Performs an upgrade from <paramref name="sourceVersion"/> to <paramref name="sourceVersion"/> + 1.
+		/// </summary>
+		/// <param name="sourceVersion">The current version to upgrade from.</param>
+		/// <remarks>
+		/// <para>
+		/// The default implementation calls <see cref="IDatabaseVersionUpgrader.Upgrade"/>.
+		/// </para>
+		/// <para>
+		/// <see cref="UpgradeImpl"/> might be called multiple times for a single upgrade operation as the upgrading is performed incrementally, calling <see cref="UpgradeImpl"/> once for each version increment.
+		/// </para>
+		/// </remarks>
 		protected virtual void UpgradeImpl (int sourceVersion)
 		{
 			this.Log(LogLevel.Information, "Performing database upgrade: {0}->{1}: {2}", sourceVersion, sourceVersion + 1, this.DebugDetails);
 			this.Configuration.VersionUpgrader.Upgrade(this, sourceVersion);
 		}
+
+		/// <summary>
+		/// Performs a backup.
+		/// </summary>
+		/// <param name="backupFile">The backup file.</param>
+		/// <remarks>
+		/// <para>
+		/// The default implementation calls <see cref="IDatabaseBackupCreator.Backup"/>.
+		/// </para>
+		/// </remarks>
 		protected virtual void BackupImpl (FilePath backupFile)
 		{
 			this.Log(LogLevel.Information, "Performing database backup: {0}: {1}", backupFile, this.DebugDetails);
 			this.Configuration.BackupCreator.Backup(this, backupFile);
 		}
+
+		/// <summary>
+		/// Performs a restore.
+		/// </summary>
+		/// <param name="backupFile">The backup file.</param>
+		/// <remarks>
+		/// <para>
+		/// The default implementation calls <see cref="IDatabaseBackupCreator.Restore"/>.
+		/// </para>
+		/// </remarks>
 		protected virtual void RestoreImpl (FilePath backupFile)
 		{
 			this.Log(LogLevel.Information, "Performing database restore: {0}: {1}", backupFile, this.DebugDetails);
 			this.Configuration.BackupCreator.Restore(this, backupFile);
 		}
+
+		/// <summary>
+		/// Performs a cleanup.
+		/// </summary>
+		/// <remarks>
+		/// <para>
+		/// The default implementation calls <see cref="IDatabaseCleanupProcessor.Cleanup"/>.
+		/// </para>
+		/// </remarks>
 		protected virtual void CleanupImpl ()
 		{
 			this.Log(LogLevel.Information, "Performing database cleanup: {0}", this.DebugDetails);
@@ -373,6 +656,7 @@ namespace RI.Framework.Data.Database
 
 
 
+		/// <inheritdoc />
 		public void Initialize ()
 		{
 			this.Log(LogLevel.Information, "Initializing database: {0}", this.DebugDetails);
@@ -393,6 +677,11 @@ namespace RI.Framework.Data.Database
 			this.InitialState = this.State;
 			this.InitialVersion = this.Version;
 		}
+
+		/// <summary>
+		///     Disposes this database manager and frees all resources.
+		/// </summary>
+		/// <param name="disposing"> true if called from <see cref="IDisposable.Dispose" /> or <see cref="Close"/>, false if called from the destructor. </param>
 		protected void Dispose (bool disposing)
 		{
 			this.Log(LogLevel.Information, "Closing database: {0}", this.DebugDetails);
@@ -406,6 +695,8 @@ namespace RI.Framework.Data.Database
 
 			this.SetStateAndVersion(DatabaseState.Uninitialized, -1);
 		}
+
+		/// <inheritdoc />
 		public TConnection CreateConnection (bool readOnly, bool track)
 		{
 			if (!this.IsReady)
@@ -433,10 +724,12 @@ namespace RI.Framework.Data.Database
 				connection.StateChange += this.ConnectionStateChangedHandler;
 			}
 
-			this.OnConnectionCreated(connection);
+			this.OnConnectionCreated(connection, readOnly, track);
 
 			return connection;
 		}
+
+		/// <inheritdoc />
 		public void Upgrade (int version)
 		{
 			if ((!this.IsReady) && (this.State != DatabaseState.New))
@@ -478,10 +771,14 @@ namespace RI.Framework.Data.Database
 				}
 			}
 		}
+
+		/// <inheritdoc />
 		public void Upgrade ()
 		{
 			this.Upgrade(this.MaxVersion);
 		}
+
+		/// <inheritdoc />
 		public void Backup (FilePath backupFile)
 		{
 			if (backupFile == null)
@@ -510,6 +807,8 @@ namespace RI.Framework.Data.Database
 
 			this.DetectStateAndVersion();
 		}
+
+		/// <inheritdoc />
 		public void Restore (FilePath backupFile)
 		{
 			if (backupFile == null)
@@ -520,6 +819,11 @@ namespace RI.Framework.Data.Database
 			if (!backupFile.IsRealFile)
 			{
 				throw new InvalidPathArgumentException(nameof(backupFile));
+			}
+
+			if (!backupFile.Exists)
+			{
+				throw new FileNotFoundException("The backup file used for restore does not exist.", backupFile);
 			}
 
 			if (this.State == DatabaseState.Uninitialized)
@@ -538,6 +842,8 @@ namespace RI.Framework.Data.Database
 
 			this.DetectStateAndVersion();
 		}
+
+		/// <inheritdoc />
 		public void Cleanup ()
 		{
 			if (!this.IsReady)
