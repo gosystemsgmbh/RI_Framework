@@ -74,9 +74,9 @@
     <Compile Include="Data\SQLite\Functions\TrimSQLiteFunction.cs" />
     <Compile Include="Data\SQLite\Functions\_NamespaceDoc.cs" />
     <Compile Include="Data\SQLite\SQLiteConnectionExtensions.cs" />
-    <Compile Include="Data\SQLite\SQLiteDatabaseManagerConfiguration.cs" />
-    <None Include="Data\SQLite\SQLiteDatabaseManager2.cs" />
-    <Compile Include="Data\SQLite\SQLiteDatabaseManager.cs" />
+    <Compile Include="Data\Database\SQLiteDatabaseManagerConfiguration.cs" />
+    <None Include="Data\Database\SQLiteDatabaseManager2.cs" />
+    <Compile Include="Data\Database\SQLiteDatabaseManager.cs" />
     <Compile Include="Data\SQLite\_NamespaceDoc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Logging\Readers\LogFileToDbConverterResults.cs" />
@@ -91,6 +91,12 @@
       <Project>{a7f5dd2f-63bf-4032-ad1e-14d211e0d3ed}</Project>
       <Name>RI.Framework.NetFx</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Data\Database\Backup\" />
+    <Folder Include="Data\Database\Cleanup\" />
+    <Folder Include="Data\Database\Upgrading\" />
+    <Folder Include="Data\Database\Versioning\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

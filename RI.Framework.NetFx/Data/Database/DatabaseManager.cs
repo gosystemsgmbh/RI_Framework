@@ -8,6 +8,7 @@ using System.IO;
 
 using RI.Framework.Data.Database.Backup;
 using RI.Framework.Data.Database.Cleanup;
+using RI.Framework.Data.Database.Scripts;
 using RI.Framework.Data.Database.Upgrading;
 using RI.Framework.Data.Database.Versioning;
 using RI.Framework.IO.Paths;
@@ -80,6 +81,14 @@ namespace RI.Framework.Data.Database
 		protected abstract bool SupportsReadOnlyImpl { get; }
 
 		/// <summary>
+		/// Gets whether this database manager implementation supports script retrieval.
+		/// </summary>
+		/// <value>
+		/// true if script retrieval is supported, false otherwise.
+		/// </value>
+		protected abstract bool SupportsScriptsImpl { get; }
+
+		/// <summary>
 		/// Gets whether this database manager implementation supports upgrading.
 		/// </summary>
 		/// <value>
@@ -124,6 +133,9 @@ namespace RI.Framework.Data.Database
 
 		/// <inheritdoc />
 		public bool SupportsReadOnly => this.SupportsReadOnlyImpl;
+
+		/// <inheritdoc />
+		public bool SupportsScripts => this.SupportsScriptsImpl && (this.Configuration.ScriptLocator != null);
 
 		/// <inheritdoc />
 		public bool SupportsUpgrade => this.SupportsUpgradeImpl && (this.Configuration.VersionUpgrader != null);
@@ -455,6 +467,9 @@ namespace RI.Framework.Data.Database
 
 		private event EventHandler<DatabaseConnectionCreatedEventArgs<TConnection>> ConnectionCreatedInternal2;
 
+		/// <inheritdoc />
+		public event EventHandler<DatabaseScriptRetrievedEventArgs> ScriptRetrieved;
+
 		/// <summary>
 		/// Called when the current database state has changed.
 		/// </summary>
@@ -519,6 +534,22 @@ namespace RI.Framework.Data.Database
 			DatabaseConnectionCreatedEventArgs<TConnection> args = new DatabaseConnectionCreatedEventArgs<TConnection>(connection, readOnly, tracked);
 			this.ConnectionCreatedInternal1?.Invoke(this, args);
 			this.ConnectionCreatedInternal2?.Invoke(this, args);
+		}
+
+		/// <summary>
+		/// Called when a script has been retrieved
+		/// </summary>
+		/// <param name="name">The name of the retrieved script.</param>
+		/// <param name="preprocess">Specifies whether the script is preprocessed.</param>
+		/// <param name="scriptBatches">The list of retrieved individual batches.</param>
+		/// <remarks>
+		/// <para>
+		/// The default implementation raises the <see cref="ScriptRetrieved"/> event.
+		/// </para>
+		/// </remarks>
+		protected virtual void OnScriptRetrieved(string name, bool preprocess, List<string> scriptBatches)
+		{
+			this.ScriptRetrieved?.Invoke(this, new DatabaseScriptRetrievedEventArgs(name, preprocess, scriptBatches));
 		}
 
 
@@ -586,14 +617,39 @@ namespace RI.Framework.Data.Database
 		/// </summary>
 		/// <param name="readOnly">Specifies whether the connection should be read-only.</param>
 		/// <returns>
-		/// The newly created and already opened connection.
+		/// The newly created and already opened connection or null if the connection could not be created.
+		/// Details can be obtained from the log.
 		/// </returns>
 		protected abstract TConnection CreateConnectionImpl (bool readOnly);
+
+		/// <summary>
+		/// Retrieves a script batch
+		/// </summary>
+		/// <param name="name">The name of the script.</param>
+		/// <param name="preprocess">Specifies whether the script is to be preprocessed.</param>
+		/// <returns>
+		/// The list of batches in the script.
+		/// If the script is empty or does not contain any bacthes respectively, an empty list is returned.
+		/// If the script could not be found, null is returned.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// The default implementation calls <see cref="IDatabaseScriptLocator.GetScriptBatch"/>.
+		/// </para>
+		/// </remarks>
+		protected virtual List<string> GetScriptBatchImpl(string name, bool preprocess)
+		{
+			return this.Configuration.ScriptLocator.GetScriptBatch(this, name, preprocess);
+		}
 
 		/// <summary>
 		/// Performs an upgrade from <paramref name="sourceVersion"/> to <paramref name="sourceVersion"/> + 1.
 		/// </summary>
 		/// <param name="sourceVersion">The current version to upgrade from.</param>
+		/// <returns>
+		/// true if the upgrade was successful, false otherwise.
+		/// Details can be obtained from the log.
+		/// </returns>
 		/// <remarks>
 		/// <para>
 		/// The default implementation calls <see cref="IDatabaseVersionUpgrader.Upgrade"/>.
@@ -602,54 +658,66 @@ namespace RI.Framework.Data.Database
 		/// <see cref="UpgradeImpl"/> might be called multiple times for a single upgrade operation as the upgrading is performed incrementally, calling <see cref="UpgradeImpl"/> once for each version increment.
 		/// </para>
 		/// </remarks>
-		protected virtual void UpgradeImpl (int sourceVersion)
+		protected virtual bool UpgradeImpl (int sourceVersion)
 		{
 			this.Log(LogLevel.Information, "Performing database upgrade: {0}->{1}: {2}", sourceVersion, sourceVersion + 1, this.DebugDetails);
-			this.Configuration.VersionUpgrader.Upgrade(this, sourceVersion);
+			return this.Configuration.VersionUpgrader.Upgrade(this, sourceVersion);
 		}
 
 		/// <summary>
 		/// Performs a backup.
 		/// </summary>
 		/// <param name="backupFile">The backup file.</param>
+		/// <returns>
+		/// true if the backup was successful, false otherwise.
+		/// Details can be obtained from the log.
+		/// </returns>
 		/// <remarks>
 		/// <para>
 		/// The default implementation calls <see cref="IDatabaseBackupCreator.Backup"/>.
 		/// </para>
 		/// </remarks>
-		protected virtual void BackupImpl (FilePath backupFile)
+		protected virtual bool BackupImpl (FilePath backupFile)
 		{
 			this.Log(LogLevel.Information, "Performing database backup: {0}: {1}", backupFile, this.DebugDetails);
-			this.Configuration.BackupCreator.Backup(this, backupFile);
+			return this.Configuration.BackupCreator.Backup(this, backupFile);
 		}
 
 		/// <summary>
 		/// Performs a restore.
 		/// </summary>
 		/// <param name="backupFile">The backup file.</param>
+		/// <returns>
+		/// true if the restore was successful, false otherwise.
+		/// Details can be obtained from the log.
+		/// </returns>
 		/// <remarks>
 		/// <para>
 		/// The default implementation calls <see cref="IDatabaseBackupCreator.Restore"/>.
 		/// </para>
 		/// </remarks>
-		protected virtual void RestoreImpl (FilePath backupFile)
+		protected virtual bool RestoreImpl (FilePath backupFile)
 		{
 			this.Log(LogLevel.Information, "Performing database restore: {0}: {1}", backupFile, this.DebugDetails);
-			this.Configuration.BackupCreator.Restore(this, backupFile);
+			return this.Configuration.BackupCreator.Restore(this, backupFile);
 		}
 
 		/// <summary>
 		/// Performs a cleanup.
 		/// </summary>
+		/// <returns>
+		/// true if the cleanup was successful, false otherwise.
+		/// Details can be obtained from the log.
+		/// </returns>
 		/// <remarks>
 		/// <para>
 		/// The default implementation calls <see cref="IDatabaseCleanupProcessor.Cleanup"/>.
 		/// </para>
 		/// </remarks>
-		protected virtual void CleanupImpl ()
+		protected virtual bool CleanupImpl ()
 		{
 			this.Log(LogLevel.Information, "Performing database cleanup: {0}", this.DebugDetails);
-			this.Configuration.CleanupProcessor.Cleanup(this);
+			return this.Configuration.CleanupProcessor.Cleanup(this);
 		}
 
 
@@ -718,19 +786,57 @@ namespace RI.Framework.Data.Database
 
 			TConnection connection = this.CreateConnectionImpl(readOnly);
 
-			if (track)
+			if (connection != null)
 			{
-				this.TrackedConnections.Add(connection);
-				connection.StateChange += this.ConnectionStateChangedHandler;
-			}
+				if (track)
+				{
+					this.TrackedConnections.Add(connection);
+					connection.StateChange += this.ConnectionStateChangedHandler;
+				}
 
-			this.OnConnectionCreated(connection, readOnly, track);
+				this.OnConnectionCreated(connection, readOnly, track);
+			}
 
 			return connection;
 		}
 
 		/// <inheritdoc />
-		public void Upgrade (int version)
+		public List<string> GetScriptBatch(string name, bool preprocess)
+		{
+			if (name == null)
+			{
+				throw new ArgumentNullException(nameof(name));
+			}
+
+			if (name.IsNullOrEmptyOrWhitespace())
+			{
+				throw new EmptyStringArgumentException(nameof(name));
+			}
+
+			if (this.State == DatabaseState.Uninitialized)
+			{
+				throw new InvalidOperationException(this.GetType().Name + " must be initialized to retrieve script batches, current state is " + this.State + ".");
+			}
+
+			if (!this.SupportsScripts)
+			{
+				throw new NotSupportedException(this.GetType().Name + " does not support script retrieval.");
+			}
+
+			this.PrepareConfiguration();
+
+			List<string> result = this.GetScriptBatchImpl(name, preprocess);
+
+			if (result != null)
+			{
+				this.OnScriptRetrieved(name, preprocess, result);
+			}
+
+			return result;
+		}
+
+		/// <inheritdoc />
+		public bool Upgrade (int version)
 		{
 			if ((!this.IsReady) && (this.State != DatabaseState.New))
 			{
@@ -754,32 +860,34 @@ namespace RI.Framework.Data.Database
 
 			if (version == this.Version)
 			{
-				return;
+				return true;
 			}
 
 			this.PrepareConfiguration();
 
 			for (int currentVersion = this.Version; currentVersion < version; currentVersion++)
 			{
-				this.UpgradeImpl(version);
+				bool result = this.UpgradeImpl(version);
 
 				this.DetectStateAndVersion();
 
-				if (!this.IsReady)
+				if ((!this.IsReady) || (!result))
 				{
-					break;
+					return false;
 				}
 			}
+
+			return true;
 		}
 
 		/// <inheritdoc />
-		public void Upgrade ()
+		public bool Upgrade ()
 		{
-			this.Upgrade(this.MaxVersion);
+			return this.Upgrade(this.MaxVersion);
 		}
 
 		/// <inheritdoc />
-		public void Backup (FilePath backupFile)
+		public bool Backup (FilePath backupFile)
 		{
 			if (backupFile == null)
 			{
@@ -803,13 +911,15 @@ namespace RI.Framework.Data.Database
 
 			this.PrepareConfiguration();
 
-			this.BackupImpl(backupFile);
+			bool result = this.BackupImpl(backupFile);
 
 			this.DetectStateAndVersion();
+
+			return result;
 		}
 
 		/// <inheritdoc />
-		public void Restore (FilePath backupFile)
+		public bool Restore (FilePath backupFile)
 		{
 			if (backupFile == null)
 			{
@@ -838,13 +948,15 @@ namespace RI.Framework.Data.Database
 
 			this.PrepareConfiguration();
 
-			this.RestoreImpl(backupFile);
+			bool result = this.RestoreImpl(backupFile);
 
 			this.DetectStateAndVersion();
+
+			return result;
 		}
 
 		/// <inheritdoc />
-		public void Cleanup ()
+		public bool Cleanup ()
 		{
 			if (!this.IsReady)
 			{
@@ -858,9 +970,11 @@ namespace RI.Framework.Data.Database
 
 			this.PrepareConfiguration();
 
-			this.CleanupImpl();
+			bool result = this.CleanupImpl();
 
 			this.DetectStateAndVersion();
+
+			return result;
 		}
 	}
 }

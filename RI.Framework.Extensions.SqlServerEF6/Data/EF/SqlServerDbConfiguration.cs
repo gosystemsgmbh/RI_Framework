@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 
 using RI.Framework.Data.EF.Resolvers;
 
-namespace RI.Framework.Data.SqlServer
+namespace RI.Framework.Data.EF
 {
 	/// <summary>
 	///     Implements a default code-based database configuration for SQL Server databases.

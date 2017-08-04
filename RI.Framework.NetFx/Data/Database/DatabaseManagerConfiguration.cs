@@ -2,6 +2,7 @@
 
 using RI.Framework.Data.Database.Backup;
 using RI.Framework.Data.Database.Cleanup;
+using RI.Framework.Data.Database.Scripts;
 using RI.Framework.Data.Database.Upgrading;
 using RI.Framework.Data.Database.Versioning;
 using RI.Framework.Utilities.Logging;
@@ -90,6 +91,23 @@ namespace RI.Framework.Data.Database
 			set
 			{
 				this._cleanupProcessor = value;
+
+				this.InheritLogger();
+			}
+		}
+
+		private IDatabaseScriptLocator _scriptLocator;
+
+		/// <inheritdoc />
+		public IDatabaseScriptLocator ScriptLocator
+		{
+			get
+			{
+				return this._scriptLocator;
+			}
+			set
+			{
+				this._scriptLocator = value;
 
 				this.InheritLogger();
 			}
@@ -185,6 +203,12 @@ namespace RI.Framework.Data.Database
 				this.CleanupProcessor.Logger = this.Logger;
 				this.CleanupProcessor.LoggingEnabled = this.LoggingEnabled;
 			}
+
+			if (this.ScriptLocator != null)
+			{
+				this.ScriptLocator.Logger = this.Logger;
+				this.ScriptLocator.LoggingEnabled = this.LoggingEnabled;
+			}
 		}
 
 		/// <inheritdoc />
@@ -198,12 +222,35 @@ namespace RI.Framework.Data.Database
 		{
 			if (this.ConnectionString == null)
 			{
-				throw new InvalidDatabaseConfigurationException("No connection string specified.");
+				throw new InvalidDatabaseConfigurationException("No connection string configured.");
+			}
+
+			if (this.ScriptLocator == null)
+			{
+				if (this.VersionDetector?.RequiresScriptLocator ?? false)
+				{
+					throw new InvalidDatabaseConfigurationException("Version detector (" + this.VersionDetector.GetType().Name + ") requires script locator but none is configured.");
+				}
+
+				if (this.VersionUpgrader?.RequiresScriptLocator ?? false)
+				{
+					throw new InvalidDatabaseConfigurationException("Version upgrader (" + this.VersionUpgrader.GetType().Name + ") requires script locator but none is configured.");
+				}
+
+				if (this.BackupCreator?.RequiresScriptLocator ?? false)
+				{
+					throw new InvalidDatabaseConfigurationException("Backup creator (" + this.BackupCreator.GetType().Name + ") requires script locator but none is configured.");
+				}
+
+				if (this.CleanupProcessor?.RequiresScriptLocator ?? false)
+				{
+					throw new InvalidDatabaseConfigurationException("Cleanup processor (" + this.CleanupProcessor.GetType().Name + ") requires script locator but none is configured.");
+				}
 			}
 
 			if (this.VersionDetector == null)
 			{
-				throw new InvalidDatabaseConfigurationException("No version detector specified.");
+				throw new InvalidDatabaseConfigurationException("No version detector configured.");
 			}
 
 			if (this.VersionUpgrader != null)

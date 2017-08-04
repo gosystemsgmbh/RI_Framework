@@ -4,13 +4,32 @@ using RI.Framework.Utilities.Logging;
 
 namespace RI.Framework.Data.Database.Versioning
 {
+	/// <summary>
+	/// Implements a base class for database version detectors.
+	/// </summary>
+	/// <typeparam name="TConnection">The database connection type, subclass of <see cref="DbConnection"/>.</typeparam>
+	/// <typeparam name="TConnectionStringBuilder">The connection string builder type, subclass of <see cref="DbConnectionStringBuilder"/>.</typeparam>
+	/// <typeparam name="TManager">The type of the database manager which is using this version detector.</typeparam>
+	/// <remarks>
+	/// <para>
+	/// It is recommended that database version detector implementations use this base class as it already implements most of the logic which is database-independent.
+	/// </para>
+	/// <para>
+	/// See <see cref="IDatabaseVersionDetector"/> for more details.
+	/// </para>
+	/// </remarks>
 	public abstract class DatabaseVersionDetector<TConnection, TConnectionStringBuilder, TManager> : IDatabaseVersionDetector<TConnection, TConnectionStringBuilder, TManager>
 		where TConnection : DbConnection
 		where TConnectionStringBuilder : DbConnectionStringBuilder
 		where TManager : IDatabaseManager<TConnection, TConnectionStringBuilder, TManager>
 	{
+		/// <inheritdoc />
 		public abstract bool Detect (TManager manager, out DatabaseState? state, out int version);
 
+		/// <inheritdoc />
+		public abstract bool RequiresScriptLocator { get; }
+
+		/// <inheritdoc />
 		bool IDatabaseVersionDetector.Detect(IDatabaseManager manager, out DatabaseState? state, out int version)
 		{
 			return this.Detect((TManager)manager, out state, out version);
@@ -18,6 +37,7 @@ namespace RI.Framework.Data.Database.Versioning
 
 		private bool _loggingEnabled;
 
+		/// <inheritdoc />
 		bool ILogSource.LoggingEnabled
 		{
 			get
@@ -32,6 +52,7 @@ namespace RI.Framework.Data.Database.Versioning
 
 		private ILogger _logger;
 
+		/// <inheritdoc />
 		ILogger ILogSource.Logger
 		{
 			get

@@ -2,16 +2,12 @@
 using System.Data.SQLite;
 using System.Diagnostics.CodeAnalysis;
 
-using RI.Framework.Data.Database;
 using RI.Framework.IO.Paths;
 
-
-
-
-namespace RI.Framework.Data.SQLite
+namespace RI.Framework.Data.Database
 {
 	/// <summary>
-	///     Stores the database configuration for an SQLite database.
+	///     Stores the database configuration for an SQLite database manager.
 	/// </summary>
 	/// <remarks>
 	///     <para>
@@ -41,11 +37,14 @@ namespace RI.Framework.Data.SQLite
 		{
 			get
 			{
-				return this.ConnectionString.DataSource;
+				return this.ConnectionString?.DataSource;
 			}
 			set
 			{
-				this.ConnectionString.DataSource = value;
+				if (this.ConnectionString != null)
+				{
+					this.ConnectionString.DataSource = value;
+				}
 			}
 		}
 

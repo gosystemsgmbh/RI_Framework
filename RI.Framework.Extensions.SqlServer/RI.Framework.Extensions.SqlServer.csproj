@@ -55,7 +55,7 @@
     <None Include="Properties\AssemblyName.snk" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Data\SqlServer\" />
+    <Folder Include="Data\Database\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

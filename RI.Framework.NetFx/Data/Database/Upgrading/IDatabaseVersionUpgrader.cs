@@ -4,20 +4,95 @@ using RI.Framework.Utilities.Logging;
 
 namespace RI.Framework.Data.Database.Upgrading
 {
+	/// <summary>
+	/// Defines the interface for database version upgraders.
+	/// </summary>
+	/// <remarks>
+	/// <para>
+	/// Database version upgraders are used to upgrade a databases version from version n to version n+1.
+	/// What the upgrade does in detail depends on the database type and the implementation of <see cref="IDatabaseVersionUpgrader"/>.
+	/// </para>
+	/// <para>
+	/// Database version upgraders are used by database managers (<see cref="IDatabaseManager"/> implementations).
+	/// Do not use database version upgraders directly but rather configure to use them through configuration (<see cref="IDatabaseManagerConfiguration"/>.<see cref="IDatabaseManagerConfiguration.VersionUpgrader"/>).
+	/// </para>
+	/// <para>
+	/// Implementations of <see cref="IDatabaseVersionUpgrader"/> are always specific for a particular type of database (or particular implementation of <see cref="IDatabaseManager"/> respectively).
+	/// </para>
+	/// <para>
+	/// Database version upgraders are optional.
+	/// If not configured, upgrading is not available / not supported.
+	/// </para>
+	/// <para>
+	/// <see cref="IDatabaseVersionUpgrader"/> performs upgrades incrementally through multiple calls to <see cref="Upgrade"/>.
+	/// <see cref="Upgrade"/> is always called for the current/source version and then upgrades to the current/source version + 1.
+	/// Therefore, <see cref="IDatabaseManager"/> implementations call <see cref="Upgrade"/> as many times as necessary to upgrade incrementally from a current version to the desired version.
+	/// </para>
+	/// </remarks>
 	public interface IDatabaseVersionUpgrader : ILogSource
 	{
+		/// <summary>
+		/// Gets whether this database version upgrader requires a script locator.
+		/// </summary>
+		/// <value>
+		/// true if a script locator is required, false otherwise.
+		/// </value>
+		bool RequiresScriptLocator { get; }
+
+		/// <summary>
+		/// Gets the lowest supported/known version of this database version upgrader.
+		/// </summary>
+		/// <value>
+		/// The lowest supported/known version of this database version upgrader.
+		/// Zero means that the database version upgrader supports creating a new database if it does not exist.
+		/// </value>
+		/// <remarks>
+		/// <note type="implement">
+		/// <see cref="MinVersion"/> always represents a source version, not a target version, meaning that <see cref="MinVersion"/> is the lowest version from which can be upgraded.
+		/// </note>
+		/// </remarks>
 		int MinVersion { get; }
 
+		/// <summary>
+		/// Gets the highest supported/known version of this database version upgrader.
+		/// </summary>
+		/// <value>
+		/// The highest supported/known version of this database version upgrader.
+		/// </value>
+		/// <remarks>
+		/// <note type="implement">
+		/// <see cref="MaxVersion"/> always represents a target version, not a source version, meaning that <see cref="MaxVersion"/> is the highest version to which can be upgraded.
+		/// </note>
+		/// </remarks>
 		int MaxVersion { get; }
 
-		void Upgrade (IDatabaseManager manager, int sourceVersion);
+		/// <summary>
+		/// Upgrades a database version from a specified version to the next version.
+		/// </summary>
+		/// <param name="manager">The used database manager representing the database.</param>
+		/// <param name="sourceVersion">The source version to upgrade from.</param>
+		/// <returns>
+		/// true if the upgrade was successful, false otherwise.
+		/// Details must be written to the log.
+		/// </returns>
+		/// <remarks>
+		/// <note type="implement">
+		/// The upgrade must be exactly from <paramref name="sourceVersion"/> to <paramref name="sourceVersion"/> + 1.
+		/// </note>
+		/// </remarks>
+		bool Upgrade (IDatabaseManager manager, int sourceVersion);
 	}
 
-	public interface IDatabaseVersionUpgrader<TConnection, TConnectionStringBuilder, TManager> : IDatabaseVersionUpgrader
+	/// <inheritdoc cref="IDatabaseVersionUpgrader"/>
+	/// <typeparam name="TConnection">The database connection type, subclass of <see cref="DbConnection"/>.</typeparam>
+	/// <typeparam name="TConnectionStringBuilder">The connection string builder type, subclass of <see cref="DbConnectionStringBuilder"/>.</typeparam>
+	/// <typeparam name="TManager">The type of the database manager which is using this version upgrader.</typeparam>
+	public interface IDatabaseVersionUpgrader<TConnection, TConnectionStringBuilder, in TManager> : IDatabaseVersionUpgrader
 		where TConnection : DbConnection
 		where TConnectionStringBuilder : DbConnectionStringBuilder
 		where TManager : IDatabaseManager<TConnection, TConnectionStringBuilder, TManager>
 	{
-		void Upgrade (TManager manager, int sourceVersion);
+		/// <inheritdoc cref="IDatabaseVersionUpgrader.Upgrade"/>
+		bool Upgrade (TManager manager, int sourceVersion);
 	}
 }

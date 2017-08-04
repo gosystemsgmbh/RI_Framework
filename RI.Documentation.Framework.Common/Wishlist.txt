@@ -275,9 +275,7 @@ Services
 Data
 ----
 
- = (.NET) Reorganize Data namespaces
- = (.NET) SQL script helpers
- = (SQLite) Implementations for SQLite providers
+ # (SQLite) Implementations for SQLite providers
 
  = (SQL Server) Implementations for SQL Server providers
  = (SQL Server) SqlServerDatabaseManager

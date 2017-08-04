@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 
 using RI.Framework.Data.EF.Resolvers;
 
-namespace RI.Framework.Data.SQLite
+namespace RI.Framework.Data.EF
 {
 	/// <summary>
 	///     Implements a default code-based database configuration for SQLite databases.

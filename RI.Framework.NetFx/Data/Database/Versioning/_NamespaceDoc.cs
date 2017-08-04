@@ -3,10 +3,10 @@
 
 
 
-namespace RI.Framework.Data.Database.Cleanup
+namespace RI.Framework.Data.Database.Versioning
 {
 	/// <summary>
-	///     Contains types for database clenup handling.
+	///     Contains database version detectors.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

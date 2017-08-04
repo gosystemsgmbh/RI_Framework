@@ -1,12 +1,12 @@
 ﻿using System.Data.SQLite;
 using System.Diagnostics.CodeAnalysis;
 
-using RI.Framework.Data.Database;
+using RI.Framework.Data.SQLite;
 using RI.Framework.Data.SQLite.Collations;
 using RI.Framework.Data.SQLite.Functions;
 using RI.Framework.IO.Paths;
 
-namespace RI.Framework.Data.SQLite
+namespace RI.Framework.Data.Database
 {
 	/// <summary>
 	///     Implements a database manager for SQLite databases.
@@ -24,6 +24,9 @@ namespace RI.Framework.Data.SQLite
 
 		/// <inheritdoc />
 		protected override bool SupportsReadOnlyImpl => true;
+
+		/// <inheritdoc />
+		protected override bool SupportsScriptsImpl => true;
 
 		/// <inheritdoc />
 		protected override bool SupportsUpgradeImpl => true;

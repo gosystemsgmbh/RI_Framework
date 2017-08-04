@@ -2,6 +2,7 @@
 
 using RI.Framework.Data.Database.Backup;
 using RI.Framework.Data.Database.Cleanup;
+using RI.Framework.Data.Database.Scripts;
 using RI.Framework.Data.Database.Upgrading;
 using RI.Framework.Data.Database.Versioning;
 using RI.Framework.Utilities.Logging;
@@ -69,7 +70,15 @@ namespace RI.Framework.Data.Database
 		IDatabaseCleanupProcessor CleanupProcessor { get; }
 
 		/// <summary>
-		/// Inherits the logger used by <see cref="IDatabaseManagerConfiguration"/> to <see cref="VersionDetector"/>, <see cref="VersionUpgrader"/>, <see cref="BackupCreator"/>, and <see cref="CleanupProcessor"/>.
+		/// Gets or sets the script locator to use.
+		/// </summary>
+		/// <value>
+		/// The script locator to use or null if script retrieval is not required.
+		/// </value>
+		IDatabaseScriptLocator ScriptLocator { get; }
+
+		/// <summary>
+		/// Inherits the logger used by <see cref="IDatabaseManagerConfiguration"/> to <see cref="VersionDetector"/>, <see cref="VersionUpgrader"/>, <see cref="BackupCreator"/>, <see cref="CleanupProcessor"/>, and <see cref="ScriptLocator"/>.
 		/// </summary>
 		void InheritLogger ();
 
@@ -83,7 +92,7 @@ namespace RI.Framework.Data.Database
 	/// <inheritdoc cref="IDatabaseManagerConfiguration"/>
 	/// <typeparam name="TConnection">The database connection type, subclass of <see cref="DbConnection"/>.</typeparam>
 	/// <typeparam name="TConnectionStringBuilder">The connection string builder type, subclass of <see cref="DbConnectionStringBuilder"/>.</typeparam>
-	/// <typeparam name="TManager">The type of the database manager which is implementing this interface.</typeparam>
+	/// <typeparam name="TManager">The type of the database manager which is using this configuration.</typeparam>
 	public interface IDatabaseManagerConfiguration<TConnection, TConnectionStringBuilder, TManager> : IDatabaseManagerConfiguration
 		where TConnection : DbConnection
 		where TConnectionStringBuilder : DbConnectionStringBuilder

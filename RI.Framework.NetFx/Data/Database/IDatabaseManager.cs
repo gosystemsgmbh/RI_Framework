@@ -6,6 +6,7 @@ using System.IO;
 
 using RI.Framework.Data.Database.Backup;
 using RI.Framework.Data.Database.Cleanup;
+using RI.Framework.Data.Database.Scripts;
 using RI.Framework.Data.Database.Upgrading;
 using RI.Framework.Data.Repository;
 using RI.Framework.IO.Paths;
@@ -159,6 +160,14 @@ namespace RI.Framework.Data.Database
 		bool SupportsReadOnly { get; }
 
 		/// <summary>
+		/// Gets whether the database supports script retrieval.
+		/// </summary>
+		/// <value>
+		/// true if the database supports script retrieval, false otherwise.
+		/// </value>
+		bool SupportsScripts { get; }
+
+		/// <summary>
 		/// Gets whether the database supports the cleanup functionality.
 		/// </summary>
 		/// <value>
@@ -224,7 +233,8 @@ namespace RI.Framework.Data.Database
 		/// <param name="readOnly">Specifies whether the connection should be read-only.</param>
 		/// <param name="track">Specifies whether the connection should be tracked.</param>
 		/// <returns>
-		/// The newly created and already opened connection.
+		/// The newly created and already opened connection or null if the connection could not be created.
+		/// Details can be obtained from the log.
 		/// </returns>
 		/// <exception cref="InvalidOperationException">The database is not in a ready state.</exception>
 		/// <exception cref="NotSupportedException"><paramref name="readOnly"/> is true but read-only connections are not supported or <paramref name="track"/> is true but connection tracking is not supported.</exception>
@@ -232,8 +242,29 @@ namespace RI.Framework.Data.Database
 		DbConnection CreateConnection (bool readOnly, bool track);
 
 		/// <summary>
+		/// Retrieves a script batch using the configured <see cref="IDatabaseScriptLocator"/>.
+		/// </summary>
+		/// <param name="name">The name of the script.</param>
+		/// <param name="preprocess">Specifies whether the script is to be preprocessed.</param>
+		/// <returns>
+		/// The list of batches in the script.
+		/// If the script is empty or does not contain any bacthes respectively, an empty list is returned.
+		/// If the script could not be found, null is returned.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"><paramref name="name"/> is null.</exception>
+		/// <exception cref="EmptyStringArgumentException"><paramref name="name"/> is an empty string.</exception>
+		/// <exception cref="InvalidOperationException">The database is not initialized.</exception>
+		/// <exception cref="NotSupportedException">Retrieving scripts is not supported by the database or no <see cref="IDatabaseScriptLocator"/> is configured.</exception>
+		/// <exception cref="InvalidDatabaseConfigurationException">The database configuration specified by <see cref="Configuration"/> is not valid.</exception>
+		List<string> GetScriptBatch (string name, bool preprocess);
+
+		/// <summary>
 		/// Performs a database cleanup using the configured <see cref="IDatabaseCleanupProcessor"/>.
 		/// </summary>
+		/// <returns>
+		/// true if the cleanup was successful, false otherwise.
+		/// Details can be obtained from the log.
+		/// </returns>
 		/// <remarks>
 		/// <para>
 		/// <see cref="State"/> and <see cref="Version"/> are updated to reflect the current state and version of the database after cleanup.
@@ -242,12 +273,16 @@ namespace RI.Framework.Data.Database
 		/// <exception cref="InvalidOperationException">The database is not in a ready state.</exception>
 		/// <exception cref="NotSupportedException">Cleanup is not supported by the database or no <see cref="IDatabaseCleanupProcessor"/> is configured.</exception>
 		/// <exception cref="InvalidDatabaseConfigurationException">The database configuration specified by <see cref="Configuration"/> is not valid.</exception>
-		void Cleanup ();
+		bool Cleanup ();
 
 		/// <summary>
 		/// Performs a backup using the configured <see cref="IDatabaseBackupCreator"/>.
 		/// </summary>
 		/// <param name="backupFile">The file the database backup is written to.</param>
+		/// <returns>
+		/// true if the backup was successful, false otherwise.
+		/// Details can be obtained from the log.
+		/// </returns>
 		/// <remarks>
 		/// <para>
 		/// <see cref="State"/> and <see cref="Version"/> are updated to reflect the current state and version of the database after backup.
@@ -258,12 +293,16 @@ namespace RI.Framework.Data.Database
 		/// <exception cref="InvalidOperationException">The database is not in a ready state.</exception>
 		/// <exception cref="NotSupportedException">Backup is not supported by the database or no <see cref="IDatabaseBackupCreator"/> is configured.</exception>
 		/// <exception cref="InvalidDatabaseConfigurationException">The database configuration specified by <see cref="Configuration"/> is not valid.</exception>
-		void Backup (FilePath backupFile);
+		bool Backup (FilePath backupFile);
 
 		/// <summary>
 		/// Performs a backup using the configured <see cref="IDatabaseBackupCreator"/>.
 		/// </summary>
 		/// <param name="backupFile">The file which is used to restore the database from.</param>
+		/// <returns>
+		/// true if the restore was successful, false otherwise.
+		/// Details can be obtained from the log.
+		/// </returns>
 		/// <remarks>
 		/// <para>
 		/// <see cref="State"/> and <see cref="Version"/> are updated to reflect the current state and version of the database after restore.
@@ -275,12 +314,16 @@ namespace RI.Framework.Data.Database
 		/// <exception cref="InvalidOperationException">The database is not initialized.</exception>
 		/// <exception cref="NotSupportedException">Restore is not supported by the database or no <see cref="IDatabaseBackupCreator"/> is configured.</exception>
 		/// <exception cref="InvalidDatabaseConfigurationException">The database configuration specified by <see cref="Configuration"/> is not valid.</exception>
-		void Restore (FilePath backupFile);
+		bool Restore (FilePath backupFile);
 
 		/// <summary>
 		/// Performs an upgrade to a specific database version using the configured <see cref="IDatabaseVersionUpgrader"/>.
 		/// </summary>
 		/// <param name="version">The version to upgrade the database to.</param>
+		/// <returns>
+		/// true if the upgrade was successful, false otherwise.
+		/// Details can be obtained from the log.
+		/// </returns>
 		/// <remarks>
 		/// <para>
 		/// <see cref="State"/> and <see cref="Version"/> are updated to reflect the current state and version of the database after upgrade.
@@ -296,11 +339,15 @@ namespace RI.Framework.Data.Database
 		/// <exception cref="NotSupportedException">Upgrading is not supported by the database or no <see cref="IDatabaseVersionUpgrader"/> is configured.</exception>
 		/// <exception cref="ArgumentOutOfRangeException"><paramref name="version"/> is less than <see cref="MinVersion"/>, greater than <see cref="MaxVersion"/>, or less than <see cref="Version"/>.</exception>
 		/// <exception cref="InvalidDatabaseConfigurationException">The database configuration specified by <see cref="Configuration"/> is not valid.</exception>
-		void Upgrade (int version);
+		bool Upgrade (int version);
 
 		/// <summary>
 		/// Performs an upgrade to highest supported version using the configured <see cref="IDatabaseVersionUpgrader"/>.
 		/// </summary>
+		/// <returns>
+		/// true if the upgrade was successful, false otherwise.
+		/// Details can be obtained from the log.
+		/// </returns>
 		/// <remarks>
 		/// <para>
 		/// <see cref="State"/> and <see cref="Version"/> are updated to reflect the current state and version of the database after upgrade.
@@ -315,7 +362,7 @@ namespace RI.Framework.Data.Database
 		/// <exception cref="InvalidOperationException">The database is not in a ready or the new state.</exception>
 		/// <exception cref="NotSupportedException">Upgrading is not supported by the database or no <see cref="IDatabaseVersionUpgrader"/> is configured.</exception>
 		/// <exception cref="InvalidDatabaseConfigurationException">The database configuration specified by <see cref="Configuration"/> is not valid.</exception>
-		void Upgrade ();
+		bool Upgrade ();
 
 		/// <summary>
 		/// Gets a list of all tracked connections.
@@ -357,9 +404,14 @@ namespace RI.Framework.Data.Database
 		event EventHandler<DatabaseConnectionChangedEventArgs> ConnectionChanged;
 
 		/// <summary>
-		/// Raised when a connection has been created.
+		/// Raised when a connection has been created using <see cref="CreateConnection"/>.
 		/// </summary>
 		event EventHandler<DatabaseConnectionCreatedEventArgs> ConnectionCreated;
+
+		/// <summary>
+		/// Raised when a script has been retrieved using <see cref="GetScriptBatch"/>.
+		/// </summary>
+		event EventHandler<DatabaseScriptRetrievedEventArgs> ScriptRetrieved;
 	}
 
 	/// <inheritdoc cref="IDatabaseManager"/>

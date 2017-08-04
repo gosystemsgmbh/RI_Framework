@@ -6,7 +6,7 @@
 namespace RI.Framework.Data.Database.Scripts
 {
 	/// <summary>
-	///     Contains types for database script handling.
+	///     Contains database script locators.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc
