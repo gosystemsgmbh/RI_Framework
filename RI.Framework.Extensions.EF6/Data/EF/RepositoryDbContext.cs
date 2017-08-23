@@ -456,7 +456,7 @@ namespace RI.Framework.Data.EF
 		///         The messages coming from <see cref="DbContext" /> are mostly SQL commands sent to the database.
 		///     </para>
 		///     <para>
-		///         The default implementation calls <see cref="ILogSourceExtensions.Log(ILogSource,LogLevel,string,object[])" /> to log the message.
+		///         The default implementation calls <see cref="M:ILogSourceExtensions.Log(ILogSource,LogLevel,string,object[])" /> to log the message.
 		///     </para>
 		/// </remarks>
 		protected virtual void LogDatabase (string message)

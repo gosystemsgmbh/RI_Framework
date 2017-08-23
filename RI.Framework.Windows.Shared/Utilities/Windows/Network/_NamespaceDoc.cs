@@ -3,10 +3,10 @@
 
 
 
-namespace RI.Framework.Utilities.Logging
+namespace RI.Framework.Utilities.Windows.Network
 {
 	/// <summary>
-	///     Contains logging utilities.
+	///     Contains Windows-specific network utilities.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

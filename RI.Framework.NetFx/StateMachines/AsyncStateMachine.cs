@@ -136,7 +136,7 @@ namespace RI.Framework.StateMachines
 			Task<bool> waitTask;
 			lock (this.SyncRoot)
 			{
-				waitTask = this.WaitForTransient(state, Timeout.Infinite, CancellationToken.None);
+				waitTask = this.WaitForTransientAsync(state, Timeout.Infinite, CancellationToken.None);
 				this.TransientInternal(nextState);
 			}
 
@@ -242,10 +242,10 @@ namespace RI.Framework.StateMachines
 		///     </para>
 		/// </remarks>
 		/// <exception cref="TaskCanceledException"> The state transition was aborted. </exception>
-		public async Task<bool> WaitForTransient <TState> (int timeout)
+		public async Task<bool> WaitForTransientAsync <TState> (int timeout)
 			where TState : IState
 		{
-			return await this.WaitForTransient<TState>(timeout, CancellationToken.None).ConfigureAwait(false);
+			return await this.WaitForTransientAsync<TState>(timeout, CancellationToken.None).ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -262,9 +262,9 @@ namespace RI.Framework.StateMachines
 		///     </para>
 		/// </remarks>
 		/// <exception cref="TaskCanceledException"> The state transition was aborted. </exception>
-		public async Task<bool> WaitForTransient (Type state, int timeout)
+		public async Task<bool> WaitForTransientAsync (Type state, int timeout)
 		{
-			return await this.WaitForTransient(state, timeout, CancellationToken.None).ConfigureAwait(false);
+			return await this.WaitForTransientAsync(state, timeout, CancellationToken.None).ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -282,10 +282,10 @@ namespace RI.Framework.StateMachines
 		///     </para>
 		/// </remarks>
 		/// <exception cref="TaskCanceledException"> The state transition was aborted. </exception>
-		public async Task<bool> WaitForTransient <TState> (int timeout, CancellationToken cancellationToken)
+		public async Task<bool> WaitForTransientAsync <TState> (int timeout, CancellationToken cancellationToken)
 			where TState : IState
 		{
-			return await this.WaitForTransient(typeof(TState), timeout, cancellationToken).ConfigureAwait(false);
+			return await this.WaitForTransientAsync(typeof(TState), timeout, cancellationToken).ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -303,7 +303,7 @@ namespace RI.Framework.StateMachines
 		///     </para>
 		/// </remarks>
 		/// <exception cref="TaskCanceledException"> The state transition was aborted. </exception>
-		public async Task<bool> WaitForTransient (Type state, int timeout, CancellationToken cancellationToken)
+		public async Task<bool> WaitForTransientAsync (Type state, int timeout, CancellationToken cancellationToken)
 		{
 			TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
 

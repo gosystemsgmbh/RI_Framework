@@ -3,10 +3,10 @@
 
 
 
-namespace RI.Framework.Utilities.Logging
+namespace RI.Framework.Utilities.Windows.Messages
 {
 	/// <summary>
-	///     Contains logging utilities.
+	///     Contains a wrapper implementation around Windows messages.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

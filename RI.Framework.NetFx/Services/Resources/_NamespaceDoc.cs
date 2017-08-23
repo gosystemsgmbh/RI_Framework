@@ -6,7 +6,7 @@
 namespace RI.Framework.Services.Resources
 {
 	/// <summary>
-	///     Provides a service to retrieve resources.
+	///     Contains the resource service.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

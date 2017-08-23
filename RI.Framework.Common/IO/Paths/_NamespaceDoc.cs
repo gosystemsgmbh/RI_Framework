@@ -6,7 +6,7 @@
 namespace RI.Framework.IO.Paths
 {
 	/// <summary>
-	///     Contains utilities for working with paths.
+	///     Contains utilities for working with file paths.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

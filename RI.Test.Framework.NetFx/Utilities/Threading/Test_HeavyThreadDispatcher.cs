@@ -6,6 +6,7 @@ using System.Threading;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Threading;
 using RI.Framework.Threading.Dispatcher;
 
@@ -406,6 +407,8 @@ namespace RI.Test.Framework.Utilities.Threading
 
 			op1 = test.Post(new Action(() => { Thread.Sleep(10000); }));
 
+			Thread.Sleep(100);
+
 			if (op1.Wait(100))
 			{
 				throw new TestAssertionException();
@@ -415,8 +418,7 @@ namespace RI.Test.Framework.Utilities.Threading
 
 			if (op1.State != ThreadDispatcherOperationState.Executing)
 			{
-				//TODO: Fix
-				//throw new TestAssertionException();
+				throw new TestAssertionException();
 			}
 
 			if (op2.State != ThreadDispatcherOperationState.Waiting)

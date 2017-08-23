@@ -6,7 +6,7 @@
 namespace RI.Framework.Web.Nancy
 {
 	/// <summary>
-	///     Contains extensions for NancyFX.
+	///     Contains utilities for NancyFX.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

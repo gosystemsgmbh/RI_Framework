@@ -6,7 +6,7 @@
 namespace RI.Framework.StateMachines.Dispatchers
 {
 	/// <summary>
-	///     Contains transition and signal dispatcher implementations.
+	///     Contains transition, signal, and update dispatcher implementations.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

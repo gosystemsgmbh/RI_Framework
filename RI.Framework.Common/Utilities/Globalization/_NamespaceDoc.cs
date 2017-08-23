@@ -3,10 +3,10 @@
 
 
 
-namespace RI.Framework.Utilities.Logging
+namespace RI.Framework.Utilities.Globalization
 {
 	/// <summary>
-	///     Contains logging utilities.
+	///     Contains globalization utilities.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

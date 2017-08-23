@@ -6,7 +6,7 @@
 namespace RI.Framework.Services.Messaging
 {
 	/// <summary>
-	///     Provides a service to send and receive messages asynchronously between modules of an application.
+	///     Contains the in-memory messaging service.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

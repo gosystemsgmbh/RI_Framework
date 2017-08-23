@@ -3,10 +3,10 @@
 
 
 
-namespace RI.Framework.Utilities.Logging
+namespace RI.Framework.Threading.Dispatcher
 {
 	/// <summary>
-	///     Contains logging utilities.
+	///     Contains a standalone implementation of a dispatcher.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

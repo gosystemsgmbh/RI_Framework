@@ -196,6 +196,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Exceptions\NotWriteableStreamArgumentException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Exceptions\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Globalization\CultureInfoExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Globalization\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Logging\ILogger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Logging\ILogSource.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Logging\ILogSourceExtensions.cs" />

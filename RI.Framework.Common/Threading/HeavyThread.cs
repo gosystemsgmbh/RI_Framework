@@ -334,6 +334,21 @@ namespace RI.Framework.Threading
 		#region Instance Methods
 
 		/// <summary>
+		/// Checks whether the thread had an exception and throws a <see cref="HeavyThreadException"/> if so.
+		/// </summary>
+		/// <exception cref="HeavyThreadException">The thread had an exception.</exception>
+		public void CheckForException ()
+		{
+			lock (this.SyncRoot)
+			{
+				if (this.ThreadException != null)
+				{
+					throw new HeavyThreadException(this.ThreadException);
+				}
+			}
+		}
+
+		/// <summary>
 		///     Determines whether the caller of this function is executed inside the thread or not.
 		/// </summary>
 		/// <returns>

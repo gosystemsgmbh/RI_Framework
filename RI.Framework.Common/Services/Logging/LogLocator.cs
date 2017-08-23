@@ -68,10 +68,10 @@ namespace RI.Framework.Services.Logging
 		/// <inheritdoc cref="ILogService.Cleanup(TimeSpan)" />
 		public static void Cleanup (TimeSpan retentionTime) => LogLocator.Service?.Cleanup(retentionTime);
 
-		/// <inheritdoc cref="ILogger.Log(LogLevel,string,string,object[])" />
+		/// <inheritdoc cref="M:ILogger.Log(LogLevel,string,string,object[])" />
 		public static void Log (LogLevel severity, string source, string format, params object[] args) => LogLocator.Service?.Log(severity, source, format, args);
 
-		/// <inheritdoc cref="ILogger.Log(DateTime,int,LogLevel,string,string,object[])" />
+		/// <inheritdoc cref="M:ILogger.Log(DateTime,int,LogLevel,string,string,object[])" />
 		public static void Log (DateTime timestamp, int threadId, LogLevel severity, string source, string format, params object[] args) => LogLocator.Service?.Log(timestamp, threadId, severity, source, format, args);
 
 		#endregion

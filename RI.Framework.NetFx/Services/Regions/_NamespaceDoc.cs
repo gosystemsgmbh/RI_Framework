@@ -6,7 +6,7 @@
 namespace RI.Framework.Services.Regions
 {
 	/// <summary>
-	///     Provides a service to modularize an applications user interface.
+	///     Contains the region service.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

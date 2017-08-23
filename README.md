@@ -7,7 +7,6 @@
   - [ ] TODOs
   - [ ] NuGet updates
   - [ ] Code cleanup
-  - [ ] Check usage of IModuleService and IDispatcherService and ILogService in documentation
   - [ ] Packages
 - [ ] Testing
   - [ ] ThreadDispatcher with priority queue
@@ -30,7 +29,6 @@
   - [ ] FileCatalog
   - [ ] ContainerCatalog
 - [ ] Documentation
-  - [ ] Namespace descriptions
   - [ ] NetFx: Simple documentation
   - [ ] Unity: Uncomments after implementation
   - [ ] Unity: AOT/IL2CPP

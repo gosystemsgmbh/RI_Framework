@@ -172,10 +172,12 @@
     <Compile Include="StateMachines\Dispatchers\ThreadDispatcherStateDispatcher.cs" />
     <Compile Include="Threading\Async\CultureFlower.cs" />
     <Compile Include="Threading\Async\CustomAwaiter.cs" />
+    <Compile Include="Threading\Async\_NamespaceDoc.cs" />
     <Compile Include="Threading\Dispatcher\HeavyThreadDispatcher.cs" />
     <Compile Include="Threading\Dispatcher\IThreadDispatcher.cs" />
     <Compile Include="Threading\Dispatcher\IThreadDispatcherExtensions.cs" />
     <Compile Include="Threading\Async\CustomFlower.cs" />
+    <Compile Include="Threading\Dispatcher\_NamespaceDoc.cs" />
     <Compile Include="Threading\SynchronizationContextAwaiter.cs" />
     <Compile Include="Threading\SynchronizationContextExtensions.cs" />
     <Compile Include="Threading\SynchronizationContextFlower.cs" />
@@ -194,6 +196,7 @@
     <Compile Include="Threading\Dispatcher\ThreadDispatcherTimer.cs" />
     <Compile Include="Threading\Dispatcher\ThreadDispatcherTimerMode.cs" />
     <Compile Include="Threading\Async\ThreadPoolAwaiter.cs" />
+    <Compile Include="Threading\Tasks\_NamespaceDoc.cs" />
     <Compile Include="Web\_NamespaceDoc.cs" />
   </ItemGroup>
   <ItemGroup>

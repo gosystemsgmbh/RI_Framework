@@ -6,7 +6,7 @@
 namespace RI.Framework.Composition
 {
 	/// <summary>
-	///     Contains infrastructure for doing composition, which is Dependency Injection (DI), which is a specialized form of Inversion-of-Control (IoC).
+	///     Contains infrastructure for doing composition or Dependency Injection (DI) / Inversion-of-Control (IoC) respectively.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

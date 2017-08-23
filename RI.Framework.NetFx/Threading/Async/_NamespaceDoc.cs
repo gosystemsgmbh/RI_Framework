@@ -3,10 +3,10 @@
 
 
 
-namespace RI.Framework.Utilities.Logging
+namespace RI.Framework.Threading.Async
 {
 	/// <summary>
-	///     Contains logging utilities.
+	///     Contains utilities to work with async/await.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

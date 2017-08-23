@@ -21,7 +21,7 @@ namespace RI.Framework.Services.Logging.Filters
 		/// </summary>
 		/// <remarks>
 		///     <para>
-		///         <see cref="LogLevel.Debug" /> is used for <see cref="MinSeverity" />, effectively allowing all messages by default.
+		///         <see cref="RI.Framework.Utilities.Logging.LogLevel.Debug" /> is used for <see cref="MinSeverity" />, effectively allowing all messages by default.
 		///     </para>
 		/// </remarks>
 		public SeverityLogFilter ()

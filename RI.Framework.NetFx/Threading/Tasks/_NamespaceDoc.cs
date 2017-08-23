@@ -3,10 +3,10 @@
 
 
 
-namespace RI.Framework.Utilities.Logging
+namespace RI.Framework.Threading.Tasks
 {
 	/// <summary>
-	///     Contains logging utilities.
+	///     Contains utilities to work with tasks.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc
