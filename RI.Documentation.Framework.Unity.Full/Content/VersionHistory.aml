@@ -7,73 +7,21 @@
 
         <introduction />
 
+        <section address="V.2.0.0.0">
+            <title>2.0.0.0</title>
+            <content>
+                <para>
+                    Second, not backward compatible release with major improvements.
+                </para>
+            </content>
+        </section>
+
         <section address="V.1.0.0.0">
             <title>1.0.0.0</title>
             <content>
                 <para>
                     First release.
                 </para>
-            </content>
-        </section>
-
-        <section address="V.1.1.0.0">
-            <title>1.1.0.0</title>
-            <content>
-                <para>
-                    * = breaking changes
-                </para>
-                <para>
-                    <legacyUnderline>Enhancements</legacyUnderline>
-                </para>
-                <para>New decoupling feature: Global discovery, export attribute no longer required (ScriptingCatalog, AppDomainCatalog, TypeCatalog, InstanceCatalog)</para>
-                <para>New decoupling feature: Parent/Child containers (CompositionContainer)</para>
-                <para>New decoupling feature: Filters for log service and log writers (ILogFilter, SeverityLogFilter, PredicateLogFilter)</para>
-                <para>New utility feature: CSV file handling (CsvDocument, CsvReader, CsvWriter)</para>
-                <para>New utility feature: Natural alphanumeric sorting (AlphanumComparer)</para>
-                <para>New utility feature: Temporary file utility (TemporaryFile)</para>
-                <para>New type: AggregateCatalog</para>
-                <para>New type: AppDomainCatalog</para>
-                <para>New type: FileCatalog</para>
-                <para>New type: ILogSource</para>
-                <para>New type: ILogSourceExtensions</para>
-                <para>New type: Singleton</para>
-                <para>New type: RuntimeEnvironment</para>
-                <para>New type: CultureInfoExtensions</para>
-                <para>New type: StateDispatcher</para>
-                <para>New type: CompositionContainerStateResolver</para>
-                <para>New event: StateMachine.TransistionAborted</para>
-                <para>New method: AssemblyExtensions.GetEmbeddedFileStream</para>
-                <para>New method: StateMachine.OnTransitionAborted</para>
-                <para>New method: StateMachine.Update</para>
-                <para>New method: IState.Update *</para>
-                <para>New method: IStateDispatcher.DispatchUpdate *</para>
-                <para>New property: ServiceLocator.UseCaching</para>
-                <para>New property: ServiceLocator.UseSingletons</para>
-                <para>New property: IState.UpdateInterval *</para>
-                <para>
-                    <legacyUnderline>Changes</legacyUnderline>
-                </para>
-                <para>StateMachineConfiguration: Is now abstract *</para>
-                <para>StateMachineConfiguration: Has new default values *</para>
-                <para>StateMachineConfiguration: Requires a dispatcher, resolver, and cache when passed to StateMachine constructor *</para>
-                <para>StateResolver: Does no longer use CompositionContainer or Singleton&lt;T&gt; *</para>
-                <para>IState: Now inherits ISynchronizable *</para>
-                <para>IStateCache: Now inherits ISynchronizable *</para>
-                <para>IStateResolver: Now inherits ISynchronizable *</para>
-                <para>IStateDispatcher: Now inherits ISynchronizable *</para>
-                <para>
-                    <legacyUnderline>Fixes</legacyUnderline>
-                </para>
-                <para>CompositionContainer: Exception when disposing a CompositionContainer which exports itself</para>
-                <para>Import: Imports only updated once</para>
-                <para>ServiceLocator: Not thread-safe.</para>
-                <para>Singleton&lt;T&gt;: Not thread-safe.</para>
-                <para>DispatcherService: Receiver registration and unregistration not thread-safe</para>
-                <para>DispatcherServiceStateDispatcher: Not thread-safe</para>
-                <para>StateCache: Not thread-safe</para>
-                <para>StateResolver: Not thread-safe</para>
-                <para>State: Not thread-safe</para>
-                <para>MonoState: Not thread-safe</para>
             </content>
         </section>
 

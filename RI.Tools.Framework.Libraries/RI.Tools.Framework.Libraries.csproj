@@ -37,12 +37,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="NuGet\ControlzEx.2.0.1.61.nupkg" />
+    <None Include="NuGet\ControlzEx.2.2.0.4.nupkg" />
     <None Include="NuGet\EntityFramework.6.1.3.nupkg" />
     <None Include="NuGet\Fluent.Ribbon.4.0.3.394.nupkg" />
+    <None Include="NuGet\Fluent.Ribbon.5.0.2.46.nupkg" />
     <None Include="NuGet\Nancy.1.4.3.nupkg" />
+    <None Include="NuGet\Nancy.1.4.4.nupkg" />
     <None Include="NuGet\System.Data.SQLite.Core.1.0.104.0.nupkg" />
+    <None Include="NuGet\System.Data.SQLite.Core.1.0.105.2.nupkg" />
     <None Include="NuGet\System.Data.SQLite.EF6.1.0.104.0.nupkg" />
+    <None Include="NuGet\System.Data.SQLite.EF6.1.0.105.2.nupkg" />
     <None Include="NuGet\System.Data.SQLite.Linq.1.0.104.0.nupkg" />
+    <None Include="NuGet\System.Data.SQLite.Linq.1.0.105.2.nupkg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

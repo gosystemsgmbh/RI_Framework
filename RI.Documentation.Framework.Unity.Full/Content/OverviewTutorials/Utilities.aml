@@ -21,11 +21,11 @@
                         <codeEntityReference qualifyHint="false">T:RI.Framework.Utilities.Threading.ThreadMover</codeEntityReference>
                     </para>
                 </listItem>
-                <!--<listItem>
+                <listItem>
                     <para>
                         <codeEntityReference qualifyHint="false">T:RI.Framework.Utilities.Threading.HeavyThread</codeEntityReference>
                     </para>
-                </listItem>-->
+                </listItem>
                 <listItem>
                     <para>
                         <codeEntityReference qualifyHint="false">T:RI.Framework.Collections.Comparison.CollectionComparer`1</codeEntityReference>
@@ -73,12 +73,22 @@
                 </listItem>
                 <listItem>
                     <para>
+                        <codeEntityReference qualifyHint="false">T:RI.Framework.IO.CSV.CsvDocument</codeEntityReference>
+                    </para>
+                </listItem>
+                <listItem>
+                    <para>
                         <codeEntityReference qualifyHint="false">T:RI.Framework.IO.Paths.FilePath</codeEntityReference>
                     </para>
                 </listItem>
                 <listItem>
                     <para>
                         <codeEntityReference qualifyHint="false">T:RI.Framework.IO.Paths.DirectoryPath</codeEntityReference>
+                    </para>
+                </listItem>
+                <listItem>
+                    <para>
+                        <codeEntityReference qualifyHint="false">T:RI.Framework.IO.Files.TemporaryFile</codeEntityReference>
                     </para>
                 </listItem>
                 <listItem>
@@ -96,11 +106,11 @@
                         <codeEntityReference qualifyHint="false">T:RI.Framework.Mathematic.RunningValues</codeEntityReference>
                     </para>
                 </listItem>
-                <!--<listItem>
+                <listItem>
                     <para>
                         <codeEntityReference qualifyHint="false">T:RI.Framework.Mathematic.StatisticValues</codeEntityReference>
                     </para>
-                </listItem>-->
+                </listItem>
                 <listItem>
                     <para>
                         <codeEntityReference qualifyHint="false">T:RI.Framework.StateMachines.StateMachine</codeEntityReference>
@@ -121,11 +131,16 @@
                         <codeEntityReference qualifyHint="false">T:RI.Framework.Utilities.ObjectModel.Singleton`1</codeEntityReference>
                     </para>
                 </listItem>
-                <!--<listItem>
+                <listItem>
+                    <para>
+                        <codeEntityReference qualifyHint="false">T:RI.Framework.Utilities.Text.AlphanumComparer</codeEntityReference>
+                    </para>
+                </listItem>
+                <listItem>
                     <para>
                         <codeEntityReference qualifyHint="false">T:RI.Framework.Utilities.Text.CommandLine</codeEntityReference>
                     </para>
-                </listItem>-->
+                </listItem>
                 <listItem>
                     <para>
                         <codeEntityReference qualifyHint="false">T:RI.Framework.Utilities.Text.IndentedTextWriter</codeEntityReference>

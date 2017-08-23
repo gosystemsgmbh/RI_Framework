@@ -68,7 +68,7 @@ go.AddComponent<Bootstrapper>();
                     The other decoupling service descriptions explain how to use them as independent standalone services.
                 </para>
                 <para>
-                    As an alternative, you can disable certain decoupling features using the bootstrapper options (see below).
+                    As an alternative, you can disable certain decoupling features and services using the bootstrapper options (see below).
                 </para>
             </content>
         </section>
@@ -91,7 +91,7 @@ go.AddComponent<Bootstrapper>();
 protected override void ConfigureContainer ()
 {
     base.ConfigureContainer();
-    this.Container.AddCatalog(new TypeCatalog(typeof(SomeType), typeof(AnotherType)));
+    this.Container.AddCatalog(new FileCatalog("myfile.dll", true));
 }
                     ]]>
                 </code>
@@ -108,7 +108,7 @@ protected override void ConfigureContainer ()
                     <image xlink:href="BootstrapperOptions" />
                 </mediaLink>
                 <para>
-                    These options can be helpful if you do want to use the bootstrapper but not all of the decoupling services or if you want to use your own implementation of a service.
+                    These options can be helpful if you do want to use the bootstrapper but not all of the decoupling features/services or if you want to use your own implementation of a service.
                     The only decoupling service always required and created by the bootstrapper is the composition container.
                 </para>
                 <para>

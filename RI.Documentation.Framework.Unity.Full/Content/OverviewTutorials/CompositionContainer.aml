@@ -36,13 +36,11 @@ using RI.Framework.Services;
 using RI.Framework.Services.Modularization;
 
 
-[Export]
 public sealed class GameRules : MonoModule
 {
 }
 
 
-[Export]
 public sealed class EnemyManager : MonoModule
 {
     [Import]
@@ -56,7 +54,9 @@ public sealed class EnemyManager : MonoModule
                     requires an instance of
                     <legacyItalic>GameRules</legacyItalic>
                     .
-                    The composition container will automatically create the instance and assign it to the
+                    The composition container will automatically resolve (and create, if necessary) the instance for
+                    <legacyItalic>GameRules</legacyItalic>
+                    and assign it to the
                     <legacyItalic>Rules</legacyItalic>
                     property.
                 </para>
@@ -75,7 +75,7 @@ public sealed class EnemyManager : MonoModule
                     ) if it is exported first.
                     To export a type, and therefore make it discoverable by the composition container, add an
                     <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Model.ExportAttribute</codeEntityReference>
-                    to the type.
+                    to the type or use a catalog which exports all types it can find and thus not requiring to explicitly export types.
                 </para>
                 <para>
                     An object will have its declared imports resolved when the object itself is also known by the composition container (means: the object itself is also exported)
@@ -86,15 +86,12 @@ public sealed class EnemyManager : MonoModule
                 </para>
                 <para>
                     Then, each object which is imported to another object has its own imports resolved, and the imports of those imports, and so on.
-                    Alternative perspective: Each exported object gets its imports resolved if instances of those exported objects are retrieved using the composition container.
+                    Alternative perspective: Each exported object gets its imports resolved if an instance of that exported object is retrieved using the composition container.
                 </para>
                 <para>
                     Or in short words: If you want to use dependency injection, always get instances through the composition container instead of creating them using
                     <legacyItalic>new</legacyItalic>
                     .
-                </para>
-                <para>
-                    Note that imports are available after the constructer has run.
                 </para>
             </content>
         </section>
@@ -132,35 +129,11 @@ CompositionContainer container = new CompositionContainer();
                     Any class type can be exported and/or have imports as long as they go through the composition container.
                 </para>
                 <para>
-                    One special case is a type which inherits from
+                    The following exemple shows usage with an arbitrary type and also with
                     <legacyItalic>MonoBehaviour</legacyItalic>
-                    .
-                    Instances of
-                    <legacyItalic>MonoBehaviour</legacyItalic>
-                    cannot be instantiated in a normal way, using
-                    <legacyItalic>new</legacyItalic>
-                    , because they need to be added as a component to a
+                    (which gets special treatment by the framework because it needs to be part of a
                     <legacyItalic>GameObject</legacyItalic>
-                    .
-                    Therefore, if you want to make a
-                    <legacyItalic>MonoBehaviour</legacyItalic>
-                    discoverable, you need to inherit from
-                    <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.ComposableMonoBehaviour</codeEntityReference>
-                    instead of
-                    <legacyItalic>MonoBehaviour</legacyItalic>
-                    .
-                    During instantiation, a new
-                    <legacyItalic>GameObject</legacyItalic>
-                    is automatically created to which the
-                    <legacyItalic>MonoBehaviour</legacyItalic>
-                    is added.
-                    Alternatively, you can explicitly export any
-                    <legacyItalic>MonoBehaviour</legacyItalic>
-                    , as described below.
-                </para>
-                <para>
-                    The following exemple shows usage with an arbitrary type and with
-                    <legacyItalic>MonoBehaviour</legacyItalic>:
+                    ):
                 </para>
                 <code language="cs">
                     <![CDATA[
@@ -170,19 +143,16 @@ using RI.Framework.Services;
 using RI.Framework.Services.Modularization;
 
 
-[Export]
 public sealed class FancyCalculations
 {
 }
 
 
-[Export]
-public sealed class Raycaster : ComposableMonoBehaviour
+public sealed class Raycaster : MonoBehaviour
 {
 }
 
 
-[Export]
 public class EnemyManager : MonoModule
 {
     [Import]
@@ -215,13 +185,11 @@ using RI.Framework.Services;
 using RI.Framework.Services.Modularization;
 
 
-[Export]
 public sealed class GameRules : MonoModule
 {
 }
 
 
-[Export]
 public sealed class EnemyManager : MonoModule
 {
     [Import]
@@ -260,7 +228,6 @@ using RI.Framework.Services;
 using RI.Framework.Services.Modularization;
 
 
-[Export]
 public sealed class EnemyManager : MonoModule
 {
     [Import]
@@ -286,7 +253,6 @@ using RI.Framework.Services;
 using RI.Framework.Services.Modularization;
 
 
-[Export]
 public sealed class EnemyManager : MonoModule
 {
     [Import]
@@ -319,7 +285,6 @@ using RI.Framework.Services;
 using RI.Framework.Services.Modularization;
 
 
-[Export]
 public interface IEnemyAI
 {
 }
@@ -335,7 +300,6 @@ public sealed class DumbEnemyAI : IEnemyAI
 }
 
 
-[Export]
 public class EnemyManager : MonoModule
 {
     // importing multiple instances is only possible with the Import proxy in order to be AOT-compatible (this might change in a future version...)
@@ -365,9 +329,6 @@ public class EnemyManager : MonoModule
 }
                     ]]>
                 </code>
-                <para>
-                    Note that the implementations have no export declaration as the one of the interface is inherited to its implementations.
-                </para>
             </content>
         </section>
 
@@ -412,7 +373,7 @@ public class EnemyManager : MonoModule
                         <para>
                             <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Catalogs.ScriptingCatalog</codeEntityReference>
                             :
-                            All exported types of the Unity scripting assemblies are used for discovery.
+                            All types of the Unity scripting assemblies are used for discovery.
                             Unity scripting assemblies are all assemblies which start with the name
                             <legacyItalic>Assembly-CSharp</legacyItalic>
                             .
@@ -422,24 +383,41 @@ public class EnemyManager : MonoModule
                     </listItem>
                     <listItem>
                         <para>
+                            <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Catalogs.GameObjectCatalog</codeEntityReference>
+                            :
+                            All active
+                            <legacyItalic>GameObject</legacyItalic>s
+                            are used for discovery.
+                            Note that this is a rather slow catalog!
+                    </para>
+                    </listItem>
+                    <listItem>
+                        <para>
+                            <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Catalogs.AppDomainCatalog</codeEntityReference>
+                            :
+                            All types of all assemblies loaded into the current application domain are used for discovery.
+                        </para>
+                    </listItem>
+                    <listItem>
+                        <para>
                             <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Catalogs.AssemblyCatalog</codeEntityReference>
                             :
-                            All exported types of one or more specified assemblies are used for discovery.
+                            All types of one or more specified assemblies are used for discovery.
                         </para>
                     </listItem>
                     <listItem>
                         <para>
                             <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Catalogs.DirectoryCatalog</codeEntityReference>
                             :
-                            All managed DLL assembly files in a specified directory will be loaded and their exported types used for discovery.
+                            All managed DLL assembly files in a specified directory will be loaded and all their types used for discovery.
                         </para>
                     </listItem>
-                    <!--<listItem>
+                    <listItem>
                         <para>
                             <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Catalogs.FileCatalog</codeEntityReference>:
-                            All exported types of a specified managed DLL assembly file are used for discovery.
+                            All types of a specified managed DLL assembly file are used for discovery.
                         </para>
-                    </listItem>-->
+                    </listItem>
                     <listItem>
                         <para>
                             <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Catalogs.TypeCatalog</codeEntityReference>
@@ -454,18 +432,18 @@ public class EnemyManager : MonoModule
                             A catalog where one or more exports can be added manually by directly specifying instances.
                         </para>
                     </listItem>
-                    <!--<listItem>
-                        <para>
-                            <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Catalogs.AppDomainCatalog</codeEntityReference>:
-                            All exported types of all assemblies loaded into the current application domain will be used for discovery.
-                        </para>
-                    </listItem>-->
-                    <!--<listItem>
+                    <listItem>
                         <para>
                             <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Catalogs.AggregateCatalog</codeEntityReference>:
                             Combines multiple catalogs so they can be used as one.
                         </para>
-                    </listItem>-->
+                    </listItem>
+                    <listItem>
+                        <para>
+                            <codeEntityReference qualifyHint="false">T:RI.Framework.Composition.Catalogs.ContainerCatalog</codeEntityReference>:
+                            Used to provide the exports of one composition container to another composition container by wrapping it as a composition catalog.
+                        </para>
+                    </listItem>
                 </list>
             </content>
         </section>
@@ -491,13 +469,11 @@ using RI.Framework.Services;
 using RI.Framework.Services.Modularization;
 
 
-[Export]
 public interface IEnemyAI
 {
 }
 
 
-[Export]
 public sealed class EnemyManager : MonoModule, IImporting
 {
     [Import]
@@ -547,7 +523,6 @@ public sealed class GameRules : MonoModule
 }
 
 
-[Export]
 public sealed class EnemyManager : MonoModule
 {
     [Import("MyRules")]
@@ -585,7 +560,6 @@ public sealed class GameRules : MonoModule, IGameRules
 }
 
 
-[Export]
 public sealed class EnemyManager : MonoModule
 {
     // all of the following imports will get the same instance of the GameRules type

@@ -1,11 +1,9 @@
 # Decoupling & Utilities Framework
 
-## 1.1.0.0
+## 2.0.0.0
 
 - [ ] Cleanup
-  - [ ] Warnings
   - [ ] TODOs
-  - [ ] NuGet updates
   - [ ] Code cleanup
   - [ ] Packages
 - [ ] Testing
@@ -21,15 +19,20 @@
   - [ ] TemporaryFile
   - [ ] CultureInfoExtensions
   - [ ] CompositionContainer with parent container
-  - [ ] CompositionContainer imports/exports
+  - [ ] Exports without export attributes
   - [ ] Filtered log service
   - [ ] Filtered log writer
   - [ ] CSV
   - [ ] AggregateCatalog
   - [ ] FileCatalog
   - [ ] ContainerCatalog
+  - [ ] GameObjectCatalog
+  - [ ] AppDomainCatalog
+  - [ ] AssemblyCatalog
+  - [ ] Run tests with oldest and newest Unity version (update compatibility page)
 - [ ] Documentation
   - [ ] NetFx: Simple documentation
+  - [ ] Unity: Update bootstrapper screenshot and options description
   - [ ] Unity: Uncomments after implementation
   - [ ] Unity: AOT/IL2CPP
   - [ ] Unity: Performance

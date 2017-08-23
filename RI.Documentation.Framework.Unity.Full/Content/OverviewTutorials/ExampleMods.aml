@@ -20,6 +20,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+
 using RI.Framework.Composition;
 using RI.Framework.Composition.Catalogs;
 using RI.Framework.Composition.Model;
@@ -44,7 +45,7 @@ public sealed class ModInfo
     public ModInfo (DirectoryPath modDir)
     {
         this.ModDir = modDir;
-        this.Catalog = new DirectoryCatalog(modDir);
+        this.Catalog = new DirectoryCatalog(modDir, true);
     }
 
     public void Load()
@@ -61,10 +62,9 @@ public sealed class ModInfo
 }
 
 
-[Export]
 public sealed class ModManager : MonoModule
 {
-    // this is our mod manager (which is a module and therefore automatically initialized by the Bootstrapper)
+    // this is our mod manager (which is a module and therefore automatically instantiated and initialized by the Bootstrapper)
 
     public DirectoryPath ModRoot;
     public List<ModInfo> AvailableMods;
@@ -92,7 +92,6 @@ public sealed class ModManager : MonoModule
 }
 
 
-[Export]
 public interface IEnemyAI
 {
     // this is the interface which our mod is going to implement (an interface for implementing enemy AI behaviour)
@@ -101,7 +100,6 @@ public interface IEnemyAI
 }
 
 
-[Export]
 public sealed class EnemyManager : MonoModule, IImporting
 {
     // this is our enemy manager, utilizing all the available enemy AI behaviours

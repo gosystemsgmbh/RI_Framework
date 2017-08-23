@@ -15,10 +15,10 @@
                 and its Mono and IL2CPP backends.
         </para>
             <para>
-                AOT is fully supported within Unitys own AOT and IL2CPP related restrictions.
+                AOT is supported within Unitys own AOT and IL2CPP related restrictions.
             </para>
             <para>
-                The framework has been fully tested on the following platforms:
+                The framework has been tested on the following platforms:
             </para>
             <list class="bullet">
                 <listItem>
@@ -38,7 +38,7 @@
                 </listItem>
             </list>
             <para>
-                The framework has been fully tested with the following Unity versions:
+                The framework has been tested with the following Unity versions:
             </para>
             <list class="bullet">
                 <listItem>

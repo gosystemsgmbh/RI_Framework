@@ -41,7 +41,6 @@ using RI.Framework.Services;
 using RI.Framework.Services.Modularization;
 
 
-[Export]
 public interface IEnemyAI
 {
 }
@@ -57,7 +56,6 @@ public sealed class DumbEnemyAI : IEnemyAI
 }
 
 
-[Export]
 public sealed class EnemyManager : MonoModule
 {
     public IEnemyAI[] EnemyAIs;

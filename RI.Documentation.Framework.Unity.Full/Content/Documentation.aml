@@ -41,6 +41,11 @@
                     </para>
                 </listItem>
             </list>
+            <para>
+                It is recommended to browse the
+                <codeEntityReference qualifyHint="false">R:Project_RI.Documentation.Framework.Unity.Full</codeEntityReference>
+            to discover all the features and functions of the framework.
+        </para>
             <alert class="important">
                 <para>
                     It is recommended that you read the reference for types and members you use.

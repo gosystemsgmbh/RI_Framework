@@ -35,18 +35,6 @@ namespace RI.Framework.Services.Dispatcher
 	///     <note type="important">
 	///         Use <see cref="Later" /> and <see cref="Idle" /> with caution! An operation with one of those priorities is non-deterministic and might never be executed in cases where operations of higher priorities are constantly dispatched (e.g. the dispatcher never becomes idle)!
 	///     </note>
-	///     <para>
-	///         <see cref="Now" />: xxx
-	///     </para>
-	///     <para>
-	///         <see cref="Now" />: xxx
-	///     </para>
-	///     <para>
-	///         <see cref="Now" />: xxx
-	///     </para>
-	///     <para>
-	///         <see cref="Now" />: xxx
-	///     </para>
 	/// </remarks>
 	[Serializable]
 	public enum DispatcherPriority

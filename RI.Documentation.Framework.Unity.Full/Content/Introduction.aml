@@ -51,7 +51,7 @@
             </list>
             <para>
                 Furthermore, this framework provides numerous utilities to save you the time of writing commonly used functionality.
-                Some of the more prominent utilities features are:
+                Some of the more prominent utility features are:
             </para>
             <list class="bullet">
                 <listItem>
@@ -91,6 +91,11 @@
                 </listItem>
                 <listItem>
                     <para>
+                        <legacyBold>CSV file processing</legacyBold>; reading, writing, in-memory representation, conversion to/from arrays
+                    </para>
+                </listItem>
+                <listItem>
+                    <para>
                         <legacyBold>Mathematical functions</legacyBold>; running values, statistics, etc.
                     </para>
                 </listItem>
@@ -117,6 +122,11 @@
                 <listItem>
                     <para>
                         <legacyBold>Unity object extensions</legacyBold>
+                    </para>
+                </listItem>
+                <listItem>
+                    <para>
+                        ...and more...
                     </para>
                 </listItem>
             </list>
