@@ -36,7 +36,7 @@ namespace RI.Test.Framework.StateMachines
 
 			Mock_State.TestValue += "sD2";
 
-			this.StateMachine.Transient<Mock_State_D3>();
+			signalInfo.StateMachine.Transient<Mock_State_D3>();
 
 			Mock_State.TestValue += "***";
 		}

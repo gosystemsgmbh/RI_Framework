@@ -15,7 +15,7 @@ namespace RI.Test.Framework.StateMachines
 
 			Mock_State.TestValue += "eD3";
 
-			this.StateMachine.Transient<Mock_State_D1>();
+			transientInfo.StateMachine.Transient<Mock_State_D1>();
 
 			Mock_State.TestValue += "###";
 		}

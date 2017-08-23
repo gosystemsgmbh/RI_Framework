@@ -1,4 +1,5 @@
 ﻿#if PLATFORM_NETFX
+using RI.Framework.Threading.Dispatcher;
 #endif
 using System;
 
@@ -9,8 +10,6 @@ using RI.Framework.Services;
 using RI.Framework.StateMachines;
 using RI.Framework.StateMachines.Dispatchers;
 using RI.Framework.StateMachines.Resolvers;
-using RI.Framework.Threading;
-using RI.Framework.Threading.Dispatcher;
 
 
 
@@ -39,7 +38,7 @@ namespace RI.Test.Framework.StateMachines
 			StateMachineConfiguration config = new DefaultStateMachineConfiguration();
 			StateMachine test = new StateMachine(config);
 
-			config.EnableAutomaticCaching = false;
+			config.CachingEnabled = false;
 
 			test.Transient<Mock_State_F>();
 			Mock_State_F f1 = (Mock_State_F)test.State;
@@ -59,7 +58,7 @@ namespace RI.Test.Framework.StateMachines
 				throw new TestAssertionException();
 			}
 
-			config.EnableAutomaticCaching = false;
+			config.CachingEnabled = false;
 			config.Cache.AddState(new Mock_State_F());
 
 			test.Transient<Mock_State_F>();
@@ -80,7 +79,7 @@ namespace RI.Test.Framework.StateMachines
 				throw new TestAssertionException();
 			}
 
-			config.EnableAutomaticCaching = true;
+			config.CachingEnabled = true;
 			config.Cache.Clear();
 
 			test.Transient<Mock_State_F>();
@@ -101,7 +100,7 @@ namespace RI.Test.Framework.StateMachines
 				throw new TestAssertionException();
 			}
 
-			config.EnableAutomaticCaching = true;
+			config.CachingEnabled = true;
 			config.Cache.AddState(new Mock_State_F());
 
 			test.Transient<Mock_State_F>();
@@ -124,7 +123,7 @@ namespace RI.Test.Framework.StateMachines
 
 			CompositionContainer container = new CompositionContainer();
 			config.Resolver = new CompositionContainerStateResolver(container);
-			config.EnableAutomaticCaching = false;
+			config.CachingEnabled = false;
 
 			test.Transient(null);
 
@@ -196,7 +195,7 @@ namespace RI.Test.Framework.StateMachines
 
 			StateMachineConfiguration config = new DefaultStateMachineConfiguration();
 			config.Dispatcher = dispatcher;
-			config.EnableAutomaticCaching = false;
+			config.CachingEnabled = false;
 			StateMachine test = new StateMachine(config);
 
 			if (test.State != null)

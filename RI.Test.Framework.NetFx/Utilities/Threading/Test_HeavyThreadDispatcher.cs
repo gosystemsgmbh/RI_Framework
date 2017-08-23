@@ -245,14 +245,12 @@ namespace RI.Test.Framework.Utilities.Threading
 
 			if (!op1.IsDone)
 			{
-				//TODO: Fix
-				//throw new TestAssertionException();
+				throw new TestAssertionException();
 			}
 
-			if (op1.State != ThreadDispatcherOperationState.Aborted)
+			if (op1.State != ThreadDispatcherOperationState.Exception)
 			{
-				//TODO: Fix
-				//throw new TestAssertionException();
+				throw new TestAssertionException();
 			}
 
 			if (op1.Exception != null)

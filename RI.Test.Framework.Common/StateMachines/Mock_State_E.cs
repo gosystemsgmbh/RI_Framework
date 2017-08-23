@@ -9,7 +9,7 @@ namespace RI.Test.Framework.StateMachines
 	{
 		#region Instance Methods
 
-		private void MySignal (string signal)
+		private void MySignal (string signal, StateMachine stateMachine)
 		{
 			Mock_State.TestValue += signal;
 

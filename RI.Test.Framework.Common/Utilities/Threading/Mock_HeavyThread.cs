@@ -53,9 +53,9 @@ namespace RI.Test.Framework.Utilities.Threading
 			this.TestValue += "End";
 		}
 
-		protected override void OnException (Exception exception, bool running, bool canContinue)
+		protected override void OnException (Exception exception, bool canContinue)
 		{
-			base.OnException(exception, running, canContinue);
+			base.OnException(exception, canContinue);
 			this.TestValue += "Exception";
 		}
 
@@ -65,9 +65,9 @@ namespace RI.Test.Framework.Utilities.Threading
 			this.Action();
 		}
 
-		protected override void OnStarted ()
+		protected override void OnStarted (bool withLock)
 		{
-			base.OnStarted();
+			base.OnStarted(withLock);
 			this.TestValue += "Started";
 		}
 
