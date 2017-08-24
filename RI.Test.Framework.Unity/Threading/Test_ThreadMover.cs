@@ -4,14 +4,11 @@ using System.Reflection;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using UnityEngine;
-
 using RI.Framework.Threading;
 
+using UnityEngine;
 
-
-
-namespace RI.Test.Framework.Utilities.Threading
+namespace RI.Test.Framework.Threading
 {
 	public sealed class Test_ThreadMover : TestModule
 	{

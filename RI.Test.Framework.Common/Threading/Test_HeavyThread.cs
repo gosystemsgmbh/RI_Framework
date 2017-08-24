@@ -3,10 +3,7 @@ using System.Threading;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-
-
-
-namespace RI.Test.Framework.Utilities.Threading
+namespace RI.Test.Framework.Threading
 {
 	[TestClass]
 	public sealed class Test_HeavyThread

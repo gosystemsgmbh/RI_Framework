@@ -1,10 +1,7 @@
 using RI.Framework.Composition.Model;
 using RI.Framework.StateMachines;
 
-
-
-
-namespace RI.Test.Framework.StateMachines
+namespace RI.Test.Framework.StateMachines.States
 {
 	[Export]
 	public sealed class Mock_MonoState_C : Mock_MonoState

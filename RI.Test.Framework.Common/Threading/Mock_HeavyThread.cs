@@ -3,7 +3,7 @@ using System.Threading;
 
 using RI.Framework.Threading;
 
-namespace RI.Test.Framework.Utilities.Threading
+namespace RI.Test.Framework.Threading
 {
 	public sealed class Mock_HeavyThread : HeavyThread
 	{
