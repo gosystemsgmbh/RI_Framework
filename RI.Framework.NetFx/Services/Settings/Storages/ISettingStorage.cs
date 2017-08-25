@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using RI.Framework.Composition.Model;
 using RI.Framework.Utilities.Exceptions;
@@ -29,18 +30,49 @@ namespace RI.Framework.Services.Settings.Storages
 		bool IsReadOnly { get; }
 
 		/// <summary>
-		///     Reads a value.
+		/// Gets whether the setting storage only writes/saves values for names it already has a value for.
 		/// </summary>
-		/// <param name="name"> The name of the value. </param>
+		/// <value>
+		/// true if the setting storage only writes/saves values for names it already has a value for, false otherwise.
+		/// </value>
+		/// <remarks>
+		/// <note type="implement">
+		/// The default value should be false.
+		/// </note>
+		/// </remarks>
+		bool WriteOnlyKnown { get; }
+
+		/// <summary>
+		/// Gets the prefix affinity of values when writing/saving.
+		/// </summary>
+		/// <value>
+		/// The prefix affinity of values when writing/saving or null if any name is written/saved.
+		/// </value>
+		/// <remarks>
+		/// <para>
+		/// <see cref="WritePrefixAffinity"/> specifies a prefix for value names.
+		/// Only values whose name starts with the specified prefix are written/saved by the storage.
+		/// </para>
+		/// <note type="implement">
+		/// The default value should be null.
+		/// </note>
+		/// </remarks>
+		string WritePrefixAffinity { get; }
+
+		/// <summary>
+		///     Reads the values of a specifed name.
+		/// </summary>
+		/// <param name="name"> The name of the values. </param>
 		/// <returns>
-		///     The value or null if the value is not available.
+		///     The values.
+		/// If no values are available, an empty list is returned.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="name" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
-		string GetValue (string name);
+		List<string> GetValues (string name);
 
 		/// <summary>
-		///     Checks whether a value is available.
+		///     Checks whether a value of a specified name is available.
 		/// </summary>
 		/// <param name="name"> The name of the value. </param>
 		/// <returns>
@@ -62,13 +94,19 @@ namespace RI.Framework.Services.Settings.Storages
 		void Save ();
 
 		/// <summary>
-		///     Creates, deletes, or updates a value.
+		///     Creates, deletes, or updates values of a specified name.
 		/// </summary>
-		/// <param name="name"> The name of the value. </param>
-		/// <param name="value"> The actual value or null to delete the value. </param>
+		/// <param name="name"> The name of the values. </param>
+		/// <param name="values"> The actual values or null to delete all values. </param>
+		/// <remarks>
+		/// <note type="important">
+		/// Any value of any name passed to <see cref="SetValues"/> must be written/saved by the storage!
+		/// Filtering based on <see cref="WriteOnlyKnown"/> and <see cref="WritePrefixAffinity"/> is done by <see cref="ISettingService"/> and not the storage!
+		/// </note>
+		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="name" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
 		/// <exception cref="NotSupportedException"> The setting stoarge is read-only. </exception>
-		void SetValue (string name, string value);
+		void SetValues (string name, IEnumerable<string> values);
 	}
 }

@@ -779,6 +779,27 @@ namespace RI.Framework.IO.INI
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
 		public string GetValue (string section, string name)
 		{
+			return this.GetValueAll(section, name)?.FirstOrDefault();
+		}
+
+		/// <summary>
+		///     Gets the values of a specified name in a specified section.
+		/// </summary>
+		/// <param name="section"> The name of the section (can be null). </param>
+		/// <param name="name"> The name of the value. </param>
+		/// <returns>
+		///     The values or an empty list if the value does not exist.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         All matching values of all matching sections are returned.
+		///         If <paramref name="section" /> is null, the value is searched outside any section.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="name" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
+		public List<string> GetValueAll (string section, string name)
+		{
 			section = section.ToNullIfNullOrEmpty();
 
 			if (name == null)
@@ -792,6 +813,7 @@ namespace RI.Framework.IO.INI
 			}
 
 			bool isMatchingSection = section == null;
+			List<string> values = new List<string>();
 			foreach (IniElement element in this.Elements)
 			{
 				if (element is SectionIniElement)
@@ -807,13 +829,13 @@ namespace RI.Framework.IO.INI
 						ValueIniElement valueElement = (ValueIniElement)element;
 						if (this.ValueNameComparer.Equals(valueElement.Name, name))
 						{
-							return valueElement.Value;
+							values.Add(valueElement.Value);
 						}
 					}
 				}
 			}
 
-			return null;
+			return values;
 		}
 
 		/// <summary>
@@ -1330,7 +1352,7 @@ namespace RI.Framework.IO.INI
 		/// </returns>
 		/// <remarks>
 		///     <para>
-		///         The first matching value of the first matching section is set.
+		///         The first matching value of the first matching section is set, all other matching values are removed.
 		///         If <paramref name="section" /> is null, the value is set outside any section.
 		///     </para>
 		///     <para>
@@ -1341,6 +1363,35 @@ namespace RI.Framework.IO.INI
 		/// <exception cref="ArgumentNullException"> <paramref name="name" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
 		public bool SetValue (string section, string name, string value)
+		{
+			return this.SetValueAll(section, name, new[]
+			{
+				value
+			});
+		}
+
+		/// <summary>
+		///     Sets the values of a specified name in a specified section.
+		/// </summary>
+		/// <param name="section"> The name of the section (can be null). </param>
+		/// <param name="name"> The name of the value. </param>
+		/// <param name="values"> The values or null or an empty list if the value should be removed (similar to <see cref="DeleteValue" />). </param>
+		/// <returns>
+		///     true if the value existed before, false otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         All matching values of all matching sections are set, all other matching values are removed.
+		///         If <paramref name="section" /> is null, the value is set outside any section.
+		///     </para>
+		///     <para>
+		///         If the section does not yet exist, a new section is created and the value added at its end.
+		///         If the section exists but not the value, the value is added at the end of the first matching section.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="name" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
+		public bool SetValueAll (string section, string name, IList<string> values)
 		{
 			section = section.ToNullIfNullOrEmpty();
 
@@ -1354,13 +1405,16 @@ namespace RI.Framework.IO.INI
 				throw new EmptyStringArgumentException(nameof(name));
 			}
 
-			if (value == null)
+			List<string> finalValues = values?.ToList() ?? new List<string>();
+
+			if (finalValues.Count == 0)
 			{
 				return this.DeleteValue(section, name);
 			}
 
 			bool isMatchingSection = section == null;
 			int insertIndex = -1;
+			List<IniElement> elementsToRemove = new List<IniElement>();
 			for (int i1 = 0; i1 < this.Elements.Count; i1++)
 			{
 				IniElement element = this.Elements[i1];
@@ -1382,25 +1436,40 @@ namespace RI.Framework.IO.INI
 						ValueIniElement valueElement = (ValueIniElement)element;
 						if (this.ValueNameComparer.Equals(valueElement.Name, name))
 						{
-							valueElement.Value = value;
-							return true;
+							if (finalValues.Count == 0)
+							{
+								elementsToRemove.Add(valueElement);
+							}
+							else
+							{
+								valueElement.Value = finalValues.Pop(0);
+								insertIndex = i1;
+							}
 						}
 					}
 				}
 			}
 
-			if (insertIndex == -1)
+			if (finalValues.Count > 0)
 			{
-				if (!isMatchingSection)
+				if (insertIndex == -1)
 				{
-					this.Elements.Add(new SectionIniElement(section));
+					if (!isMatchingSection)
+					{
+						this.Elements.Add(new SectionIniElement(section));
+					}
+					finalValues.ForEach(x => this.Elements.Add(new ValueIniElement(name, x)));
 				}
-				this.Elements.Add(new ValueIniElement(name, value));
+				else
+				{
+					for (int i1 = 0; i1 < finalValues.Count; i1++)
+					{
+						this.Elements.Insert(insertIndex + i1, new ValueIniElement(name, finalValues[i1]));
+					}
+				}
 			}
-			else
-			{
-				this.Elements.Insert(insertIndex, new ValueIniElement(name, value));
-			}
+
+			this.Elements.RemoveRange(elementsToRemove);
 
 			return false;
 		}
@@ -1472,6 +1541,96 @@ namespace RI.Framework.IO.INI
 			try
 			{
 				foreach (KeyValuePair<string, IDictionary<string, string>> value in values)
+				{
+					try
+					{
+						this.RemoveSections(value.Key);
+						this.AddSection(value.Key, IniSectionAddMode.AppendEnd, value.Value);
+					}
+					catch (ArgumentException exception)
+					{
+						throw new ArgumentException(exception.Message, nameof(values), exception);
+					}
+				}
+				success = true;
+			}
+			finally
+			{
+				if (!success)
+				{
+					this.Elements.Clear();
+					this.Elements.AddRange(backup);
+				}
+			}
+		}
+
+		/// <summary>
+		///     Sets the name-value-pairs of a section specified by a dictionary.
+		/// </summary>
+		/// <param name="section"> The name of the section (can be null). </param>
+		/// <param name="values"> The dictionary with the name-value-pairs of the section. </param>
+		/// <remarks>
+		///     <para>
+		///         If <paramref name="section" /> is null, the value is set outside any section.
+		///     </para>
+		///     <para>
+		///         All existing sections and their name-value-pairs which are specified by <paramref name="section" /> will be replaced by the specified values.
+		///         Sections not specified by <paramref name="section" /> will remain unchanged.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		/// <exception cref="ArgumentException"> <paramref name="values" /> contains name-value-pairs with invalid names. </exception>
+		public void SetValuesAll (string section, IDictionary<string, IList<string>> values)
+		{
+			section = section.ToNullIfNullOrEmpty();
+
+			if (values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			List<IniElement> backup = new List<IniElement>(this.Elements);
+			bool success = false;
+			try
+			{
+				this.RemoveSections(section);
+				this.AddSection(section, IniSectionAddMode.AppendEnd, values);
+				success = true;
+			}
+			finally
+			{
+				if (!success)
+				{
+					this.Elements.Clear();
+					this.Elements.AddRange(backup);
+				}
+			}
+		}
+
+		/// <summary>
+		///     Sets the name-value-pairs of all sections specified by a dictionary.
+		/// </summary>
+		/// <param name="values"> The dictionary with sections and inner dictionaries for their name-value-pairs. </param>
+		/// <remarks>
+		///     <para>
+		///         All existing sections and their name-value-pairs which are specified in the outer dictionary will be replaced by the specified values.
+		///         Sections not specified in the outer dictionary will remain unchanged.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		/// <exception cref="ArgumentException"> <paramref name="values" /> contains invalid section names or name-value-pairs with invalid names. </exception>
+		public void SetValuesAll (IDictionary<string, IDictionary<string, IList<string>>> values)
+		{
+			if (values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			List<IniElement> backup = new List<IniElement>(this.Elements);
+			bool success = false;
+			try
+			{
+				foreach (KeyValuePair<string, IDictionary<string, IList<string>>> value in values)
 				{
 					try
 					{
@@ -1595,25 +1754,25 @@ namespace RI.Framework.IO.INI
 		/// <summary>
 		///     Sorts the INI elements in a specified section.
 		/// </summary>
-		/// <param name="sectionName"> The name of the section (can be null). </param>
+		/// <param name="section"> The name of the section (can be null). </param>
 		/// <param name="comparer"> The comparer used to compare INI elements. </param>
 		/// <remarks>
 		///     <para>
 		///         All elements in all sections matching the specified section name are sorted.
-		///         If <paramref name="sectionName" /> is null, the elements outside any sections are sorted.
+		///         If <paramref name="section" /> is null, the elements outside any sections are sorted.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="comparer" /> is null. </exception>
-		public void SortElements (string sectionName, IComparer<IniElement> comparer)
+		public void SortElements (string section, IComparer<IniElement> comparer)
 		{
-			sectionName = sectionName.ToNullIfNullOrEmpty();
+			section = section.ToNullIfNullOrEmpty();
 
 			if (comparer == null)
 			{
 				throw new ArgumentNullException(nameof(comparer));
 			}
 
-			this.SortElementsInternal(sectionName, comparer, false);
+			this.SortElementsInternal(section, comparer, false);
 		}
 
 		/// <summary>

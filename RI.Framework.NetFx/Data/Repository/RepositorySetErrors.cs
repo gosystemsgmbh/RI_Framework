@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
+using RI.Framework.Collections;
+using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 
@@ -12,35 +15,72 @@ namespace RI.Framework.Data.Repository
 	/// <summary>
 	///     Represents validation errors of an entity.
 	/// </summary>
-	public class RepositorySetErrors
+	/// <remarks>
+	/// <para>
+	/// For equality comparison, <see cref="StringComparerEx.Ordinal" /> is used for the property names and <see cref="StringComparerEx.OrdinalIgnoreCase" /> for the errors.
+	/// </para>
+	/// <note type="note">
+	/// <see cref="RepositorySetErrors"/> is serializable, using <see cref="ISerializable"/>.
+	/// Therefore, to serialize and deserialize values in types inheriting from <see cref="RepositorySetErrors"/>, you must use <see cref="GetObjectData"/> and <see cref="RepositorySetErrors(SerializationInfo,StreamingContext)"/>.
+	/// </note>
+	/// </remarks>
+	[Serializable]
+	public class RepositorySetErrors : ISerializable
 	{
 		#region Instance Constructor/Destructor
 
 		/// <summary>
 		///     Creates anew instance of <see cref="RepositorySetErrors" />.
 		/// </summary>
-		/// <remarks>
-		///     <para>
-		///         <see cref="StringComparerEx.Ordinal" /> is used for the property names and <see cref="StringComparerEx.OrdinalIgnoreCase" /> for the errors.
-		///     </para>
-		/// </remarks>
 		public RepositorySetErrors ()
-			: this(null, null)
 		{
+			this.EntityErrors = new HashSet<string>(StringComparerEx.Ordinal);
+			this.PropertyErrors = new Dictionary<string, HashSet<string>>(StringComparerEx.OrdinalIgnoreCase);
 		}
 
 		/// <summary>
-		///     Creates anew instance of <see cref="RepositorySetErrors" />.
+		/// Creates a new instance of <see cref="RepositorySetErrors" />.
 		/// </summary>
-		/// <param name="propertyNameComparer"> The property name comparer used with the <see cref="PropertyErrors" /> dictionary or null to use <see cref="StringComparerEx.Ordinal" />. </param>
-		/// <param name="errorComparer"> The error comparer used with the <see cref="EntityErrors" /> and <see cref="PropertyErrors" /> sets or null to use <see cref="StringComparerEx.OrdinalIgnoreCase" />. </param>
-		public RepositorySetErrors (IEqualityComparer<string> propertyNameComparer, IEqualityComparer<string> errorComparer)
+		/// <param name="info"> The serialization data. </param>
+		/// <param name="context"> The type of the source of the serialization data. </param>
+		/// <exception cref="ArgumentNullException"><paramref name="info"/> is null.</exception>
+		public RepositorySetErrors(SerializationInfo info, StreamingContext context)
+			: this()
 		{
-			this.PropertyNameComparer = propertyNameComparer ?? StringComparerEx.Ordinal;
-			this.ErrorComparer = errorComparer ?? StringComparerEx.OrdinalIgnoreCase;
+			if (info == null)
+			{
+				throw new ArgumentNullException(nameof(info));
+			}
 
-			this.EntityErrors = new HashSet<string>(this.ErrorComparer);
-			this.PropertyErrors = new Dictionary<string, HashSet<string>>(this.PropertyNameComparer);
+			string[] entityErrors = (string[])info.GetValue(nameof(this.EntityErrors), typeof(string[]));
+
+			Dictionary<string, string[]> propertyErrors = (Dictionary<string, string[]>)info.GetValue(nameof(this.PropertyErrors), typeof(Dictionary<string, string[]>));
+
+			entityErrors?.ForEach(x => this.AddEntityError(x));
+			propertyErrors?.ForEach(x => x.Value.ForEach(y => this.AddPropertyError(x.Key, y)));
+		}
+
+		/// <inheritdoc />
+		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+		{
+			if (info == null)
+			{
+				throw new ArgumentNullException(nameof(info));
+			}
+
+			this.GetObjectData(info, context);
+		}
+
+		/// <inheritdoc cref="ISerializable.GetObjectData" />
+		protected virtual void GetObjectData(SerializationInfo info, StreamingContext context)
+		{
+			string[] entityErrors = this.EntityErrors.ToArray();
+
+			Dictionary<string, string[]> propertyErrors = new Dictionary<string, string[]>(this.PropertyErrors.Comparer);
+			this.PropertyErrors.ForEach(x => propertyErrors.Add(x.Key, x.Value.ToArray()));
+
+			info.AddValue(nameof(RepositorySetErrors.EntityErrors), entityErrors);
+			info.AddValue(nameof(RepositorySetErrors.PropertyErrors), propertyErrors);
 		}
 
 		#endregion
@@ -73,22 +113,6 @@ namespace RI.Framework.Data.Repository
 		///     </para>
 		/// </remarks>
 		public Dictionary<string, HashSet<string>> PropertyErrors { get; private set; }
-
-		/// <summary>
-		///     Gets the error comparer used with the <see cref="EntityErrors" /> and <see cref="PropertyErrors" /> sets.
-		/// </summary>
-		/// <value>
-		///     The error comparer used with the <see cref="EntityErrors" /> and <see cref="PropertyErrors" /> sets.
-		/// </value>
-		protected IEqualityComparer<string> ErrorComparer { get; private set; }
-
-		/// <summary>
-		///     Gets the property name comparer used with the <see cref="PropertyErrors" /> dictionary.
-		/// </summary>
-		/// <value>
-		///     The property name comparer used with the <see cref="PropertyErrors" /> dictionary.
-		/// </value>
-		protected IEqualityComparer<string> PropertyNameComparer { get; private set; }
 
 		#endregion
 
@@ -147,7 +171,7 @@ namespace RI.Framework.Data.Repository
 
 			if (!this.PropertyErrors.ContainsKey(property))
 			{
-				this.PropertyErrors.Add(property, new HashSet<string>(this.ErrorComparer));
+				this.PropertyErrors.Add(property, new HashSet<string>(this.PropertyErrors.Comparer));
 			}
 
 			this.PropertyErrors[property].Add(error);

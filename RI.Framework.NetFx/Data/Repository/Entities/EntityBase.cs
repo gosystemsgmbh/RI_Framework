@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.ComponentModel;
+using System.Runtime.Serialization;
 using System.Xml.Serialization;
 
 using RI.Framework.Data.Repository.Views;
@@ -18,9 +19,14 @@ namespace RI.Framework.Data.Repository.Entities
 	///     <para>
 	///         <see cref="EntityBase" /> implements basic functionality which might be desirable by entities which are used together with <see cref="IRepositoryContext" /> and/or <see cref="EntityView{TEntity}" />, such as property change notification, change tracking, and error tracking.
 	///     </para>
+	/// <note type="note">
+	/// <see cref="EntityBase"/> is serializable, using <see cref="ISerializable"/>.
+	/// Therefore, to serialize and deserialize values in types inheriting from <see cref="EntityBase"/>, you must use <see cref="GetObjectData"/> and <see cref="EntityBase(SerializationInfo,StreamingContext)"/>.
+	/// For serialization and deserialization of the actual entity values, the methods <see cref="SerializeEntityValues"/> and <see cref="DeserializeEntityValues"/> must be overloaded.
+	/// </note>
 	/// </remarks>
 	[Serializable]
-	public abstract class EntityBase : INotifyPropertyChanged, IEntityChangeTracking, IEntityErrorTracking, IDataErrorInfo, INotifyDataErrorInfo
+	public abstract class EntityBase : INotifyPropertyChanged, IEntityChangeTracking, IEntityErrorTracking, IDataErrorInfo, INotifyDataErrorInfo, ISerializable
 	{
 		#region Instance Constructor/Destructor
 
@@ -38,6 +44,83 @@ namespace RI.Framework.Data.Repository.Entities
 			this.Errors = null;
 		}
 
+		/// <summary>
+		/// Creates a new instance of <see cref="EntityBase" />.
+		/// </summary>
+		/// <param name="info"> The serialization data. </param>
+		/// <param name="context"> The type of the source of the serialization data. </param>
+		/// <exception cref="ArgumentNullException"><paramref name="info"/> is null.</exception>
+		protected EntityBase (SerializationInfo info, StreamingContext context)
+			: this()
+		{
+			if (info == null)
+			{
+				throw new ArgumentNullException(nameof(info));
+			}
+
+			this.CreateTimestamp = (DateTime?)info.GetValue(nameof(this.CreateTimestamp), typeof(DateTime?));
+			this.CreateContext = info.GetString(nameof(this.CreateContext));
+
+			this.ModifyTimestamp = (DateTime?)info.GetValue(nameof(this.ModifyTimestamp), typeof(DateTime?));
+			this.ModifyContext = info.GetString(nameof(this.ModifyContext));
+
+			this.Errors = (RepositorySetErrors)info.GetValue(nameof(this.Errors), typeof(RepositorySetErrors));
+
+			this.DeserializeEntityValues(info, context);
+		}
+
+		/// <inheritdoc />
+		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+		{
+			if (info == null)
+			{
+				throw new ArgumentNullException(nameof(info));
+			}
+
+			this.GetObjectData(info, context);
+		}
+
+		private void GetObjectData(SerializationInfo info, StreamingContext context)
+		{
+			info.AddValue(nameof(this.CreateTimestamp), this.CreateTimestamp);
+			info.AddValue(nameof(this.CreateContext), this.CreateContext);
+
+			info.AddValue(nameof(this.ModifyTimestamp), this.ModifyTimestamp);
+			info.AddValue(nameof(this.ModifyContext), this.ModifyContext);
+
+			info.AddValue(nameof(this.Errors), this.Errors);
+
+			this.SerializeEntityValues(info, context);
+		}
+
+		/// <summary>
+		/// Called when the entity values are serialized.
+		/// </summary>
+		/// <param name="info"> The serialization data. </param>
+		/// <param name="context"> The type of the source of the serialization data. </param>
+		/// <remarks>
+		/// <para>
+		/// The default implementation does nothing.
+		/// </para>
+		/// </remarks>
+		protected virtual void SerializeEntityValues (SerializationInfo info, StreamingContext context)
+		{
+		}
+
+		/// <summary>
+		/// Called when the entity values are deserialized.
+		/// </summary>
+		/// <param name="info"> The serialization data. </param>
+		/// <param name="context"> The type of the source of the serialization data. </param>
+		/// <remarks>
+		/// <para>
+		/// The default implementation does nothing.
+		/// </para>
+		/// </remarks>
+		protected virtual void DeserializeEntityValues(SerializationInfo info, StreamingContext context)
+		{
+		}
+
 		#endregion
 
 
@@ -47,11 +130,7 @@ namespace RI.Framework.Data.Repository.Entities
 
 		private string _createContext;
 		private DateTime? _createTimestamp;
-
-		[field: NonSerialized]
-		[field: XmlIgnore]
 		private RepositorySetErrors _errors;
-
 		private string _modifyContext;
 		private DateTime? _modifyTimestamp;
 

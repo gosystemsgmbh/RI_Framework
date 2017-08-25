@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 
+using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Composition.Model;
 using RI.Framework.IO.INI;
 using RI.Framework.IO.Paths;
@@ -150,10 +152,16 @@ namespace RI.Framework.Services.Settings.Storages
 		#region Interface: ISettingStorage
 
 		/// <inheritdoc />
-		public bool IsReadOnly => false;
+		bool ISettingStorage.IsReadOnly => false;
 
 		/// <inheritdoc />
-		public string GetValue (string name)
+		public bool WriteOnlyKnown { get; set; } = false;
+
+		/// <inheritdoc />
+		public string WritePrefixAffinity { get; set; } = null;
+
+		/// <inheritdoc />
+		public List<string> GetValues (string name)
 		{
 			if (name == null)
 			{
@@ -165,7 +173,8 @@ namespace RI.Framework.Services.Settings.Storages
 				throw new EmptyStringArgumentException(nameof(name));
 			}
 
-			return this.Document.GetValue(this.SectionName, name);
+			List<string> values = this.Document.GetValueAll(this.SectionName, name).Where(x => x != null);
+			return values;
 		}
 
 		/// <inheritdoc />
@@ -218,7 +227,7 @@ namespace RI.Framework.Services.Settings.Storages
 		}
 
 		/// <inheritdoc />
-		public void SetValue (string name, string value)
+		public void SetValues (string name, IEnumerable<string> value)
 		{
 			if (name == null)
 			{
@@ -230,14 +239,9 @@ namespace RI.Framework.Services.Settings.Storages
 				throw new EmptyStringArgumentException(nameof(name));
 			}
 
-			if (value == null)
-			{
-				this.Document.DeleteValue(this.SectionName, name);
-			}
-			else
-			{
-				this.Document.SetValue(this.SectionName, name, value);
-			}
+			List<string> finalValues = value?.ToList() ?? new List<string>();
+
+			this.Document.SetValueAll(this.SectionName, name, finalValues);
 		}
 
 		#endregion

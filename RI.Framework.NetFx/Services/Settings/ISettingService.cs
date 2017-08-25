@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 using RI.Framework.Composition.Model;
@@ -26,7 +27,7 @@ namespace RI.Framework.Services.Settings
 	///     </para>
 	///     <note type="note">
 	///         A setting storage can be either read-only or not (see <see cref="ISettingStorage.IsReadOnly" />).
-	///         Values are persisted with all available non-read-only setting storages and therefore are saved multiple times if multiple non-read-only setting storages are available.
+	///         Values are persisted with all available non-read-only setting storages and therefore are saved multiple times if multiple non-read-only setting storages are available, except when values are filtered based on their names using <see cref="ISettingStorage.WriteOnlyKnown"/> and <see cref="ISettingStorage.WritePrefixAffinity"/>.
 	///     </note>
 	///     <note type="note">
 	///         When retrieving values, values from read-only setting storages have higher priority if they have the same name.
@@ -87,15 +88,15 @@ namespace RI.Framework.Services.Settings
 		void AddStorage (ISettingStorage settingStorage);
 
 		/// <summary>
-		///     Deletes a setting with a specified name.
+		///     Deletes all setting values of a specified name.
 		/// </summary>
 		/// <param name="name"> The name of the setting to delete. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="name" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
-		void DeleteValue (string name);
+		void DeleteValues (string name);
 
 		/// <summary>
-		///     Gets a setting in its string representation.
+		///     Gets the first setting value in its string representation.
 		/// </summary>
 		/// <param name="name"> The name of the setting. </param>
 		/// <returns>
@@ -106,7 +107,18 @@ namespace RI.Framework.Services.Settings
 		string GetRawValue (string name);
 
 		/// <summary>
-		///     Gets a setting as a value of a certain type.
+		///     Gets all setting values in their string representation.
+		/// </summary>
+		/// <param name="name"> The name of the setting. </param>
+		/// <returns>
+		///     The setting values in their string representation or an empty list if the setting is not available.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="name" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
+		List<string> GetRawValues (string name);
+
+		/// <summary>
+		///     Gets the first setting value as a value of a certain type.
 		/// </summary>
 		/// <typeparam name="T"> The setting type. </typeparam>
 		/// <param name="name"> The name of the setting. </param>
@@ -119,7 +131,20 @@ namespace RI.Framework.Services.Settings
 		T GetValue <T> (string name);
 
 		/// <summary>
-		///     Gets a setting as a value of a certain type.
+		///     Gets all setting values as values of a certain type.
+		/// </summary>
+		/// <typeparam name="T"> The setting type. </typeparam>
+		/// <param name="name"> The name of the setting. </param>
+		/// <returns>
+		///     The setting values or an empty list if the setting is not available.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="name" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
+		/// <exception cref="InvalidTypeArgumentException"> The specified <typeparamref name="T" /> is not supported by any setting converter. </exception>
+		List<T> GetValues <T> (string name);
+
+		/// <summary>
+		///     Gets the first setting value as a value of a certain type.
 		/// </summary>
 		/// <param name="name"> The name of the setting. </param>
 		/// <param name="type"> The setting type. </param>
@@ -130,6 +155,19 @@ namespace RI.Framework.Services.Settings
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
 		/// <exception cref="InvalidTypeArgumentException"> The specified <paramref name="type" /> is not supported by any setting converter. </exception>
 		object GetValue (string name, Type type);
+
+		/// <summary>
+		///     Gets all setting values as values of a certain type.
+		/// </summary>
+		/// <param name="name"> The name of the setting. </param>
+		/// <param name="type"> The setting type. </param>
+		/// <returns>
+		///     The setting values or an empty list if the setting is not available.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="name" /> or <paramref name="type" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
+		/// <exception cref="InvalidTypeArgumentException"> The specified <paramref name="type" /> is not supported by any setting converter. </exception>
+		List<object> GetValues (string name, Type type);
 
 		/// <summary>
 		///     Determines whether a setting with a specified name is available.
@@ -143,7 +181,7 @@ namespace RI.Framework.Services.Settings
 		bool HasValue (string name);
 
 		/// <summary>
-		///     Initializes a setting in its string representation.
+		///     Initializes a setting in its string representation with a single value.
 		/// </summary>
 		/// <param name="name"> The name of the setting. </param>
 		/// <param name="defaultValue"> The default setting value in its string representation. </param>
@@ -152,7 +190,7 @@ namespace RI.Framework.Services.Settings
 		/// </returns>
 		/// <remarks>
 		///     <para>
-		///         Initialization means that the value is only used if the setting does not already exist and <paramref name="defaultValue" /> is not null.
+		///         Initialization means that the value is only used if the setting does not already has values and <paramref name="defaultValue" /> is not null.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="name" /> is null. </exception>
@@ -160,7 +198,24 @@ namespace RI.Framework.Services.Settings
 		bool InitializeRawValue (string name, string defaultValue);
 
 		/// <summary>
-		///     Initializes a setting as a value of a certain type.
+		///     Initializes a setting in its string representation with multiple values.
+		/// </summary>
+		/// <param name="name"> The name of the setting. </param>
+		/// <param name="defaultValues"> The default setting values in their string representation. </param>
+		/// <returns>
+		///     true if the default values were used, false otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         Initialization means that the values are only used if the setting does not already has values and <paramref name="defaultValues" /> is not null.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="name" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
+		bool InitializeRawValues (string name, IEnumerable<string> defaultValues);
+
+		/// <summary>
+		///     Initializes a setting as a single value of a certain type.
 		/// </summary>
 		/// <typeparam name="T"> The setting type. </typeparam>
 		/// <param name="name"> The name of the setting. </param>
@@ -170,7 +225,7 @@ namespace RI.Framework.Services.Settings
 		/// </returns>
 		/// <remarks>
 		///     <para>
-		///         Initialization means that the value is only used if the setting does not already exist and <paramref name="defaultValue" /> is not null.
+		///         Initialization means that the value is only used if the setting does not already has values and <paramref name="defaultValue" /> is not null.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="name" /> is null. </exception>
@@ -179,7 +234,26 @@ namespace RI.Framework.Services.Settings
 		bool InitializeValue <T> (string name, T defaultValue);
 
 		/// <summary>
-		///     Initializes a setting as a value of a certain type.
+		///     Initializes a setting as multiple values of a certain type.
+		/// </summary>
+		/// <typeparam name="T"> The setting type. </typeparam>
+		/// <param name="name"> The name of the setting. </param>
+		/// <param name="defaultValues"> The default setting values. </param>
+		/// <returns>
+		///     true if the default values were used, false otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         Initialization means that the values are only used if the setting does not already has values and <paramref name="defaultValues" /> is not null.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="name" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
+		/// <exception cref="InvalidTypeArgumentException"> The specified <typeparamref name="T" /> for <paramref name="defaultValues" /> is not supported by any setting converter. </exception>
+		bool InitializeValues <T> (string name, IEnumerable<T> defaultValues);
+
+		/// <summary>
+		///     Initializes a setting as a single value of a certain type.
 		/// </summary>
 		/// <param name="name"> The name of the setting. </param>
 		/// <param name="type"> The setting type. </param>
@@ -189,13 +263,32 @@ namespace RI.Framework.Services.Settings
 		/// </returns>
 		/// <remarks>
 		///     <para>
-		///         Initialization means that the value is only used if the setting does not already exist and <paramref name="defaultValue" /> is not null.
+		///         Initialization means that the value is only used if the setting does not already has values and <paramref name="defaultValue" /> is not null.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="name" /> or <paramref name="type" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
 		/// <exception cref="InvalidTypeArgumentException"> The specified <paramref name="type" /> for <paramref name="defaultValue" /> is not supported by any setting converter. </exception>
 		bool InitializeValue (string name, object defaultValue, Type type);
+
+		/// <summary>
+		///     Initializes a setting as multiple values of a certain type.
+		/// </summary>
+		/// <param name="name"> The name of the setting. </param>
+		/// <param name="type"> The setting type. </param>
+		/// <param name="defaultValues"> The default setting values. </param>
+		/// <returns>
+		///     true if the default values were used, false otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         Initialization means that the values are only used if the setting does not already has values and <paramref name="defaultValues" /> is not null.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="name" /> or <paramref name="type" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
+		/// <exception cref="InvalidTypeArgumentException"> The specified <paramref name="type" /> for <paramref name="defaultValues" /> is not supported by any setting converter. </exception>
+		bool InitializeValues (string name, IEnumerable defaultValues, Type type);
 
 		/// <summary>
 		///     Reloads all settings from the underlying storage, replacing all previously loaded settings in this service.
@@ -232,34 +325,95 @@ namespace RI.Framework.Services.Settings
 		void Save ();
 
 		/// <summary>
-		///     Sets a setting in its string representation.
+		///     Sets a single setting value in its string representation.
 		/// </summary>
 		/// <param name="name"> The name of the setting. </param>
 		/// <param name="value"> The setting value in its string representation or null to delete the setting. </param>
+		/// <remarks>
+		/// <para>
+		/// All existing values of the same name will be overwritten.
+		/// </para>
+		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="name" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
 		void SetRawValue (string name, string value);
 
 		/// <summary>
-		///     Sets a setting as a value of a certain type.
+		///     Sets multiple setting values in their string representation.
+		/// </summary>
+		/// <param name="name"> The name of the setting. </param>
+		/// <param name="values"> The setting values in their string representation or null or an empty sequence to delete the setting. </param>
+		/// <remarks>
+		/// <para>
+		/// All existing values of the same name will be overwritten.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="name" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
+		void SetRawValues (string name, IEnumerable<string> values);
+
+		/// <summary>
+		///     Sets a single setting as a value of a certain type.
 		/// </summary>
 		/// <typeparam name="T"> The setting type. </typeparam>
 		/// <param name="name"> The name of the setting. </param>
-		/// <param name="value"> The setting value. For class types, specifying null deletes the setting. </param>
+		/// <param name="value"> The setting value. Specifying null deletes the setting. </param>
+		/// <remarks>
+		/// <para>
+		/// All existing values of the same name will be overwritten.
+		/// </para>
+		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="name" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
 		/// <exception cref="InvalidTypeArgumentException"> The specified <typeparamref name="T" /> for <paramref name="value" /> is not supported by any setting converter. </exception>
 		void SetValue <T> (string name, T value);
 
 		/// <summary>
-		///     Sets a setting as a value of a certain type.
+		///     Sets multiple setting values as values of a certain type.
+		/// </summary>
+		/// <typeparam name="T"> The setting type. </typeparam>
+		/// <param name="name"> The name of the setting. </param>
+		/// <param name="values"> The setting values. Specifying null or an empty sequence deletes the setting. </param>
+		/// <remarks>
+		/// <para>
+		/// All existing values of the same name will be overwritten.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="name" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
+		/// <exception cref="InvalidTypeArgumentException"> The specified <typeparamref name="T" /> for <paramref name="values" /> is not supported by any setting converter. </exception>
+		void SetValues <T> (string name, IEnumerable<T> values);
+
+		/// <summary>
+		///     Sets a single setting as a value of a certain type.
 		/// </summary>
 		/// <param name="name"> The name of the setting. </param>
 		/// <param name="type"> The setting type. </param>
-		/// <param name="value"> The setting value. For class types, specifying null deletes the setting. </param>
+		/// <param name="value"> The setting value. Specifying null deletes the setting. </param>
+		/// <remarks>
+		/// <para>
+		/// All existing values of the same name will be overwritten.
+		/// </para>
+		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="name" /> or <paramref name="type" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
 		/// <exception cref="InvalidTypeArgumentException"> The specified <paramref name="type" /> for <paramref name="value" /> is not supported by any setting converter. </exception>
 		void SetValue (string name, object value, Type type);
+
+		/// <summary>
+		///     Sets multiple setting values as values of a certain type.
+		/// </summary>
+		/// <param name="name"> The name of the setting. </param>
+		/// <param name="type"> The setting type. </param>
+		/// <param name="values"> The setting values. Specifying null or an empty sequence deletes the setting. </param>
+		/// <remarks>
+		/// <para>
+		/// All existing values of the same name will be overwritten.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="name" /> or <paramref name="type" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
+		/// <exception cref="InvalidTypeArgumentException"> The specified <paramref name="type" /> for <paramref name="values" /> is not supported by any setting converter. </exception>
+		void SetValues (string name, IEnumerable values, Type type);
 	}
 }

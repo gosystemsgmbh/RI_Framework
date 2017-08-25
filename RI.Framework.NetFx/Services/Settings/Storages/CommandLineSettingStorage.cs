@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Composition.Model;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
@@ -64,10 +65,16 @@ namespace RI.Framework.Services.Settings.Storages
 		#region Interface: ISettingStorage
 
 		/// <inheritdoc />
-		public bool IsReadOnly => true;
+		bool ISettingStorage.IsReadOnly => true;
 
 		/// <inheritdoc />
-		public string GetValue (string name)
+		bool ISettingStorage.WriteOnlyKnown => false;
+
+		/// <inheritdoc />
+		string ISettingStorage.WritePrefixAffinity => null;
+
+		/// <inheritdoc />
+		public List<string> GetValues (string name)
 		{
 			if (name == null)
 			{
@@ -81,15 +88,10 @@ namespace RI.Framework.Services.Settings.Storages
 
 			if (!this.CommandLine.Parameters.ContainsKey(name))
 			{
-				return null;
+				return new List<string>();
 			}
 
-			if (this.CommandLine.Parameters[name].Count == 0)
-			{
-				return null;
-			}
-
-			return this.CommandLine.Parameters[name][0];
+			return this.CommandLine.Parameters[name].Where(x => x != null);
 		}
 
 		/// <inheritdoc />
@@ -130,7 +132,7 @@ namespace RI.Framework.Services.Settings.Storages
 		}
 
 		/// <inheritdoc />
-		public void SetValue (string name, string value)
+		public void SetValues (string name, IEnumerable<string> value)
 		{
 			throw new NotSupportedException("Setting a value to the command line is not supported.");
 		}

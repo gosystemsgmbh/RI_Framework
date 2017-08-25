@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{612277CE-E2C4-41D2-99A0-CB6E084A713F}</ProjectGuid>
+    <ProjectGuid>{D23FD87B-33C5-4BD5-9FAB-A92B885C3E90}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>RI.Framework</RootNamespace>
-    <AssemblyName>RI.Framework.Extensions.Nancy</AssemblyName>
+    <AssemblyName>RI.Framework.Extensions.NancyJson</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -20,7 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\RI.Framework.Extensions.Nancy.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\RI.Framework.Extensions.NancyJson.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,7 +29,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\RI.Framework.Extensions.Nancy.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\RI.Framework.Extensions.NancyJson.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -42,25 +42,35 @@
       <HintPath>..\packages\Nancy.1.4.4\lib\net40\Nancy.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Web\Nancy\CompositionContainerNancyBootstrapper.cs" />
-    <Compile Include="Web\Nancy\_NamespaceDoc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="Properties\AssemblyName.snk" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RI.Framework.Extensions.Json\RI.Framework.Extensions.Json.csproj">
+      <Project>{9677d921-f867-4e57-95b5-ae3ca62e43b2}</Project>
+      <Name>RI.Framework.Extensions.Json</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RI.Framework.Extensions.Nancy\RI.Framework.Extensions.Nancy.csproj">
+      <Project>{612277ce-e2c4-41d2-99a0-cb6e084a713f}</Project>
+      <Name>RI.Framework.Extensions.Nancy</Name>
+    </ProjectReference>
     <ProjectReference Include="..\RI.Framework.NetFx\RI.Framework.NetFx.csproj">
       <Project>{a7f5dd2f-63bf-4032-ad1e-14d211e0d3ed}</Project>
       <Name>RI.Framework.NetFx</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\AssemblyName.snk" />
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

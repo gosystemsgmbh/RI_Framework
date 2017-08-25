@@ -200,8 +200,6 @@ I/O
 
  - (Common) EndianessConverter
 
- - (Common) IniDocument: SetValues (string section, IDictionary<string, IList<string>> values)
- - (Common) IniDocument: SetValues (IDictionary<string, IDictionary<string, IList<string>>> values)
  - (Common) IniDocument: DecomposeSections (?)
  - (Common) IniDocument: RemoveElements with predicate
  - (Common) IniDocument: RemoveSections with predicate
@@ -225,9 +223,6 @@ Services
  - (WPF) WpfApplication: Handle power events using SystemEvents.PowerModeChanged
  - (WPF) WpfApplication: Handle user switching using SystemEvents.SessionSwitch
  
- # (.NET) Settings: Support for multiple values of the same name
- # (.NET) Settings: WriteOnlyKnown for storage
- # (.NET) Settings: PrefixAffinity for storage
  # (.NET) Settings: XmlSettingStorage
  # (.NET) Settings: ComplexConverter (JSON?)
 
@@ -276,9 +271,6 @@ Data
 
  = (SQL Server) SqlServerDatabaseManager
  = (SQL Server) Implementations for SQL Server providers
-
- # (.NET) Binary-serializable EntityBase
- # (JSON) Json-serializable EntityBase
 
  * (.NET) Reporting (Excel?)
 

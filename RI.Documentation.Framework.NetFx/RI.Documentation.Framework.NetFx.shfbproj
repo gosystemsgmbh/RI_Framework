@@ -43,6 +43,8 @@
       <DocumentationSource sourceFile="..\RI.Framework.Extensions.Nancy\RI.Framework.Extensions.Nancy.csproj" />
       <DocumentationSource sourceFile="..\RI.Framework.Extensions.SqlServer\RI.Framework.Extensions.SqlServer.csproj" />
       <DocumentationSource sourceFile="..\RI.Framework.Extensions.SqlServerEF6\RI.Framework.Extensions.SqlServerEF6.csproj" />
+      <DocumentationSource sourceFile="..\RI.Framework.Extensions.Json\RI.Framework.Extensions.Json.csproj" />
+      <DocumentationSource sourceFile="..\RI.Framework.Extensions.NancyJson\RI.Framework.Extensions.NancyJson.csproj" />
     </DocumentationSources>
     <BuildAssemblerVerbosity>OnlyWarningsAndErrors</BuildAssemblerVerbosity>
     <HelpFileFormat>HtmlHelp1, Website</HelpFileFormat>

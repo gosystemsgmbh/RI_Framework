@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 using RI.Framework.Collections;
@@ -43,7 +44,7 @@ namespace RI.Framework.Services.Settings
 			this.StoragesManual = new List<ISettingStorage>();
 			this.ConvertersManual = new List<ISettingConverter>();
 
-			this.Cache = new Dictionary<string, string>(StringComparerEx.InvariantCultureIgnoreCase);
+			this.Cache = new Dictionary<string, List<string>>(StringComparerEx.InvariantCultureIgnoreCase);
 		}
 
 		#endregion
@@ -53,7 +54,7 @@ namespace RI.Framework.Services.Settings
 
 		#region Instance Properties/Indexer
 
-		private Dictionary<string, string> Cache { get; set; }
+		private Dictionary<string, List<string>> Cache { get; set; }
 
 		[Import(typeof(ISettingConverter), Recomposable = true)]
 		private Import ConvertersImported { get; set; }
@@ -237,7 +238,7 @@ namespace RI.Framework.Services.Settings
 		}
 
 		/// <inheritdoc />
-		public void DeleteValue (string name)
+		public void DeleteValues (string name)
 		{
 			if (name == null)
 			{
@@ -249,11 +250,14 @@ namespace RI.Framework.Services.Settings
 				throw new EmptyStringArgumentException(nameof(name));
 			}
 
-			this.SetRawValue(name, null);
+			this.SetRawValues(name, null);
 		}
 
 		/// <inheritdoc />
-		public string GetRawValue (string name)
+		public string GetRawValue (string name) => this.GetRawValues(name).FirstOrDefault();
+
+		/// <inheritdoc />
+		public List<string> GetRawValues (string name)
 		{
 			if (name == null)
 			{
@@ -267,8 +271,10 @@ namespace RI.Framework.Services.Settings
 
 			if (this.Cache.ContainsKey(name))
 			{
-				return this.Cache[name];
+				return this.Cache[name].ToList();
 			}
+
+			List<string> finalValues = new List<string>();
 
 			foreach (ISettingStorage store in this.Storages)
 			{
@@ -277,11 +283,8 @@ namespace RI.Framework.Services.Settings
 					continue;
 				}
 
-				string value = store.GetValue(name);
-				if (value != null)
-				{
-					return value;
-				}
+				List<string> values = store.GetValues(name);
+				finalValues.AddRange(values);
 			}
 
 			foreach (ISettingStorage store in this.Storages)
@@ -291,24 +294,30 @@ namespace RI.Framework.Services.Settings
 					continue;
 				}
 
-				string value = store.GetValue(name);
-				if (value != null)
-				{
-					return value;
-				}
+				List<string> values = store.GetValues(name);
+				finalValues.AddRange(values);
 			}
 
-			return null;
+			return finalValues;
 		}
 
 		/// <inheritdoc />
-		public T GetValue <T> (string name)
+		public T GetValue<T> (string name)
 		{
 			return (T)this.GetValue(name, typeof(T));
 		}
 
 		/// <inheritdoc />
-		public object GetValue (string name, Type type)
+		public List<T> GetValues <T> (string name)
+		{
+			return this.GetValues(name, typeof(T)).Cast<T>();
+		}
+
+		/// <inheritdoc />
+		public object GetValue (string name, Type type) => this.GetValues(name, type).FirstOrDefault();
+
+		/// <inheritdoc />
+		public List<object> GetValues (string name, Type type)
 		{
 			if (name == null)
 			{
@@ -331,14 +340,9 @@ namespace RI.Framework.Services.Settings
 				throw new InvalidTypeArgumentException(nameof(type));
 			}
 
-			string stringValue = this.GetRawValue(name);
-			if (stringValue == null)
-			{
-				return null;
-			}
-
-			object value = converter.ConvertTo(type, stringValue);
-			return value;
+			List<string> stringValues = this.GetRawValues(name);
+			List<object> finalValues = stringValues.Select(x => converter.ConvertTo(type, x));
+			return finalValues;
 		}
 
 		/// <inheritdoc />
@@ -371,7 +375,10 @@ namespace RI.Framework.Services.Settings
 		}
 
 		/// <inheritdoc />
-		public bool InitializeRawValue (string name, string defaultValue)
+		public bool InitializeRawValue (string name, string defaultValue) => this.InitializeRawValues(name, new [] { defaultValue });
+
+		/// <inheritdoc />
+		public bool InitializeRawValues (string name, IEnumerable<string> defaultValues)
 		{
 			if (name == null)
 			{
@@ -383,7 +390,13 @@ namespace RI.Framework.Services.Settings
 				throw new EmptyStringArgumentException(nameof(name));
 			}
 
-			if (defaultValue == null)
+			if (defaultValues == null)
+			{
+				return false;
+			}
+
+			List<string> finalValues = defaultValues.ToList();
+			if (finalValues.Count == 0)
 			{
 				return false;
 			}
@@ -393,19 +406,28 @@ namespace RI.Framework.Services.Settings
 				return false;
 			}
 
-			this.SetRawValue(name, defaultValue);
+			this.SetRawValues(name, finalValues);
 
 			return true;
 		}
 
 		/// <inheritdoc />
-		public bool InitializeValue <T> (string name, T defaultValue)
+		public bool InitializeValue<T> (string name, T defaultValue)
 		{
 			return this.InitializeValue(name, defaultValue, typeof(T));
 		}
 
 		/// <inheritdoc />
-		public bool InitializeValue (string name, object defaultValue, Type type)
+		public bool InitializeValues <T> (string name, IEnumerable<T> defaultValues)
+		{
+			return this.InitializeValues(name, defaultValues, typeof(T));
+		}
+
+		/// <inheritdoc />
+		public bool InitializeValue (string name, object defaultValue, Type type) => this.InitializeValues(name, new[] { defaultValue }, type);
+
+		/// <inheritdoc />
+		public bool InitializeValues (string name, IEnumerable defaultValues, Type type)
 		{
 			if (name == null)
 			{
@@ -428,8 +450,18 @@ namespace RI.Framework.Services.Settings
 				throw new InvalidTypeArgumentException(nameof(type));
 			}
 
-			string stringValue = defaultValue == null ? null : converter.ConvertFrom(type, defaultValue);
-			return this.InitializeRawValue(name, stringValue);
+			if (defaultValues == null)
+			{
+				return false;
+			}
+
+			List<string> finalValues = defaultValues.Cast<object>().Select(x => converter.ConvertFrom(type, x));
+			if (finalValues.Count == 0)
+			{
+				return false;
+			}
+
+			return this.InitializeRawValues(name, finalValues);
 		}
 
 		/// <inheritdoc />
@@ -500,7 +532,10 @@ namespace RI.Framework.Services.Settings
 		}
 
 		/// <inheritdoc />
-		public void SetRawValue (string name, string value)
+		public void SetRawValue (string name, string value) => this.SetRawValues(name, new[] { value });
+
+		/// <inheritdoc />
+		public void SetRawValues (string name, IEnumerable<string> values)
 		{
 			if (name == null)
 			{
@@ -512,11 +547,15 @@ namespace RI.Framework.Services.Settings
 				throw new EmptyStringArgumentException(nameof(name));
 			}
 
+			List<string> finalValues = values?.ToList() ?? new List<string>();
+
 			this.Cache.Remove(name);
-			if (value != null)
+			if (finalValues.Count > 0)
 			{
-				this.Cache.Add(name, value);
+				this.Cache.Add(name, finalValues);
 			}
+
+			int stores = 0;
 
 			foreach (ISettingStorage store in this.Storages)
 			{
@@ -525,18 +564,44 @@ namespace RI.Framework.Services.Settings
 					continue;
 				}
 
-				store.SetValue(name, value);
+				if (store.WriteOnlyKnown && (!store.HasValue(name)))
+				{
+					continue;
+				}
+
+				if((store.WritePrefixAffinity != null) && (name.StartsWith(store.WritePrefixAffinity, StringComparison.InvariantCultureIgnoreCase)))
+				{
+					continue;
+				}
+
+				store.SetValues(name, finalValues);
+
+				stores++;
+			}
+
+			if ((finalValues.Count > 0) && (stores == 0))
+			{
+				this.Log(LogLevel.Warning, "Setting {0} not written to any storage");
 			}
 		}
 
 		/// <inheritdoc />
-		public void SetValue <T> (string name, T value)
+		public void SetValue<T> (string name, T value)
 		{
 			this.SetValue(name, value, typeof(T));
 		}
 
 		/// <inheritdoc />
-		public void SetValue (string name, object value, Type type)
+		public void SetValues <T> (string name, IEnumerable<T> values)
+		{
+			this.SetValues(name, values, typeof(T));
+		}
+
+		/// <inheritdoc />
+		public void SetValue (string name, object value, Type type) => this.SetValues(name, new[] { value }, type);
+
+		/// <inheritdoc />
+		public void SetValues (string name, IEnumerable values, Type type)
 		{
 			if (name == null)
 			{
@@ -559,8 +624,9 @@ namespace RI.Framework.Services.Settings
 				throw new InvalidTypeArgumentException(nameof(type));
 			}
 
-			string stringValue = value == null ? null : converter.ConvertFrom(type, value);
-			this.SetRawValue(name, stringValue);
+			List<string> finalValues = values.Cast<object>().Select(x => converter.ConvertFrom(type, x));
+
+			this.SetRawValues(name, finalValues);
 		}
 
 		#endregion

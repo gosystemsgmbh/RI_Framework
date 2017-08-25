@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 
 using RI.Framework.Composition.Model;
@@ -23,6 +24,9 @@ namespace RI.Framework.Services.Settings.Storages
 	///     <para>
 	///         See <see cref="ISettingStorage" /> for more details.
 	///     </para>
+	/// <note type="important">
+	/// <see cref="AppConfigSettingStorage"/> does not support multiple values for the same setting!
+	/// </note>
 	/// </remarks>
 	[Export]
 	public sealed class AppConfigSettingStorage : ISettingStorage
@@ -30,10 +34,16 @@ namespace RI.Framework.Services.Settings.Storages
 		#region Interface: ISettingStorage
 
 		/// <inheritdoc />
-		public bool IsReadOnly => true;
+		bool ISettingStorage.IsReadOnly => true;
 
 		/// <inheritdoc />
-		public string GetValue (string name)
+		bool ISettingStorage.WriteOnlyKnown => false;
+
+		/// <inheritdoc />
+		string ISettingStorage.WritePrefixAffinity => null;
+
+		/// <inheritdoc />
+		public List<string> GetValues (string name)
 		{
 			if (name == null)
 			{
@@ -45,7 +55,14 @@ namespace RI.Framework.Services.Settings.Storages
 				throw new EmptyStringArgumentException(nameof(name));
 			}
 
-			return ConfigurationManager.AppSettings[name];
+			List<string> values = new List<string>();
+			string value = ConfigurationManager.AppSettings[name];
+			if (value != null)
+			{
+				values.Add(value);
+			}
+
+			return values;
 		}
 
 		/// <inheritdoc />
@@ -76,9 +93,9 @@ namespace RI.Framework.Services.Settings.Storages
 		}
 
 		/// <inheritdoc />
-		public void SetValue (string name, string value)
+		public void SetValues (string name, IEnumerable<string> values)
 		{
-			throw new NotSupportedException("Setting a valu to app.config is not supported.");
+			throw new NotSupportedException("Setting a value to app.config is not supported.");
 		}
 
 		#endregion

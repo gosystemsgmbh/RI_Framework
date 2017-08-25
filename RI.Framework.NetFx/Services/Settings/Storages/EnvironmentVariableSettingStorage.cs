@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using RI.Framework.Composition.Model;
 using RI.Framework.Utilities;
@@ -25,6 +26,9 @@ namespace RI.Framework.Services.Settings.Storages
 	///     <para>
 	///         See <see cref="ISettingStorage" /> for more details.
 	///     </para>
+	/// <note type="important">
+	/// <see cref="EnvironmentVariableSettingStorage"/> does not support multiple values for the same setting!
+	/// </note>
 	/// </remarks>
 	[Export]
 	public sealed class EnvironmentVariableSettingStorage : ISettingStorage
@@ -77,10 +81,16 @@ namespace RI.Framework.Services.Settings.Storages
 		#region Interface: ISettingStorage
 
 		/// <inheritdoc />
-		public bool IsReadOnly => true;
+		bool ISettingStorage.IsReadOnly => true;
 
 		/// <inheritdoc />
-		public string GetValue (string name)
+		bool ISettingStorage.WriteOnlyKnown => false;
+
+		/// <inheritdoc />
+		string ISettingStorage.WritePrefixAffinity => null;
+
+		/// <inheritdoc />
+		public List<string> GetValues (string name)
 		{
 			if (name == null)
 			{
@@ -92,7 +102,14 @@ namespace RI.Framework.Services.Settings.Storages
 				throw new EmptyStringArgumentException(nameof(name));
 			}
 
-			return Environment.GetEnvironmentVariable((this.Prefix ?? string.Empty) + name);
+			List<string> values = new List<string>();
+			string value = Environment.GetEnvironmentVariable((this.Prefix ?? string.Empty) + name);
+			if (value != null)
+			{
+				values.Add(value);
+			}
+
+			return values;
 		}
 
 		/// <inheritdoc />
@@ -123,7 +140,7 @@ namespace RI.Framework.Services.Settings.Storages
 		}
 
 		/// <inheritdoc />
-		public void SetValue (string name, string value)
+		public void SetValues (string name, IEnumerable<string> values)
 		{
 			throw new NotSupportedException("Setting a value to environment variables is not supported.");
 		}
