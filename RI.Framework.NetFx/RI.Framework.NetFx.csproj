@@ -112,6 +112,8 @@
     <Compile Include="Services\IBootstrapperOperations.cs" />
     <Compile Include="Services\Logging\Writers\DebuggerLogWriter.cs" />
     <Compile Include="Services\Logging\Writers\TraceListenerAdapterLogWriter.cs" />
+    <Compile Include="Services\Messaging\Dispatchers\DefaultMessageDispatcher.cs" />
+    <Compile Include="Services\Messaging\Dispatchers\ThreadDispatcherMessageDispatcher.cs" />
     <Compile Include="Services\Messaging\Dispatchers\_NamespaceDoc.cs" />
     <Compile Include="Services\Messaging\Handlers\Triggers\TriggerMessageExtensions.cs" />
     <Compile Include="Services\Messaging\Handlers\Triggers\TriggerMessageHandler.cs" />
@@ -152,6 +154,8 @@
     <Compile Include="Services\Resources\Sources\DirectoryResourceSource.cs" />
     <Compile Include="Services\Resources\Sources\_NamespaceDoc.cs" />
     <Compile Include="Services\Resources\_NamespaceDoc.cs" />
+    <Compile Include="Services\Settings\Converters\SettingConversionMode.cs" />
+    <Compile Include="Services\Settings\Converters\XmlSettingConverter.cs" />
     <Compile Include="Services\Settings\Converters\_NamespaceDoc.cs" />
     <Compile Include="Services\Settings\SettingLocator.cs" />
     <Compile Include="Services\Settings\Storages\AppConfigSettingStorage.cs" />
@@ -197,6 +201,9 @@
     <Compile Include="Threading\Dispatcher\ThreadDispatcherTimerMode.cs" />
     <Compile Include="Threading\Async\ThreadPoolAwaiter.cs" />
     <Compile Include="Threading\Tasks\_NamespaceDoc.cs" />
+    <Compile Include="Utilities\Xml\XDocumentExtensions.cs" />
+    <Compile Include="Utilities\Xml\XmlDocumentExtensions.cs" />
+    <Compile Include="Utilities\Xml\_NamespaceDoc.cs" />
     <Compile Include="Web\_NamespaceDoc.cs" />
   </ItemGroup>
   <ItemGroup>

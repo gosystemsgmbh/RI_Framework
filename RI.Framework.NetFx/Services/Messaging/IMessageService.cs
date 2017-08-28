@@ -22,7 +22,7 @@ namespace RI.Framework.Services.Messaging
 	///         The message dispatcher is responsible for achieving asynchronity.
 	///     </para>
 	///     <para>
-	///         Asynchronous delivery of messages means that sending a message is quick (xxx returns immediately) and the messages are delivered, and therefore handled by their receivers, at a later time but in the correct order as they were sent.
+	///         Asynchronous delivery of messages means that sending a message is quick (<see cref="Post"/> returns immediately) and the messages are delivered, and therefore handled by their receivers, at a later time but in the correct order as they were sent.
 	///         The meaning of &quot;at a later time&quot; depends on the application context and the used message dispatcher.
 	///         For example, in GUI applications, the message dispatcher can enqueue the messages into the applications message loop.
 	///     </para>
@@ -34,6 +34,9 @@ namespace RI.Framework.Services.Messaging
 	///         Note that messaging is usually to be used from any thread.
 	///         Therefore, the messaging service must be partially thread-safe, at least for the actual send and receive operations.
 	///         However, messaging service implementations can rely upon the thread-safety of <see cref="IMessageDispatcher" />.
+	///     </note>
+	///     <note type="implement">
+	///         Message names are considered case-insensitive, but the actual behaviour depends on the creation of the message object and the message receivers.
 	///     </note>
 	/// </remarks>
 	[Export]

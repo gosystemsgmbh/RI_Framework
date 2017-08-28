@@ -29,6 +29,9 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 	///     <para>
 	///         See <see cref="TriggerMessageNames" /> and <see cref="TriggerMessageExtensions" /> for more details about the names of the messages and the trigger message data.
 	///     </para>
+	/// <para>
+	/// Trigger message names and trigger names are threated case-insensitive.
+	/// </para>
 	///     <note type="note">
 	///         A request which does not change a trigger will not cause a response.
 	///     </note>
@@ -44,8 +47,12 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 		public TriggerMessageHandler ()
 		{
 			this.Triggers = new TriggerCollection();
-			this.ChangedTriggers = new HashSet<string>(StringComparerEx.InvariantCultureIgnoreCase);
+			this.ChangedTriggers = new HashSet<string>(TriggerMessageHandler.TriggerNameComparer);
 		}
+
+		internal static readonly StringComparerEx TriggerNameComparer = StringComparerEx.OrdinalIgnoreCase;
+
+		internal static readonly StringComparison TriggerNameComparison = StringComparison.OrdinalIgnoreCase;
 
 		#endregion
 
@@ -141,7 +148,7 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 				throw new ArgumentNullException(nameof(messageService));
 			}
 
-			if (message.Name.StartsWith(TriggerMessageNames.MessageNamePrefix, StringComparison.Ordinal) && (!string.Equals(message.Name, TriggerMessageNames.MessageNameResponseChanged, StringComparison.Ordinal)))
+			if (message.Name.StartsWith(TriggerMessageNames.MessageNamePrefix, TriggerMessageHandler.TriggerNameComparison) && (!string.Equals(message.Name, TriggerMessageNames.MessageNameResponseChanged, TriggerMessageHandler.TriggerNameComparison)))
 			{
 				string triggerName;
 				string subscriberId;
@@ -159,19 +166,19 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 
 				if ((triggerName != null) && (subscriberId != null))
 				{
-					if (string.Equals(message.Name, TriggerMessageNames.MessageNameRequestSubscribe, StringComparison.Ordinal))
+					if (string.Equals(message.Name, TriggerMessageNames.MessageNameRequestSubscribe, TriggerMessageHandler.TriggerNameComparison))
 					{
 						this.TriggerSubscribe(triggerName, subscriberId);
 					}
-					else if (string.Equals(message.Name, TriggerMessageNames.MessageNameRequestUnsubscribe, StringComparison.Ordinal))
+					else if (string.Equals(message.Name, TriggerMessageNames.MessageNameRequestUnsubscribe, TriggerMessageHandler.TriggerNameComparison))
 					{
 						this.TriggerUnsubscribe(triggerName, subscriberId);
 					}
-					else if (string.Equals(message.Name, TriggerMessageNames.MessageNameRequestArm, StringComparison.Ordinal))
+					else if (string.Equals(message.Name, TriggerMessageNames.MessageNameRequestArm, TriggerMessageHandler.TriggerNameComparison))
 					{
 						this.TriggerArm(triggerName, subscriberId);
 					}
-					else if (string.Equals(message.Name, TriggerMessageNames.MessageNameRequestDisarm, StringComparison.Ordinal))
+					else if (string.Equals(message.Name, TriggerMessageNames.MessageNameRequestDisarm, TriggerMessageHandler.TriggerNameComparison))
 					{
 						this.TriggerDisarm(triggerName, subscriberId);
 					}
@@ -216,7 +223,7 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 
 				this.Name = name;
 
-				this.Subscribers = new Dictionary<string, bool>(StringComparerEx.InvariantCultureIgnoreCase);
+				this.Subscribers = new Dictionary<string, bool>(TriggerMessageHandler.TriggerNameComparer);
 			}
 
 			#endregion
@@ -277,7 +284,7 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 			#region Instance Constructor/Destructor
 
 			public TriggerCollection ()
-				: base(StringComparerEx.InvariantCultureIgnoreCase)
+				: base(TriggerMessageHandler.TriggerNameComparer)
 			{
 			}
 

@@ -212,6 +212,8 @@ I/O
 
 Composition
 ---------
+
+ # (Common) Ignore built-in classes? (AppDomainCatalog, DirectoryCatalog)
  
 
 Services
@@ -223,13 +225,6 @@ Services
  - (WPF) WpfApplication: Handle power events using SystemEvents.PowerModeChanged
  - (WPF) WpfApplication: Handle user switching using SystemEvents.SessionSwitch
  
- # (.NET) Settings: XmlSettingStorage
- # (.NET) Settings: ComplexConverter (JSON?)
-
- # (.NET) Messaging: ThreadDispatcherMessageDispatcher
- # (.NET) Messaging: DefaultMessageDispatcher
- # (.NET) Messaging: Use shared string comparers for Trigger message handler
-
  - (.NET) Messaging: Async functionality?
  - (Windows) Messaging: WindowsMessageLoopMessageDispatcher
  - (WinForms) Messaging: ApplicationMessageDispatcher

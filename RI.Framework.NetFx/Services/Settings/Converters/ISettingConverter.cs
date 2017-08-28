@@ -20,6 +20,14 @@ namespace RI.Framework.Services.Settings.Converters
 	public interface ISettingConverter
 	{
 		/// <summary>
+		/// Gets the used setting conversion mode
+		/// </summary>
+		/// <value>
+		/// The used setting conversion mode.
+		/// </value>
+		SettingConversionMode ConversionMode { get; }
+
+		/// <summary>
 		///     Determines whether this converter supports conversion to and from the specified setting type.
 		/// </summary>
 		/// <param name="type"> The setting type. </param>

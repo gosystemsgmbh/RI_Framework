@@ -254,7 +254,7 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 				return null;
 			}
 
-			if (!string.Equals(message.GetTriggerName(), triggerName, StringComparison.InvariantCultureIgnoreCase))
+			if (!string.Equals(message.GetTriggerName(), triggerName, TriggerMessageHandler.TriggerNameComparison))
 			{
 				return null;
 			}
@@ -295,7 +295,7 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 				return null;
 			}
 
-			if (!string.Equals(message.GetTriggerName(), triggerName, StringComparison.InvariantCultureIgnoreCase))
+			if (!string.Equals(message.GetTriggerName(), triggerName, TriggerMessageHandler.TriggerNameComparison))
 			{
 				return null;
 			}
@@ -318,7 +318,7 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 				throw new ArgumentNullException(nameof(message));
 			}
 
-			return string.Equals(message.Name, TriggerMessageNames.MessageNameResponseChanged, StringComparison.Ordinal);
+			return string.Equals(message.Name, TriggerMessageNames.MessageNameResponseChanged, TriggerMessageHandler.TriggerNameComparison);
 		}
 
 		/// <summary>

@@ -16,7 +16,7 @@ namespace RI.Framework.Services.Settings.Converters
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         The types supported by this seting converter are:
+	///         The types supported by this setting converter are:
 	///         <see cref="bool" />, <see cref="char" />, <see cref="string" />, <see cref="sbyte" />, <see cref="byte" />, <see cref="short" />, <see cref="ushort" />, <see cref="int" />, <see cref="uint" />, <see cref="long" />, <see cref="ulong" />, <see cref="float" />, <see cref="double" />, <see cref="decimal" />, <see cref="DateTime" />, <see cref="TimeSpan" />, <see cref="Guid" />, <see cref="Version" />, enumerations (<see cref="Enum" />), and arrays of <see cref="byte" />.
 	///     </para>
 	///     <para>
@@ -36,6 +36,9 @@ namespace RI.Framework.Services.Settings.Converters
 
 
 		#region Interface: ISettingConverter
+
+		/// <inheritdoc />
+		public SettingConversionMode ConversionMode => SettingConversionMode.StringConversion;
 
 		/// <inheritdoc />
 		public bool CanConvert (Type type)

@@ -81,6 +81,24 @@ namespace RI.Framework.Services.Settings
 		{
 			foreach (ISettingConverter converter in this.Converters)
 			{
+				if (converter.ConversionMode != SettingConversionMode.StringConversion)
+				{
+					continue;
+				}
+
+				if (converter.CanConvert(type))
+				{
+					return converter;
+				}
+			}
+
+			foreach (ISettingConverter converter in this.Converters)
+			{
+				if (converter.ConversionMode != SettingConversionMode.SerializationAsString)
+				{
+					continue;
+				}
+
 				if (converter.CanConvert(type))
 				{
 					return converter;
