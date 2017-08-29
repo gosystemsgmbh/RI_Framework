@@ -55,6 +55,6 @@ namespace RI.Framework.Data.Database.Cleanup
 		where TManager : IDatabaseManager<TConnection, TConnectionStringBuilder, TManager>
 	{
 		/// <inheritdoc cref="IDatabaseCleanupProcessor.Cleanup"/>
-		bool Cleanup (TManager managerversion);
+		bool Cleanup (TManager manager);
 	}
 }

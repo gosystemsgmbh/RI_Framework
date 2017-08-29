@@ -24,7 +24,7 @@ namespace RI.Framework.Data.Database.Cleanup
 		where TManager : IDatabaseManager<TConnection, TConnectionStringBuilder, TManager>
 	{
 		/// <inheritdoc />
-		public abstract bool Cleanup (TManager managerversion);
+		public abstract bool Cleanup (TManager manager);
 
 		/// <inheritdoc />
 		public abstract bool RequiresScriptLocator { get; }

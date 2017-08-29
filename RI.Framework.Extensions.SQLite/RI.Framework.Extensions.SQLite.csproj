@@ -53,6 +53,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\Database\Backup\SQLiteDatabaseBackupCreator.cs" />
+    <Compile Include="Data\Database\Cleanup\SQLiteDatabaseCleanupProcessor.cs" />
+    <Compile Include="Data\Database\Upgrading\SQLiteDatabaseVersionUpgrader.cs" />
+    <Compile Include="Data\Database\Versioning\SQLiteDatabaseVersionDetector.cs" />
     <Compile Include="Data\SQLite\Collations\CurrentCultureIgnoreCaseSQLiteCollation.cs" />
     <Compile Include="Data\SQLite\Collations\CurrentCultureSQLiteCollation.cs" />
     <Compile Include="Data\SQLite\Collations\InvariantCultureIgnoreCaseSQLiteCollation.cs" />
@@ -93,12 +97,7 @@
       <Name>RI.Framework.NetFx</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Data\Database\Backup\" />
-    <Folder Include="Data\Database\Cleanup\" />
-    <Folder Include="Data\Database\Upgrading\" />
-    <Folder Include="Data\Database\Versioning\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>@"$(SolutionDir)_Input\VersionUpdater.exe" "$(ProjectDir)Properties" "nr" "file" "$(SolutionDir)RI.Framework.Property.Version.txt" "$(SolutionDir)RI.Framework.Property.Company.txt" "$(SolutionDir)RI.Framework.Property.Copyright.txt"</PreBuildEvent>

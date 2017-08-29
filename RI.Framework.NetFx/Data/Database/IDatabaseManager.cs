@@ -290,7 +290,7 @@ namespace RI.Framework.Data.Database
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"><paramref name="backupFile"/> is null.</exception>
 		/// <exception cref="InvalidPathArgumentException"><paramref name="backupFile"/> is not a valid path.</exception>
-		/// <exception cref="InvalidOperationException">The database is not in a ready state.</exception>
+		/// <exception cref="InvalidOperationException">The database is not initialized.</exception>
 		/// <exception cref="NotSupportedException">Backup is not supported by the database or no <see cref="IDatabaseBackupCreator"/> is configured.</exception>
 		/// <exception cref="InvalidDatabaseConfigurationException">The database configuration specified by <see cref="Configuration"/> is not valid.</exception>
 		bool Backup (FilePath backupFile);

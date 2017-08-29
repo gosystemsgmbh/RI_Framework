@@ -899,9 +899,9 @@ namespace RI.Framework.Data.Database
 				throw new InvalidPathArgumentException(nameof(backupFile));
 			}
 
-			if (!this.IsReady)
+			if (this.State == DatabaseState.Uninitialized)
 			{
-				throw new InvalidOperationException(this.GetType().Name + " must be in a ready state to perform a backup, current state is " + this.State + ".");
+				throw new InvalidOperationException(this.GetType().Name + " must be initialized to perform a restore, current state is " + this.State + ".");
 			}
 
 			if (!this.SupportsBackup)
