@@ -2,7 +2,7 @@
 
 namespace RI.Framework.Data.Database.Upgrading
 {
-	public sealed class SQLiteDatabaseVersionUpgrader : IDatabaseVersionUpgrader<SQLiteConnection, SQLiteConnectionStringBuilder, SQLiteDatabaseManager>
+	public sealed class SQLiteDatabaseVersionUpgrader : DatabaseVersionUpgrader<SQLiteConnection, SQLiteConnectionStringBuilder, SQLiteDatabaseManager>
 	{
 	}
 }
