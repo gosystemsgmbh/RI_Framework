@@ -63,7 +63,7 @@ namespace RI.Framework.Data.Database.Scripts
 		///         The default value is <c>GO</c>.
 		///     </para>
 		/// </remarks>
-		public const string DefaultBatchSeparator = "GO";
+		public const string DefaultBatchSeparator = "\r\nGO\r\n";
 
 		/// <summary>
 		/// Gets the used string comparer used to compare placeholder names for equality.
@@ -72,6 +72,24 @@ namespace RI.Framework.Data.Database.Scripts
 		/// The used string comparer used to compare placeholder names for equality.
 		/// </value>
 		public static readonly StringComparerEx PlaceholderNameComparer = StringComparerEx.OrdinalIgnoreCase;
+
+
+		/// <summary>
+		/// Implements default splitting of a script into individual batches.
+		/// </summary>
+		/// <param name="script">The script to split into individual batches.</param>
+		/// <param name="separator">The used batch separator.</param>
+		/// <returns>
+		/// The list of batches.
+		/// </returns>
+		public static List<string> SplitBatches (string script, string separator)
+		{
+			//TODO: Normalize new-lines
+			string[] pieces = script.Split(StringSplitOptions.None, separator);
+			List<string> batches = new List<string>(pieces);
+			batches.RemoveAll(x => x.IsNullOrEmptyOrWhitespace());
+			return batches;
+		}
 
 
 
@@ -246,16 +264,15 @@ namespace RI.Framework.Data.Database.Scripts
 		/// </returns>
 		/// <remarks>
 		/// <para>
-		/// The default implementation simply splits <paramref name="script"/> using <paramref name="separator"/>.
+		/// The default implementation uses <see cref="SplitBatches(string,string)"/>.
 		/// </para>
 		/// <note type="note">
-		/// <see cref="SplitBatches"/> is not called if <see cref="BatchSeparator"/> is null.
+		/// <see cref="SplitBatches(IDatabaseManager,string,string)"/> is not called if <see cref="BatchSeparator"/> is null.
 		/// </note>
 		/// </remarks>
 		protected virtual List<string> SplitBatches (IDatabaseManager manager, string script, string separator)
 		{
-			string[] pieces = script.Split(StringSplitOptions.None, separator);
-			return new List<string>(pieces);
+			return DatabaseScriptLocator.SplitBatches(script, separator);
 		}
 
 		/// <summary>

@@ -1,7 +1,8 @@
-﻿namespace RI.Framework.Data.Database.Upgrading
+﻿using System.Data.SQLite;
+
+namespace RI.Framework.Data.Database.Upgrading
 {
-	public class SQLiteDatabaseVersionUpgrader
+	public sealed class SQLiteDatabaseVersionUpgrader : IDatabaseVersionUpgrader<SQLiteConnection, SQLiteConnectionStringBuilder, SQLiteDatabaseManager>
 	{
-		
 	}
 }

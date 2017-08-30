@@ -263,6 +263,7 @@ Data
 ----
 
  # (SQLite) Implementations for SQLite providers
+ # (.NET) Implementations for script locators
 
  = (SQL Server) SqlServerDatabaseManager
  = (SQL Server) Implementations for SQL Server providers
