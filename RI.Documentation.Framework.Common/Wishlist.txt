@@ -252,10 +252,6 @@ Services
  - (Common) Make bootstrapper container-agnostic
  - (Common) Proper unloading and unbinding of everything in bootstrapper
 
- # (SQLite) Logging: LogFileToDbConverter: Add overloads accepting DbConnection
- # (SQLite) Logging: SQLiteLogWriter
- # (SQLIte) Logging: SQLiteLogConfiguration (use in SQLiteLogWriter and LogFileToDbConverter)
-
 
 Data
 ----

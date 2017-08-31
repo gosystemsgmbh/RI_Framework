@@ -21,6 +21,7 @@ namespace RI.Framework.Services.Logging.Readers
 			this.Files = new List<FilePath>();
 			this.Errors = new List<Tuple<FilePath, int>>();
 			this.Entries = new List<Tuple<FilePath, int>>();
+			this.Exception = null;
 		}
 
 		#endregion
@@ -71,6 +72,14 @@ namespace RI.Framework.Services.Logging.Readers
 		///     The total number of log entries read.
 		/// </value>
 		public int TotalEntries => this.Entries.Sum(x => x.Item2);
+
+		/// <summary>
+		/// Gets or sets the exception occured during a conversion.
+		/// </summary>
+		/// <value>
+		/// The exception occured during a conversion.
+		/// </value>
+		public Exception Exception { get; set; }
 
 		#endregion
 	}

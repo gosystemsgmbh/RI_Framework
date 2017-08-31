@@ -362,7 +362,6 @@ namespace RI.Framework.Services.Logging.Writers
 			}
 		}
 
-
 		private void InitializeCurrent (bool construction)
 		{
 			DateTime now = DateTime.Now;

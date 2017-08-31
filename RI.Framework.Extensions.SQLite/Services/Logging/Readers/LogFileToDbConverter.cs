@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SQLite;
 using System.IO;
 using System.Linq;
@@ -11,9 +12,7 @@ using RI.Framework.IO.Paths;
 using RI.Framework.Services.Logging.Writers;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
-
-
-
+using RI.Framework.Utilities.Logging;
 
 namespace RI.Framework.Services.Logging.Readers
 {
@@ -28,7 +27,7 @@ namespace RI.Framework.Services.Logging.Readers
 	///         The log entries are written to the table &quot;Log&quot;, using the following columns: File, Timestamp, ThreadId, Severity, Source, Message.
 	///     </para>
 	/// </remarks>
-	public sealed class LogFileToDbConverter
+	public sealed class LogFileToDbConverter : LogSource
 	{
 		#region Instance Constructor/Destructor
 
@@ -41,7 +40,7 @@ namespace RI.Framework.Services.Logging.Readers
 		///     </para>
 		/// </remarks>
 		public LogFileToDbConverter ()
-			: this(null)
+			: this(null, null)
 		{
 		}
 
@@ -49,9 +48,11 @@ namespace RI.Framework.Services.Logging.Readers
 		///     Creates a new instance of <see cref="LogFileToDbConverter" />.
 		/// </summary>
 		/// <param name="encoding"> The text encoding which is used to read the log file (can be null to use <see cref="LogFileReader.DefaultEncoding" />). </param>
-		public LogFileToDbConverter (Encoding encoding)
+		/// <param name="configuration"> The SQLite log database configuration which is used to write the log database (can be null to use the default configuration. </param>
+		public LogFileToDbConverter (Encoding encoding, SQLiteLogConfiguration configuration)
 		{
 			this.Encoding = encoding ?? LogFileReader.DefaultEncoding;
+			this.Configuration = configuration ?? new SQLiteLogConfiguration();
 		}
 
 		#endregion
@@ -69,12 +70,22 @@ namespace RI.Framework.Services.Logging.Readers
 		/// </value>
 		public Encoding Encoding { get; }
 
+		/// <summary>
+		///     Gets the SQLite log database configuration which is used to write the log database.
+		/// </summary>
+		/// <value>
+		///     The SQLite log database configuration which is used to write the log database.
+		/// </value>
+		public SQLiteLogConfiguration Configuration { get; }
+
 		#endregion
 
 
 
 
 		#region Instance Methods
+
+		private SQLiteConnection CreateConnection (FilePath dbFile) => this.Configuration.CreateConnection(dbFile);
 
 		/// <summary>
 		///     Converts all log files in a log directory, as created by <see cref="DirectoryLogWriter" />, and adds them to a log database.
@@ -101,6 +112,27 @@ namespace RI.Framework.Services.Logging.Readers
 		///     Converts all log files in a log directory, as created by <see cref="DirectoryLogWriter" />, and adds them to a log database.
 		/// </summary>
 		/// <param name="logDirectory"> The log directory. </param>
+		/// <param name="dbConnection"> The log database connection. </param>
+		/// <returns>
+		///     The conversion results.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         The default file name <see cref="DirectoryLogWriter.DefaultFileName" /> is used as the file name of the text log file in the log subdirectories.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="logDirectory" /> or <paramref name="dbConnection" /> is null. </exception>
+		/// <exception cref="InvalidPathArgumentException"> <paramref name="logDirectory" /> contains wildcards. </exception>
+		/// <exception cref="DirectoryNotFoundException"> The log directory as specified by <paramref name="logDirectory" /> does not exist. </exception>
+		public LogFileToDbConverterResults ConvertDirectories (DirectoryPath logDirectory, SQLiteConnection dbConnection)
+		{
+			return this.ConvertDirectories(logDirectory, dbConnection, null);
+		}
+
+		/// <summary>
+		///     Converts all log files in a log directory, as created by <see cref="DirectoryLogWriter" />, and adds them to a log database.
+		/// </summary>
+		/// <param name="logDirectory"> The log directory. </param>
 		/// <param name="dbFile"> The log database. </param>
 		/// <param name="fileName"> The file name of the text log files in the log subdirectories (can be null to use <see cref="DirectoryLogWriter.DefaultFileName" />). </param>
 		/// <returns>
@@ -110,6 +142,36 @@ namespace RI.Framework.Services.Logging.Readers
 		/// <exception cref="InvalidPathArgumentException"> <paramref name="logDirectory" /> or <paramref name="dbFile" /> contains wildcards or <paramref name="fileName" /> is not a valid file name. </exception>
 		/// <exception cref="DirectoryNotFoundException"> The log directory as specified by <paramref name="logDirectory" /> does not exist. </exception>
 		public LogFileToDbConverterResults ConvertDirectories (DirectoryPath logDirectory, FilePath dbFile, string fileName)
+		{
+			if (dbFile == null)
+			{
+				throw new ArgumentNullException(nameof(dbFile));
+			}
+
+			if (dbFile.HasWildcards)
+			{
+				throw new InvalidPathArgumentException(nameof(dbFile), "Wildcards are not allowed.");
+			}
+
+			using (SQLiteConnection connection = this.CreateConnection(dbFile))
+			{
+				return this.ConvertDirectories(logDirectory, connection, fileName);
+			}
+		}
+
+		/// <summary>
+		///     Converts all log files in a log directory, as created by <see cref="DirectoryLogWriter" />, and adds them to a log database.
+		/// </summary>
+		/// <param name="logDirectory"> The log directory. </param>
+		/// <param name="dbConnection"> The log database connection. </param>
+		/// <param name="fileName"> The file name of the text log files in the log subdirectories (can be null to use <see cref="DirectoryLogWriter.DefaultFileName" />). </param>
+		/// <returns>
+		///     The conversion results.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="logDirectory" /> or <paramref name="dbConnection" /> is null. </exception>
+		/// <exception cref="InvalidPathArgumentException"> <paramref name="logDirectory" /> contains wildcards or <paramref name="fileName" /> is not a valid file name. </exception>
+		/// <exception cref="DirectoryNotFoundException"> The log directory as specified by <paramref name="logDirectory" /> does not exist. </exception>
+		public LogFileToDbConverterResults ConvertDirectories (DirectoryPath logDirectory, SQLiteConnection dbConnection, string fileName)
 		{
 			if (logDirectory == null)
 			{
@@ -126,14 +188,9 @@ namespace RI.Framework.Services.Logging.Readers
 				throw new DirectoryNotFoundException("The log directory does not exist: " + logDirectory + ".");
 			}
 
-			if (dbFile == null)
+			if (dbConnection == null)
 			{
-				throw new ArgumentNullException(nameof(dbFile));
-			}
-
-			if (dbFile.HasWildcards)
-			{
-				throw new InvalidPathArgumentException(nameof(dbFile), "Wildcards are not allowed.");
+				throw new ArgumentNullException(nameof(dbConnection));
 			}
 
 			FilePath fileNamePath;
@@ -147,7 +204,7 @@ namespace RI.Framework.Services.Logging.Readers
 			}
 
 			HashSet<FilePath> files = this.GetLogFilesFromDirectory(logDirectory, fileNamePath);
-			LogFileToDbConverterResults results = this.ConvertFilesInternal(files, dbFile);
+			LogFileToDbConverterResults results = this.ConvertFilesInternal(files, dbConnection);
 			return results;
 		}
 
@@ -176,6 +233,27 @@ namespace RI.Framework.Services.Logging.Readers
 		///     Converts all log files in a log directory, as created by <see cref="DirectoryLogWriter" />, and adds them to a log database.
 		/// </summary>
 		/// <param name="logDirectory"> The log directory. </param>
+		/// <param name="dbConnection"> The log database connection. </param>
+		/// <returns>
+		///     The conversion results.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         The default file name <see cref="DirectoryLogWriter.DefaultFileName" /> is used as the file name of the text log file in the log subdirectories.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="logDirectory" /> or <paramref name="dbConnection" /> is null. </exception>
+		/// <exception cref="InvalidPathArgumentException"> <paramref name="logDirectory" /> contains wildcards. </exception>
+		/// <exception cref="DirectoryNotFoundException"> The log directory as specified by <paramref name="logDirectory" /> does not exist. </exception>
+		public async Task<LogFileToDbConverterResults> ConvertDirectoriesAsync (DirectoryPath logDirectory, SQLiteConnection dbConnection)
+		{
+			return await this.ConvertDirectoriesAsync(logDirectory, dbConnection, null).ConfigureAwait(false);
+		}
+
+		/// <summary>
+		///     Converts all log files in a log directory, as created by <see cref="DirectoryLogWriter" />, and adds them to a log database.
+		/// </summary>
+		/// <param name="logDirectory"> The log directory. </param>
 		/// <param name="dbFile"> The log database. </param>
 		/// <param name="fileName"> The file name of the text log files in the log subdirectories (can be null to use <see cref="DirectoryLogWriter.DefaultFileName" />). </param>
 		/// <returns>
@@ -185,6 +263,36 @@ namespace RI.Framework.Services.Logging.Readers
 		/// <exception cref="InvalidPathArgumentException"> <paramref name="logDirectory" /> or <paramref name="dbFile" /> contains wildcards or <paramref name="fileName" /> is not a valid file name. </exception>
 		/// <exception cref="DirectoryNotFoundException"> The log directory as specified by <paramref name="logDirectory" /> does not exist. </exception>
 		public async Task<LogFileToDbConverterResults> ConvertDirectoriesAsync (DirectoryPath logDirectory, FilePath dbFile, string fileName)
+		{
+			if (dbFile == null)
+			{
+				throw new ArgumentNullException(nameof(dbFile));
+			}
+
+			if (dbFile.HasWildcards)
+			{
+				throw new InvalidPathArgumentException(nameof(dbFile), "Wildcards are not allowed.");
+			}
+
+			using (SQLiteConnection connection = this.CreateConnection(dbFile))
+			{
+				return await this.ConvertDirectoriesAsync(logDirectory, connection, fileName);
+			}
+		}
+
+		/// <summary>
+		///     Converts all log files in a log directory, as created by <see cref="DirectoryLogWriter" />, and adds them to a log database.
+		/// </summary>
+		/// <param name="logDirectory"> The log directory. </param>
+		/// <param name="dbConnection"> The log database connection. </param>
+		/// <param name="fileName"> The file name of the text log files in the log subdirectories (can be null to use <see cref="DirectoryLogWriter.DefaultFileName" />). </param>
+		/// <returns>
+		///     The conversion results.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="logDirectory" /> or <paramref name="dbConnection" /> is null. </exception>
+		/// <exception cref="InvalidPathArgumentException"> <paramref name="logDirectory" /> contains wildcards or <paramref name="fileName" /> is not a valid file name. </exception>
+		/// <exception cref="DirectoryNotFoundException"> The log directory as specified by <paramref name="logDirectory" /> does not exist. </exception>
+		public async Task<LogFileToDbConverterResults> ConvertDirectoriesAsync (DirectoryPath logDirectory, SQLiteConnection dbConnection, string fileName)
 		{
 			if (logDirectory == null)
 			{
@@ -201,14 +309,9 @@ namespace RI.Framework.Services.Logging.Readers
 				throw new DirectoryNotFoundException("The log directory does not exist: " + logDirectory + ".");
 			}
 
-			if (dbFile == null)
+			if (dbConnection == null)
 			{
-				throw new ArgumentNullException(nameof(dbFile));
-			}
-
-			if (dbFile.HasWildcards)
-			{
-				throw new InvalidPathArgumentException(nameof(dbFile), "Wildcards are not allowed.");
+				throw new ArgumentNullException(nameof(dbConnection));
 			}
 
 			FilePath fileNamePath;
@@ -223,9 +326,9 @@ namespace RI.Framework.Services.Logging.Readers
 
 			return await Task<LogFileToDbConverterResults>.Factory.StartNew(x =>
 			{
-				Tuple<DirectoryPath, FilePath, string> state = (Tuple<DirectoryPath, FilePath, string>)x;
+				Tuple<DirectoryPath, SQLiteConnection, string> state = (Tuple<DirectoryPath, SQLiteConnection, string>)x;
 				return this.ConvertDirectories(state.Item1, state.Item2, state.Item3);
-			}, new Tuple<DirectoryPath, FilePath, string>(logDirectory, dbFile, fileNamePath), CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default).ConfigureAwait(false);
+			}, new Tuple<DirectoryPath, SQLiteConnection, string>(logDirectory, dbConnection, fileNamePath), CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default).ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -240,6 +343,35 @@ namespace RI.Framework.Services.Logging.Readers
 		/// <exception cref="InvalidPathArgumentException"> <paramref name="logFile" /> or <paramref name="dbFile" /> contains wildcards. </exception>
 		/// <exception cref="FileNotFoundException"> The log file as specified by <paramref name="logFile" /> does not exist. </exception>
 		public LogFileToDbConverterResults ConvertFile (FilePath logFile, FilePath dbFile)
+		{
+			if (dbFile == null)
+			{
+				throw new ArgumentNullException(nameof(dbFile));
+			}
+
+			if (dbFile.HasWildcards)
+			{
+				throw new InvalidPathArgumentException(nameof(dbFile), "Wildcards are not allowed.");
+			}
+
+			using (SQLiteConnection connection = this.CreateConnection(dbFile))
+			{
+				return this.ConvertFile(logFile, connection);
+			}
+		}
+
+		/// <summary>
+		///     Converts a single log file and adds it to a log database.
+		/// </summary>
+		/// <param name="logFile"> The log file. </param>
+		/// <param name="dbConnection"> The log database connection. </param>
+		/// <returns>
+		///     The conversion results.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="logFile" /> or <paramref name="dbConnection" /> is null. </exception>
+		/// <exception cref="InvalidPathArgumentException"> <paramref name="logFile" /> contains wildcards. </exception>
+		/// <exception cref="FileNotFoundException"> The log file as specified by <paramref name="logFile" /> does not exist. </exception>
+		public LogFileToDbConverterResults ConvertFile(FilePath logFile, SQLiteConnection dbConnection)
 		{
 			if (logFile == null)
 			{
@@ -256,17 +388,12 @@ namespace RI.Framework.Services.Logging.Readers
 				throw new FileNotFoundException("The log file does not exist: " + logFile + ".", logFile);
 			}
 
-			if (dbFile == null)
+			if (dbConnection == null)
 			{
-				throw new ArgumentNullException(nameof(dbFile));
+				throw new ArgumentNullException(nameof(dbConnection));
 			}
 
-			if (dbFile.HasWildcards)
-			{
-				throw new InvalidPathArgumentException(nameof(dbFile), "Wildcards are not allowed.");
-			}
-
-			LogFileToDbConverterResults results = this.ConvertFilesInternal(new[] {logFile}, dbFile);
+			LogFileToDbConverterResults results = this.ConvertFilesInternal(new[] { logFile }, dbConnection);
 			return results;
 		}
 
@@ -283,6 +410,35 @@ namespace RI.Framework.Services.Logging.Readers
 		/// <exception cref="FileNotFoundException"> The log file as specified by <paramref name="logFile" /> does not exist. </exception>
 		public async Task<LogFileToDbConverterResults> ConvertFileAsync (FilePath logFile, FilePath dbFile)
 		{
+			if (dbFile == null)
+			{
+				throw new ArgumentNullException(nameof(dbFile));
+			}
+
+			if (dbFile.HasWildcards)
+			{
+				throw new InvalidPathArgumentException(nameof(dbFile), "Wildcards are not allowed.");
+			}
+
+			using (SQLiteConnection connection = this.CreateConnection(dbFile))
+			{
+				return await this.ConvertFileAsync(logFile, connection);
+			}
+		}
+
+		/// <summary>
+		///     Converts a single log file and adds it to a log database.
+		/// </summary>
+		/// <param name="logFile"> The log file. </param>
+		/// <param name="dbConnection"> The log database connection. </param>
+		/// <returns>
+		///     The conversion results.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="logFile" /> or <paramref name="dbConnection" /> is null. </exception>
+		/// <exception cref="InvalidPathArgumentException"> <paramref name="logFile" />  contains wildcards. </exception>
+		/// <exception cref="FileNotFoundException"> The log file as specified by <paramref name="logFile" /> does not exist. </exception>
+		public async Task<LogFileToDbConverterResults> ConvertFileAsync(FilePath logFile, SQLiteConnection dbConnection)
+		{
 			if (logFile == null)
 			{
 				throw new ArgumentNullException(nameof(logFile));
@@ -298,21 +454,16 @@ namespace RI.Framework.Services.Logging.Readers
 				throw new FileNotFoundException("The log file does not exist: " + logFile + ".", logFile);
 			}
 
-			if (dbFile == null)
+			if (dbConnection == null)
 			{
-				throw new ArgumentNullException(nameof(dbFile));
-			}
-
-			if (dbFile.HasWildcards)
-			{
-				throw new InvalidPathArgumentException(nameof(dbFile), "Wildcards are not allowed.");
+				throw new ArgumentNullException(nameof(dbConnection));
 			}
 
 			return await Task<LogFileToDbConverterResults>.Factory.StartNew(x =>
 			{
-				Tuple<FilePath, FilePath> state = (Tuple<FilePath, FilePath>)x;
+				Tuple<FilePath, SQLiteConnection> state = (Tuple<FilePath, SQLiteConnection>)x;
 				return this.ConvertFile(state.Item1, state.Item2);
-			}, new Tuple<FilePath, FilePath>(logFile, dbFile), CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default).ConfigureAwait(false);
+			}, new Tuple<FilePath, SQLiteConnection>(logFile, dbConnection), CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default).ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -332,6 +483,40 @@ namespace RI.Framework.Services.Logging.Readers
 		/// <exception cref="InvalidPathArgumentException"> <paramref name="logFiles" /> or <paramref name="dbFile" /> contains wildcards. </exception>
 		/// <exception cref="FileNotFoundException"> At least one log file as specified by <paramref name="logFiles" /> does not exist. </exception>
 		public LogFileToDbConverterResults ConvertFiles (IEnumerable<FilePath> logFiles, FilePath dbFile)
+		{
+			if (dbFile == null)
+			{
+				throw new ArgumentNullException(nameof(dbFile));
+			}
+
+			if (dbFile.HasWildcards)
+			{
+				throw new InvalidPathArgumentException(nameof(dbFile), "Wildcards are not allowed.");
+			}
+
+			using (SQLiteConnection connection = this.CreateConnection(dbFile))
+			{
+				return this.ConvertFiles(logFiles, connection);
+			}
+		}
+
+		/// <summary>
+		///     Converts one or more log files and adds them to a log database.
+		/// </summary>
+		/// <param name="logFiles"> The log files. </param>
+		/// <param name="dbConnection"> The log database connection. </param>
+		/// <returns>
+		///     The conversion results.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         <paramref name="logFiles" /> is enumerated only once.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="logFiles" /> or <paramref name="dbConnection" /> is null. </exception>
+		/// <exception cref="InvalidPathArgumentException"> <paramref name="logFiles" /> contains wildcards. </exception>
+		/// <exception cref="FileNotFoundException"> At least one log file as specified by <paramref name="logFiles" /> does not exist. </exception>
+		public LogFileToDbConverterResults ConvertFiles (IEnumerable<FilePath> logFiles, SQLiteConnection dbConnection)
 		{
 			if (logFiles == null)
 			{
@@ -353,17 +538,12 @@ namespace RI.Framework.Services.Logging.Readers
 				}
 			}
 
-			if (dbFile == null)
+			if (dbConnection == null)
 			{
-				throw new ArgumentNullException(nameof(dbFile));
+				throw new ArgumentNullException(nameof(dbConnection));
 			}
 
-			if (dbFile.HasWildcards)
-			{
-				throw new InvalidPathArgumentException(nameof(dbFile), "Wildcards are not allowed.");
-			}
-
-			LogFileToDbConverterResults results = this.ConvertFilesInternal(logFileList, dbFile);
+			LogFileToDbConverterResults results = this.ConvertFilesInternal(logFileList, dbConnection);
 			return results;
 		}
 
@@ -385,6 +565,40 @@ namespace RI.Framework.Services.Logging.Readers
 		/// <exception cref="FileNotFoundException"> At least one log file as specified by <paramref name="logFiles" /> does not exist. </exception>
 		public async Task<LogFileToDbConverterResults> ConvertFilesAsync (IEnumerable<FilePath> logFiles, FilePath dbFile)
 		{
+			if (dbFile == null)
+			{
+				throw new ArgumentNullException(nameof(dbFile));
+			}
+
+			if (dbFile.HasWildcards)
+			{
+				throw new InvalidPathArgumentException(nameof(dbFile), "Wildcards are not allowed.");
+			}
+
+			using (SQLiteConnection connection = this.CreateConnection(dbFile))
+			{
+				return await this.ConvertFilesAsync(logFiles, connection);
+			}
+		}
+
+		/// <summary>
+		///     Converts one or more log files and adds them to a log database.
+		/// </summary>
+		/// <param name="logFiles"> The log files. </param>
+		/// <param name="dbConnection"> The log database connection. </param>
+		/// <returns>
+		///     The conversion results.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         <paramref name="logFiles" /> is enumerated only once.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="logFiles" /> or <paramref name="dbConnection" /> is null. </exception>
+		/// <exception cref="InvalidPathArgumentException"> <paramref name="logFiles" /> contains wildcards. </exception>
+		/// <exception cref="FileNotFoundException"> At least one log file as specified by <paramref name="logFiles" /> does not exist. </exception>
+		public async Task<LogFileToDbConverterResults> ConvertFilesAsync (IEnumerable<FilePath> logFiles, SQLiteConnection dbConnection)
+		{
 			if (logFiles == null)
 			{
 				throw new ArgumentNullException(nameof(logFiles));
@@ -405,47 +619,47 @@ namespace RI.Framework.Services.Logging.Readers
 				}
 			}
 
-			if (dbFile == null)
+			if (dbConnection == null)
 			{
-				throw new ArgumentNullException(nameof(dbFile));
-			}
-
-			if (dbFile.HasWildcards)
-			{
-				throw new InvalidPathArgumentException(nameof(dbFile), "Wildcards are not allowed.");
+				throw new ArgumentNullException(nameof(dbConnection));
 			}
 
 			return await Task<LogFileToDbConverterResults>.Factory.StartNew(x =>
 			{
-				Tuple<IEnumerable<FilePath>, FilePath> state = (Tuple<IEnumerable<FilePath>, FilePath>)x;
+				Tuple<IEnumerable<FilePath>, SQLiteConnection> state = (Tuple<IEnumerable<FilePath>, SQLiteConnection>)x;
 				return this.ConvertFiles(state.Item1, state.Item2);
-			}, new Tuple<IEnumerable<FilePath>, FilePath>(logFileList, dbFile), CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default).ConfigureAwait(false);
+			}, new Tuple<IEnumerable<FilePath>, SQLiteConnection>(logFileList, dbConnection), CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default).ConfigureAwait(false);
 		}
 
-		private LogFileToDbConverterResults ConvertFilesInternal (IEnumerable<FilePath> files, FilePath dbFile)
+		private LogFileToDbConverterResults ConvertFilesInternal (IEnumerable<FilePath> files, SQLiteConnection dbConnection)
 		{
-			SQLiteConnectionStringBuilder builder = new SQLiteConnectionStringBuilder();
-			builder.DataSource = dbFile.PathResolved;
-			builder.ForeignKeys = true;
-			builder.FailIfMissing = false;
-
 			LogFileToDbConverterResults results = new LogFileToDbConverterResults();
 
-			using (SQLiteConnection connection = new SQLiteConnection(builder.ToString()))
-			{
-				connection.Open();
+			string createTableCommandString = this.Configuration.BuildCreateTableCommand();
+			string createIndicesCommandString = this.Configuration.BuildCreateIndexCommand();
+			string insertEntryCommandString = this.Configuration.BuildInsertEntryCommand();
 
-				using (SQLiteCommand createTableCommand = new SQLiteCommand("CREATE TABLE IF NOT EXISTS [Log] ([File] TEXT NULL, [Timestamp] DATETIME NOT NULL, [ThreadId] INTEGER NOT NULL, [Severity] INTEGER NOT NULL, [Source] TEXT NOT NULL, [Message] TEXT NOT NULL);", connection))
+			try
+			{
+				if (dbConnection.State != ConnectionState.Open)
+				{
+					dbConnection.Open();
+				}
+
+				using (SQLiteCommand createTableCommand = new SQLiteCommand(createTableCommandString, dbConnection))
 				{
 					createTableCommand.ExecuteNonQuery();
 				}
 
-				using (SQLiteCommand createIndicesCommand = new SQLiteCommand("CREATE INDEX IF NOT EXISTS [Log_File] ON [Log] ([File]); CREATE INDEX IF NOT EXISTS [Log_Timestamp] ON [Log] ([Timestamp]); CREATE INDEX IF NOT EXISTS [Log_ThreadId] ON [Log] ([ThreadId]); CREATE INDEX IF NOT EXISTS [Log_Severity] ON [Log] ([Severity]); CREATE INDEX IF NOT EXISTS [Log_Source] ON [Log] ([Source]);", connection))
+				if (createIndicesCommandString != null)
 				{
-					createIndicesCommand.ExecuteNonQuery();
+					using (SQLiteCommand createIndicesCommand = new SQLiteCommand(createIndicesCommandString, dbConnection))
+					{
+						createIndicesCommand.ExecuteNonQuery();
+					}
 				}
 
-				using (SQLiteTransaction transaction = connection.BeginTransaction())
+				using (SQLiteTransaction transaction = dbConnection.BeginTransaction())
 				{
 					foreach (FilePath file in files)
 					{
@@ -458,14 +672,13 @@ namespace RI.Framework.Services.Logging.Readers
 							{
 								if (lfr.CurrentValid)
 								{
-									using (SQLiteCommand insertCommand = new SQLiteCommand("INSERT INTO [Log] ([File], [Timestamp], [ThreadId], [Severity], [Source], [Message]) VALUES (@file, @timestamp, @threadId, @severity, @source, @message)", connection, transaction))
+									using (SQLiteCommand insertCommand = new SQLiteCommand(insertEntryCommandString, dbConnection, transaction))
 									{
-										insertCommand.Parameters.AddWithValue("@file", file);
-										insertCommand.Parameters.AddWithValue("@timestamp", lfr.CurrentEntry.Timestamp);
-										insertCommand.Parameters.AddWithValue("@threadId", lfr.CurrentEntry.ThreadId);
-										insertCommand.Parameters.AddWithValue("@severity", lfr.CurrentEntry.Severity);
-										insertCommand.Parameters.AddWithValue("@source", lfr.CurrentEntry.Source);
-										insertCommand.Parameters.AddWithValue("@message", lfr.CurrentEntry.Message);
+										Dictionary<string, object> parameters = this.Configuration.BuildInsertEntryParameters(file, lfr.CurrentEntry);
+										foreach (KeyValuePair<string, object> param in parameters)
+										{
+											insertCommand.Parameters.AddWithValue(param.Key, param.Value);
+										}
 										insertCommand.ExecuteNonQuery();
 									}
 								}
@@ -481,6 +694,12 @@ namespace RI.Framework.Services.Logging.Readers
 
 					transaction.Commit();
 				}
+			}
+			catch (Exception exception)
+			{
+				this.Log(LogLevel.Error, "Log file to SQLite database conversion failed: {0}{1}", Environment.NewLine, exception.ToDetailedString());
+
+				results.Exception = exception;
 			}
 
 			return results;
