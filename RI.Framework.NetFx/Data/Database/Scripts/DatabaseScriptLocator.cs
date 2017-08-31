@@ -84,7 +84,9 @@ namespace RI.Framework.Data.Database.Scripts
 		/// </returns>
 		public static List<string> SplitBatches (string script, string separator)
 		{
-			//TODO: Normalize new-lines
+			script = script.NormalizeLineBreaks();
+			separator = separator.NormalizeLineBreaks();
+
 			string[] pieces = script.Split(StringSplitOptions.None, separator);
 			List<string> batches = new List<string>(pieces);
 			batches.RemoveAll(x => x.IsNullOrEmptyOrWhitespace());

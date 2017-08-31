@@ -213,8 +213,6 @@ I/O
 Composition
 ---------
 
- # (Common) Ignore built-in classes? (AppDomainCatalog, DirectoryCatalog)
- 
 
 Services
 --------
@@ -261,9 +259,6 @@ Services
 
 Data
 ----
-
- # (SQLite) Implementations for SQLite providers
- # (.NET) Implementations for script locators
 
  = (SQL Server) SqlServerDatabaseManager
  = (SQL Server) Implementations for SQL Server providers

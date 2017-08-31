@@ -49,9 +49,9 @@ namespace RI.Framework.Data.Database
 		}
 
 		/// <inheritdoc />
-		protected override void VerifyConfiguration ()
+		protected override void VerifyConfiguration (SQLiteDatabaseManager manager)
 		{
-			base.VerifyConfiguration();
+			base.VerifyConfiguration(manager);
 
 			try
 			{

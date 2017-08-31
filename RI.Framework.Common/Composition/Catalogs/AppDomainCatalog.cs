@@ -6,6 +6,7 @@ using RI.Framework.Collections;
 using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Composition.Model;
 using RI.Framework.Utilities.Logging;
+using RI.Framework.Utilities.Runtime;
 
 namespace RI.Framework.Composition.Catalogs
 {
@@ -27,11 +28,11 @@ namespace RI.Framework.Composition.Catalogs
 		/// </summary>
 		/// <remarks>
 		///     <para>
-		///         true is used for <see cref="ExportAllTypes" /> and <see cref="AutoUpdate" />.
+		///         true is used for <see cref="ExportAllTypes" /> and <see cref="AutoUpdate" />, false is used for <see cref="IgnoreFrameworkTypes"/>.
 		///     </para>
 		/// </remarks>
 		public AppDomainCatalog ()
-			: this(true, true)
+			: this(true, true, false)
 		{
 		}
 
@@ -39,10 +40,12 @@ namespace RI.Framework.Composition.Catalogs
 		/// </summary>
 		/// <param name="exportAllTypes"> Specifies whether all types should be exported (see <see cref="ExportAllTypes" /> for details). </param>
 		/// <param name="autoUpdate"> Specifies whether the exports are automatically updated when a new assembly is loaded (see <see cref="AutoUpdate" /> for details). </param>
-		public AppDomainCatalog (bool exportAllTypes, bool autoUpdate)
+		/// <param name="ignoreFrameworkTypes"> Specifies whether framework-provided types should be exported (see <see cref="IgnoreFrameworkTypes" /> for details). </param>
+		public AppDomainCatalog (bool exportAllTypes, bool autoUpdate, bool ignoreFrameworkTypes)
 		{
 			this.ExportAllTypes = exportAllTypes;
 			this.AutoUpdate = autoUpdate;
+			this.IgnoreFrameworkTypes = ignoreFrameworkTypes;
 
 			this.LoadedAssemblies = new HashSet<Assembly>();
 			this.AssemblyLoadEventHandler = this.AssemblyLoadEvent;
@@ -128,6 +131,38 @@ namespace RI.Framework.Composition.Catalogs
 			}
 		}
 
+		private bool _ignoreFrameworkTypes;
+
+		/// <summary>
+		/// Gets whether types provided by the framework itself are ignored.
+		/// </summary>
+		/// <value>
+		/// true if types provided by the framework itself are ignored, false otherwise.
+		/// </value>
+		/// <remarks>
+		/// <para>
+		/// If framework-provided types are ignored, they are not exported by default.
+		/// However, you can still export those types by explicit export them, e.g. through <see cref="TypeCatalog"/> or <see cref="InstanceCatalog"/>.
+		/// </para>
+		/// </remarks>
+		public bool IgnoreFrameworkTypes
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._ignoreFrameworkTypes;
+				}
+			}
+			set
+			{
+				lock (this.SyncRoot)
+				{
+					this._ignoreFrameworkTypes = value;
+				}
+			}
+		}
+
 		private AssemblyLoadEventHandler AssemblyLoadEventHandler { get; }
 
 		private HashSet<Assembly> LoadedAssemblies { get; }
@@ -191,6 +226,13 @@ namespace RI.Framework.Composition.Catalogs
 					{
 						if (CompositionContainer.ValidateExportType(type))
 						{
+							bool isFrameworkType = FrameworkTypeUtility.IsFrameworkType(type);
+							if (isFrameworkType && this.IgnoreFrameworkTypes)
+							{
+								this.Log(LogLevel.Debug, "Framework-provided type filtered: {0}", type.FullName);
+								continue;
+							}
+
 							bool privateExport = CompositionContainer.IsExportPrivate(type).GetValueOrDefault(false);
 							HashSet<string> names = CompositionContainer.GetExportsOfType(type, this.ExportAllTypes);
 							foreach (string name in names)

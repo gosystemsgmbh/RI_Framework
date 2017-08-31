@@ -392,7 +392,7 @@ namespace RI.Framework.Composition
 		/// </returns>
 		/// <remarks>
 		///     <para>
-		///         <see cref="CreateSingletonWithEverything" /> does the same as <see cref="CreateSingleton" /> except that, if a singleton instance is created, it also adds an <see cref="AppDomainCatalog" /> to immediately get all types in the current application domain as exports.
+		///         <see cref="CreateSingletonWithEverything" /> does the same as <see cref="CreateSingleton" /> except that, if a singleton instance is created, it also adds an <see cref="AppDomainCatalog" /> to immediately get all types in the current application domain as exports (including framework-provided types).
 		///     </para>
 		///     <para>
 		///         See <see cref="CreateSingleton" /> for more details.
@@ -558,7 +558,7 @@ namespace RI.Framework.Composition
 				container.AddExport(container, typeof(CompositionContainer));
 				if (addAppDomainCatalog)
 				{
-					container.AddCatalog(new AppDomainCatalog(true, true));
+					container.AddCatalog(new AppDomainCatalog(true, true, false));
 				}
 				ServiceLocator.BindToDependencyResolver(container);
 			}

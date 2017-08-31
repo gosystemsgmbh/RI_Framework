@@ -8,6 +8,7 @@ using RI.Framework.IO.Paths;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Logging;
+using RI.Framework.Utilities.Runtime;
 
 namespace RI.Framework.Composition.Catalogs
 {
@@ -57,6 +58,7 @@ namespace RI.Framework.Composition.Catalogs
 		/// </summary>
 		/// <param name="directoryPath"> The directory which is searched for assemblies. </param>
 		/// <param name="exportAllTypes"> Specifies whether all types should be exported (see <see cref="ExportAllTypes" /> for details). </param>
+		/// <param name="ignoreFrameworkFiles"> Specifies whether framework-provided files should be exported (see <see cref="IgnoreFrameworkFiles" /> for details). </param>
 		/// <remarks>
 		///     <para>
 		///         The default file pattern <see cref="DefaultFilePattern" /> is used and search is performed non-recursive.
@@ -64,8 +66,8 @@ namespace RI.Framework.Composition.Catalogs
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="directoryPath" /> is null. </exception>
 		/// <exception cref="InvalidPathArgumentException"> <paramref name="directoryPath" /> is not a real usable directory. </exception>
-		public DirectoryCatalog (DirectoryPath directoryPath, bool exportAllTypes)
-			: this(directoryPath, exportAllTypes, DirectoryCatalog.DefaultFilePattern, false)
+		public DirectoryCatalog (DirectoryPath directoryPath, bool exportAllTypes, bool ignoreFrameworkFiles)
+			: this(directoryPath, exportAllTypes, ignoreFrameworkFiles, DirectoryCatalog.DefaultFilePattern, false)
 		{
 		}
 
@@ -74,12 +76,13 @@ namespace RI.Framework.Composition.Catalogs
 		/// </summary>
 		/// <param name="directoryPath"> The directory which is searched for assemblies. </param>
 		/// <param name="exportAllTypes"> Specifies whether all types should be exported (see <see cref="ExportAllTypes" /> for details). </param>
+		/// <param name="ignoreFrameworkFiles"> Specifies whether framework-provided files should be exported (see <see cref="IgnoreFrameworkFiles" /> for details). </param>
 		/// <param name="filePattern"> The file pattern which is used to search for assemblies (can be null to use <see cref="DefaultFilePattern" />). </param>
 		/// <param name="recursive"> Specifies whether assemblies are searched recursive (including subdirectories) or not. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="directoryPath" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> <paramref name="directoryPath" /> is not a real usable directory. </exception>
 		/// <exception cref="InvalidPathArgumentException"> <paramref name="filePattern" /> is an empty string. </exception>
-		public DirectoryCatalog (DirectoryPath directoryPath, bool exportAllTypes, string filePattern, bool recursive)
+		public DirectoryCatalog (DirectoryPath directoryPath, bool exportAllTypes, bool ignoreFrameworkFiles, string filePattern, bool recursive)
 		{
 			if (directoryPath == null)
 			{
@@ -101,6 +104,7 @@ namespace RI.Framework.Composition.Catalogs
 
 			this.DirectoryPath = directoryPath;
 			this.ExportAllTypes = exportAllTypes;
+			this.IgnoreFrameworkFiles = ignoreFrameworkFiles;
 			this.FilePattern = filePattern ?? DirectoryCatalog.DefaultFilePattern;
 			this.Recursive = recursive;
 
@@ -135,6 +139,20 @@ namespace RI.Framework.Composition.Catalogs
 		///     </para>
 		/// </remarks>
 		public bool ExportAllTypes { get; }
+
+		/// <summary>
+		/// Gets whether files provided by the framework itself are ignored.
+		/// </summary>
+		/// <value>
+		/// true if files provided by the framework itself are ignored, false otherwise.
+		/// </value>
+		/// <remarks>
+		/// <para>
+		/// If framework-provided files are ignored, their types are not exported by default.
+		/// However, you can still export those types by explicit export them, e.g. through <see cref="AssemblyCatalog"/>, <see cref="TypeCatalog"/>, or <see cref="InstanceCatalog"/>.
+		/// </para>
+		/// </remarks>
+		public bool IgnoreFrameworkFiles { get; }
 
 		/// <summary>
 		///     Indicates whether there were assembly files which could not be loaded.
@@ -245,6 +263,13 @@ namespace RI.Framework.Composition.Catalogs
 				foreach (FilePath newFile in newFiles)
 				{
 					this.Log(LogLevel.Debug, "Trying to load assembly: {0}", newFile);
+
+					bool isFrameworkFile = FrameworkTypeUtility.IsFrameworkFile(newFile);
+					if (isFrameworkFile && this.IgnoreFrameworkFiles)
+					{
+						this.Log(LogLevel.Debug, "Framework-provided file filtered: {0}", newFile);
+						continue;
+					}
 
 					try
 					{

@@ -153,10 +153,10 @@ namespace RI.Framework.Data.Database
 		public bool IsReady => (this.State == DatabaseState.ReadyNew) || (this.State == DatabaseState.ReadyOld) || (this.State == DatabaseState.ReadyUnknown);
 
 		/// <inheritdoc />
-		public int MinVersion => this.SupportsUpgrade ? this.Configuration.VersionUpgrader.MinVersion : -1;
+		public int MinVersion => this.SupportsUpgrade ? this.Configuration.VersionUpgrader.GetMinVersion(this) : -1;
 
 		/// <inheritdoc />
-		public int MaxVersion => this.SupportsUpgrade ? this.Configuration.VersionUpgrader.MaxVersion : -1;
+		public int MaxVersion => this.SupportsUpgrade ? this.Configuration.VersionUpgrader.GetMaxVersion(this) : -1;
 
 		/// <inheritdoc />
 		public bool CanUpgrade => this.SupportsUpgrade && (this.IsReady || (this.State == DatabaseState.New)) && (this.Version >= 0) && (this.Version < this.MaxVersion);
@@ -584,7 +584,7 @@ namespace RI.Framework.Data.Database
 		/// </remarks>
 		protected virtual void PrepareConfigurationImpl ()
 		{
-			this.Configuration.VerifyConfiguration();
+			this.Configuration.VerifyConfiguration(this);
 			this.Configuration.InheritLogger();
 		}
 
@@ -835,6 +835,9 @@ namespace RI.Framework.Data.Database
 			return result;
 		}
 
+		//TODO: Add ExecuteScriptBatch (Extension?)
+		//TODO: Add ExecumeCommand (Extension?)
+
 		/// <inheritdoc />
 		public bool Upgrade (int version)
 		{
@@ -865,11 +868,13 @@ namespace RI.Framework.Data.Database
 
 			this.PrepareConfiguration();
 
-			for (int currentVersion = this.Version; currentVersion < version; currentVersion++)
+			int currentVersion = this.Version;
+			while ( currentVersion < version)
 			{
 				bool result = this.UpgradeImpl(version);
 
 				this.DetectStateAndVersion();
+				currentVersion = this.Version;
 
 				if ((!this.IsReady) || (!result))
 				{
@@ -901,7 +906,7 @@ namespace RI.Framework.Data.Database
 
 			if (this.State == DatabaseState.Uninitialized)
 			{
-				throw new InvalidOperationException(this.GetType().Name + " must be initialized to perform a restore, current state is " + this.State + ".");
+				throw new InvalidOperationException(this.GetType().Name + " must be initialized to perform a backup, current state is " + this.State + ".");
 			}
 
 			if (!this.SupportsBackup)
@@ -958,9 +963,9 @@ namespace RI.Framework.Data.Database
 		/// <inheritdoc />
 		public bool Cleanup ()
 		{
-			if (!this.IsReady)
+			if ((!this.IsReady) && (this.State != DatabaseState.New))
 			{
-				throw new InvalidOperationException(this.GetType().Name + " must be in a ready state to perform a cleanup, current state is " + this.State + ".");
+				throw new InvalidOperationException(this.GetType().Name + " must be in a ready state or the new state to perform a cleanup, current state is " + this.State + ".");
 			}
 
 			if (!this.SupportsCleanup)

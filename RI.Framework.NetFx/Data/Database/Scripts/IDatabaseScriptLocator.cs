@@ -49,7 +49,7 @@ namespace RI.Framework.Data.Database.Scripts
 		/// Gets or sets the string which is used as the separator to separate individual batches in a script.
 		/// </summary>
 		/// <value>
-		/// The string which is used as the separator to separate individual batches in a script or null if the script iist not to be separated into individual batches.
+		/// The string which is used as the separator to separate individual batches in a script or null if the script is not to be separated into individual batches.
 		/// </value>
 		string BatchSeparator { get; set; }
 	}

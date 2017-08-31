@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SQLite;
 using System.Diagnostics.CodeAnalysis;
 
 using RI.Framework.Data.Database.Scripts;
 using RI.Framework.Utilities;
-using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Logging;
 
 namespace RI.Framework.Data.Database.Cleanup
@@ -15,15 +15,14 @@ namespace RI.Framework.Data.Database.Cleanup
 	/// </summary>
 	/// <remarks>
 	/// <para>
-	/// <see cref="SQLiteDatabaseCleanupProcessor"/> can be used with either a default SQLite cleanup script (<see cref="DefaultCleanupScript"/>) or with a custom script which is loaded through a script locator using its script name.
-	/// <see cref="RequiresScriptLocator"/> returns false if the default cleanup script is used, true if a custom script is used.
+	/// <see cref="SQLiteDatabaseCleanupProcessor"/> can be used with either a default SQLite cleanup script (<see cref="DefaultCleanupScript"/>) or with a custom processing step.
 	/// </para>
 	/// </remarks>
 	[SuppressMessage("ReSharper", "InconsistentNaming")]
 	public sealed class SQLiteDatabaseCleanupProcessor : DatabaseCleanupProcessor<SQLiteConnection, SQLiteConnectionStringBuilder, SQLiteDatabaseManager>
 	{
 		/// <summary>
-		/// The default cleanup script used when no script name is specified.
+		/// The default cleanup script used when no custom processing step is specified.
 		/// </summary>
 		/// <remarks>
 		/// <para>
@@ -48,28 +47,19 @@ namespace RI.Framework.Data.Database.Cleanup
 		/// <summary>
 		/// Creates a new instance of <see cref="SQLiteDatabaseCleanupProcessor"/>.
 		/// </summary>
-		/// <param name="scriptName">The name of the script which performs the cleanup or null if the default cleanup script is used (<see cref="DefaultCleanupScript"/>).</param>
-		/// <exception cref="EmptyStringArgumentException"><paramref name="scriptName"/> is an empty string.</exception>
-		public SQLiteDatabaseCleanupProcessor (string scriptName)
+		/// <param name="cleanupStep">The custom processing step which performs the cleanup or null if the default cleanup script is used (<see cref="DefaultCleanupScript"/>).</param>
+		public SQLiteDatabaseCleanupProcessor (SQLiteDatabaseProcessingStep cleanupStep)
 		{
-			if (scriptName != null)
-			{
-				if (scriptName.IsNullOrEmptyOrWhitespace())
-				{
-					throw new EmptyStringArgumentException(nameof(scriptName));
-				}
-			}
-
-			this.ScriptName = scriptName;
+			this.CleanupStep = cleanupStep;
 		}
 
 		/// <summary>
-		/// Gets the name of the script which performs the cleanup.
+		/// Gets the custom processing step which performs the cleanup.
 		/// </summary>
 		/// <value>
-		/// The name of the script which performs the cleanup or null if the default cleanup script is used.
+		/// The custom processing step which performs the cleanup or null if the default cleanup script is used (<see cref="DefaultCleanupScript"/>).
 		/// </value>
-		public string ScriptName { get; }
+		public SQLiteDatabaseProcessingStep CleanupStep { get; }
 
 		/// <inheritdoc />
 		public override bool Cleanup (SQLiteDatabaseManager manager)
@@ -81,29 +71,30 @@ namespace RI.Framework.Data.Database.Cleanup
 
 			try
 			{
-				string connectionString = manager.Configuration.ConnectionString.ConnectionString;
+				SQLiteConnectionStringBuilder connectionString = new SQLiteConnectionStringBuilder(manager.Configuration.ConnectionString.ConnectionString);
 
-				this.Log(LogLevel.Information, "Beginning SQLite database cleanup: Script=[{0}]; Connection=[{1}]", this.ScriptName ?? "null", connectionString);
+				this.Log(LogLevel.Information, "Beginning SQLite database cleanup: Connection=[{0}]", connectionString.ConnectionString);
 
-				List<string> batches = this.ScriptName == null ? DatabaseScriptLocator.SplitBatches(SQLiteDatabaseCleanupProcessor.DefaultCleanupScript, DatabaseScriptLocator.DefaultBatchSeparator) : manager.GetScriptBatch(this.ScriptName, true);
-				if (batches == null)
+				using (SQLiteConnection connection = new SQLiteConnection(connectionString.ConnectionString))
 				{
-					throw new Exception("Batch retrieval failed for script: " + (this.ScriptName ?? "[null]"));
-				}
+					connection.Open();
 
-				using (SQLiteConnection connection = manager.CreateConnection(false, false))
-				{
-					foreach (string batch in batches)
+					SQLiteDatabaseProcessingStep cleanupStep = this.CleanupStep;
+					if (cleanupStep == null)
 					{
-						using (SQLiteCommand command = new SQLiteCommand(batch, connection))
-						{
-							this.Log(LogLevel.Debug, "Executing SQLite database cleanup batch: {0}", batch);
-							command.ExecuteNonQuery();
-						}
+						List<string> batches = DatabaseScriptLocator.SplitBatches(SQLiteDatabaseCleanupProcessor.DefaultCleanupScript, DatabaseScriptLocator.DefaultBatchSeparator);
+						cleanupStep = new SQLiteDatabaseProcessingStep();
+						cleanupStep.AddBatches(batches);
+					}
+
+					using (SQLiteTransaction transaction = cleanupStep.RequiresTransaction ? connection.BeginTransaction(IsolationLevel.Serializable) : null)
+					{
+						cleanupStep.Execute(manager, connection, transaction);
+						transaction?.Commit();
 					}
 				}
 
-				this.Log(LogLevel.Information, "Finished SQLite database cleanup: Script=[{0}]; Connection=[{1}]", this.ScriptName ?? "null", connectionString);
+				this.Log(LogLevel.Information, "Finished SQLite database cleanup: Connection=[{0}]", connectionString.ConnectionString);
 
 				return true;
 			}
@@ -115,6 +106,6 @@ namespace RI.Framework.Data.Database.Cleanup
 		}
 
 		/// <inheritdoc />
-		public override bool RequiresScriptLocator => this.ScriptName != null;
+		public override bool RequiresScriptLocator => this.CleanupStep?.RequiresScriptLocator ?? false;
 	}
 }

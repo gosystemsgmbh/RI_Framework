@@ -55,7 +55,11 @@
   <ItemGroup>
     <Compile Include="Data\Database\Backup\SQLiteDatabaseBackupCreator.cs" />
     <Compile Include="Data\Database\Cleanup\SQLiteDatabaseCleanupProcessor.cs" />
+    <Compile Include="Data\Database\SQLiteDatabaseProcessingStepDelegate.cs" />
+    <Compile Include="Data\Database\SQLiteDatabaseProcessingStepTransactionRequirement.cs" />
+    <Compile Include="Data\Database\Upgrading\SQLiteDatabaseVersionUpgradeStep.cs" />
     <Compile Include="Data\Database\Upgrading\SQLiteDatabaseVersionUpgrader.cs" />
+    <Compile Include="Data\Database\SQLiteDatabaseProcessingStep.cs" />
     <Compile Include="Data\Database\Versioning\SQLiteDatabaseVersionDetector.cs" />
     <Compile Include="Data\SQLite\Collations\CurrentCultureIgnoreCaseSQLiteCollation.cs" />
     <Compile Include="Data\SQLite\Collations\CurrentCultureSQLiteCollation.cs" />
@@ -80,7 +84,7 @@
     <Compile Include="Data\SQLite\SQLiteConnectionExtensions.cs" />
     <Compile Include="Data\Database\SQLiteDatabaseManagerConfiguration.cs" />
     <None Include="app.config" />
-    <None Include="Data\Database\SQLiteDatabaseManager2.cs" />
+    <None Include="Data\Database\SQLiteDatabaseManagerOld.cs" />
     <Compile Include="Data\Database\SQLiteDatabaseManager.cs" />
     <Compile Include="Data\SQLite\SQLiteConversionExtensions.cs" />
     <Compile Include="Data\SQLite\_NamespaceDoc.cs" />

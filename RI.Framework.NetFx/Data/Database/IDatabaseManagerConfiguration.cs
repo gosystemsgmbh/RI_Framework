@@ -85,8 +85,9 @@ namespace RI.Framework.Data.Database
 		/// <summary>
 		/// Verifies the configuration.
 		/// </summary>
+		/// <param name="manager">The used database manager.</param>
 		/// <exception cref="InvalidDatabaseConfigurationException">The database configuration is not valid.</exception>
-		void VerifyConfiguration ();
+		void VerifyConfiguration (IDatabaseManager manager);
 	}
 
 	/// <inheritdoc cref="IDatabaseManagerConfiguration"/>
@@ -112,5 +113,8 @@ namespace RI.Framework.Data.Database
 
 		/// <inheritdoc cref="IDatabaseManagerConfiguration.CleanupProcessor"/>
 		new IDatabaseCleanupProcessor<TConnection, TConnectionStringBuilder, TManager> CleanupProcessor { get; set; }
+
+		/// <inheritdoc cref="IDatabaseManagerConfiguration.VerifyConfiguration"/>
+		void VerifyConfiguration(TManager manager);
 	}
 }

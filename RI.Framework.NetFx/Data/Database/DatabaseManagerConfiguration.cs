@@ -177,6 +177,24 @@ namespace RI.Framework.Data.Database
 			}
 		}
 
+		/// <inheritdoc />
+		void IDatabaseManagerConfiguration.InheritLogger()
+		{
+			this.InheritLogger();
+		}
+
+		/// <inheritdoc />
+		void IDatabaseManagerConfiguration.VerifyConfiguration(IDatabaseManager manager)
+		{
+			this.VerifyConfiguration((TManager)manager);
+		}
+
+		/// <inheritdoc cref="IDatabaseManagerConfiguration.VerifyConfiguration"/>
+		void IDatabaseManagerConfiguration<TConnection, TConnectionStringBuilder, TManager>.VerifyConfiguration(TManager manager)
+		{
+			this.VerifyConfiguration(manager);
+		}
+
 		/// <inheritdoc cref="IDatabaseManagerConfiguration.InheritLogger"/>
 		protected virtual void InheritLogger ()
 		{
@@ -211,14 +229,8 @@ namespace RI.Framework.Data.Database
 			}
 		}
 
-		/// <inheritdoc />
-		void IDatabaseManagerConfiguration.InheritLogger()
-		{
-			this.InheritLogger();
-		}
-
 		/// <inheritdoc cref="IDatabaseManagerConfiguration.VerifyConfiguration"/>
-		protected virtual void VerifyConfiguration()
+		protected virtual void VerifyConfiguration(TManager manager)
 		{
 			if (this.ConnectionString == null)
 			{
@@ -255,22 +267,16 @@ namespace RI.Framework.Data.Database
 
 			if (this.VersionUpgrader != null)
 			{
-				if (this.VersionUpgrader.MinVersion < 0)
+				if (this.VersionUpgrader.GetMinVersion(manager) < 0)
 				{
 					throw new InvalidDatabaseConfigurationException("Invalid version upgrader minimum version.");
 				}
 
-				if (this.VersionUpgrader.MaxVersion < this.VersionUpgrader.MinVersion)
+				if (this.VersionUpgrader.GetMaxVersion(manager) < this.VersionUpgrader.GetMinVersion(manager))
 				{
 					throw new InvalidDatabaseConfigurationException("Invalid version upgrader maximum version.");
 				}
 			}
-		}
-
-		/// <inheritdoc />
-		void IDatabaseManagerConfiguration.VerifyConfiguration()
-		{
-			this.VerifyConfiguration();
 		}
 	}
 }

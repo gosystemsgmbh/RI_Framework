@@ -29,11 +29,21 @@ namespace RI.Framework.Data.Database.Upgrading
 		/// <inheritdoc />
 		public abstract bool RequiresScriptLocator { get; }
 
-		/// <inheritdoc />
-		public abstract int MinVersion { get; }
+		int IDatabaseVersionUpgrader.GetMinVersion (IDatabaseManager manager)
+		{
+			return this.GetMinVersion((TManager)manager);
+		}
+
+		int IDatabaseVersionUpgrader.GetMaxVersion (IDatabaseManager manager)
+		{
+			return this.GetMaxVersion((TManager)manager);
+		}
 
 		/// <inheritdoc />
-		public abstract int MaxVersion { get; }
+		public abstract int GetMinVersion (TManager manager);
+
+		/// <inheritdoc />
+		public abstract int GetMaxVersion (TManager manager);
 
 		/// <inheritdoc />
 		bool IDatabaseVersionUpgrader.Upgrade(IDatabaseManager manager, int sourceVersion)

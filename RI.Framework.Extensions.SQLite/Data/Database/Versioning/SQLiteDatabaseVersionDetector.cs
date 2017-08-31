@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SQLite;
 using System.Diagnostics.CodeAnalysis;
 
@@ -15,8 +16,7 @@ namespace RI.Framework.Data.Database.Versioning
 	/// </summary>
 	/// <remarks>
 	/// <para>
-	/// <see cref="SQLiteDatabaseVersionDetector"/> uses a custom script which is loaded through a script locator using its script name.
-	/// Therefore, <see cref="RequiresScriptLocator"/> returns returns true.
+	/// <see cref="SQLiteDatabaseVersionDetector"/> uses a custom SQL script which is loaded through a script locator using its script name.
 	/// </para>
 	/// <para>
 	/// The script must return a scalar value which indicates the current version of the database.
@@ -67,9 +67,13 @@ namespace RI.Framework.Data.Database.Versioning
 			}
 
 			state = null;
+			version = -1;
 
 			try
 			{
+				SQLiteConnectionStringBuilder connectionString = new SQLiteConnectionStringBuilder(manager.Configuration.ConnectionString.ConnectionString);
+				connectionString.ReadOnly = true;
+
 				List<string> batches = manager.GetScriptBatch(this.ScriptName, true);
 				if (batches == null)
 				{
@@ -77,15 +81,22 @@ namespace RI.Framework.Data.Database.Versioning
 				}
 				if (batches.Count != 1)
 				{
-					throw new Exception("More or less than one batch in script: " + (this.ScriptName ?? "[null]"));
+					throw new Exception("Not exactly one batch in script: " + (this.ScriptName ?? "[null]"));
 				}
 
-				using (SQLiteConnection connection = manager.CreateConnection(manager.SupportsReadOnly, false))
+				using (SQLiteConnection connection = new SQLiteConnection(connectionString.ConnectionString))
 				{
-					using (SQLiteCommand command = new SQLiteCommand(batches[0], connection))
+					connection.Open();
+
+					using (SQLiteTransaction transaction = connection.BeginTransaction(IsolationLevel.Serializable))
 					{
-						object value = command.ExecuteScalar();
-						version = value.Int32FromSQLiteResult() ?? -1;
+						using (SQLiteCommand command = new SQLiteCommand(batches[0], connection, transaction))
+						{
+							object value = command.ExecuteScalar();
+							version = value.Int32FromSQLiteResult() ?? -1;
+						}
+
+						transaction?.Rollback();
 					}
 				}
 
@@ -94,7 +105,6 @@ namespace RI.Framework.Data.Database.Versioning
 			catch (Exception exception)
 			{
 				this.Log(LogLevel.Error, "SQLite database version detection failed:{0}{1}", Environment.NewLine, exception.ToDetailedString());
-				version = -1;
 				return false;
 			}
 		}

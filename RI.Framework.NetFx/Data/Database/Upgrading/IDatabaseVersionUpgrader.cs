@@ -42,29 +42,31 @@ namespace RI.Framework.Data.Database.Upgrading
 		/// <summary>
 		/// Gets the lowest supported/known version of this database version upgrader.
 		/// </summary>
-		/// <value>
+		/// <param name="manager">The used database manager representing the database.</param>
+		/// <returns>
 		/// The lowest supported/known version of this database version upgrader.
 		/// Zero means that the database version upgrader supports creating a new database if it does not exist.
-		/// </value>
+		/// </returns>
 		/// <remarks>
 		/// <note type="implement">
-		/// <see cref="MinVersion"/> always represents a source version, not a target version, meaning that <see cref="MinVersion"/> is the lowest version from which can be upgraded.
+		/// <see cref="GetMinVersion"/> always represents a source version, not a target version, meaning that <see cref="GetMinVersion"/> is the lowest version from which can be upgraded.
 		/// </note>
 		/// </remarks>
-		int MinVersion { get; }
+		int GetMinVersion (IDatabaseManager manager);
 
 		/// <summary>
 		/// Gets the highest supported/known version of this database version upgrader.
 		/// </summary>
-		/// <value>
+		/// <param name="manager">The used database manager representing the database.</param>
+		/// <returns>
 		/// The highest supported/known version of this database version upgrader.
-		/// </value>
+		/// </returns>
 		/// <remarks>
 		/// <note type="implement">
-		/// <see cref="MaxVersion"/> always represents a target version, not a source version, meaning that <see cref="MaxVersion"/> is the highest version to which can be upgraded.
+		/// <see cref="GetMaxVersion"/> always represents a target version, not a source version, meaning that <see cref="GetMaxVersion"/> is the highest version to which can be upgraded.
 		/// </note>
 		/// </remarks>
-		int MaxVersion { get; }
+		int GetMaxVersion(IDatabaseManager manager);
 
 		/// <summary>
 		/// Upgrades a database version from a specified version to the next version.
@@ -94,5 +96,11 @@ namespace RI.Framework.Data.Database.Upgrading
 	{
 		/// <inheritdoc cref="IDatabaseVersionUpgrader.Upgrade"/>
 		bool Upgrade (TManager manager, int sourceVersion);
+
+		/// <inheritdoc cref="IDatabaseVersionUpgrader.GetMinVersion"/>
+		int GetMinVersion(TManager manager);
+
+		/// <inheritdoc cref="IDatabaseVersionUpgrader.GetMaxVersion"/>
+		int GetMaxVersion(TManager manager);
 	}
 }

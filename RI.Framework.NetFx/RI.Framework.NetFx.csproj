@@ -74,7 +74,10 @@
     <Compile Include="Data\Database\IDatabaseManager.cs" />
     <Compile Include="Data\Database\IDatabaseManagerConfiguration.cs" />
     <Compile Include="Data\Database\InvalidDatabaseConfigurationException.cs" />
+    <Compile Include="Data\Database\Scripts\AggregateScriptLocator.cs" />
+    <Compile Include="Data\Database\Scripts\AssemblyRessourceScriptLocator.cs" />
     <Compile Include="Data\Database\Scripts\DatabaseScriptLocator.cs" />
+    <Compile Include="Data\Database\Scripts\DictionaryScriptLocator.cs" />
     <Compile Include="Data\Database\Scripts\IDatabaseScriptLocator.cs" />
     <Compile Include="Data\Database\Scripts\_NamespaceDoc.cs" />
     <Compile Include="Data\Database\Upgrading\DatabaseVersionUpgrader.cs" />
