@@ -37,6 +37,40 @@ namespace RI.Framework.Utilities
 		#region Static Methods
 
 		/// <summary>
+		/// Keeps only characters of a string based on a predicate.
+		/// </summary>
+		/// <param name="str">The string.</param>
+		/// <param name="predicate">The predicate used to test each character of the string.</param>
+		/// <returns>
+		/// The string where each character is preserved based on the predicate.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"><paramref name="str"/> or <paramref name="predicate"/> is null.</exception>
+		public static string Keep (this string str, Predicate<char> predicate)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			if (predicate == null)
+			{
+				throw new ArgumentNullException(nameof(predicate));
+			}
+
+			StringBuilder sb = new StringBuilder(str.Length);
+
+			foreach (char c in str)
+			{
+				if (predicate(c))
+				{
+					sb.Append(c);
+				}
+			}
+
+			return sb.ToString();
+		}
+
+		/// <summary>
 		///     Determines whether a specified string occurs in a string.
 		/// </summary>
 		/// <param name="str"> The string. </param>
@@ -654,6 +688,26 @@ namespace RI.Framework.Utilities
 
 			str = str.Replace("\r\n", "\n");
 			str = str.Replace("\n", Environment.NewLine);
+			return str;
+		}
+
+		/// <summary>
+		///     Removes all line breaks in a string.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     The string with all its line breaks removed.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static string RemoveLineBreaks(this string str)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			str = str.Replace("\r\n", "\n");
+			str = str.Replace("\n", string.Empty);
 			return str;
 		}
 

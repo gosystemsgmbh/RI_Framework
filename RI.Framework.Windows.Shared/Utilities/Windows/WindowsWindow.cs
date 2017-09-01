@@ -5,9 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-
-
-
+using System.Windows.Forms;
 
 namespace RI.Framework.Utilities.Windows
 {
@@ -445,6 +443,100 @@ namespace RI.Framework.Utilities.Windows
 			}
 
 			WindowsWindow.ShowWindow(hWnd, (int)WindowsWindow.SwShow);
+		}
+
+		/// <summary>
+		/// Moves a window to the primary screen.
+		/// </summary>
+		/// <param name="hWnd">The window to move.</param>
+		/// <remarks>
+		///     <para>
+		///         Nothing happens if <paramref name="hWnd" /> is <see cref="IntPtr.Zero" />.
+		///     </para>
+		/// </remarks>
+		public static void MoveWindowToPrimaryScreen(IntPtr hWnd)
+		{
+			WindowsWindow.MoveWindowToScreen(hWnd, null);
+		}
+
+		/// <summary>
+		/// Moves a window to a screen.
+		/// </summary>
+		/// <param name="hWnd">The window to move.</param>
+		/// <param name="screenIndex">The screen index or -1 to move to the primary screen.</param>
+		/// <remarks>
+		///     <para>
+		///         Nothing happens if <paramref name="hWnd" /> is <see cref="IntPtr.Zero" />.
+		///     </para>
+		/// </remarks>
+		public static void MoveWindowToScreen(IntPtr hWnd, int screenIndex)
+		{
+			if (screenIndex < -1)
+			{
+				screenIndex = 0;
+			}
+
+			if (screenIndex >= Screen.AllScreens.Length)
+			{
+				screenIndex = Screen.AllScreens.Length - 1;
+			}
+
+			WindowsWindow.MoveWindowToScreen(hWnd, screenIndex == -1 ? null : Screen.AllScreens[screenIndex]);
+		}
+
+		/// <summary>
+		/// Moves a window to a screen.
+		/// </summary>
+		/// <param name="hWnd">The window to move.</param>
+		/// <param name="screen">The screen or null to move to the primary screen.</param>
+		/// <remarks>
+		///     <para>
+		///         Nothing happens if <paramref name="hWnd" /> is <see cref="IntPtr.Zero" />.
+		///     </para>
+		/// </remarks>
+		public static void MoveWindowToScreen(IntPtr hWnd, Screen screen)
+		{
+			if (hWnd == IntPtr.Zero)
+			{
+				return;
+			}
+
+			screen = screen ?? Screen.PrimaryScreen;
+
+			WINDOWINFO info = new WINDOWINFO();
+			info.cbSize = (uint)Marshal.SizeOf(info);
+			WindowsWindow.GetWindowInfo(hWnd, ref info);
+
+			WINDOWPLACEMENT placement = new WINDOWPLACEMENT();
+			placement.Length = (uint)Marshal.SizeOf(placement);
+			WindowsWindow.GetWindowPlacement(hWnd, ref placement);
+
+			bool isMaximized = placement.ShowCmd == WindowsWindow.SwShowmaximized;
+			bool isMinimized = placement.ShowCmd == WindowsWindow.SwShowminimized;
+			bool isNormal = placement.ShowCmd == WindowsWindow.SwShownormal;
+
+			int width = info.rcWindow.Right - info.rcWindow.Left;
+			int height = info.rcWindow.Bottom - info.rcWindow.Top;
+
+			if (isMaximized || isMinimized)
+			{
+				WindowsWindow.ShowWindow(hWnd, (int)WindowsWindow.SwShownormal);
+			}
+
+			WindowsWindow.SetWindowPos(hWnd, IntPtr.Zero, screen.WorkingArea.Left, screen.WorkingArea.Top, 0, 0, WindowsWindow.SwpNozorder | WindowsWindow.SwpNosize);
+
+			if (isNormal)
+			{
+				WindowsWindow.SetWindowPos(hWnd, IntPtr.Zero, screen.WorkingArea.Left + ((screen.WorkingArea.Width - width) / 2), screen.WorkingArea.Top + ((screen.WorkingArea.Height - height) / 2), 0, 0, WindowsWindow.SwpNozorder | WindowsWindow.SwpNosize);
+			}
+			else if (isMaximized)
+			{
+				WindowsWindow.ShowWindow(hWnd, (int)WindowsWindow.SwShowmaximized);
+			}
+			else if (isMinimized)
+			{
+				WindowsWindow.ShowWindow(hWnd, (int)WindowsWindow.SwShowminimized);
+			}
 		}
 
 		[DllImport("user32.dll", SetLastError = false)]

@@ -44,8 +44,13 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Management" />
     <Reference Include="System.Security" />
+    <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IO\Keyboard\OnScreenKeyboard.cs" />
+    <Compile Include="IO\Keyboard\SystemKeyboard.cs" />
+    <Compile Include="IO\Keyboard\SystemKeyboardKey.cs" />
+    <Compile Include="IO\Keyboard\_NamespaceDoc.cs" />
     <Compile Include="IO\Printer\PrinterDevice.cs" />
     <Compile Include="IO\Printer\PrinterTypes.cs" />
     <Compile Include="IO\Printer\RawPrinterAccess.cs" />
@@ -59,6 +64,7 @@
     <None Include="Utilities\Windows\Messages\_NamespaceDoc.cs" />
     <Compile Include="Utilities\Windows\Cryptography\_NamespaceDoc.cs" />
     <Compile Include="Utilities\Windows\Network\_NamespaceDoc.cs" />
+    <Compile Include="Utilities\Windows\SystemInformationReport.cs" />
     <Compile Include="Utilities\Windows\Users\_NamespaceDoc.cs" />
     <Compile Include="Utilities\Windows\WindowsWindow.cs" />
     <Compile Include="Utilities\Windows\Cryptography\UniqueIdentification.cs" />

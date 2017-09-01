@@ -35,6 +35,17 @@ namespace RI.Framework.Utilities.Runtime
 			return (p == 4) || (p == 6) || (p == 128);
 		}
 
+		/// <summary>
+		///     Detects whether the current platform is a Windows platform (Windows XP or newer).
+		/// </summary>
+		/// <returns>
+		///     true if the current platform is Windows XP or newer, false otherwise.
+		/// </returns>
+		public static bool IsWindowsPlatform ()
+		{
+			return Environment.OSVersion.IsWindowsXpOrNewer();
+		}
+
 		#endregion
 	}
 }

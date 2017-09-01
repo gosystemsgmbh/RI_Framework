@@ -19,8 +19,6 @@ Utilities
  - (Common) TextWriterExtensions
 
  * (WPF) EventToCommandBinder
- * (WPF) IView Init
- * (WPF) IViewModel Init
 
  - (Linux) LinuxShell
 
@@ -29,12 +27,6 @@ Utilities
  - (Windows) WindowsMessageLoopTimer
  - (Windows) WindowsMessageLoopSynchronizationContext
  - (Windows) WindowsMessageLoop: Priority queue
-
- * (Windows) Screen
- * (Windows) OnScreenKeyboard
- * (Windows) SystemKeyboard
- * (Windows) WindowsVersion
- * (Windows) SystemInformation
 
  - (WinForms) FormExtensions
  - (WinForms) TemporaryCursor
