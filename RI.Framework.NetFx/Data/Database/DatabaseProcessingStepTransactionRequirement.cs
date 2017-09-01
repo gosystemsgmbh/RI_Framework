@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 
 namespace RI.Framework.Data.Database
 {
@@ -7,8 +6,7 @@ namespace RI.Framework.Data.Database
 	/// Describes the transaction requirements of a processing sub-step.
 	/// </summary>
 	[Serializable]
-	[SuppressMessage("ReSharper", "InconsistentNaming")]
-	public enum SQLiteDatabaseProcessingStepTransactionRequirement
+	public enum DatabaseProcessingStepTransactionRequirement
 	{
 		/// <summary>
 		/// The sub-step has no transaction requirement and can be used with or without a transaction.

@@ -55,8 +55,6 @@
   <ItemGroup>
     <Compile Include="Data\Database\Backup\SQLiteDatabaseBackupCreator.cs" />
     <Compile Include="Data\Database\Cleanup\SQLiteDatabaseCleanupProcessor.cs" />
-    <Compile Include="Data\Database\SQLiteDatabaseProcessingStepDelegate.cs" />
-    <Compile Include="Data\Database\SQLiteDatabaseProcessingStepTransactionRequirement.cs" />
     <Compile Include="Data\Database\Upgrading\SQLiteDatabaseVersionUpgradeStep.cs" />
     <Compile Include="Data\Database\Upgrading\SQLiteDatabaseVersionUpgrader.cs" />
     <Compile Include="Data\Database\SQLiteDatabaseProcessingStep.cs" />

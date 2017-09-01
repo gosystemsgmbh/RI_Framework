@@ -73,6 +73,7 @@
     <Compile Include="Data\Database\DatabaseVersionChangedEventArgs.cs" />
     <Compile Include="Data\Database\IDatabaseManager.cs" />
     <Compile Include="Data\Database\IDatabaseManagerConfiguration.cs" />
+    <Compile Include="Data\Database\IDatabaseManagerExtensions.cs" />
     <Compile Include="Data\Database\InvalidDatabaseConfigurationException.cs" />
     <Compile Include="Data\Database\Scripts\AggregateScriptLocator.cs" />
     <Compile Include="Data\Database\Scripts\AssemblyRessourceScriptLocator.cs" />
@@ -80,6 +81,9 @@
     <Compile Include="Data\Database\Scripts\DictionaryScriptLocator.cs" />
     <Compile Include="Data\Database\Scripts\IDatabaseScriptLocator.cs" />
     <Compile Include="Data\Database\Scripts\_NamespaceDoc.cs" />
+    <Compile Include="Data\Database\DatabaseProcessingStep.cs" />
+    <Compile Include="Data\Database\DatabaseProcessingStepDelegate.cs" />
+    <Compile Include="Data\Database\DatabaseProcessingStepTransactionRequirement.cs" />
     <Compile Include="Data\Database\Upgrading\DatabaseVersionUpgrader.cs" />
     <Compile Include="Data\Database\Upgrading\IDatabaseVersionUpgrader.cs" />
     <Compile Include="Data\Database\Upgrading\_NamespaceDoc.cs" />

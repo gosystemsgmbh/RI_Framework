@@ -1,6 +1,6 @@
 ﻿using System.Data.Common;
 
-using RI.Framework.IO.Paths;
+using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Logging;
 
 namespace RI.Framework.Data.Database.Backup
@@ -50,23 +50,25 @@ namespace RI.Framework.Data.Database.Backup
 		/// Creates a backup of a database to a specific file.
 		/// </summary>
 		/// <param name="manager">The used database manager representing the database.</param>
-		/// <param name="backupFile">The file to which the backup is written.</param>
+		/// <param name="backupTarget">The backup creator specific object which describes the backup target.</param>
 		/// <returns>
 		/// true if the backup was successful, false otherwise.
 		/// Details must be written to the log.
 		/// </returns>
-		bool Backup (IDatabaseManager manager, FilePath backupFile);
+		/// <exception cref="InvalidTypeArgumentException"><paramref name="backupTarget"/> is of a type which is not supported by the used backup creator.</exception>
+		bool Backup (IDatabaseManager manager, object backupTarget);
 
 		/// <summary>
 		/// Restores a backup of a database from a specific file.
 		/// </summary>
 		/// <param name="manager">The used database manager representing the database.</param>
-		/// <param name="backupFile">The file from which the backup is restored.</param>
+		/// <param name="backupSource">The backup creator specific object which describes the backup source.</param>
 		/// <returns>
 		/// true if the restore was successful, false otherwise.
 		/// Details must be written to the log.
 		/// </returns>
-		bool Restore (IDatabaseManager manager, FilePath backupFile);
+		/// <exception cref="InvalidTypeArgumentException"><paramref name="backupSource"/> is of a type which is not supported by the used backup creator.</exception>
+		bool Restore (IDatabaseManager manager, object backupSource);
 	}
 
 	/// <inheritdoc cref="IDatabaseBackupCreator"/>
@@ -79,9 +81,9 @@ namespace RI.Framework.Data.Database.Backup
 		where TManager : IDatabaseManager<TConnection, TConnectionStringBuilder, TManager>
 	{
 		/// <inheritdoc cref="IDatabaseBackupCreator.Backup"/>
-		bool Backup (TManager manager, FilePath backupFile);
+		bool Backup (TManager manager, object backupTarget);
 
 		/// <inheritdoc cref="IDatabaseBackupCreator.Restore"/>
-		bool Restore (TManager manager, FilePath backupFile);
+		bool Restore (TManager manager, object backupTarget);
 	}
 }

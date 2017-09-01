@@ -4,14 +4,12 @@ using System.Data;
 using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.IO;
 
 using RI.Framework.Data.Database.Backup;
 using RI.Framework.Data.Database.Cleanup;
 using RI.Framework.Data.Database.Scripts;
 using RI.Framework.Data.Database.Upgrading;
 using RI.Framework.Data.Database.Versioning;
-using RI.Framework.IO.Paths;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Logging;
@@ -667,7 +665,7 @@ namespace RI.Framework.Data.Database
 		/// <summary>
 		/// Performs a backup.
 		/// </summary>
-		/// <param name="backupFile">The backup file.</param>
+		/// <param name="backupTarget">The backup creator specific object which describes the backup target.</param>
 		/// <returns>
 		/// true if the backup was successful, false otherwise.
 		/// Details can be obtained from the log.
@@ -677,16 +675,16 @@ namespace RI.Framework.Data.Database
 		/// The default implementation calls <see cref="IDatabaseBackupCreator.Backup"/>.
 		/// </para>
 		/// </remarks>
-		protected virtual bool BackupImpl (FilePath backupFile)
+		protected virtual bool BackupImpl (object backupTarget)
 		{
-			this.Log(LogLevel.Information, "Performing database backup: {0}: {1}", backupFile, this.DebugDetails);
-			return this.Configuration.BackupCreator.Backup(this, backupFile);
+			this.Log(LogLevel.Information, "Performing database backup: [{0}]: {1}", backupTarget, this.DebugDetails);
+			return this.Configuration.BackupCreator.Backup(this, backupTarget);
 		}
 
 		/// <summary>
 		/// Performs a restore.
 		/// </summary>
-		/// <param name="backupFile">The backup file.</param>
+		/// <param name="backupSource">The backup creator specific object which describes the backup source.</param>
 		/// <returns>
 		/// true if the restore was successful, false otherwise.
 		/// Details can be obtained from the log.
@@ -696,10 +694,10 @@ namespace RI.Framework.Data.Database
 		/// The default implementation calls <see cref="IDatabaseBackupCreator.Restore"/>.
 		/// </para>
 		/// </remarks>
-		protected virtual bool RestoreImpl (FilePath backupFile)
+		protected virtual bool RestoreImpl (object backupSource)
 		{
-			this.Log(LogLevel.Information, "Performing database restore: {0}: {1}", backupFile, this.DebugDetails);
-			return this.Configuration.BackupCreator.Restore(this, backupFile);
+			this.Log(LogLevel.Information, "Performing database restore: [{0}]: {1}", backupSource, this.DebugDetails);
+			return this.Configuration.BackupCreator.Restore(this, backupSource);
 		}
 
 		/// <summary>
@@ -835,9 +833,6 @@ namespace RI.Framework.Data.Database
 			return result;
 		}
 
-		//TODO: Add ExecuteScriptBatch (Extension?)
-		//TODO: Add ExecumeCommand (Extension?)
-
 		/// <inheritdoc />
 		public bool Upgrade (int version)
 		{
@@ -892,16 +887,11 @@ namespace RI.Framework.Data.Database
 		}
 
 		/// <inheritdoc />
-		public bool Backup (FilePath backupFile)
+		public bool Backup (object backupTarget)
 		{
-			if (backupFile == null)
+			if (backupTarget == null)
 			{
-				throw new ArgumentNullException(nameof(backupFile));
-			}
-
-			if (!backupFile.IsRealFile)
-			{
-				throw new InvalidPathArgumentException(nameof(backupFile));
+				throw new ArgumentNullException(nameof(backupTarget));
 			}
 
 			if (this.State == DatabaseState.Uninitialized)
@@ -916,7 +906,7 @@ namespace RI.Framework.Data.Database
 
 			this.PrepareConfiguration();
 
-			bool result = this.BackupImpl(backupFile);
+			bool result = this.BackupImpl(backupTarget);
 
 			this.DetectStateAndVersion();
 
@@ -924,21 +914,11 @@ namespace RI.Framework.Data.Database
 		}
 
 		/// <inheritdoc />
-		public bool Restore (FilePath backupFile)
+		public bool Restore (object backupSource)
 		{
-			if (backupFile == null)
+			if (backupSource == null)
 			{
-				throw new ArgumentNullException(nameof(backupFile));
-			}
-
-			if (!backupFile.IsRealFile)
-			{
-				throw new InvalidPathArgumentException(nameof(backupFile));
-			}
-
-			if (!backupFile.Exists)
-			{
-				throw new FileNotFoundException("The backup file used for restore does not exist.", backupFile);
+				throw new ArgumentNullException(nameof(backupSource));
 			}
 
 			if (this.State == DatabaseState.Uninitialized)
@@ -953,7 +933,7 @@ namespace RI.Framework.Data.Database
 
 			this.PrepareConfiguration();
 
-			bool result = this.RestoreImpl(backupFile);
+			bool result = this.RestoreImpl(backupSource);
 
 			this.DetectStateAndVersion();
 

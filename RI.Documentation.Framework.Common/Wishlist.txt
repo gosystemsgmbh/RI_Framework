@@ -1,22 +1,14 @@
 ﻿Priorities
 ----------
 
-= VWA
-+ Decoupling & Utilities Framework
-# Application Framework
-* Commercium
+= [ ] VWA
++ [X] Decoupling & Utilities Framework
+# [ ] Application Framework
+* [ ] Commercium
 
 
 Utilities
 ---------
-
- - (Unity) Tuples (and remove MockTuple)
-
- - (Common) RandomExtensions: NextBytes with max and min/max overload
- - (Common) RandomExtensions: FillStream with max and min/max overload
-
- - (Common) TextReaderExtensions
- - (Common) TextWriterExtensions
 
  * (WPF) EventToCommandBinder
 
@@ -188,8 +180,6 @@ I/O
  - (Common) ConcurrencyExtensions
  - (Common) TransactiveExtensions
 
- - (Common) StreamExtensions
-
  - (Common) EndianessConverter
 
  - (Common) IniDocument: DecomposeSections (?)
@@ -248,7 +238,6 @@ Services
 Data
 ----
 
- = (SQL Server) SqlServerDatabaseManager
  = (SQL Server) Implementations for SQL Server providers
 
  * (.NET) Reporting (Excel?)

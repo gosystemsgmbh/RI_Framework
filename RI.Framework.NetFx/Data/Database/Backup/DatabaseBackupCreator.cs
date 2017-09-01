@@ -1,6 +1,5 @@
 ﻿using System.Data.Common;
 
-using RI.Framework.IO.Paths;
 using RI.Framework.Utilities.Logging;
 
 namespace RI.Framework.Data.Database.Backup
@@ -25,15 +24,15 @@ namespace RI.Framework.Data.Database.Backup
 		where TManager : IDatabaseManager<TConnection, TConnectionStringBuilder, TManager>
 	{
 		/// <inheritdoc />
-		bool IDatabaseBackupCreator.Backup(IDatabaseManager manager, FilePath backupFile)
+		bool IDatabaseBackupCreator.Backup(IDatabaseManager manager, object backupTarget)
 		{
-			return this.Backup((TManager)manager, backupFile);
+			return this.Backup((TManager)manager, backupTarget);
 		}
 
 		/// <inheritdoc />
-		bool IDatabaseBackupCreator.Restore(IDatabaseManager manager, FilePath backupFile)
+		bool IDatabaseBackupCreator.Restore(IDatabaseManager manager, object backupSource)
 		{
-			return this.Restore((TManager)manager, backupFile);
+			return this.Restore((TManager)manager, backupSource);
 		}
 
 		/// <inheritdoc />
@@ -43,10 +42,10 @@ namespace RI.Framework.Data.Database.Backup
 		public abstract bool SupportsRestore { get; }
 
 		/// <inheritdoc />
-		public abstract bool Backup (TManager manager, FilePath backupFile);
+		public abstract bool Backup (TManager manager, object backupTarget);
 
 		/// <inheritdoc />
-		public abstract bool Restore (TManager manager, FilePath backupFile);
+		public abstract bool Restore (TManager manager, object backupSource);
 
 		private bool _loggingEnabled;
 

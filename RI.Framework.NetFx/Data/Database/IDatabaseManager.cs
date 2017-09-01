@@ -2,14 +2,12 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using System.IO;
 
 using RI.Framework.Data.Database.Backup;
 using RI.Framework.Data.Database.Cleanup;
 using RI.Framework.Data.Database.Scripts;
 using RI.Framework.Data.Database.Upgrading;
 using RI.Framework.Data.Repository;
-using RI.Framework.IO.Paths;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Logging;
 
@@ -278,7 +276,7 @@ namespace RI.Framework.Data.Database
 		/// <summary>
 		/// Performs a backup using the configured <see cref="IDatabaseBackupCreator"/>.
 		/// </summary>
-		/// <param name="backupFile">The file the database backup is written to.</param>
+		/// <param name="backupTarget">The backup creator specific object which describes the backup target.</param>
 		/// <returns>
 		/// true if the backup was successful, false otherwise.
 		/// Details can be obtained from the log.
@@ -288,17 +286,17 @@ namespace RI.Framework.Data.Database
 		/// <see cref="State"/> and <see cref="Version"/> are updated to reflect the current state and version of the database after backup.
 		/// </para>
 		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="backupFile"/> is null.</exception>
-		/// <exception cref="InvalidPathArgumentException"><paramref name="backupFile"/> is not a valid path.</exception>
+		/// <exception cref="ArgumentNullException"><paramref name="backupTarget"/> is null.</exception>
+		/// <exception cref="InvalidTypeArgumentException"><paramref name="backupTarget"/> is of a type which is not supported by the used backup creator.</exception>
 		/// <exception cref="InvalidOperationException">The database is not initialized.</exception>
 		/// <exception cref="NotSupportedException">Backup is not supported by the database or no <see cref="IDatabaseBackupCreator"/> is configured.</exception>
 		/// <exception cref="InvalidDatabaseConfigurationException">The database configuration specified by <see cref="Configuration"/> is not valid.</exception>
-		bool Backup (FilePath backupFile);
+		bool Backup (object backupTarget);
 
 		/// <summary>
 		/// Performs a backup using the configured <see cref="IDatabaseBackupCreator"/>.
 		/// </summary>
-		/// <param name="backupFile">The file which is used to restore the database from.</param>
+		/// <param name="backupSource">The backup creator specific object which describes the backup source.</param>
 		/// <returns>
 		/// true if the restore was successful, false otherwise.
 		/// Details can be obtained from the log.
@@ -308,13 +306,12 @@ namespace RI.Framework.Data.Database
 		/// <see cref="State"/> and <see cref="Version"/> are updated to reflect the current state and version of the database after restore.
 		/// </para>
 		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="backupFile"/> is null.</exception>
-		/// <exception cref="InvalidPathArgumentException"><paramref name="backupFile"/> is not a valid path.</exception>
-		/// <exception cref="FileNotFoundException"><paramref name="backupFile"/> does not exist.</exception>
+		/// <exception cref="ArgumentNullException"><paramref name="backupSource"/> is null.</exception>
+		/// <exception cref="InvalidTypeArgumentException"><paramref name="backupSource"/> is of a type which is not supported by the used backup creator.</exception>
 		/// <exception cref="InvalidOperationException">The database is not initialized.</exception>
 		/// <exception cref="NotSupportedException">Restore is not supported by the database or no <see cref="IDatabaseBackupCreator"/> is configured.</exception>
 		/// <exception cref="InvalidDatabaseConfigurationException">The database configuration specified by <see cref="Configuration"/> is not valid.</exception>
-		bool Restore (FilePath backupFile);
+		bool Restore (object backupSource);
 
 		/// <summary>
 		/// Performs an upgrade to a specific database version using the configured <see cref="IDatabaseVersionUpgrader"/>.

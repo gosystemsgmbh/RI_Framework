@@ -43,6 +43,10 @@
     <Reference Include="System.Data" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\Database\SqlServerDatabaseProcessingStep.cs" />
+    <Compile Include="Data\Database\SqlServerDatabaseManager.cs" />
+    <Compile Include="Data\Database\SqlServerDatabaseManagerConfiguration.cs" />
+    <Compile Include="Data\Database\Upgrading\SqlServerDatabaseVersionUpgradeStep.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -55,7 +59,8 @@
     <None Include="Properties\AssemblyName.snk" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Data\Database\" />
+    <Folder Include="Data\Database\Cleanup\" />
+    <Folder Include="Data\Database\Versioning\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
