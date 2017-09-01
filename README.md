@@ -74,7 +74,6 @@
   - [ ] NetFx: Simple documentation
   - [ ] Unity: Update bootstrapper screenshot and options description
   - [ ] Unity: Uncomments after implementation
-  - [ ] Unity: AOT/IL2CPP
   - [ ] Unity: Performance
   - [ ] Unity: Thread Safety
 - [ ] Advertisement

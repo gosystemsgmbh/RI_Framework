@@ -1,5 +1,4 @@
 ﻿using System.Data.Entity;
-using System.Diagnostics.CodeAnalysis;
 
 using RI.Framework.Data.EF.Resolvers;
 
@@ -14,7 +13,6 @@ namespace RI.Framework.Data.EF
 	///         It also registers a default resolver using <see cref="ServiceLocatorDbDependencyResolver" />.
 	///     </para>
 	/// </remarks>
-	[SuppressMessage("ReSharper", "InconsistentNaming")]
 	public abstract class SqlServerDbConfiguration : DbConfiguration
 	{
 		#region Instance Constructor/Destructor
