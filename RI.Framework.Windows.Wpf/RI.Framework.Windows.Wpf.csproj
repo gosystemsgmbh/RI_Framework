@@ -69,6 +69,7 @@
     </Compile>
     <Compile Include="Mvvm\ViewModel\NotificationObject.cs" />
     <Compile Include="Mvvm\ViewModel\DelegateCommand.cs" />
+    <Compile Include="Utilities\Wpf\Markup\EventToCommandBinder.cs" />
     <Compile Include="Utilities\Wpf\Markup\InstanceLocator.cs" />
     <Compile Include="Mvvm\ViewModel\DelegateCommandBase.cs" />
     <Compile Include="Mvvm\ViewModel\IViewModel.cs" />

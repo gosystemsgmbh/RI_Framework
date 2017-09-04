@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
-
-
+using RI.Framework.Collections;
 
 namespace RI.Framework.Data.Repository.Views
 {
@@ -73,6 +73,8 @@ namespace RI.Framework.Data.Repository.Views
 			this.SuppressSourceChangeHandling = false;
 			this.EntityToAddIsAttached = false;
 
+			this.CollectionUpdateStrategy = EntityViewCollectionUpdateStrategy.Recreate;
+
 			this.AllowEdit = true;
 			this.AllowSelect = true;
 			this.ObserveSource = true;
@@ -129,6 +131,32 @@ namespace RI.Framework.Data.Repository.Views
 
 
 		#region Instance Properties/Indexer
+
+		private EntityViewCollectionUpdateStrategy _collectionUpdateStrategy;
+
+		/// <summary>
+		/// Gets or sets the collection update strategy for <see cref="Entities"/> and <see cref="ViewObjects"/>.
+		/// </summary>
+		/// <value>
+		///     The collection update strategy for <see cref="Entities"/> and <see cref="ViewObjects"/>.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         The default value is <see cref="EntityViewCollectionUpdateStrategy.Recreate"/>.
+		///     </para>
+		/// </remarks>
+		public EntityViewCollectionUpdateStrategy CollectionUpdateStrategy
+		{
+			get
+			{
+				return this._collectionUpdateStrategy;
+			}
+			set
+			{
+				this._collectionUpdateStrategy = value;
+				this.Update(false);
+			}
+		}
 
 		/// <summary>
 		///     Gets or sets whether the items managed by this view can be edited or not.
@@ -991,6 +1019,7 @@ namespace RI.Framework.Data.Repository.Views
 			}
 		}
 
+		[SuppressMessage("ReSharper", "PossibleNullReferenceException")]
 		private void Update (bool resetPageNumber)
 		{
 			if (this.IsInitializing)
@@ -1022,13 +1051,25 @@ namespace RI.Framework.Data.Repository.Views
 				if (this.ViewObjects != null)
 				{
 					this.ViewObjects.CollectionChanged -= this.ViewObjectsChangedHandler;
-					this.ViewObjects = null;
 				}
 
 				if (this.Entities != null)
 				{
 					this.Entities.CollectionChanged -= this.EntitiesChangedHandler;
+				}
+
+				if (this.CollectionUpdateStrategy == EntityViewCollectionUpdateStrategy.Recreate)
+				{
+					this.ViewObjects = null;
 					this.Entities = null;
+				}
+				else
+				{
+					this.ViewObjects = this.ViewObjects ?? new ObservableCollection<TViewObject>();
+					this.Entities = this.Entities ?? new ObservableCollection<TEntity>();
+
+					this.ViewObjects?.Clear();
+					this.Entities?.Clear();
 				}
 
 				int entityTotalCount = 0;
@@ -1041,10 +1082,18 @@ namespace RI.Framework.Data.Repository.Views
 				int pageTotalCount = this.PageNumber == 0 ? 0 : (this.PageSize == 0 ? 1 : ((entityTotalCount / this.PageSize) + (((entityTotalCount % this.PageSize) == 0) ? 0 : 1)));
 				pageTotalCount = Math.Max(pageTotalCount, 1);
 
-				this.Entities = new ObservableCollection<TEntity>(entities);
-				this.Entities.CollectionChanged += this.EntitiesChangedHandler;
+				if (this.CollectionUpdateStrategy == EntityViewCollectionUpdateStrategy.Recreate)
+				{
+					this.Entities = new ObservableCollection<TEntity>(entities);
+					this.ViewObjects = new ObservableCollection<TViewObject>(viewObjects);
+				}
+				else
+				{
+					this.Entities.AddRange(entities);
+					this.ViewObjects.AddRange(viewObjects);
+				}
 
-				this.ViewObjects = new ObservableCollection<TViewObject>(viewObjects);
+				this.Entities.CollectionChanged += this.EntitiesChangedHandler;
 				this.ViewObjects.CollectionChanged += this.ViewObjectsChangedHandler;
 
 				this.EntityTotalCount = entityTotalCount;
@@ -1074,6 +1123,8 @@ namespace RI.Framework.Data.Repository.Views
 				this.OnPropertyChanged(nameof(this.Sort));
 				this.OnPropertyChanged(nameof(this.PageSize));
 				this.OnPropertyChanged(nameof(this.PageNumber));
+
+				this.OnPropertyChanged(nameof(this.CollectionUpdateStrategy));
 
 				this.OnUpdated(pageNumberReallyReset);
 			}

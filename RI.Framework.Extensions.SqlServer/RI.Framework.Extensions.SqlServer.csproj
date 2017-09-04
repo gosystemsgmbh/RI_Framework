@@ -43,10 +43,14 @@
     <Reference Include="System.Data" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\Database\Cleanup\SqlServerDatabaseCleanupProcessor.cs" />
     <Compile Include="Data\Database\SqlServerDatabaseProcessingStep.cs" />
     <Compile Include="Data\Database\SqlServerDatabaseManager.cs" />
     <Compile Include="Data\Database\SqlServerDatabaseManagerConfiguration.cs" />
+    <Compile Include="Data\Database\Upgrading\SqlServerDatabaseVersionUpgrader.cs" />
     <Compile Include="Data\Database\Upgrading\SqlServerDatabaseVersionUpgradeStep.cs" />
+    <Compile Include="Data\Database\Versioning\SqlServerDatabaseVersionDetector.cs" />
+    <Compile Include="Data\SqlServer\SQLiteConversionExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -58,10 +62,7 @@
   <ItemGroup>
     <None Include="Properties\AssemblyName.snk" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Data\Database\Cleanup\" />
-    <Folder Include="Data\Database\Versioning\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>@"$(SolutionDir)_Input\VersionUpdater.exe" "$(ProjectDir)Properties" "nr" "file" "$(SolutionDir)RI.Framework.Property.Version.txt" "$(SolutionDir)RI.Framework.Property.Company.txt" "$(SolutionDir)RI.Framework.Property.Copyright.txt"</PreBuildEvent>

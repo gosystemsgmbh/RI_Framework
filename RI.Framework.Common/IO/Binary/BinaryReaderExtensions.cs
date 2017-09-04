@@ -4,7 +4,7 @@ using System.IO;
 
 
 
-namespace RI.Framework.IO.Streams
+namespace RI.Framework.IO.Binary
 {
 	/// <summary>
 	///     Provides utility/extension methods for the <see cref="BinaryReader" /> type.

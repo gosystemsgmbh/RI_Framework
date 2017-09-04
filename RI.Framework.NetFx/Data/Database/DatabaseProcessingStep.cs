@@ -19,18 +19,15 @@ namespace RI.Framework.Data.Database
 	/// <typeparam name="TConfiguration">The type of database configuration.</typeparam>
 	/// <remarks>
 	/// <para>
-	/// By adding sub-steps (<see cref="AddScript(string,DatabaseProcessingStepTransactionRequirement)"/>, <see cref="AddBatch(string,DatabaseProcessingStepTransactionRequirement)"/>, <see cref="AddBatches(IEnumerable{string},DatabaseProcessingStepTransactionRequirement)"/>, <see cref="AddCode(DatabaseProcessingStepDelegate{TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration},DatabaseProcessingStepTransactionRequirement)"/>, <see cref="AddCode(DatabaseProcessingStepDelegate,DatabaseProcessingStepTransactionRequirement)"/>), a processing step can be heavily customized by using both application code through delegates and SQL scripts.
-	/// </para>
-	/// <para>
-	/// The sub-steps are executed in the order they are added.
+	/// See <see cref="IDatabaseProcessingStep{TConnection,TTransaction,TConnectionStringBuilder,TManager,TConfiguration}"/> for more details.
 	/// </para>
 	/// </remarks>
-	public abstract class DatabaseProcessingStep<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration> : ILogSource
+	public abstract class DatabaseProcessingStep<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration> : IDatabaseProcessingStep<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration>
 		where TConnection : DbConnection
 		where TTransaction : DbTransaction
 		where TConnectionStringBuilder : DbConnectionStringBuilder
-		where TManager : IDatabaseManager<TConnection, TConnectionStringBuilder, TManager>
-		where TConfiguration : class, IDatabaseManagerConfiguration<TConnection, TConnectionStringBuilder, TManager>, new()
+		where TManager : IDatabaseManager<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration>
+		where TConfiguration : class, IDatabaseManagerConfiguration<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration>, new()
 	{
 		private bool _loggingEnabled;
 
@@ -72,29 +69,16 @@ namespace RI.Framework.Data.Database
 
 		private List<Tuple<SubStepType, DatabaseProcessingStepTransactionRequirement, object>> SubSteps { get; }
 
-		/// <summary>
-		/// Gets whether this processing step requires a script locator.
-		/// </summary>
-		/// <value>
-		/// true if a script locator is required, false otherwise.
-		/// </value>
+		/// <inheritdoc />
 		public bool RequiresScriptLocator => this.SubSteps.Count == 0 ? false : this.SubSteps.Any(x => x.Item1 == SubStepType.Script);
 
-		/// <summary>
-		/// Gets whether this processing step requires a transaction when executed.
-		/// </summary>
-		/// <value>
-		/// true if a transaction is required, false otherwise.
-		/// </value>
+		/// <inheritdoc />
 		public bool RequiresTransaction => this.SubSteps.Count == 0 ? false : this.SubSteps.Any(x => x.Item2 == DatabaseProcessingStepTransactionRequirement.Required);
 
-		/// <summary>
-		/// Executes the processing step and all its sub-steps.
-		/// </summary>
-		/// <param name="manager">The used database manager.</param>
-		/// <param name="connection">The used database connection.</param>
-		/// <param name="transaction">The used database transaction. Can be null if no transaction is used.</param>
-		/// <exception cref="ArgumentNullException"><paramref name="manager"/> or <paramref name="connection"/> is null.</exception>
+		/// <inheritdoc />
+		void IDatabaseProcessingStep.Execute (IDatabaseManager manager, DbConnection connection, DbTransaction transaction) => this.Execute((TManager)manager, (TConnection)connection, (TTransaction)transaction);
+
+		/// <inheritdoc />
 		public void Execute (TManager manager, TConnection connection, TTransaction transaction)
 		{
 			if (manager == null)
@@ -240,34 +224,10 @@ namespace RI.Framework.Data.Database
 			callback(this, manager, connection, transaction);
 		}
 
-		/// <summary>
-		/// Adds a script using its script name.
-		/// </summary>
-		/// <param name="scriptName">The name of the script.</param>
-		/// <remarks>
-		/// <para>
-		/// The script is resolved using the script locator provided by the database manager.
-		/// </para>
-		/// <para>
-		/// <see cref="DatabaseProcessingStepTransactionRequirement.DontCare"/> is used as the transaction requirement.
-		/// </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="scriptName"/> is null.</exception>
-		/// <exception cref="EmptyStringArgumentException"><paramref name="scriptName"/> is an empty string.</exception>
+		/// <inheritdoc />
 		public void AddScript (string scriptName) => this.AddScript(scriptName, DatabaseProcessingStepTransactionRequirement.DontCare);
 
-		/// <summary>
-		/// Adds a script using its script name.
-		/// </summary>
-		/// <param name="scriptName">The name of the script.</param>
-		/// <param name="transactionRequirement">The transaction requirement.</param>
-		/// <remarks>
-		/// <para>
-		/// The script is resolved using the script locator provided by the database manager.
-		/// </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="scriptName"/> is null.</exception>
-		/// <exception cref="EmptyStringArgumentException"><paramref name="scriptName"/> is an empty string.</exception>
+		/// <inheritdoc />
 		public void AddScript (string scriptName, DatabaseProcessingStepTransactionRequirement transactionRequirement)
 		{
 			if (scriptName == null)
@@ -283,36 +243,10 @@ namespace RI.Framework.Data.Database
 			this.SubSteps.Add(new Tuple<SubStepType, DatabaseProcessingStepTransactionRequirement, object>(SubStepType.Script, transactionRequirement, scriptName));
 		}
 
-		/// <summary>
-		/// Adds a single batch as SQL script code.
-		/// </summary>
-		/// <param name="batch">The SQL script.</param>
-		/// <remarks>
-		/// <para>
-		/// The SQL script is executed as passed by this method, without further processing, as a single command.
-		/// </para>
-		/// <para>
-		/// <see cref="DatabaseProcessingStepTransactionRequirement.DontCare"/> is used as the transaction requirement.
-		/// </para>
-		/// <para>
-		/// If <paramref name="batch"/> is null or empty, no sub-step is added.
-		/// </para>
-		/// </remarks>
+		/// <inheritdoc />
 		public void AddBatch (string batch) => this.AddBatch(batch, DatabaseProcessingStepTransactionRequirement.DontCare);
 
-		/// <summary>
-		/// Adds a single batch as SQL script code.
-		/// </summary>
-		/// <param name="batch">The SQL script.</param>
-		/// <param name="transactionRequirement">The transaction requirement.</param>
-		/// <remarks>
-		/// <para>
-		/// The SQL script is executed as passed by this method, without further processing, as a single command.
-		/// </para>
-		/// <para>
-		/// If <paramref name="batch"/> is null or empty, no sub-step is added.
-		/// </para>
-		/// </remarks>
+		/// <inheritdoc />
 		public void AddBatch (string batch, DatabaseProcessingStepTransactionRequirement transactionRequirement)
 		{
 			if (batch == null)
@@ -328,42 +262,10 @@ namespace RI.Framework.Data.Database
 			this.SubSteps.Add(new Tuple<SubStepType, DatabaseProcessingStepTransactionRequirement, object>(SubStepType.Batch, transactionRequirement, batch));
 		}
 
-		/// <summary>
-		/// Adds batches as SQL script code.
-		/// </summary>
-		/// <param name="batches">The SQL scripts.</param>
-		/// <remarks>
-		/// <para>
-		/// The SQL scripts are executed as passed by this method, without further processing, as a single command per batch.
-		/// </para>
-		/// <para>
-		/// <see cref="DatabaseProcessingStepTransactionRequirement.DontCare"/> is used as the transaction requirement.
-		/// </para>
-		/// <para>
-		/// If <paramref name="batches"/> is null or empty, no sub-step is added.
-		/// </para>
-		/// <para>
-		/// <paramref name="batches"/> is enumerated only once.
-		/// </para>
-		/// </remarks>
+		/// <inheritdoc />
 		public void AddBatches (IEnumerable<string> batches) => this.AddBatches(batches, DatabaseProcessingStepTransactionRequirement.DontCare);
 
-		/// <summary>
-		/// Adds batches as SQL script code.
-		/// </summary>
-		/// <param name="batches">The SQL scripts.</param>
-		/// <param name="transactionRequirement">The transaction requirement.</param>
-		/// <remarks>
-		/// <para>
-		/// The SQL scripts are executed as passed by this method, without further processing, as a single command per batch.
-		/// </para>
-		/// <para>
-		/// If <paramref name="batches"/> is null or empty, no sub-step is added.
-		/// </para>
-		/// <para>
-		/// <paramref name="batches"/> is enumerated only once.
-		/// </para>
-		/// </remarks>
+		/// <inheritdoc />
 		public void AddBatches (IEnumerable<string> batches, DatabaseProcessingStepTransactionRequirement transactionRequirement)
 		{
 			if (batches == null)
@@ -382,24 +284,10 @@ namespace RI.Framework.Data.Database
 			this.SubSteps.Add(new Tuple<SubStepType, DatabaseProcessingStepTransactionRequirement, object>(SubStepType.Batches, transactionRequirement, batches));
 		}
 
-		/// <summary>
-		/// Adds application code as a callback.
-		/// </summary>
-		/// <param name="callback">The callback which is executed when the sub-step executes.</param>
-		/// <remarks>
-		/// <para>
-		/// <see cref="DatabaseProcessingStepTransactionRequirement.DontCare"/> is used as the transaction requirement.
-		/// </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="callback"/> is null.</exception>
+		/// <inheritdoc />
 		public void AddCode (DatabaseProcessingStepDelegate<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration> callback) => this.AddCode(callback, DatabaseProcessingStepTransactionRequirement.DontCare);
 
-		/// <summary>
-		/// Adds application code as a callback.
-		/// </summary>
-		/// <param name="callback">The callback which is executed when the sub-step executes.</param>
-		/// <param name="transactionRequirement">The transaction requirement.</param>
-		/// <exception cref="ArgumentNullException"><paramref name="callback"/> is null.</exception>
+		/// <inheritdoc />
 		public void AddCode (DatabaseProcessingStepDelegate<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration> callback, DatabaseProcessingStepTransactionRequirement transactionRequirement)
 		{
 			if (callback == null)
@@ -410,24 +298,10 @@ namespace RI.Framework.Data.Database
 			this.SubSteps.Add(new Tuple<SubStepType, DatabaseProcessingStepTransactionRequirement, object>(SubStepType.CodeTyped, transactionRequirement, callback));
 		}
 
-		/// <summary>
-		/// Adds application code as a callback.
-		/// </summary>
-		/// <param name="callback">The callback which is executed when the sub-step executes.</param>
-		/// <remarks>
-		/// <para>
-		/// <see cref="DatabaseProcessingStepTransactionRequirement.DontCare"/> is used as the transaction requirement.
-		/// </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="callback"/> is null.</exception>
+		/// <inheritdoc />
 		public void AddCode(DatabaseProcessingStepDelegate callback) => this.AddCode(callback, DatabaseProcessingStepTransactionRequirement.DontCare);
 
-		/// <summary>
-		/// Adds application code as a callback.
-		/// </summary>
-		/// <param name="callback">The callback which is executed when the sub-step executes.</param>
-		/// <param name="transactionRequirement">The transaction requirement.</param>
-		/// <exception cref="ArgumentNullException"><paramref name="callback"/> is null.</exception>
+		/// <inheritdoc />
 		public void AddCode(DatabaseProcessingStepDelegate callback, DatabaseProcessingStepTransactionRequirement transactionRequirement)
 		{
 			if (callback == null)

@@ -5,7 +5,7 @@ using System.IO;
 
 
 
-namespace RI.Framework.Utilities.Text
+namespace RI.Framework.IO.Text
 {
 	/// <summary>
 	///     Provides utility/extension methods for the <see cref="TextReader" /> type.

@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Text;
 
 using RI.Framework.Collections.DirectLinq;
-using RI.Framework.Utilities.Text;
+using RI.Framework.IO.Text;
 
 
 

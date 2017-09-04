@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 using RI.Framework.Collections;
 using RI.Framework.Collections.DirectLinq;
@@ -232,9 +233,30 @@ namespace RI.Framework.Services.Messaging
 			{
 				foreach (IMessageDispatcher dispatcher in this.Dispatchers)
 				{
-					dispatcher.Post(this.Receivers, message, this);
+					dispatcher.Post(this.Receivers, message, this, null);
 				}
 			}
+		}
+
+		/// <inheritdoc />
+		public async Task Send (IMessage message)
+		{
+			if (message == null)
+			{
+				throw new ArgumentNullException(nameof(message));
+			}
+
+			TaskCompletionSource<IMessage> tcs = new TaskCompletionSource<IMessage>();
+
+			lock (this.SendSyncRoot)
+			{
+				foreach (IMessageDispatcher dispatcher in this.Dispatchers)
+				{
+					dispatcher.Post(this.Receivers, message, this, x => tcs.SetResult(x));
+				}
+			}
+
+			await tcs.Task;
 		}
 
 		/// <inheritdoc />

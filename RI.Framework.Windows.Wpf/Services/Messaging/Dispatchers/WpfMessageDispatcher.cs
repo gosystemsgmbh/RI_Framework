@@ -131,7 +131,7 @@ namespace RI.Framework.Services.Messaging.Dispatchers
 		object ISynchronizable.SyncRoot => this.SyncRoot;
 
 		/// <inheritdoc />
-		public void Post (IEnumerable<IMessageReceiver> receivers, IMessage message, IMessageService messageService)
+		public void Post (IEnumerable<IMessageReceiver> receivers, IMessage message, IMessageService messageService, Action<IMessage> deliveredCallback)
 		{
 			if (receivers == null)
 			{
@@ -145,13 +145,14 @@ namespace RI.Framework.Services.Messaging.Dispatchers
 
 			lock (this.SyncRoot)
 			{
-				this.Dispatcher.BeginInvoke(this.Priority, new Action<IEnumerable<IMessageReceiver>, IMessage, IMessageService>((r, m, s) =>
+				this.Dispatcher.BeginInvoke(this.Priority, new Action<IEnumerable<IMessageReceiver>, IMessage, IMessageService, Action<IMessage>>((r, m, s, c) =>
 				{
 					foreach (IMessageReceiver receiver in r)
 					{
 						receiver.ReceiveMessage(m, s);
 					}
-				}), receivers, message, messageService);
+					c?.Invoke(m);
+				}), receivers, message, messageService, deliveredCallback);
 			}
 		}
 

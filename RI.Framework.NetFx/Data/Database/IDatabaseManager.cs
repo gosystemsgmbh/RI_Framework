@@ -240,6 +240,14 @@ namespace RI.Framework.Data.Database
 		DbConnection CreateConnection (bool readOnly, bool track);
 
 		/// <summary>
+		/// Creates a new processing step which can be used to perform database actions.
+		/// </summary>
+		/// <returns>
+		/// The newly created processing step.
+		/// </returns>
+		IDatabaseProcessingStep CreateProcessingStep ();
+
+		/// <summary>
 		/// Retrieves a script batch using the configured <see cref="IDatabaseScriptLocator"/>.
 		/// </summary>
 		/// <param name="name">The name of the script.</param>
@@ -413,18 +421,25 @@ namespace RI.Framework.Data.Database
 
 	/// <inheritdoc cref="IDatabaseManager"/>
 	/// <typeparam name="TConnection">The database connection type, subclass of <see cref="DbConnection"/>.</typeparam>
+	/// <typeparam name="TTransaction">The database transaction type, subclass of <see cref="DbTransaction"/>.</typeparam>
 	/// <typeparam name="TConnectionStringBuilder">The connection string builder type, subclass of <see cref="DbConnectionStringBuilder"/>.</typeparam>
-	/// <typeparam name="TManager">The type of the database manager which is implementing this interface.</typeparam>
-	public interface IDatabaseManager<TConnection, TConnectionStringBuilder, TManager> : IDatabaseManager
+	/// <typeparam name="TManager">The type of the database manager.</typeparam>
+	/// <typeparam name="TConfiguration">The type of database configuration.</typeparam>
+	public interface IDatabaseManager<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration> : IDatabaseManager
 		where TConnection : DbConnection
+		where TTransaction : DbTransaction
 		where TConnectionStringBuilder : DbConnectionStringBuilder
-		where TManager : IDatabaseManager<TConnection, TConnectionStringBuilder, TManager>
+		where TManager : IDatabaseManager<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration>
+		where TConfiguration : class, IDatabaseManagerConfiguration<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration>, new()
 	{
 		/// <inheritdoc cref="IDatabaseManager.Configuration"/>
-		new IDatabaseManagerConfiguration<TConnection, TConnectionStringBuilder, TManager> Configuration { get; }
+		new IDatabaseManagerConfiguration<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration> Configuration { get; }
 
 		/// <inheritdoc cref="IDatabaseManager.CreateConnection"/>
 		new TConnection CreateConnection (bool readOnly, bool track);
+
+		/// <inheritdoc cref="IDatabaseManager.CreateProcessingStep"/>
+		new IDatabaseProcessingStep<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration> CreateProcessingStep();
 
 		/// <inheritdoc cref="IDatabaseManager.GetTrackedConnections"/>
 		new List<TConnection> GetTrackedConnections();

@@ -67,7 +67,7 @@ namespace RI.Framework.Data.Database
 	}
 
 	/// <summary>
-	///     Event arguments for the <see cref="IDatabaseManager" />.<see cref="IDatabaseManager{TConnection,TConnectionStringBuilder,TManager}.ConnectionChanged" /> event.
+	///     Event arguments for the <see cref="IDatabaseManager" />.<see cref="IDatabaseManager{TConnection,TTransaction,TConnectionStringBuilder,TManager,TConfiguration}.ConnectionChanged" /> event.
 	/// </summary>
 	/// <typeparam name="TConnection">The type of database connections.</typeparam>
 	[Serializable]

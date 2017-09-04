@@ -13,8 +13,10 @@ namespace RI.Framework.Data.Database
 	/// Implements a base class for database manager configurations.
 	/// </summary>
 	/// <typeparam name="TConnection">The database connection type, subclass of <see cref="DbConnection"/>.</typeparam>
+	/// <typeparam name="TTransaction">The database transaction type, subclass of <see cref="DbTransaction"/>.</typeparam>
 	/// <typeparam name="TConnectionStringBuilder">The connection string builder type, subclass of <see cref="DbConnectionStringBuilder"/>.</typeparam>
-	/// <typeparam name="TManager">The type of the database manager which is using this configuration.</typeparam>
+	/// <typeparam name="TManager">The type of the database manager.</typeparam>
+	/// <typeparam name="TConfiguration">The type of database configuration.</typeparam>
 	/// <remarks>
 	/// <para>
 	/// It is recommended that database manager configuration implementations use this base class as it already implements most of the logic which is database-independent.
@@ -23,15 +25,17 @@ namespace RI.Framework.Data.Database
 	/// See <see cref="IDatabaseManagerConfiguration"/> for more details.
 	/// </para>
 	/// </remarks>
-	public abstract class DatabaseManagerConfiguration<TConnection, TConnectionStringBuilder, TManager> : IDatabaseManagerConfiguration<TConnection, TConnectionStringBuilder, TManager>
+	public abstract class DatabaseManagerConfiguration<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration> : IDatabaseManagerConfiguration<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration>
 		where TConnection : DbConnection
+		where TTransaction : DbTransaction
 		where TConnectionStringBuilder : DbConnectionStringBuilder
-		where TManager : IDatabaseManager<TConnection, TConnectionStringBuilder, TManager>
+		where TManager : IDatabaseManager<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration>
+		where TConfiguration : class, IDatabaseManagerConfiguration<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration>, new()
 	{
-		private IDatabaseVersionDetector<TConnection, TConnectionStringBuilder, TManager> _versionDetector;
+		private IDatabaseVersionDetector<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration> _versionDetector;
 
 		/// <inheritdoc />
-		public IDatabaseVersionDetector<TConnection, TConnectionStringBuilder, TManager> VersionDetector
+		public IDatabaseVersionDetector<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration> VersionDetector
 		{
 			get
 			{
@@ -45,10 +49,10 @@ namespace RI.Framework.Data.Database
 			}
 		}
 
-		private IDatabaseVersionUpgrader<TConnection, TConnectionStringBuilder, TManager> _versionUpgrader;
+		private IDatabaseVersionUpgrader<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration> _versionUpgrader;
 
 		/// <inheritdoc />
-		public IDatabaseVersionUpgrader<TConnection, TConnectionStringBuilder, TManager> VersionUpgrader
+		public IDatabaseVersionUpgrader<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration> VersionUpgrader
 		{
 			get
 			{
@@ -62,10 +66,10 @@ namespace RI.Framework.Data.Database
 			}
 		}
 
-		private IDatabaseBackupCreator<TConnection, TConnectionStringBuilder, TManager> _backupCreator;
+		private IDatabaseBackupCreator<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration> _backupCreator;
 
 		/// <inheritdoc />
-		public IDatabaseBackupCreator<TConnection, TConnectionStringBuilder, TManager> BackupCreator
+		public IDatabaseBackupCreator<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration> BackupCreator
 		{
 			get
 			{
@@ -79,10 +83,10 @@ namespace RI.Framework.Data.Database
 			}
 		}
 
-		private IDatabaseCleanupProcessor<TConnection, TConnectionStringBuilder, TManager> _cleanupProcessor;
+		private IDatabaseCleanupProcessor<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration> _cleanupProcessor;
 
 		/// <inheritdoc />
-		public IDatabaseCleanupProcessor<TConnection, TConnectionStringBuilder, TManager> CleanupProcessor
+		public IDatabaseCleanupProcessor<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration> CleanupProcessor
 		{
 			get
 			{
@@ -190,7 +194,7 @@ namespace RI.Framework.Data.Database
 		}
 
 		/// <inheritdoc cref="IDatabaseManagerConfiguration.VerifyConfiguration"/>
-		void IDatabaseManagerConfiguration<TConnection, TConnectionStringBuilder, TManager>.VerifyConfiguration(TManager manager)
+		void IDatabaseManagerConfiguration<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration>.VerifyConfiguration(TManager manager)
 		{
 			this.VerifyConfiguration(manager);
 		}

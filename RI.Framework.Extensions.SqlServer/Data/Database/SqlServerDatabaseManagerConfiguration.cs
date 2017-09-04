@@ -10,7 +10,7 @@ namespace RI.Framework.Data.Database
 	///         See <see cref="IDatabaseManagerConfiguration" /> for more details.
 	///     </para>
 	/// </remarks>
-	public sealed class SqlServerDatabaseManagerConfiguration : DatabaseManagerConfiguration<SqlConnection, SqlConnectionStringBuilder, SqlServerDatabaseManager>
+	public sealed class SqlServerDatabaseManagerConfiguration : DatabaseManagerConfiguration<SqlConnection, SqlTransaction, SqlConnectionStringBuilder, SqlServerDatabaseManager, SqlServerDatabaseManagerConfiguration>
 	{
 		/// <summary>
 		/// Creates a new instance of <see cref="SqlServerDatabaseManagerConfiguration"/>.

@@ -1,7 +1,7 @@
 ﻿Priorities
 ----------
 
-= [ ] VWA
+= [X] VWA
 + [X] Decoupling & Utilities Framework
 # [ ] Application Framework
 * [ ] Commercium
@@ -14,27 +14,27 @@ Utilities
 
  - (Linux) LinuxShell
 
+ - (WinForms) FormExtensions
+ - (WinForms) TemporaryCursor
+ - (WinForms) WindowWrapper
+
  - (Windows) WindowsMessage
  - (Windows) WindowsMessageLoop
  - (Windows) WindowsMessageLoopTimer
  - (Windows) WindowsMessageLoopSynchronizationContext
  - (Windows) WindowsMessageLoop: Priority queue
 
- - (WinForms) FormExtensions
- - (WinForms) TemporaryCursor
- - (WinForms) WindowWrapper
-
 
 Threading
 ---------
+
+ - (.NET) ThreadDispatcherExtensions: Extension methods supporting various Actions and Funcs
 
  - (.NET) TaskExtensions: Awaiter for IEnumerable<Task>
  - (.NET) TaskExtensions: Awaiter for int
  - (.NET) TaskExtensions: Awaiter for TimeSpan
  - (.NET) TaskExtensions: Awaiter for CancellationToken
  - (.NET) TaskExtensions: Awaiter for Process
-
- - (.NET) ThreadDispatcherExtensions: Extension methods supporting various Actions and Funcs
 
 
 Collections
@@ -128,7 +128,13 @@ Collections
 I/O
 ---
 
+ - (Common) EndianessConverter
+
  - (Common) CsvDocument: Add header support
+
+ - (Common) IniDocument: DecomposeSections (?)
+ - (Common) IniDocument: RemoveElements with predicate
+ - (Common) IniDocument: RemoveSections with predicate
 
  - (Common) PathProperties: ChangeType
  - (Common) PathString: IsCompatible
@@ -180,12 +186,6 @@ I/O
  - (Common) ConcurrencyExtensions
  - (Common) TransactiveExtensions
 
- - (Common) EndianessConverter
-
- - (Common) IniDocument: DecomposeSections (?)
- - (Common) IniDocument: RemoveElements with predicate
- - (Common) IniDocument: RemoveSections with predicate
-
  - (Common) ZIP reader, writer, document
 
  - (Unity) OBJ mesh loader
@@ -198,27 +198,26 @@ Composition
 
 Services
 --------
-
- - (Unity) IDispatcherOperation: OnXXX callbacks
- - (Unity) IDispatcherOperation: Stacking of all OnXXX callbacks
-  
- - (WPF) WpfApplication: Handle power events using SystemEvents.PowerModeChanged
- - (WPF) WpfApplication: Handle user switching using SystemEvents.SessionSwitch
- 
- - (.NET) Messaging: Async functionality?
- - (Windows) Messaging: WindowsMessageLoopMessageDispatcher
- - (WinForms) Messaging: ApplicationMessageDispatcher
  
  # (.NET) Bus
 
  * (.NET) Backup (BackupService, DirectoryBackupStorage)
  * (.NET) Licensing (LicensingService, FileLicenseStorage)
+  
+ - (WPF) WpfApplication: Handle power events using SystemEvents.PowerModeChanged
+ - (WPF) WpfApplication: Handle user switching using SystemEvents.SessionSwitch
+
+ - (Unity) IDispatcherOperation: OnXXX callbacks
+ - (Unity) IDispatcherOperation: Stacking of all OnXXX callbacks
 
  - (WpfToolkit) AvalonDockRegionAdapter
 
+ - (Windows) Messaging: WindowsMessageLoopMessageDispatcher
+ - (WinForms) Messaging: ApplicationMessageDispatcher
+
  - (WinForms) WinFormsBootstrapper (copy from WpfBootstrapper)
  - (WinForms) Regions (WinFormsRegionAdapterBase, WinFormsRegionAdapter)
- - (WinForms) Resources (WinFormsResourceTarget, WinFormsResourceConverter)
+ - (WinForms) Resources (WinFormsResourceConverter)
 
  - (Service) ServiceBootstrapper
  - (Service) ServiceApplication
@@ -231,27 +230,23 @@ Services
  - (Unity) Audio
  - (Unity) User interface
 
- - (Common) Make bootstrapper container-agnostic
- - (Common) Proper unloading and unbinding of everything in bootstrapper
-
 
 Data
 ----
 
- = (SQL Server) Implementations for SQL Server providers
-
- * (.NET) Reporting (Excel?)
+ * (.NET) Reporting base
+ * (EPPlus) Reporting Excel
 
  - (.NET) IRepositorySet: Add entity and property descriptions functionality
  - (.NET) IRepositorySet: Add GetChanges method (return RepositorySetChanges type)
  - (.NET) IRepositoryContext: Add GetChanges method (return RepositoryContextChanges type)
  - (.NET) IRepositoryContext: Add GetErrors method (return RepositoryContextErrors type)
 
- - (.NET) EntityView: Make collection update strategy configurable (clear vs. create new)
-
 
 Mathematic
 ----------
+
+ - (Common) Aggregate extensions for numerical types (byte, short, int, long, double, float), including statistics (min, max, sum, average, median, RMS, count)
 
  - (Common) NumberExtensions: FractionAsInteger
  - (Common) NumberExtensions: FirstDigits
@@ -268,8 +263,6 @@ Mathematic
  - (Common) RunningValues: GeometricMean
  - (Common) RunningValues: PreFill (also as constructor parameter)
 
- - (Common) Aggregate extensions for numerical types (byte, short, int, long, double, float), including statistics (min, max, sum, average, median, RMS, count)
-
  - (Common) IController
  - (Common) NonlinearController
 
@@ -279,10 +272,10 @@ Mathematic
 State machines
 --------------
 
+ - (Common) Cascading
+
  - (Windows) WindowsMessageLoopStateDispatcher
  - (WinForms) ApplicationStateDispatcher
-
- - (Common) Cascading
 
 
 Behaviours

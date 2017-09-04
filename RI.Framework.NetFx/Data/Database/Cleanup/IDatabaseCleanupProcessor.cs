@@ -47,12 +47,16 @@ namespace RI.Framework.Data.Database.Cleanup
 
 	/// <inheritdoc cref="IDatabaseCleanupProcessor"/>
 	/// <typeparam name="TConnection">The database connection type, subclass of <see cref="DbConnection"/>.</typeparam>
+	/// <typeparam name="TTransaction">The database transaction type, subclass of <see cref="DbTransaction"/>.</typeparam>
 	/// <typeparam name="TConnectionStringBuilder">The connection string builder type, subclass of <see cref="DbConnectionStringBuilder"/>.</typeparam>
-	/// <typeparam name="TManager">The type of the database manager which is using this cleanup processor.</typeparam>
-	public interface IDatabaseCleanupProcessor<TConnection, TConnectionStringBuilder, in TManager> : IDatabaseCleanupProcessor
+	/// <typeparam name="TManager">The type of the database manager.</typeparam>
+	/// <typeparam name="TConfiguration">The type of database configuration.</typeparam>
+	public interface IDatabaseCleanupProcessor<TConnection, TTransaction, TConnectionStringBuilder, in TManager, TConfiguration> : IDatabaseCleanupProcessor
 		where TConnection : DbConnection
+		where TTransaction : DbTransaction
 		where TConnectionStringBuilder : DbConnectionStringBuilder
-		where TManager : IDatabaseManager<TConnection, TConnectionStringBuilder, TManager>
+		where TManager : IDatabaseManager<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration>
+		where TConfiguration : class, IDatabaseManagerConfiguration<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration>, new()
 	{
 		/// <inheritdoc cref="IDatabaseCleanupProcessor.Cleanup"/>
 		bool Cleanup (TManager manager);

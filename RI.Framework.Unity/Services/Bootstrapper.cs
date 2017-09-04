@@ -254,6 +254,19 @@ namespace RI.Framework.Services
 		/// </remarks>
 		public bool ServiceLocatorBinding = true;
 
+		/// <summary>
+		///     Specifies whether the <see cref="Container" /> should be disposed during shutdown.
+		/// </summary>
+		/// <remarks>
+		///     <para>
+		///         If true, <see cref="Container" /> is disposed using <see cref="CompositionContainer.Dispose"/> during <see cref="DoShutdown"/>.
+		///     </para>
+		///     <para>
+		///         The default value is true.
+		///     </para>
+		/// </remarks>
+		public bool DisposeContainer = true;
+
 		#endregion
 
 
@@ -477,11 +490,16 @@ namespace RI.Framework.Services
 		/// </summary>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation does nothing.
+		///         The default implementation calls <see cref="CompositionContainer.Dispose" /> of the used <see cref="CompositionContainer" /> if <see cref="DisposeContainer" /> is true, otherwise it does nothing.
 		///     </note>
 		/// </remarks>
 		protected virtual void DoShutdown ()
 		{
+			if (this.DisposeContainer)
+			{
+				this.Log(LogLevel.Debug, "Disposing container");
+				this.Container?.Dispose();
+			}
 		}
 
 		/// <summary>

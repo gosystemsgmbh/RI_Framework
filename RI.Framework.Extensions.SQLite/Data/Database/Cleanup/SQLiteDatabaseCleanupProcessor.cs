@@ -19,7 +19,7 @@ namespace RI.Framework.Data.Database.Cleanup
 	/// </para>
 	/// </remarks>
 	[SuppressMessage("ReSharper", "InconsistentNaming")]
-	public sealed class SQLiteDatabaseCleanupProcessor : DatabaseCleanupProcessor<SQLiteConnection, SQLiteConnectionStringBuilder, SQLiteDatabaseManager>
+	public sealed class SQLiteDatabaseCleanupProcessor : DatabaseCleanupProcessor<SQLiteConnection, SQLiteTransaction, SQLiteConnectionStringBuilder, SQLiteDatabaseManager, SQLiteDatabaseManagerConfiguration>
 	{
 		/// <summary>
 		/// The default cleanup script used when no custom processing step is specified.

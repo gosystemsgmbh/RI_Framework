@@ -10,7 +10,7 @@ namespace RI.Framework.Data.Database
 	///         See <see cref="IDatabaseManager" /> for more details.
 	///     </para>
 	/// </remarks>
-	public sealed class SqlServerDatabaseManager : DatabaseManager<SqlConnection, SqlConnectionStringBuilder, SqlServerDatabaseManager, SqlServerDatabaseManagerConfiguration>
+	public sealed class SqlServerDatabaseManager : DatabaseManager<SqlConnection, SqlTransaction, SqlConnectionStringBuilder, SqlServerDatabaseManager, SqlServerDatabaseManagerConfiguration>
 	{
 		/// <inheritdoc />
 		protected override bool SupportsConnectionTrackingImpl => true;
@@ -42,6 +42,12 @@ namespace RI.Framework.Data.Database
 			connection.Open();
 
 			return connection;
+		}
+
+		/// <inheritdoc />
+		protected override IDatabaseProcessingStep<SqlConnection, SqlTransaction, SqlConnectionStringBuilder, SqlServerDatabaseManager, SqlServerDatabaseManagerConfiguration> CreateProcessingStepImpl ()
+		{
+			return new SqlServerDatabaseProcessingStep();
 		}
 	}
 }

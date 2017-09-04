@@ -73,6 +73,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Composition\Model\ImportAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Composition\Model\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Composition\_NamespaceDoc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\Binary\BinaryReaderExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\Binary\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\CSV\CsvDocument.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\CSV\CsvParsingException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\CSV\CsvReader.cs" />
@@ -107,11 +109,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)IO\Paths\PathString.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\Paths\PathType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\Paths\_NamespaceDoc.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)IO\Streams\BinaryReaderExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\Streams\StreamExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\Streams\SynchronizedStream.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\Streams\UncloseableStream.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\Streams\_NamespaceDoc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\Text\IndentedTextWriter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\Text\TextReaderExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\Text\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mathematic\Controllers\PIDController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mathematic\Controllers\_NamespaceDoc.cs" />
@@ -228,8 +232,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Text\AlphanumComparer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Text\AlphanumComparerFlags.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Text\CommandLine.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Text\IndentedTextWriter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Text\TextReaderExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Text\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\TimeSpanExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\_NamespaceDoc.cs" />

@@ -1,6 +1,6 @@
 using System;
 
-namespace RI.Framework.Utilities
+namespace RI.Framework.Utilities.Runtime
 {
 	/// <summary>
 	///     Provides utility/extension methods for the <see cref="OperatingSystem" /> type.

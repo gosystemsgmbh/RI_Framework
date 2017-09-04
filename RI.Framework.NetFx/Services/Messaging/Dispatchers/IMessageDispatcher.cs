@@ -37,12 +37,13 @@ namespace RI.Framework.Services.Messaging.Dispatchers
 		/// <param name="receivers"> The sequence of receivers. </param>
 		/// <param name="message"> The message to deliver. </param>
 		/// <param name="messageService"> The message service used to deliver the message. </param>
+		/// <param name="deliveredCallback"> The callback to be called by the dispatcher when all receivers have received the message. Can be null if no callback is required. </param>
 		/// <remarks>
 		///     <note type="implement">
 		///         This method must not return until the message is delivered to all receivers.
 		///     </note>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="receivers" />, <paramref name="message" />, or <paramref name="messageService" /> is null. </exception>
-		void Post (IEnumerable<IMessageReceiver> receivers, IMessage message, IMessageService messageService);
+		void Post (IEnumerable<IMessageReceiver> receivers, IMessage message, IMessageService messageService, Action<IMessage> deliveredCallback);
 	}
 }

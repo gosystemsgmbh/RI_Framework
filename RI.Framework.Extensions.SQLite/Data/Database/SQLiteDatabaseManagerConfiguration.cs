@@ -15,7 +15,7 @@ namespace RI.Framework.Data.Database
 	///     </para>
 	/// </remarks>
 	[SuppressMessage("ReSharper", "InconsistentNaming")]
-	public sealed class SQLiteDatabaseManagerConfiguration : DatabaseManagerConfiguration<SQLiteConnection, SQLiteConnectionStringBuilder, SQLiteDatabaseManager>
+	public sealed class SQLiteDatabaseManagerConfiguration : DatabaseManagerConfiguration<SQLiteConnection, SQLiteTransaction, SQLiteConnectionStringBuilder, SQLiteDatabaseManager, SQLiteDatabaseManagerConfiguration>
 	{
 		/// <summary>
 		/// Creates a new instance of <see cref="SQLiteDatabaseManagerConfiguration"/>.

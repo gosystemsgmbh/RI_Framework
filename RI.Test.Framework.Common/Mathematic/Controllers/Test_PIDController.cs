@@ -2,10 +2,7 @@
 
 using RI.Framework.Mathematic.Controllers;
 
-
-
-
-namespace RI.Test.Framework.Mathematic
+namespace RI.Test.Framework.Mathematic.Controllers
 {
 	[TestClass]
 	public sealed class Test_PIDController

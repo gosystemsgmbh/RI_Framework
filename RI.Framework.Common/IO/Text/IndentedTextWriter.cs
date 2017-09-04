@@ -5,7 +5,7 @@ using System.Text;
 
 
 
-namespace RI.Framework.Utilities.Text
+namespace RI.Framework.IO.Text
 {
 	/// <summary>
 	///     A <see cref="TextWriter" /> which encapsulates another <see cref="TextWriter" /> so that it can be used with auto-indentation.

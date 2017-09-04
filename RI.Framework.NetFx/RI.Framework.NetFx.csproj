@@ -74,6 +74,7 @@
     <Compile Include="Data\Database\IDatabaseManager.cs" />
     <Compile Include="Data\Database\IDatabaseManagerConfiguration.cs" />
     <Compile Include="Data\Database\IDatabaseManagerExtensions.cs" />
+    <Compile Include="Data\Database\IDatabaseProcessingStep.cs" />
     <Compile Include="Data\Database\InvalidDatabaseConfigurationException.cs" />
     <Compile Include="Data\Database\Scripts\AggregateScriptLocator.cs" />
     <Compile Include="Data\Database\Scripts\AssemblyRessourceScriptLocator.cs" />
@@ -103,6 +104,7 @@
     <Compile Include="Data\Repository\RepositorySetErrors.cs" />
     <Compile Include="Data\Repository\IRepositorySet.cs" />
     <Compile Include="Data\Repository\Views\EntityView.cs" />
+    <Compile Include="Data\Repository\Views\EntityViewCollectionUpdateStrategy.cs" />
     <Compile Include="Data\Repository\Views\EntityViewItemEventArgs.cs" />
     <Compile Include="Data\Repository\Views\EntityViewItemsEventArgs.cs" />
     <Compile Include="Data\Repository\Views\EntityViewObject.cs" />

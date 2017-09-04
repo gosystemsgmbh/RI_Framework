@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -129,6 +130,7 @@ namespace RI.Framework.Utilities.Wpf.Controls
 		#region Overrides
 
 		/// <inheritdoc />
+		[SuppressMessage("ReSharper", "ConditionIsAlwaysTrueOrFalse")]
 		protected override void OnChecked (RoutedEventArgs e)
 		{
 			base.OnChecked(e);

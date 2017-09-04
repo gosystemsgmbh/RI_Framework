@@ -1088,6 +1088,30 @@ namespace RI.Framework.Services
 			}
 		}
 
+		/// <summary>
+		/// Called after shutdown to cleanup all bootstrapper resources.
+		/// </summary>
+		/// <remarks>
+		///     <note type="implement">
+		///         The default application first calls <see cref="IDisposable.Dispose"/>
+		///     </note>
+		/// </remarks>
+		protected virtual void DoCleanup ()
+		{
+			IDisposable application = this.Application as IDisposable;
+			if (application != null)
+			{
+				this.Log(LogLevel.Debug, "Disposing application");
+				application.Dispose();
+			}
+
+			if (this.Container != null)
+			{
+				this.Log(LogLevel.Debug, "Disposing container");
+				this.Container.Dispose();
+			}
+		}
+
 		#endregion
 
 
@@ -1318,6 +1342,9 @@ namespace RI.Framework.Services
 
 				this.Log(LogLevel.Debug, "Doing shutdown");
 				this.DoShutdown();
+
+				this.Log(LogLevel.Debug, "Doing cleanup");
+				this.DoCleanup();
 
 				this.Log(LogLevel.Debug, "State: Shut down");
 				this.State = BootstrapperState.ShutDown;

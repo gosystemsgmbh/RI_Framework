@@ -10,6 +10,7 @@ using RI.Framework.Services;
 using RI.Framework.StateMachines;
 using RI.Framework.StateMachines.Dispatchers;
 using RI.Framework.StateMachines.Resolvers;
+using RI.Test.Framework.StateMachines.States;
 
 
 

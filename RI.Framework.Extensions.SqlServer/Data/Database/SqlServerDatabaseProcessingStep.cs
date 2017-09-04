@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 
+using RI.Framework.Data.Database.Cleanup;
+using RI.Framework.Data.Database.Upgrading;
 using RI.Framework.Utilities.Logging;
 
 namespace RI.Framework.Data.Database

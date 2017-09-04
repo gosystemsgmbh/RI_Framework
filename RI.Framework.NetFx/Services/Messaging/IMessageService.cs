@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 using RI.Framework.Composition.Model;
 using RI.Framework.Services.Messaging.Dispatchers;
@@ -16,6 +17,9 @@ namespace RI.Framework.Services.Messaging
 	///     <para>
 	///         A messaging service is used to send/receive application-specific messages asynchronously to/from modules of an application.
 	///     </para>
+	/// <para>
+	/// Unlike a full-featured distributed bus or event aggregator, a message service is a lightweight, in-memory, in-process, local-only message distribution mechanism
+	/// </para>
 	///     <para>
 	///         Messages are instances of <see cref="IMessage" /> which are sent using a messaging service.
 	///         The message service uses message dispatchers (<see cref="IMessageDispatcher" />) to deliver the messages asynchronously to all known message receivers (<see cref="IMessageReceiver" />).
@@ -93,16 +97,30 @@ namespace RI.Framework.Services.Messaging
 		void AddReceiver (IMessageReceiver messageReceiver);
 
 		/// <summary>
-		///     Sends a message asynchronously.
+		///     Posts a message asynchronously.
 		/// </summary>
-		/// <param name="message"> The message to send. </param>
+		/// <param name="message"> The message to post. </param>
 		/// <remarks>
 		///     <para>
-		///         The message is delivered after all previously sent or posted messages but this method returns immediately.
+		/// The message is delivered after all previously sent or posted messages are delivered.
+		/// This method returns immediately and does not wait for the message to be delivered.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="message" /> is null. </exception>
 		void Post (IMessage message);
+
+		/// <summary>
+		///     Sends a message synchronously.
+		/// </summary>
+		/// <param name="message"> The message to send. </param>
+		/// <remarks>
+		///     <para>
+		/// The message is delivered after all previously sent or posted messages are delivered.
+		/// This method returns a task which can be continued or awaited when the message was delivered to all receivers.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="message" /> is null. </exception>
+		Task Send (IMessage message);
 
 		/// <summary>
 		///     Removes a message dispatcher and stops using it for all subsequent messages.

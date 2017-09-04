@@ -3,7 +3,7 @@ using System.IO;
 using System.Text;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-
+using RI.Framework.IO.Text;
 using RI.Framework.Utilities.Text;
 using RI.Test.Framework.Mocks;
 

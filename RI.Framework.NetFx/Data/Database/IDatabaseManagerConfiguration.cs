@@ -92,27 +92,31 @@ namespace RI.Framework.Data.Database
 
 	/// <inheritdoc cref="IDatabaseManagerConfiguration"/>
 	/// <typeparam name="TConnection">The database connection type, subclass of <see cref="DbConnection"/>.</typeparam>
+	/// <typeparam name="TTransaction">The database transaction type, subclass of <see cref="DbTransaction"/>.</typeparam>
 	/// <typeparam name="TConnectionStringBuilder">The connection string builder type, subclass of <see cref="DbConnectionStringBuilder"/>.</typeparam>
-	/// <typeparam name="TManager">The type of the database manager which is using this configuration.</typeparam>
-	public interface IDatabaseManagerConfiguration<TConnection, TConnectionStringBuilder, TManager> : IDatabaseManagerConfiguration
+	/// <typeparam name="TManager">The type of the database manager.</typeparam>
+	/// <typeparam name="TConfiguration">The type of database configuration.</typeparam>
+	public interface IDatabaseManagerConfiguration<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration> : IDatabaseManagerConfiguration
 		where TConnection : DbConnection
+		where TTransaction : DbTransaction
 		where TConnectionStringBuilder : DbConnectionStringBuilder
-		where TManager : IDatabaseManager<TConnection, TConnectionStringBuilder, TManager>
+		where TManager : IDatabaseManager<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration>
+		where TConfiguration : class, IDatabaseManagerConfiguration<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration>, new()
 	{
 		/// <inheritdoc cref="IDatabaseManagerConfiguration.ConnectionString"/>
 		new TConnectionStringBuilder ConnectionString { get; set; }
 
 		/// <inheritdoc cref="IDatabaseManagerConfiguration.VersionDetector"/>
-		new IDatabaseVersionDetector<TConnection, TConnectionStringBuilder, TManager> VersionDetector { get; set; }
+		new IDatabaseVersionDetector<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration> VersionDetector { get; set; }
 
 		/// <inheritdoc cref="IDatabaseManagerConfiguration.VersionUpgrader"/>
-		new IDatabaseVersionUpgrader<TConnection, TConnectionStringBuilder, TManager> VersionUpgrader { get; set; }
+		new IDatabaseVersionUpgrader<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration> VersionUpgrader { get; set; }
 
 		/// <inheritdoc cref="IDatabaseManagerConfiguration.BackupCreator"/>
-		new IDatabaseBackupCreator<TConnection, TConnectionStringBuilder, TManager> BackupCreator { get; set; }
+		new IDatabaseBackupCreator<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration> BackupCreator { get; set; }
 
 		/// <inheritdoc cref="IDatabaseManagerConfiguration.CleanupProcessor"/>
-		new IDatabaseCleanupProcessor<TConnection, TConnectionStringBuilder, TManager> CleanupProcessor { get; set; }
+		new IDatabaseCleanupProcessor<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration> CleanupProcessor { get; set; }
 
 		/// <inheritdoc cref="IDatabaseManagerConfiguration.VerifyConfiguration"/>
 		void VerifyConfiguration(TManager manager);

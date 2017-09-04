@@ -289,12 +289,12 @@ namespace RI.Framework.Collections.Comparison
 		/// </remarks>
 		public bool Equals (IEnumerable<T> x, IEnumerable<T> y)
 		{
-			if (object.ReferenceEquals(x, y))
+			if ((x == null) && (y == null))
 			{
 				return true;
 			}
 
-			if ((x == null) && (y == null))
+			if (object.ReferenceEquals(x, y))
 			{
 				return true;
 			}

@@ -8,8 +8,10 @@ namespace RI.Framework.Data.Database.Cleanup
 	/// Implements a base class for database cleanup processors.
 	/// </summary>
 	/// <typeparam name="TConnection">The database connection type, subclass of <see cref="DbConnection"/>.</typeparam>
+	/// <typeparam name="TTransaction">The database transaction type, subclass of <see cref="DbTransaction"/>.</typeparam>
 	/// <typeparam name="TConnectionStringBuilder">The connection string builder type, subclass of <see cref="DbConnectionStringBuilder"/>.</typeparam>
-	/// <typeparam name="TManager">The type of the database manager which is using this cleanup processor.</typeparam>
+	/// <typeparam name="TManager">The type of the database manager.</typeparam>
+	/// <typeparam name="TConfiguration">The type of database configuration.</typeparam>
 	/// <remarks>
 	/// <para>
 	/// It is recommended that database cleanup processor implementations use this base class as it already implements most of the logic which is database-independent.
@@ -18,10 +20,12 @@ namespace RI.Framework.Data.Database.Cleanup
 	/// See <see cref="IDatabaseCleanupProcessor"/> for more details.
 	/// </para>
 	/// </remarks>
-	public abstract class DatabaseCleanupProcessor<TConnection, TConnectionStringBuilder, TManager> : IDatabaseCleanupProcessor<TConnection, TConnectionStringBuilder, TManager>
+	public abstract class DatabaseCleanupProcessor<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration> : IDatabaseCleanupProcessor<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration>
 		where TConnection : DbConnection
+		where TTransaction : DbTransaction
 		where TConnectionStringBuilder : DbConnectionStringBuilder
-		where TManager : IDatabaseManager<TConnection, TConnectionStringBuilder, TManager>
+		where TManager : IDatabaseManager<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration>
+		where TConfiguration : class, IDatabaseManagerConfiguration<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration>, new()
 	{
 		/// <inheritdoc />
 		public abstract bool Cleanup (TManager manager);

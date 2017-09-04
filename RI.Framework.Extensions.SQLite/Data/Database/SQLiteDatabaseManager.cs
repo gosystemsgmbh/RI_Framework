@@ -17,7 +17,7 @@ namespace RI.Framework.Data.Database
 	///     </para>
 	/// </remarks>
 	[SuppressMessage("ReSharper", "InconsistentNaming")]
-	public sealed class SQLiteDatabaseManager : DatabaseManager<SQLiteConnection, SQLiteConnectionStringBuilder, SQLiteDatabaseManager, SQLiteDatabaseManagerConfiguration>
+	public sealed class SQLiteDatabaseManager : DatabaseManager<SQLiteConnection, SQLiteTransaction, SQLiteConnectionStringBuilder, SQLiteDatabaseManager, SQLiteDatabaseManagerConfiguration>
 	{
 		/// <inheritdoc />
 		protected override bool SupportsConnectionTrackingImpl => true;
@@ -60,6 +60,11 @@ namespace RI.Framework.Data.Database
 			}
 
 			return connection;
+		}
+
+		protected override IDatabaseProcessingStep<SQLiteConnection, SQLiteTransaction, SQLiteConnectionStringBuilder, SQLiteDatabaseManager, SQLiteDatabaseManagerConfiguration> CreateProcessingStepImpl ()
+		{
+			return new SQLiteDatabaseProcessingStep();
 		}
 
 		private void RegisterCollations(SQLiteConnection connection)

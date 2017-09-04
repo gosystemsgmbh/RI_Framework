@@ -24,8 +24,8 @@ namespace RI.Framework.Data.Database
 			where TConnection : DbConnection
 			where TTransaction : DbTransaction
 			where TConnectionStringBuilder : DbConnectionStringBuilder
-			where TManager : IDatabaseManager<TConnection, TConnectionStringBuilder, TManager>
-			where TConfiguration : class, IDatabaseManagerConfiguration<TConnection, TConnectionStringBuilder, TManager>, new()
+			where TManager : IDatabaseManager<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration>
+			where TConfiguration : class, IDatabaseManagerConfiguration<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration>, new()
 		{
 			if (manager == null)
 			{

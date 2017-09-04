@@ -20,9 +20,10 @@ namespace RI.Framework.Data.Database
 	/// Implements a base class for database managers.
 	/// </summary>
 	/// <typeparam name="TConnection">The database connection type, subclass of <see cref="DbConnection"/>.</typeparam>
+	/// <typeparam name="TTransaction">The database transaction type, subclass of <see cref="DbTransaction"/>.</typeparam>
 	/// <typeparam name="TConnectionStringBuilder">The connection string builder type, subclass of <see cref="DbConnectionStringBuilder"/>.</typeparam>
-	/// <typeparam name="TManager">The type of the database manager which is implementing this base class.</typeparam>
-	/// <typeparam name="TConfiguration">The type of database configuration which is required by this database manager.</typeparam>
+	/// <typeparam name="TManager">The type of the database manager.</typeparam>
+	/// <typeparam name="TConfiguration">The type of database configuration.</typeparam>
 	/// <remarks>
 	/// <para>
 	/// It is recommended that database manager implementations use this base class as it already implements most of the logic which is database-independent.
@@ -31,17 +32,18 @@ namespace RI.Framework.Data.Database
 	/// See <see cref="IDatabaseManager"/> for more details.
 	/// </para>
 	/// </remarks>
-	public abstract class DatabaseManager<TConnection, TConnectionStringBuilder, TManager, TConfiguration> : IDatabaseManager<TConnection, TConnectionStringBuilder, TManager>
+	public abstract class DatabaseManager<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration> : IDatabaseManager<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration>
 		where TConnection : DbConnection
+		where TTransaction : DbTransaction
 		where TConnectionStringBuilder : DbConnectionStringBuilder
-		where TManager : DatabaseManager<TConnection, TConnectionStringBuilder, TManager, TConfiguration>
-		where TConfiguration : class, IDatabaseManagerConfiguration<TConnection, TConnectionStringBuilder, TManager>, new()
+		where TManager : IDatabaseManager<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration>
+		where TConfiguration : class, IDatabaseManagerConfiguration<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration>, new()
 	{
 		/// <inheritdoc cref="IDatabaseManager.Configuration"/>
 		public TConfiguration Configuration { get; }
 
 		/// <inheritdoc />
-		IDatabaseManagerConfiguration<TConnection, TConnectionStringBuilder, TManager> IDatabaseManager<TConnection, TConnectionStringBuilder, TManager>.Configuration => this.Configuration;
+		IDatabaseManagerConfiguration<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration> IDatabaseManager<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration>.Configuration => this.Configuration;
 
 		/// <inheritdoc />
 		IDatabaseManagerConfiguration IDatabaseManager.Configuration => this.Configuration;
@@ -190,7 +192,7 @@ namespace RI.Framework.Data.Database
 
 
 		/// <summary>
-		/// Creates a new instance of <see cref="DatabaseManager{TConnection,TConnectionStringBuilder,TManager,TConfiguration}"/>.
+		/// Creates a new instance of <see cref="DatabaseManager{TConnection,TTransaction,TConnectionStringBuilder,TManager,TConfiguration}"/>.
 		/// </summary>
 		protected DatabaseManager ()
 		{
@@ -209,7 +211,7 @@ namespace RI.Framework.Data.Database
 		}
 
 		/// <summary>
-		///     Garbage collects this instance of <see cref="DatabaseManager{TConnection,TConnectionStringBuilder,TManager,TConfiguration}"/>.
+		///     Garbage collects this instance of <see cref="DatabaseManager{TConnection,TTransaction,TConnectionStringBuilder,TManager,TConfiguration}"/>.
 		/// </summary>
 		~DatabaseManager ()
 		{
@@ -234,6 +236,17 @@ namespace RI.Framework.Data.Database
 		{
 			return this.CreateConnection(readOnly, track);
 		}
+
+		/// <inheritdoc />
+		public IDatabaseProcessingStep<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration> CreateProcessingStep ()
+		{
+			this.PrepareConfiguration();
+
+			return this.CreateProcessingStepImpl();
+		}
+
+		/// <inheritdoc />
+		IDatabaseProcessingStep IDatabaseManager.CreateProcessingStep () => this.CreateProcessingStep();
 
 		/// <inheritdoc />
 		List<DbConnection> IDatabaseManager.GetTrackedConnections ()
@@ -557,7 +570,7 @@ namespace RI.Framework.Data.Database
 		/// <summary>
 		/// Performs the actual state and version detection as required by this database manager implementation.
 		/// </summary>
-		/// <param name="state">Returns the state of the database. Can be null to perform state detection based on <paramref name="version"/> as implemented in <see cref="DatabaseManager{TConnection,TConnectionStringBuilder,TManager,TConfiguration}"/>.</param>
+		/// <param name="state">Returns the state of the database. Can be null to perform state detection based on <paramref name="version"/> as implemented in <see cref="DatabaseManager{TConnection,TTransaction,TConnectionStringBuilder,TManager,TConfiguration}"/>.</param>
 		/// <param name="version">Returns the version of the database.</param>
 		/// <returns>
 		/// true if the state and version could be successfully determined, false if the database is damaged or in an invalid state.
@@ -619,6 +632,14 @@ namespace RI.Framework.Data.Database
 		/// Details can be obtained from the log.
 		/// </returns>
 		protected abstract TConnection CreateConnectionImpl (bool readOnly);
+
+		/// <summary>
+		/// Creates a new database processing step.
+		/// </summary>
+		/// <returns>
+		/// The newly created database processing step.
+		/// </returns>
+		protected abstract IDatabaseProcessingStep<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration> CreateProcessingStepImpl();
 
 		/// <summary>
 		/// Retrieves a script batch

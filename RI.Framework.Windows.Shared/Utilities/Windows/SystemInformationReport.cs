@@ -26,6 +26,7 @@ namespace RI.Framework.Utilities.Windows
 	/// </summary>
 	[SuppressMessage("ReSharper", "EmptyGeneralCatchClause")]
 	[SuppressMessage("ReSharper", "ConditionIsAlwaysTrueOrFalse")]
+	[SuppressMessage("ReSharper", "ConstantNullCoalescingCondition")]
 	public static class SystemInformationReport
 	{
 		#region Constants
