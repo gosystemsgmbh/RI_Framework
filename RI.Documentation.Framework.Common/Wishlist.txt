@@ -10,8 +10,6 @@
 Utilities
 ---------
 
- * (WPF) EventToCommandBinder
-
  - (Linux) LinuxShell
 
  - (WinForms) FormExtensions

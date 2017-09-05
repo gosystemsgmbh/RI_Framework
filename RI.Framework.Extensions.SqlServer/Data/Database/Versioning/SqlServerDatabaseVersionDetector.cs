@@ -93,7 +93,7 @@ namespace RI.Framework.Data.Database.Versioning
 							version = value.Int32FromSqlServerResult() ?? -1;
 						}
 
-						transaction?.Rollback();
+						transaction.Rollback();
 					}
 				}
 
