@@ -62,6 +62,7 @@ namespace RI.Framework.Data.Database
 			return connection;
 		}
 
+		/// <inheritdoc />
 		protected override IDatabaseProcessingStep<SQLiteConnection, SQLiteTransaction, SQLiteConnectionStringBuilder, SQLiteDatabaseManager, SQLiteDatabaseManagerConfiguration> CreateProcessingStepImpl ()
 		{
 			return new SQLiteDatabaseProcessingStep();

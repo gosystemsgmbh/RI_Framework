@@ -3,10 +3,10 @@
 
 
 
-namespace RI.Framework.Services.Messaging
+namespace RI.Framework.Utilities.Wpf.Imaging
 {
 	/// <summary>
-	///     Contains the in-process messaging service.
+	///     Contains WPF imaging utilities.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

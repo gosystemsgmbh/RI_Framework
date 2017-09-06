@@ -52,11 +52,16 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>@md "$(SolutionDir)_Input"
+
 @md "$(SolutionDir)_Output"
+
+
 
 @copy "$(TargetDir)$(TargetName).exe" "$(TargetDir)ElevatedStart.exe"
 
+
 @copy "$(TargetDir)ElevatedStart.*" "$(SolutionDir)_Input\*.*"
+
 @copy "$(TargetDir)ElevatedStart.*" "$(SolutionDir)_Output\*.*"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>

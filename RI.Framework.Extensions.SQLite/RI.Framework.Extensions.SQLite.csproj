@@ -83,7 +83,6 @@
     <Compile Include="Data\Database\SQLiteDatabaseManagerConfiguration.cs" />
     <Compile Include="Services\Logging\Writers\SQLiteLogConfiguration.cs" />
     <Compile Include="Services\Logging\Writers\SQLiteLogWriter.cs" />
-    <None Include="app.config" />
     <None Include="Data\Database\_Old_SQLiteDatabaseManager.cs" />
     <Compile Include="Data\Database\SQLiteDatabaseManager.cs" />
     <Compile Include="Data\SQLite\SQLiteConversionExtensions.cs" />

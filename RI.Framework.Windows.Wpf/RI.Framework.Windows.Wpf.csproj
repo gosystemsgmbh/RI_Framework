@@ -64,6 +64,9 @@
     <Compile Include="Utilities\Wpf\DispatcherAwaiter.cs" />
     <Compile Include="Mvvm\ViewModel\NotificationObject.cs" />
     <Compile Include="Mvvm\ViewModel\DelegateCommand.cs" />
+    <Compile Include="Utilities\Wpf\Imaging\BitmapFrameExtensions.cs" />
+    <Compile Include="Utilities\Wpf\Imaging\BitmapSourceExtensions.cs" />
+    <Compile Include="Utilities\Wpf\Imaging\_NamespaceDoc.cs" />
     <Compile Include="Utilities\Wpf\Markup\EventBinding.cs" />
     <Compile Include="Utilities\Wpf\Markup\EventBindings.cs" />
     <Compile Include="Utilities\Wpf\Markup\EventToCommandBinder.cs" />

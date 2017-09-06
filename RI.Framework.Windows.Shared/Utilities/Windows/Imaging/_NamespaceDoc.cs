@@ -3,10 +3,10 @@
 
 
 
-namespace RI.Framework.Services.Messaging
+namespace RI.Framework.Utilities.Windows.Imaging
 {
 	/// <summary>
-	///     Contains the in-process messaging service.
+	///     Contains Windows-specific imaging utilities.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

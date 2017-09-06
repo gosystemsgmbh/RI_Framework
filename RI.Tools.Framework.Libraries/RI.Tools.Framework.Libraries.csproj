@@ -38,8 +38,10 @@
   <ItemGroup>
     <None Include="NuGet\ControlzEx.2.0.1.61.nupkg" />
     <None Include="NuGet\ControlzEx.2.2.0.4.nupkg" />
+    <None Include="NuGet\DotNetZip.1.10.1.nupkg" />
     <None Include="NuGet\EntityFramework.6.1.3.nupkg" />
     <None Include="NuGet\EPPlus.4.1.0.nupkg" />
+    <None Include="NuGet\Extended.Wpf.Toolkit.3.1.nupkg" />
     <None Include="NuGet\Fluent.Ribbon.4.0.3.394.nupkg" />
     <None Include="NuGet\Fluent.Ribbon.5.0.2.46.nupkg" />
     <None Include="NuGet\Nancy.1.4.3.nupkg" />
@@ -55,9 +57,13 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>@md "$(SolutionDir)_Input"
+
 @md "$(SolutionDir)_Output"
 
+
+
 @copy "$(ProjectDir)7zip\*.exe" "$(SolutionDir)_Input\*.*"
+
 @copy "$(ProjectDir)7zip\*.exe" "$(SolutionDir)_Output\*.*"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -3,10 +3,10 @@
 
 
 
-namespace RI.Framework.Services.Messaging
+namespace RI.Framework.Services.Licensing
 {
 	/// <summary>
-	///     Contains the in-process messaging service.
+	///     Contains the licensing service.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

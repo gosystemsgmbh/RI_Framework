@@ -46,6 +46,8 @@
       <DocumentationSource sourceFile="..\RI.Framework.Extensions.Json\RI.Framework.Extensions.Json.csproj" />
       <DocumentationSource sourceFile="..\RI.Framework.Extensions.NancyJson\RI.Framework.Extensions.NancyJson.csproj" />
       <DocumentationSource sourceFile="..\RI.Framework.Extensions.EPPlus\RI.Framework.Extensions.EPPlus.csproj" />
+      <DocumentationSource sourceFile="..\RI.Framework.Extensions.WpfToolkit\RI.Framework.Extensions.WpfToolkit.csproj" />
+      <DocumentationSource sourceFile="..\RI.Framework.Extensions.DotNetZip\RI.Framework.Extensions.DotNetZip.csproj" />
     </DocumentationSources>
     <BuildAssemblerVerbosity>OnlyWarningsAndErrors</BuildAssemblerVerbosity>
     <HelpFileFormat>HtmlHelp1, Website</HelpFileFormat>
