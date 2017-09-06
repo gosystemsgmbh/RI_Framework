@@ -201,6 +201,9 @@ Services
 
  * (.NET) Backup (BackupService, DirectoryBackupStorage)
  * (.NET) Licensing (LicensingService, FileLicenseStorage)
+
+ * (ZIP) ZipBackupStorage
+ * (ZIP) ZipResourceSource, ZipResourceSet
   
  - (WPF) WpfApplication: Handle power events using SystemEvents.PowerModeChanged
  - (WPF) WpfApplication: Handle user switching using SystemEvents.SessionSwitch
@@ -232,8 +235,8 @@ Services
 Data
 ----
 
- * (.NET) Reporting base
- * (EPPlus) Reporting Excel
+ - (.NET) Reporting base
+ - (EPPlus) Reporting Excel
 
  - (.NET) IRepositorySet: Add entity and property descriptions functionality
  - (.NET) IRepositorySet: Add GetChanges method (return RepositorySetChanges type)
