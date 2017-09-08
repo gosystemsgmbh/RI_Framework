@@ -268,7 +268,38 @@ namespace RI.Framework.Services.Settings
 				throw new EmptyStringArgumentException(nameof(name));
 			}
 
-			this.SetRawValues(name, null);
+			this.Cache.Remove(name);
+
+			foreach (ISettingStorage store in this.Storages)
+			{
+				if (store.IsReadOnly)
+				{
+					continue;
+				}
+
+				store.DeleteValues(name);
+			}
+		}
+
+		/// <inheritdoc />
+		public void DeleteValues(Predicate<string> predicate)
+		{
+			if (predicate == null)
+			{
+				throw new ArgumentNullException(nameof(predicate));
+			}
+
+			this.Cache.RemoveWhere(x => predicate(x.Key));
+
+			foreach (ISettingStorage store in this.Storages)
+			{
+				if (store.IsReadOnly)
+				{
+					continue;
+				}
+
+				store.DeleteValues(predicate);
+			}
 		}
 
 		/// <inheritdoc />
@@ -393,6 +424,30 @@ namespace RI.Framework.Services.Settings
 		}
 
 		/// <inheritdoc />
+		public bool HasValue(Predicate<string> predicate)
+		{
+			if (predicate == null)
+			{
+				throw new ArgumentNullException(nameof(predicate));
+			}
+
+			if (this.Cache.Any(x => predicate(x.Key)))
+			{
+				return true;
+			}
+
+			foreach (ISettingStorage store in this.Storages)
+			{
+				if (store.HasValue(predicate))
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		/// <inheritdoc />
 		public bool InitializeRawValue (string name, string defaultValue) => this.InitializeRawValues(name, new [] { defaultValue });
 
 		/// <inheritdoc />
@@ -408,12 +463,7 @@ namespace RI.Framework.Services.Settings
 				throw new EmptyStringArgumentException(nameof(name));
 			}
 
-			if (defaultValues == null)
-			{
-				return false;
-			}
-
-			List<string> finalValues = defaultValues.ToList();
+			List<string> finalValues = defaultValues?.ToList() ?? new List<string>();
 			if (finalValues.Count == 0)
 			{
 				return false;
@@ -566,6 +616,11 @@ namespace RI.Framework.Services.Settings
 			}
 
 			List<string> finalValues = values?.ToList() ?? new List<string>();
+			if (finalValues.Count == 0)
+			{
+				this.DeleteValues(name);
+				return;
+			}
 
 			this.Cache.Remove(name);
 			if (finalValues.Count > 0)
@@ -597,7 +652,7 @@ namespace RI.Framework.Services.Settings
 				stores++;
 			}
 
-			if ((finalValues.Count > 0) && (stores == 0))
+			if (stores == 0)
 			{
 				this.Log(LogLevel.Warning, "Setting {0} not written to any storage");
 			}
@@ -642,7 +697,18 @@ namespace RI.Framework.Services.Settings
 				throw new InvalidTypeArgumentException(nameof(type));
 			}
 
+			if (values == null)
+			{
+				this.DeleteValues(name);
+				return;
+			}
+
 			List<string> finalValues = values.Cast<object>().Select(x => converter.ConvertFrom(type, x));
+			if (finalValues.Count == 0)
+			{
+				this.DeleteValues(name);
+				return;
+			}
 
 			this.SetRawValues(name, finalValues);
 		}

@@ -96,6 +96,13 @@ namespace RI.Framework.Services.Settings
 		void DeleteValues (string name);
 
 		/// <summary>
+		///     Deletes all setting values whose name matches a predicate.
+		/// </summary>
+		/// <param name="predicate"> The predicate used to test the names. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="predicate" /> is null. </exception>
+		void DeleteValues (Predicate<string> predicate);
+
+		/// <summary>
 		///     Gets the first setting value in its string representation.
 		/// </summary>
 		/// <param name="name"> The name of the setting. </param>
@@ -179,6 +186,16 @@ namespace RI.Framework.Services.Settings
 		/// <exception cref="ArgumentNullException"> <paramref name="name" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
 		bool HasValue (string name);
+
+		/// <summary>
+		///     Determines whether a setting is available whose name matches a predicate.
+		/// </summary>
+		/// <param name="predicate"> The predicate used to test the names. </param>
+		/// <returns>
+		///     true if the setting is available, false otherwise.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="predicate" /> is null. </exception>
+		bool HasValue (Predicate<string> predicate);
 
 		/// <summary>
 		///     Initializes a setting in its string representation with a single value.

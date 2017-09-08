@@ -34,6 +34,11 @@ namespace RI.Framework.Services.Settings.Converters
 		/// <returns>
 		///     true if this converter can convert to and from the type specified by <paramref name="type" />, false otherwise.
 		/// </returns>
+		/// <remarks>
+		/// <note type="note">
+		/// Do not call this method directly, it is intended to be called from an <see cref="ISettingService"/> implementation.
+		/// </note>
+		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="type" /> is null. </exception>
 		bool CanConvert (Type type);
 
@@ -45,6 +50,11 @@ namespace RI.Framework.Services.Settings.Converters
 		/// <returns>
 		///     The string representation of the setting value as converted by this converter or null if <paramref name="value" /> is null.
 		/// </returns>
+		/// <remarks>
+		/// <note type="note">
+		/// Do not call this method directly, it is intended to be called from an <see cref="ISettingService"/> implementation.
+		/// </note>
+		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="type" /> or <paramref name="value" /> is null. </exception>
 		/// <exception cref="InvalidTypeArgumentException"> The specified <paramref name="type" /> or the type of <paramref name="value" /> is not supported by this converter or <paramref name="type" /> and <paramref name="value" /> do not match. </exception>
 		string ConvertFrom (Type type, object value);
@@ -57,6 +67,11 @@ namespace RI.Framework.Services.Settings.Converters
 		/// <returns>
 		///     The setting value in the specified type as converted by this converter or null if <paramref name="value" /> is null..
 		/// </returns>
+		/// <remarks>
+		/// <note type="note">
+		/// Do not call this method directly, it is intended to be called from an <see cref="ISettingService"/> implementation.
+		/// </note>
+		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="type" /> is null. </exception>
 		/// <exception cref="InvalidTypeArgumentException"> The specified <paramref name="type" /> is not supported by this converter. </exception>
 		/// <exception cref="FormatException"> The string representation of <paramref name="value" /> is invalid and cannot be converted to <paramref name="type" />. </exception>

@@ -117,7 +117,7 @@
     <Compile Include="Services\Backup\IBackupAware.cs" />
     <Compile Include="Services\Backup\IBackupInclusion.cs" />
     <Compile Include="Services\Backup\IBackupService.cs" />
-    <Compile Include="Services\Backup\IBackupSet.cs" />
+    <Compile Include="Services\Backup\Storages\IBackupSet.cs" />
     <Compile Include="Services\Backup\Storages\IBackupStorage.cs" />
     <Compile Include="Services\Backup\Storages\_NamespaceDoc.cs" />
     <Compile Include="Services\Backup\_NamespaceDoc.cs" />

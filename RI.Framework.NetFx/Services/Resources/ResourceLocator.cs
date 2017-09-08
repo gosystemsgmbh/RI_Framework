@@ -104,8 +104,8 @@ namespace RI.Framework.Services.Resources
 		/// <inheritdoc cref="IResourceService.ReloadSets" />
 		public static void ReloadSets () => ResourceLocator.Service?.ReloadSets();
 
-		/// <inheritdoc cref="IResourceService.UpdateAvailable" />
-		public static void UpdateAvailable() => ResourceLocator.Service?.UpdateAvailable();
+		/// <inheritdoc cref="IResourceService.UpdateSets" />
+		public static void UpdateSets() => ResourceLocator.Service?.UpdateSets();
 
 		/// <inheritdoc cref="IResourceService.UnloadSets" />
 		public static void UnloadSets() => ResourceLocator.Service?.UnloadSets();

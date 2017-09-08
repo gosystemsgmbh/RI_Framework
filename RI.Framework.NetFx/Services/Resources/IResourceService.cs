@@ -42,19 +42,6 @@ namespace RI.Framework.Services.Resources
 		IEnumerable<IResourceSet> AvailableSets { get; }
 
 		/// <summary>
-		///     Gets all currently available resource converters.
-		/// </summary>
-		/// <value>
-		///     All currently available resource converters.
-		/// </value>
-		/// <remarks>
-		///     <note type="implement">
-		///         The value of this property must never be null.
-		///     </note>
-		/// </remarks>
-		IEnumerable<IResourceConverter> Converters { get; }
-
-		/// <summary>
 		///     Gets all currently loaded resource sets.
 		/// </summary>
 		/// <value>
@@ -66,6 +53,19 @@ namespace RI.Framework.Services.Resources
 		///     </note>
 		/// </remarks>
 		IEnumerable<IResourceSet> LoadedSets { get; }
+
+		/// <summary>
+		///     Gets all currently available resource converters.
+		/// </summary>
+		/// <value>
+		///     All currently available resource converters.
+		/// </value>
+		/// <remarks>
+		///     <note type="implement">
+		///         The value of this property must never be null.
+		///     </note>
+		/// </remarks>
+		IEnumerable<IResourceConverter> Converters { get; }
 
 		/// <summary>
 		///     Gets all currently used resource sources.
@@ -176,8 +176,8 @@ namespace RI.Framework.Services.Resources
 		void UnloadSets ();
 
 		/// <summary>
-		///     Updates the available resource sets (<see cref="AvailableSets" />).
+		///     Updates the available resource sets (<see cref="AvailableSets" />) and loaded sets (<see cref="LoadedSets"/>).
 		/// </summary>
-		void UpdateAvailable ();
+		void UpdateSets ();
 	}
 }

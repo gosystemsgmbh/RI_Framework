@@ -74,6 +74,29 @@ namespace RI.Framework.Services.Settings.Storages
 		string ISettingStorage.WritePrefixAffinity => null;
 
 		/// <inheritdoc />
+		public bool HasValue (Predicate<string> predicate)
+		{
+			if (predicate == null)
+			{
+				throw new ArgumentNullException(nameof(predicate));
+			}
+
+			return this.CommandLine.Parameters.Any(x => predicate(x.Key) && x.Value.Count > 0);
+		}
+
+		/// <inheritdoc />
+		public void DeleteValues(string name)
+		{
+			throw new NotSupportedException("Deleting a value from the command line is not supported.");
+		}
+
+		/// <inheritdoc />
+		public void DeleteValues(Predicate<string> predicate)
+		{
+			throw new NotSupportedException("Deleting a value from the command line is not supported.");
+		}
+
+		/// <inheritdoc />
 		public List<string> GetValues (string name)
 		{
 			if (name == null)

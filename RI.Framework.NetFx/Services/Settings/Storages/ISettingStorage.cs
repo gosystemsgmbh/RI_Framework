@@ -67,6 +67,11 @@ namespace RI.Framework.Services.Settings.Storages
 		///     The values.
 		/// If no values are available, an empty list is returned.
 		/// </returns>
+		/// <remarks>
+		/// <note type="note">
+		/// Do not call this method directly, it is intended to be called from an <see cref="ISettingService"/> implementation.
+		/// </note>
+		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="name" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
 		List<string> GetValues (string name);
@@ -78,18 +83,73 @@ namespace RI.Framework.Services.Settings.Storages
 		/// <returns>
 		///     true if the value is available, false otherwise.
 		/// </returns>
+		/// <remarks>
+		/// <note type="note">
+		/// Do not call this method directly, it is intended to be called from an <see cref="ISettingService"/> implementation.
+		/// </note>
+		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="name" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
 		bool HasValue (string name);
 
 		/// <summary>
+		///     Determines whether a value is available whose name matches a predicate.
+		/// </summary>
+		/// <param name="predicate"> The predicate used to test the names. </param>
+		/// <returns>
+		///     true if the value is available, false otherwise.
+		/// </returns>
+		/// <remarks>
+		/// <note type="note">
+		/// Do not call this method directly, it is intended to be called from an <see cref="ISettingService"/> implementation.
+		/// </note>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="predicate" /> is null. </exception>
+		bool HasValue (Predicate<string> predicate);
+
+		/// <summary>
+		///     Deletes all values of a specified name.
+		/// </summary>
+		/// <param name="name"> The name of the value to delete. </param>
+		/// <remarks>
+		/// <note type="note">
+		/// Do not call this method directly, it is intended to be called from an <see cref="ISettingService"/> implementation.
+		/// </note>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="name" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
+		void DeleteValues (string name);
+
+		/// <summary>
+		///     Deletes all values whose name matches a predicate.
+		/// </summary>
+		/// <param name="predicate"> The predicate used to test the names. </param>
+		/// <remarks>
+		/// <note type="note">
+		/// Do not call this method directly, it is intended to be called from an <see cref="ISettingService"/> implementation.
+		/// </note>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="predicate" /> is null. </exception>
+		void DeleteValues (Predicate<string> predicate);
+
+		/// <summary>
 		///     Reads, if necessary and applicable, all values from the storage.
 		/// </summary>
+		/// <remarks>
+		/// <note type="note">
+		/// Do not call this method directly, it is intended to be called from an <see cref="ISettingService"/> implementation.
+		/// </note>
+		/// </remarks>
 		void Load ();
 
 		/// <summary>
 		///     Writes, if necessary and applicable, all values to the storage, making them persistent.
 		/// </summary>
+		/// <remarks>
+		/// <note type="note">
+		/// Do not call this method directly, it is intended to be called from an <see cref="ISettingService"/> implementation.
+		/// </note>
+		/// </remarks>
 		/// <exception cref="NotSupportedException"> The setting stoarge is read-only. </exception>
 		void Save ();
 
@@ -102,6 +162,9 @@ namespace RI.Framework.Services.Settings.Storages
 		/// <note type="important">
 		/// Any value of any name passed to <see cref="SetValues"/> must be written/saved by the storage!
 		/// Filtering based on <see cref="WriteOnlyKnown"/> and <see cref="WritePrefixAffinity"/> is done by <see cref="ISettingService"/> and not the storage!
+		/// </note>
+		/// <note type="note">
+		/// Do not call this method directly, it is intended to be called from an <see cref="ISettingService"/> implementation.
 		/// </note>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="name" /> is null. </exception>

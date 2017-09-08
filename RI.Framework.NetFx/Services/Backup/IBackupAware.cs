@@ -51,48 +51,54 @@ namespace RI.Framework.Services.Backup
 		/// Informs that a backup is about to be performed.
 		/// </summary>
 		/// <param name="inclusions">The inclusions to be backed-up.</param>
+		/// <param name="backupService">The backup service.</param>
 		/// <returns>
 		/// true if the backup-aware object is in a state where a backup can be performed, false otherwise.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"><paramref name="inclusions"/> is null.</exception>
-		bool BeginBackup (IList<IBackupInclusion> inclusions);
+		bool BeginBackup (IList<IBackupInclusion> inclusions, IBackupService backupService);
 
 		/// <summary>
 		/// Performs the actual backup.
 		/// </summary>
 		/// <param name="streamResolver">The stream resolver used to store data in the bakcup set.</param>
 		/// <param name="inclusions">The inclusions to be backed-up.</param>
+		/// <param name="backupService">The backup service.</param>
 		/// <exception cref="ArgumentNullException"><paramref name="streamResolver"/> or <paramref name="inclusions"/> is null.</exception>
-		void Backup (Func<string, Stream> streamResolver, IList<IBackupInclusion> inclusions);
+		void Backup (Func<string, Stream> streamResolver, IList<IBackupInclusion> inclusions, IBackupService backupService);
 
 		/// <summary>
 		/// Informs that a backup has been finished.
 		/// </summary>
 		/// <param name="performed">Indicates whether the backup was actually performed.</param>
-		void EndBackup (bool performed);
+		/// <param name="backupService">The backup service.</param>
+		void EndBackup (bool performed, IBackupService backupService);
 
 		/// <summary>
 		/// Informs that a restore is about to be performed.
 		/// </summary>
 		/// <param name="inclusions">The inclusions to be restored.</param>
+		/// <param name="backupService">The backup service.</param>
 		/// <returns>
 		/// true if the backup-aware object is in a state where a restore can be performed, false otherwise.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"><paramref name="inclusions"/> is null.</exception>
-		bool BeginRestore (IList<IBackupInclusion> inclusions);
+		bool BeginRestore (IList<IBackupInclusion> inclusions, IBackupService backupService);
 
 		/// <summary>
 		/// Performs the actual restore.
 		/// </summary>
 		/// <param name="streamResolver">The stream resolver used to retrieve data from the backup set.</param>
 		/// <param name="inclusions">The inclusions to be restored.</param>
+		/// <param name="backupService">The backup service.</param>
 		/// <exception cref="ArgumentNullException"><paramref name="streamResolver"/> or <paramref name="inclusions"/> is null.</exception>
-		void Restore (Func<string, Stream> streamResolver, IList<IBackupInclusion> inclusions);
+		void Restore (Func<string, Stream> streamResolver, IList<IBackupInclusion> inclusions, IBackupService backupService);
 
 		/// <summary>
 		/// Informs that a restore has been finished.
 		/// </summary>
 		/// <param name="performed">Indicates whether the restore was actually performed.</param>
-		void EndRestore (bool performed);
+		/// <param name="backupService">The backup service.</param>
+		void EndRestore (bool performed, IBackupService backupService);
 	}
 }

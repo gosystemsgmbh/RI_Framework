@@ -6,6 +6,7 @@ using RI.Framework.Composition.Model;
 using RI.Framework.IO.Paths;
 using RI.Framework.Services.Backup.Storages;
 using RI.Framework.Utilities.Exceptions;
+using RI.Framework.Utilities.ObjectModel;
 
 
 
@@ -42,8 +43,9 @@ namespace RI.Framework.Services.Backup
 	/// See <see cref="IBackupAware"/> for more details.
 	/// </para>
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	[Export]
-	public interface IBackupService
+	public interface IBackupService : ISynchronizable
 	{
 		/// <summary>
 		///     Gets all currently available backup storages.
@@ -70,6 +72,32 @@ namespace RI.Framework.Services.Backup
 		///     </note>
 		/// </remarks>
 		IEnumerable<IBackupAware> Awares { get; }
+
+		/// <summary>
+		///     Gets all currently available backup sets.
+		/// </summary>
+		/// <value>
+		///     All currently available backup sets.
+		/// </value>
+		/// <remarks>
+		///     <note type="implement">
+		///         The value of this property must never be null.
+		///     </note>
+		/// </remarks>
+		IEnumerable<IBackupSet> AvailableSets { get; }
+
+		/// <summary>
+		///     Gets all currently available inclusions.
+		/// </summary>
+		/// <value>
+		///     All currently available inclusions.
+		/// </value>
+		/// <remarks>
+		///     <note type="implement">
+		///         The value of this property must never be null.
+		///     </note>
+		/// </remarks>
+		IEnumerable<IBackupSet> AvailableInclusions { get; }
 
 		/// <summary>
 		///     Adds a backup storage.
@@ -120,15 +148,6 @@ namespace RI.Framework.Services.Backup
 		void RemoveAware(IBackupAware backupAware);
 
 		/// <summary>
-		/// Determines whether all backup-aware objects are in a state which allows creating a backup using all inclusions.
-		/// </summary>
-		/// <param name="includeNonRestorables">Specifies whether inclusions which can not be restored are also included in the backup.</param>
-		/// <returns>
-		/// true if a full backup can be created, false otherwise.
-		/// </returns>
-		bool CanDoFullBackup (bool includeNonRestorables);
-
-		/// <summary>
 		/// Determines whether all backup-aware objects are in a state which allows creating a backup.
 		/// </summary>
 		/// <param name="inclusions">The inclusions to be included in the backup. Can be null to include all available inclusions.</param>
@@ -139,13 +158,13 @@ namespace RI.Framework.Services.Backup
 		bool CanDoBackup (IEnumerable<IBackupInclusion> inclusions);
 
 		/// <summary>
-		/// Determines whether all backup-aware objects are in a state which allows restoring a backup using all inclusions.
+		/// Determines whether all backup-aware objects are in a state which allows creating a backup using all inclusions.
 		/// </summary>
-		/// <param name="backupSet">The backup set to restore.</param>
+		/// <param name="includeNonRestorables">Specifies whether inclusions which can not be restored are also included in the backup.</param>
 		/// <returns>
-		/// true if a full backup can be restored, false otherwise.
+		/// true if a full backup can be created, false otherwise.
 		/// </returns>
-		bool CanDoFullRestore(IBackupSet backupSet);
+		bool CanDoFullBackup (bool includeNonRestorables);
 
 		/// <summary>
 		/// Determines whether all backup-aware objects are in a state which allows restoring a backup.
@@ -157,6 +176,15 @@ namespace RI.Framework.Services.Backup
 		/// </returns>
 		/// <exception cref="ArgumentException"><paramref name="inclusions"/> is an empty sequence.</exception>
 		bool CanDoRestore(IBackupSet backupSet, IEnumerable<IBackupInclusion> inclusions);
+
+		/// <summary>
+		/// Determines whether all backup-aware objects are in a state which allows restoring a backup using all inclusions.
+		/// </summary>
+		/// <param name="backupSet">The backup set to restore.</param>
+		/// <returns>
+		/// true if a full backup can be restored, false otherwise.
+		/// </returns>
+		bool CanDoFullRestore(IBackupSet backupSet);
 
 		/// <summary>
 		/// Creates a new backup.
@@ -241,13 +269,6 @@ namespace RI.Framework.Services.Backup
 		bool RestoreFullBackup (IBackupSet backupSet);
 
 		/// <summary>
-		/// Deletes a backup from the storage.
-		/// </summary>
-		/// <param name="backupSet">The backup set to delete.</param>
-		/// <exception cref="ArgumentNullException"><paramref name="backupSet"/> is null.</exception>
-		void DeleteBackup (IBackupSet backupSet);
-
-		/// <summary>
 		/// Imports a backup set from an existing backup file.
 		/// </summary>
 		/// <param name="file">The existing backup file to import.</param>
@@ -265,6 +286,45 @@ namespace RI.Framework.Services.Backup
 		IBackupSet ImportBackupFromFile (FilePath file);
 
 		/// <summary>
+		/// Deletes a backup from the storage.
+		/// </summary>
+		/// <param name="backupSet">The backup set to delete.</param>
+		/// <exception cref="ArgumentNullException"><paramref name="backupSet"/> is null.</exception>
+		void DeleteBackup (IBackupSet backupSet);
+
+		/// <summary>
+		///     Performs a cleanup of old backups.
+		/// </summary>
+		/// <param name="retentionDate"> The date and time from which all older backups are to be cleaned up. </param>
+		/// <remarks>
+		///     <note type="note">
+		///         The actual cleanup and whether it is possible at all depends on the individual <see cref="IBackupStorage" />.
+		///     </note>
+		/// </remarks>
+		void Cleanup (DateTime retentionDate);
+
+		/// <summary>
+		///     Performs a cleanup of old backups.
+		/// </summary>
+		/// <param name="retentionTime"> The time span of backups from now into the past which are to be kept. </param>
+		/// <remarks>
+		///     <note type="note">
+		///         The actual cleanup and whether it is possible at all depends on the individual <see cref="IBackupStorage" />.
+		///     </note>
+		/// </remarks>
+		void Cleanup (TimeSpan retentionTime);
+
+		/// <summary>
+		///     Updates the available backups sets (<see cref="AvailableSets" />).
+		/// </summary>
+		void UpdateSets ();
+
+		/// <summary>
+		///     Updates the available inclusions (<see cref="AvailableInclusions" />).
+		/// </summary>
+		void UpdateInclusions ();
+
+		/// <summary>
 		/// Creates an inclusion.
 		/// </summary>
 		/// <param name="id">The ID of the inclusion.</param>
@@ -275,23 +335,5 @@ namespace RI.Framework.Services.Backup
 		/// </returns>
 		/// <exception cref="EmptyStringArgumentException"><paramref name="resourceKey"/> is an empty string.</exception>
 		IBackupInclusion CreateInclusion (Guid id, string resourceKey, bool supportsRestore);
-
-		/// <summary>
-		/// Gets all available backups found in the backup storages.
-		/// </summary>
-		/// <returns>
-		/// The list of available backup sets.
-		/// An empty list is returned if no backups are available.
-		/// </returns>
-		List<IBackupSet> GetAvailableBackups ();
-
-		/// <summary>
-		/// Gets all available inclusions queried from the backup-aware objects.
-		/// </summary>
-		/// <returns>
-		/// The list of available inclusions.
-		/// An empty list is returned if no inclusions are available.
-		/// </returns>
-		List<IBackupInclusion> GetAvailableInclusions ();
 	}
 }

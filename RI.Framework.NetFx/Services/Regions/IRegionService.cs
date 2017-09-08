@@ -61,19 +61,6 @@ namespace RI.Framework.Services.Regions
 		IEnumerable<IRegionAdapter> Adapters { get; }
 
 		/// <summary>
-		///     Gets all currently available regions.
-		/// </summary>
-		/// <value>
-		///     All currently available regions.
-		/// </value>
-		/// <remarks>
-		///     <note type="implement">
-		///         The value of this property must never be null.
-		///     </note>
-		/// </remarks>
-		IEnumerable<string> Regions { get; }
-
-		/// <summary>
 		///     Activates an element in a region.
 		/// </summary>
 		/// <param name="region"> The name of the region. </param>
@@ -221,6 +208,15 @@ namespace RI.Framework.Services.Regions
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="container" /> is null. </exception>
 		HashSet<string> GetRegionNames (object container);
+
+		/// <summary>
+		///     Gets all currently available regions.
+		/// </summary>
+		/// <returns>
+		///     The set with all region names.
+		///     An empty set is returned if no region is available.
+		/// </returns>
+		HashSet<string> GetRegionNames ();
 
 		/// <summary>
 		///     Determines whether a region contains a specified element.

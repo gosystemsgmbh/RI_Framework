@@ -139,6 +139,11 @@ namespace RI.Framework.Services.Resources
 			{
 				this.Log(LogLevel.Debug, "Converter removed: {0}", converter.GetType().Name);
 			}
+
+			foreach (IResourceSource source in this.Sources)
+			{
+				source.UpdateConverters(this.Converters);
+			}
 		}
 
 		private void UpdateSources ()
@@ -192,7 +197,7 @@ namespace RI.Framework.Services.Resources
 			{
 				this.UpdateConverters();
 				this.UpdateSources();
-				this.UpdateAvailable();
+				this.UpdateSets();
 			}
 		}
 
@@ -264,7 +269,7 @@ namespace RI.Framework.Services.Resources
 			this.ConvertersManual.Add(resourceConverter);
 
 			this.UpdateConverters();
-			this.UpdateAvailable();
+			this.UpdateSets();
 		}
 
 		/// <inheritdoc />
@@ -283,7 +288,7 @@ namespace RI.Framework.Services.Resources
 			this.SourcesManual.Add(resourceSource);
 
 			this.UpdateSources();
-			this.UpdateAvailable();
+			this.UpdateSets();
 		}
 
 		/// <inheritdoc />
@@ -354,11 +359,12 @@ namespace RI.Framework.Services.Resources
 		/// <inheritdoc />
 		public void ReloadSets ()
 		{
-			this.UpdateAvailable();
+			this.UpdateSets();
 			foreach (IResourceSet set in this.LoadedSets)
 			{
 				set.Load(set.IsLazyLoaded);
 			}
+			this.UpdateSets();
 		}
 
 		/// <inheritdoc />
@@ -377,7 +383,7 @@ namespace RI.Framework.Services.Resources
 			this.ConvertersManual.RemoveAll(resourceConverter);
 
 			this.UpdateConverters();
-			this.UpdateAvailable();
+			this.UpdateSets();
 		}
 
 		/// <inheritdoc />
@@ -396,30 +402,31 @@ namespace RI.Framework.Services.Resources
 			this.SourcesManual.RemoveAll(resourceSource);
 
 			this.UpdateSources();
-			this.UpdateAvailable();
+			this.UpdateSets();
 		}
 
 		/// <inheritdoc />
 		public void UnloadSets ()
 		{
-			this.UpdateAvailable();
+			this.UpdateSets();
 			foreach (IResourceSet set in this.LoadedSets)
 			{
 				set.Unload();
 			}
+			this.UpdateSets();
 		}
 
 		/// <inheritdoc />
-		public void UpdateAvailable ()
+		public void UpdateSets ()
 		{
 			foreach (IResourceSource source in this.Sources)
 			{
-				source.UpdateAvailable();
+				source.UpdateSets();
 			}
 
 			foreach (IResourceSet set in this.AvailableSets)
 			{
-				set.UpdateAvailable();
+				set.UpdateResources();
 			}
 		}
 

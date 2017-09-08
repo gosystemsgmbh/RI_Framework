@@ -27,11 +27,21 @@ namespace RI.Framework.Services.Modularization
 		/// <summary>
 		///     Initializes the module.
 		/// </summary>
+		/// <remarks>
+		/// <note type="note">
+		/// Do not call this method directly, it is intended to be called from an <see cref="IModuleService"/> implementation.
+		/// </note>
+		/// </remarks>
 		void Initialize ();
 
 		/// <summary>
 		///     Unloads the module.
 		/// </summary>
+		/// <remarks>
+		/// <note type="note">
+		/// Do not call this method directly, it is intended to be called from an <see cref="IModuleService"/> implementation.
+		/// </note>
+		/// </remarks>
 		void Unload ();
 	}
 }

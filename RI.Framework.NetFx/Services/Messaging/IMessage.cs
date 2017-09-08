@@ -17,7 +17,7 @@ namespace RI.Framework.Services.Messaging
 	///         The actual way of transporting data is defined by the concrete message type.
 	///     </para>
 	/// </remarks>
-	public interface IMessage
+	public interface IMessage : IEquatable<IMessage>
 	{
 		/// <summary>
 		///     Gets the unique ID of the message.

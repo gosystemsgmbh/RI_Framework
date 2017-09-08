@@ -8,6 +8,10 @@ using RI.Framework.Composition;
 using RI.Framework.Composition.Model;
 using RI.Framework.Services.Messaging.Dispatchers;
 using RI.Framework.Utilities.Logging;
+using RI.Framework.Utilities.ObjectModel;
+
+
+
 
 namespace RI.Framework.Services.Messaging
 {
@@ -35,7 +39,7 @@ namespace RI.Framework.Services.Messaging
 		/// </summary>
 		public MessageService ()
 		{
-			this.SendSyncRoot = new object();
+			this.SyncRoot = new object();
 
 			this.DispatchersUpdated = new List<IMessageDispatcher>();
 			this.ReceiversUpdated = new List<IMessageReceiver>();
@@ -64,8 +68,6 @@ namespace RI.Framework.Services.Messaging
 		private List<IMessageReceiver> ReceiversManual { get; }
 
 		private List<IMessageReceiver> ReceiversUpdated { get; set; }
-
-		private object SendSyncRoot { get; }
 
 		#endregion
 
@@ -134,8 +136,11 @@ namespace RI.Framework.Services.Messaging
 		{
 			if (updated)
 			{
-				this.UpdateDispatchers();
-				this.UpdateReceivers();
+				lock (this.SyncRoot)
+				{
+					this.UpdateDispatchers();
+					this.UpdateReceivers();
+				}
 			}
 		}
 
@@ -152,18 +157,22 @@ namespace RI.Framework.Services.Messaging
 		#region Interface: IMessageService
 
 		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		public object SyncRoot { get; }
+
+		/// <inheritdoc />
 		public IEnumerable<IMessageDispatcher> Dispatchers
 		{
 			get
 			{
-				foreach (IMessageDispatcher dispatcher in this.DispatchersManual)
+				lock (this.SyncRoot)
 				{
-					yield return dispatcher;
-				}
-
-				foreach (IMessageDispatcher dispatcher in this.DispatchersImported.Values<IMessageDispatcher>())
-				{
-					yield return dispatcher;
+					List<IMessageDispatcher> dispatchers = new List<IMessageDispatcher>();
+					dispatchers.AddRange(this.DispatchersManual);
+					dispatchers.AddRange(this.DispatchersImported.Values<IMessageDispatcher>());
+					return dispatchers;
 				}
 			}
 		}
@@ -173,14 +182,12 @@ namespace RI.Framework.Services.Messaging
 		{
 			get
 			{
-				foreach (IMessageReceiver receiver in this.ReceiversManual)
+				lock (this.SyncRoot)
 				{
-					yield return receiver;
-				}
-
-				foreach (IMessageReceiver receiver in this.ReceiversImported.Values<IMessageReceiver>())
-				{
-					yield return receiver;
+					List<IMessageReceiver> receivers = new List<IMessageReceiver>();
+					receivers.AddRange(this.ReceiversManual);
+					receivers.AddRange(this.ReceiversImported.Values<IMessageReceiver>());
+					return receivers;
 				}
 			}
 		}
@@ -193,14 +200,17 @@ namespace RI.Framework.Services.Messaging
 				throw new ArgumentNullException(nameof(messageDispatcher));
 			}
 
-			if (this.DispatchersManual.Contains(messageDispatcher))
+			lock (this.SyncRoot)
 			{
-				return;
+				if (this.DispatchersManual.Contains(messageDispatcher))
+				{
+					return;
+				}
+
+				this.DispatchersManual.Add(messageDispatcher);
+
+				this.UpdateDispatchers();
 			}
-
-			this.DispatchersManual.Add(messageDispatcher);
-
-			this.UpdateDispatchers();
 		}
 
 		/// <inheritdoc />
@@ -211,14 +221,17 @@ namespace RI.Framework.Services.Messaging
 				throw new ArgumentNullException(nameof(messageReceiver));
 			}
 
-			if (this.ReceiversManual.Contains(messageReceiver))
+			lock (this.SyncRoot)
 			{
-				return;
+				if (this.ReceiversManual.Contains(messageReceiver))
+				{
+					return;
+				}
+
+				this.ReceiversManual.Add(messageReceiver);
+
+				this.UpdateReceivers();
 			}
-
-			this.ReceiversManual.Add(messageReceiver);
-
-			this.UpdateReceivers();
 		}
 
 		/// <inheritdoc />
@@ -229,11 +242,11 @@ namespace RI.Framework.Services.Messaging
 				throw new ArgumentNullException(nameof(message));
 			}
 
-			lock (this.SendSyncRoot)
+			lock (this.SyncRoot)
 			{
-				foreach (IMessageDispatcher dispatcher in this.Dispatchers)
+				foreach (IMessageDispatcher dispatcher in this.DispatchersUpdated)
 				{
-					dispatcher.Post(this.Receivers, message, this, null);
+					dispatcher.Post(this.ReceiversUpdated, message, this, null);
 				}
 			}
 		}
@@ -248,11 +261,11 @@ namespace RI.Framework.Services.Messaging
 
 			TaskCompletionSource<IMessage> tcs = new TaskCompletionSource<IMessage>();
 
-			lock (this.SendSyncRoot)
+			lock (this.SyncRoot)
 			{
-				foreach (IMessageDispatcher dispatcher in this.Dispatchers)
+				foreach (IMessageDispatcher dispatcher in this.DispatchersUpdated)
 				{
-					dispatcher.Post(this.Receivers, message, this, x => tcs.SetResult(x));
+					dispatcher.Post(this.ReceiversUpdated, message, this, x => tcs.SetResult(x));
 				}
 			}
 
@@ -267,14 +280,17 @@ namespace RI.Framework.Services.Messaging
 				throw new ArgumentNullException(nameof(messageDispatcher));
 			}
 
-			if (!this.DispatchersManual.Contains(messageDispatcher))
+			lock (this.SyncRoot)
 			{
-				return;
+				if (!this.DispatchersManual.Contains(messageDispatcher))
+				{
+					return;
+				}
+
+				this.DispatchersManual.RemoveAll(messageDispatcher);
+
+				this.UpdateDispatchers();
 			}
-
-			this.DispatchersManual.RemoveAll(messageDispatcher);
-
-			this.UpdateDispatchers();
 		}
 
 		/// <inheritdoc />
@@ -285,14 +301,17 @@ namespace RI.Framework.Services.Messaging
 				throw new ArgumentNullException(nameof(messageReceiver));
 			}
 
-			if (!this.ReceiversManual.Contains(messageReceiver))
+			lock (this.SyncRoot)
 			{
-				return;
+				if (!this.ReceiversManual.Contains(messageReceiver))
+				{
+					return;
+				}
+
+				this.ReceiversManual.RemoveAll(messageReceiver);
+
+				this.UpdateReceivers();
 			}
-
-			this.ReceiversManual.RemoveAll(messageReceiver);
-
-			this.UpdateReceivers();
 		}
 
 		#endregion

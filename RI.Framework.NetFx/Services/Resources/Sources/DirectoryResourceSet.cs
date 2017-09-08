@@ -99,7 +99,7 @@ namespace RI.Framework.Services.Resources.Sources
 		/// </value>
 		public FilePath SettingsFile { get; private set; }
 
-		internal IEnumerable<IResourceConverter> Converters => this.Source.Converters;
+		internal List<IResourceConverter> Converters => this.Source.Converters;
 
 		internal bool? IsValid { get; private set; }
 
@@ -425,7 +425,7 @@ namespace RI.Framework.Services.Resources.Sources
 
 			this.Resources.Clear();
 
-			this.UpdateAvailable();
+			this.UpdateResources();
 
 			if (!lazyLoad)
 			{
@@ -450,7 +450,7 @@ namespace RI.Framework.Services.Resources.Sources
 		}
 
 		/// <inheritdoc />
-		public void UpdateAvailable ()
+		public void UpdateResources ()
 		{
 			List<FilePath> existingFiles = this.Directory.GetFiles(false, false);
 			existingFiles.Remove(this.SettingsFile);

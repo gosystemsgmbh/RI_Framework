@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 
 using RI.Framework.Composition.Model;
 using RI.Framework.Services.Messaging.Dispatchers;
+using RI.Framework.Utilities.ObjectModel;
 
 
 
@@ -35,16 +36,12 @@ namespace RI.Framework.Services.Messaging
 	///         The receiving however depends on the used message dispatchers.
 	///     </para>
 	///     <note type="implement">
-	///         Note that messaging is usually to be used from any thread.
-	///         Therefore, the messaging service must be partially thread-safe, at least for the actual send and receive operations.
-	///         However, messaging service implementations can rely upon the thread-safety of <see cref="IMessageDispatcher" />.
-	///     </note>
-	///     <note type="implement">
 	///         Message names are considered case-insensitive, but the actual behaviour depends on the creation of the message object and the message receivers.
 	///     </note>
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	[Export]
-	public interface IMessageService
+	public interface IMessageService : ISynchronizable
 	{
 		/// <summary>
 		///     Gets all currently available message dispatchers.

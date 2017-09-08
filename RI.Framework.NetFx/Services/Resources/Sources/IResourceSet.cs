@@ -17,7 +17,7 @@ namespace RI.Framework.Services.Resources.Sources
 	///         A resource set is managed by a <see cref="IResourceSource" />.
 	///     </para>
 	/// </remarks>
-	public interface IResourceSet
+	public interface IResourceSet : IEquatable<IResourceSet>
 	{
 		/// <summary>
 		///     Gets whether this resource set shall always be loaded.
@@ -182,6 +182,6 @@ namespace RI.Framework.Services.Resources.Sources
 		/// <summary>
 		///     Updates the available resources (<see cref="AvailableResources" />).
 		/// </summary>
-		void UpdateAvailable ();
+		void UpdateResources ();
 	}
 }

@@ -9,6 +9,10 @@ using RI.Framework.Composition.Model;
 using RI.Framework.Services.Logging.Filters;
 using RI.Framework.Services.Logging.Writers;
 using RI.Framework.Utilities.Logging;
+using RI.Framework.Utilities.ObjectModel;
+
+
+
 
 namespace RI.Framework.Services.Logging
 {
@@ -26,8 +30,10 @@ namespace RI.Framework.Services.Logging
 	///         See <see cref="ILogService" /> for more details.
 	///     </para>
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
+	/// TODO: Update methods?
 	[Export]
-	public sealed class LogService : ILogService
+	public sealed class LogService : ILogService, IImporting
 	{
 		#region Instance Constructor/Destructor
 
@@ -36,7 +42,8 @@ namespace RI.Framework.Services.Logging
 		/// </summary>
 		public LogService ()
 		{
-			this.LogSyncRoot = new object();
+			this.SyncRoot = new object();
+			this.WritersUpdated = new List<ILogWriter>();
 			this.WritersManual = new List<ILogWriter>();
 		}
 
@@ -56,14 +63,40 @@ namespace RI.Framework.Services.Logging
 
 		#region Instance Properties/Indexer
 
-		private object LogSyncRoot { get; }
-
 		[Import(typeof(ILogWriter), Recomposable = true)]
 		private Import WritersImported { get; set; }
 
 		private List<ILogWriter> WritersManual { get; }
 
+		private List<ILogWriter> WritersUpdated { get; set; }
+
 		#endregion
+
+
+		private void UpdateWriters()
+		{
+			HashSet<ILogWriter> currentWriters = new HashSet<ILogWriter>(this.Writers);
+
+			this.WritersUpdated.Clear();
+			this.WritersUpdated.AddRange(currentWriters);
+		}
+
+		/// <inheritdoc />
+		void IImporting.ImportsResolved(CompositionFlags composition, bool updated)
+		{
+			if (updated)
+			{
+				lock (this.SyncRoot)
+				{
+					this.UpdateWriters();
+				}
+			}
+		}
+
+		/// <inheritdoc />
+		void IImporting.ImportsResolving(CompositionFlags composition)
+		{
+		}
 
 
 
@@ -71,18 +104,24 @@ namespace RI.Framework.Services.Logging
 		#region Interface: ILogService
 
 		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		public object SyncRoot { get; }
+
+		/// <inheritdoc />
 		public ILogFilter Filter
 		{
 			get
 			{
-				lock (this.LogSyncRoot)
+				lock (this.SyncRoot)
 				{
 					return this._filter;
 				}
 			}
 			set
 			{
-				lock (this.LogSyncRoot)
+				lock (this.SyncRoot)
 				{
 					this._filter = value;
 				}
@@ -94,14 +133,12 @@ namespace RI.Framework.Services.Logging
 		{
 			get
 			{
-				foreach (ILogWriter logWriter in this.WritersManual)
+				lock (this.SyncRoot)
 				{
-					yield return logWriter;
-				}
-
-				foreach (ILogWriter logWriter in this.WritersImported.Values<ILogWriter>())
-				{
-					yield return logWriter;
+					List<ILogWriter> writers = new List<ILogWriter>();
+					writers.AddRange(this.WritersManual);
+					writers.AddRange(this.WritersImported.Values<ILogWriter>());
+					return writers;
 				}
 			}
 		}
@@ -114,20 +151,25 @@ namespace RI.Framework.Services.Logging
 				throw new ArgumentNullException(nameof(logWriter));
 			}
 
-			if (this.WritersManual.Contains(logWriter))
+			lock (this.SyncRoot)
 			{
-				return;
-			}
+				if (this.WritersManual.Contains(logWriter))
+				{
+					return;
+				}
 
-			this.WritersManual.Add(logWriter);
+				this.WritersManual.Add(logWriter);
+
+				this.UpdateWriters();
+			}
 		}
 
 		/// <inheritdoc />
 		public void Cleanup (DateTime retentionDate)
 		{
-			lock (this.LogSyncRoot)
+			lock (this.SyncRoot)
 			{
-				foreach (ILogWriter logWriter in this.Writers)
+				foreach (ILogWriter logWriter in this.WritersUpdated)
 				{
 					logWriter.Cleanup(retentionDate);
 				}
@@ -160,11 +202,11 @@ namespace RI.Framework.Services.Logging
 				}
 			}
 
-			lock (this.LogSyncRoot)
+			lock (this.SyncRoot)
 			{
 				string message = string.Format(CultureInfo.InvariantCulture, format ?? string.Empty, args ?? new object[0]);
 
-				foreach (ILogWriter logWriter in this.Writers)
+				foreach (ILogWriter logWriter in this.WritersUpdated)
 				{
 					logWriter.Log(timestamp, threadId, severity, source, message);
 				}
@@ -183,11 +225,11 @@ namespace RI.Framework.Services.Logging
 				}
 			}
 
-			lock (this.LogSyncRoot)
+			lock (this.SyncRoot)
 			{
 				string message = string.Format(CultureInfo.InvariantCulture, format ?? string.Empty, args ?? new object[0]);
 
-				foreach (ILogWriter logWriter in this.Writers)
+				foreach (ILogWriter logWriter in this.WritersUpdated)
 				{
 					logWriter.Log(timestamp, threadId, severity, source, message);
 				}
@@ -202,12 +244,17 @@ namespace RI.Framework.Services.Logging
 				throw new ArgumentNullException(nameof(logWriter));
 			}
 
-			if (!this.WritersManual.Contains(logWriter))
+			lock (this.SyncRoot)
 			{
-				return;
-			}
+				if (!this.WritersManual.Contains(logWriter))
+				{
+					return;
+				}
 
-			this.WritersManual.RemoveAll(logWriter);
+				this.WritersManual.RemoveAll(logWriter);
+
+				this.UpdateWriters();
+			}
 		}
 
 		#endregion

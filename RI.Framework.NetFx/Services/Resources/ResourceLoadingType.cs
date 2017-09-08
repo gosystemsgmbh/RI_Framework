@@ -19,7 +19,7 @@ namespace RI.Framework.Services.Resources
 		Unknown = 0,
 
 		/// <summary>
-		///     The resource is to be loaded as a array of <see cref="byte" />s.
+		///     The resource is to be loaded as an array of <see cref="byte" />s.
 		/// </summary>
 		Binary = 1,
 

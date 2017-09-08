@@ -42,8 +42,11 @@ namespace RI.Framework.Services.Settings
 		/// <inheritdoc cref="ISettingService.Storages" />
 		public static IEnumerable<ISettingStorage> Storages => SettingLocator.Service?.Storages ?? new ISettingStorage[0];
 
-		/// <inheritdoc cref="ISettingService.DeleteValues" />
+		/// <inheritdoc cref="ISettingService.DeleteValues(string)" />
 		public static void DeleteValues(string name) => SettingLocator.Service?.DeleteValues(name);
+
+		/// <inheritdoc cref="ISettingService.DeleteValues(Predicate{string})" />
+		public static void DeleteValues(Predicate<string> predicate) => SettingLocator.Service?.DeleteValues(predicate);
 
 		/// <inheritdoc cref="ISettingService.GetRawValue" />
 		public static string GetRawValue(string name) => SettingLocator.Service?.GetRawValue(name);
@@ -63,8 +66,11 @@ namespace RI.Framework.Services.Settings
 		/// <inheritdoc cref="ISettingService.GetValues(string,Type)" />
 		public static List<object> GetValues(string name, Type type) => SettingLocator.Service?.GetValues(name, type);
 
-		/// <inheritdoc cref="ISettingService.HasValue" />
+		/// <inheritdoc cref="ISettingService.HasValue(string)" />
 		public static bool HasValue(string name) => SettingLocator.Service?.HasValue(name) ?? false;
+
+		/// <inheritdoc cref="ISettingService.HasValue(Predicate{string})" />
+		public static bool HasValue(Predicate<string> predicate) => SettingLocator.Service?.HasValue(predicate) ?? false;
 
 		/// <inheritdoc cref="ISettingService.InitializeRawValue" />
 		public static bool InitializeRawValue(string name, string defaultValue) => SettingLocator.Service?.InitializeRawValue(name, defaultValue) ?? false;

@@ -103,14 +103,6 @@ namespace RI.Framework.Services.Resources.Sources
 		#region Instance Properties/Indexer
 
 		/// <summary>
-		///     Gets the currently used resource converters of the associated <see cref="IResourceService" />.
-		/// </summary>
-		/// <value>
-		///     The currently used resource converters of the associated <see cref="IResourceService" />.
-		/// </value>
-		public IEnumerable<IResourceConverter> Converters { get; private set; }
-
-		/// <summary>
 		///     Gets the directory which contains the resource set subdirectories.
 		/// </summary>
 		/// <value>
@@ -125,6 +117,8 @@ namespace RI.Framework.Services.Resources.Sources
 		///     The text encoding for reading text files.
 		/// </value>
 		public Encoding FileEncoding { get; private set; }
+
+		internal List<IResourceConverter> Converters { get; private set; }
 
 		private Dictionary<DirectoryPath, DirectoryResourceSet> Sets { get; set; }
 
@@ -191,7 +185,7 @@ namespace RI.Framework.Services.Resources.Sources
 				throw new ArgumentNullException(nameof(converters));
 			}
 
-			this.Converters = converters;
+			this.Converters = converters.ToList();
 
 			this.Log(LogLevel.Debug, "Initializing directory resource source: {0}", this.Directory);
 
@@ -211,11 +205,22 @@ namespace RI.Framework.Services.Resources.Sources
 		}
 
 		/// <inheritdoc />
-		public void UpdateAvailable ()
+		public void UpdateSets ()
 		{
 			this.Log(LogLevel.Debug, "Updating directory resource source: {0}", this.Directory);
 
 			this.UpdateSets(false);
+		}
+
+		/// <inheritdoc />
+		public void UpdateConverters (IEnumerable<IResourceConverter> converters)
+		{
+			if (converters == null)
+			{
+				throw new ArgumentNullException(nameof(converters));
+			}
+
+			this.Converters = converters.ToList();
 		}
 
 		#endregion

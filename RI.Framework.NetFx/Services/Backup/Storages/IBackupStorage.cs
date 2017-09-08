@@ -4,6 +4,7 @@ using System.IO;
 
 using RI.Framework.IO.Paths;
 using RI.Framework.Utilities.Exceptions;
+using RI.Framework.Utilities.ObjectModel;
 
 
 
@@ -18,7 +19,8 @@ namespace RI.Framework.Services.Backup.Storages
 	/// See <see cref="IBackupService"/> for more details.
 	/// </para>
 	/// </remarks>
-	public interface IBackupStorage
+	/// <threadsafety static="true" instance="true" />
+	public interface IBackupStorage : ISynchronizable
 	{
 		/// <summary>
 		/// Gets all available backups.
@@ -110,5 +112,16 @@ namespace RI.Framework.Services.Backup.Storages
 		/// <exception cref="ArgumentNullException"><paramref name="backupSet"/> is null.</exception>
 		/// <exception cref="ArgumentException"><paramref name="backupSet"/> is not a set returned by <see cref="TryBeginRestore"/> of this backup storage.</exception>
 		void EndRestore (IBackupSet backupSet);
+
+		/// <summary>
+		///     Performs a cleanup of old backups.
+		/// </summary>
+		/// <param name="retentionDate"> The date and time from which all older backups are to be cleaned up. </param>
+		/// <remarks>
+		///     <note type="implement">
+		///         If the implemented backup storage does not support cleanup of old backups, this method should do simply nothing.
+		///     </note>
+		/// </remarks>
+		void Cleanup(DateTime retentionDate);
 	}
 }

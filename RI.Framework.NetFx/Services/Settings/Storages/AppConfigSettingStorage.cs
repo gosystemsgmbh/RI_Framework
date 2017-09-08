@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Linq;
 
 using RI.Framework.Composition.Model;
 using RI.Framework.Utilities;
@@ -79,6 +80,29 @@ namespace RI.Framework.Services.Settings.Storages
 			}
 
 			return ConfigurationManager.AppSettings[name] != null;
+		}
+
+		/// <inheritdoc />
+		public bool HasValue (Predicate<string> predicate)
+		{
+			if (predicate == null)
+			{
+				throw new ArgumentNullException(nameof(predicate));
+			}
+
+			return ConfigurationManager.AppSettings.AllKeys.Any(x => predicate(x));
+		}
+
+		/// <inheritdoc />
+		public void DeleteValues (string name)
+		{
+			throw new NotSupportedException("Deleting a value from app.config is not supported.");
+		}
+
+		/// <inheritdoc />
+		public void DeleteValues (Predicate<string> predicate)
+		{
+			throw new NotSupportedException("Deleting a value from app.config is not supported.");
 		}
 
 		/// <inheritdoc />

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 using RI.Framework.Composition.Model;
@@ -88,6 +89,43 @@ namespace RI.Framework.Services.Settings.Storages
 
 		/// <inheritdoc />
 		string ISettingStorage.WritePrefixAffinity => null;
+
+		/// <inheritdoc />
+		public bool HasValue (Predicate<string> predicate)
+		{
+			IDictionary variables = Environment.GetEnvironmentVariables();
+			foreach (DictionaryEntry entry in variables)
+			{
+				string name = (string)entry.Key;
+
+				if (!this.Prefix.IsNullOrEmpty())
+				{
+					if (name.StartsWith(this.Prefix, StringComparison.InvariantCultureIgnoreCase))
+					{
+						name = name.Substring(this.Prefix.Length);
+					}
+				}
+
+				if (predicate(name))
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		/// <inheritdoc />
+		public void DeleteValues(string name)
+		{
+			throw new NotSupportedException("Deleting a value from environment variables is not supported.");
+		}
+
+		/// <inheritdoc />
+		public void DeleteValues(Predicate<string> predicate)
+		{
+			throw new NotSupportedException("Deleting a value from environment variables is not supported.");
+		}
 
 		/// <inheritdoc />
 		public List<string> GetValues (string name)

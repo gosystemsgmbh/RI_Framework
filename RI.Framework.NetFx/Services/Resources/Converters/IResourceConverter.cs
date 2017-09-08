@@ -31,6 +31,11 @@ namespace RI.Framework.Services.Resources.Converters
 		/// <returns>
 		///     true if this converter can convert from <paramref name="sourceType" /> to <paramref name="targetType" />, false otherwise.
 		/// </returns>
+		/// <remarks>
+		/// <note type="note">
+		/// Do not call this method directly, it is intended to be called from an <see cref="IResourceService"/> implementation.
+		/// </note>
+		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="sourceType" /> or <paramref name="targetType" /> is null. </exception>
 		bool CanConvert (Type sourceType, Type targetType);
 
@@ -42,6 +47,11 @@ namespace RI.Framework.Services.Resources.Converters
 		/// <returns>
 		///     The resource value of <paramref name="type" /> as converted by this converter or null if <paramref name="value" /> is null.
 		/// </returns>
+		/// <remarks>
+		/// <note type="note">
+		/// Do not call this method directly, it is intended to be called from an <see cref="IResourceService"/> implementation.
+		/// </note>
+		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="type" /> is null. </exception>
 		/// <exception cref="InvalidTypeArgumentException"> The specified <paramref name="type" /> or the type of <paramref name="value" /> is not supported by this converter or <paramref name="type" /> and <paramref name="value" /> do not match. </exception>
 		object Convert (Type type, object value);
@@ -53,6 +63,11 @@ namespace RI.Framework.Services.Resources.Converters
 		/// <returns>
 		///     The loading information for files with the specified extension or null if this resource converter does not support the specified file extension.
 		/// </returns>
+		/// <remarks>
+		/// <note type="note">
+		/// Do not call this method directly, it is intended to be called from an <see cref="IResourceService"/> or <see cref="IResourceSource"/> or <see cref="IResourceSet"/> implementation.
+		/// </note>
+		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="extension" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="extension" /> is an empty string. </exception>
 		ResourceLoadingInfo GetLoadingInfoFromFileExtension (string extension);
