@@ -18,6 +18,7 @@ namespace RI.Framework.Data.Database.Scripts
 	/// <see cref="IDatabaseScriptLocator.BatchSeparator"/> is ignored as the values of the individual script locators are used.
 	/// </note>
 	/// </remarks>
+	/// TODO: Make aggregation similar to others
 	public sealed class AggregateScriptLocator : IDatabaseScriptLocator
 	{
 		private bool _loggingEnabled;

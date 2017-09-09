@@ -228,9 +228,6 @@ namespace RI.Framework.Composition.Catalogs
 		bool ICollection.IsSynchronized => ((ISynchronizable)this).IsSynchronized;
 
 		/// <inheritdoc />
-		object ICollection.SyncRoot => ((ISynchronizable)this).SyncRoot;
-
-		/// <inheritdoc />
 		void ICollection.CopyTo (Array array, int index)
 		{
 			lock (this.SyncRoot)

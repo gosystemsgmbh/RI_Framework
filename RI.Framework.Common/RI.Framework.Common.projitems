@@ -127,6 +127,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Mathematic\Statistics.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mathematic\StatisticValues.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mathematic\_NamespaceDoc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\Filters\AggregateLogFilter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\Filters\AggregateLogFilterMode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\Filters\ILogFilter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\Filters\PredicateLogFilter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\Filters\SeverityLogFilter.cs" />
