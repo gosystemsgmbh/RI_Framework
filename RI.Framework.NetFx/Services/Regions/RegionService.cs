@@ -145,15 +145,6 @@ namespace RI.Framework.Services.Regions
 		}
 
 		/// <inheritdoc />
-		public IEnumerable<string> Regions
-		{
-			get
-			{
-				return this.RegionDictionary.Keys;
-			}
-		}
-
-		/// <inheritdoc />
 		public void ActivateElement (string region, object element)
 		{
 			if (region == null)
@@ -478,6 +469,12 @@ namespace RI.Framework.Services.Regions
 				}
 			}
 			return names;
+		}
+
+		/// <inheritdoc />
+		public HashSet<string> GetRegionNames ()
+		{
+			return new HashSet<string>(this.RegionDictionary.Keys, this.RegionDictionary.Comparer);
 		}
 
 		/// <inheritdoc />

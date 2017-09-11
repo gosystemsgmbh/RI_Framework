@@ -54,7 +54,7 @@ namespace RI.Framework.Services.Resources
 
 			resourceService.SetLoadedSetIds(setIdsToLoad, false);
 
-			HashSet<string> resources = resourceService.GetAvailableResourceNames();
+			HashSet<string> resources = resourceService.GetAvailableResources();
 			foreach (string resource in resources)
 			{
 				object value = resourceService.GetRawValue(resource);

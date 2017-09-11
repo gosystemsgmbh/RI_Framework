@@ -66,6 +66,8 @@ namespace RI.Framework.Services.Logging.Filters
 					this.Add(filter);
 				}
 			}
+
+			this.UpdateCopy();
 		}
 
 		/// <summary>
@@ -120,6 +122,13 @@ namespace RI.Framework.Services.Logging.Filters
 
 		/// <inheritdoc />
 		public object SyncRoot { get; }
+
+		private List<ILogFilter> Copy { get; set; }
+
+		private void UpdateCopy ()
+		{
+			this.Copy = new List<ILogFilter>(this.Filters);
+		}
 
 		#endregion
 
@@ -178,6 +187,8 @@ namespace RI.Framework.Services.Logging.Filters
 			lock (this.SyncRoot)
 			{
 				this.Filters.Add(item);
+
+				this.UpdateCopy();
 			}
 		}
 
@@ -187,6 +198,8 @@ namespace RI.Framework.Services.Logging.Filters
 			lock (this.SyncRoot)
 			{
 				this.Filters.Clear();
+
+				this.UpdateCopy();
 			}
 		}
 
@@ -233,7 +246,11 @@ namespace RI.Framework.Services.Logging.Filters
 
 			lock (this.SyncRoot)
 			{
-				return this.Filters.Remove(item);
+				bool result = this.Filters.Remove(item);
+
+				this.UpdateCopy();
+
+				return result;
 			}
 		}
 
@@ -244,15 +261,21 @@ namespace RI.Framework.Services.Logging.Filters
 		/// <inheritdoc />
 		public bool Filter (DateTime timestamp, int threadId, LogLevel severity, string source)
 		{
+			List<ILogFilter> copy;
+			AggregateLogFilterMode mode;
+
 			lock (this.SyncRoot)
 			{
-				if (this.Filters.Count == 0)
-				{
-					return true;
-				}
-
-				return this.Mode == AggregateLogFilterMode.And ? this.Filters.All(x => x.Filter(timestamp, threadId, severity, source)) : this.Filters.Any(x => x.Filter(timestamp, threadId, severity, source));
+				copy = this.Copy;
+				mode = this.Mode;
 			}
+
+			if (copy.Count == 0)
+			{
+				return true;
+			}
+
+			return mode == AggregateLogFilterMode.And ? copy.All(x => x.Filter(timestamp, threadId, severity, source)) : copy.Any(x => x.Filter(timestamp, threadId, severity, source));
 		}
 	}
 }

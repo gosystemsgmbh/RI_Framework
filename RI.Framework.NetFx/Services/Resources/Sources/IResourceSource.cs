@@ -23,15 +23,16 @@ namespace RI.Framework.Services.Resources.Sources
 		/// <summary>
 		///     Gets all currently available resource sets of this resource source.
 		/// </summary>
-		/// <value>
-		///     All currently available resource sets of this resource source.
-		/// </value>
+		/// <returns>
+		///     The list with all available resource sets of this resource source.
+		///     If no resource sets are available, an empty list is returned.
+		/// </returns>
 		/// <remarks>
-		///     <note type="implement">
-		///         The value of this property must never be null.
-		///     </note>
+		/// <note type="note">
+		/// Do not call this method directly, it is intended to be called from an <see cref="IResourceService"/> implementation.
+		/// </note>
 		/// </remarks>
-		IEnumerable<IResourceSet> AvailableSets { get; }
+		List<IResourceSet> GetAvailableSets ();
 
 		/// <summary>
 		///     Gets whether the resource source is initialized or not.
@@ -62,16 +63,6 @@ namespace RI.Framework.Services.Resources.Sources
 		/// </note>
 		/// </remarks>
 		void Unload ();
-
-		/// <summary>
-		///     Updates the available resource sets (<see cref="AvailableSets" />).
-		/// </summary>
-		/// <remarks>
-		/// <note type="note">
-		/// Do not call this method directly, it is intended to be called from an <see cref="IResourceService"/> implementation.
-		/// </note>
-		/// </remarks>
-		void UpdateSets ();
 
 		/// <summary>
 		///     Updates the available resource converters provided by the resource service.

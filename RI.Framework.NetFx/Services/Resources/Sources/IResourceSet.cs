@@ -28,19 +28,6 @@ namespace RI.Framework.Services.Resources.Sources
 		bool AlwaysLoad { get; }
 
 		/// <summary>
-		///     Gets all the resource values provided by this resource set.
-		/// </summary>
-		/// <value>
-		///     All the resource values provided by this resource set.
-		/// </value>
-		/// <remarks>
-		///     <note type="implement">
-		///         The value of this property must never be null.
-		///     </note>
-		/// </remarks>
-		IEnumerable<string> AvailableResources { get; }
-
-		/// <summary>
 		///     Gets the formatting culture which is associated with this resource set.
 		/// </summary>
 		/// <value>
@@ -148,6 +135,11 @@ namespace RI.Framework.Services.Resources.Sources
 		/// <returns>
 		///     The resource value or null if the resource is not available.
 		/// </returns>
+		/// <remarks>
+		/// <note type="note">
+		/// Do not call this method directly, it is intended to be called from an <see cref="IResourceService"/> implementation.
+		/// </note>
+		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="name" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
 		object GetRawValue (string name);
@@ -161,11 +153,14 @@ namespace RI.Framework.Services.Resources.Sources
 		/// </returns>
 		/// <remarks>
 		///     <para>
-		///         Loading an already loaded resource set can be used to reload a specific set.
-		///     </para>
-		///     <para>
 		///         Lazy loading means that the actual value of a resource is only loaded into memory and converted to the appropriate type when <see cref="GetRawValue" /> is called for it.
 		///     </para>
+		///     <note type="implement">
+		///         Loading an already loaded resource set can be used to reload a specific set.
+		///     </note>
+		/// <note type="note">
+		/// Do not call this method directly, it is intended to be called from an <see cref="IResourceService"/> implementation.
+		/// </note>
 		/// </remarks>
 		bool Load (bool lazyLoad);
 
@@ -176,12 +171,24 @@ namespace RI.Framework.Services.Resources.Sources
 		///     <note type="implement">
 		///         Unloading an already unloaded resource set should have no effect.
 		///     </note>
+		/// <note type="note">
+		/// Do not call this method directly, it is intended to be called from an <see cref="IResourceService"/> implementation.
+		/// </note>
 		/// </remarks>
 		void Unload ();
 
 		/// <summary>
-		///     Updates the available resources (<see cref="AvailableResources" />).
+		///     Gets the names of all resources provided by this resource set.
 		/// </summary>
-		void UpdateResources ();
+		/// <returns>
+		///     The hash set with the names of all provied resources.
+		///     If no resources are provided, an empty hash set is returned.
+		/// </returns>
+		/// <remarks>
+		/// <note type="note">
+		/// Do not call this method directly, it is intended to be called from an <see cref="IResourceService"/> implementation.
+		/// </note>
+		/// </remarks>
+		HashSet<string> GetAvailableResources ();
 	}
 }

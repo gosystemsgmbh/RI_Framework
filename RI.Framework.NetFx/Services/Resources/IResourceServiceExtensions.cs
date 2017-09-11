@@ -18,32 +18,6 @@ namespace RI.Framework.Services.Resources
 		#region Static Methods
 
 		/// <summary>
-		///     Gets the names of all available resources.
-		/// </summary>
-		/// <param name="resourceService"> The resource service. </param>
-		/// <returns>
-		///     The hash set with the names of all available resources.
-		///     If no resources are available, an empty hash set is returned.
-		/// </returns>
-		public static HashSet<string> GetAvailableResourceNames (this IResourceService resourceService)
-		{
-			if (resourceService == null)
-			{
-				throw new ArgumentNullException(nameof(resourceService));
-			}
-
-			HashSet<string> resources = new HashSet<string>(StringComparerEx.InvariantCultureIgnoreCase);
-			foreach (IResourceSet set in resourceService.LoadedSets)
-			{
-				foreach (string resource in set.AvailableResources)
-				{
-					resources.Add(resource);
-				}
-			}
-			return resources;
-		}
-
-		/// <summary>
 		///     Gets the IDs of all loaded resource sets.
 		/// </summary>
 		/// <param name="resourceService"> The resource service. </param>
@@ -59,7 +33,7 @@ namespace RI.Framework.Services.Resources
 				throw new ArgumentNullException(nameof(resourceService));
 			}
 
-			HashSet<string> ids = new HashSet<string>(from x in resourceService.LoadedSets select x.Id, StringComparerEx.InvariantCultureIgnoreCase);
+			HashSet<string> ids = new HashSet<string>(from x in resourceService.GetLoadedSets() select x.Id, StringComparerEx.InvariantCultureIgnoreCase);
 			return ids;
 		}
 
@@ -72,7 +46,7 @@ namespace RI.Framework.Services.Resources
 		/// <remarks>
 		///     <para>
 		///         <see cref="SetLoadedSetIds" /> calls <see cref="IResourceSet.Load" /> for all found sets which match with an ID from <paramref name="setIdsToLoad" />.
-		///         IDs in <paramref name="setIdsToLoad" /> which are not found in <see cref="IResourceService.AvailableSets" /> are ignored and will not be loaded.
+		///         IDs in <paramref name="setIdsToLoad" /> which are not found in <see cref="IResourceService.GetAvailableSets" /> are ignored and will not be loaded.
 		///     </para>
 		///     <para>
 		///         The resource sets are loaded in addition to any already loaded sets.
@@ -93,7 +67,7 @@ namespace RI.Framework.Services.Resources
 			}
 
 			HashSet<string> idsToLoad = new HashSet<string>(setIdsToLoad, StringComparerEx.InvariantCultureIgnoreCase);
-			IEnumerable<IResourceSet> setsToLoad = from x in resourceService.AvailableSets where idsToLoad.Contains(x.Id) select x;
+			IEnumerable<IResourceSet> setsToLoad = from x in resourceService.GetAvailableSets() where idsToLoad.Contains(x.Id) select x;
 			foreach (IResourceSet setToLoad in setsToLoad)
 			{
 				setToLoad.Load(lazyLoad);

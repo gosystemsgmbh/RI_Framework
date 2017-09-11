@@ -13,16 +13,13 @@ using RI.Framework.Utilities.Logging;
 namespace RI.Framework.Services.Resources.Sources
 {
 	/// <summary>
-	///     Implements a resource source which reads from a specified directory
+	///     Implements a resource source which reads from a specified directory.
 	/// </summary>
 	/// <remarks>
 	///     <para>
 	///         Each subdirectory in the specified directory corresponds to one resource set (<see cref="DirectoryResourceSet" />).
 	///         Each file in a subdirectory is read and loaded, if the file extension is known.
 	///         Subdirectories of subdirectories (resource sets) are not processed.
-	///     </para>
-	///     <para>
-	///         The following file extensions are known and will be loaded into raw resource values:
 	///     </para>
 	///     <para>
 	///         A special file (<see cref="DirectoryResourceSet.SettingsFileName" />) is expected in each subdirectory (resource set).
@@ -59,10 +56,10 @@ namespace RI.Framework.Services.Resources.Sources
 		/// </summary>
 		/// <param name="directory"> The directory which contains the resource set subdirectories. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="directory" /> is null. </exception>
-		/// <exception cref="InvalidPathArgumentException"> <paramref name="directory" /> contains wildcards. </exception>
+		/// <exception cref="InvalidOperationException"> <paramref name="directory" /> is not a real usable directory. </exception>
 		/// <remarks>
 		///     <para>
-		///         The default encoding <see cref="DefaultEncoding" /> is used as the text encoding for the INI file.
+		///         The default encoding <see cref="DefaultEncoding" /> is used as the text encoding.
 		///     </para>
 		/// </remarks>
 		public DirectoryResourceSource (DirectoryPath directory)
@@ -76,7 +73,7 @@ namespace RI.Framework.Services.Resources.Sources
 		/// <param name="directory"> The directory which contains the resource set subdirectories. </param>
 		/// <param name="fileEncoding"> The text encoding used for reading text files (can be null to use <see cref="DefaultEncoding" />). </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="directory" /> is null. </exception>
-		/// <exception cref="InvalidPathArgumentException"> <paramref name="directory" /> contains wildcards. </exception>
+		/// <exception cref="InvalidOperationException"> <paramref name="directory" /> is not a real usable directory. </exception>
 		public DirectoryResourceSource (DirectoryPath directory, Encoding fileEncoding)
 		{
 			if (directory == null)
@@ -84,7 +81,7 @@ namespace RI.Framework.Services.Resources.Sources
 				throw new ArgumentNullException(nameof(directory));
 			}
 
-			if (directory.HasWildcards)
+			if (!directory.IsRealDirectory)
 			{
 				throw new InvalidPathArgumentException(nameof(directory));
 			}
@@ -108,7 +105,7 @@ namespace RI.Framework.Services.Resources.Sources
 		/// <value>
 		///     The directory which contains the resource set subdirectories.
 		/// </value>
-		public DirectoryPath Directory { get; private set; }
+		public DirectoryPath Directory { get; }
 
 		/// <summary>
 		///     Gets the text encoding for reading text files.
@@ -116,11 +113,11 @@ namespace RI.Framework.Services.Resources.Sources
 		/// <value>
 		///     The text encoding for reading text files.
 		/// </value>
-		public Encoding FileEncoding { get; private set; }
+		public Encoding FileEncoding { get; }
 
 		internal List<IResourceConverter> Converters { get; private set; }
 
-		private Dictionary<DirectoryPath, DirectoryResourceSet> Sets { get; set; }
+		private Dictionary<DirectoryPath, DirectoryResourceSet> Sets { get; }
 
 		#endregion
 
@@ -172,7 +169,7 @@ namespace RI.Framework.Services.Resources.Sources
 		#region Interface: IResourceSource
 
 		/// <inheritdoc />
-		public IEnumerable<IResourceSet> AvailableSets => this.Sets.Values;
+		public List<IResourceSet> GetAvailableSets () => this.Sets.Values.Cast<IResourceSet>().ToList();
 
 		/// <inheritdoc />
 		public bool IsInitialized { get; private set; }
@@ -205,14 +202,6 @@ namespace RI.Framework.Services.Resources.Sources
 		}
 
 		/// <inheritdoc />
-		public void UpdateSets ()
-		{
-			this.Log(LogLevel.Debug, "Updating directory resource source: {0}", this.Directory);
-
-			this.UpdateSets(false);
-		}
-
-		/// <inheritdoc />
 		public void UpdateConverters (IEnumerable<IResourceConverter> converters)
 		{
 			if (converters == null)
@@ -221,6 +210,8 @@ namespace RI.Framework.Services.Resources.Sources
 			}
 
 			this.Converters = converters.ToList();
+
+			this.UpdateSets(!this.IsInitialized);
 		}
 
 		#endregion

@@ -46,6 +46,8 @@ namespace RI.Framework.Services.Messaging
 
 			this.DispatchersManual = new List<IMessageDispatcher>();
 			this.ReceiversManual = new List<IMessageReceiver>();
+
+			this.ReceiverCopy = new List<IMessageReceiver>();
 		}
 
 		#endregion
@@ -68,6 +70,8 @@ namespace RI.Framework.Services.Messaging
 		private List<IMessageReceiver> ReceiversManual { get; }
 
 		private List<IMessageReceiver> ReceiversUpdated { get; set; }
+
+		private List<IMessageReceiver> ReceiverCopy { get; set; }
 
 		#endregion
 
@@ -122,6 +126,8 @@ namespace RI.Framework.Services.Messaging
 			{
 				this.Log(LogLevel.Debug, "Receiver removed: {0}", receiver.GetType().Name);
 			}
+
+			this.ReceiverCopy = new List<IMessageReceiver>(this.ReceiversUpdated);
 		}
 
 		#endregion
@@ -246,7 +252,7 @@ namespace RI.Framework.Services.Messaging
 			{
 				foreach (IMessageDispatcher dispatcher in this.DispatchersUpdated)
 				{
-					dispatcher.Post(this.ReceiversUpdated, message, this, null);
+					dispatcher.Post(this.ReceiverCopy, message, this, null);
 				}
 			}
 		}
@@ -265,7 +271,7 @@ namespace RI.Framework.Services.Messaging
 			{
 				foreach (IMessageDispatcher dispatcher in this.DispatchersUpdated)
 				{
-					dispatcher.Post(this.ReceiversUpdated, message, this, x => tcs.SetResult(x));
+					dispatcher.Post(this.ReceiverCopy, message, this, x => tcs.SetResult(x));
 				}
 			}
 

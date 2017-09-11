@@ -303,5 +303,30 @@ namespace RI.Framework.Services.Messaging
 		}
 
 		#endregion
+
+
+
+		/// <inheritdoc />
+		public bool Equals (IMessage other)
+		{
+			if (other == null)
+			{
+				return false;
+			}
+
+			return this.Id.Equals(other.Id);
+		}
+
+		/// <inheritdoc />
+		public override int GetHashCode ()
+		{
+			return this.Id.GetHashCode();
+		}
+
+		/// <inheritdoc />
+		public override bool Equals (object obj)
+		{
+			return this.Equals(obj as IMessage);
+		}
 	}
 }

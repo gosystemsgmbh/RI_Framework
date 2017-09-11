@@ -80,14 +80,17 @@ namespace RI.Framework.Services.Resources
 		/// </value>
 		public static IResourceService Service => ServiceLocator.GetInstance<IResourceService>();
 
-		/// <inheritdoc cref="IResourceService.AvailableSets" />
-		public static IEnumerable<IResourceSet> AvailableSets => ResourceLocator.Service?.AvailableSets ?? new IResourceSet[0];
-
 		/// <inheritdoc cref="IResourceService.Converters" />
 		public static IEnumerable<IResourceConverter> Converters => ResourceLocator.Service?.Converters ?? new IResourceConverter[0];
 
-		/// <inheritdoc cref="IResourceService.LoadedSets" />
-		public static IEnumerable<IResourceSet> LoadedSets => ResourceLocator.Service?.LoadedSets ?? new IResourceSet[0];
+		/// <inheritdoc cref="IResourceService.GetLoadedSets" />
+		public static List<IResourceSet> GetLoadedSets () => ResourceLocator.Service?.GetLoadedSets() ?? new List<IResourceSet>();
+
+		/// <inheritdoc cref="IResourceService.GetAvailableSets" />
+		public static List<IResourceSet> GetAvailableSets () => ResourceLocator.Service?.GetAvailableSets() ?? new List<IResourceSet>();
+
+		/// <inheritdoc cref="IResourceService.GetAvailableResources" />
+		public static HashSet<string> GetAvailableResources() => ResourceLocator.Service?.GetAvailableResources() ?? new HashSet<string>();
 
 		/// <inheritdoc cref="IResourceService.Sources" />
 		public static IEnumerable<IResourceSource> Sources => ResourceLocator.Service?.Sources ?? new IResourceSource[0];
@@ -104,10 +107,13 @@ namespace RI.Framework.Services.Resources
 		/// <inheritdoc cref="IResourceService.ReloadSets" />
 		public static void ReloadSets () => ResourceLocator.Service?.ReloadSets();
 
-		/// <inheritdoc cref="IResourceService.UpdateSets" />
-		public static void UpdateSets() => ResourceLocator.Service?.UpdateSets();
-
 		/// <inheritdoc cref="IResourceService.UnloadSets" />
 		public static void UnloadSets() => ResourceLocator.Service?.UnloadSets();
+
+		/// <inheritdoc cref="IResourceService.LoadSet" />
+		public static void LoadSet(IResourceSet resourceSet, bool lazyLoad) => ResourceLocator.Service?.LoadSet(resourceSet, lazyLoad);
+
+		/// <inheritdoc cref="IResourceService.UnloadSet" />
+		public static void UnloadSet(IResourceSet resourceSet) => ResourceLocator.Service?.UnloadSet(resourceSet);
 	}
 }

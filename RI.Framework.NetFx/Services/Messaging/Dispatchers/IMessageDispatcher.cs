@@ -47,6 +47,6 @@ namespace RI.Framework.Services.Messaging.Dispatchers
 		/// </note>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="receivers" />, <paramref name="message" />, or <paramref name="messageService" /> is null. </exception>
-		void Post (IEnumerable<IMessageReceiver> receivers, IMessage message, IMessageService messageService, Action<IMessage> deliveredCallback);
+		void Post (List<IMessageReceiver> receivers, IMessage message, IMessageService messageService, Action<IMessage> deliveredCallback);
 	}
 }

@@ -203,7 +203,6 @@ Services
  * (.NET) Licensing (LicensingService, FileLicenseStorage)
 
  * (ZIP) ZipBackupStorage
- * (ZIP) ZipResourceSource, ZipResourceSet
   
  - (WPF) WpfApplication: Handle power events using SystemEvents.PowerModeChanged
  - (WPF) WpfApplication: Handle user switching using SystemEvents.SessionSwitch

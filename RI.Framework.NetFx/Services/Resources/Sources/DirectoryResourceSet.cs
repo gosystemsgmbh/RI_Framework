@@ -89,7 +89,7 @@ namespace RI.Framework.Services.Resources.Sources
 		/// <value>
 		///     The directory of this resource set.
 		/// </value>
-		public DirectoryPath Directory { get; private set; }
+		public DirectoryPath Directory { get; }
 
 		/// <summary>
 		///     Gets the settings file path of this resource set.
@@ -97,15 +97,15 @@ namespace RI.Framework.Services.Resources.Sources
 		/// <value>
 		///     The settings file path of this resource set.
 		/// </value>
-		public FilePath SettingsFile { get; private set; }
+		public FilePath SettingsFile { get; }
 
 		internal List<IResourceConverter> Converters => this.Source.Converters;
 
 		internal bool? IsValid { get; private set; }
 
-		internal DirectoryResourceSource Source { get; private set; }
+		internal DirectoryResourceSource Source { get; }
 
-		private Dictionary<string, Tuple<FilePath, Loader>> Resources { get; set; }
+		private Dictionary<string, Tuple<FilePath, Loader>> Resources { get; }
 
 		#endregion
 
@@ -131,9 +131,16 @@ namespace RI.Framework.Services.Resources.Sources
 			this.UiCulture = null;
 			this.FormattingCulture = null;
 
+			if (!this.Directory.Exists)
+			{
+				this.Log(LogLevel.Error, "Directory does no longer exist: {0}", this.Directory);
+				this.IsValid = false;
+				return;
+			}
+
 			if (!this.SettingsFile.Exists)
 			{
-				this.Log(LogLevel.Error, "Settings file does not exist for directory resource set: {0}", this.SettingsFile);
+				this.Log(LogLevel.Error, "Settings file does not exist in directory: {0}", this.SettingsFile);
 				this.IsValid = false;
 				return;
 			}
@@ -143,7 +150,7 @@ namespace RI.Framework.Services.Resources.Sources
 			{
 				iniDocument.Load(this.SettingsFile, this.Source.FileEncoding);
 			}
-			catch (IniParsingException exception)
+			catch (Exception exception)
 			{
 				this.Log(LogLevel.Error, "Settings file is not a valid INI file: {0}{1}{2}", this.SettingsFile, Environment.NewLine, exception.ToDetailedString());
 				this.IsValid = false;
@@ -314,6 +321,93 @@ namespace RI.Framework.Services.Resources.Sources
 			this.IsValid = true;
 		}
 
+		private void Load ()
+		{
+			List<FilePath> existingFiles;
+			try
+			{
+				existingFiles = this.Directory.GetFiles(false, false);
+			}
+			catch (Exception exception)
+			{
+				this.Log(LogLevel.Error, "Failed to get file list: {0}{1}{2}", this.Directory, Environment.NewLine, exception.ToDetailedString());
+				return;
+			}
+
+			existingFiles.Remove(this.SettingsFile);
+
+			HashSet<FilePath> newFiles = DirectLinqExtensions.Except(existingFiles, from x in this.Resources select x.Value.Item1);
+
+			foreach (FilePath file in newFiles)
+			{
+				string extension = file.ExtensionWithDot.ToUpperInvariant();
+				ResourceLoadingInfo loadingInfo = this.GetLoadingInfo(extension);
+
+				switch (loadingInfo.LoadingType)
+				{
+					default:
+					{
+						this.Log(LogLevel.Warning, "Unknown resource loading type: {0} @ {1}", loadingInfo.LoadingType, file);
+						break;
+					}
+
+					case ResourceLoadingType.Binary:
+					{
+						string name = file.FileNameWithoutExtension;
+						ByteArrayLoader loader = new ByteArrayLoader(file, loadingInfo.ResourceType);
+						this.Resources.Add(name, new Tuple<FilePath, Loader>(file, loader));
+						this.Log(LogLevel.Debug, "Added binary resource file: {0} = {1}", name, file);
+						break;
+					}
+
+					case ResourceLoadingType.Text:
+					{
+						string name = file.FileNameWithoutExtension;
+						StringLoader loader = new StringLoader(file, this.Source.FileEncoding, loadingInfo.ResourceType);
+						this.Resources.Add(name, new Tuple<FilePath, Loader>(file, loader));
+						this.Log(LogLevel.Debug, "Added text resource file: {0} = {1}", name, file);
+						break;
+					}
+
+					case ResourceLoadingType.Unknown:
+					{
+						switch (extension)
+						{
+							default:
+							{
+								this.Log(LogLevel.Warning, "Unknown resource file type: {0}", file);
+								break;
+							}
+
+							case ".INI":
+							{
+								IniDocument iniDocument = new IniDocument();
+								try
+								{
+									iniDocument.Load(file, this.Source.FileEncoding);
+									Dictionary<string, string> values = iniDocument.GetSection(null);
+									foreach (KeyValuePair<string, string> value in values)
+									{
+										string name = value.Key;
+										EagerLoader loader = new EagerLoader(value.Value);
+										this.Resources.Add(name, new Tuple<FilePath, Loader>(file, loader));
+									}
+									this.Log(LogLevel.Debug, "Added INI resource file: {0}", file);
+								}
+								catch (Exception exception)
+								{
+									this.Log(LogLevel.Error, "Invalid INI resource file: {0}{1}{2}", file, Environment.NewLine, exception.ToDetailedString());
+								}
+								break;
+							}
+						}
+
+						break;
+					}
+				}
+			}
+		}
+
 		private IResourceConverter GetConverter (Type sourceType, Type targetType)
 		{
 			foreach (IResourceConverter converter in this.Converters)
@@ -349,19 +443,16 @@ namespace RI.Framework.Services.Resources.Sources
 		#region Interface: IResourceSet
 
 		/// <inheritdoc />
-		public bool AlwaysLoad { get; private set; }
+		public string Id { get; }
 
 		/// <inheritdoc />
-		public IEnumerable<string> AvailableResources => this.Resources.Keys;
+		public bool AlwaysLoad { get; private set; }
 
 		/// <inheritdoc />
 		public CultureInfo FormattingCulture { get; private set; }
 
 		/// <inheritdoc />
 		public string Group { get; private set; }
-
-		/// <inheritdoc />
-		public string Id { get; private set; }
 
 		/// <inheritdoc />
 		public bool IsLazyLoaded { get; private set; }
@@ -425,11 +516,11 @@ namespace RI.Framework.Services.Resources.Sources
 
 			this.Resources.Clear();
 
-			this.UpdateResources();
+			this.Load();
 
 			if (!lazyLoad)
 			{
-				foreach (string resource in this.AvailableResources)
+				foreach (string resource in this.Resources.Keys)
 				{
 					this.GetRawValue(resource);
 				}
@@ -450,82 +541,7 @@ namespace RI.Framework.Services.Resources.Sources
 		}
 
 		/// <inheritdoc />
-		public void UpdateResources ()
-		{
-			List<FilePath> existingFiles = this.Directory.GetFiles(false, false);
-			existingFiles.Remove(this.SettingsFile);
-
-			HashSet<FilePath> newFiles = DirectLinqExtensions.Except(existingFiles, from x in this.Resources select x.Value.Item1);
-
-			foreach (FilePath file in newFiles)
-			{
-				string extension = file.ExtensionWithDot.ToUpperInvariant();
-				ResourceLoadingInfo loadingInfo = this.GetLoadingInfo(extension);
-
-				switch (loadingInfo.LoadingType)
-				{
-					default:
-					{
-						this.Log(LogLevel.Warning, "Unknown resource loading type: {0} @ {1}", loadingInfo.LoadingType, file);
-						break;
-					}
-
-					case ResourceLoadingType.Binary:
-					{
-						string name = file.FileNameWithoutExtension;
-						ByteArrayLoader loader = new ByteArrayLoader(file, loadingInfo.ResourceType);
-						this.Resources.Add(name, new Tuple<FilePath, Loader>(file, loader));
-						this.Log(LogLevel.Debug, "Added binary resource file: {0} = {1}", name, file);
-						break;
-					}
-
-					case ResourceLoadingType.Text:
-					{
-						string name = file.FileNameWithoutExtension;
-						StringLoader loader = new StringLoader(file, this.Source.FileEncoding, loadingInfo.ResourceType);
-						this.Resources.Add(name, new Tuple<FilePath, Loader>(file, loader));
-						this.Log(LogLevel.Debug, "Added text resource file: {0} = {1}", name, file);
-						break;
-					}
-
-					case ResourceLoadingType.Unknown:
-					{
-						switch (extension)
-						{
-							default:
-							{
-								this.Log(LogLevel.Warning, "Unknown resource file type: {0}", file);
-								break;
-							}
-
-							case ".INI":
-							{
-								IniDocument iniDocument = new IniDocument();
-								try
-								{
-									iniDocument.Load(file, this.Source.FileEncoding);
-									Dictionary<string, string> values = iniDocument.GetSection(null);
-									foreach (KeyValuePair<string, string> value in values)
-									{
-										string name = value.Key;
-										EagerLoader loader = new EagerLoader(value.Value);
-										this.Resources.Add(name, new Tuple<FilePath, Loader>(file, loader));
-									}
-									this.Log(LogLevel.Debug, "Added INI resource file: {0}", file);
-								}
-								catch (IniParsingException exception)
-								{
-									this.Log(LogLevel.Error, "Invalid INI resource file: {0}{1}{2}", file, Environment.NewLine, exception.ToDetailedString());
-								}
-								break;
-							}
-						}
-
-						break;
-					}
-				}
-			}
-		}
+		public HashSet<string> GetAvailableResources () => new HashSet<string>(this.Resources.Keys, this.Resources.Comparer);
 
 		#endregion
 
@@ -735,5 +751,30 @@ namespace RI.Framework.Services.Resources.Sources
 		}
 
 		#endregion
+
+
+
+		/// <inheritdoc />
+		public bool Equals (IResourceSet other)
+		{
+			if (other == null)
+			{
+				return false;
+			}
+
+			DirectoryResourceSet other2 = other as DirectoryResourceSet;
+			if (other2 == null)
+			{
+				return false;
+			}
+
+			return this.Directory.Equals(other2.Directory);
+		}
+
+		/// <inheritdoc />
+		public override int GetHashCode () => this.Directory.GetHashCode();
+
+		/// <inheritdoc />
+		public override bool Equals (object obj) => this.Equals(obj as IResourceSet);
 	}
 }

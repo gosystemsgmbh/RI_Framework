@@ -331,7 +331,7 @@ namespace RI.Framework.Services.Regions
 		/// <inheritdoc cref="IRegionService.GetRegionName"/>
 		public static string GetRegionName(object container) => RegionLocator.Service?.GetRegionName(container);
 
-		/// <inheritdoc cref="IRegionService.GetRegionNames"/>
+		/// <inheritdoc cref="IRegionService.GetRegionNames(object)"/>
 		public static HashSet<string> GetRegionNames(string container)
 		{
 			if (container == null)
@@ -353,7 +353,7 @@ namespace RI.Framework.Services.Regions
 			return RegionLocator.GetRegionNames(value);
 		}
 
-		/// <inheritdoc cref="IRegionService.GetRegionNames"/>
+		/// <inheritdoc cref="IRegionService.GetRegionNames(object)"/>
 		public static HashSet<string> GetRegionNames(Type container)
 		{
 			if (container == null)
@@ -370,7 +370,7 @@ namespace RI.Framework.Services.Regions
 			return RegionLocator.GetRegionNames(value);
 		}
 
-		/// <inheritdoc cref="IRegionService.GetRegionNames"/>
+		/// <inheritdoc cref="IRegionService.GetRegionNames(object)"/>
 		public static HashSet<string> GetRegionNames(object container) => RegionLocator.Service?.GetRegionNames(container);
 
 		/// <inheritdoc cref="IRegionService.HasElement"/>
@@ -663,8 +663,8 @@ namespace RI.Framework.Services.Regions
 		/// <inheritdoc cref="IRegionService.Adapters" />
 		public static IEnumerable<IRegionAdapter> Writers => RegionLocator.Service?.Adapters ?? new IRegionAdapter[0];
 
-		/// <inheritdoc cref="IRegionService.Regions" />
-		public static IEnumerable<string> Regions => RegionLocator.Service?.Regions ?? new string[0];
+		/// <inheritdoc cref="IRegionService.GetRegionNames()" />
+		public static HashSet<string> GetRegionNames() => RegionLocator.Service?.GetRegionNames() ?? new HashSet<string>();
 
 		#endregion
 	}
