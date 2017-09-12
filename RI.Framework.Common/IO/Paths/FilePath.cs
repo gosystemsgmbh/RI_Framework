@@ -186,7 +186,10 @@ namespace RI.Framework.IO.Paths
 		///     true if the file exists, false otherwise.
 		/// </value>
 		/// <remarks>
-		///     <note type="note"> <see cref="Exists" /> does not throw exceptions besides <see cref="InvalidOperationException" />. For example, if the file exists but the user does not have access permissions, the file is not of a compatible path type used on the current system, etc., false is returned. </note>
+		///     <note type="note">
+		/// <see cref="Exists" /> does not throw exceptions besides <see cref="InvalidOperationException" />.
+		/// For example, if the file exists but the user does not have access permissions, the file is not of a compatible path type used on the current system, etc., false is returned.
+		/// </note>
 		/// </remarks>
 		/// <exception cref="InvalidOperationException"> The file contains wildcards. </exception>
 		public bool Exists
@@ -260,6 +263,37 @@ namespace RI.Framework.IO.Paths
 		///     </para>
 		/// </remarks>
 		public bool IsRealFile => !this.HasWildcards;
+
+		/// <summary>
+		/// Gets the size of the file in bytes.
+		/// </summary>
+		/// <value>
+		/// The size of the file in bytes or null if the file does not exist or cannot be accessed.
+		/// </value>
+		/// <remarks>
+		///     <note type="note">
+		/// <see cref="Size" /> does not throw exceptions besides <see cref="InvalidOperationException" />.
+		/// For example, if the file exists but the user does not have access permissions, the file is not of a compatible path type used on the current system, etc., null is returned.
+		/// </note>
+		/// </remarks>
+		/// <exception cref="InvalidOperationException"> The file contains wildcards. </exception>
+		public long? Size
+		{
+			get
+			{
+				this.VerifyRealFile();
+
+				try
+				{
+					FileInfo fi = new FileInfo(this);
+					return fi.Length;
+				}
+				catch
+				{
+					return null;
+				}
+			}
+		}
 
 		private string[] FileNameParts { get; set; }
 
