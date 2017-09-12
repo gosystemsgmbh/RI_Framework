@@ -29,6 +29,7 @@ namespace RI.Framework.Services.Messaging
 	///         See <see cref="IMessageService" /> for more details.
 	///     </para>
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	[Export]
 	public sealed class MessageService : LogSource, IMessageService, IImporting
 	{

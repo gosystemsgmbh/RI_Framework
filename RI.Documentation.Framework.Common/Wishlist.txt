@@ -199,9 +199,7 @@ Services
  
  # (.NET) Bus
 
- * (.NET) Backup (BackupService, DirectoryBackupStorage)
  * (.NET) Licensing (LicensingService, FileLicenseStorage)
-
  * (ZIP) ZipBackupStorage
   
  - (WPF) WpfApplication: Handle power events using SystemEvents.PowerModeChanged

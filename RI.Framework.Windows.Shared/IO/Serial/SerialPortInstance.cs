@@ -19,7 +19,7 @@ namespace RI.Framework.IO.Serial
 	///         A serial port on Windows is also called a COM port, e.g. COM1.
 	///     </para>
 	/// </remarks>
-	public sealed class SerialPortInstance : IEquatable<SerialPortInstance>, IComparable, IComparable<SerialPortInstance>
+	public sealed class SerialPortInstance : IEquatable<SerialPortInstance>, IComparable<SerialPortInstance>, IComparable
 	{
 		#region Constants
 
@@ -289,22 +289,13 @@ namespace RI.Framework.IO.Serial
 		#region Overrides
 
 		/// <inheritdoc />
-		public override bool Equals (object obj)
-		{
-			return this.Equals(obj as SerialPortInstance);
-		}
+		public override bool Equals (object obj) => this.Equals(obj as SerialPortInstance);
 
 		/// <inheritdoc />
-		public override int GetHashCode ()
-		{
-			return this.PortNumber;
-		}
+		public override int GetHashCode () => this.PortNumber;
 
 		/// <inheritdoc />
-		public override string ToString ()
-		{
-			return this.PortName;
-		}
+		public override string ToString () => this.PortName;
 
 		#endregion
 
@@ -314,10 +305,7 @@ namespace RI.Framework.IO.Serial
 		#region Interface: IComparable
 
 		/// <inheritdoc />
-		public int CompareTo (object obj)
-		{
-			return this.CompareTo(obj as SerialPortInstance);
-		}
+		public int CompareTo (object obj) => this.CompareTo(obj as SerialPortInstance);
 
 		#endregion
 

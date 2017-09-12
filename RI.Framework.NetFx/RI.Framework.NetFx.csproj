@@ -114,6 +114,9 @@
     <Compile Include="Data\Repository\_NamespaceDoc.cs" />
     <Compile Include="Data\_NamespaceDoc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\Backup\BackupInclusion.cs" />
+    <Compile Include="Services\Backup\BackupLocator.cs" />
+    <Compile Include="Services\Backup\BackupService.cs" />
     <Compile Include="Services\Backup\IBackupAware.cs" />
     <Compile Include="Services\Backup\IBackupInclusion.cs" />
     <Compile Include="Services\Backup\IBackupService.cs" />

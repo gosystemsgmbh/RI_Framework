@@ -1078,23 +1078,14 @@ namespace RI.Framework.IO.Paths
 		#region Overrides
 
 		/// <inheritdoc />
-		public override bool Equals (object obj)
-		{
-			return this.Equals(obj as PathProperties);
-		}
+		public override bool Equals (object obj) => this.Equals(obj as PathProperties);
 
 		/// <inheritdoc />
 		[SuppressMessage("ReSharper", "NonReadonlyMemberInGetHashCode")]
-		public override int GetHashCode ()
-		{
-			return this.Hashcode;
-		}
+		public override int GetHashCode () => this.Hashcode;
 
 		/// <inheritdoc />
-		public override string ToString ()
-		{
-			return this.PathOriginal;
-		}
+		public override string ToString () => this.PathOriginal;
 
 		#endregion
 

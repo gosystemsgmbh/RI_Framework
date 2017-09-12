@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 using RI.Framework.Services.Messaging.Dispatchers;
 
@@ -15,6 +16,7 @@ namespace RI.Framework.Services.Messaging
 	///         <see cref="MessageLocator" /> is merely a convenience utility as it uses <see cref="ServiceLocator" /> to retrieve and use a <see cref="IMessageService" />.
 	///     </para>
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	public static class MessageLocator
 	{
 		/// <summary>
@@ -41,5 +43,18 @@ namespace RI.Framework.Services.Messaging
 
 		/// <inheritdoc cref="IMessageService.Post" />
 		public static void Post(IMessage message) => MessageLocator.Service?.Post(message);
+
+		/// <inheritdoc cref="IMessageService.Send" />
+		public static async Task Send (IMessage message)
+		{
+			IMessageService service = MessageLocator.Service;
+
+			if (service == null)
+			{
+				return;
+			}
+
+			await service.Send(message).ConfigureAwait(false);
+		}
 	}
 }

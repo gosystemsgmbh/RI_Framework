@@ -661,7 +661,7 @@ namespace RI.Framework.Services.Regions
 		public static IRegionService Service => ServiceLocator.GetInstance<IRegionService>();
 
 		/// <inheritdoc cref="IRegionService.Adapters" />
-		public static IEnumerable<IRegionAdapter> Writers => RegionLocator.Service?.Adapters ?? new IRegionAdapter[0];
+		public static IEnumerable<IRegionAdapter> Adapters => RegionLocator.Service?.Adapters ?? new IRegionAdapter[0];
 
 		/// <inheritdoc cref="IRegionService.GetRegionNames()" />
 		public static HashSet<string> GetRegionNames() => RegionLocator.Service?.GetRegionNames() ?? new HashSet<string>();

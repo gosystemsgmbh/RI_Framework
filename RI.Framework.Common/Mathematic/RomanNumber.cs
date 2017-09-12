@@ -675,16 +675,10 @@ namespace RI.Framework.Mathematic
 		}
 
 		/// <inheritdoc />
-		public override int GetHashCode ()
-		{
-			return this.DecimalValue;
-		}
+		public override int GetHashCode () => this.DecimalValue;
 
 		/// <inheritdoc />
-		public override string ToString ()
-		{
-			return this.RomanValue;
-		}
+		public override string ToString () => this.RomanValue;
 
 		#endregion
 

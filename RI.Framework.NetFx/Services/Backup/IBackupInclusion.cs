@@ -9,14 +9,6 @@ namespace RI.Framework.Services.Backup
 	/// <summary>
 	/// Defines the interface for a backup inclusion.
 	/// </summary>
-	/// <remarks>
-	/// <para>
-	/// See <see cref="IBackupService"/> for more details.
-	/// </para>
-	/// <note type="implement">
-	/// <see cref="IBackupInclusion"/> is typically implemented internally by an <see cref="IBackupService"/> implementation.
-	/// </note>
-	/// </remarks>
 	public interface IBackupInclusion : IEquatable<IBackupInclusion>
 	{
 		/// <summary>

@@ -74,32 +74,6 @@ namespace RI.Framework.Services.Backup
 		IEnumerable<IBackupAware> Awares { get; }
 
 		/// <summary>
-		///     Gets all currently available backup sets.
-		/// </summary>
-		/// <value>
-		///     All currently available backup sets.
-		/// </value>
-		/// <remarks>
-		///     <note type="implement">
-		///         The value of this property must never be null.
-		///     </note>
-		/// </remarks>
-		IEnumerable<IBackupSet> AvailableSets { get; }
-
-		/// <summary>
-		///     Gets all currently available inclusions.
-		/// </summary>
-		/// <value>
-		///     All currently available inclusions.
-		/// </value>
-		/// <remarks>
-		///     <note type="implement">
-		///         The value of this property must never be null.
-		///     </note>
-		/// </remarks>
-		IEnumerable<IBackupSet> AvailableInclusions { get; }
-
-		/// <summary>
 		///     Adds a backup storage.
 		/// </summary>
 		/// <param name="backupStorage"> The backup storage to add. </param>
@@ -174,6 +148,7 @@ namespace RI.Framework.Services.Backup
 		/// <returns>
 		/// true if a backup can be restored, false otherwise.
 		/// </returns>
+		/// <exception cref="ArgumentNullException"><paramref name="backupSet"/> is null.</exception>
 		/// <exception cref="ArgumentException"><paramref name="inclusions"/> is an empty sequence.</exception>
 		bool CanDoRestore(IBackupSet backupSet, IEnumerable<IBackupInclusion> inclusions);
 
@@ -184,6 +159,7 @@ namespace RI.Framework.Services.Backup
 		/// <returns>
 		/// true if a full backup can be restored, false otherwise.
 		/// </returns>
+		/// <exception cref="ArgumentNullException"><paramref name="backupSet"/> is null.</exception>
 		bool CanDoFullRestore(IBackupSet backupSet);
 
 		/// <summary>
@@ -254,7 +230,7 @@ namespace RI.Framework.Services.Backup
 		/// </returns>
 		/// <exception cref="ArgumentNullException"><paramref name="backupSet"/> is null.</exception>
 		/// <exception cref="ArgumentException"><paramref name="inclusions"/> is an empty sequence.</exception>
-		/// <exception cref="InvalidOperationException"><paramref name="backupSet"/> does not support restore.</exception>
+		/// <exception cref="InvalidOperationException"><paramref name="backupSet"/> or one of the inclusions in <paramref name="inclusions"/> does not support restore.</exception>
 		bool RestoreBackup (IBackupSet backupSet, IEnumerable<IBackupInclusion> inclusions);
 
 		/// <summary>
@@ -286,6 +262,18 @@ namespace RI.Framework.Services.Backup
 		IBackupSet ImportBackupFromFile (FilePath file);
 
 		/// <summary>
+		/// Exports a backup set to a file.
+		/// </summary>
+		/// <param name="backupSet">The backup set to export.</param>
+		/// <param name="file">The file to export the backup to.</param>
+		/// <returns>
+		/// true if the backup set could be exported to the file, false otherwise.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"><paramref name="backupSet"/> or <paramref name="file"/> is null.</exception>
+		/// <exception cref="InvalidPathArgumentException"><paramref name="file"/> is not a valid file path.</exception>
+		bool ExportBackupToFile(IBackupSet backupSet, FilePath file);
+
+		/// <summary>
 		/// Deletes a backup from the storage.
 		/// </summary>
 		/// <param name="backupSet">The backup set to delete.</param>
@@ -315,25 +303,21 @@ namespace RI.Framework.Services.Backup
 		void Cleanup (TimeSpan retentionTime);
 
 		/// <summary>
-		///     Updates the available backups sets (<see cref="AvailableSets" />).
+		///     Gets all currently available backup sets.
 		/// </summary>
-		void UpdateSets ();
-
-		/// <summary>
-		///     Updates the available inclusions (<see cref="AvailableInclusions" />).
-		/// </summary>
-		void UpdateInclusions ();
-
-		/// <summary>
-		/// Creates an inclusion.
-		/// </summary>
-		/// <param name="id">The ID of the inclusion.</param>
-		/// <param name="resourceKey">The resource key. Can be null.</param>
-		/// <param name="supportsRestore">Specifies whether the inclusion supports restore or not.</param>
 		/// <returns>
-		/// The newly created inclusion.
+		/// The list of all available backup sets.
+		/// If no backup sets are available, an empty list is returned.
 		/// </returns>
-		/// <exception cref="EmptyStringArgumentException"><paramref name="resourceKey"/> is an empty string.</exception>
-		IBackupInclusion CreateInclusion (Guid id, string resourceKey, bool supportsRestore);
+		List<IBackupSet> GetAvailableSets ();
+
+		/// <summary>
+		///     Gets all currently available inclusions.
+		/// </summary>
+		/// <returns>
+		/// The list of all available inclusions.
+		/// If no inclusions are available, an empty list is returned.
+		/// </returns>
+		List<IBackupInclusion> GetAvailableInclusions ();
 	}
 }

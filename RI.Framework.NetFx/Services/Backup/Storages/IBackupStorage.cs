@@ -23,24 +23,33 @@ namespace RI.Framework.Services.Backup.Storages
 	public interface IBackupStorage : ISynchronizable
 	{
 		/// <summary>
-		/// Gets all available backups.
+		/// Gets all available backup sets.
 		/// </summary>
 		/// <returns>
 		/// The list of available backup sets.
-		/// An empty list is returned if no backups are available.
+		/// An empty list is returned if no backup sets are available.
 		/// </returns>
-		List<IBackupSet> GetAvailableBackups();
+		/// <remarks>
+		/// <note type="note">
+		/// Do not call this method directly, it is intended to be called from an <see cref="IBackupService"/> implementation.
+		/// </note>
+		/// </remarks>
+		List<IBackupSet> GetAvailableSets();
 
 		/// <summary>
 		/// Attempst to import a backup set from an existing backup file.
 		/// </summary>
 		/// <param name="file">The existing backup file to import.</param>
 		/// <returns>
-		/// The backup set created and associated with the imported backup file or null if this backup storage could not import the file (where the backup service tries to use another backup storage).
+		/// The backup set created and associated with the imported backup file or null if this backup storage could not import the file.
+		/// This is used by the backup service to determine which backup storage to use for importing a file.
 		/// </returns>
 		/// <remarks>
 		/// <note type="implement">
 		/// Importing a backup file must also include copying the backup content into the appropriate storage where the backup set is associated to.
+		/// </note>
+		/// <note type="note">
+		/// Do not call this method directly, it is intended to be called from an <see cref="IBackupService"/> implementation.
 		/// </note>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"><paramref name="file"/> is null.</exception>
@@ -53,8 +62,14 @@ namespace RI.Framework.Services.Backup.Storages
 		/// </summary>
 		/// <param name="backupSet">The backup set to delete.</param>
 		/// <returns>
-		/// true if the backup set was managed by this backup storage and was deleted, false otherwise (where the backup service tries to use another backup storage).
+		/// true if the backup set was managed by this backup storage and was deleted, false otherwise (where the backup set belongs to another backup storage).
+		/// This is used by the backup service to determine which backup storage to use when deleting a backup.
 		/// </returns>
+		/// <remarks>
+		/// <note type="note">
+		/// Do not call this method directly, it is intended to be called from an <see cref="IBackupService"/> implementation.
+		/// </note>
+		/// </remarks>
 		/// <exception cref="ArgumentNullException"><paramref name="backupSet"/> is null.</exception>
 		bool TryDeleteBackup(IBackupSet backupSet);
 
@@ -78,6 +93,11 @@ namespace RI.Framework.Services.Backup.Storages
 		/// true if this backup storage has started a new backup set, false otherwise.
 		/// This is used by the backup service to determine which backup storage to use when creating a new backup.
 		/// </returns>
+		/// <remarks>
+		/// <note type="note">
+		/// Do not call this method directly, it is intended to be called from an <see cref="IBackupService"/> implementation.
+		/// </note>
+		/// </remarks>
 		/// <exception cref="ArgumentNullException"><paramref name="inclusions"/> is null.</exception>
 		/// <exception cref="EmptyStringArgumentException"><paramref name="name"/> is an empty string.</exception>
 		/// <exception cref="ArgumentException"><paramref name="inclusions"/> is an empty sequence.</exception>
@@ -87,6 +107,11 @@ namespace RI.Framework.Services.Backup.Storages
 		/// Finalizes and persists a backup set created by this backup storage.
 		/// </summary>
 		/// <param name="backupSet">The backup set to finalize and persist, as returned by <see cref="TryBeginBackup"/>.</param>
+		/// <remarks>
+		/// <note type="note">
+		/// Do not call this method directly, it is intended to be called from an <see cref="IBackupService"/> implementation.
+		/// </note>
+		/// </remarks>
 		/// <exception cref="ArgumentNullException"><paramref name="backupSet"/> is null.</exception>
 		/// <exception cref="ArgumentException"><paramref name="backupSet"/> is not a set returned by <see cref="TryBeginBackup"/> of this backup storage.</exception>
 		void EndBackup (IBackupSet backupSet);
@@ -101,6 +126,11 @@ namespace RI.Framework.Services.Backup.Storages
 		/// true if the backup set was managed by this backup storage and if this backup storage has started restore of the existing backup set, false otherwise.
 		/// This is used by the backup service to determine which backup storage to use when restoring an existing backup.
 		/// </returns>
+		/// <remarks>
+		/// <note type="note">
+		/// Do not call this method directly, it is intended to be called from an <see cref="IBackupService"/> implementation.
+		/// </note>
+		/// </remarks>
 		/// <exception cref="ArgumentNullException"><paramref name="backupSet"/> or <paramref name="inclusions"/> is null.</exception>
 		/// <exception cref="ArgumentException"><paramref name="inclusions"/> is an empty sequence.</exception>
 		bool TryBeginRestore(IBackupSet backupSet, IEnumerable<IBackupInclusion> inclusions, out Func<string, Stream> streamResolver);
@@ -109,6 +139,11 @@ namespace RI.Framework.Services.Backup.Storages
 		/// Finishes restore of a backup set restored by this backup storage.
 		/// </summary>
 		/// <param name="backupSet">The backup set to finish restore, as returned by <see cref="TryBeginRestore"/>.</param>
+		/// <remarks>
+		/// <note type="note">
+		/// Do not call this method directly, it is intended to be called from an <see cref="IBackupService"/> implementation.
+		/// </note>
+		/// </remarks>
 		/// <exception cref="ArgumentNullException"><paramref name="backupSet"/> is null.</exception>
 		/// <exception cref="ArgumentException"><paramref name="backupSet"/> is not a set returned by <see cref="TryBeginRestore"/> of this backup storage.</exception>
 		void EndRestore (IBackupSet backupSet);
@@ -121,6 +156,9 @@ namespace RI.Framework.Services.Backup.Storages
 		///     <note type="implement">
 		///         If the implemented backup storage does not support cleanup of old backups, this method should do simply nothing.
 		///     </note>
+		/// <note type="note">
+		/// Do not call this method directly, it is intended to be called from an <see cref="IBackupService"/> implementation.
+		/// </note>
 		/// </remarks>
 		void Cleanup(DateTime retentionDate);
 	}

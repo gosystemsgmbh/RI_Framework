@@ -314,19 +314,19 @@ namespace RI.Framework.Services.Messaging
 				return false;
 			}
 
-			return this.Id.Equals(other.Id);
+			Message other2 = other as Message;
+			if (other2 == null)
+			{
+				return false;
+			}
+
+			return this.Id.Equals(other2.Id);
 		}
 
 		/// <inheritdoc />
-		public override int GetHashCode ()
-		{
-			return this.Id.GetHashCode();
-		}
+		public override int GetHashCode () => this.Id.GetHashCode();
 
 		/// <inheritdoc />
-		public override bool Equals (object obj)
-		{
-			return this.Equals(obj as IMessage);
-		}
+		public override bool Equals (object obj) => this.Equals(obj as IMessage);
 	}
 }

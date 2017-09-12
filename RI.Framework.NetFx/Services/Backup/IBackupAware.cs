@@ -42,6 +42,9 @@ namespace RI.Framework.Services.Backup
 		/// <paramref name="inclusions"/> is a list used to collect the inclusions for all backup-aware objects.
 		/// You should only add to the list but not remove.
 		/// </note>
+		/// <note type="note">
+		/// Do not call this method directly, it is intended to be called from an <see cref="IBackupService"/> implementation.
+		/// </note>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"><paramref name="inclusions"/> is null.</exception>
 		/// <exception cref="ArgumentNullException"><paramref name="backupService"/> is null.</exception>
@@ -55,6 +58,11 @@ namespace RI.Framework.Services.Backup
 		/// <returns>
 		/// true if the backup-aware object is in a state where a backup can be performed, false otherwise.
 		/// </returns>
+		/// <remarks>
+		/// <note type="note">
+		/// Do not call this method directly, it is intended to be called from an <see cref="IBackupService"/> implementation.
+		/// </note>
+		/// </remarks>
 		/// <exception cref="ArgumentNullException"><paramref name="inclusions"/> is null.</exception>
 		bool BeginBackup (IList<IBackupInclusion> inclusions, IBackupService backupService);
 
@@ -64,6 +72,11 @@ namespace RI.Framework.Services.Backup
 		/// <param name="streamResolver">The stream resolver used to store data in the bakcup set.</param>
 		/// <param name="inclusions">The inclusions to be backed-up.</param>
 		/// <param name="backupService">The backup service.</param>
+		/// <remarks>
+		/// <note type="note">
+		/// Do not call this method directly, it is intended to be called from an <see cref="IBackupService"/> implementation.
+		/// </note>
+		/// </remarks>
 		/// <exception cref="ArgumentNullException"><paramref name="streamResolver"/> or <paramref name="inclusions"/> is null.</exception>
 		void Backup (Func<string, Stream> streamResolver, IList<IBackupInclusion> inclusions, IBackupService backupService);
 
@@ -72,6 +85,11 @@ namespace RI.Framework.Services.Backup
 		/// </summary>
 		/// <param name="performed">Indicates whether the backup was actually performed.</param>
 		/// <param name="backupService">The backup service.</param>
+		/// <remarks>
+		/// <note type="note">
+		/// Do not call this method directly, it is intended to be called from an <see cref="IBackupService"/> implementation.
+		/// </note>
+		/// </remarks>
 		void EndBackup (bool performed, IBackupService backupService);
 
 		/// <summary>
@@ -82,6 +100,11 @@ namespace RI.Framework.Services.Backup
 		/// <returns>
 		/// true if the backup-aware object is in a state where a restore can be performed, false otherwise.
 		/// </returns>
+		/// <remarks>
+		/// <note type="note">
+		/// Do not call this method directly, it is intended to be called from an <see cref="IBackupService"/> implementation.
+		/// </note>
+		/// </remarks>
 		/// <exception cref="ArgumentNullException"><paramref name="inclusions"/> is null.</exception>
 		bool BeginRestore (IList<IBackupInclusion> inclusions, IBackupService backupService);
 
@@ -99,6 +122,11 @@ namespace RI.Framework.Services.Backup
 		/// </summary>
 		/// <param name="performed">Indicates whether the restore was actually performed.</param>
 		/// <param name="backupService">The backup service.</param>
+		/// <remarks>
+		/// <note type="note">
+		/// Do not call this method directly, it is intended to be called from an <see cref="IBackupService"/> implementation.
+		/// </note>
+		/// </remarks>
 		void EndRestore (bool performed, IBackupService backupService);
 	}
 }

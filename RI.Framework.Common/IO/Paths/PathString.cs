@@ -294,16 +294,10 @@ namespace RI.Framework.IO.Paths
 		#region Instance Methods
 
 		/// <inheritdoc cref="PathString.CompareTo(PathString)" />
-		public int CompareTo (PathProperties other)
-		{
-			return this.PathInternal.CompareTo(other);
-		}
+		public int CompareTo (PathProperties other) => this.PathInternal.CompareTo(other);
 
 		/// <inheritdoc cref="PathString.Equals(PathString)" />
-		public bool Equals (PathProperties other)
-		{
-			return this.PathInternal.Equals(other);
-		}
+		public bool Equals (PathProperties other) => this.PathInternal.Equals(other);
 
 		/// <summary>
 		///     Gets the properties of the path represented by this <see cref="PathString" />.
@@ -350,16 +344,10 @@ namespace RI.Framework.IO.Paths
 		}
 
 		/// <inheritdoc />
-		public override int GetHashCode ()
-		{
-			return this.PathInternal.GetHashCode();
-		}
+		public override int GetHashCode () => this.PathInternal.GetHashCode();
 
 		/// <inheritdoc />
-		public override string ToString ()
-		{
-			return this.PathInternal.ToString();
-		}
+		public override string ToString () => this.PathInternal.ToString();
 
 		#endregion
 
