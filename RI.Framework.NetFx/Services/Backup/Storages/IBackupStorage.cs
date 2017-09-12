@@ -161,5 +161,33 @@ namespace RI.Framework.Services.Backup.Storages
 		/// </note>
 		/// </remarks>
 		void Cleanup(DateTime retentionDate);
+
+		/// <summary>
+		///     Gets whether the backup storage is initialized or not.
+		/// </summary>
+		/// <value>
+		///     true if the backup storage is initialized, false otherwise or after the backup storage was unloaded.
+		/// </value>
+		bool IsInitialized { get; }
+
+		/// <summary>
+		///     Initializes the backup storage.
+		/// </summary>
+		/// <remarks>
+		/// <note type="note">
+		/// Do not call this method directly, it is intended to be called from an <see cref="IBackupService"/> implementation.
+		/// </note>
+		/// </remarks>
+		void Initialize();
+
+		/// <summary>
+		///     Unloads the backup storage.
+		/// </summary>
+		/// <remarks>
+		/// <note type="note">
+		/// Do not call this method directly, it is intended to be called from an <see cref="IBackupService"/> implementation.
+		/// </note>
+		/// </remarks>
+		void Unload();
 	}
 }

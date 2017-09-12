@@ -111,6 +111,8 @@ namespace RI.Framework.Services.Resources.Sources
 				}
 			}
 
+			this.IsInitialized = false;
+
 			this.Directory = directory;
 			this.FileEncoding = fileEncoding ?? ZipResourceSource.DefaultEncoding;
 			this.FilePattern = filePattern ?? ZipResourceSource.DefaultFilePattern;
@@ -127,10 +129,10 @@ namespace RI.Framework.Services.Resources.Sources
 		#region Instance Properties/Indexer
 
 		/// <summary>
-		///     Gets the directory which contains the resource set subdirectories.
+		///     Gets the directory which contains the resource set ZIP files.
 		/// </summary>
 		/// <value>
-		///     The directory which contains the resource set subdirectories.
+		///     The directory which contains the resource set ZIP files.
 		/// </value>
 		public DirectoryPath Directory { get; }
 

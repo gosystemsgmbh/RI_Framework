@@ -47,6 +47,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\Backup\Storages\ZipBackupSet.cs" />
+    <Compile Include="Services\Backup\Storages\ZipBackupStorage.cs" />
     <Compile Include="Services\Resources\Sources\ZipResourceSet.cs" />
     <Compile Include="Services\Resources\Sources\ZipResourceSource.cs" />
   </ItemGroup>
@@ -60,9 +62,7 @@
       <Name>RI.Framework.NetFx</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Services\Backup\Storages\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>@"$(SolutionDir)_Input\VersionUpdater.exe" "$(ProjectDir)Properties" "nr" "file" "$(SolutionDir)RI.Framework.Property.Version.txt" "$(SolutionDir)RI.Framework.Property.Company.txt" "$(SolutionDir)RI.Framework.Property.Copyright.txt"</PreBuildEvent>
