@@ -832,11 +832,6 @@ namespace RI.Framework.Data.Database
 				throw new EmptyStringArgumentException(nameof(name));
 			}
 
-			if (this.State == DatabaseState.Uninitialized)
-			{
-				throw new InvalidOperationException(this.GetType().Name + " must be initialized to retrieve script batches, current state is " + this.State + ".");
-			}
-
 			if (!this.SupportsScripts)
 			{
 				throw new NotSupportedException(this.GetType().Name + " does not support script retrieval.");
@@ -887,7 +882,7 @@ namespace RI.Framework.Data.Database
 			int currentVersion = this.Version;
 			while ( currentVersion < version)
 			{
-				bool result = this.UpgradeImpl(version);
+				bool result = this.UpgradeImpl(currentVersion);
 
 				this.DetectStateAndVersion();
 				currentVersion = this.Version;

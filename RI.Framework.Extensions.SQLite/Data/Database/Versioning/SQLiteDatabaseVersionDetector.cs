@@ -72,7 +72,7 @@ namespace RI.Framework.Data.Database.Versioning
 			try
 			{
 				SQLiteConnectionStringBuilder connectionString = new SQLiteConnectionStringBuilder(manager.Configuration.ConnectionString.ConnectionString);
-				connectionString.ReadOnly = true;
+				connectionString.ReadOnly = false;
 
 				List<string> batches = manager.GetScriptBatch(this.ScriptName, true);
 				if (batches == null)
