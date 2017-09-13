@@ -73,6 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="Services\Regions\Adapters\DockingManagerRegionAdapter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -92,6 +93,7 @@
       <Name>RI.Framework.Windows.Wpf</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>@"$(SolutionDir)_Input\VersionUpdater.exe" "$(ProjectDir)Properties" "nr" "file" "$(SolutionDir)RI.Framework.Property.Version.txt" "$(SolutionDir)RI.Framework.Property.Company.txt" "$(SolutionDir)RI.Framework.Property.Copyright.txt"</PreBuildEvent>

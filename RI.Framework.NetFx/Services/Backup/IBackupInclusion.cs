@@ -57,5 +57,18 @@ namespace RI.Framework.Services.Backup
 		/// </note>
 		/// </remarks>
 		IDictionary<string, string> Tags { get; }
+
+		/// <summary>
+		/// Gets the set containing the stream IDs associated with this inclusion.
+		/// </summary>
+		/// <value>
+		/// The set containing the stream IDs associated with this inclusion.
+		/// </value>
+		/// <remarks>
+		/// <note type="implement">
+		/// This property must never be null.
+		/// </note>
+		/// </remarks>
+		ISet<Guid> Streams { get; }
 	}
 }

@@ -12,6 +12,8 @@ Utilities
 
  - (Linux) LinuxShell
 
+ - (Windows) SerialPortStream
+
  - (WinForms) FormExtensions
  - (WinForms) TemporaryCursor
  - (WinForms) WindowWrapper
@@ -21,6 +23,11 @@ Utilities
  - (Windows) WindowsMessageLoopTimer
  - (Windows) WindowsMessageLoopSynchronizationContext
  - (Windows) WindowsMessageLoop: Priority queue
+
+ - (WPF) CircularProgressBar
+ - (WPF) BindablePasswordBox
+ - (WPF) Flasher
+ - (WPF) ScreenIdentifier
 
 
 Threading
@@ -157,15 +164,11 @@ I/O
  - (Common) DirectoryPath: LastReadTimeUtc
  - (Common) DirectoryPath: TryDeleteAsManyAsPossible
 
- - (Common) FilePath: Copy (FilePath, DirectoryPath)
- - (Common) FilePath: Move (FilePath, DirectoryPath)
- - (Common) FilePath: FindFiles
  - (Common) FilePath: AppendText
  - (Common) FilePath: AppendBytes
  - (Common) FilePath: OpenReader
  - (Common) FilePath: OpenWriter
  - (Common) FilePath: OpenStream
- - (Common) FilePath: Size
  - (Common) FilePath: CreationTime
  - (Common) FilePath: CreationTimeUtc
  - (Common) FilePath: LastAccessTime
@@ -200,7 +203,6 @@ Services
  # (.NET) Bus
 
  * (.NET) Licensing (LicensingService, FileLicenseStorage)
- * (ZIP) ZipBackupStorage
   
  - (WPF) WpfApplication: Handle power events using SystemEvents.PowerModeChanged
  - (WPF) WpfApplication: Handle user switching using SystemEvents.SessionSwitch
@@ -208,7 +210,7 @@ Services
  - (Unity) IDispatcherOperation: OnXXX callbacks
  - (Unity) IDispatcherOperation: Stacking of all OnXXX callbacks
 
- - (WpfToolkit) AvalonDockRegionAdapter
+ - (WpfToolkit) DockingManagerRegionAdapter
 
  - (Windows) Messaging: WindowsMessageLoopMessageDispatcher
  - (WinForms) Messaging: ApplicationMessageDispatcher
