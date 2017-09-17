@@ -21,10 +21,12 @@ namespace RI.Framework.Data.Repository.Entities
 	///     </para>
 	/// <note type="note">
 	/// <see cref="EntityBase"/> is serializable, using <see cref="ISerializable"/>.
-	/// Therefore, to serialize and deserialize values in types inheriting from <see cref="EntityBase"/>, you must use <see cref="GetObjectData"/> and <see cref="EntityBase(SerializationInfo,StreamingContext)"/>.
-	/// For serialization and deserialization of the actual entity values, the methods <see cref="SerializeEntityValues"/> and <see cref="DeserializeEntityValues"/> must be overloaded.
+	/// Therefore, to serialize and deserialize values in types inheriting from <see cref="EntityBase"/>, you must use <see cref="ISerializable.GetObjectData"/> and <see cref="EntityBase(SerializationInfo,StreamingContext)"/> (usually automatically used by serializers/deserializers).
+	/// The default implementations of <see cref="SerializeEntityValues"/> and <see cref="DeserializeEntityValues"/> performs serialization as defined by the <see cref="SerializationOptions"/> property.
+	/// These methods must be overloaded if custom serialization behaviour needs to be implemented.
 	/// </note>
 	/// </remarks>
+	/// TODO: Add ICloneable
 	[Serializable]
 	public abstract class EntityBase : INotifyPropertyChanged, IEntityChangeTracking, IEntityErrorTracking, IDataErrorInfo, INotifyDataErrorInfo, ISerializable
 	{
@@ -35,6 +37,8 @@ namespace RI.Framework.Data.Repository.Entities
 		/// </summary>
 		protected EntityBase ()
 		{
+			this.SerializationOptions = EntityBaseSerializationOptions.All;
+
 			this.CreateTimestamp = null;
 			this.CreateContext = null;
 
@@ -58,14 +62,6 @@ namespace RI.Framework.Data.Repository.Entities
 				throw new ArgumentNullException(nameof(info));
 			}
 
-			this.CreateTimestamp = (DateTime?)info.GetValue(nameof(this.CreateTimestamp), typeof(DateTime?));
-			this.CreateContext = info.GetString(nameof(this.CreateContext));
-
-			this.ModifyTimestamp = (DateTime?)info.GetValue(nameof(this.ModifyTimestamp), typeof(DateTime?));
-			this.ModifyContext = info.GetString(nameof(this.ModifyContext));
-
-			this.Errors = (RepositorySetErrors)info.GetValue(nameof(this.Errors), typeof(RepositorySetErrors));
-
 			this.DeserializeEntityValues(info, context);
 		}
 
@@ -77,48 +73,272 @@ namespace RI.Framework.Data.Repository.Entities
 				throw new ArgumentNullException(nameof(info));
 			}
 
-			this.GetObjectData(info, context);
-		}
-
-		private void GetObjectData(SerializationInfo info, StreamingContext context)
-		{
-			info.AddValue(nameof(this.CreateTimestamp), this.CreateTimestamp);
-			info.AddValue(nameof(this.CreateContext), this.CreateContext);
-
-			info.AddValue(nameof(this.ModifyTimestamp), this.ModifyTimestamp);
-			info.AddValue(nameof(this.ModifyContext), this.ModifyContext);
-
-			info.AddValue(nameof(this.Errors), this.Errors);
-
 			this.SerializeEntityValues(info, context);
 		}
 
 		/// <summary>
-		/// Called when the entity values are serialized.
+		/// Called when the entity is serialized.
 		/// </summary>
 		/// <param name="info"> The serialization data. </param>
 		/// <param name="context"> The type of the source of the serialization data. </param>
 		/// <remarks>
 		/// <para>
-		/// The default implementation does nothing.
+		/// The default implementation calls <see cref="SerializeSerializationOptions"/>, <see cref="SerializeErrors"/>, <see cref="SerializeCreateTracking"/>, <see cref="SerializeModifyTracking"/>, and/or <see cref="SerializePublicProperties"/>, depending on the value of <see cref="SerializationOptions"/>.
 		/// </para>
 		/// </remarks>
 		protected virtual void SerializeEntityValues (SerializationInfo info, StreamingContext context)
 		{
+			if ((this.SerializationOptions & EntityBaseSerializationOptions.SerializationOptions) == EntityBaseSerializationOptions.SerializationOptions)
+			{
+				this.SerializeSerializationOptions(info, context);
+			}
+
+			if ((this.SerializationOptions & EntityBaseSerializationOptions.Errors) == EntityBaseSerializationOptions.Errors)
+			{
+				this.SerializeErrors(info, context);
+			}
+
+			if ((this.SerializationOptions & EntityBaseSerializationOptions.CreateTracking) == EntityBaseSerializationOptions.CreateTracking)
+			{
+				this.SerializeCreateTracking(info, context);
+			}
+
+			if ((this.SerializationOptions & EntityBaseSerializationOptions.ModifyTracking) == EntityBaseSerializationOptions.ModifyTracking)
+			{
+				this.SerializeModifyTracking(info, context);
+			}
+
+			if ((this.SerializationOptions & EntityBaseSerializationOptions.PublicProperties) == EntityBaseSerializationOptions.PublicProperties)
+			{
+				this.SerializePublicProperties(info, context);
+			}
 		}
 
 		/// <summary>
-		/// Called when the entity values are deserialized.
+		/// Called when the entity is deserialized.
 		/// </summary>
 		/// <param name="info"> The serialization data. </param>
 		/// <param name="context"> The type of the source of the serialization data. </param>
 		/// <remarks>
 		/// <para>
-		/// The default implementation does nothing.
+		/// The default implementation calls <see cref="DeserializeSerializationOptions"/>, <see cref="DeserializeErrors"/>, <see cref="DeserializeCreateTracking"/>, <see cref="DeserializeModifyTracking"/>, and/or <see cref="DeserializePublicProperties"/>, depending on the value of <see cref="SerializationOptions"/>.
+		/// If <see cref="SerializationOptions"/> specifies <see cref="EntityBaseSerializationOptions.SerializationOptions"/>, the serialization options are deserialized first, replacing the value in <see cref="SerializationOptions"/>, and using the deserialized value for further deserialization.
 		/// </para>
 		/// </remarks>
 		protected virtual void DeserializeEntityValues(SerializationInfo info, StreamingContext context)
 		{
+			EntityBaseSerializationOptions serializationOptions = this.SerializationOptions;
+			if ((this.SerializationOptions & EntityBaseSerializationOptions.SerializationOptions) == EntityBaseSerializationOptions.SerializationOptions)
+			{
+				this.DeserializeSerializationOptions(info, context);
+				if ((this.SerializationOptions & EntityBaseSerializationOptions.SerializationOptions) == EntityBaseSerializationOptions.None)
+				{
+					this.SerializationOptions = serializationOptions;
+				}
+			}
+
+			if ((this.SerializationOptions & EntityBaseSerializationOptions.Errors) == EntityBaseSerializationOptions.Errors)
+			{
+				this.DeserializeErrors(info, context);
+			}
+
+			if ((this.SerializationOptions & EntityBaseSerializationOptions.CreateTracking) == EntityBaseSerializationOptions.CreateTracking)
+			{
+				this.DeserializeCreateTracking(info, context);
+			}
+
+			if ((this.SerializationOptions & EntityBaseSerializationOptions.ModifyTracking) == EntityBaseSerializationOptions.ModifyTracking)
+			{
+				this.DeserializeModifyTracking(info, context);
+			}
+
+			if ((this.SerializationOptions & EntityBaseSerializationOptions.PublicProperties) == EntityBaseSerializationOptions.PublicProperties)
+			{
+				this.DeserializePublicProperties(info, context);
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the serialization options for this entity.
+		/// </summary>
+		/// <value>
+		/// 
+		/// </value>
+		public EntityBaseSerializationOptions SerializationOptions
+		{
+			get
+			{
+				return this._serializationOptions;
+			}
+			set
+			{
+				EntityBaseSerializationOptions oldValue = this._serializationOptions;
+				this._serializationOptions = value;
+				bool notify = oldValue != value;
+				this.OnPropertyChanged(notify, nameof(this.SerializationOptions));
+			}
+		}
+
+		/// <summary>
+		/// Serializes creation tracking data (<see cref="CreateTimestamp"/>, <see cref="CreateContext"/>).
+		/// </summary>
+		/// <param name="info"> The serialization data. </param>
+		/// <param name="context"> The type of the source of the serialization data. </param>
+		protected virtual void SerializeCreateTracking (SerializationInfo info, StreamingContext context)
+		{
+			info.AddValue(nameof(this.CreateTimestamp), this.CreateTimestamp.GetValueOrDefault(DateTime.MinValue));
+			info.AddValue(nameof(this.CreateContext), this.CreateContext);
+		}
+
+		/// <summary>
+		/// Serializes modification tracking data (<see cref="ModifyTimestamp"/>, <see cref="ModifyContext"/>).
+		/// </summary>
+		/// <param name="info"> The serialization data. </param>
+		/// <param name="context"> The type of the source of the serialization data. </param>
+		protected virtual void SerializeModifyTracking (SerializationInfo info, StreamingContext context)
+		{
+			info.AddValue(nameof(this.ModifyTimestamp), this.ModifyTimestamp.GetValueOrDefault(DateTime.MinValue));
+			info.AddValue(nameof(this.ModifyContext), this.ModifyContext);
+		}
+
+		/// <summary>
+		/// Serializes errors (<see cref="Errors"/>).
+		/// </summary>
+		/// <param name="info"> The serialization data. </param>
+		/// <param name="context"> The type of the source of the serialization data. </param>
+		protected virtual void SerializeErrors (SerializationInfo info, StreamingContext context)
+		{
+			info.AddValue(nameof(this.Errors), this.Errors);
+		}
+
+		/// <summary>
+		/// Serializes the serialization options (<see cref="SerializationOptions"/>).
+		/// </summary>
+		/// <param name="info"> The serialization data. </param>
+		/// <param name="context"> The type of the source of the serialization data. </param>
+		protected virtual void SerializeSerializationOptions(SerializationInfo info, StreamingContext context)
+		{
+			info.AddValue(nameof(this.SerializationOptions), (int)this.SerializationOptions);
+		}
+
+		/// <summary>
+		/// Deserializes creation tracking data (<see cref="CreateTimestamp"/>, <see cref="CreateContext"/>).
+		/// </summary>
+		/// <param name="info"> The serialization data. </param>
+		/// <param name="context"> The type of the source of the serialization data. </param>
+		protected virtual void DeserializeCreateTracking(SerializationInfo info, StreamingContext context)
+		{
+			DateTime? timestamp;
+			string contextString;
+
+			try
+			{
+				timestamp = info.GetDateTime(nameof(this.CreateTimestamp));
+				contextString = info.GetString(nameof(this.CreateContext));
+			}
+			catch (SerializationException)
+			{
+				return;
+			}
+
+			if (timestamp == DateTime.MinValue)
+			{
+				timestamp = null;
+			}
+
+			this.CreateTimestamp = timestamp;
+			this.CreateContext = contextString;
+		}
+
+		/// <summary>
+		/// Deserializes modification tracking data (<see cref="ModifyTimestamp"/>, <see cref="ModifyContext"/>).
+		/// </summary>
+		/// <param name="info"> The serialization data. </param>
+		/// <param name="context"> The type of the source of the serialization data. </param>
+		protected virtual void DeserializeModifyTracking(SerializationInfo info, StreamingContext context)
+		{
+			DateTime? timestamp;
+			string contextString;
+
+			try
+			{
+				timestamp = info.GetDateTime(nameof(this.ModifyTimestamp));
+				contextString = info.GetString(nameof(this.ModifyContext));
+			}
+			catch (SerializationException)
+			{
+				return;
+			}
+
+			if (timestamp == DateTime.MinValue)
+			{
+				timestamp = null;
+			}
+
+			this.ModifyTimestamp = timestamp;
+			this.ModifyContext = contextString;
+		}
+
+		/// <summary>
+		/// Deserializes errors (<see cref="Errors"/>).
+		/// </summary>
+		/// <param name="info"> The serialization data. </param>
+		/// <param name="context"> The type of the source of the serialization data. </param>
+		protected virtual void DeserializeErrors(SerializationInfo info, StreamingContext context)
+		{
+			RepositorySetErrors errors;
+
+			try
+			{
+				errors = (RepositorySetErrors)info.GetValue(nameof(this.Errors), typeof(RepositorySetErrors));
+			}
+			catch (SerializationException)
+			{
+				return;
+			}
+
+			this.Errors = errors;
+		}
+
+		/// <summary>
+		/// Deserializes the serialization options (<see cref="SerializationOptions"/>).
+		/// </summary>
+		/// <param name="info"> The serialization data. </param>
+		/// <param name="context"> The type of the source of the serialization data. </param>
+		protected virtual void DeserializeSerializationOptions(SerializationInfo info, StreamingContext context)
+		{
+			EntityBaseSerializationOptions serializationOptions;
+
+			try
+			{
+				serializationOptions = (EntityBaseSerializationOptions)info.GetInt32(nameof(this.SerializationOptions));
+			}
+			catch (SerializationException)
+			{
+				return;
+			}
+
+			this.SerializationOptions = serializationOptions;
+		}
+
+		/// <summary>
+		/// Serializes all public properties.
+		/// </summary>
+		/// <param name="info"> The serialization data. </param>
+		/// <param name="context"> The type of the source of the serialization data. </param>
+		protected virtual void SerializePublicProperties (SerializationInfo info, StreamingContext context)
+		{
+			//TODO: Implement
+		}
+
+		/// <summary>
+		/// Deserializes all public properties.
+		/// </summary>
+		/// <param name="info"> The serialization data. </param>
+		/// <param name="context"> The type of the source of the serialization data. </param>
+		protected virtual void DeserializePublicProperties (SerializationInfo info, StreamingContext context)
+		{
+			//TODO: Implement
 		}
 
 		#endregion
@@ -133,6 +353,7 @@ namespace RI.Framework.Data.Repository.Entities
 		private RepositorySetErrors _errors;
 		private string _modifyContext;
 		private DateTime? _modifyTimestamp;
+		private EntityBaseSerializationOptions _serializationOptions;
 
 		#endregion
 

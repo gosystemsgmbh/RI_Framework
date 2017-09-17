@@ -10,6 +10,7 @@ using RI.Framework.Data.Database.Cleanup;
 using RI.Framework.Data.Database.Scripts;
 using RI.Framework.Data.Database.Upgrading;
 using RI.Framework.Data.Database.Versioning;
+using RI.Framework.Services.Logging;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Logging;
@@ -201,7 +202,7 @@ namespace RI.Framework.Data.Database
 			this.TrackedConnections = new List<TConnection>();
 			this.ConnectionStateChangedHandler = this.ConnectionStateChangedMethod;
 
-			((ILogSource)this).Logger = null;
+			((ILogSource)this).Logger = LogLocator.Logger;
 			((ILogSource)this).LoggingEnabled = true;
 
 			this.InitialState = DatabaseState.Uninitialized;

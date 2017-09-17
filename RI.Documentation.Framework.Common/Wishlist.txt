@@ -237,6 +237,8 @@ Data
  - (.NET) Reporting base
  - (EPPlus) Reporting Excel
 
+ - Improve EntityBase serialization performance by checking for existing key-value pairs instead of relying on SerializationException
+
  - (.NET) IRepositorySet: Add entity and property descriptions functionality
  - (.NET) IRepositorySet: Add GetChanges method (return RepositorySetChanges type)
  - (.NET) IRepositoryContext: Add GetChanges method (return RepositoryContextChanges type)
