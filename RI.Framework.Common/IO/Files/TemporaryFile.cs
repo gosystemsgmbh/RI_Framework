@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 
 using RI.Framework.IO.Paths;
+using RI.Framework.Utilities;
+using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.ObjectModel;
 
 
@@ -126,14 +128,47 @@ namespace RI.Framework.IO.Files
 		/// <returns>
 		///     The temporary file.
 		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// The default extension for temporary files is used.
+		/// </para>
+		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="directory" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> The directory contains wildcards. </exception>
 		/// <exception cref="DirectoryNotFoundException"> The directory does not exist. </exception>
-		public static TemporaryFile FromExistingDirectory (DirectoryPath directory)
+		public static TemporaryFile FromExistingDirectory (DirectoryPath directory) => TemporaryFile.FromExistingDirectory(directory, null);
+
+		/// <summary>
+		///     Uses a specified directory to create a new temporary file in it.
+		/// </summary>
+		/// <param name="directory"> The directory in which a new temporary file is to be created. </param>
+		/// <param name="extension"> The file extension to use. Can be null to use the default extension for temporary files.</param>
+		/// <returns>
+		///     The temporary file.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="directory" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"><paramref name="extension"/> is an empty string.</exception>
+		/// <exception cref="ArgumentException"><paramref name="extension"/> does not start with a period (.).</exception>
+		/// <exception cref="InvalidOperationException"> The directory contains wildcards. </exception>
+		/// <exception cref="DirectoryNotFoundException"> The directory does not exist. </exception>
+		public static TemporaryFile FromExistingDirectory(DirectoryPath directory, string extension)
 		{
 			if (directory == null)
 			{
 				throw new ArgumentNullException(nameof(directory));
+			}
+
+			if (extension != null)
+			{
+				if (extension.IsNullOrEmptyOrWhitespace())
+				{
+					throw new EmptyStringArgumentException(nameof(extension));
+				}
+
+				if (!extension.StartsWith(".", StringComparison.Ordinal))
+				{
+					throw new ArgumentNullException(nameof(extension), "The file extension does not start with a period (.).");
+				}
 			}
 
 			directory.VerifyRealDirectory();
@@ -143,7 +178,7 @@ namespace RI.Framework.IO.Files
 				throw new DirectoryNotFoundException("Directory not found: " + directory);
 			}
 
-			return new TemporaryFile(directory.AppendFile(TemporaryFile.CreateTemporaryFileName()));
+			return new TemporaryFile(directory.AppendFile(TemporaryFile.CreateTemporaryFileName(extension)));
 		}
 
 		/// <summary>
@@ -197,7 +232,10 @@ namespace RI.Framework.IO.Files
 			}
 		}
 
-		private static string CreateTemporaryFileName () => Guid.NewGuid().ToString("N") + DirectoryPath.TemporaryExtension;
+		private static string CreateTemporaryFileName (string extension)
+		{
+			return Guid.NewGuid().ToString("N") + (extension ?? DirectoryPath.TemporaryExtension);
+		}
 
 		private static DirectoryPath GetTempDirectory () => TemporaryFile.TemporaryDirectory ?? DirectoryPath.GetTempDirectory();
 
@@ -216,14 +254,47 @@ namespace RI.Framework.IO.Files
 		///         A new temporary file is created in the directory specified by <see cref="TemporaryDirectory" />.
 		///         If <see cref="TemporaryDirectory" /> is null, <see cref="DirectoryPath.GetTempDirectory" /> is used.
 		///     </para>
+		/// <para>
+		/// The default extension for temporary files is used.
+		/// </para>
 		/// </remarks>
-		public TemporaryFile ()
+		public TemporaryFile()
+			: this((string)null)
+		{
+		}
+
+		/// <summary>
+		///     Creates a new instance of <see cref="TemporaryFile" />.
+		/// </summary>
+		/// <param name="extension"> The file extension to use. Can be null to use the default extension for temporary files.</param>
+		/// <remarks>
+		///     <para>
+		///         A new temporary file is created in the directory specified by <see cref="TemporaryDirectory" />.
+		///         If <see cref="TemporaryDirectory" /> is null, <see cref="DirectoryPath.GetTempDirectory" /> is used.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="EmptyStringArgumentException"><paramref name="extension"/> is an empty string.</exception>
+		/// <exception cref="ArgumentException"><paramref name="extension"/> does not start with a period (.).</exception>
+		public TemporaryFile (string extension)
 		{
 			this.SyncRoot = new object();
 
+			if (extension != null)
+			{
+				if (extension.IsNullOrEmptyOrWhitespace())
+				{
+					throw new EmptyStringArgumentException(nameof(extension));
+				}
+
+				if (!extension.StartsWith(".", StringComparison.Ordinal))
+				{
+					throw new ArgumentNullException(nameof(extension), "The file extension does not start with a period (.).");
+				}
+			}
+
 			lock (TemporaryFile.GlobalSyncRoot)
 			{
-				this.File = TemporaryFile.GetTempDirectory().AppendFile(TemporaryFile.CreateTemporaryFileName());
+				this.File = TemporaryFile.GetTempDirectory().AppendFile(TemporaryFile.CreateTemporaryFileName(extension));
 			}
 
 			this.File.CreateIfNotExist();

@@ -74,6 +74,8 @@
     <Compile Include="Data\EF\Validation\_NamespaceDoc.cs" />
     <Compile Include="Data\EF\_NamespaceDoc.cs" />
     <Compile Include="Data\Repository\Entities\EntityConfigurationBase.cs" />
+    <Compile Include="Data\Repository\Entities\EntityFilterBase.cs" />
+    <Compile Include="Data\Repository\Entities\EntityValidationBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Reflection;
 using System.Runtime.Serialization;
 using System.Xml.Serialization;
 
 using RI.Framework.Data.Repository.Views;
 using RI.Framework.Utilities;
-
-
-
+using RI.Framework.Utilities.Serialization;
 
 namespace RI.Framework.Data.Repository.Entities
 {
@@ -26,9 +26,8 @@ namespace RI.Framework.Data.Repository.Entities
 	/// These methods must be overloaded if custom serialization behaviour needs to be implemented.
 	/// </note>
 	/// </remarks>
-	/// TODO: Add ICloneable
 	[Serializable]
-	public abstract class EntityBase : INotifyPropertyChanged, IEntityChangeTracking, IEntityErrorTracking, IDataErrorInfo, INotifyDataErrorInfo, ISerializable
+	public abstract class EntityBase : INotifyPropertyChanged, IEntityChangeTracking, IEntityErrorTracking, IDataErrorInfo, INotifyDataErrorInfo, ISerializable, ICloneable
 	{
 		#region Instance Constructor/Destructor
 
@@ -228,18 +227,13 @@ namespace RI.Framework.Data.Repository.Entities
 		/// <param name="context"> The type of the source of the serialization data. </param>
 		protected virtual void DeserializeCreateTracking(SerializationInfo info, StreamingContext context)
 		{
-			DateTime? timestamp;
-			string contextString;
-
-			try
-			{
-				timestamp = info.GetDateTime(nameof(this.CreateTimestamp));
-				contextString = info.GetString(nameof(this.CreateContext));
-			}
-			catch (SerializationException)
+			if (!info.HasValues(nameof(this.CreateTimestamp), nameof(this.CreateContext)))
 			{
 				return;
 			}
+
+			DateTime? timestamp = info.GetDateTime(nameof(this.CreateTimestamp));
+			string contextString = info.GetString(nameof(this.CreateContext));
 
 			if (timestamp == DateTime.MinValue)
 			{
@@ -257,18 +251,13 @@ namespace RI.Framework.Data.Repository.Entities
 		/// <param name="context"> The type of the source of the serialization data. </param>
 		protected virtual void DeserializeModifyTracking(SerializationInfo info, StreamingContext context)
 		{
-			DateTime? timestamp;
-			string contextString;
-
-			try
-			{
-				timestamp = info.GetDateTime(nameof(this.ModifyTimestamp));
-				contextString = info.GetString(nameof(this.ModifyContext));
-			}
-			catch (SerializationException)
+			if (!info.HasValues(nameof(this.ModifyTimestamp), nameof(this.ModifyContext)))
 			{
 				return;
 			}
+
+			DateTime? timestamp = info.GetDateTime(nameof(this.ModifyTimestamp));
+			string contextString = info.GetString(nameof(this.ModifyContext));
 
 			if (timestamp == DateTime.MinValue)
 			{
@@ -286,16 +275,12 @@ namespace RI.Framework.Data.Repository.Entities
 		/// <param name="context"> The type of the source of the serialization data. </param>
 		protected virtual void DeserializeErrors(SerializationInfo info, StreamingContext context)
 		{
-			RepositorySetErrors errors;
-
-			try
-			{
-				errors = (RepositorySetErrors)info.GetValue(nameof(this.Errors), typeof(RepositorySetErrors));
-			}
-			catch (SerializationException)
+			if (!info.HasValues(nameof(this.Errors)))
 			{
 				return;
 			}
+
+			RepositorySetErrors errors = (RepositorySetErrors)info.GetValue(nameof(this.Errors), typeof(RepositorySetErrors));
 
 			this.Errors = errors;
 		}
@@ -307,16 +292,12 @@ namespace RI.Framework.Data.Repository.Entities
 		/// <param name="context"> The type of the source of the serialization data. </param>
 		protected virtual void DeserializeSerializationOptions(SerializationInfo info, StreamingContext context)
 		{
-			EntityBaseSerializationOptions serializationOptions;
-
-			try
-			{
-				serializationOptions = (EntityBaseSerializationOptions)info.GetInt32(nameof(this.SerializationOptions));
-			}
-			catch (SerializationException)
+			if (!info.HasValues(nameof(this.SerializationOptions)))
 			{
 				return;
 			}
+
+			EntityBaseSerializationOptions serializationOptions = (EntityBaseSerializationOptions)info.GetInt32(nameof(this.SerializationOptions));
 
 			this.SerializationOptions = serializationOptions;
 		}
@@ -328,7 +309,14 @@ namespace RI.Framework.Data.Repository.Entities
 		/// <param name="context"> The type of the source of the serialization data. </param>
 		protected virtual void SerializePublicProperties (SerializationInfo info, StreamingContext context)
 		{
-			//TODO: Implement
+			List<PropertySerializationInfo> properties = EntityBase.GetSerializedProperties(this.GetType());
+			foreach (PropertySerializationInfo property in properties)
+			{
+				string name = property.Name;
+				Type type = property.Type;
+				object value = property.GetValue(this);
+				info.AddValue(name, value, type);
+			}
 		}
 
 		/// <summary>
@@ -338,8 +326,35 @@ namespace RI.Framework.Data.Repository.Entities
 		/// <param name="context"> The type of the source of the serialization data. </param>
 		protected virtual void DeserializePublicProperties (SerializationInfo info, StreamingContext context)
 		{
-			//TODO: Implement
+			List<PropertySerializationInfo> properties = EntityBase.GetSerializedProperties(this.GetType());
+			foreach (PropertySerializationInfo property in properties)
+			{
+				string name = property.Name;
+				if (info.HasValue(name))
+				{
+					Type type = property.Type;
+					object value = info.GetValue(name, type);
+					property.SetValue(this, value);
+				}
+			}
 		}
+
+		private static List<PropertySerializationInfo> GetSerializedProperties (Type type)
+		{
+			if (!EntityBase.SerializedProperties.ContainsKey(type))
+			{
+				EntityBase.SerializedProperties.Add(type, PropertySerializationInfo.GetFromType(type));
+			}
+
+			return EntityBase.SerializedProperties[type];
+		}
+
+		static EntityBase ()
+		{
+			EntityBase.SerializedProperties = new Dictionary<Type, List<PropertySerializationInfo>>();
+		}
+
+		private static Dictionary<Type, List<PropertySerializationInfo>> SerializedProperties { get; set; }
 
 		#endregion
 
@@ -675,5 +690,76 @@ namespace RI.Framework.Data.Repository.Entities
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		#endregion
+
+
+		/// <inheritdoc />
+		public object Clone ()
+		{
+			return this.CloneDeep();
+		}
+
+		private sealed class PropertySerializationInfo
+		{
+			public static List<PropertySerializationInfo> GetFromType (Type type)
+			{
+				if (type == null)
+				{
+					throw new ArgumentNullException(nameof(type));
+				}
+
+				PropertyInfo[] properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+				List<PropertySerializationInfo> infos = new List<PropertySerializationInfo>(properties.Length);
+
+				foreach (PropertyInfo property in properties)
+				{
+					PropertySerializationInfo info = new PropertySerializationInfo();
+					info.DeclaringType = type;
+					info.Property = property;
+					info.Name = property.Name;
+					info.Type = property.PropertyType;
+					info.GetMethod = property.GetGetMethod(true);
+					info.SetMethod = property.GetSetMethod(true);
+					infos.Add(info);
+				}
+
+				return infos;
+			}
+
+			public object GetValue (EntityBase entity)
+			{
+				if (entity == null)
+				{
+					throw new ArgumentNullException(nameof(entity));
+				}
+
+				return this.GetMethod.Invoke(entity, null);
+			}
+
+			public void SetValue (EntityBase entity, object value)
+			{
+				if (entity == null)
+				{
+					throw new ArgumentNullException(nameof(entity));
+				}
+
+				this.SetMethod.Invoke(entity, new[]
+				{
+					value
+				});
+			}
+
+			private MethodInfo GetMethod { get; set; }
+
+			private MethodInfo SetMethod { get; set; }
+
+			private Type DeclaringType { get; set; }
+
+			private PropertyInfo Property { get; set; }
+
+			public string Name { get; private set; }
+
+			public Type Type { get; private set; }
+		}
 	}
 }

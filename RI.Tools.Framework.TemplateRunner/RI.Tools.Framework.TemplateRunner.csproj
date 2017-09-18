@@ -37,6 +37,10 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="MathUtils.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>MathUtils.tt.cs</LastGenOutput>
+    </Content>
     <Content Include="NumberExtensions.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>NumberExtensions.tt.cs</LastGenOutput>
@@ -46,6 +50,11 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MathUtils.tt.cs">
+      <DependentUpon>MathUtils.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="NumberExtensions.tt.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -54,7 +63,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>@copy "$(ProjectDir)NumberExtensions.tt.cs" "$(SolutionDir)RI.Framework.Common\Mathematic\NumberExtensions.cs"</PostBuildEvent>
+    <PostBuildEvent>@copy "$(ProjectDir)NumberExtensions.tt.cs" "$(SolutionDir)RI.Framework.Common\Mathematic\NumberExtensions.cs"
+@copy "$(ProjectDir)MathUtils.tt.cs" "$(SolutionDir)RI.Framework.Common\Mathematic\MathUtils.cs"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>@"$(SolutionDir)_Input\VersionUpdater.exe" "$(ProjectDir)." "r" "file" "$(SolutionDir)RI.Framework.Property.Version.txt" "$(SolutionDir)RI.Framework.Property.Company.txt" "$(SolutionDir)RI.Framework.Property.Copyright.txt"</PreBuildEvent>

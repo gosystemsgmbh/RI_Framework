@@ -123,6 +123,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Mathematic\Controllers\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mathematic\MathConstD.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mathematic\MathConstF.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Mathematic\MathUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mathematic\NumberExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mathematic\RomanNumber.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mathematic\RunningValues.cs" />
@@ -224,6 +225,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Runtime\OperatingSystemExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Runtime\RuntimeEnvironment.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Runtime\_NamespaceDoc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Serialization\SerializationInfoExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Serialization\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\SingleExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObjectModel\ICloneable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObjectModel\_NamespaceDoc.cs" />

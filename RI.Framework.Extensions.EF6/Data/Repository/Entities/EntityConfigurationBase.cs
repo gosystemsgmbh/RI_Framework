@@ -6,13 +6,16 @@
 namespace RI.Framework.Data.Repository.Entities
 {
 	/// <summary>
-	/// Implementas a base class for entity configuration which defines default behaviour for <see cref="EntityBase"/> based entities.
+	/// Implements a base class for entity configuration which defines default behaviour for <see cref="EntityBase"/> based entities.
 	/// </summary>
 	/// <typeparam name="T"> The type of entity this configuration configures. </typeparam>
 	/// <remarks>
+	///     <para>
+	///         See <see cref="EntityConfiguration{T}" /> for more details.
+	///     </para>
 	/// <note note="note">
 	/// By default, the following properties are ignored / not mapped to columns:
-	/// <see cref="EntityBase.SerializationOptions"/>, <see cref="EntityBase.ErrorStringWithSpaces"/>, <see cref="EntityBase.ErrorStringWithNewLines"/>.
+	/// <see cref="EntityBase.SerializationOptions"/>, <see cref="EntityBase.Errors"/>, <see cref="EntityBase.ErrorStringWithSpaces"/>, <see cref="EntityBase.ErrorStringWithNewLines"/>.
 	/// </note>
 	/// </remarks>
 	public abstract class EntityConfigurationBase<T> : EntityConfiguration<T>
@@ -25,16 +28,9 @@ namespace RI.Framework.Data.Repository.Entities
 		{
 			this.Ignore(x => x.SerializationOptions);
 
+			this.Ignore(x => x.Errors);
 			this.Ignore(x => x.ErrorStringWithSpaces);
 			this.Ignore(x => x.ErrorStringWithNewLines);
-		}
-
-		/// <summary>
-		/// Ignores / does not map errors (<see cref="EntityBase.Errors"/>).
-		/// </summary>
-		public void IgnoreErrors ()
-		{
-			this.Ignore(x => x.Errors);
 		}
 
 		/// <summary>

@@ -10,8 +10,6 @@
 Utilities
 ---------
 
- - (Linux) LinuxShell
-
  - (Windows) SerialPortStream
 
  - (WinForms) FormExtensions
@@ -33,13 +31,7 @@ Utilities
 Threading
 ---------
 
- - (.NET) ThreadDispatcherExtensions: Extension methods supporting various Actions and Funcs
-
- - (.NET) TaskExtensions: Awaiter for IEnumerable<Task>
- - (.NET) TaskExtensions: Awaiter for int
- - (.NET) TaskExtensions: Awaiter for TimeSpan
- - (.NET) TaskExtensions: Awaiter for CancellationToken
- - (.NET) TaskExtensions: Awaiter for Process
+ # (.NET) ThreadDispatcherExtensions: Extension methods supporting various Actions and Funcs
 
 
 Collections
@@ -133,9 +125,7 @@ Collections
 I/O
 ---
 
- - (Common) EndianessConverter
-
- - (Common) CsvDocument: Add header support
+ # (Common) EndianessConverter
 
  - (Common) IniDocument: DecomposeSections (?)
  - (Common) IniDocument: RemoveElements with predicate
@@ -237,8 +227,6 @@ Data
  - (.NET) Reporting base
  - (EPPlus) Reporting Excel
 
- - Improve EntityBase serialization performance by checking for existing key-value pairs instead of relying on SerializationException
-
  - (.NET) IRepositorySet: Add entity and property descriptions functionality
  - (.NET) IRepositorySet: Add GetChanges method (return RepositorySetChanges type)
  - (.NET) IRepositoryContext: Add GetChanges method (return RepositoryContextChanges type)
@@ -248,22 +236,20 @@ Data
 Mathematic
 ----------
 
- - (Common) Aggregate extensions for numerical types (byte, short, int, long, double, float), including statistics (min, max, sum, average, median, RMS, count)
+ * (Common) Aggregate extensions for numerical types (byte, short, int, long, double, float), including statistics (min, max, sum, average, median, RMS, count)
 
- - (Common) NumberExtensions: FractionAsInteger
- - (Common) NumberExtensions: FirstDigits
- - (Common) NumberExtensions: LastDigits
- - (Common) NumberExtensions: ggT
- - (Common) NumberExtensions: kgV
+ * (Common) NumberExtensions: FractionAsInteger
+ * (Common) NumberExtensions: FirstDigits
+ * (Common) NumberExtensions: LastDigits
 
  - (Common) MathUtils: CirclePosition
  - (Common) MathUtils: EllipsePosition
 
- - (Common) StatisticValues: Variance
- - (Common) StatisticValues: GeometricMean
+ * (Common) StatisticValues: Variance
+ * (Common) StatisticValues: GeometricMean
 
- - (Common) RunningValues: GeometricMean
- - (Common) RunningValues: PreFill (also as constructor parameter)
+ * (Common) RunningValues: GeometricMean
+ * (Common) RunningValues: PreFill (also as constructor parameter)
 
  - (Common) IController
  - (Common) NonlinearController
