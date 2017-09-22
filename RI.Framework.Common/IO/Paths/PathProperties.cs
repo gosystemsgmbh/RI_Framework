@@ -1070,6 +1070,122 @@ namespace RI.Framework.IO.Paths
 			return PathProperties.FromPath(this.PathResolved, this.AllowWildcards, this.AllowRelatives, this.Type);
 		}
 
+		/// <summary>
+		/// Determines whether this path is compatible with another path.
+		/// </summary>
+		/// <param name="other">The other path.</param>
+		/// <returns>
+		/// true if the paths are compatible, false otherwise.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"><paramref name="other"/> is null.</exception>
+		public bool IsCompatibleWith(PathString other)
+		{
+			if (other == null)
+			{
+				throw new ArgumentNullException(nameof(other));
+			}
+
+			return this.IsCompatibleWith(other.Type, other.PathInternal);
+		}
+
+		/// <summary>
+		/// Determines whether this path is compatible with another path.
+		/// </summary>
+		/// <param name="other">The other path.</param>
+		/// <returns>
+		/// true if the paths are compatible, false otherwise.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"><paramref name="other"/> is null.</exception>
+		public bool IsCompatibleWith(PathProperties other)
+		{
+			if (other == null)
+			{
+				throw new ArgumentNullException(nameof(other));
+			}
+
+			return this.IsCompatibleWith(other.Type, other);
+		}
+
+		/// <summary>
+		/// Determines whether this path is compatible with a specifed path type.
+		/// </summary>
+		/// <param name="type">The path type to check compatibility with.</param>
+		/// <returns>
+		/// true if the path is compatible, false otherwise.
+		/// </returns>
+		public bool IsCompatibleWith(PathType type)
+		{
+			return this.IsCompatibleWith(type, null);
+		}
+
+		/// <summary>
+		/// Determines whether this path is compatible with the current system.
+		/// </summary>
+		/// <returns>
+		/// true if the path is compatible, false otherwise.
+		/// </returns>
+		public bool IsCompatibleWith()
+		{
+			PathType? type = PathProperties.GetSystemType();
+			if (!type.HasValue)
+			{
+				return false;
+			}
+			return this.IsCompatibleWith(type.Value, null);
+		}
+
+		/// <summary>
+		/// Creates a copy of this path using a different path type.
+		/// </summary>
+		/// <param name="type">The path type to use for the copy.</param>
+		/// <returns>
+		/// The copy of this path with the specified path type.
+		/// </returns>
+		/// <exception cref="ArgumentException"><paramref name="type"/> is <see cref="PathType.Invalid"/>.</exception>
+		public PathProperties ChangeType (PathType type)
+		{
+			if (type == PathType.Invalid)
+			{
+				throw new ArgumentException("Path type is invalid.", nameof(type));
+			}
+
+			string path = PathProperties.CreatePath(this.PartsNormalized.ToList(), type, this.IsRooted);
+			PathProperties copy = PathProperties.FromPath(path, this.HasWildcards, this.HasRelatives, type);
+			return copy;
+		}
+
+		private bool IsCompatibleWith(PathType type, PathProperties other)
+		{
+			bool oneIsInvalid = (this.Type == PathType.Invalid) || (type == PathType.Invalid);
+			bool oneIsWindows = (this.Type == PathType.Windows) || (type == PathType.Windows);
+			bool oneIsUnix = (this.Type == PathType.Unix) || (type == PathType.Unix);
+			bool oneIsUnc = (this.Type == PathType.Unc) || (type == PathType.Unc);
+
+			bool bothAreRelative = (!this.IsRooted) && (other?.IsRooted ?? false);
+
+			if (oneIsInvalid)
+			{
+				return false;
+			}
+
+			if (oneIsUnix && (oneIsWindows || oneIsUnc))
+			{
+				return false;
+			}
+
+			if (bothAreRelative && oneIsWindows && oneIsUnc)
+			{
+				return true;
+			}
+
+			if (oneIsWindows && oneIsUnc)
+			{
+				return false;
+			}
+
+			return true;
+		}
+
 		#endregion
 
 

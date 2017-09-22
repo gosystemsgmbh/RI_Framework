@@ -914,6 +914,16 @@ namespace RI.Framework.IO.Paths
 			return result;
 		}
 
+		/// <inheritdoc cref="PathString.ChangeType"/>
+		public new FilePath ChangeType(PathType type)
+		{
+			PathProperties properties = this.PathInternal.ChangeType(type);
+			return new FilePath(properties);
+		}
+
+		/// <inheritdoc />
+		protected override PathString ChangeTypeInternal(PathType type) => this.ChangeType(type);
+
 		#endregion
 
 

@@ -42,6 +42,11 @@
 		/// </summary>
 		public const double SpeedOfLight = 299792458.0;
 
+		/// <summary>
+		///     The default accuracy value used for zero and almost-zero comparisons.
+		/// </summary>
+		public const double DefaultAccuracy = 1.11022302462516E-15;
+
 		#endregion
 	}
 }

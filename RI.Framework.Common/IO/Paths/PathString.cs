@@ -310,6 +310,72 @@ namespace RI.Framework.IO.Paths
 			return this.PathInternal.Clone();
 		}
 
+		/// <summary>
+		/// Determines whether this path is compatible with another path.
+		/// </summary>
+		/// <param name="other">The other path.</param>
+		/// <returns>
+		/// true if the paths are compatible, false otherwise.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"><paramref name="other"/> is null.</exception>
+		public bool IsCompatibleWith (PathString other)
+		{
+			if (other == null)
+			{
+				throw new ArgumentNullException(nameof(other));
+			}
+
+			return this.PathInternal.IsCompatibleWith(other);
+		}
+
+		/// <summary>
+		/// Determines whether this path is compatible with another path.
+		/// </summary>
+		/// <param name="other">The other path.</param>
+		/// <returns>
+		/// true if the paths are compatible, false otherwise.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"><paramref name="other"/> is null.</exception>
+		public bool IsCompatibleWith(PathProperties other)
+		{
+			if (other == null)
+			{
+				throw new ArgumentNullException(nameof(other));
+			}
+
+			return this.PathInternal.IsCompatibleWith(other);
+		}
+
+		/// <summary>
+		/// Determines whether this path is compatible with a specifed path type.
+		/// </summary>
+		/// <param name="type">The path type to check compatibility with.</param>
+		/// <returns>
+		/// true if the path is compatible, false otherwise.
+		/// </returns>
+		public bool IsCompatibleWith(PathType type) => this.PathInternal.IsCompatibleWith(type);
+
+		/// <summary>
+		/// Determines whether this path is compatible with the current system.
+		/// </summary>
+		/// <returns>
+		/// true if the path is compatible, false otherwise.
+		/// </returns>
+		public bool IsCompatibleWith() => this.PathInternal.IsCompatibleWith();
+
+		/// <summary>
+		/// Creates a copy of this directory path using a different path type.
+		/// </summary>
+		/// <param name="type">The directory path type to use for the copy.</param>
+		/// <returns>
+		/// The copy of this directory path with the specified path type.
+		/// </returns>
+		/// <exception cref="ArgumentException"><paramref name="type"/> is <see cref="PathType.Invalid"/>.</exception>
+		public PathString ChangeType (PathType type) => this.ChangeTypeInternal(type);
+
+		/// <inheritdoc cref="ChangeType"/>
+		protected abstract PathString ChangeTypeInternal (PathType type);
+
 		#endregion
 
 

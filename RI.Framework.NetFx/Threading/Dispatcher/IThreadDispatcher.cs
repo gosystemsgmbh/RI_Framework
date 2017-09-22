@@ -189,7 +189,7 @@ namespace RI.Framework.Threading.Dispatcher
 		/// <summary>
 		///     Enqueues a delegate to the dispatchers queue and does not wait for its execution.
 		/// </summary>
-		/// <param name="priority"> The priority. </param>
+		/// <param name="priority"> The priority. Can be -1 to use the default priority. </param>
 		/// <param name="action"> The delegate. </param>
 		/// <param name="parameters"> Optional parameters of the delagate. </param>
 		/// <returns>
@@ -203,7 +203,7 @@ namespace RI.Framework.Threading.Dispatcher
 		///         A delegate can be enqueued before the dispatcher is run.
 		///     </note>
 		/// </remarks>
-		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="priority" /> is less than zero. </exception>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="priority" /> is less than minus one. </exception>
 		/// <exception cref="ArgumentNullException"> <paramref name="action" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> The dispatcher is being shut down. </exception>
 		ThreadDispatcherOperation Post (int priority, Delegate action, params object[] parameters);
@@ -211,7 +211,7 @@ namespace RI.Framework.Threading.Dispatcher
 		/// <summary>
 		///     Enqueues a delegate to the dispatchers queue and does not wait for its execution.
 		/// </summary>
-		/// <param name="priority"> The priority. </param>
+		/// <param name="priority"> The priority. Can be -1 to use the default priority. </param>
 		/// <param name="options"> The used execution options. </param>
 		/// <param name="action"> The delegate. </param>
 		/// <param name="parameters"> Optional parameters of the delagate. </param>
@@ -226,7 +226,7 @@ namespace RI.Framework.Threading.Dispatcher
 		///         A delegate can be enqueued before the dispatcher is run.
 		///     </note>
 		/// </remarks>
-		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="priority" /> is less than zero. </exception>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="priority" /> is less than minus one. </exception>
 		/// <exception cref="ArgumentNullException"> <paramref name="action" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> The dispatcher is being shut down. </exception>
 		ThreadDispatcherOperation Post (int priority, ThreadDispatcherOptions options, Delegate action, params object[] parameters);
@@ -235,7 +235,7 @@ namespace RI.Framework.Threading.Dispatcher
 		///     Enqueues a delegate to the dispatchers queue and does not wait for its execution.
 		/// </summary>
 		/// <param name="executionContext"> The context under which the delegate is executed. Can be null to use the executing threads context. </param>
-		/// <param name="priority"> The priority. </param>
+		/// <param name="priority"> The priority. Can be -1 to use the default priority. </param>
 		/// <param name="options"> The used execution options. </param>
 		/// <param name="action"> The delegate. </param>
 		/// <param name="parameters"> Optional parameters of the delagate. </param>
@@ -250,7 +250,7 @@ namespace RI.Framework.Threading.Dispatcher
 		///         A delegate can be enqueued before the dispatcher is run.
 		///     </note>
 		/// </remarks>
-		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="priority" /> is less than zero. </exception>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="priority" /> is less than minus one. </exception>
 		/// <exception cref="ArgumentNullException"> <paramref name="action" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> The dispatcher is being shut down. </exception>
 		ThreadDispatcherOperation Post (ThreadDispatcherExecutionContext executionContext, int priority, ThreadDispatcherOptions options, Delegate action, params object[] parameters);
@@ -286,7 +286,7 @@ namespace RI.Framework.Threading.Dispatcher
 		/// <summary>
 		///     Enqueues a delegate to the dispatchers queue and waits for its execution to be completed.
 		/// </summary>
-		/// <param name="priority"> The priority. </param>
+		/// <param name="priority"> The priority. Can be -1 to use the default priority. </param>
 		/// <param name="action"> The delegate. </param>
 		/// <param name="parameters"> Optional parameters of the delagate. </param>
 		/// <returns>
@@ -304,7 +304,7 @@ namespace RI.Framework.Threading.Dispatcher
 		///         Therefore, <see cref="Send(int,Delegate,object[])" /> calls can be cascaded.
 		///     </para>
 		/// </remarks>
-		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="priority" /> is less than zero. </exception>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="priority" /> is less than minus one. </exception>
 		/// <exception cref="ArgumentNullException"> <paramref name="action" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> The dispatcher is not running or is being shut down. </exception>
 		/// <exception cref="ThreadDispatcherException"> An exception occurred during execution of the delegate. </exception>
@@ -314,7 +314,7 @@ namespace RI.Framework.Threading.Dispatcher
 		/// <summary>
 		///     Enqueues a delegate to the dispatchers queue and waits for its execution to be completed.
 		/// </summary>
-		/// <param name="priority"> The priority. </param>
+		/// <param name="priority"> The priority. Can be -1 to use the default priority. </param>
 		/// <param name="options"> The used execution options. </param>
 		/// <param name="action"> The delegate. </param>
 		/// <param name="parameters"> Optional parameters of the delagate. </param>
@@ -333,7 +333,7 @@ namespace RI.Framework.Threading.Dispatcher
 		///         Therefore, <see cref="Send(int,Delegate,object[])" /> calls can be cascaded.
 		///     </para>
 		/// </remarks>
-		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="priority" /> is less than zero. </exception>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="priority" /> is less than minus one. </exception>
 		/// <exception cref="ArgumentNullException"> <paramref name="action" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> The dispatcher is not running or is being shut down. </exception>
 		/// <exception cref="ThreadDispatcherException"> An exception occurred during execution of the delegate. </exception>
@@ -371,7 +371,7 @@ namespace RI.Framework.Threading.Dispatcher
 		/// <summary>
 		///     Enqueues a delegate to the dispatchers queue and waits for its execution to be completed.
 		/// </summary>
-		/// <param name="priority"> The priority. </param>
+		/// <param name="priority"> The priority. Can be -1 to use the default priority. </param>
 		/// <param name="action"> The delegate. </param>
 		/// <param name="parameters"> Optional parameters of the delagate. </param>
 		/// <returns>
@@ -389,7 +389,7 @@ namespace RI.Framework.Threading.Dispatcher
 		///         Therefore, <see cref="Send(int,Delegate,object[])" /> calls can be cascaded.
 		///     </para>
 		/// </remarks>
-		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="priority" /> is less than zero. </exception>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="priority" /> is less than minus one. </exception>
 		/// <exception cref="ArgumentNullException"> <paramref name="action" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> The dispatcher is not running or is being shut down. </exception>
 		/// <exception cref="ThreadDispatcherException"> An exception occurred during execution of the delegate. </exception>
@@ -399,7 +399,7 @@ namespace RI.Framework.Threading.Dispatcher
 		/// <summary>
 		///     Enqueues a delegate to the dispatchers queue and waits for its execution to be completed.
 		/// </summary>
-		/// <param name="priority"> The priority. </param>
+		/// <param name="priority"> The priority. Can be -1 to use the default priority. </param>
 		/// <param name="options"> The used execution options. </param>
 		/// <param name="action"> The delegate. </param>
 		/// <param name="parameters"> Optional parameters of the delagate. </param>
@@ -418,7 +418,7 @@ namespace RI.Framework.Threading.Dispatcher
 		///         Therefore, <see cref="Send(int,Delegate,object[])" /> calls can be cascaded.
 		///     </para>
 		/// </remarks>
-		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="priority" /> is less than zero. </exception>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="priority" /> is less than minus one. </exception>
 		/// <exception cref="ArgumentNullException"> <paramref name="action" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> The dispatcher is not running or is being shut down. </exception>
 		/// <exception cref="ThreadDispatcherException"> An exception occurred during execution of the delegate. </exception>

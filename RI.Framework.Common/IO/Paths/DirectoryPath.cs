@@ -661,6 +661,16 @@ namespace RI.Framework.IO.Paths
 			}
 		}
 
+		/// <inheritdoc cref="PathString.ChangeType"/>
+		public new DirectoryPath ChangeType(PathType type)
+		{
+			PathProperties properties = this.PathInternal.ChangeType(type);
+			return new DirectoryPath(properties);
+		}
+
+		/// <inheritdoc />
+		protected override PathString ChangeTypeInternal (PathType type) => this.ChangeType(type);
+
 		#endregion
 
 

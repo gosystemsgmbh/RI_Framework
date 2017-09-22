@@ -865,7 +865,7 @@ namespace RI.Framework.Threading.Dispatcher
 		/// <inheritdoc />
 		public ThreadDispatcherOperation Post (ThreadDispatcherExecutionContext executionContext, int priority, ThreadDispatcherOptions options, Delegate action, params object[] parameters)
 		{
-			if (priority < 0)
+			if (priority < -1)
 			{
 				throw new ArgumentOutOfRangeException(nameof(priority));
 			}
@@ -880,6 +880,9 @@ namespace RI.Framework.Threading.Dispatcher
 			lock (this.SyncRoot)
 			{
 				this.VerifyNotShuttingDown();
+
+				priority = (priority == -1) ? this.DefaultPriority : priority;
+				options = (options == ThreadDispatcherOptions.Default) ? this.DefaultOptions : options;
 
 				ThreadDispatcherOperation operation = new ThreadDispatcherOperation(this, executionContext, priority, options, action, parameters);
 
@@ -911,7 +914,7 @@ namespace RI.Framework.Threading.Dispatcher
 		/// <inheritdoc />
 		public object Send (int priority, ThreadDispatcherOptions options, Delegate action, params object[] parameters)
 		{
-			if (priority < 0)
+			if (priority < -1)
 			{
 				throw new ArgumentOutOfRangeException(nameof(priority));
 			}
@@ -972,7 +975,7 @@ namespace RI.Framework.Threading.Dispatcher
 		/// <inheritdoc />
 		public async Task<object> SendAsync (int priority, ThreadDispatcherOptions options, Delegate action, params object[] parameters)
 		{
-			if (priority < 0)
+			if (priority < -1)
 			{
 				throw new ArgumentOutOfRangeException(nameof(priority));
 			}

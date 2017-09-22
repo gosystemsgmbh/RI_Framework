@@ -17,6 +17,10 @@ namespace RI.Framework.Threading.Dispatcher
 		///     No options specified. That is: Nothing flows.
 		/// </summary>
 		None = 0x00,
+		/// <summary>
+		///     The default options of the dispatcher are used.
+		/// </summary>
+		Default = 0xFF,
 
 		/// <summary>
 		///     <see cref="Thread.CurrentCulture" /> flows.

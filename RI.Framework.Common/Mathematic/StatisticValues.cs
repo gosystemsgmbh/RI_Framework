@@ -122,13 +122,17 @@ namespace RI.Framework.Mathematic
 			this.Timesteps = timestepArray;
 
 			this.WeightedValues = new double[this.Values.Length];
+
 			this.Count = 0;
 			this.Duration = 0.0;
 			this.Sum = 0.0;
 			this.SquareSum = 0.0;
+			this.Product = 1.0;
 
 			this.Min = double.MaxValue;
 			this.Max = double.MinValue;
+
+			double reciprocedSum = 0.0;
 
 			for (int i1 = 0; i1 < this.Values.Length; i1++)
 			{
@@ -136,12 +140,15 @@ namespace RI.Framework.Mathematic
 				double timestep = this.Timesteps[i1];
 				double weightedValue = value * timestep;
 
+				reciprocedSum += 1.0 / weightedValue;
+
 				this.WeightedValues[i1] = weightedValue;
 				this.Count++;
 				this.Duration += timestep;
 
 				this.Sum += weightedValue;
 				this.SquareSum += weightedValue * weightedValue;
+				this.Product *= weightedValue;
 
 				if (this.Min > weightedValue)
 				{
@@ -162,11 +169,16 @@ namespace RI.Framework.Mathematic
 
 			if (this.Count == 0)
 			{
+				this.Product = 0.0;
+
 				this.Min = double.NaN;
 				this.Max = double.NaN;
 
 				this.Rms = 0.0;
 				this.ArithmeticMean = 0.0;
+				this.GeometricMean = 0.0;
+				this.HarmonicMean = 0.0;
+
 				this.Variance = 0.0;
 				this.Sigma = 0.0;
 			}
@@ -174,11 +186,13 @@ namespace RI.Framework.Mathematic
 			{
 				this.Rms = Math.Sqrt(this.SquareSum / this.Duration);
 				this.ArithmeticMean = this.Sum / this.Duration;
+				this.GeometricMean = Math.Pow(this.Product, 1.0 / this.Duration);
+				this.HarmonicMean = this.Duration / reciprocedSum;
 
 				double diff = 0.0;
-				foreach (double value in this.WeightedValues)
+				foreach (double weightedValue in this.WeightedValues)
 				{
-					diff += Math.Pow(value - this.ArithmeticMean, 2.0);
+					diff += Math.Pow(weightedValue - this.ArithmeticMean, 2.0);
 				}
 				this.Variance = diff / this.Duration;
 
@@ -189,7 +203,7 @@ namespace RI.Framework.Mathematic
 			{
 				this.Median = double.NaN;
 			}
-			if (this.Count == 1)
+			else if (this.Count == 1)
 			{
 				this.Median = this.Sum;
 			}
@@ -214,6 +228,16 @@ namespace RI.Framework.Mathematic
 		///     The arithmetic mean or average of all values.
 		/// </summary>
 		public double ArithmeticMean;
+
+		/// <summary>
+		///     The geometric mean of all values.
+		/// </summary>
+		public double GeometricMean;
+
+		/// <summary>
+		///     The harmonic mean of all values.
+		/// </summary>
+		public double HarmonicMean;
 
 		/// <summary>
 		///     The number of values.
@@ -286,6 +310,11 @@ namespace RI.Framework.Mathematic
 		public double Sum;
 
 		/// <summary>
+		///     The product of all values.
+		/// </summary>
+		public double Product;
+
+		/// <summary>
 		///     The timesteps of each value.
 		/// </summary>
 		public double[] Timesteps;
@@ -318,11 +347,14 @@ namespace RI.Framework.Mathematic
 			StatisticValues clone = new StatisticValues();
 
 			clone.Sum = this.Sum;
+			clone.Product = this.Product;
 			clone.SquareSum = this.SquareSum;
 			clone.Min = this.Min;
 			clone.Max = this.Max;
 			clone.Rms = this.Rms;
 			clone.ArithmeticMean = this.ArithmeticMean;
+			clone.GeometricMean = this.GeometricMean;
+			clone.HarmonicMean = this.HarmonicMean;
 			clone.Sigma = this.Sigma;
 			clone.Variance = this.Variance;
 			clone.Median = this.Median;

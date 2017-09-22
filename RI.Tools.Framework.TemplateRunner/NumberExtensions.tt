@@ -8,6 +8,7 @@
 #if !TEMPLATE_RUNNER
 
 using System;
+using System.Globalization;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
@@ -193,7 +194,8 @@ if(type != "float")
 		/// </summary>
 		/// <param name="values">The sequence of values.</param>
 		/// <returns>
-		/// The sequence of values as floats.
+		/// The list of values as floats.
+		// An empty list is returned if the sequence is empty.
 		/// </returns>
 		/// <remarks>
 		/// <para>
@@ -221,7 +223,8 @@ if(type != "double")
 		/// </summary>
 		/// <param name="values">The sequence of values.</param>
 		/// <returns>
-		/// The sequence of values as doubles.
+		/// The list of values as doubles.
+		// An empty list is returned if the sequence is empty.
 		/// </returns>
 		/// <remarks>
 		/// <para>
@@ -237,6 +240,68 @@ if(type != "double")
 			}
 
 			return values.Select(x => (double)x);
+		}
+
+		/// <summary>
+		/// Gets statistics for a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The statistics for the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static StatisticValues GetStatistics (this IEnumerable<<#=type#>> values) => new StatisticValues(values.AsDouble());
+<#
+}
+if(type == "double")
+{
+#>
+
+		/// <summary>
+		/// Gets statistics for a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The statistics for the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static StatisticValues GetStatistics (this IEnumerable<<#=type#>> values) => new StatisticValues(values);
+<#
+}
+if((type != "float") && (type != "double") && (type != "decimal"))
+{
+#>
+
+		/// <summary>
+		/// Gets each digit of a value as separate integers.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The list of digits.
+		/// The most-significant digit comes first, the least-significant digit comes last.
+		/// </returns>
+		public static List<int> GetDigits (this <#=type#> value)
+		{
+			string stringValue = value.ToString("D", CultureInfo.InvariantCulture);
+			List<int> digits = new List<int>(20);
+			foreach(char chr in stringValue)
+			{
+				if((chr >= 48) && (chr <= 57))
+				{
+					digits.Add(chr - 48);
+				}
+			}
+			return digits;
 		}
 <#
 }
@@ -311,9 +376,9 @@ plusOnes = new string[]					{	"1.0f",															"1.0"																	};
 minusOnes = new string[]				{	"-1.0f",														"-1.0"																	};
 string[] plusTwos = new string[]		{	"2.0f",															"2.0"																	};
 string[] minusTwos = new string[]		{	"-2.0f",														"-2.0"																	};
-string[] accuracies = new string[]		{	"5.96046447753906E-07f",										"1.11022302462516E-15"													};
-string[] toDegFactors = new string[]	{	"57.295779513f",												"57.295779513"															};
-string[] toRadFactors = new string[]	{	"0.01745329252f",												"0.01745329252"															};
+string[] accuracies = new string[]		{	"MathConstF.DefaultAccuracy",									"MathConstD.DefaultAccuracy"											};
+string[] toDegFactors = new string[]	{	"MathConstF.RadToDeg",											"MathConstF.RadToDeg"													};
+string[] toRadFactors = new string[]	{	"MathConstF.DegToRad",											"MathConstF.DegToRad"													};
 string[] degCircles = new string[]		{	"360.0f",														"360.0"																	};
 string[] radCircles = new string[]		{	"2.0f*3.1415926535897932384626433832795028841971693993751f",	"2.0*3.1415926535897932384626433832795028841971693993751"				};
 for (int i1 = 0; i1 < types.Length; i1++)
@@ -808,6 +873,32 @@ string radCircle = radCircles[i1];
 		public static <#=type#> CircularClampRad (this <#=type#> value) => value.DivRem(<#=radCircle#>);
 
 		/// <summary>
+		/// Gets the fractional part of a value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The result.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// Examples: 12.34 -> 34; 3.416 -> 416; etc.
+		/// </para>
+		/// </remarks>
+		public static <#=type#> GetFraction (this <#=type#> value)
+		{
+			string stringValue = value.ToString("F", CultureInfo.InvariantCulture);
+
+			int separatorIndex = stringValue.IndexOf('.');
+			if(separatorIndex == -1)
+			{
+				return 0;
+			}
+
+			string fractionPart = stringValue.Substring(separatorIndex + 1);
+			return <#=type#>.Parse(fractionPart, CultureInfo.InvariantCulture);
+		}
+
+		/// <summary>
 		/// Gets the sum from a sequence of values.
 		/// </summary>
 		/// <param name="values">The sequence of values.</param>
@@ -955,7 +1046,7 @@ string radCircle = radCircles[i1];
 			int count = 0;
 			foreach(<#=type#> value in values)
 			{
-				sum = (<#=plusOne#>) / value;
+				sum += (<#=plusOne#>) / value;
 				count += 1;
 			}
 			if(count == 0)
@@ -988,7 +1079,7 @@ string radCircle = radCircles[i1];
 			<#=type#> sum = 0;
 			foreach(<#=type#> value in values)
 			{
-				sum = value * value;
+				sum += value * value;
 			}
 			return sum;
 		}

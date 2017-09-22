@@ -109,6 +109,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)IO\Paths\PathString.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\Paths\PathType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\Paths\_NamespaceDoc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\Streams\BinaryStream.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\Streams\LoopbackStream.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\Streams\ReadOnlyStream.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\Streams\StreamExtensions.cs" />

@@ -10,7 +10,8 @@
 Utilities
 ---------
 
- - (???) SerialPortStream
+ # (Windows) SerialPortStream
+ # (Linux) SerialPortStream
 
  - (WinForms) FormExtensions
  - (WinForms) TemporaryCursor
@@ -22,16 +23,14 @@ Utilities
  - (Windows) WindowsMessageLoopSynchronizationContext
  - (Windows) WindowsMessageLoop: Priority queue
 
- - (WPF) CircularProgressBar
- - (WPF) BindablePasswordBox
- - (WPF) Flasher
- - (WPF) ScreenIdentifier
+ * (WPF) CircularProgressBar
+ * (WPF) BindablePasswordBox
+ * (WPF) Flasher
+ * (WPF) ScreenIdentifier
 
 
 Threading
 ---------
-
- # (.NET) ThreadDispatcherExtensions: Extension methods supporting various Actions and Funcs
 
 
 Collections
@@ -126,13 +125,12 @@ I/O
 ---
 
  # (Common) EndianessConverter
+ # (Common) EndianReader
+ # (Common) EndianWriter
 
- # (Common) PathProperties: ChangeType
- # (Common) PathString: IsCompatible
-
- - (Common) IniDocument: DecomposeSections (?)
- - (Common) IniDocument: RemoveElements with predicate
- - (Common) IniDocument: RemoveSections with predicate
+ # (Common) IniDocument: DecomposeSections (?)
+ # (Common) IniDocument: RemoveElements with predicate
+ # (Common) IniDocument: RemoveSections with predicate
 
  - (Common) DirectoryPath: Copy (DirectoryPath)
  - (Common) DirectoryPath: Move (DirectoryPath)
@@ -142,8 +140,8 @@ I/O
  - (Common) DirectoryPath: FindFiles
  - (Common) DirectoryPath: GetDirectories
  - (Common) DirectoryPath: FindDirectories
+ - (Common) DirectoryPath: GetSize
  - (Common) DirectoryPath: IsEmpty
- - (Common) DirectoryPath: Size
  - (Common) DirectoryPath: CreationTime
  - (Common) DirectoryPath: CreationTimeUtc
  - (Common) DirectoryPath: LastAccessTime
@@ -193,14 +191,14 @@ Services
  # (.NET) Bus
 
  * (.NET) Licensing (LicensingService, FileLicenseStorage)
+
+ * (WpfToolkit) DockingManagerRegionAdapter
   
  - (WPF) WpfApplication: Handle power events using SystemEvents.PowerModeChanged
  - (WPF) WpfApplication: Handle user switching using SystemEvents.SessionSwitch
 
  - (Unity) IDispatcherOperation: OnXXX callbacks
  - (Unity) IDispatcherOperation: Stacking of all OnXXX callbacks
-
- - (WpfToolkit) DockingManagerRegionAdapter
 
  - (Windows) Messaging: WindowsMessageLoopMessageDispatcher
  - (WinForms) Messaging: ApplicationMessageDispatcher
@@ -224,10 +222,11 @@ Services
 Data
 ----
 
- - (.NET) Reporting base
- - (EPPlus) Reporting Excel
+ * (.NET) Reporting base
+ * (EPPlus) Reporting Excel
 
- - (.NET) IRepositorySet: Add entity and property descriptions functionality
+ * (.NET) IRepositorySet: Add entity and property descriptions functionality
+
  - (.NET) IRepositorySet: Add GetChanges method (return RepositorySetChanges type)
  - (.NET) IRepositoryContext: Add GetChanges method (return RepositoryContextChanges type)
  - (.NET) IRepositoryContext: Add GetErrors method (return RepositoryContextErrors type)
@@ -235,15 +234,6 @@ Data
 
 Mathematic
 ----------
-
- * (Common) NumberExtensions: FractionAsInteger
- * (Common) NumberExtensions: FirstDigits
- * (Common) NumberExtensions: LastDigits
-
- * (Common) StatisticValues: Make sure everything is weighted
- * (Common) StatisticValues: GeometricMean
- * (Common) StatisticValues: HarmonicMean
- * (Common) StatisticValues: Product
 
  - (Common) MathUtils: CirclePosition
  - (Common) MathUtils: EllipsePosition

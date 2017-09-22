@@ -42,6 +42,11 @@ namespace RI.Framework.Mathematic
 		/// </summary>
 		public const float SpeedOfLight = 299792458.0f;
 
+		/// <summary>
+		///     The default accuracy value used for zero and almost-zero comparisons.
+		/// </summary>
+		public const float DefaultAccuracy = 5.96046447753906E-07f;
+
 		#endregion
 	}
 }

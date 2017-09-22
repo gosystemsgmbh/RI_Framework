@@ -202,6 +202,11 @@
     <Compile Include="Threading\Dispatcher\IThreadDispatcher.cs" />
     <Compile Include="Threading\Dispatcher\IThreadDispatcherExtensions.cs" />
     <Compile Include="Threading\Async\CustomFlower.cs" />
+    <Compile Include="Threading\Dispatcher\IThreadDispatcherDelegateExtensions.tt.cs">
+      <DependentUpon>IThreadDispatcherDelegateExtensions.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Threading\Dispatcher\_NamespaceDoc.cs" />
     <Compile Include="Threading\SynchronizationContextAwaiter.cs" />
     <Compile Include="Threading\SynchronizationContextExtensions.cs" />
@@ -230,7 +235,15 @@
   <ItemGroup>
     <None Include="Properties\AssemblyName.snk" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Threading\Dispatcher\IThreadDispatcherDelegateExtensions.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>IThreadDispatcherDelegateExtensions.tt.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
   <Import Project="..\RI.Framework.Common\RI.Framework.Common.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

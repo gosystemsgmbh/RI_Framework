@@ -2,6 +2,7 @@
 #if !TEMPLATE_RUNNER
 
 using System;
+using System.Globalization;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
@@ -171,7 +172,8 @@ namespace RI.Framework.Mathematic
 		/// </summary>
 		/// <param name="values">The sequence of values.</param>
 		/// <returns>
-		/// The sequence of values as floats.
+		/// The list of values as floats.
+		// An empty list is returned if the sequence is empty.
 		/// </returns>
 		/// <remarks>
 		/// <para>
@@ -187,6 +189,67 @@ namespace RI.Framework.Mathematic
 			}
 
 			return values.Select(x => (float)x);
+		}
+
+		/// <summary>
+		/// Converts a sequence of values to doubles.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The list of values as doubles.
+		// An empty list is returned if the sequence is empty.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static List<double> AsDouble (this IEnumerable<sbyte> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			return values.Select(x => (double)x);
+		}
+
+		/// <summary>
+		/// Gets statistics for a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The statistics for the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static StatisticValues GetStatistics (this IEnumerable<sbyte> values) => new StatisticValues(values.AsDouble());
+
+		/// <summary>
+		/// Gets each digit of a value as separate integers.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The list of digits.
+		/// The most-significant digit comes first, the least-significant digit comes last.
+		/// </returns>
+		public static List<int> GetDigits (this sbyte value)
+		{
+			string stringValue = value.ToString("D", CultureInfo.InvariantCulture);
+			List<int> digits = new List<int>(20);
+			foreach(char chr in stringValue)
+			{
+				if((chr >= 48) && (chr <= 57))
+				{
+					digits.Add(chr - 48);
+				}
+			}
+			return digits;
 		}
 
 		/// <summary>
@@ -338,7 +401,8 @@ namespace RI.Framework.Mathematic
 		/// </summary>
 		/// <param name="values">The sequence of values.</param>
 		/// <returns>
-		/// The sequence of values as floats.
+		/// The list of values as floats.
+		// An empty list is returned if the sequence is empty.
 		/// </returns>
 		/// <remarks>
 		/// <para>
@@ -354,6 +418,67 @@ namespace RI.Framework.Mathematic
 			}
 
 			return values.Select(x => (float)x);
+		}
+
+		/// <summary>
+		/// Converts a sequence of values to doubles.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The list of values as doubles.
+		// An empty list is returned if the sequence is empty.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static List<double> AsDouble (this IEnumerable<byte> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			return values.Select(x => (double)x);
+		}
+
+		/// <summary>
+		/// Gets statistics for a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The statistics for the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static StatisticValues GetStatistics (this IEnumerable<byte> values) => new StatisticValues(values.AsDouble());
+
+		/// <summary>
+		/// Gets each digit of a value as separate integers.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The list of digits.
+		/// The most-significant digit comes first, the least-significant digit comes last.
+		/// </returns>
+		public static List<int> GetDigits (this byte value)
+		{
+			string stringValue = value.ToString("D", CultureInfo.InvariantCulture);
+			List<int> digits = new List<int>(20);
+			foreach(char chr in stringValue)
+			{
+				if((chr >= 48) && (chr <= 57))
+				{
+					digits.Add(chr - 48);
+				}
+			}
+			return digits;
 		}
 
 		/// <summary>
@@ -505,7 +630,8 @@ namespace RI.Framework.Mathematic
 		/// </summary>
 		/// <param name="values">The sequence of values.</param>
 		/// <returns>
-		/// The sequence of values as floats.
+		/// The list of values as floats.
+		// An empty list is returned if the sequence is empty.
 		/// </returns>
 		/// <remarks>
 		/// <para>
@@ -521,6 +647,67 @@ namespace RI.Framework.Mathematic
 			}
 
 			return values.Select(x => (float)x);
+		}
+
+		/// <summary>
+		/// Converts a sequence of values to doubles.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The list of values as doubles.
+		// An empty list is returned if the sequence is empty.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static List<double> AsDouble (this IEnumerable<short> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			return values.Select(x => (double)x);
+		}
+
+		/// <summary>
+		/// Gets statistics for a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The statistics for the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static StatisticValues GetStatistics (this IEnumerable<short> values) => new StatisticValues(values.AsDouble());
+
+		/// <summary>
+		/// Gets each digit of a value as separate integers.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The list of digits.
+		/// The most-significant digit comes first, the least-significant digit comes last.
+		/// </returns>
+		public static List<int> GetDigits (this short value)
+		{
+			string stringValue = value.ToString("D", CultureInfo.InvariantCulture);
+			List<int> digits = new List<int>(20);
+			foreach(char chr in stringValue)
+			{
+				if((chr >= 48) && (chr <= 57))
+				{
+					digits.Add(chr - 48);
+				}
+			}
+			return digits;
 		}
 
 		/// <summary>
@@ -672,7 +859,8 @@ namespace RI.Framework.Mathematic
 		/// </summary>
 		/// <param name="values">The sequence of values.</param>
 		/// <returns>
-		/// The sequence of values as floats.
+		/// The list of values as floats.
+		// An empty list is returned if the sequence is empty.
 		/// </returns>
 		/// <remarks>
 		/// <para>
@@ -688,6 +876,67 @@ namespace RI.Framework.Mathematic
 			}
 
 			return values.Select(x => (float)x);
+		}
+
+		/// <summary>
+		/// Converts a sequence of values to doubles.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The list of values as doubles.
+		// An empty list is returned if the sequence is empty.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static List<double> AsDouble (this IEnumerable<ushort> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			return values.Select(x => (double)x);
+		}
+
+		/// <summary>
+		/// Gets statistics for a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The statistics for the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static StatisticValues GetStatistics (this IEnumerable<ushort> values) => new StatisticValues(values.AsDouble());
+
+		/// <summary>
+		/// Gets each digit of a value as separate integers.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The list of digits.
+		/// The most-significant digit comes first, the least-significant digit comes last.
+		/// </returns>
+		public static List<int> GetDigits (this ushort value)
+		{
+			string stringValue = value.ToString("D", CultureInfo.InvariantCulture);
+			List<int> digits = new List<int>(20);
+			foreach(char chr in stringValue)
+			{
+				if((chr >= 48) && (chr <= 57))
+				{
+					digits.Add(chr - 48);
+				}
+			}
+			return digits;
 		}
 
 		/// <summary>
@@ -839,7 +1088,8 @@ namespace RI.Framework.Mathematic
 		/// </summary>
 		/// <param name="values">The sequence of values.</param>
 		/// <returns>
-		/// The sequence of values as floats.
+		/// The list of values as floats.
+		// An empty list is returned if the sequence is empty.
 		/// </returns>
 		/// <remarks>
 		/// <para>
@@ -855,6 +1105,67 @@ namespace RI.Framework.Mathematic
 			}
 
 			return values.Select(x => (float)x);
+		}
+
+		/// <summary>
+		/// Converts a sequence of values to doubles.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The list of values as doubles.
+		// An empty list is returned if the sequence is empty.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static List<double> AsDouble (this IEnumerable<int> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			return values.Select(x => (double)x);
+		}
+
+		/// <summary>
+		/// Gets statistics for a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The statistics for the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static StatisticValues GetStatistics (this IEnumerable<int> values) => new StatisticValues(values.AsDouble());
+
+		/// <summary>
+		/// Gets each digit of a value as separate integers.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The list of digits.
+		/// The most-significant digit comes first, the least-significant digit comes last.
+		/// </returns>
+		public static List<int> GetDigits (this int value)
+		{
+			string stringValue = value.ToString("D", CultureInfo.InvariantCulture);
+			List<int> digits = new List<int>(20);
+			foreach(char chr in stringValue)
+			{
+				if((chr >= 48) && (chr <= 57))
+				{
+					digits.Add(chr - 48);
+				}
+			}
+			return digits;
 		}
 
 		/// <summary>
@@ -1006,7 +1317,8 @@ namespace RI.Framework.Mathematic
 		/// </summary>
 		/// <param name="values">The sequence of values.</param>
 		/// <returns>
-		/// The sequence of values as floats.
+		/// The list of values as floats.
+		// An empty list is returned if the sequence is empty.
 		/// </returns>
 		/// <remarks>
 		/// <para>
@@ -1022,6 +1334,67 @@ namespace RI.Framework.Mathematic
 			}
 
 			return values.Select(x => (float)x);
+		}
+
+		/// <summary>
+		/// Converts a sequence of values to doubles.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The list of values as doubles.
+		// An empty list is returned if the sequence is empty.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static List<double> AsDouble (this IEnumerable<uint> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			return values.Select(x => (double)x);
+		}
+
+		/// <summary>
+		/// Gets statistics for a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The statistics for the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static StatisticValues GetStatistics (this IEnumerable<uint> values) => new StatisticValues(values.AsDouble());
+
+		/// <summary>
+		/// Gets each digit of a value as separate integers.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The list of digits.
+		/// The most-significant digit comes first, the least-significant digit comes last.
+		/// </returns>
+		public static List<int> GetDigits (this uint value)
+		{
+			string stringValue = value.ToString("D", CultureInfo.InvariantCulture);
+			List<int> digits = new List<int>(20);
+			foreach(char chr in stringValue)
+			{
+				if((chr >= 48) && (chr <= 57))
+				{
+					digits.Add(chr - 48);
+				}
+			}
+			return digits;
 		}
 
 		/// <summary>
@@ -1173,7 +1546,8 @@ namespace RI.Framework.Mathematic
 		/// </summary>
 		/// <param name="values">The sequence of values.</param>
 		/// <returns>
-		/// The sequence of values as floats.
+		/// The list of values as floats.
+		// An empty list is returned if the sequence is empty.
 		/// </returns>
 		/// <remarks>
 		/// <para>
@@ -1189,6 +1563,67 @@ namespace RI.Framework.Mathematic
 			}
 
 			return values.Select(x => (float)x);
+		}
+
+		/// <summary>
+		/// Converts a sequence of values to doubles.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The list of values as doubles.
+		// An empty list is returned if the sequence is empty.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static List<double> AsDouble (this IEnumerable<long> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			return values.Select(x => (double)x);
+		}
+
+		/// <summary>
+		/// Gets statistics for a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The statistics for the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static StatisticValues GetStatistics (this IEnumerable<long> values) => new StatisticValues(values.AsDouble());
+
+		/// <summary>
+		/// Gets each digit of a value as separate integers.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The list of digits.
+		/// The most-significant digit comes first, the least-significant digit comes last.
+		/// </returns>
+		public static List<int> GetDigits (this long value)
+		{
+			string stringValue = value.ToString("D", CultureInfo.InvariantCulture);
+			List<int> digits = new List<int>(20);
+			foreach(char chr in stringValue)
+			{
+				if((chr >= 48) && (chr <= 57))
+				{
+					digits.Add(chr - 48);
+				}
+			}
+			return digits;
 		}
 
 		/// <summary>
@@ -1340,7 +1775,8 @@ namespace RI.Framework.Mathematic
 		/// </summary>
 		/// <param name="values">The sequence of values.</param>
 		/// <returns>
-		/// The sequence of values as floats.
+		/// The list of values as floats.
+		// An empty list is returned if the sequence is empty.
 		/// </returns>
 		/// <remarks>
 		/// <para>
@@ -1356,6 +1792,67 @@ namespace RI.Framework.Mathematic
 			}
 
 			return values.Select(x => (float)x);
+		}
+
+		/// <summary>
+		/// Converts a sequence of values to doubles.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The list of values as doubles.
+		// An empty list is returned if the sequence is empty.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static List<double> AsDouble (this IEnumerable<ulong> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			return values.Select(x => (double)x);
+		}
+
+		/// <summary>
+		/// Gets statistics for a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The statistics for the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static StatisticValues GetStatistics (this IEnumerable<ulong> values) => new StatisticValues(values.AsDouble());
+
+		/// <summary>
+		/// Gets each digit of a value as separate integers.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The list of digits.
+		/// The most-significant digit comes first, the least-significant digit comes last.
+		/// </returns>
+		public static List<int> GetDigits (this ulong value)
+		{
+			string stringValue = value.ToString("D", CultureInfo.InvariantCulture);
+			List<int> digits = new List<int>(20);
+			foreach(char chr in stringValue)
+			{
+				if((chr >= 48) && (chr <= 57))
+				{
+					digits.Add(chr - 48);
+				}
+			}
+			return digits;
 		}
 
 		/// <summary>
@@ -1501,6 +1998,45 @@ namespace RI.Framework.Mathematic
 			}
 			return max;
 		}
+
+		/// <summary>
+		/// Converts a sequence of values to doubles.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The list of values as doubles.
+		// An empty list is returned if the sequence is empty.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static List<double> AsDouble (this IEnumerable<float> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			return values.Select(x => (double)x);
+		}
+
+		/// <summary>
+		/// Gets statistics for a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The statistics for the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static StatisticValues GetStatistics (this IEnumerable<float> values) => new StatisticValues(values.AsDouble());
 
 		/// <summary>
 		/// Clamps a value between an inclusive minimum and maximum value.
@@ -1651,7 +2187,8 @@ namespace RI.Framework.Mathematic
 		/// </summary>
 		/// <param name="values">The sequence of values.</param>
 		/// <returns>
-		/// The sequence of values as floats.
+		/// The list of values as floats.
+		// An empty list is returned if the sequence is empty.
 		/// </returns>
 		/// <remarks>
 		/// <para>
@@ -1668,6 +2205,21 @@ namespace RI.Framework.Mathematic
 
 			return values.Select(x => (float)x);
 		}
+
+		/// <summary>
+		/// Gets statistics for a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The statistics for the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static StatisticValues GetStatistics (this IEnumerable<double> values) => new StatisticValues(values);
 
 		/// <summary>
 		/// Clamps a value between an inclusive minimum and maximum value.
@@ -1818,7 +2370,8 @@ namespace RI.Framework.Mathematic
 		/// </summary>
 		/// <param name="values">The sequence of values.</param>
 		/// <returns>
-		/// The sequence of values as floats.
+		/// The list of values as floats.
+		// An empty list is returned if the sequence is empty.
 		/// </returns>
 		/// <remarks>
 		/// <para>
@@ -1835,6 +2388,45 @@ namespace RI.Framework.Mathematic
 
 			return values.Select(x => (float)x);
 		}
+
+		/// <summary>
+		/// Converts a sequence of values to doubles.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The list of values as doubles.
+		// An empty list is returned if the sequence is empty.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static List<double> AsDouble (this IEnumerable<decimal> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			return values.Select(x => (double)x);
+		}
+
+		/// <summary>
+		/// Gets statistics for a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The statistics for the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static StatisticValues GetStatistics (this IEnumerable<decimal> values) => new StatisticValues(values.AsDouble());
 
 		/// <summary>
 		/// Gets the absolute number of a value.
@@ -2223,7 +2815,7 @@ namespace RI.Framework.Mathematic
 		/// <returns>
 		/// true if the value is within the default accuracy for equality, false otherwise.
 		/// </returns>
-		public static bool AlmostEqual (this float value, float other) => value.AlmostEqual(other, 5.96046447753906E-07f);
+		public static bool AlmostEqual (this float value, float other) => value.AlmostEqual(other, MathConstF.DefaultAccuracy);
 
 		/// <summary>
 		/// Determines whether a value is almost equal to another value.
@@ -2243,7 +2835,7 @@ namespace RI.Framework.Mathematic
 		/// <returns>
 		/// true if the value is within the default accuracy to zero, false otherwise.
 		/// </returns>
-		public static bool AlmostZero (this float value) => Math.Abs(value) < (double)5.96046447753906E-07f;
+		public static bool AlmostZero (this float value) => Math.Abs(value) < (double)MathConstF.DefaultAccuracy;
 
 		/// <summary>
 		/// Determines whether a value is almost zero.
@@ -2624,7 +3216,7 @@ namespace RI.Framework.Mathematic
 		/// Use <see cref="CircularClampDeg(float)" /> to clamp to a single full circle value.
 		/// </para>
 		/// </remarks>
-		public static float ToDeg (this float value) => value * 57.295779513f;
+		public static float ToDeg (this float value) => value * MathConstF.RadToDeg;
 
 		/// <summary>
 		/// Converts a degree value to radians.
@@ -2639,7 +3231,7 @@ namespace RI.Framework.Mathematic
 		/// Use <see cref="CircularClampRad(float)" /> to clamp to a single full circle value.
 		/// </para>
 		/// </remarks>
-		public static float ToRad (this float value) => value * 0.01745329252f;
+		public static float ToRad (this float value) => value * MathConstF.DegToRad;
 
 		/// <summary>
 		/// Clamps a degree value to a single full circle (-359...0...+359).
@@ -2668,6 +3260,32 @@ namespace RI.Framework.Mathematic
 		/// </para>
 		/// </remarks>
 		public static float CircularClampRad (this float value) => value.DivRem(2.0f*3.1415926535897932384626433832795028841971693993751f);
+
+		/// <summary>
+		/// Gets the fractional part of a value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The result.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// Examples: 12.34 -> 34; 3.416 -> 416; etc.
+		/// </para>
+		/// </remarks>
+		public static float GetFraction (this float value)
+		{
+			string stringValue = value.ToString("F", CultureInfo.InvariantCulture);
+
+			int separatorIndex = stringValue.IndexOf('.');
+			if(separatorIndex == -1)
+			{
+				return 0;
+			}
+
+			string fractionPart = stringValue.Substring(separatorIndex + 1);
+			return float.Parse(fractionPart, CultureInfo.InvariantCulture);
+		}
 
 		/// <summary>
 		/// Gets the sum from a sequence of values.
@@ -2817,7 +3435,7 @@ namespace RI.Framework.Mathematic
 			int count = 0;
 			foreach(float value in values)
 			{
-				sum = (1.0f) / value;
+				sum += (1.0f) / value;
 				count += 1;
 			}
 			if(count == 0)
@@ -2850,7 +3468,7 @@ namespace RI.Framework.Mathematic
 			float sum = 0;
 			foreach(float value in values)
 			{
-				sum = value * value;
+				sum += value * value;
 			}
 			return sum;
 		}
@@ -3012,7 +3630,7 @@ namespace RI.Framework.Mathematic
 		/// <returns>
 		/// true if the value is within the default accuracy for equality, false otherwise.
 		/// </returns>
-		public static bool AlmostEqual (this double value, double other) => value.AlmostEqual(other, 1.11022302462516E-15);
+		public static bool AlmostEqual (this double value, double other) => value.AlmostEqual(other, MathConstD.DefaultAccuracy);
 
 		/// <summary>
 		/// Determines whether a value is almost equal to another value.
@@ -3032,7 +3650,7 @@ namespace RI.Framework.Mathematic
 		/// <returns>
 		/// true if the value is within the default accuracy to zero, false otherwise.
 		/// </returns>
-		public static bool AlmostZero (this double value) => Math.Abs(value) < (double)1.11022302462516E-15;
+		public static bool AlmostZero (this double value) => Math.Abs(value) < (double)MathConstD.DefaultAccuracy;
 
 		/// <summary>
 		/// Determines whether a value is almost zero.
@@ -3413,7 +4031,7 @@ namespace RI.Framework.Mathematic
 		/// Use <see cref="CircularClampDeg(double)" /> to clamp to a single full circle value.
 		/// </para>
 		/// </remarks>
-		public static double ToDeg (this double value) => value * 57.295779513;
+		public static double ToDeg (this double value) => value * MathConstF.RadToDeg;
 
 		/// <summary>
 		/// Converts a degree value to radians.
@@ -3428,7 +4046,7 @@ namespace RI.Framework.Mathematic
 		/// Use <see cref="CircularClampRad(double)" /> to clamp to a single full circle value.
 		/// </para>
 		/// </remarks>
-		public static double ToRad (this double value) => value * 0.01745329252;
+		public static double ToRad (this double value) => value * MathConstF.DegToRad;
 
 		/// <summary>
 		/// Clamps a degree value to a single full circle (-359...0...+359).
@@ -3457,6 +4075,32 @@ namespace RI.Framework.Mathematic
 		/// </para>
 		/// </remarks>
 		public static double CircularClampRad (this double value) => value.DivRem(2.0*3.1415926535897932384626433832795028841971693993751);
+
+		/// <summary>
+		/// Gets the fractional part of a value.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>
+		/// The result.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// Examples: 12.34 -> 34; 3.416 -> 416; etc.
+		/// </para>
+		/// </remarks>
+		public static double GetFraction (this double value)
+		{
+			string stringValue = value.ToString("F", CultureInfo.InvariantCulture);
+
+			int separatorIndex = stringValue.IndexOf('.');
+			if(separatorIndex == -1)
+			{
+				return 0;
+			}
+
+			string fractionPart = stringValue.Substring(separatorIndex + 1);
+			return double.Parse(fractionPart, CultureInfo.InvariantCulture);
+		}
 
 		/// <summary>
 		/// Gets the sum from a sequence of values.
@@ -3606,7 +4250,7 @@ namespace RI.Framework.Mathematic
 			int count = 0;
 			foreach(double value in values)
 			{
-				sum = (1.0) / value;
+				sum += (1.0) / value;
 				count += 1;
 			}
 			if(count == 0)
@@ -3639,7 +4283,7 @@ namespace RI.Framework.Mathematic
 			double sum = 0;
 			foreach(double value in values)
 			{
-				sum = value * value;
+				sum += value * value;
 			}
 			return sum;
 		}
