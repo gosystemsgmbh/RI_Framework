@@ -104,7 +104,7 @@ namespace RI.Framework.Services.Backup.Storages
 				}
 			}
 		}
-		
+
 		internal ZipBackupStorage Storage { get; }
 
 		/// <inheritdoc />

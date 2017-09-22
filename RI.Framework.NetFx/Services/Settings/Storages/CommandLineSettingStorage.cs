@@ -81,7 +81,7 @@ namespace RI.Framework.Services.Settings.Storages
 				throw new ArgumentNullException(nameof(predicate));
 			}
 
-			return this.CommandLine.Parameters.Any(x => predicate(x.Key) && x.Value.Count > 0);
+			return this.CommandLine.Parameters.Any(x => predicate(x.Key) && (x.Value.Count > 0));
 		}
 
 		/// <inheritdoc />

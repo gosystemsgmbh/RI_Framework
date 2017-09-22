@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 
 using RI.Framework.Collections.DirectLinq;
-
-
-
+using RI.Framework.Utilities.ObjectModel;
 
 namespace RI.Framework.Mathematic
 {
@@ -53,7 +51,8 @@ namespace RI.Framework.Mathematic
 	/// ]]>
 	/// </code>
 	/// </example>
-	public sealed class RunningValues
+	/// TODO: Cloning
+	public sealed class RunningValues : ICloneable<RunningValues>, ICloneable
 	{
 		#region Instance Constructor/Destructor
 
@@ -65,6 +64,197 @@ namespace RI.Framework.Mathematic
 		public RunningValues (int capacity)
 		{
 			this.Reset(capacity);
+		}
+
+		/// <summary>
+		/// Creates a new instance of <see cref="RunningValues" />.
+		/// </summary>
+		/// <param name="initialValues">The initial values added to the history.</param>
+		/// <remarks>
+		/// <para>
+		/// The initial values are added with a timestep of 1.0.
+		/// </para>
+		/// <para>
+		/// The capacity is set to the number of values in <paramref name="initialValues"/>.
+		/// Therefore, the sequence must contain at least one value.
+		/// </para>
+		/// <para>
+		/// <paramref name="initialValues"/> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"><paramref name="initialValues"/> is null.</exception>
+		/// <exception cref="ArgumentException"><paramref name="initialValues"/> is an empty sequence.</exception>
+		public RunningValues (IEnumerable<float> initialValues)
+		{
+			if (initialValues == null)
+			{
+				throw new ArgumentNullException(nameof(initialValues));
+			}
+
+			List<float> values = initialValues.ToList();
+			if (values.Count == 0)
+			{
+				throw new ArgumentException("The sequence of intial values is empty.", nameof(initialValues));
+			}
+
+			this.Reset(values.Count);
+
+			for (int i1 = 0; i1 < values.Count; i1++)
+			{
+				float value = values[i1];
+				this.Add(value);
+			}
+		}
+
+		/// <summary>
+		/// Creates a new instance of <see cref="RunningValues" />.
+		/// </summary>
+		/// <param name="initialValues">The initial values added to the history.</param>
+		/// <param name="initialTimesteps">The timesteps values added to the history.</param>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="initialValues"/> and <paramref name="initialTimesteps"/> must contain the same number of values.
+		/// </para>
+		/// <para>
+		/// The capacity is set to the number of values in <paramref name="initialValues"/>.
+		/// Therefore, the sequence must contain at least one value.
+		/// </para>
+		/// <para>
+		/// <paramref name="initialValues"/> and <paramref name="initialTimesteps"/> are enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"><paramref name="initialValues"/> or <paramref name="initialTimesteps"/> is null.</exception>
+		/// <exception cref="ArgumentException"><paramref name="initialValues"/> or <paramref name="initialTimesteps"/> is an empty sequence or <paramref name="initialValues"/> and <paramref name="initialTimesteps"/> do not contain the same number of values.</exception>
+		public RunningValues (IEnumerable<float> initialValues, IEnumerable<float> initialTimesteps)
+		{
+			if (initialValues == null)
+			{
+				throw new ArgumentNullException(nameof(initialValues));
+			}
+
+			if (initialTimesteps == null)
+			{
+				throw new ArgumentNullException(nameof(initialTimesteps));
+			}
+
+			List<float> values = initialValues.ToList();
+			if (values.Count == 0)
+			{
+				throw new ArgumentException("The sequence of intial values is empty.", nameof(initialValues));
+			}
+
+			List<float> timesteps = initialTimesteps.ToList();
+			if (timesteps.Count == 0)
+			{
+				throw new ArgumentException("The sequence of intial timesteps is empty.", nameof(initialValues));
+			}
+
+			if (values.Count != timesteps.Count)
+			{
+				throw new ArgumentException("The sequence of intial values and initial timesteps do not contain the same number of elements.", nameof(initialValues));
+			}
+
+			this.Reset(values.Count);
+
+			for (int i1 = 0; i1 < values.Count; i1++)
+			{
+				float value = values[i1];
+				float timestep = timesteps[i1];
+				this.Add(value, timestep);
+			}
+		}
+
+		/// <summary>
+		/// Creates a new instance of <see cref="RunningValues" />.
+		/// </summary>
+		/// <param name="capacity"> The capacity of the history used to calculate the running values. </param>
+		/// <param name="initialValues">The initial values added to the history.</param>
+		/// <remarks>
+		/// <para>
+		/// The initial values are added with a timestep of 1.0.
+		/// </para>
+		/// <para>
+		/// <paramref name="initialValues"/> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="capacity" /> is less than 1. </exception>
+		/// <exception cref="ArgumentNullException"><paramref name="initialValues"/> is null.</exception>
+		/// <exception cref="ArgumentException"><paramref name="initialValues"/> is an empty sequence.</exception>
+		public RunningValues (int capacity, IEnumerable<float> initialValues)
+		{
+			if (initialValues == null)
+			{
+				throw new ArgumentNullException(nameof(initialValues));
+			}
+
+			List<float> values = initialValues.ToList();
+			if (values.Count == 0)
+			{
+				throw new ArgumentException("The sequence of intial values is empty.", nameof(initialValues));
+			}
+
+			this.Reset(capacity);
+
+			foreach (float value in values)
+			{
+				this.Add(value);
+			}
+		}
+
+		/// <summary>
+		/// Creates a new instance of <see cref="RunningValues" />.
+		/// </summary>
+		/// <param name="capacity"> The capacity of the history used to calculate the running values. </param>
+		/// <param name="initialValues">The initial values added to the history.</param>
+		/// <param name="initialTimesteps">The timesteps values added to the history.</param>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="initialValues"/> and <paramref name="initialTimesteps"/> must contain the same number of values.
+		/// </para>
+		/// <para>
+		/// <paramref name="initialValues"/> and <paramref name="initialTimesteps"/> are enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="capacity" /> is less than 1. </exception>
+		/// <exception cref="ArgumentNullException"><paramref name="initialValues"/> or <paramref name="initialTimesteps"/> is null.</exception>
+		/// <exception cref="ArgumentException"><paramref name="initialValues"/> or <paramref name="initialTimesteps"/> is an empty sequence or <paramref name="initialValues"/> and <paramref name="initialTimesteps"/> do not contain the same number of values.</exception>
+		public RunningValues (int capacity, IEnumerable<float> initialValues, IEnumerable<float> initialTimesteps)
+		{
+			if (initialValues == null)
+			{
+				throw new ArgumentNullException(nameof(initialValues));
+			}
+
+			if (initialTimesteps == null)
+			{
+				throw new ArgumentNullException(nameof(initialTimesteps));
+			}
+
+			List<float> values = initialValues.ToList();
+			if (values.Count == 0)
+			{
+				throw new ArgumentException("The sequence of intial values is empty.", nameof(initialValues));
+			}
+
+			List<float> timesteps = initialTimesteps.ToList();
+			if (timesteps.Count == 0)
+			{
+				throw new ArgumentException("The sequence of intial timesteps is empty.", nameof(initialValues));
+			}
+
+			if (values.Count != timesteps.Count)
+			{
+				throw new ArgumentException("The sequence of intial values and initial timesteps do not contain the same number of elements.", nameof(initialValues));
+			}
+
+			this.Reset(capacity);
+
+			for (int i1 = 0; i1 < values.Count; i1++)
+			{
+				float value = values[i1];
+				float timestep = timesteps[i1];
+				this.Add(value, timestep);
+			}
 		}
 
 		#endregion
@@ -103,6 +293,28 @@ namespace RI.Framework.Mathematic
 		///     The sum of all values in the history.
 		/// </summary>
 		public float Sum;
+
+		/// <summary>
+		///     The sum of squared values (first squared, then summed) of all values in the history.
+		/// </summary>
+		public float SquareSum;
+
+		/// <summary>
+		///     The root-mean-square (RMS) of all values in the history.
+		/// </summary>
+		public double Rms;
+
+		/// <summary>
+		///     The variance of all values in the history.
+		/// </summary>
+		public double Variance;
+
+		/// <summary>
+		///     The sigma or standard deviation of all values in the history.
+		/// </summary>
+		public double Sigma;
+
+		private float VarianceDiff;
 
 		private int Index;
 
@@ -156,23 +368,45 @@ namespace RI.Framework.Mathematic
 		/// <param name="timestep"> The timestep for the value. </param>
 		public void Add (float value, float timestep)
 		{
+			float previousLast = this.Last;
+			float previousAverage = this.ArithmeticMean;
+
 			float removedValue;
 			float removedTimestep;
 
 			this.ReplaceOldest(value, timestep, out removedValue, out removedTimestep);
 
 			float weightedValue = value * timestep;
-			float weightedRemovedValue = removedValue * removedTimestep;
+			float weightedValueRemoved = removedValue * removedTimestep;
 
-			float last = this.Last;
-			float sum = (this.Sum - weightedRemovedValue) + weightedValue;
+			float weightedSquaredValue = weightedValue * weightedValue;
+			float weightedSquaredValueRemoved = weightedValueRemoved * weightedValueRemoved;
+
+			float sum = (this.Sum - weightedValueRemoved) + weightedValue;
+			float squareSum = (this.SquareSum - weightedSquaredValueRemoved) + weightedSquaredValue;
 			float duration = (this.Duration - removedTimestep) + timestep;
+			bool durationIsZero = duration.AlmostZero();
+			float rms = durationIsZero ? 0.0f : (float)Math.Sqrt(squareSum / duration);
+			float difference = weightedValue - previousLast;
+			float average = durationIsZero ? 0.0f : (sum / duration);
+
+			float weightedVarianceTemp = (float)Math.Sqrt(weightedValue - average);
+			float weightedVarianceTempRemoved = (float)Math.Sqrt(weightedValueRemoved - previousAverage);
+			float varianceDiff = (this.VarianceDiff - weightedVarianceTempRemoved) + weightedVarianceTemp;
+			float variance = durationIsZero ? 0.0f : (varianceDiff / duration);
+			float sigma = (float)Math.Sqrt(variance);
 
 			this.Last = weightedValue;
-			this.Difference = weightedValue - last;
 			this.Sum = sum;
-			this.ArithmeticMean = sum / duration;
+			this.SquareSum = squareSum;
 			this.Duration = duration;
+			this.Rms = rms;
+			this.Difference = difference;
+			this.ArithmeticMean = average;
+
+			this.VarianceDiff = varianceDiff;
+			this.Variance = variance;
+			this.Sigma = sigma;
 		}
 
 		/// <summary>
@@ -279,11 +513,17 @@ namespace RI.Framework.Mathematic
 			this.Index = 0;
 			this.Count = 0;
 
+			this.VarianceDiff = 0.0f;
+
 			this.Last = 0.0f;
 			this.Difference = 0.0f;
 			this.Sum = 0.0f;
+			this.SquareSum = 0.0f;
 			this.ArithmeticMean = 0.0f;
 			this.Duration = 0.0f;
+			this.Rms = 0.0f;
+			this.Variance = 0.0f;
+			this.Sigma = 0.0f;
 		}
 
 		private void ReplaceOldest (float value, float timestep, out float removedValue, out float removedTimestep)
@@ -306,5 +546,11 @@ namespace RI.Framework.Mathematic
 		}
 
 		#endregion
+
+		/// <inheritdoc />
+		public RunningValues Clone () => new RunningValues(this.GetHistory(), this.GetTimesteps());
+
+		/// <inheritdoc />
+		object ICloneable.Clone () => this.Clone();
 	}
 }

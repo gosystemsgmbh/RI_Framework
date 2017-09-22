@@ -139,8 +139,9 @@ namespace RI.Framework.Mathematic
 				this.WeightedValues[i1] = weightedValue;
 				this.Count++;
 				this.Duration += timestep;
+
 				this.Sum += weightedValue;
-				this.SquareSum += Math.Pow(weightedValue, 2.0);
+				this.SquareSum += weightedValue * weightedValue;
 
 				if (this.Min > weightedValue)
 				{
@@ -166,6 +167,7 @@ namespace RI.Framework.Mathematic
 
 				this.Rms = 0.0;
 				this.ArithmeticMean = 0.0;
+				this.Variance = 0.0;
 				this.Sigma = 0.0;
 			}
 			else
@@ -173,17 +175,23 @@ namespace RI.Framework.Mathematic
 				this.Rms = Math.Sqrt(this.SquareSum / this.Duration);
 				this.ArithmeticMean = this.Sum / this.Duration;
 
-				double sigmaTemp = 0.0;
+				double diff = 0.0;
 				foreach (double value in this.WeightedValues)
 				{
-					sigmaTemp += Math.Pow(value - this.ArithmeticMean, 2.0);
+					diff += Math.Pow(value - this.ArithmeticMean, 2.0);
 				}
-				this.Sigma = Math.Sqrt(sigmaTemp / this.Duration);
+				this.Variance = diff / this.Duration;
+
+				this.Sigma = Math.Sqrt(this.Variance);
 			}
 
-			if (this.Count < 2)
+			if (this.Count == 0)
 			{
 				this.Median = double.NaN;
+			}
+			if (this.Count == 1)
+			{
+				this.Median = this.Sum;
 			}
 			else if ((this.Count % 2) == 0)
 			{
@@ -253,7 +261,12 @@ namespace RI.Framework.Mathematic
 		public double Rms;
 
 		/// <summary>
-		///     The standard deviation of all values.
+		///     The variance of all values.
+		/// </summary>
+		public double Variance;
+
+		/// <summary>
+		///     The sigma or standard deviation of all values.
 		/// </summary>
 		public double Sigma;
 
@@ -311,6 +324,7 @@ namespace RI.Framework.Mathematic
 			clone.Rms = this.Rms;
 			clone.ArithmeticMean = this.ArithmeticMean;
 			clone.Sigma = this.Sigma;
+			clone.Variance = this.Variance;
 			clone.Median = this.Median;
 			clone.Values = (double[])this.Values?.Clone();
 			clone.SortedValues = (double[])this.SortedValues?.Clone();

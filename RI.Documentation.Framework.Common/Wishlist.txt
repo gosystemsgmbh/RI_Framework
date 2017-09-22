@@ -10,7 +10,7 @@
 Utilities
 ---------
 
- - (Windows) SerialPortStream
+ - (???) SerialPortStream
 
  - (WinForms) FormExtensions
  - (WinForms) TemporaryCursor
@@ -117,7 +117,7 @@ Collections
 
  - (Common) RingQueue
  - (Common) SortedQueue
- - (Common) WrappingCollection (warpping multiple collections in a sequence)
+ - (Common) WrappingCollection (wrapping multiple collections in a sequence)
 
  - (Common) IInheritingTreeNode, IInheritingTreeNodeExtensions, InheritingTreeNodeBase, InheritingTreeNode
 
@@ -127,12 +127,12 @@ I/O
 
  # (Common) EndianessConverter
 
+ # (Common) PathProperties: ChangeType
+ # (Common) PathString: IsCompatible
+
  - (Common) IniDocument: DecomposeSections (?)
  - (Common) IniDocument: RemoveElements with predicate
  - (Common) IniDocument: RemoveSections with predicate
-
- - (Common) PathProperties: ChangeType
- - (Common) PathString: IsCompatible
 
  - (Common) DirectoryPath: Copy (DirectoryPath)
  - (Common) DirectoryPath: Move (DirectoryPath)
@@ -236,20 +236,17 @@ Data
 Mathematic
 ----------
 
- * (Common) Aggregate extensions for numerical types (byte, short, int, long, double, float), including statistics (min, max, sum, average, median, RMS, count)
-
  * (Common) NumberExtensions: FractionAsInteger
  * (Common) NumberExtensions: FirstDigits
  * (Common) NumberExtensions: LastDigits
 
+ * (Common) StatisticValues: Make sure everything is weighted
+ * (Common) StatisticValues: GeometricMean
+ * (Common) StatisticValues: HarmonicMean
+ * (Common) StatisticValues: Product
+
  - (Common) MathUtils: CirclePosition
  - (Common) MathUtils: EllipsePosition
-
- * (Common) StatisticValues: Variance
- * (Common) StatisticValues: GeometricMean
-
- * (Common) RunningValues: GeometricMean
- * (Common) RunningValues: PreFill (also as constructor parameter)
 
  - (Common) IController
  - (Common) NonlinearController

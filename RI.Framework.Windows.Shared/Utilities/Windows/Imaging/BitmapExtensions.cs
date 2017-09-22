@@ -157,7 +157,6 @@ namespace RI.Framework.Utilities.Windows.Imaging
 					BitmapExtensions.DestroyIcon(hIcon);
 				}
 			}
-			
 		}
 
 		[DllImport("user32.dll", SetLastError = false)]

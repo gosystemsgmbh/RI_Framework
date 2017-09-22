@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Utilities.Exceptions;
 
 namespace RI.Framework.Utilities.Serialization

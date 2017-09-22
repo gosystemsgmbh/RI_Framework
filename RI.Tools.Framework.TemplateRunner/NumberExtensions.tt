@@ -8,7 +8,10 @@
 #if !TEMPLATE_RUNNER
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+
+using RI.Framework.Collections.DirectLinq;
 
 // ReSharper disable RedundantCast
 
@@ -120,45 +123,123 @@ string minusOne = minusOnes[i1];
 		public static <#=type#> Quantize (this <#=type#> value, <#=type#> multiple, MidpointRounding rounding) => (<#=type#>)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
 
 		/// <summary>
-		/// Adds a number to a value.
+		/// Gets the minimum value from a sequence of values.
 		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="addition">The number to add.</param>
+		/// <param name="values">The sequence of values.</param>
 		/// <returns>
-		/// The result of: value + addition.
+		/// The minimum value of the sequence.
 		/// </returns>
-		public static <#=type#> Add (this <#=type#> value, <#=type#> addition) => (<#=type#>)(value + addition);
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static <#=type#> Min (this IEnumerable<<#=type#>> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			<#=type#> min = <#=type#>.MaxValue;
+			foreach(<#=type#> value in values)
+			{
+				if(value < min)
+				{
+					min = value;
+				}
+			}
+			return min;
+		}
 
 		/// <summary>
-		/// Subtracts a number from a value.
+		/// Gets the maximum value from a sequence of values.
 		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="subtract">The number to subtract.</param>
+		/// <param name="values">The sequence of values.</param>
 		/// <returns>
-		/// The result of: value - subtract.
+		/// The maximum value of the sequence.
 		/// </returns>
-		public static <#=type#> Subtract (this <#=type#> value, <#=type#> subtract) => (<#=type#>)(value - subtract);
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static <#=type#> Max (this IEnumerable<<#=type#>> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
 
-		/// <summary>
-		/// Subtracts a value from a number.
-		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="subtractFrom">The number to subtract from.</param>
-		/// <returns>
-		/// The result of: subtractFrom - value.
-		/// </returns>
-		public static <#=type#> SubtractFrom (this <#=type#> value, <#=type#> subtractFrom) => (<#=type#>)(subtractFrom - value);
-
-		/// <summary>
-		/// Multiplies a value by a factor.
-		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="factor">The factor to multiply with.</param>
-		/// <returns>
-		/// The result of: value * factor.
-		/// </returns>
-		public static <#=type#> Multiply (this <#=type#> value, <#=type#> factor) => (<#=type#>)(value * factor);
+			<#=type#> max = <#=type#>.MinValue;
+			foreach(<#=type#> value in values)
+			{
+				if(value > max)
+				{
+					max = value;
+				}
+			}
+			return max;
+		}
 <#
+if(type != "float")
+{
+#>
+
+		/// <summary>
+		/// Converts a sequence of values to floats.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The sequence of values as floats.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static List<float> AsFloat (this IEnumerable<<#=type#>> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			return values.Select(x => (float)x);
+		}
+<#
+}
+if(type != "double")
+{
+#>
+
+		/// <summary>
+		/// Converts a sequence of values to doubles.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The sequence of values as doubles.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static List<double> AsDouble (this IEnumerable<<#=type#>> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			return values.Select(x => (double)x);
+		}
+<#
+}
 }
 types = new string[]		{	"sbyte",	"short",	"int",	"long",		"float",	"double",	"decimal"	};
 zeros = new string[]		{	"0",		"0",		"0",	"0",		"0.0f",		"0.0",		"0.0m"		};
@@ -228,6 +309,8 @@ types = new string[]					{	"float",														"double"																};
 zeros = new string[]					{	"0.0f",															"0.0"																	};
 plusOnes = new string[]					{	"1.0f",															"1.0"																	};
 minusOnes = new string[]				{	"-1.0f",														"-1.0"																	};
+string[] plusTwos = new string[]		{	"2.0f",															"2.0"																	};
+string[] minusTwos = new string[]		{	"-2.0f",														"-2.0"																	};
 string[] accuracies = new string[]		{	"5.96046447753906E-07f",										"1.11022302462516E-15"													};
 string[] toDegFactors = new string[]	{	"57.295779513f",												"57.295779513"															};
 string[] toRadFactors = new string[]	{	"0.01745329252f",												"0.01745329252"															};
@@ -239,6 +322,8 @@ string type = types[i1];
 string zero = zeros[i1];
 string plusOne = plusOnes[i1];
 string minusOne = minusOnes[i1];
+string plusTwo = plusTwos[i1];
+string minusTwo = minusTwos[i1];
 string accuracy = accuracies[i1];
 string toDegFactor = toDegFactors[i1];
 string toRadFactor = toRadFactors[i1];
@@ -721,6 +806,319 @@ string radCircle = radCircles[i1];
 		/// </para>
 		/// </remarks>
 		public static <#=type#> CircularClampRad (this <#=type#> value) => value.DivRem(<#=radCircle#>);
+
+		/// <summary>
+		/// Gets the sum from a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The sum of the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static <#=type#> Sum (this IEnumerable<<#=type#>> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			<#=type#> sum = 0;
+			foreach(<#=type#> value in values)
+			{
+				sum += value;
+			}
+			return sum;
+		}
+
+		/// <summary>
+		/// Gets the Product from a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The product of the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static <#=type#> Product (this IEnumerable<<#=type#>> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			<#=type#> product = 0;
+			foreach(<#=type#> value in values)
+			{
+				product *= value;
+			}
+			return product;
+		}
+
+		/// <summary>
+		/// Gets the arithmetic mean or average from a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The arithmetic mean or average of the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static double ArithmeticMean (this IEnumerable<<#=type#>> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			<#=type#> sum = 0;
+			int count = 0;
+			foreach(<#=type#> value in values)
+			{
+				sum += value;
+				count += 1;
+			}
+			if(count == 0)
+			{
+				return 0;
+			}
+			return sum / (<#=type#>)count;
+		}
+
+		/// <summary>
+		/// Gets the geometric mean from a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The geometric mean of the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static <#=type#> GeometricMean (this IEnumerable<<#=type#>> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			<#=type#> product = 0;
+			int count = 0;
+			foreach(<#=type#> value in values)
+			{
+				product *= value;
+				count += 1;
+			}
+			if(count == 0)
+			{
+				return 0;
+			}
+			return (<#=type#>)Math.Pow((double)product, 1.0 / (<#=type#>)count);
+		}
+
+		/// <summary>
+		/// Gets the harmonic mean from a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The harmonic mean of the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static <#=type#> HarmonicMean (this IEnumerable<<#=type#>> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			<#=type#> sum = 0;
+			int count = 0;
+			foreach(<#=type#> value in values)
+			{
+				sum = (<#=plusOne#>) / value;
+				count += 1;
+			}
+			if(count == 0)
+			{
+				return 0;
+			}
+			return ((<#=type#>)count) / sum;
+		}
+
+		/// <summary>
+		/// Gets the sum of all squared values (first squared, then summed) from a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The sum of all squared values of the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static <#=type#> SquareSum (this IEnumerable<<#=type#>> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			<#=type#> sum = 0;
+			foreach(<#=type#> value in values)
+			{
+				sum = value * value;
+			}
+			return sum;
+		}
+
+		/// <summary>
+		/// Gets the RMS from a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The RMS of the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static <#=type#> Rms (this IEnumerable<<#=type#>> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			<#=type#> squareSum = values.SquareSum();
+			return  (<#=type#>)Math.Sqrt(squareSum);
+		}
+
+		/// <summary>
+		/// Gets the variance from a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The variance of the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static <#=type#> Variance (this IEnumerable<<#=type#>> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			List<<#=type#>> valueList = new List<<#=type#>>(values);
+			if(valueList.Count == 0)
+			{
+				return 0;
+			}
+
+			<#=type#> average = valueList.GeometricMean();
+
+			<#=type#> diff = 0;
+			foreach(<#=type#> value in valueList)
+			{
+				diff += (<#=type#>)Math.Sqrt(value - average);
+			}
+
+			return diff / (<#=type#>)valueList.Count;
+		}
+
+		/// <summary>
+		/// Gets the sigma or standard deviation from a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The sigma or standard deviation of the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static <#=type#> Sigma (this IEnumerable<<#=type#>> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			return (<#=type#>)Math.Sqrt(values.Variance());
+		}
+
+		/// <summary>
+		/// Gets the median from a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The median of the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static <#=type#> Median (this IEnumerable<<#=type#>> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			List<<#=type#>> valueList = new List<<#=type#>>(values);
+			if(valueList.Count == 0)
+			{
+				return 0;
+			}
+
+			if (valueList.Count == 1)
+			{
+				return valueList[0];
+			}
+
+			valueList.Sort();
+
+			if ((valueList.Count % 2) == 0)
+			{
+				return ((valueList[valueList.Count / 2]) + (valueList[(valueList.Count / 2) - 1])) / <#=plusTwo#>;
+			}
+			else
+			{
+				return valueList[valueList.Count / 2];
+			}
+		}
 <#
 }
 #>

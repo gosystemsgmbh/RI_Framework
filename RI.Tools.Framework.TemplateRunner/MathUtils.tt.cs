@@ -1,9 +1,6 @@
 ﻿
 #if !TEMPLATE_RUNNER
 
-using System;
-using System.Diagnostics.CodeAnalysis;
-
 // ReSharper disable RedundantCast
 
 namespace RI.Framework.Mathematic
@@ -24,7 +21,7 @@ namespace RI.Framework.Mathematic
 		/// </returns>
 		public static sbyte Gcd (sbyte x, sbyte y)
 		{
-			while (y != 0)
+			while (!(y == 0))
 			{
 				sbyte temp = y;
 				y = (sbyte)(x % y);
@@ -56,7 +53,7 @@ namespace RI.Framework.Mathematic
 		/// </returns>
 		public static byte Gcd (byte x, byte y)
 		{
-			while (y != 0)
+			while (!(y == 0))
 			{
 				byte temp = y;
 				y = (byte)(x % y);
@@ -88,7 +85,7 @@ namespace RI.Framework.Mathematic
 		/// </returns>
 		public static short Gcd (short x, short y)
 		{
-			while (y != 0)
+			while (!(y == 0))
 			{
 				short temp = y;
 				y = (short)(x % y);
@@ -120,7 +117,7 @@ namespace RI.Framework.Mathematic
 		/// </returns>
 		public static ushort Gcd (ushort x, ushort y)
 		{
-			while (y != 0)
+			while (!(y == 0))
 			{
 				ushort temp = y;
 				y = (ushort)(x % y);
@@ -152,7 +149,7 @@ namespace RI.Framework.Mathematic
 		/// </returns>
 		public static int Gcd (int x, int y)
 		{
-			while (y != 0)
+			while (!(y == 0))
 			{
 				int temp = y;
 				y = (int)(x % y);
@@ -184,7 +181,7 @@ namespace RI.Framework.Mathematic
 		/// </returns>
 		public static uint Gcd (uint x, uint y)
 		{
-			while (y != 0)
+			while (!(y == 0))
 			{
 				uint temp = y;
 				y = (uint)(x % y);
@@ -216,7 +213,7 @@ namespace RI.Framework.Mathematic
 		/// </returns>
 		public static long Gcd (long x, long y)
 		{
-			while (y != 0)
+			while (!(y == 0))
 			{
 				long temp = y;
 				y = (long)(x % y);
@@ -248,7 +245,7 @@ namespace RI.Framework.Mathematic
 		/// </returns>
 		public static ulong Gcd (ulong x, ulong y)
 		{
-			while (y != 0)
+			while (!(y == 0ul))
 			{
 				ulong temp = y;
 				y = (ulong)(x % y);
@@ -280,7 +277,7 @@ namespace RI.Framework.Mathematic
 		/// </returns>
 		public static float Gcd (float x, float y)
 		{
-			while (y != 0)
+			while (!(y.AlmostZero()))
 			{
 				float temp = y;
 				y = (float)(x % y);
@@ -312,7 +309,7 @@ namespace RI.Framework.Mathematic
 		/// </returns>
 		public static double Gcd (double x, double y)
 		{
-			while (y != 0)
+			while (!(y.AlmostZero()))
 			{
 				double temp = y;
 				y = (double)(x % y);
@@ -344,7 +341,7 @@ namespace RI.Framework.Mathematic
 		/// </returns>
 		public static decimal Gcd (decimal x, decimal y)
 		{
-			while (y != 0)
+			while (!(y == 0.0m))
 			{
 				decimal temp = y;
 				y = (decimal)(x % y);

@@ -2,7 +2,10 @@
 #if !TEMPLATE_RUNNER
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+
+using RI.Framework.Collections.DirectLinq;
 
 // ReSharper disable RedundantCast
 
@@ -102,44 +105,89 @@ namespace RI.Framework.Mathematic
 		public static sbyte Quantize (this sbyte value, sbyte multiple, MidpointRounding rounding) => (sbyte)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
 
 		/// <summary>
-		/// Adds a number to a value.
+		/// Gets the minimum value from a sequence of values.
 		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="addition">The number to add.</param>
+		/// <param name="values">The sequence of values.</param>
 		/// <returns>
-		/// The result of: value + addition.
+		/// The minimum value of the sequence.
 		/// </returns>
-		public static sbyte Add (this sbyte value, sbyte addition) => (sbyte)(value + addition);
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static sbyte Min (this IEnumerable<sbyte> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			sbyte min = sbyte.MaxValue;
+			foreach(sbyte value in values)
+			{
+				if(value < min)
+				{
+					min = value;
+				}
+			}
+			return min;
+		}
 
 		/// <summary>
-		/// Subtracts a number from a value.
+		/// Gets the maximum value from a sequence of values.
 		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="subtract">The number to subtract.</param>
+		/// <param name="values">The sequence of values.</param>
 		/// <returns>
-		/// The result of: value - subtract.
+		/// The maximum value of the sequence.
 		/// </returns>
-		public static sbyte Subtract (this sbyte value, sbyte subtract) => (sbyte)(value - subtract);
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static sbyte Max (this IEnumerable<sbyte> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			sbyte max = sbyte.MinValue;
+			foreach(sbyte value in values)
+			{
+				if(value > max)
+				{
+					max = value;
+				}
+			}
+			return max;
+		}
 
 		/// <summary>
-		/// Subtracts a value from a number.
+		/// Converts a sequence of values to floats.
 		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="subtractFrom">The number to subtract from.</param>
+		/// <param name="values">The sequence of values.</param>
 		/// <returns>
-		/// The result of: subtractFrom - value.
+		/// The sequence of values as floats.
 		/// </returns>
-		public static sbyte SubtractFrom (this sbyte value, sbyte subtractFrom) => (sbyte)(subtractFrom - value);
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static List<float> AsFloat (this IEnumerable<sbyte> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
 
-		/// <summary>
-		/// Multiplies a value by a factor.
-		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="factor">The factor to multiply with.</param>
-		/// <returns>
-		/// The result of: value * factor.
-		/// </returns>
-		public static sbyte Multiply (this sbyte value, sbyte factor) => (sbyte)(value * factor);
+			return values.Select(x => (float)x);
+		}
 
 		/// <summary>
 		/// Clamps a value between an inclusive minimum and maximum value.
@@ -224,44 +272,89 @@ namespace RI.Framework.Mathematic
 		public static byte Quantize (this byte value, byte multiple, MidpointRounding rounding) => (byte)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
 
 		/// <summary>
-		/// Adds a number to a value.
+		/// Gets the minimum value from a sequence of values.
 		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="addition">The number to add.</param>
+		/// <param name="values">The sequence of values.</param>
 		/// <returns>
-		/// The result of: value + addition.
+		/// The minimum value of the sequence.
 		/// </returns>
-		public static byte Add (this byte value, byte addition) => (byte)(value + addition);
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static byte Min (this IEnumerable<byte> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			byte min = byte.MaxValue;
+			foreach(byte value in values)
+			{
+				if(value < min)
+				{
+					min = value;
+				}
+			}
+			return min;
+		}
 
 		/// <summary>
-		/// Subtracts a number from a value.
+		/// Gets the maximum value from a sequence of values.
 		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="subtract">The number to subtract.</param>
+		/// <param name="values">The sequence of values.</param>
 		/// <returns>
-		/// The result of: value - subtract.
+		/// The maximum value of the sequence.
 		/// </returns>
-		public static byte Subtract (this byte value, byte subtract) => (byte)(value - subtract);
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static byte Max (this IEnumerable<byte> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			byte max = byte.MinValue;
+			foreach(byte value in values)
+			{
+				if(value > max)
+				{
+					max = value;
+				}
+			}
+			return max;
+		}
 
 		/// <summary>
-		/// Subtracts a value from a number.
+		/// Converts a sequence of values to floats.
 		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="subtractFrom">The number to subtract from.</param>
+		/// <param name="values">The sequence of values.</param>
 		/// <returns>
-		/// The result of: subtractFrom - value.
+		/// The sequence of values as floats.
 		/// </returns>
-		public static byte SubtractFrom (this byte value, byte subtractFrom) => (byte)(subtractFrom - value);
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static List<float> AsFloat (this IEnumerable<byte> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
 
-		/// <summary>
-		/// Multiplies a value by a factor.
-		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="factor">The factor to multiply with.</param>
-		/// <returns>
-		/// The result of: value * factor.
-		/// </returns>
-		public static byte Multiply (this byte value, byte factor) => (byte)(value * factor);
+			return values.Select(x => (float)x);
+		}
 
 		/// <summary>
 		/// Clamps a value between an inclusive minimum and maximum value.
@@ -346,44 +439,89 @@ namespace RI.Framework.Mathematic
 		public static short Quantize (this short value, short multiple, MidpointRounding rounding) => (short)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
 
 		/// <summary>
-		/// Adds a number to a value.
+		/// Gets the minimum value from a sequence of values.
 		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="addition">The number to add.</param>
+		/// <param name="values">The sequence of values.</param>
 		/// <returns>
-		/// The result of: value + addition.
+		/// The minimum value of the sequence.
 		/// </returns>
-		public static short Add (this short value, short addition) => (short)(value + addition);
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static short Min (this IEnumerable<short> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			short min = short.MaxValue;
+			foreach(short value in values)
+			{
+				if(value < min)
+				{
+					min = value;
+				}
+			}
+			return min;
+		}
 
 		/// <summary>
-		/// Subtracts a number from a value.
+		/// Gets the maximum value from a sequence of values.
 		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="subtract">The number to subtract.</param>
+		/// <param name="values">The sequence of values.</param>
 		/// <returns>
-		/// The result of: value - subtract.
+		/// The maximum value of the sequence.
 		/// </returns>
-		public static short Subtract (this short value, short subtract) => (short)(value - subtract);
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static short Max (this IEnumerable<short> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			short max = short.MinValue;
+			foreach(short value in values)
+			{
+				if(value > max)
+				{
+					max = value;
+				}
+			}
+			return max;
+		}
 
 		/// <summary>
-		/// Subtracts a value from a number.
+		/// Converts a sequence of values to floats.
 		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="subtractFrom">The number to subtract from.</param>
+		/// <param name="values">The sequence of values.</param>
 		/// <returns>
-		/// The result of: subtractFrom - value.
+		/// The sequence of values as floats.
 		/// </returns>
-		public static short SubtractFrom (this short value, short subtractFrom) => (short)(subtractFrom - value);
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static List<float> AsFloat (this IEnumerable<short> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
 
-		/// <summary>
-		/// Multiplies a value by a factor.
-		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="factor">The factor to multiply with.</param>
-		/// <returns>
-		/// The result of: value * factor.
-		/// </returns>
-		public static short Multiply (this short value, short factor) => (short)(value * factor);
+			return values.Select(x => (float)x);
+		}
 
 		/// <summary>
 		/// Clamps a value between an inclusive minimum and maximum value.
@@ -468,44 +606,89 @@ namespace RI.Framework.Mathematic
 		public static ushort Quantize (this ushort value, ushort multiple, MidpointRounding rounding) => (ushort)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
 
 		/// <summary>
-		/// Adds a number to a value.
+		/// Gets the minimum value from a sequence of values.
 		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="addition">The number to add.</param>
+		/// <param name="values">The sequence of values.</param>
 		/// <returns>
-		/// The result of: value + addition.
+		/// The minimum value of the sequence.
 		/// </returns>
-		public static ushort Add (this ushort value, ushort addition) => (ushort)(value + addition);
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static ushort Min (this IEnumerable<ushort> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			ushort min = ushort.MaxValue;
+			foreach(ushort value in values)
+			{
+				if(value < min)
+				{
+					min = value;
+				}
+			}
+			return min;
+		}
 
 		/// <summary>
-		/// Subtracts a number from a value.
+		/// Gets the maximum value from a sequence of values.
 		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="subtract">The number to subtract.</param>
+		/// <param name="values">The sequence of values.</param>
 		/// <returns>
-		/// The result of: value - subtract.
+		/// The maximum value of the sequence.
 		/// </returns>
-		public static ushort Subtract (this ushort value, ushort subtract) => (ushort)(value - subtract);
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static ushort Max (this IEnumerable<ushort> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			ushort max = ushort.MinValue;
+			foreach(ushort value in values)
+			{
+				if(value > max)
+				{
+					max = value;
+				}
+			}
+			return max;
+		}
 
 		/// <summary>
-		/// Subtracts a value from a number.
+		/// Converts a sequence of values to floats.
 		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="subtractFrom">The number to subtract from.</param>
+		/// <param name="values">The sequence of values.</param>
 		/// <returns>
-		/// The result of: subtractFrom - value.
+		/// The sequence of values as floats.
 		/// </returns>
-		public static ushort SubtractFrom (this ushort value, ushort subtractFrom) => (ushort)(subtractFrom - value);
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static List<float> AsFloat (this IEnumerable<ushort> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
 
-		/// <summary>
-		/// Multiplies a value by a factor.
-		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="factor">The factor to multiply with.</param>
-		/// <returns>
-		/// The result of: value * factor.
-		/// </returns>
-		public static ushort Multiply (this ushort value, ushort factor) => (ushort)(value * factor);
+			return values.Select(x => (float)x);
+		}
 
 		/// <summary>
 		/// Clamps a value between an inclusive minimum and maximum value.
@@ -590,44 +773,89 @@ namespace RI.Framework.Mathematic
 		public static int Quantize (this int value, int multiple, MidpointRounding rounding) => (int)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
 
 		/// <summary>
-		/// Adds a number to a value.
+		/// Gets the minimum value from a sequence of values.
 		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="addition">The number to add.</param>
+		/// <param name="values">The sequence of values.</param>
 		/// <returns>
-		/// The result of: value + addition.
+		/// The minimum value of the sequence.
 		/// </returns>
-		public static int Add (this int value, int addition) => (int)(value + addition);
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static int Min (this IEnumerable<int> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			int min = int.MaxValue;
+			foreach(int value in values)
+			{
+				if(value < min)
+				{
+					min = value;
+				}
+			}
+			return min;
+		}
 
 		/// <summary>
-		/// Subtracts a number from a value.
+		/// Gets the maximum value from a sequence of values.
 		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="subtract">The number to subtract.</param>
+		/// <param name="values">The sequence of values.</param>
 		/// <returns>
-		/// The result of: value - subtract.
+		/// The maximum value of the sequence.
 		/// </returns>
-		public static int Subtract (this int value, int subtract) => (int)(value - subtract);
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static int Max (this IEnumerable<int> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			int max = int.MinValue;
+			foreach(int value in values)
+			{
+				if(value > max)
+				{
+					max = value;
+				}
+			}
+			return max;
+		}
 
 		/// <summary>
-		/// Subtracts a value from a number.
+		/// Converts a sequence of values to floats.
 		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="subtractFrom">The number to subtract from.</param>
+		/// <param name="values">The sequence of values.</param>
 		/// <returns>
-		/// The result of: subtractFrom - value.
+		/// The sequence of values as floats.
 		/// </returns>
-		public static int SubtractFrom (this int value, int subtractFrom) => (int)(subtractFrom - value);
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static List<float> AsFloat (this IEnumerable<int> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
 
-		/// <summary>
-		/// Multiplies a value by a factor.
-		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="factor">The factor to multiply with.</param>
-		/// <returns>
-		/// The result of: value * factor.
-		/// </returns>
-		public static int Multiply (this int value, int factor) => (int)(value * factor);
+			return values.Select(x => (float)x);
+		}
 
 		/// <summary>
 		/// Clamps a value between an inclusive minimum and maximum value.
@@ -712,44 +940,89 @@ namespace RI.Framework.Mathematic
 		public static uint Quantize (this uint value, uint multiple, MidpointRounding rounding) => (uint)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
 
 		/// <summary>
-		/// Adds a number to a value.
+		/// Gets the minimum value from a sequence of values.
 		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="addition">The number to add.</param>
+		/// <param name="values">The sequence of values.</param>
 		/// <returns>
-		/// The result of: value + addition.
+		/// The minimum value of the sequence.
 		/// </returns>
-		public static uint Add (this uint value, uint addition) => (uint)(value + addition);
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static uint Min (this IEnumerable<uint> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			uint min = uint.MaxValue;
+			foreach(uint value in values)
+			{
+				if(value < min)
+				{
+					min = value;
+				}
+			}
+			return min;
+		}
 
 		/// <summary>
-		/// Subtracts a number from a value.
+		/// Gets the maximum value from a sequence of values.
 		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="subtract">The number to subtract.</param>
+		/// <param name="values">The sequence of values.</param>
 		/// <returns>
-		/// The result of: value - subtract.
+		/// The maximum value of the sequence.
 		/// </returns>
-		public static uint Subtract (this uint value, uint subtract) => (uint)(value - subtract);
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static uint Max (this IEnumerable<uint> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			uint max = uint.MinValue;
+			foreach(uint value in values)
+			{
+				if(value > max)
+				{
+					max = value;
+				}
+			}
+			return max;
+		}
 
 		/// <summary>
-		/// Subtracts a value from a number.
+		/// Converts a sequence of values to floats.
 		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="subtractFrom">The number to subtract from.</param>
+		/// <param name="values">The sequence of values.</param>
 		/// <returns>
-		/// The result of: subtractFrom - value.
+		/// The sequence of values as floats.
 		/// </returns>
-		public static uint SubtractFrom (this uint value, uint subtractFrom) => (uint)(subtractFrom - value);
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static List<float> AsFloat (this IEnumerable<uint> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
 
-		/// <summary>
-		/// Multiplies a value by a factor.
-		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="factor">The factor to multiply with.</param>
-		/// <returns>
-		/// The result of: value * factor.
-		/// </returns>
-		public static uint Multiply (this uint value, uint factor) => (uint)(value * factor);
+			return values.Select(x => (float)x);
+		}
 
 		/// <summary>
 		/// Clamps a value between an inclusive minimum and maximum value.
@@ -834,44 +1107,89 @@ namespace RI.Framework.Mathematic
 		public static long Quantize (this long value, long multiple, MidpointRounding rounding) => (long)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
 
 		/// <summary>
-		/// Adds a number to a value.
+		/// Gets the minimum value from a sequence of values.
 		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="addition">The number to add.</param>
+		/// <param name="values">The sequence of values.</param>
 		/// <returns>
-		/// The result of: value + addition.
+		/// The minimum value of the sequence.
 		/// </returns>
-		public static long Add (this long value, long addition) => (long)(value + addition);
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static long Min (this IEnumerable<long> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			long min = long.MaxValue;
+			foreach(long value in values)
+			{
+				if(value < min)
+				{
+					min = value;
+				}
+			}
+			return min;
+		}
 
 		/// <summary>
-		/// Subtracts a number from a value.
+		/// Gets the maximum value from a sequence of values.
 		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="subtract">The number to subtract.</param>
+		/// <param name="values">The sequence of values.</param>
 		/// <returns>
-		/// The result of: value - subtract.
+		/// The maximum value of the sequence.
 		/// </returns>
-		public static long Subtract (this long value, long subtract) => (long)(value - subtract);
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static long Max (this IEnumerable<long> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			long max = long.MinValue;
+			foreach(long value in values)
+			{
+				if(value > max)
+				{
+					max = value;
+				}
+			}
+			return max;
+		}
 
 		/// <summary>
-		/// Subtracts a value from a number.
+		/// Converts a sequence of values to floats.
 		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="subtractFrom">The number to subtract from.</param>
+		/// <param name="values">The sequence of values.</param>
 		/// <returns>
-		/// The result of: subtractFrom - value.
+		/// The sequence of values as floats.
 		/// </returns>
-		public static long SubtractFrom (this long value, long subtractFrom) => (long)(subtractFrom - value);
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static List<float> AsFloat (this IEnumerable<long> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
 
-		/// <summary>
-		/// Multiplies a value by a factor.
-		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="factor">The factor to multiply with.</param>
-		/// <returns>
-		/// The result of: value * factor.
-		/// </returns>
-		public static long Multiply (this long value, long factor) => (long)(value * factor);
+			return values.Select(x => (float)x);
+		}
 
 		/// <summary>
 		/// Clamps a value between an inclusive minimum and maximum value.
@@ -956,44 +1274,89 @@ namespace RI.Framework.Mathematic
 		public static ulong Quantize (this ulong value, ulong multiple, MidpointRounding rounding) => (ulong)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
 
 		/// <summary>
-		/// Adds a number to a value.
+		/// Gets the minimum value from a sequence of values.
 		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="addition">The number to add.</param>
+		/// <param name="values">The sequence of values.</param>
 		/// <returns>
-		/// The result of: value + addition.
+		/// The minimum value of the sequence.
 		/// </returns>
-		public static ulong Add (this ulong value, ulong addition) => (ulong)(value + addition);
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static ulong Min (this IEnumerable<ulong> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			ulong min = ulong.MaxValue;
+			foreach(ulong value in values)
+			{
+				if(value < min)
+				{
+					min = value;
+				}
+			}
+			return min;
+		}
 
 		/// <summary>
-		/// Subtracts a number from a value.
+		/// Gets the maximum value from a sequence of values.
 		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="subtract">The number to subtract.</param>
+		/// <param name="values">The sequence of values.</param>
 		/// <returns>
-		/// The result of: value - subtract.
+		/// The maximum value of the sequence.
 		/// </returns>
-		public static ulong Subtract (this ulong value, ulong subtract) => (ulong)(value - subtract);
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static ulong Max (this IEnumerable<ulong> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			ulong max = ulong.MinValue;
+			foreach(ulong value in values)
+			{
+				if(value > max)
+				{
+					max = value;
+				}
+			}
+			return max;
+		}
 
 		/// <summary>
-		/// Subtracts a value from a number.
+		/// Converts a sequence of values to floats.
 		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="subtractFrom">The number to subtract from.</param>
+		/// <param name="values">The sequence of values.</param>
 		/// <returns>
-		/// The result of: subtractFrom - value.
+		/// The sequence of values as floats.
 		/// </returns>
-		public static ulong SubtractFrom (this ulong value, ulong subtractFrom) => (ulong)(subtractFrom - value);
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static List<float> AsFloat (this IEnumerable<ulong> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
 
-		/// <summary>
-		/// Multiplies a value by a factor.
-		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="factor">The factor to multiply with.</param>
-		/// <returns>
-		/// The result of: value * factor.
-		/// </returns>
-		public static ulong Multiply (this ulong value, ulong factor) => (ulong)(value * factor);
+			return values.Select(x => (float)x);
+		}
 
 		/// <summary>
 		/// Clamps a value between an inclusive minimum and maximum value.
@@ -1078,44 +1441,66 @@ namespace RI.Framework.Mathematic
 		public static float Quantize (this float value, float multiple, MidpointRounding rounding) => (float)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
 
 		/// <summary>
-		/// Adds a number to a value.
+		/// Gets the minimum value from a sequence of values.
 		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="addition">The number to add.</param>
+		/// <param name="values">The sequence of values.</param>
 		/// <returns>
-		/// The result of: value + addition.
+		/// The minimum value of the sequence.
 		/// </returns>
-		public static float Add (this float value, float addition) => (float)(value + addition);
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static float Min (this IEnumerable<float> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			float min = float.MaxValue;
+			foreach(float value in values)
+			{
+				if(value < min)
+				{
+					min = value;
+				}
+			}
+			return min;
+		}
 
 		/// <summary>
-		/// Subtracts a number from a value.
+		/// Gets the maximum value from a sequence of values.
 		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="subtract">The number to subtract.</param>
+		/// <param name="values">The sequence of values.</param>
 		/// <returns>
-		/// The result of: value - subtract.
+		/// The maximum value of the sequence.
 		/// </returns>
-		public static float Subtract (this float value, float subtract) => (float)(value - subtract);
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static float Max (this IEnumerable<float> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
 
-		/// <summary>
-		/// Subtracts a value from a number.
-		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="subtractFrom">The number to subtract from.</param>
-		/// <returns>
-		/// The result of: subtractFrom - value.
-		/// </returns>
-		public static float SubtractFrom (this float value, float subtractFrom) => (float)(subtractFrom - value);
-
-		/// <summary>
-		/// Multiplies a value by a factor.
-		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="factor">The factor to multiply with.</param>
-		/// <returns>
-		/// The result of: value * factor.
-		/// </returns>
-		public static float Multiply (this float value, float factor) => (float)(value * factor);
+			float max = float.MinValue;
+			foreach(float value in values)
+			{
+				if(value > max)
+				{
+					max = value;
+				}
+			}
+			return max;
+		}
 
 		/// <summary>
 		/// Clamps a value between an inclusive minimum and maximum value.
@@ -1200,44 +1585,89 @@ namespace RI.Framework.Mathematic
 		public static double Quantize (this double value, double multiple, MidpointRounding rounding) => (double)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
 
 		/// <summary>
-		/// Adds a number to a value.
+		/// Gets the minimum value from a sequence of values.
 		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="addition">The number to add.</param>
+		/// <param name="values">The sequence of values.</param>
 		/// <returns>
-		/// The result of: value + addition.
+		/// The minimum value of the sequence.
 		/// </returns>
-		public static double Add (this double value, double addition) => (double)(value + addition);
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static double Min (this IEnumerable<double> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			double min = double.MaxValue;
+			foreach(double value in values)
+			{
+				if(value < min)
+				{
+					min = value;
+				}
+			}
+			return min;
+		}
 
 		/// <summary>
-		/// Subtracts a number from a value.
+		/// Gets the maximum value from a sequence of values.
 		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="subtract">The number to subtract.</param>
+		/// <param name="values">The sequence of values.</param>
 		/// <returns>
-		/// The result of: value - subtract.
+		/// The maximum value of the sequence.
 		/// </returns>
-		public static double Subtract (this double value, double subtract) => (double)(value - subtract);
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static double Max (this IEnumerable<double> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			double max = double.MinValue;
+			foreach(double value in values)
+			{
+				if(value > max)
+				{
+					max = value;
+				}
+			}
+			return max;
+		}
 
 		/// <summary>
-		/// Subtracts a value from a number.
+		/// Converts a sequence of values to floats.
 		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="subtractFrom">The number to subtract from.</param>
+		/// <param name="values">The sequence of values.</param>
 		/// <returns>
-		/// The result of: subtractFrom - value.
+		/// The sequence of values as floats.
 		/// </returns>
-		public static double SubtractFrom (this double value, double subtractFrom) => (double)(subtractFrom - value);
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static List<float> AsFloat (this IEnumerable<double> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
 
-		/// <summary>
-		/// Multiplies a value by a factor.
-		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="factor">The factor to multiply with.</param>
-		/// <returns>
-		/// The result of: value * factor.
-		/// </returns>
-		public static double Multiply (this double value, double factor) => (double)(value * factor);
+			return values.Select(x => (float)x);
+		}
 
 		/// <summary>
 		/// Clamps a value between an inclusive minimum and maximum value.
@@ -1322,44 +1752,89 @@ namespace RI.Framework.Mathematic
 		public static decimal Quantize (this decimal value, decimal multiple, MidpointRounding rounding) => (decimal)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
 
 		/// <summary>
-		/// Adds a number to a value.
+		/// Gets the minimum value from a sequence of values.
 		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="addition">The number to add.</param>
+		/// <param name="values">The sequence of values.</param>
 		/// <returns>
-		/// The result of: value + addition.
+		/// The minimum value of the sequence.
 		/// </returns>
-		public static decimal Add (this decimal value, decimal addition) => (decimal)(value + addition);
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static decimal Min (this IEnumerable<decimal> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			decimal min = decimal.MaxValue;
+			foreach(decimal value in values)
+			{
+				if(value < min)
+				{
+					min = value;
+				}
+			}
+			return min;
+		}
 
 		/// <summary>
-		/// Subtracts a number from a value.
+		/// Gets the maximum value from a sequence of values.
 		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="subtract">The number to subtract.</param>
+		/// <param name="values">The sequence of values.</param>
 		/// <returns>
-		/// The result of: value - subtract.
+		/// The maximum value of the sequence.
 		/// </returns>
-		public static decimal Subtract (this decimal value, decimal subtract) => (decimal)(value - subtract);
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static decimal Max (this IEnumerable<decimal> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			decimal max = decimal.MinValue;
+			foreach(decimal value in values)
+			{
+				if(value > max)
+				{
+					max = value;
+				}
+			}
+			return max;
+		}
 
 		/// <summary>
-		/// Subtracts a value from a number.
+		/// Converts a sequence of values to floats.
 		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="subtractFrom">The number to subtract from.</param>
+		/// <param name="values">The sequence of values.</param>
 		/// <returns>
-		/// The result of: subtractFrom - value.
+		/// The sequence of values as floats.
 		/// </returns>
-		public static decimal SubtractFrom (this decimal value, decimal subtractFrom) => (decimal)(subtractFrom - value);
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static List<float> AsFloat (this IEnumerable<decimal> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
 
-		/// <summary>
-		/// Multiplies a value by a factor.
-		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <param name="factor">The factor to multiply with.</param>
-		/// <returns>
-		/// The result of: value * factor.
-		/// </returns>
-		public static decimal Multiply (this decimal value, decimal factor) => (decimal)(value * factor);
+			return values.Select(x => (float)x);
+		}
 
 		/// <summary>
 		/// Gets the absolute number of a value.
@@ -2195,6 +2670,319 @@ namespace RI.Framework.Mathematic
 		public static float CircularClampRad (this float value) => value.DivRem(2.0f*3.1415926535897932384626433832795028841971693993751f);
 
 		/// <summary>
+		/// Gets the sum from a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The sum of the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static float Sum (this IEnumerable<float> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			float sum = 0;
+			foreach(float value in values)
+			{
+				sum += value;
+			}
+			return sum;
+		}
+
+		/// <summary>
+		/// Gets the Product from a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The product of the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static float Product (this IEnumerable<float> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			float product = 0;
+			foreach(float value in values)
+			{
+				product *= value;
+			}
+			return product;
+		}
+
+		/// <summary>
+		/// Gets the arithmetic mean or average from a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The arithmetic mean or average of the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static double ArithmeticMean (this IEnumerable<float> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			float sum = 0;
+			int count = 0;
+			foreach(float value in values)
+			{
+				sum += value;
+				count += 1;
+			}
+			if(count == 0)
+			{
+				return 0;
+			}
+			return sum / (float)count;
+		}
+
+		/// <summary>
+		/// Gets the geometric mean from a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The geometric mean of the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static float GeometricMean (this IEnumerable<float> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			float product = 0;
+			int count = 0;
+			foreach(float value in values)
+			{
+				product *= value;
+				count += 1;
+			}
+			if(count == 0)
+			{
+				return 0;
+			}
+			return (float)Math.Pow((double)product, 1.0 / (float)count);
+		}
+
+		/// <summary>
+		/// Gets the harmonic mean from a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The harmonic mean of the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static float HarmonicMean (this IEnumerable<float> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			float sum = 0;
+			int count = 0;
+			foreach(float value in values)
+			{
+				sum = (1.0f) / value;
+				count += 1;
+			}
+			if(count == 0)
+			{
+				return 0;
+			}
+			return ((float)count) / sum;
+		}
+
+		/// <summary>
+		/// Gets the sum of all squared values (first squared, then summed) from a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The sum of all squared values of the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static float SquareSum (this IEnumerable<float> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			float sum = 0;
+			foreach(float value in values)
+			{
+				sum = value * value;
+			}
+			return sum;
+		}
+
+		/// <summary>
+		/// Gets the RMS from a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The RMS of the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static float Rms (this IEnumerable<float> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			float squareSum = values.SquareSum();
+			return  (float)Math.Sqrt(squareSum);
+		}
+
+		/// <summary>
+		/// Gets the variance from a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The variance of the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static float Variance (this IEnumerable<float> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			List<float> valueList = new List<float>(values);
+			if(valueList.Count == 0)
+			{
+				return 0;
+			}
+
+			float average = valueList.GeometricMean();
+
+			float diff = 0;
+			foreach(float value in valueList)
+			{
+				diff += (float)Math.Sqrt(value - average);
+			}
+
+			return diff / (float)valueList.Count;
+		}
+
+		/// <summary>
+		/// Gets the sigma or standard deviation from a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The sigma or standard deviation of the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static float Sigma (this IEnumerable<float> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			return (float)Math.Sqrt(values.Variance());
+		}
+
+		/// <summary>
+		/// Gets the median from a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The median of the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static float Median (this IEnumerable<float> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			List<float> valueList = new List<float>(values);
+			if(valueList.Count == 0)
+			{
+				return 0;
+			}
+
+			if (valueList.Count == 1)
+			{
+				return valueList[0];
+			}
+
+			valueList.Sort();
+
+			if ((valueList.Count % 2) == 0)
+			{
+				return ((valueList[valueList.Count / 2]) + (valueList[(valueList.Count / 2) - 1])) / 2.0f;
+			}
+			else
+			{
+				return valueList[valueList.Count / 2];
+			}
+		}
+
+		/// <summary>
 		/// Gets the remainder of a division.
 		/// </summary>
 		/// <param name="dividend">The dividend.</param>
@@ -2669,6 +3457,319 @@ namespace RI.Framework.Mathematic
 		/// </para>
 		/// </remarks>
 		public static double CircularClampRad (this double value) => value.DivRem(2.0*3.1415926535897932384626433832795028841971693993751);
+
+		/// <summary>
+		/// Gets the sum from a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The sum of the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static double Sum (this IEnumerable<double> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			double sum = 0;
+			foreach(double value in values)
+			{
+				sum += value;
+			}
+			return sum;
+		}
+
+		/// <summary>
+		/// Gets the Product from a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The product of the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static double Product (this IEnumerable<double> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			double product = 0;
+			foreach(double value in values)
+			{
+				product *= value;
+			}
+			return product;
+		}
+
+		/// <summary>
+		/// Gets the arithmetic mean or average from a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The arithmetic mean or average of the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static double ArithmeticMean (this IEnumerable<double> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			double sum = 0;
+			int count = 0;
+			foreach(double value in values)
+			{
+				sum += value;
+				count += 1;
+			}
+			if(count == 0)
+			{
+				return 0;
+			}
+			return sum / (double)count;
+		}
+
+		/// <summary>
+		/// Gets the geometric mean from a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The geometric mean of the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static double GeometricMean (this IEnumerable<double> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			double product = 0;
+			int count = 0;
+			foreach(double value in values)
+			{
+				product *= value;
+				count += 1;
+			}
+			if(count == 0)
+			{
+				return 0;
+			}
+			return (double)Math.Pow((double)product, 1.0 / (double)count);
+		}
+
+		/// <summary>
+		/// Gets the harmonic mean from a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The harmonic mean of the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static double HarmonicMean (this IEnumerable<double> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			double sum = 0;
+			int count = 0;
+			foreach(double value in values)
+			{
+				sum = (1.0) / value;
+				count += 1;
+			}
+			if(count == 0)
+			{
+				return 0;
+			}
+			return ((double)count) / sum;
+		}
+
+		/// <summary>
+		/// Gets the sum of all squared values (first squared, then summed) from a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The sum of all squared values of the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static double SquareSum (this IEnumerable<double> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			double sum = 0;
+			foreach(double value in values)
+			{
+				sum = value * value;
+			}
+			return sum;
+		}
+
+		/// <summary>
+		/// Gets the RMS from a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The RMS of the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static double Rms (this IEnumerable<double> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			double squareSum = values.SquareSum();
+			return  (double)Math.Sqrt(squareSum);
+		}
+
+		/// <summary>
+		/// Gets the variance from a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The variance of the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static double Variance (this IEnumerable<double> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			List<double> valueList = new List<double>(values);
+			if(valueList.Count == 0)
+			{
+				return 0;
+			}
+
+			double average = valueList.GeometricMean();
+
+			double diff = 0;
+			foreach(double value in valueList)
+			{
+				diff += (double)Math.Sqrt(value - average);
+			}
+
+			return diff / (double)valueList.Count;
+		}
+
+		/// <summary>
+		/// Gets the sigma or standard deviation from a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The sigma or standard deviation of the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static double Sigma (this IEnumerable<double> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			return (double)Math.Sqrt(values.Variance());
+		}
+
+		/// <summary>
+		/// Gets the median from a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The median of the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static double Median (this IEnumerable<double> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			List<double> valueList = new List<double>(values);
+			if(valueList.Count == 0)
+			{
+				return 0;
+			}
+
+			if (valueList.Count == 1)
+			{
+				return valueList[0];
+			}
+
+			valueList.Sort();
+
+			if ((valueList.Count % 2) == 0)
+			{
+				return ((valueList[valueList.Count / 2]) + (valueList[(valueList.Count / 2) - 1])) / 2.0;
+			}
+			else
+			{
+				return valueList[valueList.Count / 2];
+			}
+		}
 	}
 }
 
