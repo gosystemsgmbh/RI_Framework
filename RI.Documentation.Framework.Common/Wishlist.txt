@@ -10,9 +10,6 @@
 Utilities
 ---------
 
- # (Windows) SerialPortStream
- # (Linux) SerialPortStream
-
  - (WinForms) FormExtensions
  - (WinForms) TemporaryCursor
  - (WinForms) WindowWrapper
@@ -131,6 +128,9 @@ I/O
  # (Common) IniDocument: DecomposeSections (?)
  # (Common) IniDocument: RemoveElements with predicate
  # (Common) IniDocument: RemoveSections with predicate
+
+ # (Windows) SerialPortStream
+ # (Linux) SerialPortStream
 
  - (Common) DirectoryPath: Copy (DirectoryPath)
  - (Common) DirectoryPath: Move (DirectoryPath)
