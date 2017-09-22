@@ -100,8 +100,7 @@ namespace RI.Framework.Utilities.Wpf.Markup
 				return;
 			}
 
-			//TODO: Check event name
-			if (this.EventName == null)
+			if (this.EventName.IsNullOrEmptyOrWhitespace())
 			{
 				return;
 			}

@@ -51,7 +51,6 @@ namespace RI.Framework.Mathematic
 	/// ]]>
 	/// </code>
 	/// </example>
-	/// TODO: Cloning
 	public sealed class RunningValues : ICloneable<RunningValues>, ICloneable
 	{
 		#region Instance Constructor/Destructor

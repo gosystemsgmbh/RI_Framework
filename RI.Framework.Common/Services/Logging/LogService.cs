@@ -31,7 +31,6 @@ namespace RI.Framework.Services.Logging
 	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
-	/// TODO: Update methods?
 	[Export]
 	public sealed class LogService : ILogService, IImporting
 	{
