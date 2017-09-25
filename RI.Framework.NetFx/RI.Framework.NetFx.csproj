@@ -207,6 +207,7 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="Threading\Dispatcher\ThreadDispatcherWatchdogEventArgs.cs" />
     <Compile Include="Threading\Dispatcher\_NamespaceDoc.cs" />
     <Compile Include="Threading\SynchronizationContextAwaiter.cs" />
     <Compile Include="Threading\SynchronizationContextExtensions.cs" />

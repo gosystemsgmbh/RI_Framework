@@ -338,6 +338,8 @@ namespace RI.Framework.Services.Resources.Sources
 
 			HashSet<FilePath> newFiles = DirectLinqExtensions.Except(existingFiles, from x in this.Resources select x.Value.Item1);
 
+			newFiles.RemoveWhere(x => this.Source.IgnoredExtensions.Contains(x.ExtensionWithoutDot));
+
 			foreach (FilePath file in newFiles)
 			{
 				string extension = file.ExtensionWithDot.ToUpperInvariant();

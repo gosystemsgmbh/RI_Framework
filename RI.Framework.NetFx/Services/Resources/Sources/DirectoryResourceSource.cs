@@ -7,6 +7,7 @@ using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Composition.Model;
 using RI.Framework.IO.Paths;
 using RI.Framework.Services.Resources.Converters;
+using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Logging;
 
@@ -61,9 +62,12 @@ namespace RI.Framework.Services.Resources.Sources
 		///     <para>
 		///         The default encoding <see cref="DefaultEncoding" /> is used as the text encoding.
 		///     </para>
+		/// <para>
+		/// No files are ignored.
+		/// </para>
 		/// </remarks>
 		public DirectoryResourceSource (DirectoryPath directory)
-			: this(directory, null)
+			: this(directory, null, null)
 		{
 		}
 
@@ -72,9 +76,10 @@ namespace RI.Framework.Services.Resources.Sources
 		/// </summary>
 		/// <param name="directory"> The directory which contains the resource set subdirectories. </param>
 		/// <param name="fileEncoding"> The text encoding used for reading text files (can be null to use <see cref="DefaultEncoding" />). </param>
+		/// <param name="ignoredExtensions">A sequence of file extensions which are completely ignored (can be null to not ignore any files).</param>
 		/// <exception cref="ArgumentNullException"> <paramref name="directory" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> <paramref name="directory" /> is not a real usable directory. </exception>
-		public DirectoryResourceSource (DirectoryPath directory, Encoding fileEncoding)
+		public DirectoryResourceSource (DirectoryPath directory, Encoding fileEncoding, IEnumerable<string> ignoredExtensions)
 		{
 			if (directory == null)
 			{
@@ -87,9 +92,23 @@ namespace RI.Framework.Services.Resources.Sources
 			}
 
 			this.Directory = directory;
+			this.IgnoredExtensions = new HashSet<string>((ignoredExtensions ?? new string[0]).Select(x => x.TrimStart('.')), StringComparerEx.InvariantCultureIgnoreCase);
 			this.FileEncoding = fileEncoding ?? DirectoryResourceSource.DefaultEncoding;
 
 			this.Sets = new Dictionary<DirectoryPath, DirectoryResourceSet>();
+		}
+
+		/// <summary>
+		///     Creates a new instance of <see cref="DirectoryResourceSource" />.
+		/// </summary>
+		/// <param name="directory"> The directory which contains the resource set subdirectories. </param>
+		/// <param name="fileEncoding"> The text encoding used for reading text files (can be null to use <see cref="DefaultEncoding" />). </param>
+		/// <param name="ignoredExtensions">A sequence of file extensions which are completely ignored (can be null to not ignore any files).</param>
+		/// <exception cref="ArgumentNullException"> <paramref name="directory" /> is null. </exception>
+		/// <exception cref="InvalidOperationException"> <paramref name="directory" /> is not a real usable directory. </exception>
+		public DirectoryResourceSource (DirectoryPath directory, Encoding fileEncoding, params string[] ignoredExtensions)
+			: this(directory, fileEncoding, (IEnumerable<string>)ignoredExtensions)
+		{
 		}
 
 		#endregion
@@ -106,6 +125,19 @@ namespace RI.Framework.Services.Resources.Sources
 		///     The directory which contains the resource set subdirectories.
 		/// </value>
 		public DirectoryPath Directory { get; }
+
+		/// <summary>
+		/// Gets the set of ignored file extensions.
+		/// </summary>
+		/// <value>
+		/// The set of ignored file extensions.
+		/// </value>
+		/// <remarks>
+		/// <note type="note">
+		/// The file extensions in the set have their leading dot removed.
+		/// </note>
+		/// </remarks>
+		public HashSet<string> IgnoredExtensions { get; }
 
 		/// <summary>
 		///     Gets the text encoding for reading text files.

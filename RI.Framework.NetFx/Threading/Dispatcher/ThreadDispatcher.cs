@@ -27,6 +27,11 @@ namespace RI.Framework.Threading.Dispatcher
 	///     <para>
 	///         During <see cref="Run" />, the current <see cref="SynchronizationContext" /> is replaced by an instance of <see cref="ThreadDispatcherSynchronizationContext" /> and restored afterwards.
 	///     </para>
+	/// <para>
+	/// A watchdog can be used to ensure that the execution of a delegate does not block the dispatcher undetected.
+	/// The watchdog is active whenever <see cref="WatchdogTimeout"/> is not null.
+	/// The watchdog runs in a separate thread and raises the <see cref="Watchdog"/> event if the execution of a delegate takes longer than the specified timeout.
+	/// </para>
 	///     <note type="important">
 	///         Whether <see cref="ExecutionContext" /> and/or <see cref="CultureInfo" /> flows, depends on the used <see cref="ThreadDispatcherOptions" />.
 	///     </note>
@@ -75,6 +80,8 @@ namespace RI.Framework.Threading.Dispatcher
 			this.DefaultOptions = ThreadDispatcher.DefaultOptionsValue;
 			this.ShutdownMode = ThreadDispatcherShutdownMode.None;
 
+			this.WatchdogTimeout = null;
+
 			this.Thread = null;
 			this.Queue = null;
 			this.Posted = null;
@@ -121,6 +128,7 @@ namespace RI.Framework.Threading.Dispatcher
 		private int _defaultPriority;
 		private TaskScheduler _scheduler;
 		private ThreadDispatcherShutdownMode _shutdownMode;
+		private TimeSpan? _watchdogTimeout;
 
 		#endregion
 
@@ -388,7 +396,9 @@ namespace RI.Framework.Threading.Dispatcher
 						break;
 					}
 
+					//TODO: begin watchdog period
 					operation.Execute();
+					//TODO: end watchdog period
 
 					bool catchExceptions;
 
@@ -422,6 +432,11 @@ namespace RI.Framework.Threading.Dispatcher
 		private void OnException (Exception exception, bool canContinue)
 		{
 			this.Exception?.Invoke(this, new ThreadDispatcherExceptionEventArgs(exception, canContinue));
+		}
+
+		private void OnWatchdog(TimeSpan timeout, ThreadDispatcherOperation currentOperation)
+		{
+			this.Watchdog?.Invoke(this, new ThreadDispatcherWatchdogEventArgs(timeout, currentOperation));
 		}
 
 		private void SignalIdle ()
@@ -561,6 +576,25 @@ namespace RI.Framework.Threading.Dispatcher
 		}
 
 		/// <inheritdoc />
+		public TimeSpan? WatchdogTimeout
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._watchdogTimeout;
+				}
+			}
+			set
+			{
+				lock (this.SyncRoot)
+				{
+					this._watchdogTimeout = value;
+				}
+			}
+		}
+
+		/// <inheritdoc />
 		bool ISynchronizable.IsSynchronized => true;
 
 		/// <inheritdoc />
@@ -592,6 +626,9 @@ namespace RI.Framework.Threading.Dispatcher
 
 		/// <inheritdoc />
 		public event EventHandler<ThreadDispatcherExceptionEventArgs> Exception;
+
+		/// <inheritdoc />
+		public event EventHandler<ThreadDispatcherWatchdogEventArgs> Watchdog;
 
 		/// <inheritdoc />
 		public void BeginShutdown (bool finishPendingDelegates)

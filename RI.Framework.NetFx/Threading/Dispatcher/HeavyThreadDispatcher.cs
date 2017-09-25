@@ -32,10 +32,12 @@ namespace RI.Framework.Threading.Dispatcher
 		public HeavyThreadDispatcher ()
 		{
 			this.DispatcherExceptionHandlerDelegate = this.DispatcherExceptionHandler;
+			this.DispatcherWatchdogHandlerDelegate = this.DispatcherWatchdogHandler;
 
 			this.CatchExceptions = false;
 			this.DefaultPriority = ThreadDispatcher.DefaultPriorityValue;
 			this.DefaultOptions = ThreadDispatcher.DefaultOptionsValue;
+			this.WatchdogTimeout = null;
 
 			this.FinishPendingDelegatesOnShutdown = false;
 			this.IsBackgroundThread = true;
@@ -60,6 +62,7 @@ namespace RI.Framework.Threading.Dispatcher
 		private bool _catchExceptions;
 		private ThreadDispatcherOptions _defaultOptions;
 		private int _defaultPriority;
+		private TimeSpan? _watchdogTimeout;
 
 		private bool _finishPendingDelegatesOnShutdown;
 		private bool _isBackgroundThread;
@@ -305,6 +308,8 @@ namespace RI.Framework.Threading.Dispatcher
 
 		private EventHandler<ThreadDispatcherExceptionEventArgs> DispatcherExceptionHandlerDelegate { get; }
 
+		private EventHandler<ThreadDispatcherWatchdogEventArgs> DispatcherWatchdogHandlerDelegate { get; }
+
 		private ThreadDispatcherOperation DispatcherStartOperation { get; set; }
 
 		#endregion
@@ -341,6 +346,11 @@ namespace RI.Framework.Threading.Dispatcher
 			}
 		}
 
+		private void DispatcherWatchdogHandler(object sender, ThreadDispatcherWatchdogEventArgs args)
+		{
+			this.Watchdog?.Invoke(this, args);
+		}
+
 		private void VerifyRunningDispatcher ()
 		{
 			this.VerifyRunning();
@@ -374,14 +384,17 @@ namespace RI.Framework.Threading.Dispatcher
 				if (this.Dispatcher != null)
 				{
 					this.Dispatcher.Exception -= this.DispatcherExceptionHandlerDelegate;
+					this.Dispatcher.Watchdog -= this.DispatcherWatchdogHandlerDelegate;
 					this.Dispatcher = null;
 				}
 
 				this.Dispatcher = new ThreadDispatcher();
 				this.Dispatcher.Exception += this.DispatcherExceptionHandlerDelegate;
+				this.Dispatcher.Watchdog += this.DispatcherWatchdogHandlerDelegate;
 				this.Dispatcher.CatchExceptions = this.CatchExceptions;
 				this.Dispatcher.DefaultPriority = this.DefaultPriority;
 				this.Dispatcher.DefaultOptions = this.DefaultOptions;
+				this.Dispatcher.WatchdogTimeout = this.WatchdogTimeout;
 
 				this.DispatcherStartOperation = this.Dispatcher.Post(0, ThreadDispatcherOptions.None, new Action(() => { }));
 			}
@@ -403,6 +416,7 @@ namespace RI.Framework.Threading.Dispatcher
 				if (this.Dispatcher != null)
 				{
 					this.Dispatcher.Exception -= this.DispatcherExceptionHandlerDelegate;
+					this.Dispatcher.Watchdog -= this.DispatcherWatchdogHandlerDelegate;
 					this.Dispatcher = null;
 				}
 			}
@@ -583,6 +597,38 @@ namespace RI.Framework.Threading.Dispatcher
 
 		/// <inheritdoc />
 		public event EventHandler<ThreadDispatcherExceptionEventArgs> Exception;
+
+		/// <inheritdoc />
+		public event EventHandler<ThreadDispatcherWatchdogEventArgs> Watchdog;
+
+		/// <inheritdoc />
+		public TimeSpan? WatchdogTimeout
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					if (this.Dispatcher != null)
+					{
+						this._watchdogTimeout = this.Dispatcher.WatchdogTimeout;
+					}
+
+					return this._watchdogTimeout;
+				}
+			}
+			set
+			{
+				lock (this.SyncRoot)
+				{
+					this._watchdogTimeout = value;
+
+					if (this.Dispatcher != null)
+					{
+						this.Dispatcher.WatchdogTimeout = value;
+					}
+				}
+			}
+		}
 
 		/// <inheritdoc />
 		[SuppressMessage("ReSharper", "UnusedVariable")]

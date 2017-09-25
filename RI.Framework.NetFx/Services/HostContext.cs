@@ -1,5 +1,6 @@
 ﻿using System;
 
+using RI.Framework.Services.Logging.Writers;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.ObjectModel;
 
@@ -21,7 +22,7 @@ namespace RI.Framework.Services
 		/// <value>
 		///     An additional logger which is provided directly by the hosting environment or null if no such is available.
 		/// </value>
-		public object Logger { get; set; } = null;
+		public ILogWriter Logger { get; set; } = null;
 
 		#endregion
 

@@ -99,6 +99,25 @@ namespace RI.Framework.Threading.Dispatcher
 		event EventHandler<ThreadDispatcherExceptionEventArgs> Exception;
 
 		/// <summary>
+		///     Raised when a watchdog was not reset within the timeout period.
+		/// </summary>
+		/// <remarks>
+		///     <note type="important">
+		///         The event is raised from a separate watchdog thread.
+		///     </note>
+		/// </remarks>
+		event EventHandler<ThreadDispatcherWatchdogEventArgs> Watchdog;
+
+		/// <summary>
+		/// Gets the watchdog timeout.
+		/// </summary>
+		/// <value>
+		/// The watchdog timeout or null if no watchdog is used.
+		/// </value>
+		/// <exception cref="ArgumentOutOfRangeException">The value is negative.</exception>
+		TimeSpan? WatchdogTimeout { get; set; }
+
+		/// <summary>
 		///     Stops processing the delegate queue but does not wait for its shutdown.
 		/// </summary>
 		/// <param name="finishPendingDelegates"> Specifies whether already pending delegates should be processed before the dispatcher is shut down. </param>
