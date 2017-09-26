@@ -1208,7 +1208,7 @@ namespace RI.Framework.Composition
 
 			lock (this.SyncRoot)
 			{
-				List<object> instances = this.GetOrCreateInstancesInternal(exportName, typeof(T));
+				List<object> instances = this.GetOrCreateInstancesInternal(exportName, typeof(T), true);
 				return instances.Count == 0 ? null : (T)instances[0];
 			}
 		}
@@ -1277,13 +1277,148 @@ namespace RI.Framework.Composition
 
 			lock (this.SyncRoot)
 			{
-				List<object> instances = this.GetOrCreateInstancesInternal(exportName, typeof(T));
+				List<object> instances = this.GetOrCreateInstancesInternal(exportName, typeof(T), true);
+				return DirectLinqExtensions.Select(instances, x => (T)x);
+			}
+		}
+
+		/// <summary>
+		///     Manual import: Gets the first resolved value for the specified types default name without creating instances.
+		/// </summary>
+		/// <typeparam name="T"> The type whose default name is resolved. </typeparam>
+		/// <returns>
+		///     The first resolved value which is exported under the specified types default name and which is of type <typeparamref name="T" />, null if no such value could be resolved.
+		/// </returns>
+		/// <exception cref="CompositionException"> The resolving failed although matching exports were found. </exception>
+		public T GetExisting<T>()
+			where T : class
+		{
+			return this.GetExisting<T>(CompositionContainer.GetNameOfType(typeof(T)));
+		}
+
+		/// <summary>
+		///     Manual import: Gets the first resolved value for the specified types default name without creating instances.
+		/// </summary>
+		/// <typeparam name="T"> The type the resolved value must be compatible with. </typeparam>
+		/// <param name="exportType"> The type whose default name is resolved. </param>
+		/// <returns>
+		///     The first resolved value which is exported under the specified types default name and which is of type <typeparamref name="T" />, null if no such value could be resolved.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="exportType" /> is null. </exception>
+		/// <exception cref="CompositionException"> The resolving failed although matching exports were found. </exception>
+		public T GetExisting<T>(Type exportType)
+			where T : class
+		{
+			if (exportType == null)
+			{
+				throw new ArgumentNullException(nameof(exportType));
+			}
+
+			return this.GetExisting<T>(CompositionContainer.GetNameOfType(exportType));
+		}
+
+		/// <summary>
+		///     Manual import: Gets the first resolved value for the specified name without creating instances.
+		/// </summary>
+		/// <typeparam name="T"> The type the resolved value must be compatible with. </typeparam>
+		/// <param name="exportName"> The name which is resolved. </param>
+		/// <returns>
+		///     The first resolved value which is exported under the specified name and which is of type <typeparamref name="T" />, null if no such value could be resolved.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="exportName" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="exportName" /> is an empty string. </exception>
+		/// <exception cref="CompositionException"> The resolving failed although matching exports were found. </exception>
+		public T GetExisting<T>(string exportName)
+			where T : class
+		{
+			if (exportName == null)
+			{
+				throw new ArgumentNullException(nameof(exportName));
+			}
+
+			if (exportName.IsEmptyOrWhitespace())
+			{
+				throw new EmptyStringArgumentException(nameof(exportName));
+			}
+
+			lock (this.SyncRoot)
+			{
+				List<object> instances = this.GetOrCreateInstancesInternal(exportName, typeof(T), false);
+				return instances.Count == 0 ? null : (T)instances[0];
+			}
+		}
+
+		/// <summary>
+		///     Manual import: Gets all resolved values for the specified types default name without creating instances.
+		/// </summary>
+		/// <typeparam name="T"> The type whose default name is resolved. </typeparam>
+		/// <returns>
+		///     The list containing the resolved values.
+		///     The list is empty if no values could be resolved or none of the values are of type <typeparamref name="T" />.
+		/// </returns>
+		/// <exception cref="CompositionException"> The resolving failed although matching exports were found. </exception>
+		public List<T> GetExistings<T>()
+			where T : class
+		{
+			return this.GetExistings<T>(CompositionContainer.GetNameOfType(typeof(T)));
+		}
+
+		/// <summary>
+		///     Manual import: Gets all resolved values for the specified types default name without creating instances.
+		/// </summary>
+		/// <typeparam name="T"> The type the resolved values must be compatible with. </typeparam>
+		/// <param name="exportType"> The type whose default name is resolved. </param>
+		/// <returns>
+		///     The list containing the resolved values.
+		///     The list is empty if no values could be resolved or none of the values are of type <typeparamref name="T" />.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="exportType" /> is null. </exception>
+		/// <exception cref="CompositionException"> The resolving failed although matching exports were found. </exception>
+		public List<T> GetExistings<T>(Type exportType)
+			where T : class
+		{
+			if (exportType == null)
+			{
+				throw new ArgumentNullException(nameof(exportType));
+			}
+
+			return this.GetExistings<T>(CompositionContainer.GetNameOfType(exportType));
+		}
+
+		/// <summary>
+		///     Manual import: Gets all resolved values for the specified name without creating instances.
+		/// </summary>
+		/// <typeparam name="T"> The type the resolved values must be compatible with. </typeparam>
+		/// <param name="exportName"> The name which is resolved. </param>
+		/// <returns>
+		///     The list containing the resolved values.
+		///     The list is empty if no values could be resolved or none of the values are of type <typeparamref name="T" />.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="exportName" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="exportName" /> is an empty string. </exception>
+		/// <exception cref="CompositionException"> The resolving failed although matching exports were found. </exception>
+		public List<T> GetExistings<T>(string exportName)
+			where T : class
+		{
+			if (exportName == null)
+			{
+				throw new ArgumentNullException(nameof(exportName));
+			}
+
+			if (exportName.IsEmptyOrWhitespace())
+			{
+				throw new EmptyStringArgumentException(nameof(exportName));
+			}
+
+			lock (this.SyncRoot)
+			{
+				List<object> instances = this.GetOrCreateInstancesInternal(exportName, typeof(T), false);
 				return DirectLinqExtensions.Select(instances, x => (T)x);
 			}
 		}
 
 		/// <inheritdoc />
-		public object GetInstance(Type type)
+		object IDependencyResolver.GetInstance(Type type)
 		{
 			if (type == null)
 			{
@@ -1299,7 +1434,7 @@ namespace RI.Framework.Composition
 		}
 
 		/// <inheritdoc />
-		public object GetInstance(string name)
+		object IDependencyResolver.GetInstance(string name)
 		{
 			if (name == null)
 			{
@@ -1315,14 +1450,13 @@ namespace RI.Framework.Composition
 		}
 
 		/// <inheritdoc />
-		public T GetInstance<T>()
-			where T : class
+		T IDependencyResolver.GetInstance<T>()
 		{
-			return (T)this.GetInstance(typeof(T));
+			return (T)((IDependencyResolver)this).GetInstance(typeof(T));
 		}
 
 		/// <inheritdoc />
-		public List<object> GetInstances(Type type)
+		List<object> IDependencyResolver.GetInstances(Type type)
 		{
 			if (type == null)
 			{
@@ -1338,7 +1472,7 @@ namespace RI.Framework.Composition
 		}
 
 		/// <inheritdoc />
-		public List<object> GetInstances(string name)
+		List<object> IDependencyResolver.GetInstances(string name)
 		{
 			if (name == null)
 			{
@@ -1354,10 +1488,9 @@ namespace RI.Framework.Composition
 		}
 
 		/// <inheritdoc />
-		public List<T> GetInstances<T>()
-			where T : class
+		List<T> IDependencyResolver.GetInstances<T>()
 		{
-			return this.GetInstances(typeof(T)).Cast<T>();
+			return ((IDependencyResolver)this).GetInstances(typeof(T)).Cast<T>();
 		}
 
 		/// <summary>
@@ -2023,7 +2156,7 @@ namespace RI.Framework.Composition
 			List<object> importValues = null;
 			if ((kind != ImportKind.LazyFunc) && (kind != ImportKind.LazyObject))
 			{
-				importValues = this.GetOrCreateInstancesInternal(importName, importType);
+				importValues = this.GetOrCreateInstancesInternal(importName, importType, true);
 			}
 
 			if (kind == ImportKind.Special)
@@ -2056,7 +2189,7 @@ namespace RI.Framework.Composition
 			return null;
 		}
 
-		private List<object> GetOrCreateInstancesInternal (string name, Type compatibleType)
+		private List<object> GetOrCreateInstancesInternal (string name, Type compatibleType, bool create)
 		{
 			if (!this.HasExport(name))
 			{
@@ -2095,9 +2228,14 @@ namespace RI.Framework.Composition
 			{
 				lock (this.ParentContainer.SyncRoot)
 				{
-					List<object> parentInstances = this.ParentContainer.GetOrCreateInstancesInternal(name, compatibleType);
+					List<object> parentInstances = this.ParentContainer.GetOrCreateInstancesInternal(name, compatibleType, create);
 					instances.AddRange(parentInstances);
 				}
+			}
+
+			if (!create)
+			{
+				types.Clear();
 			}
 
 			List<object> newInstances = new List<object>();

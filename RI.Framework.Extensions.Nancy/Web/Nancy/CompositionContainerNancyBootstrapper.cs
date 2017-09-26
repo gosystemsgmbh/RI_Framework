@@ -142,6 +142,7 @@ namespace RI.Framework.Web.Nancy
 		/// <inheritdoc />
 		protected override void RegisterBootstrapperTypes (CompositionContainer applicationContainer)
 		{
+			applicationContainer.AddExport(this, typeof(INancyBootstrapper));
 			applicationContainer.AddExport(this, typeof(INancyModuleCatalog));
 		}
 

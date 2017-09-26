@@ -178,6 +178,7 @@
     <Compile Include="Services\Settings\Converters\SettingConversionMode.cs" />
     <Compile Include="Services\Settings\Converters\XmlSettingConverter.cs" />
     <Compile Include="Services\Settings\Converters\_NamespaceDoc.cs" />
+    <Compile Include="Services\Settings\SettingItem.cs" />
     <Compile Include="Services\Settings\SettingLocator.cs" />
     <Compile Include="Services\Settings\Storages\AppConfigSettingStorage.cs" />
     <Compile Include="Services\Settings\Storages\CommandLineSettingStorage.cs" />

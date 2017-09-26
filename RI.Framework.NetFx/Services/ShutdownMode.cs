@@ -17,14 +17,14 @@ namespace RI.Framework.Services
 		ExitApplication = 1,
 
 		/// <summary>
-		///     Restarts the application.
-		/// </summary>
-		RestartApplication = 2,
-
-		/// <summary>
 		///     Exits the application and runs a script.
 		/// </summary>
-		ExitApplicationAndRunScript = 3,
+		ExitApplicationAndRunScript = 2,
+
+		/// <summary>
+		///     Restarts the application.
+		/// </summary>
+		RestartApplication = 3,
 
 		/// <summary>
 		///     Exits the application and reboots the machine.

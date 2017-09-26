@@ -179,7 +179,14 @@ namespace RI.Framework.Threading.Dispatcher
 			}
 		}
 
-		internal Delegate Action { get; }
+		/// <summary>
+		/// Gets the delegate executed by this operation.
+		/// </summary>
+		/// <value>
+		/// The delegate executed by this operation.
+		/// </value>
+		public Delegate Action { get; }
+
 		internal ThreadDispatcher Dispatcher { get; }
 		internal ThreadDispatcherExecutionContext ExecutionContext { get; set; }
 		internal ThreadDispatcherOptions Options { get; }

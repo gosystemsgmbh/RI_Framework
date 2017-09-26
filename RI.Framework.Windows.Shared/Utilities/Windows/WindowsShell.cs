@@ -78,7 +78,7 @@ namespace RI.Framework.Utilities.Windows
 			workingDirectory = workingDirectory ?? DirectoryPath.GetCurrentDirectory();
 			string directory = Environment.ExpandEnvironmentVariables(workingDirectory);
 
-			ProcessStartInfo startInfo = new ProcessStartInfo(WindowsShell.CommandPromptExecutable, "/c " + scriptFile);
+			ProcessStartInfo startInfo = new ProcessStartInfo(WindowsShell.CommandPromptExecutable, "/c call \"" + scriptFile + "\"");
 			startInfo.CreateNoWindow = true;
 			startInfo.ErrorDialog = false;
 			startInfo.UseShellExecute = false;
@@ -131,7 +131,7 @@ namespace RI.Framework.Utilities.Windows
 			TemporaryFile tempFile = new TemporaryFile(WindowsShell.BatchFileExtension);
 			tempFile.File.WriteText(commands, Encoding.Default);
 
-			ProcessStartInfo startInfo = new ProcessStartInfo(WindowsShell.CommandPromptExecutable, "/c " + tempFile.File);
+			ProcessStartInfo startInfo = new ProcessStartInfo(WindowsShell.CommandPromptExecutable, "/c call \"" + tempFile.File + "\"");
 			startInfo.CreateNoWindow = true;
 			startInfo.ErrorDialog = false;
 			startInfo.UseShellExecute = false;
