@@ -148,7 +148,7 @@ namespace RI.Framework.Services.Settings.Converters
 			}
 			if (type == typeof(Version))
 			{
-				return ((Version)value).ToString(4);
+				return ((Version)value).ToString();
 			}
 			if (type == typeof(byte[]))
 			{

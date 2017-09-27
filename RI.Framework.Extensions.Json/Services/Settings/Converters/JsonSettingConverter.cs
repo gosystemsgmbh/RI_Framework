@@ -44,7 +44,7 @@ namespace RI.Framework.Services.Settings.Converters
 		}
 
 		/// <inheritdoc />
-		public SettingConversionMode ConversionMode => SettingConversionMode.StringConversion;
+		public SettingConversionMode ConversionMode => SettingConversionMode.SerializationAsString;
 
 		/// <summary>
 		/// Gets the used JSON serialization settings.

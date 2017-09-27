@@ -127,6 +127,7 @@
     <Compile Include="Services\Backup\_NamespaceDoc.cs" />
     <Compile Include="Services\Bootstrapper.cs" />
     <Compile Include="Services\BootstrapperState.cs" />
+    <Compile Include="Services\FirstStart.cs" />
     <Compile Include="Services\HostContext.cs" />
     <Compile Include="Services\IBootstrapper.cs" />
     <Compile Include="Services\IBootstrapperOperations.cs" />

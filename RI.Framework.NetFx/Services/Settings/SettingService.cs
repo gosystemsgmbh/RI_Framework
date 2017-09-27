@@ -11,6 +11,7 @@ using RI.Framework.Services.Settings.Storages;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Logging;
+using RI.Framework.Utilities.Reflection;
 
 namespace RI.Framework.Services.Settings
 {
@@ -79,6 +80,8 @@ namespace RI.Framework.Services.Settings
 
 		private ISettingConverter GetConverterForType (Type type)
 		{
+			Type usedType = this.GetConverterType(type);
+
 			foreach (ISettingConverter converter in this.Converters)
 			{
 				if (converter.ConversionMode != SettingConversionMode.StringConversion)
@@ -86,7 +89,7 @@ namespace RI.Framework.Services.Settings
 					continue;
 				}
 
-				if (converter.CanConvert(type))
+				if (converter.CanConvert(usedType))
 				{
 					return converter;
 				}
@@ -99,13 +102,59 @@ namespace RI.Framework.Services.Settings
 					continue;
 				}
 
-				if (converter.CanConvert(type))
+				if (converter.CanConvert(usedType))
 				{
 					return converter;
 				}
 			}
 
 			return null;
+		}
+
+		private Type GetConverterType (Type type)
+		{
+			if (type.IsNullable())
+			{
+				return type.GetGenericArguments()[0];
+			}
+
+			return type;
+		}
+
+		private string ConvertFrom (ISettingConverter converter, Type type, object value)
+		{
+			Type usedType = this.GetConverterType(type);
+			bool nullable = type.IsNullable();
+
+			if (nullable && (value == null))
+			{
+				return string.Empty;
+			}
+
+			if (value == null)
+			{
+				return null;
+			}
+
+			return converter.ConvertFrom(usedType, value);
+		}
+
+		private object ConvertTo (ISettingConverter converter, Type type, string value)
+		{
+			Type usedType = this.GetConverterType(type);
+			bool nullable = type.IsNullable();
+
+			if (value == null)
+			{
+				return null;
+			}
+
+			if (nullable && value.IsEmpty())
+			{
+				return null;
+			}
+
+			return converter.ConvertTo(usedType, value);
 		}
 
 		private void UpdateConverters ()
@@ -390,7 +439,7 @@ namespace RI.Framework.Services.Settings
 			}
 
 			List<string> stringValues = this.GetRawValues(name);
-			List<object> finalValues = stringValues.Select(x => converter.ConvertTo(type, x));
+			List<object> finalValues = stringValues.Select(x => this.ConvertTo(converter, type, x));
 			return finalValues;
 		}
 
@@ -523,7 +572,7 @@ namespace RI.Framework.Services.Settings
 				return false;
 			}
 
-			List<string> finalValues = defaultValues.Cast<object>().Select(x => converter.ConvertFrom(type, x));
+			List<string> finalValues = defaultValues.Cast<object>().Select(x => this.ConvertFrom(converter, type, x));
 			if (finalValues.Count == 0)
 			{
 				return false;
@@ -703,7 +752,7 @@ namespace RI.Framework.Services.Settings
 				return;
 			}
 
-			List<string> finalValues = values.Cast<object>().Select(x => converter.ConvertFrom(type, x));
+			List<string> finalValues = values.Cast<object>().Select(x => this.ConvertFrom(converter, type, x));
 			if (finalValues.Count == 0)
 			{
 				this.DeleteValues(name);

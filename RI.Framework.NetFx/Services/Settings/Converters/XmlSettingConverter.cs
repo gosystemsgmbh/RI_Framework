@@ -96,7 +96,14 @@ namespace RI.Framework.Services.Settings.Converters
 
 			using (StringReader sr = new StringReader(value))
 			{
-				doc.Load(sr);
+				try
+				{
+					doc.Load(sr);
+				}
+				catch (Exception exception)
+				{
+					throw new FormatException("The string representation is invalid and cannot be converted to the type " + type.Name + ".", exception);
+				}
 			}
 
 			object finalValue;

@@ -149,6 +149,16 @@ namespace RI.Framework.Services
 	///         </item>
 	///         <item>
 	///             <para>
+	///                 <see cref="DeterminePreviousVersion" /> is called and <see cref="PreviousVersion" /> is set.
+	///             </para>
+	///         </item>
+	///         <item>
+	///             <para>
+	///                 <see cref="DetermineFirstStart" /> is called and <see cref="FirstStart" /> is set.
+	///             </para>
+	///         </item>
+	///         <item>
+	///             <para>
 	///                 <see cref="CreateContainer" /> is called and <see cref="Container" /> is set.
 	///             </para>
 	///         </item>
@@ -647,6 +657,8 @@ namespace RI.Framework.Services
 			additionalData.Add(nameof(this.SessionTimestamp), this.SessionTimestamp.ToSortableString('-'));
 			additionalData.Add(nameof(this.SessionId), this.SessionId.ToString("N", CultureInfo.InvariantCulture));
 			additionalData.Add(nameof(this.InstanceId), this.InstanceId ?? "[null]");
+			additionalData.Add(nameof(this.PreviousVersion), this.PreviousVersion?.ToString() ?? "[null]");
+			additionalData.Add(nameof(this.FirstStart), this.FirstStart?.ToString() ?? "[null]");
 
 			return additionalData;
 		}
@@ -1058,6 +1070,8 @@ namespace RI.Framework.Services
 			this.Log(LogLevel.Debug, "Executable directory:  {0}", this.ApplicationExecutableDirectory?.PathResolved ?? "[null]");
 			this.Log(LogLevel.Debug, "Data directory:        {0}", this.ApplicationDataDirectory?.PathResolved ?? "[null]");
 			this.Log(LogLevel.Debug, "Application object:    {0}", this.Application?.ToString() ?? "[null]");
+			this.Log(LogLevel.Debug, "First start:           {0}", this.FirstStart?.ToString() ?? "[null]");
+			this.Log(LogLevel.Debug, "Previous version:      {0}", this.PreviousVersion?.ToString() ?? "[null]");
 		}
 
 		/// <summary>
@@ -1110,6 +1124,69 @@ namespace RI.Framework.Services
 				this.Log(LogLevel.Debug, "Disposing container");
 				this.Container.Dispose();
 			}
+		}
+
+		/// <summary>
+		/// Implements the reset of the previous version information.
+		/// </summary>
+		/// <remarks>
+		/// <para>
+		/// Whatever this method does, <see cref="PreviousVersion"/> is reset anyway.
+		/// </para>
+		///     <note type="implement">
+		///         The default implementation does nothing.
+		///     </note>
+		/// </remarks>
+		protected virtual void ResetPreviousVersionImpl ()
+		{
+		}
+
+		/// <summary>
+		/// Implements the reset of the first start indication.
+		/// </summary>
+		/// <param name="indicators">The indicators to reset.</param>
+		/// <remarks>
+		/// <para>
+		/// Whatever this method does, <see cref="FirstStart"/> is reset anyway.
+		/// </para>
+		///     <note type="implement">
+		///         The default implementation does nothing.
+		///     </note>
+		/// </remarks>
+		protected virtual void ResetFirstStartImpl(FirstStart indicators)
+		{
+		}
+
+		/// <summary>
+		///     Called to determine whether and how the application is started for the first time (<see cref="FirstStart"/>).
+		/// </summary>
+		/// <returns>
+		///     The first start indicators or null if the information is not available or first start indication is not used.
+		/// </returns>
+		/// <remarks>
+		///     <note type="implement">
+		///         The default implementation does nothing and returns null.
+		///     </note>
+		/// </remarks>
+		protected virtual FirstStart? DetermineFirstStart ()
+		{
+			return null;
+		}
+
+		/// <summary>
+		///     Called to determine the timestamp of the current session (<see cref="SessionTimestamp" />).
+		/// </summary>
+		/// <returns>
+		///     The previous application version or null if the application is started for the first time on this machine, the information is not vailable, or the previous version information is not used.
+		/// </returns>
+		/// <remarks>
+		///     <note type="implement">
+		///         The default implementation does nothing and returns null.
+		///     </note>
+		/// </remarks>
+		protected virtual Version DeterminePreviousVersion ()
+		{
+			return null;
 		}
 
 		#endregion
@@ -1230,6 +1307,66 @@ namespace RI.Framework.Services
 		/// <inheritdoc />
 		public Guid UserId { get; private set; }
 
+		private FirstStart? _firstStart;
+
+		/// <inheritdoc />
+		public FirstStart? FirstStart
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._firstStart;
+				}
+			}
+			private set
+			{
+				lock (this.SyncRoot)
+				{
+					this._firstStart = value;
+				}
+			}
+		}
+
+		private Version _previousVersion;
+
+		/// <inheritdoc />
+		public Version PreviousVersion
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._previousVersion;
+				}
+			}
+			private set
+			{
+				lock (this.SyncRoot)
+				{
+					this._previousVersion = value;
+				}
+			}
+		}
+
+		/// <inheritdoc />
+		public void ResetFirstStart (FirstStart? indicators)
+		{
+			FirstStart usedIndicators = indicators ?? Services.FirstStart.All;
+			this.ResetFirstStartImpl(usedIndicators);
+			this.FirstStart = this.FirstStart.HasValue ? (this.FirstStart & (~usedIndicators)) : null;
+		}
+
+		/// <inheritdoc />
+		public void ResetFirstStart () => this.ResetFirstStart(null);
+
+		/// <inheritdoc />
+		public void ResetPreviousVersion ()
+		{
+			this.ResetPreviousVersionImpl();
+			this.PreviousVersion = null;
+		}
+
 		/// <inheritdoc />
 		public virtual void HideSplashScreen ()
 		{
@@ -1288,6 +1425,9 @@ namespace RI.Framework.Services
 
 				this.ApplicationExecutableDirectory = this.DetermineApplicationExecutableDirectory();
 				this.ApplicationDataDirectory = this.DetermineApplicationDataDirectory();
+
+				this.PreviousVersion = this.DeterminePreviousVersion();
+				this.FirstStart = this.DetermineFirstStart();
 
 				this.Log(LogLevel.Debug, "Creating container");
 				this.Container = this.CreateContainer() ?? new CompositionContainer();

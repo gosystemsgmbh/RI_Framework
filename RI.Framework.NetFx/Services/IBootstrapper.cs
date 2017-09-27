@@ -212,7 +212,6 @@ namespace RI.Framework.Services
 		/// </value>
 		CultureInfo StartupCulture { get; }
 
-
 		/// <summary>
 		///     Gets the UI culture which was set during start of the bootstrapping.
 		/// </summary>
@@ -237,6 +236,38 @@ namespace RI.Framework.Services
 		///     The anonymized GUID of the current user.
 		/// </value>
 		Guid UserId { get; }
+
+		/// <summary>
+		/// Gets whether the application is started for the first time.
+		/// </summary>
+		/// <value>
+		/// The indication whether the application has started for the first time or null if this information is not available.
+		/// </value>
+		FirstStart? FirstStart { get; }
+
+		/// <summary>
+		/// Gets the previous version the application was run last time before the current session.
+		/// </summary>
+		/// <value>
+		/// The previous version the application was run last time before the current session or null if the application is started for the very first time on this machine or this information is not available.
+		/// </value>
+		Version PreviousVersion { get; }
+
+		/// <summary>
+		/// Resets the first start information (<see cref="FirstStart"/>).
+		/// </summary>
+		/// <param name="indicators">The indicators to reset or null to reset all indicators.</param>
+		void ResetFirstStart (FirstStart? indicators);
+
+		/// <summary>
+		/// Resets the first start information (<see cref="FirstStart"/>) as if the application was never started on this machine before.
+		/// </summary>
+		void ResetFirstStart ();
+
+		/// <summary>
+		/// Resets the previous version information (<see cref="PreviousVersion"/>) as if the application was never started on this machine before.
+		/// </summary>
+		void ResetPreviousVersion ();
 
 
 
