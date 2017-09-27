@@ -32,7 +32,7 @@
     <DocumentationFile>bin\Release\RI.Framework.RotenInformatik.Wpf.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>Properties\AssemblyName.snk</AssemblyOriginatorKeyFile>

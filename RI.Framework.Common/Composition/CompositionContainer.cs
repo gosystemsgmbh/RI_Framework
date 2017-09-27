@@ -2294,7 +2294,7 @@ namespace RI.Framework.Composition
 					}
 
 					List<ConstructorInfo> greedyConstructors = supportedByCreators ? new List<ConstructorInfo>() : new List<ConstructorInfo>(allConstructors);
-					greedyConstructors.RemoveAll(x =>
+					/*greedyConstructors.RemoveAll(x =>
 					{
 						ParameterInfo[] parameterCandidates = x.GetParameters();
 						foreach (ParameterInfo parameterCandidate in parameterCandidates)
@@ -2319,6 +2319,31 @@ namespace RI.Framework.Composition
 							}
 						}
 						return false;
+					});*/
+					greedyConstructors.ForEach(x =>
+					{
+						ParameterInfo[] parameterCandidates = x.GetParameters();
+						foreach (ParameterInfo parameterCandidate in parameterCandidates)
+						{
+							string importName = parameterCandidate.GetCustomAttributes(typeof(ImportAttribute), false).OfType<ImportAttribute>().FirstOrDefault(null, y => !y.Name.IsNullOrEmptyOrWhitespace())?.Name;
+							ImportKind importKind;
+							Type importType = this.GetImportTypeFromType(parameterCandidate.ParameterType, out importKind);
+
+							if ((importKind == ImportKind.Special) && importName.IsNullOrEmptyOrWhitespace())
+							{
+								this.Log(LogLevel.Debug, "Constructor parameter cannot be satisfied (reason: import type without name); Type: {0}; Constructor parameter: {1}", type.FullName, parameterCandidate.ParameterType.FullName);
+							}
+
+							if ((!importName.IsNullOrEmptyOrWhitespace()) && (!this.HasExport(importName)))
+							{
+								this.Log(LogLevel.Debug, "Constructor parameter cannot be satisfied (reason: import name not found); Type: {0}; Constructor parameter: {1}", type.FullName, parameterCandidate.ParameterType.FullName);
+							}
+
+							if ((importKind != ImportKind.Special) && (!this.HasExport(importType)))
+							{
+								this.Log(LogLevel.Debug, "Constructor parameter cannot be satisfied (reason: import type not found); Type: {0}; Constructor parameter: {1}", type.FullName, parameterCandidate.ParameterType.FullName);
+							}
+						}
 					});
 					greedyConstructors.Sort((x, y) => x.GetParameters().Length.CompareTo(y.GetParameters().Length));
 					greedyConstructors.Reverse();
@@ -2363,18 +2388,22 @@ namespace RI.Framework.Composition
 
 				if (newInstance == null)
 				{
-					throw new CompositionException("No export creators, export constructors, or composition creators could be resolved for type: " + type.FullName);
+					//throw new CompositionException("No export creators, export constructors, or composition creators could be resolved for type: " + type.FullName);
+					this.Log(LogLevel.Debug, "No export creators, export constructors, or composition creators could be resolved for type: {0}", type.FullName);
 				}
 
-				newInstances.Add(newInstance);
-
-				foreach (KeyValuePair<string, CompositionItem> compositionItem in this.Composition)
+				if (newInstance != null)
 				{
-					foreach (CompositionTypeItem typeItem in compositionItem.Value.Types)
+					newInstances.Add(newInstance);
+
+					foreach (KeyValuePair<string, CompositionItem> compositionItem in this.Composition)
 					{
-						if ((typeItem.Type == type) && (typeItem.Instance == null) && (!typeItem.PrivateExport))
+						foreach (CompositionTypeItem typeItem in compositionItem.Value.Types)
 						{
-							typeItem.Instance = newInstance;
+							if ((typeItem.Type == type) && (typeItem.Instance == null) && (!typeItem.PrivateExport))
+							{
+								typeItem.Instance = newInstance;
+							}
 						}
 					}
 				}

@@ -34,7 +34,7 @@
     <NoWarn>CS8002</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>Properties\AssemblyName.snk</AssemblyOriginatorKeyFile>
