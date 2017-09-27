@@ -1860,6 +1860,13 @@ namespace RI.Framework.Composition
 				foreach (PropertyInfo property in properties)
 				{
 					List<ImportAttribute> attributes = property.GetCustomAttributes(typeof(ImportAttribute), false).OfType<ImportAttribute>().ToList();
+					bool canCompose = attributes.Count > 0;
+
+					if (!canCompose)
+					{
+						continue;
+					}
+
 					bool canRecompose = attributes.Any(x => x.Recomposable);
 					object oldValue = property.GetGetMethod(true).Invoke(obj, null);
 
