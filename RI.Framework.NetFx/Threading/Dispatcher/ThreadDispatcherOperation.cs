@@ -59,6 +59,7 @@ namespace RI.Framework.Threading.Dispatcher
 
 			this.RunTimeMillisecondsInternal = 0.0;
 			this.WatchdogTimeMillisecondsInternal = 0.0;
+			this.WatchdogEventsInternal = 0;
 		}
 
 		/// <summary>
@@ -227,6 +228,28 @@ namespace RI.Framework.Threading.Dispatcher
 		}
 
 		/// <summary>
+		/// Gets the number of watchdog events for this operation.
+		/// </summary>
+		/// <value>
+		/// The number of watchdog events for this operation.
+		/// </value>
+		/// <remarks>
+		/// <para>
+		/// When a watchdog event occurs, this counter is already incremented, for example the first watchdog events has thsi property set to 1.
+		/// </para>
+		/// </remarks>
+		public int WatchdogEvents
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this.WatchdogEventsInternal;
+				}
+			}
+		}
+
+		/// <summary>
 		/// Gets the delegate executed by this operation.
 		/// </summary>
 		/// <value>
@@ -247,6 +270,7 @@ namespace RI.Framework.Threading.Dispatcher
 
 		internal double RunTimeMillisecondsInternal { get; set; }
 		internal double WatchdogTimeMillisecondsInternal { get; set; }
+		internal int WatchdogEventsInternal { get; set; }
 
 		#endregion
 

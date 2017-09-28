@@ -121,7 +121,7 @@ namespace RI.Framework.Services.Logging.Writers
 				finalMessageBuilder.Append("] [");
 				finalMessageBuilder.Append(source);
 				finalMessageBuilder.Append("] ");
-				finalMessageBuilder.AppendLine(message);
+				finalMessageBuilder.Append(message);
 				string finalMessage = finalMessageBuilder.ToString();
 
 				Debugger.Log((int)severity, source, finalMessage);

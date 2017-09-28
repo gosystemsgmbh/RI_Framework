@@ -31,7 +31,7 @@ namespace RI.Framework.Utilities.Linux
 		/// </returns>
 		public static Guid GetMachineId ()
 		{
-			string cipher = LocalEncryption.Encrypt(false, UniqueIdentification.InnerGuid, null);
+			string cipher = Environment.MachineName + "\\" + UniqueIdentification.InnerGuid;
 			Guid guid = UniqueIdentification.CreateGuidFromString(cipher);
 			return guid;
 		}
@@ -44,7 +44,7 @@ namespace RI.Framework.Utilities.Linux
 		/// </returns>
 		public static Guid GetUserId ()
 		{
-			string cipher = LocalEncryption.Encrypt(true, UniqueIdentification.InnerGuid, null);
+			string cipher = Environment.UserDomainName + "\\" + Environment.UserName + "\\" + UniqueIdentification.InnerGuid;
 			Guid guid = UniqueIdentification.CreateGuidFromString(cipher);
 			return guid;
 		}

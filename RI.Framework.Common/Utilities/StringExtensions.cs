@@ -2406,6 +2406,69 @@ namespace RI.Framework.Utilities
 			return sb.ToString();
 		}
 
+		/// <summary>
+		///     Gets the maximum length of multiple strings.
+		/// </summary>
+		/// <param name="values"> The sequence of strings to get the maximum length from. </param>
+		/// <returns>
+		///     The length of the string with the maximum length.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         <paramref name="values" /> is enumerated exactly once.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static int MaxLength (this IEnumerable<string> values)
+		{
+			if (values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			int max = int.MinValue;
+			foreach (string str in values)
+			{
+				if (str.Length > max)
+				{
+					max = str.Length;
+				}
+			}
+			return max;
+		}
+
+		/// <summary>
+		///     Gets the minimum length of multiple strings.
+		/// </summary>
+		/// <param name="values"> The sequence of strings to get the minimum length from. </param>
+		/// <param name="ignoreZeroLength"> Specifies whether string with zero length do not count. </param>
+		/// <returns>
+		///     The length of the string with the minimum length.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         <paramref name="values" /> is enumerated exactly once.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static int MinLength(this IEnumerable<string> values, bool ignoreZeroLength)
+		{
+			if (values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			int min = int.MaxValue;
+			foreach (string str in values)
+			{
+				if (str.Length < min)
+				{
+					min = str.Length;
+				}
+			}
+			return min;
+		}
+
 		#endregion
 	}
 }

@@ -1187,6 +1187,7 @@ namespace RI.Framework.Threading.Dispatcher
 						{
 							hasTimeout = true;
 							operation.WatchdogTimeMillisecondsInternal = 0.0;
+							operation.WatchdogEventsInternal += 1;
 						}
 					}
 

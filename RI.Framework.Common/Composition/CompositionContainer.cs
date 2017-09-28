@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Reflection;
 
 using RI.Framework.Collections;
@@ -1971,6 +1972,79 @@ namespace RI.Framework.Composition
 				}
 				return snapshot;
 			}
+		}
+
+		/// <summary>
+		/// Creates a text describing the current composition.
+		/// </summary>
+		/// <param name="writer">The text writer to write the description to.</param>
+		public void GetCurrentCompositionLog (TextWriter writer)
+		{
+			Dictionary<string, List<CompositionCatalogItem>> compositionSnapshot = this.GetCompositionSnapshot();
+
+			List<string> names = compositionSnapshot.Keys.ToList();
+			names.Sort(StringComparerEx.InvariantCultureIgnoreCase);
+
+			for (int i1 = 0; i1 < names.Count; i1++)
+			{
+				bool last = i1 >= (names.Count - 1);
+				string name = names[i1];
+				List<CompositionCatalogItem> catalogItems = compositionSnapshot[name];
+
+				List<string> lines = new List<string>();
+				lines.Add(name);
+				foreach (CompositionCatalogItem catalogItem in catalogItems)
+				{
+					if (catalogItem.Value != null)
+					{
+						lines.Add("  Kind=Instance, Value=" + catalogItem.Value.GetType().AssemblyQualifiedName);
+					}
+					else
+					{
+						lines.Add("  Kind=Type, Private=" + (catalogItem.PrivateExport ? "yes" : "no") + ", Type=" + catalogItem.Type.AssemblyQualifiedName);
+					}
+				}
+
+				int separatorLength = lines.MaxLength();
+				string separator = new string('-', separatorLength);
+
+				writer.WriteLine(separator);
+
+				foreach (string line in lines)
+				{
+					writer.WriteLine(line);
+				}
+
+				if (last)
+				{
+					writer.WriteLine(separator);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Creates a text describing the current composition.
+		/// </summary>
+		/// <returns>
+		/// The text describing the current composition.
+		/// </returns>
+		public string GetCurrentCompositionLog ()
+		{
+			using (StringWriter sw = new StringWriter())
+			{
+				this.GetCurrentCompositionLog(sw);
+				sw.Flush();
+				return sw.ToString().Trim();
+			}
+		}
+
+		/// <summary>
+		/// Creates a text describing the current composition and writes it to the log.
+		/// </summary>
+		public void LogCurrentComposition (LogLevel severity)
+		{
+			string currentCompositionLog = this.GetCurrentCompositionLog();
+			this.Log(severity, "Current composition:{0}{1}", Environment.NewLine, currentCompositionLog);
 		}
 
 		private void AddCatalogInternal (CompositionCatalog catalog)
