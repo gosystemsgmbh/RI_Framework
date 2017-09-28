@@ -56,6 +56,9 @@ namespace RI.Framework.Threading.Dispatcher
 			this.OperationDoneTask = new TaskCompletionSource<object>();
 
 			this.Dispatcher.AddKeepAlive(this);
+
+			this.RunTimeMillisecondsInternal = 0.0;
+			this.WatchdogTimeMillisecondsInternal = 0.0;
 		}
 
 		/// <summary>
@@ -180,6 +183,50 @@ namespace RI.Framework.Threading.Dispatcher
 		}
 
 		/// <summary>
+		/// Gets the total time in milliseconds this dispatcher operation was executing within the dispatcher.
+		/// </summary>
+		/// <value>
+		/// The total time in milliseconds this dispatcher operation was executing within the dispatcher.
+		/// </value>
+		/// <remarks>
+		/// <para>
+		/// The executing time does only include the time the operation was using dispatcher resources, but does not include time which was spent in another thread (e.g. when the operation is a task which uses other threads).
+		/// </para>
+		/// </remarks>
+		public int RunTimeMilliseconds
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return (int)this.RunTimeMillisecondsInternal;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets the time in milliseconds this dispatcher operation was executing within the dispatcher since its last watchdog event.
+		/// </summary>
+		/// <value>
+		/// The time in milliseconds this dispatcher operation was executing within the dispatcher since its last watchdog event.
+		/// </value>
+		/// <remarks>
+		/// <para>
+		/// The executing time does only include the time the operation was using dispatcher resources, but does not include time which was spent in another thread (e.g. when the operation is a task which uses other threads).
+		/// </para>
+		/// </remarks>
+		public int WatchdogTimeMilliseconds
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return (int)this.WatchdogTimeMillisecondsInternal;
+				}
+			}
+		}
+
+		/// <summary>
 		/// Gets the delegate executed by this operation.
 		/// </summary>
 		/// <value>
@@ -197,6 +244,9 @@ namespace RI.Framework.Threading.Dispatcher
 		private Task Task { get; set; }
 		private ManualResetEvent OperationDone { get; set; }
 		private TaskCompletionSource<object> OperationDoneTask { get; set; }
+
+		internal double RunTimeMillisecondsInternal { get; set; }
+		internal double WatchdogTimeMillisecondsInternal { get; set; }
 
 		#endregion
 

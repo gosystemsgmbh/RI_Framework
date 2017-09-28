@@ -430,7 +430,7 @@ namespace RI.Framework.Composition
 			List<Type> inheritedTypes = type.GetInheritance(false);
 			foreach (Type inheritedType in inheritedTypes)
 			{
-				CompositionContainer.GetExportsOfTypeInternal(inheritedType, false, false, exports);
+				CompositionContainer.GetExportsOfTypeInternal(inheritedType, includeWithoutAttribute, false, exports);
 			}
 
 			Type[] interfaceTypes = type.GetInterfaces();
@@ -558,7 +558,7 @@ namespace RI.Framework.Composition
 				container.AddExport(container, typeof(CompositionContainer));
 				if (addAppDomainCatalog)
 				{
-					container.AddCatalog(new AppDomainCatalog(true, true, false));
+					container.AddCatalog(new AppDomainCatalog(true, true, true));
 				}
 				ServiceLocator.BindToDependencyResolver(container);
 			}
@@ -664,7 +664,7 @@ namespace RI.Framework.Composition
 			this.Instances = new List<CompositionCatalogItem>();
 			this.Types = new List<CompositionCatalogItem>();
 			this.Catalogs = new List<CompositionCatalog>();
-			this.Creators = new HashSet<CompositionCreator>();
+			this.Creators = new List<CompositionCreator>();
 			this.Composition = new Dictionary<string, CompositionItem>(CompositionContainer.NameComparer);
 			this.LazyInvokers = new Dictionary<string, Dictionary<Type, LazyInvoker>>(CompositionContainer.NameComparer);
 
@@ -782,7 +782,7 @@ namespace RI.Framework.Composition
 
 		private Dictionary<string, CompositionItem> Composition { get; }
 
-		private HashSet<CompositionCreator> Creators { get; }
+		private List<CompositionCreator> Creators { get; }
 
 		private List<CompositionCatalogItem> Instances { get; }
 
@@ -1860,17 +1860,17 @@ namespace RI.Framework.Composition
 				foreach (PropertyInfo property in properties)
 				{
 					List<ImportAttribute> attributes = property.GetCustomAttributes(typeof(ImportAttribute), false).OfType<ImportAttribute>().ToList();
-					bool canCompose = attributes.Count > 0;
 
+					bool canCompose = attributes.Count > 0;
 					if (!canCompose)
 					{
 						continue;
 					}
 
 					bool canRecompose = attributes.Any(x => x.Recomposable);
-					object oldValue = property.GetGetMethod(true).Invoke(obj, null);
+					object oldValue = property.GetGetMethod(true)?.Invoke(obj, null);
 
-					if ((isConstructing || (updateMissing && (oldValue == null)) || (updateRecomposable && canRecompose) || (updateComposed && (oldValue != null))) && (attributes.Count > 0))
+					if ((isConstructing || (updateMissing && (oldValue == null)) || (updateRecomposable && canRecompose) || (updateComposed && (oldValue != null))))
 					{
 						string importName = attributes.FirstOrDefault(null, x => !x.Name.IsNullOrEmptyOrWhitespace())?.Name;
 						Type importType = property.PropertyType;
@@ -1928,7 +1928,19 @@ namespace RI.Framework.Composition
 			}
 		}
 
-		internal Dictionary<string, List<CompositionCatalogItem>> GetCompositionSnapshot ()
+		/// <summary>
+		/// Gets an independent snapshot of the current composition.
+		/// </summary>
+		/// <returns>
+		/// The independent snapshot of the current composition.
+		/// If no composition items are available, an empty dictionary is returned.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// The key of the returned dictionary is the name under which the items in the inner list are exported.
+		/// </para>
+		/// </remarks>
+		public Dictionary<string, List<CompositionCatalogItem>> GetCompositionSnapshot ()
 		{
 			lock (this.SyncRoot)
 			{
@@ -2188,9 +2200,9 @@ namespace RI.Framework.Composition
 			}
 #endif
 
-			if (importValues?.Count > 0)
+			if (kind == ImportKind.Single)
 			{
-				return importValues[0];
+				return importValues?.Count > 0 ? importValues[0] : null;
 			}
 
 			return null;
@@ -2254,7 +2266,7 @@ namespace RI.Framework.Composition
 				{
 					MethodInfo[] allMethods = type.GetMethods(BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.FlattenHierarchy);
 
-					List<MethodInfo> methods = DirectLinqExtensions.Where(allMethods, x => (x.GetCustomAttributes(typeof(ExportCreatorAttribute), true).Length > 0) && (x.ReturnType != typeof(void)) && (x.GetParameters().Length >= 1) && (x.GetParameters()[0].ParameterType == typeof(Type)));
+					List<MethodInfo> methods = DirectLinqExtensions.Where(allMethods, x => (x.GetCustomAttributes(typeof(ExportCreatorAttribute), true).Length > 0) && (x.ReturnType != typeof(void)) && (compatibleType.IsAssignableFrom(x.ReturnType)) && (x.GetParameters().Length >= 1) && (x.GetParameters()[0].ParameterType == typeof(Type)));
 
 					if (methods.Count > 1)
 					{
@@ -2294,57 +2306,6 @@ namespace RI.Framework.Composition
 					}
 
 					List<ConstructorInfo> greedyConstructors = supportedByCreators ? new List<ConstructorInfo>() : new List<ConstructorInfo>(allConstructors);
-					/*greedyConstructors.RemoveAll(x =>
-					{
-						ParameterInfo[] parameterCandidates = x.GetParameters();
-						foreach (ParameterInfo parameterCandidate in parameterCandidates)
-						{
-							string importName = parameterCandidate.GetCustomAttributes(typeof(ImportAttribute), false).OfType<ImportAttribute>().FirstOrDefault(null, y => !y.Name.IsNullOrEmptyOrWhitespace())?.Name;
-							ImportKind importKind;
-							Type importType = this.GetImportTypeFromType(parameterCandidate.ParameterType, out importKind);
-
-							if ((importKind == ImportKind.Special) && importName.IsNullOrEmptyOrWhitespace())
-							{
-								return true;
-							}
-
-							if ((!importName.IsNullOrEmptyOrWhitespace()) && (!this.HasExport(importName)))
-							{
-								return true;
-							}
-
-							if ((importKind != ImportKind.Special) && (!this.HasExport(importType)))
-							{
-								return true;
-							}
-						}
-						return false;
-					});*/
-					greedyConstructors.ForEach(x =>
-					{
-						ParameterInfo[] parameterCandidates = x.GetParameters();
-						foreach (ParameterInfo parameterCandidate in parameterCandidates)
-						{
-							string importName = parameterCandidate.GetCustomAttributes(typeof(ImportAttribute), false).OfType<ImportAttribute>().FirstOrDefault(null, y => !y.Name.IsNullOrEmptyOrWhitespace())?.Name;
-							ImportKind importKind;
-							Type importType = this.GetImportTypeFromType(parameterCandidate.ParameterType, out importKind);
-
-							if ((importKind == ImportKind.Special) && importName.IsNullOrEmptyOrWhitespace())
-							{
-								this.Log(LogLevel.Debug, "Constructor parameter cannot be satisfied (reason: import type without name); Type: {0}; Constructor parameter: {1}", type.FullName, parameterCandidate.ParameterType.FullName);
-							}
-
-							if ((!importName.IsNullOrEmptyOrWhitespace()) && (!this.HasExport(importName)))
-							{
-								this.Log(LogLevel.Debug, "Constructor parameter cannot be satisfied (reason: import name not found); Type: {0}; Constructor parameter: {1}", type.FullName, parameterCandidate.ParameterType.FullName);
-							}
-
-							if ((importKind != ImportKind.Special) && (!this.HasExport(importType)))
-							{
-								this.Log(LogLevel.Debug, "Constructor parameter cannot be satisfied (reason: import type not found); Type: {0}; Constructor parameter: {1}", type.FullName, parameterCandidate.ParameterType.FullName);
-							}
-						}
-					});
 					greedyConstructors.Sort((x, y) => x.GetParameters().Length.CompareTo(y.GetParameters().Length));
 					greedyConstructors.Reverse();
 
@@ -2388,7 +2349,6 @@ namespace RI.Framework.Composition
 
 				if (newInstance == null)
 				{
-					//throw new CompositionException("No export creators, export constructors, or composition creators could be resolved for type: " + type.FullName);
 					this.Log(LogLevel.Debug, "No export creators, export constructors, or composition creators could be resolved for type: {0}", type.FullName);
 				}
 
@@ -2663,7 +2623,7 @@ namespace RI.Framework.Composition
 
 			public bool Checked { get; set; }
 
-			public object Instance { get; private set; }
+			public object Instance { get; }
 
 			#endregion
 		}
@@ -2693,11 +2653,11 @@ namespace RI.Framework.Composition
 
 			#region Instance Properties/Indexer
 
-			public List<CompositionInstanceItem> Instances { get; private set; }
+			public List<CompositionInstanceItem> Instances { get; }
 
-			public string Name { get; private set; }
+			public string Name { get; }
 
-			public List<CompositionTypeItem> Types { get; private set; }
+			public List<CompositionTypeItem> Types { get; }
 
 			#endregion
 
@@ -2753,9 +2713,9 @@ namespace RI.Framework.Composition
 
 			public object Instance { get; set; }
 
-			public bool PrivateExport { get; private set; }
+			public bool PrivateExport { get; }
 
-			public Type Type { get; private set; }
+			public Type Type { get; }
 
 			#endregion
 		}

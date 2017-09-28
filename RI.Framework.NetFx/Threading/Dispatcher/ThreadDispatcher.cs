@@ -61,6 +61,10 @@ namespace RI.Framework.Threading.Dispatcher
 		/// </remarks>
 		public const int DefaultPriorityValue = int.MaxValue / 2;
 
+		private const int WatchdogThreadTimeoutMilliseconds = 1000;
+
+		private const int WatchdogCheckInterval = 20;
+
 		#endregion
 
 
@@ -90,6 +94,7 @@ namespace RI.Framework.Threading.Dispatcher
 			this.CurrentOptions = null;
 			this.CurrentOperation = null;
 			this.KeepAlives = null;
+			this.WatchdogLoop = null;
 
 			this.Scheduler = new ThreadDispatcherTaskScheduler(this);
 			this.Context = new ThreadDispatcherSynchronizationContext(this);
@@ -121,7 +126,6 @@ namespace RI.Framework.Threading.Dispatcher
 		#region Instance Fields
 
 		private ThreadDispatcherAwaiter _awaiter;
-
 		private bool _catchExceptions;
 		private SynchronizationContext _context;
 		private ThreadDispatcherOptions _defaultOptions;
@@ -205,6 +209,8 @@ namespace RI.Framework.Threading.Dispatcher
 
 		private Thread Thread { get; set; }
 
+		private WatchdogThread WatchdogLoop { get; set; }
+
 		#endregion
 
 
@@ -245,6 +251,10 @@ namespace RI.Framework.Threading.Dispatcher
 
 					this.Finished.Reset();
 					this.FinishedSignals.Clear();
+
+					this.WatchdogLoop = new WatchdogThread(this);
+					this.WatchdogLoop.Timeout = ThreadDispatcher.WatchdogThreadTimeoutMilliseconds;
+					this.WatchdogLoop.Start();
 				}
 
 				this.ExecuteFrame(null);
@@ -253,6 +263,8 @@ namespace RI.Framework.Threading.Dispatcher
 			{
 				lock (this.SyncRoot)
 				{
+					this.WatchdogLoop?.Stop();
+
 					this.CurrentOperation?.ForEach(x => x.CancelHard());
 					this.Queue?.ForEach(x => x.CancelHard());
 					this.IdleSignals?.ForEach(x => x.TrySetResult(null));
@@ -396,9 +408,15 @@ namespace RI.Framework.Threading.Dispatcher
 						break;
 					}
 
-					//TODO: begin watchdog period
-					operation.Execute();
-					//TODO: end watchdog period
+					this.WatchdogLoop.StartSurveilance(operation);
+					try
+					{
+						operation.Execute();
+					}
+					finally
+					{
+						this.WatchdogLoop.StopSurveilance(operation);
+					}
 
 					bool catchExceptions;
 
@@ -434,7 +452,7 @@ namespace RI.Framework.Threading.Dispatcher
 			this.Exception?.Invoke(this, new ThreadDispatcherExceptionEventArgs(exception, canContinue));
 		}
 
-		private void OnWatchdog(TimeSpan timeout, ThreadDispatcherOperation currentOperation)
+		private void OnWatchdog (TimeSpan timeout, ThreadDispatcherOperation currentOperation)
 		{
 			this.Watchdog?.Invoke(this, new ThreadDispatcherWatchdogEventArgs(timeout, currentOperation));
 		}
@@ -1098,6 +1116,152 @@ namespace RI.Framework.Threading.Dispatcher
 			}
 
 			await finishTask.ConfigureAwait(false);
+		}
+
+		private sealed class WatchdogThread : HeavyThread
+		{
+			public WatchdogThread (ThreadDispatcher dispatcher)
+			{
+				if (dispatcher == null)
+				{
+					throw new ArgumentNullException(nameof(dispatcher));
+				}
+
+				this.Dispatcher = dispatcher;
+
+				this.Operations = new Stack<WatchdogThreadItem>();
+			}
+
+			public ThreadDispatcher Dispatcher { get; }
+
+			private Stack<WatchdogThreadItem> Operations { get; }
+
+			protected override void OnStarting ()
+			{
+				base.OnStarting();
+
+				this.Thread.CurrentCulture = CultureInfo.InvariantCulture;
+				this.Thread.CurrentUICulture = CultureInfo.InvariantCulture;
+				this.Thread.Priority = ThreadPriority.Highest;
+				this.Thread.IsBackground = false;
+			}
+
+			protected override void OnRun ()
+			{
+				base.OnRun();
+
+				while (!this.StopRequested)
+				{
+					Thread.Sleep(ThreadDispatcher.WatchdogCheckInterval);
+
+					WatchdogThreadItem item;
+					TimeSpan timeout;
+
+					lock (this.SyncRoot)
+					{
+						if ((this.Operations.Count == 0) || (!this.Dispatcher.WatchdogTimeout.HasValue))
+						{
+							continue;
+						}
+
+						item = this.Operations.Peek();
+						timeout = this.Dispatcher.WatchdogTimeout.Value;
+					}
+
+					DateTime now = DateTime.UtcNow;
+					TimeSpan runTimeThisLoop = now.Subtract(item.LastCheck);
+					item.LastCheck = now;
+
+					ThreadDispatcherOperation operation = item.Operation;
+					bool hasTimeout = false;
+
+					lock (operation.SyncRoot)
+					{
+						double runTime = operation.RunTimeMillisecondsInternal + runTimeThisLoop.TotalMilliseconds;
+						double watchdogTime = operation.WatchdogTimeMillisecondsInternal + runTimeThisLoop.TotalMilliseconds;
+
+						operation.RunTimeMillisecondsInternal = runTime;
+						operation.WatchdogTimeMillisecondsInternal = watchdogTime;
+
+						if (watchdogTime > timeout.TotalMilliseconds)
+						{
+							hasTimeout = true;
+							operation.WatchdogTimeMillisecondsInternal = 0.0;
+						}
+					}
+
+					if (hasTimeout)
+					{
+						this.Dispatcher.OnWatchdog(timeout, operation);
+					}
+				}
+			}
+
+			protected override void OnException (Exception exception, bool canContinue)
+			{
+				base.OnException(exception, canContinue);
+
+				this.Dispatcher.Post<Exception>(int.MaxValue, ThreadDispatcherOptions.None, x =>
+				{
+					throw new HeavyThreadException(x);
+				}, exception);
+			}
+
+			protected override void Dispose (bool disposing)
+			{
+				this.Operations?.Clear();
+				base.Dispose(disposing);
+			}
+
+			public void StartSurveilance (ThreadDispatcherOperation operation)
+			{
+				if (operation == null)
+				{
+					throw new ArgumentNullException(nameof(operation));
+				}
+
+				lock (this.SyncRoot)
+				{
+					this.Operations.Push(new WatchdogThreadItem(operation));
+				}
+			}
+
+			public void StopSurveilance (ThreadDispatcherOperation operation)
+			{
+				if (operation == null)
+				{
+					throw new ArgumentNullException(nameof(operation));
+				}
+
+				lock (this.SyncRoot)
+				{
+					if ((this.Operations.Count == 0) || (!object.ReferenceEquals(operation, this.Operations.Peek().Operation)))
+					{
+						throw new ThreadDispatcherException("Watchdog operation surveilance stack is out of sync.");
+					}
+
+					this.Operations.Pop();
+				}
+			}
+		}
+
+		private sealed class WatchdogThreadItem
+		{
+			public WatchdogThreadItem (ThreadDispatcherOperation operation)
+			{
+				if (operation == null)
+				{
+					throw new ArgumentNullException(nameof(operation));
+				}
+
+				this.Operation = operation;
+
+				this.LastCheck = DateTime.UtcNow;
+			}
+
+			public ThreadDispatcherOperation Operation { get; }
+
+			public DateTime LastCheck { get; set; }
 		}
 
 		#endregion
