@@ -243,6 +243,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Text\CommandLine.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Text\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\TimeSpanExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Time\Schedule.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Time\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\_NamespaceDoc.cs" />
   </ItemGroup>
 </Project>
