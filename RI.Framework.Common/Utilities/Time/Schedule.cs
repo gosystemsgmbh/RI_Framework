@@ -196,7 +196,7 @@ namespace RI.Framework.Utilities.Time
 		/// </returns>
 		public bool IsDue (DateTime now, DateTime? lastOccurence)
 		{
-			TimeSpan overdue;
+			TimeSpan? overdue;
 			return this.IsDue(now, lastOccurence, out overdue);
 		}
 

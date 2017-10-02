@@ -238,6 +238,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\StringComparerEx.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\StringExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\StringSplitPredicate.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\TechnicalStringOptions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Text\AlphanumComparer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Text\AlphanumComparerFlags.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Text\CommandLine.cs" />

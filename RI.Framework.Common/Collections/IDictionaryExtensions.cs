@@ -456,6 +456,46 @@ namespace RI.Framework.Collections
 			return true;
 		}
 
+		/// <summary>
+		/// Gets a value from a dictionary or the default value if the key does not exist in the dictionary.
+		/// </summary>
+		/// <typeparam name="TKey"> The type of the keys in <paramref name="dictionary" />. </typeparam>
+		/// <typeparam name="TValue"> The type of the values in <paramref name="dictionary" />. </typeparam>
+		/// <param name="dictionary"> The dictionary. </param>
+		/// <param name="key"> The key to get its value of. </param>
+		/// <returns>
+		/// The value or default value of <typeparamref name="TValue"/>.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="dictionary" /> is null. </exception>
+		public static TValue GetValueOrDefault<TKey, TValue> (this IDictionary<TKey, TValue> dictionary, TKey key) => dictionary.GetValueOrDefault(key, default(TValue));
+
+		/// <summary>
+		/// Gets a value from a dictionary or a default value if the key does not exist in the dictionary.
+		/// </summary>
+		/// <typeparam name="TKey"> The type of the keys in <paramref name="dictionary" />. </typeparam>
+		/// <typeparam name="TValue"> The type of the values in <paramref name="dictionary" />. </typeparam>
+		/// <param name="dictionary"> The dictionary. </param>
+		/// <param name="key"> The key to get its value of. </param>
+		/// <param name="defaultValue"> The default value to use if the key does not exist in the dictionary. </param>
+		/// <returns>
+		/// The value or default value.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="dictionary" /> is null. </exception>
+		public static TValue GetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue)
+		{
+			if (dictionary == null)
+			{
+				throw new ArgumentNullException(nameof(dictionary));
+			}
+
+			if (dictionary.ContainsKey(key))
+			{
+				return dictionary[key];
+			}
+
+			return defaultValue;
+		}
+
 		#endregion
 	}
 }

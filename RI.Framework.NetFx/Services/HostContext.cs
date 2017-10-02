@@ -24,6 +24,14 @@ namespace RI.Framework.Services
 		/// </value>
 		public ILogWriter Logger { get; set; } = null;
 
+		/// <summary>
+		/// Gets or sets the instance ID of the application provided by the hosting environment.
+		/// </summary>
+		/// <value>
+		/// The instance ID of the application provided by the hosting environment or null if the hosting environment does not specify an instance ID (e.g. only one instance is run).
+		/// </value>
+		public string InstanceId { get; set; } = null;
+
 		#endregion
 
 
@@ -36,6 +44,7 @@ namespace RI.Framework.Services
 		{
 			HostContext clone = new HostContext();
 			clone.Logger = this.Logger?.CloneOrSelf();
+			clone.InstanceId = this.InstanceId;
 			return clone;
 		}
 

@@ -5,7 +5,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
-using System.Threading;
 
 using RI.Framework.Composition;
 using RI.Framework.Composition.Catalogs;
@@ -874,12 +873,12 @@ namespace RI.Framework.Services
 		/// </returns>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation returns null and therefore indicates that multiple instances at the same time are not supported.
+		///         The default implementation gets the instance ID from the hosting environment context (<see cref="HostContext"/>) or returns null if no hosting environment context is available.
 		///     </note>
 		/// </remarks>
 		protected virtual string DetermineInstanceId ()
 		{
-			return null;
+			return this.HostContext?.InstanceId;
 		}
 
 		/// <summary>
@@ -1568,11 +1567,6 @@ namespace RI.Framework.Services
 
 				lock (this.SyncRoot)
 				{
-					if (this.ShutdownInitiated && (exception is ThreadAbortException))
-					{
-						return;
-					}
-
 					try
 					{
 						this.HandleException(exception);
@@ -1619,11 +1613,6 @@ namespace RI.Framework.Services
 
 				lock (this.SyncRoot)
 				{
-					if (this.ShutdownInitiated && (exception is ThreadAbortException))
-					{
-						return;
-					}
-
 					try
 					{
 						this.HandleFirstChanceException(exception);

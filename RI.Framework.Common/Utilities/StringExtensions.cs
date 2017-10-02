@@ -2469,6 +2469,118 @@ namespace RI.Framework.Utilities
 			return min;
 		}
 
+		/// <summary>
+		/// Transforms a string into a &quot;technical string&quot;.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		/// The technical string.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// See <see cref="ToTechnical(string,TechnicalStringOptions,char?)"/> for more details.
+		/// </para>
+		/// <para>
+		/// <see cref="TechnicalStringOptions.None"/> is used for options.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static string ToTechnical(this string str)
+		{
+			return str.ToTechnical(TechnicalStringOptions.None, null);
+		}
+
+		/// <summary>
+		/// Transforms a string into a &quot;technical string&quot;.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <param name="options">The technical string options.</param>
+		/// <returns>
+		/// The technical string.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// See <see cref="ToTechnical(string,TechnicalStringOptions,char?)"/> for more details.
+		/// </para>
+		/// <para>
+		/// Whitespace is preserved and not replaced with a replacement character if <paramref name="options"/> specifies <see cref="TechnicalStringOptions.AllowWhitespaces"/>.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static string ToTechnical(this string str, TechnicalStringOptions options)
+		{
+			return str.ToTechnical(options, null);
+		}
+
+		/// <summary>
+		/// Transforms a string into a &quot;technical string&quot;.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <param name="options">The technical string options.</param>
+		/// <param name="whitespaceReplacement">The replacement character for whitespaces or null if the whitespace is to be preserved.</param>
+		/// <returns>
+		/// The technical string.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// The transformation of a string into a technical string is done by removing characters which can not be used for technical purposes.
+		/// </para>
+		/// <para>
+		/// A technical string is a string which can be used for technical purposes such as file names, IDs, etc. and therefore consists only of certain characters.
+		/// By default, if <paramref name="options"/> is <see cref="TechnicalStringOptions.None"/>, only letters and digits will be preserved.
+		/// <paramref name="options"/> can specify additional characters which will be preserved.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static string ToTechnical(this string str, TechnicalStringOptions options, char? whitespaceReplacement)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			bool allowWhitespaces = (options & TechnicalStringOptions.AllowWhitespaces) == TechnicalStringOptions.AllowWhitespaces;
+			bool allowUnderscores = (options & TechnicalStringOptions.AllowUnderscores) == TechnicalStringOptions.AllowUnderscores;
+			bool allowMinues = (options & TechnicalStringOptions.AllowMinus) == TechnicalStringOptions.AllowMinus;
+			bool allowPeriodes = (options & TechnicalStringOptions.AllowPeriods) == TechnicalStringOptions.AllowPeriods;
+
+			StringBuilder strBuilder = new StringBuilder(str.Length);
+
+			for (int i1 = 0; i1 < str.Length; i1++)
+			{
+				char chr = str[i1];
+				if (char.IsLetterOrDigit(chr))
+				{
+					strBuilder.Append(chr);
+				}
+				else if (allowWhitespaces && char.IsWhiteSpace(chr))
+				{
+					if (whitespaceReplacement.HasValue)
+					{
+						strBuilder.Append(whitespaceReplacement);
+					}
+					else
+					{
+						strBuilder.Append(chr);
+					}
+				}
+				else if (allowUnderscores && (chr == '_'))
+				{
+					strBuilder.Append(chr);
+				}
+				else if (allowMinues && (chr == '-'))
+				{
+					strBuilder.Append(chr);
+				}
+				else if (allowPeriodes && (chr == '.'))
+				{
+					strBuilder.Append(chr);
+				}
+			}
+
+			return strBuilder.ToString();
+		}
+
 		#endregion
 	}
 }

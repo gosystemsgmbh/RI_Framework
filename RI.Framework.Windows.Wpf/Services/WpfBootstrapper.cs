@@ -37,6 +37,7 @@ namespace RI.Framework.Services
 
 			if (!this.DebuggerAttached)
 			{
+				//TODO: Detach handler
 				this.Application.DispatcherUnhandledException += (s, a) => this.StartExceptionHandling(a.Exception);
 			}
 
