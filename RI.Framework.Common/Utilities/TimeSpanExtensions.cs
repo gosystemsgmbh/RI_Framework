@@ -66,8 +66,45 @@ namespace RI.Framework.Utilities
 			dateTimeString.Append(separator);
 			dateTimeString.Append(timeSpan.Milliseconds.ToString("D3", CultureInfo.InvariantCulture));
 
-			return (dateTimeString.ToString());
+			return dateTimeString.ToString();
 		}
+
+		/// <summary>
+		/// Determines whether a time span is negative.
+		/// </summary>
+		/// <param name="timeSpan">The time span.</param>
+		/// <returns>
+		/// true if the time span is negative, false otherwise.
+		/// </returns>
+		/// <remarks>
+		/// <note type="note">
+		/// Zero is considered not negative.
+		/// </note>
+		/// </remarks>
+		public static bool IsNegative (this TimeSpan timeSpan) => timeSpan.Ticks < 0;
+
+		/// <summary>
+		/// Determines whether a time span is positive.
+		/// </summary>
+		/// <param name="timeSpan">The time span.</param>
+		/// <returns>
+		/// true if the time span is positive, false otherwise.
+		/// </returns>
+		/// <remarks>
+		/// <note type="note">
+		/// Zero is considered positive.
+		/// </note>
+		/// </remarks>
+		public static bool IsPositive(this TimeSpan timeSpan) => timeSpan.Ticks >= 0;
+
+		/// <summary>
+		/// Determines whether a time span is zero.
+		/// </summary>
+		/// <param name="timeSpan">The time span.</param>
+		/// <returns>
+		/// true if the time span is zero, false otherwise.
+		/// </returns>
+		public static bool IsZero(this TimeSpan timeSpan) => timeSpan.Ticks == 0;
 
 		#endregion
 	}

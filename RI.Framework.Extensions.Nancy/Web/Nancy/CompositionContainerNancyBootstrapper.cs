@@ -144,6 +144,7 @@ namespace RI.Framework.Web.Nancy
 		{
 			applicationContainer.AddExport(this, typeof(INancyBootstrapper));
 			applicationContainer.AddExport(this, typeof(INancyModuleCatalog));
+			applicationContainer.AddExport(this, this.GetType());
 		}
 
 		/// <inheritdoc />

@@ -1098,6 +1098,37 @@ namespace RI.Framework.Utilities
 		}
 
 		/// <summary>
+		/// Splits a string into pieces before each upper case character and on whitespaces.
+		/// </summary>
+		/// <param name="str">The string.</param>
+		/// <returns>
+		///     The array of string pieces.
+		///     If the string does not contain any upper case characters except its first character, the array has only one element, equal to <paramref name="str" />.
+		/// </returns>
+		public static string[] SplitWords (this string str)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			return str.SplitWhere(StringSplitOptions.None, (s, currentToken, previous, next) =>
+			{
+				if ((previous < 0) || (next >= s.Length))
+				{
+					return false;
+				}
+
+				char previousChar = s[previous];
+				char nextChar = s[next];
+
+				return (char.IsWhiteSpace(previousChar) && (!char.IsWhiteSpace(nextChar))) ||
+				       (char.IsWhiteSpace(nextChar) && (!char.IsWhiteSpace(previousChar))) ||
+				       (((char.IsLetter(previousChar) && char.IsLower(previousChar)) || (!char.IsLetterOrDigit(previousChar))) && char.IsLetter(nextChar) && char.IsUpper(nextChar));
+			});
+		}
+
+		/// <summary>
 		///     Counts how many times a string starts with a specified character.
 		/// </summary>
 		/// <param name="str"> The string. </param>

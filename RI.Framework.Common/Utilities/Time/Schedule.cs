@@ -29,13 +29,21 @@ namespace RI.Framework.Utilities.Time
 		private const char StringSeparator = '-';
 
 		/// <summary>
-		/// Creates a schedule which schedules an event to occur once in the future.
+		/// Creates a schedule which is due now.
+		/// </summary>
+		/// <returns>
+		/// The schedule.
+		/// </returns>
+		public static Schedule Now () => Schedule.Once(DateTime.UtcNow);
+
+		/// <summary>
+		/// Creates a schedule which schedules an event to occur once relative to now.
 		/// </summary>
 		/// <param name="delay">The delay from now.</param>
 		/// <returns>
 		/// The schedule.
 		/// </returns>
-		public static Schedule Once(TimeSpan delay) => Schedule.Once(DateTime.UtcNow.Add(delay));
+		public static Schedule Once (TimeSpan delay) => Schedule.Once(DateTime.UtcNow.Add(delay));
 
 		/// <summary>
 		/// Creates a schedule which schedules an event to occur once at a specified date and time.
@@ -44,7 +52,7 @@ namespace RI.Framework.Utilities.Time
 		/// <returns>
 		/// The schedule.
 		/// </returns>
-		public static Schedule Once(DateTime start)
+		public static Schedule Once (DateTime start)
 		{
 			Schedule schedule = new Schedule();
 			schedule.Type = ScheduleType.Once;
@@ -66,7 +74,7 @@ namespace RI.Framework.Utilities.Time
 		/// The date part of <paramref name="start"/> is ignored.
 		/// </note>
 		/// </remarks>
-		public static Schedule Daily(DateTime start)
+		public static Schedule Daily (DateTime start)
 		{
 			Schedule schedule = new Schedule();
 			schedule.Type = ScheduleType.Daily;
@@ -89,7 +97,7 @@ namespace RI.Framework.Utilities.Time
 		/// The date part of <paramref name="start"/> is ignored.
 		/// </note>
 		/// </remarks>
-		public static Schedule Daily(DateTime start, DateTime stop)
+		public static Schedule Daily (DateTime start, DateTime stop)
 		{
 			Schedule schedule = new Schedule();
 			schedule.Type = ScheduleType.Daily;
@@ -111,7 +119,7 @@ namespace RI.Framework.Utilities.Time
 		/// The first occurence of the event is considered to be now plus <paramref name="interval"/>.
 		/// </para>
 		/// </remarks>
-		public static Schedule Repeated(TimeSpan interval)
+		public static Schedule Repeated (TimeSpan interval)
 		{
 			Schedule schedule = new Schedule();
 			schedule.Type = ScheduleType.Repeated;
@@ -127,7 +135,7 @@ namespace RI.Framework.Utilities.Time
 		/// <param name="interval">The interval between two events.</param>
 		/// <param name="start">The time of day.</param>
 		/// <returns></returns>
-		public static Schedule Repeated(TimeSpan interval, DateTime start)
+		public static Schedule Repeated (TimeSpan interval, DateTime start)
 		{
 			Schedule schedule = new Schedule();
 			schedule.Type = ScheduleType.Repeated;
@@ -144,7 +152,7 @@ namespace RI.Framework.Utilities.Time
 		/// <param name="start">The earliest time of day the event can occur.</param>
 		/// <param name="stop">The latest time of day the event can occur.</param>
 		/// <returns></returns>
-		public static Schedule Repeated(TimeSpan interval, DateTime start, DateTime stop)
+		public static Schedule Repeated (TimeSpan interval, DateTime start, DateTime stop)
 		{
 			Schedule schedule = new Schedule();
 			schedule.Type = ScheduleType.Repeated;
@@ -229,9 +237,19 @@ namespace RI.Framework.Utilities.Time
 			switch (this.Type)
 			{
 				case ScheduleType.Once:
-					break;
+					if (lastOccurence.HasValue)
+					{
+						dueTime = null;
+						return false;
+					}
+					dueTime = now.Subtract(this.Start);
+					return dueTime.Value.IsZero() || (!dueTime.Value.IsNegative());
 
 				case ScheduleType.Daily:
+					if (!lastOccurence.HasValue)
+					{
+						
+					}
 					break;
 
 				case ScheduleType.Repeated:
