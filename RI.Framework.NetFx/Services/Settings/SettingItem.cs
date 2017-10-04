@@ -19,7 +19,7 @@ namespace RI.Framework.Services.Settings
 		/// <exception cref="ArgumentNullException"><paramref name="name"/> is null.</exception>
 		/// <exception cref="EmptyStringArgumentException"><paramref name="name"/> is an empty string.</exception>
 		public SettingItem (string name)
-			: this(name, null, default(T))
+			: this(name, null, (IEnumerable<T>)null)
 		{
 		}
 
@@ -31,7 +31,7 @@ namespace RI.Framework.Services.Settings
 		/// <exception cref="ArgumentNullException"><paramref name="name"/> is null.</exception>
 		/// <exception cref="EmptyStringArgumentException"><paramref name="name"/> is an empty string.</exception>
 		public SettingItem(string name, Func<ISettingService> serviceResolver)
-			: this(name, serviceResolver, default(T))
+			: this(name, serviceResolver, (IEnumerable<T>)null)
 		{
 		}
 

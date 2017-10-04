@@ -13,8 +13,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Collections\Comparison\CollectionComparerFlags.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\Comparison\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\Generic\IPriorityQueue.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Generic\IPriorityQueueExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\Generic\IWarehouse.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\Generic\PriorityQueue.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Generic\PriorityQueueRemoveDelegate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\Generic\Warehouse.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\Generic\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\HashSetExtensions.cs" />
@@ -223,6 +225,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Randomizing\RandomStream.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Randomizing\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Reflection\DelegateExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Reflection\DelegateUtility.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Runtime\FrameworkTypeUtility.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Runtime\OperatingSystemExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Runtime\RuntimeEnvironment.cs" />

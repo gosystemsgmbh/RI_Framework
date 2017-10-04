@@ -248,7 +248,6 @@ namespace RI.Framework.Utilities.Time
 				case ScheduleType.Daily:
 					if (!lastOccurence.HasValue)
 					{
-						
 					}
 					break;
 

@@ -86,5 +86,27 @@ namespace RI.Framework.Utilities.Reflection
 			string methodName = del.GetFullMethodName();
 			return (targetName == null) ? methodName : (methodName + "@" + targetName);
 		}
+
+		/// <summary>
+		/// Checks whether a delegate has a static target.
+		/// </summary>
+		/// <param name="del">The delegate.</param>
+		/// <returns>
+		/// true if the delegate is using a static method and has no target, fale otherwise.
+		/// </returns>
+		public static bool IsStatic (this Delegate del)
+		{
+			if (del == null)
+			{
+				throw new ArgumentNullException(nameof(del));
+			}
+
+			if (del.Target != null)
+			{
+				return false;
+			}
+
+			return del.Method.IsStatic;
+		}
 	}
 }
