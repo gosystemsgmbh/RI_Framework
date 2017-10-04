@@ -2,6 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
+using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.ObjectModel;
 
 namespace RI.Framework.Utilities.Time
@@ -34,7 +35,7 @@ namespace RI.Framework.Utilities.Time
 		/// <returns>
 		/// The schedule.
 		/// </returns>
-		public static Schedule Now () => Schedule.Once(DateTime.UtcNow);
+		public static Schedule Once () => Schedule.Once(DateTime.UtcNow);
 
 		/// <summary>
 		/// Creates a schedule which schedules an event to occur once relative to now.
@@ -74,11 +75,17 @@ namespace RI.Framework.Utilities.Time
 		/// The date part of <paramref name="start"/> is ignored.
 		/// </note>
 		/// </remarks>
-		public static Schedule Daily (DateTime start)
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="start"/> is negative.</exception>
+		public static Schedule Daily (TimeSpan start)
 		{
+			if (start.IsNegative())
+			{
+				throw new ArgumentOutOfRangeException(nameof(start));
+			}
+
 			Schedule schedule = new Schedule();
 			schedule.Type = ScheduleType.Daily;
-			schedule.Start = start.ToUniversalTime();
+			schedule.Start = DateTime.MinValue.Date.Add(start);
 			schedule.Stop = null;
 			schedule.Interval = null;
 			return schedule;
@@ -97,12 +104,23 @@ namespace RI.Framework.Utilities.Time
 		/// The date part of <paramref name="start"/> is ignored.
 		/// </note>
 		/// </remarks>
-		public static Schedule Daily (DateTime start, DateTime stop)
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="start"/> or <paramref name="stop"/> is negative.</exception>
+		public static Schedule Daily (TimeSpan start, TimeSpan stop)
 		{
+			if (start.IsNegative())
+			{
+				throw new ArgumentOutOfRangeException(nameof(start));
+			}
+
+			if (stop.IsNegative())
+			{
+				throw new ArgumentOutOfRangeException(nameof(stop));
+			}
+
 			Schedule schedule = new Schedule();
 			schedule.Type = ScheduleType.Daily;
-			schedule.Start = start.ToUniversalTime();
-			schedule.Stop = stop.ToUniversalTime();
+			schedule.Start = DateTime.MinValue.Date.Add(start);
+			schedule.Stop = DateTime.MinValue.Date.Add(stop);
 			schedule.Interval = null;
 			return schedule;
 		}
@@ -135,11 +153,11 @@ namespace RI.Framework.Utilities.Time
 		/// <param name="interval">The interval between two events.</param>
 		/// <param name="start">The time of day.</param>
 		/// <returns></returns>
-		public static Schedule Repeated (TimeSpan interval, DateTime start)
+		public static Schedule Repeated (TimeSpan interval, TimeSpan start)
 		{
 			Schedule schedule = new Schedule();
 			schedule.Type = ScheduleType.Repeated;
-			schedule.Start = start.ToUniversalTime();
+			schedule.Start = DateTime.MinValue.Date.Add(start);
 			schedule.Stop = null;
 			schedule.Interval = interval;
 			return schedule;
@@ -152,12 +170,12 @@ namespace RI.Framework.Utilities.Time
 		/// <param name="start">The earliest time of day the event can occur.</param>
 		/// <param name="stop">The latest time of day the event can occur.</param>
 		/// <returns></returns>
-		public static Schedule Repeated (TimeSpan interval, DateTime start, DateTime stop)
+		public static Schedule Repeated (TimeSpan interval, TimeSpan start, TimeSpan stop)
 		{
 			Schedule schedule = new Schedule();
 			schedule.Type = ScheduleType.Repeated;
-			schedule.Start = start.ToUniversalTime();
-			schedule.Stop = stop.ToUniversalTime();
+			schedule.Start = DateTime.MinValue.Date.Add(start);
+			schedule.Stop = DateTime.MinValue.Date.Add(stop);
 			schedule.Interval = interval;
 			return schedule;
 		}
@@ -195,6 +213,20 @@ namespace RI.Framework.Utilities.Time
 		public TimeSpan? Interval { get; private set; }
 
 		/// <summary>
+		/// Checks whether an event is due according to this schedule, given the current time and the assumption that the event never occurred before.
+		/// </summary>
+		/// <param name="now">The current date and time.</param>
+		/// <returns>
+		/// true if the event is due, false otherwise.
+		/// </returns>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="lastOccurence"/> comes after <paramref name="now."/></exception>
+		public bool IsDue(DateTime now)
+		{
+			TimeSpan? overdue;
+			return this.IsDue(now, null, out overdue);
+		}
+
+		/// <summary>
 		/// Checks whether an event is due according to this schedule, given the current time and the events last occurence.
 		/// </summary>
 		/// <param name="now">The current date and time.</param>
@@ -202,6 +234,7 @@ namespace RI.Framework.Utilities.Time
 		/// <returns>
 		/// true if the event is due, false otherwise.
 		/// </returns>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="lastOccurence"/> comes after <paramref name="now."/></exception>
 		public bool IsDue (DateTime now, DateTime? lastOccurence)
 		{
 			TimeSpan? overdue;
@@ -227,36 +260,80 @@ namespace RI.Framework.Utilities.Time
 		/// Under very rare circumstances, <paramref name="dueTime"/> can return zero, which is treated the same as the event is (over)due.
 		/// </para>
 		/// </remarks>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="lastOccurence"/> comes after <paramref name="now."/></exception>
 		public bool IsDue (DateTime now, DateTime? lastOccurence, out TimeSpan? dueTime)
 		{
 			now = now.ToUniversalTime();
 			lastOccurence = lastOccurence?.ToUniversalTime();
 
-			dueTime = null;
+			if (lastOccurence.HasValue)
+			{
+				if (lastOccurence.Value > now)
+				{
+					throw new ArgumentOutOfRangeException(nameof(lastOccurence));
+				}
+			}
 
 			switch (this.Type)
 			{
+				default:
+					throw new InvalidStateOrExecutionPathException();
+
 				case ScheduleType.Once:
+
 					if (lastOccurence.HasValue)
 					{
 						dueTime = null;
 						return false;
 					}
+
 					dueTime = now.Subtract(this.Start);
-					return dueTime.Value.IsZero() || (!dueTime.Value.IsNegative());
+					return dueTime.Value.IsPositive();
 
 				case ScheduleType.Daily:
-					if (!lastOccurence.HasValue)
+
+					DateTime start;
+					DateTime stop;
+					DateTime nextStart;
+					this.GetDayWindow(now, this.Start, this.Stop, out start, out stop, out nextStart);
+
+					if (lastOccurence.HasValue && (lastOccurence.Value >= start) && (lastOccurence.Value <= stop))
 					{
+						dueTime = now.Subtract(nextStart);
+						return false;
 					}
-					break;
+
+					if ((now >= start) && (now <= stop))
+					{
+						dueTime = now.Subtract(start);
+						return true;
+					}
+
+					if (now < start)
+					{
+						dueTime = now.Subtract(start);
+						return false;
+					}
+
+					if (now > stop)
+					{
+						dueTime = now.Subtract(nextStart);
+						return false;
+					}
+
+					throw new InvalidStateOrExecutionPathException();
 
 				case ScheduleType.Repeated:
-					break;
-			}
 
-			//TODO: Implement
-			throw new NotImplementedException();
+					
+					//TODO: Implement
+					throw new InvalidStateOrExecutionPathException();
+			}
+		}
+
+		private void GetDayWindow (DateTime now, DateTime todStart, DateTime? todStop, out DateTime start, out DateTime stop, out DateTime nextStart)
+		{
+			throw new InvalidStateOrExecutionPathException();
 		}
 
 		/// <summary>
@@ -329,7 +406,7 @@ namespace RI.Framework.Utilities.Time
 			{
 				if (pieces.Length == 2)
 				{
-					value = Schedule.Daily(start.Value);
+					value = Schedule.Daily(start.Value.TimeOfDay);
 					return true;
 				}
 
@@ -341,7 +418,7 @@ namespace RI.Framework.Utilities.Time
 						return false;
 					}
 
-					value = Schedule.Daily(start.Value, stop.Value);
+					value = Schedule.Daily(start.Value.TimeOfDay, stop.Value.TimeOfDay);
 					return true;
 				}
 
@@ -358,7 +435,7 @@ namespace RI.Framework.Utilities.Time
 						return false;
 					}
 
-					value = Schedule.Repeated(interval.Value, start.Value);
+					value = Schedule.Repeated(interval.Value, start.Value.TimeOfDay);
 					return true;
 				}
 
@@ -376,7 +453,7 @@ namespace RI.Framework.Utilities.Time
 						return false;
 					}
 
-					value = Schedule.Repeated(interval.Value, start.Value, stop.Value);
+					value = Schedule.Repeated(interval.Value, start.Value.TimeOfDay, stop.Value.TimeOfDay);
 					return true;
 				}
 
@@ -464,32 +541,6 @@ namespace RI.Framework.Utilities.Time
 		object ICloneable.Clone()
 		{
 			return this.Clone();
-		}
-
-		/// <summary>
-		///     Compares two <see cref="Schedule" />s for inequality.
-		/// </summary>
-		/// <param name="x"> The first value. </param>
-		/// <param name="y"> The second value. </param>
-		/// <returns>
-		///     false if both values are equal, true otherwise.
-		/// </returns>
-		public static bool operator !=(Schedule x, Schedule y)
-		{
-			return !(x == y);
-		}
-
-		/// <summary>
-		///     Compares two <see cref="Schedule" />s for equality.
-		/// </summary>
-		/// <param name="x"> The first value. </param>
-		/// <param name="y"> The second value. </param>
-		/// <returns>
-		///     true if both values are equal, false otherwise.
-		/// </returns>
-		public static bool operator ==(Schedule x, Schedule y)
-		{
-			return x.Equals(y);
 		}
 	}
 }
