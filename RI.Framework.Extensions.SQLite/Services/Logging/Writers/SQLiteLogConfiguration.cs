@@ -68,6 +68,13 @@ namespace RI.Framework.Services.Logging.Writers
 		/// The column name for the message column.
 		/// </value>
 		public string ColumnNameMessage { get; set; } = "Message";
+		/// <summary>
+		/// Gets or sets the column name for the session column.
+		/// </summary>
+		/// <value>
+		/// The column name for the session column.
+		/// </value>
+		public string ColumnNameSession { get; set; } = "Session";
 
 		/// <summary>
 		/// Gets or sets additional constraints for the file column.
@@ -111,6 +118,13 @@ namespace RI.Framework.Services.Logging.Writers
 		/// The additional constraints for the message column.
 		/// </value>
 		public string ColumnConstraintMessage { get; set; } = null;
+		/// <summary>
+		/// Gets or sets additional constraints for the session column.
+		/// </summary>
+		/// <value>
+		/// The additional constraints for the session column.
+		/// </value>
+		public string ColumnConstraintSession { get; set; } = null;
 
 		/// <summary>
 		/// Gets or sets the data type for the file column.
@@ -154,6 +168,13 @@ namespace RI.Framework.Services.Logging.Writers
 		/// The data type for the message column.
 		/// </value>
 		public string ColumnTypeMessage { get; set; } = "TEXT";
+		/// <summary>
+		/// Gets or sets the data type for the session column.
+		/// </summary>
+		/// <value>
+		/// The data type for the session column.
+		/// </value>
+		public string ColumnTypeSession { get; set; } = "TEXT";
 
 		/// <summary>
 		/// Gets or sets the nullability for the file column.
@@ -197,6 +218,13 @@ namespace RI.Framework.Services.Logging.Writers
 		/// The nullability for the message column.
 		/// </value>
 		public bool ColumnNullableMessage { get; set; } = false;
+		/// <summary>
+		/// Gets or sets the nullability for the session column.
+		/// </summary>
+		/// <value>
+		/// The nullability for the session column.
+		/// </value>
+		public bool ColumnNullableSession { get; set; } = true;
 
 		/// <summary>
 		/// Gets or sets the name for the file index.
@@ -211,7 +239,7 @@ namespace RI.Framework.Services.Logging.Writers
 		/// <value>
 		/// The name for the timestamp index.
 		/// </value>
-		public string IndexNameTimestamp { get; set; } = "Log_Timestamp";
+		public string IndexNameTimestamp { get; set; } = null;
 		/// <summary>
 		/// Gets or sets the name for the thread ID index.
 		/// </summary>
@@ -239,7 +267,14 @@ namespace RI.Framework.Services.Logging.Writers
 		/// <value>
 		/// The name for the message index.
 		/// </value>
-		public string IndexNameMessage { get; set; } = "Log_Message";
+		public string IndexNameMessage { get; set; } = null;
+		/// <summary>
+		/// Gets or sets the name for the session index.
+		/// </summary>
+		/// <value>
+		/// The name for the session index.
+		/// </value>
+		public string IndexNameSession { get; set; } = "Log_Session";
 
 		/// <summary>
 		/// Builds the SQLite command string which can be used to create the log table, based on the current configuration.
@@ -270,6 +305,7 @@ namespace RI.Framework.Services.Logging.Writers
 			addColumn(configuration.ColumnNameSeverity, configuration.ColumnTypeSeverity, configuration.ColumnNullableSeverity, configuration.ColumnConstraintSeverity);
 			addColumn(configuration.ColumnNameSource, configuration.ColumnTypeSource, configuration.ColumnNullableSource, configuration.ColumnConstraintSource);
 			addColumn(configuration.ColumnNameMessage, configuration.ColumnTypeMessage, configuration.ColumnNullableMessage, configuration.ColumnConstraintMessage);
+			addColumn(configuration.ColumnNameSession, configuration.ColumnTypeSession, configuration.ColumnNullableSession, configuration.ColumnConstraintSession);
 
 			if (columns.Count == 0)
 			{
@@ -319,6 +355,7 @@ namespace RI.Framework.Services.Logging.Writers
 			addIndex(configuration.IndexNameSeverity, configuration.TableName, configuration.ColumnNameSeverity);
 			addIndex(configuration.IndexNameSource, configuration.TableName, configuration.ColumnNameSource);
 			addIndex(configuration.IndexNameMessage, configuration.TableName, configuration.ColumnNameMessage);
+			addIndex(configuration.IndexNameSession, configuration.TableName, configuration.ColumnNameSession);
 
 			if (indices.Count == 0)
 			{
@@ -363,6 +400,7 @@ namespace RI.Framework.Services.Logging.Writers
 			addEntry(configuration.ColumnNameSeverity);
 			addEntry(configuration.ColumnNameSource);
 			addEntry(configuration.ColumnNameMessage);
+			addEntry(configuration.ColumnNameSession);
 
 			if (columns.Count == 0)
 			{
@@ -410,17 +448,18 @@ namespace RI.Framework.Services.Logging.Writers
 				parameters.Add("@" + column.ToLowerInvariant(), value);
 			};
 
-			if (parameters.Count == 0)
-			{
-				throw new InvalidOperationException("No columns configured.");
-			}
-
 			addParameter(configuration.ColumnNameFile, file?.PathOriginal);
 			addParameter(configuration.ColumnNameTimestamp, entry.Timestamp);
 			addParameter(configuration.ColumnNameThreadId, entry.ThreadId);
 			addParameter(configuration.ColumnNameSeverity, entry.Severity);
 			addParameter(configuration.ColumnNameSource, entry.Source);
 			addParameter(configuration.ColumnNameMessage, entry.Message);
+			addParameter(configuration.ColumnNameSession, entry.Session);
+
+			if (parameters.Count == 0)
+			{
+				throw new InvalidOperationException("No columns configured.");
+			}
 
 			return parameters;
 		}
@@ -498,6 +537,7 @@ namespace RI.Framework.Services.Logging.Writers
 			configuration.ColumnNameSeverity = this.NormalizeName(this.ColumnNameSeverity);
 			configuration.ColumnNameSource = this.NormalizeName(this.ColumnNameSource);
 			configuration.ColumnNameMessage = this.NormalizeName(this.ColumnNameMessage);
+			configuration.ColumnNameSession = this.NormalizeName(this.ColumnNameSession);
 
 			configuration.IndexNameFile = this.NormalizeName(this.IndexNameFile);
 			configuration.IndexNameTimestamp = this.NormalizeName(this.IndexNameTimestamp);
@@ -505,6 +545,7 @@ namespace RI.Framework.Services.Logging.Writers
 			configuration.IndexNameSeverity = this.NormalizeName(this.IndexNameSeverity);
 			configuration.IndexNameSource = this.NormalizeName(this.IndexNameSource);
 			configuration.IndexNameMessage = this.NormalizeName(this.IndexNameMessage);
+			configuration.IndexNameSession = this.NormalizeName(this.IndexNameSession);
 
 			return configuration;
 		}
@@ -532,6 +573,7 @@ namespace RI.Framework.Services.Logging.Writers
 			clone.ColumnNameSeverity = this.ColumnNameSeverity;
 			clone.ColumnNameSource = this.ColumnNameSource;
 			clone.ColumnNameMessage = this.ColumnNameMessage;
+			clone.ColumnNameSession = this.ColumnNameSession;
 
 			clone.ColumnConstraintFile = this.ColumnConstraintFile;
 			clone.ColumnConstraintTimestamp = this.ColumnConstraintTimestamp;
@@ -539,6 +581,7 @@ namespace RI.Framework.Services.Logging.Writers
 			clone.ColumnConstraintSeverity = this.ColumnConstraintSeverity;
 			clone.ColumnConstraintSource = this.ColumnConstraintSource;
 			clone.ColumnConstraintMessage = this.ColumnConstraintMessage;
+			clone.ColumnConstraintSession = this.ColumnConstraintSession;
 
 			clone.ColumnTypeFile = this.ColumnTypeFile;
 			clone.ColumnTypeTimestamp = this.ColumnTypeTimestamp;
@@ -546,6 +589,7 @@ namespace RI.Framework.Services.Logging.Writers
 			clone.ColumnTypeSeverity = this.ColumnTypeSeverity;
 			clone.ColumnTypeSource = this.ColumnTypeSource;
 			clone.ColumnTypeMessage = this.ColumnTypeMessage;
+			clone.ColumnTypeSession = this.ColumnTypeSession;
 
 			clone.ColumnNullableFile = this.ColumnNullableFile;
 			clone.ColumnNullableTimestamp = this.ColumnNullableTimestamp;
@@ -553,6 +597,7 @@ namespace RI.Framework.Services.Logging.Writers
 			clone.ColumnNullableSeverity = this.ColumnNullableSeverity;
 			clone.ColumnNullableSource = this.ColumnNullableSource;
 			clone.ColumnNullableMessage = this.ColumnNullableMessage;
+			clone.ColumnNameSession = this.ColumnNameSession;
 
 			clone.IndexNameFile = this.IndexNameFile;
 			clone.IndexNameTimestamp = this.IndexNameTimestamp;
@@ -560,6 +605,7 @@ namespace RI.Framework.Services.Logging.Writers
 			clone.IndexNameSeverity = this.IndexNameSeverity;
 			clone.IndexNameSource = this.IndexNameSource;
 			clone.IndexNameMessage = this.IndexNameMessage;
+			clone.IndexNameSession = this.IndexNameSession;
 
 			return clone;
 		}

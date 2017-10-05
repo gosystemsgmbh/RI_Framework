@@ -22,8 +22,8 @@ namespace RI.Framework.Utilities.Time
 		Daily = 1,
 
 		/// <summary>
-		/// The event is scheduled to occur repeatedly.
+		/// The event is scheduled to occur weekly.
 		/// </summary>
-		Repeated = 2,
+		Weekly = 2,
 	}
 }

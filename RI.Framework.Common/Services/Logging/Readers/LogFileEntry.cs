@@ -55,6 +55,14 @@ namespace RI.Framework.Services.Logging.Readers
 		/// </value>
 		public DateTime Timestamp { get; set; }
 
+		/// <summary>
+		///     Gets or sets the session this log entry belongs to.
+		/// </summary>
+		/// <value>
+		///     The session this log entry belongs to.
+		/// </value>
+		public string Session { get; set; }
+
 		#endregion
 
 
@@ -71,6 +79,7 @@ namespace RI.Framework.Services.Logging.Readers
 			clone.Severity = this.Severity;
 			clone.Source = this.Source;
 			clone.Message = this.Message;
+			clone.Session = this.Session;
 			return clone;
 		}
 

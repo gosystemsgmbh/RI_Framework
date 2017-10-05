@@ -7,9 +7,7 @@ using RI.Framework.Collections;
 using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Mathematic;
 using RI.Framework.Utilities.Exceptions;
-
-
-
+using RI.Framework.Utilities.Time;
 
 namespace RI.Framework.Utilities
 {
@@ -1974,6 +1972,67 @@ namespace RI.Framework.Utilities
 			}
 
 			return null;
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into a schedule.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     The schedule if the string can be converted into a schedule, null otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         <see cref="CultureInfo" />.<see cref="CultureInfo.CurrentCulture" /> are used for parsing.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static Schedule? ToSchedule(this string str)
+		{
+			return str.ToSchedule(CultureInfo.CurrentCulture);
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into a schedule.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <param name="provider"> An object that supplies culture-specific formatting information for parsing the string. Can be null to use the current threads culture. </param>
+		/// <returns>
+		///     The schedule if the string can be converted into a schedule, null otherwise.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static Schedule? ToSchedule(this string str, IFormatProvider provider)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			Schedule value;
+			if (Schedule.TryParse(str, provider, out value))
+			{
+				return value;
+			}
+
+			return null;
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into a schedule.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     The schedule if the string can be converted into a schedule, null otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         <see cref="CultureInfo" />.<see cref="CultureInfo.InvariantCulture" /> are used for parsing.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static Schedule? ToScheduleInvariant(this string str)
+		{
+			return str.ToSchedule(CultureInfo.InvariantCulture);
 		}
 
 		/// <summary>

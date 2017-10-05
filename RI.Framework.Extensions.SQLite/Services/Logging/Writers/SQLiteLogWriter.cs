@@ -31,6 +31,7 @@ namespace RI.Framework.Services.Logging.Writers
 		/// <summary>
 		/// Creates a new instance of <see cref="SQLiteLogWriter"/>.
 		/// </summary>
+		/// <param name="session">The current session identification or null if not used.</param>
 		/// <param name="dbFile">The SQLite database file the log entries are written to.</param>
 		/// <remarks>
 		/// <para>
@@ -39,19 +40,20 @@ namespace RI.Framework.Services.Logging.Writers
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="dbFile" /> is null. </exception>
 		/// <exception cref="InvalidPathArgumentException"> <paramref name="dbFile" /> contains wildcards. </exception>
-		public SQLiteLogWriter(FilePath dbFile)
-			:this(dbFile, null)
+		public SQLiteLogWriter(string session, FilePath dbFile)
+			:this(session, dbFile, null)
 		{
 		}
 
 		/// <summary>
 		/// Creates a new instance of <see cref="SQLiteLogWriter"/>.
 		/// </summary>
+		/// <param name="session">The current session identification or null if not used.</param>
 		/// <param name="dbFile">The SQLite database file the log entries are written to.</param>
 		/// <param name="configuration">The used configuration or null to use the default configuration.</param>
 		/// <exception cref="ArgumentNullException"> <paramref name="dbFile" /> is null. </exception>
 		/// <exception cref="InvalidPathArgumentException"> <paramref name="dbFile" /> contains wildcards. </exception>
-		public SQLiteLogWriter(FilePath dbFile, SQLiteLogConfiguration configuration)
+		public SQLiteLogWriter(string session, FilePath dbFile, SQLiteLogConfiguration configuration)
 		{
 			if (dbFile == null)
 			{
@@ -63,12 +65,13 @@ namespace RI.Framework.Services.Logging.Writers
 				throw new InvalidPathArgumentException(nameof(dbFile), "Wildcards are not allowed.");
 			}
 
-			this.Initialize(dbFile, null, configuration);
+			this.Initialize(session, dbFile, null, configuration);
 		}
 
 		/// <summary>
 		/// Creates a new instance of <see cref="SQLiteLogWriter"/>.
 		/// </summary>
+		/// <param name="session">The current session identification or null if not used.</param>
 		/// <param name="dbConnection">The SQLite connection to the database the log entries are written to.</param>
 		/// <remarks>
 		/// <para>
@@ -76,30 +79,33 @@ namespace RI.Framework.Services.Logging.Writers
 		/// </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="dbConnection" /> is null. </exception>
-		public SQLiteLogWriter(SQLiteConnection dbConnection)
-			: this(dbConnection, null)
+		public SQLiteLogWriter(string session, SQLiteConnection dbConnection)
+			: this(null, dbConnection, null)
 		{
 		}
 
 		/// <summary>
 		/// Creates a new instance of <see cref="SQLiteLogWriter"/>.
 		/// </summary>
+		/// <param name="session">The current session identification or null if not used.</param>
 		/// <param name="dbConnection">The SQLite connection to the database the log entries are written to.</param>
 		/// <param name="configuration">The used configuration or null to use the default configuration.</param>
 		/// <exception cref="ArgumentNullException"> <paramref name="dbConnection" /> is null. </exception>
-		public SQLiteLogWriter(SQLiteConnection dbConnection, SQLiteLogConfiguration configuration)
+		public SQLiteLogWriter(string session, SQLiteConnection dbConnection, SQLiteLogConfiguration configuration)
 		{
 			if (dbConnection == null)
 			{
 				throw new ArgumentNullException(nameof(dbConnection));
 			}
 
-			this.Initialize(null, dbConnection, configuration);
+			this.Initialize(session, null, dbConnection, configuration);
 		}
 
-		private void Initialize (FilePath dbFile, SQLiteConnection dbConnection, SQLiteLogConfiguration configuration)
+		private void Initialize (string session, FilePath dbFile, SQLiteConnection dbConnection, SQLiteLogConfiguration configuration)
 		{
 			this.SyncRoot = new object();
+
+			this.Session = session.ToNullIfNullOrEmptyOrWhitespace();
 			this.DbConfiguration = configuration ?? new SQLiteLogConfiguration();
 
 			if (dbFile != null)
@@ -141,6 +147,14 @@ namespace RI.Framework.Services.Logging.Writers
 		private SQLiteConnection DbConnection { get; set; }
 		private SQLiteLogConfiguration DbConfiguration { get; set; }
 		private string InsertEntryCommandString { get; set; }
+
+		/// <summary>
+		/// Gets the current session identification.
+		/// </summary>
+		/// <value>
+		/// The current session identification.
+		/// </value>
+		public string Session { get; private set; }
 
 		/// <summary>
 		/// Gets the used database file.
@@ -311,6 +325,7 @@ namespace RI.Framework.Services.Logging.Writers
 							entry.Severity = severity;
 							entry.Source = source;
 							entry.Message = message;
+							entry.Session = this.Session;
 
 							Dictionary<string, object> parameters = this.DbConfiguration.BuildInsertEntryParameters(null, entry);
 							foreach (KeyValuePair<string, object> param in parameters)
