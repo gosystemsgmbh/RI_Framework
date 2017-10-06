@@ -5,7 +5,7 @@ using System.Text;
 
 
 
-namespace RI.Framework.Utilities.Windows.Cryptography
+namespace RI.Framework.Utilities.Cryptography
 {
 	/// <summary>
 	///     Provides transparent encryption functionality with a machine or user local scope.

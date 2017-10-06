@@ -317,7 +317,26 @@ namespace RI.Framework.Services
 
 		private EventHandler<FirstChanceExceptionEventArgs> FirstChanceExceptionHandler { get; }
 
-		private bool ShutdownInitiated { get; set; }
+		private bool _shutdownInitiated;
+
+		/// <inheritdoc />
+		public bool ShutdownInitiated
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._shutdownInitiated;
+				}
+			}
+			private set
+			{
+				lock (this.SyncRoot)
+				{
+					this._shutdownInitiated = value;
+				}
+			}
+		}
 
 		#endregion
 

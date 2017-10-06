@@ -177,6 +177,43 @@ namespace RI.Framework.Services.Settings
 		List<object> GetValues (string name, Type type);
 
 		/// <summary>
+		///     Gets all setting values in their string representation based on a predicate which checks the names.
+		/// </summary>
+		/// <param name="predicate"> The predicate used to test the names. </param>
+		/// <returns>
+		///     The values in their string representation, arranged as a dictionary where the key is the name and the value is a list of actual setting values belonging to the name.
+		/// An empty dictionary is returned if no values are found.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="predicate" /> is null. </exception>
+		Dictionary<string, List<string>> GetRawValues(Predicate<string> predicate);
+
+		/// <summary>
+		///     Gets all settingh values based on a predicate which checks the names.
+		/// </summary>
+		/// <typeparam name="T"> The setting type. </typeparam>
+		/// <param name="predicate"> The predicate used to test the names. </param>
+		/// <returns>
+		///     The values, arranged as a dictionary where the key is the name and the value is a list of actual setting values belonging to the name.
+		/// An empty dictionary is returned if no values are found.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="predicate" /> is null. </exception>
+		/// <exception cref="InvalidTypeArgumentException"> The specified <typeparamref name="T" /> is not supported by any setting converter. </exception>
+		Dictionary<string, List<T>> GetValues<T> (Predicate<string> predicate);
+
+		/// <summary>
+		///     Gets all settingh values based on a predicate which checks the names.
+		/// </summary>
+		/// <param name="predicate"> The predicate used to test the names. </param>
+		/// <param name="type"> The setting type. </param>
+		/// <returns>
+		///     The values, arranged as a dictionary where the key is the name and the value is a list of actual setting values belonging to the name.
+		/// An empty dictionary is returned if no values are found.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="predicate" /> or <paramref name="type"/> is null. </exception>
+		/// <exception cref="InvalidTypeArgumentException"> The specified <paramref name="type" /> is not supported by any setting converter. </exception>
+		Dictionary<string, List<object>> GetValues (Predicate<string> predicate, Type type);
+
+		/// <summary>
 		///     Determines whether a setting with a specified name is available.
 		/// </summary>
 		/// <param name="name"> The name of the setting to check. </param>

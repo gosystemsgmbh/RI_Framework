@@ -44,6 +44,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Dynamic" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
@@ -179,6 +180,7 @@
     <Compile Include="Services\Settings\Converters\SettingConversionMode.cs" />
     <Compile Include="Services\Settings\Converters\XmlSettingConverter.cs" />
     <Compile Include="Services\Settings\Converters\_NamespaceDoc.cs" />
+    <Compile Include="Services\Settings\ISettingServiceExtensions.cs" />
     <Compile Include="Services\Settings\SettingItem.cs" />
     <Compile Include="Services\Settings\SettingLocator.cs" />
     <Compile Include="Services\Settings\Storages\AppConfigSettingStorage.cs" />
@@ -230,6 +232,8 @@
     <Compile Include="Threading\Dispatcher\ThreadDispatcherTimerMode.cs" />
     <Compile Include="Threading\Async\ThreadPoolAwaiter.cs" />
     <Compile Include="Threading\Tasks\_NamespaceDoc.cs" />
+    <Compile Include="Utilities\Cryptography\LocalEncryption.cs" />
+    <Compile Include="Utilities\Cryptography\_NamespaceDoc.cs" />
     <Compile Include="Utilities\Xml\XDocumentExtensions.cs" />
     <Compile Include="Utilities\Xml\XmlDocumentExtensions.cs" />
     <Compile Include="Utilities\Xml\_NamespaceDoc.cs" />

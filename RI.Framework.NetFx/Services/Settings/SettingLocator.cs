@@ -5,9 +5,6 @@ using System.Collections.Generic;
 using RI.Framework.Services.Settings.Converters;
 using RI.Framework.Services.Settings.Storages;
 
-
-
-
 namespace RI.Framework.Services.Settings
 {
 	/// <summary>
@@ -57,14 +54,23 @@ namespace RI.Framework.Services.Settings
 		/// <inheritdoc cref="ISettingService.GetValue(string,Type)" />
 		public static object GetValue(string name, Type type) => SettingLocator.Service?.GetValue(name, type);
 
-		/// <inheritdoc cref="ISettingService.GetRawValues" />
-		public static List<string> GetRawValues(string name) => SettingLocator.Service?.GetRawValues(name);
+		/// <inheritdoc cref="ISettingService.GetRawValues(string)" />
+		public static List<string> GetRawValues(string name) => SettingLocator.Service?.GetRawValues(name) ?? new List<string>();
+
+		/// <inheritdoc cref="ISettingService.GetRawValues(Predicate{string})" />
+		public static Dictionary<string, List<string>> GetRawValues (Predicate<string> predicate) => SettingLocator.Service?.GetRawValues(predicate) ?? new Dictionary<string, List<string>>(SettingService.NameComparer);
+
+		/// <inheritdoc cref="ISettingService.GetValues{T}(Predicate{string})" />
+		public static Dictionary<string, List<T>> GetValues<T>(Predicate<string> predicate) => SettingLocator.Service?.GetValues<T>(predicate) ?? new Dictionary<string, List<T>>(SettingService.NameComparer);
+
+		/// <inheritdoc cref="ISettingService.GetValues(Predicate{string},Type)" />
+		public static Dictionary<string, List<object>> GetValues(Predicate<string> predicate, Type type) => SettingLocator.Service?.GetValues(predicate, type) ?? new Dictionary<string, List<object>>(SettingService.NameComparer);
 
 		/// <inheritdoc cref="ISettingService.GetValues{T}(string)" />
-		public static List<T> GetValues<T>(string name) => SettingLocator.Service?.GetValues<T>(name);
+		public static List<T> GetValues<T>(string name) => SettingLocator.Service?.GetValues<T>(name) ?? new List<T>();
 
 		/// <inheritdoc cref="ISettingService.GetValues(string,Type)" />
-		public static List<object> GetValues(string name, Type type) => SettingLocator.Service?.GetValues(name, type);
+		public static List<object> GetValues(string name, Type type) => SettingLocator.Service?.GetValues(name, type) ?? new List<object>();
 
 		/// <inheritdoc cref="ISettingService.HasValue(string)" />
 		public static bool HasValue(string name) => SettingLocator.Service?.HasValue(name) ?? false;

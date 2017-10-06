@@ -151,6 +151,32 @@ namespace RI.Framework.Services.Settings.Storages
 		}
 
 		/// <inheritdoc />
+		public Dictionary<string, List<string>> GetValues(Predicate<string> predicate)
+		{
+			if (predicate == null)
+			{
+				throw new ArgumentNullException(nameof(predicate));
+			}
+
+			Dictionary<string, List<string>> values = new Dictionary<string, List<string>>(SettingService.NameComparer);
+			IDictionary variables = Environment.GetEnvironmentVariables();
+			foreach (DictionaryEntry entry in variables)
+			{
+				string name = (string)entry.Key;
+				string value = (string)entry.Value;
+				if (predicate(name))
+				{
+					if (!values.ContainsKey(name))
+					{
+						values.Add(name, new List<string>());
+					}
+					values[name].Add(value);
+				}
+			}
+			return values;
+		}
+
+		/// <inheritdoc />
 		public bool HasValue (string name)
 		{
 			if (name == null)

@@ -136,6 +136,14 @@ namespace RI.Framework.Services
 		HostContext HostContext { get; }
 
 		/// <summary>
+		/// Gets whether the shutdown has been initiated, using <see cref="Shutdown"/>.
+		/// </summary>
+		/// <value>
+		/// true if the shutdown has been initiated, false otherwise.
+		/// </value>
+		bool ShutdownInitiated { get; }
+
+		/// <summary>
 		///     Gets the ID of the currently running instance.
 		/// </summary>
 		/// <value>

@@ -302,6 +302,7 @@ namespace RI.Framework.Composition
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	[Export]
+	[SuppressMessage("ReSharper", "InconsistentNaming")]
 	public sealed class CompositionContainer : LogSource, IDependencyResolver, IDisposable, ISynchronizable
 	{
 		#region Constants
@@ -669,7 +670,7 @@ namespace RI.Framework.Composition
 			this.Composition = new Dictionary<string, CompositionItem>(CompositionContainer.NameComparer);
 			this.LazyInvokers = new Dictionary<string, Dictionary<Type, LazyInvoker>>(CompositionContainer.NameComparer);
 
-			this.UpdateComposition(true);
+			//this.UpdateComposition(true);
 		}
 
 		/// <summary>
@@ -693,7 +694,7 @@ namespace RI.Framework.Composition
 			this.ParentContainer = parentContainer;
 			this.ParentContainer.CompositionChanged += this.ParentContainerCompositionChangedHandler;
 
-			this.UpdateComposition(true);
+			//this.UpdateComposition(true);
 		}
 
 		/// <summary>
@@ -1591,8 +1592,9 @@ namespace RI.Framework.Composition
 			{
 				bool recomposed = this.ParentContainer?.Recompose(composition) ?? false;
 				List<object> instances = this.GetExistingInstancesInternal(false);
-				foreach (object instance in instances)
+				for (int i1 = 0; i1 < instances.Count; i1++)
 				{
+					object instance = instances[i1];
 					if (this.ResolveImports(instance, composition))
 					{
 						recomposed = true;
@@ -1811,6 +1813,58 @@ namespace RI.Framework.Composition
 			this.RaiseCompositionChanged();
 		}
 
+		private sealed class ResolveImports_PropertyInfo
+		{
+			public Type ImportType { get; set; }
+
+			public PropertyInfo Property { get; set; }
+
+			public List<ImportAttribute> ImportAttributes { get; set; } = new List<ImportAttribute>();
+
+			public MethodInfo GetMethod { get; set; }
+
+			public MethodInfo SetMethod { get; set; }
+
+			public bool CanRecompose { get; set; }
+
+			public string ImportName { get; set; }
+		}
+
+		private static Dictionary<Type, ResolveImports_PropertyInfo[]> ResolveImports_PropertyCache { get; set; }
+
+		private static ResolveImports_PropertyInfo[] ResolveImports_GetProperties (Type type)
+		{
+			lock (CompositionContainer.GlobalSyncRoot)
+			{
+				if (CompositionContainer.ResolveImports_PropertyCache == null)
+				{
+					CompositionContainer.ResolveImports_PropertyCache = new Dictionary<Type, ResolveImports_PropertyInfo[]>();
+				}
+
+				if (!CompositionContainer.ResolveImports_PropertyCache.ContainsKey(type))
+				{
+					PropertyInfo[] properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+					ResolveImports_PropertyInfo[] infos = new ResolveImports_PropertyInfo[properties.Length];
+					for (int i1 = 0; i1 < properties.Length; i1++)
+					{
+						PropertyInfo property = properties[i1];
+						ResolveImports_PropertyInfo info = new ResolveImports_PropertyInfo();
+						info.ImportType = property.PropertyType;
+						info.Property = property;
+						info.GetMethod = property.GetGetMethod(true);
+						info.SetMethod = property.GetSetMethod(true);
+						info.ImportAttributes.AddRange(property.GetCustomAttributes(typeof(ImportAttribute), false).OfType<ImportAttribute>());
+						info.CanRecompose = info.ImportAttributes.Any(x => x.Recomposable);
+						info.ImportName = info.ImportAttributes.FirstOrDefault(null, x => !x.Name.IsNullOrEmptyOrWhitespace())?.Name;
+						infos[i1] = info;
+					}
+					CompositionContainer.ResolveImports_PropertyCache.Add(type, infos);
+				}
+
+				return CompositionContainer.ResolveImports_PropertyCache[type];
+			}
+		}
+
 		/// <summary>
 		///     Model-based import: Resolves the imports of the specified object, using <see cref="ImportAttribute" />.
 		/// </summary>
@@ -1857,10 +1911,11 @@ namespace RI.Framework.Composition
 				bool updateComposed = (composition & CompositionFlags.Composed) == CompositionFlags.Composed;
 
 				Type type = obj.GetType();
-				PropertyInfo[] properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-				foreach (PropertyInfo property in properties)
+				ResolveImports_PropertyInfo[] properties = CompositionContainer.ResolveImports_GetProperties(type);
+				for (int i1 = 0; i1 < properties.Length; i1++)
 				{
-					List<ImportAttribute> attributes = property.GetCustomAttributes(typeof(ImportAttribute), false).OfType<ImportAttribute>().ToList();
+					ResolveImports_PropertyInfo property = properties[i1];
+					List<ImportAttribute> attributes = property.ImportAttributes;
 
 					bool canCompose = attributes.Count > 0;
 					if (!canCompose)
@@ -1868,13 +1923,13 @@ namespace RI.Framework.Composition
 						continue;
 					}
 
-					bool canRecompose = attributes.Any(x => x.Recomposable);
-					object oldValue = property.GetGetMethod(true)?.Invoke(obj, null);
+					bool canRecompose = property.CanRecompose;
+					object oldValue = property.GetMethod?.Invoke(obj, null);
 
 					if ((isConstructing || (updateMissing && (oldValue == null)) || (updateRecomposable && canRecompose) || (updateComposed && (oldValue != null))))
 					{
-						string importName = attributes.FirstOrDefault(null, x => !x.Name.IsNullOrEmptyOrWhitespace())?.Name;
-						Type importType = property.PropertyType;
+						string importName = property.ImportName;
+						Type importType = property.ImportType;
 
 						ImportKind importKind;
 						object newValue = this.GetImportValueFromNameOrType(importName, importType, out importKind);
@@ -1907,15 +1962,18 @@ namespace RI.Framework.Composition
 
 						if (updateValue)
 						{
-							MethodInfo setMethod = property.GetSetMethod(true);
+							MethodInfo setMethod = property.SetMethod;
 							if (setMethod == null)
 							{
-								throw new CompositionException("Cannot set value for property because set accessor is missing/unavailable: " + type.FullName + "." + property.Name);
+								throw new CompositionException("Cannot set value for property because set accessor is missing/unavailable: " + type.FullName + "." + property.Property.Name);
 							}
 							else
 							{
-								this.Log(LogLevel.Debug, "Updating import ({0}): {1}", composition, type.FullName + "." + property.Name);
-								setMethod.Invoke(obj, new[] {newValue});
+								this.Log(LogLevel.Debug, "Updating import ({0}): {1}", composition, type.FullName + "." + property.Property.Name);
+								setMethod.Invoke(obj, new[]
+								{
+									newValue
+								});
 							}
 
 							composed = true;
@@ -2154,20 +2212,22 @@ namespace RI.Framework.Composition
 
 		private List<object> GetExistingInstancesInternal (bool includeParentInstances)
 		{
-			List<object> instances = new List<object>();
+			List<object> instances = new List<object>(this.Composition.Count * 10);
 
 			foreach (KeyValuePair<string, CompositionItem> compositionItem in this.Composition)
 			{
-				foreach (CompositionInstanceItem instance in compositionItem.Value.Instances)
+				for (int i1 = 0; i1 < compositionItem.Value.Instances.Count; i1++)
 				{
+					CompositionInstanceItem instance = compositionItem.Value.Instances[i1];
 					if (instance.Instance != null)
 					{
 						instances.Add(instance.Instance);
 					}
 				}
 
-				foreach (CompositionTypeItem type in compositionItem.Value.Types)
+				for (int i1 = 0; i1 < compositionItem.Value.Types.Count; i1++)
 				{
+					CompositionTypeItem type = compositionItem.Value.Types[i1];
 					if (type.Instance != null)
 					{
 						instances.Add(type.Instance);
@@ -2296,16 +2356,18 @@ namespace RI.Framework.Composition
 			{
 				CompositionItem item = this.Composition[name];
 
-				foreach (CompositionInstanceItem instanceItem in item.Instances)
+				for (int i1 = 0; i1 < item.Instances.Count; i1++)
 				{
+					CompositionInstanceItem instanceItem = item.Instances[i1];
 					if (instanceItem.Instance != null)
 					{
 						instances.Add(instanceItem.Instance);
 					}
 				}
 
-				foreach (CompositionTypeItem typeItem in item.Types)
+				for (int i1 = 0; i1 < item.Types.Count; i1++)
 				{
+					CompositionTypeItem typeItem = item.Types[i1];
 					if (typeItem.Instance != null)
 					{
 						instances.Add(typeItem.Instance);
@@ -2331,7 +2393,7 @@ namespace RI.Framework.Composition
 				types.Clear();
 			}
 
-			List<object> newInstances = new List<object>();
+			List<object> newInstances = new List<object>(types.Count);
 			foreach (Type type in types)
 			{
 				bool supportedByCreators = this.Creators.Any(x => x.CanCreateInstance(this, type, compatibleType, name));
@@ -2443,13 +2505,15 @@ namespace RI.Framework.Composition
 				}
 			}
 
-			foreach (object newInstance in newInstances)
+			for (int i1 = 0; i1 < newInstances.Count; i1++)
 			{
+				object newInstance = newInstances[i1];
 				this.ResolveImports(newInstance, CompositionFlags.Constructing);
 			}
 
-			foreach (object newInstance in newInstances)
+			for (int i1 = 0; i1 < newInstances.Count; i1++)
 			{
+				object newInstance = newInstances[i1];
 				this.Log(LogLevel.Debug, "Type added to container: {0} / {1}", name, newInstance.GetType().AssemblyQualifiedName);
 
 				IExporting exportingInstance = newInstance as IExporting;

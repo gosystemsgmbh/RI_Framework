@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Security;
 using System.Text;
 
 using RI.Framework.Collections;
@@ -2669,6 +2670,29 @@ namespace RI.Framework.Utilities
 			}
 
 			return strBuilder.ToString();
+		}
+
+		/// <summary>
+		/// Converts a string into a secure string.
+		/// </summary>
+		/// <param name="str">The string.</param>
+		/// <returns>
+		/// The secure string.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static SecureString ToSecureString (this string str)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			SecureString secureString = new SecureString();
+			foreach (char chr in str)
+			{
+				secureString.AppendChar(chr);
+			}
+			return secureString;
 		}
 
 		#endregion

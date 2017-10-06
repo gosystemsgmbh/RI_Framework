@@ -80,7 +80,7 @@ namespace RI.Framework.Services.Logging.Writers
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="dbConnection" /> is null. </exception>
 		public SQLiteLogWriter(string session, SQLiteConnection dbConnection)
-			: this(null, dbConnection, null)
+			: this(session, dbConnection, null)
 		{
 		}
 

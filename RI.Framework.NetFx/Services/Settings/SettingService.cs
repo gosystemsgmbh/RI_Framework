@@ -32,6 +32,15 @@ namespace RI.Framework.Services.Settings
 	[Export]
 	public sealed class SettingService : LogSource, ISettingService, IImporting
 	{
+		/// <summary>
+		/// Gets the string comparer which can be used to compare setting names.
+		/// </summary>
+		/// <value>
+		/// The string comparer which can be used to compare setting names.
+		/// </value>
+		public static readonly StringComparer NameComparer = StringComparerEx.InvariantCultureIgnoreCase;
+
+
 		#region Instance Constructor/Destructor
 
 		/// <summary>
@@ -440,6 +449,92 @@ namespace RI.Framework.Services.Settings
 
 			List<string> stringValues = this.GetRawValues(name);
 			List<object> finalValues = stringValues.Select(x => this.ConvertTo(converter, type, x));
+			return finalValues;
+		}
+
+		/// <inheritdoc />
+		public Dictionary<string, List<string>> GetRawValues(Predicate<string> predicate)
+		{
+			if (predicate == null)
+			{
+				throw new ArgumentNullException(nameof(predicate));
+			}
+
+			//We need to clear the cache, otherwise values might appear twice in the result
+			this.Cache.Clear();
+
+			Dictionary<string, List<string>> finalValues = new Dictionary<string, List<string>>(SettingService.NameComparer);
+			Action<string, List<string>> addToFinalValues = (k, v) =>
+			{
+				if (!finalValues.ContainsKey(k))
+				{
+					finalValues.Add(k, new List<string>());
+				}
+				finalValues[k].AddRange(v);
+			};
+
+			foreach (ISettingStorage store in this.Storages)
+			{
+				if (!store.IsReadOnly)
+				{
+					continue;
+				}
+
+				Dictionary<string, List<string>> values = store.GetValues(predicate);
+				values.ForEach(x => addToFinalValues(x.Key, x.Value));
+			}
+
+			foreach (ISettingStorage store in this.Storages)
+			{
+				if (store.IsReadOnly)
+				{
+					continue;
+				}
+
+				Dictionary<string, List<string>> values = store.GetValues(predicate);
+				values.ForEach(x => addToFinalValues(x.Key, x.Value));
+			}
+
+			return finalValues;
+		}
+
+		/// <inheritdoc />
+		public Dictionary<string, List<T>> GetValues<T> (Predicate<string> predicate)
+		{
+			Dictionary<string, List<object>> values = this.GetValues(predicate, typeof(T));
+			Dictionary<string, List<T>> finalValues = new Dictionary<string, List<T>>(SettingService.NameComparer);
+			foreach (KeyValuePair<string, List<object>> value in values)
+			{
+				finalValues.Add(value.Key, new List<T>(value.Value.Select(x => (T)x)));
+			}
+			return finalValues;
+		}
+
+		/// <inheritdoc />
+		public Dictionary<string, List<object>> GetValues(Predicate<string> predicate, Type type)
+		{
+			if (predicate == null)
+			{
+				throw new ArgumentNullException(nameof(predicate));
+			}
+
+			if (type == null)
+			{
+				throw new ArgumentNullException(nameof(type));
+			}
+
+			ISettingConverter converter = this.GetConverterForType(type);
+			if (converter == null)
+			{
+				throw new InvalidTypeArgumentException(nameof(type));
+			}
+
+			Dictionary<string, List<string>> stringValues = this.GetRawValues(predicate);
+			Dictionary<string, List<object>> finalValues = new Dictionary<string, List<object>>(SettingService.NameComparer);
+			foreach (KeyValuePair<string, List<string>> stringValue in stringValues)
+			{
+				finalValues.Add(stringValue.Key, new List<object>(stringValue.Value.Select(x => this.ConvertTo(converter, type, x))));
+			}
 			return finalValues;
 		}
 

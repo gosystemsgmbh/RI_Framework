@@ -77,6 +77,22 @@ namespace RI.Framework.Services.Settings.Storages
 		List<string> GetValues (string name);
 
 		/// <summary>
+		///     Reads the values based on a predicate which checks the names.
+		/// </summary>
+		/// <param name="predicate"> The predicate used to test the names. </param>
+		/// <returns>
+		///     The values, arranged as a dictionary where the key is the name and the value is a list of actual setting values belonging to the name.
+		/// An empty dictionary is returned if no values are found.
+		/// </returns>
+		/// <remarks>
+		/// <note type="note">
+		/// Do not call this method directly, it is intended to be called from an <see cref="ISettingService"/> implementation.
+		/// </note>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="predicate" /> is null. </exception>
+		Dictionary<string, List<string>> GetValues (Predicate<string> predicate);
+
+		/// <summary>
 		///     Checks whether a value of a specified name is available.
 		/// </summary>
 		/// <param name="name"> The name of the value. </param>

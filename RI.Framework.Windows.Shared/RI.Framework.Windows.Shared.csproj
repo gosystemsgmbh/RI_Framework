@@ -60,7 +60,6 @@
     <Compile Include="IO\Serial\_NamespaceDoc.cs" />
     <Compile Include="Services\Logging\Writers\EventLogWriter.cs" />
     <Compile Include="Services\WindowsBootstrapper.cs" />
-    <Compile Include="Utilities\Windows\Cryptography\LocalEncryption.cs" />
     <None Include="Utilities\Windows\Messages\_NamespaceDoc.cs" />
     <Compile Include="Utilities\Windows\Cryptography\_NamespaceDoc.cs" />
     <Compile Include="Utilities\Windows\Imaging\BitmapExtensions.cs" />
