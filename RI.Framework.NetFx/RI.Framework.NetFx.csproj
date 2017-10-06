@@ -86,6 +86,7 @@
     <Compile Include="Data\Database\DatabaseProcessingStep.cs" />
     <Compile Include="Data\Database\DatabaseProcessingStepDelegate.cs" />
     <Compile Include="Data\Database\DatabaseProcessingStepTransactionRequirement.cs" />
+    <Compile Include="Data\Database\Upgrading\AssemblyResourceVersionUpgraderUtility.cs" />
     <Compile Include="Data\Database\Upgrading\DatabaseVersionUpgrader.cs" />
     <Compile Include="Data\Database\Upgrading\IDatabaseVersionUpgrader.cs" />
     <Compile Include="Data\Database\Upgrading\_NamespaceDoc.cs" />

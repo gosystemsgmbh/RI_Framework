@@ -47,6 +47,7 @@
     <Compile Include="Data\Database\SqlServerDatabaseProcessingStep.cs" />
     <Compile Include="Data\Database\SqlServerDatabaseManager.cs" />
     <Compile Include="Data\Database\SqlServerDatabaseManagerConfiguration.cs" />
+    <Compile Include="Data\Database\Upgrading\SqlServerAssemblyResourceVersionUpgraderUtility.cs" />
     <Compile Include="Data\Database\Upgrading\SqlServerDatabaseVersionUpgrader.cs" />
     <Compile Include="Data\Database\Upgrading\SqlServerDatabaseVersionUpgradeStep.cs" />
     <Compile Include="Data\Database\Versioning\SqlServerDatabaseVersionDetector.cs" />

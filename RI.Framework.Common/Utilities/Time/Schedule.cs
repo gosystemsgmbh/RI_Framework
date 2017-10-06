@@ -33,7 +33,7 @@ namespace RI.Framework.Utilities.Time
 
 		private const char TimeOfDaySeparator = '-';
 
-		private const char StringSeparator = '-';
+		private const char StringSeparator = ',';
 
 		/// <summary>
 		/// Creates a schedule which is due now.
