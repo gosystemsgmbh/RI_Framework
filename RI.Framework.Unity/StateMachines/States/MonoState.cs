@@ -82,13 +82,6 @@ namespace RI.Framework.StateMachines.States
 			this.UpdateInterval = null;
 		}
 
-
-		/// <inheritdoc />
-		public bool LoggingEnabled { get; set; } = true;
-
-		/// <inheritdoc />
-		public Utilities.Logging.ILogger Logger { get; set; } = LogLocator.Logger;
-
 		#endregion
 
 
@@ -133,6 +126,20 @@ namespace RI.Framework.StateMachines.States
 		protected virtual void Update (StateUpdateInfo updateInfo)
 		{
 		}
+
+		#endregion
+
+
+
+
+		#region Interface: ILogSource
+
+		/// <inheritdoc />
+		public Utilities.Logging.ILogger Logger { get; set; } = LogLocator.Logger;
+
+
+		/// <inheritdoc />
+		public bool LoggingEnabled { get; set; } = true;
 
 		#endregion
 

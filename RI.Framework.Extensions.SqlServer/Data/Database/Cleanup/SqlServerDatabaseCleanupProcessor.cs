@@ -7,60 +7,89 @@ using RI.Framework.Data.Database.Scripts;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Logging;
 
+
+
+
 namespace RI.Framework.Data.Database.Cleanup
 {
 	/// <summary>
-	/// Implements a database cleanup processor for SQL Server databases.
+	///     Implements a database cleanup processor for SQL Server databases.
 	/// </summary>
 	/// <remarks>
-	/// <para>
-	/// <see cref="SqlServerDatabaseCleanupProcessor"/> can be used with either a default SQL Server cleanup script (<see cref="DefaultCleanupScript"/>) or with a custom processing step.
-	/// </para>
+	///     <para>
+	///         <see cref="SqlServerDatabaseCleanupProcessor" /> can be used with either a default SQL Server cleanup script (<see cref="DefaultCleanupScript" />) or with a custom processing step.
+	///     </para>
 	/// </remarks>
 	public sealed class SqlServerDatabaseCleanupProcessor : DatabaseCleanupProcessor<SqlConnection, SqlTransaction, SqlConnectionStringBuilder, SqlServerDatabaseManager, SqlServerDatabaseManagerConfiguration>
 	{
+		#region Constants
+
 		/// <summary>
-		/// The default cleanup script used when no custom processing step is specified.
+		///     The default cleanup script used when no custom processing step is specified.
 		/// </summary>
 		/// <remarks>
-		/// <para>
-		/// The default cleanup script uses <c>DBCC SHRINKDATABASE 0</c>, executed as a single command.
-		/// </para>
+		///     <para>
+		///         The default cleanup script uses <c> DBCC SHRINKDATABASE 0 </c>, executed as a single command.
+		///     </para>
 		/// </remarks>
 		public const string DefaultCleanupScript = "DBCC SHRINKDATABASE 0;" + DatabaseScriptLocator.DefaultBatchSeparator;
 
+		#endregion
+
+
+
+
+		#region Instance Constructor/Destructor
+
 		/// <summary>
-		/// Creates a new instance of <see cref="SqlServerDatabaseCleanupProcessor"/>.
+		///     Creates a new instance of <see cref="SqlServerDatabaseCleanupProcessor" />.
 		/// </summary>
 		/// <remarks>
-		/// <para>
-		/// The default cleanup script is used (<see cref="DefaultCleanupScript"/>).
-		/// </para>
+		///     <para>
+		///         The default cleanup script is used (<see cref="DefaultCleanupScript" />).
+		///     </para>
 		/// </remarks>
-		public SqlServerDatabaseCleanupProcessor()
+		public SqlServerDatabaseCleanupProcessor ()
 			: this(null)
 		{
 		}
 
 		/// <summary>
-		/// Creates a new instance of <see cref="SqlServerDatabaseCleanupProcessor"/>.
+		///     Creates a new instance of <see cref="SqlServerDatabaseCleanupProcessor" />.
 		/// </summary>
-		/// <param name="cleanupStep">The custom processing step which performs the cleanup or null if the default cleanup script is used (<see cref="DefaultCleanupScript"/>).</param>
-		public SqlServerDatabaseCleanupProcessor(SqlServerDatabaseProcessingStep cleanupStep)
+		/// <param name="cleanupStep"> The custom processing step which performs the cleanup or null if the default cleanup script is used (<see cref="DefaultCleanupScript" />). </param>
+		public SqlServerDatabaseCleanupProcessor (SqlServerDatabaseProcessingStep cleanupStep)
 		{
 			this.CleanupStep = cleanupStep;
 		}
 
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
+
 		/// <summary>
-		/// Gets the custom processing step which performs the cleanup.
+		///     Gets the custom processing step which performs the cleanup.
 		/// </summary>
 		/// <value>
-		/// The custom processing step which performs the cleanup or null if the default cleanup script is used (<see cref="DefaultCleanupScript"/>).
+		///     The custom processing step which performs the cleanup or null if the default cleanup script is used (<see cref="DefaultCleanupScript" />).
 		/// </value>
 		public SqlServerDatabaseProcessingStep CleanupStep { get; }
 
+		#endregion
+
+
+
+
+		#region Overrides
+
 		/// <inheritdoc />
-		public override bool Cleanup(SqlServerDatabaseManager manager)
+		public override bool RequiresScriptLocator => this.CleanupStep?.RequiresScriptLocator ?? false;
+
+		/// <inheritdoc />
+		public override bool Cleanup (SqlServerDatabaseManager manager)
 		{
 			if (manager == null)
 			{
@@ -103,7 +132,6 @@ namespace RI.Framework.Data.Database.Cleanup
 			}
 		}
 
-		/// <inheritdoc />
-		public override bool RequiresScriptLocator => this.CleanupStep?.RequiresScriptLocator ?? false;
+		#endregion
 	}
 }

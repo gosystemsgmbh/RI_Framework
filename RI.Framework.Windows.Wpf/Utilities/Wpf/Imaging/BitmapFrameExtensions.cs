@@ -15,13 +15,13 @@ namespace RI.Framework.Utilities.Wpf.Imaging
 		#region Static Methods
 
 		/// <summary>
-		/// Converts an icon to a bitmap frame.
+		///     Converts an icon to a bitmap frame.
 		/// </summary>
-		/// <param name="icon">The icon.</param>
+		/// <param name="icon"> The icon. </param>
 		/// <returns>
-		/// The bitmap frame.
+		///     The bitmap frame.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="icon"/> is null.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="icon" /> is null. </exception>
 		public static BitmapFrame ToBitmapFrame (this Icon icon)
 		{
 			if (icon == null)
@@ -35,13 +35,13 @@ namespace RI.Framework.Utilities.Wpf.Imaging
 		}
 
 		/// <summary>
-		/// Converts a bitmap to a bitmap frame.
+		///     Converts a bitmap to a bitmap frame.
 		/// </summary>
-		/// <param name="image">The bitmap.</param>
+		/// <param name="image"> The bitmap. </param>
 		/// <returns>
-		/// The bitmap frame.
+		///     The bitmap frame.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="image"/> is null.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="image" /> is null. </exception>
 		public static BitmapFrame ToBitmapFrame (this Bitmap image)
 		{
 			if (image == null)
@@ -55,13 +55,13 @@ namespace RI.Framework.Utilities.Wpf.Imaging
 		}
 
 		/// <summary>
-		/// Converts a bitmap source to a bitmap frame.
+		///     Converts a bitmap source to a bitmap frame.
 		/// </summary>
-		/// <param name="image">The bitmap source.</param>
+		/// <param name="image"> The bitmap source. </param>
 		/// <returns>
-		/// The bitmap frame.
+		///     The bitmap frame.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="image"/> is null.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="image" /> is null. </exception>
 		public static BitmapFrame ToBitmapFrame (this BitmapSource image)
 		{
 			if (image == null)

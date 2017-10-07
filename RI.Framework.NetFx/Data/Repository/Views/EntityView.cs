@@ -8,6 +8,9 @@ using System.Linq;
 
 using RI.Framework.Collections;
 
+
+
+
 namespace RI.Framework.Data.Repository.Views
 {
 	/// <summary>
@@ -109,9 +112,9 @@ namespace RI.Framework.Data.Repository.Views
 
 		private bool _allowSelect;
 
-		private object _filter;
+		private EntityViewCollectionUpdateStrategy _collectionUpdateStrategy;
 
-		private object _sort;
+		private object _filter;
 
 		private bool _isUpdating;
 
@@ -120,6 +123,8 @@ namespace RI.Framework.Data.Repository.Views
 		private int _pageNumber;
 
 		private int _pageSize;
+
+		private object _sort;
 
 		private IEnumerable<TEntity> _source;
 
@@ -131,32 +136,6 @@ namespace RI.Framework.Data.Repository.Views
 
 
 		#region Instance Properties/Indexer
-
-		private EntityViewCollectionUpdateStrategy _collectionUpdateStrategy;
-
-		/// <summary>
-		/// Gets or sets the collection update strategy for <see cref="Entities"/> and <see cref="ViewObjects"/>.
-		/// </summary>
-		/// <value>
-		///     The collection update strategy for <see cref="Entities"/> and <see cref="ViewObjects"/>.
-		/// </value>
-		/// <remarks>
-		///     <para>
-		///         The default value is <see cref="EntityViewCollectionUpdateStrategy.Recreate"/>.
-		///     </para>
-		/// </remarks>
-		public EntityViewCollectionUpdateStrategy CollectionUpdateStrategy
-		{
-			get
-			{
-				return this._collectionUpdateStrategy;
-			}
-			set
-			{
-				this._collectionUpdateStrategy = value;
-				this.Update(false);
-			}
-		}
 
 		/// <summary>
 		///     Gets or sets whether the items managed by this view can be edited or not.
@@ -203,6 +182,30 @@ namespace RI.Framework.Data.Repository.Views
 			{
 				this._allowSelect = value;
 				this.OnPropertyChanged(nameof(this.AllowSelect));
+			}
+		}
+
+		/// <summary>
+		///     Gets or sets the collection update strategy for <see cref="Entities" /> and <see cref="ViewObjects" />.
+		/// </summary>
+		/// <value>
+		///     The collection update strategy for <see cref="Entities" /> and <see cref="ViewObjects" />.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         The default value is <see cref="EntityViewCollectionUpdateStrategy.Recreate" />.
+		///     </para>
+		/// </remarks>
+		public EntityViewCollectionUpdateStrategy CollectionUpdateStrategy
+		{
+			get
+			{
+				return this._collectionUpdateStrategy;
+			}
+			set
+			{
+				this._collectionUpdateStrategy = value;
+				this.Update(false);
 			}
 		}
 
@@ -343,41 +346,6 @@ namespace RI.Framework.Data.Repository.Views
 			set
 			{
 				this._filter = value;
-				this.Update(true);
-			}
-		}
-
-		/// <summary>
-		///     Gets or sets the entity sorting.
-		/// </summary>
-		/// <value>
-		///     The entity sorting.
-		/// </value>
-		/// <remarks>
-		///     <note type="important">
-		///         Changing <see cref="Sort" /> calls <see cref="Update()" /> and resets <see cref="PageNumber" /> to 1 (if current page number is higher than 1).
-		///     </note>
-		///     <para>
-		///         The entity sorting is an arbitrary sorting object which is used to sort the data source before its entities are presented by the view.
-		///         Note that the sorting is applied before pagination is performed.
-		///     </para>
-		///     <para>
-		///         The sorting object itself is used by <see cref="IRepositorySet{T}.GetFiltered(object, object, int, int, out int, out int, out int)" /> and therefore depends on its implementation.
-		///         The sorting object itself is not directly used by the view.
-		///     </para>
-		///     <para>
-		///         The default value is null.
-		///     </para>
-		/// </remarks>
-		public object Sort
-		{
-			get
-			{
-				return this._sort;
-			}
-			set
-			{
-				this._sort = value;
 				this.Update(true);
 			}
 		}
@@ -613,6 +581,41 @@ namespace RI.Framework.Data.Repository.Views
 		///     The <see cref="IRepositorySet{T}" /> this view is associated with.
 		/// </value>
 		public IRepositorySet<TEntity> Set { get; private set; }
+
+		/// <summary>
+		///     Gets or sets the entity sorting.
+		/// </summary>
+		/// <value>
+		///     The entity sorting.
+		/// </value>
+		/// <remarks>
+		///     <note type="important">
+		///         Changing <see cref="Sort" /> calls <see cref="Update()" /> and resets <see cref="PageNumber" /> to 1 (if current page number is higher than 1).
+		///     </note>
+		///     <para>
+		///         The entity sorting is an arbitrary sorting object which is used to sort the data source before its entities are presented by the view.
+		///         Note that the sorting is applied before pagination is performed.
+		///     </para>
+		///     <para>
+		///         The sorting object itself is used by <see cref="IRepositorySet{T}.GetFiltered(object, object, int, int, out int, out int, out int)" /> and therefore depends on its implementation.
+		///         The sorting object itself is not directly used by the view.
+		///     </para>
+		///     <para>
+		///         The default value is null.
+		///     </para>
+		/// </remarks>
+		public object Sort
+		{
+			get
+			{
+				return this._sort;
+			}
+			set
+			{
+				this._sort = value;
+				this.Update(true);
+			}
+		}
 
 		/// <summary>
 		///     Gets or sets the data source presented by this view.

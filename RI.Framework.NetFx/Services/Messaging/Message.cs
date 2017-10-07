@@ -223,6 +223,19 @@ namespace RI.Framework.Services.Messaging
 
 
 
+		#region Overrides
+
+		/// <inheritdoc />
+		public override bool Equals (object obj) => this.Equals(obj as IMessage);
+
+		/// <inheritdoc />
+		public override int GetHashCode () => this.Id.GetHashCode();
+
+		#endregion
+
+
+
+
 		#region Interface: IMessage
 
 		/// <inheritdoc />
@@ -245,6 +258,24 @@ namespace RI.Framework.Services.Messaging
 			}
 
 			this.Data.Remove(name);
+		}
+
+
+		/// <inheritdoc />
+		public bool Equals (IMessage other)
+		{
+			if (other == null)
+			{
+				return false;
+			}
+
+			Message other2 = other as Message;
+			if (other2 == null)
+			{
+				return false;
+			}
+
+			return this.Id.Equals(other2.Id);
 		}
 
 		/// <inheritdoc />
@@ -303,30 +334,5 @@ namespace RI.Framework.Services.Messaging
 		}
 
 		#endregion
-
-
-
-		/// <inheritdoc />
-		public bool Equals (IMessage other)
-		{
-			if (other == null)
-			{
-				return false;
-			}
-
-			Message other2 = other as Message;
-			if (other2 == null)
-			{
-				return false;
-			}
-
-			return this.Id.Equals(other2.Id);
-		}
-
-		/// <inheritdoc />
-		public override int GetHashCode () => this.Id.GetHashCode();
-
-		/// <inheritdoc />
-		public override bool Equals (object obj) => this.Equals(obj as IMessage);
 	}
 }

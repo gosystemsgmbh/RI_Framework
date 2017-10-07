@@ -1,5 +1,8 @@
 ﻿using RI.Framework.Services;
 
+
+
+
 namespace RI.Framework.Data.EF.Resolvers
 {
 	/// <summary>
@@ -12,12 +15,16 @@ namespace RI.Framework.Data.EF.Resolvers
 	/// </remarks>
 	public sealed class ServiceLocatorDbDependencyResolver : DependencyResolverDbDependencyResolver
 	{
+		#region Instance Constructor/Destructor
+
 		/// <summary>
-		/// Creates a new instance of <see cref="ServiceLocatorDbDependencyResolver"/>.
+		///     Creates a new instance of <see cref="ServiceLocatorDbDependencyResolver" />.
 		/// </summary>
 		public ServiceLocatorDbDependencyResolver ()
 			: base(ServiceLocator.Resolver)
 		{
 		}
+
+		#endregion
 	}
 }

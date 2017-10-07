@@ -10,6 +10,9 @@ using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Logging;
 
+
+
+
 namespace RI.Framework.Services.Regions
 {
 	/// <summary>
@@ -29,13 +32,18 @@ namespace RI.Framework.Services.Regions
 	[Export]
 	public sealed class RegionService : LogSource, IRegionService, IImporting
 	{
+		#region Constants
+
 		/// <summary>
-		/// Gets the used string comparer used to compare region names for equality.
+		///     Gets the used string comparer used to compare region names for equality.
 		/// </summary>
 		/// <value>
-		/// The used string comparer used to compare region names for equality.
+		///     The used string comparer used to compare region names for equality.
 		/// </value>
 		public static readonly StringComparerEx RegionNameComparer = StringComparerEx.InvariantCultureIgnoreCase;
+
+		#endregion
+
 
 
 

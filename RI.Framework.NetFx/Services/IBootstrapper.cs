@@ -128,20 +128,20 @@ namespace RI.Framework.Services
 		Guid DomainId { get; }
 
 		/// <summary>
+		///     Gets whether the application is started for the first time.
+		/// </summary>
+		/// <value>
+		///     The indication whether the application has started for the first time or null if this information is not available.
+		/// </value>
+		FirstStart? FirstStart { get; }
+
+		/// <summary>
 		///     Gets the hosting environment context.
 		/// </summary>
 		/// <value>
 		///     The hosting environment context.
 		/// </value>
 		HostContext HostContext { get; }
-
-		/// <summary>
-		/// Gets whether the shutdown has been initiated, using <see cref="Shutdown"/>.
-		/// </summary>
-		/// <value>
-		/// true if the shutdown has been initiated, false otherwise.
-		/// </value>
-		bool ShutdownInitiated { get; }
 
 		/// <summary>
 		///     Gets the ID of the currently running instance.
@@ -171,6 +171,14 @@ namespace RI.Framework.Services
 		///     The anonymized GUID of the local machine.
 		/// </value>
 		Guid MachineId { get; }
+
+		/// <summary>
+		///     Gets the previous version the application was run last time before the current session.
+		/// </summary>
+		/// <value>
+		///     The previous version the application was run last time before the current session or null if the application is started for the very first time on this machine or this information is not available.
+		/// </value>
+		Version PreviousVersion { get; }
 
 		/// <summary>
 		///     Gets the command line which was used for the current process.
@@ -213,6 +221,14 @@ namespace RI.Framework.Services
 		ShutdownInfo ShutdownInfo { get; }
 
 		/// <summary>
+		///     Gets whether the shutdown has been initiated, using <see cref="Shutdown" />.
+		/// </summary>
+		/// <value>
+		///     true if the shutdown has been initiated, false otherwise.
+		/// </value>
+		bool ShutdownInitiated { get; }
+
+		/// <summary>
 		///     Gets the formatting culture which was set during start of the bootstrapping.
 		/// </summary>
 		/// <value>
@@ -246,34 +262,18 @@ namespace RI.Framework.Services
 		Guid UserId { get; }
 
 		/// <summary>
-		/// Gets whether the application is started for the first time.
+		///     Resets the first start information (<see cref="FirstStart" />).
 		/// </summary>
-		/// <value>
-		/// The indication whether the application has started for the first time or null if this information is not available.
-		/// </value>
-		FirstStart? FirstStart { get; }
-
-		/// <summary>
-		/// Gets the previous version the application was run last time before the current session.
-		/// </summary>
-		/// <value>
-		/// The previous version the application was run last time before the current session or null if the application is started for the very first time on this machine or this information is not available.
-		/// </value>
-		Version PreviousVersion { get; }
-
-		/// <summary>
-		/// Resets the first start information (<see cref="FirstStart"/>).
-		/// </summary>
-		/// <param name="indicators">The indicators to reset or null to reset all indicators.</param>
+		/// <param name="indicators"> The indicators to reset or null to reset all indicators. </param>
 		void ResetFirstStart (FirstStart? indicators);
 
 		/// <summary>
-		/// Resets the first start information (<see cref="FirstStart"/>) as if the application was never started on this machine before.
+		///     Resets the first start information (<see cref="FirstStart" />) as if the application was never started on this machine before.
 		/// </summary>
 		void ResetFirstStart ();
 
 		/// <summary>
-		/// Resets the previous version information (<see cref="PreviousVersion"/>) as if the application was never started on this machine before.
+		///     Resets the previous version information (<see cref="PreviousVersion" />) as if the application was never started on this machine before.
 		/// </summary>
 		void ResetPreviousVersion ();
 

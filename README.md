@@ -46,6 +46,7 @@
   - [ ] CompositionCreator
   - [ ] CompositionExtensions
   - [ ] HeavyThread
+  - [ ] Schedule
 - [ ] Testing (NetFX)
   - [ ] TaskExtensions
   - [ ] ThreadPoolAwaiter

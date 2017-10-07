@@ -398,6 +398,13 @@ namespace RI.Framework.IO.Paths
 			return newParent.AppendDirectory(new DirectoryPath(this.DirectoryName));
 		}
 
+		/// <inheritdoc cref="PathString.ChangeType" />
+		public new DirectoryPath ChangeType (PathType type)
+		{
+			PathProperties properties = this.PathInternal.ChangeType(type);
+			return new DirectoryPath(properties);
+		}
+
 		/// <summary>
 		///     Creates the directory if it does not exists or leaves an existing directory unchanged.
 		/// </summary>
@@ -661,22 +668,15 @@ namespace RI.Framework.IO.Paths
 			}
 		}
 
-		/// <inheritdoc cref="PathString.ChangeType"/>
-		public new DirectoryPath ChangeType(PathType type)
-		{
-			PathProperties properties = this.PathInternal.ChangeType(type);
-			return new DirectoryPath(properties);
-		}
-
-		/// <inheritdoc />
-		protected override PathString ChangeTypeInternal (PathType type) => this.ChangeType(type);
-
 		#endregion
 
 
 
 
 		#region Overrides
+
+		/// <inheritdoc />
+		protected override PathString ChangeTypeInternal (PathType type) => this.ChangeType(type);
 
 		/// <inheritdoc />
 		protected override PathString CloneInternal ()

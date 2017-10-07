@@ -3,28 +3,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 
+
+
+
 namespace RI.Framework.IO.Keyboard
 {
 	/// <summary>
-	/// Provides access to the system keyboard.
+	///     Provides access to the system keyboard.
 	/// </summary>
 	public static class SystemKeyboard
 	{
 		#region Static Methods
 
 		/// <summary>
-		/// Determines whether a specified key is pressed.
+		///     Determines whether a specified key is pressed.
 		/// </summary>
-		/// <param name="key">The key.</param>
+		/// <param name="key"> The key. </param>
 		/// <returns>
-		/// true if the key is pressed, false otherwise.
+		///     true if the key is pressed, false otherwise.
 		/// </returns>
 		public static bool IsKeyPressed (SystemKeyboardKey key)
 		{
 			short result = SystemKeyboard.GetKeyState((int)key);
 
 			bool keyPressed;
-			switch (( result & 0x8000 ) >> 15)
+			switch ((result & 0x8000) >> 15)
 			{
 				default:
 				{
@@ -49,21 +52,21 @@ namespace RI.Framework.IO.Keyboard
 		}
 
 		/// <summary>
-		/// Determines whether a keystroke (multiple keys at the same time) is pressed.
+		///     Determines whether a keystroke (multiple keys at the same time) is pressed.
 		/// </summary>
-		/// <param name="keys">The keystroke.</param>
+		/// <param name="keys"> The keystroke. </param>
 		/// <returns>
-		/// true if all specified keys are pressed at the same time, false otherwise.
+		///     true if all specified keys are pressed at the same time, false otherwise.
 		/// </returns>
 		/// <remarks>
-		/// <para>
-		/// true is returned if <paramref name="keys"/> is an empty sequence.
-		/// </para>
-		/// <para>
-		/// <paramref name="keys"/> is enumerated only once.
-		/// </para>
+		///     <para>
+		///         true is returned if <paramref name="keys" /> is an empty sequence.
+		///     </para>
+		///     <para>
+		///         <paramref name="keys" /> is enumerated only once.
+		///     </para>
 		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="keys"/> is null.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="keys" /> is null. </exception>
 		public static bool IsKeystrokePressed (IEnumerable<SystemKeyboardKey> keys)
 		{
 			if (keys == null)
@@ -83,26 +86,75 @@ namespace RI.Framework.IO.Keyboard
 		}
 
 		/// <summary>
-		/// Determines whether a keystroke (multiple keys at the same time) is pressed.
+		///     Determines whether a keystroke (multiple keys at the same time) is pressed.
 		/// </summary>
-		/// <param name="keys">The keystroke.</param>
+		/// <param name="keys"> The keystroke. </param>
 		/// <returns>
-		/// true if all specified keys are pressed at the same time, false otherwise.
+		///     true if all specified keys are pressed at the same time, false otherwise.
 		/// </returns>
 		/// <remarks>
-		/// <para>
-		/// true is returned if <paramref name="keys"/> is an empty array.
-		/// </para>
+		///     <para>
+		///         true is returned if <paramref name="keys" /> is an empty array.
+		///     </para>
 		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="keys"/> is null.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="keys" /> is null. </exception>
 		public static bool IsKeystrokePressed (params SystemKeyboardKey[] keys) => SystemKeyboard.IsKeystrokePressed((IEnumerable<SystemKeyboardKey>)keys);
 
 		/// <summary>
-		/// Determines whether a specified key is toggled on.
+		///     Determines whether a keystroke (multiple keys at the same time) is toggled on.
 		/// </summary>
-		/// <param name="key">The key.</param>
+		/// <param name="keys"> The keystroke. </param>
 		/// <returns>
-		/// true if the key is toggled on, false otherwise.
+		///     true if all specified keys are toggled on at the same time, false otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         true is returned if <paramref name="keys" /> is an empty sequence.
+		///     </para>
+		///     <para>
+		///         <paramref name="keys" /> is enumerated only once.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="keys" /> is null. </exception>
+		public static bool IsKeystrokeToggledOn (IEnumerable<SystemKeyboardKey> keys)
+		{
+			if (keys == null)
+			{
+				throw new ArgumentNullException(nameof(keys));
+			}
+
+			foreach (SystemKeyboardKey key in keys)
+			{
+				if (!SystemKeyboard.IsKeyToggledOn(key))
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		/// <summary>
+		///     Determines whether a keystroke (multiple keys at the same time) is toggled on.
+		/// </summary>
+		/// <param name="keys"> The keystroke. </param>
+		/// <returns>
+		///     true if all specified keys are toggled on at the same time, false otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         true is returned if <paramref name="keys" /> is an empty array.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="keys" /> is null. </exception>
+		public static bool IsKeystrokeToggledOn (params SystemKeyboardKey[] keys) => SystemKeyboard.IsKeystrokeToggledOn((IEnumerable<SystemKeyboardKey>)keys);
+
+		/// <summary>
+		///     Determines whether a specified key is toggled on.
+		/// </summary>
+		/// <param name="key"> The key. </param>
+		/// <returns>
+		///     true if the key is toggled on, false otherwise.
 		/// </returns>
 		public static bool IsKeyToggledOn (SystemKeyboardKey key)
 		{
@@ -134,103 +186,54 @@ namespace RI.Framework.IO.Keyboard
 		}
 
 		/// <summary>
-		/// Determines whether a keystroke (multiple keys at the same time) is toggled on.
+		///     Maps characters to keyboard keys.
 		/// </summary>
-		/// <param name="keys">The keystroke.</param>
+		/// <param name="characters"> The string of characters to map. </param>
 		/// <returns>
-		/// true if all specified keys are toggled on at the same time, false otherwise.
+		///     The list of mapped keys.
+		///     An empty list is returned if no characters were provided or if no characters could be mapped.
 		/// </returns>
 		/// <remarks>
-		/// <para>
-		/// true is returned if <paramref name="keys"/> is an empty sequence.
-		/// </para>
-		/// <para>
-		/// <paramref name="keys"/> is enumerated only once.
-		/// </para>
+		///     <note type="note">
+		///         Not all characters can be mapped to keys.
+		///     </note>
 		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="keys"/> is null.</exception>
-		public static bool IsKeystrokeToggledOn (IEnumerable<SystemKeyboardKey> keys)
-		{
-			if (keys == null)
-			{
-				throw new ArgumentNullException(nameof(keys));
-			}
-
-			foreach (SystemKeyboardKey key in keys)
-			{
-				if (!SystemKeyboard.IsKeyToggledOn(key))
-				{
-					return false;
-				}
-			}
-
-			return true;
-		}
-
-		/// <summary>
-		/// Determines whether a keystroke (multiple keys at the same time) is toggled on.
-		/// </summary>
-		/// <param name="keys">The keystroke.</param>
-		/// <returns>
-		/// true if all specified keys are toggled on at the same time, false otherwise.
-		/// </returns>
-		/// <remarks>
-		/// <para>
-		/// true is returned if <paramref name="keys"/> is an empty array.
-		/// </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="keys"/> is null.</exception>
-		public static bool IsKeystrokeToggledOn (params SystemKeyboardKey[] keys) => SystemKeyboard.IsKeystrokeToggledOn((IEnumerable<SystemKeyboardKey>)keys);
-
-		/// <summary>
-		/// Maps characters to keyboard keys.
-		/// </summary>
-		/// <param name="characters">The string of characters to map.</param>
-		/// <returns>
-		/// The list of mapped keys.
-		/// An empty list is returned if no characters were provided or if no characters could be mapped.
-		/// </returns>
-		/// <remarks>
-		/// <note type="note">
-		/// Not all characters can be mapped to keys.
-		/// </note>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="characters"/> is null.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="characters" /> is null. </exception>
 		public static List<SystemKeyboardKey> MapCharactersToKey (string characters) => SystemKeyboard.MapCharactersToKey((IEnumerable<char>)characters.ToArray());
 
 		/// <summary>
-		/// Maps characters to keyboard keys.
+		///     Maps characters to keyboard keys.
 		/// </summary>
-		/// <param name="characters">The array of characters to map.</param>
+		/// <param name="characters"> The array of characters to map. </param>
 		/// <returns>
-		/// The list of mapped keys.
-		/// An empty list is returned if no characters were provided or if no characters could be mapped.
+		///     The list of mapped keys.
+		///     An empty list is returned if no characters were provided or if no characters could be mapped.
 		/// </returns>
 		/// <remarks>
-		/// <note type="note">
-		/// Not all characters can be mapped to keys.
-		/// </note>
+		///     <note type="note">
+		///         Not all characters can be mapped to keys.
+		///     </note>
 		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="characters"/> is null.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="characters" /> is null. </exception>
 		public static List<SystemKeyboardKey> MapCharactersToKey (params char[] characters) => SystemKeyboard.MapCharactersToKey((IEnumerable<char>)characters.ToArray());
 
 		/// <summary>
-		/// Maps characters to keyboard keys.
+		///     Maps characters to keyboard keys.
 		/// </summary>
-		/// <param name="characters">The sequence of characters to map.</param>
+		/// <param name="characters"> The sequence of characters to map. </param>
 		/// <returns>
-		/// The list of mapped keys.
-		/// An empty list is returned if no characters were provided or if no characters could be mapped.
+		///     The list of mapped keys.
+		///     An empty list is returned if no characters were provided or if no characters could be mapped.
 		/// </returns>
 		/// <remarks>
-		/// <note type="note">
-		/// Not all characters can be mapped to keys.
-		/// </note>
-		/// <para>
-		/// <paramref name="characters"/> is enumerated only once.
-		/// </para>
+		///     <note type="note">
+		///         Not all characters can be mapped to keys.
+		///     </note>
+		///     <para>
+		///         <paramref name="characters" /> is enumerated only once.
+		///     </para>
 		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="characters"/> is null.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="characters" /> is null. </exception>
 		public static List<SystemKeyboardKey> MapCharactersToKey (IEnumerable<char> characters)
 		{
 			if (characters == null)
@@ -244,7 +247,7 @@ namespace RI.Framework.IO.Keyboard
 			{
 				char chr = char.ToUpperInvariant(character);
 
-				if (( ( chr >= 65 ) && ( chr <= 90 ) ) || ( ( chr >= 48 ) && ( chr <= 57 ) ))
+				if (((chr >= 65) && (chr <= 90)) || ((chr >= 48) && (chr <= 57)))
 				{
 					keys.Add((SystemKeyboardKey)chr);
 				}
@@ -253,7 +256,7 @@ namespace RI.Framework.IO.Keyboard
 			return keys;
 		}
 
-		[DllImport ("user32.dll", SetLastError = false)]
+		[DllImport("user32.dll", SetLastError = false)]
 		private static extern short GetKeyState (int nVirtKey);
 
 		#endregion

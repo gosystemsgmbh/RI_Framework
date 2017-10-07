@@ -9,6 +9,9 @@ using RI.Framework.Composition.Model;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Xml;
 
+
+
+
 namespace RI.Framework.Services.Settings.Converters
 {
 	/// <summary>
@@ -26,13 +29,22 @@ namespace RI.Framework.Services.Settings.Converters
 	[Export]
 	public sealed class XmlSettingConverter : ISettingConverter
 	{
-		private readonly Type[] _supportedTypes = { typeof(XmlDocument), typeof(XDocument) };
+		#region Instance Fields
+
+		private readonly Type[] _supportedTypes = {typeof(XmlDocument), typeof(XDocument)};
+
+		#endregion
+
+
+
+
+		#region Interface: ISettingConverter
 
 		/// <inheritdoc />
 		public SettingConversionMode ConversionMode => SettingConversionMode.StringConversion;
 
 		/// <inheritdoc />
-		public bool CanConvert(Type type)
+		public bool CanConvert (Type type)
 		{
 			if (type == null)
 			{
@@ -128,5 +140,7 @@ namespace RI.Framework.Services.Settings.Converters
 
 			return finalValue;
 		}
+
+		#endregion
 	}
 }

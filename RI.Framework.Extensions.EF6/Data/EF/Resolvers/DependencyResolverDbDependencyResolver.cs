@@ -4,6 +4,9 @@ using System.Data.Entity.Infrastructure.DependencyResolution;
 
 using RI.Framework.Utilities.ObjectModel;
 
+
+
+
 namespace RI.Framework.Data.EF.Resolvers
 {
 	/// <summary>
@@ -23,7 +26,7 @@ namespace RI.Framework.Data.EF.Resolvers
 		/// </summary>
 		/// <param name="resolver"> The used dependency resolver. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="resolver" /> is null. </exception>
-		public DependencyResolverDbDependencyResolver(IDependencyResolver resolver)
+		public DependencyResolverDbDependencyResolver (IDependencyResolver resolver)
 		{
 			if (resolver == null)
 			{
@@ -56,13 +59,13 @@ namespace RI.Framework.Data.EF.Resolvers
 		#region Interface: IDbDependencyResolver
 
 		/// <inheritdoc />
-		public object GetService(Type type, object key)
+		public object GetService (Type type, object key)
 		{
 			return this.Resolver.GetInstance(type);
 		}
 
 		/// <inheritdoc />
-		public IEnumerable<object> GetServices(Type type, object key)
+		public IEnumerable<object> GetServices (Type type, object key)
 		{
 			return this.Resolver.GetInstances(type);
 		}

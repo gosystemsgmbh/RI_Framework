@@ -13,6 +13,9 @@ using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.Reflection;
 
+
+
+
 namespace RI.Framework.Services.Settings
 {
 	/// <summary>
@@ -32,13 +35,19 @@ namespace RI.Framework.Services.Settings
 	[Export]
 	public sealed class SettingService : LogSource, ISettingService, IImporting
 	{
+		#region Constants
+
 		/// <summary>
-		/// Gets the string comparer which can be used to compare setting names.
+		///     Gets the string comparer which can be used to compare setting names.
 		/// </summary>
 		/// <value>
-		/// The string comparer which can be used to compare setting names.
+		///     The string comparer which can be used to compare setting names.
 		/// </value>
 		public static readonly StringComparer NameComparer = StringComparerEx.InvariantCultureIgnoreCase;
+
+		#endregion
+
+
 
 
 		#region Instance Constructor/Destructor
@@ -87,6 +96,42 @@ namespace RI.Framework.Services.Settings
 
 		#region Instance Methods
 
+		private string ConvertFrom (ISettingConverter converter, Type type, object value)
+		{
+			Type usedType = this.GetConverterType(type);
+			bool nullable = type.IsNullable();
+
+			if (nullable && (value == null))
+			{
+				return string.Empty;
+			}
+
+			if (value == null)
+			{
+				return null;
+			}
+
+			return converter.ConvertFrom(usedType, value);
+		}
+
+		private object ConvertTo (ISettingConverter converter, Type type, string value)
+		{
+			Type usedType = this.GetConverterType(type);
+			bool nullable = type.IsNullable();
+
+			if (value == null)
+			{
+				return null;
+			}
+
+			if (nullable && value.IsEmpty())
+			{
+				return null;
+			}
+
+			return converter.ConvertTo(usedType, value);
+		}
+
 		private ISettingConverter GetConverterForType (Type type)
 		{
 			Type usedType = this.GetConverterType(type);
@@ -128,42 +173,6 @@ namespace RI.Framework.Services.Settings
 			}
 
 			return type;
-		}
-
-		private string ConvertFrom (ISettingConverter converter, Type type, object value)
-		{
-			Type usedType = this.GetConverterType(type);
-			bool nullable = type.IsNullable();
-
-			if (nullable && (value == null))
-			{
-				return string.Empty;
-			}
-
-			if (value == null)
-			{
-				return null;
-			}
-
-			return converter.ConvertFrom(usedType, value);
-		}
-
-		private object ConvertTo (ISettingConverter converter, Type type, string value)
-		{
-			Type usedType = this.GetConverterType(type);
-			bool nullable = type.IsNullable();
-
-			if (value == null)
-			{
-				return null;
-			}
-
-			if (nullable && value.IsEmpty())
-			{
-				return null;
-			}
-
-			return converter.ConvertTo(usedType, value);
 		}
 
 		private void UpdateConverters ()
@@ -340,7 +349,7 @@ namespace RI.Framework.Services.Settings
 		}
 
 		/// <inheritdoc />
-		public void DeleteValues(Predicate<string> predicate)
+		public void DeleteValues (Predicate<string> predicate)
 		{
 			if (predicate == null)
 			{
@@ -409,51 +418,7 @@ namespace RI.Framework.Services.Settings
 		}
 
 		/// <inheritdoc />
-		public T GetValue<T> (string name)
-		{
-			return (T)this.GetValue(name, typeof(T));
-		}
-
-		/// <inheritdoc />
-		public List<T> GetValues <T> (string name)
-		{
-			return this.GetValues(name, typeof(T)).Cast<T>();
-		}
-
-		/// <inheritdoc />
-		public object GetValue (string name, Type type) => this.GetValues(name, type).FirstOrDefault();
-
-		/// <inheritdoc />
-		public List<object> GetValues (string name, Type type)
-		{
-			if (name == null)
-			{
-				throw new ArgumentNullException(nameof(name));
-			}
-
-			if (name.IsEmptyOrWhitespace())
-			{
-				throw new EmptyStringArgumentException(nameof(name));
-			}
-
-			if (type == null)
-			{
-				throw new ArgumentNullException(nameof(type));
-			}
-
-			ISettingConverter converter = this.GetConverterForType(type);
-			if (converter == null)
-			{
-				throw new InvalidTypeArgumentException(nameof(type));
-			}
-
-			List<string> stringValues = this.GetRawValues(name);
-			List<object> finalValues = stringValues.Select(x => this.ConvertTo(converter, type, x));
-			return finalValues;
-		}
-
-		/// <inheritdoc />
-		public Dictionary<string, List<string>> GetRawValues(Predicate<string> predicate)
+		public Dictionary<string, List<string>> GetRawValues (Predicate<string> predicate)
 		{
 			if (predicate == null)
 			{
@@ -499,7 +464,51 @@ namespace RI.Framework.Services.Settings
 		}
 
 		/// <inheritdoc />
-		public Dictionary<string, List<T>> GetValues<T> (Predicate<string> predicate)
+		public T GetValue <T> (string name)
+		{
+			return (T)this.GetValue(name, typeof(T));
+		}
+
+		/// <inheritdoc />
+		public object GetValue (string name, Type type) => this.GetValues(name, type).FirstOrDefault();
+
+		/// <inheritdoc />
+		public List<T> GetValues <T> (string name)
+		{
+			return this.GetValues(name, typeof(T)).Cast<T>();
+		}
+
+		/// <inheritdoc />
+		public List<object> GetValues (string name, Type type)
+		{
+			if (name == null)
+			{
+				throw new ArgumentNullException(nameof(name));
+			}
+
+			if (name.IsEmptyOrWhitespace())
+			{
+				throw new EmptyStringArgumentException(nameof(name));
+			}
+
+			if (type == null)
+			{
+				throw new ArgumentNullException(nameof(type));
+			}
+
+			ISettingConverter converter = this.GetConverterForType(type);
+			if (converter == null)
+			{
+				throw new InvalidTypeArgumentException(nameof(type));
+			}
+
+			List<string> stringValues = this.GetRawValues(name);
+			List<object> finalValues = stringValues.Select(x => this.ConvertTo(converter, type, x));
+			return finalValues;
+		}
+
+		/// <inheritdoc />
+		public Dictionary<string, List<T>> GetValues <T> (Predicate<string> predicate)
 		{
 			Dictionary<string, List<object>> values = this.GetValues(predicate, typeof(T));
 			Dictionary<string, List<T>> finalValues = new Dictionary<string, List<T>>(SettingService.NameComparer);
@@ -511,7 +520,7 @@ namespace RI.Framework.Services.Settings
 		}
 
 		/// <inheritdoc />
-		public Dictionary<string, List<object>> GetValues(Predicate<string> predicate, Type type)
+		public Dictionary<string, List<object>> GetValues (Predicate<string> predicate, Type type)
 		{
 			if (predicate == null)
 			{
@@ -568,7 +577,7 @@ namespace RI.Framework.Services.Settings
 		}
 
 		/// <inheritdoc />
-		public bool HasValue(Predicate<string> predicate)
+		public bool HasValue (Predicate<string> predicate)
 		{
 			if (predicate == null)
 			{
@@ -592,7 +601,7 @@ namespace RI.Framework.Services.Settings
 		}
 
 		/// <inheritdoc />
-		public bool InitializeRawValue (string name, string defaultValue) => this.InitializeRawValues(name, new [] { defaultValue });
+		public bool InitializeRawValue (string name, string defaultValue) => this.InitializeRawValues(name, new[] {defaultValue});
 
 		/// <inheritdoc />
 		public bool InitializeRawValues (string name, IEnumerable<string> defaultValues)
@@ -624,19 +633,19 @@ namespace RI.Framework.Services.Settings
 		}
 
 		/// <inheritdoc />
-		public bool InitializeValue<T> (string name, T defaultValue)
+		public bool InitializeValue <T> (string name, T defaultValue)
 		{
 			return this.InitializeValue(name, defaultValue, typeof(T));
 		}
+
+		/// <inheritdoc />
+		public bool InitializeValue (string name, object defaultValue, Type type) => this.InitializeValues(name, new[] {defaultValue}, type);
 
 		/// <inheritdoc />
 		public bool InitializeValues <T> (string name, IEnumerable<T> defaultValues)
 		{
 			return this.InitializeValues(name, defaultValues, typeof(T));
 		}
-
-		/// <inheritdoc />
-		public bool InitializeValue (string name, object defaultValue, Type type) => this.InitializeValues(name, new[] { defaultValue }, type);
 
 		/// <inheritdoc />
 		public bool InitializeValues (string name, IEnumerable defaultValues, Type type)
@@ -744,7 +753,7 @@ namespace RI.Framework.Services.Settings
 		}
 
 		/// <inheritdoc />
-		public void SetRawValue (string name, string value) => this.SetRawValues(name, new[] { value });
+		public void SetRawValue (string name, string value) => this.SetRawValues(name, new[] {value});
 
 		/// <inheritdoc />
 		public void SetRawValues (string name, IEnumerable<string> values)
@@ -786,7 +795,7 @@ namespace RI.Framework.Services.Settings
 					continue;
 				}
 
-				if((store.WritePrefixAffinity != null) && (name.StartsWith(store.WritePrefixAffinity, StringComparison.InvariantCultureIgnoreCase)))
+				if ((store.WritePrefixAffinity != null) && (name.StartsWith(store.WritePrefixAffinity, StringComparison.InvariantCultureIgnoreCase)))
 				{
 					continue;
 				}
@@ -803,19 +812,19 @@ namespace RI.Framework.Services.Settings
 		}
 
 		/// <inheritdoc />
-		public void SetValue<T> (string name, T value)
+		public void SetValue <T> (string name, T value)
 		{
 			this.SetValue(name, value, typeof(T));
 		}
+
+		/// <inheritdoc />
+		public void SetValue (string name, object value, Type type) => this.SetValues(name, new[] {value}, type);
 
 		/// <inheritdoc />
 		public void SetValues <T> (string name, IEnumerable<T> values)
 		{
 			this.SetValues(name, values, typeof(T));
 		}
-
-		/// <inheritdoc />
-		public void SetValue (string name, object value, Type type) => this.SetValues(name, new[] { value }, type);
 
 		/// <inheritdoc />
 		public void SetValues (string name, IEnumerable values, Type type)

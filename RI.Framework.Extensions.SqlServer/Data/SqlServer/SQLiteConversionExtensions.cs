@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 
+
+
+
 namespace RI.Framework.Data.SqlServer
 {
 	/// <summary>
@@ -9,12 +12,14 @@ namespace RI.Framework.Data.SqlServer
 	[SuppressMessage("ReSharper", "InconsistentNaming")]
 	public static class SqlServerConversionExtensions
 	{
+		#region Static Methods
+
 		/// <summary>
-		/// Attempts to convert a value from a SQL Server query result to <see cref="int"/>.
+		///     Attempts to convert a value from a SQL Server query result to <see cref="int" />.
 		/// </summary>
-		/// <param name="value">The value to convert.</param>
+		/// <param name="value"> The value to convert. </param>
 		/// <returns>
-		/// The converted value or null if <paramref name="value"/> is null, <see cref="DBNull"/>, or can not be converted to <see cref="int"/>.
+		///     The converted value or null if <paramref name="value" /> is null, <see cref="DBNull" />, or can not be converted to <see cref="int" />.
 		/// </returns>
 		public static int? Int32FromSqlServerResult (this object value)
 		{
@@ -93,13 +98,13 @@ namespace RI.Framework.Data.SqlServer
 		}
 
 		/// <summary>
-		/// Attempts to convert a value from a SQL Server query result to <see cref="long"/>.
+		///     Attempts to convert a value from a SQL Server query result to <see cref="long" />.
 		/// </summary>
-		/// <param name="value">The value to convert.</param>
+		/// <param name="value"> The value to convert. </param>
 		/// <returns>
-		/// The converted value or null if <paramref name="value"/> is null, <see cref="DBNull"/>, or can not be converted to <see cref="long"/>.
+		///     The converted value or null if <paramref name="value" /> is null, <see cref="DBNull" />, or can not be converted to <see cref="long" />.
 		/// </returns>
-		public static long? Int64FromSqlServerResult(this object value)
+		public static long? Int64FromSqlServerResult (this object value)
 		{
 			if (value == null)
 			{
@@ -172,5 +177,7 @@ namespace RI.Framework.Data.SqlServer
 
 			return null;
 		}
+
+		#endregion
 	}
 }

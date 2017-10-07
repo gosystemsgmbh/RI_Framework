@@ -4,10 +4,13 @@ using System.Runtime.InteropServices;
 
 using RI.Framework.IO.Paths;
 
+
+
+
 namespace RI.Framework.IO.Keyboard
 {
 	/// <summary>
-	/// Provides access to the Windows on-screen keyboard.
+	///     Provides access to the Windows on-screen keyboard.
 	/// </summary>
 	public static class OnScreenKeyboard
 	{
@@ -23,11 +26,7 @@ namespace RI.Framework.IO.Keyboard
 
 		private const int WmSyscommand = 0x0112;
 
-		private static readonly Environment.SpecialFolder[] TabTipFolders =
-		{
-			Environment.SpecialFolder.CommonProgramFiles,
-			Environment.SpecialFolder.CommonProgramFilesX86
-		};
+		private static readonly Environment.SpecialFolder[] TabTipFolders = {Environment.SpecialFolder.CommonProgramFiles, Environment.SpecialFolder.CommonProgramFilesX86};
 
 		#endregion
 
@@ -37,10 +36,10 @@ namespace RI.Framework.IO.Keyboard
 		#region Static Properties/Indexer
 
 		/// <summary>
-		/// Gets whether the on-screen keyboard is available or not.
+		///     Gets whether the on-screen keyboard is available or not.
 		/// </summary>
 		/// <value>
-		/// true if the on-screen keyboard is available, false otherwise.
+		///     true if the on-screen keyboard is available, false otherwise.
 		/// </value>
 		public static bool IsAvailable => OnScreenKeyboard.ExecutablePath != null;
 
@@ -71,7 +70,7 @@ namespace RI.Framework.IO.Keyboard
 		#region Static Methods
 
 		/// <summary>
-		/// Deactivates the on-screen keyboard.
+		///     Deactivates the on-screen keyboard.
 		/// </summary>
 		public static void Hide ()
 		{
@@ -88,10 +87,10 @@ namespace RI.Framework.IO.Keyboard
 		}
 
 		/// <summary>
-		/// Activates the on-screen keyboard.
+		///     Activates the on-screen keyboard.
 		/// </summary>
 		/// <returns>
-		/// true if the on-screen keyboard could be activated, false otherwise.
+		///     true if the on-screen keyboard could be activated, false otherwise.
 		/// </returns>
 		public static bool Show ()
 		{
@@ -112,10 +111,10 @@ namespace RI.Framework.IO.Keyboard
 			}
 		}
 
-		[DllImport ("user32.dll", SetLastError = false, CharSet = CharSet.Unicode)]
+		[DllImport("user32.dll", SetLastError = false, CharSet = CharSet.Unicode)]
 		private static extern IntPtr FindWindow (string lpClassName, string lpWindowName);
 
-		[DllImport ("user32.dll", SetLastError = false)]
+		[DllImport("user32.dll", SetLastError = false)]
 		private static extern IntPtr SendMessage (IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
 
 		#endregion

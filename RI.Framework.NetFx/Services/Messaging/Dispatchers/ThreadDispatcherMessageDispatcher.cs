@@ -5,6 +5,9 @@ using RI.Framework.Composition.Model;
 using RI.Framework.Threading.Dispatcher;
 using RI.Framework.Utilities.ObjectModel;
 
+
+
+
 namespace RI.Framework.Services.Messaging.Dispatchers
 {
 	/// <summary>
@@ -22,12 +25,14 @@ namespace RI.Framework.Services.Messaging.Dispatchers
 	[Export]
 	public sealed class ThreadDispatcherMessageDispatcher : IMessageDispatcher
 	{
+		#region Instance Constructor/Destructor
+
 		/// <summary>
 		///     Creates a new instance of <see cref="ThreadDispatcherMessageDispatcher" />.
 		/// </summary>
 		/// <param name="threadDispatcher"> The dispatcher to use. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="threadDispatcher" /> is null. </exception>
-		public ThreadDispatcherMessageDispatcher(IThreadDispatcher threadDispatcher)
+		public ThreadDispatcherMessageDispatcher (IThreadDispatcher threadDispatcher)
 		{
 			if (threadDispatcher == null)
 			{
@@ -41,27 +46,23 @@ namespace RI.Framework.Services.Messaging.Dispatchers
 			this.Options = null;
 		}
 
+		#endregion
+
+
+
+
 		#region Instance Fields
 
 		private ThreadDispatcherOptions? _options;
 
 		private int? _priority;
 
-		private ThreadDispatcherOptions UsedOptions => this.Options.GetValueOrDefault(this.ThreadDispatcher.DefaultOptions);
-
-		private int UsedPriority => this.Priority.GetValueOrDefault(this.ThreadDispatcher.DefaultPriority);
-
 		#endregion
 
-		#region Instance Properties/Indexer
 
-		/// <summary>
-		///     Gets the used dispatcher.
-		/// </summary>
-		/// <value>
-		///     The used dispatcher.
-		/// </value>
-		public IThreadDispatcher ThreadDispatcher { get; }
+
+
+		#region Instance Properties/Indexer
 
 		/// <summary>
 		///     Gets or sets the options used for dispatching messages.
@@ -130,9 +131,26 @@ namespace RI.Framework.Services.Messaging.Dispatchers
 			}
 		}
 
+		/// <summary>
+		///     Gets the used dispatcher.
+		/// </summary>
+		/// <value>
+		///     The used dispatcher.
+		/// </value>
+		public IThreadDispatcher ThreadDispatcher { get; }
+
 		private object SyncRoot { get; }
 
+		private ThreadDispatcherOptions UsedOptions => this.Options.GetValueOrDefault(this.ThreadDispatcher.DefaultOptions);
+
+		private int UsedPriority => this.Priority.GetValueOrDefault(this.ThreadDispatcher.DefaultPriority);
+
 		#endregion
+
+
+
+
+		#region Interface: IMessageDispatcher
 
 		/// <inheritdoc />
 		bool ISynchronizable.IsSynchronized => true;
@@ -141,7 +159,7 @@ namespace RI.Framework.Services.Messaging.Dispatchers
 		object ISynchronizable.SyncRoot => this.SyncRoot;
 
 		/// <inheritdoc />
-		public void Post(List<IMessageReceiver> receivers, IMessage message, IMessageService messageService, Action<IMessage> deliveredCallback)
+		public void Post (List<IMessageReceiver> receivers, IMessage message, IMessageService messageService, Action<IMessage> deliveredCallback)
 		{
 			if (receivers == null)
 			{
@@ -165,5 +183,7 @@ namespace RI.Framework.Services.Messaging.Dispatchers
 				}), receivers, message, messageService, deliveredCallback);
 			}
 		}
+
+		#endregion
 	}
 }

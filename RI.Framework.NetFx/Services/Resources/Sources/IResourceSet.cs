@@ -129,6 +129,20 @@ namespace RI.Framework.Services.Resources.Sources
 		CultureInfo UiCulture { get; }
 
 		/// <summary>
+		///     Gets the names of all resources provided by this resource set.
+		/// </summary>
+		/// <returns>
+		///     The hash set with the names of all provied resources.
+		///     If no resources are provided, an empty hash set is returned.
+		/// </returns>
+		/// <remarks>
+		///     <note type="note">
+		///         Do not call this method directly, it is intended to be called from an <see cref="IResourceService" /> implementation.
+		///     </note>
+		/// </remarks>
+		HashSet<string> GetAvailableResources ();
+
+		/// <summary>
 		///     Gets a resource as its originally loaded type.
 		/// </summary>
 		/// <param name="name"> The name of the resource. </param>
@@ -136,9 +150,9 @@ namespace RI.Framework.Services.Resources.Sources
 		///     The resource value or null if the resource is not available.
 		/// </returns>
 		/// <remarks>
-		/// <note type="note">
-		/// Do not call this method directly, it is intended to be called from an <see cref="IResourceService"/> implementation.
-		/// </note>
+		///     <note type="note">
+		///         Do not call this method directly, it is intended to be called from an <see cref="IResourceService" /> implementation.
+		///     </note>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="name" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
@@ -158,9 +172,9 @@ namespace RI.Framework.Services.Resources.Sources
 		///     <note type="implement">
 		///         Loading an already loaded resource set can be used to reload a specific set.
 		///     </note>
-		/// <note type="note">
-		/// Do not call this method directly, it is intended to be called from an <see cref="IResourceService"/> implementation.
-		/// </note>
+		///     <note type="note">
+		///         Do not call this method directly, it is intended to be called from an <see cref="IResourceService" /> implementation.
+		///     </note>
 		/// </remarks>
 		bool Load (bool lazyLoad);
 
@@ -171,24 +185,10 @@ namespace RI.Framework.Services.Resources.Sources
 		///     <note type="implement">
 		///         Unloading an already unloaded resource set should have no effect.
 		///     </note>
-		/// <note type="note">
-		/// Do not call this method directly, it is intended to be called from an <see cref="IResourceService"/> implementation.
-		/// </note>
+		///     <note type="note">
+		///         Do not call this method directly, it is intended to be called from an <see cref="IResourceService" /> implementation.
+		///     </note>
 		/// </remarks>
 		void Unload ();
-
-		/// <summary>
-		///     Gets the names of all resources provided by this resource set.
-		/// </summary>
-		/// <returns>
-		///     The hash set with the names of all provied resources.
-		///     If no resources are provided, an empty hash set is returned.
-		/// </returns>
-		/// <remarks>
-		/// <note type="note">
-		/// Do not call this method directly, it is intended to be called from an <see cref="IResourceService"/> implementation.
-		/// </note>
-		/// </remarks>
-		HashSet<string> GetAvailableResources ();
 	}
 }

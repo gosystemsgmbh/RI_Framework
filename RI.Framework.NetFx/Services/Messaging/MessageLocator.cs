@@ -19,6 +19,11 @@ namespace RI.Framework.Services.Messaging
 	/// <threadsafety static="true" instance="true" />
 	public static class MessageLocator
 	{
+		#region Static Properties/Indexer
+
+		/// <inheritdoc cref="IMessageService.Dispatchers" />
+		public static IEnumerable<IMessageDispatcher> Dispatchers => MessageLocator.Service?.Dispatchers ?? new IMessageDispatcher[0];
+
 		/// <summary>
 		///     Gets whether a messaging service is available and can be used by <see cref="MessageLocator" />.
 		/// </summary>
@@ -26,6 +31,9 @@ namespace RI.Framework.Services.Messaging
 		///     true if a messaging service is available and can be used by <see cref="MessageLocator" />, false otherwise.
 		/// </value>
 		public static bool IsAvailable => MessageLocator.Service != null;
+
+		/// <inheritdoc cref="IMessageService.Receivers" />
+		public static IEnumerable<IMessageReceiver> Receivers => MessageLocator.Service?.Receivers ?? new IMessageReceiver[0];
 
 		/// <summary>
 		///     Gets the available messaging service.
@@ -35,14 +43,15 @@ namespace RI.Framework.Services.Messaging
 		/// </value>
 		public static IMessageService Service => ServiceLocator.GetInstance<IMessageService>();
 
-		/// <inheritdoc cref="IMessageService.Dispatchers" />
-		public static IEnumerable<IMessageDispatcher> Dispatchers => MessageLocator.Service?.Dispatchers ?? new IMessageDispatcher[0];
+		#endregion
 
-		/// <inheritdoc cref="IMessageService.Receivers" />
-		public static IEnumerable<IMessageReceiver> Receivers => MessageLocator.Service?.Receivers ?? new IMessageReceiver[0];
+
+
+
+		#region Static Methods
 
 		/// <inheritdoc cref="IMessageService.Post" />
-		public static void Post(IMessage message) => MessageLocator.Service?.Post(message);
+		public static void Post (IMessage message) => MessageLocator.Service?.Post(message);
 
 		/// <inheritdoc cref="IMessageService.Send" />
 		public static async Task Send (IMessage message)
@@ -56,5 +65,7 @@ namespace RI.Framework.Services.Messaging
 
 			await service.Send(message).ConfigureAwait(false);
 		}
+
+		#endregion
 	}
 }

@@ -56,13 +56,6 @@ namespace RI.Framework.Services.Modularization
 			return instance;
 		}
 
-
-		/// <inheritdoc />
-		public bool LoggingEnabled { get; set; } = true;
-
-		/// <inheritdoc />
-		public Utilities.Logging.ILogger Logger { get; set; } = LogLocator.Logger;
-
 		#endregion
 
 
@@ -79,6 +72,20 @@ namespace RI.Framework.Services.Modularization
 		protected virtual void Unload ()
 		{
 		}
+
+		#endregion
+
+
+
+
+		#region Interface: ILogSource
+
+		/// <inheritdoc />
+		public Utilities.Logging.ILogger Logger { get; set; } = LogLocator.Logger;
+
+
+		/// <inheritdoc />
+		public bool LoggingEnabled { get; set; } = true;
 
 		#endregion
 

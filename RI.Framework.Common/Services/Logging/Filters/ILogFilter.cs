@@ -3,6 +3,9 @@
 using RI.Framework.Services.Logging.Writers;
 using RI.Framework.Utilities.Logging;
 
+
+
+
 namespace RI.Framework.Services.Logging.Filters
 {
 	/// <summary>
@@ -32,9 +35,9 @@ namespace RI.Framework.Services.Logging.Filters
 		///     true if the log entry is to be written, false otherwise.
 		/// </returns>
 		/// <remarks>
-		/// <note type="note">
-		/// Do not call this method directly, it is intended to be called from an <see cref="ILogService"/> or <see cref="ILogWriter"/> implementation.
-		/// </note>
+		///     <note type="note">
+		///         Do not call this method directly, it is intended to be called from an <see cref="ILogService" /> or <see cref="ILogWriter" /> implementation.
+		///     </note>
 		/// </remarks>
 		bool Filter (DateTime timestamp, int threadId, LogLevel severity, string source);
 	}

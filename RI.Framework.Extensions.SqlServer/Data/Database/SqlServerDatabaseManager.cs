@@ -1,5 +1,8 @@
 ﻿using System.Data.SqlClient;
 
+
+
+
 namespace RI.Framework.Data.Database
 {
 	/// <summary>
@@ -12,6 +15,14 @@ namespace RI.Framework.Data.Database
 	/// </remarks>
 	public sealed class SqlServerDatabaseManager : DatabaseManager<SqlConnection, SqlTransaction, SqlConnectionStringBuilder, SqlServerDatabaseManager, SqlServerDatabaseManagerConfiguration>
 	{
+		#region Overrides
+
+		/// <inheritdoc />
+		protected override bool SupportsBackupImpl => false;
+
+		/// <inheritdoc />
+		protected override bool SupportsCleanupImpl => true;
+
 		/// <inheritdoc />
 		protected override bool SupportsConnectionTrackingImpl => true;
 
@@ -19,19 +30,13 @@ namespace RI.Framework.Data.Database
 		protected override bool SupportsReadOnlyImpl => false;
 
 		/// <inheritdoc />
+		protected override bool SupportsRestoreImpl => false;
+
+		/// <inheritdoc />
 		protected override bool SupportsScriptsImpl => true;
 
 		/// <inheritdoc />
 		protected override bool SupportsUpgradeImpl => true;
-
-		/// <inheritdoc />
-		protected override bool SupportsCleanupImpl => true;
-
-		/// <inheritdoc />
-		protected override bool SupportsBackupImpl => false;
-
-		/// <inheritdoc />
-		protected override bool SupportsRestoreImpl => false;
 
 		/// <inheritdoc />
 		protected override SqlConnection CreateConnectionImpl (bool readOnly)
@@ -49,5 +54,7 @@ namespace RI.Framework.Data.Database
 		{
 			return new SqlServerDatabaseProcessingStep();
 		}
+
+		#endregion
 	}
 }

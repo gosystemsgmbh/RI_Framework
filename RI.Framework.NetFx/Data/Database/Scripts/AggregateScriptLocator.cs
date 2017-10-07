@@ -7,78 +7,45 @@ using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.ObjectModel;
 
+
+
+
 namespace RI.Framework.Data.Database.Scripts
 {
 	/// <summary>
-	/// Implements a database script locator which combines multiple script locators.
+	///     Implements a database script locator which combines multiple script locators.
 	/// </summary>
 	/// <remarks>
-	/// <para>
-	/// See <see cref="IDatabaseScriptLocator"/> for more details.
-	/// </para>
-	/// <note type="note">
-	/// <see cref="IDatabaseScriptLocator.BatchSeparator"/> is ignored as the values of the individual script locators are used.
-	/// </note>
+	///     <para>
+	///         See <see cref="IDatabaseScriptLocator" /> for more details.
+	///     </para>
+	///     <note type="note">
+	///         <see cref="IDatabaseScriptLocator.BatchSeparator" /> is ignored as the values of the individual script locators are used.
+	///     </note>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	public sealed class AggregateScriptLocator : IDatabaseScriptLocator, ISynchronizable, ICollection<IDatabaseScriptLocator>, ICollection
 	{
-		private HashSet<IDatabaseScriptLocator> ScriptLocators { get; }
-
-		/// <inheritdoc />
-		bool ISynchronizable.IsSynchronized => true;
-
-		/// <inheritdoc />
-		public object SyncRoot { get; }
-
-		private bool _loggingEnabled;
-
-		/// <inheritdoc />
-		bool ILogSource.LoggingEnabled
-		{
-			get
-			{
-				return this._loggingEnabled;
-			}
-			set
-			{
-				this._loggingEnabled = value;
-			}
-		}
-
-		private ILogger _logger;
-
-		/// <inheritdoc />
-		ILogger ILogSource.Logger
-		{
-			get
-			{
-				return this._logger;
-			}
-			set
-			{
-				this._logger = value;
-			}
-		}
+		#region Instance Constructor/Destructor
 
 		/// <summary>
 		///     Creates a new instance of <see cref="AggregateScriptLocator" />.
 		/// </summary>
-		public AggregateScriptLocator()
+		public AggregateScriptLocator ()
 			: this((IEnumerable<IDatabaseScriptLocator>)null)
 		{
 		}
 
 		/// <summary>
-		/// Creates a new instance of <see cref="AggregateScriptLocator"/>.
+		///     Creates a new instance of <see cref="AggregateScriptLocator" />.
 		/// </summary>
 		/// <param name="scriptLocators"> The sequence of script locators which are aggregated. </param>
 		/// <remarks>
-		/// <para>
-		/// <paramref name="scriptLocators"/> is enumerated only once.
-		/// </para>
+		///     <para>
+		///         <paramref name="scriptLocators" /> is enumerated only once.
+		///     </para>
 		/// </remarks>
-		public AggregateScriptLocator(IEnumerable<IDatabaseScriptLocator> scriptLocators)
+		public AggregateScriptLocator (IEnumerable<IDatabaseScriptLocator> scriptLocators)
 		{
 			this.SyncRoot = new object();
 
@@ -94,13 +61,38 @@ namespace RI.Framework.Data.Database.Scripts
 		}
 
 		/// <summary>
-		/// Creates a new instance of <see cref="AggregateScriptLocator"/>.
+		///     Creates a new instance of <see cref="AggregateScriptLocator" />.
 		/// </summary>
 		/// <param name="scriptLocators"> The array of script locators which are aggregated. </param>
-		public AggregateScriptLocator(params IDatabaseScriptLocator[] scriptLocators)
+		public AggregateScriptLocator (params IDatabaseScriptLocator[] scriptLocators)
 			: this((IEnumerable<IDatabaseScriptLocator>)scriptLocators)
 		{
 		}
+
+		#endregion
+
+
+
+
+		#region Instance Fields
+
+		private ILogger _logger;
+
+		private bool _loggingEnabled;
+
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
+
+		private HashSet<IDatabaseScriptLocator> ScriptLocators { get; }
+
+		#endregion
+
+
+
 
 		#region Interface: ICollection
 
@@ -108,7 +100,7 @@ namespace RI.Framework.Data.Database.Scripts
 		bool ICollection.IsSynchronized => ((ISynchronizable)this).IsSynchronized;
 
 		/// <inheritdoc />
-		void ICollection.CopyTo(Array array, int index)
+		void ICollection.CopyTo (Array array, int index)
 		{
 			lock (this.SyncRoot)
 			{
@@ -126,7 +118,7 @@ namespace RI.Framework.Data.Database.Scripts
 
 
 
-		#region Interface: ICollection<CompositionCatalog>
+		#region Interface: ICollection<IDatabaseScriptLocator>
 
 		/// <inheritdoc />
 		public int Count
@@ -144,7 +136,7 @@ namespace RI.Framework.Data.Database.Scripts
 		bool ICollection<IDatabaseScriptLocator>.IsReadOnly => false;
 
 		/// <inheritdoc />
-		public void Add(IDatabaseScriptLocator item)
+		public void Add (IDatabaseScriptLocator item)
 		{
 			if (item == null)
 			{
@@ -158,7 +150,7 @@ namespace RI.Framework.Data.Database.Scripts
 		}
 
 		/// <inheritdoc />
-		public void Clear()
+		public void Clear ()
 		{
 			lock (this.SyncRoot)
 			{
@@ -167,7 +159,7 @@ namespace RI.Framework.Data.Database.Scripts
 		}
 
 		/// <inheritdoc />
-		public bool Contains(IDatabaseScriptLocator item)
+		public bool Contains (IDatabaseScriptLocator item)
 		{
 			lock (this.SyncRoot)
 			{
@@ -176,7 +168,7 @@ namespace RI.Framework.Data.Database.Scripts
 		}
 
 		/// <inheritdoc />
-		void ICollection<IDatabaseScriptLocator>.CopyTo(IDatabaseScriptLocator[] array, int arrayIndex)
+		void ICollection<IDatabaseScriptLocator>.CopyTo (IDatabaseScriptLocator[] array, int arrayIndex)
 		{
 			lock (this.SyncRoot)
 			{
@@ -185,13 +177,13 @@ namespace RI.Framework.Data.Database.Scripts
 		}
 
 		/// <inheritdoc />
-		IEnumerator IEnumerable.GetEnumerator()
+		IEnumerator IEnumerable.GetEnumerator ()
 		{
 			return this.GetEnumerator();
 		}
 
 		/// <inheritdoc />
-		public IEnumerator<IDatabaseScriptLocator> GetEnumerator()
+		public IEnumerator<IDatabaseScriptLocator> GetEnumerator ()
 		{
 			lock (this.SyncRoot)
 			{
@@ -200,7 +192,7 @@ namespace RI.Framework.Data.Database.Scripts
 		}
 
 		/// <inheritdoc />
-		public bool Remove(IDatabaseScriptLocator item)
+		public bool Remove (IDatabaseScriptLocator item)
 		{
 			if (item == null)
 			{
@@ -214,6 +206,40 @@ namespace RI.Framework.Data.Database.Scripts
 		}
 
 		#endregion
+
+
+
+
+		#region Interface: IDatabaseScriptLocator
+
+		/// <inheritdoc />
+		string IDatabaseScriptLocator.BatchSeparator { get; set; }
+
+		/// <inheritdoc />
+		ILogger ILogSource.Logger
+		{
+			get
+			{
+				return this._logger;
+			}
+			set
+			{
+				this._logger = value;
+			}
+		}
+
+		/// <inheritdoc />
+		bool ILogSource.LoggingEnabled
+		{
+			get
+			{
+				return this._loggingEnabled;
+			}
+			set
+			{
+				this._loggingEnabled = value;
+			}
+		}
 
 		/// <inheritdoc />
 		public List<string> GetScriptBatch (IDatabaseManager manager, string name, bool preprocess)
@@ -255,7 +281,19 @@ namespace RI.Framework.Data.Database.Scripts
 			}
 		}
 
+		#endregion
+
+
+
+
+		#region Interface: ISynchronizable
+
 		/// <inheritdoc />
-		string IDatabaseScriptLocator.BatchSeparator { get; set; }
+		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		public object SyncRoot { get; }
+
+		#endregion
 	}
 }

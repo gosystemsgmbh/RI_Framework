@@ -11,6 +11,9 @@ using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Logging;
 
+
+
+
 namespace RI.Framework.Services.Resources.Sources
 {
 	/// <summary>
@@ -62,9 +65,9 @@ namespace RI.Framework.Services.Resources.Sources
 		///     <para>
 		///         The default encoding <see cref="DefaultEncoding" /> is used as the text encoding.
 		///     </para>
-		/// <para>
-		/// No files are ignored.
-		/// </para>
+		///     <para>
+		///         No files are ignored.
+		///     </para>
 		/// </remarks>
 		public DirectoryResourceSource (DirectoryPath directory)
 			: this(directory, null, null)
@@ -76,7 +79,7 @@ namespace RI.Framework.Services.Resources.Sources
 		/// </summary>
 		/// <param name="directory"> The directory which contains the resource set subdirectories. </param>
 		/// <param name="fileEncoding"> The text encoding used for reading text files (can be null to use <see cref="DefaultEncoding" />). </param>
-		/// <param name="ignoredExtensions">A sequence of file extensions which are completely ignored (can be null to not ignore any files).</param>
+		/// <param name="ignoredExtensions"> A sequence of file extensions which are completely ignored (can be null to not ignore any files). </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="directory" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> <paramref name="directory" /> is not a real usable directory. </exception>
 		public DirectoryResourceSource (DirectoryPath directory, Encoding fileEncoding, IEnumerable<string> ignoredExtensions)
@@ -103,7 +106,7 @@ namespace RI.Framework.Services.Resources.Sources
 		/// </summary>
 		/// <param name="directory"> The directory which contains the resource set subdirectories. </param>
 		/// <param name="fileEncoding"> The text encoding used for reading text files (can be null to use <see cref="DefaultEncoding" />). </param>
-		/// <param name="ignoredExtensions">A sequence of file extensions which are completely ignored (can be null to not ignore any files).</param>
+		/// <param name="ignoredExtensions"> A sequence of file extensions which are completely ignored (can be null to not ignore any files). </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="directory" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> <paramref name="directory" /> is not a real usable directory. </exception>
 		public DirectoryResourceSource (DirectoryPath directory, Encoding fileEncoding, params string[] ignoredExtensions)
@@ -127,25 +130,25 @@ namespace RI.Framework.Services.Resources.Sources
 		public DirectoryPath Directory { get; }
 
 		/// <summary>
-		/// Gets the set of ignored file extensions.
-		/// </summary>
-		/// <value>
-		/// The set of ignored file extensions.
-		/// </value>
-		/// <remarks>
-		/// <note type="note">
-		/// The file extensions in the set have their leading dot removed.
-		/// </note>
-		/// </remarks>
-		public HashSet<string> IgnoredExtensions { get; }
-
-		/// <summary>
 		///     Gets the text encoding for reading text files.
 		/// </summary>
 		/// <value>
 		///     The text encoding for reading text files.
 		/// </value>
 		public Encoding FileEncoding { get; }
+
+		/// <summary>
+		///     Gets the set of ignored file extensions.
+		/// </summary>
+		/// <value>
+		///     The set of ignored file extensions.
+		/// </value>
+		/// <remarks>
+		///     <note type="note">
+		///         The file extensions in the set have their leading dot removed.
+		///     </note>
+		/// </remarks>
+		public HashSet<string> IgnoredExtensions { get; }
 
 		internal List<IResourceConverter> Converters { get; private set; }
 
@@ -201,10 +204,10 @@ namespace RI.Framework.Services.Resources.Sources
 		#region Interface: IResourceSource
 
 		/// <inheritdoc />
-		public List<IResourceSet> GetAvailableSets () => this.Sets.Values.Cast<IResourceSet>().ToList();
+		public bool IsInitialized { get; private set; }
 
 		/// <inheritdoc />
-		public bool IsInitialized { get; private set; }
+		public List<IResourceSet> GetAvailableSets () => this.Sets.Values.Cast<IResourceSet>().ToList();
 
 		/// <inheritdoc />
 		void IResourceSource.Initialize (IEnumerable<IResourceConverter> converters)

@@ -3,30 +3,35 @@ using System.Reflection;
 
 using RI.Framework.Utilities.Exceptions;
 
+
+
+
 namespace RI.Framework.Utilities.Reflection
 {
 	/// <summary>
-	/// Provides a utility for delegate types.
+	///     Provides a utility for delegate types.
 	/// </summary>
 	public static class DelegateUtility
 	{
+		#region Static Methods
+
 		/// <summary>
-		/// Creates a delegate of a specified type from the given full method name.
+		///     Creates a delegate of a specified type from the given full method name.
 		/// </summary>
-		/// <param name="delegateType">The type of the delegate to create.</param>
-		/// <param name="fullMethodName">The full method name.</param>
+		/// <param name="delegateType"> The type of the delegate to create. </param>
+		/// <param name="fullMethodName"> The full method name. </param>
 		/// <returns>
-		/// The created delegate
+		///     The created delegate
 		/// </returns>
 		/// <remarks>
-		/// <para>
-		/// <see cref="CreateFromFullMethodName"/> can be used to create a delegate pointing to a static method as returned by <see cref="DelegateExtensions.GetFullMethodName"/>.
-		/// </para>
+		///     <para>
+		///         <see cref="CreateFromFullMethodName" /> can be used to create a delegate pointing to a static method as returned by <see cref="DelegateExtensions.GetFullMethodName" />.
+		///     </para>
 		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="delegateType"/> or <paramref name="fullMethodName"/> is null.</exception>
-		/// <exception cref="EmptyStringArgumentException"><paramref name="fullMethodName"/> is an empty string.</exception>
-		/// <exception cref="ArgumentException"><paramref name="fullMethodName"/> is an invalid full method name.</exception>
-		/// <exception cref="TypeLoadException">The type and/or method specified by <paramref name="fullMethodName"/> cannot be resolved.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="delegateType" /> or <paramref name="fullMethodName" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="fullMethodName" /> is an empty string. </exception>
+		/// <exception cref="ArgumentException"> <paramref name="fullMethodName" /> is an invalid full method name. </exception>
+		/// <exception cref="TypeLoadException"> The type and/or method specified by <paramref name="fullMethodName" /> cannot be resolved. </exception>
 		public static Delegate CreateFromFullMethodName (Type delegateType, string fullMethodName)
 		{
 			if (delegateType == null)
@@ -64,5 +69,7 @@ namespace RI.Framework.Utilities.Reflection
 			Delegate del = Delegate.CreateDelegate(delegateType, method, true);
 			return del;
 		}
+
+		#endregion
 	}
 }

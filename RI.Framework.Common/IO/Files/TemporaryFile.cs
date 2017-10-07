@@ -129,9 +129,9 @@ namespace RI.Framework.IO.Files
 		///     The temporary file.
 		/// </returns>
 		/// <remarks>
-		/// <para>
-		/// The default extension for temporary files is used.
-		/// </para>
+		///     <para>
+		///         The default extension for temporary files is used.
+		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="directory" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> The directory contains wildcards. </exception>
@@ -142,16 +142,16 @@ namespace RI.Framework.IO.Files
 		///     Uses a specified directory to create a new temporary file in it.
 		/// </summary>
 		/// <param name="directory"> The directory in which a new temporary file is to be created. </param>
-		/// <param name="extension"> The file extension to use. Can be null to use the default extension for temporary files.</param>
+		/// <param name="extension"> The file extension to use. Can be null to use the default extension for temporary files. </param>
 		/// <returns>
 		///     The temporary file.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="directory" /> is null. </exception>
-		/// <exception cref="EmptyStringArgumentException"><paramref name="extension"/> is an empty string.</exception>
-		/// <exception cref="ArgumentException"><paramref name="extension"/> does not start with a period (.).</exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="extension" /> is an empty string. </exception>
+		/// <exception cref="ArgumentException"> <paramref name="extension" /> does not start with a period (.). </exception>
 		/// <exception cref="InvalidOperationException"> The directory contains wildcards. </exception>
 		/// <exception cref="DirectoryNotFoundException"> The directory does not exist. </exception>
-		public static TemporaryFile FromExistingDirectory(DirectoryPath directory, string extension)
+		public static TemporaryFile FromExistingDirectory (DirectoryPath directory, string extension)
 		{
 			if (directory == null)
 			{
@@ -254,11 +254,11 @@ namespace RI.Framework.IO.Files
 		///         A new temporary file is created in the directory specified by <see cref="TemporaryDirectory" />.
 		///         If <see cref="TemporaryDirectory" /> is null, <see cref="DirectoryPath.GetTempDirectory" /> is used.
 		///     </para>
-		/// <para>
-		/// The default extension for temporary files is used.
-		/// </para>
+		///     <para>
+		///         The default extension for temporary files is used.
+		///     </para>
 		/// </remarks>
-		public TemporaryFile()
+		public TemporaryFile ()
 			: this((string)null)
 		{
 		}
@@ -266,15 +266,15 @@ namespace RI.Framework.IO.Files
 		/// <summary>
 		///     Creates a new instance of <see cref="TemporaryFile" />.
 		/// </summary>
-		/// <param name="extension"> The file extension to use. Can be null to use the default extension for temporary files.</param>
+		/// <param name="extension"> The file extension to use. Can be null to use the default extension for temporary files. </param>
 		/// <remarks>
 		///     <para>
 		///         A new temporary file is created in the directory specified by <see cref="TemporaryDirectory" />.
 		///         If <see cref="TemporaryDirectory" /> is null, <see cref="DirectoryPath.GetTempDirectory" /> is used.
 		///     </para>
 		/// </remarks>
-		/// <exception cref="EmptyStringArgumentException"><paramref name="extension"/> is an empty string.</exception>
-		/// <exception cref="ArgumentException"><paramref name="extension"/> does not start with a period (.).</exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="extension" /> is an empty string. </exception>
+		/// <exception cref="ArgumentException"> <paramref name="extension" /> does not start with a period (.). </exception>
 		public TemporaryFile (string extension)
 		{
 			this.SyncRoot = new object();

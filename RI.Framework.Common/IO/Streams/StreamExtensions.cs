@@ -4,6 +4,9 @@ using System.IO;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 
+
+
+
 namespace RI.Framework.IO.Streams
 {
 	/// <summary>
@@ -14,12 +17,12 @@ namespace RI.Framework.IO.Streams
 		#region Constants
 
 		/// <summary>
-		/// The default buffer size used for reading and writing.
+		///     The default buffer size used for reading and writing.
 		/// </summary>
 		/// <remarks>
-		/// <para>
-		/// The default buffer size is 4096 bytes.
-		/// </para>
+		///     <para>
+		///         The default buffer size is 4096 bytes.
+		///     </para>
 		/// </remarks>
 		public const int DefaultBufferSize = 4096;
 
@@ -31,17 +34,17 @@ namespace RI.Framework.IO.Streams
 		#region Static Methods
 
 		/// <summary>
-		/// Reads from one stream into another.
+		///     Reads from one stream into another.
 		/// </summary>
-		/// <param name="source">The source stream.</param>
-		/// <param name="target">The target stream.</param>
+		/// <param name="source"> The source stream. </param>
+		/// <param name="target"> The target stream. </param>
 		/// <returns>
-		/// The number of bytes read.
+		///     The number of bytes read.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="source"/> or <paramref name="target"/> is null.</exception>
-		/// <exception cref="NotReadableStreamArgumentException"><paramref name="source"/> is a stream which cannot be read.</exception>
-		/// <exception cref="NotWriteableStreamArgumentException"><paramref name="target"/> is a stream which cannot be written.</exception>
-		public static int Read(this Stream source, Stream target)
+		/// <exception cref="ArgumentNullException"> <paramref name="source" /> or <paramref name="target" /> is null. </exception>
+		/// <exception cref="NotReadableStreamArgumentException"> <paramref name="source" /> is a stream which cannot be read. </exception>
+		/// <exception cref="NotWriteableStreamArgumentException"> <paramref name="target" /> is a stream which cannot be written. </exception>
+		public static int Read (this Stream source, Stream target)
 		{
 			if (source == null)
 			{
@@ -52,19 +55,19 @@ namespace RI.Framework.IO.Streams
 		}
 
 		/// <summary>
-		/// Reads from one stream into another.
+		///     Reads from one stream into another.
 		/// </summary>
-		/// <param name="source">The source stream.</param>
-		/// <param name="target">The target stream.</param>
-		/// <param name="length">The number of bytes to read or -1 to read all bytes.</param>
+		/// <param name="source"> The source stream. </param>
+		/// <param name="target"> The target stream. </param>
+		/// <param name="length"> The number of bytes to read or -1 to read all bytes. </param>
 		/// <returns>
-		/// The number of bytes read.
+		///     The number of bytes read.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="source"/> or <paramref name="target"/> is null.</exception>
-		/// <exception cref="ArgumentOutOfRangeException"><paramref name="length"/> is less than zero.</exception>
-		/// <exception cref="NotReadableStreamArgumentException"><paramref name="source"/> is a stream which cannot be read.</exception>
-		/// <exception cref="NotWriteableStreamArgumentException"><paramref name="target"/> is a stream which cannot be written.</exception>
-		public static int Read(this Stream source, Stream target, int length)
+		/// <exception cref="ArgumentNullException"> <paramref name="source" /> or <paramref name="target" /> is null. </exception>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="length" /> is less than zero. </exception>
+		/// <exception cref="NotReadableStreamArgumentException"> <paramref name="source" /> is a stream which cannot be read. </exception>
+		/// <exception cref="NotWriteableStreamArgumentException"> <paramref name="target" /> is a stream which cannot be written. </exception>
+		public static int Read (this Stream source, Stream target, int length)
 		{
 			if (source == null)
 			{
@@ -75,20 +78,20 @@ namespace RI.Framework.IO.Streams
 		}
 
 		/// <summary>
-		/// Reads from one stream into another.
+		///     Reads from one stream into another.
 		/// </summary>
-		/// <param name="source">The source stream.</param>
-		/// <param name="target">The target stream.</param>
-		/// <param name="length">The number of bytes to read or -1 to read all bytes.</param>
-		/// <param name="bufferSize">The buffer size used for reading or -1 to use the default buffer size.</param>
+		/// <param name="source"> The source stream. </param>
+		/// <param name="target"> The target stream. </param>
+		/// <param name="length"> The number of bytes to read or -1 to read all bytes. </param>
+		/// <param name="bufferSize"> The buffer size used for reading or -1 to use the default buffer size. </param>
 		/// <returns>
-		/// The number of bytes read.
+		///     The number of bytes read.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="source"/> or <paramref name="target"/> is null.</exception>
-		/// <exception cref="ArgumentOutOfRangeException"><paramref name="length"/> is less than zero or <paramref name="bufferSize"/> is less than or equal to zero.</exception>
-		/// <exception cref="NotReadableStreamArgumentException"><paramref name="source"/> is a stream which cannot be read.</exception>
-		/// <exception cref="NotWriteableStreamArgumentException"><paramref name="target"/> is a stream which cannot be written.</exception>
-		public static int Read(this Stream source, Stream target, int length, int bufferSize)
+		/// <exception cref="ArgumentNullException"> <paramref name="source" /> or <paramref name="target" /> is null. </exception>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="length" /> is less than zero or <paramref name="bufferSize" /> is less than or equal to zero. </exception>
+		/// <exception cref="NotReadableStreamArgumentException"> <paramref name="source" /> is a stream which cannot be read. </exception>
+		/// <exception cref="NotWriteableStreamArgumentException"> <paramref name="target" /> is a stream which cannot be written. </exception>
+		public static int Read (this Stream source, Stream target, int length, int bufferSize)
 		{
 			if (source == null)
 			{
@@ -99,16 +102,16 @@ namespace RI.Framework.IO.Streams
 		}
 
 		/// <summary>
-		/// Reads a byte array from a stream.
+		///     Reads a byte array from a stream.
 		/// </summary>
-		/// <param name="source">The stream.</param>
-		/// <param name="data">The byte array.</param>
+		/// <param name="source"> The stream. </param>
+		/// <param name="data"> The byte array. </param>
 		/// <returns>
-		/// The number of bytes read into the byte array, starting at index zero.
+		///     The number of bytes read into the byte array, starting at index zero.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="source"/> or <paramref name="data"/> is null.</exception>
-		/// <exception cref="NotSupportedException"><paramref name="source"/> does not support reading.</exception>
-		public static int Read(this Stream source, byte[] data)
+		/// <exception cref="ArgumentNullException"> <paramref name="source" /> or <paramref name="data" /> is null. </exception>
+		/// <exception cref="NotSupportedException"> <paramref name="source" /> does not support reading. </exception>
+		public static int Read (this Stream source, byte[] data)
 		{
 			if (source == null)
 			{
@@ -124,48 +127,48 @@ namespace RI.Framework.IO.Streams
 		}
 
 		/// <summary>
-		/// Reads a stream into a byte array.
+		///     Reads a stream into a byte array.
 		/// </summary>
-		/// <param name="source">The stream.</param>
+		/// <param name="source"> The stream. </param>
 		/// <returns>
-		/// The byte array containing all bytes of the stream.
+		///     The byte array containing all bytes of the stream.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="source"/> is null.</exception>
-		/// <exception cref="NotReadableStreamArgumentException"><paramref name="source"/> is a stream which cannot be read.</exception>
-		public static byte[] Read(this Stream source)
+		/// <exception cref="ArgumentNullException"> <paramref name="source" /> is null. </exception>
+		/// <exception cref="NotReadableStreamArgumentException"> <paramref name="source" /> is a stream which cannot be read. </exception>
+		public static byte[] Read (this Stream source)
 		{
 			return source.Read(-1, -1);
 		}
 
 		/// <summary>
-		/// Reads a stream into a byte array.
+		///     Reads a stream into a byte array.
 		/// </summary>
-		/// <param name="source">The stream.</param>
-		/// <param name="length">The number of bytes to read or -1 to read all bytes.</param>
+		/// <param name="source"> The stream. </param>
+		/// <param name="length"> The number of bytes to read or -1 to read all bytes. </param>
 		/// <returns>
-		/// The byte array containing all bytes of the stream.
+		///     The byte array containing all bytes of the stream.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="source"/> is null.</exception>
-		/// <exception cref="NotReadableStreamArgumentException"><paramref name="source"/> is a stream which cannot be read.</exception>
-		/// <exception cref="ArgumentOutOfRangeException"><paramref name="length"/> is less than zero.</exception>
-		public static byte[] Read(this Stream source, int length)
+		/// <exception cref="ArgumentNullException"> <paramref name="source" /> is null. </exception>
+		/// <exception cref="NotReadableStreamArgumentException"> <paramref name="source" /> is a stream which cannot be read. </exception>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="length" /> is less than zero. </exception>
+		public static byte[] Read (this Stream source, int length)
 		{
 			return source.Read(length, -1);
 		}
 
 		/// <summary>
-		/// Reads a stream into a byte array.
+		///     Reads a stream into a byte array.
 		/// </summary>
-		/// <param name="source">The stream.</param>
-		/// <param name="length">The number of bytes to read or -1 to read all bytes.</param>
-		/// <param name="bufferSize">The buffer size used for reading or -1 to use the default buffer size.</param>
+		/// <param name="source"> The stream. </param>
+		/// <param name="length"> The number of bytes to read or -1 to read all bytes. </param>
+		/// <param name="bufferSize"> The buffer size used for reading or -1 to use the default buffer size. </param>
 		/// <returns>
-		/// The byte array containing all bytes of the stream.
+		///     The byte array containing all bytes of the stream.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="source"/> is null.</exception>
-		/// <exception cref="NotReadableStreamArgumentException"><paramref name="source"/> is a stream which cannot be read.</exception>
-		/// <exception cref="ArgumentOutOfRangeException"><paramref name="length"/> is less than zero or <paramref name="bufferSize"/> is less than or equal to zero.</exception>
-		public static byte[] Read(this Stream source, int length, int bufferSize)
+		/// <exception cref="ArgumentNullException"> <paramref name="source" /> is null. </exception>
+		/// <exception cref="NotReadableStreamArgumentException"> <paramref name="source" /> is a stream which cannot be read. </exception>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="length" /> is less than zero or <paramref name="bufferSize" /> is less than or equal to zero. </exception>
+		public static byte[] Read (this Stream source, int length, int bufferSize)
 		{
 			if (source == null)
 			{
@@ -181,21 +184,21 @@ namespace RI.Framework.IO.Streams
 		}
 
 		/// <summary>
-		/// Removes a specified amount of bytes from the end of a stream.
+		///     Removes a specified amount of bytes from the end of a stream.
 		/// </summary>
-		/// <param name="stream">The stream.</param>
-		/// <param name="length">The number of bytes to remove.</param>
+		/// <param name="stream"> The stream. </param>
+		/// <param name="length"> The number of bytes to remove. </param>
 		/// <remarks>
-		/// <para>
-		/// The streams position remains unchanged, except in cases the position is within the removed range where the position will be set to the end of the stream.
-		/// </para>
+		///     <para>
+		///         The streams position remains unchanged, except in cases the position is within the removed range where the position will be set to the end of the stream.
+		///     </para>
 		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="stream"/> is null.</exception>
-		/// <exception cref="ArgumentOutOfRangeException"><paramref name="length"/> is less than zero or more than the length of <paramref name="stream"/>.</exception>
-		/// <exception cref="NotReadableStreamArgumentException"><paramref name="stream"/> is a stream which cannot be read.</exception>
-		/// <exception cref="NotWriteableStreamArgumentException"><paramref name="stream"/> is a stream which cannot be written.</exception>
-		/// <exception cref="NotSeekableStreamArgumentException"><paramref name="stream"/> is a stream which cannot be seeked.</exception>
-		public static void TruncateAtEnd(this Stream stream, int length)
+		/// <exception cref="ArgumentNullException"> <paramref name="stream" /> is null. </exception>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="length" /> is less than zero or more than the length of <paramref name="stream" />. </exception>
+		/// <exception cref="NotReadableStreamArgumentException"> <paramref name="stream" /> is a stream which cannot be read. </exception>
+		/// <exception cref="NotWriteableStreamArgumentException"> <paramref name="stream" /> is a stream which cannot be written. </exception>
+		/// <exception cref="NotSeekableStreamArgumentException"> <paramref name="stream" /> is a stream which cannot be seeked. </exception>
+		public static void TruncateAtEnd (this Stream stream, int length)
 		{
 			if (stream == null)
 			{
@@ -248,21 +251,21 @@ namespace RI.Framework.IO.Streams
 		}
 
 		/// <summary>
-		/// Removes a specified amount of bytes from the start of a stream.
+		///     Removes a specified amount of bytes from the start of a stream.
 		/// </summary>
-		/// <param name="stream">The stream.</param>
-		/// <param name="length">The number of bytes to remove.</param>
+		/// <param name="stream"> The stream. </param>
+		/// <param name="length"> The number of bytes to remove. </param>
 		/// <remarks>
-		/// <para>
-		/// The streams position remains unchanged, except in cases the position is within the removed range where the position will be set to the start of the stream.
-		/// </para>
+		///     <para>
+		///         The streams position remains unchanged, except in cases the position is within the removed range where the position will be set to the start of the stream.
+		///     </para>
 		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="stream"/> is null.</exception>
-		/// <exception cref="ArgumentOutOfRangeException"><paramref name="length"/> is less than zero or more than the length of <paramref name="stream"/>.</exception>
-		/// <exception cref="NotReadableStreamArgumentException"><paramref name="stream"/> is a stream which cannot be read.</exception>
-		/// <exception cref="NotWriteableStreamArgumentException"><paramref name="stream"/> is a stream which cannot be written.</exception>
-		/// <exception cref="NotSeekableStreamArgumentException"><paramref name="stream"/> is a stream which cannot be seeked.</exception>
-		public static void TruncateAtStart(this Stream stream, int length)
+		/// <exception cref="ArgumentNullException"> <paramref name="stream" /> is null. </exception>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="length" /> is less than zero or more than the length of <paramref name="stream" />. </exception>
+		/// <exception cref="NotReadableStreamArgumentException"> <paramref name="stream" /> is a stream which cannot be read. </exception>
+		/// <exception cref="NotWriteableStreamArgumentException"> <paramref name="stream" /> is a stream which cannot be written. </exception>
+		/// <exception cref="NotSeekableStreamArgumentException"> <paramref name="stream" /> is a stream which cannot be seeked. </exception>
+		public static void TruncateAtStart (this Stream stream, int length)
 		{
 			if (stream == null)
 			{
@@ -331,13 +334,13 @@ namespace RI.Framework.IO.Streams
 		}
 
 		/// <summary>
-		/// Writes a byte array to a stream.
+		///     Writes a byte array to a stream.
 		/// </summary>
-		/// <param name="target">The stream.</param>
-		/// <param name="data">The byte array.</param>
-		/// <exception cref="ArgumentNullException"><paramref name="target"/> or <paramref name="data"/> is null.</exception>
-		/// <exception cref="NotSupportedException"><paramref name="target"/> does not support writing.</exception>
-		public static void Write(this Stream target, byte[] data)
+		/// <param name="target"> The stream. </param>
+		/// <param name="data"> The byte array. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="target" /> or <paramref name="data" /> is null. </exception>
+		/// <exception cref="NotSupportedException"> <paramref name="target" /> does not support writing. </exception>
+		public static void Write (this Stream target, byte[] data)
 		{
 			if (target == null)
 			{
@@ -353,17 +356,17 @@ namespace RI.Framework.IO.Streams
 		}
 
 		/// <summary>
-		/// Writes from one stream into another.
+		///     Writes from one stream into another.
 		/// </summary>
-		/// <param name="source">The source stream.</param>
-		/// <param name="target">The target stream.</param>
+		/// <param name="source"> The source stream. </param>
+		/// <param name="target"> The target stream. </param>
 		/// <returns>
-		/// The number of bytes written.
+		///     The number of bytes written.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="source"/> or <paramref name="target"/> is null.</exception>
-		/// <exception cref="NotReadableStreamArgumentException"><paramref name="source"/> is a stream which cannot be read.</exception>
-		/// <exception cref="NotWriteableStreamArgumentException"><paramref name="target"/> is a stream which cannot be written.</exception>
-		public static int Write(this Stream target, Stream source)
+		/// <exception cref="ArgumentNullException"> <paramref name="source" /> or <paramref name="target" /> is null. </exception>
+		/// <exception cref="NotReadableStreamArgumentException"> <paramref name="source" /> is a stream which cannot be read. </exception>
+		/// <exception cref="NotWriteableStreamArgumentException"> <paramref name="target" /> is a stream which cannot be written. </exception>
+		public static int Write (this Stream target, Stream source)
 		{
 			if (target == null)
 			{
@@ -374,19 +377,19 @@ namespace RI.Framework.IO.Streams
 		}
 
 		/// <summary>
-		/// Writes from one stream into another.
+		///     Writes from one stream into another.
 		/// </summary>
-		/// <param name="source">The source stream.</param>
-		/// <param name="target">The target stream.</param>
-		/// <param name="length">The number of bytes to read or -1 to read all bytes.</param>
+		/// <param name="source"> The source stream. </param>
+		/// <param name="target"> The target stream. </param>
+		/// <param name="length"> The number of bytes to read or -1 to read all bytes. </param>
 		/// <returns>
-		/// The number of bytes written.
+		///     The number of bytes written.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="source"/> or <paramref name="target"/> is null.</exception>
-		/// <exception cref="ArgumentOutOfRangeException"><paramref name="length"/> is less than zero.</exception>
-		/// <exception cref="NotReadableStreamArgumentException"><paramref name="source"/> is a stream which cannot be read.</exception>
-		/// <exception cref="NotWriteableStreamArgumentException"><paramref name="target"/> is a stream which cannot be written.</exception>
-		public static int Write(this Stream target, Stream source, int length)
+		/// <exception cref="ArgumentNullException"> <paramref name="source" /> or <paramref name="target" /> is null. </exception>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="length" /> is less than zero. </exception>
+		/// <exception cref="NotReadableStreamArgumentException"> <paramref name="source" /> is a stream which cannot be read. </exception>
+		/// <exception cref="NotWriteableStreamArgumentException"> <paramref name="target" /> is a stream which cannot be written. </exception>
+		public static int Write (this Stream target, Stream source, int length)
 		{
 			if (target == null)
 			{
@@ -397,20 +400,20 @@ namespace RI.Framework.IO.Streams
 		}
 
 		/// <summary>
-		/// Writes from one stream into another.
+		///     Writes from one stream into another.
 		/// </summary>
-		/// <param name="source">The source stream.</param>
-		/// <param name="target">The target stream.</param>
-		/// <param name="length">The number of bytes to read or -1 to read all bytes.</param>
-		/// <param name="bufferSize">The buffer size used for reading or -1 to use the default buffer size.</param>
+		/// <param name="source"> The source stream. </param>
+		/// <param name="target"> The target stream. </param>
+		/// <param name="length"> The number of bytes to read or -1 to read all bytes. </param>
+		/// <param name="bufferSize"> The buffer size used for reading or -1 to use the default buffer size. </param>
 		/// <returns>
-		/// The number of bytes written.
+		///     The number of bytes written.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="source"/> or <paramref name="target"/> is null.</exception>
-		/// <exception cref="ArgumentOutOfRangeException"><paramref name="length"/> is less than zero or <paramref name="bufferSize"/> is less than or equal to zero.</exception>
-		/// <exception cref="NotReadableStreamArgumentException"><paramref name="source"/> is a stream which cannot be read.</exception>
-		/// <exception cref="NotWriteableStreamArgumentException"><paramref name="target"/> is a stream which cannot be written.</exception>
-		public static int Write(this Stream target, Stream source, int length, int bufferSize)
+		/// <exception cref="ArgumentNullException"> <paramref name="source" /> or <paramref name="target" /> is null. </exception>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="length" /> is less than zero or <paramref name="bufferSize" /> is less than or equal to zero. </exception>
+		/// <exception cref="NotReadableStreamArgumentException"> <paramref name="source" /> is a stream which cannot be read. </exception>
+		/// <exception cref="NotWriteableStreamArgumentException"> <paramref name="target" /> is a stream which cannot be written. </exception>
+		public static int Write (this Stream target, Stream source, int length, int bufferSize)
 		{
 			if (target == null)
 			{
@@ -420,7 +423,7 @@ namespace RI.Framework.IO.Streams
 			return StreamExtensions.Copy(target, source, length, bufferSize);
 		}
 
-		private static int Copy(Stream target, Stream source, int length, int bufferSize)
+		private static int Copy (Stream target, Stream source, int length, int bufferSize)
 		{
 			if (target == null)
 			{

@@ -11,6 +11,9 @@ using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Logging;
 
+
+
+
 namespace RI.Framework.Services.Resources.Sources
 {
 	/// <summary>
@@ -321,6 +324,33 @@ namespace RI.Framework.Services.Resources.Sources
 			this.IsValid = true;
 		}
 
+		private IResourceConverter GetConverter (Type sourceType, Type targetType)
+		{
+			foreach (IResourceConverter converter in this.Converters)
+			{
+				if (converter.CanConvert(sourceType, targetType))
+				{
+					return converter;
+				}
+			}
+
+			return null;
+		}
+
+		private ResourceLoadingInfo GetLoadingInfo (string extension)
+		{
+			foreach (IResourceConverter converter in this.Converters)
+			{
+				ResourceLoadingInfo loadingInfo = converter.GetLoadingInfoFromFileExtension(extension);
+				if (loadingInfo != null)
+				{
+					return loadingInfo;
+				}
+			}
+
+			return new ResourceLoadingInfo(ResourceLoadingType.Unknown, null);
+		}
+
 		private void Load ()
 		{
 			List<FilePath> existingFiles;
@@ -410,32 +440,18 @@ namespace RI.Framework.Services.Resources.Sources
 			}
 		}
 
-		private IResourceConverter GetConverter (Type sourceType, Type targetType)
-		{
-			foreach (IResourceConverter converter in this.Converters)
-			{
-				if (converter.CanConvert(sourceType, targetType))
-				{
-					return converter;
-				}
-			}
+		#endregion
 
-			return null;
-		}
 
-		private ResourceLoadingInfo GetLoadingInfo (string extension)
-		{
-			foreach (IResourceConverter converter in this.Converters)
-			{
-				ResourceLoadingInfo loadingInfo = converter.GetLoadingInfoFromFileExtension(extension);
-				if (loadingInfo != null)
-				{
-					return loadingInfo;
-				}
-			}
 
-			return new ResourceLoadingInfo(ResourceLoadingType.Unknown, null);
-		}
+
+		#region Overrides
+
+		/// <inheritdoc />
+		public override bool Equals (object obj) => this.Equals(obj as IResourceSet);
+
+		/// <inheritdoc />
+		public override int GetHashCode () => this.Directory.GetHashCode();
 
 		#endregion
 
@@ -445,9 +461,6 @@ namespace RI.Framework.Services.Resources.Sources
 		#region Interface: IResourceSet
 
 		/// <inheritdoc />
-		public string Id { get; }
-
-		/// <inheritdoc />
 		public bool AlwaysLoad { get; private set; }
 
 		/// <inheritdoc />
@@ -455,6 +468,9 @@ namespace RI.Framework.Services.Resources.Sources
 
 		/// <inheritdoc />
 		public string Group { get; private set; }
+
+		/// <inheritdoc />
+		public string Id { get; }
 
 		/// <inheritdoc />
 		public bool IsLazyLoaded { get; private set; }
@@ -473,6 +489,27 @@ namespace RI.Framework.Services.Resources.Sources
 
 		/// <inheritdoc />
 		public CultureInfo UiCulture { get; private set; }
+
+
+		/// <inheritdoc />
+		public bool Equals (IResourceSet other)
+		{
+			if (other == null)
+			{
+				return false;
+			}
+
+			DirectoryResourceSet other2 = other as DirectoryResourceSet;
+			if (other2 == null)
+			{
+				return false;
+			}
+
+			return this.Directory.Equals(other2.Directory);
+		}
+
+		/// <inheritdoc />
+		public HashSet<string> GetAvailableResources () => new HashSet<string>(this.Resources.Keys, this.Resources.Comparer);
 
 		/// <inheritdoc />
 		public object GetRawValue (string name)
@@ -541,9 +578,6 @@ namespace RI.Framework.Services.Resources.Sources
 			this.IsLoaded = false;
 			this.IsLazyLoaded = false;
 		}
-
-		/// <inheritdoc />
-		public HashSet<string> GetAvailableResources () => new HashSet<string>(this.Resources.Keys, this.Resources.Comparer);
 
 		#endregion
 
@@ -753,30 +787,5 @@ namespace RI.Framework.Services.Resources.Sources
 		}
 
 		#endregion
-
-
-
-		/// <inheritdoc />
-		public bool Equals (IResourceSet other)
-		{
-			if (other == null)
-			{
-				return false;
-			}
-
-			DirectoryResourceSet other2 = other as DirectoryResourceSet;
-			if (other2 == null)
-			{
-				return false;
-			}
-
-			return this.Directory.Equals(other2.Directory);
-		}
-
-		/// <inheritdoc />
-		public override int GetHashCode () => this.Directory.GetHashCode();
-
-		/// <inheritdoc />
-		public override bool Equals (object obj) => this.Equals(obj as IResourceSet);
 	}
 }

@@ -22,6 +22,10 @@ using RI.Framework.Utilities.Reflection;
 #if PLATFORM_NETFX
 using System.Collections;
 using System.Linq.Expressions;
+
+
+
+
 #endif
 
 
@@ -354,6 +358,8 @@ namespace RI.Framework.Composition
 
 		private static object GlobalSyncRoot { get; }
 
+		private static Dictionary<Type, ResolveImports_PropertyInfo[]> ResolveImports_PropertyCache { get; set; }
+
 		#endregion
 
 
@@ -588,30 +594,6 @@ namespace RI.Framework.Composition
 			}
 		}
 
-#if PLATFORM_NETFX
-		private static Type GetEnumerableType (Type type)
-		{
-			Type genericType = type.IsGenericType ? type.GetGenericTypeDefinition() : null;
-			Type typeArgument = type.IsGenericType ? type.GetGenericArguments()[0] : null;
-			return (genericType == typeof(IEnumerable<>)) ? typeArgument : null;
-		}
-
-		private static Type GetLazyLoadFuncType (Type type)
-		{
-			Type genericType = type.IsGenericType ? type.GetGenericTypeDefinition() : null;
-			Type typeArgument = type.IsGenericType ? type.GetGenericArguments()[0] : null;
-			int typeArgumentCount = type.IsGenericType ? type.GetGenericArguments().Length : 0;
-			return ((genericType == typeof(Func<>)) && (typeArgumentCount == 1)) ? typeArgument : null;
-		}
-
-		private static Type GetLazyLoadObjectType(Type type)
-		{
-			Type genericType = type.IsGenericType ? type.GetGenericTypeDefinition() : null;
-			Type typeArgument = type.IsGenericType ? type.GetGenericArguments()[0] : null;
-			return (genericType == typeof(Lazy<>)) ? typeArgument : null;
-		}
-#endif
-
 		private static void IsExportPrivateInternal (Type type, bool isSelf, HashSet<bool> privates)
 		{
 			object[] attributes = type.GetCustomAttributes(typeof(ExportAttribute), false);
@@ -621,6 +603,39 @@ namespace RI.Framework.Composition
 				{
 					privates.Add(attribute.Private);
 				}
+			}
+		}
+
+		private static ResolveImports_PropertyInfo[] ResolveImports_GetProperties (Type type)
+		{
+			lock (CompositionContainer.GlobalSyncRoot)
+			{
+				if (CompositionContainer.ResolveImports_PropertyCache == null)
+				{
+					CompositionContainer.ResolveImports_PropertyCache = new Dictionary<Type, ResolveImports_PropertyInfo[]>();
+				}
+
+				if (!CompositionContainer.ResolveImports_PropertyCache.ContainsKey(type))
+				{
+					PropertyInfo[] properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+					ResolveImports_PropertyInfo[] infos = new ResolveImports_PropertyInfo[properties.Length];
+					for (int i1 = 0; i1 < properties.Length; i1++)
+					{
+						PropertyInfo property = properties[i1];
+						ResolveImports_PropertyInfo info = new ResolveImports_PropertyInfo();
+						info.ImportType = property.PropertyType;
+						info.Property = property;
+						info.GetMethod = property.GetGetMethod(true);
+						info.SetMethod = property.GetSetMethod(true);
+						info.ImportAttributes.AddRange(property.GetCustomAttributes(typeof(ImportAttribute), false).OfType<ImportAttribute>());
+						info.CanRecompose = info.ImportAttributes.Any(x => x.Recomposable);
+						info.ImportName = info.ImportAttributes.FirstOrDefault(null, x => !x.Name.IsNullOrEmptyOrWhitespace())?.Name;
+						infos[i1] = info;
+					}
+					CompositionContainer.ResolveImports_PropertyCache.Add(type, infos);
+				}
+
+				return CompositionContainer.ResolveImports_PropertyCache[type];
 			}
 		}
 
@@ -788,12 +803,12 @@ namespace RI.Framework.Composition
 
 		private List<CompositionCatalogItem> Instances { get; }
 
+		[SuppressMessage("ReSharper", "CollectionNeverUpdated.Local")]
+		private Dictionary<string, Dictionary<Type, LazyInvoker>> LazyInvokers { get; }
+
 		private EventHandler ParentContainerCompositionChangedHandler { get; }
 
 		private List<CompositionCatalogItem> Types { get; }
-
-		[SuppressMessage("ReSharper", "CollectionNeverUpdated.Local")]
-		private Dictionary<string, Dictionary<Type, LazyInvoker>> LazyInvokers { get; }
 
 		#endregion
 
@@ -1150,6 +1165,250 @@ namespace RI.Framework.Composition
 		}
 
 		/// <summary>
+		///     Gets an independent snapshot of the current composition.
+		/// </summary>
+		/// <returns>
+		///     The independent snapshot of the current composition.
+		///     If no composition items are available, an empty dictionary is returned.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         The key of the returned dictionary is the name under which the items in the inner list are exported.
+		///     </para>
+		/// </remarks>
+		public Dictionary<string, List<CompositionCatalogItem>> GetCompositionSnapshot ()
+		{
+			lock (this.SyncRoot)
+			{
+				Dictionary<string, List<CompositionCatalogItem>> snapshot = new Dictionary<string, List<CompositionCatalogItem>>(CompositionContainer.NameComparer);
+				foreach (KeyValuePair<string, CompositionItem> composition in this.Composition)
+				{
+					string name = composition.Value.Name;
+
+					List<CompositionCatalogItem> items = new List<CompositionCatalogItem>();
+					snapshot.Add(name, items);
+
+					foreach (CompositionTypeItem type in composition.Value.Types)
+					{
+						if (type.Instance != null)
+						{
+							items.Add(new CompositionCatalogItem(name, type.Instance));
+						}
+						else
+						{
+							items.Add(new CompositionCatalogItem(name, type.Type, type.PrivateExport));
+						}
+					}
+
+					foreach (CompositionInstanceItem instance in composition.Value.Instances)
+					{
+						items.Add(new CompositionCatalogItem(name, instance.Instance));
+					}
+				}
+				return snapshot;
+			}
+		}
+
+		/// <summary>
+		///     Creates a text describing the current composition.
+		/// </summary>
+		/// <param name="writer"> The text writer to write the description to. </param>
+		public void GetCurrentCompositionLog (TextWriter writer)
+		{
+			Dictionary<string, List<CompositionCatalogItem>> compositionSnapshot = this.GetCompositionSnapshot();
+
+			List<string> names = compositionSnapshot.Keys.ToList();
+			names.Sort(StringComparerEx.InvariantCultureIgnoreCase);
+
+			for (int i1 = 0; i1 < names.Count; i1++)
+			{
+				bool last = i1 >= (names.Count - 1);
+				string name = names[i1];
+				List<CompositionCatalogItem> catalogItems = compositionSnapshot[name];
+
+				List<string> lines = new List<string>();
+				lines.Add(name);
+				foreach (CompositionCatalogItem catalogItem in catalogItems)
+				{
+					if (catalogItem.Value != null)
+					{
+						lines.Add("  Kind=Instance, Value=" + catalogItem.Value.GetType().AssemblyQualifiedName);
+					}
+					else
+					{
+						lines.Add("  Kind=Type, Private=" + (catalogItem.PrivateExport ? "yes" : "no") + ", Type=" + catalogItem.Type.AssemblyQualifiedName);
+					}
+				}
+
+				int separatorLength = lines.MaxLength();
+				string separator = new string('-', separatorLength);
+
+				writer.WriteLine(separator);
+
+				foreach (string line in lines)
+				{
+					writer.WriteLine(line);
+				}
+
+				if (last)
+				{
+					writer.WriteLine(separator);
+				}
+			}
+		}
+
+		/// <summary>
+		///     Creates a text describing the current composition.
+		/// </summary>
+		/// <returns>
+		///     The text describing the current composition.
+		/// </returns>
+		public string GetCurrentCompositionLog ()
+		{
+			using (StringWriter sw = new StringWriter())
+			{
+				this.GetCurrentCompositionLog(sw);
+				sw.Flush();
+				return sw.ToString().Trim();
+			}
+		}
+
+		/// <summary>
+		///     Manual import: Gets the first resolved value for the specified types default name without creating instances.
+		/// </summary>
+		/// <typeparam name="T"> The type whose default name is resolved. </typeparam>
+		/// <returns>
+		///     The first resolved value which is exported under the specified types default name and which is of type <typeparamref name="T" />, null if no such value could be resolved.
+		/// </returns>
+		/// <exception cref="CompositionException"> The resolving failed although matching exports were found. </exception>
+		public T GetExisting <T> ()
+			where T : class
+		{
+			return this.GetExisting<T>(CompositionContainer.GetNameOfType(typeof(T)));
+		}
+
+		/// <summary>
+		///     Manual import: Gets the first resolved value for the specified types default name without creating instances.
+		/// </summary>
+		/// <typeparam name="T"> The type the resolved value must be compatible with. </typeparam>
+		/// <param name="exportType"> The type whose default name is resolved. </param>
+		/// <returns>
+		///     The first resolved value which is exported under the specified types default name and which is of type <typeparamref name="T" />, null if no such value could be resolved.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="exportType" /> is null. </exception>
+		/// <exception cref="CompositionException"> The resolving failed although matching exports were found. </exception>
+		public T GetExisting <T> (Type exportType)
+			where T : class
+		{
+			if (exportType == null)
+			{
+				throw new ArgumentNullException(nameof(exportType));
+			}
+
+			return this.GetExisting<T>(CompositionContainer.GetNameOfType(exportType));
+		}
+
+		/// <summary>
+		///     Manual import: Gets the first resolved value for the specified name without creating instances.
+		/// </summary>
+		/// <typeparam name="T"> The type the resolved value must be compatible with. </typeparam>
+		/// <param name="exportName"> The name which is resolved. </param>
+		/// <returns>
+		///     The first resolved value which is exported under the specified name and which is of type <typeparamref name="T" />, null if no such value could be resolved.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="exportName" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="exportName" /> is an empty string. </exception>
+		/// <exception cref="CompositionException"> The resolving failed although matching exports were found. </exception>
+		public T GetExisting <T> (string exportName)
+			where T : class
+		{
+			if (exportName == null)
+			{
+				throw new ArgumentNullException(nameof(exportName));
+			}
+
+			if (exportName.IsEmptyOrWhitespace())
+			{
+				throw new EmptyStringArgumentException(nameof(exportName));
+			}
+
+			lock (this.SyncRoot)
+			{
+				List<object> instances = this.GetOrCreateInstancesInternal(exportName, typeof(T), false);
+				return instances.Count == 0 ? null : (T)instances[0];
+			}
+		}
+
+		/// <summary>
+		///     Manual import: Gets all resolved values for the specified types default name without creating instances.
+		/// </summary>
+		/// <typeparam name="T"> The type whose default name is resolved. </typeparam>
+		/// <returns>
+		///     The list containing the resolved values.
+		///     The list is empty if no values could be resolved or none of the values are of type <typeparamref name="T" />.
+		/// </returns>
+		/// <exception cref="CompositionException"> The resolving failed although matching exports were found. </exception>
+		public List<T> GetExistings <T> ()
+			where T : class
+		{
+			return this.GetExistings<T>(CompositionContainer.GetNameOfType(typeof(T)));
+		}
+
+		/// <summary>
+		///     Manual import: Gets all resolved values for the specified types default name without creating instances.
+		/// </summary>
+		/// <typeparam name="T"> The type the resolved values must be compatible with. </typeparam>
+		/// <param name="exportType"> The type whose default name is resolved. </param>
+		/// <returns>
+		///     The list containing the resolved values.
+		///     The list is empty if no values could be resolved or none of the values are of type <typeparamref name="T" />.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="exportType" /> is null. </exception>
+		/// <exception cref="CompositionException"> The resolving failed although matching exports were found. </exception>
+		public List<T> GetExistings <T> (Type exportType)
+			where T : class
+		{
+			if (exportType == null)
+			{
+				throw new ArgumentNullException(nameof(exportType));
+			}
+
+			return this.GetExistings<T>(CompositionContainer.GetNameOfType(exportType));
+		}
+
+		/// <summary>
+		///     Manual import: Gets all resolved values for the specified name without creating instances.
+		/// </summary>
+		/// <typeparam name="T"> The type the resolved values must be compatible with. </typeparam>
+		/// <param name="exportName"> The name which is resolved. </param>
+		/// <returns>
+		///     The list containing the resolved values.
+		///     The list is empty if no values could be resolved or none of the values are of type <typeparamref name="T" />.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="exportName" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="exportName" /> is an empty string. </exception>
+		/// <exception cref="CompositionException"> The resolving failed although matching exports were found. </exception>
+		public List<T> GetExistings <T> (string exportName)
+			where T : class
+		{
+			if (exportName == null)
+			{
+				throw new ArgumentNullException(nameof(exportName));
+			}
+
+			if (exportName.IsEmptyOrWhitespace())
+			{
+				throw new EmptyStringArgumentException(nameof(exportName));
+			}
+
+			lock (this.SyncRoot)
+			{
+				List<object> instances = this.GetOrCreateInstancesInternal(exportName, typeof(T), false);
+				return DirectLinqExtensions.Select(instances, x => (T)x);
+			}
+		}
+
+		/// <summary>
 		///     Manual import: Gets the first resolved value for the specified types default name.
 		/// </summary>
 		/// <typeparam name="T"> The type whose default name is resolved. </typeparam>
@@ -1285,217 +1544,6 @@ namespace RI.Framework.Composition
 		}
 
 		/// <summary>
-		///     Manual import: Gets the first resolved value for the specified types default name without creating instances.
-		/// </summary>
-		/// <typeparam name="T"> The type whose default name is resolved. </typeparam>
-		/// <returns>
-		///     The first resolved value which is exported under the specified types default name and which is of type <typeparamref name="T" />, null if no such value could be resolved.
-		/// </returns>
-		/// <exception cref="CompositionException"> The resolving failed although matching exports were found. </exception>
-		public T GetExisting<T>()
-			where T : class
-		{
-			return this.GetExisting<T>(CompositionContainer.GetNameOfType(typeof(T)));
-		}
-
-		/// <summary>
-		///     Manual import: Gets the first resolved value for the specified types default name without creating instances.
-		/// </summary>
-		/// <typeparam name="T"> The type the resolved value must be compatible with. </typeparam>
-		/// <param name="exportType"> The type whose default name is resolved. </param>
-		/// <returns>
-		///     The first resolved value which is exported under the specified types default name and which is of type <typeparamref name="T" />, null if no such value could be resolved.
-		/// </returns>
-		/// <exception cref="ArgumentNullException"> <paramref name="exportType" /> is null. </exception>
-		/// <exception cref="CompositionException"> The resolving failed although matching exports were found. </exception>
-		public T GetExisting<T>(Type exportType)
-			where T : class
-		{
-			if (exportType == null)
-			{
-				throw new ArgumentNullException(nameof(exportType));
-			}
-
-			return this.GetExisting<T>(CompositionContainer.GetNameOfType(exportType));
-		}
-
-		/// <summary>
-		///     Manual import: Gets the first resolved value for the specified name without creating instances.
-		/// </summary>
-		/// <typeparam name="T"> The type the resolved value must be compatible with. </typeparam>
-		/// <param name="exportName"> The name which is resolved. </param>
-		/// <returns>
-		///     The first resolved value which is exported under the specified name and which is of type <typeparamref name="T" />, null if no such value could be resolved.
-		/// </returns>
-		/// <exception cref="ArgumentNullException"> <paramref name="exportName" /> is null. </exception>
-		/// <exception cref="EmptyStringArgumentException"> <paramref name="exportName" /> is an empty string. </exception>
-		/// <exception cref="CompositionException"> The resolving failed although matching exports were found. </exception>
-		public T GetExisting<T>(string exportName)
-			where T : class
-		{
-			if (exportName == null)
-			{
-				throw new ArgumentNullException(nameof(exportName));
-			}
-
-			if (exportName.IsEmptyOrWhitespace())
-			{
-				throw new EmptyStringArgumentException(nameof(exportName));
-			}
-
-			lock (this.SyncRoot)
-			{
-				List<object> instances = this.GetOrCreateInstancesInternal(exportName, typeof(T), false);
-				return instances.Count == 0 ? null : (T)instances[0];
-			}
-		}
-
-		/// <summary>
-		///     Manual import: Gets all resolved values for the specified types default name without creating instances.
-		/// </summary>
-		/// <typeparam name="T"> The type whose default name is resolved. </typeparam>
-		/// <returns>
-		///     The list containing the resolved values.
-		///     The list is empty if no values could be resolved or none of the values are of type <typeparamref name="T" />.
-		/// </returns>
-		/// <exception cref="CompositionException"> The resolving failed although matching exports were found. </exception>
-		public List<T> GetExistings<T>()
-			where T : class
-		{
-			return this.GetExistings<T>(CompositionContainer.GetNameOfType(typeof(T)));
-		}
-
-		/// <summary>
-		///     Manual import: Gets all resolved values for the specified types default name without creating instances.
-		/// </summary>
-		/// <typeparam name="T"> The type the resolved values must be compatible with. </typeparam>
-		/// <param name="exportType"> The type whose default name is resolved. </param>
-		/// <returns>
-		///     The list containing the resolved values.
-		///     The list is empty if no values could be resolved or none of the values are of type <typeparamref name="T" />.
-		/// </returns>
-		/// <exception cref="ArgumentNullException"> <paramref name="exportType" /> is null. </exception>
-		/// <exception cref="CompositionException"> The resolving failed although matching exports were found. </exception>
-		public List<T> GetExistings<T>(Type exportType)
-			where T : class
-		{
-			if (exportType == null)
-			{
-				throw new ArgumentNullException(nameof(exportType));
-			}
-
-			return this.GetExistings<T>(CompositionContainer.GetNameOfType(exportType));
-		}
-
-		/// <summary>
-		///     Manual import: Gets all resolved values for the specified name without creating instances.
-		/// </summary>
-		/// <typeparam name="T"> The type the resolved values must be compatible with. </typeparam>
-		/// <param name="exportName"> The name which is resolved. </param>
-		/// <returns>
-		///     The list containing the resolved values.
-		///     The list is empty if no values could be resolved or none of the values are of type <typeparamref name="T" />.
-		/// </returns>
-		/// <exception cref="ArgumentNullException"> <paramref name="exportName" /> is null. </exception>
-		/// <exception cref="EmptyStringArgumentException"> <paramref name="exportName" /> is an empty string. </exception>
-		/// <exception cref="CompositionException"> The resolving failed although matching exports were found. </exception>
-		public List<T> GetExistings<T>(string exportName)
-			where T : class
-		{
-			if (exportName == null)
-			{
-				throw new ArgumentNullException(nameof(exportName));
-			}
-
-			if (exportName.IsEmptyOrWhitespace())
-			{
-				throw new EmptyStringArgumentException(nameof(exportName));
-			}
-
-			lock (this.SyncRoot)
-			{
-				List<object> instances = this.GetOrCreateInstancesInternal(exportName, typeof(T), false);
-				return DirectLinqExtensions.Select(instances, x => (T)x);
-			}
-		}
-
-		/// <inheritdoc />
-		object IDependencyResolver.GetInstance(Type type)
-		{
-			if (type == null)
-			{
-				throw new ArgumentNullException(nameof(type));
-			}
-
-			if ((!type.IsClass) && (!type.IsInterface))
-			{
-				throw new InvalidTypeArgumentException(nameof(type));
-			}
-
-			return this.GetExport<object>(type);
-		}
-
-		/// <inheritdoc />
-		object IDependencyResolver.GetInstance(string name)
-		{
-			if (name == null)
-			{
-				throw new ArgumentNullException(nameof(name));
-			}
-
-			if (name.IsNullOrEmptyOrWhitespace())
-			{
-				throw new EmptyStringArgumentException(nameof(name));
-			}
-
-			return this.GetExport<object>(name);
-		}
-
-		/// <inheritdoc />
-		T IDependencyResolver.GetInstance<T>()
-		{
-			return (T)((IDependencyResolver)this).GetInstance(typeof(T));
-		}
-
-		/// <inheritdoc />
-		List<object> IDependencyResolver.GetInstances(Type type)
-		{
-			if (type == null)
-			{
-				throw new ArgumentNullException(nameof(type));
-			}
-
-			if ((!type.IsClass) && (!type.IsInterface))
-			{
-				throw new InvalidTypeArgumentException(nameof(type));
-			}
-
-			return this.GetExports<object>(type);
-		}
-
-		/// <inheritdoc />
-		List<object> IDependencyResolver.GetInstances(string name)
-		{
-			if (name == null)
-			{
-				throw new ArgumentNullException(nameof(name));
-			}
-
-			if (name.IsNullOrEmptyOrWhitespace())
-			{
-				throw new EmptyStringArgumentException(nameof(name));
-			}
-
-			return this.GetExports<object>(name);
-		}
-
-		/// <inheritdoc />
-		List<T> IDependencyResolver.GetInstances<T>()
-		{
-			return ((IDependencyResolver)this).GetInstances(typeof(T)).Cast<T>();
-		}
-
-		/// <summary>
 		///     Determines whether there is at least one value for importing of the specified types default name.
 		/// </summary>
 		/// <typeparam name="T"> The type to check whether its default name can be resolved to at least one value for importing. </typeparam>
@@ -1569,6 +1617,15 @@ namespace RI.Framework.Composition
 
 				return this.Composition.ContainsKey(exportName);
 			}
+		}
+
+		/// <summary>
+		///     Creates a text describing the current composition and writes it to the log.
+		/// </summary>
+		public void LogCurrentComposition (LogLevel severity)
+		{
+			string currentCompositionLog = this.GetCurrentCompositionLog();
+			this.Log(severity, "Current composition:{0}{1}", Environment.NewLine, currentCompositionLog);
 		}
 
 		/// <summary>
@@ -1813,58 +1870,6 @@ namespace RI.Framework.Composition
 			this.RaiseCompositionChanged();
 		}
 
-		private sealed class ResolveImports_PropertyInfo
-		{
-			public Type ImportType { get; set; }
-
-			public PropertyInfo Property { get; set; }
-
-			public List<ImportAttribute> ImportAttributes { get; set; } = new List<ImportAttribute>();
-
-			public MethodInfo GetMethod { get; set; }
-
-			public MethodInfo SetMethod { get; set; }
-
-			public bool CanRecompose { get; set; }
-
-			public string ImportName { get; set; }
-		}
-
-		private static Dictionary<Type, ResolveImports_PropertyInfo[]> ResolveImports_PropertyCache { get; set; }
-
-		private static ResolveImports_PropertyInfo[] ResolveImports_GetProperties (Type type)
-		{
-			lock (CompositionContainer.GlobalSyncRoot)
-			{
-				if (CompositionContainer.ResolveImports_PropertyCache == null)
-				{
-					CompositionContainer.ResolveImports_PropertyCache = new Dictionary<Type, ResolveImports_PropertyInfo[]>();
-				}
-
-				if (!CompositionContainer.ResolveImports_PropertyCache.ContainsKey(type))
-				{
-					PropertyInfo[] properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-					ResolveImports_PropertyInfo[] infos = new ResolveImports_PropertyInfo[properties.Length];
-					for (int i1 = 0; i1 < properties.Length; i1++)
-					{
-						PropertyInfo property = properties[i1];
-						ResolveImports_PropertyInfo info = new ResolveImports_PropertyInfo();
-						info.ImportType = property.PropertyType;
-						info.Property = property;
-						info.GetMethod = property.GetGetMethod(true);
-						info.SetMethod = property.GetSetMethod(true);
-						info.ImportAttributes.AddRange(property.GetCustomAttributes(typeof(ImportAttribute), false).OfType<ImportAttribute>());
-						info.CanRecompose = info.ImportAttributes.Any(x => x.Recomposable);
-						info.ImportName = info.ImportAttributes.FirstOrDefault(null, x => !x.Name.IsNullOrEmptyOrWhitespace())?.Name;
-						infos[i1] = info;
-					}
-					CompositionContainer.ResolveImports_PropertyCache.Add(type, infos);
-				}
-
-				return CompositionContainer.ResolveImports_PropertyCache[type];
-			}
-		}
-
 		/// <summary>
 		///     Model-based import: Resolves the imports of the specified object, using <see cref="ImportAttribute" />.
 		/// </summary>
@@ -1970,10 +1975,7 @@ namespace RI.Framework.Composition
 							else
 							{
 								this.Log(LogLevel.Debug, "Updating import ({0}): {1}", composition, type.FullName + "." + property.Property.Name);
-								setMethod.Invoke(obj, new[]
-								{
-									newValue
-								});
+								setMethod.Invoke(obj, new[] {newValue});
 							}
 
 							composed = true;
@@ -1985,124 +1987,6 @@ namespace RI.Framework.Composition
 
 				return composed;
 			}
-		}
-
-		/// <summary>
-		/// Gets an independent snapshot of the current composition.
-		/// </summary>
-		/// <returns>
-		/// The independent snapshot of the current composition.
-		/// If no composition items are available, an empty dictionary is returned.
-		/// </returns>
-		/// <remarks>
-		/// <para>
-		/// The key of the returned dictionary is the name under which the items in the inner list are exported.
-		/// </para>
-		/// </remarks>
-		public Dictionary<string, List<CompositionCatalogItem>> GetCompositionSnapshot ()
-		{
-			lock (this.SyncRoot)
-			{
-				Dictionary<string, List<CompositionCatalogItem>> snapshot = new Dictionary<string, List<CompositionCatalogItem>>(CompositionContainer.NameComparer);
-				foreach (KeyValuePair<string, CompositionItem> composition in this.Composition)
-				{
-					string name = composition.Value.Name;
-
-					List<CompositionCatalogItem> items = new List<CompositionCatalogItem>();
-					snapshot.Add(name, items);
-
-					foreach (CompositionTypeItem type in composition.Value.Types)
-					{
-						if (type.Instance != null)
-						{
-							items.Add(new CompositionCatalogItem(name, type.Instance));
-						}
-						else
-						{
-							items.Add(new CompositionCatalogItem(name, type.Type, type.PrivateExport));
-						}
-					}
-
-					foreach (CompositionInstanceItem instance in composition.Value.Instances)
-					{
-						items.Add(new CompositionCatalogItem(name, instance.Instance));
-					}
-				}
-				return snapshot;
-			}
-		}
-
-		/// <summary>
-		/// Creates a text describing the current composition.
-		/// </summary>
-		/// <param name="writer">The text writer to write the description to.</param>
-		public void GetCurrentCompositionLog (TextWriter writer)
-		{
-			Dictionary<string, List<CompositionCatalogItem>> compositionSnapshot = this.GetCompositionSnapshot();
-
-			List<string> names = compositionSnapshot.Keys.ToList();
-			names.Sort(StringComparerEx.InvariantCultureIgnoreCase);
-
-			for (int i1 = 0; i1 < names.Count; i1++)
-			{
-				bool last = i1 >= (names.Count - 1);
-				string name = names[i1];
-				List<CompositionCatalogItem> catalogItems = compositionSnapshot[name];
-
-				List<string> lines = new List<string>();
-				lines.Add(name);
-				foreach (CompositionCatalogItem catalogItem in catalogItems)
-				{
-					if (catalogItem.Value != null)
-					{
-						lines.Add("  Kind=Instance, Value=" + catalogItem.Value.GetType().AssemblyQualifiedName);
-					}
-					else
-					{
-						lines.Add("  Kind=Type, Private=" + (catalogItem.PrivateExport ? "yes" : "no") + ", Type=" + catalogItem.Type.AssemblyQualifiedName);
-					}
-				}
-
-				int separatorLength = lines.MaxLength();
-				string separator = new string('-', separatorLength);
-
-				writer.WriteLine(separator);
-
-				foreach (string line in lines)
-				{
-					writer.WriteLine(line);
-				}
-
-				if (last)
-				{
-					writer.WriteLine(separator);
-				}
-			}
-		}
-
-		/// <summary>
-		/// Creates a text describing the current composition.
-		/// </summary>
-		/// <returns>
-		/// The text describing the current composition.
-		/// </returns>
-		public string GetCurrentCompositionLog ()
-		{
-			using (StringWriter sw = new StringWriter())
-			{
-				this.GetCurrentCompositionLog(sw);
-				sw.Flush();
-				return sw.ToString().Trim();
-			}
-		}
-
-		/// <summary>
-		/// Creates a text describing the current composition and writes it to the log.
-		/// </summary>
-		public void LogCurrentComposition (LogLevel severity)
-		{
-			string currentCompositionLog = this.GetCurrentCompositionLog();
-			this.Log(severity, "Current composition:{0}{1}", Environment.NewLine, currentCompositionLog);
 		}
 
 		private void AddCatalogInternal (CompositionCatalog catalog)
@@ -2161,55 +2045,6 @@ namespace RI.Framework.Composition
 			this.UpdateComposition(true);
 		}
 
-#if PLATFORM_NETFX
-
-		private object CreateArray(Type type, List<object> content)
-		{
-			Array array = Array.CreateInstance(type, content.Count);
-			((ICollection)content).CopyTo(array, 0);
-			return array;
-		}
-
-		private object CreateGenericLazyLoadFunc (string name, Type type)
-		{
-			LazyInvoker invoker = null;
-			if (this.LazyInvokers.ContainsKey(name))
-			{
-				if (this.LazyInvokers[name].ContainsKey(type))
-				{
-					invoker = this.LazyInvokers[name][type];
-				}
-				else
-				{
-					this.LazyInvokers[name].Add(type, null);
-				}
-			}
-			else
-			{
-				this.LazyInvokers.Add(name, new Dictionary<Type, LazyInvoker>());
-				this.LazyInvokers[name].Add(type, null);
-			}
-
-			if (invoker == null)
-			{
-				invoker = new LazyInvoker(this, name, type);
-				this.LazyInvokers[name][type] = invoker;
-			}
-
-			return invoker.Resolver;
-		}
-
-		private object CreateGenericLazyLoadObject (string name, Type type)
-		{
-			object lazyLoadFunc = this.CreateGenericLazyLoadFunc(name, type);
-			Type genericType = typeof(Lazy<>);
-			Type concreteType = genericType.MakeGenericType(type);
-			object lazyLoadObject = Activator.CreateInstance(concreteType, BindingFlags.Default, null, lazyLoadFunc);
-			return lazyLoadObject;
-		}
-
-#endif
-
 		private List<object> GetExistingInstancesInternal (bool includeParentInstances)
 		{
 			List<object> instances = new List<object>(this.Composition.Count * 10);
@@ -2244,15 +2079,6 @@ namespace RI.Framework.Composition
 			}
 
 			return instances;
-		}
-
-		private enum ImportKind
-		{
-			Special,
-			Enumerable,
-			LazyFunc,
-			LazyObject,
-			Single,
 		}
 
 		private Type GetImportTypeFromType (Type type, out ImportKind kind)
@@ -2701,6 +2527,89 @@ namespace RI.Framework.Composition
 
 
 
+		#region Interface: IDependencyResolver
+
+		/// <inheritdoc />
+		object IDependencyResolver.GetInstance (Type type)
+		{
+			if (type == null)
+			{
+				throw new ArgumentNullException(nameof(type));
+			}
+
+			if ((!type.IsClass) && (!type.IsInterface))
+			{
+				throw new InvalidTypeArgumentException(nameof(type));
+			}
+
+			return this.GetExport<object>(type);
+		}
+
+		/// <inheritdoc />
+		object IDependencyResolver.GetInstance (string name)
+		{
+			if (name == null)
+			{
+				throw new ArgumentNullException(nameof(name));
+			}
+
+			if (name.IsNullOrEmptyOrWhitespace())
+			{
+				throw new EmptyStringArgumentException(nameof(name));
+			}
+
+			return this.GetExport<object>(name);
+		}
+
+		/// <inheritdoc />
+		T IDependencyResolver.GetInstance <T> ()
+		{
+			return (T)((IDependencyResolver)this).GetInstance(typeof(T));
+		}
+
+		/// <inheritdoc />
+		List<object> IDependencyResolver.GetInstances (Type type)
+		{
+			if (type == null)
+			{
+				throw new ArgumentNullException(nameof(type));
+			}
+
+			if ((!type.IsClass) && (!type.IsInterface))
+			{
+				throw new InvalidTypeArgumentException(nameof(type));
+			}
+
+			return this.GetExports<object>(type);
+		}
+
+		/// <inheritdoc />
+		List<object> IDependencyResolver.GetInstances (string name)
+		{
+			if (name == null)
+			{
+				throw new ArgumentNullException(nameof(name));
+			}
+
+			if (name.IsNullOrEmptyOrWhitespace())
+			{
+				throw new EmptyStringArgumentException(nameof(name));
+			}
+
+			return this.GetExports<object>(name);
+		}
+
+		/// <inheritdoc />
+		List<T> IDependencyResolver.GetInstances <T> ()
+		{
+			return ((IDependencyResolver)this).GetInstances(typeof(T)).Cast<T>();
+		}
+
+		#endregion
+
+
+
+
 		#region Interface: IDisposable
 
 		/// <inheritdoc />
@@ -2863,6 +2772,24 @@ namespace RI.Framework.Composition
 
 
 
+		#region Type: ImportKind
+
+		private enum ImportKind
+		{
+			Special,
+			Enumerable,
+			LazyFunc,
+			LazyObject,
+			Single,
+		}
+
+		#endregion
+
+
+
+
+		#region Type: LazyInvoker
+
 		private sealed class LazyInvoker
 		{
 			#region Instance Constructor/Destructor
@@ -2880,7 +2807,7 @@ namespace RI.Framework.Composition
 				Type enumerableType = CompositionContainer.GetEnumerableType(type);
 				string resolveName = enumerableType == null ? nameof(CompositionContainer.GetExport) : nameof(CompositionContainer.GetExports);
 
-				MethodInfo genericMethod = container.GetType().GetMethod(resolveName, useName ? new [] { typeof(string) } : new Type[] { });
+				MethodInfo genericMethod = container.GetType().GetMethod(resolveName, useName ? new[] {typeof(string)} : new Type[] { });
 				MethodInfo resolveMethod = genericMethod.MakeGenericMethod(type);
 
 				MethodCallExpression resolveCall = useName ? Expression.Call(Expression.Constant(this.Container), resolveMethod, Expression.Constant(this.Name)) : Expression.Call(Expression.Constant(this.Container), resolveMethod);
@@ -2907,5 +2834,110 @@ namespace RI.Framework.Composition
 
 			#endregion
 		}
+
+		#endregion
+
+
+
+
+		#region Type: ResolveImports_PropertyInfo
+
+		private sealed class ResolveImports_PropertyInfo
+		{
+			#region Instance Properties/Indexer
+
+			public bool CanRecompose { get; set; }
+
+			public MethodInfo GetMethod { get; set; }
+
+			public List<ImportAttribute> ImportAttributes { get; set; } = new List<ImportAttribute>();
+
+			public string ImportName { get; set; }
+			public Type ImportType { get; set; }
+
+			public PropertyInfo Property { get; set; }
+
+			public MethodInfo SetMethod { get; set; }
+
+			#endregion
+		}
+
+		#endregion
+
+
+
+
+#if PLATFORM_NETFX
+		private static Type GetEnumerableType (Type type)
+		{
+			Type genericType = type.IsGenericType ? type.GetGenericTypeDefinition() : null;
+			Type typeArgument = type.IsGenericType ? type.GetGenericArguments()[0] : null;
+			return (genericType == typeof(IEnumerable<>)) ? typeArgument : null;
+		}
+
+		private static Type GetLazyLoadFuncType (Type type)
+		{
+			Type genericType = type.IsGenericType ? type.GetGenericTypeDefinition() : null;
+			Type typeArgument = type.IsGenericType ? type.GetGenericArguments()[0] : null;
+			int typeArgumentCount = type.IsGenericType ? type.GetGenericArguments().Length : 0;
+			return ((genericType == typeof(Func<>)) && (typeArgumentCount == 1)) ? typeArgument : null;
+		}
+
+		private static Type GetLazyLoadObjectType (Type type)
+		{
+			Type genericType = type.IsGenericType ? type.GetGenericTypeDefinition() : null;
+			Type typeArgument = type.IsGenericType ? type.GetGenericArguments()[0] : null;
+			return (genericType == typeof(Lazy<>)) ? typeArgument : null;
+		}
+#endif
+
+#if PLATFORM_NETFX
+
+		private object CreateArray (Type type, List<object> content)
+		{
+			Array array = Array.CreateInstance(type, content.Count);
+			((ICollection)content).CopyTo(array, 0);
+			return array;
+		}
+
+		private object CreateGenericLazyLoadFunc (string name, Type type)
+		{
+			LazyInvoker invoker = null;
+			if (this.LazyInvokers.ContainsKey(name))
+			{
+				if (this.LazyInvokers[name].ContainsKey(type))
+				{
+					invoker = this.LazyInvokers[name][type];
+				}
+				else
+				{
+					this.LazyInvokers[name].Add(type, null);
+				}
+			}
+			else
+			{
+				this.LazyInvokers.Add(name, new Dictionary<Type, LazyInvoker>());
+				this.LazyInvokers[name].Add(type, null);
+			}
+
+			if (invoker == null)
+			{
+				invoker = new LazyInvoker(this, name, type);
+				this.LazyInvokers[name][type] = invoker;
+			}
+
+			return invoker.Resolver;
+		}
+
+		private object CreateGenericLazyLoadObject (string name, Type type)
+		{
+			object lazyLoadFunc = this.CreateGenericLazyLoadFunc(name, type);
+			Type genericType = typeof(Lazy<>);
+			Type concreteType = genericType.MakeGenericType(type);
+			object lazyLoadObject = Activator.CreateInstance(concreteType, BindingFlags.Default, null, lazyLoadFunc);
+			return lazyLoadObject;
+		}
+
+#endif
 	}
 }

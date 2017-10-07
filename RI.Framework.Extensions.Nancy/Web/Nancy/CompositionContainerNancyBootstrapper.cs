@@ -9,6 +9,9 @@ using RI.Framework.Composition;
 using RI.Framework.Services.Logging;
 using RI.Framework.Utilities.Logging;
 
+
+
+
 namespace RI.Framework.Web.Nancy
 {
 	/// <summary>
@@ -47,13 +50,6 @@ namespace RI.Framework.Web.Nancy
 		///     The used composition container.
 		/// </value>
 		protected CompositionContainer CompositionContainer { get; private set; }
-
-
-		/// <inheritdoc />
-		public bool LoggingEnabled { get; set; } = true;
-
-		/// <inheritdoc />
-		public ILogger Logger { get; set; } = LogLocator.Logger;
 
 		#endregion
 
@@ -201,6 +197,20 @@ namespace RI.Framework.Web.Nancy
 				}
 			}
 		}
+
+		#endregion
+
+
+
+
+		#region Interface: ILogSource
+
+		/// <inheritdoc />
+		public ILogger Logger { get; set; } = LogLocator.Logger;
+
+
+		/// <inheritdoc />
+		public bool LoggingEnabled { get; set; } = true;
 
 		#endregion
 	}

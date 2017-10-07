@@ -6,21 +6,26 @@ using RI.Framework.Data.Database.Cleanup;
 using RI.Framework.Data.Database.Upgrading;
 using RI.Framework.Utilities.Logging;
 
+
+
+
 namespace RI.Framework.Data.Database
 {
 	/// <summary>
-	/// Implements a single SQL Server database processing step.
+	///     Implements a single SQL Server database processing step.
 	/// </summary>
 	/// <remarks>
-	/// <para>
-	/// <see cref="SqlServerDatabaseProcessingStep"/> is used by <see cref="SqlServerDatabaseCleanupProcessor"/> and <see cref="SqlServerDatabaseVersionUpgrader"/>.
-	/// </para>
-	/// <para>
-	/// See <see cref="DatabaseProcessingStep{TConnection,TTransaction,TConnectionStringBuilder,TManager,TConfiguration}"/> for more details.
-	/// </para>
+	///     <para>
+	///         <see cref="SqlServerDatabaseProcessingStep" /> is used by <see cref="SqlServerDatabaseCleanupProcessor" /> and <see cref="SqlServerDatabaseVersionUpgrader" />.
+	///     </para>
+	///     <para>
+	///         See <see cref="DatabaseProcessingStep{TConnection,TTransaction,TConnectionStringBuilder,TManager,TConfiguration}" /> for more details.
+	///     </para>
 	/// </remarks>
 	public class SqlServerDatabaseProcessingStep : DatabaseProcessingStep<SqlConnection, SqlTransaction, SqlConnectionStringBuilder, SqlServerDatabaseManager, SqlServerDatabaseManagerConfiguration>
 	{
+		#region Overrides
+
 		/// <inheritdoc />
 		protected override void ExecuteBatchesImpl (List<string> batches, SqlServerDatabaseManager manager, SqlConnection connection, SqlTransaction transaction)
 		{
@@ -33,5 +38,7 @@ namespace RI.Framework.Data.Database
 				}
 			}
 		}
+
+		#endregion
 	}
 }

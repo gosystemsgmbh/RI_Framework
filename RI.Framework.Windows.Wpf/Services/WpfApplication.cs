@@ -4,6 +4,9 @@ using RI.Framework.Composition.Model;
 using RI.Framework.Services.Logging;
 using RI.Framework.Utilities.Logging;
 
+
+
+
 namespace RI.Framework.Services
 {
 	/// <summary>
@@ -30,10 +33,17 @@ namespace RI.Framework.Services
 		#endregion
 
 
-		/// <inheritdoc />
-		public bool LoggingEnabled { get; set; } = true;
+
+
+		#region Interface: ILogSource
 
 		/// <inheritdoc />
 		public ILogger Logger { get; set; } = LogLocator.Logger;
+
+
+		/// <inheritdoc />
+		public bool LoggingEnabled { get; set; } = true;
+
+		#endregion
 	}
 }

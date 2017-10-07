@@ -15,19 +15,19 @@ namespace RI.Framework.IO.Text
 		#region Static Methods
 
 		/// <summary>
-		/// Reads characters into an array.
+		///     Reads characters into an array.
 		/// </summary>
-		/// <param name="reader">The reader.</param>
-		/// <param name="data">The array.</param>
+		/// <param name="reader"> The reader. </param>
+		/// <param name="data"> The array. </param>
 		/// <returns>
-		/// The number of characters read.
+		///     The number of characters read.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="reader"/> or <paramref name="data"/> is null.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="reader" /> or <paramref name="data" /> is null. </exception>
 		public static int Read (this TextReader reader, char[] data)
 		{
 			if (reader == null)
 			{
-				throw  new ArgumentNullException(nameof(reader));
+				throw new ArgumentNullException(nameof(reader));
 			}
 
 			if (data == null)
@@ -39,14 +39,14 @@ namespace RI.Framework.IO.Text
 		}
 
 		/// <summary>
-		/// Reads characters into an array.
+		///     Reads characters into an array.
 		/// </summary>
-		/// <param name="reader">The reader.</param>
-		/// <param name="data">The array.</param>
+		/// <param name="reader"> The reader. </param>
+		/// <param name="data"> The array. </param>
 		/// <returns>
-		/// The number of characters read.
+		///     The number of characters read.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="reader"/> or <paramref name="data"/> is null.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="reader" /> or <paramref name="data" /> is null. </exception>
 		public static int ReadBlock (this TextReader reader, char[] data)
 		{
 			if (reader == null)
@@ -63,11 +63,11 @@ namespace RI.Framework.IO.Text
 		}
 
 		/// <summary>
-		/// Reads all available lines into an array.
+		///     Reads all available lines into an array.
 		/// </summary>
-		/// <param name="reader">The reader.</param>
+		/// <param name="reader"> The reader. </param>
 		/// <returns>
-		/// The array of lines read to the end of the reader or null if the end of the reader was reached without reading any line.
+		///     The array of lines read to the end of the reader or null if the end of the reader was reached without reading any line.
 		/// </returns>
 		public static string[] ReadLines (this TextReader reader)
 		{

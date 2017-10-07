@@ -5,10 +5,13 @@ using System.Threading;
 using RI.Framework.Composition.Model;
 using RI.Framework.Utilities.ObjectModel;
 
+
+
+
 namespace RI.Framework.Services.Messaging.Dispatchers
 {
 	/// <summary>
-	///     Implements a message dispatcher which uses <see cref="ThreadPool"/>.
+	///     Implements a message dispatcher which uses <see cref="ThreadPool" />.
 	/// </summary>
 	/// <remarks>
 	///     <para>
@@ -22,19 +25,31 @@ namespace RI.Framework.Services.Messaging.Dispatchers
 	[Export]
 	public sealed class DefaultMessageDispatcher : IMessageDispatcher
 	{
+		#region Instance Constructor/Destructor
+
 		/// <summary>
 		///     Creates a new instance of <see cref="DefaultMessageDispatcher" />.
 		/// </summary>
-		public DefaultMessageDispatcher()
+		public DefaultMessageDispatcher ()
 		{
 			this.SyncRoot = new object();
 		}
+
+		#endregion
+
+
+
 
 		#region Instance Properties/Indexer
 
 		private object SyncRoot { get; }
 
 		#endregion
+
+
+
+
+		#region Interface: IMessageDispatcher
 
 		/// <inheritdoc />
 		bool ISynchronizable.IsSynchronized => true;
@@ -43,7 +58,7 @@ namespace RI.Framework.Services.Messaging.Dispatchers
 		object ISynchronizable.SyncRoot => this.SyncRoot;
 
 		/// <inheritdoc />
-		public void Post(List<IMessageReceiver> receivers, IMessage message, IMessageService messageService, Action<IMessage> deliveredCallback)
+		public void Post (List<IMessageReceiver> receivers, IMessage message, IMessageService messageService, Action<IMessage> deliveredCallback)
 		{
 			if (receivers == null)
 			{
@@ -70,11 +85,18 @@ namespace RI.Framework.Services.Messaging.Dispatchers
 			}
 		}
 
+		#endregion
+
+
+
+
+		#region Type: DispatchCapture
+
 		private sealed class DispatchCapture
 		{
 			#region Instance Constructor/Destructor
 
-			public DispatchCapture(Delegate action, params object[] arguments)
+			public DispatchCapture (Delegate action, params object[] arguments)
 			{
 				if (action == null)
 				{
@@ -111,7 +133,7 @@ namespace RI.Framework.Services.Messaging.Dispatchers
 
 			#region Instance Methods
 
-			public void Execute()
+			public void Execute ()
 			{
 				if (this.Context != null)
 				{
@@ -133,5 +155,7 @@ namespace RI.Framework.Services.Messaging.Dispatchers
 
 			#endregion
 		}
+
+		#endregion
 	}
 }

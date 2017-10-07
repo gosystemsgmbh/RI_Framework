@@ -2,6 +2,9 @@
 using RI.Framework.Services.Regions;
 using RI.Framework.Utilities.Logging;
 
+
+
+
 namespace RI.Framework.Mvvm.ViewModel
 {
 	/// <summary>
@@ -16,12 +19,19 @@ namespace RI.Framework.Mvvm.ViewModel
 		{
 		}
 
+		#endregion
 
-		/// <inheritdoc />
-		public bool LoggingEnabled { get; set; } = true;
+
+
+
+		#region Interface: ILogSource
 
 		/// <inheritdoc />
 		public ILogger Logger { get; set; } = LogLocator.Logger;
+
+
+		/// <inheritdoc />
+		public bool LoggingEnabled { get; set; } = true;
 
 		#endregion
 

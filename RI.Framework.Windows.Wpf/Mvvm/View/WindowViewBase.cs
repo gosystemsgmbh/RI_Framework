@@ -4,6 +4,9 @@ using System.Windows;
 using RI.Framework.Services.Logging;
 using RI.Framework.Utilities.Logging;
 
+
+
+
 namespace RI.Framework.Mvvm.View
 {
 	/// <summary>
@@ -15,13 +18,6 @@ namespace RI.Framework.Mvvm.View
 
 		/// <inheritdoc cref="IView.IsInitialized" />
 		public new bool IsInitialized { get; private set; }
-
-
-		/// <inheritdoc />
-		public bool LoggingEnabled { get; set; } = true;
-
-		/// <inheritdoc />
-		public ILogger Logger { get; set; } = LogLocator.Logger;
 
 		#endregion
 
@@ -68,6 +64,20 @@ namespace RI.Framework.Mvvm.View
 
 			this.PerformInitializationIfNotAlreadyDone();
 		}
+
+		#endregion
+
+
+
+
+		#region Interface: ILogSource
+
+		/// <inheritdoc />
+		public ILogger Logger { get; set; } = LogLocator.Logger;
+
+
+		/// <inheritdoc />
+		public bool LoggingEnabled { get; set; } = true;
 
 		#endregion
 

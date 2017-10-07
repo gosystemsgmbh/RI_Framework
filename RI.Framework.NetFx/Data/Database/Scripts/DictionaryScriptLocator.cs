@@ -2,20 +2,25 @@
 
 using RI.Framework.Utilities;
 
+
+
+
 namespace RI.Framework.Data.Database.Scripts
 {
 	/// <summary>
-	/// Implements a database script locator which uses name-script-pairs.
+	///     Implements a database script locator which uses name-script-pairs.
 	/// </summary>
 	/// <remarks>
-	/// <para>
-	/// <see cref="StringComparerEx.InvariantCultureIgnoreCase"/> is used to compare names of the name-script-pairs.
-	/// </para>
+	///     <para>
+	///         <see cref="StringComparerEx.InvariantCultureIgnoreCase" /> is used to compare names of the name-script-pairs.
+	///     </para>
 	/// </remarks>
 	public sealed class DictionaryScriptLocator : DatabaseScriptLocator
 	{
+		#region Instance Constructor/Destructor
+
 		/// <summary>
-		/// Creates a new instance of <see cref="DictionaryScriptLocator"/>.
+		///     Creates a new instance of <see cref="DictionaryScriptLocator" />.
 		/// </summary>
 		public DictionaryScriptLocator ()
 			: this(null)
@@ -23,9 +28,9 @@ namespace RI.Framework.Data.Database.Scripts
 		}
 
 		/// <summary>
-		/// Creates a new instance of <see cref="DictionaryScriptLocator"/>.
+		///     Creates a new instance of <see cref="DictionaryScriptLocator" />.
 		/// </summary>
-		/// <param name="scripts">A dictionary with predefined name-script-pairs.</param>
+		/// <param name="scripts"> A dictionary with predefined name-script-pairs. </param>
 		public DictionaryScriptLocator (IDictionary<string, string> scripts)
 		{
 			this.Scripts = new Dictionary<string, string>(StringComparerEx.InvariantCultureIgnoreCase);
@@ -39,13 +44,27 @@ namespace RI.Framework.Data.Database.Scripts
 			}
 		}
 
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
+
 		/// <summary>
-		/// Gets the dictionary with the used name-script-pairs.
+		///     Gets the dictionary with the used name-script-pairs.
 		/// </summary>
 		/// <value>
-		/// The dictionary with the used name-script-pairs.
+		///     The dictionary with the used name-script-pairs.
 		/// </value>
-		public Dictionary<string,string> Scripts { get; }
+		public Dictionary<string, string> Scripts { get; }
+
+		#endregion
+
+
+
+
+		#region Overrides
 
 		/// <inheritdoc />
 		protected override string LocateAndReadScript (IDatabaseManager manager, string name)
@@ -57,5 +76,7 @@ namespace RI.Framework.Data.Database.Scripts
 
 			return this.Scripts[name];
 		}
+
+		#endregion
 	}
 }

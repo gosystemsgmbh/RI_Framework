@@ -5,6 +5,9 @@ using RI.Framework.Services.Logging.Filters;
 using RI.Framework.Services.Logging.Writers;
 using RI.Framework.Utilities.Logging;
 
+
+
+
 namespace RI.Framework.Services.Logging
 {
 	/// <summary>
@@ -18,20 +21,19 @@ namespace RI.Framework.Services.Logging
 	/// <threadsafety static="true" instance="true" />
 	public static class LogLocator
 	{
+		#region Static Constructor/Destructor
+
 		static LogLocator ()
 		{
 			LogLocator.Logger = new LogLocatorLogger();
 		}
 
-		#region Static Properties/Indexer
+		#endregion
 
-		/// <summary>
-		/// Gets a logger which uses <see cref="LogLocator"/>.
-		/// </summary>
-		/// <value>
-		/// A logger which uses <see cref="LogLocator"/>.
-		/// </value>
-		public static ILogger Logger { get; }
+
+
+
+		#region Static Properties/Indexer
 
 		/// <inheritdoc cref="ILogService.Filter" />
 		public static ILogFilter Filter => LogLocator.Service?.Filter;
@@ -43,6 +45,14 @@ namespace RI.Framework.Services.Logging
 		///     true if a logging service is available and can be used by <see cref="LogLocator" />, false otherwise.
 		/// </value>
 		public static bool IsAvailable => LogLocator.Service != null;
+
+		/// <summary>
+		///     Gets a logger which uses <see cref="LogLocator" />.
+		/// </summary>
+		/// <value>
+		///     A logger which uses <see cref="LogLocator" />.
+		/// </value>
+		public static ILogger Logger { get; }
 
 		/// <summary>
 		///     Gets the available logging service.
@@ -77,17 +87,27 @@ namespace RI.Framework.Services.Logging
 		#endregion
 
 
+
+
+		#region Type: LogLocatorLogger
+
 		private sealed class LogLocatorLogger : ILogger
 		{
-			void ILogger.Log(LogLevel severity, string source, string format, params object[] args)
+			#region Interface: ILogger
+
+			void ILogger.Log (LogLevel severity, string source, string format, params object[] args)
 			{
 				LogLocator.Log(severity, source, format, args);
 			}
 
-			void ILogger.Log(DateTime timestamp, int threadId, LogLevel severity, string source, string format, params object[] args)
+			void ILogger.Log (DateTime timestamp, int threadId, LogLevel severity, string source, string format, params object[] args)
 			{
 				LogLocator.Log(timestamp, threadId, severity, source, format, args);
 			}
+
+			#endregion
 		}
+
+		#endregion
 	}
 }

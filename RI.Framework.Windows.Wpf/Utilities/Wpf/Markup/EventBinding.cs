@@ -10,14 +10,50 @@ using System.Windows.Input;
 namespace RI.Framework.Utilities.Wpf.Markup
 {
 	/// <summary>
-	/// Defines a single event-to-command binding used with <see cref="EventToCommandBinder"/>.
+	///     Defines a single event-to-command binding used with <see cref="EventToCommandBinder" />.
 	/// </summary>
 	public sealed class EventBinding : Freezable
 	{
+		#region Static Fields
+
 		/// <summary>
-		/// Creates a new instance of <see cref="EventBinding"/>.
+		///     Defines the command to be executed.
 		/// </summary>
-		public EventBinding()
+		public static DependencyProperty CommandProperty = DependencyProperty.Register("Command", typeof(ICommand), typeof(EventBinding), new UIPropertyMetadata(null, EventBinding.OnCommandChanged));
+
+		/// <summary>
+		///     Defines the event to be handled.
+		/// </summary>
+		public static DependencyProperty EventNameProperty = DependencyProperty.Register("EventName", typeof(string), typeof(EventBinding), new UIPropertyMetadata(null, EventBinding.OnEventNameChanged));
+
+		#endregion
+
+
+
+
+		#region Static Methods
+
+		private static void OnCommandChanged (DependencyObject obj, DependencyPropertyChangedEventArgs args)
+		{
+			(obj as EventBinding)?.ReAttach();
+		}
+
+		private static void OnEventNameChanged (DependencyObject obj, DependencyPropertyChangedEventArgs args)
+		{
+			(obj as EventBinding)?.ReAttach();
+		}
+
+		#endregion
+
+
+
+
+		#region Instance Constructor/Destructor
+
+		/// <summary>
+		///     Creates a new instance of <see cref="EventBinding" />.
+		/// </summary>
+		public EventBinding ()
 		{
 			this.AttachedTo = null;
 			this.EventInfo = null;
@@ -26,35 +62,18 @@ namespace RI.Framework.Utilities.Wpf.Markup
 			this.EventHandlerMethod = this.GetType().GetMethod(nameof(this.OnEvent), BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 		}
 
-		private DependencyObject AttachedTo { get; set; }
-		private EventInfo EventInfo { get; set; }
-		private Delegate EventHandlerDelegate { get; set; }
-		private MethodInfo EventHandlerMethod { get; set; }
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
 
 		/// <summary>
-		/// Defines the command to be executed.
-		/// </summary>
-		public static DependencyProperty CommandProperty = DependencyProperty.Register("Command", typeof(ICommand), typeof(EventBinding), new UIPropertyMetadata(null, EventBinding.OnCommandChanged));
-
-		/// <summary>
-		/// Defines the event to be handled.
-		/// </summary>
-		public static DependencyProperty EventNameProperty = DependencyProperty.Register("EventName", typeof(string), typeof(EventBinding), new UIPropertyMetadata(null, EventBinding.OnEventNameChanged));
-
-		private static void OnCommandChanged(DependencyObject obj, DependencyPropertyChangedEventArgs args)
-		{
-			(obj as EventBinding)?.ReAttach();
-		}
-		private static void OnEventNameChanged(DependencyObject obj, DependencyPropertyChangedEventArgs args)
-		{
-			(obj as EventBinding)?.ReAttach();
-		}
-
-		/// <summary>
-		/// Gets or sets the command to be executed.
+		///     Gets or sets the command to be executed.
 		/// </summary>
 		/// <value>
-		/// The command to be executed.
+		///     The command to be executed.
 		/// </value>
 		public ICommand Command
 		{
@@ -69,10 +88,10 @@ namespace RI.Framework.Utilities.Wpf.Markup
 		}
 
 		/// <summary>
-		/// Gets or sets the event to be handled.
+		///     Gets or sets the event to be handled.
 		/// </summary>
 		/// <value>
-		/// The event to be handled.
+		///     The event to be handled.
 		/// </value>
 		public string EventName
 		{
@@ -86,12 +105,19 @@ namespace RI.Framework.Utilities.Wpf.Markup
 			}
 		}
 
-		internal void ReAttach()
-		{
-			this.Attach(this.AttachedTo);
-		}
+		private DependencyObject AttachedTo { get; set; }
+		private Delegate EventHandlerDelegate { get; set; }
+		private MethodInfo EventHandlerMethod { get; set; }
+		private EventInfo EventInfo { get; set; }
 
-		internal void Attach(DependencyObject attachedTo)
+		#endregion
+
+
+
+
+		#region Instance Methods
+
+		internal void Attach (DependencyObject attachedTo)
 		{
 			this.Detach();
 
@@ -122,7 +148,7 @@ namespace RI.Framework.Utilities.Wpf.Markup
 			this.EventInfo.AddEventHandler(this.AttachedTo, this.EventHandlerDelegate);
 		}
 
-		internal void Detach()
+		internal void Detach ()
 		{
 			this.EventInfo?.RemoveEventHandler(this.AttachedTo, this.EventHandlerDelegate);
 
@@ -131,8 +157,13 @@ namespace RI.Framework.Utilities.Wpf.Markup
 			this.AttachedTo = null;
 		}
 
+		internal void ReAttach ()
+		{
+			this.Attach(this.AttachedTo);
+		}
+
 		[SuppressMessage("ReSharper", "UnusedParameter.Local")]
-		private void OnEvent(object sender, object eventArgs)
+		private void OnEvent (object sender, object eventArgs)
 		{
 			if (this.Command.CanExecute(eventArgs))
 			{
@@ -140,10 +171,19 @@ namespace RI.Framework.Utilities.Wpf.Markup
 			}
 		}
 
+		#endregion
+
+
+
+
+		#region Overrides
+
 		/// <inheritdoc />
-		protected override Freezable CreateInstanceCore()
+		protected override Freezable CreateInstanceCore ()
 		{
 			return new EventBinding();
 		}
+
+		#endregion
 	}
 }

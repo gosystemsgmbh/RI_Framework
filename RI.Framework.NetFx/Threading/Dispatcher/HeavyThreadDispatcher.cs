@@ -62,7 +62,6 @@ namespace RI.Framework.Threading.Dispatcher
 		private bool _catchExceptions;
 		private ThreadDispatcherOptions _defaultOptions;
 		private int _defaultPriority;
-		private TimeSpan? _watchdogTimeout;
 
 		private bool _finishPendingDelegatesOnShutdown;
 		private bool _isBackgroundThread;
@@ -71,6 +70,7 @@ namespace RI.Framework.Threading.Dispatcher
 		private string _threadName;
 		private ThreadPriority _threadPriority;
 		private CultureInfo _threadUICulture;
+		private TimeSpan? _watchdogTimeout;
 
 		#endregion
 
@@ -308,9 +308,9 @@ namespace RI.Framework.Threading.Dispatcher
 
 		private EventHandler<ThreadDispatcherExceptionEventArgs> DispatcherExceptionHandlerDelegate { get; }
 
-		private EventHandler<ThreadDispatcherWatchdogEventArgs> DispatcherWatchdogHandlerDelegate { get; }
-
 		private ThreadDispatcherOperation DispatcherStartOperation { get; set; }
+
+		private EventHandler<ThreadDispatcherWatchdogEventArgs> DispatcherWatchdogHandlerDelegate { get; }
 
 		#endregion
 
@@ -346,7 +346,7 @@ namespace RI.Framework.Threading.Dispatcher
 			}
 		}
 
-		private void DispatcherWatchdogHandler(object sender, ThreadDispatcherWatchdogEventArgs args)
+		private void DispatcherWatchdogHandler (object sender, ThreadDispatcherWatchdogEventArgs args)
 		{
 			this.Watchdog?.Invoke(this, args);
 		}
@@ -596,12 +596,6 @@ namespace RI.Framework.Threading.Dispatcher
 		}
 
 		/// <inheritdoc />
-		public event EventHandler<ThreadDispatcherExceptionEventArgs> Exception;
-
-		/// <inheritdoc />
-		public event EventHandler<ThreadDispatcherWatchdogEventArgs> Watchdog;
-
-		/// <inheritdoc />
 		public TimeSpan? WatchdogTimeout
 		{
 			get
@@ -627,6 +621,21 @@ namespace RI.Framework.Threading.Dispatcher
 						this.Dispatcher.WatchdogTimeout = value;
 					}
 				}
+			}
+		}
+
+		/// <inheritdoc />
+		public event EventHandler<ThreadDispatcherExceptionEventArgs> Exception;
+
+		/// <inheritdoc />
+		public event EventHandler<ThreadDispatcherWatchdogEventArgs> Watchdog;
+
+		/// <inheritdoc />
+		public bool AddKeepAlive (object obj)
+		{
+			lock (this.SyncRoot)
+			{
+				return this.Dispatcher?.AddKeepAlive(obj) ?? false;
 			}
 		}
 
@@ -757,6 +766,15 @@ namespace RI.Framework.Threading.Dispatcher
 		}
 
 		/// <inheritdoc />
+		public bool RemoveKeepAlive (object obj)
+		{
+			lock (this.SyncRoot)
+			{
+				return this.Dispatcher?.RemoveKeepAlive(obj) ?? false;
+			}
+		}
+
+		/// <inheritdoc />
 		public object Send (Delegate action, params object[] parameters)
 		{
 			ThreadDispatcher dispatcher;
@@ -850,24 +868,6 @@ namespace RI.Framework.Threading.Dispatcher
 			}
 
 			await this.BeginShutdownInternal(finishPendingDelegates).ConfigureAwait(false);
-		}
-
-		/// <inheritdoc />
-		public bool AddKeepAlive (object obj)
-		{
-			lock (this.SyncRoot)
-			{
-				return this.Dispatcher?.AddKeepAlive(obj) ?? false;
-			}
-		}
-
-		/// <inheritdoc />
-		public bool RemoveKeepAlive (object obj)
-		{
-			lock (this.SyncRoot)
-			{
-				return this.Dispatcher?.RemoveKeepAlive(obj) ?? false;
-			}
 		}
 
 		#endregion

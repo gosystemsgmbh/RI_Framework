@@ -89,6 +89,15 @@ namespace RI.Framework.Threading.Dispatcher
 		ThreadDispatcherShutdownMode ShutdownMode { get; }
 
 		/// <summary>
+		///     Gets the watchdog timeout.
+		/// </summary>
+		/// <value>
+		///     The watchdog timeout or null if no watchdog is used.
+		/// </value>
+		/// <exception cref="ArgumentOutOfRangeException"> The value is negative. </exception>
+		TimeSpan? WatchdogTimeout { get; set; }
+
+		/// <summary>
 		///     Raised when an exception occurred during execution of a delegate.
 		/// </summary>
 		/// <remarks>
@@ -109,13 +118,21 @@ namespace RI.Framework.Threading.Dispatcher
 		event EventHandler<ThreadDispatcherWatchdogEventArgs> Watchdog;
 
 		/// <summary>
-		/// Gets the watchdog timeout.
+		///     Adds an object to the list of objects which are kept alive at least as long as this thread dispatcher is running.
 		/// </summary>
-		/// <value>
-		/// The watchdog timeout or null if no watchdog is used.
-		/// </value>
-		/// <exception cref="ArgumentOutOfRangeException">The value is negative.</exception>
-		TimeSpan? WatchdogTimeout { get; set; }
+		/// <param name="obj"> The object to add to the keep-alive list. </param>
+		/// <returns>
+		///     true if the thread dispatcher is running and the object was added to the keep-alive list, false otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         The keep-alive list simply storeas a reference to the specified object, preventing the garbage collector from collecting the object.
+		///         Therefore, the keep-alive list is useful for keeping objects which are needed later, e.g. during the processing of a delegate, but are not required anywhere else.
+		///         An example for this is a <see cref="ThreadDispatcherTimer" /> which needs to live as long as the timer is running, e.g. a one-shot timer where the <see cref="ThreadDispatcherTimer" /> instance is not required anymore after it was created.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="obj" /> is null. </exception>
+		bool AddKeepAlive (object obj);
 
 		/// <summary>
 		///     Stops processing the delegate queue but does not wait for its shutdown.
@@ -273,6 +290,21 @@ namespace RI.Framework.Threading.Dispatcher
 		/// <exception cref="ArgumentNullException"> <paramref name="action" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> The dispatcher is being shut down. </exception>
 		ThreadDispatcherOperation Post (ThreadDispatcherExecutionContext executionContext, int priority, ThreadDispatcherOptions options, Delegate action, params object[] parameters);
+
+		/// <summary>
+		///     Removes an object from the list of objects which are kept alive at least as long as this thread dispatcher is running.
+		/// </summary>
+		/// <param name="obj"> The object to remove from the keep-alive list. </param>
+		/// <returns>
+		///     true if the thread dispatcher is running and the object was removed from the keep-alive list, false otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         <see cref="AddKeepAlive" /> for more details.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="obj" /> is null. </exception>
+		bool RemoveKeepAlive (object obj);
 
 		/// <summary>
 		///     Enqueues a delegate to the dispatchers queue and waits for its execution to be completed.
@@ -469,37 +501,5 @@ namespace RI.Framework.Threading.Dispatcher
 		/// </remarks>
 		/// <exception cref="InvalidOperationException"> The dispatcher is not running, is already being shut down, or the method was called from the dispatcher thread. </exception>
 		Task ShutdownAsync (bool finishPendingDelegates);
-
-		/// <summary>
-		/// Adds an object to the list of objects which are kept alive at least as long as this thread dispatcher is running.
-		/// </summary>
-		/// <param name="obj">The object to add to the keep-alive list.</param>
-		/// <returns>
-		/// true if the thread dispatcher is running and the object was added to the keep-alive list, false otherwise.
-		/// </returns>
-		/// <remarks>
-		/// <para>
-		/// The keep-alive list simply storeas a reference to the specified object, preventing the garbage collector from collecting the object.
-		/// Therefore, the keep-alive list is useful for keeping objects which are needed later, e.g. during the processing of a delegate, but are not required anywhere else.
-		/// An example for this is a <see cref="ThreadDispatcherTimer"/> which needs to live as long as the timer is running, e.g. a one-shot timer where the <see cref="ThreadDispatcherTimer"/> instance is not required anymore after it was created.
-		/// </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="obj"/> is null.</exception>
-		bool AddKeepAlive (object obj);
-
-		/// <summary>
-		/// Removes an object from the list of objects which are kept alive at least as long as this thread dispatcher is running.
-		/// </summary>
-		/// <param name="obj">The object to remove from the keep-alive list.</param>
-		/// <returns>
-		/// true if the thread dispatcher is running and the object was removed from the keep-alive list, false otherwise.
-		/// </returns>
-		/// <remarks>
-		/// <para>
-		/// <see cref="AddKeepAlive"/> for more details.
-		/// </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="obj"/> is null.</exception>
-		bool RemoveKeepAlive (object obj);
 	}
 }

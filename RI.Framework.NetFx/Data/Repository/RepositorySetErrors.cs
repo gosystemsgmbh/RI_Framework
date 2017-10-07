@@ -16,13 +16,13 @@ namespace RI.Framework.Data.Repository
 	///     Represents validation errors of an entity.
 	/// </summary>
 	/// <remarks>
-	/// <para>
-	/// For equality comparison, <see cref="StringComparerEx.Ordinal" /> is used for the property names and <see cref="StringComparerEx.OrdinalIgnoreCase" /> for the errors.
-	/// </para>
-	/// <note type="note">
-	/// <see cref="RepositorySetErrors"/> is serializable, using <see cref="ISerializable"/>.
-	/// Therefore, to serialize and deserialize values in types inheriting from <see cref="RepositorySetErrors"/>, you must use <see cref="GetObjectData"/> and <see cref="RepositorySetErrors(SerializationInfo,StreamingContext)"/>.
-	/// </note>
+	///     <para>
+	///         For equality comparison, <see cref="StringComparerEx.Ordinal" /> is used for the property names and <see cref="StringComparerEx.OrdinalIgnoreCase" /> for the errors.
+	///     </para>
+	///     <note type="note">
+	///         <see cref="RepositorySetErrors" /> is serializable, using <see cref="ISerializable" />.
+	///         Therefore, to serialize and deserialize values in types inheriting from <see cref="RepositorySetErrors" />, you must use <see cref="GetObjectData" /> and <see cref="RepositorySetErrors(SerializationInfo,StreamingContext)" />.
+	///     </note>
 	/// </remarks>
 	[Serializable]
 	public class RepositorySetErrors : ISerializable
@@ -39,12 +39,12 @@ namespace RI.Framework.Data.Repository
 		}
 
 		/// <summary>
-		/// Creates a new instance of <see cref="RepositorySetErrors" />.
+		///     Creates a new instance of <see cref="RepositorySetErrors" />.
 		/// </summary>
 		/// <param name="info"> The serialization data. </param>
 		/// <param name="context"> The type of the source of the serialization data. </param>
-		/// <exception cref="ArgumentNullException"><paramref name="info"/> is null.</exception>
-		public RepositorySetErrors(SerializationInfo info, StreamingContext context)
+		/// <exception cref="ArgumentNullException"> <paramref name="info" /> is null. </exception>
+		public RepositorySetErrors (SerializationInfo info, StreamingContext context)
 			: this()
 		{
 			if (info == null)
@@ -58,29 +58,6 @@ namespace RI.Framework.Data.Repository
 
 			entityErrors?.ForEach(x => this.AddEntityError(x));
 			propertyErrors?.ForEach(x => x.Value.ForEach(y => this.AddPropertyError(x.Key, y)));
-		}
-
-		/// <inheritdoc />
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-		{
-			if (info == null)
-			{
-				throw new ArgumentNullException(nameof(info));
-			}
-
-			this.GetObjectData(info, context);
-		}
-
-		/// <inheritdoc cref="ISerializable.GetObjectData" />
-		protected virtual void GetObjectData(SerializationInfo info, StreamingContext context)
-		{
-			string[] entityErrors = this.EntityErrors.ToArray();
-
-			Dictionary<string, string[]> propertyErrors = new Dictionary<string, string[]>(this.PropertyErrors.Comparer);
-			this.PropertyErrors.ForEach(x => propertyErrors.Add(x.Key, x.Value.ToArray()));
-
-			info.AddValue(nameof(RepositorySetErrors.EntityErrors), entityErrors);
-			info.AddValue(nameof(RepositorySetErrors.PropertyErrors), propertyErrors);
 		}
 
 		#endregion
@@ -241,6 +218,43 @@ namespace RI.Framework.Data.Repository
 		public string ToErrorString (string separator)
 		{
 			return this.ToErrorList()?.Join(separator ?? Environment.NewLine);
+		}
+
+		#endregion
+
+
+
+
+		#region Virtuals
+
+		/// <inheritdoc cref="ISerializable.GetObjectData" />
+		protected virtual void GetObjectData (SerializationInfo info, StreamingContext context)
+		{
+			string[] entityErrors = this.EntityErrors.ToArray();
+
+			Dictionary<string, string[]> propertyErrors = new Dictionary<string, string[]>(this.PropertyErrors.Comparer);
+			this.PropertyErrors.ForEach(x => propertyErrors.Add(x.Key, x.Value.ToArray()));
+
+			info.AddValue(nameof(RepositorySetErrors.EntityErrors), entityErrors);
+			info.AddValue(nameof(RepositorySetErrors.PropertyErrors), propertyErrors);
+		}
+
+		#endregion
+
+
+
+
+		#region Interface: ISerializable
+
+		/// <inheritdoc />
+		void ISerializable.GetObjectData (SerializationInfo info, StreamingContext context)
+		{
+			if (info == null)
+			{
+				throw new ArgumentNullException(nameof(info));
+			}
+
+			this.GetObjectData(info, context);
 		}
 
 		#endregion

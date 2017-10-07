@@ -4,6 +4,6 @@
              xmlns:local="clr-namespace:RI.Tools.Framework.LogViewer"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+
     </Application.Resources>
 </Application>

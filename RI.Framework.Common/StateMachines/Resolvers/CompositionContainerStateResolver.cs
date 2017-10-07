@@ -26,7 +26,7 @@ namespace RI.Framework.StateMachines.Resolvers
 		/// <param name="container"> The used composition container </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="container" /> is null. </exception>
 		public CompositionContainerStateResolver (CompositionContainer container)
-			:base(container)
+			: base(container)
 		{
 			if (container == null)
 			{

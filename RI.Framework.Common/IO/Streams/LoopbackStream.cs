@@ -10,24 +10,24 @@ using System.Threading;
 namespace RI.Framework.IO.Streams
 {
 	/// <summary>
-	/// Implements a stream where write operations are written to a queue and read operations read from that queue.
+	///     Implements a stream where write operations are written to a queue and read operations read from that queue.
 	/// </summary>
 	/// <remarks>
-	/// <para>
-	/// Bytes written using <see cref="Write"/> or <see cref="WriteByte"/> are written to a queue.
-	/// When bytes are read using <see cref="Read"/> or <see cref="ReadByte"/>, the bytes are read from that queue.
-	/// The queue is using first-in first-out (FIFO), meaning that bytes written first are read first.
-	/// </para>
-	/// <para>
-	/// <see cref="LoopbackStream"/> is thread-safe. One thread can write to the strem while another thread can read from the stream at the same time.
-	/// However, only one read and only one write operation can be performed at the same time.
-	/// Calling a read or write operation while another is already in progress, the call blocks.
-	/// </para>
-	/// <para>
-	/// Timeouts are supported.
-	/// When a <see cref="ReadTimeout"/> greater than zero is used, read operations will wait for the specified amount of time if the queue is empty.
-	/// <see cref="WriteTimeout"/> can be used but is ignored by <see cref="LoopbackStream"/>.
-	/// </para>
+	///     <para>
+	///         Bytes written using <see cref="Write" /> or <see cref="WriteByte" /> are written to a queue.
+	///         When bytes are read using <see cref="Read" /> or <see cref="ReadByte" />, the bytes are read from that queue.
+	///         The queue is using first-in first-out (FIFO), meaning that bytes written first are read first.
+	///     </para>
+	///     <para>
+	///         <see cref="LoopbackStream" /> is thread-safe. One thread can write to the strem while another thread can read from the stream at the same time.
+	///         However, only one read and only one write operation can be performed at the same time.
+	///         Calling a read or write operation while another is already in progress, the call blocks.
+	///     </para>
+	///     <para>
+	///         Timeouts are supported.
+	///         When a <see cref="ReadTimeout" /> greater than zero is used, read operations will wait for the specified amount of time if the queue is empty.
+	///         <see cref="WriteTimeout" /> can be used but is ignored by <see cref="LoopbackStream" />.
+	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	public sealed class LoopbackStream : Stream
@@ -35,9 +35,9 @@ namespace RI.Framework.IO.Streams
 		#region Instance Constructor/Destructor
 
 		/// <summary>
-		/// Creates a new instance of <see cref="LoopbackStream"/>.
+		///     Creates a new instance of <see cref="LoopbackStream" />.
 		/// </summary>
-		public LoopbackStream()
+		public LoopbackStream ()
 		{
 			this.SyncRoot = new object();
 			this.ReadSyncRoot = new object();
@@ -56,7 +56,7 @@ namespace RI.Framework.IO.Streams
 		/// <summary>
 		///     Garbage collects this instance of <see cref="LoopbackStream" />.
 		/// </summary>
-		~LoopbackStream()
+		~LoopbackStream ()
 		{
 			this.Close();
 		}
@@ -83,6 +83,54 @@ namespace RI.Framework.IO.Streams
 
 		#region Instance Properties/Indexer
 
+		/// <summary>
+		///     Gets whether the stream is closed/disposed.
+		/// </summary>
+		/// <value>
+		///     true if the stream is closed/disposed, false otherwise.
+		/// </value>
+		public bool IsDisposed
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._isDisposed;
+				}
+			}
+			private set
+			{
+				lock (this.SyncRoot)
+				{
+					this._isDisposed = value;
+				}
+			}
+		}
+
+		/// <summary>
+		///     Gets whether the stream is currently being closed/disposed.
+		/// </summary>
+		/// <value>
+		///     true if the stream is currently being closed/disposed or is already closed/disposed, false otherwise.
+		/// </value>
+		public bool IsDisposing
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._isDisposing;
+				}
+			}
+			private set
+			{
+				lock (this.SyncRoot)
+				{
+					this._isDisposing = value;
+				}
+			}
+		}
+
 		private List<byte[]> Buffer { get; set; }
 
 		private AutoResetEvent DataWritten { get; set; }
@@ -101,10 +149,10 @@ namespace RI.Framework.IO.Streams
 		#region Instance Methods
 
 		/// <summary>
-		/// Clears the queue.
+		///     Clears the queue.
 		/// </summary>
-		/// <exception cref="ObjectDisposedException">This instance is closed/disposed.</exception>
-		public void Clear()
+		/// <exception cref="ObjectDisposedException"> This instance is closed/disposed. </exception>
+		public void Clear ()
 		{
 			lock (this.SyncRoot)
 			{
@@ -115,19 +163,19 @@ namespace RI.Framework.IO.Streams
 		}
 
 		/// <summary>
-		/// Copies the current content of the queue to an array.
+		///     Copies the current content of the queue to an array.
 		/// </summary>
 		/// <returns>
-		/// The array with the current content of the queue.
-		/// If the queue is empty, an empty array is returned.
+		///     The array with the current content of the queue.
+		///     If the queue is empty, an empty array is returned.
 		/// </returns>
 		/// <remarks>
-		/// <para>
-		/// The content of the queue is copied, the queue itself is not changed.
-		/// </para>
+		///     <para>
+		///         The content of the queue is copied, the queue itself is not changed.
+		///     </para>
 		/// </remarks>
-		/// <exception cref="ObjectDisposedException">This instance is closed/disposed.</exception>
-		public byte[] ToArray()
+		/// <exception cref="ObjectDisposedException"> This instance is closed/disposed. </exception>
+		public byte[] ToArray ()
 		{
 			lock (this.SyncRoot)
 			{
@@ -147,7 +195,7 @@ namespace RI.Framework.IO.Streams
 			}
 		}
 
-		private void CloseInternal()
+		private void CloseInternal ()
 		{
 			this.IsDisposing = true;
 
@@ -166,7 +214,7 @@ namespace RI.Framework.IO.Streams
 			this.IsDisposed = true;
 		}
 
-		private int ReadInternal(byte[] buffer, int offset, int count, TimeSpan? timeout)
+		private int ReadInternal (byte[] buffer, int offset, int count, TimeSpan? timeout)
 		{
 			List<byte[]> read = new List<byte[]>();
 			int readBytes = 0;
@@ -245,7 +293,7 @@ namespace RI.Framework.IO.Streams
 			return position;
 		}
 
-		private void VerifyNotClosed()
+		private void VerifyNotClosed ()
 		{
 			if (this.IsDisposed)
 			{
@@ -368,7 +416,7 @@ namespace RI.Framework.IO.Streams
 		}
 
 		/// <inheritdoc />
-		public override void Close()
+		public override void Close ()
 		{
 			lock (this.SyncRoot)
 			{
@@ -378,7 +426,7 @@ namespace RI.Framework.IO.Streams
 		}
 
 		/// <inheritdoc />
-		public override void Flush()
+		public override void Flush ()
 		{
 			lock (this.SyncRoot)
 			{
@@ -387,7 +435,7 @@ namespace RI.Framework.IO.Streams
 		}
 
 		/// <inheritdoc />
-		public override int Read(byte[] buffer, int offset, int count)
+		public override int Read (byte[] buffer, int offset, int count)
 		{
 			if (buffer == null)
 			{
@@ -430,7 +478,7 @@ namespace RI.Framework.IO.Streams
 		}
 
 		/// <inheritdoc />
-		public override int ReadByte()
+		public override int ReadByte ()
 		{
 			byte[] buffer = new byte[1];
 
@@ -445,7 +493,7 @@ namespace RI.Framework.IO.Streams
 		}
 
 		/// <inheritdoc />
-		public override long Seek(long offset, SeekOrigin origin)
+		public override long Seek (long offset, SeekOrigin origin)
 		{
 			lock (this.SyncRoot)
 			{
@@ -455,7 +503,7 @@ namespace RI.Framework.IO.Streams
 		}
 
 		/// <inheritdoc />
-		public override void SetLength(long value)
+		public override void SetLength (long value)
 		{
 			lock (this.SyncRoot)
 			{
@@ -465,7 +513,7 @@ namespace RI.Framework.IO.Streams
 		}
 
 		/// <inheritdoc />
-		public override void Write(byte[] buffer, int offset, int count)
+		public override void Write (byte[] buffer, int offset, int count)
 		{
 			if (buffer == null)
 			{
@@ -504,76 +552,18 @@ namespace RI.Framework.IO.Streams
 		}
 
 		/// <inheritdoc />
-		public override void WriteByte(byte value)
+		public override void WriteByte (byte value)
 		{
-			this.Write(new[]
-			{
-				value
-			});
+			this.Write(new[] {value});
 		}
 
 		/// <inheritdoc />
-		protected override void Dispose(bool disposing)
+		protected override void Dispose (bool disposing)
 		{
 			lock (this.SyncRoot)
 			{
 				this.CloseInternal();
 				base.Dispose(disposing);
-			}
-		}
-
-		#endregion
-
-
-
-
-		#region Interface: IEnhancedDisposable
-
-		/// <summary>
-		/// Gets whether the stream is closed/disposed.
-		/// </summary>
-		/// <value>
-		/// true if the stream is closed/disposed, false otherwise.
-		/// </value>
-		public bool IsDisposed
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					return this._isDisposed;
-				}
-			}
-			private set
-			{
-				lock (this.SyncRoot)
-				{
-					this._isDisposed = value;
-				}
-			}
-		}
-
-		/// <summary>
-		/// Gets whether the stream is currently being closed/disposed.
-		/// </summary>
-		/// <value>
-		/// true if the stream is currently being closed/disposed or is already closed/disposed, false otherwise.
-		/// </value>
-		public bool IsDisposing
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					return this._isDisposing;
-				}
-			}
-			private set
-			{
-				lock (this.SyncRoot)
-				{
-					this._isDisposing = value;
-				}
 			}
 		}
 

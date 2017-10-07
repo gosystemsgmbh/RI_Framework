@@ -3,45 +3,57 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 
+
+
+
 namespace RI.Framework.Data.Database.Scripts
 {
 	/// <summary>
-	/// Implements a database script locator which uses assembly resources to locate scripts.
+	///     Implements a database script locator which uses assembly resources to locate scripts.
 	/// </summary>
 	public sealed class AssemblyRessourceScriptLocator : DatabaseScriptLocator
 	{
+		#region Constants
+
 		/// <summary>
-		/// Thedefault encoding used to read assembly resources.
+		///     Thedefault encoding used to read assembly resources.
 		/// </summary>
 		/// <remarks>
-		/// <para>
-		/// The default encoding is UTF-8.
-		/// </para>
+		///     <para>
+		///         The default encoding is UTF-8.
+		///     </para>
 		/// </remarks>
 		public static readonly Encoding DefaultEncoding = Encoding.UTF8;
 
+		#endregion
+
+
+
+
+		#region Instance Constructor/Destructor
+
 		/// <summary>
-		/// Creates a new instance of <see cref="AssemblyRessourceScriptLocator"/>.
+		///     Creates a new instance of <see cref="AssemblyRessourceScriptLocator" />.
 		/// </summary>
-		/// <param name="assembly">The used assembly.</param>
+		/// <param name="assembly"> The used assembly. </param>
 		/// <remarks>
-		/// <para>
-		/// The default encoding <see cref="DefaultEncoding"/> is used.
-		/// </para>
+		///     <para>
+		///         The default encoding <see cref="DefaultEncoding" /> is used.
+		///     </para>
 		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="assembly"/> is null.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="assembly" /> is null. </exception>
 		public AssemblyRessourceScriptLocator (Assembly assembly)
-			:this(assembly, null)
+			: this(assembly, null)
 		{
 		}
 
 		/// <summary>
-		/// Creates a new instance of <see cref="AssemblyRessourceScriptLocator"/>.
+		///     Creates a new instance of <see cref="AssemblyRessourceScriptLocator" />.
 		/// </summary>
-		/// <param name="assembly">The used assembly.</param>
-		/// <param name="encoding">The used encoding or null to use the default encoding <see cref="DefaultEncoding"/>.</param>
-		/// <exception cref="ArgumentNullException"><paramref name="assembly"/> is null.</exception>
-		public AssemblyRessourceScriptLocator(Assembly assembly, Encoding encoding)
+		/// <param name="assembly"> The used assembly. </param>
+		/// <param name="encoding"> The used encoding or null to use the default encoding <see cref="DefaultEncoding" />. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="assembly" /> is null. </exception>
+		public AssemblyRessourceScriptLocator (Assembly assembly, Encoding encoding)
 		{
 			if (assembly == null)
 			{
@@ -52,21 +64,35 @@ namespace RI.Framework.Data.Database.Scripts
 			this.Encoding = encoding ?? AssemblyRessourceScriptLocator.DefaultEncoding;
 		}
 
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
+
 		/// <summary>
-		/// Gets the used assembly.
+		///     Gets the used assembly.
 		/// </summary>
 		/// <value>
-		/// The used assembly.
+		///     The used assembly.
 		/// </value>
 		public Assembly Assembly { get; }
 
 		/// <summary>
-		/// Gets the used encoding.
+		///     Gets the used encoding.
 		/// </summary>
 		/// <value>
-		/// The used encoding.
+		///     The used encoding.
 		/// </value>
 		public Encoding Encoding { get; }
+
+		#endregion
+
+
+
+
+		#region Overrides
 
 		/// <inheritdoc />
 		protected override string LocateAndReadScript (IDatabaseManager manager, string name)
@@ -84,5 +110,7 @@ namespace RI.Framework.Data.Database.Scripts
 				}
 			}
 		}
+
+		#endregion
 	}
 }

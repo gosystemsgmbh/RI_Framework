@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
+
+
+
 namespace RI.Framework.Utilities.Exceptions
 {
 	/// <summary>
@@ -23,7 +26,7 @@ namespace RI.Framework.Utilities.Exceptions
 		/// <summary>
 		///     Creates a new instance of <see cref="InvalidStateOrExecutionPathException" />.
 		/// </summary>
-		public InvalidStateOrExecutionPathException()
+		public InvalidStateOrExecutionPathException ()
 			: base(InvalidStateOrExecutionPathException.ExceptionMessage)
 		{
 		}
@@ -32,7 +35,7 @@ namespace RI.Framework.Utilities.Exceptions
 		///     Creates a new instance of <see cref="InvalidStateOrExecutionPathException" />.
 		/// </summary>
 		/// <param name="message"> The message which describes the exception. </param>
-		public InvalidStateOrExecutionPathException(string message)
+		public InvalidStateOrExecutionPathException (string message)
 			: base(message)
 		{
 		}
@@ -42,7 +45,7 @@ namespace RI.Framework.Utilities.Exceptions
 		/// </summary>
 		/// <param name="message"> The message which describes the exception. </param>
 		/// <param name="innerException"> The exception which triggered this exception. </param>
-		public InvalidStateOrExecutionPathException(string message, Exception innerException)
+		public InvalidStateOrExecutionPathException (string message, Exception innerException)
 			: base(message, innerException)
 		{
 		}
@@ -52,7 +55,7 @@ namespace RI.Framework.Utilities.Exceptions
 		/// </summary>
 		/// <param name="info"> The serialization data. </param>
 		/// <param name="context"> The type of the source of the serialization data. </param>
-		protected InvalidStateOrExecutionPathException(SerializationInfo info, StreamingContext context)
+		protected InvalidStateOrExecutionPathException (SerializationInfo info, StreamingContext context)
 			: base(info, context)
 		{
 		}

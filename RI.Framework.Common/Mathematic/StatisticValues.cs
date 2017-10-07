@@ -230,16 +230,6 @@ namespace RI.Framework.Mathematic
 		public double ArithmeticMean;
 
 		/// <summary>
-		///     The geometric mean of all values.
-		/// </summary>
-		public double GeometricMean;
-
-		/// <summary>
-		///     The harmonic mean of all values.
-		/// </summary>
-		public double HarmonicMean;
-
-		/// <summary>
 		///     The number of values.
 		/// </summary>
 		public int Count;
@@ -248,6 +238,16 @@ namespace RI.Framework.Mathematic
 		///     The sum of all timesteps.
 		/// </summary>
 		public double Duration;
+
+		/// <summary>
+		///     The geometric mean of all values.
+		/// </summary>
+		public double GeometricMean;
+
+		/// <summary>
+		///     The harmonic mean of all values.
+		/// </summary>
+		public double HarmonicMean;
 
 		/// <summary>
 		///     The largest value of all values.
@@ -280,14 +280,14 @@ namespace RI.Framework.Mathematic
 		public double Min;
 
 		/// <summary>
+		///     The product of all values.
+		/// </summary>
+		public double Product;
+
+		/// <summary>
 		///     The root-mean-square (RMS) of all values.
 		/// </summary>
 		public double Rms;
-
-		/// <summary>
-		///     The variance of all values.
-		/// </summary>
-		public double Variance;
 
 		/// <summary>
 		///     The sigma or standard deviation of all values.
@@ -310,11 +310,6 @@ namespace RI.Framework.Mathematic
 		public double Sum;
 
 		/// <summary>
-		///     The product of all values.
-		/// </summary>
-		public double Product;
-
-		/// <summary>
 		///     The timesteps of each value.
 		/// </summary>
 		public double[] Timesteps;
@@ -323,6 +318,11 @@ namespace RI.Framework.Mathematic
 		///     All values.
 		/// </summary>
 		public double[] Values;
+
+		/// <summary>
+		///     The variance of all values.
+		/// </summary>
+		public double Variance;
 
 		/// <summary>
 		///     All values, multiplied by their corresponding timestep and then sorted by their numeric value.

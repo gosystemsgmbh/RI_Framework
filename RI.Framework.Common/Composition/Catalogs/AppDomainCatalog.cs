@@ -8,6 +8,9 @@ using RI.Framework.Composition.Model;
 using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.Runtime;
 
+
+
+
 namespace RI.Framework.Composition.Catalogs
 {
 	/// <summary>
@@ -28,7 +31,7 @@ namespace RI.Framework.Composition.Catalogs
 		/// </summary>
 		/// <remarks>
 		///     <para>
-		///         true is used for <see cref="ExportAllTypes" /> and <see cref="AutoUpdate" />, false is used for <see cref="IgnoreFrameworkTypes"/>.
+		///         true is used for <see cref="ExportAllTypes" /> and <see cref="AutoUpdate" />, false is used for <see cref="IgnoreFrameworkTypes" />.
 		///     </para>
 		/// </remarks>
 		public AppDomainCatalog ()
@@ -62,6 +65,8 @@ namespace RI.Framework.Composition.Catalogs
 
 		private bool _autoUpdate;
 		private bool _exportAllTypes;
+
+		private bool _ignoreFrameworkTypes;
 
 		#endregion
 
@@ -131,19 +136,17 @@ namespace RI.Framework.Composition.Catalogs
 			}
 		}
 
-		private bool _ignoreFrameworkTypes;
-
 		/// <summary>
-		/// Gets whether types provided by the framework itself are ignored.
+		///     Gets whether types provided by the framework itself are ignored.
 		/// </summary>
 		/// <value>
-		/// true if types provided by the framework itself are ignored, false otherwise.
+		///     true if types provided by the framework itself are ignored, false otherwise.
 		/// </value>
 		/// <remarks>
-		/// <para>
-		/// If framework-provided types are ignored, they are not exported by default.
-		/// However, you can still export those types by explicit export them, e.g. through <see cref="TypeCatalog"/> or <see cref="InstanceCatalog"/>.
-		/// </para>
+		///     <para>
+		///         If framework-provided types are ignored, they are not exported by default.
+		///         However, you can still export those types by explicit export them, e.g. through <see cref="TypeCatalog" /> or <see cref="InstanceCatalog" />.
+		///     </para>
 		/// </remarks>
 		public bool IgnoreFrameworkTypes
 		{

@@ -58,6 +58,14 @@ namespace RI.Framework.Services.Logging.Readers
 		public List<Tuple<FilePath, int>> Errors { get; private set; }
 
 		/// <summary>
+		///     Gets or sets the exception occured during a conversion.
+		/// </summary>
+		/// <value>
+		///     The exception occured during a conversion.
+		/// </value>
+		public Exception Exception { get; set; }
+
+		/// <summary>
 		///     Gets a list of files which were converted.
 		/// </summary>
 		/// <value>
@@ -72,14 +80,6 @@ namespace RI.Framework.Services.Logging.Readers
 		///     The total number of log entries read.
 		/// </value>
 		public int TotalEntries => this.Entries.Sum(x => x.Item2);
-
-		/// <summary>
-		/// Gets or sets the exception occured during a conversion.
-		/// </summary>
-		/// <value>
-		/// The exception occured during a conversion.
-		/// </value>
-		public Exception Exception { get; set; }
 
 		#endregion
 	}

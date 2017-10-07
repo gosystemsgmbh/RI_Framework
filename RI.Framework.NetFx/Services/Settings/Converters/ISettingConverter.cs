@@ -20,10 +20,10 @@ namespace RI.Framework.Services.Settings.Converters
 	public interface ISettingConverter
 	{
 		/// <summary>
-		/// Gets the used setting conversion mode
+		///     Gets the used setting conversion mode
 		/// </summary>
 		/// <value>
-		/// The used setting conversion mode.
+		///     The used setting conversion mode.
 		/// </value>
 		SettingConversionMode ConversionMode { get; }
 
@@ -35,9 +35,9 @@ namespace RI.Framework.Services.Settings.Converters
 		///     true if this converter can convert to and from the type specified by <paramref name="type" />, false otherwise.
 		/// </returns>
 		/// <remarks>
-		/// <note type="note">
-		/// Do not call this method directly, it is intended to be called from an <see cref="ISettingService"/> implementation.
-		/// </note>
+		///     <note type="note">
+		///         Do not call this method directly, it is intended to be called from an <see cref="ISettingService" /> implementation.
+		///     </note>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="type" /> is null. </exception>
 		bool CanConvert (Type type);
@@ -51,9 +51,9 @@ namespace RI.Framework.Services.Settings.Converters
 		///     The string representation of the setting value as converted by this converter or null if <paramref name="value" /> is null.
 		/// </returns>
 		/// <remarks>
-		/// <note type="note">
-		/// Do not call this method directly, it is intended to be called from an <see cref="ISettingService"/> implementation.
-		/// </note>
+		///     <note type="note">
+		///         Do not call this method directly, it is intended to be called from an <see cref="ISettingService" /> implementation.
+		///     </note>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="type" /> or <paramref name="value" /> is null. </exception>
 		/// <exception cref="InvalidTypeArgumentException"> The specified <paramref name="type" /> or the type of <paramref name="value" /> is not supported by this converter or <paramref name="type" /> and <paramref name="value" /> do not match. </exception>
@@ -68,9 +68,9 @@ namespace RI.Framework.Services.Settings.Converters
 		///     The setting value in the specified type as converted by this converter or null if <paramref name="value" /> is null..
 		/// </returns>
 		/// <remarks>
-		/// <note type="note">
-		/// Do not call this method directly, it is intended to be called from an <see cref="ISettingService"/> implementation.
-		/// </note>
+		///     <note type="note">
+		///         Do not call this method directly, it is intended to be called from an <see cref="ISettingService" /> implementation.
+		///     </note>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="type" /> is null. </exception>
 		/// <exception cref="InvalidTypeArgumentException"> The specified <paramref name="type" /> is not supported by this converter. </exception>

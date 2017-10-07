@@ -1,5 +1,8 @@
 ﻿using System;
 
+
+
+
 namespace RI.Framework.Data.Database
 {
 	/// <summary>
@@ -15,7 +18,7 @@ namespace RI.Framework.Data.Database
 		/// </summary>
 		/// <param name="oldVersion"> The old version of the database. </param>
 		/// <param name="newVersion"> The new version of the database. </param>
-		public DatabaseVersionChangedEventArgs(int oldVersion, int newVersion)
+		public DatabaseVersionChangedEventArgs (int oldVersion, int newVersion)
 		{
 			this.OldVersion = oldVersion;
 			this.NewVersion = newVersion;

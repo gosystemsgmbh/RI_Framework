@@ -238,13 +238,6 @@ namespace RI.Framework.Data.EF
 		/// </remarks>
 		public bool FixOnValidateEnabled { get; set; }
 
-
-		/// <inheritdoc />
-		public bool LoggingEnabled { get; set; } = true;
-
-		/// <inheritdoc />
-		public ILogger Logger { get; set; } = LogLocator.Logger;
-
 		private SetCollection Sets { get; set; }
 
 		#endregion
@@ -626,6 +619,20 @@ namespace RI.Framework.Data.EF
 
 			return result ?? base.ValidateEntity(entityEntry, items);
 		}
+
+		#endregion
+
+
+
+
+		#region Interface: ILogSource
+
+		/// <inheritdoc />
+		public ILogger Logger { get; set; } = LogLocator.Logger;
+
+
+		/// <inheritdoc />
+		public bool LoggingEnabled { get; set; } = true;
 
 		#endregion
 

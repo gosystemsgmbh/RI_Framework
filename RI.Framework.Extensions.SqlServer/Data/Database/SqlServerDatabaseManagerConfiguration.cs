@@ -1,5 +1,8 @@
 ﻿using System.Data.SqlClient;
 
+
+
+
 namespace RI.Framework.Data.Database
 {
 	/// <summary>
@@ -12,12 +15,16 @@ namespace RI.Framework.Data.Database
 	/// </remarks>
 	public sealed class SqlServerDatabaseManagerConfiguration : DatabaseManagerConfiguration<SqlConnection, SqlTransaction, SqlConnectionStringBuilder, SqlServerDatabaseManager, SqlServerDatabaseManagerConfiguration>
 	{
+		#region Instance Constructor/Destructor
+
 		/// <summary>
-		/// Creates a new instance of <see cref="SqlServerDatabaseManagerConfiguration"/>.
+		///     Creates a new instance of <see cref="SqlServerDatabaseManagerConfiguration" />.
 		/// </summary>
-		public SqlServerDatabaseManagerConfiguration()
+		public SqlServerDatabaseManagerConfiguration ()
 		{
 			this.ConnectionString = new SqlConnectionStringBuilder();
 		}
+
+		#endregion
 	}
 }

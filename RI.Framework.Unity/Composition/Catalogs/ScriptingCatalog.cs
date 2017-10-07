@@ -7,6 +7,9 @@ using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Composition.Model;
 using RI.Framework.Utilities.Logging;
 
+
+
+
 namespace RI.Framework.Composition.Catalogs
 {
 	/// <summary>

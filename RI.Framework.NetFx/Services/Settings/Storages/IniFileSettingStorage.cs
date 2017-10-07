@@ -10,6 +10,9 @@ using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Logging;
 
+
+
+
 namespace RI.Framework.Services.Settings.Storages
 {
 	/// <summary>
@@ -161,6 +164,22 @@ namespace RI.Framework.Services.Settings.Storages
 		public string WritePrefixAffinity { get; set; } = null;
 
 		/// <inheritdoc />
+		public void DeleteValues (string name) => this.SetValues(name, null);
+
+		/// <inheritdoc />
+		public void DeleteValues (Predicate<string> predicate)
+		{
+			if (predicate == null)
+			{
+				throw new ArgumentNullException(nameof(predicate));
+			}
+
+			Dictionary<string, string> section = this.Document.GetSection(this.SectionName);
+			List<string> namesToRemove = section.Select(x => x.Key).Where(x => predicate(x));
+			namesToRemove.ForEach(this.DeleteValues);
+		}
+
+		/// <inheritdoc />
 		public List<string> GetValues (string name)
 		{
 			if (name == null)
@@ -227,22 +246,6 @@ namespace RI.Framework.Services.Settings.Storages
 
 			Dictionary<string, string> section = this.Document.GetSection(this.SectionName);
 			return section.Any(x => predicate(x.Key));
-		}
-
-		/// <inheritdoc />
-		public void DeleteValues (string name) => this.SetValues(name, null);
-
-		/// <inheritdoc />
-		public void DeleteValues (Predicate<string> predicate)
-		{
-			if (predicate == null)
-			{
-				throw new ArgumentNullException(nameof(predicate));
-			}
-
-			Dictionary<string, string> section = this.Document.GetSection(this.SectionName);
-			List<string> namesToRemove = section.Select(x => x.Key).Where(x => predicate(x));
-			namesToRemove.ForEach(this.DeleteValues);
 		}
 
 		/// <inheritdoc />

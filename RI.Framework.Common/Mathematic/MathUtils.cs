@@ -1,23 +1,23 @@
-﻿
-#if !TEMPLATE_RUNNER
+﻿#if !TEMPLATE_RUNNER
 
 // ReSharper disable RedundantCast
 
 namespace RI.Framework.Mathematic
 {
 	/// <summary>
-	/// Provides various mathematical utility methods.
+	///     Provides various mathematical utility methods.
 	/// </summary>
 	public static class MathUtils
 	{
+		#region Static Methods
 
 		/// <summary>
-		/// Finds the greatest common divisor (GCD) of two values.
+		///     Finds the greatest common divisor (GCD) of two values.
 		/// </summary>
-		/// <param name="x">The first value.</param>
-		/// <param name="y">The second value.</param>
+		/// <param name="x"> The first value. </param>
+		/// <param name="y"> The second value. </param>
 		/// <returns>
-		/// The clamped value.
+		///     The clamped value.
 		/// </returns>
 		public static sbyte Gcd (sbyte x, sbyte y)
 		{
@@ -31,25 +31,12 @@ namespace RI.Framework.Mathematic
 		}
 
 		/// <summary>
-		/// Finds the least common multiple (LCM) of two values.
+		///     Finds the greatest common divisor (GCD) of two values.
 		/// </summary>
-		/// <param name="x">The first value.</param>
-		/// <param name="y">The second value.</param>
+		/// <param name="x"> The first value. </param>
+		/// <param name="y"> The second value. </param>
 		/// <returns>
-		/// The clamped value.
-		/// </returns>
-		public static sbyte Lcm (sbyte x, sbyte y)
-		{
-			return (sbyte)((x / MathUtils.Gcd(x, y)) * y);
-		}
-
-		/// <summary>
-		/// Finds the greatest common divisor (GCD) of two values.
-		/// </summary>
-		/// <param name="x">The first value.</param>
-		/// <param name="y">The second value.</param>
-		/// <returns>
-		/// The clamped value.
+		///     The clamped value.
 		/// </returns>
 		public static byte Gcd (byte x, byte y)
 		{
@@ -63,25 +50,12 @@ namespace RI.Framework.Mathematic
 		}
 
 		/// <summary>
-		/// Finds the least common multiple (LCM) of two values.
+		///     Finds the greatest common divisor (GCD) of two values.
 		/// </summary>
-		/// <param name="x">The first value.</param>
-		/// <param name="y">The second value.</param>
+		/// <param name="x"> The first value. </param>
+		/// <param name="y"> The second value. </param>
 		/// <returns>
-		/// The clamped value.
-		/// </returns>
-		public static byte Lcm (byte x, byte y)
-		{
-			return (byte)((x / MathUtils.Gcd(x, y)) * y);
-		}
-
-		/// <summary>
-		/// Finds the greatest common divisor (GCD) of two values.
-		/// </summary>
-		/// <param name="x">The first value.</param>
-		/// <param name="y">The second value.</param>
-		/// <returns>
-		/// The clamped value.
+		///     The clamped value.
 		/// </returns>
 		public static short Gcd (short x, short y)
 		{
@@ -95,25 +69,12 @@ namespace RI.Framework.Mathematic
 		}
 
 		/// <summary>
-		/// Finds the least common multiple (LCM) of two values.
+		///     Finds the greatest common divisor (GCD) of two values.
 		/// </summary>
-		/// <param name="x">The first value.</param>
-		/// <param name="y">The second value.</param>
+		/// <param name="x"> The first value. </param>
+		/// <param name="y"> The second value. </param>
 		/// <returns>
-		/// The clamped value.
-		/// </returns>
-		public static short Lcm (short x, short y)
-		{
-			return (short)((x / MathUtils.Gcd(x, y)) * y);
-		}
-
-		/// <summary>
-		/// Finds the greatest common divisor (GCD) of two values.
-		/// </summary>
-		/// <param name="x">The first value.</param>
-		/// <param name="y">The second value.</param>
-		/// <returns>
-		/// The clamped value.
+		///     The clamped value.
 		/// </returns>
 		public static ushort Gcd (ushort x, ushort y)
 		{
@@ -127,25 +88,12 @@ namespace RI.Framework.Mathematic
 		}
 
 		/// <summary>
-		/// Finds the least common multiple (LCM) of two values.
+		///     Finds the greatest common divisor (GCD) of two values.
 		/// </summary>
-		/// <param name="x">The first value.</param>
-		/// <param name="y">The second value.</param>
+		/// <param name="x"> The first value. </param>
+		/// <param name="y"> The second value. </param>
 		/// <returns>
-		/// The clamped value.
-		/// </returns>
-		public static ushort Lcm (ushort x, ushort y)
-		{
-			return (ushort)((x / MathUtils.Gcd(x, y)) * y);
-		}
-
-		/// <summary>
-		/// Finds the greatest common divisor (GCD) of two values.
-		/// </summary>
-		/// <param name="x">The first value.</param>
-		/// <param name="y">The second value.</param>
-		/// <returns>
-		/// The clamped value.
+		///     The clamped value.
 		/// </returns>
 		public static int Gcd (int x, int y)
 		{
@@ -159,25 +107,12 @@ namespace RI.Framework.Mathematic
 		}
 
 		/// <summary>
-		/// Finds the least common multiple (LCM) of two values.
+		///     Finds the greatest common divisor (GCD) of two values.
 		/// </summary>
-		/// <param name="x">The first value.</param>
-		/// <param name="y">The second value.</param>
+		/// <param name="x"> The first value. </param>
+		/// <param name="y"> The second value. </param>
 		/// <returns>
-		/// The clamped value.
-		/// </returns>
-		public static int Lcm (int x, int y)
-		{
-			return (int)((x / MathUtils.Gcd(x, y)) * y);
-		}
-
-		/// <summary>
-		/// Finds the greatest common divisor (GCD) of two values.
-		/// </summary>
-		/// <param name="x">The first value.</param>
-		/// <param name="y">The second value.</param>
-		/// <returns>
-		/// The clamped value.
+		///     The clamped value.
 		/// </returns>
 		public static uint Gcd (uint x, uint y)
 		{
@@ -191,25 +126,12 @@ namespace RI.Framework.Mathematic
 		}
 
 		/// <summary>
-		/// Finds the least common multiple (LCM) of two values.
+		///     Finds the greatest common divisor (GCD) of two values.
 		/// </summary>
-		/// <param name="x">The first value.</param>
-		/// <param name="y">The second value.</param>
+		/// <param name="x"> The first value. </param>
+		/// <param name="y"> The second value. </param>
 		/// <returns>
-		/// The clamped value.
-		/// </returns>
-		public static uint Lcm (uint x, uint y)
-		{
-			return (uint)((x / MathUtils.Gcd(x, y)) * y);
-		}
-
-		/// <summary>
-		/// Finds the greatest common divisor (GCD) of two values.
-		/// </summary>
-		/// <param name="x">The first value.</param>
-		/// <param name="y">The second value.</param>
-		/// <returns>
-		/// The clamped value.
+		///     The clamped value.
 		/// </returns>
 		public static long Gcd (long x, long y)
 		{
@@ -223,25 +145,12 @@ namespace RI.Framework.Mathematic
 		}
 
 		/// <summary>
-		/// Finds the least common multiple (LCM) of two values.
+		///     Finds the greatest common divisor (GCD) of two values.
 		/// </summary>
-		/// <param name="x">The first value.</param>
-		/// <param name="y">The second value.</param>
+		/// <param name="x"> The first value. </param>
+		/// <param name="y"> The second value. </param>
 		/// <returns>
-		/// The clamped value.
-		/// </returns>
-		public static long Lcm (long x, long y)
-		{
-			return (long)((x / MathUtils.Gcd(x, y)) * y);
-		}
-
-		/// <summary>
-		/// Finds the greatest common divisor (GCD) of two values.
-		/// </summary>
-		/// <param name="x">The first value.</param>
-		/// <param name="y">The second value.</param>
-		/// <returns>
-		/// The clamped value.
+		///     The clamped value.
 		/// </returns>
 		public static ulong Gcd (ulong x, ulong y)
 		{
@@ -255,25 +164,12 @@ namespace RI.Framework.Mathematic
 		}
 
 		/// <summary>
-		/// Finds the least common multiple (LCM) of two values.
+		///     Finds the greatest common divisor (GCD) of two values.
 		/// </summary>
-		/// <param name="x">The first value.</param>
-		/// <param name="y">The second value.</param>
+		/// <param name="x"> The first value. </param>
+		/// <param name="y"> The second value. </param>
 		/// <returns>
-		/// The clamped value.
-		/// </returns>
-		public static ulong Lcm (ulong x, ulong y)
-		{
-			return (ulong)((x / MathUtils.Gcd(x, y)) * y);
-		}
-
-		/// <summary>
-		/// Finds the greatest common divisor (GCD) of two values.
-		/// </summary>
-		/// <param name="x">The first value.</param>
-		/// <param name="y">The second value.</param>
-		/// <returns>
-		/// The clamped value.
+		///     The clamped value.
 		/// </returns>
 		public static float Gcd (float x, float y)
 		{
@@ -287,25 +183,12 @@ namespace RI.Framework.Mathematic
 		}
 
 		/// <summary>
-		/// Finds the least common multiple (LCM) of two values.
+		///     Finds the greatest common divisor (GCD) of two values.
 		/// </summary>
-		/// <param name="x">The first value.</param>
-		/// <param name="y">The second value.</param>
+		/// <param name="x"> The first value. </param>
+		/// <param name="y"> The second value. </param>
 		/// <returns>
-		/// The clamped value.
-		/// </returns>
-		public static float Lcm (float x, float y)
-		{
-			return (float)((x / MathUtils.Gcd(x, y)) * y);
-		}
-
-		/// <summary>
-		/// Finds the greatest common divisor (GCD) of two values.
-		/// </summary>
-		/// <param name="x">The first value.</param>
-		/// <param name="y">The second value.</param>
-		/// <returns>
-		/// The clamped value.
+		///     The clamped value.
 		/// </returns>
 		public static double Gcd (double x, double y)
 		{
@@ -319,25 +202,12 @@ namespace RI.Framework.Mathematic
 		}
 
 		/// <summary>
-		/// Finds the least common multiple (LCM) of two values.
+		///     Finds the greatest common divisor (GCD) of two values.
 		/// </summary>
-		/// <param name="x">The first value.</param>
-		/// <param name="y">The second value.</param>
+		/// <param name="x"> The first value. </param>
+		/// <param name="y"> The second value. </param>
 		/// <returns>
-		/// The clamped value.
-		/// </returns>
-		public static double Lcm (double x, double y)
-		{
-			return (double)((x / MathUtils.Gcd(x, y)) * y);
-		}
-
-		/// <summary>
-		/// Finds the greatest common divisor (GCD) of two values.
-		/// </summary>
-		/// <param name="x">The first value.</param>
-		/// <param name="y">The second value.</param>
-		/// <returns>
-		/// The clamped value.
+		///     The clamped value.
 		/// </returns>
 		public static decimal Gcd (decimal x, decimal y)
 		{
@@ -351,17 +221,149 @@ namespace RI.Framework.Mathematic
 		}
 
 		/// <summary>
-		/// Finds the least common multiple (LCM) of two values.
+		///     Finds the least common multiple (LCM) of two values.
 		/// </summary>
-		/// <param name="x">The first value.</param>
-		/// <param name="y">The second value.</param>
+		/// <param name="x"> The first value. </param>
+		/// <param name="y"> The second value. </param>
 		/// <returns>
-		/// The clamped value.
+		///     The clamped value.
+		/// </returns>
+		public static sbyte Lcm (sbyte x, sbyte y)
+		{
+			return (sbyte)((x / MathUtils.Gcd(x, y)) * y);
+		}
+
+		/// <summary>
+		///     Finds the least common multiple (LCM) of two values.
+		/// </summary>
+		/// <param name="x"> The first value. </param>
+		/// <param name="y"> The second value. </param>
+		/// <returns>
+		///     The clamped value.
+		/// </returns>
+		public static byte Lcm (byte x, byte y)
+		{
+			return (byte)((x / MathUtils.Gcd(x, y)) * y);
+		}
+
+		/// <summary>
+		///     Finds the least common multiple (LCM) of two values.
+		/// </summary>
+		/// <param name="x"> The first value. </param>
+		/// <param name="y"> The second value. </param>
+		/// <returns>
+		///     The clamped value.
+		/// </returns>
+		public static short Lcm (short x, short y)
+		{
+			return (short)((x / MathUtils.Gcd(x, y)) * y);
+		}
+
+		/// <summary>
+		///     Finds the least common multiple (LCM) of two values.
+		/// </summary>
+		/// <param name="x"> The first value. </param>
+		/// <param name="y"> The second value. </param>
+		/// <returns>
+		///     The clamped value.
+		/// </returns>
+		public static ushort Lcm (ushort x, ushort y)
+		{
+			return (ushort)((x / MathUtils.Gcd(x, y)) * y);
+		}
+
+		/// <summary>
+		///     Finds the least common multiple (LCM) of two values.
+		/// </summary>
+		/// <param name="x"> The first value. </param>
+		/// <param name="y"> The second value. </param>
+		/// <returns>
+		///     The clamped value.
+		/// </returns>
+		public static int Lcm (int x, int y)
+		{
+			return (int)((x / MathUtils.Gcd(x, y)) * y);
+		}
+
+		/// <summary>
+		///     Finds the least common multiple (LCM) of two values.
+		/// </summary>
+		/// <param name="x"> The first value. </param>
+		/// <param name="y"> The second value. </param>
+		/// <returns>
+		///     The clamped value.
+		/// </returns>
+		public static uint Lcm (uint x, uint y)
+		{
+			return (uint)((x / MathUtils.Gcd(x, y)) * y);
+		}
+
+		/// <summary>
+		///     Finds the least common multiple (LCM) of two values.
+		/// </summary>
+		/// <param name="x"> The first value. </param>
+		/// <param name="y"> The second value. </param>
+		/// <returns>
+		///     The clamped value.
+		/// </returns>
+		public static long Lcm (long x, long y)
+		{
+			return (long)((x / MathUtils.Gcd(x, y)) * y);
+		}
+
+		/// <summary>
+		///     Finds the least common multiple (LCM) of two values.
+		/// </summary>
+		/// <param name="x"> The first value. </param>
+		/// <param name="y"> The second value. </param>
+		/// <returns>
+		///     The clamped value.
+		/// </returns>
+		public static ulong Lcm (ulong x, ulong y)
+		{
+			return (ulong)((x / MathUtils.Gcd(x, y)) * y);
+		}
+
+		/// <summary>
+		///     Finds the least common multiple (LCM) of two values.
+		/// </summary>
+		/// <param name="x"> The first value. </param>
+		/// <param name="y"> The second value. </param>
+		/// <returns>
+		///     The clamped value.
+		/// </returns>
+		public static float Lcm (float x, float y)
+		{
+			return (float)((x / MathUtils.Gcd(x, y)) * y);
+		}
+
+		/// <summary>
+		///     Finds the least common multiple (LCM) of two values.
+		/// </summary>
+		/// <param name="x"> The first value. </param>
+		/// <param name="y"> The second value. </param>
+		/// <returns>
+		///     The clamped value.
+		/// </returns>
+		public static double Lcm (double x, double y)
+		{
+			return (double)((x / MathUtils.Gcd(x, y)) * y);
+		}
+
+		/// <summary>
+		///     Finds the least common multiple (LCM) of two values.
+		/// </summary>
+		/// <param name="x"> The first value. </param>
+		/// <param name="y"> The second value. </param>
+		/// <returns>
+		///     The clamped value.
 		/// </returns>
 		public static decimal Lcm (decimal x, decimal y)
 		{
 			return (decimal)((x / MathUtils.Gcd(x, y)) * y);
 		}
+
+		#endregion
 	}
 }
 

@@ -17,13 +17,13 @@ namespace RI.Framework.Utilities.Windows.Imaging
 		#region Static Methods
 
 		/// <summary>
-		/// Creates a bitmap from a byte array.
+		///     Creates a bitmap from a byte array.
 		/// </summary>
-		/// <param name="array">The byte array.</param>
+		/// <param name="array"> The byte array. </param>
 		/// <returns>
-		/// The created bitmap.
+		///     The created bitmap.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="array"/> is null.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="array" /> is null. </exception>
 		public static Bitmap ToBitmap (this byte[] array)
 		{
 			if (array == null)
@@ -41,15 +41,33 @@ namespace RI.Framework.Utilities.Windows.Imaging
 		}
 
 		/// <summary>
-		/// Converts a bitmap into a byte array.
+		///     Converts a bitmap into a BMP byte array.
 		/// </summary>
-		/// <param name="image">The icon.</param>
-		/// <param name="format">The image format.</param>
+		/// <param name="image"> The icon. </param>
 		/// <returns>
-		/// The byte array.
+		///     The byte array.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="image"/> or <paramref name="format"/> is null.</exception>
-		public static byte[] ToByteArray(this Bitmap image, ImageFormat format)
+		/// <exception cref="ArgumentNullException"> <paramref name="image" /> is null. </exception>
+		public static byte[] ToBmpByteArray (this Bitmap image)
+		{
+			if (image == null)
+			{
+				throw new ArgumentNullException(nameof(image));
+			}
+
+			return image.ToByteArray(ImageFormat.Bmp);
+		}
+
+		/// <summary>
+		///     Converts a bitmap into a byte array.
+		/// </summary>
+		/// <param name="image"> The icon. </param>
+		/// <param name="format"> The image format. </param>
+		/// <returns>
+		///     The byte array.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="image" /> or <paramref name="format" /> is null. </exception>
+		public static byte[] ToByteArray (this Bitmap image, ImageFormat format)
 		{
 			if (image == null)
 			{
@@ -73,67 +91,13 @@ namespace RI.Framework.Utilities.Windows.Imaging
 		}
 
 		/// <summary>
-		/// Converts a bitmap into a BMP byte array.
+		///     Converts a bitmap to an icon.
 		/// </summary>
-		/// <param name="image">The icon.</param>
+		/// <param name="image"> The bitmap. </param>
 		/// <returns>
-		/// The byte array.
+		///     The icon.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="image"/> is null.</exception>
-		public static byte[] ToBmpByteArray (this Bitmap image)
-		{
-			if (image == null)
-			{
-				throw new ArgumentNullException(nameof(image));
-			}
-
-			return image.ToByteArray(ImageFormat.Bmp);
-		}
-
-		/// <summary>
-		/// Converts a bitmap into a JPEG byte array.
-		/// </summary>
-		/// <param name="image">The icon.</param>
-		/// <returns>
-		/// The byte array.
-		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="image"/> is null.</exception>
-		public static byte[] ToJpegByteArray(this Bitmap image)
-		{
-			if (image == null)
-			{
-				throw new ArgumentNullException(nameof(image));
-			}
-
-			return image.ToByteArray(ImageFormat.Jpeg);
-		}
-
-		/// <summary>
-		/// Converts a bitmap into a PNG byte array.
-		/// </summary>
-		/// <param name="image">The icon.</param>
-		/// <returns>
-		/// The byte array.
-		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="image"/> is null.</exception>
-		public static byte[] ToPngByteArray(this Bitmap image)
-		{
-			if (image == null)
-			{
-				throw new ArgumentNullException(nameof(image));
-			}
-
-			return image.ToByteArray(ImageFormat.Png);
-		}
-
-		/// <summary>
-		/// Converts a bitmap to an icon.
-		/// </summary>
-		/// <param name="image">The bitmap.</param>
-		/// <returns>
-		/// The icon.
-		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="image"/> is null.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="image" /> is null. </exception>
 		public static Icon ToIcon (this Bitmap image)
 		{
 			if (image == null)
@@ -157,6 +121,42 @@ namespace RI.Framework.Utilities.Windows.Imaging
 					BitmapExtensions.DestroyIcon(hIcon);
 				}
 			}
+		}
+
+		/// <summary>
+		///     Converts a bitmap into a JPEG byte array.
+		/// </summary>
+		/// <param name="image"> The icon. </param>
+		/// <returns>
+		///     The byte array.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="image" /> is null. </exception>
+		public static byte[] ToJpegByteArray (this Bitmap image)
+		{
+			if (image == null)
+			{
+				throw new ArgumentNullException(nameof(image));
+			}
+
+			return image.ToByteArray(ImageFormat.Jpeg);
+		}
+
+		/// <summary>
+		///     Converts a bitmap into a PNG byte array.
+		/// </summary>
+		/// <param name="image"> The icon. </param>
+		/// <returns>
+		///     The byte array.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="image" /> is null. </exception>
+		public static byte[] ToPngByteArray (this Bitmap image)
+		{
+			if (image == null)
+			{
+				throw new ArgumentNullException(nameof(image));
+			}
+
+			return image.ToByteArray(ImageFormat.Png);
 		}
 
 		[DllImport("user32.dll", SetLastError = false)]

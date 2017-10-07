@@ -9,6 +9,9 @@ using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Logging;
 
+
+
+
 namespace RI.Framework.Services.Messaging.Handlers.Triggers
 {
 	/// <summary>
@@ -29,9 +32,9 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 	///     <para>
 	///         See <see cref="TriggerMessageNames" /> and <see cref="TriggerMessageExtensions" /> for more details about the names of the messages and the trigger message data.
 	///     </para>
-	/// <para>
-	/// Trigger message names and trigger names are threated case-insensitive.
-	/// </para>
+	///     <para>
+	///         Trigger message names and trigger names are threated case-insensitive.
+	///     </para>
 	///     <note type="note">
 	///         A request which does not change a trigger will not cause a response.
 	///     </note>
@@ -39,6 +42,17 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 	[Export]
 	public sealed class TriggerMessageHandler : LogSource, IMessageReceiver
 	{
+		#region Constants
+
+		internal static readonly StringComparerEx TriggerNameComparer = StringComparerEx.OrdinalIgnoreCase;
+
+		internal static readonly StringComparison TriggerNameComparison = StringComparison.OrdinalIgnoreCase;
+
+		#endregion
+
+
+
+
 		#region Instance Constructor/Destructor
 
 		/// <summary>
@@ -49,10 +63,6 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 			this.Triggers = new TriggerCollection();
 			this.ChangedTriggers = new HashSet<string>(TriggerMessageHandler.TriggerNameComparer);
 		}
-
-		internal static readonly StringComparerEx TriggerNameComparer = StringComparerEx.OrdinalIgnoreCase;
-
-		internal static readonly StringComparison TriggerNameComparison = StringComparison.OrdinalIgnoreCase;
 
 		#endregion
 

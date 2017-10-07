@@ -65,14 +65,14 @@ namespace RI.Framework.Services.Messaging
 
 		private List<IMessageDispatcher> DispatchersUpdated { get; set; }
 
+		private List<IMessageReceiver> ReceiverCopy { get; set; }
+
 		[Import(typeof(IMessageReceiver), Recomposable = true)]
 		private Import ReceiversImported { get; set; }
 
 		private List<IMessageReceiver> ReceiversManual { get; }
 
 		private List<IMessageReceiver> ReceiversUpdated { get; set; }
-
-		private List<IMessageReceiver> ReceiverCopy { get; set; }
 
 		#endregion
 
@@ -164,12 +164,6 @@ namespace RI.Framework.Services.Messaging
 		#region Interface: IMessageService
 
 		/// <inheritdoc />
-		bool ISynchronizable.IsSynchronized => true;
-
-		/// <inheritdoc />
-		public object SyncRoot { get; }
-
-		/// <inheritdoc />
 		public IEnumerable<IMessageDispatcher> Dispatchers
 		{
 			get
@@ -185,6 +179,9 @@ namespace RI.Framework.Services.Messaging
 		}
 
 		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
 		public IEnumerable<IMessageReceiver> Receivers
 		{
 			get
@@ -198,6 +195,9 @@ namespace RI.Framework.Services.Messaging
 				}
 			}
 		}
+
+		/// <inheritdoc />
+		public object SyncRoot { get; }
 
 		/// <inheritdoc />
 		public void AddDispatcher (IMessageDispatcher messageDispatcher)
@@ -259,27 +259,6 @@ namespace RI.Framework.Services.Messaging
 		}
 
 		/// <inheritdoc />
-		public async Task Send (IMessage message)
-		{
-			if (message == null)
-			{
-				throw new ArgumentNullException(nameof(message));
-			}
-
-			TaskCompletionSource<IMessage> tcs = new TaskCompletionSource<IMessage>();
-
-			lock (this.SyncRoot)
-			{
-				foreach (IMessageDispatcher dispatcher in this.DispatchersUpdated)
-				{
-					dispatcher.Post(this.ReceiverCopy, message, this, x => tcs.SetResult(x));
-				}
-			}
-
-			await tcs.Task;
-		}
-
-		/// <inheritdoc />
 		public void RemoveDispatcher (IMessageDispatcher messageDispatcher)
 		{
 			if (messageDispatcher == null)
@@ -319,6 +298,27 @@ namespace RI.Framework.Services.Messaging
 
 				this.UpdateReceivers();
 			}
+		}
+
+		/// <inheritdoc />
+		public async Task Send (IMessage message)
+		{
+			if (message == null)
+			{
+				throw new ArgumentNullException(nameof(message));
+			}
+
+			TaskCompletionSource<IMessage> tcs = new TaskCompletionSource<IMessage>();
+
+			lock (this.SyncRoot)
+			{
+				foreach (IMessageDispatcher dispatcher in this.DispatchersUpdated)
+				{
+					dispatcher.Post(this.ReceiverCopy, message, this, x => tcs.SetResult(x));
+				}
+			}
+
+			await tcs.Task;
 		}
 
 		#endregion

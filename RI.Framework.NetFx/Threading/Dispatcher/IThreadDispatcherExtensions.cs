@@ -258,7 +258,7 @@ namespace RI.Framework.Threading.Dispatcher
 		///     The dispatcher timer created for the delayed execution.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" /> or <paramref name="action" /> is null. </exception>
-		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="milliseconds" /> or <paramref name="priority" /> is less than zero or <paramref name="priority"/> is less than minus one. </exception>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="milliseconds" /> or <paramref name="priority" /> is less than zero or <paramref name="priority" /> is less than minus one. </exception>
 		/// <exception cref="InvalidOperationException"> The dispatcher is not running or is being shut down. </exception>
 		public static ThreadDispatcherTimer PostDelayed (this IThreadDispatcher dispatcher, int milliseconds, int priority, Delegate action, params object[] parameters)
 		{
@@ -286,7 +286,7 @@ namespace RI.Framework.Threading.Dispatcher
 		///     The dispatcher timer created for the delayed execution.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" /> or <paramref name="action" /> is null. </exception>
-		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="milliseconds" /> or <paramref name="priority" /> is less than zero or <paramref name="priority"/> is less than minus one. </exception>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="milliseconds" /> or <paramref name="priority" /> is less than zero or <paramref name="priority" /> is less than minus one. </exception>
 		/// <exception cref="InvalidOperationException"> The dispatcher is not running or is being shut down. </exception>
 		public static ThreadDispatcherTimer PostDelayed (this IThreadDispatcher dispatcher, int milliseconds, int priority, ThreadDispatcherOptions options, Delegate action, params object[] parameters)
 		{
@@ -370,7 +370,7 @@ namespace RI.Framework.Threading.Dispatcher
 		///     The dispatcher timer created for the delayed execution.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" /> or <paramref name="action" /> is null. </exception>
-		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="priority" /> is less than zero or <paramref name="priority"/> is less than minus one. </exception>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="priority" /> is less than zero or <paramref name="priority" /> is less than minus one. </exception>
 		/// <exception cref="InvalidOperationException"> The dispatcher is not running or is being shut down. </exception>
 		public static ThreadDispatcherTimer PostDelayed (this IThreadDispatcher dispatcher, TimeSpan delay, int priority, Delegate action, params object[] parameters)
 		{
@@ -398,7 +398,7 @@ namespace RI.Framework.Threading.Dispatcher
 		///     The dispatcher timer created for the delayed execution.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" /> or <paramref name="action" /> is null. </exception>
-		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="priority" /> is less than zero or <paramref name="priority"/> is less than minus one. </exception>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="priority" /> is less than zero or <paramref name="priority" /> is less than minus one. </exception>
 		/// <exception cref="InvalidOperationException"> The dispatcher is not running or is being shut down. </exception>
 		public static ThreadDispatcherTimer PostDelayed (this IThreadDispatcher dispatcher, TimeSpan delay, int priority, ThreadDispatcherOptions options, Delegate action, params object[] parameters)
 		{

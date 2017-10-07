@@ -1,5 +1,8 @@
 ﻿using RI.Framework.Utilities.ObjectModel;
 
+
+
+
 namespace RI.Framework.Data.EF.Resolvers
 {
 	/// <summary>
@@ -12,12 +15,16 @@ namespace RI.Framework.Data.EF.Resolvers
 	/// </remarks>
 	public sealed class SingletonDbDependencyResolver : DependencyResolverDbDependencyResolver
 	{
+		#region Instance Constructor/Destructor
+
 		/// <summary>
-		/// Creates a new instance of <see cref="SingletonDbDependencyResolver"/>.
+		///     Creates a new instance of <see cref="SingletonDbDependencyResolver" />.
 		/// </summary>
-		public SingletonDbDependencyResolver()
+		public SingletonDbDependencyResolver ()
 			: base(Singleton.Resolver)
 		{
 		}
+
+		#endregion
 	}
 }

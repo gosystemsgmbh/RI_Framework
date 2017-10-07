@@ -27,11 +27,11 @@ namespace RI.Framework.Threading.Dispatcher
 	///     <para>
 	///         During <see cref="Run" />, the current <see cref="SynchronizationContext" /> is replaced by an instance of <see cref="ThreadDispatcherSynchronizationContext" /> and restored afterwards.
 	///     </para>
-	/// <para>
-	/// A watchdog can be used to ensure that the execution of a delegate does not block the dispatcher undetected.
-	/// The watchdog is active whenever <see cref="WatchdogTimeout"/> is not null.
-	/// The watchdog runs in a separate thread and raises the <see cref="Watchdog"/> event if the execution of a delegate takes longer than the specified timeout.
-	/// </para>
+	///     <para>
+	///         A watchdog can be used to ensure that the execution of a delegate does not block the dispatcher undetected.
+	///         The watchdog is active whenever <see cref="WatchdogTimeout" /> is not null.
+	///         The watchdog runs in a separate thread and raises the <see cref="Watchdog" /> event if the execution of a delegate takes longer than the specified timeout.
+	///     </para>
 	///     <note type="important">
 	///         Whether <see cref="ExecutionContext" /> and/or <see cref="CultureInfo" /> flows, depends on the used <see cref="ThreadDispatcherOptions" />.
 	///     </note>
@@ -61,9 +61,9 @@ namespace RI.Framework.Threading.Dispatcher
 		/// </remarks>
 		public const int DefaultPriorityValue = int.MaxValue / 2;
 
-		private const int WatchdogThreadTimeoutMilliseconds = 1000;
-
 		private const int WatchdogCheckInterval = 20;
+
+		private const int WatchdogThreadTimeoutMilliseconds = 1000;
 
 		#endregion
 
@@ -195,13 +195,14 @@ namespace RI.Framework.Threading.Dispatcher
 			}
 		}
 
-		private HashSet<object> KeepAlives { get; set; }
 		private Stack<ThreadDispatcherOperation> CurrentOperation { get; set; }
 		private Stack<ThreadDispatcherOptions> CurrentOptions { get; set; }
 		private Stack<int> CurrentPriority { get; set; }
 		private ManualResetEvent Finished { get; set; }
 		private List<TaskCompletionSource<object>> FinishedSignals { get; set; }
 		private List<TaskCompletionSource<object>> IdleSignals { get; set; }
+
+		private HashSet<object> KeepAlives { get; set; }
 		private ManualResetEvent Posted { get; set; }
 
 		private PriorityQueue<ThreadDispatcherOperation> PreRunQueue { get; set; }
@@ -313,46 +314,6 @@ namespace RI.Framework.Threading.Dispatcher
 
 				this.Queue.Enqueue(operation, operation.Priority);
 				this.Posted.Set();
-			}
-		}
-
-		/// <inheritdoc />
-		public bool AddKeepAlive (object obj)
-		{
-			if (obj == null)
-			{
-				throw new ArgumentNullException(nameof(obj));
-			}
-
-			lock (this.SyncRoot)
-			{
-				if (this.KeepAlives == null)
-				{
-					return false;
-				}
-
-				this.KeepAlives.Add(obj);
-				return true;
-			}
-		}
-
-		/// <inheritdoc />
-		public bool RemoveKeepAlive (object obj)
-		{
-			if (obj == null)
-			{
-				throw new ArgumentNullException(nameof(obj));
-			}
-
-			lock (this.SyncRoot)
-			{
-				if (this.KeepAlives == null)
-				{
-					return false;
-				}
-
-				this.KeepAlives.Remove(obj);
-				return true;
 			}
 		}
 
@@ -594,25 +555,6 @@ namespace RI.Framework.Threading.Dispatcher
 		}
 
 		/// <inheritdoc />
-		public TimeSpan? WatchdogTimeout
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					return this._watchdogTimeout;
-				}
-			}
-			set
-			{
-				lock (this.SyncRoot)
-				{
-					this._watchdogTimeout = value;
-				}
-			}
-		}
-
-		/// <inheritdoc />
 		bool ISynchronizable.IsSynchronized => true;
 
 		/// <inheritdoc />
@@ -643,10 +585,49 @@ namespace RI.Framework.Threading.Dispatcher
 		public object SyncRoot { get; }
 
 		/// <inheritdoc />
+		public TimeSpan? WatchdogTimeout
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._watchdogTimeout;
+				}
+			}
+			set
+			{
+				lock (this.SyncRoot)
+				{
+					this._watchdogTimeout = value;
+				}
+			}
+		}
+
+		/// <inheritdoc />
 		public event EventHandler<ThreadDispatcherExceptionEventArgs> Exception;
 
 		/// <inheritdoc />
 		public event EventHandler<ThreadDispatcherWatchdogEventArgs> Watchdog;
+
+		/// <inheritdoc />
+		public bool AddKeepAlive (object obj)
+		{
+			if (obj == null)
+			{
+				throw new ArgumentNullException(nameof(obj));
+			}
+
+			lock (this.SyncRoot)
+			{
+				if (this.KeepAlives == null)
+				{
+					return false;
+				}
+
+				this.KeepAlives.Add(obj);
+				return true;
+			}
+		}
 
 		/// <inheritdoc />
 		public void BeginShutdown (bool finishPendingDelegates)
@@ -955,6 +936,26 @@ namespace RI.Framework.Threading.Dispatcher
 		}
 
 		/// <inheritdoc />
+		public bool RemoveKeepAlive (object obj)
+		{
+			if (obj == null)
+			{
+				throw new ArgumentNullException(nameof(obj));
+			}
+
+			lock (this.SyncRoot)
+			{
+				if (this.KeepAlives == null)
+				{
+					return false;
+				}
+
+				this.KeepAlives.Remove(obj);
+				return true;
+			}
+		}
+
+		/// <inheritdoc />
 		public object Send (Delegate action, params object[] parameters)
 		{
 			return this.Send(this.DefaultPriority, this.DefaultOptions, action, parameters);
@@ -1118,8 +1119,17 @@ namespace RI.Framework.Threading.Dispatcher
 			await finishTask.ConfigureAwait(false);
 		}
 
+		#endregion
+
+
+
+
+		#region Type: WatchdogThread
+
 		private sealed class WatchdogThread : HeavyThread
 		{
+			#region Instance Constructor/Destructor
+
 			public WatchdogThread (ThreadDispatcher dispatcher)
 			{
 				if (dispatcher == null)
@@ -1132,18 +1142,73 @@ namespace RI.Framework.Threading.Dispatcher
 				this.Operations = new Stack<WatchdogThreadItem>();
 			}
 
+			#endregion
+
+
+
+
+			#region Instance Properties/Indexer
+
 			public ThreadDispatcher Dispatcher { get; }
 
 			private Stack<WatchdogThreadItem> Operations { get; }
 
-			protected override void OnStarting ()
-			{
-				base.OnStarting();
+			#endregion
 
-				this.Thread.CurrentCulture = CultureInfo.InvariantCulture;
-				this.Thread.CurrentUICulture = CultureInfo.InvariantCulture;
-				this.Thread.Priority = ThreadPriority.Highest;
-				this.Thread.IsBackground = false;
+
+
+
+			#region Instance Methods
+
+			public void StartSurveilance (ThreadDispatcherOperation operation)
+			{
+				if (operation == null)
+				{
+					throw new ArgumentNullException(nameof(operation));
+				}
+
+				lock (this.SyncRoot)
+				{
+					this.Operations.Push(new WatchdogThreadItem(operation));
+				}
+			}
+
+			public void StopSurveilance (ThreadDispatcherOperation operation)
+			{
+				if (operation == null)
+				{
+					throw new ArgumentNullException(nameof(operation));
+				}
+
+				lock (this.SyncRoot)
+				{
+					if ((this.Operations.Count == 0) || (!object.ReferenceEquals(operation, this.Operations.Peek().Operation)))
+					{
+						throw new ThreadDispatcherException("Watchdog operation surveilance stack is out of sync.");
+					}
+
+					this.Operations.Pop();
+				}
+			}
+
+			#endregion
+
+
+
+
+			#region Overrides
+
+			protected override void Dispose (bool disposing)
+			{
+				this.Operations?.Clear();
+				base.Dispose(disposing);
+			}
+
+			protected override void OnException (Exception exception, bool canContinue)
+			{
+				base.OnException(exception, canContinue);
+
+				this.Dispatcher.Post<Exception>(int.MaxValue, ThreadDispatcherOptions.None, x => { throw new HeavyThreadException(x); }, exception);
 			}
 
 			protected override void OnRun ()
@@ -1198,56 +1263,30 @@ namespace RI.Framework.Threading.Dispatcher
 				}
 			}
 
-			protected override void OnException (Exception exception, bool canContinue)
+			protected override void OnStarting ()
 			{
-				base.OnException(exception, canContinue);
+				base.OnStarting();
 
-				this.Dispatcher.Post<Exception>(int.MaxValue, ThreadDispatcherOptions.None, x =>
-				{
-					throw new HeavyThreadException(x);
-				}, exception);
+				this.Thread.CurrentCulture = CultureInfo.InvariantCulture;
+				this.Thread.CurrentUICulture = CultureInfo.InvariantCulture;
+				this.Thread.Priority = ThreadPriority.Highest;
+				this.Thread.IsBackground = false;
 			}
 
-			protected override void Dispose (bool disposing)
-			{
-				this.Operations?.Clear();
-				base.Dispose(disposing);
-			}
-
-			public void StartSurveilance (ThreadDispatcherOperation operation)
-			{
-				if (operation == null)
-				{
-					throw new ArgumentNullException(nameof(operation));
-				}
-
-				lock (this.SyncRoot)
-				{
-					this.Operations.Push(new WatchdogThreadItem(operation));
-				}
-			}
-
-			public void StopSurveilance (ThreadDispatcherOperation operation)
-			{
-				if (operation == null)
-				{
-					throw new ArgumentNullException(nameof(operation));
-				}
-
-				lock (this.SyncRoot)
-				{
-					if ((this.Operations.Count == 0) || (!object.ReferenceEquals(operation, this.Operations.Peek().Operation)))
-					{
-						throw new ThreadDispatcherException("Watchdog operation surveilance stack is out of sync.");
-					}
-
-					this.Operations.Pop();
-				}
-			}
+			#endregion
 		}
+
+		#endregion
+
+
+
+
+		#region Type: WatchdogThreadItem
 
 		private sealed class WatchdogThreadItem
 		{
+			#region Instance Constructor/Destructor
+
 			public WatchdogThreadItem (ThreadDispatcherOperation operation)
 			{
 				if (operation == null)
@@ -1260,9 +1299,18 @@ namespace RI.Framework.Threading.Dispatcher
 				this.LastCheck = DateTime.UtcNow;
 			}
 
-			public ThreadDispatcherOperation Operation { get; }
+			#endregion
+
+
+
+
+			#region Instance Properties/Indexer
 
 			public DateTime LastCheck { get; set; }
+
+			public ThreadDispatcherOperation Operation { get; }
+
+			#endregion
 		}
 
 		#endregion

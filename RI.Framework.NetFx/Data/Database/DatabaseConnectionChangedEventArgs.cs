@@ -2,6 +2,9 @@
 using System.Data;
 using System.Data.Common;
 
+
+
+
 namespace RI.Framework.Data.Database
 {
 	/// <summary>
@@ -18,7 +21,7 @@ namespace RI.Framework.Data.Database
 		/// <param name="connection"> The connection which changed its state. </param>
 		/// <param name="oldState"> The old state of the connection. </param>
 		/// <param name="newState"> The new state of the connection. </param>
-		internal DatabaseConnectionChangedEventArgs(DbConnection connection, ConnectionState oldState, ConnectionState newState)
+		internal DatabaseConnectionChangedEventArgs (DbConnection connection, ConnectionState oldState, ConnectionState newState)
 		{
 			if (connection == null)
 			{
@@ -38,6 +41,14 @@ namespace RI.Framework.Data.Database
 		#region Instance Properties/Indexer
 
 		/// <summary>
+		///     Gets the connection which changed its state.
+		/// </summary>
+		/// <value>
+		///     The connection which changed its state.
+		/// </value>
+		public DbConnection Connection { get; }
+
+		/// <summary>
 		///     Gets the new state of the connection.
 		/// </summary>
 		/// <value>
@@ -54,24 +65,15 @@ namespace RI.Framework.Data.Database
 		/// </value>
 		public ConnectionState OldState { get; }
 
-
-		/// <summary>
-		///     Gets the connection which changed its state.
-		/// </summary>
-		/// <value>
-		///     The connection which changed its state.
-		/// </value>
-		public DbConnection Connection { get; }
-
 		#endregion
 	}
 
 	/// <summary>
 	///     Event arguments for the <see cref="IDatabaseManager" />.<see cref="IDatabaseManager{TConnection,TTransaction,TConnectionStringBuilder,TManager,TConfiguration}.ConnectionChanged" /> event.
 	/// </summary>
-	/// <typeparam name="TConnection">The type of database connections.</typeparam>
+	/// <typeparam name="TConnection"> The type of database connections. </typeparam>
 	[Serializable]
-	public sealed class DatabaseConnectionChangedEventArgs<TConnection> : DatabaseConnectionChangedEventArgs
+	public sealed class DatabaseConnectionChangedEventArgs <TConnection> : DatabaseConnectionChangedEventArgs
 		where TConnection : DbConnection
 	{
 		#region Instance Constructor/Destructor
@@ -82,7 +84,7 @@ namespace RI.Framework.Data.Database
 		/// <param name="connection"> The connection which changed its state. </param>
 		/// <param name="oldState"> The old state of the connection. </param>
 		/// <param name="newState"> The new state of the connection. </param>
-		public DatabaseConnectionChangedEventArgs(TConnection connection, ConnectionState oldState, ConnectionState newState)
+		public DatabaseConnectionChangedEventArgs (TConnection connection, ConnectionState oldState, ConnectionState newState)
 			: base(connection, oldState, newState)
 		{
 		}

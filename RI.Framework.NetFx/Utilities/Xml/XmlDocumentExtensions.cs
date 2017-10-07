@@ -2,6 +2,9 @@
 using System.Xml;
 using System.Xml.Linq;
 
+
+
+
 namespace RI.Framework.Utilities.Xml
 {
 	/// <summary>
@@ -9,13 +12,15 @@ namespace RI.Framework.Utilities.Xml
 	/// </summary>
 	public static class XmlDocumentExtensions
 	{
+		#region Static Methods
+
 		/// <summary>
-		/// Converts a <see cref="XmlDocument"/> to a <see cref="XDocument"/>.
+		///     Converts a <see cref="XmlDocument" /> to a <see cref="XDocument" />.
 		/// </summary>
-		/// <param name="xmlDocument">The <see cref="XmlDocument"/> to convert.</param>
-		/// <returns>The converted <see cref="XDocument"/>.</returns>
-		/// <exception cref="ArgumentNullException"><paramref name="xmlDocument"/> is null.</exception>
-		public static XDocument ToXDocument(this XmlDocument xmlDocument)
+		/// <param name="xmlDocument"> The <see cref="XmlDocument" /> to convert. </param>
+		/// <returns> The converted <see cref="XDocument" />. </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="xmlDocument" /> is null. </exception>
+		public static XDocument ToXDocument (this XmlDocument xmlDocument)
 		{
 			if (xmlDocument == null)
 			{
@@ -28,5 +33,7 @@ namespace RI.Framework.Utilities.Xml
 				return XDocument.Load(nodeReader);
 			}
 		}
+
+		#endregion
 	}
 }

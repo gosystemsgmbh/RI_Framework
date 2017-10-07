@@ -30,9 +30,9 @@ namespace RI.Framework.Services.Messaging
 		///         The delivery of the same message to the next receiver can only be made after <see cref="ReceiveMessage" /> returned.
 		///         Therefore, long-running tasks should be avoided in <see cref="ReceiveMessage" />.
 		///     </note>
-		/// <note type="note">
-		/// Do not call this method directly, it is intended to be called from an <see cref="IMessageDispatcher"/> implementation.
-		/// </note>
+		///     <note type="note">
+		///         Do not call this method directly, it is intended to be called from an <see cref="IMessageDispatcher" /> implementation.
+		///     </note>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="message" /> or <paramref name="messageService" /> is null. </exception>
 		void ReceiveMessage (IMessage message, IMessageService messageService);

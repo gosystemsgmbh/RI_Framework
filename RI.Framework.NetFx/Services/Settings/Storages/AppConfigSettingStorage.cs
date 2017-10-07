@@ -25,9 +25,9 @@ namespace RI.Framework.Services.Settings.Storages
 	///     <para>
 	///         See <see cref="ISettingStorage" /> for more details.
 	///     </para>
-	/// <note type="important">
-	/// <see cref="AppConfigSettingStorage"/> does not support multiple values for the same setting!
-	/// </note>
+	///     <note type="important">
+	///         <see cref="AppConfigSettingStorage" /> does not support multiple values for the same setting!
+	///     </note>
 	/// </remarks>
 	[Export]
 	public sealed class AppConfigSettingStorage : ISettingStorage
@@ -42,6 +42,18 @@ namespace RI.Framework.Services.Settings.Storages
 
 		/// <inheritdoc />
 		string ISettingStorage.WritePrefixAffinity => null;
+
+		/// <inheritdoc />
+		public void DeleteValues (string name)
+		{
+			throw new NotSupportedException("Deleting a value from app.config is not supported.");
+		}
+
+		/// <inheritdoc />
+		public void DeleteValues (Predicate<string> predicate)
+		{
+			throw new NotSupportedException("Deleting a value from app.config is not supported.");
+		}
 
 		/// <inheritdoc />
 		public List<string> GetValues (string name)
@@ -67,7 +79,7 @@ namespace RI.Framework.Services.Settings.Storages
 		}
 
 		/// <inheritdoc />
-		public Dictionary<string, List<string>> GetValues(Predicate<string> predicate)
+		public Dictionary<string, List<string>> GetValues (Predicate<string> predicate)
 		{
 			if (predicate == null)
 			{
@@ -116,18 +128,6 @@ namespace RI.Framework.Services.Settings.Storages
 			}
 
 			return ConfigurationManager.AppSettings.AllKeys.Any(x => predicate(x));
-		}
-
-		/// <inheritdoc />
-		public void DeleteValues (string name)
-		{
-			throw new NotSupportedException("Deleting a value from app.config is not supported.");
-		}
-
-		/// <inheritdoc />
-		public void DeleteValues (Predicate<string> predicate)
-		{
-			throw new NotSupportedException("Deleting a value from app.config is not supported.");
 		}
 
 		/// <inheritdoc />

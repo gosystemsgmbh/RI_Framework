@@ -26,9 +26,9 @@ namespace RI.Framework.Services.Regions.Adapters
 		/// <param name="container"> The container. </param>
 		/// <param name="element"> The element. </param>
 		/// <remarks>
-		/// <note type="note">
-		/// Do not call this method directly, it is intended to be called from an <see cref="IRegionService"/> implementation.
-		/// </note>
+		///     <note type="note">
+		///         Do not call this method directly, it is intended to be called from an <see cref="IRegionService" /> implementation.
+		///     </note>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="container" /> or <paramref name="element" /> is null. </exception>
 		/// <exception cref="InvalidTypeArgumentException"> The type of <paramref name="container" /> or <paramref name="element" /> is not handled by this region adapter. </exception>
@@ -40,9 +40,9 @@ namespace RI.Framework.Services.Regions.Adapters
 		/// <param name="container"> The container. </param>
 		/// <param name="element"> The element. </param>
 		/// <remarks>
-		/// <note type="note">
-		/// Do not call this method directly, it is intended to be called from an <see cref="IRegionService"/> implementation.
-		/// </note>
+		///     <note type="note">
+		///         Do not call this method directly, it is intended to be called from an <see cref="IRegionService" /> implementation.
+		///     </note>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="container" /> or <paramref name="element" /> is null. </exception>
 		/// <exception cref="InvalidTypeArgumentException"> The type of <paramref name="container" /> or <paramref name="element" /> is not handled by this region adapter. </exception>
@@ -61,9 +61,9 @@ namespace RI.Framework.Services.Regions.Adapters
 		///     <para>
 		///         <paramref name="element" /> can be null to only navigate away from the current element but not to a new one, leaving the container without an element.
 		///     </para>
-		/// <note type="note">
-		/// Do not call this method directly, it is intended to be called from an <see cref="IRegionService"/> implementation.
-		/// </note>
+		///     <note type="note">
+		///         Do not call this method directly, it is intended to be called from an <see cref="IRegionService" /> implementation.
+		///     </note>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="container" /> is null. </exception>
 		bool CanNavigate (object container, object element);
@@ -73,9 +73,9 @@ namespace RI.Framework.Services.Regions.Adapters
 		/// </summary>
 		/// <param name="container"> The container. </param>
 		/// <remarks>
-		/// <note type="note">
-		/// Do not call this method directly, it is intended to be called from an <see cref="IRegionService"/> implementation.
-		/// </note>
+		///     <note type="note">
+		///         Do not call this method directly, it is intended to be called from an <see cref="IRegionService" /> implementation.
+		///     </note>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="container" /> is null. </exception>
 		/// <exception cref="InvalidTypeArgumentException"> The type of <paramref name="container" /> is not handled by this region adapter. </exception>
@@ -90,9 +90,9 @@ namespace RI.Framework.Services.Regions.Adapters
 		///     true if the container contains the element, false otherwise.
 		/// </returns>
 		/// <remarks>
-		/// <note type="note">
-		/// Do not call this method directly, it is intended to be called from an <see cref="IRegionService"/> implementation.
-		/// </note>
+		///     <note type="note">
+		///         Do not call this method directly, it is intended to be called from an <see cref="IRegionService" /> implementation.
+		///     </note>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="container" /> or <paramref name="element" /> is null. </exception>
 		/// <exception cref="InvalidTypeArgumentException"> The type of <paramref name="container" /> or <paramref name="element" /> is not handled by this region adapter. </exception>
@@ -104,9 +104,9 @@ namespace RI.Framework.Services.Regions.Adapters
 		/// <param name="container"> The container. </param>
 		/// <param name="element"> The element. </param>
 		/// <remarks>
-		/// <note type="note">
-		/// Do not call this method directly, it is intended to be called from an <see cref="IRegionService"/> implementation.
-		/// </note>
+		///     <note type="note">
+		///         Do not call this method directly, it is intended to be called from an <see cref="IRegionService" /> implementation.
+		///     </note>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="container" /> or <paramref name="element" /> is null. </exception>
 		/// <exception cref="InvalidTypeArgumentException"> The type of <paramref name="container" /> or <paramref name="element" /> is not handled by this region adapter. </exception>
@@ -121,9 +121,9 @@ namespace RI.Framework.Services.Regions.Adapters
 		///     An empty list is returned if the container contains no elements.
 		/// </returns>
 		/// <remarks>
-		/// <note type="note">
-		/// Do not call this method directly, it is intended to be called from an <see cref="IRegionService"/> implementation.
-		/// </note>
+		///     <note type="note">
+		///         Do not call this method directly, it is intended to be called from an <see cref="IRegionService" /> implementation.
+		///     </note>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="container" /> is null. </exception>
 		/// <exception cref="InvalidTypeArgumentException"> The type of <paramref name="container" /> is not handled by this region adapter. </exception>
@@ -138,9 +138,9 @@ namespace RI.Framework.Services.Regions.Adapters
 		///     true if this region adapter can use the specified type as container, false otherwise.
 		/// </returns>
 		/// <remarks>
-		/// <note type="note">
-		/// Do not call this method directly, it is intended to be called from an <see cref="IRegionService"/> implementation.
-		/// </note>
+		///     <note type="note">
+		///         Do not call this method directly, it is intended to be called from an <see cref="IRegionService" /> implementation.
+		///     </note>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="type" /> is null. </exception>
 		bool IsCompatibleContainer (Type type, out int inheritanceDepth);
@@ -158,9 +158,9 @@ namespace RI.Framework.Services.Regions.Adapters
 		///     <para>
 		///         <paramref name="element" /> can be null to only navigate away from the current element but not to a new one, leaving the container without an element.
 		///     </para>
-		/// <note type="note">
-		/// Do not call this method directly, it is intended to be called from an <see cref="IRegionService"/> implementation.
-		/// </note>
+		///     <note type="note">
+		///         Do not call this method directly, it is intended to be called from an <see cref="IRegionService" /> implementation.
+		///     </note>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="container" /> is null. </exception>
 		bool Navigate (object container, object element);
@@ -171,9 +171,9 @@ namespace RI.Framework.Services.Regions.Adapters
 		/// <param name="container"> The container. </param>
 		/// <param name="element"> The element. </param>
 		/// <remarks>
-		/// <note type="note">
-		/// Do not call this method directly, it is intended to be called from an <see cref="IRegionService"/> implementation.
-		/// </note>
+		///     <note type="note">
+		///         Do not call this method directly, it is intended to be called from an <see cref="IRegionService" /> implementation.
+		///     </note>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="container" /> or <paramref name="element" /> is null. </exception>
 		/// <exception cref="InvalidTypeArgumentException"> The type of <paramref name="container" /> or <paramref name="element" /> is not handled by this region adapter. </exception>
@@ -184,9 +184,9 @@ namespace RI.Framework.Services.Regions.Adapters
 		/// </summary>
 		/// <param name="container"> The container. </param>
 		/// <remarks>
-		/// <note type="note">
-		/// Do not call this method directly, it is intended to be called from an <see cref="IRegionService"/> implementation.
-		/// </note>
+		///     <note type="note">
+		///         Do not call this method directly, it is intended to be called from an <see cref="IRegionService" /> implementation.
+		///     </note>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="container" /> is null. </exception>
 		/// <exception cref="InvalidTypeArgumentException"> The type of <paramref name="container" /> is not handled by this region adapter. </exception>

@@ -14,6 +14,9 @@ using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Logging;
 
+
+
+
 namespace RI.Framework.Services.Logging.Readers
 {
 	/// <summary>
@@ -63,14 +66,6 @@ namespace RI.Framework.Services.Logging.Readers
 		#region Instance Properties/Indexer
 
 		/// <summary>
-		///     Gets the encoding which is used to read the log file.
-		/// </summary>
-		/// <value>
-		///     The encoding to read the log file.
-		/// </value>
-		public Encoding Encoding { get; }
-
-		/// <summary>
 		///     Gets the SQLite log database configuration which is used to write the log database.
 		/// </summary>
 		/// <value>
@@ -78,14 +73,20 @@ namespace RI.Framework.Services.Logging.Readers
 		/// </value>
 		public SQLiteLogConfiguration Configuration { get; }
 
+		/// <summary>
+		///     Gets the encoding which is used to read the log file.
+		/// </summary>
+		/// <value>
+		///     The encoding to read the log file.
+		/// </value>
+		public Encoding Encoding { get; }
+
 		#endregion
 
 
 
 
 		#region Instance Methods
-
-		private SQLiteConnection CreateConnection (FilePath dbFile) => this.Configuration.CreateConnection(dbFile);
 
 		/// <summary>
 		///     Converts all log files in a log directory, as created by <see cref="DirectoryLogWriter" />, and adds them to a log database.
@@ -371,7 +372,7 @@ namespace RI.Framework.Services.Logging.Readers
 		/// <exception cref="ArgumentNullException"> <paramref name="logFile" /> or <paramref name="dbConnection" /> is null. </exception>
 		/// <exception cref="InvalidPathArgumentException"> <paramref name="logFile" /> contains wildcards. </exception>
 		/// <exception cref="FileNotFoundException"> The log file as specified by <paramref name="logFile" /> does not exist. </exception>
-		public LogFileToDbConverterResults ConvertFile(FilePath logFile, SQLiteConnection dbConnection)
+		public LogFileToDbConverterResults ConvertFile (FilePath logFile, SQLiteConnection dbConnection)
 		{
 			if (logFile == null)
 			{
@@ -393,7 +394,7 @@ namespace RI.Framework.Services.Logging.Readers
 				throw new ArgumentNullException(nameof(dbConnection));
 			}
 
-			LogFileToDbConverterResults results = this.ConvertFilesInternal(new[] { logFile }, dbConnection);
+			LogFileToDbConverterResults results = this.ConvertFilesInternal(new[] {logFile}, dbConnection);
 			return results;
 		}
 
@@ -437,7 +438,7 @@ namespace RI.Framework.Services.Logging.Readers
 		/// <exception cref="ArgumentNullException"> <paramref name="logFile" /> or <paramref name="dbConnection" /> is null. </exception>
 		/// <exception cref="InvalidPathArgumentException"> <paramref name="logFile" />  contains wildcards. </exception>
 		/// <exception cref="FileNotFoundException"> The log file as specified by <paramref name="logFile" /> does not exist. </exception>
-		public async Task<LogFileToDbConverterResults> ConvertFileAsync(FilePath logFile, SQLiteConnection dbConnection)
+		public async Task<LogFileToDbConverterResults> ConvertFileAsync (FilePath logFile, SQLiteConnection dbConnection)
 		{
 			if (logFile == null)
 			{
@@ -704,6 +705,8 @@ namespace RI.Framework.Services.Logging.Readers
 
 			return results;
 		}
+
+		private SQLiteConnection CreateConnection (FilePath dbFile) => this.Configuration.CreateConnection(dbFile);
 
 		private HashSet<FilePath> GetLogFilesFromDirectory (DirectoryPath logDirectory, FilePath fileName)
 		{

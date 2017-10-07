@@ -46,18 +46,6 @@ namespace RI.Framework.Services.Backup.Storages
 		#region Constants
 
 		/// <summary>
-		///     The default text encoding which is used for reading text files.
-		/// </summary>
-		/// <remarks>
-		///     <para>
-		///         The default text encoding is UTF-8.
-		///     </para>
-		/// </remarks>
-		public static readonly Encoding DefaultEncoding = Encoding.UTF8;
-
-		private bool _isInitialized;
-
-		/// <summary>
 		///     The default file pattern which is used to search for ZIP files.
 		/// </summary>
 		/// <remarks>
@@ -66,6 +54,16 @@ namespace RI.Framework.Services.Backup.Storages
 		///     </para>
 		/// </remarks>
 		public const string DefaultFilePattern = "*.zip";
+
+		/// <summary>
+		///     The default text encoding which is used for reading text files.
+		/// </summary>
+		/// <remarks>
+		///     <para>
+		///         The default text encoding is UTF-8.
+		///     </para>
+		/// </remarks>
+		public static readonly Encoding DefaultEncoding = Encoding.UTF8;
 
 		#endregion
 
@@ -88,7 +86,7 @@ namespace RI.Framework.Services.Backup.Storages
 		///         The default file pattern <see cref="DefaultFilePattern" /> is used and search is performed non-recursive.
 		///     </para>
 		/// </remarks>
-		public ZipBackupStorage(DirectoryPath directory)
+		public ZipBackupStorage (DirectoryPath directory)
 			: this(directory, null, null, false)
 		{
 		}
@@ -103,7 +101,7 @@ namespace RI.Framework.Services.Backup.Storages
 		/// <exception cref="ArgumentNullException"> <paramref name="directory" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> <paramref name="directory" /> is not a real usable directory. </exception>
 		/// <exception cref="InvalidPathArgumentException"> <paramref name="filePattern" /> is an empty string. </exception>
-		public ZipBackupStorage(DirectoryPath directory, Encoding fileEncoding, string filePattern, bool recursive)
+		public ZipBackupStorage (DirectoryPath directory, Encoding fileEncoding, string filePattern, bool recursive)
 		{
 			if (directory == null)
 			{
@@ -133,6 +131,15 @@ namespace RI.Framework.Services.Backup.Storages
 
 			this.Sets = new Dictionary<FilePath, ZipBackupSet>();
 		}
+
+		#endregion
+
+
+
+
+		#region Instance Fields
+
+		private bool _isInitialized;
 
 		#endregion
 
@@ -177,58 +184,12 @@ namespace RI.Framework.Services.Backup.Storages
 
 		#endregion
 
-		/// <inheritdoc />
-		bool ISynchronizable.IsSynchronized => true;
 
-		/// <inheritdoc />
-		public object SyncRoot { get; }
 
-		/// <inheritdoc />
-		public bool IsInitialized
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					return this._isInitialized;
-				}
-			}
-			private set
-			{
-				lock (this.SyncRoot)
-				{
-					this._isInitialized = value;
-				}
-			}
-		}
 
-		/// <inheritdoc />
-		void IBackupStorage.Initialize()
-		{
-			lock (this.SyncRoot)
-			{
-				this.Log(LogLevel.Debug, "Initializing ZIP backup storage: {0}", this.Directory);
+		#region Instance Methods
 
-				this.UpdateSets(false);
-
-				this.IsInitialized = true;
-			}
-		}
-
-		/// <inheritdoc />
-		void IBackupStorage.Unload()
-		{
-			lock (this.SyncRoot)
-			{
-				this.Log(LogLevel.Debug, "Unloading ZIP backup storage: {0}", this.Directory);
-
-				this.UpdateSets(true);
-
-				this.IsInitialized = false;
-			}
-		}
-
-		private void UpdateSets(bool unload)
+		private void UpdateSets (bool unload)
 		{
 			HashSet<FilePath> currentFiles = unload ? new HashSet<FilePath>() : new HashSet<FilePath>(this.Directory.GetFiles(false, this.Recursive, this.FilePattern));
 			HashSet<FilePath> lastFiles = new HashSet<FilePath>(this.Sets.Keys);
@@ -262,12 +223,29 @@ namespace RI.Framework.Services.Backup.Storages
 			this.Sets.RemoveWhere(x => !x.Value.IsValid.GetValueOrDefault(false));
 		}
 
+		#endregion
+
+
+
+
+		#region Interface: IBackupStorage
+
 		/// <inheritdoc />
-		public List<IBackupSet> GetAvailableSets()
+		public bool IsInitialized
 		{
-			lock (this.SyncRoot)
+			get
 			{
-				return DirectLinqExtensions.ToList(this.Sets.Values.Cast<IBackupSet>());
+				lock (this.SyncRoot)
+				{
+					return this._isInitialized;
+				}
+			}
+			private set
+			{
+				lock (this.SyncRoot)
+				{
+					this._isInitialized = value;
+				}
 			}
 		}
 
@@ -275,98 +253,132 @@ namespace RI.Framework.Services.Backup.Storages
 		public bool IsReadOnly => false;
 
 		/// <inheritdoc />
-		public IBackupSet TryImportBackupFromFile(FilePath file)
+		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		public object SyncRoot { get; }
+
+		/// <inheritdoc />
+		public void Cleanup (DateTime retentionDate)
 		{
-			if (file == null)
-			{
-				throw new ArgumentNullException(nameof(file));
-			}
-
-			if (!file.IsRealFile)
-			{
-				throw new InvalidPathArgumentException(nameof(file));
-			}
-
-			if (!file.Exists)
-			{
-				throw new FileNotFoundException("Backup import file not found.", file);
-			}
-
 			lock (this.SyncRoot)
 			{
-				FilePath targetFile = this.Directory.AppendFile(file.FileName);
-				if (targetFile.Exists)
+				List<IBackupSet> sets = this.GetAvailableSets();
+				foreach (IBackupSet set in sets)
 				{
-					this.Log(LogLevel.Warning, "Backup file already exists: {0}", targetFile);
-					return null;
-				}
-
-				if (!file.Copy(targetFile, false))
-				{
-					this.Log(LogLevel.Warning, "Cannot copy backup file: {0} -> {1}", file, targetFile);
-					return null;
-				}
-
-				try
-				{
-					using (ZipFile zipFile = ZipFile.Read(targetFile))
+					if (set.Timestamp.Date < retentionDate.Date)
 					{
-						DirectLinqExtensions.ToArray(zipFile);
+						this.TryDeleteBackup(set);
 					}
-				}
-				catch (Exception exception)
-				{
-					this.Log(LogLevel.Debug, "Cannot import backup file: {0}{1}{2}", targetFile, Environment.NewLine, exception.ToDetailedString());
-					targetFile.Delete();
-					return null;
 				}
 
 				this.UpdateSets(!this.IsInitialized);
-
-				IBackupSet backupSet = (from x in this.GetAvailableSets().Cast<ZipBackupSet>() where x.File.Equals(targetFile) select x).FirstOrDefault();
-				if (backupSet == null)
-				{
-					this.Log(LogLevel.Warning, "Failed to prepare imported backup file: {0}", targetFile);
-					targetFile.Delete();
-					return null;
-				}
-
-				return backupSet;
 			}
 		}
 
 		/// <inheritdoc />
-		public bool TryDeleteBackup(IBackupSet backupSet)
+		public void EndBackup (IBackupSet backupSet)
 		{
 			if (backupSet == null)
 			{
 				throw new ArgumentNullException(nameof(backupSet));
 			}
 
+			ZipBackupSet usedSet = backupSet as ZipBackupSet;
+			if (usedSet == null)
+			{
+				throw new ArgumentException("The backup set to end backup was not created by this backup storage.", nameof(backupSet));
+			}
+
 			lock (this.SyncRoot)
 			{
-				ZipBackupSet set = backupSet as ZipBackupSet;
-				if (set == null)
-				{
-					return false;
-				}
-
 				List<IBackupSet> sets = this.GetAvailableSets();
-				if (!sets.Contains(set))
+				if (!sets.Contains(backupSet))
 				{
-					return false;
+					throw new ArgumentException("The backup set to end backup was not created by this backup storage.", nameof(backupSet));
 				}
 
-				set.File.Delete();
+				using (ZipFile zipFile = ZipFile.Read(usedSet.File))
+				{
+					foreach (KeyValuePair<Guid, Tuple<TemporaryFile, FileStream>> tempFile in usedSet.TemporaryFiles)
+					{
+						tempFile.Value.Item2.Flush(true);
+						tempFile.Value.Item2.Position = 0;
+
+						zipFile.AddEntry(tempFile.Key.ToString("N").ToUpperInvariant(), tempFile.Value.Item2);
+					}
+
+					zipFile.Save();
+				}
+
+				foreach (KeyValuePair<Guid, Tuple<TemporaryFile, FileStream>> tempFile in usedSet.TemporaryFiles)
+				{
+					tempFile.Value.Item2.Close();
+					tempFile.Value.Item1.Delete();
+				}
+
+				usedSet.TemporaryFiles.Clear();
 
 				this.UpdateSets(!this.IsInitialized);
-
-				return true;
 			}
 		}
 
 		/// <inheritdoc />
-		public bool TryBeginBackup(string name, DateTime timestamp, IEnumerable<IBackupInclusion> inclusions, out IBackupSet backupSet, out Func<Guid, Stream> streamResolver)
+		public void EndRestore (IBackupSet backupSet)
+		{
+			if (backupSet == null)
+			{
+				throw new ArgumentNullException(nameof(backupSet));
+			}
+
+			ZipBackupSet usedSet = backupSet as ZipBackupSet;
+			if (usedSet == null)
+			{
+				throw new ArgumentException("The backup set to end restore was not created by this backup storage.", nameof(backupSet));
+			}
+
+			lock (this.SyncRoot)
+			{
+				List<IBackupSet> sets = this.GetAvailableSets();
+				if (!sets.Contains(backupSet))
+				{
+					throw new ArgumentException("The backup set to end restore was not created by this backup storage.", nameof(backupSet));
+				}
+
+				foreach (KeyValuePair<Guid, Tuple<TemporaryFile, FileStream>> tempFile in usedSet.TemporaryFiles)
+				{
+					tempFile.Value.Item2.Close();
+					tempFile.Value.Item1.Delete();
+				}
+
+				usedSet.TemporaryFiles.Clear();
+			}
+		}
+
+		/// <inheritdoc />
+		public List<IBackupSet> GetAvailableSets ()
+		{
+			lock (this.SyncRoot)
+			{
+				return this.Sets.Values.Cast<IBackupSet>().ToList();
+			}
+		}
+
+		/// <inheritdoc />
+		void IBackupStorage.Initialize ()
+		{
+			lock (this.SyncRoot)
+			{
+				this.Log(LogLevel.Debug, "Initializing ZIP backup storage: {0}", this.Directory);
+
+				this.UpdateSets(false);
+
+				this.IsInitialized = true;
+			}
+		}
+
+		/// <inheritdoc />
+		public bool TryBeginBackup (string name, DateTime timestamp, IEnumerable<IBackupInclusion> inclusions, out IBackupSet backupSet, out Func<Guid, Stream> streamResolver)
 		{
 			backupSet = null;
 			streamResolver = null;
@@ -434,54 +446,7 @@ namespace RI.Framework.Services.Backup.Storages
 		}
 
 		/// <inheritdoc />
-		public void EndBackup(IBackupSet backupSet)
-		{
-			if (backupSet == null)
-			{
-				throw new ArgumentNullException(nameof(backupSet));
-			}
-
-			ZipBackupSet usedSet = backupSet as ZipBackupSet;
-			if (usedSet == null)
-			{
-				throw new ArgumentException("The backup set to end backup was not created by this backup storage.", nameof(backupSet));
-			}
-
-			lock (this.SyncRoot)
-			{
-				List<IBackupSet> sets = this.GetAvailableSets();
-				if (!sets.Contains(backupSet))
-				{
-					throw new ArgumentException("The backup set to end backup was not created by this backup storage.", nameof(backupSet));
-				}
-
-				using (ZipFile zipFile = ZipFile.Read(usedSet.File))
-				{
-					foreach (KeyValuePair<Guid, Tuple<TemporaryFile, FileStream>> tempFile in usedSet.TemporaryFiles)
-					{
-						tempFile.Value.Item2.Flush(true);
-						tempFile.Value.Item2.Position = 0;
-
-						zipFile.AddEntry(tempFile.Key.ToString("N").ToUpperInvariant(), tempFile.Value.Item2);
-					}
-
-					zipFile.Save();
-				}
-
-				foreach (KeyValuePair<Guid, Tuple<TemporaryFile, FileStream>> tempFile in usedSet.TemporaryFiles)
-				{
-					tempFile.Value.Item2.Close();
-					tempFile.Value.Item1.Delete();
-				}
-
-				usedSet.TemporaryFiles.Clear();
-
-				this.UpdateSets(!this.IsInitialized);
-			}
-		}
-
-		/// <inheritdoc />
-		public bool TryBeginRestore(IBackupSet backupSet, IEnumerable<IBackupInclusion> inclusions, out Func<Guid, Stream> streamResolver)
+		public bool TryBeginRestore (IBackupSet backupSet, IEnumerable<IBackupInclusion> inclusions, out Func<Guid, Stream> streamResolver)
 		{
 			streamResolver = null;
 
@@ -532,53 +497,109 @@ namespace RI.Framework.Services.Backup.Storages
 		}
 
 		/// <inheritdoc />
-		public void EndRestore(IBackupSet backupSet)
+		public bool TryDeleteBackup (IBackupSet backupSet)
 		{
 			if (backupSet == null)
 			{
 				throw new ArgumentNullException(nameof(backupSet));
 			}
 
-			ZipBackupSet usedSet = backupSet as ZipBackupSet;
-			if (usedSet == null)
-			{
-				throw new ArgumentException("The backup set to end restore was not created by this backup storage.", nameof(backupSet));
-			}
-
 			lock (this.SyncRoot)
 			{
+				ZipBackupSet set = backupSet as ZipBackupSet;
+				if (set == null)
+				{
+					return false;
+				}
+
 				List<IBackupSet> sets = this.GetAvailableSets();
-				if (!sets.Contains(backupSet))
+				if (!sets.Contains(set))
 				{
-					throw new ArgumentException("The backup set to end restore was not created by this backup storage.", nameof(backupSet));
+					return false;
 				}
 
-				foreach (KeyValuePair<Guid, Tuple<TemporaryFile, FileStream>> tempFile in usedSet.TemporaryFiles)
-				{
-					tempFile.Value.Item2.Close();
-					tempFile.Value.Item1.Delete();
-				}
+				set.File.Delete();
 
-				usedSet.TemporaryFiles.Clear();
+				this.UpdateSets(!this.IsInitialized);
+
+				return true;
 			}
 		}
 
 		/// <inheritdoc />
-		public void Cleanup(DateTime retentionDate)
+		public IBackupSet TryImportBackupFromFile (FilePath file)
 		{
+			if (file == null)
+			{
+				throw new ArgumentNullException(nameof(file));
+			}
+
+			if (!file.IsRealFile)
+			{
+				throw new InvalidPathArgumentException(nameof(file));
+			}
+
+			if (!file.Exists)
+			{
+				throw new FileNotFoundException("Backup import file not found.", file);
+			}
+
 			lock (this.SyncRoot)
 			{
-				List<IBackupSet> sets = this.GetAvailableSets();
-				foreach (IBackupSet set in sets)
+				FilePath targetFile = this.Directory.AppendFile(file.FileName);
+				if (targetFile.Exists)
 				{
-					if (set.Timestamp.Date < retentionDate.Date)
+					this.Log(LogLevel.Warning, "Backup file already exists: {0}", targetFile);
+					return null;
+				}
+
+				if (!file.Copy(targetFile, false))
+				{
+					this.Log(LogLevel.Warning, "Cannot copy backup file: {0} -> {1}", file, targetFile);
+					return null;
+				}
+
+				try
+				{
+					using (ZipFile zipFile = ZipFile.Read(targetFile))
 					{
-						this.TryDeleteBackup(set);
+						DirectLinqExtensions.ToArray(zipFile);
 					}
+				}
+				catch (Exception exception)
+				{
+					this.Log(LogLevel.Debug, "Cannot import backup file: {0}{1}{2}", targetFile, Environment.NewLine, exception.ToDetailedString());
+					targetFile.Delete();
+					return null;
 				}
 
 				this.UpdateSets(!this.IsInitialized);
+
+				IBackupSet backupSet = (from x in this.GetAvailableSets().Cast<ZipBackupSet>() where x.File.Equals(targetFile) select x).FirstOrDefault();
+				if (backupSet == null)
+				{
+					this.Log(LogLevel.Warning, "Failed to prepare imported backup file: {0}", targetFile);
+					targetFile.Delete();
+					return null;
+				}
+
+				return backupSet;
 			}
 		}
+
+		/// <inheritdoc />
+		void IBackupStorage.Unload ()
+		{
+			lock (this.SyncRoot)
+			{
+				this.Log(LogLevel.Debug, "Unloading ZIP backup storage: {0}", this.Directory);
+
+				this.UpdateSets(true);
+
+				this.IsInitialized = false;
+			}
+		}
+
+		#endregion
 	}
 }

@@ -42,9 +42,9 @@ namespace RI.Framework.Services.Messaging.Dispatchers
 		///     <note type="implement">
 		///         This method must not return until the message is delivered to all receivers.
 		///     </note>
-		/// <note type="note">
-		/// Do not call this method directly, it is intended to be called from an <see cref="IMessageService"/> implementation.
-		/// </note>
+		///     <note type="note">
+		///         Do not call this method directly, it is intended to be called from an <see cref="IMessageService" /> implementation.
+		///     </note>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="receivers" />, <paramref name="message" />, or <paramref name="messageService" /> is null. </exception>
 		void Post (List<IMessageReceiver> receivers, IMessage message, IMessageService messageService, Action<IMessage> deliveredCallback);

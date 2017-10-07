@@ -20,13 +20,44 @@ namespace RI.Framework.Utilities.Wpf.Imaging
 		#region Static Methods
 
 		/// <summary>
-		/// Converts an icon to a bitmap source.
+		///     Converts a bitmap source to a bitmap.
 		/// </summary>
-		/// <param name="icon">The icon.</param>
+		/// <param name="image"> The bitmap source. </param>
 		/// <returns>
-		/// The bitmap source.
+		///     The bitmap.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="icon"/> is null.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="image" /> is null. </exception>
+		public static Bitmap ToBitmap (this BitmapSource image)
+		{
+			if (image == null)
+			{
+				throw new ArgumentNullException(nameof(image));
+			}
+
+			using (MemoryStream ms = new MemoryStream())
+			{
+				BmpBitmapEncoder encoder = new BmpBitmapEncoder();
+				encoder.Frames.Add(BitmapFrame.Create(image));
+				encoder.Save(ms);
+
+				ms.Flush();
+				ms.Position = 0;
+
+				using (Bitmap bmp = new Bitmap(ms))
+				{
+					return bmp.Clone(new Rectangle(new System.Drawing.Point(0, 0), bmp.Size), bmp.PixelFormat);
+				}
+			}
+		}
+
+		/// <summary>
+		///     Converts an icon to a bitmap source.
+		/// </summary>
+		/// <param name="icon"> The icon. </param>
+		/// <returns>
+		///     The bitmap source.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="icon" /> is null. </exception>
 		public static BitmapSource ToBitmapSource (this Icon icon)
 		{
 			if (icon == null)
@@ -38,13 +69,13 @@ namespace RI.Framework.Utilities.Wpf.Imaging
 		}
 
 		/// <summary>
-		/// Converts a bitmap to a bitmap source.
+		///     Converts a bitmap to a bitmap source.
 		/// </summary>
-		/// <param name="image">The bitmap.</param>
+		/// <param name="image"> The bitmap. </param>
 		/// <returns>
-		/// The bitmap source.
+		///     The bitmap source.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="image"/> is null.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="image" /> is null. </exception>
 		public static BitmapSource ToBitmapSource (this Bitmap image)
 		{
 			if (image == null)
@@ -71,118 +102,13 @@ namespace RI.Framework.Utilities.Wpf.Imaging
 		}
 
 		/// <summary>
-		/// Converts a bitmap source into a byte array.
+		///     Creates a bitmap source from a byte array.
 		/// </summary>
-		/// <param name="image">The icon.</param>
-		/// <param name="encoder">The image encoder.</param>
+		/// <param name="array"> The byte array. </param>
 		/// <returns>
-		/// The byte array.
+		///     The created bitmap source.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="image"/> or <paramref name="encoder"/> is null.</exception>
-		public static byte[] ToByteArray (this BitmapSource image, BitmapEncoder encoder)
-		{
-			if (image == null)
-			{
-				throw new ArgumentNullException(nameof(image));
-			}
-
-			if (encoder == null)
-			{
-				throw new ArgumentNullException(nameof(encoder));
-			}
-
-			using (MemoryStream ms = new MemoryStream())
-			{
-				encoder.Frames.Add(BitmapFrame.Create(image));
-				encoder.Save(ms);
-
-				return ms.ToArray();
-			}
-		}
-
-		/// <summary>
-		/// Converts a bitmap source into a BMP byte array.
-		/// </summary>
-		/// <param name="image">The bitmap source.</param>
-		/// <returns>
-		/// The byte array.
-		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="image"/> is null.</exception>
-		public static byte[] ToBmpByteArray (this BitmapSource image)
-		{
-			if (image == null)
-			{
-				throw new ArgumentNullException(nameof(image));
-			}
-
-			BmpBitmapEncoder encoder = new BmpBitmapEncoder();
-
-			return image.ToByteArray(encoder);
-		}
-
-		/// <summary>
-		/// Converts a bitmap source into a JPEG byte array.
-		/// </summary>
-		/// <param name="image">The bitmap source.</param>
-		/// <param name="quality">The JPEG image quality between 0.0 and 1.0.</param>
-		/// <returns>
-		/// The byte array.
-		/// </returns>
-		/// <remarks>
-		/// <para>
-		/// Values for <paramref name="quality"/> are clamped between 0.0 and 1.0.
-		/// </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="image"/> is null.</exception>
-		/// <exception cref="ArgumentOutOfRangeException"><paramref name="quality"/> is NaN or infinity.</exception>
-		public static byte[] ToJpegByteArray (this BitmapSource image, double quality)
-		{
-			if (image == null)
-			{
-				throw new ArgumentNullException(nameof(image));
-			}
-
-			if (quality.IsNanOrInfinity())
-			{
-				throw new ArgumentOutOfRangeException(nameof(quality));
-			}
-
-			JpegBitmapEncoder encoder = new JpegBitmapEncoder();
-			encoder.QualityLevel = 1 + (int)Math.Max(0.0, Math.Min(99.0, quality * 99.0));
-
-			return image.ToByteArray(encoder);
-		}
-
-		/// <summary>
-		/// Converts a bitmap source into a PNG byte array.
-		/// </summary>
-		/// <param name="image">The bitmap source.</param>
-		/// <param name="interlace">The PNG interlace options.</param>
-		/// <returns>
-		/// The byte array.
-		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="image"/> is null.</exception>
-		public static byte[] ToPngByteArray (this BitmapSource image, PngInterlaceOption interlace)
-		{
-			if (image == null)
-			{
-				throw new ArgumentNullException(nameof(image));
-			}
-
-			PngBitmapEncoder encoder = new PngBitmapEncoder();
-			encoder.Interlace = interlace;
-
-			return image.ToByteArray(encoder);
-		}
-
-		/// <summary>
-		/// Creates a bitmap source from a byte array.
-		/// </summary>
-		/// <param name="array">The byte array.</param>
-		/// <returns>
-		/// The created bitmap source.
-		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="array"/> is null.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="array" /> is null. </exception>
 		public static BitmapSource ToBitmapSource (this byte[] array)
 		{
 			if (array == null)
@@ -205,44 +131,63 @@ namespace RI.Framework.Utilities.Wpf.Imaging
 		}
 
 		/// <summary>
-		/// Converts a bitmap source to a bitmap.
+		///     Converts a bitmap source into a BMP byte array.
 		/// </summary>
-		/// <param name="image">The bitmap source.</param>
+		/// <param name="image"> The bitmap source. </param>
 		/// <returns>
-		/// The bitmap.
+		///     The byte array.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="image"/> is null.</exception>
-		public static Bitmap ToBitmap (this BitmapSource image)
+		/// <exception cref="ArgumentNullException"> <paramref name="image" /> is null. </exception>
+		public static byte[] ToBmpByteArray (this BitmapSource image)
 		{
 			if (image == null)
 			{
 				throw new ArgumentNullException(nameof(image));
 			}
 
+			BmpBitmapEncoder encoder = new BmpBitmapEncoder();
+
+			return image.ToByteArray(encoder);
+		}
+
+		/// <summary>
+		///     Converts a bitmap source into a byte array.
+		/// </summary>
+		/// <param name="image"> The icon. </param>
+		/// <param name="encoder"> The image encoder. </param>
+		/// <returns>
+		///     The byte array.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="image" /> or <paramref name="encoder" /> is null. </exception>
+		public static byte[] ToByteArray (this BitmapSource image, BitmapEncoder encoder)
+		{
+			if (image == null)
+			{
+				throw new ArgumentNullException(nameof(image));
+			}
+
+			if (encoder == null)
+			{
+				throw new ArgumentNullException(nameof(encoder));
+			}
+
 			using (MemoryStream ms = new MemoryStream())
 			{
-				BmpBitmapEncoder encoder = new BmpBitmapEncoder();
 				encoder.Frames.Add(BitmapFrame.Create(image));
 				encoder.Save(ms);
 
-				ms.Flush();
-				ms.Position = 0;
-
-				using (Bitmap bmp = new Bitmap(ms))
-				{
-					return bmp.Clone(new Rectangle(new System.Drawing.Point(0, 0), bmp.Size), bmp.PixelFormat);
-				}
+				return ms.ToArray();
 			}
 		}
 
 		/// <summary>
-		/// Converts a bitmap source to an icon.
+		///     Converts a bitmap source to an icon.
 		/// </summary>
-		/// <param name="image">The bitmap source.</param>
+		/// <param name="image"> The bitmap source. </param>
 		/// <returns>
-		/// The icon.
+		///     The icon.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="image"/> is null.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="image" /> is null. </exception>
 		public static Icon ToIcon (this BitmapSource image)
 		{
 			if (image == null)
@@ -256,9 +201,64 @@ namespace RI.Framework.Utilities.Wpf.Imaging
 			}
 		}
 
+		/// <summary>
+		///     Converts a bitmap source into a JPEG byte array.
+		/// </summary>
+		/// <param name="image"> The bitmap source. </param>
+		/// <param name="quality"> The JPEG image quality between 0.0 and 1.0. </param>
+		/// <returns>
+		///     The byte array.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         Values for <paramref name="quality" /> are clamped between 0.0 and 1.0.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="image" /> is null. </exception>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="quality" /> is NaN or infinity. </exception>
+		public static byte[] ToJpegByteArray (this BitmapSource image, double quality)
+		{
+			if (image == null)
+			{
+				throw new ArgumentNullException(nameof(image));
+			}
+
+			if (quality.IsNanOrInfinity())
+			{
+				throw new ArgumentOutOfRangeException(nameof(quality));
+			}
+
+			JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+			encoder.QualityLevel = 1 + (int)Math.Max(0.0, Math.Min(99.0, quality * 99.0));
+
+			return image.ToByteArray(encoder);
+		}
+
+		/// <summary>
+		///     Converts a bitmap source into a PNG byte array.
+		/// </summary>
+		/// <param name="image"> The bitmap source. </param>
+		/// <param name="interlace"> The PNG interlace options. </param>
+		/// <returns>
+		///     The byte array.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="image" /> is null. </exception>
+		public static byte[] ToPngByteArray (this BitmapSource image, PngInterlaceOption interlace)
+		{
+			if (image == null)
+			{
+				throw new ArgumentNullException(nameof(image));
+			}
+
+			PngBitmapEncoder encoder = new PngBitmapEncoder();
+			encoder.Interlace = interlace;
+
+			return image.ToByteArray(encoder);
+		}
+
 		[DllImport("gdi32.dll", SetLastError = false)]
 		[return: MarshalAs(UnmanagedType.Bool)]
-		private static extern bool DeleteObject(IntPtr hObject);
+		private static extern bool DeleteObject (IntPtr hObject);
 
 		#endregion
 	}

@@ -4,6 +4,9 @@ using System.Diagnostics.CodeAnalysis;
 
 using RI.Framework.IO.Paths;
 
+
+
+
 namespace RI.Framework.Data.Database
 {
 	/// <summary>
@@ -17,13 +20,20 @@ namespace RI.Framework.Data.Database
 	[SuppressMessage("ReSharper", "InconsistentNaming")]
 	public sealed class SQLiteDatabaseManagerConfiguration : DatabaseManagerConfiguration<SQLiteConnection, SQLiteTransaction, SQLiteConnectionStringBuilder, SQLiteDatabaseManager, SQLiteDatabaseManagerConfiguration>
 	{
+		#region Instance Constructor/Destructor
+
 		/// <summary>
-		/// Creates a new instance of <see cref="SQLiteDatabaseManagerConfiguration"/>.
+		///     Creates a new instance of <see cref="SQLiteDatabaseManagerConfiguration" />.
 		/// </summary>
 		public SQLiteDatabaseManagerConfiguration ()
 		{
 			this.ConnectionString = new SQLiteConnectionStringBuilder();
 		}
+
+		#endregion
+
+
+
 
 		#region Instance Properties/Indexer
 
@@ -48,6 +58,29 @@ namespace RI.Framework.Data.Database
 			}
 		}
 
+		/// <summary>
+		///     Gets or sets whether default collation are automatically registered with newly created connections.
+		/// </summary>
+		/// <value>
+		///     true if default collations are automatically registered with newly created connections, false otherwise.
+		/// </value>
+		public bool RegisterDefaultCollations { get; set; } = true;
+
+		/// <summary>
+		///     Gets or sets whether default functions are automatically registered with newly created connections.
+		/// </summary>
+		/// <value>
+		///     true if default functions are automatically registered with newly created connections, false otherwise.
+		/// </value>
+		public bool RegisterDefaultFunctions { get; set; } = true;
+
+		#endregion
+
+
+
+
+		#region Overrides
+
 		/// <inheritdoc />
 		protected override void VerifyConfiguration (SQLiteDatabaseManager manager)
 		{
@@ -63,22 +96,6 @@ namespace RI.Framework.Data.Database
 				throw new InvalidDatabaseConfigurationException("Invalid database file path: " + (this.ConnectionString.DataSource ?? "[null]") + ".", exception);
 			}
 		}
-
-		/// <summary>
-		/// Gets or sets whether default functions are automatically registered with newly created connections.
-		/// </summary>
-		/// <value>
-		/// true if default functions are automatically registered with newly created connections, false otherwise.
-		/// </value>
-		public bool RegisterDefaultFunctions { get; set; } = true;
-
-		/// <summary>
-		/// Gets or sets whether default collation are automatically registered with newly created connections.
-		/// </summary>
-		/// <value>
-		/// true if default collations are automatically registered with newly created connections, false otherwise.
-		/// </value>
-		public bool RegisterDefaultCollations { get; set; } = true;
 
 		#endregion
 	}

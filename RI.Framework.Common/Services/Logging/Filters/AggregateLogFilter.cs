@@ -18,27 +18,22 @@ namespace RI.Framework.Services.Logging.Filters
 	///     <para>
 	///         See <see cref="ILogFilter" /> for more details.
 	///     </para>
-	/// <para>
-	/// The filter mode (<see cref="Mode"/>) defines the behaviour when multiple filters are used.
-	/// </para>
-	/// <para>
-	/// If no filter is used, <see cref="Filter"/> returns true.
-	/// </para>
+	///     <para>
+	///         The filter mode (<see cref="Mode" />) defines the behaviour when multiple filters are used.
+	///     </para>
+	///     <para>
+	///         If no filter is used, <see cref="Filter" /> returns true.
+	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	public sealed class AggregateLogFilter : ILogFilter, ISynchronizable, ICollection<ILogFilter>, ICollection
 	{
-		private AggregateLogFilterMode _mode;
-
-
-
-
 		#region Instance Constructor/Destructor
 
 		/// <summary>
 		///     Creates a new instance of <see cref="AggregateLogFilter" />.
 		/// </summary>
-		public AggregateLogFilter()
+		public AggregateLogFilter ()
 			: this((IEnumerable<ILogFilter>)null)
 		{
 		}
@@ -52,7 +47,7 @@ namespace RI.Framework.Services.Logging.Filters
 		///         <paramref name="filters" /> is enumerated exactly once.
 		///     </para>
 		/// </remarks>
-		public AggregateLogFilter(IEnumerable<ILogFilter> filters)
+		public AggregateLogFilter (IEnumerable<ILogFilter> filters)
 		{
 			this.SyncRoot = new object();
 
@@ -74,7 +69,7 @@ namespace RI.Framework.Services.Logging.Filters
 		///     Creates a new instance of <see cref="AggregateLogFilter" />.
 		/// </summary>
 		/// <param name="filters"> The array of filters which are aggregated. </param>
-		public AggregateLogFilter(params ILogFilter[] filters)
+		public AggregateLogFilter (params ILogFilter[] filters)
 			: this((IEnumerable<ILogFilter>)filters)
 		{
 		}
@@ -84,18 +79,27 @@ namespace RI.Framework.Services.Logging.Filters
 
 
 
+		#region Instance Fields
+
+		private AggregateLogFilterMode _mode;
+
+		#endregion
+
+
+
+
 		#region Instance Properties/Indexer
 
 		/// <summary>
-		/// Gets or sets the filter mode.
+		///     Gets or sets the filter mode.
 		/// </summary>
 		/// <value>
-		/// The filter mode.
+		///     The filter mode.
 		/// </value>
 		/// <remarks>
-		/// <para>
-		/// The default value is <see cref="AggregateLogFilterMode.And"/>.
-		/// </para>
+		///     <para>
+		///         The default value is <see cref="AggregateLogFilterMode.And" />.
+		///     </para>
 		/// </remarks>
 		public AggregateLogFilterMode Mode
 		{
@@ -115,15 +119,16 @@ namespace RI.Framework.Services.Logging.Filters
 			}
 		}
 
+		private List<ILogFilter> Copy { get; set; }
+
 		private HashSet<ILogFilter> Filters { get; }
 
-		/// <inheritdoc />
-		bool ISynchronizable.IsSynchronized => true;
+		#endregion
 
-		/// <inheritdoc />
-		public object SyncRoot { get; }
 
-		private List<ILogFilter> Copy { get; set; }
+
+
+		#region Instance Methods
 
 		private void UpdateCopy ()
 		{
@@ -141,7 +146,7 @@ namespace RI.Framework.Services.Logging.Filters
 		bool ICollection.IsSynchronized => ((ISynchronizable)this).IsSynchronized;
 
 		/// <inheritdoc />
-		void ICollection.CopyTo(Array array, int index)
+		void ICollection.CopyTo (Array array, int index)
 		{
 			lock (this.SyncRoot)
 			{
@@ -159,7 +164,7 @@ namespace RI.Framework.Services.Logging.Filters
 
 
 
-		#region Interface: ICollection<CompositionCatalog>
+		#region Interface: ICollection<ILogFilter>
 
 		/// <inheritdoc />
 		public int Count
@@ -177,7 +182,7 @@ namespace RI.Framework.Services.Logging.Filters
 		bool ICollection<ILogFilter>.IsReadOnly => false;
 
 		/// <inheritdoc />
-		public void Add(ILogFilter item)
+		public void Add (ILogFilter item)
 		{
 			if (item == null)
 			{
@@ -193,7 +198,7 @@ namespace RI.Framework.Services.Logging.Filters
 		}
 
 		/// <inheritdoc />
-		public void Clear()
+		public void Clear ()
 		{
 			lock (this.SyncRoot)
 			{
@@ -204,7 +209,7 @@ namespace RI.Framework.Services.Logging.Filters
 		}
 
 		/// <inheritdoc />
-		public bool Contains(ILogFilter item)
+		public bool Contains (ILogFilter item)
 		{
 			lock (this.SyncRoot)
 			{
@@ -213,7 +218,7 @@ namespace RI.Framework.Services.Logging.Filters
 		}
 
 		/// <inheritdoc />
-		void ICollection<ILogFilter>.CopyTo(ILogFilter[] array, int arrayIndex)
+		void ICollection<ILogFilter>.CopyTo (ILogFilter[] array, int arrayIndex)
 		{
 			lock (this.SyncRoot)
 			{
@@ -222,13 +227,13 @@ namespace RI.Framework.Services.Logging.Filters
 		}
 
 		/// <inheritdoc />
-		IEnumerator IEnumerable.GetEnumerator()
+		IEnumerator IEnumerable.GetEnumerator ()
 		{
 			return this.GetEnumerator();
 		}
 
 		/// <inheritdoc />
-		public IEnumerator<ILogFilter> GetEnumerator()
+		public IEnumerator<ILogFilter> GetEnumerator ()
 		{
 			lock (this.SyncRoot)
 			{
@@ -237,7 +242,7 @@ namespace RI.Framework.Services.Logging.Filters
 		}
 
 		/// <inheritdoc />
-		public bool Remove(ILogFilter item)
+		public bool Remove (ILogFilter item)
 		{
 			if (item == null)
 			{
@@ -258,6 +263,9 @@ namespace RI.Framework.Services.Logging.Filters
 
 
 
+
+		#region Interface: ILogFilter
+
 		/// <inheritdoc />
 		public bool Filter (DateTime timestamp, int threadId, LogLevel severity, string source)
 		{
@@ -277,5 +285,20 @@ namespace RI.Framework.Services.Logging.Filters
 
 			return mode == AggregateLogFilterMode.And ? copy.All(x => x.Filter(timestamp, threadId, severity, source)) : copy.Any(x => x.Filter(timestamp, threadId, severity, source));
 		}
+
+		#endregion
+
+
+
+
+		#region Interface: ISynchronizable
+
+		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		public object SyncRoot { get; }
+
+		#endregion
 	}
 }

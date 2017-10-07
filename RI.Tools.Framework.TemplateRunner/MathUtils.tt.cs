@@ -1,7 +1,4 @@
-﻿
-#if !TEMPLATE_RUNNER
-
-// ReSharper disable RedundantCast
+﻿#if !TEMPLATE_RUNNER // ReSharper disable RedundantCast
 
 namespace RI.Framework.Mathematic
 {

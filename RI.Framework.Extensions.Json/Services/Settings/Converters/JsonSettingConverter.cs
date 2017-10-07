@@ -4,6 +4,9 @@ using Newtonsoft.Json;
 
 using RI.Framework.Composition.Model;
 
+
+
+
 namespace RI.Framework.Services.Settings.Converters
 {
 	/// <summary>
@@ -21,13 +24,15 @@ namespace RI.Framework.Services.Settings.Converters
 	[Export]
 	public sealed class JsonSettingConverter : ISettingConverter
 	{
+		#region Instance Constructor/Destructor
+
 		/// <summary>
-		/// Creates a new instance of <see cref="JsonSettingConverter"/>.
+		///     Creates a new instance of <see cref="JsonSettingConverter" />.
 		/// </summary>
 		/// <remarks>
-		/// <para>
-		/// Default JSON serialization settings are used.
-		/// </para>
+		///     <para>
+		///         Default JSON serialization settings are used.
+		///     </para>
 		/// </remarks>
 		public JsonSettingConverter ()
 			: this(null)
@@ -35,24 +40,38 @@ namespace RI.Framework.Services.Settings.Converters
 		}
 
 		/// <summary>
-		/// Creates a new instance of <see cref="JsonSettingConverter"/>.
+		///     Creates a new instance of <see cref="JsonSettingConverter" />.
 		/// </summary>
-		/// <param name="settings">The used JSON serialization settings or null to use default settings.</param>
+		/// <param name="settings"> The used JSON serialization settings or null to use default settings. </param>
 		public JsonSettingConverter (JsonSerializerSettings settings)
 		{
 			this.Settings = settings;
 		}
 
-		/// <inheritdoc />
-		public SettingConversionMode ConversionMode => SettingConversionMode.SerializationAsString;
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
 
 		/// <summary>
-		/// Gets the used JSON serialization settings.
+		///     Gets the used JSON serialization settings.
 		/// </summary>
 		/// <value>
-		/// The used JSON serialization settings.
+		///     The used JSON serialization settings.
 		/// </value>
 		public JsonSerializerSettings Settings { get; }
+
+		#endregion
+
+
+
+
+		#region Interface: ISettingConverter
+
+		/// <inheritdoc />
+		public SettingConversionMode ConversionMode => SettingConversionMode.SerializationAsString;
 
 		/// <inheritdoc />
 		public bool CanConvert (Type type)
@@ -98,5 +117,7 @@ namespace RI.Framework.Services.Settings.Converters
 			object result = JsonConvert.DeserializeObject(value, type, this.Settings);
 			return result;
 		}
+
+		#endregion
 	}
 }

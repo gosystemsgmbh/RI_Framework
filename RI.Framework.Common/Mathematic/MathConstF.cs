@@ -8,6 +8,11 @@ namespace RI.Framework.Mathematic
 		#region Constants
 
 		/// <summary>
+		///     The default accuracy value used for zero and almost-zero comparisons.
+		/// </summary>
+		public const float DefaultAccuracy = 5.96046447753906E-07f;
+
+		/// <summary>
 		///     The factor used to convert a degree value to a radians value.
 		/// </summary>
 		public const float DegToRad = 0.01745329252f;
@@ -41,11 +46,6 @@ namespace RI.Framework.Mathematic
 		///     The speed of light in vacuum in [m/s].
 		/// </summary>
 		public const float SpeedOfLight = 299792458.0f;
-
-		/// <summary>
-		///     The default accuracy value used for zero and almost-zero comparisons.
-		/// </summary>
-		public const float DefaultAccuracy = 5.96046447753906E-07f;
 
 		#endregion
 	}

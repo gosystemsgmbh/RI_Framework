@@ -29,6 +29,8 @@ namespace RI.Framework.Services.Backup.Storages
 	/// </remarks>
 	public sealed class ZipBackupSet : LogSource, IBackupSet
 	{
+		#region Constants
+
 		/// <summary>
 		///     The file name of the backup description file.
 		/// </summary>
@@ -40,6 +42,13 @@ namespace RI.Framework.Services.Backup.Storages
 		public const string BackupFileName = "[Backup].ini";
 
 		internal const string InclusionSectionName = "Inclusions";
+
+		#endregion
+
+
+
+
+		#region Instance Constructor/Destructor
 
 		internal ZipBackupSet (FilePath file, ZipBackupStorage storage)
 		{
@@ -67,16 +76,30 @@ namespace RI.Framework.Services.Backup.Storages
 			this.Inclusions = new List<IBackupInclusion>();
 			this.Streams = new Dictionary<Guid, FilePath>();
 
-			this.TemporaryFiles = new Dictionary<Guid, Tuple<TemporaryFile,FileStream>>();
+			this.TemporaryFiles = new Dictionary<Guid, Tuple<TemporaryFile, FileStream>>();
 		}
 
-		/// <summary>
-		///     Gets the ZIP file of this backup set.
-		/// </summary>
-		/// <value>
-		///     The ZIP file of this backup set.
-		/// </value>
-		public FilePath File { get; }
+		#endregion
+
+
+
+
+		#region Instance Fields
+
+		private bool? _isValid;
+
+		private string _name;
+
+		private long? _sizeInBytes;
+
+		private DateTime _timestamp;
+
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
 
 		/// <summary>
 		///     Gets the backup description file path inside the ZIP file of this backup set.
@@ -86,7 +109,14 @@ namespace RI.Framework.Services.Backup.Storages
 		/// </value>
 		public FilePath BackupFile { get; }
 
-		private bool? _isValid;
+		/// <summary>
+		///     Gets the ZIP file of this backup set.
+		/// </summary>
+		/// <value>
+		///     The ZIP file of this backup set.
+		/// </value>
+		public FilePath File { get; }
+
 		internal bool? IsValid
 		{
 			get
@@ -107,34 +137,26 @@ namespace RI.Framework.Services.Backup.Storages
 
 		internal ZipBackupStorage Storage { get; }
 
-		/// <inheritdoc />
-		bool ISynchronizable.IsSynchronized => true;
+		internal Dictionary<Guid, Tuple<TemporaryFile, FileStream>> TemporaryFiles { get; }
 
-		/// <inheritdoc />
-		public object SyncRoot { get; }
+		private List<IBackupInclusion> Inclusions { get; }
 
-		/// <inheritdoc />
-		public bool Equals(IBackupSet other)
+		private Dictionary<Guid, FilePath> Streams { get; }
+
+		#endregion
+
+
+
+
+		#region Instance Methods
+
+		internal Dictionary<Guid, FilePath> GetStreams ()
 		{
-			if (other == null)
+			lock (this.SyncRoot)
 			{
-				return false;
+				return new Dictionary<Guid, FilePath>(this.Streams, this.Streams.Comparer);
 			}
-
-			ZipBackupSet other2 = other as ZipBackupSet;
-			if (other2 == null)
-			{
-				return false;
-			}
-
-			return this.File.Equals(other2.File);
 		}
-
-		/// <inheritdoc />
-		public override int GetHashCode() => this.File.GetHashCode();
-
-		/// <inheritdoc />
-		public override bool Equals(object obj) => this.Equals(obj as IBackupSet);
 
 		internal void Prepare ()
 		{
@@ -408,7 +430,49 @@ namespace RI.Framework.Services.Backup.Storages
 			}
 		}
 
-		private string _name;
+		#endregion
+
+
+
+
+		#region Overrides
+
+		/// <inheritdoc />
+		public override bool Equals (object obj) => this.Equals(obj as IBackupSet);
+
+		/// <inheritdoc />
+		public override int GetHashCode () => this.File.GetHashCode();
+
+		#endregion
+
+
+
+
+		#region Interface: IBackupSet
+
+		/// <inheritdoc />
+		public bool CanExportToFile => true;
+
+		/// <inheritdoc />
+		public bool CanRestore
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					if (this.Inclusions.Count == 0)
+					{
+						return false;
+					}
+
+					return this.Inclusions.Any(x => x.SupportsRestore);
+				}
+			}
+		}
+
+		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => true;
+
 		/// <inheritdoc />
 		public string Name
 		{
@@ -428,7 +492,6 @@ namespace RI.Framework.Services.Backup.Storages
 			}
 		}
 
-		private long? _sizeInBytes;
 		/// <inheritdoc />
 		public long? SizeInBytes
 		{
@@ -448,7 +511,9 @@ namespace RI.Framework.Services.Backup.Storages
 			}
 		}
 
-		private DateTime _timestamp;
+		/// <inheritdoc />
+		public object SyncRoot { get; }
+
 		/// <inheritdoc />
 		public DateTime Timestamp
 		{
@@ -468,12 +533,22 @@ namespace RI.Framework.Services.Backup.Storages
 			}
 		}
 
-		private List<IBackupInclusion> Inclusions { get; }
-
-		private Dictionary<Guid,FilePath> Streams { get; }
-
 		/// <inheritdoc />
-		public bool CanExportToFile => true;
+		public bool Equals (IBackupSet other)
+		{
+			if (other == null)
+			{
+				return false;
+			}
+
+			ZipBackupSet other2 = other as ZipBackupSet;
+			if (other2 == null)
+			{
+				return false;
+			}
+
+			return this.File.Equals(other2.File);
+		}
 
 		/// <inheritdoc />
 		public void ExportToFile (FilePath targetFile)
@@ -503,31 +578,6 @@ namespace RI.Framework.Services.Backup.Storages
 			}
 		}
 
-		internal Dictionary<Guid, FilePath> GetStreams()
-		{
-			lock (this.SyncRoot)
-			{
-				return new Dictionary<Guid, FilePath>(this.Streams, this.Streams.Comparer);
-			}
-		}
-
-		/// <inheritdoc />
-		public bool CanRestore
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					if (this.Inclusions.Count == 0)
-					{
-						return false;
-					}
-
-					return this.Inclusions.Any(x => x.SupportsRestore);
-				}
-			}
-		}
-
-		internal Dictionary<Guid, Tuple<TemporaryFile, FileStream>> TemporaryFiles { get; }
+		#endregion
 	}
 }

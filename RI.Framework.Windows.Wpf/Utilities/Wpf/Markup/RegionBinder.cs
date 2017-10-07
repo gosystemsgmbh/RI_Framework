@@ -15,14 +15,14 @@ namespace RI.Framework.Utilities.Wpf.Markup
 	///     <para>
 	///         <see cref="RegionBinder" /> is a convenience utility to work with regions (<see cref="IRegionService" />) in MVVM scenarios.
 	///         It defines an attached property (<see cref="RegionNameProperty" />) which can be used to associate a container with a region (using the region services <see cref="IRegionService.AddRegion" /> method).
-	///         It also defines an attached property (<see cref="RegionServiceProperty"/>) to specify the used <see cref="IRegionService"/>.
+	///         It also defines an attached property (<see cref="RegionServiceProperty" />) to specify the used <see cref="IRegionService" />.
 	///     </para>
-	/// <para>
-	/// The used <see cref="IRegionService"/> is determined in the following order:
-	/// If <see cref="RegionServiceProperty"/> is not null, that instance is used.
-	/// If <see cref="DefaultRegionService"/> is not null, that instance is used.
-	/// <see cref="RegionLocator"/> is used if neither <see cref="RegionServiceProperty"/> nor <see cref="DefaultRegionService"/> is set.
-	/// </para>
+	///     <para>
+	///         The used <see cref="IRegionService" /> is determined in the following order:
+	///         If <see cref="RegionServiceProperty" /> is not null, that instance is used.
+	///         If <see cref="DefaultRegionService" /> is not null, that instance is used.
+	///         <see cref="RegionLocator" /> is used if neither <see cref="RegionServiceProperty" /> nor <see cref="DefaultRegionService" /> is set.
+	///     </para>
 	/// </remarks>
 	public static class RegionBinder
 	{
@@ -43,20 +43,27 @@ namespace RI.Framework.Utilities.Wpf.Markup
 
 
 
-		#region Static Methods
+		#region Static Properties/Indexer
 
 		/// <summary>
-		/// Gets or sets the default region service to use.
+		///     Gets or sets the default region service to use.
 		/// </summary>
 		/// <value>
-		/// The default region service to use.
+		///     The default region service to use.
 		/// </value>
 		/// <remarks>
-		/// <para>
-		/// The default value is null.
-		/// </para>
+		///     <para>
+		///         The default value is null.
+		///     </para>
 		/// </remarks>
 		public static IRegionService DefaultRegionService { get; set; }
+
+		#endregion
+
+
+
+
+		#region Static Methods
 
 		/// <summary>
 		///     Gets the region name of the specified container.
@@ -76,6 +83,23 @@ namespace RI.Framework.Utilities.Wpf.Markup
 		}
 
 		/// <summary>
+		///     Gets the region service of the specified container.
+		/// </summary>
+		/// <param name="obj"> The container. </param>
+		/// <returns>
+		///     The region service associated with the container or null if <see cref="DefaultRegionService" /> or <see cref="RegionLocator" /> is used.
+		/// </returns>
+		/// <remarks>
+		///     <note type="note">
+		///         This method is for supporting the XAML designer and not intended to be used by your code.
+		///     </note>
+		/// </remarks>
+		public static IRegionService GetRegionService (DependencyObject obj)
+		{
+			return obj?.GetValue(RegionBinder.RegionServiceProperty) as IRegionService;
+		}
+
+		/// <summary>
 		///     Sets the region name of the specified container.
 		/// </summary>
 		/// <param name="obj"> The container. </param>
@@ -91,33 +115,16 @@ namespace RI.Framework.Utilities.Wpf.Markup
 		}
 
 		/// <summary>
-		///     Gets the region service of the specified container.
-		/// </summary>
-		/// <param name="obj"> The container. </param>
-		/// <returns>
-		///     The region service associated with the container or null if <see cref="DefaultRegionService"/> or <see cref="RegionLocator"/> is used.
-		/// </returns>
-		/// <remarks>
-		///     <note type="note">
-		///         This method is for supporting the XAML designer and not intended to be used by your code.
-		///     </note>
-		/// </remarks>
-		public static IRegionService GetRegionService(DependencyObject obj)
-		{
-			return obj?.GetValue(RegionBinder.RegionServiceProperty) as IRegionService;
-		}
-
-		/// <summary>
 		///     Sets the region service of the specified container.
 		/// </summary>
 		/// <param name="obj"> The container. </param>
-		/// <param name="value"> The region service to associate with the container. Can be null to use <see cref="DefaultRegionService"/> or <see cref="RegionLocator"/>. </param>
+		/// <param name="value"> The region service to associate with the container. Can be null to use <see cref="DefaultRegionService" /> or <see cref="RegionLocator" />. </param>
 		/// <remarks>
 		///     <note type="note">
 		///         This method is for supporting the XAML designer and not intended to be used by your code.
 		///     </note>
 		/// </remarks>
-		public static void SetRegionService(DependencyObject obj, IRegionService value)
+		public static void SetRegionService (DependencyObject obj, IRegionService value)
 		{
 			obj?.SetValue(RegionBinder.RegionServiceProperty, value);
 		}
@@ -152,7 +159,7 @@ namespace RI.Framework.Utilities.Wpf.Markup
 			}
 		}
 
-		private static void OnRegionServiceChange(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+		private static void OnRegionServiceChange (DependencyObject obj, DependencyPropertyChangedEventArgs e)
 		{
 			IRegionService oldService = e.OldValue as IRegionService;
 			IRegionService newService = e.NewValue as IRegionService;

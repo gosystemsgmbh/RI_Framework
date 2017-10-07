@@ -10,6 +10,9 @@ using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.Runtime;
 
+
+
+
 namespace RI.Framework.Composition.Catalogs
 {
 	/// <summary>
@@ -141,20 +144,6 @@ namespace RI.Framework.Composition.Catalogs
 		public bool ExportAllTypes { get; }
 
 		/// <summary>
-		/// Gets whether files provided by the framework itself are ignored.
-		/// </summary>
-		/// <value>
-		/// true if files provided by the framework itself are ignored, false otherwise.
-		/// </value>
-		/// <remarks>
-		/// <para>
-		/// If framework-provided files are ignored, their types are not exported by default.
-		/// However, you can still export those types by explicit export them, e.g. through <see cref="AssemblyCatalog"/>, <see cref="TypeCatalog"/>, or <see cref="InstanceCatalog"/>.
-		/// </para>
-		/// </remarks>
-		public bool IgnoreFrameworkFiles { get; }
-
-		/// <summary>
 		///     Indicates whether there were assembly files which could not be loaded.
 		/// </summary>
 		/// <value>
@@ -183,6 +172,20 @@ namespace RI.Framework.Composition.Catalogs
 		///     The file pattern which is used to search for assemblies.
 		/// </value>
 		public string FilePattern { get; }
+
+		/// <summary>
+		///     Gets whether files provided by the framework itself are ignored.
+		/// </summary>
+		/// <value>
+		///     true if files provided by the framework itself are ignored, false otherwise.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         If framework-provided files are ignored, their types are not exported by default.
+		///         However, you can still export those types by explicit export them, e.g. through <see cref="AssemblyCatalog" />, <see cref="TypeCatalog" />, or <see cref="InstanceCatalog" />.
+		///     </para>
+		/// </remarks>
+		public bool IgnoreFrameworkFiles { get; }
 
 		/// <summary>
 		///     Gets whether assemblies are searched recursive (including subdirectories) or not.

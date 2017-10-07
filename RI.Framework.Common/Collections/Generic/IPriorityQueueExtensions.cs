@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
+
+
+
 namespace RI.Framework.Collections.Generic
 {
 	/// <summary>
@@ -8,70 +11,29 @@ namespace RI.Framework.Collections.Generic
 	/// </summary>
 	public static class IPriorityQueueExtensions
 	{
-		/// <summary>
-		/// Removes all occurences of an item from the priority queue.
-		/// </summary>
-		/// <param name="priorityQueue">The priority queue.</param>
-		/// <param name="item">The item to remove.</param>
-		/// <returns>
-		/// The number of times the item was removed from the priority queue.
-		/// </returns>
-		/// <remarks>
-		/// <note type="important">
-		/// This method is considered very slow as it needs to rebuild the whole internal structure of the priority queue.
-		/// </note>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="priorityQueue"/> is null.</exception>
-		public static int RemoveAll<T>(this IPriorityQueue<T> priorityQueue, T item) => priorityQueue.RemoveAll(item, null);
+		#region Static Methods
 
 		/// <summary>
-		/// Removes all occurences of an item from the priority queue.
+		///     Removes items from the queue based on a predicate.
 		/// </summary>
-		/// <param name="priorityQueue">The priority queue.</param>
-		/// <param name="item">The item to remove.</param>
-		/// <param name="comparer">The comparer to use to test which items to remove or null to use the default comparer.</param>
+		/// <param name="priorityQueue"> The priority queue. </param>
+		/// <param name="predicate"> The predicate. </param>
 		/// <returns>
-		/// The number of times the item was removed from the priority queue.
+		///     The list of removed items.
 		/// </returns>
 		/// <remarks>
-		/// <note type="important">
-		/// This method is considered very slow as it needs to rebuild the whole internal structure of the priority queue.
-		/// </note>
+		///     <para>
+		///         All items for which the predicate returns true are removed.
+		///     </para>
+		///     <note type="important">
+		///         This method is considered very slow as it needs to rebuild the whole internal structure of the priority queue.
+		///     </note>
+		///     <note type="important">
+		///         The priority queue is left in an undefined, most probably empty, state if an exception is thrown by <paramref name="predicate" />.
+		///     </note>
 		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="priorityQueue"/> is null.</exception>
-		public static int RemoveAll<T>(this IPriorityQueue<T> priorityQueue, T item, IEqualityComparer<T> comparer)
-		{
-			if (priorityQueue == null)
-			{
-				throw new ArgumentNullException(nameof(priorityQueue));
-			}
-
-			comparer = comparer ?? EqualityComparer<T>.Default;
-			List<T> removed = priorityQueue.Remove(((i, p) => comparer.Equals(i, item)));
-			return removed.Count;
-		}
-
-		/// <summary>
-		/// Removes items from the queue based on a predicate.
-		/// </summary>
-		/// <param name="priorityQueue">The priority queue.</param>
-		/// <param name="predicate">The predicate.</param>
-		/// <returns>
-		/// The list of removed items.
-		/// </returns>
-		/// <remarks>
-		/// <para>
-		/// All items for which the predicate returns true are removed.
-		/// </para>
-		/// <note type="important">
-		/// This method is considered very slow as it needs to rebuild the whole internal structure of the priority queue.
-		/// </note>
-		/// <note type="important">
-		/// The priority queue is left in an undefined, most probably empty, state if an exception is thrown by <paramref name="predicate"/>.
-		/// </note>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="priorityQueue"/> or <paramref name="predicate"/> is null.</exception>
-		public static List<T> Remove<T>(this IPriorityQueue<T> priorityQueue, PriorityQueueRemovePredicate<T> predicate)
+		/// <exception cref="ArgumentNullException"> <paramref name="priorityQueue" /> or <paramref name="predicate" /> is null. </exception>
+		public static List<T> Remove <T> (this IPriorityQueue<T> priorityQueue, PriorityQueueRemovePredicate<T> predicate)
 		{
 			if (priorityQueue == null)
 			{
@@ -117,8 +79,60 @@ namespace RI.Framework.Collections.Generic
 			return removed;
 		}
 
-		private sealed class RemovalTuple<T>
+		/// <summary>
+		///     Removes all occurences of an item from the priority queue.
+		/// </summary>
+		/// <param name="priorityQueue"> The priority queue. </param>
+		/// <param name="item"> The item to remove. </param>
+		/// <returns>
+		///     The number of times the item was removed from the priority queue.
+		/// </returns>
+		/// <remarks>
+		///     <note type="important">
+		///         This method is considered very slow as it needs to rebuild the whole internal structure of the priority queue.
+		///     </note>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="priorityQueue" /> is null. </exception>
+		public static int RemoveAll <T> (this IPriorityQueue<T> priorityQueue, T item) => priorityQueue.RemoveAll(item, null);
+
+		/// <summary>
+		///     Removes all occurences of an item from the priority queue.
+		/// </summary>
+		/// <param name="priorityQueue"> The priority queue. </param>
+		/// <param name="item"> The item to remove. </param>
+		/// <param name="comparer"> The comparer to use to test which items to remove or null to use the default comparer. </param>
+		/// <returns>
+		///     The number of times the item was removed from the priority queue.
+		/// </returns>
+		/// <remarks>
+		///     <note type="important">
+		///         This method is considered very slow as it needs to rebuild the whole internal structure of the priority queue.
+		///     </note>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="priorityQueue" /> is null. </exception>
+		public static int RemoveAll <T> (this IPriorityQueue<T> priorityQueue, T item, IEqualityComparer<T> comparer)
 		{
+			if (priorityQueue == null)
+			{
+				throw new ArgumentNullException(nameof(priorityQueue));
+			}
+
+			comparer = comparer ?? EqualityComparer<T>.Default;
+			List<T> removed = priorityQueue.Remove(((i, p) => comparer.Equals(i, item)));
+			return removed.Count;
+		}
+
+		#endregion
+
+
+
+
+		#region Type: RemovalTuple
+
+		private sealed class RemovalTuple <T>
+		{
+			#region Instance Constructor/Destructor
+
 			public RemovalTuple ()
 			{
 				this.Item = default(T);
@@ -131,9 +145,20 @@ namespace RI.Framework.Collections.Generic
 				this.Priority = priority;
 			}
 
+			#endregion
+
+
+
+
+			#region Instance Properties/Indexer
+
 			public T Item { get; set; }
 
 			public int Priority { get; set; }
+
+			#endregion
 		}
+
+		#endregion
 	}
 }

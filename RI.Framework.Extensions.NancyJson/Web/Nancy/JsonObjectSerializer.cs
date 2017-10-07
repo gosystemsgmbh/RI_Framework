@@ -2,22 +2,20 @@
 
 using Newtonsoft.Json;
 
+
+
+
 namespace RI.Framework.Web.Nancy
 {
 	/// <summary>
-	/// Implements an object serializer which uses JSON.
+	///     Implements an object serializer which uses JSON.
 	/// </summary>
 	public sealed class JsonObjectSerializer : IObjectSerializer
 	{
-		/// <inheritdoc />
-		public string Serialize(object sourceObject)
-		{
-			//Serialize with default settings
-			return JsonConvert.SerializeObject(sourceObject);
-		}
+		#region Interface: IObjectSerializer
 
 		/// <inheritdoc />
-		public object Deserialize(string sourceString)
+		public object Deserialize (string sourceString)
 		{
 			try
 			{
@@ -30,5 +28,14 @@ namespace RI.Framework.Web.Nancy
 				return null;
 			}
 		}
+
+		/// <inheritdoc />
+		public string Serialize (object sourceObject)
+		{
+			//Serialize with default settings
+			return JsonConvert.SerializeObject(sourceObject);
+		}
+
+		#endregion
 	}
 }

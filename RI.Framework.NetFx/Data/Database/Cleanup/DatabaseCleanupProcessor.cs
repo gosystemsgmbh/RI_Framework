@@ -2,44 +2,59 @@
 
 using RI.Framework.Utilities.Logging;
 
+
+
+
 namespace RI.Framework.Data.Database.Cleanup
 {
 	/// <summary>
-	/// Implements a base class for database cleanup processors.
+	///     Implements a base class for database cleanup processors.
 	/// </summary>
-	/// <typeparam name="TConnection">The database connection type, subclass of <see cref="DbConnection"/>.</typeparam>
-	/// <typeparam name="TTransaction">The database transaction type, subclass of <see cref="DbTransaction"/>.</typeparam>
-	/// <typeparam name="TConnectionStringBuilder">The connection string builder type, subclass of <see cref="DbConnectionStringBuilder"/>.</typeparam>
-	/// <typeparam name="TManager">The type of the database manager.</typeparam>
-	/// <typeparam name="TConfiguration">The type of database configuration.</typeparam>
+	/// <typeparam name="TConnection"> The database connection type, subclass of <see cref="DbConnection" />. </typeparam>
+	/// <typeparam name="TTransaction"> The database transaction type, subclass of <see cref="DbTransaction" />. </typeparam>
+	/// <typeparam name="TConnectionStringBuilder"> The connection string builder type, subclass of <see cref="DbConnectionStringBuilder" />. </typeparam>
+	/// <typeparam name="TManager"> The type of the database manager. </typeparam>
+	/// <typeparam name="TConfiguration"> The type of database configuration. </typeparam>
 	/// <remarks>
-	/// <para>
-	/// It is recommended that database cleanup processor implementations use this base class as it already implements most of the logic which is database-independent.
-	/// </para>
-	/// <para>
-	/// See <see cref="IDatabaseCleanupProcessor"/> for more details.
-	/// </para>
+	///     <para>
+	///         It is recommended that database cleanup processor implementations use this base class as it already implements most of the logic which is database-independent.
+	///     </para>
+	///     <para>
+	///         See <see cref="IDatabaseCleanupProcessor" /> for more details.
+	///     </para>
 	/// </remarks>
-	public abstract class DatabaseCleanupProcessor<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration> : IDatabaseCleanupProcessor<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration>
+	public abstract class DatabaseCleanupProcessor <TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration> : IDatabaseCleanupProcessor<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration>
 		where TConnection : DbConnection
 		where TTransaction : DbTransaction
 		where TConnectionStringBuilder : DbConnectionStringBuilder
 		where TManager : IDatabaseManager<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration>
 		where TConfiguration : class, IDatabaseManagerConfiguration<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration>, new()
 	{
-		/// <inheritdoc />
-		public abstract bool Cleanup (TManager manager);
+		#region Instance Fields
 
-		/// <inheritdoc />
-		public abstract bool RequiresScriptLocator { get; }
-
-		/// <inheritdoc />
-		bool IDatabaseCleanupProcessor.Cleanup(IDatabaseManager manager)
-		{
-			return this.Cleanup((TManager)manager);
-		}
+		private ILogger _logger;
 
 		private bool _loggingEnabled;
+
+		#endregion
+
+
+
+
+		#region Interface: IDatabaseCleanupProcessor<TConnection,TTransaction,TConnectionStringBuilder,TManager,TConfiguration>
+
+		/// <inheritdoc />
+		ILogger ILogSource.Logger
+		{
+			get
+			{
+				return this._logger;
+			}
+			set
+			{
+				this._logger = value;
+			}
+		}
 
 		/// <inheritdoc />
 		bool ILogSource.LoggingEnabled
@@ -54,19 +69,18 @@ namespace RI.Framework.Data.Database.Cleanup
 			}
 		}
 
-		private ILogger _logger;
+		/// <inheritdoc />
+		public abstract bool RequiresScriptLocator { get; }
 
 		/// <inheritdoc />
-		ILogger ILogSource.Logger
+		public abstract bool Cleanup (TManager manager);
+
+		/// <inheritdoc />
+		bool IDatabaseCleanupProcessor.Cleanup (IDatabaseManager manager)
 		{
-			get
-			{
-				return this._logger;
-			}
-			set
-			{
-				this._logger = value;
-			}
+			return this.Cleanup((TManager)manager);
 		}
+
+		#endregion
 	}
 }

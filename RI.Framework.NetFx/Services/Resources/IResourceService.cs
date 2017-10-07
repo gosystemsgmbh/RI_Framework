@@ -79,6 +79,33 @@ namespace RI.Framework.Services.Resources
 		void AddSource (IResourceSource resourceSource);
 
 		/// <summary>
+		///     Gets the names of all available resources.
+		/// </summary>
+		/// <returns>
+		///     The hash set with the names of all available resources.
+		///     If no resources are available, an empty hash set is returned.
+		/// </returns>
+		HashSet<string> GetAvailableResources ();
+
+		/// <summary>
+		///     Gets all currently available resource sets.
+		/// </summary>
+		/// <returns>
+		///     The list with all available resource sets.
+		///     If no resource sets are available, an empty list is returned.
+		/// </returns>
+		List<IResourceSet> GetAvailableSets ();
+
+		/// <summary>
+		///     Gets all currently loaded resource sets.
+		/// </summary>
+		/// <returns>
+		///     The list with all loaded resource sets.
+		///     If no resource sets are loaded, an empty list is returned.
+		/// </returns>
+		List<IResourceSet> GetLoadedSets ();
+
+		/// <summary>
 		///     Gets a resource as its originally loaded type.
 		/// </summary>
 		/// <param name="name"> The name of the resource. </param>
@@ -116,6 +143,27 @@ namespace RI.Framework.Services.Resources
 		object GetValue (string name, Type type);
 
 		/// <summary>
+		///     Loads a resource sets and makes its resources available.
+		/// </summary>
+		/// <param name="resourceSet"> The resource set to load. </param>
+		/// <param name="lazyLoad"> Specifies whether lazy loading shall be used for the resources of this resource set or not. </param>
+		/// <remarks>
+		///     <para>
+		///         Lazy loading means that the actual value of a resource is only loaded into memory and converted to the appropriate type when <see cref="GetRawValue" /> is called for it.
+		///     </para>
+		///     <note type="implement">
+		///         Loading an already loaded resource set can be used to reload a specific set.
+		///     </note>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="resourceSet" /> is null. </exception>
+		void LoadSet (IResourceSet resourceSet, bool lazyLoad);
+
+		/// <summary>
+		///     Reloads all currently loaded resource sets.
+		/// </summary>
+		void ReloadSets ();
+
+		/// <summary>
 		///     Removes a resource converter and stops using it for all subsequent conversions.
 		/// </summary>
 		/// <param name="resourceConverter"> The resource converter to remove. </param>
@@ -140,68 +188,20 @@ namespace RI.Framework.Services.Resources
 		void RemoveSource (IResourceSource resourceSource);
 
 		/// <summary>
-		///     Gets all currently available resource sets.
+		///     Unloads a resource set.
 		/// </summary>
-		/// <returns>
-		///     The list with all available resource sets.
-		///     If no resource sets are available, an empty list is returned.
-		/// </returns>
-		List<IResourceSet> GetAvailableSets ();
-
-		/// <summary>
-		///     Gets all currently loaded resource sets.
-		/// </summary>
-		/// <returns>
-		///     The list with all loaded resource sets.
-		///     If no resource sets are loaded, an empty list is returned.
-		/// </returns>
-		List<IResourceSet> GetLoadedSets ();
-
-		/// <summary>
-		///     Gets the names of all available resources.
-		/// </summary>
-		/// <returns>
-		///     The hash set with the names of all available resources.
-		///     If no resources are available, an empty hash set is returned.
-		/// </returns>
-		HashSet<string> GetAvailableResources ();
-
-		/// <summary>
-		///     Reloads all currently loaded resource sets.
-		/// </summary>
-		void ReloadSets ();
+		/// <param name="resourceSet"> The resource set to unload. </param>
+		/// <remarks>
+		///     <note type="implement">
+		///         Unloading an already unloaded resource set should have no effect.
+		///     </note>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="resourceSet" /> is null. </exception>
+		void UnloadSet (IResourceSet resourceSet);
 
 		/// <summary>
 		///     Unloads all currently loaded resource sets.
 		/// </summary>
 		void UnloadSets ();
-
-		/// <summary>
-		/// Loads a resource sets and makes its resources available.
-		/// </summary>
-		/// <param name="resourceSet">The resource set to load.</param>
-		/// <param name="lazyLoad"> Specifies whether lazy loading shall be used for the resources of this resource set or not. </param>
-		/// <remarks>
-		///     <para>
-		///         Lazy loading means that the actual value of a resource is only loaded into memory and converted to the appropriate type when <see cref="GetRawValue" /> is called for it.
-		///     </para>
-		///     <note type="implement">
-		///         Loading an already loaded resource set can be used to reload a specific set.
-		///     </note>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="resourceSet"/> is null.</exception>
-		void LoadSet (IResourceSet resourceSet, bool lazyLoad);
-
-		/// <summary>
-		/// Unloads a resource set.
-		/// </summary>
-		/// <param name="resourceSet">The resource set to unload.</param>
-		/// <remarks>
-		/// <note type="implement">
-		/// Unloading an already unloaded resource set should have no effect.
-		/// </note>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="resourceSet"/> is null.</exception>
-		void UnloadSet (IResourceSet resourceSet);
 	}
 }

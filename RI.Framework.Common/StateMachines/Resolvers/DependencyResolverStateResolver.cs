@@ -3,6 +3,9 @@
 using RI.Framework.StateMachines.States;
 using RI.Framework.Utilities.ObjectModel;
 
+
+
+
 namespace RI.Framework.StateMachines.Resolvers
 {
 	/// <summary>
@@ -23,7 +26,7 @@ namespace RI.Framework.StateMachines.Resolvers
 		/// </summary>
 		/// <param name="resolver"> The used dependency resolver. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="resolver" /> is null. </exception>
-		public DependencyResolverStateResolver(IDependencyResolver resolver)
+		public DependencyResolverStateResolver (IDependencyResolver resolver)
 		{
 			if (resolver == null)
 			{
@@ -58,7 +61,7 @@ namespace RI.Framework.StateMachines.Resolvers
 		public object SyncRoot { get; }
 
 		/// <inheritdoc />
-		public IState ResolveState(Type type)
+		public IState ResolveState (Type type)
 		{
 			lock (this.SyncRoot)
 			{

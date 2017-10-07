@@ -42,6 +42,51 @@ namespace RI.Framework.Collections
 		}
 
 		/// <summary>
+		///     Gets the item at the specified index or the default value if the index is outside the range of the list.
+		/// </summary>
+		/// <typeparam name="T"> The type of the items in <paramref name="list" />. </typeparam>
+		/// <param name="list"> The list. </param>
+		/// <param name="index"> The index of the item to retrieve. </param>
+		/// <returns>
+		///     The value or default value of <typeparamref name="T" />.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="list" /> is null. </exception>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="index" /> is less than zero. </exception>
+		public static T GetIndexOrDefault <T> (this IList<T> list, int index) => list.GetIndexOrDefault(index, default(T));
+
+		/// <summary>
+		///     Gets the item at the specified index or a default value if the index is outside the range of the list.
+		/// </summary>
+		/// <typeparam name="T"> The type of the items in <paramref name="list" />. </typeparam>
+		/// <param name="list"> The list. </param>
+		/// <param name="index"> The index of the item to retrieve. </param>
+		/// <param name="defaultValue"> The default value to use if the index is outside the range of the list. </param>
+		/// <returns>
+		///     The value or default value.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="list" /> is null. </exception>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="index" /> is less than zero. </exception>
+		public static T GetIndexOrDefault <T> (this IList<T> list, int index, T defaultValue)
+		{
+			if (list == null)
+			{
+				throw new ArgumentNullException(nameof(list));
+			}
+
+			if (index < 0)
+			{
+				throw new ArgumentOutOfRangeException(nameof(index));
+			}
+
+			if (index >= list.Count)
+			{
+				return defaultValue;
+			}
+
+			return list[index];
+		}
+
+		/// <summary>
 		///     Inserts multiple items into a list at the specified index.
 		/// </summary>
 		/// <typeparam name="T"> The type of the items in <paramref name="list" />. </typeparam>
@@ -831,51 +876,6 @@ namespace RI.Framework.Collections
 			}
 			item = list[index];
 			return true;
-		}
-
-		/// <summary>
-		/// Gets the item at the specified index or the default value if the index is outside the range of the list.
-		/// </summary>
-		/// <typeparam name="T"> The type of the items in <paramref name="list" />. </typeparam>
-		/// <param name="list"> The list. </param>
-		/// <param name="index"> The index of the item to retrieve. </param>
-		/// <returns>
-		/// The value or default value of <typeparamref name="T"/>.
-		/// </returns>
-		/// <exception cref="ArgumentNullException"> <paramref name="list" /> is null. </exception>
-		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="index" /> is less than zero. </exception>
-		public static T GetIndexOrDefault<T> (this IList<T> list, int index) => list.GetIndexOrDefault(index, default(T));
-
-		/// <summary>
-		/// Gets the item at the specified index or a default value if the index is outside the range of the list.
-		/// </summary>
-		/// <typeparam name="T"> The type of the items in <paramref name="list" />. </typeparam>
-		/// <param name="list"> The list. </param>
-		/// <param name="index"> The index of the item to retrieve. </param>
-		/// <param name="defaultValue"> The default value to use if the index is outside the range of the list. </param>
-		/// <returns>
-		/// The value or default value.
-		/// </returns>
-		/// <exception cref="ArgumentNullException"> <paramref name="list" /> is null. </exception>
-		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="index" /> is less than zero. </exception>
-		public static T GetIndexOrDefault<T>(this IList<T> list, int index, T defaultValue)
-		{
-			if (list == null)
-			{
-				throw new ArgumentNullException(nameof(list));
-			}
-
-			if (index < 0)
-			{
-				throw new ArgumentOutOfRangeException(nameof(index));
-			}
-
-			if (index >= list.Count)
-			{
-				return defaultValue;
-			}
-
-			return list[index];
 		}
 
 		#endregion

@@ -1,5 +1,4 @@
-﻿
-#if !TEMPLATE_RUNNER
+﻿#if !TEMPLATE_RUNNER
 
 using System;
 using System.Globalization;

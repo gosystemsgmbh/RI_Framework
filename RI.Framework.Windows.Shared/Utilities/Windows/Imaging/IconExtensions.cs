@@ -15,37 +15,13 @@ namespace RI.Framework.Utilities.Windows.Imaging
 		#region Static Methods
 
 		/// <summary>
-		/// Creates an icon from a byte array.
+		///     Converts an icon into a byte array.
 		/// </summary>
-		/// <param name="array">The byte array.</param>
+		/// <param name="icon"> The icon. </param>
 		/// <returns>
-		/// The created icon.
+		///     The byte array.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="array"/> is null.</exception>
-		public static Icon ToIcon (this byte[] array)
-		{
-			if (array == null)
-			{
-				throw new ArgumentNullException(nameof(array));
-			}
-
-			using (MemoryStream ms = new MemoryStream(array, false))
-			{
-				using (Icon icon = new Icon(ms))
-				{
-					return (Icon)icon.Clone();
-				}
-			}
-		}
-
-		/// <summary>
-		/// Converts an icon into a byte array.
-		/// </summary>
-		/// <param name="icon">The icon.</param>
-		/// <returns>
-		/// The byte array.
-		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="icon"/> is null.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="icon" /> is null. </exception>
 		public static byte[] ToByteArray (this Icon icon)
 		{
 			if (icon == null)
@@ -61,6 +37,30 @@ namespace RI.Framework.Utilities.Windows.Imaging
 				ms.Position = 0;
 
 				return ms.ToArray();
+			}
+		}
+
+		/// <summary>
+		///     Creates an icon from a byte array.
+		/// </summary>
+		/// <param name="array"> The byte array. </param>
+		/// <returns>
+		///     The created icon.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="array" /> is null. </exception>
+		public static Icon ToIcon (this byte[] array)
+		{
+			if (array == null)
+			{
+				throw new ArgumentNullException(nameof(array));
+			}
+
+			using (MemoryStream ms = new MemoryStream(array, false))
+			{
+				using (Icon icon = new Icon(ms))
+				{
+					return (Icon)icon.Clone();
+				}
 			}
 		}
 

@@ -1364,10 +1364,7 @@ namespace RI.Framework.IO.INI
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
 		public bool SetValue (string section, string name, string value)
 		{
-			return this.SetValueAll(section, name, new[]
-			{
-				value
-			});
+			return this.SetValueAll(section, name, new[] {value});
 		}
 
 		/// <summary>

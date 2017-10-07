@@ -187,9 +187,9 @@ namespace RI.Framework.IO.Paths
 		/// </value>
 		/// <remarks>
 		///     <note type="note">
-		/// <see cref="Exists" /> does not throw exceptions besides <see cref="InvalidOperationException" />.
-		/// For example, if the file exists but the user does not have access permissions, the file is not of a compatible path type used on the current system, etc., false is returned.
-		/// </note>
+		///         <see cref="Exists" /> does not throw exceptions besides <see cref="InvalidOperationException" />.
+		///         For example, if the file exists but the user does not have access permissions, the file is not of a compatible path type used on the current system, etc., false is returned.
+		///     </note>
 		/// </remarks>
 		/// <exception cref="InvalidOperationException"> The file contains wildcards. </exception>
 		public bool Exists
@@ -265,16 +265,16 @@ namespace RI.Framework.IO.Paths
 		public bool IsRealFile => !this.HasWildcards;
 
 		/// <summary>
-		/// Gets the size of the file in bytes.
+		///     Gets the size of the file in bytes.
 		/// </summary>
 		/// <value>
-		/// The size of the file in bytes or null if the file does not exist or cannot be accessed.
+		///     The size of the file in bytes or null if the file does not exist or cannot be accessed.
 		/// </value>
 		/// <remarks>
 		///     <note type="note">
-		/// <see cref="Size" /> does not throw exceptions besides <see cref="InvalidOperationException" />.
-		/// For example, if the file exists but the user does not have access permissions, the file is not of a compatible path type used on the current system, etc., null is returned.
-		/// </note>
+		///         <see cref="Size" /> does not throw exceptions besides <see cref="InvalidOperationException" />.
+		///         For example, if the file exists but the user does not have access permissions, the file is not of a compatible path type used on the current system, etc., null is returned.
+		///     </note>
 		/// </remarks>
 		/// <exception cref="InvalidOperationException"> The file contains wildcards. </exception>
 		public long? Size
@@ -417,6 +417,13 @@ namespace RI.Framework.IO.Paths
 			}
 		}
 
+		/// <inheritdoc cref="PathString.ChangeType" />
+		public new FilePath ChangeType (PathType type)
+		{
+			PathProperties properties = this.PathInternal.ChangeType(type);
+			return new FilePath(properties);
+		}
+
 		/// <summary>
 		///     Copies the file.
 		/// </summary>
@@ -470,7 +477,7 @@ namespace RI.Framework.IO.Paths
 		/// <exception cref="FileNotFoundException"> The source file does not exist. </exception>
 		/// <exception cref="DirectoryNotFoundException"> The files directory does not exist or is not available. </exception>
 		/// <exception cref="NotSupportedException"> The file is not of a compatible path type used on the current system. </exception>
-		public bool Copy(DirectoryPath destination, bool overwrite)
+		public bool Copy (DirectoryPath destination, bool overwrite)
 		{
 			if (destination == null)
 			{
@@ -485,76 +492,6 @@ namespace RI.Framework.IO.Paths
 			FilePath target = destination.AppendFile(this.FileName);
 
 			return this.Copy(target, overwrite);
-		}
-
-		/// <summary>
-		///     Moves the file.
-		/// </summary>
-		/// <param name="destination"> The destination file. </param>
-		/// <param name="overwrite"> Specifies whether an already existing destination file should be overwritten (true) or not (false). </param>
-		/// <returns>
-		///     true if the file was moved, false otherwise.
-		/// </returns>
-		/// <exception cref="InvalidOperationException"> The file contains wildcards. </exception>
-		/// <exception cref="IOException"> The file is in use. </exception>
-		/// <exception cref="UnauthorizedAccessException"> The user does not have the required permissions, the file is read-only, or the file is an executable which is in use. </exception>
-		/// <exception cref="PathTooLongException"> Although being a valid file path, the file path is too long for the current system to be used. </exception>
-		/// <exception cref="FileNotFoundException"> The source file does not exist. </exception>
-		/// <exception cref="DirectoryNotFoundException"> The files directory does not exist or is not available. </exception>
-		/// <exception cref="NotSupportedException"> The file is not of a compatible path type used on the current system. </exception>
-		public bool Move(FilePath destination, bool overwrite)
-		{
-			if (destination == null)
-			{
-				throw new ArgumentNullException(nameof(destination));
-			}
-
-			if (destination.HasWildcards)
-			{
-				throw new InvalidPathArgumentException(nameof(destination));
-			}
-
-			this.VerifyRealFile();
-
-			if ((!overwrite) && destination.Exists)
-			{
-				return false;
-			}
-
-			File.Move(this, destination);
-			return true;
-		}
-
-		/// <summary>
-		///     Moves the file to a directory, keeping its file name.
-		/// </summary>
-		/// <param name="destination"> The destination directory. </param>
-		/// <param name="overwrite"> Specifies whether an already existing destination file should be overwritten (true) or not (false). </param>
-		/// <returns>
-		///     true if the file was moved, false otherwise.
-		/// </returns>
-		/// <exception cref="InvalidOperationException"> The file contains wildcards. </exception>
-		/// <exception cref="IOException"> The file is in use. </exception>
-		/// <exception cref="UnauthorizedAccessException"> The user does not have the required permissions, the file is read-only, or the file is an executable which is in use. </exception>
-		/// <exception cref="PathTooLongException"> Although being a valid file path, the file path is too long for the current system to be used. </exception>
-		/// <exception cref="FileNotFoundException"> The source file does not exist. </exception>
-		/// <exception cref="DirectoryNotFoundException"> The files directory does not exist or is not available. </exception>
-		/// <exception cref="NotSupportedException"> The file is not of a compatible path type used on the current system. </exception>
-		public bool Move(DirectoryPath destination, bool overwrite)
-		{
-			if (destination == null)
-			{
-				throw new ArgumentNullException(nameof(destination));
-			}
-
-			if (destination.HasWildcards)
-			{
-				throw new InvalidPathArgumentException(nameof(destination));
-			}
-
-			FilePath target = destination.AppendFile(this.FileName);
-
-			return this.Move(target, overwrite);
 		}
 
 		/// <summary>
@@ -695,6 +632,76 @@ namespace RI.Framework.IO.Paths
 			}
 
 			return new FilePath(PathProperties.MakeRelative(root.PathInternal, this.PathInternal));
+		}
+
+		/// <summary>
+		///     Moves the file.
+		/// </summary>
+		/// <param name="destination"> The destination file. </param>
+		/// <param name="overwrite"> Specifies whether an already existing destination file should be overwritten (true) or not (false). </param>
+		/// <returns>
+		///     true if the file was moved, false otherwise.
+		/// </returns>
+		/// <exception cref="InvalidOperationException"> The file contains wildcards. </exception>
+		/// <exception cref="IOException"> The file is in use. </exception>
+		/// <exception cref="UnauthorizedAccessException"> The user does not have the required permissions, the file is read-only, or the file is an executable which is in use. </exception>
+		/// <exception cref="PathTooLongException"> Although being a valid file path, the file path is too long for the current system to be used. </exception>
+		/// <exception cref="FileNotFoundException"> The source file does not exist. </exception>
+		/// <exception cref="DirectoryNotFoundException"> The files directory does not exist or is not available. </exception>
+		/// <exception cref="NotSupportedException"> The file is not of a compatible path type used on the current system. </exception>
+		public bool Move (FilePath destination, bool overwrite)
+		{
+			if (destination == null)
+			{
+				throw new ArgumentNullException(nameof(destination));
+			}
+
+			if (destination.HasWildcards)
+			{
+				throw new InvalidPathArgumentException(nameof(destination));
+			}
+
+			this.VerifyRealFile();
+
+			if ((!overwrite) && destination.Exists)
+			{
+				return false;
+			}
+
+			File.Move(this, destination);
+			return true;
+		}
+
+		/// <summary>
+		///     Moves the file to a directory, keeping its file name.
+		/// </summary>
+		/// <param name="destination"> The destination directory. </param>
+		/// <param name="overwrite"> Specifies whether an already existing destination file should be overwritten (true) or not (false). </param>
+		/// <returns>
+		///     true if the file was moved, false otherwise.
+		/// </returns>
+		/// <exception cref="InvalidOperationException"> The file contains wildcards. </exception>
+		/// <exception cref="IOException"> The file is in use. </exception>
+		/// <exception cref="UnauthorizedAccessException"> The user does not have the required permissions, the file is read-only, or the file is an executable which is in use. </exception>
+		/// <exception cref="PathTooLongException"> Although being a valid file path, the file path is too long for the current system to be used. </exception>
+		/// <exception cref="FileNotFoundException"> The source file does not exist. </exception>
+		/// <exception cref="DirectoryNotFoundException"> The files directory does not exist or is not available. </exception>
+		/// <exception cref="NotSupportedException"> The file is not of a compatible path type used on the current system. </exception>
+		public bool Move (DirectoryPath destination, bool overwrite)
+		{
+			if (destination == null)
+			{
+				throw new ArgumentNullException(nameof(destination));
+			}
+
+			if (destination.HasWildcards)
+			{
+				throw new InvalidPathArgumentException(nameof(destination));
+			}
+
+			FilePath target = destination.AppendFile(this.FileName);
+
+			return this.Move(target, overwrite);
 		}
 
 		/// <summary>
@@ -914,22 +921,15 @@ namespace RI.Framework.IO.Paths
 			return result;
 		}
 
-		/// <inheritdoc cref="PathString.ChangeType"/>
-		public new FilePath ChangeType(PathType type)
-		{
-			PathProperties properties = this.PathInternal.ChangeType(type);
-			return new FilePath(properties);
-		}
-
-		/// <inheritdoc />
-		protected override PathString ChangeTypeInternal(PathType type) => this.ChangeType(type);
-
 		#endregion
 
 
 
 
 		#region Overrides
+
+		/// <inheritdoc />
+		protected override PathString ChangeTypeInternal (PathType type) => this.ChangeType(type);
 
 		/// <inheritdoc />
 		protected override PathString CloneInternal ()

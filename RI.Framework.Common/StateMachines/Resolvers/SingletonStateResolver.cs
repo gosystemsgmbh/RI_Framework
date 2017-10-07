@@ -1,5 +1,8 @@
 ﻿using RI.Framework.Utilities.ObjectModel;
 
+
+
+
 namespace RI.Framework.StateMachines.Resolvers
 {
 	/// <summary>
@@ -18,7 +21,7 @@ namespace RI.Framework.StateMachines.Resolvers
 		/// <summary>
 		///     Creates a new instance of <see cref="SingletonStateResolver" />.
 		/// </summary>
-		public SingletonStateResolver()
+		public SingletonStateResolver ()
 			: base(Singleton.Resolver)
 		{
 		}

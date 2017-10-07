@@ -19,13 +19,15 @@ namespace RI.Framework.Services.Backup
 	/// </remarks>
 	public class BackupInclusion : IBackupInclusion
 	{
+		#region Instance Constructor/Destructor
+
 		/// <summary>
-		/// Creates a new instance of <see cref="BackupInclusion"/>.
+		///     Creates a new instance of <see cref="BackupInclusion" />.
 		/// </summary>
-		/// <param name="id">The ID of the inclusion.</param>
-		/// <param name="resourceKey">The resource key of the inclusion. Can be null.</param>
-		/// <param name="supportsRestore">Specifies whether the inclusion can be restored.</param>
-		/// <exception cref="EmptyStringArgumentException"><paramref name="resourceKey"/> is an empty string.</exception>
+		/// <param name="id"> The ID of the inclusion. </param>
+		/// <param name="resourceKey"> The resource key of the inclusion. Can be null. </param>
+		/// <param name="supportsRestore"> Specifies whether the inclusion can be restored. </param>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="resourceKey" /> is an empty string. </exception>
 		public BackupInclusion (Guid id, string resourceKey, bool supportsRestore)
 		{
 			if (resourceKey != null)
@@ -44,6 +46,41 @@ namespace RI.Framework.Services.Backup
 			this.Streams = new HashSet<Guid>();
 		}
 
+		#endregion
+
+
+
+
+		#region Overrides
+
+		/// <inheritdoc />
+		public override bool Equals (object obj) => this.Equals(obj as IBackupInclusion);
+
+		/// <inheritdoc />
+		public override int GetHashCode () => this.Id.GetHashCode();
+
+		#endregion
+
+
+
+
+		#region Interface: IBackupInclusion
+
+		/// <inheritdoc />
+		public Guid Id { get; }
+
+		/// <inheritdoc />
+		public string ResourceKey { get; }
+
+		/// <inheritdoc />
+		public ISet<Guid> Streams { get; }
+
+		/// <inheritdoc />
+		public bool SupportsRestore { get; }
+
+		/// <inheritdoc />
+		public IDictionary<string, string> Tags { get; }
+
 		/// <inheritdoc />
 		public bool Equals (IBackupInclusion other)
 		{
@@ -61,25 +98,6 @@ namespace RI.Framework.Services.Backup
 			return this.Id.Equals(other2.Id);
 		}
 
-		/// <inheritdoc />
-		public override int GetHashCode () => this.Id.GetHashCode();
-
-		/// <inheritdoc />
-		public override bool Equals (object obj) => this.Equals(obj as IBackupInclusion);
-
-		/// <inheritdoc />
-		public Guid Id { get; }
-
-		/// <inheritdoc />
-		public string ResourceKey { get; }
-
-		/// <inheritdoc />
-		public bool SupportsRestore { get; }
-
-		/// <inheritdoc />
-		public IDictionary<string, string> Tags { get; }
-
-		/// <inheritdoc />
-		public ISet<Guid> Streams { get; }
+		#endregion
 	}
 }

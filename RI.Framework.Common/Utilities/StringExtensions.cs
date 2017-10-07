@@ -10,6 +10,9 @@ using RI.Framework.Mathematic;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Time;
 
+
+
+
 namespace RI.Framework.Utilities
 {
 	/// <summary>
@@ -34,40 +37,6 @@ namespace RI.Framework.Utilities
 
 
 		#region Static Methods
-
-		/// <summary>
-		/// Keeps only characters of a string based on a predicate.
-		/// </summary>
-		/// <param name="str">The string.</param>
-		/// <param name="predicate">The predicate used to test each character of the string.</param>
-		/// <returns>
-		/// The string where each character is preserved based on the predicate.
-		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="str"/> or <paramref name="predicate"/> is null.</exception>
-		public static string Keep (this string str, Predicate<char> predicate)
-		{
-			if (str == null)
-			{
-				throw new ArgumentNullException(nameof(str));
-			}
-
-			if (predicate == null)
-			{
-				throw new ArgumentNullException(nameof(predicate));
-			}
-
-			StringBuilder sb = new StringBuilder(str.Length);
-
-			foreach (char c in str)
-			{
-				if (predicate(c))
-				{
-					sb.Append(c);
-				}
-			}
-
-			return sb.ToString();
-		}
 
 		/// <summary>
 		///     Determines whether a specified string occurs in a string.
@@ -598,6 +567,103 @@ namespace RI.Framework.Utilities
 		}
 
 		/// <summary>
+		///     Keeps only characters of a string based on a predicate.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <param name="predicate"> The predicate used to test each character of the string. </param>
+		/// <returns>
+		///     The string where each character is preserved based on the predicate.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> or <paramref name="predicate" /> is null. </exception>
+		public static string Keep (this string str, Predicate<char> predicate)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			if (predicate == null)
+			{
+				throw new ArgumentNullException(nameof(predicate));
+			}
+
+			StringBuilder sb = new StringBuilder(str.Length);
+
+			foreach (char c in str)
+			{
+				if (predicate(c))
+				{
+					sb.Append(c);
+				}
+			}
+
+			return sb.ToString();
+		}
+
+		/// <summary>
+		///     Gets the maximum length of multiple strings.
+		/// </summary>
+		/// <param name="values"> The sequence of strings to get the maximum length from. </param>
+		/// <returns>
+		///     The length of the string with the maximum length.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         <paramref name="values" /> is enumerated exactly once.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static int MaxLength (this IEnumerable<string> values)
+		{
+			if (values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			int max = int.MinValue;
+			foreach (string str in values)
+			{
+				if (str.Length > max)
+				{
+					max = str.Length;
+				}
+			}
+			return max;
+		}
+
+		/// <summary>
+		///     Gets the minimum length of multiple strings.
+		/// </summary>
+		/// <param name="values"> The sequence of strings to get the minimum length from. </param>
+		/// <param name="ignoreZeroLength"> Specifies whether string with zero length do not count. </param>
+		/// <returns>
+		///     The length of the string with the minimum length.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         <paramref name="values" /> is enumerated exactly once.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static int MinLength (this IEnumerable<string> values, bool ignoreZeroLength)
+		{
+			if (values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			int min = int.MaxValue;
+			foreach (string str in values)
+			{
+				if (str.Length < min)
+				{
+					min = str.Length;
+				}
+			}
+			return min;
+		}
+
+		/// <summary>
 		///     Modifies each occurence of a specified character in a string by a specified factor and/or offset.
 		/// </summary>
 		/// <param name="str"> The string. </param>
@@ -698,7 +764,7 @@ namespace RI.Framework.Utilities
 		///     The string with all its line breaks removed.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
-		public static string RemoveLineBreaks(this string str)
+		public static string RemoveLineBreaks (this string str)
 		{
 			if (str == null)
 			{
@@ -1097,9 +1163,9 @@ namespace RI.Framework.Utilities
 		}
 
 		/// <summary>
-		/// Splits a string into pieces before each upper case character and on whitespaces.
+		///     Splits a string into pieces before each upper case character and on whitespaces.
 		/// </summary>
-		/// <param name="str">The string.</param>
+		/// <param name="str"> The string. </param>
 		/// <returns>
 		///     The array of string pieces.
 		///     If the string does not contain any upper case characters except its first character, the array has only one element, equal to <paramref name="str" />.
@@ -1121,9 +1187,7 @@ namespace RI.Framework.Utilities
 				char previousChar = s[previous];
 				char nextChar = s[next];
 
-				return (char.IsWhiteSpace(previousChar) && (!char.IsWhiteSpace(nextChar))) ||
-				       (char.IsWhiteSpace(nextChar) && (!char.IsWhiteSpace(previousChar))) ||
-				       (((char.IsLetter(previousChar) && char.IsLower(previousChar)) || (!char.IsLetterOrDigit(previousChar))) && char.IsLetter(nextChar) && char.IsUpper(nextChar));
+				return (char.IsWhiteSpace(previousChar) && (!char.IsWhiteSpace(nextChar))) || (char.IsWhiteSpace(nextChar) && (!char.IsWhiteSpace(previousChar))) || (((char.IsLetter(previousChar) && char.IsLower(previousChar)) || (!char.IsLetterOrDigit(previousChar))) && char.IsLetter(nextChar) && char.IsUpper(nextChar));
 			});
 		}
 
@@ -1976,67 +2040,6 @@ namespace RI.Framework.Utilities
 		}
 
 		/// <summary>
-		///     Attempts to convert a string into a schedule.
-		/// </summary>
-		/// <param name="str"> The string. </param>
-		/// <returns>
-		///     The schedule if the string can be converted into a schedule, null otherwise.
-		/// </returns>
-		/// <remarks>
-		///     <para>
-		///         <see cref="CultureInfo" />.<see cref="CultureInfo.CurrentCulture" /> are used for parsing.
-		///     </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
-		public static Schedule? ToSchedule(this string str)
-		{
-			return str.ToSchedule(CultureInfo.CurrentCulture);
-		}
-
-		/// <summary>
-		///     Attempts to convert a string into a schedule.
-		/// </summary>
-		/// <param name="str"> The string. </param>
-		/// <param name="provider"> An object that supplies culture-specific formatting information for parsing the string. Can be null to use the current threads culture. </param>
-		/// <returns>
-		///     The schedule if the string can be converted into a schedule, null otherwise.
-		/// </returns>
-		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
-		public static Schedule? ToSchedule(this string str, IFormatProvider provider)
-		{
-			if (str == null)
-			{
-				throw new ArgumentNullException(nameof(str));
-			}
-
-			Schedule value;
-			if (Schedule.TryParse(str, provider, out value))
-			{
-				return value;
-			}
-
-			return null;
-		}
-
-		/// <summary>
-		///     Attempts to convert a string into a schedule.
-		/// </summary>
-		/// <param name="str"> The string. </param>
-		/// <returns>
-		///     The schedule if the string can be converted into a schedule, null otherwise.
-		/// </returns>
-		/// <remarks>
-		///     <para>
-		///         <see cref="CultureInfo" />.<see cref="CultureInfo.InvariantCulture" /> are used for parsing.
-		///     </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
-		public static Schedule? ToScheduleInvariant(this string str)
-		{
-			return str.ToSchedule(CultureInfo.InvariantCulture);
-		}
-
-		/// <summary>
 		///     Attempts to convert a string into a signed byte value.
 		/// </summary>
 		/// <param name="str"> The string. </param>
@@ -2096,6 +2099,202 @@ namespace RI.Framework.Utilities
 		public static sbyte? ToSByteInvariant (this string str)
 		{
 			return str.ToSByte(NumberStyles.Any, CultureInfo.InvariantCulture);
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into a schedule.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     The schedule if the string can be converted into a schedule, null otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         <see cref="CultureInfo" />.<see cref="CultureInfo.CurrentCulture" /> are used for parsing.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static Schedule? ToSchedule (this string str)
+		{
+			return str.ToSchedule(CultureInfo.CurrentCulture);
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into a schedule.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <param name="provider"> An object that supplies culture-specific formatting information for parsing the string. Can be null to use the current threads culture. </param>
+		/// <returns>
+		///     The schedule if the string can be converted into a schedule, null otherwise.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static Schedule? ToSchedule (this string str, IFormatProvider provider)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			Schedule value;
+			if (Schedule.TryParse(str, provider, out value))
+			{
+				return value;
+			}
+
+			return null;
+		}
+
+		/// <summary>
+		///     Attempts to convert a string into a schedule.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     The schedule if the string can be converted into a schedule, null otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         <see cref="CultureInfo" />.<see cref="CultureInfo.InvariantCulture" /> are used for parsing.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static Schedule? ToScheduleInvariant (this string str)
+		{
+			return str.ToSchedule(CultureInfo.InvariantCulture);
+		}
+
+		/// <summary>
+		///     Converts a string into a secure string.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     The secure string.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static SecureString ToSecureString (this string str)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			SecureString secureString = new SecureString();
+			foreach (char chr in str)
+			{
+				secureString.AppendChar(chr);
+			}
+			return secureString;
+		}
+
+		/// <summary>
+		///     Transforms a string into a &quot;technical string&quot;.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <returns>
+		///     The technical string.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         See <see cref="ToTechnical(string,TechnicalStringOptions,char?)" /> for more details.
+		///     </para>
+		///     <para>
+		///         <see cref="TechnicalStringOptions.None" /> is used for options.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static string ToTechnical (this string str)
+		{
+			return str.ToTechnical(TechnicalStringOptions.None, null);
+		}
+
+		/// <summary>
+		///     Transforms a string into a &quot;technical string&quot;.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <param name="options"> The technical string options. </param>
+		/// <returns>
+		///     The technical string.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         See <see cref="ToTechnical(string,TechnicalStringOptions,char?)" /> for more details.
+		///     </para>
+		///     <para>
+		///         Whitespace is preserved and not replaced with a replacement character if <paramref name="options" /> specifies <see cref="TechnicalStringOptions.AllowWhitespaces" />.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static string ToTechnical (this string str, TechnicalStringOptions options)
+		{
+			return str.ToTechnical(options, null);
+		}
+
+		/// <summary>
+		///     Transforms a string into a &quot;technical string&quot;.
+		/// </summary>
+		/// <param name="str"> The string. </param>
+		/// <param name="options"> The technical string options. </param>
+		/// <param name="whitespaceReplacement"> The replacement character for whitespaces or null if the whitespace is to be preserved. </param>
+		/// <returns>
+		///     The technical string.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         The transformation of a string into a technical string is done by removing characters which can not be used for technical purposes.
+		///     </para>
+		///     <para>
+		///         A technical string is a string which can be used for technical purposes such as file names, IDs, etc. and therefore consists only of certain characters.
+		///         By default, if <paramref name="options" /> is <see cref="TechnicalStringOptions.None" />, only letters and digits will be preserved.
+		///         <paramref name="options" /> can specify additional characters which will be preserved.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
+		public static string ToTechnical (this string str, TechnicalStringOptions options, char? whitespaceReplacement)
+		{
+			if (str == null)
+			{
+				throw new ArgumentNullException(nameof(str));
+			}
+
+			bool allowWhitespaces = (options & TechnicalStringOptions.AllowWhitespaces) == TechnicalStringOptions.AllowWhitespaces;
+			bool allowUnderscores = (options & TechnicalStringOptions.AllowUnderscores) == TechnicalStringOptions.AllowUnderscores;
+			bool allowMinues = (options & TechnicalStringOptions.AllowMinus) == TechnicalStringOptions.AllowMinus;
+			bool allowPeriodes = (options & TechnicalStringOptions.AllowPeriods) == TechnicalStringOptions.AllowPeriods;
+
+			StringBuilder strBuilder = new StringBuilder(str.Length);
+
+			for (int i1 = 0; i1 < str.Length; i1++)
+			{
+				char chr = str[i1];
+				if (char.IsLetterOrDigit(chr))
+				{
+					strBuilder.Append(chr);
+				}
+				else if (allowWhitespaces && char.IsWhiteSpace(chr))
+				{
+					if (whitespaceReplacement.HasValue)
+					{
+						strBuilder.Append(whitespaceReplacement);
+					}
+					else
+					{
+						strBuilder.Append(chr);
+					}
+				}
+				else if (allowUnderscores && (chr == '_'))
+				{
+					strBuilder.Append(chr);
+				}
+				else if (allowMinues && (chr == '-'))
+				{
+					strBuilder.Append(chr);
+				}
+				else if (allowPeriodes && (chr == '.'))
+				{
+					strBuilder.Append(chr);
+				}
+			}
+
+			return strBuilder.ToString();
 		}
 
 		/// <summary>
@@ -2495,204 +2694,6 @@ namespace RI.Framework.Utilities
 			}
 
 			return sb.ToString();
-		}
-
-		/// <summary>
-		///     Gets the maximum length of multiple strings.
-		/// </summary>
-		/// <param name="values"> The sequence of strings to get the maximum length from. </param>
-		/// <returns>
-		///     The length of the string with the maximum length.
-		/// </returns>
-		/// <remarks>
-		///     <para>
-		///         <paramref name="values" /> is enumerated exactly once.
-		///     </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
-		public static int MaxLength (this IEnumerable<string> values)
-		{
-			if (values == null)
-			{
-				throw new ArgumentNullException(nameof(values));
-			}
-
-			int max = int.MinValue;
-			foreach (string str in values)
-			{
-				if (str.Length > max)
-				{
-					max = str.Length;
-				}
-			}
-			return max;
-		}
-
-		/// <summary>
-		///     Gets the minimum length of multiple strings.
-		/// </summary>
-		/// <param name="values"> The sequence of strings to get the minimum length from. </param>
-		/// <param name="ignoreZeroLength"> Specifies whether string with zero length do not count. </param>
-		/// <returns>
-		///     The length of the string with the minimum length.
-		/// </returns>
-		/// <remarks>
-		///     <para>
-		///         <paramref name="values" /> is enumerated exactly once.
-		///     </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
-		public static int MinLength(this IEnumerable<string> values, bool ignoreZeroLength)
-		{
-			if (values == null)
-			{
-				throw new ArgumentNullException(nameof(values));
-			}
-
-			int min = int.MaxValue;
-			foreach (string str in values)
-			{
-				if (str.Length < min)
-				{
-					min = str.Length;
-				}
-			}
-			return min;
-		}
-
-		/// <summary>
-		/// Transforms a string into a &quot;technical string&quot;.
-		/// </summary>
-		/// <param name="str"> The string. </param>
-		/// <returns>
-		/// The technical string.
-		/// </returns>
-		/// <remarks>
-		/// <para>
-		/// See <see cref="ToTechnical(string,TechnicalStringOptions,char?)"/> for more details.
-		/// </para>
-		/// <para>
-		/// <see cref="TechnicalStringOptions.None"/> is used for options.
-		/// </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
-		public static string ToTechnical(this string str)
-		{
-			return str.ToTechnical(TechnicalStringOptions.None, null);
-		}
-
-		/// <summary>
-		/// Transforms a string into a &quot;technical string&quot;.
-		/// </summary>
-		/// <param name="str"> The string. </param>
-		/// <param name="options">The technical string options.</param>
-		/// <returns>
-		/// The technical string.
-		/// </returns>
-		/// <remarks>
-		/// <para>
-		/// See <see cref="ToTechnical(string,TechnicalStringOptions,char?)"/> for more details.
-		/// </para>
-		/// <para>
-		/// Whitespace is preserved and not replaced with a replacement character if <paramref name="options"/> specifies <see cref="TechnicalStringOptions.AllowWhitespaces"/>.
-		/// </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
-		public static string ToTechnical(this string str, TechnicalStringOptions options)
-		{
-			return str.ToTechnical(options, null);
-		}
-
-		/// <summary>
-		/// Transforms a string into a &quot;technical string&quot;.
-		/// </summary>
-		/// <param name="str"> The string. </param>
-		/// <param name="options">The technical string options.</param>
-		/// <param name="whitespaceReplacement">The replacement character for whitespaces or null if the whitespace is to be preserved.</param>
-		/// <returns>
-		/// The technical string.
-		/// </returns>
-		/// <remarks>
-		/// <para>
-		/// The transformation of a string into a technical string is done by removing characters which can not be used for technical purposes.
-		/// </para>
-		/// <para>
-		/// A technical string is a string which can be used for technical purposes such as file names, IDs, etc. and therefore consists only of certain characters.
-		/// By default, if <paramref name="options"/> is <see cref="TechnicalStringOptions.None"/>, only letters and digits will be preserved.
-		/// <paramref name="options"/> can specify additional characters which will be preserved.
-		/// </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
-		public static string ToTechnical(this string str, TechnicalStringOptions options, char? whitespaceReplacement)
-		{
-			if (str == null)
-			{
-				throw new ArgumentNullException(nameof(str));
-			}
-
-			bool allowWhitespaces = (options & TechnicalStringOptions.AllowWhitespaces) == TechnicalStringOptions.AllowWhitespaces;
-			bool allowUnderscores = (options & TechnicalStringOptions.AllowUnderscores) == TechnicalStringOptions.AllowUnderscores;
-			bool allowMinues = (options & TechnicalStringOptions.AllowMinus) == TechnicalStringOptions.AllowMinus;
-			bool allowPeriodes = (options & TechnicalStringOptions.AllowPeriods) == TechnicalStringOptions.AllowPeriods;
-
-			StringBuilder strBuilder = new StringBuilder(str.Length);
-
-			for (int i1 = 0; i1 < str.Length; i1++)
-			{
-				char chr = str[i1];
-				if (char.IsLetterOrDigit(chr))
-				{
-					strBuilder.Append(chr);
-				}
-				else if (allowWhitespaces && char.IsWhiteSpace(chr))
-				{
-					if (whitespaceReplacement.HasValue)
-					{
-						strBuilder.Append(whitespaceReplacement);
-					}
-					else
-					{
-						strBuilder.Append(chr);
-					}
-				}
-				else if (allowUnderscores && (chr == '_'))
-				{
-					strBuilder.Append(chr);
-				}
-				else if (allowMinues && (chr == '-'))
-				{
-					strBuilder.Append(chr);
-				}
-				else if (allowPeriodes && (chr == '.'))
-				{
-					strBuilder.Append(chr);
-				}
-			}
-
-			return strBuilder.ToString();
-		}
-
-		/// <summary>
-		/// Converts a string into a secure string.
-		/// </summary>
-		/// <param name="str">The string.</param>
-		/// <returns>
-		/// The secure string.
-		/// </returns>
-		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
-		public static SecureString ToSecureString (this string str)
-		{
-			if (str == null)
-			{
-				throw new ArgumentNullException(nameof(str));
-			}
-
-			SecureString secureString = new SecureString();
-			foreach (char chr in str)
-			{
-				secureString.AppendChar(chr);
-			}
-			return secureString;
 		}
 
 		#endregion

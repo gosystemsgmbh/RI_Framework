@@ -303,6 +303,23 @@ namespace RI.Framework.Services
 
 
 
+		#region Instance Fields
+
+		private FirstStart? _firstStart;
+
+		private Version _previousVersion;
+
+		private ShutdownInfo _shutdownInfo;
+
+		private bool _shutdownInitiated;
+
+		private BootstrapperState _state;
+
+		#endregion
+
+
+
+
 		#region Instance Properties/Indexer
 
 		/// <summary>
@@ -316,27 +333,6 @@ namespace RI.Framework.Services
 		private UnhandledExceptionEventHandler ExceptionHandler { get; }
 
 		private EventHandler<FirstChanceExceptionEventArgs> FirstChanceExceptionHandler { get; }
-
-		private bool _shutdownInitiated;
-
-		/// <inheritdoc />
-		public bool ShutdownInitiated
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					return this._shutdownInitiated;
-				}
-			}
-			private set
-			{
-				lock (this.SyncRoot)
-				{
-					this._shutdownInitiated = value;
-				}
-			}
-		}
 
 		#endregion
 
@@ -885,6 +881,22 @@ namespace RI.Framework.Services
 		}
 
 		/// <summary>
+		///     Called to determine whether and how the application is started for the first time (<see cref="FirstStart" />).
+		/// </summary>
+		/// <returns>
+		///     The first start indicators or null if the information is not available or first start indication is not used.
+		/// </returns>
+		/// <remarks>
+		///     <note type="implement">
+		///         The default implementation does nothing and returns null.
+		///     </note>
+		/// </remarks>
+		protected virtual FirstStart? DetermineFirstStart ()
+		{
+			return null;
+		}
+
+		/// <summary>
 		///     Called to determine the ID of the currently running instance of the application (<see cref="InstanceId" />).
 		/// </summary>
 		/// <returns>
@@ -892,12 +904,28 @@ namespace RI.Framework.Services
 		/// </returns>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation gets the instance ID from the hosting environment context (<see cref="HostContext"/>) or returns null if no hosting environment context is available.
+		///         The default implementation gets the instance ID from the hosting environment context (<see cref="HostContext" />) or returns null if no hosting environment context is available.
 		///     </note>
 		/// </remarks>
 		protected virtual string DetermineInstanceId ()
 		{
 			return this.HostContext?.InstanceId;
+		}
+
+		/// <summary>
+		///     Called to determine the timestamp of the current session (<see cref="SessionTimestamp" />).
+		/// </summary>
+		/// <returns>
+		///     The previous application version or null if the application is started for the first time on this machine, the information is not vailable, or the previous version information is not used.
+		/// </returns>
+		/// <remarks>
+		///     <note type="implement">
+		///         The default implementation does nothing and returns null.
+		///     </note>
+		/// </remarks>
+		protected virtual Version DeterminePreviousVersion ()
+		{
+			return null;
 		}
 
 		/// <summary>
@@ -991,6 +1019,30 @@ namespace RI.Framework.Services
 		protected virtual void DispatchStopOperations (Delegate action, params object[] args)
 		{
 			action.DynamicInvoke(args);
+		}
+
+		/// <summary>
+		///     Called after shutdown to cleanup all bootstrapper resources.
+		/// </summary>
+		/// <remarks>
+		///     <note type="implement">
+		///         The default implementation calls <see cref="IDisposable.Dispose" /> on <see cref="Application" /> and then <see cref="Container" />.
+		///     </note>
+		/// </remarks>
+		protected virtual void DoCleanup ()
+		{
+			IDisposable application = this.Application as IDisposable;
+			if (application != null)
+			{
+				this.Log(LogLevel.Debug, "Disposing application");
+				application.Dispose();
+			}
+
+			if (this.Container != null)
+			{
+				this.Log(LogLevel.Debug, "Disposing container");
+				this.Container.Dispose();
+			}
 		}
 
 		/// <summary>
@@ -1093,6 +1145,37 @@ namespace RI.Framework.Services
 		}
 
 		/// <summary>
+		///     Implements the reset of the first start indication.
+		/// </summary>
+		/// <param name="indicators"> The indicators to reset. </param>
+		/// <remarks>
+		///     <para>
+		///         Whatever this method does, <see cref="FirstStart" /> is reset anyway.
+		///     </para>
+		///     <note type="implement">
+		///         The default implementation does nothing.
+		///     </note>
+		/// </remarks>
+		protected virtual void ResetFirstStartImpl (FirstStart indicators)
+		{
+		}
+
+		/// <summary>
+		///     Implements the reset of the previous version information.
+		/// </summary>
+		/// <remarks>
+		///     <para>
+		///         Whatever this method does, <see cref="PreviousVersion" /> is reset anyway.
+		///     </para>
+		///     <note type="implement">
+		///         The default implementation does nothing.
+		///     </note>
+		/// </remarks>
+		protected virtual void ResetPreviousVersionImpl ()
+		{
+		}
+
+		/// <summary>
 		///     Called when the splash screen can be created and shown.
 		/// </summary>
 		/// <remarks>
@@ -1118,93 +1201,6 @@ namespace RI.Framework.Services
 			{
 				ops.StopOperations();
 			}
-		}
-
-		/// <summary>
-		/// Called after shutdown to cleanup all bootstrapper resources.
-		/// </summary>
-		/// <remarks>
-		///     <note type="implement">
-		///         The default application first calls <see cref="IDisposable.Dispose"/>
-		///     </note>
-		/// </remarks>
-		protected virtual void DoCleanup ()
-		{
-			IDisposable application = this.Application as IDisposable;
-			if (application != null)
-			{
-				this.Log(LogLevel.Debug, "Disposing application");
-				application.Dispose();
-			}
-
-			if (this.Container != null)
-			{
-				this.Log(LogLevel.Debug, "Disposing container");
-				this.Container.Dispose();
-			}
-		}
-
-		/// <summary>
-		/// Implements the reset of the previous version information.
-		/// </summary>
-		/// <remarks>
-		/// <para>
-		/// Whatever this method does, <see cref="PreviousVersion"/> is reset anyway.
-		/// </para>
-		///     <note type="implement">
-		///         The default implementation does nothing.
-		///     </note>
-		/// </remarks>
-		protected virtual void ResetPreviousVersionImpl ()
-		{
-		}
-
-		/// <summary>
-		/// Implements the reset of the first start indication.
-		/// </summary>
-		/// <param name="indicators">The indicators to reset.</param>
-		/// <remarks>
-		/// <para>
-		/// Whatever this method does, <see cref="FirstStart"/> is reset anyway.
-		/// </para>
-		///     <note type="implement">
-		///         The default implementation does nothing.
-		///     </note>
-		/// </remarks>
-		protected virtual void ResetFirstStartImpl(FirstStart indicators)
-		{
-		}
-
-		/// <summary>
-		///     Called to determine whether and how the application is started for the first time (<see cref="FirstStart"/>).
-		/// </summary>
-		/// <returns>
-		///     The first start indicators or null if the information is not available or first start indication is not used.
-		/// </returns>
-		/// <remarks>
-		///     <note type="implement">
-		///         The default implementation does nothing and returns null.
-		///     </note>
-		/// </remarks>
-		protected virtual FirstStart? DetermineFirstStart ()
-		{
-			return null;
-		}
-
-		/// <summary>
-		///     Called to determine the timestamp of the current session (<see cref="SessionTimestamp" />).
-		/// </summary>
-		/// <returns>
-		///     The previous application version or null if the application is started for the first time on this machine, the information is not vailable, or the previous version information is not used.
-		/// </returns>
-		/// <remarks>
-		///     <note type="implement">
-		///         The default implementation does nothing and returns null.
-		///     </note>
-		/// </remarks>
-		protected virtual Version DeterminePreviousVersion ()
-		{
-			return null;
 		}
 
 		#endregion
@@ -1251,83 +1247,6 @@ namespace RI.Framework.Services
 		public Guid DomainId { get; private set; }
 
 		/// <inheritdoc />
-		public HostContext HostContext { get; private set; }
-
-		/// <inheritdoc />
-		public string InstanceId { get; private set; }
-
-		/// <inheritdoc />
-		public bool Machine64Bit { get; private set; }
-
-		/// <inheritdoc />
-		public Guid MachineId { get; private set; }
-
-		/// <inheritdoc />
-		public CommandLine ProcessCommandLine { get; private set; }
-
-		/// <inheritdoc />
-		public bool Session64Bit { get; private set; }
-
-		/// <inheritdoc />
-		public Guid SessionId { get; private set; }
-
-		/// <inheritdoc />
-		public DateTime SessionTimestamp { get; private set; }
-
-		private ShutdownInfo _shutdownInfo;
-
-		/// <inheritdoc />
-		public ShutdownInfo ShutdownInfo
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					return this._shutdownInfo;
-				}
-			}
-			private set
-			{
-				lock (this.SyncRoot)
-				{
-					this._shutdownInfo = value;
-				}
-			}
-		}
-
-		/// <inheritdoc />
-		public CultureInfo StartupCulture { get; private set; }
-
-		/// <inheritdoc />
-		public CultureInfo StartupUICulture { get; private set; }
-
-		private BootstrapperState _state;
-
-		/// <inheritdoc />
-		public BootstrapperState State
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					return this._state;
-				}
-			}
-			private set
-			{
-				lock (this.SyncRoot)
-				{
-					this._state = value;
-				}
-			}
-		}
-
-		/// <inheritdoc />
-		public Guid UserId { get; private set; }
-
-		private FirstStart? _firstStart;
-
-		/// <inheritdoc />
 		public FirstStart? FirstStart
 		{
 			get
@@ -1346,7 +1265,21 @@ namespace RI.Framework.Services
 			}
 		}
 
-		private Version _previousVersion;
+		/// <inheritdoc />
+		public HostContext HostContext { get; private set; }
+
+		/// <inheritdoc />
+		public string InstanceId { get; private set; }
+
+
+		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		public bool Machine64Bit { get; private set; }
+
+		/// <inheritdoc />
+		public Guid MachineId { get; private set; }
 
 		/// <inheritdoc />
 		public Version PreviousVersion
@@ -1368,6 +1301,92 @@ namespace RI.Framework.Services
 		}
 
 		/// <inheritdoc />
+		public CommandLine ProcessCommandLine { get; private set; }
+
+		/// <inheritdoc />
+		public bool Session64Bit { get; private set; }
+
+		/// <inheritdoc />
+		public Guid SessionId { get; private set; }
+
+		/// <inheritdoc />
+		public DateTime SessionTimestamp { get; private set; }
+
+		/// <inheritdoc />
+		public ShutdownInfo ShutdownInfo
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._shutdownInfo;
+				}
+			}
+			private set
+			{
+				lock (this.SyncRoot)
+				{
+					this._shutdownInfo = value;
+				}
+			}
+		}
+
+		/// <inheritdoc />
+		public bool ShutdownInitiated
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._shutdownInitiated;
+				}
+			}
+			private set
+			{
+				lock (this.SyncRoot)
+				{
+					this._shutdownInitiated = value;
+				}
+			}
+		}
+
+		/// <inheritdoc />
+		public CultureInfo StartupCulture { get; private set; }
+
+		/// <inheritdoc />
+		public CultureInfo StartupUICulture { get; private set; }
+
+		/// <inheritdoc />
+		public BootstrapperState State
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._state;
+				}
+			}
+			private set
+			{
+				lock (this.SyncRoot)
+				{
+					this._state = value;
+				}
+			}
+		}
+
+		/// <inheritdoc />
+		public object SyncRoot { get; }
+
+		/// <inheritdoc />
+		public Guid UserId { get; private set; }
+
+		/// <inheritdoc />
+		public virtual void HideSplashScreen ()
+		{
+		}
+
+		/// <inheritdoc />
 		public void ResetFirstStart (FirstStart? indicators)
 		{
 			FirstStart usedIndicators = indicators ?? Services.FirstStart.All;
@@ -1383,11 +1402,6 @@ namespace RI.Framework.Services
 		{
 			this.ResetPreviousVersionImpl();
 			this.PreviousVersion = null;
-		}
-
-		/// <inheritdoc />
-		public virtual void HideSplashScreen ()
-		{
 		}
 
 		/// <inheritdoc />
@@ -1647,13 +1661,6 @@ namespace RI.Framework.Services
 		}
 
 		#endregion
-
-
-		/// <inheritdoc />
-		bool ISynchronizable.IsSynchronized => true;
-
-		/// <inheritdoc />
-		public object SyncRoot { get; }
 	}
 
 	/// <inheritdoc cref="Bootstrapper" />

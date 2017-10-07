@@ -14,14 +14,14 @@ namespace RI.Framework.IO.Binary
 		#region Static Methods
 
 		/// <summary>
-		/// Reads the next byte from the reader without advancing the read position.
+		///     Reads the next byte from the reader without advancing the read position.
 		/// </summary>
-		/// <param name="reader">The reader.</param>
+		/// <param name="reader"> The reader. </param>
 		/// <returns>
-		/// The read byte or -1 if the end of the reader was reached.
+		///     The read byte or -1 if the end of the reader was reached.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="reader"/> is null.</exception>
-		/// <exception cref="NotSupportedException"><paramref name="reader"/> does not support seeking.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="reader" /> is null. </exception>
+		/// <exception cref="NotSupportedException"> <paramref name="reader" /> does not support seeking. </exception>
 		public static int PeekByte (this BinaryReader reader)
 		{
 			if (reader == null)
@@ -44,14 +44,14 @@ namespace RI.Framework.IO.Binary
 		}
 
 		/// <summary>
-		/// Reads characters into an array.
+		///     Reads characters into an array.
 		/// </summary>
-		/// <param name="reader">The reader.</param>
-		/// <param name="data">The array.</param>
+		/// <param name="reader"> The reader. </param>
+		/// <param name="data"> The array. </param>
 		/// <returns>
-		/// The number of characters read into the array, beginning at index zero.
+		///     The number of characters read into the array, beginning at index zero.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="reader"/> or <paramref name="data"/> is null.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="reader" /> or <paramref name="data" /> is null. </exception>
 		public static int Read (this BinaryReader reader, char[] data)
 		{
 			if (reader == null)
@@ -68,14 +68,14 @@ namespace RI.Framework.IO.Binary
 		}
 
 		/// <summary>
-		/// Reads bytes into an array.
+		///     Reads bytes into an array.
 		/// </summary>
-		/// <param name="reader">The reader.</param>
-		/// <param name="data">The array.</param>
+		/// <param name="reader"> The reader. </param>
+		/// <param name="data"> The array. </param>
 		/// <returns>
-		/// The number of bytes read into the array, beginning at index zero.
+		///     The number of bytes read into the array, beginning at index zero.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="reader"/> or <paramref name="data"/> is null.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="reader" /> or <paramref name="data" /> is null. </exception>
 		public static int Read (this BinaryReader reader, byte[] data)
 		{
 			if (reader == null)
@@ -88,7 +88,7 @@ namespace RI.Framework.IO.Binary
 				throw new ArgumentNullException(nameof(data));
 			}
 
-			return  reader.Read(data, 0, data.Length);
+			return reader.Read(data, 0, data.Length);
 		}
 
 		#endregion

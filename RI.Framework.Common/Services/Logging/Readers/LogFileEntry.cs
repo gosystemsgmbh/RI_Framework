@@ -24,6 +24,14 @@ namespace RI.Framework.Services.Logging.Readers
 		public string Message { get; set; }
 
 		/// <summary>
+		///     Gets or sets the session this log entry belongs to.
+		/// </summary>
+		/// <value>
+		///     The session this log entry belongs to.
+		/// </value>
+		public string Session { get; set; }
+
+		/// <summary>
 		///     Gets or sets the severity.
 		/// </summary>
 		/// <value>
@@ -54,14 +62,6 @@ namespace RI.Framework.Services.Logging.Readers
 		///     The timestamp of the log entry.
 		/// </value>
 		public DateTime Timestamp { get; set; }
-
-		/// <summary>
-		///     Gets or sets the session this log entry belongs to.
-		/// </summary>
-		/// <value>
-		///     The session this log entry belongs to.
-		/// </value>
-		public string Session { get; set; }
 
 		#endregion
 

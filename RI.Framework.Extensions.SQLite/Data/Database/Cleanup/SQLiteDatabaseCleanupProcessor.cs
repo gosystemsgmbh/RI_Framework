@@ -8,36 +8,48 @@ using RI.Framework.Data.Database.Scripts;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Logging;
 
+
+
+
 namespace RI.Framework.Data.Database.Cleanup
 {
 	/// <summary>
-	/// Implements a database cleanup processor for SQLite databases.
+	///     Implements a database cleanup processor for SQLite databases.
 	/// </summary>
 	/// <remarks>
-	/// <para>
-	/// <see cref="SQLiteDatabaseCleanupProcessor"/> can be used with either a default SQLite cleanup script (<see cref="DefaultCleanupScript"/>) or with a custom processing step.
-	/// </para>
+	///     <para>
+	///         <see cref="SQLiteDatabaseCleanupProcessor" /> can be used with either a default SQLite cleanup script (<see cref="DefaultCleanupScript" />) or with a custom processing step.
+	///     </para>
 	/// </remarks>
 	[SuppressMessage("ReSharper", "InconsistentNaming")]
 	public sealed class SQLiteDatabaseCleanupProcessor : DatabaseCleanupProcessor<SQLiteConnection, SQLiteTransaction, SQLiteConnectionStringBuilder, SQLiteDatabaseManager, SQLiteDatabaseManagerConfiguration>
 	{
+		#region Constants
+
 		/// <summary>
-		/// The default cleanup script used when no custom processing step is specified.
+		///     The default cleanup script used when no custom processing step is specified.
 		/// </summary>
 		/// <remarks>
-		/// <para>
-		/// The default cleanup script uses <c>VACUUM</c>, <c>ANALYZE</c>, and <c>REINDEX</c>, each executed as a single command.
-		/// </para>
+		///     <para>
+		///         The default cleanup script uses <c> VACUUM </c>, <c> ANALYZE </c>, and <c> REINDEX </c>, each executed as a single command.
+		///     </para>
 		/// </remarks>
 		public const string DefaultCleanupScript = "VACUUM;" + DatabaseScriptLocator.DefaultBatchSeparator + "ANALYZE;" + DatabaseScriptLocator.DefaultBatchSeparator + "REINDEX;" + DatabaseScriptLocator.DefaultBatchSeparator;
 
+		#endregion
+
+
+
+
+		#region Instance Constructor/Destructor
+
 		/// <summary>
-		/// Creates a new instance of <see cref="SQLiteDatabaseCleanupProcessor"/>.
+		///     Creates a new instance of <see cref="SQLiteDatabaseCleanupProcessor" />.
 		/// </summary>
 		/// <remarks>
-		/// <para>
-		/// The default cleanup script is used (<see cref="DefaultCleanupScript"/>).
-		/// </para>
+		///     <para>
+		///         The default cleanup script is used (<see cref="DefaultCleanupScript" />).
+		///     </para>
 		/// </remarks>
 		public SQLiteDatabaseCleanupProcessor ()
 			: this(null)
@@ -45,21 +57,38 @@ namespace RI.Framework.Data.Database.Cleanup
 		}
 
 		/// <summary>
-		/// Creates a new instance of <see cref="SQLiteDatabaseCleanupProcessor"/>.
+		///     Creates a new instance of <see cref="SQLiteDatabaseCleanupProcessor" />.
 		/// </summary>
-		/// <param name="cleanupStep">The custom processing step which performs the cleanup or null if the default cleanup script is used (<see cref="DefaultCleanupScript"/>).</param>
+		/// <param name="cleanupStep"> The custom processing step which performs the cleanup or null if the default cleanup script is used (<see cref="DefaultCleanupScript" />). </param>
 		public SQLiteDatabaseCleanupProcessor (SQLiteDatabaseProcessingStep cleanupStep)
 		{
 			this.CleanupStep = cleanupStep;
 		}
 
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
+
 		/// <summary>
-		/// Gets the custom processing step which performs the cleanup.
+		///     Gets the custom processing step which performs the cleanup.
 		/// </summary>
 		/// <value>
-		/// The custom processing step which performs the cleanup or null if the default cleanup script is used (<see cref="DefaultCleanupScript"/>).
+		///     The custom processing step which performs the cleanup or null if the default cleanup script is used (<see cref="DefaultCleanupScript" />).
 		/// </value>
 		public SQLiteDatabaseProcessingStep CleanupStep { get; }
+
+		#endregion
+
+
+
+
+		#region Overrides
+
+		/// <inheritdoc />
+		public override bool RequiresScriptLocator => this.CleanupStep?.RequiresScriptLocator ?? false;
 
 		/// <inheritdoc />
 		public override bool Cleanup (SQLiteDatabaseManager manager)
@@ -105,7 +134,6 @@ namespace RI.Framework.Data.Database.Cleanup
 			}
 		}
 
-		/// <inheritdoc />
-		public override bool RequiresScriptLocator => this.CleanupStep?.RequiresScriptLocator ?? false;
+		#endregion
 	}
 }

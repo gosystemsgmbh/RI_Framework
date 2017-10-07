@@ -136,13 +136,13 @@ namespace RI.Framework.Utilities.Reflection
 		}
 
 		/// <summary>
-		/// Gets whether a type is a nullable type.
+		///     Gets whether a type is a nullable type.
 		/// </summary>
-		/// <param name="type">The type.</param>
+		/// <param name="type"> The type. </param>
 		/// <returns>
-		/// true if the type is nullable, using <see cref="Nullable{T}"/>, false otherwise.
+		///     true if the type is nullable, using <see cref="Nullable{T}" />, false otherwise.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="type"/> is null.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="type" /> is null. </exception>
 		public static bool IsNullable (this Type type)
 		{
 			if (!type.IsGenericType)

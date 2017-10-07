@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Utilities.ObjectModel;
 
+
+
+
 namespace RI.Framework.Mathematic
 {
 	/// <summary>
@@ -66,23 +69,23 @@ namespace RI.Framework.Mathematic
 		}
 
 		/// <summary>
-		/// Creates a new instance of <see cref="RunningValues" />.
+		///     Creates a new instance of <see cref="RunningValues" />.
 		/// </summary>
-		/// <param name="initialValues">The initial values added to the history.</param>
+		/// <param name="initialValues"> The initial values added to the history. </param>
 		/// <remarks>
-		/// <para>
-		/// The initial values are added with a timestep of 1.0.
-		/// </para>
-		/// <para>
-		/// The capacity is set to the number of values in <paramref name="initialValues"/>.
-		/// Therefore, the sequence must contain at least one value.
-		/// </para>
-		/// <para>
-		/// <paramref name="initialValues"/> is enumerated only once.
-		/// </para>
+		///     <para>
+		///         The initial values are added with a timestep of 1.0.
+		///     </para>
+		///     <para>
+		///         The capacity is set to the number of values in <paramref name="initialValues" />.
+		///         Therefore, the sequence must contain at least one value.
+		///     </para>
+		///     <para>
+		///         <paramref name="initialValues" /> is enumerated only once.
+		///     </para>
 		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="initialValues"/> is null.</exception>
-		/// <exception cref="ArgumentException"><paramref name="initialValues"/> is an empty sequence.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="initialValues" /> is null. </exception>
+		/// <exception cref="ArgumentException"> <paramref name="initialValues" /> is an empty sequence. </exception>
 		public RunningValues (IEnumerable<float> initialValues)
 		{
 			if (initialValues == null)
@@ -106,24 +109,24 @@ namespace RI.Framework.Mathematic
 		}
 
 		/// <summary>
-		/// Creates a new instance of <see cref="RunningValues" />.
+		///     Creates a new instance of <see cref="RunningValues" />.
 		/// </summary>
-		/// <param name="initialValues">The initial values added to the history.</param>
-		/// <param name="initialTimesteps">The timesteps values added to the history.</param>
+		/// <param name="initialValues"> The initial values added to the history. </param>
+		/// <param name="initialTimesteps"> The timesteps values added to the history. </param>
 		/// <remarks>
-		/// <para>
-		/// <paramref name="initialValues"/> and <paramref name="initialTimesteps"/> must contain the same number of values.
-		/// </para>
-		/// <para>
-		/// The capacity is set to the number of values in <paramref name="initialValues"/>.
-		/// Therefore, the sequence must contain at least one value.
-		/// </para>
-		/// <para>
-		/// <paramref name="initialValues"/> and <paramref name="initialTimesteps"/> are enumerated only once.
-		/// </para>
+		///     <para>
+		///         <paramref name="initialValues" /> and <paramref name="initialTimesteps" /> must contain the same number of values.
+		///     </para>
+		///     <para>
+		///         The capacity is set to the number of values in <paramref name="initialValues" />.
+		///         Therefore, the sequence must contain at least one value.
+		///     </para>
+		///     <para>
+		///         <paramref name="initialValues" /> and <paramref name="initialTimesteps" /> are enumerated only once.
+		///     </para>
 		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="initialValues"/> or <paramref name="initialTimesteps"/> is null.</exception>
-		/// <exception cref="ArgumentException"><paramref name="initialValues"/> or <paramref name="initialTimesteps"/> is an empty sequence or <paramref name="initialValues"/> and <paramref name="initialTimesteps"/> do not contain the same number of values.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="initialValues" /> or <paramref name="initialTimesteps" /> is null. </exception>
+		/// <exception cref="ArgumentException"> <paramref name="initialValues" /> or <paramref name="initialTimesteps" /> is an empty sequence or <paramref name="initialValues" /> and <paramref name="initialTimesteps" /> do not contain the same number of values. </exception>
 		public RunningValues (IEnumerable<float> initialValues, IEnumerable<float> initialTimesteps)
 		{
 			if (initialValues == null)
@@ -164,21 +167,21 @@ namespace RI.Framework.Mathematic
 		}
 
 		/// <summary>
-		/// Creates a new instance of <see cref="RunningValues" />.
+		///     Creates a new instance of <see cref="RunningValues" />.
 		/// </summary>
 		/// <param name="capacity"> The capacity of the history used to calculate the running values. </param>
-		/// <param name="initialValues">The initial values added to the history.</param>
+		/// <param name="initialValues"> The initial values added to the history. </param>
 		/// <remarks>
-		/// <para>
-		/// The initial values are added with a timestep of 1.0.
-		/// </para>
-		/// <para>
-		/// <paramref name="initialValues"/> is enumerated only once.
-		/// </para>
+		///     <para>
+		///         The initial values are added with a timestep of 1.0.
+		///     </para>
+		///     <para>
+		///         <paramref name="initialValues" /> is enumerated only once.
+		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="capacity" /> is less than 1. </exception>
-		/// <exception cref="ArgumentNullException"><paramref name="initialValues"/> is null.</exception>
-		/// <exception cref="ArgumentException"><paramref name="initialValues"/> is an empty sequence.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="initialValues" /> is null. </exception>
+		/// <exception cref="ArgumentException"> <paramref name="initialValues" /> is an empty sequence. </exception>
 		public RunningValues (int capacity, IEnumerable<float> initialValues)
 		{
 			if (initialValues == null)
@@ -201,22 +204,22 @@ namespace RI.Framework.Mathematic
 		}
 
 		/// <summary>
-		/// Creates a new instance of <see cref="RunningValues" />.
+		///     Creates a new instance of <see cref="RunningValues" />.
 		/// </summary>
 		/// <param name="capacity"> The capacity of the history used to calculate the running values. </param>
-		/// <param name="initialValues">The initial values added to the history.</param>
-		/// <param name="initialTimesteps">The timesteps values added to the history.</param>
+		/// <param name="initialValues"> The initial values added to the history. </param>
+		/// <param name="initialTimesteps"> The timesteps values added to the history. </param>
 		/// <remarks>
-		/// <para>
-		/// <paramref name="initialValues"/> and <paramref name="initialTimesteps"/> must contain the same number of values.
-		/// </para>
-		/// <para>
-		/// <paramref name="initialValues"/> and <paramref name="initialTimesteps"/> are enumerated only once.
-		/// </para>
+		///     <para>
+		///         <paramref name="initialValues" /> and <paramref name="initialTimesteps" /> must contain the same number of values.
+		///     </para>
+		///     <para>
+		///         <paramref name="initialValues" /> and <paramref name="initialTimesteps" /> are enumerated only once.
+		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="capacity" /> is less than 1. </exception>
-		/// <exception cref="ArgumentNullException"><paramref name="initialValues"/> or <paramref name="initialTimesteps"/> is null.</exception>
-		/// <exception cref="ArgumentException"><paramref name="initialValues"/> or <paramref name="initialTimesteps"/> is an empty sequence or <paramref name="initialValues"/> and <paramref name="initialTimesteps"/> do not contain the same number of values.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="initialValues" /> or <paramref name="initialTimesteps" /> is null. </exception>
+		/// <exception cref="ArgumentException"> <paramref name="initialValues" /> or <paramref name="initialTimesteps" /> is an empty sequence or <paramref name="initialValues" /> and <paramref name="initialTimesteps" /> do not contain the same number of values. </exception>
 		public RunningValues (int capacity, IEnumerable<float> initialValues, IEnumerable<float> initialTimesteps)
 		{
 			if (initialValues == null)
@@ -289,9 +292,14 @@ namespace RI.Framework.Mathematic
 		public float Last;
 
 		/// <summary>
-		///     The sum of all values in the history.
+		///     The root-mean-square (RMS) of all values in the history.
 		/// </summary>
-		public float Sum;
+		public double Rms;
+
+		/// <summary>
+		///     The sigma or standard deviation of all values in the history.
+		/// </summary>
+		public double Sigma;
 
 		/// <summary>
 		///     The sum of squared values (first squared, then summed) of all values in the history.
@@ -299,27 +307,22 @@ namespace RI.Framework.Mathematic
 		public float SquareSum;
 
 		/// <summary>
-		///     The root-mean-square (RMS) of all values in the history.
+		///     The sum of all values in the history.
 		/// </summary>
-		public double Rms;
+		public float Sum;
 
 		/// <summary>
 		///     The variance of all values in the history.
 		/// </summary>
 		public double Variance;
 
-		/// <summary>
-		///     The sigma or standard deviation of all values in the history.
-		/// </summary>
-		public double Sigma;
-
-		private float VarianceDiff;
-
 		private int Index;
 
 		private float[] Timesteps;
 
 		private float[] Values;
+
+		private float VarianceDiff;
 
 		#endregion
 
@@ -546,10 +549,17 @@ namespace RI.Framework.Mathematic
 
 		#endregion
 
+
+
+
+		#region Interface: ICloneable<RunningValues>
+
 		/// <inheritdoc />
 		public RunningValues Clone () => new RunningValues(this.GetHistory(), this.GetTimesteps());
 
 		/// <inheritdoc />
 		object ICloneable.Clone () => this.Clone();
+
+		#endregion
 	}
 }

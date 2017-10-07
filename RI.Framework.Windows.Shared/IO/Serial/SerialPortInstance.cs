@@ -18,12 +18,12 @@ namespace RI.Framework.IO.Serial
 	///     <para>
 	///         A serial port on Windows is also called a COM port, e.g. COM1.
 	///     </para>
-	/// <note type="note">
-	/// <see cref="SerialPortInstance"/> is not intended for actually accessing a serial port.
-	/// <see cref="SerialPortInstance"/> is only used for managing the used/available ports.
-	/// Use <see cref="SerialPort"/> to access a serial port.
-	/// <see cref="SerialPort"/> instances can be created using <see cref="CreateSerialPort"/>.
-	/// </note>
+	///     <note type="note">
+	///         <see cref="SerialPortInstance" /> is not intended for actually accessing a serial port.
+	///         <see cref="SerialPortInstance" /> is only used for managing the used/available ports.
+	///         Use <see cref="SerialPort" /> to access a serial port.
+	///         <see cref="SerialPort" /> instances can be created using <see cref="CreateSerialPort" />.
+	///     </note>
 	/// </remarks>
 	public sealed class SerialPortInstance : IEquatable<SerialPortInstance>, IComparable<SerialPortInstance>, IComparable
 	{
@@ -259,6 +259,18 @@ namespace RI.Framework.IO.Serial
 		#region Instance Methods
 
 		/// <summary>
+		///     Creates a <see cref="SerialPort" /> instance associated with this <see cref="SerialPortInstance" />.
+		/// </summary>
+		/// <returns>
+		///     The created serial port instance.
+		/// </returns>
+		public SerialPort CreateSerialPort ()
+		{
+			SerialPort port = new SerialPort(this.PortName);
+			return port;
+		}
+
+		/// <summary>
 		///     Determines whether the serial port is available.
 		/// </summary>
 		/// <returns>
@@ -285,18 +297,6 @@ namespace RI.Framework.IO.Serial
 			{
 				return false;
 			}
-		}
-
-		/// <summary>
-		/// Creates a <see cref="SerialPort"/> instance associated with this <see cref="SerialPortInstance"/>.
-		/// </summary>
-		/// <returns>
-		/// The created serial port instance.
-		/// </returns>
-		public SerialPort CreateSerialPort ()
-		{
-			SerialPort port = new SerialPort(this.PortName);
-			return port;
 		}
 
 		#endregion

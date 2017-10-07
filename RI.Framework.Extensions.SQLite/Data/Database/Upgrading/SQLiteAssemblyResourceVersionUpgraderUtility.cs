@@ -1,12 +1,17 @@
 ﻿using System.Data.SQLite;
 
+
+
+
 namespace RI.Framework.Data.Database.Upgrading
 {
 	/// <summary>
-	/// Implements an assembly version upgrade step extractor for SQLite databases.
+	///     Implements an assembly version upgrade step extractor for SQLite databases.
 	/// </summary>
 	public sealed class SQLiteAssemblyResourceVersionUpgraderUtility : AssemblyResourceVersionUpgraderUtility<SQLiteDatabaseVersionUpgradeStep, SQLiteConnection, SQLiteTransaction, SQLiteConnectionStringBuilder, SQLiteDatabaseManager, SQLiteDatabaseManagerConfiguration>
 	{
+		#region Overrides
+
 		/// <inheritdoc />
 		protected override SQLiteDatabaseVersionUpgradeStep CreateProcessingStep (int sourceVersion, string resourceName)
 		{
@@ -14,5 +19,7 @@ namespace RI.Framework.Data.Database.Upgrading
 			upgradeStep.AddScript(resourceName, DatabaseProcessingStepTransactionRequirement.Required);
 			return upgradeStep;
 		}
+
+		#endregion
 	}
 }

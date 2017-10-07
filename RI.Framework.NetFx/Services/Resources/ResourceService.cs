@@ -253,40 +253,29 @@ namespace RI.Framework.Services.Resources
 		}
 
 		/// <inheritdoc />
-		public void RemoveConverter (IResourceConverter resourceConverter)
+		public HashSet<string> GetAvailableResources ()
 		{
-			if (resourceConverter == null)
+			HashSet<string> resources = new HashSet<string>(StringComparerEx.InvariantCultureIgnoreCase);
+			foreach (IResourceSet set in this.GetLoadedSets())
 			{
-				throw new ArgumentNullException(nameof(resourceConverter));
+				resources.AddRange(set.GetAvailableResources());
 			}
-
-			if (!this.ConvertersManual.Contains(resourceConverter))
-			{
-				return;
-			}
-
-			this.ConvertersManual.RemoveAll(resourceConverter);
-
-			this.UpdateConverters();
+			return resources;
 		}
 
 		/// <inheritdoc />
-		public void RemoveSource (IResourceSource resourceSource)
+		public List<IResourceSet> GetAvailableSets ()
 		{
-			if (resourceSource == null)
+			List<IResourceSet> sets = new List<IResourceSet>();
+			foreach (IResourceSource source in this.Sources)
 			{
-				throw new ArgumentNullException(nameof(resourceSource));
+				sets.AddRange(source.GetAvailableSets());
 			}
-
-			if (!this.SourcesManual.Contains(resourceSource))
-			{
-				return;
-			}
-
-			this.SourcesManual.RemoveAll(resourceSource);
-
-			this.UpdateSources();
+			return sets;
 		}
+
+		/// <inheritdoc />
+		public List<IResourceSet> GetLoadedSets () => new List<IResourceSet>(from x in this.GetAvailableSets() where x.IsLoaded select x);
 
 		/// <inheritdoc />
 		public object GetRawValue (string name)
@@ -351,53 +340,6 @@ namespace RI.Framework.Services.Resources
 		}
 
 		/// <inheritdoc />
-		public void ReloadSets ()
-		{
-			this.Log(LogLevel.Debug, "Reloading all loaded sets");
-
-			foreach (IResourceSet set in this.GetLoadedSets())
-			{
-				this.LoadSet(set, set.IsLazyLoaded);
-			}
-		}
-
-		/// <inheritdoc />
-		public void UnloadSets()
-		{
-			this.Log(LogLevel.Debug, "Unloading all loaded sets");
-
-			foreach (IResourceSet set in this.GetLoadedSets())
-			{
-				this.UnloadSet(set);
-			}
-		}
-
-		/// <inheritdoc />
-		public HashSet<string> GetAvailableResources()
-		{
-			HashSet<string> resources = new HashSet<string>(StringComparerEx.InvariantCultureIgnoreCase);
-			foreach (IResourceSet set in this.GetLoadedSets())
-			{
-				resources.AddRange(set.GetAvailableResources());
-			}
-			return resources;
-		}
-
-		/// <inheritdoc />
-		public List<IResourceSet> GetAvailableSets ()
-		{
-			List<IResourceSet> sets = new List<IResourceSet>();
-			foreach (IResourceSource source in this.Sources)
-			{
-				sets.AddRange(source.GetAvailableSets());
-			}
-			return sets;
-		}
-
-		/// <inheritdoc />
-		public List<IResourceSet> GetLoadedSets () => new List<IResourceSet>(from x in this.GetAvailableSets() where x.IsLoaded select x);
-
-		/// <inheritdoc />
 		public void LoadSet (IResourceSet resourceSet, bool lazyLoad)
 		{
 			if (resourceSet == null)
@@ -411,6 +353,53 @@ namespace RI.Framework.Services.Resources
 		}
 
 		/// <inheritdoc />
+		public void ReloadSets ()
+		{
+			this.Log(LogLevel.Debug, "Reloading all loaded sets");
+
+			foreach (IResourceSet set in this.GetLoadedSets())
+			{
+				this.LoadSet(set, set.IsLazyLoaded);
+			}
+		}
+
+		/// <inheritdoc />
+		public void RemoveConverter (IResourceConverter resourceConverter)
+		{
+			if (resourceConverter == null)
+			{
+				throw new ArgumentNullException(nameof(resourceConverter));
+			}
+
+			if (!this.ConvertersManual.Contains(resourceConverter))
+			{
+				return;
+			}
+
+			this.ConvertersManual.RemoveAll(resourceConverter);
+
+			this.UpdateConverters();
+		}
+
+		/// <inheritdoc />
+		public void RemoveSource (IResourceSource resourceSource)
+		{
+			if (resourceSource == null)
+			{
+				throw new ArgumentNullException(nameof(resourceSource));
+			}
+
+			if (!this.SourcesManual.Contains(resourceSource))
+			{
+				return;
+			}
+
+			this.SourcesManual.RemoveAll(resourceSource);
+
+			this.UpdateSources();
+		}
+
+		/// <inheritdoc />
 		public void UnloadSet (IResourceSet resourceSet)
 		{
 			if (resourceSet == null)
@@ -421,6 +410,17 @@ namespace RI.Framework.Services.Resources
 			this.Log(LogLevel.Debug, "Unlaoding set: {0}", resourceSet.Id);
 
 			resourceSet.Unload();
+		}
+
+		/// <inheritdoc />
+		public void UnloadSets ()
+		{
+			this.Log(LogLevel.Debug, "Unloading all loaded sets");
+
+			foreach (IResourceSet set in this.GetLoadedSets())
+			{
+				this.UnloadSet(set);
+			}
 		}
 
 		#endregion

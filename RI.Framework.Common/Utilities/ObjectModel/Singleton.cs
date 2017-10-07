@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Utilities.Exceptions;
 
+
+
+
 namespace RI.Framework.Utilities.ObjectModel
 {
 	/// <summary>
@@ -52,10 +55,10 @@ namespace RI.Framework.Utilities.ObjectModel
 		#region Static Properties/Indexer
 
 		/// <summary>
-		/// Gets a dependency resolver which uses <see cref="Singleton"/>.
+		///     Gets a dependency resolver which uses <see cref="Singleton" />.
 		/// </summary>
 		/// <value>
-		/// A dependency resolver which uses <see cref="Singleton"/>.
+		///     A dependency resolver which uses <see cref="Singleton" />.
 		/// </value>
 		public static IDependencyResolver Resolver { get; }
 
@@ -196,8 +199,14 @@ namespace RI.Framework.Utilities.ObjectModel
 		#endregion
 
 
+
+
+		#region Type: SingletonResolver
+
 		private sealed class SingletonResolver : IDependencyResolver
 		{
+			#region Interface: IDependencyResolver
+
 			public object GetInstance (Type type)
 			{
 				if (type == null)
@@ -234,7 +243,7 @@ namespace RI.Framework.Utilities.ObjectModel
 				return this.GetInstance(type);
 			}
 
-			public T GetInstance<T> ()
+			public T GetInstance <T> ()
 				where T : class
 			{
 				return (T)this.GetInstance(typeof(T));
@@ -274,12 +283,16 @@ namespace RI.Framework.Utilities.ObjectModel
 				return instances;
 			}
 
-			public List<T> GetInstances<T> ()
+			public List<T> GetInstances <T> ()
 				where T : class
 			{
 				return this.GetInstances(typeof(T)).Cast<T>();
 			}
+
+			#endregion
 		}
+
+		#endregion
 	}
 
 
@@ -333,7 +346,7 @@ namespace RI.Framework.Utilities.ObjectModel
 			}
 		}
 
-		/// <inheritdoc cref="Singleton.Resolver"/>
+		/// <inheritdoc cref="Singleton.Resolver" />
 		public static IDependencyResolver Resolver => Singleton.Resolver;
 
 		#endregion

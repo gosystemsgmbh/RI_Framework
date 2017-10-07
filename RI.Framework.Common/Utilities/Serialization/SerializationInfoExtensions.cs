@@ -4,6 +4,9 @@ using System.Runtime.Serialization;
 
 using RI.Framework.Utilities.Exceptions;
 
+
+
+
 namespace RI.Framework.Utilities.Serialization
 {
 	/// <summary>
@@ -11,21 +14,23 @@ namespace RI.Framework.Utilities.Serialization
 	/// </summary>
 	public static class SerializationInfoExtensions
 	{
+		#region Static Methods
+
 		/// <summary>
-		/// Checks whether a value is available.
+		///     Checks whether a value is available.
 		/// </summary>
 		/// <param name="info"> The serialization data. </param>
 		/// <param name="name"> The name of the value. </param>
 		/// <returns>
-		/// true if the value exists, false otherwise.
+		///     true if the value exists, false otherwise.
 		/// </returns>
 		/// <remarks>
-		/// <note type= "note">
-		/// Comparison is done case-insensitive.
-		/// </note>
+		///     <note type="note">
+		///         Comparison is done case-insensitive.
+		///     </note>
 		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="info"/> or <paramref name="name"/> is null.</exception>
-		/// <exception cref="EmptyStringArgumentException"><paramref name="name"/> is an empty string.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="info" /> or <paramref name="name" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
 		public static bool HasValue (this SerializationInfo info, string name)
 		{
 			if (info == null)
@@ -55,23 +60,23 @@ namespace RI.Framework.Utilities.Serialization
 		}
 
 		/// <summary>
-		/// Checks whether multiple values are available.
+		///     Checks whether multiple values are available.
 		/// </summary>
 		/// <param name="info"> The serialization data. </param>
 		/// <param name="names"> The names of the values. </param>
 		/// <returns>
-		/// true if all values exists, false otherwise.
+		///     true if all values exists, false otherwise.
 		/// </returns>
 		/// <remarks>
-		/// <note type= "note">
-		/// Comparison is done case-insensitive.
-		/// </note>
-		/// <para>
-		/// <paramref name="names"/> is enumerated only once.
-		/// </para>
+		///     <note type="note">
+		///         Comparison is done case-insensitive.
+		///     </note>
+		///     <para>
+		///         <paramref name="names" /> is enumerated only once.
+		///     </para>
 		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="info"/> or <paramref name="names"/> is null.</exception>
-		/// <exception cref="EmptyStringArgumentException"><paramref name="names"/> contains an empty string.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="info" /> or <paramref name="names" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="names" /> contains an empty string. </exception>
 		public static bool HasValues (this SerializationInfo info, IEnumerable<string> names)
 		{
 			if (info == null)
@@ -109,23 +114,25 @@ namespace RI.Framework.Utilities.Serialization
 		}
 
 		/// <summary>
-		/// Checks whether multiple values are available.
+		///     Checks whether multiple values are available.
 		/// </summary>
 		/// <param name="info"> The serialization data. </param>
 		/// <param name="names"> The names of the values. </param>
 		/// <returns>
-		/// true if all values exists, false otherwise.
+		///     true if all values exists, false otherwise.
 		/// </returns>
 		/// <remarks>
-		/// <note type= "note">
-		/// Comparison is done case-insensitive.
-		/// </note>
-		/// <para>
-		/// <paramref name="names"/> is enumerated only once.
-		/// </para>
+		///     <note type="note">
+		///         Comparison is done case-insensitive.
+		///     </note>
+		///     <para>
+		///         <paramref name="names" /> is enumerated only once.
+		///     </para>
 		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="info"/> or <paramref name="names"/> is null.</exception>
-		/// <exception cref="EmptyStringArgumentException"><paramref name="names"/> contains an empty string.</exception>
-		public static bool HasValues(this SerializationInfo info, params string[] names) => info.HasValues((IEnumerable<string>)names);
+		/// <exception cref="ArgumentNullException"> <paramref name="info" /> or <paramref name="names" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="names" /> contains an empty string. </exception>
+		public static bool HasValues (this SerializationInfo info, params string[] names) => info.HasValues((IEnumerable<string>)names);
+
+		#endregion
 	}
 }

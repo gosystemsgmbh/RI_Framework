@@ -131,7 +131,7 @@ namespace RI.Framework.Services
 	///         </para>
 	///     </note>
 	/// </remarks>
-		/// <threadsafety static="true" instance="true" />
+	/// <threadsafety static="true" instance="true" />
 	[Export]
 	public class Bootstrapper : MonoBehaviour, IBootstrapper, ILogSource
 	{
@@ -149,6 +149,19 @@ namespace RI.Framework.Services
 		///     </para>
 		/// </remarks>
 		public bool DispatcherService = true;
+
+		/// <summary>
+		///     Specifies whether the <see cref="Container" /> should be disposed during shutdown.
+		/// </summary>
+		/// <remarks>
+		///     <para>
+		///         If true, <see cref="Container" /> is disposed using <see cref="CompositionContainer.Dispose" /> during <see cref="DoShutdown" />.
+		///     </para>
+		///     <para>
+		///         The default value is true.
+		///     </para>
+		/// </remarks>
+		public bool DisposeContainer = true;
 
 		/// <summary>
 		///     Specifies whether the default logging service should be used or not.
@@ -254,18 +267,7 @@ namespace RI.Framework.Services
 		/// </remarks>
 		public bool ServiceLocatorBinding = true;
 
-		/// <summary>
-		///     Specifies whether the <see cref="Container" /> should be disposed during shutdown.
-		/// </summary>
-		/// <remarks>
-		///     <para>
-		///         If true, <see cref="Container" /> is disposed using <see cref="CompositionContainer.Dispose"/> during <see cref="DoShutdown"/>.
-		///     </para>
-		///     <para>
-		///         The default value is true.
-		///     </para>
-		/// </remarks>
-		public bool DisposeContainer = true;
+		private BootstrapperState _state = BootstrapperState.Uninitialized;
 
 		#endregion
 
@@ -275,13 +277,6 @@ namespace RI.Framework.Services
 		#region Instance Properties/Indexer
 
 		private bool ShutdownFinished { get; set; } = false;
-
-
-		/// <inheritdoc />
-		public bool LoggingEnabled { get; set; } = true;
-
-		/// <inheritdoc />
-		public Utilities.Logging.ILogger Logger { get; set; } = LogLocator.Logger;
 
 		#endregion
 
@@ -526,17 +521,12 @@ namespace RI.Framework.Services
 
 		#region Interface: IBootstrapper
 
-
-		/// <inheritdoc />
-		bool ISynchronizable.IsSynchronized => true;
-
-		/// <inheritdoc />
-		public object SyncRoot { get; } = new object();
-
 		/// <inheritdoc />
 		public CompositionContainer Container { get; private set; } = null;
 
-		private BootstrapperState _state = BootstrapperState.Uninitialized;
+
+		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => true;
 
 		/// <inheritdoc />
 		public BootstrapperState State
@@ -556,6 +546,9 @@ namespace RI.Framework.Services
 				}
 			}
 		}
+
+		/// <inheritdoc />
+		public object SyncRoot { get; } = new object();
 
 		/// <inheritdoc />
 		void IBootstrapper.Run ()
@@ -611,6 +604,20 @@ namespace RI.Framework.Services
 			this.Log(LogLevel.Debug, "Initiating shutdown");
 			Application.Quit();
 		}
+
+		#endregion
+
+
+
+
+		#region Interface: ILogSource
+
+		/// <inheritdoc />
+		public Utilities.Logging.ILogger Logger { get; set; } = LogLocator.Logger;
+
+
+		/// <inheritdoc />
+		public bool LoggingEnabled { get; set; } = true;
 
 		#endregion
 	}

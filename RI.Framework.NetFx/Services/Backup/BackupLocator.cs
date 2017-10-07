@@ -19,6 +19,11 @@ namespace RI.Framework.Services.Backup
 	/// </remarks>
 	public static class BackupLocator
 	{
+		#region Static Properties/Indexer
+
+		/// <inheritdoc cref="IBackupService.Awares" />
+		public static IEnumerable<IBackupAware> Awares => BackupLocator.Service?.Awares ?? new IBackupAware[0];
+
 		/// <summary>
 		///     Gets whether a backup service is available and can be used by <see cref="BackupLocator" />.
 		/// </summary>
@@ -38,8 +43,12 @@ namespace RI.Framework.Services.Backup
 		/// <inheritdoc cref="IBackupService.Storages" />
 		public static IEnumerable<IBackupStorage> Storages => BackupLocator.Service?.Storages ?? new IBackupStorage[0];
 
-		/// <inheritdoc cref="IBackupService.Awares" />
-		public static IEnumerable<IBackupAware> Awares => BackupLocator.Service?.Awares ?? new IBackupAware[0];
+		#endregion
+
+
+
+
+		#region Static Methods
 
 		/// <inheritdoc cref="IBackupService.CanDoBackup" />
 		public static bool CanDoBackup (IEnumerable<IBackupInclusion> inclusions) => BackupLocator.Service?.CanDoBackup(inclusions) ?? false;
@@ -47,11 +56,17 @@ namespace RI.Framework.Services.Backup
 		/// <inheritdoc cref="IBackupService.CanDoFullBackup" />
 		public static bool CanDoFullBackup (bool includeNonRestorables) => BackupLocator.Service?.CanDoFullBackup(includeNonRestorables) ?? false;
 
+		/// <inheritdoc cref="IBackupService.CanDoFullRestore" />
+		public static bool CanDoFullRestore (IBackupSet backupSet) => BackupLocator.Service?.CanDoFullRestore(backupSet) ?? false;
+
 		/// <inheritdoc cref="IBackupService.CanDoRestore" />
 		public static bool CanDoRestore (IBackupSet backupSet, IEnumerable<IBackupInclusion> inclusions) => BackupLocator.Service?.CanDoRestore(backupSet, inclusions) ?? false;
 
-		/// <inheritdoc cref="IBackupService.CanDoFullRestore" />
-		public static bool CanDoFullRestore (IBackupSet backupSet) => BackupLocator.Service?.CanDoFullRestore(backupSet) ?? false;
+		/// <inheritdoc cref="IBackupService.Cleanup(DateTime)" />
+		public static void Cleanup (DateTime retentionDate) => BackupLocator.Service?.Cleanup(retentionDate);
+
+		/// <inheritdoc cref="IBackupService.Cleanup(TimeSpan)" />
+		public static void Cleanup (TimeSpan retentionTime) => BackupLocator.Service?.Cleanup(retentionTime);
 
 		/// <inheritdoc cref="IBackupService.CreateBackup(string,IEnumerable{IBackupInclusion})" />
 		public static IBackupSet CreateBackup (string name, IEnumerable<IBackupInclusion> inclusions) => BackupLocator.Service?.CreateBackup(name, inclusions);
@@ -65,31 +80,27 @@ namespace RI.Framework.Services.Backup
 		/// <inheritdoc cref="IBackupService.CreateFullBackup(string,DateTime,bool)" />
 		public static IBackupSet CreateFullBackup (string name, DateTime timestamp, bool includeNonRestorables) => BackupLocator.Service?.CreateFullBackup(name, timestamp, includeNonRestorables);
 
+		/// <inheritdoc cref="IBackupService.DeleteBackup" />
+		public static void DeleteBackup (IBackupSet backupSet) => BackupLocator.Service?.DeleteBackup(backupSet);
+
+		/// <inheritdoc cref="IBackupService.ExportBackupToFile" />
+		public static bool ExportBackupToFile (IBackupSet backupSet, FilePath file) => BackupLocator.Service?.ExportBackupToFile(backupSet, file) ?? false;
+
+		/// <inheritdoc cref="IBackupService.GetAvailableInclusions" />
+		public static List<IBackupInclusion> GetAvailableInclusions () => BackupLocator.Service?.GetAvailableInclusions() ?? new List<IBackupInclusion>();
+
+		/// <inheritdoc cref="IBackupService.GetAvailableSets" />
+		public static List<IBackupSet> GetAvailableSets () => BackupLocator.Service?.GetAvailableSets() ?? new List<IBackupSet>();
+
+		/// <inheritdoc cref="IBackupService.ImportBackupFromFile" />
+		public static IBackupSet ImportBackupFromFile (FilePath file) => BackupLocator.Service?.ImportBackupFromFile(file);
+
 		/// <inheritdoc cref="IBackupService.RestoreBackup" />
 		public static bool RestoreBackup (IBackupSet backupSet, IEnumerable<IBackupInclusion> inclusions) => BackupLocator.Service?.RestoreBackup(backupSet, inclusions) ?? false;
 
 		/// <inheritdoc cref="IBackupService.RestoreFullBackup" />
 		public static bool RestoreFullBackup (IBackupSet backupSet) => BackupLocator.Service?.RestoreFullBackup(backupSet) ?? false;
 
-		/// <inheritdoc cref="IBackupService.ImportBackupFromFile" />
-		public static IBackupSet ImportBackupFromFile (FilePath file) => BackupLocator.Service?.ImportBackupFromFile(file);
-
-		/// <inheritdoc cref="IBackupService.ExportBackupToFile" />
-		public static bool ExportBackupToFile (IBackupSet backupSet, FilePath file) => BackupLocator.Service?.ExportBackupToFile(backupSet, file) ?? false;
-
-		/// <inheritdoc cref="IBackupService.DeleteBackup" />
-		public static void DeleteBackup (IBackupSet backupSet) => BackupLocator.Service?.DeleteBackup(backupSet);
-
-		/// <inheritdoc cref="IBackupService.Cleanup(DateTime)" />
-		public static void Cleanup (DateTime retentionDate) => BackupLocator.Service?.Cleanup(retentionDate);
-
-		/// <inheritdoc cref="IBackupService.Cleanup(TimeSpan)" />
-		public static void Cleanup (TimeSpan retentionTime) => BackupLocator.Service?.Cleanup(retentionTime);
-
-		/// <inheritdoc cref="IBackupService.GetAvailableSets" />
-		public static List<IBackupSet> GetAvailableSets () => BackupLocator.Service?.GetAvailableSets() ?? new List<IBackupSet>();
-
-		/// <inheritdoc cref="IBackupService.GetAvailableInclusions" />
-		public static List<IBackupInclusion> GetAvailableInclusions () => BackupLocator.Service?.GetAvailableInclusions() ?? new List<IBackupInclusion>();
+		#endregion
 	}
 }

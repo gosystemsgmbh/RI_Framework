@@ -22,7 +22,7 @@ namespace RI.Framework.StateMachines.Resolvers
 		///     Creates a new instance of <see cref="ServiceLocatorStateResolver" />.
 		/// </summary>
 		public ServiceLocatorStateResolver ()
-			:base(ServiceLocator.Resolver)
+			: base(ServiceLocator.Resolver)
 		{
 		}
 

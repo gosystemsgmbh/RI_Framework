@@ -11,6 +11,9 @@ using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Logging;
 
+
+
+
 namespace RI.Framework.Services.Resources.Sources
 {
 	/// <summary>
@@ -36,16 +39,6 @@ namespace RI.Framework.Services.Resources.Sources
 		#region Constants
 
 		/// <summary>
-		///     The default text encoding which is used for reading text files.
-		/// </summary>
-		/// <remarks>
-		///     <para>
-		///         The default text encoding is UTF-8.
-		///     </para>
-		/// </remarks>
-		public static readonly Encoding DefaultEncoding = Encoding.UTF8;
-
-		/// <summary>
 		///     The default file pattern which is used to search for ZIP files.
 		/// </summary>
 		/// <remarks>
@@ -54,6 +47,16 @@ namespace RI.Framework.Services.Resources.Sources
 		///     </para>
 		/// </remarks>
 		public const string DefaultFilePattern = "*.zip";
+
+		/// <summary>
+		///     The default text encoding which is used for reading text files.
+		/// </summary>
+		/// <remarks>
+		///     <para>
+		///         The default text encoding is UTF-8.
+		///     </para>
+		/// </remarks>
+		public static readonly Encoding DefaultEncoding = Encoding.UTF8;
 
 		#endregion
 
@@ -76,7 +79,7 @@ namespace RI.Framework.Services.Resources.Sources
 		///         The default file pattern <see cref="DefaultFilePattern" /> is used and search is performed non-recursive.
 		///     </para>
 		/// </remarks>
-		public ZipResourceSource(DirectoryPath directory)
+		public ZipResourceSource (DirectoryPath directory)
 			: this(directory, null, null, false)
 		{
 		}
@@ -91,7 +94,7 @@ namespace RI.Framework.Services.Resources.Sources
 		/// <exception cref="ArgumentNullException"> <paramref name="directory" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> <paramref name="directory" /> is not a real usable directory. </exception>
 		/// <exception cref="InvalidPathArgumentException"> <paramref name="filePattern" /> is an empty string. </exception>
-		public ZipResourceSource(DirectoryPath directory, Encoding fileEncoding, string filePattern, bool recursive)
+		public ZipResourceSource (DirectoryPath directory, Encoding fileEncoding, string filePattern, bool recursive)
 		{
 			if (directory == null)
 			{
@@ -214,10 +217,10 @@ namespace RI.Framework.Services.Resources.Sources
 		#region Interface: IResourceSource
 
 		/// <inheritdoc />
-		public List<IResourceSet> GetAvailableSets () => this.Sets.Values.Cast<IResourceSet>().ToList();
+		public bool IsInitialized { get; private set; }
 
 		/// <inheritdoc />
-		public bool IsInitialized { get; private set; }
+		public List<IResourceSet> GetAvailableSets () => this.Sets.Values.Cast<IResourceSet>().ToList();
 
 		/// <inheritdoc />
 		void IResourceSource.Initialize (IEnumerable<IResourceConverter> converters)

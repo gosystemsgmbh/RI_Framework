@@ -8,6 +8,9 @@ using RI.Framework.Mvvm.ViewModel;
 using RI.Framework.Services;
 using RI.Framework.Utilities.ObjectModel;
 
+
+
+
 namespace RI.Framework.Utilities.Wpf.Markup
 {
 	/// <summary>
@@ -20,32 +23,89 @@ namespace RI.Framework.Utilities.Wpf.Markup
 	///     </para>
 	///     <para>
 	///         The instance to obtain can be either specified by its name, using the <see cref="Name" /> property, or its type, using the <see cref="Type" /> property.
-	///         The used <see cref="IDependencyResolver"/> can also explicitly defined through the <see cref="Resolver"/> property.
+	///         The used <see cref="IDependencyResolver" /> can also explicitly defined through the <see cref="Resolver" /> property.
 	///     </para>
-	/// <para>
-	/// The used <see cref="IDependencyResolver"/> is determined in the following order:
-	/// If <see cref="Resolver"/> is not null, that instance is used.
-	/// If <see cref="DefaultResolver"/> is not null, that instance is used.
-	/// <see cref="ServiceLocator"/> is used if neither <see cref="Resolver"/> nor <see cref="DefaultResolver"/> is set.
-	/// </para>
+	///     <para>
+	///         The used <see cref="IDependencyResolver" /> is determined in the following order:
+	///         If <see cref="Resolver" /> is not null, that instance is used.
+	///         If <see cref="DefaultResolver" /> is not null, that instance is used.
+	///         <see cref="ServiceLocator" /> is used if neither <see cref="Resolver" /> nor <see cref="DefaultResolver" /> is set.
+	///     </para>
 	/// </remarks>
 	[MarkupExtensionReturnType(typeof(object))]
 	public sealed class InstanceLocator : MarkupExtension
 	{
+		#region Static Properties/Indexer
+
 		/// <summary>
-		/// Gets or sets the default dependency resolver to use.
+		///     Gets or sets the default dependency resolver to use.
 		/// </summary>
 		/// <value>
-		/// The default dependency resolver to use.
+		///     The default dependency resolver to use.
 		/// </value>
 		/// <remarks>
-		/// <para>
-		/// The default value is null.
-		/// </para>
+		///     <para>
+		///         The default value is null.
+		///     </para>
 		/// </remarks>
 		public static IDependencyResolver DefaultResolver { get; set; }
 
-		#region Static Methods
+		#endregion
+
+
+
+
+		#region Instance Constructor/Destructor
+
+		/// <summary>
+		///     Creates a new instance of <see cref="InstanceLocator" />.
+		/// </summary>
+		public InstanceLocator ()
+		{
+			this.Resolver = null;
+			this.Name = null;
+			this.Type = null;
+		}
+
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
+
+		/// <summary>
+		///     Gets or sets the name of the instance to obtain.
+		/// </summary>
+		/// <value>
+		///     The name of the instance to obtain.
+		/// </value>
+		public string Name { get; set; }
+
+		/// <summary>
+		///     Gets or sets the dependency resolver to use.
+		/// </summary>
+		/// <value>
+		///     The dependency resolver to use.
+		/// </value>
+		public IDependencyResolver Resolver { get; set; }
+
+		/// <summary>
+		///     Gets or sets the type of the instance to obtain.
+		/// </summary>
+		/// <value>
+		///     The type of the instance to obtain.
+		/// </value>
+		public Type Type { get; set; }
+
+		private IDependencyResolver UsedResolver => this.Resolver ?? InstanceLocator.DefaultResolver ?? ServiceLocator.Resolver;
+
+		#endregion
+
+
+
+
+		#region Instance Methods
 
 		private object GetValue (string name)
 		{
@@ -129,56 +189,6 @@ namespace RI.Framework.Utilities.Wpf.Markup
 				}
 			}
 		}
-
-		#endregion
-
-
-
-
-		#region Instance Constructor/Destructor
-
-		/// <summary>
-		///     Creates a new instance of <see cref="InstanceLocator" />.
-		/// </summary>
-		public InstanceLocator ()
-		{
-			this.Resolver = null;
-			this.Name = null;
-			this.Type = null;
-		}
-
-		#endregion
-
-
-
-
-		#region Instance Properties/Indexer
-
-		/// <summary>
-		/// Gets or sets the name of the instance to obtain.
-		/// </summary>
-		/// <value>
-		/// The name of the instance to obtain.
-		/// </value>
-		public string Name { get; set; }
-
-		/// <summary>
-		/// Gets or sets the type of the instance to obtain.
-		/// </summary>
-		/// <value>
-		/// The type of the instance to obtain.
-		/// </value>
-		public Type Type { get; set; }
-
-		/// <summary>
-		/// Gets or sets the dependency resolver to use.
-		/// </summary>
-		/// <value>
-		/// The dependency resolver to use.
-		/// </value>
-		public IDependencyResolver Resolver { get; set; }
-
-		private IDependencyResolver UsedResolver => this.Resolver ?? InstanceLocator.DefaultResolver ?? ServiceLocator.Resolver;
 
 		#endregion
 

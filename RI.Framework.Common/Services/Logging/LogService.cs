@@ -72,7 +72,11 @@ namespace RI.Framework.Services.Logging
 		#endregion
 
 
-		private void UpdateWriters()
+
+
+		#region Instance Methods
+
+		private void UpdateWriters ()
 		{
 			HashSet<ILogWriter> currentWriters = new HashSet<ILogWriter>(this.Writers);
 
@@ -80,8 +84,15 @@ namespace RI.Framework.Services.Logging
 			this.WritersUpdated.AddRange(currentWriters);
 		}
 
+		#endregion
+
+
+
+
+		#region Interface: IImporting
+
 		/// <inheritdoc />
-		void IImporting.ImportsResolved(CompositionFlags composition, bool updated)
+		void IImporting.ImportsResolved (CompositionFlags composition, bool updated)
 		{
 			if (updated)
 			{
@@ -93,20 +104,16 @@ namespace RI.Framework.Services.Logging
 		}
 
 		/// <inheritdoc />
-		void IImporting.ImportsResolving(CompositionFlags composition)
+		void IImporting.ImportsResolving (CompositionFlags composition)
 		{
 		}
+
+		#endregion
 
 
 
 
 		#region Interface: ILogService
-
-		/// <inheritdoc />
-		bool ISynchronizable.IsSynchronized => true;
-
-		/// <inheritdoc />
-		public object SyncRoot { get; }
 
 		/// <inheritdoc />
 		public ILogFilter Filter
@@ -126,6 +133,12 @@ namespace RI.Framework.Services.Logging
 				}
 			}
 		}
+
+		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		public object SyncRoot { get; }
 
 		/// <inheritdoc />
 		public IEnumerable<ILogWriter> Writers

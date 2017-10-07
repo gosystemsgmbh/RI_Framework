@@ -8,13 +8,13 @@ using System.Windows;
 namespace RI.Framework.Utilities.Wpf.Markup
 {
 	/// <summary>
-	/// The collection which holds all event-to-command bindings (<see cref="EventBinding"/>) used with <see cref="EventToCommandBinder"/>.
+	///     The collection which holds all event-to-command bindings (<see cref="EventBinding" />) used with <see cref="EventToCommandBinder" />.
 	/// </summary>
 	public sealed class EventBindings : FreezableCollection<EventBinding>
 	{
-		private DependencyObject AttachedTo { get; }
+		#region Instance Constructor/Destructor
 
-		internal EventBindings(DependencyObject attachedTo)
+		internal EventBindings (DependencyObject attachedTo)
 		{
 			if (attachedTo == null)
 			{
@@ -42,5 +42,16 @@ namespace RI.Framework.Utilities.Wpf.Markup
 				}
 			};
 		}
+
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
+
+		private DependencyObject AttachedTo { get; }
+
+		#endregion
 	}
 }

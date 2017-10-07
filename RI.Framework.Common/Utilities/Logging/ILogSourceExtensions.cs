@@ -1,9 +1,12 @@
 ﻿using System;
 
+
+
+
 namespace RI.Framework.Utilities.Logging
 {
 	/// <summary>
-	///     Provides extension methods for the <see cref="ILogSource" /> interface to add simple logging to types which implement <see cref="ILogSource"/>.
+	///     Provides extension methods for the <see cref="ILogSource" /> interface to add simple logging to types which implement <see cref="ILogSource" />.
 	/// </summary>
 	public static class ILogSourceExtensions
 	{

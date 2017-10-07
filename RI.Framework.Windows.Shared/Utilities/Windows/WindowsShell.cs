@@ -20,6 +20,8 @@ namespace RI.Framework.Utilities.Windows
 	{
 		#region Constants
 
+		private static readonly string BatchFileExtension = ".bat";
+
 		private static readonly string CommandPromptArguments = "/k \"cd /d {0}\"";
 
 		private static readonly FilePath CommandPromptExecutable = new FilePath("cmd.exe");
@@ -32,8 +34,6 @@ namespace RI.Framework.Utilities.Windows
 
 		private static readonly FilePath TaskManagerExecutable = new FilePath("taskmgr.exe");
 
-		private static readonly string BatchFileExtension = ".bat";
-
 		#endregion
 
 
@@ -42,78 +42,22 @@ namespace RI.Framework.Utilities.Windows
 		#region Static Methods
 
 		/// <summary>
-		/// Executes a batch script file.
+		///     Executes batch commands.
 		/// </summary>
-		/// <param name="scriptFile">The batch script file.</param>
-		/// <param name="workingDirectory"> The used working directory. Can be null to use the current directory. </param>
-		/// <returns>
-		///     The <see cref="Process" /> if the script file could be started successfully, null otherwise.
-		/// </returns>
-		/// <remarks>
-		/// <note type="important">
-		/// The standard output is redirected.
-		/// Therefore, you must read the <see cref="Process.StandardOutput"/> reader.
-		/// </note>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="scriptFile"/> is null.</exception>
-		/// <exception cref="InvalidPathArgumentException"><paramref name="scriptFile"/> is not a valid path.</exception>
-		/// <exception cref="FileNotFoundException"><paramref name="scriptFile"/> does not exist.</exception>
-		public static Process ExecuteBatchScript(FilePath scriptFile, DirectoryPath workingDirectory)
-		{
-			if (scriptFile == null)
-			{
-				throw new ArgumentNullException(nameof(scriptFile));
-			}
-
-			if (!scriptFile.IsRealFile)
-			{
-				throw new InvalidPathArgumentException(nameof(scriptFile));
-			}
-
-			if (!scriptFile.Exists)
-			{
-				throw new FileNotFoundException("Script file not found.", scriptFile);
-			}
-
-			workingDirectory = workingDirectory ?? DirectoryPath.GetCurrentDirectory();
-			string directory = Environment.ExpandEnvironmentVariables(workingDirectory);
-
-			ProcessStartInfo startInfo = new ProcessStartInfo(WindowsShell.CommandPromptExecutable, "/c call \"" + scriptFile + "\"");
-			startInfo.CreateNoWindow = true;
-			startInfo.ErrorDialog = false;
-			startInfo.UseShellExecute = false;
-			startInfo.WindowStyle = ProcessWindowStyle.Hidden;
-			startInfo.WorkingDirectory = directory;
-			startInfo.RedirectStandardOutput = true;
-			startInfo.StandardOutputEncoding = Encoding.UTF8;
-
-			try
-			{
-				return Process.Start(startInfo);
-			}
-			catch
-			{
-				return null;
-			}
-		}
-
-		/// <summary>
-		/// Executes batch commands.
-		/// </summary>
-		/// <param name="commands">The batch commands.</param>
+		/// <param name="commands"> The batch commands. </param>
 		/// <param name="workingDirectory"> The used working directory. Can be null to use the current directory. </param>
 		/// <returns>
 		///     The <see cref="Process" /> if the commands could be started successfully, null otherwise.
 		/// </returns>
 		/// <remarks>
-		/// <note type="important">
-		/// The standard output is redirected.
-		/// Therefore, you must read the <see cref="Process.StandardOutput"/> reader.
-		/// </note>
+		///     <note type="important">
+		///         The standard output is redirected.
+		///         Therefore, you must read the <see cref="Process.StandardOutput" /> reader.
+		///     </note>
 		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="commands"/> is null.</exception>
-		/// <exception cref="EmptyStringArgumentException"><paramref name="commands"/> is an empty string.</exception>
-		public static Process ExecuteBatchCommands(string commands, DirectoryPath workingDirectory)
+		/// <exception cref="ArgumentNullException"> <paramref name="commands" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="commands" /> is an empty string. </exception>
+		public static Process ExecuteBatchCommands (string commands, DirectoryPath workingDirectory)
 		{
 			if (commands == null)
 			{
@@ -175,6 +119,62 @@ namespace RI.Framework.Utilities.Windows
 		}
 
 		/// <summary>
+		///     Executes a batch script file.
+		/// </summary>
+		/// <param name="scriptFile"> The batch script file. </param>
+		/// <param name="workingDirectory"> The used working directory. Can be null to use the current directory. </param>
+		/// <returns>
+		///     The <see cref="Process" /> if the script file could be started successfully, null otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <note type="important">
+		///         The standard output is redirected.
+		///         Therefore, you must read the <see cref="Process.StandardOutput" /> reader.
+		///     </note>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="scriptFile" /> is null. </exception>
+		/// <exception cref="InvalidPathArgumentException"> <paramref name="scriptFile" /> is not a valid path. </exception>
+		/// <exception cref="FileNotFoundException"> <paramref name="scriptFile" /> does not exist. </exception>
+		public static Process ExecuteBatchScript (FilePath scriptFile, DirectoryPath workingDirectory)
+		{
+			if (scriptFile == null)
+			{
+				throw new ArgumentNullException(nameof(scriptFile));
+			}
+
+			if (!scriptFile.IsRealFile)
+			{
+				throw new InvalidPathArgumentException(nameof(scriptFile));
+			}
+
+			if (!scriptFile.Exists)
+			{
+				throw new FileNotFoundException("Script file not found.", scriptFile);
+			}
+
+			workingDirectory = workingDirectory ?? DirectoryPath.GetCurrentDirectory();
+			string directory = Environment.ExpandEnvironmentVariables(workingDirectory);
+
+			ProcessStartInfo startInfo = new ProcessStartInfo(WindowsShell.CommandPromptExecutable, "/c call \"" + scriptFile + "\"");
+			startInfo.CreateNoWindow = true;
+			startInfo.ErrorDialog = false;
+			startInfo.UseShellExecute = false;
+			startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+			startInfo.WorkingDirectory = directory;
+			startInfo.RedirectStandardOutput = true;
+			startInfo.StandardOutputEncoding = Encoding.UTF8;
+
+			try
+			{
+				return Process.Start(startInfo);
+			}
+			catch
+			{
+				return null;
+			}
+		}
+
+		/// <summary>
 		///     Executes a console command.
 		/// </summary>
 		/// <param name="command"> The command to execute. </param>
@@ -187,10 +187,10 @@ namespace RI.Framework.Utilities.Windows
 		///     <para>
 		///         Environment variables will be resolved for <paramref name="command" />, <paramref name="arguments" />, and <paramref name="workingDirectory" />.
 		///     </para>
-		/// <note type="important">
-		/// The standard output is redirected.
-		/// Therefore, you must read the <see cref="Process.StandardOutput"/> reader.
-		/// </note>
+		///     <note type="important">
+		///         The standard output is redirected.
+		///         Therefore, you must read the <see cref="Process.StandardOutput" /> reader.
+		///     </note>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="command" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="command" /> is an empty string. </exception>

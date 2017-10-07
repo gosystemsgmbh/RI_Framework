@@ -2,30 +2,33 @@
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
+
+
+
 namespace RI.Framework.IO.Streams
 {
 	/// <summary>
-	/// Implements a stream which wraps either a <see cref="BinaryReader"/> or a <see cref="BinaryWriter"/>.
+	///     Implements a stream which wraps either a <see cref="BinaryReader" /> or a <see cref="BinaryWriter" />.
 	/// </summary>
 	/// <remarks>
-	/// <para>
-	/// <see cref="BinaryStream"/> is used when a <see cref="BinaryReader"/> or <see cref="BinaryWriter"/> needs to be used as a stream.
-	/// </para>
-	/// <para>
-	/// A <see cref="BinaryStream"/> can either support reading (using a <see cref="BinaryReader"/>) or writing (using a <see cref="BinaryWriter"/>) but not both at the same time.
-	/// </para>
+	///     <para>
+	///         <see cref="BinaryStream" /> is used when a <see cref="BinaryReader" /> or <see cref="BinaryWriter" /> needs to be used as a stream.
+	///     </para>
+	///     <para>
+	///         A <see cref="BinaryStream" /> can either support reading (using a <see cref="BinaryReader" />) or writing (using a <see cref="BinaryWriter" />) but not both at the same time.
+	///     </para>
 	/// </remarks>
 	public sealed class BinaryStream : Stream
 	{
 		#region Instance Constructor/Destructor
 
 		/// <summary>
-		/// Creates a new instance of <see cref="BinaryStream"/>.
+		///     Creates a new instance of <see cref="BinaryStream" />.
 		/// </summary>
-		/// <param name="reader">The <see cref="BinaryReader"/> to use.</param>
-		/// <param name="doNotOwnStream">Specifies whether the wrapped reader should be closed when this stream is closed (false) or kept open (true).</param>
-		/// <exception cref="ArgumentNullException"><paramref name="reader"/> is null.</exception>
-		public BinaryStream(BinaryReader reader, bool doNotOwnStream)
+		/// <param name="reader"> The <see cref="BinaryReader" /> to use. </param>
+		/// <param name="doNotOwnStream"> Specifies whether the wrapped reader should be closed when this stream is closed (false) or kept open (true). </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="reader" /> is null. </exception>
+		public BinaryStream (BinaryReader reader, bool doNotOwnStream)
 		{
 			if (reader == null)
 			{
@@ -38,27 +41,27 @@ namespace RI.Framework.IO.Streams
 		}
 
 		/// <summary>
-		/// Creates a new instance of <see cref="BinaryStream"/>.
+		///     Creates a new instance of <see cref="BinaryStream" />.
 		/// </summary>
-		/// <param name="reader">The <see cref="BinaryReader"/> to use.</param>
+		/// <param name="reader"> The <see cref="BinaryReader" /> to use. </param>
 		/// <remarks>
-		/// <para>
-		/// The wrapped reader is closed if this stream is closed.
-		/// </para>
+		///     <para>
+		///         The wrapped reader is closed if this stream is closed.
+		///     </para>
 		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="reader"/> is null.</exception>
-		public BinaryStream(BinaryReader reader)
+		/// <exception cref="ArgumentNullException"> <paramref name="reader" /> is null. </exception>
+		public BinaryStream (BinaryReader reader)
 			: this(reader, false)
 		{
 		}
 
 		/// <summary>
-		/// Creates a new instance of <see cref="BinaryStream"/>.
+		///     Creates a new instance of <see cref="BinaryStream" />.
 		/// </summary>
-		/// <param name="writer">The <see cref="BinaryWriter"/> to use.</param>
-		/// <param name="doNotOwnStream">Specifies whether the wrapped writer should be closed when this stream is closed (false) or kept open (true).</param>
-		/// <exception cref="ArgumentNullException"><paramref name="writer"/> is null.</exception>
-		public BinaryStream(BinaryWriter writer, bool doNotOwnStream)
+		/// <param name="writer"> The <see cref="BinaryWriter" /> to use. </param>
+		/// <param name="doNotOwnStream"> Specifies whether the wrapped writer should be closed when this stream is closed (false) or kept open (true). </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="writer" /> is null. </exception>
+		public BinaryStream (BinaryWriter writer, bool doNotOwnStream)
 		{
 			if (writer == null)
 			{
@@ -71,16 +74,16 @@ namespace RI.Framework.IO.Streams
 		}
 
 		/// <summary>
-		/// Creates a new instance of <see cref="BinaryStream"/>.
+		///     Creates a new instance of <see cref="BinaryStream" />.
 		/// </summary>
-		/// <param name="writer">The <see cref="BinaryWriter"/> to use.</param>
+		/// <param name="writer"> The <see cref="BinaryWriter" /> to use. </param>
 		/// <remarks>
-		/// <para>
-		/// The wrapped writer is closed if this stream is closed.
-		/// </para>
+		///     <para>
+		///         The wrapped writer is closed if this stream is closed.
+		///     </para>
 		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="writer"/> is null.</exception>
-		public BinaryStream(BinaryWriter writer)
+		/// <exception cref="ArgumentNullException"> <paramref name="writer" /> is null. </exception>
+		public BinaryStream (BinaryWriter writer)
 			: this(writer, false)
 		{
 		}
@@ -88,7 +91,7 @@ namespace RI.Framework.IO.Streams
 		/// <summary>
 		///     Garbage collects this instance of <see cref="BinaryStream" />.
 		/// </summary>
-		~BinaryStream()
+		~BinaryStream ()
 		{
 			this.Close();
 		}
@@ -101,18 +104,18 @@ namespace RI.Framework.IO.Streams
 		#region Instance Properties/Indexer
 
 		/// <summary>
-		/// Gets the used <see cref="BinaryReader"/>, if any.
+		///     Gets the used <see cref="BinaryReader" />, if any.
 		/// </summary>
 		/// <value>
-		/// The used <see cref="BinaryReader"/> or null if no <see cref="BinaryReader"/> is used.
+		///     The used <see cref="BinaryReader" /> or null if no <see cref="BinaryReader" /> is used.
 		/// </value>
 		public BinaryReader Reader { get; private set; }
 
 		/// <summary>
-		/// Gets the used <see cref="BinaryWriter"/>, if any.
+		///     Gets the used <see cref="BinaryWriter" />, if any.
 		/// </summary>
 		/// <value>
-		/// The used <see cref="BinaryWriter"/> or null if no <see cref="BinaryWriter"/> is used.
+		///     The used <see cref="BinaryWriter" /> or null if no <see cref="BinaryWriter" /> is used.
 		/// </value>
 		public BinaryWriter Writer { get; private set; }
 
@@ -125,12 +128,12 @@ namespace RI.Framework.IO.Streams
 
 		#region Instance Methods
 
-		private bool CheckNotClosed()
+		private bool CheckNotClosed ()
 		{
 			return (this.Writer != null) || (this.Reader != null);
 		}
 
-		private void CloseInternal()
+		private void CloseInternal ()
 		{
 			if (this.Reader != null)
 			{
@@ -151,7 +154,7 @@ namespace RI.Framework.IO.Streams
 			}
 		}
 
-		private void VerifyNotClosed()
+		private void VerifyNotClosed ()
 		{
 			if (!this.CheckNotClosed())
 			{
@@ -251,21 +254,21 @@ namespace RI.Framework.IO.Streams
 		}
 
 		/// <inheritdoc />
-		public override void Close()
+		public override void Close ()
 		{
 			this.CloseInternal();
 			base.Close();
 		}
 
 		/// <inheritdoc />
-		public override void Flush()
+		public override void Flush ()
 		{
 			this.VerifyNotClosed();
 			this.Writer?.Flush();
 		}
 
 		/// <inheritdoc />
-		public override int Read(byte[] buffer, int offset, int count)
+		public override int Read (byte[] buffer, int offset, int count)
 		{
 			this.VerifyNotClosed();
 
@@ -278,7 +281,7 @@ namespace RI.Framework.IO.Streams
 		}
 
 		/// <inheritdoc />
-		public override int ReadByte()
+		public override int ReadByte ()
 		{
 			byte[] buffer = new byte[1];
 
@@ -293,21 +296,21 @@ namespace RI.Framework.IO.Streams
 		}
 
 		/// <inheritdoc />
-		public override long Seek(long offset, SeekOrigin origin)
+		public override long Seek (long offset, SeekOrigin origin)
 		{
 			this.VerifyNotClosed();
 			throw new NotSupportedException(nameof(BinaryStream) + " does not support seeking.");
 		}
 
 		/// <inheritdoc />
-		public override void SetLength(long value)
+		public override void SetLength (long value)
 		{
 			this.VerifyNotClosed();
 			throw new NotSupportedException(nameof(BinaryStream) + " does not support seeking.");
 		}
 
 		/// <inheritdoc />
-		public override void Write(byte[] buffer, int offset, int count)
+		public override void Write (byte[] buffer, int offset, int count)
 		{
 			this.VerifyNotClosed();
 
@@ -320,16 +323,13 @@ namespace RI.Framework.IO.Streams
 		}
 
 		/// <inheritdoc />
-		public override void WriteByte(byte value)
+		public override void WriteByte (byte value)
 		{
-			this.Write(new[]
-			{
-				value
-			});
+			this.Write(new[] {value});
 		}
 
 		/// <inheritdoc />
-		protected override void Dispose(bool disposing)
+		protected override void Dispose (bool disposing)
 		{
 			this.CloseInternal();
 			base.Dispose(disposing);

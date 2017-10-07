@@ -1,642 +1,645 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 
+
+
+
 namespace RI.Framework.IO.Keyboard
 {
 	/// <summary>
-	/// Describes the keyboard keys recognizable by <see cref="SystemKeyboard"/>.
+	///     Describes the keyboard keys recognizable by <see cref="SystemKeyboard" />.
 	/// </summary>
 	[Serializable]
 	[SuppressMessage("ReSharper", "InconsistentNaming")]
 	public enum SystemKeyboardKey
 	{
 		/// <summary>
-		/// A
+		///     A
 		/// </summary>
 		AsciiA = 'A',
 
 		/// <summary>
-		/// B
+		///     B
 		/// </summary>
 		AsciiB = 'B',
 
 		/// <summary>
-		/// C
+		///     C
 		/// </summary>
 		AsciiC = 'C',
 
 		/// <summary>
-		/// D
+		///     D
 		/// </summary>
 		AsciiD = 'D',
 
 		/// <summary>
-		/// E
+		///     E
 		/// </summary>
 		AsciiE = 'E',
 
 		/// <summary>
-		/// F
+		///     F
 		/// </summary>
 		AsciiF = 'F',
 
 		/// <summary>
-		/// G
+		///     G
 		/// </summary>
 		AsciiG = 'G',
 
 		/// <summary>
-		/// H
+		///     H
 		/// </summary>
 		AsciiH = 'H',
 
 		/// <summary>
-		/// I
+		///     I
 		/// </summary>
 		AsciiI = 'I',
 
 		/// <summary>
-		/// J
+		///     J
 		/// </summary>
 		AsciiJ = 'J',
 
 		/// <summary>
-		/// K
+		///     K
 		/// </summary>
 		AsciiK = 'K',
 
 		/// <summary>
-		/// L
+		///     L
 		/// </summary>
 		AsciiL = 'L',
 
 		/// <summary>
-		/// M
+		///     M
 		/// </summary>
 		AsciiM = 'M',
 
 		/// <summary>
-		/// N
+		///     N
 		/// </summary>
 		AsciiN = 'N',
 
 		/// <summary>
-		/// O
+		///     O
 		/// </summary>
 		AsciiO = 'O',
 
 		/// <summary>
-		/// P
+		///     P
 		/// </summary>
 		AsciiP = 'P',
 
 		/// <summary>
-		/// Q
+		///     Q
 		/// </summary>
 		AsciiQ = 'Q',
 
 		/// <summary>
-		/// R
+		///     R
 		/// </summary>
 		AsciiR = 'R',
 
 		/// <summary>
-		/// S
+		///     S
 		/// </summary>
 		AsciiS = 'S',
 
 		/// <summary>
-		/// T
+		///     T
 		/// </summary>
 		AsciiT = 'T',
 
 		/// <summary>
-		/// U
+		///     U
 		/// </summary>
 		AsciiU = 'U',
 
 		/// <summary>
-		/// V
+		///     V
 		/// </summary>
 		AsciiV = 'V',
 
 		/// <summary>
-		/// W
+		///     W
 		/// </summary>
 		AsciiW = 'W',
 
 		/// <summary>
-		/// X
+		///     X
 		/// </summary>
 		AsciiX = 'X',
 
 		/// <summary>
-		/// Y
+		///     Y
 		/// </summary>
 		AsciiY = 'Y',
 
 		/// <summary>
-		/// Z
+		///     Z
 		/// </summary>
 		AsciiZ = 'Z',
 
 		/// <summary>
-		/// 1
+		///     1
 		/// </summary>
 		Ascii1 = '1',
 
 		/// <summary>
-		/// 2
+		///     2
 		/// </summary>
 		Ascii2 = '2',
 
 		/// <summary>
-		/// 3
+		///     3
 		/// </summary>
 		Ascii3 = '3',
 
 		/// <summary>
-		/// 4
+		///     4
 		/// </summary>
 		Ascii4 = '4',
 
 		/// <summary>
-		/// 5
+		///     5
 		/// </summary>
 		Ascii5 = '5',
 
 		/// <summary>
-		/// 6
+		///     6
 		/// </summary>
 		Ascii6 = '6',
 
 		/// <summary>
-		/// 7
+		///     7
 		/// </summary>
 		Ascii7 = '7',
 
 		/// <summary>
-		/// 8
+		///     8
 		/// </summary>
 		Ascii8 = '8',
 
 		/// <summary>
-		/// 9
+		///     9
 		/// </summary>
 		Ascii9 = '9',
 
 		/// <summary>
-		/// 0
+		///     0
 		/// </summary>
 		Ascii0 = '0',
 
 		/// <summary>
-		/// Left button
+		///     Left button
 		/// </summary>
 		LButton = 0x01,
 
 		/// <summary>
-		/// Right button
+		///     Right button
 		/// </summary>
 		RButton = 0x02,
 
 		/// <summary>
-		/// Cancel
+		///     Cancel
 		/// </summary>
 		Cancel = 0x03,
 
 		/// <summary>
-		/// Middle button
+		///     Middle button
 		/// </summary>
 		MButton = 0x04,
 
 		/// <summary>
-		/// Extended button 1
+		///     Extended button 1
 		/// </summary>
 		XButton1 = 0x05,
 
 		/// <summary>
-		/// Extended button 2
+		///     Extended button 2
 		/// </summary>
 		XButton2 = 0x06,
 
 		/// <summary>
-		/// Back
+		///     Back
 		/// </summary>
 		Back = 0x08,
 
 		/// <summary>
-		/// Tab
+		///     Tab
 		/// </summary>
 		Tab = 0x09,
 
 		/// <summary>
-		/// Clear
+		///     Clear
 		/// </summary>
 		Clear = 0x0C,
 
 		/// <summary>
-		/// Return
+		///     Return
 		/// </summary>
 		Return = 0x0D,
 
 		/// <summary>
-		/// Shift
+		///     Shift
 		/// </summary>
 		Shift = 0x10,
 
 		/// <summary>
-		/// Control
+		///     Control
 		/// </summary>
 		Control = 0x11,
 
 		/// <summary>
-		/// Menu
+		///     Menu
 		/// </summary>
 		Menu = 0x12,
 
 		/// <summary>
-		/// Pause
+		///     Pause
 		/// </summary>
 		Pause = 0x13,
 
 		/// <summary>
-		/// Capital
+		///     Capital
 		/// </summary>
 		Capital = 0x14,
 
 		/// <summary>
-		/// Kana
+		///     Kana
 		/// </summary>
 		Kana = 0x15,
 
 		/// <summary>
-		/// Hangeul
+		///     Hangeul
 		/// </summary>
 		Hangeul = 0x15,
 
 		/// <summary>
-		/// Hangul
+		///     Hangul
 		/// </summary>
 		Hangul = 0x15,
 
 		/// <summary>
-		/// Junja
+		///     Junja
 		/// </summary>
 		Junja = 0x17,
 
 		/// <summary>
-		/// Final
+		///     Final
 		/// </summary>
 		Final = 0x18,
 
 		/// <summary>
-		/// Hanja
+		///     Hanja
 		/// </summary>
 		Hanja = 0x19,
 
 		/// <summary>
-		/// Kanji
+		///     Kanji
 		/// </summary>
 		Kanji = 0x19,
 
 		/// <summary>
-		/// Escape
+		///     Escape
 		/// </summary>
 		Escape = 0x1B,
 
 		/// <summary>
-		/// Convert
+		///     Convert
 		/// </summary>
 		Convert = 0x1C,
 
 		/// <summary>
-		/// Non-convert
+		///     Non-convert
 		/// </summary>
 		NonConvert = 0x1D,
 
 		/// <summary>
-		/// Accept
+		///     Accept
 		/// </summary>
 		Accept = 0x1E,
 
 		/// <summary>
-		/// Mode change
+		///     Mode change
 		/// </summary>
 		ModeChange = 0x1F,
 
 		/// <summary>
-		/// Space
+		///     Space
 		/// </summary>
 		Space = 0x20,
 
 		/// <summary>
-		/// Prior
+		///     Prior
 		/// </summary>
 		Prior = 0x21,
 
 		/// <summary>
-		/// Next
+		///     Next
 		/// </summary>
 		Next = 0x22,
 
 		/// <summary>
-		/// End
+		///     End
 		/// </summary>
 		End = 0x23,
 
 		/// <summary>
-		/// Home
+		///     Home
 		/// </summary>
 		Home = 0x24,
 
 		/// <summary>
-		/// Left
+		///     Left
 		/// </summary>
 		Left = 0x25,
 
 		/// <summary>
-		/// Up
+		///     Up
 		/// </summary>
 		Up = 0x26,
 
 		/// <summary>
-		/// Right
+		///     Right
 		/// </summary>
 		Right = 0x27,
 
 		/// <summary>
-		/// Down
+		///     Down
 		/// </summary>
 		Down = 0x28,
 
 		/// <summary>
-		/// Select
+		///     Select
 		/// </summary>
 		Select = 0x29,
 
 		/// <summary>
-		/// Print
+		///     Print
 		/// </summary>
 		Print = 0x2A,
 
 		/// <summary>
-		/// Execute
+		///     Execute
 		/// </summary>
 		Execute = 0x2B,
 
 		/// <summary>
-		/// Snapshot
+		///     Snapshot
 		/// </summary>
 		Snapshot = 0x2C,
 
 		/// <summary>
-		/// Insert
+		///     Insert
 		/// </summary>
 		Insert = 0x2D,
 
 		/// <summary>
-		/// Delete
+		///     Delete
 		/// </summary>
 		Delete = 0x2E,
 
 		/// <summary>
-		/// Help
+		///     Help
 		/// </summary>
 		Help = 0x2F,
 
 		/// <summary>
-		/// Left Windows
+		///     Left Windows
 		/// </summary>
 		LWin = 0x5B,
 
 		/// <summary>
-		/// Right Windows
+		///     Right Windows
 		/// </summary>
 		RWin = 0x5C,
 
 		/// <summary>
-		/// Applications
+		///     Applications
 		/// </summary>
 		Apps = 0x5D,
 
 		/// <summary>
-		/// Sleep
+		///     Sleep
 		/// </summary>
 		Sleep = 0x5F,
 
 		/// <summary>
-		/// Num pad 0
+		///     Num pad 0
 		/// </summary>
 		NumPad0 = 0x60,
 
 		/// <summary>
-		/// Num pad 1
+		///     Num pad 1
 		/// </summary>
 		NumPad1 = 0x61,
 
 		/// <summary>
-		/// Num pad 2
+		///     Num pad 2
 		/// </summary>
 		NumPad2 = 0x62,
 
 		/// <summary>
-		/// Num pad 3
+		///     Num pad 3
 		/// </summary>
 		NumPad3 = 0x63,
 
 		/// <summary>
-		/// Num pad 4
+		///     Num pad 4
 		/// </summary>
 		NumPad4 = 0x64,
 
 		/// <summary>
-		/// Num pad 5
+		///     Num pad 5
 		/// </summary>
 		NumPad5 = 0x65,
 
 		/// <summary>
-		/// Num pad 6
+		///     Num pad 6
 		/// </summary>
 		NumPad6 = 0x66,
 
 		/// <summary>
-		/// Num pad 7
+		///     Num pad 7
 		/// </summary>
 		NumPad7 = 0x67,
 
 		/// <summary>
-		/// Num pad 8
+		///     Num pad 8
 		/// </summary>
 		NumPad8 = 0x68,
 
 		/// <summary>
-		/// Num pad 9
+		///     Num pad 9
 		/// </summary>
 		NumPad9 = 0x69,
 
 		/// <summary>
-		/// Multiply
+		///     Multiply
 		/// </summary>
 		Multiply = 0x6A,
 
 		/// <summary>
-		/// Add
+		///     Add
 		/// </summary>
 		Add = 0x6B,
 
 		/// <summary>
-		/// Separator
+		///     Separator
 		/// </summary>
 		Separator = 0x6C,
 
 		/// <summary>
-		/// Subtract
+		///     Subtract
 		/// </summary>
 		Subtract = 0x6D,
 
 		/// <summary>
-		/// Decimal
+		///     Decimal
 		/// </summary>
 		Decimal = 0x6E,
 
 		/// <summary>
-		/// Divide
+		///     Divide
 		/// </summary>
 		Divide = 0x6F,
 
 		/// <summary>
-		/// F1
+		///     F1
 		/// </summary>
 		F1 = 0x70,
 
 		/// <summary>
-		/// F2
+		///     F2
 		/// </summary>
 		F2 = 0x71,
 
 		/// <summary>
-		/// F3
+		///     F3
 		/// </summary>
 		F3 = 0x72,
 
 		/// <summary>
-		/// F4
+		///     F4
 		/// </summary>
 		F4 = 0x73,
 
 		/// <summary>
-		/// F5
+		///     F5
 		/// </summary>
 		F5 = 0x74,
 
 		/// <summary>
-		/// F6
+		///     F6
 		/// </summary>
 		F6 = 0x75,
 
 		/// <summary>
-		/// F7
+		///     F7
 		/// </summary>
 		F7 = 0x76,
 
 		/// <summary>
-		/// F8
+		///     F8
 		/// </summary>
 		F8 = 0x77,
 
 		/// <summary>
-		/// F9
+		///     F9
 		/// </summary>
 		F9 = 0x78,
 
 		/// <summary>
-		/// F10
+		///     F10
 		/// </summary>
 		F10 = 0x79,
 
 		/// <summary>
-		/// F11
+		///     F11
 		/// </summary>
 		F11 = 0x7A,
 
 		/// <summary>
-		/// F12
+		///     F12
 		/// </summary>
 		F12 = 0x7B,
 
 		/// <summary>
-		/// F13
+		///     F13
 		/// </summary>
 		F13 = 0x7C,
 
 		/// <summary>
-		/// F14
+		///     F14
 		/// </summary>
 		F14 = 0x7D,
 
 		/// <summary>
-		/// F15
+		///     F15
 		/// </summary>
 		F15 = 0x7E,
 
 		/// <summary>
-		/// F16
+		///     F16
 		/// </summary>
 		F16 = 0x7F,
 
 		/// <summary>
-		/// F17
+		///     F17
 		/// </summary>
 		F17 = 0x80,
 
 		/// <summary>
-		/// F18
+		///     F18
 		/// </summary>
 		F18 = 0x81,
 
 		/// <summary>
-		/// F19
+		///     F19
 		/// </summary>
 		F19 = 0x82,
 
 		/// <summary>
-		/// F20
+		///     F20
 		/// </summary>
 		F20 = 0x83,
 
 		/// <summary>
-		/// F21
+		///     F21
 		/// </summary>
 		F21 = 0x84,
 
 		/// <summary>
-		/// F22
+		///     F22
 		/// </summary>
 		F22 = 0x85,
 
 		/// <summary>
-		/// F23
+		///     F23
 		/// </summary>
 		F23 = 0x86,
 
 		/// <summary>
-		/// F24
+		///     F24
 		/// </summary>
 		F24 = 0x87,
 
 		/// <summary>
-		/// Num lock
+		///     Num lock
 		/// </summary>
 		NumLock = 0x90,
 
 		/// <summary>
-		/// Scroll lock
+		///     Scroll lock
 		/// </summary>
 		Scroll = 0x91,
 
 		/// <summary>
-		/// Num pad equal
+		///     Num pad equal
 		/// </summary>
 		OemNECEqual = 0x92, // '=' key on numpad
 
@@ -651,144 +654,144 @@ namespace RI.Framework.IO.Keyboard
 		//OeamFJROya = 0x96, // 'Right OYAYUBI' key
 
 		/// <summary>
-		/// Left shift
+		///     Left shift
 		/// </summary>
 		LShift = 0xA0,
 
 		/// <summary>
-		/// Right shift
+		///     Right shift
 		/// </summary>
 		RShift = 0xA1,
 
 		/// <summary>
-		/// Left control
+		///     Left control
 		/// </summary>
 		LControl = 0xA2,
 
 		/// <summary>
-		/// Right control
+		///     Right control
 		/// </summary>
 		RControl = 0xA3,
 
 		/// <summary>
-		/// Left menu
+		///     Left menu
 		/// </summary>
 		LMenu = 0xA4,
 
 		/// <summary>
-		/// Right menu
+		///     Right menu
 		/// </summary>
 		RMenu = 0xA5,
 
 		/// <summary>
-		/// Browser back
+		///     Browser back
 		/// </summary>
 		BrowserBack = 0xA6,
 
 		/// <summary>
-		/// Browser forward
+		///     Browser forward
 		/// </summary>
 		BrowserForward = 0xA7,
 
 		/// <summary>
-		/// Browser refresh
+		///     Browser refresh
 		/// </summary>
 		BrowserRefresh = 0xA8,
 
 		/// <summary>
-		/// Browser stop
+		///     Browser stop
 		/// </summary>
 		BrowserStop = 0xA9,
 
 		/// <summary>
-		/// Browser search
+		///     Browser search
 		/// </summary>
 		BrowserSearch = 0xAA,
 
 		/// <summary>
-		/// Browser favorites
+		///     Browser favorites
 		/// </summary>
 		BrowserFavorites = 0xAB,
 
 		/// <summary>
-		/// Browser home
+		///     Browser home
 		/// </summary>
 		BrowserHome = 0xAC,
 
 		/// <summary>
-		/// Volume mute
+		///     Volume mute
 		/// </summary>
 		VolumeMute = 0xAD,
 
 		/// <summary>
-		/// Volume down
+		///     Volume down
 		/// </summary>
 		VolumeDown = 0xAE,
 
 		/// <summary>
-		/// Volume up
+		///     Volume up
 		/// </summary>
 		VolumeUp = 0xAF,
 
 		/// <summary>
-		/// Media next track
+		///     Media next track
 		/// </summary>
 		MediaNextTrack = 0xB0,
 
 		/// <summary>
-		/// Media previous track
+		///     Media previous track
 		/// </summary>
 		MediaPrevTrack = 0xB1,
 
 		/// <summary>
-		/// Media stop
+		///     Media stop
 		/// </summary>
 		MediaStop = 0xB2,
 
 		/// <summary>
-		/// Media play/pause
+		///     Media play/pause
 		/// </summary>
 		MediaPlayPause = 0xB3,
 
 		/// <summary>
-		/// Launch mail
+		///     Launch mail
 		/// </summary>
 		LaunchMail = 0xB4,
 
 		/// <summary>
-		/// Launch media
+		///     Launch media
 		/// </summary>
 		LaunchMediaSelect = 0xB5,
 
 		/// <summary>
-		/// Launch application 1
+		///     Launch application 1
 		/// </summary>
 		LaunchApp1 = 0xB6,
 
 		/// <summary>
-		/// Launch application 2
+		///     Launch application 2
 		/// </summary>
 		LaunchApp2 = 0xB7,
 
 		//Oem1 = 0xBA, // ';:' for US
 
 		/// <summary>
-		/// Plus
+		///     Plus
 		/// </summary>
 		OemPlus = 0xBB, // '+' any country
 
 		/// <summary>
-		/// Comma
+		///     Comma
 		/// </summary>
 		OemComma = 0xBC, // ',' any country
 
 		/// <summary>
-		/// Minus
+		///     Minus
 		/// </summary>
 		OemMinus = 0xBD, // '-' any country
 
 		/// <summary>
-		/// Period
+		///     Period
 		/// </summary>
 		OemPeriod = 0xBE, // '.' any country
 
@@ -815,14 +818,14 @@ namespace RI.Framework.IO.Keyboard
 		//Ico00 = 0xE4, // 00 key on ICO
 
 		/// <summary>
-		/// Process key
+		///     Process key
 		/// </summary>
 		ProcessKey = 0xE5,
 
 		//IcoClear = 0xE6,
 
 		/// <summary>
-		/// Packet
+		///     Packet
 		/// </summary>
 		Packet = 0xE7,
 
@@ -861,12 +864,12 @@ namespace RI.Framework.IO.Keyboard
 		//EREOF = 0xF9,
 
 		/// <summary>
-		/// Play
+		///     Play
 		/// </summary>
 		Play = 0xFA,
 
 		/// <summary>
-		/// Zoom
+		///     Zoom
 		/// </summary>
 		Zoom = 0xFB,
 

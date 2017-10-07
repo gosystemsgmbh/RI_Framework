@@ -2,6 +2,9 @@
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
+
+
+
 namespace RI.Framework.IO.Streams
 {
 	/// <summary>
@@ -13,27 +16,27 @@ namespace RI.Framework.IO.Streams
 		#region Instance Constructor/Destructor
 
 		/// <summary>
-		/// Creates a new instance of <see cref="ReadOnlyStream"/>.
+		///     Creates a new instance of <see cref="ReadOnlyStream" />.
 		/// </summary>
-		/// <param name="stream">The stream to wrap.</param>
+		/// <param name="stream"> The stream to wrap. </param>
 		/// <remarks>
-		/// <para>
-		/// The wrapped stream is closed if this stream is closed.
-		/// </para>
+		///     <para>
+		///         The wrapped stream is closed if this stream is closed.
+		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="stream" /> is null. </exception>
-		public ReadOnlyStream(Stream stream)
+		public ReadOnlyStream (Stream stream)
 			: this(stream, false)
 		{
 		}
 
 		/// <summary>
-		/// Creates a new instance of <see cref="ReadOnlyStream"/>.
+		///     Creates a new instance of <see cref="ReadOnlyStream" />.
 		/// </summary>
-		/// <param name="stream">The stream to wrap.</param>
-		/// <param name="doNotOwnStream">Specifies whether the wrapped stream should be closed when this stream is closed (false) or kept open (true).</param>
+		/// <param name="stream"> The stream to wrap. </param>
+		/// <param name="doNotOwnStream"> Specifies whether the wrapped stream should be closed when this stream is closed (false) or kept open (true). </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="stream" /> is null. </exception>
-		public ReadOnlyStream(Stream stream, bool doNotOwnStream)
+		public ReadOnlyStream (Stream stream, bool doNotOwnStream)
 		{
 			if (stream == null)
 			{
@@ -47,7 +50,7 @@ namespace RI.Framework.IO.Streams
 		/// <summary>
 		///     Garbage collects this instance of <see cref="ReadOnlyStream" />.
 		/// </summary>
-		~ReadOnlyStream()
+		~ReadOnlyStream ()
 		{
 			this.Close();
 		}
@@ -76,12 +79,12 @@ namespace RI.Framework.IO.Streams
 
 		#region Instance Methods
 
-		private bool CheckNotClosed()
+		private bool CheckNotClosed ()
 		{
 			return this.BaseStream != null;
 		}
 
-		private void CloseInternal()
+		private void CloseInternal ()
 		{
 			if (this.BaseStream != null)
 			{
@@ -93,7 +96,7 @@ namespace RI.Framework.IO.Streams
 			}
 		}
 
-		private void VerifyNotClosed()
+		private void VerifyNotClosed ()
 		{
 			if (!this.CheckNotClosed())
 			{
@@ -198,91 +201,91 @@ namespace RI.Framework.IO.Streams
 		}
 
 		/// <inheritdoc />
-		public override IAsyncResult BeginRead(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
+		public override IAsyncResult BeginRead (byte[] buffer, int offset, int count, AsyncCallback callback, object state)
 		{
 			this.VerifyNotClosed();
 			return this.BaseStream.BeginRead(buffer, offset, count, callback, state);
 		}
 
 		/// <inheritdoc />
-		public override IAsyncResult BeginWrite(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
+		public override IAsyncResult BeginWrite (byte[] buffer, int offset, int count, AsyncCallback callback, object state)
 		{
 			this.VerifyNotClosed();
 			throw new NotSupportedException(nameof(ReadOnlyStream) + " does not support writing.");
 		}
 
 		/// <inheritdoc />
-		public override void Close()
+		public override void Close ()
 		{
 			this.CloseInternal();
 			base.Close();
 		}
 
 		/// <inheritdoc />
-		public override int EndRead(IAsyncResult asyncResult)
+		public override int EndRead (IAsyncResult asyncResult)
 		{
 			this.VerifyNotClosed();
 			return this.BaseStream.EndRead(asyncResult);
 		}
 
 		/// <inheritdoc />
-		public override void EndWrite(IAsyncResult asyncResult)
+		public override void EndWrite (IAsyncResult asyncResult)
 		{
 			this.VerifyNotClosed();
 			throw new NotSupportedException(nameof(ReadOnlyStream) + " does not support writing.");
 		}
 
 		/// <inheritdoc />
-		public override void Flush()
+		public override void Flush ()
 		{
 			this.VerifyNotClosed();
 			this.BaseStream.Flush();
 		}
 
 		/// <inheritdoc />
-		public override int Read(byte[] buffer, int offset, int count)
+		public override int Read (byte[] buffer, int offset, int count)
 		{
 			this.VerifyNotClosed();
 			return this.BaseStream.Read(buffer, offset, count);
 		}
 
 		/// <inheritdoc />
-		public override int ReadByte()
+		public override int ReadByte ()
 		{
 			this.VerifyNotClosed();
 			return this.BaseStream.ReadByte();
 		}
 
 		/// <inheritdoc />
-		public override long Seek(long offset, SeekOrigin origin)
+		public override long Seek (long offset, SeekOrigin origin)
 		{
 			this.VerifyNotClosed();
 			return this.BaseStream.Seek(offset, origin);
 		}
 
 		/// <inheritdoc />
-		public override void SetLength(long value)
+		public override void SetLength (long value)
 		{
 			this.VerifyNotClosed();
 			throw new NotSupportedException(nameof(ReadOnlyStream) + " does not support writing.");
 		}
 
 		/// <inheritdoc />
-		public override void Write(byte[] buffer, int offset, int count)
+		public override void Write (byte[] buffer, int offset, int count)
 		{
 			this.VerifyNotClosed();
 			throw new NotSupportedException(nameof(ReadOnlyStream) + " does not support writing.");
 		}
 
 		/// <inheritdoc />
-		public override void WriteByte(byte value)
+		public override void WriteByte (byte value)
 		{
 			this.VerifyNotClosed();
 			throw new NotSupportedException(nameof(ReadOnlyStream) + " does not support writing.");
 		}
 
 		/// <inheritdoc />
-		protected override void Dispose(bool disposing)
+		protected override void Dispose (bool disposing)
 		{
 			this.CloseInternal();
 			base.Dispose(disposing);

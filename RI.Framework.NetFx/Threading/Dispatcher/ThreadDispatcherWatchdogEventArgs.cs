@@ -1,5 +1,8 @@
 ﻿using System;
 
+
+
+
 namespace RI.Framework.Threading.Dispatcher
 {
 	/// <summary>
@@ -14,7 +17,7 @@ namespace RI.Framework.Threading.Dispatcher
 		/// </summary>
 		/// <param name="timeout"> The timeout. </param>
 		/// <param name="currentOperation"> The current operation which was in progress at the time of the timeout or null if no operation was in progress. </param>
-		public ThreadDispatcherWatchdogEventArgs(TimeSpan timeout, ThreadDispatcherOperation currentOperation)
+		public ThreadDispatcherWatchdogEventArgs (TimeSpan timeout, ThreadDispatcherOperation currentOperation)
 		{
 			this.Timeout = timeout;
 			this.CurrentOperation = currentOperation;
@@ -27,6 +30,15 @@ namespace RI.Framework.Threading.Dispatcher
 
 		#region Instance Properties/Indexer
 
+		/// ///
+		/// <summary>
+		///     Gets the current operation which was in progress at the time of the timeout or null if no operation was in progress
+		/// </summary>
+		/// <value>
+		///     The current operation which was in progress at the time of the timeout or null if no operation was in progress.
+		/// </value>
+		public ThreadDispatcherOperation CurrentOperation { get; }
+
 		/// <summary>
 		///     Gets the timeout.
 		/// </summary>
@@ -34,14 +46,6 @@ namespace RI.Framework.Threading.Dispatcher
 		///     The timeout.
 		/// </value>
 		public TimeSpan Timeout { get; }
-
-		/// /// <summary>
-		///     Gets the current operation which was in progress at the time of the timeout or null if no operation was in progress
-		/// </summary>
-		/// <value>
-		///     The current operation which was in progress at the time of the timeout or null if no operation was in progress.
-		/// </value>
-		public ThreadDispatcherOperation CurrentOperation { get; }
 
 		#endregion
 	}

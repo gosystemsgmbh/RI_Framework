@@ -4,6 +4,8 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 
+using Ionic.Zip;
+
 using RI.Framework.Collections.DirectLinq;
 using RI.Framework.IO.INI;
 using RI.Framework.IO.Paths;
@@ -12,7 +14,8 @@ using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Logging;
 
-using Ionic.Zip;
+
+
 
 namespace RI.Framework.Services.Resources.Sources
 {
@@ -45,7 +48,7 @@ namespace RI.Framework.Services.Resources.Sources
 
 		#region Instance Constructor/Destructor
 
-		internal ZipResourceSet(FilePath file, ZipResourceSource source)
+		internal ZipResourceSet (FilePath file, ZipResourceSource source)
 		{
 			if (file == null)
 			{
@@ -356,6 +359,33 @@ namespace RI.Framework.Services.Resources.Sources
 			this.IsValid = true;
 		}
 
+		private IResourceConverter GetConverter (Type sourceType, Type targetType)
+		{
+			foreach (IResourceConverter converter in this.Converters)
+			{
+				if (converter.CanConvert(sourceType, targetType))
+				{
+					return converter;
+				}
+			}
+
+			return null;
+		}
+
+		private ResourceLoadingInfo GetLoadingInfo (string extension)
+		{
+			foreach (IResourceConverter converter in this.Converters)
+			{
+				ResourceLoadingInfo loadingInfo = converter.GetLoadingInfoFromFileExtension(extension);
+				if (loadingInfo != null)
+				{
+					return loadingInfo;
+				}
+			}
+
+			return new ResourceLoadingInfo(ResourceLoadingType.Unknown, null);
+		}
+
 		private void Load ()
 		{
 			ZipFile zipFile = null;
@@ -467,32 +497,18 @@ namespace RI.Framework.Services.Resources.Sources
 			}
 		}
 
-		private IResourceConverter GetConverter (Type sourceType, Type targetType)
-		{
-			foreach (IResourceConverter converter in this.Converters)
-			{
-				if (converter.CanConvert(sourceType, targetType))
-				{
-					return converter;
-				}
-			}
+		#endregion
 
-			return null;
-		}
 
-		private ResourceLoadingInfo GetLoadingInfo (string extension)
-		{
-			foreach (IResourceConverter converter in this.Converters)
-			{
-				ResourceLoadingInfo loadingInfo = converter.GetLoadingInfoFromFileExtension(extension);
-				if (loadingInfo != null)
-				{
-					return loadingInfo;
-				}
-			}
 
-			return new ResourceLoadingInfo(ResourceLoadingType.Unknown, null);
-		}
+
+		#region Overrides
+
+		/// <inheritdoc />
+		public override bool Equals (object obj) => this.Equals(obj as IResourceSet);
+
+		/// <inheritdoc />
+		public override int GetHashCode () => this.File.GetHashCode();
 
 		#endregion
 
@@ -502,9 +518,6 @@ namespace RI.Framework.Services.Resources.Sources
 		#region Interface: IResourceSet
 
 		/// <inheritdoc />
-		public string Id { get; }
-
-		/// <inheritdoc />
 		public bool AlwaysLoad { get; private set; }
 
 		/// <inheritdoc />
@@ -512,6 +525,9 @@ namespace RI.Framework.Services.Resources.Sources
 
 		/// <inheritdoc />
 		public string Group { get; private set; }
+
+		/// <inheritdoc />
+		public string Id { get; }
 
 		/// <inheritdoc />
 		public bool IsLazyLoaded { get; private set; }
@@ -530,6 +546,27 @@ namespace RI.Framework.Services.Resources.Sources
 
 		/// <inheritdoc />
 		public CultureInfo UiCulture { get; private set; }
+
+
+		/// <inheritdoc />
+		public bool Equals (IResourceSet other)
+		{
+			if (other == null)
+			{
+				return false;
+			}
+
+			ZipResourceSet other2 = other as ZipResourceSet;
+			if (other2 == null)
+			{
+				return false;
+			}
+
+			return this.File.Equals(other2.File);
+		}
+
+		/// <inheritdoc />
+		public HashSet<string> GetAvailableResources () => new HashSet<string>(this.Resources.Keys, this.Resources.Comparer);
 
 		/// <inheritdoc />
 		public object GetRawValue (string name)
@@ -598,9 +635,6 @@ namespace RI.Framework.Services.Resources.Sources
 			this.IsLoaded = false;
 			this.IsLazyLoaded = false;
 		}
-
-		/// <inheritdoc />
-		public HashSet<string> GetAvailableResources () => new HashSet<string>(this.Resources.Keys, this.Resources.Comparer);
 
 		#endregion
 
@@ -836,30 +870,5 @@ namespace RI.Framework.Services.Resources.Sources
 		}
 
 		#endregion
-
-
-
-		/// <inheritdoc />
-		public bool Equals (IResourceSet other)
-		{
-			if (other == null)
-			{
-				return false;
-			}
-
-			ZipResourceSet other2 = other as ZipResourceSet;
-			if (other2 == null)
-			{
-				return false;
-			}
-
-			return this.File.Equals(other2.File);
-		}
-
-		/// <inheritdoc />
-		public override int GetHashCode () => this.File.GetHashCode();
-
-		/// <inheritdoc />
-		public override bool Equals (object obj) => this.Equals(obj as IResourceSet);
 	}
 }

@@ -19,10 +19,13 @@ using RI.Framework.IO.Serial;
 using RI.Framework.Utilities.Windows.Cryptography;
 using RI.Framework.Utilities.Windows.Users;
 
+
+
+
 namespace RI.Framework.Utilities.Windows
 {
 	/// <summary>
-	/// Implements a detailed system information report creator.
+	///     Implements a detailed system information report creator.
 	/// </summary>
 	[SuppressMessage("ReSharper", "EmptyGeneralCatchClause")]
 	[SuppressMessage("ReSharper", "ConditionIsAlwaysTrueOrFalse")]
@@ -43,10 +46,10 @@ namespace RI.Framework.Utilities.Windows
 		#region Static Methods
 
 		/// <summary>
-		/// Creates a system information report without system information dump.
+		///     Creates a system information report without system information dump.
 		/// </summary>
 		/// <returns>
-		/// The system information report.
+		///     The system information report.
 		/// </returns>
 		public static string CreateReport ()
 		{
@@ -54,21 +57,21 @@ namespace RI.Framework.Utilities.Windows
 		}
 
 		/// <summary>
-		/// Creates a system information report without system information dump.
+		///     Creates a system information report without system information dump.
 		/// </summary>
-		/// <param name="writer">The text writer to which the system information report is written.</param>
-		/// <exception cref="ArgumentNullException"><paramref name="writer"/> is null.</exception>
+		/// <param name="writer"> The text writer to which the system information report is written. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="writer" /> is null. </exception>
 		public static void CreateReport (TextWriter writer)
 		{
 			SystemInformationReport.CreateReport(writer, false);
 		}
 
 		/// <summary>
-		/// Creates a system information report with an optional system information dump.
+		///     Creates a system information report with an optional system information dump.
 		/// </summary>
-		/// <param name="includeSystemInformationDump">Specifies whether a system information dum is included in the report.</param>
+		/// <param name="includeSystemInformationDump"> Specifies whether a system information dum is included in the report. </param>
 		/// <returns>
-		/// The system information report.
+		///     The system information report.
 		/// </returns>
 		public static string CreateReport (bool includeSystemInformationDump)
 		{
@@ -83,11 +86,11 @@ namespace RI.Framework.Utilities.Windows
 		}
 
 		/// <summary>
-		/// Creates a system information report with an optional system information dump.
+		///     Creates a system information report with an optional system information dump.
 		/// </summary>
-		/// <param name="writer">The text writer to which the system information report is written.</param>
-		/// <param name="includeSystemInformationDump">Specifies whether a system information dum is included in the report.</param>
-		/// <exception cref="ArgumentNullException"><paramref name="writer"/> is null.</exception>
+		/// <param name="writer"> The text writer to which the system information report is written. </param>
+		/// <param name="includeSystemInformationDump"> Specifies whether a system information dum is included in the report. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="writer" /> is null. </exception>
 		public static void CreateReport (TextWriter writer, bool includeSystemInformationDump)
 		{
 			if (writer == null)
@@ -109,10 +112,10 @@ namespace RI.Framework.Utilities.Windows
 		}
 
 		/// <summary>
-		/// Creates a system information dump.
+		///     Creates a system information dump.
 		/// </summary>
 		/// <returns>
-		/// The system information dump.
+		///     The system information dump.
 		/// </returns>
 		public static string CreateSystemInformationDump ()
 		{
@@ -123,14 +126,14 @@ namespace RI.Framework.Utilities.Windows
 				SystemInformationReport.CreateSystemInformationDump(sw);
 			}
 
-			return ( sb.ToString() );
+			return (sb.ToString());
 		}
 
 		/// <summary>
-		/// Creates a system information dump.
+		///     Creates a system information dump.
 		/// </summary>
-		/// <param name="writer">The text writer to which the system information dump is written.</param>
-		/// <exception cref="ArgumentNullException"><paramref name="writer"/> is null.</exception>
+		/// <param name="writer"> The text writer to which the system information dump is written. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="writer" /> is null. </exception>
 		public static void CreateSystemInformationDump (TextWriter writer)
 		{
 			if (writer == null)
@@ -176,24 +179,24 @@ namespace RI.Framework.Utilities.Windows
 		{
 			if (assembly == null)
 			{
-				return ( "[null]" );
+				return ("[null]");
 			}
 
 			StringBuilder str = new StringBuilder();
 
 			str.Append(assembly.FullName.PadRight(150));
-			str.Append(( "Dynamic: " + assembly.IsDynamic ).PadRight(20));
+			str.Append(("Dynamic: " + assembly.IsDynamic).PadRight(20));
 			if (!assembly.IsDynamic)
 			{
-				str.Append(( "GAC: " + assembly.GlobalAssemblyCache ).PadRight(20));
-				str.Append(( "Host context: " + assembly.HostContext.ToString(CultureInfo.InvariantCulture) ).PadRight(30));
-				str.Append(( "Fully trusted: " + assembly.IsFullyTrusted ).PadRight(30));
-				str.Append(( "Security rule set: " + assembly.SecurityRuleSet ).PadRight(40));
-				str.Append(( "Image runtime version: " + assembly.ImageRuntimeVersion ).PadRight(40));
-				str.Append("Location: " + ( assembly.Location ?? "[null]" ));
+				str.Append(("GAC: " + assembly.GlobalAssemblyCache).PadRight(20));
+				str.Append(("Host context: " + assembly.HostContext.ToString(CultureInfo.InvariantCulture)).PadRight(30));
+				str.Append(("Fully trusted: " + assembly.IsFullyTrusted).PadRight(30));
+				str.Append(("Security rule set: " + assembly.SecurityRuleSet).PadRight(40));
+				str.Append(("Image runtime version: " + assembly.ImageRuntimeVersion).PadRight(40));
+				str.Append("Location: " + (assembly.Location ?? "[null]"));
 			}
 
-			return ( str.ToString().Trim() );
+			return (str.ToString().Trim());
 		}
 
 		private static void CreateReportInternal (TextWriter writer, bool includeSystemInformationDump)
@@ -282,7 +285,7 @@ namespace RI.Framework.Utilities.Windows
 
 			writer.WriteLine("System properties");
 			writer.WriteLine("-----------------");
-			PropertyInfo[] properties = typeof (System.Windows.Forms.SystemInformation).GetProperties(BindingFlags.Public | BindingFlags.Static);
+			PropertyInfo[] properties = typeof(SystemInformation).GetProperties(BindingFlags.Public | BindingFlags.Static);
 			foreach (PropertyInfo property in properties)
 			{
 				try
@@ -309,9 +312,9 @@ namespace RI.Framework.Utilities.Windows
 			writer.WriteLine("----------------------");
 			writer.WriteLine("Processor count:    " + Environment.ProcessorCount.ToString(CultureInfo.InvariantCulture));
 			writer.WriteLine("Processor affinity: " + currentProcess.ProcessorAffinity);
-			writer.WriteLine("Total time:         " + ( (long)currentProcess.TotalProcessorTime.TotalMilliseconds ).ToString(CultureInfo.InvariantCulture) + " ms");
-			writer.WriteLine("User time:          " + ( (long)currentProcess.UserProcessorTime.TotalMilliseconds ).ToString(CultureInfo.InvariantCulture) + " ms");
-			writer.WriteLine("Privileged time:    " + ( (long)currentProcess.PrivilegedProcessorTime.TotalMilliseconds ).ToString(CultureInfo.InvariantCulture) + " ms");
+			writer.WriteLine("Total time:         " + ((long)currentProcess.TotalProcessorTime.TotalMilliseconds).ToString(CultureInfo.InvariantCulture) + " ms");
+			writer.WriteLine("User time:          " + ((long)currentProcess.UserProcessorTime.TotalMilliseconds).ToString(CultureInfo.InvariantCulture) + " ms");
+			writer.WriteLine("Privileged time:    " + ((long)currentProcess.PrivilegedProcessorTime.TotalMilliseconds).ToString(CultureInfo.InvariantCulture) + " ms");
 			writer.WriteLine();
 
 			writer.WriteLine("Memory informations");
@@ -356,7 +359,7 @@ namespace RI.Framework.Utilities.Windows
 			{
 				try
 				{
-					writer.WriteLine("Available window:   " + window.ToInt64().ToString(CultureInfo.InvariantCulture).PadLeft(10, ' ') + " @ " + WindowsWindow.GetProcess(window).Id.ToString(CultureInfo.InvariantCulture).PadLeft(10, ' ') + " = " + (WindowsWindow.GetWindowTitle(window) ?? "[null]" ));
+					writer.WriteLine("Available window:   " + window.ToInt64().ToString(CultureInfo.InvariantCulture).PadLeft(10, ' ') + " @ " + WindowsWindow.GetProcess(window).Id.ToString(CultureInfo.InvariantCulture).PadLeft(10, ' ') + " = " + (WindowsWindow.GetWindowTitle(window) ?? "[null]"));
 				}
 				catch
 				{
@@ -370,7 +373,7 @@ namespace RI.Framework.Utilities.Windows
 			writer.WriteLine("Is logging:  " + Debugger.IsLogging());
 			writer.WriteLine();
 
-			Array values = Enum.GetValues(typeof (Environment.SpecialFolder));
+			Array values = Enum.GetValues(typeof(Environment.SpecialFolder));
 			writer.WriteLine("Directory informations");
 			writer.WriteLine("----------------------");
 			writer.WriteLine("Current directory:  " + Environment.CurrentDirectory);
@@ -478,24 +481,24 @@ namespace RI.Framework.Utilities.Windows
 		{
 			StringBuilder str = new StringBuilder();
 
-			str.Append(( culture.Name.IsEmpty() ? "[null]" : culture.Name ).PadRight(30));
-			str.Append(( "ISO (2): " + culture.TwoLetterISOLanguageName ).PadRight(20));
-			str.Append(( "ISO (3): " + culture.ThreeLetterISOLanguageName ).PadRight(20));
-			str.Append(( "WIN (3): " + culture.ThreeLetterWindowsLanguageName ).PadRight(20));
-			str.Append(( "IETF: " + culture.IetfLanguageTag ).PadRight(25));
-			str.Append(( "LCID: " + culture.LCID.ToString(CultureInfo.InvariantCulture) ).PadRight(20));
-			str.Append(( "Keyboard layout ID: " + culture.KeyboardLayoutId.ToString(CultureInfo.InvariantCulture) ).PadRight(30));
-			str.Append(( "Culture types: " + culture.CultureTypes ).PadRight(100));
-			str.Append(( "User override: " + culture.UseUserOverride ).PadRight(30));
-			str.Append(( "Neutral: " + culture.IsNeutralCulture ).PadRight(30));
-			str.Append(( "Read-only: " + culture.IsReadOnly ).PadRight(30));
-			str.Append(( "Parent: " + ( culture.Parent == null ? "[null]" : culture.Parent.Name ).PadRight(30) ));
-			str.Append(( "Used calendar: " + culture.Calendar ).PadRight(80));
-			str.Append(( "English name: " + culture.EnglishName ).PadRight(80));
-			str.Append(( "Display name: " + culture.DisplayName ).PadRight(80));
-			str.Append(( "Native name: " + culture.NativeName ).PadRight(80));
+			str.Append((culture.Name.IsEmpty() ? "[null]" : culture.Name).PadRight(30));
+			str.Append(("ISO (2): " + culture.TwoLetterISOLanguageName).PadRight(20));
+			str.Append(("ISO (3): " + culture.ThreeLetterISOLanguageName).PadRight(20));
+			str.Append(("WIN (3): " + culture.ThreeLetterWindowsLanguageName).PadRight(20));
+			str.Append(("IETF: " + culture.IetfLanguageTag).PadRight(25));
+			str.Append(("LCID: " + culture.LCID.ToString(CultureInfo.InvariantCulture)).PadRight(20));
+			str.Append(("Keyboard layout ID: " + culture.KeyboardLayoutId.ToString(CultureInfo.InvariantCulture)).PadRight(30));
+			str.Append(("Culture types: " + culture.CultureTypes).PadRight(100));
+			str.Append(("User override: " + culture.UseUserOverride).PadRight(30));
+			str.Append(("Neutral: " + culture.IsNeutralCulture).PadRight(30));
+			str.Append(("Read-only: " + culture.IsReadOnly).PadRight(30));
+			str.Append(("Parent: " + (culture.Parent == null ? "[null]" : culture.Parent.Name).PadRight(30)));
+			str.Append(("Used calendar: " + culture.Calendar).PadRight(80));
+			str.Append(("English name: " + culture.EnglishName).PadRight(80));
+			str.Append(("Display name: " + culture.DisplayName).PadRight(80));
+			str.Append(("Native name: " + culture.NativeName).PadRight(80));
 
-			return ( str.ToString().Trim() );
+			return (str.ToString().Trim());
 		}
 
 		private static string DriveInfoToString (DriveInfo drive)
@@ -503,19 +506,19 @@ namespace RI.Framework.Utilities.Windows
 			StringBuilder str = new StringBuilder();
 
 			str.Append(drive.Name.PadRight(10));
-			str.Append(( "Ready: " + drive.IsReady ).PadRight(20));
-			str.Append(( "Root: " + drive.RootDirectory ).PadRight(20));
+			str.Append(("Ready: " + drive.IsReady).PadRight(20));
+			str.Append(("Root: " + drive.RootDirectory).PadRight(20));
 
 			StringBuilder str2 = new StringBuilder();
 
 			try
 			{
-				str2.Append(( "Type: " + drive.DriveType ).PadRight(40));
-				str2.Append(( "Format: " + drive.DriveFormat ).PadRight(40));
-				str2.Append(( "Label: " + drive.VolumeLabel ).PadRight(40));
-				str2.Append(( "Available free: " + drive.AvailableFreeSpace.ToString(CultureInfo.InvariantCulture).PadLeft(16) + " bytes" ).PadRight(40));
-				str2.Append(( "Total free: " + drive.TotalFreeSpace.ToString(CultureInfo.InvariantCulture).PadLeft(16) + " bytes" ).PadRight(40));
-				str2.Append(( "Total size: " + drive.TotalSize.ToString(CultureInfo.InvariantCulture).PadLeft(16) + " bytes" ).PadRight(40));
+				str2.Append(("Type: " + drive.DriveType).PadRight(40));
+				str2.Append(("Format: " + drive.DriveFormat).PadRight(40));
+				str2.Append(("Label: " + drive.VolumeLabel).PadRight(40));
+				str2.Append(("Available free: " + drive.AvailableFreeSpace.ToString(CultureInfo.InvariantCulture).PadLeft(16) + " bytes").PadRight(40));
+				str2.Append(("Total free: " + drive.TotalFreeSpace.ToString(CultureInfo.InvariantCulture).PadLeft(16) + " bytes").PadRight(40));
+				str2.Append(("Total size: " + drive.TotalSize.ToString(CultureInfo.InvariantCulture).PadLeft(16) + " bytes").PadRight(40));
 
 
 				str.Append(str2);
@@ -525,7 +528,7 @@ namespace RI.Framework.Utilities.Windows
 				str.Append("[Drive not ready for further information]");
 			}
 
-			return ( str.ToString().Trim() );
+			return (str.ToString().Trim());
 		}
 
 		private static string EncodingToString (Encoding encoding)
@@ -533,20 +536,20 @@ namespace RI.Framework.Utilities.Windows
 			StringBuilder str = new StringBuilder();
 
 			str.Append(encoding.WebName.PadRight(40));
-			str.Append(( "Body name: " + encoding.BodyName ).PadRight(40));
-			str.Append(( "Header name: " + encoding.HeaderName ).PadRight(40));
-			str.Append(( "Code page: " + encoding.CodePage ).PadRight(40));
-			str.Append(( "Windows code page: " + encoding.WindowsCodePage ).PadRight(40));
-			str.Append(( "Browser display: " + encoding.IsBrowserDisplay ).PadRight(30));
-			str.Append(( "Browser save: " + encoding.IsBrowserSave ).PadRight(30));
-			str.Append(( "Mail+News display: " + encoding.IsMailNewsDisplay ).PadRight(30));
-			str.Append(( "Mail+News save: " + encoding.IsMailNewsSave ).PadRight(30));
-			str.Append(( "Read-only: " + encoding.IsReadOnly ).PadRight(30));
-			str.Append(( "Single byte: " + encoding.IsSingleByte ).PadRight(30));
-			str.Append(( "Always normalized: " + encoding.IsAlwaysNormalized() ).PadRight(30));
+			str.Append(("Body name: " + encoding.BodyName).PadRight(40));
+			str.Append(("Header name: " + encoding.HeaderName).PadRight(40));
+			str.Append(("Code page: " + encoding.CodePage).PadRight(40));
+			str.Append(("Windows code page: " + encoding.WindowsCodePage).PadRight(40));
+			str.Append(("Browser display: " + encoding.IsBrowserDisplay).PadRight(30));
+			str.Append(("Browser save: " + encoding.IsBrowserSave).PadRight(30));
+			str.Append(("Mail+News display: " + encoding.IsMailNewsDisplay).PadRight(30));
+			str.Append(("Mail+News save: " + encoding.IsMailNewsSave).PadRight(30));
+			str.Append(("Read-only: " + encoding.IsReadOnly).PadRight(30));
+			str.Append(("Single byte: " + encoding.IsSingleByte).PadRight(30));
+			str.Append(("Always normalized: " + encoding.IsAlwaysNormalized()).PadRight(30));
 			str.Append("Name: " + encoding.EncodingName);
 
-			return ( str.ToString().Trim() );
+			return (str.ToString().Trim());
 		}
 
 		private static string NetworkInterfaceToString (NetworkInterface intf)
@@ -554,22 +557,22 @@ namespace RI.Framework.Utilities.Windows
 			StringBuilder str = new StringBuilder();
 
 			str.Append(intf.Id.PadRight(50));
-			str.Append(( "Interface type: " + intf.NetworkInterfaceType ).PadRight(40));
-			str.Append(( "Operational status: " + intf.OperationalStatus ).PadRight(30));
-			str.Append(( "Speed: " + intf.Speed.ToString(CultureInfo.InvariantCulture).PadLeft(10) ).PadRight(30));
-			str.Append(( "Receive-only: " + intf.IsReceiveOnly ).PadRight(30));
-			str.Append(( "Supports multicast: " + intf.SupportsMulticast ).PadRight(30));
-			str.Append(( "Supports IPv4: " + intf.Supports(NetworkInterfaceComponent.IPv4) ).PadRight(30));
-			str.Append(( "Supports IPv6" + intf.Supports(NetworkInterfaceComponent.IPv6) ).PadRight(30));
-			str.Append(( "Physical address: " + intf.GetPhysicalAddress() ).PadRight(50));
+			str.Append(("Interface type: " + intf.NetworkInterfaceType).PadRight(40));
+			str.Append(("Operational status: " + intf.OperationalStatus).PadRight(30));
+			str.Append(("Speed: " + intf.Speed.ToString(CultureInfo.InvariantCulture).PadLeft(10)).PadRight(30));
+			str.Append(("Receive-only: " + intf.IsReceiveOnly).PadRight(30));
+			str.Append(("Supports multicast: " + intf.SupportsMulticast).PadRight(30));
+			str.Append(("Supports IPv4: " + intf.Supports(NetworkInterfaceComponent.IPv4)).PadRight(30));
+			str.Append(("Supports IPv6" + intf.Supports(NetworkInterfaceComponent.IPv6)).PadRight(30));
+			str.Append(("Physical address: " + intf.GetPhysicalAddress()).PadRight(50));
 
 			IPInterfaceProperties ip = intf.GetIPProperties();
 
-			str.Append(( "DNS suffix: " + ( ip.DnsSuffix ?? "[null]" ) ).PadRight(40));
-			str.Append(( "DNS enabled: " + ip.IsDnsEnabled ).PadRight(30));
-			str.Append(( "Dynamic DNS: " + ip.IsDynamicDnsEnabled ).PadRight(30));
-			str.Append(( "Interface name: " + intf.Name ).PadRight(100));
-			str.Append(( "Interface description: " + intf.Description ).PadRight(120));
+			str.Append(("DNS suffix: " + (ip.DnsSuffix ?? "[null]")).PadRight(40));
+			str.Append(("DNS enabled: " + ip.IsDnsEnabled).PadRight(30));
+			str.Append(("Dynamic DNS: " + ip.IsDynamicDnsEnabled).PadRight(30));
+			str.Append(("Interface name: " + intf.Name).PadRight(100));
+			str.Append(("Interface description: " + intf.Description).PadRight(120));
 
 			bool appended = false;
 
@@ -643,7 +646,7 @@ namespace RI.Framework.Utilities.Windows
 				appended = true;
 			}
 
-			return ( str.ToString().Trim() );
+			return (str.ToString().Trim());
 		}
 
 		private static string ProcessModuleToString (ProcessModule module)
@@ -651,14 +654,14 @@ namespace RI.Framework.Utilities.Windows
 			StringBuilder str = new StringBuilder();
 
 			str.Append(module.ModuleName.PadRight(80));
-			str.Append(( "File version: " + module.FileVersionInfo.FileVersion ).PadRight(80));
-			str.Append(( "Product version: " + module.FileVersionInfo.ProductVersion ).PadRight(50));
-			str.Append(( "Memory size: " + module.ModuleMemorySize.ToString(CultureInfo.InvariantCulture) + " bytes" ).PadRight(50));
-			str.Append(( "Base address: " + module.BaseAddress.ToInt64().ToString(CultureInfo.InvariantCulture) ).PadRight(40));
-			str.Append(( "Entry point address: " + module.EntryPointAddress.ToInt64().ToString(CultureInfo.InvariantCulture) ).PadRight(40));
+			str.Append(("File version: " + module.FileVersionInfo.FileVersion).PadRight(80));
+			str.Append(("Product version: " + module.FileVersionInfo.ProductVersion).PadRight(50));
+			str.Append(("Memory size: " + module.ModuleMemorySize.ToString(CultureInfo.InvariantCulture) + " bytes").PadRight(50));
+			str.Append(("Base address: " + module.BaseAddress.ToInt64().ToString(CultureInfo.InvariantCulture)).PadRight(40));
+			str.Append(("Entry point address: " + module.EntryPointAddress.ToInt64().ToString(CultureInfo.InvariantCulture)).PadRight(40));
 			str.Append("File name: " + module.FileName);
 
-			return ( str.ToString().Trim() );
+			return (str.ToString().Trim());
 		}
 
 		private static string ScreenToString (Screen screen)
@@ -666,11 +669,11 @@ namespace RI.Framework.Utilities.Windows
 			StringBuilder str = new StringBuilder();
 
 			str.Append(screen.DeviceName.PadRight(20));
-			str.Append(( "Bits per pixel: " + screen.BitsPerPixel ).PadRight(30));
-			str.Append(( "Bounds: " + screen.Bounds ).PadRight(50));
-			str.Append(( "Working area: " + screen.WorkingArea ).PadRight(50));
+			str.Append(("Bits per pixel: " + screen.BitsPerPixel).PadRight(30));
+			str.Append(("Bounds: " + screen.Bounds).PadRight(50));
+			str.Append(("Working area: " + screen.WorkingArea).PadRight(50));
 
-			return ( str.ToString().Trim() );
+			return (str.ToString().Trim());
 		}
 
 		#endregion

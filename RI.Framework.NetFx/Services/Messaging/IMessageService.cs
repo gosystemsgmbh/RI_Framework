@@ -18,16 +18,16 @@ namespace RI.Framework.Services.Messaging
 	///     <para>
 	///         A messaging service is used to send/receive application-specific messages asynchronously to/from modules of an application.
 	///     </para>
-	/// <para>
-	/// Unlike a full-featured distributed bus or event aggregator, a message service is a lightweight, in-memory, in-process, local-only message distribution mechanism
-	/// </para>
+	///     <para>
+	///         Unlike a full-featured distributed bus or event aggregator, a message service is a lightweight, in-memory, in-process, local-only message distribution mechanism
+	///     </para>
 	///     <para>
 	///         Messages are instances of <see cref="IMessage" /> which are sent using a messaging service.
 	///         The message service uses message dispatchers (<see cref="IMessageDispatcher" />) to deliver the messages asynchronously to all known message receivers (<see cref="IMessageReceiver" />).
 	///         The message dispatcher is responsible for achieving asynchronity.
 	///     </para>
 	///     <para>
-	///         Asynchronous delivery of messages means that sending a message is quick (<see cref="Post"/> returns immediately) and the messages are delivered, and therefore handled by their receivers, at a later time but in the correct order as they were sent.
+	///         Asynchronous delivery of messages means that sending a message is quick (<see cref="Post" /> returns immediately) and the messages are delivered, and therefore handled by their receivers, at a later time but in the correct order as they were sent.
 	///         The meaning of &quot;at a later time&quot; depends on the application context and the used message dispatcher.
 	///         For example, in GUI applications, the message dispatcher can enqueue the messages into the applications message loop.
 	///     </para>
@@ -99,25 +99,12 @@ namespace RI.Framework.Services.Messaging
 		/// <param name="message"> The message to post. </param>
 		/// <remarks>
 		///     <para>
-		/// The message is delivered after all previously sent or posted messages are delivered.
-		/// This method returns immediately and does not wait for the message to be delivered.
+		///         The message is delivered after all previously sent or posted messages are delivered.
+		///         This method returns immediately and does not wait for the message to be delivered.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="message" /> is null. </exception>
 		void Post (IMessage message);
-
-		/// <summary>
-		///     Sends a message synchronously.
-		/// </summary>
-		/// <param name="message"> The message to send. </param>
-		/// <remarks>
-		///     <para>
-		/// The message is delivered after all previously sent or posted messages are delivered.
-		/// This method returns a task which can be continued or awaited when the message was delivered to all receivers.
-		///     </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="message" /> is null. </exception>
-		Task Send (IMessage message);
 
 		/// <summary>
 		///     Removes a message dispatcher and stops using it for all subsequent messages.
@@ -142,5 +129,18 @@ namespace RI.Framework.Services.Messaging
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="messageReceiver" /> is null. </exception>
 		void RemoveReceiver (IMessageReceiver messageReceiver);
+
+		/// <summary>
+		///     Sends a message synchronously.
+		/// </summary>
+		/// <param name="message"> The message to send. </param>
+		/// <remarks>
+		///     <para>
+		///         The message is delivered after all previously sent or posted messages are delivered.
+		///         This method returns a task which can be continued or awaited when the message was delivered to all receivers.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="message" /> is null. </exception>
+		Task Send (IMessage message);
 	}
 }

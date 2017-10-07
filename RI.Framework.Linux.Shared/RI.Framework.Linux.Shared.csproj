@@ -46,7 +46,6 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\Linux\LinuxShell.cs" />
-    <Compile Include="Utilities\Linux\LocalEncryption.cs" />
     <Compile Include="Utilities\Linux\UniqueIdentification.cs" />
     <Compile Include="Utilities\Linux\_NamespaceDoc.cs" />
   </ItemGroup>

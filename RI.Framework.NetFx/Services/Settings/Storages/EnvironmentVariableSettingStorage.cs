@@ -27,9 +27,9 @@ namespace RI.Framework.Services.Settings.Storages
 	///     <para>
 	///         See <see cref="ISettingStorage" /> for more details.
 	///     </para>
-	/// <note type="important">
-	/// <see cref="EnvironmentVariableSettingStorage"/> does not support multiple values for the same setting!
-	/// </note>
+	///     <note type="important">
+	///         <see cref="EnvironmentVariableSettingStorage" /> does not support multiple values for the same setting!
+	///     </note>
 	/// </remarks>
 	[Export]
 	public sealed class EnvironmentVariableSettingStorage : ISettingStorage
@@ -91,38 +91,13 @@ namespace RI.Framework.Services.Settings.Storages
 		string ISettingStorage.WritePrefixAffinity => null;
 
 		/// <inheritdoc />
-		public bool HasValue (Predicate<string> predicate)
-		{
-			IDictionary variables = Environment.GetEnvironmentVariables();
-			foreach (DictionaryEntry entry in variables)
-			{
-				string name = (string)entry.Key;
-
-				if (!this.Prefix.IsNullOrEmpty())
-				{
-					if (name.StartsWith(this.Prefix, StringComparison.InvariantCultureIgnoreCase))
-					{
-						name = name.Substring(this.Prefix.Length);
-					}
-				}
-
-				if (predicate(name))
-				{
-					return true;
-				}
-			}
-
-			return false;
-		}
-
-		/// <inheritdoc />
-		public void DeleteValues(string name)
+		public void DeleteValues (string name)
 		{
 			throw new NotSupportedException("Deleting a value from environment variables is not supported.");
 		}
 
 		/// <inheritdoc />
-		public void DeleteValues(Predicate<string> predicate)
+		public void DeleteValues (Predicate<string> predicate)
 		{
 			throw new NotSupportedException("Deleting a value from environment variables is not supported.");
 		}
@@ -151,7 +126,7 @@ namespace RI.Framework.Services.Settings.Storages
 		}
 
 		/// <inheritdoc />
-		public Dictionary<string, List<string>> GetValues(Predicate<string> predicate)
+		public Dictionary<string, List<string>> GetValues (Predicate<string> predicate)
 		{
 			if (predicate == null)
 			{
@@ -174,6 +149,31 @@ namespace RI.Framework.Services.Settings.Storages
 				}
 			}
 			return values;
+		}
+
+		/// <inheritdoc />
+		public bool HasValue (Predicate<string> predicate)
+		{
+			IDictionary variables = Environment.GetEnvironmentVariables();
+			foreach (DictionaryEntry entry in variables)
+			{
+				string name = (string)entry.Key;
+
+				if (!this.Prefix.IsNullOrEmpty())
+				{
+					if (name.StartsWith(this.Prefix, StringComparison.InvariantCultureIgnoreCase))
+					{
+						name = name.Substring(this.Prefix.Length);
+					}
+				}
+
+				if (predicate(name))
+				{
+					return true;
+				}
+			}
+
+			return false;
 		}
 
 		/// <inheritdoc />

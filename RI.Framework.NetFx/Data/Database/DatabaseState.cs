@@ -12,22 +12,22 @@ namespace RI.Framework.Data.Database
 	public enum DatabaseState
 	{
 		/// <summary>
-		/// The database is not initialized.
+		///     The database is not initialized.
 		/// </summary>
 		Uninitialized = 0,
 
 		/// <summary>
-		/// The database is initialized and ready for use, using the newest known/supported version.
+		///     The database is initialized and ready for use, using the newest known/supported version.
 		/// </summary>
 		ReadyNew = 1,
 
 		/// <summary>
-		/// The database is initialized and ready for use, using an older known/supported version.
+		///     The database is initialized and ready for use, using an older known/supported version.
 		/// </summary>
 		ReadyOld = 2,
 
 		/// <summary>
-		/// The database is initialized and ready for use, but upgrading is not supported/available.
+		///     The database is initialized and ready for use, but upgrading is not supported/available.
 		/// </summary>
 		ReadyUnknown = 3,
 

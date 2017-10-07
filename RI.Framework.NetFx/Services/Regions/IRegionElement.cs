@@ -25,9 +25,9 @@ namespace RI.Framework.Services.Regions
 		///     The element was activated.
 		/// </summary>
 		/// <remarks>
-		/// <note type="note">
-		/// Do not call this method directly, it is intended to be called from an <see cref="IRegionAdapter"/> implementation.
-		/// </note>
+		///     <note type="note">
+		///         Do not call this method directly, it is intended to be called from an <see cref="IRegionAdapter" /> implementation.
+		///     </note>
 		/// </remarks>
 		void Activated ();
 
@@ -35,12 +35,12 @@ namespace RI.Framework.Services.Regions
 		///     Determines whether the element allows being navigated away.
 		/// </summary>
 		/// <returns>
-		/// true if the current element allows navigation away from, false otherwise.
+		///     true if the current element allows navigation away from, false otherwise.
 		/// </returns>
 		/// <remarks>
-		/// <note type="note">
-		/// Do not call this method directly, it is intended to be called from an <see cref="IRegionAdapter"/> implementation.
-		/// </note>
+		///     <note type="note">
+		///         Do not call this method directly, it is intended to be called from an <see cref="IRegionAdapter" /> implementation.
+		///     </note>
 		/// </remarks>
 		bool CanNavigateFrom ();
 
@@ -48,12 +48,12 @@ namespace RI.Framework.Services.Regions
 		///     Determines whether the element allows being navigated to.
 		/// </summary>
 		/// <returns>
-		/// true if the current element allows navigation to, false otherwise.
+		///     true if the current element allows navigation to, false otherwise.
 		/// </returns>
 		/// <remarks>
-		/// <note type="note">
-		/// Do not call this method directly, it is intended to be called from an <see cref="IRegionAdapter"/> implementation.
-		/// </note>
+		///     <note type="note">
+		///         Do not call this method directly, it is intended to be called from an <see cref="IRegionAdapter" /> implementation.
+		///     </note>
 		/// </remarks>
 		bool CanNavigateTo ();
 
@@ -61,9 +61,9 @@ namespace RI.Framework.Services.Regions
 		///     The element was deactivated.
 		/// </summary>
 		/// <remarks>
-		/// <note type="note">
-		/// Do not call this method directly, it is intended to be called from an <see cref="IRegionAdapter"/> implementation.
-		/// </note>
+		///     <note type="note">
+		///         Do not call this method directly, it is intended to be called from an <see cref="IRegionAdapter" /> implementation.
+		///     </note>
 		/// </remarks>
 		void Deactivated ();
 
@@ -71,9 +71,9 @@ namespace RI.Framework.Services.Regions
 		///     The element was navigated away from.
 		/// </summary>
 		/// <remarks>
-		/// <note type="note">
-		/// Do not call this method directly, it is intended to be called from an <see cref="IRegionAdapter"/> implementation.
-		/// </note>
+		///     <note type="note">
+		///         Do not call this method directly, it is intended to be called from an <see cref="IRegionAdapter" /> implementation.
+		///     </note>
 		/// </remarks>
 		void NavigatedFrom ();
 
@@ -81,9 +81,9 @@ namespace RI.Framework.Services.Regions
 		///     The element was navigated to.
 		/// </summary>
 		/// <remarks>
-		/// <note type="note">
-		/// Do not call this method directly, it is intended to be called from an <see cref="IRegionAdapter"/> implementation.
-		/// </note>
+		///     <note type="note">
+		///         Do not call this method directly, it is intended to be called from an <see cref="IRegionAdapter" /> implementation.
+		///     </note>
 		/// </remarks>
 		void NavigatedTo ();
 	}

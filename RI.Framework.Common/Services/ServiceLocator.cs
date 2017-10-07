@@ -35,9 +35,9 @@ namespace RI.Framework.Services
 	///         It can only be used when working with types, not with names.
 	///         The connection to the singletons is enabled by default.
 	///     </para>
-	/// <para>
-	/// By default, if <see cref="Translate"/> is not handled, <see cref="CompositionContainer.GetNameOfType"/> is used to translate a type to a name.
-	/// </para>
+	///     <para>
+	///         By default, if <see cref="Translate" /> is not handled, <see cref="CompositionContainer.GetNameOfType" /> is used to translate a type to a name.
+	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	public static class ServiceLocator
@@ -78,10 +78,10 @@ namespace RI.Framework.Services
 		#region Static Properties/Indexer
 
 		/// <summary>
-		/// Gets a dependency resolver which uses <see cref="ServiceLocator"/>.
+		///     Gets a dependency resolver which uses <see cref="ServiceLocator" />.
 		/// </summary>
 		/// <value>
-		/// A dependency resolver which uses <see cref="ServiceLocator"/>.
+		///     A dependency resolver which uses <see cref="ServiceLocator" />.
 		/// </value>
 		public static IDependencyResolver Resolver { get; }
 
@@ -179,7 +179,7 @@ namespace RI.Framework.Services
 		#region Static Methods
 
 		/// <summary>
-		///     Binds the service locator to a specified dependency resolver (e.g. <see cref="CompositionContainer"/>) which is then used for service lookup.
+		///     Binds the service locator to a specified dependency resolver (e.g. <see cref="CompositionContainer" />) which is then used for service lookup.
 		/// </summary>
 		/// <param name="dependencyResolver"> The dependency resolver to bind to. </param>
 		/// <remarks>
@@ -393,7 +393,7 @@ namespace RI.Framework.Services
 		}
 
 		/// <summary>
-		///     Unbinds the service locator from a specified dependency resolver (e.g. <see cref="CompositionContainer"/>) which is then no longer used for service lookup.
+		///     Unbinds the service locator from a specified dependency resolver (e.g. <see cref="CompositionContainer" />) which is then no longer used for service lookup.
 		/// </summary>
 		/// <param name="dependencyResolver"> The dependency resolver to unbind from. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="dependencyResolver" /> is null. </exception>
@@ -510,9 +510,15 @@ namespace RI.Framework.Services
 		#endregion
 
 
+
+
+		#region Type: ServiceLocatorResolver
+
 		private sealed class ServiceLocatorResolver : IDependencyResolver
 		{
-			object IDependencyResolver.GetInstance(Type type)
+			#region Interface: IDependencyResolver
+
+			object IDependencyResolver.GetInstance (Type type)
 			{
 				if (type == null)
 				{
@@ -527,7 +533,7 @@ namespace RI.Framework.Services
 				return ServiceLocator.GetInstance(type);
 			}
 
-			object IDependencyResolver.GetInstance(string name)
+			object IDependencyResolver.GetInstance (string name)
 			{
 				if (name == null)
 				{
@@ -542,12 +548,12 @@ namespace RI.Framework.Services
 				return ServiceLocator.GetInstance(name);
 			}
 
-			T IDependencyResolver.GetInstance<T>()
+			T IDependencyResolver.GetInstance <T> ()
 			{
 				return (T)((IDependencyResolver)this).GetInstance(typeof(T));
 			}
 
-			List<object> IDependencyResolver.GetInstances(Type type)
+			List<object> IDependencyResolver.GetInstances (Type type)
 			{
 				if (type == null)
 				{
@@ -562,7 +568,7 @@ namespace RI.Framework.Services
 				return new List<object>(ServiceLocator.GetInstances(type));
 			}
 
-			List<object> IDependencyResolver.GetInstances(string name)
+			List<object> IDependencyResolver.GetInstances (string name)
 			{
 				if (name == null)
 				{
@@ -577,10 +583,14 @@ namespace RI.Framework.Services
 				return new List<object>(ServiceLocator.GetInstances(name));
 			}
 
-			List<T> IDependencyResolver.GetInstances<T>()
+			List<T> IDependencyResolver.GetInstances <T> ()
 			{
 				return ((IDependencyResolver)this).GetInstances(typeof(T)).Cast<T>();
 			}
+
+			#endregion
 		}
+
+		#endregion
 	}
 }

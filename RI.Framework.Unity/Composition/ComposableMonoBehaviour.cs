@@ -54,12 +54,19 @@ namespace RI.Framework.Composition
 			return instance;
 		}
 
+		#endregion
 
-		/// <inheritdoc />
-		public bool LoggingEnabled { get; set; } = true;
+
+
+
+		#region Interface: ILogSource
 
 		/// <inheritdoc />
 		public Utilities.Logging.ILogger Logger { get; set; } = LogLocator.Logger;
+
+
+		/// <inheritdoc />
+		public bool LoggingEnabled { get; set; } = true;
 
 		#endregion
 	}

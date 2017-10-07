@@ -43,9 +43,9 @@ namespace RI.Framework.Services.Logging.Writers
 		///     <note type="implement">
 		///         If the implemented log writer does not support cleanup of old log messages, this method should do simply nothing.
 		///     </note>
-		/// <note type="note">
-		/// Do not call this method directly, it is intended to be called from an <see cref="ILogService"/> implementation.
-		/// </note>
+		///     <note type="note">
+		///         Do not call this method directly, it is intended to be called from an <see cref="ILogService" /> implementation.
+		///     </note>
 		/// </remarks>
 		void Cleanup (DateTime retentionDate);
 
@@ -62,9 +62,9 @@ namespace RI.Framework.Services.Logging.Writers
 		///         The <paramref name="threadId" /> is not necessarily a technical relevant ID and its meaning is undefined.
 		///         It is only used to distinguish log messages coming from different threads.
 		///     </para>
-		/// <note type="note">
-		/// Do not call this method directly, it is intended to be called from an <see cref="ILogService"/> implementation.
-		/// </note>
+		///     <note type="note">
+		///         Do not call this method directly, it is intended to be called from an <see cref="ILogService" /> implementation.
+		///     </note>
 		/// </remarks>
 		void Log (DateTime timestamp, int threadId, LogLevel severity, string source, string message);
 	}

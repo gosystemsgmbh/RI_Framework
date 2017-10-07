@@ -95,6 +95,14 @@ namespace RI.Framework.Threading.Dispatcher
 		#region Instance Properties/Indexer
 
 		/// <summary>
+		///     Gets the delegate executed by this operation.
+		/// </summary>
+		/// <value>
+		///     The delegate executed by this operation.
+		/// </value>
+		public Delegate Action { get; }
+
+		/// <summary>
 		///     Gets the exception which occurred during execution of the delegate associated with this dispatcher operation.
 		/// </summary>
 		/// <value>
@@ -160,6 +168,28 @@ namespace RI.Framework.Threading.Dispatcher
 		}
 
 		/// <summary>
+		///     Gets the total time in milliseconds this dispatcher operation was executing within the dispatcher.
+		/// </summary>
+		/// <value>
+		///     The total time in milliseconds this dispatcher operation was executing within the dispatcher.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         The executing time does only include the time the operation was using dispatcher resources, but does not include time which was spent in another thread (e.g. when the operation is a task which uses other threads).
+		///     </para>
+		/// </remarks>
+		public int RunTimeMilliseconds
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return (int)this.RunTimeMillisecondsInternal;
+				}
+			}
+		}
+
+		/// <summary>
 		///     Gets the current state of the dispatcher operation.
 		/// </summary>
 		/// <value>
@@ -184,59 +214,15 @@ namespace RI.Framework.Threading.Dispatcher
 		}
 
 		/// <summary>
-		/// Gets the total time in milliseconds this dispatcher operation was executing within the dispatcher.
+		///     Gets the number of watchdog events for this operation.
 		/// </summary>
 		/// <value>
-		/// The total time in milliseconds this dispatcher operation was executing within the dispatcher.
+		///     The number of watchdog events for this operation.
 		/// </value>
 		/// <remarks>
-		/// <para>
-		/// The executing time does only include the time the operation was using dispatcher resources, but does not include time which was spent in another thread (e.g. when the operation is a task which uses other threads).
-		/// </para>
-		/// </remarks>
-		public int RunTimeMilliseconds
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					return (int)this.RunTimeMillisecondsInternal;
-				}
-			}
-		}
-
-		/// <summary>
-		/// Gets the time in milliseconds this dispatcher operation was executing within the dispatcher since its last watchdog event.
-		/// </summary>
-		/// <value>
-		/// The time in milliseconds this dispatcher operation was executing within the dispatcher since its last watchdog event.
-		/// </value>
-		/// <remarks>
-		/// <para>
-		/// The executing time does only include the time the operation was using dispatcher resources, but does not include time which was spent in another thread (e.g. when the operation is a task which uses other threads).
-		/// </para>
-		/// </remarks>
-		public int WatchdogTimeMilliseconds
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					return (int)this.WatchdogTimeMillisecondsInternal;
-				}
-			}
-		}
-
-		/// <summary>
-		/// Gets the number of watchdog events for this operation.
-		/// </summary>
-		/// <value>
-		/// The number of watchdog events for this operation.
-		/// </value>
-		/// <remarks>
-		/// <para>
-		/// When a watchdog event occurs, this counter is already incremented, for example the first watchdog events has thsi property set to 1.
-		/// </para>
+		///     <para>
+		///         When a watchdog event occurs, this counter is already incremented, for example the first watchdog events has thsi property set to 1.
+		///     </para>
 		/// </remarks>
 		public int WatchdogEvents
 		{
@@ -250,12 +236,26 @@ namespace RI.Framework.Threading.Dispatcher
 		}
 
 		/// <summary>
-		/// Gets the delegate executed by this operation.
+		///     Gets the time in milliseconds this dispatcher operation was executing within the dispatcher since its last watchdog event.
 		/// </summary>
 		/// <value>
-		/// The delegate executed by this operation.
+		///     The time in milliseconds this dispatcher operation was executing within the dispatcher since its last watchdog event.
 		/// </value>
-		public Delegate Action { get; }
+		/// <remarks>
+		///     <para>
+		///         The executing time does only include the time the operation was using dispatcher resources, but does not include time which was spent in another thread (e.g. when the operation is a task which uses other threads).
+		///     </para>
+		/// </remarks>
+		public int WatchdogTimeMilliseconds
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return (int)this.WatchdogTimeMillisecondsInternal;
+				}
+			}
+		}
 
 		internal ThreadDispatcher Dispatcher { get; }
 		internal ThreadDispatcherExecutionContext ExecutionContext { get; set; }
@@ -263,14 +263,14 @@ namespace RI.Framework.Threading.Dispatcher
 		internal object[] Parameters { get; }
 		internal int Priority { get; }
 
-		private int Stage { get; set; }
-		private Task Task { get; set; }
+		internal double RunTimeMillisecondsInternal { get; set; }
+		internal int WatchdogEventsInternal { get; set; }
+		internal double WatchdogTimeMillisecondsInternal { get; set; }
 		private ManualResetEvent OperationDone { get; set; }
 		private TaskCompletionSource<object> OperationDoneTask { get; set; }
 
-		internal double RunTimeMillisecondsInternal { get; set; }
-		internal double WatchdogTimeMillisecondsInternal { get; set; }
-		internal int WatchdogEventsInternal { get; set; }
+		private int Stage { get; set; }
+		private Task Task { get; set; }
 
 		#endregion
 
@@ -604,6 +604,21 @@ namespace RI.Framework.Threading.Dispatcher
 			}
 		}
 
+		private void EvaluateTask (out object result, out Exception exception, out bool canceled)
+		{
+			result = null;
+			exception = this.Task.Exception;
+			canceled = this.Task.IsCanceled;
+
+			if (this.Task.Status == TaskStatus.RanToCompletion)
+			{
+				Type taskType = this.Task.GetType();
+				PropertyInfo resultProperty = taskType.GetProperty(nameof(Task<object>.Result), BindingFlags.Instance | BindingFlags.Public);
+				MethodInfo resultGetter = resultProperty?.GetGetMethod(false);
+				result = resultGetter?.Invoke(this.Task, null);
+			}
+		}
+
 		private bool ExecuteCore (out object result, out Exception exception, out bool canceled)
 		{
 			if (this.Stage == 0)
@@ -624,10 +639,7 @@ namespace RI.Framework.Threading.Dispatcher
 					{
 						this.Stage = 1;
 
-						this.Task.ContinueWith((t, s) =>
-						{
-							this.Dispatcher.EnqueueOperation(this);
-						}, null, TaskContinuationOptions.DenyChildAttach | TaskContinuationOptions.LazyCancellation | TaskContinuationOptions.RunContinuationsAsynchronously);
+						this.Task.ContinueWith((t, s) => { this.Dispatcher.EnqueueOperation(this); }, null, TaskContinuationOptions.DenyChildAttach | TaskContinuationOptions.LazyCancellation | TaskContinuationOptions.RunContinuationsAsynchronously);
 
 						result = null;
 						exception = null;
@@ -651,21 +663,6 @@ namespace RI.Framework.Threading.Dispatcher
 			}
 
 			throw new InvalidOperationException("Invalid stage: " + this.Stage);
-		}
-
-		private void EvaluateTask (out object result, out Exception exception, out bool canceled)
-		{
-			result = null;
-			exception = this.Task.Exception;
-			canceled = this.Task.IsCanceled;
-
-			if (this.Task.Status == TaskStatus.RanToCompletion)
-			{
-				Type taskType = this.Task.GetType();
-				PropertyInfo resultProperty = taskType.GetProperty(nameof(Task<object>.Result), BindingFlags.Instance | BindingFlags.Public);
-				MethodInfo resultGetter = resultProperty?.GetGetMethod(false);
-				result = resultGetter?.Invoke(this.Task, null);
-			}
 		}
 
 		private object ExecuteCoreAction ()

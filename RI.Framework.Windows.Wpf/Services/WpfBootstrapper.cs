@@ -7,6 +7,9 @@ using System.Windows.Threading;
 using RI.Framework.Composition.Catalogs;
 using RI.Framework.Utilities.Logging;
 
+
+
+
 namespace RI.Framework.Services
 {
 	/// <summary>
@@ -21,6 +24,39 @@ namespace RI.Framework.Services
 	public abstract class WpfBootstrapper <TApplication> : WindowsBootstrapper<TApplication>
 		where TApplication : Application
 	{
+		#region Instance Constructor/Destructor
+
+		/// <summary>
+		///     Creates a new instance of <see cref="WpfBootstrapper{TApplication}" />
+		/// </summary>
+		protected WpfBootstrapper ()
+		{
+			this.DispatcherExceptionHandler = this.HandleDispatcherException;
+		}
+
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
+
+		private DispatcherUnhandledExceptionEventHandler DispatcherExceptionHandler { get; }
+
+		#endregion
+
+
+
+
+		#region Instance Methods
+
+		private void HandleDispatcherException (object sender, DispatcherUnhandledExceptionEventArgs args) => this.StartExceptionHandling(args.Exception);
+
+		#endregion
+
+
+
+
 		#region Overrides
 
 		/// <summary>
@@ -38,7 +74,7 @@ namespace RI.Framework.Services
 			if (!this.DebuggerAttached)
 			{
 				//TODO: Detach handler
-				this.Application.DispatcherUnhandledException += (s, a) => this.StartExceptionHandling(a.Exception);
+				this.Application.DispatcherUnhandledException += this.DispatcherExceptionHandler;
 			}
 
 			this.Application.ShutdownMode = System.Windows.ShutdownMode.OnExplicitShutdown;
@@ -113,6 +149,24 @@ namespace RI.Framework.Services
 		protected override void DispatchStopOperations (Delegate action, params object[] args)
 		{
 			this.Application.Dispatcher.BeginInvoke(DispatcherPriority.SystemIdle, new Action<Delegate, List<object>>((x, y) => x.DynamicInvoke(y.ToArray())), action, args.ToList());
+		}
+
+		/// <summary>
+		///     Called after shutdown to cleanup all bootstrapper resources.
+		/// </summary>
+		/// <remarks>
+		///     <note type="implement">
+		///         The default implementation calls <see cref="IDisposable.Dispose" /> on <see cref="Bootstrapper.Application" /> and then <see cref="Bootstrapper.Container" />.
+		///     </note>
+		/// </remarks>
+		protected override void DoCleanup ()
+		{
+			if (this.Application != null)
+			{
+				this.Application.DispatcherUnhandledException -= this.DispatcherExceptionHandler;
+			}
+
+			base.DoCleanup();
 		}
 
 		/// <summary>
