@@ -16,7 +16,10 @@ namespace RI.Framework.Data.Database.Upgrading
 		protected override SqlServerDatabaseVersionUpgradeStep CreateProcessingStep (int sourceVersion, string resourceName)
 		{
 			SqlServerDatabaseVersionUpgradeStep upgradeStep = new SqlServerDatabaseVersionUpgradeStep(sourceVersion);
-			upgradeStep.AddScript(resourceName, DatabaseProcessingStepTransactionRequirement.Required);
+			if (resourceName != null)
+			{
+				upgradeStep.AddScript(resourceName, DatabaseProcessingStepTransactionRequirement.Required);
+			}
 			return upgradeStep;
 		}
 

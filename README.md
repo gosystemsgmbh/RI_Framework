@@ -73,6 +73,7 @@
   - [ ] Run tests with oldest and newest Unity version (update compatibility page)
 - [ ] Documentation
   - [ ] NetFx: Simple documentation
+  - [ ] Unity: Review documentation
   - [ ] Unity: Update bootstrapper screenshot and options description
   - [ ] Unity: Uncomments after implementation
   - [ ] Unity: Performance
@@ -83,10 +84,11 @@
 ## Backlog
 
 - [ ] Wishlist
-- [ ] Provide all possible overloads for timeout and cancellation token
+- [ ] Timeout and cancellation token overloads
 
 ## Proposals
 
-- [ ] Unify cross-platform model and code
+- [ ] Cross-platform model and code unification
 - [ ] AOT checking utility
-- [ ] Migrate Common to Shared (own DLL using .NET Standard?)
+- [ ] .NET Standard
+- [ ] Common to Shared migration

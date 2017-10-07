@@ -56,7 +56,7 @@ namespace RI.Framework.Mathematic.Controllers
 	/// </code>
 	/// </example>
 	[SuppressMessage("ReSharper", "InconsistentNaming")]
-	public sealed class PIDController
+	public sealed class PIDController : IController
 	{
 		#region Instance Constructor/Destructor
 
@@ -73,128 +73,95 @@ namespace RI.Framework.Mathematic.Controllers
 
 
 
-		#region Instance Fields
+		#region Instance Properties/Indexer
 
 		/// <summary>
+		///     Gets or sets the current differential value used for the differential component.
+		/// </summary>
+		/// <value>
 		///     The current differential value used for the differential component.
-		/// </summary>
-		public float Differential;
+		/// </value>
+		public float Differential { get; set; }
 
 		/// <summary>
+		///     Gets or sets the current error (set point minus process variable).
+		/// </summary>
+		/// <value>
 		///     The current error (set point minus process variable).
-		/// </summary>
-		public float Error;
+		/// </value>
+		public float Error { get; set; }
 
 		/// <summary>
+		///     Gets or sets the current integral value used for the integral component.
+		/// </summary>
+		/// <value>
 		///     The current integral value used for the integral component.
-		/// </summary>
-		public float Integral;
+		/// </value>
+		public float Integral { get; set; }
 
 		/// <summary>
+		///     Gets or sets the differential coefficient.
+		/// </summary>
+		/// <value>
 		///     The differential coefficient.
-		/// </summary>
-		public float KD;
+		/// </value>
+		public float KD { get; set; }
 
 		/// <summary>
+		///     Gets or sets the integral coefficient.
+		/// </summary>
+		/// <value>
 		///     The integral coefficient.
-		/// </summary>
-		public float KI;
+		/// </value>
+		public float KI { get; set; }
 
 		/// <summary>
+		///     Gets or sets the proportional coefficient.
+		/// </summary>
+		/// <value>
 		///     The proportional coefficient.
-		/// </summary>
-		public float KP;
-
-		/// <summary>
-		///     The number of computations performed since the instance was created or the last time <see cref="Reset" /> was called.
-		/// </summary>
-		public int Loops;
-
-		/// <summary>
-		///     The current output (clamped by <see cref="OutputMin" /> and <see cref="OutputMax" />).
-		/// </summary>
-		public float Output;
-
-		/// <summary>
-		///     Maximum allowed value of the output.
-		/// </summary>
-		public float OutputMax;
-
-		/// <summary>
-		///     Minimum allowed value of the output.
-		/// </summary>
-		public float OutputMin;
-
-		/// <summary>
-		///     The current output (not clamped).
-		/// </summary>
-		public float OutputUnclamped;
-
-		/// <summary>
-		///     The last process variable.
-		/// </summary>
-		public float ProcessVariable;
-
-		/// <summary>
-		///     The last set point.
-		/// </summary>
-		public float SetPoint;
+		/// </value>
+		public float KP { get; set; }
 
 		#endregion
 
 
 
 
-		#region Instance Methods
+		#region Interface: IController
 
-		/// <summary>
-		///     Keeps the set point and computes the controller output using a timestep of 1.0.
-		/// </summary>
-		/// <param name="processVariable"> The process variable (feedback or measurement from the controlled process). </param>
-		/// <returns>
-		///     The computet and clamped output (same as <see cref="Output" />.
-		/// </returns>
-		public float ComputeKeepSetPoint (float processVariable)
-		{
-			return this.ComputeNewSetPoint(this.SetPoint, processVariable, 1.0f);
-		}
+		/// <inheritdoc />
+		public int Loops { get; set; }
 
-		/// <summary>
-		///     Keeps the set point and computes the controller output using a given timestep.
-		/// </summary>
-		/// <param name="processVariable"> The process variable (feedback or measurement from the controlled process). </param>
-		/// <param name="timestep"> The timestep for the current process value. </param>
-		/// <returns>
-		///     The computet and clamped output (same as <see cref="Output" />.
-		/// </returns>
-		public float ComputeKeepSetPoint (float processVariable, float timestep)
-		{
-			return this.ComputeNewSetPoint(this.SetPoint, processVariable, timestep);
-		}
+		/// <inheritdoc />
+		public float Output { get; set; }
 
-		/// <summary>
-		///     Sets a new set point and computes the controller output using a timestep of 1.0.
-		/// </summary>
-		/// <param name="setPoint"> The used set point (the desired value). </param>
-		/// <param name="processVariable"> The process variable (feedback or measurement from the controlled process). </param>
-		/// <returns>
-		///     The computet and clamped output (same as <see cref="Output" />.
-		/// </returns>
-		public float ComputeNewSetPoint (float setPoint, float processVariable)
-		{
-			return this.ComputeNewSetPoint(setPoint, processVariable, 1.0f);
-		}
+		/// <inheritdoc />
+		public float OutputMax { get; set; }
 
-		/// <summary>
-		///     Sets a new set point and computes the controller output using a given timestep.
-		/// </summary>
-		/// <param name="setPoint"> The used set point (the desired value). </param>
-		/// <param name="processVariable"> The process variable (feedback or measurement from the controlled process). </param>
-		/// <param name="timestep"> The timestep for the current process value. </param>
-		/// <returns>
-		///     The computet and clamped output (same as <see cref="Output" />.
-		/// </returns>
-		public float ComputeNewSetPoint (float setPoint, float processVariable, float timestep)
+		/// <inheritdoc />
+		public float OutputMin { get; set; }
+
+		/// <inheritdoc />
+		public float OutputUnclamped { get; set; }
+
+		/// <inheritdoc />
+		public float ProcessVariable { get; set; }
+
+		/// <inheritdoc />
+		public float SetPoint { get; set; }
+
+		/// <inheritdoc />
+		public float ComputeKeepSetPoint (float processVariable) => this.ComputeWithNewSetPoint(this.SetPoint, processVariable, 1.0f);
+
+		/// <inheritdoc />
+		public float ComputeKeepSetPoint (float processVariable, float timestep) => this.ComputeWithNewSetPoint(this.SetPoint, processVariable, timestep);
+
+		/// <inheritdoc />
+		public float ComputeWithNewSetPoint (float setPoint, float processVariable) => this.ComputeWithNewSetPoint(setPoint, processVariable, 1.0f);
+
+		/// <inheritdoc />
+		public float ComputeWithNewSetPoint (float setPoint, float processVariable, float timestep)
 		{
 			this.Loops++;
 
@@ -228,9 +195,7 @@ namespace RI.Framework.Mathematic.Controllers
 			return output;
 		}
 
-		/// <summary>
-		///     Resets the controller values to their initial values.
-		/// </summary>
+		/// <inheritdoc />
 		public void Reset ()
 		{
 			this.Loops = 0;

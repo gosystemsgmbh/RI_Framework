@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 using Ionic.Zip;
 
 using RI.Framework.Collections;
+using RI.Framework.Collections.DirectLinq;
 using RI.Framework.IO.Files;
 using RI.Framework.IO.INI;
 using RI.Framework.IO.Paths;

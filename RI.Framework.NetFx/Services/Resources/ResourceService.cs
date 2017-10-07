@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 using RI.Framework.Collections;
+using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Composition;
 using RI.Framework.Composition.Model;
 using RI.Framework.Services.Resources.Converters;
@@ -10,8 +10,6 @@ using RI.Framework.Services.Resources.Sources;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Logging;
-
-using DirectLinqExtensions = RI.Framework.Collections.DirectLinq.DirectLinqExtensions;
 
 
 
@@ -97,8 +95,8 @@ namespace RI.Framework.Services.Resources
 			HashSet<IResourceConverter> currentConverters = new HashSet<IResourceConverter>(this.Converters);
 			HashSet<IResourceConverter> lastConverters = new HashSet<IResourceConverter>(this.ConvertersUpdated);
 
-			HashSet<IResourceConverter> newConverters = DirectLinqExtensions.Except(currentConverters, lastConverters);
-			HashSet<IResourceConverter> oldConverters = DirectLinqExtensions.Except(lastConverters, currentConverters);
+			HashSet<IResourceConverter> newConverters = currentConverters.Except(lastConverters);
+			HashSet<IResourceConverter> oldConverters = lastConverters.Except(currentConverters);
 
 			this.ConvertersUpdated.Clear();
 			this.ConvertersUpdated.AddRange(currentConverters);
@@ -126,8 +124,8 @@ namespace RI.Framework.Services.Resources
 			HashSet<IResourceSource> currentSources = new HashSet<IResourceSource>(this.Sources);
 			HashSet<IResourceSource> lastSources = new HashSet<IResourceSource>(this.SourcesUpdated);
 
-			HashSet<IResourceSource> newSources = DirectLinqExtensions.Except(currentSources, lastSources);
-			HashSet<IResourceSource> oldSources = DirectLinqExtensions.Except(lastSources, currentSources);
+			HashSet<IResourceSource> newSources = currentSources.Except(lastSources);
+			HashSet<IResourceSource> oldSources = lastSources.Except(currentSources);
 
 			this.SourcesUpdated.Clear();
 			this.SourcesUpdated.AddRange(currentSources);

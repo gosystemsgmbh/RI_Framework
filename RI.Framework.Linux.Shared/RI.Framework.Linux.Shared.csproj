@@ -45,8 +45,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\Linux\Cryptography\_NamespaceDoc.cs" />
     <Compile Include="Utilities\Linux\LinuxShell.cs" />
-    <Compile Include="Utilities\Linux\UniqueIdentification.cs" />
+    <Compile Include="Utilities\Linux\Cryptography\UniqueIdentification.cs" />
     <Compile Include="Utilities\Linux\_NamespaceDoc.cs" />
   </ItemGroup>
   <ItemGroup>

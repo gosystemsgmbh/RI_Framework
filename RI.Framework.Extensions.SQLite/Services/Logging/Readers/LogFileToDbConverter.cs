@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
+using RI.Framework.Collections.DirectLinq;
 using RI.Framework.IO.Paths;
 using RI.Framework.Services.Logging.Writers;
 using RI.Framework.Utilities;

@@ -188,8 +188,6 @@ Composition
 Services
 --------
  
- # (.NET) Bus
-
  * (.NET) Licensing (LicensingService, FileLicenseStorage)
 
  * (WpfToolkit) DockingManagerRegionAdapter
@@ -222,8 +220,8 @@ Services
 Data
 ----
 
- * (.NET) Reporting base
- * (EPPlus) Reporting Excel
+ = (.NET) Reporting base
+ = (EPPlus) Reporting Excel
 
  * (.NET) IRepositorySet: Add entity and property descriptions functionality
 
@@ -237,9 +235,6 @@ Mathematic
 
  - (Common) MathUtils: CirclePosition
  - (Common) MathUtils: EllipsePosition
-
- - (Common) IController
- - (Common) NonlinearController
 
  - (Common) Bezier/Spline curves
 

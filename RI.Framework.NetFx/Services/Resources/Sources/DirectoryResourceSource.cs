@@ -166,8 +166,8 @@ namespace RI.Framework.Services.Resources.Sources
 			HashSet<DirectoryPath> currentDirectories = unload ? new HashSet<DirectoryPath>() : new HashSet<DirectoryPath>(this.Directory.GetSubdirectories(false, false));
 			HashSet<DirectoryPath> lastDirectories = new HashSet<DirectoryPath>(this.Sets.Keys);
 
-			HashSet<DirectoryPath> newDirectories = DirectLinqExtensions.Except(currentDirectories, lastDirectories);
-			HashSet<DirectoryPath> oldDirectories = DirectLinqExtensions.Except(lastDirectories, currentDirectories);
+			HashSet<DirectoryPath> newDirectories = currentDirectories.Except(currentDirectories);
+			HashSet<DirectoryPath> oldDirectories = lastDirectories.Except(lastDirectories);
 
 			foreach (DirectoryPath directory in newDirectories)
 			{

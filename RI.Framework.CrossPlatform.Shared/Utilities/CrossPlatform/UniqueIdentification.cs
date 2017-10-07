@@ -20,14 +20,9 @@ namespace RI.Framework.Utilities.CrossPlatform
 		/// <returns>
 		///     The ID as a GUID.
 		/// </returns>
-		/// <remarks>
-		///     <note type="important">
-		///         <see cref="GetDomainId" /> returns an empty <see cref="Guid" /> on non-Windows platforms.
-		///     </note>
-		/// </remarks>
 		public static Guid GetDomainId ()
 		{
-			return RuntimeEnvironment.IsUnixPlatform() ? Guid.Empty : Windows.Cryptography.UniqueIdentification.GetDomainId();
+			return RuntimeEnvironment.IsUnixPlatform() ? Linux.Cryptography.UniqueIdentification.GetDomainId() : Windows.Cryptography.UniqueIdentification.GetDomainId();
 		}
 
 		/// <summary>
@@ -38,7 +33,7 @@ namespace RI.Framework.Utilities.CrossPlatform
 		/// </returns>
 		public static Guid GetMachineId ()
 		{
-			return RuntimeEnvironment.IsUnixPlatform() ? Linux.UniqueIdentification.GetMachineId() : Windows.Cryptography.UniqueIdentification.GetMachineId();
+			return RuntimeEnvironment.IsUnixPlatform() ? Linux.Cryptography.UniqueIdentification.GetMachineId() : Windows.Cryptography.UniqueIdentification.GetMachineId();
 		}
 
 		/// <summary>
@@ -49,7 +44,7 @@ namespace RI.Framework.Utilities.CrossPlatform
 		/// </returns>
 		public static Guid GetUserId ()
 		{
-			return RuntimeEnvironment.IsUnixPlatform() ? Linux.UniqueIdentification.GetUserId() : Windows.Cryptography.UniqueIdentification.GetUserId();
+			return RuntimeEnvironment.IsUnixPlatform() ? Linux.Cryptography.UniqueIdentification.GetUserId() : Windows.Cryptography.UniqueIdentification.GetUserId();
 		}
 
 		#endregion

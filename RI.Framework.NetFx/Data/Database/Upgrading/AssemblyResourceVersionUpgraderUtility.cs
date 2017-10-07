@@ -4,10 +4,13 @@ using System.Data.Common;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 
+using RI.Framework.Collections;
 using RI.Framework.Data.Database.Scripts;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
+using RI.Framework.Utilities.Logging;
 
 
 
@@ -25,10 +28,20 @@ namespace RI.Framework.Data.Database.Upgrading
 	/// <typeparam name="TConfiguration"> The type of database configuration. </typeparam>
 	/// <remarks>
 	///     <para>
-	///         It is assumed that each version upgrade step has its own script file which is added to an assembly as an embedded resource and all script files share a common name format (e.g. <c> upgrade01 </c>).
+	///         It is assumed that:
+	///         Each version upgrade step has its own script file which is added to the assembly as an embedded resource and all script files share a common name format (e.g. <c> upgrade01 </c>)
+	///         -and/or-
+	///         Each version upgrade step has its own implementation of <see cref="IAssemblyResourceVersionUpgraderStepConfigurator{TProcessingStep,TConnection,TTransaction,TConnectionStringBuilder,TManager,TConfiguration}" /> which is marked with <see cref="AssemblyResourceVersionUpgraderStepAttribute" /> in the assembly.
 	///     </para>
+	///     <para>
+	///         Script files and <see cref="IAssemblyResourceVersionUpgraderStepConfigurator{TProcessingStep,TConnection,TTransaction,TConnectionStringBuilder,TManager,TConfiguration}" /> implementations can be combined, meaning that a single upgrade step can have both at the same time.
+	///     </para>
+	///     <note type="note">
+	///         Implementations of <see cref="IAssemblyResourceVersionUpgraderStepConfigurator{TProcessingStep,TConnection,TTransaction,TConnectionStringBuilder,TManager,TConfiguration}" /> must have a parameterless constructor in order to be usable.
+	///         A new instance is created for each call to <see cref="GetUpgradeStepsFromAssembly" />.
+	///     </note>
 	/// </remarks>
-	public abstract class AssemblyResourceVersionUpgraderUtility <TProcessingStep, TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration>
+	public abstract class AssemblyResourceVersionUpgraderUtility <TProcessingStep, TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration> : LogSource
 		where TProcessingStep : IDatabaseProcessingStep<TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration>
 		where TConnection : DbConnection
 		where TTransaction : DbTransaction
@@ -42,6 +55,7 @@ namespace RI.Framework.Data.Database.Upgrading
 		///     Extracts all verion upgrade steps from an assembly.
 		/// </summary>
 		/// <param name="assembly"> The assembly. </param>
+		/// <param name="encoding"> The used encoding or null to use the default encoding <see cref="AssemblyRessourceScriptLocator.DefaultEncoding" />. </param>
 		/// <param name="nameFormat"> The common name format of the embedded script files. </param>
 		/// <param name="steps"> Returns the list of upgrade steps. </param>
 		/// <param name="scriptLocator"> Returns the script locator for the assembly. </param>
@@ -56,7 +70,7 @@ namespace RI.Framework.Data.Database.Upgrading
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="assembly" /> or <paramref name="nameFormat" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="nameFormat" /> is an empty string. </exception>
-		public bool GetUpgradeStepsFromAssembly (Assembly assembly, string nameFormat, out List<TProcessingStep> steps, out AssemblyRessourceScriptLocator scriptLocator)
+		public bool GetUpgradeStepsFromAssembly (Assembly assembly, Encoding encoding, string nameFormat, out List<TProcessingStep> steps, out AssemblyRessourceScriptLocator scriptLocator)
 		{
 			if (assembly == null)
 			{
@@ -73,29 +87,80 @@ namespace RI.Framework.Data.Database.Upgrading
 				throw new EmptyStringArgumentException(nameof(nameFormat));
 			}
 
-			steps = new List<TProcessingStep>();
-			string[] names = assembly.GetManifestResourceNames();
-			for (int i1 = 0; i1 < names.Length; i1++)
+			Dictionary<int, IAssemblyResourceVersionUpgraderStepConfigurator<TProcessingStep, TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration>> configurators = new Dictionary<int, IAssemblyResourceVersionUpgraderStepConfigurator<TProcessingStep, TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration>>();
+			Type[] types = assembly.GetTypes();
+			foreach (Type type in types)
 			{
-				string candidate = string.Format(CultureInfo.InvariantCulture, nameFormat, i1);
-				if (names.Contains(candidate, StringComparerEx.InvariantCultureIgnoreCase))
+				if ((!type.IsClass) || type.IsAbstract)
 				{
-					TProcessingStep step = this.CreateProcessingStep(i1, candidate);
-					steps.Add(step);
+					continue;
 				}
-				else
+
+				if (!typeof(IAssemblyResourceVersionUpgraderStepConfigurator<TProcessingStep, TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration>).IsAssignableFrom(type))
+				{
+					continue;
+				}
+
+				AssemblyResourceVersionUpgraderStepAttribute attribute = type.GetCustomAttribute<AssemblyResourceVersionUpgraderStepAttribute>();
+				if (attribute == null)
+				{
+					this.Log(LogLevel.Warning, "Found type without attribute: {0}", type.Name);
+					continue;
+				}
+
+				if (configurators.ContainsKey(attribute.SourceVersion))
+				{
+					this.Log(LogLevel.Warning, "Found same source version twice: {0}", attribute.SourceVersion);
+					continue;
+				}
+
+				IAssemblyResourceVersionUpgraderStepConfigurator<TProcessingStep, TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration> instance = (IAssemblyResourceVersionUpgraderStepConfigurator<TProcessingStep, TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration>)Activator.CreateInstance(type);
+				configurators.Add(attribute.SourceVersion, instance);
+			}
+
+			string[] names = assembly.GetManifestResourceNames();
+
+			steps = new List<TProcessingStep>();
+			for (int i1 = 0; i1 < (names.Length + configurators.Count + 1); i1++)
+			{
+				string script = string.Format(CultureInfo.InvariantCulture, nameFormat, i1);
+				IAssemblyResourceVersionUpgraderStepConfigurator<TProcessingStep, TConnection, TTransaction, TConnectionStringBuilder, TManager, TConfiguration> configurator = configurators.GetValueOrDefault(i1);
+
+				bool hasScript = names.Contains(script, StringComparerEx.InvariantCultureIgnoreCase);
+				bool hasConfigurator = configurator != null;
+
+				TProcessingStep step = default(TProcessingStep);
+				if (hasScript && hasConfigurator)
+				{
+					step = this.CreateProcessingStep(i1, null);
+					configurator.ConfigureStep(step, i1, script);
+				}
+				else if (hasScript)
+				{
+					step = this.CreateProcessingStep(i1, script);
+				}
+				else if (hasConfigurator)
+				{
+					step = this.CreateProcessingStep(i1, null);
+					configurator.ConfigureStep(step, i1, null);
+				}
+
+				if (step == null)
 				{
 					break;
 				}
+
+				steps.Add(step);
 			}
 
-			scriptLocator = null;
-			if (steps.Count > 0)
+			if (steps.Count == 0)
 			{
-				scriptLocator = new AssemblyRessourceScriptLocator(assembly);
+				scriptLocator = null;
+				return false;
 			}
 
-			return steps.Count > 0;
+			scriptLocator = new AssemblyRessourceScriptLocator(assembly, encoding);
+			return true;
 		}
 
 		#endregion
@@ -109,10 +174,15 @@ namespace RI.Framework.Data.Database.Upgrading
 		///     Creates the actual processing step.
 		/// </summary>
 		/// <param name="sourceVersion"> The source version. </param>
-		/// <param name="resourceName"> The corresponding embedded script file name. </param>
+		/// <param name="resourceName"> The corresponding embedded script file name or null if no script file is associated with this processing step. </param>
 		/// <returns>
 		///     The created processing step.
 		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         <paramref name="resourceName" /> is also null when there is a script and a configurator (<see cref="IAssemblyResourceVersionUpgraderStepConfigurator{TProcessingStep,TConnection,TTransaction,TConnectionStringBuilder,TManager,TConfiguration}" />), where the script is not associated when creating the step but when using the configurator.
+		///     </para>
+		/// </remarks>
 		protected abstract TProcessingStep CreateProcessingStep (int sourceVersion, string resourceName);
 
 		#endregion

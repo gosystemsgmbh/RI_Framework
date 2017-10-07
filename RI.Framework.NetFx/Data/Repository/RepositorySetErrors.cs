@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 
 using RI.Framework.Collections;
-using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 

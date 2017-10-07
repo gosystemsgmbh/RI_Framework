@@ -79,6 +79,7 @@ namespace RI.Framework.Services.Logging.Readers
 		/// <value>
 		///     The total number of log entries read.
 		/// </value>
+		/// TODO: Use number extension and remove using of System.Linq
 		public int TotalEntries => this.Entries.Sum(x => x.Item2);
 
 		#endregion

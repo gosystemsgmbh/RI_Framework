@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
 
+using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Composition.Model;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Xml;

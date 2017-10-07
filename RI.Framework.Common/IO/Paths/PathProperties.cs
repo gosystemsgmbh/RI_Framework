@@ -280,7 +280,7 @@ namespace RI.Framework.IO.Paths
 						continue;
 					}
 
-					if ((chr < (char)32) || (DirectLinqExtensions.Contains(PathProperties.InvalidPathCharacters, chr)))
+					if ((chr < (char)32) || (PathProperties.InvalidPathCharacters.Contains(chr)))
 					{
 						type = PathType.Invalid;
 						error = PathError.InvalidCharacter;

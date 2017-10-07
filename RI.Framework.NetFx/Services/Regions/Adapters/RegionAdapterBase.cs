@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 using RI.Framework.Collections.Comparison;
 using RI.Framework.Collections.DirectLinq;
@@ -270,7 +269,7 @@ namespace RI.Framework.Services.Regions.Adapters
 			}
 
 			List<object> currentElements = this.Get(container);
-			if (Enumerable.Any(currentElements, x => object.ReferenceEquals(x, element)))
+			if (currentElements.Any(x => object.ReferenceEquals(x, element)))
 			{
 				return true;
 			}
@@ -314,7 +313,7 @@ namespace RI.Framework.Services.Regions.Adapters
 			List<object> existingElements = this.Get(container);
 			List<object> sortedElements = this.GetSortedElements(existingElements);
 
-			if (!DirectLinqExtensions.SequenceEqual(sortedElements, existingElements, CollectionComparerFlags.ReferenceEquality))
+			if (!sortedElements.SequenceEqual(existingElements, CollectionComparerFlags.ReferenceEquality))
 			{
 				this.Clear(container);
 				foreach (object sortedElement in sortedElements)

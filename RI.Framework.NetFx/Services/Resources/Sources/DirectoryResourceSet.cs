@@ -366,7 +366,7 @@ namespace RI.Framework.Services.Resources.Sources
 
 			existingFiles.Remove(this.SettingsFile);
 
-			HashSet<FilePath> newFiles = DirectLinqExtensions.Except(existingFiles, from x in this.Resources select x.Value.Item1);
+			HashSet<FilePath> newFiles = existingFiles.Except(from x in this.Resources select x.Value.Item1);
 
 			newFiles.RemoveWhere(x => this.Source.IgnoredExtensions.Contains(x.ExtensionWithoutDot));
 

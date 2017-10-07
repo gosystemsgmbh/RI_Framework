@@ -16,7 +16,10 @@ namespace RI.Framework.Data.Database.Upgrading
 		protected override SQLiteDatabaseVersionUpgradeStep CreateProcessingStep (int sourceVersion, string resourceName)
 		{
 			SQLiteDatabaseVersionUpgradeStep upgradeStep = new SQLiteDatabaseVersionUpgradeStep(sourceVersion);
-			upgradeStep.AddScript(resourceName, DatabaseProcessingStepTransactionRequirement.Required);
+			if (resourceName != null)
+			{
+				upgradeStep.AddScript(resourceName, DatabaseProcessingStepTransactionRequirement.Required);
+			}
 			return upgradeStep;
 		}
 

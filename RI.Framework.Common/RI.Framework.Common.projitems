@@ -122,6 +122,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)IO\Text\TextReaderExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\Text\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\_NamespaceDoc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Mathematic\Controllers\IController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mathematic\Controllers\PIDController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mathematic\Controllers\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Mathematic\MathConstD.cs" />

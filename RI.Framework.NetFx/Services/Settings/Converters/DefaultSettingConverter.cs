@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
-using System.Linq;
 
+using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Composition.Model;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;

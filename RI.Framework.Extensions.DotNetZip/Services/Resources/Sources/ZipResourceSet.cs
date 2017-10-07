@@ -407,7 +407,7 @@ namespace RI.Framework.Services.Resources.Sources
 				List<FilePath> existingFiles = (from x in entries where !x.IsDirectory select new FilePath(x.FileName)).ToList();
 				existingFiles.Remove(this.SettingsFile);
 
-				HashSet<FilePath> newFiles = DirectLinqExtensions.Except(existingFiles, from x in this.Resources select x.Value.Item1);
+				HashSet<FilePath> newFiles = existingFiles.Except(from x in this.Resources select x.Value.Item1);
 
 				foreach (FilePath file in newFiles)
 				{

@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Linq;
 using System.Text;
 
 using Ionic.Zip;
 
 using RI.Framework.Collections;
+using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Composition.Model;
 using RI.Framework.IO.Files;
 using RI.Framework.IO.INI;
@@ -15,8 +16,6 @@ using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.ObjectModel;
-
-using DirectLinqExtensions = RI.Framework.Collections.DirectLinq.DirectLinqExtensions;
 
 
 
@@ -194,8 +193,8 @@ namespace RI.Framework.Services.Backup.Storages
 			HashSet<FilePath> currentFiles = unload ? new HashSet<FilePath>() : new HashSet<FilePath>(this.Directory.GetFiles(false, this.Recursive, this.FilePattern));
 			HashSet<FilePath> lastFiles = new HashSet<FilePath>(this.Sets.Keys);
 
-			HashSet<FilePath> newFiles = DirectLinqExtensions.Except(currentFiles, lastFiles);
-			HashSet<FilePath> oldFiles = DirectLinqExtensions.Except(lastFiles, currentFiles);
+			HashSet<FilePath> newFiles = currentFiles.Except(lastFiles);
+			HashSet<FilePath> oldFiles = lastFiles.Except(currentFiles);
 
 			foreach (FilePath file in newFiles)
 			{
@@ -527,6 +526,7 @@ namespace RI.Framework.Services.Backup.Storages
 		}
 
 		/// <inheritdoc />
+		[SuppressMessage("ReSharper", "ReturnValueOfPureMethodIsNotUsed")]
 		public IBackupSet TryImportBackupFromFile (FilePath file)
 		{
 			if (file == null)
@@ -563,7 +563,7 @@ namespace RI.Framework.Services.Backup.Storages
 				{
 					using (ZipFile zipFile = ZipFile.Read(targetFile))
 					{
-						DirectLinqExtensions.ToArray(zipFile);
+						zipFile.ToArray();
 					}
 				}
 				catch (Exception exception)

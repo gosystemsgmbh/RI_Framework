@@ -5,7 +5,7 @@ using System.Text;
 
 
 
-namespace RI.Framework.Utilities.Linux
+namespace RI.Framework.Utilities.Linux.Cryptography
 {
 	/// <summary>
 	///     Provides functionality to obtain various unique IDs.
@@ -14,7 +14,7 @@ namespace RI.Framework.Utilities.Linux
 	{
 		#region Constants
 
-		private const string InnerGuid = "D2810CA2E2B74A1CB859644FD5BE32C2";
+		private const string InnerGuid = "1D670704B745436798037597933204BB";
 
 		#endregion
 
@@ -22,6 +22,19 @@ namespace RI.Framework.Utilities.Linux
 
 
 		#region Static Methods
+
+		/// <summary>
+		///     Gets an anonymous ID identifying the current network domain.
+		/// </summary>
+		/// <returns>
+		///     The ID as a GUID.
+		/// </returns>
+		public static Guid GetDomainId ()
+		{
+			string cipher = Environment.UserDomainName + "\\" + UniqueIdentification.InnerGuid;
+			Guid guid = UniqueIdentification.CreateGuidFromString(cipher);
+			return guid;
+		}
 
 		/// <summary>
 		///     Gets an anonymous ID identifying the current machine.

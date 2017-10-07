@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
 
+using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Composition.Catalogs;
 using RI.Framework.Utilities.Logging;
 
@@ -73,7 +73,6 @@ namespace RI.Framework.Services
 
 			if (!this.DebuggerAttached)
 			{
-				//TODO: Detach handler
 				this.Application.DispatcherUnhandledException += this.DispatcherExceptionHandler;
 			}
 

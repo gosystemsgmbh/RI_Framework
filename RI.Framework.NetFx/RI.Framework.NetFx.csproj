@@ -49,18 +49,6 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Bus\Brokers\LocalBroker.cs" />
-    <None Include="Bus\BusTransmission.cs" />
-    <None Include="Bus\Connections\IBusConnection.cs" />
-    <None Include="Bus\BusContext.cs" />
-    <None Include="Bus\Containers\IBusContainer.cs" />
-    <None Include="Bus\Dispatchers\IBusDispatcher.cs" />
-    <None Include="Bus\Endpoints\IBusEndpoint.cs" />
-    <None Include="Bus\BusNode.cs" />
-    <None Include="Bus\InvalidBusConfigurationException.cs" />
-    <None Include="Bus\Pipelines\DefaultBusPipeline.cs" />
-    <None Include="Bus\Pipelines\IBusPipeline.cs" />
-    <None Include="Bus\Serialization\IBusSerializer.cs" />
     <Compile Include="Data\Database\Backup\DatabaseBackupCreator.cs" />
     <Compile Include="Data\Database\Backup\IDatabaseBackupCreator.cs" />
     <Compile Include="Data\Database\Backup\_NamespaceDoc.cs" />
@@ -86,8 +74,11 @@
     <Compile Include="Data\Database\DatabaseProcessingStep.cs" />
     <Compile Include="Data\Database\DatabaseProcessingStepDelegate.cs" />
     <Compile Include="Data\Database\DatabaseProcessingStepTransactionRequirement.cs" />
+    <Compile Include="Data\Database\Upgrading\AssemblyResourceVersionUpgraderStepConfigurator.cs" />
+    <Compile Include="Data\Database\Upgrading\AssemblyResourceVersionUpgraderStepAttribute.cs" />
     <Compile Include="Data\Database\Upgrading\AssemblyResourceVersionUpgraderUtility.cs" />
     <Compile Include="Data\Database\Upgrading\DatabaseVersionUpgrader.cs" />
+    <Compile Include="Data\Database\Upgrading\IAssemblyResourceVersionUpgraderStepConfigurator.cs" />
     <Compile Include="Data\Database\Upgrading\IDatabaseVersionUpgrader.cs" />
     <Compile Include="Data\Database\Upgrading\_NamespaceDoc.cs" />
     <Compile Include="Data\Database\Versioning\DatabaseVersionDetector.cs" />

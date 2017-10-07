@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
 
+using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Composition.Model;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;

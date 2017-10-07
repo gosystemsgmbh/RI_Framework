@@ -1404,7 +1404,7 @@ namespace RI.Framework.Composition
 			lock (this.SyncRoot)
 			{
 				List<object> instances = this.GetOrCreateInstancesInternal(exportName, typeof(T), false);
-				return DirectLinqExtensions.Select(instances, x => (T)x);
+				return instances.Select(x => (T)x);
 			}
 		}
 
@@ -1539,7 +1539,7 @@ namespace RI.Framework.Composition
 			lock (this.SyncRoot)
 			{
 				List<object> instances = this.GetOrCreateInstancesInternal(exportName, typeof(T), true);
-				return DirectLinqExtensions.Select(instances, x => (T)x);
+				return instances.Select(x => (T)x);
 			}
 		}
 
@@ -2013,7 +2013,7 @@ namespace RI.Framework.Composition
 
 		private void AddInstanceInternal (object instance, string name)
 		{
-			if (DirectLinqExtensions.Any(this.Instances, x => object.ReferenceEquals(x.Value, instance) && CompositionContainer.NameComparer.Equals(x.Name, name)))
+			if (this.Instances.Any(x => object.ReferenceEquals(x.Value, instance) && CompositionContainer.NameComparer.Equals(x.Name, name)))
 			{
 				return;
 			}
@@ -2023,7 +2023,7 @@ namespace RI.Framework.Composition
 
 		private void AddTypeInternal (Type type, string name, bool privateExport)
 		{
-			if (DirectLinqExtensions.Any(this.Types, x => (x.Type == type) && CompositionContainer.NameComparer.Equals(x.Name, name)))
+			if (this.Types.Any(x => (x.Type == type) && CompositionContainer.NameComparer.Equals(x.Name, name)))
 			{
 				return;
 			}
@@ -2228,7 +2228,7 @@ namespace RI.Framework.Composition
 				{
 					MethodInfo[] allMethods = type.GetMethods(BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.FlattenHierarchy);
 
-					List<MethodInfo> methods = DirectLinqExtensions.Where(allMethods, x => (x.GetCustomAttributes(typeof(ExportCreatorAttribute), true).Length > 0) && (x.ReturnType != typeof(void)) && (compatibleType.IsAssignableFrom(x.ReturnType)) && (x.GetParameters().Length >= 1) && (x.GetParameters()[0].ParameterType == typeof(Type)));
+					List<MethodInfo> methods = allMethods.Where(x => (x.GetCustomAttributes(typeof(ExportCreatorAttribute), true).Length > 0) && (x.ReturnType != typeof(void)) && (compatibleType.IsAssignableFrom(x.ReturnType)) && (x.GetParameters().Length >= 1) && (x.GetParameters()[0].ParameterType == typeof(Type)));
 
 					if (methods.Count > 1)
 					{
@@ -2260,7 +2260,7 @@ namespace RI.Framework.Composition
 				{
 					ConstructorInfo[] allConstructors = type.GetConstructors(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
-					List<ConstructorInfo> declaredConstructors = DirectLinqExtensions.Where(allConstructors, x => x.GetCustomAttributes(typeof(ExportConstructorAttribute), false).Length > 0);
+					List<ConstructorInfo> declaredConstructors = allConstructors.Where(x => x.GetCustomAttributes(typeof(ExportConstructorAttribute), false).Length > 0);
 
 					if (declaredConstructors.Count > 1)
 					{
@@ -2346,9 +2346,9 @@ namespace RI.Framework.Composition
 				exportingInstance?.AddedToContainer(name, this);
 			}
 
-			HashSetExtensions.AddRange(instances, newInstances);
+			instances.AddRange(newInstances);
 
-			return DirectLinqExtensions.Where(instances, x => compatibleType.IsAssignableFrom(x.GetType()));
+			return instances.Where(x => compatibleType.IsAssignableFrom(x.GetType()));
 		}
 
 		private void HandleCatalogRecomposeRequest (object sender, EventArgs e)
@@ -2385,7 +2385,7 @@ namespace RI.Framework.Composition
 
 			catalog.RecomposeRequested -= this.CatalogRecomposeRequestHandler;
 
-			ICollectionExtensions.RemoveAll(this.Catalogs, catalog);
+			this.Catalogs.RemoveAll(catalog);
 		}
 
 		private void RemoveCreatorInternal (CompositionCreator creator)
@@ -2395,7 +2395,7 @@ namespace RI.Framework.Composition
 				return;
 			}
 
-			ICollectionExtensions.RemoveAll(this.Creators, creator);
+			this.Creators.RemoveAll(creator);
 		}
 
 		private void RemoveInstanceInternal (object instance, string name)
@@ -2450,7 +2450,7 @@ namespace RI.Framework.Composition
 				{
 					if (CompositionContainer.ValidateExportInstance(item.Value))
 					{
-						CompositionInstanceItem instanceItem = DirectLinqExtensions.FirstOrDefault(compositionItem.Instances, x => object.ReferenceEquals(x.Instance, item.Value));
+						CompositionInstanceItem instanceItem = compositionItem.Instances.FirstOrDefault(x => object.ReferenceEquals(x.Instance, item.Value));
 						if (instanceItem == null)
 						{
 							instanceItem = new CompositionInstanceItem(item.Value);
@@ -2469,7 +2469,7 @@ namespace RI.Framework.Composition
 				{
 					if (CompositionContainer.ValidateExportType(item.Type))
 					{
-						CompositionTypeItem typeItem = DirectLinqExtensions.FirstOrDefault(compositionItem.Types, x => (x.Type == item.Type));
+						CompositionTypeItem typeItem = compositionItem.Types.FirstOrDefault(x => (x.Type == item.Type));
 						if (typeItem == null)
 						{
 							typeItem = new CompositionTypeItem(item.Type, item.PrivateExport);
@@ -2503,7 +2503,7 @@ namespace RI.Framework.Composition
 				compositionItem.Value.ResetChecked();
 			}
 
-			IDictionaryExtensions.RemoveWhere(this.Composition, x => (x.Value.Instances.Count == 0) && (x.Value.Types.Count == 0)).ForEach(x => this.Log(LogLevel.Debug, "Removing export: {0}", x.Key));
+			this.Composition.RemoveWhere(x => (x.Value.Instances.Count == 0) && (x.Value.Types.Count == 0)).ForEach(x => this.Log(LogLevel.Debug, "Removing export: {0}", x.Key));
 
 			foreach (KeyValuePair<object, HashSet<string>> newInstance in newInstances)
 			{

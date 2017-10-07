@@ -179,8 +179,8 @@ namespace RI.Framework.Services.Resources.Sources
 			HashSet<FilePath> currentFiles = unload ? new HashSet<FilePath>() : new HashSet<FilePath>(this.Directory.GetFiles(false, this.Recursive, this.FilePattern));
 			HashSet<FilePath> lastFiles = new HashSet<FilePath>(this.Sets.Keys);
 
-			HashSet<FilePath> newFiles = DirectLinqExtensions.Except(currentFiles, lastFiles);
-			HashSet<FilePath> oldFiles = DirectLinqExtensions.Except(lastFiles, currentFiles);
+			HashSet<FilePath> newFiles = currentFiles.Except(lastFiles);
+			HashSet<FilePath> oldFiles = lastFiles.Except(currentFiles);
 
 			foreach (FilePath file in newFiles)
 			{
