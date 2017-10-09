@@ -25,7 +25,8 @@ namespace RI.Framework.Data.Database.Versioning
 	///         The script must return -1 to indicate when the database is damaged or in an invalid state or 0 to indicate that the database does not yet exist and needs to be created.
 	///     </para>
 	///     <para>
-	///         The version detection fails if the script contains more than one batch.
+	///         If the script contains multiple batches, each batch is executed consecutively.
+	///         The execution stops on the first bacth which returns -1.
 	///     </para>
 	/// </remarks>
 	public sealed class SqlServerDatabaseVersionDetector : DatabaseVersionDetector<SqlConnection, SqlTransaction, SqlConnectionStringBuilder, SqlServerDatabaseManager, SqlServerDatabaseManagerConfiguration>
@@ -91,28 +92,27 @@ namespace RI.Framework.Data.Database.Versioning
 
 			try
 			{
-				SqlConnectionStringBuilder connectionString = new SqlConnectionStringBuilder(manager.Configuration.ConnectionString.ConnectionString);
-
 				List<string> batches = manager.GetScriptBatch(this.ScriptName, true);
 				if (batches == null)
 				{
 					throw new Exception("Batch retrieval failed for script: " + (this.ScriptName ?? "[null]"));
 				}
-				if (batches.Count != 1)
-				{
-					throw new Exception("Not exactly one batch in script: " + (this.ScriptName ?? "[null]"));
-				}
 
-				using (SqlConnection connection = new SqlConnection(connectionString.ConnectionString))
+				using (SqlConnection connection = manager.CreateInternalConnection(null))
 				{
-					connection.Open();
-
 					using (SqlTransaction transaction = connection.BeginTransaction(IsolationLevel.Serializable))
 					{
-						using (SqlCommand command = new SqlCommand(batches[0], connection, transaction))
+						foreach (string batch in batches)
 						{
-							object value = command.ExecuteScalar();
-							version = value.Int32FromSqlServerResult() ?? -1;
+							using (SqlCommand command = new SqlCommand(batch, connection, transaction))
+							{
+								object value = command.ExecuteScalar();
+								version = value.Int32FromSqlServerResult() ?? -1;
+								if (version == -1)
+								{
+									break;
+								}
+							}
 						}
 
 						transaction.Rollback();

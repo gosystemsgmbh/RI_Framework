@@ -210,6 +210,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Exceptions\NotReadableStreamArgumentException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Exceptions\NotSeekableStreamArgumentException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Exceptions\NotWriteableStreamArgumentException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Exceptions\StartupException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Exceptions\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Globalization\CultureInfoExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Globalization\_NamespaceDoc.cs" />

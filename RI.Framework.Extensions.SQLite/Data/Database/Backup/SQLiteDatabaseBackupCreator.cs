@@ -129,8 +129,6 @@ namespace RI.Framework.Data.Database.Backup
 
 				try
 				{
-					SQLiteConnectionStringBuilder sourceConnectionString = new SQLiteConnectionStringBuilder(manager.Configuration.ConnectionString.ConnectionString);
-
 					SQLiteConnectionStringBuilder targetConnectionString = connectionStringBuilder ?? new SQLiteConnectionStringBuilder(connectionString ?? manager.Configuration.ConnectionString.ConnectionString);
 					if (backupFile != null)
 					{
@@ -142,12 +140,10 @@ namespace RI.Framework.Data.Database.Backup
 						targetConnectionString.DataSource = tempFile.File.PathResolved;
 					}
 
-					this.Log(LogLevel.Information, "Beginning SQLite database backup: Source=[{0}]; Target=[{1}]", sourceConnectionString.ConnectionString, backupTarget);
+					this.Log(LogLevel.Information, "Beginning SQLite database backup: Source=[{0}]; Target=[{1}]", manager.Configuration.ConnectionString, backupTarget);
 
-					using (SQLiteConnection source = new SQLiteConnection(sourceConnectionString.ConnectionString))
+					using (SQLiteConnection source = manager.CreateInternalConnection(null, false))
 					{
-						source.Open();
-
 						if (this.PreprocessingStep != null)
 						{
 							using (SQLiteTransaction transaction = this.PreprocessingStep.RequiresTransaction ? source.BeginTransaction(IsolationLevel.Serializable) : null)
@@ -157,7 +153,7 @@ namespace RI.Framework.Data.Database.Backup
 							}
 						}
 
-						using (SQLiteConnection target = connection ?? new SQLiteConnection(targetConnectionString.ConnectionString))
+						using (SQLiteConnection target = connection ?? manager.CreateInternalConnection(targetConnectionString.ConnectionString, false))
 						{
 							if (target.State != ConnectionState.Open)
 							{
@@ -189,7 +185,7 @@ namespace RI.Framework.Data.Database.Backup
 						}
 					}
 
-					this.Log(LogLevel.Information, "Finished SQLite database backup: Source=[{0}]; Target=[{1}]", sourceConnectionString.ConnectionString, backupTarget);
+					this.Log(LogLevel.Information, "Finished SQLite database backup: Source=[{0}]; Target=[{1}]", manager.Configuration.ConnectionString, backupTarget);
 
 					return true;
 				}

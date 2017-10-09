@@ -45,6 +45,7 @@
     <None Include="NuGet\Extended.Wpf.Toolkit.3.2.0.nupkg" />
     <None Include="NuGet\Fluent.Ribbon.4.0.3.394.nupkg" />
     <None Include="NuGet\Fluent.Ribbon.5.0.2.46.nupkg" />
+    <None Include="NuGet\Mono.Posix-4.5.4.5.0.nupkg" />
     <None Include="NuGet\Nancy.1.4.3.nupkg" />
     <None Include="NuGet\Nancy.1.4.4.nupkg" />
     <None Include="NuGet\Newtonsoft.Json.10.0.3.nupkg" />

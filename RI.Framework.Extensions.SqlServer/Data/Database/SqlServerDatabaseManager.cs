@@ -39,20 +39,22 @@ namespace RI.Framework.Data.Database
 		protected override bool SupportsUpgradeImpl => true;
 
 		/// <inheritdoc />
-		protected override SqlConnection CreateConnectionImpl (bool readOnly)
-		{
-			SqlConnectionStringBuilder connectionString = new SqlConnectionStringBuilder(this.Configuration.ConnectionString.ConnectionString);
-
-			SqlConnection connection = new SqlConnection(connectionString.ConnectionString);
-			connection.Open();
-
-			return connection;
-		}
+		protected override SqlConnection CreateConnectionImpl (bool readOnly) => this.CreateInternalConnection(null);
 
 		/// <inheritdoc />
 		protected override IDatabaseProcessingStep<SqlConnection, SqlTransaction, SqlConnectionStringBuilder, SqlServerDatabaseManager, SqlServerDatabaseManagerConfiguration> CreateProcessingStepImpl ()
 		{
 			return new SqlServerDatabaseProcessingStep();
+		}
+
+		internal SqlConnection CreateInternalConnection(string connectionStringOverride)
+		{
+			SqlConnectionStringBuilder connectionString = new SqlConnectionStringBuilder(connectionStringOverride ?? this.Configuration.ConnectionString.ConnectionString);
+
+			SqlConnection connection = new SqlConnection(connectionString.ConnectionString);
+			connection.Open();
+
+			return connection;
 		}
 
 		#endregion

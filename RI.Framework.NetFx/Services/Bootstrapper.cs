@@ -431,6 +431,14 @@ namespace RI.Framework.Services
 		protected abstract Guid DetermineUserId ();
 
 		/// <summary>
+		///     Called to determine whether the startup user has elevated privileges.
+		/// </summary>
+		/// <returns>
+		///     true if the startup user has elevated privileges, false otherwise or if the information is not available.
+		/// </returns>
+		protected abstract bool DetermineStartupUserElevated ();
+
+		/// <summary>
 		///     Instructs the application to start running.
 		/// </summary>
 		/// <remarks>
@@ -655,6 +663,7 @@ namespace RI.Framework.Services
 		{
 			Dictionary<string, string> additionalData = new Dictionary<string, string>(StringComparerEx.InvariantCultureIgnoreCase);
 			additionalData.Add(nameof(this.DebuggerAttached), this.DebuggerAttached.ToString());
+			additionalData.Add(nameof(this.StartupUserElevated), this.StartupUserElevated.ToString());
 			additionalData.Add(nameof(this.StartupCulture), this.StartupCulture?.ToString() ?? "[null]");
 			additionalData.Add(nameof(this.StartupUICulture), this.StartupUICulture?.ToString() ?? "[null]");
 			additionalData.Add(nameof(this.Machine64Bit), this.Machine64Bit.ToString());
@@ -1119,6 +1128,7 @@ namespace RI.Framework.Services
 		protected virtual void LogVariables ()
 		{
 			this.Log(LogLevel.Debug, "Debugger attached:     {0}", this.DebuggerAttached);
+			this.Log(LogLevel.Debug, "Startup user elevated: {0}", this.StartupUserElevated);
 			this.Log(LogLevel.Debug, "Startup culture:       {0}", this.StartupCulture?.Name ?? "[null]");
 			this.Log(LogLevel.Debug, "Startup UI culture:    {0}", this.StartupUICulture?.Name ?? "[null]");
 			this.Log(LogLevel.Debug, "Machine 64 bit:        {0}", this.Machine64Bit.ToString());
@@ -1242,6 +1252,9 @@ namespace RI.Framework.Services
 
 		/// <inheritdoc />
 		public bool DebuggerAttached { get; private set; }
+
+		/// <inheritdoc />
+		public bool StartupUserElevated { get; private set; }
 
 		/// <inheritdoc />
 		public Guid DomainId { get; private set; }
@@ -1435,6 +1448,8 @@ namespace RI.Framework.Services
 
 				this.Machine64Bit = Environment.Is64BitOperatingSystem;
 				this.Session64Bit = Environment.Is64BitProcess;
+
+				this.StartupUserElevated = this.DetermineStartupUserElevated();
 
 				this.ProcessCommandLine = this.DetermineProcessCommandLine();
 

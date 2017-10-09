@@ -69,7 +69,7 @@ namespace RI.Test.Framework.Mathematic.Controllers
 			test.OutputMin = 1.0f;
 			test.OutputMax = 10.0f;
 
-			test.ComputeNewSetPoint(10.0f, 0.0f, 1.0f);
+			test.ComputeWithNewSetPoint(10.0f, 0.0f, 1.0f);
 
 			if (test.Loops != 1)
 			{
@@ -120,7 +120,7 @@ namespace RI.Test.Framework.Mathematic.Controllers
 				throw new TestAssertionException();
 			}
 
-			test.ComputeNewSetPoint(10.0f, 0.0f, 2.0f);
+			test.ComputeWithNewSetPoint(10.0f, 0.0f, 2.0f);
 
 			if (test.Loops != 2)
 			{
@@ -171,7 +171,7 @@ namespace RI.Test.Framework.Mathematic.Controllers
 				throw new TestAssertionException();
 			}
 
-			test.ComputeNewSetPoint(5.0f, 5.0f, 3.0f);
+			test.ComputeWithNewSetPoint(5.0f, 5.0f, 3.0f);
 
 			if (test.Loops != 3)
 			{
@@ -222,7 +222,7 @@ namespace RI.Test.Framework.Mathematic.Controllers
 				throw new TestAssertionException();
 			}
 
-			test.ComputeNewSetPoint(5.0f, 20.0f, 0.5f);
+			test.ComputeWithNewSetPoint(5.0f, 20.0f, 0.5f);
 
 			if (test.Loops != 4)
 			{

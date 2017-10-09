@@ -98,26 +98,7 @@ namespace RI.Framework.Data.Database
 		protected override bool SupportsUpgradeImpl => true;
 
 		/// <inheritdoc />
-		protected override SQLiteConnection CreateConnectionImpl (bool readOnly)
-		{
-			SQLiteConnectionStringBuilder connectionString = new SQLiteConnectionStringBuilder(this.Configuration.ConnectionString.ConnectionString);
-			connectionString.ReadOnly = readOnly;
-
-			SQLiteConnection connection = new SQLiteConnection(connectionString.ConnectionString);
-			connection.Open();
-
-			if (this.Configuration.RegisterDefaultCollations)
-			{
-				this.RegisterCollations(connection);
-			}
-
-			if (this.Configuration.RegisterDefaultFunctions)
-			{
-				this.RegisterFunctions(connection);
-			}
-
-			return connection;
-		}
+		protected override SQLiteConnection CreateConnectionImpl (bool readOnly) => this.CreateInternalConnection(null, readOnly);
 
 		/// <inheritdoc />
 		protected override IDatabaseProcessingStep<SQLiteConnection, SQLiteTransaction, SQLiteConnectionStringBuilder, SQLiteDatabaseManager, SQLiteDatabaseManagerConfiguration> CreateProcessingStepImpl ()
@@ -136,6 +117,27 @@ namespace RI.Framework.Data.Database
 			}
 
 			return base.DetectStateAndVersionImpl(out state, out version);
+		}
+
+		internal SQLiteConnection CreateInternalConnection (string connectionStringOverride, bool readOnly)
+		{
+			SQLiteConnectionStringBuilder connectionString = new SQLiteConnectionStringBuilder(connectionStringOverride ?? this.Configuration.ConnectionString.ConnectionString);
+			connectionString.ReadOnly = readOnly;
+
+			SQLiteConnection connection = new SQLiteConnection(connectionString.ConnectionString);
+			connection.Open();
+
+			if (this.Configuration.RegisterDefaultCollations)
+			{
+				this.RegisterCollations(connection);
+			}
+
+			if (this.Configuration.RegisterDefaultFunctions)
+			{
+				this.RegisterFunctions(connection);
+			}
+
+			return connection;
 		}
 
 		#endregion

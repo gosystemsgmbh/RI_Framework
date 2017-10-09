@@ -160,10 +160,13 @@ namespace RI.Framework.Utilities.Text
 								key = key.Trim();
 							}
 
-							if (commandLine[i1] == '=')
+							if (i1 < commandLine.Length)
 							{
-								i1++;
-								hasValue = true;
+								if (commandLine[i1] == '=')
+								{
+									i1++;
+									hasValue = true;
+								}
 							}
 
 							string parameterKeyToAdd = key;

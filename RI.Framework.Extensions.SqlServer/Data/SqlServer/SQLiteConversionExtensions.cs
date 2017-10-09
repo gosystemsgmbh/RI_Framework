@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 
-
-
+using RI.Framework.Utilities;
 
 namespace RI.Framework.Data.SqlServer
 {
@@ -94,6 +93,11 @@ namespace RI.Framework.Data.SqlServer
 				return (testValue < int.MinValue) || (testValue > int.MaxValue) ? (int?)null : (int)testValue;
 			}
 
+			if (value is string)
+			{
+				return ((string)value).ToInt32Invariant();
+			}
+
 			return null;
 		}
 
@@ -173,6 +177,11 @@ namespace RI.Framework.Data.SqlServer
 			{
 				decimal testValue = (decimal)value;
 				return (testValue < long.MinValue) || (testValue > long.MaxValue) ? (long?)null : (long)testValue;
+			}
+
+			if (value is string)
+			{
+				return ((string)value).ToInt64Invariant();
 			}
 
 			return null;

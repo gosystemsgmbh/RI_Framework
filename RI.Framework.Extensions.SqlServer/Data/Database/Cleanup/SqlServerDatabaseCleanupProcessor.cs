@@ -98,14 +98,10 @@ namespace RI.Framework.Data.Database.Cleanup
 
 			try
 			{
-				SqlConnectionStringBuilder connectionString = new SqlConnectionStringBuilder(manager.Configuration.ConnectionString.ConnectionString);
+				this.Log(LogLevel.Information, "Beginning SQL Server database cleanup: Connection=[{0}]", manager.Configuration.ConnectionString);
 
-				this.Log(LogLevel.Information, "Beginning SQL Server database cleanup: Connection=[{0}]", connectionString.ConnectionString);
-
-				using (SqlConnection connection = new SqlConnection(connectionString.ConnectionString))
+				using (SqlConnection connection = manager.CreateInternalConnection(null))
 				{
-					connection.Open();
-
 					SqlServerDatabaseProcessingStep cleanupStep = this.CleanupStep;
 					if (cleanupStep == null)
 					{
@@ -121,7 +117,7 @@ namespace RI.Framework.Data.Database.Cleanup
 					}
 				}
 
-				this.Log(LogLevel.Information, "Finished SQL Server database cleanup: Connection=[{0}]", connectionString.ConnectionString);
+				this.Log(LogLevel.Information, "Finished SQL Server database cleanup: Connection=[{0}]", manager.Configuration.ConnectionString);
 
 				return true;
 			}

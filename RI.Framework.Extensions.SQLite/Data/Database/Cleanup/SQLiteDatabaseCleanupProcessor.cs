@@ -100,14 +100,10 @@ namespace RI.Framework.Data.Database.Cleanup
 
 			try
 			{
-				SQLiteConnectionStringBuilder connectionString = new SQLiteConnectionStringBuilder(manager.Configuration.ConnectionString.ConnectionString);
+				this.Log(LogLevel.Information, "Beginning SQLite database cleanup: Connection=[{0}]", manager.Configuration.ConnectionString);
 
-				this.Log(LogLevel.Information, "Beginning SQLite database cleanup: Connection=[{0}]", connectionString.ConnectionString);
-
-				using (SQLiteConnection connection = new SQLiteConnection(connectionString.ConnectionString))
+				using (SQLiteConnection connection = manager.CreateInternalConnection(null, false))
 				{
-					connection.Open();
-
 					SQLiteDatabaseProcessingStep cleanupStep = this.CleanupStep;
 					if (cleanupStep == null)
 					{
@@ -123,7 +119,7 @@ namespace RI.Framework.Data.Database.Cleanup
 					}
 				}
 
-				this.Log(LogLevel.Information, "Finished SQLite database cleanup: Connection=[{0}]", connectionString.ConnectionString);
+				this.Log(LogLevel.Information, "Finished SQLite database cleanup: Connection=[{0}]", manager.Configuration.ConnectionString);
 
 				return true;
 			}

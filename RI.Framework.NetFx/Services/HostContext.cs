@@ -1,8 +1,4 @@
-﻿using System;
-
-using RI.Framework.Services.Logging.Writers;
-using RI.Framework.Utilities;
-using RI.Framework.Utilities.ObjectModel;
+﻿using RI.Framework.Services.Logging.Writers;
 
 
 
@@ -12,7 +8,7 @@ namespace RI.Framework.Services
 	/// <summary>
 	///     Describes the hosting context of an application started by a bootstrapper.
 	/// </summary>
-	public class HostContext : ICloneable<HostContext>, ICloneable
+	public class HostContext
 	{
 		#region Instance Properties/Indexer
 
@@ -32,27 +28,13 @@ namespace RI.Framework.Services
 		/// </value>
 		public ILogWriter Logger { get; set; } = null;
 
-		#endregion
-
-
-
-
-		#region Interface: ICloneable<HostContext>
-
-		/// <inheritdoc />
-		public virtual HostContext Clone ()
-		{
-			HostContext clone = new HostContext();
-			clone.Logger = this.Logger?.CloneOrSelf();
-			clone.InstanceId = this.InstanceId;
-			return clone;
-		}
-
-		/// <inheritdoc />
-		object ICloneable.Clone ()
-		{
-			return this.Clone();
-		}
+		/// <summary>
+		///     Gets or sets whether the application runs as a service or daemon.
+		/// </summary>
+		/// <value>
+		///     true if the application runs as a service or daemon, false otherwise.
+		/// </value>
+		public bool IsService { get; set; } = false;
 
 		#endregion
 	}

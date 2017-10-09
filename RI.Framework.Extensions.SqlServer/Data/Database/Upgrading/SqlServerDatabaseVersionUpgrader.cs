@@ -126,9 +126,7 @@ namespace RI.Framework.Data.Database.Upgrading
 
 			try
 			{
-				SqlConnectionStringBuilder connectionString = new SqlConnectionStringBuilder(manager.Configuration.ConnectionString.ConnectionString);
-
-				this.Log(LogLevel.Information, "Beginning SQL Server database upgrade step: SourceVersion=[{0}]; Connection=[{1}]", sourceVersion, connectionString.ConnectionString);
+				this.Log(LogLevel.Information, "Beginning SQL Server database upgrade step: SourceVersion=[{0}]; Connection=[{1}]", sourceVersion, manager.Configuration.ConnectionString);
 
 				SqlServerDatabaseVersionUpgradeStep upgradeStep = this.UpgradeSteps.FirstOrDefault(x => x.SourceVersion == sourceVersion);
 				if (upgradeStep == null)
@@ -136,10 +134,8 @@ namespace RI.Framework.Data.Database.Upgrading
 					throw new Exception("No upgrade step found for source version: " + sourceVersion);
 				}
 
-				using (SqlConnection connection = new SqlConnection(connectionString.ConnectionString))
+				using (SqlConnection connection = manager.CreateInternalConnection(null))
 				{
-					connection.Open();
-
 					using (SqlTransaction transaction = upgradeStep.RequiresTransaction ? connection.BeginTransaction(IsolationLevel.Serializable) : null)
 					{
 						upgradeStep.Execute(manager, connection, transaction);
@@ -147,7 +143,7 @@ namespace RI.Framework.Data.Database.Upgrading
 					}
 				}
 
-				this.Log(LogLevel.Information, "Finished SQL Server database upgrade step: SourceVersion=[{0}]; Connection=[{1}]", sourceVersion, connectionString.ConnectionString);
+				this.Log(LogLevel.Information, "Finished SQL Server database upgrade step: SourceVersion=[{0}]; Connection=[{1}]", sourceVersion, manager.Configuration.ConnectionString);
 
 				return true;
 			}

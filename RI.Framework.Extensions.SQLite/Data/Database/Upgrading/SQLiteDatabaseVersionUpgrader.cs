@@ -128,9 +128,7 @@ namespace RI.Framework.Data.Database.Upgrading
 
 			try
 			{
-				SQLiteConnectionStringBuilder connectionString = new SQLiteConnectionStringBuilder(manager.Configuration.ConnectionString.ConnectionString);
-
-				this.Log(LogLevel.Information, "Beginning SQLite database upgrade step: SourceVersion=[{0}]; Connection=[{1}]", sourceVersion, connectionString.ConnectionString);
+				this.Log(LogLevel.Information, "Beginning SQLite database upgrade step: SourceVersion=[{0}]; Connection=[{1}]", sourceVersion, manager.Configuration.ConnectionString);
 
 				SQLiteDatabaseVersionUpgradeStep upgradeStep = this.UpgradeSteps.FirstOrDefault(x => x.SourceVersion == sourceVersion);
 				if (upgradeStep == null)
@@ -138,10 +136,8 @@ namespace RI.Framework.Data.Database.Upgrading
 					throw new Exception("No upgrade step found for source version: " + sourceVersion);
 				}
 
-				using (SQLiteConnection connection = new SQLiteConnection(connectionString.ConnectionString))
+				using (SQLiteConnection connection = manager.CreateInternalConnection(null, false))
 				{
-					connection.Open();
-
 					using (SQLiteTransaction transaction = upgradeStep.RequiresTransaction ? connection.BeginTransaction(IsolationLevel.Serializable) : null)
 					{
 						upgradeStep.Execute(manager, connection, transaction);
@@ -149,7 +145,7 @@ namespace RI.Framework.Data.Database.Upgrading
 					}
 				}
 
-				this.Log(LogLevel.Information, "Finished SQLite database upgrade step: SourceVersion=[{0}]; Connection=[{1}]", sourceVersion, connectionString.ConnectionString);
+				this.Log(LogLevel.Information, "Finished SQLite database upgrade step: SourceVersion=[{0}]; Connection=[{1}]", sourceVersion, manager.Configuration.ConnectionString);
 
 				return true;
 			}
