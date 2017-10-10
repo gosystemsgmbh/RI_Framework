@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 using RI.Framework.Utilities.Exceptions;
 
@@ -143,7 +144,7 @@ namespace RI.Framework.Data.Repository
 		/// <returns>
 		///     The sequence of all entities of this sets type.
 		/// </returns>
-		IEnumerable<object> GetAll ();
+		IQueryable<object> GetAll ();
 
 		/// <summary>
 		///     Gets the number of all entities of this sets type.
@@ -176,7 +177,7 @@ namespace RI.Framework.Data.Repository
 		/// </remarks>
 		/// <exception cref="ArgumentException"> <paramref name="filter" /> is an invalid filter object. </exception>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="pageIndex" /> or <paramref name="pageSize" /> is less than zero, <paramref name="pageIndex" /> is not zero when <paramref name="pageSize" /> is zero, or <paramref name="pageIndex" /> points to a page which does not exist. </exception>
-		IEnumerable<object> GetFiltered (object filter, object sort, int pageIndex, int pageSize, out int totalCount, out int entityCount, out int pageCount);
+		IQueryable<object> GetFiltered (object filter, object sort, int pageIndex, int pageSize, out int totalCount, out int entityCount, out int pageCount);
 
 		/// <summary>
 		///     Gets a sequence of filtered entities from an existing sequence of entities.
@@ -202,7 +203,7 @@ namespace RI.Framework.Data.Repository
 		/// </remarks>
 		/// <exception cref="ArgumentException"> <paramref name="filter" /> is an invalid filter object. </exception>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="pageIndex" /> or <paramref name="pageSize" /> is less than zero, <paramref name="pageIndex" /> is not zero when <paramref name="pageSize" /> is zero, or <paramref name="pageIndex" /> points to a page which does not exist. </exception>
-		IEnumerable<object> GetFiltered (IEnumerable entities, object filter, object sort, int pageIndex, int pageSize, out int totalCount, out int entityCount, out int pageCount);
+		IQueryable<object> GetFiltered (IEnumerable entities, object filter, object sort, int pageIndex, int pageSize, out int totalCount, out int entityCount, out int pageCount);
 
 		/// <summary>
 		///     Determines whether an entity has any pending changes.
@@ -370,7 +371,7 @@ namespace RI.Framework.Data.Repository
 		/// <returns>
 		///     The sequence of all entities of this sets type.
 		/// </returns>
-		new IEnumerable<T> GetAll ();
+		new IQueryable<T> GetAll ();
 
 		/// <summary>
 		///     Gets a sequence of filtered entities from this set.
@@ -395,7 +396,7 @@ namespace RI.Framework.Data.Repository
 		/// </remarks>
 		/// <exception cref="ArgumentException"> <paramref name="filter" /> is an invalid filter object. </exception>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="pageIndex" /> or <paramref name="pageSize" /> is less than zero, <paramref name="pageIndex" /> is not zero when <paramref name="pageSize" /> is zero, or <paramref name="pageIndex" /> points to a page which does not exist. </exception>
-		new IEnumerable<T> GetFiltered (object filter, object sort, int pageIndex, int pageSize, out int totalCount, out int filteredCount, out int pageCount);
+		new IQueryable<T> GetFiltered (object filter, object sort, int pageIndex, int pageSize, out int totalCount, out int filteredCount, out int pageCount);
 
 		/// <summary>
 		///     Gets a sequence of filtered entities from an existing sequence of entities.
@@ -421,7 +422,7 @@ namespace RI.Framework.Data.Repository
 		/// </remarks>
 		/// <exception cref="ArgumentException"> <paramref name="filter" /> is an invalid filter object. </exception>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="pageIndex" /> or <paramref name="pageSize" /> is less than zero, <paramref name="pageIndex" /> is not zero when <paramref name="pageSize" /> is zero, or <paramref name="pageIndex" /> points to a page which does not exist. </exception>
-		IEnumerable<T> GetFiltered (IEnumerable<T> entities, object filter, object sort, int pageIndex, int pageSize, out int totalCount, out int filteredCount, out int pageCount);
+		IQueryable<T> GetFiltered (IEnumerable<T> entities, object filter, object sort, int pageIndex, int pageSize, out int totalCount, out int filteredCount, out int pageCount);
 
 		/// <summary>
 		///     Determines whether an entity has any pending changes.

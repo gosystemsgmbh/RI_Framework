@@ -38,6 +38,16 @@ namespace RI.Framework.Data.EF.Filter
 		/// <inheritdoc />
 		IOrderedQueryable IEntityFilter.Filter (RepositoryDbContext repository, RepositoryDbSet set, IEnumerable customSequence, object filter, object sort)
 		{
+			if (repository == null)
+			{
+				throw new ArgumentNullException(nameof(repository));
+			}
+
+			if (set == null)
+			{
+				throw new ArgumentNullException(nameof(set));
+			}
+
 			return this.Filter(repository, (RepositoryDbSet<T>)set, (IEnumerable<T>)customSequence, filter, sort);
 		}
 

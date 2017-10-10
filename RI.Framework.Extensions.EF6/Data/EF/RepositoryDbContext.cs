@@ -433,8 +433,10 @@ namespace RI.Framework.Data.EF
 		/// <param name="entityEntry"> The entity to fix. </param>
 		protected virtual void FixEntity (DbEntityEntry entityEntry)
 		{
-			IEntityValidation validator = this.GetValidator(entityEntry.Entity.GetType());
-			validator?.Fix(this, entityEntry);
+			object entity = entityEntry.Entity;
+			Type type = entity.GetType();
+			IEntityValidation validator = this.GetValidator(type);
+			validator?.Fix(this, this.GetSet(type), entity);
 		}
 
 		/// <summary>
@@ -609,8 +611,10 @@ namespace RI.Framework.Data.EF
 				this.FixEntity(entityEntry);
 			}
 
-			IEntityValidation validator = this.GetValidator(entityEntry.Entity.GetType());
-			DbEntityValidationResult result = validator?.Validate(this, entityEntry);
+			object entity = entityEntry.Entity;
+			Type type = entity.GetType();
+			IEntityValidation validator = this.GetValidator(type);
+			DbEntityValidationResult result = validator?.Validate(this, this.GetSet(type), entity);
 
 			if (this.EntitySelfErrorTrackingEnabled)
 			{

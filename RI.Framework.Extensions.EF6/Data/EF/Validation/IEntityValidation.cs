@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Validation;
 
 using RI.Framework.Composition.Model;
@@ -36,96 +35,106 @@ namespace RI.Framework.Data.EF.Validation
 		///     Determines whether an entity can be added.
 		/// </summary>
 		/// <param name="repository"> The repository. </param>
+		/// <param name="set"> The set. </param>
 		/// <param name="entity"> The entity. </param>
 		/// <returns>
 		///     true if the entity can be added, false otherwise.
 		/// </returns>
-		bool CanAdd (RepositoryDbContext repository, object entity);
+		bool CanAdd (RepositoryDbContext repository, RepositoryDbSet set, object entity);
 
 		/// <summary>
 		///     Determines whether an entity can be attached.
 		/// </summary>
 		/// <param name="repository"> The repository. </param>
+		/// <param name="set"> The set. </param>
 		/// <param name="entity"> The entity. </param>
 		/// <returns>
 		///     true if the entity can be attached, false otherwise.
 		/// </returns>
-		bool CanAttach (RepositoryDbContext repository, object entity);
+		bool CanAttach (RepositoryDbContext repository, RepositoryDbSet set, object entity);
 
 		/// <summary>
 		///     Determines whether a new entity instance can be created.
 		/// </summary>
 		/// <param name="repository"> The repository. </param>
+		/// <param name="set"> The set. </param>
 		/// <returns>
 		///     true if a new entity instance can be created, false otherwise.
 		/// </returns>
-		bool CanCreate (RepositoryDbContext repository);
+		bool CanCreate (RepositoryDbContext repository, RepositoryDbSet set);
 
 		/// <summary>
 		///     Determines whether an entity can be deleted.
 		/// </summary>
 		/// <param name="repository"> The repository. </param>
-		/// <param name="entry"> The entity entry of the entity. </param>
+		/// <param name="set"> The set. </param>
+		/// <param name="entity"> The entity. </param>
 		/// <returns>
 		///     true if the entity can be deleted, false otherwise.
 		/// </returns>
-		bool CanDelete (RepositoryDbContext repository, DbEntityEntry entry);
+		bool CanDelete (RepositoryDbContext repository, RepositoryDbSet set, object entity);
 
 		/// <summary>
 		///     Determines whether an entity can be modified.
 		/// </summary>
 		/// <param name="repository"> The repository. </param>
-		/// <param name="entry"> The entity entry of the entity. </param>
+		/// <param name="set"> The set. </param>
+		/// <param name="entity"> The entity. </param>
 		/// <returns>
 		///     true if the entity can be modified, false otherwise.
 		/// </returns>
-		bool CanModify (RepositoryDbContext repository, DbEntityEntry entry);
+		bool CanModify (RepositoryDbContext repository, RepositoryDbSet set, object entity);
 
 		/// <summary>
 		///     Determines whether an entity can be reloaded.
 		/// </summary>
 		/// <param name="repository"> The repository. </param>
-		/// <param name="entry"> The entity entry of the entity. </param>
+		/// <param name="set"> The set. </param>
+		/// <param name="entity"> The entity. </param>
 		/// <returns>
 		///     true if the entity can be reloaded, false otherwise.
 		/// </returns>
-		bool CanReload (RepositoryDbContext repository, DbEntityEntry entry);
+		bool CanReload (RepositoryDbContext repository, RepositoryDbSet set, object entity);
 
 		/// <summary>
 		///     Determines whether an entity can be validated.
 		/// </summary>
 		/// <param name="repository"> The repository. </param>
-		/// <param name="entry"> The entity entry of the entity. </param>
+		/// <param name="set"> The set. </param>
+		/// <param name="entity"> The entity. </param>
 		/// <returns>
 		///     true if the entity can be validated, false otherwise.
 		/// </returns>
-		bool CanValidate (RepositoryDbContext repository, DbEntityEntry entry);
+		bool CanValidate (RepositoryDbContext repository, RepositoryDbSet set, object entity);
 
 		/// <summary>
 		///     Fixes an entity (means: modifies values) before it is saved to the database.
 		/// </summary>
 		/// <param name="repository"> The repository the fixed entity belongs to. </param>
-		/// <param name="entry"> The entity entry of the entity to fix. </param>
-		/// <exception cref="ArgumentNullException"> <paramref name="repository" /> or <paramref name="entry" /> is null. </exception>
-		void Fix (RepositoryDbContext repository, DbEntityEntry entry);
+		/// <param name="set"> The set. </param>
+		/// <param name="entity"> The entity. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="repository" />, <paramref name="set" />, or <paramref name="entity"/> is null. </exception>
+		void Fix (RepositoryDbContext repository, RepositoryDbSet set, object entity);
 
 		/// <summary>
 		///     Initializes a newly created entity which was created using <see cref="IRepositorySet.Create" />.
 		/// </summary>
 		/// <param name="repository"> The repository the newly created entity belongs to. </param>
-		/// <param name="entry"> The entity entry of the entity to initialize. </param>
-		/// <exception cref="ArgumentNullException"> <paramref name="repository" /> or <paramref name="entry" /> is null. </exception>
-		void Initialize (RepositoryDbContext repository, DbEntityEntry entry);
+		/// <param name="set"> The set. </param>
+		/// <param name="entity"> The entity. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="repository" />, <paramref name="set" />, or <paramref name="entity"/> is null. </exception>
+		void Initialize (RepositoryDbContext repository, RepositoryDbSet set, object entity);
 
 		/// <summary>
 		///     Validates an entity.
 		/// </summary>
 		/// <param name="repository"> The repository the validated entity belongs to. </param>
-		/// <param name="entry"> The entity entry of the entity to validate. </param>
+		/// <param name="set"> The set. </param>
+		/// <param name="entity"> The entity. </param>
 		/// <returns>
 		///     The validation results if the validation results in validation errors or null if the entity is valid.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"> <paramref name="repository" /> or <paramref name="entry" /> is null. </exception>
-		DbEntityValidationResult Validate (RepositoryDbContext repository, DbEntityEntry entry);
+		/// <exception cref="ArgumentNullException"> <paramref name="repository" />, <paramref name="set" />, or <paramref name="entity"/> is null. </exception>
+		DbEntityValidationResult Validate (RepositoryDbContext repository, RepositoryDbSet set, object entity);
 	}
 }

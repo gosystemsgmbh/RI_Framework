@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Validation;
 
 
@@ -68,12 +67,11 @@ namespace RI.Framework.Data.EF.Validation
 		/// </summary>
 		/// <param name="repository"> The repository. </param>
 		/// <param name="set"> The set. </param>
-		/// <param name="entry"> The entity entry of the entity. </param>
 		/// <param name="entity"> The entity. </param>
 		/// <returns>
 		///     true if the entity can be deleted, false otherwise.
 		/// </returns>
-		public virtual bool CanDelete (RepositoryDbContext repository, RepositoryDbSet<T> set, DbEntityEntry entry, T entity)
+		public virtual bool CanDelete (RepositoryDbContext repository, RepositoryDbSet<T> set, T entity)
 		{
 			return true;
 		}
@@ -83,12 +81,11 @@ namespace RI.Framework.Data.EF.Validation
 		/// </summary>
 		/// <param name="repository"> The repository. </param>
 		/// <param name="set"> The set. </param>
-		/// <param name="entry"> The entity entry of the entity. </param>
 		/// <param name="entity"> The entity. </param>
 		/// <returns>
 		///     true if the entity can be modified, false otherwise.
 		/// </returns>
-		public virtual bool CanModify (RepositoryDbContext repository, RepositoryDbSet<T> set, DbEntityEntry entry, T entity)
+		public virtual bool CanModify (RepositoryDbContext repository, RepositoryDbSet<T> set, T entity)
 		{
 			return true;
 		}
@@ -98,12 +95,11 @@ namespace RI.Framework.Data.EF.Validation
 		/// </summary>
 		/// <param name="repository"> The repository. </param>
 		/// <param name="set"> The set. </param>
-		/// <param name="entry"> The entity entry of the entity. </param>
 		/// <param name="entity"> The entity. </param>
 		/// <returns>
 		///     true if the entity can be reloaded, false otherwise.
 		/// </returns>
-		public virtual bool CanReload (RepositoryDbContext repository, RepositoryDbSet<T> set, DbEntityEntry entry, T entity)
+		public virtual bool CanReload (RepositoryDbContext repository, RepositoryDbSet<T> set, T entity)
 		{
 			return true;
 		}
@@ -113,12 +109,11 @@ namespace RI.Framework.Data.EF.Validation
 		/// </summary>
 		/// <param name="repository"> The repository. </param>
 		/// <param name="set"> The set. </param>
-		/// <param name="entry"> The entity entry of the entity. </param>
 		/// <param name="entity"> The entity. </param>
 		/// <returns>
 		///     true if the entity can be validated, false otherwise.
 		/// </returns>
-		public virtual bool CanValidate (RepositoryDbContext repository, RepositoryDbSet<T> set, DbEntityEntry entry, T entity)
+		public virtual bool CanValidate (RepositoryDbContext repository, RepositoryDbSet<T> set, T entity)
 		{
 			return true;
 		}
@@ -128,9 +123,8 @@ namespace RI.Framework.Data.EF.Validation
 		/// </summary>
 		/// <param name="repository"> The repository the fixed entity belongs to. </param>
 		/// <param name="set"> The set the fixed entity belongs to. </param>
-		/// <param name="entry"> The entity entry of the entity to fix. </param>
 		/// <param name="entity"> The entity to fix. </param>
-		protected virtual void Fix (RepositoryDbContext repository, RepositoryDbSet<T> set, DbEntityEntry entry, T entity)
+		protected virtual void Fix (RepositoryDbContext repository, RepositoryDbSet<T> set, T entity)
 		{
 		}
 
@@ -139,9 +133,8 @@ namespace RI.Framework.Data.EF.Validation
 		/// </summary>
 		/// <param name="repository"> The repository the initialized entity belongs to. </param>
 		/// <param name="set"> The set the initialized entity belongs to. </param>
-		/// <param name="entry"> The entity entry of the entity to initialize. </param>
 		/// <param name="entity"> The entity to initialize. </param>
-		protected virtual void Initialize (RepositoryDbContext repository, RepositoryDbSet<T> set, DbEntityEntry entry, T entity)
+		protected virtual void Initialize (RepositoryDbContext repository, RepositoryDbSet<T> set, T entity)
 		{
 		}
 
@@ -150,10 +143,9 @@ namespace RI.Framework.Data.EF.Validation
 		/// </summary>
 		/// <param name="repository"> The repository the validated entity belongs to. </param>
 		/// <param name="set"> The set the validated entity belongs to. </param>
-		/// <param name="entry"> The entity entry of the entity to validate. </param>
 		/// <param name="entity"> The entity to validate. </param>
 		/// <param name="errors"> The list which is to be populated with the validation errors (if any). </param>
-		protected virtual void Validate (RepositoryDbContext repository, RepositoryDbSet<T> set, DbEntityEntry entry, T entity, List<DbValidationError> errors)
+		protected virtual void Validate (RepositoryDbContext repository, RepositoryDbSet<T> set, T entity, List<DbValidationError> errors)
 		{
 		}
 
@@ -168,11 +160,16 @@ namespace RI.Framework.Data.EF.Validation
 		Type IEntityValidation.EntityType => typeof(T);
 
 		/// <inheritdoc />
-		bool IEntityValidation.CanAdd (RepositoryDbContext repository, object entity)
+		bool IEntityValidation.CanAdd (RepositoryDbContext repository, RepositoryDbSet set, object entity)
 		{
 			if (repository == null)
 			{
 				throw new ArgumentNullException(nameof(repository));
+			}
+
+			if (set == null)
+			{
+				throw new ArgumentNullException(nameof(set));
 			}
 
 			if (entity == null)
@@ -180,15 +177,20 @@ namespace RI.Framework.Data.EF.Validation
 				throw new ArgumentNullException(nameof(entity));
 			}
 
-			return this.CanAdd(repository, repository.GetSet<T>(), (T)entity);
+			return this.CanAdd(repository, (RepositoryDbSet<T>)set, (T)entity);
 		}
 
 		/// <inheritdoc />
-		bool IEntityValidation.CanAttach (RepositoryDbContext repository, object entity)
+		bool IEntityValidation.CanAttach (RepositoryDbContext repository, RepositoryDbSet set, object entity)
 		{
 			if (repository == null)
 			{
 				throw new ArgumentNullException(nameof(repository));
+			}
+
+			if (set == null)
+			{
+				throw new ArgumentNullException(nameof(set));
 			}
 
 			if (entity == null)
@@ -196,132 +198,172 @@ namespace RI.Framework.Data.EF.Validation
 				throw new ArgumentNullException(nameof(entity));
 			}
 
-			return this.CanAttach(repository, repository.GetSet<T>(), (T)entity);
+			return this.CanAttach(repository, (RepositoryDbSet<T>)set, (T)entity);
 		}
 
 		/// <inheritdoc />
-		bool IEntityValidation.CanCreate (RepositoryDbContext repository)
+		bool IEntityValidation.CanCreate (RepositoryDbContext repository, RepositoryDbSet set)
 		{
 			if (repository == null)
 			{
 				throw new ArgumentNullException(nameof(repository));
 			}
 
-			return this.CanCreate(repository, repository.GetSet<T>());
+			if (set == null)
+			{
+				throw new ArgumentNullException(nameof(set));
+			}
+
+			return this.CanCreate(repository, (RepositoryDbSet<T>)set);
 		}
 
 		/// <inheritdoc />
-		bool IEntityValidation.CanDelete (RepositoryDbContext repository, DbEntityEntry entry)
+		bool IEntityValidation.CanDelete (RepositoryDbContext repository, RepositoryDbSet set, object entity)
 		{
 			if (repository == null)
 			{
 				throw new ArgumentNullException(nameof(repository));
 			}
 
-			if (entry == null)
+			if (set == null)
 			{
-				throw new ArgumentNullException(nameof(entry));
+				throw new ArgumentNullException(nameof(set));
 			}
 
-			return this.CanDelete(repository, repository.GetSet<T>(), entry, (T)entry.Entity);
+			if (entity == null)
+			{
+				throw new ArgumentNullException(nameof(entity));
+			}
+
+			return this.CanDelete(repository, (RepositoryDbSet<T>)set, (T)entity);
 		}
 
 		/// <inheritdoc />
-		bool IEntityValidation.CanModify (RepositoryDbContext repository, DbEntityEntry entry)
+		bool IEntityValidation.CanModify (RepositoryDbContext repository, RepositoryDbSet set, object entity)
 		{
 			if (repository == null)
 			{
 				throw new ArgumentNullException(nameof(repository));
 			}
 
-			if (entry == null)
+			if (set == null)
 			{
-				throw new ArgumentNullException(nameof(entry));
+				throw new ArgumentNullException(nameof(set));
 			}
 
-			return this.CanModify(repository, repository.GetSet<T>(), entry, (T)entry.Entity);
+			if (entity == null)
+			{
+				throw new ArgumentNullException(nameof(entity));
+			}
+
+			return this.CanModify(repository, (RepositoryDbSet<T>)set, (T)entity);
 		}
 
 		/// <inheritdoc />
-		bool IEntityValidation.CanReload (RepositoryDbContext repository, DbEntityEntry entry)
+		bool IEntityValidation.CanReload (RepositoryDbContext repository, RepositoryDbSet set, object entity)
 		{
 			if (repository == null)
 			{
 				throw new ArgumentNullException(nameof(repository));
 			}
 
-			if (entry == null)
+			if (set == null)
 			{
-				throw new ArgumentNullException(nameof(entry));
+				throw new ArgumentNullException(nameof(set));
 			}
 
-			return this.CanReload(repository, repository.GetSet<T>(), entry, (T)entry.Entity);
+			if (entity == null)
+			{
+				throw new ArgumentNullException(nameof(entity));
+			}
+
+			return this.CanReload(repository, (RepositoryDbSet<T>)set, (T)entity);
 		}
 
 		/// <inheritdoc />
-		bool IEntityValidation.CanValidate (RepositoryDbContext repository, DbEntityEntry entry)
+		bool IEntityValidation.CanValidate (RepositoryDbContext repository, RepositoryDbSet set, object entity)
 		{
 			if (repository == null)
 			{
 				throw new ArgumentNullException(nameof(repository));
 			}
 
-			if (entry == null)
+			if (set == null)
 			{
-				throw new ArgumentNullException(nameof(entry));
+				throw new ArgumentNullException(nameof(set));
 			}
 
-			return this.CanValidate(repository, repository.GetSet<T>(), entry, (T)entry.Entity);
+			if (entity == null)
+			{
+				throw new ArgumentNullException(nameof(entity));
+			}
+
+			return this.CanValidate(repository, (RepositoryDbSet<T>)set, (T)entity);
 		}
 
 		/// <inheritdoc />
-		void IEntityValidation.Fix (RepositoryDbContext repository, DbEntityEntry entry)
+		void IEntityValidation.Fix (RepositoryDbContext repository, RepositoryDbSet set, object entity)
 		{
 			if (repository == null)
 			{
 				throw new ArgumentNullException(nameof(repository));
 			}
 
-			if (entry == null)
+			if (set == null)
 			{
-				throw new ArgumentNullException(nameof(entry));
+				throw new ArgumentNullException(nameof(set));
 			}
 
-			this.Fix(repository, repository.GetSet<T>(), entry, (T)entry.Entity);
+			if (entity == null)
+			{
+				throw new ArgumentNullException(nameof(entity));
+			}
+
+			this.Fix(repository, (RepositoryDbSet<T>)set, (T)entity);
 		}
 
 		/// <inheritdoc />
-		void IEntityValidation.Initialize (RepositoryDbContext repository, DbEntityEntry entry)
+		void IEntityValidation.Initialize (RepositoryDbContext repository, RepositoryDbSet set, object entity)
 		{
 			if (repository == null)
 			{
 				throw new ArgumentNullException(nameof(repository));
 			}
 
-			if (entry == null)
+			if (set == null)
 			{
-				throw new ArgumentNullException(nameof(entry));
+				throw new ArgumentNullException(nameof(set));
 			}
 
-			this.Initialize(repository, repository.GetSet<T>(), entry, (T)entry.Entity);
+			if (entity == null)
+			{
+				throw new ArgumentNullException(nameof(entity));
+			}
+
+			this.Initialize(repository, (RepositoryDbSet<T>)set, (T)entity);
 		}
 
 		/// <inheritdoc />
-		DbEntityValidationResult IEntityValidation.Validate (RepositoryDbContext repository, DbEntityEntry entry)
+		DbEntityValidationResult IEntityValidation.Validate (RepositoryDbContext repository, RepositoryDbSet set, object entity)
 		{
 			if (repository == null)
 			{
 				throw new ArgumentNullException(nameof(repository));
 			}
 
-			if (entry == null)
+			if (set == null)
 			{
-				throw new ArgumentNullException(nameof(entry));
+				throw new ArgumentNullException(nameof(set));
+			}
+
+			if (entity == null)
+			{
+				throw new ArgumentNullException(nameof(entity));
 			}
 
 			List<DbValidationError> errors = new List<DbValidationError>();
-			this.Validate(repository, repository.GetSet<T>(), entry, (T)entry.Entity, errors);
-			return errors.Count == 0 ? null : new DbEntityValidationResult(entry, errors);
+			this.Validate(repository, (RepositoryDbSet<T>)set, (T)entity, errors);
+			return errors.Count == 0 ? null : new DbEntityValidationResult(repository.Entry(entity), errors);
 		}
 
 		#endregion
