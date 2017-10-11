@@ -14,10 +14,10 @@ namespace RI.Framework.Data.EF.Validation
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         Entity validation classes are used to validate an entity in the context of an <see cref="RepositoryDbContext" />.
+	///         Entity validation classes are used to validate an entity in the context of an <see cref="DbRepositoryContext" />.
 	///     </para>
 	///     <para>
-	///         Entity validation classes are created during <see cref="RepositoryDbContext.OnValidatorsCreating" />.
+	///         Entity validation classes are created during <see cref="DbRepositoryContext.OnValidatorsCreating" />.
 	///     </para>
 	/// </remarks>
 	[Export]
@@ -40,7 +40,7 @@ namespace RI.Framework.Data.EF.Validation
 		/// <returns>
 		///     true if the entity can be added, false otherwise.
 		/// </returns>
-		bool CanAdd (RepositoryDbContext repository, RepositoryDbSet set, object entity);
+		bool CanAdd (DbRepositoryContext repository, DbRepositorySet set, object entity);
 
 		/// <summary>
 		///     Determines whether an entity can be attached.
@@ -51,7 +51,7 @@ namespace RI.Framework.Data.EF.Validation
 		/// <returns>
 		///     true if the entity can be attached, false otherwise.
 		/// </returns>
-		bool CanAttach (RepositoryDbContext repository, RepositoryDbSet set, object entity);
+		bool CanAttach (DbRepositoryContext repository, DbRepositorySet set, object entity);
 
 		/// <summary>
 		///     Determines whether a new entity instance can be created.
@@ -61,7 +61,7 @@ namespace RI.Framework.Data.EF.Validation
 		/// <returns>
 		///     true if a new entity instance can be created, false otherwise.
 		/// </returns>
-		bool CanCreate (RepositoryDbContext repository, RepositoryDbSet set);
+		bool CanCreate (DbRepositoryContext repository, DbRepositorySet set);
 
 		/// <summary>
 		///     Determines whether an entity can be deleted.
@@ -72,7 +72,7 @@ namespace RI.Framework.Data.EF.Validation
 		/// <returns>
 		///     true if the entity can be deleted, false otherwise.
 		/// </returns>
-		bool CanDelete (RepositoryDbContext repository, RepositoryDbSet set, object entity);
+		bool CanDelete (DbRepositoryContext repository, DbRepositorySet set, object entity);
 
 		/// <summary>
 		///     Determines whether an entity can be modified.
@@ -83,7 +83,7 @@ namespace RI.Framework.Data.EF.Validation
 		/// <returns>
 		///     true if the entity can be modified, false otherwise.
 		/// </returns>
-		bool CanModify (RepositoryDbContext repository, RepositoryDbSet set, object entity);
+		bool CanModify (DbRepositoryContext repository, DbRepositorySet set, object entity);
 
 		/// <summary>
 		///     Determines whether an entity can be reloaded.
@@ -94,7 +94,7 @@ namespace RI.Framework.Data.EF.Validation
 		/// <returns>
 		///     true if the entity can be reloaded, false otherwise.
 		/// </returns>
-		bool CanReload (RepositoryDbContext repository, RepositoryDbSet set, object entity);
+		bool CanReload (DbRepositoryContext repository, DbRepositorySet set, object entity);
 
 		/// <summary>
 		///     Determines whether an entity can be validated.
@@ -105,7 +105,7 @@ namespace RI.Framework.Data.EF.Validation
 		/// <returns>
 		///     true if the entity can be validated, false otherwise.
 		/// </returns>
-		bool CanValidate (RepositoryDbContext repository, RepositoryDbSet set, object entity);
+		bool CanValidate (DbRepositoryContext repository, DbRepositorySet set, object entity);
 
 		/// <summary>
 		///     Fixes an entity (means: modifies values) before it is saved to the database.
@@ -114,7 +114,7 @@ namespace RI.Framework.Data.EF.Validation
 		/// <param name="set"> The set. </param>
 		/// <param name="entity"> The entity. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="repository" />, <paramref name="set" />, or <paramref name="entity"/> is null. </exception>
-		void Fix (RepositoryDbContext repository, RepositoryDbSet set, object entity);
+		void Fix (DbRepositoryContext repository, DbRepositorySet set, object entity);
 
 		/// <summary>
 		///     Initializes a newly created entity which was created using <see cref="IRepositorySet.Create" />.
@@ -123,7 +123,7 @@ namespace RI.Framework.Data.EF.Validation
 		/// <param name="set"> The set. </param>
 		/// <param name="entity"> The entity. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="repository" />, <paramref name="set" />, or <paramref name="entity"/> is null. </exception>
-		void Initialize (RepositoryDbContext repository, RepositoryDbSet set, object entity);
+		void Initialize (DbRepositoryContext repository, DbRepositorySet set, object entity);
 
 		/// <summary>
 		///     Validates an entity.
@@ -135,6 +135,6 @@ namespace RI.Framework.Data.EF.Validation
 		///     The validation results if the validation results in validation errors or null if the entity is valid.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="repository" />, <paramref name="set" />, or <paramref name="entity"/> is null. </exception>
-		DbEntityValidationResult Validate (RepositoryDbContext repository, RepositoryDbSet set, object entity);
+		DbEntityValidationResult Validate (DbRepositoryContext repository, DbRepositorySet set, object entity);
 	}
 }

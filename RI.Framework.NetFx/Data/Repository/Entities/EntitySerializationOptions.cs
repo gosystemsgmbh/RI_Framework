@@ -10,7 +10,7 @@ namespace RI.Framework.Data.Repository.Entities
 	/// </summary>
 	[Serializable]
 	[Flags]
-	public enum EntityBaseSerializationOptions
+	public enum EntitySerializationOptions
 	{
 		/// <summary>
 		///     Nothing gets serialized.
@@ -45,6 +45,6 @@ namespace RI.Framework.Data.Repository.Entities
 		/// <summary>
 		///     Everyting is serialized (comination of <see cref="Errors" />, <see cref="CreateTracking" />, <see cref="ModifyTracking" />, <see cref="PublicProperties" />, <see cref="SerializationOptions" />).
 		/// </summary>
-		All = EntityBaseSerializationOptions.Errors | EntityBaseSerializationOptions.CreateTracking | EntityBaseSerializationOptions.ModifyTracking | EntityBaseSerializationOptions.PublicProperties | EntityBaseSerializationOptions.SerializationOptions,
+		All = EntitySerializationOptions.Errors | EntitySerializationOptions.CreateTracking | EntitySerializationOptions.ModifyTracking | EntitySerializationOptions.PublicProperties | EntitySerializationOptions.SerializationOptions,
 	}
 }

@@ -6,7 +6,7 @@
 namespace RI.Framework.Data.Repository.Entities
 {
 	/// <summary>
-	///     Implements a base class for entity configuration which defines default behaviour for <see cref="EntityBase" /> based entities.
+	///     Implements a base class for entity configuration which defines default behaviour for <see cref="DbEntityBase" /> based entities.
 	/// </summary>
 	/// <typeparam name="T"> The type of entity this configuration configures. </typeparam>
 	/// <remarks>
@@ -18,15 +18,15 @@ namespace RI.Framework.Data.Repository.Entities
 	///         <see cref="EntityBase.SerializationOptions" />, <see cref="EntityBase.Errors" />, <see cref="EntityBase.ErrorStringWithSpaces" />, <see cref="EntityBase.ErrorStringWithNewLines" />.
 	///     </note>
 	/// </remarks>
-	public abstract class EntityConfigurationBase <T> : EntityConfiguration<T>
-		where T : EntityBase
+	public abstract class DbEntityConfigurationBase <T> : EntityConfiguration<T>
+		where T : DbEntityBase
 	{
 		#region Instance Constructor/Destructor
 
 		/// <summary>
-		///     Creates a new instance of <see cref="EntityConfigurationBase{T}" />.
+		///     Creates a new instance of <see cref="DbEntityConfigurationBase{T}" />.
 		/// </summary>
-		protected EntityConfigurationBase ()
+		protected DbEntityConfigurationBase ()
 		{
 			this.Ignore(x => x.SerializationOptions);
 

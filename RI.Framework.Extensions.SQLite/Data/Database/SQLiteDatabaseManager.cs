@@ -116,6 +116,13 @@ namespace RI.Framework.Data.Database
 				return true;
 			}
 
+			if (this.DatabaseFile.Size.GetValueOrDefault(0) == 0)
+			{
+				state = null;
+				version = 0;
+				return true;
+			}
+
 			return base.DetectStateAndVersionImpl(out state, out version);
 		}
 

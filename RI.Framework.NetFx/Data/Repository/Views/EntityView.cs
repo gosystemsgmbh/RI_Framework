@@ -32,6 +32,7 @@ namespace RI.Framework.Data.Repository.Views
 	///         This allows to control the final set of items an <see cref="EntityView{TEntity,TViewObject}" /> is using, as long as the items are associated with the specified <see cref="IRepositorySet{T}" />.
 	///     </para>
 	/// </remarks>
+	/// TODO: View interfaces for WF and WPF
 	public class EntityView <TEntity, TViewObject> : INotifyPropertyChanged, IEntityViewCaller<TEntity>
 		where TEntity : class, new()
 		where TViewObject : EntityViewObject<TEntity>, new()

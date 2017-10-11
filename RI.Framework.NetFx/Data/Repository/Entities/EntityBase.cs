@@ -16,11 +16,11 @@ using RI.Framework.Utilities.Serialization;
 namespace RI.Framework.Data.Repository.Entities
 {
 	/// <summary>
-	///     Implements a base class for entities.
+	///     Implements a base class for entities used with <see cref="IRepositorySet{TEntity}"/>.
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         <see cref="EntityBase" /> implements basic functionality which might be desirable by entities which are used together with <see cref="IRepositoryContext" /> and/or <see cref="EntityView{TEntity}" />, such as property change notification, change tracking, and error tracking.
+	///         <see cref="EntityBase" /> implements basic functionality which might be desirable by entities which are used together with <see cref="IRepositoryContext" />, <see cref="IRepositorySet{TEntity}"/> and/or <see cref="EntityView{TEntity}" />, such as property change notification, change tracking, and error tracking.
 	///     </para>
 	///     <note type="note">
 	///         <see cref="EntityBase" /> is serializable, using <see cref="ISerializable" />.
@@ -36,6 +36,7 @@ namespace RI.Framework.Data.Repository.Entities
 
 		static EntityBase ()
 		{
+			EntityBase.GlobalSyncRoot = new object();
 			EntityBase.SerializedProperties = new Dictionary<Type, List<PropertySerializationInfo>>();
 		}
 
@@ -48,6 +49,8 @@ namespace RI.Framework.Data.Repository.Entities
 
 		private static Dictionary<Type, List<PropertySerializationInfo>> SerializedProperties { get; set; }
 
+		private static object GlobalSyncRoot { get; set; }
+
 		#endregion
 
 
@@ -57,12 +60,15 @@ namespace RI.Framework.Data.Repository.Entities
 
 		private static List<PropertySerializationInfo> GetSerializedProperties (Type type)
 		{
-			if (!EntityBase.SerializedProperties.ContainsKey(type))
+			lock (EntityBase.GlobalSyncRoot)
 			{
-				EntityBase.SerializedProperties.Add(type, PropertySerializationInfo.GetFromType(type));
-			}
+				if (!EntityBase.SerializedProperties.ContainsKey(type))
+				{
+					EntityBase.SerializedProperties.Add(type, PropertySerializationInfo.GetFromType(type));
+				}
 
-			return EntityBase.SerializedProperties[type];
+				return EntityBase.SerializedProperties[type];
+			}
 		}
 
 		#endregion
@@ -77,7 +83,7 @@ namespace RI.Framework.Data.Repository.Entities
 		/// </summary>
 		protected EntityBase ()
 		{
-			this.SerializationOptions = EntityBaseSerializationOptions.All;
+			this.SerializationOptions = EntitySerializationOptions.All;
 
 			this.CreateTimestamp = null;
 			this.CreateContext = null;
@@ -117,7 +123,7 @@ namespace RI.Framework.Data.Repository.Entities
 		private RepositorySetErrors _errors;
 		private string _modifyContext;
 		private DateTime? _modifyTimestamp;
-		private EntityBaseSerializationOptions _serializationOptions;
+		private EntitySerializationOptions _serializationOptions;
 
 		#endregion
 
@@ -255,7 +261,7 @@ namespace RI.Framework.Data.Repository.Entities
 		/// </summary>
 		/// <value>
 		/// </value>
-		public EntityBaseSerializationOptions SerializationOptions
+		public EntitySerializationOptions SerializationOptions
 		{
 			get
 			{
@@ -263,7 +269,7 @@ namespace RI.Framework.Data.Repository.Entities
 			}
 			set
 			{
-				EntityBaseSerializationOptions oldValue = this._serializationOptions;
+				EntitySerializationOptions oldValue = this._serializationOptions;
 				this._serializationOptions = value;
 				bool notify = oldValue != value;
 				this.OnPropertyChanged(notify, nameof(this.SerializationOptions));
@@ -309,37 +315,37 @@ namespace RI.Framework.Data.Repository.Entities
 		/// <remarks>
 		///     <para>
 		///         The default implementation calls <see cref="DeserializeSerializationOptions" />, <see cref="DeserializeErrors" />, <see cref="DeserializeCreateTracking" />, <see cref="DeserializeModifyTracking" />, and/or <see cref="DeserializePublicProperties" />, depending on the value of <see cref="SerializationOptions" />.
-		///         If <see cref="SerializationOptions" /> specifies <see cref="EntityBaseSerializationOptions.SerializationOptions" />, the serialization options are deserialized first, replacing the value in <see cref="SerializationOptions" />, and using the deserialized value for further deserialization.
+		///         If <see cref="SerializationOptions" /> specifies <see cref="EntitySerializationOptions.SerializationOptions" />, the serialization options are deserialized first, replacing the value in <see cref="SerializationOptions" />, and using the deserialized value for further deserialization.
 		///     </para>
 		/// </remarks>
 		protected virtual void DeserializeEntityValues (SerializationInfo info, StreamingContext context)
 		{
-			EntityBaseSerializationOptions serializationOptions = this.SerializationOptions;
-			if ((this.SerializationOptions & EntityBaseSerializationOptions.SerializationOptions) == EntityBaseSerializationOptions.SerializationOptions)
+			EntitySerializationOptions serializationOptions = this.SerializationOptions;
+			if ((this.SerializationOptions & EntitySerializationOptions.SerializationOptions) == EntitySerializationOptions.SerializationOptions)
 			{
 				this.DeserializeSerializationOptions(info, context);
-				if ((this.SerializationOptions & EntityBaseSerializationOptions.SerializationOptions) == EntityBaseSerializationOptions.None)
+				if ((this.SerializationOptions & EntitySerializationOptions.SerializationOptions) == EntitySerializationOptions.None)
 				{
 					this.SerializationOptions = serializationOptions;
 				}
 			}
 
-			if ((this.SerializationOptions & EntityBaseSerializationOptions.Errors) == EntityBaseSerializationOptions.Errors)
+			if ((this.SerializationOptions & EntitySerializationOptions.Errors) == EntitySerializationOptions.Errors)
 			{
 				this.DeserializeErrors(info, context);
 			}
 
-			if ((this.SerializationOptions & EntityBaseSerializationOptions.CreateTracking) == EntityBaseSerializationOptions.CreateTracking)
+			if ((this.SerializationOptions & EntitySerializationOptions.CreateTracking) == EntitySerializationOptions.CreateTracking)
 			{
 				this.DeserializeCreateTracking(info, context);
 			}
 
-			if ((this.SerializationOptions & EntityBaseSerializationOptions.ModifyTracking) == EntityBaseSerializationOptions.ModifyTracking)
+			if ((this.SerializationOptions & EntitySerializationOptions.ModifyTracking) == EntitySerializationOptions.ModifyTracking)
 			{
 				this.DeserializeModifyTracking(info, context);
 			}
 
-			if ((this.SerializationOptions & EntityBaseSerializationOptions.PublicProperties) == EntityBaseSerializationOptions.PublicProperties)
+			if ((this.SerializationOptions & EntitySerializationOptions.PublicProperties) == EntitySerializationOptions.PublicProperties)
 			{
 				this.DeserializePublicProperties(info, context);
 			}
@@ -418,7 +424,7 @@ namespace RI.Framework.Data.Repository.Entities
 				return;
 			}
 
-			EntityBaseSerializationOptions serializationOptions = (EntityBaseSerializationOptions)info.GetInt32(nameof(this.SerializationOptions));
+			EntitySerializationOptions serializationOptions = (EntitySerializationOptions)info.GetInt32(nameof(this.SerializationOptions));
 
 			this.SerializationOptions = serializationOptions;
 		}
@@ -495,27 +501,27 @@ namespace RI.Framework.Data.Repository.Entities
 		/// </remarks>
 		protected virtual void SerializeEntityValues (SerializationInfo info, StreamingContext context)
 		{
-			if ((this.SerializationOptions & EntityBaseSerializationOptions.SerializationOptions) == EntityBaseSerializationOptions.SerializationOptions)
+			if ((this.SerializationOptions & EntitySerializationOptions.SerializationOptions) == EntitySerializationOptions.SerializationOptions)
 			{
 				this.SerializeSerializationOptions(info, context);
 			}
 
-			if ((this.SerializationOptions & EntityBaseSerializationOptions.Errors) == EntityBaseSerializationOptions.Errors)
+			if ((this.SerializationOptions & EntitySerializationOptions.Errors) == EntitySerializationOptions.Errors)
 			{
 				this.SerializeErrors(info, context);
 			}
 
-			if ((this.SerializationOptions & EntityBaseSerializationOptions.CreateTracking) == EntityBaseSerializationOptions.CreateTracking)
+			if ((this.SerializationOptions & EntitySerializationOptions.CreateTracking) == EntitySerializationOptions.CreateTracking)
 			{
 				this.SerializeCreateTracking(info, context);
 			}
 
-			if ((this.SerializationOptions & EntityBaseSerializationOptions.ModifyTracking) == EntityBaseSerializationOptions.ModifyTracking)
+			if ((this.SerializationOptions & EntitySerializationOptions.ModifyTracking) == EntitySerializationOptions.ModifyTracking)
 			{
 				this.SerializeModifyTracking(info, context);
 			}
 
-			if ((this.SerializationOptions & EntityBaseSerializationOptions.PublicProperties) == EntityBaseSerializationOptions.PublicProperties)
+			if ((this.SerializationOptions & EntitySerializationOptions.PublicProperties) == EntitySerializationOptions.PublicProperties)
 			{
 				this.SerializePublicProperties(info, context);
 			}

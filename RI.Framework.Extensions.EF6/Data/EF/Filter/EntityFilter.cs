@@ -23,7 +23,7 @@ namespace RI.Framework.Data.EF.Filter
 		#region Abstracts
 
 		/// <inheritdoc cref="IEntityFilter.Filter" />
-		public abstract IOrderedQueryable<T> Filter (RepositoryDbContext repository, RepositoryDbSet<T> set, IEnumerable<T> customSequence, object filter, object sort);
+		public abstract IOrderedQueryable<T> Filter (DbRepositoryContext repository, DbRepositorySet<T> set, IEnumerable<T> customSequence, object filter, object sort);
 
 		#endregion
 
@@ -36,7 +36,7 @@ namespace RI.Framework.Data.EF.Filter
 		Type IEntityFilter.EntityType => typeof(T);
 
 		/// <inheritdoc />
-		IOrderedQueryable IEntityFilter.Filter (RepositoryDbContext repository, RepositoryDbSet set, IEnumerable customSequence, object filter, object sort)
+		IOrderedQueryable IEntityFilter.Filter (DbRepositoryContext repository, DbRepositorySet set, IEnumerable customSequence, object filter, object sort)
 		{
 			if (repository == null)
 			{
@@ -48,7 +48,7 @@ namespace RI.Framework.Data.EF.Filter
 				throw new ArgumentNullException(nameof(set));
 			}
 
-			return this.Filter(repository, (RepositoryDbSet<T>)set, (IEnumerable<T>)customSequence, filter, sort);
+			return this.Filter(repository, (DbRepositorySet<T>)set, (IEnumerable<T>)customSequence, filter, sort);
 		}
 
 		#endregion

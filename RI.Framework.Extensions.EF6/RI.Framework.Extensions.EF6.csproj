@@ -63,8 +63,8 @@
     <Compile Include="Data\EF\Filter\FilterRegistrar.cs" />
     <Compile Include="Data\EF\Filter\IEntityFilter.cs" />
     <Compile Include="Data\EF\Filter\_NamespaceDoc.cs" />
-    <Compile Include="Data\EF\RepositoryDbContext.cs" />
-    <Compile Include="Data\EF\RepositoryDbSet.cs" />
+    <Compile Include="Data\EF\DbRepositoryContext.cs" />
+    <Compile Include="Data\EF\DbRepositorySet.cs" />
     <Compile Include="Data\EF\Resolvers\ServiceLocatorDbDependencyResolver.cs" />
     <Compile Include="Data\EF\Resolvers\SingletonDbDependencyResolver.cs" />
     <Compile Include="Data\EF\Resolvers\_NamespaceDoc.cs" />
@@ -73,9 +73,10 @@
     <Compile Include="Data\EF\Validation\ValidationRegistrar.cs" />
     <Compile Include="Data\EF\Validation\_NamespaceDoc.cs" />
     <Compile Include="Data\EF\_NamespaceDoc.cs" />
-    <Compile Include="Data\Repository\Entities\EntityConfigurationBase.cs" />
-    <Compile Include="Data\Repository\Entities\EntityFilterBase.cs" />
-    <Compile Include="Data\Repository\Entities\EntityValidationBase.cs" />
+    <Compile Include="Data\Repository\Entities\DbEntityBase.cs" />
+    <Compile Include="Data\Repository\Entities\DbEntityConfigurationBase.cs" />
+    <Compile Include="Data\Repository\Entities\DbEntityFilterBase.cs" />
+    <Compile Include="Data\Repository\Entities\DbEntityValidationBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

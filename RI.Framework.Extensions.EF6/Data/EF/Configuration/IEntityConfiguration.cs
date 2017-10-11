@@ -12,11 +12,11 @@ namespace RI.Framework.Data.EF.Configuration
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         Entity validation classes are used to describe the configuration of an entity in the context of an <see cref="RepositoryDbContext" />.
-	///         This includes a description of what a certain entity actually is and how it is mapped to the database used by the corresponding <see cref="RepositoryDbContext" />.
+	///         Entity validation classes are used to describe the configuration of an entity in the context of an <see cref="DbRepositoryContext" />.
+	///         This includes a description of what a certain entity actually is and how it is mapped to the database used by the corresponding <see cref="DbRepositoryContext" />.
 	///     </para>
 	///     <para>
-	///         Entity validation classes are created during <see cref="RepositoryDbContext.OnConfigurationCreating" />.
+	///         Entity validation classes are created during <see cref="DbRepositoryContext.OnConfigurationCreating" />.
 	///     </para>
 	/// </remarks>
 	[Export]

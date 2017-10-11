@@ -21,17 +21,17 @@ namespace RI.Framework.Data.EF
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         This is only a non-generic base class inherited by <see cref="RepositoryDbSet{T}" /> in order to provide an implementation of <see cref="IRepositorySet" />.
-	///         This implementation simply forwards everything to <see cref="RepositoryDbSet{T}" />.
+	///         This is only a non-generic base class inherited by <see cref="DbRepositorySet{T}" /> in order to provide an implementation of <see cref="IRepositorySet" />.
+	///         This implementation simply forwards everything to <see cref="DbRepositorySet{T}" />.
 	///         You cannot inherit from this class.
-	///         See <see cref="RepositoryDbSet{T}" /> for more details.
+	///         See <see cref="DbRepositorySet{T}" /> for more details.
 	///     </para>
 	/// </remarks>
-	public abstract class RepositoryDbSet : LogSource, IRepositorySet
+	public abstract class DbRepositorySet : LogSource, IRepositorySet
 	{
 		#region Instance Constructor/Destructor
 
-		internal RepositoryDbSet (RepositoryDbContext repository, DbSet set)
+		internal DbRepositorySet (DbRepositoryContext repository, DbSet set)
 		{
 			if (repository == null)
 			{
@@ -60,7 +60,7 @@ namespace RI.Framework.Data.EF
 		/// <value>
 		///     The repository this repository set belongs to.
 		/// </value>
-		public RepositoryDbContext Repository { get; private set; }
+		public DbRepositoryContext Repository { get; private set; }
 
 		/// <summary>
 		///     Gets the underlying Entity Framework <see cref="DbSet" /> used by this repository set.
@@ -282,18 +282,18 @@ namespace RI.Framework.Data.EF
 	///         See <see cref="IRepositorySet{T}" /> and <see cref="DbSet{TEntity}" /> for more details.
 	///     </para>
 	/// </remarks>
-	public class RepositoryDbSet <T> : RepositoryDbSet, IRepositorySet<T>
+	public class DbRepositorySet <T> : DbRepositorySet, IRepositorySet<T>
 		where T : class
 	{
 		#region Instance Constructor/Destructor
 
 		/// <summary>
-		///     Creates a new instance of <see cref="RepositoryDbSet{T}" />.
+		///     Creates a new instance of <see cref="DbRepositorySet{T}" />.
 		/// </summary>
 		/// <param name="repository"> The repository this repository set belongs to. </param>
 		/// <param name="set"> The underlying Entity Framework <see cref="DbSet{TEntity}" /> used by this repository set. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="repository" /> or <paramref name="set" /> is null. </exception>
-		public RepositoryDbSet (RepositoryDbContext repository, DbSet<T> set)
+		public DbRepositorySet (DbRepositoryContext repository, DbSet<T> set)
 			: base(repository, set)
 		{
 			if (set == null)

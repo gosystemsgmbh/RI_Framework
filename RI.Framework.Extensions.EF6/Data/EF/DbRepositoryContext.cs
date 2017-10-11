@@ -34,20 +34,20 @@ namespace RI.Framework.Data.EF
 	///         See <see cref="IRepositoryContext" /> and <see cref="DbContext" /> for more details.
 	///     </para>
 	/// </remarks>
-	public abstract class RepositoryDbContext : DbContext, IRepositoryContext, ILogSource
+	public abstract class DbRepositoryContext : DbContext, IRepositoryContext, ILogSource
 	{
 		#region Static Constructor/Destructor
 
-		static RepositoryDbContext ()
+		static DbRepositoryContext ()
 		{
-			RepositoryDbContext.ValidatorsSyncRoot = new object();
-			RepositoryDbContext.Validators = new Dictionary<Type, ValidatorCollection>();
+			DbRepositoryContext.ValidatorsSyncRoot = new object();
+			DbRepositoryContext.Validators = new Dictionary<Type, ValidatorCollection>();
 
-			RepositoryDbContext.FiltersSyncRoot = new object();
-			RepositoryDbContext.Filters = new Dictionary<Type, FilterCollection>();
+			DbRepositoryContext.FiltersSyncRoot = new object();
+			DbRepositoryContext.Filters = new Dictionary<Type, FilterCollection>();
 
-			RepositoryDbContext.SetCreatorsSyncRoot = new object();
-			RepositoryDbContext.SetCreators = new Dictionary<Type, Dictionary<Type, MethodInfo>>();
+			DbRepositoryContext.SetCreatorsSyncRoot = new object();
+			DbRepositoryContext.SetCreators = new Dictionary<Type, Dictionary<Type, MethodInfo>>();
 		}
 
 		#endregion
@@ -76,43 +76,43 @@ namespace RI.Framework.Data.EF
 
 		#region Static Methods
 
-		private static void CreateFilters (RepositoryDbContext repository)
+		private static void CreateFilters (DbRepositoryContext repository)
 		{
-			lock (RepositoryDbContext.FiltersSyncRoot)
+			lock (DbRepositoryContext.FiltersSyncRoot)
 			{
 				Type repositoryType = repository.GetType();
-				if (!RepositoryDbContext.Filters.ContainsKey(repositoryType))
+				if (!DbRepositoryContext.Filters.ContainsKey(repositoryType))
 				{
 					FilterCollection filters = new FilterCollection();
 					FilterRegistrar registrar = new FilterRegistrar(filters);
 					repository.OnFiltersCreating(registrar);
-					RepositoryDbContext.Filters.Add(repositoryType, filters);
+					DbRepositoryContext.Filters.Add(repositoryType, filters);
 				}
 			}
 		}
 
-		private static void CreateValidators (RepositoryDbContext repository)
+		private static void CreateValidators (DbRepositoryContext repository)
 		{
-			lock (RepositoryDbContext.ValidatorsSyncRoot)
+			lock (DbRepositoryContext.ValidatorsSyncRoot)
 			{
 				Type repositoryType = repository.GetType();
-				if (!RepositoryDbContext.Validators.ContainsKey(repositoryType))
+				if (!DbRepositoryContext.Validators.ContainsKey(repositoryType))
 				{
 					ValidatorCollection validators = new ValidatorCollection();
 					ValidationRegistrar registrar = new ValidationRegistrar(validators);
 					repository.OnValidatorsCreating(registrar);
-					RepositoryDbContext.Validators.Add(repositoryType, validators);
+					DbRepositoryContext.Validators.Add(repositoryType, validators);
 				}
 			}
 		}
 
-		private static IEntityFilter GetFilter (RepositoryDbContext repository, Type entityType)
+		private static IEntityFilter GetFilter (DbRepositoryContext repository, Type entityType)
 		{
-			lock (RepositoryDbContext.FiltersSyncRoot)
+			lock (DbRepositoryContext.FiltersSyncRoot)
 			{
-				RepositoryDbContext.CreateFilters(repository);
+				DbRepositoryContext.CreateFilters(repository);
 
-				Type[] types = RepositoryDbContext.Filters[repository.GetType()].Select(x => x.EntityType).ToArray();
+				Type[] types = DbRepositoryContext.Filters[repository.GetType()].Select(x => x.EntityType).ToArray();
 
 				Type matchingType;
 				int inheritanceDepth;
@@ -121,23 +121,23 @@ namespace RI.Framework.Data.EF
 					return null;
 				}
 
-				return RepositoryDbContext.Filters[repository.GetType()][matchingType];
+				return DbRepositoryContext.Filters[repository.GetType()][matchingType];
 			}
 		}
 
-		private static MethodInfo GetSetCreator (RepositoryDbContext repository, Type entityType)
+		private static MethodInfo GetSetCreator (DbRepositoryContext repository, Type entityType)
 		{
-			lock (RepositoryDbContext.SetCreatorsSyncRoot)
+			lock (DbRepositoryContext.SetCreatorsSyncRoot)
 			{
 				Type repositoryType = repository.GetType();
-				if (!RepositoryDbContext.SetCreators.ContainsKey(repositoryType))
+				if (!DbRepositoryContext.SetCreators.ContainsKey(repositoryType))
 				{
-					RepositoryDbContext.SetCreators.Add(repositoryType, new Dictionary<Type, MethodInfo>());
+					DbRepositoryContext.SetCreators.Add(repositoryType, new Dictionary<Type, MethodInfo>());
 				}
-				Dictionary<Type, MethodInfo> creatorDictionary = RepositoryDbContext.SetCreators[repositoryType];
+				Dictionary<Type, MethodInfo> creatorDictionary = DbRepositoryContext.SetCreators[repositoryType];
 				if (!creatorDictionary.ContainsKey(entityType))
 				{
-					MethodInfo method = repositoryType.GetMethod(nameof(RepositoryDbContext.CreateSet), BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+					MethodInfo method = repositoryType.GetMethod(nameof(DbRepositoryContext.CreateSet), BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 					MethodInfo genericMethod = method.MakeGenericMethod(entityType);
 					creatorDictionary.Add(entityType, genericMethod);
 				}
@@ -145,13 +145,13 @@ namespace RI.Framework.Data.EF
 			}
 		}
 
-		private static IEntityValidation GetValidator (RepositoryDbContext repository, Type entityType)
+		private static IEntityValidation GetValidator (DbRepositoryContext repository, Type entityType)
 		{
-			lock (RepositoryDbContext.ValidatorsSyncRoot)
+			lock (DbRepositoryContext.ValidatorsSyncRoot)
 			{
-				RepositoryDbContext.CreateValidators(repository);
+				DbRepositoryContext.CreateValidators(repository);
 
-				Type[] types = RepositoryDbContext.Validators[repository.GetType()].Select(x => x.EntityType).ToArray();
+				Type[] types = DbRepositoryContext.Validators[repository.GetType()].Select(x => x.EntityType).ToArray();
 
 				Type matchingType;
 				int inheritanceDepth;
@@ -160,7 +160,7 @@ namespace RI.Framework.Data.EF
 					return null;
 				}
 
-				return RepositoryDbContext.Validators[repository.GetType()][matchingType];
+				return DbRepositoryContext.Validators[repository.GetType()][matchingType];
 			}
 		}
 
@@ -172,12 +172,12 @@ namespace RI.Framework.Data.EF
 		#region Instance Constructor/Destructor
 
 		/// <summary>
-		///     Creates a new instance of <see cref="RepositoryDbContext" />.
+		///     Creates a new instance of <see cref="DbRepositoryContext" />.
 		/// </summary>
 		/// <param name="connection"> The database connection to be used by the underlying <see cref="DbContext" />. </param>
 		/// <param name="ownConnection"> Specifies whether the underlying <see cref="DbContext" /> owns the connection or not. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="connection" /> is null. </exception>
-		protected RepositoryDbContext (DbConnection connection, bool ownConnection)
+		protected DbRepositoryContext (DbConnection connection, bool ownConnection)
 			: base(connection, ownConnection)
 		{
 			if (connection == null)
@@ -263,14 +263,14 @@ namespace RI.Framework.Data.EF
 		}
 
 		/// <inheritdoc cref="IRepositoryContext.GetSet{T}" />
-		public RepositoryDbSet<T> GetSet <T> ()
+		public DbRepositorySet<T> GetSet <T> ()
 			where T : class
 		{
-			return (RepositoryDbSet<T>)this.GetSet(typeof(T));
+			return (DbRepositorySet<T>)this.GetSet(typeof(T));
 		}
 
 		/// <inheritdoc cref="IRepositoryContext.GetSet(Type)" />
-		public RepositoryDbSet GetSet (Type type)
+		public DbRepositorySet GetSet (Type type)
 		{
 			if (type == null)
 			{
@@ -298,7 +298,7 @@ namespace RI.Framework.Data.EF
 				throw new ArgumentNullException(nameof(entityType));
 			}
 
-			return RepositoryDbContext.GetFilter(this, entityType);
+			return DbRepositoryContext.GetFilter(this, entityType);
 		}
 
 		internal EntityValidation<T> GetValidator <T> ()
@@ -314,13 +314,13 @@ namespace RI.Framework.Data.EF
 				throw new ArgumentNullException(nameof(entityType));
 			}
 
-			return RepositoryDbContext.GetValidator(this, entityType);
+			return DbRepositoryContext.GetValidator(this, entityType);
 		}
 
-		private RepositoryDbSet CreateSetInternal (Type type)
+		private DbRepositorySet CreateSetInternal (Type type)
 		{
-			MethodInfo method = RepositoryDbContext.GetSetCreator(this, type);
-			return (RepositoryDbSet)method.Invoke(this, null);
+			MethodInfo method = DbRepositoryContext.GetSetCreator(this, type);
+			return (DbRepositorySet)method.Invoke(this, null);
 		}
 
 		private void PerformEntitySelfChangeTracking ()
@@ -372,11 +372,11 @@ namespace RI.Framework.Data.EF
 		}
 
 		/// <summary>
-		///     Called when a <see cref="RepositoryDbSet{T}" /> is required which does not yet exist.
+		///     Called when a <see cref="DbRepositorySet{T}" /> is required which does not yet exist.
 		/// </summary>
-		/// <typeparam name="T"> The type of entity the <see cref="RepositoryDbSet{T}" /> is required for. </typeparam>
+		/// <typeparam name="T"> The type of entity the <see cref="DbRepositorySet{T}" /> is required for. </typeparam>
 		/// <returns>
-		///     The <see cref="RepositoryDbSet{T}" /> which manages entities of type <typeparamref name="T" />.
+		///     The <see cref="DbRepositorySet{T}" /> which manages entities of type <typeparamref name="T" />.
 		/// </returns>
 		/// <remarks>
 		///     <note type="important">
@@ -387,13 +387,13 @@ namespace RI.Framework.Data.EF
 		///         A set is only created once and then cached and reused for each subsequent call of <see cref="GetSet{T}" /> or <see cref="GetSet(Type)" /> as long as this repository is not disposed.
 		///     </para>
 		///     <para>
-		///         The default implementation creates a new instance of <see cref="RepositoryDbSet{T}" />.
+		///         The default implementation creates a new instance of <see cref="DbRepositorySet{T}" />.
 		///     </para>
 		/// </remarks>
-		protected virtual RepositoryDbSet<T> CreateSet <T> ()
+		protected virtual DbRepositorySet<T> CreateSet <T> ()
 			where T : class
 		{
-			return new RepositoryDbSet<T>(this, this.EFSet<T>());
+			return new DbRepositorySet<T>(this, this.EFSet<T>());
 		}
 
 		/// <summary>
@@ -482,7 +482,7 @@ namespace RI.Framework.Data.EF
 		///     </para>
 		///     <note type="note">
 		///         The entity configuration is only created once for a certain type of repository.
-		///         It is cached and reused for subsequent instances of the same concrete <see cref="RepositoryDbContext" /> type.
+		///         It is cached and reused for subsequent instances of the same concrete <see cref="DbRepositoryContext" /> type.
 		///     </note>
 		/// </remarks>
 		protected virtual void OnConfigurationCreating (ConfigurationRegistrar configurations)
@@ -500,7 +500,7 @@ namespace RI.Framework.Data.EF
 		///     </para>
 		///     <note type="note">
 		///         The entity filters are only created once for a certain type of repository.
-		///         It is cached and reused for subsequent instances of the same concrete <see cref="RepositoryDbContext" /> type.
+		///         It is cached and reused for subsequent instances of the same concrete <see cref="DbRepositoryContext" /> type.
 		///     </note>
 		/// </remarks>
 		protected virtual void OnFiltersCreating (FilterRegistrar filters)
@@ -518,7 +518,7 @@ namespace RI.Framework.Data.EF
 		///     </para>
 		///     <note type="note">
 		///         The entity validations are only created once for a certain type of repository.
-		///         It is cached and reused for subsequent instances of the same concrete <see cref="RepositoryDbContext" /> type.
+		///         It is cached and reused for subsequent instances of the same concrete <see cref="DbRepositoryContext" /> type.
 		///     </note>
 		/// </remarks>
 		protected virtual void OnValidatorsCreating (ValidationRegistrar validators)
@@ -572,14 +572,14 @@ namespace RI.Framework.Data.EF
 		/// <inheritdoc />
 		public sealed override DbSet Set (Type entityType)
 		{
-			RepositoryDbSet set = this.GetSet(entityType);
+			DbRepositorySet set = this.GetSet(entityType);
 			return set.Set;
 		}
 
 		/// <inheritdoc />
 		public sealed override DbSet<TEntity> Set <TEntity> ()
 		{
-			RepositoryDbSet<TEntity> set = this.GetSet<TEntity>();
+			DbRepositorySet<TEntity> set = this.GetSet<TEntity>();
 			return set.Set;
 		}
 
@@ -714,11 +714,11 @@ namespace RI.Framework.Data.EF
 
 		#region Type: SetCollection
 
-		private sealed class SetCollection : KeyedCollection<Type, RepositoryDbSet>
+		private sealed class SetCollection : KeyedCollection<Type, DbRepositorySet>
 		{
 			#region Overrides
 
-			protected override Type GetKeyForItem (RepositoryDbSet item) => item.EntityType;
+			protected override Type GetKeyForItem (DbRepositorySet item) => item.EntityType;
 
 			#endregion
 		}

@@ -11,11 +11,11 @@ using RI.Framework.Collections;
 namespace RI.Framework.Data.EF.Validation
 {
 	/// <summary>
-	///     Implements a registrar which is used to register the entity validation classes which are to be used by a <see cref="RepositoryDbContext" />.
+	///     Implements a registrar which is used to register the entity validation classes which are to be used by a <see cref="DbRepositoryContext" />.
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         <see cref="ValidationRegistrar" /> is used during <see cref="RepositoryDbContext.OnValidatorsCreating" /> to register the entity validation classes.
+	///         <see cref="ValidationRegistrar" /> is used during <see cref="DbRepositoryContext.OnValidatorsCreating" /> to register the entity validation classes.
 	///     </para>
 	/// </remarks>
 	public sealed class ValidationRegistrar

@@ -14,10 +14,10 @@ namespace RI.Framework.Data.EF.Filter
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         Entity filter classes are used to filter entities in the context of an <see cref="RepositoryDbSet{T}" />.
+	///         Entity filter classes are used to filter entities in the context of an <see cref="DbRepositorySet{T}" />.
 	///     </para>
 	///     <para>
-	///         Entity filter classes are created during <see cref="RepositoryDbContext.OnFiltersCreating" />.
+	///         Entity filter classes are created during <see cref="DbRepositoryContext.OnFiltersCreating" />.
 	///     </para>
 	/// </remarks>
 	[Export]
@@ -49,6 +49,6 @@ namespace RI.Framework.Data.EF.Filter
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="repository" /> or <paramref name="set" /> is null. </exception>
-		IOrderedQueryable Filter (RepositoryDbContext repository, RepositoryDbSet set, IEnumerable customSequence, object filter, object sort);
+		IOrderedQueryable Filter (DbRepositoryContext repository, DbRepositorySet set, IEnumerable customSequence, object filter, object sort);
 	}
 }

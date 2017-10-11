@@ -30,7 +30,7 @@ namespace RI.Framework.Data.EF.Validation
 		/// <returns>
 		///     true if the entity can be added, false otherwise.
 		/// </returns>
-		public virtual bool CanAdd (RepositoryDbContext repository, RepositoryDbSet<T> set, T entity)
+		public virtual bool CanAdd (DbRepositoryContext repository, DbRepositorySet<T> set, T entity)
 		{
 			return true;
 		}
@@ -44,7 +44,7 @@ namespace RI.Framework.Data.EF.Validation
 		/// <returns>
 		///     true if the entity can be attached, false otherwise.
 		/// </returns>
-		public virtual bool CanAttach (RepositoryDbContext repository, RepositoryDbSet<T> set, T entity)
+		public virtual bool CanAttach (DbRepositoryContext repository, DbRepositorySet<T> set, T entity)
 		{
 			return true;
 		}
@@ -57,7 +57,7 @@ namespace RI.Framework.Data.EF.Validation
 		/// <returns>
 		///     true if a new instance can be created, false otherwise.
 		/// </returns>
-		public virtual bool CanCreate (RepositoryDbContext repository, RepositoryDbSet<T> set)
+		public virtual bool CanCreate (DbRepositoryContext repository, DbRepositorySet<T> set)
 		{
 			return true;
 		}
@@ -71,7 +71,7 @@ namespace RI.Framework.Data.EF.Validation
 		/// <returns>
 		///     true if the entity can be deleted, false otherwise.
 		/// </returns>
-		public virtual bool CanDelete (RepositoryDbContext repository, RepositoryDbSet<T> set, T entity)
+		public virtual bool CanDelete (DbRepositoryContext repository, DbRepositorySet<T> set, T entity)
 		{
 			return true;
 		}
@@ -85,7 +85,7 @@ namespace RI.Framework.Data.EF.Validation
 		/// <returns>
 		///     true if the entity can be modified, false otherwise.
 		/// </returns>
-		public virtual bool CanModify (RepositoryDbContext repository, RepositoryDbSet<T> set, T entity)
+		public virtual bool CanModify (DbRepositoryContext repository, DbRepositorySet<T> set, T entity)
 		{
 			return true;
 		}
@@ -99,7 +99,7 @@ namespace RI.Framework.Data.EF.Validation
 		/// <returns>
 		///     true if the entity can be reloaded, false otherwise.
 		/// </returns>
-		public virtual bool CanReload (RepositoryDbContext repository, RepositoryDbSet<T> set, T entity)
+		public virtual bool CanReload (DbRepositoryContext repository, DbRepositorySet<T> set, T entity)
 		{
 			return true;
 		}
@@ -113,7 +113,7 @@ namespace RI.Framework.Data.EF.Validation
 		/// <returns>
 		///     true if the entity can be validated, false otherwise.
 		/// </returns>
-		public virtual bool CanValidate (RepositoryDbContext repository, RepositoryDbSet<T> set, T entity)
+		public virtual bool CanValidate (DbRepositoryContext repository, DbRepositorySet<T> set, T entity)
 		{
 			return true;
 		}
@@ -124,7 +124,7 @@ namespace RI.Framework.Data.EF.Validation
 		/// <param name="repository"> The repository the fixed entity belongs to. </param>
 		/// <param name="set"> The set the fixed entity belongs to. </param>
 		/// <param name="entity"> The entity to fix. </param>
-		protected virtual void Fix (RepositoryDbContext repository, RepositoryDbSet<T> set, T entity)
+		protected virtual void Fix (DbRepositoryContext repository, DbRepositorySet<T> set, T entity)
 		{
 		}
 
@@ -134,7 +134,7 @@ namespace RI.Framework.Data.EF.Validation
 		/// <param name="repository"> The repository the initialized entity belongs to. </param>
 		/// <param name="set"> The set the initialized entity belongs to. </param>
 		/// <param name="entity"> The entity to initialize. </param>
-		protected virtual void Initialize (RepositoryDbContext repository, RepositoryDbSet<T> set, T entity)
+		protected virtual void Initialize (DbRepositoryContext repository, DbRepositorySet<T> set, T entity)
 		{
 		}
 
@@ -145,7 +145,7 @@ namespace RI.Framework.Data.EF.Validation
 		/// <param name="set"> The set the validated entity belongs to. </param>
 		/// <param name="entity"> The entity to validate. </param>
 		/// <param name="errors"> The list which is to be populated with the validation errors (if any). </param>
-		protected virtual void Validate (RepositoryDbContext repository, RepositoryDbSet<T> set, T entity, List<DbValidationError> errors)
+		protected virtual void Validate (DbRepositoryContext repository, DbRepositorySet<T> set, T entity, List<DbValidationError> errors)
 		{
 		}
 
@@ -160,7 +160,7 @@ namespace RI.Framework.Data.EF.Validation
 		Type IEntityValidation.EntityType => typeof(T);
 
 		/// <inheritdoc />
-		bool IEntityValidation.CanAdd (RepositoryDbContext repository, RepositoryDbSet set, object entity)
+		bool IEntityValidation.CanAdd (DbRepositoryContext repository, DbRepositorySet set, object entity)
 		{
 			if (repository == null)
 			{
@@ -177,11 +177,11 @@ namespace RI.Framework.Data.EF.Validation
 				throw new ArgumentNullException(nameof(entity));
 			}
 
-			return this.CanAdd(repository, (RepositoryDbSet<T>)set, (T)entity);
+			return this.CanAdd(repository, (DbRepositorySet<T>)set, (T)entity);
 		}
 
 		/// <inheritdoc />
-		bool IEntityValidation.CanAttach (RepositoryDbContext repository, RepositoryDbSet set, object entity)
+		bool IEntityValidation.CanAttach (DbRepositoryContext repository, DbRepositorySet set, object entity)
 		{
 			if (repository == null)
 			{
@@ -198,11 +198,11 @@ namespace RI.Framework.Data.EF.Validation
 				throw new ArgumentNullException(nameof(entity));
 			}
 
-			return this.CanAttach(repository, (RepositoryDbSet<T>)set, (T)entity);
+			return this.CanAttach(repository, (DbRepositorySet<T>)set, (T)entity);
 		}
 
 		/// <inheritdoc />
-		bool IEntityValidation.CanCreate (RepositoryDbContext repository, RepositoryDbSet set)
+		bool IEntityValidation.CanCreate (DbRepositoryContext repository, DbRepositorySet set)
 		{
 			if (repository == null)
 			{
@@ -214,32 +214,11 @@ namespace RI.Framework.Data.EF.Validation
 				throw new ArgumentNullException(nameof(set));
 			}
 
-			return this.CanCreate(repository, (RepositoryDbSet<T>)set);
+			return this.CanCreate(repository, (DbRepositorySet<T>)set);
 		}
 
 		/// <inheritdoc />
-		bool IEntityValidation.CanDelete (RepositoryDbContext repository, RepositoryDbSet set, object entity)
-		{
-			if (repository == null)
-			{
-				throw new ArgumentNullException(nameof(repository));
-			}
-
-			if (set == null)
-			{
-				throw new ArgumentNullException(nameof(set));
-			}
-
-			if (entity == null)
-			{
-				throw new ArgumentNullException(nameof(entity));
-			}
-
-			return this.CanDelete(repository, (RepositoryDbSet<T>)set, (T)entity);
-		}
-
-		/// <inheritdoc />
-		bool IEntityValidation.CanModify (RepositoryDbContext repository, RepositoryDbSet set, object entity)
+		bool IEntityValidation.CanDelete (DbRepositoryContext repository, DbRepositorySet set, object entity)
 		{
 			if (repository == null)
 			{
@@ -256,11 +235,11 @@ namespace RI.Framework.Data.EF.Validation
 				throw new ArgumentNullException(nameof(entity));
 			}
 
-			return this.CanModify(repository, (RepositoryDbSet<T>)set, (T)entity);
+			return this.CanDelete(repository, (DbRepositorySet<T>)set, (T)entity);
 		}
 
 		/// <inheritdoc />
-		bool IEntityValidation.CanReload (RepositoryDbContext repository, RepositoryDbSet set, object entity)
+		bool IEntityValidation.CanModify (DbRepositoryContext repository, DbRepositorySet set, object entity)
 		{
 			if (repository == null)
 			{
@@ -277,11 +256,11 @@ namespace RI.Framework.Data.EF.Validation
 				throw new ArgumentNullException(nameof(entity));
 			}
 
-			return this.CanReload(repository, (RepositoryDbSet<T>)set, (T)entity);
+			return this.CanModify(repository, (DbRepositorySet<T>)set, (T)entity);
 		}
 
 		/// <inheritdoc />
-		bool IEntityValidation.CanValidate (RepositoryDbContext repository, RepositoryDbSet set, object entity)
+		bool IEntityValidation.CanReload (DbRepositoryContext repository, DbRepositorySet set, object entity)
 		{
 			if (repository == null)
 			{
@@ -298,11 +277,11 @@ namespace RI.Framework.Data.EF.Validation
 				throw new ArgumentNullException(nameof(entity));
 			}
 
-			return this.CanValidate(repository, (RepositoryDbSet<T>)set, (T)entity);
+			return this.CanReload(repository, (DbRepositorySet<T>)set, (T)entity);
 		}
 
 		/// <inheritdoc />
-		void IEntityValidation.Fix (RepositoryDbContext repository, RepositoryDbSet set, object entity)
+		bool IEntityValidation.CanValidate (DbRepositoryContext repository, DbRepositorySet set, object entity)
 		{
 			if (repository == null)
 			{
@@ -319,11 +298,11 @@ namespace RI.Framework.Data.EF.Validation
 				throw new ArgumentNullException(nameof(entity));
 			}
 
-			this.Fix(repository, (RepositoryDbSet<T>)set, (T)entity);
+			return this.CanValidate(repository, (DbRepositorySet<T>)set, (T)entity);
 		}
 
 		/// <inheritdoc />
-		void IEntityValidation.Initialize (RepositoryDbContext repository, RepositoryDbSet set, object entity)
+		void IEntityValidation.Fix (DbRepositoryContext repository, DbRepositorySet set, object entity)
 		{
 			if (repository == null)
 			{
@@ -340,11 +319,32 @@ namespace RI.Framework.Data.EF.Validation
 				throw new ArgumentNullException(nameof(entity));
 			}
 
-			this.Initialize(repository, (RepositoryDbSet<T>)set, (T)entity);
+			this.Fix(repository, (DbRepositorySet<T>)set, (T)entity);
 		}
 
 		/// <inheritdoc />
-		DbEntityValidationResult IEntityValidation.Validate (RepositoryDbContext repository, RepositoryDbSet set, object entity)
+		void IEntityValidation.Initialize (DbRepositoryContext repository, DbRepositorySet set, object entity)
+		{
+			if (repository == null)
+			{
+				throw new ArgumentNullException(nameof(repository));
+			}
+
+			if (set == null)
+			{
+				throw new ArgumentNullException(nameof(set));
+			}
+
+			if (entity == null)
+			{
+				throw new ArgumentNullException(nameof(entity));
+			}
+
+			this.Initialize(repository, (DbRepositorySet<T>)set, (T)entity);
+		}
+
+		/// <inheritdoc />
+		DbEntityValidationResult IEntityValidation.Validate (DbRepositoryContext repository, DbRepositorySet set, object entity)
 		{
 			if (repository == null)
 			{
@@ -362,7 +362,7 @@ namespace RI.Framework.Data.EF.Validation
 			}
 
 			List<DbValidationError> errors = new List<DbValidationError>();
-			this.Validate(repository, (RepositoryDbSet<T>)set, (T)entity, errors);
+			this.Validate(repository, (DbRepositorySet<T>)set, (T)entity, errors);
 			return errors.Count == 0 ? null : new DbEntityValidationResult(repository.Entry(entity), errors);
 		}
 
