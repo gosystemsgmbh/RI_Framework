@@ -49,6 +49,14 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bus\Exceptions\ConnectionBrokenException.cs" />
+    <Compile Include="Bus\Connections\IBusConnection.cs" />
+    <Compile Include="Bus\Dispatchers\IBusDispatcher.cs" />
+    <Compile Include="Bus\LocalBus.cs" />
+    <Compile Include="Bus\Exceptions\ResponseTimeoutException.cs" />
+    <Compile Include="Bus\ReceiveCallback.cs" />
+    <Compile Include="Bus\SendOperation.cs" />
+    <Compile Include="Bus\_NamespaceDoc.cs" />
     <Compile Include="Data\Database\Backup\DatabaseBackupCreator.cs" />
     <Compile Include="Data\Database\Backup\IDatabaseBackupCreator.cs" />
     <Compile Include="Data\Database\Backup\_NamespaceDoc.cs" />
@@ -90,6 +98,7 @@
     <Compile Include="Data\Database\_NamespaceDoc.cs" />
     <Compile Include="Data\Repository\ChangeTrackingContextResolveEventArgs.cs" />
     <Compile Include="Data\Repository\Entities\EntityBase.cs" />
+    <Compile Include="Data\Repository\Entities\EntitySerializationIgnoreAttribute.cs" />
     <Compile Include="Data\Repository\Entities\EntitySerializationOptions.cs" />
     <Compile Include="Data\Repository\Entities\IEntityChangeTracking.cs" />
     <Compile Include="Data\Repository\Entities\IEntityErrorTracking.cs" />
@@ -243,6 +252,7 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="..\RI.Framework.Common\RI.Framework.Common.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

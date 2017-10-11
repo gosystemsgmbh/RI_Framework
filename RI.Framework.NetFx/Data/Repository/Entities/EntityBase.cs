@@ -762,6 +762,12 @@ namespace RI.Framework.Data.Repository.Entities
 
 				foreach (PropertyInfo property in properties)
 				{
+					EntitySerializationIgnoreAttribute attributes = property.GetCustomAttribute<EntitySerializationIgnoreAttribute>();
+					if (attributes != null)
+					{
+						continue;
+					}
+
 					PropertySerializationInfo info = new PropertySerializationInfo();
 					info.DeclaringType = type;
 					info.Property = property;
