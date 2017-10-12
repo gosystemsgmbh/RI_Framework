@@ -5,19 +5,23 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
+using RI.Framework.Bus.Exceptions;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
+using RI.Framework.Utilities.ObjectModel;
 
 namespace RI.Framework.Bus
 {
 	/// <summary>
 	/// Represents a send operation.
 	/// </summary>
-	public sealed class SendOperation
+	/// <threadsafety static="true" instance="true" />
+	public sealed class SendOperation : ISynchronizable
 	{
-		internal SendOperation (LocalBus localBus)
+		internal SendOperation (IBus bus)
 		{
-			this.LocalBus = localBus;
+			this.SyncRoot = new object();
+			this.Bus = bus;
 
 			this.Address = null;
 			this.Global = null;
@@ -32,28 +36,70 @@ namespace RI.Framework.Bus
 		}
 
 		/// <summary>
-		/// Gets the local bus this send operation is associated with.
+		/// Gets the bus this send operation is associated with.
 		/// </summary>
 		/// <value>
-		/// The local bus this send operation is associated with.
+		/// The bus this send operation is associated with.
 		/// </value>
-		public LocalBus LocalBus { get; }
+		public IBus Bus { get; }
 
+		/// <summary>
+		/// Gets the address the message is sent to.
+		/// </summary>
+		/// <value>
+		/// The address the message is sent to or null if no address is used.
+		/// </value>
 		public string Address { get; private set; }
 
+		/// <summary>
+		/// Gets whether the message is sent globally.
+		/// </summary>
+		/// <value>
+		/// true if the message is sent globally, false if locally, null if not defined where the default value of the associated bus is used.
+		/// </value>
 		public bool? Global { get; private set; }
 
+		/// <summary>
+		/// Gets the payload of the message.
+		/// </summary>
+		/// <value>
+		/// The payload of the message or null if no payload is used.
+		/// </value>
 		public object Payload { get; private set; }
 
+		/// <summary>
+		/// Gets the timeout for the message (waiting for or collecting responses).
+		/// </summary>
+		/// <value>
+		/// The timeout for the message or null if not defined where the default value of the associated bus is used.
+		/// </value>
 		public TimeSpan? Timeout { get; private set; }
 
+		/// <summary>
+		/// Gets the cancellation token which can be used to cancel the wait for responses or the collection of responses.
+		/// </summary>
+		/// <value>
+		/// tHE cancellation token which can be used to cancel the wait for responses or the collection of responses.
+		/// </value>
 		public CancellationToken? CancellationToken { get; private set; }
 
+		/// <summary>
+		/// Gets whether the message is sent as a broadcast.
+		/// </summary>
+		/// <value>
+		/// true if the message is sent as broadcast, false otherwise.
+		/// </value>
 		public bool IsBroadcast { get; private set; }
 
 		private bool Started { get; set; }
 
 		private object Result { get; set; }
+
+		/// <inheritdoc />
+		public object SyncRoot { get; }
+
+		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => true;
 
 		private void VerifyNotStarted ()
 		{
@@ -82,13 +128,16 @@ namespace RI.Framework.Bus
 				}
 			}
 
-			this.VerifyNotStarted();
-			this.Address = address;
-			return this;
+			lock (this.SyncRoot)
+			{
+				this.VerifyNotStarted();
+				this.Address = address;
+				return this;
+			}
 		}
 
 		/// <summary>
-		/// Sets the message to be sent only to receivers of this local message bus.
+		/// Sets the message to be sent locally.
 		/// </summary>
 		/// <returns>
 		/// The send operation to continue configuration of the message.
@@ -96,13 +145,16 @@ namespace RI.Framework.Bus
 		/// <exception cref="InvalidOperationException">The message is already being processed.</exception>
 		public SendOperation ToLocal()
 		{
-			this.VerifyNotStarted();
-			this.Global = false;
-			return this;
+			lock (this.SyncRoot)
+			{
+				this.VerifyNotStarted();
+				this.Global = false;
+				return this;
+			}
 		}
 
 		/// <summary>
-		/// Sets the message to be sent to receivers of this local message bus and all connected message busses.
+		/// Sets the message to be sent globally.
 		/// </summary>
 		/// <returns>
 		/// The send operation to continue configuration of the message.
@@ -110,28 +162,34 @@ namespace RI.Framework.Bus
 		/// <exception cref="InvalidOperationException">The message is already being processed.</exception>
 		public SendOperation ToGlobal()
 		{
-			this.VerifyNotStarted();
-			this.Global = true;
-			return this;
+			lock (this.SyncRoot)
+			{
+				this.VerifyNotStarted();
+				this.Global = true;
+				return this;
+			}
 		}
 
 		/// <summary>
 		/// Sets the message to be sent locally or globally.
 		/// </summary>
-		/// <param name="sendGlobally">Specifes whether the message should be sent globally.</param>
+		/// <param name="sendGlobally">Specifes whether the message should be sent globally (true) or locally (false).</param>
 		/// <returns>
 		/// The send operation to continue configuration of the message.
 		/// </returns>
 		/// <exception cref="InvalidOperationException">The message is already being processed.</exception>
 		public SendOperation ToGlobal(bool sendGlobally)
 		{
-			this.VerifyNotStarted();
-			this.Global = sendGlobally;
-			return this;
+			lock (this.SyncRoot)
+			{
+				this.VerifyNotStarted();
+				this.Global = sendGlobally;
+				return this;
+			}
 		}
 
 		/// <summary>
-		/// Sets to use the default value whether to send the message globally.
+		/// Sets to use the default value of the associated bus whether to send the message globally.
 		/// </summary>
 		/// <returns>
 		/// The send operation to continue configuration of the message.
@@ -139,9 +197,12 @@ namespace RI.Framework.Bus
 		/// <exception cref="InvalidOperationException">The message is already being processed.</exception>
 		public SendOperation ToDefaultGlobal ()
 		{
-			this.VerifyNotStarted();
-			this.Global = null;
-			return this;
+			lock (this.SyncRoot)
+			{
+				this.VerifyNotStarted();
+				this.Global = null;
+				return this;
+			}
 		}
 
 		/// <summary>
@@ -154,13 +215,16 @@ namespace RI.Framework.Bus
 		/// <exception cref="InvalidOperationException">The message is already being processed.</exception>
 		public SendOperation WithPayload (object payload)
 		{
-			this.VerifyNotStarted();
-			this.Payload = payload;
-			return this;
+			lock (this.SyncRoot)
+			{
+				this.VerifyNotStarted();
+				this.Payload = payload;
+				return this;
+			}
 		}
 
 		/// <summary>
-		/// Sets the timeout after which a <see cref="ResponseTimeoutException"/> is thrown (<see cref="AsSingle"/>, <see cref="AsSingle{TResponse}"/>) or the collection of responses is finished (<see cref="AsBroadcast"/>, <see cref="AsBroadcast{TResponse}"/>).
+		/// Sets the timeout for the message (waiting for or collecting responses).
 		/// </summary>
 		/// <param name="timeout">The timeout.</param>
 		/// <returns>
@@ -175,23 +239,27 @@ namespace RI.Framework.Bus
 				throw new ArgumentOutOfRangeException(nameof(timeout));
 			}
 
-			this.VerifyNotStarted();
-			this.Timeout = timeout;
-			return this;
+			lock (this.SyncRoot)
+			{
+				this.VerifyNotStarted();
+				this.Timeout = timeout;
+				return this;
+			}
 		}
 
 		/// <summary>
-		/// Sets the timeout after which a <see cref="ResponseTimeoutException"/> is thrown (<see cref="AsSingle"/>, <see cref="AsSingle{TResponse}"/>) or the collection of responses is finished (<see cref="AsBroadcast"/>, <see cref="AsBroadcast{TResponse}"/>).
+		/// Sets the timeout for the message (waiting for or collecting responses).
 		/// </summary>
 		/// <param name="milliseconds">The timeout in milliseconds.</param>
 		/// <returns>
 		/// The send operation to continue configuration of the message.
 		/// </returns>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="milliseconds"/> is negative.</exception>
 		/// <exception cref="InvalidOperationException">The message is already being processed.</exception>
 		public SendOperation WithTimeout (int milliseconds) => this.WithTimeout(TimeSpan.FromMilliseconds(milliseconds));
 
 		/// <summary>
-		/// Sets to use the default timeout after which a <see cref="ResponseTimeoutException"/> is thrown (<see cref="AsSingle"/>, <see cref="AsSingle{TResponse}"/>) or the collection of responses is finished (<see cref="AsBroadcast"/>, <see cref="AsBroadcast{TResponse}"/>).
+		/// Sets to use the default timeoutfor the message (waiting for or collecting responses) of the associated bus.
 		/// </summary>
 		/// <returns>
 		/// The send operation to continue configuration of the message.
@@ -199,24 +267,30 @@ namespace RI.Framework.Bus
 		/// <exception cref="InvalidOperationException">The message is already being processed.</exception>
 		public SendOperation WithDefaultTimeout()
 		{
-			this.VerifyNotStarted();
-			this.Timeout = null;
-			return this;
+			lock (this.SyncRoot)
+			{
+				this.VerifyNotStarted();
+				this.Timeout = null;
+				return this;
+			}
 		}
 
 		/// <summary>
-		/// Sets cancellation token used to stop waiting for the round-trip or collection of responses.
+		/// Sets the cancellation token which can be used to cancel the wait for responses or the collection of responses.
 		/// </summary>
-		/// <param name="cancellationToken">The used cancellation token or null if cancellation is not used.</param>
+		/// <param name="cancellationToken">The cancellation token or null if cancellation is not used.</param>
 		/// <returns>
 		/// The send operation to continue configuration of the message.
 		/// </returns>
 		/// <exception cref="InvalidOperationException">The message is already being processed.</exception>
 		public SendOperation WithCancellation(CancellationToken? cancellationToken)
 		{
-			this.VerifyNotStarted();
-			this.CancellationToken = cancellationToken;
-			return this;
+			lock (this.SyncRoot)
+			{
+				this.VerifyNotStarted();
+				this.CancellationToken = cancellationToken;
+				return this;
+			}
 		}
 
 		/// <summary>
@@ -225,16 +299,22 @@ namespace RI.Framework.Bus
 		/// <returns>
 		/// The task used to wait until the round-trip completed.
 		/// </returns>
-		/// <exception cref="InvalidOperationException">The message is already being processed or the local message bus is stopped.</exception>
-		/// <exception cref="LocalBusException">The local bus processing pipeline encountered an exception.</exception>
-		/// <exception cref="ResponseTimeoutException">The intended receiver did not respond within the specified timeout.</exception>
-		/// <exception cref="ConnectionBrokenException">A used connection to a connected message bus is broken.</exception>
+		/// <exception cref="InvalidOperationException">The message is already being processed or the bus is stopped.</exception>
+		/// <exception cref="LocalBusException">The bus processing pipeline encountered an exception.</exception>
+		/// <exception cref="ResponseTimeoutException">The intended receiver did not respond within the used timeout.</exception>
+		/// <exception cref="ConnectionBrokenException">A used connection to a remote bus is broken.</exception>
 		public async Task AsSingle ()
 		{
-			this.VerifyNotStarted();
-			this.Started = true;
-			this.IsBroadcast = false;
-			this.Result = await this.LocalBus.Enqueue(this);
+			Task<object> task;
+			lock (this.SyncRoot)
+			{
+				this.VerifyNotStarted();
+				this.Started = true;
+				this.IsBroadcast = false;
+				task = this.Bus.Enqueue(this);
+			}
+
+			this.Result = await task.ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -245,17 +325,23 @@ namespace RI.Framework.Bus
 		/// The task used to wait until the round-trip completed.
 		/// The tasks result is the received response.
 		/// </returns>
-		/// <exception cref="InvalidOperationException">The message is already being processed or the local message bus is stopped.</exception>
-		/// <exception cref="LocalBusException">The local bus processing pipeline encountered an exception.</exception>
-		/// <exception cref="ResponseTimeoutException">The intended receiver did not respond within the specified timeout.</exception>
-		/// <exception cref="ConnectionBrokenException">A used connection to a connected message bus is broken.</exception>
+		/// <exception cref="InvalidOperationException">The message is already being processed or the bus is stopped.</exception>
+		/// <exception cref="LocalBusException">The bus processing pipeline encountered an exception.</exception>
+		/// <exception cref="ResponseTimeoutException">The intended receiver did not respond within the used timeout.</exception>
+		/// <exception cref="ConnectionBrokenException">A used connection to a remote bus is broken.</exception>
 		/// <exception cref="InvalidCastException">The response could not be casted to type <typeparamref name="TResponse"/>.</exception>
 		public async Task<TResponse> AsSingle <TResponse> ()
 		{
-			this.VerifyNotStarted();
-			this.Started = true;
-			this.IsBroadcast = false;
-			this.Result = await this.LocalBus.Enqueue(this);
+			Task<object> task;
+			lock (this.SyncRoot)
+			{
+				this.VerifyNotStarted();
+				this.Started = true;
+				this.IsBroadcast = false;
+				task = this.Bus.Enqueue(this);
+			}
+
+			this.Result = await task.ConfigureAwait(false);
 			return (TResponse)this.Result;
 		}
 
@@ -271,15 +357,21 @@ namespace RI.Framework.Bus
 		/// <see cref="AsBroadcast"/> does not throw <see cref="ResponseTimeoutException"/> for not responding receivers.
 		/// </note>
 		/// </remarks>
-		/// <exception cref="InvalidOperationException">The message is already being processed or the local message bus is stopped.</exception>
-		/// <exception cref="LocalBusException">The local bus processing pipeline encountered an exception.</exception>
-		/// <exception cref="ConnectionBrokenException">A used connection to a connected message bus is broken.</exception>
+		/// <exception cref="InvalidOperationException">The message is already being processed or the bus is stopped.</exception>
+		/// <exception cref="LocalBusException">The bus processing pipeline encountered an exception.</exception>
+		/// <exception cref="ConnectionBrokenException">A used connection to a remote bus is broken.</exception>
 		public async Task<int> AsBroadcast()
 		{
-			this.VerifyNotStarted();
-			this.Started = true;
-			this.IsBroadcast = true;
-			this.Result = await this.LocalBus.Enqueue(this);
+			Task<object> task;
+			lock (this.SyncRoot)
+			{
+				this.VerifyNotStarted();
+				this.Started = true;
+				this.IsBroadcast = true;
+				task = this.Bus.Enqueue(this);
+			}
+
+			this.Result = await task.ConfigureAwait(false);
 			return ((ICollection)this.Result).Count;
 		}
 
@@ -293,19 +385,25 @@ namespace RI.Framework.Bus
 		/// </returns>
 		/// <remarks>
 		/// <note type="important">
-		/// <see cref="AsBroadcast"/> does not throw <see cref="ResponseTimeoutException"/> for not responding receivers.
+		/// <see cref="AsBroadcast{TResponse}"/> does not throw <see cref="ResponseTimeoutException"/> for not responding receivers.
 		/// </note>
 		/// </remarks>
-		/// <exception cref="InvalidOperationException">The message is already being processed or the local message bus is stopped.</exception>
-		/// <exception cref="LocalBusException">The local bus processing pipeline encountered an exception.</exception>
-		/// <exception cref="ConnectionBrokenException">A used connection to a connected message bus is broken.</exception>
+		/// <exception cref="InvalidOperationException">The message is already being processed or the bus is stopped.</exception>
+		/// <exception cref="LocalBusException">The bus processing pipeline encountered an exception.</exception>
+		/// <exception cref="ConnectionBrokenException">A used connection to a remote bus is broken.</exception>
 		/// <exception cref="InvalidCastException">The responses could not be casted to type <typeparamref name="TResponse"/>.</exception>
 		public async Task<List<TResponse>> AsBroadcast <TResponse> ()
 		{
-			this.VerifyNotStarted();
-			this.Started = true;
-			this.IsBroadcast = true;
-			this.Result = await this.LocalBus.Enqueue(this);
+			Task<object> task;
+			lock (this.SyncRoot)
+			{
+				this.VerifyNotStarted();
+				this.Started = true;
+				this.IsBroadcast = true;
+				task = this.Bus.Enqueue(this);
+			}
+
+			this.Result = await task.ConfigureAwait(false);
 			return ((ICollection)this.Result).Cast<TResponse>().ToList();
 		}
 	}

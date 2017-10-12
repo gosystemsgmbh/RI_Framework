@@ -277,7 +277,7 @@ namespace RI.Framework.Services.Logging.Readers
 
 			using (SQLiteConnection connection = this.CreateConnection(dbFile))
 			{
-				return await this.ConvertDirectoriesAsync(logDirectory, connection, fileName);
+				return await this.ConvertDirectoriesAsync(logDirectory, connection, fileName).ConfigureAwait(false);
 			}
 		}
 
@@ -423,7 +423,7 @@ namespace RI.Framework.Services.Logging.Readers
 
 			using (SQLiteConnection connection = this.CreateConnection(dbFile))
 			{
-				return await this.ConvertFileAsync(logFile, connection);
+				return await this.ConvertFileAsync(logFile, connection).ConfigureAwait(false);
 			}
 		}
 
@@ -578,7 +578,7 @@ namespace RI.Framework.Services.Logging.Readers
 
 			using (SQLiteConnection connection = this.CreateConnection(dbFile))
 			{
-				return await this.ConvertFilesAsync(logFiles, connection);
+				return await this.ConvertFilesAsync(logFiles, connection).ConfigureAwait(false);
 			}
 		}
 

@@ -4,7 +4,12 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 
+using RI.Framework.Bus.Connections;
 using RI.Framework.Bus.Exceptions;
+using RI.Framework.Bus.Internals;
+using RI.Framework.Bus.Pipeline;
+using RI.Framework.Bus.Routers;
+using RI.Framework.Bus.Serializers;
 using RI.Framework.Threading;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Logging;
@@ -22,33 +27,24 @@ namespace RI.Framework.Bus
 	/// However, multiple local message busses can be connected, across processes, machines, or networks, to form a global message bus which consists of independent but connected local message busses.
 	/// </para>
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	/// TODO: Logging
 	/// TODO: Documentation
-	public sealed class LocalBus : LogSource, IDisposable, ISynchronizable
+	public sealed class LocalBus : LogSource, IBus
 	{
 		private TimeSpan _pollInterval;
-		private TimeSpan _defaultTimeout;
+		private TimeSpan _responseTimeout;
+		private TimeSpan _collectionTimeout;
 		private bool _defaultIsGlobal;
 
-		/// <summary>
-		/// Gets or sets the timeout after which a <see cref="ResponseTimeoutException"/> is thrown or the collection of responses is finished.
-		/// </summary>
-		/// <value>
-		/// The timeout after which a <see cref="ResponseTimeoutException"/> is thrown or the collection of responses is finished.
-		/// </value>
-		/// <remarks>
-		/// <para>
-		/// The default value is 10 seconds.
-		/// </para>
-		/// </remarks>
-		/// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> is negative.</exception>
-		public TimeSpan DefaultTimeout
+		/// <inheritdoc />
+		public TimeSpan ResponseTimeout
 		{
 			get
 			{
 				lock (this.SyncRoot)
 				{
-					return this._defaultTimeout;
+					return this._responseTimeout;
 				}
 			}
 			set
@@ -60,22 +56,36 @@ namespace RI.Framework.Bus
 
 				lock (this.SyncRoot)
 				{
-					this._defaultTimeout = value;
+					this._responseTimeout = value;
 				}
 			}
 		}
 
-		/// <summary>
-		/// Gets or sets whether messages are sent globally by default.
-		/// </summary>
-		/// <value>
-		/// true if messages are sent globally by default, false otherwise.
-		/// </value>
-		/// <remarks>
-		/// <para>
-		/// The default value is false.
-		/// </para>
-		/// </remarks>
+		/// <inheritdoc />
+		public TimeSpan CollectionTimeout
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._collectionTimeout;
+				}
+			}
+			set
+			{
+				if (value.IsNegative())
+				{
+					throw new ArgumentOutOfRangeException(nameof(value));
+				}
+
+				lock (this.SyncRoot)
+				{
+					this._collectionTimeout = value;
+				}
+			}
+		}
+
+		/// <inheritdoc />
 		public bool DefaultIsGlobal
 		{
 			get
@@ -94,18 +104,7 @@ namespace RI.Framework.Bus
 			}
 		}
 
-		/// <summary>
-		/// Gets or sets the polling interval.
-		/// </summary>
-		/// <value>
-		/// The polling interval.
-		/// </value>
-		/// <remarks>
-		/// <para>
-		/// The default value is 20 milliseconds.
-		/// </para>
-		/// </remarks>
-		/// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> is negative.</exception>
+		/// <inheritdoc />
 		public TimeSpan PollInterval
 		{
 			get
@@ -129,14 +128,6 @@ namespace RI.Framework.Bus
 			}
 		}
 
-		/// <summary>
-		/// Gets the dependency resolver which is used for resolving types needed by the local bus.
-		/// </summary>
-		/// <value>
-		/// The dependency resolver which is used for resolving types needed by the local bus.
-		/// </value>
-		public IDependencyResolver DependencyResolver { get; }
-
 		/// <inheritdoc />
 		public object SyncRoot { get; }
 
@@ -144,6 +135,30 @@ namespace RI.Framework.Bus
 		bool ISynchronizable.IsSynchronized => true;
 
 		private object StartStopSyncRoot { get; set; }
+
+		/// <inheritdoc />
+		List<SendOperationItem> IBus.SendOperations
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this.SendOperations;
+				}
+			}
+		}
+
+		/// <inheritdoc />
+		List<ReceiveRegistrationItem> IBus.ReceiveRegistrations
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this.ReceiveRegistrations;
+				}
+			}
+		}
 
 		private List<SendOperationItem> SendOperations { get; set; }
 
@@ -153,27 +168,22 @@ namespace RI.Framework.Bus
 
 		private WorkThread WorkerThread { get; set; }
 
+		private IDependencyResolver DependencyResolver { get; set; }
+
 		/// <summary>
 		/// Creates a new instance of <see cref="LocalBus"/>.
 		/// </summary>
-		/// <param name="dependencyResolver">The dependency resolver which is used for resolving types needed by the local bus.</param>
-		/// <exception cref="ArgumentNullException"><paramref name="dependencyResolver"/> is null.</exception>
-		public LocalBus (IDependencyResolver dependencyResolver)
+		public LocalBus ()
 		{
-			if (dependencyResolver == null)
-			{
-				throw new ArgumentNullException(nameof(dependencyResolver));
-			}
-
-			this.DependencyResolver = dependencyResolver;
-
 			this.SyncRoot = new object();
 			this.StartStopSyncRoot = new object();
 
-			this.DefaultTimeout = TimeSpan.FromSeconds(10);
-			this.DefaultIsGlobal = false;
+			this.ResponseTimeout = TimeSpan.FromSeconds(10);
+			this.CollectionTimeout = TimeSpan.FromSeconds(10);
 			this.PollInterval = TimeSpan.FromMilliseconds(20);
+			this.DefaultIsGlobal = false;
 
+			this.DependencyResolver = null;
 			this.WorkerThread = null;
 			this.WorkAvailable = null;
 			this.SendOperations = new List<SendOperationItem>();
@@ -188,9 +198,7 @@ namespace RI.Framework.Bus
 			this.Dispose(false);
 		}
 
-		/// <summary>
-		///     Stops the local bus and closes all connections.
-		/// </summary>
+		/// <inheritdoc />
 		public void Stop ()
 		{
 			this.Dispose(true);
@@ -203,12 +211,14 @@ namespace RI.Framework.Bus
 			this.Stop();
 		}
 
-		/// <summary>
-		/// Starts the local bus.
-		/// </summary>
-		/// <exception cref="InvalidOperationException">The local message bus is already started.</exception>
-		public void Start ()
+		/// <inheritdoc />
+		public void Start (IDependencyResolver dependencyResolver)
 		{
+			if (dependencyResolver == null)
+			{
+				throw new ArgumentNullException(nameof(dependencyResolver));
+			}
+
 			lock (this.StartStopSyncRoot)
 			{
 				bool success = false;
@@ -218,18 +228,20 @@ namespace RI.Framework.Bus
 					{
 						this.VerifyNotStarted();
 
+						this.DependencyResolver = dependencyResolver;
+
 						this.SendOperations.Clear();
 						this.ReceiveRegistrations.Clear();
 
 						this.WorkAvailable = new ManualResetEvent(false);
 
 						this.WorkerThread = new WorkThread(this);
-						this.WorkerThread.Timeout = (int)this.DefaultTimeout.TotalMilliseconds * 2;
-
-						this.WorkerThread.Start();
-
-						success = true;
+						this.WorkerThread.Timeout += (int)this.ResponseTimeout.TotalMilliseconds + (int)this.PollInterval.TotalMilliseconds;
 					}
+
+					this.WorkerThread.Start();
+
+					success = true;
 				}
 				finally
 				{
@@ -241,10 +253,6 @@ namespace RI.Framework.Bus
 			}
 		}
 
-		/// <summary>
-		///     Stops the local bus and closes all connections.
-		/// </summary>
-		/// <param name="disposing"> true if called from <see cref="Stop" /> or <see cref="IDisposable.Dispose" />, false if called from the destructor. </param>
 		[SuppressMessage("ReSharper", "UnusedParameter.Local")]
 		private void Dispose(bool disposing)
 		{
@@ -254,18 +262,21 @@ namespace RI.Framework.Bus
 				lock (this.SyncRoot)
 				{
 					workerThread = this.WorkerThread;
-					this.WorkerThread = null;
 				}
 
 				workerThread?.Stop();
 
 				lock (this.SyncRoot)
 				{
+					this.WorkerThread = null;
+
 					this.WorkAvailable?.Close();
 					this.WorkAvailable = null;
 
 					this.SendOperations?.Clear();
 					this.ReceiveRegistrations?.Clear();
+
+					this.DependencyResolver = null;
 				}
 			}
 		}
@@ -286,26 +297,12 @@ namespace RI.Framework.Bus
 			}
 		}
 
-		/// <summary>
-		/// Gets whether the local bus is started.
-		/// </summary>
-		/// <value>
-		/// true if the local bus is started, false otherwise.
-		/// </value>
-		public bool IsStarted
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					return this.WorkerThread != null;
-				}
-			}
-		}
-
 		private void SignalWorkAvailable ()
 		{
-			this.WorkAvailable.Set();
+			lock (this.SyncRoot)
+			{
+				this.WorkAvailable.Set();
+			}
 		}
 
 		private void CheckForExceptions()
@@ -316,8 +313,14 @@ namespace RI.Framework.Bus
 			}
 		}
 
-		internal Task<object> Enqueue (SendOperation sendOperation)
+		/// <inheritdoc />
+		Task<object> IBus.Enqueue(SendOperation sendOperation)
 		{
+			if (sendOperation == null)
+			{
+				throw new ArgumentNullException(nameof(sendOperation));
+			}
+
 			lock (this.SyncRoot)
 			{
 				this.VerifyStarted();
@@ -332,34 +335,39 @@ namespace RI.Framework.Bus
 			}
 		}
 
-		internal void Register (ReceiveRegistration receiveRegistration)
+		/// <inheritdoc />
+		void IBus.Register(ReceiverRegistration receiverRegistration)
 		{
+			if (receiverRegistration == null)
+			{
+				throw new ArgumentNullException(nameof(receiverRegistration));
+			}
+
 			lock (this.SyncRoot)
 			{
 				this.VerifyStarted();
 				this.CheckForExceptions();
 
-				ReceiveRegistrationItem item = new ReceiveRegistrationItem(receiveRegistration);
+				ReceiveRegistrationItem item = new ReceiveRegistrationItem(receiverRegistration);
 				this.ReceiveRegistrations.Add(item);
 			}
 		}
 
-		internal void Unregister (ReceiveRegistration receiveRegistration)
+		/// <inheritdoc />
+		void IBus.Unregister(ReceiverRegistration receiverRegistration)
 		{
+			if (receiverRegistration == null)
+			{
+				throw new ArgumentNullException(nameof(receiverRegistration));
+			}
+
 			lock (this.SyncRoot)
 			{
-				this.ReceiveRegistrations.RemoveAll(x => object.ReferenceEquals(x.ReceiveRegistration, receiveRegistration));
+				this.ReceiveRegistrations.RemoveAll(x => object.ReferenceEquals(x.ReceiverRegistration, receiverRegistration));
 			}
 		}
 
-		/// <summary>
-		/// Creates a new send operation which can be configured.
-		/// </summary>
-		/// <returns>
-		/// The new send operation.
-		/// </returns>
-		/// <exception cref="InvalidOperationException">The local message bus is stopped.</exception>
-		/// <exception cref="LocalBusException">The local bus processing pipeline encountered an exception.</exception>
+		/// <inheritdoc />
 		public SendOperation Send ()
 		{
 			lock (this.SyncRoot)
@@ -370,52 +378,27 @@ namespace RI.Framework.Bus
 			}
 		}
 
-		/// <summary>
-		/// Creates a new receive registration which can be configured.
-		/// </summary>
-		/// <returns>
-		/// The new receive registration.
-		/// </returns>
-		/// <exception cref="InvalidOperationException">The local message bus is stopped.</exception>
-		/// <exception cref="LocalBusException">The local bus processing pipeline encountered an exception.</exception>
-		public ReceiveRegistration Receive ()
+		/// <inheritdoc />
+		public ReceiverRegistration Receive ()
 		{
 			lock (this.SyncRoot)
 			{
 				this.VerifyStarted();
 				this.CheckForExceptions();
-				return new ReceiveRegistration(this);
+				return new ReceiverRegistration(this);
 			}
 		}
 
-
-
-
-
-
-
-		private sealed class SendOperationItem
+		/// <inheritdoc />
+		public bool IsStarted
 		{
-			public SendOperationItem (SendOperation sendOperation)
+			get
 			{
-				this.SendOperation = sendOperation;
-
-				this.Task = new TaskCompletionSource<object>(this.SendOperation, TaskCreationOptions.DenyChildAttach);
+				lock (this.SyncRoot)
+				{
+					return this.WorkerThread != null;
+				}
 			}
-
-			public SendOperation SendOperation { get; }
-
-			public TaskCompletionSource<object> Task { get; }
-		}
-
-		private sealed class ReceiveRegistrationItem
-		{
-			public ReceiveRegistrationItem(ReceiveRegistration receiveRegistration)
-			{
-				this.ReceiveRegistration = receiveRegistration;
-			}
-
-			public ReceiveRegistration ReceiveRegistration { get; }
 		}
 
 		private sealed class WorkThread : HeavyThread
@@ -427,22 +410,137 @@ namespace RI.Framework.Bus
 
 			public LocalBus LocalBus { get; }
 
+			private IDependencyResolver DependencyResolver => this.LocalBus.DependencyResolver;
+
+			private IBusPipeline Pipeline { get; set; }
+
+			private IBusDispatcher Dispatcher { get; set; }
+
+			private IBusRouter Router { get; set; }
+
+			private IBusSerializer Serializer { get; set; }
+
+			private IBusConnectionManager ConnectionManager { get; set; }
+
+			private List<IBusConnection> Connections { get; set; }
+
+			private T ResolveSingle<T> (bool mandatory)
+				where T : class
+			{
+				//TODO: Exception on multiple
+				T instance = this.DependencyResolver.GetInstance<T>();
+				if ((instance == null) && mandatory)
+				{
+					throw new Exception("Could not resolve a mandatory single instance of " + typeof(T).Name + ".");
+				}
+				return instance;
+			}
+
+			private List<T> ResolveMultiple<T> (bool mandatory)
+				where T : class
+			{
+				List<T> instances = this.DependencyResolver.GetInstances<T>();
+				if ((instances.Count == 0) && mandatory)
+				{
+					throw new Exception("Could not resolve mandatory multiple instances of " + typeof(T).Name + ".");
+				}
+				return instances;
+			}
+
 			protected override void OnException (Exception exception, bool canContinue)
 			{
-				lock (this.LocalBus.SyncRoot)
+				lock (this.SyncRoot)
 				{
-					foreach (SendOperationItem item in this.LocalBus.SendOperations)
+					lock (this.LocalBus.SyncRoot)
 					{
-						item.Task.TrySetException(new LocalBusException(exception));
-					}
+						foreach (SendOperationItem item in this.LocalBus.SendOperations)
+						{
+							item.Task.TrySetException(new LocalBusException(exception));
+						}
 
-					this.LocalBus.SendOperations.Clear();
+						this.LocalBus.SendOperations.Clear();
+					}
 				}
 
 				base.OnException(exception, canContinue);
 			}
 
-			//TODO: Implement
+			protected override void OnStarting ()
+			{
+				base.OnStarting();
+
+				//TODO: thread configuration
+			}
+
+			protected override void OnBegin ()
+			{
+				base.OnBegin();
+
+				this.Pipeline = this.ResolveSingle<IBusPipeline>(true);
+				this.Dispatcher = this.ResolveSingle<IBusDispatcher>(true);
+				this.Router = this.ResolveSingle<IBusRouter>(true);
+
+				this.Serializer = this.ResolveSingle<IBusSerializer>(false);
+				this.ConnectionManager = this.ResolveSingle<IBusConnectionManager>(false);
+				this.Connections = this.ResolveMultiple<IBusConnection>(false);
+
+				this.Pipeline.Initialize(this.DependencyResolver);
+				this.Dispatcher.Initialize(this.DependencyResolver);
+				this.Router.Initialize(this.DependencyResolver);
+
+				this.Serializer?.Initialize(this.DependencyResolver);
+				this.ConnectionManager?.Initialize(this.DependencyResolver);
+				this.Connections.ForEach(x => x.Initialize(this.DependencyResolver));
+			}
+
+			protected override void OnEnd ()
+			{
+				this.Connections?.ForEach(x => x.Unload());
+				this.ConnectionManager?.Unload();
+				this.Serializer?.Unload();
+
+				this.Router?.Unload();
+				this.Dispatcher?.Unload();
+				this.Pipeline?.Unload();
+
+				base.OnEnd();
+			}
+
+			protected override void OnRun ()
+			{
+				base.OnRun();
+
+				lock (this.LocalBus.SyncRoot)
+				{
+					this.Pipeline.StartProcessing(this.LocalBus.SignalWorkAvailable);
+				}
+
+				while (true)
+				{
+					WaitHandle.WaitAny(new WaitHandle[]
+					{
+						this.LocalBus.WorkAvailable,
+						this.StopEvent
+					}, this.LocalBus.PollInterval);
+
+					lock (this.LocalBus.SyncRoot)
+					{
+						this.LocalBus.WorkAvailable.Reset();
+					}
+
+					if (this.StopRequested)
+					{
+						break;
+					}
+
+					this.Pipeline.DoWork();
+				}
+
+				lock (this.LocalBus.SyncRoot)
+				{
+					this.Pipeline.StopProcessing();
+				}
+			}
 		}
 	}
 }

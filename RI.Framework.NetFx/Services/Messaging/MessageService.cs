@@ -318,7 +318,7 @@ namespace RI.Framework.Services.Messaging
 				}
 			}
 
-			await tcs.Task;
+			await tcs.Task.ConfigureAwait(false);
 		}
 
 		#endregion
