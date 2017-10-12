@@ -52,9 +52,10 @@
     <Compile Include="Bus\Exceptions\ConnectionBrokenException.cs" />
     <Compile Include="Bus\Connections\IBusConnection.cs" />
     <Compile Include="Bus\Dispatchers\IBusDispatcher.cs" />
+    <Compile Include="Bus\Exceptions\LocalBusException.cs" />
     <Compile Include="Bus\LocalBus.cs" />
     <Compile Include="Bus\Exceptions\ResponseTimeoutException.cs" />
-    <Compile Include="Bus\ReceiveCallback.cs" />
+    <Compile Include="Bus\ReceiveRegistration.cs" />
     <Compile Include="Bus\SendOperation.cs" />
     <Compile Include="Bus\_NamespaceDoc.cs" />
     <Compile Include="Data\Database\Backup\DatabaseBackupCreator.cs" />
@@ -252,7 +253,9 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Bus\Internals\" />
+  </ItemGroup>
   <Import Project="..\RI.Framework.Common\RI.Framework.Common.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

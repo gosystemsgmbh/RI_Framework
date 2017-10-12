@@ -4,8 +4,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 
+using RI.Framework.Bus.Exceptions;
+using RI.Framework.Threading;
 using RI.Framework.Utilities;
-using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.ObjectModel;
 
@@ -22,8 +23,10 @@ namespace RI.Framework.Bus
 	/// </para>
 	/// </remarks>
 	/// TODO: Logging
+	/// TODO: Documentation
 	public sealed class LocalBus : LogSource, IDisposable, ISynchronizable
 	{
+		private TimeSpan _pollInterval;
 		private TimeSpan _defaultTimeout;
 		private bool _defaultIsGlobal;
 
@@ -92,6 +95,41 @@ namespace RI.Framework.Bus
 		}
 
 		/// <summary>
+		/// Gets or sets the polling interval.
+		/// </summary>
+		/// <value>
+		/// The polling interval.
+		/// </value>
+		/// <remarks>
+		/// <para>
+		/// The default value is 20 milliseconds.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> is negative.</exception>
+		public TimeSpan PollInterval
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._pollInterval;
+				}
+			}
+			set
+			{
+				if (value.IsNegative())
+				{
+					throw new ArgumentOutOfRangeException(nameof(value));
+				}
+
+				lock (this.SyncRoot)
+				{
+					this._pollInterval = value;
+				}
+			}
+		}
+
+		/// <summary>
 		/// Gets the dependency resolver which is used for resolving types needed by the local bus.
 		/// </summary>
 		/// <value>
@@ -107,11 +145,13 @@ namespace RI.Framework.Bus
 
 		private object StartStopSyncRoot { get; set; }
 
-		private bool IsStarted { get; set; }
-
 		private List<SendOperationItem> SendOperations { get; set; }
 
+		private List<ReceiveRegistrationItem> ReceiveRegistrations { get; set; }
+
 		private ManualResetEvent WorkAvailable { get; set; }
+
+		private WorkThread WorkerThread { get; set; }
 
 		/// <summary>
 		/// Creates a new instance of <see cref="LocalBus"/>.
@@ -132,10 +172,12 @@ namespace RI.Framework.Bus
 
 			this.DefaultTimeout = TimeSpan.FromSeconds(10);
 			this.DefaultIsGlobal = false;
+			this.PollInterval = TimeSpan.FromMilliseconds(20);
 
-			this.IsStarted = false;
-			this.WorkAvailable = new ManualResetEvent(true);
+			this.WorkerThread = null;
+			this.WorkAvailable = null;
 			this.SendOperations = new List<SendOperationItem>();
+			this.ReceiveRegistrations = new List<ReceiveRegistrationItem>();
 		}
 
 		/// <summary>
@@ -175,13 +217,17 @@ namespace RI.Framework.Bus
 					lock (this.SyncRoot)
 					{
 						this.VerifyNotStarted();
-					}
 
-					//TODO: Implement
+						this.SendOperations.Clear();
+						this.ReceiveRegistrations.Clear();
 
-					lock (this.SyncRoot)
-					{
-						this.IsStarted = true;
+						this.WorkAvailable = new ManualResetEvent(false);
+
+						this.WorkerThread = new WorkThread(this);
+						this.WorkerThread.Timeout = (int)this.DefaultTimeout.TotalMilliseconds * 2;
+
+						this.WorkerThread.Start();
+
 						success = true;
 					}
 				}
@@ -204,11 +250,22 @@ namespace RI.Framework.Bus
 		{
 			lock (this.StartStopSyncRoot)
 			{
-				//TODO: Implement
+				WorkThread workerThread;
+				lock (this.SyncRoot)
+				{
+					workerThread = this.WorkerThread;
+					this.WorkerThread = null;
+				}
+
+				workerThread?.Stop();
 
 				lock (this.SyncRoot)
 				{
-					this.IsStarted = false;
+					this.WorkAvailable?.Close();
+					this.WorkAvailable = null;
+
+					this.SendOperations?.Clear();
+					this.ReceiveRegistrations?.Clear();
 				}
 			}
 		}
@@ -229,152 +286,105 @@ namespace RI.Framework.Bus
 			}
 		}
 
-		internal Task<object> Enqueue(SendOperation sendOperation)
+		/// <summary>
+		/// Gets whether the local bus is started.
+		/// </summary>
+		/// <value>
+		/// true if the local bus is started, false otherwise.
+		/// </value>
+		public bool IsStarted
 		{
-			SendOperationItem item;
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this.WorkerThread != null;
+				}
+			}
+		}
 
+		private void SignalWorkAvailable ()
+		{
+			this.WorkAvailable.Set();
+		}
+
+		private void CheckForExceptions()
+		{
+			if (this.WorkerThread.ThreadException != null)
+			{
+				throw new LocalBusException(this.WorkerThread.ThreadException);
+			}
+		}
+
+		internal Task<object> Enqueue (SendOperation sendOperation)
+		{
 			lock (this.SyncRoot)
 			{
 				this.VerifyStarted();
+				this.CheckForExceptions();
 
-				item = new SendOperationItem(sendOperation);
+				SendOperationItem item = new SendOperationItem(sendOperation);
 
 				this.SendOperations.Add(item);
-				this.WorkAvailable.Set();
-			}
+				this.SignalWorkAvailable();
 
-			return item.Task.Task;
+				return item.Task.Task;
+			}
+		}
+
+		internal void Register (ReceiveRegistration receiveRegistration)
+		{
+			lock (this.SyncRoot)
+			{
+				this.VerifyStarted();
+				this.CheckForExceptions();
+
+				ReceiveRegistrationItem item = new ReceiveRegistrationItem(receiveRegistration);
+				this.ReceiveRegistrations.Add(item);
+			}
+		}
+
+		internal void Unregister (ReceiveRegistration receiveRegistration)
+		{
+			lock (this.SyncRoot)
+			{
+				this.ReceiveRegistrations.RemoveAll(x => object.ReferenceEquals(x.ReceiveRegistration, receiveRegistration));
+			}
 		}
 
 		/// <summary>
-		/// Creates a new message which can be sent.
+		/// Creates a new send operation which can be configured.
 		/// </summary>
 		/// <returns>
-		/// The message which can be configured and sent.
+		/// The new send operation.
 		/// </returns>
 		/// <exception cref="InvalidOperationException">The local message bus is stopped.</exception>
-		public SendOperation Message ()
+		/// <exception cref="LocalBusException">The local bus processing pipeline encountered an exception.</exception>
+		public SendOperation Send ()
 		{
 			lock (this.SyncRoot)
 			{
 				this.VerifyStarted();
+				this.CheckForExceptions();
 				return new SendOperation(this);
 			}
 		}
 
 		/// <summary>
-		/// Receives all messages.
+		/// Creates a new receive registration which can be configured.
 		/// </summary>
-		/// <param name="callback">The callback, called for each message.</param>
-		/// <exception cref="ArgumentNullException"><paramref name="callback"/> is null.</exception>
+		/// <returns>
+		/// The new receive registration.
+		/// </returns>
 		/// <exception cref="InvalidOperationException">The local message bus is stopped.</exception>
-		public void Receive (ReceiveCallback callback)
+		/// <exception cref="LocalBusException">The local bus processing pipeline encountered an exception.</exception>
+		public ReceiveRegistration Receive ()
 		{
-			if (callback == null)
-			{
-				throw new ArgumentNullException(nameof(callback));
-			}
-
 			lock (this.SyncRoot)
 			{
 				this.VerifyStarted();
-
-				//TODO: Implement
-			}
-		}
-
-		/// <summary>
-		/// Receives all messages with a specified type of payload.
-		/// </summary>
-		/// <typeparam name="TPayload">The type of the payload.</typeparam>
-		/// <typeparam name="TResponse">The type of the response.</typeparam>
-		/// <param name="callback">The callback, called for each message.</param>
-		/// <exception cref="ArgumentNullException"><paramref name="callback"/> is null.</exception>
-		/// <exception cref="InvalidOperationException">The local message bus is stopped.</exception>
-		public void Receive<TPayload, TResponse> (ReceiveCallback<TPayload, TResponse> callback)
-			where TPayload : class
-			where TResponse : class
-		{
-			if (callback == null)
-			{
-				throw new ArgumentNullException(nameof(callback));
-			}
-
-			lock (this.SyncRoot)
-			{
-				this.VerifyStarted();
-
-				//TODO: Implement
-			}
-		}
-
-		/// <summary>
-		/// Receives all messages sent to a specified address.
-		/// </summary>
-		/// <param name="address">The address.</param>
-		/// <param name="callback">The callback, called for each message.</param>
-		/// <exception cref="ArgumentNullException"><paramref name="address"/> or <paramref name="callback"/> is null.</exception>
-		/// <exception cref="EmptyStringArgumentException"><paramref name="address"/> is an empty string.</exception>
-		/// <exception cref="InvalidOperationException">The local message bus is stopped.</exception>
-		public void Receive (string address, ReceiveCallback callback)
-		{
-			if (address == null)
-			{
-				throw new ArgumentNullException(nameof(callback));
-			}
-
-			if (address.IsNullOrEmptyOrWhitespace())
-			{
-				throw new EmptyStringArgumentException(nameof(address));
-			}
-
-			if (callback == null)
-			{
-				throw new ArgumentNullException(nameof(callback));
-			}
-
-			lock (this.SyncRoot)
-			{
-				this.VerifyStarted();
-
-				//TODO: Implement
-			}
-		}
-
-		/// <summary>
-		/// Receives all messages sent to a specified addres and with a specified type of payload.
-		/// </summary>
-		/// <typeparam name="TPayload">The type of the payload.</typeparam>
-		/// <typeparam name="TResponse">The type of the response.</typeparam>
-		/// <param name="address">The address.</param>
-		/// <param name="callback">The callback, called for each message.</param>
-		/// <exception cref="ArgumentNullException"><paramref name="address"/> or <paramref name="callback"/> is null.</exception>
-		/// <exception cref="EmptyStringArgumentException"><paramref name="address"/> is an empty string.</exception>
-		/// <exception cref="InvalidOperationException">The local message bus is stopped.</exception>
-		public void Receive <TPayload, TResponse> (string address, ReceiveCallback<TPayload, TResponse> callback)
-			where TPayload : class
-			where TResponse : class
-		{
-			if (address == null)
-			{
-				throw new ArgumentNullException(nameof(callback));
-			}
-
-			if (address.IsNullOrEmptyOrWhitespace())
-			{
-				throw new EmptyStringArgumentException(nameof(address));
-			}
-
-			if (callback == null)
-			{
-				throw new ArgumentNullException(nameof(callback));
-			}
-
-			lock (this.SyncRoot)
-			{
-				this.VerifyStarted();
-
-				//TODO: Implement
+				this.CheckForExceptions();
+				return new ReceiveRegistration(this);
 			}
 		}
 
@@ -396,6 +406,43 @@ namespace RI.Framework.Bus
 			public SendOperation SendOperation { get; }
 
 			public TaskCompletionSource<object> Task { get; }
+		}
+
+		private sealed class ReceiveRegistrationItem
+		{
+			public ReceiveRegistrationItem(ReceiveRegistration receiveRegistration)
+			{
+				this.ReceiveRegistration = receiveRegistration;
+			}
+
+			public ReceiveRegistration ReceiveRegistration { get; }
+		}
+
+		private sealed class WorkThread : HeavyThread
+		{
+			public WorkThread (LocalBus localBus)
+			{
+				this.LocalBus = localBus;
+			}
+
+			public LocalBus LocalBus { get; }
+
+			protected override void OnException (Exception exception, bool canContinue)
+			{
+				lock (this.LocalBus.SyncRoot)
+				{
+					foreach (SendOperationItem item in this.LocalBus.SendOperations)
+					{
+						item.Task.TrySetException(new LocalBusException(exception));
+					}
+
+					this.LocalBus.SendOperations.Clear();
+				}
+
+				base.OnException(exception, canContinue);
+			}
+
+			//TODO: Implement
 		}
 	}
 }

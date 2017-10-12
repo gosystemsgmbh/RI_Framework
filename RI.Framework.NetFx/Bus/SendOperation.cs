@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -10,15 +11,13 @@ using RI.Framework.Utilities.Exceptions;
 namespace RI.Framework.Bus
 {
 	/// <summary>
-	/// Represents a message or send operation respectively.
+	/// Represents a send operation.
 	/// </summary>
 	public sealed class SendOperation
 	{
 		internal SendOperation (LocalBus localBus)
 		{
 			this.LocalBus = localBus;
-
-			this.Started = false;
 
 			this.Address = null;
 			this.Global = null;
@@ -27,27 +26,34 @@ namespace RI.Framework.Bus
 			this.CancellationToken = null;
 
 			this.IsBroadcast = false;
+			this.Started = false;
 
 			this.Result = null;
 		}
 
-		private LocalBus LocalBus { get; }
+		/// <summary>
+		/// Gets the local bus this send operation is associated with.
+		/// </summary>
+		/// <value>
+		/// The local bus this send operation is associated with.
+		/// </value>
+		public LocalBus LocalBus { get; }
 
-		internal string Address { get; private set; }
+		public string Address { get; private set; }
 
-		internal bool? Global { get; private set; }
+		public bool? Global { get; private set; }
 
-		internal object Payload { get; private set; }
+		public object Payload { get; private set; }
 
-		internal TimeSpan? Timeout { get; private set; }
+		public TimeSpan? Timeout { get; private set; }
 
-		internal CancellationToken? CancellationToken { get; private set; }
+		public CancellationToken? CancellationToken { get; private set; }
 
-		internal bool IsBroadcast { get; private set; }
-
-		internal object Result { get; set; }
+		public bool IsBroadcast { get; private set; }
 
 		private bool Started { get; set; }
+
+		private object Result { get; set; }
 
 		private void VerifyNotStarted ()
 		{
@@ -131,7 +137,7 @@ namespace RI.Framework.Bus
 		/// The send operation to continue configuration of the message.
 		/// </returns>
 		/// <exception cref="InvalidOperationException">The message is already being processed.</exception>
-		public SendOperation ToDefaultGloabl ()
+		public SendOperation ToDefaultGlobal ()
 		{
 			this.VerifyNotStarted();
 			this.Global = null;
@@ -154,7 +160,7 @@ namespace RI.Framework.Bus
 		}
 
 		/// <summary>
-		/// Sets the timeout after which a <see cref="ResponseTimeoutException"/> is thrown (<see cref="SendAsync"/>, <see cref="SendAsync{TResponse}"/>) or the collection of responses is finished (<see cref="BroadcastAsync"/>, <see cref="BroadcastAsync{TResponse}"/>).
+		/// Sets the timeout after which a <see cref="ResponseTimeoutException"/> is thrown (<see cref="AsSingle"/>, <see cref="AsSingle{TResponse}"/>) or the collection of responses is finished (<see cref="AsBroadcast"/>, <see cref="AsBroadcast{TResponse}"/>).
 		/// </summary>
 		/// <param name="timeout">The timeout.</param>
 		/// <returns>
@@ -175,7 +181,7 @@ namespace RI.Framework.Bus
 		}
 
 		/// <summary>
-		/// Sets the timeout after which a <see cref="ResponseTimeoutException"/> is thrown (<see cref="SendAsync"/>, <see cref="SendAsync{TResponse}"/>) or the collection of responses is finished (<see cref="BroadcastAsync"/>, <see cref="BroadcastAsync{TResponse}"/>).
+		/// Sets the timeout after which a <see cref="ResponseTimeoutException"/> is thrown (<see cref="AsSingle"/>, <see cref="AsSingle{TResponse}"/>) or the collection of responses is finished (<see cref="AsBroadcast"/>, <see cref="AsBroadcast{TResponse}"/>).
 		/// </summary>
 		/// <param name="milliseconds">The timeout in milliseconds.</param>
 		/// <returns>
@@ -185,7 +191,7 @@ namespace RI.Framework.Bus
 		public SendOperation WithTimeout (int milliseconds) => this.WithTimeout(TimeSpan.FromMilliseconds(milliseconds));
 
 		/// <summary>
-		/// Sets to use the default timeout after which a <see cref="ResponseTimeoutException"/> is thrown (<see cref="SendAsync"/>, <see cref="SendAsync{TResponse}"/>) or the collection of responses is finished (<see cref="BroadcastAsync"/>, <see cref="BroadcastAsync{TResponse}"/>).
+		/// Sets to use the default timeout after which a <see cref="ResponseTimeoutException"/> is thrown (<see cref="AsSingle"/>, <see cref="AsSingle{TResponse}"/>) or the collection of responses is finished (<see cref="AsBroadcast"/>, <see cref="AsBroadcast{TResponse}"/>).
 		/// </summary>
 		/// <returns>
 		/// The send operation to continue configuration of the message.
@@ -220,14 +226,15 @@ namespace RI.Framework.Bus
 		/// The task used to wait until the round-trip completed.
 		/// </returns>
 		/// <exception cref="InvalidOperationException">The message is already being processed or the local message bus is stopped.</exception>
+		/// <exception cref="LocalBusException">The local bus processing pipeline encountered an exception.</exception>
 		/// <exception cref="ResponseTimeoutException">The intended receiver did not respond within the specified timeout.</exception>
 		/// <exception cref="ConnectionBrokenException">A used connection to a connected message bus is broken.</exception>
-		public async Task SendAsync ()
+		public async Task AsSingle ()
 		{
 			this.VerifyNotStarted();
 			this.Started = true;
 			this.IsBroadcast = false;
-			await this.LocalBus.Enqueue(this);
+			this.Result = await this.LocalBus.Enqueue(this);
 		}
 
 		/// <summary>
@@ -239,14 +246,16 @@ namespace RI.Framework.Bus
 		/// The tasks result is the received response.
 		/// </returns>
 		/// <exception cref="InvalidOperationException">The message is already being processed or the local message bus is stopped.</exception>
+		/// <exception cref="LocalBusException">The local bus processing pipeline encountered an exception.</exception>
 		/// <exception cref="ResponseTimeoutException">The intended receiver did not respond within the specified timeout.</exception>
 		/// <exception cref="ConnectionBrokenException">A used connection to a connected message bus is broken.</exception>
-		public async Task<TResponse> SendAsync <TResponse> ()
+		/// <exception cref="InvalidCastException">The response could not be casted to type <typeparamref name="TResponse"/>.</exception>
+		public async Task<TResponse> AsSingle <TResponse> ()
 		{
 			this.VerifyNotStarted();
 			this.Started = true;
 			this.IsBroadcast = false;
-			await this.LocalBus.Enqueue(this);
+			this.Result = await this.LocalBus.Enqueue(this);
 			return (TResponse)this.Result;
 		}
 
@@ -259,17 +268,18 @@ namespace RI.Framework.Bus
 		/// </returns>
 		/// <remarks>
 		/// <note type="important">
-		/// <see cref="BroadcastAsync"/> does not throw <see cref="ResponseTimeoutException"/> for not responding receivers.
+		/// <see cref="AsBroadcast"/> does not throw <see cref="ResponseTimeoutException"/> for not responding receivers.
 		/// </note>
 		/// </remarks>
 		/// <exception cref="InvalidOperationException">The message is already being processed or the local message bus is stopped.</exception>
+		/// <exception cref="LocalBusException">The local bus processing pipeline encountered an exception.</exception>
 		/// <exception cref="ConnectionBrokenException">A used connection to a connected message bus is broken.</exception>
-		public async Task<int> BroadcastAsync()
+		public async Task<int> AsBroadcast()
 		{
 			this.VerifyNotStarted();
 			this.Started = true;
 			this.IsBroadcast = true;
-			await this.LocalBus.Enqueue(this);
+			this.Result = await this.LocalBus.Enqueue(this);
 			return ((ICollection)this.Result).Count;
 		}
 
@@ -283,18 +293,20 @@ namespace RI.Framework.Bus
 		/// </returns>
 		/// <remarks>
 		/// <note type="important">
-		/// <see cref="BroadcastAsync"/> does not throw <see cref="ResponseTimeoutException"/> for not responding receivers.
+		/// <see cref="AsBroadcast"/> does not throw <see cref="ResponseTimeoutException"/> for not responding receivers.
 		/// </note>
 		/// </remarks>
 		/// <exception cref="InvalidOperationException">The message is already being processed or the local message bus is stopped.</exception>
+		/// <exception cref="LocalBusException">The local bus processing pipeline encountered an exception.</exception>
 		/// <exception cref="ConnectionBrokenException">A used connection to a connected message bus is broken.</exception>
-		public async Task<List<TResponse>> BroadcastAsync <TResponse> ()
+		/// <exception cref="InvalidCastException">The responses could not be casted to type <typeparamref name="TResponse"/>.</exception>
+		public async Task<List<TResponse>> AsBroadcast <TResponse> ()
 		{
 			this.VerifyNotStarted();
 			this.Started = true;
 			this.IsBroadcast = true;
-			await this.LocalBus.Enqueue(this);
-			return (List<TResponse>)this.Result;
+			this.Result = await this.LocalBus.Enqueue(this);
+			return ((ICollection)this.Result).Cast<TResponse>().ToList();
 		}
 	}
 }
