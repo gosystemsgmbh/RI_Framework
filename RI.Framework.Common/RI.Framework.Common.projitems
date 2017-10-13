@@ -192,6 +192,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\States\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\StateTransientInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\_NamespaceDoc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Threading\DispatchCapture.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Threading\HeavyThread.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Threading\HeavyThreadException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Threading\_NamespaceDoc.cs" />
@@ -221,6 +222,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Logging\LogSource.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Logging\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObjectExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObjectModel\DependencyInjector.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObjectModel\IDependencyResolver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObjectModel\ISynchronizable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObjectModel\Singleton.cs" />

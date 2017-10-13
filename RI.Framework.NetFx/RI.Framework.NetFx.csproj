@@ -50,21 +50,27 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bus\Connections\IBusConnectionManager.cs" />
-    <Compile Include="Bus\Exceptions\ConnectionBrokenException.cs" />
+    <Compile Include="Bus\Dispatchers\DefaultBusDispatcher.cs" />
+    <Compile Include="Bus\Dispatchers\IBusDispatcherExtensions.cs" />
+    <Compile Include="Bus\Dispatchers\ThreadDispatcherBusDispatcher.cs" />
+    <Compile Include="Bus\Exceptions\BusConnectionBrokenException.cs" />
     <Compile Include="Bus\Connections\IBusConnection.cs" />
     <Compile Include="Bus\Dispatchers\IBusDispatcher.cs" />
-    <Compile Include="Bus\Exceptions\LocalBusException.cs" />
+    <Compile Include="Bus\Exceptions\BusProcessingPipelineException.cs" />
+    <Compile Include="Bus\IBusExtensions.cs" />
     <Compile Include="Bus\Internals\MessageItem.cs" />
+    <Compile Include="Bus\Internals\SendOperationItemState.cs" />
     <Compile Include="Bus\LocalBus.cs" />
-    <Compile Include="Bus\Exceptions\ResponseTimeoutException.cs" />
+    <Compile Include="Bus\Exceptions\BusResponseTimeoutException.cs" />
     <Compile Include="Bus\Pipeline\DefaultBusPipeline.cs" />
     <Compile Include="Bus\Pipeline\IBusPipeline.cs" />
     <Compile Include="Bus\Internals\ReceiveRegistrationItem.cs" />
+    <Compile Include="Bus\Pipeline\IBusPipelineWorkSignaler.cs" />
     <Compile Include="Bus\ReceiverRegistration.cs" />
+    <Compile Include="Bus\Routers\DefaultBusRouter.cs" />
     <Compile Include="Bus\Routers\IBusRouter.cs" />
     <Compile Include="Bus\SendOperation.cs" />
     <Compile Include="Bus\Internals\SendOperationItem.cs" />
-    <Compile Include="Bus\Serializers\IBusSerializer.cs" />
     <Compile Include="Bus\_NamespaceDoc.cs" />
     <Compile Include="Data\Database\Backup\DatabaseBackupCreator.cs" />
     <Compile Include="Data\Database\Backup\IDatabaseBackupCreator.cs" />

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 using RI.Framework.Bus.Exceptions;
 using RI.Framework.Utilities;
@@ -13,16 +14,27 @@ namespace RI.Framework.Bus
 	/// <threadsafety static="true" instance="true" />
 	public sealed class ReceiverRegistration : ISynchronizable
 	{
-		internal ReceiverRegistration (IBus bus)
+		/// <summary>
+		/// Creates a new instance of <see cref="ReceiverRegistration"/>.
+		/// </summary>
+		/// <param name="bus">The bus to be associated with this receiver registration.</param>
+		/// <exception cref="ArgumentNullException"><paramref name="bus"/> is null.</exception>
+		public ReceiverRegistration (IBus bus)
 		{
+			if (bus == null)
+			{
+				throw new ArgumentNullException(nameof(bus));
+			}
+
 			this.SyncRoot = new object();
 			this.Bus = bus;
 
 			this.Address = null;
 			this.PayloadType = null;
 			this.ResponseType = null;
+			this.IncludeCompatiblePayloadTypes = false;
 
-			this.Started = false;
+			this.IsProcessed = false;
 		}
 
 		/// <summary>
@@ -50,6 +62,14 @@ namespace RI.Framework.Bus
 		public Type PayloadType { get; private set; }
 
 		/// <summary>
+		/// Gets whether compatible payload types, which are convertible to <see cref="PayloadType"/>, are also accepted (true) or only those payloads which are of exactly <see cref="PayloadType"/> (false).
+		/// </summary>
+		/// <value>
+		/// true if compatible payload types are accepted, false otherwise.
+		/// </value>
+		public bool IncludeCompatiblePayloadTypes { get; private set; }
+
+		/// <summary>
 		/// Gets the response type this receiver produces.
 		/// </summary>
 		/// <value>
@@ -63,9 +83,15 @@ namespace RI.Framework.Bus
 		/// <value>
 		/// The callback which is called upon message reception.
 		/// </value>
-		public Func<string, object, object> Callback { get; private set; }
+		public Func<string, object, Task<object>> Callback { get; private set; }
 
-		private bool Started { get; set; }
+		/// <summary>
+		/// Gets whether this receiver registration is being processed.
+		/// </summary>
+		/// <value>
+		/// true if the receiver registration is being processed, false otherwise.
+		/// </value>
+		public bool IsProcessed { get; private set; }
 
 		/// <inheritdoc />
 		public object SyncRoot { get; }
@@ -75,7 +101,7 @@ namespace RI.Framework.Bus
 
 		private void VerifyNotStarted ()
 		{
-			if (this.Started)
+			if (this.IsProcessed)
 			{
 				throw new InvalidOperationException("The reception is already being processed.");
 			}
@@ -181,6 +207,39 @@ namespace RI.Framework.Bus
 		}
 
 		/// <summary>
+		/// Sets that compatible payload types, which are convertible to <see cref="PayloadType"/>, are also accepted and not only those payloads which are of exactly <see cref="PayloadType"/>.
+		/// </summary>
+		/// <returns>
+		/// The receiver registration to continue configuration of the receiver.
+		/// </returns>
+		public ReceiverRegistration IncludeCompatiblePayloads ()
+		{
+			lock (this.SyncRoot)
+			{
+				this.VerifyNotStarted();
+				this.IncludeCompatiblePayloadTypes = true;
+				return this;
+			}
+		}
+
+		/// <summary>
+		/// Sets whether compatible payload types, which are convertible to <see cref="PayloadType"/>, are also accepted or only those payloads which are of exactly <see cref="PayloadType"/>.
+		/// </summary>
+		/// <param name="includeCompatiblePayloads">Specifies whether compatible payload types are accepted.</param>
+		/// <returns>
+		/// The receiver registration to continue configuration of the receiver.
+		/// </returns>
+		public ReceiverRegistration IncludeCompatiblePayloads(bool includeCompatiblePayloads)
+		{
+			lock (this.SyncRoot)
+			{
+				this.VerifyNotStarted();
+				this.IncludeCompatiblePayloadTypes = includeCompatiblePayloads;
+				return this;
+			}
+		}
+
+		/// <summary>
 		/// Starts reception by a specified callback.
 		/// </summary>
 		/// <param name="callback">The callback.</param>
@@ -188,9 +247,9 @@ namespace RI.Framework.Bus
 		/// The receiver registration.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"><paramref name="callback"/> is null.</exception>
-		/// <exception cref="InvalidOperationException">The reception is already being processed or the bus is stopped.</exception>
-		/// <exception cref="LocalBusException">The bus processing pipeline encountered an exception.</exception>
-		public ReceiverRegistration By (Func<string, object, object> callback)
+		/// <exception cref="InvalidOperationException">The reception is already being processed or the bus is not started.</exception>
+		/// <exception cref="BusProcessingPipelineException">The bus processing pipeline encountered an exception.</exception>
+		public ReceiverRegistration By (Func<string, object, Task<object>> callback)
 		{
 			if (callback == null)
 			{
@@ -200,7 +259,7 @@ namespace RI.Framework.Bus
 			lock (this.SyncRoot)
 			{
 				this.VerifyNotStarted();
-				this.Started = true;
+				this.IsProcessed = true;
 				this.Callback = callback;
 				this.Bus.Register(this);
 				return this;
@@ -230,7 +289,7 @@ namespace RI.Framework.Bus
 			lock (this.SyncRoot)
 			{
 				this.Bus.Unregister(this);
-				this.Started = false;
+				this.IsProcessed = false;
 			}
 		}
 	}
@@ -292,17 +351,31 @@ namespace RI.Framework.Bus
 			return new ReceiverRegistrationWithPayloadAndResponse<TPayload, TResponse>(this.Origin);
 		}
 
-		/// <inheritdoc cref="ReceiverRegistration.By(Func{string,object,object})"/>
-		public ReceiverRegistrationWithPayload<TPayload> By (Action<string, TPayload> callback)
+		/// <inheritdoc cref="ReceiverRegistration.IncludeCompatiblePayloads()"/>
+		public ReceiverRegistrationWithPayload<TPayload> IncludeCompatiblePayloads()
+		{
+			this.Origin.IncludeCompatiblePayloads();
+			return this;
+		}
+
+		/// <inheritdoc cref="ReceiverRegistration.IncludeCompatiblePayloads(bool)"/>
+		public ReceiverRegistrationWithPayload<TPayload> IncludeCompatiblePayloads(bool includeCompatiblePayloads)
+		{
+			this.Origin.IncludeCompatiblePayloads(includeCompatiblePayloads);
+			return this;
+		}
+
+		/// <inheritdoc cref="ReceiverRegistration.By(Func{string,object,Task{object}})"/>
+		public ReceiverRegistrationWithPayload<TPayload> By (Func<string, TPayload, Task> callback)
 		{
 			if (callback == null)
 			{
 				throw new ArgumentNullException(nameof(callback));
 			}
 
-			this.Origin.By((address, payload) =>
+			this.Origin.By(async (address, payload) =>
 			{
-				callback(address, (TPayload)payload);
+				await callback(address, (TPayload)payload).ConfigureAwait(false);
 				return null;
 			});
 			return this;
@@ -379,15 +452,29 @@ namespace RI.Framework.Bus
 			return this.Origin.WithResponse<TNewResponse>();
 		}
 
-		/// <inheritdoc cref="ReceiverRegistration.By(Func{string,object,object})"/>
-		public ReceiverRegistrationWithResponse<TResponse> By (Func<string, TResponse> callback)
+		/// <inheritdoc cref="ReceiverRegistration.IncludeCompatiblePayloads()"/>
+		public ReceiverRegistrationWithResponse<TResponse> IncludeCompatiblePayloads()
+		{
+			this.Origin.IncludeCompatiblePayloads();
+			return this;
+		}
+
+		/// <inheritdoc cref="ReceiverRegistration.IncludeCompatiblePayloads(bool)"/>
+		public ReceiverRegistrationWithResponse<TResponse> IncludeCompatiblePayloads(bool includeCompatiblePayloads)
+		{
+			this.Origin.IncludeCompatiblePayloads(includeCompatiblePayloads);
+			return this;
+		}
+
+		/// <inheritdoc cref="ReceiverRegistration.By(Func{string,object,Task{object}})"/>
+		public ReceiverRegistrationWithResponse<TResponse> By (Func<string, Task<TResponse>> callback)
 		{
 			if (callback == null)
 			{
 				throw new ArgumentNullException(nameof(callback));
 			}
 
-			this.Origin.By((address, payload) => callback(address));
+			this.Origin.By(async (address, payload) => await callback(address).ConfigureAwait(false));
 			return this;
 		}
 
@@ -464,15 +551,29 @@ namespace RI.Framework.Bus
 			return new ReceiverRegistrationWithPayloadAndResponse<TPayload, TNewResponse>(this.Origin);
 		}
 
-		/// <inheritdoc cref="ReceiverRegistration.By(Func{string,object,object})"/>
-		public ReceiverRegistrationWithPayloadAndResponse<TPayload, TResponse> By(Func<string, TPayload, TResponse> callback)
+		/// <inheritdoc cref="ReceiverRegistration.IncludeCompatiblePayloads()"/>
+		public ReceiverRegistrationWithPayloadAndResponse<TPayload, TResponse> IncludeCompatiblePayloads()
+		{
+			this.Origin.IncludeCompatiblePayloads();
+			return this;
+		}
+
+		/// <inheritdoc cref="ReceiverRegistration.IncludeCompatiblePayloads(bool)"/>
+		public ReceiverRegistrationWithPayloadAndResponse<TPayload, TResponse> IncludeCompatiblePayloads(bool includeCompatiblePayloads)
+		{
+			this.Origin.IncludeCompatiblePayloads(includeCompatiblePayloads);
+			return this;
+		}
+
+		/// <inheritdoc cref="ReceiverRegistration.By(Func{string,object,Task{object}})"/>
+		public ReceiverRegistrationWithPayloadAndResponse<TPayload, TResponse> By(Func<string, TPayload, Task<TResponse>> callback)
 		{
 			if (callback == null)
 			{
 				throw new ArgumentNullException(nameof(callback));
 			}
 
-			this.Origin.By((address, payload) => callback(address, (TPayload)payload));
+			this.Origin.By(async (address, payload) => await callback(address, (TPayload)payload).ConfigureAwait(false));
 			return this;
 		}
 

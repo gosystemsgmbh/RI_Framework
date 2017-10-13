@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 
 using RI.Framework.Composition.Model;
+using RI.Framework.Threading;
 using RI.Framework.Utilities.ObjectModel;
 
 
@@ -83,77 +84,6 @@ namespace RI.Framework.Services.Messaging.Dispatchers
 
 				capture.Execute();
 			}
-		}
-
-		#endregion
-
-
-
-
-		#region Type: DispatchCapture
-
-		private sealed class DispatchCapture
-		{
-			#region Instance Constructor/Destructor
-
-			public DispatchCapture (Delegate action, params object[] arguments)
-			{
-				if (action == null)
-				{
-					throw new ArgumentNullException(nameof(action));
-				}
-
-				if (arguments == null)
-				{
-					throw new ArgumentNullException(nameof(arguments));
-				}
-
-				this.Action = action;
-				this.Arguments = arguments;
-				this.Context = SynchronizationContext.Current;
-			}
-
-			#endregion
-
-
-
-
-			#region Instance Properties/Indexer
-
-			public Delegate Action { get; }
-
-			public object[] Arguments { get; }
-
-			public SynchronizationContext Context { get; }
-
-			#endregion
-
-
-
-
-			#region Instance Methods
-
-			public void Execute ()
-			{
-				if (this.Context != null)
-				{
-					this.Context.Post(x =>
-					{
-						DispatchCapture capture = ((DispatchCapture)x);
-						capture.Action.DynamicInvoke(capture.Arguments);
-					}, this);
-				}
-				else
-				{
-					ThreadPool.QueueUserWorkItem(x =>
-					{
-						DispatchCapture capture = ((DispatchCapture)x);
-						capture.Action.DynamicInvoke(capture.Arguments);
-					}, this);
-				}
-			}
-
-			#endregion
 		}
 
 		#endregion

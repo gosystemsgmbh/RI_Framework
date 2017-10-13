@@ -251,12 +251,6 @@ State machines
 Bus
 ---
 
- # (.NET) ThreadDispatcherBusDispatcher
-
- - (.NET) BinaryBusSerializer
- - (.NET) DefaultBusDispatcher
- - (WPF) WpfBusDispatcher
-
  - (Windows) WindowsMessageLoopBusDispatcher
  - (WinForms) ApplicationBusDispatcher
 

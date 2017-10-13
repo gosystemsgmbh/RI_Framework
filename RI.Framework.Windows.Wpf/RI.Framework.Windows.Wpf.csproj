@@ -50,6 +50,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bus\Dispatchers\WpfBusDispatcher.cs" />
     <Compile Include="Mvvm\View\GenericViewBase.cs" />
     <Compile Include="Mvvm\View\WindowViewBase.cs" />
     <Compile Include="StateMachines\Dispatchers\WpfStateDispatcher.cs" />

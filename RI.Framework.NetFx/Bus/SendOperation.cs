@@ -18,8 +18,18 @@ namespace RI.Framework.Bus
 	/// <threadsafety static="true" instance="true" />
 	public sealed class SendOperation : ISynchronizable
 	{
-		internal SendOperation (IBus bus)
+		/// <summary>
+		/// Creates a new instance of <see cref="SendOperation"/>.
+		/// </summary>
+		/// <param name="bus">The bus to be associated with this send operation.</param>
+		/// <exception cref="ArgumentNullException"><paramref name="bus"/> is null.</exception>
+		public SendOperation (IBus bus)
 		{
+			if (bus == null)
+			{
+				throw new ArgumentNullException(nameof(bus));
+			}
+
 			this.SyncRoot = new object();
 			this.Bus = bus;
 
@@ -30,7 +40,7 @@ namespace RI.Framework.Bus
 			this.CancellationToken = null;
 
 			this.IsBroadcast = false;
-			this.Started = false;
+			this.IsProcessed = false;
 
 			this.Result = null;
 		}
@@ -91,7 +101,13 @@ namespace RI.Framework.Bus
 		/// </value>
 		public bool IsBroadcast { get; private set; }
 
-		private bool Started { get; set; }
+		/// <summary>
+		/// Gets whether this send operation is being processed.
+		/// </summary>
+		/// <value>
+		/// true if the send operation is being processed, false otherwise.
+		/// </value>
+		public bool IsProcessed { get; private set; }
 
 		private object Result { get; set; }
 
@@ -103,7 +119,7 @@ namespace RI.Framework.Bus
 
 		private void VerifyNotStarted ()
 		{
-			if (this.Started)
+			if (this.IsProcessed)
 			{
 				throw new InvalidOperationException("The message is already being processed.");
 			}
@@ -299,17 +315,17 @@ namespace RI.Framework.Bus
 		/// <returns>
 		/// The task used to wait until the round-trip completed.
 		/// </returns>
-		/// <exception cref="InvalidOperationException">The message is already being processed or the bus is stopped.</exception>
-		/// <exception cref="LocalBusException">The bus processing pipeline encountered an exception.</exception>
-		/// <exception cref="ResponseTimeoutException">The intended receiver did not respond within the used timeout.</exception>
-		/// <exception cref="ConnectionBrokenException">A used connection to a remote bus is broken.</exception>
+		/// <exception cref="InvalidOperationException">The message is already being processed or the bus is not started.</exception>
+		/// <exception cref="BusProcessingPipelineException">The bus processing pipeline encountered an exception.</exception>
+		/// <exception cref="BusResponseTimeoutException">The intended receiver did not respond within the used timeout.</exception>
+		/// <exception cref="BusConnectionBrokenException">A used connection to a remote bus is broken.</exception>
 		public async Task AsSingle ()
 		{
 			Task<object> task;
 			lock (this.SyncRoot)
 			{
 				this.VerifyNotStarted();
-				this.Started = true;
+				this.IsProcessed = true;
 				this.IsBroadcast = false;
 				task = this.Bus.Enqueue(this);
 			}
@@ -325,10 +341,10 @@ namespace RI.Framework.Bus
 		/// The task used to wait until the round-trip completed.
 		/// The tasks result is the received response.
 		/// </returns>
-		/// <exception cref="InvalidOperationException">The message is already being processed or the bus is stopped.</exception>
-		/// <exception cref="LocalBusException">The bus processing pipeline encountered an exception.</exception>
-		/// <exception cref="ResponseTimeoutException">The intended receiver did not respond within the used timeout.</exception>
-		/// <exception cref="ConnectionBrokenException">A used connection to a remote bus is broken.</exception>
+		/// <exception cref="InvalidOperationException">The message is already being processed or the bus is not started.</exception>
+		/// <exception cref="BusProcessingPipelineException">The bus processing pipeline encountered an exception.</exception>
+		/// <exception cref="BusResponseTimeoutException">The intended receiver did not respond within the used timeout.</exception>
+		/// <exception cref="BusConnectionBrokenException">A used connection to a remote bus is broken.</exception>
 		/// <exception cref="InvalidCastException">The response could not be casted to type <typeparamref name="TResponse"/>.</exception>
 		public async Task<TResponse> AsSingle <TResponse> ()
 		{
@@ -336,7 +352,7 @@ namespace RI.Framework.Bus
 			lock (this.SyncRoot)
 			{
 				this.VerifyNotStarted();
-				this.Started = true;
+				this.IsProcessed = true;
 				this.IsBroadcast = false;
 				task = this.Bus.Enqueue(this);
 			}
@@ -354,19 +370,19 @@ namespace RI.Framework.Bus
 		/// </returns>
 		/// <remarks>
 		/// <note type="important">
-		/// <see cref="AsBroadcast"/> does not throw <see cref="ResponseTimeoutException"/> for not responding receivers.
+		/// <see cref="AsBroadcast"/> does not throw <see cref="BusResponseTimeoutException"/> for not responding receivers.
 		/// </note>
 		/// </remarks>
-		/// <exception cref="InvalidOperationException">The message is already being processed or the bus is stopped.</exception>
-		/// <exception cref="LocalBusException">The bus processing pipeline encountered an exception.</exception>
-		/// <exception cref="ConnectionBrokenException">A used connection to a remote bus is broken.</exception>
+		/// <exception cref="InvalidOperationException">The message is already being processed or the bus is not started.</exception>
+		/// <exception cref="BusProcessingPipelineException">The bus processing pipeline encountered an exception.</exception>
+		/// <exception cref="BusConnectionBrokenException">A used connection to a remote bus is broken.</exception>
 		public async Task<int> AsBroadcast()
 		{
 			Task<object> task;
 			lock (this.SyncRoot)
 			{
 				this.VerifyNotStarted();
-				this.Started = true;
+				this.IsProcessed = true;
 				this.IsBroadcast = true;
 				task = this.Bus.Enqueue(this);
 			}
@@ -385,12 +401,12 @@ namespace RI.Framework.Bus
 		/// </returns>
 		/// <remarks>
 		/// <note type="important">
-		/// <see cref="AsBroadcast{TResponse}"/> does not throw <see cref="ResponseTimeoutException"/> for not responding receivers.
+		/// <see cref="AsBroadcast{TResponse}"/> does not throw <see cref="BusResponseTimeoutException"/> for not responding receivers.
 		/// </note>
 		/// </remarks>
-		/// <exception cref="InvalidOperationException">The message is already being processed or the bus is stopped.</exception>
-		/// <exception cref="LocalBusException">The bus processing pipeline encountered an exception.</exception>
-		/// <exception cref="ConnectionBrokenException">A used connection to a remote bus is broken.</exception>
+		/// <exception cref="InvalidOperationException">The message is already being processed or the bus is not started.</exception>
+		/// <exception cref="BusProcessingPipelineException">The bus processing pipeline encountered an exception.</exception>
+		/// <exception cref="BusConnectionBrokenException">A used connection to a remote bus is broken.</exception>
 		/// <exception cref="InvalidCastException">The responses could not be casted to type <typeparamref name="TResponse"/>.</exception>
 		public async Task<List<TResponse>> AsBroadcast <TResponse> ()
 		{
@@ -398,7 +414,7 @@ namespace RI.Framework.Bus
 			lock (this.SyncRoot)
 			{
 				this.VerifyNotStarted();
-				this.Started = true;
+				this.IsProcessed = true;
 				this.IsBroadcast = true;
 				task = this.Bus.Enqueue(this);
 			}

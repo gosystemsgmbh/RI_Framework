@@ -2,34 +2,31 @@
 
 using RI.Framework.Utilities.ObjectModel;
 
-namespace RI.Framework.Bus.Dispatchers
+namespace RI.Framework.Bus.Pipeline
 {
 	/// <summary>
-	/// Defines the interface for a bus dispatcher.
+	/// Defines the interface for a bus processing pipeline work signaler.
 	/// </summary>
 	/// <remarks>
 	/// See <see cref="IBus"/> for more details about message busses.
 	/// </remarks>
-	public interface IBusDispatcher
+	public interface IBusPipelineWorkSignaler
 	{
 		/// <summary>
-		/// Initializes the dispatcher when the bus starts.
+		/// Initializes the pipeline work signaler when the bus starts.
 		/// </summary>
 		/// <param name="dependencyResolver">The dependency resolver which can be used to get instances of required types.</param>
 		/// <exception cref="ArgumentNullException"><paramref name="dependencyResolver"/> is null.</exception>
 		void Initialize(IDependencyResolver dependencyResolver);
 
 		/// <summary>
-		/// Unloads the dispatcher when the bus stops.
+		/// Unloads the pipeline work signaler when the bus stops.
 		/// </summary>
 		void Unload();
 
 		/// <summary>
-		/// Dispatches a delegate for execution.
+		/// Signals the bus processing pipeline that new work is pending (e.g. a message has been received through a bus connection).
 		/// </summary>
-		/// <param name="action">The delegate.</param>
-		/// <param name="parameters">Optional parameters of the delegate.</param>
-		/// <exception cref="ArgumentNullException"><paramref name="action"/> is null.</exception>
-		void Dispatch (Delegate action, params object[] parameters);
+		void SignalWorkAvailable ();
 	}
 }

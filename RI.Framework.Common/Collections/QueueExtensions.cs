@@ -41,6 +41,36 @@ namespace RI.Framework.Collections
 		}
 
 		/// <summary>
+		///     Gets all the items from a queue in the order they are dequeue'ed and removes them.
+		/// </summary>
+		/// <typeparam name="T"> The type of the items in <paramref name="queue" />. </typeparam>
+		/// <param name="queue"> The queue. </param>
+		/// <param name="collection"> The collection the dequeued items are put into. </param>
+		/// <returns>
+		///     The number of dequeued items.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="queue" /> or <paramref name="collection"/> is null. </exception>
+		public static int DequeueInto<T>(this Queue<T> queue, ICollection<T> collection)
+		{
+			if (queue == null)
+			{
+				throw new ArgumentNullException(nameof(queue));
+			}
+
+			if (collection == null)
+			{
+				throw new ArgumentNullException(nameof(collection));
+			}
+
+			int count = queue.Count;
+			while (queue.Count > 0)
+			{
+				collection.Add(queue.Dequeue());
+			}
+			return count;
+		}
+
+		/// <summary>
 		///     Enqueues multiple items to a queue.
 		/// </summary>
 		/// <typeparam name="T"> The type of the items in <paramref name="queue" />. </typeparam>
