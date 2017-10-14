@@ -1,11 +1,12 @@
 # Decoupling & Utilities Framework
 
-## 2.0.0.0
+## Current
 
 - [ ] Cleanup
   - [ ] TODOs
   - [ ] Code cleanup
   - [ ] Packages
+  - [ ] License and license on website
 - [ ] Testing (common)
   - [ ] RuntimeEnvironment
   - [ ] CultureInfoExtensions
@@ -80,15 +81,17 @@
   - [ ] Unity: Thread Safety
 - [ ] Advertisement
 
+## Next
+
+- [ ] Timeout and cancellation token overloads
 
 ## Backlog
 
 - [ ] Wishlist
-- [ ] Timeout and cancellation token overloads
 
 ## Proposals
 
-- [ ] Cross-platform model and code unification
-- [ ] AOT checking utility
 - [ ] .NET Standard
 - [ ] Common to Shared migration
+- [ ] Cross-platform model and code unification
+- [ ] AOT checking utility
