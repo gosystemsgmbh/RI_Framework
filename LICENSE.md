@@ -123,7 +123,10 @@
       ***(e) The Derivative Works does not compete in any way with products,
           business models, business interests, or financial interests of the
           Licensor at the time of redistribution, regardless whether
-          Derivative Works existed before the competition with Licensor.***
+          Derivative Works existed before the competition with Licensor; and***
+
+      ***(f) The Derivative Works is not a product which uses the Unity
+          engine (http://www.unity3d.com).***
 
       You may add Your own copyright statement to Your modifications and
       may provide additional or different license terms and conditions
