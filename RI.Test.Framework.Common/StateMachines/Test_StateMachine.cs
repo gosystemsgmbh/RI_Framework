@@ -1,4 +1,6 @@
 ﻿#if PLATFORM_NETFX
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 using RI.Framework.Threading.Dispatcher;
 #endif
 using System;
@@ -6,15 +8,10 @@ using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using RI.Framework.Composition;
-using RI.Framework.Services;
 using RI.Framework.StateMachines;
 using RI.Framework.StateMachines.Dispatchers;
 using RI.Framework.StateMachines.Resolvers;
 using RI.Test.Framework.StateMachines.States;
-
-
-
-
 #if PLATFORM_UNITY
 using RI.Framework.Services.Dispatcher;
 

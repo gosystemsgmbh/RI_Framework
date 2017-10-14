@@ -4,6 +4,9 @@ using System.Threading;
 using RI.Framework.Threading;
 using RI.Framework.Utilities.ObjectModel;
 
+
+
+
 namespace RI.Framework.Bus.Dispatchers
 {
 	/// <summary>
@@ -25,7 +28,7 @@ namespace RI.Framework.Bus.Dispatchers
 		/// <summary>
 		///     Creates a new instance of <see cref="DefaultBusDispatcher" />.
 		/// </summary>
-		public DefaultBusDispatcher()
+		public DefaultBusDispatcher ()
 		{
 			this.SyncRoot = new object();
 		}
@@ -35,15 +38,17 @@ namespace RI.Framework.Bus.Dispatchers
 
 
 
-		#region Interface: IStateDispatcher
+		#region Interface: IBusDispatcher
 
 		/// <inheritdoc />
-		bool ISynchronizable.IsSynchronized => true;
-
-		/// <inheritdoc />
-		public object SyncRoot { get; }
-
-		#endregion
+		public void Dispatch (Delegate action, params object[] parameters)
+		{
+			lock (this.SyncRoot)
+			{
+				DispatchCapture capture = new DispatchCapture(action, parameters ?? new object[0]);
+				capture.Execute();
+			}
+		}
 
 		/// <inheritdoc />
 		public void Initialize (IDependencyResolver dependencyResolver)
@@ -55,14 +60,19 @@ namespace RI.Framework.Bus.Dispatchers
 		{
 		}
 
+		#endregion
+
+
+
+
+		#region Interface: ISynchronizable
+
 		/// <inheritdoc />
-		public void Dispatch (Delegate action, params object[] parameters)
-		{
-			lock (this.SyncRoot)
-			{
-				DispatchCapture capture = new DispatchCapture(action, parameters ?? new object[0]);
-				capture.Execute();
-			}
-		}
+		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		public object SyncRoot { get; }
+
+		#endregion
 	}
 }

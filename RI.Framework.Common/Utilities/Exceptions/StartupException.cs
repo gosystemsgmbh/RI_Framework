@@ -26,7 +26,7 @@ namespace RI.Framework.Utilities.Exceptions
 		/// <summary>
 		///     Creates a new instance of <see cref="StartupException" />.
 		/// </summary>
-		public StartupException()
+		public StartupException ()
 			: base(StartupException.ExceptionMessage)
 		{
 		}
@@ -35,7 +35,7 @@ namespace RI.Framework.Utilities.Exceptions
 		///     Creates a new instance of <see cref="StartupException" />.
 		/// </summary>
 		/// <param name="message"> The message which describes the exception. </param>
-		public StartupException(string message)
+		public StartupException (string message)
 			: base(message)
 		{
 		}
@@ -45,7 +45,7 @@ namespace RI.Framework.Utilities.Exceptions
 		/// </summary>
 		/// <param name="message"> The message which describes the exception. </param>
 		/// <param name="innerException"> The exception which triggered this exception. </param>
-		public StartupException(string message, Exception innerException)
+		public StartupException (string message, Exception innerException)
 			: base(message, innerException)
 		{
 		}
@@ -55,7 +55,7 @@ namespace RI.Framework.Utilities.Exceptions
 		/// </summary>
 		/// <param name="info"> The serialization data. </param>
 		/// <param name="context"> The type of the source of the serialization data. </param>
-		protected StartupException(SerializationInfo info, StreamingContext context)
+		protected StartupException (SerializationInfo info, StreamingContext context)
 			: base(info, context)
 		{
 		}

@@ -11,55 +11,110 @@ using RI.Framework.Bus.Routers;
 using RI.Framework.Collections;
 using RI.Framework.Utilities.ObjectModel;
 
+
+
+
 namespace RI.Framework.Bus.Pipeline
 {
 	/// <summary>
-	/// Implements a default bus processing pipeline which is suitable for most scenarios.
+	///     Implements a default bus processing pipeline which is suitable for most scenarios.
 	/// </summary>
 	/// <remarks>
-	/// See <see cref="IBusPipeline"/> for more details.
+	///     See <see cref="IBusPipeline" /> for more details.
 	/// </remarks>
 	public sealed class DefaultBusPipeline : IBusPipeline
 	{
+		#region Instance Properties/Indexer
+
 		private IBus Bus { get; set; }
-		private IBusPipelineWorkSignaler PipelineWorkSignaler { get; set; }
-		private IBusRouter Router { get; set; }
-		private IBusDispatcher Dispatcher { get; set; }
 
 		private IBusConnectionManager ConnectionManager { get; set; }
-
-		private object LocalResponsesSyncRoot { get; set; }
+		private IBusDispatcher Dispatcher { get; set; }
 		private Queue<MessageItem> LocalResponses { get; set; }
 
-		/// <inheritdoc />
-		public void Initialize (IDependencyResolver dependencyResolver)
+		private object LocalResponsesSyncRoot { get; set; }
+		private IBusPipelineWorkSignaler PipelineWorkSignaler { get; set; }
+		private IBusRouter Router { get; set; }
+
+		#endregion
+
+
+
+
+		#region Instance Methods
+
+		private void ProcessMessage (MessageItem messageItem)
 		{
-			this.Bus = dependencyResolver.GetInstance<IBus>();
-			this.PipelineWorkSignaler = dependencyResolver.GetInstance<IBusPipelineWorkSignaler>();
-			this.Router = dependencyResolver.GetInstance<IBusRouter>();
-			this.Dispatcher = dependencyResolver.GetInstance<IBusDispatcher>();
+			if (messageItem.ResponseTo.HasValue)
+			{
+				lock (this.Bus.SyncRoot)
+				{
+					this.Bus.SendOperations.Where(x => x.Request.Id == messageItem.ResponseTo.Value).ForEach(x =>
+					{
+						x.Responses.Add(messageItem);
+						x.Results.Add(messageItem.Payload);
+						if (!x.SendOperation.IsBroadcast)
+						{
+							x.State = SendOperationItemState.Finished;
+							x.Task.TrySetResult(x.Results[0]);
+						}
+					});
+				}
+			}
 
-			this.ConnectionManager = dependencyResolver.GetInstance<IBusConnectionManager>();
+			bool toLocal = this.Router.ForwardToLocal(messageItem);
+			bool toGlobal = this.Router.ForwardToGlobal(messageItem);
 
-			this.LocalResponsesSyncRoot = new object();
-			this.LocalResponses = new Queue<MessageItem>();
+			if (toLocal)
+			{
+				lock (this.Bus.SyncRoot)
+				{
+					this.Bus.ReceiveRegistrations.Where(x => this.Router.ShouldReceive(messageItem, x)).ForEach(x =>
+					{
+						this.Dispatcher.Dispatch(new Action<MessageItem, ReceiverRegistrationItem>((m, r) =>
+						{
+							Func<string, object, Task<object>> callback = r.ReceiverRegistration.Callback;
+							Task<object> task = callback(m.Address, m.Payload);
+							task.ContinueWith((c, s) => { this.ResponseHandler((MessageItem)s, c.Result); }, m);
+						}), messageItem, x);
+					});
+				}
+			}
+
+			if (toGlobal && (this.ConnectionManager != null))
+			{
+				lock (this.ConnectionManager.SyncRoot)
+				{
+					this.ConnectionManager.Connections.Where(x => this.Router.ShouldSend(messageItem, x)).ForEach(x => this.ConnectionManager.SendMessage(messageItem, x));
+				}
+			}
 		}
 
-		/// <inheritdoc />
-		public void Unload ()
+		private void ResponseHandler (MessageItem message, object result)
 		{
-			this.LocalResponses?.Clear();
+			MessageItem response = new MessageItem();
+			response.Address = message.Address;
+			response.Payload = result;
+			response.ToGlobal = message.FromGlobal;
+			response.Timeout = message.Timeout;
+			response.IsBroadcast = false;
+			response.Id = Guid.NewGuid();
+			response.Sent = DateTime.UtcNow;
+			response.FromGlobal = false;
+			response.ResponseTo = message.Id;
+
+			lock (this.LocalResponsesSyncRoot)
+			{
+				this.LocalResponses.Enqueue(response);
+			}
 		}
 
-		/// <inheritdoc />
-		public void StartProcessing ()
-		{
-		}
+		#endregion
 
-		/// <inheritdoc />
-		public void StopProcessing ()
-		{
-		}
+
+
+
+		#region Interface: IBusPipeline
 
 		/// <inheritdoc />
 		public void DoWork ()
@@ -142,7 +197,7 @@ namespace RI.Framework.Bus.Pipeline
 			}
 
 
-			if(((localResponses.Count == 0)) && (newMessages.Count == 0) && (receivedMessages.Count == 0) && (removedMessages == 0))
+			if (((localResponses.Count == 0)) && (newMessages.Count == 0) && (receivedMessages.Count == 0) && (removedMessages == 0))
 			{
 				return;
 			}
@@ -157,73 +212,36 @@ namespace RI.Framework.Bus.Pipeline
 			this.PipelineWorkSignaler.SignalWorkAvailable();
 		}
 
-		private void ProcessMessage (MessageItem messageItem)
+		/// <inheritdoc />
+		public void Initialize (IDependencyResolver dependencyResolver)
 		{
-			if (messageItem.ResponseTo.HasValue)
-			{
-				lock (this.Bus.SyncRoot)
-				{
-					this.Bus.SendOperations.Where(x => x.Request.Id == messageItem.ResponseTo.Value).ForEach(x =>
-					{
-						x.Responses.Add(messageItem);
-						x.Results.Add(messageItem.Payload);
-						if (!x.SendOperation.IsBroadcast)
-						{
-							x.State = SendOperationItemState.Finished;
-							x.Task.TrySetResult(x.Results[0]);
-						}
-					});
-				}
-			}
+			this.Bus = dependencyResolver.GetInstance<IBus>();
+			this.PipelineWorkSignaler = dependencyResolver.GetInstance<IBusPipelineWorkSignaler>();
+			this.Router = dependencyResolver.GetInstance<IBusRouter>();
+			this.Dispatcher = dependencyResolver.GetInstance<IBusDispatcher>();
 
-			bool toLocal = this.Router.ForwardToLocal(messageItem);
-			bool toGlobal = this.Router.ForwardToGlobal(messageItem);
+			this.ConnectionManager = dependencyResolver.GetInstance<IBusConnectionManager>();
 
-			if (toLocal)
-			{
-				lock (this.Bus.SyncRoot)
-				{
-					this.Bus.ReceiveRegistrations.Where(x => this.Router.ShouldReceive(messageItem, x)).ForEach(x =>
-					{
-						this.Dispatcher.Dispatch(new Action<MessageItem, ReceiverRegistrationItem>((m,r) =>
-						{
-							Func<string, object, Task<object>> callback = r.ReceiverRegistration.Callback;
-							Task<object> task = callback(m.Address, m.Payload);
-							task.ContinueWith((c, s) =>
-							{
-								this.ResponseHandler((MessageItem)s, c.Result);
-							}, m);
-						}), messageItem, x);
-					});
-				}
-			}
-
-			if (toGlobal && (this.ConnectionManager != null))
-			{
-				lock (this.ConnectionManager.SyncRoot)
-				{
-					this.ConnectionManager.Connections.Where(x => this.Router.ShouldSend(messageItem, x)).ForEach(x => this.ConnectionManager.SendMessage(messageItem, x));
-				}
-			}
+			this.LocalResponsesSyncRoot = new object();
+			this.LocalResponses = new Queue<MessageItem>();
 		}
 
-		private void ResponseHandler (MessageItem message, object result)
+		/// <inheritdoc />
+		public void StartProcessing ()
 		{
-			MessageItem response = new MessageItem();
-			response.Address = message.Address;
-			response.Payload = result;
-			response.ToGlobal = message.FromGlobal;
-			response.Timeout = message.Timeout;
-			response.IsBroadcast = false;
-			response.Id = Guid.NewGuid();
-			response.Sent = DateTime.UtcNow;
-			response.FromGlobal = false;
-			response.ResponseTo = message.Id;
-
-			lock (this.LocalResponsesSyncRoot)
-			{
-				this.LocalResponses.Enqueue(response);
-			}
 		}
+
+		/// <inheritdoc />
+		public void StopProcessing ()
+		{
+		}
+
+		/// <inheritdoc />
+		public void Unload ()
+		{
+			this.LocalResponses?.Clear();
+		}
+
+		#endregion
 	}
 }

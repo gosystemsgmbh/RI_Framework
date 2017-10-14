@@ -689,8 +689,7 @@ namespace RI.Test.Framework.IO.Paths
 				throw new TestAssertionException();
 			}
 
-#if PLATFORM_NETFX
-//----------------------------------
+#if PLATFORM_NETFX //----------------------------------
 // Files not possible for operations
 //----------------------------------
 

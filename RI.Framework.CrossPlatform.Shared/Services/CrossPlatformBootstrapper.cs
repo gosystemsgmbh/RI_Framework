@@ -5,6 +5,9 @@ using RI.Framework.Utilities.Linux.Users;
 using RI.Framework.Utilities.Runtime;
 using RI.Framework.Utilities.Windows.Users;
 
+
+
+
 namespace RI.Framework.Services
 {
 	/// <summary>
@@ -53,6 +56,22 @@ namespace RI.Framework.Services
 		}
 
 		/// <summary>
+		///     Called to determine whether the startup user has elevated privileges.
+		/// </summary>
+		/// <returns>
+		///     true if the startup user has elevated privileges, false otherwise or if the information is not available.
+		/// </returns>
+		/// <remarks>
+		///     <note type="implement">
+		///         The default implementation uses <see cref="WindowsUser" />.<see cref="WindowsUser.IsCurrentAdministrator" /> on Windows and <see cref="LinuxUser" />.<see cref="LinuxUser.IsCurrentRoot" /> on Linux.
+		///     </note>
+		/// </remarks>
+		protected override bool DetermineStartupUserElevated ()
+		{
+			return RuntimeEnvironment.IsUnixPlatform() ? LinuxUser.IsCurrentRoot() : WindowsUser.IsCurrentAdministrator();
+		}
+
+		/// <summary>
 		///     Called to determine the GUID of the current user.
 		/// </summary>
 		/// <returns>
@@ -66,22 +85,6 @@ namespace RI.Framework.Services
 		protected override Guid DetermineUserId ()
 		{
 			return UniqueIdentification.GetUserId();
-		}
-
-		/// <summary>
-		///     Called to determine whether the startup user has elevated privileges.
-		/// </summary>
-		/// <returns>
-		///     true if the startup user has elevated privileges, false otherwise or if the information is not available.
-		/// </returns>
-		/// <remarks>
-		///     <note type="implement">
-		///         The default implementation uses <see cref="WindowsUser" />.<see cref="WindowsUser.IsCurrentAdministrator" /> on Windows and <see cref="LinuxUser"/>.<see cref="LinuxUser.IsCurrentRoot"/> on Linux.
-		///     </note>
-		/// </remarks>
-		protected override bool DetermineStartupUserElevated ()
-		{
-			return RuntimeEnvironment.IsUnixPlatform() ? LinuxUser.IsCurrentRoot() : WindowsUser.IsCurrentAdministrator();
 		}
 
 		#endregion

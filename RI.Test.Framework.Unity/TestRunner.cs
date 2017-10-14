@@ -174,10 +174,17 @@ namespace RI.Test.Framework
 
 		#endregion
 
-		/// <inheritdoc />
-		public bool LoggingEnabled { get; set; } = true;
+
+
+
+		#region Interface: ILogSource
 
 		/// <inheritdoc />
 		public RI.Framework.Utilities.Logging.ILogger Logger { get; set; } = LogLocator.Logger;
+
+		/// <inheritdoc />
+		public bool LoggingEnabled { get; set; } = true;
+
+		#endregion
 	}
 }

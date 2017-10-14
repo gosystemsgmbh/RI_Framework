@@ -49,8 +49,8 @@ namespace RI.Framework.Collections
 		/// <returns>
 		///     The number of dequeued items.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"> <paramref name="queue" /> or <paramref name="collection"/> is null. </exception>
-		public static int DequeueInto<T>(this Queue<T> queue, ICollection<T> collection)
+		/// <exception cref="ArgumentNullException"> <paramref name="queue" /> or <paramref name="collection" /> is null. </exception>
+		public static int DequeueInto <T> (this Queue<T> queue, ICollection<T> collection)
 		{
 			if (queue == null)
 			{

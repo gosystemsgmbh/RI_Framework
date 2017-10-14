@@ -39,6 +39,27 @@ namespace RI.Framework.Data.Database
 
 		#region Instance Methods
 
+		internal SQLiteConnection CreateInternalConnection (string connectionStringOverride, bool readOnly)
+		{
+			SQLiteConnectionStringBuilder connectionString = new SQLiteConnectionStringBuilder(connectionStringOverride ?? this.Configuration.ConnectionString.ConnectionString);
+			connectionString.ReadOnly = readOnly;
+
+			SQLiteConnection connection = new SQLiteConnection(connectionString.ConnectionString);
+			connection.Open();
+
+			if (this.Configuration.RegisterDefaultCollations)
+			{
+				this.RegisterCollations(connection);
+			}
+
+			if (this.Configuration.RegisterDefaultFunctions)
+			{
+				this.RegisterFunctions(connection);
+			}
+
+			return connection;
+		}
+
 		private void RegisterCollations (SQLiteConnection connection)
 		{
 			connection.BindFunction(new CurrentCultureIgnoreCaseSQLiteCollation());
@@ -124,27 +145,6 @@ namespace RI.Framework.Data.Database
 			}
 
 			return base.DetectStateAndVersionImpl(out state, out version);
-		}
-
-		internal SQLiteConnection CreateInternalConnection (string connectionStringOverride, bool readOnly)
-		{
-			SQLiteConnectionStringBuilder connectionString = new SQLiteConnectionStringBuilder(connectionStringOverride ?? this.Configuration.ConnectionString.ConnectionString);
-			connectionString.ReadOnly = readOnly;
-
-			SQLiteConnection connection = new SQLiteConnection(connectionString.ConnectionString);
-			connection.Open();
-
-			if (this.Configuration.RegisterDefaultCollations)
-			{
-				this.RegisterCollations(connection);
-			}
-
-			if (this.Configuration.RegisterDefaultFunctions)
-			{
-				this.RegisterFunctions(connection);
-			}
-
-			return connection;
 		}
 
 		#endregion

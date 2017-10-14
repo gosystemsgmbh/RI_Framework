@@ -423,20 +423,20 @@ namespace RI.Framework.Services
 		protected abstract Guid DetermineMachineId ();
 
 		/// <summary>
-		///     Called to determine the GUID of the current user.
-		/// </summary>
-		/// <returns>
-		///     The GUID of the current user.
-		/// </returns>
-		protected abstract Guid DetermineUserId ();
-
-		/// <summary>
 		///     Called to determine whether the startup user has elevated privileges.
 		/// </summary>
 		/// <returns>
 		///     true if the startup user has elevated privileges, false otherwise or if the information is not available.
 		/// </returns>
 		protected abstract bool DetermineStartupUserElevated ();
+
+		/// <summary>
+		///     Called to determine the GUID of the current user.
+		/// </summary>
+		/// <returns>
+		///     The GUID of the current user.
+		/// </returns>
+		protected abstract Guid DetermineUserId ();
 
 		/// <summary>
 		///     Instructs the application to start running.
@@ -1254,9 +1254,6 @@ namespace RI.Framework.Services
 		public bool DebuggerAttached { get; private set; }
 
 		/// <inheritdoc />
-		public bool StartupUserElevated { get; private set; }
-
-		/// <inheritdoc />
 		public Guid DomainId { get; private set; }
 
 		/// <inheritdoc />
@@ -1368,6 +1365,9 @@ namespace RI.Framework.Services
 
 		/// <inheritdoc />
 		public CultureInfo StartupUICulture { get; private set; }
+
+		/// <inheritdoc />
+		public bool StartupUserElevated { get; private set; }
 
 		/// <inheritdoc />
 		public BootstrapperState State

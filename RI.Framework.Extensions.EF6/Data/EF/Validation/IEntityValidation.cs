@@ -113,7 +113,7 @@ namespace RI.Framework.Data.EF.Validation
 		/// <param name="repository"> The repository the fixed entity belongs to. </param>
 		/// <param name="set"> The set. </param>
 		/// <param name="entity"> The entity. </param>
-		/// <exception cref="ArgumentNullException"> <paramref name="repository" />, <paramref name="set" />, or <paramref name="entity"/> is null. </exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="repository" />, <paramref name="set" />, or <paramref name="entity" /> is null. </exception>
 		void Fix (DbRepositoryContext repository, DbRepositorySet set, object entity);
 
 		/// <summary>
@@ -122,7 +122,7 @@ namespace RI.Framework.Data.EF.Validation
 		/// <param name="repository"> The repository the newly created entity belongs to. </param>
 		/// <param name="set"> The set. </param>
 		/// <param name="entity"> The entity. </param>
-		/// <exception cref="ArgumentNullException"> <paramref name="repository" />, <paramref name="set" />, or <paramref name="entity"/> is null. </exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="repository" />, <paramref name="set" />, or <paramref name="entity" /> is null. </exception>
 		void Initialize (DbRepositoryContext repository, DbRepositorySet set, object entity);
 
 		/// <summary>
@@ -134,7 +134,7 @@ namespace RI.Framework.Data.EF.Validation
 		/// <returns>
 		///     The validation results if the validation results in validation errors or null if the entity is valid.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"> <paramref name="repository" />, <paramref name="set" />, or <paramref name="entity"/> is null. </exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="repository" />, <paramref name="set" />, or <paramref name="entity" /> is null. </exception>
 		DbEntityValidationResult Validate (DbRepositoryContext repository, DbRepositorySet set, object entity);
 	}
 }

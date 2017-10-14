@@ -3,6 +3,9 @@ using System.Diagnostics.CodeAnalysis;
 
 using RI.Framework.Utilities;
 
+
+
+
 namespace RI.Framework.Data.SQLite
 {
 	/// <summary>

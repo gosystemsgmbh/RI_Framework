@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 
+
+
+
 namespace RI.Framework.Bus.Dispatchers
 {
 	/// <summary>
@@ -8,16 +11,18 @@ namespace RI.Framework.Bus.Dispatchers
 	/// </summary>
 	public static class IBusDispatcherExtensions
 	{
+		#region Static Methods
+
 		/// <summary>
-		/// Dispatches a delegate for execution and retuns a task which allows continuation after the delegate was executed.
+		///     Dispatches a delegate for execution and retuns a task which allows continuation after the delegate was executed.
 		/// </summary>
-		/// <param name="dispatcher">The bus dispatcher.</param>
-		/// <param name="action">The delegate.</param>
-		/// <param name="parameters">Optional parameters of the delegate.</param>
+		/// <param name="dispatcher"> The bus dispatcher. </param>
+		/// <param name="action"> The delegate. </param>
+		/// <param name="parameters"> Optional parameters of the delegate. </param>
 		/// <returns>
-		/// The task which can be used to continue after the delegate was executed.
+		///     The task which can be used to continue after the delegate was executed.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="dispatcher"/> or <paramref name="action"/> is null.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" /> or <paramref name="action" /> is null. </exception>
 		public static Task<object> DispatchAsync (this IBusDispatcher dispatcher, Delegate action, params object[] parameters)
 		{
 			if (dispatcher == null)
@@ -34,7 +39,7 @@ namespace RI.Framework.Bus.Dispatchers
 
 			TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
 
-			dispatcher.Dispatch(new Action<TaskCompletionSource<object>,Delegate,object[]>((t,d,p) =>
+			dispatcher.Dispatch(new Action<TaskCompletionSource<object>, Delegate, object[]>((t, d, p) =>
 			{
 				object result = d.DynamicInvoke(p);
 				t.TrySetResult(result);
@@ -42,5 +47,7 @@ namespace RI.Framework.Bus.Dispatchers
 
 			return tcs.Task;
 		}
+
+		#endregion
 	}
 }

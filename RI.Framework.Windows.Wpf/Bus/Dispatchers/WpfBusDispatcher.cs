@@ -4,6 +4,9 @@ using System.Windows.Threading;
 
 using RI.Framework.Utilities.ObjectModel;
 
+
+
+
 namespace RI.Framework.Bus.Dispatchers
 {
 	/// <summary>
@@ -27,7 +30,7 @@ namespace RI.Framework.Bus.Dispatchers
 		/// </summary>
 		/// <param name="application"> The application object to get the dispatcher from. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="application" /> is null. </exception>
-		public WpfBusDispatcher(Application application)
+		public WpfBusDispatcher (Application application)
 		{
 			if (application == null)
 			{
@@ -45,7 +48,7 @@ namespace RI.Framework.Bus.Dispatchers
 		/// </summary>
 		/// <param name="dispatcher"> The dispatcher to use. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="dispatcher" /> is null. </exception>
-		public WpfBusDispatcher(Dispatcher dispatcher)
+		public WpfBusDispatcher (Dispatcher dispatcher)
 		{
 			if (dispatcher == null)
 			{
@@ -116,15 +119,16 @@ namespace RI.Framework.Bus.Dispatchers
 
 
 
-		#region Interface: IStateDispatcher
+		#region Interface: IBusDispatcher
 
 		/// <inheritdoc />
-		bool ISynchronizable.IsSynchronized => true;
-
-		/// <inheritdoc />
-		public object SyncRoot { get; }
-
-		#endregion
+		public void Dispatch (Delegate action, params object[] parameters)
+		{
+			lock (this.SyncRoot)
+			{
+				this.Dispatcher.BeginInvoke(action, this.Priority, parameters ?? new object[0]);
+			}
+		}
 
 		/// <inheritdoc />
 		public void Initialize (IDependencyResolver dependencyResolver)
@@ -136,13 +140,19 @@ namespace RI.Framework.Bus.Dispatchers
 		{
 		}
 
+		#endregion
+
+
+
+
+		#region Interface: ISynchronizable
+
 		/// <inheritdoc />
-		public void Dispatch (Delegate action, params object[] parameters)
-		{
-			lock (this.SyncRoot)
-			{
-				this.Dispatcher.BeginInvoke(action, this.Priority, parameters ?? new object[0]);
-			}
-		}
+		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		public object SyncRoot { get; }
+
+		#endregion
 	}
 }

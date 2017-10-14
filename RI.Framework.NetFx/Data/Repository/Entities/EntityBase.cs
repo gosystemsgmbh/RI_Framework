@@ -16,11 +16,11 @@ using RI.Framework.Utilities.Serialization;
 namespace RI.Framework.Data.Repository.Entities
 {
 	/// <summary>
-	///     Implements a base class for entities used with <see cref="IRepositorySet{TEntity}"/>.
+	///     Implements a base class for entities used with <see cref="IRepositorySet{TEntity}" />.
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         <see cref="EntityBase" /> implements basic functionality which might be desirable by entities which are used together with <see cref="IRepositoryContext" />, <see cref="IRepositorySet{TEntity}"/> and/or <see cref="EntityView{TEntity}" />, such as property change notification, change tracking, and error tracking.
+	///         <see cref="EntityBase" /> implements basic functionality which might be desirable by entities which are used together with <see cref="IRepositoryContext" />, <see cref="IRepositorySet{TEntity}" /> and/or <see cref="EntityView{TEntity}" />, such as property change notification, change tracking, and error tracking.
 	///     </para>
 	///     <note type="note">
 	///         <see cref="EntityBase" /> is serializable, using <see cref="ISerializable" />.
@@ -47,9 +47,9 @@ namespace RI.Framework.Data.Repository.Entities
 
 		#region Static Properties/Indexer
 
-		private static Dictionary<Type, List<PropertySerializationInfo>> SerializedProperties { get; set; }
-
 		private static object GlobalSyncRoot { get; set; }
+
+		private static Dictionary<Type, List<PropertySerializationInfo>> SerializedProperties { get; set; }
 
 		#endregion
 

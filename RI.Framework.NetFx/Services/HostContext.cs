@@ -21,20 +21,20 @@ namespace RI.Framework.Services
 		public string InstanceId { get; set; } = null;
 
 		/// <summary>
-		///     Gets or sets an additional logger which is provided directly by the hosting environment.
-		/// </summary>
-		/// <value>
-		///     An additional logger which is provided directly by the hosting environment or null if no such is available.
-		/// </value>
-		public ILogWriter Logger { get; set; } = null;
-
-		/// <summary>
 		///     Gets or sets whether the application runs as a service or daemon.
 		/// </summary>
 		/// <value>
 		///     true if the application runs as a service or daemon, false otherwise.
 		/// </value>
 		public bool IsService { get; set; } = false;
+
+		/// <summary>
+		///     Gets or sets an additional logger which is provided directly by the hosting environment.
+		/// </summary>
+		/// <value>
+		///     An additional logger which is provided directly by the hosting environment or null if no such is available.
+		/// </value>
+		public ILogWriter Logger { get; set; } = null;
 
 		#endregion
 	}

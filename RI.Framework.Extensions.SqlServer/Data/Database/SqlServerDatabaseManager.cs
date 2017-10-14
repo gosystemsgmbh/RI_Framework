@@ -15,6 +15,23 @@ namespace RI.Framework.Data.Database
 	/// </remarks>
 	public sealed class SqlServerDatabaseManager : DatabaseManager<SqlConnection, SqlTransaction, SqlConnectionStringBuilder, SqlServerDatabaseManager, SqlServerDatabaseManagerConfiguration>
 	{
+		#region Instance Methods
+
+		internal SqlConnection CreateInternalConnection (string connectionStringOverride)
+		{
+			SqlConnectionStringBuilder connectionString = new SqlConnectionStringBuilder(connectionStringOverride ?? this.Configuration.ConnectionString.ConnectionString);
+
+			SqlConnection connection = new SqlConnection(connectionString.ConnectionString);
+			connection.Open();
+
+			return connection;
+		}
+
+		#endregion
+
+
+
+
 		#region Overrides
 
 		/// <inheritdoc />
@@ -45,16 +62,6 @@ namespace RI.Framework.Data.Database
 		protected override IDatabaseProcessingStep<SqlConnection, SqlTransaction, SqlConnectionStringBuilder, SqlServerDatabaseManager, SqlServerDatabaseManagerConfiguration> CreateProcessingStepImpl ()
 		{
 			return new SqlServerDatabaseProcessingStep();
-		}
-
-		internal SqlConnection CreateInternalConnection(string connectionStringOverride)
-		{
-			SqlConnectionStringBuilder connectionString = new SqlConnectionStringBuilder(connectionStringOverride ?? this.Configuration.ConnectionString.ConnectionString);
-
-			SqlConnection connection = new SqlConnection(connectionString.ConnectionString);
-			connection.Open();
-
-			return connection;
 		}
 
 		#endregion

@@ -246,7 +246,7 @@ namespace RI.Framework.Services
 		CultureInfo StartupUICulture { get; }
 
 		/// <summary>
-		/// Gets whether the user which started the bootstrapping has elevated privileges and might be able to perform system configuration changes.
+		///     Gets whether the user which started the bootstrapping has elevated privileges and might be able to perform system configuration changes.
 		/// </summary>
 		bool StartupUserElevated { get; }
 

@@ -3,6 +3,9 @@
 using RI.Framework.Threading.Dispatcher;
 using RI.Framework.Utilities.ObjectModel;
 
+
+
+
 namespace RI.Framework.Bus.Dispatchers
 {
 	/// <summary>
@@ -26,7 +29,7 @@ namespace RI.Framework.Bus.Dispatchers
 		/// </summary>
 		/// <param name="threadDispatcher"> The used dispatcher. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="threadDispatcher" /> is null. </exception>
-		public ThreadDispatcherBusDispatcher(IThreadDispatcher threadDispatcher)
+		public ThreadDispatcherBusDispatcher (IThreadDispatcher threadDispatcher)
 		{
 			if (threadDispatcher == null)
 			{
@@ -142,15 +145,16 @@ namespace RI.Framework.Bus.Dispatchers
 
 
 
-		#region Interface: IStateDispatcher
+		#region Interface: IBusDispatcher
 
 		/// <inheritdoc />
-		bool ISynchronizable.IsSynchronized => true;
-
-		/// <inheritdoc />
-		public object SyncRoot { get; }
-
-		#endregion
+		public void Dispatch (Delegate action, params object[] parameters)
+		{
+			lock (this.SyncRoot)
+			{
+				this.ThreadDispatcher.Post(this.UsedPriority, this.UsedOptions, action, parameters ?? new object[0]);
+			}
+		}
 
 		/// <inheritdoc />
 		public void Initialize (IDependencyResolver dependencyResolver)
@@ -162,13 +166,19 @@ namespace RI.Framework.Bus.Dispatchers
 		{
 		}
 
+		#endregion
+
+
+
+
+		#region Interface: ISynchronizable
+
 		/// <inheritdoc />
-		public void Dispatch (Delegate action, params object[] parameters)
-		{
-			lock (this.SyncRoot)
-			{
-				this.ThreadDispatcher.Post(this.UsedPriority, this.UsedOptions, action, parameters ?? new object[0]);
-			}
-		}
+		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		public object SyncRoot { get; }
+
+		#endregion
 	}
 }

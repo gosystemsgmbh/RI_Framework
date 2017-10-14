@@ -3,6 +3,9 @@ using System.Runtime.Serialization;
 
 using RI.Framework.Bus.Connections;
 
+
+
+
 namespace RI.Framework.Bus.Exceptions
 {
 	/// <summary>
@@ -27,7 +30,7 @@ namespace RI.Framework.Bus.Exceptions
 		/// <summary>
 		///     Creates a new instance of <see cref="BusConnectionBrokenException" />.
 		/// </summary>
-		public BusConnectionBrokenException()
+		public BusConnectionBrokenException ()
 			: base(BusConnectionBrokenException.ExceptionMessageWithoutException)
 		{
 		}
@@ -36,7 +39,7 @@ namespace RI.Framework.Bus.Exceptions
 		///     Creates a new instance of <see cref="BusConnectionBrokenException" />.
 		/// </summary>
 		/// <param name="message"> The message which describes the exception. </param>
-		public BusConnectionBrokenException(string message)
+		public BusConnectionBrokenException (string message)
 			: base(message)
 		{
 		}
@@ -45,7 +48,7 @@ namespace RI.Framework.Bus.Exceptions
 		///     Creates a new instance of <see cref="BusConnectionBrokenException" />.
 		/// </summary>
 		/// <param name="innerException"> The exception which triggered this exception. </param>
-		public BusConnectionBrokenException(Exception innerException)
+		public BusConnectionBrokenException (Exception innerException)
 			: base(string.Format(BusConnectionBrokenException.ExceptionMessageWithException, innerException.GetType().Name, innerException.Message), innerException)
 		{
 		}
@@ -55,7 +58,7 @@ namespace RI.Framework.Bus.Exceptions
 		/// </summary>
 		/// <param name="message"> The message which describes the exception. </param>
 		/// <param name="innerException"> The exception which triggered this exception. </param>
-		public BusConnectionBrokenException(string message, Exception innerException)
+		public BusConnectionBrokenException (string message, Exception innerException)
 			: base(message, innerException)
 		{
 		}
@@ -64,7 +67,7 @@ namespace RI.Framework.Bus.Exceptions
 		///     Creates a new instance of <see cref="BusConnectionBrokenException" />.
 		/// </summary>
 		/// <param name="connection"> The connection which broke. </param>
-		public BusConnectionBrokenException(IBusConnection connection)
+		public BusConnectionBrokenException (IBusConnection connection)
 			: base(string.Format(BusConnectionBrokenException.ExceptionMessageWithConnection, connection.GetType().Name, connection.BrokenMessage ?? "[unknown]"))
 		{
 		}
@@ -74,7 +77,7 @@ namespace RI.Framework.Bus.Exceptions
 		/// </summary>
 		/// <param name="info"> The serialization data. </param>
 		/// <param name="context"> The type of the source of the serialization data. </param>
-		protected BusConnectionBrokenException(SerializationInfo info, StreamingContext context)
+		protected BusConnectionBrokenException (SerializationInfo info, StreamingContext context)
 			: base(info, context)
 		{
 		}

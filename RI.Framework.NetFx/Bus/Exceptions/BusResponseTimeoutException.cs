@@ -3,6 +3,9 @@ using System.Runtime.Serialization;
 
 using RI.Framework.Bus.Internals;
 
+
+
+
 namespace RI.Framework.Bus.Exceptions
 {
 	/// <summary>
@@ -13,8 +16,9 @@ namespace RI.Framework.Bus.Exceptions
 	{
 		#region Constants
 
-		private const string ExceptionMessageWithMessage = "Timeout while waiting for response: Address={0}, PayloadType={1}, Broadcast={2}, Timeout={3}";
 		private const string ExceptionMessageWithException = "Timeout while waiting for response ({0}): {1}";
+
+		private const string ExceptionMessageWithMessage = "Timeout while waiting for response: Address={0}, PayloadType={1}, Broadcast={2}, Timeout={3}";
 		private const string ExceptionMessageWithoutException = "Timeout while waiting for response.";
 
 		#endregion
@@ -27,7 +31,7 @@ namespace RI.Framework.Bus.Exceptions
 		/// <summary>
 		///     Creates a new instance of <see cref="BusResponseTimeoutException" />.
 		/// </summary>
-		public BusResponseTimeoutException()
+		public BusResponseTimeoutException ()
 			: base(BusResponseTimeoutException.ExceptionMessageWithoutException)
 		{
 		}
@@ -36,7 +40,7 @@ namespace RI.Framework.Bus.Exceptions
 		///     Creates a new instance of <see cref="BusResponseTimeoutException" />.
 		/// </summary>
 		/// <param name="message"> The message which describes the exception. </param>
-		public BusResponseTimeoutException(string message)
+		public BusResponseTimeoutException (string message)
 			: base(message)
 		{
 		}
@@ -45,7 +49,7 @@ namespace RI.Framework.Bus.Exceptions
 		///     Creates a new instance of <see cref="BusResponseTimeoutException" />.
 		/// </summary>
 		/// <param name="innerException"> The exception which triggered this exception. </param>
-		public BusResponseTimeoutException(Exception innerException)
+		public BusResponseTimeoutException (Exception innerException)
 			: base(string.Format(BusResponseTimeoutException.ExceptionMessageWithException, innerException.GetType().Name, innerException.Message), innerException)
 		{
 		}
@@ -55,7 +59,7 @@ namespace RI.Framework.Bus.Exceptions
 		/// </summary>
 		/// <param name="message"> The message which describes the exception. </param>
 		/// <param name="innerException"> The exception which triggered this exception. </param>
-		public BusResponseTimeoutException(string message, Exception innerException)
+		public BusResponseTimeoutException (string message, Exception innerException)
 			: base(message, innerException)
 		{
 		}
@@ -64,7 +68,7 @@ namespace RI.Framework.Bus.Exceptions
 		///     Creates a new instance of <see cref="BusResponseTimeoutException" />.
 		/// </summary>
 		/// <param name="message"> The message whose response timed-out. </param>
-		public BusResponseTimeoutException(MessageItem message)
+		public BusResponseTimeoutException (MessageItem message)
 			: base(string.Format(BusResponseTimeoutException.ExceptionMessageWithMessage, message.Address ?? "[null]", message.Payload?.GetType()?.Name ?? "[null]", message.IsBroadcast, message.Timeout))
 		{
 		}
@@ -74,7 +78,7 @@ namespace RI.Framework.Bus.Exceptions
 		/// </summary>
 		/// <param name="info"> The serialization data. </param>
 		/// <param name="context"> The type of the source of the serialization data. </param>
-		protected BusResponseTimeoutException(SerializationInfo info, StreamingContext context)
+		protected BusResponseTimeoutException (SerializationInfo info, StreamingContext context)
 			: base(info, context)
 		{
 		}

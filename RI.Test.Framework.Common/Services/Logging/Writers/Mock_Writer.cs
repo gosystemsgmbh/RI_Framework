@@ -7,6 +7,9 @@ using RI.Framework.Services.Logging.Writers;
 using RI.Framework.Utilities.Logging;
 using RI.Test.Framework.Mocks;
 
+
+
+
 namespace RI.Test.Framework.Services.Logging.Writers
 {
 	public sealed class Mock_Writer : ILogWriter
