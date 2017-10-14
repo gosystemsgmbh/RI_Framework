@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 using RI.Framework.Bus.Connections;
@@ -49,11 +50,19 @@ namespace RI.Framework.Bus.Pipeline
 			{
 				lock (this.Bus.SyncRoot)
 				{
-					this.Bus.SendOperations.Where(x => x.Request.Id == messageItem.ResponseTo.Value).ForEach(x =>
+					this.Bus.SendOperations.Where(x => (x.Request.Id == messageItem.ResponseTo.Value) && (x.State == SendOperationItemState.Waiting)).ForEach(x =>
 					{
 						x.Responses.Add(messageItem);
 						x.Results.Add(messageItem.Payload);
-						if (!x.SendOperation.IsBroadcast)
+						if (x.SendOperation.IsBroadcast)
+						{
+							if (x.SendOperation.ExpectedResults.HasValue && (x.Results.Count >= x.SendOperation.ExpectedResults.Value))
+							{
+								x.State = SendOperationItemState.Finished;
+								x.Task.TrySetResult(x.Results);
+							}
+						}
+						else
 						{
 							x.State = SendOperationItemState.Finished;
 							x.Task.TrySetResult(x.Results[0]);
@@ -75,7 +84,7 @@ namespace RI.Framework.Bus.Pipeline
 						{
 							Func<string, object, Task<object>> callback = r.ReceiverRegistration.Callback;
 							Task<object> task = callback(m.Address, m.Payload);
-							task.ContinueWith((c, s) => { this.ResponseHandler((MessageItem)s, c.Result); }, m);
+							task.ContinueWith((c, s) => { this.ResponseHandler((MessageItem)s, c.Result); }, m, CancellationToken.None, TaskContinuationOptions.DenyChildAttach | TaskContinuationOptions.LazyCancellation | TaskContinuationOptions.RunContinuationsAsynchronously, TaskScheduler.Current);
 						}), messageItem, x);
 					});
 				}

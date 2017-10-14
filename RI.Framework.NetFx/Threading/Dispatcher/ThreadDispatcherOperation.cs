@@ -639,7 +639,7 @@ namespace RI.Framework.Threading.Dispatcher
 					{
 						this.Stage = 1;
 
-						this.Task.ContinueWith((t, s) => { this.Dispatcher.EnqueueOperation(this); }, null, TaskContinuationOptions.DenyChildAttach | TaskContinuationOptions.LazyCancellation | TaskContinuationOptions.RunContinuationsAsynchronously);
+						this.Task.ContinueWith((t, s) => { this.Dispatcher.EnqueueOperation(this); }, null, CancellationToken.None, TaskContinuationOptions.DenyChildAttach | TaskContinuationOptions.LazyCancellation | TaskContinuationOptions.RunContinuationsAsynchronously, this.Dispatcher.Scheduler);
 
 						result = null;
 						exception = null;

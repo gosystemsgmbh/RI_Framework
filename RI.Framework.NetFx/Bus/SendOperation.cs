@@ -41,6 +41,7 @@ namespace RI.Framework.Bus
 			this.Address = null;
 			this.Global = null;
 			this.Payload = null;
+			this.ExpectedResults = null;
 			this.Timeout = null;
 			this.CancellationToken = null;
 
@@ -80,6 +81,14 @@ namespace RI.Framework.Bus
 		///     tHE cancellation token which can be used to cancel the wait for responses or the collection of responses.
 		/// </value>
 		public CancellationToken? CancellationToken { get; private set; }
+
+		/// <summary>
+		///     Gets the number of expected responses.
+		/// </summary>
+		/// <value>
+		///     The number of expected responses or null if no such number is specified.
+		/// </value>
+		public int? ExpectedResults { get; private set; }
 
 		/// <summary>
 		///     Gets whether the message is sent globally.
@@ -131,7 +140,7 @@ namespace RI.Framework.Bus
 		#region Instance Methods
 
 		/// <summary>
-		///     Broadcasts the message to multiple receivers without responses.
+		///     Broadcasts the message to multiple receivers without responses and accepts any number of responses (collecting as long as the the timeout).
 		/// </summary>
 		/// <returns>
 		///     The task used to wait until the timeout for completing round-trips expired.
@@ -139,20 +148,67 @@ namespace RI.Framework.Bus
 		/// </returns>
 		/// <remarks>
 		///     <note type="important">
-		///         <see cref="AsBroadcast" /> does not throw <see cref="BusResponseTimeoutException" /> for not responding receivers.
+		///         <see cref="AsBroadcast()" /> does not throw <see cref="BusResponseTimeoutException" /> for not responding receivers.
 		///     </note>
 		/// </remarks>
 		/// <exception cref="InvalidOperationException"> The message is already being processed or the bus is not started. </exception>
 		/// <exception cref="BusProcessingPipelineException"> The bus processing pipeline encountered an exception. </exception>
 		/// <exception cref="BusConnectionBrokenException"> A used connection to a remote bus is broken. </exception>
-		public async Task<int> AsBroadcast ()
+		public async Task<int> AsBroadcast () => await this.AsBroadcast(null).ConfigureAwait(false);
+
+		/// <summary>
+		///     Broadcasts the message to multiple receivers without responses and accepts any number of responses (collecting as long as the the timeout).
+		/// </summary>
+		/// <typeparam name="TResponse"> The type of the expected responses. </typeparam>
+		/// <returns>
+		///     The task used to wait until the timeout for completing round-trips expired.
+		///     The tasks result is the list of responses.
+		/// </returns>
+		/// <remarks>
+		///     <note type="important">
+		///         <see cref="AsBroadcast{TResponse}()" /> does not throw <see cref="BusResponseTimeoutException" /> for not responding receivers.
+		///     </note>
+		/// </remarks>
+		/// <exception cref="InvalidOperationException"> The message is already being processed or the bus is not started. </exception>
+		/// <exception cref="BusProcessingPipelineException"> The bus processing pipeline encountered an exception. </exception>
+		/// <exception cref="BusConnectionBrokenException"> A used connection to a remote bus is broken. </exception>
+		/// <exception cref="InvalidCastException"> The responses could not be casted to type <typeparamref name="TResponse" />. </exception>
+		public async Task<List<TResponse>> AsBroadcast <TResponse> () => await this.AsBroadcast<TResponse>(null).ConfigureAwait(false);
+
+		/// <summary>
+		///     Broadcasts the message to multiple receivers without responses.
+		/// </summary>
+		/// <param name="expectedResults"> The number of expected results or null if any number is accepted (collecting as long as the the timeout). </param>
+		/// <returns>
+		///     The task used to wait until the timeout for completing round-trips expired.
+		///     The tasks result is the number of receivers which acknowledged the message.
+		/// </returns>
+		/// <remarks>
+		///     <note type="important">
+		///         <see cref="AsBroadcast(int?)" /> does not throw <see cref="BusResponseTimeoutException" /> for not responding receivers.
+		///     </note>
+		/// </remarks>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="expectedResults" /> is less than one. </exception>
+		/// <exception cref="InvalidOperationException"> The message is already being processed or the bus is not started. </exception>
+		/// <exception cref="BusProcessingPipelineException"> The bus processing pipeline encountered an exception. </exception>
+		/// <exception cref="BusConnectionBrokenException"> A used connection to a remote bus is broken. </exception>
+		public async Task<int> AsBroadcast (int? expectedResults)
 		{
+			if (expectedResults.HasValue)
+			{
+				if (expectedResults.Value < 1)
+				{
+					throw new ArgumentOutOfRangeException(nameof(expectedResults));
+				}
+			}
+
 			Task<object> task;
 			lock (this.SyncRoot)
 			{
 				this.VerifyNotStarted();
 				this.IsProcessed = true;
 				this.IsBroadcast = true;
+				this.ExpectedResults = expectedResults;
 				task = this.Bus.Enqueue(this);
 			}
 
@@ -164,20 +220,22 @@ namespace RI.Framework.Bus
 		///     Broadcasts the message to multiple receivers expecting a response from each receiver.
 		/// </summary>
 		/// <typeparam name="TResponse"> The type of the expected responses. </typeparam>
+		/// <param name="expectedResults"> The number of expected results or null if any number is accepted (collecting as long as the the timeout). </param>
 		/// <returns>
 		///     The task used to wait until the timeout for completing round-trips expired.
 		///     The tasks result is the list of responses.
 		/// </returns>
 		/// <remarks>
 		///     <note type="important">
-		///         <see cref="AsBroadcast{TResponse}" /> does not throw <see cref="BusResponseTimeoutException" /> for not responding receivers.
+		///         <see cref="AsBroadcast{TResponse}(int?)" /> does not throw <see cref="BusResponseTimeoutException" /> for not responding receivers.
 		///     </note>
 		/// </remarks>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="expectedResults" /> is less than one. </exception>
 		/// <exception cref="InvalidOperationException"> The message is already being processed or the bus is not started. </exception>
 		/// <exception cref="BusProcessingPipelineException"> The bus processing pipeline encountered an exception. </exception>
 		/// <exception cref="BusConnectionBrokenException"> A used connection to a remote bus is broken. </exception>
 		/// <exception cref="InvalidCastException"> The responses could not be casted to type <typeparamref name="TResponse" />. </exception>
-		public async Task<List<TResponse>> AsBroadcast <TResponse> ()
+		public async Task<List<TResponse>> AsBroadcast <TResponse> (int? expectedResults)
 		{
 			Task<object> task;
 			lock (this.SyncRoot)
@@ -185,6 +243,7 @@ namespace RI.Framework.Bus
 				this.VerifyNotStarted();
 				this.IsProcessed = true;
 				this.IsBroadcast = true;
+				this.ExpectedResults = expectedResults;
 				task = this.Bus.Enqueue(this);
 			}
 
@@ -210,6 +269,7 @@ namespace RI.Framework.Bus
 				this.VerifyNotStarted();
 				this.IsProcessed = true;
 				this.IsBroadcast = false;
+				this.ExpectedResults = 1;
 				task = this.Bus.Enqueue(this);
 			}
 
@@ -237,6 +297,7 @@ namespace RI.Framework.Bus
 				this.VerifyNotStarted();
 				this.IsProcessed = true;
 				this.IsBroadcast = false;
+				this.ExpectedResults = 1;
 				task = this.Bus.Enqueue(this);
 			}
 
