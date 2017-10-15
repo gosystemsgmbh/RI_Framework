@@ -195,7 +195,7 @@ if(type != "float")
 		/// <param name="values">The sequence of values.</param>
 		/// <returns>
 		/// The list of values as floats.
-		// An empty list is returned if the sequence is empty.
+		/// An empty list is returned if the sequence is empty.
 		/// </returns>
 		/// <remarks>
 		/// <para>
@@ -224,7 +224,7 @@ if(type != "double")
 		/// <param name="values">The sequence of values.</param>
 		/// <returns>
 		/// The list of values as doubles.
-		// An empty list is returned if the sequence is empty.
+		/// An empty list is returned if the sequence is empty.
 		/// </returns>
 		/// <remarks>
 		/// <para>

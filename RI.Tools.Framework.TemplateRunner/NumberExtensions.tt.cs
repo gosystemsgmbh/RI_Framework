@@ -1,4 +1,5 @@
-﻿#if !TEMPLATE_RUNNER
+﻿
+#if !TEMPLATE_RUNNER
 
 using System;
 using System.Globalization;
@@ -172,7 +173,7 @@ namespace RI.Framework.Mathematic
 		/// <param name="values">The sequence of values.</param>
 		/// <returns>
 		/// The list of values as floats.
-		// An empty list is returned if the sequence is empty.
+		/// An empty list is returned if the sequence is empty.
 		/// </returns>
 		/// <remarks>
 		/// <para>
@@ -196,7 +197,7 @@ namespace RI.Framework.Mathematic
 		/// <param name="values">The sequence of values.</param>
 		/// <returns>
 		/// The list of values as doubles.
-		// An empty list is returned if the sequence is empty.
+		/// An empty list is returned if the sequence is empty.
 		/// </returns>
 		/// <remarks>
 		/// <para>
@@ -401,7 +402,7 @@ namespace RI.Framework.Mathematic
 		/// <param name="values">The sequence of values.</param>
 		/// <returns>
 		/// The list of values as floats.
-		// An empty list is returned if the sequence is empty.
+		/// An empty list is returned if the sequence is empty.
 		/// </returns>
 		/// <remarks>
 		/// <para>
@@ -425,7 +426,7 @@ namespace RI.Framework.Mathematic
 		/// <param name="values">The sequence of values.</param>
 		/// <returns>
 		/// The list of values as doubles.
-		// An empty list is returned if the sequence is empty.
+		/// An empty list is returned if the sequence is empty.
 		/// </returns>
 		/// <remarks>
 		/// <para>
@@ -630,7 +631,7 @@ namespace RI.Framework.Mathematic
 		/// <param name="values">The sequence of values.</param>
 		/// <returns>
 		/// The list of values as floats.
-		// An empty list is returned if the sequence is empty.
+		/// An empty list is returned if the sequence is empty.
 		/// </returns>
 		/// <remarks>
 		/// <para>
@@ -654,7 +655,7 @@ namespace RI.Framework.Mathematic
 		/// <param name="values">The sequence of values.</param>
 		/// <returns>
 		/// The list of values as doubles.
-		// An empty list is returned if the sequence is empty.
+		/// An empty list is returned if the sequence is empty.
 		/// </returns>
 		/// <remarks>
 		/// <para>
@@ -859,7 +860,7 @@ namespace RI.Framework.Mathematic
 		/// <param name="values">The sequence of values.</param>
 		/// <returns>
 		/// The list of values as floats.
-		// An empty list is returned if the sequence is empty.
+		/// An empty list is returned if the sequence is empty.
 		/// </returns>
 		/// <remarks>
 		/// <para>
@@ -883,7 +884,7 @@ namespace RI.Framework.Mathematic
 		/// <param name="values">The sequence of values.</param>
 		/// <returns>
 		/// The list of values as doubles.
-		// An empty list is returned if the sequence is empty.
+		/// An empty list is returned if the sequence is empty.
 		/// </returns>
 		/// <remarks>
 		/// <para>
@@ -1088,7 +1089,7 @@ namespace RI.Framework.Mathematic
 		/// <param name="values">The sequence of values.</param>
 		/// <returns>
 		/// The list of values as floats.
-		// An empty list is returned if the sequence is empty.
+		/// An empty list is returned if the sequence is empty.
 		/// </returns>
 		/// <remarks>
 		/// <para>
@@ -1112,7 +1113,7 @@ namespace RI.Framework.Mathematic
 		/// <param name="values">The sequence of values.</param>
 		/// <returns>
 		/// The list of values as doubles.
-		// An empty list is returned if the sequence is empty.
+		/// An empty list is returned if the sequence is empty.
 		/// </returns>
 		/// <remarks>
 		/// <para>
@@ -1317,7 +1318,7 @@ namespace RI.Framework.Mathematic
 		/// <param name="values">The sequence of values.</param>
 		/// <returns>
 		/// The list of values as floats.
-		// An empty list is returned if the sequence is empty.
+		/// An empty list is returned if the sequence is empty.
 		/// </returns>
 		/// <remarks>
 		/// <para>
@@ -1341,7 +1342,7 @@ namespace RI.Framework.Mathematic
 		/// <param name="values">The sequence of values.</param>
 		/// <returns>
 		/// The list of values as doubles.
-		// An empty list is returned if the sequence is empty.
+		/// An empty list is returned if the sequence is empty.
 		/// </returns>
 		/// <remarks>
 		/// <para>
@@ -1546,7 +1547,7 @@ namespace RI.Framework.Mathematic
 		/// <param name="values">The sequence of values.</param>
 		/// <returns>
 		/// The list of values as floats.
-		// An empty list is returned if the sequence is empty.
+		/// An empty list is returned if the sequence is empty.
 		/// </returns>
 		/// <remarks>
 		/// <para>
@@ -1570,7 +1571,7 @@ namespace RI.Framework.Mathematic
 		/// <param name="values">The sequence of values.</param>
 		/// <returns>
 		/// The list of values as doubles.
-		// An empty list is returned if the sequence is empty.
+		/// An empty list is returned if the sequence is empty.
 		/// </returns>
 		/// <remarks>
 		/// <para>
@@ -1775,7 +1776,7 @@ namespace RI.Framework.Mathematic
 		/// <param name="values">The sequence of values.</param>
 		/// <returns>
 		/// The list of values as floats.
-		// An empty list is returned if the sequence is empty.
+		/// An empty list is returned if the sequence is empty.
 		/// </returns>
 		/// <remarks>
 		/// <para>
@@ -1799,7 +1800,7 @@ namespace RI.Framework.Mathematic
 		/// <param name="values">The sequence of values.</param>
 		/// <returns>
 		/// The list of values as doubles.
-		// An empty list is returned if the sequence is empty.
+		/// An empty list is returned if the sequence is empty.
 		/// </returns>
 		/// <remarks>
 		/// <para>
@@ -2004,7 +2005,7 @@ namespace RI.Framework.Mathematic
 		/// <param name="values">The sequence of values.</param>
 		/// <returns>
 		/// The list of values as doubles.
-		// An empty list is returned if the sequence is empty.
+		/// An empty list is returned if the sequence is empty.
 		/// </returns>
 		/// <remarks>
 		/// <para>
@@ -2187,7 +2188,7 @@ namespace RI.Framework.Mathematic
 		/// <param name="values">The sequence of values.</param>
 		/// <returns>
 		/// The list of values as floats.
-		// An empty list is returned if the sequence is empty.
+		/// An empty list is returned if the sequence is empty.
 		/// </returns>
 		/// <remarks>
 		/// <para>
@@ -2370,7 +2371,7 @@ namespace RI.Framework.Mathematic
 		/// <param name="values">The sequence of values.</param>
 		/// <returns>
 		/// The list of values as floats.
-		// An empty list is returned if the sequence is empty.
+		/// An empty list is returned if the sequence is empty.
 		/// </returns>
 		/// <remarks>
 		/// <para>
@@ -2394,7 +2395,7 @@ namespace RI.Framework.Mathematic
 		/// <param name="values">The sequence of values.</param>
 		/// <returns>
 		/// The list of values as doubles.
-		// An empty list is returned if the sequence is empty.
+		/// An empty list is returned if the sequence is empty.
 		/// </returns>
 		/// <remarks>
 		/// <para>

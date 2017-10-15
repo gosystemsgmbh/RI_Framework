@@ -1,6 +1,4 @@
 ﻿#if PLATFORM_NETFX
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 using RI.Framework.Threading.Dispatcher;
 #endif
 using System;
