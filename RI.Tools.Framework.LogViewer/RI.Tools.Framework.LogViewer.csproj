@@ -85,54 +85,47 @@
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\AssemblyName.snk" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
     <AppDesigner Include="Properties\" />
+    <None Include="_PostBuild.bat" />
+    <None Include="_PreBuild.bat" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\RI.Framework.Extensions.FluentRibbon\RI.Framework.Extensions.FluentRibbon.csproj">
+      <Project>{a52dced6-1ed6-4301-929c-f9caee3eeade}</Project>
+      <Name>RI.Framework.Extensions.FluentRibbon</Name>
+    </ProjectReference>
     <ProjectReference Include="..\RI.Framework.Extensions.SQLite\RI.Framework.Extensions.SQLite.csproj">
       <Project>{f0017883-0bca-4b15-ae3c-1d0580152506}</Project>
       <Name>RI.Framework.Extensions.SQLite</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RI.Framework.Extensions.WpfToolkit\RI.Framework.Extensions.WpfToolkit.csproj">
+      <Project>{1ad143fe-49ac-4e02-a0fa-c2e6ff4280f5}</Project>
+      <Name>RI.Framework.Extensions.WpfToolkit</Name>
     </ProjectReference>
     <ProjectReference Include="..\RI.Framework.NetFx\RI.Framework.NetFx.csproj">
       <Project>{a7f5dd2f-63bf-4032-ad1e-14d211e0d3ed}</Project>
       <Name>RI.Framework.NetFx</Name>
     </ProjectReference>
+    <ProjectReference Include="..\RI.Framework.Windows.Shared\RI.Framework.Windows.Shared.csproj">
+      <Project>{cd9c2847-a48f-45e1-908f-3f9a86ee0e37}</Project>
+      <Name>RI.Framework.Windows.Shared</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RI.Framework.Windows.Wpf\RI.Framework.Windows.Wpf.csproj">
+      <Project>{d5bf9549-aeb4-4a21-aca0-591131018428}</Project>
+      <Name>RI.Framework.Windows.Wpf</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>@"$(SolutionDir)_Input\VersionUpdater.exe" "$(ProjectDir)Properties" "nr" "file" "$(SolutionDir)RI.Framework.Property.Version.txt" "$(SolutionDir)RI.Framework.Property.Company.txt" "$(SolutionDir)RI.Framework.Property.Copyright.txt"</PreBuildEvent>
+    <PreBuildEvent>@call "$(ProjectDir)_PreBuild.bat" $(ConfigurationName)</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>@md "$(SolutionDir)_Output"
-
-
-
-@copy "$(TargetDir)$(TargetName).exe" "$(TargetDir)LogViewer.exe"
-
-
-@copy "$(TargetDir)LogViewer.*" "$(SolutionDir)_Output\*.*"</PostBuildEvent>
+    <PostBuildEvent>@call "$(ProjectDir)_PostBuild.bat" $(ConfigurationName)</PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.105.2\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.105.2\build\net46\System.Data.SQLite.Core.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

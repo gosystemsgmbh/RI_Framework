@@ -1,6 +1,33 @@
-               Roten Informatik Modified Apache License (RIMAL)
-                         Version 1.0, October 2017
-                http://www.roteninformatik.ch/licenses/rimal/
+   Roten Informatik Framework License (RIFL),
+   Version 1.0, October 2017
+
+   INFORMATION ABOUT THE LICENSE
+
+   The Roten Informatik Framework License (RIFL) is based on the
+   Apache License 2.0 (AL2). The following are the differences from the
+   AL2 to the RIFL:
+
+   A. The following was removed:
+
+      Section 5: *Unless You explicitly state otherwise,*
+
+      Section 7: *required by applicable law or*
+
+      Section 8: *required by applicable law (such as deliberate and grossly
+      negligent acts) or*
+
+   B. The following was added:
+
+      Section 4d: *; and*
+
+      Section 4e: (whole paragraph) *The Derivative Works does not compete
+      in any way with products, business models, business interests, or
+      financial interests of the Licensor at the time of redistribution,
+      regardless whether Derivative Works existed before the competition
+      with Licensor; and*
+
+      Section 4f: (whole paragraph) *The Derivative Works does not use
+      the Unity engine.*
 
    TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 
@@ -118,15 +145,14 @@
           notices within Derivative Works that You distribute, alongside
           or as an addendum to the NOTICE text from the Work, provided
           that such additional attribution notices cannot be construed
-          as modifying the License; ***and***
+          as modifying the License; and
 
-      ***(e) The Derivative Works does not compete in any way with products,
+      (e) The Derivative Works does not compete in any way with products,
           business models, business interests, or financial interests of the
           Licensor at the time of redistribution, regardless whether
-          Derivative Works existed before the competition with Licensor; and***
+          Derivative Works existed before the competition with Licensor; and
 
-      ***(f) The Derivative Works is not a product which uses the Unity
-          engine (http://www.unity3d.com).***
+      (f) The Derivative Works is not a product which uses the Unity engine.
 
       You may add Your own copyright statement to Your modifications and
       may provide additional or different license terms and conditions
@@ -135,12 +161,11 @@
       reproduction, and distribution of the Work otherwise complies with
       the conditions stated in this License.
 
-   5. Submission of Contributions. ~~Unless You explicitly state otherwise,~~
-      any Contribution intentionally submitted for inclusion in the Work
-      by You to the Licensor shall be under the terms and conditions of
-      this License, without any additional terms or conditions.
-      Notwithstanding the above, nothing herein shall supersede or modify
-      the terms of any separate license agreement you may have executed
+   5. Submission of Contributions. Any Contribution intentionally submitted
+      for inclusion in the Work by You to the Licensor shall be under the
+      terms and conditions of this License, without any additional terms
+      or conditions. Notwithstanding the above, nothing herein shall supersede
+      or modify the terms of any separate license agreement you may have executed
       with Licensor regarding such Contributions.
 
    6. Trademarks. This License does not grant permission to use the trade
@@ -148,9 +173,8 @@
       except as required for reasonable and customary use in describing the
       origin of the Work and reproducing the content of the NOTICE file.
 
-   7. Disclaimer of Warranty. Unless ~~required by applicable law or~~
-      agreed to in writing, Licensor provides the Work (and each
-      Contributor provides its Contributions) on an "AS IS" BASIS,
+   7. Disclaimer of Warranty. Unless agreed to in writing, Licensor provides
+      the Work (and each Contributor provides its Contributions) on an "AS IS" BASIS,
       WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
       implied, including, without limitation, any warranties or conditions
       of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
@@ -160,9 +184,8 @@
 
    8. Limitation of Liability. In no event and under no legal theory,
       whether in tort (including negligence), contract, or otherwise,
-      unless ~~required by applicable law (such as deliberate and grossly
-      negligent acts) or~~ agreed to in writing, shall any Contributor be
-      liable to You for damages, including any direct, indirect, special,
+      unless agreed to in writing, shall any Contributor be liable to
+      You for damages, including any direct, indirect, special,
       incidental, or consequential damages of any character arising as a
       result of this License or out of the use or inability to use the
       Work (including but not limited to damages for loss of goodwill,
@@ -183,28 +206,26 @@
 
    END OF TERMS AND CONDITIONS
 
-   APPENDIX: How to apply the RIMAL to your work.
+   APPENDIX: How to apply the Roten Informatik Framework License (RIFL)
+   to your work.
 
-   To apply the RIMAL to your work, attach the following
-   boilerplate notice, with the fields enclosed by brackets "{}"
-   replaced with your own identifying information. (Don't include
-   the brackets!)  The text should be enclosed in the appropriate
-   comment syntax for the file format. We also recommend that a
-   file or class name and description of purpose be included on the
-   same "printed page" as the copyright notice for easier
-   identification within third-party archives.
+   To apply the RIFL to your work, attach the following
+   boilerplate notice, with the fields for year and author
+   replaced with your own identifying information. The text should be
+   enclosed in the appropriate comment syntax for the file format.
+   We also recommend that a file or class name and description of purpose
+   be included on the same "printed page" as the copyright notice for easier
+   identification within third-party archives. This license file must also be
+   included or redistributed respectively, unmodified, with your work.
 
-   Copyright `{yyyy}` `{name of copyright owner}`
+      Copyright 2017 Hans Muster
 
-   Licensed under the Roten Informatik Modified Appache License (RIMAL),
-   Version 1.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+      Licensed under the Roten Informatik Framework License (RIFL),
+      Version 1.0 (the "License").
+      You may not use this file except in compliance with the License.
 
-   http://www.roteninformatik.ch/licenses/rimal/
-
-   Unless ~~required by applicable law or~~ agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+      Unless agreed to in writing, software distributed under the License
+      is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS
+      OF ANY KIND, either express or implied. See the License for the
+      specific language governing permissions and limitations under
+      the License.

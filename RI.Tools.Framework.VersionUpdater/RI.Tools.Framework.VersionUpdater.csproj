@@ -54,22 +54,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\AssemblyName.snk" />
+    <None Include="_PostBuild.bat" />
+    <None Include="_PreBuild.bat" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>@md "$(SolutionDir)_Input"
-@md "$(SolutionDir)_Output"
-
-@copy "$(TargetDir)$(TargetName).exe" "$(TargetDir)VersionUpdater.exe"
-
-@copy "$(TargetDir)VersionUpdater.*" "$(SolutionDir)_Input\*.*"
-@copy "$(TargetDir)VersionUpdater.*" "$(SolutionDir)_Output\*.*"
-
-@"$(SolutionDir)_Input\VersionUpdater.exe" "$(ProjectDir)Properties" "nr" "file" "$(SolutionDir)RI.Framework.Property.Version.txt" "$(SolutionDir)RI.Framework.Property.Company.txt" "$(SolutionDir)RI.Framework.Property.Copyright.txt"</PostBuildEvent>
+    <PostBuildEvent>@call "$(ProjectDir)_PostBuild.bat" $(ConfigurationName)</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
+    <PreBuildEvent>@call "$(ProjectDir)_PreBuild.bat" $(ConfigurationName)</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
