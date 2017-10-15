@@ -33,8 +33,8 @@
     <Content Include="Wishlist.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="PostBuild.bat" />
-    <None Include="PreBuild.bat" />
+    <None Include="_PostBuild.bat" />
+    <None Include="_PreBuild.bat" />
     <None Include="IEnumerableExtensions.xlsx" />
   </ItemGroup>
   <ItemGroup>
@@ -42,10 +42,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>@call "$(ProjectDir)PreBuild.bat"</PreBuildEvent>
+    <PreBuildEvent>@call "$(ProjectDir)_PreBuild.bat" $(ConfigurationName)</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>@call "$(ProjectDir)PostBuild.bat"</PostBuildEvent>
+    <PostBuildEvent>@call "$(ProjectDir)_PostBuild.bat" $(ConfigurationName)</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -1,6 +1,6 @@
 @cd %~dp0
 
-@"..\_Input\VersionUpdater.exe" "." "nr" "file" "..\RI.Framework.Property.Version.txt" "..\RI.Framework.Property.Company.txt" "..\RI.Framework.Property.Copyright.txt"
+@"..\_Output\VersionUpdater.exe" "." "r" "file" "..\RI.Framework.Property.Version.txt" "..\RI.Framework.Property.Company.txt" "..\RI.Framework.Property.Copyright.txt"
 
 @xcopy "..\RI.Documentation.Framework.Unity.Full\Content\Introduction.aml" ".\Content\Introduction.aml" /E /Y
 @xcopy "..\RI.Documentation.Framework.Unity.Full\Content\Compatibility.aml" ".\Content\Compatibility.aml" /E /Y

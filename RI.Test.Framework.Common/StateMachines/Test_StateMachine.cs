@@ -7,6 +7,7 @@ using System;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+using RI.Framework.Services;
 using RI.Framework.Composition;
 using RI.Framework.StateMachines;
 using RI.Framework.StateMachines.Dispatchers;

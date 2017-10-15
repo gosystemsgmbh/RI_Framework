@@ -161,8 +161,8 @@
     <None Include="Content\OverviewTutorials\Utilities.aml" />
     <None Include="Content\Usage.aml" />
     <None Include="Content\VersionHistory.aml" />
-    <None Include="PostBuild.bat" />
-    <None Include="PreBuild.bat" />
+    <None Include="_PostBuild.bat" />
+    <None Include="_PreBuild.bat" />
     <None Include="Content\ContactSupport.aml" />
     <None Include="Content\Introduction.aml" />
   </ItemGroup>
@@ -194,8 +194,8 @@
   <!-- The pre-build and post-build event properties must appear *after* the targets file import in order to be
 			 evaluated correctly. -->
   <PropertyGroup>
-    <PreBuildEvent>@call "$(ProjectDir)PreBuild.bat"</PreBuildEvent>
-    <PostBuildEvent>@call "$(ProjectDir)PostBuild.bat"</PostBuildEvent>
+    <PreBuildEvent>@call "$(ProjectDir)_PreBuild.bat" $(ConfigurationName)</PreBuildEvent>
+    <PostBuildEvent>@call "$(ProjectDir)_PostBuild.bat" $(ConfigurationName)</PostBuildEvent>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
 </Project>

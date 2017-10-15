@@ -60,6 +60,8 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="Properties\AssemblyName.snk" />
+    <None Include="_PostBuild.bat" />
+    <None Include="_PreBuild.bat" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RI.Framework.Extensions.Json\RI.Framework.Extensions.Json.csproj">
@@ -77,14 +79,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>@"$(SolutionDir)_Input\VersionUpdater.exe" "$(ProjectDir)Properties" "nr" "file" "$(SolutionDir)RI.Framework.Property.Version.txt" "$(SolutionDir)RI.Framework.Property.Company.txt" "$(SolutionDir)RI.Framework.Property.Copyright.txt"</PreBuildEvent>
+    <PreBuildEvent>@call "$(ProjectDir)_PreBuild.bat" $(ConfigurationName)</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>@md "$(SolutionDir)_Output"
-@md "$(SolutionDir)_Test"
-
-@copy "$(TargetDir)$(TargetName).*" "$(SolutionDir)_Output\*.*"
-@copy "$(TargetDir)$(TargetName).*" "$(SolutionDir)_Test\*.*"</PostBuildEvent>
+    <PostBuildEvent>@call "$(ProjectDir)_PostBuild.bat" $(ConfigurationName)</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

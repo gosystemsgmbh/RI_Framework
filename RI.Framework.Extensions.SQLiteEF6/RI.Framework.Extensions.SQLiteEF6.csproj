@@ -71,6 +71,8 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="Properties\AssemblyName.snk" />
+    <None Include="_PostBuild.bat" />
+    <None Include="_PreBuild.bat" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RI.Framework.Extensions.EF6\RI.Framework.Extensions.EF6.csproj">
@@ -88,14 +90,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>@"$(SolutionDir)_Input\VersionUpdater.exe" "$(ProjectDir)Properties" "nr" "file" "$(SolutionDir)RI.Framework.Property.Version.txt" "$(SolutionDir)RI.Framework.Property.Company.txt" "$(SolutionDir)RI.Framework.Property.Copyright.txt"</PreBuildEvent>
+    <PreBuildEvent>@call "$(ProjectDir)_PreBuild.bat" $(ConfigurationName)</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>@md "$(SolutionDir)_Output"
-@md "$(SolutionDir)_Test"
-
-@copy "$(TargetDir)$(TargetName).*" "$(SolutionDir)_Output\*.*"
-@copy "$(TargetDir)$(TargetName).*" "$(SolutionDir)_Test\*.*"</PostBuildEvent>
+    <PostBuildEvent>@call "$(ProjectDir)_PostBuild.bat" $(ConfigurationName)</PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.105.2\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.105.2\build\net46\System.Data.SQLite.Core.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

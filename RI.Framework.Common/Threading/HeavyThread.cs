@@ -908,7 +908,8 @@ namespace RI.Framework.Threading
 
 
 
-#if PLATFORM_NETFX /// <summary>
+#if PLATFORM_NETFX
+/// <summary>
 ///     Adds a <see cref="TaskCompletionSource{T}" /> to this thread which is completed when the thread is requested to stop.
 /// </summary>
 /// <param name="tcs"> The <see cref="TaskCompletionSource{T}" /> to add. </param>
