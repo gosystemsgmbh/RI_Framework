@@ -13,6 +13,7 @@ namespace RI.Framework.Bus.Connections
 	/// <remarks>
 	///     See <see cref="IBus" /> for more details about message busses.
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	public interface IBusConnection : ISynchronizable
 	{
 		/// <summary>

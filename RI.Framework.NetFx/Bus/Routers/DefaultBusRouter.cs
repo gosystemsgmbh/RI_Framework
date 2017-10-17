@@ -15,6 +15,7 @@ namespace RI.Framework.Bus.Routers
 	/// <remarks>
 	///     See <see cref="IBusRouter" /> for more details.
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	public sealed class DefaultBusRouter : IBusRouter
 	{
 		#region Instance Methods

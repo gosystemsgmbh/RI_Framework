@@ -13,7 +13,8 @@ namespace RI.Framework.Bus.Dispatchers
 	/// <remarks>
 	///     See <see cref="IBus" /> for more details about message busses.
 	/// </remarks>
-	public interface IBusDispatcher
+	/// <threadsafety static="true" instance="true" />
+	public interface IBusDispatcher : ISynchronizable
 	{
 		/// <summary>
 		///     Dispatches a delegate for execution.

@@ -8,6 +8,7 @@ namespace RI.Framework.Bus
 	/// <summary>
 	///     Provides utility/extension methods for the <see cref="IBus" /> type.
 	/// </summary>
+	/// <threadsafety static="true" instance="true" />
 	public static class IBusExtensions
 	{
 		#region Static Methods

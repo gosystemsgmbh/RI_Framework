@@ -23,6 +23,7 @@ namespace RI.Framework.Bus.Pipeline
 	/// <remarks>
 	///     See <see cref="IBusPipeline" /> for more details.
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	public sealed class DefaultBusPipeline : IBusPipeline
 	{
 		#region Instance Properties/Indexer
@@ -33,7 +34,12 @@ namespace RI.Framework.Bus.Pipeline
 		private IBusDispatcher Dispatcher { get; set; }
 		private Queue<MessageItem> LocalResponses { get; set; }
 
-		private object LocalResponsesSyncRoot { get; set; }
+		/// <inheritdoc />
+		public object SyncRoot { get; set; }
+
+		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => true;
+
 		private IBusPipelineWorkSignaler PipelineWorkSignaler { get; set; }
 		private IBusRouter Router { get; set; }
 
@@ -43,6 +49,15 @@ namespace RI.Framework.Bus.Pipeline
 
 
 		#region Instance Methods
+
+		/// <summary>
+		/// Creates a new instance of <see cref="DefaultBusPipeline"/>.
+		/// </summary>
+		public DefaultBusPipeline ()
+		{
+			this.SyncRoot = new object();
+			this.LocalResponses = new Queue<MessageItem>();
+		}
 
 		private void ProcessMessage (MessageItem messageItem)
 		{
@@ -112,7 +127,7 @@ namespace RI.Framework.Bus.Pipeline
 			response.FromGlobal = false;
 			response.ResponseTo = message.Id;
 
-			lock (this.LocalResponsesSyncRoot)
+			lock (this.SyncRoot)
 			{
 				this.LocalResponses.Enqueue(response);
 			}
@@ -136,7 +151,7 @@ namespace RI.Framework.Bus.Pipeline
 
 			this.ConnectionManager?.DequeueMessages(receivedMessages);
 
-			lock (this.LocalResponsesSyncRoot)
+			lock (this.SyncRoot)
 			{
 				this.LocalResponses.DequeueInto(localResponses);
 			}
@@ -224,15 +239,15 @@ namespace RI.Framework.Bus.Pipeline
 		/// <inheritdoc />
 		public void Initialize (IDependencyResolver dependencyResolver)
 		{
-			this.Bus = dependencyResolver.GetInstance<IBus>();
-			this.PipelineWorkSignaler = dependencyResolver.GetInstance<IBusPipelineWorkSignaler>();
-			this.Router = dependencyResolver.GetInstance<IBusRouter>();
-			this.Dispatcher = dependencyResolver.GetInstance<IBusDispatcher>();
+			lock (this.SyncRoot)
+			{
+				this.Bus = dependencyResolver.GetInstance<IBus>();
+				this.PipelineWorkSignaler = dependencyResolver.GetInstance<IBusPipelineWorkSignaler>();
+				this.Router = dependencyResolver.GetInstance<IBusRouter>();
+				this.Dispatcher = dependencyResolver.GetInstance<IBusDispatcher>();
 
-			this.ConnectionManager = dependencyResolver.GetInstance<IBusConnectionManager>();
-
-			this.LocalResponsesSyncRoot = new object();
-			this.LocalResponses = new Queue<MessageItem>();
+				this.ConnectionManager = dependencyResolver.GetInstance<IBusConnectionManager>();
+			}
 		}
 
 		/// <inheritdoc />
@@ -248,7 +263,6 @@ namespace RI.Framework.Bus.Pipeline
 		/// <inheritdoc />
 		public void Unload ()
 		{
-			this.LocalResponses?.Clear();
 		}
 
 		#endregion

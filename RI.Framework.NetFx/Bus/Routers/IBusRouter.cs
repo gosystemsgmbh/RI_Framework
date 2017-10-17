@@ -15,7 +15,8 @@ namespace RI.Framework.Bus.Routers
 	/// <remarks>
 	///     See <see cref="IBus" /> for more details about message busses.
 	/// </remarks>
-	public interface IBusRouter
+	/// <threadsafety static="true" instance="true" />
+	public interface IBusRouter : ISynchronizable
 	{
 		/// <summary>
 		///     Determines whether a message is to be forwarded to remote busses through connections.

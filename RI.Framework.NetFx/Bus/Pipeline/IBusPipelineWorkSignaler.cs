@@ -13,7 +13,8 @@ namespace RI.Framework.Bus.Pipeline
 	/// <remarks>
 	///     See <see cref="IBus" /> for more details about message busses.
 	/// </remarks>
-	public interface IBusPipelineWorkSignaler
+	/// <threadsafety static="true" instance="true" />
+	public interface IBusPipelineWorkSignaler : ISynchronizable
 	{
 		/// <summary>
 		///     Initializes the pipeline work signaler when the bus starts.

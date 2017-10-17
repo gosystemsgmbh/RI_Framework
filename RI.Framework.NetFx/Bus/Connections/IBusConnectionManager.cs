@@ -15,6 +15,7 @@ namespace RI.Framework.Bus.Connections
 	/// <remarks>
 	///     See <see cref="IBus" /> for more details about message busses.
 	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
 	public interface IBusConnectionManager : ISynchronizable
 	{
 		/// <summary>
@@ -23,7 +24,18 @@ namespace RI.Framework.Bus.Connections
 		/// <value>
 		///     The list of managed connections.
 		/// </value>
+		/// <remarks>
+		///     <note type="important">
+		///         The returned list is not a copy and access to it needs to be synchronized using <see cref="SyncRoot" />.
+		///     </note>
+		///     <note type="implement">
+		///         This property must never return null.
+		///     </note>
+		/// </remarks>
 		IReadOnlyList<IBusConnection> Connections { get; }
+
+		/// <inheritdoc cref="ISynchronizable.SyncRoot" />
+		new object SyncRoot { get; }
 
 		/// <summary>
 		///     Dequeues all messages which have been received from all managed connections since the last call to <see cref="DequeueMessages" />.

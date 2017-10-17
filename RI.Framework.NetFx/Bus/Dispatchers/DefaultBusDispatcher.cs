@@ -21,7 +21,7 @@ namespace RI.Framework.Bus.Dispatchers
 	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
-	public sealed class DefaultBusDispatcher : IBusDispatcher, ISynchronizable
+	public sealed class DefaultBusDispatcher : IBusDispatcher
 	{
 		#region Instance Constructor/Destructor
 

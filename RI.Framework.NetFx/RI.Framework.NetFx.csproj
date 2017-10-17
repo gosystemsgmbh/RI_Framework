@@ -53,9 +53,9 @@
     <Compile Include="..\SolutionInfo.cs">
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
+    <Compile Include="Bus\Connections\DefaultBusConnectionManager.cs" />
     <Compile Include="Bus\Connections\IBusConnectionManager.cs" />
     <Compile Include="Bus\Dispatchers\DefaultBusDispatcher.cs" />
-    <Compile Include="Bus\Dispatchers\IBusDispatcherExtensions.cs" />
     <Compile Include="Bus\Dispatchers\ThreadDispatcherBusDispatcher.cs" />
     <Compile Include="Bus\Exceptions\BusConnectionBrokenException.cs" />
     <Compile Include="Bus\Connections\IBusConnection.cs" />

@@ -670,6 +670,12 @@ namespace RI.Framework.Bus
 
 			#endregion
 
+			/// <inheritdoc />
+			bool ISynchronizable.IsSynchronized => true;
+
+			/// <inheritdoc />
+			public object SyncRoot => this.LocalBus.SyncRoot;
+
 
 
 
@@ -688,7 +694,7 @@ namespace RI.Framework.Bus
 
 			public void Reset ()
 			{
-				lock (this.LocalBus.SyncRoot)
+				lock (this.SyncRoot)
 				{
 					this.Event.Reset();
 				}
@@ -707,7 +713,7 @@ namespace RI.Framework.Bus
 
 			public void SignalWorkAvailable ()
 			{
-				lock (this.LocalBus.SyncRoot)
+				lock (this.SyncRoot)
 				{
 					this.Event.Set();
 				}
@@ -726,7 +732,10 @@ namespace RI.Framework.Bus
 
 			public void Dispose ()
 			{
-				this.Event?.Close();
+				lock (this.SyncRoot)
+				{
+					this.Event?.Close();
+				}
 			}
 
 			#endregion

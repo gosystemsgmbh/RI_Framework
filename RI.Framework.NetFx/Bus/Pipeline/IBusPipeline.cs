@@ -13,7 +13,8 @@ namespace RI.Framework.Bus.Pipeline
 	/// <remarks>
 	///     See <see cref="IBus" /> for more details about message busses.
 	/// </remarks>
-	public interface IBusPipeline
+	/// <threadsafety static="true" instance="true" />
+	public interface IBusPipeline : ISynchronizable
 	{
 		/// <summary>
 		///     Processes all pending work on the bus processing pipeline.
