@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-using RI.Framework.Bus.Exceptions;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.ObjectModel;
@@ -147,8 +146,7 @@ namespace RI.Framework.Bus
 		///     The receiver registration.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="callback" /> is null. </exception>
-		/// <exception cref="InvalidOperationException"> The reception is already being processed or the bus is not started. </exception>
-		/// <exception cref="BusProcessingPipelineException"> The bus processing pipeline encountered an exception. </exception>
+		/// <exception cref="InvalidOperationException"> The reception is already being processed. </exception>
 		public ReceiverRegistration By (Func<string, object, Task<object>> callback)
 		{
 			if (callback == null)
@@ -167,12 +165,28 @@ namespace RI.Framework.Bus
 		}
 
 		/// <summary>
+		///     Sets that compatible payload types, which are convertible to <see cref="PayloadType" />, are not accepted and only those payloads which are of exactly <see cref="PayloadType" />.
+		/// </summary>
+		/// <returns>
+		///     The receiver registration to continue configuration of the receiver.
+		/// </returns>
+		public ReceiverRegistration ExcludingCompatiblePayloads()
+		{
+			lock (this.SyncRoot)
+			{
+				this.VerifyNotStarted();
+				this.IncludeCompatiblePayloadTypes = false;
+				return this;
+			}
+		}
+
+		/// <summary>
 		///     Sets that compatible payload types, which are convertible to <see cref="PayloadType" />, are also accepted and not only those payloads which are of exactly <see cref="PayloadType" />.
 		/// </summary>
 		/// <returns>
 		///     The receiver registration to continue configuration of the receiver.
 		/// </returns>
-		public ReceiverRegistration IncludeCompatiblePayloads ()
+		public ReceiverRegistration IncludingCompatiblePayloads ()
 		{
 			lock (this.SyncRoot)
 			{
@@ -189,7 +203,7 @@ namespace RI.Framework.Bus
 		/// <returns>
 		///     The receiver registration to continue configuration of the receiver.
 		/// </returns>
-		public ReceiverRegistration IncludeCompatiblePayloads (bool includeCompatiblePayloads)
+		public ReceiverRegistration IncludingCompatiblePayloads (bool includeCompatiblePayloads)
 		{
 			lock (this.SyncRoot)
 			{
@@ -391,17 +405,24 @@ namespace RI.Framework.Bus
 			return this;
 		}
 
-		/// <inheritdoc cref="ReceiverRegistration.IncludeCompatiblePayloads()" />
-		public ReceiverRegistrationWithPayload<TPayload> IncludeCompatiblePayloads ()
+		/// <inheritdoc cref="ReceiverRegistration.ExcludingCompatiblePayloads()" />
+		public ReceiverRegistrationWithPayload<TPayload> ExcludingCompatiblePayloads()
 		{
-			this.Origin.IncludeCompatiblePayloads();
+			this.Origin.ExcludingCompatiblePayloads();
 			return this;
 		}
 
-		/// <inheritdoc cref="ReceiverRegistration.IncludeCompatiblePayloads(bool)" />
-		public ReceiverRegistrationWithPayload<TPayload> IncludeCompatiblePayloads (bool includeCompatiblePayloads)
+		/// <inheritdoc cref="ReceiverRegistration.IncludingCompatiblePayloads()" />
+		public ReceiverRegistrationWithPayload<TPayload> IncludingCompatiblePayloads ()
 		{
-			this.Origin.IncludeCompatiblePayloads(includeCompatiblePayloads);
+			this.Origin.IncludingCompatiblePayloads();
+			return this;
+		}
+
+		/// <inheritdoc cref="ReceiverRegistration.IncludingCompatiblePayloads(bool)" />
+		public ReceiverRegistrationWithPayload<TPayload> IncludingCompatiblePayloads (bool includeCompatiblePayloads)
+		{
+			this.Origin.IncludingCompatiblePayloads(includeCompatiblePayloads);
 			return this;
 		}
 
@@ -513,17 +534,24 @@ namespace RI.Framework.Bus
 			return this;
 		}
 
-		/// <inheritdoc cref="ReceiverRegistration.IncludeCompatiblePayloads()" />
-		public ReceiverRegistrationWithResponse<TResponse> IncludeCompatiblePayloads ()
+		/// <inheritdoc cref="ReceiverRegistration.ExcludingCompatiblePayloads()" />
+		public ReceiverRegistrationWithResponse<TResponse> ExcludingCompatiblePayloads()
 		{
-			this.Origin.IncludeCompatiblePayloads();
+			this.Origin.ExcludingCompatiblePayloads();
 			return this;
 		}
 
-		/// <inheritdoc cref="ReceiverRegistration.IncludeCompatiblePayloads(bool)" />
-		public ReceiverRegistrationWithResponse<TResponse> IncludeCompatiblePayloads (bool includeCompatiblePayloads)
+		/// <inheritdoc cref="ReceiverRegistration.IncludingCompatiblePayloads()" />
+		public ReceiverRegistrationWithResponse<TResponse> IncludingCompatiblePayloads ()
 		{
-			this.Origin.IncludeCompatiblePayloads(includeCompatiblePayloads);
+			this.Origin.IncludingCompatiblePayloads();
+			return this;
+		}
+
+		/// <inheritdoc cref="ReceiverRegistration.IncludingCompatiblePayloads(bool)" />
+		public ReceiverRegistrationWithResponse<TResponse> IncludingCompatiblePayloads (bool includeCompatiblePayloads)
+		{
+			this.Origin.IncludingCompatiblePayloads(includeCompatiblePayloads);
 			return this;
 		}
 
@@ -636,17 +664,24 @@ namespace RI.Framework.Bus
 			return this;
 		}
 
-		/// <inheritdoc cref="ReceiverRegistration.IncludeCompatiblePayloads()" />
-		public ReceiverRegistrationWithPayloadAndResponse<TPayload, TResponse> IncludeCompatiblePayloads ()
+		/// <inheritdoc cref="ReceiverRegistration.ExcludingCompatiblePayloads()" />
+		public ReceiverRegistrationWithPayloadAndResponse<TPayload, TResponse> ExcludingCompatiblePayloads()
 		{
-			this.Origin.IncludeCompatiblePayloads();
+			this.Origin.ExcludingCompatiblePayloads();
 			return this;
 		}
 
-		/// <inheritdoc cref="ReceiverRegistration.IncludeCompatiblePayloads(bool)" />
-		public ReceiverRegistrationWithPayloadAndResponse<TPayload, TResponse> IncludeCompatiblePayloads (bool includeCompatiblePayloads)
+		/// <inheritdoc cref="ReceiverRegistration.IncludingCompatiblePayloads()" />
+		public ReceiverRegistrationWithPayloadAndResponse<TPayload, TResponse> IncludingCompatiblePayloads ()
 		{
-			this.Origin.IncludeCompatiblePayloads(includeCompatiblePayloads);
+			this.Origin.IncludingCompatiblePayloads();
+			return this;
+		}
+
+		/// <inheritdoc cref="ReceiverRegistration.IncludingCompatiblePayloads(bool)" />
+		public ReceiverRegistrationWithPayloadAndResponse<TPayload, TResponse> IncludingCompatiblePayloads (bool includeCompatiblePayloads)
+		{
+			this.Origin.IncludingCompatiblePayloads(includeCompatiblePayloads);
 			return this;
 		}
 

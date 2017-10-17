@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 
 using RI.Framework.Bus.Internals;
-using RI.Framework.Bus.Pipeline;
 using RI.Framework.Utilities.ObjectModel;
 
 namespace RI.Framework.Bus.Connections
@@ -16,40 +15,123 @@ namespace RI.Framework.Bus.Connections
 	/// <threadsafety static="true" instance="true" />
 	public sealed class DefaultBusConnectionManager : IBusConnectionManager
 	{
-		public bool IsSynchronized { get; }
+		/// <summary>
+		/// Creates a new instance of <see cref="DefaultBusConnectionManager"/>.
+		/// </summary>
+		public DefaultBusConnectionManager ()
+		{
+			this.SyncRoot = new object();
 
+			this.Connections = new List<IBusConnection>();
+		}
+
+		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
 		public object SyncRoot { get; }
 
-		public IReadOnlyList<IBusConnection> Connections { get; }
-
-		public void DequeueMessages (List<Tuple<MessageItem, IBusConnection>> messages)
+		/// <inheritdoc />
+		IReadOnlyList<IBusConnection> IBusConnectionManager.Connections
 		{
-			throw new NotImplementedException();
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this.Connections;
+				}
+			}
 		}
 
+		private List<IBusConnection> Connections { get; }
+
+		/// <inheritdoc />
 		public void Initialize (IDependencyResolver dependencyResolver)
 		{
-			throw new NotImplementedException();
+			lock (this.SyncRoot)
+			{
+				this.Connections.Clear();
+				this.Connections.AddRange(dependencyResolver.GetInstances<IBusConnection>());
+			}
 		}
 
-		public void SendMessage (MessageItem message, IEnumerable<IBusConnection> connections)
-		{
-			throw new NotImplementedException();
-		}
-
-		public void SendMessage (MessageItem message, IBusConnection connection)
-		{
-			throw new NotImplementedException();
-		}
-
-		public void SendMessage (MessageItem message)
-		{
-			throw new NotImplementedException();
-		}
-
+		/// <inheritdoc />
 		public void Unload ()
 		{
-			throw new NotImplementedException();
+			lock (this.SyncRoot)
+			{
+				this.Connections?.Clear();
+			}
+		}
+
+		/// <inheritdoc />
+		public void DequeueMessages (List<Tuple<MessageItem, IBusConnection>> messages)
+		{
+			lock (this.SyncRoot)
+			{
+				List<MessageItem> connectionMessages = new List<MessageItem>();
+				foreach (IBusConnection connection in this.Connections)
+				{
+					connectionMessages.Clear();
+					connection.DequeueMessages(connectionMessages);
+					foreach (MessageItem message in connectionMessages)
+					{
+						messages.Add(new Tuple<MessageItem, IBusConnection>(message, connection));
+					}
+				}
+			}
+		}
+
+		/// <inheritdoc />
+		public void SendMessage (MessageItem message, IBusConnection connection)
+		{
+			if (message == null)
+			{
+				throw new ArgumentNullException(nameof(message));
+			}
+
+			if (connection == null)
+			{
+				throw new ArgumentNullException(nameof(connection));
+			}
+
+			connection.SendMessage(message);
+		}
+
+		/// <inheritdoc />
+		public void SendMessage (MessageItem message, IEnumerable<IBusConnection> connections)
+		{
+			if (message == null)
+			{
+				throw new ArgumentNullException(nameof(message));
+			}
+
+			if (connections == null)
+			{
+				throw new ArgumentNullException(nameof(connections));
+			}
+
+			foreach (IBusConnection connection in connections)
+			{
+				this.SendMessage(message, connection);
+			}
+		}
+
+		/// <inheritdoc />
+		public void SendMessage (MessageItem message)
+		{
+			if (message == null)
+			{
+				throw new ArgumentNullException(nameof(message));
+			}
+
+			lock (this.SyncRoot)
+			{
+				foreach (IBusConnection connection in this.Connections)
+				{
+					this.SendMessage(message, connection);
+				}
+			}
 		}
 	}
 }

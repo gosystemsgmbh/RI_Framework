@@ -13,11 +13,31 @@ namespace RI.Framework.Bus.Connections
 	///     Defines the interface for a bus connection manager.
 	/// </summary>
 	/// <remarks>
-	///     See <see cref="IBus" /> for more details about message busses.
+	///     <para>
+	/// See <see cref="IBus" /> for more details about message busses.
+	/// </para>
+	/// <para>
+	/// This interface is part of the actual bus implementation and not intended to be used by the bus users.
+	/// </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	public interface IBusConnectionManager : ISynchronizable
 	{
+		/// <inheritdoc cref="ISynchronizable.SyncRoot" />
+		new object SyncRoot { get; }
+
+		/// <summary>
+		///     Initializes the connection manager when the bus starts.
+		/// </summary>
+		/// <param name="dependencyResolver"> The dependency resolver which can be used to get instances of required types. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="dependencyResolver" /> is null. </exception>
+		void Initialize (IDependencyResolver dependencyResolver);
+
+		/// <summary>
+		///     Unloads the connection manager when the bus stops.
+		/// </summary>
+		void Unload ();
+
 		/// <summary>
 		///     Gets the list of managed connections.
 		/// </summary>
@@ -34,22 +54,12 @@ namespace RI.Framework.Bus.Connections
 		/// </remarks>
 		IReadOnlyList<IBusConnection> Connections { get; }
 
-		/// <inheritdoc cref="ISynchronizable.SyncRoot" />
-		new object SyncRoot { get; }
-
 		/// <summary>
 		///     Dequeues all messages which have been received from all managed connections since the last call to <see cref="DequeueMessages" />.
 		/// </summary>
-		/// <param name="messages"> The to which all dequeued messages are added. </param>
+		/// <param name="messages"> The list to which all dequeued messages are added. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="messages" /> is null. </exception>
 		void DequeueMessages (List<Tuple<MessageItem, IBusConnection>> messages);
-
-		/// <summary>
-		///     Initializes the connection manager when the bus starts.
-		/// </summary>
-		/// <param name="dependencyResolver"> The dependency resolver which can be used to get instances of required types. </param>
-		/// <exception cref="ArgumentNullException"> <paramref name="dependencyResolver" /> is null. </exception>
-		void Initialize (IDependencyResolver dependencyResolver);
 
 		/// <summary>
 		///     Sends a message through the specified connections.
@@ -73,15 +83,10 @@ namespace RI.Framework.Bus.Connections
 		void SendMessage (MessageItem message, IBusConnection connection);
 
 		/// <summary>
-		///     Sends a message through all managed connections
+		///     Sends a message through all managed connections.
 		/// </summary>
 		/// <param name="message"> The message to send. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="message" /> is null. </exception>
 		void SendMessage (MessageItem message);
-
-		/// <summary>
-		///     Unloads the connection manager when the bus stops.
-		/// </summary>
-		void Unload ();
 	}
 }

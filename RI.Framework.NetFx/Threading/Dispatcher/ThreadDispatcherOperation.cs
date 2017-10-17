@@ -53,7 +53,7 @@ namespace RI.Framework.Threading.Dispatcher
 			this.Exception = null;
 
 			this.OperationDone = new ManualResetEvent(false);
-			this.OperationDoneTask = new TaskCompletionSource<object>();
+			this.OperationDoneTask = new TaskCompletionSource<object>(TaskCreationOptions.DenyChildAttach | TaskCreationOptions.RunContinuationsAsynchronously);
 
 			this.Dispatcher.AddKeepAlive(this);
 

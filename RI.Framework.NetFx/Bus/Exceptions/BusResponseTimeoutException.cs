@@ -69,7 +69,7 @@ namespace RI.Framework.Bus.Exceptions
 		/// </summary>
 		/// <param name="message"> The message whose response timed-out. </param>
 		public BusResponseTimeoutException (MessageItem message)
-			: base(string.Format(BusResponseTimeoutException.ExceptionMessageWithMessage, message.Address ?? "[null]", message.Payload?.GetType()?.Name ?? "[null]", message.IsBroadcast, message.Timeout))
+			: base(string.Format(BusResponseTimeoutException.ExceptionMessageWithMessage, message?.Address ?? "[null]", message?.Payload?.GetType()?.Name ?? "[null]", message?.IsBroadcast.ToString() ?? "[null]", message?.Timeout.ToString() ?? "[null]"))
 		{
 		}
 

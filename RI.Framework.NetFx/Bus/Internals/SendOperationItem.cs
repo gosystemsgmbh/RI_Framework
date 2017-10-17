@@ -32,7 +32,7 @@ namespace RI.Framework.Bus.Internals
 			}
 
 			this.SendOperation = sendOperation;
-			this.Task = new TaskCompletionSource<object>(this.SendOperation, TaskCreationOptions.DenyChildAttach);
+			this.Task = new TaskCompletionSource<object>(this.SendOperation, TaskCreationOptions.DenyChildAttach | TaskCreationOptions.RunContinuationsAsynchronously);
 			this.State = SendOperationItemState.New;
 			this.Request = new MessageItem();
 			this.Responses = new List<MessageItem>();

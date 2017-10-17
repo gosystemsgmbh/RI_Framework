@@ -68,7 +68,7 @@ namespace RI.Framework.Bus.Exceptions
 		/// </summary>
 		/// <param name="connection"> The connection which broke. </param>
 		public BusConnectionBrokenException (IBusConnection connection)
-			: base(string.Format(BusConnectionBrokenException.ExceptionMessageWithConnection, connection.GetType().Name, connection.BrokenMessage ?? "[unknown]"))
+			: base(string.Format(BusConnectionBrokenException.ExceptionMessageWithConnection, connection?.GetType()?.Name ?? "[unknown]", connection?.BrokenMessage ?? "[unknown]"))
 		{
 		}
 

@@ -21,11 +21,20 @@ namespace RI.Framework.Bus
 	///         Basically, each process (or application domain, if you distinguish those) has its own local message bus, distributing the messages to all receivers within the same process.
 	///         However, multiple local message busses can be connected, across processes, machines, or networks, to form a global message bus which consists of independent but connected local message busses.
 	///     </para>
+	/// <para>
+	/// <see cref="IBus"/> or its implementations respectively is the main interface used by bus users while the other interfaces are merely the actual implementation of the bus, hidden to the bus users.
+	/// </para>
+	/// <para>
+	/// <see cref="IBus"/> initializes and unloads instances of implementations of the other bus interfaces, provides the runtime environment (including threading and exception handling) for the bus processing pipeline, and acts as the main interface to the bus user.
+	/// </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	/// TODO: Documentation
 	public interface IBus : IDisposable, ISynchronizable
 	{
+		/// <inheritdoc cref="ISynchronizable.SyncRoot" />
+		new object SyncRoot { get; }
+
 		/// <summary>
 		///     Gets or sets the timeout for collecting responses.
 		/// </summary>
@@ -39,6 +48,37 @@ namespace RI.Framework.Bus
 		/// </remarks>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="value" /> is negative. </exception>
 		TimeSpan CollectionTimeout { get; set; }
+
+		/// <summary>
+		///     Gets or sets the timeout for waiting for responses.
+		/// </summary>
+		/// <value>
+		///     The timeout for waiting for responses.
+		/// </value>
+		/// <remarks>
+		///     <note type="implement">
+		///         The default value should be 10 seconds.
+		///     </note>
+		/// </remarks>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="value" /> is negative. </exception>
+		TimeSpan ResponseTimeout { get; set; }
+
+		/// <summary>
+		///     Gets or sets the polling interval used by the bus processing pipeline.
+		/// </summary>
+		/// <value>
+		///     The polling interval.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         The polling interval defines the interval in which <see cref="IBusPipeline.DoWork" /> is called when there is no work to be processed by the pipeline (hence &quot;polling&quot;).
+		///     </para>
+		///     <note type="implement">
+		///         The default value should be 20 milliseconds.
+		///     </note>
+		/// </remarks>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="value" /> is negative. </exception>
+		TimeSpan PollInterval { get; set; }
 
 		/// <summary>
 		///     Gets or sets whether messages are sent globally by default.
@@ -62,23 +102,6 @@ namespace RI.Framework.Bus
 		bool IsStarted { get; }
 
 		/// <summary>
-		///     Gets or sets the polling interval used by the bus processing pipeline.
-		/// </summary>
-		/// <value>
-		///     The polling interval.
-		/// </value>
-		/// <remarks>
-		///     <para>
-		///         The polling interval defines the interval in which <see cref="IBusPipeline.DoWork" /> is called when there is no work to be processed by the pipeline (hence &quot;polling&quot;).
-		///     </para>
-		///     <note type="implement">
-		///         The default value should be 20 milliseconds.
-		///     </note>
-		/// </remarks>
-		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="value" /> is negative. </exception>
-		TimeSpan PollInterval { get; set; }
-
-		/// <summary>
 		///     Gets the list of registered receivers managed by the bus.
 		/// </summary>
 		/// <value>
@@ -99,20 +122,6 @@ namespace RI.Framework.Bus
 		List<ReceiverRegistrationItem> ReceiveRegistrations { get; }
 
 		/// <summary>
-		///     Gets or sets the timeout for waiting for responses.
-		/// </summary>
-		/// <value>
-		///     The timeout for waiting for responses.
-		/// </value>
-		/// <remarks>
-		///     <note type="implement">
-		///         The default value should be 10 seconds.
-		///     </note>
-		/// </remarks>
-		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="value" /> is negative. </exception>
-		TimeSpan ResponseTimeout { get; set; }
-
-		/// <summary>
 		///     Gets the list of enqueued send operations managed by the bus.
 		/// </summary>
 		/// <value>
@@ -121,7 +130,7 @@ namespace RI.Framework.Bus
 		/// <remarks>
 		///     <note type="note">
 		///         Do not use this property directly, it is intended to be used from bus and bus pipeline implementations.
-		///         Use <see cref="Enqueue" /> for dealing with receiver registrations.
+		///         Use <see cref="Enqueue" /> for dealing with send operations.
 		///     </note>
 		///     <note type="important">
 		///         The returned list is not a copy and access to it needs to be synchronized using <see cref="SyncRoot" />.
@@ -131,9 +140,6 @@ namespace RI.Framework.Bus
 		///     </note>
 		/// </remarks>
 		List<SendOperationItem> SendOperations { get; }
-
-		/// <inheritdoc cref="ISynchronizable.SyncRoot" />
-		new object SyncRoot { get; }
 
 		/// <summary>
 		///     Enqueues a configured send operation to send its message.
@@ -155,9 +161,14 @@ namespace RI.Framework.Bus
 		/// <param name="receiverRegistration"> The receiver registration. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="receiverRegistration" /> is null. </exception>
 		/// <exception cref="ArgumentException"> <paramref name="receiverRegistration" /> was not properly configured. </exception>
-		/// <exception cref="InvalidOperationException"> The bus is not started. </exception>
-		/// <exception cref="BusProcessingPipelineException"> The bus processing pipeline encountered an exception. </exception>
 		void Register (ReceiverRegistration receiverRegistration);
+
+		/// <summary>
+		///     Unregisters a configured receiver registration to be no longer used with the bus.
+		/// </summary>
+		/// <param name="receiverRegistration"> The receiver registration. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="receiverRegistration" /> is null. </exception>
+		void Unregister (ReceiverRegistration receiverRegistration);
 
 		/// <summary>
 		///     Starts the bus and opens all connections to remote busses.
@@ -173,10 +184,9 @@ namespace RI.Framework.Bus
 		void Stop ();
 
 		/// <summary>
-		///     Unregisters a configured receiver registration to be no longer used with the bus.
+		///     Signals that new work is pending (e.g. a message has been received through a bus connection) which must be processed by the bus processing pipeline.
 		/// </summary>
-		/// <param name="receiverRegistration"> The receiver registration. </param>
-		/// <exception cref="ArgumentNullException"> <paramref name="receiverRegistration" /> is null. </exception>
-		void Unregister (ReceiverRegistration receiverRegistration);
+		/// <exception cref="InvalidOperationException"> The bus is not started. </exception>
+		void SignalWorkAvailable();
 	}
 }

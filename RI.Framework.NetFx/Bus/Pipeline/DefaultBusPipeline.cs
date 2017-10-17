@@ -21,7 +21,9 @@ namespace RI.Framework.Bus.Pipeline
 	///     Implements a default bus processing pipeline which is suitable for most scenarios.
 	/// </summary>
 	/// <remarks>
-	///     See <see cref="IBusPipeline" /> for more details.
+	///     <para>
+	/// See <see cref="IBusPipeline" /> for more details.
+	/// </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	public sealed class DefaultBusPipeline : IBusPipeline
@@ -29,9 +31,9 @@ namespace RI.Framework.Bus.Pipeline
 		#region Instance Properties/Indexer
 
 		private IBus Bus { get; set; }
-
 		private IBusConnectionManager ConnectionManager { get; set; }
 		private IBusDispatcher Dispatcher { get; set; }
+		private IBusRouter Router { get; set; }
 		private Queue<MessageItem> LocalResponses { get; set; }
 
 		/// <inheritdoc />
@@ -39,9 +41,6 @@ namespace RI.Framework.Bus.Pipeline
 
 		/// <inheritdoc />
 		bool ISynchronizable.IsSynchronized => true;
-
-		private IBusPipelineWorkSignaler PipelineWorkSignaler { get; set; }
-		private IBusRouter Router { get; set; }
 
 		#endregion
 
@@ -233,7 +232,7 @@ namespace RI.Framework.Bus.Pipeline
 			localResponses.ForEach(this.ProcessMessage);
 			newMessages.ForEach(this.ProcessMessage);
 
-			this.PipelineWorkSignaler.SignalWorkAvailable();
+			this.Bus.SignalWorkAvailable();
 		}
 
 		/// <inheritdoc />
@@ -242,7 +241,6 @@ namespace RI.Framework.Bus.Pipeline
 			lock (this.SyncRoot)
 			{
 				this.Bus = dependencyResolver.GetInstance<IBus>();
-				this.PipelineWorkSignaler = dependencyResolver.GetInstance<IBusPipelineWorkSignaler>();
 				this.Router = dependencyResolver.GetInstance<IBusRouter>();
 				this.Dispatcher = dependencyResolver.GetInstance<IBusDispatcher>();
 
@@ -263,6 +261,10 @@ namespace RI.Framework.Bus.Pipeline
 		/// <inheritdoc />
 		public void Unload ()
 		{
+			lock (this.SyncRoot)
+			{
+				this.LocalResponses?.Clear();
+			}
 		}
 
 		#endregion

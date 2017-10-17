@@ -69,7 +69,6 @@
     <Compile Include="Bus\Pipeline\DefaultBusPipeline.cs" />
     <Compile Include="Bus\Pipeline\IBusPipeline.cs" />
     <Compile Include="Bus\Internals\ReceiveRegistrationItem.cs" />
-    <Compile Include="Bus\Pipeline\IBusPipelineWorkSignaler.cs" />
     <Compile Include="Bus\ReceiverRegistration.cs" />
     <Compile Include="Bus\Routers\DefaultBusRouter.cs" />
     <Compile Include="Bus\Routers\IBusRouter.cs" />

@@ -11,7 +11,6 @@ using RI.Framework.Bus.Exceptions;
 using RI.Framework.Bus.Internals;
 using RI.Framework.Bus.Pipeline;
 using RI.Framework.Bus.Routers;
-using RI.Framework.Composition;
 using RI.Framework.Threading;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Logging;
@@ -52,11 +51,12 @@ namespace RI.Framework.Bus
 			this.ThreadCulture = Thread.CurrentThread.CurrentCulture;
 			this.ThreadUICulture = Thread.CurrentThread.CurrentUICulture;
 
-			this.TypeResolver = null;
-			this.WorkerThread = null;
-			this.WorkAvailable = null;
 			this.SendOperations = new List<SendOperationItem>();
 			this.ReceiveRegistrations = new List<ReceiverRegistrationItem>();
+
+			this.DependencyResolver = null;
+			this.WorkerThread = null;
+			this.WorkAvailable = null;
 		}
 
 		/// <summary>
@@ -80,7 +80,6 @@ namespace RI.Framework.Bus
 		private TimeSpan _responseTimeout;
 		private CultureInfo _threadCulture;
 		private ThreadPriority _threadPriority;
-
 		private TimeSpan _threadTimeout;
 		private CultureInfo _threadUICulture;
 
@@ -245,17 +244,17 @@ namespace RI.Framework.Bus
 			}
 		}
 
-		private List<ReceiverRegistrationItem> ReceiveRegistrations { get; set; }
+		private object StartStopSyncRoot { get; }
 
-		private List<SendOperationItem> SendOperations { get; set; }
+		private List<ReceiverRegistrationItem> ReceiveRegistrations { get; }
 
-		private object StartStopSyncRoot { get; set; }
+		private List<SendOperationItem> SendOperations { get; }
 
-		private TypeInjector TypeResolver { get; set; }
-
-		private WorkSignaler WorkAvailable { get; set; }
+		private ManualResetEvent WorkAvailable { get; set; }
 
 		private WorkThread WorkerThread { get; set; }
+
+		private IDependencyResolver DependencyResolver { get; set; }
 
 		#endregion
 
@@ -263,15 +262,6 @@ namespace RI.Framework.Bus
 
 
 		#region Instance Methods
-
-		private void CheckForExceptions ()
-		{
-			Exception exception = this.WorkerThread?.ThreadException;
-			if (exception != null)
-			{
-				throw new BusProcessingPipelineException(exception);
-			}
-		}
 
 		[SuppressMessage("ReSharper", "UnusedParameter.Local")]
 		private void Dispose (bool disposing)
@@ -290,20 +280,26 @@ namespace RI.Framework.Bus
 				{
 					this.WorkerThread = null;
 
-					this.WorkAvailable?.Dispose();
+					this.WorkAvailable?.Close();
 					this.WorkAvailable = null;
 
-					this.SendOperations?.Clear();
-					this.ReceiveRegistrations?.Clear();
-
-					this.TypeResolver = null;
+					this.DependencyResolver = null;
 				}
 			}
 		}
 
 		private void SignalWorkAvailable ()
 		{
-			this.WorkAvailable?.SignalWorkAvailable();
+			this.WorkAvailable?.Set();
+		}
+
+		private void CheckForExceptions ()
+		{
+			Exception exception = this.WorkerThread?.ThreadException;
+			if (exception != null)
+			{
+				throw new BusProcessingPipelineException(exception);
+			}
 		}
 
 		private void VerifyNotStarted ()
@@ -487,7 +483,6 @@ namespace RI.Framework.Bus
 				this.CheckForExceptions();
 
 				SendOperationItem item = new SendOperationItem(sendOperation);
-
 				this.SendOperations.Add(item);
 
 				this.SignalWorkAvailable();
@@ -511,12 +506,24 @@ namespace RI.Framework.Bus
 
 			lock (this.SyncRoot)
 			{
-				this.VerifyStarted();
-				this.CheckForExceptions();
-
 				ReceiverRegistrationItem item = new ReceiverRegistrationItem(receiverRegistration);
-
 				this.ReceiveRegistrations.Add(item);
+
+				this.SignalWorkAvailable();
+			}
+		}
+
+		/// <inheritdoc />
+		void IBus.Unregister (ReceiverRegistration receiverRegistration)
+		{
+			if (receiverRegistration == null)
+			{
+				throw new ArgumentNullException(nameof(receiverRegistration));
+			}
+
+			lock (this.SyncRoot)
+			{
+				this.ReceiveRegistrations.RemoveAll(x => object.ReferenceEquals(x.ReceiverRegistration, receiverRegistration));
 
 				this.SignalWorkAvailable();
 			}
@@ -542,15 +549,11 @@ namespace RI.Framework.Bus
 				{
 					lock (this.SyncRoot)
 					{
-						this.TypeResolver = new TypeInjector(this, dependencyResolver);
+						this.DependencyResolver = dependencyResolver;
 
-						this.SendOperations.Clear();
-						this.ReceiveRegistrations.Clear();
-
-						this.WorkAvailable = new WorkSignaler(this);
+						this.WorkAvailable = new ManualResetEvent(false);
 
 						this.WorkerThread = new WorkThread(this);
-						this.WorkerThread.Timeout = (int)this.ThreadTimeout.TotalMilliseconds;
 					}
 
 					this.WorkerThread.Start();
@@ -575,170 +578,14 @@ namespace RI.Framework.Bus
 		}
 
 		/// <inheritdoc />
-		void IBus.Unregister (ReceiverRegistration receiverRegistration)
+		void IBus.SignalWorkAvailable()
 		{
-			if (receiverRegistration == null)
-			{
-				throw new ArgumentNullException(nameof(receiverRegistration));
-			}
-
 			lock (this.SyncRoot)
 			{
-				this.ReceiveRegistrations.RemoveAll(x => object.ReferenceEquals(x.ReceiverRegistration, receiverRegistration));
+				this.VerifyStarted();
 
-				this.SignalWorkAvailable();
+				this.WorkAvailable.Set();
 			}
-		}
-
-		#endregion
-
-
-
-
-		#region Type: TypeInjector
-
-		private sealed class TypeInjector : DependencyInjector
-		{
-			#region Instance Constructor/Destructor
-
-			public TypeInjector (LocalBus localBus, IDependencyResolver dependencyResolver)
-				: base(dependencyResolver)
-			{
-				this.LocalBus = localBus;
-			}
-
-			#endregion
-
-
-
-
-			#region Instance Properties/Indexer
-
-			public LocalBus LocalBus { get; }
-
-			#endregion
-
-
-
-
-			#region Overrides
-
-			protected override void Intercept (string name, List<object> instances)
-			{
-				if (!instances.Contains(this.LocalBus.WorkAvailable))
-				{
-					if (string.Equals(name, CompositionContainer.GetNameOfType(typeof(IBusPipelineWorkSignaler)), StringComparison.OrdinalIgnoreCase) || string.Equals(name, CompositionContainer.GetNameOfType(typeof(IDisposable)), StringComparison.OrdinalIgnoreCase))
-					{
-						instances.Add(this.LocalBus.WorkAvailable);
-					}
-				}
-
-				if (!instances.Contains(this.LocalBus))
-				{
-					if (string.Equals(name, CompositionContainer.GetNameOfType(typeof(IBus)), StringComparison.OrdinalIgnoreCase) || string.Equals(name, CompositionContainer.GetNameOfType(typeof(IDisposable)), StringComparison.OrdinalIgnoreCase))
-					{
-						instances.Add(this.LocalBus);
-					}
-				}
-			}
-
-			#endregion
-		}
-
-		#endregion
-
-
-
-
-		#region Type: WorkSignaler
-
-		private sealed class WorkSignaler : IBusPipelineWorkSignaler, IDisposable
-		{
-			#region Instance Constructor/Destructor
-
-			public WorkSignaler (LocalBus localBus)
-			{
-				this.LocalBus = localBus;
-
-				this.Event = new ManualResetEvent(false);
-			}
-
-			~WorkSignaler ()
-			{
-				this.Dispose();
-			}
-
-			#endregion
-
-			/// <inheritdoc />
-			bool ISynchronizable.IsSynchronized => true;
-
-			/// <inheritdoc />
-			public object SyncRoot => this.LocalBus.SyncRoot;
-
-
-
-
-			#region Instance Properties/Indexer
-
-			public ManualResetEvent Event { get; }
-
-			public LocalBus LocalBus { get; }
-
-			#endregion
-
-
-
-
-			#region Instance Methods
-
-			public void Reset ()
-			{
-				lock (this.SyncRoot)
-				{
-					this.Event.Reset();
-				}
-			}
-
-			#endregion
-
-
-
-
-			#region Interface: IBusPipelineWorkSignaler
-
-			public void Initialize (IDependencyResolver dependencyResolver)
-			{
-			}
-
-			public void SignalWorkAvailable ()
-			{
-				lock (this.SyncRoot)
-				{
-					this.Event.Set();
-				}
-			}
-
-			public void Unload ()
-			{
-			}
-
-			#endregion
-
-
-
-
-			#region Interface: IDisposable
-
-			public void Dispose ()
-			{
-				lock (this.SyncRoot)
-				{
-					this.Event?.Close();
-				}
-			}
-
-			#endregion
 		}
 
 		#endregion
@@ -768,17 +615,15 @@ namespace RI.Framework.Bus
 
 			public new Thread Thread => base.Thread;
 
+			private IDependencyResolver DependencyResolver => this.LocalBus.DependencyResolver;
+
 			private IBusConnectionManager ConnectionManager { get; set; }
 
 			private List<IBusConnection> Connections { get; set; }
 
-			private IDependencyResolver DependencyResolver => this.LocalBus.TypeResolver;
-
 			private IBusDispatcher Dispatcher { get; set; }
 
 			private IBusPipeline Pipeline { get; set; }
-
-			private IBusPipelineWorkSignaler PipelineWorkSignaler { get; set; }
 
 			private IBusRouter Router { get; set; }
 
@@ -827,31 +672,26 @@ namespace RI.Framework.Bus
 				base.OnBegin();
 
 				this.Pipeline = this.ResolveSingle<IBusPipeline>(true);
-				this.PipelineWorkSignaler = this.ResolveSingle<IBusPipelineWorkSignaler>(true);
 				this.Dispatcher = this.ResolveSingle<IBusDispatcher>(true);
 				this.Router = this.ResolveSingle<IBusRouter>(true);
 
 				this.ConnectionManager = this.ResolveSingle<IBusConnectionManager>(false);
 				this.Connections = this.ResolveMultiple<IBusConnection>(false);
 
-				this.Pipeline.Initialize(this.DependencyResolver);
-				this.PipelineWorkSignaler.Initialize(this.DependencyResolver);
-				this.Dispatcher.Initialize(this.DependencyResolver);
-				this.Router.Initialize(this.DependencyResolver);
-
-				this.ConnectionManager?.Initialize(this.DependencyResolver);
 				this.Connections.ForEach(x => x.Initialize(this.DependencyResolver));
+				this.ConnectionManager?.Initialize(this.DependencyResolver);
+				this.Router.Initialize(this.DependencyResolver);
+				this.Dispatcher.Initialize(this.DependencyResolver);
+				this.Pipeline.Initialize(this.DependencyResolver);
 			}
 
 			protected override void OnEnd ()
 			{
-				this.Connections?.ForEach(x => x.Unload());
-				this.ConnectionManager?.Unload();
-
-				this.Router?.Unload();
-				this.Dispatcher?.Unload();
-				this.PipelineWorkSignaler?.Unload();
 				this.Pipeline?.Unload();
+				this.Dispatcher?.Unload();
+				this.Router?.Unload();
+				this.ConnectionManager?.Unload();
+				this.Connections?.ForEach(x => x.Unload());
 
 				base.OnEnd();
 			}
@@ -882,13 +722,14 @@ namespace RI.Framework.Bus
 			{
 				base.OnRun();
 
-				this.Pipeline.StartProcessing();
-
 				while (true)
 				{
-					WaitHandle.WaitAny(new WaitHandle[] {this.LocalBus.WorkAvailable.Event, this.StopEvent}, this.LocalBus.PollInterval);
+					WaitHandle.WaitAny(new WaitHandle[] {this.LocalBus.WorkAvailable, this.StopEvent}, this.LocalBus.PollInterval);
 
-					this.LocalBus.WorkAvailable.Reset();
+					lock (this.LocalBus.SyncRoot)
+					{
+						this.LocalBus.WorkAvailable.Reset();
+					}
 
 					if (this.StopRequested)
 					{
@@ -897,13 +738,13 @@ namespace RI.Framework.Bus
 
 					this.Pipeline.DoWork();
 				}
-
-				this.Pipeline.StopProcessing();
 			}
 
 			protected override void OnStarting ()
 			{
 				base.OnStarting();
+
+				this.Timeout = (int)this.LocalBus.ThreadTimeout.TotalMilliseconds;
 
 				this.Thread.IsBackground = false;
 				this.Thread.Name = this.LocalBus.GetType().Name;

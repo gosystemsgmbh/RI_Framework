@@ -308,7 +308,7 @@ namespace RI.Framework.Services.Messaging
 				throw new ArgumentNullException(nameof(message));
 			}
 
-			TaskCompletionSource<IMessage> tcs = new TaskCompletionSource<IMessage>();
+			TaskCompletionSource<IMessage> tcs = new TaskCompletionSource<IMessage>(TaskCreationOptions.DenyChildAttach | TaskCreationOptions.RunContinuationsAsynchronously);
 
 			lock (this.SyncRoot)
 			{

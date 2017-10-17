@@ -13,11 +13,30 @@ namespace RI.Framework.Bus.Routers
 	///     Implements a default bus router which is suitable for most scenarios.
 	/// </summary>
 	/// <remarks>
-	///     See <see cref="IBusRouter" /> for more details.
+	///     <para>
+	/// See <see cref="IBusRouter" /> for more details.
+	/// </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	public sealed class DefaultBusRouter : IBusRouter
 	{
+		/// <summary>
+		/// Creates a new instance of <see cref="DefaultBusRouter"/>.
+		/// </summary>
+		public DefaultBusRouter ()
+		{
+			this.SyncRoot = new object();
+		}
+
+		/// <inheritdoc />
+		public object SyncRoot { get; set; }
+
+		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => true;
+
+
+
+
 		#region Instance Methods
 
 		private bool CompareTypes (Type source, Type target, bool inheritanceTolerant)
@@ -41,9 +60,6 @@ namespace RI.Framework.Bus.Routers
 		}
 
 		#endregion
-
-
-
 
 		#region Interface: IBusRouter
 

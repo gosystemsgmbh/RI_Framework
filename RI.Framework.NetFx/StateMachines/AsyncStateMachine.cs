@@ -214,7 +214,7 @@ namespace RI.Framework.StateMachines
 		/// </returns>
 		public async Task<bool> WaitForSignalAsync (object signal, int timeout, CancellationToken cancellationToken)
 		{
-			TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
+			TaskCompletionSource<object> tcs = new TaskCompletionSource<object>(TaskCreationOptions.DenyChildAttach | TaskCreationOptions.RunContinuationsAsynchronously);
 
 			lock (this.SyncRoot)
 			{
@@ -305,7 +305,7 @@ namespace RI.Framework.StateMachines
 		/// <exception cref="TaskCanceledException"> The state transition was aborted. </exception>
 		public async Task<bool> WaitForTransientAsync (Type state, int timeout, CancellationToken cancellationToken)
 		{
-			TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
+			TaskCompletionSource<object> tcs = new TaskCompletionSource<object>(TaskCreationOptions.DenyChildAttach | TaskCreationOptions.RunContinuationsAsynchronously);
 
 			lock (this.SyncRoot)
 			{
@@ -341,7 +341,7 @@ namespace RI.Framework.StateMachines
 		/// </returns>
 		public async Task<bool> WaitForUpdateAsync (int timeout, CancellationToken cancellationToken)
 		{
-			TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
+			TaskCompletionSource<object> tcs = new TaskCompletionSource<object>(TaskCreationOptions.DenyChildAttach | TaskCreationOptions.RunContinuationsAsynchronously);
 
 			lock (this.SyncRoot)
 			{

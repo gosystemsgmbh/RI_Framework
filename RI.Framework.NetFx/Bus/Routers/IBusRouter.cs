@@ -13,7 +13,12 @@ namespace RI.Framework.Bus.Routers
 	///     Defines the interface for a bus router.
 	/// </summary>
 	/// <remarks>
-	///     See <see cref="IBus" /> for more details about message busses.
+	///     <para>
+	/// See <see cref="IBus" /> for more details about message busses.
+	/// </para>
+	/// <para>
+	/// This interface is part of the actual bus implementation and not intended to be used by the bus users.
+	/// </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	public interface IBusRouter : ISynchronizable
