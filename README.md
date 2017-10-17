@@ -6,7 +6,6 @@
   - [ ] TODOs
   - [ ] Code cleanup
   - [ ] Packages
-  - [ ] License and license on website
 - [ ] Testing (common)
   - [ ] RuntimeEnvironment
   - [ ] CultureInfoExtensions
@@ -79,6 +78,7 @@
   - [ ] Unity: Uncomments after implementation
   - [ ] Unity: Performance
   - [ ] Unity: Thread Safety
+  - [ ] Proper Readme
 - [ ] Advertisement
 
 ## Next
@@ -91,7 +91,7 @@
 
 ## Proposals
 
-- [ ] .NET Standard
-- [ ] Common to Shared migration
+- [ ] Move targets to .NET Standard
+- [ ] Move away from shared projects (using .NET Standard?)
 - [ ] Cross-platform model and code unification
 - [ ] AOT checking utility

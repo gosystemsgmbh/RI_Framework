@@ -1,18 +1,6 @@
-﻿using System;
-using System.Reflection;
-
-
-
+﻿using System.Reflection;
+using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("RI.Framework.Windows.Service")]
 [assembly: AssemblyDescription("RI.Framework.Windows.Service")]
-[assembly: AssemblyProduct("Decoupling & Utilities Framework")]
-[assembly: AssemblyCompany("Roten Informatik")]
-[assembly: AssemblyCopyright("Copyright (c) 2015-2017 Roten Informatik")]
-[assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: CLSCompliant(false)]
-[assembly: AssemblyVersion("2.0.0.0")]
-[assembly: AssemblyFileVersion("2.0.0.0")]
-[assembly: AssemblyInformationalVersion("2.0.0.0")]
+[assembly: Guid("ADA12B03-7FB4-4FFC-9263-BFE649F214AF")]

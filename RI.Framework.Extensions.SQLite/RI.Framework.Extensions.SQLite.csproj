@@ -37,7 +37,8 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>Properties\AssemblyName.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -53,6 +54,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\SolutionInfo.cs">
+      <Link>Properties\SolutionInfo.cs</Link>
+    </Compile>
     <Compile Include="Data\Database\Backup\SQLiteDatabaseBackupCreator.cs" />
     <Compile Include="Data\Database\Cleanup\SQLiteDatabaseCleanupProcessor.cs" />
     <Compile Include="Data\Database\Upgrading\SQLiteAssemblyResourceVersionUpgraderStepConfigurator.cs" />
@@ -85,6 +89,9 @@
     <Compile Include="Data\Database\SQLiteDatabaseManagerConfiguration.cs" />
     <Compile Include="Services\Logging\Writers\SQLiteLogConfiguration.cs" />
     <Compile Include="Services\Logging\Writers\SQLiteLogWriter.cs" />
+    <None Include="..\SolutionName.snk">
+      <Link>Properties\SolutionName.snk</Link>
+    </None>
     <None Include="Data\Database\_Old_SQLiteDatabaseManager.cs" />
     <Compile Include="Data\Database\SQLiteDatabaseManager.cs" />
     <Compile Include="Data\SQLite\SQLiteConversionExtensions.cs" />
@@ -97,7 +104,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Properties\AssemblyName.snk" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RI.Framework.NetFx\RI.Framework.NetFx.csproj">

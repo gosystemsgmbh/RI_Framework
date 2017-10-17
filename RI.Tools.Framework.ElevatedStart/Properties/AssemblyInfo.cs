@@ -1,18 +1,6 @@
-﻿using System;
-using System.Reflection;
-
-
-
+﻿using System.Reflection;
+using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("RI.Tools.Framework.ElevatedStart")]
 [assembly: AssemblyDescription("RI.Tools.Framework.ElevatedStart")]
-[assembly: AssemblyProduct("Decoupling & Utilities Framework")]
-[assembly: AssemblyCompany("Roten Informatik")]
-[assembly: AssemblyCopyright("Copyright (c) 2015-2017 Roten Informatik")]
-[assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: CLSCompliant(false)]
-[assembly: AssemblyVersion("2.0.0.0")]
-[assembly: AssemblyFileVersion("2.0.0.0")]
-[assembly: AssemblyInformationalVersion("2.0.0.0")]
+[assembly: Guid("AC30C1B7-A19D-41C5-A0C2-1306117A1628")]

@@ -1,18 +1,6 @@
-﻿using System;
-using System.Reflection;
-
-
-
+﻿using System.Reflection;
+using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("RI.Framework.Extensions.EF6")]
 [assembly: AssemblyDescription("RI.Framework.Extensions.EF6")]
-[assembly: AssemblyProduct("Decoupling & Utilities Framework")]
-[assembly: AssemblyCompany("Roten Informatik")]
-[assembly: AssemblyCopyright("Copyright (c) 2015-2017 Roten Informatik")]
-[assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: CLSCompliant(false)]
-[assembly: AssemblyVersion("2.0.0.0")]
-[assembly: AssemblyFileVersion("2.0.0.0")]
-[assembly: AssemblyInformationalVersion("2.0.0.0")]
+[assembly: Guid("A81C27FC-D7B3-4CA6-8AFD-97CD3B5A6944")]

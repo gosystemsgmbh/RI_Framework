@@ -37,7 +37,8 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>Properties\AssemblyName.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Nancy, Version=1.4.4.0, Culture=neutral, processorArchitecture=MSIL">
@@ -50,6 +51,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\SolutionInfo.cs">
+      <Link>Properties\SolutionInfo.cs</Link>
+    </Compile>
     <Compile Include="Web\Nancy\CompositionContainerNancyBootstrapper.cs" />
     <Compile Include="Web\Nancy\NancyModuleExtensions.cs" />
     <Compile Include="Web\Nancy\ResponseExtensions.cs" />
@@ -63,7 +67,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Properties\AssemblyName.snk" />
+    <None Include="..\SolutionName.snk">
+      <Link>Properties\SolutionName.snk</Link>
+    </None>
     <None Include="packages.config" />
     <None Include="_PostBuild.bat" />
     <None Include="_PreBuild.bat" />

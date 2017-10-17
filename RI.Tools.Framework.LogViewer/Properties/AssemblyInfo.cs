@@ -1,18 +1,6 @@
-﻿using System;
-using System.Reflection;
-
-
-
+﻿using System.Reflection;
+using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("RI.Tools.Framework.LogViewer")]
 [assembly: AssemblyDescription("RI.Tools.Framework.LogViewer")]
-[assembly: AssemblyProduct("Decoupling & Utilities Framework")]
-[assembly: AssemblyCompany("Roten Informatik")]
-[assembly: AssemblyCopyright("Copyright (c) 2015-2017 Roten Informatik")]
-[assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: CLSCompliant(false)]
-[assembly: AssemblyVersion("2.0.0.0")]
-[assembly: AssemblyFileVersion("2.0.0.0")]
-[assembly: AssemblyInformationalVersion("2.0.0.0")]
+[assembly: Guid("138A8755-C640-44A9-9C27-77C09F9709D9")]

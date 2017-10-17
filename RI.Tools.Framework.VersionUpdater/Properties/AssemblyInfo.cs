@@ -1,18 +1,6 @@
-﻿using System;
-using System.Reflection;
-
-
-
+﻿using System.Reflection;
+using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("RI.Tools.Framework.VersionUpdater")]
 [assembly: AssemblyDescription("RI.Tools.Framework.VersionUpdater")]
-[assembly: AssemblyProduct("Decoupling & Utilities Framework")]
-[assembly: AssemblyCompany("Roten Informatik")]
-[assembly: AssemblyCopyright("Copyright (c) 2015-2017 Roten Informatik")]
-[assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: CLSCompliant(false)]
-[assembly: AssemblyVersion("2.0.0.0")]
-[assembly: AssemblyFileVersion("2.0.0.0")]
-[assembly: AssemblyInformationalVersion("2.0.0.0")]
+[assembly: Guid("9ADEFBB5-D619-47D7-A3D4-CE14A5383DCE")]

@@ -35,7 +35,8 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>Properties\AssemblyName.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />
@@ -72,14 +73,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\SolutionInfo.cs">
+      <Link>Properties\SolutionInfo.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="..\SolutionName.snk">
+      <Link>Properties\SolutionName.snk</Link>
+    </None>
     <None Include="packages.config" />
     <None Include="Services\Regions\Adapters\DockingManagerRegionAdapter.cs" />
     <None Include="_PostBuild.bat" />
     <None Include="_PreBuild.bat" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\AssemblyName.snk" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RI.Framework.NetFx\RI.Framework.NetFx.csproj">

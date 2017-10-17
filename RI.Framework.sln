@@ -4,15 +4,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Solution", "_Solution", "{237458F2-03F8-4EE2-B506-A6F935736306}"
-	ProjectSection(SolutionItems) = preProject
-		.gitignore = .gitignore
-		LICENSE.md = LICENSE.md
-		README.md = README.md
-		RI.Framework.Property.Company.txt = RI.Framework.Property.Company.txt
-		RI.Framework.Property.Copyright.txt = RI.Framework.Property.Copyright.txt
-		RI.Framework.Property.Version.txt = RI.Framework.Property.Version.txt
-		RI.Framework.sln.DotSettings = RI.Framework.sln.DotSettings
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Framework.Unity", "RI.Framework.Unity\RI.Framework.Unity.csproj", "{36E8EB66-9A69-41EA-A7F8-45BA5299A03F}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -373,6 +364,31 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Libraries.Framework.NuGe
 		{1AD143FE-49AC-4E02-A0FA-C2E6FF4280F5} = {1AD143FE-49AC-4E02-A0FA-C2E6FF4280F5}
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "E-Packages", "E-Packages", "{9394C280-2CF5-48CD-A9F8-A52B14F5D82D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Settings", "Settings", "{88929AD5-F3E4-487C-AB4D-8242AACE01B8}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		RI.Framework.sln.DotSettings = RI.Framework.sln.DotSettings
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Definitions", "Definitions", "{4CF0B8AE-85C5-4E4E-8B1E-DAF7C963CCB0}"
+	ProjectSection(SolutionItems) = preProject
+		SolutionInfo.cs = SolutionInfo.cs
+		SolutionName.snk = SolutionName.snk
+		SolutionProperty.Company.txt = SolutionProperty.Company.txt
+		SolutionProperty.Copyright.txt = SolutionProperty.Copyright.txt
+		SolutionProperty.Product.txt = SolutionProperty.Product.txt
+		SolutionProperty.Trademark.txt = SolutionProperty.Trademark.txt
+		SolutionProperty.Version.txt = SolutionProperty.Version.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{257A9E18-0120-4A5B-8C00-CE7817FBC254}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE.md = LICENSE.md
+		README.md = README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		RI.Framework.Common\RI.Framework.Common.projitems*{0de0d41d-b3c7-4eb5-a76e-62fc4ca9cb30}*SharedItemsImports = 13
@@ -577,5 +593,8 @@ Global
 		{4D7002F3-8151-4B43-B063-84B7C935F7E2} = {2139B354-0C0B-461E-B0BD-D83F111F63B2}
 		{76BDCD48-9CC7-45B2-B5D5-224BAA70A7EB} = {CFD6DFF4-35C3-4B6E-BED2-2FE1159B2275}
 		{C0BB3E8E-6139-4767-A8AB-62D2F4432E12} = {CFD6DFF4-35C3-4B6E-BED2-2FE1159B2275}
+		{88929AD5-F3E4-487C-AB4D-8242AACE01B8} = {237458F2-03F8-4EE2-B506-A6F935736306}
+		{4CF0B8AE-85C5-4E4E-8B1E-DAF7C963CCB0} = {237458F2-03F8-4EE2-B506-A6F935736306}
+		{257A9E18-0120-4A5B-8C00-CE7817FBC254} = {237458F2-03F8-4EE2-B506-A6F935736306}
 	EndGlobalSection
 EndGlobal

@@ -27,7 +27,7 @@ namespace RI.Tools.Framework.VersionUpdater
 		{
 			args = args ?? new string[0];
 
-			if (args.Length != 6)
+			if (args.Length != 8)
 			{
 				Console.WriteLine("ERROR: Invalid command line parameter count!");
 				return;
@@ -36,28 +36,36 @@ namespace RI.Tools.Framework.VersionUpdater
 			string fullPath = Path.GetFullPath(args[0]);
 			bool recursive = string.Equals(args[1], "r", StringComparison.InvariantCultureIgnoreCase);
 
+			string newProduct;
 			Version newVersion;
 			string newCompany;
 			string newCopyright;
+			string newTrademark;
 
 			if (string.Equals(args[2], "file", StringComparison.InvariantCultureIgnoreCase))
 			{
-				newVersion = new Version(File.ReadAllText(Path.GetFullPath(args[3])).Trim());
-				newCompany = File.ReadAllText(Path.GetFullPath(args[4])).Trim();
-				newCopyright = File.ReadAllText(Path.GetFullPath(args[5])).Trim();
+				newProduct = File.ReadAllText(Path.GetFullPath(args[3])).Trim();
+				newVersion = new Version(File.ReadAllText(Path.GetFullPath(args[4])).Trim());
+				newCompany = File.ReadAllText(Path.GetFullPath(args[5])).Trim();
+				newCopyright = File.ReadAllText(Path.GetFullPath(args[6])).Trim();
+				newTrademark = File.ReadAllText(Path.GetFullPath(args[7])).Trim();
 			}
 			else
 			{
-				newVersion = new Version(args[3]);
-				newCompany = args[4];
-				newCopyright = args[5];
+				newProduct = args[3];
+				newVersion = new Version(args[4]);
+				newCompany = args[5];
+				newCopyright = args[6];
+				newTrademark = args[7];
 			}
 
 			Console.WriteLine("Directory:     " + fullPath);
 			Console.WriteLine("Recursive:     " + recursive);
-			Console.WriteLine("New version:   " + newVersion.ToString(4));
+			Console.WriteLine("New product:   " + newProduct);
+			Console.WriteLine("New version:   " + newVersion);
 			Console.WriteLine("New company:   " + newCompany);
 			Console.WriteLine("New copyright: " + newCopyright);
+			Console.WriteLine("New trademark: " + newTrademark);
 			Console.WriteLine("Command line:  " + Environment.CommandLine);
 
 			string[] files = Directory.GetFiles(fullPath, "*", recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
@@ -71,11 +79,11 @@ namespace RI.Tools.Framework.VersionUpdater
 				if (file.EndsWith(templateExtension, StringComparison.InvariantCultureIgnoreCase))
 				{
 					string outFile = file.Substring(0, file.Length - templateExtension.Length) + Path.GetExtension(file);
-					VersionUpdater.ProcessFileToken(file, outFile, newVersion, newCompany, newCopyright);
+					VersionUpdater.ProcessFileToken(file, outFile, newProduct, newVersion, newCompany, newCopyright, newTrademark);
 				}
 				else
 				{
-					VersionUpdater.ProcessFileRegex(file, newVersion, newCompany, newCopyright);
+					VersionUpdater.ProcessFileRegex(file, newProduct, newVersion, newCompany, newCopyright, newTrademark);
 				}
 			}
 
@@ -115,7 +123,7 @@ namespace RI.Tools.Framework.VersionUpdater
 			}
 		}
 
-		private static void ProcessFileRegex (string file, Version newVersion, string newCompany, string newCopyright)
+		private static void ProcessFileRegex (string file, string newProduct, Version newVersion, string newCompany, string newCopyright, string newTrademark)
 		{
 			string extension = Path.GetExtension(file)?.ToUpperInvariant();
 			string fileName = Path.GetFileName(file)?.ToUpperInvariant();
@@ -302,8 +310,13 @@ namespace RI.Tools.Framework.VersionUpdater
 					break;
 				}
 
+				case "SOLUTIONINFO.CS":
 				case "ASSEMBLYINFO.CS":
 				{
+					search = "(?'part1'AssemblyProduct(Attribute)*\\s*\\(\\s*\")[\\w\\s\\(\\)\\.,-_]*(?'part2'\"\\s*\\))";
+					replacement = "${part1}" + newProduct + "${part2}";
+					VersionUpdater.PerformReplacementRegex(file, search, replacement, Encoding.UTF8);
+
 					search = "(?'part1'Assembly[a-zA-Z]*?Version(Attribute)*\\s*\\(\\s*\")[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+(?'part2'\"\\s*\\))";
 					replacement = "${part1}" + newVersionDot + "${part2}";
 					VersionUpdater.PerformReplacementRegex(file, search, replacement, Encoding.UTF8);
@@ -316,13 +329,22 @@ namespace RI.Tools.Framework.VersionUpdater
 					replacement = "${part1}" + newCopyright + "${part2}";
 					VersionUpdater.PerformReplacementRegex(file, search, replacement, Encoding.UTF8);
 
+					search = "(?'part1'AssemblyTrademark(Attribute)*\\s*\\(\\s*\")[\\w\\s\\(\\)\\.,-_]*(?'part2'\"\\s*\\))";
+					replacement = "${part1}" + newTrademark + "${part2}";
+					VersionUpdater.PerformReplacementRegex(file, search, replacement, Encoding.UTF8);
+
 					processed = true;
 
 					break;
 				}
 
+				case "SOLUTIONINFO.CPP":
 				case "ASSEMBLYINFO.CPP":
 				{
+					search = "(?'part1'AssemblyProduct(Attribute)*\\s*\\(\\s*L\")[\\w\\s\\(\\)\\.,-_]*(?'part2'\"\\s*\\))";
+					replacement = "${part1}" + newProduct + "${part2}";
+					VersionUpdater.PerformReplacementRegex(file, search, replacement, Encoding.UTF8);
+
 					search = "(?'part1'Assembly[a-zA-Z]*?Version(Attribute)*\\s*\\(\\s*L\")[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+(?'part2'\"\\s*\\))";
 					replacement = "${part1}" + newVersionDot + "${part2}";
 					VersionUpdater.PerformReplacementRegex(file, search, replacement, Encoding.UTF8);
@@ -333,6 +355,10 @@ namespace RI.Tools.Framework.VersionUpdater
 
 					search = "(?'part1'AssemblyCopyright(Attribute)*\\s*\\(\\s*L\")[\\w\\s\\(\\)\\.,-_]*(?'part2'\"\\s*\\))";
 					replacement = "${part1}" + newCopyright + "${part2}";
+					VersionUpdater.PerformReplacementRegex(file, search, replacement, Encoding.UTF8);
+
+					search = "(?'part1'AssemblyTrademark(Attribute)*\\s*\\(\\s*L\")[\\w\\s\\(\\)\\.,-_]*(?'part2'\"\\s*\\))";
+					replacement = "${part1}" + newTrademark + "${part2}";
 					VersionUpdater.PerformReplacementRegex(file, search, replacement, Encoding.UTF8);
 
 					processed = true;
@@ -420,13 +446,13 @@ namespace RI.Tools.Framework.VersionUpdater
 			}
 		}
 
-		private static void ProcessFileToken (string inFile, string outFile, Version newVersion, string newCompany, string newCopyright)
+		private static void ProcessFileToken (string inFile, string outFile, string newProduct, Version newVersion, string newCompany, string newCopyright, string newTrademark)
 		{
 			File.Copy(inFile, outFile, true);
 
 			string extension = Path.GetExtension(inFile).ToUpperInvariant();
 
-			string newVersionDot = newVersion.ToString(4);
+			string newVersionDot = newVersion.ToString();
 
 			bool processed = false;
 
@@ -435,9 +461,12 @@ namespace RI.Tools.Framework.VersionUpdater
 				case ".HTML":
 				case ".HTM":
 				{
-					string search = @"($version$)";
-					string replacement = newVersionDot;
+					string search = @"($product$)";
+					string replacement = newProduct;
+					VersionUpdater.PerformReplacementToken(outFile, search, replacement, Encoding.UTF8);
 
+					search = @"($version$)";
+					replacement = newVersionDot;
 					VersionUpdater.PerformReplacementToken(outFile, search, replacement, Encoding.UTF8);
 
 					search = @"($company$)";
@@ -446,6 +475,10 @@ namespace RI.Tools.Framework.VersionUpdater
 
 					search = @"($copyright$)";
 					replacement = newCopyright;
+					VersionUpdater.PerformReplacementToken(outFile, search, replacement, Encoding.UTF8);
+
+					search = @"($trademark$)";
+					replacement = newTrademark;
 					VersionUpdater.PerformReplacementToken(outFile, search, replacement, Encoding.UTF8);
 
 					processed = true;

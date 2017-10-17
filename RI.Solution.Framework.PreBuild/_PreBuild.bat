@@ -10,3 +10,5 @@ _Output\x64
     @md "..\%%i"
   )
 )
+
+@copy "..\LICENSE.md" "..\_Output\Roten Informatik Framework License 1.0.md"

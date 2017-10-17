@@ -35,7 +35,8 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>Properties\AssemblyName.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -47,6 +48,9 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\SolutionInfo.cs">
+      <Link>Properties\SolutionInfo.cs</Link>
+    </Compile>
     <Compile Include="IO\Keyboard\OnScreenKeyboard.cs" />
     <Compile Include="IO\Keyboard\SystemKeyboard.cs" />
     <Compile Include="IO\Keyboard\SystemKeyboardKey.cs" />
@@ -60,6 +64,9 @@
     <Compile Include="IO\Serial\_NamespaceDoc.cs" />
     <Compile Include="Services\Logging\Writers\EventLogWriter.cs" />
     <Compile Include="Services\WindowsBootstrapper.cs" />
+    <None Include="..\SolutionName.snk">
+      <Link>Properties\SolutionName.snk</Link>
+    </None>
     <None Include="Utilities\Windows\Messages\_NamespaceDoc.cs" />
     <Compile Include="Utilities\Windows\Cryptography\_NamespaceDoc.cs" />
     <Compile Include="Utilities\Windows\Imaging\BitmapExtensions.cs" />
@@ -88,7 +95,6 @@
     <Compile Include="Utilities\Windows\Users\WindowsUserImpersonation.cs" />
     <Compile Include="Utilities\Windows\Users\WindowsUserProfile.cs" />
     <Compile Include="Utilities\Windows\_NamespaceDoc.cs" />
-    <None Include="Properties\AssemblyName.snk" />
     <Compile Include="IO\Paths\DirectoryPathExtensions.cs" />
     <Compile Include="IO\Paths\FilePathExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -266,3 +266,6 @@ Tools
 -----
 
  # LogViewer
+ - Version updater: Add support for *.md
+ - Version updater: Full update of *.shfbproj
+ - Version updater: Full update of *.wxs

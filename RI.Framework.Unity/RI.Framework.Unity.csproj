@@ -40,6 +40,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\SolutionInfo.cs">
+      <Link>Properties\SolutionInfo.cs</Link>
+    </Compile>
     <Compile Include="Collections\Specialized\PrefabPool.cs" />
     <Compile Include="Composition\Catalogs\GameObjectCatalog.cs" />
     <Compile Include="Composition\Catalogs\ScriptingCatalog.cs" />
@@ -69,6 +72,9 @@
     <Compile Include="Threading\ToHeavyThread.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\SolutionName.snk">
+      <Link>Properties\SolutionName.snk</Link>
+    </None>
     <None Include="_PostBuild.bat" />
     <None Include="_PreBuild.bat" />
   </ItemGroup>

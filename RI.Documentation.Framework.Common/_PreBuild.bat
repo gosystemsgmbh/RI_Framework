@@ -1,3 +1,3 @@
-﻿@cd %~dp0
+@cd %~dp0
 
-@"..\_Output\VersionUpdater.exe" "." "r" "file" "..\RI.Framework.Property.Version.txt" "..\RI.Framework.Property.Company.txt" "..\RI.Framework.Property.Copyright.txt"
+@"..\_Output\VersionUpdater.exe" "." "r" "file" "..\SolutionProperty.Product.txt" "..\SolutionProperty.Version.txt" "..\SolutionProperty.Company.txt" "..\SolutionProperty.Copyright.txt" "..\SolutionProperty.Trademark.txt"
