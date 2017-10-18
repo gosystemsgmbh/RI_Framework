@@ -15,18 +15,18 @@ using RI.Framework.Utilities.Logging;
 namespace RI.Framework.Web.Nancy
 {
 	/// <summary>
-	///     Nancy bootstrapper which uses a <see cref="CompositionContainer" />.
+	///     Nancy bootstrapper which uses a <see cref="CompositionContainer" /> and a separate <see cref="CompositionContainer"/> for each request.
 	/// </summary>
-	public class CompositionContainerNancyBootstrapper : NancyBootstrapperBase<CompositionContainer>, ILogSource
+	public class CompositionContainerNancyBootstrapperWithRequestContainer : NancyBootstrapperWithRequestContainerBase<CompositionContainer>, ILogSource
 	{
 		#region Instance Constructor/Destructor
 
 		/// <summary>
-		///     Creates a new instance of <see cref="CompositionContainerNancyBootstrapper" />.
+		///     Creates a new instance of <see cref="CompositionContainerNancyBootstrapperWithRequestContainer" />.
 		/// </summary>
 		/// <param name="compositionContainer"> The composition container to use as the root application container. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="compositionContainer" /> is null. </exception>
-		public CompositionContainerNancyBootstrapper (CompositionContainer compositionContainer)
+		public CompositionContainerNancyBootstrapperWithRequestContainer(CompositionContainer compositionContainer)
 		{
 			if (compositionContainer == null)
 			{
@@ -77,6 +77,18 @@ namespace RI.Framework.Web.Nancy
 		protected override NancyInternalConfiguration InternalConfiguration => NancyInternalConfiguration.WithOverrides(this.OnConfigurationBuilder);
 
 		/// <inheritdoc />
+		protected override CompositionContainer CreateRequestContainer (NancyContext context)
+		{
+			return new CompositionContainer(this.CompositionContainer);
+		}
+
+		/// <inheritdoc />
+		protected override IEnumerable<INancyModule> GetAllModules (CompositionContainer container)
+		{
+			return container.GetExports<INancyModule>();
+		}
+
+		/// <inheritdoc />
 		protected override CompositionContainer GetApplicationContainer ()
 		{
 			return this.CompositionContainer;
@@ -101,21 +113,15 @@ namespace RI.Framework.Web.Nancy
 		}
 
 		/// <inheritdoc />
+		protected override INancyModule GetModule (CompositionContainer container, Type moduleType)
+		{
+			return container.GetExport<INancyModule>(moduleType);
+		}
+
+		/// <inheritdoc />
 		protected override IEnumerable<IRegistrations> GetRegistrationTasks ()
 		{
 			return this.ApplicationContainer.GetExports<IRegistrations>();
-		}
-
-		/// <inheritdoc />
-		public override IEnumerable<INancyModule> GetAllModules (NancyContext context)
-		{
-			return this.CompositionContainer.GetExports<INancyModule>();
-		}
-
-		/// <inheritdoc />
-		public override INancyModule GetModule (Type moduleType, NancyContext context)
-		{
-			return this.CompositionContainer.GetExport<INancyModule>(moduleType);
 		}
 
 		/// <inheritdoc />
@@ -166,11 +172,6 @@ namespace RI.Framework.Web.Nancy
 		}
 
 		/// <inheritdoc />
-		protected override void RegisterModules (CompositionContainer container, IEnumerable<ModuleRegistration> moduleRegistrationTypes)
-		{
-		}
-
-		/// <inheritdoc />
 		protected override void RegisterInstances (CompositionContainer container, IEnumerable<InstanceRegistration> instanceRegistrations)
 		{
 			CompositionBatch batch = new CompositionBatch();
@@ -179,6 +180,11 @@ namespace RI.Framework.Web.Nancy
 				batch.AddExport(instanceRegistration.Implementation, instanceRegistration.RegistrationType);
 			}
 			container.Compose(batch);
+		}
+
+		/// <inheritdoc />
+		protected override void RegisterRequestContainerModules (CompositionContainer container, IEnumerable<ModuleRegistration> moduleRegistrationTypes)
+		{
 		}
 
 		/// <inheritdoc />

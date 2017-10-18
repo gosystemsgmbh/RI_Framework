@@ -129,6 +129,7 @@ namespace RI.Framework.Bus.Pipeline
 			lock (this.SyncRoot)
 			{
 				this.LocalResponses.Enqueue(response);
+				this.Bus.SignalWorkAvailable();
 			}
 		}
 
@@ -140,7 +141,7 @@ namespace RI.Framework.Bus.Pipeline
 		#region Interface: IBusPipeline
 
 		/// <inheritdoc />
-		public void DoWork ()
+		public void DoWork (bool polling)
 		{
 			DateTime utcNow = DateTime.UtcNow;
 

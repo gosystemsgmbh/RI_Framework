@@ -169,8 +169,8 @@ namespace RI.Framework.Data.Repository.Entities
 				MethodInfo getMethod = sourceProperties[property].Item1;
 				MethodInfo setMethod = targetProperties[property].Item2;
 
-				object value = getMethod.Invoke(source, null);
-				setMethod.Invoke(target, new[] {value});
+				object value = getMethod?.Invoke(source, null);
+				setMethod?.Invoke(target, new[] {value});
 			}
 		}
 

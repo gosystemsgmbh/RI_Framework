@@ -724,7 +724,7 @@ namespace RI.Framework.Bus
 
 				while (true)
 				{
-					WaitHandle.WaitAny(new WaitHandle[] {this.LocalBus.WorkAvailable, this.StopEvent}, this.LocalBus.PollInterval);
+					int response = WaitHandle.WaitAny(new WaitHandle[] {this.LocalBus.WorkAvailable, this.StopEvent}, this.LocalBus.PollInterval);
 
 					lock (this.LocalBus.SyncRoot)
 					{
@@ -736,7 +736,7 @@ namespace RI.Framework.Bus
 						break;
 					}
 
-					this.Pipeline.DoWork();
+					this.Pipeline.DoWork(response == 0);
 				}
 			}
 

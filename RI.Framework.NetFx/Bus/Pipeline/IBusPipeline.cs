@@ -24,12 +24,13 @@ namespace RI.Framework.Bus.Pipeline
 		/// <summary>
 		///     Processes all pending work on the bus processing pipeline.
 		/// </summary>
+		/// <param name="polling">Specifies whether <see cref="DoWork"/> is called by polling (true) or because actual work is available (false).</param>
 		/// <remarks>
 		///     <para>
 		///         <see cref="DoWork" /> is also called in the interval of <see cref="IBus.PollInterval" /> when no work is available.
 		///     </para>
 		/// </remarks>
-		void DoWork ();
+		void DoWork (bool polling);
 
 		/// <summary>
 		///     Initializes the pipeline when the bus starts.

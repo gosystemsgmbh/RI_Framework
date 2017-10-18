@@ -54,6 +54,7 @@
     <Compile Include="..\SolutionInfo.cs">
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
+    <Compile Include="Web\Nancy\CompositionContainerNancyBootstrapperWithRequestContainer.cs" />
     <Compile Include="Web\Nancy\CompositionContainerNancyBootstrapper.cs" />
     <Compile Include="Web\Nancy\NancyModuleExtensions.cs" />
     <Compile Include="Web\Nancy\ResponseExtensions.cs" />
