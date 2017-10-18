@@ -520,7 +520,6 @@ namespace RI.Framework.Threading
 							this.Thread.Priority = currentThread.Priority;
 							this.Thread.CurrentCulture = currentThread.CurrentCulture;
 							this.Thread.CurrentUICulture = currentThread.CurrentUICulture;
-							this.Thread.Name = this.GetType().Name;
 							this.Thread.SetApartmentState(ApartmentState.STA);
 
 							this.OnStarting();

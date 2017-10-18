@@ -1111,7 +1111,7 @@ namespace RI.Framework.Threading.Dispatcher
 
 				this.BeginShutdown(finishPendingDelegates);
 
-				TaskCompletionSource<object> tcs = new TaskCompletionSource<object>(TaskCreationOptions.DenyChildAttach | TaskCreationOptions.RunContinuationsAsynchronously);
+				TaskCompletionSource<object> tcs = new TaskCompletionSource<object>(TaskCreationOptions.RunContinuationsAsynchronously);
 				this.FinishedSignals.Add(tcs);
 				finishTask = tcs.Task;
 			}
