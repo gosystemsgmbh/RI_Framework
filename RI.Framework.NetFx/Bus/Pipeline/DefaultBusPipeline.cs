@@ -98,7 +98,20 @@ namespace RI.Framework.Bus.Pipeline
 						{
 							Func<string, object, Task<object>> callback = r.ReceiverRegistration.Callback;
 							Task<object> task = callback(m.Address, m.Payload);
-							task.ContinueWith((c, s) => { this.ResponseHandler((MessageItem)s, c.Result); }, m, CancellationToken.None, TaskContinuationOptions.DenyChildAttach | TaskContinuationOptions.LazyCancellation | TaskContinuationOptions.RunContinuationsAsynchronously, TaskScheduler.Current);
+							if (task.IsCompleted)
+							{
+								this.ResponseHandler(m, task.Result);
+							}
+							else
+							{
+								task.ContinueWith((c1, s1) =>
+								{
+									this.Dispatcher.Dispatch(new Action<MessageItem, Task<object>>((s2, c2) =>
+									{
+										this.ResponseHandler(s2, c2.Result);
+									}), s1, c1);
+								}, m, CancellationToken.None, TaskContinuationOptions.DenyChildAttach | TaskContinuationOptions.LazyCancellation | TaskContinuationOptions.RunContinuationsAsynchronously, TaskScheduler.Current);
+							}
 						}), messageItem, x);
 					});
 				}
