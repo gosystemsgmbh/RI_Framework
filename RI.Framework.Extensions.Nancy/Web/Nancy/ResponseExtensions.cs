@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -30,9 +31,11 @@ namespace RI.Framework.Web.Nancy
 		/// <summary>
 		///     Adds encoding information to a response.
 		/// </summary>
-		/// <param name="response"> </param>
-		/// <param name="encoding"> </param>
-		/// <returns> </returns>
+		/// <param name="response">The response.</param>
+		/// <param name="encoding">The encoding.</param>
+		/// <returns>
+		/// The response.
+		/// </returns>
 		/// <remarks>
 		///     <para>
 		///         <see cref="WithEncoding" /> detects whether the response is a text response and is missing its charset content type parameter.
@@ -68,6 +71,29 @@ namespace RI.Framework.Web.Nancy
 			}
 
 			response.ContentType = contentType + "; " + ResponseExtensions.EncodingContentTypeParameter + encoding.WebName;
+			return response;
+		}
+
+		/// <summary>
+		/// Adds last modified and thus change check information to a response.
+		/// </summary>
+		/// <param name="response">The response.</param>
+		/// <param name="timestamp">The timestamp of the last change ot the requetsed resource or null if the current date and time is used.</param>
+		/// <returns>
+		/// The response.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="response" /> is null. </exception>
+		public static Response WithChangeCheck (this Response response, DateTime? timestamp = null)
+		{
+			if (response == null)
+			{
+				throw new ArgumentNullException(nameof(response));
+			}
+
+			timestamp = timestamp?.ToUniversalTime() ?? DateTime.UtcNow;
+
+			response.Headers["ETag"] = timestamp.Value.Ticks.ToString("x", CultureInfo.InvariantCulture);
+			response.Headers["Last-Modified"] = timestamp.Value.ToString("R", CultureInfo.InvariantCulture);
 			return response;
 		}
 

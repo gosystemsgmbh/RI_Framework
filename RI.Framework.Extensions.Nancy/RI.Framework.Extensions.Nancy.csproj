@@ -56,7 +56,9 @@
     </Compile>
     <Compile Include="Web\Nancy\CompositionContainerNancyBootstrapperWithRequestContainer.cs" />
     <Compile Include="Web\Nancy\CompositionContainerNancyBootstrapper.cs" />
+    <Compile Include="Web\Nancy\NancyContextExtensions.cs" />
     <Compile Include="Web\Nancy\NancyModuleExtensions.cs" />
+    <Compile Include="Web\Nancy\RequestExtensions.cs" />
     <Compile Include="Web\Nancy\ResponseExtensions.cs" />
     <Compile Include="Web\Nancy\_NamespaceDoc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
