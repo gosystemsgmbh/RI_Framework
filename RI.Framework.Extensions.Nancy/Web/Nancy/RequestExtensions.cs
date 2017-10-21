@@ -4,6 +4,9 @@ using System.Linq;
 
 using Nancy;
 
+
+
+
 namespace RI.Framework.Web.Nancy
 {
 	/// <summary>
@@ -11,15 +14,17 @@ namespace RI.Framework.Web.Nancy
 	/// </summary>
 	public static class RequestExtensions
 	{
+		#region Static Methods
+
 		/// <summary>
-		/// Checks whether a request requests a modified resource.
+		///     Checks whether a request requests a modified resource.
 		/// </summary>
-		/// <param name="request">The request.</param>
-		/// <param name="timestamp">The timestamp of the last time the requested resource was modified.</param>
+		/// <param name="request"> The request. </param>
+		/// <param name="timestamp"> The timestamp of the last time the requested resource was modified. </param>
 		/// <returns>
-		/// true if the requested resource was modified and should be resend, false otherwise.
+		///     true if the requested resource was modified and should be resend, false otherwise.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="request"/> is null.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="request" /> is null. </exception>
 		public static bool IsModified (this Request request, DateTime timestamp)
 		{
 			timestamp = timestamp.ToUniversalTime();
@@ -39,5 +44,7 @@ namespace RI.Framework.Web.Nancy
 
 			return timestamp > requestHeaders.IfModifiedSince.Value.ToUniversalTime();
 		}
+
+		#endregion
 	}
 }

@@ -77,6 +77,18 @@ namespace RI.Framework.Web.Nancy
 		protected override NancyInternalConfiguration InternalConfiguration => NancyInternalConfiguration.WithOverrides(this.OnConfigurationBuilder);
 
 		/// <inheritdoc />
+		public override IEnumerable<INancyModule> GetAllModules (NancyContext context)
+		{
+			return this.CompositionContainer.GetExports<INancyModule>();
+		}
+
+		/// <inheritdoc />
+		public override INancyModule GetModule (Type moduleType, NancyContext context)
+		{
+			return this.CompositionContainer.GetExport<INancyModule>(moduleType);
+		}
+
+		/// <inheritdoc />
 		protected override CompositionContainer GetApplicationContainer ()
 		{
 			return this.CompositionContainer;
@@ -104,18 +116,6 @@ namespace RI.Framework.Web.Nancy
 		protected override IEnumerable<IRegistrations> GetRegistrationTasks ()
 		{
 			return this.ApplicationContainer.GetExports<IRegistrations>();
-		}
-
-		/// <inheritdoc />
-		public override IEnumerable<INancyModule> GetAllModules (NancyContext context)
-		{
-			return this.CompositionContainer.GetExports<INancyModule>();
-		}
-
-		/// <inheritdoc />
-		public override INancyModule GetModule (Type moduleType, NancyContext context)
-		{
-			return this.CompositionContainer.GetExport<INancyModule>(moduleType);
 		}
 
 		/// <inheritdoc />
@@ -166,11 +166,6 @@ namespace RI.Framework.Web.Nancy
 		}
 
 		/// <inheritdoc />
-		protected override void RegisterModules (CompositionContainer container, IEnumerable<ModuleRegistration> moduleRegistrationTypes)
-		{
-		}
-
-		/// <inheritdoc />
 		protected override void RegisterInstances (CompositionContainer container, IEnumerable<InstanceRegistration> instanceRegistrations)
 		{
 			CompositionBatch batch = new CompositionBatch();
@@ -179,6 +174,11 @@ namespace RI.Framework.Web.Nancy
 				batch.AddExport(instanceRegistration.Implementation, instanceRegistration.RegistrationType);
 			}
 			container.Compose(batch);
+		}
+
+		/// <inheritdoc />
+		protected override void RegisterModules (CompositionContainer container, IEnumerable<ModuleRegistration> moduleRegistrationTypes)
+		{
 		}
 
 		/// <inheritdoc />

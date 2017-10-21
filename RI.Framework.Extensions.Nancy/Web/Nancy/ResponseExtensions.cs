@@ -29,12 +29,35 @@ namespace RI.Framework.Web.Nancy
 		#region Static Methods
 
 		/// <summary>
+		///     Adds last modified and thus change check information to a response.
+		/// </summary>
+		/// <param name="response"> The response. </param>
+		/// <param name="timestamp"> The timestamp of the last change ot the requetsed resource or null if the current date and time is used. </param>
+		/// <returns>
+		///     The response.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="response" /> is null. </exception>
+		public static Response WithChangeCheck (this Response response, DateTime? timestamp = null)
+		{
+			if (response == null)
+			{
+				throw new ArgumentNullException(nameof(response));
+			}
+
+			timestamp = timestamp?.ToUniversalTime() ?? DateTime.UtcNow;
+
+			response.Headers["ETag"] = timestamp.Value.Ticks.ToString("x", CultureInfo.InvariantCulture);
+			response.Headers["Last-Modified"] = timestamp.Value.ToString("R", CultureInfo.InvariantCulture);
+			return response;
+		}
+
+		/// <summary>
 		///     Adds encoding information to a response.
 		/// </summary>
-		/// <param name="response">The response.</param>
-		/// <param name="encoding">The encoding.</param>
+		/// <param name="response"> The response. </param>
+		/// <param name="encoding"> The encoding. </param>
 		/// <returns>
-		/// The response.
+		///     The response.
 		/// </returns>
 		/// <remarks>
 		///     <para>
@@ -71,29 +94,6 @@ namespace RI.Framework.Web.Nancy
 			}
 
 			response.ContentType = contentType + "; " + ResponseExtensions.EncodingContentTypeParameter + encoding.WebName;
-			return response;
-		}
-
-		/// <summary>
-		/// Adds last modified and thus change check information to a response.
-		/// </summary>
-		/// <param name="response">The response.</param>
-		/// <param name="timestamp">The timestamp of the last change ot the requetsed resource or null if the current date and time is used.</param>
-		/// <returns>
-		/// The response.
-		/// </returns>
-		/// <exception cref="ArgumentNullException"> <paramref name="response" /> is null. </exception>
-		public static Response WithChangeCheck (this Response response, DateTime? timestamp = null)
-		{
-			if (response == null)
-			{
-				throw new ArgumentNullException(nameof(response));
-			}
-
-			timestamp = timestamp?.ToUniversalTime() ?? DateTime.UtcNow;
-
-			response.Headers["ETag"] = timestamp.Value.Ticks.ToString("x", CultureInfo.InvariantCulture);
-			response.Headers["Last-Modified"] = timestamp.Value.ToString("R", CultureInfo.InvariantCulture);
 			return response;
 		}
 

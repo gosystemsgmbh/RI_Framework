@@ -15,7 +15,7 @@ using RI.Framework.Utilities.Logging;
 namespace RI.Framework.Web.Nancy
 {
 	/// <summary>
-	///     Nancy bootstrapper which uses a <see cref="CompositionContainer" /> and a separate <see cref="CompositionContainer"/> for each request.
+	///     Nancy bootstrapper which uses a <see cref="CompositionContainer" /> and a separate <see cref="CompositionContainer" /> for each request.
 	/// </summary>
 	public class CompositionContainerNancyBootstrapperWithRequestContainer : NancyBootstrapperWithRequestContainerBase<CompositionContainer>, ILogSource
 	{
@@ -26,7 +26,7 @@ namespace RI.Framework.Web.Nancy
 		/// </summary>
 		/// <param name="compositionContainer"> The composition container to use as the root application container. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="compositionContainer" /> is null. </exception>
-		public CompositionContainerNancyBootstrapperWithRequestContainer(CompositionContainer compositionContainer)
+		public CompositionContainerNancyBootstrapperWithRequestContainer (CompositionContainer compositionContainer)
 		{
 			if (compositionContainer == null)
 			{

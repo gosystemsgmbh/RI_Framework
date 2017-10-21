@@ -122,6 +122,12 @@ namespace RI.Framework.Bus.Dispatchers
 		#region Interface: IBusDispatcher
 
 		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		public object SyncRoot { get; }
+
+		/// <inheritdoc />
 		public void Dispatch (Delegate action, params object[] parameters)
 		{
 			lock (this.SyncRoot)
@@ -139,19 +145,6 @@ namespace RI.Framework.Bus.Dispatchers
 		public void Unload ()
 		{
 		}
-
-		#endregion
-
-
-
-
-		#region Interface: ISynchronizable
-
-		/// <inheritdoc />
-		bool ISynchronizable.IsSynchronized => true;
-
-		/// <inheritdoc />
-		public object SyncRoot { get; }
 
 		#endregion
 	}
