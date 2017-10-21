@@ -244,17 +244,17 @@ namespace RI.Framework.Bus
 			}
 		}
 
-		private object StartStopSyncRoot { get; }
+		private IDependencyResolver DependencyResolver { get; set; }
 
 		private List<ReceiverRegistrationItem> ReceiveRegistrations { get; }
 
 		private List<SendOperationItem> SendOperations { get; }
 
+		private object StartStopSyncRoot { get; }
+
 		private ManualResetEvent WorkAvailable { get; set; }
 
 		private WorkThread WorkerThread { get; set; }
-
-		private IDependencyResolver DependencyResolver { get; set; }
 
 		#endregion
 
@@ -262,6 +262,15 @@ namespace RI.Framework.Bus
 
 
 		#region Instance Methods
+
+		private void CheckForExceptions ()
+		{
+			Exception exception = this.WorkerThread?.ThreadException;
+			if (exception != null)
+			{
+				throw new BusProcessingPipelineException(exception);
+			}
+		}
 
 		[SuppressMessage("ReSharper", "UnusedParameter.Local")]
 		private void Dispose (bool disposing)
@@ -291,15 +300,6 @@ namespace RI.Framework.Bus
 		private void SignalWorkAvailable ()
 		{
 			this.WorkAvailable?.Set();
-		}
-
-		private void CheckForExceptions ()
-		{
-			Exception exception = this.WorkerThread?.ThreadException;
-			if (exception != null)
-			{
-				throw new BusProcessingPipelineException(exception);
-			}
 		}
 
 		private void VerifyNotStarted ()
@@ -514,18 +514,13 @@ namespace RI.Framework.Bus
 		}
 
 		/// <inheritdoc />
-		void IBus.Unregister (ReceiverRegistration receiverRegistration)
+		void IBus.SignalWorkAvailable ()
 		{
-			if (receiverRegistration == null)
-			{
-				throw new ArgumentNullException(nameof(receiverRegistration));
-			}
-
 			lock (this.SyncRoot)
 			{
-				this.ReceiveRegistrations.RemoveAll(x => object.ReferenceEquals(x.ReceiverRegistration, receiverRegistration));
+				this.VerifyStarted();
 
-				this.SignalWorkAvailable();
+				this.WorkAvailable.Set();
 			}
 		}
 
@@ -578,13 +573,18 @@ namespace RI.Framework.Bus
 		}
 
 		/// <inheritdoc />
-		void IBus.SignalWorkAvailable()
+		void IBus.Unregister (ReceiverRegistration receiverRegistration)
 		{
+			if (receiverRegistration == null)
+			{
+				throw new ArgumentNullException(nameof(receiverRegistration));
+			}
+
 			lock (this.SyncRoot)
 			{
-				this.VerifyStarted();
+				this.ReceiveRegistrations.RemoveAll(x => object.ReferenceEquals(x.ReceiverRegistration, receiverRegistration));
 
-				this.WorkAvailable.Set();
+				this.SignalWorkAvailable();
 			}
 		}
 
@@ -615,11 +615,11 @@ namespace RI.Framework.Bus
 
 			public new Thread Thread => base.Thread;
 
-			private IDependencyResolver DependencyResolver => this.LocalBus.DependencyResolver;
-
 			private IBusConnectionManager ConnectionManager { get; set; }
 
 			private List<IBusConnection> Connections { get; set; }
+
+			private IDependencyResolver DependencyResolver => this.LocalBus.DependencyResolver;
 
 			private IBusDispatcher Dispatcher { get; set; }
 

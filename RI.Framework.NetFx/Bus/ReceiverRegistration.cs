@@ -170,7 +170,7 @@ namespace RI.Framework.Bus
 		/// <returns>
 		///     The receiver registration to continue configuration of the receiver.
 		/// </returns>
-		public ReceiverRegistration ExcludingCompatiblePayloads()
+		public ReceiverRegistration ExcludingCompatiblePayloads ()
 		{
 			lock (this.SyncRoot)
 			{
@@ -406,7 +406,7 @@ namespace RI.Framework.Bus
 		}
 
 		/// <inheritdoc cref="ReceiverRegistration.ExcludingCompatiblePayloads()" />
-		public ReceiverRegistrationWithPayload<TPayload> ExcludingCompatiblePayloads()
+		public ReceiverRegistrationWithPayload<TPayload> ExcludingCompatiblePayloads ()
 		{
 			this.Origin.ExcludingCompatiblePayloads();
 			return this;
@@ -535,7 +535,7 @@ namespace RI.Framework.Bus
 		}
 
 		/// <inheritdoc cref="ReceiverRegistration.ExcludingCompatiblePayloads()" />
-		public ReceiverRegistrationWithResponse<TResponse> ExcludingCompatiblePayloads()
+		public ReceiverRegistrationWithResponse<TResponse> ExcludingCompatiblePayloads ()
 		{
 			this.Origin.ExcludingCompatiblePayloads();
 			return this;
@@ -665,7 +665,7 @@ namespace RI.Framework.Bus
 		}
 
 		/// <inheritdoc cref="ReceiverRegistration.ExcludingCompatiblePayloads()" />
-		public ReceiverRegistrationWithPayloadAndResponse<TPayload, TResponse> ExcludingCompatiblePayloads()
+		public ReceiverRegistrationWithPayloadAndResponse<TPayload, TResponse> ExcludingCompatiblePayloads ()
 		{
 			this.Origin.ExcludingCompatiblePayloads();
 			return this;

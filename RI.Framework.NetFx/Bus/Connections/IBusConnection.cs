@@ -14,40 +14,22 @@ namespace RI.Framework.Bus.Connections
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	/// See <see cref="IBus" /> for more details about message busses.
-	/// </para>
-	/// <para>
-	/// This interface is part of the actual bus implementation and not intended to be used by the bus users.
-	/// </para>
+	///         See <see cref="IBus" /> for more details about message busses.
+	///     </para>
+	///     <para>
+	///         This interface is part of the actual bus implementation and not intended to be used by the bus users.
+	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	public interface IBusConnection : ISynchronizable
 	{
 		/// <summary>
-		///     Initializes the connection when the bus starts.
+		///     Gets an explanatory message what and why the connection is broken.
 		/// </summary>
-		/// <param name="dependencyResolver"> The dependency resolver which can be used to get instances of required types. </param>
-		/// <exception cref="ArgumentNullException"> <paramref name="dependencyResolver" /> is null. </exception>
-		void Initialize (IDependencyResolver dependencyResolver);
-
-		/// <summary>
-		///     Unloads the connection when the bus stops.
-		/// </summary>
-		void Unload ();
-
-		/// <summary>
-		///     Sends a message through this connection.
-		/// </summary>
-		/// <param name="message"> The message to send. </param>
-		/// <exception cref="ArgumentNullException"> <paramref name="message" /> is null. </exception>
-		void SendMessage(MessageItem message);
-
-		/// <summary>
-		///     Dequeues all messages which have been received by this connection.
-		/// </summary>
-		/// <param name="messages"> The list to which all dequeued messages are added. </param>
-		/// <exception cref="ArgumentNullException"> <paramref name="messages" /> is null. </exception>
-		void DequeueMessages(List<MessageItem> messages);
+		/// <value>
+		///     An explanatory message what and why the connection is broken or null if the connection is not broken.
+		/// </value>
+		string BrokenMessage { get; }
 
 		/// <summary>
 		///     Gets whether this connection is broken.
@@ -58,11 +40,29 @@ namespace RI.Framework.Bus.Connections
 		bool IsBroken { get; }
 
 		/// <summary>
-		///     Gets an explanatory message what and why the connection is broken.
+		///     Dequeues all messages which have been received by this connection.
 		/// </summary>
-		/// <value>
-		///     An explanatory message what and why the connection is broken or null if the connection is not broken.
-		/// </value>
-		string BrokenMessage { get; }
+		/// <param name="messages"> The list to which all dequeued messages are added. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="messages" /> is null. </exception>
+		void DequeueMessages (List<MessageItem> messages);
+
+		/// <summary>
+		///     Initializes the connection when the bus starts.
+		/// </summary>
+		/// <param name="dependencyResolver"> The dependency resolver which can be used to get instances of required types. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="dependencyResolver" /> is null. </exception>
+		void Initialize (IDependencyResolver dependencyResolver);
+
+		/// <summary>
+		///     Sends a message through this connection.
+		/// </summary>
+		/// <param name="message"> The message to send. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="message" /> is null. </exception>
+		void SendMessage (MessageItem message);
+
+		/// <summary>
+		///     Unloads the connection when the bus stops.
+		/// </summary>
+		void Unload ();
 	}
 }

@@ -22,25 +22,35 @@ namespace RI.Framework.Bus.Pipeline
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	/// See <see cref="IBusPipeline" /> for more details.
-	/// </para>
+	///         See <see cref="IBusPipeline" /> for more details.
+	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	public sealed class DefaultBusPipeline : IBusPipeline
 	{
+		#region Instance Constructor/Destructor
+
+		/// <summary>
+		///     Creates a new instance of <see cref="DefaultBusPipeline" />.
+		/// </summary>
+		public DefaultBusPipeline ()
+		{
+			this.SyncRoot = new object();
+			this.LocalResponses = new Queue<MessageItem>();
+		}
+
+		#endregion
+
+
+
+
 		#region Instance Properties/Indexer
 
 		private IBus Bus { get; set; }
 		private IBusConnectionManager ConnectionManager { get; set; }
 		private IBusDispatcher Dispatcher { get; set; }
-		private IBusRouter Router { get; set; }
 		private Queue<MessageItem> LocalResponses { get; set; }
-
-		/// <inheritdoc />
-		public object SyncRoot { get; set; }
-
-		/// <inheritdoc />
-		bool ISynchronizable.IsSynchronized => true;
+		private IBusRouter Router { get; set; }
 
 		#endregion
 
@@ -49,13 +59,14 @@ namespace RI.Framework.Bus.Pipeline
 
 		#region Instance Methods
 
-		/// <summary>
-		/// Creates a new instance of <see cref="DefaultBusPipeline"/>.
-		/// </summary>
-		public DefaultBusPipeline ()
+		/// <inheritdoc />
+		public void StartProcessing ()
 		{
-			this.SyncRoot = new object();
-			this.LocalResponses = new Queue<MessageItem>();
+		}
+
+		/// <inheritdoc />
+		public void StopProcessing ()
+		{
 		}
 
 		private void ProcessMessage (MessageItem messageItem)
@@ -104,13 +115,7 @@ namespace RI.Framework.Bus.Pipeline
 							}
 							else
 							{
-								task.ContinueWith((c1, s1) =>
-								{
-									this.Dispatcher.Dispatch(new Action<MessageItem, Task<object>>((s2, c2) =>
-									{
-										this.ResponseHandler(s2, c2.Result);
-									}), s1, c1);
-								}, m, CancellationToken.None, TaskContinuationOptions.DenyChildAttach | TaskContinuationOptions.LazyCancellation | TaskContinuationOptions.RunContinuationsAsynchronously, TaskScheduler.Current);
+								task.ContinueWith((c1, s1) => { this.Dispatcher.Dispatch(new Action<MessageItem, Task<object>>((s2, c2) => { this.ResponseHandler(s2, c2.Result); }), s1, c1); }, m, CancellationToken.None, TaskContinuationOptions.DenyChildAttach | TaskContinuationOptions.LazyCancellation | TaskContinuationOptions.RunContinuationsAsynchronously, TaskScheduler.Current);
 							}
 						}), messageItem, x);
 					});
@@ -152,6 +157,12 @@ namespace RI.Framework.Bus.Pipeline
 
 
 		#region Interface: IBusPipeline
+
+		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		public object SyncRoot { get; set; }
 
 		/// <inheritdoc />
 		public void DoWork (bool polling)
@@ -260,16 +271,6 @@ namespace RI.Framework.Bus.Pipeline
 
 				this.ConnectionManager = dependencyResolver.GetInstance<IBusConnectionManager>();
 			}
-		}
-
-		/// <inheritdoc />
-		public void StartProcessing ()
-		{
-		}
-
-		/// <inheritdoc />
-		public void StopProcessing ()
-		{
 		}
 
 		/// <inheritdoc />

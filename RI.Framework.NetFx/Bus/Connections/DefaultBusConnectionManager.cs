@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using RI.Framework.Bus.Internals;
 using RI.Framework.Utilities.ObjectModel;
 
+
+
+
 namespace RI.Framework.Bus.Connections
 {
 	/// <summary>
@@ -15,8 +18,10 @@ namespace RI.Framework.Bus.Connections
 	/// <threadsafety static="true" instance="true" />
 	public sealed class DefaultBusConnectionManager : IBusConnectionManager
 	{
+		#region Instance Constructor/Destructor
+
 		/// <summary>
-		/// Creates a new instance of <see cref="DefaultBusConnectionManager"/>.
+		///     Creates a new instance of <see cref="DefaultBusConnectionManager" />.
 		/// </summary>
 		public DefaultBusConnectionManager ()
 		{
@@ -25,11 +30,21 @@ namespace RI.Framework.Bus.Connections
 			this.Connections = new List<IBusConnection>();
 		}
 
-		/// <inheritdoc />
-		bool ISynchronizable.IsSynchronized => true;
+		#endregion
 
-		/// <inheritdoc />
-		public object SyncRoot { get; }
+
+
+
+		#region Instance Properties/Indexer
+
+		private List<IBusConnection> Connections { get; }
+
+		#endregion
+
+
+
+
+		#region Interface: IBusConnectionManager
 
 		/// <inheritdoc />
 		IReadOnlyList<IBusConnection> IBusConnectionManager.Connections
@@ -43,26 +58,11 @@ namespace RI.Framework.Bus.Connections
 			}
 		}
 
-		private List<IBusConnection> Connections { get; }
+		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => true;
 
 		/// <inheritdoc />
-		public void Initialize (IDependencyResolver dependencyResolver)
-		{
-			lock (this.SyncRoot)
-			{
-				this.Connections.Clear();
-				this.Connections.AddRange(dependencyResolver.GetInstances<IBusConnection>());
-			}
-		}
-
-		/// <inheritdoc />
-		public void Unload ()
-		{
-			lock (this.SyncRoot)
-			{
-				this.Connections?.Clear();
-			}
-		}
+		public object SyncRoot { get; }
 
 		/// <inheritdoc />
 		public void DequeueMessages (List<Tuple<MessageItem, IBusConnection>> messages)
@@ -79,6 +79,16 @@ namespace RI.Framework.Bus.Connections
 						messages.Add(new Tuple<MessageItem, IBusConnection>(message, connection));
 					}
 				}
+			}
+		}
+
+		/// <inheritdoc />
+		public void Initialize (IDependencyResolver dependencyResolver)
+		{
+			lock (this.SyncRoot)
+			{
+				this.Connections.Clear();
+				this.Connections.AddRange(dependencyResolver.GetInstances<IBusConnection>());
 			}
 		}
 
@@ -133,5 +143,16 @@ namespace RI.Framework.Bus.Connections
 				}
 			}
 		}
+
+		/// <inheritdoc />
+		public void Unload ()
+		{
+			lock (this.SyncRoot)
+			{
+				this.Connections?.Clear();
+			}
+		}
+
+		#endregion
 	}
 }

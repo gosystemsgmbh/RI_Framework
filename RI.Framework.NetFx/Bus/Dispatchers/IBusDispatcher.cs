@@ -12,11 +12,11 @@ namespace RI.Framework.Bus.Dispatchers
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	/// See <see cref="IBus" /> for more details about message busses.
-	/// </para>
-	/// <para>
-	/// This interface is part of the actual bus implementation and not intended to be used by the bus users.
-	/// </para>
+	///         See <see cref="IBus" /> for more details about message busses.
+	///     </para>
+	///     <para>
+	///         This interface is part of the actual bus implementation and not intended to be used by the bus users.
+	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	public interface IBusDispatcher : ISynchronizable

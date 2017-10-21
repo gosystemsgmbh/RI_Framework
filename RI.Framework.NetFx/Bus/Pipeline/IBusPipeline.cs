@@ -12,11 +12,11 @@ namespace RI.Framework.Bus.Pipeline
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	/// See <see cref="IBus" /> for more details about message busses.
-	/// </para>
-	/// <para>
-	/// This interface is part of the actual bus implementation and not intended to be used by the bus users.
-	/// </para>
+	///         See <see cref="IBus" /> for more details about message busses.
+	///     </para>
+	///     <para>
+	///         This interface is part of the actual bus implementation and not intended to be used by the bus users.
+	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	public interface IBusPipeline : ISynchronizable
@@ -24,7 +24,7 @@ namespace RI.Framework.Bus.Pipeline
 		/// <summary>
 		///     Processes all pending work on the bus processing pipeline.
 		/// </summary>
-		/// <param name="polling">Specifies whether <see cref="DoWork"/> is called by polling (true) or because actual work is available (false).</param>
+		/// <param name="polling"> Specifies whether <see cref="DoWork" /> is called by polling (true) or because actual work is available (false). </param>
 		/// <remarks>
 		///     <para>
 		///         <see cref="DoWork" /> is also called in the interval of <see cref="IBus.PollInterval" /> when no work is available.

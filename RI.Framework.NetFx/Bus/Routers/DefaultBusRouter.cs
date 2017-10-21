@@ -14,25 +14,23 @@ namespace RI.Framework.Bus.Routers
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	/// See <see cref="IBusRouter" /> for more details.
-	/// </para>
+	///         See <see cref="IBusRouter" /> for more details.
+	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	public sealed class DefaultBusRouter : IBusRouter
 	{
+		#region Instance Constructor/Destructor
+
 		/// <summary>
-		/// Creates a new instance of <see cref="DefaultBusRouter"/>.
+		///     Creates a new instance of <see cref="DefaultBusRouter" />.
 		/// </summary>
 		public DefaultBusRouter ()
 		{
 			this.SyncRoot = new object();
 		}
 
-		/// <inheritdoc />
-		public object SyncRoot { get; set; }
-
-		/// <inheritdoc />
-		bool ISynchronizable.IsSynchronized => true;
+		#endregion
 
 
 
@@ -61,7 +59,16 @@ namespace RI.Framework.Bus.Routers
 
 		#endregion
 
+
+
+
 		#region Interface: IBusRouter
+
+		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		public object SyncRoot { get; set; }
 
 		/// <inheritdoc />
 		public bool ForwardToGlobal (MessageItem message) => message.ToGlobal && (!message.FromGlobal);
