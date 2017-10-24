@@ -119,6 +119,9 @@ namespace RI.Framework.Data.EF
 		/// <inheritdoc cref="IRepositorySet.GetCount" />
 		protected abstract int GetCountInternal ();
 
+		/// <inheritdoc cref="IRepositorySet.Find" />
+		protected abstract object FindInternal (params object[] primaryKeys);
+
 		/// <inheritdoc cref="IRepositorySet.GetFiltered(object,object,int,int,out int,out int,out int)" />
 		protected abstract IQueryable<object> GetFilteredInternal (object filter, object sort, int pageIndex, int pageSize, out int totalCount, out int filteredCount, out int pageCount);
 
@@ -226,6 +229,12 @@ namespace RI.Framework.Data.EF
 		public int GetCount ()
 		{
 			return this.GetCountInternal();
+		}
+
+		/// <inheritdoc />
+		public object Find (params object[] primaryKeys)
+		{
+			return this.FindInternal(primaryKeys);
 		}
 
 		/// <inheritdoc />
@@ -408,6 +417,12 @@ namespace RI.Framework.Data.EF
 		}
 
 		/// <inheritdoc />
+		protected override object FindInternal (params object[] primaryKeys)
+		{
+			return this.Find(primaryKeys);
+		}
+
+		/// <inheritdoc />
 		protected sealed override IQueryable<object> GetFilteredInternal (object filter, object sort, int pageIndex, int pageSize, out int totalCount, out int filteredCount, out int pageCount)
 		{
 			return this.GetFiltered(filter, sort, pageIndex, pageSize, out totalCount, out filteredCount, out pageCount);
@@ -551,6 +566,22 @@ namespace RI.Framework.Data.EF
 			}
 
 			this.Set.Remove(entity);
+		}
+
+		/// <inheritdoc />
+		public new T Find (params object[] primaryKeys)
+		{
+			if (primaryKeys == null)
+			{
+				throw new ArgumentNullException(nameof(primaryKeys));
+			}
+
+			if (primaryKeys.Length == 0)
+			{
+				throw new ArgumentException("Array of primary keys is empty.", nameof(primaryKeys));
+			}
+
+			return this.Set.Find(primaryKeys);
 		}
 
 		/// <inheritdoc />

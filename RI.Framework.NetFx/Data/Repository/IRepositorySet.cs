@@ -155,6 +155,17 @@ namespace RI.Framework.Data.Repository
 		int GetCount ();
 
 		/// <summary>
+		/// Gets the entity with a specified primary key.
+		/// </summary>
+		/// <param name="primaryKeys">The array of values which form the primary key.</param>
+		/// <returns>
+		/// The entity or null if no entity with the specified primary key exists.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"><paramref name="primaryKeys"/> is null.</exception>
+		/// <exception cref="ArgumentException"><paramref name="primaryKeys"/> is an empty array.</exception>
+		object Find (params object[] primaryKeys);
+
+		/// <summary>
 		///     Gets a sequence of filtered entities from this set.
 		/// </summary>
 		/// <param name="filter"> An implementation-defined filter object which is used for filtering or null if no filter is to be used. </param>
@@ -364,6 +375,17 @@ namespace RI.Framework.Data.Repository
 		/// <exception cref="ArgumentNullException"> <paramref name="entity" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> The entity cannot be deleted. </exception>
 		void Delete (T entity);
+
+		/// <summary>
+		/// Gets the entity with a specified primary key.
+		/// </summary>
+		/// <param name="primaryKeys">The array of values which form the primary key.</param>
+		/// <returns>
+		/// The entity or null if no entity with the specified primary key exists.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"><paramref name="primaryKeys"/> is null.</exception>
+		/// <exception cref="ArgumentException"><paramref name="primaryKeys"/> is an empty array.</exception>
+		new T Find(params object[] primaryKeys);
 
 		/// <summary>
 		///     Gets a sequence of all entities of this sets type.

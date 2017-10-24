@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.Common;
 using System.Data.Entity;
+using System.Data.Entity.Core.Objects;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.ModelConfiguration.Configuration;
 using System.Data.Entity.Validation;
@@ -276,6 +277,8 @@ namespace RI.Framework.Data.EF
 			{
 				throw new ArgumentNullException(nameof(type));
 			}
+
+			type = ObjectContext.GetObjectType(type);
 
 			if (!this.Sets.Contains(type))
 			{

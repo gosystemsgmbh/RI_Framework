@@ -46,14 +46,9 @@ namespace RI.Framework.Web.Nancy
 				throw new ArgumentNullException(nameof(data));
 			}
 
-			const string itemName = "RequestedBinaryData-0537A029-D356-45F9-B821-4471C8B97030";
-
-			module.Context.Items.Add(itemName, data);
-
 			Response response = new StreamResponse(() =>
 			{
-				byte[] requestedBinaryData = (byte[])module.Context.Items[itemName];
-				Stream stream = new MemoryStream(requestedBinaryData, false);
+				Stream stream = new MemoryStream(data, false);
 				return stream;
 			}, "application/octet-stream");
 			response.StatusCode = statusCode;
@@ -68,7 +63,7 @@ namespace RI.Framework.Web.Nancy
 		/// <param name="file"> The name of the embedded file. </param>
 		/// <param name="statusCode"> The optional HTTP status code of the response. The default value is OK. </param>
 		/// <returns>
-		///     The response.
+		///     The response or null if the embedded file does not exist.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="module" />, <paramref name="assembly" />, or <paramref name="file" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="file" /> is an empty string. </exception>
@@ -94,17 +89,17 @@ namespace RI.Framework.Web.Nancy
 				throw new EmptyStringArgumentException(nameof(file));
 			}
 
-			const string assemblyItemName = "RequestedEmbeddedAssembly-EC99F0E8-A8F3-4113-B456-423A11C5418B";
-			const string fileItemName = "RequestedEmbeddedFile-24BED48D-D5DF-49AD-95E5-3CBFB3818B62";
-
-			module.Context.Items.Add(assemblyItemName, assembly);
-			module.Context.Items.Add(fileItemName, file);
+			using (Stream stream = assembly.GetEmbeddedFileStream(file))
+			{
+				if (stream == null)
+				{
+					return null;
+				}
+			}
 
 			Response response = new StreamResponse(() =>
 			{
-				Assembly requestedEmbeddedAssembly = (Assembly)module.Context.Items[assemblyItemName];
-				string requestedEmbeddedFile = (string)module.Context.Items[fileItemName];
-				Stream stream = requestedEmbeddedAssembly.GetEmbeddedFileStream(requestedEmbeddedFile);
+				Stream stream = assembly.GetEmbeddedFileStream(file);
 				return stream;
 			}, MimeTypes.GetMimeType(file));
 			response.StatusCode = statusCode;
@@ -145,11 +140,10 @@ namespace RI.Framework.Web.Nancy
 		/// <param name="file"> The path to the physical file. </param>
 		/// <param name="statusCode"> The optional HTTP status code of the response. The default value is OK. </param>
 		/// <returns>
-		///     The response.
+		///     The response or null if the physical file does not exist.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="module" /> or <paramref name="file" /> is null. </exception>
 		/// <exception cref="InvalidPathArgumentException"> <paramref name="file" /> is an invalid file path. </exception>
-		/// <exception cref="FileNotFoundException"> <paramref name="file" /> does not exist. </exception>
 		public static Response PhysicalFileResponse (this NancyModule module, FilePath file, HttpStatusCode statusCode = HttpStatusCode.OK)
 		{
 			if (module == null)
@@ -169,17 +163,12 @@ namespace RI.Framework.Web.Nancy
 
 			if (!file.Exists)
 			{
-				throw new FileNotFoundException("Physical file not found.", file);
+				return null;
 			}
-
-			const string itemName = "RequestedPhysicalFile-56C6FEF5-324F-4718-B62F-CFACC4EF4ACC";
-
-			module.Context.Items.Add(itemName, file);
 
 			Response response = new StreamResponse(() =>
 			{
-				FilePath requestedPhysicalFile = (FilePath)module.Context.Items[itemName];
-				Stream stream = File.OpenRead(requestedPhysicalFile);
+				Stream stream = File.OpenRead(file);
 				return stream;
 			}, MimeTypes.GetMimeType(file));
 			response.StatusCode = statusCode;
@@ -208,14 +197,9 @@ namespace RI.Framework.Web.Nancy
 				throw new ArgumentNullException(nameof(stream));
 			}
 
-			const string itemName = "RequestedBinaryStream-56B94DE3-EA5E-4930-9169-F969F7CD0664";
-
-			module.Context.Items.Add(itemName, stream);
-
 			Response response = new StreamResponse(() =>
 			{
-				Stream requestedBinaryStream = (Stream)module.Context.Items[itemName];
-				return requestedBinaryStream;
+				return stream;
 			}, "application/octet-stream");
 			response.StatusCode = statusCode;
 			return response;
