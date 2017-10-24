@@ -94,8 +94,8 @@ namespace RI.Framework.Bus.Routers
 		/// <inheritdoc />
 		public bool ShouldReceive (MessageItem message, ReceiverRegistrationItem receiver)
 		{
-			bool addressMatch = string.Equals(message.Address, receiver.ReceiverRegistration.Address, StringComparison.OrdinalIgnoreCase);
-			bool typeMatch = this.CompareTypes(message.Payload?.GetType(), receiver.ReceiverRegistration.PayloadType, receiver.ReceiverRegistration.IncludeCompatiblePayloadTypes);
+			bool addressMatch = (receiver.ReceiverRegistration.Address == null) || string.Equals(message.Address, receiver.ReceiverRegistration.Address, StringComparison.OrdinalIgnoreCase);
+			bool typeMatch = (receiver.ReceiverRegistration.PayloadType == null) || this.CompareTypes(message.Payload?.GetType(), receiver.ReceiverRegistration.PayloadType, receiver.ReceiverRegistration.IncludeCompatiblePayloadTypes);
 			return addressMatch && typeMatch;
 		}
 
