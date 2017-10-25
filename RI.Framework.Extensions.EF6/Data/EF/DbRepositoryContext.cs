@@ -126,6 +126,7 @@ namespace RI.Framework.Data.EF
 			}
 		}
 
+		[SuppressMessage("ReSharper", "PossibleNullReferenceException")]
 		private static MethodInfo GetSetCreator (DbRepositoryContext repository, Type entityType)
 		{
 			lock (DbRepositoryContext.SetCreatorsSyncRoot)
@@ -186,8 +187,13 @@ namespace RI.Framework.Data.EF
 				throw new ArgumentNullException(nameof(connection));
 			}
 
+			this.ObjectMaterializedHandler = this.ObjectMaterializedMethod;
+
 			this.FixOnValidateEnabled = true;
 			this.FixOnSaveEnabled = true;
+
+			this.MaterializationHandlingEnabled = false;
+			this.DematerializationHandlingEnabled = false;
 
 			this.EntitySelfErrorTrackingEnabled = true;
 			this.EntitySelfChangeTrackingEnabled = true;
@@ -206,12 +212,48 @@ namespace RI.Framework.Data.EF
 			this.Configuration.ValidateOnSaveEnabled = true;
 		}
 
+		private ObjectMaterializedEventHandler ObjectMaterializedHandler { get; set; }
+
+		private void ObjectMaterializedMethod (object sender, ObjectMaterializedEventArgs e)
+		{
+			if (e.Entity == null)
+			{
+				return;
+			}
+
+			this.ObjectMaterialized(e.Entity);
+		}
+
+		/// <summary>
+		/// Called after an entity was materialized by loading from the database.
+		/// </summary>
+		/// <param name="entity">The materialized entity.</param>
+		protected virtual void ObjectMaterialized (object entity)
+		{
+			Type type = entity.GetType();
+			IEntityValidation validator = this.GetValidator(type);
+			validator?.Materialize(this, this.GetSet(type), entity);
+		}
+
+		/// <summary>
+		/// Called before an entity is dematerialized by saving to the database.
+		/// </summary>
+		/// <param name="entity">The dematerializing entity.</param>
+		protected virtual void ObjectDematerializing (object entity)
+		{
+			Type type = entity.GetType();
+			IEntityValidation validator = this.GetValidator(type);
+			validator?.Dematerialize(this, this.GetSet(type), entity);
+		}
+
 		#endregion
 
 
 
 
 		#region Instance Properties/Indexer
+
+		private IObjectContextAdapter ObjectContextAdapter => this;
 
 		/// <summary>
 		///     Gets or sets whether entity fixing is enabled before pending changes are saved or committed.
@@ -238,6 +280,49 @@ namespace RI.Framework.Data.EF
 		///     </para>
 		/// </remarks>
 		public bool FixOnValidateEnabled { get; set; }
+
+		private bool _materializationHandlingEnabled;
+
+		/// <summary>
+		/// Gets or sets whether materialization handling is enabled for entities after they were loaded from the database.
+		/// </summary>
+		/// <value>
+		/// true if materialization handling is enabled, false otherwise.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         The default value is false.
+		///     </para>
+		/// </remarks>
+		public bool MaterializationHandlingEnabled
+		{
+			get
+			{
+				return this._materializationHandlingEnabled;
+			}
+			set
+			{
+				this._materializationHandlingEnabled = value;
+				this.ObjectContextAdapter.ObjectContext.ObjectMaterialized -= this.ObjectMaterializedHandler;
+				if (value)
+				{
+					this.ObjectContextAdapter.ObjectContext.ObjectMaterialized += this.ObjectMaterializedHandler;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or set whether dematerialization handling is enabled for entities before they are saved to the database.
+		/// </summary>
+		/// <value>
+		/// true if dematerialization handling is enabled, false otherwise.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         The default value is false.
+		///     </para>
+		/// </remarks>
+		public bool DematerializationHandlingEnabled { get; set; }
 
 		private SetCollection Sets { get; set; }
 
@@ -301,6 +386,8 @@ namespace RI.Framework.Data.EF
 				throw new ArgumentNullException(nameof(entityType));
 			}
 
+			entityType = ObjectContext.GetObjectType(entityType);
+
 			return DbRepositoryContext.GetFilter(this, entityType);
 		}
 
@@ -316,6 +403,8 @@ namespace RI.Framework.Data.EF
 			{
 				throw new ArgumentNullException(nameof(entityType));
 			}
+
+			entityType = ObjectContext.GetObjectType(entityType);
 
 			return DbRepositoryContext.GetValidator(this, entityType);
 		}
@@ -351,6 +440,16 @@ namespace RI.Framework.Data.EF
 			}
 		}
 
+		private void PerformDematerializationHandling ()
+		{
+			this.ChangeTracker.DetectChanges();
+			foreach (DbEntityEntry entry in this.ChangeTracker.Entries())
+			{
+				object entity = entry.Entity;
+				this.ObjectDematerializing(entity);
+			}
+		}
+
 		#endregion
 
 
@@ -371,6 +470,11 @@ namespace RI.Framework.Data.EF
 			if (this.EntitySelfChangeTrackingEnabled)
 			{
 				this.PerformEntitySelfChangeTracking();
+			}
+
+			if (this.DematerializationHandlingEnabled)
+			{
+				this.PerformDematerializationHandling();
 			}
 		}
 

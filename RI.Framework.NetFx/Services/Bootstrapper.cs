@@ -682,9 +682,13 @@ namespace RI.Framework.Services
 			additionalData.Add(nameof(this.InstanceId), this.InstanceId ?? "[null]");
 			additionalData.Add(nameof(this.PreviousVersion), this.PreviousVersion?.ToString() ?? "[null]");
 			additionalData.Add(nameof(this.FirstStart), this.FirstStart?.ToString() ?? "[null]");
+			additionalData.Add(nameof(this.IsService), this.IsService.ToString());
 
 			return additionalData;
 		}
+
+		/// <inheritdoc />
+		public bool IsService => this.HostContext?.IsService ?? false;
 
 		/// <summary>
 		///     Called when the application object needs to be created.
@@ -1152,6 +1156,7 @@ namespace RI.Framework.Services
 			this.Log(LogLevel.Debug, "Application object:    {0}", this.Application?.ToString() ?? "[null]");
 			this.Log(LogLevel.Debug, "First start:           {0}", this.FirstStart?.ToString() ?? "[null]");
 			this.Log(LogLevel.Debug, "Previous version:      {0}", this.PreviousVersion?.ToString() ?? "[null]");
+			this.Log(LogLevel.Debug, "Is service:            {0}", this.IsService);
 		}
 
 		/// <summary>

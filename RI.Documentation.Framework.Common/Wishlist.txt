@@ -229,6 +229,8 @@ Data
  - (.NET) IRepositoryContext: Add GetChanges method (return RepositoryContextChanges type)
  - (.NET) IRepositoryContext: Add GetErrors method (return RepositoryContextErrors type)
 
+ - (.NET) Async repositories/contexts
+
 
 Mathematic
 ----------

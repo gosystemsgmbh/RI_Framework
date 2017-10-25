@@ -35,6 +35,14 @@ namespace RI.Framework.Services
 		Assembly ApplicationAssembly { get; }
 
 		/// <summary>
+		///     Gets whether the application runs as a service or daemon.
+		/// </summary>
+		/// <value>
+		///     true if the application runs as a service or daemon, false otherwise.
+		/// </value>
+		bool IsService { get; }
+
+		/// <summary>
 		///     Gets the associated company name of the application.
 		/// </summary>
 		/// <value>

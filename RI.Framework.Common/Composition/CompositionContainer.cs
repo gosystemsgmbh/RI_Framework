@@ -2794,6 +2794,7 @@ namespace RI.Framework.Composition
 		{
 			#region Instance Constructor/Destructor
 
+			[SuppressMessage("ReSharper", "PossibleNullReferenceException")]
 			public LazyInvoker (CompositionContainer container, string name, Type type)
 			{
 				this.Container = container;

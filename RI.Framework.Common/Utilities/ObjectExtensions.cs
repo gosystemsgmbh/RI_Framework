@@ -329,6 +329,97 @@ namespace RI.Framework.Utilities
 			return null;
 		}
 
+		/// <summary>
+		/// Checks whether the object is equal to at least one of a given sequence of other objects.
+		/// </summary>
+		/// <typeparam name="T"> The type of the object to check. </typeparam>
+		/// <param name="obj">The object to check against the sequence.</param>
+		/// <param name="candidates">The sequence of other objects <paramref name="obj"/> is checked against.</param>
+		/// <returns>
+		/// true if the object is atr least equal to one other object of the specified sequence, false otherwise.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="candidates"/> is enumerated only once.
+		/// </para>
+		/// <para>
+		/// <see cref="EqualityComparer{T}.Default"/> is used for equality comparison.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"><paramref name="obj"/> or <paramref name="candidates"/> is null.</exception>
+		public static bool EqualsAny<T> (this T obj, IEnumerable<T> candidates) => obj.EqualsAny(null, candidates);
+
+		/// <summary>
+		/// Checks whether the object is equal to at least one of a given array of other objects.
+		/// </summary>
+		/// <typeparam name="T"> The type of the object to check. </typeparam>
+		/// <param name="obj">The object to check against the array.</param>
+		/// <param name="candidates">The array of other objects <paramref name="obj"/> is checked against.</param>
+		/// <returns>
+		/// true if the object is atr least equal to one other object of the specified array, false otherwise.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <see cref="EqualityComparer{T}.Default"/> is used for equality comparison.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"><paramref name="obj"/> or <paramref name="candidates"/> is null.</exception>
+		public static bool EqualsAny<T> (this T obj, params T[] candidates) => obj.EqualsAny((IEnumerable<T>)candidates);
+
+		/// <summary>
+		/// Checks whether the object is equal to at least one of a given sequence of other objects.
+		/// </summary>
+		/// <typeparam name="T"> The type of the object to check. </typeparam>
+		/// <param name="obj">The object to check against the sequence.</param>
+		/// <param name="comparer">The comparer used for the equality checks or null to use <see cref="EqualityComparer{T}.Default"/>.</param>
+		/// <param name="candidates">The sequence of other objects <paramref name="obj"/> is checked against.</param>
+		/// <returns>
+		/// true if the object is atr least equal to one other object of the specified sequence, false otherwise.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="candidates"/> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"><paramref name="obj"/> or <paramref name="candidates"/> is null.</exception>
+		public static bool EqualsAny<T>(this T obj, IEqualityComparer<T> comparer, IEnumerable<T> candidates)
+		{
+			if (obj == null)
+			{
+				throw new ArgumentNullException(nameof(obj));
+			}
+
+			if (candidates == null)
+			{
+				throw new ArgumentNullException(nameof(candidates));
+			}
+
+			comparer = comparer ?? EqualityComparer<T>.Default;
+
+			foreach (T candidate in candidates)
+			{
+				if (comparer.Equals(obj, candidate))
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		/// <summary>
+		/// Checks whether the object is equal to at least one of a given array of other objects.
+		/// </summary>
+		/// <typeparam name="T"> The type of the object to check. </typeparam>
+		/// <param name="obj">The object to check against the array.</param>
+		/// <param name="comparer">The comparer used for the equality checks or null to use <see cref="EqualityComparer{T}.Default"/>.</param>
+		/// <param name="candidates">The array of other objects <paramref name="obj"/> is checked against.</param>
+		/// <returns>
+		/// true if the object is atr least equal to one other object of the specified array, false otherwise.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"><paramref name="obj"/> or <paramref name="candidates"/> is null.</exception>
+		public static bool EqualsAny<T>(this T obj, IEqualityComparer<T> comparer, params T[] candidates) => obj.EqualsAny(comparer, (IEnumerable<T>)candidates);
+
 		#endregion
 	}
 }
