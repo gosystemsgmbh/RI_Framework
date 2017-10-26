@@ -104,6 +104,14 @@ namespace RI.Framework.Bus
 		/// </value>
 		public Type ResponseType { get; private set; }
 
+		/// <summary>
+		/// Gets the exception handler which is called for unhandled exceptions within <see cref="Callback"/>.
+		/// </summary>
+		/// <value>
+		/// The exception handler which is called for unhandled exceptions within <see cref="Callback"/> or null if no exception handler is used.
+		/// </value>
+		public Func<string, object, Exception, object> ExceptionHandler { get; private set; }
+
 		#endregion
 
 
@@ -312,6 +320,31 @@ namespace RI.Framework.Bus
 			}
 		}
 
+		/// <summary>
+		///     Sets the exception handler this receiver uses.
+		/// </summary>
+		/// <param name="exceptionHandler"> The exception handler this receiver uses or null if no exception handler is used. </param>
+		/// <returns>
+		///     The receiver registration to continue configuration of the receiver.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// The exception handler uses the following parameters, in the following order:
+		/// The address of the message or null if the message has no address, The payload or null if the message has no payload, and the exception which was not handled.
+		/// The return value is the response object or null if no response object is used.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="InvalidOperationException"> The reception is already being processed. </exception>
+		public ReceiverRegistration WithExceptionHandler(Func<string, object, Exception, object> exceptionHandler)
+		{
+			lock (this.SyncRoot)
+			{
+				this.VerifyNotStarted();
+				this.ExceptionHandler = exceptionHandler;
+				return this;
+			}
+		}
+
 		private void VerifyNotStarted ()
 		{
 			if (this.IsProcessed)
@@ -381,6 +414,13 @@ namespace RI.Framework.Bus
 
 
 		#region Instance Methods
+
+		/// <inheritdoc cref="ReceiverRegistration.WithExceptionHandler" />
+		public ReceiverRegistrationWithPayload<TPayload> WithExceptionHandler(Func<string, object, Exception, object> exceptionHandler)
+		{
+			this.Origin.WithExceptionHandler(exceptionHandler);
+			return this;
+		}
 
 		/// <inheritdoc cref="ReceiverRegistration.AsAddress" />
 		public ReceiverRegistrationWithPayload<TPayload> AsAddress (string address)
@@ -515,6 +555,13 @@ namespace RI.Framework.Bus
 
 		#region Instance Methods
 
+		/// <inheritdoc cref="ReceiverRegistration.WithExceptionHandler" />
+		public ReceiverRegistrationWithResponse<TResponse> WithExceptionHandler(Func<string, object, Exception, object> exceptionHandler)
+		{
+			this.Origin.WithExceptionHandler(exceptionHandler);
+			return this;
+		}
+
 		/// <inheritdoc cref="ReceiverRegistration.AsAddress" />
 		public ReceiverRegistrationWithResponse<TResponse> AsAddress (string address)
 		{
@@ -644,6 +691,13 @@ namespace RI.Framework.Bus
 
 
 		#region Instance Methods
+
+		/// <inheritdoc cref="ReceiverRegistration.WithExceptionHandler" />
+		public ReceiverRegistrationWithPayloadAndResponse<TPayload, TResponse> WithExceptionHandler(Func<string, object, Exception, object> exceptionHandler)
+		{
+			this.Origin.WithExceptionHandler(exceptionHandler);
+			return this;
+		}
 
 		/// <inheritdoc cref="ReceiverRegistration.AsAddress" />
 		public ReceiverRegistrationWithPayloadAndResponse<TPayload, TResponse> AsAddress (string address)

@@ -108,14 +108,42 @@ namespace RI.Framework.Bus.Pipeline
 						this.Dispatcher.Dispatch(new Action<MessageItem, ReceiverRegistrationItem>((m, r) =>
 						{
 							Func<string, object, Task<object>> callback = r.ReceiverRegistration.Callback;
-							Task<object> task = callback(m.Address, m.Payload);
+							Task<object> task;
+							if (r.ReceiverRegistration.ExceptionHandler == null)
+							{
+								task = callback(m.Address, m.Payload);
+							}
+							else
+							{
+								try
+								{
+									task = callback(m.Address, m.Payload);
+								}
+								catch (Exception exception)
+								{
+									object result = r.ReceiverRegistration.ExceptionHandler(m.Address, m.Payload, exception);
+									task = Task.FromResult(result);
+								}
+							}
 							if (task.IsCompleted)
 							{
 								this.ResponseHandler(m, task.Result);
 							}
 							else
 							{
-								task.ContinueWith((c1, s1) => { this.Dispatcher.Dispatch(new Action<MessageItem, Task<object>>((s2, c2) => { this.ResponseHandler(s2, c2.Result); }), s1, c1); }, m, CancellationToken.None, TaskContinuationOptions.DenyChildAttach | TaskContinuationOptions.LazyCancellation | TaskContinuationOptions.RunContinuationsAsynchronously, TaskScheduler.Current);
+								task.ContinueWith((c1, s1) => { this.Dispatcher.Dispatch(new Action<MessageItem, Task<object>>((s2, c2) =>
+								{
+									object result;
+									if ((c2.Exception != null) && (r.ReceiverRegistration.ExceptionHandler != null))
+									{
+										result = r.ReceiverRegistration.ExceptionHandler(m.Address, m.Payload, c2.Exception);
+									}
+									else
+									{
+										result = c2.Result;
+									}
+									this.ResponseHandler(s2, result);
+								}), s1, c1); }, m, CancellationToken.None, TaskContinuationOptions.DenyChildAttach | TaskContinuationOptions.LazyCancellation | TaskContinuationOptions.RunContinuationsAsynchronously, TaskScheduler.Current);
 							}
 						}), messageItem, x);
 					});

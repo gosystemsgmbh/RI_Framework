@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using RI.Framework.Bus.Exceptions;
 using RI.Framework.Bus.Internals;
 using RI.Framework.Bus.Pipeline;
+using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.ObjectModel;
 
 
@@ -30,7 +31,7 @@ namespace RI.Framework.Bus
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	/// TODO: Documentation
-	public interface IBus : IDisposable, ISynchronizable
+	public interface IBus : IDisposable, ISynchronizable, ILogSource
 	{
 		/// <summary>
 		///     Gets or sets the timeout for collecting responses.

@@ -300,14 +300,9 @@ namespace RI.Framework.Services.Logging.Writers
 
 				try
 				{
-					using (SQLiteTransaction transaction = this.DbConnection.BeginTransaction())
+					using (SQLiteCommand cleanupCommand = this.DbConfiguration.BuildCleanupCommand(retentionDate, this.DbConnection, null))
 					{
-						using (SQLiteCommand cleanupCommand = this.DbConfiguration.BuildCleanupCommand(retentionDate, this.DbConnection, transaction))
-						{
-							cleanupCommand.ExecuteNonQuery();
-						}
-
-						transaction.Commit();
+						cleanupCommand.ExecuteNonQuery();
 					}
 				}
 				catch (Exception exception)
@@ -344,27 +339,22 @@ namespace RI.Framework.Services.Logging.Writers
 
 				try
 				{
-					using (SQLiteTransaction transaction = this.DbConnection.BeginTransaction())
+					using (SQLiteCommand insertCommand = new SQLiteCommand(this.InsertEntryCommandString, this.DbConnection))
 					{
-						using (SQLiteCommand insertCommand = new SQLiteCommand(this.InsertEntryCommandString, this.DbConnection, transaction))
+						LogFileEntry entry = new LogFileEntry();
+						entry.Timestamp = timestamp;
+						entry.ThreadId = threadId;
+						entry.Severity = severity;
+						entry.Source = source;
+						entry.Message = message;
+						entry.Session = this.Session;
+
+						Dictionary<string, object> parameters = this.DbConfiguration.BuildInsertEntryParameters(null, entry);
+						foreach (KeyValuePair<string, object> param in parameters)
 						{
-							LogFileEntry entry = new LogFileEntry();
-							entry.Timestamp = timestamp;
-							entry.ThreadId = threadId;
-							entry.Severity = severity;
-							entry.Source = source;
-							entry.Message = message;
-							entry.Session = this.Session;
-
-							Dictionary<string, object> parameters = this.DbConfiguration.BuildInsertEntryParameters(null, entry);
-							foreach (KeyValuePair<string, object> param in parameters)
-							{
-								insertCommand.Parameters.AddWithValue(param.Key, param.Value);
-							}
-							insertCommand.ExecuteNonQuery();
+							insertCommand.Parameters.AddWithValue(param.Key, param.Value);
 						}
-
-						transaction.Commit();
+						insertCommand.ExecuteNonQuery();
 					}
 				}
 				catch
