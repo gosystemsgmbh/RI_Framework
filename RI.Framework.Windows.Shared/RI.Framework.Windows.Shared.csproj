@@ -45,6 +45,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Management" />
     <Reference Include="System.Security" />
+    <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
@@ -75,6 +76,8 @@
     <Compile Include="Utilities\Windows\Network\_NamespaceDoc.cs" />
     <Compile Include="Utilities\Windows\SystemInformationReport.cs" />
     <Compile Include="Utilities\Windows\Users\_NamespaceDoc.cs" />
+    <Compile Include="Utilities\Windows\WindowsApplication.cs" />
+    <Compile Include="Utilities\Windows\WindowsService.cs" />
     <Compile Include="Utilities\Windows\WindowsWindow.cs" />
     <Compile Include="Utilities\Windows\Cryptography\UniqueIdentification.cs" />
     <None Include="Utilities\Windows\Messages\WindowsMessage.cs" />

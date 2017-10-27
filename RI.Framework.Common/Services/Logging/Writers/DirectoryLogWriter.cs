@@ -5,6 +5,7 @@ using System.IO;
 using System.Text;
 
 using RI.Framework.Composition.Model;
+using RI.Framework.IO.Files;
 using RI.Framework.IO.Paths;
 using RI.Framework.Services.Logging.Filters;
 using RI.Framework.Utilities;
@@ -310,6 +311,40 @@ namespace RI.Framework.Services.Logging.Writers
 		{
 			this.Dispose(true);
 			GC.SuppressFinalize(this);
+		}
+
+		/// <summary>
+		/// Creates a copy of the current log file which can be safely accessed.
+		/// </summary>
+		/// <returns>
+		/// The copy of the current log file as a temporary file or null if the log writer is disposed.
+		/// </returns>
+		public TemporaryFile CreateCopyOfCurrentFile ()
+		{
+			lock (this.SyncRoot)
+			{
+				if ((this.CurrentWriter == null) || (this.CurrentStream == null))
+				{
+					return null;
+				}
+
+				TemporaryFile tempFile = null;
+				bool success = false;
+				try
+				{
+					tempFile = new TemporaryFile(this.FileName.ExtensionWithDot);
+					this.CurrentFile.Copy(tempFile.File, true);
+					success = true;
+					return tempFile;
+				}
+				finally
+				{
+					if (!success)
+					{
+						tempFile?.Delete();
+					}
+				}
+			}
 		}
 
 		[SuppressMessage("ReSharper", "UnusedParameter.Local")]

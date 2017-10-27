@@ -44,6 +44,19 @@ namespace RI.Framework.Services
 		/// </remarks>
 		public FilePath ScriptFile { get; set; } = null;
 
+		/// <summary>
+		/// Gets or sets the arguments for the script file.
+		/// </summary>
+		/// <value>
+		/// The arguments for the script file.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         <see cref="ScriptArguments" /> is ignored if <see cref="ScriptFile" /> is null or <see cref="Mode" /> is not <see cref="ShutdownMode.ExitApplicationAndRunScript" />.
+		///     </para>
+		/// </remarks>
+		public string ScriptArguments { get; set; } = null;
+
 		#endregion
 
 
@@ -58,6 +71,7 @@ namespace RI.Framework.Services
 			clone.Mode = this.Mode;
 			clone.ExitCode = this.ExitCode;
 			clone.ScriptFile = this.ScriptFile?.Clone();
+			clone.ScriptArguments = this.ScriptArguments;
 			return clone;
 		}
 

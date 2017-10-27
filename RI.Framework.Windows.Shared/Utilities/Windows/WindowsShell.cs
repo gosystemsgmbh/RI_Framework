@@ -122,6 +122,7 @@ namespace RI.Framework.Utilities.Windows
 		///     Executes a batch script file.
 		/// </summary>
 		/// <param name="scriptFile"> The batch script file. </param>
+		/// <param name="scriptArguments"> The batch script arguments or null if no arguments are used. </param>
 		/// <param name="workingDirectory"> The used working directory. Can be null to use the current directory. </param>
 		/// <returns>
 		///     The <see cref="Process" /> if the script file could be started successfully, null otherwise.
@@ -135,7 +136,7 @@ namespace RI.Framework.Utilities.Windows
 		/// <exception cref="ArgumentNullException"> <paramref name="scriptFile" /> is null. </exception>
 		/// <exception cref="InvalidPathArgumentException"> <paramref name="scriptFile" /> is not a valid path. </exception>
 		/// <exception cref="FileNotFoundException"> <paramref name="scriptFile" /> does not exist. </exception>
-		public static Process ExecuteBatchScript (FilePath scriptFile, DirectoryPath workingDirectory)
+		public static Process ExecuteBatchScript (FilePath scriptFile, string scriptArguments, DirectoryPath workingDirectory)
 		{
 			if (scriptFile == null)
 			{
@@ -155,7 +156,15 @@ namespace RI.Framework.Utilities.Windows
 			workingDirectory = workingDirectory ?? DirectoryPath.GetCurrentDirectory();
 			string directory = Environment.ExpandEnvironmentVariables(workingDirectory);
 
-			ProcessStartInfo startInfo = new ProcessStartInfo(WindowsShell.CommandPromptExecutable, "/c call \"" + scriptFile + "\"");
+			StringBuilder arguments = new StringBuilder();
+			arguments.Append("/c call \"" + scriptFile + "\"");
+			if (!scriptArguments.IsNullOrEmptyOrWhitespace())
+			{
+				arguments.Append(" ");
+				arguments.Append(Environment.ExpandEnvironmentVariables(scriptArguments));
+			}
+
+			ProcessStartInfo startInfo = new ProcessStartInfo(WindowsShell.CommandPromptExecutable, arguments.ToString());
 			startInfo.CreateNoWindow = true;
 			startInfo.ErrorDialog = false;
 			startInfo.UseShellExecute = false;

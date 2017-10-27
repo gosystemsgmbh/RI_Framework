@@ -156,7 +156,7 @@ namespace RI.Framework.Web.Nancy
 				throw new ArgumentNullException(nameof(file));
 			}
 
-			if (file.IsRealFile)
+			if (!file.IsRealFile)
 			{
 				throw new InvalidPathArgumentException(nameof(file));
 			}
