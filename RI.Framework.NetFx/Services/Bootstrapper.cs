@@ -687,9 +687,6 @@ namespace RI.Framework.Services
 			return additionalData;
 		}
 
-		/// <inheritdoc />
-		public bool IsService => this.HostContext?.IsService ?? false;
-
 		/// <summary>
 		///     Called when the application object needs to be created.
 		/// </summary>
@@ -1285,6 +1282,9 @@ namespace RI.Framework.Services
 
 		/// <inheritdoc />
 		public string InstanceId { get; private set; }
+
+		/// <inheritdoc />
+		public bool IsService => this.HostContext?.IsService ?? false;
 
 
 		/// <inheritdoc />

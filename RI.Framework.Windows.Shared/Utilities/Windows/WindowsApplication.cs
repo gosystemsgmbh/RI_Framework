@@ -7,62 +7,69 @@ using RI.Framework.IO.Paths;
 using RI.Framework.Utilities.Reflection;
 using RI.Framework.Utilities.Text;
 
+
+
+
 namespace RI.Framework.Utilities.Windows
 {
 	/// <summary>
 	///     Provides utilities for working with Windows applications.
 	/// </summary>
 	/// <remarks>
-	/// <note type="important">
-	/// When waiting for exit before a new process is started, e.g. on restarting the current application, the wait for exit and the restart are delegated into a batch file, executed in its own process.
-	/// Therefore, the action will silently fail on errors.
-	/// </note>
+	///     <note type="important">
+	///         When waiting for exit before a new process is started, e.g. on restarting the current application, the wait for exit and the restart are delegated into a batch file, executed in its own process.
+	///         Therefore, the action will silently fail on errors.
+	///     </note>
 	/// </remarks>
 	public static class WindowsApplication
 	{
-		private const string WaitForExitScript = ":loop\r\n" +
-												 "tasklist | find \"{0}\" >nul\r\n" +
-												 "if not errorlevel 1 (\r\n" +
-												 "timeout /T 1 /NOBREAK >nul\r\n" +
-												 "goto :loop\r\n" +
-												 ")\r\n";
+		#region Constants
+
+		private const string WaitForExitScript = ":loop\r\n" + "tasklist | find \"{0}\" >nul\r\n" + "if not errorlevel 1 (\r\n" + "timeout /T 1 /NOBREAK >nul\r\n" + "goto :loop\r\n" + ")\r\n";
+
+		#endregion
+
+
+
+
+		#region Static Methods
 
 		/// <summary>
-		/// Restarts the current application including the current command line arguments.
+		///     Restarts the current application including the current command line arguments.
 		/// </summary>
-		/// <param name="waitForExitBeforeStart">Specifies whether it should be waited for the current process to exit before the application is restarted.</param>
+		/// <param name="waitForExitBeforeStart"> Specifies whether it should be waited for the current process to exit before the application is restarted. </param>
 		/// <remarks>
-		/// <note type="note">
-		/// See the remarks of <see cref="WindowsApplication"/> for more important information about windows application actions provided by <see cref="WindowsApplication"/>.
-		/// </note>
+		///     <note type="note">
+		///         See the remarks of <see cref="WindowsApplication" /> for more important information about windows application actions provided by <see cref="WindowsApplication" />.
+		///     </note>
 		/// </remarks>
 		public static void RestartCurrent (bool waitForExitBeforeStart) => WindowsApplication.RestartCurrentInternal(waitForExitBeforeStart, CommandLine.Parse(Environment.CommandLine, true));
 
 		/// <summary>
-		/// Restarts the current application with the specified command line arguments.
+		///     Restarts the current application with the specified command line arguments.
 		/// </summary>
-		/// <param name="waitForExitBeforeStart">Specifies whether it should be waited for the current process to exit before the application is restarted.</param>
-		/// <param name="commandLineArguments">The used command line arguments or null if no command line arguments are used.</param>
+		/// <param name="waitForExitBeforeStart"> Specifies whether it should be waited for the current process to exit before the application is restarted. </param>
+		/// <param name="commandLineArguments"> The used command line arguments or null if no command line arguments are used. </param>
 		/// <remarks>
-		/// <note type="note">
-		/// See the remarks of <see cref="WindowsApplication"/> for more important information about windows application actions provided by <see cref="WindowsApplication"/>.
-		/// </note>
+		///     <note type="note">
+		///         See the remarks of <see cref="WindowsApplication" /> for more important information about windows application actions provided by <see cref="WindowsApplication" />.
+		///     </note>
 		/// </remarks>
 		public static void RestartCurrent (bool waitForExitBeforeStart, string commandLineArguments) => WindowsApplication.RestartCurrentInternal(waitForExitBeforeStart, CommandLine.Parse(commandLineArguments, false));
 
 		/// <summary>
-		/// Restarts the current application with the specified command line arguments.
+		///     Restarts the current application with the specified command line arguments.
 		/// </summary>
-		/// <param name="waitForExitBeforeStart">Specifies whether it should be waited for the current process to exit before the application is restarted.</param>
-		/// <param name="commandLineArguments">The used command line arguments or null if no command line arguments are used.</param>
+		/// <param name="waitForExitBeforeStart"> Specifies whether it should be waited for the current process to exit before the application is restarted. </param>
+		/// <param name="commandLineArguments"> The used command line arguments or null if no command line arguments are used. </param>
 		/// <remarks>
-		/// <note type="note">
-		/// See the remarks of <see cref="WindowsApplication"/> for more important information about windows application actions provided by <see cref="WindowsApplication"/>.
-		/// </note>
+		///     <note type="note">
+		///         See the remarks of <see cref="WindowsApplication" /> for more important information about windows application actions provided by <see cref="WindowsApplication" />.
+		///     </note>
 		/// </remarks>
-		public static void RestartCurrent(bool waitForExitBeforeStart, CommandLine commandLineArguments) => WindowsApplication.RestartCurrentInternal(waitForExitBeforeStart, commandLineArguments);
+		public static void RestartCurrent (bool waitForExitBeforeStart, CommandLine commandLineArguments) => WindowsApplication.RestartCurrentInternal(waitForExitBeforeStart, commandLineArguments);
 
-		private static void RestartCurrentInternal(bool waitForExitBeforeStart, CommandLine commandLine)
+		private static void RestartCurrentInternal (bool waitForExitBeforeStart, CommandLine commandLine)
 		{
 			Assembly entryAssembly = Assembly.GetEntryAssembly();
 			FilePath assemblyFile = entryAssembly?.GetFile();
@@ -101,5 +108,7 @@ namespace RI.Framework.Utilities.Windows
 				newProcess?.Dispose();
 			}
 		}
+
+		#endregion
 	}
 }

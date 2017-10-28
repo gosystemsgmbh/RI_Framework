@@ -197,10 +197,7 @@ namespace RI.Framework.Web.Nancy
 				throw new ArgumentNullException(nameof(stream));
 			}
 
-			Response response = new StreamResponse(() =>
-			{
-				return stream;
-			}, "application/octet-stream");
+			Response response = new StreamResponse(() => { return stream; }, "application/octet-stream");
 			response.StatusCode = statusCode;
 			return response;
 		}

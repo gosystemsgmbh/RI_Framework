@@ -119,26 +119,6 @@ namespace RI.Framework.Data.EF.Validation
 		}
 
 		/// <summary>
-		///     Called when an entity is to be fixed.
-		/// </summary>
-		/// <param name="repository"> The repository the fixed entity belongs to. </param>
-		/// <param name="set"> The set the fixed entity belongs to. </param>
-		/// <param name="entity"> The entity to fix. </param>
-		protected virtual void Fix (DbRepositoryContext repository, DbRepositorySet<T> set, T entity)
-		{
-		}
-
-		/// <summary>
-		///     Called when the materialization of an entity is to be handled after it was loaded from the database.
-		/// </summary>
-		/// <param name="repository"> The repository the entity belongs to. </param>
-		/// <param name="set"> The set. </param>
-		/// <param name="entity"> The entity. </param>
-		protected virtual void Materialize (DbRepositoryContext repository, DbRepositorySet<T> set, T entity)
-		{
-		}
-
-		/// <summary>
 		///     Called when the dematerialization of an entity is to be handled before it is saved to the database.
 		/// </summary>
 		/// <param name="repository"> The repository the entity belongs to. </param>
@@ -149,12 +129,32 @@ namespace RI.Framework.Data.EF.Validation
 		}
 
 		/// <summary>
+		///     Called when an entity is to be fixed.
+		/// </summary>
+		/// <param name="repository"> The repository the fixed entity belongs to. </param>
+		/// <param name="set"> The set the fixed entity belongs to. </param>
+		/// <param name="entity"> The entity to fix. </param>
+		protected virtual void Fix (DbRepositoryContext repository, DbRepositorySet<T> set, T entity)
+		{
+		}
+
+		/// <summary>
 		///     Called when an entity is to be initialized.
 		/// </summary>
 		/// <param name="repository"> The repository the initialized entity belongs to. </param>
 		/// <param name="set"> The set the initialized entity belongs to. </param>
 		/// <param name="entity"> The entity to initialize. </param>
 		protected virtual void Initialize (DbRepositoryContext repository, DbRepositorySet<T> set, T entity)
+		{
+		}
+
+		/// <summary>
+		///     Called when the materialization of an entity is to be handled after it was loaded from the database.
+		/// </summary>
+		/// <param name="repository"> The repository the entity belongs to. </param>
+		/// <param name="set"> The set. </param>
+		/// <param name="entity"> The entity. </param>
+		protected virtual void Materialize (DbRepositoryContext repository, DbRepositorySet<T> set, T entity)
 		{
 		}
 
@@ -322,48 +322,6 @@ namespace RI.Framework.Data.EF.Validation
 		}
 
 		/// <inheritdoc />
-		void IEntityValidation.Fix (DbRepositoryContext repository, DbRepositorySet set, object entity)
-		{
-			if (repository == null)
-			{
-				throw new ArgumentNullException(nameof(repository));
-			}
-
-			if (set == null)
-			{
-				throw new ArgumentNullException(nameof(set));
-			}
-
-			if (entity == null)
-			{
-				throw new ArgumentNullException(nameof(entity));
-			}
-
-			this.Fix(repository, (DbRepositorySet<T>)set, (T)entity);
-		}
-
-		/// <inheritdoc />
-		void IEntityValidation.Materialize (DbRepositoryContext repository, DbRepositorySet set, object entity)
-		{
-			if (repository == null)
-			{
-				throw new ArgumentNullException(nameof(repository));
-			}
-
-			if (set == null)
-			{
-				throw new ArgumentNullException(nameof(set));
-			}
-
-			if (entity == null)
-			{
-				throw new ArgumentNullException(nameof(entity));
-			}
-
-			this.Materialize(repository, (DbRepositorySet<T>)set, (T)entity);
-		}
-
-		/// <inheritdoc />
 		void IEntityValidation.Dematerialize (DbRepositoryContext repository, DbRepositorySet set, object entity)
 		{
 			if (repository == null)
@@ -385,6 +343,27 @@ namespace RI.Framework.Data.EF.Validation
 		}
 
 		/// <inheritdoc />
+		void IEntityValidation.Fix (DbRepositoryContext repository, DbRepositorySet set, object entity)
+		{
+			if (repository == null)
+			{
+				throw new ArgumentNullException(nameof(repository));
+			}
+
+			if (set == null)
+			{
+				throw new ArgumentNullException(nameof(set));
+			}
+
+			if (entity == null)
+			{
+				throw new ArgumentNullException(nameof(entity));
+			}
+
+			this.Fix(repository, (DbRepositorySet<T>)set, (T)entity);
+		}
+
+		/// <inheritdoc />
 		void IEntityValidation.Initialize (DbRepositoryContext repository, DbRepositorySet set, object entity)
 		{
 			if (repository == null)
@@ -403,6 +382,27 @@ namespace RI.Framework.Data.EF.Validation
 			}
 
 			this.Initialize(repository, (DbRepositorySet<T>)set, (T)entity);
+		}
+
+		/// <inheritdoc />
+		void IEntityValidation.Materialize (DbRepositoryContext repository, DbRepositorySet set, object entity)
+		{
+			if (repository == null)
+			{
+				throw new ArgumentNullException(nameof(repository));
+			}
+
+			if (set == null)
+			{
+				throw new ArgumentNullException(nameof(set));
+			}
+
+			if (entity == null)
+			{
+				throw new ArgumentNullException(nameof(entity));
+			}
+
+			this.Materialize(repository, (DbRepositorySet<T>)set, (T)entity);
 		}
 
 		/// <inheritdoc />

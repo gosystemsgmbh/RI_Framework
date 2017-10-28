@@ -32,6 +32,19 @@ namespace RI.Framework.Services
 		public ShutdownMode Mode { get; set; } = ShutdownMode.ExitApplication;
 
 		/// <summary>
+		///     Gets or sets the arguments for the script file.
+		/// </summary>
+		/// <value>
+		///     The arguments for the script file.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         <see cref="ScriptArguments" /> is ignored if <see cref="ScriptFile" /> is null or <see cref="Mode" /> is not <see cref="ShutdownMode.ExitApplicationAndRunScript" />.
+		///     </para>
+		/// </remarks>
+		public string ScriptArguments { get; set; } = null;
+
+		/// <summary>
 		///     Gets or sets the script file to execute after shutdown.
 		/// </summary>
 		/// <value>
@@ -43,19 +56,6 @@ namespace RI.Framework.Services
 		///     </para>
 		/// </remarks>
 		public FilePath ScriptFile { get; set; } = null;
-
-		/// <summary>
-		/// Gets or sets the arguments for the script file.
-		/// </summary>
-		/// <value>
-		/// The arguments for the script file.
-		/// </value>
-		/// <remarks>
-		///     <para>
-		///         <see cref="ScriptArguments" /> is ignored if <see cref="ScriptFile" /> is null or <see cref="Mode" /> is not <see cref="ShutdownMode.ExitApplicationAndRunScript" />.
-		///     </para>
-		/// </remarks>
-		public string ScriptArguments { get; set; } = null;
 
 		#endregion
 

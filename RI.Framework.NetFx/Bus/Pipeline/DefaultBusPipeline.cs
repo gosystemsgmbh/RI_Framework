@@ -131,19 +131,22 @@ namespace RI.Framework.Bus.Pipeline
 							}
 							else
 							{
-								task.ContinueWith((c1, s1) => { this.Dispatcher.Dispatch(new Action<MessageItem, Task<object>>((s2, c2) =>
+								task.ContinueWith((c1, s1) =>
 								{
-									object result;
-									if ((c2.Exception != null) && (r.ReceiverRegistration.ExceptionHandler != null))
+									this.Dispatcher.Dispatch(new Action<MessageItem, Task<object>>((s2, c2) =>
 									{
-										result = r.ReceiverRegistration.ExceptionHandler(m.Address, m.Payload, c2.Exception);
-									}
-									else
-									{
-										result = c2.Result;
-									}
-									this.ResponseHandler(s2, result);
-								}), s1, c1); }, m, CancellationToken.None, TaskContinuationOptions.DenyChildAttach | TaskContinuationOptions.LazyCancellation | TaskContinuationOptions.RunContinuationsAsynchronously, TaskScheduler.Current);
+										object result;
+										if ((c2.Exception != null) && (r.ReceiverRegistration.ExceptionHandler != null))
+										{
+											result = r.ReceiverRegistration.ExceptionHandler(m.Address, m.Payload, c2.Exception);
+										}
+										else
+										{
+											result = c2.Result;
+										}
+										this.ResponseHandler(s2, result);
+									}), s1, c1);
+								}, m, CancellationToken.None, TaskContinuationOptions.DenyChildAttach | TaskContinuationOptions.LazyCancellation | TaskContinuationOptions.RunContinuationsAsynchronously, TaskScheduler.Current);
 							}
 						}), messageItem, x);
 					});

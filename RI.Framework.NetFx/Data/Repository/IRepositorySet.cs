@@ -139,6 +139,17 @@ namespace RI.Framework.Data.Repository
 		void Delete (object entity);
 
 		/// <summary>
+		///     Gets the entity with a specified primary key.
+		/// </summary>
+		/// <param name="primaryKeys"> The array of values which form the primary key. </param>
+		/// <returns>
+		///     The entity or null if no entity with the specified primary key exists.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="primaryKeys" /> is null. </exception>
+		/// <exception cref="ArgumentException"> <paramref name="primaryKeys" /> is an empty array. </exception>
+		object Find (params object[] primaryKeys);
+
+		/// <summary>
 		///     Gets a sequence of all entities of this sets type.
 		/// </summary>
 		/// <returns>
@@ -153,17 +164,6 @@ namespace RI.Framework.Data.Repository
 		///     The number of all entities of this sets type.
 		/// </returns>
 		int GetCount ();
-
-		/// <summary>
-		/// Gets the entity with a specified primary key.
-		/// </summary>
-		/// <param name="primaryKeys">The array of values which form the primary key.</param>
-		/// <returns>
-		/// The entity or null if no entity with the specified primary key exists.
-		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="primaryKeys"/> is null.</exception>
-		/// <exception cref="ArgumentException"><paramref name="primaryKeys"/> is an empty array.</exception>
-		object Find (params object[] primaryKeys);
 
 		/// <summary>
 		///     Gets a sequence of filtered entities from this set.
@@ -377,15 +377,15 @@ namespace RI.Framework.Data.Repository
 		void Delete (T entity);
 
 		/// <summary>
-		/// Gets the entity with a specified primary key.
+		///     Gets the entity with a specified primary key.
 		/// </summary>
-		/// <param name="primaryKeys">The array of values which form the primary key.</param>
+		/// <param name="primaryKeys"> The array of values which form the primary key. </param>
 		/// <returns>
-		/// The entity or null if no entity with the specified primary key exists.
+		///     The entity or null if no entity with the specified primary key exists.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"><paramref name="primaryKeys"/> is null.</exception>
-		/// <exception cref="ArgumentException"><paramref name="primaryKeys"/> is an empty array.</exception>
-		new T Find(params object[] primaryKeys);
+		/// <exception cref="ArgumentNullException"> <paramref name="primaryKeys" /> is null. </exception>
+		/// <exception cref="ArgumentException"> <paramref name="primaryKeys" /> is an empty array. </exception>
+		new T Find (params object[] primaryKeys);
 
 		/// <summary>
 		///     Gets a sequence of all entities of this sets type.

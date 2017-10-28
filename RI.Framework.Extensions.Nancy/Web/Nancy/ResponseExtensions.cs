@@ -31,6 +31,47 @@ namespace RI.Framework.Web.Nancy
 		#region Static Methods
 
 		/// <summary>
+		///     Adds caching information to a response, allowing the specified caching.
+		/// </summary>
+		/// <param name="response"> The response. </param>
+		/// <param name="privateOnly"> Specifies whether only private caching is allowed (true) or also public caching (false). </param>
+		/// <param name="allowTransform"> Specifies whether caches/proxies are allowed to transform a requested resource (true) or not (false). </param>
+		/// <param name="maxAge"> Optionally specifies the maximum age a resource can be in the cache before it is reloaded from the origin. </param>
+		/// <param name="varyHeaders"> Optional array of header names which can be used by a cache/proxy to determine whether a request is served from the cache. </param>
+		/// <returns>
+		///     The response.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="response" />  is null. </exception>
+		public static Response WithCaching (this Response response, bool privateOnly, bool allowTransform, TimeSpan? maxAge, params string[] varyHeaders)
+		{
+			if (response == null)
+			{
+				throw new ArgumentNullException(nameof(response));
+			}
+
+			varyHeaders = varyHeaders ?? new string[0];
+
+			StringBuilder sb = new StringBuilder();
+			sb.Append(privateOnly ? "private" : "public");
+			if (!allowTransform)
+			{
+				sb.Append(", no-transform");
+			}
+			if (maxAge.HasValue)
+			{
+				sb.Append(", max-age=");
+				sb.Append(((int)maxAge.Value.TotalSeconds).ToString("D", CultureInfo.InvariantCulture));
+			}
+
+			response.WithHeader("Cache-Control", sb.ToString());
+			if (varyHeaders.Length > 0)
+			{
+				response.WithHeader("Vary", varyHeaders.Join(", "));
+			}
+			return response;
+		}
+
+		/// <summary>
 		///     Adds last modified and thus change check information to a response.
 		/// </summary>
 		/// <param name="response"> The response. </param>
@@ -100,7 +141,7 @@ namespace RI.Framework.Web.Nancy
 		}
 
 		/// <summary>
-		/// Adds caching information to a response, disallowing any caching
+		///     Adds caching information to a response, disallowing any caching
 		/// </summary>
 		/// <param name="response"> The response. </param>
 		/// <returns>
@@ -116,47 +157,6 @@ namespace RI.Framework.Web.Nancy
 
 			response.WithHeader("Cache-Control", "no-cache, no-store, must-revalidate, no-transform");
 			response.WithHeader("Vary", "*");
-			return response;
-		}
-
-		/// <summary>
-		/// Adds caching information to a response, allowing the specified caching.
-		/// </summary>
-		/// <param name="response"> The response. </param>
-		/// <param name="privateOnly">Specifies whether only private caching is allowed (true) or also public caching (false).</param>
-		/// <param name="allowTransform">Specifies whether caches/proxies are allowed to transform a requested resource (true) or not (false).</param>
-		/// <param name="maxAge">Optionally specifies the maximum age a resource can be in the cache before it is reloaded from the origin.</param>
-		/// <param name="varyHeaders">Optional array of header names which can be used by a cache/proxy to determine whether a request is served from the cache.</param>
-		/// <returns>
-		///     The response.
-		/// </returns>
-		/// <exception cref="ArgumentNullException"> <paramref name="response" />  is null. </exception>
-		public static Response WithCaching (this Response response, bool privateOnly, bool allowTransform, TimeSpan? maxAge, params string[] varyHeaders)
-		{
-			if (response == null)
-			{
-				throw new ArgumentNullException(nameof(response));
-			}
-
-			varyHeaders = varyHeaders ?? new string[0];
-
-			StringBuilder sb = new StringBuilder();
-			sb.Append(privateOnly ? "private" : "public");
-			if (!allowTransform)
-			{
-				sb.Append(", no-transform");
-			}
-			if (maxAge.HasValue)
-			{
-				sb.Append(", max-age=");
-				sb.Append(((int)maxAge.Value.TotalSeconds).ToString("D", CultureInfo.InvariantCulture));
-			}
-
-			response.WithHeader("Cache-Control", sb.ToString());
-			if (varyHeaders.Length > 0)
-			{
-				response.WithHeader("Vary", varyHeaders.Join(", "));
-			}
 			return response;
 		}
 

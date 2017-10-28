@@ -212,39 +212,14 @@ namespace RI.Framework.Data.EF
 			this.Configuration.ValidateOnSaveEnabled = true;
 		}
 
-		private ObjectMaterializedEventHandler ObjectMaterializedHandler { get; set; }
+		#endregion
 
-		private void ObjectMaterializedMethod (object sender, ObjectMaterializedEventArgs e)
-		{
-			if (e.Entity == null)
-			{
-				return;
-			}
 
-			this.ObjectMaterialized(e.Entity);
-		}
 
-		/// <summary>
-		/// Called after an entity was materialized by loading from the database.
-		/// </summary>
-		/// <param name="entity">The materialized entity.</param>
-		protected virtual void ObjectMaterialized (object entity)
-		{
-			Type type = entity.GetType();
-			IEntityValidation validator = this.GetValidator(type);
-			validator?.Materialize(this, this.GetSet(type), entity);
-		}
 
-		/// <summary>
-		/// Called before an entity is dematerialized by saving to the database.
-		/// </summary>
-		/// <param name="entity">The dematerializing entity.</param>
-		protected virtual void ObjectDematerializing (object entity)
-		{
-			Type type = entity.GetType();
-			IEntityValidation validator = this.GetValidator(type);
-			validator?.Dematerialize(this, this.GetSet(type), entity);
-		}
+		#region Instance Fields
+
+		private bool _materializationHandlingEnabled;
 
 		#endregion
 
@@ -253,7 +228,18 @@ namespace RI.Framework.Data.EF
 
 		#region Instance Properties/Indexer
 
-		private IObjectContextAdapter ObjectContextAdapter => this;
+		/// <summary>
+		///     Gets or set whether dematerialization handling is enabled for entities before they are saved to the database.
+		/// </summary>
+		/// <value>
+		///     true if dematerialization handling is enabled, false otherwise.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         The default value is false.
+		///     </para>
+		/// </remarks>
+		public bool DematerializationHandlingEnabled { get; set; }
 
 		/// <summary>
 		///     Gets or sets whether entity fixing is enabled before pending changes are saved or committed.
@@ -281,13 +267,11 @@ namespace RI.Framework.Data.EF
 		/// </remarks>
 		public bool FixOnValidateEnabled { get; set; }
 
-		private bool _materializationHandlingEnabled;
-
 		/// <summary>
-		/// Gets or sets whether materialization handling is enabled for entities after they were loaded from the database.
+		///     Gets or sets whether materialization handling is enabled for entities after they were loaded from the database.
 		/// </summary>
 		/// <value>
-		/// true if materialization handling is enabled, false otherwise.
+		///     true if materialization handling is enabled, false otherwise.
 		/// </value>
 		/// <remarks>
 		///     <para>
@@ -311,18 +295,9 @@ namespace RI.Framework.Data.EF
 			}
 		}
 
-		/// <summary>
-		/// Gets or set whether dematerialization handling is enabled for entities before they are saved to the database.
-		/// </summary>
-		/// <value>
-		/// true if dematerialization handling is enabled, false otherwise.
-		/// </value>
-		/// <remarks>
-		///     <para>
-		///         The default value is false.
-		///     </para>
-		/// </remarks>
-		public bool DematerializationHandlingEnabled { get; set; }
+		private IObjectContextAdapter ObjectContextAdapter => this;
+
+		private ObjectMaterializedEventHandler ObjectMaterializedHandler { get; set; }
 
 		private SetCollection Sets { get; set; }
 
@@ -415,6 +390,26 @@ namespace RI.Framework.Data.EF
 			return (DbRepositorySet)method.Invoke(this, null);
 		}
 
+		private void ObjectMaterializedMethod (object sender, ObjectMaterializedEventArgs e)
+		{
+			if (e.Entity == null)
+			{
+				return;
+			}
+
+			this.ObjectMaterialized(e.Entity);
+		}
+
+		private void PerformDematerializationHandling ()
+		{
+			this.ChangeTracker.DetectChanges();
+			foreach (DbEntityEntry entry in this.ChangeTracker.Entries())
+			{
+				object entity = entry.Entity;
+				this.ObjectDematerializing(entity);
+			}
+		}
+
 		private void PerformEntitySelfChangeTracking ()
 		{
 			this.ChangeTrackingContext = this.ChangeTrackingContext ?? this.OnChangeTrackingContextResolve();
@@ -437,16 +432,6 @@ namespace RI.Framework.Data.EF
 						entity.SetModification(this.ChangeTrackingContext, now);
 					}
 				}
-			}
-		}
-
-		private void PerformDematerializationHandling ()
-		{
-			this.ChangeTracker.DetectChanges();
-			foreach (DbEntityEntry entry in this.ChangeTracker.Entries())
-			{
-				object entity = entry.Entity;
-				this.ObjectDematerializing(entity);
 			}
 		}
 
@@ -564,6 +549,28 @@ namespace RI.Framework.Data.EF
 		protected virtual void LogDatabase (string message)
 		{
 			this.Log(LogLevel.Debug, "Database activity: {0}", message.Trim());
+		}
+
+		/// <summary>
+		///     Called before an entity is dematerialized by saving to the database.
+		/// </summary>
+		/// <param name="entity"> The dematerializing entity. </param>
+		protected virtual void ObjectDematerializing (object entity)
+		{
+			Type type = entity.GetType();
+			IEntityValidation validator = this.GetValidator(type);
+			validator?.Dematerialize(this, this.GetSet(type), entity);
+		}
+
+		/// <summary>
+		///     Called after an entity was materialized by loading from the database.
+		/// </summary>
+		/// <param name="entity"> The materialized entity. </param>
+		protected virtual void ObjectMaterialized (object entity)
+		{
+			Type type = entity.GetType();
+			IEntityValidation validator = this.GetValidator(type);
+			validator?.Materialize(this, this.GetSet(type), entity);
 		}
 
 		/// <summary>

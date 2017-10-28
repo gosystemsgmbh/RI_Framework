@@ -314,10 +314,10 @@ namespace RI.Framework.Services.Logging.Writers
 		}
 
 		/// <summary>
-		/// Creates a copy of the current log file which can be safely accessed.
+		///     Creates a copy of the current log file which can be safely accessed.
 		/// </summary>
 		/// <returns>
-		/// The copy of the current log file as a temporary file or null if the log writer is disposed.
+		///     The copy of the current log file as a temporary file or null if the log writer is disposed.
 		/// </returns>
 		public TemporaryFile CreateCopyOfCurrentFile ()
 		{

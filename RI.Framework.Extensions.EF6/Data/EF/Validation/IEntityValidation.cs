@@ -108,6 +108,15 @@ namespace RI.Framework.Data.EF.Validation
 		bool CanValidate (DbRepositoryContext repository, DbRepositorySet set, object entity);
 
 		/// <summary>
+		///     Handles the dematerialization of an entity before it is saved to the database.
+		/// </summary>
+		/// <param name="repository"> The repository the entity belongs to. </param>
+		/// <param name="set"> The set. </param>
+		/// <param name="entity"> The entity. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="repository" />, <paramref name="set" />, or <paramref name="entity" /> is null. </exception>
+		void Dematerialize (DbRepositoryContext repository, DbRepositorySet set, object entity);
+
+		/// <summary>
 		///     Fixes an entity (means: modifies values) before it is validated or saved to the database.
 		/// </summary>
 		/// <param name="repository"> The repository the fixed entity belongs to. </param>
@@ -126,6 +135,15 @@ namespace RI.Framework.Data.EF.Validation
 		void Initialize (DbRepositoryContext repository, DbRepositorySet set, object entity);
 
 		/// <summary>
+		///     Handles the materialization of an entity after it was loaded from the database.
+		/// </summary>
+		/// <param name="repository"> The repository the entity belongs to. </param>
+		/// <param name="set"> The set. </param>
+		/// <param name="entity"> The entity. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="repository" />, <paramref name="set" />, or <paramref name="entity" /> is null. </exception>
+		void Materialize (DbRepositoryContext repository, DbRepositorySet set, object entity);
+
+		/// <summary>
 		///     Validates an entity.
 		/// </summary>
 		/// <param name="repository"> The repository the validated entity belongs to. </param>
@@ -136,23 +154,5 @@ namespace RI.Framework.Data.EF.Validation
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="repository" />, <paramref name="set" />, or <paramref name="entity" /> is null. </exception>
 		DbEntityValidationResult Validate (DbRepositoryContext repository, DbRepositorySet set, object entity);
-
-		/// <summary>
-		///     Handles the materialization of an entity after it was loaded from the database.
-		/// </summary>
-		/// <param name="repository"> The repository the entity belongs to. </param>
-		/// <param name="set"> The set. </param>
-		/// <param name="entity"> The entity. </param>
-		/// <exception cref="ArgumentNullException"> <paramref name="repository" />, <paramref name="set" />, or <paramref name="entity" /> is null. </exception>
-		void Materialize (DbRepositoryContext repository, DbRepositorySet set, object entity);
-
-		/// <summary>
-		///     Handles the dematerialization of an entity before it is saved to the database.
-		/// </summary>
-		/// <param name="repository"> The repository the entity belongs to. </param>
-		/// <param name="set"> The set. </param>
-		/// <param name="entity"> The entity. </param>
-		/// <exception cref="ArgumentNullException"> <paramref name="repository" />, <paramref name="set" />, or <paramref name="entity" /> is null. </exception>
-		void Dematerialize (DbRepositoryContext repository, DbRepositorySet set, object entity);
 	}
 }

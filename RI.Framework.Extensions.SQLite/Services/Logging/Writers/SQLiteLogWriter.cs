@@ -174,6 +174,58 @@ namespace RI.Framework.Services.Logging.Writers
 			GC.SuppressFinalize(this);
 		}
 
+		/// <summary>
+		///     Creates a copy of the current log database which can be safely accessed.
+		/// </summary>
+		/// <returns>
+		///     The copy of the current log database as a temporary file or null if the log writer is disposed.
+		/// </returns>
+		public TemporaryFile CreateCopyOfCurrentDatabase ()
+		{
+			lock (this.SyncRoot)
+			{
+				if (this.DbConnection == null)
+				{
+					return null;
+				}
+
+				if (this.DbConnection.State != ConnectionState.Open)
+				{
+					return null;
+				}
+
+				TemporaryFile tempFile = null;
+				bool success = false;
+				try
+				{
+					tempFile = new TemporaryFile(".logdb");
+
+					SQLiteConnectionStringBuilder targetConnectionString = new SQLiteConnectionStringBuilder();
+					targetConnectionString.DataSource = tempFile.File.PathResolved;
+
+					using (SQLiteConnection target = new SQLiteConnection(targetConnectionString.ConnectionString))
+					{
+						target.Open();
+
+						string sourceDatabaseName = "main";
+						string targetDatabaseName = "main";
+
+						this.DbConnection.BackupDatabase(target, targetDatabaseName, sourceDatabaseName, -1, null, 10);
+					}
+
+					success = true;
+					return tempFile;
+				}
+				finally
+				{
+					if (!success)
+					{
+						tempFile?.Delete();
+					}
+				}
+			}
+		}
+
 		[SuppressMessage("ReSharper", "UnusedParameter.Local")]
 		[SuppressMessage("ReSharper", "EmptyGeneralCatchClause")]
 		private void Dispose (bool disposing)
@@ -233,58 +285,6 @@ namespace RI.Framework.Services.Logging.Writers
 				using (SQLiteCommand createIndicesCommand = new SQLiteCommand(createIndicesCommandString, this.DbConnection))
 				{
 					createIndicesCommand.ExecuteNonQuery();
-				}
-			}
-		}
-
-		/// <summary>
-		/// Creates a copy of the current log database which can be safely accessed.
-		/// </summary>
-		/// <returns>
-		/// The copy of the current log database as a temporary file or null if the log writer is disposed.
-		/// </returns>
-		public TemporaryFile CreateCopyOfCurrentDatabase()
-		{
-			lock (this.SyncRoot)
-			{
-				if (this.DbConnection == null)
-				{
-					return null;
-				}
-
-				if (this.DbConnection.State != ConnectionState.Open)
-				{
-					return null;
-				}
-
-				TemporaryFile tempFile = null;
-				bool success = false;
-				try
-				{
-					tempFile = new TemporaryFile(".logdb");
-
-					SQLiteConnectionStringBuilder targetConnectionString = new SQLiteConnectionStringBuilder();
-					targetConnectionString.DataSource = tempFile.File.PathResolved;
-
-					using (SQLiteConnection target = new SQLiteConnection(targetConnectionString.ConnectionString))
-					{
-						target.Open();
-
-						string sourceDatabaseName = "main";
-						string targetDatabaseName = "main";
-
-						this.DbConnection.BackupDatabase(target, targetDatabaseName, sourceDatabaseName, -1, null, 10);
-					}
-
-					success = true;
-					return tempFile;
-				}
-				finally
-				{
-					if (!success)
-					{
-						tempFile?.Delete();
-					}
 				}
 			}
 		}

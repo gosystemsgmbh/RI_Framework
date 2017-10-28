@@ -113,14 +113,14 @@ namespace RI.Framework.Data.EF
 		/// <inheritdoc cref="IRepositorySet.Delete" />
 		protected abstract void DeleteInternal (object entity);
 
+		/// <inheritdoc cref="IRepositorySet.Find" />
+		protected abstract object FindInternal (params object[] primaryKeys);
+
 		/// <inheritdoc cref="IRepositorySet.GetAll" />
 		protected abstract IQueryable<object> GetAllInternal ();
 
 		/// <inheritdoc cref="IRepositorySet.GetCount" />
 		protected abstract int GetCountInternal ();
-
-		/// <inheritdoc cref="IRepositorySet.Find" />
-		protected abstract object FindInternal (params object[] primaryKeys);
 
 		/// <inheritdoc cref="IRepositorySet.GetFiltered(object,object,int,int,out int,out int,out int)" />
 		protected abstract IQueryable<object> GetFilteredInternal (object filter, object sort, int pageIndex, int pageSize, out int totalCount, out int filteredCount, out int pageCount);
@@ -220,6 +220,12 @@ namespace RI.Framework.Data.EF
 		}
 
 		/// <inheritdoc />
+		public object Find (params object[] primaryKeys)
+		{
+			return this.FindInternal(primaryKeys);
+		}
+
+		/// <inheritdoc />
 		public IQueryable<object> GetAll ()
 		{
 			return this.GetAllInternal();
@@ -229,12 +235,6 @@ namespace RI.Framework.Data.EF
 		public int GetCount ()
 		{
 			return this.GetCountInternal();
-		}
-
-		/// <inheritdoc />
-		public object Find (params object[] primaryKeys)
-		{
-			return this.FindInternal(primaryKeys);
 		}
 
 		/// <inheritdoc />
@@ -405,6 +405,12 @@ namespace RI.Framework.Data.EF
 		}
 
 		/// <inheritdoc />
+		protected override object FindInternal (params object[] primaryKeys)
+		{
+			return this.Find(primaryKeys);
+		}
+
+		/// <inheritdoc />
 		protected sealed override IQueryable<object> GetAllInternal ()
 		{
 			return this.GetAll();
@@ -414,12 +420,6 @@ namespace RI.Framework.Data.EF
 		protected sealed override int GetCountInternal ()
 		{
 			return this.Set.Count();
-		}
-
-		/// <inheritdoc />
-		protected override object FindInternal (params object[] primaryKeys)
-		{
-			return this.Find(primaryKeys);
 		}
 
 		/// <inheritdoc />
