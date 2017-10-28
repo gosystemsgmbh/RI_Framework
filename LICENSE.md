@@ -218,7 +218,7 @@
    identification within third-party archives. This license file must also be
    included or redistributed respectively, unmodified, with your work.
 
-      Copyright 2017 Hans Muster
+      Copyright 2015-2017 Hans Muster
 
       Licensed under the Roten Informatik Framework License (RIFL),
       Version 1.0 (the "License").
