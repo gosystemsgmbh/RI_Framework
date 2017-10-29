@@ -447,6 +447,8 @@ namespace RI.Framework.Composition
 				CompositionContainer.GetExportsOfTypeInternal(interfaceType, includeWithoutAttribute, false, exports);
 			}
 
+			exports.RemoveWhere(x => x == null);
+
 			return exports;
 		}
 
