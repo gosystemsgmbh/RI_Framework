@@ -1,7 +1,5 @@
 ﻿using RI.Framework.Services.Logging.Writers;
-
-
-
+using RI.Framework.Utilities.Text;
 
 namespace RI.Framework.Services
 {
@@ -35,6 +33,14 @@ namespace RI.Framework.Services
 		///     An additional logger which is provided directly by the hosting environment or null if no such is available.
 		/// </value>
 		public ILogWriter Logger { get; set; } = null;
+
+		/// <summary>
+		/// Gets or sets an optional command line to use with the application.
+		/// </summary>
+		/// <value>
+		///     An optional command line to use with the application.
+		/// </value>
+		public CommandLine CommandLine { get; set; } = null;
 
 		#endregion
 	}

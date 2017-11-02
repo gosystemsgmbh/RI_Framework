@@ -946,12 +946,12 @@ namespace RI.Framework.Services
 		/// </returns>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation uses <see cref="RI.Framework.Utilities.Text.CommandLine.Parse(string,bool,IEqualityComparer{string})" /> with <see cref="Environment" />.<see cref="Environment.CommandLine" />.
+		///         The default implementation gets the instance ID from the hosting environment context (<see cref="HostContext" />) or uses <see cref="CommandLine.Parse(string,bool,IEqualityComparer{string})" /> with <see cref="Environment" />.<see cref="Environment.CommandLine" /> if the hosting environment context does not provide a command line.
 		///     </note>
 		/// </remarks>
 		protected virtual CommandLine DetermineProcessCommandLine ()
 		{
-			return CommandLine.Parse(Environment.CommandLine, true, StringComparerEx.InvariantCultureIgnoreCase);
+			return this.HostContext?.CommandLine ?? CommandLine.Parse(Environment.CommandLine, true, StringComparerEx.InvariantCultureIgnoreCase);
 		}
 
 		/// <summary>
