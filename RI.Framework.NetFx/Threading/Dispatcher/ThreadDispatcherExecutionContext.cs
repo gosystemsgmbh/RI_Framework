@@ -92,7 +92,7 @@ namespace RI.Framework.Threading.Dispatcher
 		private bool FlowCurrentUICulture { get; set; }
 		private bool FlowExecutionContext { get; set; }
 		private bool FlowSynchronizationContext { get; set; }
-		private bool IsDisposed { get; set; }
+		internal bool IsDisposed { get; private set; }
 		private ThreadDispatcherOptions Options { get; set; }
 		private object[] Parameters { get; set; }
 		private object Result { get; set; }

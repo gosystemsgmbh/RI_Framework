@@ -669,7 +669,14 @@ namespace RI.Framework.Threading.Dispatcher
 		{
 			if ((this.ExecutionContext != null) && (this.Options != ThreadDispatcherOptions.None))
 			{
-				return this.ExecutionContext.Run(this.Options, this.Action, this.Parameters);
+				if (!this.ExecutionContext.IsDisposed)
+				{
+					return this.ExecutionContext.Run(this.Options, this.Action, this.Parameters);
+				}
+				else
+				{
+					return null;
+				}
 			}
 			else
 			{
