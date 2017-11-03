@@ -6,6 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 
 using RI.Framework.Data.Database.Scripts;
 using RI.Framework.Utilities;
+using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Logging;
 
 
@@ -52,17 +53,46 @@ namespace RI.Framework.Data.Database.Cleanup
 		///     </para>
 		/// </remarks>
 		public SQLiteDatabaseCleanupProcessor ()
-			: this(null)
 		{
+			this.CleanupStep = null;
 		}
 
 		/// <summary>
 		///     Creates a new instance of <see cref="SQLiteDatabaseCleanupProcessor" />.
 		/// </summary>
-		/// <param name="cleanupStep"> The custom processing step which performs the cleanup or null if the default cleanup script is used (<see cref="DefaultCleanupScript" />). </param>
+		/// <param name="cleanupStep"> The custom processing step which performs the cleanup. </param>
+		/// <exception cref="ArgumentNullException"><paramref name="cleanupStep"/> is null.</exception>
 		public SQLiteDatabaseCleanupProcessor (SQLiteDatabaseProcessingStep cleanupStep)
 		{
+			if (cleanupStep == null)
+			{
+				throw new ArgumentNullException(nameof(cleanupStep));
+			}
+
 			this.CleanupStep = cleanupStep;
+		}
+
+		/// <summary>
+		///     Creates a new instance of <see cref="SQLiteDatabaseCleanupProcessor" />.
+		/// </summary>
+		/// <param name="scriptName"> The script name which is used to perform the cleanup. </param>
+		/// <exception cref="ArgumentNullException"><paramref name="scriptName"/> is null.</exception>
+		/// <exception cref="EmptyStringArgumentException"><paramref name="scriptName"/> is an empty string.</exception>
+		public SQLiteDatabaseCleanupProcessor(string scriptName)
+		{
+			if (scriptName == null)
+			{
+				throw new ArgumentNullException(nameof(scriptName));
+			}
+
+			if (scriptName.IsNullOrEmptyOrWhitespace())
+			{
+				throw new EmptyStringArgumentException(nameof(scriptName));
+			}
+
+			SQLiteDatabaseProcessingStep step = new SQLiteDatabaseProcessingStep();
+			step.AddScript(scriptName);
+			this.CleanupStep = step;
 		}
 
 		#endregion

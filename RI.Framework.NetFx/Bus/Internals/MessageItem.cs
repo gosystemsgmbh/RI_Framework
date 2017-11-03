@@ -1,7 +1,6 @@
 ﻿using System;
 
-
-
+using RI.Framework.Utilities.ObjectModel;
 
 namespace RI.Framework.Bus.Internals
 {
@@ -9,7 +8,7 @@ namespace RI.Framework.Bus.Internals
 	///     Stores a single message.
 	/// </summary>
 	[Serializable]
-	public sealed class MessageItem
+	public sealed class MessageItem : ICloneable<MessageItem>, ICloneable
 	{
 		#region Instance Properties/Indexer
 
@@ -45,13 +44,31 @@ namespace RI.Framework.Bus.Internals
 		/// </value>
 		public bool IsBroadcast { get; set; }
 
+		private object _payload;
+
 		/// <summary>
 		///     Gets or sets the payload of the message.
 		/// </summary>
 		/// <value>
 		///     The payload of the message or null if the message does not have a payload.
 		/// </value>
-		public object Payload { get; set; }
+		public object Payload
+		{
+			get
+			{
+				return this._payload;
+			}
+			set
+			{
+				this._payload = value;
+				this.PayloadAssembly = value?.GetType().Assembly.GetName().Name;
+				this.PayloadType = value?.GetType().FullName;
+			}
+		}
+
+		public string PayloadAssembly { get; private set; }
+
+		public string PayloadType { get; private set; }
 
 		/// <summary>
 		///     Gets or sets the unique ID of the message this message responds to.
@@ -86,5 +103,27 @@ namespace RI.Framework.Bus.Internals
 		public bool ToGlobal { get; set; }
 
 		#endregion
+
+		/// <inheritdoc />
+		public MessageItem Clone ()
+		{
+			MessageItem clone = new MessageItem();
+			clone.Address = this.Address;
+			clone.FromGlobal = this.FromGlobal;
+			clone.Id = this.Id;
+			clone.IsBroadcast = this.IsBroadcast;
+			clone.Payload = this.Payload;
+			clone.ResponseTo = this.ResponseTo;
+			clone.Sent = this.Sent;
+			clone.Timeout = this.Timeout;
+			clone.ToGlobal = this.ToGlobal;
+			return clone;
+		}
+
+		/// <inheritdoc />
+		object ICloneable.Clone ()
+		{
+			return this.Clone();
+		}
 	}
 }
