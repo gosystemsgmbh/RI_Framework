@@ -60,6 +60,7 @@
     <Compile Include="Bus\Exceptions\BusConnectionBrokenException.cs" />
     <Compile Include="Bus\Connections\IBusConnection.cs" />
     <Compile Include="Bus\Dispatchers\IBusDispatcher.cs" />
+    <Compile Include="Bus\Exceptions\BusOperationalException.cs" />
     <Compile Include="Bus\Exceptions\BusProcessingPipelineException.cs" />
     <Compile Include="Bus\IBusExtensions.cs" />
     <Compile Include="Bus\Internals\MessageItem.cs" />

@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Threading;
 
+using RI.Framework.Composition.Model;
 using RI.Framework.Utilities.ObjectModel;
 
 
@@ -21,6 +22,7 @@ namespace RI.Framework.Bus.Dispatchers
 	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
+	[Export]
 	public sealed class WpfBusDispatcher : IBusDispatcher
 	{
 		#region Instance Constructor/Destructor

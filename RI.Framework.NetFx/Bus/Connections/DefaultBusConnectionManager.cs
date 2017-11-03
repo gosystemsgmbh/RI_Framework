@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using RI.Framework.Bus.Internals;
+using RI.Framework.Composition.Model;
 using RI.Framework.Utilities.ObjectModel;
 
 
@@ -16,6 +17,8 @@ namespace RI.Framework.Bus.Connections
 	///     See <see cref="IBusConnectionManager" /> for more details.
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
+	/// TODO: Logging
+	[Export]
 	public sealed class DefaultBusConnectionManager : IBusConnectionManager
 	{
 		#region Instance Constructor/Destructor

@@ -1,5 +1,6 @@
 ﻿using System;
 
+using RI.Framework.Composition.Model;
 using RI.Framework.Utilities.ObjectModel;
 
 
@@ -19,6 +20,7 @@ namespace RI.Framework.Bus.Dispatchers
 	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
+	[Export]
 	public interface IBusDispatcher : ISynchronizable
 	{
 		/// <summary>

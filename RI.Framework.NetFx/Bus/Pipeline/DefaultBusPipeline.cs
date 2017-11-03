@@ -10,6 +10,7 @@ using RI.Framework.Bus.Exceptions;
 using RI.Framework.Bus.Internals;
 using RI.Framework.Bus.Routers;
 using RI.Framework.Collections;
+using RI.Framework.Composition.Model;
 using RI.Framework.Utilities.ObjectModel;
 
 
@@ -26,6 +27,8 @@ namespace RI.Framework.Bus.Pipeline
 	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
+	/// TODO: Logging
+	[Export]
 	public sealed class DefaultBusPipeline : IBusPipeline
 	{
 		#region Instance Constructor/Destructor
@@ -58,16 +61,6 @@ namespace RI.Framework.Bus.Pipeline
 
 
 		#region Instance Methods
-
-		/// <inheritdoc />
-		public void StartProcessing ()
-		{
-		}
-
-		/// <inheritdoc />
-		public void StopProcessing ()
-		{
-		}
 
 		private void ProcessMessage (MessageItem messageItem)
 		{
@@ -193,7 +186,7 @@ namespace RI.Framework.Bus.Pipeline
 		bool ISynchronizable.IsSynchronized => true;
 
 		/// <inheritdoc />
-		public object SyncRoot { get; set; }
+		public object SyncRoot { get; }
 
 		/// <inheritdoc />
 		public void DoWork (bool polling)
@@ -235,6 +228,7 @@ namespace RI.Framework.Bus.Pipeline
 					x.Request.Sent = utcNow;
 					x.Request.FromGlobal = false;
 					x.Request.ResponseTo = null;
+					x.Request.RoutingInfo = null;
 					newMessages.Add(x.Request);
 				});
 

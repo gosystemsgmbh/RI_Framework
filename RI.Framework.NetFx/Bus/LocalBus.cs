@@ -11,6 +11,7 @@ using RI.Framework.Bus.Exceptions;
 using RI.Framework.Bus.Internals;
 using RI.Framework.Bus.Pipeline;
 using RI.Framework.Bus.Routers;
+using RI.Framework.Composition.Model;
 using RI.Framework.Threading;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Logging;
@@ -29,6 +30,7 @@ namespace RI.Framework.Bus
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	/// TODO: Logging
+	[Export]
 	public sealed class LocalBus : LogSource, IBus
 	{
 		#region Instance Constructor/Destructor
@@ -680,6 +682,7 @@ namespace RI.Framework.Bus
 
 				this.Connections.ForEach(x => x.Initialize(this.DependencyResolver));
 				this.ConnectionManager?.Initialize(this.DependencyResolver);
+
 				this.Router.Initialize(this.DependencyResolver);
 				this.Dispatcher.Initialize(this.DependencyResolver);
 				this.Pipeline.Initialize(this.DependencyResolver);
@@ -736,7 +739,7 @@ namespace RI.Framework.Bus
 						break;
 					}
 
-					this.Pipeline.DoWork(response == 0);
+					this.Pipeline.DoWork(response != 0);
 				}
 			}
 

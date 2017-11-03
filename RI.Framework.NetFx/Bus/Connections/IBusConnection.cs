@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using RI.Framework.Bus.Internals;
+using RI.Framework.Composition.Model;
 using RI.Framework.Utilities.ObjectModel;
 
 
@@ -21,6 +22,7 @@ namespace RI.Framework.Bus.Connections
 	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
+	[Export]
 	public interface IBusConnection : ISynchronizable
 	{
 		/// <summary>

@@ -12,7 +12,7 @@ namespace RI.Framework.Bus.Exceptions
 	///     The <see cref="BusResponseTimeoutException" /> is thrown when there was no response to a sent message within the specified timeout.
 	/// </summary>
 	[Serializable]
-	public class BusResponseTimeoutException : Exception
+	public class BusResponseTimeoutException : BusOperationalException
 	{
 		#region Constants
 

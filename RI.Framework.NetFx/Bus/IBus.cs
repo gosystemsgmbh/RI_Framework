@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+using RI.Framework.Bus.Connections;
+using RI.Framework.Bus.Dispatchers;
 using RI.Framework.Bus.Exceptions;
 using RI.Framework.Bus.Internals;
 using RI.Framework.Bus.Pipeline;
 using RI.Framework.Bus.Routers;
+using RI.Framework.Composition.Model;
 using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.ObjectModel;
 
@@ -18,18 +21,6 @@ namespace RI.Framework.Bus
 	///     Defines the interface for a message bus.
 	/// </summary>
 	/// <remarks>
-	///     <para>
-	///         The &quot;Local&quot; in <see cref="LocalBus" /> stands for the in-process locality of the message bus.
-	///         Basically, each process (or application domain, if you distinguish those) has its own local message bus, distributing the messages to all receivers within the same process.
-	///         However, multiple local message busses can be connected, across processes, machines, or networks, to form a global message bus which consists of independent but connected local message busses.
-	///     </para>
-	///     <para>
-	///         <see cref="IBus" /> or its implementations respectively is the main interface used by bus users while the other interfaces are merely the actual implementation of the bus, hidden to the bus users.
-	///     </para>
-	///     <para>
-	///         <see cref="IBus" /> initializes and unloads instances of implementations of the other bus interfaces, provides the runtime environment (including threading and exception handling) for the bus processing pipeline, and acts as the main interface to the bus user.
-	///     </para>
-	/// 
 	/// <para>
 	/// <b> GENERAL </b>
 	/// </para>
@@ -131,17 +122,93 @@ namespace RI.Framework.Bus
 	/// Therefore, the determination whether a message is type-based or address-based is not solely done by the sender.
 	/// The rule is as following:
 	/// If the sender specifies an address, the message is address-based, regardless of the payload (if any).
-	/// If the sender specifies an address and a payload, the receiver registration defines the type: receiver configured for a specified address only, accepting any payload type (address-based), or receiver configured for a specified address and specified payload type (both address- and type-based).
+	/// If the sender specifies an address and a payload, the receiver registration defines the type: receiver configured for a specified address only, accepting any payload type (address-based), -or- receiver configured for a specified address and specified payload type (both address- and type-based).
 	/// If the sender only specifies the payload, the message is type-based.
 	/// </para>
 	/// <para>
-	///
-	/// router
-	/// 
+	/// However, whether a receiver will receive a certain message is eventually decided by the used <see cref="IBusRouter"/>.
+	/// </para>
+	/// <para>
+	/// <b>IBus</b>
+	/// </para>
+	/// <para>
+	/// An <see cref="IBus"/> implementation is the front-end of the message bus towards the message bus users, meaning that only an <see cref="IBus"/> instance is needed to perform normal bus operations (sending and receiving of messages).
+	/// Besides being the API for sending and receiving, <see cref="IBus"/> is responsible for instantiating and managing the other message bus components as described below.
+	/// </para>
+	/// <para>
+	/// As described above, an <see cref="IBus"/> implementation is inherently meant to be a local bus for all its associated <see cref="SendOperation"/>s and <see cref="ReceiverRegistration"/>s.
+	/// </para>
+	/// <para>
+	/// A default local bus, which allows optional connections to remote busses, is implemented in <see cref="LocalBus"/>.
+	/// </para>
+	/// <para>
+	/// <b>IBusPipeline</b>
+	/// </para>
+	/// <para>
+	/// <see cref="IBusPipeline"/> is responsible for interconnecting all the message bus components, the control of the message flow between the components, and the timeout and connection state handling.
+	/// </para>
+	/// <para>
+	/// Exactly one <see cref="IBusPipeline"/> instance is required for one <see cref="IBus"/> instance.
+	/// </para>
+	/// <para>
+	/// A default <see cref="IBusPipeline"/> implementation is provided by <see cref="DefaultBusPipeline"/>.
+	/// </para>
+	/// <para>
+	/// <b>IBusDispatcher</b>
+	/// </para>
+	/// <para>
+	/// <see cref="IBusDispatcher"/> is responsible for executing the processing of received messages.
+	/// This is, depending on the actual <see cref="IBusDispatcher"/> implementation, usually done by dispatching the corresponding message callbacks to the desired execution contexts, allowing the control on which thread and/or in which execution context a received message is processed (and also allowing serialization/synchronization of message processing).
+	/// </para>
+	/// <para>
+	/// Although mainly used for dispatching the processing of received messages, the other bus components can use <see cref="IBusDispatcher"/> for their own purposes.
+	/// </para>
+	/// <para>
+	/// Exactly one <see cref="IBusDispatcher"/> instance is required for one <see cref="IBus"/> instance.
+	/// </para>
+	/// <para>
+	/// <b>IBusRouter</b>
+	/// </para>
+	/// <para>
+	/// <see cref="IBusRouter"/> is responsible for deciding whether a message is sent globally, which remote connections are used to send a message, and whether a certain receiver will receive/process a message.
+	/// </para>
+	/// <para>
+	/// Exactly one <see cref="IBusRouter"/> instance is required for one <see cref="IBus"/> instance.
+	/// </para>
+	/// <para>
+	/// A default <see cref="IBusRouter"/> implementation is provided by <see cref="DefaultBusRouter"/>.
+	/// </para>
+	/// <para>
+	/// <b>IBusConnection &amp; IBusConnectionManager</b>
+	/// </para>
+	/// <para>
+	/// An <see cref="IBusConnection"/> implementation implements a single connection from the local bus (to which the instance of <see cref="IBusConnection"/> belongs) to a remote bus.
+	/// This is either a unidirectional or bidirectional connection for sending and/or receiving messages from the remote bus, depending on the actual used connection or its implementation respectively.
+	/// </para>
+	/// <para>
+	/// <see cref="IBusConnection"/> is responsible for serializing messages, transmitting messages, and ensuring that the remote bus successfully received the messages (or detection of transmission failures respectively).
+	/// </para>
+	/// <para>
+	/// There can be zero, one, or more <see cref="IBusConnection"/> instances for one <see cref="IBus"/> instance.
+	/// Having no <see cref="IBusConnection"/> instances makes a bus a local-only bus.
+	/// </para>
+	/// <para>
+	/// When using one or more <see cref="IBusConnection"/> instances with an <see cref="IBus"/> instance, exactly one <see cref="IBusConnectionManager"/> instance is required, otherwise its optional.
+	/// </para>
+	/// <para>
+	/// <see cref="IBusConnectionManager"/> is responsible for managing the connections, forwarding a sent message to all available connections, and collecting received messages from all available connections.
+	/// Therefore, other bus components should not directly use <see cref="IBusConnection"/>, if possible, but rather use <see cref="IBusConnectionManager"/>.
+	/// </para>
+	/// <para>
+	/// <b>INSTANTIATION OF BUS COMPONENTS</b>
+	/// </para>
+	/// <para>
+	/// As mentioned above, the instantiation of all the bus components is done by an <see cref="IBus"/> implementation.
+	/// To do this, <see cref="IBus"/> uses <see cref="IDependencyResolver"/> which is passed to <see cref="Start"/>.
 	/// </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
-	/// TODO: Documentation
+	[Export]
 	public interface IBus : IDisposable, ISynchronizable, ILogSource
 	{
 		/// <summary>

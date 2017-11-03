@@ -12,7 +12,7 @@ namespace RI.Framework.Bus.Exceptions
 	///     The <see cref="BusConnectionBrokenException" /> is thrown when a used connection to a remote bus is broken.
 	/// </summary>
 	[Serializable]
-	public class BusConnectionBrokenException : Exception
+	public class BusConnectionBrokenException : BusOperationalException
 	{
 		#region Constants
 

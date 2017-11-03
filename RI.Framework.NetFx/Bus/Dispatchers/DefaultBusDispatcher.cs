@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 
+using RI.Framework.Composition.Model;
 using RI.Framework.Threading;
 using RI.Framework.Utilities.ObjectModel;
 
@@ -21,6 +22,7 @@ namespace RI.Framework.Bus.Dispatchers
 	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
+	[Export]
 	public sealed class DefaultBusDispatcher : IBusDispatcher
 	{
 		#region Instance Constructor/Destructor

@@ -2,6 +2,7 @@
 
 using RI.Framework.Bus.Connections;
 using RI.Framework.Bus.Internals;
+using RI.Framework.Composition.Model;
 using RI.Framework.Utilities.ObjectModel;
 
 
@@ -18,7 +19,8 @@ namespace RI.Framework.Bus.Routers
 	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
-	public sealed class DefaultBusRouter : IBusRouter
+	[Export]
+	public class DefaultBusRouter : IBusRouter
 	{
 		#region Instance Constructor/Destructor
 
@@ -37,7 +39,16 @@ namespace RI.Framework.Bus.Routers
 
 		#region Instance Methods
 
-		private bool CompareTypes (Type source, Type target, bool inheritanceTolerant)
+		/// <summary>
+		/// Compares two types whether they are the same, in the context of payload type and receiver registration.
+		/// </summary>
+		/// <param name="source">The type to convert from or the payload respectively.</param>
+		/// <param name="target">The type to convert to or the receiver type respectively.</param>
+		/// <param name="inheritanceTolerant">Specifies whether compatible, assignable types are also considered equal.</param>
+		/// <returns>
+		/// true if the two types are considered equal, false otherwise.
+		/// </returns>
+		protected virtual bool CompareTypes (Type source, Type target, bool inheritanceTolerant)
 		{
 			if ((source == null) && (target == null))
 			{
@@ -68,31 +79,31 @@ namespace RI.Framework.Bus.Routers
 		bool ISynchronizable.IsSynchronized => true;
 
 		/// <inheritdoc />
-		public object SyncRoot { get; set; }
+		public object SyncRoot { get; }
 
 		/// <inheritdoc />
-		public bool ForwardToGlobal (MessageItem message) => message.ToGlobal && (!message.FromGlobal);
+		public virtual bool ForwardToGlobal (MessageItem message) => message.ToGlobal && (!message.FromGlobal);
 
 		/// <inheritdoc />
-		public bool ForwardToLocal (MessageItem message) => !message.ResponseTo.HasValue;
+		public virtual bool ForwardToLocal (MessageItem message) => !message.ResponseTo.HasValue;
 
 		/// <inheritdoc />
-		public void Initialize (IDependencyResolver dependencyResolver)
+		public virtual void Initialize (IDependencyResolver dependencyResolver)
 		{
 		}
 
 		/// <inheritdoc />
-		public void ReceivedFromLocal (MessageItem message)
+		public virtual void ReceivedFromLocal (MessageItem message)
 		{
 		}
 
 		/// <inheritdoc />
-		public void ReceivedFromRemote (MessageItem message, IBusConnection connection)
+		public virtual void ReceivedFromRemote (MessageItem message, IBusConnection connection)
 		{
 		}
 
 		/// <inheritdoc />
-		public bool ShouldReceive (MessageItem message, ReceiverRegistrationItem receiver)
+		public virtual bool ShouldReceive (MessageItem message, ReceiverRegistrationItem receiver)
 		{
 			bool addressMatch = (receiver.ReceiverRegistration.Address == null) || string.Equals(message.Address, receiver.ReceiverRegistration.Address, StringComparison.OrdinalIgnoreCase);
 			bool typeMatch = (receiver.ReceiverRegistration.PayloadType == null) || this.CompareTypes(message.Payload?.GetType(), receiver.ReceiverRegistration.PayloadType, receiver.ReceiverRegistration.IncludeCompatiblePayloadTypes);
@@ -100,10 +111,10 @@ namespace RI.Framework.Bus.Routers
 		}
 
 		/// <inheritdoc />
-		public bool ShouldSend (MessageItem message, IBusConnection connection) => true;
+		public virtual bool ShouldSend (MessageItem message, IBusConnection connection) => true;
 
 		/// <inheritdoc />
-		public void Unload ()
+		public virtual void Unload ()
 		{
 		}
 

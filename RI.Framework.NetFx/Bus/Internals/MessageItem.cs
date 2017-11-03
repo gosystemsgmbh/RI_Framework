@@ -1,5 +1,6 @@
 ﻿using System;
 
+using RI.Framework.Bus.Routers;
 using RI.Framework.Utilities.ObjectModel;
 
 namespace RI.Framework.Bus.Internals
@@ -66,9 +67,64 @@ namespace RI.Framework.Bus.Internals
 			}
 		}
 
+		/// <summary>
+		/// Gets the simple name of the assembly in which the used payload type is defined.
+		/// </summary>
+		/// <value>
+		/// The simple name of the assembly in which the used payload type is defined or null if the message does not have a payload.
+		/// </value>
 		public string PayloadAssembly { get; private set; }
 
+		/// <summary>
+		/// Gets the full name of the payload type.
+		/// </summary>
+		/// <value>
+		/// The full name of the payload type or null if the message does not have a payload.
+		/// </value>
 		public string PayloadType { get; private set; }
+
+		private object _routingInfo;
+
+		/// <summary>
+		///     Gets or sets routing information of the message.
+		/// </summary>
+		/// <value>
+		///     The routing information of the message or null if the message does not have routing information.
+		/// </value>
+		/// <remarks>
+		/// <para>
+		/// Routing information is optional and only used by <see cref="IBusRouter"/>s in cases where they need to exchange routing information.
+		/// </para>
+		/// </remarks>
+		public object RoutingInfo
+		{
+			get
+			{
+				return this._routingInfo;
+			}
+			set
+			{
+				this._routingInfo = value;
+				this.RoutingInfoAssembly = value?.GetType().Assembly.GetName().Name;
+				this.RoutingInfoType = value?.GetType().FullName;
+			}
+		}
+
+		/// <summary>
+		/// Gets the simple name of the assembly in which the used routing information type is defined.
+		/// </summary>
+		/// <value>
+		/// The simple name of the assembly in which the used routing information type is defined or null if the message does not have routing information.
+		/// </value>
+		public string RoutingInfoAssembly { get; private set; }
+
+		/// <summary>
+		/// Gets the full name of the routing information type.
+		/// </summary>
+		/// <value>
+		/// The full name of the routing information type or null if the message does not have routing information.
+		/// </value>
+		public string RoutingInfoType { get; private set; }
 
 		/// <summary>
 		///     Gets or sets the unique ID of the message this message responds to.
@@ -114,6 +170,7 @@ namespace RI.Framework.Bus.Internals
 			clone.IsBroadcast = this.IsBroadcast;
 			clone.Payload = this.Payload;
 			clone.ResponseTo = this.ResponseTo;
+			clone.RoutingInfo = this.RoutingInfo;
 			clone.Sent = this.Sent;
 			clone.Timeout = this.Timeout;
 			clone.ToGlobal = this.ToGlobal;

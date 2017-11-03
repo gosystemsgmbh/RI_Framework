@@ -254,6 +254,8 @@ State machines
 Bus
 ---
 
+ - (.NET) Forwarding of exceptions
+
  - (Windows) WindowsMessageLoopBusDispatcher
  - (WinForms) ApplicationBusDispatcher
 
