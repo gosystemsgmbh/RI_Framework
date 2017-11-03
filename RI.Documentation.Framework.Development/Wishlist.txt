@@ -223,6 +223,7 @@ Data
  = (.NET) Reporting base
  = (EPPlus) Reporting Excel
 
+ * (.NET) EntityView: View interfaces for WF and WPF
  * (.NET) IRepositorySet: Add entity and property descriptions functionality
 
  - (.NET) IRepositorySet: Add GetChanges method (return RepositorySetChanges type)
