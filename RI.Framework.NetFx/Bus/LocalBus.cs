@@ -13,6 +13,7 @@ using RI.Framework.Bus.Pipeline;
 using RI.Framework.Bus.Routers;
 using RI.Framework.Collections;
 using RI.Framework.Composition.Model;
+using RI.Framework.Services.Logging;
 using RI.Framework.Threading;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Logging;
@@ -42,6 +43,10 @@ namespace RI.Framework.Bus
 		{
 			this.SyncRoot = new object();
 			this.StartStopSyncRoot = new object();
+
+			this.Logger = LogLocator.Logger;
+			this.LoggingEnabled = true;
+			this.LogFilter = LogLevel.Debug;
 
 			this.ResponseTimeout = TimeSpan.FromSeconds(10);
 			this.CollectionTimeout = TimeSpan.FromSeconds(10);
@@ -752,32 +757,22 @@ namespace RI.Framework.Bus
 			{
 				get
 				{
-					if (this.Pipeline is ILogSource)
-					{
-						yield return this.Pipeline as ILogSource;
-					}
+					yield return this.Pipeline;
+					yield return this.Router;
 
 					if (this.Dispatcher is ILogSource)
 					{
 						yield return this.Dispatcher as ILogSource;
 					}
 
-					if (this.Router is ILogSource)
+					if (this.ConnectionManager != null)
 					{
-						yield return this.Router as ILogSource;
-					}
-
-					if (this.ConnectionManager is ILogSource)
-					{
-						yield return this.ConnectionManager as ILogSource;
+						yield return this.ConnectionManager;
 					}
 
 					foreach (IBusConnection connection in this.Connections)
 					{
-						if (connection is ILogSource)
-						{
-							yield return connection as ILogSource;
-						}
+						yield return connection;
 					}
 				}
 			}

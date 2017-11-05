@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using RI.Framework.Bus.Internals;
 using RI.Framework.Composition.Model;
+using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.ObjectModel;
 
 
@@ -23,7 +24,7 @@ namespace RI.Framework.Bus.Connections
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	[Export]
-	public interface IBusConnection : ISynchronizable
+	public interface IBusConnection : ISynchronizable, ILogSource
 	{
 		/// <summary>
 		///     Gets an explanatory message what and why the connection is broken.

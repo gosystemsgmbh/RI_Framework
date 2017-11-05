@@ -1,6 +1,7 @@
 ﻿using System;
 
 using RI.Framework.Composition.Model;
+using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.ObjectModel;
 
 
@@ -21,7 +22,7 @@ namespace RI.Framework.Bus.Pipeline
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	[Export]
-	public interface IBusPipeline : ISynchronizable
+	public interface IBusPipeline : ISynchronizable, ILogSource
 	{
 		/// <summary>
 		///     Processes all pending work on the bus processing pipeline.

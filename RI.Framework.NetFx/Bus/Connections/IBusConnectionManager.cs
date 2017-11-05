@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using RI.Framework.Bus.Internals;
 using RI.Framework.Composition.Model;
+using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.ObjectModel;
 
 
@@ -23,7 +24,7 @@ namespace RI.Framework.Bus.Connections
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	[Export]
-	public interface IBusConnectionManager : ISynchronizable
+	public interface IBusConnectionManager : ISynchronizable, ILogSource
 	{
 		/// <summary>
 		///     Gets the list of managed connections.

@@ -3,6 +3,8 @@
 using RI.Framework.Bus.Connections;
 using RI.Framework.Bus.Internals;
 using RI.Framework.Composition.Model;
+using RI.Framework.Services.Logging;
+using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.ObjectModel;
 
 
@@ -77,6 +79,15 @@ namespace RI.Framework.Bus.Routers
 
 		/// <inheritdoc />
 		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		public LogLevel LogFilter { get; set; } = LogLevel.Debug;
+
+		/// <inheritdoc />
+		public ILogger Logger { get; set; } = LogLocator.Logger;
+
+		/// <inheritdoc />
+		public bool LoggingEnabled { get; set; } = true;
 
 		/// <inheritdoc />
 		public object SyncRoot { get; }

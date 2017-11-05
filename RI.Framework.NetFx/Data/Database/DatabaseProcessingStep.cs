@@ -278,8 +278,9 @@ namespace RI.Framework.Data.Database
 				throw new ArgumentNullException(nameof(connection));
 			}
 
-			((ILogSource)this).LoggingEnabled = ((ILogSource)manager).LoggingEnabled;
 			((ILogSource)this).Logger = ((ILogSource)manager).Logger;
+			((ILogSource)this).LoggingEnabled = ((ILogSource)manager).LoggingEnabled;
+			((ILogSource)this).LogFilter = ((ILogSource)manager).LogFilter;
 
 			if (this.SubSteps.Count == 0)
 			{

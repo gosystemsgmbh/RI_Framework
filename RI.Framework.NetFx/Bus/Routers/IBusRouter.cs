@@ -3,6 +3,7 @@
 using RI.Framework.Bus.Connections;
 using RI.Framework.Bus.Internals;
 using RI.Framework.Composition.Model;
+using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.ObjectModel;
 
 
@@ -23,7 +24,7 @@ namespace RI.Framework.Bus.Routers
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	[Export]
-	public interface IBusRouter : ISynchronizable
+	public interface IBusRouter : ISynchronizable, ILogSource
 	{
 		/// <summary>
 		///     Determines whether a message is to be forwarded to remote busses through connections.

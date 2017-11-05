@@ -280,8 +280,9 @@ namespace RI.Framework.Data.Database.Scripts
 
 				foreach (IDatabaseScriptLocator scriptLocator in this.ScriptLocators)
 				{
-					scriptLocator.LoggingEnabled = ((ILogSource)this).LoggingEnabled;
 					scriptLocator.Logger = ((ILogSource)this).Logger;
+					scriptLocator.LoggingEnabled = ((ILogSource)this).LoggingEnabled;
+					scriptLocator.LogFilter = ((ILogSource)this).LogFilter;
 
 					List<string> currentBatches = scriptLocator.GetScriptBatch(manager, name, preprocess);
 					if (currentBatches == null)

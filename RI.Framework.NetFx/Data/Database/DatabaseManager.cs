@@ -57,6 +57,7 @@ namespace RI.Framework.Data.Database
 
 			((ILogSource)this).Logger = LogLocator.Logger;
 			((ILogSource)this).LoggingEnabled = true;
+			((ILogSource)this).LogFilter = LogLevel.Debug;
 
 			this.InitialState = DatabaseState.Uninitialized;
 			this.InitialVersion = -1;
