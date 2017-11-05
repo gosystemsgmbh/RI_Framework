@@ -84,6 +84,8 @@ namespace RI.Framework.Threading.Dispatcher
 
 		#region Instance Properties/Indexer
 
+		internal bool IsDisposed { get; private set; }
+
 		private Delegate Action { get; set; }
 		private CultureInfo CurrentCulture { get; set; }
 		private CultureInfo CurrentUICulture { get; set; }
@@ -92,7 +94,6 @@ namespace RI.Framework.Threading.Dispatcher
 		private bool FlowCurrentUICulture { get; set; }
 		private bool FlowExecutionContext { get; set; }
 		private bool FlowSynchronizationContext { get; set; }
-		internal bool IsDisposed { get; private set; }
 		private ThreadDispatcherOptions Options { get; set; }
 		private object[] Parameters { get; set; }
 		private object Result { get; set; }

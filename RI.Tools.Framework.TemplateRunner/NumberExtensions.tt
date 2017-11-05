@@ -124,6 +124,34 @@ string minusOne = minusOnes[i1];
 		public static <#=type#> Quantize (this <#=type#> value, <#=type#> multiple, MidpointRounding rounding) => (<#=type#>)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
 
 		/// <summary>
+		/// Gets the sum from a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The sum of the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static <#=type#> Sum (this IEnumerable<<#=type#>> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			<#=type#> sum = 0;
+			foreach(<#=type#> value in values)
+			{
+				sum += value;
+			}
+			return sum;
+		}
+
+		/// <summary>
 		/// Gets the minimum value from a sequence of values.
 		/// </summary>
 		/// <param name="values">The sequence of values.</param>
@@ -896,34 +924,6 @@ string radCircle = radCircles[i1];
 
 			string fractionPart = stringValue.Substring(separatorIndex + 1);
 			return <#=type#>.Parse(fractionPart, CultureInfo.InvariantCulture);
-		}
-
-		/// <summary>
-		/// Gets the sum from a sequence of values.
-		/// </summary>
-		/// <param name="values">The sequence of values.</param>
-		/// <returns>
-		/// The sum of the sequence.
-		/// </returns>
-		/// <remarks>
-		/// <para>
-		/// <paramref name="values" /> is enumerated only once.
-		/// </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
-		public static <#=type#> Sum (this IEnumerable<<#=type#>> values)
-		{
-			if(values == null)
-			{
-				throw new ArgumentNullException(nameof(values));
-			}
-
-			<#=type#> sum = 0;
-			foreach(<#=type#> value in values)
-			{
-				sum += value;
-			}
-			return sum;
 		}
 
 		/// <summary>

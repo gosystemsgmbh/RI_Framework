@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
+using RI.Framework.Collections.DirectLinq;
 using RI.Framework.IO.Paths;
+using RI.Framework.Mathematic;
 
 
 
@@ -79,8 +80,7 @@ namespace RI.Framework.Services.Logging.Readers
 		/// <value>
 		///     The total number of log entries read.
 		/// </value>
-		/// TODO: Use number extension and remove using of System.Linq
-		public int TotalEntries => this.Entries.Sum(x => x.Item2);
+		public int TotalEntries => this.Entries.Select(x => x.Item2).Sum();
 
 		#endregion
 	}

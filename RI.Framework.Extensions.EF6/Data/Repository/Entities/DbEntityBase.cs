@@ -20,7 +20,6 @@ namespace RI.Framework.Data.Repository.Entities
 	///         <see cref="EntityBase" /> for more details.
 	///     </para>
 	/// </remarks>
-	/// TODO: Extract helpers
 	public abstract class DbEntityBase : EntityBase
 	{
 		#region Static Constructor/Destructor

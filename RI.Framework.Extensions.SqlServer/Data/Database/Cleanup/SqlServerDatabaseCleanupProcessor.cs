@@ -59,7 +59,7 @@ namespace RI.Framework.Data.Database.Cleanup
 		///     Creates a new instance of <see cref="SqlServerDatabaseCleanupProcessor" />.
 		/// </summary>
 		/// <param name="cleanupStep"> The custom processing step which performs the cleanup or null if the default cleanup script is used (<see cref="DefaultCleanupScript" />). </param>
-		/// <exception cref="ArgumentNullException"><paramref name="cleanupStep"/> is null.</exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="cleanupStep" /> is null. </exception>
 		public SqlServerDatabaseCleanupProcessor (SqlServerDatabaseProcessingStep cleanupStep)
 		{
 			if (cleanupStep == null)
@@ -74,9 +74,9 @@ namespace RI.Framework.Data.Database.Cleanup
 		///     Creates a new instance of <see cref="SqlServerDatabaseCleanupProcessor" />.
 		/// </summary>
 		/// <param name="scriptName"> The script name which is used to perform the cleanup. </param>
-		/// <exception cref="ArgumentNullException"><paramref name="scriptName"/> is null.</exception>
-		/// <exception cref="EmptyStringArgumentException"><paramref name="scriptName"/> is an empty string.</exception>
-		public SqlServerDatabaseCleanupProcessor(string scriptName)
+		/// <exception cref="ArgumentNullException"> <paramref name="scriptName" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="scriptName" /> is an empty string. </exception>
+		public SqlServerDatabaseCleanupProcessor (string scriptName)
 		{
 			if (scriptName == null)
 			{

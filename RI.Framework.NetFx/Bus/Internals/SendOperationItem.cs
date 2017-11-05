@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 
 
@@ -90,6 +91,33 @@ namespace RI.Framework.Bus.Internals
 		///     The task which is used to wait for the completion of the send operation.
 		/// </value>
 		public TaskCompletionSource<object> Task { get; }
+
+		#endregion
+
+
+
+
+		#region Overrides
+
+		/// <inheritdoc />
+		public override string ToString ()
+		{
+			StringBuilder sb = new StringBuilder();
+
+			sb.Append("State=");
+			sb.Append(this.State);
+			sb.Append("; Responses=");
+			sb.Append(this.Responses.Count);
+			sb.Append("; Results=");
+			sb.Append(this.Results.Count);
+			sb.Append("; SendOperation=[");
+			sb.Append(this.SendOperation);
+			sb.Append("]; Request=[");
+			sb.Append(this.Request);
+			sb.Append("]");
+
+			return sb.ToString();
+		}
 
 		#endregion
 	}

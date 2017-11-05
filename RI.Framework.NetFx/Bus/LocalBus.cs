@@ -11,6 +11,7 @@ using RI.Framework.Bus.Exceptions;
 using RI.Framework.Bus.Internals;
 using RI.Framework.Bus.Pipeline;
 using RI.Framework.Bus.Routers;
+using RI.Framework.Collections;
 using RI.Framework.Composition.Model;
 using RI.Framework.Threading;
 using RI.Framework.Utilities;
@@ -29,9 +30,8 @@ namespace RI.Framework.Bus
 	///     See <see cref="IBus" /> for more details.
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
-	/// TODO: Logging
 	[Export]
-	public sealed class LocalBus : LogSource, IBus
+	public sealed class LocalBus : IBus
 	{
 		#region Instance Constructor/Destructor
 
@@ -78,6 +78,8 @@ namespace RI.Framework.Bus
 
 		private TimeSpan _collectionTimeout;
 		private bool _defaultIsGlobal;
+		private ILogger _logger;
+		private bool _loggingEnabled;
 		private TimeSpan _pollInterval;
 		private TimeSpan _responseTimeout;
 		private CultureInfo _threadCulture;
@@ -279,6 +281,8 @@ namespace RI.Framework.Bus
 		{
 			lock (this.StartStopSyncRoot)
 			{
+				this.Log(LogLevel.Information, "Stopping message bus");
+
 				WorkThread workerThread;
 				lock (this.SyncRoot)
 				{
@@ -296,6 +300,17 @@ namespace RI.Framework.Bus
 
 					this.DependencyResolver = null;
 				}
+
+				this.Log(LogLevel.Information, "Message bus stopped");
+			}
+		}
+
+		private void InheritLogger ()
+		{
+			if (this.WorkerThread != null)
+			{
+				this.WorkerThread.Logger = this.Logger;
+				this.WorkerThread.LoggingEnabled = this.LoggingEnabled;
 			}
 		}
 
@@ -384,6 +399,46 @@ namespace RI.Framework.Bus
 
 		/// <inheritdoc />
 		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		public ILogger Logger
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._logger;
+				}
+			}
+			set
+			{
+				lock (this.SyncRoot)
+				{
+					this._logger = value;
+					this.InheritLogger();
+				}
+			}
+		}
+
+		/// <inheritdoc />
+		public bool LoggingEnabled
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._loggingEnabled;
+				}
+			}
+			set
+			{
+				lock (this.SyncRoot)
+				{
+					this._loggingEnabled = value;
+					this.InheritLogger();
+				}
+			}
+		}
 
 		/// <inheritdoc />
 		public TimeSpan PollInterval
@@ -484,6 +539,8 @@ namespace RI.Framework.Bus
 				this.VerifyStarted();
 				this.CheckForExceptions();
 
+				this.Log(LogLevel.Debug, "Sending: {0}", sendOperation);
+
 				SendOperationItem item = new SendOperationItem(sendOperation);
 				this.SendOperations.Add(item);
 
@@ -508,6 +565,8 @@ namespace RI.Framework.Bus
 
 			lock (this.SyncRoot)
 			{
+				this.Log(LogLevel.Debug, "Registering receiver: {0}", receiverRegistration);
+
 				ReceiverRegistrationItem item = new ReceiverRegistrationItem(receiverRegistration);
 				this.ReceiveRegistrations.Add(item);
 
@@ -541,6 +600,8 @@ namespace RI.Framework.Bus
 					this.VerifyNotStarted();
 				}
 
+				this.Log(LogLevel.Information, "Starting message bus");
+
 				bool success = false;
 				try
 				{
@@ -551,9 +612,13 @@ namespace RI.Framework.Bus
 						this.WorkAvailable = new ManualResetEvent(false);
 
 						this.WorkerThread = new WorkThread(this);
+
+						this.InheritLogger();
 					}
 
 					this.WorkerThread.Start();
+
+					this.Log(LogLevel.Information, "Message bus started");
 
 					success = true;
 				}
@@ -584,6 +649,8 @@ namespace RI.Framework.Bus
 
 			lock (this.SyncRoot)
 			{
+				this.Log(LogLevel.Debug, "Unregistering receiver: {0}", receiverRegistration);
+
 				this.ReceiveRegistrations.RemoveAll(x => object.ReferenceEquals(x.ReceiverRegistration, receiverRegistration));
 
 				this.SignalWorkAvailable();
@@ -597,7 +664,7 @@ namespace RI.Framework.Bus
 
 		#region Type: WorkThread
 
-		private sealed class WorkThread : HeavyThread
+		private sealed class WorkThread : HeavyThread, ILogSource
 		{
 			#region Instance Constructor/Destructor
 
@@ -605,6 +672,16 @@ namespace RI.Framework.Bus
 			{
 				this.LocalBus = localBus;
 			}
+
+			#endregion
+
+
+
+
+			#region Instance Fields
+
+			private ILogger _logger;
+			private bool _loggingEnabled;
 
 			#endregion
 
@@ -625,6 +702,41 @@ namespace RI.Framework.Bus
 
 			private IBusDispatcher Dispatcher { get; set; }
 
+			[SuppressMessage("ReSharper", "SuspiciousTypeConversion.Global")]
+			private IEnumerable<ILogSource> LogSources
+			{
+				get
+				{
+					if (this.Pipeline is ILogSource)
+					{
+						yield return this.Pipeline as ILogSource;
+					}
+
+					if (this.Dispatcher is ILogSource)
+					{
+						yield return this.Dispatcher as ILogSource;
+					}
+
+					if (this.Router is ILogSource)
+					{
+						yield return this.Router as ILogSource;
+					}
+
+					if (this.ConnectionManager is ILogSource)
+					{
+						yield return this.ConnectionManager as ILogSource;
+					}
+
+					foreach (IBusConnection connection in this.Connections)
+					{
+						if (connection is ILogSource)
+						{
+							yield return connection as ILogSource;
+						}
+					}
+				}
+			}
+
 			private IBusPipeline Pipeline { get; set; }
 
 			private IBusRouter Router { get; set; }
@@ -635,6 +747,15 @@ namespace RI.Framework.Bus
 
 
 			#region Instance Methods
+
+			private void InheritLogger ()
+			{
+				this.LogSources.ForEach(x =>
+				{
+					x.Logger = this.Logger;
+					x.LoggingEnabled = this.LoggingEnabled;
+				});
+			}
 
 			private List<T> ResolveMultiple <T> (bool mandatory)
 				where T : class
@@ -676,25 +797,70 @@ namespace RI.Framework.Bus
 				this.Pipeline = this.ResolveSingle<IBusPipeline>(true);
 				this.Dispatcher = this.ResolveSingle<IBusDispatcher>(true);
 				this.Router = this.ResolveSingle<IBusRouter>(true);
-
 				this.ConnectionManager = this.ResolveSingle<IBusConnectionManager>(false);
 				this.Connections = this.ResolveMultiple<IBusConnection>(false);
 
-				this.Connections.ForEach(x => x.Initialize(this.DependencyResolver));
-				this.ConnectionManager?.Initialize(this.DependencyResolver);
+				this.Log(LogLevel.Information, "Used bus pipeline:           {0}", this.Pipeline);
+				this.Log(LogLevel.Information, "Used bus dispatcher:         {0}", this.Dispatcher);
+				this.Log(LogLevel.Information, "Used bus router:             {0}", this.Router);
+				this.Log(LogLevel.Information, "Used bus connection manager: {0}", this.ConnectionManager?.ToString() ?? "[null]");
+				this.Connections.ForEach(x => this.Log(LogLevel.Information, "Used bus connection:         {0}", x));
 
+				this.InheritLogger();
+
+				this.Connections.ForEach(x =>
+				{
+					this.Log(LogLevel.Information, "Initialize bus connection: {0}", x);
+					x.Initialize(this.DependencyResolver);
+				});
+
+				if (this.ConnectionManager != null)
+				{
+					this.Log(LogLevel.Information, "Initialize bus connection manager: {0}", this.ConnectionManager);
+					this.ConnectionManager.Initialize(this.DependencyResolver);
+				}
+
+				this.Log(LogLevel.Information, "Initialize bus router: {0}", this.Router);
 				this.Router.Initialize(this.DependencyResolver);
+
+				this.Log(LogLevel.Information, "Initialize bus dispatcher: {0}", this.Dispatcher);
 				this.Dispatcher.Initialize(this.DependencyResolver);
+
+				this.Log(LogLevel.Information, "Initialize bus pipeline: {0}", this.Pipeline);
 				this.Pipeline.Initialize(this.DependencyResolver);
 			}
 
 			protected override void OnEnd ()
 			{
-				this.Pipeline?.Unload();
-				this.Dispatcher?.Unload();
-				this.Router?.Unload();
-				this.ConnectionManager?.Unload();
-				this.Connections?.ForEach(x => x.Unload());
+				if (this.Pipeline != null)
+				{
+					this.Log(LogLevel.Information, "Unload bus pipeline: {0}", this.Pipeline);
+					this.Pipeline.Unload();
+				}
+
+				if (this.Dispatcher != null)
+				{
+					this.Log(LogLevel.Information, "Unload bus dispatcher: {0}", this.Dispatcher);
+					this.Dispatcher.Unload();
+				}
+
+				if (this.Router != null)
+				{
+					this.Log(LogLevel.Information, "Unload bus router: {0}", this.Router);
+					this.Router.Unload();
+				}
+
+				if (this.ConnectionManager != null)
+				{
+					this.Log(LogLevel.Information, "Unload bus connection manager: {0}", this.ConnectionManager);
+					this.ConnectionManager.Unload();
+				}
+
+				this.Connections?.ForEach(x =>
+				{
+					this.Log(LogLevel.Information, "Unload bus connection: {0}", x);
+					x.Unload();
+				});
 
 				base.OnEnd();
 			}
@@ -702,6 +868,8 @@ namespace RI.Framework.Bus
 			protected override void OnException (Exception exception, bool canContinue)
 			{
 				base.OnException(exception, canContinue);
+
+				this.Log(LogLevel.Error, "Bus processing pipeline exception: {0}{1}", Environment.NewLine, exception.ToDetailedString());
 
 				lock (this.LocalBus.SyncRoot)
 				{
@@ -725,6 +893,8 @@ namespace RI.Framework.Bus
 			{
 				base.OnRun();
 
+				this.Log(LogLevel.Information, "Bus pipeline is running");
+
 				while (true)
 				{
 					int response = WaitHandle.WaitAny(new WaitHandle[] {this.LocalBus.WorkAvailable, this.StopEvent}, this.LocalBus.PollInterval);
@@ -736,6 +906,7 @@ namespace RI.Framework.Bus
 
 					if (this.StopRequested)
 					{
+						this.Log(LogLevel.Information, "Bus pipeline received stop request");
 						break;
 					}
 
@@ -755,6 +926,53 @@ namespace RI.Framework.Bus
 				this.Thread.Priority = this.LocalBus.ThreadPriority;
 				this.Thread.CurrentCulture = this.LocalBus.ThreadCulture;
 				this.Thread.CurrentUICulture = this.LocalBus.ThreadUICulture;
+			}
+
+			#endregion
+
+
+
+
+			#region Interface: ILogSource
+
+			/// <inheritdoc />
+			public ILogger Logger
+			{
+				get
+				{
+					lock (this.LocalBus.SyncRoot)
+					{
+						return this._logger;
+					}
+				}
+				set
+				{
+					lock (this.LocalBus.SyncRoot)
+					{
+						this._logger = value;
+						this.InheritLogger();
+					}
+				}
+			}
+
+			/// <inheritdoc />
+			public bool LoggingEnabled
+			{
+				get
+				{
+					lock (this.LocalBus.SyncRoot)
+					{
+						return this._loggingEnabled;
+					}
+				}
+				set
+				{
+					lock (this.LocalBus.SyncRoot)
+					{
+						this._loggingEnabled = value;
+						this.InheritLogger();
+					}
+				}
 			}
 
 			#endregion

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using RI.Framework.Bus.Internals;
 using RI.Framework.Composition.Model;
+using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.ObjectModel;
 
 
@@ -17,9 +18,8 @@ namespace RI.Framework.Bus.Connections
 	///     See <see cref="IBusConnectionManager" /> for more details.
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
-	/// TODO: Logging
 	[Export]
-	public sealed class DefaultBusConnectionManager : IBusConnectionManager
+	public sealed class DefaultBusConnectionManager : LogSource, IBusConnectionManager
 	{
 		#region Instance Constructor/Destructor
 
@@ -79,6 +79,7 @@ namespace RI.Framework.Bus.Connections
 					connection.DequeueMessages(connectionMessages);
 					foreach (MessageItem message in connectionMessages)
 					{
+						this.Log(LogLevel.Debug, "Receiving: Connection=[{0}], Message=[{1}]", connection, message);
 						messages.Add(new Tuple<MessageItem, IBusConnection>(message, connection));
 					}
 				}
@@ -107,6 +108,8 @@ namespace RI.Framework.Bus.Connections
 			{
 				throw new ArgumentNullException(nameof(connection));
 			}
+
+			this.Log(LogLevel.Debug, "Sending: Connection=[{0}], Message=[{1}]", connection, message);
 
 			connection.SendMessage(message);
 		}

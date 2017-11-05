@@ -11,6 +11,7 @@ using RI.Framework.Bus.Internals;
 using RI.Framework.Bus.Routers;
 using RI.Framework.Collections;
 using RI.Framework.Composition.Model;
+using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.ObjectModel;
 
 
@@ -27,9 +28,8 @@ namespace RI.Framework.Bus.Pipeline
 	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
-	/// TODO: Logging
 	[Export]
-	public sealed class DefaultBusPipeline : IBusPipeline
+	public sealed class DefaultBusPipeline : LogSource, IBusPipeline
 	{
 		#region Instance Constructor/Destructor
 
@@ -76,12 +76,14 @@ namespace RI.Framework.Bus.Pipeline
 						{
 							if (x.SendOperation.ExpectedResults.HasValue && (x.Results.Count >= x.SendOperation.ExpectedResults.Value))
 							{
+								this.Log(LogLevel.Debug, "Send operation finished (collection count): {0}", x);
 								x.State = SendOperationItemState.Finished;
 								x.Task.TrySetResult(x.Results);
 							}
 						}
 						else
 						{
+							this.Log(LogLevel.Debug, "Send operation finished (single): {0}", x);
 							x.State = SendOperationItemState.Finished;
 							x.Task.TrySetResult(x.Results[0]);
 						}
@@ -98,8 +100,10 @@ namespace RI.Framework.Bus.Pipeline
 				{
 					this.Bus.ReceiveRegistrations.Where(x => this.Router.ShouldReceive(messageItem, x)).ForEach(x =>
 					{
+						this.Log(LogLevel.Debug, "Dispatching message processing: Request=[{0}], Receiver=[{1}]", messageItem, x);
 						this.Dispatcher.Dispatch(new Action<MessageItem, ReceiverRegistrationItem>((m, r) =>
 						{
+							this.Log(LogLevel.Debug, "Executing message processing: Request=[{0}], Receiver=[{1}]", m, r);
 							Func<string, object, Task<object>> callback = r.ReceiverRegistration.Callback;
 							Task<object> task;
 							if (r.ReceiverRegistration.ExceptionHandler == null)
@@ -168,6 +172,8 @@ namespace RI.Framework.Bus.Pipeline
 			response.FromGlobal = false;
 			response.ResponseTo = message.Id;
 
+			this.Log(LogLevel.Debug, "Finished message processing: Request=[{0}], Response=[{1}]", message, response);
+
 			lock (this.SyncRoot)
 			{
 				this.LocalResponses.Enqueue(response);
@@ -211,6 +217,7 @@ namespace RI.Framework.Bus.Pipeline
 				{
 					if (x.SendOperation.CancellationToken?.IsCancellationRequested ?? false)
 					{
+						this.Log(LogLevel.Debug, "Send operation canceled: {0}", x);
 						x.State = SendOperationItemState.Cancelled;
 						x.Task.TrySetCanceled(x.SendOperation.CancellationToken.Value);
 					}
@@ -230,6 +237,7 @@ namespace RI.Framework.Bus.Pipeline
 					x.Request.ResponseTo = null;
 					x.Request.RoutingInfo = null;
 					newMessages.Add(x.Request);
+					this.Log(LogLevel.Debug, "Send operation created: {0}", x);
 				});
 
 				this.Bus.SendOperations.Where(x => x.State == SendOperationItemState.Waiting).ForEach(x =>
@@ -239,11 +247,13 @@ namespace RI.Framework.Bus.Pipeline
 					{
 						if (!x.Request.IsBroadcast)
 						{
+							this.Log(LogLevel.Debug, "Send operation timed-out: {0}", x);
 							x.State = SendOperationItemState.TimedOut;
 							x.Task.TrySetException(new BusResponseTimeoutException(x.Request));
 						}
 						else
 						{
+							this.Log(LogLevel.Debug, "Send operation finished (collection timeout): {0}", x);
 							x.State = SendOperationItemState.Finished;
 							x.Task.TrySetResult(x.Results);
 						}
@@ -259,6 +269,7 @@ namespace RI.Framework.Bus.Pipeline
 						{
 							this.Bus.SendOperations.Where(x => x.Request.ToGlobal && (x.State == SendOperationItemState.Waiting)).ForEach(x =>
 							{
+								this.Log(LogLevel.Debug, "Send operation broken: {0}", x);
 								x.State = SendOperationItemState.Broken;
 								x.Task.TrySetException(new BusConnectionBrokenException(brokenConnection));
 							});

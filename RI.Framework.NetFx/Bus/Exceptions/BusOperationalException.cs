@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
+
+
+
 namespace RI.Framework.Bus.Exceptions
 {
 	/// <summary>
@@ -24,7 +27,7 @@ namespace RI.Framework.Bus.Exceptions
 		/// <summary>
 		///     Creates a new instance of <see cref="BusOperationalException" />.
 		/// </summary>
-		public BusOperationalException()
+		public BusOperationalException ()
 			: base(BusOperationalException.ExceptionMessageWithoutException)
 		{
 		}
@@ -33,7 +36,7 @@ namespace RI.Framework.Bus.Exceptions
 		///     Creates a new instance of <see cref="BusOperationalException" />.
 		/// </summary>
 		/// <param name="message"> The message which describes the exception. </param>
-		public BusOperationalException(string message)
+		public BusOperationalException (string message)
 			: base(message)
 		{
 		}
@@ -42,7 +45,7 @@ namespace RI.Framework.Bus.Exceptions
 		///     Creates a new instance of <see cref="BusOperationalException" />.
 		/// </summary>
 		/// <param name="innerException"> The exception which triggered this exception. </param>
-		public BusOperationalException(Exception innerException)
+		public BusOperationalException (Exception innerException)
 			: base(string.Format(BusOperationalException.ExceptionMessageWithException, innerException.GetType().Name, innerException.Message), innerException)
 		{
 		}
@@ -52,7 +55,7 @@ namespace RI.Framework.Bus.Exceptions
 		/// </summary>
 		/// <param name="message"> The message which describes the exception. </param>
 		/// <param name="innerException"> The exception which triggered this exception. </param>
-		public BusOperationalException(string message, Exception innerException)
+		public BusOperationalException (string message, Exception innerException)
 			: base(message, innerException)
 		{
 		}
@@ -62,7 +65,7 @@ namespace RI.Framework.Bus.Exceptions
 		/// </summary>
 		/// <param name="info"> The serialization data. </param>
 		/// <param name="context"> The type of the source of the serialization data. </param>
-		protected BusOperationalException(SerializationInfo info, StreamingContext context)
+		protected BusOperationalException (SerializationInfo info, StreamingContext context)
 			: base(info, context)
 		{
 		}

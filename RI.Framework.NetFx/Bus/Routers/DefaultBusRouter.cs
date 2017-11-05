@@ -37,16 +37,16 @@ namespace RI.Framework.Bus.Routers
 
 
 
-		#region Instance Methods
+		#region Virtuals
 
 		/// <summary>
-		/// Compares two types whether they are the same, in the context of payload type and receiver registration.
+		///     Compares two types whether they are the same, in the context of payload type and receiver registration.
 		/// </summary>
-		/// <param name="source">The type to convert from or the payload respectively.</param>
-		/// <param name="target">The type to convert to or the receiver type respectively.</param>
-		/// <param name="inheritanceTolerant">Specifies whether compatible, assignable types are also considered equal.</param>
+		/// <param name="source"> The type to convert from or the payload respectively. </param>
+		/// <param name="target"> The type to convert to or the receiver type respectively. </param>
+		/// <param name="inheritanceTolerant"> Specifies whether compatible, assignable types are also considered equal. </param>
 		/// <returns>
-		/// true if the two types are considered equal, false otherwise.
+		///     true if the two types are considered equal, false otherwise.
 		/// </returns>
 		protected virtual bool CompareTypes (Type source, Type target, bool inheritanceTolerant)
 		{

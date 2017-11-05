@@ -105,6 +105,34 @@ namespace RI.Framework.Mathematic
 		public static sbyte Quantize (this sbyte value, sbyte multiple, MidpointRounding rounding) => (sbyte)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
 
 		/// <summary>
+		/// Gets the sum from a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The sum of the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static sbyte Sum (this IEnumerable<sbyte> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			sbyte sum = 0;
+			foreach(sbyte value in values)
+			{
+				sum += value;
+			}
+			return sum;
+		}
+
+		/// <summary>
 		/// Gets the minimum value from a sequence of values.
 		/// </summary>
 		/// <param name="values">The sequence of values.</param>
@@ -332,6 +360,34 @@ namespace RI.Framework.Mathematic
 		/// The quantized value.
 		/// </returns>
 		public static byte Quantize (this byte value, byte multiple, MidpointRounding rounding) => (byte)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
+
+		/// <summary>
+		/// Gets the sum from a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The sum of the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static byte Sum (this IEnumerable<byte> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			byte sum = 0;
+			foreach(byte value in values)
+			{
+				sum += value;
+			}
+			return sum;
+		}
 
 		/// <summary>
 		/// Gets the minimum value from a sequence of values.
@@ -563,6 +619,34 @@ namespace RI.Framework.Mathematic
 		public static short Quantize (this short value, short multiple, MidpointRounding rounding) => (short)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
 
 		/// <summary>
+		/// Gets the sum from a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The sum of the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static short Sum (this IEnumerable<short> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			short sum = 0;
+			foreach(short value in values)
+			{
+				sum += value;
+			}
+			return sum;
+		}
+
+		/// <summary>
 		/// Gets the minimum value from a sequence of values.
 		/// </summary>
 		/// <param name="values">The sequence of values.</param>
@@ -790,6 +874,34 @@ namespace RI.Framework.Mathematic
 		/// The quantized value.
 		/// </returns>
 		public static ushort Quantize (this ushort value, ushort multiple, MidpointRounding rounding) => (ushort)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
+
+		/// <summary>
+		/// Gets the sum from a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The sum of the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static ushort Sum (this IEnumerable<ushort> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			ushort sum = 0;
+			foreach(ushort value in values)
+			{
+				sum += value;
+			}
+			return sum;
+		}
 
 		/// <summary>
 		/// Gets the minimum value from a sequence of values.
@@ -1021,6 +1133,34 @@ namespace RI.Framework.Mathematic
 		public static int Quantize (this int value, int multiple, MidpointRounding rounding) => (int)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
 
 		/// <summary>
+		/// Gets the sum from a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The sum of the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static int Sum (this IEnumerable<int> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			int sum = 0;
+			foreach(int value in values)
+			{
+				sum += value;
+			}
+			return sum;
+		}
+
+		/// <summary>
 		/// Gets the minimum value from a sequence of values.
 		/// </summary>
 		/// <param name="values">The sequence of values.</param>
@@ -1248,6 +1388,34 @@ namespace RI.Framework.Mathematic
 		/// The quantized value.
 		/// </returns>
 		public static uint Quantize (this uint value, uint multiple, MidpointRounding rounding) => (uint)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
+
+		/// <summary>
+		/// Gets the sum from a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The sum of the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static uint Sum (this IEnumerable<uint> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			uint sum = 0;
+			foreach(uint value in values)
+			{
+				sum += value;
+			}
+			return sum;
+		}
 
 		/// <summary>
 		/// Gets the minimum value from a sequence of values.
@@ -1479,6 +1647,34 @@ namespace RI.Framework.Mathematic
 		public static long Quantize (this long value, long multiple, MidpointRounding rounding) => (long)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
 
 		/// <summary>
+		/// Gets the sum from a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The sum of the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static long Sum (this IEnumerable<long> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			long sum = 0;
+			foreach(long value in values)
+			{
+				sum += value;
+			}
+			return sum;
+		}
+
+		/// <summary>
 		/// Gets the minimum value from a sequence of values.
 		/// </summary>
 		/// <param name="values">The sequence of values.</param>
@@ -1706,6 +1902,34 @@ namespace RI.Framework.Mathematic
 		/// The quantized value.
 		/// </returns>
 		public static ulong Quantize (this ulong value, ulong multiple, MidpointRounding rounding) => (ulong)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
+
+		/// <summary>
+		/// Gets the sum from a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The sum of the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static ulong Sum (this IEnumerable<ulong> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			ulong sum = 0;
+			foreach(ulong value in values)
+			{
+				sum += value;
+			}
+			return sum;
+		}
 
 		/// <summary>
 		/// Gets the minimum value from a sequence of values.
@@ -1937,6 +2161,34 @@ namespace RI.Framework.Mathematic
 		public static float Quantize (this float value, float multiple, MidpointRounding rounding) => (float)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
 
 		/// <summary>
+		/// Gets the sum from a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The sum of the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static float Sum (this IEnumerable<float> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			float sum = 0;
+			foreach(float value in values)
+			{
+				sum += value;
+			}
+			return sum;
+		}
+
+		/// <summary>
 		/// Gets the minimum value from a sequence of values.
 		/// </summary>
 		/// <param name="values">The sequence of values.</param>
@@ -2120,6 +2372,34 @@ namespace RI.Framework.Mathematic
 		public static double Quantize (this double value, double multiple, MidpointRounding rounding) => (double)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
 
 		/// <summary>
+		/// Gets the sum from a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The sum of the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static double Sum (this IEnumerable<double> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			double sum = 0;
+			foreach(double value in values)
+			{
+				sum += value;
+			}
+			return sum;
+		}
+
+		/// <summary>
 		/// Gets the minimum value from a sequence of values.
 		/// </summary>
 		/// <param name="values">The sequence of values.</param>
@@ -2301,6 +2581,34 @@ namespace RI.Framework.Mathematic
 		/// The quantized value.
 		/// </returns>
 		public static decimal Quantize (this decimal value, decimal multiple, MidpointRounding rounding) => (decimal)(Math.Round((double)value / (double)multiple, rounding) * (double)multiple);
+
+		/// <summary>
+		/// Gets the sum from a sequence of values.
+		/// </summary>
+		/// <param name="values">The sequence of values.</param>
+		/// <returns>
+		/// The sum of the sequence.
+		/// </returns>
+		/// <remarks>
+		/// <para>
+		/// <paramref name="values" /> is enumerated only once.
+		/// </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
+		public static decimal Sum (this IEnumerable<decimal> values)
+		{
+			if(values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			decimal sum = 0;
+			foreach(decimal value in values)
+			{
+				sum += value;
+			}
+			return sum;
+		}
 
 		/// <summary>
 		/// Gets the minimum value from a sequence of values.
@@ -3287,34 +3595,6 @@ namespace RI.Framework.Mathematic
 		}
 
 		/// <summary>
-		/// Gets the sum from a sequence of values.
-		/// </summary>
-		/// <param name="values">The sequence of values.</param>
-		/// <returns>
-		/// The sum of the sequence.
-		/// </returns>
-		/// <remarks>
-		/// <para>
-		/// <paramref name="values" /> is enumerated only once.
-		/// </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
-		public static float Sum (this IEnumerable<float> values)
-		{
-			if(values == null)
-			{
-				throw new ArgumentNullException(nameof(values));
-			}
-
-			float sum = 0;
-			foreach(float value in values)
-			{
-				sum += value;
-			}
-			return sum;
-		}
-
-		/// <summary>
 		/// Gets the Product from a sequence of values.
 		/// </summary>
 		/// <param name="values">The sequence of values.</param>
@@ -4099,34 +4379,6 @@ namespace RI.Framework.Mathematic
 
 			string fractionPart = stringValue.Substring(separatorIndex + 1);
 			return double.Parse(fractionPart, CultureInfo.InvariantCulture);
-		}
-
-		/// <summary>
-		/// Gets the sum from a sequence of values.
-		/// </summary>
-		/// <param name="values">The sequence of values.</param>
-		/// <returns>
-		/// The sum of the sequence.
-		/// </returns>
-		/// <remarks>
-		/// <para>
-		/// <paramref name="values" /> is enumerated only once.
-		/// </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="values" /> is null. </exception>
-		public static double Sum (this IEnumerable<double> values)
-		{
-			if(values == null)
-			{
-				throw new ArgumentNullException(nameof(values));
-			}
-
-			double sum = 0;
-			foreach(double value in values)
-			{
-				sum += value;
-			}
-			return sum;
 		}
 
 		/// <summary>

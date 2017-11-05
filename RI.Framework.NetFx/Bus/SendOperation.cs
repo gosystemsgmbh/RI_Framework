@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -495,6 +496,36 @@ namespace RI.Framework.Bus
 			{
 				throw new InvalidOperationException("The message is already being processed.");
 			}
+		}
+
+		#endregion
+
+
+
+
+		#region Overrides
+
+		/// <inheritdoc />
+		public override string ToString ()
+		{
+			StringBuilder sb = new StringBuilder();
+
+			sb.Append("Address=");
+			sb.Append(this.Address ?? "[null]");
+			sb.Append("; Payload=");
+			sb.Append(this.Payload?.GetType().FullName ?? "[null]");
+			sb.Append("; Global=");
+			sb.Append(this.Global?.ToString() ?? "[null]");
+			sb.Append("; IsBroadcast=");
+			sb.Append(this.IsBroadcast);
+			sb.Append("; Timeout=");
+			sb.Append(this.Timeout.HasValue ? ((int)this.Timeout.Value.TotalMilliseconds).ToString() : "[null]");
+			sb.Append("; ExpectedResults=");
+			sb.Append(this.ExpectedResults?.ToString() ?? "[null]");
+			sb.Append("; IsProcessed=");
+			sb.Append(this.IsProcessed);
+
+			return sb.ToString();
 		}
 
 		#endregion

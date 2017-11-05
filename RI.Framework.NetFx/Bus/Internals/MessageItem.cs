@@ -1,7 +1,12 @@
 ﻿using System;
+using System.Text;
 
 using RI.Framework.Bus.Routers;
+using RI.Framework.Utilities;
 using RI.Framework.Utilities.ObjectModel;
+
+
+
 
 namespace RI.Framework.Bus.Internals
 {
@@ -11,6 +16,17 @@ namespace RI.Framework.Bus.Internals
 	[Serializable]
 	public sealed class MessageItem : ICloneable<MessageItem>, ICloneable
 	{
+		#region Instance Fields
+
+		private object _payload;
+
+		private object _routingInfo;
+
+		#endregion
+
+
+
+
 		#region Instance Properties/Indexer
 
 		/// <summary>
@@ -45,8 +61,6 @@ namespace RI.Framework.Bus.Internals
 		/// </value>
 		public bool IsBroadcast { get; set; }
 
-		private object _payload;
-
 		/// <summary>
 		///     Gets or sets the payload of the message.
 		/// </summary>
@@ -68,22 +82,28 @@ namespace RI.Framework.Bus.Internals
 		}
 
 		/// <summary>
-		/// Gets the simple name of the assembly in which the used payload type is defined.
+		///     Gets the simple name of the assembly in which the used payload type is defined.
 		/// </summary>
 		/// <value>
-		/// The simple name of the assembly in which the used payload type is defined or null if the message does not have a payload.
+		///     The simple name of the assembly in which the used payload type is defined or null if the message does not have a payload.
 		/// </value>
 		public string PayloadAssembly { get; private set; }
 
 		/// <summary>
-		/// Gets the full name of the payload type.
+		///     Gets the full name of the payload type.
 		/// </summary>
 		/// <value>
-		/// The full name of the payload type or null if the message does not have a payload.
+		///     The full name of the payload type or null if the message does not have a payload.
 		/// </value>
 		public string PayloadType { get; private set; }
 
-		private object _routingInfo;
+		/// <summary>
+		///     Gets or sets the unique ID of the message this message responds to.
+		/// </summary>
+		/// <value>
+		///     The unique ID of the message this message responds to.
+		/// </value>
+		public Guid? ResponseTo { get; set; }
 
 		/// <summary>
 		///     Gets or sets routing information of the message.
@@ -92,9 +112,9 @@ namespace RI.Framework.Bus.Internals
 		///     The routing information of the message or null if the message does not have routing information.
 		/// </value>
 		/// <remarks>
-		/// <para>
-		/// Routing information is optional and only used by <see cref="IBusRouter"/>s in cases where they need to exchange routing information.
-		/// </para>
+		///     <para>
+		///         Routing information is optional and only used by <see cref="IBusRouter" />s in cases where they need to exchange routing information.
+		///     </para>
 		/// </remarks>
 		public object RoutingInfo
 		{
@@ -111,28 +131,20 @@ namespace RI.Framework.Bus.Internals
 		}
 
 		/// <summary>
-		/// Gets the simple name of the assembly in which the used routing information type is defined.
+		///     Gets the simple name of the assembly in which the used routing information type is defined.
 		/// </summary>
 		/// <value>
-		/// The simple name of the assembly in which the used routing information type is defined or null if the message does not have routing information.
+		///     The simple name of the assembly in which the used routing information type is defined or null if the message does not have routing information.
 		/// </value>
 		public string RoutingInfoAssembly { get; private set; }
 
 		/// <summary>
-		/// Gets the full name of the routing information type.
+		///     Gets the full name of the routing information type.
 		/// </summary>
 		/// <value>
-		/// The full name of the routing information type or null if the message does not have routing information.
+		///     The full name of the routing information type or null if the message does not have routing information.
 		/// </value>
 		public string RoutingInfoType { get; private set; }
-
-		/// <summary>
-		///     Gets or sets the unique ID of the message this message responds to.
-		/// </summary>
-		/// <value>
-		///     The unique ID of the message this message responds to.
-		/// </value>
-		public Guid? ResponseTo { get; set; }
 
 		/// <summary>
 		///     Gets or sets the UTC timestamp when the message was sent.
@@ -160,6 +172,47 @@ namespace RI.Framework.Bus.Internals
 
 		#endregion
 
+
+
+
+		#region Overrides
+
+		/// <inheritdoc />
+		public override string ToString ()
+		{
+			StringBuilder sb = new StringBuilder();
+
+			sb.Append("Id=");
+			sb.Append(this.Id.ToString("N").ToUpperInvariant());
+			sb.Append("; ResponseTo=");
+			sb.Append(this.ResponseTo?.ToString("N").ToUpperInvariant() ?? "[null]");
+			sb.Append("; Address=");
+			sb.Append(this.Address ?? "[null]");
+			sb.Append("; Payload=");
+			sb.Append(this.Payload?.GetType().FullName ?? "[null]");
+			sb.Append("; ToGlobal=");
+			sb.Append(this.ToGlobal);
+			sb.Append("; FromGlobal=");
+			sb.Append(this.FromGlobal);
+			sb.Append("; IsBroadcast=");
+			sb.Append(this.IsBroadcast);
+			sb.Append("; Timeout=");
+			sb.Append(this.Timeout);
+			sb.Append("; Sent=");
+			sb.Append(this.Sent.ToSortableString('-'));
+			sb.Append("; RoutingInfo=");
+			sb.Append(this.RoutingInfo?.ToString() ?? "[null]");
+
+			return sb.ToString();
+		}
+
+		#endregion
+
+
+
+
+		#region Interface: ICloneable<MessageItem>
+
 		/// <inheritdoc />
 		public MessageItem Clone ()
 		{
@@ -182,5 +235,7 @@ namespace RI.Framework.Bus.Internals
 		{
 			return this.Clone();
 		}
+
+		#endregion
 	}
 }

@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Text;
 using System.Threading.Tasks;
 
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.ObjectModel;
+using RI.Framework.Utilities.Reflection;
 
 
 
@@ -351,6 +353,36 @@ namespace RI.Framework.Bus
 			{
 				throw new InvalidOperationException("The reception is already being processed.");
 			}
+		}
+
+		#endregion
+
+
+
+
+		#region Overrides
+
+		/// <inheritdoc />
+		public override string ToString ()
+		{
+			StringBuilder sb = new StringBuilder();
+
+			sb.Append("Address=");
+			sb.Append(this.Address ?? "[null]");
+			sb.Append("; PayloadType=");
+			sb.Append(this.PayloadType?.FullName ?? "[null]");
+			sb.Append("; Compatibles=");
+			sb.Append(this.IncludeCompatiblePayloadTypes);
+			sb.Append("; ResponseType=");
+			sb.Append(this.ResponseType?.FullName ?? "[null]");
+			sb.Append("; Callback=");
+			sb.Append(this.Callback?.GetFullName() ?? "[null]");
+			sb.Append("; ExceptionHandler=");
+			sb.Append(this.ExceptionHandler?.GetFullName() ?? "[null]");
+			sb.Append("; IsProcessed=");
+			sb.Append(this.IsProcessed);
+
+			return sb.ToString();
 		}
 
 		#endregion
