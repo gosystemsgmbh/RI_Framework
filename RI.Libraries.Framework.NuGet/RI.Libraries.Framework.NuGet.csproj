@@ -38,6 +38,7 @@
     <None Include="DotNetZip.1.10.1.nupkg" />
     <None Include="EntityFramework.6.1.3.nupkg" />
     <None Include="EPPlus.4.1.0.nupkg" />
+    <None Include="EPPlus.4.1.1.nupkg" />
     <None Include="Extended.Wpf.Toolkit.3.1.nupkg" />
     <None Include="Extended.Wpf.Toolkit.3.2.0.nupkg" />
     <None Include="Fluent.Ribbon.4.0.3.394.nupkg" />
@@ -48,10 +49,13 @@
     <None Include="Newtonsoft.Json.10.0.3.nupkg" />
     <None Include="System.Data.SQLite.Core.1.0.104.0.nupkg" />
     <None Include="System.Data.SQLite.Core.1.0.105.2.nupkg" />
+    <None Include="System.Data.SQLite.Core.1.0.106.0.nupkg" />
     <None Include="System.Data.SQLite.EF6.1.0.104.0.nupkg" />
     <None Include="System.Data.SQLite.EF6.1.0.105.2.nupkg" />
+    <None Include="System.Data.SQLite.EF6.1.0.106.0.nupkg" />
     <None Include="System.Data.SQLite.Linq.1.0.104.0.nupkg" />
     <None Include="System.Data.SQLite.Linq.1.0.105.2.nupkg" />
+    <None Include="System.Data.SQLite.Linq.1.0.106.0.nupkg" />
     <None Include="_PostBuild.bat" />
     <None Include="_PreBuild.bat" />
   </ItemGroup>

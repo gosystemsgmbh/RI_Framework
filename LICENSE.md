@@ -9,12 +9,12 @@
 
    A. The following was removed:
 
-      Section 5: *Unless You explicitly state otherwise,*
+      Section 5: Unless You explicitly state otherwise,
 
-      Section 7: *required by applicable law or*
+      Section 7: required by applicable law or
 
-      Section 8: *required by applicable law (such as deliberate and grossly
-      negligent acts) or*
+      Section 8: required by applicable law (such as deliberate and grossly
+      negligent acts) or
 
    B. The following was added:
 

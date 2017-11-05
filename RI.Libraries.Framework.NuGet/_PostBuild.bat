@@ -18,8 +18,8 @@
 
 @copy "..\packages\Newtonsoft.Json.10.0.3\lib\net45\*.dll" "..\_Output\*.*"
 
-@copy "..\packages\System.Data.SQLite.Core.1.0.105.2\lib\net46\*.dll" "..\_Output\*.*"
-@copy "..\packages\System.Data.SQLite.Core.1.0.105.2\build\net46\x86\*.dll" "..\_Output\x86\*.*"
-@copy "..\packages\System.Data.SQLite.Core.1.0.105.2\build\net46\x64\*.dll" "..\_Output\x64\*.*"
-@copy "..\packages\System.Data.SQLite.Linq.1.0.105.2\lib\net46\*.dll" "..\_Output\*.*"
-@copy "..\packages\System.Data.SQLite.EF6.1.0.105.2\lib\net46\*.dll" "..\_Output\*.*"
+@copy "..\packages\System.Data.SQLite.Core.1.0.106.0\lib\net46\*.dll" "..\_Output\*.*"
+@copy "..\packages\System.Data.SQLite.Core.1.0.106.0\build\net46\x86\*.dll" "..\_Output\x86\*.*"
+@copy "..\packages\System.Data.SQLite.Core.1.0.106.0\build\net46\x64\*.dll" "..\_Output\x64\*.*"
+@copy "..\packages\System.Data.SQLite.Linq.1.0.106.0\lib\net46\*.dll" "..\_Output\*.*"
+@copy "..\packages\System.Data.SQLite.EF6.1.0.106.0\lib\net46\*.dll" "..\_Output\*.*"

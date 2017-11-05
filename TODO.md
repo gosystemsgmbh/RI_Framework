@@ -7,6 +7,8 @@
   - [ ] Code cleanup
   - [ ] Packages
   - [ ] Incorporate wishlist into TODO
+  - [ ] Move RotenInformatik assemblies into other assemblies
+  - [ ] NuGet Packages
 - [ ] Testing (common)
   - [ ] RuntimeEnvironment
   - [ ] CultureInfoExtensions
