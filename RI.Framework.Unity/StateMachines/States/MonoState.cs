@@ -135,6 +135,9 @@ namespace RI.Framework.StateMachines.States
 		#region Interface: ILogSource
 
 		/// <inheritdoc />
+		public LogLevel LogFilter { get; set; } = LogLevel.Debug;
+
+		/// <inheritdoc />
 		public Utilities.Logging.ILogger Logger { get; set; } = LogLocator.Logger;
 
 

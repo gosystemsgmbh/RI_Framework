@@ -612,6 +612,19 @@ namespace RI.Framework.Data.Database
 		public bool IsReady => (this.State == DatabaseState.ReadyNew) || (this.State == DatabaseState.ReadyOld) || (this.State == DatabaseState.ReadyUnknown);
 
 		/// <inheritdoc />
+		LogLevel ILogSource.LogFilter
+		{
+			get
+			{
+				return this.Configuration.LogFilter;
+			}
+			set
+			{
+				this.Configuration.LogFilter = value;
+			}
+		}
+
+		/// <inheritdoc />
 		ILogger ILogSource.Logger
 		{
 			get
@@ -636,6 +649,7 @@ namespace RI.Framework.Data.Database
 				this.Configuration.LoggingEnabled = value;
 			}
 		}
+
 
 		/// <inheritdoc />
 		public int MaxVersion => this.SupportsUpgrade ? this.Configuration.VersionUpgrader.GetMaxVersion(this) : -1;

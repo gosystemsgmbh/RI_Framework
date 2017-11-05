@@ -43,6 +43,8 @@ namespace RI.Framework.Data.Database
 
 		private TConnectionStringBuilder _connectionString;
 
+		private LogLevel _logFilter;
+
 		private ILogger _logger;
 
 		private bool _loggingEnabled;
@@ -66,30 +68,35 @@ namespace RI.Framework.Data.Database
 			{
 				this.VersionDetector.Logger = this.Logger;
 				this.VersionDetector.LoggingEnabled = this.LoggingEnabled;
+				this.VersionDetector.LogFilter = this.LogFilter;
 			}
 
 			if (this.VersionUpgrader != null)
 			{
 				this.VersionUpgrader.Logger = this.Logger;
 				this.VersionUpgrader.LoggingEnabled = this.LoggingEnabled;
+				this.VersionUpgrader.LogFilter = this.LogFilter;
 			}
 
 			if (this.BackupCreator != null)
 			{
 				this.BackupCreator.Logger = this.Logger;
 				this.BackupCreator.LoggingEnabled = this.LoggingEnabled;
+				this.BackupCreator.LogFilter = this.LogFilter;
 			}
 
 			if (this.CleanupProcessor != null)
 			{
 				this.CleanupProcessor.Logger = this.Logger;
 				this.CleanupProcessor.LoggingEnabled = this.LoggingEnabled;
+				this.CleanupProcessor.LogFilter = this.LogFilter;
 			}
 
 			if (this.ScriptLocator != null)
 			{
 				this.ScriptLocator.Logger = this.Logger;
 				this.ScriptLocator.LoggingEnabled = this.LoggingEnabled;
+				this.ScriptLocator.LogFilter = this.LogFilter;
 			}
 		}
 
@@ -201,6 +208,21 @@ namespace RI.Framework.Data.Database
 
 		/// <inheritdoc />
 		DbConnectionStringBuilder IDatabaseManagerConfiguration.ConnectionString => this.ConnectionString;
+
+		/// <inheritdoc />
+		public LogLevel LogFilter
+		{
+			get
+			{
+				return this._logFilter;
+			}
+			set
+			{
+				this._logFilter = value;
+
+				this.InheritLogger();
+			}
+		}
 
 		/// <inheritdoc />
 		public ILogger Logger

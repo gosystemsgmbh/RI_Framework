@@ -49,6 +49,8 @@ namespace RI.Framework.Data.Database
 
 		#region Instance Fields
 
+		private LogLevel _logFilter;
+
 		private ILogger _logger;
 		private bool _loggingEnabled;
 
@@ -126,6 +128,19 @@ namespace RI.Framework.Data.Database
 
 
 		#region Interface: IDatabaseProcessingStep<TConnection,TTransaction,TConnectionStringBuilder,TManager,TConfiguration>
+
+		/// <inheritdoc />
+		LogLevel ILogSource.LogFilter
+		{
+			get
+			{
+				return this._logFilter;
+			}
+			set
+			{
+				this._logFilter = value;
+			}
+		}
 
 		/// <inheritdoc />
 		ILogger ILogSource.Logger

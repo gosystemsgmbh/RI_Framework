@@ -38,6 +38,9 @@ namespace RI.Framework.Services
 		#region Interface: ILogSource
 
 		/// <inheritdoc />
+		public LogLevel LogFilter { get; set; } = LogLevel.Debug;
+
+		/// <inheritdoc />
 		public ILogger Logger { get; set; } = LogLocator.Logger;
 
 

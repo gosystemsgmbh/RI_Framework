@@ -81,6 +81,9 @@ namespace RI.Framework.Services.Modularization
 		#region Interface: ILogSource
 
 		/// <inheritdoc />
+		public LogLevel LogFilter { get; set; } = LogLevel.Debug;
+
+		/// <inheritdoc />
 		public Utilities.Logging.ILogger Logger { get; set; } = LogLocator.Logger;
 
 

@@ -30,6 +30,11 @@ namespace RI.Framework.Utilities.Logging
 				return;
 			}
 
+			if (severity >= source.LogFilter)
+			{
+				return;
+			}
+
 			source.Logger.Log(severity, source.GetType().Name, format, args);
 		}
 
@@ -47,6 +52,11 @@ namespace RI.Framework.Utilities.Logging
 			}
 
 			if (source.Logger == null)
+			{
+				return;
+			}
+
+			if (severity >= source.LogFilter)
 			{
 				return;
 			}

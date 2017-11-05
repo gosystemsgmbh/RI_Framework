@@ -1,16 +1,14 @@
 ﻿Priorities
 ----------
 
-= [X] VWA
+= [ ] VWA
 + [X] Decoupling & Utilities Framework
-# [ ] Application Framework
+# [X] Application Framework
 * [ ] Commercium
 
 
 Utilities
 ---------
-
- # (Common) Add filter to ILogSource
 
  - (WinForms) FormExtensions
  - (WinForms) TemporaryCursor

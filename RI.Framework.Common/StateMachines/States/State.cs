@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 
 using RI.Framework.Composition.Model;
-using RI.Framework.Services.Logging;
 using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.ObjectModel;
 
@@ -25,7 +24,7 @@ namespace RI.Framework.StateMachines.States
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	[Export]
-	public abstract class State : IState, ILogSource
+	public abstract class State : LogSource, IState
 	{
 		#region Instance Constructor/Destructor
 
@@ -191,20 +190,6 @@ namespace RI.Framework.StateMachines.States
 		protected virtual void Update (StateUpdateInfo updateInfo)
 		{
 		}
-
-		#endregion
-
-
-
-
-		#region Interface: ILogSource
-
-		/// <inheritdoc />
-		public ILogger Logger { get; set; } = LogLocator.Logger;
-
-
-		/// <inheritdoc />
-		public bool LoggingEnabled { get; set; } = true;
 
 		#endregion
 

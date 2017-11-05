@@ -80,6 +80,7 @@ namespace RI.Framework.Bus
 		private TimeSpan _collectionTimeout;
 		private bool _defaultExceptionForwarding;
 		private bool _defaultIsGlobal;
+		private LogLevel _logFilter;
 		private ILogger _logger;
 		private bool _loggingEnabled;
 		private TimeSpan _pollInterval;
@@ -313,6 +314,7 @@ namespace RI.Framework.Bus
 			{
 				this.WorkerThread.Logger = this.Logger;
 				this.WorkerThread.LoggingEnabled = this.LoggingEnabled;
+				this.WorkerThread.LogFilter = this.LogFilter;
 			}
 		}
 
@@ -420,6 +422,26 @@ namespace RI.Framework.Bus
 
 		/// <inheritdoc />
 		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		public LogLevel LogFilter
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._logFilter;
+				}
+			}
+			set
+			{
+				lock (this.SyncRoot)
+				{
+					this._logFilter = value;
+					this.InheritLogger();
+				}
+			}
+		}
 
 		/// <inheritdoc />
 		public ILogger Logger
@@ -701,6 +723,8 @@ namespace RI.Framework.Bus
 
 			#region Instance Fields
 
+			private LogLevel _logFilter1 = LogLevel.Debug;
+
 			private ILogger _logger;
 			private bool _loggingEnabled;
 
@@ -775,6 +799,7 @@ namespace RI.Framework.Bus
 				{
 					x.Logger = this.Logger;
 					x.LoggingEnabled = this.LoggingEnabled;
+					x.LogFilter = this.LogFilter;
 				});
 			}
 
@@ -955,6 +980,26 @@ namespace RI.Framework.Bus
 
 
 			#region Interface: ILogSource
+
+			/// <inheritdoc />
+			public LogLevel LogFilter
+			{
+				get
+				{
+					lock (this.LocalBus.SyncRoot)
+					{
+						return this._logFilter1;
+					}
+				}
+				set
+				{
+					lock (this.LocalBus.SyncRoot)
+					{
+						this._logFilter1 = value;
+						this.InheritLogger();
+					}
+				}
+			}
 
 			/// <inheritdoc />
 			public ILogger Logger

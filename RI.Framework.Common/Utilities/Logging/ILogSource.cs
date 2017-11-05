@@ -17,6 +17,19 @@ namespace RI.Framework.Utilities.Logging
 	public interface ILogSource
 	{
 		/// <summary>
+		///     Gets or sets the minimum severity required for log messages to be logged by this instance.
+		/// </summary>
+		/// <value>
+		///     The minimum severity required for log messages to be logged by this instance.
+		/// </value>
+		/// <remarks>
+		///     <note type="implement">
+		///         The default value is <see cref="LogLevel.Debug" />.
+		///     </note>
+		/// </remarks>
+		LogLevel LogFilter { get; set; }
+
+		/// <summary>
 		///     Gets or sets the used logger for this instance.
 		/// </summary>
 		/// <value>
