@@ -45,6 +45,7 @@ namespace RI.Framework.Bus
 			this.ExpectedResults = null;
 			this.Timeout = null;
 			this.CancellationToken = null;
+			this.ExceptionForwarding = null;
 
 			this.IsBroadcast = false;
 			this.IsProcessed = false;
@@ -82,6 +83,14 @@ namespace RI.Framework.Bus
 		///     tHE cancellation token which can be used to cancel the wait for responses or the collection of responses.
 		/// </value>
 		public CancellationToken? CancellationToken { get; private set; }
+
+		/// <summary>
+		///     Gets or sets whether exception forwarding to the sender is used when the message is processed by a receiver.
+		/// </summary>
+		/// <value>
+		///     true if exception forwarding is used, false if not, null if not defined where the default value of the associated bus is used.
+		/// </value>
+		public bool? ExceptionForwarding { get; private set; }
 
 		/// <summary>
 		///     Gets the number of expected responses.
@@ -155,6 +164,7 @@ namespace RI.Framework.Bus
 		/// <exception cref="InvalidOperationException"> The message is already being processed or the bus is not started. </exception>
 		/// <exception cref="BusProcessingPipelineException"> The bus processing pipeline encountered an exception. </exception>
 		/// <exception cref="BusConnectionBrokenException"> A used connection to a remote bus is broken. </exception>
+		/// <exception cref="BusMessageProcessingException"> An exception which was thrown by the message receiver was forwarded to this sender. </exception>
 		public async Task<int> AsBroadcast () => await this.AsBroadcast(null).ConfigureAwait(false);
 
 		/// <summary>
@@ -173,6 +183,7 @@ namespace RI.Framework.Bus
 		/// <exception cref="InvalidOperationException"> The message is already being processed or the bus is not started. </exception>
 		/// <exception cref="BusProcessingPipelineException"> The bus processing pipeline encountered an exception. </exception>
 		/// <exception cref="BusConnectionBrokenException"> A used connection to a remote bus is broken. </exception>
+		/// <exception cref="BusMessageProcessingException"> An exception which was thrown by the message receiver was forwarded to this sender. </exception>
 		/// <exception cref="InvalidCastException"> The responses could not be casted to type <typeparamref name="TResponse" />. </exception>
 		public async Task<List<TResponse>> AsBroadcast <TResponse> () => await this.AsBroadcast<TResponse>(null).ConfigureAwait(false);
 
@@ -193,6 +204,7 @@ namespace RI.Framework.Bus
 		/// <exception cref="InvalidOperationException"> The message is already being processed or the bus is not started. </exception>
 		/// <exception cref="BusProcessingPipelineException"> The bus processing pipeline encountered an exception. </exception>
 		/// <exception cref="BusConnectionBrokenException"> A used connection to a remote bus is broken. </exception>
+		/// <exception cref="BusMessageProcessingException"> An exception which was thrown by the message receiver was forwarded to this sender. </exception>
 		public async Task<int> AsBroadcast (int? expectedResults)
 		{
 			if (expectedResults.HasValue)
@@ -235,6 +247,7 @@ namespace RI.Framework.Bus
 		/// <exception cref="InvalidOperationException"> The message is already being processed or the bus is not started. </exception>
 		/// <exception cref="BusProcessingPipelineException"> The bus processing pipeline encountered an exception. </exception>
 		/// <exception cref="BusConnectionBrokenException"> A used connection to a remote bus is broken. </exception>
+		/// <exception cref="BusMessageProcessingException"> An exception which was thrown by the message receiver was forwarded to this sender. </exception>
 		/// <exception cref="InvalidCastException"> The responses could not be casted to type <typeparamref name="TResponse" />. </exception>
 		public async Task<List<TResponse>> AsBroadcast <TResponse> (int? expectedResults)
 		{
@@ -262,6 +275,7 @@ namespace RI.Framework.Bus
 		/// <exception cref="BusProcessingPipelineException"> The bus processing pipeline encountered an exception. </exception>
 		/// <exception cref="BusResponseTimeoutException"> The intended receiver did not respond within the used timeout. </exception>
 		/// <exception cref="BusConnectionBrokenException"> A used connection to a remote bus is broken. </exception>
+		/// <exception cref="BusMessageProcessingException"> An exception which was thrown by the message receiver was forwarded to this sender. </exception>
 		public async Task AsSingle ()
 		{
 			Task<object> task;
@@ -289,6 +303,7 @@ namespace RI.Framework.Bus
 		/// <exception cref="BusProcessingPipelineException"> The bus processing pipeline encountered an exception. </exception>
 		/// <exception cref="BusResponseTimeoutException"> The intended receiver did not respond within the used timeout. </exception>
 		/// <exception cref="BusConnectionBrokenException"> A used connection to a remote bus is broken. </exception>
+		/// <exception cref="BusMessageProcessingException"> An exception which was thrown by the message receiver was forwarded to this sender. </exception>
 		/// <exception cref="InvalidCastException"> The response could not be casted to type <typeparamref name="TResponse" />. </exception>
 		public async Task<TResponse> AsSingle <TResponse> ()
 		{
@@ -421,6 +436,23 @@ namespace RI.Framework.Bus
 		}
 
 		/// <summary>
+		///     Sets to use the default value of the associated bus whether to forward exceptions from the receiver back to the sender.
+		/// </summary>
+		/// <returns>
+		///     The send operation to continue configuration of the message.
+		/// </returns>
+		/// <exception cref="InvalidOperationException"> The message is already being processed. </exception>
+		public SendOperation WithDefaultExceptionForwarding ()
+		{
+			lock (this.SyncRoot)
+			{
+				this.VerifyNotStarted();
+				this.ExceptionForwarding = null;
+				return this;
+			}
+		}
+
+		/// <summary>
 		///     Sets to use the default timeoutfor the message (waiting for or collecting responses) of the associated bus.
 		/// </summary>
 		/// <returns>
@@ -433,6 +465,41 @@ namespace RI.Framework.Bus
 			{
 				this.VerifyNotStarted();
 				this.Timeout = null;
+				return this;
+			}
+		}
+
+		/// <summary>
+		///     Sets the message to forward exceptions from the receiver back to the sender.
+		/// </summary>
+		/// <returns>
+		///     The send operation to continue configuration of the message.
+		/// </returns>
+		/// <exception cref="InvalidOperationException"> The message is already being processed. </exception>
+		public SendOperation WithExceptionForwarding ()
+		{
+			lock (this.SyncRoot)
+			{
+				this.VerifyNotStarted();
+				this.ExceptionForwarding = true;
+				return this;
+			}
+		}
+
+		/// <summary>
+		///     Sets the message to use or not use forward exceptions from the receiver back to the sender.
+		/// </summary>
+		/// <param name="forwardExceptiond"> Specifes whether the message should forward exceptions from the receiver back to the sender (true) or not (false). </param>
+		/// <returns>
+		///     The send operation to continue configuration of the message.
+		/// </returns>
+		/// <exception cref="InvalidOperationException"> The message is already being processed. </exception>
+		public SendOperation WithExceptionForwarding (bool forwardExceptiond)
+		{
+			lock (this.SyncRoot)
+			{
+				this.VerifyNotStarted();
+				this.ExceptionForwarding = forwardExceptiond;
 				return this;
 			}
 		}
@@ -522,6 +589,8 @@ namespace RI.Framework.Bus
 			sb.Append(this.Timeout.HasValue ? ((int)this.Timeout.Value.TotalMilliseconds).ToString() : "[null]");
 			sb.Append("; ExpectedResults=");
 			sb.Append(this.ExpectedResults?.ToString() ?? "[null]");
+			sb.Append("; ExceptionForwarding=");
+			sb.Append(this.ExceptionForwarding?.ToString() ?? "[null]");
 			sb.Append("; IsProcessed=");
 			sb.Append(this.IsProcessed);
 

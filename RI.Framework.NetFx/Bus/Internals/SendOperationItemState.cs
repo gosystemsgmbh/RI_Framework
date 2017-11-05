@@ -40,5 +40,10 @@ namespace RI.Framework.Bus.Internals
 		///     The send operation failed because at least one connection is broken and the message was intended to be sent globally.
 		/// </summary>
 		Broken = 6,
+
+		/// <summary>
+		///     The send operation failed because the receiver threw an exception during message processing and forwarded it to the sender.
+		/// </summary>
+		ForwardedException = 7,
 	}
 }

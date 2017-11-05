@@ -16,9 +16,8 @@ namespace RI.Framework.Bus.Exceptions
 	{
 		#region Constants
 
-		private const string ExceptionMessageWithException = "Timeout while waiting for response ({0}): {1}";
-
-		private const string ExceptionMessageWithMessage = "Timeout while waiting for response: Address={0}, PayloadType={1}, Broadcast={2}, Timeout={3}";
+		private const string ExceptionMessageWithException = "Timeout while waiting for response: {0}: {1}";
+		private const string ExceptionMessageWithMessage = "Timeout while waiting for response: {0}";
 		private const string ExceptionMessageWithoutException = "Timeout while waiting for response.";
 
 		#endregion
@@ -69,7 +68,7 @@ namespace RI.Framework.Bus.Exceptions
 		/// </summary>
 		/// <param name="message"> The message whose response timed-out. </param>
 		public BusResponseTimeoutException (MessageItem message)
-			: base(string.Format(BusResponseTimeoutException.ExceptionMessageWithMessage, message?.Address ?? "[null]", message?.Payload?.GetType()?.Name ?? "[null]", message?.IsBroadcast.ToString() ?? "[null]", message?.Timeout.ToString() ?? "[null]"))
+			: base(string.Format(BusResponseTimeoutException.ExceptionMessageWithMessage, message))
 		{
 		}
 

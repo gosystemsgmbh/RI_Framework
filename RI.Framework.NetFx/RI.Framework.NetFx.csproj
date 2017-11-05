@@ -60,6 +60,7 @@
     <Compile Include="Bus\Exceptions\BusConnectionBrokenException.cs" />
     <Compile Include="Bus\Connections\IBusConnection.cs" />
     <Compile Include="Bus\Dispatchers\IBusDispatcher.cs" />
+    <Compile Include="Bus\Exceptions\BusMessageProcessingException.cs" />
     <Compile Include="Bus\Exceptions\BusOperationalException.cs" />
     <Compile Include="Bus\Exceptions\BusProcessingPipelineException.cs" />
     <Compile Include="Bus\IBusExtensions.cs" />
@@ -70,6 +71,7 @@
     <Compile Include="Bus\Pipeline\DefaultBusPipeline.cs" />
     <Compile Include="Bus\Pipeline\IBusPipeline.cs" />
     <Compile Include="Bus\Internals\ReceiveRegistrationItem.cs" />
+    <Compile Include="Bus\ReceiverExceptionHandler.cs" />
     <Compile Include="Bus\ReceiverRegistration.cs" />
     <Compile Include="Bus\Routers\DefaultBusRouter.cs" />
     <Compile Include="Bus\Routers\IBusRouter.cs" />

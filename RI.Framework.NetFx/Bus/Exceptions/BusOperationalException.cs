@@ -14,7 +14,7 @@ namespace RI.Framework.Bus.Exceptions
 	{
 		#region Constants
 
-		private const string ExceptionMessageWithException = "Bus operational exception ({0}): {1}";
+		private const string ExceptionMessageWithException = "Bus operational exception: {0}: {1}";
 		private const string ExceptionMessageWithoutException = "Bus operational exception.";
 
 		#endregion

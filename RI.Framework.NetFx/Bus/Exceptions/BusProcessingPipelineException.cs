@@ -14,7 +14,7 @@ namespace RI.Framework.Bus.Exceptions
 	{
 		#region Constants
 
-		private const string ExceptionMessageWithException = "Exception in bus processing pipeline ({0}): {1}";
+		private const string ExceptionMessageWithException = "Exception in bus processing pipeline: {0}: {1}";
 		private const string ExceptionMessageWithoutException = "Exception in bus processing pipeline.";
 
 		#endregion

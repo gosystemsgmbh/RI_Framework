@@ -38,6 +38,7 @@ namespace RI.Framework.Bus.Internals
 			this.Request = new MessageItem();
 			this.Responses = new List<MessageItem>();
 			this.Results = new List<object>();
+			this.Exception = null;
 		}
 
 		#endregion
@@ -46,6 +47,14 @@ namespace RI.Framework.Bus.Internals
 
 
 		#region Instance Properties/Indexer
+
+		/// <summary>
+		///     Gets or sets the exception forwarded from the receiver.
+		/// </summary>
+		/// <value>
+		///     The exception forwarded from the receiver or null if no exception was forwarded.
+		/// </value>
+		public Exception Exception { get; set; }
 
 		/// <summary>
 		///     The request message which was created and sent based upon the send operation.
@@ -114,6 +123,8 @@ namespace RI.Framework.Bus.Internals
 			sb.Append(this.SendOperation);
 			sb.Append("]; Request=[");
 			sb.Append(this.Request);
+			sb.Append("]; Exception=[");
+			sb.Append(this.Exception != null ? (this.Exception.GetType().Name + ": " + this.Exception.Message) : "null");
 			sb.Append("]");
 
 			return sb.ToString();

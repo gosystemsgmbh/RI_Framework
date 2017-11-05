@@ -24,10 +24,7 @@
       in any way with products, business models, business interests, or
       financial interests of the Licensor at the time of redistribution,
       regardless whether Derivative Works existed before the competition
-      with Licensor; and*
-
-      Section 4f: (whole paragraph) *The Derivative Works does not use
-      the Unity engine.*
+      with Licensor.*
 
    TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 
@@ -150,9 +147,7 @@
       (e) The Derivative Works does not compete in any way with products,
           business models, business interests, or financial interests of the
           Licensor at the time of redistribution, regardless whether
-          Derivative Works existed before the competition with Licensor; and
-
-      (f) The Derivative Works is not a product which uses the Unity engine.
+          Derivative Works existed before the competition with Licensor.
 
       You may add Your own copyright statement to Your modifications and
       may provide additional or different license terms and conditions

@@ -123,16 +123,16 @@ Collections
 I/O
 ---
 
- # (Common) EndianessConverter
- # (Common) EndianReader
- # (Common) EndianWriter
+ - (Common) EndianessConverter
+ - (Common) EndianReader
+ - (Common) EndianWriter
 
- # (Common) IniDocument: DecomposeSections (?)
- # (Common) IniDocument: RemoveElements with predicate
- # (Common) IniDocument: RemoveSections with predicate
+ - (Common) IniDocument: DecomposeSections (?)
+ - (Common) IniDocument: RemoveElements with predicate
+ - (Common) IniDocument: RemoveSections with predicate
 
- # (Windows) SerialPortStream
- # (Linux) SerialPortStream
+ - (Windows) SerialPortStream
+ - (Linux) SerialPortStream
 
  - (Common) DirectoryPath: Copy (DirectoryPath)
  - (Common) DirectoryPath: Move (DirectoryPath)
@@ -256,8 +256,6 @@ State machines
 Bus
 ---
 
- - (.NET) Forwarding of exceptions
-
  - (Windows) WindowsMessageLoopBusDispatcher
  - (WinForms) ApplicationBusDispatcher
 
@@ -272,7 +270,7 @@ Behaviours
 Tools
 -----
 
- # LogViewer
+ - LogViewer
  - Version updater: Add support for *.md
  - Version updater: Full update of *.shfbproj
  - Version updater: Full update of *.wxs

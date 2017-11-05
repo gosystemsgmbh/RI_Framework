@@ -206,6 +206,21 @@ namespace RI.Framework.Bus
 	///         As mentioned above, the instantiation of all the bus components is done by an <see cref="IBus" /> implementation.
 	///         To do this, <see cref="IBus" /> uses <see cref="IDependencyResolver" /> which is passed to <see cref="Start" />.
 	///     </para>
+	///     <para>
+	///         <b> EXCEPTION FORWARDING </b>
+	///     </para>
+	///     <para>
+	///         Depending on your applications needs and the context under which received messages are processed, you might want to forward exceptions, thrown by receivers when processing messages, back to the sender.
+	///         This is called &quot;exception forwarding&quot; and can be enabled by the sender, the receiver, or an exception handler registered with a receiver.
+	///     </para>
+	///     <para>
+	///         An exception is forwarded, and does therefore not lead to an unhandled exception in the receivers <see cref="IBusDispatcher" /> context, when an exception is thrown by the callback registered with a <see cref="ReceiverRegistration" /> AND if ANY of the following is true:
+	///         The <see cref="SendOperation" /> enabled exception forwarding, the <see cref="ReceiverRegistration" /> enabled exception forwarding, OR the <see cref="ReceiverRegistration" /> used a <see cref="ReceiverExceptionHandler" /> which enabled exception forwarding.
+	///     </para>
+	///     <para>
+	///         When an exception from the receiver is forwarded to the sender, it will not be handled and therefore silently ignored on the receiver side, except a <see cref="ReceiverExceptionHandler" /> is registered with the corresponding <see cref="ReceiverRegistration" />.
+	///         Instead, the sender or its task respectively will throw a <see cref="BusMessageProcessingException" />.
+	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	[Export]
@@ -224,6 +239,19 @@ namespace RI.Framework.Bus
 		/// </remarks>
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="value" /> is negative. </exception>
 		TimeSpan CollectionTimeout { get; set; }
+
+		/// <summary>
+		///     Gets or sets whether exception forwarding is used by default.
+		/// </summary>
+		/// <value>
+		///     true if exception forwarding is used by default, false otherwise.
+		/// </value>
+		/// <remarks>
+		///     <note type="implement">
+		///         The default value should be true.
+		///     </note>
+		/// </remarks>
+		bool DefaultExceptionForwarding { get; set; }
 
 		/// <summary>
 		///     Gets or sets whether messages are sent globally by default.

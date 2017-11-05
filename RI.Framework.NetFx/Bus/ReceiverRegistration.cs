@@ -38,6 +38,7 @@ namespace RI.Framework.Bus
 			this.Address = null;
 			this.PayloadType = null;
 			this.ResponseType = null;
+			this.ExceptionForwarding = null;
 			this.IncludeCompatiblePayloadTypes = false;
 
 			this.IsProcessed = false;
@@ -75,12 +76,20 @@ namespace RI.Framework.Bus
 		public Func<string, object, Task<object>> Callback { get; private set; }
 
 		/// <summary>
+		///     Gets or sets whether exception forwarding to the sender is used when the message is processed by the receiver.
+		/// </summary>
+		/// <value>
+		///     true if exception forwarding is used, false if not, null if not defined where the default value of the associated bus is used.
+		/// </value>
+		public bool? ExceptionForwarding { get; private set; }
+
+		/// <summary>
 		///     Gets the exception handler which is called for unhandled exceptions within <see cref="Callback" />.
 		/// </summary>
 		/// <value>
 		///     The exception handler which is called for unhandled exceptions within <see cref="Callback" /> or null if no exception handler is used.
 		/// </value>
-		public Func<string, object, Exception, object> ExceptionHandler { get; private set; }
+		public ReceiverExceptionHandler ExceptionHandler { get; private set; }
 
 		/// <summary>
 		///     Gets whether compatible payload types, which are convertible to <see cref="PayloadType" />, are also accepted (true) or only those payloads which are of exactly <see cref="PayloadType" /> (false).
@@ -251,21 +260,66 @@ namespace RI.Framework.Bus
 		}
 
 		/// <summary>
+		///     Sets to use the default value of the associated bus whether to forward exceptions from the receiver back to the sender.
+		/// </summary>
+		/// <returns>
+		///     The receiver registration to continue configuration of the receiver.
+		/// </returns>
+		/// <exception cref="InvalidOperationException"> The reception is already being processed. </exception>
+		public ReceiverRegistration WithDefaultExceptionForwarding ()
+		{
+			lock (this.SyncRoot)
+			{
+				this.VerifyNotStarted();
+				this.ExceptionForwarding = null;
+				return this;
+			}
+		}
+
+		/// <summary>
+		///     Sets the receiver to forward exceptions from the receiver back to the sender.
+		/// </summary>
+		/// <returns>
+		///     The receiver registration to continue configuration of the receiver.
+		/// </returns>
+		/// <exception cref="InvalidOperationException"> The reception is already being processed. </exception>
+		public ReceiverRegistration WithExceptionForwarding ()
+		{
+			lock (this.SyncRoot)
+			{
+				this.VerifyNotStarted();
+				this.ExceptionForwarding = true;
+				return this;
+			}
+		}
+
+		/// <summary>
+		///     Sets the receiver to use or not use forward exceptions from the receiver back to the sender.
+		/// </summary>
+		/// <param name="forwardExceptiond"> Specifes whether the message should forward exceptions from the receiver back to the sender (true) or not (false). </param>
+		/// <returns>
+		///     The receiver registration to continue configuration of the receiver.
+		/// </returns>
+		/// <exception cref="InvalidOperationException"> The reception is already being processed. </exception>
+		public ReceiverRegistration WithExceptionForwarding (bool forwardExceptiond)
+		{
+			lock (this.SyncRoot)
+			{
+				this.VerifyNotStarted();
+				this.ExceptionForwarding = forwardExceptiond;
+				return this;
+			}
+		}
+
+		/// <summary>
 		///     Sets the exception handler this receiver uses.
 		/// </summary>
 		/// <param name="exceptionHandler"> The exception handler this receiver uses or null if no exception handler is used. </param>
 		/// <returns>
 		///     The receiver registration to continue configuration of the receiver.
 		/// </returns>
-		/// <remarks>
-		///     <para>
-		///         The exception handler uses the following parameters, in the following order:
-		///         The address of the message or null if the message has no address, The payload or null if the message has no payload, and the exception which was not handled.
-		///         The return value is the response object or null if no response object is used.
-		///     </para>
-		/// </remarks>
 		/// <exception cref="InvalidOperationException"> The reception is already being processed. </exception>
-		public ReceiverRegistration WithExceptionHandler (Func<string, object, Exception, object> exceptionHandler)
+		public ReceiverRegistration WithExceptionHandler (ReceiverExceptionHandler exceptionHandler)
 		{
 			lock (this.SyncRoot)
 			{
@@ -504,8 +558,29 @@ namespace RI.Framework.Bus
 			return this;
 		}
 
+		/// <inheritdoc cref="ReceiverRegistration.WithDefaultExceptionForwarding" />
+		public ReceiverRegistrationWithPayload<TPayload> WithDefaultExceptionForwarding ()
+		{
+			this.Origin.WithDefaultExceptionForwarding();
+			return this;
+		}
+
+		/// <inheritdoc cref="ReceiverRegistration.WithExceptionForwarding()" />
+		public ReceiverRegistrationWithPayload<TPayload> WithExceptionForwarding ()
+		{
+			this.Origin.WithExceptionForwarding();
+			return this;
+		}
+
+		/// <inheritdoc cref="ReceiverRegistration.WithExceptionForwarding(bool)" />
+		public ReceiverRegistrationWithPayload<TPayload> WithExceptionForwarding (bool forwardExceptiond)
+		{
+			this.Origin.WithExceptionForwarding(forwardExceptiond);
+			return this;
+		}
+
 		/// <inheritdoc cref="ReceiverRegistration.WithExceptionHandler" />
-		public ReceiverRegistrationWithPayload<TPayload> WithExceptionHandler (Func<string, object, Exception, object> exceptionHandler)
+		public ReceiverRegistrationWithPayload<TPayload> WithExceptionHandler (ReceiverExceptionHandler exceptionHandler)
 		{
 			this.Origin.WithExceptionHandler(exceptionHandler);
 			return this;
@@ -640,8 +715,29 @@ namespace RI.Framework.Bus
 			return this;
 		}
 
+		/// <inheritdoc cref="ReceiverRegistration.WithDefaultExceptionForwarding" />
+		public ReceiverRegistrationWithResponse<TResponse> WithDefaultExceptionForwarding ()
+		{
+			this.Origin.WithDefaultExceptionForwarding();
+			return this;
+		}
+
+		/// <inheritdoc cref="ReceiverRegistration.WithExceptionForwarding()" />
+		public ReceiverRegistrationWithResponse<TResponse> WithExceptionForwarding ()
+		{
+			this.Origin.WithExceptionForwarding();
+			return this;
+		}
+
+		/// <inheritdoc cref="ReceiverRegistration.WithExceptionForwarding(bool)" />
+		public ReceiverRegistrationWithResponse<TResponse> WithExceptionForwarding (bool forwardExceptiond)
+		{
+			this.Origin.WithExceptionForwarding(forwardExceptiond);
+			return this;
+		}
+
 		/// <inheritdoc cref="ReceiverRegistration.WithExceptionHandler" />
-		public ReceiverRegistrationWithResponse<TResponse> WithExceptionHandler (Func<string, object, Exception, object> exceptionHandler)
+		public ReceiverRegistrationWithResponse<TResponse> WithExceptionHandler (ReceiverExceptionHandler exceptionHandler)
 		{
 			this.Origin.WithExceptionHandler(exceptionHandler);
 			return this;
@@ -777,8 +873,29 @@ namespace RI.Framework.Bus
 			return this;
 		}
 
+		/// <inheritdoc cref="ReceiverRegistration.WithDefaultExceptionForwarding" />
+		public ReceiverRegistrationWithPayloadAndResponse<TPayload, TResponse> WithDefaultExceptionForwarding ()
+		{
+			this.Origin.WithDefaultExceptionForwarding();
+			return this;
+		}
+
+		/// <inheritdoc cref="ReceiverRegistration.WithExceptionForwarding()" />
+		public ReceiverRegistrationWithPayloadAndResponse<TPayload, TResponse> WithExceptionForwarding ()
+		{
+			this.Origin.WithExceptionForwarding();
+			return this;
+		}
+
+		/// <inheritdoc cref="ReceiverRegistration.WithExceptionForwarding(bool)" />
+		public ReceiverRegistrationWithPayloadAndResponse<TPayload, TResponse> WithExceptionForwarding (bool forwardExceptiond)
+		{
+			this.Origin.WithExceptionForwarding(forwardExceptiond);
+			return this;
+		}
+
 		/// <inheritdoc cref="ReceiverRegistration.WithExceptionHandler" />
-		public ReceiverRegistrationWithPayloadAndResponse<TPayload, TResponse> WithExceptionHandler (Func<string, object, Exception, object> exceptionHandler)
+		public ReceiverRegistrationWithPayloadAndResponse<TPayload, TResponse> WithExceptionHandler (ReceiverExceptionHandler exceptionHandler)
 		{
 			this.Origin.WithExceptionHandler(exceptionHandler);
 			return this;

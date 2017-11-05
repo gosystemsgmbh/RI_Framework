@@ -47,6 +47,7 @@ namespace RI.Framework.Bus
 			this.CollectionTimeout = TimeSpan.FromSeconds(10);
 			this.PollInterval = TimeSpan.FromMilliseconds(20);
 			this.DefaultIsGlobal = false;
+			this.DefaultExceptionForwarding = true;
 
 			this.ThreadTimeout = TimeSpan.FromMilliseconds(HeavyThread.DefaultThreadTimeout);
 			this.ThreadPriority = Thread.CurrentThread.Priority;
@@ -77,6 +78,7 @@ namespace RI.Framework.Bus
 		#region Instance Fields
 
 		private TimeSpan _collectionTimeout;
+		private bool _defaultExceptionForwarding;
 		private bool _defaultIsGlobal;
 		private ILogger _logger;
 		private bool _loggingEnabled;
@@ -362,6 +364,25 @@ namespace RI.Framework.Bus
 				lock (this.SyncRoot)
 				{
 					this._collectionTimeout = value;
+				}
+			}
+		}
+
+		/// <inheritdoc />
+		public bool DefaultExceptionForwarding
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._defaultExceptionForwarding;
+				}
+			}
+			set
+			{
+				lock (this.SyncRoot)
+				{
+					this._defaultExceptionForwarding = value;
 				}
 			}
 		}

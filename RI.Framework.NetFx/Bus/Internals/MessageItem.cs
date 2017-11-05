@@ -18,6 +18,8 @@ namespace RI.Framework.Bus.Internals
 	{
 		#region Instance Fields
 
+		private Exception _exception;
+
 		private object _payload;
 
 		private object _routingInfo;
@@ -36,6 +38,50 @@ namespace RI.Framework.Bus.Internals
 		///     The address of the message or null if no address is used.
 		/// </value>
 		public string Address { get; set; }
+
+		/// <summary>
+		///     Gets or sets the exception of the message processing.
+		/// </summary>
+		/// <value>
+		///     The exception of the message processing or null if the message processing did not throw an exception or exception forwarding was not enabled.
+		/// </value>
+		public Exception Exception
+		{
+			get
+			{
+				return this._exception;
+			}
+			set
+			{
+				this._exception = value;
+				this.ExceptionAssembly = value?.GetType().Assembly.GetName().Name;
+				this.ExceptionType = value?.GetType().FullName;
+			}
+		}
+
+		/// <summary>
+		///     Gets the simple name of the assembly in which the used message processing exception type is defined.
+		/// </summary>
+		/// <value>
+		///     The simple name of the assembly in which the used message processing exception type is defined or null if the message does not have an exception.
+		/// </value>
+		public string ExceptionAssembly { get; private set; }
+
+		/// <summary>
+		///     Gets or sets whether exception forwarding to the sender is used when the message is processed by a receiver.
+		/// </summary>
+		/// <value>
+		///     true if exception forwarding is used, false otherwise.
+		/// </value>
+		public bool ExceptionForwarding { get; set; }
+
+		/// <summary>
+		///     Gets the full name of the message processing exception type.
+		/// </summary>
+		/// <value>
+		///     The full name of the message processing exception type or null if the message does not have an exception.
+		/// </value>
+		public string ExceptionType { get; private set; }
 
 		/// <summary>
 		///     Gets or sets whether the message was received from a remote bus.
@@ -200,7 +246,9 @@ namespace RI.Framework.Bus.Internals
 			sb.Append(this.Timeout);
 			sb.Append("; Sent=");
 			sb.Append(this.Sent.ToSortableString('-'));
-			sb.Append("; RoutingInfo=");
+			sb.Append("; Exception=[");
+			sb.Append(this.Exception != null ? (this.Exception.GetType().Name + ": " + this.Exception.Message) : "[null]");
+			sb.Append("]; RoutingInfo=");
 			sb.Append(this.RoutingInfo?.ToString() ?? "[null]");
 
 			return sb.ToString();
@@ -218,6 +266,7 @@ namespace RI.Framework.Bus.Internals
 		{
 			MessageItem clone = new MessageItem();
 			clone.Address = this.Address;
+			clone.Exception = this.Exception;
 			clone.FromGlobal = this.FromGlobal;
 			clone.Id = this.Id;
 			clone.IsBroadcast = this.IsBroadcast;

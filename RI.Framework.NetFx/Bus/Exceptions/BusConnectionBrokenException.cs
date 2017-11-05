@@ -16,8 +16,8 @@ namespace RI.Framework.Bus.Exceptions
 	{
 		#region Constants
 
-		private const string ExceptionMessageWithConnection = "Bus connection is broken: ({0}): {1}";
-		private const string ExceptionMessageWithException = "Bus connection is broken ({0}): {1}";
+		private const string ExceptionMessageWithConnection = "Bus connection is broken: {0}: {1}";
+		private const string ExceptionMessageWithException = "Bus connection is broken: {0}: {1}";
 		private const string ExceptionMessageWithoutException = "Bus connection is broken.";
 
 		#endregion
@@ -68,7 +68,7 @@ namespace RI.Framework.Bus.Exceptions
 		/// </summary>
 		/// <param name="connection"> The connection which broke. </param>
 		public BusConnectionBrokenException (IBusConnection connection)
-			: base(string.Format(BusConnectionBrokenException.ExceptionMessageWithConnection, connection?.GetType()?.Name ?? "[unknown]", connection?.BrokenMessage ?? "[unknown]"))
+			: base(string.Format(BusConnectionBrokenException.ExceptionMessageWithConnection, connection?.GetType()?.Name ?? "[null]", connection?.BrokenMessage ?? "[null]"))
 		{
 		}
 
