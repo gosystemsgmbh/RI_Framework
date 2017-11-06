@@ -12,6 +12,7 @@ using RI.Framework.Bus.Routers;
 using RI.Framework.Collections;
 using RI.Framework.Composition.Model;
 using RI.Framework.Utilities;
+using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.ObjectModel;
 
@@ -67,6 +68,8 @@ namespace RI.Framework.Bus.Pipeline
 		{
 			if (messageItem.ResponseTo.HasValue)
 			{
+				this.Bus.RaiseReceivingResponse(messageItem);
+
 				lock (this.Bus.SyncRoot)
 				{
 					this.Bus.SendOperations.Where(x => (x.Request.Id == messageItem.ResponseTo.Value) && (x.State == SendOperationItemState.Waiting)).ForEach(x =>
@@ -101,6 +104,10 @@ namespace RI.Framework.Bus.Pipeline
 					});
 				}
 			}
+			else
+			{
+				this.Bus.RaiseReceivingRequest(messageItem);
+			}
 
 			bool toLocal = this.Router.ForwardToLocal(messageItem);
 			bool toGlobal = this.Router.ForwardToGlobal(messageItem);
@@ -112,65 +119,21 @@ namespace RI.Framework.Bus.Pipeline
 					this.Bus.ReceiveRegistrations.Where(x => this.Router.ShouldReceive(messageItem, x)).ForEach(x =>
 					{
 						this.Log(LogLevel.Debug, "Dispatching message processing: Request=[{0}], Receiver=[{1}]", messageItem, x);
-						this.Dispatcher.Dispatch(new Action<MessageItem, ReceiverRegistrationItem>((m, r) =>
+						this.Dispatcher.Dispatch(new Action<ReceiverRegistrationItem, MessageItem>((r, m) =>
 						{
 							this.Log(LogLevel.Debug, "Executing message processing: Request=[{0}], Receiver=[{1}]", m, r);
-							bool exceptionForwarding1 = r.ReceiverRegistration.ExceptionForwarding.GetValueOrDefault(this.Bus.DefaultExceptionForwarding) || m.ExceptionForwarding;
-							ReceiverExceptionHandler exceptionHandler1 = r.ReceiverRegistration.ExceptionHandler;
-							bool catchException1 = exceptionForwarding1 || (exceptionHandler1 != null);
-							Func<string, object, Task<object>> callback = r.ReceiverRegistration.Callback;
-							Exception exception;
-							Task<object> task;
-							if (!catchException1)
+							Exception exception = null;
+							Task<object> task = null;
+							try
 							{
-								exception = null;
-								task = callback(m.Address, m.Payload);
+								task = r.ReceiverRegistration.Callback(m.Address, m.Payload);
 							}
-							else
+							catch (Exception ex)
 							{
-								try
-								{
-									exception = null;
-									task = callback(m.Address, m.Payload);
-								}
-								catch (Exception ex)
-								{
-									exception = ex;
-									task = null;
-								}
+								exception = ex;
 							}
-							if (exception != null)
-							{
-								object result = exceptionHandler1?.Invoke(m.Address, m.Payload, exception, ref exceptionForwarding1);
-								task = Task.FromResult(result);
-							}
-							if (task.IsCompleted)
-							{
-								this.ResponseHandler(m, task.Result, exceptionForwarding1 ? exception : null);
-							}
-							else
-							{
-								task.ContinueWith((c1, s1) =>
-								{
-									this.Dispatcher.Dispatch(new Action<Task<object>, Tuple<MessageItem, ReceiverRegistrationItem>>((c2, s2) =>
-									{
-										bool exceptionForwarding2 = s2.Item2.ReceiverRegistration.ExceptionForwarding.GetValueOrDefault(this.Bus.DefaultExceptionForwarding) || s2.Item1.ExceptionForwarding;
-										ReceiverExceptionHandler exceptionHandler2 = s2.Item2.ReceiverRegistration.ExceptionHandler;
-										bool catchException2 = exceptionForwarding2 || (exceptionHandler2 != null);
-										object result;
-										if ((c2.Exception != null) && catchException2)
-										{
-											result = exceptionHandler2?.Invoke(s2.Item1.Address, s2.Item1.Payload, c2.Exception, ref exceptionForwarding2);
-										}
-										else
-										{
-											result = c2.Result;
-										}
-										this.ResponseHandler(s2.Item1, result, exceptionForwarding2 ? c2.Exception : null);
-									}), c1, s1);
-								}, new Tuple<MessageItem, ReceiverRegistrationItem>(m, r), CancellationToken.None, TaskContinuationOptions.DenyChildAttach | TaskContinuationOptions.LazyCancellation | TaskContinuationOptions.RunContinuationsAsynchronously, TaskScheduler.Current);
-							}
-						}), messageItem, x);
+							this.ProcessingHandler(r, m, task, exception);
+						}), x, messageItem);
 					});
 				}
 			}
@@ -181,6 +144,66 @@ namespace RI.Framework.Bus.Pipeline
 				{
 					this.ConnectionManager.Connections.Where(x => this.Router.ShouldSend(messageItem, x)).ForEach(x => this.ConnectionManager.SendMessage(messageItem, x));
 				}
+			}
+		}
+
+		private void ProcessingHandler (ReceiverRegistrationItem receiver, MessageItem message, Task<object> task, Exception exception)
+		{
+			bool isCompleted = false;
+			if (task != null)
+			{
+				isCompleted = task.IsCompleted;
+				Exception taskException = task.Exception;
+				if (isCompleted && (taskException != null))
+				{
+					exception = taskException;
+				}
+			}
+
+			if (exception != null)
+			{
+				Exception handlerException = exception;
+				Exception eventException = exception;
+
+				bool forwardException = receiver.ReceiverRegistration.ExceptionForwarding.GetValueOrDefault(this.Bus.DefaultExceptionForwarding) || message.ExceptionForwarding;
+				bool handlerForward = forwardException;
+				bool eventForward = forwardException;
+
+				object result = receiver.ReceiverRegistration.ExceptionHandler?.Invoke(message.Address, message.Payload, ref handlerException, ref handlerForward);
+				result = this.Bus.RaiseProcessingException(message, result, ref eventException, ref eventForward);
+
+				exception = eventException ?? handlerException;
+				forwardException = eventForward || handlerForward;
+
+				if ((!forwardException) && (exception != null))
+				{
+					throw new BusMessageProcessingException(exception);
+				}
+
+				this.ResponseHandler(message, result, exception);
+
+				return;
+			}
+
+			if (task == null)
+			{
+				throw new InvalidStateOrExecutionPathException("Either a task or an exception must be available.");
+			}
+
+			if (isCompleted)
+			{
+				object result = task.Result;
+				this.ResponseHandler(message, result, null);
+			}
+			else
+			{
+				task.ContinueWith((t1, s1) =>
+				{
+					this.Dispatcher.Dispatch(new Action<Task<object>, Tuple<ReceiverRegistrationItem, MessageItem>>((t2, s2) =>
+					{
+						this.ProcessingHandler(s2.Item1, s2.Item2, t2, null);
+					}), t1, s1);
+				}, new Tuple<ReceiverRegistrationItem, MessageItem>(receiver, message), CancellationToken.None, TaskContinuationOptions.DenyChildAttach | TaskContinuationOptions.LazyCancellation | TaskContinuationOptions.RunContinuationsAsynchronously, TaskScheduler.Current);
 			}
 		}
 
@@ -201,6 +224,8 @@ namespace RI.Framework.Bus.Pipeline
 			response.RoutingInfo = message.RoutingInfo;
 
 			this.Log(LogLevel.Debug, "Finished message processing: Request=[{0}], Response=[{1}]", message, response);
+
+			this.Bus.RaiseSendingResponse(response);
 
 			lock (this.SyncRoot)
 			{
@@ -315,6 +340,8 @@ namespace RI.Framework.Bus.Pipeline
 			{
 				return;
 			}
+
+			newMessages.ForEach(x => this.Bus.RaiseSendingRequest(x));
 
 			receivedMessages.ForEach(x => this.Router.ReceivedFromRemote(x.Item1, x.Item2));
 			newMessages.ForEach(x => this.Router.ReceivedFromLocal(x));

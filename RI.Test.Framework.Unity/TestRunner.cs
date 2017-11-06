@@ -185,6 +185,9 @@ namespace RI.Test.Framework
 		/// <inheritdoc />
 		public bool LoggingEnabled { get; set; } = true;
 
+		/// <inheritdoc />
+		public LogLevel LogFilter { get; set; } = LogLevel.Debug;
+
 		#endregion
 	}
 }

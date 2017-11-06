@@ -30,7 +30,7 @@ namespace RI.Framework.Utilities.Logging
 				return;
 			}
 
-			if (severity >= source.LogFilter)
+			if (severity < source.LogFilter)
 			{
 				return;
 			}
@@ -56,7 +56,7 @@ namespace RI.Framework.Utilities.Logging
 				return;
 			}
 
-			if (severity >= source.LogFilter)
+			if (severity < source.LogFilter)
 			{
 				return;
 			}
