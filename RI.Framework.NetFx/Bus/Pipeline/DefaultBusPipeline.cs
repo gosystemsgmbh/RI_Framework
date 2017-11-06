@@ -257,6 +257,7 @@ namespace RI.Framework.Bus.Pipeline
 			List<MessageItem> newMessages = new List<MessageItem>();
 
 			this.ConnectionManager?.DequeueMessages(receivedMessages);
+			receivedMessages.ForEach(x => x.Item1.FromGlobal = true);
 
 			lock (this.SyncRoot)
 			{
