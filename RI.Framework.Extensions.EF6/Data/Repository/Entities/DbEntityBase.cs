@@ -20,6 +20,7 @@ namespace RI.Framework.Data.Repository.Entities
 	///         <see cref="EntityBase" /> for more details.
 	///     </para>
 	/// </remarks>
+	[Serializable]
 	public abstract class DbEntityBase : EntityBase
 	{
 		#region Static Constructor/Destructor
