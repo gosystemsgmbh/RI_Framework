@@ -146,6 +146,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\Readers\LogFileEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\Readers\LogFileReader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\Readers\_NamespaceDoc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\Writers\CallbackLogWriter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\Writers\ConsoleLogWriter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\Writers\DirectoryLogWriter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\Writers\FileLogWriter.cs" />
