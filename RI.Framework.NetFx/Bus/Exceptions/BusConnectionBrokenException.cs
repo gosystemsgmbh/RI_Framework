@@ -2,9 +2,7 @@
 using System.Runtime.Serialization;
 
 using RI.Framework.Bus.Connections;
-
-
-
+using RI.Framework.Bus.Internals;
 
 namespace RI.Framework.Bus.Exceptions
 {
@@ -16,7 +14,7 @@ namespace RI.Framework.Bus.Exceptions
 	{
 		#region Constants
 
-		private const string ExceptionMessageWithConnection = "Bus connection is broken: {0}: {1}";
+		private const string ExceptionMessageWithMessageAndConnection = "Bus connection is broken: {0}: {1} (Message: {2})";
 		private const string ExceptionMessageWithException = "Bus connection is broken: {0}: {1}";
 		private const string ExceptionMessageWithoutException = "Bus connection is broken.";
 
@@ -66,9 +64,10 @@ namespace RI.Framework.Bus.Exceptions
 		/// <summary>
 		///     Creates a new instance of <see cref="BusConnectionBrokenException" />.
 		/// </summary>
+		/// <param name="message"> The message whose connection broke. </param>
 		/// <param name="connection"> The connection which broke. </param>
-		public BusConnectionBrokenException (IBusConnection connection)
-			: base(string.Format(BusConnectionBrokenException.ExceptionMessageWithConnection, connection?.GetType()?.Name ?? "[null]", connection?.BrokenMessage ?? "[null]"))
+		public BusConnectionBrokenException (MessageItem message, IBusConnection connection)
+			: base(string.Format(BusConnectionBrokenException.ExceptionMessageWithMessageAndConnection, connection.GetType().Name, connection.BrokenMessage ?? "[null]", message))
 		{
 		}
 

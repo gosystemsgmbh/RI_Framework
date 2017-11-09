@@ -17,7 +17,7 @@ namespace RI.Framework.Bus.Exceptions
 		#region Constants
 
 		private const string ExceptionMessageWithException = "Timeout while waiting for response: {0}: {1}";
-		private const string ExceptionMessageWithMessage = "Timeout while waiting for response: {0}";
+		private const string ExceptionMessageWithMessage = "Timeout while waiting for response (Message: {0}).";
 		private const string ExceptionMessageWithoutException = "Timeout while waiting for response.";
 
 		#endregion

@@ -11,7 +11,6 @@ using RI.Framework.Bus.Internals;
 using RI.Framework.Bus.Routers;
 using RI.Framework.Collections;
 using RI.Framework.Composition.Model;
-using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.ObjectModel;
@@ -79,9 +78,17 @@ namespace RI.Framework.Bus.Pipeline
 						x.Exception = messageItem.Exception;
 						if (x.Exception != null)
 						{
-							this.Log(LogLevel.Debug, "Send operation failed with forwarded exception: {0}{1}{2}", x, Environment.NewLine, x.Exception.ToDetailedString());
+							this.Log(LogLevel.Debug, "Send operation failed with forwarded exception: {0}{1}{2}", x, Environment.NewLine, MessageItem.CreateExceptionMessage(x.Exception, true));
 							x.State = SendOperationItemState.ForwardedException;
-							x.Task.TrySetException(new BusMessageProcessingException(x.Exception));
+							Exception realException = x.Exception as Exception;
+							if (realException != null)
+							{
+								x.Task.TrySetException(new BusMessageProcessingException(x.Request, realException));
+							}
+							else
+							{
+								x.Task.TrySetException(new BusMessageProcessingException(x.Request, x.Exception));
+							}
 						}
 						else
 						{
@@ -320,14 +327,18 @@ namespace RI.Framework.Bus.Pipeline
 					lock (this.ConnectionManager.SyncRoot)
 					{
 						List<IBusConnection> brokenConnections = this.ConnectionManager.Connections.Where(x => x.IsBroken).ToList();
-						brokenConnections.ForEach(x => this.Log(LogLevel.Warning, "Broken connection: {0}", x));
 						if (brokenConnections.Count > 0)
 						{
-							this.Bus.SendOperations.Where(x => x.Request.ToGlobal && (x.State == SendOperationItemState.Waiting)).ForEach(x =>
+							List<SendOperationItem> connectionAwareSendOperations = this.Bus.SendOperations.Where(x => x.Request.ToGlobal && (x.State == SendOperationItemState.Waiting)).ToList();
+							if (connectionAwareSendOperations.Count > 0)
+							{
+								brokenConnections.ForEach(x => this.Log(LogLevel.Warning, "Broken connection: {0}", x));
+							}
+							connectionAwareSendOperations.ForEach(x =>
 							{
 								this.Log(LogLevel.Debug, "Send operation failed with broken connection: {0}", x);
 								x.State = SendOperationItemState.Broken;
-								x.Task.TrySetException(new BusConnectionBrokenException(brokenConnections[0]));
+								x.Task.TrySetException(new BusConnectionBrokenException(x.Request, brokenConnections[0]));
 							});
 						}
 					}

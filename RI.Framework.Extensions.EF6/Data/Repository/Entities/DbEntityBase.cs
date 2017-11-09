@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity.Core.Objects;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 
 using RI.Framework.Data.EF;
 using RI.Framework.Utilities;
@@ -70,6 +71,26 @@ namespace RI.Framework.Data.Repository.Entities
 		}
 
 		#endregion
+
+
+
+		/// <summary>
+		///     Creates a new instance of <see cref="DbEntityBase" />.
+		/// </summary>
+		protected DbEntityBase()
+		{
+		}
+
+		/// <summary>
+		///     Creates a new instance of <see cref="DbEntityBase" />.
+		/// </summary>
+		/// <param name="info"> The serialization data. </param>
+		/// <param name="context"> The type of the source of the serialization data. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="info" /> is null. </exception>
+		protected DbEntityBase(SerializationInfo info, StreamingContext context)
+			: base(info, context)
+		{
+		}
 
 
 

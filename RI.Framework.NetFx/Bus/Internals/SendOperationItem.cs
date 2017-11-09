@@ -54,7 +54,7 @@ namespace RI.Framework.Bus.Internals
 		/// <value>
 		///     The exception forwarded from the receiver or null if no exception was forwarded.
 		/// </value>
-		public Exception Exception { get; set; }
+		public object Exception { get; set; }
 
 		/// <summary>
 		///     The request message which was created and sent based upon the send operation.
@@ -124,7 +124,7 @@ namespace RI.Framework.Bus.Internals
 			sb.Append("]; Request=[");
 			sb.Append(this.Request);
 			sb.Append("]; Exception=[");
-			sb.Append(this.Exception != null ? (this.Exception.GetType().Name + ": " + this.Exception.Message) : "null");
+			sb.Append(MessageItem.CreateExceptionMessage(this.Exception, false));
 			sb.Append("]");
 
 			return sb.ToString();

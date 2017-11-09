@@ -16,8 +16,9 @@ namespace RI.Framework.Bus.Exceptions
 	{
 		#region Constants
 
+		private const string ExceptionMessageWithMessageAndObject = "Exception while receiver processed message (Message: {1}): {0}.";
+		private const string ExceptionMessageWithMessageAndException = "Exception while receiver processed message: {0} (Message: {1}).";
 		private const string ExceptionMessageWithException = "Exception while receiver processed message: {0}: {1}";
-		private const string ExceptionMessageWithMessage = "Exception while receiver processed message: {0}";
 		private const string ExceptionMessageWithoutException = "Exception while receiver processed message.";
 
 		#endregion
@@ -66,9 +67,20 @@ namespace RI.Framework.Bus.Exceptions
 		/// <summary>
 		///     Creates a new instance of <see cref="BusMessageProcessingException" />.
 		/// </summary>
-		/// <param name="message"> The message whose response timed-out. </param>
-		public BusMessageProcessingException (MessageItem message)
-			: base(string.Format(BusMessageProcessingException.ExceptionMessageWithMessage, message))
+		/// <param name="message"> The message whose processing threw an exception. </param>
+		/// <param name="exception"> The exception which was thrown when processing the message. </param>
+		public BusMessageProcessingException(MessageItem message, Exception exception)
+			: base(string.Format(BusMessageProcessingException.ExceptionMessageWithMessageAndException, MessageItem.CreateExceptionMessage(exception, false), message), exception)
+		{
+		}
+
+		/// <summary>
+		///     Creates a new instance of <see cref="BusMessageProcessingException" />.
+		/// </summary>
+		/// <param name="message"> The message whose processing threw an exception. </param>
+		/// <param name="exception"> The exception which was thrown when processing the message. </param>
+		public BusMessageProcessingException(MessageItem message, object exception)
+			: base(string.Format(BusMessageProcessingException.ExceptionMessageWithMessageAndObject, MessageItem.CreateExceptionMessage(exception, false), message))
 		{
 		}
 

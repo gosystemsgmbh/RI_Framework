@@ -92,6 +92,19 @@ namespace RI.Framework.Data.Repository.Entities
 			this.ModifyContext = null;
 
 			this.Errors = null;
+
+			this.FilteredSerializedProperties = new HashSet<string>
+			{
+				nameof(this.FilteredSerializedProperties),
+				nameof(this.SerializationOptions),
+				nameof(this.CreateTimestamp),
+				nameof(this.CreateContext),
+				nameof(this.ModifyTimestamp),
+				nameof(this.ModifyContext),
+				nameof(this.Errors),
+				nameof(this.ErrorStringWithNewLines),
+				nameof(this.ErrorStringWithSpaces),
+			};
 		}
 
 		/// <summary>
@@ -276,6 +289,8 @@ namespace RI.Framework.Data.Repository.Entities
 			}
 		}
 
+		private HashSet<string> FilteredSerializedProperties { get; }
+
 		#endregion
 
 
@@ -403,7 +418,7 @@ namespace RI.Framework.Data.Repository.Entities
 			foreach (PropertySerializationInfo property in properties)
 			{
 				string name = property.Name;
-				if (info.HasValue(name))
+				if (info.HasValue(name) && (!this.FilteredSerializedProperties.Contains(name)))
 				{
 					Type type = property.Type;
 					object value = info.GetValue(name, type);
@@ -559,9 +574,12 @@ namespace RI.Framework.Data.Repository.Entities
 			foreach (PropertySerializationInfo property in properties)
 			{
 				string name = property.Name;
-				Type type = property.Type;
-				object value = property.GetValue(this);
-				info.AddValue(name, value, type);
+				if (!this.FilteredSerializedProperties.Contains(name))
+				{
+					Type type = property.Type;
+					object value = property.GetValue(this);
+					info.AddValue(name, value, type);
+				}
 			}
 		}
 
