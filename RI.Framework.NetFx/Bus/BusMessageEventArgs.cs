@@ -2,6 +2,9 @@
 
 using RI.Framework.Bus.Internals;
 
+
+
+
 namespace RI.Framework.Bus
 {
 	/// <summary>
@@ -10,11 +13,13 @@ namespace RI.Framework.Bus
 	[Serializable]
 	public sealed class BusMessageEventArgs : EventArgs
 	{
+		#region Instance Constructor/Destructor
+
 		/// <summary>
-		/// Creates a new instance of <see cref="BusMessageEventArgs"/>.
+		///     Creates a new instance of <see cref="BusMessageEventArgs" />.
 		/// </summary>
-		/// <param name="message">The message.</param>
-		/// <exception cref="ArgumentNullException"><paramref name="message"/> is null.</exception>
+		/// <param name="message"> The message. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="message" /> is null. </exception>
 		public BusMessageEventArgs (MessageItem message)
 		{
 			if (message == null)
@@ -25,12 +30,21 @@ namespace RI.Framework.Bus
 			this.Message = message;
 		}
 
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
+
 		/// <summary>
-		/// Gets the message.
+		///     Gets the message.
 		/// </summary>
 		/// <value>
-		/// The message.
+		///     The message.
 		/// </value>
 		public MessageItem Message { get; }
+
+		#endregion
 	}
 }

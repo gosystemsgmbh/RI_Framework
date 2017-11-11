@@ -4,6 +4,9 @@ using System.Runtime.Serialization;
 using RI.Framework.Bus.Connections;
 using RI.Framework.Bus.Internals;
 
+
+
+
 namespace RI.Framework.Bus.Exceptions
 {
 	/// <summary>
@@ -14,8 +17,9 @@ namespace RI.Framework.Bus.Exceptions
 	{
 		#region Constants
 
-		private const string ExceptionMessageWithMessageAndConnection = "Bus connection is broken: {0}: {1} (Message: {2})";
 		private const string ExceptionMessageWithException = "Bus connection is broken: {0}: {1}";
+
+		private const string ExceptionMessageWithMessageAndConnection = "Bus connection is broken: {0}: {1} (Message: {2})";
 		private const string ExceptionMessageWithoutException = "Bus connection is broken.";
 
 		#endregion

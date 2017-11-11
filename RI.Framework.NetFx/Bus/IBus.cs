@@ -215,7 +215,7 @@ namespace RI.Framework.Bus
 	///     </para>
 	///     <para>
 	///         An exception is forwarded, and does therefore not lead to an unhandled exception in the receivers <see cref="IBusDispatcher" /> context, when an exception is thrown by the callback registered with a <see cref="ReceiverRegistration" /> AND if ANY of the following is true:
-	///         The <see cref="SendOperation" /> enabled exception forwarding, the <see cref="ReceiverRegistration" /> enabled exception forwarding, the handler for <see cref="ProcessingException"/>, if any, enabled exception forwarding, OR the <see cref="ReceiverRegistration" /> used a <see cref="ReceiverExceptionHandler" /> which enabled exception forwarding.
+	///         The <see cref="SendOperation" /> enabled exception forwarding, the <see cref="ReceiverRegistration" /> enabled exception forwarding, the handler for <see cref="ProcessingException" />, if any, enabled exception forwarding, OR the <see cref="ReceiverRegistration" /> used a <see cref="ReceiverExceptionHandler" /> which enabled exception forwarding.
 	///     </para>
 	///     <para>
 	///         When an exception from the receiver is forwarded to the sender, it will not be handled and therefore silently ignored on the receiver side, except a <see cref="ReceiverExceptionHandler" /> is registered with the corresponding <see cref="ReceiverRegistration" />.
@@ -349,6 +349,56 @@ namespace RI.Framework.Bus
 		new object SyncRoot { get; }
 
 		/// <summary>
+		///     Raised when an exception occured while processing a received message using a <see cref="ReceiverRegistration" />.
+		/// </summary>
+		/// <remarks>
+		///     <note type="important">
+		///         Be aware of the thread this event is raised on, depending on the used bus components or their implementation respectively.
+		///     </note>
+		/// </remarks>
+		event EventHandler<BusMessageProcessingExceptionEventArgs> ProcessingException;
+
+		/// <summary>
+		///     Raised after a request message was received from local or global but before it is processed.
+		/// </summary>
+		/// <remarks>
+		///     <note type="important">
+		///         Be aware of the thread this event is raised on, depending on the used bus components or their implementation respectively.
+		///     </note>
+		/// </remarks>
+		event EventHandler<BusMessageEventArgs> ReceivingRequest;
+
+		/// <summary>
+		///     Raised after a response message was received from local or global but before it is added to the corresponding <see cref="SendOperation" />.
+		/// </summary>
+		/// <remarks>
+		///     <note type="important">
+		///         Be aware of the thread this event is raised on, depending on the used bus components or their implementation respectively.
+		///     </note>
+		/// </remarks>
+		event EventHandler<BusMessageEventArgs> ReceivingResponse;
+
+		/// <summary>
+		///     Raised after a request message was created but before it is sent to local and/or global.
+		/// </summary>
+		/// <remarks>
+		///     <note type="important">
+		///         Be aware of the thread this event is raised on, depending on the used bus components or their implementation respectively.
+		///     </note>
+		/// </remarks>
+		event EventHandler<BusMessageEventArgs> SendingRequest;
+
+		/// <summary>
+		///     Raised after a response message was created but before it is sent to local and/or global.
+		/// </summary>
+		/// <remarks>
+		///     <note type="important">
+		///         Be aware of the thread this event is raised on, depending on the used bus components or their implementation respectively.
+		///     </note>
+		/// </remarks>
+		event EventHandler<BusMessageEventArgs> SendingResponse;
+
+		/// <summary>
 		///     Enqueues a configured send operation to send its message.
 		/// </summary>
 		/// <param name="sendOperation"> The send operation. </param>
@@ -361,6 +411,77 @@ namespace RI.Framework.Bus
 		/// <exception cref="InvalidOperationException"> The bus is not started. </exception>
 		/// <exception cref="BusProcessingPipelineException"> The bus processing pipeline encountered an exception. </exception>
 		Task<object> Enqueue (SendOperation sendOperation);
+
+		/// <summary>
+		///     Raises the <see cref="ProcessingException" /> event.
+		/// </summary>
+		/// <param name="message"> The message. </param>
+		/// <param name="result"> The result to respond to the sender. </param>
+		/// <param name="exception"> Specifies and returns the exception. </param>
+		/// <param name="forwardException"> Specifies and returns whether the exception should be forwarded to the sender. </param>
+		/// <returns>
+		///     The result to respond to the sender.
+		/// </returns>
+		/// <remarks>
+		///     <note type="note">
+		///         This method is not intended to be used by the message bus user.
+		///         It is merely provided to allow <see cref="IBusPipeline" /> implementations to raise the corresponding event.
+		///     </note>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="message" /> or <paramref name="exception" /> is null. </exception>
+		object RaiseProcessingException (MessageItem message, object result, ref Exception exception, ref bool forwardException);
+
+		/// <summary>
+		///     Raises the <see cref="ReceivingRequest" /> event.
+		/// </summary>
+		/// <param name="message"> The message. </param>
+		/// <remarks>
+		///     <note type="note">
+		///         This method is not intended to be used by the message bus user.
+		///         It is merely provided to allow <see cref="IBusPipeline" /> implementations to raise the corresponding event.
+		///     </note>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="message" /> is null. </exception>
+		void RaiseReceivingRequest (MessageItem message);
+
+		/// <summary>
+		///     Raises the <see cref="ReceivingRequest" /> event.
+		/// </summary>
+		/// <param name="message"> The message. </param>
+		/// <remarks>
+		///     <note type="note">
+		///         This method is not intended to be used by the message bus user.
+		///         It is merely provided to allow <see cref="IBusPipeline" /> implementations to raise the corresponding event.
+		///     </note>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="message" /> is null. </exception>
+		void RaiseReceivingResponse (MessageItem message);
+
+		/// <summary>
+		///     Raises the <see cref="SendingRequest" /> event.
+		/// </summary>
+		/// <param name="message"> The message. </param>
+		/// <remarks>
+		///     <note type="note">
+		///         This method is not intended to be used by the message bus user.
+		///         It is merely provided to allow <see cref="IBusPipeline" /> implementations to raise the corresponding event.
+		///     </note>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="message" /> is null. </exception>
+		void RaiseSendingRequest (MessageItem message);
+
+		/// <summary>
+		///     Raises the <see cref="SendingResponse" /> event.
+		/// </summary>
+		/// <param name="message"> The message. </param>
+		/// <remarks>
+		///     <note type="note">
+		///         This method is not intended to be used by the message bus user.
+		///         It is merely provided to allow <see cref="IBusPipeline" /> implementations to raise the corresponding event.
+		///     </note>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="message" /> is null. </exception>
+		void RaiseSendingResponse (MessageItem message);
 
 		/// <summary>
 		///     Registers a configured receiver registration for use with the bus.
@@ -395,126 +516,5 @@ namespace RI.Framework.Bus
 		/// <param name="receiverRegistration"> The receiver registration. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="receiverRegistration" /> is null. </exception>
 		void Unregister (ReceiverRegistration receiverRegistration);
-
-		/// <summary>
-		/// Raised after a request message was received from local or global but before it is processed.
-		/// </summary>
-		/// <remarks>
-		/// <note type="important">
-		/// Be aware of the thread this event is raised on, depending on the used bus components or their implementation respectively.
-		/// </note>
-		/// </remarks>
-		event EventHandler<BusMessageEventArgs> ReceivingRequest;
-
-		/// <summary>
-		/// Raised after a response message was received from local or global but before it is added to the corresponding <see cref="SendOperation"/>.
-		/// </summary>
-		/// <remarks>
-		/// <note type="important">
-		/// Be aware of the thread this event is raised on, depending on the used bus components or their implementation respectively.
-		/// </note>
-		/// </remarks>
-		event EventHandler<BusMessageEventArgs> ReceivingResponse;
-
-		/// <summary>
-		/// Raised after a request message was created but before it is sent to local and/or global.
-		/// </summary>
-		/// <remarks>
-		/// <note type="important">
-		/// Be aware of the thread this event is raised on, depending on the used bus components or their implementation respectively.
-		/// </note>
-		/// </remarks>
-		event EventHandler<BusMessageEventArgs> SendingRequest;
-
-		/// <summary>
-		/// Raised after a response message was created but before it is sent to local and/or global.
-		/// </summary>
-		/// <remarks>
-		/// <note type="important">
-		/// Be aware of the thread this event is raised on, depending on the used bus components or their implementation respectively.
-		/// </note>
-		/// </remarks>
-		event EventHandler<BusMessageEventArgs> SendingResponse;
-
-		/// <summary>
-		/// Raised when an exception occured while processing a received message using a <see cref="ReceiverRegistration"/>.
-		/// </summary>
-		/// <remarks>
-		/// <note type="important">
-		/// Be aware of the thread this event is raised on, depending on the used bus components or their implementation respectively.
-		/// </note>
-		/// </remarks>
-		event EventHandler<BusMessageProcessingExceptionEventArgs> ProcessingException;
-
-		/// <summary>
-		/// Raises the <see cref="ReceivingRequest"/> event.
-		/// </summary>
-		/// <param name="message">The message.</param>
-		/// <remarks>
-		/// <note type="note">
-		/// This method is not intended to be used by the message bus user.
-		/// It is merely provided to allow <see cref="IBusPipeline"/> implementations to raise the corresponding event.
-		/// </note>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="message"/> is null.</exception>
-		void RaiseReceivingRequest (MessageItem message);
-
-		/// <summary>
-		/// Raises the <see cref="ReceivingRequest"/> event.
-		/// </summary>
-		/// <param name="message">The message.</param>
-		/// <remarks>
-		/// <note type="note">
-		/// This method is not intended to be used by the message bus user.
-		/// It is merely provided to allow <see cref="IBusPipeline"/> implementations to raise the corresponding event.
-		/// </note>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="message"/> is null.</exception>
-		void RaiseReceivingResponse(MessageItem message);
-
-		/// <summary>
-		/// Raises the <see cref="SendingRequest"/> event.
-		/// </summary>
-		/// <param name="message">The message.</param>
-		/// <remarks>
-		/// <note type="note">
-		/// This method is not intended to be used by the message bus user.
-		/// It is merely provided to allow <see cref="IBusPipeline"/> implementations to raise the corresponding event.
-		/// </note>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="message"/> is null.</exception>
-		void RaiseSendingRequest (MessageItem message);
-
-		/// <summary>
-		/// Raises the <see cref="SendingResponse"/> event.
-		/// </summary>
-		/// <param name="message">The message.</param>
-		/// <remarks>
-		/// <note type="note">
-		/// This method is not intended to be used by the message bus user.
-		/// It is merely provided to allow <see cref="IBusPipeline"/> implementations to raise the corresponding event.
-		/// </note>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="message"/> is null.</exception>
-		void RaiseSendingResponse(MessageItem message);
-
-		/// <summary>
-		/// Raises the <see cref="ProcessingException"/> event.
-		/// </summary>
-		/// <param name="message">The message.</param>
-		/// <param name="result">The result to respond to the sender.</param>
-		/// <param name="exception">Specifies and returns the exception.</param>
-		/// <param name="forwardException">Specifies and returns whether the exception should be forwarded to the sender.</param>
-		/// <returns>
-		/// The result to respond to the sender.
-		/// </returns>
-		/// <remarks>
-		/// <note type="note">
-		/// This method is not intended to be used by the message bus user.
-		/// It is merely provided to allow <see cref="IBusPipeline"/> implementations to raise the corresponding event.
-		/// </note>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="message"/> or <paramref name="exception"/> is null.</exception>
-		object RaiseProcessingException (MessageItem message, object result, ref Exception exception, ref bool forwardException);
 	}
 }

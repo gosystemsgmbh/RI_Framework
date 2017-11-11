@@ -20,6 +20,8 @@ Utilities
  - (Windows) WindowsMessageLoopSynchronizationContext
  - (Windows) WindowsMessageLoop: Priority queue
 
+ - (ZIP) TemporaryFiles (from ZIP)
+
  * (WPF) CircularProgressBar
  * (WPF) BindablePasswordBox
  * (WPF) Flasher
@@ -269,6 +271,7 @@ Tools
 -----
 
  - LogViewer
+ - Embedd LogViewer into Windows.Shared
  - Version updater: Add support for *.md
  - Version updater: Full update of *.shfbproj
  - Version updater: Full update of *.wxs

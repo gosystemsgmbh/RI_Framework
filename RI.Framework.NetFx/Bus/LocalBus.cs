@@ -564,6 +564,21 @@ namespace RI.Framework.Bus
 		public object SyncRoot { get; }
 
 		/// <inheritdoc />
+		public event EventHandler<BusMessageProcessingExceptionEventArgs> ProcessingException;
+
+		/// <inheritdoc />
+		public event EventHandler<BusMessageEventArgs> ReceivingRequest;
+
+		/// <inheritdoc />
+		public event EventHandler<BusMessageEventArgs> ReceivingResponse;
+
+		/// <inheritdoc />
+		public event EventHandler<BusMessageEventArgs> SendingRequest;
+
+		/// <inheritdoc />
+		public event EventHandler<BusMessageEventArgs> SendingResponse;
+
+		/// <inheritdoc />
 		void IDisposable.Dispose ()
 		{
 			this.Stop();
@@ -596,6 +611,74 @@ namespace RI.Framework.Bus
 
 				return item.Task.Task;
 			}
+		}
+
+		/// <inheritdoc />
+		public object RaiseProcessingException (MessageItem message, object result, ref Exception exception, ref bool forwardException)
+		{
+			if (message == null)
+			{
+				throw new ArgumentNullException(nameof(message));
+			}
+
+			if (exception == null)
+			{
+				throw new ArgumentNullException(nameof(exception));
+			}
+
+			BusMessageProcessingExceptionEventArgs args = new BusMessageProcessingExceptionEventArgs(message, result, exception, forwardException);
+			this.ProcessingException?.Invoke(this, args);
+			exception = args.Exception;
+			forwardException = args.ForwardException;
+			return args.Result;
+		}
+
+		/// <inheritdoc />
+		public void RaiseReceivingRequest (MessageItem message)
+		{
+			if (message == null)
+			{
+				throw new ArgumentNullException(nameof(message));
+			}
+
+			BusMessageEventArgs args = new BusMessageEventArgs(message);
+			this.ReceivingRequest?.Invoke(this, args);
+		}
+
+		/// <inheritdoc />
+		public void RaiseReceivingResponse (MessageItem message)
+		{
+			if (message == null)
+			{
+				throw new ArgumentNullException(nameof(message));
+			}
+
+			BusMessageEventArgs args = new BusMessageEventArgs(message);
+			this.ReceivingResponse?.Invoke(this, args);
+		}
+
+		/// <inheritdoc />
+		public void RaiseSendingRequest (MessageItem message)
+		{
+			if (message == null)
+			{
+				throw new ArgumentNullException(nameof(message));
+			}
+
+			BusMessageEventArgs args = new BusMessageEventArgs(message);
+			this.SendingRequest?.Invoke(this, args);
+		}
+
+		/// <inheritdoc />
+		public void RaiseSendingResponse (MessageItem message)
+		{
+			if (message == null)
+			{
+				throw new ArgumentNullException(nameof(message));
+			}
+
+			BusMessageEventArgs args = new BusMessageEventArgs(message);
+			this.SendingResponse?.Invoke(this, args);
 		}
 
 		/// <inheritdoc />
@@ -703,89 +786,6 @@ namespace RI.Framework.Bus
 
 				this.SignalWorkAvailable();
 			}
-		}
-
-		/// <inheritdoc />
-		public event EventHandler<BusMessageEventArgs> ReceivingRequest;
-
-		/// <inheritdoc />
-		public event EventHandler<BusMessageEventArgs> ReceivingResponse;
-
-		/// <inheritdoc />
-		public event EventHandler<BusMessageEventArgs> SendingRequest;
-
-		/// <inheritdoc />
-		public event EventHandler<BusMessageEventArgs> SendingResponse;
-
-		/// <inheritdoc />
-		public event EventHandler<BusMessageProcessingExceptionEventArgs> ProcessingException;
-
-		/// <inheritdoc />
-		public void RaiseReceivingRequest (MessageItem message)
-		{
-			if (message == null)
-			{
-				throw new ArgumentNullException(nameof(message));
-			}
-
-			BusMessageEventArgs args = new BusMessageEventArgs(message);
-			this.ReceivingRequest?.Invoke(this, args);
-		}
-
-		/// <inheritdoc />
-		public void RaiseReceivingResponse (MessageItem message)
-		{
-			if (message == null)
-			{
-				throw new ArgumentNullException(nameof(message));
-			}
-
-			BusMessageEventArgs args = new BusMessageEventArgs(message);
-			this.ReceivingResponse?.Invoke(this, args);
-		}
-
-		/// <inheritdoc />
-		public void RaiseSendingRequest (MessageItem message)
-		{
-			if (message == null)
-			{
-				throw new ArgumentNullException(nameof(message));
-			}
-
-			BusMessageEventArgs args = new BusMessageEventArgs(message);
-			this.SendingRequest?.Invoke(this, args);
-		}
-
-		/// <inheritdoc />
-		public void RaiseSendingResponse (MessageItem message)
-		{
-			if (message == null)
-			{
-				throw new ArgumentNullException(nameof(message));
-			}
-
-			BusMessageEventArgs args = new BusMessageEventArgs(message);
-			this.SendingResponse?.Invoke(this, args);
-		}
-
-		/// <inheritdoc />
-		public object RaiseProcessingException (MessageItem message, object result, ref Exception exception, ref bool forwardException)
-		{
-			if (message == null)
-			{
-				throw new ArgumentNullException(nameof(message));
-			}
-
-			if (exception == null)
-			{
-				throw new ArgumentNullException(nameof(exception));
-			}
-
-			BusMessageProcessingExceptionEventArgs args = new BusMessageProcessingExceptionEventArgs(message, result, exception, forwardException);
-			this.ProcessingException?.Invoke(this, args);
-			exception = args.Exception;
-			forwardException = args.ForwardException;
-			return args.Result;
 		}
 
 		#endregion

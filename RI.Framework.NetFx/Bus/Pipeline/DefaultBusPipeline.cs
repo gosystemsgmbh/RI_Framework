@@ -63,6 +63,60 @@ namespace RI.Framework.Bus.Pipeline
 
 		#region Instance Methods
 
+		private void ProcessingHandler (ReceiverRegistrationItem receiver, MessageItem message, Task<object> task, Exception exception)
+		{
+			bool isCompleted = false;
+			if (task != null)
+			{
+				isCompleted = task.IsCompleted;
+				Exception taskException = task.Exception;
+				if (isCompleted && (taskException != null))
+				{
+					exception = taskException;
+				}
+			}
+
+			if (exception != null)
+			{
+				Exception handlerException = exception;
+				Exception eventException = exception;
+
+				bool forwardException = receiver.ReceiverRegistration.ExceptionForwarding.GetValueOrDefault(this.Bus.DefaultExceptionForwarding) || message.ExceptionForwarding;
+				bool handlerForward = forwardException;
+				bool eventForward = forwardException;
+
+				object result = receiver.ReceiverRegistration.ExceptionHandler?.Invoke(message.Address, message.Payload, ref handlerException, ref handlerForward);
+				result = this.Bus.RaiseProcessingException(message, result, ref eventException, ref eventForward);
+
+				exception = eventException ?? handlerException;
+				forwardException = eventForward || handlerForward;
+
+				if ((!forwardException) && (exception != null))
+				{
+					throw new BusMessageProcessingException(exception);
+				}
+
+				this.ResponseHandler(message, result, exception);
+
+				return;
+			}
+
+			if (task == null)
+			{
+				throw new InvalidStateOrExecutionPathException("Either a task or an exception must be available.");
+			}
+
+			if (isCompleted)
+			{
+				object result = task.Result;
+				this.ResponseHandler(message, result, null);
+			}
+			else
+			{
+				task.ContinueWith((t1, s1) => { this.Dispatcher.Dispatch(new Action<Task<object>, Tuple<ReceiverRegistrationItem, MessageItem>>((t2, s2) => { this.ProcessingHandler(s2.Item1, s2.Item2, t2, null); }), t1, s1); }, new Tuple<ReceiverRegistrationItem, MessageItem>(receiver, message), CancellationToken.None, TaskContinuationOptions.DenyChildAttach | TaskContinuationOptions.LazyCancellation | TaskContinuationOptions.RunContinuationsAsynchronously, TaskScheduler.Current);
+			}
+		}
+
 		private void ProcessMessage (MessageItem messageItem)
 		{
 			if (messageItem.ResponseTo.HasValue)
@@ -151,66 +205,6 @@ namespace RI.Framework.Bus.Pipeline
 				{
 					this.ConnectionManager.Connections.Where(x => this.Router.ShouldSend(messageItem, x)).ForEach(x => this.ConnectionManager.SendMessage(messageItem, x));
 				}
-			}
-		}
-
-		private void ProcessingHandler (ReceiverRegistrationItem receiver, MessageItem message, Task<object> task, Exception exception)
-		{
-			bool isCompleted = false;
-			if (task != null)
-			{
-				isCompleted = task.IsCompleted;
-				Exception taskException = task.Exception;
-				if (isCompleted && (taskException != null))
-				{
-					exception = taskException;
-				}
-			}
-
-			if (exception != null)
-			{
-				Exception handlerException = exception;
-				Exception eventException = exception;
-
-				bool forwardException = receiver.ReceiverRegistration.ExceptionForwarding.GetValueOrDefault(this.Bus.DefaultExceptionForwarding) || message.ExceptionForwarding;
-				bool handlerForward = forwardException;
-				bool eventForward = forwardException;
-
-				object result = receiver.ReceiverRegistration.ExceptionHandler?.Invoke(message.Address, message.Payload, ref handlerException, ref handlerForward);
-				result = this.Bus.RaiseProcessingException(message, result, ref eventException, ref eventForward);
-
-				exception = eventException ?? handlerException;
-				forwardException = eventForward || handlerForward;
-
-				if ((!forwardException) && (exception != null))
-				{
-					throw new BusMessageProcessingException(exception);
-				}
-
-				this.ResponseHandler(message, result, exception);
-
-				return;
-			}
-
-			if (task == null)
-			{
-				throw new InvalidStateOrExecutionPathException("Either a task or an exception must be available.");
-			}
-
-			if (isCompleted)
-			{
-				object result = task.Result;
-				this.ResponseHandler(message, result, null);
-			}
-			else
-			{
-				task.ContinueWith((t1, s1) =>
-				{
-					this.Dispatcher.Dispatch(new Action<Task<object>, Tuple<ReceiverRegistrationItem, MessageItem>>((t2, s2) =>
-					{
-						this.ProcessingHandler(s2.Item1, s2.Item2, t2, null);
-					}), t1, s1);
-				}, new Tuple<ReceiverRegistrationItem, MessageItem>(receiver, message), CancellationToken.None, TaskContinuationOptions.DenyChildAttach | TaskContinuationOptions.LazyCancellation | TaskContinuationOptions.RunContinuationsAsynchronously, TaskScheduler.Current);
 			}
 		}
 

@@ -74,10 +74,13 @@ namespace RI.Framework.Data.Repository.Entities
 
 
 
+
+		#region Instance Constructor/Destructor
+
 		/// <summary>
 		///     Creates a new instance of <see cref="DbEntityBase" />.
 		/// </summary>
-		protected DbEntityBase()
+		protected DbEntityBase ()
 		{
 		}
 
@@ -87,10 +90,12 @@ namespace RI.Framework.Data.Repository.Entities
 		/// <param name="info"> The serialization data. </param>
 		/// <param name="context"> The type of the source of the serialization data. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="info" /> is null. </exception>
-		protected DbEntityBase(SerializationInfo info, StreamingContext context)
+		protected DbEntityBase (SerializationInfo info, StreamingContext context)
 			: base(info, context)
 		{
 		}
+
+		#endregion
 
 
 

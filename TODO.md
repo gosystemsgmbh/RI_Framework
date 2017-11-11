@@ -9,6 +9,8 @@
   - [ ] Incorporate wishlist into TODO
   - [ ] Move RotenInformatik assemblies into other assemblies
   - [ ] NuGet Packages
+  - [ ] Add manifest to log viewer
+  - [ ] Add manifest to VersionUpdater and ElevatedStart
 - [ ] Testing (common)
   - [ ] RuntimeEnvironment
   - [ ] CultureInfoExtensions
@@ -82,6 +84,7 @@
   - [ ] Unity: Performance
   - [ ] Unity: Thread Safety
   - [ ] Proper Readme
+  - [ ] Development documentation
 - [ ] Advertisement
 
 ## Next

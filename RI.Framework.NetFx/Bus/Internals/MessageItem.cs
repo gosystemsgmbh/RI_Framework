@@ -16,6 +16,42 @@ namespace RI.Framework.Bus.Internals
 	[Serializable]
 	public sealed class MessageItem : ICloneable<MessageItem>, ICloneable
 	{
+		#region Static Methods
+
+		/// <summary>
+		///     Creates a useful display string from an exception object as transported by <see cref="Exception" />.
+		/// </summary>
+		/// <param name="exception"> The exception object. </param>
+		/// <param name="detailed"> Specifies whether a detailed exception message is to be created, using <see cref="ExceptionExtensions.ToDetailedString(System.Exception)" />, if <paramref name="exception" /> is or inherits from <see cref="System.Exception" />. </param>
+		/// <returns>
+		///     A display string representing the exception object.
+		///     The return value is never null, even if <paramref name="exception" /> is null.
+		/// </returns>
+		public static string CreateExceptionMessage (object exception, bool detailed)
+		{
+			if (exception != null)
+			{
+				Exception ex = exception as Exception;
+				if (ex != null)
+				{
+					return ex.GetType().Name + ": " + (detailed ? ex.ToDetailedString() : ex.Message);
+				}
+				else
+				{
+					return exception.GetType().Name + ": " + exception;
+				}
+			}
+			else
+			{
+				return "null";
+			}
+		}
+
+		#endregion
+
+
+
+
 		#region Instance Fields
 
 		private object _exception;
@@ -46,9 +82,9 @@ namespace RI.Framework.Bus.Internals
 		///     The exception of the message processing or null if the message processing did not throw an exception or exception forwarding was not enabled.
 		/// </value>
 		/// <remarks>
-		/// <note type="note">
-		/// <see cref="Exception"/> is of type <see cref="object"/> instead of <see cref="System.Exception"/> to allow bus connections to substitute the exception with another object, e.g. for serialization/deserialization reasons.
-		/// </note>
+		///     <note type="note">
+		///         <see cref="Exception" /> is of type <see cref="object" /> instead of <see cref="System.Exception" /> to allow bus connections to substitute the exception with another object, e.g. for serialization/deserialization reasons.
+		///     </note>
 		/// </remarks>
 		public object Exception
 		{
@@ -227,35 +263,6 @@ namespace RI.Framework.Bus.Internals
 
 
 		#region Overrides
-
-		/// <summary>
-		/// Creates a useful display string from an exception object as transported by <see cref="Exception"/>.
-		/// </summary>
-		/// <param name="exception">The exception object.</param>
-		/// <param name="detailed">Specifies whether a detailed exception message is to be created, using <see cref="ExceptionExtensions.ToDetailedString(System.Exception)"/>, if <paramref name="exception"/> is or inherits from <see cref="System.Exception"/>.</param>
-		/// <returns>
-		/// A display string representing the exception object.
-		/// The return value is never null, even if <paramref name="exception"/> is null.
-		/// </returns>
-		public static string CreateExceptionMessage (object exception, bool detailed)
-		{
-			if (exception != null)
-			{
-				Exception ex = exception as Exception;
-				if (ex != null)
-				{
-					return ex.GetType().Name + ": " + (detailed ? ex.ToDetailedString() : ex.Message);
-				}
-				else
-				{
-					return exception.GetType().Name + ": " + exception;
-				}
-			}
-			else
-			{
-				return "null";
-			}
-		}
 
 		/// <inheritdoc />
 		public override string ToString ()

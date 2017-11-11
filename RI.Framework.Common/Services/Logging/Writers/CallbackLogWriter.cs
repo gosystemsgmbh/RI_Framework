@@ -8,6 +8,9 @@ using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.ObjectModel;
 
+
+
+
 namespace RI.Framework.Services.Logging.Writers
 {
 	/// <summary>
@@ -22,41 +25,48 @@ namespace RI.Framework.Services.Logging.Writers
 	[Export]
 	public sealed class CallbackLogWriter : ILogWriter
 	{
+		#region Constants
+
 		/// <summary>
-		/// The default format string.
+		///     The default format string.
 		/// </summary>
 		/// <value>
-		/// The default format string.
+		///     The default format string.
 		/// </value>
 		/// <remarks>
-		/// <para>
-		/// The default format string is <c>[{1}] [{2:D2}] [{5}] [{6}] {7}</c>.
-		/// See <see cref="FormatString"/> for more details.
-		/// </para>
+		///     <para>
+		///         The default format string is <c> [{1}] [{2:D2}] [{5}] [{6}] {7} </c>.
+		///         See <see cref="FormatString" /> for more details.
+		///     </para>
 		/// </remarks>
 		public const string DefaultFormatString = "[{1}] [{2:D2}] [{5}] [{6}] {7}";
+
+		#endregion
+
+
+
 
 		#region Instance Constructor/Destructor
 
 		/// <summary>
 		///     Creates a new instance of <see cref="CallbackLogWriter" />.
 		/// </summary>
-		/// <param name="logCallback">The required log callback.</param>
-		/// <exception cref="ArgumentNullException"><paramref name="logCallback"/> is null.</exception>
-		public CallbackLogWriter(Action<string> logCallback)
+		/// <param name="logCallback"> The required log callback. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="logCallback" /> is null. </exception>
+		public CallbackLogWriter (Action<string> logCallback)
 			: this(logCallback, null, null)
 		{
 		}
 
 		/// <summary>
-		/// Creates a new instance of <see cref="CallbackLogWriter" />.
+		///     Creates a new instance of <see cref="CallbackLogWriter" />.
 		/// </summary>
-		/// <param name="logCallback">The required log callback.</param>
-		/// <param name="cleanupCallback">The optional cleanup callback. Can be null if not used.</param>
-		/// <param name="formatString">The optional format string to format the log message. Can be null to use <see cref="DefaultFormatString"/>. See <see cref="FormatString"/> for more details.</param>
-		/// <exception cref="ArgumentNullException"><paramref name="logCallback"/> is null.</exception>
-		/// <exception cref="EmptyStringArgumentException"><paramref name="formatString"/> is an empty string.</exception>
-		public CallbackLogWriter(Action<string> logCallback, Action<DateTime> cleanupCallback, string formatString)
+		/// <param name="logCallback"> The required log callback. </param>
+		/// <param name="cleanupCallback"> The optional cleanup callback. Can be null if not used. </param>
+		/// <param name="formatString"> The optional format string to format the log message. Can be null to use <see cref="DefaultFormatString" />. See <see cref="FormatString" /> for more details. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="logCallback" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="formatString" /> is an empty string. </exception>
+		public CallbackLogWriter (Action<string> logCallback, Action<DateTime> cleanupCallback, string formatString)
 		{
 			this.SyncRoot = new object();
 
@@ -78,22 +88,6 @@ namespace RI.Framework.Services.Logging.Writers
 			this.FormatString = formatString ?? CallbackLogWriter.DefaultFormatString;
 		}
 
-		/// <summary>
-		/// Gets the log callback which is called for each log entry.
-		/// </summary>
-		/// <value>
-		/// The log callback which is called for each log entry.
-		/// </value>
-		public Action<string> LogCallback { get; }
-
-		/// <summary>
-		/// Gets the cleanup callback which is called for each cleanup.
-		/// </summary>
-		/// <value>
-		/// The cleanup callback which is called for each cleanup.
-		/// </value>
-		public Action<DateTime> CleanupCallback { get; }
-
 		#endregion
 
 
@@ -103,6 +97,8 @@ namespace RI.Framework.Services.Logging.Writers
 
 		private ILogFilter _filter;
 
+		private string _formatString;
+
 		#endregion
 
 
@@ -110,30 +106,34 @@ namespace RI.Framework.Services.Logging.Writers
 
 		#region Instance Properties/Indexer
 
-		private object SyncRoot { get; }
-
-		private string _formatString;
-
 		/// <summary>
-		/// Gets or sets the format string used to format the log message.
+		///     Gets the cleanup callback which is called for each cleanup.
 		/// </summary>
 		/// <value>
-		/// The format string used to format the log message.
+		///     The cleanup callback which is called for each cleanup.
 		/// </value>
-		/// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
-		/// <exception cref="EmptyStringArgumentException"><paramref name="value"/> is an empty string.</exception>
+		public Action<DateTime> CleanupCallback { get; }
+
+		/// <summary>
+		///     Gets or sets the format string used to format the log message.
+		/// </summary>
+		/// <value>
+		///     The format string used to format the log message.
+		/// </value>
+		/// <exception cref="ArgumentNullException"> <paramref name="value" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="value" /> is an empty string. </exception>
 		/// <remarks>
-		/// <para>
-		/// The format string is given several arguments (not all have to be used):
-		/// {0}: The timestamp of the log entry as a <see cref="DateTime"/>.
-		/// {1}: The timestamp of the log entry as a sortable <see cref="string"/>.
-		/// {2}: The thread ID as an <see cref="int"/>.
-		/// {3}: The severity as an <see cref="int"/>.
-		/// {4}: The severity as a <see cref="string"/>.
-		/// {5}: The first character of {4} as an uppercase <see cref="string"/>.
-		/// {6}: The source as a <see cref="string"/>.
-		/// {7}: The actual log message as a <see cref="string"/>.
-		/// </para>
+		///     <para>
+		///         The format string is given several arguments (not all have to be used):
+		///         {0}: The timestamp of the log entry as a <see cref="DateTime" />.
+		///         {1}: The timestamp of the log entry as a sortable <see cref="string" />.
+		///         {2}: The thread ID as an <see cref="int" />.
+		///         {3}: The severity as an <see cref="int" />.
+		///         {4}: The severity as a <see cref="string" />.
+		///         {5}: The first character of {4} as an uppercase <see cref="string" />.
+		///         {6}: The source as a <see cref="string" />.
+		///         {7}: The actual log message as a <see cref="string" />.
+		///     </para>
 		/// </remarks>
 		public string FormatString
 		{
@@ -163,10 +163,22 @@ namespace RI.Framework.Services.Logging.Writers
 			}
 		}
 
+		/// <summary>
+		///     Gets the log callback which is called for each log entry.
+		/// </summary>
+		/// <value>
+		///     The log callback which is called for each log entry.
+		/// </value>
+		public Action<string> LogCallback { get; }
+
+		private object SyncRoot { get; }
+
 		#endregion
 
 
 
+
+		#region Interface: ILogWriter
 
 		/// <inheritdoc />
 		public ILogFilter Filter
@@ -194,13 +206,13 @@ namespace RI.Framework.Services.Logging.Writers
 		object ISynchronizable.SyncRoot => this.SyncRoot;
 
 		/// <inheritdoc />
-		public void Cleanup(DateTime retentionDate)
+		public void Cleanup (DateTime retentionDate)
 		{
 			this.CleanupCallback?.Invoke(retentionDate);
 		}
 
 		/// <inheritdoc />
-		public void Log(DateTime timestamp, int threadId, LogLevel severity, string source, string message)
+		public void Log (DateTime timestamp, int threadId, LogLevel severity, string source, string message)
 		{
 			ILogFilter filter = this.Filter;
 			if (filter != null)
@@ -221,5 +233,7 @@ namespace RI.Framework.Services.Logging.Writers
 				this.LogCallback(messageToLog);
 			}
 		}
+
+		#endregion
 	}
 }
