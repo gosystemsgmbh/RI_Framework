@@ -197,13 +197,13 @@ namespace RI.Framework.Utilities.Text
 
 							if (parameterKeyToAdd != null)
 							{
-								parameterKeyToAdd = parameterKeyToAdd.Unescape();
+								parameterKeyToAdd = parameterKeyToAdd.Unescape(StringEscapeOptions.DoubleQuote);
 								if (!parameterDictionary.ContainsKey(parameterKeyToAdd))
 								{
 									parameterDictionary.Add(parameterKeyToAdd, new List<string>());
 								}
 
-								parameterValueToAdd = parameterValueToAdd == null ? string.Empty : parameterValueToAdd.Unescape();
+								parameterValueToAdd = parameterValueToAdd == null ? string.Empty : parameterValueToAdd.Unescape(StringEscapeOptions.DoubleQuote);
 								parameterDictionary[parameterKeyToAdd].Add(parameterValueToAdd);
 							}
 						}
@@ -214,7 +214,7 @@ namespace RI.Framework.Utilities.Text
 						if (i1 < commandLine.Length)
 						{
 							string literal = CommandLine.ReadUntil(commandLine, ref i1, out eos, (v, p) => ((v[p] == '\"') && (v[p - 1] != '\\')));
-							literalList.Add(literal.Unescape());
+							literalList.Add(literal.Unescape(StringEscapeOptions.DoubleQuote));
 
 							if (parameterDictionary.Count == 0)
 							{
@@ -227,7 +227,7 @@ namespace RI.Framework.Utilities.Text
 						string literal = CommandLine.ReadUntil(commandLine, ref i1, out eos, (v, p) => (char.IsWhiteSpace(v[p])));
 						if (!literal.IsEmptyOrWhitespace())
 						{
-							literalList.Add(literal.Unescape().Trim());
+							literalList.Add(literal.Unescape(StringEscapeOptions.DoubleQuote).Trim());
 
 							if (parameterDictionary.Count == 0)
 							{

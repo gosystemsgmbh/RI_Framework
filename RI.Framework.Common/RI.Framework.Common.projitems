@@ -246,6 +246,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Reflection\TypeExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Reflection\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\StringComparerEx.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\StringEscapeOptions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\StringExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\StringSplitPredicate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\TechnicalStringOptions.cs" />

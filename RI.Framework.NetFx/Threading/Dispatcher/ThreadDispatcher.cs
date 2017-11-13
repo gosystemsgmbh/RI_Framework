@@ -894,8 +894,10 @@ namespace RI.Framework.Threading.Dispatcher
 		/// <inheritdoc />
 		public ThreadDispatcherOperation Post (int priority, ThreadDispatcherOptions options, Delegate action, params object[] parameters)
 		{
-			ThreadDispatcherExecutionContext executionContext = ThreadDispatcherExecutionContext.Capture(options);
-			return this.Post(executionContext, priority, options, action, parameters);
+			using (ThreadDispatcherExecutionContext executionContext = ThreadDispatcherExecutionContext.Capture(options))
+			{
+				return this.Post(executionContext, priority, options, action, parameters);
+			}
 		}
 
 		/// <inheritdoc />

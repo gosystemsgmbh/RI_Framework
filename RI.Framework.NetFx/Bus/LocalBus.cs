@@ -564,6 +564,9 @@ namespace RI.Framework.Bus
 		public object SyncRoot { get; }
 
 		/// <inheritdoc />
+		public event EventHandler<BusConnectionEventArgs> ConnectionBroken;
+
+		/// <inheritdoc />
 		public event EventHandler<BusMessageProcessingExceptionEventArgs> ProcessingException;
 
 		/// <inheritdoc />
@@ -614,7 +617,19 @@ namespace RI.Framework.Bus
 		}
 
 		/// <inheritdoc />
-		public object RaiseProcessingException (MessageItem message, object result, ref Exception exception, ref bool forwardException)
+		void IBus.RaiseConnectionBroken(IBusConnection connection)
+		{
+			if (connection == null)
+			{
+				throw new ArgumentNullException(nameof(connection));
+			}
+
+			BusConnectionEventArgs args = new BusConnectionEventArgs(connection);
+			this.ConnectionBroken?.Invoke(this, args);
+		}
+
+		/// <inheritdoc />
+		object IBus.RaiseProcessingException (MessageItem message, object result, ref Exception exception, ref bool forwardException)
 		{
 			if (message == null)
 			{
@@ -634,7 +649,7 @@ namespace RI.Framework.Bus
 		}
 
 		/// <inheritdoc />
-		public void RaiseReceivingRequest (MessageItem message)
+		void IBus.RaiseReceivingRequest (MessageItem message)
 		{
 			if (message == null)
 			{
@@ -646,7 +661,7 @@ namespace RI.Framework.Bus
 		}
 
 		/// <inheritdoc />
-		public void RaiseReceivingResponse (MessageItem message)
+		void IBus.RaiseReceivingResponse (MessageItem message)
 		{
 			if (message == null)
 			{
@@ -658,7 +673,7 @@ namespace RI.Framework.Bus
 		}
 
 		/// <inheritdoc />
-		public void RaiseSendingRequest (MessageItem message)
+		void IBus.RaiseSendingRequest (MessageItem message)
 		{
 			if (message == null)
 			{
@@ -670,7 +685,7 @@ namespace RI.Framework.Bus
 		}
 
 		/// <inheritdoc />
-		public void RaiseSendingResponse (MessageItem message)
+		void IBus.RaiseSendingResponse(MessageItem message)
 		{
 			if (message == null)
 			{

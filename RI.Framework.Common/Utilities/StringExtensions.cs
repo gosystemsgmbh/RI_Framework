@@ -193,6 +193,7 @@ namespace RI.Framework.Utilities
 		///     Converts a string into another string where certain special characters are converted to escape sequences.
 		/// </summary>
 		/// <param name="str"> The string. </param>
+		/// <param name="options"> The conversion options. </param>
 		/// <returns>
 		///     The resulting string with special characters converted to escape sequences.
 		/// </returns>
@@ -205,7 +206,7 @@ namespace RI.Framework.Utilities
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
-		public static string Escape (this string str)
+		public static string Escape (this string str, StringEscapeOptions options)
 		{
 			if (str == null)
 			{
@@ -224,45 +225,49 @@ namespace RI.Framework.Utilities
 				char current = str[i1];
 				string replacement = null;
 
-				if (current == '\a')
+				if ((current == '\a') && ((options & StringEscapeOptions.Alert) == StringEscapeOptions.Alert))
 				{
 					replacement = "\\a";
 				}
-				else if (current == '\b')
+				else if ((current == '\b') && ((options & StringEscapeOptions.Backspace) == StringEscapeOptions.Backspace))
 				{
 					replacement = "\\b";
 				}
-				else if (current == '\f')
+				else if ((current == '\f') && ((options & StringEscapeOptions.Formfeed) == StringEscapeOptions.Formfeed))
 				{
 					replacement = "\\f";
 				}
-				else if (current == '\n')
+				else if ((current == '\n') && ((options & StringEscapeOptions.Newline) == StringEscapeOptions.Newline))
 				{
 					replacement = "\\n";
 				}
-				else if (current == '\r')
+				else if ((current == '\r') && ((options & StringEscapeOptions.CarriageReturn) == StringEscapeOptions.CarriageReturn))
 				{
 					replacement = "\\r";
 				}
-				else if (current == '\t')
+				else if ((current == '\t') && ((options & StringEscapeOptions.HorizontalTab) == StringEscapeOptions.HorizontalTab))
 				{
 					replacement = "\\t";
 				}
-				else if (current == '\v')
+				else if ((current == '\v') && ((options & StringEscapeOptions.VerticalTap) == StringEscapeOptions.VerticalTap))
 				{
 					replacement = "\\v";
 				}
-				else if (current == '\\')
+				else if ((current == '\\') && ((options & StringEscapeOptions.Backslash) == StringEscapeOptions.Backslash))
 				{
 					replacement = "\\\\";
 				}
-				else if (current == '\'')
+				else if ((current == '\'') && ((options & StringEscapeOptions.SingleQuote) == StringEscapeOptions.SingleQuote))
 				{
 					replacement = "\\\'";
 				}
-				else if (current == '\"')
+				else if ((current == '\"') && ((options & StringEscapeOptions.DoubleQuote) == StringEscapeOptions.DoubleQuote))
 				{
 					replacement = "\\\"";
+				}
+				else if ((current == '?') && ((options & StringEscapeOptions.QuestionMark) == StringEscapeOptions.QuestionMark))
+				{
+					replacement = "\\?";
 				}
 
 				if (replacement != null)
@@ -2601,6 +2606,7 @@ namespace RI.Framework.Utilities
 		///     Converts a string into another string where escape sequences are converted back to certain special characters.
 		/// </summary>
 		/// <param name="str"> The string. </param>
+		/// <param name="options"> The conversion options. </param>
 		/// <returns>
 		///     The resulting string with escape sequences converted back to special characters.
 		/// </returns>
@@ -2613,7 +2619,7 @@ namespace RI.Framework.Utilities
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="str" /> is null. </exception>
-		public static string Unescape (this string str)
+		public static string Unescape (this string str, StringEscapeOptions options)
 		{
 			if (str == null)
 			{
@@ -2635,45 +2641,49 @@ namespace RI.Framework.Utilities
 					char next = str[i1 + 1];
 					char? replacement = null;
 
-					if (next == 'a')
+					if ((next == 'a') && ((options & StringEscapeOptions.Alert) == StringEscapeOptions.Alert))
 					{
 						replacement = '\a';
 					}
-					else if (next == 'b')
+					else if ((next == 'b') && ((options & StringEscapeOptions.Backspace) == StringEscapeOptions.Backspace))
 					{
 						replacement = '\b';
 					}
-					else if (next == 'f')
+					else if ((next == 'f') && ((options & StringEscapeOptions.Formfeed) == StringEscapeOptions.Formfeed))
 					{
 						replacement = '\f';
 					}
-					else if (next == 'n')
+					else if ((next == 'n') && ((options & StringEscapeOptions.Newline) == StringEscapeOptions.Newline))
 					{
 						replacement = '\n';
 					}
-					else if (next == 'r')
+					else if ((next == 'r') && ((options & StringEscapeOptions.CarriageReturn) == StringEscapeOptions.CarriageReturn))
 					{
 						replacement = '\r';
 					}
-					else if (next == 't')
+					else if ((next == 't') && ((options & StringEscapeOptions.HorizontalTab) == StringEscapeOptions.HorizontalTab))
 					{
 						replacement = '\t';
 					}
-					else if (next == 'v')
+					else if ((next == 'v') && ((options & StringEscapeOptions.VerticalTap) == StringEscapeOptions.VerticalTap))
 					{
 						replacement = '\v';
 					}
-					else if (next == '\\')
+					else if ((next == '\\') && ((options & StringEscapeOptions.Backslash) == StringEscapeOptions.Backslash))
 					{
 						replacement = '\\';
 					}
-					else if (next == '\'')
+					else if ((next == '\'') && ((options & StringEscapeOptions.SingleQuote) == StringEscapeOptions.SingleQuote))
 					{
 						replacement = '\'';
 					}
-					else if (next == '\"')
+					else if ((next == '\"') && ((options & StringEscapeOptions.DoubleQuote) == StringEscapeOptions.DoubleQuote))
 					{
 						replacement = '\"';
+					}
+					else if ((next == '?') && ((options & StringEscapeOptions.QuestionMark) == StringEscapeOptions.QuestionMark))
+					{
+						replacement = '?';
 					}
 
 					if (replacement.HasValue)
@@ -2683,8 +2693,7 @@ namespace RI.Framework.Utilities
 					}
 					else
 					{
-						sb.Append(next);
-						i1++;
+						sb.Append(current);
 					}
 				}
 				else

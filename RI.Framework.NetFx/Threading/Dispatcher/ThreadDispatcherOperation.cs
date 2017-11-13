@@ -38,8 +38,9 @@ namespace RI.Framework.Threading.Dispatcher
 
 			this.SyncRoot = new object();
 
+			this.ExecutionContext = executionContext?.Clone();
+
 			this.Dispatcher = dispatcher;
-			this.ExecutionContext = executionContext;
 			this.Priority = priority;
 			this.Options = options;
 			this.Action = action;
@@ -669,14 +670,7 @@ namespace RI.Framework.Threading.Dispatcher
 		{
 			if ((this.ExecutionContext != null) && (this.Options != ThreadDispatcherOptions.None))
 			{
-				if (!this.ExecutionContext.IsDisposed)
-				{
-					return this.ExecutionContext.Run(this.Options, this.Action, this.Parameters);
-				}
-				else
-				{
-					return null;
-				}
+				return this.ExecutionContext.Run(this.Options, this.Action, this.Parameters);
 			}
 			else
 			{

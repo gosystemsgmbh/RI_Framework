@@ -231,9 +231,9 @@ namespace RI.Framework.Threading.Dispatcher
 			clone.FlowCurrentUICulture = this.FlowCurrentUICulture;
 
 			clone.ExecutionContext = this.ExecutionContext?.CreateCopy();
-			clone.SynchronizationContext = this.SynchronizationContext?.CreateCopy();
-			clone.CurrentCulture = (CultureInfo)this.CurrentCulture?.Clone();
-			clone.CurrentUICulture = (CultureInfo)this.CurrentUICulture?.Clone();
+			clone.SynchronizationContext = this.SynchronizationContext?.CreateCopy() ?? this.SynchronizationContext;
+			clone.CurrentCulture = (CultureInfo)this.CurrentCulture?.Clone() ?? this.CurrentCulture;
+			clone.CurrentUICulture = (CultureInfo)this.CurrentUICulture?.Clone() ?? this.CurrentUICulture;
 
 			return clone;
 		}

@@ -41,6 +41,7 @@ namespace RI.Framework.Bus.Pipeline
 		{
 			this.SyncRoot = new object();
 			this.LocalResponses = new Queue<MessageItem>();
+			this.BrokenConnections = new HashSet<IBusConnection>();
 		}
 
 		#endregion
@@ -53,8 +54,9 @@ namespace RI.Framework.Bus.Pipeline
 		private IBus Bus { get; set; }
 		private IBusConnectionManager ConnectionManager { get; set; }
 		private IBusDispatcher Dispatcher { get; set; }
-		private Queue<MessageItem> LocalResponses { get; set; }
+		private Queue<MessageItem> LocalResponses { get; }
 		private IBusRouter Router { get; set; }
+		private HashSet<IBusConnection> BrokenConnections { get; }
 
 		#endregion
 
@@ -321,20 +323,26 @@ namespace RI.Framework.Bus.Pipeline
 					lock (this.ConnectionManager.SyncRoot)
 					{
 						List<IBusConnection> brokenConnections = this.ConnectionManager.Connections.Where(x => x.IsBroken).ToList();
+						IEnumerable<IBusConnection> newBrokenConnections = brokenConnections.Except(this.BrokenConnections);
+						this.BrokenConnections.Clear();
+						this.BrokenConnections.AddRange(brokenConnections);
+
+						foreach (IBusConnection newBrokenConnection in newBrokenConnections)
+						{
+							this.Log(LogLevel.Debug, "Broken connection: {0}", newBrokenConnection);
+							this.Bus.RaiseConnectionBroken(newBrokenConnection);
+						}
+
 						if (brokenConnections.Count > 0)
 						{
-							List<SendOperationItem> connectionAwareSendOperations = this.Bus.SendOperations.Where(x => x.Request.ToGlobal && (x.State == SendOperationItemState.Waiting)).ToList();
-							if (connectionAwareSendOperations.Count > 0)
-							{
-								brokenConnections.ForEach(x => this.Log(LogLevel.Warning, "Broken connection: {0}", x));
-							}
-							connectionAwareSendOperations.ForEach(x =>
+							this.Bus.SendOperations.Where(x => x.Request.ToGlobal && (x.State == SendOperationItemState.Waiting) && (!x.SendOperation.IgnoreBroken)).ForEach(x =>
 							{
 								this.Log(LogLevel.Debug, "Send operation failed with broken connection: {0}", x);
 								x.State = SendOperationItemState.Broken;
 								x.Task.TrySetException(new BusConnectionBrokenException(x.Request, brokenConnections[0]));
 							});
 						}
+
 					}
 				}
 
@@ -378,6 +386,8 @@ namespace RI.Framework.Bus.Pipeline
 			lock (this.SyncRoot)
 			{
 				this.LocalResponses?.Clear();
+
+				this.BrokenConnections?.Clear();
 			}
 		}
 

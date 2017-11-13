@@ -47,6 +47,7 @@ namespace RI.Framework.Bus
 			this.CancellationToken = null;
 			this.ExceptionForwarding = null;
 
+			this.IgnoreBroken = false;
 			this.IsBroadcast = false;
 			this.IsProcessed = false;
 
@@ -107,6 +108,14 @@ namespace RI.Framework.Bus
 		///     true if the message is sent globally, false if locally, null if not defined where the default value of the associated bus is used.
 		/// </value>
 		public bool? Global { get; private set; }
+
+		/// <summary>
+		///     Gets whether broken connections should be ignored.
+		/// </summary>
+		/// <value>
+		///     true if broken connections should be ignored (favouring timeouts), false otherwise.
+		/// </value>
+		public bool IgnoreBroken { get; private set; }
 
 		/// <summary>
 		///     Gets whether the message is sent as a broadcast.
@@ -418,6 +427,41 @@ namespace RI.Framework.Bus
 		}
 
 		/// <summary>
+		///     Sets the message to ignore broken connections.
+		/// </summary>
+		/// <returns>
+		///     The send operation to continue configuration of the message.
+		/// </returns>
+		/// <exception cref="InvalidOperationException"> The message is already being processed. </exception>
+		public SendOperation IgnoreBrokenConnections ()
+		{
+			lock (this.SyncRoot)
+			{
+				this.VerifyNotStarted();
+				this.IgnoreBroken = true;
+				return this;
+			}
+		}
+
+		/// <summary>
+		///     Sets the message to ignore broken connections or not.
+		/// </summary>
+		/// <param name="ignore"> Specifes whether the message ignores broken connections (true) or not (false). </param>
+		/// <returns>
+		///     The send operation to continue configuration of the message.
+		/// </returns>
+		/// <exception cref="InvalidOperationException"> The message is already being processed. </exception>
+		public SendOperation IgnoreBrokenConnections(bool ignore)
+		{
+			lock (this.SyncRoot)
+			{
+				this.VerifyNotStarted();
+				this.IgnoreBroken = ignore;
+				return this;
+			}
+		}
+
+		/// <summary>
 		///     Sets the cancellation token which can be used to cancel the wait for responses or the collection of responses.
 		/// </summary>
 		/// <param name="cancellationToken"> The cancellation token or null if cancellation is not used. </param>
@@ -591,6 +635,8 @@ namespace RI.Framework.Bus
 			sb.Append(this.ExpectedResults?.ToString() ?? "[null]");
 			sb.Append("; ExceptionForwarding=");
 			sb.Append(this.ExceptionForwarding?.ToString() ?? "[null]");
+			sb.Append("; IgnoreBroken=");
+			sb.Append(this.IgnoreBroken);
 			sb.Append("; IsProcessed=");
 			sb.Append(this.IsProcessed);
 

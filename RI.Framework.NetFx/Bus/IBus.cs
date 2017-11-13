@@ -349,6 +349,16 @@ namespace RI.Framework.Bus
 		new object SyncRoot { get; }
 
 		/// <summary>
+		///     Raised when a connection broke.
+		/// </summary>
+		/// <remarks>
+		///     <note type="important">
+		///         Be aware of the thread this event is raised on, depending on the used bus components or their implementation respectively.
+		///     </note>
+		/// </remarks>
+		event EventHandler<BusConnectionEventArgs> ConnectionBroken;
+
+		/// <summary>
 		///     Raised when an exception occured while processing a received message using a <see cref="ReceiverRegistration" />.
 		/// </summary>
 		/// <remarks>
@@ -411,6 +421,19 @@ namespace RI.Framework.Bus
 		/// <exception cref="InvalidOperationException"> The bus is not started. </exception>
 		/// <exception cref="BusProcessingPipelineException"> The bus processing pipeline encountered an exception. </exception>
 		Task<object> Enqueue (SendOperation sendOperation);
+
+		/// <summary>
+		///     Raises the <see cref="ConnectionBroken" /> event.
+		/// </summary>
+		/// <param name="connection"> The connection. </param>
+		/// <remarks>
+		///     <note type="note">
+		///         This method is not intended to be used by the message bus user.
+		///         It is merely provided to allow <see cref="IBusPipeline" /> implementations to raise the corresponding event.
+		///     </note>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="connection" /> is null. </exception>
+		void RaiseConnectionBroken (IBusConnection connection);
 
 		/// <summary>
 		///     Raises the <see cref="ProcessingException" /> event.

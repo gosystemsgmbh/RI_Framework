@@ -907,20 +907,21 @@ namespace RI.Framework.Threading
 
 
 
-#if PLATFORM_NETFX /// <summary>
-///     Adds a <see cref="TaskCompletionSource{T}" /> to this thread which is completed when the thread is requested to stop.
-/// </summary>
-/// <param name="tcs"> The <see cref="TaskCompletionSource{T}" /> to add. </param>
-/// <remarks>
-///     <para>
-///         A task can be added multiple times but will only be completed once.
-///     </para>
-///     <para>
-///         All added tasks will be completed using <see cref="TaskCompletionSource{T}.TrySetResult" /> by the default implementation of <see cref="OnStop" />.
-///         Therefore, no tasks added after <see cref="OnStop" /> was called will be completed.
-///     </para>
-/// </remarks>
-/// <exception cref="ArgumentNullException"> <paramref name="tcs" /> is null. </exception>
+#if PLATFORM_NETFX
+		/// <summary>
+		///     Adds a <see cref="TaskCompletionSource{T}" /> to this thread which is completed when the thread is requested to stop.
+		/// </summary>
+		/// <param name="tcs"> The <see cref="TaskCompletionSource{T}" /> to add. </param>
+		/// <remarks>
+		///     <para>
+		///         A task can be added multiple times but will only be completed once.
+		///     </para>
+		///     <para>
+		///         All added tasks will be completed using <see cref="TaskCompletionSource{T}.TrySetResult" /> by the default implementation of <see cref="OnStop" />.
+		///         Therefore, no tasks added after <see cref="OnStop" /> was called will be completed.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="tcs" /> is null. </exception>
 		protected void AddStopTask (TaskCompletionSource<object> tcs)
 		{
 			if (tcs == null)

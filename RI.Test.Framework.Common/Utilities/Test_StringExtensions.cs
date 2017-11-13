@@ -308,37 +308,37 @@ namespace RI.Test.Framework.Utilities
 		[TestMethod]
 		public void Escape_Test ()
 		{
-			if (string.Empty.Escape() != string.Empty)
+			if (string.Empty.Escape(StringEscapeOptions.All) != string.Empty)
 			{
 				throw new TestAssertionException();
 			}
 
-			if ("ABC".Escape() != "ABC")
+			if ("ABC".Escape(StringEscapeOptions.All) != "ABC")
 			{
 				throw new TestAssertionException();
 			}
 
-			if ("\a\b\f\n\r\t\v\\\'\"".Escape() != "\\a\\b\\f\\n\\r\\t\\v\\\\\\\'\\\"")
+			if ("\a\b\f\n\r\t\v\\\'\"".Escape(StringEscapeOptions.All) != "\\a\\b\\f\\n\\r\\t\\v\\\\\\\'\\\"")
 			{
 				throw new TestAssertionException();
 			}
 
-			if ("\\".Escape() != "\\\\")
+			if ("\\".Escape(StringEscapeOptions.All) != "\\\\")
 			{
 				throw new TestAssertionException();
 			}
 
-			if ("\\\\".Escape() != "\\\\\\\\")
+			if ("\\\\".Escape(StringEscapeOptions.All) != "\\\\\\\\")
 			{
 				throw new TestAssertionException();
 			}
 
-			if ("\\\\\\".Escape() != "\\\\\\\\\\\\")
+			if ("\\\\\\".Escape(StringEscapeOptions.All) != "\\\\\\\\\\\\")
 			{
 				throw new TestAssertionException();
 			}
 
-			if ("AB\\CD".Escape() != "AB\\\\CD")
+			if ("AB\\CD".Escape(StringEscapeOptions.All) != "AB\\\\CD")
 			{
 				throw new TestAssertionException();
 			}
@@ -3457,42 +3457,42 @@ namespace RI.Test.Framework.Utilities
 		[TestMethod]
 		public void Unescape_Test ()
 		{
-			if (string.Empty.Unescape() != string.Empty)
+			if (string.Empty.Unescape(StringEscapeOptions.All) != string.Empty)
 			{
 				throw new TestAssertionException();
 			}
 
-			if ("ABC".Unescape() != "ABC")
+			if ("ABC".Unescape(StringEscapeOptions.All) != "ABC")
 			{
 				throw new TestAssertionException();
 			}
 
-			if ("\\a\\b\\f\\n\\r\\t\\v\\\\\\\'\\\"".Unescape() != "\a\b\f\n\r\t\v\\\'\"")
+			if ("\\a\\b\\f\\n\\r\\t\\v\\\\\\\'\\\"".Unescape(StringEscapeOptions.All) != "\a\b\f\n\r\t\v\\\'\"")
 			{
 				throw new TestAssertionException();
 			}
 
-			if ("\\\\".Unescape() != "\\")
+			if ("\\\\".Unescape(StringEscapeOptions.All) != "\\")
 			{
 				throw new TestAssertionException();
 			}
 
-			if ("\\\\\\\\".Unescape() != "\\\\")
+			if ("\\\\\\\\".Unescape(StringEscapeOptions.All) != "\\\\")
 			{
 				throw new TestAssertionException();
 			}
 
-			if ("\\\\\\\\\\\\".Unescape() != "\\\\\\")
+			if ("\\\\\\\\\\\\".Unescape(StringEscapeOptions.All) != "\\\\\\")
 			{
 				throw new TestAssertionException();
 			}
 
-			if ("AB\\\\CD".Unescape() != "AB\\CD")
+			if ("AB\\\\CD".Unescape(StringEscapeOptions.All) != "AB\\CD")
 			{
 				throw new TestAssertionException();
 			}
 
-			if ("1\\x2".Unescape() != "1x2")
+			if ("1\\x2".Unescape(StringEscapeOptions.All) != "1x2")
 			{
 				throw new TestAssertionException();
 			}

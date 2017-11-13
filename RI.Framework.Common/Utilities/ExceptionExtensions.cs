@@ -162,7 +162,7 @@ namespace RI.Framework.Utilities
 									}
 								}
 
-								string escapedStringValue = stringValue.Escape();
+								string escapedStringValue = stringValue.Escape(StringEscapeOptions.Default);
 
 								writer.Write(ExceptionExtensions.PropertyPrefix);
 								writer.Write(name);

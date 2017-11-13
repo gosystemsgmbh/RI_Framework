@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 
+using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Composition;
 using RI.Framework.Composition.Model;
 using RI.Framework.Services.Logging;
@@ -80,6 +82,8 @@ namespace RI.Framework.StateMachines.States
 			this.IsInitialized = false;
 			this.UseCaching = true;
 			this.UpdateInterval = null;
+
+			this.ActiveMachines = new HashSet<StateMachine>();
 		}
 
 		#endregion
@@ -94,6 +98,15 @@ namespace RI.Framework.StateMachines.States
 		private int? _updateInterval;
 
 		private bool _useCaching;
+
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
+
+		private HashSet<StateMachine> ActiveMachines { get; }
 
 		#endregion
 
@@ -139,7 +152,6 @@ namespace RI.Framework.StateMachines.States
 
 		/// <inheritdoc />
 		public Utilities.Logging.ILogger Logger { get; set; } = LogLocator.Logger;
-
 
 		/// <inheritdoc />
 		public bool LoggingEnabled { get; set; } = true;
@@ -215,11 +227,60 @@ namespace RI.Framework.StateMachines.States
 		}
 
 		/// <inheritdoc />
+		public bool IsActive
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this.ActiveMachines.Count > 0;
+				}
+			}
+		}
+
+		/// <inheritdoc />
+		public StateMachine StateMachine
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					if (this.ActiveMachines.Count > 1)
+					{
+						throw new InvalidOperationException("An instance of the state " + this.GetType().Name + " is used in more than one state machines.");
+					}
+					else if (this.ActiveMachines.Count == 1)
+					{
+						return this.ActiveMachines.First();
+					}
+					else
+					{
+						return null;
+					}
+				}
+			}
+		}
+
+		/// <inheritdoc />
+		public List<StateMachine> GetActiveMachines()
+		{
+			lock (this.SyncRoot)
+			{
+				return new List<StateMachine>(this.ActiveMachines);
+			}
+		}
+
+		/// <inheritdoc />
 		void IState.Enter (StateTransientInfo transientInfo)
 		{
 			if (transientInfo == null)
 			{
 				throw new ArgumentNullException(nameof(transientInfo));
+			}
+
+			lock (this.SyncRoot)
+			{
+				this.ActiveMachines.Add(transientInfo.StateMachine);
 			}
 
 			this.Enter(transientInfo);
@@ -258,6 +319,11 @@ namespace RI.Framework.StateMachines.States
 			}
 
 			this.Leave(transientInfo);
+
+			lock (this.SyncRoot)
+			{
+				this.ActiveMachines.Remove(transientInfo.StateMachine);
+			}
 		}
 
 		/// <inheritdoc />

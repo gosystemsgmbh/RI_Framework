@@ -53,6 +53,7 @@
     <Compile Include="..\SolutionInfo.cs">
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
+    <Compile Include="Bus\BusConnectionEventArgs.cs" />
     <Compile Include="Bus\BusMessageEventArgs.cs" />
     <Compile Include="Bus\BusMessageProcessingExceptionEventArgs.cs" />
     <Compile Include="Bus\Connections\DefaultBusConnectionManager.cs" />
