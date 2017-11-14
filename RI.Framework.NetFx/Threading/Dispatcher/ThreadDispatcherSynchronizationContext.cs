@@ -59,13 +59,13 @@ namespace RI.Framework.Threading.Dispatcher
 		/// <inheritdoc />
 		public override void Post (SendOrPostCallback d, object state)
 		{
-			this.Dispatcher.Post(new Action<SendOrPostCallback, object>((x, y) => x(y)), d, state);
+			this.Dispatcher.Post(this.Dispatcher.GetCurrentPriorityOrDefault(), this.Dispatcher.GetCurrentOptionsOrDefault(), new Action<SendOrPostCallback, object>((x, y) => x(y)), d, state);
 		}
 
 		/// <inheritdoc />
 		public override void Send (SendOrPostCallback d, object state)
 		{
-			this.Dispatcher.Send(new Action<SendOrPostCallback, object>((x, y) => x(y)), d, state);
+			this.Dispatcher.Send(this.Dispatcher.GetCurrentPriorityOrDefault(), this.Dispatcher.GetCurrentOptionsOrDefault(), new Action<SendOrPostCallback, object>((x, y) => x(y)), d, state);
 		}
 
 		#endregion

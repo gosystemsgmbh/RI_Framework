@@ -120,7 +120,7 @@ namespace RI.Framework.Threading.Dispatcher
 					return;
 				}
 
-				ThreadDispatcherOperation operation = this.Dispatcher.Post(this.TaskExecutor, task);
+				ThreadDispatcherOperation operation = this.Dispatcher.Post(this.Dispatcher.GetCurrentPriorityOrDefault(), this.Dispatcher.GetCurrentOptionsOrDefault(), this.TaskExecutor, task);
 				this.Tasks.Add(task, operation);
 			}
 		}

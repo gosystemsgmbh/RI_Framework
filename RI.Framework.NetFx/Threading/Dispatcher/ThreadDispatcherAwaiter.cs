@@ -60,7 +60,7 @@ namespace RI.Framework.Threading.Dispatcher
 				throw new ArgumentNullException(nameof(continuation));
 			}
 
-			this.Dispatcher.Post(continuation);
+			this.Dispatcher.Post(this.Dispatcher.GetCurrentPriorityOrDefault(), this.Dispatcher.GetCurrentOptionsOrDefault(), continuation);
 		}
 
 		#endregion
