@@ -11,6 +11,7 @@ namespace RI.Framework.Services
 	/// <summary>
 	///     Describes the desired shutdown information returned by a bootstrapper.
 	/// </summary>
+	[Serializable]
 	public class ShutdownInfo : ICloneable<ShutdownInfo>, ICloneable
 	{
 		#region Instance Properties/Indexer
