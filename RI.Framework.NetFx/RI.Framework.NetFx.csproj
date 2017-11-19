@@ -258,6 +258,8 @@
     <Compile Include="Threading\Dispatcher\ThreadDispatcherTimerMode.cs" />
     <Compile Include="Threading\Async\ThreadPoolAwaiter.cs" />
     <Compile Include="Threading\Tasks\_NamespaceDoc.cs" />
+    <Compile Include="Utilities\Crash\CrashReport.cs" />
+    <Compile Include="Utilities\Crash\_NamespaceDoc.cs" />
     <Compile Include="Utilities\Cryptography\LocalEncryption.cs" />
     <Compile Include="Utilities\Cryptography\_NamespaceDoc.cs" />
     <Compile Include="Utilities\Xml\XDocumentExtensions.cs" />

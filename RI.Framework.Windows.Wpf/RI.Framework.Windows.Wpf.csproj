@@ -58,6 +58,10 @@
     <Compile Include="Mvvm\View\GenericViewBase.cs" />
     <Compile Include="Mvvm\View\WindowViewBase.cs" />
     <Compile Include="StateMachines\Dispatchers\WpfStateDispatcher.cs" />
+    <Compile Include="Utilities\Crash\CrashDialog.cs" />
+    <Compile Include="Utilities\Crash\CrashDialogWindow.xaml.cs">
+      <DependentUpon>CrashDialogWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\Wpf\Controls\ComboBoxChecker.cs" />
     <Compile Include="Windows\Wpf\Controls\_NamespaceDoc.cs" />
     <Compile Include="Windows\Wpf\Converters\InvertedBoolVisibilityConverter.cs" />
@@ -121,6 +125,15 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Utilities\Crash\CrashDialogWindow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Utilities\Crash\CrashDialogWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
