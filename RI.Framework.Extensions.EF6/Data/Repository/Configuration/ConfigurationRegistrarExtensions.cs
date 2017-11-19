@@ -7,7 +7,7 @@ using System.Reflection;
 
 
 
-namespace RI.Framework.Data.EF.Configuration
+namespace RI.Framework.Data.Repository.Configuration
 {
 	/// <summary>
 	///     Provides utility/extension methods for the <see cref="ConfigurationRegistrar" /> type.

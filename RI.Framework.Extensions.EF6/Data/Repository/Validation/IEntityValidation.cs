@@ -2,12 +2,11 @@
 using System.Data.Entity.Validation;
 
 using RI.Framework.Composition.Model;
-using RI.Framework.Data.Repository;
 
 
 
 
-namespace RI.Framework.Data.EF.Validation
+namespace RI.Framework.Data.Repository.Validation
 {
 	/// <summary>
 	///     Defines the interface for entity validation classes.

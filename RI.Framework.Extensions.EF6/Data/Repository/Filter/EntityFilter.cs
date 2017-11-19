@@ -6,7 +6,7 @@ using System.Linq;
 
 
 
-namespace RI.Framework.Data.EF.Filter
+namespace RI.Framework.Data.Repository.Filter
 {
 	/// <summary>
 	///     Implements a base class for entity filters.

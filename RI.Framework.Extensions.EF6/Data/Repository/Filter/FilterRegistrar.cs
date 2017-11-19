@@ -8,7 +8,7 @@ using RI.Framework.Collections;
 
 
 
-namespace RI.Framework.Data.EF.Filter
+namespace RI.Framework.Data.Repository.Filter
 {
 	/// <summary>
 	///     Implements a registrar which is used to register the entity filter classes which are to be used by a <see cref="DbRepositoryContext" />.

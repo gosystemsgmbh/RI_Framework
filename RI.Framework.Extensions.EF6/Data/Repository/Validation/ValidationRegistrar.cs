@@ -8,7 +8,7 @@ using RI.Framework.Collections;
 
 
 
-namespace RI.Framework.Data.EF.Validation
+namespace RI.Framework.Data.Repository.Validation
 {
 	/// <summary>
 	///     Implements a registrar which is used to register the entity validation classes which are to be used by a <see cref="DbRepositoryContext" />.

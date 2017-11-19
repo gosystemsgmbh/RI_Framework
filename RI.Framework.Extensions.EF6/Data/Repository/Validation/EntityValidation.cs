@@ -5,7 +5,7 @@ using System.Data.Entity.Validation;
 
 
 
-namespace RI.Framework.Data.EF.Validation
+namespace RI.Framework.Data.Repository.Validation
 {
 	/// <summary>
 	///     Implements a base class for entity validators.

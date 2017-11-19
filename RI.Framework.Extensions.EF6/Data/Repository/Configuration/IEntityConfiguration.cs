@@ -5,7 +5,7 @@ using RI.Framework.Composition.Model;
 
 
 
-namespace RI.Framework.Data.EF.Configuration
+namespace RI.Framework.Data.Repository.Configuration
 {
 	/// <summary>
 	///     Defines the interface for entity configuration classes.

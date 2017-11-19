@@ -4,7 +4,7 @@ using System.Data.Entity.ModelConfiguration;
 
 
 
-namespace RI.Framework.Data.EF.Configuration
+namespace RI.Framework.Data.Repository.Configuration
 {
 	/// <summary>
 	///     Implements a base class for entity configurations.

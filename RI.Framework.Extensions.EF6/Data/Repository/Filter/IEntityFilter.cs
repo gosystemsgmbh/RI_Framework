@@ -7,7 +7,7 @@ using RI.Framework.Composition.Model;
 
 
 
-namespace RI.Framework.Data.EF.Filter
+namespace RI.Framework.Data.Repository.Filter
 {
 	/// <summary>
 	///     Defines the interface for entity filter classes.

@@ -6,15 +6,15 @@ using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Validation;
 using System.Linq;
 
-using RI.Framework.Data.EF.Filter;
-using RI.Framework.Data.EF.Validation;
-using RI.Framework.Data.Repository;
+using RI.Framework.Data.EF;
+using RI.Framework.Data.Repository.Filter;
+using RI.Framework.Data.Repository.Validation;
 using RI.Framework.Utilities.Logging;
 
 
 
 
-namespace RI.Framework.Data.EF
+namespace RI.Framework.Data.Repository
 {
 	/// <summary>
 	///     Implements a non-generic repository set using an Entity Frameworks <see cref="DbSet{TEntity}" />.

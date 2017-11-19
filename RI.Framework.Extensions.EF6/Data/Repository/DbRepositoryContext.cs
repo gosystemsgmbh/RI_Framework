@@ -13,11 +13,11 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
-using RI.Framework.Data.EF.Configuration;
-using RI.Framework.Data.EF.Filter;
-using RI.Framework.Data.EF.Validation;
-using RI.Framework.Data.Repository;
+using RI.Framework.Data.EF;
+using RI.Framework.Data.Repository.Configuration;
 using RI.Framework.Data.Repository.Entities;
+using RI.Framework.Data.Repository.Filter;
+using RI.Framework.Data.Repository.Validation;
 using RI.Framework.Services.Logging;
 using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.Reflection;
@@ -25,7 +25,7 @@ using RI.Framework.Utilities.Reflection;
 
 
 
-namespace RI.Framework.Data.EF
+namespace RI.Framework.Data.Repository
 {
 	/// <summary>
 	///     Implements the repository / unit-of-work pattern on top of an Entity Frameworks <see cref="DbContext" />.

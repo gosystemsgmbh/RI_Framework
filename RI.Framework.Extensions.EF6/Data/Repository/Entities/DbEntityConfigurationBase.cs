@@ -1,4 +1,4 @@
-﻿using RI.Framework.Data.EF.Configuration;
+﻿using RI.Framework.Data.Repository.Configuration;
 
 
 
