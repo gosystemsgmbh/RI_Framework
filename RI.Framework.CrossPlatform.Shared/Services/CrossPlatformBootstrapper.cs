@@ -1,9 +1,9 @@
 ﻿using System;
 
-using RI.Framework.Utilities.CrossPlatform;
-using RI.Framework.Utilities.Linux.Users;
+using RI.Framework.CrossPlatform.Cryptography;
+using RI.Framework.Linux.Users;
 using RI.Framework.Utilities.Runtime;
-using RI.Framework.Utilities.Windows.Users;
+using RI.Framework.Windows.Users;
 
 
 

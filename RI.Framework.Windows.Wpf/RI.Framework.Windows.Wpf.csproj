@@ -58,24 +58,23 @@
     <Compile Include="Mvvm\View\GenericViewBase.cs" />
     <Compile Include="Mvvm\View\WindowViewBase.cs" />
     <Compile Include="StateMachines\Dispatchers\WpfStateDispatcher.cs" />
-    <Compile Include="Utilities\Wpf\Controls\ComboBoxChecker.cs" />
-    <Compile Include="Utilities\Wpf\Controls\_NamespaceDoc.cs" />
-    <Compile Include="Utilities\Wpf\Converters\InvertedBoolVisibilityConverter.cs" />
-    <Compile Include="Utilities\Wpf\Converters\NormalBoolVisibilityConverter.cs" />
-    <Compile Include="Utilities\Wpf\Converters\InvertedObjectBoolConverter.cs" />
-    <Compile Include="Utilities\Wpf\Converters\NormalObjectBoolConverter.cs" />
-    <Compile Include="Utilities\Wpf\Converters\InvertedObjectVisibilityConverter.cs" />
-    <Compile Include="Utilities\Wpf\Converters\NormalObjectVisibilityConverter.cs" />
-    <Compile Include="Utilities\Wpf\DispatcherAwaiter.cs" />
+    <Compile Include="Windows\Wpf\Controls\ComboBoxChecker.cs" />
+    <Compile Include="Windows\Wpf\Controls\_NamespaceDoc.cs" />
+    <Compile Include="Windows\Wpf\Converters\InvertedBoolVisibilityConverter.cs" />
+    <Compile Include="Windows\Wpf\Converters\NormalBoolVisibilityConverter.cs" />
+    <Compile Include="Windows\Wpf\Converters\InvertedObjectBoolConverter.cs" />
+    <Compile Include="Windows\Wpf\Converters\NormalObjectBoolConverter.cs" />
+    <Compile Include="Windows\Wpf\Converters\InvertedObjectVisibilityConverter.cs" />
+    <Compile Include="Windows\Wpf\Converters\NormalObjectVisibilityConverter.cs" />
+    <Compile Include="Threading\Async\DispatcherAwaiter.cs" />
     <Compile Include="Mvvm\ViewModel\NotificationObject.cs" />
     <Compile Include="Mvvm\ViewModel\DelegateCommand.cs" />
-    <Compile Include="Utilities\Wpf\Imaging\BitmapFrameExtensions.cs" />
-    <Compile Include="Utilities\Wpf\Imaging\BitmapSourceExtensions.cs" />
-    <Compile Include="Utilities\Wpf\Imaging\_NamespaceDoc.cs" />
-    <Compile Include="Utilities\Wpf\Markup\EventBinding.cs" />
-    <Compile Include="Utilities\Wpf\Markup\EventBindings.cs" />
-    <Compile Include="Utilities\Wpf\Markup\EventToCommandBinder.cs" />
-    <Compile Include="Utilities\Wpf\Markup\InstanceLocator.cs" />
+    <Compile Include="Windows\Imaging\BitmapFrameExtensions.cs" />
+    <Compile Include="Windows\Imaging\BitmapSourceExtensions.cs" />
+    <Compile Include="Windows\Wpf\Markup\EventBinding.cs" />
+    <Compile Include="Windows\Wpf\Markup\EventBindings.cs" />
+    <Compile Include="Windows\Wpf\Markup\EventToCommandBinder.cs" />
+    <Compile Include="Windows\Wpf\Markup\InstanceLocator.cs" />
     <Compile Include="Mvvm\ViewModel\DelegateCommandBase.cs" />
     <Compile Include="Mvvm\ViewModel\IViewModel.cs" />
     <Compile Include="Mvvm\ViewModel\ViewModelBase.cs" />
@@ -84,7 +83,7 @@
     <Compile Include="Mvvm\View\_NamespaceDoc.cs" />
     <Compile Include="Mvvm\_NamespaceDoc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utilities\Wpf\Markup\RegionBinder.cs" />
+    <Compile Include="Windows\Wpf\Markup\RegionBinder.cs" />
     <Compile Include="Services\Messaging\Dispatchers\WpfMessageDispatcher.cs" />
     <Compile Include="Services\Regions\Adapters\WpfRegionAdapter.cs" />
     <Compile Include="Services\Regions\Adapters\WpfRegionAdapterBase.cs" />
@@ -92,13 +91,13 @@
     <Compile Include="Services\Resources\WpfResourceServiceExtensions.cs" />
     <Compile Include="Services\WpfApplication.cs" />
     <Compile Include="Services\WpfBootstrapper.cs" />
-    <Compile Include="Utilities\Wpf\ApplicationExtensions.cs" />
-    <Compile Include="Utilities\Wpf\Converters\_NamespaceDoc.cs" />
-    <Compile Include="Utilities\Wpf\DispatcherExtensions.cs" />
-    <Compile Include="Utilities\Wpf\Markup\_NamespaceDoc.cs" />
-    <Compile Include="Utilities\Wpf\TemporaryCursor.cs" />
-    <Compile Include="Utilities\Wpf\WindowExtensions.cs" />
-    <Compile Include="Utilities\Wpf\_NamespaceDoc.cs" />
+    <Compile Include="Windows\Wpf\ApplicationExtensions.cs" />
+    <Compile Include="Windows\Wpf\Converters\_NamespaceDoc.cs" />
+    <Compile Include="Windows\Wpf\DispatcherExtensions.cs" />
+    <Compile Include="Windows\Wpf\Markup\_NamespaceDoc.cs" />
+    <Compile Include="Windows\Wpf\TemporaryCursor.cs" />
+    <Compile Include="Windows\Wpf\WindowExtensions.cs" />
+    <Compile Include="Windows\Wpf\_NamespaceDoc.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\SolutionName.snk">
@@ -118,7 +117,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Utilities\Wpf\Markup\_Old_EventBinder.tt" />
+    <None Include="Windows\Wpf\Markup\_Old_EventBinder.tt" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

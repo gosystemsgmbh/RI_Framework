@@ -6,7 +6,7 @@ using System.Text;
 
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
-using RI.Framework.Utilities.Windows;
+using RI.Framework.Windows;
 
 
 

@@ -1,6 +1,6 @@
 ﻿using System;
 
-using RI.Framework.Utilities.Windows.Cryptography;
+using RI.Framework.Windows.Cryptography;
 
 
 

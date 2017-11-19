@@ -46,10 +46,11 @@
     <Compile Include="..\SolutionInfo.cs">
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
+    <Compile Include="CrossPlatform\Cryptography\_NamespaceDoc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\CrossPlatformBootstrapper.cs" />
-    <Compile Include="Utilities\CrossPlatform\UniqueIdentification.cs" />
-    <Compile Include="Utilities\CrossPlatform\_NamespaceDoc.cs" />
+    <Compile Include="CrossPlatform\Cryptography\UniqueIdentification.cs" />
+    <Compile Include="CrossPlatform\_NamespaceDoc.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RI.Framework.Linux.Shared\RI.Framework.Linux.Shared.csproj">

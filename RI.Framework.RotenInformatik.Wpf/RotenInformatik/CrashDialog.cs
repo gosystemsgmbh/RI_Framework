@@ -5,7 +5,7 @@ using System.Windows;
 
 using RI.Framework.IO.Paths;
 using RI.Framework.Utilities;
-using RI.Framework.Utilities.Windows;
+using RI.Framework.Windows;
 
 
 

@@ -53,12 +53,12 @@
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utilities\Linux\Cryptography\_NamespaceDoc.cs" />
-    <Compile Include="Utilities\Linux\LinuxShell.cs" />
-    <Compile Include="Utilities\Linux\Cryptography\UniqueIdentification.cs" />
-    <Compile Include="Utilities\Linux\Users\LinuxUser.cs" />
-    <Compile Include="Utilities\Linux\Users\_NamespaceDoc.cs" />
-    <Compile Include="Utilities\Linux\_NamespaceDoc.cs" />
+    <Compile Include="Linux\Cryptography\_NamespaceDoc.cs" />
+    <Compile Include="Linux\LinuxShell.cs" />
+    <Compile Include="Linux\Cryptography\UniqueIdentification.cs" />
+    <Compile Include="Linux\Users\LinuxUser.cs" />
+    <Compile Include="Linux\Users\_NamespaceDoc.cs" />
+    <Compile Include="Linux\_NamespaceDoc.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RI.Framework.NetFx\RI.Framework.NetFx.csproj">

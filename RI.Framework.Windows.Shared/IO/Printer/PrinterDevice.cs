@@ -5,8 +5,8 @@ using System.Linq;
 using System.Runtime.InteropServices;
 
 using RI.Framework.Utilities;
-using RI.Framework.Utilities.Windows;
-using RI.Framework.Utilities.Windows.Interop;
+using RI.Framework.Windows;
+using RI.Framework.Windows.Interop;
 
 
 

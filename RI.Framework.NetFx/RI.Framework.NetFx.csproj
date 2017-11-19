@@ -239,9 +239,9 @@
     </Compile>
     <Compile Include="Threading\Dispatcher\ThreadDispatcherWatchdogEventArgs.cs" />
     <Compile Include="Threading\Dispatcher\_NamespaceDoc.cs" />
-    <Compile Include="Threading\SynchronizationContextAwaiter.cs" />
+    <Compile Include="Threading\Async\SynchronizationContextAwaiter.cs" />
     <Compile Include="Threading\SynchronizationContextExtensions.cs" />
-    <Compile Include="Threading\SynchronizationContextFlower.cs" />
+    <Compile Include="Threading\Async\SynchronizationContextFlower.cs" />
     <Compile Include="Threading\Tasks\TaskExtensions.cs" />
     <Compile Include="Threading\Dispatcher\ThreadDispatcher.cs" />
     <Compile Include="Threading\Dispatcher\ThreadDispatcherAwaiter.cs" />
