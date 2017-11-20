@@ -1,91 +1,94 @@
 ﻿using System;
 
+
+
+
 namespace RI.Framework.Utilities
 {
 	/// <summary>
-	/// Describes options used for escaping/unescaping strings.
+	///     Describes options used for escaping/unescaping strings.
 	/// </summary>
 	[Flags]
 	[Serializable]
 	public enum StringEscapeOptions
 	{
 		/// <summary>
-		/// <c>\a</c>
+		///     <c> \a </c>
 		/// </summary>
 		Alert = 0x0001,
 
 		/// <summary>
-		/// <c>\b</c>
+		///     <c> \b </c>
 		/// </summary>
 		Backspace = 0x0002,
 
 		/// <summary>
-		/// <c>\f</c>
+		///     <c> \f </c>
 		/// </summary>
 		Formfeed = 0x0004,
 
 		/// <summary>
-		/// <c>\n</c>
+		///     <c> \n </c>
 		/// </summary>
 		Newline = 0x0008,
 
 		/// <summary>
-		/// <c>\r</c>
+		///     <c> \r </c>
 		/// </summary>
 		CarriageReturn = 0x0010,
 
 		/// <summary>
-		/// <c>\t</c>
+		///     <c> \t </c>
 		/// </summary>
 		HorizontalTab = 0x0020,
 
 		/// <summary>
-		/// <c>\v</c>
+		///     <c> \v </c>
 		/// </summary>
 		VerticalTap = 0x0040,
 
 		/// <summary>
-		/// <c>\\</c>
+		///     <c> \\ </c>
 		/// </summary>
 		Backslash = 0x0080,
 
 		/// <summary>
-		/// <c>\'</c>
+		///     <c> \' </c>
 		/// </summary>
 		SingleQuote = 0x0100,
 
 		/// <summary>
-		/// <c>\&quot;</c>
+		///     <c> \&quot; </c>
 		/// </summary>
 		DoubleQuote = 0x0200,
 
 		/// <summary>
-		/// <c>\?</c>
+		///     <c> \? </c>
 		/// </summary>
 		QuestionMark = 0x400,
 
 		/// <summary>
-		/// None.
+		///     None.
 		/// </summary>
 		None = 0x0000,
 
 		/// <summary>
-		/// All except <c>\?</c>.
+		///     All except <c> \? </c>.
 		/// </summary>
 		Default = StringEscapeOptions.Alert | StringEscapeOptions.Backspace | StringEscapeOptions.Formfeed | StringEscapeOptions.Newline | StringEscapeOptions.CarriageReturn | StringEscapeOptions.HorizontalTab | StringEscapeOptions.VerticalTap | StringEscapeOptions.Backslash | StringEscapeOptions.SingleQuote | StringEscapeOptions.DoubleQuote,
 
 		/// <summary>
-		/// All.
+		///     All.
 		/// </summary>
 		All = StringEscapeOptions.Default | StringEscapeOptions.QuestionMark,
 
 		/// <summary>
-		/// <c>\'</c> and <c>\&quot;</c>
+		///     <c> \' </c> and <c> \&quot; </c>
 		/// </summary>
 		Quote = StringEscapeOptions.SingleQuote | StringEscapeOptions.DoubleQuote,
 
 		/// <summary>
-		/// <c>\r</c> and <c>\n</c>
+		///     <c> \r </c> and <c> \n </c>
 		/// </summary>
 		LineFeed = StringEscapeOptions.Newline | StringEscapeOptions.CarriageReturn,
 	}

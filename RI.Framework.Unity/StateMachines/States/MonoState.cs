@@ -164,6 +164,18 @@ namespace RI.Framework.StateMachines.States
 		#region Interface: IState
 
 		/// <inheritdoc />
+		public bool IsActive
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this.ActiveMachines.Count > 0;
+				}
+			}
+		}
+
+		/// <inheritdoc />
 		public bool IsInitialized
 		{
 			get
@@ -184,6 +196,29 @@ namespace RI.Framework.StateMachines.States
 
 		/// <inheritdoc />
 		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		public StateMachine StateMachine
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					if (this.ActiveMachines.Count > 1)
+					{
+						throw new InvalidOperationException("An instance of the state " + this.GetType().Name + " is used in more than one state machines.");
+					}
+					else if (this.ActiveMachines.Count == 1)
+					{
+						return this.ActiveMachines.First();
+					}
+					else
+					{
+						return null;
+					}
+				}
+			}
+		}
 
 		/// <inheritdoc />
 		public object SyncRoot { get; }
@@ -227,50 +262,6 @@ namespace RI.Framework.StateMachines.States
 		}
 
 		/// <inheritdoc />
-		public bool IsActive
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					return this.ActiveMachines.Count > 0;
-				}
-			}
-		}
-
-		/// <inheritdoc />
-		public StateMachine StateMachine
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					if (this.ActiveMachines.Count > 1)
-					{
-						throw new InvalidOperationException("An instance of the state " + this.GetType().Name + " is used in more than one state machines.");
-					}
-					else if (this.ActiveMachines.Count == 1)
-					{
-						return this.ActiveMachines.First();
-					}
-					else
-					{
-						return null;
-					}
-				}
-			}
-		}
-
-		/// <inheritdoc />
-		public List<StateMachine> GetActiveMachines()
-		{
-			lock (this.SyncRoot)
-			{
-				return new List<StateMachine>(this.ActiveMachines);
-			}
-		}
-
-		/// <inheritdoc />
 		void IState.Enter (StateTransientInfo transientInfo)
 		{
 			if (transientInfo == null)
@@ -284,6 +275,15 @@ namespace RI.Framework.StateMachines.States
 			}
 
 			this.Enter(transientInfo);
+		}
+
+		/// <inheritdoc />
+		public List<StateMachine> GetActiveMachines ()
+		{
+			lock (this.SyncRoot)
+			{
+				return new List<StateMachine>(this.ActiveMachines);
+			}
 		}
 
 		/// <inheritdoc />

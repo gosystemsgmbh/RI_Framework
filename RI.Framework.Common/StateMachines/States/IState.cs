@@ -26,12 +26,35 @@ namespace RI.Framework.StateMachines.States
 	public interface IState : ISynchronizable
 	{
 		/// <summary>
+		///     Gets whether the state is active.
+		/// </summary>
+		/// <value>
+		///     true if the state is active, or is the current state of at least one state machine respectively, false otherwise.
+		/// </value>
+		bool IsActive { get; }
+
+		/// <summary>
 		///     Gets whether the state is initialized or not.
 		/// </summary>
 		/// <value>
 		///     true if the state is initialized, false otherwise.
 		/// </value>
 		bool IsInitialized { get; }
+
+		/// <summary>
+		///     Gets the singular state machine this state is active in.
+		/// </summary>
+		/// <value>
+		///     The singular state machine this state is active in or null if the state is not active in any state machine.
+		/// </value>
+		/// <exception cref="InvalidOperationException"> The state is active in more than one state machine. </exception>
+		/// <remarks>
+		///     <note type="note">
+		///         <see cref="StateMachine" /> can only be used with states and state machines where an instance of a state is only active in zero or one, but not more, state machines.
+		///         <see cref="InvalidOperationException" /> will be thrown when the state is used in more than one state machines.
+		///     </note>
+		/// </remarks>
+		StateMachine StateMachine { get; }
 
 		/// <summary>
 		///     Gets the update interval in milliseconds which defines the time between two calls to <see cref="Update" />.
@@ -55,38 +78,6 @@ namespace RI.Framework.StateMachines.States
 		bool UseCaching { get; }
 
 		/// <summary>
-		/// Gets whether the state is active.
-		/// </summary>
-		/// <value>
-		/// true if the state is active, or is the current state of at least one state machine respectively, false otherwise.
-		/// </value>
-		bool IsActive { get; }
-
-		/// <summary>
-		/// Gets the singular state machine this state is active in.
-		/// </summary>
-		/// <value>
-		/// The singular state machine this state is active in or null if the state is not active in any state machine.
-		/// </value>
-		/// <exception cref="InvalidOperationException">The state is active in more than one state machine.</exception>
-		/// <remarks>
-		/// <note type="note">
-		/// <see cref="StateMachine"/> can only be used with states and state machines where an instance of a state is only active in zero or one, but not more, state machines.
-		/// <see cref="InvalidOperationException"/> will be thrown when the state is used in more than one state machines.
-		/// </note>
-		/// </remarks>
-		StateMachine StateMachine { get; }
-
-		/// <summary>
-		/// Gets the list of all state machines the state is the current state of.
-		/// </summary>
-		/// <returns>
-		/// The list of all state machines the state is the current state of.
-		/// If the state is not active or not the current state of any state machine respectively, an empty list is returned.
-		/// </returns>
-		List<StateMachine> GetActiveMachines ();
-
-		/// <summary>
 		///     Called by <see cref="StateMachine" /> when the state becomes the new current state.
 		/// </summary>
 		/// <param name="transientInfo"> The transition being executed. </param>
@@ -96,6 +87,15 @@ namespace RI.Framework.StateMachines.States
 		///     </note>
 		/// </remarks>
 		void Enter (StateTransientInfo transientInfo);
+
+		/// <summary>
+		///     Gets the list of all state machines the state is the current state of.
+		/// </summary>
+		/// <returns>
+		///     The list of all state machines the state is the current state of.
+		///     If the state is not active or not the current state of any state machine respectively, an empty list is returned.
+		/// </returns>
+		List<StateMachine> GetActiveMachines ();
 
 		/// <summary>
 		///     Initializes the state.

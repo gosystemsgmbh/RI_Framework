@@ -2,6 +2,9 @@
 
 using RI.Framework.Bus.Connections;
 
+
+
+
 namespace RI.Framework.Bus
 {
 	/// <summary>
@@ -17,7 +20,7 @@ namespace RI.Framework.Bus
 		/// </summary>
 		/// <param name="connection"> The connection. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="connection" /> is null. </exception>
-		public BusConnectionEventArgs(IBusConnection connection)
+		public BusConnectionEventArgs (IBusConnection connection)
 		{
 			if (connection == null)
 			{

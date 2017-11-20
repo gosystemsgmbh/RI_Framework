@@ -331,6 +331,41 @@ namespace RI.Framework.Bus
 		}
 
 		/// <summary>
+		///     Sets the message to ignore broken connections.
+		/// </summary>
+		/// <returns>
+		///     The send operation to continue configuration of the message.
+		/// </returns>
+		/// <exception cref="InvalidOperationException"> The message is already being processed. </exception>
+		public SendOperation IgnoreBrokenConnections ()
+		{
+			lock (this.SyncRoot)
+			{
+				this.VerifyNotStarted();
+				this.IgnoreBroken = true;
+				return this;
+			}
+		}
+
+		/// <summary>
+		///     Sets the message to ignore broken connections or not.
+		/// </summary>
+		/// <param name="ignore"> Specifes whether the message ignores broken connections (true) or not (false). </param>
+		/// <returns>
+		///     The send operation to continue configuration of the message.
+		/// </returns>
+		/// <exception cref="InvalidOperationException"> The message is already being processed. </exception>
+		public SendOperation IgnoreBrokenConnections (bool ignore)
+		{
+			lock (this.SyncRoot)
+			{
+				this.VerifyNotStarted();
+				this.IgnoreBroken = ignore;
+				return this;
+			}
+		}
+
+		/// <summary>
 		///     Sets the address the message is sent to.
 		/// </summary>
 		/// <param name="address"> The address the message is sent to or null if no address is used. </param>
@@ -422,41 +457,6 @@ namespace RI.Framework.Bus
 			{
 				this.VerifyNotStarted();
 				this.Global = false;
-				return this;
-			}
-		}
-
-		/// <summary>
-		///     Sets the message to ignore broken connections.
-		/// </summary>
-		/// <returns>
-		///     The send operation to continue configuration of the message.
-		/// </returns>
-		/// <exception cref="InvalidOperationException"> The message is already being processed. </exception>
-		public SendOperation IgnoreBrokenConnections ()
-		{
-			lock (this.SyncRoot)
-			{
-				this.VerifyNotStarted();
-				this.IgnoreBroken = true;
-				return this;
-			}
-		}
-
-		/// <summary>
-		///     Sets the message to ignore broken connections or not.
-		/// </summary>
-		/// <param name="ignore"> Specifes whether the message ignores broken connections (true) or not (false). </param>
-		/// <returns>
-		///     The send operation to continue configuration of the message.
-		/// </returns>
-		/// <exception cref="InvalidOperationException"> The message is already being processed. </exception>
-		public SendOperation IgnoreBrokenConnections(bool ignore)
-		{
-			lock (this.SyncRoot)
-			{
-				this.VerifyNotStarted();
-				this.IgnoreBroken = ignore;
 				return this;
 			}
 		}

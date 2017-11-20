@@ -617,7 +617,7 @@ namespace RI.Framework.Bus
 		}
 
 		/// <inheritdoc />
-		void IBus.RaiseConnectionBroken(IBusConnection connection)
+		void IBus.RaiseConnectionBroken (IBusConnection connection)
 		{
 			if (connection == null)
 			{
@@ -685,7 +685,7 @@ namespace RI.Framework.Bus
 		}
 
 		/// <inheritdoc />
-		void IBus.RaiseSendingResponse(MessageItem message)
+		void IBus.RaiseSendingResponse (MessageItem message)
 		{
 			if (message == null)
 			{

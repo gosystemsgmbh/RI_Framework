@@ -51,12 +51,13 @@ namespace RI.Framework.Bus.Pipeline
 
 		#region Instance Properties/Indexer
 
+		private HashSet<IBusConnection> BrokenConnections { get; }
+
 		private IBus Bus { get; set; }
 		private IBusConnectionManager ConnectionManager { get; set; }
 		private IBusDispatcher Dispatcher { get; set; }
 		private Queue<MessageItem> LocalResponses { get; }
 		private IBusRouter Router { get; set; }
-		private HashSet<IBusConnection> BrokenConnections { get; }
 
 		#endregion
 
@@ -342,7 +343,6 @@ namespace RI.Framework.Bus.Pipeline
 								x.Task.TrySetException(new BusConnectionBrokenException(x.Request, brokenConnections[0]));
 							});
 						}
-
 					}
 				}
 
