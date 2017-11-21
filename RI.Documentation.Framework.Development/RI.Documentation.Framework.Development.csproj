@@ -33,6 +33,7 @@
     <Content Include="Wishlist.txt" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="TODO.md" />
     <None Include="_PostBuild.bat" />
     <None Include="_PreBuild.bat" />
     <None Include="IEnumerableExtensions.xlsx" />
