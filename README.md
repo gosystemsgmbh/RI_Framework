@@ -111,15 +111,15 @@ The motivation for writing a particular function and put it into the framework w
  * Educational purposes ("I need to experience the problems of a message bus implementation myself")
  * Fun (Ever tried to write a composition container yourself? What an adventure!)
 
-## Documentation
-
-See [Documentation](DOCUMENTATION.md) for development and usage documentation.
-
 ## License
 
 The Decoupling & Utilities Framework uses its own license, the Roten Informatik Framework License, which is mostly based on the Apache 2.0 license.
 See [License](LICENSE.md) for more details.
 
+## Documentation
+
+See [Documentation](DOCUMENTATION.md) for development and usage documentation.
+
 ## Contribution
 
-If you wish to contribute to the project, see [Contribution](CONTRIBUTION.md) for more details.
+See [Contribution](CONTRIBUTION.md) if you wish to contribute to the project.
