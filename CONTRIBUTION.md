@@ -27,6 +27,8 @@ Please use issues, forks, and pull requests to contribute.
 
 ## Rules
 
+TBD
+
 ### Language
 
  * Everything has to be in English language. Documentation. Comments. Names. Code. Everything.
