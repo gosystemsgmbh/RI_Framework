@@ -18,11 +18,11 @@ All those functions, regardless whether big or small, are (mostly) independent o
 
 At this moment, the following runtimes and platforms are supported:
 
-| Runtime        | Platform                                     | Version | Remarks                                                                 |
-| -------------- | -------------------------------------------- | ------- | ----------------------------------------------------------------------- |
-| .NET Framework | Windows                                      | 4.6.1   |                                                                         |
-| .Mono          | Linux                                        | 5.4.1.6 |                                                                         |
-| Unity          | Windows, MacOS, iOS,<br>(Linux)*, (Android)* | 5.4.1f1 | * = not tested, not supported                                           |
+| Runtime        | Platform                                       | Version | Remarks                                                                 |
+| -------------- | ---------------------------------------------- | ------- | ----------------------------------------------------------------------- |
+| .NET Framework | Windows                                        | 4.6.1   |                                                                         |
+| .Mono          | Linux                                          | 5.4.1.6 |                                                                         |
+| Unity          | Windows, MacOS, iOS,<br>(Linux)\*, (Android)\* | 5.4.1f1 | * = not tested, not supported                                           |
 
 .NET Core and the .NET Standard are currently **not** supported.
 Support for those is on the roadmap as a long-term goal (through .NET Standard).
