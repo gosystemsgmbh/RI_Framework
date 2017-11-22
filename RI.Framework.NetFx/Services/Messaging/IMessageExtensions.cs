@@ -11,6 +11,7 @@ namespace RI.Framework.Services.Messaging
 	/// <summary>
 	///     Provides utility/extension methods for the <see cref="IMessage" /> type.
 	/// </summary>
+	[Obsolete("The message service is obsolete. Use the message bus instead (RI.Framework.Bus.*).", false)]
 	public static class IMessageExtensions
 	{
 		#region Static Methods

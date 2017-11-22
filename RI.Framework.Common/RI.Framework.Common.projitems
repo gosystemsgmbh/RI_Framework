@@ -160,9 +160,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Services\Modularization\ModuleLocator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Modularization\ModuleService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Modularization\_NamespaceDoc.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Services\ServiceLocator.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Services\ServiceLocatorLookupEventArgs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Services\ServiceLocatorTranslationEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Caches\DefaultStateCache.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Caches\IStateCache.cs" />
@@ -226,6 +223,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObjectModel\DependencyInjector.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObjectModel\IDependencyResolver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObjectModel\ISynchronizable.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObjectModel\ServiceLocator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObjectModel\ServiceLocatorLookupEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObjectModel\ServiceLocatorTranslationEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObjectModel\Singleton.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Randomizing\RandomExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Randomizing\RandomStream.cs" />

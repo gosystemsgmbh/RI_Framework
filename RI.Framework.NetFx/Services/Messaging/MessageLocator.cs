@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using RI.Framework.Services.Messaging.Dispatchers;
+using RI.Framework.Utilities.ObjectModel;
 
 
 
@@ -17,6 +19,7 @@ namespace RI.Framework.Services.Messaging
 	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
+	[Obsolete("The message service is obsolete. Use the message bus instead (RI.Framework.Bus.*).", false)]
 	public static class MessageLocator
 	{
 		#region Static Properties/Indexer

@@ -4,14 +4,12 @@ using System.Collections.Generic;
 using RI.Framework.Collections;
 using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Composition;
-using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
-using RI.Framework.Utilities.ObjectModel;
 
 
 
 
-namespace RI.Framework.Services
+namespace RI.Framework.Utilities.ObjectModel
 {
 	/// <summary>
 	///     Provides a centralized and global locator to lookup services and instances.

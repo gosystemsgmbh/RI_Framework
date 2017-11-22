@@ -1,7 +1,7 @@
 ﻿using System;
 
-using RI.Framework.Services;
 using RI.Framework.Services.Dispatcher;
+using RI.Framework.Utilities.ObjectModel;
 
 using UnityEngine;
 

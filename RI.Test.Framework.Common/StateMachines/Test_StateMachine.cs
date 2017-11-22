@@ -10,6 +10,7 @@ using RI.Framework.Composition;
 using RI.Framework.StateMachines;
 using RI.Framework.StateMachines.Dispatchers;
 using RI.Framework.StateMachines.Resolvers;
+using RI.Framework.Utilities.ObjectModel;
 using RI.Test.Framework.StateMachines.States;
 #if PLATFORM_UNITY
 using RI.Framework.Services.Dispatcher;

@@ -11,6 +11,7 @@ using RI.Framework.Services.Dispatcher;
 using RI.Framework.Services.Logging;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Logging;
+using RI.Framework.Utilities.ObjectModel;
 
 using UnityEngine;
 

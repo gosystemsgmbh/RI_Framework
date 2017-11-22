@@ -3,6 +3,7 @@
 using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Services;
 using RI.Framework.Services.Modularization;
+using RI.Framework.Utilities.ObjectModel;
 
 
 

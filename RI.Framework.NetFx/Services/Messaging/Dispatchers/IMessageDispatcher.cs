@@ -29,6 +29,7 @@ namespace RI.Framework.Services.Messaging.Dispatchers
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	[Export]
+	[Obsolete("The message service is obsolete. Use the message bus instead (RI.Framework.Bus.*).", false)]
 	public interface IMessageDispatcher : ISynchronizable
 	{
 		/// <summary>

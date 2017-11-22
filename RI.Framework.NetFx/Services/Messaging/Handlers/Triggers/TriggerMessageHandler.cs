@@ -40,6 +40,7 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 	///     </note>
 	/// </remarks>
 	[Export]
+	[Obsolete("The message service is obsolete. Use the message bus instead (RI.Framework.Bus.*).", false)]
 	public sealed class TriggerMessageHandler : LogSource, IMessageReceiver
 	{
 		#region Constants

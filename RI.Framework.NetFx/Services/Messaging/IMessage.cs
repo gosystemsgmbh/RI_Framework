@@ -17,6 +17,7 @@ namespace RI.Framework.Services.Messaging
 	///         The actual way of transporting data is defined by the concrete message type.
 	///     </para>
 	/// </remarks>
+	[Obsolete("The message service is obsolete. Use the message bus instead (RI.Framework.Bus.*).", false)]
 	public interface IMessage : IEquatable<IMessage>
 	{
 		/// <summary>

@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using RI.Framework.Services;
 using RI.Framework.Services.Dispatcher;
+using RI.Framework.Utilities.ObjectModel;
 
 
 

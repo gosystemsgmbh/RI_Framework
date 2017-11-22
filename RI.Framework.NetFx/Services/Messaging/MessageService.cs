@@ -31,6 +31,7 @@ namespace RI.Framework.Services.Messaging
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	[Export]
+	[Obsolete("The message service is obsolete. Use the message bus instead (RI.Framework.Bus.*).", false)]
 	public sealed class MessageService : LogSource, IMessageService, IImporting
 	{
 		#region Instance Constructor/Destructor

@@ -13,6 +13,7 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 	/// <summary>
 	///     Provides utility/extension methods for the <see cref="IMessage" /> type for working with trigger messages.
 	/// </summary>
+	[Obsolete("The message service is obsolete. Use the message bus instead (RI.Framework.Bus.*).", false)]
 	public static class TriggerMessageExtensions
 	{
 		#region Static Methods

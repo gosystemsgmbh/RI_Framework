@@ -17,6 +17,7 @@ namespace RI.Framework.Services.Messaging
 	///     </para>
 	/// </remarks>
 	[Export]
+	[Obsolete("The message service is obsolete. Use the message bus instead (RI.Framework.Bus.*).", false)]
 	public interface IMessageReceiver
 	{
 		/// <summary>

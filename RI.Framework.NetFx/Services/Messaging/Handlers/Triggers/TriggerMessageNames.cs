@@ -1,8 +1,14 @@
-﻿namespace RI.Framework.Services.Messaging.Handlers.Triggers
+﻿using System;
+
+
+
+
+namespace RI.Framework.Services.Messaging.Handlers.Triggers
 {
 	/// <summary>
 	///     Contains trigger message and data name definitions.
 	/// </summary>
+	[Obsolete("The message service is obsolete. Use the message bus instead (RI.Framework.Bus.*).", false)]
 	public static class TriggerMessageNames
 	{
 		#region Constants

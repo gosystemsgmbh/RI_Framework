@@ -20,6 +20,7 @@ namespace RI.Framework.Services.Messaging
 	///         See <see cref="IMessage" /> for more details.
 	///     </para>
 	/// </remarks>
+	[Obsolete("The message service is obsolete. Use the message bus instead (RI.Framework.Bus.*).", false)]
 	public class Message : IMessage
 	{
 		#region Instance Constructor/Destructor
