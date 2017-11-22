@@ -18,22 +18,18 @@ All those functions, regardless whether big or small, are (mostly) independent o
 
 At this moment, the following runtimes and platforms are supported:
 
-| Runtime        | Platform                                | Version | Remarks                                                                 |
-| -------------- | --------------------------------------- | ------- | ----------------------------------------------------------------------- |
-| .NET Framework | Windows                                 | 4.6.1   |                                                                         |
-| .Mono          | Linux                                   | 5.4.1.6 |                                                                         |
-| Unity          | Windows, MacOS, iOS, (Linux), (Android) | 5.4.1f1 | Linux and Android might work but are not tested or officially supported |
+| Runtime        | Platform                                     | Version | Remarks                                                                 |
+| -------------- | -------------------------------------------- | ------- | ----------------------------------------------------------------------- |
+| .NET Framework | Windows                                      | 4.6.1   |                                                                         |
+| .Mono          | Linux                                        | 5.4.1.6 |                                                                         |
+| Unity          | Windows, MacOS, iOS,<br>(Linux)*, (Android)* | 5.4.1f1 | * = not tested, not supported                                           |
 
 .NET Core and the .NET Standard are currently **not** supported.
 Support for those is on the roadmap as a long-term goal (through .NET Standard).
 
 ## Contents
 
-N = .NET Framework
-M = Mono
-U = Unity
-W = .NET Framework, Windows only
-L = Mono, Linux only
+N = .NET Framework / M = Mono / U = Unity / W = .NET Framework, Windows only / L = Mono, Linux only
 
 ### Decoupling
 
@@ -97,12 +93,6 @@ Due to the utilities part of the framework, which implements general purpose fun
 
 The decoupling part on the other hand has a more narrower target audience as it focuses on implementation of mostly infrastructure functions common to desktop applications, server software, and games.
 
-Please consider the following:
-
- * Some functions of the framework are BETTER than other implementations
- * Some functions of the framework are WORSE than other implementations
- * Some functions of the framework are just DIFFERENT than other implementations
-
 ## Origin & Motivation & Reinventing the wheel
 
 The framework was originally a collection of functions which were used in multiple private projects, simply as a container for code reuse.
@@ -111,14 +101,12 @@ As it grew over time, accumulating more and more functionality, the framework wa
 
 The motivation for open-sourcing the framework is simply that others might benefit from it and to potentially improve it through exposure, feedback, and contribution.
 
-The history of the framework is still somewhat visible in its structure, for example a very Visual Studio centric organization, that the separation into assemblies is based on dependencies and not functionality, or the obvious fact that it is one big project containing a lot of actually unrelated functions (instead of several smaller, independent projects).
-
 The motivation for writing a particular function and put it into the framework was/is one or more of the following:
 
  * It did not exist
  * It did exist, but the implementation was following too different requirements
  * It did exist, but the implementation was unsatisfying (style, abstractions, customizability, quality, license, etc.)
- * Productivity concerns ("Learning and/or customizing this existing solution to fit my needs takes at least as long as writing it myself")
+ * Productivity concerns ("Learning/customizing this existing solution to fit my needs takes at least as long as writing it myself")
  * Naivety, not-invented-here syndrom, overconfidence ("I can do this better")
  * Educational purposes ("I need to experience the problems of a message bus implementation myself")
  * Fun (Ever tried to write a composition container yourself? What an adventure!)
