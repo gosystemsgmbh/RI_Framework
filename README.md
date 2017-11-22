@@ -21,7 +21,7 @@ At this moment, the following runtimes and platforms are supported:
 | Runtime        | Platform                                       | Version | Remarks                                                                 |
 | -------------- | ---------------------------------------------- | ------- | ----------------------------------------------------------------------- |
 | .NET Framework | Windows                                        | 4.6.1   |                                                                         |
-| .Mono          | Linux                                          | 5.4.1.6 |                                                                         |
+| Mono           | Linux                                          | 5.4.1.6 |                                                                         |
 | Unity          | Windows, MacOS, iOS,<br>(Linux)\*, (Android)\* | 5.4.1f1 | * = not tested, not supported                                           |
 
 .NET Core and the .NET Standard are currently **not** supported.
@@ -106,7 +106,7 @@ The motivation for writing a particular function and put it into the framework w
  * It did not exist
  * It did exist, but the implementation was following too different requirements
  * It did exist, but the implementation was unsatisfying (style, abstractions, customizability, quality, license, etc.)
- * Productivity concerns ("Learning/customizing this existing solution to fit my needs takes at least as long as writing it myself")
+ * Productivity concerns ("Learning/customizing takes at least as long as writing it myself")
  * Naivety, not-invented-here syndrom, overconfidence ("I can do this better")
  * Educational purposes ("I need to experience the problems of a message bus implementation myself")
  * Fun (Ever tried to write a composition container yourself? What an adventure!)
