@@ -1,5 +1,5 @@
    Roten Informatik Framework License (RIFL),
-   Version 1.0, October 2017
+   Version 1.0, November 2017
 
    INFORMATION ABOUT THE LICENSE
 
@@ -7,24 +7,12 @@
    Apache License 2.0 (AL2). The following are the differences from the
    AL2 to the RIFL:
 
-   A. The following was removed:
+   Section 5: removed "Unless You explicitly state otherwise,"
 
-      Section 5: Unless You explicitly state otherwise,
+   Section 7: removed "required by applicable law or"
 
-      Section 7: required by applicable law or
-
-      Section 8: required by applicable law (such as deliberate and grossly
-      negligent acts) or
-
-   B. The following was added:
-
-      Section 4d: *; and*
-
-      Section 4e: (whole paragraph) *The Derivative Works does not compete
-      in any way with products, business models, business interests, or
-      financial interests of the Licensor at the time of redistribution,
-      regardless whether Derivative Works existed before the competition
-      with Licensor.*
+   Section 8: removed "required by applicable law
+                      (such as deliberate and grossly negligent acts) or"
 
    TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 
@@ -142,12 +130,7 @@
           notices within Derivative Works that You distribute, alongside
           or as an addendum to the NOTICE text from the Work, provided
           that such additional attribution notices cannot be construed
-          as modifying the License; and
-
-      (e) The Derivative Works does not compete in any way with products,
-          business models, business interests, or financial interests of the
-          Licensor at the time of redistribution, regardless whether
-          Derivative Works existed before the competition with Licensor.
+          as modifying the License.
 
       You may add Your own copyright statement to Your modifications and
       may provide additional or different license terms and conditions
@@ -213,7 +196,7 @@
    identification within third-party archives. This license file must also be
    included or redistributed respectively, unmodified, with your work.
 
-      Copyright 2015-2017 Hans Muster
+      Copyright [year] [author]
 
       Licensed under the Roten Informatik Framework License (RIFL),
       Version 1.0 (the "License").
