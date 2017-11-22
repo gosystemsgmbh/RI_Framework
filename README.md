@@ -18,11 +18,11 @@ All those functions, regardless whether big or small, are (mostly) independent o
 
 At this moment, the following runtimes and platforms are supported:
 
-| Runtime        | Platform                                       | Version | Remarks                                                                 |
-| -------------- | ---------------------------------------------- | ------- | ----------------------------------------------------------------------- |
-| .NET Framework | Windows                                        | 4.6.1   |                                                                         |
-| Mono           | Linux                                          | 5.4.1.6 |                                                                         |
-| Unity          | Windows, MacOS, iOS,<br>(Linux)\*, (Android)\* | 5.4.1f1 | * = not tested, not supported                                           |
+| Runtime                                          | Platform                                       | Version | Remarks                                                                 |
+| ------------------------------------------------ | ---------------------------------------------- | ------- | ----------------------------------------------------------------------- |
+| [.NET Framework](https://www.microsoft.com/net/) | Windows                                        | 4.6.1   |                                                                         |
+| [Mono](http://www.mono-project.com/)             | Linux                                          | 5.4.1.6 |                                                                         |
+| [Unity](https://unity3d.com/)                    | Windows, MacOS, iOS,<br>(Linux)\*, (Android)\* | 5.4.1f1 | * = not tested, not supported                                           |
 
 .NET Core and the .NET Standard are currently **not** supported.
 Support for those is on the roadmap as a long-term goal (through .NET Standard).
@@ -74,18 +74,18 @@ N = .NET Framework / M = Mono / U = Unity / W = .NET Framework, Windows only / L
 
 ### Extensions
 
-| Library / Framework   | Platform          | Namespace                              | Version  |
-| --------------------- | ----------------- | -------------------------------------- | -------- |
-| Entity Framework 6.x  | N, M              | RI.Framework.Data.EF.*                 | 6.1.3    |
-| SQLite                | N, M              | RI.Framework.Data.SQLite.*             | 1.0.106  |
-| SQL Server            | N, M              | RI.Framework.Data.SqlServer.*          |          |
-| Nancy Framework       | N, M              | RI.Framework.Web.Nancy.*               | 1.4.4    |
-| DotNetZip             | N, M              |                                        | 1.10.1   |
-| EPPlus                | N, M              |                                        | 4.1.1    |
-| Extended WPF Toolkit  | W                 |                                        | 3.2.0    |
-| Fluent Ribbon         | W                 |                                        | 5.0.2.46 |
-| Mono.Posix            | L                 |                                        | 4.5.0    |
-| Newtonsoft JSON       | N, M              |                                        | 10.0.3   |
+| Library / Framework                                                 | Platform          | Namespace                              | Version  |
+| ------------------------------------------------------------------- | ----------------- | -------------------------------------- | -------- |
+| [Entity Framework 6.x](https://github.com/aspnet/EntityFramework6)  | N, M              | RI.Framework.Data.EF.*                 | 6.1.3    |
+| [SQLite](https://system.data.sqlite.org/)                           | N, M              | RI.Framework.Data.SQLite.*             | 1.0.106  |
+| [SQL Server](https://www.microsoft.com/en-us/sql-server)            | N, M              | RI.Framework.Data.SqlServer.*          |          |
+| [Nancy Framework](https://github.com/NancyFx/Nancy)                 | N, M              | RI.Framework.Web.Nancy.*               | 1.4.4    |
+| [DotNetZip](https://dotnetzip.codeplex.com/)                        | N, M              |                                        | 1.10.1   |
+| [EPPlus](https://github.com/JanKallman/EPPlus)                      | N, M              |                                        | 4.1.1    |
+| [Extended WPF Toolkit](https://github.com/xceedsoftware/wpftoolkit) | W                 |                                        | 3.2.0    |
+| [Fluent Ribbon](https://github.com/fluentribbon/Fluent.Ribbon)      | W                 |                                        | 5.0.2.46 |
+| [Mono.Posix](https://github.com/mono/mono)                          | L                 |                                        | 4.5.0    |
+| [Newtonsoft JSON](https://github.com/JamesNK/Newtonsoft.Json)       | N, M              |                                        | 10.0.3   |
 
 ## Target audience
 
