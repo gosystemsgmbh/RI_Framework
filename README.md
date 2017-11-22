@@ -16,6 +16,10 @@ It implements all kind of bigger functional blocks (the "decoupling" part), asor
 
 All those functions, regardless whether big or small, are (mostly) independent of each other and can be used individually.
 
+Due to the utilities part of the framework, which implements general purpose functions not tied to a particular application type or structure, the target audience is simply everyone who uses the .NET Framework, Mono, or Unity.
+
+The decoupling part on the other hand has a more narrower target audience as it focuses on implementation of mostly infrastructure functions common to desktop applications, server software, and games.
+
 ## Compatibility
 
 At this moment, the following runtimes and platforms are supported:
@@ -89,38 +93,14 @@ N = .NET Framework / M = Mono / U = Unity / W = .NET Framework, Windows only / L
 | [Mono.Posix](https://github.com/mono/mono)                          | L                 |                                        | 4.5.0    |
 | [Newtonsoft JSON](https://github.com/JamesNK/Newtonsoft.Json)       | N, M              |                                        | 10.0.3   |
 
-## Target audience
-
-Due to the utilities part of the framework, which implements general purpose functions not tied to a particular application type or structure, the target audience is simply everyone who uses the .NET Framework, Mono, or Unity.
-
-The decoupling part on the other hand has a more narrower target audience as it focuses on implementation of mostly infrastructure functions common to desktop applications, server software, and games.
-
-## Origin & Motivation & Reinventing the wheel
-
-The framework was originally a collection of functions which were used in multiple private projects, simply as a container for code reuse.
-
-As it grew over time, accumulating more and more functionality, the framework was made into its own standalone project and eventually polished and open-sourced.
-
-The motivation for open-sourcing the framework is simply that others might benefit from it and to potentially improve it through exposure, feedback, and contribution.
-
-The motivation for writing a particular function and put it into the framework was/is one or more of the following:
-
- * It did not exist
- * It did exist, but the implementation was following too different requirements
- * It did exist, but the implementation was unsatisfying (style, abstractions, customizability, quality, license, etc.)
- * Productivity concerns ("Learning/customizing takes at least as long as writing it myself")
- * Naivety, not-invented-here syndrom, overconfidence ("I can do this better")
- * Educational purposes ("I need to experience the problems of a message bus implementation myself")
- * Fun (Ever tried to write a composition container yourself? What an adventure!)
-
 ## License
 
-The Decoupling & Utilities Framework uses its own license, the Roten Informatik Framework License, which is mostly based on the Apache 2.0 license.
+The Decoupling & Utilities Framework uses its own license, the Roten Informatik Framework License 1.0, which is mostly based on the [Apache 2.0 license](https://choosealicense.com/licenses/apache-2.0/).
 See [License](LICENSE.md) for more details.
 
 ## Documentation
 
-See [Documentation](DOCUMENTATION.md) for development and usage documentation.
+See [Documentation](DOCUMENTATION.md) for documentation.
 
 ## Contribution
 

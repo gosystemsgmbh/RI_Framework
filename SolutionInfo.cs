@@ -6,8 +6,8 @@ using System.Reflection;
 
 [assembly: AssemblyProduct("Decoupling & Utilities Framework")]
 [assembly: AssemblyCompany("Roten Informatik")]
-[assembly: AssemblyCopyright("Copyright (c) 2015-2017 Roten Informatik")]
-[assembly: AssemblyTrademark("Licensed under the Roten Informatik Framework License")]
+[assembly: AssemblyCopyright("Copyright (c) 2011-2017 Roten Informatik")]
+[assembly: AssemblyTrademark("Licensed under the Roten Informatik Framework License 1.0")]
 [assembly: AssemblyCulture("")]
 [assembly: CLSCompliant(false)]
 [assembly: AssemblyVersion("2.0.0.0")]
