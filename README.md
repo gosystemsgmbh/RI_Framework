@@ -2,6 +2,8 @@
 
 A framework for the .NET Framework, Mono, and Unity.
 
+:warning: Work in progress! :warning: Not released yet! :warning: Subject to changes! :warning:
+
 ## Releases
 
 *no release yet*

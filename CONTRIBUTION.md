@@ -1,103 +1,51 @@
-# Decoupling & Utilities Framework
+# Contribution
 
-## Current
+:warning: Work in progress! :warning: Not released yet! :warning: Subject to changes! :warning:
 
-- [ ] Cleanup
-  - [ ] TODOs
-  - [ ] Code cleanup
-  - [ ] Packages
-  - [ ] Incorporate wishlist into TODO
-  - [ ] Move RotenInformatik assemblies into other assemblies
-  - [ ] NuGet Packages
-  - [ ] Add manifest to log viewer
-  - [ ] Add manifest to VersionUpdater and ElevatedStart
-- [ ] Testing (common)
-  - [ ] RuntimeEnvironment
-  - [ ] CultureInfoExtensions
-  - [ ] ObjectExtensions
-  - [ ] AlphanumComparer
-  - [ ] PredicateLogFilter
-  - [ ] SeverityLogFilter
-  - [ ] Filtered log service
-  - [ ] Filtered log writer
-  - [ ] FileLogWriter
-  - [ ] DirectoryLogWriter (including day separation)
-  - [ ] LogFileReader
-  - [ ] TemporaryFile
-  - [ ] UncloseableStream
-  - [ ] SynchronizedStream
-  - [ ] CSV
-  - [ ] AggregateCatalog
-  - [ ] FileCatalog
-  - [ ] DirectoryCatalog
-  - [ ] ContainerCatalog
-  - [ ] AppDomainCatalog
-  - [ ] InstanceCatalog
-  - [ ] TypeCatalog
-  - [ ] Singleton (generic and non-generic)
-  - [ ] ServiceLocator
-  - [ ] ServiceLocatorStateResolver
-  - [ ] SingletonStateResolver
-  - [ ] CompositionContainerStateResolver
-  - [ ] DependencyResolverStateResolver
-  - [ ] DefaultStateResolver
-  - [ ] DefaultStateCache
-  - [ ] DefaultStateDispatcher
-  - [ ] StateMachine (including TransitionAborted and Update)
-  - [ ] FilePath (including new ops)
-  - [ ] DirectoryPath (including new ops)
-  - [ ] CompositionContainer with parent container
-  - [ ] CompositionContainer without export attributes
-  - [ ] CompositionCreator
-  - [ ] CompositionExtensions
-  - [ ] HeavyThread
-  - [ ] Schedule
-- [ ] Testing (NetFX)
-  - [ ] TaskExtensions
-  - [ ] ThreadPoolAwaiter
-  - [ ] CultureFlower
-  - [ ] ThreadDispatcherAwaiter
-  - [ ] ThreadDispatcherSynchronizationContext
-  - [ ] ThreadDispatcherTaskScheduler
-  - [ ] ThreadDispatcherTimer
-  - [ ] ThreadDispatcherExecutionContext
-  - [ ] IThreadDispatcherExtensions
-  - [ ] ThreadDispatcherOperation
-  - [ ] ThreadDispatcher
-  - [ ] HeavyThreadDispatcher
-  - [ ] AsyncStateMachine
-  - [ ] ThreadDispatcherStateDispatcher
-  - [ ] SynchronizationContextExtensions
-  - [ ] SynchronizationContextFlower
-  - [ ] SynchronizationContextAwaiter
-- [ ] Testing (Unity)
-  - [ ] GameObjectCatalog
-  - [ ] ScriptingCatalog (including without export attributes)
-  - [ ] MonoBehaviourCreator
-  - [ ] DispatcherServiceStateDispatcher
-  - [ ] Run tests with oldest and newest Unity version (update compatibility page)
-- [ ] Documentation
-  - [ ] NetFx: Simple documentation
-  - [ ] Unity: Review documentation
-  - [ ] Unity: Update bootstrapper screenshot and options description
-  - [ ] Unity: Uncomments after implementation
-  - [ ] Unity: Performance
-  - [ ] Unity: Thread Safety
-  - [ ] Proper Readme
-  - [ ] Development documentation
-- [ ] Advertisement
+## Issues
 
-## Next
+You can contribute by submitting issues.
 
-- [ ] Timeout and cancellation token overloads
+If an issue follows the rules (see below), it will be prioritized and processed.
+If an issue does not follow the rules, it will be closed immediately with no further consideration.
 
-## Backlog
+Issues are processed as seen fit and no guarantees can be given regarding whether, how, and when an issue will be prioritized and eventually processed.
 
-- [ ] Wishlist
+## Pull requests
 
-## Proposals
+You can contribute by submitting pull requests.
 
-- [ ] Move targets to .NET Standard
-- [ ] Move away from shared projects (using .NET Standard?)
-- [ ] Cross-platform model and code unification
-- [ ] AOT checking utility
+If a pull request follows the rules (see below), it will be reviewed and merged.
+If a pull request does not follow the rules, it will be closed immediately with no further consideration.
+
+Pull requests are merged as seen fit and no guarantees can be given regarding whether, how, and when a pull request will be reviewed and eventually merged.
+
+## Contributors
+
+At the moment, no contributors will be added to the repository.
+Please use issues, forks, and pull requests to contribute.
+
+## Rules
+
+### Language
+
+ * Everything has to be in English language. Documentation. Comments. Names. Code. Everything.
+ * Grammar and orthography matters (it must not be perfect and typo-free).
+
+### Changes
+
+ * Structural changes (deleting, creating, renaming, moving, copying of files or directories) are only accepted if there is a corresponding open issue.
+ * Namespace changes are only accepted if there is a corresponding open issue.
+
+### Style
+
+ * The existing code style must be followed.
+
+### Completeness
+
+ * Issues which are bugs have a higher chance of being accepted if they contain a description how to reproduce the issue.
+ * The following must always have propert XML comments:
+   * Namespaces
+   * Public types
+   * Public members
+ * A unit test must be written (if not yet existing) or modified (if existing) for each created or modified type.
