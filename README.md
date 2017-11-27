@@ -117,14 +117,14 @@ N = .NET Framework <br> M = Mono <br> U = Unity <br> W = Windows (.NET Framework
 
 The Decoupling & Utilities Framework uses its own license, the Roten Informatik Framework License 1.0, which is mostly based on the [Apache 2.0 license](https://choosealicense.com/licenses/apache-2.0/).
 
-See [License](LICENSE.txt) for more details.
+See [License](LICENSE.txt) for more details and the license itself.
 
 ## Documentation
 
 Each release contains an API documentation which describes the assemblies, namespaces, types, and members of the various functions.
 
-See [Documentation](DOCUMENTATION.md) for more details about the project itself.
+See [Documentation](DOCUMENTATION.md) for more details about the project.
 
 ## Contribution & Issues
 
-See [Contribution](CONTRIBUTION.md) if you wish to contribute to the project or report issues.
+See [Contribution](CONTRIBUTION.md) if you wish to contribute to the project or report [issues](https://github.com/RotenInformatik/RI_Framework/issues).
