@@ -12,30 +12,51 @@ A framework for the .NET Framework, Mono, and Unity.
 
 The Decoupling & Utilities Framework is a collection of various functions for the .NET Framework, Mono, and Unity.
 
-It implements all kind of bigger functional blocks (the "decoupling" part), asorted small helpers (the "utilities" part), and extensions for other libraries/frameworks.
+It implements all kind of bigger functional blocks (the "decoupling" part), asorted small helpers (the "utilities" part), and extensions for other libraries/frameworks (both in the "decoupling" and "utilities" part).
 
 All those functions, regardless whether big or small, are (mostly) independent of each other and can be used individually.
 
-Due to the utilities part of the framework, which implements general purpose functions not tied to a particular application type or structure, the target audience is simply everyone who uses the .NET Framework, Mono, or Unity.
+Due to the utilities part of the framework, which implements general-purpose functions not tied to a particular application type, the target audience can be everyone who uses .NET.
 
-The decoupling part on the other hand has a more narrower target audience as it focuses on implementation of mostly infrastructure functions common to desktop applications, server software, and games.
+The decoupling part on the other hand has a more narrower target audience as it focuses on functionality common to the following application types:
+
+ * Desktop applications
+ * Desktop games
+ * Server software
+
+Therefore, it currently supports the following "fat" runtimes/targets:
+ * [.NET Framework](https://www.microsoft.com/net/)
+ * [Mono](http://www.mono-project.com/)
+ * [Unity](https://unity3d.com/)
+
+## Roadmap
+
+Short-term and medium-term, the intention is to support the Decoupling and Utilities Framework with bugfixes, improvements, and small enhancements.
+
+The long-term goal includes several larger endeavors:
+
+ * Functionality for additional application types:
+   * Web applications
+   * Mobile games
+ * Support for additional runtimes/targets:
+   * .NET Standard
+   * .NET Core (through .NET Standard)
+ * Extensions for additional libraries/frameworks:
+   * ASP.NET
+   * ASP.NET Core
+   * Entity Framework Core
 
 ## Compatibility
-
-At this moment, the following runtimes and platforms are supported:
 
 | Runtime                                          | Platform                                       | Version | Remarks                                                                 |
 | ------------------------------------------------ | ---------------------------------------------- | ------- | ----------------------------------------------------------------------- |
 | [.NET Framework](https://www.microsoft.com/net/) | Windows                                        | 4.6.1   |                                                                         |
 | [Mono](http://www.mono-project.com/)             | Linux                                          | 5.4.1.6 |                                                                         |
-| [Unity](https://unity3d.com/)                    | Windows, MacOS, iOS,<br>(Linux)\*, (Android)\* | 5.4.1f1 | * = not tested, not supported                                           |
-
-.NET Core and the .NET Standard are currently **not** supported.
-Support for those is on the roadmap as a long-term goal (through .NET Standard).
+| [Unity](https://unity3d.com/)                    | Windows, MacOS, iOS,<br>(Linux)\*, (Android)\* | 5.4.1f1 | * = not actively tested or supported                                    |
 
 ## Contents
 
-N = .NET Framework / M = Mono / U = Unity / W = .NET Framework, Windows only / L = Mono, Linux only
+N = .NET Framework <br> M = Mono <br> U = Unity <br> W = Windows (.NET Framework) <br> L = Linux (Mono)
 
 ### Decoupling
 
@@ -45,11 +66,12 @@ N = .NET Framework / M = Mono / U = Unity / W = .NET Framework, Windows only / L
 | Composition container | N, M, U           | RI.Framework.Composition.*             | Dependency Injection, Inversion-of-Control (IoC)                                 |
 | Database manager      | N, M              | RI.Framework.Data.Database.*           | Low-level database: script management, schema versioning, cleanup, backup        |
 | Repository            | N, M              | RI.Framework.Data.Repository.*         | High-level database: generic repository, entities, views, filters, validation    |
-| Model-View-ViewModel  | W                 | RI.Framework.Mvvm.*                    | MVVM basics for WPF                                                              |
+| Model-View-ViewModel  | N                 | RI.Framework.Mvvm.*                    | MVVM basics for WPF                                                              |
 | State machines        | N, M, U           | RI.Framework.StateMachines.*           | Hierarchical asynchronous state machines with signals, transients, and updates   |
 | Thread dispatcher     | N, M              | RI.Framework.Threading.Dispatcher.*    | Platform-independent dispatcher with priorities, timers, and task scheduler      |
 | Bootstrapper          | N, M, U           | RI.Framework.Services.*                | Application and service bootstrapper                                             |
 | Backup                | N, M              | RI.Framework.Services.Backup.*         | Application data backup                                                          |
+| Dispatcher            | U                 | RI.Framework.Services.Dispatcher.*     | Task dispatcher for Unity                                                        |
 | Logging               | N, M, U           | RI.Framework.Services.Logging.*        | Technical logging                                                                |
 | Modularization        | N, M, U           | RI.Framework.Services.Modularization.* | Modularizes application into functional modules                                  |
 | Regions               | N, M              | RI.Framework.Services.Regions.*        | Modularizes GUI into separate regions                                            |
@@ -96,12 +118,13 @@ N = .NET Framework / M = Mono / U = Unity / W = .NET Framework, Windows only / L
 ## License
 
 The Decoupling & Utilities Framework uses its own license, the Roten Informatik Framework License 1.0, which is mostly based on the [Apache 2.0 license](https://choosealicense.com/licenses/apache-2.0/).
-See [License](LICENSE.md) for more details.
+
+See [License](LICENSE.txt) for more details.
 
 ## Documentation
 
-See [Documentation](DOCUMENTATION.md) for documentation.
+See [Documentation](DOCUMENTATION.md) for more documentation.
 
-## Contribution
+## Contribution & Issues
 
-See [Contribution](CONTRIBUTION.md) if you wish to contribute to the project.
+See [Contribution](CONTRIBUTION.md) if you wish to contribute to the project or report issues.
