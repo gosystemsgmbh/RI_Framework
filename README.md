@@ -2,8 +2,6 @@
 
 A framework for the .NET Framework, Mono, and Unity.
 
-:warning: Work in progress! :warning: Not released yet! :warning: Subject to changes! :warning:
-
 ## Releases
 
 *no release yet*
@@ -123,7 +121,9 @@ See [License](LICENSE.txt) for more details.
 
 ## Documentation
 
-See [Documentation](DOCUMENTATION.md) for more documentation.
+Each release contains an API documentation which describes the assemblies, namespaces, types, and members of the various functions.
+
+See [Documentation](DOCUMENTATION.md) for more details about the project itself.
 
 ## Contribution & Issues
 
