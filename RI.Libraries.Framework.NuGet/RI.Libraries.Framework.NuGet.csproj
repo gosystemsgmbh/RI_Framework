@@ -46,6 +46,7 @@
     <None Include="Mono.Posix-4.5.4.5.0.nupkg" />
     <None Include="Nancy.1.4.3.nupkg" />
     <None Include="Nancy.1.4.4.nupkg" />
+    <None Include="Nancy.Authentication.Forms.1.4.1.nupkg" />
     <None Include="Newtonsoft.Json.10.0.3.nupkg" />
     <None Include="System.Data.SQLite.Core.1.0.104.0.nupkg" />
     <None Include="System.Data.SQLite.Core.1.0.105.2.nupkg" />

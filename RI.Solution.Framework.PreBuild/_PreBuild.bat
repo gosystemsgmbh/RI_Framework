@@ -11,4 +11,4 @@ _Output\x64
   )
 )
 
-@copy "..\LICENSE.md" "..\_Output\Roten Informatik Framework License.md"
+@copy "..\LICENSE.txt" "..\_Output\Roten Informatik Framework License.txt"

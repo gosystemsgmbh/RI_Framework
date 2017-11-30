@@ -16,6 +16,8 @@
 
 @copy "..\packages\Nancy.1.4.4\lib\net40\*.dll" "..\_Output\*.*"
 
+@copy "..\packages\Nancy.Authentication.Forms.1.4.1\lib\net40\*.dll" "..\_Output\*.*"
+
 @copy "..\packages\Newtonsoft.Json.10.0.3\lib\net45\*.dll" "..\_Output\*.*"
 
 @copy "..\packages\System.Data.SQLite.Core.1.0.106.0\lib\net46\*.dll" "..\_Output\*.*"

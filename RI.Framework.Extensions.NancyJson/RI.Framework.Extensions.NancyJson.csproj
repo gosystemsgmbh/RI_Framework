@@ -59,7 +59,7 @@
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Web\Nancy\JsonObjectSerializer.cs" />
+    <Compile Include="Web\Nancy\JsonNetObjectSerializer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\SolutionName.snk">

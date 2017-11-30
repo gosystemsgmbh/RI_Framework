@@ -45,6 +45,10 @@
       <HintPath>..\packages\Nancy.1.4.4\lib\net40\Nancy.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Nancy.Authentication.Forms, Version=1.4.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Nancy.Authentication.Forms.1.4.1\lib\net40\Nancy.Authentication.Forms.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -54,9 +58,12 @@
     <Compile Include="..\SolutionInfo.cs">
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
+    <Compile Include="Web\Nancy\AuthenticatedUser.cs" />
+    <Compile Include="Web\Nancy\AuthenticatedUserMapper.cs" />
     <Compile Include="Web\Nancy\CompositionContainerNancyBootstrapperWithRequestContainer.cs" />
     <Compile Include="Web\Nancy\CompositionContainerNancyBootstrapper.cs" />
     <Compile Include="Web\Nancy\NancyContextExtensions.cs" />
+    <Compile Include="Web\Nancy\NancyContextLogOptions.cs" />
     <Compile Include="Web\Nancy\NancyModuleExtensions.cs" />
     <Compile Include="Web\Nancy\RequestExtensions.cs" />
     <Compile Include="Web\Nancy\ResponseExtensions.cs" />

@@ -22,28 +22,28 @@ namespace RI.Framework.Services.Settings.Converters
 	///     </para>
 	/// </remarks>
 	[Export]
-	public sealed class JsonSettingConverter : ISettingConverter
+	public sealed class JsonNetSettingConverter : ISettingConverter
 	{
 		#region Instance Constructor/Destructor
 
 		/// <summary>
-		///     Creates a new instance of <see cref="JsonSettingConverter" />.
+		///     Creates a new instance of <see cref="JsonNetSettingConverter" />.
 		/// </summary>
 		/// <remarks>
 		///     <para>
 		///         Default JSON serialization settings are used.
 		///     </para>
 		/// </remarks>
-		public JsonSettingConverter ()
+		public JsonNetSettingConverter ()
 			: this(null)
 		{
 		}
 
 		/// <summary>
-		///     Creates a new instance of <see cref="JsonSettingConverter" />.
+		///     Creates a new instance of <see cref="JsonNetSettingConverter" />.
 		/// </summary>
 		/// <param name="settings"> The used JSON serialization settings or null to use default settings. </param>
-		public JsonSettingConverter (JsonSerializerSettings settings)
+		public JsonNetSettingConverter (JsonSerializerSettings settings)
 		{
 			this.Settings = settings;
 		}

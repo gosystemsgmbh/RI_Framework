@@ -10,7 +10,7 @@ namespace RI.Framework.Web.Nancy
 	/// <summary>
 	///     Implements an object serializer which uses JSON.
 	/// </summary>
-	public sealed class JsonObjectSerializer : IObjectSerializer
+	public sealed class JsonNetObjectSerializer : IObjectSerializer
 	{
 		#region Interface: IObjectSerializer
 
