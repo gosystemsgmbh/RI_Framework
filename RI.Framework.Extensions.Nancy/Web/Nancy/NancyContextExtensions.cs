@@ -7,6 +7,9 @@ using Nancy;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 
+
+
+
 namespace RI.Framework.Web.Nancy
 {
 	/// <summary>
@@ -14,15 +17,17 @@ namespace RI.Framework.Web.Nancy
 	/// </summary>
 	public static class NancyContextExtensions
 	{
+		#region Static Methods
+
 		/// <summary>
 		///     Logs the current state of a context.
 		/// </summary>
-		/// <param name="message">The log message.</param>
-		/// <param name="context">The context whose current state information is appended to the log message.</param>
-		/// <param name="options">Context logging options.</param>
-		/// <exception cref="ArgumentNullException"><paramref name="context"/> or <paramref name="message"/> is null.</exception>
-		/// <exception cref="EmptyStringArgumentException"><paramref name="message"/> is an empty string.</exception>
-		public static string CreateContextLog(this NancyContext context, string message, NancyContextLogOptions options)
+		/// <param name="message"> The log message. </param>
+		/// <param name="context"> The context whose current state information is appended to the log message. </param>
+		/// <param name="options"> Context logging options. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="context" /> or <paramref name="message" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="message" /> is an empty string. </exception>
+		public static string CreateContextLog (this NancyContext context, string message, NancyContextLogOptions options)
 		{
 			if (context == null)
 			{
@@ -92,5 +97,7 @@ namespace RI.Framework.Web.Nancy
 			string log = string.Format(CultureInfo.InvariantCulture, format, method, url, userHostAddress, requestHeaders, statusCode, contentType, user, responseHeaders, processingTime);
 			return log;
 		}
+
+		#endregion
 	}
 }

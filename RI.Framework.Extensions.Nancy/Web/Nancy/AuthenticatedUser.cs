@@ -7,6 +7,9 @@ using Nancy.Security;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 
+
+
+
 namespace RI.Framework.Web.Nancy
 {
 	/// <summary>
@@ -14,20 +17,22 @@ namespace RI.Framework.Web.Nancy
 	/// </summary>
 	public sealed class AuthenticatedUser : IUserIdentity
 	{
+		#region Instance Constructor/Destructor
+
 		/// <summary>
 		///     Creates a new instance of <see cref="AuthenticatedUser" />.
 		/// </summary>
-		/// <param name="context">The context during which this user identity was created.</param>
-		/// <param name="userName">The user name.</param>
-		/// <param name="claims">The sequence of user claims (if any, can be null).</param>
+		/// <param name="context"> The context during which this user identity was created. </param>
+		/// <param name="userName"> The user name. </param>
+		/// <param name="claims"> The sequence of user claims (if any, can be null). </param>
 		/// <remarks>
-		/// <para>
-		/// <paramref name="claims"/> is enumerated only once.
-		/// </para>
+		///     <para>
+		///         <paramref name="claims" /> is enumerated only once.
+		///     </para>
 		/// </remarks>
-		/// <exception cref="ArgumentNullException"><paramref name="context" /> or <paramref name="userName" /> is null.</exception>
-		/// <exception cref="EmptyStringArgumentException"><paramref name="userName" /> is an empty string.</exception>
-		public AuthenticatedUser(NancyContext context, string userName, IEnumerable<string> claims)
+		/// <exception cref="ArgumentNullException"> <paramref name="context" /> or <paramref name="userName" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="userName" /> is an empty string. </exception>
+		public AuthenticatedUser (NancyContext context, string userName, IEnumerable<string> claims)
 		{
 			if (context == null)
 			{
@@ -64,15 +69,22 @@ namespace RI.Framework.Web.Nancy
 		/// <summary>
 		///     Creates a new instance of <see cref="AuthenticatedUser" />.
 		/// </summary>
-		/// <param name="context">The context during which this user identity was created.</param>
-		/// <param name="userName">The user name.</param>
-		/// <param name="claims">The sequence of user claims (if any, can be null).</param>
-		/// <exception cref="ArgumentNullException"><paramref name="context" /> or <paramref name="userName" /> is null.</exception>
-		/// <exception cref="EmptyStringArgumentException"><paramref name="userName" /> is an empty string.</exception>
-		public AuthenticatedUser(NancyContext context, string userName, params string[] claims)
+		/// <param name="context"> The context during which this user identity was created. </param>
+		/// <param name="userName"> The user name. </param>
+		/// <param name="claims"> The sequence of user claims (if any, can be null). </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="context" /> or <paramref name="userName" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="userName" /> is an empty string. </exception>
+		public AuthenticatedUser (NancyContext context, string userName, params string[] claims)
 			: this(context, userName, (IEnumerable<string>)claims)
 		{
 		}
+
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
 
 		/// <summary>
 		///     Gets the dictionary which can be used to store additional, application-specific data.
@@ -86,6 +98,14 @@ namespace RI.Framework.Web.Nancy
 		///     </para>
 		/// </remarks>
 		public Dictionary<string, object> Data { get; }
+
+		/// <summary>
+		///     Gets the host address of the users machine.
+		/// </summary>
+		/// <value>
+		///     The host address of the users machine.
+		/// </value>
+		public string HostAddress { get; }
 
 		/// <summary>
 		///     Gets the GUID currently associated with the user.
@@ -120,12 +140,48 @@ namespace RI.Framework.Web.Nancy
 		public DateTime? LogoutTimestampUtc { get; set; }
 
 		/// <summary>
+		///     Gets the protocol version used by the user.
+		/// </summary>
+		/// <value>
+		///     The protocol version used by the user.
+		/// </value>
+		public string ProtocolVersion { get; }
+
+		/// <summary>
 		///     Gets or sets an object representing additional, application-specific data.
 		/// </summary>
 		/// <value>
 		///     An object representing additional, application-specific data.
 		/// </value>
 		public object Tag { get; set; }
+
+		/// <summary>
+		///     Gets the user agent used by the user.
+		/// </summary>
+		/// <value>
+		///     The user agent used by the user.
+		/// </value>
+		public string UserAgent { get; }
+
+		#endregion
+
+
+
+
+		#region Overrides
+
+		/// <inheritdoc />
+		public override string ToString ()
+		{
+			return "UserName=" + this.UserName + "; Claims=" + (this.Claims.Join(",").ToEmptyIfNullOrEmptyOrWhitespace() ?? "[none]") + "; Identifier=" + this.Identifier.ToString("N").ToUpperInvariant() + "; LastActivity=" + (this.LastActivityTimestampUtc?.ToSortableString() ?? "[null]") + "; Login=" + (this.LoginTimestampUtc?.ToSortableString() ?? "[null]") + "; Logout=" + (this.LogoutTimestampUtc?.ToSortableString() ?? "[null]");
+		}
+
+		#endregion
+
+
+
+
+		#region Interface: IUserIdentity
 
 		/// <summary>
 		///     Gets the claims associated with the user.
@@ -144,34 +200,6 @@ namespace RI.Framework.Web.Nancy
 		/// </value>
 		public string UserName { get; }
 
-		/// <summary>
-		/// Gets the host address of the users machine.
-		/// </summary>
-		/// <value>
-		/// The host address of the users machine.
-		/// </value>
-		public string HostAddress { get; }
-
-		/// <summary>
-		/// Gets the protocol version used by the user.
-		/// </summary>
-		/// <value>
-		/// The protocol version used by the user.
-		/// </value>
-		public string ProtocolVersion { get; }
-
-		/// <summary>
-		/// Gets the user agent used by the user.
-		/// </summary>
-		/// <value>
-		/// The user agent used by the user.
-		/// </value>
-		public string UserAgent { get; }
-
-		/// <inheritdoc />
-		public override string ToString()
-		{
-			return "UserName=" + this.UserName + "; Claims=" + (this.Claims.Join(",").ToEmptyIfNullOrEmptyOrWhitespace() ?? "[none]") + "; Identifier=" + this.Identifier.ToString("N").ToUpperInvariant() + "; LastActivity=" + (this.LastActivityTimestampUtc?.ToSortableString() ?? "[null]") + "; Login=" + (this.LoginTimestampUtc?.ToSortableString() ?? "[null]") + "; Logout=" + (this.LogoutTimestampUtc?.ToSortableString() ?? "[null]");
-		}
+		#endregion
 	}
 }

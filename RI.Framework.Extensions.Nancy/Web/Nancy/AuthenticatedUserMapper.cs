@@ -10,6 +10,9 @@ using RI.Framework.Collections;
 using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.ObjectModel;
 
+
+
+
 namespace RI.Framework.Web.Nancy
 {
 	/// <summary>
@@ -17,12 +20,14 @@ namespace RI.Framework.Web.Nancy
 	/// </summary>
 	public sealed class AuthenticatedUserMapper : LogSource, IUserMapper, ISynchronizable
 	{
+		#region Instance Constructor/Destructor
+
 		/// <summary>
-		/// Creates a new instance of <see cref="AuthenticatedUserMapper" />.
+		///     Creates a new instance of <see cref="AuthenticatedUserMapper" />.
 		/// </summary>
-		/// <param name="idleTimeout">The user idle timeout after which it is automatically logged out.</param>
-		/// <exception cref="ArgumentOutOfRangeException"><paramref name="idleTimeout"/> is zero or less.</exception>
-		public AuthenticatedUserMapper(TimeSpan idleTimeout)
+		/// <param name="idleTimeout"> The user idle timeout after which it is automatically logged out. </param>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="idleTimeout" /> is zero or less. </exception>
+		public AuthenticatedUserMapper (TimeSpan idleTimeout)
 		{
 			if (idleTimeout.TotalMilliseconds <= 0)
 			{
@@ -36,27 +41,77 @@ namespace RI.Framework.Web.Nancy
 			this.AuthenticatedUsers = new Dictionary<Guid, AuthenticatedUser>();
 		}
 
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
+
 		/// <summary>
-		/// Gets the user idle timeout after which it is automatically logged out.
+		///     Gets the user idle timeout after which it is automatically logged out.
 		/// </summary>
 		/// <value>
-		/// The user idle timeout.
+		///     The user idle timeout.
 		/// </value>
 		public TimeSpan IdleTimeout { get; }
 
 		private Dictionary<Guid, AuthenticatedUser> AuthenticatedUsers { get; }
 
-		/// <inheritdoc />
-		bool ISynchronizable.IsSynchronized => true;
+		#endregion
 
-		/// <inheritdoc />
-		public object SyncRoot { get; }
 
-		/// <inheritdoc />
-		IUserIdentity IUserMapper.GetUserFromIdentifier (Guid identifier, NancyContext context) => this.GetUserFromIdentifier(identifier, context);
+
+
+		#region Instance Methods
+
+		/// <summary>
+		///     Performs a cleanup of all authenticated users by removing all users which had no activity within the default idle timeout.
+		/// </summary>
+		public void Cleanup () => this.Cleanup(this.IdleTimeout);
+
+		/// <summary>
+		///     Performs a cleanup of all authenticated users by removing all users which had no activity within a specified idle timeout.
+		/// </summary>
+		/// <param name="idleTimeout"> The user idle timeout.idle timeout after which it is automatically logged out. </param>
+		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="idleTimeout" /> is zero or less. </exception>
+		public void Cleanup (TimeSpan idleTimeout)
+		{
+			if (idleTimeout.TotalMilliseconds <= 0)
+			{
+				throw new ArgumentOutOfRangeException(nameof(idleTimeout));
+			}
+
+			lock (this.SyncRoot)
+			{
+				this.AuthenticatedUsers.RemoveWhere(x => x.Value.LastActivityTimestampUtc.HasValue ? DateTime.UtcNow.Subtract(x.Value.LastActivityTimestampUtc.Value) >= idleTimeout : true).ForEach(x => this.Log(LogLevel.Information, "Automatically logged-out user {0} with ID {1} after {2} seconds", x.Value.UserName, x.Value.Identifier.ToString("N").ToUpperInvariant(), idleTimeout.TotalSeconds));
+			}
+		}
+
+		/// <summary>
+		///     Gets the authenticated user with the specified GUID.
+		/// </summary>
+		/// <param name="identifier"> The users GUID. </param>
+		/// <returns>
+		///     The user or null if there is no authenticated user with the specified GUID
+		/// </returns>
+		public AuthenticatedUser GetUser (Guid identifier)
+		{
+			lock (this.SyncRoot)
+			{
+				this.Cleanup();
+
+				if (this.AuthenticatedUsers.ContainsKey(identifier))
+				{
+					return this.AuthenticatedUsers[identifier];
+				}
+
+				return null;
+			}
+		}
 
 		/// <inheritdoc cref="IUserMapper.GetUserFromIdentifier" />
-		public AuthenticatedUser GetUserFromIdentifier(Guid identifier, NancyContext context)
+		public AuthenticatedUser GetUserFromIdentifier (Guid identifier, NancyContext context)
 		{
 			lock (this.SyncRoot)
 			{
@@ -79,56 +134,28 @@ namespace RI.Framework.Web.Nancy
 		}
 
 		/// <summary>
-		/// Gets the authenticated user with the specified GUID.
+		///     Gets a list of all currently logged-in users.
 		/// </summary>
-		/// <param name="identifier">The users GUID.</param>
 		/// <returns>
-		/// The user or null if there is no authenticated user with the specified GUID
+		///     The list of all currently logged-in users.
+		///     An empty list is returned if no users are currently logged-in.
 		/// </returns>
-		public AuthenticatedUser GetUser(Guid identifier)
+		public List<AuthenticatedUser> GetUsers ()
 		{
 			lock (this.SyncRoot)
 			{
 				this.Cleanup();
 
-				if (this.AuthenticatedUsers.ContainsKey(identifier))
-				{
-					return this.AuthenticatedUsers[identifier];
-				}
-
-				return null;
+				return new List<AuthenticatedUser>(this.AuthenticatedUsers.Values);
 			}
 		}
 
 		/// <summary>
-		///     Performs a cleanup of all authenticated users by removing all users which had no activity within the default idle timeout.
+		///     Adds a user as a currently authenticated user.
 		/// </summary>
-		public void Cleanup() => this.Cleanup(this.IdleTimeout);
-
-		/// <summary>
-		///     Performs a cleanup of all authenticated users by removing all users which had no activity within a specified idle timeout.
-		/// </summary>
-		/// <param name="idleTimeout">The user idle timeout.idle timeout after which it is automatically logged out.</param>
-		/// <exception cref="ArgumentOutOfRangeException"><paramref name="idleTimeout"/> is zero or less.</exception>
-		public void Cleanup(TimeSpan idleTimeout)
-		{
-			if (idleTimeout.TotalMilliseconds <= 0)
-			{
-				throw new ArgumentOutOfRangeException(nameof(idleTimeout));
-			}
-
-			lock (this.SyncRoot)
-			{
-				this.AuthenticatedUsers.RemoveWhere(x => x.Value.LastActivityTimestampUtc.HasValue ? DateTime.UtcNow.Subtract(x.Value.LastActivityTimestampUtc.Value) >= idleTimeout : true).ForEach(x => this.Log(LogLevel.Information, "Automatically logged-out user {0} with ID {1} after {2} seconds", x.Value.UserName, x.Value.Identifier.ToString("N").ToUpperInvariant(), idleTimeout.TotalSeconds));
-			}
-		}
-
-		/// <summary>
-		/// Adds a user as a currently authenticated user.
-		/// </summary>
-		/// <param name="user">The user.</param>
-		/// <exception cref="ArgumentNullException"><paramref name="user" /> is null.</exception>
-		public void Login(AuthenticatedUser user)
+		/// <param name="user"> The user. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="user" /> is null. </exception>
+		public void Login (AuthenticatedUser user)
 		{
 			if (user == null)
 			{
@@ -144,11 +171,11 @@ namespace RI.Framework.Web.Nancy
 		}
 
 		/// <summary>
-		/// Removes a user as a currently authenticated user.
+		///     Removes a user as a currently authenticated user.
 		/// </summary>
-		/// <param name="user">The user.</param>
-		/// <exception cref="ArgumentNullException"><paramref name="user" /> is null.</exception>
-		public void Logout(AuthenticatedUser user)
+		/// <param name="user"> The user. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="user" /> is null. </exception>
+		public void Logout (AuthenticatedUser user)
 		{
 			if (user == null)
 			{
@@ -163,10 +190,10 @@ namespace RI.Framework.Web.Nancy
 		}
 
 		/// <summary>
-		/// Removes a user as a currently authenticated user.
+		///     Removes a user as a currently authenticated user.
 		/// </summary>
-		/// <param name="userId">The users ID.</param>
-		public void Logout(Guid userId)
+		/// <param name="userId"> The users ID. </param>
+		public void Logout (Guid userId)
 		{
 			lock (this.SyncRoot)
 			{
@@ -179,7 +206,7 @@ namespace RI.Framework.Web.Nancy
 		}
 
 		/// <summary>
-		/// Removes all currently authenticated users
+		///     Removes all currently authenticated users
 		/// </summary>
 		public void LogoutAll ()
 		{
@@ -192,21 +219,29 @@ namespace RI.Framework.Web.Nancy
 			}
 		}
 
-		/// <summary>
-		/// Gets a list of all currently logged-in users.
-		/// </summary>
-		/// <returns>
-		/// The list of all currently logged-in users.
-		/// An empty list is returned if no users are currently logged-in.
-		/// </returns>
-		public List<AuthenticatedUser> GetUsers()
-		{
-			lock (this.SyncRoot)
-			{
-				this.Cleanup();
+		#endregion
 
-				return new List<AuthenticatedUser>(this.AuthenticatedUsers.Values);
-			}
-		}
+
+
+
+		#region Interface: ISynchronizable
+
+		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => true;
+
+		/// <inheritdoc />
+		public object SyncRoot { get; }
+
+		#endregion
+
+
+
+
+		#region Interface: IUserMapper
+
+		/// <inheritdoc />
+		IUserIdentity IUserMapper.GetUserFromIdentifier (Guid identifier, NancyContext context) => this.GetUserFromIdentifier(identifier, context);
+
+		#endregion
 	}
 }
