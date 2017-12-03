@@ -79,13 +79,13 @@ namespace RI.Framework.Web.Nancy
 		/// <inheritdoc />
 		public override IEnumerable<INancyModule> GetAllModules (NancyContext context)
 		{
-			return this.CompositionContainer.GetExports<INancyModule>();
+			return this.ApplicationContainer.GetExports<INancyModule>();
 		}
 
 		/// <inheritdoc />
 		public override INancyModule GetModule (Type moduleType, NancyContext context)
 		{
-			return this.CompositionContainer.GetExport<INancyModule>(moduleType);
+			return this.ApplicationContainer.GetExport<INancyModule>(moduleType);
 		}
 
 		/// <inheritdoc />
@@ -125,6 +125,7 @@ namespace RI.Framework.Web.Nancy
 			foreach (Type requestStartupType in requestStartupTypes)
 			{
 				batch.AddExport(requestStartupType, typeof(IRequestStartup));
+				batch.AddExport(requestStartupType, requestStartupType);
 			}
 			container.Compose(batch);
 
@@ -137,6 +138,7 @@ namespace RI.Framework.Web.Nancy
 			CompositionBatch batch = new CompositionBatch();
 			batch.AddExport(this, typeof(INancyBootstrapper));
 			batch.AddExport(this, typeof(INancyModuleCatalog));
+			batch.AddExport(this, typeof(NancyBootstrapperBase<CompositionContainer>));
 			batch.AddExport(this, this.GetType());
 			applicationContainer.Compose(batch);
 		}
@@ -179,6 +181,12 @@ namespace RI.Framework.Web.Nancy
 		/// <inheritdoc />
 		protected override void RegisterModules (CompositionContainer container, IEnumerable<ModuleRegistration> moduleRegistrationTypes)
 		{
+			CompositionBatch batch = new CompositionBatch();
+			foreach (ModuleRegistration moduleRegistration in moduleRegistrationTypes)
+			{
+				batch.AddExport(moduleRegistration.ModuleType, moduleRegistration.ModuleType, false);
+			}
+			container.Compose(batch);
 		}
 
 		/// <inheritdoc />
@@ -214,7 +222,6 @@ namespace RI.Framework.Web.Nancy
 
 		/// <inheritdoc />
 		public ILogger Logger { get; set; } = LogLocator.Logger;
-
 
 		/// <inheritdoc />
 		public bool LoggingEnabled { get; set; } = true;
