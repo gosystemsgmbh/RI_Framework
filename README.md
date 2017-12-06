@@ -112,6 +112,7 @@ N = .NET Framework <br> M = Mono <br> U = Unity <br> W = Windows (.NET Framework
 | [Fluent Ribbon](https://github.com/fluentribbon/Fluent.Ribbon)      | W                 |                                        | 5.0.2.46 |
 | [Mono.Posix](https://github.com/mono/mono)                          | L                 |                                        | 4.5.0    |
 | [Newtonsoft JSON](https://github.com/JamesNK/Newtonsoft.Json)       | N, M              |                                        | 10.0.3   |
+| [Bouncy Castle](https://github.com/onovotny/bc-csharp)              | N, M              |                                        | 1.8.1.3  |
 
 ## License
 

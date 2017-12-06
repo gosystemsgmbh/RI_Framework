@@ -20,6 +20,8 @@
 
 @copy "..\packages\Newtonsoft.Json.10.0.3\lib\net45\*.dll" "..\_Output\*.*"
 
+@copy "..\packages\Portable.BouncyCastle.1.8.1.3\lib\net40\*.dll" "..\_Output\*.*"
+
 @copy "..\packages\System.Data.SQLite.Core.1.0.106.0\lib\net46\*.dll" "..\_Output\*.*"
 @copy "..\packages\System.Data.SQLite.Core.1.0.106.0\build\net46\x86\*.dll" "..\_Output\x86\*.*"
 @copy "..\packages\System.Data.SQLite.Core.1.0.106.0\build\net46\x64\*.dll" "..\_Output\x64\*.*"
