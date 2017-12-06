@@ -26,7 +26,7 @@ namespace RI.Framework.Data.Database.Versioning
 	///     </para>
 	///     <para>
 	///         If the script contains multiple batches, each batch is executed consecutively.
-	///         The execution stops on the first bacth which returns -1.
+	///         The execution stops on the first batch which returns -1 or 0.
 	///     </para>
 	/// </remarks>
 	public sealed class SqlServerDatabaseVersionDetector : DatabaseVersionDetector<SqlConnection, SqlTransaction, SqlConnectionStringBuilder, SqlServerDatabaseManager, SqlServerDatabaseManagerConfiguration>
@@ -108,7 +108,7 @@ namespace RI.Framework.Data.Database.Versioning
 							{
 								object value = command.ExecuteScalar();
 								version = value.Int32FromSqlServerResult() ?? -1;
-								if (version == -1)
+								if (version <= 0)
 								{
 									break;
 								}

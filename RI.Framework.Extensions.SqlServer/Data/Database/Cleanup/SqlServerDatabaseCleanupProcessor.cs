@@ -33,7 +33,7 @@ namespace RI.Framework.Data.Database.Cleanup
 		///         The default cleanup script uses <c> DBCC SHRINKDATABASE 0 </c>, executed as a single command.
 		///     </para>
 		/// </remarks>
-		public const string DefaultCleanupScript = "DBCC SHRINKDATABASE 0;" + DatabaseScriptLocator.DefaultBatchSeparator;
+		public const string DefaultCleanupScript = "DBCC SHRINKDATABASE (0);" + DatabaseScriptLocator.DefaultBatchSeparator;
 
 		#endregion
 

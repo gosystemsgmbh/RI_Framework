@@ -8,7 +8,7 @@ namespace RI.Framework.Data.Database.Upgrading
 	/// <summary>
 	///     Implements an assembly version upgrade step extractor for SQL Server databases.
 	/// </summary>
-	public sealed class SQLiteAssemblyResourceVersionUpgraderUtility : AssemblyResourceVersionUpgraderUtility<SqlServerDatabaseVersionUpgradeStep, SqlConnection, SqlTransaction, SqlConnectionStringBuilder, SqlServerDatabaseManager, SqlServerDatabaseManagerConfiguration>
+	public sealed class SqlServerAssemblyResourceVersionUpgraderUtility : AssemblyResourceVersionUpgraderUtility<SqlServerDatabaseVersionUpgradeStep, SqlConnection, SqlTransaction, SqlConnectionStringBuilder, SqlServerDatabaseManager, SqlServerDatabaseManagerConfiguration>
 	{
 		#region Overrides
 
