@@ -12,15 +12,15 @@ As it grew over time, accumulating more and more functionality, the framework wa
 
 The motivation to write a particular function and put it into the framework was (and still is) one or more of the following:
 
- * It did not exist
- * It did exist, but the implementation was following too different requirements or guidelines
- * It did exist, but the implementation was unsatisfying (style, abstractions, customizability, quality, license, etc.)
- * Productivity concerns ("Learning/customizing takes at least as long as writing it myself")
- * Naivety, [not-invented-here](https://en.wikipedia.org/wiki/Not_invented_here) syndrom, overconfidence ("I can do this better")
- * Educational purposes ("I need to experience the problems of implementing this myself")
- * Fun (Ever tried to write a composition container yourself? What an adventure!)
+ * It did not exist.
+ * It did exist, but the implementation was following too different requirements or guidelines.
+ * It did exist, but the implementation was unsatisfying (style, abstractions, customizability, quality, license, etc.).
+ * Productivity concerns ("Learning/customizing takes at least as long as writing it myself").
+ * Naivety, [not-invented-here](https://en.wikipedia.org/wiki/Not_invented_here) syndrom, overconfidence ("I can do this better").
+ * Educational purposes ("I need to experience the problems of implementing this myself").
+ * Fun (Ever tried to write a composition container yourself? What an adventure!).
 
-Therefore, keep in mind that this framework is not a silver bullet and you should take the time to check whether it will really help you.
+Therefore, keep in mind that this framework is not a silver bullet and you should take the time to check whether it (or parts of it...) is really what you need.
 
 ## Code organization
 
@@ -28,8 +28,9 @@ Therefore, keep in mind that this framework is not a silver bullet and you shoul
 
 The history of the framework is still somewhat visible in its structure, mostly in a very Visual Studio centric organization and workflow.
 
-There are no "loose files" as every file is a part of the projects Visual Studio solution or one of its C# projects.
-A few C# projects are also "misused" for grouping special kind of files or to define a separate compilation unit.
+There are no "loose files" as every file is a part of the Visual Studio solution or one of its C# projects.
+
+A few C# projects are also "misused" for file grouping/organization without actually producing an usable assembly.
 
 ### Build procedure
 
@@ -37,11 +38,11 @@ The build procedure relies entirely on Visual Studio as custom steps are impleme
 
 The build output is generated in the *_Output* folder in the directory of the Visual Studio solution.
 
-Note that not all Visual Studio projects are built by default to save time while doing "normal" work on the code.
-For example, the SHFB projects are not built by default.
+Note that to save time while doing "normal" work on the code, not all Visual Studio projects are built by default when the soultion is (re)built.
 
 ### Assemblies vs. Namespaces
 
 The separation of code into assemblies is based on dependencies and not functionality.
 
 This means that everything which has the same dependencies is put into the same assembly, while everything which belongs to the same functionality is put into the same namespace.
+If a certain functionality is not used, simply do not use the corresponding namespace.

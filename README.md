@@ -46,88 +46,87 @@ The long-term goal includes several larger endeavors:
 
 ## Compatibility
 
-| Runtime                                          | Platform                                             | Version | Remarks                                                              |
-| ------------------------------------------------ | ---------------------------------------------------- | ------- | -------------------------------------------------------------------- |
-| [.NET Framework](https://www.microsoft.com/net/) | Windows                                              | 4.6.1   |                                                                      |
-| [Mono](http://www.mono-project.com/)             | Linux                                                | 5.4.1.6 |                                                                      |
-| [Unity](https://unity3d.com/)                    | Windows, MacOS, iOS\*,<br>(Linux)\*\*, (Android)\*\* | 5.4.1f1 | \* = including AOT/IL2CPP<br>\*\* = not actively tested or supported |
+| Runtime                                          | Version | Platform                                         | Remarks                                                              |
+| ------------------------------------------------ | ------- | ------------------------------------------------ | -------------------------------------------------------------------- |
+| [.NET Framework](https://www.microsoft.com/net/) | 4.6.1   | Windows                                          |                                                                      |
+| [Mono](http://www.mono-project.com/)             | 5.4.1.6 | Linux                                            |                                                                      |
+| [Unity](https://unity3d.com/)                    | 5.4.1f1 | Windows, MacOS, iOS\*,<br>Linux\*\*, Android\*\* | \* = including AOT/IL2CPP<br>\*\* = not actively tested or supported |
 
 ## Contents
 
 N = .NET Framework <br> M = Mono <br> U = Unity <br> W = Windows (.NET Framework) <br> L = Linux (Mono)
 
-See [Documentation](DOCUMENTATION.md) for more details about the separation into namespaces and assemblies.
+See the [documentation](DOCUMENTATION.md) for more details about how to use the Decoupling and Utilities Framework and its separation into namespaces and assemblies.
 
 ### Decoupling namespaces
 
-| Functionality         | Platform          | Namespace                              | Remarks                                                                          |
-| --------------------- | ----------------- | -------------------------------------- | -------------------------------------------------------------------------------- |
-| Message bus           | N, M              | RI.Framework.Bus.*                     | Simple address and/or type based asynchronous message bus                        |
-| Composition container | N, M, U           | RI.Framework.Composition.*             | Dependency Injection, Inversion-of-Control (IoC)                                 |
-| Database manager      | N, M              | RI.Framework.Data.Database.*           | Low-level database: script management, schema versioning, cleanup, backup        |
-| Repository            | N, M              | RI.Framework.Data.Repository.*         | High-level database: generic repository, entities, views, filters, validation    |
-| Model-View-ViewModel  | N                 | RI.Framework.Mvvm.*                    | MVVM basics for WPF                                                              |
-| State machines        | N, M, U           | RI.Framework.StateMachines.*           | Hierarchical asynchronous state machines with signals, transients, and updates   |
-| Thread dispatcher     | N, M              | RI.Framework.Threading.Dispatcher.*    | Platform-independent dispatcher with priorities, timers, and task scheduler      |
-| Bootstrapper          | N, M, U           | RI.Framework.Services.*                | Application and service bootstrapper                                             |
-| Backup                | N, M              | RI.Framework.Services.Backup.*         | Application data backup                                                          |
-| Dispatcher            | U                 | RI.Framework.Services.Dispatcher.*     | Task dispatcher for Unity                                                        |
-| Logging               | N, M, U           | RI.Framework.Services.Logging.*        | Technical logging                                                                |
-| Modularization        | N, M, U           | RI.Framework.Services.Modularization.* | Modularizes application into functional modules                                  |
-| Regions               | N, M              | RI.Framework.Services.Regions.*        | Modularizes GUI into separate regions                                            |
-| Resources             | N, M              | RI.Framework.Services.Resources.*      | Application resource management and loading                                      |
-| Settings              | N, M              | RI.Framework.Services.Settings.*       | Application settings and configuration                                           |
+| Functionality         | Namespace                              | Platform          | Remarks                                                                                          |
+| --------------------- | -------------------------------------- | ----------------- | ------------------------------------------------------------------------------------------------ |
+| Composition container | RI.Framework.Composition.*             | N, M, U           | Dependency Injection (DI), Inversion-of-Control (IoC)                                            |
+| State machines        | RI.Framework.StateMachines.*           | N, M, U           | Hierarchical, asynchronous state machines with signals, transients, and updates                  |
+| Message bus           | RI.Framework.Bus.*                     | N, M              | Simple address and/or type based, local and/or distributed, asynchronous message bus             |
+| Database manager      | RI.Framework.Data.Database.*           | N, M              | Low-level database: script management, connection management, schema versioning, cleanup, backup |
+| Repository            | RI.Framework.Data.Repository.*         | N, M              | High-level database: generic repository, entities, views, filters, validation                    |
+| Thread dispatcher     | RI.Framework.Threading.Dispatcher      | N, M              | Platform-independent dispatcher with priorities, timers, task scheduler, synchronization context |
+| Model-View-ViewModel  | RI.Framework.Mvvm.*                    | W                 | Model-View-ViewModel (MVVM) base infrastructure for Windows Presentation Foundation              |
+| Bootstrapper          | RI.Framework.Services                  | N, M, U           | Application and service bootstrapper                                                             |
+| Logging               | RI.Framework.Services.Logging.*        | N, M, U           | Logging service                                                                                  |
+| Modularization        | RI.Framework.Services.Modularization.* | N, M, U           | Service to modularize applications into functional blocks                                        |
+| Regions               | RI.Framework.Services.Regions.*        | N, M              | Service to modularize GUIs into separate regions                                                 |
+| Settings              | RI.Framework.Services.Settings.*       | N, M              | Application settings and configuration management service                                        |
+| Resources             | RI.Framework.Services.Resources.*      | N, M              | Application resource management and loading service                                              |
+| Backup                | RI.Framework.Services.Backup.*         | N, M              | Application data backup service                                                                  |
+| Dispatcher            | RI.Framework.Services.Dispatcher.*     | U                 | Task dispatcher service for Unity                                                                |
 
 ### Utilities namespaces
 
-| Functionality         | Platform          | Namespace                              | Remarks                                                                          |
-| --------------------- | ----------------- | -------------------------------------- | -------------------------------------------------------------------------------- |
-| Collections           | N, M, U           | RI.Framework.Collections.*             | Collection types and utilities                                                   |
-| Direct LINQ           | N, M, U           | RI.Framework.Collections.DirectLinq    | AOT-compatible LINQ replacement with immediate execution                         |
-| I/O                   | N, M, U           | RI.Framework.IO.*                      | Binary, text, and stream types and utilities                                     |
-| CSV                   | N, M, U           | RI.Framework.IO.CSV                    | Files and data with comma separated values                                       |
-| INI                   | N, M, U           | RI.Framework.IO.INI                    | Files and data with key-value-pairs                                              |
-| Keyboard              | W                 | RI.Framework.IO.Keyboard               | Low-level keyboard access                                                        |
-| Printer               | W                 | RI.Framework.IO.Printer                | Low-level printer access                                                         |
-| Serial                | W                 | RI.Framework.IO.Serial                 | Low-level serial port access                                                     |
-| Paths                 | N, M, U           | RI.Framework.IO.Paths                  | Platform-independent file and directory path handling                            |
-| Mathematics           | N, M, U           | RI.Framework.Mathematic.*              | Math types and utilities                                                         |
-| Controllers           | N, M, U           | RI.Framework.Mathematic.Controllers    | PID controller                                                                   |
-| Threading             | N, M, U           | RI.Framework.Threading.*               | Threading types and utilities                                                    |
-| Basic utilities       | N, M, U           | RI.Framework.Utilities.*               | Utilities and extensions for basic CLR and BCL types and functions               |
-| Windows               | W                 | RI.Framework.Windows.*                 | Windows platform-specific functions                                              |
-| WPF                   | W                 | RI.Framework.Windows.Wpf.*             | Utilities and extensions for WPF                                                 |
-| Linux                 | L                 | RI.Framework.Linux.*                   | Linux platform-specific functions                                                |
-| Cross-platform        | N, M              | RI.Framework.CrossPlatform.*           | Platform-independent wrapper for RI.Framework.Windows.* and RI.Framework.Linux.* |
+| Functionality         | Namespace                              | Platform          | Remarks                                                                          |
+| --------------------- | -------------------------------------- | ----------------- | -------------------------------------------------------------------------------- |
+| Collections           | RI.Framework.Collections.*             | N, M, U           | Collection types and utilities                                                   |
+| Direct LINQ           | RI.Framework.Collections.DirectLinq    | N, M, U           | AOT-compatible LINQ subset/replacement with immediate execution                  |
+| I/O                   | RI.Framework.IO.*                      | N, M, U           | Binary, text, stream types and utilities                                         |
+| CSV                   | RI.Framework.IO.CSV                    | N, M, U           | Files and data with comma separated values                                       |
+| INI                   | RI.Framework.IO.INI                    | N, M, U           | Files and data with key-value-pairs                                              |
+| Keyboard              | RI.Framework.IO.Keyboard               | W                 | Low-level keyboard access                                                        |
+| Printer               | RI.Framework.IO.Printer                | W                 | Low-level printer access                                                         |
+| Serial                | RI.Framework.IO.Serial                 | W                 | Low-level serial port access                                                     |
+| Paths                 | RI.Framework.IO.Paths                  | N, M, U           | Platform-independent file and directory path handling                            |
+| Mathematics           | RI.Framework.Mathematic.*              | N, M, U           | Math types and utilities                                                         |
+| Controllers           | RI.Framework.Mathematic.Controllers    | N, M, U           | PID controller                                                                   |
+| Threading             | RI.Framework.Threading.*               | N, M, U           | Threading types and utilities                                                    |
+| Basic utilities       | RI.Framework.Utilities.*               | N, M, U           | Utilities and extensions for basic CLR and BCL types and functions               |
+| Windows               | RI.Framework.Windows.*                 | W                 | Windows platform-specific functions                                              |
+| Linux                 | RI.Framework.Linux.*                   | L                 | Linux platform-specific functions                                                |
+| Cross-platform        | RI.Framework.CrossPlatform.*           | N, M              | Platform-independent wrapper for RI.Framework.Windows.* and RI.Framework.Linux.* |
 
 ### Assemblies
 
-| Assembly                          | Platform | Remarks |
-| --------------------------------- | -------- | ------- |
-| RI.Framework.NetFx                | N, M     |         |
-| RI.Framework.Unity                | U        |         |
-| RI.Framework.CrossPlatform.Shared | N, M     |         |
-| RI.Framework.Linux.Shared         | L        |         |
-| RI.Framework.Windows.Shared       | W        |         |
-| RI.Framework.Windows.Wpf          | W        |         |
-| RI.Framework.Windows.Forms        | W        |         |
-| RI.Framework.Windows.Service      | W        |         |
+| Assembly                              | Platform | Remarks                                                                                  |
+| ------------------------------------- | -------- | ---------------------------------------------------------------------------------------- |
+| RI.Framework.NetFx.dll                | N, M     | Functions for the .NET Framework and Mono without additional dependencies                |
+| RI.Framework.Unity.dll                | U        | Functions for Unity without additional dependencies                                      |
+| RI.Framework.CrossPlatform.Shared.dll | N, M     | Platform-independent wrapper for RI.Framework.Windows.*.dll and RI.Framework.Linux.*.dll |
+| RI.Framework.Linux.Shared.dll         | L        | Functions only for Linux in general (e.g. using PInvoke)                                 |
+| RI.Framework.Windows.Shared.dll       | W        | Functions only for Windows in general (e.g. using PInvoke)                               |
+| RI.Framework.Windows.Wpf.dll          | W        | Functions for Windows Presentation Foundation                                            |
+| RI.Framework.Windows.Forms.dll        | W        | Functions for Windows Forms                                                              |
+| RI.Framework.Windows.Service.dll      | W        | Functions for Windows Services                                                           |
 
 ### Extensions
 
-| Library / Framework                                                 | Platform          | Assembly                                                                                                             | Version  |
-| ------------------------------------------------------------------- | ----------------- | -------------------------------------------------------------------------------------------------------------------- | -------- |
-| [Entity Framework 6.x](https://github.com/aspnet/EntityFramework6)  | N, M              | RI.Framework.Extensions.EF6.dll<br>RI.Framework.Extensions.SQLiteEF6.dll<br>RI.Framework.Extensions.SqlServerEF6.dll | 6.1.3    |
-| [SQLite](https://system.data.sqlite.org/)                           | N, M              | RI.Framework.Extensions.SQLite.dll<br>RI.Framework.Extensions.SQLiteEF6.dll                                          | 1.0.106  |
-| [SQL Server](https://www.microsoft.com/en-us/sql-server)            | N, M              | RI.Framework.Extensions.SqlServer.dll<br>RI.Framework.Extensions.SqlServerEF6.dll                                    |          |
-| [Nancy Framework](https://github.com/NancyFx/Nancy)                 | N, M              | RI.Framework.Extensions.Nancy.dll<br>RI.Framework.Extensions.NancyJson.dll                                           | 1.4.4    |
-| [DotNetZip](https://dotnetzip.codeplex.com/)                        | N, M              | RI.Framework.Extensions.DotNetZip.dll                                                                                | 1.10.1   |
-| [EPPlus](https://github.com/JanKallman/EPPlus)                      | N, M              | RI.Framework.Extensions.EPPlus.dll                                                                                   | 4.1.1    |
-| [Newtonsoft JSON](https://github.com/JamesNK/Newtonsoft.Json)       | N, M              | RI.Framework.Extensions.Json.dll<br>RI.Framework.Extensions.NancyJson.dll                                            | 10.0.3   |
-| [Bouncy Castle](https://github.com/onovotny/bc-csharp)              | N, M              | RI.Framework.Extensions.BouncyCastle.dll                                                                             | 1.8.1.3  |
-| [Extended WPF Toolkit](https://github.com/xceedsoftware/wpftoolkit) | W                 | RI.Framework.Extensions.WpfToolkit.dll                                                                               | 3.2.0    |
-| [Fluent Ribbon](https://github.com/fluentribbon/Fluent.Ribbon)      | W                 | RI.Framework.Extensions.FluentRibbon.dll                                                                             | 5.0.2.46 |
-| [Mono.Posix](https://github.com/mono/mono)                          | L                 | RI.Framework.Linux.Shared.dll                                                                                        | 4.5.0    |
+| Library / Framework                                                 | Version  | Assembly                                                                                                             | Platform          |
+| ------------------------------------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------- | ----------------- |
+| [Entity Framework 6.x](https://github.com/aspnet/EntityFramework6)  | 6.1.3    | RI.Framework.Extensions.EF6.dll<br>RI.Framework.Extensions.SQLiteEF6.dll<br>RI.Framework.Extensions.SqlServerEF6.dll | N, M              |
+| [SQLite](https://system.data.sqlite.org/)                           | 1.0.106  | RI.Framework.Extensions.SQLite.dll<br>RI.Framework.Extensions.SQLiteEF6.dll                                          | N, M              |
+| [SQL Server](https://www.microsoft.com/en-us/sql-server)            | 2008+    | RI.Framework.Extensions.SqlServer.dll<br>RI.Framework.Extensions.SqlServerEF6.dll                                    | N, M              |
+| [Nancy Framework](https://github.com/NancyFx/Nancy)                 | 1.4.4    | RI.Framework.Extensions.Nancy.dll<br>RI.Framework.Extensions.NancyJson.dll                                           | N, M              |
+| [DotNetZip](https://dotnetzip.codeplex.com/)                        | 1.10.1   | RI.Framework.Extensions.DotNetZip.dll                                                                                | N, M              |
+| [EPPlus](https://github.com/JanKallman/EPPlus)                      | 4.1.1    | RI.Framework.Extensions.EPPlus.dll                                                                                   | N, M              |
+| [Newtonsoft JSON](https://github.com/JamesNK/Newtonsoft.Json)       | 10.0.3   | RI.Framework.Extensions.Json.dll<br>RI.Framework.Extensions.NancyJson.dll                                            | N, M              |
+| [Bouncy Castle](https://github.com/onovotny/bc-csharp)              | 1.8.1.3  | RI.Framework.Extensions.BouncyCastle.dll                                                                             | N, M              |
+| [Extended WPF Toolkit](https://github.com/xceedsoftware/wpftoolkit) | 3.2.0    | RI.Framework.Extensions.WpfToolkit.dll                                                                               | W                 |
+| [Fluent Ribbon](https://github.com/fluentribbon/Fluent.Ribbon)      | 5.0.2.46 | RI.Framework.Extensions.FluentRibbon.dll                                                                             | W                 |
+| [Mono.Posix](https://github.com/mono/mono)                          | 4.5.0    | RI.Framework.Linux.Shared.dll                                                                                        | L                 |
 
 ## License
 
@@ -139,7 +138,7 @@ See [License](LICENSE.txt) for more details and the license itself.
 
 Each [Release](#releases) contains an API documentation which describes the assemblies, namespaces, types, and members of the various functions.
 
-See [Documentation](DOCUMENTATION.md) for more details about the project.
+See [Documentation](DOCUMENTATION.md) for more details about the project and code.
 
 ## Contribution & Issues
 
