@@ -60,57 +60,57 @@ See the [documentation](DOCUMENTATION.md) for more details about how to use the 
 
 ### Decoupling namespaces
 
-| Functionality         | Namespace                              | Platform          | Remarks                                                                                          |
-| --------------------- | -------------------------------------- | ----------------- | ------------------------------------------------------------------------------------------------ |
-| Composition container | RI.Framework.Composition.*             | N, M, U           | Dependency Injection (DI), Inversion-of-Control (IoC)                                            |
-| State machines        | RI.Framework.StateMachines.*           | N, M, U           | Hierarchical, asynchronous state machines with signals, transients, and updates                  |
-| Message bus           | RI.Framework.Bus.*                     | N, M              | Simple address and/or type based, local and/or distributed, asynchronous message bus             |
-| Database manager      | RI.Framework.Data.Database.*           | N, M              | Low-level database: script management, connection management, schema versioning, cleanup, backup |
-| Repository            | RI.Framework.Data.Repository.*         | N, M              | High-level database: generic repository, entities, views, filters, validation                    |
-| Thread dispatcher     | RI.Framework.Threading.Dispatcher      | N, M              | Platform-independent dispatcher with priorities, timers, task scheduler, synchronization context |
-| Model-View-ViewModel  | RI.Framework.Mvvm.*                    | W                 | Model-View-ViewModel (MVVM) base infrastructure for Windows Presentation Foundation              |
-| Bootstrapper          | RI.Framework.Services                  | N, M, U           | Application and service bootstrapper                                                             |
-| Logging               | RI.Framework.Services.Logging.*        | N, M, U           | Logging service                                                                                  |
-| Modularization        | RI.Framework.Services.Modularization.* | N, M, U           | Service to modularize applications into functional blocks                                        |
-| Regions               | RI.Framework.Services.Regions.*        | N, M              | Service to modularize GUIs into separate regions                                                 |
-| Settings              | RI.Framework.Services.Settings.*       | N, M              | Application settings and configuration management service                                        |
-| Resources             | RI.Framework.Services.Resources.*      | N, M              | Application resource management and loading service                                              |
-| Backup                | RI.Framework.Services.Backup.*         | N, M              | Application data backup service                                                                  |
-| Dispatcher            | RI.Framework.Services.Dispatcher.*     | U                 | Task dispatcher service for Unity                                                                |
+| Functionality         | Namespace                               | Platform          | Remarks                                                                                          |
+| --------------------- | --------------------------------------- | ----------------- | ------------------------------------------------------------------------------------------------ |
+| Composition container | RI.Framework.Composition.\*             | N, M, U           | Dependency Injection (DI), Inversion-of-Control (IoC)                                            |
+| State machines        | RI.Framework.StateMachines.\*           | N, M, U           | Hierarchical, asynchronous state machines with signals, transients, and updates                  |
+| Message bus           | RI.Framework.Bus.\*                     | N, M              | Simple address and/or type based, local and/or distributed, asynchronous message bus             |
+| Database manager      | RI.Framework.Data.Database.\*           | N, M              | Low-level database: script management, connection management, schema versioning, cleanup, backup |
+| Repository            | RI.Framework.Data.Repository.\*         | N, M              | High-level database: generic repository, entities, views, filters, validation                    |
+| Thread dispatcher     | RI.Framework.Threading.Dispatcher       | N, M              | Platform-independent dispatcher with priorities, timers, task scheduler, synchronization context |
+| Model-View-ViewModel  | RI.Framework.Mvvm.\*                    | W                 | Model-View-ViewModel (MVVM) base infrastructure for Windows Presentation Foundation              |
+| Bootstrapper          | RI.Framework.Services                   | N, M, U           | Application and service bootstrapper                                                             |
+| Logging               | RI.Framework.Services.Logging.\*        | N, M, U           | Logging service                                                                                  |
+| Modularization        | RI.Framework.Services.Modularization.\* | N, M, U           | Service to modularize applications into functional blocks                                        |
+| Regions               | RI.Framework.Services.Regions.\*        | N, M              | Service to modularize GUIs into separate regions                                                 |
+| Settings              | RI.Framework.Services.Settings.\*       | N, M              | Application settings and configuration management service                                        |
+| Resources             | RI.Framework.Services.Resources.\*      | N, M              | Application resource management and loading service                                              |
+| Backup                | RI.Framework.Services.Backup.\*         | N, M              | Application data backup service                                                                  |
+| Dispatcher            | RI.Framework.Services.Dispatcher.\*     | U                 | Task dispatcher service for Unity                                                                |
 
 ### Utilities namespaces
 
-| Functionality         | Namespace                              | Platform          | Remarks                                                                          |
-| --------------------- | -------------------------------------- | ----------------- | -------------------------------------------------------------------------------- |
-| Collections           | RI.Framework.Collections.*             | N, M, U           | Collection types and utilities                                                   |
-| Direct LINQ           | RI.Framework.Collections.DirectLinq    | N, M, U           | AOT-compatible LINQ subset/replacement with immediate execution                  |
-| I/O                   | RI.Framework.IO.*                      | N, M, U           | Binary, text, stream types and utilities                                         |
-| CSV                   | RI.Framework.IO.CSV                    | N, M, U           | Files and data with comma separated values                                       |
-| INI                   | RI.Framework.IO.INI                    | N, M, U           | Files and data with key-value-pairs                                              |
-| Keyboard              | RI.Framework.IO.Keyboard               | W                 | Low-level keyboard access                                                        |
-| Printer               | RI.Framework.IO.Printer                | W                 | Low-level printer access                                                         |
-| Serial                | RI.Framework.IO.Serial                 | W                 | Low-level serial port access                                                     |
-| Paths                 | RI.Framework.IO.Paths                  | N, M, U           | Platform-independent file and directory path handling                            |
-| Mathematics           | RI.Framework.Mathematic.*              | N, M, U           | Math types and utilities                                                         |
-| Controllers           | RI.Framework.Mathematic.Controllers    | N, M, U           | PID controller                                                                   |
-| Threading             | RI.Framework.Threading.*               | N, M, U           | Threading types and utilities                                                    |
-| Basic utilities       | RI.Framework.Utilities.*               | N, M, U           | Utilities and extensions for basic CLR and BCL types and functions               |
-| Windows               | RI.Framework.Windows.*                 | W                 | Windows platform-specific functions                                              |
-| Linux                 | RI.Framework.Linux.*                   | L                 | Linux platform-specific functions                                                |
-| Cross-platform        | RI.Framework.CrossPlatform.*           | N, M              | Platform-independent wrapper for RI.Framework.Windows.* and RI.Framework.Linux.* |
+| Functionality         | Namespace                               | Platform          | Remarks                                                                            |
+| --------------------- | --------------------------------------- | ----------------- | ---------------------------------------------------------------------------------- |
+| Collections           | RI.Framework.Collections.\*             | N, M, U           | Collection types and utilities                                                     |
+| Direct LINQ           | RI.Framework.Collections.DirectLinq     | N, M, U           | AOT-compatible LINQ subset/replacement with immediate execution                    |
+| I/O                   | RI.Framework.IO.\*                      | N, M, U           | Binary, text, stream types and utilities                                           |
+| CSV                   | RI.Framework.IO.CSV                     | N, M, U           | Files and data with comma separated values                                         |
+| INI                   | RI.Framework.IO.INI                     | N, M, U           | Files and data with key-value-pairs                                                |
+| Keyboard              | RI.Framework.IO.Keyboard                | W                 | Low-level keyboard access                                                          |
+| Printer               | RI.Framework.IO.Printer                 | W                 | Low-level printer access                                                           |
+| Serial                | RI.Framework.IO.Serial                  | W                 | Low-level serial port access                                                       |
+| Paths                 | RI.Framework.IO.Paths                   | N, M, U           | Platform-independent file and directory path handling                              |
+| Mathematics           | RI.Framework.Mathematic.\*              | N, M, U           | Math types and utilities                                                           |
+| Controllers           | RI.Framework.Mathematic.Controllers     | N, M, U           | PID controller                                                                     |
+| Threading             | RI.Framework.Threading.\*               | N, M, U           | Threading types and utilities                                                      |
+| Basic utilities       | RI.Framework.Utilities.\*               | N, M, U           | Utilities and extensions for basic CLR and BCL types and functions                 |
+| Windows               | RI.Framework.Windows.\*                 | W                 | Windows platform-specific functions                                                |
+| Linux                 | RI.Framework.Linux.\*                   | L                 | Linux platform-specific functions                                                  |
+| Cross-platform        | RI.Framework.CrossPlatform.\*           | N, M              | Platform-independent wrapper for RI.Framework.Windows.\* and RI.Framework.Linux.\* |
 
 ### Assemblies
 
-| Assembly                              | Platform | Remarks                                                                                  |
-| ------------------------------------- | -------- | ---------------------------------------------------------------------------------------- |
-| RI.Framework.NetFx.dll                | N, M     | Functions for the .NET Framework and Mono without additional dependencies                |
-| RI.Framework.Unity.dll                | U        | Functions for Unity without additional dependencies                                      |
-| RI.Framework.CrossPlatform.Shared.dll | N, M     | Platform-independent wrapper for RI.Framework.Windows.*.dll and RI.Framework.Linux.*.dll |
-| RI.Framework.Linux.Shared.dll         | L        | Functions only for Linux in general (e.g. using PInvoke)                                 |
-| RI.Framework.Windows.Shared.dll       | W        | Functions only for Windows in general (e.g. using PInvoke)                               |
-| RI.Framework.Windows.Wpf.dll          | W        | Functions for Windows Presentation Foundation                                            |
-| RI.Framework.Windows.Forms.dll        | W        | Functions for Windows Forms                                                              |
-| RI.Framework.Windows.Service.dll      | W        | Functions for Windows Services                                                           |
+| Assembly                              | Platform | Remarks                                                                                    |
+| ------------------------------------- | -------- | ------------------------------------------------------------------------------------------ |
+| RI.Framework.NetFx.dll                | N, M     | Functions for the .NET Framework and Mono without additional dependencies                  |
+| RI.Framework.Unity.dll                | U        | Functions for Unity without additional dependencies                                        |
+| RI.Framework.CrossPlatform.Shared.dll | N, M     | Platform-independent wrapper for RI.Framework.Windows.\*.dll and RI.Framework.Linux.\*.dll |
+| RI.Framework.Linux.Shared.dll         | L        | Functions only for Linux in general (e.g. using PInvoke)                                   |
+| RI.Framework.Windows.Shared.dll       | W        | Functions only for Windows in general (e.g. using PInvoke)                                 |
+| RI.Framework.Windows.Wpf.dll          | W        | Functions for Windows Presentation Foundation                                              |
+| RI.Framework.Windows.Forms.dll        | W        | Functions for Windows Forms                                                                |
+| RI.Framework.Windows.Service.dll      | W        | Functions for Windows Services                                                             |
 
 ### Extensions
 
