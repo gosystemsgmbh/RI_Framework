@@ -50,7 +50,7 @@ The long-term goal includes several larger endeavors:
 | ------------------------------------------------ | --------------------------------------------------- | ------- | -------------------------------------------------------------------- |
 | [.NET Framework](https://www.microsoft.com/net/) | Windows                                             | 4.6.1   |                                                                      |
 | [Mono](http://www.mono-project.com/)             | Linux                                               | 5.4.1.6 |                                                                      |
-| [Unity](https://unity3d.com/)                    | Windows, MacOS, iOS\*,<br>(Linux)\*\*, (Android)\\* | 5.4.1f1 | \* = including AOT/IL2CPP<br>\*\* = not actively tested or supported |
+| [Unity](https://unity3d.com/)                    | Windows, MacOS, iOS\*,<br>(Linux)\*\*, (Android)\* | 5.4.1f1 | \* = including AOT/IL2CPP<br>\*\* = not actively tested or supported |
 
 ## Contents
 
@@ -137,7 +137,7 @@ See [License](LICENSE.txt) for more details and the license itself.
 
 ## Documentation
 
-Each [Release](#Releases) contains an API documentation which describes the assemblies, namespaces, types, and members of the various functions.
+Each [Release](#releases) contains an API documentation which describes the assemblies, namespaces, types, and members of the various functions.
 
 See [Documentation](DOCUMENTATION.md) for more details about the project.
 
