@@ -46,11 +46,11 @@ The long-term goal includes several larger endeavors:
 
 ## Compatibility
 
-| Runtime                                          | Platform                                            | Version | Remarks                                                              |
-| ------------------------------------------------ | --------------------------------------------------- | ------- | -------------------------------------------------------------------- |
-| [.NET Framework](https://www.microsoft.com/net/) | Windows                                             | 4.6.1   |                                                                      |
-| [Mono](http://www.mono-project.com/)             | Linux                                               | 5.4.1.6 |                                                                      |
-| [Unity](https://unity3d.com/)                    | Windows, MacOS, iOS\*,<br>(Linux)\*\*, (Android)\* | 5.4.1f1 | \* = including AOT/IL2CPP<br>\*\* = not actively tested or supported |
+| Runtime                                          | Platform                                             | Version | Remarks                                                              |
+| ------------------------------------------------ | ---------------------------------------------------- | ------- | -------------------------------------------------------------------- |
+| [.NET Framework](https://www.microsoft.com/net/) | Windows                                              | 4.6.1   |                                                                      |
+| [Mono](http://www.mono-project.com/)             | Linux                                                | 5.4.1.6 |                                                                      |
+| [Unity](https://unity3d.com/)                    | Windows, MacOS, iOS\*,<br>(Linux)\*\*, (Android)\*\* | 5.4.1f1 | \* = including AOT/IL2CPP<br>\*\* = not actively tested or supported |
 
 ## Contents
 
