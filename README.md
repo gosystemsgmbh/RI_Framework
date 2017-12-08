@@ -40,23 +40,25 @@ The long-term goal includes several larger endeavors:
    * .NET Standard
    * .NET Core (through .NET Standard)
  * Extensions for additional libraries/frameworks:
-   * ASP.NET
+   * ASP.NET (not that much as focus will be on ASP.NET Core)
    * ASP.NET Core
    * Entity Framework Core
 
 ## Compatibility
 
-| Runtime                                          | Platform                                       | Version | Remarks                                                                 |
-| ------------------------------------------------ | ---------------------------------------------- | ------- | ----------------------------------------------------------------------- |
-| [.NET Framework](https://www.microsoft.com/net/) | Windows                                        | 4.6.1   |                                                                         |
-| [Mono](http://www.mono-project.com/)             | Linux                                          | 5.4.1.6 |                                                                         |
-| [Unity](https://unity3d.com/)                    | Windows, MacOS, iOS,<br>(Linux)\*, (Android)\* | 5.4.1f1 | * = not actively tested or supported                                    |
+| Runtime                                          | Platform                                            | Version | Remarks                                                              |
+| ------------------------------------------------ | --------------------------------------------------- | ------- | -------------------------------------------------------------------- |
+| [.NET Framework](https://www.microsoft.com/net/) | Windows                                             | 4.6.1   |                                                                      |
+| [Mono](http://www.mono-project.com/)             | Linux                                               | 5.4.1.6 |                                                                      |
+| [Unity](https://unity3d.com/)                    | Windows, MacOS, iOS\*,<br>(Linux)\*\*, (Android)\\* | 5.4.1f1 | \* = including AOT/IL2CPP<br>\*\* = not actively tested or supported |
 
 ## Contents
 
 N = .NET Framework <br> M = Mono <br> U = Unity <br> W = Windows (.NET Framework) <br> L = Linux (Mono)
 
-### Decoupling
+See [Documentation](DOCUMENTATION.md) for more details about the separation into namespaces and assemblies.
+
+### Decoupling namespaces
 
 | Functionality         | Platform          | Namespace                              | Remarks                                                                          |
 | --------------------- | ----------------- | -------------------------------------- | -------------------------------------------------------------------------------- |
@@ -76,7 +78,7 @@ N = .NET Framework <br> M = Mono <br> U = Unity <br> W = Windows (.NET Framework
 | Resources             | N, M              | RI.Framework.Services.Resources.*      | Application resource management and loading                                      |
 | Settings              | N, M              | RI.Framework.Services.Settings.*       | Application settings and configuration                                           |
 
-### Utilities
+### Utilities namespaces
 
 | Functionality         | Platform          | Namespace                              | Remarks                                                                          |
 | --------------------- | ----------------- | -------------------------------------- | -------------------------------------------------------------------------------- |
@@ -98,21 +100,34 @@ N = .NET Framework <br> M = Mono <br> U = Unity <br> W = Windows (.NET Framework
 | Linux                 | L                 | RI.Framework.Linux.*                   | Linux platform-specific functions                                                |
 | Cross-platform        | N, M              | RI.Framework.CrossPlatform.*           | Platform-independent wrapper for RI.Framework.Windows.* and RI.Framework.Linux.* |
 
+### Assemblies
+
+| Assembly                          | Platform | Remarks |
+| --------------------------------- | -------- | ------- |
+| RI.Framework.NetFx                | N, M     |         |
+| RI.Framework.Unity                | U        |         |
+| RI.Framework.CrossPlatform.Shared | N, M     |         |
+| RI.Framework.Linux.Shared         | L        |         |
+| RI.Framework.Windows.Shared       | W        |         |
+| RI.Framework.Windows.Wpf          | W        |         |
+| RI.Framework.Windows.Forms        | W        |         |
+| RI.Framework.Windows.Service      | W        |         |
+
 ### Extensions
 
-| Library / Framework                                                 | Platform          | Namespace                              | Version  |
-| ------------------------------------------------------------------- | ----------------- | -------------------------------------- | -------- |
-| [Entity Framework 6.x](https://github.com/aspnet/EntityFramework6)  | N, M              | RI.Framework.Data.EF.*                 | 6.1.3    |
-| [SQLite](https://system.data.sqlite.org/)                           | N, M              | RI.Framework.Data.SQLite.*             | 1.0.106  |
-| [SQL Server](https://www.microsoft.com/en-us/sql-server)            | N, M              | RI.Framework.Data.SqlServer.*          |          |
-| [Nancy Framework](https://github.com/NancyFx/Nancy)                 | N, M              | RI.Framework.Web.Nancy.*               | 1.4.4    |
-| [DotNetZip](https://dotnetzip.codeplex.com/)                        | N, M              |                                        | 1.10.1   |
-| [EPPlus](https://github.com/JanKallman/EPPlus)                      | N, M              |                                        | 4.1.1    |
-| [Extended WPF Toolkit](https://github.com/xceedsoftware/wpftoolkit) | W                 |                                        | 3.2.0    |
-| [Fluent Ribbon](https://github.com/fluentribbon/Fluent.Ribbon)      | W                 |                                        | 5.0.2.46 |
-| [Mono.Posix](https://github.com/mono/mono)                          | L                 |                                        | 4.5.0    |
-| [Newtonsoft JSON](https://github.com/JamesNK/Newtonsoft.Json)       | N, M              |                                        | 10.0.3   |
-| [Bouncy Castle](https://github.com/onovotny/bc-csharp)              | N, M              |                                        | 1.8.1.3  |
+| Library / Framework                                                 | Platform          | Assembly                                                                                                             | Version  |
+| ------------------------------------------------------------------- | ----------------- | -------------------------------------------------------------------------------------------------------------------- | -------- |
+| [Entity Framework 6.x](https://github.com/aspnet/EntityFramework6)  | N, M              | RI.Framework.Extensions.EF6.dll<br>RI.Framework.Extensions.SQLiteEF6.dll<br>RI.Framework.Extensions.SqlServerEF6.dll | 6.1.3    |
+| [SQLite](https://system.data.sqlite.org/)                           | N, M              | RI.Framework.Extensions.SQLite.dll<br>RI.Framework.Extensions.SQLiteEF6.dll                                          | 1.0.106  |
+| [SQL Server](https://www.microsoft.com/en-us/sql-server)            | N, M              | RI.Framework.Extensions.SqlServer.dll<br>RI.Framework.Extensions.SqlServerEF6.dll                                    |          |
+| [Nancy Framework](https://github.com/NancyFx/Nancy)                 | N, M              | RI.Framework.Extensions.Nancy.dll<br>RI.Framework.Extensions.NancyJson.dll                                           | 1.4.4    |
+| [DotNetZip](https://dotnetzip.codeplex.com/)                        | N, M              | RI.Framework.Extensions.DotNetZip.dll                                                                                | 1.10.1   |
+| [EPPlus](https://github.com/JanKallman/EPPlus)                      | N, M              | RI.Framework.Extensions.EPPlus.dll                                                                                   | 4.1.1    |
+| [Newtonsoft JSON](https://github.com/JamesNK/Newtonsoft.Json)       | N, M              | RI.Framework.Extensions.Json.dll<br>RI.Framework.Extensions.NancyJson.dll                                            | 10.0.3   |
+| [Bouncy Castle](https://github.com/onovotny/bc-csharp)              | N, M              | RI.Framework.Extensions.BouncyCastle.dll                                                                             | 1.8.1.3  |
+| [Extended WPF Toolkit](https://github.com/xceedsoftware/wpftoolkit) | W                 | RI.Framework.Extensions.WpfToolkit.dll                                                                               | 3.2.0    |
+| [Fluent Ribbon](https://github.com/fluentribbon/Fluent.Ribbon)      | W                 | RI.Framework.Extensions.FluentRibbon.dll                                                                             | 5.0.2.46 |
+| [Mono.Posix](https://github.com/mono/mono)                          | L                 | RI.Framework.Linux.Shared.dll                                                                                        | 4.5.0    |
 
 ## License
 
@@ -122,10 +137,10 @@ See [License](LICENSE.txt) for more details and the license itself.
 
 ## Documentation
 
-Each release contains an API documentation which describes the assemblies, namespaces, types, and members of the various functions.
+Each [Release](#Releases) contains an API documentation which describes the assemblies, namespaces, types, and members of the various functions.
 
 See [Documentation](DOCUMENTATION.md) for more details about the project.
 
 ## Contribution & Issues
 
-See [Contribution](CONTRIBUTION.md) if you wish to contribute to the project or report [issues](https://github.com/RotenInformatik/RI_Framework/issues).
+See [Contribution](CONTRIBUTING.md) if you wish to contribute to the project or report [issues](https://github.com/RotenInformatik/RI_Framework/issues).
