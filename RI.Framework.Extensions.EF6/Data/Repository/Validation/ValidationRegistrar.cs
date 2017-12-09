@@ -4,6 +4,8 @@ using System.Linq;
 using System.Reflection;
 
 using RI.Framework.Collections;
+using RI.Framework.Composition;
+using RI.Framework.Utilities.ObjectModel;
 
 
 
@@ -77,6 +79,52 @@ namespace RI.Framework.Data.Repository.Validation
 
 			List<IEntityValidation> validators = (from x in assembly.GetTypes() where typeof(IEntityValidation).IsAssignableFrom(x) && (!x.IsAbstract) select (IEntityValidation)Activator.CreateInstance(x)).ToList();
 			this.List.AddRange(validators);
+		}
+
+		/// <summary>
+		///     Registers entity validation class instances from a composition container.
+		/// </summary>
+		/// <param name="container"> The composition container to use. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="container" /> is null. </exception>
+		public void AddFromCompositionContainer (CompositionContainer container)
+		{
+			if (container == null)
+			{
+				throw new ArgumentNullException(nameof(container));
+			}
+
+			this.AddFromDependencyResolver(container);
+		}
+
+		/// <summary>
+		///     Registers entity validation class instances from a dependency resolver.
+		/// </summary>
+		/// <param name="resolver"> The dependency resolver to use. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="resolver" /> is null. </exception>
+		public void AddFromDependencyResolver (IDependencyResolver resolver)
+		{
+			if (resolver == null)
+			{
+				throw new ArgumentNullException(nameof(resolver));
+			}
+
+			resolver.GetInstances<IEntityValidation>().ForEach(this.Add);
+		}
+
+		/// <summary>
+		///     Registers entity validation class instances from <see cref="ServiceLocator" />.
+		/// </summary>
+		public void AddFromServiceLocator ()
+		{
+			this.AddFromDependencyResolver(ServiceLocator.Resolver);
+		}
+
+		/// <summary>
+		///     Registers entity validation class instances from <see cref="Singleton" />.
+		/// </summary>
+		public void AddFromSingleton ()
+		{
+			this.AddFromDependencyResolver(Singleton.Resolver);
 		}
 
 		#endregion

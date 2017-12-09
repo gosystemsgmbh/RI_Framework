@@ -2,6 +2,8 @@
 
 using Newtonsoft.Json;
 
+using RI.Framework.Composition.Model;
+
 
 
 
@@ -10,8 +12,54 @@ namespace RI.Framework.Web.Nancy
 	/// <summary>
 	///     Implements an object serializer which uses JSON.
 	/// </summary>
+	[Export]
+	[Export(typeof(IObjectSerializer))]
 	public sealed class JsonNetObjectSerializer : IObjectSerializer
 	{
+		#region Instance Constructor/Destructor
+
+		/// <summary>
+		///     Creates a new instance of <see cref="JsonNetObjectSerializer" />.
+		/// </summary>
+		/// <remarks>
+		///     <para>
+		///         Default JSON serialization settings are used.
+		///     </para>
+		/// </remarks>
+		public JsonNetObjectSerializer ()
+			: this(null)
+		{
+		}
+
+		/// <summary>
+		///     Creates a new instance of <see cref="JsonNetObjectSerializer" />.
+		/// </summary>
+		/// <param name="settings"> The used JSON serialization settings or null to use default settings. </param>
+		public JsonNetObjectSerializer (JsonSerializerSettings settings)
+		{
+			this.Settings = settings;
+		}
+
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
+
+		/// <summary>
+		///     Gets the used JSON serialization settings.
+		/// </summary>
+		/// <value>
+		///     The used JSON serialization settings or null if default settings are used.
+		/// </value>
+		public JsonSerializerSettings Settings { get; }
+
+		#endregion
+
+
+
+
 		#region Interface: IObjectSerializer
 
 		/// <inheritdoc />
@@ -19,8 +67,7 @@ namespace RI.Framework.Web.Nancy
 		{
 			try
 			{
-				//Deserialize with default settings
-				return JsonConvert.DeserializeObject(sourceString);
+				return JsonConvert.DeserializeObject(sourceString, this.Settings);
 			}
 			catch
 			{
@@ -32,8 +79,7 @@ namespace RI.Framework.Web.Nancy
 		/// <inheritdoc />
 		public string Serialize (object sourceObject)
 		{
-			//Serialize with default settings
-			return JsonConvert.SerializeObject(sourceObject);
+			return JsonConvert.SerializeObject(sourceObject, this.Settings);
 		}
 
 		#endregion

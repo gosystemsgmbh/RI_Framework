@@ -59,7 +59,7 @@ namespace RI.Framework.Services.Settings.Converters
 		///     Gets the used JSON serialization settings.
 		/// </summary>
 		/// <value>
-		///     The used JSON serialization settings.
+		///     The used JSON serialization settings or null if default settings are used.
 		/// </value>
 		public JsonSerializerSettings Settings { get; }
 

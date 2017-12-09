@@ -37,6 +37,23 @@ namespace RI.Framework.Linux
 		///     Executes bash commands.
 		/// </summary>
 		/// <param name="commands"> The bash commands. </param>
+		/// <returns>
+		///     The <see cref="Process" /> if the commands could be started successfully, null otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <note type="important">
+		///         The standard output is redirected.
+		///         Therefore, you must read the <see cref="Process.StandardOutput" /> reader.
+		///     </note>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="commands" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="commands" /> is an empty string. </exception>
+		public static Process ExecuteBashCommands (string commands) => LinuxShell.ExecuteBashCommands(commands, DirectoryPath.GetCurrentDirectory());
+
+		/// <summary>
+		///     Executes bash commands.
+		/// </summary>
+		/// <param name="commands"> The bash commands. </param>
 		/// <param name="workingDirectory"> The used working directory. Can be null to use the current directory. </param>
 		/// <returns>
 		///     The <see cref="Process" /> if the commands could be started successfully, null otherwise.
@@ -114,6 +131,24 @@ namespace RI.Framework.Linux
 
 			return process;
 		}
+
+		/// <summary>
+		///     Executes a bash script file.
+		/// </summary>
+		/// <param name="scriptFile"> The bash script file. </param>
+		/// <returns>
+		///     The <see cref="Process" /> if the script file could be started successfully, null otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <note type="important">
+		///         The standard output is redirected.
+		///         Therefore, you must read the <see cref="Process.StandardOutput" /> reader.
+		///     </note>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="scriptFile" /> is null. </exception>
+		/// <exception cref="InvalidPathArgumentException"> <paramref name="scriptFile" /> is not a valid path. </exception>
+		/// <exception cref="FileNotFoundException"> <paramref name="scriptFile" /> does not exist. </exception>
+		public static Process ExecuteBashScript (FilePath scriptFile) => LinuxShell.ExecuteBashScript(scriptFile, DirectoryPath.GetCurrentDirectory());
 
 		/// <summary>
 		///     Executes a bash script file.

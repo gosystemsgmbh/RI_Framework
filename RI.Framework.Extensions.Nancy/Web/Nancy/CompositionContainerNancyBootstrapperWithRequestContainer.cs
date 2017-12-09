@@ -131,6 +131,7 @@ namespace RI.Framework.Web.Nancy
 			foreach (Type requestStartupType in requestStartupTypes)
 			{
 				batch.AddExport(requestStartupType, typeof(IRequestStartup));
+				batch.AddExport(requestStartupType, requestStartupType);
 			}
 			container.Compose(batch);
 
@@ -143,6 +144,8 @@ namespace RI.Framework.Web.Nancy
 			CompositionBatch batch = new CompositionBatch();
 			batch.AddExport(this, typeof(INancyBootstrapper));
 			batch.AddExport(this, typeof(INancyModuleCatalog));
+			batch.AddExport(this, typeof(NancyBootstrapperBase<CompositionContainer>));
+			batch.AddExport(this, typeof(NancyBootstrapperWithRequestContainerBase<CompositionContainer>));
 			batch.AddExport(this, this.GetType());
 			applicationContainer.Compose(batch);
 		}
@@ -185,6 +188,12 @@ namespace RI.Framework.Web.Nancy
 		/// <inheritdoc />
 		protected override void RegisterRequestContainerModules (CompositionContainer container, IEnumerable<ModuleRegistration> moduleRegistrationTypes)
 		{
+			CompositionBatch batch = new CompositionBatch();
+			foreach (ModuleRegistration moduleRegistration in moduleRegistrationTypes)
+			{
+				batch.AddExport(moduleRegistration.ModuleType, moduleRegistration.ModuleType, false);
+			}
+			container.Compose(batch);
 		}
 
 		/// <inheritdoc />
@@ -220,7 +229,6 @@ namespace RI.Framework.Web.Nancy
 
 		/// <inheritdoc />
 		public ILogger Logger { get; set; } = LogLocator.Logger;
-
 
 		/// <inheritdoc />
 		public bool LoggingEnabled { get; set; } = true;

@@ -27,28 +27,7 @@ namespace RI.Framework.Data.EF.Resolvers
 		public CompositionContainerDbDependencyResolver (CompositionContainer container)
 			: base(container)
 		{
-			if (container == null)
-			{
-				throw new ArgumentNullException(nameof(container));
-			}
-
-			this.Container = container;
 		}
-
-		#endregion
-
-
-
-
-		#region Instance Properties/Indexer
-
-		/// <summary>
-		///     Gets the used composition container.
-		/// </summary>
-		/// <value>
-		///     The used composition container.
-		/// </value>
-		public CompositionContainer Container { get; }
 
 		#endregion
 	}

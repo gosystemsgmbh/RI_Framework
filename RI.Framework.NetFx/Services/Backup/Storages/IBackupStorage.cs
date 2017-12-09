@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
+using RI.Framework.Composition.Model;
 using RI.Framework.IO.Paths;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.ObjectModel;
@@ -20,6 +21,7 @@ namespace RI.Framework.Services.Backup.Storages
 	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
+	[Export]
 	public interface IBackupStorage : ISynchronizable
 	{
 		/// <summary>

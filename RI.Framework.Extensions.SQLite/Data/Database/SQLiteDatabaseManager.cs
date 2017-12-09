@@ -2,8 +2,6 @@
 using System.Diagnostics.CodeAnalysis;
 
 using RI.Framework.Data.SQLite;
-using RI.Framework.Data.SQLite.Collations;
-using RI.Framework.Data.SQLite.Functions;
 using RI.Framework.IO.Paths;
 
 
@@ -62,32 +60,12 @@ namespace RI.Framework.Data.Database
 
 		private void RegisterCollations (SQLiteConnection connection)
 		{
-			connection.BindFunction(new CurrentCultureIgnoreCaseSQLiteCollation());
-			connection.BindFunction(new CurrentCultureSQLiteCollation());
-			connection.BindFunction(new InvariantCultureIgnoreCaseSQLiteCollation());
-			connection.BindFunction(new InvariantCultureSQLiteCollation());
-			connection.BindFunction(new OrdinalIgnoreCaseSQLiteCollation());
-			connection.BindFunction(new OrdinalSQLiteCollation());
-
-			connection.BindFunction(new TrimmedCurrentCultureIgnoreCaseSQLiteCollation());
-			connection.BindFunction(new TrimmedCurrentCultureSQLiteCollation());
-			connection.BindFunction(new TrimmedInvariantCultureIgnoreCaseSQLiteCollation());
-			connection.BindFunction(new TrimmedInvariantCultureSQLiteCollation());
-			connection.BindFunction(new TrimmedOrdinalIgnoreCaseSQLiteCollation());
-			connection.BindFunction(new TrimmedOrdinalSQLiteCollation());
+			connection.BindFrameworkCollations();
 		}
 
 		private void RegisterFunctions (SQLiteConnection connection)
 		{
-			connection.BindFunction(new TrimSQLiteFunction());
-
-			connection.BindFunction(new ToEmptyIfNullOrEmptyOrWhitespaceSQLiteFunction());
-			connection.BindFunction(new ToNullIfNullOrEmptyOrWhitespaceSQLiteFunction());
-
-			connection.BindFunction(new IsNullOrEmptyOrWhitespaceSQLiteFunction());
-
-			connection.BindFunction(new MatchSQLiteFunction());
-			connection.BindFunction(new RegularExpressionSQLiteFunction());
+			connection.BindFrameworkFunctions();
 		}
 
 		#endregion
