@@ -172,6 +172,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Resolvers\IStateResolver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Resolvers\ServiceLocatorStateResolver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Resolvers\DefaultStateResolver.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Resolvers\ServiceProviderStateResolver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Resolvers\SingletonStateResolver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Resolvers\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\StateMachineUpdateDelegate.cs" />

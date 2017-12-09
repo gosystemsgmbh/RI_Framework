@@ -560,17 +560,18 @@ namespace RI.Framework.Windows
 		/// </returns>
 		public static bool OpenSystemInfo ()
 		{
-			return WindowsShell.OpenSystemInfo(ProcessWindowStyle.Normal);
+			return WindowsShell.OpenSystemInfo(ProcessWindowStyle.Normal, false);
 		}
 
 		/// <summary>
 		///     Opens the System Info.
 		/// </summary>
 		/// <param name="windowStyle"> The window style of the opened System Info window. </param>
+		/// <param name="elevated"> Specifies whether the System Info should be opened with elevated privileges. </param>
 		/// <returns>
 		///     true if the System Info could be opened, false otherwise.
 		/// </returns>
-		public static bool OpenSystemInfo (ProcessWindowStyle windowStyle)
+		public static bool OpenSystemInfo (ProcessWindowStyle windowStyle, bool elevated)
 		{
 			ProcessStartInfo startInfo = new ProcessStartInfo(WindowsShell.SystemInfoExecutable);
 
@@ -579,6 +580,11 @@ namespace RI.Framework.Windows
 			startInfo.UseShellExecute = true;
 			startInfo.WindowStyle = windowStyle;
 			startInfo.WorkingDirectory = Environment.CurrentDirectory;
+
+			if (elevated)
+			{
+				startInfo.Verb = WindowsShell.ElevatedVerb;
+			}
 
 			try
 			{
@@ -600,17 +606,18 @@ namespace RI.Framework.Windows
 		/// </returns>
 		public static bool OpenTaskManager ()
 		{
-			return WindowsShell.OpenTaskManager(ProcessWindowStyle.Normal);
+			return WindowsShell.OpenTaskManager(ProcessWindowStyle.Normal, false);
 		}
 
 		/// <summary>
 		///     Opens the Task Manager.
 		/// </summary>
 		/// <param name="windowStyle"> The window style of the opened Task Manager window. </param>
+		/// <param name="elevated"> Specifies whether the Task Manager should be opened with elevated privileges. </param>
 		/// <returns>
 		///     true if the Task Manager could be opened, false otherwise.
 		/// </returns>
-		public static bool OpenTaskManager (ProcessWindowStyle windowStyle)
+		public static bool OpenTaskManager (ProcessWindowStyle windowStyle, bool elevated)
 		{
 			ProcessStartInfo startInfo = new ProcessStartInfo(WindowsShell.TaskManagerExecutable);
 
@@ -619,6 +626,11 @@ namespace RI.Framework.Windows
 			startInfo.UseShellExecute = true;
 			startInfo.WindowStyle = windowStyle;
 			startInfo.WorkingDirectory = Environment.CurrentDirectory;
+
+			if (elevated)
+			{
+				startInfo.Verb = WindowsShell.ElevatedVerb;
+			}
 
 			try
 			{
@@ -644,7 +656,7 @@ namespace RI.Framework.Windows
 		/// <exception cref="UriFormatException"> <paramref name="url" /> is not a valid URI. </exception>
 		public static bool OpenUrl (string url)
 		{
-			return WindowsShell.OpenUrl(url, ProcessWindowStyle.Normal);
+			return WindowsShell.OpenUrl(url, ProcessWindowStyle.Normal, false);
 		}
 
 		/// <summary>
@@ -652,13 +664,14 @@ namespace RI.Framework.Windows
 		/// </summary>
 		/// <param name="url"> The URL to open. </param>
 		/// <param name="windowStyle"> The window style of the window started by opening the URL. </param>
+		/// <param name="elevated"> Specifies whether the URL should be opened with elevated privileges. </param>
 		/// <returns>
 		///     true if the URL could be opened, false otherwise.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="url" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="url" /> is an empty string. </exception>
 		/// <exception cref="UriFormatException"> <paramref name="url" /> is not a valid URI. </exception>
-		public static bool OpenUrl (string url, ProcessWindowStyle windowStyle)
+		public static bool OpenUrl (string url, ProcessWindowStyle windowStyle, bool elevated)
 		{
 			if (url == null)
 			{
@@ -680,7 +693,7 @@ namespace RI.Framework.Windows
 				throw new UriFormatException(exception.Message, exception);
 			}
 
-			return WindowsShell.OpenUrl(uri, windowStyle);
+			return WindowsShell.OpenUrl(uri, windowStyle, elevated);
 		}
 
 		/// <summary>
@@ -693,7 +706,7 @@ namespace RI.Framework.Windows
 		/// <exception cref="ArgumentNullException"> <paramref name="url" /> is null. </exception>
 		public static bool OpenUrl (Uri url)
 		{
-			return WindowsShell.OpenUrl(url, ProcessWindowStyle.Normal);
+			return WindowsShell.OpenUrl(url, ProcessWindowStyle.Normal, false);
 		}
 
 		/// <summary>
@@ -701,11 +714,12 @@ namespace RI.Framework.Windows
 		/// </summary>
 		/// <param name="url"> The URL to open. </param>
 		/// <param name="windowStyle"> The window style of the window started by opening the URL. </param>
+		/// <param name="elevated"> Specifies whether the URL should be opened with elevated privileges. </param>
 		/// <returns>
 		///     true if the URL could be opened, false otherwise.
 		/// </returns>
 		/// <exception cref="ArgumentNullException"> <paramref name="url" /> is null. </exception>
-		public static bool OpenUrl (Uri url, ProcessWindowStyle windowStyle)
+		public static bool OpenUrl (Uri url, ProcessWindowStyle windowStyle, bool elevated)
 		{
 			if (url == null)
 			{
@@ -719,6 +733,11 @@ namespace RI.Framework.Windows
 			startInfo.UseShellExecute = true;
 			startInfo.WindowStyle = windowStyle;
 			startInfo.WorkingDirectory = Environment.CurrentDirectory;
+
+			if (elevated)
+			{
+				startInfo.Verb = WindowsShell.ElevatedVerb;
+			}
 
 			try
 			{

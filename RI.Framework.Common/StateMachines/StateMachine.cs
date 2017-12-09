@@ -753,18 +753,20 @@ namespace RI.Framework.StateMachines
 				return null;
 			}
 
+			bool useCacheByConfig;
 			IStateCache cache;
 			IStateResolver resolver;
 
 			lock (this.Configuration.SyncRoot)
 			{
+				useCacheByConfig = this.Configuration.CachingEnabled;
 				cache = this.Configuration.Cache;
 				resolver = this.Configuration.Resolver;
 			}
 
 			IState state = null;
 
-			if (useCache)
+			if (useCache && useCacheByConfig)
 			{
 				lock (cache.SyncRoot)
 				{

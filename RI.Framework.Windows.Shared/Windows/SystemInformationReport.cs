@@ -52,20 +52,14 @@ namespace RI.Framework.Windows
 		/// <returns>
 		///     The system information report.
 		/// </returns>
-		public static string CreateReport ()
-		{
-			return SystemInformationReport.CreateReport(false);
-		}
+		public static string CreateReport () => SystemInformationReport.CreateReport(false);
 
 		/// <summary>
 		///     Creates a system information report without system information dump.
 		/// </summary>
 		/// <param name="writer"> The text writer to which the system information report is written. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="writer" /> is null. </exception>
-		public static void CreateReport (TextWriter writer)
-		{
-			SystemInformationReport.CreateReport(writer, false);
-		}
+		public static void CreateReport (TextWriter writer) => SystemInformationReport.CreateReport(writer, false);
 
 		/// <summary>
 		///     Creates a system information report with an optional system information dump.
@@ -127,7 +121,7 @@ namespace RI.Framework.Windows
 				SystemInformationReport.CreateSystemInformationDump(sw);
 			}
 
-			return (sb.ToString());
+			return sb.ToString();
 		}
 
 		/// <summary>
@@ -170,7 +164,6 @@ namespace RI.Framework.Windows
 				{
 					string exceptionMessage = exception.ToDetailedString();
 
-					writer.WriteLine();
 					writer.WriteLine(exceptionMessage);
 				}
 			}

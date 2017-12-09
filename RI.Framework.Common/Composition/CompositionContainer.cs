@@ -15,10 +15,6 @@ using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.ObjectModel;
 using RI.Framework.Utilities.Reflection;
-
-
-
-
 #if PLATFORM_NETFX
 using System.Collections;
 using System.Linq.Expressions;
@@ -307,7 +303,7 @@ namespace RI.Framework.Composition
 	/// <threadsafety static="true" instance="true" />
 	[Export]
 	[SuppressMessage("ReSharper", "InconsistentNaming")]
-	public sealed class CompositionContainer : LogSource, IDependencyResolver, IDisposable, ISynchronizable
+	public sealed class CompositionContainer : LogSource, IDependencyResolver, IServiceProvider, IDisposable, ISynchronizable
 	{
 		#region Constants
 
@@ -2631,6 +2627,29 @@ namespace RI.Framework.Composition
 			}
 
 			this.RaiseCompositionChanged();
+		}
+
+		#endregion
+
+
+
+
+		#region Interface: IServiceProvider
+
+		/// <inheritdoc />
+		object IServiceProvider.GetService (Type serviceType)
+		{
+			if (serviceType == null)
+			{
+				throw new ArgumentNullException(nameof(serviceType));
+			}
+
+			if ((!serviceType.IsClass) && (!serviceType.IsInterface))
+			{
+				throw new InvalidTypeArgumentException(nameof(serviceType));
+			}
+
+			return this.GetExport<object>(serviceType);
 		}
 
 		#endregion

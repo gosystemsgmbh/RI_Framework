@@ -13,7 +13,12 @@ namespace RI.Framework.Utilities.ObjectModel
 	/// <summary>
 	///     Implemens a wrapper for <see cref="IDependencyResolver" />s which allows modification/interception of resolved instances.
 	/// </summary>
-	public abstract class DependencyInjector : IDependencyResolver
+	/// <remarks>
+	///     <para>
+	///         <see cref="DependencyInjector" /> can also be used to wrap a <see cref="IDependencyResolver" /> as <see cref="IServiceProvider" />.
+	///     </para>
+	/// </remarks>
+	public abstract class DependencyInjector : IDependencyResolver, IServiceProvider
 	{
 		#region Instance Constructor/Destructor
 
@@ -74,21 +79,16 @@ namespace RI.Framework.Utilities.ObjectModel
 
 
 
-		#region Abstracts
+		#region Virtuals
 
 		/// <summary>
 		///     Intercepts instance resolving by name.
 		/// </summary>
 		/// <param name="name"> The name to resolve. </param>
 		/// <param name="instances"> The list of instances already resolved by <see cref="DependencyResolver" /> which can be modified to perform the interception. </param>
-		protected abstract void Intercept (string name, List<object> instances);
-
-		#endregion
-
-
-
-
-		#region Virtuals
+		protected virtual void Intercept (string name, List<object> instances)
+		{
+		}
 
 		/// <summary>
 		///     Intercepts instance resolving by type.
@@ -128,6 +128,16 @@ namespace RI.Framework.Utilities.ObjectModel
 		/// <inheritdoc />
 		public List<T> GetInstances <T> ()
 			where T : class => this.InterceptInternal(this.DependencyResolver.GetInstances<T>());
+
+		#endregion
+
+
+
+
+		#region Interface: IServiceProvider
+
+		/// <inheritdoc />
+		public object GetService (Type serviceType) => this.GetInstance(serviceType);
 
 		#endregion
 	}

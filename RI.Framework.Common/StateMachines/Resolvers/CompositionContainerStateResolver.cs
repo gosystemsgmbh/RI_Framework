@@ -28,22 +28,7 @@ namespace RI.Framework.StateMachines.Resolvers
 		public CompositionContainerStateResolver (CompositionContainer container)
 			: base(container)
 		{
-			if (container == null)
-			{
-				throw new ArgumentNullException(nameof(container));
-			}
-
-			this.Container = container;
 		}
-
-		#endregion
-
-
-
-
-		#region Instance Properties/Indexer
-
-		private CompositionContainer Container { get; }
 
 		#endregion
 	}

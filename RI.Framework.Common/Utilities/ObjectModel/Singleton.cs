@@ -45,6 +45,7 @@ namespace RI.Framework.Utilities.ObjectModel
 			Singleton.GlobalSyncRoot = new object();
 			Singleton.Instances = new Dictionary<Type, object>();
 			Singleton.Resolver = new SingletonResolver();
+			Singleton.Provider = new SingletonProvider();
 		}
 
 		#endregion
@@ -53,6 +54,14 @@ namespace RI.Framework.Utilities.ObjectModel
 
 
 		#region Static Properties/Indexer
+
+		/// <summary>
+		///     Gets a service provider which uses <see cref="Singleton" />.
+		/// </summary>
+		/// <value>
+		///     A service provider which uses <see cref="Singleton" />.
+		/// </value>
+		public static IServiceProvider Provider { get; }
 
 		/// <summary>
 		///     Gets a dependency resolver which uses <see cref="Singleton" />.
@@ -194,6 +203,35 @@ namespace RI.Framework.Utilities.ObjectModel
 
 				return instance;
 			}
+		}
+
+		#endregion
+
+
+
+
+		#region Type: SingletonProvider
+
+		private sealed class SingletonProvider : IServiceProvider
+		{
+			#region Interface: IServiceProvider
+
+			public object GetService (Type serviceType)
+			{
+				if (serviceType == null)
+				{
+					throw new ArgumentNullException(nameof(serviceType));
+				}
+
+				if ((!serviceType.IsClass) && (!serviceType.IsInterface))
+				{
+					throw new InvalidTypeArgumentException(nameof(serviceType));
+				}
+
+				return Singleton.Get(serviceType);
+			}
+
+			#endregion
 		}
 
 		#endregion
@@ -345,9 +383,6 @@ namespace RI.Framework.Utilities.ObjectModel
 				Singleton.Set(typeof(T), value);
 			}
 		}
-
-		/// <inheritdoc cref="Singleton.Resolver" />
-		public static IDependencyResolver Resolver => Singleton.Resolver;
 
 		#endregion
 

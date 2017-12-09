@@ -48,6 +48,7 @@ namespace RI.Framework.Utilities.ObjectModel
 
 			ServiceLocator.Cache = new Dictionary<string, object[]>(CompositionContainer.NameComparer);
 			ServiceLocator.DependencyResolverBindings = new HashSet<IDependencyResolver>();
+			ServiceLocator.ServiceProviderBindings = new HashSet<IServiceProvider>();
 
 			ServiceLocator.UseCaching = true;
 			ServiceLocator.UseSingletons = true;
@@ -55,6 +56,7 @@ namespace RI.Framework.Utilities.ObjectModel
 			ServiceLocator.CacheVersion = 0;
 
 			ServiceLocator.Resolver = new ServiceLocatorResolver();
+			ServiceLocator.Provider = new ServiceLocatorProvider();
 		}
 
 		#endregion
@@ -74,6 +76,14 @@ namespace RI.Framework.Utilities.ObjectModel
 
 
 		#region Static Properties/Indexer
+
+		/// <summary>
+		///     Gets a service provider which uses <see cref="ServiceLocator" />.
+		/// </summary>
+		/// <value>
+		///     A service provider which uses <see cref="ServiceLocator" />.
+		/// </value>
+		public static IServiceProvider Provider { get; }
 
 		/// <summary>
 		///     Gets a dependency resolver which uses <see cref="ServiceLocator" />.
@@ -149,6 +159,8 @@ namespace RI.Framework.Utilities.ObjectModel
 
 		private static object GlobalSyncRoot { get; }
 
+		private static HashSet<IServiceProvider> ServiceProviderBindings { get; }
+
 		#endregion
 
 
@@ -196,6 +208,29 @@ namespace RI.Framework.Utilities.ObjectModel
 			lock (ServiceLocator.GlobalSyncRoot)
 			{
 				ServiceLocator.DependencyResolverBindings.Add(dependencyResolver);
+			}
+		}
+
+		/// <summary>
+		///     Binds the service locator to a specified service provider which is then used for service lookup.
+		/// </summary>
+		/// <param name="serviceProvider"> The service provider to bind to. </param>
+		/// <remarks>
+		///     <para>
+		///         It is possible to bind multiple dependency resolvers to the service locator.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="serviceProvider" /> is null. </exception>
+		public static void BindToServiceProvider (IServiceProvider serviceProvider)
+		{
+			if (serviceProvider == null)
+			{
+				throw new ArgumentNullException(nameof(serviceProvider));
+			}
+
+			lock (ServiceLocator.GlobalSyncRoot)
+			{
+				ServiceLocator.ServiceProviderBindings.Add(serviceProvider);
 			}
 		}
 
@@ -408,6 +443,24 @@ namespace RI.Framework.Utilities.ObjectModel
 			}
 		}
 
+		/// <summary>
+		///     Unbinds the service locator from a specified service provider which is then no longer used for service lookup.
+		/// </summary>
+		/// <param name="serviceProvider"> The service provider to unbind from. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="serviceProvider" /> is null. </exception>
+		public static void UnbindFromServiceProvider (IServiceProvider serviceProvider)
+		{
+			if (serviceProvider == null)
+			{
+				throw new ArgumentNullException(nameof(serviceProvider));
+			}
+
+			lock (ServiceLocator.GlobalSyncRoot)
+			{
+				ServiceLocator.ServiceProviderBindings.Remove(serviceProvider);
+			}
+		}
+
 		private static object LookupService (string name, Type typeHint)
 		{
 			if (name == null)
@@ -441,6 +494,7 @@ namespace RI.Framework.Utilities.ObjectModel
 				bool useSingletons;
 				bool useCaching;
 				HashSet<IDependencyResolver> resolverBindings;
+				HashSet<IServiceProvider> providerBindings;
 
 				lock (ServiceLocator.GlobalSyncRoot)
 				{
@@ -455,6 +509,7 @@ namespace RI.Framework.Utilities.ObjectModel
 					useSingletons = ServiceLocator.UseSingletons;
 					useCaching = ServiceLocator.UseCaching;
 					resolverBindings = new HashSet<IDependencyResolver>(ServiceLocator.DependencyResolverBindings);
+					providerBindings = new HashSet<IServiceProvider>(ServiceLocator.ServiceProviderBindings);
 				}
 
 				ServiceLocatorLookupEventArgs args = new ServiceLocatorLookupEventArgs(name);
@@ -466,12 +521,20 @@ namespace RI.Framework.Utilities.ObjectModel
 					instances.AddRange(resolver.GetInstances(name));
 				}
 
-				if ((typeHint != null) && useSingletons)
+				if (typeHint != null)
 				{
-					object singleton = Singleton.Get(typeHint);
-					if (singleton != null)
+					foreach (IServiceProvider provider in providerBindings)
 					{
-						instances.Add(singleton);
+						instances.Add(provider.GetService(typeHint));
+					}
+
+					if (useSingletons)
+					{
+						object singleton = Singleton.Get(typeHint);
+						if (singleton != null)
+						{
+							instances.Add(singleton);
+						}
 					}
 				}
 
@@ -503,6 +566,35 @@ namespace RI.Framework.Utilities.ObjectModel
 			args.Name = CompositionContainer.GetNameOfType(type);
 			ServiceLocator.Translate?.Invoke(null, args);
 			return args.Name;
+		}
+
+		#endregion
+
+
+
+
+		#region Type: ServiceLocatorProvider
+
+		private sealed class ServiceLocatorProvider : IServiceProvider
+		{
+			#region Interface: IServiceProvider
+
+			public object GetService (Type serviceType)
+			{
+				if (serviceType == null)
+				{
+					throw new ArgumentNullException(nameof(serviceType));
+				}
+
+				if ((!serviceType.IsClass) && (!serviceType.IsInterface))
+				{
+					throw new InvalidTypeArgumentException(nameof(serviceType));
+				}
+
+				return ServiceLocator.GetInstance(serviceType);
+			}
+
+			#endregion
 		}
 
 		#endregion
