@@ -732,6 +732,20 @@ namespace RI.Framework.Bus
 		}
 
 		/// <inheritdoc />
+		public void Start () => this.Start(ServiceLocator.Resolver);
+
+		/// <inheritdoc />
+		public void Start (IServiceProvider serviceProvider)
+		{
+			if (serviceProvider == null)
+			{
+				throw new ArgumentNullException(nameof(serviceProvider));
+			}
+
+			this.Start((IDependencyResolver)new DependencyResolverWrapper(serviceProvider));
+		}
+
+		/// <inheritdoc />
 		public void Start (IDependencyResolver dependencyResolver)
 		{
 			if (dependencyResolver == null)

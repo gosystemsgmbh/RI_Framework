@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Threading;
@@ -571,6 +572,8 @@ namespace RI.Framework.Threading.Dispatcher
 			}
 		}
 
+		bool ISynchronizeInvoke.InvokeRequired => ((ISynchronizeInvoke)this.Dispatcher)?.InvokeRequired ?? false;
+
 		/// <inheritdoc />
 		public bool IsShuttingDown
 		{
@@ -639,6 +642,18 @@ namespace RI.Framework.Threading.Dispatcher
 			}
 		}
 
+
+		IAsyncResult ISynchronizeInvoke.BeginInvoke (Delegate method, object[] args)
+		{
+			ThreadDispatcher dispatcher;
+			lock (this.SyncRoot)
+			{
+				this.VerifyRunningDispatcher();
+				dispatcher = this.Dispatcher;
+			}
+			return ((ISynchronizeInvoke)dispatcher).BeginInvoke(method, args);
+		}
+
 		/// <inheritdoc />
 		[SuppressMessage("ReSharper", "UnusedVariable")]
 		public void BeginShutdown (bool finishPendingDelegates)
@@ -699,6 +714,22 @@ namespace RI.Framework.Threading.Dispatcher
 			await dispatcher.DoProcessingAsync(priority).ConfigureAwait(false);
 		}
 
+		object ISynchronizeInvoke.EndInvoke (IAsyncResult result)
+		{
+			if (result == null)
+			{
+				throw new ArgumentNullException(nameof(result));
+			}
+
+			ThreadDispatcher dispatcher;
+			lock (this.SyncRoot)
+			{
+				this.VerifyRunningDispatcher();
+				dispatcher = this.Dispatcher;
+			}
+			return ((ISynchronizeInvoke)dispatcher).EndInvoke(result);
+		}
+
 		/// <inheritdoc />
 		public ThreadDispatcherOptions? GetCurrentOptions ()
 		{
@@ -715,6 +746,17 @@ namespace RI.Framework.Threading.Dispatcher
 			{
 				return this.Dispatcher?.GetCurrentPriority();
 			}
+		}
+
+		object ISynchronizeInvoke.Invoke (Delegate method, object[] args)
+		{
+			ThreadDispatcher dispatcher;
+			lock (this.SyncRoot)
+			{
+				this.VerifyRunningDispatcher();
+				dispatcher = this.Dispatcher;
+			}
+			return ((ISynchronizeInvoke)dispatcher).Invoke(method, args);
 		}
 
 		/// <inheritdoc />

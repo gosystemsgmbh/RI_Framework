@@ -11,23 +11,23 @@ using RI.Framework.Composition;
 namespace RI.Framework.Utilities.ObjectModel
 {
 	/// <summary>
-	///     Implemens a wrapper for <see cref="IDependencyResolver" />s which allows modification/interception of resolved instances.
+	///     Implemens a wrapper for <see cref="IDependencyResolver" /> and <see cref="IServiceProvider" /> which allows modification/interception of resolved instances.
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         <see cref="DependencyInjector" /> can also be used to wrap a <see cref="IDependencyResolver" /> as <see cref="IServiceProvider" />.
+	///         <see cref="ObjectModel.DependencyResolverWrapper" /> can also be used to wrap a <see cref="IDependencyResolver" /> as a <see cref="IServiceProvider" /> and vice-versa.
 	///     </para>
 	/// </remarks>
-	public abstract class DependencyInjector : IDependencyResolver, IServiceProvider
+	public class DependencyResolverWrapper : IDependencyResolver, IServiceProvider
 	{
 		#region Instance Constructor/Destructor
 
 		/// <summary>
-		///     Creates a new instance of <see cref="DependencyInjector" />.
+		///     Creates a new instance of <see cref="ObjectModel.DependencyResolverWrapper" />.
 		/// </summary>
 		/// <param name="dependencyResolver"> The dependency resolver. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="dependencyResolver" /> is null. </exception>
-		protected DependencyInjector (IDependencyResolver dependencyResolver)
+		public DependencyResolverWrapper (IDependencyResolver dependencyResolver)
 		{
 			if (dependencyResolver == null)
 			{
@@ -35,6 +35,21 @@ namespace RI.Framework.Utilities.ObjectModel
 			}
 
 			this.DependencyResolver = dependencyResolver;
+		}
+
+		/// <summary>
+		///     Creates a new instance of <see cref="ObjectModel.DependencyResolverWrapper" />.
+		/// </summary>
+		/// <param name="serviceProvider"> The service provider. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="serviceProvider" /> is null. </exception>
+		public DependencyResolverWrapper (IServiceProvider serviceProvider)
+		{
+			if (serviceProvider == null)
+			{
+				throw new ArgumentNullException(nameof(serviceProvider));
+			}
+
+			this.ServiceProvider = serviceProvider;
 		}
 
 		#endregion
@@ -48,9 +63,17 @@ namespace RI.Framework.Utilities.ObjectModel
 		///     Gets the used dependency resolver.
 		/// </summary>
 		/// <value>
-		///     The used dependency resolver.
+		///     The used dependency resolver or null if no dependency resolver is used.
 		/// </value>
 		public IDependencyResolver DependencyResolver { get; }
+
+		/// <summary>
+		///     Gets the used service provider.
+		/// </summary>
+		/// <value>
+		///     The used service provider or null if no service provider is used.
+		/// </value>
+		public IServiceProvider ServiceProvider { get; }
 
 		#endregion
 
@@ -58,6 +81,17 @@ namespace RI.Framework.Utilities.ObjectModel
 
 
 		#region Instance Methods
+
+		private List<object> GetListFromServiceProvider (Type type)
+		{
+			List<object> instances = new List<object>();
+			object instance = this.ServiceProvider?.GetService(type);
+			if (instance != null)
+			{
+				instances.Add(instance);
+			}
+			return instances;
+		}
 
 		private List<T> InterceptInternal <T> (List<T> list)
 			where T : class => this.InterceptInternal(typeof(T), list.OfType<object>()).OfType<T>().ToList();
@@ -110,24 +144,24 @@ namespace RI.Framework.Utilities.ObjectModel
 		#region Interface: IDependencyResolver
 
 		/// <inheritdoc />
-		public object GetInstance (Type type) => this.InterceptInternal(type, this.DependencyResolver.GetInstances(type)).GetIndexOrDefault(0);
+		public object GetInstance (Type type) => this.InterceptInternal(type, this.DependencyResolver == null ? this.GetListFromServiceProvider(type) : this.DependencyResolver.GetInstances(type)).GetIndexOrDefault(0);
 
 		/// <inheritdoc />
-		public object GetInstance (string name) => this.InterceptInternal(name, this.DependencyResolver.GetInstances(name)).GetIndexOrDefault(0);
+		public object GetInstance (string name) => this.InterceptInternal(name, this.DependencyResolver == null ? new List<object>() : this.DependencyResolver.GetInstances(name)).GetIndexOrDefault(0);
 
 		/// <inheritdoc />
 		public T GetInstance <T> ()
-			where T : class => this.InterceptInternal(this.DependencyResolver.GetInstances<T>()).GetIndexOrDefault(0);
+			where T : class => this.InterceptInternal(this.DependencyResolver == null ? this.GetListFromServiceProvider(typeof(T)).OfType<T>() : this.DependencyResolver.GetInstances<T>()).GetIndexOrDefault(0);
 
 		/// <inheritdoc />
-		public List<object> GetInstances (Type type) => this.InterceptInternal(type, this.DependencyResolver.GetInstances(type));
+		public List<object> GetInstances (Type type) => this.InterceptInternal(type, this.DependencyResolver == null ? this.GetListFromServiceProvider(type) : this.DependencyResolver.GetInstances(type));
 
 		/// <inheritdoc />
-		public List<object> GetInstances (string name) => this.InterceptInternal(name, this.DependencyResolver.GetInstances(name));
+		public List<object> GetInstances (string name) => this.InterceptInternal(name, this.DependencyResolver == null ? new List<object>() : this.DependencyResolver.GetInstances(name));
 
 		/// <inheritdoc />
 		public List<T> GetInstances <T> ()
-			where T : class => this.InterceptInternal(this.DependencyResolver.GetInstances<T>());
+			where T : class => this.InterceptInternal(this.DependencyResolver == null ? this.GetListFromServiceProvider(typeof(T)).OfType<T>() : this.DependencyResolver.GetInstances<T>());
 
 		#endregion
 

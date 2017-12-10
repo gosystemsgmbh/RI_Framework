@@ -221,7 +221,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Logging\LogSource.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Logging\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObjectExtensions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObjectModel\DependencyInjector.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObjectModel\DependencyResolverWrapper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObjectModel\IDependencyResolver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObjectModel\ISynchronizable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ObjectModel\ServiceLocator.cs" />

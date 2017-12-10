@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
 
 using RI.Framework.Utilities.ObjectModel;
@@ -17,7 +18,7 @@ namespace RI.Framework.Threading.Dispatcher
 	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
-	public interface IThreadDispatcher : IDisposable, ISynchronizable
+	public interface IThreadDispatcher : ISynchronizeInvoke, IDisposable, ISynchronizable
 	{
 		/// <summary>
 		///     Gets or sets whether exceptions, thrown when executing delegates, are catched and the dispatcher continues its operations.

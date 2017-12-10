@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -526,6 +529,9 @@ namespace RI.Framework.Threading.Dispatcher
 		}
 
 		/// <inheritdoc />
+		bool ISynchronizeInvoke.InvokeRequired => !this.IsInThread();
+
+		/// <inheritdoc />
 		public bool IsRunning
 		{
 			get
@@ -627,6 +633,30 @@ namespace RI.Framework.Threading.Dispatcher
 				this.KeepAlives.Add(obj);
 				return true;
 			}
+		}
+
+		/// <inheritdoc />
+		[SuppressMessage("ReSharper", "PossibleNullReferenceException")]
+		IAsyncResult ISynchronizeInvoke.BeginInvoke (Delegate method, object[] args)
+		{
+			TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
+			Task<object> task = this.SendAsync(method, args);
+			task.ContinueWith(t =>
+			{
+				if (t.IsFaulted)
+				{
+					tcs.TrySetException(t.Exception.InnerExceptions);
+				}
+				else if (t.IsCanceled)
+				{
+					tcs.TrySetCanceled();
+				}
+				else
+				{
+					tcs.TrySetResult(t.Result);
+				}
+			});
+			return tcs.Task;
 		}
 
 		/// <inheritdoc />
@@ -818,6 +848,26 @@ namespace RI.Framework.Threading.Dispatcher
 		}
 
 		/// <inheritdoc />
+		[SuppressMessage("ReSharper", "HeuristicUnreachableCode")]
+		object ISynchronizeInvoke.EndInvoke (IAsyncResult result)
+		{
+			if (result == null)
+			{
+				throw new ArgumentNullException(nameof(result));
+			}
+
+			try
+			{
+				return ((Task<object>)result).Result;
+			}
+			catch (AggregateException ex)
+			{
+				ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
+				throw;
+			}
+		}
+
+		/// <inheritdoc />
 		public ThreadDispatcherOptions? GetCurrentOptions ()
 		{
 			lock (this.SyncRoot)
@@ -864,6 +914,9 @@ namespace RI.Framework.Threading.Dispatcher
 				return this.CurrentPriority.Peek();
 			}
 		}
+
+		/// <inheritdoc />
+		object ISynchronizeInvoke.Invoke (Delegate method, object[] args) => this.Send(method, args);
 
 		/// <inheritdoc />
 		public bool IsInThread ()
