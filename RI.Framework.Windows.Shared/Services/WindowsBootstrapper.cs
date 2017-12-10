@@ -1,6 +1,7 @@
 ﻿using System;
 
 using RI.Framework.Windows.Cryptography;
+using RI.Framework.Windows.Users;
 
 
 
@@ -31,6 +32,12 @@ namespace RI.Framework.Services
 		protected override Guid DetermineMachineId ()
 		{
 			return UniqueIdentification.GetMachineId();
+		}
+
+		/// <inheritdoc />
+		protected override bool DetermineStartupUserElevated ()
+		{
+			return WindowsUser.IsCurrentAdministrator();
 		}
 
 		/// <inheritdoc />

@@ -8,7 +8,6 @@ using System.Runtime.ExceptionServices;
 
 using RI.Framework.Composition;
 using RI.Framework.Composition.Catalogs;
-using RI.Framework.Composition.Model;
 using RI.Framework.IO.Paths;
 using RI.Framework.Services.Logging;
 using RI.Framework.Services.Modularization;
@@ -134,6 +133,11 @@ namespace RI.Framework.Services
 	///         <item>
 	///             <para>
 	///                 <see cref="DetermineInstanceId" /> is called and <see cref="InstanceId" /> is set.
+	///             </para>
+	///         </item>
+	///         <item>
+	///             <para>
+	///                 <see cref="DetermineIsService" /> is called and <see cref="IsService" /> is set.
 	///             </para>
 	///         </item>
 	///         <item>
@@ -274,7 +278,6 @@ namespace RI.Framework.Services
 	///     </list>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
-	[Export]
 	public abstract class Bootstrapper : LogSource, IBootstrapper
 	{
 		#region Instance Constructor/Destructor
@@ -296,6 +299,9 @@ namespace RI.Framework.Services
 
 			this.FirstChanceExceptionHandler = (s, e) => this.StartFirstChanceExceptionHandling(e.Exception);
 			this.ExceptionHandler = (s, a) => this.StartExceptionHandling(a.ExceptionObject as Exception);
+
+			this.PreviousVersion = null;
+			this.FirstStart = null;
 		}
 
 		#endregion
@@ -522,9 +528,10 @@ namespace RI.Framework.Services
 		{
 			this.LogSeperator("BEGIN SHUTDOWN");
 
-			this.Log(LogLevel.Debug, "Shutdown mode: {0}", this.ShutdownInfo.Mode);
-			this.Log(LogLevel.Debug, "Exit code:     {0}", this.ShutdownInfo.ExitCode);
-			this.Log(LogLevel.Debug, "Script file:   {0}", this.ShutdownInfo.ScriptFile);
+			this.Log(LogLevel.Debug, "Shutdown mode:    {0}", this.ShutdownInfo.Mode);
+			this.Log(LogLevel.Debug, "Exit code:        {0}", this.ShutdownInfo.ExitCode);
+			this.Log(LogLevel.Debug, "Script file:      {0}", this.ShutdownInfo.ScriptFile ?? "[null]");
+			this.Log(LogLevel.Debug, "Script arguments: {0}", this.ShutdownInfo.ScriptArguments ?? "[null]");
 
 			this.Log(LogLevel.Debug, "Dispatching stop operations");
 			this.DispatchStopOperations(new Action(() =>
@@ -540,15 +547,11 @@ namespace RI.Framework.Services
 		/// </summary>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation adds the application object (<see cref="Application" />) to the used composition container as an export using a <see cref="InstanceCatalog" />.
+		///         The default implementation does nothing.
 		///     </note>
 		/// </remarks>
 		protected virtual void ConfigureApplication ()
 		{
-			if (this.Application != null)
-			{
-				this.Container.AddCatalog(new InstanceCatalog(this.Application));
-			}
 		}
 
 		/// <summary>
@@ -556,12 +559,22 @@ namespace RI.Framework.Services
 		/// </summary>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation adds this bootstrapper instance to the used composition container as an export using a <see cref="InstanceCatalog" />.
+		///         The default implementation adds this bootstrapper instance to the used composition container as an export using a <see cref="InstanceCatalog" /> and adds the container (<see cref="Container" />) to itself as an export using a <see cref="InstanceCatalog" />.
 		///     </note>
 		/// </remarks>
 		protected virtual void ConfigureBootstrapper ()
 		{
-			this.Container.AddCatalog(new InstanceCatalog(this));
+			CompositionBatch batch = new CompositionBatch();
+
+			batch.AddExport(this, typeof(IBootstrapper));
+			batch.AddExport(this, typeof(Bootstrapper));
+			batch.AddExport(this, this.GetType());
+
+			batch.AddExport(this.Container, typeof(IDependencyResolver));
+			batch.AddExport(this.Container, typeof(IServiceProvider));
+			batch.AddExport(this.Container, typeof(CompositionContainer));
+
+			this.Container.Compose(batch);
 		}
 
 		/// <summary>
@@ -569,12 +582,11 @@ namespace RI.Framework.Services
 		/// </summary>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation adds the container (<see cref="Container" />) to itself as an export using a <see cref="InstanceCatalog" />.
+		///         The default implementation does nothing.
 		///     </note>
 		/// </remarks>
 		protected virtual void ConfigureContainer ()
 		{
-			this.Container.AddCatalog(new InstanceCatalog(this.Container));
 		}
 
 		/// <summary>
@@ -631,19 +643,21 @@ namespace RI.Framework.Services
 		/// </summary>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation sets the singleton instance for <see cref="Bootstrapper" /> and <see cref="CompositionContainer" /> (<see cref="Container" />).
+		///         The default implementation sets the singleton instance for <see cref="Bootstrapper" /> and <see cref="CompositionContainer" /> (<see cref="Container" />) and adds the application object (<see cref="Application" />) to the used composition container as an export using a <see cref="InstanceCatalog" /> as well as a singleton to <see cref="Singleton" />.
 		///     </note>
 		/// </remarks>
 		protected virtual void ConfigureSingletons ()
 		{
-			Singleton<Bootstrapper>.Ensure(() => this);
 			Singleton<IBootstrapper>.Ensure(() => this);
+			Singleton<Bootstrapper>.Ensure(() => this);
 
-			Singleton<CompositionContainer>.Ensure(() => this.Container);
 			Singleton<IDependencyResolver>.Ensure(() => this.Container);
+			Singleton<IServiceProvider>.Ensure(() => this.Container);
+			Singleton<CompositionContainer>.Ensure(() => this.Container);
 
 			if (this.Application != null)
 			{
+				this.Container.AddCatalog(new InstanceCatalog(this.Application));
 				Singleton.Set(this.Application.GetType(), this.Application);
 			}
 		}
@@ -782,12 +796,19 @@ namespace RI.Framework.Services
 		/// <remarks>
 		///     <note type="implement">
 		///         The default implementation uses the directory returned by <see cref="Environment.GetFolderPath(Environment.SpecialFolder)" /> using <see cref="Environment.SpecialFolder.LocalApplicationData" /> appended with <see cref="ApplicationCompanyName" /> and <see cref="ApplicationProductName" />.
+		///         If an instance ID (<see cref="InstanceId" />) is available, it is also appended at the end of the path as another subdirectory (as a technical string using <see cref="TechnicalStringOptions.FileCompatibleNoWhitespaces" />).
 		///         The directory is just determined but not accessed in any way.
 		///     </note>
 		/// </remarks>
 		protected virtual DirectoryPath DetermineApplicationDataDirectory ()
 		{
-			return new DirectoryPath(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)).AppendDirectory(this.ApplicationCompanyName, this.ApplicationProductName);
+			DirectoryPath path = new DirectoryPath(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)).AppendDirectory(this.ApplicationCompanyName, this.ApplicationProductName);
+			string instanceId = this.InstanceId.IsNullOrEmptyOrWhitespace() ? null : this.InstanceId.ToTechnical(TechnicalStringOptions.FileCompatibleNoWhitespaces).ToNullIfNullOrEmptyOrWhitespace();
+			if (instanceId != null)
+			{
+				path = path.AppendDirectory(instanceId);
+			}
+			return path;
 		}
 
 		/// <summary>
@@ -866,12 +887,12 @@ namespace RI.Framework.Services
 		/// </returns>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation uses <see cref="AssemblyExtensions.GetAssemblyVersion" />, <see cref="AssemblyExtensions.GetFileVersion" />, and <see cref="AssemblyExtensions.GetInformationalVersion" /> on <see cref="ApplicationAssembly" /> (in that order, whichever returns a valid version first).
+		///         The default implementation uses <see cref="AssemblyExtensions.GetInformationalVersion" />, <see cref="AssemblyExtensions.GetFileVersion" />, and <see cref="AssemblyExtensions.GetAssemblyVersion" /> on <see cref="ApplicationAssembly" /> (in that order, whichever returns a valid version first).
 		///     </note>
 		/// </remarks>
 		protected virtual Version DetermineApplicationVersion ()
 		{
-			return (this.ApplicationAssembly.GetAssemblyVersion() ?? this.ApplicationAssembly.GetFileVersion()) ?? this.ApplicationAssembly.GetInformationalVersion();
+			return this.ApplicationAssembly.GetInformationalVersion() ?? this.ApplicationAssembly.GetFileVersion() ?? this.ApplicationAssembly.GetAssemblyVersion();
 		}
 
 		/// <summary>
@@ -920,6 +941,22 @@ namespace RI.Framework.Services
 		protected virtual string DetermineInstanceId ()
 		{
 			return this.HostContext?.InstanceId;
+		}
+
+		/// <summary>
+		///     Called to determine whether the application is run as a service or deamon (<see cref="IsService" />).
+		/// </summary>
+		/// <returns>
+		///     true if the application is run as a service or deamon, false otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <note type="implement">
+		///         The default implementation gets the information from the hosting environment context (<see cref="HostContext" />) or returns false if no hosting environment context is available.
+		///     </note>
+		/// </remarks>
+		protected virtual bool DetermineIsService ()
+		{
+			return this.HostContext?.IsService ?? false;
 		}
 
 		/// <summary>
@@ -1041,6 +1078,8 @@ namespace RI.Framework.Services
 		/// </remarks>
 		protected virtual void DoCleanup ()
 		{
+			this.LogSeperator("DO CLEANUP");
+
 			IDisposable application = this.Application as IDisposable;
 			if (application != null)
 			{
@@ -1060,11 +1099,18 @@ namespace RI.Framework.Services
 		/// </summary>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation does nothing.
+		///         The default implementation unloads all modules and calls <see cref="HideSplashScreen" />.
 		///     </note>
 		/// </remarks>
 		protected virtual void DoShutdown ()
 		{
+			this.LogSeperator("DO SHUTDOWN");
+
+			this.Log(LogLevel.Debug, "Unloading modules");
+			this.Container?.GetExport<IModuleService>()?.Unload();
+
+			this.Log(LogLevel.Debug, "Hiding splash screen");
+			this.HideSplashScreen();
 		}
 
 		/// <summary>
@@ -1072,18 +1118,12 @@ namespace RI.Framework.Services
 		/// </summary>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation unloads all modules and calls <see cref="HideSplashScreen" />.
+		///         The default implementation does nothing.
 		///     </note>
 		/// </remarks>
 		protected virtual void EndRun ()
 		{
 			this.LogSeperator("END RUN");
-
-			this.Log(LogLevel.Debug, "Unloading modules");
-			this.Container.GetExport<IModuleService>()?.Unload();
-
-			this.Log(LogLevel.Debug, "Hiding splash screen");
-			this.HideSplashScreen();
 		}
 
 		/// <summary>
@@ -1284,8 +1324,7 @@ namespace RI.Framework.Services
 		public string InstanceId { get; private set; }
 
 		/// <inheritdoc />
-		public bool IsService => this.HostContext?.IsService ?? false;
-
+		public bool IsService { get; private set; }
 
 		/// <inheritdoc />
 		bool ISynchronizable.IsSynchronized => true;
@@ -1473,6 +1512,7 @@ namespace RI.Framework.Services
 				this.SessionTimestamp = this.DetermineSessionTimestamp();
 				this.SessionId = this.DetermineSessionId();
 
+				this.IsService = this.DetermineIsService();
 				this.InstanceId = this.DetermineInstanceId();
 
 				this.ApplicationExecutableDirectory = this.DetermineApplicationExecutableDirectory();
@@ -1714,7 +1754,7 @@ namespace RI.Framework.Services
 
 			if (this.Application != null)
 			{
-				Singleton<TApplication>.Ensure(() => this.Application);
+				Singleton.Set(typeof(TApplication), this.Application);
 			}
 		}
 

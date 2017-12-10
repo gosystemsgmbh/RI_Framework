@@ -132,7 +132,6 @@ namespace RI.Framework.Services
 	///     </note>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
-	[Export]
 	public class Bootstrapper : MonoBehaviour, IBootstrapper, ILogSource
 	{
 		#region Instance Fields
@@ -351,7 +350,16 @@ namespace RI.Framework.Services
 		/// </remarks>
 		protected virtual void ConfigureBootstrapper ()
 		{
-			this.Container.AddCatalog(new InstanceCatalog(this));
+			CompositionBatch batch = new CompositionBatch();
+
+			batch.AddExport(this, typeof(IBootstrapper));
+			batch.AddExport(this, typeof(Bootstrapper));
+
+			batch.AddExport(this.Container, typeof(IDependencyResolver));
+			batch.AddExport(this.Container, typeof(IServiceProvider));
+			batch.AddExport(this.Container, typeof(CompositionContainer));
+
+			this.Container.Compose(batch);
 		}
 
 		/// <summary>
@@ -364,11 +372,9 @@ namespace RI.Framework.Services
 		/// </remarks>
 		protected virtual void ConfigureContainer ()
 		{
-			this.Container.AddCatalog(new InstanceCatalog(this.Container));
-
 			if (this.MonoBehaviourCreator)
 			{
-				this.Log(LogLevel.Debug, "Using MonoBehaviour composition creator");
+				this.Log(LogLevel.Debug, "Using default MonoBehaviour composition creator");
 				this.Container.AddCreator(new MonoBehaviourCreator());
 			}
 
@@ -425,6 +431,7 @@ namespace RI.Framework.Services
 		{
 			if (this.ServiceLocatorBinding)
 			{
+				this.Log(LogLevel.Debug, "Using default service locator binding");
 				ServiceLocator.BindToDependencyResolver(this.Container);
 			}
 		}
@@ -456,11 +463,12 @@ namespace RI.Framework.Services
 		/// </remarks>
 		protected virtual void ConfigureSingletons ()
 		{
-			Singleton<Bootstrapper>.Ensure(() => this);
 			Singleton<IBootstrapper>.Ensure(() => this);
+			Singleton<Bootstrapper>.Ensure(() => this);
 
-			Singleton<CompositionContainer>.Ensure(() => this.Container);
 			Singleton<IDependencyResolver>.Ensure(() => this.Container);
+			Singleton<IServiceProvider>.Ensure(() => this.Container);
+			Singleton<CompositionContainer>.Ensure(() => this.Container);
 		}
 
 		/// <summary>
@@ -510,7 +518,7 @@ namespace RI.Framework.Services
 			if (this.ModuleUnloading)
 			{
 				this.Log(LogLevel.Debug, "Automatically unload modules");
-				this.Container.GetExport<IModuleService>()?.Unload();
+				this.Container?.GetExport<IModuleService>()?.Unload();
 			}
 		}
 
@@ -523,7 +531,6 @@ namespace RI.Framework.Services
 
 		/// <inheritdoc />
 		public CompositionContainer Container { get; private set; } = null;
-
 
 		/// <inheritdoc />
 		bool ISynchronizable.IsSynchronized => true;
@@ -617,7 +624,6 @@ namespace RI.Framework.Services
 
 		/// <inheritdoc />
 		public Utilities.Logging.ILogger Logger { get; set; } = LogLocator.Logger;
-
 
 		/// <inheritdoc />
 		public bool LoggingEnabled { get; set; } = true;
