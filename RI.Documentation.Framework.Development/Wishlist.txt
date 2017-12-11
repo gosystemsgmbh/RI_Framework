@@ -7,33 +7,6 @@
 * [ ] Commercium
 
 
-Utilities
----------
-
- - (WinForms) FormExtensions
- - (WinForms) TemporaryCursor
- - (WinForms) WindowWrapper
-
- - (CrossPlatform) CrossPlatform\Users\User.IsCurrentElevated
-
- - (Windows) WindowsMessage
- - (Windows) WindowsMessageLoop
- - (Windows) WindowsMessageLoopTimer
- - (Windows) WindowsMessageLoopSynchronizationContext
- - (Windows) WindowsMessageLoop: Priority queue
-
- - (ZIP) TemporaryFiles (from ZIP)
-
- * (WPF) CircularProgressBar
- * (WPF) BindablePasswordBox
- * (WPF) Flasher
- * (WPF) ScreenIdentifier
-
-
-Threading
----------
-
-
 Collections
 -----------
 
@@ -115,10 +88,6 @@ Collections
  - (Common) WatchableXXX (Collection, List, Dictionary, Queue, Stack, HashSet, LinkedList, Pool, Warehouse, PriorityQueue)
  - (Common) ObservableXXX (Collection, List, Dictionary, Queue, Stack, HashSet, LinkedList, Pool, Warehouse, PriorityQueue)
 
- - (Common) RingQueue
- - (Common) SortedQueue
- - (Common) WrappingCollection (wrapping multiple collections in a sequence)
-
  - (Common) IInheritingTreeNode, IInheritingTreeNodeExtensions, InheritingTreeNodeBase, InheritingTreeNode
 
 
@@ -185,31 +154,16 @@ I/O
  - (Unity) JSON mesh loader (babylon.JS)
 
 
-Composition
----------
-
-
 Services
 --------
  
  * (.NET) Licensing (LicensingService, FileLicenseStorage)
-
- * (WpfToolkit) DockingManagerRegionAdapter
-
- - (.NET) Logging: PipeLogWriter
   
  - (WPF) WpfApplication: Handle power events using SystemEvents.PowerModeChanged
  - (WPF) WpfApplication: Handle user switching using SystemEvents.SessionSwitch
 
  - (Unity) IDispatcherOperation: OnXXX callbacks
  - (Unity) IDispatcherOperation: Stacking of all OnXXX callbacks
-
- - (Windows) Messaging: WindowsMessageLoopMessageDispatcher
- - (WinForms) Messaging: ApplicationMessageDispatcher
-
- - (WinForms) WinFormsBootstrapper (copy from WpfBootstrapper)
- - (WinForms) Regions (WinFormsRegionAdapterBase, WinFormsRegionAdapter)
- - (WinForms) Resources (WinFormsResourceConverter)
 
  - (Service) ServiceBootstrapper
  - (Service) ServiceApplication
@@ -226,56 +180,8 @@ Services
 Data
 ----
 
- = (.NET) Reporting base
- = (EPPlus) Reporting Excel
-
- * (.NET) EntityView: View interfaces for WF and WPF
- * (.NET) IRepositorySet: Add entity and property descriptions functionality
-
  - (.NET) IRepositorySet: Add GetChanges method (return RepositorySetChanges type)
  - (.NET) IRepositoryContext: Add GetChanges method (return RepositoryContextChanges type)
  - (.NET) IRepositoryContext: Add GetErrors method (return RepositoryContextErrors type)
 
  - (.NET) Async repositories/contexts
-
-
-Mathematic
-----------
-
- - (Common) MathUtils: CirclePosition
- - (Common) MathUtils: EllipsePosition
-
- - (Common) Bezier/Spline curves
-
-
-State machines
---------------
-
- - (Common) Cascading
-
- - (Windows) WindowsMessageLoopStateDispatcher
- - (WinForms) ApplicationStateDispatcher
-
-
-Bus
----
-
- - (Windows) WindowsMessageLoopBusDispatcher
- - (WinForms) ApplicationBusDispatcher
-
-
-Behaviours
-----------
-
- - (Unity) Splash screen
- - (Unity) Screenshot
-
-
-Tools
------
-
- - LogViewer
- - Embedd LogViewer into Windows.Shared
- - Version updater: Add support for *.md
- - Version updater: Full update of *.shfbproj
- - Version updater: Full update of *.wxs
