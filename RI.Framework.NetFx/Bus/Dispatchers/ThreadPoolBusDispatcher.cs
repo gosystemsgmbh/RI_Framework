@@ -3,7 +3,6 @@ using System.Threading;
 
 using RI.Framework.ComponentModel;
 using RI.Framework.Composition.Model;
-using RI.Framework.Threading;
 using RI.Framework.Utilities.ObjectModel;
 
 
@@ -12,26 +11,26 @@ using RI.Framework.Utilities.ObjectModel;
 namespace RI.Framework.Bus.Dispatchers
 {
 	/// <summary>
-	///     Implements a default bus dispatcher.
+	///     Implements a bus dispatcher which uses <see cref="ThreadPool" />.
 	/// </summary>
 	/// <remarks>
 	///     <para>
 	///         See <see cref="IBusDispatcher" /> for more details.
 	///     </para>
 	///     <para>
-	///         <see cref="DefaultBusDispatcher" /> uses <see cref="SynchronizationContext" />, which is captured at the time of dispatching, to dispatch operations or falls back to <see cref="ThreadPool.QueueUserWorkItem(WaitCallback,object)" /> if no <see cref="SynchronizationContext" /> is available.
+	///         Bus operations are dispatched using <see cref="ThreadPool.QueueUserWorkItem(WaitCallback)" />.
 	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	[Export]
-	public sealed class DefaultBusDispatcher : IBusDispatcher
+	public sealed class ThreadPoolBusDispatcher : IBusDispatcher
 	{
 		#region Instance Constructor/Destructor
 
 		/// <summary>
-		///     Creates a new instance of <see cref="DefaultBusDispatcher" />.
+		///     Creates a new instance of <see cref="ThreadPoolBusDispatcher" />.
 		/// </summary>
-		public DefaultBusDispatcher ()
+		public ThreadPoolBusDispatcher ()
 		{
 			this.SyncRoot = new object();
 		}
@@ -54,8 +53,7 @@ namespace RI.Framework.Bus.Dispatchers
 		{
 			lock (this.SyncRoot)
 			{
-				DispatchCapture capture = new DispatchCapture(action, parameters ?? new object[0]);
-				capture.Execute();
+				ThreadPool.QueueUserWorkItem(_ => action.DynamicInvoke(parameters));
 			}
 		}
 

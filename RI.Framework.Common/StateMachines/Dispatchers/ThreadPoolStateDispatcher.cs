@@ -3,43 +3,46 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 
-using RI.Framework.Threading;
+using RI.Framework.Composition.Model;
+using RI.Framework.StateMachines;
+using RI.Framework.StateMachines.Dispatchers;
 using RI.Framework.Utilities.ObjectModel;
 
 
 
 
-namespace RI.Framework.StateMachines.Dispatchers
+namespace RI.Framework.Bus.Dispatchers
 {
 	/// <summary>
-	///     Implements a default state machine operation dispatcher.
+	///     Implements a state machine operation dispatcher which uses <see cref="ThreadPool" />.
 	/// </summary>
 	/// <remarks>
 	///     <para>
 	///         See <see cref="IStateDispatcher" /> for more details.
 	///     </para>
 	///     <para>
-	///         <see cref="DefaultStateDispatcher" /> uses <see cref="SynchronizationContext" />, which is captured at the time of dispatching, to dispatch operations or falls back to <see cref="ThreadPool.QueueUserWorkItem(WaitCallback,object)" /> if no <see cref="SynchronizationContext" /> is available.
+	///         State machine operations are dispatched using <see cref="ThreadPool.QueueUserWorkItem(WaitCallback)" />.
 	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
-	public sealed class DefaultStateDispatcher : IStateDispatcher, IDisposable
+	[Export]
+	public sealed class ThreadPoolStateDispatcher : IStateDispatcher, IDisposable
 	{
 		#region Instance Constructor/Destructor
 
 		/// <summary>
-		///     Creates a new instance of <see cref="DefaultStateDispatcher" />.
+		///     Creates a new instance of <see cref="ThreadPoolStateDispatcher" />.
 		/// </summary>
-		public DefaultStateDispatcher ()
+		public ThreadPoolStateDispatcher ()
 		{
 			this.SyncRoot = new object();
 			this.UpdateTimers = new Dictionary<StateMachine, Timer>();
 		}
 
 		/// <summary>
-		///     Garbage collects this instance of <see cref="DefaultStateDispatcher" />.
+		///     Garbage collects this instance of <see cref="ThreadPoolStateDispatcher" />.
 		/// </summary>
-		~DefaultStateDispatcher ()
+		~ThreadPoolStateDispatcher ()
 		{
 			this.Dispose(false);
 		}
@@ -99,13 +102,13 @@ namespace RI.Framework.StateMachines.Dispatchers
 		/// <inheritdoc />
 		public object SyncRoot { get; }
 
+
 		/// <inheritdoc />
 		public void DispatchSignal (StateMachineSignalDelegate signalDelegate, StateSignalInfo signalInfo)
 		{
 			lock (this.SyncRoot)
 			{
-				DispatchCapture capture = new DispatchCapture(signalDelegate, signalInfo);
-				capture.Execute();
+				ThreadPool.QueueUserWorkItem(_ => signalDelegate(signalInfo));
 			}
 		}
 
@@ -114,8 +117,7 @@ namespace RI.Framework.StateMachines.Dispatchers
 		{
 			lock (this.SyncRoot)
 			{
-				DispatchCapture capture = new DispatchCapture(transientDelegate, transientInfo);
-				capture.Execute();
+				ThreadPool.QueueUserWorkItem(_ => transientDelegate(transientInfo));
 			}
 		}
 
@@ -123,7 +125,6 @@ namespace RI.Framework.StateMachines.Dispatchers
 		public void DispatchUpdate (StateMachineUpdateDelegate updateDelegate, StateUpdateInfo updateInfo)
 		{
 			StateMachine stateMachine = updateInfo.StateMachine;
-			DispatchCapture capture = new DispatchCapture(updateDelegate, updateInfo);
 
 			lock (this.SyncRoot)
 			{
@@ -133,7 +134,7 @@ namespace RI.Framework.StateMachines.Dispatchers
 					this.UpdateTimers.Remove(stateMachine);
 				}
 
-				Timer timer = new Timer(x => { ((DispatchCapture)x).Execute(); }, capture, updateInfo.UpdateDelay, Timeout.Infinite);
+				Timer timer = new Timer(_ => updateDelegate(updateInfo), null, updateInfo.UpdateDelay, Timeout.Infinite);
 				this.UpdateTimers.Add(stateMachine, timer);
 			}
 		}

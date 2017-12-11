@@ -173,6 +173,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Caches\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Dispatchers\DefaultStateDispatcher.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Dispatchers\IStateDispatcher.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Dispatchers\SynchronizationContextStateDispatcher.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Dispatchers\ThreadPoolStateDispatcher.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Dispatchers\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Resolvers\CompositionContainerStateResolver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Resolvers\DependencyResolverStateResolver.cs" />
