@@ -7,6 +7,7 @@ using System.Reflection;
 using RI.Framework.Collections;
 using RI.Framework.Collections.Comparison;
 using RI.Framework.Collections.DirectLinq;
+using RI.Framework.ComponentModel;
 using RI.Framework.Composition.Catalogs;
 using RI.Framework.Composition.Model;
 using RI.Framework.Services;

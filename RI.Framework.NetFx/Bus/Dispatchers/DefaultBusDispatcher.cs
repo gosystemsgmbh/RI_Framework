@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 
+using RI.Framework.ComponentModel;
 using RI.Framework.Composition.Model;
 using RI.Framework.Threading;
 using RI.Framework.Utilities.ObjectModel;

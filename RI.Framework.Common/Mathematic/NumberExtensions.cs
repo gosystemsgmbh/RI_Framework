@@ -1,4 +1,5 @@
-﻿#if !TEMPLATE_RUNNER
+﻿
+#if !TEMPLATE_RUNNER
 
 using System;
 using System.Globalization;
@@ -6,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 using RI.Framework.Collections.DirectLinq;
+using RI.Framework.Mathematic.Statistics;
 
 // ReSharper disable RedundantCast
 

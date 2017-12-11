@@ -9,7 +9,7 @@ using RI.Framework.Utilities.ObjectModel;
 
 
 
-namespace RI.Framework.Mathematic
+namespace RI.Framework.Mathematic.Statistics
 {
 	/// <summary>
 	///     Contains statistic values for a sequence of numbers.

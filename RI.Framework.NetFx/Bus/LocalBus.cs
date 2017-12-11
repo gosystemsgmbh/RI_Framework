@@ -12,6 +12,7 @@ using RI.Framework.Bus.Internals;
 using RI.Framework.Bus.Pipeline;
 using RI.Framework.Bus.Routers;
 using RI.Framework.Collections;
+using RI.Framework.ComponentModel;
 using RI.Framework.Composition.Model;
 using RI.Framework.Services.Logging;
 using RI.Framework.Threading;
@@ -729,20 +730,6 @@ namespace RI.Framework.Bus
 
 				this.WorkAvailable.Set();
 			}
-		}
-
-		/// <inheritdoc />
-		public void Start () => this.Start(ServiceLocator.Resolver);
-
-		/// <inheritdoc />
-		public void Start (IServiceProvider serviceProvider)
-		{
-			if (serviceProvider == null)
-			{
-				throw new ArgumentNullException(nameof(serviceProvider));
-			}
-
-			this.Start((IDependencyResolver)new DependencyResolverWrapper(serviceProvider));
 		}
 
 		/// <inheritdoc />

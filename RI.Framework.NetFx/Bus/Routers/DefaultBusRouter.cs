@@ -2,6 +2,7 @@
 
 using RI.Framework.Bus.Connections;
 using RI.Framework.Bus.Internals;
+using RI.Framework.ComponentModel;
 using RI.Framework.Composition.Model;
 using RI.Framework.Services.Logging;
 using RI.Framework.Utilities.Logging;

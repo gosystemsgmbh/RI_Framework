@@ -4,8 +4,8 @@ using System.Data.Entity.ModelConfiguration.Configuration;
 using System.Linq.Expressions;
 using System.Reflection;
 
+using RI.Framework.ComponentModel;
 using RI.Framework.Composition;
-using RI.Framework.Utilities.ObjectModel;
 
 
 

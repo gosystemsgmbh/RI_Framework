@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+using RI.Framework.ComponentModel;
 using RI.Framework.Services;
 using RI.Framework.Utilities.ObjectModel;
 

@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 
 
 
 
-namespace RI.Framework.Utilities.ObjectModel
+namespace RI.Framework.ComponentModel
 {
 	/// <summary>
 	///     Event arguments for the <see cref="ServiceLocator" />.<see cref="ServiceLocator.Lookup" /> event.

@@ -10,6 +10,7 @@ using RI.Framework.Bus.Exceptions;
 using RI.Framework.Bus.Internals;
 using RI.Framework.Bus.Routers;
 using RI.Framework.Collections;
+using RI.Framework.ComponentModel;
 using RI.Framework.Composition.Model;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Logging;

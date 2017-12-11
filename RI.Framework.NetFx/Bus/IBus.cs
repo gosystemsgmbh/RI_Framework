@@ -8,6 +8,7 @@ using RI.Framework.Bus.Exceptions;
 using RI.Framework.Bus.Internals;
 using RI.Framework.Bus.Pipeline;
 using RI.Framework.Bus.Routers;
+using RI.Framework.ComponentModel;
 using RI.Framework.Composition.Model;
 using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.ObjectModel;
@@ -204,7 +205,7 @@ namespace RI.Framework.Bus
 	///     </para>
 	///     <para>
 	///         As mentioned above, the instantiation of all the bus components is done by an <see cref="IBus" /> implementation.
-	///         To do this, <see cref="IBus" /> uses <see cref="IDependencyResolver" />, <see cref="IServiceProvider" />, or <see cref="ServiceLocator" /> which is passed to <see cref="Start(IDependencyResolver)" />, <see cref="Start(IServiceProvider)" />, or <see cref="Start()" />.
+	///         To do this, <see cref="IBus" /> uses <see cref="IDependencyResolver" /> which is passed to <see cref="Start(IDependencyResolver)" />.
 	///     </para>
 	///     <para>
 	///         <b> EXCEPTION HANDLING AND FORWARDING </b>
@@ -523,29 +524,10 @@ namespace RI.Framework.Bus
 		/// <summary>
 		///     Starts the bus and opens all connections to remote busses.
 		/// </summary>
-		/// <remarks>
-		///     <para>
-		///         <see cref="ServiceLocator" /> is used to resolve types needed by the bus.
-		///     </para>
-		/// </remarks>
-		/// <exception cref="InvalidOperationException"> The bus is already started. </exception>
-		void Start ();
-
-		/// <summary>
-		///     Starts the bus and opens all connections to remote busses.
-		/// </summary>
 		/// <param name="dependencyResolver"> The dependency resolver which is used for resolving types needed by the bus. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="dependencyResolver" /> is null. </exception>
 		/// <exception cref="InvalidOperationException"> The bus is already started. </exception>
 		void Start (IDependencyResolver dependencyResolver);
-
-		/// <summary>
-		///     Starts the bus and opens all connections to remote busses.
-		/// </summary>
-		/// <param name="serviceProvider"> The service provider which is used for resolving types needed by the bus. </param>
-		/// <exception cref="ArgumentNullException"> <paramref name="serviceProvider" /> is null. </exception>
-		/// <exception cref="InvalidOperationException"> The bus is already started. </exception>
-		void Start (IServiceProvider serviceProvider);
 
 		/// <summary>
 		///     Stops the bus and closes all connections to remote busses.

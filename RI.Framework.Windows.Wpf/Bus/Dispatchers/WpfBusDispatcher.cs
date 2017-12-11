@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Threading;
 
+using RI.Framework.ComponentModel;
 using RI.Framework.Composition.Model;
 using RI.Framework.Utilities.ObjectModel;
 

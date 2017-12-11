@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+using RI.Framework.ComponentModel;
 using RI.Framework.Services.Messaging.Dispatchers;
-using RI.Framework.Utilities.ObjectModel;
 
 
 

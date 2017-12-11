@@ -4,8 +4,8 @@ using System.Linq;
 using System.Reflection;
 
 using RI.Framework.Collections;
+using RI.Framework.ComponentModel;
 using RI.Framework.Composition;
-using RI.Framework.Utilities.ObjectModel;
 
 
 

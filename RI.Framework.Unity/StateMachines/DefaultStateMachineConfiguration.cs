@@ -1,8 +1,8 @@
-﻿using RI.Framework.Composition;
+﻿using RI.Framework.ComponentModel;
+using RI.Framework.Composition;
 using RI.Framework.Services.Dispatcher;
 using RI.Framework.StateMachines.Dispatchers;
 using RI.Framework.StateMachines.Resolvers;
-using RI.Framework.Utilities.ObjectModel;
 
 
 

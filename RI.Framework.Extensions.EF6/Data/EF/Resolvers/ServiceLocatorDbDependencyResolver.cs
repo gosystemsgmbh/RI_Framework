@@ -1,4 +1,4 @@
-﻿using RI.Framework.Utilities.ObjectModel;
+﻿using RI.Framework.ComponentModel;
 
 
 

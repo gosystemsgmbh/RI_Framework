@@ -159,6 +159,7 @@
     <Compile Include="Services\IBootstrapper.cs" />
     <Compile Include="Services\IBootstrapperOperations.cs" />
     <Compile Include="Services\Licensing\_NamespaceDoc.cs" />
+    <Compile Include="Services\Logging\Writers\ColoredConsoleLogWriter.cs" />
     <Compile Include="Services\Logging\Writers\DebuggerLogWriter.cs" />
     <Compile Include="Services\Logging\Writers\TraceListenerAdapterLogWriter.cs" />
     <Compile Include="Services\Messaging\Dispatchers\DefaultMessageDispatcher.cs" />

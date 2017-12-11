@@ -4,6 +4,15 @@ using System.Threading;
 
 
 
+#if PLATFORM_NETFX
+
+using System.Threading.Tasks;
+
+#endif
+
+
+
+
 namespace RI.Framework.Threading
 {
 	/// <summary>
@@ -85,6 +94,11 @@ namespace RI.Framework.Threading
 		/// <summary>
 		///     Executes the delegate.
 		/// </summary>
+		/// <remarks>
+		///     <para>
+		///         The execution is just scheduled and <see cref="Execute"/> returns immediately without waiting for the execution to be completed.
+		///     </para>
+		/// </remarks>
 		public void Execute ()
 		{
 			if (this.Context != null)
@@ -104,6 +118,45 @@ namespace RI.Framework.Threading
 				}, this);
 			}
 		}
+
+#if PLATFORM_NETFX
+
+		/// <summary>
+		///     Executes the delegate.
+		/// </summary>
+		/// <returns>
+		///     The task which can be used to await the completion of the execution.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         The execution is just scheduled and <see cref="ExecuteAsync"/> returns immediately without waiting for the execution to be completed.
+		///     </para>
+		/// </remarks> 
+		public Task<object> ExecuteAsync ()
+		{
+			TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
+			if (this.Context != null)
+			{
+				this.Context.Post(x =>
+				{
+					DispatchCapture capture = ((DispatchCapture)x);
+					object result = capture.Action.DynamicInvoke(capture.Arguments);
+					tcs.TrySetResult(result);
+				}, this);
+			}
+			else
+			{
+				ThreadPool.QueueUserWorkItem(x =>
+				{
+					DispatchCapture capture = ((DispatchCapture)x);
+					object result = capture.Action.DynamicInvoke(capture.Arguments);
+					tcs.TrySetResult(result);
+				}, this);
+			}
+			return tcs.Task;
+		}
+
+#endif
 
 		#endregion
 	}

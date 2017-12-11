@@ -1,5 +1,6 @@
 ﻿using System;
 
+using RI.Framework.ComponentModel;
 using RI.Framework.Composition;
 using RI.Framework.Composition.Catalogs;
 using RI.Framework.Composition.Creators;

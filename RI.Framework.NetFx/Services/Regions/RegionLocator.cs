@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using RI.Framework.ComponentModel;
 using RI.Framework.Services.Regions.Adapters;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
-using RI.Framework.Utilities.ObjectModel;
 
 
 

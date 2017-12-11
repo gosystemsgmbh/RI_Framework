@@ -8,14 +8,14 @@ using RI.Framework.Composition;
 
 
 
-namespace RI.Framework.Utilities.ObjectModel
+namespace RI.Framework.ComponentModel
 {
 	/// <summary>
 	///     Implemens a wrapper for <see cref="IDependencyResolver" /> and <see cref="IServiceProvider" /> which allows modification/interception of resolved instances.
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         <see cref="ObjectModel.DependencyResolverWrapper" /> can also be used to wrap a <see cref="IDependencyResolver" /> as a <see cref="IServiceProvider" /> and vice-versa.
+	///         <see cref="DependencyResolverWrapper" /> can also be used to wrap a <see cref="IDependencyResolver" /> as a <see cref="IServiceProvider" /> and vice-versa.
 	///     </para>
 	/// </remarks>
 	public class DependencyResolverWrapper : IDependencyResolver, IServiceProvider
@@ -23,7 +23,7 @@ namespace RI.Framework.Utilities.ObjectModel
 		#region Instance Constructor/Destructor
 
 		/// <summary>
-		///     Creates a new instance of <see cref="ObjectModel.DependencyResolverWrapper" />.
+		///     Creates a new instance of <see cref="DependencyResolverWrapper" />.
 		/// </summary>
 		/// <param name="dependencyResolver"> The dependency resolver. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="dependencyResolver" /> is null. </exception>
@@ -38,7 +38,7 @@ namespace RI.Framework.Utilities.ObjectModel
 		}
 
 		/// <summary>
-		///     Creates a new instance of <see cref="ObjectModel.DependencyResolverWrapper" />.
+		///     Creates a new instance of <see cref="DependencyResolverWrapper" />.
 		/// </summary>
 		/// <param name="serviceProvider"> The service provider. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="serviceProvider" /> is null. </exception>

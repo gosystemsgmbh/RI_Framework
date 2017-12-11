@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using RI.Framework.ComponentModel;
 using RI.Framework.Services.Logging.Filters;
 using RI.Framework.Services.Logging.Writers;
 using RI.Framework.Utilities.Logging;
-using RI.Framework.Utilities.ObjectModel;
 
 
 

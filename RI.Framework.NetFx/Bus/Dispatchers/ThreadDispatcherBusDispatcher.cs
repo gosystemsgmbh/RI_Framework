@@ -1,5 +1,6 @@
 ﻿using System;
 
+using RI.Framework.ComponentModel;
 using RI.Framework.Composition.Model;
 using RI.Framework.Threading.Dispatcher;
 using RI.Framework.Utilities.ObjectModel;

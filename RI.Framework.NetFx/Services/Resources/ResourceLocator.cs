@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Globalization;
 
+using RI.Framework.ComponentModel;
 using RI.Framework.Services.Resources.Converters;
 using RI.Framework.Services.Resources.Sources;
 using RI.Framework.Utilities.Exceptions;
-using RI.Framework.Utilities.ObjectModel;
 
 
 

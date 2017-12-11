@@ -2,6 +2,7 @@
 
 using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Mathematic;
+using RI.Framework.Mathematic.Statistics;
 
 
 

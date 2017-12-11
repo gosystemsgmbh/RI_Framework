@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
 
+using RI.Framework.ComponentModel;
 using RI.Framework.Composition;
 using RI.Framework.Composition.Catalogs;
 using RI.Framework.IO.Paths;

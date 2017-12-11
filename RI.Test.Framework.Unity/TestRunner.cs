@@ -4,6 +4,7 @@ using System.Reflection;
 
 using RI.Framework.Collections;
 using RI.Framework.Collections.DirectLinq;
+using RI.Framework.ComponentModel;
 using RI.Framework.Composition;
 using RI.Framework.Composition.Catalogs;
 using RI.Framework.Services;

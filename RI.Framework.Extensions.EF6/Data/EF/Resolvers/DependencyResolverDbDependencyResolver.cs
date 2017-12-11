@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity.Infrastructure.DependencyResolution;
 
-using RI.Framework.Utilities.ObjectModel;
+using RI.Framework.ComponentModel;
 
 
 

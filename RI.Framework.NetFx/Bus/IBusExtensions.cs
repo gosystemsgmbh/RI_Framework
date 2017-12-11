@@ -1,5 +1,7 @@
 ﻿using System;
 
+using RI.Framework.ComponentModel;
+
 
 
 
@@ -61,6 +63,49 @@ namespace RI.Framework.Bus
 			}
 
 			return new SendOperation(bus);
+		}
+
+		/// <summary>
+		///     Starts the bus and opens all connections to remote busses.
+		/// </summary>
+		/// <param name="bus"> The bus. </param>
+		/// <remarks>
+		///     <para>
+		///         <see cref="ServiceLocator" /> is used to resolve types needed by the bus.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="bus" /> is null. </exception>
+		/// <exception cref="InvalidOperationException"> The bus is already started. </exception>
+		public static void Start (this IBus bus)
+		{
+			if (bus == null)
+			{
+				throw new ArgumentNullException(nameof(bus));
+			}
+
+			bus.Start(ServiceLocator.Resolver);
+		}
+
+		/// <summary>
+		///     Starts the bus and opens all connections to remote busses.
+		/// </summary>
+		/// <param name="bus"> The bus. </param>
+		/// <param name="serviceProvider"> The service provider which is used for resolving types needed by the bus. </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="bus" /> or <paramref name="serviceProvider" /> is null. </exception>
+		/// <exception cref="InvalidOperationException"> The bus is already started. </exception>
+		public static void Start (this IBus bus, IServiceProvider serviceProvider)
+		{
+			if (bus == null)
+			{
+				throw new ArgumentNullException(nameof(bus));
+			}
+
+			if (serviceProvider == null)
+			{
+				throw new ArgumentNullException(nameof(serviceProvider));
+			}
+
+			bus.Start(new DependencyResolverWrapper(serviceProvider));
 		}
 
 		#endregion

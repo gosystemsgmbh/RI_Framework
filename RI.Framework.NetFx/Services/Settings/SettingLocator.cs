@@ -2,9 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 
+using RI.Framework.ComponentModel;
 using RI.Framework.Services.Settings.Converters;
 using RI.Framework.Services.Settings.Storages;
-using RI.Framework.Utilities.ObjectModel;
 
 
 
