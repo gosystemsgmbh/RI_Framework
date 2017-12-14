@@ -84,7 +84,8 @@ namespace RI.Framework.Web.Nancy
 
 			lock (this.SyncRoot)
 			{
-				this.AuthenticatedUsers.RemoveWhere(x => x.Value.LastActivityTimestampUtc.HasValue ? DateTime.UtcNow.Subtract(x.Value.LastActivityTimestampUtc.Value) >= idleTimeout : true).ForEach(x => this.Log(LogLevel.Information, "Automatically logged-out user {0} with ID {1} after {2} seconds", x.Value.UserName, x.Value.Identifier.ToString("N").ToUpperInvariant(), idleTimeout.TotalSeconds));
+				DateTime utcNow = DateTime.UtcNow;
+				this.AuthenticatedUsers.RemoveWhere(x => x.Value.LastActivityTimestampUtc.HasValue ? utcNow.Subtract(x.Value.LastActivityTimestampUtc.Value) >= idleTimeout : (x.Value.LoginTimestampUtc.HasValue ? utcNow.Subtract(x.Value.LoginTimestampUtc.Value) >= idleTimeout : true)).ForEach(x => this.Log(LogLevel.Information, "Automatically logged-out user {0} with ID {1} after {2} seconds", x.Value.UserName, x.Value.Identifier.ToString("N").ToUpperInvariant(), idleTimeout.TotalSeconds));
 			}
 		}
 
@@ -164,7 +165,10 @@ namespace RI.Framework.Web.Nancy
 
 			lock (this.SyncRoot)
 			{
-				user.LoginTimestampUtc = DateTime.UtcNow;
+				DateTime utcNow = DateTime.UtcNow;
+				user.LoginTimestampUtc = utcNow;
+				user.LastActivityTimestampUtc = utcNow;
+				user.LogoutTimestampUtc = null;
 				this.AuthenticatedUsers.Remove(user.Identifier);
 				this.AuthenticatedUsers.Add(user.Identifier, user);
 			}
