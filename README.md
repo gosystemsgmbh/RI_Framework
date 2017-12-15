@@ -40,7 +40,6 @@ The long-term goal includes several larger endeavors:
    * .NET Standard
    * .NET Core (through .NET Standard)
  * Extensions for additional libraries/frameworks:
-   * ASP.NET (not that much as focus will be on ASP.NET Core)
    * ASP.NET Core
    * Entity Framework Core
 

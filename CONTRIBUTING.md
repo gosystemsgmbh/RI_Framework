@@ -32,9 +32,9 @@ A pull request must follow the following rules, otherwise it will be closed imme
 
 The following tools are required in order to successfully build the project:
 
- * [Visual Studio](https://www.visualstudio.com/) 2015 or newer
+ * [Visual Studio](https://www.visualstudio.com/) 2017 or newer
  * [Visual Studio Tools for Unity](https://docs.microsoft.com/en-us/visualstudio/cross-platform/visual-studio-tools-for-unity)
- * [Sandcastle Help File Builder](https://github.com/EWSoftware/SHFB) 2016.9.17 or newer
+ * [Sandcastle Help File Builder](https://github.com/EWSoftware/SHFB) 2017.5.15.0 or newer
 
 ## Recommended tools
 
