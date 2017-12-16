@@ -1,6 +1,6 @@
 @cd %~dp0
 
-@"..\_Output\VersionUpdater.exe" "." "r" "file" "..\SolutionProperty.Product.txt" "..\SolutionProperty.Version.txt" "..\SolutionProperty.Company.txt" "..\SolutionProperty.Copyright.txt" "..\SolutionProperty.Trademark.txt"
+@"..\_Tools\VersionUpdater.exe" "." "r" "file" "..\SolutionProperty.Product.txt" "..\SolutionProperty.Version.txt" "..\SolutionProperty.Company.txt" "..\SolutionProperty.Copyright.txt" "..\SolutionProperty.Trademark.txt"
 
 @xcopy "..\RI.Documentation.Framework.Unity.Full\Content\Introduction.aml" ".\Content\Introduction.aml" /E /Y
 @xcopy "..\RI.Documentation.Framework.Unity.Full\Content\Compatibility.aml" ".\Content\Compatibility.aml" /E /Y

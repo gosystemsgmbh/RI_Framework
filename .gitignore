@@ -1,17 +1,18 @@
 # Build output
+/_Tools
 /_Output
 /_Packages
+
+# Documentation output
+/RI.Documentation.Framework.NetFx/Help
+/RI.Documentation.Framework.Unity.Full/Help
+/RI.Documentation.Framework.Unity.Light/Help
 
 # Project output
 [Dd]ebug/
 [Rr]elease/
 [Bb]in/
 [Oo]bj/
-
-# Documentation output
-/RI.Documentation.Framework.NetFx/Help
-/RI.Documentation.Framework.Unity.Full/Help
-/RI.Documentation.Framework.Unity.Light/Help
 
 # Visual Studio files
 .vs/

@@ -1,6 +1,7 @@
 @cd %~dp0
 
 @for %%i in (
+_Tools,
 _Output,
 _Output\x86,
 _Output\x64

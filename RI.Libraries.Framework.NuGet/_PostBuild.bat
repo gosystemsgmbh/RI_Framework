@@ -1,5 +1,7 @@
 @cd %~dp0
 
+@copy "..\packages\BCrypt.Net-Next.2.1.2\lib\net452\*.dll" "..\_Output\*.*"
+
 @copy "..\packages\ControlzEx.2.2.0.4\lib\net45\*.dll" "..\_Output\*.*"
 
 @copy "..\packages\DotNetZip.1.10.1\lib\net20\*.dll" "..\_Output\*.*"
@@ -12,14 +14,21 @@
 
 @copy "..\packages\Fluent.Ribbon.5.0.2.46\lib\net45\*.dll" "..\_Output\*.*"
 
+@copy "..\packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\*.dll" "..\_Output\*.*"
+
 @copy "..\packages\Mono.Posix-4.5.4.5.0\lib\net45\*.dll" "..\_Output\*.*"
 
 @copy "..\packages\Nancy.1.4.4\lib\net40\*.dll" "..\_Output\*.*"
 @copy "..\packages\Nancy.Authentication.Forms.1.4.1\lib\net40\*.dll" "..\_Output\*.*"
+@copy "..\packages\Nancy.Hosting.Aspnet.1.4.1\lib\net40\*.dll" "..\_Output"
+@copy "..\packages\Nancy.Serialization.JsonNet.1.4.1\lib\net40\*.dll" "..\_Output"
+@copy "..\packages\Nancy.Viewengines.Razor.1.4.3\lib\net40\*.dll" "..\_Output"
 
 @copy "..\packages\Newtonsoft.Json.10.0.3\lib\net45\*.dll" "..\_Output\*.*"
 
 @copy "..\packages\Portable.BouncyCastle.1.8.1.3\lib\net40\*.dll" "..\_Output\*.*"
+
+@copy "..\packages\RestSharp.106.1.0\lib\net452\*.dll" "..\_Output"
 
 @copy "..\packages\System.Data.SQLite.Core.1.0.106.0\lib\net46\*.dll" "..\_Output\*.*"
 @copy "..\packages\System.Data.SQLite.Core.1.0.106.0\build\net46\x86\*.dll" "..\_Output\x86\*.*"

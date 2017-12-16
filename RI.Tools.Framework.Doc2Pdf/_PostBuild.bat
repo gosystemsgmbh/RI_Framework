@@ -1,3 +1,3 @@
 @cd %~dp0
 
-@copy ".\*.vbs" "..\_Output\*.*"
+@copy ".\*.vbs" "..\_Tools\*.*"
