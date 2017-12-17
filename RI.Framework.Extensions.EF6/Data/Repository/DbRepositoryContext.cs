@@ -116,8 +116,7 @@ namespace RI.Framework.Data.Repository
 				Type[] types = DbRepositoryContext.Filters[repository.GetType()].Select(x => x.EntityType).ToArray();
 
 				Type matchingType;
-				int inheritanceDepth;
-				if (!entityType.GetBestMatchingType(out matchingType, out inheritanceDepth, types))
+				if (!entityType.GetBestMatchingType(out matchingType, out _, types))
 				{
 					return null;
 				}
@@ -156,8 +155,7 @@ namespace RI.Framework.Data.Repository
 				Type[] types = DbRepositoryContext.Validators[repository.GetType()].Select(x => x.EntityType).ToArray();
 
 				Type matchingType;
-				int inheritanceDepth;
-				if (!entityType.GetBestMatchingType(out matchingType, out inheritanceDepth, types))
+				if (!entityType.GetBestMatchingType(out matchingType, out _, types))
 				{
 					return null;
 				}

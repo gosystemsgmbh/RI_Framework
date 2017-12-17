@@ -651,6 +651,7 @@ namespace RI.Framework.Services
 		{
 			Singleton<IBootstrapper>.Ensure(() => this);
 			Singleton<Bootstrapper>.Ensure(() => this);
+			Singleton.Ensure(this.GetType(), () => this);
 
 			Singleton<IDependencyResolver>.Ensure(() => this.Container);
 			Singleton<IServiceProvider>.Ensure(() => this.Container);
@@ -1741,12 +1742,10 @@ namespace RI.Framework.Services
 
 		#region Overrides
 
-		/// <summary>
-		///     Called when the bootstrapper singletons are to be configured.
-		/// </summary>
+		/// <inheritdoc />
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation sets the singleton instance for <see cref="Bootstrapper" />, <see cref="CompositionContainer" /> (<see cref="Bootstrapper.Container" />), and the application object (<see cref="Bootstrapper.Application" />) using <see cref="Singleton{T}" />.
+		///         The default implementation sets the singleton instance for the application object (<see cref="Bootstrapper.Application" />) using <see cref="Singleton" />.
 		///     </note>
 		/// </remarks>
 		protected override void ConfigureSingletons ()

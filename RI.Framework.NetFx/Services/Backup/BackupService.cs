@@ -372,8 +372,7 @@ namespace RI.Framework.Services.Backup
 				throw new ArgumentException("Inclusion sequence is empty.", nameof(inclusions));
 			}
 
-			IBackupSet backupSet;
-			return this.CreateBackupInternal(true, null, DateTime.Now, inclusionList, out backupSet);
+			return this.CreateBackupInternal(true, null, DateTime.Now, inclusionList, out _);
 		}
 
 		/// <inheritdoc />

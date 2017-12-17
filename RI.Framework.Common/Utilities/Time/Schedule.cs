@@ -658,8 +658,7 @@ namespace RI.Framework.Utilities.Time
 		/// </returns>
 		public bool IsDue (DateTime now)
 		{
-			TimeSpan? overdue;
-			return this.IsDue(now, null, out overdue);
+			return this.IsDue(now, null, out _);
 		}
 
 		/// <summary>
@@ -673,8 +672,7 @@ namespace RI.Framework.Utilities.Time
 		/// <exception cref="ArgumentOutOfRangeException"> <paramref name="lastOccurence" /> comes after <paramref name="now." /> </exception>
 		public bool IsDue (DateTime now, DateTime? lastOccurence)
 		{
-			TimeSpan? overdue;
-			return this.IsDue(now, lastOccurence, out overdue);
+			return this.IsDue(now, lastOccurence, out _);
 		}
 
 		/// <summary>

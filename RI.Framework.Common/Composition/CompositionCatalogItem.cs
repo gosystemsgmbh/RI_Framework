@@ -13,7 +13,7 @@ namespace RI.Framework.Composition
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         An export can only have either an assigned type (using the <see cref="Type" /> property) or an object (using the <see cref="Value" /> property), but not both.
+	///         An export can only have either an assigned type (using the <see cref="Type" /> property), an object (using the <see cref="Value" /> property), or a factory (using the <see cref="Factory" /> property), but not more than one.
 	///         Which one is used depends on the <see cref="CompositionCatalog" /> which is managing the export.
 	///     </para>
 	/// </remarks>
@@ -48,8 +48,9 @@ namespace RI.Framework.Composition
 
 			this.Name = name;
 			this.Type = type;
-			this.PrivateExport = privateExport;
 			this.Value = null;
+			this.Factory = null;
+			this.PrivateExport = privateExport;
 		}
 
 		/// <summary>
@@ -78,8 +79,41 @@ namespace RI.Framework.Composition
 
 			this.Name = name;
 			this.Type = null;
-			this.PrivateExport = false;
 			this.Value = value;
+			this.Factory = null;
+			this.PrivateExport = false;
+		}
+
+		/// <summary>
+		///     Creates a new instance of <see cref="CompositionCatalogItem" />.
+		/// </summary>
+		/// <param name="name"> The name under which the export is exported. </param>
+		/// <param name="factory"> The factory which creates the export. </param>
+		/// <param name="privateExport"> Specifies whether the type export is a private export (false) or a shared export (true). </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="name" /> or <paramref name="factory" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
+		public CompositionCatalogItem (string name, Delegate factory, bool privateExport)
+		{
+			if (name == null)
+			{
+				throw new ArgumentNullException(nameof(name));
+			}
+
+			if (name.IsEmptyOrWhitespace())
+			{
+				throw new EmptyStringArgumentException(nameof(name));
+			}
+
+			if (factory == null)
+			{
+				throw new ArgumentNullException(nameof(factory));
+			}
+
+			this.Name = name;
+			this.Type = null;
+			this.Value = null;
+			this.Factory = factory;
+			this.PrivateExport = privateExport;
 		}
 
 		#endregion
@@ -90,12 +124,20 @@ namespace RI.Framework.Composition
 		#region Instance Properties/Indexer
 
 		/// <summary>
+		///     Gets the factory which creates the export.
+		/// </summary>
+		/// <value>
+		///     The factory which creates the export or null if a factory is not used.
+		/// </value>
+		public Delegate Factory { get; }
+
+		/// <summary>
 		///     Gets the name under which the export is exported.
 		/// </summary>
 		/// <value>
 		///     The name under which the export is exported.
 		/// </value>
-		public string Name { get; private set; }
+		public string Name { get; }
 
 		/// <summary>
 		///     Gets whether the export is private or shared.
@@ -103,23 +145,23 @@ namespace RI.Framework.Composition
 		/// <value>
 		///     true if the export is private, false if the export is shared.
 		/// </value>
-		public bool PrivateExport { get; private set; }
+		public bool PrivateExport { get; }
 
 		/// <summary>
 		///     Gets the type which is exported.
 		/// </summary>
 		/// <value>
-		///     The type which is exported or null if an object is exported instead.
+		///     The type which is exported or null if a type is not exported.
 		/// </value>
-		public Type Type { get; private set; }
+		public Type Type { get; }
 
 		/// <summary>
 		///     Gets the object which is exported.
 		/// </summary>
 		/// <value>
-		///     The object which is exported or null if a type is exported instead.
+		///     The object which is exported or null an instance is not exported.
 		/// </value>
-		public object Value { get; private set; }
+		public object Value { get; }
 
 		#endregion
 	}

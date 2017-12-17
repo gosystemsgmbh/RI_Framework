@@ -305,8 +305,7 @@ namespace RI.Framework.IO.Printer
 
 		private void SendBytes (IntPtr pointer, int byteCount)
 		{
-			int dwWritten;
-			if (!RawPrinterAccess.WritePrinter(this.PrinterHandle, pointer, byteCount, out dwWritten))
+			if (!RawPrinterAccess.WritePrinter(this.PrinterHandle, pointer, byteCount, out _))
 			{
 				int errorCode = WindowsApi.GetLastErrorCode();
 				string errorMessage = WindowsApi.GetErrorMessage(errorCode);

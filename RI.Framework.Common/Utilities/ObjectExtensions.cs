@@ -186,8 +186,7 @@ namespace RI.Framework.Utilities
 					List<Type> candidateTypes = candidates.Select(x => x.ReturnType);
 
 					Type matchingType;
-					int matchingDepth;
-					cloneType.GetBestMatchingType(out matchingType, out matchingDepth, candidateTypes.ToArray());
+					cloneType.GetBestMatchingType(out matchingType, out _, candidateTypes.ToArray());
 
 					if (matchingType != null)
 					{

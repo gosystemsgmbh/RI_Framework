@@ -256,8 +256,7 @@ namespace RI.Framework.Services.Regions.Adapters
 			List<Type> supportedTypes = new List<Type>();
 			this.GetSupportedTypes(supportedTypes);
 
-			Type matchingType;
-			return type.GetBestMatchingType(out matchingType, out inheritanceDepth, supportedTypes.ToArray());
+			return type.GetBestMatchingType(out _, out inheritanceDepth, supportedTypes.ToArray());
 		}
 
 		/// <inheritdoc />

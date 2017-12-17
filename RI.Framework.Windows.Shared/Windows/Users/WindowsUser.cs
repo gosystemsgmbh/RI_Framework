@@ -166,8 +166,7 @@ namespace RI.Framework.Windows.Users
 			using (WindowsIdentity identity = WindowsIdentity.GetCurrent(false))
 			{
 				string domain;
-				string username;
-				WindowsUser.ExtractDomainAndUser(identity.Name, true, out domain, out username);
+				WindowsUser.ExtractDomainAndUser(identity.Name, true, out domain, out _);
 
 				return domain;
 			}
@@ -197,9 +196,8 @@ namespace RI.Framework.Windows.Users
 		{
 			using (WindowsIdentity identity = WindowsIdentity.GetCurrent(false))
 			{
-				string domain;
 				string username;
-				WindowsUser.ExtractDomainAndUser(identity.Name, true, out domain, out username);
+				WindowsUser.ExtractDomainAndUser(identity.Name, true, out _, out username);
 
 				return username;
 			}
@@ -213,9 +211,8 @@ namespace RI.Framework.Windows.Users
 		/// </returns>
 		public static string GetEveryoneUserName ()
 		{
-			string domain;
 			string user;
-			WindowsUser.GetUserFromSid(new SecurityIdentifier(WellKnownSidType.WorldSid, null), out domain, out user);
+			WindowsUser.GetUserFromSid(new SecurityIdentifier(WellKnownSidType.WorldSid, null), out _, out user);
 			return user;
 		}
 
@@ -282,9 +279,7 @@ namespace RI.Framework.Windows.Users
 			StringBuilder domainBuilder = new StringBuilder((int)capacity);
 			StringBuilder nameBuilder = new StringBuilder((int)capacity);
 
-			SID_NAME_USE sidNameUse;
-
-			bool success = WindowsUser.LookupAccountSid(null, sidBytes, nameBuilder, ref capacity, domainBuilder, ref capacity, out sidNameUse);
+			bool success = WindowsUser.LookupAccountSid(null, sidBytes, nameBuilder, ref capacity, domainBuilder, ref capacity, out _);
 			if (!success)
 			{
 				int errorCode = WindowsApi.GetLastErrorCode();

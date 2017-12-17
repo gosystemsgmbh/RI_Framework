@@ -679,6 +679,7 @@ namespace RI.Framework.Composition
 
 			this.Instances = new List<CompositionCatalogItem>();
 			this.Types = new List<CompositionCatalogItem>();
+			this.Factories = new List<CompositionCatalogItem>();
 			this.Catalogs = new List<CompositionCatalog>();
 			this.Creators = new List<CompositionCreator>();
 			this.Composition = new Dictionary<string, CompositionItem>(CompositionContainer.NameComparer);
@@ -799,6 +800,8 @@ namespace RI.Framework.Composition
 		private Dictionary<string, CompositionItem> Composition { get; }
 
 		private List<CompositionCreator> Creators { get; }
+
+		private List<CompositionCatalogItem> Factories { get; }
 
 		private List<CompositionCatalogItem> Instances { get; }
 
@@ -1058,6 +1061,125 @@ namespace RI.Framework.Composition
 		}
 
 		/// <summary>
+		///     Manual export: Adds a factory and exports it under the specified types default name for composition.
+		/// </summary>
+		/// <param name="factory"> The factory which creates the exported instance. </param>
+		/// <param name="exportType"> The type under whose default name the factory is exported. </param>
+		/// <param name="privateExport"> Specifies whether the export is private (true) or shared (false). </param>
+		/// <remarks>
+		///     <para>
+		///         If the specified factory is already exported under the specified name, the composition remains unchanged.
+		///     </para>
+		///     <para>
+		///         This triggers an internal recomposition using <see cref="CompositionFlags" />.<see cref="CompositionFlags.Normal" />.
+		///         See <see cref="Recompose(CompositionFlags)" /> for details.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="factory" /> or <paramref name="exportType" /> is null. </exception>
+		/// <exception cref="InvalidTypeArgumentException"> <paramref name="factory" /> is not of a type which can be used for composition. </exception>
+		/// <exception cref="CompositionException"> The internal recomposition failed. </exception>
+		public void AddExport (Delegate factory, Type exportType, bool privateExport)
+		{
+			if (factory == null)
+			{
+				throw new ArgumentNullException(nameof(factory));
+			}
+
+			if (exportType == null)
+			{
+				throw new ArgumentNullException(nameof(exportType));
+			}
+
+			this.AddExport(factory, CompositionContainer.GetNameOfType(exportType), privateExport);
+		}
+
+		/// <summary>
+		///     Manual export: Adds a factory and exports it under the specified name for composition.
+		/// </summary>
+		/// <param name="factory"> The factory which creates the exported instance. </param>
+		/// <param name="exportName"> The name under which the factory is exported. </param>
+		/// <param name="privateExport"> Specifies whether the export is private (true) or shared (false). </param>
+		/// <remarks>
+		///     <para>
+		///         If the specified factory is already exported under the specified name, the composition remains unchanged.
+		///     </para>
+		///     <para>
+		///         This triggers an internal recomposition using <see cref="CompositionFlags" />.<see cref="CompositionFlags.Normal" />.
+		///         See <see cref="Recompose(CompositionFlags)" /> for details.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="factory" /> or <paramref name="exportName" /> is null. </exception>
+		/// <exception cref="InvalidTypeArgumentException"> <paramref name="factory" /> is not of a type which can be used for composition. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="exportName" /> is an empty string. </exception>
+		/// <exception cref="CompositionException"> The internal recomposition failed. </exception>
+		public void AddExport (Delegate factory, string exportName, bool privateExport)
+		{
+			if (factory == null)
+			{
+				throw new ArgumentNullException(nameof(factory));
+			}
+
+			if (exportName == null)
+			{
+				throw new ArgumentNullException(nameof(exportName));
+			}
+
+			if (exportName.IsEmptyOrWhitespace())
+			{
+				throw new EmptyStringArgumentException(nameof(exportName));
+			}
+
+			lock (this.SyncRoot)
+			{
+				this.AddFactoryInternal(factory, exportName, privateExport);
+				this.UpdateComposition(true);
+			}
+
+			this.RaiseCompositionChanged();
+		}
+
+		/// <summary>
+		///     Manual export: Adds a factory and exports it under the specified types default name for composition.
+		/// </summary>
+		/// <param name="factory"> The factory which creates the exported instance. </param>
+		/// <param name="exportType"> The type under whose default name the factory is exported. </param>
+		/// <param name="privateExport"> Specifies whether the export is private (true) or shared (false). </param>
+		/// <remarks>
+		///     <para>
+		///         If the specified factory is already exported under the specified name, the composition remains unchanged.
+		///     </para>
+		///     <para>
+		///         This triggers an internal recomposition using <see cref="CompositionFlags" />.<see cref="CompositionFlags.Normal" />.
+		///         See <see cref="Recompose(CompositionFlags)" /> for details.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="factory" /> or <paramref name="exportType" /> is null. </exception>
+		/// <exception cref="InvalidTypeArgumentException"> <paramref name="factory" /> is not of a type which can be used for composition. </exception>
+		/// <exception cref="CompositionException"> The internal recomposition failed. </exception>
+		public void AddExport (Func<CompositionContainer, object> factory, Type exportType, bool privateExport) => this.AddExport((Delegate)factory, exportType, privateExport);
+
+		/// <summary>
+		///     Manual export: Adds a factory and exports it under the specified name for composition.
+		/// </summary>
+		/// <param name="factory"> The factory which creates the exported instance. </param>
+		/// <param name="exportName"> The name under which the factory is exported. </param>
+		/// <param name="privateExport"> Specifies whether the export is private (true) or shared (false). </param>
+		/// <remarks>
+		///     <para>
+		///         If the specified factory is already exported under the specified name, the composition remains unchanged.
+		///     </para>
+		///     <para>
+		///         This triggers an internal recomposition using <see cref="CompositionFlags" />.<see cref="CompositionFlags.Normal" />.
+		///         See <see cref="Recompose(CompositionFlags)" /> for details.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="factory" /> or <paramref name="exportName" /> is null. </exception>
+		/// <exception cref="InvalidTypeArgumentException"> <paramref name="factory" /> is not of a type which can be used for composition. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="exportName" /> is an empty string. </exception>
+		/// <exception cref="CompositionException"> The internal recomposition failed. </exception>
+		public void AddExport (Func<CompositionContainer, object> factory, string exportName, bool privateExport) => this.AddExport((Delegate)factory, exportName, privateExport);
+
+		/// <summary>
 		///     Removes all exports.
 		/// </summary>
 		/// <remarks>
@@ -1117,6 +1239,10 @@ namespace RI.Framework.Composition
 					{
 						this.AddTypeInternal(item.Type, item.Name, item.PrivateExport);
 					}
+					else if (item.Factory != null)
+					{
+						this.AddFactoryInternal(item.Factory, item.Name, item.PrivateExport);
+					}
 				}
 
 				foreach (CompositionCatalogItem item in batch.ItemsToRemove)
@@ -1128,6 +1254,10 @@ namespace RI.Framework.Composition
 					else if (item.Type != null)
 					{
 						this.RemoveTypeInternal(item.Type, item.Name);
+					}
+					else if (item.Factory != null)
+					{
+						this.RemoveFactoryInternal(item.Factory, item.Name);
 					}
 				}
 
@@ -1187,6 +1317,11 @@ namespace RI.Framework.Composition
 					List<CompositionCatalogItem> items = new List<CompositionCatalogItem>();
 					snapshot.Add(name, items);
 
+					foreach (CompositionInstanceItem instance in composition.Value.Instances)
+					{
+						items.Add(new CompositionCatalogItem(name, instance.Instance));
+					}
+
 					foreach (CompositionTypeItem type in composition.Value.Types)
 					{
 						if (type.Instance != null)
@@ -1199,9 +1334,16 @@ namespace RI.Framework.Composition
 						}
 					}
 
-					foreach (CompositionInstanceItem instance in composition.Value.Instances)
+					foreach (CompositionFactoryItem factory in composition.Value.Factories)
 					{
-						items.Add(new CompositionCatalogItem(name, instance.Instance));
+						if (factory.Instance != null)
+						{
+							items.Add(new CompositionCatalogItem(name, factory.Instance));
+						}
+						else
+						{
+							items.Add(new CompositionCatalogItem(name, factory.Factory, factory.PrivateExport));
+						}
 					}
 				}
 				return snapshot;
@@ -1800,7 +1942,7 @@ namespace RI.Framework.Composition
 		/// <param name="exportType"> The type under whose default name the type is exported. </param>
 		/// <remarks>
 		///     <para>
-		///         Only the export matching the specified types is removed.
+		///         Only the export matching the specified type is removed.
 		///         If the same type is also exported under other types or names, those exports remain intact.
 		///     </para>
 		///     <para>
@@ -1868,6 +2010,121 @@ namespace RI.Framework.Composition
 
 			this.RaiseCompositionChanged();
 		}
+
+		/// <summary>
+		///     Manual export: Removes a factory exported under the specified types default name so that it is no longer used for composition.
+		/// </summary>
+		/// <param name="factory"> The factory which creates the exported instance. </param>
+		/// <param name="exportType"> The type under whose default name the factory is exported. </param>
+		/// <remarks>
+		///     <para>
+		///         Only the export matching the specified factory is removed.
+		///         If the same factory is also exported under other types or names, those exports remain intact.
+		///     </para>
+		///     <para>
+		///         This triggers an internal recomposition using <see cref="CompositionFlags" />.<see cref="CompositionFlags.Normal" />.
+		///         See <see cref="Recompose(CompositionFlags)" /> for details.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="factory" /> or <paramref name="exportType" /> is null. </exception>
+		/// <exception cref="CompositionException"> The internal recomposition failed. </exception>
+		public void RemoveExport (Delegate factory, Type exportType)
+		{
+			if (factory == null)
+			{
+				throw new ArgumentNullException(nameof(factory));
+			}
+
+			if (exportType == null)
+			{
+				throw new ArgumentNullException(nameof(exportType));
+			}
+
+			this.RemoveExport(factory, CompositionContainer.GetNameOfType(exportType));
+		}
+
+		/// <summary>
+		///     Manual export: Removes a factory exported under the specified name so that it is no longer used for composition.
+		/// </summary>
+		/// <param name="factory"> The factory which creates the exported instance. </param>
+		/// <param name="exportName"> The name under which the factory is exported. </param>
+		/// <remarks>
+		///     <para>
+		///         Only the export matching the specified factory and name is removed.
+		///         If the same factory is also exported under other types or names, those exports remain intact.
+		///     </para>
+		///     <para>
+		///         This triggers an internal recomposition using <see cref="CompositionFlags" />.<see cref="CompositionFlags.Normal" />.
+		///         See <see cref="Recompose(CompositionFlags)" /> for details.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="factory" /> or <paramref name="exportName" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="exportName" /> is an empty string. </exception>
+		/// <exception cref="CompositionException"> The internal recomposition failed. </exception>
+		public void RemoveExport (Delegate factory, string exportName)
+		{
+			if (factory == null)
+			{
+				throw new ArgumentNullException(nameof(factory));
+			}
+
+			if (exportName == null)
+			{
+				throw new ArgumentNullException(nameof(exportName));
+			}
+
+			if (exportName.IsEmptyOrWhitespace())
+			{
+				throw new EmptyStringArgumentException(nameof(exportName));
+			}
+
+			lock (this.SyncRoot)
+			{
+				this.RemoveFactoryInternal(factory, exportName);
+				this.UpdateComposition(true);
+			}
+
+			this.RaiseCompositionChanged();
+		}
+
+		/// <summary>
+		///     Manual export: Removes a factory exported under the specified types default name so that it is no longer used for composition.
+		/// </summary>
+		/// <param name="factory"> The factory which creates the exported instance. </param>
+		/// <param name="exportType"> The type under whose default name the factory is exported. </param>
+		/// <remarks>
+		///     <para>
+		///         Only the export matching the specified factory is removed.
+		///         If the same factory is also exported under other types or names, those exports remain intact.
+		///     </para>
+		///     <para>
+		///         This triggers an internal recomposition using <see cref="CompositionFlags" />.<see cref="CompositionFlags.Normal" />.
+		///         See <see cref="Recompose(CompositionFlags)" /> for details.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="factory" /> or <paramref name="exportType" /> is null. </exception>
+		/// <exception cref="CompositionException"> The internal recomposition failed. </exception>
+		public void RemoveExport (Func<CompositionContainer, object> factory, Type exportType) => this.RemoveExport((Delegate)factory, exportType);
+
+		/// <summary>
+		///     Manual export: Removes a factory exported under the specified name so that it is no longer used for composition.
+		/// </summary>
+		/// <param name="factory"> The factory which creates the exported instance. </param>
+		/// <param name="exportName"> The name under which the factory is exported. </param>
+		/// <remarks>
+		///     <para>
+		///         Only the export matching the specified factory and name is removed.
+		///         If the same factory is also exported under other types or names, those exports remain intact.
+		///     </para>
+		///     <para>
+		///         This triggers an internal recomposition using <see cref="CompositionFlags" />.<see cref="CompositionFlags.Normal" />.
+		///         See <see cref="Recompose(CompositionFlags)" /> for details.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="factory" /> or <paramref name="exportName" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="exportName" /> is an empty string. </exception>
+		/// <exception cref="CompositionException"> The internal recomposition failed. </exception>
+		public void RemoveExport (Func<CompositionContainer, object> factory, string exportName) => this.RemoveExport((Delegate)factory, exportName);
 
 		/// <summary>
 		///     Model-based import: Resolves the imports of the specified object, using <see cref="ImportAttribute" />.
@@ -2010,6 +2267,16 @@ namespace RI.Framework.Composition
 			this.Creators.Add(creator);
 		}
 
+		private void AddFactoryInternal (Delegate factory, string name, bool privateExport)
+		{
+			if (this.Factories.Any(x => (x.Factory == factory) && CompositionContainer.NameComparer.Equals(x.Name, name)))
+			{
+				return;
+			}
+
+			this.Factories.Add(new CompositionCatalogItem(name, factory, privateExport));
+		}
+
 		private void AddInstanceInternal (object instance, string name)
 		{
 			if (this.Instances.Any(x => object.ReferenceEquals(x.Value, instance) && CompositionContainer.NameComparer.Equals(x.Name, name)))
@@ -2040,6 +2307,7 @@ namespace RI.Framework.Composition
 			this.Catalogs.Clear();
 			this.Instances.Clear();
 			this.Types.Clear();
+			this.Factories.Clear();
 
 			this.UpdateComposition(true);
 		}
@@ -2065,6 +2333,15 @@ namespace RI.Framework.Composition
 					if (type.Instance != null)
 					{
 						instances.Add(type.Instance);
+					}
+				}
+
+				for (int i1 = 0; i1 < compositionItem.Value.Factories.Count; i1++)
+				{
+					CompositionFactoryItem factory = compositionItem.Value.Factories[i1];
+					if (factory.Instance != null)
+					{
+						instances.Add(factory.Instance);
 					}
 				}
 			}
@@ -2176,6 +2453,7 @@ namespace RI.Framework.Composition
 
 			HashSet<object> instances = new HashSet<object>();
 			HashSet<Type> types = new HashSet<Type>();
+			HashSet<Delegate> factories = new HashSet<Delegate>();
 
 			if (this.Composition.ContainsKey(name))
 			{
@@ -2202,6 +2480,19 @@ namespace RI.Framework.Composition
 						types.Add(typeItem.Type);
 					}
 				}
+
+				for (int i1 = 0; i1 < item.Factories.Count; i1++)
+				{
+					CompositionFactoryItem factoryItem = item.Factories[i1];
+					if (factoryItem.Instance != null)
+					{
+						instances.Add(factoryItem.Instance);
+					}
+					else
+					{
+						factories.Add(factoryItem.Factory);
+					}
+				}
 			}
 
 			if (this.ParentContainer != null)
@@ -2216,9 +2507,10 @@ namespace RI.Framework.Composition
 			if (!create)
 			{
 				types.Clear();
+				factories.Clear();
 			}
 
-			List<object> newInstances = new List<object>(types.Count);
+			List<object> newInstances = new List<object>(types.Count + factories.Count);
 			foreach (Type type in types)
 			{
 				bool supportedByCreators = this.Creators.Any(x => x.CanCreateInstance(this, type, compatibleType, name));
@@ -2240,15 +2532,23 @@ namespace RI.Framework.Composition
 						ParameterInfo[] methodParameters = method.GetParameters();
 						object[] parameters = new object[methodParameters.Length];
 
-						parameters[0] = type;
-
-						for (int i1 = 1; i1 < methodParameters.Length; i1++)
+						for (int i1 = 0; i1 < methodParameters.Length; i1++)
 						{
 							string importName = methodParameters[i1].GetCustomAttributes(typeof(ImportAttribute), false).OfType<ImportAttribute>().FirstOrDefault(null, x => !x.Name.IsNullOrEmptyOrWhitespace())?.Name;
 							Type importType = methodParameters[i1].ParameterType;
 
-							ImportKind importKind;
-							parameters[i1] = this.GetImportValueFromNameOrType(importName, importType, out importKind);
+							if (importType == typeof(string))
+							{
+								parameters[i1] = name;
+							}
+							else if (importType == typeof(Type))
+							{
+								parameters[i1] = type;
+							}
+							else
+							{
+								parameters[i1] = this.GetImportValueFromNameOrType(importName, importType, out _);
+							}
 						}
 
 						newInstance = method.Invoke(null, parameters);
@@ -2285,8 +2585,18 @@ namespace RI.Framework.Composition
 							string importName = constructorParameters[i1].GetCustomAttributes(typeof(ImportAttribute), false).OfType<ImportAttribute>().FirstOrDefault(null, x => !x.Name.IsNullOrEmptyOrWhitespace())?.Name;
 							Type importType = constructorParameters[i1].ParameterType;
 
-							ImportKind importKind;
-							parameters[i1] = this.GetImportValueFromNameOrType(importName, importType, out importKind);
+							if (importType == typeof(string))
+							{
+								parameters[i1] = name;
+							}
+							else if (importType == typeof(Type))
+							{
+								parameters[i1] = type;
+							}
+							else
+							{
+								parameters[i1] = this.GetImportValueFromNameOrType(importName, importType, out _);
+							}
 						}
 
 						newInstance = constructor.Invoke(parameters);
@@ -2324,6 +2634,55 @@ namespace RI.Framework.Composition
 							if ((typeItem.Type == type) && (typeItem.Instance == null) && (!typeItem.PrivateExport))
 							{
 								typeItem.Instance = newInstance;
+							}
+						}
+					}
+				}
+			}
+
+			foreach (Delegate factory in factories)
+			{
+				object newInstance = null;
+
+				if (compatibleType.IsAssignableFrom(factory.Method.ReturnType) || (factory.Method.ReturnType == typeof(object)))
+				{
+					ParameterInfo[] factoryParameters = factory.Method.GetParameters();
+					object[] parameters = new object[factoryParameters.Length];
+
+					for (int i1 = 0; i1 < factoryParameters.Length; i1++)
+					{
+						string importName = factoryParameters[i1].GetCustomAttributes(typeof(ImportAttribute), false).OfType<ImportAttribute>().FirstOrDefault(null, x => !x.Name.IsNullOrEmptyOrWhitespace())?.Name;
+						Type importType = factoryParameters[i1].ParameterType;
+
+						if (importType == typeof(string))
+						{
+							parameters[i1] = name;
+						}
+						else
+						{
+							parameters[i1] = this.GetImportValueFromNameOrType(importName, importType, out _);
+						}
+					}
+
+					newInstance = factory.DynamicInvoke(parameters);
+				}
+
+				if (newInstance == null)
+				{
+					this.Log(LogLevel.Debug, "The factory is not a supported delegate type: {0}", factory.GetFullName());
+				}
+
+				if (newInstance != null)
+				{
+					newInstances.Add(newInstance);
+
+					foreach (KeyValuePair<string, CompositionItem> compositionItem in this.Composition)
+					{
+						foreach (CompositionFactoryItem factoryItem in compositionItem.Value.Factories)
+						{
+							if ((factoryItem.Factory == factory) && (factoryItem.Instance == null) && (!factoryItem.PrivateExport))
+							{
+								factoryItem.Instance = newInstance;
 							}
 						}
 					}
@@ -2397,6 +2756,11 @@ namespace RI.Framework.Composition
 			this.Creators.RemoveAll(creator);
 		}
 
+		private void RemoveFactoryInternal (Delegate factory, string name)
+		{
+			this.Factories.RemoveAll(x => (x.Factory == factory) && CompositionContainer.NameComparer.Equals(x.Name, name));
+		}
+
 		private void RemoveInstanceInternal (object instance, string name)
 		{
 			this.Instances.RemoveAll(x => object.ReferenceEquals(x.Value, instance) && CompositionContainer.NameComparer.Equals(x.Name, name));
@@ -2419,6 +2783,7 @@ namespace RI.Framework.Composition
 
 			items.AddRange(this.Instances);
 			items.AddRange(this.Types);
+			items.AddRange(this.Factories);
 
 			foreach (CompositionCatalog catalog in this.Catalogs)
 			{
@@ -2477,6 +2842,16 @@ namespace RI.Framework.Composition
 						typeItem.Checked = true;
 					}
 				}
+				else if (item.Factory != null)
+				{
+					CompositionFactoryItem factoryItem = compositionItem.Factories.FirstOrDefault(x => (x.Factory == item.Factory));
+					if (factoryItem == null)
+					{
+						factoryItem = new CompositionFactoryItem(item.Factory, item.PrivateExport);
+						compositionItem.Factories.Add(factoryItem);
+					}
+					factoryItem.Checked = true;
+				}
 			}
 
 			foreach (KeyValuePair<string, CompositionItem> compositionItem in this.Composition)
@@ -2499,10 +2874,19 @@ namespace RI.Framework.Composition
 						(x?.Instance as IDisposable)?.Dispose();
 					}
 				});
+				compositionItem.Value.Factories.RemoveWhere(x => !x.Checked).ForEach(x =>
+				{
+					this.Log(LogLevel.Debug, "Factory removed from container: {0} / {1}", compositionItem.Key, x?.Instance?.GetType()?.AssemblyQualifiedName ?? "[null]");
+					(x?.Instance as IExporting)?.RemovedFromContainer(compositionItem.Key, this);
+					if (this.AutoDispose && (!object.ReferenceEquals(x?.Instance, this)))
+					{
+						(x?.Instance as IDisposable)?.Dispose();
+					}
+				});
 				compositionItem.Value.ResetChecked();
 			}
 
-			this.Composition.RemoveWhere(x => (x.Value.Instances.Count == 0) && (x.Value.Types.Count == 0)).ForEach(x => this.Log(LogLevel.Debug, "Removing export: {0}", x.Key));
+			this.Composition.RemoveWhere(x => (x.Value.Instances.Count == 0) && (x.Value.Types.Count == 0) && (x.Value.Factories.Count == 0)).ForEach(x => this.Log(LogLevel.Debug, "Removing export: {0}", x.Key));
 
 			foreach (KeyValuePair<object, HashSet<string>> newInstance in newInstances)
 			{
@@ -2671,6 +3055,44 @@ namespace RI.Framework.Composition
 
 
 
+		#region Type: CompositionFactoryItem
+
+		private sealed class CompositionFactoryItem
+		{
+			#region Instance Constructor/Destructor
+
+			public CompositionFactoryItem (Delegate factory, bool privateExport)
+			{
+				this.Factory = factory;
+				this.PrivateExport = privateExport;
+
+				this.Checked = false;
+				this.Instance = null;
+			}
+
+			#endregion
+
+
+
+
+			#region Instance Properties/Indexer
+
+			public bool Checked { get; set; }
+
+			public Delegate Factory { get; }
+
+			public object Instance { get; set; }
+
+			public bool PrivateExport { get; }
+
+			#endregion
+		}
+
+		#endregion
+
+
+
+
 		#region Type: CompositionInstanceItem
 
 		private sealed class CompositionInstanceItem
@@ -2713,6 +3135,7 @@ namespace RI.Framework.Composition
 				this.Name = name;
 				this.Instances = new List<CompositionInstanceItem>();
 				this.Types = new List<CompositionTypeItem>();
+				this.Factories = new List<CompositionFactoryItem>();
 			}
 
 			#endregion
@@ -2721,6 +3144,8 @@ namespace RI.Framework.Composition
 
 
 			#region Instance Properties/Indexer
+
+			public List<CompositionFactoryItem> Factories { get; }
 
 			public List<CompositionInstanceItem> Instances { get; }
 
@@ -2745,6 +3170,11 @@ namespace RI.Framework.Composition
 				foreach (CompositionTypeItem typeItem in this.Types)
 				{
 					typeItem.Checked = false;
+				}
+
+				foreach (CompositionFactoryItem factoryItem in this.Factories)
+				{
+					factoryItem.Checked = false;
 				}
 			}
 

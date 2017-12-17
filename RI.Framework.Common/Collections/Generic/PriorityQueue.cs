@@ -186,8 +186,7 @@ namespace RI.Framework.Collections.Generic
 		/// <inheritdoc />
 		public T Dequeue ()
 		{
-			int priority;
-			return this.Get(true, out priority);
+			return this.Get(true, out _);
 		}
 
 		/// <inheritdoc />
@@ -306,8 +305,7 @@ namespace RI.Framework.Collections.Generic
 		/// <inheritdoc />
 		public T Peek ()
 		{
-			int priority;
-			return this.Get(false, out priority);
+			return this.Get(false, out _);
 		}
 
 		/// <inheritdoc />
