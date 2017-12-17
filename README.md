@@ -1,6 +1,6 @@
 # Decoupling & Utilities Framework
 
-A framework for the .NET Framework, Mono, and Unity.
+A framework for .NET, Mono, and Unity.
 
 ## Releases
 
@@ -8,13 +8,13 @@ A framework for the .NET Framework, Mono, and Unity.
 
 ## Overview
 
-The Decoupling & Utilities Framework is a collection of various functions for the .NET Framework, Mono, and Unity.
+The Decoupling & Utilities Framework is a collection of various functions for .NET, Mono, and Unity.
 
 It implements all kind of bigger functional blocks (the "decoupling" part), asorted small helpers (the "utilities" part), and extensions for other libraries/frameworks (both in the "decoupling" and "utilities" part).
 
 All those functions, regardless whether big or small, are (mostly) independent of each other and can be used individually.
 
-Due to the utilities part of the framework, which implements general-purpose functions not tied to a particular application type, the target audience can be everyone who uses .NET.
+Due to the utilities part of the framework, which implements general-purpose functions not tied to a particular application type, the target audience can be everyone who develops for .NET.
 
 The decoupling part on the other hand has a more narrower target audience as it focuses on functionality common to the following application types:
 
@@ -22,7 +22,8 @@ The decoupling part on the other hand has a more narrower target audience as it 
  * Desktop games
  * Server software
 
-Therefore, it currently supports the following "fat" runtimes/targets:
+It currently supports the following runtimes/targets:
+
  * [.NET Framework](https://www.microsoft.com/net/)
  * [Mono](http://www.mono-project.com/)
  * [Unity](https://unity3d.com/)
@@ -45,7 +46,7 @@ The long-term goal includes several larger endeavors:
 
 ## Compatibility
 
-| Runtime                                          | Version | Platform                                         | Remarks                                                              |
+| Runtime / Target                                 | Version | Platform                                         | Remarks                                                              |
 | ------------------------------------------------ | ------- | ------------------------------------------------ | -------------------------------------------------------------------- |
 | [.NET Framework](https://www.microsoft.com/net/) | 4.6.1   | Windows                                          |                                                                      |
 | [Mono](http://www.mono-project.com/)             | 5.4.1.6 | Linux                                            |                                                                      |
@@ -56,6 +57,35 @@ The long-term goal includes several larger endeavors:
 N = .NET Framework <br> M = Mono <br> U = Unity <br> W = Windows (.NET Framework) <br> L = Linux (Mono)
 
 See the [documentation](DOCUMENTATION.md) for more details about how to use the Decoupling and Utilities Framework and its separation into namespaces and assemblies.
+
+### Base assemblies
+
+| Assembly                              | Platform | Remarks                                                                                    |
+| ------------------------------------- | -------- | ------------------------------------------------------------------------------------------ |
+| RI.Framework.NetFx.dll                | N, M     | Main assembly for the .NET Framework and Mono                                              |
+| RI.Framework.Unity.dll                | U        | Main assembly for Unity                                                                    |
+| RI.Framework.Windows.Shared.dll       | W        | Additional Windows functions                                                               |
+| RI.Framework.Windows.Wpf.dll          | W        | Additional Windows Presentation Foundation functions                                       |
+| RI.Framework.Windows.Forms.dll        | W        | Additional Windows Forms functions                                                         |
+| RI.Framework.Windows.Service.dll      | W        | Additional Winows Service functions                                                        |
+| RI.Framework.Linux.Shared.dll         | L        | Additional Linux functions                                                                 |
+| RI.Framework.CrossPlatform.Shared.dll | N, M     | Platform-independent wrapper for RI.Framework.Windows.\*.dll and RI.Framework.Linux.\*.dll |
+
+### Extension assemblies
+
+| Library / Framework                                                 | Version  | Assembly                                                                                                             | Platform          |
+| ------------------------------------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------- | ----------------- |
+| [Entity Framework 6.x](https://github.com/aspnet/EntityFramework6)  | 6.1.3    | RI.Framework.Extensions.EF6.dll<br>RI.Framework.Extensions.SQLiteEF6.dll<br>RI.Framework.Extensions.SqlServerEF6.dll | N, M              |
+| [SQLite](https://system.data.sqlite.org/)                           | 1.0.106  | RI.Framework.Extensions.SQLite.dll<br>RI.Framework.Extensions.SQLiteEF6.dll                                          | N, M              |
+| [SQL Server](https://www.microsoft.com/en-us/sql-server)            | 2008+    | RI.Framework.Extensions.SqlServer.dll<br>RI.Framework.Extensions.SqlServerEF6.dll                                    | N, M              |
+| [Nancy Framework](https://github.com/NancyFx/Nancy)                 | 1.4.4    | RI.Framework.Extensions.Nancy.dll<br>RI.Framework.Extensions.NancyJson.dll                                           | N, M              |
+| [DotNetZip](https://dotnetzip.codeplex.com/)                        | 1.10.1   | RI.Framework.Extensions.DotNetZip.dll                                                                                | N, M              |
+| [EPPlus](https://github.com/JanKallman/EPPlus)                      | 4.1.1    | RI.Framework.Extensions.EPPlus.dll                                                                                   | N, M              |
+| [Newtonsoft JSON](https://github.com/JamesNK/Newtonsoft.Json)       | 10.0.3   | RI.Framework.Extensions.Json.dll<br>RI.Framework.Extensions.NancyJson.dll                                            | N, M              |
+| [Bouncy Castle](https://github.com/onovotny/bc-csharp)              | 1.8.1.3  | RI.Framework.Extensions.BouncyCastle.dll                                                                             | N, M              |
+| [Extended WPF Toolkit](https://github.com/xceedsoftware/wpftoolkit) | 3.2.0    | RI.Framework.Extensions.WpfToolkit.dll                                                                               | W                 |
+| [Fluent Ribbon](https://github.com/fluentribbon/Fluent.Ribbon)      | 5.0.2.46 | RI.Framework.Extensions.FluentRibbon.dll                                                                             | W                 |
+| [Mono.Posix](https://github.com/mono/mono)                          | 4.5.0    | RI.Framework.Linux.Shared.dll                                                                                        | L                 |
 
 ### Decoupling namespaces
 
@@ -80,6 +110,7 @@ See the [documentation](DOCUMENTATION.md) for more details about how to use the 
 
 | Functionality         | Namespace                               | Platform          | Remarks                                                                                          |
 | --------------------- | --------------------------------------- | ----------------- | ------------------------------------------------------------------------------------------------ |
+| Basic utilities       | RI.Framework.Utilities.\*               | N, M, U           | Utilities and extensions for basic CLR and BCL types and functions                               |
 | Components            | RI.Framework.ComponentModel             | N, M, U           | Types and utilities to componentize an application and to handle its dependencies                |
 | Collections           | RI.Framework.Collections.\*             | N, M, U           | Collection types and utilities                                                                   |
 | Direct LINQ           | RI.Framework.Collections.DirectLinq     | N, M, U           | AOT-compatible LINQ subset/replacement with immediate execution                                  |
@@ -94,7 +125,6 @@ See the [documentation](DOCUMENTATION.md) for more details about how to use the 
 | Controllers           | RI.Framework.Mathematic.Controllers     | N, M, U           | PID controller                                                                                   |
 | Threading             | RI.Framework.Threading.\*               | N, M, U           | Threading types and utilities                                                                    |
 | Thread dispatcher     | RI.Framework.Threading.Dispatcher       | N, M              | Platform-independent dispatcher with priorities, timers, task scheduler, synchronization context |
-| Basic utilities       | RI.Framework.Utilities.\*               | N, M, U           | Utilities and extensions for basic CLR and BCL types and functions                               |
 | Windows               | RI.Framework.Windows.\*                 | W                 | Windows platform-specific functions                                                              |
 | Linux                 | RI.Framework.Linux.\*                   | L                 | Linux platform-specific functions                                                                |
 | Cross-platform        | RI.Framework.CrossPlatform.\*           | N, M              | Platform-independent wrapper for RI.Framework.Windows.\* and RI.Framework.Linux.\*               |
@@ -107,35 +137,6 @@ See the [documentation](DOCUMENTATION.md) for more details about how to use the 
 | [SQLite](https://system.data.sqlite.org/)                          | RI.Framework.Data.SQLite.\*    | N, M, U           |
 | [SQL Server](https://www.microsoft.com/en-us/sql-server)           | RI.Framework.Data.SqlServer.\* | N, M, U           |
 | [Nancy Framework](https://github.com/NancyFx/Nancy)                | RI.Framework.Web.Nancy.\*      | N, M, U           |
-
-### Base assemblies
-
-| Assembly                              | Platform | Remarks                                                                                    |
-| ------------------------------------- | -------- | ------------------------------------------------------------------------------------------ |
-| RI.Framework.NetFx.dll                | N, M     | Functions for the .NET Framework and Mono without additional dependencies                  |
-| RI.Framework.Unity.dll                | U        | Functions for Unity without additional dependencies                                        |
-| RI.Framework.Windows.Shared.dll       | W        | Functions for Windows                                                                      |
-| RI.Framework.Windows.Wpf.dll          | W        | Functions for Windows Presentation Foundation                                              |
-| RI.Framework.Windows.Forms.dll        | W        | Functions for Windows Forms                                                                |
-| RI.Framework.Windows.Service.dll      | W        | Functions for Windows Services                                                             |
-| RI.Framework.Linux.Shared.dll         | L        | Functions for Linux                                                                        |
-| RI.Framework.CrossPlatform.Shared.dll | N, M     | Platform-independent wrapper for RI.Framework.Windows.\*.dll and RI.Framework.Linux.\*.dll |
-
-### Extension assemblies
-
-| Library / Framework                                                 | Version  | Assembly                                                                                                             | Platform          |
-| ------------------------------------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------- | ----------------- |
-| [Entity Framework 6.x](https://github.com/aspnet/EntityFramework6)  | 6.1.3    | RI.Framework.Extensions.EF6.dll<br>RI.Framework.Extensions.SQLiteEF6.dll<br>RI.Framework.Extensions.SqlServerEF6.dll | N, M              |
-| [SQLite](https://system.data.sqlite.org/)                           | 1.0.106  | RI.Framework.Extensions.SQLite.dll<br>RI.Framework.Extensions.SQLiteEF6.dll                                          | N, M              |
-| [SQL Server](https://www.microsoft.com/en-us/sql-server)            | 2008+    | RI.Framework.Extensions.SqlServer.dll<br>RI.Framework.Extensions.SqlServerEF6.dll                                    | N, M              |
-| [Nancy Framework](https://github.com/NancyFx/Nancy)                 | 1.4.4    | RI.Framework.Extensions.Nancy.dll<br>RI.Framework.Extensions.NancyJson.dll                                           | N, M              |
-| [DotNetZip](https://dotnetzip.codeplex.com/)                        | 1.10.1   | RI.Framework.Extensions.DotNetZip.dll                                                                                | N, M              |
-| [EPPlus](https://github.com/JanKallman/EPPlus)                      | 4.1.1    | RI.Framework.Extensions.EPPlus.dll                                                                                   | N, M              |
-| [Newtonsoft JSON](https://github.com/JamesNK/Newtonsoft.Json)       | 10.0.3   | RI.Framework.Extensions.Json.dll<br>RI.Framework.Extensions.NancyJson.dll                                            | N, M              |
-| [Bouncy Castle](https://github.com/onovotny/bc-csharp)              | 1.8.1.3  | RI.Framework.Extensions.BouncyCastle.dll                                                                             | N, M              |
-| [Extended WPF Toolkit](https://github.com/xceedsoftware/wpftoolkit) | 3.2.0    | RI.Framework.Extensions.WpfToolkit.dll                                                                               | W                 |
-| [Fluent Ribbon](https://github.com/fluentribbon/Fluent.Ribbon)      | 5.0.2.46 | RI.Framework.Extensions.FluentRibbon.dll                                                                             | W                 |
-| [Mono.Posix](https://github.com/mono/mono)                          | 4.5.0    | RI.Framework.Linux.Shared.dll                                                                                        | L                 |
 
 ## License
 
