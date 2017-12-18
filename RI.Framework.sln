@@ -388,12 +388,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Framework.Extensions.Bou
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		RI.Framework.Common\RI.Framework.Common.projitems*{0de0d41d-b3c7-4eb5-a76e-62fc4ca9cb30}*SharedItemsImports = 13
+		RI.Framework.Shared.All\RI.Framework.Shared.All.projitems*{0de0d41d-b3c7-4eb5-a76e-62fc4ca9cb30}*SharedItemsImports = 13
 		RI.Test.Framework.Common\RI.Test.Framework.Common.projitems*{32368735-ba73-45b2-9f24-aba7f6099508}*SharedItemsImports = 4
-		RI.Framework.Common\RI.Framework.Common.projitems*{36e8eb66-9a69-41ea-a7f8-45ba5299a03f}*SharedItemsImports = 4
-		RI.Framework.Common\RI.Framework.Common.projitems*{a7f5dd2f-63bf-4032-ad1e-14d211e0d3ed}*SharedItemsImports = 4
+		RI.Framework.Shared.All\RI.Framework.Shared.All.projitems*{36e8eb66-9a69-41ea-a7f8-45ba5299a03f}*SharedItemsImports = 4
+		RI.Framework.Shared.All\RI.Framework.Shared.All.projitems*{a7f5dd2f-63bf-4032-ad1e-14d211e0d3ed}*SharedItemsImports = 4
 		RI.Test.Framework.Common\RI.Test.Framework.Common.projitems*{cb4bb068-91a4-44cd-94bc-13d1c5542c5b}*SharedItemsImports = 4
-		RI.Test.Framework.Common\RI.Test.Framework.Common.projitems*{d002cc0c-2a9c-4731-a3e6-dffa517e3bd9}*SharedItemsImports = 13
+		RI.Test.Framework.Shared.All\RI.Test.Framework.Common.projitems*{d002cc0c-2a9c-4731-a3e6-dffa517e3bd9}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

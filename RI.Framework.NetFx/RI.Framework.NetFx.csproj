@@ -288,7 +288,7 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup />
-  <Import Project="..\RI.Framework.Common\RI.Framework.Common.projitems" Label="Shared" />
+  <Import Project="..\RI.Framework.Shared.All\RI.Framework.Shared.All.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>@call "$(ProjectDir)_PreBuild.bat" $(ConfigurationName)</PreBuildEvent>
