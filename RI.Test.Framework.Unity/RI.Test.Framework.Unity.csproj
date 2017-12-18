@@ -75,7 +75,7 @@
     <None Include="_PostBuild.bat" />
     <None Include="_PreBuild.bat" />
   </ItemGroup>
-  <Import Project="..\RI.Test.Framework.Common\RI.Test.Framework.Common.projitems" Label="Shared" />
+  <Import Project="..\RI.Test.Framework.Shared.All\RI.Test.Framework.Shared.All.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>@call "$(ProjectDir)_PostBuild.bat" $(ConfigurationName)</PostBuildEvent>
