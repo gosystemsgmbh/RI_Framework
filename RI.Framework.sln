@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Solution", "_Solution", "{237458F2-03F8-4EE2-B506-A6F935736306}"
 EndProject
@@ -60,7 +60,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Framework.NetFx", "RI.Fr
 		{5C393494-8524-49FF-9978-BA2B8FA228B7} = {5C393494-8524-49FF-9978-BA2B8FA228B7}
 	EndProjectSection
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "RI.Framework.Common", "RI.Framework.Common\RI.Framework.Common.shproj", "{0DE0D41D-B3C7-4EB5-A76E-62FC4CA9CB30}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "RI.Framework.Shared.All", "RI.Framework.Common\RI.Framework.Shared.All.shproj", "{0DE0D41D-B3C7-4EB5-A76E-62FC4CA9CB30}"
 EndProject
 Project("{7CF6DF6D-3B04-46F8-A40B-537D21BCA0B4}") = "RI.Documentation.Framework.NetFx", "RI.Documentation.Framework.NetFx\RI.Documentation.Framework.NetFx.shfbproj", "{0CE71375-77BE-427A-822D-7BF17C7A3BC5}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -97,7 +97,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Test.Framework.NetFx", "
 		{5C393494-8524-49FF-9978-BA2B8FA228B7} = {5C393494-8524-49FF-9978-BA2B8FA228B7}
 	EndProjectSection
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "RI.Test.Framework.Common", "RI.Test.Framework.Common\RI.Test.Framework.Common.shproj", "{D002CC0C-2A9C-4731-A3E6-DFFA517E3BD9}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "RI.Test.Framework.Shared.All", "RI.Test.Framework.Common\RI.Test.Framework.Shared.All.shproj", "{D002CC0C-2A9C-4731-A3E6-DFFA517E3BD9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Framework.Windows.Wpf", "RI.Framework.Windows.Wpf\RI.Framework.Windows.Wpf.csproj", "{D5BF9549-AEB4-4A21-ACA0-591131018428}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -587,5 +587,8 @@ Global
 		{4CF0B8AE-85C5-4E4E-8B1E-DAF7C963CCB0} = {237458F2-03F8-4EE2-B506-A6F935736306}
 		{257A9E18-0120-4A5B-8C00-CE7817FBC254} = {237458F2-03F8-4EE2-B506-A6F935736306}
 		{EC687B9B-0203-440F-88D6-FCF74201F271} = {D61DB73D-4E53-46F9-B18A-3DBAC4424E41}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8F1C7CEE-8964-4978-B12D-D8D050AED41A}
 	EndGlobalSection
 EndGlobal
