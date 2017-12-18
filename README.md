@@ -64,6 +64,11 @@ See the [documentation](DOCUMENTATION.md) for more details about how to use the 
 | ------------------------------------- | -------- | ------------------------------------------------------------------------------------------ |
 | RI.Framework.NetFx.dll                | N, M     | Main assembly for the .NET Framework and Mono                                              |
 | RI.Framework.Unity.dll                | U        | Main assembly for Unity                                                                    |
+
+### Platform-dependent assemblies
+
+| Assembly                              | Platform | Remarks                                                                                    |
+| ------------------------------------- | -------- | ------------------------------------------------------------------------------------------ |
 | RI.Framework.Windows.Shared.dll       | W        | Additional Windows functions                                                               |
 | RI.Framework.Windows.Wpf.dll          | W        | Additional Windows Presentation Foundation functions                                       |
 | RI.Framework.Windows.Forms.dll        | W        | Additional Windows Forms functions                                                         |
