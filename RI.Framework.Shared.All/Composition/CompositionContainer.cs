@@ -16,6 +16,10 @@ using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.ObjectModel;
 using RI.Framework.Utilities.Reflection;
+
+
+
+
 #if PLATFORM_NETFX
 using System.Collections;
 using System.Linq.Expressions;
@@ -320,6 +324,7 @@ namespace RI.Framework.Composition
 		static CompositionContainer ()
 		{
 			CompositionContainer.GlobalSyncRoot = new object();
+			CompositionContainer.ResolveImports_PropertyCache = null;
 		}
 
 		#endregion
@@ -645,11 +650,11 @@ namespace RI.Framework.Composition
 				throw new ArgumentNullException(nameof(type));
 			}
 
-#if PLATFORM_NETFX
-			Type genericType = type.IsGenericType ? type.GetGenericTypeDefinition() : null;
-			Type typeArgument = type.IsGenericType ? type.GetGenericArguments()[0] : type;
-			int typeArgumentCount = type.IsGenericType ? type.GetGenericArguments().Length : 0;
-			return (typeArgument.IsClass || typeArgument.IsInterface) && ((genericType == null) || (genericType == typeof(IEnumerable<>)) || ((genericType == typeof(Func<>)) && (typeArgumentCount == 1)) || (genericType == typeof(Lazy<>)));
+#if PLATFORM_NETFX //Type genericType = type.IsGenericType ? type.GetGenericTypeDefinition() : null;
+//Type typeArgument = type.IsGenericType ? type.GetGenericArguments()[0] : type;
+//int typeArgumentCount = type.IsGenericType ? type.GetGenericArguments().Length : 0;
+//return (typeArgument.IsClass || typeArgument.IsInterface) && ((genericType == null) || ((genericType == typeof(IEnumerable<>)) && (typeArgumentCount == 1)) || ((genericType == typeof(Func<>)) && (typeArgumentCount == 1)) || ((genericType == typeof(Lazy<>)) && (typeArgumentCount == 1)));
+			return type.IsClass || type.IsInterface;
 #endif
 #if PLATFORM_UNITY
 			return (type.IsClass || type.IsInterface) && (!type.IsGenericType);
@@ -684,8 +689,6 @@ namespace RI.Framework.Composition
 			this.Creators = new List<CompositionCreator>();
 			this.Composition = new Dictionary<string, CompositionItem>(CompositionContainer.NameComparer);
 			this.LazyInvokers = new Dictionary<string, Dictionary<Type, LazyInvoker>>(CompositionContainer.NameComparer);
-
-			//this.UpdateComposition(true);
 		}
 
 		/// <summary>
@@ -708,8 +711,6 @@ namespace RI.Framework.Composition
 
 			this.ParentContainer = parentContainer;
 			this.ParentContainer.CompositionChanged += this.ParentContainerCompositionChangedHandler;
-
-			//this.UpdateComposition(true);
 		}
 
 		/// <summary>
@@ -1293,19 +1294,7 @@ namespace RI.Framework.Composition
 			return new CompositionContainer(this);
 		}
 
-		/// <summary>
-		///     Gets an independent snapshot of the current composition.
-		/// </summary>
-		/// <returns>
-		///     The independent snapshot of the current composition.
-		///     If no composition items are available, an empty dictionary is returned.
-		/// </returns>
-		/// <remarks>
-		///     <para>
-		///         The key of the returned dictionary is the name under which the items in the inner list are exported.
-		///     </para>
-		/// </remarks>
-		public Dictionary<string, List<CompositionCatalogItem>> GetCompositionSnapshot ()
+		private Dictionary<string, List<CompositionCatalogItem>> GetCompositionSnapshot ()
 		{
 			lock (this.SyncRoot)
 			{
@@ -1324,13 +1313,17 @@ namespace RI.Framework.Composition
 
 					foreach (CompositionTypeItem type in composition.Value.Types)
 					{
-						if (type.Instance != null)
+						if (type.ClosedInstance != null)
 						{
-							items.Add(new CompositionCatalogItem(name, type.Instance));
+							items.Add(new CompositionCatalogItem(name, type.ClosedInstance));
 						}
 						else
 						{
 							items.Add(new CompositionCatalogItem(name, type.Type, type.PrivateExport));
+						}
+						foreach (KeyValuePair<string, object> openInstance in type.OpenInstances)
+						{
+							items.Add(new CompositionCatalogItem(name, openInstance.Value));
 						}
 					}
 
@@ -1425,7 +1418,11 @@ namespace RI.Framework.Composition
 		public T GetExisting <T> ()
 			where T : class
 		{
-			return this.GetExisting<T>(CompositionContainer.GetNameOfType(typeof(T)));
+			lock (this.SyncRoot)
+			{
+				List<object> instances = this.GetOrCreateInstancesInternal(null, typeof(T), typeof(T), false);
+				return instances.Count == 0 ? null : (T)instances[0];
+			}
 		}
 
 		/// <summary>
@@ -1446,7 +1443,11 @@ namespace RI.Framework.Composition
 				throw new ArgumentNullException(nameof(exportType));
 			}
 
-			return this.GetExisting<T>(CompositionContainer.GetNameOfType(exportType));
+			lock (this.SyncRoot)
+			{
+				List<object> instances = this.GetOrCreateInstancesInternal(null, exportType, typeof(T), false);
+				return instances.Count == 0 ? null : (T)instances[0];
+			}
 		}
 
 		/// <summary>
@@ -1475,7 +1476,7 @@ namespace RI.Framework.Composition
 
 			lock (this.SyncRoot)
 			{
-				List<object> instances = this.GetOrCreateInstancesInternal(exportName, typeof(T), false);
+				List<object> instances = this.GetOrCreateInstancesInternal(exportName, null, typeof(T), false);
 				return instances.Count == 0 ? null : (T)instances[0];
 			}
 		}
@@ -1492,7 +1493,11 @@ namespace RI.Framework.Composition
 		public List<T> GetExistings <T> ()
 			where T : class
 		{
-			return this.GetExistings<T>(CompositionContainer.GetNameOfType(typeof(T)));
+			lock (this.SyncRoot)
+			{
+				List<object> instances = this.GetOrCreateInstancesInternal(null, typeof(T), typeof(T), false);
+				return instances.Select(x => (T)x);
+			}
 		}
 
 		/// <summary>
@@ -1514,7 +1519,11 @@ namespace RI.Framework.Composition
 				throw new ArgumentNullException(nameof(exportType));
 			}
 
-			return this.GetExistings<T>(CompositionContainer.GetNameOfType(exportType));
+			lock (this.SyncRoot)
+			{
+				List<object> instances = this.GetOrCreateInstancesInternal(null, exportType, typeof(T), false);
+				return instances.Select(x => (T)x);
+			}
 		}
 
 		/// <summary>
@@ -1544,7 +1553,7 @@ namespace RI.Framework.Composition
 
 			lock (this.SyncRoot)
 			{
-				List<object> instances = this.GetOrCreateInstancesInternal(exportName, typeof(T), false);
+				List<object> instances = this.GetOrCreateInstancesInternal(exportName, null, typeof(T), false);
 				return instances.Select(x => (T)x);
 			}
 		}
@@ -1560,7 +1569,11 @@ namespace RI.Framework.Composition
 		public T GetExport <T> ()
 			where T : class
 		{
-			return this.GetExport<T>(CompositionContainer.GetNameOfType(typeof(T)));
+			lock (this.SyncRoot)
+			{
+				List<object> instances = this.GetOrCreateInstancesInternal(null, typeof(T), typeof(T), true);
+				return instances.Count == 0 ? null : (T)instances[0];
+			}
 		}
 
 		/// <summary>
@@ -1581,7 +1594,11 @@ namespace RI.Framework.Composition
 				throw new ArgumentNullException(nameof(exportType));
 			}
 
-			return this.GetExport<T>(CompositionContainer.GetNameOfType(exportType));
+			lock (this.SyncRoot)
+			{
+				List<object> instances = this.GetOrCreateInstancesInternal(null, exportType, typeof(T), true);
+				return instances.Count == 0 ? null : (T)instances[0];
+			}
 		}
 
 		/// <summary>
@@ -1610,7 +1627,7 @@ namespace RI.Framework.Composition
 
 			lock (this.SyncRoot)
 			{
-				List<object> instances = this.GetOrCreateInstancesInternal(exportName, typeof(T), true);
+				List<object> instances = this.GetOrCreateInstancesInternal(exportName, null, typeof(T), true);
 				return instances.Count == 0 ? null : (T)instances[0];
 			}
 		}
@@ -1627,7 +1644,11 @@ namespace RI.Framework.Composition
 		public List<T> GetExports <T> ()
 			where T : class
 		{
-			return this.GetExports<T>(CompositionContainer.GetNameOfType(typeof(T)));
+			lock (this.SyncRoot)
+			{
+				List<object> instances = this.GetOrCreateInstancesInternal(null, typeof(T), typeof(T), true);
+				return instances.Select(x => (T)x);
+			}
 		}
 
 		/// <summary>
@@ -1649,7 +1670,11 @@ namespace RI.Framework.Composition
 				throw new ArgumentNullException(nameof(exportType));
 			}
 
-			return this.GetExports<T>(CompositionContainer.GetNameOfType(exportType));
+			lock (this.SyncRoot)
+			{
+				List<object> instances = this.GetOrCreateInstancesInternal(null, exportType, typeof(T), true);
+				return instances.Select(x => (T)x);
+			}
 		}
 
 		/// <summary>
@@ -1679,84 +1704,8 @@ namespace RI.Framework.Composition
 
 			lock (this.SyncRoot)
 			{
-				List<object> instances = this.GetOrCreateInstancesInternal(exportName, typeof(T), true);
+				List<object> instances = this.GetOrCreateInstancesInternal(exportName, null, typeof(T), true);
 				return instances.Select(x => (T)x);
-			}
-		}
-
-		/// <summary>
-		///     Determines whether there is at least one value for importing of the specified types default name.
-		/// </summary>
-		/// <typeparam name="T"> The type to check whether its default name can be resolved to at least one value for importing. </typeparam>
-		/// <returns>
-		///     true if there is at least one value for the specified types default name, false otherwise.
-		/// </returns>
-		/// <remarks>
-		///     <note type="note">
-		///         The imports for the specified types default name are not actually resolved, e.g. type exports are not instantiated.
-		///     </note>
-		/// </remarks>
-		public bool HasExport <T> ()
-			where T : class
-		{
-			return this.HasExport(typeof(T));
-		}
-
-		/// <summary>
-		///     Determines whether there is at least one value for importing of the specified types default name.
-		/// </summary>
-		/// <param name="exportType"> The type to check whether its default name can be resolved to at least one value for importing. </param>
-		/// <returns>
-		///     true if there is at least one value for the specified types default name, false otherwise.
-		/// </returns>
-		/// <remarks>
-		///     <note type="note">
-		///         The imports for the specified types default name are not actually resolved, e.g. type exports are not instantiated.
-		///     </note>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="exportType" /> is null. </exception>
-		public bool HasExport (Type exportType)
-		{
-			return this.HasExport(CompositionContainer.GetNameOfType(exportType));
-		}
-
-		/// <summary>
-		///     Determines whether there is at least one value for importing of the specified name.
-		/// </summary>
-		/// <param name="exportName"> The name to check whether it can be resolved to at least one value for importing. </param>
-		/// <returns>
-		///     true if there is at least one value for the specified name, false otherwise.
-		/// </returns>
-		/// <remarks>
-		///     <note type="note">
-		///         The imports for the specified name are not actually resolved, e.g. type exports are not instantiated.
-		///     </note>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="exportName" /> is null. </exception>
-		/// <exception cref="EmptyStringArgumentException"> <paramref name="exportName" /> is an empty string. </exception>
-		public bool HasExport (string exportName)
-		{
-			if (exportName == null)
-			{
-				throw new ArgumentNullException(nameof(exportName));
-			}
-
-			if (exportName.IsEmptyOrWhitespace())
-			{
-				throw new EmptyStringArgumentException(nameof(exportName));
-			}
-
-			lock (this.SyncRoot)
-			{
-				if (this.ParentContainer != null)
-				{
-					if (this.ParentContainer.HasExport(exportName))
-					{
-						return true;
-					}
-				}
-
-				return this.Composition.ContainsKey(exportName);
 			}
 		}
 
@@ -2330,10 +2279,11 @@ namespace RI.Framework.Composition
 				for (int i1 = 0; i1 < compositionItem.Value.Types.Count; i1++)
 				{
 					CompositionTypeItem type = compositionItem.Value.Types[i1];
-					if (type.Instance != null)
+					if (type.ClosedInstance != null)
 					{
-						instances.Add(type.Instance);
+						instances.Add(type.ClosedInstance);
 					}
+					instances.AddRange(type.OpenInstances.Values);
 				}
 
 				for (int i1 = 0; i1 < compositionItem.Value.Factories.Count; i1++)
@@ -2411,7 +2361,7 @@ namespace RI.Framework.Composition
 			List<object> importValues = null;
 			if ((kind != ImportKind.LazyFunc) && (kind != ImportKind.LazyObject))
 			{
-				importValues = this.GetOrCreateInstancesInternal(importName, importType, true);
+				importValues = this.GetOrCreateInstancesInternal(importName, importType, importType, true);
 			}
 
 			if (kind == ImportKind.Special)
@@ -2444,16 +2394,13 @@ namespace RI.Framework.Composition
 			return null;
 		}
 
-		private List<object> GetOrCreateInstancesInternal (string name, Type compatibleType, bool create)
+		private List<object> GetOrCreateInstancesInternal (string nameHint, Type typeHint, Type compatibleType, bool create)
 		{
-			if (!this.HasExport(name))
-			{
-				return new List<object>();
-			}
+			string name = nameHint ?? CompositionContainer.GetNameOfType(typeHint);
 
 			HashSet<object> instances = new HashSet<object>();
-			HashSet<Type> types = new HashSet<Type>();
-			HashSet<Delegate> factories = new HashSet<Delegate>();
+			HashSet<CompositionTypeItem> types = new HashSet<CompositionTypeItem>();
+			HashSet<CompositionFactoryItem> factories = new HashSet<CompositionFactoryItem>();
 
 			if (this.Composition.ContainsKey(name))
 			{
@@ -2471,13 +2418,35 @@ namespace RI.Framework.Composition
 				for (int i1 = 0; i1 < item.Types.Count; i1++)
 				{
 					CompositionTypeItem typeItem = item.Types[i1];
-					if (typeItem.Instance != null)
+					if (typeItem.Type.IsGenericTypeDefinition)
 					{
-						instances.Add(typeItem.Instance);
+						if (typeHint?.IsGenericTypeDefinition ?? false)
+						{
+							instances.AddRange(typeItem.OpenInstances.Values);
+						}
+						else
+						{
+							string openName = typeHint?.FullName ?? string.Empty;
+							if (typeItem.OpenInstances.ContainsKey(openName))
+							{
+								instances.Add(typeItem.OpenInstances[openName]);
+							}
+							else
+							{
+								types.Add(typeItem);
+							}
+						}
 					}
 					else
 					{
-						types.Add(typeItem.Type);
+						if (typeItem.ClosedInstance != null)
+						{
+							instances.Add(typeItem.ClosedInstance);
+						}
+						else
+						{
+							types.Add(typeItem);
+						}
 					}
 				}
 
@@ -2490,7 +2459,45 @@ namespace RI.Framework.Composition
 					}
 					else
 					{
-						factories.Add(factoryItem.Factory);
+						factories.Add(factoryItem);
+					}
+				}
+			}
+
+			Type genericType = typeHint == null ? null : ((typeHint.IsGenericType && (!typeHint.IsGenericTypeDefinition)) ? typeHint.GetGenericTypeDefinition() : null);
+			if (genericType != null)
+			{
+				string genericName = CompositionContainer.GetNameOfType(genericType);
+				if (this.Composition.ContainsKey(genericName))
+				{
+					CompositionItem item = this.Composition[genericName];
+
+					for (int i1 = 0; i1 < item.Types.Count; i1++)
+					{
+						CompositionTypeItem typeItem = item.Types[i1];
+						if (typeItem.Type.IsGenericTypeDefinition)
+						{
+							string openName = typeHint?.FullName ?? string.Empty;
+							if (typeItem.OpenInstances.ContainsKey(openName))
+							{
+								instances.Add(typeItem.OpenInstances[openName]);
+							}
+							else
+							{
+								types.Add(typeItem);
+							}
+						}
+						else
+						{
+							if (typeItem.ClosedInstance != null)
+							{
+								instances.Add(typeItem.ClosedInstance);
+							}
+							else
+							{
+								types.Add(typeItem);
+							}
+						}
 					}
 				}
 			}
@@ -2499,7 +2506,7 @@ namespace RI.Framework.Composition
 			{
 				lock (this.ParentContainer.SyncRoot)
 				{
-					List<object> parentInstances = this.ParentContainer.GetOrCreateInstancesInternal(name, compatibleType, create);
+					List<object> parentInstances = this.ParentContainer.GetOrCreateInstancesInternal(nameHint, typeHint, compatibleType, create);
 					instances.AddRange(parentInstances);
 				}
 			}
@@ -2511,19 +2518,34 @@ namespace RI.Framework.Composition
 			}
 
 			List<object> newInstances = new List<object>(types.Count + factories.Count);
-			foreach (Type type in types)
+
+			foreach (CompositionTypeItem typeItem in types)
 			{
-				bool supportedByCreators = this.Creators.Any(x => x.CanCreateInstance(this, type, compatibleType, name));
+				Type typeToCreate = typeItem.Type;
+				bool isOpenType = typeToCreate.IsGenericTypeDefinition;
+				if (isOpenType)
+				{
+					Type[] typeArguments = typeHint.GetGenericArguments();
+					typeToCreate = typeToCreate.MakeGenericType(typeArguments);
+				}
+				string openName = isOpenType ? typeToCreate.FullName : null;
+				if ((openName != null) && (typeItem.OpenInstances.ContainsKey(openName)))
+				{
+					instances.Add(typeItem.OpenInstances[openName]);
+					continue;
+				}
+
+				bool supportedByCreators = this.Creators.Any(x => x.CanCreateInstance(this, typeToCreate, compatibleType, name));
 
 				object newInstance = null;
 				{
-					MethodInfo[] allMethods = type.GetMethods(BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.FlattenHierarchy);
+					MethodInfo[] allMethods = typeToCreate.GetMethods(BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.FlattenHierarchy);
 
 					List<MethodInfo> methods = allMethods.Where(x => (x.GetCustomAttributes(typeof(ExportCreatorAttribute), true).Length > 0) && (x.ReturnType != typeof(void)) && (compatibleType.IsAssignableFrom(x.ReturnType)) && (x.GetParameters().Length >= 1) && (x.GetParameters()[0].ParameterType == typeof(Type)));
 
 					if (methods.Count > 1)
 					{
-						throw new CompositionException("Too many export creators defined for type: " + type.FullName);
+						throw new CompositionException("Too many export creators defined for type: " + typeToCreate.FullName);
 					}
 
 					if (methods.Count > 0)
@@ -2543,7 +2565,7 @@ namespace RI.Framework.Composition
 							}
 							else if (importType == typeof(Type))
 							{
-								parameters[i1] = type;
+								parameters[i1] = typeToCreate;
 							}
 							else
 							{
@@ -2557,22 +2579,65 @@ namespace RI.Framework.Composition
 
 				if (newInstance == null)
 				{
-					ConstructorInfo[] allConstructors = type.GetConstructors(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+					ConstructorInfo[] allConstructors = typeToCreate.GetConstructors(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
 					List<ConstructorInfo> declaredConstructors = allConstructors.Where(x => x.GetCustomAttributes(typeof(ExportConstructorAttribute), false).Length > 0);
 
 					if (declaredConstructors.Count > 1)
 					{
-						throw new CompositionException("Too many export constructors defined for type: " + type.FullName);
+						throw new CompositionException("Too many export constructors defined for type: " + typeToCreate.FullName);
 					}
 
 					List<ConstructorInfo> greedyConstructors = supportedByCreators ? new List<ConstructorInfo>() : new List<ConstructorInfo>(allConstructors);
 					greedyConstructors.Sort((x, y) => x.GetParameters().Length.CompareTo(y.GetParameters().Length));
 					greedyConstructors.Reverse();
 
+					List<ConstructorInfo> constructorCandidates = new List<ConstructorInfo>();
+					constructorCandidates.AddRange(declaredConstructors);
+					constructorCandidates.AddRange(greedyConstructors);
+
+					List<ConstructorInfo> fullyResolvable = new List<ConstructorInfo>();
+					List<ConstructorInfo> partiallyResolvable = new List<ConstructorInfo>();
+					foreach (ConstructorInfo constructor in constructorCandidates)
+					{
+						bool? full = null;
+						ParameterInfo[] constructorParameters = constructor.GetParameters();
+						if (constructorParameters.Length == 0)
+						{
+							full = true;
+						}
+						else
+						{
+							for (int i1 = 0; i1 < constructorParameters.Length; i1++)
+							{
+								string importName = constructorParameters[i1].GetCustomAttributes(typeof(ImportAttribute), false).OfType<ImportAttribute>().FirstOrDefault(null, x => !x.Name.IsNullOrEmptyOrWhitespace())?.Name;
+								Type importType = constructorParameters[i1].ParameterType;
+
+								if (!CompositionContainer.ValidateImportType(importType))
+								{
+									full = null;
+									break;
+								}
+
+								full = this.GetImportValueFromNameOrType(importName, importType, out _) != null;
+							}
+						}
+						if (full.HasValue)
+						{
+							if (full.Value)
+							{
+								fullyResolvable.Add(constructor);
+							}
+							else
+							{
+								partiallyResolvable.Add(constructor);
+							}
+						}
+					}
+
 					List<ConstructorInfo> constructors = new List<ConstructorInfo>();
-					constructors.AddRange(declaredConstructors);
-					constructors.AddRange(greedyConstructors);
+					constructors.AddRange(fullyResolvable);
+					constructors.AddRange(partiallyResolvable);
 
 					if (constructors.Count > 0)
 					{
@@ -2591,7 +2656,7 @@ namespace RI.Framework.Composition
 							}
 							else if (importType == typeof(Type))
 							{
-								parameters[i1] = type;
+								parameters[i1] = typeToCreate;
 							}
 							else
 							{
@@ -2607,9 +2672,9 @@ namespace RI.Framework.Composition
 				{
 					foreach (CompositionCreator creator in this.Creators)
 					{
-						if (creator.CanCreateInstance(this, type, compatibleType, name))
+						if (creator.CanCreateInstance(this, typeToCreate, compatibleType, name))
 						{
-							newInstance = creator.CreateInstance(this, type, compatibleType, name);
+							newInstance = creator.CreateInstance(this, typeToCreate, compatibleType, name);
 							if (newInstance != null)
 							{
 								break;
@@ -2620,33 +2685,59 @@ namespace RI.Framework.Composition
 
 				if (newInstance == null)
 				{
-					this.Log(LogLevel.Debug, "No export creators, export constructors, or composition creators could be resolved for type: {0}", type.FullName);
+					this.Log(LogLevel.Debug, "No export creators, export constructors, or composition creators could be resolved for type: {0}", typeItem.Type.FullName);
 				}
 
 				if (newInstance != null)
 				{
 					newInstances.Add(newInstance);
 
-					foreach (KeyValuePair<string, CompositionItem> compositionItem in this.Composition)
+					if (isOpenType)
 					{
-						foreach (CompositionTypeItem typeItem in compositionItem.Value.Types)
+						if (!typeItem.PrivateExport)
 						{
-							if ((typeItem.Type == type) && (typeItem.Instance == null) && (!typeItem.PrivateExport))
+							typeItem.OpenInstances.Add(openName, newInstance);
+						}
+
+						foreach (KeyValuePair<string, CompositionItem> compositionItem in this.Composition)
+						{
+							foreach (CompositionTypeItem other in compositionItem.Value.Types)
 							{
-								typeItem.Instance = newInstance;
+								if ((other.Type == typeItem.Type) && (!other.OpenInstances.ContainsKey(openName)) && (!other.PrivateExport))
+								{
+									other.OpenInstances.Add(openName, newInstance);
+								}
+							}
+						}
+					}
+					else
+					{
+						if (!typeItem.PrivateExport)
+						{
+							typeItem.ClosedInstance = newInstance;
+						}
+
+						foreach (KeyValuePair<string, CompositionItem> compositionItem in this.Composition)
+						{
+							foreach (CompositionTypeItem other in compositionItem.Value.Types)
+							{
+								if ((other.Type == typeItem.Type) && (other.ClosedInstance == null) && (!other.PrivateExport))
+								{
+									other.ClosedInstance = newInstance;
+								}
 							}
 						}
 					}
 				}
 			}
 
-			foreach (Delegate factory in factories)
+			foreach (CompositionFactoryItem factoryItem in factories)
 			{
 				object newInstance = null;
 
-				if (compatibleType.IsAssignableFrom(factory.Method.ReturnType) || (factory.Method.ReturnType == typeof(object)))
+				if (compatibleType.IsAssignableFrom(factoryItem.Factory.Method.ReturnType) || (factoryItem.Factory.Method.ReturnType == typeof(object)))
 				{
-					ParameterInfo[] factoryParameters = factory.Method.GetParameters();
+					ParameterInfo[] factoryParameters = factoryItem.Factory.Method.GetParameters();
 					object[] parameters = new object[factoryParameters.Length];
 
 					for (int i1 = 0; i1 < factoryParameters.Length; i1++)
@@ -2664,25 +2755,26 @@ namespace RI.Framework.Composition
 						}
 					}
 
-					newInstance = factory.DynamicInvoke(parameters);
+					newInstance = factoryItem.Factory.DynamicInvoke(parameters);
 				}
 
 				if (newInstance == null)
 				{
-					this.Log(LogLevel.Debug, "The factory is not a supported delegate type: {0}", factory.GetFullName());
+					this.Log(LogLevel.Debug, "The factory is not a supported delegate type: {0}", factoryItem.Factory.GetFullName());
 				}
 
 				if (newInstance != null)
 				{
+					factoryItem.Instance = newInstance;
 					newInstances.Add(newInstance);
 
 					foreach (KeyValuePair<string, CompositionItem> compositionItem in this.Composition)
 					{
-						foreach (CompositionFactoryItem factoryItem in compositionItem.Value.Factories)
+						foreach (CompositionFactoryItem other in compositionItem.Value.Factories)
 						{
-							if ((factoryItem.Factory == factory) && (factoryItem.Instance == null) && (!factoryItem.PrivateExport))
+							if ((other.Factory == factoryItem.Factory) && (other.Instance == null) && (!other.PrivateExport))
 							{
-								factoryItem.Instance = newInstance;
+								other.Instance = newInstance;
 							}
 						}
 					}
@@ -2867,11 +2959,20 @@ namespace RI.Framework.Composition
 				});
 				compositionItem.Value.Types.RemoveWhere(x => !x.Checked).ForEach(x =>
 				{
-					this.Log(LogLevel.Debug, "Type removed from container: {0} / {1}", compositionItem.Key, x?.Instance?.GetType()?.AssemblyQualifiedName ?? "[null]");
-					(x?.Instance as IExporting)?.RemovedFromContainer(compositionItem.Key, this);
-					if (this.AutoDispose && (!object.ReferenceEquals(x?.Instance, this)))
+					this.Log(LogLevel.Debug, "Type removed from container: {0} / {1}", compositionItem.Key, x?.ClosedInstance?.GetType()?.AssemblyQualifiedName ?? "[null]");
+					(x?.ClosedInstance as IExporting)?.RemovedFromContainer(compositionItem.Key, this);
+					if (this.AutoDispose && (!object.ReferenceEquals(x?.ClosedInstance, this)))
 					{
-						(x?.Instance as IDisposable)?.Dispose();
+						(x?.ClosedInstance as IDisposable)?.Dispose();
+					}
+					foreach (KeyValuePair<string, object> openInstance in x?.OpenInstances ?? new Dictionary<string, object>())
+					{
+						this.Log(LogLevel.Debug, "Type removed from container: {0} / {1}", compositionItem.Key, openInstance.Value?.GetType()?.AssemblyQualifiedName ?? "[null]");
+						(openInstance.Value as IExporting)?.RemovedFromContainer(compositionItem.Key, this);
+						if (this.AutoDispose && (!object.ReferenceEquals(openInstance.Value, this)))
+						{
+							(openInstance.Value as IDisposable)?.Dispose();
+						}
 					}
 				});
 				compositionItem.Value.Factories.RemoveWhere(x => !x.Checked).ForEach(x =>
@@ -2947,7 +3048,7 @@ namespace RI.Framework.Composition
 		/// <inheritdoc />
 		T IDependencyResolver.GetInstance <T> ()
 		{
-			return (T)((IDependencyResolver)this).GetInstance(typeof(T));
+			return ((IDependencyResolver)this).GetInstance(typeof(T)) as T;
 		}
 
 		/// <inheritdoc />
@@ -2985,7 +3086,7 @@ namespace RI.Framework.Composition
 		/// <inheritdoc />
 		List<T> IDependencyResolver.GetInstances <T> ()
 		{
-			return ((IDependencyResolver)this).GetInstances(typeof(T)).Cast<T>();
+			return ((IDependencyResolver)this).GetInstances(typeof(T)).OfType<T>();
 		}
 
 		#endregion
@@ -3198,7 +3299,8 @@ namespace RI.Framework.Composition
 				this.PrivateExport = privateExport;
 
 				this.Checked = false;
-				this.Instance = null;
+				this.ClosedInstance = null;
+				this.OpenInstances = new Dictionary<string, object>(StringComparerEx.Ordinal);
 			}
 
 			#endregion
@@ -3210,7 +3312,9 @@ namespace RI.Framework.Composition
 
 			public bool Checked { get; set; }
 
-			public object Instance { get; set; }
+			public object ClosedInstance { get; set; }
+
+			public Dictionary<string, object> OpenInstances { get; }
 
 			public bool PrivateExport { get; }
 
