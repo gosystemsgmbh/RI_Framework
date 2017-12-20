@@ -115,7 +115,7 @@ namespace RI.Framework.Web.Nancy
 		/// <inheritdoc />
 		protected override INancyModule GetModule (CompositionContainer container, Type moduleType)
 		{
-			return container.GetExport<INancyModule>(moduleType);
+			return container.GetExport(moduleType) as INancyModule;
 		}
 
 		/// <inheritdoc />

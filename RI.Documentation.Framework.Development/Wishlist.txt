@@ -180,8 +180,4 @@ Services
 Data
 ----
 
- - (.NET) IRepositorySet: Add GetChanges method (return RepositorySetChanges type)
- - (.NET) IRepositoryContext: Add GetChanges method (return RepositoryContextChanges type)
- - (.NET) IRepositoryContext: Add GetErrors method (return RepositoryContextErrors type)
-
  - (.NET) Async repositories/contexts

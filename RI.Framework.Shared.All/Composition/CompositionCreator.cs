@@ -66,29 +66,27 @@ namespace RI.Framework.Composition
 		///     Determines whether this composition creator can create an instance of a specified type.
 		/// </summary>
 		/// <param name="container"> The composition container which is currently using this composition creator to create an instance of <paramref name="type" />. </param>
-		/// <param name="type"> The type to create an instance of. </param>
-		/// <param name="compatibleType"> The type to which the created instance is eventually assigned. </param>
 		/// <param name="exportName"> The name under which the type is exported. </param>
+		/// <param name="type"> The type to create an instance of. </param>
 		/// <returns>
 		///     true if this composition creator can create an instance of <paramref name="type" />, false otherwise.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"> <paramref name="type" />, <paramref name="compatibleType" />, or <paramref name="exportName" /> is null. </exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="type" /> or <paramref name="exportName" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="exportName" /> is an empty string. </exception>
-		protected internal abstract bool CanCreateInstance (CompositionContainer container, Type type, Type compatibleType, string exportName);
+		protected internal abstract bool CanCreateInstance (CompositionContainer container, string exportName, Type type);
 
 		/// <summary>
 		///     Attempts to create an instance of a specified type
 		/// </summary>
 		/// <param name="container"> The composition container which is currently using this composition creator to create an instance of <paramref name="type" />. </param>
-		/// <param name="type"> The type to create an instance of. </param>
-		/// <param name="compatibleType"> The type to which the created instance is eventually assigned. </param>
 		/// <param name="exportName"> The name under which the type is exported. </param>
+		/// <param name="type"> The type to create an instance of. </param>
 		/// <returns>
 		///     The created instance of <paramref name="type" /> or null if this composition creator cannot create an instance of <paramref name="type" />.
 		/// </returns>
-		/// <exception cref="ArgumentNullException"> <paramref name="type" />, <paramref name="compatibleType" />, or <paramref name="exportName" /> is null. </exception>
+		/// <exception cref="ArgumentNullException"> <paramref name="type" /> or <paramref name="exportName" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="exportName" /> is an empty string. </exception>
-		protected internal abstract object CreateInstance (CompositionContainer container, Type type, Type compatibleType, string exportName);
+		protected internal abstract object CreateInstance (CompositionContainer container, string exportName, Type type);
 
 		#endregion
 

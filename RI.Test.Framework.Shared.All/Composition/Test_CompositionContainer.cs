@@ -145,7 +145,7 @@ namespace RI.Test.Framework.Composition
 			{
 				throw new TestAssertionException();
 			}
-			if (test.GetExports<object>(typeof(object)).Count != 0)
+			if (test.GetExports(typeof(object)).Count != 0)
 			{
 				throw new TestAssertionException();
 			}
@@ -154,7 +154,7 @@ namespace RI.Test.Framework.Composition
 			{
 				throw new TestAssertionException();
 			}
-			if (test.GetExport<object>(typeof(Mock_Exports_1)) == null)
+			if (test.GetExport(typeof(Mock_Exports_1)) == null)
 			{
 				throw new TestAssertionException();
 			}
@@ -162,7 +162,7 @@ namespace RI.Test.Framework.Composition
 			{
 				throw new TestAssertionException();
 			}
-			if (test.GetExports<object>(typeof(Mock_Exports_1)).Count != 1)
+			if (test.GetExports(typeof(Mock_Exports_1)).Count != 1)
 			{
 				throw new TestAssertionException();
 			}
@@ -171,7 +171,7 @@ namespace RI.Test.Framework.Composition
 			{
 				throw new TestAssertionException();
 			}
-			if (test.GetExport<object>(typeof(Mock_Exports_2)) == null)
+			if (test.GetExport(typeof(Mock_Exports_2)) == null)
 			{
 				throw new TestAssertionException();
 			}
@@ -179,25 +179,25 @@ namespace RI.Test.Framework.Composition
 			{
 				throw new TestAssertionException();
 			}
-			if (test.GetExports<object>(typeof(Mock_Exports_2)).Count != 1)
+			if (test.GetExports(typeof(Mock_Exports_2)).Count != 1)
 			{
 				throw new TestAssertionException();
 			}
 
-			if (test.GetExport<object>("E3") == null)
+			if (test.GetExport("E3") == null)
 			{
 				throw new TestAssertionException();
 			}
-			if (test.GetExports<object>("E3").Count != 2)
+			if (test.GetExports("E3").Count != 2)
 			{
 				throw new TestAssertionException();
 			}
 
-			if (test.GetExport<object>("E4") == null)
+			if (test.GetExport("E4") == null)
 			{
 				throw new TestAssertionException();
 			}
-			if (test.GetExports<object>("E4").Count != 2)
+			if (test.GetExports("E4").Count != 2)
 			{
 				throw new TestAssertionException();
 			}

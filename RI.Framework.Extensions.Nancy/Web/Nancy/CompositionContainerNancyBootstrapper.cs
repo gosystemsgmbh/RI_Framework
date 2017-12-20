@@ -85,7 +85,7 @@ namespace RI.Framework.Web.Nancy
 		/// <inheritdoc />
 		public override INancyModule GetModule (Type moduleType, NancyContext context)
 		{
-			return this.ApplicationContainer.GetExport<INancyModule>(moduleType);
+			return this.ApplicationContainer.GetExport(moduleType) as INancyModule;
 		}
 
 		/// <inheritdoc />
