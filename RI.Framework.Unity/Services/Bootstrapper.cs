@@ -353,12 +353,13 @@ namespace RI.Framework.Services
 		{
 			CompositionBatch batch = new CompositionBatch();
 
-			batch.AddExport(this, typeof(IBootstrapper));
-			batch.AddExport(this, typeof(Bootstrapper));
+			batch.AddInstance(this, typeof(IBootstrapper));
+			batch.AddInstance(this, typeof(Bootstrapper));
+			batch.AddInstance(this, this.GetType());
 
-			batch.AddExport(this.Container, typeof(IDependencyResolver));
-			batch.AddExport(this.Container, typeof(IServiceProvider));
-			batch.AddExport(this.Container, typeof(CompositionContainer));
+			batch.AddInstance(this.Container, typeof(IDependencyResolver));
+			batch.AddInstance(this.Container, typeof(IServiceProvider));
+			batch.AddInstance(this.Container, typeof(CompositionContainer));
 
 			this.Container.Compose(batch);
 		}

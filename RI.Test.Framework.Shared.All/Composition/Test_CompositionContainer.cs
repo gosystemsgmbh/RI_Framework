@@ -22,8 +22,8 @@ namespace RI.Test.Framework.Composition
 		{
 			CompositionContainer test = new CompositionContainer();
 
-			test.AddExport(typeof(Mock_Exports_10), typeof(Mock_Exports_10), false);
-			test.AddExport(typeof(Mock_Exports_11), typeof(Mock_Exports_11), false);
+			test.AddType(typeof(Mock_Exports_10), typeof(Mock_Exports_10), false);
+			test.AddType(typeof(Mock_Exports_11), typeof(Mock_Exports_11), false);
 
 			Mock_Exports_10 test10 = test.GetExport<Mock_Exports_10>();
 			Mock_Exports_11 test11 = test.GetExport<Mock_Exports_11>();
@@ -134,12 +134,12 @@ namespace RI.Test.Framework.Composition
 		{
 			CompositionContainer test = new CompositionContainer();
 
-			test.AddExport(typeof(Mock_Exports_1), typeof(Mock_Exports_1), false);
-			test.AddExport(new Mock_Exports_2(), typeof(Mock_Exports_2));
-			test.AddExport(typeof(Mock_Exports_3A), "E3", false);
-			test.AddExport(new Mock_Exports_3B(), "E3");
-			test.AddExport(typeof(Mock_Exports_4A), "E4", false);
-			test.AddExport(new Mock_Exports_4B(), "E4");
+			test.AddType(typeof(Mock_Exports_1), typeof(Mock_Exports_1), false);
+			test.AddInstance(new Mock_Exports_2(), typeof(Mock_Exports_2));
+			test.AddType(typeof(Mock_Exports_3A), "E3", false);
+			test.AddInstance(new Mock_Exports_3B(), "E3");
+			test.AddType(typeof(Mock_Exports_4A), "E4", false);
+			test.AddInstance(new Mock_Exports_4B(), "E4");
 
 			if (test.GetExports<object>().Count != 0)
 			{
@@ -323,7 +323,7 @@ namespace RI.Test.Framework.Composition
 		public void Recomposition_Test ()
 		{
 			CompositionContainer test = new CompositionContainer();
-			test.AddExport(typeof(Mock_Imports), typeof(Mock_Imports), false);
+			test.AddType(typeof(Mock_Imports), typeof(Mock_Imports), false);
 			Mock_Imports imports = test.GetExport<Mock_Imports>();
 
 			if (imports.Import_7.Values<Mock_Exports_1>().Count() != 0)
@@ -335,7 +335,7 @@ namespace RI.Test.Framework.Composition
 				throw new TestAssertionException();
 			}
 
-			test.AddExport(typeof(Mock_Exports_1), typeof(Mock_Exports_1), false);
+			test.AddType(typeof(Mock_Exports_1), typeof(Mock_Exports_1), false);
 
 			if (imports.Import_7.Values<Mock_Exports_1>().Count() != 1)
 			{
@@ -346,7 +346,7 @@ namespace RI.Test.Framework.Composition
 				throw new TestAssertionException();
 			}
 
-			test.AddExport(new Mock_Exports_1(), typeof(Mock_Exports_1));
+			test.AddInstance(new Mock_Exports_1(), typeof(Mock_Exports_1));
 
 			if (imports.Import_7.Values<Mock_Exports_1>().Count() != 1)
 			{
@@ -368,7 +368,7 @@ namespace RI.Test.Framework.Composition
 				throw new TestAssertionException();
 			}
 
-			test.RemoveExport(typeof(Mock_Exports_1), typeof(Mock_Exports_1));
+			test.RemoveType(typeof(Mock_Exports_1), typeof(Mock_Exports_1));
 
 			if (imports.Import_7.Values<Mock_Exports_1>().Count() != 2)
 			{
@@ -385,8 +385,8 @@ namespace RI.Test.Framework.Composition
 		{
 			CompositionContainer test = new CompositionContainer();
 
-			test.AddExport(typeof(Mock_Exports_1), typeof(Mock_Exports_1), false);
-			test.AddExport(typeof(Mock_Exports_2), typeof(Mock_Exports_2), true);
+			test.AddType(typeof(Mock_Exports_1), typeof(Mock_Exports_1), false);
+			test.AddType(typeof(Mock_Exports_2), typeof(Mock_Exports_2), true);
 
 			if (!object.ReferenceEquals(test.GetExport<Mock_Exports_1>(), test.GetExport<Mock_Exports_1>()))
 			{
@@ -401,8 +401,8 @@ namespace RI.Test.Framework.Composition
 			Mock_Exports_1 instance1 = new Mock_Exports_1();
 			Mock_Exports_2 instance2 = new Mock_Exports_2();
 
-			test.AddExport(instance1, typeof(Mock_Exports_1));
-			test.AddExport(instance2, typeof(Mock_Exports_2));
+			test.AddInstance(instance1, typeof(Mock_Exports_1));
+			test.AddInstance(instance2, typeof(Mock_Exports_2));
 
 			if (object.ReferenceEquals(test.GetExports<Mock_Exports_1>()[0], test.GetExports<Mock_Exports_1>()[1]))
 			{

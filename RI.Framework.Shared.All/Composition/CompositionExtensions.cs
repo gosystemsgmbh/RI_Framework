@@ -33,7 +33,7 @@ namespace RI.Framework.Composition
 		///         <see cref="CompositionContainer.CreateSingletonWithEverything" /> is used to retrieve or create the composition containers singleton instance.
 		///     </para>
 		///     <para>
-		///         <see cref="CompositionContainer.AddExport(object,Type)" /> for more details.
+		///         See <see cref="CompositionContainer.AddInstance(object,Type)" /> for more details.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="instance" /> is null. </exception>
@@ -47,7 +47,7 @@ namespace RI.Framework.Composition
 				throw new ArgumentNullException(nameof(instance));
 			}
 
-			CompositionContainer.CreateSingletonWithEverything().AddExport(instance, typeof(T));
+			CompositionContainer.CreateSingletonWithEverything().AddInstance(instance, typeof(T));
 		}
 
 		/// <summary>
@@ -61,7 +61,7 @@ namespace RI.Framework.Composition
 		///         <see cref="CompositionContainer.CreateSingletonWithEverything" /> is used to retrieve or create the composition containers singleton instance.
 		///     </para>
 		///     <para>
-		///         <see cref="CompositionContainer.AddExport(object,Type)" /> for more details.
+		///         See <see cref="CompositionContainer.AddInstance(object,Type)" /> for more details.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="instance" /> or <paramref name="exportType" /> is null. </exception>
@@ -80,7 +80,7 @@ namespace RI.Framework.Composition
 				throw new ArgumentNullException(nameof(exportType));
 			}
 
-			CompositionContainer.CreateSingletonWithEverything().AddExport(instance, exportType);
+			CompositionContainer.CreateSingletonWithEverything().AddInstance(instance, exportType);
 		}
 
 		/// <summary>
@@ -94,7 +94,7 @@ namespace RI.Framework.Composition
 		///         <see cref="CompositionContainer.CreateSingletonWithEverything" /> is used to retrieve or create the composition containers singleton instance.
 		///     </para>
 		///     <para>
-		///         <see cref="CompositionContainer.AddExport(object,string)" /> for more details.
+		///         See <see cref="CompositionContainer.AddInstance(object,string)" /> for more details.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="instance" /> or <paramref name="exportName" /> is null. </exception>
@@ -119,7 +119,7 @@ namespace RI.Framework.Composition
 				throw new EmptyStringArgumentException(nameof(exportName));
 			}
 
-			CompositionContainer.CreateSingletonWithEverything().AddExport(instance, exportName);
+			CompositionContainer.CreateSingletonWithEverything().AddInstance(instance, exportName);
 		}
 
 		/// <summary>
@@ -133,7 +133,7 @@ namespace RI.Framework.Composition
 		///         <typeparamref name="T" /> is used to determine the default name.
 		///     </para>
 		///     <para>
-		///         <see cref="CompositionContainer.AddExport(object,Type)" /> for more details.
+		///         See <see cref="CompositionContainer.AddInstance(object,Type)" /> for more details.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="instance" />, or <paramref name="container" /> is null. </exception>
@@ -152,7 +152,7 @@ namespace RI.Framework.Composition
 				throw new ArgumentNullException(nameof(container));
 			}
 
-			container.AddExport(instance, typeof(T));
+			container.AddInstance(instance, typeof(T));
 		}
 
 		/// <summary>
@@ -164,7 +164,7 @@ namespace RI.Framework.Composition
 		/// <param name="container"> The used composition container. </param>
 		/// <remarks>
 		///     <para>
-		///         <see cref="CompositionContainer.AddExport(object,Type)" /> for more details.
+		///         See <see cref="CompositionContainer.AddInstance(object,Type)" /> for more details.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="instance" />, <paramref name="exportType" />, or <paramref name="container" /> is null. </exception>
@@ -188,7 +188,7 @@ namespace RI.Framework.Composition
 				throw new ArgumentNullException(nameof(container));
 			}
 
-			container.AddExport(instance, exportType);
+			container.AddInstance(instance, exportType);
 		}
 
 		/// <summary>
@@ -200,7 +200,7 @@ namespace RI.Framework.Composition
 		/// <param name="container"> The used composition container. </param>
 		/// <remarks>
 		///     <para>
-		///         <see cref="CompositionContainer.AddExport(object,string)" /> for more details.
+		///         See <see cref="CompositionContainer.AddInstance(object,string)" /> for more details.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="instance" />, <paramref name="exportName" />, or <paramref name="container" /> is null. </exception>
@@ -230,7 +230,7 @@ namespace RI.Framework.Composition
 				throw new ArgumentNullException(nameof(container));
 			}
 
-			container.AddExport(instance, exportName);
+			container.AddInstance(instance, exportName);
 		}
 
 		/// <summary>
@@ -249,7 +249,7 @@ namespace RI.Framework.Composition
 		///         <see cref="CompositionContainer.CreateSingletonWithEverything" /> is used to retrieve or create the composition containers singleton instance.
 		///     </para>
 		///     <para>
-		///         <see cref="CompositionContainer.ResolveImports" /> for more details.
+		///         See <see cref="CompositionContainer.ResolveImports" /> for more details.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="obj" /> is null. </exception>
@@ -279,7 +279,7 @@ namespace RI.Framework.Composition
 		///         <see cref="CompositionContainer.CreateSingletonWithEverything" /> is used to retrieve or create the composition containers singleton instance.
 		///     </para>
 		///     <para>
-		///         <see cref="CompositionContainer.ResolveImports" /> for more details.
+		///         See <see cref="CompositionContainer.ResolveImports" /> for more details.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="obj" /> is null. </exception>
@@ -309,7 +309,7 @@ namespace RI.Framework.Composition
 		///         <see cref="CompositionFlags" />.<see cref="CompositionFlags.Normal" /> is used.
 		///     </para>
 		///     <para>
-		///         <see cref="CompositionContainer.ResolveImports" /> for more details.
+		///         See <see cref="CompositionContainer.ResolveImports" /> for more details.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="obj" /> or <paramref name="container" /> is null. </exception>
@@ -342,7 +342,7 @@ namespace RI.Framework.Composition
 		/// </returns>
 		/// <remarks>
 		///     <para>
-		///         <see cref="CompositionContainer.ResolveImports" /> for more details.
+		///         See <see cref="CompositionContainer.ResolveImports" /> for more details.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="obj" /> or <paramref name="container" /> is null. </exception>

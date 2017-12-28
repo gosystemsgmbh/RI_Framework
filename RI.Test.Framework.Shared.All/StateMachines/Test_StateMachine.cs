@@ -136,7 +136,7 @@ namespace RI.Test.Framework.StateMachines
 			{
 			}
 
-			container.AddExport(typeof(Mock_State_A), "Test", false);
+			container.AddType(typeof(Mock_State_A), "Test", false);
 
 			try
 			{
@@ -147,7 +147,7 @@ namespace RI.Test.Framework.StateMachines
 			{
 			}
 
-			container.AddExport(typeof(Mock_State_A), typeof(Mock_State_A), false);
+			container.AddType(typeof(Mock_State_A), typeof(Mock_State_A), false);
 
 			test.Transient<Mock_State_A>();
 			Mock_State_A a1 = (Mock_State_A)test.State;
@@ -158,7 +158,7 @@ namespace RI.Test.Framework.StateMachines
 				throw new TestAssertionException();
 			}
 
-			container.AddExport(typeof(Mock_State_B), typeof(Mock_State_B), true);
+			container.AddType(typeof(Mock_State_B), typeof(Mock_State_B), true);
 
 			test.Transient<Mock_State_B>();
 			Mock_State_B b1 = (Mock_State_B)test.State;

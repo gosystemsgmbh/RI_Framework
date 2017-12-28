@@ -93,8 +93,51 @@ namespace RI.Framework.Composition
 			this.CreatorsToRemove.Remove(creator);
 		}
 
-		/// <inheritdoc cref="CompositionContainer.AddExport(object, Type)" />
-		public void AddExport (object instance, Type exportType)
+		/// <inheritdoc cref="CompositionContainer.AddFactory(Delegate, Type, bool)" />
+		public void AddFactory (Delegate factory, Type exportType, bool privateExport)
+		{
+			if (factory == null)
+			{
+				throw new ArgumentNullException(nameof(factory));
+			}
+
+			if (exportType == null)
+			{
+				throw new ArgumentNullException(nameof(exportType));
+			}
+
+			this.AddFactory(factory, CompositionContainer.GetNameOfType(exportType), privateExport);
+		}
+
+		/// <inheritdoc cref="CompositionContainer.AddFactory(Delegate, string, bool)" />
+		public void AddFactory (Delegate factory, string exportName, bool privateExport)
+		{
+			if (factory == null)
+			{
+				throw new ArgumentNullException(nameof(factory));
+			}
+
+			if (exportName == null)
+			{
+				throw new ArgumentNullException(nameof(exportName));
+			}
+
+			if (exportName.IsEmptyOrWhitespace())
+			{
+				throw new EmptyStringArgumentException(nameof(exportName));
+			}
+
+			this.ItemsToAdd.Add(new CompositionCatalogItem(exportName, factory, privateExport));
+		}
+
+		/// <inheritdoc cref="CompositionContainer.AddFactory(Func{CompositionContainer,object}, Type, bool)" />
+		public void AddFactory (Func<CompositionContainer, object> factory, Type exportType, bool privateExport) => this.AddFactory((Delegate)factory, exportType, privateExport);
+
+		/// <inheritdoc cref="CompositionContainer.AddFactory(Func{CompositionContainer,object}, string, bool)" />
+		public void AddFactory (Func<CompositionContainer, object> factory, string exportName, bool privateExport) => this.AddFactory((Delegate)factory, exportName, privateExport);
+
+		/// <inheritdoc cref="CompositionContainer.AddInstance(object, Type)" />
+		public void AddInstance (object instance, Type exportType)
 		{
 			if (instance == null)
 			{
@@ -106,11 +149,11 @@ namespace RI.Framework.Composition
 				throw new ArgumentNullException(nameof(exportType));
 			}
 
-			this.AddExport(instance, CompositionContainer.GetNameOfType(exportType));
+			this.AddInstance(instance, CompositionContainer.GetNameOfType(exportType));
 		}
 
-		/// <inheritdoc cref="CompositionContainer.AddExport(object, string)" />
-		public void AddExport (object instance, string exportName)
+		/// <inheritdoc cref="CompositionContainer.AddInstance(object, string)" />
+		public void AddInstance (object instance, string exportName)
 		{
 			if (instance == null)
 			{
@@ -135,8 +178,8 @@ namespace RI.Framework.Composition
 			this.ItemsToAdd.Add(new CompositionCatalogItem(exportName, instance));
 		}
 
-		/// <inheritdoc cref="CompositionContainer.AddExport(Type, Type, bool)" />
-		public void AddExport (Type type, Type exportType, bool privateExport)
+		/// <inheritdoc cref="CompositionContainer.AddType(Type, Type, bool)" />
+		public void AddType (Type type, Type exportType, bool privateExport)
 		{
 			if (type == null)
 			{
@@ -148,11 +191,11 @@ namespace RI.Framework.Composition
 				throw new ArgumentNullException(nameof(exportType));
 			}
 
-			this.AddExport(type, CompositionContainer.GetNameOfType(exportType), privateExport);
+			this.AddType(type, CompositionContainer.GetNameOfType(exportType), privateExport);
 		}
 
-		/// <inheritdoc cref="CompositionContainer.AddExport(Type, string, bool)" />
-		public void AddExport (Type type, string exportName, bool privateExport)
+		/// <inheritdoc cref="CompositionContainer.AddType(Type, string, bool)" />
+		public void AddType (Type type, string exportName, bool privateExport)
 		{
 			if (type == null)
 			{
@@ -176,49 +219,6 @@ namespace RI.Framework.Composition
 
 			this.ItemsToAdd.Add(new CompositionCatalogItem(exportName, type, privateExport));
 		}
-
-		/// <inheritdoc cref="CompositionContainer.AddExport(Delegate, Type, bool)" />
-		public void AddExport (Delegate factory, Type exportType, bool privateExport)
-		{
-			if (factory == null)
-			{
-				throw new ArgumentNullException(nameof(factory));
-			}
-
-			if (exportType == null)
-			{
-				throw new ArgumentNullException(nameof(exportType));
-			}
-
-			this.AddExport(factory, CompositionContainer.GetNameOfType(exportType), privateExport);
-		}
-
-		/// <inheritdoc cref="CompositionContainer.AddExport(Delegate, string, bool)" />
-		public void AddExport (Delegate factory, string exportName, bool privateExport)
-		{
-			if (factory == null)
-			{
-				throw new ArgumentNullException(nameof(factory));
-			}
-
-			if (exportName == null)
-			{
-				throw new ArgumentNullException(nameof(exportName));
-			}
-
-			if (exportName.IsEmptyOrWhitespace())
-			{
-				throw new EmptyStringArgumentException(nameof(exportName));
-			}
-
-			this.ItemsToAdd.Add(new CompositionCatalogItem(exportName, factory, privateExport));
-		}
-
-		/// <inheritdoc cref="CompositionContainer.AddExport(Func{CompositionContainer,object}, Type, bool)" />
-		public void AddExport (Func<CompositionContainer, object> factory, Type exportType, bool privateExport) => this.AddExport((Delegate)factory, exportType, privateExport);
-
-		/// <inheritdoc cref="CompositionContainer.AddExport(Func{CompositionContainer,object}, string, bool)" />
-		public void AddExport (Func<CompositionContainer, object> factory, string exportName, bool privateExport) => this.AddExport((Delegate)factory, exportName, privateExport);
 
 		/// <summary>
 		///     Empties this composition batch so that it does not contain any composition actions.
@@ -263,82 +263,8 @@ namespace RI.Framework.Composition
 			this.CreatorsToAdd.Remove(creator);
 		}
 
-		/// <inheritdoc cref="CompositionContainer.RemoveExport(object, Type)" />
-		public void RemoveExport (object instance, Type exportType)
-		{
-			if (instance == null)
-			{
-				throw new ArgumentNullException(nameof(instance));
-			}
-
-			if (exportType == null)
-			{
-				throw new ArgumentNullException(nameof(exportType));
-			}
-
-			this.RemoveExport(instance, CompositionContainer.GetNameOfType(exportType));
-		}
-
-		/// <inheritdoc cref="CompositionContainer.RemoveExport(object, string)" />
-		public void RemoveExport (object instance, string exportName)
-		{
-			if (instance == null)
-			{
-				throw new ArgumentNullException(nameof(instance));
-			}
-
-			if (exportName == null)
-			{
-				throw new ArgumentNullException(nameof(exportName));
-			}
-
-			if (exportName.IsEmptyOrWhitespace())
-			{
-				throw new EmptyStringArgumentException(nameof(exportName));
-			}
-
-			this.ItemsToRemove.Add(new CompositionCatalogItem(exportName, instance));
-		}
-
-		/// <inheritdoc cref="CompositionContainer.RemoveExport(Type, Type)" />
-		public void RemoveExport (Type type, Type exportType)
-		{
-			if (type == null)
-			{
-				throw new ArgumentNullException(nameof(type));
-			}
-
-			if (exportType == null)
-			{
-				throw new ArgumentNullException(nameof(exportType));
-			}
-
-			this.RemoveExport(type, CompositionContainer.GetNameOfType(exportType));
-		}
-
-		/// <inheritdoc cref="CompositionContainer.RemoveExport(Type, string)" />
-		public void RemoveExport (Type type, string exportName)
-		{
-			if (type == null)
-			{
-				throw new ArgumentNullException(nameof(type));
-			}
-
-			if (exportName == null)
-			{
-				throw new ArgumentNullException(nameof(exportName));
-			}
-
-			if (exportName.IsEmptyOrWhitespace())
-			{
-				throw new EmptyStringArgumentException(nameof(exportName));
-			}
-
-			this.ItemsToRemove.Add(new CompositionCatalogItem(exportName, type, false));
-		}
-
-		/// <inheritdoc cref="CompositionContainer.RemoveExport(Delegate, Type)" />
-		public void RemoveExport (Delegate factory, Type exportType)
+		/// <inheritdoc cref="CompositionContainer.RemoveFactory(Delegate, Type)" />
+		public void RemoveFactory (Delegate factory, Type exportType)
 		{
 			if (factory == null)
 			{
@@ -350,11 +276,11 @@ namespace RI.Framework.Composition
 				throw new ArgumentNullException(nameof(exportType));
 			}
 
-			this.RemoveExport(factory, CompositionContainer.GetNameOfType(exportType));
+			this.RemoveFactory(factory, CompositionContainer.GetNameOfType(exportType));
 		}
 
-		/// <inheritdoc cref="CompositionContainer.RemoveExport(Delegate, string)" />
-		public void RemoveExport (Delegate factory, string exportName)
+		/// <inheritdoc cref="CompositionContainer.RemoveFactory(Delegate, string)" />
+		public void RemoveFactory (Delegate factory, string exportName)
 		{
 			if (factory == null)
 			{
@@ -374,11 +300,85 @@ namespace RI.Framework.Composition
 			this.ItemsToRemove.Add(new CompositionCatalogItem(exportName, factory, false));
 		}
 
-		/// <inheritdoc cref="CompositionContainer.RemoveExport(Func{CompositionContainer,object}, Type)" />
-		public void RemoveExport (Func<CompositionContainer, object> factory, Type exportType) => this.RemoveExport((Delegate)factory, exportType);
+		/// <inheritdoc cref="CompositionContainer.RemoveFactory(Func{CompositionContainer,object}, Type)" />
+		public void RemoveFactory (Func<CompositionContainer, object> factory, Type exportType) => this.RemoveFactory((Delegate)factory, exportType);
 
-		/// <inheritdoc cref="CompositionContainer.RemoveExport(Func{CompositionContainer,object}, string)" />
-		public void RemoveExport (Func<CompositionContainer, object> factory, string exportName) => this.RemoveExport((Delegate)factory, exportName);
+		/// <inheritdoc cref="CompositionContainer.RemoveFactory(Func{CompositionContainer,object}, string)" />
+		public void RemoveFactory (Func<CompositionContainer, object> factory, string exportName) => this.RemoveFactory((Delegate)factory, exportName);
+
+		/// <inheritdoc cref="CompositionContainer.RemoveInstance(object, Type)" />
+		public void RemoveInstance (object instance, Type exportType)
+		{
+			if (instance == null)
+			{
+				throw new ArgumentNullException(nameof(instance));
+			}
+
+			if (exportType == null)
+			{
+				throw new ArgumentNullException(nameof(exportType));
+			}
+
+			this.RemoveInstance(instance, CompositionContainer.GetNameOfType(exportType));
+		}
+
+		/// <inheritdoc cref="CompositionContainer.RemoveInstance(object, string)" />
+		public void RemoveInstance (object instance, string exportName)
+		{
+			if (instance == null)
+			{
+				throw new ArgumentNullException(nameof(instance));
+			}
+
+			if (exportName == null)
+			{
+				throw new ArgumentNullException(nameof(exportName));
+			}
+
+			if (exportName.IsEmptyOrWhitespace())
+			{
+				throw new EmptyStringArgumentException(nameof(exportName));
+			}
+
+			this.ItemsToRemove.Add(new CompositionCatalogItem(exportName, instance));
+		}
+
+		/// <inheritdoc cref="CompositionContainer.RemoveType(Type, Type)" />
+		public void RemoveType (Type type, Type exportType)
+		{
+			if (type == null)
+			{
+				throw new ArgumentNullException(nameof(type));
+			}
+
+			if (exportType == null)
+			{
+				throw new ArgumentNullException(nameof(exportType));
+			}
+
+			this.RemoveType(type, CompositionContainer.GetNameOfType(exportType));
+		}
+
+		/// <inheritdoc cref="CompositionContainer.RemoveType(Type, string)" />
+		public void RemoveType (Type type, string exportName)
+		{
+			if (type == null)
+			{
+				throw new ArgumentNullException(nameof(type));
+			}
+
+			if (exportName == null)
+			{
+				throw new ArgumentNullException(nameof(exportName));
+			}
+
+			if (exportName.IsEmptyOrWhitespace())
+			{
+				throw new EmptyStringArgumentException(nameof(exportName));
+			}
+
+			this.ItemsToRemove.Add(new CompositionCatalogItem(exportName, type, false));
+		}
 
 		/// <inheritdoc cref="CompositionContainer.ResolveImports" />
 		public void ResolveImports (object obj, CompositionFlags composition)

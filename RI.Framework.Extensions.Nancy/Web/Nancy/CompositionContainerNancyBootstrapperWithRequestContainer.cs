@@ -130,8 +130,8 @@ namespace RI.Framework.Web.Nancy
 			CompositionBatch batch = new CompositionBatch();
 			foreach (Type requestStartupType in requestStartupTypes)
 			{
-				batch.AddExport(requestStartupType, typeof(IRequestStartup));
-				batch.AddExport(requestStartupType, requestStartupType);
+				batch.AddType(requestStartupType, typeof(IRequestStartup), false);
+				batch.AddType(requestStartupType, requestStartupType, false);
 			}
 			container.Compose(batch);
 
@@ -142,11 +142,11 @@ namespace RI.Framework.Web.Nancy
 		protected override void RegisterBootstrapperTypes (CompositionContainer applicationContainer)
 		{
 			CompositionBatch batch = new CompositionBatch();
-			batch.AddExport(this, typeof(INancyBootstrapper));
-			batch.AddExport(this, typeof(INancyModuleCatalog));
-			batch.AddExport(this, typeof(NancyBootstrapperBase<CompositionContainer>));
-			batch.AddExport(this, typeof(NancyBootstrapperWithRequestContainerBase<CompositionContainer>));
-			batch.AddExport(this, this.GetType());
+			batch.AddInstance(this, typeof(INancyBootstrapper));
+			batch.AddInstance(this, typeof(INancyModuleCatalog));
+			batch.AddInstance(this, typeof(NancyBootstrapperBase<CompositionContainer>));
+			batch.AddInstance(this, typeof(NancyBootstrapperWithRequestContainerBase<CompositionContainer>));
+			batch.AddInstance(this, this.GetType());
 			applicationContainer.Compose(batch);
 		}
 
@@ -161,10 +161,10 @@ namespace RI.Framework.Web.Nancy
 					switch (collectionTypeRegistration.Lifetime)
 					{
 						case Lifetime.Singleton:
-							batch.AddExport(typeRegistration, collectionTypeRegistration.RegistrationType, false);
+							batch.AddType(typeRegistration, collectionTypeRegistration.RegistrationType, false);
 							break;
 						case Lifetime.Transient:
-							batch.AddExport(typeRegistration, collectionTypeRegistration.RegistrationType, true);
+							batch.AddType(typeRegistration, collectionTypeRegistration.RegistrationType, true);
 							break;
 						case Lifetime.PerRequest: throw new InvalidOperationException("Type registration on a per-request basis are not supported.");
 						default: throw new InvalidOperationException("Unknown type registration lifetime.");
@@ -180,7 +180,7 @@ namespace RI.Framework.Web.Nancy
 			CompositionBatch batch = new CompositionBatch();
 			foreach (InstanceRegistration instanceRegistration in instanceRegistrations)
 			{
-				batch.AddExport(instanceRegistration.Implementation, instanceRegistration.RegistrationType);
+				batch.AddInstance(instanceRegistration.Implementation, instanceRegistration.RegistrationType);
 			}
 			container.Compose(batch);
 		}
@@ -191,7 +191,7 @@ namespace RI.Framework.Web.Nancy
 			CompositionBatch batch = new CompositionBatch();
 			foreach (ModuleRegistration moduleRegistration in moduleRegistrationTypes)
 			{
-				batch.AddExport(moduleRegistration.ModuleType, moduleRegistration.ModuleType, false);
+				batch.AddType(moduleRegistration.ModuleType, moduleRegistration.ModuleType, false);
 			}
 			container.Compose(batch);
 		}
@@ -205,10 +205,10 @@ namespace RI.Framework.Web.Nancy
 				switch (typeRegistration.Lifetime)
 				{
 					case Lifetime.Singleton:
-						batch.AddExport(typeRegistration.ImplementationType, typeRegistration.RegistrationType, false);
+						batch.AddType(typeRegistration.ImplementationType, typeRegistration.RegistrationType, false);
 						break;
 					case Lifetime.Transient:
-						batch.AddExport(typeRegistration.ImplementationType, typeRegistration.RegistrationType, true);
+						batch.AddType(typeRegistration.ImplementationType, typeRegistration.RegistrationType, true);
 						break;
 					case Lifetime.PerRequest: throw new InvalidOperationException("Type registration on a per-request basis are not supported.");
 					default: throw new InvalidOperationException("Unknown type registration lifetime.");

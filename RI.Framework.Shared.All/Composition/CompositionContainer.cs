@@ -65,7 +65,7 @@ namespace RI.Framework.Composition
 	///         Resolving of imports is also always done using the name of the import.
 	///         Now, when types are used instead of names, the types are simply translated into what is called &quot;the types default name&quot;.
 	///         After the translation, the types are ignored and the exports and imports are continued to be handled using their translated names.
-	///         For example, the method <see cref="AddExport(object, Type)" /> does nothing else than determine the types default name and then call <see cref="AddExport(object, string)" /> with that name.
+	///         For example, the method <see cref="AddInstance(object, Type)" /> does nothing else than determine the types default name and then call <see cref="AddInstance(object, string)" /> with that name.
 	///         This allows you to mix type-based import and export (using their types default names) and also name-based import and export (using any custom names you specify).
 	///         Finally, a types default name is simply its namespace and type name, e.g. the name &quot;RI.Framework.Composition.CompositionContainer&quot; for the type <see cref="CompositionContainer" />.
 	///     </para>
@@ -563,7 +563,7 @@ namespace RI.Framework.Composition
 			if (container == null)
 			{
 				container = Singleton<CompositionContainer>.Ensure();
-				container.AddExport(container, typeof(CompositionContainer));
+				container.AddInstance(container, typeof(CompositionContainer));
 				if (addAppDomainCatalog)
 				{
 					container.AddCatalog(new AppDomainCatalog(true, true, true));
@@ -894,6 +894,125 @@ namespace RI.Framework.Composition
 		}
 
 		/// <summary>
+		///     Manual export: Adds a factory and exports it under the specified types default name for composition.
+		/// </summary>
+		/// <param name="factory"> The factory which creates the exported instance. </param>
+		/// <param name="exportType"> The type under whose default name the factory is exported. </param>
+		/// <param name="privateExport"> Specifies whether the export is private (true) or shared (false). </param>
+		/// <remarks>
+		///     <para>
+		///         If the specified factory is already exported under the specified name, the composition remains unchanged.
+		///     </para>
+		///     <para>
+		///         This triggers an internal recomposition using <see cref="CompositionFlags" />.<see cref="CompositionFlags.Normal" />.
+		///         See <see cref="Recompose(CompositionFlags)" /> for details.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="factory" /> or <paramref name="exportType" /> is null. </exception>
+		/// <exception cref="InvalidTypeArgumentException"> <paramref name="factory" /> is not of a type which can be used for composition. </exception>
+		/// <exception cref="CompositionException"> The internal recomposition failed. </exception>
+		public void AddFactory (Delegate factory, Type exportType, bool privateExport)
+		{
+			if (factory == null)
+			{
+				throw new ArgumentNullException(nameof(factory));
+			}
+
+			if (exportType == null)
+			{
+				throw new ArgumentNullException(nameof(exportType));
+			}
+
+			this.AddFactory(factory, CompositionContainer.GetNameOfType(exportType), privateExport);
+		}
+
+		/// <summary>
+		///     Manual export: Adds a factory and exports it under the specified name for composition.
+		/// </summary>
+		/// <param name="factory"> The factory which creates the exported instance. </param>
+		/// <param name="exportName"> The name under which the factory is exported. </param>
+		/// <param name="privateExport"> Specifies whether the export is private (true) or shared (false). </param>
+		/// <remarks>
+		///     <para>
+		///         If the specified factory is already exported under the specified name, the composition remains unchanged.
+		///     </para>
+		///     <para>
+		///         This triggers an internal recomposition using <see cref="CompositionFlags" />.<see cref="CompositionFlags.Normal" />.
+		///         See <see cref="Recompose(CompositionFlags)" /> for details.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="factory" /> or <paramref name="exportName" /> is null. </exception>
+		/// <exception cref="InvalidTypeArgumentException"> <paramref name="factory" /> is not of a type which can be used for composition. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="exportName" /> is an empty string. </exception>
+		/// <exception cref="CompositionException"> The internal recomposition failed. </exception>
+		public void AddFactory (Delegate factory, string exportName, bool privateExport)
+		{
+			if (factory == null)
+			{
+				throw new ArgumentNullException(nameof(factory));
+			}
+
+			if (exportName == null)
+			{
+				throw new ArgumentNullException(nameof(exportName));
+			}
+
+			if (exportName.IsEmptyOrWhitespace())
+			{
+				throw new EmptyStringArgumentException(nameof(exportName));
+			}
+
+			lock (this.SyncRoot)
+			{
+				this.AddFactoryInternal(factory, exportName, privateExport);
+				this.UpdateComposition(true);
+			}
+
+			this.RaiseCompositionChanged();
+		}
+
+		/// <summary>
+		///     Manual export: Adds a factory and exports it under the specified types default name for composition.
+		/// </summary>
+		/// <param name="factory"> The factory which creates the exported instance. </param>
+		/// <param name="exportType"> The type under whose default name the factory is exported. </param>
+		/// <param name="privateExport"> Specifies whether the export is private (true) or shared (false). </param>
+		/// <remarks>
+		///     <para>
+		///         If the specified factory is already exported under the specified name, the composition remains unchanged.
+		///     </para>
+		///     <para>
+		///         This triggers an internal recomposition using <see cref="CompositionFlags" />.<see cref="CompositionFlags.Normal" />.
+		///         See <see cref="Recompose(CompositionFlags)" /> for details.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="factory" /> or <paramref name="exportType" /> is null. </exception>
+		/// <exception cref="InvalidTypeArgumentException"> <paramref name="factory" /> is not of a type which can be used for composition. </exception>
+		/// <exception cref="CompositionException"> The internal recomposition failed. </exception>
+		public void AddFactory (Func<CompositionContainer, object> factory, Type exportType, bool privateExport) => this.AddFactory((Delegate)factory, exportType, privateExport);
+
+		/// <summary>
+		///     Manual export: Adds a factory and exports it under the specified name for composition.
+		/// </summary>
+		/// <param name="factory"> The factory which creates the exported instance. </param>
+		/// <param name="exportName"> The name under which the factory is exported. </param>
+		/// <param name="privateExport"> Specifies whether the export is private (true) or shared (false). </param>
+		/// <remarks>
+		///     <para>
+		///         If the specified factory is already exported under the specified name, the composition remains unchanged.
+		///     </para>
+		///     <para>
+		///         This triggers an internal recomposition using <see cref="CompositionFlags" />.<see cref="CompositionFlags.Normal" />.
+		///         See <see cref="Recompose(CompositionFlags)" /> for details.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="factory" /> or <paramref name="exportName" /> is null. </exception>
+		/// <exception cref="InvalidTypeArgumentException"> <paramref name="factory" /> is not of a type which can be used for composition. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="exportName" /> is an empty string. </exception>
+		/// <exception cref="CompositionException"> The internal recomposition failed. </exception>
+		public void AddFactory (Func<CompositionContainer, object> factory, string exportName, bool privateExport) => this.AddFactory((Delegate)factory, exportName, privateExport);
+
+		/// <summary>
 		///     Manual export: Adds an object and exports it under the specified types default name for composition.
 		/// </summary>
 		/// <param name="instance"> The object to export. </param>
@@ -910,7 +1029,7 @@ namespace RI.Framework.Composition
 		/// <exception cref="ArgumentNullException"> <paramref name="instance" /> or <paramref name="exportType" /> is null. </exception>
 		/// <exception cref="InvalidTypeArgumentException"> <paramref name="instance" /> is not of a type which can be exported. </exception>
 		/// <exception cref="CompositionException"> The internal recomposition failed. </exception>
-		public void AddExport (object instance, Type exportType)
+		public void AddInstance (object instance, Type exportType)
 		{
 			if (instance == null)
 			{
@@ -922,7 +1041,7 @@ namespace RI.Framework.Composition
 				throw new ArgumentNullException(nameof(exportType));
 			}
 
-			this.AddExport(instance, CompositionContainer.GetNameOfType(exportType));
+			this.AddInstance(instance, CompositionContainer.GetNameOfType(exportType));
 		}
 
 		/// <summary>
@@ -943,7 +1062,7 @@ namespace RI.Framework.Composition
 		/// <exception cref="InvalidTypeArgumentException"> <paramref name="instance" /> is not of a type which can be exported. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="exportName" /> is an empty string. </exception>
 		/// <exception cref="CompositionException"> The internal recomposition failed. </exception>
-		public void AddExport (object instance, string exportName)
+		public void AddInstance (object instance, string exportName)
 		{
 			if (instance == null)
 			{
@@ -992,7 +1111,7 @@ namespace RI.Framework.Composition
 		/// <exception cref="ArgumentNullException"> <paramref name="type" /> or <paramref name="exportType" /> is null. </exception>
 		/// <exception cref="InvalidTypeArgumentException"> <paramref name="type" /> is not of a type which can be exported. </exception>
 		/// <exception cref="CompositionException"> The internal recomposition failed. </exception>
-		public void AddExport (Type type, Type exportType, bool privateExport)
+		public void AddType (Type type, Type exportType, bool privateExport)
 		{
 			if (type == null)
 			{
@@ -1004,7 +1123,7 @@ namespace RI.Framework.Composition
 				throw new ArgumentNullException(nameof(exportType));
 			}
 
-			this.AddExport(type, CompositionContainer.GetNameOfType(exportType), privateExport);
+			this.AddType(type, CompositionContainer.GetNameOfType(exportType), privateExport);
 		}
 
 		/// <summary>
@@ -1026,7 +1145,7 @@ namespace RI.Framework.Composition
 		/// <exception cref="InvalidTypeArgumentException"> <paramref name="type" /> is not of a type which can be exported. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="exportName" /> is an empty string. </exception>
 		/// <exception cref="CompositionException"> The internal recomposition failed. </exception>
-		public void AddExport (Type type, string exportName, bool privateExport)
+		public void AddType (Type type, string exportName, bool privateExport)
 		{
 			if (type == null)
 			{
@@ -1056,125 +1175,6 @@ namespace RI.Framework.Composition
 
 			this.RaiseCompositionChanged();
 		}
-
-		/// <summary>
-		///     Manual export: Adds a factory and exports it under the specified types default name for composition.
-		/// </summary>
-		/// <param name="factory"> The factory which creates the exported instance. </param>
-		/// <param name="exportType"> The type under whose default name the factory is exported. </param>
-		/// <param name="privateExport"> Specifies whether the export is private (true) or shared (false). </param>
-		/// <remarks>
-		///     <para>
-		///         If the specified factory is already exported under the specified name, the composition remains unchanged.
-		///     </para>
-		///     <para>
-		///         This triggers an internal recomposition using <see cref="CompositionFlags" />.<see cref="CompositionFlags.Normal" />.
-		///         See <see cref="Recompose(CompositionFlags)" /> for details.
-		///     </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="factory" /> or <paramref name="exportType" /> is null. </exception>
-		/// <exception cref="InvalidTypeArgumentException"> <paramref name="factory" /> is not of a type which can be used for composition. </exception>
-		/// <exception cref="CompositionException"> The internal recomposition failed. </exception>
-		public void AddExport (Delegate factory, Type exportType, bool privateExport)
-		{
-			if (factory == null)
-			{
-				throw new ArgumentNullException(nameof(factory));
-			}
-
-			if (exportType == null)
-			{
-				throw new ArgumentNullException(nameof(exportType));
-			}
-
-			this.AddExport(factory, CompositionContainer.GetNameOfType(exportType), privateExport);
-		}
-
-		/// <summary>
-		///     Manual export: Adds a factory and exports it under the specified name for composition.
-		/// </summary>
-		/// <param name="factory"> The factory which creates the exported instance. </param>
-		/// <param name="exportName"> The name under which the factory is exported. </param>
-		/// <param name="privateExport"> Specifies whether the export is private (true) or shared (false). </param>
-		/// <remarks>
-		///     <para>
-		///         If the specified factory is already exported under the specified name, the composition remains unchanged.
-		///     </para>
-		///     <para>
-		///         This triggers an internal recomposition using <see cref="CompositionFlags" />.<see cref="CompositionFlags.Normal" />.
-		///         See <see cref="Recompose(CompositionFlags)" /> for details.
-		///     </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="factory" /> or <paramref name="exportName" /> is null. </exception>
-		/// <exception cref="InvalidTypeArgumentException"> <paramref name="factory" /> is not of a type which can be used for composition. </exception>
-		/// <exception cref="EmptyStringArgumentException"> <paramref name="exportName" /> is an empty string. </exception>
-		/// <exception cref="CompositionException"> The internal recomposition failed. </exception>
-		public void AddExport (Delegate factory, string exportName, bool privateExport)
-		{
-			if (factory == null)
-			{
-				throw new ArgumentNullException(nameof(factory));
-			}
-
-			if (exportName == null)
-			{
-				throw new ArgumentNullException(nameof(exportName));
-			}
-
-			if (exportName.IsEmptyOrWhitespace())
-			{
-				throw new EmptyStringArgumentException(nameof(exportName));
-			}
-
-			lock (this.SyncRoot)
-			{
-				this.AddFactoryInternal(factory, exportName, privateExport);
-				this.UpdateComposition(true);
-			}
-
-			this.RaiseCompositionChanged();
-		}
-
-		/// <summary>
-		///     Manual export: Adds a factory and exports it under the specified types default name for composition.
-		/// </summary>
-		/// <param name="factory"> The factory which creates the exported instance. </param>
-		/// <param name="exportType"> The type under whose default name the factory is exported. </param>
-		/// <param name="privateExport"> Specifies whether the export is private (true) or shared (false). </param>
-		/// <remarks>
-		///     <para>
-		///         If the specified factory is already exported under the specified name, the composition remains unchanged.
-		///     </para>
-		///     <para>
-		///         This triggers an internal recomposition using <see cref="CompositionFlags" />.<see cref="CompositionFlags.Normal" />.
-		///         See <see cref="Recompose(CompositionFlags)" /> for details.
-		///     </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="factory" /> or <paramref name="exportType" /> is null. </exception>
-		/// <exception cref="InvalidTypeArgumentException"> <paramref name="factory" /> is not of a type which can be used for composition. </exception>
-		/// <exception cref="CompositionException"> The internal recomposition failed. </exception>
-		public void AddExport (Func<CompositionContainer, object> factory, Type exportType, bool privateExport) => this.AddExport((Delegate)factory, exportType, privateExport);
-
-		/// <summary>
-		///     Manual export: Adds a factory and exports it under the specified name for composition.
-		/// </summary>
-		/// <param name="factory"> The factory which creates the exported instance. </param>
-		/// <param name="exportName"> The name under which the factory is exported. </param>
-		/// <param name="privateExport"> Specifies whether the export is private (true) or shared (false). </param>
-		/// <remarks>
-		///     <para>
-		///         If the specified factory is already exported under the specified name, the composition remains unchanged.
-		///     </para>
-		///     <para>
-		///         This triggers an internal recomposition using <see cref="CompositionFlags" />.<see cref="CompositionFlags.Normal" />.
-		///         See <see cref="Recompose(CompositionFlags)" /> for details.
-		///     </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="factory" /> or <paramref name="exportName" /> is null. </exception>
-		/// <exception cref="InvalidTypeArgumentException"> <paramref name="factory" /> is not of a type which can be used for composition. </exception>
-		/// <exception cref="EmptyStringArgumentException"> <paramref name="exportName" /> is an empty string. </exception>
-		/// <exception cref="CompositionException"> The internal recomposition failed. </exception>
-		public void AddExport (Func<CompositionContainer, object> factory, string exportName, bool privateExport) => this.AddExport((Delegate)factory, exportName, privateExport);
 
 		/// <summary>
 		///     Removes all exports.
@@ -1592,158 +1592,6 @@ namespace RI.Framework.Composition
 		}
 
 		/// <summary>
-		///     Manual export: Removes an object exported under the specified types default name so that it is no longer used for composition.
-		/// </summary>
-		/// <param name="instance"> The exported object. </param>
-		/// <param name="exportType"> The type under whose default name the object is exported. </param>
-		/// <remarks>
-		///     <para>
-		///         Only the export matching the specified object and type is removed.
-		///         If the same object is also exported under other types or names, those exports remain intact.
-		///     </para>
-		///     <para>
-		///         This triggers an internal recomposition using <see cref="CompositionFlags" />.<see cref="CompositionFlags.Normal" />.
-		///         See <see cref="Recompose(CompositionFlags)" /> for details.
-		///     </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="instance" /> or <paramref name="exportType" /> is null. </exception>
-		/// <exception cref="CompositionException"> The internal recomposition failed. </exception>
-		public void RemoveExport (object instance, Type exportType)
-		{
-			if (instance == null)
-			{
-				throw new ArgumentNullException(nameof(instance));
-			}
-
-			if (exportType == null)
-			{
-				throw new ArgumentNullException(nameof(exportType));
-			}
-
-			this.RemoveExport(instance, CompositionContainer.GetNameOfType(exportType));
-		}
-
-		/// <summary>
-		///     Manual export: Removes an object exported under the specified name so that it is no longer used for composition.
-		/// </summary>
-		/// <param name="instance"> The exported object. </param>
-		/// <param name="exportName"> The name under which the object is exported. </param>
-		/// <remarks>
-		///     <para>
-		///         Only the export matching the specified object and name is removed.
-		///         If the same object is also exported under other types or names, those exports remain intact.
-		///     </para>
-		///     <para>
-		///         This triggers an internal recomposition using <see cref="CompositionFlags" />.<see cref="CompositionFlags.Normal" />.
-		///         See <see cref="Recompose(CompositionFlags)" /> for details.
-		///     </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="instance" /> or <paramref name="exportName" /> is null. </exception>
-		/// <exception cref="EmptyStringArgumentException"> <paramref name="exportName" /> is an empty string. </exception>
-		/// <exception cref="CompositionException"> The internal recomposition failed. </exception>
-		public void RemoveExport (object instance, string exportName)
-		{
-			if (instance == null)
-			{
-				throw new ArgumentNullException(nameof(instance));
-			}
-
-			if (exportName == null)
-			{
-				throw new ArgumentNullException(nameof(exportName));
-			}
-
-			if (exportName.IsEmptyOrWhitespace())
-			{
-				throw new EmptyStringArgumentException(nameof(exportName));
-			}
-
-			lock (this.SyncRoot)
-			{
-				this.RemoveInstanceInternal(instance, exportName);
-				this.UpdateComposition(true);
-			}
-
-			this.RaiseCompositionChanged();
-		}
-
-		/// <summary>
-		///     Manual export: Removes a type exported under the specified types default name so that it is no longer used for composition.
-		/// </summary>
-		/// <param name="type"> The exported type. </param>
-		/// <param name="exportType"> The type under whose default name the type is exported. </param>
-		/// <remarks>
-		///     <para>
-		///         Only the export matching the specified type is removed.
-		///         If the same type is also exported under other types or names, those exports remain intact.
-		///     </para>
-		///     <para>
-		///         This triggers an internal recomposition using <see cref="CompositionFlags" />.<see cref="CompositionFlags.Normal" />.
-		///         See <see cref="Recompose(CompositionFlags)" /> for details.
-		///     </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="type" /> or <paramref name="exportType" /> is null. </exception>
-		/// <exception cref="CompositionException"> The internal recomposition failed. </exception>
-		public void RemoveExport (Type type, Type exportType)
-		{
-			if (type == null)
-			{
-				throw new ArgumentNullException(nameof(type));
-			}
-
-			if (exportType == null)
-			{
-				throw new ArgumentNullException(nameof(exportType));
-			}
-
-			this.RemoveExport(type, CompositionContainer.GetNameOfType(exportType));
-		}
-
-		/// <summary>
-		///     Manual export: Removes a type exported under the specified name so that it is no longer used for composition.
-		/// </summary>
-		/// <param name="type"> The exported type. </param>
-		/// <param name="exportName"> The name under which the type is exported. </param>
-		/// <remarks>
-		///     <para>
-		///         Only the export matching the specified type and name is removed.
-		///         If the same type is also exported under other types or names, those exports remain intact.
-		///     </para>
-		///     <para>
-		///         This triggers an internal recomposition using <see cref="CompositionFlags" />.<see cref="CompositionFlags.Normal" />.
-		///         See <see cref="Recompose(CompositionFlags)" /> for details.
-		///     </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="type" /> or <paramref name="exportName" /> is null. </exception>
-		/// <exception cref="EmptyStringArgumentException"> <paramref name="exportName" /> is an empty string. </exception>
-		/// <exception cref="CompositionException"> The internal recomposition failed. </exception>
-		public void RemoveExport (Type type, string exportName)
-		{
-			if (type == null)
-			{
-				throw new ArgumentNullException(nameof(type));
-			}
-
-			if (exportName == null)
-			{
-				throw new ArgumentNullException(nameof(exportName));
-			}
-
-			if (exportName.IsEmptyOrWhitespace())
-			{
-				throw new EmptyStringArgumentException(nameof(exportName));
-			}
-
-			lock (this.SyncRoot)
-			{
-				this.RemoveTypeInternal(type, exportName);
-				this.UpdateComposition(true);
-			}
-
-			this.RaiseCompositionChanged();
-		}
-
-		/// <summary>
 		///     Manual export: Removes a factory exported under the specified types default name so that it is no longer used for composition.
 		/// </summary>
 		/// <param name="factory"> The factory which creates the exported instance. </param>
@@ -1760,7 +1608,7 @@ namespace RI.Framework.Composition
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="factory" /> or <paramref name="exportType" /> is null. </exception>
 		/// <exception cref="CompositionException"> The internal recomposition failed. </exception>
-		public void RemoveExport (Delegate factory, Type exportType)
+		public void RemoveFactory (Delegate factory, Type exportType)
 		{
 			if (factory == null)
 			{
@@ -1772,7 +1620,7 @@ namespace RI.Framework.Composition
 				throw new ArgumentNullException(nameof(exportType));
 			}
 
-			this.RemoveExport(factory, CompositionContainer.GetNameOfType(exportType));
+			this.RemoveFactory(factory, CompositionContainer.GetNameOfType(exportType));
 		}
 
 		/// <summary>
@@ -1793,7 +1641,7 @@ namespace RI.Framework.Composition
 		/// <exception cref="ArgumentNullException"> <paramref name="factory" /> or <paramref name="exportName" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="exportName" /> is an empty string. </exception>
 		/// <exception cref="CompositionException"> The internal recomposition failed. </exception>
-		public void RemoveExport (Delegate factory, string exportName)
+		public void RemoveFactory (Delegate factory, string exportName)
 		{
 			if (factory == null)
 			{
@@ -1836,7 +1684,7 @@ namespace RI.Framework.Composition
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="factory" /> or <paramref name="exportType" /> is null. </exception>
 		/// <exception cref="CompositionException"> The internal recomposition failed. </exception>
-		public void RemoveExport (Func<CompositionContainer, object> factory, Type exportType) => this.RemoveExport((Delegate)factory, exportType);
+		public void RemoveFactory (Func<CompositionContainer, object> factory, Type exportType) => this.RemoveFactory((Delegate)factory, exportType);
 
 		/// <summary>
 		///     Manual export: Removes a factory exported under the specified name so that it is no longer used for composition.
@@ -1856,7 +1704,159 @@ namespace RI.Framework.Composition
 		/// <exception cref="ArgumentNullException"> <paramref name="factory" /> or <paramref name="exportName" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="exportName" /> is an empty string. </exception>
 		/// <exception cref="CompositionException"> The internal recomposition failed. </exception>
-		public void RemoveExport (Func<CompositionContainer, object> factory, string exportName) => this.RemoveExport((Delegate)factory, exportName);
+		public void RemoveFactory (Func<CompositionContainer, object> factory, string exportName) => this.RemoveFactory((Delegate)factory, exportName);
+
+		/// <summary>
+		///     Manual export: Removes an object exported under the specified types default name so that it is no longer used for composition.
+		/// </summary>
+		/// <param name="instance"> The exported object. </param>
+		/// <param name="exportType"> The type under whose default name the object is exported. </param>
+		/// <remarks>
+		///     <para>
+		///         Only the export matching the specified object and type is removed.
+		///         If the same object is also exported under other types or names, those exports remain intact.
+		///     </para>
+		///     <para>
+		///         This triggers an internal recomposition using <see cref="CompositionFlags" />.<see cref="CompositionFlags.Normal" />.
+		///         See <see cref="Recompose(CompositionFlags)" /> for details.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="instance" /> or <paramref name="exportType" /> is null. </exception>
+		/// <exception cref="CompositionException"> The internal recomposition failed. </exception>
+		public void RemoveInstance (object instance, Type exportType)
+		{
+			if (instance == null)
+			{
+				throw new ArgumentNullException(nameof(instance));
+			}
+
+			if (exportType == null)
+			{
+				throw new ArgumentNullException(nameof(exportType));
+			}
+
+			this.RemoveInstance(instance, CompositionContainer.GetNameOfType(exportType));
+		}
+
+		/// <summary>
+		///     Manual export: Removes an object exported under the specified name so that it is no longer used for composition.
+		/// </summary>
+		/// <param name="instance"> The exported object. </param>
+		/// <param name="exportName"> The name under which the object is exported. </param>
+		/// <remarks>
+		///     <para>
+		///         Only the export matching the specified object and name is removed.
+		///         If the same object is also exported under other types or names, those exports remain intact.
+		///     </para>
+		///     <para>
+		///         This triggers an internal recomposition using <see cref="CompositionFlags" />.<see cref="CompositionFlags.Normal" />.
+		///         See <see cref="Recompose(CompositionFlags)" /> for details.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="instance" /> or <paramref name="exportName" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="exportName" /> is an empty string. </exception>
+		/// <exception cref="CompositionException"> The internal recomposition failed. </exception>
+		public void RemoveInstance (object instance, string exportName)
+		{
+			if (instance == null)
+			{
+				throw new ArgumentNullException(nameof(instance));
+			}
+
+			if (exportName == null)
+			{
+				throw new ArgumentNullException(nameof(exportName));
+			}
+
+			if (exportName.IsEmptyOrWhitespace())
+			{
+				throw new EmptyStringArgumentException(nameof(exportName));
+			}
+
+			lock (this.SyncRoot)
+			{
+				this.RemoveInstanceInternal(instance, exportName);
+				this.UpdateComposition(true);
+			}
+
+			this.RaiseCompositionChanged();
+		}
+
+		/// <summary>
+		///     Manual export: Removes a type exported under the specified types default name so that it is no longer used for composition.
+		/// </summary>
+		/// <param name="type"> The exported type. </param>
+		/// <param name="exportType"> The type under whose default name the type is exported. </param>
+		/// <remarks>
+		///     <para>
+		///         Only the export matching the specified type is removed.
+		///         If the same type is also exported under other types or names, those exports remain intact.
+		///     </para>
+		///     <para>
+		///         This triggers an internal recomposition using <see cref="CompositionFlags" />.<see cref="CompositionFlags.Normal" />.
+		///         See <see cref="Recompose(CompositionFlags)" /> for details.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="type" /> or <paramref name="exportType" /> is null. </exception>
+		/// <exception cref="CompositionException"> The internal recomposition failed. </exception>
+		public void RemoveType (Type type, Type exportType)
+		{
+			if (type == null)
+			{
+				throw new ArgumentNullException(nameof(type));
+			}
+
+			if (exportType == null)
+			{
+				throw new ArgumentNullException(nameof(exportType));
+			}
+
+			this.RemoveType(type, CompositionContainer.GetNameOfType(exportType));
+		}
+
+		/// <summary>
+		///     Manual export: Removes a type exported under the specified name so that it is no longer used for composition.
+		/// </summary>
+		/// <param name="type"> The exported type. </param>
+		/// <param name="exportName"> The name under which the type is exported. </param>
+		/// <remarks>
+		///     <para>
+		///         Only the export matching the specified type and name is removed.
+		///         If the same type is also exported under other types or names, those exports remain intact.
+		///     </para>
+		///     <para>
+		///         This triggers an internal recomposition using <see cref="CompositionFlags" />.<see cref="CompositionFlags.Normal" />.
+		///         See <see cref="Recompose(CompositionFlags)" /> for details.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="type" /> or <paramref name="exportName" /> is null. </exception>
+		/// <exception cref="EmptyStringArgumentException"> <paramref name="exportName" /> is an empty string. </exception>
+		/// <exception cref="CompositionException"> The internal recomposition failed. </exception>
+		public void RemoveType (Type type, string exportName)
+		{
+			if (type == null)
+			{
+				throw new ArgumentNullException(nameof(type));
+			}
+
+			if (exportName == null)
+			{
+				throw new ArgumentNullException(nameof(exportName));
+			}
+
+			if (exportName.IsEmptyOrWhitespace())
+			{
+				throw new EmptyStringArgumentException(nameof(exportName));
+			}
+
+			lock (this.SyncRoot)
+			{
+				this.RemoveTypeInternal(type, exportName);
+				this.UpdateComposition(true);
+			}
+
+			this.RaiseCompositionChanged();
+		}
 
 		/// <summary>
 		///     Model-based import: Resolves the imports of the specified object, using <see cref="ImportAttribute" />.
@@ -2443,7 +2443,6 @@ namespace RI.Framework.Composition
 					greedyConstructors.Reverse();
 
 					List<ConstructorInfo> constructorCandidates = new List<ConstructorInfo>();
-					constructorCandidates.AddRange(declaredConstructors);
 					constructorCandidates.AddRange(greedyConstructors);
 
 					List<ConstructorInfo> fullyResolvable = new List<ConstructorInfo>();
@@ -2486,6 +2485,7 @@ namespace RI.Framework.Composition
 					}
 
 					List<ConstructorInfo> constructors = new List<ConstructorInfo>();
+					constructors.AddRange(declaredConstructors);
 					constructors.AddRange(fullyResolvable);
 					constructors.AddRange(partiallyResolvable);
 
