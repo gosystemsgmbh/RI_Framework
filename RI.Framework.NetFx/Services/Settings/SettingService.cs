@@ -795,7 +795,7 @@ namespace RI.Framework.Services.Settings
 					continue;
 				}
 
-				if ((store.WritePrefixAffinity != null) && (name.StartsWith(store.WritePrefixAffinity, StringComparison.InvariantCultureIgnoreCase)))
+				if ((store.WritePrefixAffinity != null) && (!name.StartsWith(store.WritePrefixAffinity, StringComparison.InvariantCultureIgnoreCase)))
 				{
 					continue;
 				}
@@ -807,7 +807,7 @@ namespace RI.Framework.Services.Settings
 
 			if (stores == 0)
 			{
-				this.Log(LogLevel.Warning, "Setting {0} not written to any storage");
+				this.Log(LogLevel.Warning, "Setting {0} not written to any storage", name);
 			}
 		}
 
