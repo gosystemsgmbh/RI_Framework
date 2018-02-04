@@ -67,7 +67,7 @@ namespace RI.Framework.IO.Paths
 		public static DirectoryPath GetCurrentDirectory ()
 		{
 #if PLATFORM_UNITY
-			if ((UnityEngine.Application.platform != UnityEngine.RuntimePlatform.WindowsEditor) && (UnityEngine.Application.platform != UnityEngine.RuntimePlatform.WindowsPlayer) && (UnityEngine.Application.platform != UnityEngine.RuntimePlatform.OSXEditor) && (UnityEngine.Application.platform != UnityEngine.RuntimePlatform.OSXPlayer) && (UnityEngine.Application.platform != UnityEngine.RuntimePlatform.OSXDashboardPlayer))
+			if ((UnityEngine.Application.platform != UnityEngine.RuntimePlatform.WindowsEditor) && (UnityEngine.Application.platform != UnityEngine.RuntimePlatform.WindowsPlayer) && (UnityEngine.Application.platform != UnityEngine.RuntimePlatform.OSXEditor) && (UnityEngine.Application.platform != UnityEngine.RuntimePlatform.OSXPlayer))
 			{
 				throw new NotSupportedException(nameof(DirectoryPath.GetCurrentDirectory) + " is only supported on Windows and Mac OS.");
 			}
