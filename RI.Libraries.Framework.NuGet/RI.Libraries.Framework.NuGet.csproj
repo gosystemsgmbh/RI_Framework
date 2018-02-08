@@ -36,14 +36,17 @@
     <None Include="BCrypt.Net-Next.2.1.2.nupkg" />
     <None Include="ControlzEx.2.0.1.61.nupkg" />
     <None Include="ControlzEx.2.2.0.4.nupkg" />
+    <None Include="ControlzEx.3.0.2.4.nupkg" />
     <None Include="DotNetZip.1.10.1.nupkg" />
     <None Include="EntityFramework.6.1.3.nupkg" />
+    <None Include="EntityFramework.6.2.0.nupkg" />
     <None Include="EPPlus.4.1.0.nupkg" />
     <None Include="EPPlus.4.1.1.nupkg" />
     <None Include="Extended.Wpf.Toolkit.3.1.nupkg" />
     <None Include="Extended.Wpf.Toolkit.3.2.0.nupkg" />
     <None Include="Fluent.Ribbon.4.0.3.394.nupkg" />
     <None Include="Fluent.Ribbon.5.0.2.46.nupkg" />
+    <None Include="Fluent.Ribbon.6.0.0.208.nupkg" />
     <None Include="Microsoft.AspNet.Razor.3.2.3.nupkg" />
     <None Include="Mono.Posix-4.5.4.5.0.nupkg" />
     <None Include="Nancy.1.4.3.nupkg" />
@@ -58,12 +61,15 @@
     <None Include="System.Data.SQLite.Core.1.0.104.0.nupkg" />
     <None Include="System.Data.SQLite.Core.1.0.105.2.nupkg" />
     <None Include="System.Data.SQLite.Core.1.0.106.0.nupkg" />
+    <None Include="System.Data.SQLite.Core.1.0.107.0.nupkg" />
     <None Include="System.Data.SQLite.EF6.1.0.104.0.nupkg" />
     <None Include="System.Data.SQLite.EF6.1.0.105.2.nupkg" />
     <None Include="System.Data.SQLite.EF6.1.0.106.0.nupkg" />
+    <None Include="System.Data.SQLite.EF6.1.0.107.0.nupkg" />
     <None Include="System.Data.SQLite.Linq.1.0.104.0.nupkg" />
     <None Include="System.Data.SQLite.Linq.1.0.105.2.nupkg" />
     <None Include="System.Data.SQLite.Linq.1.0.106.0.nupkg" />
+    <None Include="System.Data.SQLite.Linq.1.0.107.0.nupkg" />
     <None Include="_PostBuild.bat" />
     <None Include="_PreBuild.bat" />
   </ItemGroup>
