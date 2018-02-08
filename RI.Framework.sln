@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2010
+VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Solution", "_Solution", "{237458F2-03F8-4EE2-B506-A6F935736306}"
 EndProject
@@ -111,7 +111,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Framework.Windows.Forms"
 		{5C393494-8524-49FF-9978-BA2B8FA228B7} = {5C393494-8524-49FF-9978-BA2B8FA228B7}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Framework.Windows.Shared", "RI.Framework.Windows.Shared\RI.Framework.Windows.Shared.csproj", "{CD9C2847-A48F-45E1-908F-3F9A86EE0E37}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Framework.Windows.Common", "RI.Framework.Windows.Shared\RI.Framework.Windows.Common.csproj", "{CD9C2847-A48F-45E1-908F-3F9A86EE0E37}"
 	ProjectSection(ProjectDependencies) = postProject
 		{5210DF0B-3AD1-444A-8C79-38821577788C} = {5210DF0B-3AD1-444A-8C79-38821577788C}
 		{5C393494-8524-49FF-9978-BA2B8FA228B7} = {5C393494-8524-49FF-9978-BA2B8FA228B7}
@@ -171,7 +171,7 @@ Project("{7CF6DF6D-3B04-46F8-A40B-537D21BCA0B4}") = "RI.Documentation.Framework.
 		{BEA7ACCD-752E-4BE7-93F3-491CD5A7E02D} = {BEA7ACCD-752E-4BE7-93F3-491CD5A7E02D}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Framework.Linux.Shared", "RI.Framework.Linux.Shared\RI.Framework.Linux.Shared.csproj", "{B8D1A4E0-E7F2-4804-8181-BC4437601FBA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Framework.Linux.Common", "RI.Framework.Linux.Shared\RI.Framework.Linux.Common.csproj", "{B8D1A4E0-E7F2-4804-8181-BC4437601FBA}"
 	ProjectSection(ProjectDependencies) = postProject
 		{5210DF0B-3AD1-444A-8C79-38821577788C} = {5210DF0B-3AD1-444A-8C79-38821577788C}
 		{5C393494-8524-49FF-9978-BA2B8FA228B7} = {5C393494-8524-49FF-9978-BA2B8FA228B7}
@@ -179,7 +179,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Framework.Linux.Shared",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "12-CrossPlatform", "12-CrossPlatform", "{26CB60DB-11D2-4CFA-810E-E83D6DE6F423}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Framework.CrossPlatform.Shared", "RI.Framework.CrossPlatform.Shared\RI.Framework.CrossPlatform.Shared.csproj", "{FB40A2DF-A02D-419F-8187-B75886EA2910}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Framework.CrossPlatform.Common", "RI.Framework.CrossPlatform.Shared\RI.Framework.CrossPlatform.Common.csproj", "{FB40A2DF-A02D-419F-8187-B75886EA2910}"
 	ProjectSection(ProjectDependencies) = postProject
 		{5210DF0B-3AD1-444A-8C79-38821577788C} = {5210DF0B-3AD1-444A-8C79-38821577788C}
 		{5C393494-8524-49FF-9978-BA2B8FA228B7} = {5C393494-8524-49FF-9978-BA2B8FA228B7}

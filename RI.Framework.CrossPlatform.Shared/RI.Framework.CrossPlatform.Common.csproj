@@ -55,17 +55,17 @@
     <Compile Include="CrossPlatform\_NamespaceDoc.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RI.Framework.Linux.Shared\RI.Framework.Linux.Shared.csproj">
+    <ProjectReference Include="..\RI.Framework.Linux.Shared\RI.Framework.Linux.Common.csproj">
       <Project>{b8d1a4e0-e7f2-4804-8181-bc4437601fba}</Project>
-      <Name>RI.Framework.Linux.Shared</Name>
+      <Name>RI.Framework.Linux.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\RI.Framework.NetFx\RI.Framework.NetFx.csproj">
       <Project>{a7f5dd2f-63bf-4032-ad1e-14d211e0d3ed}</Project>
       <Name>RI.Framework.NetFx</Name>
     </ProjectReference>
-    <ProjectReference Include="..\RI.Framework.Windows.Shared\RI.Framework.Windows.Shared.csproj">
+    <ProjectReference Include="..\RI.Framework.Windows.Shared\RI.Framework.Windows.Common.csproj">
       <Project>{cd9c2847-a48f-45e1-908f-3f9a86ee0e37}</Project>
-      <Name>RI.Framework.Windows.Shared</Name>
+      <Name>RI.Framework.Windows.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
