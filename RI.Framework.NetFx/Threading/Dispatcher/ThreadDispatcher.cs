@@ -269,8 +269,8 @@ namespace RI.Framework.Threading.Dispatcher
 				{
 					this.WatchdogLoop?.Stop();
 
-					this.CurrentOperation?.ForEach(x => x.CancelHard());
-					this.Queue?.ForEach(x => x.CancelHard());
+					this.CancelHard(false);
+
 					this.IdleSignals?.ForEach(x => x.TrySetResult(null));
 
 					SynchronizationContext.SetSynchronizationContext(synchronizationContextBackup);
@@ -299,6 +299,17 @@ namespace RI.Framework.Threading.Dispatcher
 					this.FinishedSignals.ForEach(x => x.TrySetResult(null));
 					this.FinishedSignals.Clear();
 				}
+			}
+		}
+
+		internal void CancelHard (bool includePreRunQueue)
+		{
+			this.CurrentOperation?.ForEach(x => x.CancelHard());
+			this.Queue?.ForEach(x => x.CancelHard());
+
+			if (includePreRunQueue)
+			{
+				this.PreRunQueue?.ForEach(x => x.CancelHard());
 			}
 		}
 
@@ -343,6 +354,7 @@ namespace RI.Framework.Threading.Dispatcher
 							{
 								operationToCancel.Cancel();
 							}
+
 							this.Queue.Clear();
 							this.SignalIdle();
 							return;
@@ -682,9 +694,10 @@ namespace RI.Framework.Threading.Dispatcher
 					this.BeginShutdown(false);
 				}
 
+				this.CancelHard(true);
+
 				this.KeepAlives?.Clear();
 
-				this.PreRunQueue?.ForEach(x => x.CancelHard());
 				this.PreRunQueue?.Clear();
 			}
 		}

@@ -3492,7 +3492,7 @@ namespace RI.Test.Framework.Utilities
 				throw new TestAssertionException();
 			}
 
-			if ("1\\x2".Unescape(StringEscapeOptions.All) != "1x2")
+			if ("1\\x2".Unescape(StringEscapeOptions.All) != "1\\x2")
 			{
 				throw new TestAssertionException();
 			}

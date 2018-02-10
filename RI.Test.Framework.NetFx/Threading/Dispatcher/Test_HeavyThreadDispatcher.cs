@@ -108,7 +108,7 @@ namespace RI.Test.Framework.Threading.Dispatcher
 				throw new TestAssertionException();
 			}
 
-			if (test.HasStoppedGracefully.HasValue)
+			if (!test.HasStoppedGracefully.HasValue)
 			{
 				throw new TestAssertionException();
 			}
@@ -249,7 +249,7 @@ namespace RI.Test.Framework.Threading.Dispatcher
 				throw new TestAssertionException();
 			}
 
-			if (op1.State != ThreadDispatcherOperationState.Exception)
+			if (op1.State != ThreadDispatcherOperationState.Aborted)
 			{
 				throw new TestAssertionException();
 			}
@@ -483,7 +483,7 @@ namespace RI.Test.Framework.Threading.Dispatcher
 				Thread.Sleep(10);
 			}));
 
-			if (sb.ToString() == "Test")
+			if (sb.ToString() != "Test")
 			{
 				throw new TestAssertionException();
 			}

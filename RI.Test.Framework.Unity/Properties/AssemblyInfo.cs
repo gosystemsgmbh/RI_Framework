@@ -6,4 +6,4 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("RI.Test.Framework.Unity")]
 [assembly: AssemblyDescription("RI.Test.Framework.Unity")]
-[assembly: Guid("38014DDF-564E-4FC8-BFEB-4F4F039B1A37")]
+[assembly: Guid("7527DDB6-406E-4896-8ECA-A017ECD7B5E7")]

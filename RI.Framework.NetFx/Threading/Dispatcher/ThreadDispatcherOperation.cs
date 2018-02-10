@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -515,24 +514,17 @@ namespace RI.Framework.Threading.Dispatcher
 			Exception exception;
 			bool canceled = false;
 
-			if (Debugger.IsAttached)
+			try
 			{
 				finished = this.ExecuteCore(out result, out exception, out canceled);
 			}
-			else
+			catch (ThreadAbortException)
 			{
-				try
-				{
-					finished = this.ExecuteCore(out result, out exception, out canceled);
-				}
-				catch (ThreadAbortException)
-				{
-					throw;
-				}
-				catch (Exception ex)
-				{
-					exception = ex;
-				}
+				throw;
+			}
+			catch (Exception ex)
+			{
+				exception = ex;
 			}
 
 			lock (this.SyncRoot)
@@ -594,7 +586,7 @@ namespace RI.Framework.Threading.Dispatcher
 
 				this.Exception = null;
 				this.Result = null;
-				this.State = ThreadDispatcherOperationState.Canceled;
+				this.State = this.State == ThreadDispatcherOperationState.Executing ? ThreadDispatcherOperationState.Aborted : ThreadDispatcherOperationState.Canceled;
 
 				this.Dispatcher.RemoveKeepAlive(this);
 

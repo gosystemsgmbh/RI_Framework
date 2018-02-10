@@ -80,7 +80,7 @@ namespace RI.Test.Framework.Mathematic
 			{
 				throw new TestAssertionException();
 			}
-			if (!stats2.Median.IsNan())
+			if (stats2.Median != 2.0)
 			{
 				throw new TestAssertionException();
 			}

@@ -3,6 +3,7 @@
 using RI.Framework.Threading.Dispatcher;
 #endif
 using System;
+using System.Threading;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -12,6 +13,7 @@ using RI.Framework.StateMachines;
 using RI.Framework.StateMachines.Dispatchers;
 using RI.Framework.StateMachines.Resolvers;
 using RI.Framework.Utilities.ObjectModel;
+using RI.Test.Framework.StateMachines.Dispatchers;
 using RI.Test.Framework.StateMachines.States;
 #if PLATFORM_UNITY
 using RI.Framework.Services.Dispatcher;
@@ -36,6 +38,8 @@ namespace RI.Test.Framework.StateMachines
 			Mock_State.TestValue = "";
 
 			StateMachineConfiguration config = new DefaultStateMachineConfiguration();
+			config.Dispatcher = new Mock_Dispatcher();
+
 			StateMachine test = new StateMachine(config);
 
 			config.CachingEnabled = false;
@@ -74,7 +78,7 @@ namespace RI.Test.Framework.StateMachines
 			{
 				throw new TestAssertionException();
 			}
-			if (!object.ReferenceEquals(f1, f2))
+			if (object.ReferenceEquals(f1, f2))
 			{
 				throw new TestAssertionException();
 			}
@@ -101,6 +105,7 @@ namespace RI.Test.Framework.StateMachines
 			}
 
 			config.CachingEnabled = true;
+			config.Cache.Clear();
 			config.Cache.AddState(new Mock_State_F());
 
 			test.Transient<Mock_State_F>();
@@ -272,6 +277,8 @@ namespace RI.Test.Framework.StateMachines
 			Mock_State.TestValue = "";
 
 			StateMachineConfiguration config = new DefaultStateMachineConfiguration();
+			config.Dispatcher = new Mock_Dispatcher();
+
 			StateMachine test = new StateMachine(config);
 
 			test.Transient<Mock_State_E>();
@@ -346,6 +353,7 @@ namespace RI.Test.Framework.StateMachines
 
 			StateMachineConfiguration config = new DefaultStateMachineConfiguration();
 			config.Dispatcher = dispatcher;
+
 			StateMachine test = new StateMachine(config);
 
 			if (test.State != null)
@@ -470,6 +478,8 @@ namespace RI.Test.Framework.StateMachines
 			Mock_State.TestValue = "";
 
 			StateMachineConfiguration config = new DefaultStateMachineConfiguration();
+			config.Dispatcher = new Mock_Dispatcher();
+
 			StateMachine test = new StateMachine(config);
 
 			if (test.State != null)

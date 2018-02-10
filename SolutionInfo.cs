@@ -6,7 +6,7 @@ using System.Reflection;
 
 [assembly: AssemblyProduct("Decoupling & Utilities Framework")]
 [assembly: AssemblyCompany("Roten Informatik")]
-[assembly: AssemblyCopyright("Copyright (c) 2011-2017 Roten Informatik")]
+[assembly: AssemblyCopyright("Copyright (c) 2011-2018 Roten Informatik")]
 [assembly: AssemblyTrademark("Licensed under the Roten Informatik Framework License 1.0")]
 [assembly: AssemblyCulture("")]
 [assembly: CLSCompliant(false)]

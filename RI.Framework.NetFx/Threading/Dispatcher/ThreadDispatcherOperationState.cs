@@ -32,8 +32,13 @@ namespace RI.Framework.Threading.Dispatcher
 		Canceled = 3,
 
 		/// <summary>
+		///     The operation was aborted while being processed.
+		/// </summary>
+		Aborted = 4,
+
+		/// <summary>
 		///     The operation has finished processing but an exception ocurred during processing.
 		/// </summary>
-		Exception = 4,
+		Exception = 5,
 	}
 }

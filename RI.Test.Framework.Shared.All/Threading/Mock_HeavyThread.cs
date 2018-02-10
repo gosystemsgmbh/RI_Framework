@@ -71,7 +71,7 @@ namespace RI.Test.Framework.Threading
 		protected override void OnStarted (bool withLock)
 		{
 			base.OnStarted(withLock);
-			this.TestValue += "Started";
+			this.TestValue += withLock ? "Started1" : "Started2";
 		}
 
 		protected override void OnStarting ()

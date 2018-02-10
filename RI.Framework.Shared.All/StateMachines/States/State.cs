@@ -93,7 +93,7 @@ namespace RI.Framework.StateMachines.States
 		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="handler" /> is null. </exception>
-		protected void RegisterSignal <TSignal> (Action<TSignal, StateMachine> handler)
+		protected void RegisterSignal <TSignal> (Action<TSignal, StateSignalInfo> handler)
 		{
 			if (handler == null)
 			{

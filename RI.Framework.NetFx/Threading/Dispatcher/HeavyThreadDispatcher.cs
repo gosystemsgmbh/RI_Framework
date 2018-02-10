@@ -352,6 +352,31 @@ namespace RI.Framework.Threading.Dispatcher
 			this.Watchdog?.Invoke(this, args);
 		}
 
+		private void GetRidOfDispatcher ()
+		{
+			lock (this.SyncRoot)
+			{
+				if (this.DispatcherStartOperation != null)
+				{
+					this.DispatcherStartOperation.CancelHard();
+					this.DispatcherStartOperation = null;
+				}
+
+				if (this.Dispatcher != null)
+				{
+					lock (this.Dispatcher.SyncRoot)
+					{
+						this.Dispatcher.Exception -= this.DispatcherExceptionHandlerDelegate;
+						this.Dispatcher.Watchdog -= this.DispatcherWatchdogHandlerDelegate;
+
+						this.Dispatcher.CancelHard(true);
+
+						this.Dispatcher = null;
+					}
+				}
+			}
+		}
+
 		private void VerifyRunningDispatcher ()
 		{
 			this.VerifyRunning();
@@ -389,16 +414,29 @@ namespace RI.Framework.Threading.Dispatcher
 					this.Dispatcher = null;
 				}
 
+				bool catchExceptions = this.CatchExceptions;
+				int defaultPriority = this.DefaultPriority;
+				ThreadDispatcherOptions defaultOptions = this.DefaultOptions;
+				TimeSpan? watchdogTimeout = this.WatchdogTimeout;
+
 				this.Dispatcher = new ThreadDispatcher();
 				this.Dispatcher.Exception += this.DispatcherExceptionHandlerDelegate;
 				this.Dispatcher.Watchdog += this.DispatcherWatchdogHandlerDelegate;
-				this.Dispatcher.CatchExceptions = this.CatchExceptions;
-				this.Dispatcher.DefaultPriority = this.DefaultPriority;
-				this.Dispatcher.DefaultOptions = this.DefaultOptions;
-				this.Dispatcher.WatchdogTimeout = this.WatchdogTimeout;
+				this.Dispatcher.CatchExceptions = catchExceptions;
+				this.Dispatcher.DefaultPriority = defaultPriority;
+				this.Dispatcher.DefaultOptions = defaultOptions;
+				this.Dispatcher.WatchdogTimeout = watchdogTimeout;
 
 				this.DispatcherStartOperation = this.Dispatcher.Post(0, ThreadDispatcherOptions.None, new Action(() => { }));
 			}
+		}
+
+		/// <inheritdoc />
+		protected override void OnDisposed ()
+		{
+			base.OnDisposed();
+
+			this.GetRidOfDispatcher();
 		}
 
 		/// <inheritdoc />
@@ -406,21 +444,7 @@ namespace RI.Framework.Threading.Dispatcher
 		{
 			base.OnEnd();
 
-			lock (this.SyncRoot)
-			{
-				if (this.DispatcherStartOperation != null)
-				{
-					this.DispatcherStartOperation.CancelHard();
-					this.DispatcherStartOperation = null;
-				}
-
-				if (this.Dispatcher != null)
-				{
-					this.Dispatcher.Exception -= this.DispatcherExceptionHandlerDelegate;
-					this.Dispatcher.Watchdog -= this.DispatcherWatchdogHandlerDelegate;
-					this.Dispatcher = null;
-				}
-			}
+			this.GetRidOfDispatcher();
 		}
 
 		/// <inheritdoc />
@@ -651,6 +675,7 @@ namespace RI.Framework.Threading.Dispatcher
 				this.VerifyRunningDispatcher();
 				dispatcher = this.Dispatcher;
 			}
+
 			return ((ISynchronizeInvoke)dispatcher).BeginInvoke(method, args);
 		}
 
@@ -675,6 +700,7 @@ namespace RI.Framework.Threading.Dispatcher
 				this.VerifyRunningDispatcher();
 				dispatcher = this.Dispatcher;
 			}
+
 			dispatcher.DoProcessing();
 		}
 
@@ -687,6 +713,7 @@ namespace RI.Framework.Threading.Dispatcher
 				this.VerifyRunningDispatcher();
 				dispatcher = this.Dispatcher;
 			}
+
 			dispatcher.DoProcessing(priority);
 		}
 
@@ -699,6 +726,7 @@ namespace RI.Framework.Threading.Dispatcher
 				this.VerifyRunningDispatcher();
 				dispatcher = this.Dispatcher;
 			}
+
 			await dispatcher.DoProcessingAsync().ConfigureAwait(false);
 		}
 
@@ -711,6 +739,7 @@ namespace RI.Framework.Threading.Dispatcher
 				this.VerifyRunningDispatcher();
 				dispatcher = this.Dispatcher;
 			}
+
 			await dispatcher.DoProcessingAsync(priority).ConfigureAwait(false);
 		}
 
@@ -727,6 +756,7 @@ namespace RI.Framework.Threading.Dispatcher
 				this.VerifyRunningDispatcher();
 				dispatcher = this.Dispatcher;
 			}
+
 			return ((ISynchronizeInvoke)dispatcher).EndInvoke(result);
 		}
 
@@ -756,6 +786,7 @@ namespace RI.Framework.Threading.Dispatcher
 				this.VerifyRunningDispatcher();
 				dispatcher = this.Dispatcher;
 			}
+
 			return ((ISynchronizeInvoke)dispatcher).Invoke(method, args);
 		}
 
@@ -768,6 +799,7 @@ namespace RI.Framework.Threading.Dispatcher
 				this.VerifyRunningDispatcher();
 				dispatcher = this.Dispatcher;
 			}
+
 			return dispatcher.Post(action, parameters);
 		}
 
@@ -780,6 +812,7 @@ namespace RI.Framework.Threading.Dispatcher
 				this.VerifyRunningDispatcher();
 				dispatcher = this.Dispatcher;
 			}
+
 			return dispatcher.Post(priority, action, parameters);
 		}
 
@@ -792,6 +825,7 @@ namespace RI.Framework.Threading.Dispatcher
 				this.VerifyRunningDispatcher();
 				dispatcher = this.Dispatcher;
 			}
+
 			return dispatcher.Post(priority, options, action, parameters);
 		}
 
@@ -804,6 +838,7 @@ namespace RI.Framework.Threading.Dispatcher
 				this.VerifyRunningDispatcher();
 				dispatcher = this.Dispatcher;
 			}
+
 			return dispatcher.Post(context, priority, options, action, parameters);
 		}
 
@@ -825,6 +860,7 @@ namespace RI.Framework.Threading.Dispatcher
 				this.VerifyRunningDispatcher();
 				dispatcher = this.Dispatcher;
 			}
+
 			return dispatcher.Send(action, parameters);
 		}
 
@@ -837,6 +873,7 @@ namespace RI.Framework.Threading.Dispatcher
 				this.VerifyRunningDispatcher();
 				dispatcher = this.Dispatcher;
 			}
+
 			return dispatcher.Send(priority, action, parameters);
 		}
 
@@ -849,6 +886,7 @@ namespace RI.Framework.Threading.Dispatcher
 				this.VerifyRunningDispatcher();
 				dispatcher = this.Dispatcher;
 			}
+
 			return dispatcher.Send(priority, options, action, parameters);
 		}
 
@@ -861,6 +899,7 @@ namespace RI.Framework.Threading.Dispatcher
 				this.VerifyRunningDispatcher();
 				dispatcher = this.Dispatcher;
 			}
+
 			return await dispatcher.SendAsync(action, parameters).ConfigureAwait(false);
 		}
 
@@ -873,6 +912,7 @@ namespace RI.Framework.Threading.Dispatcher
 				this.VerifyRunningDispatcher();
 				dispatcher = this.Dispatcher;
 			}
+
 			return await dispatcher.SendAsync(priority, action, parameters).ConfigureAwait(false);
 		}
 
@@ -885,6 +925,7 @@ namespace RI.Framework.Threading.Dispatcher
 				this.VerifyRunningDispatcher();
 				dispatcher = this.Dispatcher;
 			}
+
 			return await dispatcher.SendAsync(priority, options, action, parameters).ConfigureAwait(false);
 		}
 

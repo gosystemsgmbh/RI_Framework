@@ -8,15 +8,12 @@ using RI.Framework.Utilities.ObjectModel;
 
 
 #if PLATFORM_NETFX
-
 using RI.Framework.Collections;
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 #endif
-
-
 
 
 namespace RI.Framework.Threading
@@ -471,6 +468,7 @@ namespace RI.Framework.Threading
 									catch
 									{
 									}
+
 									throw;
 								}
 								catch (Exception exception)
@@ -482,6 +480,7 @@ namespace RI.Framework.Threading
 									catch
 									{
 									}
+
 									try
 									{
 										this.OnException(exception, false);
@@ -489,6 +488,7 @@ namespace RI.Framework.Threading
 									catch
 									{
 									}
+
 									try
 									{
 										startEventSet = true;
@@ -497,6 +497,7 @@ namespace RI.Framework.Threading
 									catch
 									{
 									}
+
 									try
 									{
 										stopEvent?.WaitOne();
@@ -504,6 +505,7 @@ namespace RI.Framework.Threading
 									catch
 									{
 									}
+
 									try
 									{
 										this.OnEnd();
@@ -734,6 +736,8 @@ namespace RI.Framework.Threading
 
 					this.HasStoppedGracefully = terminated && (this.ThreadException == null);
 					this.IsRunning = false;
+
+					this.OnDisposed();
 				}
 			}
 		}
@@ -871,6 +875,21 @@ namespace RI.Framework.Threading
 #endif
 		}
 
+		/// <summary>
+		///     Called after the thread has been disposed and its resources considered freed.
+		/// </summary>
+		/// <remarks>
+		///     <note type="note">
+		///         This method is called by <see cref="Stop" />.
+		///     </note>
+		///     <note type="important">
+		///         This method is called inside a lock to <see cref="SyncRoot" />.
+		///     </note>
+		/// </remarks>
+		protected virtual void OnDisposed ()
+		{
+		}
+
 		#endregion
 
 
@@ -908,20 +927,20 @@ namespace RI.Framework.Threading
 
 
 #if PLATFORM_NETFX
-		/// <summary>
-		///     Adds a <see cref="TaskCompletionSource{T}" /> to this thread which is completed when the thread is requested to stop.
-		/// </summary>
-		/// <param name="tcs"> The <see cref="TaskCompletionSource{T}" /> to add. </param>
-		/// <remarks>
-		///     <para>
-		///         A task can be added multiple times but will only be completed once.
-		///     </para>
-		///     <para>
-		///         All added tasks will be completed using <see cref="TaskCompletionSource{T}.TrySetResult" /> by the default implementation of <see cref="OnStop" />.
-		///         Therefore, no tasks added after <see cref="OnStop" /> was called will be completed.
-		///     </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="tcs" /> is null. </exception>
+/// <summary>
+///     Adds a <see cref="TaskCompletionSource{T}" /> to this thread which is completed when the thread is requested to stop.
+/// </summary>
+/// <param name="tcs"> The <see cref="TaskCompletionSource{T}" /> to add. </param>
+/// <remarks>
+///     <para>
+///         A task can be added multiple times but will only be completed once.
+///     </para>
+///     <para>
+///         All added tasks will be completed using <see cref="TaskCompletionSource{T}.TrySetResult" /> by the default implementation of <see cref="OnStop" />.
+///         Therefore, no tasks added after <see cref="OnStop" /> was called will be completed.
+///     </para>
+/// </remarks>
+/// <exception cref="ArgumentNullException"> <paramref name="tcs" /> is null. </exception>
 		protected void AddStopTask (TaskCompletionSource<object> tcs)
 		{
 			if (tcs == null)

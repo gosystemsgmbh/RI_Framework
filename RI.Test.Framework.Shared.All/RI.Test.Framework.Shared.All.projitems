@@ -62,6 +62,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\Writers\Test_DirectoryLogWriter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Modularization\Mock_Module.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\Modularization\Test_ModuleService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Dispatchers\Mock_Dispatcher.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\States\Mock_State.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\States\Mock_State_A.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\States\Mock_State_B.cs" />
