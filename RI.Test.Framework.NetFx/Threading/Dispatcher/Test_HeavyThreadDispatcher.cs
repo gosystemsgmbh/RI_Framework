@@ -32,6 +32,7 @@ namespace RI.Test.Framework.Threading.Dispatcher
 			Action syncTestAction1 = null;
 			Action syncTestAction2 = new Action(() =>
 			{
+				Thread.Sleep(10);
 				syncTestValue++;
 				if (syncTestValue < 10)
 				{
@@ -51,7 +52,7 @@ namespace RI.Test.Framework.Threading.Dispatcher
 		}
 
 		[TestMethod]
-		public void Test ()
+		public void General_Test ()
 		{
 			HeavyThreadDispatcher test = new HeavyThreadDispatcher();
 			ThreadDispatcherOperation op1 = null;
@@ -483,9 +484,11 @@ namespace RI.Test.Framework.Threading.Dispatcher
 				Thread.Sleep(10);
 			}));
 
+			Thread.Sleep(100);
+
 			if (sb.ToString() != "Test")
 			{
-				throw new TestAssertionException();
+				throw new TestAssertionException(sb.ToString());
 			}
 
 			test.Send(new Action(() =>
@@ -493,6 +496,7 @@ namespace RI.Test.Framework.Threading.Dispatcher
 				sb.Append("1");
 				Thread.Sleep(10);
 			}));
+
 			if (sb.ToString() != "Test1")
 			{
 				throw new TestAssertionException();
@@ -503,6 +507,7 @@ namespace RI.Test.Framework.Threading.Dispatcher
 				sb.Append("2");
 				Thread.Sleep(10);
 			}));
+
 			if (sb.ToString() != "Test12")
 			{
 				throw new TestAssertionException();
@@ -513,6 +518,7 @@ namespace RI.Test.Framework.Threading.Dispatcher
 				sb.Append("3");
 				Thread.Sleep(10);
 			}));
+
 			if (sb.ToString() != "Test123")
 			{
 				throw new TestAssertionException();
@@ -594,7 +600,7 @@ namespace RI.Test.Framework.Threading.Dispatcher
 			}
 			test.Timeout = 20;
 			test.Stop(true);
-			if ((!ops.Any(x => x.State == ThreadDispatcherOperationState.Finished)) || (!ops.Any(x => x.State == ThreadDispatcherOperationState.Waiting)))
+			if ((!ops.Any(x => x.State == ThreadDispatcherOperationState.Finished)) || (!ops.Any(x => x.State == ThreadDispatcherOperationState.Canceled)))
 			{
 				throw new TestAssertionException();
 			}
