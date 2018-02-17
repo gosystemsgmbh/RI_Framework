@@ -114,6 +114,9 @@ namespace RI.Framework.Services
 		///     <para>
 		///         The value of <see cref="DebuggerAttached" /> reflects the situation during bootstrapping.
 		///     </para>
+		///     <para>
+		///         Note that, depending on the application and its bootstrapper, <see cref="DebuggerAttached" /> is not necessarily the same as <see cref="IsDevelopment" />.
+		///     </para>
 		/// </remarks>
 		bool DebuggerAttached { get; }
 
@@ -153,6 +156,22 @@ namespace RI.Framework.Services
 		///     </para>
 		/// </remarks>
 		string InstanceId { get; }
+
+		/// <summary>
+		///     Gets whether the application is run in a development environment.
+		/// </summary>
+		/// <value>
+		///     true if the application is run in a development environment, false otherwise.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         The value of <see cref="IsDevelopment" /> reflects the situation during bootstrapping.
+		///     </para>
+		///     <para>
+		///         Note that, depending on the application and its bootstrapper, <see cref="IsDevelopment" /> is not necessarily the same as <see cref="DebuggerAttached" />.
+		///     </para>
+		/// </remarks>
+		bool IsDevelopment { get; }
 
 		/// <summary>
 		///     Gets whether the application runs as a service or daemon.

@@ -43,6 +43,11 @@ namespace RI.Framework.Services
 	///         </item>
 	///         <item>
 	///             <para>
+	///                 <see cref="DetermineIsDevelopment" /> is called and <see cref="IsDevelopment" /> is set.
+	///             </para>
+	///         </item>
+	///         <item>
+	///             <para>
 	///                 <see cref="StartListeningForFirstChanceExceptions" /> is called (if <see cref="DebuggerAttached" /> is false).
 	///             </para>
 	///         </item>
@@ -679,6 +684,7 @@ namespace RI.Framework.Services
 		{
 			Dictionary<string, string> additionalData = new Dictionary<string, string>(StringComparerEx.InvariantCultureIgnoreCase);
 			additionalData.Add(nameof(this.DebuggerAttached), this.DebuggerAttached.ToString());
+			additionalData.Add(nameof(this.IsDevelopment), this.IsDevelopment.ToString());
 			additionalData.Add(nameof(this.StartupUserElevated), this.StartupUserElevated.ToString());
 			additionalData.Add(nameof(this.StartupCulture), this.StartupCulture?.ToString() ?? "[null]");
 			additionalData.Add(nameof(this.StartupUICulture), this.StartupUICulture?.ToString() ?? "[null]");
@@ -810,6 +816,7 @@ namespace RI.Framework.Services
 			{
 				path = path.AppendDirectory(instanceId);
 			}
+
 			return path;
 		}
 
@@ -943,6 +950,22 @@ namespace RI.Framework.Services
 		protected virtual string DetermineInstanceId ()
 		{
 			return this.HostContext?.InstanceId;
+		}
+
+		/// <summary>
+		///     Called to determine whether the application is run in a development environment or not.
+		/// </summary>
+		/// <returns>
+		///     true if the application is run in a development environment, false otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <note type="implement">
+		///         The default implementation returns the same value as <see cref="DetermineDebuggerAttached" />.
+		///     </note>
+		/// </remarks>
+		protected virtual bool DetermineIsDevelopment ()
+		{
+			return Debugger.IsAttached;
 		}
 
 		/// <summary>
@@ -1170,32 +1193,33 @@ namespace RI.Framework.Services
 		/// </remarks>
 		protected virtual void LogVariables ()
 		{
-			this.Log(LogLevel.Debug, "Debugger attached:     {0}", this.DebuggerAttached);
-			this.Log(LogLevel.Debug, "Startup user elevated: {0}", this.StartupUserElevated);
-			this.Log(LogLevel.Debug, "Startup culture:       {0}", this.StartupCulture?.Name ?? "[null]");
-			this.Log(LogLevel.Debug, "Startup UI culture:    {0}", this.StartupUICulture?.Name ?? "[null]");
-			this.Log(LogLevel.Debug, "Machine 64 bit:        {0}", this.Machine64Bit.ToString());
-			this.Log(LogLevel.Debug, "Session 64 bit:        {0}", this.Session64Bit.ToString());
-			this.Log(LogLevel.Debug, "Command line:          {0}", this.ProcessCommandLine?.ToString() ?? "[null]");
-			this.Log(LogLevel.Debug, "Domain ID:             {0}", this.DomainId.ToString("N", CultureInfo.InvariantCulture));
-			this.Log(LogLevel.Debug, "Machine ID:            {0}", this.MachineId.ToString("N", CultureInfo.InvariantCulture));
-			this.Log(LogLevel.Debug, "User ID:               {0}", this.UserId.ToString("N", CultureInfo.InvariantCulture));
-			this.Log(LogLevel.Debug, "Application assembly:  {0}", this.ApplicationAssembly.FullName);
-			this.Log(LogLevel.Debug, "Application product:   {0}", this.ApplicationProductName ?? "[null]");
-			this.Log(LogLevel.Debug, "Application company:   {0}", this.ApplicationCompanyName ?? "[null]");
-			this.Log(LogLevel.Debug, "Application copyright: {0}", this.ApplicationCopyright ?? "[null]");
-			this.Log(LogLevel.Debug, "Application version:   {0}", this.ApplicationVersion?.ToString() ?? "[null]");
-			this.Log(LogLevel.Debug, "Application ID (-V):   {0}", this.ApplicationIdVersionIndependent.ToString("N", CultureInfo.InvariantCulture));
-			this.Log(LogLevel.Debug, "Application ID (+V):   {0}", this.ApplicationIdVersionDependent.ToString("N", CultureInfo.InvariantCulture));
-			this.Log(LogLevel.Debug, "Session timestamp:     {0}", this.SessionTimestamp.ToSortableString('-'));
-			this.Log(LogLevel.Debug, "Session ID:            {0}", this.SessionId.ToString("N", CultureInfo.InvariantCulture));
-			this.Log(LogLevel.Debug, "Instance ID:           {0}", this.InstanceId ?? "[null]");
-			this.Log(LogLevel.Debug, "Executable directory:  {0}", this.ApplicationExecutableDirectory?.PathResolved ?? "[null]");
-			this.Log(LogLevel.Debug, "Data directory:        {0}", this.ApplicationDataDirectory?.PathResolved ?? "[null]");
-			this.Log(LogLevel.Debug, "Application object:    {0}", this.Application?.ToString() ?? "[null]");
-			this.Log(LogLevel.Debug, "First start:           {0}", this.FirstStart?.ToString() ?? "[null]");
-			this.Log(LogLevel.Debug, "Previous version:      {0}", this.PreviousVersion?.ToString() ?? "[null]");
-			this.Log(LogLevel.Debug, "Is service:            {0}", this.IsService);
+			this.Log(LogLevel.Debug, "Debugger attached:          {0}", this.DebuggerAttached);
+			this.Log(LogLevel.Debug, "Is development environment: {0}", this.IsDevelopment);
+			this.Log(LogLevel.Debug, "Startup user elevated:      {0}", this.StartupUserElevated);
+			this.Log(LogLevel.Debug, "Startup culture:            {0}", this.StartupCulture?.Name ?? "[null]");
+			this.Log(LogLevel.Debug, "Startup UI culture:         {0}", this.StartupUICulture?.Name ?? "[null]");
+			this.Log(LogLevel.Debug, "Machine 64 bit:             {0}", this.Machine64Bit.ToString());
+			this.Log(LogLevel.Debug, "Session 64 bit:             {0}", this.Session64Bit.ToString());
+			this.Log(LogLevel.Debug, "Command line:               {0}", this.ProcessCommandLine?.ToString() ?? "[null]");
+			this.Log(LogLevel.Debug, "Domain ID:                  {0}", this.DomainId.ToString("N", CultureInfo.InvariantCulture));
+			this.Log(LogLevel.Debug, "Machine ID:                 {0}", this.MachineId.ToString("N", CultureInfo.InvariantCulture));
+			this.Log(LogLevel.Debug, "User ID:                    {0}", this.UserId.ToString("N", CultureInfo.InvariantCulture));
+			this.Log(LogLevel.Debug, "Application assembly:       {0}", this.ApplicationAssembly.FullName);
+			this.Log(LogLevel.Debug, "Application product:        {0}", this.ApplicationProductName ?? "[null]");
+			this.Log(LogLevel.Debug, "Application company:        {0}", this.ApplicationCompanyName ?? "[null]");
+			this.Log(LogLevel.Debug, "Application copyright:      {0}", this.ApplicationCopyright ?? "[null]");
+			this.Log(LogLevel.Debug, "Application version:        {0}", this.ApplicationVersion?.ToString() ?? "[null]");
+			this.Log(LogLevel.Debug, "Application ID (-V):        {0}", this.ApplicationIdVersionIndependent.ToString("N", CultureInfo.InvariantCulture));
+			this.Log(LogLevel.Debug, "Application ID (+V):        {0}", this.ApplicationIdVersionDependent.ToString("N", CultureInfo.InvariantCulture));
+			this.Log(LogLevel.Debug, "Session timestamp:          {0}", this.SessionTimestamp.ToSortableString('-'));
+			this.Log(LogLevel.Debug, "Session ID:                 {0}", this.SessionId.ToString("N", CultureInfo.InvariantCulture));
+			this.Log(LogLevel.Debug, "Instance ID:                {0}", this.InstanceId ?? "[null]");
+			this.Log(LogLevel.Debug, "Executable directory:       {0}", this.ApplicationExecutableDirectory?.PathResolved ?? "[null]");
+			this.Log(LogLevel.Debug, "Data directory:             {0}", this.ApplicationDataDirectory?.PathResolved ?? "[null]");
+			this.Log(LogLevel.Debug, "Application object:         {0}", this.Application?.ToString() ?? "[null]");
+			this.Log(LogLevel.Debug, "First start:                {0}", this.FirstStart?.ToString() ?? "[null]");
+			this.Log(LogLevel.Debug, "Previous version:           {0}", this.PreviousVersion?.ToString() ?? "[null]");
+			this.Log(LogLevel.Debug, "Is service:                 {0}", this.IsService);
 		}
 
 		/// <summary>
@@ -1324,6 +1348,9 @@ namespace RI.Framework.Services
 
 		/// <inheritdoc />
 		public string InstanceId { get; private set; }
+
+		/// <inheritdoc />
+		public bool IsDevelopment { get; private set; }
 
 		/// <inheritdoc />
 		public bool IsService { get; private set; }
@@ -1488,6 +1515,8 @@ namespace RI.Framework.Services
 					AppDomain.CurrentDomain.UnhandledException += this.ExceptionHandler;
 					this.StartListeningForFirstChanceExceptions();
 				}
+
+				this.IsDevelopment = this.DetermineIsDevelopment();
 
 				this.StartupCulture = CultureInfo.CurrentCulture;
 				this.StartupUICulture = CultureInfo.CurrentUICulture;
