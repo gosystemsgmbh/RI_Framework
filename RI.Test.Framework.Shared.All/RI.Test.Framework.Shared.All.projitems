@@ -46,6 +46,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Composition\Mock_Exports_9.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Composition\Mock_Imports.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Composition\Test_CompositionContainer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\CSV\Test_CsvDocument.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\INI\Test_IniDocument.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\Paths\Test_DirectoryPath.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\Paths\Test_FilePath.cs" />
