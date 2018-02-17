@@ -58,7 +58,10 @@ namespace RI.Framework.Composition.Catalogs
 			{
 				foreach (CompositionCatalog catalog in catalogs)
 				{
-					this.Add(catalog);
+					if (catalog != null)
+					{
+						this.Add(catalog);
+					}
 				}
 			}
 		}
@@ -146,6 +149,7 @@ namespace RI.Framework.Composition.Catalogs
 				handler(this, args);
 				return args.Result;
 			}
+
 			return true;
 		}
 

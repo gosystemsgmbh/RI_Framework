@@ -44,7 +44,6 @@
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
     <Compile Include="Collections\Specialized\PrefabPool.cs" />
-    <Compile Include="Composition\Catalogs\GameObjectCatalog.cs" />
     <Compile Include="Composition\Catalogs\ScriptingCatalog.cs" />
     <Compile Include="Composition\ComposableMonoBehaviour.cs" />
     <Compile Include="Composition\Creators\MonoBehaviourCreator.cs" />

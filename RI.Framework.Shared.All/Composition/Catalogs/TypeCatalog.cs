@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using RI.Framework.Collections.DirectLinq;
+using RI.Framework.Utilities.Logging;
 
 
 
@@ -57,6 +58,10 @@ namespace RI.Framework.Composition.Catalogs
 									this.Items[name].Add(new CompositionCatalogItem(name, type, privateExport));
 								}
 							}
+						}
+						else
+						{
+							this.Log(LogLevel.Warning, "{0} is not a valid type for exporting.", type.FullName);
 						}
 					}
 				}
