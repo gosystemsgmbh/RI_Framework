@@ -36,6 +36,8 @@ namespace RI.Test.Framework.IO.CSV
 		//TODO: #12: Other Tests: Different value separators
 		//TODO: #12: Other Tests: Different line breaks
 		//TODO: #12: Other Tests: With/without empty lines (start, in the middle, at the end)
+		//TODO: #12: Other Tests: Line numbering
+		//TODO: #12: Other Tests: Reader errors
 
 		private void Verify_Value (CsvDocument doc, int row, int column, string expected)
 		{

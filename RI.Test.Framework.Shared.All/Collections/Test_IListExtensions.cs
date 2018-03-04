@@ -295,15 +295,14 @@ namespace RI.Test.Framework.Collections
 				throw new TestAssertionException();
 			}
 
-			list1.Add(1);
-			list1.Add(2);
-			list1.Add(3);
-			list1.Add(4);
-			list1.Add(5);
+			for (int i1 = 0; i1 < 1000; i1++)
+			{
+				list1.Add(i1 + 1);
+			}
 
 			List<int> list2 = new List<int>(list1);
 
-			if (test.Shuffle(random, 0) != 5)
+			if (test.Shuffle(random, 0) != 1000)
 			{
 				throw new TestAssertionException();
 			}
@@ -313,7 +312,7 @@ namespace RI.Test.Framework.Collections
 				throw new TestAssertionException();
 			}
 
-			if (test.Shuffle(random, 1) != 5)
+			if (test.Shuffle(random, 1) != 1000)
 			{
 				throw new TestAssertionException();
 			}
@@ -323,7 +322,7 @@ namespace RI.Test.Framework.Collections
 				throw new TestAssertionException();
 			}
 
-			if (test.Shuffle(random) != 5)
+			if (test.Shuffle(random) != 1000)
 			{
 				throw new TestAssertionException();
 			}

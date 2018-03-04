@@ -52,6 +52,8 @@ namespace RI.Framework.IO.CSV
 			this.BaseReader = reader;
 			this.Settings = settings ?? new CsvReaderSettings();
 
+			this.CurrentLineNumberInternal = 0;
+
 			this.CurrentLineNumber = 0;
 			this.CurrentRow = null;
 			this.CurrentError = CsvReaderError.None;
@@ -142,6 +144,8 @@ namespace RI.Framework.IO.CSV
 		/// </value>
 		public CsvReaderSettings Settings { get; private set; }
 
+		private int CurrentLineNumberInternal { get; set; }
+
 		#endregion
 
 
@@ -176,8 +180,15 @@ namespace RI.Framework.IO.CSV
 		{
 			this.VerifyNotClosed();
 
-			int current;
-			int next = this.BaseReader.Read();
+			if (this.CurrentError != CsvReaderError.None)
+			{
+				return false;
+			}
+
+			if (this.CurrentLineNumberInternal <= 0)
+			{
+				this.CurrentLineNumberInternal = 1;
+			}
 
 			ParseState state = ParseState.ExpectStart;
 			StringBuilder value = null;
@@ -185,20 +196,30 @@ namespace RI.Framework.IO.CSV
 			CsvReaderError error = CsvReaderError.None;
 			List<string> row = new List<string>();
 
+			int readCharacters = 0;
+
+			bool lastWasNewLine = false;
+
+
 			while (true)
 			{
-				current = next;
-				next = this.BaseReader.Read();
+				int current = this.BaseReader.Read();
+				int next = this.BaseReader.Peek();
 
 				if (current == -1)
 				{
-					return false;
+					if (value != null)
+					{
+						row.Add(value.ToString());
+					}
+
+					break;
 				}
 
-				if (this.CurrentLineNumber <= 0)
-				{
-					this.CurrentLineNumber = 1;
-				}
+				readCharacters++;
+
+				//TODO: Fix line number detection
+
 
 				char currentChar = (char)current;
 				char? nextChar = next == -1 ? (char?)null : (char)next;
@@ -213,6 +234,8 @@ namespace RI.Framework.IO.CSV
 				bool isNewLine = currentChar == '\n';
 				bool isDoubleQuote = isQuote && (nextChar.HasValue ? (nextChar.Value == this.Settings.Quote) : false);
 
+				lastWasNewLine = isNewLine;
+
 				bool skipNext = false;
 				bool finishValue = false;
 				bool finishRow = false;
@@ -223,21 +246,32 @@ namespace RI.Framework.IO.CSV
 					case ParseState.ExpectStart:
 						if (isQuote)
 						{
+							value = new StringBuilder();
 							state = ParseState.ExpectContentQuoted;
 						}
 						else if (isSeparator)
 						{
 							row.Add(string.Empty);
+							if (!nextChar.HasValue)
+							{
+								row.Add(string.Empty);
+							}
 						}
 						else if (isNewLine)
 						{
 							finishRow = true;
+							if (row.Count > 0)
+							{
+								row.Add(string.Empty);
+							}
 						}
 						else
 						{
+							value = new StringBuilder();
 							state = ParseState.ExpectContentUnquoted;
 							append = currentChar.ToString();
 						}
+
 						break;
 
 					case ParseState.ExpectContentQuoted:
@@ -250,10 +284,6 @@ namespace RI.Framework.IO.CSV
 						{
 							state = ParseState.ExpectSeparator;
 							finishValue = true;
-						}
-						else if (isSeparator)
-						{
-							append = currentChar.ToString();
 						}
 						else if (isNewLine)
 						{
@@ -270,6 +300,7 @@ namespace RI.Framework.IO.CSV
 						{
 							append = currentChar.ToString();
 						}
+
 						break;
 
 					case ParseState.ExpectContentUnquoted:
@@ -291,6 +322,7 @@ namespace RI.Framework.IO.CSV
 						{
 							append = currentChar.ToString();
 						}
+
 						break;
 
 					case ParseState.ExpectSeparator:
@@ -309,12 +341,18 @@ namespace RI.Framework.IO.CSV
 						{
 							error = CsvReaderError.SeparatorExpected;
 						}
+
 						break;
 				}
 
 				if (isNewLine)
 				{
-					this.CurrentLineNumber++;
+					this.CurrentLineNumberInternal++;
+				}
+
+				if (skipNext)
+				{
+					this.BaseReader.Read();
 				}
 
 				if (append != null)
@@ -323,15 +361,10 @@ namespace RI.Framework.IO.CSV
 					value.Append(append);
 				}
 
-				if (finishValue && (value != null))
+				if ((finishRow || finishValue) && (value != null))
 				{
 					row.Add(value.ToString());
 					value = null;
-				}
-
-				if (skipNext)
-				{
-					next = this.BaseReader.Read();
 				}
 
 				if (finishRow || (error != CsvReaderError.None))
@@ -340,10 +373,11 @@ namespace RI.Framework.IO.CSV
 				}
 			}
 
+			this.CurrentLineNumber = lastWasNewLine ? this.CurrentLineNumberInternal - 1 : this.CurrentLineNumberInternal;
 			this.CurrentError = error;
 			this.CurrentRow = error == CsvReaderError.None ? row : null;
 
-			return true;
+			return error == CsvReaderError.None ? readCharacters > 0 : false;
 		}
 
 		[SuppressMessage("ReSharper", "UnusedParameter.Local")]
