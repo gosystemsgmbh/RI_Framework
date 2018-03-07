@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{968509A4-4BD4-4E94-9A7F-ABC422F974B8}</ProjectGuid>
+    <ProjectGuid>{CEE08B2B-A403-4634-931E-02981338EA89}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RI.Documentation.Framework.Development</RootNamespace>
-    <AssemblyName>RI.Documentation.Framework.Development</AssemblyName>
+    <RootNamespace>RI.Packages.Framework.Unity</RootNamespace>
+    <AssemblyName>RI.Packages.Framework.Unity</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -30,13 +30,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="Wishlist.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Todo.md" />
     <None Include="_PostBuild.bat" />
     <None Include="_PreBuild.bat" />
-    <None Include="IEnumerableExtensions.xlsx" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
@@ -48,11 +43,4 @@
   <PropertyGroup>
     <PostBuildEvent>@call "$(ProjectDir)_PostBuild.bat" $(ConfigurationName)</PostBuildEvent>
   </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

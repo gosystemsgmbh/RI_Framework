@@ -264,19 +264,19 @@ namespace RI.Tools.Framework.VersionUpdater
 
 				case ".BAT":
 				{
-					search = @"(?'part1'set\sbuild_version_major=)[0-9]+";
+					search = @"(?'part1'set\sbuild_version_major=)[0-9X]+";
 					replacement = "${part1}" + newVersion.Major.ToString(CultureInfo.InvariantCulture);
 					VersionUpdater.PerformReplacementRegex(file, search, replacement, Encoding.Default);
 
-					search = @"(?'part1'set\sbuild_version_minor=)[0-9]+";
+					search = @"(?'part1'set\sbuild_version_minor=)[0-9X]+";
 					replacement = "${part1}" + newVersion.Minor.ToString(CultureInfo.InvariantCulture);
 					VersionUpdater.PerformReplacementRegex(file, search, replacement, Encoding.Default);
 
-					search = @"(?'part1'set\sbuild_version_fix=)[0-9]+";
+					search = @"(?'part1'set\sbuild_version_fix=)[0-9X]+";
 					replacement = "${part1}" + newVersion.Build.ToString(CultureInfo.InvariantCulture);
 					VersionUpdater.PerformReplacementRegex(file, search, replacement, Encoding.Default);
 
-					search = @"(?'part1'set\sbuild_version_revision=)[0-9]+";
+					search = @"(?'part1'set\sbuild_version_revision=)[0-9X]+";
 					replacement = "${part1}" + newVersion.Revision.ToString(CultureInfo.InvariantCulture);
 					VersionUpdater.PerformReplacementRegex(file, search, replacement, Encoding.Default);
 
