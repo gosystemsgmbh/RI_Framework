@@ -59,7 +59,7 @@ namespace RI.Framework.Composition.Catalogs
 		/// <value>
 		///     The catalog item which is filtered.
 		/// </value>
-		public CompositionCatalogItem Item { get; private set; }
+		public CompositionCatalogItem Item { get; }
 
 		/// <summary>
 		///     Gets the export name which is filtered.
@@ -67,7 +67,7 @@ namespace RI.Framework.Composition.Catalogs
 		/// <value>
 		///     The export name which is filtered.
 		/// </value>
-		public string Name { get; private set; }
+		public string Name { get; }
 
 		/// <summary>
 		///     Gets or sets the filter result.

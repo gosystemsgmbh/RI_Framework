@@ -31,20 +31,21 @@ namespace RI.Framework.Composition.Catalogs
 		/// </summary>
 		/// <remarks>
 		///     <para>
-		///         true is used for <see cref="ExportAllTypes" /> and <see cref="AutoUpdate" />, false is used for <see cref="IgnoreFrameworkTypes" />.
+		///         true is used for <see cref="ExportAllTypes" />, <see cref="AutoUpdate" />, and <see cref="IgnoreFrameworkTypes" />.
 		///     </para>
 		/// </remarks>
 		public AppDomainCatalog ()
-			: this(true, true, false)
+			: this(true, true, true)
 		{
 		}
 
-		/// <summary>
-		/// </summary>
-		/// <param name="exportAllTypes"> Specifies whether all types should be exported (see <see cref="ExportAllTypes" /> for details). </param>
-		/// <param name="autoUpdate"> Specifies whether the exports are automatically updated when a new assembly is loaded (see <see cref="AutoUpdate" /> for details). </param>
-		/// <param name="ignoreFrameworkTypes"> Specifies whether framework-provided types should be exported (see <see cref="IgnoreFrameworkTypes" /> for details). </param>
-		public AppDomainCatalog (bool exportAllTypes, bool autoUpdate, bool ignoreFrameworkTypes)
+        /// <summary>
+        ///     Creates a new instance of <see cref="AppDomainCatalog" />.
+        /// </summary>
+        /// <param name="exportAllTypes"> Specifies whether all types should be exported (see <see cref="ExportAllTypes" /> for details). </param>
+        /// <param name="autoUpdate"> Specifies whether the exports are automatically updated when a new assembly is loaded (see <see cref="AutoUpdate" /> for details). </param>
+        /// <param name="ignoreFrameworkTypes"> Specifies whether framework-provided types should be exported (see <see cref="IgnoreFrameworkTypes" /> for details). </param>
+        public AppDomainCatalog (bool exportAllTypes, bool autoUpdate, bool ignoreFrameworkTypes)
 		{
 			this.ExportAllTypes = exportAllTypes;
 			this.AutoUpdate = autoUpdate;
@@ -65,28 +66,31 @@ namespace RI.Framework.Composition.Catalogs
 
 		private bool _autoUpdate;
 		private bool _exportAllTypes;
+        private bool _ignoreFrameworkTypes;
 
-		private bool _ignoreFrameworkTypes;
-
-		#endregion
-
+        #endregion
 
 
 
-		#region Instance Properties/Indexer
 
-		/// <summary>
-		///     Gets or sets whether the exports are automatically updated when a new assembly is loaded.
-		/// </summary>
-		/// <value>
-		///     true if exports are automatically updated when a new assembly is loaded, false otherwise.
-		/// </value>
-		/// <remarks>
-		///     <para>
-		///         If exports are automatically updated, this catalog issues a recomposition every time an assembly is loaded into the application domain.
-		///     </para>
-		/// </remarks>
-		public bool AutoUpdate
+        #region Instance Properties/Indexer
+
+        /// <summary>
+        ///     Gets or sets whether the exports are automatically updated when a new assembly is loaded.
+        /// </summary>
+        /// <value>
+        ///     true if exports are automatically updated when a new assembly is loaded, false otherwise.
+        /// </value>
+        /// <remarks>
+        ///     <para>
+        ///         If exports are automatically updated, this catalog issues a recomposition every time an assembly is loaded into the application domain.
+        ///     </para>
+        ///     <para>
+        ///         Changing this property will not automatically reload the assemblies/types.
+        ///         Use <see cref="Reload"/> to apply new settings to this property.
+        ///     </para>
+        /// </remarks>
+        public bool AutoUpdate
 		{
 			get
 			{
@@ -104,21 +108,25 @@ namespace RI.Framework.Composition.Catalogs
 			}
 		}
 
-		/// <summary>
-		///     Gets or sets whether all types should be exported.
-		/// </summary>
-		/// <value>
-		///     true if all types should be exported, false otherwise.
-		/// </value>
-		/// <remarks>
-		///     <para>
-		///         If all types are exported, the exports will consist of all public, non-abstract, non-static types, even those without an <see cref="ExportAttribute" />.
-		///     </para>
-		///     <note type="note">
-		///         Already exported types will not be affected when this property is changed.
-		///     </note>
-		/// </remarks>
-		public bool ExportAllTypes
+        /// <summary>
+        ///     Gets or sets whether all types should be exported.
+        /// </summary>
+        /// <value>
+        ///     true if all types should be exported, false otherwise.
+        /// </value>
+        /// <remarks>
+        ///     <para>
+        ///         If all types are exported, the exports will consist of all public, non-abstract, non-static types, even those without an <see cref="ExportAttribute" />.
+        ///     </para>
+        ///     <note type="note">
+        ///         Already exported types will not be affected when this property is changed.
+        ///     </note>
+        ///     <para>
+        ///         Changing this property will not automatically reload the assemblies/types.
+        ///         Use <see cref="Reload"/> to apply new settings to this property.
+        ///     </para>
+        /// </remarks>
+        public bool ExportAllTypes
 		{
 			get
 			{
@@ -136,19 +144,26 @@ namespace RI.Framework.Composition.Catalogs
 			}
 		}
 
-		/// <summary>
-		///     Gets whether types provided by the framework itself are ignored.
-		/// </summary>
-		/// <value>
-		///     true if types provided by the framework itself are ignored, false otherwise.
-		/// </value>
-		/// <remarks>
-		///     <para>
-		///         If framework-provided types are ignored, they are not exported by default.
-		///         However, you can still export those types by explicit export them, e.g. through <see cref="TypeCatalog" /> or <see cref="InstanceCatalog" />.
-		///     </para>
-		/// </remarks>
-		public bool IgnoreFrameworkTypes
+        /// <summary>
+        ///     Gets or sets whether types provided by the framework itself are ignored.
+        /// </summary>
+        /// <value>
+        ///     true if types provided by the framework itself are ignored, false otherwise.
+        /// </value>
+        /// <remarks>
+        ///     <para>
+        ///         If framework-provided types are ignored, they are not exported by default.
+        ///         However, you can still export those types by explicit export them, e.g. through <see cref="TypeCatalog" /> or <see cref="InstanceCatalog" />.
+        ///     </para>
+        ///     <note type="note">
+        ///         Already exported types will not be affected when this property is changed.
+        ///     </note>
+        ///     <para>
+        ///         Changing this property will not automatically reload the assemblies/types.
+        ///         Use <see cref="Reload"/> to apply new settings to this property.
+        ///     </para>
+        /// </remarks>
+        public bool IgnoreFrameworkTypes
 		{
 			get
 			{

@@ -72,29 +72,32 @@ namespace RI.Framework.Composition.Catalogs
 
 		private bool _exportAllTypes;
 
-		#endregion
+        #endregion
 
 
 
 
-		#region Instance Properties/Indexer
+        #region Instance Properties/Indexer
 
-		/// <summary>
-		///     Gets or sets whether all types should be exported.
-		/// </summary>
-		/// <value>
-		///     true if all types should be exported, false otherwise.
-		/// </value>
-		/// <remarks>
-		///     <para>
-		///         If all types are exported, the exports will consist of all non-abstract, non-static types, even those without an <see cref="ExportAttribute" />.
-		///     </para>
+        /// <summary>
+        ///     Gets or sets whether all types should be exported.
+        /// </summary>
+        /// <value>
+        ///     true if all types should be exported, false otherwise.
+        /// </value>
+        /// <remarks>
+        ///     <para>
+        ///         If all types are exported, the exports will consist of all public, non-abstract, non-static types, even those without an <see cref="ExportAttribute" />.
+        ///     </para>
+        ///     <note type="note">
+        ///         Already exported types will not be affected when this property is changed.
+        ///     </note>
         ///     <para>
         ///         Changing this property will not automatically reload the assemblies/types.
         ///         Use <see cref="Reload"/> to apply new settings to this property.
         ///     </para>
-		/// </remarks>
-		public bool ExportAllTypes
+        /// </remarks>
+        public bool ExportAllTypes
 		{
 			get
 			{

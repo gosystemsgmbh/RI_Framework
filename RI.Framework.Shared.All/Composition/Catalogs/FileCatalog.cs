@@ -72,21 +72,37 @@ namespace RI.Framework.Composition.Catalogs
 			return items;
 		}
 
-		#endregion
+        #endregion
 
 
 
 
-		#region Instance Constructor/Destructor
+        #region Instance Constructor/Destructor
 
-		/// <summary>
-		///     Creates a new instance of <see cref="FileCatalog" />.
-		/// </summary>
-		/// <param name="file"> The assembly file to load. </param>
-		/// <param name="exportAllTypes"> Specifies whether all types should be exported (see <see cref="ExportAllTypes" /> for details). </param>
-		/// <exception cref="ArgumentNullException"> <paramref name="file" /> is null. </exception>
-		/// <exception cref="InvalidPathArgumentException"> <paramref name="file" /> is not a real usable file. </exception>
-		public FileCatalog (FilePath file, bool exportAllTypes)
+        /// <summary>
+        ///     Creates a new instance of <see cref="FileCatalog" />.
+        /// </summary>
+        /// <param name="file"> The assembly file to load. </param>
+        /// <remarks>
+		///     <para>
+		///         true is used for <see cref="ExportAllTypes" />.
+		///     </para>
+        /// </remarks>
+        /// <exception cref="ArgumentNullException"> <paramref name="file" /> is null. </exception>
+        /// <exception cref="InvalidPathArgumentException"> <paramref name="file" /> is not a real usable file. </exception>
+        public FileCatalog(FilePath file)
+            : this(file, true)
+        {
+        }
+
+        /// <summary>
+        ///     Creates a new instance of <see cref="FileCatalog" />.
+        /// </summary>
+        /// <param name="file"> The assembly file to load. </param>
+        /// <param name="exportAllTypes"> Specifies whether all types should be exported (see <see cref="ExportAllTypes" /> for details). </param>
+        /// <exception cref="ArgumentNullException"> <paramref name="file" /> is null. </exception>
+        /// <exception cref="InvalidPathArgumentException"> <paramref name="file" /> is not a real usable file. </exception>
+        public FileCatalog (FilePath file, bool exportAllTypes)
 		{
 			if (file == null)
 			{

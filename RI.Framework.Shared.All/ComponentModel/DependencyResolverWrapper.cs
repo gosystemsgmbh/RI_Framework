@@ -11,7 +11,7 @@ using RI.Framework.Composition;
 namespace RI.Framework.ComponentModel
 {
 	/// <summary>
-	///     Implemens a wrapper for <see cref="IDependencyResolver" /> and <see cref="IServiceProvider" /> which allows modification/interception of resolved instances.
+	///     Implemens a wrapper for <see cref="IDependencyResolver" /> and <see cref="IServiceProvider" /> which also allows modification/interception of resolved instances.
 	/// </summary>
 	/// <remarks>
 	///     <para>
@@ -108,19 +108,24 @@ namespace RI.Framework.ComponentModel
 			return list;
 		}
 
-		#endregion
+        #endregion
 
 
 
 
-		#region Virtuals
+        #region Virtuals
 
-		/// <summary>
-		///     Intercepts instance resolving by name.
-		/// </summary>
-		/// <param name="name"> The name to resolve. </param>
-		/// <param name="instances"> The list of instances already resolved by <see cref="DependencyResolver" /> which can be modified to perform the interception. </param>
-		protected virtual void Intercept (string name, List<object> instances)
+        /// <summary>
+        ///     Intercepts instance resolving by name.
+        /// </summary>
+        /// <param name="name"> The name to resolve. </param>
+        /// <param name="instances"> The list of instances already resolved by <see cref="DependencyResolver" /> or <see cref="ServiceProvider"/> which can be modified to perform the interception. </param>
+        /// <remarks>
+        ///     <para>
+        ///         The default implementation does nothing and so passes through all instances already in <paramref name="instances"/>.
+        ///     </para>
+        /// </remarks>
+        protected virtual void Intercept (string name, List<object> instances)
 		{
 		}
 
@@ -128,7 +133,7 @@ namespace RI.Framework.ComponentModel
 		///     Intercepts instance resolving by type.
 		/// </summary>
 		/// <param name="type"> The type to resolve. </param>
-		/// <param name="instances"> The list of instances already resolved by <see cref="DependencyResolver" /> which can be modified to perform the interception. </param>
+		/// <param name="instances"> The list of instances already resolved by <see cref="DependencyResolver" /> or <see cref="ServiceProvider"/> which can be modified to perform the interception. </param>
 		/// <remarks>
 		///     <para>
 		///         The default implementation uses <see cref="CompositionContainer.GetNameOfType" /> to get the name of the type and then uses <see cref="Intercept(string,List{object})" />.
