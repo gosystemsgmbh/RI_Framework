@@ -8,49 +8,49 @@ using RI.Framework.Utilities.ObjectModel;
 
 namespace RI.Framework.Collections.Specialized
 {
-	/// <summary>
-	///     Implements a pool which creates items by cloning from a prototype.
-	/// </summary>
-	/// <typeparam name="T"> The type of objects which can be stored and recycled by the pool. </typeparam>
-	/// <remarks>
-	///     <para>
-	///         The prototype can be any object which implements <see cref="ICloneable" /> or <see cref="ICloneable{T}" />.
-	///         <see cref="ICloneable.Clone" /> is used to create new items from the prototype.
-	///     </para>
-	///     <para>
-	///         The prototype itself is never used as an item or taken from the pool respectively, it is only used for cloning.
-	///     </para>
-	///     <para>
-	///         This pool implementation supports <see cref="IPoolAware" />.
-	///     </para>
-	///     <para>
-	///         See <see cref="PoolBase{T}" /> for more details.
-	///     </para>
-	/// </remarks>
-	/// <example>
-	///     <code language="cs">
-	/// <![CDATA[
-	/// // create a pool with a cloneable prototype
-	/// var pool = new ClonePool<MyObject>(new MyObject(some, constructor, parameters));
-	/// 
-	/// // get some cloned items
-	/// var item1 = pool.Take();
-	/// var item2 = pool.Take();
-	/// var item3 = pool.Take();
-	/// 
-	/// // ... do something ...
-	/// 
-	/// // return one of the items
-	/// pool.Return(item2);
-	/// 
-	/// // ... do something ...
-	/// 
-	/// // get another item (the former item2 is recycled)
-	/// var item4 = pool.Take();
-	/// ]]>
-	/// </code>
-	/// </example>
-	public sealed class ClonePool <T> : PoolBase<T>
+    /// <summary>
+    ///     Implements a pool which creates items by cloning from a prototype.
+    /// </summary>
+    /// <typeparam name="T"> The type of objects which can be stored and recycled by the pool. </typeparam>
+    /// <remarks>
+    ///     <para>
+    ///         The prototype can be any object which implements <see cref="ICloneable" /> or <see cref="ICloneable{T}" />.
+    ///         <see cref="ICloneable.Clone" /> or <see cref="ICloneable{T}.Clone" /> is used to create new items from the prototype.
+    ///     </para>
+    ///     <para>
+    ///         The prototype itself is never used as an item or taken from the pool respectively, it is only used for cloning.
+    ///     </para>
+    ///     <para>
+    ///         This pool implementation supports <see cref="IPoolAware" />.
+    ///     </para>
+    ///     <para>
+    ///         See <see cref="PoolBase{T}" /> for more details.
+    ///     </para>
+    /// </remarks>
+    /// <example>
+    ///     <code language="cs">
+    /// <![CDATA[
+    /// // create a pool with a cloneable prototype
+    /// var pool = new ClonePool<MyObject>(new MyObject(some, constructor, parameters));
+    /// 
+    /// // get some cloned items
+    /// var item1 = pool.Take();
+    /// var item2 = pool.Take();
+    /// var item3 = pool.Take();
+    /// 
+    /// // ... do something ...
+    /// 
+    /// // return one of the items
+    /// pool.Return(item2);
+    /// 
+    /// // ... do something ...
+    /// 
+    /// // get another item (the former item2 is recycled)
+    /// var item4 = pool.Take();
+    /// ]]>
+    /// </code>
+    /// </example>
+    public sealed class ClonePool <T> : PoolBase<T>
 		where T : ICloneable
 	{
 		#region Instance Constructor/Destructor

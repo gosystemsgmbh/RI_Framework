@@ -37,6 +37,6 @@ RI.Framework.Extensions.WpfToolkit
 
 "..\_Tools\7za.exe" a -r "..\_Temp\%package_file%" "..\_Output\RI.Documentation.Framework.NetFx.chm"
 "..\_Tools\7za.exe" a -r "..\_Temp\%package_file%" "..\_Output\RI.Documentation.Framework.NetFx.zip"
-"..\_Tools\7za.exe" a -r "..\_Temp\%package_file%" "..\_Output\Roten Informatik Framework License.txt"
+"..\_Tools\7za.exe" a -r "..\_Temp\%package_file%" "..\_Output\Roten Informatik Framework License 1.0.txt"
 
 @copy "..\_Temp\%package_file%" "..\_Packages\%package_file%"

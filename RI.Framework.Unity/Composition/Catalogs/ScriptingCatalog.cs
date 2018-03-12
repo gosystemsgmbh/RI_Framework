@@ -89,6 +89,10 @@ namespace RI.Framework.Composition.Catalogs
 		///     <para>
 		///         If all types are exported, the exports will consist of all non-abstract, non-static types, even those without an <see cref="ExportAttribute" />.
 		///     </para>
+        ///     <para>
+        ///         Changing this property will not automatically reload the assemblies/types.
+        ///         Use <see cref="Reload"/> to apply new settings to this property.
+        ///     </para>
 		/// </remarks>
 		public bool ExportAllTypes
 		{

@@ -20,6 +20,6 @@ RI.Framework.Unity
 "..\_Tools\7za.exe" a -r "..\_Temp\%package_file%" "..\_Output\RI.Documentation.Framework.Unity.Light.pdf"
 "..\_Tools\7za.exe" a -r "..\_Temp\%package_file%" "..\_Output\RI.Documentation.Framework.Unity.Full.chm"
 "..\_Tools\7za.exe" a -r "..\_Temp\%package_file%" "..\_Output\RI.Documentation.Framework.Unity.Full.zip"
-"..\_Tools\7za.exe" a -r "..\_Temp\%package_file%" "..\_Output\Roten Informatik Framework License.txt"
+"..\_Tools\7za.exe" a -r "..\_Temp\%package_file%" "..\_Output\Roten Informatik Framework License 1.0.txt"
 
 @copy "..\_Temp\%package_file%" "..\_Packages\%package_file%"

@@ -17,4 +17,4 @@ _Packages
 @rd /S /Q "..\_Temp"
 @md "..\_Temp"
 
-@copy "..\LICENSE.txt" "..\_Output\Roten Informatik Framework License.txt"
+@copy "..\LICENSE.txt" "..\_Output\Roten Informatik Framework License 1.0.txt"

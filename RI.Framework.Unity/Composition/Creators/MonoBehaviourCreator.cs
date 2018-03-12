@@ -14,8 +14,6 @@ namespace RI.Framework.Composition.Creators
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///     </para>
-	///     <para>
 	///         <c> MonoBehaviour </c>s are not created using their constructor (as this would be the wrong way how to instantiate anything <c> MonoBehaviour </c>).
 	///         Instead, to instantiate a <c> MonoBehaviour </c>, a new <c> GameObject </c> is created to which the <c> MonoBehaviour </c> is added as a component using <c> AddComponent </c>.
 	///         The created <c> GameObject </c> has also called <c> Object.DontDestroyOnLoad </c> on it.
