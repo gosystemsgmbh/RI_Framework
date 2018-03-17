@@ -74,6 +74,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\States\Mock_State_D3.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\States\Mock_State_E.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\States\Mock_State_F.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\States\Mock_State_I.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\States\Mock_State_H1.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\States\Mock_State_H2.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\States\Mock_State_H.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\States\Mock_State_G.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Test_StateMachine.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TestAssertionException.cs" />

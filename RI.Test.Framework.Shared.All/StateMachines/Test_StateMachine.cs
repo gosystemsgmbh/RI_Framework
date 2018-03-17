@@ -571,6 +571,191 @@ namespace RI.Test.Framework.StateMachines
 			}
 		}
 
+		[TestMethod]
+		public void StateVariables_Test ()
+		{
+			StateMachineConfiguration config = new DefaultStateMachineConfiguration();
+			config.Dispatcher = new Mock_Dispatcher();
+			config.CachingEnabled = true;
+
+			StateMachine test = new StateMachine(config);
+
+			test.Transient<Mock_State_H1>();
+
+			if (((Mock_State_H1)test.State).TestValue1 != null)
+			{
+				throw new TestAssertionException();
+			}
+			if (((Mock_State_H1)test.State).TestValue2 != null)
+			{
+				throw new TestAssertionException();
+			}
+			if (((Mock_State_H1)test.State).TestValue3 != null)
+			{
+				throw new TestAssertionException();
+			}
+			if (((Mock_State_H1)test.State).TestValue4 != null)
+			{
+				throw new TestAssertionException();
+			}
+			if (((Mock_State_H1)test.State).TestValue5 != null)
+			{
+				throw new TestAssertionException();
+			}
+
+			((Mock_State_H1)test.State).TestValue1 = "T11";
+			((Mock_State_H1)test.State).TestValue2 = "T12";
+			((Mock_State_H1)test.State).TestValue3 = "T13";
+			((Mock_State_H1)test.State).TestValue4 = "T14";
+			((Mock_State_H1)test.State).TestValue5 = "T15";
+
+			if (((Mock_State_H1)test.State).TestValue1 != "T11")
+			{
+				throw new TestAssertionException();
+			}
+			if (((Mock_State_H1)test.State).TestValue2 != "T12")
+			{
+				throw new TestAssertionException();
+			}
+			if (((Mock_State_H1)test.State).TestValue3 != "T13")
+			{
+				throw new TestAssertionException();
+			}
+			if (((Mock_State_H1)test.State).TestValue4 != "T14")
+			{
+				throw new TestAssertionException();
+			}
+			if (((Mock_State_H1)test.State).TestValue5 != "T15")
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Transient<Mock_State_H2>();
+
+			if (((Mock_State_H2)test.State).TestValue1 != null)
+			{
+				throw new TestAssertionException();
+			}
+			if (((Mock_State_H2)test.State).TestValue2 != "T12")
+			{
+				throw new TestAssertionException();
+			}
+			if (((Mock_State_H2)test.State).TestValue3 != null)
+			{
+				throw new TestAssertionException();
+			}
+			if (((Mock_State_H2)test.State).TestValue4 != "T14")
+			{
+				throw new TestAssertionException();
+			}
+			if (((Mock_State_H2)test.State).TestValue5 != null)
+			{
+				throw new TestAssertionException();
+			}
+
+			((Mock_State_H2)test.State).TestValue1 = "T21";
+			((Mock_State_H2)test.State).TestValue3 = "T23";
+			((Mock_State_H2)test.State).TestValue5 = "T25";
+
+			test.Transient<Mock_State_I>();
+
+			if (((Mock_State_I)test.State).TestValue1 != null)
+			{
+				throw new TestAssertionException();
+			}
+			if (((Mock_State_I)test.State).TestValue2 != "T12")
+			{
+				throw new TestAssertionException();
+			}
+			if (((Mock_State_I)test.State).TestValue3 != null)
+			{
+				throw new TestAssertionException();
+			}
+			if (((Mock_State_I)test.State).TestValue4 != "T14")
+			{
+				throw new TestAssertionException();
+			}
+			if (((Mock_State_I)test.State).TestValue5 != null)
+			{
+				throw new TestAssertionException();
+			}
+
+			((Mock_State_I)test.State).TestValue1 = "T31";
+			((Mock_State_I)test.State).TestValue2 = "T32";
+			((Mock_State_I)test.State).TestValue3 = "T33";
+			((Mock_State_I)test.State).TestValue4 = "T34";
+			((Mock_State_I)test.State).TestValue5 = "T35";
+
+			test.Transient<Mock_State_H1>();
+
+			if (((Mock_State_H1)test.State).TestValue1 != "T11")
+			{
+				throw new TestAssertionException();
+			}
+			if (((Mock_State_H1)test.State).TestValue2 != "T32")
+			{
+				throw new TestAssertionException();
+			}
+			if (((Mock_State_H1)test.State).TestValue3 != "T13")
+			{
+				throw new TestAssertionException();
+			}
+			if (((Mock_State_H1)test.State).TestValue4 != "T34")
+			{
+				throw new TestAssertionException();
+			}
+			if (((Mock_State_H1)test.State).TestValue5 != null)
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Transient<Mock_State_H2>();
+
+			if (((Mock_State_H2)test.State).TestValue1 != "T21")
+			{
+				throw new TestAssertionException();
+			}
+			if (((Mock_State_H2)test.State).TestValue2 != "T32")
+			{
+				throw new TestAssertionException();
+			}
+			if (((Mock_State_H2)test.State).TestValue3 != "T23")
+			{
+				throw new TestAssertionException();
+			}
+			if (((Mock_State_H2)test.State).TestValue4 != "T34")
+			{
+				throw new TestAssertionException();
+			}
+			if (((Mock_State_H2)test.State).TestValue5 != null)
+			{
+				throw new TestAssertionException();
+			}
+
+			test.Transient<Mock_State_I>();
+
+			if (((Mock_State_I)test.State).TestValue1 != null)
+			{
+				throw new TestAssertionException();
+			}
+			if (((Mock_State_I)test.State).TestValue2 != "T32")
+			{
+				throw new TestAssertionException();
+			}
+			if (((Mock_State_I)test.State).TestValue3 != null)
+			{
+				throw new TestAssertionException();
+			}
+			if (((Mock_State_I)test.State).TestValue4 != "T34")
+			{
+				throw new TestAssertionException();
+			}
+			if (((Mock_State_I)test.State).TestValue5 != null)
+			{
+				throw new TestAssertionException();
+			}
+		}
+
 		#endregion
 	}
 }
