@@ -24,7 +24,6 @@ namespace RI.Framework.Services.Modularization
 	///         Instances of <see cref="MonoModule" />s are not created using their constructor (as this would be the wrong way how to instantiate anything <c> MonoBehaviour </c>). Instead, <see cref="CreateInstance" /> is used.
 	///     </note>
 	/// </remarks>
-	[Export]
 	public abstract class MonoModule : MonoBehaviour, IModule, ILogSource
 	{
 		#region Static Methods

@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 
 using RI.Framework.Collections;
 using RI.Framework.Collections.DirectLinq;
-using RI.Framework.Composition.Model;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Logging;
@@ -39,7 +38,6 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
 	///         A request which does not change a trigger will not cause a response.
 	///     </note>
 	/// </remarks>
-	[Export]
 	[Obsolete("The message service is obsolete. Use the message bus instead (RI.Framework.Bus.*).", false)]
 	public sealed class TriggerMessageHandler : LogSource, IMessageReceiver
 	{

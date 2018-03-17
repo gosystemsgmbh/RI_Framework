@@ -4,14 +4,12 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 
 using RI.Framework.Composition.Model;
-using RI.Framework.StateMachines;
-using RI.Framework.StateMachines.Dispatchers;
 using RI.Framework.Utilities.ObjectModel;
 
 
 
 
-namespace RI.Framework.Bus.Dispatchers
+namespace RI.Framework.StateMachines.Dispatchers
 {
 	/// <summary>
 	///     Implements a state machine operation dispatcher which uses <see cref="ThreadPool" />.

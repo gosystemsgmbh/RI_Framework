@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Reflection;
 
 using RI.Framework.Composition;
+using RI.Framework.Composition.Model;
 using RI.Framework.IO.Paths;
 using RI.Framework.Utilities.ObjectModel;
 using RI.Framework.Utilities.Text;
@@ -22,6 +23,7 @@ namespace RI.Framework.Services
 	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
+	[Export]
 	public interface IBootstrapper : ISynchronizable
 	{
 		/// <summary>

@@ -3,6 +3,7 @@
 using RI.Framework.Bus.Connections;
 using RI.Framework.Bus.Internals;
 using RI.Framework.ComponentModel;
+using RI.Framework.Composition.Model;
 using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.ObjectModel;
 
@@ -23,6 +24,7 @@ namespace RI.Framework.Bus.Routers
 	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
+	[Export]
 	public interface IBusRouter : ISynchronizable, ILogSource
 	{
 		/// <summary>

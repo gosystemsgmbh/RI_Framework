@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 
+using RI.Framework.Composition.Model;
 using RI.Framework.Threading;
 using RI.Framework.Utilities.ObjectModel;
 
@@ -23,6 +24,7 @@ namespace RI.Framework.StateMachines.Dispatchers
 	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
+	[Export]
 	public sealed class DefaultStateDispatcher : IStateDispatcher, IDisposable
 	{
 		#region Instance Constructor/Destructor

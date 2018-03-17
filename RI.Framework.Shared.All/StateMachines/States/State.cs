@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 
 using RI.Framework.Collections.DirectLinq;
-using RI.Framework.Composition.Model;
 using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.ObjectModel;
 
@@ -24,7 +23,6 @@ namespace RI.Framework.StateMachines.States
 	///     </note>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
-	[Export]
 	public abstract class State : LogSource, IState
 	{
 		#region Instance Constructor/Destructor

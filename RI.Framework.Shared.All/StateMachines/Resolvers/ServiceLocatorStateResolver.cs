@@ -1,4 +1,5 @@
 ﻿using RI.Framework.ComponentModel;
+using RI.Framework.Composition.Model;
 
 
 
@@ -14,6 +15,7 @@ namespace RI.Framework.StateMachines.Resolvers
 	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
+	[Export]
 	public sealed class ServiceLocatorStateResolver : DependencyResolverStateResolver
 	{
 		#region Instance Constructor/Destructor

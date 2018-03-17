@@ -108,24 +108,24 @@ namespace RI.Framework.ComponentModel
 			return list;
 		}
 
-        #endregion
+		#endregion
 
 
 
 
-        #region Virtuals
+		#region Virtuals
 
-        /// <summary>
-        ///     Intercepts instance resolving by name.
-        /// </summary>
-        /// <param name="name"> The name to resolve. </param>
-        /// <param name="instances"> The list of instances already resolved by <see cref="DependencyResolver" /> or <see cref="ServiceProvider"/> which can be modified to perform the interception. </param>
-        /// <remarks>
-        ///     <para>
-        ///         The default implementation does nothing and so passes through all instances already in <paramref name="instances"/>.
-        ///     </para>
-        /// </remarks>
-        protected virtual void Intercept (string name, List<object> instances)
+		/// <summary>
+		///     Intercepts instance resolving by name.
+		/// </summary>
+		/// <param name="name"> The name to resolve. </param>
+		/// <param name="instances"> The list of instances already resolved by <see cref="DependencyResolver" /> or <see cref="ServiceProvider"/> which can be modified to perform the interception. </param>
+		/// <remarks>
+		///     <para>
+		///         The default implementation does nothing and so passes through all instances already in <paramref name="instances"/>.
+		///     </para>
+		/// </remarks>
+		protected virtual void Intercept (string name, List<object> instances)
 		{
 		}
 

@@ -18,6 +18,7 @@ namespace RI.Framework.Services
 	///     </para>
 	/// </remarks>
 	[Export]
+	[Export(typeof(Application))]
 	public class WpfApplication : Application, ILogSource
 	{
 		#region Instance Properties/Indexer

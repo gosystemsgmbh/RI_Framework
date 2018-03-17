@@ -12,6 +12,7 @@ using Xceed.Wpf.AvalonDock.Layout;
 
 namespace RI.Framework.Services.Regions.Adapters
 {
+	[Export]
 	public sealed class DockingManagerRegionAdapter : RegionAdapterBase
 	{
 		#region Instance Constructor/Destructor

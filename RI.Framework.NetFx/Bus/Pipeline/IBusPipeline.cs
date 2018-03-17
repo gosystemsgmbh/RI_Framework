@@ -1,6 +1,7 @@
 ﻿using System;
 
 using RI.Framework.ComponentModel;
+using RI.Framework.Composition.Model;
 using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.ObjectModel;
 
@@ -21,6 +22,7 @@ namespace RI.Framework.Bus.Pipeline
 	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
+	[Export]
 	public interface IBusPipeline : ISynchronizable, ILogSource
 	{
 		/// <summary>

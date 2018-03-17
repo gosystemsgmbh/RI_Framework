@@ -308,6 +308,8 @@ namespace RI.Framework.Composition
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	[Export]
+	[Export(typeof(IDependencyResolver))]
+	[Export(typeof(IServiceProvider))]
 	[SuppressMessage("ReSharper", "InconsistentNaming")]
 	public sealed class CompositionContainer : LogSource, IDependencyResolver, IServiceProvider, IDisposable, ISynchronizable
 	{

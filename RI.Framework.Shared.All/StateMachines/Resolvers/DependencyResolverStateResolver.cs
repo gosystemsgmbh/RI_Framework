@@ -1,6 +1,7 @@
 ﻿using System;
 
 using RI.Framework.ComponentModel;
+using RI.Framework.Composition.Model;
 using RI.Framework.StateMachines.States;
 using RI.Framework.Utilities.ObjectModel;
 
@@ -18,6 +19,7 @@ namespace RI.Framework.StateMachines.Resolvers
 	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
+	[Export]
 	public class DependencyResolverStateResolver : IStateResolver
 	{
 		#region Instance Constructor/Destructor

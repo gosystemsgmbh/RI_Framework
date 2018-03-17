@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Threading;
 
+using RI.Framework.Composition.Model;
 using RI.Framework.Utilities.ObjectModel;
 
 
@@ -26,6 +27,7 @@ namespace RI.Framework.StateMachines.Dispatchers
 	///     </note>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
+	[Export]
 	public interface IStateDispatcher : ISynchronizable
 	{
 		/// <summary>

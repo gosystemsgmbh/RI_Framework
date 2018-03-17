@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using RI.Framework.Composition.Model;
 using RI.Framework.StateMachines.States;
 using RI.Framework.Utilities.ObjectModel;
 
@@ -18,6 +19,7 @@ namespace RI.Framework.StateMachines.Caches
 	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
+	[Export]
 	public interface IStateCache : ISynchronizable
 	{
 		/// <summary>

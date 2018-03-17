@@ -1,5 +1,6 @@
 ﻿using System;
 
+using RI.Framework.Composition.Model;
 using RI.Framework.Services.Dispatcher;
 using RI.Framework.Utilities.ObjectModel;
 
@@ -20,6 +21,7 @@ namespace RI.Framework.StateMachines.Dispatchers
 	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
+	[Export]
 	public sealed class DispatcherServiceStateDispatcher : IStateDispatcher
 	{
 		#region Instance Constructor/Destructor

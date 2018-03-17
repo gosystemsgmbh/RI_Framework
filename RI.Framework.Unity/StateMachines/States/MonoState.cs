@@ -33,7 +33,6 @@ namespace RI.Framework.StateMachines.States
 	///     </note>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
-	[Export]
 	public abstract class MonoState : MonoBehaviour, IState, ILogSource
 	{
 		#region Static Methods
