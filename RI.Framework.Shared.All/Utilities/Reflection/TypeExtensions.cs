@@ -69,6 +69,7 @@ namespace RI.Framework.Utilities.Reflection
 						break;
 					}
 				}
+
 				depths.Add(depth);
 			}
 
@@ -92,6 +93,29 @@ namespace RI.Framework.Utilities.Reflection
 			matchingType = types[minIndex];
 			inheritanceDepth = depths[minIndex];
 			return true;
+		}
+
+		/// <summary>
+		///     Gets the default value of a type.
+		/// </summary>
+		/// <param name="type"> The type. </param>
+		/// <returns>
+		///     The default value of the type.
+		/// </returns>
+		/// <exception cref="ArgumentNullException"> <paramref name="type" /> is null. </exception>
+		public static object GetDefaultValue (this Type type)
+		{
+			if (type == null)
+			{
+				throw new ArgumentNullException(nameof(type));
+			}
+
+			if (type.IsValueType)
+			{
+				return Activator.CreateInstance(type);
+			}
+
+			return null;
 		}
 
 		/// <summary>
@@ -145,6 +169,11 @@ namespace RI.Framework.Utilities.Reflection
 		/// <exception cref="ArgumentNullException"> <paramref name="type" /> is null. </exception>
 		public static bool IsNullable (this Type type)
 		{
+			if (type == null)
+			{
+				throw new ArgumentNullException(nameof(type));
+			}
+
 			if (!type.IsGenericType)
 			{
 				return false;

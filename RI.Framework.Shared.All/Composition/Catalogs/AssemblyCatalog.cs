@@ -4,6 +4,7 @@ using System.Reflection;
 
 using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Composition.Model;
+using RI.Framework.Utilities.Logging;
 
 
 
@@ -24,50 +25,50 @@ namespace RI.Framework.Composition.Catalogs
 	/// <threadsafety static="true" instance="true" />
 	public class AssemblyCatalog : CompositionCatalog
 	{
-        #region Instance Constructor/Destructor
+		#region Instance Constructor/Destructor
 
-        /// <summary>
-        ///     Creates a new instance of <see cref="AssemblyCatalog" />.
-        /// </summary>
-        /// <param name="assemblies"> The sequence of assemblies whose types are used for composition. </param>
-        /// <remarks>
-        ///     <para>
-        ///         <paramref name="assemblies" /> is enumerated exactly once.
-        ///     </para>
+		/// <summary>
+		///     Creates a new instance of <see cref="AssemblyCatalog" />.
+		/// </summary>
+		/// <param name="assemblies"> The sequence of assemblies whose types are used for composition. </param>
+		/// <remarks>
+		///     <para>
+		///         <paramref name="assemblies" /> is enumerated exactly once.
+		///     </para>
 		///     <para>
 		///         true is used for <see cref="ExportAllTypes" />.
 		///     </para>
-        /// </remarks>
-        public AssemblyCatalog(IEnumerable<Assembly> assemblies)
-            : this(true, assemblies)
-        {
-        }
+		/// </remarks>
+		public AssemblyCatalog (IEnumerable<Assembly> assemblies)
+			: this(true, assemblies)
+		{
+		}
 
-        /// <summary>
-        ///     Creates a new instance of <see cref="AssemblyCatalog" />.
-        /// </summary>
-        /// <param name="assemblies"> The array of assemblies whose types are used for composition. </param>
+		/// <summary>
+		///     Creates a new instance of <see cref="AssemblyCatalog" />.
+		/// </summary>
+		/// <param name="assemblies"> The array of assemblies whose types are used for composition. </param>
 		/// <remarks>
 		///     <para>
 		///         true is used for <see cref="ExportAllTypes" />.
 		///     </para>
 		/// </remarks>
-        public AssemblyCatalog(params Assembly[] assemblies)
-            : this(true, assemblies)
-        {
-        }
+		public AssemblyCatalog (params Assembly[] assemblies)
+			: this(true, assemblies)
+		{
+		}
 
-        /// <summary>
-        ///     Creates a new instance of <see cref="AssemblyCatalog" />.
-        /// </summary>
-        /// <param name="exportAllTypes"> Specifies whether all types should be exported (see <see cref="ExportAllTypes" /> for details). </param>
-        /// <param name="assemblies"> The sequence of assemblies whose types are used for composition. </param>
-        /// <remarks>
-        ///     <para>
-        ///         <paramref name="assemblies" /> is enumerated exactly once.
-        ///     </para>
-        /// </remarks>
-        public AssemblyCatalog (bool exportAllTypes, IEnumerable<Assembly> assemblies)
+		/// <summary>
+		///     Creates a new instance of <see cref="AssemblyCatalog" />.
+		/// </summary>
+		/// <param name="exportAllTypes"> Specifies whether all types should be exported (see <see cref="ExportAllTypes" /> for details). </param>
+		/// <param name="assemblies"> The sequence of assemblies whose types are used for composition. </param>
+		/// <remarks>
+		///     <para>
+		///         <paramref name="assemblies" /> is enumerated exactly once.
+		///     </para>
+		/// </remarks>
+		public AssemblyCatalog (bool exportAllTypes, IEnumerable<Assembly> assemblies)
 		{
 			this.ExportAllTypes = exportAllTypes;
 
@@ -77,6 +78,8 @@ namespace RI.Framework.Composition.Catalogs
 				{
 					if (assembly != null)
 					{
+						AssemblyName assemblyName = assembly.GetName();
+						this.Log(LogLevel.Debug, "Loading assembly: {0}", assemblyName.FullName);
 						foreach (Type type in assembly.GetTypes())
 						{
 							if (CompositionContainer.ValidateExportType(type))

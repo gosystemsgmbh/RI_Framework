@@ -186,6 +186,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\StateMachineUpdateDelegate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\StateMachineUpdateEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\States\IState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\States\StateVariableHandling.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\StateUpdateInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\StateMachine.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\StateMachineConfiguration.cs" />
@@ -198,6 +199,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\States\State.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\States\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\StateTransientInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\States\StateVariableAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StateMachines\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Threading\DispatchCapture.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Threading\HeavyThread.cs" />

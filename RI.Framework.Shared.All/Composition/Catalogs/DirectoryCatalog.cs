@@ -49,65 +49,65 @@ namespace RI.Framework.Composition.Catalogs
 		/// </remarks>
 		public const string DefaultFilePattern = "*.dll";
 
-        #endregion
+		#endregion
 
 
 
 
-        #region Instance Constructor/Destructor
+		#region Instance Constructor/Destructor
 
-        /// <summary>
-        ///     Creates a new instance of <see cref="DirectoryCatalog" />.
-        /// </summary>
-        /// <param name="directoryPath"> The directory which is searched for assemblies. </param>
-        /// <remarks>
-        ///     <para>
-        ///         The default file pattern <see cref="DefaultFilePattern" /> is used and search is performed non-recursive.
-        ///     </para>
+		/// <summary>
+		///     Creates a new instance of <see cref="DirectoryCatalog" />.
+		/// </summary>
+		/// <param name="directoryPath"> The directory which is searched for assemblies. </param>
+		/// <remarks>
+		///     <para>
+		///         The default file pattern <see cref="DefaultFilePattern" /> is used and search is performed non-recursive.
+		///     </para>
 		///     <para>
 		///         true is used for <see cref="ExportAllTypes" /> and <see cref="IgnoreFrameworkFiles" />.
 		///     </para>
-        /// </remarks>
-        /// <exception cref="ArgumentNullException"> <paramref name="directoryPath" /> is null. </exception>
-        /// <exception cref="InvalidPathArgumentException"> <paramref name="directoryPath" /> is not a real usable directory. </exception>
-        public DirectoryCatalog(DirectoryPath directoryPath)
-            : this(directoryPath, true, true)
-        {
-        }
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="directoryPath" /> is null. </exception>
+		/// <exception cref="InvalidPathArgumentException"> <paramref name="directoryPath" /> is not a real usable directory. </exception>
+		public DirectoryCatalog (DirectoryPath directoryPath)
+			: this(directoryPath, true, true)
+		{
+		}
 
-        /// <summary>
-        ///     Creates a new instance of <see cref="DirectoryCatalog" />.
-        /// </summary>
-        /// <param name="directoryPath"> The directory which is searched for assemblies. </param>
-        /// <param name="filePattern"> The file pattern which is used to search for assemblies (can be null to use <see cref="DefaultFilePattern" />). </param>
-        /// <param name="recursive"> Specifies whether assemblies are searched recursive (including subdirectories) or not. </param>
-        /// <remarks>
+		/// <summary>
+		///     Creates a new instance of <see cref="DirectoryCatalog" />.
+		/// </summary>
+		/// <param name="directoryPath"> The directory which is searched for assemblies. </param>
+		/// <param name="filePattern"> The file pattern which is used to search for assemblies (can be null to use <see cref="DefaultFilePattern" />). </param>
+		/// <param name="recursive"> Specifies whether assemblies are searched recursive (including subdirectories) or not. </param>
+		/// <remarks>
 		///     <para>
 		///         true is used for <see cref="ExportAllTypes" /> and <see cref="IgnoreFrameworkFiles" />.
 		///     </para>
-        /// </remarks>
-        /// <exception cref="ArgumentNullException"> <paramref name="directoryPath" /> is null. </exception>
-        /// <exception cref="InvalidOperationException"> <paramref name="directoryPath" /> is not a real usable directory. </exception>
-        /// <exception cref="InvalidPathArgumentException"> <paramref name="filePattern" /> is an empty string. </exception>
-        public DirectoryCatalog(DirectoryPath directoryPath, string filePattern, bool recursive)
-            : this(directoryPath, true, true, filePattern, recursive)
-        {
-        }
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="directoryPath" /> is null. </exception>
+		/// <exception cref="InvalidOperationException"> <paramref name="directoryPath" /> is not a real usable directory. </exception>
+		/// <exception cref="InvalidPathArgumentException"> <paramref name="filePattern" /> is an empty string. </exception>
+		public DirectoryCatalog (DirectoryPath directoryPath, string filePattern, bool recursive)
+			: this(directoryPath, true, true, filePattern, recursive)
+		{
+		}
 
-        /// <summary>
-        ///     Creates a new instance of <see cref="DirectoryCatalog" />.
-        /// </summary>
-        /// <param name="directoryPath"> The directory which is searched for assemblies. </param>
-        /// <param name="exportAllTypes"> Specifies whether all types should be exported (see <see cref="ExportAllTypes" /> for details). </param>
-        /// <param name="ignoreFrameworkFiles"> Specifies whether framework-provided files should be exported (see <see cref="IgnoreFrameworkFiles" /> for details). </param>
-        /// <remarks>
-        ///     <para>
-        ///         The default file pattern <see cref="DefaultFilePattern" /> is used and search is performed non-recursive.
-        ///     </para>
-        /// </remarks>
-        /// <exception cref="ArgumentNullException"> <paramref name="directoryPath" /> is null. </exception>
-        /// <exception cref="InvalidPathArgumentException"> <paramref name="directoryPath" /> is not a real usable directory. </exception>
-        public DirectoryCatalog (DirectoryPath directoryPath, bool exportAllTypes, bool ignoreFrameworkFiles)
+		/// <summary>
+		///     Creates a new instance of <see cref="DirectoryCatalog" />.
+		/// </summary>
+		/// <param name="directoryPath"> The directory which is searched for assemblies. </param>
+		/// <param name="exportAllTypes"> Specifies whether all types should be exported (see <see cref="ExportAllTypes" /> for details). </param>
+		/// <param name="ignoreFrameworkFiles"> Specifies whether framework-provided files should be exported (see <see cref="IgnoreFrameworkFiles" /> for details). </param>
+		/// <remarks>
+		///     <para>
+		///         The default file pattern <see cref="DefaultFilePattern" /> is used and search is performed non-recursive.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="directoryPath" /> is null. </exception>
+		/// <exception cref="InvalidPathArgumentException"> <paramref name="directoryPath" /> is not a real usable directory. </exception>
+		public DirectoryCatalog (DirectoryPath directoryPath, bool exportAllTypes, bool ignoreFrameworkFiles)
 			: this(directoryPath, exportAllTypes, ignoreFrameworkFiles, DirectoryCatalog.DefaultFilePattern, false)
 		{
 		}
@@ -168,57 +168,31 @@ namespace RI.Framework.Composition.Catalogs
 		/// </value>
 		public DirectoryPath DirectoryPath { get; }
 
-        private bool _exportAllTypes;
-        private bool _ignoreFrameworkFiles;
+		/// <summary>
+		///     Gets whether all types should be exported.
+		/// </summary>
+		/// <value>
+		///     true if all types should be exported, false otherwise.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         If all types are exported, the exports will consist of all public, non-abstract, non-static types, even those without an <see cref="ExportAttribute" />.
+		///     </para>
+		/// </remarks>
+		public bool ExportAllTypes { get; }
 
-        /// <summary>
-        ///     Gets or sets whether all types should be exported.
-        /// </summary>
-        /// <value>
-        ///     true if all types should be exported, false otherwise.
-        /// </value>
-        /// <remarks>
-        ///     <para>
-        ///         If all types are exported, the exports will consist of all public, non-abstract, non-static types, even those without an <see cref="ExportAttribute" />.
-        ///     </para>
-        ///     <note type="note">
-        ///         Already exported types will not be affected when this property is changed.
-        ///     </note>
-        ///     <para>
-        ///         Changing this property will not automatically reload the assemblies/types.
-        ///         Use <see cref="Reload"/> to apply new settings to this property.
-        ///     </para>
-        /// </remarks>
-        public bool ExportAllTypes
-        {
-            get
-            {
-                lock (this.SyncRoot)
-                {
-                    return this._exportAllTypes;
-                }
-            }
-            set
-            {
-                lock (this.SyncRoot)
-                {
-                    this._exportAllTypes = value;
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Indicates whether there were assembly files which could not be loaded.
-        /// </summary>
-        /// <value>
-        ///     true if there was at least one assembly file which could not be loaded, false otherwise.
-        /// </value>
-        /// <remarks>
-        ///     <para>
-        ///         The list of failed assembly files which could not be loaded can be retrieved using <see cref="GetFailedFiles" />.
-        ///     </para>
-        /// </remarks>
-        public bool Failed
+		/// <summary>
+		///     Indicates whether there were assembly files which could not be loaded.
+		/// </summary>
+		/// <value>
+		///     true if there was at least one assembly file which could not be loaded, false otherwise.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         The list of failed assembly files which could not be loaded can be retrieved using <see cref="GetFailedFiles" />.
+		///     </para>
+		/// </remarks>
+		public bool Failed
 		{
 			get
 			{
@@ -237,50 +211,27 @@ namespace RI.Framework.Composition.Catalogs
 		/// </value>
 		public string FilePattern { get; }
 
-        /// <summary>
-        ///     Gets or sets whether files provided by the framework itself are ignored.
-        /// </summary>
-        /// <value>
-        ///     true if files provided by the framework itself are ignored, false otherwise.
-        /// </value>
-        /// <remarks>
-        ///     <para>
-        ///         If framework-provided files are ignored, their types are not exported by default.
-        ///         However, you can still export those types by explicit export them, e.g. through <see cref="AssemblyCatalog" />, <see cref="TypeCatalog" />, or <see cref="InstanceCatalog" />.
-        ///     </para>
-        ///     <note type="note">
-        ///         Already exported types will not be affected when this property is changed.
-        ///     </note>
-        ///     <para>
-        ///         Changing this property will not automatically reload the assemblies/types.
-        ///         Use <see cref="Reload"/> to apply new settings to this property.
-        ///     </para>
-        /// </remarks>
-        public bool IgnoreFrameworkFiles
-        {
-            get
-            {
-                lock (this.SyncRoot)
-                {
-                    return this._ignoreFrameworkFiles;
-                }
-            }
-            set
-            {
-                lock (this.SyncRoot)
-                {
-                    this._ignoreFrameworkFiles = value;
-                }
-            }
-        }
+		/// <summary>
+		///     Gets whether files provided by the framework itself are ignored.
+		/// </summary>
+		/// <value>
+		///     true if files provided by the framework itself are ignored, false otherwise.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         If framework-provided files are ignored, their types are not exported by default.
+		///         However, you can still export those types by explicit export them, e.g. through <see cref="AssemblyCatalog" />, <see cref="TypeCatalog" />, or <see cref="InstanceCatalog" />.
+		///     </para>
+		/// </remarks>
+		public bool IgnoreFrameworkFiles { get; }
 
-        /// <summary>
-        ///     Gets whether assemblies are searched recursive (including subdirectories) or not.
-        /// </summary>
-        /// <value>
-        ///     true if subdirectories of <see cref="DirectoryPath" /> are searched for assemblies, false otherwise.
-        /// </value>
-        public bool Recursive { get; }
+		/// <summary>
+		///     Gets whether assemblies are searched recursive (including subdirectories) or not.
+		/// </summary>
+		/// <value>
+		///     true if subdirectories of <see cref="DirectoryPath" /> are searched for assemblies, false otherwise.
+		/// </value>
+		public bool Recursive { get; }
 
 		private HashSet<FilePath> FailedFiles { get; set; }
 

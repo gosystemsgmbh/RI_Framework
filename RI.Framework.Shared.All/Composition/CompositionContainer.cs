@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 
@@ -17,6 +18,10 @@ using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.ObjectModel;
 using RI.Framework.Utilities.Reflection;
+
+
+
+
 #if PLATFORM_NETFX
 using System.Linq.Expressions;
 
@@ -320,7 +325,7 @@ namespace RI.Framework.Composition
 		static CompositionContainer ()
 		{
 			CompositionContainer.GlobalSyncRoot = new object();
-			CompositionContainer.ResolveImports_PropertyCache = null;
+			CompositionContainer.ResolveImports_PropertyCache = new Dictionary<Type, ResolveImports_PropertyInfo[]>();
 		}
 
 		#endregion
@@ -356,7 +361,7 @@ namespace RI.Framework.Composition
 
 		private static object GlobalSyncRoot { get; }
 
-		private static Dictionary<Type, ResolveImports_PropertyInfo[]> ResolveImports_PropertyCache { get; set; }
+		private static Dictionary<Type, ResolveImports_PropertyInfo[]> ResolveImports_PropertyCache { get; }
 
 		#endregion
 
@@ -398,7 +403,7 @@ namespace RI.Framework.Composition
 		/// </returns>
 		/// <remarks>
 		///     <para>
-		///         <see cref="CreateSingletonWithEverything" /> does the same as <see cref="CreateSingleton" /> except that, if a singleton instance is created, it also adds an <see cref="AppDomainCatalog" /> to immediately get all types in the current application domain as exports (including framework-provided types).
+		///         <see cref="CreateSingletonWithEverything" /> does the same as <see cref="CreateSingleton" /> except that, if a singleton instance is created, it also adds an <see cref="AppDomainCatalog" /> to immediately get all types in the current application domain as exports (excluding framework-provided types).
 		///     </para>
 		///     <para>
 		///         See <see cref="CreateSingleton" /> for more details.
@@ -525,6 +530,7 @@ namespace RI.Framework.Composition
 		///         An object can be exported if it is an instance of a class.
 		///     </para>
 		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="instance" /> is null. </exception>
 		public static bool ValidateExportInstance (object instance)
 		{
 			if (instance == null)
@@ -557,6 +563,29 @@ namespace RI.Framework.Composition
 			return type.IsClass && (!type.IsAbstract);
 		}
 
+		/// <summary>
+		///     Validates whether a factory can be used for creating exports.
+		/// </summary>
+		/// <param name="factory"> The factory to validate. </param>
+		/// <returns>
+		///     true if the factory can be used by a <see cref="CompositionContainer" /> to create exports, false otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         A factory can be used for creating exports if xxx.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="factory" /> is null. </exception>
+		public static bool ValidateExportFactory (Delegate factory)
+		{
+			if (factory == null)
+			{
+				throw new ArgumentNullException(nameof(factory));
+			}
+
+			return (factory.Method.ReturnType.IsClass || factory.Method.ReturnType.IsInterface) && (factory.Method.ReturnType != typeof(void)) && (!factory.Method.GetParameters().Any(x => !CompositionContainer.ValidateImportType(x.ParameterType)));
+		}
+
 		private static CompositionContainer CreateSingletonInternal (bool addAppDomainCatalog)
 		{
 			CompositionContainer container = Singleton<CompositionContainer>.Instance;
@@ -564,12 +593,16 @@ namespace RI.Framework.Composition
 			{
 				container = Singleton<CompositionContainer>.Ensure();
 				container.AddInstance(container, typeof(CompositionContainer));
+				container.AddInstance(container, typeof(IDependencyResolver));
+				container.AddInstance(container, typeof(IServiceProvider));
 				if (addAppDomainCatalog)
 				{
 					container.AddCatalog(new AppDomainCatalog(true, true, true));
 				}
+
 				ServiceLocator.BindToDependencyResolver(container);
 			}
+
 			return container;
 		}
 
@@ -610,11 +643,6 @@ namespace RI.Framework.Composition
 		{
 			lock (CompositionContainer.GlobalSyncRoot)
 			{
-				if (CompositionContainer.ResolveImports_PropertyCache == null)
-				{
-					CompositionContainer.ResolveImports_PropertyCache = new Dictionary<Type, ResolveImports_PropertyInfo[]>();
-				}
-
 				if (!CompositionContainer.ResolveImports_PropertyCache.ContainsKey(type))
 				{
 					PropertyInfo[] properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
@@ -632,6 +660,7 @@ namespace RI.Framework.Composition
 						info.ImportName = info.ImportAttributes.FirstOrDefault(null, x => !x.Name.IsNullOrEmptyOrWhitespace())?.Name;
 						infos[i1] = info;
 					}
+
 					CompositionContainer.ResolveImports_PropertyCache.Add(type, infos);
 				}
 
@@ -647,9 +676,9 @@ namespace RI.Framework.Composition
 			}
 
 #if PLATFORM_NETFX //Type genericType = type.IsGenericType ? type.GetGenericTypeDefinition() : null;
-			//Type typeArgument = type.IsGenericType ? type.GetGenericArguments()[0] : type;
-			//int typeArgumentCount = type.IsGenericType ? type.GetGenericArguments().Length : 0;
-			//return (typeArgument.IsClass || typeArgument.IsInterface) && ((genericType == null) || ((genericType == typeof(IEnumerable<>)) && (typeArgumentCount == 1)) || ((genericType == typeof(Func<>)) && (typeArgumentCount == 1)) || ((genericType == typeof(Lazy<>)) && (typeArgumentCount == 1)));
+//Type typeArgument = type.IsGenericType ? type.GetGenericArguments()[0] : type;
+//int typeArgumentCount = type.IsGenericType ? type.GetGenericArguments().Length : 0;
+//return (typeArgument.IsClass || typeArgument.IsInterface) && ((genericType == null) || ((genericType == typeof(IEnumerable<>)) && (typeArgumentCount == 1)) || ((genericType == typeof(Func<>)) && (typeArgumentCount == 1)) || ((genericType == typeof(Lazy<>)) && (typeArgumentCount == 1)));
 			return type.IsClass || type.IsInterface;
 #endif
 #if PLATFORM_UNITY
@@ -952,6 +981,11 @@ namespace RI.Framework.Composition
 				throw new ArgumentNullException(nameof(factory));
 			}
 
+			if (!CompositionContainer.ValidateExportFactory(factory))
+			{
+				throw new InvalidTypeArgumentException(nameof(factory));
+			}
+
 			if (exportName == null)
 			{
 				throw new ArgumentNullException(nameof(exportName));
@@ -989,7 +1023,7 @@ namespace RI.Framework.Composition
 		/// <exception cref="ArgumentNullException"> <paramref name="factory" /> or <paramref name="exportType" /> is null. </exception>
 		/// <exception cref="InvalidTypeArgumentException"> <paramref name="factory" /> is not of a type which can be used for composition. </exception>
 		/// <exception cref="CompositionException"> The internal recomposition failed. </exception>
-		public void AddFactory (Func<CompositionContainer, object> factory, Type exportType, bool privateExport) => this.AddFactory((Delegate)factory, exportType, privateExport);
+		public void AddFactory (Func<object> factory, Type exportType, bool privateExport) => this.AddFactory((Delegate)factory, exportType, privateExport);
 
 		/// <summary>
 		///     Manual export: Adds a factory and exports it under the specified name for composition.
@@ -1010,7 +1044,7 @@ namespace RI.Framework.Composition
 		/// <exception cref="InvalidTypeArgumentException"> <paramref name="factory" /> is not of a type which can be used for composition. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="exportName" /> is an empty string. </exception>
 		/// <exception cref="CompositionException"> The internal recomposition failed. </exception>
-		public void AddFactory (Func<CompositionContainer, object> factory, string exportName, bool privateExport) => this.AddFactory((Delegate)factory, exportName, privateExport);
+		public void AddFactory (Func<object> factory, string exportName, bool privateExport) => this.AddFactory((Delegate)factory, exportName, privateExport);
 
 		/// <summary>
 		///     Manual export: Adds an object and exports it under the specified types default name for composition.
@@ -1181,7 +1215,7 @@ namespace RI.Framework.Composition
 		/// </summary>
 		/// <remarks>
 		///     <para>
-		///         All exports of all catalogs, objects, and types are removed.
+		///         All catalogs, creators, objects, types, and factories are removed.
 		///     </para>
 		/// </remarks>
 		/// <exception cref="CompositionException"> The internal recomposition failed. </exception>
@@ -1314,11 +1348,15 @@ namespace RI.Framework.Composition
 				{
 					if (catalogItem.Value != null)
 					{
-						lines.Add("  Kind=Instance, Value=" + catalogItem.Value.GetType().AssemblyQualifiedName);
+						lines.Add(string.Format(CultureInfo.InvariantCulture, "  Kind=Instance, Private=0, Value= {0} ({1})", catalogItem.Value.GetType().Name, catalogItem.Value.GetType().AssemblyQualifiedName));
 					}
-					else
+					else if (catalogItem.Type != null)
 					{
-						lines.Add("  Kind=Type, Private=" + (catalogItem.PrivateExport ? "yes" : "no") + ", Type=" + catalogItem.Type.AssemblyQualifiedName);
+						lines.Add(string.Format(CultureInfo.InvariantCulture, "  Kind=Type,     Private={0}, Value= {1} ({2})", catalogItem.PrivateExport ? "1" : "0", catalogItem.Type.Name, catalogItem.Type.AssemblyQualifiedName));
+					}
+					else if (catalogItem.Factory != null)
+					{
+						lines.Add(string.Format(CultureInfo.InvariantCulture, "  Kind=Factory,  Private={0}, Value= {1}", catalogItem.PrivateExport ? "1" : "0", catalogItem.Factory.GetFullName()));
 					}
 				}
 
@@ -1530,6 +1568,7 @@ namespace RI.Framework.Composition
 						recomposed = true;
 					}
 				}
+
 				return recomposed;
 			}
 		}
@@ -1919,7 +1958,7 @@ namespace RI.Framework.Composition
 					bool canRecompose = property.CanRecompose;
 					object oldValue = property.GetMethod?.Invoke(obj, null);
 
-					if ((isConstructing || (updateMissing && (oldValue == null)) || (updateRecomposable && canRecompose) || (updateComposed && (oldValue != null))))
+					if (isConstructing || (updateMissing && (oldValue == null)) || (updateRecomposable && canRecompose) || (updateComposed && (oldValue != null)))
 					{
 						string importName = property.ImportName;
 						Type importType = property.ImportType;
@@ -2070,6 +2109,7 @@ namespace RI.Framework.Composition
 						{
 							items.Add(new CompositionCatalogItem(name, type.Type, type.PrivateExport));
 						}
+
 						foreach (KeyValuePair<string, object> openInstance in type.OpenInstances)
 						{
 							items.Add(new CompositionCatalogItem(name, openInstance.Value));
@@ -2088,6 +2128,7 @@ namespace RI.Framework.Composition
 						}
 					}
 				}
+
 				return snapshot;
 			}
 		}
@@ -2122,6 +2163,7 @@ namespace RI.Framework.Composition
 					{
 						instances.Add(type.ClosedInstance);
 					}
+
 					instances.AddRange(type.OpenInstances.Values);
 				}
 
@@ -2138,6 +2180,7 @@ namespace RI.Framework.Composition
 			return instances;
 		}
 
+		[SuppressMessage("ReSharper", "UnusedMember.Local")]
 		private T GetExportForLazyInvoker <T> (string exportName)
 			where T : class
 		{
@@ -2147,6 +2190,7 @@ namespace RI.Framework.Composition
 			}
 		}
 
+		[SuppressMessage("ReSharper", "UnusedMember.Local")]
 		private List<T> GetExportsForLazyInvoker <T> (string exportName)
 			where T : class
 		{
@@ -2376,6 +2420,7 @@ namespace RI.Framework.Composition
 					Type[] typeArguments = typeHint.GetGenericArguments();
 					typeToCreate = typeToCreate.MakeGenericType(typeArguments);
 				}
+
 				string openName = isOpenType ? typeToCreate.FullName : null;
 				if ((openName != null) && (typeItem.OpenInstances.ContainsKey(openName)))
 				{
@@ -2471,6 +2516,7 @@ namespace RI.Framework.Composition
 								full = resolveScope.GetImportValueFromNameOrType(importName, importType, out _) != null;
 							}
 						}
+
 						if (full.HasValue)
 						{
 							if (full.Value)
@@ -2777,8 +2823,10 @@ namespace RI.Framework.Composition
 							{
 								newInstances.Add(item.Value, new HashSet<string>(CompositionContainer.NameComparer));
 							}
+
 							newInstances[item.Value].Add(compositionItem.Name);
 						}
+
 						instanceItem.Checked = true;
 					}
 				}
@@ -2792,18 +2840,23 @@ namespace RI.Framework.Composition
 							typeItem = new CompositionTypeItem(item.Type, item.PrivateExport);
 							compositionItem.Types.Add(typeItem);
 						}
+
 						typeItem.Checked = true;
 					}
 				}
 				else if (item.Factory != null)
 				{
-					CompositionFactoryItem factoryItem = compositionItem.Factories.FirstOrDefault(x => (x.Factory == item.Factory));
-					if (factoryItem == null)
+					if (CompositionContainer.ValidateExportFactory(item.Factory))
 					{
-						factoryItem = new CompositionFactoryItem(item.Factory, item.PrivateExport);
-						compositionItem.Factories.Add(factoryItem);
+						CompositionFactoryItem factoryItem = compositionItem.Factories.FirstOrDefault(x => (x.Factory == item.Factory));
+						if (factoryItem == null)
+						{
+							factoryItem = new CompositionFactoryItem(item.Factory, item.PrivateExport);
+							compositionItem.Factories.Add(factoryItem);
+						}
+
+						factoryItem.Checked = true;
 					}
-					factoryItem.Checked = true;
 				}
 			}
 
@@ -2826,6 +2879,7 @@ namespace RI.Framework.Composition
 					{
 						(x?.ClosedInstance as IDisposable)?.Dispose();
 					}
+
 					foreach (KeyValuePair<string, object> openInstance in x?.OpenInstances ?? new Dictionary<string, object>())
 					{
 						this.Log(LogLevel.Debug, "Type removed from container: {0} / {1}", compositionItem.Key, openInstance.Value?.GetType()?.AssemblyQualifiedName ?? "[null]");
@@ -3256,7 +3310,7 @@ namespace RI.Framework.Composition
 
 			public MethodInfo GetMethod { get; set; }
 
-			public List<ImportAttribute> ImportAttributes { get; set; } = new List<ImportAttribute>();
+			public List<ImportAttribute> ImportAttributes { get; } = new List<ImportAttribute>();
 
 			public string ImportName { get; set; }
 
@@ -3299,7 +3353,6 @@ namespace RI.Framework.Composition
 #endif
 
 #if PLATFORM_NETFX
-
 		private object CreateArray (Type type, List<object> content)
 		{
 			Array array = Array.CreateInstance(type, content.Count);

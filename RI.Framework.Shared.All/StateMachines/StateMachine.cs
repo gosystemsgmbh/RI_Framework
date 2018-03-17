@@ -1,11 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
 
+using RI.Framework.Collections.DirectLinq;
 using RI.Framework.StateMachines.Caches;
 using RI.Framework.StateMachines.Dispatchers;
 using RI.Framework.StateMachines.Resolvers;
 using RI.Framework.StateMachines.States;
+using RI.Framework.Utilities;
 using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.ObjectModel;
+using RI.Framework.Utilities.Reflection;
 
 
 
@@ -242,6 +247,8 @@ namespace RI.Framework.StateMachines
 
 			this.Configuration = configuration;
 
+			this.StateVariableInfos = new Dictionary<Type, Dictionary<string, StateVariableInfo>>();
+
 			this.TransientDelegate = this.ExecuteTransient;
 			this.SignalDelegate = this.ExecuteSignal;
 			this.UpdateDelegate = this.ExecuteUpdate;
@@ -311,6 +318,8 @@ namespace RI.Framework.StateMachines
 		private DateTime StateEnterTimestampLocal { get; set; }
 
 		private DateTime StateEnterTimestampUtc { get; set; }
+
+		private Dictionary<Type, Dictionary<string, StateVariableInfo>> StateVariableInfos { get; }
 
 		private StateMachineTransientDelegate TransientDelegate { get; }
 
@@ -425,6 +434,37 @@ namespace RI.Framework.StateMachines
 			updateInfo.StateEnteredLocal = this.StateEnterTimestampLocal;
 
 			this.DispatchUpdate(updateInfo);
+		}
+
+		private Dictionary<string, StateVariableInfo> GetStateVariableInfos (Type type)
+		{
+			if (!this.StateVariableInfos.ContainsKey(type))
+			{
+				Dictionary<string, StateVariableInfo> stateVariableInfos = new Dictionary<string, StateVariableInfo>(StringComparerEx.Ordinal);
+
+				PropertyInfo[] properties = type.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+				foreach (PropertyInfo property in properties)
+				{
+					StateVariableAttribute attribute = property.GetCustomAttributes(typeof(StateVariableAttribute), false).OfType<StateVariableAttribute>().FirstOrDefault();
+					if (attribute == null)
+					{
+						continue;
+					}
+
+					StateVariableInfo info = new StateVariableInfo();
+					info.Property = property;
+					info.Attribute = attribute;
+					info.GetMethod = property.GetGetMethod(true);
+					info.SetMethod = property.GetSetMethod(true);
+					info.DefaultValue = property.PropertyType.GetDefaultValue();
+
+					stateVariableInfos.Add(property.Name, info);
+				}
+
+				this.StateVariableInfos.Add(type, stateVariableInfos);
+			}
+
+			return this.StateVariableInfos[type];
 		}
 
 		#endregion
@@ -553,6 +593,8 @@ namespace RI.Framework.StateMachines
 				this.State = nextState;
 				this.StateEnterTimestampUtc = DateTime.UtcNow;
 				this.StateEnterTimestampLocal = this.StateEnterTimestampUtc.ToLocalTime();
+
+				this.TransferStateVariables(previousState, nextState);
 
 				this.OnBeforeEnter(transientInfo);
 
@@ -793,6 +835,60 @@ namespace RI.Framework.StateMachines
 			return state;
 		}
 
+		/// <summary>
+		///     Called during <see cref="ExecuteTransient" /> between leaving the previous state and entering the next state to transfer the state variables.
+		/// </summary>
+		/// <param name="previousState"> The previous state, already left. </param>
+		/// <param name="nextState"> The next state, not yet enetered. </param>
+		protected virtual void TransferStateVariables (IState previousState, IState nextState)
+		{
+			Dictionary<string, object> variables = new Dictionary<string, object>(StringComparerEx.Ordinal);
+
+			if (previousState != null)
+			{
+				Dictionary<string, StateVariableInfo> stateVariableInfos = this.GetStateVariableInfos(previousState.GetType());
+				foreach (KeyValuePair<string, StateVariableInfo> stateVariableInfo in stateVariableInfos)
+				{
+					if (stateVariableInfo.Value.Attribute.Handling == StateVariableHandling.Unspecified)
+					{
+						continue;
+					}
+
+					if (stateVariableInfo.Value.Attribute.Handling == StateVariableHandling.Transient)
+					{
+						string name = stateVariableInfo.Key;
+						object value = stateVariableInfo.Value.GetMethod.Invoke(previousState, null);
+						variables.Add(name, value);
+					}
+
+					stateVariableInfo.Value.SetMethod.Invoke(previousState, new[] {stateVariableInfo.Value.DefaultValue});
+				}
+			}
+
+			if (nextState != null)
+			{
+				Dictionary<string, StateVariableInfo> stateVariableInfos = this.GetStateVariableInfos(nextState.GetType());
+				foreach (KeyValuePair<string, StateVariableInfo> stateVariableInfo in stateVariableInfos)
+				{
+					if (stateVariableInfo.Value.Attribute.Handling == StateVariableHandling.Unspecified)
+					{
+						continue;
+					}
+
+					object value = stateVariableInfo.Value.DefaultValue;
+					if (stateVariableInfo.Value.Attribute.Handling == StateVariableHandling.Transient)
+					{
+						if (variables.ContainsKey(stateVariableInfo.Key))
+						{
+							value = variables[stateVariableInfo.Key];
+						}
+					}
+
+					stateVariableInfo.Value.SetMethod.Invoke(nextState, new[] {value});
+				}
+			}
+		}
+
 		#endregion
 
 
@@ -805,6 +901,29 @@ namespace RI.Framework.StateMachines
 
 		/// <inheritdoc />
 		public object SyncRoot { get; }
+
+		#endregion
+
+
+
+
+		#region Type: StateVariableInfo
+
+		private sealed class StateVariableInfo
+		{
+			#region Instance Properties/Indexer
+
+			public StateVariableAttribute Attribute { get; set; }
+
+			public object DefaultValue { get; set; }
+
+			public MethodInfo GetMethod { get; set; }
+			public PropertyInfo Property { get; set; }
+
+			public MethodInfo SetMethod { get; set; }
+
+			#endregion
+		}
 
 		#endregion
 	}

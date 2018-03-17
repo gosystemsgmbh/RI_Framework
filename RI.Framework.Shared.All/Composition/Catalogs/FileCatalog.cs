@@ -69,40 +69,41 @@ namespace RI.Framework.Composition.Catalogs
 					}
 				}
 			}
+
 			return items;
 		}
 
-        #endregion
+		#endregion
 
 
 
 
-        #region Instance Constructor/Destructor
+		#region Instance Constructor/Destructor
 
-        /// <summary>
-        ///     Creates a new instance of <see cref="FileCatalog" />.
-        /// </summary>
-        /// <param name="file"> The assembly file to load. </param>
-        /// <remarks>
+		/// <summary>
+		///     Creates a new instance of <see cref="FileCatalog" />.
+		/// </summary>
+		/// <param name="file"> The assembly file to load. </param>
+		/// <remarks>
 		///     <para>
 		///         true is used for <see cref="ExportAllTypes" />.
 		///     </para>
-        /// </remarks>
-        /// <exception cref="ArgumentNullException"> <paramref name="file" /> is null. </exception>
-        /// <exception cref="InvalidPathArgumentException"> <paramref name="file" /> is not a real usable file. </exception>
-        public FileCatalog(FilePath file)
-            : this(file, true)
-        {
-        }
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="file" /> is null. </exception>
+		/// <exception cref="InvalidPathArgumentException"> <paramref name="file" /> is not a real usable file. </exception>
+		public FileCatalog (FilePath file)
+			: this(file, true)
+		{
+		}
 
-        /// <summary>
-        ///     Creates a new instance of <see cref="FileCatalog" />.
-        /// </summary>
-        /// <param name="file"> The assembly file to load. </param>
-        /// <param name="exportAllTypes"> Specifies whether all types should be exported (see <see cref="ExportAllTypes" /> for details). </param>
-        /// <exception cref="ArgumentNullException"> <paramref name="file" /> is null. </exception>
-        /// <exception cref="InvalidPathArgumentException"> <paramref name="file" /> is not a real usable file. </exception>
-        public FileCatalog (FilePath file, bool exportAllTypes)
+		/// <summary>
+		///     Creates a new instance of <see cref="FileCatalog" />.
+		/// </summary>
+		/// <param name="file"> The assembly file to load. </param>
+		/// <param name="exportAllTypes"> Specifies whether all types should be exported (see <see cref="ExportAllTypes" /> for details). </param>
+		/// <exception cref="ArgumentNullException"> <paramref name="file" /> is null. </exception>
+		/// <exception cref="InvalidPathArgumentException"> <paramref name="file" /> is not a real usable file. </exception>
+		public FileCatalog (FilePath file, bool exportAllTypes)
 		{
 			if (file == null)
 			{
@@ -129,6 +130,7 @@ namespace RI.Framework.Composition.Catalogs
 		#region Instance Fields
 
 		private bool _failed;
+		private bool _isLoaded;
 
 		#endregion
 
@@ -182,7 +184,29 @@ namespace RI.Framework.Composition.Catalogs
 		/// </value>
 		public FilePath File { get; }
 
-		private bool IsLoaded { get; set; }
+		/// <summary>
+		///     Gets whether the file is loaded.
+		/// </summary>
+		/// <value>
+		///     true if the file is loaded, false otherwise.
+		/// </value>
+		public bool IsLoaded
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._isLoaded;
+				}
+			}
+			private set
+			{
+				lock (this.SyncRoot)
+				{
+					this._isLoaded = value;
+				}
+			}
+		}
 
 		#endregion
 
@@ -214,6 +238,7 @@ namespace RI.Framework.Composition.Catalogs
 					{
 						this.Items.Add(item.Key, item.Value);
 					}
+
 					this.Failed = false;
 				}
 				catch (Exception exception)

@@ -117,6 +117,11 @@ namespace RI.Framework.Composition
 				throw new ArgumentNullException(nameof(factory));
 			}
 
+			if (!CompositionContainer.ValidateExportFactory(factory))
+			{
+				throw new InvalidTypeArgumentException(nameof(factory));
+			}
+
 			if (exportName == null)
 			{
 				throw new ArgumentNullException(nameof(exportName));
@@ -130,11 +135,11 @@ namespace RI.Framework.Composition
 			this.ItemsToAdd.Add(new CompositionCatalogItem(exportName, factory, privateExport));
 		}
 
-		/// <inheritdoc cref="CompositionContainer.AddFactory(Func{CompositionContainer,object}, Type, bool)" />
-		public void AddFactory (Func<CompositionContainer, object> factory, Type exportType, bool privateExport) => this.AddFactory((Delegate)factory, exportType, privateExport);
+		/// <inheritdoc cref="CompositionContainer.AddFactory(Func{object}, Type, bool)" />
+		public void AddFactory (Func<object> factory, Type exportType, bool privateExport) => this.AddFactory((Delegate)factory, exportType, privateExport);
 
-		/// <inheritdoc cref="CompositionContainer.AddFactory(Func{CompositionContainer,object}, string, bool)" />
-		public void AddFactory (Func<CompositionContainer, object> factory, string exportName, bool privateExport) => this.AddFactory((Delegate)factory, exportName, privateExport);
+		/// <inheritdoc cref="CompositionContainer.AddFactory(Func{object}, string, bool)" />
+		public void AddFactory (Func<object> factory, string exportName, bool privateExport) => this.AddFactory((Delegate)factory, exportName, privateExport);
 
 		/// <inheritdoc cref="CompositionContainer.AddInstance(object, Type)" />
 		public void AddInstance (object instance, Type exportType)

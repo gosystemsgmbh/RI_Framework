@@ -68,52 +68,20 @@ namespace RI.Framework.Composition.Catalogs
 
 
 
-		#region Instance Fields
+		#region Instance Properties/Indexer
 
-		private bool _exportAllTypes;
-
-        #endregion
-
-
-
-
-        #region Instance Properties/Indexer
-
-        /// <summary>
-        ///     Gets or sets whether all types should be exported.
-        /// </summary>
-        /// <value>
-        ///     true if all types should be exported, false otherwise.
-        /// </value>
-        /// <remarks>
-        ///     <para>
-        ///         If all types are exported, the exports will consist of all public, non-abstract, non-static types, even those without an <see cref="ExportAttribute" />.
-        ///     </para>
-        ///     <note type="note">
-        ///         Already exported types will not be affected when this property is changed.
-        ///     </note>
-        ///     <para>
-        ///         Changing this property will not automatically reload the assemblies/types.
-        ///         Use <see cref="Reload"/> to apply new settings to this property.
-        ///     </para>
-        /// </remarks>
-        public bool ExportAllTypes
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					return this._exportAllTypes;
-				}
-			}
-			set
-			{
-				lock (this.SyncRoot)
-				{
-					this._exportAllTypes = value;
-				}
-			}
-		}
+		/// <summary>
+		///     Gets whether all types should be exported.
+		/// </summary>
+		/// <value>
+		///     true if all types should be exported, false otherwise.
+		/// </value>
+		/// <remarks>
+		///     <para>
+		///         If all types are exported, the exports will consist of all public, non-abstract, non-static types, even those without an <see cref="ExportAttribute" />.
+		///     </para>
+		/// </remarks>
+		public bool ExportAllTypes { get; }
 
 		private HashSet<Assembly> LoadedAssemblies { get; }
 

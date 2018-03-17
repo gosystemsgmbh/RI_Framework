@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
 using RI.Framework.Collections.DirectLinq;
-using RI.Framework.Utilities.Logging;
 using RI.Framework.Composition.Model;
+using RI.Framework.Utilities.Logging;
 
 
 
@@ -23,52 +23,52 @@ namespace RI.Framework.Composition.Catalogs
 	/// <threadsafety static="true" instance="true" />
 	public class InstanceCatalog : CompositionCatalog
 	{
-        #region Instance Constructor/Destructor
+		#region Instance Constructor/Destructor
 
-        /// <summary>
-        ///     Creates a new instance of <see cref="InstanceCatalog" />.
-        /// </summary>
-        /// <param name="objects"> The sequence of objects which are used for composition. </param>
-        /// <remarks>
-        ///     <para>
-        ///         <paramref name="objects" /> is enumerated exactly once.
-        ///     </para>
+		/// <summary>
+		///     Creates a new instance of <see cref="InstanceCatalog" />.
+		/// </summary>
+		/// <param name="objects"> The sequence of objects which are used for composition. </param>
+		/// <remarks>
+		///     <para>
+		///         <paramref name="objects" /> is enumerated exactly once.
+		///     </para>
 		///     <para>
 		///         true is used for <see cref="ExportAllTypes" />.
 		///     </para>
-        /// </remarks>
-        public InstanceCatalog(IEnumerable<object> objects)
-            : this(true, objects)
-        {
-        }
+		/// </remarks>
+		public InstanceCatalog (IEnumerable<object> objects)
+			: this(true, objects)
+		{
+		}
 
-        /// <summary>
-        ///     Creates a new instance of <see cref="InstanceCatalog" />.
-        /// </summary>
-        /// <param name="objects"> The array of objects which are used for composition. </param>
+		/// <summary>
+		///     Creates a new instance of <see cref="InstanceCatalog" />.
+		/// </summary>
+		/// <param name="objects"> The array of objects which are used for composition. </param>
 		/// <remarks>
 		///     <para>
 		///         true is used for <see cref="ExportAllTypes" />.
 		///     </para>
 		/// </remarks>
-        public InstanceCatalog(params object[] objects)
-            : this(true, objects)
-        {
-        }
-
-        /// <summary>
-        ///     Creates a new instance of <see cref="InstanceCatalog" />.
-        /// </summary>
-        /// <param name="exportAllTypes"> Specifies whether all types should be exported (see <see cref="ExportAllTypes" /> for details). </param>
-        /// <param name="objects"> The sequence of objects which are used for composition. </param>
-        /// <remarks>
-        ///     <para>
-        ///         <paramref name="objects" /> is enumerated exactly once.
-        ///     </para>
-        /// </remarks>
-        public InstanceCatalog (bool exportAllTypes, IEnumerable<object> objects)
+		public InstanceCatalog (params object[] objects)
+			: this(true, objects)
 		{
-            this.ExportAllTypes = exportAllTypes;
+		}
+
+		/// <summary>
+		///     Creates a new instance of <see cref="InstanceCatalog" />.
+		/// </summary>
+		/// <param name="exportAllTypes"> Specifies whether all types should be exported (see <see cref="ExportAllTypes" /> for details). </param>
+		/// <param name="objects"> The sequence of objects which are used for composition. </param>
+		/// <remarks>
+		///     <para>
+		///         <paramref name="objects" /> is enumerated exactly once.
+		///     </para>
+		/// </remarks>
+		public InstanceCatalog (bool exportAllTypes, IEnumerable<object> objects)
+		{
+			this.ExportAllTypes = exportAllTypes;
 
 			if (objects != null)
 			{
@@ -101,17 +101,24 @@ namespace RI.Framework.Composition.Catalogs
 			}
 		}
 
-        /// <summary>
-        ///     Creates a new instance of <see cref="InstanceCatalog" />.
-        /// </summary>
-        /// <param name="exportAllTypes"> Specifies whether all types should be exported (see <see cref="ExportAllTypes" /> for details). </param>
-        /// <param name="objects"> The array of objects which are used for composition. </param>
-        public InstanceCatalog (bool exportAllTypes, params object[] objects)
+		/// <summary>
+		///     Creates a new instance of <see cref="InstanceCatalog" />.
+		/// </summary>
+		/// <param name="exportAllTypes"> Specifies whether all types should be exported (see <see cref="ExportAllTypes" /> for details). </param>
+		/// <param name="objects"> The array of objects which are used for composition. </param>
+		public InstanceCatalog (bool exportAllTypes, params object[] objects)
 			: this(exportAllTypes, (IEnumerable<object>)objects)
 		{
 		}
 
-        /// <summary>
+		#endregion
+
+
+
+
+		#region Instance Properties/Indexer
+
+		/// <summary>
 		///     Gets whether all types should be exported.
 		/// </summary>
 		/// <value>
@@ -124,6 +131,6 @@ namespace RI.Framework.Composition.Catalogs
 		/// </remarks>
 		public bool ExportAllTypes { get; }
 
-        #endregion
-    }
+		#endregion
+	}
 }
