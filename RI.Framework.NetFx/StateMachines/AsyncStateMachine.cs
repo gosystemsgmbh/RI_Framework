@@ -137,7 +137,55 @@ namespace RI.Framework.StateMachines
 			lock (this.SyncRoot)
 			{
 				waitTask = this.WaitForTransientAsync(state, Timeout.Infinite, CancellationToken.None);
-				this.TransientInternal(nextState);
+				this.TransientInternal(nextState, new object[0]);
+			}
+
+			return await waitTask.ConfigureAwait(false);
+		}
+
+		/// <summary>
+		///     Initiates a transition to another state.
+		/// </summary>
+		/// <typeparam name="TState"> The type of state to transition to. </typeparam>
+		/// <param name="parameters"> Specifies optional transition parameters passed to the next state. </param>
+		/// <returns>
+		///     true if the transition was executed within the specified timeout, false otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         The method waits for the execution of the transition, even if the current state is already the same as the requested state.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="TaskCanceledException"> The state transition was aborted. </exception>
+		public async Task<bool> TransientAsync <TState> (params object[] parameters)
+			where TState : IState
+		{
+			return await this.TransientAsync(typeof(TState), parameters).ConfigureAwait(false);
+		}
+
+		/// <summary>
+		///     Initiates a transition to another state.
+		/// </summary>
+		/// <param name="state"> The type of state to transition to. </param>
+		/// <param name="parameters"> Specifies optional transition parameters passed to the next state. </param>
+		/// <returns>
+		///     true if the transition was executed within the specified timeout, false otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         The method waits for the execution of the transition, even if the current state is already the same as the requested state.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="TaskCanceledException"> The state transition was aborted. </exception>
+		public async Task<bool> TransientAsync (Type state, params object[] parameters)
+		{
+			IState nextState = this.Resolve(state, true);
+
+			Task<bool> waitTask;
+			lock (this.SyncRoot)
+			{
+				waitTask = this.WaitForTransientAsync(state, Timeout.Infinite, CancellationToken.None);
+				this.TransientInternal(nextState, parameters ?? new object[0]);
 			}
 
 			return await waitTask.ConfigureAwait(false);

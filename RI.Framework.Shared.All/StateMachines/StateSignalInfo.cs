@@ -43,7 +43,7 @@ namespace RI.Framework.StateMachines
 		/// <value>
 		///     The state machine associated with the signal.
 		/// </value>
-		public StateMachine StateMachine { get; private set; }
+		public StateMachine StateMachine { get; }
 
 		#endregion
 	}

@@ -15,11 +15,11 @@ namespace RI.Framework.StateMachines
 	/// <remarks>
 	///     <para>
 	///         By default, <see cref="DefaultStateMachineConfiguration" /> uses a <see cref="DispatcherServiceStateDispatcher" /> for which it gets the required instances of <see cref="IDispatcherService" /> through a constructor parameter or through <see cref="ServiceLocator" />.
-	///         If no instance of <see cref="IDispatcherService" /> can be retrieved, no <see cref="DispatcherServiceStateDispatcher" /> is created and you must supply an instance of <see cref="IStateDispatcher" /> (using <see cref="StateMachineConfiguration.Dispatcher" />).
+	///         If no instance of <see cref="IDispatcherService" /> can be retrieved, no <see cref="DispatcherServiceStateDispatcher" /> is created and <see cref="DefaultStateDispatcher" /> is used.
 	///     </para>
 	///     <para>
 	///         By default, <see cref="DefaultStateMachineConfiguration" /> uses a <see cref="DependencyResolverStateResolver" /> for which it gets the required instances of <see cref="IDependencyResolver" /> through a constructor parameter or through <see cref="ServiceLocator" />.
-	///         If no instance of <see cref="IDependencyResolver" /> can be retrieved, no <see cref="DependencyResolverStateResolver" /> is created and you must supply an instance of <see cref="IStateResolver" /> (using <see cref="StateMachineConfiguration.Resolver" />).
+	///         If no instance of <see cref="IDependencyResolver" /> can be retrieved, no <see cref="DependencyResolverStateResolver" /> is created and <see cref="DefaultStateResolver" /> is used.
 	///         Note that <see cref="CompositionContainer" /> implements <see cref="IDependencyResolver" /> and can therefore be used as a resolver constructor parameter.
 	///     </para>
 	///     <para>
@@ -67,8 +67,15 @@ namespace RI.Framework.StateMachines
 			IDispatcherService dispatcherService = dispatcher ?? ServiceLocator.GetInstance<IDispatcherService>() ?? ServiceLocator.GetInstance<DispatcherService>();
 			IDependencyResolver dependencyResolver = resolver ?? ServiceLocator.GetInstance<IDependencyResolver>() ?? ServiceLocator.GetInstance<CompositionContainer>();
 
-			this.Dispatcher = dispatcherService == null ? null : new DispatcherServiceStateDispatcher(dispatcherService);
-			this.Resolver = dependencyResolver == null ? null : new DependencyResolverStateResolver(dependencyResolver);
+			if (dispatcherService != null)
+			{
+				this.Dispatcher = new DispatcherServiceStateDispatcher(dispatcherService);
+			}
+
+			if (dependencyResolver != null)
+			{
+				this.Resolver = new DependencyResolverStateResolver(dependencyResolver);
+			}
 		}
 
 		#endregion

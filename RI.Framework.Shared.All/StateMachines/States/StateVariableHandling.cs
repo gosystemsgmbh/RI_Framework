@@ -7,6 +7,7 @@
 	{
 		/// <summary>
 		///     The state variable handling is unspecified and behaves the same as if no <see cref="StateVariableAttribute" /> would be applied.
+		///     The behaviour then depends on the used state resolver and cache.
 		/// </summary>
 		Unspecified = 0,
 

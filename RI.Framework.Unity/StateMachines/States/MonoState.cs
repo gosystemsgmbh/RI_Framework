@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using RI.Framework.Collections;
 using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Composition;
 using RI.Framework.Composition.Model;
@@ -83,6 +84,7 @@ namespace RI.Framework.StateMachines.States
 			this.UpdateInterval = null;
 
 			this.ActiveMachines = new HashSet<StateMachine>();
+			this.SubMachines = new HashSet<StateMachine>();
 		}
 
 		#endregion
@@ -106,6 +108,52 @@ namespace RI.Framework.StateMachines.States
 		#region Instance Properties/Indexer
 
 		private HashSet<StateMachine> ActiveMachines { get; }
+
+		private HashSet<StateMachine> SubMachines { get; }
+
+		#endregion
+
+
+
+
+		#region Instance Methods
+
+		/// <summary>
+		///     Creates a new sub state machine which is a hierarchical subordinate to this state.
+		/// </summary>
+		/// <param name="creator"> The creator callback which is used to create the sub state machine. </param>
+		/// <returns>
+		///     The created sub state machine.
+		/// </returns>
+		/// <remarks>
+		///     <note type="note">
+		///         The created sub state machine is stored by this state instance.
+		///         This state instance will issue a transient to null on the created sub state machine every time this state is left (<see cref="Leave" />).
+		///         Further management, like keeping a reference to issue signals, transients, etc., must be done by this state itself.
+		///     </note>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="creator" /> is null. </exception>
+		/// <exception cref="InvalidOperationException"> <paramref name="creator" /> returned null instead of a <see cref="StateMachine" /> or derived instance. </exception>
+		protected StateMachine CreateSubStateMachine (Func<StateMachine> creator)
+		{
+			if (creator == null)
+			{
+				throw new ArgumentNullException(nameof(creator));
+			}
+
+			lock (this.SyncRoot)
+			{
+				StateMachine subStateMachine = creator();
+				if (subStateMachine == null)
+				{
+					throw new InvalidOperationException();
+				}
+
+				this.SubMachines.Add(subStateMachine);
+
+				return subStateMachine;
+			}
+		}
 
 		#endregion
 
@@ -322,6 +370,7 @@ namespace RI.Framework.StateMachines.States
 			lock (this.SyncRoot)
 			{
 				this.ActiveMachines.Remove(transientInfo.StateMachine);
+				this.SubMachines.ForEach(x => x.Transient(null));
 			}
 		}
 

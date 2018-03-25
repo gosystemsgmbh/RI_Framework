@@ -41,7 +41,7 @@ namespace RI.Framework.StateMachines
 		/// <value>
 		///     Information about the processed signal.
 		/// </value>
-		public StateSignalInfo SignalInfo { get; private set; }
+		public StateSignalInfo SignalInfo { get; }
 
 		#endregion
 	}

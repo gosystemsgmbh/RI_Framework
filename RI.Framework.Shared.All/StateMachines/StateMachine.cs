@@ -208,6 +208,65 @@ namespace RI.Framework.StateMachines
 	/// </example>
 	public class StateMachine : LogSource, ISynchronizable
 	{
+		#region Static Constructor/Destructor
+
+		static StateMachine ()
+		{
+			StateMachine.StateVariableInfos = new Dictionary<Type, Dictionary<string, StateVariableInfo>>();
+		}
+
+		#endregion
+
+
+
+
+		#region Static Properties/Indexer
+
+		private static Dictionary<Type, Dictionary<string, StateVariableInfo>> StateVariableInfos { get; }
+
+		#endregion
+
+
+
+
+		#region Static Methods
+
+		private static Dictionary<string, StateVariableInfo> GetStateVariableInfos (Type type)
+		{
+			if (!StateMachine.StateVariableInfos.ContainsKey(type))
+			{
+				Dictionary<string, StateVariableInfo> stateVariableInfos = new Dictionary<string, StateVariableInfo>(StringComparerEx.Ordinal);
+
+				PropertyInfo[] properties = type.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+				foreach (PropertyInfo property in properties)
+				{
+					StateVariableAttribute attribute = property.GetCustomAttributes(typeof(StateVariableAttribute), false).OfType<StateVariableAttribute>().FirstOrDefault();
+					if (attribute == null)
+					{
+						continue;
+					}
+
+					StateVariableInfo info = new StateVariableInfo();
+					info.Property = property;
+					info.Attribute = attribute;
+					info.GetMethod = property.GetGetMethod(true);
+					info.SetMethod = property.GetSetMethod(true);
+					info.DefaultValue = property.PropertyType.GetDefaultValue();
+
+					stateVariableInfos.Add(property.Name, info);
+				}
+
+				StateMachine.StateVariableInfos.Add(type, stateVariableInfos);
+			}
+
+			return StateMachine.StateVariableInfos[type];
+		}
+
+		#endregion
+
+
+
+
 		#region Instance Constructor/Destructor
 
 		/// <summary>
@@ -246,8 +305,6 @@ namespace RI.Framework.StateMachines
 			this.SyncRoot = new object();
 
 			this.Configuration = configuration;
-
-			this.StateVariableInfos = new Dictionary<Type, Dictionary<string, StateVariableInfo>>();
 
 			this.TransientDelegate = this.ExecuteTransient;
 			this.SignalDelegate = this.ExecuteSignal;
@@ -319,8 +376,6 @@ namespace RI.Framework.StateMachines
 
 		private DateTime StateEnterTimestampUtc { get; set; }
 
-		private Dictionary<Type, Dictionary<string, StateVariableInfo>> StateVariableInfos { get; }
-
 		private StateMachineTransientDelegate TransientDelegate { get; }
 
 		private StateMachineUpdateDelegate UpdateDelegate { get; }
@@ -374,7 +429,33 @@ namespace RI.Framework.StateMachines
 
 			lock (this.SyncRoot)
 			{
-				this.TransientInternal(nextState);
+				this.TransientInternal(nextState, new object[0]);
+			}
+		}
+
+		/// <summary>
+		///     Initiates a transition to another state.
+		/// </summary>
+		/// <param name="parameters"> Specifies optional transition parameters passed to the next state. </param>
+		/// <typeparam name="TState"> The type of state to transition to. </typeparam>
+		public void Transient <TState> (params object[] parameters)
+			where TState : IState
+		{
+			this.Transient(typeof(TState), parameters);
+		}
+
+		/// <summary>
+		///     Initiates a transition to another state.
+		/// </summary>
+		/// <param name="state"> The type of state to transition to. </param>
+		/// <param name="parameters"> Specifies optional transition parameters passed to the next state. </param>
+		public void Transient (Type state, params object[] parameters)
+		{
+			IState nextState = this.Resolve(state, true);
+
+			lock (this.SyncRoot)
+			{
+				this.TransientInternal(nextState, parameters ?? new object[0]);
 			}
 		}
 
@@ -405,13 +486,15 @@ namespace RI.Framework.StateMachines
 		///     Initiates a transition to another state.
 		/// </summary>
 		/// <param name="nextState"> The state instance to transition to. </param>
-		protected void TransientInternal (IState nextState)
+		/// <param name="parameters"> Specifies optional transition parameters passed to the next state. </param>
+		protected void TransientInternal (IState nextState, object[] parameters)
 		{
 			IState previousState = this.State;
 
 			StateTransientInfo transientInfo = new StateTransientInfo(this);
 			transientInfo.NextState = nextState;
 			transientInfo.PreviousState = previousState;
+			transientInfo.Parameters = new List<object>(parameters ?? new object[0]);
 
 			this.DispatchTransient(transientInfo);
 		}
@@ -434,37 +517,6 @@ namespace RI.Framework.StateMachines
 			updateInfo.StateEnteredLocal = this.StateEnterTimestampLocal;
 
 			this.DispatchUpdate(updateInfo);
-		}
-
-		private Dictionary<string, StateVariableInfo> GetStateVariableInfos (Type type)
-		{
-			if (!this.StateVariableInfos.ContainsKey(type))
-			{
-				Dictionary<string, StateVariableInfo> stateVariableInfos = new Dictionary<string, StateVariableInfo>(StringComparerEx.Ordinal);
-
-				PropertyInfo[] properties = type.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-				foreach (PropertyInfo property in properties)
-				{
-					StateVariableAttribute attribute = property.GetCustomAttributes(typeof(StateVariableAttribute), false).OfType<StateVariableAttribute>().FirstOrDefault();
-					if (attribute == null)
-					{
-						continue;
-					}
-
-					StateVariableInfo info = new StateVariableInfo();
-					info.Property = property;
-					info.Attribute = attribute;
-					info.GetMethod = property.GetGetMethod(true);
-					info.SetMethod = property.GetSetMethod(true);
-					info.DefaultValue = property.PropertyType.GetDefaultValue();
-
-					stateVariableInfos.Add(property.Name, info);
-				}
-
-				this.StateVariableInfos.Add(type, stateVariableInfos);
-			}
-
-			return this.StateVariableInfos[type];
 		}
 
 		#endregion
@@ -597,16 +649,14 @@ namespace RI.Framework.StateMachines
 				this.TransferStateVariables(previousState, nextState);
 
 				this.OnBeforeEnter(transientInfo);
-
 				nextState?.Enter(transientInfo);
+				this.OnAfterEnter(transientInfo);
 
 				int? interval = nextState?.UpdateInterval;
 				if (interval.HasValue)
 				{
 					this.UpdateInternal(interval.Value);
 				}
-
-				this.OnAfterEnter(transientInfo);
 			}
 		}
 
@@ -846,7 +896,7 @@ namespace RI.Framework.StateMachines
 
 			if (previousState != null)
 			{
-				Dictionary<string, StateVariableInfo> stateVariableInfos = this.GetStateVariableInfos(previousState.GetType());
+				Dictionary<string, StateVariableInfo> stateVariableInfos = StateMachine.GetStateVariableInfos(previousState.GetType());
 				foreach (KeyValuePair<string, StateVariableInfo> stateVariableInfo in stateVariableInfos)
 				{
 					if (stateVariableInfo.Value.Attribute.Handling == StateVariableHandling.Unspecified)
@@ -867,7 +917,7 @@ namespace RI.Framework.StateMachines
 
 			if (nextState != null)
 			{
-				Dictionary<string, StateVariableInfo> stateVariableInfos = this.GetStateVariableInfos(nextState.GetType());
+				Dictionary<string, StateVariableInfo> stateVariableInfos = StateMachine.GetStateVariableInfos(nextState.GetType());
 				foreach (KeyValuePair<string, StateVariableInfo> stateVariableInfo in stateVariableInfos)
 				{
 					if (stateVariableInfo.Value.Attribute.Handling == StateVariableHandling.Unspecified)
@@ -918,6 +968,7 @@ namespace RI.Framework.StateMachines
 			public object DefaultValue { get; set; }
 
 			public MethodInfo GetMethod { get; set; }
+
 			public PropertyInfo Property { get; set; }
 
 			public MethodInfo SetMethod { get; set; }

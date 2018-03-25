@@ -53,7 +53,7 @@ namespace RI.Framework.StateMachines
 		/// <value>
 		///     The state machine associated with the update.
 		/// </value>
-		public StateMachine StateMachine { get; private set; }
+		public StateMachine StateMachine { get; }
 
 		/// <summary>
 		///     Gets the delay of the update in milliseconds.

@@ -41,7 +41,7 @@ namespace RI.Framework.StateMachines
 		/// <value>
 		///     Information about the processed transition.
 		/// </value>
-		public StateTransientInfo TransientInfo { get; private set; }
+		public StateTransientInfo TransientInfo { get; }
 
 		#endregion
 	}

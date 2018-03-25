@@ -130,7 +130,7 @@ namespace RI.Framework.StateMachines.Dispatchers
 			}
 		}
 
-		private EventHandler UpdateCallbackHandler { get; set; }
+		private EventHandler UpdateCallbackHandler { get; }
 
 		private Dictionary<StateMachine, DispatcherTimer> UpdateTimers { get; }
 
@@ -150,6 +150,7 @@ namespace RI.Framework.StateMachines.Dispatchers
 				{
 					timer.Value.Stop();
 				}
+
 				this.UpdateTimers.Clear();
 			}
 		}

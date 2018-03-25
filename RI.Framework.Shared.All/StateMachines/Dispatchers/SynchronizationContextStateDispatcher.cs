@@ -108,6 +108,7 @@ namespace RI.Framework.StateMachines.Dispatchers
 				{
 					timer.Value.Dispose();
 				}
+
 				this.UpdateTimers.Clear();
 			}
 		}
@@ -143,7 +144,7 @@ namespace RI.Framework.StateMachines.Dispatchers
 		{
 			lock (this.SyncRoot)
 			{
-				this.SynchronizationContext.Post(_ => signalDelegate.Invoke(signalInfo), null);
+				this.SynchronizationContext.Post(_ => signalDelegate(signalInfo), null);
 			}
 		}
 
@@ -152,7 +153,7 @@ namespace RI.Framework.StateMachines.Dispatchers
 		{
 			lock (this.SyncRoot)
 			{
-				this.SynchronizationContext.Post(_ => transientDelegate.Invoke(transientInfo), null);
+				this.SynchronizationContext.Post(_ => transientDelegate(transientInfo), null);
 			}
 		}
 

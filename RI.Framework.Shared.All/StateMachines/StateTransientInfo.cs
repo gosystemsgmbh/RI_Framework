@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using RI.Framework.StateMachines.States;
 
@@ -40,6 +41,20 @@ namespace RI.Framework.StateMachines
 		public IState NextState { get; internal set; }
 
 		/// <summary>
+		///     Gets the list of transition parameters.
+		/// </summary>
+		/// <value>
+		///     The list of transition parameters.
+		///     An empty list is returned if no transition parameters were specified.
+		/// </value>
+		/// <remarks>
+		///     <note type="important">
+		///         Note that the leaving state gets a chance to modify the parameter list before the entering state sees it.
+		///     </note>
+		/// </remarks>
+		public List<object> Parameters { get; internal set; }
+
+		/// <summary>
 		///     Gets the previous state.
 		/// </summary>
 		/// <value>
@@ -53,7 +68,7 @@ namespace RI.Framework.StateMachines
 		/// <value>
 		///     The state machine associated with the transition.
 		/// </value>
-		public StateMachine StateMachine { get; private set; }
+		public StateMachine StateMachine { get; }
 
 		#endregion
 	}

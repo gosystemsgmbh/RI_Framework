@@ -41,7 +41,7 @@ namespace RI.Framework.StateMachines
 		/// <value>
 		///     Information about the processed update.
 		/// </value>
-		public StateUpdateInfo UpdateInfo { get; private set; }
+		public StateUpdateInfo UpdateInfo { get; }
 
 		#endregion
 	}
