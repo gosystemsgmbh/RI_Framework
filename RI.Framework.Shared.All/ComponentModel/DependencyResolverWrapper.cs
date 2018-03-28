@@ -129,17 +129,19 @@ namespace RI.Framework.ComponentModel
 		{
 		}
 
-		/// <summary>
-		///     Intercepts instance resolving by type.
-		/// </summary>
-		/// <param name="type"> The type to resolve. </param>
-		/// <param name="instances"> The list of instances already resolved by <see cref="DependencyResolver" /> or <see cref="ServiceProvider"/> which can be modified to perform the interception. </param>
-		/// <remarks>
-		///     <para>
-		///         The default implementation uses <see cref="CompositionContainer.GetNameOfType" /> to get the name of the type and then uses <see cref="Intercept(string,List{object})" />.
-		///     </para>
-		/// </remarks>
-		protected virtual void Intercept (Type type, List<object> instances) => this.Intercept(CompositionContainer.GetNameOfType(type), instances);
+        /// <summary>
+        ///     Intercepts instance resolving by type.
+        /// </summary>
+        /// <param name="type"> The type to resolve. </param>
+        /// <param name="instances"> The list of instances already resolved by <see cref="DependencyResolver" /> or <see cref="ServiceProvider"/> which can be modified to perform the interception. </param>
+        /// <remarks>
+        ///     <para>
+        ///         The default implementation does nothing and so passes through all instances already in <paramref name="instances"/>.
+        ///     </para>
+        /// </remarks>
+        protected virtual void Intercept (Type type, List<object> instances)
+        {
+        }
 
 		#endregion
 
