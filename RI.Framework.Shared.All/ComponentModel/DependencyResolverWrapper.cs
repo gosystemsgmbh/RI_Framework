@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 using RI.Framework.Collections;
 using RI.Framework.Collections.DirectLinq;
-using RI.Framework.Composition;
 
 
 
@@ -90,11 +89,13 @@ namespace RI.Framework.ComponentModel
 			{
 				instances.Add(instance);
 			}
+
 			return instances;
 		}
 
 		private List<T> InterceptInternal <T> (List<T> list)
-			where T : class => this.InterceptInternal(typeof(T), list.OfType<object>()).OfType<T>().ToList();
+			where T : class =>
+			this.InterceptInternal(typeof(T), list.OfType<object>()).OfType<T>().ToList();
 
 		private List<object> InterceptInternal (string name, List<object> list)
 		{
@@ -119,29 +120,29 @@ namespace RI.Framework.ComponentModel
 		///     Intercepts instance resolving by name.
 		/// </summary>
 		/// <param name="name"> The name to resolve. </param>
-		/// <param name="instances"> The list of instances already resolved by <see cref="DependencyResolver" /> or <see cref="ServiceProvider"/> which can be modified to perform the interception. </param>
+		/// <param name="instances"> The list of instances already resolved by <see cref="DependencyResolver" /> or <see cref="ServiceProvider" /> which can be modified to perform the interception. </param>
 		/// <remarks>
 		///     <para>
-		///         The default implementation does nothing and so passes through all instances already in <paramref name="instances"/>.
+		///         The default implementation does nothing and so passes through all instances already in <paramref name="instances" />.
 		///     </para>
 		/// </remarks>
 		protected virtual void Intercept (string name, List<object> instances)
 		{
 		}
 
-        /// <summary>
-        ///     Intercepts instance resolving by type.
-        /// </summary>
-        /// <param name="type"> The type to resolve. </param>
-        /// <param name="instances"> The list of instances already resolved by <see cref="DependencyResolver" /> or <see cref="ServiceProvider"/> which can be modified to perform the interception. </param>
-        /// <remarks>
-        ///     <para>
-        ///         The default implementation does nothing and so passes through all instances already in <paramref name="instances"/>.
-        ///     </para>
-        /// </remarks>
-        protected virtual void Intercept (Type type, List<object> instances)
-        {
-        }
+		/// <summary>
+		///     Intercepts instance resolving by type.
+		/// </summary>
+		/// <param name="type"> The type to resolve. </param>
+		/// <param name="instances"> The list of instances already resolved by <see cref="DependencyResolver" /> or <see cref="ServiceProvider" /> which can be modified to perform the interception. </param>
+		/// <remarks>
+		///     <para>
+		///         The default implementation does nothing and so passes through all instances already in <paramref name="instances" />.
+		///     </para>
+		/// </remarks>
+		protected virtual void Intercept (Type type, List<object> instances)
+		{
+		}
 
 		#endregion
 
@@ -158,7 +159,8 @@ namespace RI.Framework.ComponentModel
 
 		/// <inheritdoc />
 		public T GetInstance <T> ()
-			where T : class => this.InterceptInternal(this.DependencyResolver == null ? this.GetListFromServiceProvider(typeof(T)).OfType<T>() : this.DependencyResolver.GetInstances<T>()).GetIndexOrDefault(0);
+			where T : class =>
+			this.InterceptInternal(this.DependencyResolver == null ? this.GetListFromServiceProvider(typeof(T)).OfType<T>() : this.DependencyResolver.GetInstances<T>()).GetIndexOrDefault(0);
 
 		/// <inheritdoc />
 		public List<object> GetInstances (Type type) => this.InterceptInternal(type, this.DependencyResolver == null ? this.GetListFromServiceProvider(type) : this.DependencyResolver.GetInstances(type));
@@ -168,7 +170,8 @@ namespace RI.Framework.ComponentModel
 
 		/// <inheritdoc />
 		public List<T> GetInstances <T> ()
-			where T : class => this.InterceptInternal(this.DependencyResolver == null ? this.GetListFromServiceProvider(typeof(T)).OfType<T>() : this.DependencyResolver.GetInstances<T>());
+			where T : class =>
+			this.InterceptInternal(this.DependencyResolver == null ? this.GetListFromServiceProvider(typeof(T)).OfType<T>() : this.DependencyResolver.GetInstances<T>());
 
 		#endregion
 

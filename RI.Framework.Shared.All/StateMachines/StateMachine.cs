@@ -68,7 +68,7 @@ namespace RI.Framework.StateMachines
 	///     </para>
 	///     <para>
 	///         Transitions are nothing else than changing the current state.
-	///         A transition is initiated using <see cref="Transient" /> or <see cref="Transient{TState}" />.
+	///         A transition is initiated using one of the <c>Transient</c> methods.
 	///         During a transition, the previous states <see cref="IState.Leave" /> method is called, then <see cref="State" /> is updated to the next state, and then the next states <see cref="IState.Enter" /> method is called.
 	///     </para>
 	///     <para>

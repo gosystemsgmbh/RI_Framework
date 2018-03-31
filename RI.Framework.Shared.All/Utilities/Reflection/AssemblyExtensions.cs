@@ -400,6 +400,36 @@ namespace RI.Framework.Utilities.Reflection
 			return ((AssemblyTitleAttribute)attributes[0]).Title;
 		}
 
+		/// <summary>
+		///     Gets the trademark of an assembly.
+		/// </summary>
+		/// <param name="assembly"> The assembly. </param>
+		/// <returns>
+		///     The trademark of the assembly or null if the trademark could not be determined.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         The <see cref="AssemblyTrademarkAttribute" /> is used to determine the trademark of an assembly.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="assembly" /> is null. </exception>
+		public static string GetTrademark (this Assembly assembly)
+		{
+			if (assembly == null)
+			{
+				throw new ArgumentNullException(nameof(assembly));
+			}
+
+			object[] attributes = assembly.GetCustomAttributes(typeof(AssemblyTrademarkAttribute), true);
+
+			if (attributes.Length == 0)
+			{
+				return null;
+			}
+
+			return ((AssemblyTrademarkAttribute)attributes[0]).Trademark;
+		}
+
 		#endregion
 	}
 }
