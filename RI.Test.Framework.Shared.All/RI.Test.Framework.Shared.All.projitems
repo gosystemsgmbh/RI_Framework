@@ -85,7 +85,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Threading\Test_HeavyThread.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Comparison\Test_EqualityComparison.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Comparison\Test_OrderComparison.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Reflection\Mock_MethodCallTarget.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Reflection\Test_AssemblyExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Reflection\Test_MethodCallDispatcher.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Reflection\Test_TypeExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Test_DateTimeExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Test_DoubleExtensions.cs" />
