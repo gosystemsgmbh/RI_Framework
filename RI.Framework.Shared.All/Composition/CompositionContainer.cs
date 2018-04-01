@@ -18,10 +18,6 @@ using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.ObjectModel;
 using RI.Framework.Utilities.Reflection;
-
-
-
-
 #if PLATFORM_NETFX
 using System.Linq.Expressions;
 
@@ -521,6 +517,29 @@ namespace RI.Framework.Composition
 		}
 
 		/// <summary>
+		///     Validates whether a factory can be used for creating exports.
+		/// </summary>
+		/// <param name="factory"> The factory to validate. </param>
+		/// <returns>
+		///     true if the factory can be used by a <see cref="CompositionContainer" /> to create exports, false otherwise.
+		/// </returns>
+		/// <remarks>
+		///     <para>
+		///         A factory can be used for creating exports if xxx.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="factory" /> is null. </exception>
+		public static bool ValidateExportFactory (Delegate factory)
+		{
+			if (factory == null)
+			{
+				throw new ArgumentNullException(nameof(factory));
+			}
+
+			return (factory.Method.ReturnType.IsClass || factory.Method.ReturnType.IsInterface) && (factory.Method.ReturnType != typeof(void)) && (!factory.Method.GetParameters().Any(x => !CompositionContainer.ValidateImportType(x.ParameterType)));
+		}
+
+		/// <summary>
 		///     Validates whether an object can be exported.
 		/// </summary>
 		/// <param name="instance"> The object to validate. </param>
@@ -563,29 +582,6 @@ namespace RI.Framework.Composition
 			}
 
 			return type.IsClass && (!type.IsAbstract);
-		}
-
-		/// <summary>
-		///     Validates whether a factory can be used for creating exports.
-		/// </summary>
-		/// <param name="factory"> The factory to validate. </param>
-		/// <returns>
-		///     true if the factory can be used by a <see cref="CompositionContainer" /> to create exports, false otherwise.
-		/// </returns>
-		/// <remarks>
-		///     <para>
-		///         A factory can be used for creating exports if xxx.
-		///     </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="factory" /> is null. </exception>
-		public static bool ValidateExportFactory (Delegate factory)
-		{
-			if (factory == null)
-			{
-				throw new ArgumentNullException(nameof(factory));
-			}
-
-			return (factory.Method.ReturnType.IsClass || factory.Method.ReturnType.IsInterface) && (factory.Method.ReturnType != typeof(void)) && (!factory.Method.GetParameters().Any(x => !CompositionContainer.ValidateImportType(x.ParameterType)));
 		}
 
 		private static CompositionContainer CreateSingletonInternal (bool addAppDomainCatalog)
@@ -678,9 +674,9 @@ namespace RI.Framework.Composition
 			}
 
 #if PLATFORM_NETFX //Type genericType = type.IsGenericType ? type.GetGenericTypeDefinition() : null;
-//Type typeArgument = type.IsGenericType ? type.GetGenericArguments()[0] : type;
-//int typeArgumentCount = type.IsGenericType ? type.GetGenericArguments().Length : 0;
-//return (typeArgument.IsClass || typeArgument.IsInterface) && ((genericType == null) || ((genericType == typeof(IEnumerable<>)) && (typeArgumentCount == 1)) || ((genericType == typeof(Func<>)) && (typeArgumentCount == 1)) || ((genericType == typeof(Lazy<>)) && (typeArgumentCount == 1)));
+			//Type typeArgument = type.IsGenericType ? type.GetGenericArguments()[0] : type;
+			//int typeArgumentCount = type.IsGenericType ? type.GetGenericArguments().Length : 0;
+			//return (typeArgument.IsClass || typeArgument.IsInterface) && ((genericType == null) || ((genericType == typeof(IEnumerable<>)) && (typeArgumentCount == 1)) || ((genericType == typeof(Func<>)) && (typeArgumentCount == 1)) || ((genericType == typeof(Lazy<>)) && (typeArgumentCount == 1)));
 			return type.IsClass || type.IsInterface;
 #endif
 #if PLATFORM_UNITY
@@ -1225,6 +1221,8 @@ namespace RI.Framework.Composition
 		{
 			lock (this.SyncRoot)
 			{
+				this.Log(LogLevel.Debug, "Clearing container.");
+
 				this.ClearInternal();
 				this.UpdateComposition(true);
 			}
@@ -2003,7 +2001,7 @@ namespace RI.Framework.Composition
 							}
 							else
 							{
-								this.Log(LogLevel.Debug, "Updating import ({0}): {1}", composition, type.FullName + "." + property.Property.Name);
+								this.Log(LogLevel.Debug, "Updating import ({0}): {1} <- {2}", composition, type.FullName + "." + property.Property.Name, newValue == null ? "[null]" : newValue.GetType().FullName);
 								setMethod.Invoke(obj, new[] {newValue});
 							}
 
@@ -2583,7 +2581,7 @@ namespace RI.Framework.Composition
 
 				if (newInstance == null)
 				{
-					this.Log(LogLevel.Debug, "No export creators, export constructors, or composition creators could be resolved for type: {0}", typeItem.Type.FullName);
+					this.Log(LogLevel.Debug, "The type is not supported by export creators, export constructors, or composition creators: {0}", typeItem.Type.FullName);
 				}
 
 				if (newInstance != null)
@@ -2875,7 +2873,7 @@ namespace RI.Framework.Composition
 				});
 				compositionItem.Value.Types.RemoveWhere(x => !x.Checked).ForEach(x =>
 				{
-					this.Log(LogLevel.Debug, "Type removed from container: {0} / {1}", compositionItem.Key, x?.ClosedInstance?.GetType()?.AssemblyQualifiedName ?? "[null]");
+					this.Log(LogLevel.Debug, "Type removed from container (closed): {0} / {1}", compositionItem.Key, x?.ClosedInstance?.GetType()?.AssemblyQualifiedName ?? "[null]");
 					(x?.ClosedInstance as IExporting)?.RemovedFromContainer(compositionItem.Key, this);
 					if (this.AutoDispose && (!object.ReferenceEquals(x?.ClosedInstance, this)))
 					{
@@ -2884,7 +2882,7 @@ namespace RI.Framework.Composition
 
 					foreach (KeyValuePair<string, object> openInstance in x?.OpenInstances ?? new Dictionary<string, object>())
 					{
-						this.Log(LogLevel.Debug, "Type removed from container: {0} / {1}", compositionItem.Key, openInstance.Value?.GetType()?.AssemblyQualifiedName ?? "[null]");
+						this.Log(LogLevel.Debug, "Type removed from container (open): {0} / {1}", compositionItem.Key, openInstance.Value?.GetType()?.AssemblyQualifiedName ?? "[null]");
 						(openInstance.Value as IExporting)?.RemovedFromContainer(compositionItem.Key, this);
 						if (this.AutoDispose && (!object.ReferenceEquals(openInstance.Value, this)))
 						{
@@ -3008,6 +3006,8 @@ namespace RI.Framework.Composition
 		{
 			lock (this.SyncRoot)
 			{
+				this.Log(LogLevel.Debug, "Disposing container.");
+
 				if (this.ParentContainer != null)
 				{
 					this.ParentContainer.CompositionChanged -= this.ParentContainerCompositionChangedHandler;
