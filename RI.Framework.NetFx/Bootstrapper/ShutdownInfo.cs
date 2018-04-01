@@ -6,7 +6,7 @@ using RI.Framework.Utilities.ObjectModel;
 
 
 
-namespace RI.Framework.Services
+namespace RI.Framework.Bootstrapper
 {
 	/// <summary>
 	///     Describes the desired shutdown information returned by a bootstrapper.

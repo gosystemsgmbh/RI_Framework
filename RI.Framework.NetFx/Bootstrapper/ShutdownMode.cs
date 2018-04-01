@@ -3,7 +3,7 @@
 
 
 
-namespace RI.Framework.Services
+namespace RI.Framework.Bootstrapper
 {
 	/// <summary>
 	///     Describes the desired shutdown mode returned by a bootstrapper.

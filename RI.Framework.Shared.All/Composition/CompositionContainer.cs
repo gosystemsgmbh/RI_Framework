@@ -6,13 +6,13 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 
+using RI.Framework.Bootstrapper;
 using RI.Framework.Collections;
 using RI.Framework.Collections.Comparison;
 using RI.Framework.Collections.DirectLinq;
 using RI.Framework.ComponentModel;
 using RI.Framework.Composition.Catalogs;
 using RI.Framework.Composition.Model;
-using RI.Framework.Services;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Logging;

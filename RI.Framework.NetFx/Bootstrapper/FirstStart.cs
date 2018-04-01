@@ -3,7 +3,7 @@
 
 
 
-namespace RI.Framework.Services
+namespace RI.Framework.Bootstrapper
 {
 	/// <summary>
 	///     Describes the if and how a application is started for the first time by a <see cref="Bootstrapper" />.

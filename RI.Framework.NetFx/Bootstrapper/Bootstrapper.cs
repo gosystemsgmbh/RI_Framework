@@ -21,7 +21,7 @@ using RI.Framework.Utilities.Text;
 
 
 
-namespace RI.Framework.Services
+namespace RI.Framework.Bootstrapper
 {
 	/// <summary>
 	///     Implements a generic bootstrapper for applications.
@@ -1475,7 +1475,7 @@ namespace RI.Framework.Services
 		/// <inheritdoc />
 		public void ResetFirstStart (FirstStart? indicators)
 		{
-			FirstStart usedIndicators = indicators ?? Services.FirstStart.All;
+			FirstStart usedIndicators = indicators ?? Framework.Bootstrapper.FirstStart.All;
 			this.ResetFirstStartImpl(usedIndicators);
 			this.FirstStart = this.FirstStart.HasValue ? (this.FirstStart & (~usedIndicators)) : null;
 		}

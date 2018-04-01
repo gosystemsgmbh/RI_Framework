@@ -4,7 +4,7 @@ using RI.Framework.Utilities.Text;
 
 
 
-namespace RI.Framework.Services
+namespace RI.Framework.Bootstrapper
 {
 	/// <summary>
 	///     Describes the hosting context of an application started by a bootstrapper.

@@ -19,7 +19,7 @@ using Object = UnityEngine.Object;
 
 
 
-namespace RI.Framework.Services
+namespace RI.Framework.Bootstrapper
 {
 	/// <summary>
 	///     Implements a default bootstrapper which is suitable for most scenarios.
@@ -142,7 +142,7 @@ namespace RI.Framework.Services
 		/// </summary>
 		/// <remarks>
 		///     <para>
-		///         If true, <see cref="Dispatcher.DispatcherService" /> is added automatically, providing a default dispatcher service.
+		///         If true, <see cref="Services.Dispatcher.DispatcherService" /> is added automatically, providing a default dispatcher service.
 		///     </para>
 		///     <para>
 		///         The default value is true.
@@ -194,7 +194,7 @@ namespace RI.Framework.Services
 		/// </summary>
 		/// <remarks>
 		///     <para>
-		///         If true, <see cref="Modularization.ModuleService" /> is added automatically, providing a default modularization service using <see cref="IModule" /> (<see cref="MonoModule" />, <see cref="Module" />, or a custom implementation of <see cref="IModule" />).
+		///         If true, <see cref="Services.Modularization.ModuleService" /> is added automatically, providing a default modularization service using <see cref="IModule" /> (<see cref="MonoModule" />, <see cref="Module" />, or a custom implementation of <see cref="IModule" />).
 		///     </para>
 		///     <para>
 		///         The default value is true.
@@ -409,7 +409,7 @@ namespace RI.Framework.Services
 		/// </summary>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation adds <see cref="Modularization.ModuleService" /> to the composition container if <see cref="ModuleService" /> is true, otherwise it does nothing.
+		///         The default implementation adds <see cref="Services.Modularization.ModuleService" /> to the composition container if <see cref="ModuleService" /> is true, otherwise it does nothing.
 		///     </note>
 		/// </remarks>
 		protected virtual void ConfigureModularization ()
@@ -443,7 +443,7 @@ namespace RI.Framework.Services
 		/// </summary>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation adds <see cref="Dispatcher.DispatcherService" /> to the composition container if <see cref="DispatcherService" /> is true, otherwise it does nothing.
+		///         The default implementation adds <see cref="Services.Dispatcher.DispatcherService" /> to the composition container if <see cref="DispatcherService" /> is true, otherwise it does nothing.
 		///     </note>
 		/// </remarks>
 		protected virtual void ConfigureServices ()

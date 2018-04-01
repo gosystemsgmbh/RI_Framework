@@ -4,7 +4,7 @@ using RI.Framework.Composition.Model;
 
 
 
-namespace RI.Framework.Services
+namespace RI.Framework.Bootstrapper
 {
 	/// <summary>
 	///     Defines the interface which makes types bootstrapper operations aware.

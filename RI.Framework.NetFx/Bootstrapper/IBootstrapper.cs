@@ -12,7 +12,7 @@ using RI.Framework.Utilities.Text;
 
 
 
-namespace RI.Framework.Services
+namespace RI.Framework.Bootstrapper
 {
 	/// <summary>
 	///     Defines the interface for a bootstrapper.

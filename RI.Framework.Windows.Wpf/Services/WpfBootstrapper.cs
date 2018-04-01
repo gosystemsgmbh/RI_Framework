@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Threading;
 
+using RI.Framework.Bootstrapper;
 using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Composition.Catalogs;
 using RI.Framework.Utilities.Logging;

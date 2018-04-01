@@ -29,7 +29,7 @@ namespace RI.Framework.Services
 		/// <value>
 		///     The used bootstrapper object.
 		/// </value>
-		public Bootstrapper Bootstrapper { get; internal set; }
+		public Bootstrapper.Bootstrapper Bootstrapper { get; internal set; }
 
 		#endregion
 

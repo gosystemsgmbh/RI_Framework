@@ -6,7 +6,7 @@
 namespace RI.Framework.Services
 {
 	/// <summary>
-	///     Contains types for implementing globally available services.
+	///     Contains infrastructure and application-independent services.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

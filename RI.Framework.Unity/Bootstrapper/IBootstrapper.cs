@@ -7,7 +7,7 @@ using RI.Framework.Utilities.ObjectModel;
 
 
 
-namespace RI.Framework.Services
+namespace RI.Framework.Bootstrapper
 {
 	/// <summary>
 	///     Defines the interface for a bootstrapper.

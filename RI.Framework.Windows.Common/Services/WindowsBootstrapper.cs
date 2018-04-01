@@ -1,5 +1,6 @@
 ﻿using System;
 
+using RI.Framework.Bootstrapper;
 using RI.Framework.Windows.Cryptography;
 using RI.Framework.Windows.Users;
 

@@ -46,8 +46,8 @@
     <Compile Include="Collections\Specialized\PrefabPool.cs" />
     <Compile Include="Composition\Catalogs\ScriptingCatalog.cs" />
     <Compile Include="Composition\Creators\MonoBehaviourCreator.cs" />
-    <Compile Include="Services\Bootstrapper.cs" />
-    <Compile Include="Services\BootstrapperState.cs" />
+    <Compile Include="Bootstrapper\Bootstrapper.cs" />
+    <Compile Include="Bootstrapper\BootstrapperState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Dispatcher\DispatcherPriority.cs" />
     <Compile Include="Services\Dispatcher\DispatcherService.cs" />
@@ -56,7 +56,7 @@
     <Compile Include="Services\Dispatcher\IDispatcherService.cs" />
     <Compile Include="Services\Dispatcher\IDispatcherServiceExtensions.cs" />
     <Compile Include="Services\Dispatcher\_NamespaceDoc.cs" />
-    <Compile Include="Services\IBootstrapper.cs" />
+    <Compile Include="Bootstrapper\IBootstrapper.cs" />
     <Compile Include="Services\Logging\Writers\DebugLogWriter.cs" />
     <Compile Include="Services\Modularization\MonoModule.cs" />
     <Compile Include="StateMachines\DefaultStateMachineConfiguration.cs" />
