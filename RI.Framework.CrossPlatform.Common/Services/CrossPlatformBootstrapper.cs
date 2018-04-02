@@ -1,6 +1,6 @@
 ﻿using System;
 
-using RI.Framework.Bootstrapper;
+using RI.Framework.Bootstrapping;
 using RI.Framework.CrossPlatform.Cryptography;
 using RI.Framework.CrossPlatform.Users;
 
@@ -18,7 +18,7 @@ namespace RI.Framework.Services
 	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
-	public abstract class CrossPlatformBootstrapper : Bootstrapper.Bootstrapper
+	public abstract class CrossPlatformBootstrapper : Bootstrapper
 	{
 		#region Overrides
 

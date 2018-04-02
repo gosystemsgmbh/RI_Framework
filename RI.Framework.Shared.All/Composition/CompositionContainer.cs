@@ -6,7 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 
-using RI.Framework.Bootstrapper;
+using RI.Framework.Bootstrapping;
 using RI.Framework.Collections;
 using RI.Framework.Collections.Comparison;
 using RI.Framework.Collections.DirectLinq;
@@ -2275,12 +2275,12 @@ namespace RI.Framework.Composition
 
 			if (kind == ImportKind.LazyFunc)
 			{
-				return this.CreateGenericLazyLoadFunc(name, importType);
+				return this.CreateGenericLazyLoadFunc(importName, importType);
 			}
 
 			if (kind == ImportKind.LazyObject)
 			{
-				return this.CreateGenericLazyLoadObject(name, importType);
+				return this.CreateGenericLazyLoadObject(importName, importType);
 			}
 #endif
 
@@ -3271,7 +3271,7 @@ namespace RI.Framework.Composition
 #if PLATFORM_NETFX
 				Type enumerableType = CompositionContainer.GetEnumerableType(type);
 				string resolveName = enumerableType == null ? nameof(CompositionContainer.GetExportForLazyInvoker) : nameof(CompositionContainer.GetExportsForLazyInvoker);
-				MethodInfo genericMethod = container.GetType().GetMethod(resolveName);
+				MethodInfo genericMethod = container.GetType().GetMethod(resolveName, BindingFlags.Instance | BindingFlags.NonPublic);
 				MethodInfo resolveMethod = genericMethod.MakeGenericMethod(type);
 
 				MethodCallExpression resolveCall = Expression.Call(Expression.Constant(this.Container), resolveMethod, Expression.Constant(this.Name));

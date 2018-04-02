@@ -23,8 +23,8 @@
 
 @copy "..\packages\Portable.BouncyCastle.1.8.1.3\lib\net40\*.dll" "..\_Output\*.*"
 
-@copy "..\packages\System.Data.SQLite.Core.1.0.107.0\lib\net46\*.dll" "..\_Output\*.*"
-@copy "..\packages\System.Data.SQLite.Core.1.0.107.0\build\net46\x86\*.dll" "..\_Output\x86\*.*"
-@copy "..\packages\System.Data.SQLite.Core.1.0.107.0\build\net46\x64\*.dll" "..\_Output\x64\*.*"
-@copy "..\packages\System.Data.SQLite.EF6.1.0.107.0\lib\net46\*.dll" "..\_Output\*.*"
-@copy "..\packages\System.Data.SQLite.Linq.1.0.107.0\lib\net46\*.dll" "..\_Output\*.*"
+@copy "..\packages\System.Data.SQLite.Core.1.0.108.0\lib\net46\*.dll" "..\_Output\*.*"
+@copy "..\packages\System.Data.SQLite.Core.1.0.108.0\build\net46\x86\*.dll" "..\_Output\x86\*.*"
+@copy "..\packages\System.Data.SQLite.Core.1.0.108.0\build\net46\x64\*.dll" "..\_Output\x64\*.*"
+@copy "..\packages\System.Data.SQLite.EF6.1.0.108.0\lib\net46\*.dll" "..\_Output\*.*"
+@copy "..\packages\System.Data.SQLite.Linq.1.0.108.0\lib\net46\*.dll" "..\_Output\*.*"

@@ -9,7 +9,7 @@
     <Import_RootNamespace>RI.Framework</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Bootstrapper\_NamespaceDoc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bootstrapping\_NamespaceDoc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\Comparison\CollectionComparer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\Comparison\CollectionComparerFlags.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Collections\Comparison\_NamespaceDoc.cs" />
