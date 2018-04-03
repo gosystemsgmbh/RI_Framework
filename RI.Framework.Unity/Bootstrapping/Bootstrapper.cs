@@ -246,7 +246,7 @@ namespace RI.Framework.Bootstrapping
 		/// </summary>
 		/// <remarks>
 		///     <para>
-		///         If true, all non-abstract, non-static types, even those without an <see cref="ExportAttribute" /> are exported by the default scripting catalog.
+		///         If true, all non-abstract, non-static types, even those without an <see cref="ExportAttribute" />, are exported by the default scripting catalog (see <see cref="ScriptingCatalog"/>).
 		///     </para>
 		///     <para>
 		///         The default value is true.

@@ -22,7 +22,7 @@ namespace RI.Framework.Services.Dispatcher
 		Processing = 1,
 
 		/// <summary>
-		///     The operation has finished execution and is considered complete.
+		///     The operation has finished execution and is considered finished.
 		/// </summary>
 		Processed = 2,
 
