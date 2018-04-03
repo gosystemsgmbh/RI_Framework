@@ -1,8 +1,5 @@
 ﻿using System;
 
-using RI.Framework.Utilities;
-using RI.Framework.Utilities.Exceptions;
-
 
 
 
@@ -19,20 +16,5 @@ namespace RI.Framework.Composition.Model
 	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = false, Inherited = false)]
 	public sealed class NoExportAttribute : Attribute
 	{
-		#region Instance Constructor/Destructor
-
-		/// <summary>
-		///     Specifies a type to be no longer exported.
-		/// </summary>
-		/// <remarks>
-		///     <para>
-		///         See <see cref="CompositionContainer" /> for more details about exporting.
-		///     </para>
-		/// </remarks>
-		public NoExportAttribute()
-		{
-		}
-
-		#endregion
 	}
 }
