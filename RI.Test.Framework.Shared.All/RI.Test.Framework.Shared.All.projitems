@@ -40,6 +40,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Composition\Mock_Exports_5B.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Composition\Mock_Exports_6.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Composition\Mock_Exports_6A.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\Mock_Exports_6C.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Composition\Mock_Exports_6B.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Composition\Mock_Exports_7.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Composition\Mock_Exports_8.cs" />

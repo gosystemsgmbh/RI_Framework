@@ -105,6 +105,9 @@ namespace RI.Framework.Composition
 	///         Advantage: No dependencies or references to the exported types or objects are required at compile time because, depending on the used <see cref="CompositionCatalog" />, the composition catalog can collect all exports by itself (e.g. all eligible types in an <see cref="Assembly" /> when using <see cref="AssemblyCatalog" />).
 	///         Disadvantage: A type or object needs special preparation in order to be model-based exported, namely at least one or more <see cref="ExportAttribute" /> applied to it (for some <see cref="CompositionCatalog" />s) or simple constructors.
 	///     </para>
+    ///     <para>
+    ///         If a type has a <see cref="NoExportAttribute"/> on itself or anywhere in its inheritance hierarchy (including interfaces), the type is not exported at all.
+    ///     </para>
 	///     <para>
 	///         <b> TYPE &amp; OBJECT EXPORTS </b>
 	///     </para>
@@ -434,19 +437,31 @@ namespace RI.Framework.Composition
 
 			HashSet<string> exports = new HashSet<string>(CompositionContainer.NameComparer);
 
-			CompositionContainer.GetExportsOfTypeInternal(type, includeWithoutAttribute, true, exports);
+			if(!CompositionContainer.GetExportsOfTypeInternal(type, includeWithoutAttribute, true, exports))
+            {
+                exports.Clear();
+                return exports;
+            }
 
 			List<Type> inheritedTypes = type.GetInheritance(false);
 			foreach (Type inheritedType in inheritedTypes)
 			{
-				CompositionContainer.GetExportsOfTypeInternal(inheritedType, includeWithoutAttribute, false, exports);
-			}
+                if (!CompositionContainer.GetExportsOfTypeInternal(inheritedType, includeWithoutAttribute, false, exports))
+                {
+                    exports.Clear();
+                    return exports;
+                }
+            }
 
 			Type[] interfaceTypes = type.GetInterfaces();
 			foreach (Type interfaceType in interfaceTypes)
 			{
-				CompositionContainer.GetExportsOfTypeInternal(interfaceType, includeWithoutAttribute, false, exports);
-			}
+                if (!CompositionContainer.GetExportsOfTypeInternal(interfaceType, includeWithoutAttribute, false, exports))
+                {
+                    exports.Clear();
+                    return exports;
+                }
+            }
 
 			exports.RemoveWhere(x => x == null);
 
@@ -604,12 +619,18 @@ namespace RI.Framework.Composition
 			return container;
 		}
 
-		private static void GetExportsOfTypeInternal (Type type, bool includeWithoutAttribute, bool isSelf, HashSet<string> exports)
+		private static bool GetExportsOfTypeInternal (Type type, bool includeWithoutAttribute, bool isSelf, HashSet<string> exports)
 		{
-			object[] attributes = type.GetCustomAttributes(typeof(ExportAttribute), false);
-			if (attributes.Length > 0)
+			object[] exportAttributes = type.GetCustomAttributes(typeof(ExportAttribute), false);
+            object[] noExportAttributes = type.GetCustomAttributes(typeof(NoExportAttribute), false);
+
+            if(noExportAttributes.Length > 0)
+            {
+                return !isSelf;
+            }
+            else if (exportAttributes.Length > 0)
 			{
-				foreach (ExportAttribute attribute in attributes)
+				foreach (ExportAttribute attribute in exportAttributes)
 				{
 					if (attribute.Inherited || isSelf)
 					{
@@ -623,6 +644,8 @@ namespace RI.Framework.Composition
 				string name = CompositionContainer.GetNameOfType(type);
 				exports.Add(name);
 			}
+
+            return true;
 		}
 
 		private static void IsExportPrivateInternal (Type type, bool isSelf, HashSet<bool> privates)
