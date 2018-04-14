@@ -23,7 +23,7 @@ namespace RI.Framework.Collections.Generic
 		/// </returns>
 		/// <remarks>
 		///     <para>
-		///         All items for which the predicate returns true are removed.
+		///         All items for which the predicate returns true are removed, regardless of the priorities and the order in which they are in the queue.
 		///     </para>
 		///     <note type="important">
 		///         This method is considered very slow as it needs to rebuild the whole internal structure of the priority queue.
@@ -88,6 +88,9 @@ namespace RI.Framework.Collections.Generic
 		///     The number of times the item was removed from the priority queue.
 		/// </returns>
 		/// <remarks>
+		///     <para>
+		///         All matching items are removed, regardless of the priorities and the order in which they are in the queue.
+		///     </para>
 		///     <note type="important">
 		///         This method is considered very slow as it needs to rebuild the whole internal structure of the priority queue.
 		///     </note>
@@ -105,6 +108,9 @@ namespace RI.Framework.Collections.Generic
 		///     The number of times the item was removed from the priority queue.
 		/// </returns>
 		/// <remarks>
+		///     <para>
+		///         All matching items are removed, regardless of the priorities and the order in which they are in the queue.
+		///     </para>
 		///     <note type="important">
 		///         This method is considered very slow as it needs to rebuild the whole internal structure of the priority queue.
 		///     </note>

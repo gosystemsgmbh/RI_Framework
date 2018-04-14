@@ -18,8 +18,8 @@ namespace RI.Framework.Collections.Comparison
 	///         The collections themselves are not compared for equality, only their elements.
 	///     </note>
 	///     <note type="important">
-	///         Therefore, this implementation of <see cref="IEqualityComparer{T}" /> is only intended for equality comparison of elements of collections.
-	///         It should not be used in scenarios where hash values of the collections themselves are used, e.g. used as a hash provider for the collections when storing the collections in another collection (e.g. storing collections in a <see cref="HashSet{T}" />).
+	///         This implementation of <see cref="IEqualityComparer{T}" /> is only intended for equality comparison of elements of collections.
+	///         It should not be used in scenarios where hash values of the collections themselves are used, e.g. used as a hash provider for the collections when storing the collections in another collection (e.g. storing collections in a <see cref="HashSet{T}" /> or <see cref="Dictionary{TKey,TValue}" />).
 	///     </note>
 	/// </remarks>
 	/// <example>
@@ -219,7 +219,7 @@ namespace RI.Framework.Collections.Comparison
 		///     <para>
 		///         This delegate always points to the function which eventually does the comparison between two elements of the collections being compared.
 		///         If <see cref="CollectionComparer{T}" /> is constructed using an <see cref="IEqualityComparer{T}" /> or is using default equality comparison (using <see cref="EqualityComparer{T}" />.<see cref="EqualityComparer{T}.Default" />), the delegate points to the <see cref="IEqualityComparer{T}.Equals(T,T)" /> method of that equality comparer.
-		///         If <see cref="CollectionComparer{T}" /> is constructed using comparison function, the delegate points to that function.
+		///         If <see cref="CollectionComparer{T}" /> is constructed using a comparison function, the delegate points to that function.
 		///         If the <see cref="CollectionComparer{T}" /> uses reference equality, the delegate points to an anonymous function which encapsulates <see cref="object" />.<see cref="object.ReferenceEquals" />.
 		///     </para>
 		/// </remarks>
@@ -328,6 +328,7 @@ namespace RI.Framework.Collections.Comparison
 							break;
 						}
 					}
+
 					if (!found)
 					{
 						return false;
@@ -359,9 +360,16 @@ namespace RI.Framework.Collections.Comparison
 		///     The hash value of the collection.
 		/// </returns>
 		/// <remarks>
-		///     <note type="important">
-		///         The hash value is not based on the elements in the collection but on the collection itself (the collections own <see cref="object.GetHashCode" /> method is used).
-		///     </note>
+		///     <para>
+		///         The behaviour of this method is controlled by the presence or absence of the <see cref="CollectionComparerFlags.DoNotGetHashFromElements" /> option.
+		///     </para>
+		///     <para>
+		///         <paramref name="obj" />is enumerated exactly once.
+		///         <paramref name="obj" /> is not enumerated if the hash code is taken from the collection itself.
+		///     </para>
+		///     <para>
+		///         This is a O(1) operation if the hash code is taken from the collection itself, O(n) otherwise where n is the number of items in <paramref name="obj" />.
+		///     </para>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="obj" /> is null. </exception>
 		int IEqualityComparer<IEnumerable<T>>.GetHashCode (IEnumerable<T> obj)
@@ -371,7 +379,21 @@ namespace RI.Framework.Collections.Comparison
 				throw new ArgumentNullException(nameof(obj));
 			}
 
-			return obj.GetHashCode();
+			bool useCollectionHash = ((this.Options & CollectionComparerFlags.DoNotGetHashFromElements) == CollectionComparerFlags.DoNotGetHashFromElements);
+			if (useCollectionHash)
+			{
+				return obj.GetHashCode();
+			}
+
+			long hash = 0;
+			long count = 0;
+			foreach (T item in obj)
+			{
+				hash += item?.GetHashCode() ?? 0;
+				count++;
+			}
+
+			return (int)(count == 0 ? 0 : (hash / count));
 		}
 
 		#endregion

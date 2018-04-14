@@ -333,6 +333,9 @@ namespace RI.Framework.Collections.DirectLinq
 		///     true if the sequence contains an element at the specified index, false otherwise.
 		/// </returns>
 		/// <remarks>
+		///     <note type="note">
+		///         if the index exists but its value is null, the element is considered existing.
+		///     </note>
 		///     <para>
 		///         This is a O(n) operation where n is the number of elements in the sequence.
 		///     </para>

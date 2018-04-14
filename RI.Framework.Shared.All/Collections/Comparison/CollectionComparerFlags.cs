@@ -26,5 +26,10 @@ namespace RI.Framework.Collections.Comparison
 		///     Two collections are only considered equal if their elements are of the same reference, regardless of the elements own behaviour regarding equality.
 		/// </summary>
 		ReferenceEquality = 0x02,
+
+		/// <summary>
+		///     The hash code of a collection is not based on the elements but rather on the collections own <see cref="object.GetHashCode" /> method.
+		/// </summary>
+		DoNotGetHashFromElements = 0x04,
 	}
 }

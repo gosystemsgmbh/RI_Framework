@@ -36,10 +36,7 @@
       <DocumentationSource sourceFile="..\RI.Framework.NetFx\RI.Framework.NetFx.csproj" />
       <DocumentationSource sourceFile="..\RI.Framework.Windows.Forms\RI.Framework.Windows.Forms.csproj" />
       <DocumentationSource sourceFile="..\RI.Framework.Windows.Service\RI.Framework.Windows.Service.csproj" />
-      <DocumentationSource sourceFile="..\RI.Framework.Windows.Shared\RI.Framework.Windows.Shared.csproj" />
       <DocumentationSource sourceFile="..\RI.Framework.Windows.Wpf\RI.Framework.Windows.Wpf.csproj" />
-      <DocumentationSource sourceFile="..\RI.Framework.CrossPlatform.Shared\RI.Framework.CrossPlatform.Shared.csproj" />
-      <DocumentationSource sourceFile="..\RI.Framework.Linux.Shared\RI.Framework.Linux.Shared.csproj" />
       <DocumentationSource sourceFile="..\RI.Framework.Extensions.Nancy\RI.Framework.Extensions.Nancy.csproj" />
       <DocumentationSource sourceFile="..\RI.Framework.Extensions.SqlServer\RI.Framework.Extensions.SqlServer.csproj" />
       <DocumentationSource sourceFile="..\RI.Framework.Extensions.SqlServerEF6\RI.Framework.Extensions.SqlServerEF6.csproj" />
@@ -48,6 +45,10 @@
       <DocumentationSource sourceFile="..\RI.Framework.Extensions.EPPlus\RI.Framework.Extensions.EPPlus.csproj" />
       <DocumentationSource sourceFile="..\RI.Framework.Extensions.WpfToolkit\RI.Framework.Extensions.WpfToolkit.csproj" />
       <DocumentationSource sourceFile="..\RI.Framework.Extensions.DotNetZip\RI.Framework.Extensions.DotNetZip.csproj" />
+      <DocumentationSource sourceFile="..\RI.Framework.CrossPlatform.Common\RI.Framework.CrossPlatform.Common.csproj" />
+      <DocumentationSource sourceFile="..\RI.Framework.Linux.Common\RI.Framework.Linux.Common.csproj" />
+      <DocumentationSource sourceFile="..\RI.Framework.Windows.Common\RI.Framework.Windows.Common.csproj" />
+      <DocumentationSource sourceFile="..\RI.Framework.Extensions.BouncyCastle\RI.Framework.Extensions.BouncyCastle.csproj" />
     </DocumentationSources>
     <BuildAssemblerVerbosity>OnlyWarningsAndErrors</BuildAssemblerVerbosity>
     <HelpFileFormat>HtmlHelp1, Website</HelpFileFormat>

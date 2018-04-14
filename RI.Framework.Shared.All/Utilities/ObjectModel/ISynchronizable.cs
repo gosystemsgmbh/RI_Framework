@@ -3,6 +3,12 @@
 	/// <summary>
 	///     Defines an interface to implement detection of synchronization/thread-safety.
 	/// </summary>
+	/// <remarks>
+	/// <note type="important">
+	/// A type which implements <see cref="ISynchronizable"/> is not necessarily, by definition, synchronized or thread-safe!
+	/// Only the value of <see cref="IsSynchronized"/> defines that!
+	/// </note>
+	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	public interface ISynchronizable
 	{
