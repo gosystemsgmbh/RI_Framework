@@ -46,11 +46,11 @@ The long-term goal includes several larger endeavors:
 
 ## Compatibility
 
-| Runtime / Target                                 | Version | Platform                                         | Remarks                                                              |
-| ------------------------------------------------ | ------- | ------------------------------------------------ | -------------------------------------------------------------------- |
-| [.NET Framework](https://www.microsoft.com/net/) | 4.6.1   | Windows                                          |                                                                      |
-| [Mono](http://www.mono-project.com/)             | 5.4.1.6 | Linux                                            |                                                                      |
-| [Unity](https://unity3d.com/)                    | 5.4.1f1 | Windows, MacOS, iOS\*,<br>Linux\*\*, Android\*\* | \* = including AOT/IL2CPP<br>\*\* = not actively tested or supported |
+| Runtime / Target                                 | Version  | Platform                                         | Remarks                                                              |
+| ------------------------------------------------ | -------- | ------------------------------------------------ | -------------------------------------------------------------------- |
+| [.NET Framework](https://www.microsoft.com/net/) | 4.6.1    | Windows                                          |                                                                      |
+| [Mono](http://www.mono-project.com/)             | 5.4.1.6  | Linux                                            |                                                                      |
+| [Unity](https://unity3d.com/)                    | 2018.1.1 | Windows, MacOS, iOS\*,<br>Linux\*\*, Android\*\* | \* = including AOT/IL2CPP<br>\*\* = not actively tested or supported |
 
 ## Contents
 
@@ -78,19 +78,19 @@ See the [documentation](DOCUMENTATION.md) for more details about how to use the 
 
 ### Extension assemblies
 
-| Library / Framework                                                 | Version  | Assembly                                                                                                             | Platform          |
-| ------------------------------------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------- | ----------------- |
-| [Entity Framework 6.x](https://github.com/aspnet/EntityFramework6)  | 6.1.3    | RI.Framework.Extensions.EF6.dll<br>RI.Framework.Extensions.SQLiteEF6.dll<br>RI.Framework.Extensions.SqlServerEF6.dll | N, M              |
-| [SQLite](https://system.data.sqlite.org/)                           | 1.0.106  | RI.Framework.Extensions.SQLite.dll<br>RI.Framework.Extensions.SQLiteEF6.dll                                          | N, M              |
-| [SQL Server](https://www.microsoft.com/en-us/sql-server)            | 2008+    | RI.Framework.Extensions.SqlServer.dll<br>RI.Framework.Extensions.SqlServerEF6.dll                                    | N, M              |
-| [Nancy Framework](https://github.com/NancyFx/Nancy)                 | 1.4.4    | RI.Framework.Extensions.Nancy.dll<br>RI.Framework.Extensions.NancyJson.dll                                           | N, M              |
-| [DotNetZip](https://dotnetzip.codeplex.com/)                        | 1.10.1   | RI.Framework.Extensions.DotNetZip.dll                                                                                | N, M              |
-| [EPPlus](https://github.com/JanKallman/EPPlus)                      | 4.1.1    | RI.Framework.Extensions.EPPlus.dll                                                                                   | N, M              |
-| [Newtonsoft JSON](https://github.com/JamesNK/Newtonsoft.Json)       | 10.0.3   | RI.Framework.Extensions.Json.dll<br>RI.Framework.Extensions.NancyJson.dll                                            | N, M              |
-| [Bouncy Castle](https://github.com/onovotny/bc-csharp)              | 1.8.1.3  | RI.Framework.Extensions.BouncyCastle.dll                                                                             | N, M              |
-| [Extended WPF Toolkit](https://github.com/xceedsoftware/wpftoolkit) | 3.2.0    | RI.Framework.Extensions.WpfToolkit.dll                                                                               | W                 |
-| [Fluent Ribbon](https://github.com/fluentribbon/Fluent.Ribbon)      | 5.0.2.46 | RI.Framework.Extensions.FluentRibbon.dll                                                                             | W                 |
-| [Mono.Posix](https://github.com/mono/mono)                          | 4.5.0    | RI.Framework.Linux.Shared.dll                                                                                        | L                 |
+| Library / Framework                                                 | Version   | Assembly                                                                                                             | Platform          |
+| ------------------------------------------------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------- | ----------------- |
+| [Entity Framework 6.x](https://github.com/aspnet/EntityFramework6)  | 6.2.0     | RI.Framework.Extensions.EF6.dll<br>RI.Framework.Extensions.SQLiteEF6.dll<br>RI.Framework.Extensions.SqlServerEF6.dll | N, M              |
+| [SQLite](https://system.data.sqlite.org/)                           | 1.0.108   | RI.Framework.Extensions.SQLite.dll<br>RI.Framework.Extensions.SQLiteEF6.dll                                          | N, M              |
+| [SQL Server](https://www.microsoft.com/en-us/sql-server)            | 2008+     | RI.Framework.Extensions.SqlServer.dll<br>RI.Framework.Extensions.SqlServerEF6.dll                                    | N, M              |
+| [Nancy Framework](https://github.com/NancyFx/Nancy)                 | 1.4.4     | RI.Framework.Extensions.Nancy.dll<br>RI.Framework.Extensions.NancyJson.dll                                           | N, M              |
+| [DotNetZip](https://dotnetzip.codeplex.com/)                        | 1.10.1    | RI.Framework.Extensions.DotNetZip.dll                                                                                | N, M              |
+| [EPPlus](https://github.com/JanKallman/EPPlus)                      | 4.1.1     | RI.Framework.Extensions.EPPlus.dll                                                                                   | N, M              |
+| [Newtonsoft JSON](https://github.com/JamesNK/Newtonsoft.Json)       | 10.0.3    | RI.Framework.Extensions.Json.dll<br>RI.Framework.Extensions.NancyJson.dll                                            | N, M              |
+| [Bouncy Castle](https://github.com/onovotny/bc-csharp)              | 1.8.1.3   | RI.Framework.Extensions.BouncyCastle.dll                                                                             | N, M              |
+| [Extended WPF Toolkit](https://github.com/xceedsoftware/wpftoolkit) | 3.2.0     | RI.Framework.Extensions.WpfToolkit.dll                                                                               | W                 |
+| [Fluent Ribbon](https://github.com/fluentribbon/Fluent.Ribbon)      | 6.0.0.208 | RI.Framework.Extensions.FluentRibbon.dll                                                                             | W                 |
+| [Mono.Posix](https://github.com/mono/mono)                          | 4.5.0     | RI.Framework.Linux.Shared.dll                                                                                        | L                 |
 
 ### Decoupling namespaces
 
