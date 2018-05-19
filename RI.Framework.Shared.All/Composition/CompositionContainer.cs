@@ -105,9 +105,9 @@ namespace RI.Framework.Composition
 	///         Advantage: No dependencies or references to the exported types or objects are required at compile time because, depending on the used <see cref="CompositionCatalog" />, the composition catalog can collect all exports by itself (e.g. all eligible types in an <see cref="Assembly" /> when using <see cref="AssemblyCatalog" />).
 	///         Disadvantage: A type or object needs special preparation in order to be model-based exported, namely at least one or more <see cref="ExportAttribute" /> applied to it (for some <see cref="CompositionCatalog" />s) or simple constructors.
 	///     </para>
-    ///     <para>
-    ///         If a type has a <see cref="NoExportAttribute"/> on itself or anywhere in its inheritance hierarchy (including interfaces), the type is not exported at all.
-    ///     </para>
+	///     <para>
+	///         If a type has a <see cref="NoExportAttribute"/> on itself or anywhere in its inheritance hierarchy (including interfaces), the type is not exported at all.
+	///     </para>
 	///     <para>
 	///         <b> TYPE &amp; OBJECT EXPORTS </b>
 	///     </para>
@@ -438,30 +438,30 @@ namespace RI.Framework.Composition
 			HashSet<string> exports = new HashSet<string>(CompositionContainer.NameComparer);
 
 			if(!CompositionContainer.GetExportsOfTypeInternal(type, includeWithoutAttribute, true, exports))
-            {
-                exports.Clear();
-                return exports;
-            }
+			{
+				exports.Clear();
+				return exports;
+			}
 
 			List<Type> inheritedTypes = type.GetInheritance(false);
 			foreach (Type inheritedType in inheritedTypes)
 			{
-                if (!CompositionContainer.GetExportsOfTypeInternal(inheritedType, includeWithoutAttribute, false, exports))
-                {
-                    exports.Clear();
-                    return exports;
-                }
-            }
+				if (!CompositionContainer.GetExportsOfTypeInternal(inheritedType, includeWithoutAttribute, false, exports))
+				{
+					exports.Clear();
+					return exports;
+				}
+			}
 
 			Type[] interfaceTypes = type.GetInterfaces();
 			foreach (Type interfaceType in interfaceTypes)
 			{
-                if (!CompositionContainer.GetExportsOfTypeInternal(interfaceType, includeWithoutAttribute, false, exports))
-                {
-                    exports.Clear();
-                    return exports;
-                }
-            }
+				if (!CompositionContainer.GetExportsOfTypeInternal(interfaceType, includeWithoutAttribute, false, exports))
+				{
+					exports.Clear();
+					return exports;
+				}
+			}
 
 			exports.RemoveWhere(x => x == null);
 
@@ -622,13 +622,13 @@ namespace RI.Framework.Composition
 		private static bool GetExportsOfTypeInternal (Type type, bool includeWithoutAttribute, bool isSelf, HashSet<string> exports)
 		{
 			object[] exportAttributes = type.GetCustomAttributes(typeof(ExportAttribute), false);
-            object[] noExportAttributes = type.GetCustomAttributes(typeof(NoExportAttribute), false);
+			object[] noExportAttributes = type.GetCustomAttributes(typeof(NoExportAttribute), false);
 
-            if(noExportAttributes.Length > 0)
-            {
-                return !isSelf;
-            }
-            else if (exportAttributes.Length > 0)
+			if(noExportAttributes.Length > 0)
+			{
+				return !isSelf;
+			}
+			else if (exportAttributes.Length > 0)
 			{
 				foreach (ExportAttribute attribute in exportAttributes)
 				{
@@ -645,7 +645,7 @@ namespace RI.Framework.Composition
 				exports.Add(name);
 			}
 
-            return true;
+			return true;
 		}
 
 		private static void IsExportPrivateInternal (Type type, bool isSelf, HashSet<bool> privates)
@@ -1497,7 +1497,11 @@ namespace RI.Framework.Composition
 		{
 			lock (this.SyncRoot)
 			{
+#if PLATFORM_UNITY
+				return ((Import)this.GetImportValueFromNameOrType(CompositionContainer.GetNameOfType(typeof(T)), typeof(Import), out _)).ToList<T>();
+#else
 				return ((IEnumerable<T>)this.GetImportValueFromNameOrType(null, typeof(IEnumerable<T>), out _)).ToList();
+#endif
 			}
 		}
 
@@ -1520,7 +1524,11 @@ namespace RI.Framework.Composition
 
 			lock (this.SyncRoot)
 			{
+#if PLATFORM_UNITY
+				return ((Import)this.GetImportValueFromNameOrType(CompositionContainer.GetNameOfType(exportType), typeof(Import), out _)).ToList<object>();
+#else
 				return ((IEnumerable)this.GetImportValueFromNameOrType(null, typeof(IEnumerable<>).MakeGenericType(exportType), out _)).ToList();
+#endif
 			}
 		}
 
@@ -1549,7 +1557,11 @@ namespace RI.Framework.Composition
 
 			lock (this.SyncRoot)
 			{
+#if PLATFORM_UNITY
+				return ((Import)this.GetImportValueFromNameOrType(exportName, typeof(Import), out _)).ToList<object>();
+#else
 				return ((IEnumerable<object>)this.GetImportValueFromNameOrType(exportName, typeof(IEnumerable<object>), out _)).ToList();
+#endif
 			}
 		}
 

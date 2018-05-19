@@ -90,7 +90,6 @@
     <None Include="..\SolutionName.snk">
       <Link>Properties\SolutionName.snk</Link>
     </None>
-    <None Include="Data\Database\_Old_SQLiteDatabaseManager.cs" />
     <Compile Include="Data\Database\SQLiteDatabaseManager.cs" />
     <Compile Include="Data\SQLite\SQLiteConversionExtensions.cs" />
     <Compile Include="Data\SQLite\_NamespaceDoc.cs" />

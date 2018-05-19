@@ -39,6 +39,7 @@ namespace RI.Test.Framework.StateMachines
 
 			StateMachineConfiguration config = new DefaultStateMachineConfiguration();
 			config.Dispatcher = new Mock_Dispatcher();
+			config.Resolver = new DefaultStateResolver();
 
 			StateMachine test = new StateMachine(config);
 
@@ -200,6 +201,7 @@ namespace RI.Test.Framework.StateMachines
 
 			StateMachineConfiguration config = new DefaultStateMachineConfiguration();
 			config.Dispatcher = dispatcher;
+			config.Resolver = new DefaultStateResolver();
 			config.CachingEnabled = false;
 			StateMachine test = new StateMachine(config);
 
@@ -278,6 +280,7 @@ namespace RI.Test.Framework.StateMachines
 
 			StateMachineConfiguration config = new DefaultStateMachineConfiguration();
 			config.Dispatcher = new Mock_Dispatcher();
+			config.Resolver = new DefaultStateResolver();
 
 			StateMachine test = new StateMachine(config);
 
@@ -353,6 +356,7 @@ namespace RI.Test.Framework.StateMachines
 
 			StateMachineConfiguration config = new DefaultStateMachineConfiguration();
 			config.Dispatcher = dispatcher;
+			config.Resolver = new DefaultStateResolver();
 
 			StateMachine test = new StateMachine(config);
 
@@ -479,6 +483,7 @@ namespace RI.Test.Framework.StateMachines
 
 			StateMachineConfiguration config = new DefaultStateMachineConfiguration();
 			config.Dispatcher = new Mock_Dispatcher();
+			config.Resolver = new DefaultStateResolver();
 
 			StateMachine test = new StateMachine(config);
 
@@ -576,6 +581,7 @@ namespace RI.Test.Framework.StateMachines
 		{
 			StateMachineConfiguration config = new DefaultStateMachineConfiguration();
 			config.Dispatcher = new Mock_Dispatcher();
+			config.Resolver = new DefaultStateResolver();
 			config.CachingEnabled = true;
 
 			StateMachine test = new StateMachine(config);

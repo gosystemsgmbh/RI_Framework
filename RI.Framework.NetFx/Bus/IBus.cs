@@ -55,7 +55,7 @@ namespace RI.Framework.Bus
 	///         When a message, matching the receiver registration, is received, the specified message handling callback will be executed.
 	///     </para>
 	///     <para>
-	///         Note that the response is only sent to the sender, when the message handling callback has returned.
+	///         Note that the response is only sent back to the sender when the message handling callback has returned.
 	///     </para>
 	///     <para>
 	///         <b> SINGLE vs. BROADCAST </b>
@@ -76,7 +76,7 @@ namespace RI.Framework.Bus
 	///         If a number of expected responses is specified, the send task completes as soon as that number of responses was received, ignoring all further responses.
 	///         If no number of expected responses is specified, the send task completes always (more or less) exactly after the time specified by <see cref="CollectionTimeout" />.
 	///         Either way, the send task always completes no later than <see cref="CollectionTimeout" /> after the message was sent, ignoring all responses received afterwards.
-	///         The result of the send task is always a list of responses (which can include null for recipients which did not send a response payload) and will never throw <see cref="BusResponseTimeoutException" /> because the bus cannot know the actual number of receivers which should respond.
+	///         The result of the send task is always a list of responses (which can include null for recipients which did not send a response payload) and will never throw <see cref="BusResponseTimeoutException" /> because the bus cannot know the actual number of receivers which should respond (unless explicitly stated).
 	///     </para>
 	///     <para>
 	///         <b> LOCAL vs. GLOBAL / LOCAL BUS vs. REMOTE BUS </b>
@@ -87,10 +87,10 @@ namespace RI.Framework.Bus
 	///         Global means that a message is both sent to the local bus and any connected &quot;remote busses&quot;, thus probably leaving process, machine, and/or network boundaries.
 	///     </para>
 	///     <para>
-	///         Therefore, the local/global concept can be used to only let messages cross process boundaries which are known to be used by remote bus recipients, saving bandwith (transmitting) and CPU time (serialization).
+	///         Therefore, the local/global concept can be used to only let messages cross process boundaries which are known to be used by remote bus recipients, saving bandwith (transmission) and CPU time (serialization).
 	///     </para>
 	///     <para>
-	///         Each <see cref="SendOperation" /> and <see cref="ReceiverRegistration" /> always has its local bus, the bus which is associated with it upon creation.
+	///         Each <see cref="SendOperation" /> and <see cref="ReceiverRegistration" /> always has its assigned local bus, the bus which is associated with it upon creation.
 	///         If the associated bus has no connections to remote busses, the meaning of local and global are the same (meaning that the messages are only sent to the local bus and only received from the local bus).
 	///         However, if the local bus has connections to remote busses, global messages are sent through these connections to those connected remote busses (which are inherenly also local busses for <see cref="SendOperation" />s and <see cref="ReceiverRegistration" />s associated with them).
 	///         In other words: each bus is a local bus to itself, other, connected, busses are remote busses.
@@ -211,7 +211,7 @@ namespace RI.Framework.Bus
 	///         <b> EXCEPTION HANDLING AND FORWARDING </b>
 	///     </para>
 	///     <para>
-	///         Depending on your applications needs and the context under which received messages are processed, you might want to forward exceptions, thrown by receivers when processing messages, back to the sender.
+	///         Depending on your application needs and the context under which received messages are processed, you might want to forward exceptions, thrown by receivers when processing messages, back to the sender.
 	///         This is called &quot;exception forwarding&quot; and can be enabled by the sender, the receiver, or an exception handler registered with a receiver.
 	///     </para>
 	///     <para>

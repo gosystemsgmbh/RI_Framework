@@ -9,7 +9,7 @@ using RI.Framework.Utilities.Exceptions;
 namespace RI.Framework.ComponentModel
 {
 	/// <summary>
-	///     Defines the interface for a dependency resolver which can be used to btain instances of required types and names.
+	///     Defines the interface for a dependency resolver which can be used to obtain instances of required types and names.
 	/// </summary>
 	public interface IDependencyResolver
 	{

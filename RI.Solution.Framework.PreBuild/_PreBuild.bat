@@ -6,7 +6,8 @@ _Tools,
 _Output,
 _Output\x86,
 _Output\x64,
-_Packages
+_Packages,
+_Test
 ) do @(
   @if not exist "..\%%i" @(
     @echo Creating directory: "..\%%i"

@@ -37,6 +37,11 @@ namespace RI.Framework.ComponentModel
 	///     <para>
 	///         By default, if <see cref="Translate" /> is not handled, <see cref="CompositionContainer.GetNameOfType" /> is used to translate a type to a name.
 	///     </para>
+	///     <note type="note">
+	///         The use of a service locator is considered a bad practice in some contexts and under some circumstances.
+	///         Please reflect carefully whether a service locator is the right architectural/design choice.
+	///         Dependency injection, e.g. using <see cref="CompositionContainer" />, might be a better approach.
+	///     </note>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	public static class ServiceLocator
