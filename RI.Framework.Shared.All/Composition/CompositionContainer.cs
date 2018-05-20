@@ -20,25 +20,24 @@ using RI.Framework.Utilities.ObjectModel;
 using RI.Framework.Utilities.Reflection;
 #if PLATFORM_NETFX
 using System.Linq.Expressions;
-
-
-
-
+#endif
+#if PLATFORM_UNITY
+using RI.Framework.Composition.Compatibility;
 #endif
 
 
 namespace RI.Framework.Composition
 {
 	/// <summary>
-	///     The main hub for doing composition.
+	///     The main hub for doing composition or Dependency Injection (DI) / Inversion-of-Control (IoC) respectively.
 	/// </summary>
 	/// <remarks>
 	///     <para>
 	///         <b> GENERAL </b>
 	///     </para>
 	///     <para>
-	///         Basically, &quot;composition&quot; means to resolve imports according to the known exports of a <see cref="CompositionContainer" />.
-	///         The term &quot;container&quot; in <see cref="CompositionContainer" /> already indicates that the exports are contained in the <see cref="CompositionContainer" /> and taken from there to resolve the imports.
+	///         Basically, &quot;composition&quot; means to resolve dependencies (called &quot;imports&quot;) according to the known &quot;exports&quot; of a <see cref="CompositionContainer" />.
+	///         The term &quot;container&quot; in <see cref="CompositionContainer" /> already indicates that the exports are contained in the <see cref="CompositionContainer" /> and taken from there to resolve the imports and so satisfy the dependencies.
 	///     </para>
 	///     <para>
 	///         <b> EXPORTS &amp; IMPORTS </b>
@@ -48,10 +47,10 @@ namespace RI.Framework.Composition
 	///         But it is simple:
 	///     </para>
 	///     <para>
-	///         &quot;Export&quot; means that a type or object is being &quot;exported for use&quot; or &quot;provided to a <see cref="CompositionContainer" /> in some way&quot; (manual or model-based export) so that the <see cref="CompositionContainer" /> can resolve the imports.
+	///         &quot;Export&quot; means that a type or object is being &quot;exported for use&quot; or &quot;provided to a <see cref="CompositionContainer" /> in some way&quot; so that the <see cref="CompositionContainer" /> can use it to resolve imports.
 	///     </para>
 	///     <para>
-	///         &quot;Import&quot; means that &quot;a value of a given type or name is required or requested in some way&quot; (manual or model-based import) and the <see cref="CompositionContainer" /> provides that value (or &quot;imports it for use&quot;) by searching its known exports for an export of the same name as the import.
+	///         &quot;Import&quot; means that &quot;a value of a given type or name is required or requested in some way&quot; and the <see cref="CompositionContainer" /> provides that value (or &quot;imports it for use&quot;) by searching its known exports for an export of the same name as the import.
 	///     </para>
 	///     <para>
 	///         The search and provisioning of exports (of the same name as the required import) is called &quot;resolving imports&quot; or simply &quot;resolving&quot;.
@@ -62,13 +61,19 @@ namespace RI.Framework.Composition
 	///     <para>
 	///         What also might be unclear at first is the &quot;name&quot; of imports and exports.
 	///         Especially because sometimes a type and sometimes a name is mentioned/used.
-	///         When exports are managed by a <see cref="CompositionContainer" />, or a <see cref="CompositionCatalog" />, they are always identified using their name.
+	///         When exports are managed by a <see cref="CompositionContainer" /> (or a <see cref="CompositionCatalog" />) they are always identified using their name.
 	///         Resolving of imports is also always done using the name of the import.
 	///         Now, when types are used instead of names, the types are simply translated into what is called &quot;the types default name&quot;.
 	///         After the translation, the types are ignored and the exports and imports are continued to be handled using their translated names.
 	///         For example, the method <see cref="AddInstance(object, Type)" /> does nothing else than determine the types default name and then call <see cref="AddInstance(object, string)" /> with that name.
 	///         This allows you to mix type-based import and export (using their types default names) and also name-based import and export (using any custom names you specify).
 	///         Finally, a types default name is simply its namespace and type name, e.g. the name &quot;RI.Framework.Composition.CompositionContainer&quot; for the type <see cref="CompositionContainer" />.
+	///     </para>
+	///     <para>
+	///         In short: Types are never compared or looked-up, only names or the types default names in cases types are used.
+	///     </para>
+	///     <para>
+	///         To get the default name of a type (e.g. for creating a custom <see cref="CompositionCatalog" />), use the method <see cref="GetNameOfType" />.
 	///     </para>
 	///     <para>
 	///         Note that names are always case-sensitive.
@@ -83,11 +88,12 @@ namespace RI.Framework.Composition
 	///     </para>
 	///     <para>
 	///         This is how Dependency Injection is implemented using <see cref="CompositionContainer" />.
-	///         If you have a cascade of objects, with all kind of dependencies, you do not need to resolve them all by yourself by creating instances, dealing with singletons, or getting manual imports.
+	///         If you have a graph or cascade of objects, with all kind of dependencies, you do not need to resolve them all by yourself by creating instances, dealing with singletons, or getting manual imports.
 	///         You just make the <see cref="CompositionContainer" /> aware where to find all the possibly required objects or types (using the various concrete implementations of <see cref="CompositionCatalog" />) and then start to pull the objects from the <see cref="CompositionContainer" /> as you need them.
+	///         They will have their imports resolved and filled in.
 	///     </para>
 	///     <para>
-	///         It is a dangerous comparison but you could view a <see cref="CompositionContainer" /> as a kind of very advanced singleton manager which also resolves the dependencies of its managed singletons.
+	///         It is a dangerous (and partially wrong!) comparison but you could view a <see cref="CompositionContainer" /> as a kind of very advanced singleton manager which also resolves the dependencies of the singletons it manages.
 	///     </para>
 	///     <para>
 	///         <b> MANUAL &amp; MODEL-BASED EXPORTING </b>
@@ -96,35 +102,54 @@ namespace RI.Framework.Composition
 	///         There are two ways of exporting: Manual and model-based.
 	///     </para>
 	///     <para>
-	///         Manual export is done by calling one of the <c> AddExport </c> methods explicitly and stating a type or object and under which name it is exported.
-	///         Advantage: A type or object does not need any special preparation in order to be exported manually, any type or object can be exported (restrictions apply, see below), even those which requires complex construction which could not be handled by a <see cref="CompositionContainer" />.
-	///         Disadvantage: The type or object to be manually exported must be known and explicitly added to the <see cref="CompositionContainer" />, adding a strong dependency to that type or object and/or a lot of boilerplate code just to discover the type or object.
+	///         Manual export is done by calling one of the <c> AddType </c>, <c> AddInstance </c>, or <c> AddFactory </c> methods of <see cref="CompositionContainer" /> explicitly and stating a type, object, or factory and under which name it is exported.
+	///         Advantage: A type or object does not need any special preparation in order to be exported manually. Any type or object can be exported manually (restrictions apply, see below), even those which requires complex construction which could not be handled by a <see cref="CompositionContainer" />.
+	///         Disadvantage: The type or object to be manually exported must be known and explicitly added to the <see cref="CompositionContainer" />, adding a strong dependency to the corresponding type and/or boilerplate code to discover the type or construct the object.
 	///     </para>
 	///     <para>
 	///         Model-based export is done by using a <see cref="CompositionCatalog" /> and adding it to the <see cref="CompositionContainer" /> using the <see cref="AddCatalog(CompositionCatalog)" /> method.
-	///         Advantage: No dependencies or references to the exported types or objects are required at compile time because, depending on the used <see cref="CompositionCatalog" />, the composition catalog can collect all exports by itself (e.g. all eligible types in an <see cref="Assembly" /> when using <see cref="AssemblyCatalog" />).
-	///         Disadvantage: A type or object needs special preparation in order to be model-based exported, namely at least one or more <see cref="ExportAttribute" /> applied to it (for some <see cref="CompositionCatalog" />s) or simple constructors.
+	///         Advantage: No dependencies or references to the exported types are required at compile time because, depending on the used <see cref="CompositionCatalog" />, the composition catalog can collect all exports by itself (e.g. all eligible types in an <see cref="Assembly" /> when using <see cref="AssemblyCatalog" />). This makes the things truly &quot;decoupled&quot;!
+	///         Disadvantage: A type needs to fulfill some rules in order to be model-based exportable. This could be: An applied <see cref="ExportAttribute" /> (it depends on the used <see cref="CompositionCatalog" /> whether this attribute is optional or not) and/or simple constructors (either parameterless or only with parameters whose types can be resolved by the <see cref="CompositionContainer" /> when constructing an instance of the type for export).
 	///     </para>
 	///     <para>
-	///         If a type has a <see cref="NoExportAttribute"/> on itself or anywhere in its inheritance hierarchy (including interfaces), the type is not exported at all.
+	///         <b> MODEL-BASED EXPORTING &amp; ATTRIBUTES </b>
 	///     </para>
 	///     <para>
-	///         <b> TYPE &amp; OBJECT EXPORTS </b>
+	///         When doing model-based exporting, the <see cref="ExportAttribute" /> is used to declare a type explicitly as exported.
+	///         This might be necessary, depending on the used <see cref="CompositionCatalog" />.
 	///     </para>
 	///     <para>
-	///         Two things can be exported: Types and objects.
-	///         &quot;Types or objects&quot; means that either a <see cref="Type" /> or an already instantiated <see cref="object" /> of any type can be used.
+	///         Some <see cref="CompositionCatalog" />s can be configured to use all available types, including those without an <see cref="ExportAttribute" />, by using their types default names for exporting.
+	///         The effect is that all types which are visible to the catalog, and which can be exported, are either exported as described above, respecting their <see cref="ExportAttribute" />, or using default names if a type has no <see cref="ExportAttribute" /> defined.
+	///         This can help with exporting/importing types which are not under your control, where you cannot apply a <see cref="ExportAttribute" /> and you do not want to explicitly create instances of those types (where you would lose the loose coupling)).
+	///         Whether a <see cref="CompositionCatalog" /> provides the functionality to export all types depends on the particular implementation of <see cref="CompositionCatalog" />.
+	///         See the description of the <see cref="CompositionCatalog" /> implementations for more details.
 	///     </para>
 	///     <para>
-	///         A type can be exported by specifying the <see cref="Type" /> and under which name it is exported.
-	///         When an import is resolved to such a type export, a new instance of that type is created (if not yet created) or the previously created instance of that type is used and provided as the import value (except for private exports, see below).
+	///         <see cref="ExportAttribute" /> can also have optional parameters to specify under which type or name a type is export.
+	///         Using the parameterless version of <see cref="ExportAttribute" /> uses the types default name.
+	///     </para>
+	///     <para>
+	///         Multiple <see cref="ExportAttribute" />s can be used on a type to export the same type under multiple types or names.
+	///         In such cases, for non-private exports, the eventually exported instance of the type is shared by all export definitions or in other words: All <see cref="ExportAttribute" />s of a type will point to the same instance.
+	///     </para>
+	///     <para>
+	///         If a type has a <see cref="RI.Framework.Composition.Model.NoExportAttribute" /> on itself or anywhere in its inheritance hierarchy (including interfaces), the type is not exported at all.
+	///     </para>
+	///     <para>
+	///         <b> TYPE / OBJECT / FACTORY EXPORTS </b>
+	///     </para>
+	///     <para>
+	///         Three things can be exported: Types, objects, factories.
+	///         This means that either a <see cref="Type" />, an already instantiated <see cref="object" /> of any type (as long as its a closs or reference type respectively), or a <see cref="Delegate" /> can be used as an export.
+	///     </para>
+	///     <para>
+	///         A type can be exported by specifying the <see cref="Type" /> and optionally under which name it is exported (otherwise using the types default name).
+	///         When an import is resolved to such a type export, a new instance of that type is created (if not already done) or the previously created instance of that type is used and then provided as the import value (except for private exports, see below).
 	///         A type can be exported multiple times under different names.
-	///         It is important to know that the same type is only instantiated once in a <see cref="CompositionContainer" />.
+	///         It is important to know that the exactly same type is only instantiated once in a <see cref="CompositionContainer" />.
 	///         That means that the one instance of a particular type is used for all exports of that type, even if exported under different names.
 	///         Therefore, type exports are always shared, singleton-like exports (except for private exports, see below).
-	///         <see cref="ExportConstructorAttribute" /> and <see cref="ExportCreatorAttribute" /> are used to help with the construction of instances for type exports.
-	///         <see cref="ExportCreatorAttribute" />s have higher priority than <see cref="ExportConstructorAttribute" />s when determining how an instance of a type export is to be created.
-	///         Only if the <see cref="ExportCreatorAttribute" />s yield no usable results or are not used, <see cref="ExportConstructorAttribute" /> is used.
 	///     </para>
 	///     <para>
 	///         An object can be exported by specifying the <see cref="object" /> and under which name it is exported.
@@ -134,9 +159,68 @@ namespace RI.Framework.Composition
 	///         However, object exports cannot be private exports (see below).
 	///     </para>
 	///     <para>
-	///         Although type exports share one instance for the same type, it is possible to have type exports of a particular type and also one or more object exports with instances of that same type.
-	///         In such cases, a new shared instance for the type export is still created although there are object exports with instances of the same type.
-	///         Or in other words: Type exports and object exports do not share their instances.
+	///         A factory can be used for exporting by providing a <see cref="Delegate" /> which is used to build the eventually exported instance of the type.
+	///         A <see cref="Delegate" /> is specified and also under which name the instance, which is created by the factory delegate, is exported.
+	///         When an import is resolved to such a factory export, the factory delegate is called and its return value is used as the exported value.
+	///         Factory delegates can have parameters, which are treated the same way as type constructor parameters when using type exporting (see section &quot;instance construction&quot; below).
+	///         A factory can be exported multiple times under different names.
+	///         It is important to know that the exactly same factory is only called once in a <see cref="CompositionContainer" />.
+	///         That means that the one instance created by a particular factory is used for all exports which use the same factory, even if exported under different names.
+	///         Therefore, factory exports are always shared, singleton-like exports (except for private exports, see below).
+	///     </para>
+	///     <para>
+	///         Although type and factory exports share one single instance for the same type or factory, it is possible to have type or factory exports of a particular type and also one or more object exports with instances of that same type.
+	///         In such cases, a new shared instance for the type or factory export is still created although there are object exports with instances of the same type.
+	///         Or in other words: Type exports, factory exports, and object exports do not share their instances.
+	///         Type exports share their instances only with other type exports.
+	///         Factory exports share their instances only with other factory exports.
+	///     </para>
+	///     <para>
+	///         <b> INSTANCE CONSTRUCTION </b>
+	///     </para>
+	///     <para>
+	///         A <see cref="CompositionContainer" /> creates new instances for type exports to get the actual exported value.
+	///         Basically, those instances are created in a normal way by using type constructors, with some exceptions.
+	///     </para>
+	///     <para>
+	///         <see cref="ExportConstructorAttribute" />, <see cref="ExportCreatorAttribute" />, and <see cref="CompositionCreator" /> are used to help with the construction of instances for type exports.
+	///         If, for a particlar type, more than one approach is available to get an instance, the priority is as follows: creator methods (<see cref="ExportCreatorAttribute" />, then constructors (with or without <see cref="ExportConstructorAttribute" />), then <see cref="CompositionCreator" />.
+	///         If no creator method is specified or a specified creator method yields no usable results (means: returns null), constructors are tried.
+	///         If no suitable constructors are available AND there is a <see cref="CompositionCreator" /> supporting the type, that <see cref="CompositionCreator" /> is used.
+	///         Only one constructor per type is allowed to have the <see cref="ExportConstructorAttribute" />.
+	///         Only one method per type is allowed to have the <see cref="ExportCreatorAttribute" />.
+	///     </para>
+	///     <para>
+	///         The rules used to determine which constructor to use, in case there are multiple constructors defined for a type, are as follows:
+	///         All constructors, public and non-public, with and without parameters, with or without <see cref="ExportConstructorAttribute" />, are considered.
+	///         The one constructor marked with <see cref="ExportConstructorAttribute" /> has first priority (basically saying &quot;this is the one, regardless what other constructors are there&quot;).
+	///         All constructors for which ALL of their parameters can be satisfied with import values have second priority.
+	///         All constructors for which NONE or NOT ALL of their parameters can be satisfied with import values have third priority.
+	///         Within the same priority, the one constructor with the most parameters has the highest sub-priority.
+	///     </para>
+	///     <para>
+	///         <see cref="ExportCreatorAttribute" />s can be used on a type to specify a static method which creates instances of that type.
+	///         This can be helpful in cases the instance creation itself is too complex so it cannot be handled by the <see cref="CompositionContainer" /> itself.
+	///         Any static method of the type which is to be created can be declared the types creator method by applying <see cref="ExportCreatorAttribute" />.
+	///         The return value of the method is taken as the constructed instance of the type (even if the type is not the same type as the method belongs to).
+	///     </para>
+	///     <para>
+	///         <see cref="CompositionCreator" />s can be used to provide a mechanism which is more decoupled from the constructed type than an <see cref="ExportCreatorAttribute" /> would be (the <see cref="CompositionCreator" /> knows the type to construct, but not vice-versa).
+	///         This can be helpful in cases the instance creation itself is too complex so it cannot be handled by the <see cref="CompositionContainer" /> itself.
+	///         <see cref="CompositionCreator" />s are added to the <see cref="CompositionContainer" /> (using <see cref="AddCreator" />).
+	///         A <see cref="CompositionCreator" /> decides by itself whether it is responsible for creating a particular type (using the <see cref="CompositionCreator.CanCreateInstance" /> method).
+	///         If a <see cref="CompositionCreator" /> decides to be responsible for creating an instance, the <see cref="CompositionCreator.CreateInstance" /> method is used.
+	///     </para>
+	///     <para>
+	///         The same principles now described for the constructor parameters also apply to factory delegate parameters and parameters for constructor methods specified by <see cref="ExportCreatorAttribute" />:
+	///     </para>
+	///     <para>
+	///         A parameterless constructor is simple: It is just called and if the constructor itself does not crash, there are no side-effects.
+	///         A constructor with parameters is more complex: There are three kinds of parameters which are handled differently: <see cref="Type" />, <see cref="string" />, and any other type.
+	///         A <see cref="Type" /> parameter is always satisfied with the type currently being under construction.
+	///         A <see cref="string" /> parameter is always satisfied with the name under which the currently exported type being under construction is experted.
+	///         Any other type is satisfied by attempting a &quot;manual&quot; import based on the parameter type, similar as if one of the <c> GetExport </c> methods would be used to get the value for the parameter.
+	///         This also includes the ability to have parameters which use &quot;multiple importing&quot; or &quot;lazy importing&quot;.
 	///     </para>
 	///     <para>
 	///         <b> SHARED &amp; PRIVATE EXPORTS </b>
@@ -146,16 +230,40 @@ namespace RI.Framework.Composition
 	///     </para>
 	///     <para>
 	///         Shared exports behave exactly like described above.
-	///         For type exports, the instance which is created for the type is used (shared) for all imports of the same type.
+	///         For type exports, the instance which is created for a type is used (shared) for all imports of the same type.
+	///         For factory exports, the instance which is created for a factory delegate is used (shared) for all imports of the same factory delegate.
 	///         For object exports, the instance is used (shared) for all imports of the same name.
 	///     </para>
 	///     <para>
-	///         Private exports behave more or less also the same as described above, with one exception:
-	///         For type exports, imports will receive their own (private) instance each time (!) an import is resolved.
+	///         Private exports behave more or less also the same as described above, with three exceptions:
+	///         For type exports, imports will receive their own (private) instance each time (!) an import is resolved, meaning: a new instance of the type is constructed for each import.
+	///         For factory exports, imports will receive their own (private) instance each time (!) an import is resolved, meaning: the factory delegate is called for each import.
 	///         Object exports cannot be private and are always shared.
 	///     </para>
 	///     <para>
-	///         An export can be made private through the <see cref="ExportAttribute.Private" /> property of <see cref="ExportAttribute" />.
+	///         Therefore, only the export side can control whether an export or import respectively is shared or private.
+	///         The import side has no control over whether its import value is shared or private.
+	///     </para>
+	///     <para>
+	///         An export can be made private through the <see cref="ExportAttribute.Private" /> property of <see cref="ExportAttribute" /> or by specifying so when using one of the methods for manual exporting.
+	///     </para>
+	///     <para>
+	///         <b> CLOSED &amp; OPEN GENERICS </b>
+	///     </para>
+	///     <para>
+	///         <see cref="CompositionContainer" /> supports both closed and open generics as exports.
+	///     </para>
+	///     <para>
+	///         Closed generic: A concrete type of a generic type is exported.
+	///         Example: <c> container.AddType(typeof(MyType&lt;string&gt;), typeof(MyType&lt;string&gt;), false); </c>.
+	///         Here, an instance of <c> MyType&lt;string&gt; </c> is resolved and created when an import for <c> MyType&lt;string&gt; </c> is requested.
+	///         If an import for <c> MyType&lt;int&gt; </c> would be requested, nothing would be resolved and no instance is created.
+	///     </para>
+	///     <para>
+	///         Open generic: An open type of a generic type is exported, not specifying the type parameters.
+	///         Example: <c> container.AddType(typeof(MyType&lt;&gt;), typeof(MyType&lt;&gt;), false); </c>.
+	///         Here, an instance of <c> MyType&lt;string&gt; </c> is resolved and created when an import for <c> MyType&lt;string&gt; </c> is requested.
+	///         But then if an import for <c> MyType&lt;int&gt; </c> would be requested, <c> MyType&lt;int&gt; </c> would be resolved and created.
 	///     </para>
 	///     <para>
 	///         <b> MANUAL &amp; MODEL-BASED IMPORTING </b>
@@ -168,46 +276,40 @@ namespace RI.Framework.Composition
 	///         This is usually used to retrieve an export from the <see cref="CompositionContainer" /> programmatically.
 	///     </para>
 	///     <para>
-	///         Model-based import is done by decorating properties of composed types or objects with <see cref="ImportAttribute" />.
+	///         Model-based import is done by decorating properties of composed types with <see cref="ImportAttribute" />s.
+	///         The <see cref="CompositionContainer" /> then automatically fills in the values for those properties, based on the <see cref="ImportAttribute" />.
 	///         This is usually used for implementing Dependency Injection (DI) or to retrieve an export from the <see cref="CompositionContainer" /> declaratively.
 	///     </para>
 	///     <para>
-	///         <b> IMPLICIT &amp; EXPLICIT MODEL-BASED IMPORTING </b>
+	///         <b> EXPLICIT &amp; IMPLICIT MODEL-BASED IMPORTING </b>
 	///     </para>
 	///     <para>
-	///         Model-based import comes in two flavours: Implicit and explicit.
+	///         Model-based import comes in two flavours: Explicit and implicit.
 	///     </para>
 	///     <para>
-	///         Explicit model-based import is done by passing an object to the <see cref="ResolveImports(object, CompositionFlags)" /> method.
-	///         The specified object gets then all its imports resolved and assigned once.
+	///         Explicit model-based importing is done by passing an object to the <see cref="ResolveImports(object, CompositionFlags)" /> method.
+	///         The specified object then gets all its imports, which have an <see cref="ImportAttribute" /> applied, resolved and assigned once.
+	///         The passed object is not tracked by the <see cref="CompositionContainer" />.
 	///         See <see cref="ResolveImports(object, CompositionFlags)" /> for details.
 	///     </para>
 	///     <para>
 	///         Implicit model-based import is done automatically by the <see cref="CompositionContainer" /> itself by resolving the imports of all its known exports.
 	///         The imports of the known exports of a <see cref="CompositionContainer" /> are resolved whenever the composition changes (e.g. a manual export method is used or a composition catalog is added or removed) or a recomposition is executed (using the <see cref="Recompose(CompositionFlags)" /> method).
+	///         In other words: All exports in a <see cref="CompositionContainer" /> get their imports, using <see cref="ImportAttribute" />, automatically resolved and filled in.
 	///     </para>
 	///     <para>
-	///         <b> SINGLE &amp; MULTIPLE IMPORTING </b>
+	///         <b> MODEL-BASED IMPORTING &amp; ATTRIBUTES </b>
 	///     </para>
 	///     <para>
-	///         Importing can be used in two ways: Single import and multiple import.
+	///         When doing model-based importing, the <see cref="ImportAttribute" /> is used to declare what is eventually to be assigned to the property as its imported value.
 	///     </para>
 	///     <para>
-	///         A single import is when one of the <c> GetExport </c> methods is used or when an <see cref="ImportAttribute" /> is applied to a normal property (means: a property not of type <see cref="Import" />).
-	///         In such cases, the first resolved import value is provided or assigned respectively.
-	///         If the import resolves to more than one value, the provided value is one of them but it is not defined which one.
+	///         Using the parameterless version of <see cref="ImportAttribute" /> uses the default name of the property type for importing.
 	///     </para>
 	///     <para>
-	///         A multiple import is when one of the <c> GetExports </c> methods is used or when an <see cref="ImportAttribute" /> is applied to a property of the type <see cref="Import" />.
-	///         In such cases, all the resolved import values are provided or assigned respectively.
-	///         Therefore, multiple types or objects can be exported under the same name.
-	///     </para>
-	///     <para>
-	///         <b> ELIGIBLE TYPES </b>
-	///     </para>
-	///     <para>
-	///         Only non-abstract class types can be exported.
-	///         Only non-generic class or interface types can be imported.
+	///         Other versions of <see cref="ImportAttribute" /> allows to specify a type or name which is to be imported.
+	///         In such cases, the imported value assigned to the property must be compatible with the property type.
+	///         An exception will occur if the imported value can not be assigned to the type of the property (e.g. when the import value type and the property type are not the same or the property type is not in the inheritance hierarchy of the import value type).
 	///     </para>
 	///     <para>
 	///         <b> RECOMPOSITION &amp; TRACKING </b>
@@ -215,8 +317,8 @@ namespace RI.Framework.Composition
 	///     <para>
 	///         Model-based imports can be marked as &quot;recomposable&quot; using <see cref="ImportAttribute" />.<see cref="ImportAttribute.Recomposable" />.
 	///         This means that the imports of such properties are reimported or resolved again respectively whenever the composition for the corresponding name changes (e.g. a new export of that name gets added to the <see cref="CompositionContainer" />).
-	///         However, this is only done using implicit model-based importing, meaning that only exports known to the <see cref="CompositionContainer" /> get their recomposable imports updated.
-	///         Imports resolved using <see cref="ResolveImports(object, CompositionFlags)" /> are not updated during a recomposition.
+	///         However, this is only done for implicit model-based importing, meaning that only exports known to the <see cref="CompositionContainer" /> get their recomposable imports updated.
+	///         Imports resolved using <see cref="ResolveImports(object, CompositionFlags)" /> are not updated during a recomposition because they are not implicitly part of the <see cref="CompositionContainer" /> and therefore not tracked.
 	///         See <see cref="Recompose(CompositionFlags)" /> and <see cref="ResolveImports(object, CompositionFlags)" /> for more details.
 	///     </para>
 	///     <para>
@@ -225,56 +327,130 @@ namespace RI.Framework.Composition
 	///         <see cref="IImporting" /> can be used to detect when imports have changed.
 	///     </para>
 	///     <para>
-	///         <b> UNDEFINED STATE </b>
+	///         <b> IMPORT KINDS </b>
 	///     </para>
 	///     <para>
-	///         If a <see cref="CompositionException" /> is thrown during a composition, the state of the <see cref="CompositionContainer" /> and all its compositions are undefined and might remain unusable.
-	///         Therefore, a <see cref="CompositionException" /> should always be treated as a serious error which prevents the program from continueing normally.
+	///         Five fundamentally different kinds of providing import values are available: one normal way (providing a single value), two ways providing multiple values, and two ways providing the values in a &quot;lazy&quot; style.
+	///         The used kind is determined by the target type where the import value goes, therefore applicable to model-based importing using <see cref="ImportAttribute" /> and parameters of factory delegates, constructors, and methods specified by <see cref="ExportCreatorAttribute" />.
+	///     </para>
+	///     <para>
+	///         <b> Single </b>:
+	///         The target type is of any reference type, except one of the other types which define the other import kinds.
+	///         For example a property of the type <see cref="ILogger" />.
+	///         The property gets a single instance of <see cref="ILogger" /> or null if the <see cref="CompositionContainer" /> has no matching export.
+	///         If there are multiple matching exports, one of them is used but it is undefined which one.
+	///     </para>
+	///     <para>
+	///         <b> Multiple </b>:
+	///         The target type is <see cref="IEnumerable{T}" />.
+	///         For example a property of the type <see cref="IEnumerable{ILogger}" />.
+	///         The <see cref="CompositionContainer" /> internally creates an array of <see cref="ILogger" />s and assigns it to the property so that it gets all matching exports.
+	///         If there no matching exports, an empty array would be assigned.
+	///         Note that only <see cref="IEnumerable{T}" /> is used to detect multiple imports so you cannot use the array type directly.
+	///         You should also never cast back to an array as this is only considered an internal mechanism which might change in a future version (the only thing guaranteed is that the value is of a type which implements <see cref="IEnumerable{T}" />).
+	///     </para>
+	///     <para>
+	///         <b> Special Multiple </b>:
+	///         The target type is <see cref="Import" />.
+	///         For example a property of the type <see cref="Import" />.
+	///         The <see cref="CompositionContainer" /> internally creates an instance of <see cref="Import" /> and fills it with the import values of all matching exports, then assigns it to the property so that it gets all these matching exports indirectly through the <see cref="Import" /> instance.
+	///         There will be always an <see cref="Import" /> instance, even when there are no matching exports.
+	///         To retrieve the actual imported values from <see cref="Import" />, the extension methods from <see cref="ImportExtensions" /> are used.
+	///         The reason why this kind of import exists is to provide an AOT-compliant way of providing more than one import values (as the <see cref="IEnumerable{T}" /> approach cannot be used with AOT).
+	///         Note that for this kind of import, the corresponding property or parameter must be assigned with an <see cref="ImportAttribute" /> which specifies the name or type to be imported (otherwise there would be no indication about what is actually to be imported, no name or type).
+	///     </para>
+	///     <para>
+	///         <b> Lazy Method </b>:
+	///         The target type is <see cref="Func{TResult}" />.
+	///         For example a property of the type <see cref="Func{ILogger}" />.
+	///         The property gets a delegate which can be called when the actual instance of <see cref="ILogger" /> is really needed, only resolving the import value on-demand (or &quot;lazy&quot; respectively).
+	///         So the resolving of the import VALUE happens at the time the delegate is called and not at the time the import ITSELF is resolved (including any potential construction of instances).
+	///     </para>
+	///     <para>
+	///         <b> Lazy Object </b>:
+	///         The target type is <see cref="Lazy{TResult}" />.
+	///         For example a property of the type <see cref="Lazy{ILogger}" />.
+	///         The property gets an instance of <see cref="Lazy{ILogger}" /> where the property <see cref="Lazy{TResult}.Value" /> is used when the actual instance of <see cref="ILogger" /> is really needed, only resolving the import value on-demand (or &quot;lazy&quot; respectively).
+	///         So the resolving of the import VALUE happens at the time the <see cref="Lazy{TResult}.Value" /> is used and not at the time the import ITSELF is resolved (including any potential construction of instances).
+	///     </para>
+	///     <para>
+	///         Some of the import kinds can be cascaded.
+	///         If the the lazy method or the lazy object kind is used, the type resolved by <see cref="Func{TResult}" /> or <see cref="Lazy{T}" /> can be used to define the single kind (e.g. <c> Func&lt;ILogger&gt; </c>) or multiple kind (e.g. <c> Func&lt;IEnumerable&lt;ILogger&gt;&gt; </c>) (but not special multiple kind).
+	///     </para>
+	///     <para>
+	///         <b> ELIGIBLE TYPES </b>
+	///     </para>
+	///     <para>
+	///         Only non-abstract reference types can be exported.
+	///     </para>
+	///     <para>
+	///         Only class or interface types can be imported.
+	///     </para>
+	///     <para>
+	///         <b> COMPOSITION AWARENESS THROUGH INTERFACES </b>
+	///     </para>
+	///     <para>
+	///         Types which are managed by the <see cref="CompositionContainer" /> as exports and types into which the <see cref="CompositionContainer" /> imports can be made composition-aware by implementing the proper interfaces.
+	///     </para>
+	///     <para>
+	///         <see cref="IExporting" />: Allows exported types and objects to be informed when they are added to or removed from a <see cref="CompositionContainer" />.
+	///     </para>
+	///     <para>
+	///         <see cref="IImporting" />: Allows types and objects which use model-based importing (using <see cref="ImportAttribute" />) to be informed when their imports are being resolved or updated.
+	///         This interface is very helpful if you have a decoupled environment where exports/imports can change at any time and a type needs to be informed when that happens.
+	///     </para>
+	///     <note type="note">
+	///         Be careful when using those interfaces, especially with <see cref="IExporting" />.
+	///         Using them in the wrong way could lead to tight structural and/or tight dynamic coupling.
+	///     </note>
+	///     <para>
+	///         <b> BATCHES </b>
+	///     </para>
+	///     <para>
+	///         Multiple composition and <see cref="CompositionContainer" /> operations can be combined into a single batch.
+	///         <see cref="CompositionBatch" /> can be used to collect multiple operations which are then executed in one batch, using <see cref="Compose" />.
+	///     </para>
+	///     <para>
+	///         Using batches, a recomposition is only triggered once for the whole batch, instead of doing a recomposition for each operation.
 	///     </para>
 	///     <para>
 	///         <b> SELF-COMPOSITION </b>
 	///     </para>
 	///     <para>
-	///         A <see cref="CompositionContainer" /> does not add itself as an export by default but can be added like any other manual or model-based object export (the <see cref="CompositionContainer" /> has the <see cref="ExportAttribute" /> applied).
-	///         A <see cref="CompositionContainer" /> which has an export of another <see cref="CompositionContainer" /> does only export that other <see cref="CompositionContainer" /> instance as it does any other object or type but does not also export the exports of that other <see cref="CompositionContainer" />.
+	///         A <see cref="CompositionContainer" /> does not add itself as an export by default but can be added as an export like any other object (the <see cref="CompositionContainer" /> has also multiple <see cref="ExportAttribute" />s applied).
+	///         A <see cref="CompositionContainer" /> which has an export of another <see cref="CompositionContainer" /> does only export that other <see cref="CompositionContainer" /> instance the same way as it does any other object or type but does not also export the exports of that other <see cref="CompositionContainer" /> (no flattening of the export hierarchy, this can be done using parent/child containers).
+	///     </para>
+	///     <para>
+	///         <b> PARENT/CHILD CONTAINERS </b>
+	///     </para>
+	///     <para>
+	///         When constructing a <see cref="CompositionContainer" />, a parent container can be specified (see <see cref="CompositionContainer(CompositionContainer)" />).
+	///         The constructed <see cref="CompositionContainer" /> then inherits all exports of its parent container and also reflects the changes in composition of its parent container.
+	///         It behaves as if the exports of the parent container are exports of the child container.
+	///     </para>
+	///     <para>
+	///         A parent conatiner does not get the exports of the child containers and is also otherwise not affected in any way by child containers.
+	///         A container can be parent of multiple child containers.
+	///     </para>
+	///     <para>
+	///         The only way to detach from a parent container is through <see cref="Dispose" /> but no other parent container can be attached afterwards.
+	///     </para>
+	///     <para>
+	///         Instead of creating a new child contianer and pass the parrent container, a child container can be created with <see cref="CreateChildContainer" /> (which does basically the same).
 	///     </para>
 	///     <para>
 	///         <b> MULTIPLE COMPOSITION CONTAINERS </b>
 	///     </para>
 	///     <para>
-	///         Multiple composition containers can coexist independently side-by-side.
+	///         Multiple composition containers can coexist independently side-by-side and do not affect each other at all.
 	///         They can also share the same exports and <see cref="CompositionCatalog" />s.
-	///     </para>
-	///     <para>
-	///         <b> EXPORT OF ALL TYPES </b>
-	///     </para>
-	///     <para>
-	///         A <see cref="CompositionCatalog" /> could also explicitly export all eligible types, even if they do not have any <see cref="ExportAttribute" /> defined.
-	///         The effect is that all types which are visible to the catalog and which can be exported are either exported as described above, respecting their <see cref="ExportAttribute" />, or using default names if a type has no <see cref="ExportAttribute" /> defined.
-	///     </para>
-	///     <para>
-	///         Whether a <see cref="CompositionCatalog" /> provides the functionality to export all types depends on the particular implementation of <see cref="CompositionCatalog" />.
-	///         See the description of the <see cref="CompositionCatalog" /> implementations for more details.
-	///     </para>
-	///     <para>
-	///         This can help with exporting/importing types which are not under your control, where you cannot apply a <see cref="ExportAttribute" /> and you do not want to explicitly create instances of those types.
-	///     </para>
-	///     <para>
-	///         <b> PARENT CONTAINER </b>
-	///     </para>
-	///     <para>
-	///         When constructing a <see cref="CompositionContainer" />, a parent container can be specified (see <see cref="CompositionContainer(CompositionContainer)" />).
-	///         The constructed <see cref="CompositionContainer" /> then inherits all exports of its parent container and also reflects the changes in composition of its parent container.
-	///     </para>
-	///     <para>
-	///         The only way to detach from a parent container is through <see cref="Dispose" /> but no other parent container can be attached afterwards.
 	///     </para>
 	///     <para> SIMPLE USAGE / ROOT SINGLETON </para>
 	///     <para>
-	///         A very simple usage of <see cref="CompositionContainer" /> and the principles of Dependency Injection is the creation of one <see cref="CompositionContainer" /> instance and use it wehere necessary.
+	///         A very simple usage of <see cref="CompositionContainer" /> and the principles of Dependency Injection is the creation of one <see cref="CompositionContainer" /> instance and use it where necessary.
 	///     </para>
 	///     <para>
-	///         This can be done using your own mechanism to create, store, and distribute instances of <see cref="CompositionContainer" /> or you can use the built-in singleton mechanism.
+	///         This can be done using your own mechanism to create, store, and distribute instances of <see cref="CompositionContainer" /> throughout your application or you can use the built-in singleton mechanism.
 	///         By calling the static <see cref="CreateSingleton" /> method, you create a globally available singleton instance of <see cref="CompositionContainer" /> which can be retrieved by the static property <see cref="Singleton" />.
 	///         Instead of <see cref="Singleton" /> you can also always use <see cref="CreateSingleton" /> to create the singleton if it does not exis (the first call to <see cref="CreateSingleton" /> will create it and all subsequent calls will retrieve the created singleton).
 	///         Therefore, you might want to use a <see cref="CompositionContainer" /> singleton as a sole &quot;root&quot; singleton which is used to retrieve all kind of instances and dependencies you need, practically avoiding the implementation of the singleton pattern except for <see cref="CompositionContainer" /> itself.
@@ -285,24 +461,45 @@ namespace RI.Framework.Composition
 	///     </para>
 	///     <para>
 	///         This approach (simple usage with a root singleton) is supported by the extension methods provided by <see cref="CompositionExtensions" />.
-	///         In the simplest case, depending on the used extension methods, you would not need to deal with <see cref="CompositionContainer" /> at all.
+	///         In the simplest case, depending on the used extension methods, you would not need to deal with <see cref="CompositionContainer" /> AT ALL.
 	///     </para>
 	///     <para> ADVANCED USAGE / BOOTSTRAPPER </para>
 	///     <para>
 	///         In more advanced scenarios, where the application or game requires bootstrapping of its various components and subsystems, a <see cref="CompositionContainer" /> is one of the core components for bootstrappers, as implemented by <see cref="Bootstrapper" /> / <see cref="IBootstrapper" />.
 	///         See <see cref="Bootstrapper" /> and <see cref="IBootstrapper" /> for more information about bootstrappers and their use of <see cref="CompositionContainer" />.
 	///     </para>
-	///     <para> PERFORMANCE </para>
 	///     <para>
-	///         Be aware that doing composition is a costly operation.
-	///         Therefore, composition is usually done during startup to bring everything in place (or resolving all dependencies respectively).
-	///         The performance impact for composition operations depend on various factors, including the used <see cref="CompositionCatalog" />s, and cannot be generally stated.
+	///         <b> EXCEPTIONS &amp; UNDEFINED STATE </b>
+	///     </para>
+	///     <para>
+	///         If a <see cref="CompositionException" /> is thrown during a composition, the state of the <see cref="CompositionContainer" /> and all its compositions are undefined and might remain unusable.
+	///         Therefore, a <see cref="CompositionException" /> should always be treated as a fatal error which prevents the program from continueing normally.
+	///     </para>
+	///     <para>
+	///         <b> PERFORMANCE </b>
+	///     </para>
+	///     <para>
+	///         Be aware that doing composition are usually very costly operations and should be avoided in performance or time critical paths.
+	///         Therefore, composition is usually done during startup or when the application composition changes (e.g. enabling/disabling mods or plugins) to bring everything in place and resolve all dependencies.
+	///         The performance impact for composition operations depend on various factors, including the used <see cref="CompositionCatalog" />s, and cannot be generally stated beyond &quot;its costly&quot;.
+	///     </para>
+	///     <para>
+	///         <b> THREAD-SAFETY </b>
 	///     </para>
 	///     <note type="important">
 	///         <see cref="CompositionContainer" /> is thread-safe.
 	///         It uses exclusive locks for its composition operations.
 	///         It is important to know that the <see cref="CompositionCatalog" />s used by a <see cref="CompositionContainer" /> are accessed from inside locks to <see cref="SyncRoot" />!
 	///         Be careful when explicitly dealing with catalogs in multithreaded scenarios to not produce deadlocks!
+	///     </note>
+	///     <para>
+	///         <b> PLATFORMS &amp; AVAILABILITY OF FEATURES </b>
+	///     </para>
+	///     <note type="important">
+	///         Not all features of the <see cref="CompositionContainer" /> are available on all platforms.
+	///         On platforms which use AOT, like IL2CPP, the following features are not available:
+	///         Multiple imports using <see cref="IEnumerable{T}" /> (use <see cref="Import" /> instead), lazy imports using <see cref="Lazy{T}" />, lazy imports using <see cref="Func{TResult}" />, import of any open or closed generic type.
+	///         Exceptions will be thrown when using those features on unsupported platforms.
 	///     </note>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
@@ -312,16 +509,16 @@ namespace RI.Framework.Composition
 	[SuppressMessage("ReSharper", "InconsistentNaming")]
 	public sealed class CompositionContainer : LogSource, IDependencyResolver, IServiceProvider, IDisposable, ISynchronizable
 	{
-		#region Constants
+#region Constants
 
 		internal static readonly StringComparerEx NameComparer = StringComparerEx.Ordinal;
 
-		#endregion
+#endregion
 
 
 
 
-		#region Static Constructor/Destructor
+#region Static Constructor/Destructor
 
 		static CompositionContainer ()
 		{
@@ -329,12 +526,12 @@ namespace RI.Framework.Composition
 			CompositionContainer.ResolveImports_PropertyCache = new Dictionary<Type, ResolveImports_PropertyInfo[]>();
 		}
 
-		#endregion
+#endregion
 
 
 
 
-		#region Static Properties/Indexer
+#region Static Properties/Indexer
 
 		/// <summary>
 		///     Gets the current composition container singleton.
@@ -364,12 +561,12 @@ namespace RI.Framework.Composition
 
 		private static Dictionary<Type, ResolveImports_PropertyInfo[]> ResolveImports_PropertyCache { get; }
 
-		#endregion
+#endregion
 
 
 
 
-		#region Static Methods
+#region Static Methods
 
 		/// <summary>
 		///     Gets the current composition container singleton or creates a new one if none exists.
@@ -437,7 +634,7 @@ namespace RI.Framework.Composition
 
 			HashSet<string> exports = new HashSet<string>(CompositionContainer.NameComparer);
 
-			if(!CompositionContainer.GetExportsOfTypeInternal(type, includeWithoutAttribute, true, exports))
+			if (!CompositionContainer.GetExportsOfTypeInternal(type, includeWithoutAttribute, true, exports))
 			{
 				exports.Clear();
 				return exports;
@@ -624,7 +821,7 @@ namespace RI.Framework.Composition
 			object[] exportAttributes = type.GetCustomAttributes(typeof(ExportAttribute), false);
 			object[] noExportAttributes = type.GetCustomAttributes(typeof(NoExportAttribute), false);
 
-			if(noExportAttributes.Length > 0)
+			if (noExportAttributes.Length > 0)
 			{
 				return !isSelf;
 			}
@@ -696,23 +893,15 @@ namespace RI.Framework.Composition
 				throw new ArgumentNullException(nameof(type));
 			}
 
-#if PLATFORM_NETFX //Type genericType = type.IsGenericType ? type.GetGenericTypeDefinition() : null;
-			//Type typeArgument = type.IsGenericType ? type.GetGenericArguments()[0] : type;
-			//int typeArgumentCount = type.IsGenericType ? type.GetGenericArguments().Length : 0;
-			//return (typeArgument.IsClass || typeArgument.IsInterface) && ((genericType == null) || ((genericType == typeof(IEnumerable<>)) && (typeArgumentCount == 1)) || ((genericType == typeof(Func<>)) && (typeArgumentCount == 1)) || ((genericType == typeof(Lazy<>)) && (typeArgumentCount == 1)));
 			return type.IsClass || type.IsInterface;
-#endif
-#if PLATFORM_UNITY
-			return (type.IsClass || type.IsInterface) && (!type.IsGenericType);
-#endif
 		}
 
-		#endregion
+#endregion
 
 
 
 
-		#region Instance Constructor/Destructor
+#region Instance Constructor/Destructor
 
 		/// <summary>
 		///     Creates a new instance of <see cref="CompositionContainer" />.
@@ -767,22 +956,22 @@ namespace RI.Framework.Composition
 			this.Dispose();
 		}
 
-		#endregion
+#endregion
 
 
 
 
-		#region Instance Fields
+#region Instance Fields
 
 		private bool _autoDispose;
 		private CompositionContainer _parentContainer;
 
-		#endregion
+#endregion
 
 
 
 
-		#region Instance Properties/Indexer
+#region Instance Properties/Indexer
 
 		/// <summary>
 		///     Gets or sets whether exports have <see cref="IDisposable.Dispose" /> called when removed.
@@ -859,12 +1048,12 @@ namespace RI.Framework.Composition
 
 		private List<CompositionCatalogItem> Types { get; }
 
-		#endregion
+#endregion
 
 
 
 
-		#region Instance Events
+#region Instance Events
 
 		/// <summary>
 		///     Raised when the composition has changed.
@@ -876,12 +1065,12 @@ namespace RI.Framework.Composition
 		/// </remarks>
 		public event EventHandler CompositionChanged;
 
-		#endregion
+#endregion
 
 
 
 
-		#region Instance Methods
+#region Instance Methods
 
 		/// <summary>
 		///     Model-based export: Adds a composition catalog to use its exports for composition.
@@ -2010,7 +2199,6 @@ namespace RI.Framework.Composition
 							List<object> newValues = newImport?.GetInstancesSnapshot() ?? new List<object>();
 							updateValue = !CollectionComparer<object>.ReferenceEquality.Equals(oldValues, newValues);
 						}
-#if PLATFORM_NETFX
 						else if (importKind == ImportKind.Enumerable)
 						{
 							List<object> oldValues = (oldValue as IEnumerable)?.ToList() ?? new List<object>();
@@ -2021,7 +2209,6 @@ namespace RI.Framework.Composition
 						{
 							updateValue = oldValue == null;
 						}
-#endif
 						else if (importKind == ImportKind.Single)
 						{
 							updateValue = !object.ReferenceEquals(oldValue, newValue);
@@ -2243,7 +2430,6 @@ namespace RI.Framework.Composition
 				return typeof(object);
 			}
 
-#if PLATFORM_NETFX
 			Type enumerableType = CompositionContainer.GetEnumerableType(type);
 			if (enumerableType != null)
 			{
@@ -2264,7 +2450,6 @@ namespace RI.Framework.Composition
 				kind = ImportKind.LazyObject;
 				return lazyLoadObjectType;
 			}
-#endif
 
 			kind = ImportKind.Single;
 			return type;
@@ -2302,7 +2487,6 @@ namespace RI.Framework.Composition
 				return new Import(importValues?.Count == 0 ? null : importValues?.ToArray());
 			}
 
-#if PLATFORM_NETFX
 			if (kind == ImportKind.Enumerable)
 			{
 				return this.CreateArray(importType, importValues);
@@ -2317,7 +2501,6 @@ namespace RI.Framework.Composition
 			{
 				return this.CreateGenericLazyLoadObject(importName, importType);
 			}
-#endif
 
 			if (kind == ImportKind.Single)
 			{
@@ -2956,12 +3139,12 @@ namespace RI.Framework.Composition
 			}
 		}
 
-		#endregion
+#endregion
 
 
 
 
-		#region Interface: IDependencyResolver
+#region Interface: IDependencyResolver
 
 		/// <inheritdoc />
 		object IDependencyResolver.GetInstance (Type type)
@@ -3029,12 +3212,12 @@ namespace RI.Framework.Composition
 			return this.GetExports<T>();
 		}
 
-		#endregion
+#endregion
 
 
 
 
-		#region Interface: IDisposable
+#region Interface: IDisposable
 
 		/// <inheritdoc />
 		public void Dispose ()
@@ -3058,12 +3241,12 @@ namespace RI.Framework.Composition
 			this.RaiseCompositionChanged();
 		}
 
-		#endregion
+#endregion
 
 
 
 
-		#region Interface: IServiceProvider
+#region Interface: IServiceProvider
 
 		/// <inheritdoc />
 		object IServiceProvider.GetService (Type serviceType)
@@ -3081,12 +3264,12 @@ namespace RI.Framework.Composition
 			return this.GetExport(serviceType);
 		}
 
-		#endregion
+#endregion
 
 
 
 
-		#region Interface: ISynchronizable
+#region Interface: ISynchronizable
 
 		/// <inheritdoc />
 		bool ISynchronizable.IsSynchronized => true;
@@ -3094,16 +3277,16 @@ namespace RI.Framework.Composition
 		/// <inheritdoc />
 		public object SyncRoot { get; }
 
-		#endregion
+#endregion
 
 
 
 
-		#region Type: CompositionFactoryItem
+#region Type: CompositionFactoryItem
 
 		private sealed class CompositionFactoryItem
 		{
-			#region Instance Constructor/Destructor
+#region Instance Constructor/Destructor
 
 			public CompositionFactoryItem (Delegate factory, bool privateExport)
 			{
@@ -3114,12 +3297,12 @@ namespace RI.Framework.Composition
 				this.Instance = null;
 			}
 
-			#endregion
+#endregion
 
 
 
 
-			#region Instance Properties/Indexer
+#region Instance Properties/Indexer
 
 			public bool Checked { get; set; }
 
@@ -3129,19 +3312,19 @@ namespace RI.Framework.Composition
 
 			public bool PrivateExport { get; }
 
-			#endregion
+#endregion
 		}
 
-		#endregion
+#endregion
 
 
 
 
-		#region Type: CompositionInstanceItem
+#region Type: CompositionInstanceItem
 
 		private sealed class CompositionInstanceItem
 		{
-			#region Instance Constructor/Destructor
+#region Instance Constructor/Destructor
 
 			public CompositionInstanceItem (object instance)
 			{
@@ -3150,30 +3333,30 @@ namespace RI.Framework.Composition
 				this.Checked = false;
 			}
 
-			#endregion
+#endregion
 
 
 
 
-			#region Instance Properties/Indexer
+#region Instance Properties/Indexer
 
 			public bool Checked { get; set; }
 
 			public object Instance { get; }
 
-			#endregion
+#endregion
 		}
 
-		#endregion
+#endregion
 
 
 
 
-		#region Type: CompositionItem
+#region Type: CompositionItem
 
 		private sealed class CompositionItem
 		{
-			#region Instance Constructor/Destructor
+#region Instance Constructor/Destructor
 
 			public CompositionItem (string name)
 			{
@@ -3184,12 +3367,12 @@ namespace RI.Framework.Composition
 				this.Factories = new List<CompositionFactoryItem>();
 			}
 
-			#endregion
+#endregion
 
 
 
 
-			#region Instance Properties/Indexer
+#region Instance Properties/Indexer
 
 			public List<CompositionFactoryItem> Factories { get; }
 
@@ -3199,12 +3382,12 @@ namespace RI.Framework.Composition
 
 			public List<CompositionTypeItem> Types { get; }
 
-			#endregion
+#endregion
 
 
 
 
-			#region Instance Methods
+#region Instance Methods
 
 			public void ResetChecked ()
 			{
@@ -3224,19 +3407,19 @@ namespace RI.Framework.Composition
 				}
 			}
 
-			#endregion
+#endregion
 		}
 
-		#endregion
+#endregion
 
 
 
 
-		#region Type: CompositionTypeItem
+#region Type: CompositionTypeItem
 
 		private sealed class CompositionTypeItem
 		{
-			#region Instance Constructor/Destructor
+#region Instance Constructor/Destructor
 
 			public CompositionTypeItem (Type type, bool privateExport)
 			{
@@ -3248,12 +3431,12 @@ namespace RI.Framework.Composition
 				this.OpenInstances = new Dictionary<string, object>(StringComparerEx.Ordinal);
 			}
 
-			#endregion
+#endregion
 
 
 
 
-			#region Instance Properties/Indexer
+#region Instance Properties/Indexer
 
 			public bool Checked { get; set; }
 
@@ -3265,15 +3448,15 @@ namespace RI.Framework.Composition
 
 			public Type Type { get; }
 
-			#endregion
+#endregion
 		}
 
-		#endregion
+#endregion
 
 
 
 
-		#region Type: ImportKind
+#region Type: ImportKind
 
 		private enum ImportKind
 		{
@@ -3284,16 +3467,16 @@ namespace RI.Framework.Composition
 			Single,
 		}
 
-		#endregion
+#endregion
 
 
 
 
-		#region Type: LazyInvoker
+#region Type: LazyInvoker
 
 		private sealed class LazyInvoker
 		{
-			#region Instance Constructor/Destructor
+#region Instance Constructor/Destructor
 
 			[SuppressMessage("ReSharper", "PossibleNullReferenceException")]
 			public LazyInvoker (CompositionContainer container, string name, Type type)
@@ -3314,12 +3497,12 @@ namespace RI.Framework.Composition
 #endif
 			}
 
-			#endregion
+#endregion
 
 
 
 
-			#region Instance Properties/Indexer
+#region Instance Properties/Indexer
 
 			public Delegate Resolver { get; }
 
@@ -3329,19 +3512,19 @@ namespace RI.Framework.Composition
 
 			private Type Type { get; }
 
-			#endregion
+#endregion
 		}
 
-		#endregion
+#endregion
 
 
 
 
-		#region Type: ResolveImports_PropertyInfo
+#region Type: ResolveImports_PropertyInfo
 
 		private sealed class ResolveImports_PropertyInfo
 		{
-			#region Instance Properties/Indexer
+#region Instance Properties/Indexer
 
 			public bool CanRecompose { get; set; }
 
@@ -3357,15 +3540,14 @@ namespace RI.Framework.Composition
 
 			public MethodInfo SetMethod { get; set; }
 
-			#endregion
+#endregion
 		}
 
-		#endregion
+#endregion
 
 
 
 
-#if PLATFORM_NETFX
 		private static Type GetEnumerableType (Type type)
 		{
 			Type genericType = type.IsGenericType ? type.GetGenericTypeDefinition() : null;
@@ -3387,9 +3569,7 @@ namespace RI.Framework.Composition
 			Type typeArgument = type.IsGenericType ? type.GetGenericArguments()[0] : null;
 			return (genericType == typeof(Lazy<>)) ? typeArgument : null;
 		}
-#endif
 
-#if PLATFORM_NETFX
 		private object CreateArray (Type type, List<object> content)
 		{
 			Array array = Array.CreateInstance(type, content.Count);
@@ -3434,7 +3614,5 @@ namespace RI.Framework.Composition
 			object lazyLoadObject = Activator.CreateInstance(concreteType, BindingFlags.Default, null, lazyLoadFunc);
 			return lazyLoadObject;
 		}
-
-#endif
 	}
 }

@@ -45,6 +45,8 @@
     </Compile>
     <Compile Include="Collections\Specialized\PrefabPool.cs" />
     <Compile Include="Composition\Catalogs\ScriptingCatalog.cs" />
+    <Compile Include="Composition\Compatibility\Lazy.cs" />
+    <Compile Include="Composition\Compatibility\_NamespaceDoc.cs" />
     <Compile Include="Composition\Creators\MonoBehaviourCreator.cs" />
     <Compile Include="Bootstrapping\Bootstrapper.cs" />
     <Compile Include="Bootstrapping\BootstrapperState.cs" />
