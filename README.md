@@ -36,7 +36,7 @@ The "decoupling" part on the other hand has a more narrower target audience as i
 
 ## Documentation
 
-Each [release](#release) contains a description about its assemblies, namespaces, types, and members.
+Each [release](README.md) contains a description about its assemblies, namespaces, types, and members.
 
 The project itself and its structure/organization is described in the [project documentation](DOCUMENTATION.md).
 

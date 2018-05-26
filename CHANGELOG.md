@@ -1,7 +1,7 @@
 # Changelog
 
-[Overview](README.md)
-
 [Releases](README.md)
+
+[Overview](README.md)
 
 *no release yet*
