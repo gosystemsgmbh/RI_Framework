@@ -3,14 +3,7 @@
 ## Current
 
 - [ ] Cleanup
-  - [ ] TODOs
   - [ ] Code cleanup
-  - [ ] Packages
-  - [ ] Incorporate wishlist into TODO
-  - [ ] Move RotenInformatik assemblies into other assemblies
-  - [ ] NuGet Packages
-  - [ ] Add manifest to log viewer
-  - [ ] Add manifest to VersionUpdater and ElevatedStart
 - [ ] Testing (common)
   - [ ] RuntimeEnvironment
   - [ ] CultureInfoExtensions
@@ -85,19 +78,3 @@
   - [ ] Unity: Thread Safety
   - [ ] Proper Readme
   - [ ] Development documentation
-- [ ] Advertisement
-
-## Next
-
-- [ ] Timeout and cancellation token overloads
-
-## Backlog
-
-- [ ] Wishlist
-
-## Proposals
-
-- [ ] Move targets to .NET Standard
-- [ ] Move away from shared projects (using .NET Standard?)
-- [ ] Cross-platform model and code unification
-- [ ] AOT checking utility
