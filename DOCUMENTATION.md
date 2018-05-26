@@ -4,7 +4,7 @@ Please read the [overview](README.md) to get started and to get additional infor
 
 ## Using the framework
 
-Each release contains a description about its assemblies, namespaces, types, and members.
+Each [release](README.md) contains a description about its assemblies, namespaces, types, and members.
 
 ## History, Motivation & Reinventing the wheel
 
@@ -23,6 +23,30 @@ The motivation to write a particular function and put it into the framework was 
  * Fun (ever tried to write a composition container yourself? What an adventure!).
 
 Therefore, keep in mind that this framework is not a silver bullet and you should take the time to check whether it (or parts of it...) is really what you need.
+
+## Roadmap
+
+The short-term and medium-term roadmap includes:
+
+ * More unit tests
+ * Bugfixes
+ * Improvement of existing functions
+ * Small and medium enhancements
+ * More documentation, examples, and tutorials
+
+The long-term roadmap includes several large enhancements:
+
+ * Functionality for additional application types:
+   * Mobile applications
+   * Mobile games
+   * Web applications
+ * Support for additional runtimes/targets:
+   * .NET Standard
+   * .NET Core (through .NET Standard)
+   * Xamarin
+ * Extensions for additional libraries/frameworks:
+   * ASP.NET Core
+   * Entity Framework Core
 
 ## Code organization
 
@@ -49,6 +73,16 @@ The separation of code into assemblies is based on dependencies and not function
 
 This means that everything which has the same dependencies is put into the same assembly, while everything which belongs to the same functionality is put into the same namespace.
 If a certain functionality is not used, simply do not use the corresponding namespace.
+
+## Compatibility
+
+Not all functions are available for all runtimes/targets or on all platforms. See documentation for details.
+
+| Runtime / Target                                 | Version  | Platform                                           | Remarks                                                                       |
+| ------------------------------------------------ | -------- | -------------------------------------------------- | ----------------------------------------------------------------------------- |
+| [.NET Framework](https://www.microsoft.com/net/) | 4.6.1    | Windows                                            |                                                                               |
+| [Mono](http://www.mono-project.com/)             | 5.4.1.6  | Linux                                              |                                                                               |
+| [Unity](https://unity3d.com/)                    | 2018.1.1 | Windows, MacOS<br>iOS\*\*, Linux\*\*, Android\*\*  | including AOT/IL2CPP<br>\*\* = not actively tested or supported at the moment |
 
 ## Contents
 
