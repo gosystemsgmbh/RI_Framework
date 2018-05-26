@@ -379,6 +379,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{
 		CONTRIBUTING.md = CONTRIBUTING.md
 		DOCUMENTATION.md = DOCUMENTATION.md
 		LICENSE.txt = LICENSE.txt
+		README-overview.png = README-overview.png
 		README.md = README.md
 	EndProjectSection
 EndProject
