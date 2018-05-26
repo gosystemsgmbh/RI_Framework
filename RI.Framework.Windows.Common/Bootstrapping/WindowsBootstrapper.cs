@@ -1,13 +1,12 @@
 ﻿using System;
 
-using RI.Framework.Bootstrapping;
 using RI.Framework.Windows.Cryptography;
 using RI.Framework.Windows.Users;
 
 
 
 
-namespace RI.Framework.Services
+namespace RI.Framework.Bootstrapping
 {
 	/// <summary>
 	///     Implements a Windows application bootstrapper.

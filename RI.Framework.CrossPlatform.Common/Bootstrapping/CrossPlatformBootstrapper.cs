@@ -1,13 +1,12 @@
 ﻿using System;
 
-using RI.Framework.Bootstrapping;
 using RI.Framework.CrossPlatform.Cryptography;
 using RI.Framework.CrossPlatform.Users;
 
 
 
 
-namespace RI.Framework.Services
+namespace RI.Framework.Bootstrapping
 {
 	/// <summary>
 	///     Implements a cross-platform application bootstrapper.

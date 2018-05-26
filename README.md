@@ -4,6 +4,8 @@ A framework for .NET, Mono, and Unity.
 
 ## Releases
 
+[Changelog](CHANGELOG.md)
+
 *no release yet*
 
 ## Overview
@@ -12,14 +14,13 @@ The Decoupling & Utilities Framework is a collection of various functions for di
 
 ![Overview](README-overview.png)
 
-TODO
-It contains...
- * ...functional blocks for application infrastructure and services common to most applications (e.g. bootstrapper, logging, settings, resources, ...)
- * ...types which help to create decoupled and maintainable code (e.g. dependency injection, database manager, data repository, state machines, message bus, ...)
- * ...asorted small helpers and utilities (e.g. collections, threading, MVVM, math, I/O, ...)
- * ...extensions for other libraries/frameworks to use them with the Decoupling & Utilities Framework (e.g. SQLite, Entity Framework, ...)
+In general, it contains functions to help you...
+ * ...reduce the amount of boilerplate code you need to write
+ * ...decouple your application components/modules and make your codebase more maintainable and extensible
+ * ...add functionality to your application by providing implementations for application infrastructure and services used by most applications
+ * ...save time by providing functionality not part of .NET or third-party libraries
 
- TODO
+![Content](README-content.png)
 
 All those functions are mostly independent of each other and can be used individually.
 So you can simply ignore functions you do not want to use.
@@ -32,6 +33,8 @@ The "decoupling" part on the other hand has a more narrower target audience as i
  * Desktop applications
  * Desktop games
  * Server applications
+
+Please read the [project documentation](DOCUMENTATION.md) to get a more complete overview.
 
 ## Compatibility
 
@@ -47,19 +50,19 @@ Not all functions are available for all runtimes/targets or on all platforms. Se
 
 The dependencies only apply if the corresponding extension is used. Otherwise there are no dependencies besides the used runtime/target and platform.
 
-| Library / Framework                                                 | Version   | Runtime / Target     |
-| ------------------------------------------------------------------- | --------- | -------------------- |
-| [Entity Framework 6.x](https://github.com/aspnet/EntityFramework6)  | 6.2.0     | .NET Framework, Mono |
-| [SQLite](https://system.data.sqlite.org/)                           | 1.0.108   | .NET Framework, Mono |
-| [SQL Server](https://www.microsoft.com/en-us/sql-server)            | 2008+     | .NET Framework, Mono |
-| [Nancy Framework](https://github.com/NancyFx/Nancy)                 | 1.4.4     | .NET Framework, Mono |
-| [DotNetZip](https://dotnetzip.codeplex.com/)                        | 1.11.1    | .NET Framework, Mono |
-| [EPPlus](https://github.com/JanKallman/EPPlus)                      | 4.1.1     | .NET Framework, Mono |
-| [Newtonsoft JSON](https://github.com/JamesNK/Newtonsoft.Json)       | 10.0.3    | .NET Framework, Mono |
-| [Bouncy Castle](https://github.com/onovotny/bc-csharp)              | 1.8.1.3   | .NET Framework, Mono |
-| [Extended WPF Toolkit](https://github.com/xceedsoftware/wpftoolkit) | 3.2.0     | .NET Framework       |
-| [Fluent Ribbon](https://github.com/fluentribbon/Fluent.Ribbon)      | 6.0.0.208 | .NET Framework       |
-| [Mono.Posix](https://github.com/mono/mono)                          | 4.5.0     | Mono                 |
+| Library / Framework                                                 | Version   | Runtime / Target     | Remarks |
+| ------------------------------------------------------------------- | --------- | -------------------- | ------- |
+| [Entity Framework 6.x](https://github.com/aspnet/EntityFramework6)  | 6.2.0     | .NET Framework, Mono |         |
+| [SQLite](https://system.data.sqlite.org/)                           | 1.0.108   | .NET Framework, Mono |         |
+| [SQL Server](https://www.microsoft.com/en-us/sql-server)            | 2008+     | .NET Framework, Mono |         |
+| [Nancy Framework](https://github.com/NancyFx/Nancy)                 | 1.4.4     | .NET Framework, Mono |         |
+| [DotNetZip](https://dotnetzip.codeplex.com/)                        | 1.10.1    | .NET Framework, Mono |         |
+| [EPPlus](https://github.com/JanKallman/EPPlus)                      | 4.1.1     | .NET Framework, Mono |         |
+| [Newtonsoft JSON](https://github.com/JamesNK/Newtonsoft.Json)       | 10.0.3    | .NET Framework, Mono |         |
+| [Bouncy Castle](https://github.com/onovotny/bc-csharp)              | 1.8.1.3   | .NET Framework, Mono |         |
+| [Extended WPF Toolkit](https://github.com/xceedsoftware/wpftoolkit) | 3.2.0     | .NET Framework       |         |
+| [Fluent Ribbon](https://github.com/fluentribbon/Fluent.Ribbon)      | 6.0.0.208 | .NET Framework       |         |
+| [Mono.Posix](https://github.com/mono/mono)                          | 4.5.0     | Mono                 |         |
 
 ## Roadmap
 
@@ -90,6 +93,8 @@ The long-term roadmap includes several large enhancements:
 Each release contains a description about its assemblies, namespaces, types, and members.
 
 The project itself and its structure/organization is described in the [project documentation](DOCUMENTATION.md).
+
+The version history is documented in the [changelog](CHANGELOG.md).
 
 ## Contribution & Issues
 

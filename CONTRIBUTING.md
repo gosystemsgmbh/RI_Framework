@@ -1,5 +1,7 @@
 # Contribution
 
+Please read the [overview](README.md) to get started and to get additional information.
+
 ## General
 
 At the moment, [issues](https://github.com/RotenInformatik/RI_Framework/issues) are the preferred way for contributions.
@@ -8,20 +10,21 @@ You are of course welcome to submit pull request from your own fork as well, but
 
 ## Issues
 
-An issue must follow the following rules, otherwise it will be closed immediately without further consideration.
+An issue must follow the following rules, otherwise it will be closed immediately without further consideration:
 
- * Everything has to be in proper English language.
+ * Everything has to be in English language.
  * Issues which represent bugs have a higher chance of being accepted if they contain a description about how to reproduce them.
 
 ## Pull requests
 
-A pull request must follow the following rules, otherwise it will be closed immediately without further consideration.
+A pull request must follow the following rules, otherwise it will be closed immediately without further consideration:
 
- * Everything has to be in proper English language.
+ * Everything has to be in English language.
  * The existing code style must be followed.
- * Structural changes (deleting, creating, renaming, moving, copying of files or directories) are only accepted if there is a corresponding open issue.
- * Namespace changes are only accepted if there is a corresponding open issue.
- * Dependency changes (removing, adding, changing of assembly references or NuGet packages) are only accepted if there is a corresponding open issue.
+ * The following is only accepted if there is a corresponding open issue:
+   * Structural changes (deleting, creating, renaming, moving, copying of files or directories).
+   * Namespace changes.
+   * Dependency changes (removing, adding, changing of assembly references or NuGet packages).
  * A unit test must be written (if not yet existing) or modified (if existing) for each created or modified type and/or member.
  * The following must always have proper XML comments (also check the generated SHFB documentation for completeness):
    * Namespaces

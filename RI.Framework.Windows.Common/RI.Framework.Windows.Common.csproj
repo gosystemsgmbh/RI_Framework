@@ -64,7 +64,7 @@
     <Compile Include="IO\Serial\SerialPortInstance.cs" />
     <Compile Include="IO\Serial\_NamespaceDoc.cs" />
     <Compile Include="Services\Logging\Writers\EventLogWriter.cs" />
-    <Compile Include="Services\WindowsBootstrapper.cs" />
+    <Compile Include="Bootstrapping\WindowsBootstrapper.cs" />
     <None Include="..\SolutionName.snk">
       <Link>Properties\SolutionName.snk</Link>
     </None>
