@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -46,6 +47,7 @@ namespace RI.Test.Framework
 			return result;
 		}
 
+		[SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
 		public override void InvokeTestMethod (MethodInfo method, Action testContinuation)
 		{
 			object instance = Activator.CreateInstance(method.DeclaringType);

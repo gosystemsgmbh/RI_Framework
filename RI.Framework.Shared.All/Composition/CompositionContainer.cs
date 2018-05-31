@@ -18,11 +18,8 @@ using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.ObjectModel;
 using RI.Framework.Utilities.Reflection;
-#if PLATFORM_NETFX
+#if PLATFORM_NETFX || PLATFORM_NETSTD || PLATFORM_NETCORE
 using System.Linq.Expressions;
-#endif
-#if PLATFORM_UNITY
-using RI.Framework.Composition.Compatibility;
 #endif
 
 
@@ -32,6 +29,15 @@ namespace RI.Framework.Composition
 	///     The main hub for doing composition or Dependency Injection (DI) / Inversion-of-Control (IoC) respectively.
 	/// </summary>
 	/// <remarks>
+	///     <para>
+	///         <b> PLATFORMS &amp; AVAILABILITY OF FEATURES </b>
+	///     </para>
+	///     <note type="important">
+	///         Not all features of the <see cref="CompositionContainer" /> are available on all platforms.
+	///         On platforms which use AOT, like IL2CPP, the following features are not available:
+	///         Multiple imports using <see cref="IEnumerable{T}" /> (use <see cref="Import" /> instead), lazy imports using <see cref="Lazy{T}" />, lazy imports using <see cref="Func{TResult}" />, import of any open or closed generic type.
+	///         Exceptions will be thrown when using those features on unsupported platforms.
+	///     </note>
 	///     <para>
 	///         <b> GENERAL </b>
 	///     </para>
@@ -491,15 +497,6 @@ namespace RI.Framework.Composition
 	///         It uses exclusive locks for its composition operations.
 	///         It is important to know that the <see cref="CompositionCatalog" />s used by a <see cref="CompositionContainer" /> are accessed from inside locks to <see cref="SyncRoot" />!
 	///         Be careful when explicitly dealing with catalogs in multithreaded scenarios to not produce deadlocks!
-	///     </note>
-	///     <para>
-	///         <b> PLATFORMS &amp; AVAILABILITY OF FEATURES </b>
-	///     </para>
-	///     <note type="important">
-	///         Not all features of the <see cref="CompositionContainer" /> are available on all platforms.
-	///         On platforms which use AOT, like IL2CPP, the following features are not available:
-	///         Multiple imports using <see cref="IEnumerable{T}" /> (use <see cref="Import" /> instead), lazy imports using <see cref="Lazy{T}" />, lazy imports using <see cref="Func{TResult}" />, import of any open or closed generic type.
-	///         Exceptions will be thrown when using those features on unsupported platforms.
 	///     </note>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
@@ -3486,7 +3483,7 @@ namespace RI.Framework.Composition
 				this.Type = type;
 				this.Resolver = null;
 
-#if PLATFORM_NETFX
+#if PLATFORM_NETFX || PLATFORM_NETSTD || PLATFORM_NETCORE
 				Type enumerableType = CompositionContainer.GetEnumerableType(type);
 				string resolveName = enumerableType == null ? nameof(CompositionContainer.GetExportForLazyInvoker) : nameof(CompositionContainer.GetExportsForLazyInvoker);
 				MethodInfo genericMethod = container.GetType().GetMethod(resolveName, BindingFlags.Instance | BindingFlags.NonPublic);
@@ -3494,15 +3491,19 @@ namespace RI.Framework.Composition
 
 				MethodCallExpression resolveCall = Expression.Call(Expression.Constant(this.Container), resolveMethod, Expression.Constant(this.Name));
 				this.Resolver = Expression.Lambda(resolveCall).Compile();
+#elif PLATFORM_UNITY
+				throw new PlatformNotSupportedException("Lazy imports not supported in Unity.");
+#else
+#error Unspecified platform
 #endif
 			}
 
-#endregion
+			#endregion
 
 
 
 
-#region Instance Properties/Indexer
+			#region Instance Properties/Indexer
 
 			public Delegate Resolver { get; }
 

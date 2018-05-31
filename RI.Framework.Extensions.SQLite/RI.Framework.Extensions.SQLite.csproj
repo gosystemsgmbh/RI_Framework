@@ -87,9 +87,6 @@
     <Compile Include="Data\Database\SQLiteDatabaseManagerConfiguration.cs" />
     <Compile Include="Services\Logging\Writers\SQLiteLogConfiguration.cs" />
     <Compile Include="Services\Logging\Writers\SQLiteLogWriter.cs" />
-    <None Include="..\SolutionName.snk">
-      <Link>Properties\SolutionName.snk</Link>
-    </None>
     <Compile Include="Data\Database\SQLiteDatabaseManager.cs" />
     <Compile Include="Data\SQLite\SQLiteConversionExtensions.cs" />
     <Compile Include="Data\SQLite\_NamespaceDoc.cs" />

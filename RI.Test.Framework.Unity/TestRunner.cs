@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using RI.Framework.Bootstrapping;
 using RI.Framework.Collections;
@@ -7,12 +8,10 @@ using RI.Framework.Collections.DirectLinq;
 using RI.Framework.ComponentModel;
 using RI.Framework.Composition;
 using RI.Framework.Composition.Catalogs;
-using RI.Framework.Services;
 using RI.Framework.Services.Dispatcher;
 using RI.Framework.Services.Logging;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Logging;
-using RI.Framework.Utilities.ObjectModel;
 
 using UnityEngine;
 
@@ -57,6 +56,7 @@ namespace RI.Test.Framework
 
 		#region Instance Methods
 
+		[SuppressMessage("ReSharper", "PossibleNullReferenceException")]
 		private void ContinueTests ()
 		{
 			if (this.ProcessedTestMethods >= this.TestMethods.Count)
@@ -87,11 +87,11 @@ namespace RI.Test.Framework
 				}
 				else
 				{
-					ServiceLocator.GetInstance<DispatcherService>().Dispatch(DispatcherPriority.Idle, (_testModule, _testMethod) =>
+					ServiceLocator.GetInstance<DispatcherService>().Dispatch(DispatcherPriority.Idle, (testModule2, testMethod2) =>
 					{
 						try
 						{
-							_testModule.InvokeTestMethod(_testMethod, new Action(this.ContinueTests));
+							testModule2.InvokeTestMethod(testMethod2, this.ContinueTests);
 
 							this.Log(LogLevel.Debug, "Test succeeded");
 						}
@@ -109,11 +109,13 @@ namespace RI.Test.Framework
 			});
 		}
 
+		[SuppressMessage("ReSharper", "PossibleNullReferenceException")]
 		private string GetTestName (MethodInfo testMethod)
 		{
 			return testMethod.DeclaringType.Name + "." + testMethod.Name;
 		}
 
+		[SuppressMessage("ReSharper", "InconsistentNaming")]
 		private void OnGUI ()
 		{
 			string text = this.Exception?.ToString() ?? this.Progress ?? string.Empty;

@@ -1,93 +1,36 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{32368735-BA73-45B2-9F24-ABA7F6099508}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>RI.Test.Framework</RootNamespace>
-    <AssemblyName>RI.Test.Framework.Unity</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;PLATFORM_UNITY</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DefineConstants>TRACE;PLATFORM_UNITY</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;DEBUG;PLATFORM_UNITY</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
+    <ProjectReference Include="..\RI.Framework.Unity\RI.Framework.Unity.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="UnityEngine">
       <HintPath>C:\Program Files\Unity\Editor\Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\SolutionInfo.cs">
-      <Link>Properties\SolutionInfo.cs</Link>
-    </Compile>
-    <Compile Include="Collections\Specialized\Test_PrefabPool.cs" />
-    <Compile Include="Composition\Catalogs\Mock_Export.cs" />
-    <Compile Include="Composition\Catalogs\Test_ScriptingCatalog.cs" />
-    <Compile Include="Services\Dispatcher\Test_DispatcherOperation.cs" />
-    <Compile Include="Services\Dispatcher\Test_DispatcherService.cs" />
-    <Compile Include="Services\Modularization\Mock_ModuleB.cs" />
-    <Compile Include="Services\Modularization\Mock_ModuleA.cs" />
-    <Compile Include="Services\Modularization\Test_MonoModule.cs" />
-    <Compile Include="StateMachines\States\Mock_MonoState.cs" />
-    <Compile Include="StateMachines\States\Mock_MonoState_A.cs" />
-    <Compile Include="StateMachines\States\Mock_MonoState_B.cs" />
-    <Compile Include="StateMachines\States\Mock_MonoState_C.cs" />
-    <Compile Include="StateMachines\States\Test_MonoState.cs" />
-    <Compile Include="Test_Common.cs" />
-    <Compile Include="Threading\Test_ThreadMover.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestClassAttribute.cs" />
-    <Compile Include="TestMethodAttribute.cs" />
-    <Compile Include="TestModule.cs" />
-    <Compile Include="TestRunner.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\RI.Framework.Unity\RI.Framework.Unity.csproj">
-      <Project>{36e8eb66-9a69-41ea-a7f8-45ba5299a03f}</Project>
-      <Name>RI.Framework.Unity</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\SolutionName.snk">
-      <Link>Properties\SolutionName.snk</Link>
-    </None>
-    <None Include="_PostBuild.bat" />
-    <None Include="_PreBuild.bat" />
-  </ItemGroup>
+
   <Import Project="..\RI.Test.Framework.Shared.All\RI.Test.Framework.Shared.All.projitems" Label="Shared" />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>@call "$(ProjectDir)_PostBuild.bat" $(ConfigurationName)</PostBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup>
-    <PreBuildEvent>@call "$(ProjectDir)_PreBuild.bat" $(ConfigurationName)</PreBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="@call &quot;$(ProjectDir)_PreBuild.bat&quot; $(ConfigurationName)" />
   </Target>
-  <Target Name="AfterBuild">
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="@call &quot;$(ProjectDir)_PostBuild.bat&quot; $(ConfigurationName)" />
   </Target>
-  -->
+
 </Project>

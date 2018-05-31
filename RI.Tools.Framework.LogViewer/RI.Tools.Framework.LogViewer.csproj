@@ -111,9 +111,6 @@
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <None Include="..\SolutionName.snk">
-      <Link>Properties\SolutionName.snk</Link>
-    </None>
     <AppDesigner Include="Properties\" />
     <None Include="packages.config" />
     <None Include="_PostBuild.bat" />

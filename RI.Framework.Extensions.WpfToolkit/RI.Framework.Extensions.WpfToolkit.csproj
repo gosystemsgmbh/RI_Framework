@@ -77,9 +77,6 @@
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <None Include="..\SolutionName.snk">
-      <Link>Properties\SolutionName.snk</Link>
-    </None>
     <None Include="packages.config" />
     <None Include="Services\Regions\Adapters\DockingManagerRegionAdapter.cs" />
     <None Include="_PostBuild.bat" />

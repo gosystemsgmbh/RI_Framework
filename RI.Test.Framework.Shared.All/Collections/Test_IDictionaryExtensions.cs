@@ -365,7 +365,7 @@ namespace RI.Test.Framework.Collections
 			Dictionary<string, int> dict = new Dictionary<string, int>();
 			IDictionary<string, int> test = dict.AsDictionary();
 
-			if (!test.TryAdd("1", 1))
+			if (!IDictionaryExtensions.TryAdd(test, "1", 1))
 			{
 				throw new TestAssertionException();
 			}
@@ -375,7 +375,7 @@ namespace RI.Test.Framework.Collections
 				throw new TestAssertionException();
 			}
 
-			if (test.TryAdd("1", 2))
+			if (IDictionaryExtensions.TryAdd(test, "1", 2))
 			{
 				throw new TestAssertionException();
 			}

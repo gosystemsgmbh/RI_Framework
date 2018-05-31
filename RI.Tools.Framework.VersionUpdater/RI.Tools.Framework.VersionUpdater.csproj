@@ -57,9 +57,6 @@
     <Compile Include="VersionUpdater.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\SolutionName.snk">
-      <Link>Properties\SolutionName.snk</Link>
-    </None>
     <None Include="_PostBuild.bat" />
     <None Include="_PreBuild.bat" />
   </ItemGroup>
