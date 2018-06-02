@@ -76,9 +76,9 @@
     <Compile Include="Threading\Dispatcher\Test_HeavyThreadDispatcher.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RI.Framework.NetFx\RI.Framework.NetFx.csproj">
+    <ProjectReference Include="..\RI.Framework.NetFx\RI.Framework.Net.Fx.csproj">
       <Project>{a7f5dd2f-63bf-4032-ad1e-14d211e0d3ed}</Project>
-      <Name>RI.Framework.NetFx</Name>
+      <Name>RI.Framework.Net.Fx</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

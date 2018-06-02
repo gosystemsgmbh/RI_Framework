@@ -6,7 +6,7 @@
     <SharedGUID>b747fac5-2044-4794-9caf-580f063a2a5b</SharedGUID>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
-    <Import_RootNamespace>RI.Framework.Shared.Net</Import_RootNamespace>
+    <Import_RootNamespace>RI.Framework</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Bootstrapping\Bootstrapper.cs" />

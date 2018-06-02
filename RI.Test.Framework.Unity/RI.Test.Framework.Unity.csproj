@@ -14,7 +14,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RI.Framework.Unity\RI.Framework.Unity.csproj" />
+    <ProjectReference Include="..\RI.Framework.Unity\RI.Framework.Unity.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>

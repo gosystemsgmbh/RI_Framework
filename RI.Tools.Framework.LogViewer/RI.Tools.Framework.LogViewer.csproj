@@ -128,9 +128,9 @@
       <Project>{1ad143fe-49ac-4e02-a0fa-c2e6ff4280f5}</Project>
       <Name>RI.Framework.Extensions.WpfToolkit</Name>
     </ProjectReference>
-    <ProjectReference Include="..\RI.Framework.NetFx\RI.Framework.NetFx.csproj">
+    <ProjectReference Include="..\RI.Framework.Net.Fx\RI.Framework.Net.Fx.csproj">
       <Project>{a7f5dd2f-63bf-4032-ad1e-14d211e0d3ed}</Project>
-      <Name>RI.Framework.NetFx</Name>
+      <Name>RI.Framework.Net.Fx</Name>
     </ProjectReference>
     <ProjectReference Include="..\RI.Framework.Windows.Common\RI.Framework.Windows.Common.csproj">
       <Project>{cd9c2847-a48f-45e1-908f-3f9a86ee0e37}</Project>

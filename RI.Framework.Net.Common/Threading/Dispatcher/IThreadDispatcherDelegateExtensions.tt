@@ -1,0 +1,136 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".tt.cs" #>
+
+#if !TEMPLATE_RUNNER
+
+using System;
+using System.Threading.Tasks;
+
+// ReSharper disable RedundantCast
+
+namespace RI.Framework.Threading.Dispatcher
+{
+	public static partial class IThreadDispatcherExtensions
+	{
+<#
+int actionCount = 16;
+for (int i1 = 0; i1 <= actionCount; i1++)
+{
+List<string> types = new List<string>();
+for(int i2 = 1; i2 <= i1; i2++)
+{
+types.Add("T" +  i2.ToString("D"));
+}
+string commonSignature = (types.Count == 0) ? null : string.Join(",", types);
+string actionTypes = (commonSignature == null) ? string.Empty : ("<" + commonSignature + ">");
+string funcTypes = (commonSignature == null) ? "<TResult>" : ("<" + commonSignature + ",TResult>");
+string action = (commonSignature == null) ? "Action" : ("Action<" + commonSignature + ">");
+string func = (commonSignature == null) ? "Func<TResult>" : ("Func<" + commonSignature + ",TResult>");
+#>
+
+		/// <inheritdoc cref="IThreadDispatcher.Post(Delegate,object[])"/>
+		public static ThreadDispatcherOperation Post<#=actionTypes#> (this IThreadDispatcher dispatcher, <#=action#> action, params object[] parameters) => dispatcher.Post((Delegate)action, parameters);
+
+		/// <inheritdoc cref="IThreadDispatcher.Post(Delegate,object[])"/>
+		public static ThreadDispatcherOperation Post<#=funcTypes#> (this IThreadDispatcher dispatcher, <#=func#> action, params object[] parameters) => dispatcher.Post((Delegate)action, parameters);
+
+		/// <inheritdoc cref="IThreadDispatcher.Post(int,Delegate,object[])"/>
+		public static ThreadDispatcherOperation Post<#=actionTypes#> (this IThreadDispatcher dispatcher, int priority, <#=action#> action, params object[] parameters) => dispatcher.Post(priority, (Delegate)action, parameters);
+
+		/// <inheritdoc cref="IThreadDispatcher.Post(int,Delegate,object[])"/>
+		public static ThreadDispatcherOperation Post<#=funcTypes#> (this IThreadDispatcher dispatcher, int priority, <#=func#> action, params object[] parameters) => dispatcher.Post(priority, (Delegate)action, parameters);
+
+		/// <inheritdoc cref="IThreadDispatcher.Post(int,ThreadDispatcherOptions,Delegate,object[])"/>
+		public static ThreadDispatcherOperation Post<#=actionTypes#> (this IThreadDispatcher dispatcher, int priority, ThreadDispatcherOptions options, <#=action#> action, params object[] parameters) => dispatcher.Post(priority, options, (Delegate)action, parameters);
+
+		/// <inheritdoc cref="IThreadDispatcher.Post(int,ThreadDispatcherOptions,Delegate,object[])"/>
+		public static ThreadDispatcherOperation Post<#=funcTypes#> (this IThreadDispatcher dispatcher, int priority, ThreadDispatcherOptions options, <#=func#> action, params object[] parameters) => dispatcher.Post(priority, options, (Delegate)action, parameters);
+
+
+
+		/// <inheritdoc cref="IThreadDispatcher.Send(Delegate,object[])"/>
+		public static object Send<#=actionTypes#> (this IThreadDispatcher dispatcher, <#=action#> action, params object[] parameters) => dispatcher.Send((Delegate)action, parameters);
+
+		/// <inheritdoc cref="IThreadDispatcher.Send(Delegate,object[])"/>
+		public static object Send<#=funcTypes#> (this IThreadDispatcher dispatcher, <#=func#> action, params object[] parameters) => dispatcher.Send((Delegate)action, parameters);
+
+		/// <inheritdoc cref="IThreadDispatcher.Send(int,Delegate,object[])"/>
+		public static object Send<#=actionTypes#> (this IThreadDispatcher dispatcher, int priority, <#=action#> action, params object[] parameters) => dispatcher.Send(priority, (Delegate)action, parameters);
+
+		/// <inheritdoc cref="IThreadDispatcher.Send(int,Delegate,object[])"/>
+		public static object Send<#=funcTypes#> (this IThreadDispatcher dispatcher, int priority, <#=func#> action, params object[] parameters) => dispatcher.Send(priority, (Delegate)action, parameters);
+
+		/// <inheritdoc cref="IThreadDispatcher.Send(int,ThreadDispatcherOptions,Delegate,object[])"/>
+		public static object Send<#=actionTypes#> (this IThreadDispatcher dispatcher, int priority, ThreadDispatcherOptions options, <#=action#> action, params object[] parameters) => dispatcher.Send(priority, options, (Delegate)action, parameters);
+
+		/// <inheritdoc cref="IThreadDispatcher.Send(int,ThreadDispatcherOptions,Delegate,object[])"/>
+		public static object Send<#=funcTypes#> (this IThreadDispatcher dispatcher, int priority, ThreadDispatcherOptions options, <#=func#> action, params object[] parameters) => dispatcher.Send(priority, options, (Delegate)action, parameters);
+
+
+
+		/// <inheritdoc cref="IThreadDispatcher.SendAsync(Delegate,object[])"/>
+		public static Task<object> SendAsync<#=actionTypes#> (this IThreadDispatcher dispatcher, <#=action#> action, params object[] parameters) => dispatcher.SendAsync((Delegate)action, parameters);
+
+		/// <inheritdoc cref="IThreadDispatcher.SendAsync(Delegate,object[])"/>
+		public static Task<object> SendAsync<#=funcTypes#> (this IThreadDispatcher dispatcher, <#=func#> action, params object[] parameters) => dispatcher.SendAsync((Delegate)action, parameters);
+
+		/// <inheritdoc cref="IThreadDispatcher.SendAsync(int,Delegate,object[])"/>
+		public static Task<object> SendAsync<#=actionTypes#> (this IThreadDispatcher dispatcher, int priority, <#=action#> action, params object[] parameters) => dispatcher.SendAsync(priority, (Delegate)action, parameters);
+
+		/// <inheritdoc cref="IThreadDispatcher.SendAsync(int,Delegate,object[])"/>
+		public static Task<object> SendAsync<#=funcTypes#> (this IThreadDispatcher dispatcher, int priority, <#=func#> action, params object[] parameters) => dispatcher.SendAsync(priority, (Delegate)action, parameters);
+
+		/// <inheritdoc cref="IThreadDispatcher.SendAsync(int,ThreadDispatcherOptions,Delegate,object[])"/>
+		public static Task<object> SendAsync<#=actionTypes#> (this IThreadDispatcher dispatcher, int priority, ThreadDispatcherOptions options, <#=action#> action, params object[] parameters) => dispatcher.SendAsync(priority, options, (Delegate)action, parameters);
+
+		/// <inheritdoc cref="IThreadDispatcher.SendAsync(int,ThreadDispatcherOptions,Delegate,object[])"/>
+		public static Task<object> SendAsync<#=funcTypes#> (this IThreadDispatcher dispatcher, int priority, ThreadDispatcherOptions options, <#=func#> action, params object[] parameters) => dispatcher.SendAsync(priority, options, (Delegate)action, parameters);
+
+
+
+		/// <inheritdoc cref="IThreadDispatcherExtensions.PostDelayed(IThreadDispatcher,int,Delegate,object[])"/>
+		public static ThreadDispatcherTimer PostDelayed<#=actionTypes#> (this IThreadDispatcher dispatcher, int milliseconds, <#=action#> action, params object[] parameters) => dispatcher.PostDelayed(milliseconds, (Delegate)action, parameters);
+
+		/// <inheritdoc cref="IThreadDispatcherExtensions.PostDelayed(IThreadDispatcher,int,Delegate,object[])"/>
+		public static ThreadDispatcherTimer PostDelayed<#=funcTypes#> (this IThreadDispatcher dispatcher, int milliseconds, <#=func#> action, params object[] parameters) => dispatcher.PostDelayed(milliseconds, (Delegate)action, parameters);
+
+		/// <inheritdoc cref="IThreadDispatcherExtensions.PostDelayed(IThreadDispatcher,int,int,Delegate,object[])"/>
+		public static ThreadDispatcherTimer PostDelayed<#=actionTypes#> (this IThreadDispatcher dispatcher, int milliseconds, int priority, <#=action#> action, params object[] parameters) => dispatcher.PostDelayed(milliseconds, priority, (Delegate)action, parameters);
+
+		/// <inheritdoc cref="IThreadDispatcherExtensions.PostDelayed(IThreadDispatcher,int,int,Delegate,object[])"/>
+		public static ThreadDispatcherTimer PostDelayed<#=funcTypes#> (this IThreadDispatcher dispatcher, int milliseconds, int priority, <#=func#> action, params object[] parameters) => dispatcher.PostDelayed(milliseconds, priority, (Delegate)action, parameters);
+
+		/// <inheritdoc cref="IThreadDispatcherExtensions.PostDelayed(IThreadDispatcher,int,int,ThreadDispatcherOptions,Delegate,object[])"/>
+		public static ThreadDispatcherTimer PostDelayed<#=actionTypes#> (this IThreadDispatcher dispatcher, int milliseconds, int priority, ThreadDispatcherOptions options, <#=action#> action, params object[] parameters) => dispatcher.PostDelayed(milliseconds, priority, options, (Delegate)action, parameters);
+
+		/// <inheritdoc cref="IThreadDispatcherExtensions.PostDelayed(IThreadDispatcher,int,int,ThreadDispatcherOptions,Delegate,object[])"/>
+		public static ThreadDispatcherTimer PostDelayed<#=funcTypes#> (this IThreadDispatcher dispatcher, int milliseconds, int priority, ThreadDispatcherOptions options, <#=func#> action, params object[] parameters) => dispatcher.PostDelayed(milliseconds, priority, options, (Delegate)action, parameters);
+
+		/// <inheritdoc cref="IThreadDispatcherExtensions.PostDelayed(IThreadDispatcher,int,Delegate,object[])"/>
+		public static ThreadDispatcherTimer PostDelayed<#=actionTypes#> (this IThreadDispatcher dispatcher, TimeSpan delay, <#=action#> action, params object[] parameters) => dispatcher.PostDelayed(delay, (Delegate)action, parameters);
+
+		/// <inheritdoc cref="IThreadDispatcherExtensions.PostDelayed(IThreadDispatcher,int,Delegate,object[])"/>
+		public static ThreadDispatcherTimer PostDelayed<#=funcTypes#> (this IThreadDispatcher dispatcher, TimeSpan delay, <#=func#> action, params object[] parameters) => dispatcher.PostDelayed(delay, (Delegate)action, parameters);
+
+		/// <inheritdoc cref="IThreadDispatcherExtensions.PostDelayed(IThreadDispatcher,int,int,Delegate,object[])"/>
+		public static ThreadDispatcherTimer PostDelayed<#=actionTypes#> (this IThreadDispatcher dispatcher, TimeSpan delay, int priority, <#=action#> action, params object[] parameters) => dispatcher.PostDelayed(delay, priority, (Delegate)action, parameters);
+
+		/// <inheritdoc cref="IThreadDispatcherExtensions.PostDelayed(IThreadDispatcher,int,int,Delegate,object[])"/>
+		public static ThreadDispatcherTimer PostDelayed<#=funcTypes#> (this IThreadDispatcher dispatcher, TimeSpan delay, int priority, <#=func#> action, params object[] parameters) => dispatcher.PostDelayed(delay, priority, (Delegate)action, parameters);
+
+		/// <inheritdoc cref="IThreadDispatcherExtensions.PostDelayed(IThreadDispatcher,int,int,ThreadDispatcherOptions,Delegate,object[])"/>
+		public static ThreadDispatcherTimer PostDelayed<#=actionTypes#> (this IThreadDispatcher dispatcher, TimeSpan delay, int priority, ThreadDispatcherOptions options, <#=action#> action, params object[] parameters) => dispatcher.PostDelayed(delay, priority, options, (Delegate)action, parameters);
+
+		/// <inheritdoc cref="IThreadDispatcherExtensions.PostDelayed(IThreadDispatcher,int,int,ThreadDispatcherOptions,Delegate,object[])"/>
+		public static ThreadDispatcherTimer PostDelayed<#=funcTypes#> (this IThreadDispatcher dispatcher, TimeSpan delay, int priority, ThreadDispatcherOptions options, <#=func#> action, params object[] parameters) => dispatcher.PostDelayed(delay, priority, options, (Delegate)action, parameters);
+<#
+}
+#>
+	}
+}
+
+#endif
