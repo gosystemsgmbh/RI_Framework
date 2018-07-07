@@ -30,18 +30,3 @@ A pull request must follow the following rules, otherwise it will be closed imme
    * Namespaces
    * Public types
    * Public members
-
-## Required tools
-
-The following tools are required in order to successfully build the project:
-
- * [Visual Studio](https://www.visualstudio.com/) 2017 15.7.1 or newer
- * [Unity](https://unity3d.com/) 2018.1.1 or newer
- * [Visual Studio Tools for Unity](https://docs.microsoft.com/en-us/visualstudio/cross-platform/visual-studio-tools-for-unity) 3.7.0.1 or newer
- * [Sandcastle Help File Builder](https://github.com/EWSoftware/SHFB) 2017.5.15.0 or newer
-
-## Recommended tools
-
-The following tools are recommended but not necessary to build the project:
-
- * [ReSharper](https://www.jetbrains.com/resharper/)
