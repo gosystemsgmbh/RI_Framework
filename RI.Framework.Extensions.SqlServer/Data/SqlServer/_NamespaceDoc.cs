@@ -3,10 +3,10 @@
 
 
 
-namespace RI.Framework.Windows.Messages
+namespace RI.Framework.Data.SqlServer
 {
 	/// <summary>
-	///     Contains a wrapper implementation around Windows messages.
+	///     Contains SQL Server database utilities.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

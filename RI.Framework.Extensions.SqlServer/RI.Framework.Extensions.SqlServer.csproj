@@ -57,6 +57,7 @@
     <Compile Include="Data\Database\Upgrading\SqlServerDatabaseVersionUpgradeStep.cs" />
     <Compile Include="Data\Database\Versioning\SqlServerDatabaseVersionDetector.cs" />
     <Compile Include="Data\SqlServer\SQLiteConversionExtensions.cs" />
+    <Compile Include="Data\SqlServer\_NamespaceDoc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -3,10 +3,10 @@
 
 
 
-namespace RI.Framework.Windows.Messages
+namespace RI.Framework.Bus.Exceptions
 {
 	/// <summary>
-	///     Contains a wrapper implementation around Windows messages.
+	///     Contains bus related exceptions.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

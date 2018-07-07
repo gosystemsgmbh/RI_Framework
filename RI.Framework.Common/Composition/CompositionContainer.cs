@@ -6,7 +6,6 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 
-using RI.Framework.Bootstrapping;
 using RI.Framework.Collections;
 using RI.Framework.Collections.Comparison;
 using RI.Framework.Collections.DirectLinq;
@@ -20,6 +19,10 @@ using RI.Framework.Utilities.ObjectModel;
 using RI.Framework.Utilities.Reflection;
 #if PLATFORM_NETFX || PLATFORM_NETSTD || PLATFORM_NETCORE
 using System.Linq.Expressions;
+
+
+
+
 #endif
 
 
@@ -471,8 +474,8 @@ namespace RI.Framework.Composition
 	///     </para>
 	///     <para> ADVANCED USAGE / BOOTSTRAPPER </para>
 	///     <para>
-	///         In more advanced scenarios, where the application or game requires bootstrapping of its various components and subsystems, a <see cref="CompositionContainer" /> is one of the core components for bootstrappers, as implemented by <see cref="Bootstrapper" /> / <see cref="IBootstrapper" />.
-	///         See <see cref="Bootstrapper" /> and <see cref="IBootstrapper" /> for more information about bootstrappers and their use of <see cref="CompositionContainer" />.
+	///         In more advanced scenarios, where the application or game requires bootstrapping of its various components and subsystems, a <see cref="CompositionContainer" /> is one of the core components for bootstrappers.
+	///         See the various bootstrapper implementations for more information about bootstrappers and their use of <see cref="CompositionContainer" />.
 	///     </para>
 	///     <para>
 	///         <b> EXCEPTIONS &amp; UNDEFINED STATE </b>
@@ -506,16 +509,16 @@ namespace RI.Framework.Composition
 	[SuppressMessage("ReSharper", "InconsistentNaming")]
 	public sealed class CompositionContainer : LogSource, IDependencyResolver, IServiceProvider, IDisposable, ISynchronizable
 	{
-#region Constants
+		#region Constants
 
 		internal static readonly StringComparerEx NameComparer = StringComparerEx.Ordinal;
 
-#endregion
+		#endregion
 
 
 
 
-#region Static Constructor/Destructor
+		#region Static Constructor/Destructor
 
 		static CompositionContainer ()
 		{
@@ -523,12 +526,12 @@ namespace RI.Framework.Composition
 			CompositionContainer.ResolveImports_PropertyCache = new Dictionary<Type, ResolveImports_PropertyInfo[]>();
 		}
 
-#endregion
+		#endregion
 
 
 
 
-#region Static Properties/Indexer
+		#region Static Properties/Indexer
 
 		/// <summary>
 		///     Gets the current composition container singleton.
@@ -558,12 +561,12 @@ namespace RI.Framework.Composition
 
 		private static Dictionary<Type, ResolveImports_PropertyInfo[]> ResolveImports_PropertyCache { get; }
 
-#endregion
+		#endregion
 
 
 
 
-#region Static Methods
+		#region Static Methods
 
 		/// <summary>
 		///     Gets the current composition container singleton or creates a new one if none exists.
@@ -813,6 +816,14 @@ namespace RI.Framework.Composition
 			return container;
 		}
 
+
+		private static Type GetEnumerableType (Type type)
+		{
+			Type genericType = type.IsGenericType ? type.GetGenericTypeDefinition() : null;
+			Type typeArgument = type.IsGenericType ? type.GetGenericArguments()[0] : null;
+			return (genericType == typeof(IEnumerable<>)) ? typeArgument : null;
+		}
+
 		private static bool GetExportsOfTypeInternal (Type type, bool includeWithoutAttribute, bool isSelf, HashSet<string> exports)
 		{
 			object[] exportAttributes = type.GetCustomAttributes(typeof(ExportAttribute), false);
@@ -840,6 +851,21 @@ namespace RI.Framework.Composition
 			}
 
 			return true;
+		}
+
+		private static Type GetLazyLoadFuncType (Type type)
+		{
+			Type genericType = type.IsGenericType ? type.GetGenericTypeDefinition() : null;
+			Type typeArgument = type.IsGenericType ? type.GetGenericArguments()[0] : null;
+			int typeArgumentCount = type.IsGenericType ? type.GetGenericArguments().Length : 0;
+			return ((genericType == typeof(Func<>)) && (typeArgumentCount == 1)) ? typeArgument : null;
+		}
+
+		private static Type GetLazyLoadObjectType (Type type)
+		{
+			Type genericType = type.IsGenericType ? type.GetGenericTypeDefinition() : null;
+			Type typeArgument = type.IsGenericType ? type.GetGenericArguments()[0] : null;
+			return (genericType == typeof(Lazy<>)) ? typeArgument : null;
 		}
 
 		private static void IsExportPrivateInternal (Type type, bool isSelf, HashSet<bool> privates)
@@ -893,12 +919,12 @@ namespace RI.Framework.Composition
 			return type.IsClass || type.IsInterface;
 		}
 
-#endregion
+		#endregion
 
 
 
 
-#region Instance Constructor/Destructor
+		#region Instance Constructor/Destructor
 
 		/// <summary>
 		///     Creates a new instance of <see cref="CompositionContainer" />.
@@ -906,6 +932,8 @@ namespace RI.Framework.Composition
 		public CompositionContainer ()
 		{
 			this.SyncRoot = new object();
+
+			this.IsClearing = false;
 
 			this.CatalogRecomposeRequestHandler = this.HandleCatalogRecomposeRequest;
 			this.ParentContainerCompositionChangedHandler = this.HandleParentContainerCompositionChanged;
@@ -953,22 +981,22 @@ namespace RI.Framework.Composition
 			this.Dispose();
 		}
 
-#endregion
+		#endregion
 
 
 
 
-#region Instance Fields
+		#region Instance Fields
 
 		private bool _autoDispose;
 		private CompositionContainer _parentContainer;
 
-#endregion
+		#endregion
 
 
 
 
-#region Instance Properties/Indexer
+		#region Instance Properties/Indexer
 
 		/// <summary>
 		///     Gets or sets whether exports have <see cref="IDisposable.Dispose" /> called when removed.
@@ -1038,6 +1066,8 @@ namespace RI.Framework.Composition
 
 		private List<CompositionCatalogItem> Instances { get; }
 
+		private bool IsClearing { get; set; }
+
 		[SuppressMessage("ReSharper", "CollectionNeverUpdated.Local")]
 		private Dictionary<string, Dictionary<Type, LazyInvoker>> LazyInvokers { get; }
 
@@ -1045,12 +1075,12 @@ namespace RI.Framework.Composition
 
 		private List<CompositionCatalogItem> Types { get; }
 
-#endregion
+		#endregion
 
 
 
 
-#region Instance Events
+		#region Instance Events
 
 		/// <summary>
 		///     Raised when the composition has changed.
@@ -1062,12 +1092,12 @@ namespace RI.Framework.Composition
 		/// </remarks>
 		public event EventHandler CompositionChanged;
 
-#endregion
+		#endregion
 
 
 
 
-#region Instance Methods
+		#region Instance Methods
 
 		/// <summary>
 		///     Model-based export: Adds a composition catalog to use its exports for composition.
@@ -1430,10 +1460,24 @@ namespace RI.Framework.Composition
 		{
 			lock (this.SyncRoot)
 			{
-				this.Log(LogLevel.Debug, "Clearing container.");
+				if (this.IsClearing)
+				{
+					return;
+				}
 
-				this.ClearInternal();
-				this.UpdateComposition(true);
+				try
+				{
+					this.IsClearing = true;
+
+					this.Log(LogLevel.Debug, "Clearing container.");
+
+					this.ClearInternal();
+					this.UpdateComposition(true);
+				}
+				finally
+				{
+					this.IsClearing = false;
+				}
 			}
 
 			this.RaiseCompositionChanged();
@@ -2301,6 +2345,51 @@ namespace RI.Framework.Composition
 			this.Creators.Clear();
 		}
 
+		private object CreateArray (Type type, List<object> content)
+		{
+			Array array = Array.CreateInstance(type, content.Count);
+			((ICollection)content).CopyTo(array, 0);
+			return array;
+		}
+
+		private object CreateGenericLazyLoadFunc (string name, Type type)
+		{
+			LazyInvoker invoker = null;
+			if (this.LazyInvokers.ContainsKey(name))
+			{
+				if (this.LazyInvokers[name].ContainsKey(type))
+				{
+					invoker = this.LazyInvokers[name][type];
+				}
+				else
+				{
+					this.LazyInvokers[name].Add(type, null);
+				}
+			}
+			else
+			{
+				this.LazyInvokers.Add(name, new Dictionary<Type, LazyInvoker>());
+				this.LazyInvokers[name].Add(type, null);
+			}
+
+			if (invoker == null)
+			{
+				invoker = new LazyInvoker(this, name, type);
+				this.LazyInvokers[name][type] = invoker;
+			}
+
+			return invoker.Resolver;
+		}
+
+		private object CreateGenericLazyLoadObject (string name, Type type)
+		{
+			object lazyLoadFunc = this.CreateGenericLazyLoadFunc(name, type);
+			Type genericType = typeof(Lazy<>);
+			Type concreteType = genericType.MakeGenericType(type);
+			object lazyLoadObject = Activator.CreateInstance(concreteType, BindingFlags.Default, null, lazyLoadFunc);
+			return lazyLoadObject;
+		}
+
 		private Dictionary<string, List<CompositionCatalogItem>> GetCompositionSnapshot ()
 		{
 			lock (this.SyncRoot)
@@ -3136,12 +3225,12 @@ namespace RI.Framework.Composition
 			}
 		}
 
-#endregion
+		#endregion
 
 
 
 
-#region Interface: IDependencyResolver
+		#region Interface: IDependencyResolver
 
 		/// <inheritdoc />
 		object IDependencyResolver.GetInstance (Type type)
@@ -3209,41 +3298,55 @@ namespace RI.Framework.Composition
 			return this.GetExports<T>();
 		}
 
-#endregion
+		#endregion
 
 
 
 
-#region Interface: IDisposable
+		#region Interface: IDisposable
 
 		/// <inheritdoc />
 		public void Dispose ()
 		{
 			lock (this.SyncRoot)
 			{
-				this.Log(LogLevel.Debug, "Disposing container.");
-
-				if (this.ParentContainer != null)
+				if (this.IsClearing)
 				{
-					this.ParentContainer.CompositionChanged -= this.ParentContainerCompositionChangedHandler;
-					this.ParentContainer = null;
+					return;
 				}
 
-				this.LazyInvokers.Clear();
+				try
+				{
+					this.IsClearing = true;
 
-				this.ClearInternal();
-				this.UpdateComposition(true);
+					this.Log(LogLevel.Debug, "Disposing container.");
+
+					if (this.ParentContainer != null)
+					{
+						this.ParentContainer.CompositionChanged -= this.ParentContainerCompositionChangedHandler;
+						this.ParentContainer = null;
+					}
+
+					this.LazyInvokers.Clear();
+
+					this.ClearInternal();
+					this.UpdateComposition(true);
+				}
+				finally
+				{
+					this.IsClearing = false;
+				}
 			}
 
 			this.RaiseCompositionChanged();
 		}
 
-#endregion
+		#endregion
 
 
 
 
-#region Interface: IServiceProvider
+		#region Interface: IServiceProvider
 
 		/// <inheritdoc />
 		object IServiceProvider.GetService (Type serviceType)
@@ -3261,12 +3364,12 @@ namespace RI.Framework.Composition
 			return this.GetExport(serviceType);
 		}
 
-#endregion
+		#endregion
 
 
 
 
-#region Interface: ISynchronizable
+		#region Interface: ISynchronizable
 
 		/// <inheritdoc />
 		bool ISynchronizable.IsSynchronized => true;
@@ -3274,16 +3377,16 @@ namespace RI.Framework.Composition
 		/// <inheritdoc />
 		public object SyncRoot { get; }
 
-#endregion
+		#endregion
 
 
 
 
-#region Type: CompositionFactoryItem
+		#region Type: CompositionFactoryItem
 
 		private sealed class CompositionFactoryItem
 		{
-#region Instance Constructor/Destructor
+			#region Instance Constructor/Destructor
 
 			public CompositionFactoryItem (Delegate factory, bool privateExport)
 			{
@@ -3294,12 +3397,12 @@ namespace RI.Framework.Composition
 				this.Instance = null;
 			}
 
-#endregion
+			#endregion
 
 
 
 
-#region Instance Properties/Indexer
+			#region Instance Properties/Indexer
 
 			public bool Checked { get; set; }
 
@@ -3309,19 +3412,19 @@ namespace RI.Framework.Composition
 
 			public bool PrivateExport { get; }
 
-#endregion
+			#endregion
 		}
 
-#endregion
+		#endregion
 
 
 
 
-#region Type: CompositionInstanceItem
+		#region Type: CompositionInstanceItem
 
 		private sealed class CompositionInstanceItem
 		{
-#region Instance Constructor/Destructor
+			#region Instance Constructor/Destructor
 
 			public CompositionInstanceItem (object instance)
 			{
@@ -3330,30 +3433,30 @@ namespace RI.Framework.Composition
 				this.Checked = false;
 			}
 
-#endregion
+			#endregion
 
 
 
 
-#region Instance Properties/Indexer
+			#region Instance Properties/Indexer
 
 			public bool Checked { get; set; }
 
 			public object Instance { get; }
 
-#endregion
+			#endregion
 		}
 
-#endregion
+		#endregion
 
 
 
 
-#region Type: CompositionItem
+		#region Type: CompositionItem
 
 		private sealed class CompositionItem
 		{
-#region Instance Constructor/Destructor
+			#region Instance Constructor/Destructor
 
 			public CompositionItem (string name)
 			{
@@ -3364,12 +3467,12 @@ namespace RI.Framework.Composition
 				this.Factories = new List<CompositionFactoryItem>();
 			}
 
-#endregion
+			#endregion
 
 
 
 
-#region Instance Properties/Indexer
+			#region Instance Properties/Indexer
 
 			public List<CompositionFactoryItem> Factories { get; }
 
@@ -3379,12 +3482,12 @@ namespace RI.Framework.Composition
 
 			public List<CompositionTypeItem> Types { get; }
 
-#endregion
+			#endregion
 
 
 
 
-#region Instance Methods
+			#region Instance Methods
 
 			public void ResetChecked ()
 			{
@@ -3404,19 +3507,19 @@ namespace RI.Framework.Composition
 				}
 			}
 
-#endregion
+			#endregion
 		}
 
-#endregion
+		#endregion
 
 
 
 
-#region Type: CompositionTypeItem
+		#region Type: CompositionTypeItem
 
 		private sealed class CompositionTypeItem
 		{
-#region Instance Constructor/Destructor
+			#region Instance Constructor/Destructor
 
 			public CompositionTypeItem (Type type, bool privateExport)
 			{
@@ -3428,12 +3531,12 @@ namespace RI.Framework.Composition
 				this.OpenInstances = new Dictionary<string, object>(StringComparerEx.Ordinal);
 			}
 
-#endregion
+			#endregion
 
 
 
 
-#region Instance Properties/Indexer
+			#region Instance Properties/Indexer
 
 			public bool Checked { get; set; }
 
@@ -3445,15 +3548,15 @@ namespace RI.Framework.Composition
 
 			public Type Type { get; }
 
-#endregion
+			#endregion
 		}
 
-#endregion
+		#endregion
 
 
 
 
-#region Type: ImportKind
+		#region Type: ImportKind
 
 		private enum ImportKind
 		{
@@ -3464,16 +3567,16 @@ namespace RI.Framework.Composition
 			Single,
 		}
 
-#endregion
+		#endregion
 
 
 
 
-#region Type: LazyInvoker
+		#region Type: LazyInvoker
 
 		private sealed class LazyInvoker
 		{
-#region Instance Constructor/Destructor
+			#region Instance Constructor/Destructor
 
 			[SuppressMessage("ReSharper", "PossibleNullReferenceException")]
 			public LazyInvoker (CompositionContainer container, string name, Type type)
@@ -3513,19 +3616,19 @@ namespace RI.Framework.Composition
 
 			private Type Type { get; }
 
-#endregion
+			#endregion
 		}
 
-#endregion
+		#endregion
 
 
 
 
-#region Type: ResolveImports_PropertyInfo
+		#region Type: ResolveImports_PropertyInfo
 
 		private sealed class ResolveImports_PropertyInfo
 		{
-#region Instance Properties/Indexer
+			#region Instance Properties/Indexer
 
 			public bool CanRecompose { get; set; }
 
@@ -3541,79 +3644,9 @@ namespace RI.Framework.Composition
 
 			public MethodInfo SetMethod { get; set; }
 
-#endregion
+			#endregion
 		}
 
-#endregion
-
-
-
-
-		private static Type GetEnumerableType (Type type)
-		{
-			Type genericType = type.IsGenericType ? type.GetGenericTypeDefinition() : null;
-			Type typeArgument = type.IsGenericType ? type.GetGenericArguments()[0] : null;
-			return (genericType == typeof(IEnumerable<>)) ? typeArgument : null;
-		}
-
-		private static Type GetLazyLoadFuncType (Type type)
-		{
-			Type genericType = type.IsGenericType ? type.GetGenericTypeDefinition() : null;
-			Type typeArgument = type.IsGenericType ? type.GetGenericArguments()[0] : null;
-			int typeArgumentCount = type.IsGenericType ? type.GetGenericArguments().Length : 0;
-			return ((genericType == typeof(Func<>)) && (typeArgumentCount == 1)) ? typeArgument : null;
-		}
-
-		private static Type GetLazyLoadObjectType (Type type)
-		{
-			Type genericType = type.IsGenericType ? type.GetGenericTypeDefinition() : null;
-			Type typeArgument = type.IsGenericType ? type.GetGenericArguments()[0] : null;
-			return (genericType == typeof(Lazy<>)) ? typeArgument : null;
-		}
-
-		private object CreateArray (Type type, List<object> content)
-		{
-			Array array = Array.CreateInstance(type, content.Count);
-			((ICollection)content).CopyTo(array, 0);
-			return array;
-		}
-
-		private object CreateGenericLazyLoadFunc (string name, Type type)
-		{
-			LazyInvoker invoker = null;
-			if (this.LazyInvokers.ContainsKey(name))
-			{
-				if (this.LazyInvokers[name].ContainsKey(type))
-				{
-					invoker = this.LazyInvokers[name][type];
-				}
-				else
-				{
-					this.LazyInvokers[name].Add(type, null);
-				}
-			}
-			else
-			{
-				this.LazyInvokers.Add(name, new Dictionary<Type, LazyInvoker>());
-				this.LazyInvokers[name].Add(type, null);
-			}
-
-			if (invoker == null)
-			{
-				invoker = new LazyInvoker(this, name, type);
-				this.LazyInvokers[name][type] = invoker;
-			}
-
-			return invoker.Resolver;
-		}
-
-		private object CreateGenericLazyLoadObject (string name, Type type)
-		{
-			object lazyLoadFunc = this.CreateGenericLazyLoadFunc(name, type);
-			Type genericType = typeof(Lazy<>);
-			Type concreteType = genericType.MakeGenericType(type);
-			object lazyLoadObject = Activator.CreateInstance(concreteType, BindingFlags.Default, null, lazyLoadFunc);
-			return lazyLoadObject;
-		}
+		#endregion
 	}
 }

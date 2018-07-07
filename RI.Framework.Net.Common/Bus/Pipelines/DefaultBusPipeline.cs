@@ -19,7 +19,7 @@ using RI.Framework.Utilities.ObjectModel;
 
 
 
-namespace RI.Framework.Bus.Pipeline
+namespace RI.Framework.Bus.Pipelines
 {
 	/// <summary>
 	///     Implements a default bus processing pipeline which is suitable for most scenarios.

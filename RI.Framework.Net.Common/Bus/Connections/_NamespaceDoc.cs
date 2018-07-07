@@ -3,10 +3,10 @@
 
 
 
-namespace RI.Framework.Windows.Messages
+namespace RI.Framework.Bus.Connections
 {
 	/// <summary>
-	///     Contains a wrapper implementation around Windows messages.
+	///     Contains infrastructure for implementing bus connections.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

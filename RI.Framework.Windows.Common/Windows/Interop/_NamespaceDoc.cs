@@ -3,10 +3,10 @@
 
 
 
-namespace RI.Framework.Windows.Messages
+namespace RI.Framework.Windows.Interop
 {
 	/// <summary>
-	///     Contains a wrapper implementation around Windows messages.
+	///     Contains types used for interop functionality and PInvoke.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

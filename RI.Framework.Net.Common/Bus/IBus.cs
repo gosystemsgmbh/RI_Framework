@@ -6,7 +6,7 @@ using RI.Framework.Bus.Connections;
 using RI.Framework.Bus.Dispatchers;
 using RI.Framework.Bus.Exceptions;
 using RI.Framework.Bus.Internals;
-using RI.Framework.Bus.Pipeline;
+using RI.Framework.Bus.Pipelines;
 using RI.Framework.Bus.Routers;
 using RI.Framework.ComponentModel;
 using RI.Framework.Composition.Model;

@@ -8,7 +8,7 @@ using RI.Framework.Utilities.ObjectModel;
 
 
 
-namespace RI.Framework.Bus.Pipeline
+namespace RI.Framework.Bus.Pipelines
 {
 	/// <summary>
 	///     Defines the interface for a bus processing pipeline.
