@@ -7,7 +7,7 @@ using RI.Framework.Utilities.Logging;
 
 
 
-namespace RI.Framework.Services
+namespace RI.Framework.Bootstrapping
 {
 	/// <summary>
 	///     Implements a default WPF application object.

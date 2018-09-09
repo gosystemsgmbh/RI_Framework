@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Threading;
 
-using RI.Framework.Bootstrapping;
 using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Composition.Catalogs;
 using RI.Framework.Utilities.Logging;
@@ -11,7 +10,7 @@ using RI.Framework.Utilities.Logging;
 
 
 
-namespace RI.Framework.Services
+namespace RI.Framework.Bootstrapping
 {
 	/// <summary>
 	///     Implements a WPF application bootstrapper.

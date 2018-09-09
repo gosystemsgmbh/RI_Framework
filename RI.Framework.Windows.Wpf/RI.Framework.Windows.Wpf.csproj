@@ -97,8 +97,8 @@
     <Compile Include="Services\Regions\Adapters\WpfRegionAdapterBase.cs" />
     <Compile Include="Services\Resources\Converters\WpfResourceConverter.cs" />
     <Compile Include="Services\Resources\WpfResourceServiceExtensions.cs" />
-    <Compile Include="Services\WpfApplication.cs" />
-    <Compile Include="Services\WpfBootstrapper.cs" />
+    <Compile Include="Bootstrapping\WpfApplication.cs" />
+    <Compile Include="Bootstrapping\WpfBootstrapper.cs" />
     <Compile Include="Windows\Wpf\ApplicationExtensions.cs" />
     <Compile Include="Windows\Wpf\Converters\_NamespaceDoc.cs" />
     <Compile Include="Windows\Wpf\DispatcherExtensions.cs" />

@@ -21,7 +21,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RI.Framework.NetCore\RI.Framework.Net.Core.csproj" />
+    <ProjectReference Include="..\RI.Framework.Common\RI.Framework.Common.csproj" />
+    <ProjectReference Include="..\RI.Framework.Net.Common\RI.Framework.Net.Common.csproj" />
+    <ProjectReference Include="..\RI.Framework.Net.Core\RI.Framework.Net.Core.csproj" />
   </ItemGroup>
 
   <Import Project="..\RI.Test.Framework.Shared.All\RI.Test.Framework.Shared.All.projitems" Label="Shared" />

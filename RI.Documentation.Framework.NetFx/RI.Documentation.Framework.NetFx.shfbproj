@@ -29,26 +29,29 @@
       <Argument Key="includeEnumValues" Value="true" />
     </TransformComponentArguments>
     <DocumentationSources>
-      <DocumentationSource sourceFile="..\RI.Framework.Extensions.EF6\RI.Framework.Extensions.EF6.csproj" />
-      <DocumentationSource sourceFile="..\RI.Framework.Extensions.FluentRibbon\RI.Framework.Extensions.FluentRibbon.csproj" />
-      <DocumentationSource sourceFile="..\RI.Framework.Extensions.SQLite\RI.Framework.Extensions.SQLite.csproj" />
-      <DocumentationSource sourceFile="..\RI.Framework.Extensions.SQLiteEF6\RI.Framework.Extensions.SQLiteEF6.csproj" />
-      <DocumentationSource sourceFile="..\RI.Framework.NetFx\RI.Framework.NetFx.csproj" />
-      <DocumentationSource sourceFile="..\RI.Framework.Windows.Forms\RI.Framework.Windows.Forms.csproj" />
-      <DocumentationSource sourceFile="..\RI.Framework.Windows.Service\RI.Framework.Windows.Service.csproj" />
-      <DocumentationSource sourceFile="..\RI.Framework.Windows.Wpf\RI.Framework.Windows.Wpf.csproj" />
-      <DocumentationSource sourceFile="..\RI.Framework.Extensions.Nancy\RI.Framework.Extensions.Nancy.csproj" />
-      <DocumentationSource sourceFile="..\RI.Framework.Extensions.SqlServer\RI.Framework.Extensions.SqlServer.csproj" />
-      <DocumentationSource sourceFile="..\RI.Framework.Extensions.SqlServerEF6\RI.Framework.Extensions.SqlServerEF6.csproj" />
-      <DocumentationSource sourceFile="..\RI.Framework.Extensions.Json\RI.Framework.Extensions.Json.csproj" />
-      <DocumentationSource sourceFile="..\RI.Framework.Extensions.NancyJson\RI.Framework.Extensions.NancyJson.csproj" />
-      <DocumentationSource sourceFile="..\RI.Framework.Extensions.EPPlus\RI.Framework.Extensions.EPPlus.csproj" />
-      <DocumentationSource sourceFile="..\RI.Framework.Extensions.WpfToolkit\RI.Framework.Extensions.WpfToolkit.csproj" />
-      <DocumentationSource sourceFile="..\RI.Framework.Extensions.DotNetZip\RI.Framework.Extensions.DotNetZip.csproj" />
+      <DocumentationSource sourceFile="..\RI.Framework.Common\RI.Framework.Common.csproj" />
+      <DocumentationSource sourceFile="..\RI.Framework.Net.Common\RI.Framework.Net.Common.csproj" />
+      <DocumentationSource sourceFile="..\RI.Framework.Net.Fx\RI.Framework.Net.Fx.csproj" />
+      <DocumentationSource sourceFile="..\RI.Framework.Net.Core\RI.Framework.Net.Core.csproj" />
       <DocumentationSource sourceFile="..\RI.Framework.CrossPlatform.Common\RI.Framework.CrossPlatform.Common.csproj" />
       <DocumentationSource sourceFile="..\RI.Framework.Linux.Common\RI.Framework.Linux.Common.csproj" />
       <DocumentationSource sourceFile="..\RI.Framework.Windows.Common\RI.Framework.Windows.Common.csproj" />
+      <DocumentationSource sourceFile="..\RI.Framework.Windows.Forms\RI.Framework.Windows.Forms.csproj" />
+      <DocumentationSource sourceFile="..\RI.Framework.Windows.Service\RI.Framework.Windows.Service.csproj" />
+      <DocumentationSource sourceFile="..\RI.Framework.Windows.Wpf\RI.Framework.Windows.Wpf.csproj" />
       <DocumentationSource sourceFile="..\RI.Framework.Extensions.BouncyCastle\RI.Framework.Extensions.BouncyCastle.csproj" />
+      <DocumentationSource sourceFile="..\RI.Framework.Extensions.DotNetZip\RI.Framework.Extensions.DotNetZip.csproj" />
+      <DocumentationSource sourceFile="..\RI.Framework.Extensions.EF6\RI.Framework.Extensions.EF6.csproj" />
+      <DocumentationSource sourceFile="..\RI.Framework.Extensions.EPPlus\RI.Framework.Extensions.EPPlus.csproj" />
+      <DocumentationSource sourceFile="..\RI.Framework.Extensions.FluentRibbon\RI.Framework.Extensions.FluentRibbon.csproj" />
+      <DocumentationSource sourceFile="..\RI.Framework.Extensions.Json\RI.Framework.Extensions.Json.csproj" />
+      <DocumentationSource sourceFile="..\RI.Framework.Extensions.Nancy\RI.Framework.Extensions.Nancy.csproj" />
+      <DocumentationSource sourceFile="..\RI.Framework.Extensions.NancyJson\RI.Framework.Extensions.NancyJson.csproj" />
+      <DocumentationSource sourceFile="..\RI.Framework.Extensions.SQLite\RI.Framework.Extensions.SQLite.csproj" />
+      <DocumentationSource sourceFile="..\RI.Framework.Extensions.SQLiteEF6\RI.Framework.Extensions.SQLiteEF6.csproj" />
+      <DocumentationSource sourceFile="..\RI.Framework.Extensions.SqlServer\RI.Framework.Extensions.SqlServer.csproj" />
+      <DocumentationSource sourceFile="..\RI.Framework.Extensions.SqlServerEF6\RI.Framework.Extensions.SqlServerEF6.csproj" />
+      <DocumentationSource sourceFile="..\RI.Framework.Extensions.WpfToolkit\RI.Framework.Extensions.WpfToolkit.csproj" />
     </DocumentationSources>
     <BuildAssemblerVerbosity>OnlyWarningsAndErrors</BuildAssemblerVerbosity>
     <HelpFileFormat>HtmlHelp1, Website</HelpFileFormat>
@@ -74,43 +77,50 @@
     <ComponentConfigurations>
       <ComponentConfig id="Code Block Component" enabled="True">
         <component id="Code Block Component">
-  <basePath value="{@HtmlEncProjectFolder}" />
-  <outputPaths>{@HelpFormatOutputPaths}</outputPaths>
-  <allowMissingSource value="false" />
-  <removeRegionMarkers value="false" />
-  <colorizer syntaxFile="{@SHFBFolder}PresentationStyles\Colorizer\highlight.xml" styleFile="{@SHFBFolder}PresentationStyles\Colorizer\highlight.xsl" stylesheet="{@SHFBFolder}PresentationStyles\Colorizer\highlight.css" scriptFile="{@SHFBFolder}PresentationStyles\Colorizer\highlight.js" disabled="{@DisableCodeBlockComponent}" language="cs" tabSize="0" numberLines="false" outlining="false" keepSeeTags="false" defaultTitle="true" />
-</component>
+          <basePath value="{@HtmlEncProjectFolder}" />
+          <outputPaths>{@HelpFormatOutputPaths}</outputPaths>
+          <allowMissingSource value="false" />
+          <removeRegionMarkers value="false" />
+          <colorizer syntaxFile="{@SHFBFolder}PresentationStyles\Colorizer\highlight.xml" styleFile="{@SHFBFolder}PresentationStyles\Colorizer\highlight.xsl" stylesheet="{@SHFBFolder}PresentationStyles\Colorizer\highlight.css" scriptFile="{@SHFBFolder}PresentationStyles\Colorizer\highlight.js" disabled="{@DisableCodeBlockComponent}" language="cs" tabSize="0" numberLines="false" outlining="false" keepSeeTags="false" defaultTitle="true" />
+        </component>
       </ComponentConfig>
-<ComponentConfig id="Syntax Component" enabled="True"><component id="Syntax Component">
-  <syntax input="/document/reference" output="/document/syntax" renderReferenceLinks="false" />
-  <generators>
+      <ComponentConfig id="Syntax Component" enabled="True">
+        <component id="Syntax Component">
+          <syntax input="/document/reference" output="/document/syntax" renderReferenceLinks="false" />
+          <generators>
     {@SyntaxFilters}
 </generators>
-  <containerElement name="codeSnippetGroup" addNoExampleTabs="true" includeOnSingleSnippets="false" groupingEnabled="{@CodeSnippetGrouping}" />
-  <configurations>
-    <generator id="C#" />
-    <generator id="Visual Basic">
-      <includeLineContinuation value="false" />
-    </generator>
-    <generator id="Visual Basic Usage">
-      <includeLineContinuation value="false" />
-    </generator>
-    <generator id="Managed C++" />
-    <generator id="F#" />
-    <generator id="J#" />
-    <generator id="JScript" />
-    <generator id="JavaScript" />
-    <generator id="XAML Usage" />
-    <generator id="ASP.NET" />
-    <generator id="X#" />
-  </configurations>
-</component></ComponentConfig>
-<ComponentConfig id="IntelliSense Component" enabled="True"><component id="IntelliSense Component">
-  <output includeNamespaces="false" namespacesFile="Namespaces" folder="{@OutputFolder}" boundedCapacity="100" />
-</component></ComponentConfig>
-<ComponentConfig id="API Token Resolution" enabled="True"><component id="API Token Resolution">{@TokenFiles}
-<replace elements="/*//token" item="string(.)" /></component></ComponentConfig>
-<ComponentConfig id="Resolve Reference Links (ESENT Cache)" enabled="True"><component id="Resolve Reference Links (ESENT Cache)">{@HRefFormat}
+          <containerElement name="codeSnippetGroup" addNoExampleTabs="true" includeOnSingleSnippets="false" groupingEnabled="{@CodeSnippetGrouping}" />
+          <configurations>
+            <generator id="C#" />
+            <generator id="Visual Basic">
+              <includeLineContinuation value="false" />
+            </generator>
+            <generator id="Visual Basic Usage">
+              <includeLineContinuation value="false" />
+            </generator>
+            <generator id="Managed C++" />
+            <generator id="F#" />
+            <generator id="J#" />
+            <generator id="JScript" />
+            <generator id="JavaScript" />
+            <generator id="XAML Usage" />
+            <generator id="ASP.NET" />
+            <generator id="X#" />
+          </configurations>
+        </component>
+      </ComponentConfig>
+      <ComponentConfig id="IntelliSense Component" enabled="True">
+        <component id="IntelliSense Component">
+          <output includeNamespaces="false" namespacesFile="Namespaces" folder="{@OutputFolder}" boundedCapacity="100" />
+        </component>
+      </ComponentConfig>
+      <ComponentConfig id="API Token Resolution" enabled="True">
+        <component id="API Token Resolution">{@TokenFiles}
+<replace elements="/*//token" item="string(.)" /></component>
+      </ComponentConfig>
+      <ComponentConfig id="Resolve Reference Links (ESENT Cache)" enabled="True">
+        <component id="Resolve Reference Links (ESENT Cache)">{@HRefFormat}
 <locale value="{@Locale}" /><linkTarget value="{@SdkLinkTarget}" /><helpOutput format="HtmlHelp1"><msdnContentIdCache path="{@LocalDataFolder}Cache\MsdnContentId.cache" cachePath="{@LocalDataFolder}Cache\ESentMsdnContentIdCache" localCacheSize="2500" /><targets base="{@FrameworkReflectionDataFolder}" recurse="true" files="*.xml" type="{@HtmlSdkLinkType}" id="FrameworkTargets" cachePath="{@LocalDataFolder}Cache\ESentFrameworkTargetCache" localCacheSize="2500">
 		{@ReferenceLinkNamespaceFiles}
 	</targets><targets files="reflection.xml" type="Local" id="ProjectTargets" cachePath="" localCacheSize="2500" noReload="true" /></helpOutput><helpOutput format="MSHelpViewer"><msdnContentIdCache path="{@LocalDataFolder}Cache\MsdnContentId.cache" cachePath="{@LocalDataFolder}Cache\ESentMsdnContentIdCache" localCacheSize="2500" /><targets base="{@FrameworkReflectionDataFolder}" recurse="true" files="*.xml" type="{@MSHelpViewerSdkLinkType}" id="FrameworkTargets" cachePath="{@LocalDataFolder}Cache\ESentFrameworkTargetCache" localCacheSize="2500">
@@ -121,23 +131,29 @@
 		{@ReferenceLinkNamespaceFiles}
 	</targets><targets files="reflection.xml" type="Local" id="ProjectTargets" cachePath="" localCacheSize="2500" noReload="true" /></helpOutput><helpOutput format="Markdown"><msdnContentIdCache path="{@LocalDataFolder}Cache\MsdnContentId.cache" cachePath="{@LocalDataFolder}Cache\ESentMsdnContentIdCache" localCacheSize="2500" /><targets base="{@FrameworkReflectionDataFolder}" recurse="true" files="*.xml" type="{@WebsiteSdkLinkType}" id="FrameworkTargets" cachePath="{@LocalDataFolder}Cache\ESentFrameworkTargetCache" localCacheSize="2500">
 		{@ReferenceLinkNamespaceFiles}
-	</targets><targets files="reflection.xml" type="Local" id="ProjectTargets" cachePath="" localCacheSize="2500" noReload="true" /></helpOutput></component></ComponentConfig>
-<ComponentConfig id="Comments Index Data (ESENT Cache)" enabled="True"><component id="Comments Index Data (ESENT Cache)">
-  <index name="comments" value="/doc/members/member" key="@name" cache="30" localCacheSize="2500" frameworkCachePath="{@LocalDataFolder}Cache\CommentsIndexCache" projectCachePath="">
+	</targets><targets files="reflection.xml" type="Local" id="ProjectTargets" cachePath="" localCacheSize="2500" noReload="true" /></helpOutput></component>
+      </ComponentConfig>
+      <ComponentConfig id="Comments Index Data (ESENT Cache)" enabled="True">
+        <component id="Comments Index Data (ESENT Cache)">
+          <index name="comments" value="/doc/members/member" key="@name" cache="30" localCacheSize="2500" frameworkCachePath="{@LocalDataFolder}Cache\CommentsIndexCache" projectCachePath="">
 	{@FrameworkCommentList}
 	{@CommentFileList}
 </index>
-  <copy name="comments" source="*" target="/document/comments" />
-</component></ComponentConfig>
-<ComponentConfig id="Reflection Index Data (ESENT Cache)" enabled="True"><component id="Reflection Index Data (ESENT Cache)">
-  <index name="reflection" value="/reflection/apis/api" key="@id" cache="15" localCacheSize="2500" frameworkCachePath="{@LocalDataFolder}Cache\ReflectionIndexCache" projectCachePath="">
-    <data base="{@FrameworkReflectionDataFolder}" recurse="true" files="*.xml" duplicateWarning="false" groupId="ReflectionIndexCache">
+          <copy name="comments" source="*" target="/document/comments" />
+        </component>
+      </ComponentConfig>
+      <ComponentConfig id="Reflection Index Data (ESENT Cache)" enabled="True">
+        <component id="Reflection Index Data (ESENT Cache)">
+          <index name="reflection" value="/reflection/apis/api" key="@id" cache="15" localCacheSize="2500" frameworkCachePath="{@LocalDataFolder}Cache\ReflectionIndexCache" projectCachePath="">
+            <data base="{@FrameworkReflectionDataFolder}" recurse="true" files="*.xml" duplicateWarning="false" groupId="ReflectionIndexCache">
 		{@ReferenceLinkNamespaceFiles}
 	</data>
-    <data files="reflection.xml" groupId="Project_Ref_{@UniqueID}" />
-  </index>
-  <copy name="reflection" source="*" target="/document/reference" />
-</component></ComponentConfig></ComponentConfigurations>
+            <data files="reflection.xml" groupId="Project_Ref_{@UniqueID}" />
+          </index>
+          <copy name="reflection" source="*" target="/document/reference" />
+        </component>
+      </ComponentConfig>
+    </ComponentConfigurations>
     <SaveComponentCacheCapacity>100</SaveComponentCacheCapacity>
     <WebsiteSdkLinkType>Msdn</WebsiteSdkLinkType>
     <HtmlSdkLinkType>Msdn</HtmlSdkLinkType>
