@@ -34,7 +34,7 @@
     <KeepLogFile>True</KeepLogFile>
     <DisableCodeBlockComponent>False</DisableCodeBlockComponent>
     <CleanIntermediates>True</CleanIntermediates>
-    <HelpFileVersion>2.0.0.0</HelpFileVersion>
+    <HelpFileVersion>1.0.0.0</HelpFileVersion>
     <MaximumGroupParts>2</MaximumGroupParts>
     <NamespaceGrouping>False</NamespaceGrouping>
     <SyntaxFilters>C#</SyntaxFilters>
@@ -46,7 +46,8 @@
     <HelpTitle>Decoupling &amp;amp%3b Utilities Framework</HelpTitle>
     <ContentPlacement>AboveNamespaces</ContentPlacement>
     <DocumentationSources>
-      <DocumentationSource sourceFile="..\RI.Framework.Unity\RI.Framework.Unity.csproj" />
+      <DocumentationSource sourceFile="..\RI.Framework.Unity.Common\RI.Framework.Unity.Common.csproj" />
+      <DocumentationSource sourceFile="..\RI.Framework.Unity.Modern\RI.Framework.Unity.Modern.csproj" />
     </DocumentationSources>
     <RootNamespaceTitle>Reference</RootNamespaceTitle>
     <WebsiteSdkLinkType>Msdn</WebsiteSdkLinkType>

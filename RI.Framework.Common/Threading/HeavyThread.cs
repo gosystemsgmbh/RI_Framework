@@ -1,19 +1,11 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
-
-using RI.Framework.Utilities.ObjectModel;
-
-
-
-
-#if PLATFORM_NETFX
-using RI.Framework.Collections;
-
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-#endif
+using RI.Framework.Utilities.ObjectModel;
+using RI.Framework.Collections;
 
 
 namespace RI.Framework.Threading
@@ -72,9 +64,7 @@ namespace RI.Framework.Threading
 			this.Thread = null;
 			this.StopRequested = false;
 			this.StopEvent = null;
-#if PLATFORM_NETFX
 			this.StopTasks = null;
-#endif
 		}
 
 		/// <summary>
@@ -323,9 +313,7 @@ namespace RI.Framework.Threading
 
 		private object StartStopSyncRoot { get; }
 
-#if PLATFORM_NETFX
 		private HashSet<TaskCompletionSource<object>> StopTasks { get; set; }
-#endif
 
 		#endregion
 
@@ -429,7 +417,6 @@ namespace RI.Framework.Threading
 
 					using (ManualResetEvent startEvent = new ManualResetEvent(false))
 					{
-						bool startEventSet = false;
 						int timeout;
 
 						lock (this.SyncRoot)
@@ -442,9 +429,7 @@ namespace RI.Framework.Threading
 
 							this.StopRequested = false;
 							this.StopEvent = new ManualResetEvent(false);
-#if PLATFORM_NETFX
 							this.StopTasks = new HashSet<TaskCompletionSource<object>>();
-#endif
 
 							this.Thread = new Thread(() =>
 							{
@@ -453,7 +438,6 @@ namespace RI.Framework.Threading
 								{
 									stopEvent = this.StopEvent;
 									this.OnBegin();
-									startEventSet = true;
 									startEvent.Set();
 									this.OnRun();
 									stopEvent.WaitOne();
@@ -491,7 +475,6 @@ namespace RI.Framework.Threading
 
 									try
 									{
-										startEventSet = true;
 										startEvent.Set();
 									}
 									catch
@@ -529,27 +512,11 @@ namespace RI.Framework.Threading
 							this.Thread.Start();
 						}
 
-#if PLATFORM_NETFX || PLATFORM_NETSTD || PLATFORM_NETCORE
 						bool started = startEvent.WaitOne(timeout);
-						GC.KeepAlive(startEventSet);
-#endif
-#if PLATFORM_UNITY
-						bool started = true;
-						DateTime start = DateTime.UtcNow;
-						while (!startEventSet)
-						{
-							Thread.Sleep(1);
-							if (DateTime.UtcNow.Subtract(start).TotalMilliseconds > timeout)
-							{
-								started = false;
-								break;
-							}
-						}
-#endif
 
 						lock (this.SyncRoot)
 						{
-							if (!(startEventSet && started))
+							if (!started)
 							{
 								if (this.ThreadException != null)
 								{
@@ -726,10 +693,8 @@ namespace RI.Framework.Threading
 					this.StopEvent?.Close();
 					this.StopEvent = null;
 
-#if PLATFORM_NETFX
 					this.StopTasks?.Clear();
 					this.StopTasks = null;
-#endif
 
 					this.StopRequested = false;
 					this.Thread = null;
@@ -869,10 +834,9 @@ namespace RI.Framework.Threading
 		{
 			this.StopRequested = true;
 			this.StopEvent.Set();
-#if PLATFORM_NETFX
+
 			this.StopTasks.ForEach(x => x.TrySetResult(this));
 			this.StopTasks.Clear();
-#endif
 		}
 
 		/// <summary>
@@ -926,21 +890,20 @@ namespace RI.Framework.Threading
 
 
 
-#if PLATFORM_NETFX
-/// <summary>
-///     Adds a <see cref="TaskCompletionSource{T}" /> to this thread which is completed when the thread is requested to stop.
-/// </summary>
-/// <param name="tcs"> The <see cref="TaskCompletionSource{T}" /> to add. </param>
-/// <remarks>
-///     <para>
-///         A task can be added multiple times but will only be completed once.
-///     </para>
-///     <para>
-///         All added tasks will be completed using <see cref="TaskCompletionSource{T}.TrySetResult" /> by the default implementation of <see cref="OnStop" />.
-///         Therefore, no tasks added after <see cref="OnStop" /> was called will be completed.
-///     </para>
-/// </remarks>
-/// <exception cref="ArgumentNullException"> <paramref name="tcs" /> is null. </exception>
+		/// <summary>
+		///     Adds a <see cref="TaskCompletionSource{T}" /> to this thread which is completed when the thread is requested to stop.
+		/// </summary>
+		/// <param name="tcs"> The <see cref="TaskCompletionSource{T}" /> to add. </param>
+		/// <remarks>
+		///     <para>
+		///         A task can be added multiple times but will only be completed once.
+		///     </para>
+		///     <para>
+		///         All added tasks will be completed using <see cref="TaskCompletionSource{T}.TrySetResult" /> by the default implementation of <see cref="OnStop" />.
+		///         Therefore, no tasks added after <see cref="OnStop" /> was called will be completed.
+		///     </para>
+		/// </remarks>
+		/// <exception cref="ArgumentNullException"> <paramref name="tcs" /> is null. </exception>
 		protected void AddStopTask (TaskCompletionSource<object> tcs)
 		{
 			if (tcs == null)
@@ -970,6 +933,5 @@ namespace RI.Framework.Threading
 
 			this.StopTasks.Remove(tcs);
 		}
-#endif
 	}
 }

@@ -34,6 +34,7 @@
   <ItemGroup>
     <Content Include="Threading\Dispatcher\IThreadDispatcherDelegateExtensions.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>IThreadDispatcherDelegateExtensions.tt.cs</LastGenOutput>
     </Content>
   </ItemGroup>
 
@@ -53,6 +54,10 @@
     <Content Update="D:\Workfolder\RI_Framework\RI.Framework.Shared.Net\Threading\Dispatcher\IThreadDispatcherDelegateExtensions.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">

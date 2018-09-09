@@ -393,12 +393,7 @@ namespace RI.Framework.Services.Logging.Writers
 					this.Formatter.Write(this.Writer, timestamp, threadId, severity, source, message);
 
 					this.Writer.Flush();
-#if PLATFORM_NETFX
 					this.Stream.Flush(true);
-#endif
-#if PLATFORM_UNITY
-					this.Stream.Flush();
-#endif
 
 					if (this.RolledOver)
 					{
@@ -410,12 +405,7 @@ namespace RI.Framework.Services.Logging.Writers
 						this.Writer.Write(padding);
 
 						this.Writer.Flush();
-#if PLATFORM_NETFX
 						this.Stream.Flush(true);
-#endif
-#if PLATFORM_UNITY
-						this.Stream.Flush();
-#endif
 					}
 				}
 				catch

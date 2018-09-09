@@ -5,8 +5,6 @@
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".tt.cs" #>
 
-#if !TEMPLATE_RUNNER
-
 using System;
 using System.Threading.Tasks;
 
@@ -132,5 +130,3 @@ string func = (commonSignature == null) ? "Func<TResult>" : ("Func<" + commonSig
 #>
 	}
 }
-
-#endif

@@ -558,12 +558,7 @@ namespace RI.Framework.Services.Logging.Writers
 					this.Formatter.Write(this.CurrentWriter, timestamp, threadId, severity, source, message);
 
 					this.CurrentWriter.Flush();
-#if PLATFORM_NETFX
 					this.CurrentStream.Flush(true);
-#endif
-#if PLATFORM_UNITY
-					this.CurrentStream.Flush();
-#endif
 				}
 				catch
 				{

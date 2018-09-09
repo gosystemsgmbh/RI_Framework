@@ -1,14 +1,6 @@
 ﻿using System;
 using System.Threading;
-
-
-
-
-#if PLATFORM_NETFX
-
 using System.Threading.Tasks;
-
-#endif
 
 
 
@@ -119,8 +111,6 @@ namespace RI.Framework.Threading
 			}
 		}
 
-#if PLATFORM_NETFX
-
 		/// <summary>
 		///     Executes the delegate.
 		/// </summary>
@@ -155,8 +145,6 @@ namespace RI.Framework.Threading
 			}
 			return tcs.Task;
 		}
-
-#endif
 
 		#endregion
 	}

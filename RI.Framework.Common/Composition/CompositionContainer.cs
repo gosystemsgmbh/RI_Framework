@@ -5,6 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
+using System.Linq.Expressions;
 
 using RI.Framework.Collections;
 using RI.Framework.Collections.Comparison;
@@ -17,13 +18,9 @@ using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.ObjectModel;
 using RI.Framework.Utilities.Reflection;
-#if PLATFORM_NETFX || PLATFORM_NETSTD || PLATFORM_NETCORE
-using System.Linq.Expressions;
+using RI.Framework.Utilities.Runtime;
 
 
-
-
-#endif
 
 
 namespace RI.Framework.Composition
@@ -1727,11 +1724,14 @@ namespace RI.Framework.Composition
 		{
 			lock (this.SyncRoot)
 			{
-#if PLATFORM_UNITY
-				return ((Import)this.GetImportValueFromNameOrType(CompositionContainer.GetNameOfType(typeof(T)), typeof(Import), out _)).ToList<T>();
-#else
-				return ((IEnumerable<T>)this.GetImportValueFromNameOrType(null, typeof(IEnumerable<T>), out _)).ToList();
-#endif
+				if (RuntimeEnvironment.IsUnityRuntime())
+				{
+					return ((Import)this.GetImportValueFromNameOrType(CompositionContainer.GetNameOfType(typeof(T)), typeof(Import), out _)).ToList<T>();
+				}
+				else
+				{
+					return ((IEnumerable<T>)this.GetImportValueFromNameOrType(null, typeof(IEnumerable<T>), out _)).ToList();
+				}
 			}
 		}
 
@@ -1754,11 +1754,14 @@ namespace RI.Framework.Composition
 
 			lock (this.SyncRoot)
 			{
-#if PLATFORM_UNITY
-				return ((Import)this.GetImportValueFromNameOrType(CompositionContainer.GetNameOfType(exportType), typeof(Import), out _)).ToList<object>();
-#else
-				return ((IEnumerable)this.GetImportValueFromNameOrType(null, typeof(IEnumerable<>).MakeGenericType(exportType), out _)).ToList();
-#endif
+				if (RuntimeEnvironment.IsUnityRuntime())
+				{
+					return ((Import)this.GetImportValueFromNameOrType(CompositionContainer.GetNameOfType(exportType), typeof(Import), out _)).ToList<object>();
+				}
+				else
+				{
+					return ((IEnumerable)this.GetImportValueFromNameOrType(null, typeof(IEnumerable<>).MakeGenericType(exportType), out _)).ToList();
+				}
 			}
 		}
 
@@ -1787,11 +1790,14 @@ namespace RI.Framework.Composition
 
 			lock (this.SyncRoot)
 			{
-#if PLATFORM_UNITY
-				return ((Import)this.GetImportValueFromNameOrType(exportName, typeof(Import), out _)).ToList<object>();
-#else
-				return ((IEnumerable<object>)this.GetImportValueFromNameOrType(exportName, typeof(IEnumerable<object>), out _)).ToList();
-#endif
+				if (RuntimeEnvironment.IsUnityRuntime())
+				{
+					return ((Import)this.GetImportValueFromNameOrType(exportName, typeof(Import), out _)).ToList<object>();
+				}
+				else
+				{
+					return ((IEnumerable<object>)this.GetImportValueFromNameOrType(exportName, typeof(IEnumerable<object>), out _)).ToList();
+				}
 			}
 		}
 
@@ -3586,7 +3592,11 @@ namespace RI.Framework.Composition
 				this.Type = type;
 				this.Resolver = null;
 
-#if PLATFORM_NETFX || PLATFORM_NETSTD || PLATFORM_NETCORE
+				if (RuntimeEnvironment.IsUnityRuntime())
+				{
+					throw new PlatformNotSupportedException("Lazy imports not supported in Unity.");
+				}
+
 				Type enumerableType = CompositionContainer.GetEnumerableType(type);
 				string resolveName = enumerableType == null ? nameof(CompositionContainer.GetExportForLazyInvoker) : nameof(CompositionContainer.GetExportsForLazyInvoker);
 				MethodInfo genericMethod = container.GetType().GetMethod(resolveName, BindingFlags.Instance | BindingFlags.NonPublic);
@@ -3594,11 +3604,6 @@ namespace RI.Framework.Composition
 
 				MethodCallExpression resolveCall = Expression.Call(Expression.Constant(this.Container), resolveMethod, Expression.Constant(this.Name));
 				this.Resolver = Expression.Lambda(resolveCall).Compile();
-#elif PLATFORM_UNITY
-				throw new PlatformNotSupportedException("Lazy imports not supported in Unity.");
-#else
-#error Unspecified platform
-#endif
 			}
 
 			#endregion

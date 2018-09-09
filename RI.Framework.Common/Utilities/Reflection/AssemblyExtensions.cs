@@ -194,19 +194,10 @@ namespace RI.Framework.Utilities.Reflection
 				throw new ArgumentNullException(nameof(assembly));
 			}
 
-#if PLATFORM_UNITY
-			if ((UnityEngine.Application.platform != UnityEngine.RuntimePlatform.WindowsEditor) && (UnityEngine.Application.platform != UnityEngine.RuntimePlatform.WindowsPlayer) && (UnityEngine.Application.platform != UnityEngine.RuntimePlatform.OSXEditor) && (UnityEngine.Application.platform != UnityEngine.RuntimePlatform.OSXPlayer))
-			{
-				throw new NotSupportedException(nameof(AssemblyExtensions.GetFile) + " is only supported on Windows and Mac OS.");
-			}
-#endif
-
-#if PLATFORM_NETFX
 			if (assembly.IsDynamic)
 			{
 				return null;
 			}
-#endif
 
 			string location;
 
