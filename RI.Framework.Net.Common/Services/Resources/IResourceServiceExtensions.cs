@@ -10,10 +10,11 @@ using RI.Framework.Utilities;
 
 namespace RI.Framework.Services.Resources
 {
-	/// <summary>
-	///     Provides utility/extension methods for the <see cref="IResourceService" /> type.
-	/// </summary>
-	public static class IResourceServiceExtensions
+    /// <summary>
+    ///     Provides utility/extension methods for the <see cref="IResourceService" /> type.
+    /// </summary>
+    /// <threadsafety static="true" instance="true" />
+    public static class IResourceServiceExtensions
 	{
 		#region Static Methods
 
@@ -67,11 +68,15 @@ namespace RI.Framework.Services.Resources
 			}
 
 			HashSet<string> idsToLoad = new HashSet<string>(setIdsToLoad, StringComparerEx.InvariantCultureIgnoreCase);
-			IEnumerable<IResourceSet> setsToLoad = from x in resourceService.GetAvailableSets() where idsToLoad.Contains(x.Id) select x;
-			foreach (IResourceSet setToLoad in setsToLoad)
-			{
-				setToLoad.Load(lazyLoad);
-			}
+
+		    lock (resourceService.SyncRoot)
+		    {
+		        IEnumerable<IResourceSet> setsToLoad = from x in resourceService.GetAvailableSets() where idsToLoad.Contains(x.Id) select x;
+		        foreach (IResourceSet setToLoad in setsToLoad)
+		        {
+		            setToLoad.Load(lazyLoad);
+		        }
+            }
 		}
 
 		#endregion

@@ -10,23 +10,27 @@ using RI.Framework.Services.Resources.Converters;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Logging;
-
-
+using RI.Framework.Utilities.ObjectModel;
 
 
 namespace RI.Framework.Services.Resources.Sources
 {
-	/// <summary>
-	///     Implements a resource set associated with a directory of a <see cref="DirectoryResourceSource" />.
-	/// </summary>
-	/// <remarks>
-	///     <para>
-	///         See <see cref="IResourceSet" /> and <see cref="DirectoryResourceSource" /> for more details.
-	///     </para>
-	/// </remarks>
-	public sealed class DirectoryResourceSet : LogSource, IResourceSet
+    /// <summary>
+    ///     Implements a resource set associated with a directory of a <see cref="DirectoryResourceSource" />.
+    /// </summary>
+    /// <remarks>
+    ///     <para>
+    ///         See <see cref="IResourceSet" /> and <see cref="DirectoryResourceSource" /> for more details.
+    ///     </para>
+    /// </remarks>
+    /// <threadsafety static="true" instance="true" />
+    public sealed class DirectoryResourceSet : LogSource, IResourceSet
 	{
-		#region Constants
+	    private bool _isLazyLoaded;
+
+	    private bool _isLoaded;
+
+	    #region Constants
 
 		/// <summary>
 		///     The file name of the settings file.
@@ -57,6 +61,8 @@ namespace RI.Framework.Services.Resources.Sources
 				throw new ArgumentNullException(nameof(source));
 			}
 
+            this.SyncRoot = new object();
+
 			this.Id = directory.DirectoryName;
 
 			this.Directory = directory;
@@ -70,8 +76,8 @@ namespace RI.Framework.Services.Resources.Sources
 			this.Selectable = false;
 			this.AlwaysLoad = false;
 			this.Priority = 0;
-			this.UiCulture = null;
-			this.FormattingCulture = null;
+			this.Culture = null;
+			this.Formatting = null;
 
 			this.IsLoaded = false;
 			this.IsLazyLoaded = false;
@@ -102,11 +108,11 @@ namespace RI.Framework.Services.Resources.Sources
 		/// </value>
 		public FilePath SettingsFile { get; }
 
-		internal List<IResourceConverter> Converters => this.Source.Converters;
-
 		internal bool? IsValid { get; private set; }
 
-		internal DirectoryResourceSource Source { get; }
+	    private DirectoryResourceSource Source { get; }
+
+	    private List<IResourceConverter> Converters => this.Source.Converters;
 
 		private Dictionary<string, Tuple<FilePath, Loader>> Resources { get; }
 
@@ -131,8 +137,8 @@ namespace RI.Framework.Services.Resources.Sources
 			this.Selectable = false;
 			this.AlwaysLoad = false;
 			this.Priority = 0;
-			this.UiCulture = null;
-			this.FormattingCulture = null;
+			this.Culture = null;
+			this.Formatting = null;
 
 			if (!this.Directory.Exists)
 			{
@@ -167,8 +173,8 @@ namespace RI.Framework.Services.Resources.Sources
 			string selectableKey = nameof(this.Selectable);
 			string alwaysLoadKey = nameof(this.AlwaysLoad);
 			string priorityKey = nameof(this.Priority);
-			string uiCultureKey = nameof(this.UiCulture);
-			string formattingCultureKey = nameof(this.FormattingCulture);
+			string uiCultureKey = nameof(this.Culture);
+			string formattingCultureKey = nameof(this.Formatting);
 
 			if (settings.ContainsKey(nameKey))
 			{
@@ -282,7 +288,7 @@ namespace RI.Framework.Services.Resources.Sources
 				if (candidate != null)
 				{
 					this.Log(LogLevel.Debug, "Settings value: {0}={1} @ {2}", uiCultureKey, value, this.SettingsFile);
-					this.UiCulture = candidate;
+					this.Culture = candidate;
 				}
 				else
 				{
@@ -309,7 +315,7 @@ namespace RI.Framework.Services.Resources.Sources
 				if (candidate != null)
 				{
 					this.Log(LogLevel.Debug, "Settings value: {0}={1} @ {2}", formattingCultureKey, value, this.SettingsFile);
-					this.FormattingCulture = candidate;
+					this.Formatting = candidate;
 				}
 				else
 				{
@@ -356,7 +362,7 @@ namespace RI.Framework.Services.Resources.Sources
 			List<FilePath> existingFiles;
 			try
 			{
-				existingFiles = this.Directory.GetFiles(false, false);
+				existingFiles = this.Directory.GetFiles(false, this.Source.Recursive);
 			}
 			catch (Exception exception)
 			{
@@ -367,8 +373,7 @@ namespace RI.Framework.Services.Resources.Sources
 			existingFiles.Remove(this.SettingsFile);
 
 			HashSet<FilePath> newFiles = existingFiles.Except(from x in this.Resources select x.Value.Item1);
-
-			newFiles.RemoveWhere(x => this.Source.IgnoredExtensions.Contains(x.ExtensionWithoutDot));
+            newFiles.RemoveWhere(x => this.Source.IgnoredExtensionsInternal.Contains(x.ExtensionWithoutDot));
 
 			foreach (FilePath file in newFiles)
 			{
@@ -440,31 +445,40 @@ namespace RI.Framework.Services.Resources.Sources
 			}
 		}
 
-		#endregion
+        #endregion
 
 
 
 
-		#region Overrides
+        #region Overrides
 
-		/// <inheritdoc />
+	    /// <inheritdoc />
+        public int CompareTo (object obj) => this.CompareTo(obj as IResourceSet);
+
+	    /// <inheritdoc />
 		public override bool Equals (object obj) => this.Equals(obj as IResourceSet);
 
 		/// <inheritdoc />
 		public override int GetHashCode () => this.Directory.GetHashCode();
 
-		#endregion
+	    #endregion
 
 
 
 
-		#region Interface: IResourceSet
+        #region Interface: IResourceSet
+
+	    /// <inheritdoc />
+	    bool ISynchronizable.IsSynchronized => true;
+
+	    /// <inheritdoc />
+	    public object SyncRoot { get; }
+
+        /// <inheritdoc />
+        public bool AlwaysLoad { get; private set; }
 
 		/// <inheritdoc />
-		public bool AlwaysLoad { get; private set; }
-
-		/// <inheritdoc />
-		public CultureInfo FormattingCulture { get; private set; }
+		public CultureInfo Formatting { get; private set; }
 
 		/// <inheritdoc />
 		public string Group { get; private set; }
@@ -472,14 +486,46 @@ namespace RI.Framework.Services.Resources.Sources
 		/// <inheritdoc />
 		public string Id { get; }
 
-		/// <inheritdoc />
-		public bool IsLazyLoaded { get; private set; }
+	    /// <inheritdoc />
+	    public bool IsLazyLoaded
+	    {
+	        get
+	        {
+	            lock (this.SyncRoot)
+	            {
+	                return _isLazyLoaded;
+	            }
+	        }
+	        private set
+	        {
+	            lock (this.SyncRoot)
+	            {
+	                _isLazyLoaded = value;
+	            }
+	        }
+	    }
 
-		/// <inheritdoc />
-		public bool IsLoaded { get; private set; }
+	    /// <inheritdoc />
+	    public bool IsLoaded
+	    {
+	        get
+	        {
+	            lock (this.SyncRoot)
+	            {
+	                return this._isLoaded;
+                }
+	        }
+	        private set
+	        {
+	            lock (this.SyncRoot)
+	            {
+	                this._isLoaded = value;
+	            }
+	        }
+	    }
 
-		/// <inheritdoc />
-		public string Name { get; private set; }
+	    /// <inheritdoc />
+	    public string Name { get; private set; }
 
 		/// <inheritdoc />
 		public int Priority { get; private set; }
@@ -488,11 +534,21 @@ namespace RI.Framework.Services.Resources.Sources
 		public bool Selectable { get; private set; }
 
 		/// <inheritdoc />
-		public CultureInfo UiCulture { get; private set; }
+		public CultureInfo Culture { get; private set; }
 
+        /// <inheritdoc />
+        public int CompareTo(IResourceSet other)
+        {
+            if (other == null)
+            {
+                return -1;
+            }
 
-		/// <inheritdoc />
-		public bool Equals (IResourceSet other)
+            return this.Priority.CompareTo(other.Priority);
+        }
+
+        /// <inheritdoc />
+        public bool Equals (IResourceSet other)
 		{
 			if (other == null)
 			{
@@ -508,11 +564,17 @@ namespace RI.Framework.Services.Resources.Sources
 			return this.Directory.Equals(other2.Directory);
 		}
 
-		/// <inheritdoc />
-		public HashSet<string> GetAvailableResources () => new HashSet<string>(this.Resources.Keys, this.Resources.Comparer);
+	    /// <inheritdoc />
+	    public HashSet<string> GetAvailableResources()
+	    {
+	        lock (this.SyncRoot)
+	        {
+	            return new HashSet<string>(this.Resources.Keys, this.Resources.Comparer);
+	        }
+	    }
 
-		/// <inheritdoc />
-		public object GetRawValue (string name)
+        /// <inheritdoc />
+        public object GetRawValue (string name)
 		{
 			if (name == null)
 			{
@@ -524,59 +586,68 @@ namespace RI.Framework.Services.Resources.Sources
 				throw new EmptyStringArgumentException(nameof(name));
 			}
 
-			if (!this.Resources.ContainsKey(name))
-			{
-				return null;
-			}
+		    lock (this.SyncRoot)
+		    {
+		        if (!this.Resources.ContainsKey(name))
+		        {
+		            return null;
+		        }
 
-			Loader loader = this.Resources[name].Item2;
-			object loadedValue = loader.Load();
+		        Loader loader = this.Resources[name].Item2;
+		        object loadedValue = loader.Load();
 
-			Type sourceType = loadedValue.GetType();
-			Type targetType = loader.Type;
+		        Type sourceType = loadedValue.GetType();
+		        Type targetType = loader.Type;
 
-			IResourceConverter converter = this.GetConverter(sourceType, targetType);
-			if (converter == null)
-			{
-				return null;
-			}
+		        IResourceConverter converter = this.GetConverter(sourceType, targetType);
+		        if (converter == null)
+		        {
+		            return null;
+		        }
 
-			object rawValue = converter.Convert(targetType, loadedValue);
-			return rawValue;
+		        object rawValue = converter.Convert(targetType, loadedValue);
+		        return rawValue;
+		    }
 		}
 
 		/// <inheritdoc />
 		public bool Load (bool lazyLoad)
 		{
-			this.Log(LogLevel.Debug, "Loading directory resource set: {0}", this.Directory);
+		    lock (this.SyncRoot)
+		    {
+		        this.Log(LogLevel.Debug, "Loading directory resource set: {0}", this.Directory);
 
-			this.IsLoaded = true;
-			this.IsLazyLoaded = lazyLoad;
+		        this.IsLoaded = true;
+		        this.IsLazyLoaded = lazyLoad;
 
-			this.Resources.Clear();
+		        this.Resources.Clear();
 
-			this.Load();
+		        this.Load();
 
-			if (!lazyLoad)
-			{
-				foreach (string resource in this.Resources.Keys)
-				{
-					this.GetRawValue(resource);
-				}
-			}
+		        if (!lazyLoad)
+		        {
+		            foreach (string resource in this.Resources.Keys)
+		            {
+		                this.GetRawValue(resource);
+		            }
+		        }
 
-			return lazyLoad;
+		        return lazyLoad;
+		    }
 		}
 
 		/// <inheritdoc />
 		public void Unload ()
 		{
-			this.Log(LogLevel.Debug, "Unloading directory resource set: {0}", this.Directory);
+		    lock (this.SyncRoot)
+		    {
+		        this.Log(LogLevel.Debug, "Unloading directory resource set: {0}", this.Directory);
 
-			this.Resources.Clear();
+		        this.Resources.Clear();
 
-			this.IsLoaded = false;
-			this.IsLazyLoaded = false;
+		        this.IsLoaded = false;
+		        this.IsLazyLoaded = false;
+		    }
 		}
 
 		#endregion
@@ -622,7 +693,7 @@ namespace RI.Framework.Services.Resources.Sources
 
 			private byte[] Data { get; set; }
 
-			private FilePath File { get; set; }
+			private FilePath File { get; }
 
 			#endregion
 

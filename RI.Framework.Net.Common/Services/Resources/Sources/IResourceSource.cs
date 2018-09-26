@@ -3,22 +3,22 @@ using System.Collections.Generic;
 
 using RI.Framework.Composition.Model;
 using RI.Framework.Services.Resources.Converters;
-
-
+using RI.Framework.Utilities.ObjectModel;
 
 
 namespace RI.Framework.Services.Resources.Sources
 {
-	/// <summary>
-	///     Defines the interface for a resource source used by a resource service.
-	/// </summary>
-	/// <remarks>
-	///     <para>
-	///         A resource source is used by a <see cref="IResourceService" /> to locate and load <see cref="IResourceSet" />s.
-	///     </para>
-	/// </remarks>
-	[Export]
-	public interface IResourceSource
+    /// <summary>
+    ///     Defines the interface for a resource source used by a resource service.
+    /// </summary>
+    /// <remarks>
+    ///     <para>
+    ///         A resource source is used by a <see cref="IResourceService" /> to locate and load <see cref="IResourceSet" />s.
+    ///     </para>
+    /// </remarks>
+    /// <threadsafety static="true" instance="true" />
+    [Export]
+	public interface IResourceSource : ISynchronizable
 	{
 		/// <summary>
 		///     Gets whether the resource source is initialized or not.

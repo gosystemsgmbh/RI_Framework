@@ -10,30 +10,30 @@ using RI.Framework.Services.Resources.Converters;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Logging;
-
-
+using RI.Framework.Utilities.ObjectModel;
 
 
 namespace RI.Framework.Services.Resources.Sources
 {
-	/// <summary>
-	///     Implements a resource source which reads from a specified directory.
-	/// </summary>
-	/// <remarks>
-	///     <para>
-	///         Each subdirectory in the specified directory corresponds to one resource set (<see cref="DirectoryResourceSet" />).
-	///         Each file in a subdirectory is read and loaded, if the file extension is known.
-	///         Subdirectories of subdirectories (resource sets) are not processed.
-	///     </para>
-	///     <para>
-	///         A special file (<see cref="DirectoryResourceSet.SettingsFileName" />) is expected in each subdirectory (resource set).
-	///         It contains descriptions and settings of the corresponding resource set.
-	///     </para>
-	///     <para>
-	///         See <see cref="IResourceSource" /> for more details.
-	///     </para>
-	/// </remarks>
-	[Export]
+    /// <summary>
+    ///     Implements a resource source which reads from a specified directory.
+    /// </summary>
+    /// <remarks>
+    ///     <para>
+    ///         Each subdirectory in the specified directory corresponds to one resource set (<see cref="DirectoryResourceSet" />).
+    ///         Each file in a subdirectory is read and loaded, if the file extension is known.
+    ///         Subdirectories of subdirectories are not processed.
+    ///     </para>
+    ///     <para>
+    ///         A special file (<see cref="DirectoryResourceSet.SettingsFileName" />) is expected in each subdirectory (resource set).
+    ///         It contains descriptions and settings of the corresponding resource set.
+    ///     </para>
+    ///     <para>
+    ///         See <see cref="IResourceSource" /> for more details.
+    ///     </para>
+    /// </remarks>
+    /// <threadsafety static="true" instance="true" />
+    [Export]
 	public sealed class DirectoryResourceSource : LogSource, IResourceSource
 	{
 		#region Constants
@@ -48,7 +48,9 @@ namespace RI.Framework.Services.Resources.Sources
 		/// </remarks>
 		public static readonly Encoding DefaultEncoding = Encoding.UTF8;
 
-		#endregion
+	    private bool _isInitialized;
+
+	    #endregion
 
 
 
@@ -70,19 +72,20 @@ namespace RI.Framework.Services.Resources.Sources
 		///     </para>
 		/// </remarks>
 		public DirectoryResourceSource (DirectoryPath directory)
-			: this(directory, null, null)
+			: this(directory, null, false, null)
 		{
 		}
 
-		/// <summary>
-		///     Creates a new instance of <see cref="DirectoryResourceSource" />.
-		/// </summary>
-		/// <param name="directory"> The directory which contains the resource set subdirectories. </param>
-		/// <param name="fileEncoding"> The text encoding used for reading text files (can be null to use <see cref="DefaultEncoding" />). </param>
-		/// <param name="ignoredExtensions"> A sequence of file extensions which are completely ignored (can be null to not ignore any files). </param>
-		/// <exception cref="ArgumentNullException"> <paramref name="directory" /> is null. </exception>
-		/// <exception cref="InvalidOperationException"> <paramref name="directory" /> is not a real usable directory. </exception>
-		public DirectoryResourceSource (DirectoryPath directory, Encoding fileEncoding, IEnumerable<string> ignoredExtensions)
+        /// <summary>
+        ///     Creates a new instance of <see cref="DirectoryResourceSource" />.
+        /// </summary>
+        /// <param name="directory"> The directory which contains the resource set subdirectories. </param>
+        /// <param name="fileEncoding"> The text encoding used for reading text files (can be null to use <see cref="DefaultEncoding" />). </param>
+        /// <param name="recursive"> Specifies whether subdirectories are searched recursive for resource files or not. </param>
+        /// <param name="ignoredExtensions"> A sequence of file extensions which are completely ignored (can be null to not ignore any files). </param>
+        /// <exception cref="ArgumentNullException"> <paramref name="directory" /> is null. </exception>
+        /// <exception cref="InvalidOperationException"> <paramref name="directory" /> is not a real usable directory. </exception>
+        public DirectoryResourceSource (DirectoryPath directory, Encoding fileEncoding, bool recursive, IEnumerable<string> ignoredExtensions)
 		{
 			if (directory == null)
 			{
@@ -94,23 +97,28 @@ namespace RI.Framework.Services.Resources.Sources
 				throw new InvalidPathArgumentException(nameof(directory));
 			}
 
-			this.Directory = directory;
-			this.IgnoredExtensions = new HashSet<string>((ignoredExtensions ?? new string[0]).Select(x => x.TrimStart('.')), StringComparerEx.InvariantCultureIgnoreCase);
-			this.FileEncoding = fileEncoding ?? DirectoryResourceSource.DefaultEncoding;
+            this.SyncRoot = new object();
 
-			this.Sets = new Dictionary<DirectoryPath, DirectoryResourceSet>();
+			this.Directory = directory;
+			this.FileEncoding = fileEncoding ?? DirectoryResourceSource.DefaultEncoding;
+		    this.Recursive = recursive;
+
+		    this.IgnoredExtensionsInternal = new HashSet<string>((ignoredExtensions ?? new string[0]).Select(x => x.TrimStart('.')), StringComparerEx.InvariantCultureIgnoreCase);
+
+            this.Sets = new Dictionary<DirectoryPath, DirectoryResourceSet>();
 		}
 
-		/// <summary>
-		///     Creates a new instance of <see cref="DirectoryResourceSource" />.
-		/// </summary>
-		/// <param name="directory"> The directory which contains the resource set subdirectories. </param>
-		/// <param name="fileEncoding"> The text encoding used for reading text files (can be null to use <see cref="DefaultEncoding" />). </param>
-		/// <param name="ignoredExtensions"> A sequence of file extensions which are completely ignored (can be null to not ignore any files). </param>
-		/// <exception cref="ArgumentNullException"> <paramref name="directory" /> is null. </exception>
-		/// <exception cref="InvalidOperationException"> <paramref name="directory" /> is not a real usable directory. </exception>
-		public DirectoryResourceSource (DirectoryPath directory, Encoding fileEncoding, params string[] ignoredExtensions)
-			: this(directory, fileEncoding, (IEnumerable<string>)ignoredExtensions)
+        /// <summary>
+        ///     Creates a new instance of <see cref="DirectoryResourceSource" />.
+        /// </summary>
+        /// <param name="directory"> The directory which contains the resource set subdirectories. </param>
+        /// <param name="fileEncoding"> The text encoding used for reading text files (can be null to use <see cref="DefaultEncoding" />). </param>
+        /// <param name="recursive"> Specifies whether subdirectories are searched recursive for resource files or not. </param>
+        /// <param name="ignoredExtensions"> A sequence of file extensions which are completely ignored (can be null to not ignore any files). </param>
+        /// <exception cref="ArgumentNullException"> <paramref name="directory" /> is null. </exception>
+        /// <exception cref="InvalidOperationException"> <paramref name="directory" /> is not a real usable directory. </exception>
+        public DirectoryResourceSource (DirectoryPath directory, Encoding fileEncoding, bool recursive, params string[] ignoredExtensions)
+			: this(directory, fileEncoding, false, (IEnumerable<string>)ignoredExtensions)
 		{
 		}
 
@@ -137,20 +145,30 @@ namespace RI.Framework.Services.Resources.Sources
 		/// </value>
 		public Encoding FileEncoding { get; }
 
-		/// <summary>
-		///     Gets the set of ignored file extensions.
-		/// </summary>
-		/// <value>
-		///     The set of ignored file extensions.
-		/// </value>
-		/// <remarks>
-		///     <note type="note">
-		///         The file extensions in the set have their leading dot removed.
-		///     </note>
-		/// </remarks>
-		public HashSet<string> IgnoredExtensions { get; }
+	    /// <summary>
+	    ///     Gets the set of ignored file extensions.
+	    /// </summary>
+	    /// <value>
+	    ///     The set of ignored file extensions.
+	    /// </value>
+	    /// <remarks>
+	    ///     <note type="note">
+	    ///         The file extensions in the set have their leading dot removed.
+	    ///     </note>
+	    /// </remarks>
+	    public IEnumerable<string> IgnoredExtensions => this.IgnoredExtensionsInternal;
 
-		internal List<IResourceConverter> Converters { get; private set; }
+	    /// <summary>
+	    ///     Gets whether subdirectories are searched recursive for resource files or not.
+	    /// </summary>
+	    /// <value>
+	    ///     true if subdirectories of <see cref="DirectoryPath" /> are searched for resource files, false otherwise.
+	    /// </value>
+	    public bool Recursive { get; }
+
+        internal HashSet<string> IgnoredExtensionsInternal { get; }
+
+        internal List<IResourceConverter> Converters { get; private set; }
 
 		private Dictionary<DirectoryPath, DirectoryResourceSet> Sets { get; }
 
@@ -166,8 +184,8 @@ namespace RI.Framework.Services.Resources.Sources
 			HashSet<DirectoryPath> currentDirectories = unload ? new HashSet<DirectoryPath>() : new HashSet<DirectoryPath>(this.Directory.GetSubdirectories(false, false));
 			HashSet<DirectoryPath> lastDirectories = new HashSet<DirectoryPath>(this.Sets.Keys);
 
-			HashSet<DirectoryPath> newDirectories = currentDirectories.Except(currentDirectories);
-			HashSet<DirectoryPath> oldDirectories = lastDirectories.Except(lastDirectories);
+			HashSet<DirectoryPath> newDirectories = currentDirectories.Except(lastDirectories);
+			HashSet<DirectoryPath> oldDirectories = lastDirectories.Except(currentDirectories);
 
 			foreach (DirectoryPath directory in newDirectories)
 			{
@@ -196,20 +214,48 @@ namespace RI.Framework.Services.Resources.Sources
 			this.Sets.RemoveWhere(x => !x.Value.IsValid.GetValueOrDefault(false));
 		}
 
-		#endregion
+        #endregion
 
 
 
 
-		#region Interface: IResourceSource
+        #region Interface: IResourceSource
 
-		/// <inheritdoc />
-		public bool IsInitialized { get; private set; }
+	    /// <inheritdoc />
+	    bool ISynchronizable.IsSynchronized => true;
 
-		/// <inheritdoc />
-		public List<IResourceSet> GetAvailableSets () => this.Sets.Values.Cast<IResourceSet>().ToList();
+	    /// <inheritdoc />
+	    public object SyncRoot { get; }
 
-		/// <inheritdoc />
+	    /// <inheritdoc />
+	    public bool IsInitialized
+	    {
+	        get
+	        {
+	            lock (this.SyncRoot)
+	            {
+	                return this._isInitialized;
+	            }
+	        }
+	        private set
+	        {
+	            lock (this.SyncRoot)
+	            {
+	                this._isInitialized = value;
+	            }
+	        }
+	    }
+
+	    /// <inheritdoc />
+	    List<IResourceSet> IResourceSource.GetAvailableSets ()
+	    {
+	        lock (this.SyncRoot)
+	        {
+	            return this.Sets.Values.Cast<IResourceSet>().ToList();
+            }
+	    }
+
+	    /// <inheritdoc />
 		void IResourceSource.Initialize (IEnumerable<IResourceConverter> converters)
 		{
 			if (converters == null)
@@ -217,37 +263,46 @@ namespace RI.Framework.Services.Resources.Sources
 				throw new ArgumentNullException(nameof(converters));
 			}
 
-			this.Converters = converters.ToList();
+		    lock (this.SyncRoot)
+		    {
+		        this.Converters = converters.ToList();
 
-			this.Log(LogLevel.Debug, "Initializing directory resource source: {0}", this.Directory);
+		        this.Log(LogLevel.Debug, "Initializing directory resource source: {0}", this.Directory);
 
-			this.UpdateSets(false);
+		        this.UpdateSets(false);
 
-			this.IsInitialized = true;
+		        this.IsInitialized = true;
+		    }
 		}
 
 		/// <inheritdoc />
 		void IResourceSource.Unload ()
 		{
-			this.Log(LogLevel.Debug, "Unloading directory resource source: {0}", this.Directory);
+		    lock (this.SyncRoot)
+		    {
+		        this.Log(LogLevel.Debug, "Unloading directory resource source: {0}", this.Directory);
 
-			this.UpdateSets(true);
+		        this.UpdateSets(true);
 
-			this.IsInitialized = false;
+		        this.IsInitialized = false;
+		    }
 		}
 
 		/// <inheritdoc />
-		public void UpdateConverters (IEnumerable<IResourceConverter> converters)
+		void IResourceSource.UpdateConverters (IEnumerable<IResourceConverter> converters)
 		{
 			if (converters == null)
 			{
 				throw new ArgumentNullException(nameof(converters));
-			}
+		    }
 
-			this.Converters = converters.ToList();
+		    lock (this.SyncRoot)
+		    {
+		        this.Converters = converters.ToList();
 
-			this.UpdateSets(!this.IsInitialized);
-		}
+		        this.UpdateSets(!this.IsInitialized);
+		    }
+        }
 
 		#endregion
 	}

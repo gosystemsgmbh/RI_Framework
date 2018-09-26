@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Globalization;
 using RI.Framework.Collections;
 using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Composition;
@@ -10,27 +10,27 @@ using RI.Framework.Services.Resources.Sources;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Logging;
-
-
+using RI.Framework.Utilities.ObjectModel;
 
 
 namespace RI.Framework.Services.Resources
 {
-	/// <summary>
-	///     Implements a default resource service which is suitable for most scenarios.
-	/// </summary>
-	/// <remarks>
-	///     <para>
-	///         This resource service manages <see cref="IResourceSource" />s  and <see cref="IResourceConverter" />s from two sources.
-	///         One are the explicitly specified sources and converters added through <see cref="AddSource" /> and <see cref="AddConverter" />.
-	///         The second is a <see cref="CompositionContainer" /> if this <see cref="ResourceService" /> is added as an export (the sources and converters are then imported through composition).
-	///         <see cref="Sources" /> gives the sequence containing all setting storages from all sources and <see cref="Converters" /> gives the sequence containing all setting converters from all sources.
-	///     </para>
-	///     <para>
-	///         See <see cref="IResourceService" /> for more details.
-	///     </para>
-	/// </remarks>
-	[Export]
+    /// <summary>
+    ///     Implements a default resource service which is suitable for most scenarios.
+    /// </summary>
+    /// <remarks>
+    ///     <para>
+    ///         This resource service manages <see cref="IResourceSource" />s  and <see cref="IResourceConverter" />s from two sources.
+    ///         One are the explicitly specified sources and converters added through <see cref="AddSource" /> and <see cref="AddConverter" />.
+    ///         The second is a <see cref="CompositionContainer" /> if this <see cref="ResourceService" /> is added as an export (the sources and converters are then imported through composition).
+    ///         <see cref="Sources" /> gives the sequence containing all setting storages from all sources and <see cref="Converters" /> gives the sequence containing all setting converters from all sources.
+    ///     </para>
+    ///     <para>
+    ///         See <see cref="IResourceService" /> for more details.
+    ///     </para>
+    /// </remarks>
+    /// <threadsafety static="true" instance="true" />
+    [Export]
 	public sealed class ResourceService : LogSource, IResourceService, IImporting
 	{
 		#region Instance Constructor/Destructor
@@ -40,7 +40,9 @@ namespace RI.Framework.Services.Resources
 		/// </summary>
 		public ResourceService ()
 		{
-			this.SourcesUpdated = new List<IResourceSource>();
+		    this.SyncRoot = new object();
+
+            this.SourcesUpdated = new List<IResourceSource>();
 			this.ConvertersUpdated = new List<IResourceConverter>();
 
 			this.SourcesManual = new List<IResourceSource>();
@@ -163,8 +165,11 @@ namespace RI.Framework.Services.Resources
 		{
 			if (updated)
 			{
-				this.UpdateConverters();
-				this.UpdateSources();
+			    lock (this.SyncRoot)
+			    {
+			        this.UpdateConverters();
+			        this.UpdateSources();
+			    }
 			}
 		}
 
@@ -173,27 +178,36 @@ namespace RI.Framework.Services.Resources
 		{
 		}
 
-		#endregion
+        #endregion
 
 
 
 
-		#region Interface: IResourceService
+        #region Interface: IResourceService
 
-		/// <inheritdoc />
-		public IEnumerable<IResourceConverter> Converters
+	    /// <inheritdoc />
+	    bool ISynchronizable.IsSynchronized => true;
+
+	    /// <inheritdoc />
+	    public object SyncRoot { get; }
+
+        /// <inheritdoc />
+        public IEnumerable<IResourceConverter> Converters
 		{
 			get
 			{
-				foreach (IResourceConverter converter in this.ConvertersManual)
-				{
-					yield return converter;
-				}
+			    lock (this.SyncRoot)
+			    {
+			        foreach (IResourceConverter converter in this.ConvertersManual)
+			        {
+			            yield return converter;
+			        }
 
-				foreach (IResourceConverter converter in this.ConvertersImported.Values<IResourceConverter>())
-				{
-					yield return converter;
-				}
+			        foreach (IResourceConverter converter in this.ConvertersImported.Values<IResourceConverter>())
+			        {
+			            yield return converter;
+			        }
+			    }
 			}
 		}
 
@@ -202,15 +216,18 @@ namespace RI.Framework.Services.Resources
 		{
 			get
 			{
-				foreach (IResourceSource storage in this.SourcesManual)
-				{
-					yield return storage;
-				}
+			    lock (this.SyncRoot)
+			    {
+			        foreach (IResourceSource storage in this.SourcesManual)
+			        {
+			            yield return storage;
+			        }
 
-				foreach (IResourceSource storage in this.SourcesImported.Values<IResourceSource>())
-				{
-					yield return storage;
-				}
+			        foreach (IResourceSource storage in this.SourcesImported.Values<IResourceSource>())
+			        {
+			            yield return storage;
+			        }
+			    }
 			}
 		}
 
@@ -222,14 +239,17 @@ namespace RI.Framework.Services.Resources
 				throw new ArgumentNullException(nameof(resourceConverter));
 			}
 
-			if (this.ConvertersManual.Contains(resourceConverter))
-			{
-				return;
-			}
+		    lock (this.SyncRoot)
+		    {
+		        if (this.ConvertersManual.Contains(resourceConverter))
+		        {
+		            return;
+		        }
 
-			this.ConvertersManual.Add(resourceConverter);
+		        this.ConvertersManual.Add(resourceConverter);
 
-			this.UpdateConverters();
+		        this.UpdateConverters();
+		    }
 		}
 
 		/// <inheritdoc />
@@ -240,104 +260,175 @@ namespace RI.Framework.Services.Resources
 				throw new ArgumentNullException(nameof(resourceSource));
 			}
 
-			if (this.SourcesManual.Contains(resourceSource))
-			{
-				return;
-			}
+		    lock (this.SyncRoot)
+		    {
+		        if (this.SourcesManual.Contains(resourceSource))
+		        {
+		            return;
+		        }
 
-			this.SourcesManual.Add(resourceSource);
+		        this.SourcesManual.Add(resourceSource);
 
-			this.UpdateSources();
+		        this.UpdateSources();
+		    }
 		}
 
-		/// <inheritdoc />
+	    /// <inheritdoc />
+	    public HashSet<CultureInfo> GetAvailableCultures()
+	    {
+	        lock (this.SyncRoot)
+	        {
+	            HashSet<CultureInfo> cultures = new HashSet<CultureInfo>();
+	            foreach (IResourceSet set in this.GetLoadedSets())
+	            {
+	                if (set.Culture != null)
+	                {
+	                    cultures.Add(set.Culture);
+
+	                }
+	            }
+
+	            return cultures;
+	        }
+        }
+
+	    /// <inheritdoc />
 		public HashSet<string> GetAvailableResources ()
 		{
-			HashSet<string> resources = new HashSet<string>(StringComparerEx.InvariantCultureIgnoreCase);
-			foreach (IResourceSet set in this.GetLoadedSets())
-			{
-				resources.AddRange(set.GetAvailableResources());
-			}
-			return resources;
+		    lock (this.SyncRoot)
+		    {
+		        HashSet<string> resources = new HashSet<string>(StringComparerEx.InvariantCultureIgnoreCase);
+		        foreach (IResourceSet set in this.GetLoadedSets())
+		        {
+		            resources.AddRange(set.GetAvailableResources());
+		        }
+
+		        return resources;
+		    }
 		}
 
 		/// <inheritdoc />
 		public List<IResourceSet> GetAvailableSets ()
 		{
-			List<IResourceSet> sets = new List<IResourceSet>();
-			foreach (IResourceSource source in this.Sources)
-			{
-				sets.AddRange(source.GetAvailableSets());
-			}
-			return sets;
+		    lock (this.SyncRoot)
+		    {
+                List<IResourceSet> sets = new List<IResourceSet>();
+		        foreach (IResourceSource source in this.Sources)
+		        {
+		            sets.AddRange(source.GetAvailableSets());
+		        }
+
+		        sets.Sort((x, y) => x.Priority.CompareTo(y.Priority));
+
+		        return sets;
+		    }
 		}
 
 		/// <inheritdoc />
-		public List<IResourceSet> GetLoadedSets () => new List<IResourceSet>(from x in this.GetAvailableSets() where x.IsLoaded select x);
+		public List<IResourceSet> GetLoadedSets ()
+	    {
+	        lock (this.SyncRoot)
+	        {
+	            List<IResourceSet> sets = new List<IResourceSet>(from x in this.GetAvailableSets() where x.IsLoaded select x);
+	            return sets;
+            }
+	    }
 
-		/// <inheritdoc />
-		public object GetRawValue (string name)
-		{
-			if (name == null)
-			{
-				throw new ArgumentNullException(nameof(name));
-			}
+	    /// <inheritdoc />
+	    public object GetRawValue(string name) => this.GetRawValue(name, null);
 
-			if (name.IsEmptyOrWhitespace())
-			{
-				throw new EmptyStringArgumentException(nameof(name));
-			}
+	    /// <inheritdoc />
+	    public object GetRawValue(string name, CultureInfo culture)
+	    {
+	        if (name == null)
+	        {
+	            throw new ArgumentNullException(nameof(name));
+	        }
 
-			foreach (IResourceSet set in this.GetLoadedSets())
-			{
-				object value = set.GetRawValue(name);
-				if (value != null)
-				{
-					return value;
-				}
-			}
+	        if (name.IsEmptyOrWhitespace())
+	        {
+	            throw new EmptyStringArgumentException(nameof(name));
+	        }
 
-			return null;
-		}
+	        lock (this.SyncRoot)
+	        {
+	            List<IResourceSet> sets = this.GetLoadedSets();
 
-		/// <inheritdoc />
+	            if (culture != null)
+	            {
+	                foreach (IResourceSet set in sets)
+	                {
+	                    if (culture.Equals(set.Culture))
+	                    {
+	                        object value = set.GetRawValue(name);
+	                        if (value != null)
+	                        {
+	                            return value;
+	                        }
+                        }
+	                }
+                }
+
+	            foreach (IResourceSet set in sets)
+	            {
+	                object value = set.GetRawValue(name);
+	                if (value != null)
+	                {
+	                    return value;
+	                }
+	            }
+
+                return null;
+            }
+        }
+
+	    /// <inheritdoc />
 		public T GetValue <T> (string name) => (T)this.GetValue(name, typeof(T));
 
-		/// <inheritdoc />
-		public object GetValue (string name, Type type)
-		{
-			if (name == null)
-			{
-				throw new ArgumentNullException(nameof(name));
-			}
+	    /// <inheritdoc />
+	    public T GetValue<T> (string name, CultureInfo culture) => (T)this.GetValue(name, typeof(T), culture);
 
-			if (name.IsEmptyOrWhitespace())
-			{
-				throw new EmptyStringArgumentException(nameof(name));
-			}
+        /// <inheritdoc />
+        public object GetValue(string name, Type type) => this.GetValue(name, type, null);
 
-			if (type == null)
-			{
-				throw new ArgumentNullException(nameof(type));
-			}
+	    /// <inheritdoc />
+	    public object GetValue(string name, Type type, CultureInfo culture)
+	    {
+	        if (name == null)
+	        {
+	            throw new ArgumentNullException(nameof(name));
+	        }
 
-			object value = this.GetRawValue(name);
-			if (value == null)
-			{
-				return null;
-			}
+	        if (name.IsEmptyOrWhitespace())
+	        {
+	            throw new EmptyStringArgumentException(nameof(name));
+	        }
 
-			IResourceConverter converter = this.GetConverterForType(value.GetType(), type);
-			if (converter == null)
-			{
-				throw new InvalidTypeArgumentException(nameof(type));
-			}
+	        if (type == null)
+	        {
+	            throw new ArgumentNullException(nameof(type));
+	        }
 
-			object finalValue = converter.Convert(type, value);
-			return finalValue;
-		}
+	        lock (this.SyncRoot)
+	        {
+	            object value = this.GetRawValue(name, culture);
+	            if (value == null)
+	            {
+	                return null;
+	            }
 
-		/// <inheritdoc />
+	            IResourceConverter converter = this.GetConverterForType(value.GetType(), type);
+	            if (converter == null)
+	            {
+	                throw new InvalidTypeArgumentException(nameof(type));
+	            }
+
+	            object finalValue = converter.Convert(type, value);
+	            return finalValue;
+            }
+        }
+
+	    /// <inheritdoc />
 		public void LoadSet (IResourceSet resourceSet, bool lazyLoad)
 		{
 			if (resourceSet == null)
@@ -345,20 +436,40 @@ namespace RI.Framework.Services.Resources
 				throw new ArgumentNullException(nameof(resourceSet));
 			}
 
-			this.Log(LogLevel.Debug, "Loading set: {0}", resourceSet.Id);
+		    lock (this.SyncRoot)
+		    {
+		        this.Log(LogLevel.Debug, "Loading set: {0}", resourceSet.Id);
 
-			resourceSet.Load(lazyLoad);
+		        resourceSet.Load(lazyLoad);
+		    }
 		}
 
-		/// <inheritdoc />
+	    /// <inheritdoc />
+	    public void LoadSets (bool lazyLoad)
+	    {
+	        lock (this.SyncRoot)
+	        {
+	            this.Log(LogLevel.Debug, "Loading all available sets");
+
+	            foreach (IResourceSet set in this.GetAvailableSets())
+	            {
+	                this.LoadSet(set, lazyLoad);
+	            }
+	        }
+        }
+
+	    /// <inheritdoc />
 		public void ReloadSets ()
 		{
-			this.Log(LogLevel.Debug, "Reloading all loaded sets");
+		    lock (this.SyncRoot)
+		    {
+		        this.Log(LogLevel.Debug, "Reloading all loaded sets");
 
-			foreach (IResourceSet set in this.GetLoadedSets())
-			{
-				this.LoadSet(set, set.IsLazyLoaded);
-			}
+		        foreach (IResourceSet set in this.GetLoadedSets())
+		        {
+		            this.LoadSet(set, set.IsLazyLoaded);
+		        }
+		    }
 		}
 
 		/// <inheritdoc />
@@ -369,14 +480,17 @@ namespace RI.Framework.Services.Resources
 				throw new ArgumentNullException(nameof(resourceConverter));
 			}
 
-			if (!this.ConvertersManual.Contains(resourceConverter))
-			{
-				return;
-			}
+		    lock (this.SyncRoot)
+		    {
+		        if (!this.ConvertersManual.Contains(resourceConverter))
+		        {
+		            return;
+		        }
 
-			this.ConvertersManual.RemoveAll(resourceConverter);
+		        this.ConvertersManual.RemoveAll(resourceConverter);
 
-			this.UpdateConverters();
+		        this.UpdateConverters();
+		    }
 		}
 
 		/// <inheritdoc />
@@ -387,14 +501,17 @@ namespace RI.Framework.Services.Resources
 				throw new ArgumentNullException(nameof(resourceSource));
 			}
 
-			if (!this.SourcesManual.Contains(resourceSource))
-			{
-				return;
-			}
+		    lock (this.SyncRoot)
+		    {
+		        if (!this.SourcesManual.Contains(resourceSource))
+		        {
+		            return;
+		        }
 
-			this.SourcesManual.RemoveAll(resourceSource);
+		        this.SourcesManual.RemoveAll(resourceSource);
 
-			this.UpdateSources();
+		        this.UpdateSources();
+		    }
 		}
 
 		/// <inheritdoc />
@@ -405,20 +522,26 @@ namespace RI.Framework.Services.Resources
 				throw new ArgumentNullException(nameof(resourceSet));
 			}
 
-			this.Log(LogLevel.Debug, "Unlaoding set: {0}", resourceSet.Id);
+		    lock (this.SyncRoot)
+		    {
+		        this.Log(LogLevel.Debug, "Unloading set: {0}", resourceSet.Id);
 
-			resourceSet.Unload();
+		        resourceSet.Unload();
+		    }
 		}
 
 		/// <inheritdoc />
 		public void UnloadSets ()
 		{
-			this.Log(LogLevel.Debug, "Unloading all loaded sets");
+		    lock (this.SyncRoot)
+		    {
+		        this.Log(LogLevel.Debug, "Unloading all loaded sets");
 
-			foreach (IResourceSet set in this.GetLoadedSets())
-			{
-				this.UnloadSet(set);
-			}
+		        foreach (IResourceSet set in this.GetLoadedSets())
+		        {
+		            this.UnloadSet(set);
+		        }
+		    }
 		}
 
 		#endregion

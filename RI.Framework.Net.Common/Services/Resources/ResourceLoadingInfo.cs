@@ -45,7 +45,7 @@ namespace RI.Framework.Services.Resources
 		/// <value>
 		///     The loading type of the raw resource value.
 		/// </value>
-		public ResourceLoadingType LoadingType { get; private set; }
+		public ResourceLoadingType LoadingType { get; }
 
 		/// <summary>
 		///     Gets the resource type supported by a resource converter.
@@ -53,7 +53,7 @@ namespace RI.Framework.Services.Resources
 		/// <value>
 		///     The resource type supported by a resource converter.
 		/// </value>
-		public Type ResourceType { get; private set; }
+		public Type ResourceType { get; }
 
 		#endregion
 	}

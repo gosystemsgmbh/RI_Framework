@@ -417,6 +417,7 @@ namespace RI.Framework.Services.Logging.Readers
 			}
 
 			LogFileEntry entry = new LogFileEntry();
+		    entry.Session = this.File;
 			entry.Timestamp = timestamp.Value;
 			entry.ThreadId = threadId.Value;
 			entry.Severity = severity.Value;

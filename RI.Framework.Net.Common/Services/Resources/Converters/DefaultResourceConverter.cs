@@ -6,31 +6,52 @@ using RI.Framework.Composition.Model;
 using RI.Framework.IO.INI;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
-
-
+using RI.Framework.Utilities.ObjectModel;
 
 
 namespace RI.Framework.Services.Resources.Converters
 {
-	/// <summary>
-	///     Implements a default resource converter which can convert to and from the basic types used in .NET.
-	/// </summary>
-	/// <remarks>
-	///     <para>
-	///         The types supported by this seting converter are:
-	///         <see cref="string" /> to <see cref="string" />, <see cref="string" /> to <see cref="XDocument" />, <see cref="string" /> to <see cref="XmlDocument" />, <see cref="string" /> to <see cref="IniDocument" />, and arrays of <see cref="byte" /> to arrays of <see cref="byte" />.
-	///     </para>
-	///     <para>
-	///         See <see cref="IResourceConverter" /> for more details.
-	///     </para>
-	/// </remarks>
-	[Export]
+    /// <summary>
+    ///     Implements a default resource converter which can convert to and from the basic types used in .NET.
+    /// </summary>
+    /// <remarks>
+    ///     <para>
+    ///         The types supported by this seting converter are:
+    ///         <see cref="string" /> to <see cref="string" />, <see cref="string" /> to <see cref="XDocument" />, <see cref="string" /> to <see cref="XmlDocument" />, <see cref="string" /> to <see cref="IniDocument" />, and arrays of <see cref="byte" /> to arrays of <see cref="byte" />.
+    ///     </para>
+    ///     <para>
+    ///         See <see cref="IResourceConverter" /> for more details.
+    ///     </para>
+    /// </remarks>
+    /// <threadsafety static="true" instance="true" />
+    [Export]
 	public sealed class DefaultResourceConverter : IResourceConverter
 	{
-		#region Interface: IResourceConverter
+        #region Instance Constructor/Destructor
 
-		/// <inheritdoc />
-		public bool CanConvert (Type sourceType, Type targetType)
+        /// <summary>
+        ///     Creates a new instance of <see cref="DefaultResourceConverter" />.
+        /// </summary>
+        public DefaultResourceConverter()
+	    {
+	        this.SyncRoot = new object();
+	    }
+
+	    #endregion
+
+
+
+
+        #region Interface: IResourceConverter
+
+        /// <inheritdoc />
+        bool ISynchronizable.IsSynchronized => true;
+
+	    /// <inheritdoc />
+	    public object SyncRoot { get; }
+
+        /// <inheritdoc />
+        public bool CanConvert (Type sourceType, Type targetType)
 		{
 			if (sourceType == null)
 			{
@@ -134,9 +155,9 @@ namespace RI.Framework.Services.Resources.Converters
 			if (extension == ".TXT")
 			{
 				return new ResourceLoadingInfo(ResourceLoadingType.Text, typeof(string));
-			}
+		    }
 
-			return null;
+            return null;
 		}
 
 		#endregion

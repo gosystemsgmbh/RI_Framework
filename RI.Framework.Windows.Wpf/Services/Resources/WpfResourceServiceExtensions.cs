@@ -52,21 +52,24 @@ namespace RI.Framework.Services.Resources
 			resourceDictionary.Clear();
 			resourceDictionary.MergedDictionaries.Clear();
 
-			resourceService.SetLoadedSetIds(setIdsToLoad, false);
+		    lock (resourceService.SyncRoot)
+		    {
+		        resourceService.SetLoadedSetIds(setIdsToLoad, false);
 
-			HashSet<string> resources = resourceService.GetAvailableResources();
-			foreach (string resource in resources)
-			{
-				object value = resourceService.GetRawValue(resource);
-				if (value is ResourceDictionary)
-				{
-					resourceDictionary.MergedDictionaries.Add((ResourceDictionary)value);
-				}
-				else
-				{
-					resourceDictionary.Add(resource, value);
-				}
-			}
+		        HashSet<string> resources = resourceService.GetAvailableResources();
+		        foreach (string resource in resources)
+		        {
+		            object value = resourceService.GetRawValue(resource);
+		            if (value is ResourceDictionary)
+		            {
+		                resourceDictionary.MergedDictionaries.Add((ResourceDictionary) value);
+		            }
+		            else
+		            {
+		                resourceDictionary.Add(resource, value);
+		            }
+		        }
+		    }
 		}
 
 		#endregion

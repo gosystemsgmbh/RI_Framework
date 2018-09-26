@@ -8,31 +8,52 @@ using System.Windows.Media.Imaging;
 using RI.Framework.Composition.Model;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
-
-
+using RI.Framework.Utilities.ObjectModel;
 
 
 namespace RI.Framework.Services.Resources.Converters
 {
-	/// <summary>
-	///     Implements a resource converter which handles common WPF resource types.
-	/// </summary>
-	/// <remarks>
-	///     <para>
-	///         The common WPF resource types which are supported by this resource converter are:
-	///         <see cref="ImageSource" /> to <see cref="ImageSource" />, <see cref="BitmapSource" /> to <see cref="BitmapSource" />, <see cref="BitmapImage" /> to <see cref="BitmapImage" />, arrays of <see cref="byte" /> to <see cref="ImageSource" />, arrays of <see cref="byte" /> to <see cref="BitmapSource" />, arrays of <see cref="byte" /> to <see cref="BitmapImage" />, and arrays of <see cref="byte" /> to <see cref="ResourceDictionary" />.
-	///     </para>
-	///     <para>
-	///         See <see cref="IResourceConverter" /> for more details.
-	///     </para>
-	/// </remarks>
-	[Export]
+    /// <summary>
+    ///     Implements a resource converter which handles common WPF resource types.
+    /// </summary>
+    /// <remarks>
+    ///     <para>
+    ///         The common WPF resource types which are supported by this resource converter are:
+    ///         <see cref="ImageSource" /> to <see cref="ImageSource" />, <see cref="BitmapSource" /> to <see cref="BitmapSource" />, <see cref="BitmapImage" /> to <see cref="BitmapImage" />, arrays of <see cref="byte" /> to <see cref="ImageSource" />, arrays of <see cref="byte" /> to <see cref="BitmapSource" />, arrays of <see cref="byte" /> to <see cref="BitmapImage" />, and arrays of <see cref="byte" /> to <see cref="ResourceDictionary" />.
+    ///     </para>
+    ///     <para>
+    ///         See <see cref="IResourceConverter" /> for more details.
+    ///     </para>
+    /// </remarks>
+    /// <threadsafety static="true" instance="true" />
+    [Export]
 	public sealed class WpfResourceConverter : IResourceConverter
 	{
-		#region Interface: IResourceConverter
+        #region Instance Constructor/Destructor
 
-		/// <inheritdoc />
-		public bool CanConvert (Type sourceType, Type targetType)
+        /// <summary>
+        ///     Creates a new instance of <see cref="WpfResourceConverter" />.
+        /// </summary>
+        public WpfResourceConverter()
+	    {
+	        this.SyncRoot = new object();
+	    }
+
+        #endregion
+
+
+
+
+        #region Interface: IResourceConverter
+
+	    /// <inheritdoc />
+	    bool ISynchronizable.IsSynchronized => true;
+
+	    /// <inheritdoc />
+	    public object SyncRoot { get; }
+
+        /// <inheritdoc />
+        public bool CanConvert (Type sourceType, Type targetType)
 		{
 			if (sourceType == null)
 			{
