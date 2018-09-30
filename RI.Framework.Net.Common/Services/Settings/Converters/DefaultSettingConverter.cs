@@ -1,10 +1,17 @@
 ﻿using System;
 using System.Globalization;
+using System.IO;
+using System.Xml;
+using System.Xml.Linq;
 
 using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Composition.Model;
+using RI.Framework.IO.CSV;
+using RI.Framework.IO.INI;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
+using RI.Framework.Utilities.Time;
+using RI.Framework.Utilities.Xml;
 
 
 
@@ -17,7 +24,7 @@ namespace RI.Framework.Services.Settings.Converters
 	/// <remarks>
 	///     <para>
 	///         The types supported by this setting converter are:
-	///         <see cref="bool" />, <see cref="char" />, <see cref="string" />, <see cref="sbyte" />, <see cref="byte" />, <see cref="short" />, <see cref="ushort" />, <see cref="int" />, <see cref="uint" />, <see cref="long" />, <see cref="ulong" />, <see cref="float" />, <see cref="double" />, <see cref="decimal" />, <see cref="DateTime" />, <see cref="TimeSpan" />, <see cref="Guid" />, <see cref="Version" />, enumerations (<see cref="Enum" />), and arrays of <see cref="byte" />.
+	///         <see cref="bool" />, <see cref="char" />, <see cref="string" />, <see cref="sbyte" />, <see cref="byte" />, <see cref="short" />, <see cref="ushort" />, <see cref="int" />, <see cref="uint" />, <see cref="long" />, <see cref="ulong" />, <see cref="float" />, <see cref="double" />, <see cref="decimal" />, <see cref="DateTime" />, <see cref="TimeSpan" />, <see cref="Guid" />, <see cref="Version" />, enumerations (<see cref="Enum" />), arrays of <see cref="byte" />, <see cref="XDocument"/>, <see cref="XmlDocument"/>, <see cref="IniDocument"/>, <see cref="CsvDocument"/>, and <see cref="Schedule"/>.
 	///     </para>
 	///     <para>
 	///         See <see cref="ISettingConverter" /> for more details.
@@ -28,7 +35,7 @@ namespace RI.Framework.Services.Settings.Converters
 	{
 		#region Instance Fields
 
-		private readonly Type[] _supportedTypes = {typeof(bool), typeof(char), typeof(string), typeof(sbyte), typeof(byte), typeof(short), typeof(ushort), typeof(int), typeof(uint), typeof(long), typeof(ulong), typeof(float), typeof(double), typeof(decimal), typeof(DateTime), typeof(TimeSpan), typeof(Guid), typeof(Version), typeof(Enum), typeof(byte[])};
+		private readonly Type[] _supportedTypes = {typeof(bool), typeof(char), typeof(string), typeof(sbyte), typeof(byte), typeof(short), typeof(ushort), typeof(int), typeof(uint), typeof(long), typeof(ulong), typeof(float), typeof(double), typeof(decimal), typeof(DateTime), typeof(TimeSpan), typeof(Guid), typeof(Version), typeof(Enum), typeof(byte[]), typeof(XDocument), typeof(XmlDocument), typeof(IniDocument), typeof(CsvDocument), typeof(Schedule)};
 
 		#endregion
 
@@ -154,6 +161,42 @@ namespace RI.Framework.Services.Settings.Converters
 			{
 				return Convert.ToBase64String((byte[])value, Base64FormattingOptions.None);
 			}
+			if (type == typeof(XDocument))
+			{
+				//TODO: Add possibility to specify options
+				XmlDocument doc = ((XDocument)value).ToXmlDocument();
+				using (StringWriter sw = new StringWriter(CultureInfo.InvariantCulture))
+				{
+					doc.Save(sw);
+					sw.Flush();
+					return sw.ToString();
+				}
+			}
+			if (type == typeof(XmlDocument))
+			{
+				//TODO: Add possibility to specify options
+				XmlDocument doc = (XmlDocument)value;
+				using (StringWriter sw = new StringWriter(CultureInfo.InvariantCulture))
+				{
+					doc.Save(sw);
+					sw.Flush();
+					return sw.ToString();
+				}
+			}
+			if (type == typeof(IniDocument))
+			{
+				//TODO: Add possibility to specify options
+				return ((IniDocument)value).AsString();
+			}
+			if (type == typeof(CsvDocument))
+			{
+				//TODO: Add possibility to specify options
+				return ((CsvDocument)value).AsString();
+			}
+			if (type == typeof(Schedule))
+			{
+				return ((Schedule)value).ToString(null, CultureInfo.InvariantCulture);
+			}
 
 			throw new InvalidTypeArgumentException(nameof(type));
 		}
@@ -273,6 +316,62 @@ namespace RI.Framework.Services.Settings.Converters
 				catch (FormatException)
 				{
 					finalValue = null;
+				}
+			}
+			else if (type == typeof(XDocument))
+			{
+				XmlDocument doc = new XmlDocument();
+				using (StringReader sr = new StringReader(value))
+				{
+					try
+					{
+						//TODO: Add possibility to specify options
+						doc.Load(sr);
+						finalValue = doc.ToXDocument();
+					}
+					catch (Exception)
+					{
+						finalValue = null;
+					}
+				}
+			}
+			else if (type == typeof(XmlDocument))
+			{
+				XmlDocument doc = new XmlDocument();
+				using (StringReader sr = new StringReader(value))
+				{
+					try
+					{
+						//TODO: Add possibility to specify options
+						doc.Load(sr);
+						finalValue = doc;
+					}
+					catch (Exception)
+					{
+						finalValue = null;
+					}
+				}
+			}
+			else if (type == typeof(IniDocument))
+			{
+				//TODO: Add possibility to specify options
+				IniDocument doc = new IniDocument();
+				doc.Load(value);
+				return doc;
+			}
+			else if (type == typeof(CsvDocument))
+			{
+				//TODO: Add possibility to specify options
+				CsvDocument doc = new CsvDocument();
+				doc.Load(value);
+				return doc;
+			}
+			else if (type == typeof(Schedule))
+			{
+				finalValue = null;
+				if (Schedule.TryParse(value, CultureInfo.InvariantCulture, out Schedule candidate))
+				{
+					finalValue = candidate;
 				}
 			}
 			else

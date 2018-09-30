@@ -51,6 +51,7 @@
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\Resources\Converters\JsonNetResourceConverter.cs" />
     <Compile Include="Services\Settings\Converters\JsonNetSettingConverter.cs" />
   </ItemGroup>
   <ItemGroup>

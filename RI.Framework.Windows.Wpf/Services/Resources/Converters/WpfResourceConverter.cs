@@ -13,20 +13,20 @@ using RI.Framework.Utilities.ObjectModel;
 
 namespace RI.Framework.Services.Resources.Converters
 {
-    /// <summary>
-    ///     Implements a resource converter which handles common WPF types.
-    /// </summary>
-    /// <remarks>
-    ///     <para>
-    ///         The common WPF resource types which are supported by this resource converter are:
-    ///         <see cref="ImageSource" /> to <see cref="ImageSource" />, <see cref="BitmapSource" /> to <see cref="BitmapSource" />, <see cref="BitmapImage" /> to <see cref="BitmapImage" />, arrays of <see cref="byte" /> to <see cref="ImageSource" />, arrays of <see cref="byte" /> to <see cref="BitmapSource" />, arrays of <see cref="byte" /> to <see cref="BitmapImage" />, and arrays of <see cref="byte" /> to <see cref="ResourceDictionary" />.
-    ///     </para>
-    ///     <para>
-    ///         See <see cref="IResourceConverter" /> for more details.
-    ///     </para>
-    /// </remarks>
-    /// <threadsafety static="true" instance="true" />
-    [Export]
+	/// <summary>
+	///     Implements a resource converter which handles common WPF types.
+	/// </summary>
+	/// <remarks>
+	///     <para>
+	///         The types supported by this resource converter are:
+	///         <see cref="ImageSource" /> to <see cref="ImageSource" />, <see cref="BitmapSource" /> to <see cref="BitmapSource" />, <see cref="BitmapImage" /> to <see cref="BitmapImage" />, arrays of <see cref="byte" /> to <see cref="ImageSource" />, arrays of <see cref="byte" /> to <see cref="BitmapSource" />, arrays of <see cref="byte" /> to <see cref="BitmapImage" />, and arrays of <see cref="byte" /> to <see cref="ResourceDictionary" />.
+	///     </para>
+	///     <para>
+	///         See <see cref="IResourceConverter" /> for more details.
+	///     </para>
+	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
+	[Export]
 	public sealed class WpfResourceConverter : IResourceConverter
 	{
         #region Instance Constructor/Destructor
@@ -80,6 +80,11 @@ namespace RI.Framework.Services.Resources.Converters
 				return true;
 			}
 
+			if ((sourceType == typeof(ResourceDictionary)) && (targetType == typeof(ResourceDictionary)))
+			{
+				return true;
+			}
+
 			if ((sourceType == typeof(byte[])) && ((targetType == typeof(ImageSource)) || (targetType == typeof(BitmapSource)) || (targetType == typeof(BitmapImage))))
 			{
 				return true;
@@ -117,6 +122,11 @@ namespace RI.Framework.Services.Resources.Converters
 			}
 
 			if ((value is ImageSource) && (type == typeof(ImageSource)))
+			{
+				return value;
+			}
+
+			if ((value is ResourceDictionary) && (type == typeof(ResourceDictionary)))
 			{
 				return value;
 			}
