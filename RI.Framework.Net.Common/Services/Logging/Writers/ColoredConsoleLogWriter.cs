@@ -14,7 +14,7 @@ using RI.Framework.Utilities.ObjectModel;
 namespace RI.Framework.Services.Logging.Writers
 {
 	/// <summary>
-	///     Implements a log writer which writes to the process console and uses colorization.
+	///     Implements a log writer which writes to <see cref="Console"/> and uses colorization.
 	/// </summary>
 	/// <remarks>
 	///     <para>

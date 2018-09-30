@@ -18,6 +18,7 @@ namespace RI.Framework.Services.Logging.Writers
 	/// <summary>
 	///     Holds table, index, and column configurations for SQLite log database schemas.
 	/// </summary>
+	/// <threadsafety static="false" instance="false" />
 	[SuppressMessage("ReSharper", "InconsistentNaming")]
 	public sealed class SQLiteLogConfiguration : ICloneable<SQLiteLogConfiguration>, ICloneable
 	{

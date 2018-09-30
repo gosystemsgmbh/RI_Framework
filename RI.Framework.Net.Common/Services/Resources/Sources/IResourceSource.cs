@@ -9,7 +9,7 @@ using RI.Framework.Utilities.ObjectModel;
 namespace RI.Framework.Services.Resources.Sources
 {
     /// <summary>
-    ///     Defines the interface for a resource source used by a resource service.
+    ///     Defines the interface for a resource source.
     /// </summary>
     /// <remarks>
     ///     <para>

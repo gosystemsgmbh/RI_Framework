@@ -143,7 +143,7 @@ namespace RI.Framework.Services.Resources.Sources
         /// <exception cref="InvalidOperationException"> <paramref name="directory" /> is not a real usable directory. </exception>
         /// <exception cref="InvalidPathArgumentException"> <paramref name="filePattern" /> is an empty string. </exception>
         public ZipResourceSource(DirectoryPath directory, Encoding fileEncoding, string filePattern, bool recursive, params string[] ignoredExtensions)
-            : this(directory, null, null, false, (IEnumerable<string>)null)
+            : this(directory, fileEncoding, filePattern, recursive, (IEnumerable<string>)ignoredExtensions)
         {
         }
 

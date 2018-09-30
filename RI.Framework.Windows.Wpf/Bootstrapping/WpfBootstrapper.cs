@@ -4,7 +4,6 @@ using System.Windows;
 using System.Windows.Threading;
 
 using RI.Framework.Collections.DirectLinq;
-using RI.Framework.Composition.Catalogs;
 using RI.Framework.Utilities.Logging;
 
 
@@ -13,8 +12,9 @@ using RI.Framework.Utilities.Logging;
 namespace RI.Framework.Bootstrapping
 {
 	/// <summary>
-	///     Implements a WPF application bootstrapper.
+	///     Implements a default WPF application bootstrapper.
 	/// </summary>
+	/// <typeparam name="TApplication"> The type of the used application object. </typeparam>
 	/// <remarks>
 	///     <para>
 	///         See <see cref="WindowsBootstrapper{TApplication}" /> for more details.
@@ -59,14 +59,7 @@ namespace RI.Framework.Bootstrapping
 
 		#region Overrides
 
-		/// <summary>
-		///     Called when the used application object (<see cref="Application" />) needs to be configured.
-		/// </summary>
-		/// <remarks>
-		///     <note type="implement">
-		///         The default implementation adds the application object (<see cref="Application" />) to the used composition container as an export using a <see cref="InstanceCatalog" />, configures exception handling of the application objects dispatcher to use <see cref="Bootstrapper.StartExceptionHandling" />, sets the WPF application objects <see cref="System.Windows.Application.ShutdownMode" /> property to <see cref="System.Windows.ShutdownMode.OnExplicitShutdown" />, and sets the WPF application objects <see cref="WpfApplication.Bootstrapper" /> property to this boottsrapper instance (if the application object derives from <see cref="WpfApplication" />).
-		///     </note>
-		/// </remarks>
+		/// <inheritdoc />
 		protected override void ConfigureApplication ()
 		{
 			base.ConfigureApplication();
@@ -77,12 +70,6 @@ namespace RI.Framework.Bootstrapping
 			}
 
 			this.Application.ShutdownMode = System.Windows.ShutdownMode.OnExplicitShutdown;
-
-			WpfApplication wpfApplication = this.Application as WpfApplication;
-			if (wpfApplication != null)
-			{
-				wpfApplication.Bootstrapper = this;
-			}
 		}
 
 		/// <summary>
@@ -90,7 +77,6 @@ namespace RI.Framework.Bootstrapping
 		/// </summary>
 		/// <returns>
 		///     The default application object.
-		///     Can be null if the use of an application object is not applicable.
 		/// </returns>
 		/// <remarks>
 		///     <para>
@@ -98,6 +84,9 @@ namespace RI.Framework.Bootstrapping
 		///     </para>
 		///     <note type="implement">
 		///         The default implementation returns a new instance of <see cref="WpfApplication" />.
+		///     </note>
+		///     <note type="implement">
+		///         This method must never return null.
 		///     </note>
 		/// </remarks>
 		protected override object CreateDefaultApplication ()
@@ -112,9 +101,10 @@ namespace RI.Framework.Bootstrapping
 		/// <param name="args"> The optional arguments for the delegate. </param>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation executes the delegate with the applications dispatcher.
+		///         The default implementation executes the delegate with the applications dispatcher using the <see cref="DispatcherPriority.ApplicationIdle"/> priority.
 		///     </note>
 		/// </remarks>
+		/// TODO: Return awaitable
 		protected override void DispatchBeginOperations (Delegate action, params object[] args)
 		{
 			this.Application.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new Action<Delegate, List<object>>((x, y) => x.DynamicInvoke(y.ToArray())), action, args.ToList());
@@ -127,9 +117,10 @@ namespace RI.Framework.Bootstrapping
 		/// <param name="args"> The optional arguments for the delegate. </param>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation executes the delegate with the applications dispatcher.
+		///         The default implementation executes the delegate with the applications dispatcher using the <see cref="DispatcherPriority.Normal"/> priority.
 		///     </note>
 		/// </remarks>
+		/// TODO: Return awaitable
 		protected override void DispatchModuleInitialization (Delegate action, params object[] args)
 		{
 			this.Application.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action<Delegate, List<object>>((x, y) => x.DynamicInvoke(y.ToArray())), action, args.ToList());
@@ -142,22 +133,16 @@ namespace RI.Framework.Bootstrapping
 		/// <param name="args"> The optional arguments for the delegate. </param>
 		/// <remarks>
 		///     <note type="implement">
-		///         The default implementation executes the delegate with the applications dispatcher.
+		///         The default implementation executes the delegate with the applications dispatcher using the <see cref="DispatcherPriority.SystemIdle"/> priority.
 		///     </note>
 		/// </remarks>
+		/// TODO: Return awaitable
 		protected override void DispatchStopOperations (Delegate action, params object[] args)
 		{
 			this.Application.Dispatcher.BeginInvoke(DispatcherPriority.SystemIdle, new Action<Delegate, List<object>>((x, y) => x.DynamicInvoke(y.ToArray())), action, args.ToList());
 		}
 
-		/// <summary>
-		///     Called after shutdown to cleanup all bootstrapper resources.
-		/// </summary>
-		/// <remarks>
-		///     <note type="implement">
-		///         The default implementation calls <see cref="IDisposable.Dispose" /> on <see cref="Bootstrapper.Application" /> and then <see cref="Bootstrapper.Container" />.
-		///     </note>
-		/// </remarks>
+		/// <inheritdoc />
 		protected override void DoCleanup ()
 		{
 			if (this.Application != null)
@@ -183,7 +168,7 @@ namespace RI.Framework.Bootstrapping
 		}
 
 		/// <summary>
-		///     Instructs the application to shutdown the application and return from <see cref="InitiateRun" />.
+		///     Instructs the application to shutdown.
 		/// </summary>
 		/// <remarks>
 		///     <note type="implement">

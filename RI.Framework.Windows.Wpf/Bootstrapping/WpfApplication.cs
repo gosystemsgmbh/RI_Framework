@@ -17,25 +17,12 @@ namespace RI.Framework.Bootstrapping
 	///         This default WPF application object inherits from <see cref="Application" /> and adds some common desktop application functionality such as handling of power events, logoff, sleep, etc.
 	///     </para>
 	/// </remarks>
+	/// <threadsafety static="false" instance="false" />
+	/// TODO: Add promised features (power events, logoff, sleep, etc.)
 	[Export]
 	[Export(typeof(Application))]
 	public class WpfApplication : Application, ILogSource
 	{
-		#region Instance Properties/Indexer
-
-		/// <summary>
-		///     Gets the used bootstrapper object.
-		/// </summary>
-		/// <value>
-		///     The used bootstrapper object.
-		/// </value>
-		public Bootstrapping.Bootstrapper Bootstrapper { get; internal set; }
-
-		#endregion
-
-
-
-
 		#region Interface: ILogSource
 
 		/// <inheritdoc />
@@ -43,7 +30,6 @@ namespace RI.Framework.Bootstrapping
 
 		/// <inheritdoc />
 		public ILogger Logger { get; set; } = LogLocator.Logger;
-
 
 		/// <inheritdoc />
 		public bool LoggingEnabled { get; set; } = true;

@@ -9,14 +9,14 @@ using RI.Framework.Utilities.ObjectModel;
 namespace RI.Framework.Services.Resources.Converters
 {
     /// <summary>
-    ///     Defines the interface for a resource converter used by a resource service.
+    ///     Defines the interface for a resource converter.
     /// </summary>
     /// <remarks>
     ///     <para>
     ///         A resource converter is used by a <see cref="IResourceService" /> to convert between the raw data provided by its used underlying resource sources / resource sets and the requested resource types.
     ///     </para>
     ///     <para>
-    ///         A resource converter is also used by <see cref="IResourceSet" />s and <see cref="IResourceSource" />s to determine how a eaw resource value is to be loaded so that it can be converted by a <see cref="IResourceConverter" />.
+    ///         A resource converter is also used by <see cref="IResourceSet" />s and <see cref="IResourceSource" />s to determine how a raw resource value is to be loaded so that it can be converted by a <see cref="IResourceConverter" />.
     ///     </para>
     /// </remarks>
     /// <threadsafety static="true" instance="true" />

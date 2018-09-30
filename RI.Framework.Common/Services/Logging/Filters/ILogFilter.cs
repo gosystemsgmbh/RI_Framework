@@ -22,6 +22,7 @@ namespace RI.Framework.Services.Logging.Filters
 	///         Log filters are not exported or imported to the log service or log writers, they must be applied explicitly.
 	///     </note>
 	/// </remarks>
+	/// <threadsafety static="false" instance="false" />
 	public interface ILogFilter
 	{
 		/// <summary>

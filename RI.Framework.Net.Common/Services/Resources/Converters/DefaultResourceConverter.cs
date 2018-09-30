@@ -12,7 +12,7 @@ using RI.Framework.Utilities.ObjectModel;
 namespace RI.Framework.Services.Resources.Converters
 {
     /// <summary>
-    ///     Implements a default resource converter which can convert to and from the basic types used in .NET.
+    ///     Implements a default resource converter which handles common .NET types.
     /// </summary>
     /// <remarks>
     ///     <para>

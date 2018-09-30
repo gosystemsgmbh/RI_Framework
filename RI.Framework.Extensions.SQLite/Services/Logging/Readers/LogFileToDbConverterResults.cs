@@ -13,15 +13,16 @@ namespace RI.Framework.Services.Logging.Readers
 	/// <summary>
 	///     Holds conversion results from a single conversion performed by <see cref="LogFileToDbConverter" />.
 	/// </summary>
+	/// <threadsafety static="false" instance="false" />
 	public sealed class LogFileToDbConverterResults
 	{
 		#region Instance Constructor/Destructor
 
 		internal LogFileToDbConverterResults ()
 		{
-			this.Files = new List<FilePath>();
-			this.Errors = new List<Tuple<FilePath, int>>();
-			this.Entries = new List<Tuple<FilePath, int>>();
+			this.Files = new HashSet<FilePath>();
+			this.Errors = new Dictionary<FilePath, List<int>>();
+			this.Entries = new Dictionary<FilePath, int>();
 			this.Exception = null;
 		}
 
@@ -33,54 +34,81 @@ namespace RI.Framework.Services.Logging.Readers
 		#region Instance Properties/Indexer
 
 		/// <summary>
-		///     Gets a list of numbers of entries per log file.
+		///     Gets number of converted entries per log file.
 		/// </summary>
 		/// <value>
-		///     The list of numbers of entries per log file.
+		///     The number of converted entries per log file.
 		/// </value>
 		/// <remarks>
 		///     <para>
-		///         The tuple contains the file and the number of valid log entries read.
+		///         The key represents the converted file, the value its number of converted entries.
 		///     </para>
 		/// </remarks>
-		public List<Tuple<FilePath, int>> Entries { get; private set; }
+		public Dictionary<FilePath, int> Entries { get; private set; }
 
 		/// <summary>
-		///     Gets a list of log file reading errors.
+		///     Gets conversion errors per log file.
 		/// </summary>
 		/// <value>
-		///     The list of log file reading errors.
+		///     The conversion errors per log file.
 		/// </value>
 		/// <remarks>
 		///     <para>
-		///         The tuple contains the file and the line number of the error.
+		///         The key represents the converted file, the value is a list of line numbers with an error.
 		///     </para>
 		/// </remarks>
-		public List<Tuple<FilePath, int>> Errors { get; private set; }
+		public Dictionary<FilePath, List<int>> Errors { get; private set; }
 
 		/// <summary>
-		///     Gets or sets the exception occured during a conversion.
+		///     Gets or sets the exception occured during the conversion.
 		/// </summary>
 		/// <value>
-		///     The exception occured during a conversion.
+		///     The exception occured during the conversion.
 		/// </value>
 		public Exception Exception { get; set; }
 
 		/// <summary>
-		///     Gets a list of files which were converted.
+		///     Gets the set of files which were converted.
 		/// </summary>
 		/// <value>
-		///     The list of files which were converted.
+		///     The set of files which were converted.
 		/// </value>
-		public List<FilePath> Files { get; private set; }
+		public HashSet<FilePath> Files { get; }
 
 		/// <summary>
-		///     Gets the total number of log entries read.
+		///     Gets the total number of log entries converted.
 		/// </summary>
 		/// <value>
-		///     The total number of log entries read.
+		///     The total number of log entries converted.
 		/// </value>
-		public int TotalEntries => this.Entries.Select(x => x.Item2).Sum();
+		public int TotalEntries => this.Entries.Select(x => x.Value).Sum();
+
+		#endregion
+
+
+
+
+		#region Instance Methods
+
+		internal void AddError (FilePath file, int lineNumber)
+		{
+			if (file == null)
+			{
+				throw new ArgumentNullException(nameof(file));
+			}
+
+			if (lineNumber < 0)
+			{
+				throw new ArgumentOutOfRangeException(nameof(lineNumber));
+			}
+
+			if (!this.Errors.ContainsKey(file))
+			{
+				this.Errors.Add(file, new List<int>());
+			}
+
+			this.Errors[file].Add(lineNumber);
+		}
 
 		#endregion
 	}

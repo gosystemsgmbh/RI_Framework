@@ -118,7 +118,7 @@ namespace RI.Framework.Services.Resources.Sources
         /// <exception cref="ArgumentNullException"> <paramref name="directory" /> is null. </exception>
         /// <exception cref="InvalidOperationException"> <paramref name="directory" /> is not a real usable directory. </exception>
         public DirectoryResourceSource (DirectoryPath directory, Encoding fileEncoding, bool recursive, params string[] ignoredExtensions)
-			: this(directory, fileEncoding, false, (IEnumerable<string>)ignoredExtensions)
+			: this(directory, fileEncoding, recursive, (IEnumerable<string>)ignoredExtensions)
 		{
 		}
 

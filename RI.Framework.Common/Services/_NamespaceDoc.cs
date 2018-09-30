@@ -6,7 +6,7 @@
 namespace RI.Framework.Services
 {
 	/// <summary>
-	///     Contains infrastructure and application-independent services.
+	///     Contains application-independent infrastructure services.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

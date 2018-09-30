@@ -14,7 +14,7 @@ using RI.Framework.Utilities.ObjectModel;
 namespace RI.Framework.Services.Resources.Converters
 {
     /// <summary>
-    ///     Implements a resource converter which handles common WPF resource types.
+    ///     Implements a resource converter which handles common WPF types.
     /// </summary>
     /// <remarks>
     ///     <para>

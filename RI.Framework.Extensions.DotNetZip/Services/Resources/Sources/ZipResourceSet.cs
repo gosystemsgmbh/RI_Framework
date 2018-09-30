@@ -552,14 +552,14 @@ namespace RI.Framework.Services.Resources.Sources
 	        {
 	            lock (this.SyncRoot)
 	            {
-	                return _isLazyLoaded;
+	                return this._isLazyLoaded;
 	            }
 	        }
 	        private set
 	        {
 	            lock (this.SyncRoot)
 	            {
-	                _isLazyLoaded = value;
+		            this._isLazyLoaded = value;
 	            }
 	        }
 	    }

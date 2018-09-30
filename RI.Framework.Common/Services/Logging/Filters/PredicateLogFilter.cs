@@ -15,6 +15,7 @@ namespace RI.Framework.Services.Logging.Filters
 	///         See <see cref="ILogFilter" /> for more details.
 	///     </para>
 	/// </remarks>
+	/// <threadsafety static="false" instance="false" />
 	public class PredicateLogFilter : ILogFilter
 	{
 		#region Instance Constructor/Destructor
@@ -23,7 +24,8 @@ namespace RI.Framework.Services.Logging.Filters
 		///     Creates a new instance of <see cref="PredicateLogFilter" />.
 		/// </summary>
 		/// <param name="predicate"> The used predicate. </param>
-		public PredicateLogFilter (Func<DateTime, int, LogLevel, string, bool> predicate)
+		/// <exception cref="ArgumentNullException"><paramref name="predicate"/> is null.</exception>
+		public PredicateLogFilter (PredicateLogFilterCallback predicate)
 		{
 			if (predicate == null)
 			{
@@ -46,7 +48,7 @@ namespace RI.Framework.Services.Logging.Filters
 		/// <value>
 		///     The used predicate.
 		/// </value>
-		public Func<DateTime, int, LogLevel, string, bool> Predicate { get; private set; }
+		public PredicateLogFilterCallback Predicate { get; }
 
 		#endregion
 

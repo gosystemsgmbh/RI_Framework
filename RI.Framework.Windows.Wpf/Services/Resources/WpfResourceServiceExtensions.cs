@@ -10,6 +10,7 @@ namespace RI.Framework.Services.Resources
 	/// <summary>
 	///     Provides WPF specific utility/extension methods for the <see cref="IResourceService" /> type.
 	/// </summary>
+	/// <threadsafety static="true" instance="true" />
 	public static class WpfResourceServiceExtensions
 	{
 		#region Static Methods

@@ -15,6 +15,7 @@ namespace RI.Framework.Services.Logging.Filters
 	///         See <see cref="ILogFilter" /> for more details.
 	///     </para>
 	/// </remarks>
+	/// <threadsafety static="false" instance="false" />
 	public sealed class SeverityLogFilter : ILogFilter
 	{
 		#region Instance Constructor/Destructor

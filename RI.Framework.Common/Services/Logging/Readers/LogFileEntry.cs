@@ -11,6 +11,7 @@ namespace RI.Framework.Services.Logging.Readers
 	/// <summary>
 	///     Represents a single entry in a log file read by <see cref="LogFileReader" />.
 	/// </summary>
+	/// <threadsafety static="false" instance="false" />
 	public sealed class LogFileEntry : ICloneable<LogFileEntry>, ICloneable
 	{
 		#region Instance Properties/Indexer

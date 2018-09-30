@@ -14,7 +14,7 @@ using RI.Framework.Utilities.ObjectModel;
 namespace RI.Framework.Services.Logging.Writers
 {
 	/// <summary>
-	///     Implements a log writer which writes to the process console.
+	///     Implements a log writer which forwards log messages to a callback.
 	/// </summary>
 	/// <remarks>
 	///     <para>
@@ -22,6 +22,7 @@ namespace RI.Framework.Services.Logging.Writers
 	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
+	/// TODO: Use specialized delegates for callbacks
 	[Export]
 	public sealed class CallbackLogWriter : ILogWriter
 	{

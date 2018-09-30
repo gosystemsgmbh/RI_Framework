@@ -208,7 +208,7 @@ namespace RI.Framework.Services.Resources
         /// <param name="lazyLoad"> Specifies whether lazy loading shall be used for the resources of this resource set or not. </param>
         /// <remarks>
         ///     <para>
-        ///         Lazy loading means that the actual value of a resource is only loaded into memory and converted to the appropriate type when <see cref="GetRawValue" /> is called for it.
+        ///         Lazy loading means that the actual value of a resource is only loaded into memory and converted to the appropriate type when <see cref="GetRawValue(string)" /> or <see cref="GetRawValue(string,CultureInfo)"/> is called for it.
         ///     </para>
         ///     <note type="implement">
         ///         Loading an already loaded resource set can be used to reload a specific set.
@@ -217,16 +217,16 @@ namespace RI.Framework.Services.Resources
         /// <exception cref="ArgumentNullException"> <paramref name="resourceSet" /> is null. </exception>
         void LoadSet (IResourceSet resourceSet, bool lazyLoad);
 
-	    /// <summary>
-	    ///     Loads all currently available resource sets and makes its resources available.
-	    /// </summary>
-	    /// <param name="lazyLoad"> Specifies whether lazy loading shall be used for the resources or not. </param>
-	    /// <remarks>
-	    ///     <para>
-	    ///         Lazy loading means that the actual value of a resource is only loaded into memory and converted to the appropriate type when <see cref="GetRawValue" /> is called for it.
-	    ///     </para>
-	    /// </remarks>
-	    void LoadSets (bool lazyLoad);
+		/// <summary>
+		///     Loads all currently available resource sets and makes its resources available.
+		/// </summary>
+		/// <param name="lazyLoad"> Specifies whether lazy loading shall be used for the resources or not. </param>
+		/// <remarks>
+		///     <para>
+		///         Lazy loading means that the actual value of a resource is only loaded into memory and converted to the appropriate type when <see cref="GetRawValue(string)" /> or <see cref="GetRawValue(string,CultureInfo)"/> is called for it.
+		///     </para>
+		/// </remarks>
+		void LoadSets (bool lazyLoad);
 
         /// <summary>
         ///     Reloads all currently loaded resource sets.

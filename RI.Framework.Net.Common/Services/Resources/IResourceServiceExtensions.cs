@@ -11,7 +11,7 @@ using RI.Framework.Utilities;
 namespace RI.Framework.Services.Resources
 {
     /// <summary>
-    ///     Provides utility/extension methods for the <see cref="IResourceService" /> type.
+    ///     Provides common utility/extension methods for the <see cref="IResourceService" /> type.
     /// </summary>
     /// <threadsafety static="true" instance="true" />
     public static class IResourceServiceExtensions
