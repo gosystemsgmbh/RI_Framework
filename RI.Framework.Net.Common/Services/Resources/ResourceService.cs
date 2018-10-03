@@ -33,7 +33,9 @@ namespace RI.Framework.Services.Resources
     [Export]
 	public sealed class ResourceService : LogSource, IResourceService, IImporting
 	{
-		#region Instance Constructor/Destructor
+	    private CultureInfo _defaultCulture;
+
+	    #region Instance Constructor/Destructor
 
 		/// <summary>
 		///     Creates a new instance of <see cref="ResourceService" />.
@@ -41,6 +43,8 @@ namespace RI.Framework.Services.Resources
 		public ResourceService ()
 		{
 		    this.SyncRoot = new object();
+
+            this.DefaultCulture = null;
 
             this.SourcesUpdated = new List<IResourceSource>();
 			this.ConvertersUpdated = new List<IResourceConverter>();
@@ -153,6 +157,8 @@ namespace RI.Framework.Services.Resources
 			}
 		}
 
+	    private CultureInfo UsedCulture => this.DefaultCulture ?? CultureInfo.CurrentUICulture;
+
 		#endregion
 
 
@@ -231,8 +237,27 @@ namespace RI.Framework.Services.Resources
 			}
 		}
 
-		/// <inheritdoc />
-		public void AddConverter (IResourceConverter resourceConverter)
+	    /// <inheritdoc />
+	    public CultureInfo DefaultCulture
+	    {
+	        get
+	        {
+	            lock (this.SyncRoot)
+	            {
+	                return _defaultCulture;
+	            }
+	        }
+	        set
+	        {
+	            lock (this.SyncRoot)
+	            {
+	                _defaultCulture = value;
+	            }
+	        }
+	    }
+
+	    /// <inheritdoc />
+	    public void AddConverter (IResourceConverter resourceConverter)
 		{
 			if (resourceConverter == null)
 			{
@@ -335,7 +360,7 @@ namespace RI.Framework.Services.Resources
 	    }
 
 	    /// <inheritdoc />
-	    public object GetRawValue(string name) => this.GetRawValue(name, null);
+	    public object GetRawValue(string name) => this.GetRawValue(name, this.UsedCulture);
 
 	    /// <inheritdoc />
 	    public object GetRawValue(string name, CultureInfo culture)
@@ -389,7 +414,7 @@ namespace RI.Framework.Services.Resources
 	    public T GetValue<T> (string name, CultureInfo culture) => (T)this.GetValue(name, typeof(T), culture);
 
         /// <inheritdoc />
-        public object GetValue(string name, Type type) => this.GetValue(name, type, null);
+        public object GetValue(string name, Type type) => this.GetValue(name, type, this.UsedCulture);
 
 	    /// <inheritdoc />
 	    public object GetValue(string name, Type type, CultureInfo culture)

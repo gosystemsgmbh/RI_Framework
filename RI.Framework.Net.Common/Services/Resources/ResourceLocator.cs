@@ -50,6 +50,13 @@ namespace RI.Framework.Services.Resources
 		/// <inheritdoc cref="IResourceService.Sources" />
 		public static IEnumerable<IResourceSource> Sources => ResourceLocator.Service?.Sources ?? new IResourceSource[0];
 
+        /// <inheritdoc cref="IResourceService.DefaultCulture" />
+        public static CultureInfo DefaultCulture
+	    {
+	        get => ResourceLocator.Service?.DefaultCulture ?? null;
+	        set => ResourceLocator.Service.DefaultCulture = value;
+	    }
+
         #endregion
 
 

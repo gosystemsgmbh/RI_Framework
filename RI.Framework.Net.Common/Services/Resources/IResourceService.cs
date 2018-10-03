@@ -54,6 +54,19 @@ namespace RI.Framework.Services.Resources
 		/// </remarks>
 		IEnumerable<IResourceSource> Sources { get; }
 
+        /// <summary>
+        /// Gets or sets the default culture to use when retrieving resource values.
+        /// </summary>
+        /// <value>
+        /// The default culture to use when retrieving resource values or null to use <see cref="CultureInfo.CurrentUICulture"/>.
+        /// </value>
+        /// <remarks>
+        ///     <note type="implement">
+        ///         The default value should be null.
+        ///     </note>
+        /// </remarks>
+        CultureInfo DefaultCulture { get; set; }
+
 		/// <summary>
 		///     Adds a resource converter and starts using it for all subsequent conversions.
 		/// </summary>
@@ -131,6 +144,11 @@ namespace RI.Framework.Services.Resources
         /// <returns>
         ///     The resource value or null if the resource is not available.
         /// </returns>
+        /// <remarks>
+        ///     <para>
+        ///         The used culture is defined by <see cref="DefaultCulture"/>.
+        ///     </para>
+        /// </remarks>
         /// <exception cref="ArgumentNullException"> <paramref name="name" /> is null. </exception>
         /// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
         object GetRawValue (string name);
@@ -139,7 +157,7 @@ namespace RI.Framework.Services.Resources
         ///     Gets a resource for a specified culture as its originally loaded type.
         /// </summary>
         /// <param name="name"> The name of the resource. </param>
-        /// <param name="culture"> The culture or null to lookup the resource solely based on resource set priority. </param>
+        /// <param name="culture"> The culture or null if only the resource priorities should be taken into account. </param>
         /// <returns>
         ///     The resource value or null if the resource is not available.
         /// </returns>
@@ -155,6 +173,11 @@ namespace RI.Framework.Services.Resources
         /// <returns>
         ///     The resource value or the default value of <typeparamref name="T" /> if the resource is not available.
         /// </returns>
+        /// <remarks>
+        ///     <para>
+        ///         The used culture is defined by <see cref="DefaultCulture"/>.
+        ///     </para>
+        /// </remarks>
         /// <exception cref="ArgumentNullException"> <paramref name="name" /> is null. </exception>
         /// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
         /// <exception cref="InvalidTypeArgumentException"> The resource cannot be converted to type <typeparamref name="T" />. </exception>
@@ -165,7 +188,7 @@ namespace RI.Framework.Services.Resources
         /// </summary>
         /// <typeparam name="T"> The resource type. </typeparam>
         /// <param name="name"> The name of the resource. </param>
-        /// <param name="culture"> The culture or null to lookup the resource solely based on resource set priority. </param>
+        /// <param name="culture"> The culture or null if only the resource priorities should be taken into account. </param>
         /// <returns>
         ///     The resource value or the default value of <typeparamref name="T" /> if the resource is not available.
         /// </returns>
@@ -182,6 +205,11 @@ namespace RI.Framework.Services.Resources
         /// <returns>
         ///     The resource value or the default value of <paramref name="type" /> if the resource is not available.
         /// </returns>
+        /// <remarks>
+        ///     <para>
+        ///         The used culture is defined by <see cref="DefaultCulture"/>.
+        ///     </para>
+        /// </remarks>
         /// <exception cref="ArgumentNullException"> <paramref name="name" /> or <paramref name="type" /> is null. </exception>
         /// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
         /// <exception cref="InvalidTypeArgumentException"> The resource cannot be converted to type <paramref name="type" />. </exception>
@@ -192,7 +220,7 @@ namespace RI.Framework.Services.Resources
         /// </summary>
         /// <param name="type"> The resource type. </param>
         /// <param name="name"> The name of the resource. </param>
-        /// <param name="culture"> The culture or null to lookup the resource solely based on resource set priority. </param>
+        /// <param name="culture"> The culture or null if only the resource priorities should be taken into account. </param>
         /// <returns>
         ///     The resource value or the default value of <paramref name="type" /> if the resource is not available.
         /// </returns>
