@@ -15,38 +15,38 @@ using RI.Framework.Utilities.ObjectModel;
 
 namespace RI.Framework.Services.Resources
 {
-    /// <summary>
-    ///     Implements a default resource service which is suitable for most scenarios.
-    /// </summary>
-    /// <remarks>
-    ///     <para>
-    ///         This resource service manages <see cref="IResourceSource" />s  and <see cref="IResourceConverter" />s from two sources.
-    ///         One are the explicitly specified sources and converters added through <see cref="AddSource" /> and <see cref="AddConverter" />.
-    ///         The second is a <see cref="CompositionContainer" /> if this <see cref="ResourceService" /> is added as an export (the sources and converters are then imported through composition).
-    ///         <see cref="Sources" /> gives the sequence containing all setting storages from all sources and <see cref="Converters" /> gives the sequence containing all setting converters from all sources.
-    ///     </para>
-    ///     <para>
-    ///         See <see cref="IResourceService" /> for more details.
-    ///     </para>
-    /// </remarks>
-    /// <threadsafety static="true" instance="true" />
-    [Export]
+	/// <summary>
+	///     Implements a default resource service which is suitable for most scenarios.
+	/// </summary>
+	/// <remarks>
+	///     <para>
+	///         This resource service manages <see cref="IResourceSource" />s  and <see cref="IResourceConverter" />s from two sources.
+	///         One are the explicitly specified sources and converters added through <see cref="AddSource" /> and <see cref="AddConverter" />.
+	///         The second is a <see cref="CompositionContainer" /> if this <see cref="ResourceService" /> is added as an export (the sources and converters are then imported through composition).
+	///         <see cref="Sources" /> gives the sequence containing all setting storages from all sources and <see cref="Converters" /> gives the sequence containing all setting converters from all sources.
+	///     </para>
+	///     <para>
+	///         See <see cref="IResourceService" /> for more details.
+	///     </para>
+	/// </remarks>
+	/// <threadsafety static="true" instance="true" />
+	[Export]
 	public sealed class ResourceService : LogSource, IResourceService, IImporting
 	{
-	    private CultureInfo _defaultCulture;
+		private CultureInfo _defaultCulture;
 
-	    #region Instance Constructor/Destructor
+		#region Instance Constructor/Destructor
 
 		/// <summary>
 		///     Creates a new instance of <see cref="ResourceService" />.
 		/// </summary>
 		public ResourceService ()
 		{
-		    this.SyncRoot = new object();
+			this.SyncRoot = new object();
 
-            this.DefaultCulture = null;
+			this.DefaultCulture = null;
 
-            this.SourcesUpdated = new List<IResourceSource>();
+			this.SourcesUpdated = new List<IResourceSource>();
 			this.ConvertersUpdated = new List<IResourceConverter>();
 
 			this.SourcesManual = new List<IResourceSource>();
@@ -157,7 +157,7 @@ namespace RI.Framework.Services.Resources
 			}
 		}
 
-	    private CultureInfo UsedCulture => this.DefaultCulture ?? CultureInfo.CurrentUICulture;
+		private CultureInfo UsedCulture => this.DefaultCulture ?? CultureInfo.CurrentUICulture;
 
 		#endregion
 
@@ -171,11 +171,11 @@ namespace RI.Framework.Services.Resources
 		{
 			if (updated)
 			{
-			    lock (this.SyncRoot)
-			    {
-			        this.UpdateConverters();
-			        this.UpdateSources();
-			    }
+				lock (this.SyncRoot)
+				{
+					this.UpdateConverters();
+					this.UpdateSources();
+				}
 			}
 		}
 
@@ -184,36 +184,36 @@ namespace RI.Framework.Services.Resources
 		{
 		}
 
-        #endregion
+		#endregion
 
 
 
 
-        #region Interface: IResourceService
+		#region Interface: IResourceService
 
-	    /// <inheritdoc />
-	    bool ISynchronizable.IsSynchronized => true;
+		/// <inheritdoc />
+		bool ISynchronizable.IsSynchronized => true;
 
-	    /// <inheritdoc />
-	    public object SyncRoot { get; }
+		/// <inheritdoc />
+		public object SyncRoot { get; }
 
-        /// <inheritdoc />
-        public IEnumerable<IResourceConverter> Converters
+		/// <inheritdoc />
+		public IEnumerable<IResourceConverter> Converters
 		{
 			get
 			{
-			    lock (this.SyncRoot)
-			    {
-			        foreach (IResourceConverter converter in this.ConvertersManual)
-			        {
-			            yield return converter;
-			        }
+				lock (this.SyncRoot)
+				{
+					foreach (IResourceConverter converter in this.ConvertersManual)
+					{
+						yield return converter;
+					}
 
-			        foreach (IResourceConverter converter in this.ConvertersImported.Values<IResourceConverter>())
-			        {
-			            yield return converter;
-			        }
-			    }
+					foreach (IResourceConverter converter in this.ConvertersImported.Values<IResourceConverter>())
+					{
+						yield return converter;
+					}
+				}
 			}
 		}
 
@@ -222,59 +222,59 @@ namespace RI.Framework.Services.Resources
 		{
 			get
 			{
-			    lock (this.SyncRoot)
-			    {
-			        foreach (IResourceSource storage in this.SourcesManual)
-			        {
-			            yield return storage;
-			        }
+				lock (this.SyncRoot)
+				{
+					foreach (IResourceSource storage in this.SourcesManual)
+					{
+						yield return storage;
+					}
 
-			        foreach (IResourceSource storage in this.SourcesImported.Values<IResourceSource>())
-			        {
-			            yield return storage;
-			        }
-			    }
+					foreach (IResourceSource storage in this.SourcesImported.Values<IResourceSource>())
+					{
+						yield return storage;
+					}
+				}
 			}
 		}
 
-	    /// <inheritdoc />
-	    public CultureInfo DefaultCulture
-	    {
-	        get
-	        {
-	            lock (this.SyncRoot)
-	            {
-	                return _defaultCulture;
-	            }
-	        }
-	        set
-	        {
-	            lock (this.SyncRoot)
-	            {
-	                _defaultCulture = value;
-	            }
-	        }
-	    }
+		/// <inheritdoc />
+		public CultureInfo DefaultCulture
+		{
+			get
+			{
+				lock (this.SyncRoot)
+				{
+					return this._defaultCulture;
+				}
+			}
+			set
+			{
+				lock (this.SyncRoot)
+				{
+					this._defaultCulture = value;
+				}
+			}
+		}
 
-	    /// <inheritdoc />
-	    public void AddConverter (IResourceConverter resourceConverter)
+		/// <inheritdoc />
+		public void AddConverter (IResourceConverter resourceConverter)
 		{
 			if (resourceConverter == null)
 			{
 				throw new ArgumentNullException(nameof(resourceConverter));
 			}
 
-		    lock (this.SyncRoot)
-		    {
-		        if (this.ConvertersManual.Contains(resourceConverter))
-		        {
-		            return;
-		        }
+			lock (this.SyncRoot)
+			{
+				if (this.ConvertersManual.Contains(resourceConverter))
+				{
+					return;
+				}
 
-		        this.ConvertersManual.Add(resourceConverter);
+				this.ConvertersManual.Add(resourceConverter);
 
-		        this.UpdateConverters();
-		    }
+				this.UpdateConverters();
+			}
 		}
 
 		/// <inheritdoc />
@@ -285,175 +285,175 @@ namespace RI.Framework.Services.Resources
 				throw new ArgumentNullException(nameof(resourceSource));
 			}
 
-		    lock (this.SyncRoot)
-		    {
-		        if (this.SourcesManual.Contains(resourceSource))
-		        {
-		            return;
-		        }
+			lock (this.SyncRoot)
+			{
+				if (this.SourcesManual.Contains(resourceSource))
+				{
+					return;
+				}
 
-		        this.SourcesManual.Add(resourceSource);
+				this.SourcesManual.Add(resourceSource);
 
-		        this.UpdateSources();
-		    }
+				this.UpdateSources();
+			}
 		}
 
-	    /// <inheritdoc />
-	    public HashSet<CultureInfo> GetAvailableCultures()
-	    {
-	        lock (this.SyncRoot)
-	        {
-	            HashSet<CultureInfo> cultures = new HashSet<CultureInfo>();
-	            foreach (IResourceSet set in this.GetLoadedSets())
-	            {
-	                if (set.Culture != null)
-	                {
-	                    cultures.Add(set.Culture);
+		/// <inheritdoc />
+		public HashSet<CultureInfo> GetAvailableCultures()
+		{
+			lock (this.SyncRoot)
+			{
+				HashSet<CultureInfo> cultures = new HashSet<CultureInfo>();
+				foreach (IResourceSet set in this.GetLoadedSets())
+				{
+					if (set.Culture != null)
+					{
+						cultures.Add(set.Culture);
 
-	                }
-	            }
+					}
+				}
 
-	            return cultures;
-	        }
-        }
+				return cultures;
+			}
+		}
 
-	    /// <inheritdoc />
+		/// <inheritdoc />
 		public HashSet<string> GetAvailableResources ()
 		{
-		    lock (this.SyncRoot)
-		    {
-		        HashSet<string> resources = new HashSet<string>(StringComparerEx.InvariantCultureIgnoreCase);
-		        foreach (IResourceSet set in this.GetLoadedSets())
-		        {
-		            resources.AddRange(set.GetAvailableResources());
-		        }
+			lock (this.SyncRoot)
+			{
+				HashSet<string> resources = new HashSet<string>(StringComparerEx.InvariantCultureIgnoreCase);
+				foreach (IResourceSet set in this.GetLoadedSets())
+				{
+					resources.AddRange(set.GetAvailableResources());
+				}
 
-		        return resources;
-		    }
+				return resources;
+			}
 		}
 
 		/// <inheritdoc />
 		public List<IResourceSet> GetAvailableSets ()
 		{
-		    lock (this.SyncRoot)
-		    {
-                List<IResourceSet> sets = new List<IResourceSet>();
-		        foreach (IResourceSource source in this.Sources)
-		        {
-		            sets.AddRange(source.GetAvailableSets());
-		        }
+			lock (this.SyncRoot)
+			{
+				List<IResourceSet> sets = new List<IResourceSet>();
+				foreach (IResourceSource source in this.Sources)
+				{
+					sets.AddRange(source.GetAvailableSets());
+				}
 
-		        sets.Sort((x, y) => x.Priority.CompareTo(y.Priority));
+				sets.Sort((x, y) => x.Priority.CompareTo(y.Priority));
 
-		        return sets;
-		    }
+				return sets;
+			}
 		}
 
 		/// <inheritdoc />
 		public List<IResourceSet> GetLoadedSets ()
-	    {
-	        lock (this.SyncRoot)
-	        {
-	            List<IResourceSet> sets = new List<IResourceSet>(from x in this.GetAvailableSets() where x.IsLoaded select x);
-	            return sets;
-            }
-	    }
+		{
+			lock (this.SyncRoot)
+			{
+				List<IResourceSet> sets = new List<IResourceSet>(from x in this.GetAvailableSets() where x.IsLoaded select x);
+				return sets;
+			}
+		}
 
-	    /// <inheritdoc />
-	    public object GetRawValue(string name) => this.GetRawValue(name, this.UsedCulture);
+		/// <inheritdoc />
+		public object GetRawValue(string name) => this.GetRawValue(name, this.UsedCulture);
 
-	    /// <inheritdoc />
-	    public object GetRawValue(string name, CultureInfo culture)
-	    {
-	        if (name == null)
-	        {
-	            throw new ArgumentNullException(nameof(name));
-	        }
+		/// <inheritdoc />
+		public object GetRawValue(string name, CultureInfo culture)
+		{
+			if (name == null)
+			{
+				throw new ArgumentNullException(nameof(name));
+			}
 
-	        if (name.IsEmptyOrWhitespace())
-	        {
-	            throw new EmptyStringArgumentException(nameof(name));
-	        }
+			if (name.IsEmptyOrWhitespace())
+			{
+				throw new EmptyStringArgumentException(nameof(name));
+			}
 
-	        lock (this.SyncRoot)
-	        {
-	            List<IResourceSet> sets = this.GetLoadedSets();
+			lock (this.SyncRoot)
+			{
+				List<IResourceSet> sets = this.GetLoadedSets();
 
-	            if (culture != null)
-	            {
-	                foreach (IResourceSet set in sets)
-	                {
-	                    if (culture.Equals(set.Culture))
-	                    {
-	                        object value = set.GetRawValue(name);
-	                        if (value != null)
-	                        {
-	                            return value;
-	                        }
-                        }
-	                }
-                }
+				if (culture != null)
+				{
+					foreach (IResourceSet set in sets)
+					{
+						if (culture.Equals(set.Culture))
+						{
+							object value = set.GetRawValue(name);
+							if (value != null)
+							{
+								return value;
+							}
+						}
+					}
+				}
 
-	            foreach (IResourceSet set in sets)
-	            {
-	                object value = set.GetRawValue(name);
-	                if (value != null)
-	                {
-	                    return value;
-	                }
-	            }
+				foreach (IResourceSet set in sets)
+				{
+					object value = set.GetRawValue(name);
+					if (value != null)
+					{
+						return value;
+					}
+				}
 
-                return null;
-            }
-        }
+				return null;
+			}
+		}
 
-	    /// <inheritdoc />
+		/// <inheritdoc />
 		public T GetValue <T> (string name) => (T)this.GetValue(name, typeof(T));
 
-	    /// <inheritdoc />
-	    public T GetValue<T> (string name, CultureInfo culture) => (T)this.GetValue(name, typeof(T), culture);
+		/// <inheritdoc />
+		public T GetValue<T> (string name, CultureInfo culture) => (T)this.GetValue(name, typeof(T), culture);
 
-        /// <inheritdoc />
-        public object GetValue(string name, Type type) => this.GetValue(name, type, this.UsedCulture);
+		/// <inheritdoc />
+		public object GetValue(string name, Type type) => this.GetValue(name, type, this.UsedCulture);
 
-	    /// <inheritdoc />
-	    public object GetValue(string name, Type type, CultureInfo culture)
-	    {
-	        if (name == null)
-	        {
-	            throw new ArgumentNullException(nameof(name));
-	        }
+		/// <inheritdoc />
+		public object GetValue(string name, Type type, CultureInfo culture)
+		{
+			if (name == null)
+			{
+				throw new ArgumentNullException(nameof(name));
+			}
 
-	        if (name.IsEmptyOrWhitespace())
-	        {
-	            throw new EmptyStringArgumentException(nameof(name));
-	        }
+			if (name.IsEmptyOrWhitespace())
+			{
+				throw new EmptyStringArgumentException(nameof(name));
+			}
 
-	        if (type == null)
-	        {
-	            throw new ArgumentNullException(nameof(type));
-	        }
+			if (type == null)
+			{
+				throw new ArgumentNullException(nameof(type));
+			}
 
-	        lock (this.SyncRoot)
-	        {
-	            object value = this.GetRawValue(name, culture);
-	            if (value == null)
-	            {
-	                return null;
-	            }
+			lock (this.SyncRoot)
+			{
+				object value = this.GetRawValue(name, culture);
+				if (value == null)
+				{
+					return null;
+				}
 
-	            IResourceConverter converter = this.GetConverterForType(value.GetType(), type);
-	            if (converter == null)
-	            {
-	                throw new InvalidTypeArgumentException(nameof(type));
-	            }
+				IResourceConverter converter = this.GetConverterForType(value.GetType(), type);
+				if (converter == null)
+				{
+					throw new InvalidTypeArgumentException(nameof(type));
+				}
 
-	            object finalValue = converter.Convert(type, value);
-	            return finalValue;
-            }
-        }
+				object finalValue = converter.Convert(type, value);
+				return finalValue;
+			}
+		}
 
-	    /// <inheritdoc />
+		/// <inheritdoc />
 		public void LoadSet (IResourceSet resourceSet, bool lazyLoad)
 		{
 			if (resourceSet == null)
@@ -461,40 +461,40 @@ namespace RI.Framework.Services.Resources
 				throw new ArgumentNullException(nameof(resourceSet));
 			}
 
-		    lock (this.SyncRoot)
-		    {
-		        this.Log(LogLevel.Debug, "Loading set: {0}", resourceSet.Id);
+			lock (this.SyncRoot)
+			{
+				this.Log(LogLevel.Debug, "Loading set: {0}", resourceSet.Id);
 
-		        resourceSet.Load(lazyLoad);
-		    }
+				resourceSet.Load(lazyLoad);
+			}
 		}
 
-	    /// <inheritdoc />
-	    public void LoadSets (bool lazyLoad)
-	    {
-	        lock (this.SyncRoot)
-	        {
-	            this.Log(LogLevel.Debug, "Loading all available sets");
+		/// <inheritdoc />
+		public void LoadSets (bool lazyLoad)
+		{
+			lock (this.SyncRoot)
+			{
+				this.Log(LogLevel.Debug, "Loading all available sets");
 
-	            foreach (IResourceSet set in this.GetAvailableSets())
-	            {
-	                this.LoadSet(set, lazyLoad);
-	            }
-	        }
-        }
+				foreach (IResourceSet set in this.GetAvailableSets())
+				{
+					this.LoadSet(set, lazyLoad);
+				}
+			}
+		}
 
-	    /// <inheritdoc />
+		/// <inheritdoc />
 		public void ReloadSets ()
 		{
-		    lock (this.SyncRoot)
-		    {
-		        this.Log(LogLevel.Debug, "Reloading all loaded sets");
+			lock (this.SyncRoot)
+			{
+				this.Log(LogLevel.Debug, "Reloading all loaded sets");
 
-		        foreach (IResourceSet set in this.GetLoadedSets())
-		        {
-		            this.LoadSet(set, set.IsLazyLoaded);
-		        }
-		    }
+				foreach (IResourceSet set in this.GetLoadedSets())
+				{
+					this.LoadSet(set, set.IsLazyLoaded);
+				}
+			}
 		}
 
 		/// <inheritdoc />
@@ -505,17 +505,17 @@ namespace RI.Framework.Services.Resources
 				throw new ArgumentNullException(nameof(resourceConverter));
 			}
 
-		    lock (this.SyncRoot)
-		    {
-		        if (!this.ConvertersManual.Contains(resourceConverter))
-		        {
-		            return;
-		        }
+			lock (this.SyncRoot)
+			{
+				if (!this.ConvertersManual.Contains(resourceConverter))
+				{
+					return;
+				}
 
-		        this.ConvertersManual.RemoveAll(resourceConverter);
+				this.ConvertersManual.RemoveAll(resourceConverter);
 
-		        this.UpdateConverters();
-		    }
+				this.UpdateConverters();
+			}
 		}
 
 		/// <inheritdoc />
@@ -526,17 +526,17 @@ namespace RI.Framework.Services.Resources
 				throw new ArgumentNullException(nameof(resourceSource));
 			}
 
-		    lock (this.SyncRoot)
-		    {
-		        if (!this.SourcesManual.Contains(resourceSource))
-		        {
-		            return;
-		        }
+			lock (this.SyncRoot)
+			{
+				if (!this.SourcesManual.Contains(resourceSource))
+				{
+					return;
+				}
 
-		        this.SourcesManual.RemoveAll(resourceSource);
+				this.SourcesManual.RemoveAll(resourceSource);
 
-		        this.UpdateSources();
-		    }
+				this.UpdateSources();
+			}
 		}
 
 		/// <inheritdoc />
@@ -547,26 +547,26 @@ namespace RI.Framework.Services.Resources
 				throw new ArgumentNullException(nameof(resourceSet));
 			}
 
-		    lock (this.SyncRoot)
-		    {
-		        this.Log(LogLevel.Debug, "Unloading set: {0}", resourceSet.Id);
+			lock (this.SyncRoot)
+			{
+				this.Log(LogLevel.Debug, "Unloading set: {0}", resourceSet.Id);
 
-		        resourceSet.Unload();
-		    }
+				resourceSet.Unload();
+			}
 		}
 
 		/// <inheritdoc />
 		public void UnloadSets ()
 		{
-		    lock (this.SyncRoot)
-		    {
-		        this.Log(LogLevel.Debug, "Unloading all loaded sets");
+			lock (this.SyncRoot)
+			{
+				this.Log(LogLevel.Debug, "Unloading all loaded sets");
 
-		        foreach (IResourceSet set in this.GetLoadedSets())
-		        {
-		            this.UnloadSet(set);
-		        }
-		    }
+				foreach (IResourceSet set in this.GetLoadedSets())
+				{
+					this.UnloadSet(set);
+				}
+			}
 		}
 
 		#endregion

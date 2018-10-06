@@ -70,8 +70,8 @@ namespace RI.Framework.Services.Settings.Storages
 		/// <inheritdoc />
 		bool ISettingStorage.WriteOnlyKnown => false;
 
-		/// <inheritdoc />
-		string ISettingStorage.WritePrefixAffinity => null;
+        /// <inheritdoc />
+        IReadOnlyCollection<string> ISettingStorage.WritePrefixAffinities => null;
 
 		/// <inheritdoc />
 		public void DeleteValues (string name)

@@ -11,204 +11,204 @@ using RI.Framework.Utilities.Exceptions;
 
 namespace RI.Framework.Services.Settings.Storages
 {
-	/// <summary>
-	///     Implements a setting storage which reads from environment variables.
-	/// </summary>
-	/// <remarks>
-	///     <para>
-	///         This setting store is read-only.
-	///     </para>
-	///     <para>
-	///         This setting store internally uses <see cref="Environment" />.<see cref="Environment.GetEnvironmentVariable(string)" /> to read from the current processes environment variables.
-	///     </para>
-	///     <para>
-	///         Because environment variables can be global and their names might be ambiguous, a prefix can be specified which is then always appended in front of any name when searching for environment variables.
-	///     </para>
-	///     <para>
-	///         See <see cref="ISettingStorage" /> for more details.
-	///     </para>
-	///     <note type="important">
-	///         <see cref="EnvironmentVariableSettingStorage" /> does not support multiple values for the same setting!
-	///     </note>
-	/// </remarks>
-	[Export]
-	public sealed class EnvironmentVariableSettingStorage : ISettingStorage
-	{
-		#region Instance Constructor/Destructor
+    /// <summary>
+    ///     Implements a setting storage which reads from environment variables.
+    /// </summary>
+    /// <remarks>
+    ///     <para>
+    ///         This setting store is read-only.
+    ///     </para>
+    ///     <para>
+    ///         This setting store internally uses <see cref="Environment" />.<see cref="Environment.GetEnvironmentVariable(string)" /> to read from the current processes environment variables.
+    ///     </para>
+    ///     <para>
+    ///         Because environment variables can be global and their names might be ambiguous, a prefix can be specified which is then always appended in front of any name when searching for environment variables.
+    ///     </para>
+    ///     <para>
+    ///         See <see cref="ISettingStorage" /> for more details.
+    ///     </para>
+    ///     <note type="important">
+    ///         <see cref="EnvironmentVariableSettingStorage" /> does not support multiple values for the same setting!
+    ///     </note>
+    /// </remarks>
+    [Export]
+    public sealed class EnvironmentVariableSettingStorage : ISettingStorage
+    {
+        #region Instance Constructor/Destructor
 
-		/// <summary>
-		///     Creates a new instance of <see cref="EnvironmentVariableSettingStorage" />.
-		/// </summary>
-		/// <remarks>
-		///     <para>
-		///         No prefix will be used.
-		///     </para>
-		/// </remarks>
-		public EnvironmentVariableSettingStorage ()
-			: this(null)
-		{
-		}
+        /// <summary>
+        ///     Creates a new instance of <see cref="EnvironmentVariableSettingStorage" />.
+        /// </summary>
+        /// <remarks>
+        ///     <para>
+        ///         No prefix will be used.
+        ///     </para>
+        /// </remarks>
+        public EnvironmentVariableSettingStorage ()
+            : this(null)
+        {
+        }
 
-		/// <summary>
-		///     Creates a new instance of <see cref="EnvironmentVariableSettingStorage" />.
-		/// </summary>
-		/// <param name="prefix"> The prefix to be used. </param>
-		public EnvironmentVariableSettingStorage (string prefix)
-		{
-			this.Prefix = prefix ?? string.Empty;
-			this.Prefix = this.Prefix.IsEmptyOrWhitespace() ? null : this.Prefix.Trim();
-		}
+        /// <summary>
+        ///     Creates a new instance of <see cref="EnvironmentVariableSettingStorage" />.
+        /// </summary>
+        /// <param name="prefix"> The prefix to be used. </param>
+        public EnvironmentVariableSettingStorage (string prefix)
+        {
+            this.Prefix = prefix ?? string.Empty;
+            this.Prefix = this.Prefix.IsEmptyOrWhitespace() ? null : this.Prefix.Trim();
+        }
 
-		#endregion
-
-
-
-
-		#region Instance Properties/Indexer
-
-		/// <summary>
-		///     Gets the used prefix.
-		/// </summary>
-		/// <value>
-		///     The used prefix or null if no prefix is used.
-		/// </value>
-		public string Prefix { get; private set; }
-
-		#endregion
+        #endregion
 
 
 
 
-		#region Interface: ISettingStorage
+        #region Instance Properties/Indexer
 
-		/// <inheritdoc />
-		bool ISettingStorage.IsReadOnly => true;
+        /// <summary>
+        ///     Gets the used prefix.
+        /// </summary>
+        /// <value>
+        ///     The used prefix or null if no prefix is used.
+        /// </value>
+        public string Prefix { get; private set; }
 
-		/// <inheritdoc />
-		bool ISettingStorage.WriteOnlyKnown => false;
+        #endregion
 
-		/// <inheritdoc />
-		string ISettingStorage.WritePrefixAffinity => null;
 
-		/// <inheritdoc />
-		public void DeleteValues (string name)
-		{
-			throw new NotSupportedException("Deleting a value from environment variables is not supported.");
-		}
 
-		/// <inheritdoc />
-		public void DeleteValues (Predicate<string> predicate)
-		{
-			throw new NotSupportedException("Deleting a value from environment variables is not supported.");
-		}
 
-		/// <inheritdoc />
-		public List<string> GetValues (string name)
-		{
-			if (name == null)
-			{
-				throw new ArgumentNullException(nameof(name));
-			}
+        #region Interface: ISettingStorage
 
-			if (name.IsEmptyOrWhitespace())
-			{
-				throw new EmptyStringArgumentException(nameof(name));
-			}
+        /// <inheritdoc />
+        bool ISettingStorage.IsReadOnly => true;
 
-			List<string> values = new List<string>();
-			string value = Environment.GetEnvironmentVariable((this.Prefix ?? string.Empty) + name);
-			if (value != null)
-			{
-				values.Add(value);
-			}
+        /// <inheritdoc />
+        bool ISettingStorage.WriteOnlyKnown => false;
 
-			return values;
-		}
+        /// <inheritdoc />
+        IReadOnlyCollection<string> ISettingStorage.WritePrefixAffinities => null;
 
-		/// <inheritdoc />
-		public Dictionary<string, List<string>> GetValues (Predicate<string> predicate)
-		{
-			if (predicate == null)
-			{
-				throw new ArgumentNullException(nameof(predicate));
-			}
+        /// <inheritdoc />
+        public void DeleteValues (string name)
+        {
+            throw new NotSupportedException("Deleting a value from environment variables is not supported.");
+        }
 
-			Dictionary<string, List<string>> values = new Dictionary<string, List<string>>(SettingService.NameComparer);
-			IDictionary variables = Environment.GetEnvironmentVariables();
-			foreach (DictionaryEntry entry in variables)
-			{
-				string name = (string)entry.Key;
-				string value = (string)entry.Value;
-				if (predicate(name))
-				{
-					if (!values.ContainsKey(name))
-					{
-						values.Add(name, new List<string>());
-					}
-					values[name].Add(value);
-				}
-			}
-			return values;
-		}
+        /// <inheritdoc />
+        public void DeleteValues (Predicate<string> predicate)
+        {
+            throw new NotSupportedException("Deleting a value from environment variables is not supported.");
+        }
 
-		/// <inheritdoc />
-		public bool HasValue (Predicate<string> predicate)
-		{
-			IDictionary variables = Environment.GetEnvironmentVariables();
-			foreach (DictionaryEntry entry in variables)
-			{
-				string name = (string)entry.Key;
+        /// <inheritdoc />
+        public List<string> GetValues (string name)
+        {
+            if (name == null)
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
 
-				if (!this.Prefix.IsNullOrEmpty())
-				{
-					if (name.StartsWith(this.Prefix, StringComparison.InvariantCultureIgnoreCase))
-					{
-						name = name.Substring(this.Prefix.Length);
-					}
-				}
+            if (name.IsEmptyOrWhitespace())
+            {
+                throw new EmptyStringArgumentException(nameof(name));
+            }
 
-				if (predicate(name))
-				{
-					return true;
-				}
-			}
+            List<string> values = new List<string>();
+            string value = Environment.GetEnvironmentVariable((this.Prefix ?? string.Empty) + name);
+            if (value != null)
+            {
+                values.Add(value);
+            }
 
-			return false;
-		}
+            return values;
+        }
 
-		/// <inheritdoc />
-		public bool HasValue (string name)
-		{
-			if (name == null)
-			{
-				throw new ArgumentNullException(nameof(name));
-			}
+        /// <inheritdoc />
+        public Dictionary<string, List<string>> GetValues (Predicate<string> predicate)
+        {
+            if (predicate == null)
+            {
+                throw new ArgumentNullException(nameof(predicate));
+            }
 
-			if (name.IsEmptyOrWhitespace())
-			{
-				throw new EmptyStringArgumentException(nameof(name));
-			}
+            Dictionary<string, List<string>> values = new Dictionary<string, List<string>>(SettingService.NameComparer);
+            IDictionary variables = Environment.GetEnvironmentVariables();
+            foreach (DictionaryEntry entry in variables)
+            {
+                string name = (string)entry.Key;
+                string value = (string)entry.Value;
+                if (predicate(name))
+                {
+                    if (!values.ContainsKey(name))
+                    {
+                        values.Add(name, new List<string>());
+                    }
+                    values[name].Add(value);
+                }
+            }
+            return values;
+        }
 
-			return Environment.GetEnvironmentVariable((this.Prefix ?? string.Empty) + name) != null;
-		}
+        /// <inheritdoc />
+        public bool HasValue (Predicate<string> predicate)
+        {
+            IDictionary variables = Environment.GetEnvironmentVariables();
+            foreach (DictionaryEntry entry in variables)
+            {
+                string name = (string)entry.Key;
 
-		/// <inheritdoc />
-		public void Load ()
-		{
-		}
+                if (!this.Prefix.IsNullOrEmpty())
+                {
+                    if (name.StartsWith(this.Prefix, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        name = name.Substring(this.Prefix.Length);
+                    }
+                }
 
-		/// <inheritdoc />
-		public void Save ()
-		{
-			throw new NotSupportedException("Saving to environment variables is not supported.");
-		}
+                if (predicate(name))
+                {
+                    return true;
+                }
+            }
 
-		/// <inheritdoc />
-		public void SetValues (string name, IEnumerable<string> values)
-		{
-			throw new NotSupportedException("Setting a value to environment variables is not supported.");
-		}
+            return false;
+        }
 
-		#endregion
-	}
+        /// <inheritdoc />
+        public bool HasValue (string name)
+        {
+            if (name == null)
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
+
+            if (name.IsEmptyOrWhitespace())
+            {
+                throw new EmptyStringArgumentException(nameof(name));
+            }
+
+            return Environment.GetEnvironmentVariable((this.Prefix ?? string.Empty) + name) != null;
+        }
+
+        /// <inheritdoc />
+        public void Load ()
+        {
+        }
+
+        /// <inheritdoc />
+        public void Save ()
+        {
+            throw new NotSupportedException("Saving to environment variables is not supported.");
+        }
+
+        /// <inheritdoc />
+        public void SetValues (string name, IEnumerable<string> values)
+        {
+            throw new NotSupportedException("Setting a value to environment variables is not supported.");
+        }
+
+        #endregion
+    }
 }
