@@ -3,6 +3,7 @@
 using Newtonsoft.Json;
 
 using RI.Framework.Composition.Model;
+using RI.Framework.Services.Resources.Internals;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.ObjectModel;

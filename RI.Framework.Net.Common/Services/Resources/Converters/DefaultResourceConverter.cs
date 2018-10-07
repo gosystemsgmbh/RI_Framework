@@ -5,6 +5,7 @@ using System.Xml.Linq;
 using RI.Framework.Composition.Model;
 using RI.Framework.IO.CSV;
 using RI.Framework.IO.INI;
+using RI.Framework.Services.Resources.Internals;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.ObjectModel;
@@ -21,7 +22,7 @@ namespace RI.Framework.Services.Resources.Converters
 	/// <remarks>
 	///     <para>
 	///         The types supported by this resource converter are:
-	///         <see cref="string" /> to <see cref="string" />, <see cref="string" /> to <see cref="XDocument" />, <see cref="string" /> to <see cref="XmlDocument" />, <see cref="string" /> to <see cref="IniDocument" />, <see cref="string" /> to <see cref="CsvDocument" />, and arrays of <see cref="byte" /> to arrays of <see cref="byte" />.
+	///         <see cref="string" />, <see cref="XDocument" />, <see cref="XmlDocument" />, <see cref="IniDocument" />, <see cref="CsvDocument" />, arrays of <see cref="byte" />.
 	///     </para>
 	///     <para>
 	///         See <see cref="IResourceConverter" /> for more details.

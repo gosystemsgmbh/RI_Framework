@@ -54,7 +54,7 @@
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\Settings\ISettingServiceExtensions.cs" />
+    <Compile Include="Services\Settings\SecuritySettingServiceExtensions.cs" />
     <Compile Include="Services\Settings\Storages\AppConfigSettingStorage.cs" />
     <Compile Include="Utilities\Cryptography\LocalEncryption.cs" />
   </ItemGroup>

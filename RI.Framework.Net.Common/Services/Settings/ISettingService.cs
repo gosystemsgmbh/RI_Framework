@@ -34,6 +34,7 @@ namespace RI.Framework.Services.Settings
     ///         Otherwise, the order is undefined for values with the same name.
     ///     </note>
     /// </remarks>
+    /// TODO: Make thread-safe
     [Export]
     public interface ISettingService
     {

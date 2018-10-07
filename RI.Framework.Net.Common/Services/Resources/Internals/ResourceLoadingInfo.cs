@@ -6,7 +6,7 @@ using RI.Framework.Services.Resources.Sources;
 
 
 
-namespace RI.Framework.Services.Resources
+namespace RI.Framework.Services.Resources.Internals
 {
 	/// <summary>
 	///     Describes, from the perspective of a <see cref="IResourceConverter" />, how a raw resource value is to be loaded by its associated <see cref="IResourceSet" /> or <see cref="IResourceSource" />.

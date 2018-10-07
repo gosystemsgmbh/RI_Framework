@@ -5,7 +5,7 @@ using RI.Framework.Services.Resources.Sources;
 
 
 
-namespace RI.Framework.Services.Resources
+namespace RI.Framework.Services.Resources.Internals
 {
 	/// <summary>
 	///     Describes the loading type of a raw resource value.

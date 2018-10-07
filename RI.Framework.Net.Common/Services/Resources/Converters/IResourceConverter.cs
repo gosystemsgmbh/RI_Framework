@@ -1,6 +1,7 @@
 ﻿using System;
 
 using RI.Framework.Composition.Model;
+using RI.Framework.Services.Resources.Internals;
 using RI.Framework.Services.Resources.Sources;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.ObjectModel;

@@ -26,33 +26,33 @@ namespace RI.Framework.Services.Resources
     /// </remarks>
     /// <threadsafety static="true" instance="true" />
     [Export]
-	public interface IResourceService : ISynchronizable
-	{
-		/// <summary>
-		///     Gets all currently available resource converters.
-		/// </summary>
-		/// <value>
-		///     All currently available resource converters.
-		/// </value>
-		/// <remarks>
-		///     <note type="implement">
-		///         The value of this property must never be null.
-		///     </note>
-		/// </remarks>
-		IEnumerable<IResourceConverter> Converters { get; }
+    public interface IResourceService : ISynchronizable
+    {
+        /// <summary>
+        ///     Gets all currently available resource converters.
+        /// </summary>
+        /// <value>
+        ///     All currently available resource converters.
+        /// </value>
+        /// <remarks>
+        ///     <note type="implement">
+        ///         The value of this property must never be null.
+        ///     </note>
+        /// </remarks>
+        IEnumerable<IResourceConverter> Converters { get; }
 
-		/// <summary>
-		///     Gets all currently used resource sources.
-		/// </summary>
-		/// <value>
-		///     All currently used resource sources.
-		/// </value>
-		/// <remarks>
-		///     <note type="implement">
-		///         The value of this property must never be null.
-		///     </note>
-		/// </remarks>
-		IEnumerable<IResourceSource> Sources { get; }
+        /// <summary>
+        ///     Gets all currently used resource sources.
+        /// </summary>
+        /// <value>
+        ///     All currently used resource sources.
+        /// </value>
+        /// <remarks>
+        ///     <note type="implement">
+        ///         The value of this property must never be null.
+        ///     </note>
+        /// </remarks>
+        IEnumerable<IResourceSource> Sources { get; }
 
         /// <summary>
         /// Gets or sets the default culture to use when retrieving resource values.
@@ -67,38 +67,38 @@ namespace RI.Framework.Services.Resources
         /// </remarks>
         CultureInfo DefaultCulture { get; set; }
 
-		/// <summary>
-		///     Adds a resource converter and starts using it for all subsequent conversions.
-		/// </summary>
-		/// <param name="resourceConverter"> The resource converter to add. </param>
-		/// <remarks>
-		///     <note type="implement">
-		///         Specifying an already added resource converter should have no effect.
-		///     </note>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="resourceConverter" /> is null. </exception>
-		void AddConverter (IResourceConverter resourceConverter);
+        /// <summary>
+        ///     Adds a resource converter and starts using it for all subsequent conversions.
+        /// </summary>
+        /// <param name="resourceConverter"> The resource converter to add. </param>
+        /// <remarks>
+        ///     <note type="implement">
+        ///         Specifying an already added resource converter should have no effect.
+        ///     </note>
+        /// </remarks>
+        /// <exception cref="ArgumentNullException"> <paramref name="resourceConverter" /> is null. </exception>
+        void AddConverter (IResourceConverter resourceConverter);
 
-		/// <summary>
-		///     Adds a resource source.
-		/// </summary>
-		/// <param name="resourceSource"> The resource source to add. </param>
-		/// <remarks>
-		///     <note type="implement">
-		///         Specifying an already added resource source should have no effect.
-		///     </note>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="resourceSource" /> is null. </exception>
-		void AddSource (IResourceSource resourceSource);
+        /// <summary>
+        ///     Adds a resource source.
+        /// </summary>
+        /// <param name="resourceSource"> The resource source to add. </param>
+        /// <remarks>
+        ///     <note type="implement">
+        ///         Specifying an already added resource source should have no effect.
+        ///     </note>
+        /// </remarks>
+        /// <exception cref="ArgumentNullException"> <paramref name="resourceSource" /> is null. </exception>
+        void AddSource (IResourceSource resourceSource);
 
-	    /// <summary>
-	    ///     Gets all available cultures.
-	    /// </summary>
-	    /// <returns>
-	    ///     The hash set with all available cultures.
-	    ///     If no cultures are available (e.g. none was specified in any resource set), an empty hash set is returned.
-	    /// </returns>
-	    HashSet<CultureInfo> GetAvailableCultures ();
+        /// <summary>
+        ///     Gets all available cultures.
+        /// </summary>
+        /// <returns>
+        ///     The hash set with all available cultures.
+        ///     If no cultures are available (e.g. none was specified in any resource set), an empty hash set is returned.
+        /// </returns>
+        HashSet<CultureInfo> GetAvailableCultures ();
 
         /// <summary>
         ///     Gets the names of all available resources.
@@ -245,61 +245,61 @@ namespace RI.Framework.Services.Resources
         /// <exception cref="ArgumentNullException"> <paramref name="resourceSet" /> is null. </exception>
         void LoadSet (IResourceSet resourceSet, bool lazyLoad);
 
-		/// <summary>
-		///     Loads all currently available resource sets and makes its resources available.
-		/// </summary>
-		/// <param name="lazyLoad"> Specifies whether lazy loading shall be used for the resources or not. </param>
-		/// <remarks>
-		///     <para>
-		///         Lazy loading means that the actual value of a resource is only loaded into memory and converted to the appropriate type when <see cref="GetRawValue(string)" /> or <see cref="GetRawValue(string,CultureInfo)"/> is called for it.
-		///     </para>
-		/// </remarks>
-		void LoadSets (bool lazyLoad);
+        /// <summary>
+        ///     Loads all currently available resource sets and makes its resources available.
+        /// </summary>
+        /// <param name="lazyLoad"> Specifies whether lazy loading shall be used for the resources or not. </param>
+        /// <remarks>
+        ///     <para>
+        ///         Lazy loading means that the actual value of a resource is only loaded into memory and converted to the appropriate type when <see cref="GetRawValue(string)" /> or <see cref="GetRawValue(string,CultureInfo)"/> is called for it.
+        ///     </para>
+        /// </remarks>
+        void LoadSets (bool lazyLoad);
 
         /// <summary>
         ///     Reloads all currently loaded resource sets.
         /// </summary>
         void ReloadSets ();
 
-		/// <summary>
-		///     Removes a resource converter and stops using it for all subsequent conversions.
-		/// </summary>
-		/// <param name="resourceConverter"> The resource converter to remove. </param>
-		/// <remarks>
-		///     <note type="implement">
-		///         Specifying an already removed resource converter should have no effect.
-		///     </note>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="resourceConverter" /> is null. </exception>
-		void RemoveConverter (IResourceConverter resourceConverter);
+        /// <summary>
+        ///     Removes a resource converter and stops using it for all subsequent conversions.
+        /// </summary>
+        /// <param name="resourceConverter"> The resource converter to remove. </param>
+        /// <remarks>
+        ///     <note type="implement">
+        ///         Specifying an already removed resource converter should have no effect.
+        ///     </note>
+        /// </remarks>
+        /// <exception cref="ArgumentNullException"> <paramref name="resourceConverter" /> is null. </exception>
+        void RemoveConverter (IResourceConverter resourceConverter);
 
-		/// <summary>
-		///     Removes a resource source.
-		/// </summary>
-		/// <param name="resourceSource"> The resource source to remove. </param>
-		/// <remarks>
-		///     <note type="implement">
-		///         Specifying an already removed resource source should have no effect.
-		///     </note>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="resourceSource" /> is null. </exception>
-		void RemoveSource (IResourceSource resourceSource);
+        /// <summary>
+        ///     Removes a resource source.
+        /// </summary>
+        /// <param name="resourceSource"> The resource source to remove. </param>
+        /// <remarks>
+        ///     <note type="implement">
+        ///         Specifying an already removed resource source should have no effect.
+        ///     </note>
+        /// </remarks>
+        /// <exception cref="ArgumentNullException"> <paramref name="resourceSource" /> is null. </exception>
+        void RemoveSource (IResourceSource resourceSource);
 
-		/// <summary>
-		///     Unloads a resource set.
-		/// </summary>
-		/// <param name="resourceSet"> The resource set to unload. </param>
-		/// <remarks>
-		///     <note type="implement">
-		///         Unloading an already unloaded resource set should have no effect.
-		///     </note>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="resourceSet" /> is null. </exception>
-		void UnloadSet (IResourceSet resourceSet);
+        /// <summary>
+        ///     Unloads a resource set.
+        /// </summary>
+        /// <param name="resourceSet"> The resource set to unload. </param>
+        /// <remarks>
+        ///     <note type="implement">
+        ///         Unloading an already unloaded resource set should have no effect.
+        ///     </note>
+        /// </remarks>
+        /// <exception cref="ArgumentNullException"> <paramref name="resourceSet" /> is null. </exception>
+        void UnloadSet (IResourceSet resourceSet);
 
-		/// <summary>
-		///     Unloads all currently loaded resource sets.
-		/// </summary>
-		void UnloadSets ();
-	}
+        /// <summary>
+        ///     Unloads all currently loaded resource sets.
+        /// </summary>
+        void UnloadSets ();
+    }
 }
