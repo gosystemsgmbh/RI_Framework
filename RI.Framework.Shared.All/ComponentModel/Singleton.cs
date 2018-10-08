@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using RI.Framework.Collections.DirectLinq;
+using RI.Framework.Composition;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 
@@ -16,6 +17,11 @@ namespace RI.Framework.ComponentModel
 	/// <remarks>
 	///     <note type="note">
 	///         <see cref="Singleton" /> shares its singleton instances with <see cref="Singleton{T}" />.
+	///     </note>
+	///     <note type="note">
+	///         The use of singletons is considered a bad practice in some contexts and under some circumstances.
+	///         Please reflect carefully whether singletons is the right architectural/design choice.
+	///         Dependency injection, e.g. using <see cref="CompositionContainer" />, might be a better approach.
 	///     </note>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
@@ -109,6 +115,7 @@ namespace RI.Framework.ComponentModel
 				{
 					Singleton.Instances.Add(type, Activator.CreateInstance(type));
 				}
+
 				return Singleton.Instances[type];
 			}
 		}
@@ -145,8 +152,10 @@ namespace RI.Framework.ComponentModel
 					{
 						throw new InvalidOperationException("The creator delegate did not return a new instance of the singleton.");
 					}
+
 					Singleton.Instances.Add(type, instance);
 				}
+
 				return Singleton.Instances[type];
 			}
 		}
@@ -411,6 +420,7 @@ namespace RI.Framework.ComponentModel
 				{
 					Singleton<T>.Instance = Activator.CreateInstance<T>();
 				}
+
 				return Singleton<T>.Instance;
 			}
 		}
@@ -447,6 +457,7 @@ namespace RI.Framework.ComponentModel
 						throw new InvalidOperationException("The creator delegate did not return a new instance of the singleton.");
 					}
 				}
+
 				return Singleton<T>.Instance;
 			}
 		}

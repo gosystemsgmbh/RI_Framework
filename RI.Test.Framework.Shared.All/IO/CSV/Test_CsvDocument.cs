@@ -179,30 +179,36 @@ namespace RI.Test.Framework.IO.CSV
 		[TestMethod]
 		public void Values_Test ()
 		{
+			CsvReaderSettings settings = new CsvReaderSettings();
+			settings.AllowMultilineValues = true;
+			settings.WhitespaceTolerant = true;
+			settings.Quote = '\"';
+			settings.Separator = ';';
+
 			CsvDocument doc = new CsvDocument();
 
-			doc.Load(Test_CsvDocument.NoQuotes_NoBreaks_NoEmpties);
+			doc.Load(Test_CsvDocument.NoQuotes_NoBreaks_NoEmpties, settings);
 			this.Verify_NoQuotes_NoBreaks_NoEmpties(doc);
 
-			doc.Load(Test_CsvDocument.NoQuotes_NoBreaks_WithEmpties);
+			doc.Load(Test_CsvDocument.NoQuotes_NoBreaks_WithEmpties, settings);
 			this.Verify_NoQuotes_NoBreaks_WithEmpties(doc);
 
-			doc.Load(Test_CsvDocument.NoQuotes_WithBreaks_NoEmpties);
+			doc.Load(Test_CsvDocument.NoQuotes_WithBreaks_NoEmpties, settings);
 			this.Verify_NoQuotes_WithBreaks_NoEmpties(doc);
 
-			doc.Load(Test_CsvDocument.NoQuotes_WithBreaks_WithEmpties);
+			doc.Load(Test_CsvDocument.NoQuotes_WithBreaks_WithEmpties, settings);
 			this.Verify_NoQuotes_WithBreaks_WithEmpties(doc);
 
-			doc.Load(Test_CsvDocument.WithQuotes_NoBreaks_NoEmpties);
+			doc.Load(Test_CsvDocument.WithQuotes_NoBreaks_NoEmpties, settings);
 			this.Verify_WithQuotes_NoBreaks_NoEmpties(doc);
 
-			doc.Load(Test_CsvDocument.WithQuotes_NoBreaks_WithEmpties);
+			doc.Load(Test_CsvDocument.WithQuotes_NoBreaks_WithEmpties, settings);
 			this.Verify_WithQuotes_NoBreaks_WithEmpties(doc);
 
-			doc.Load(Test_CsvDocument.WithQuotes_WithBreaks_NoEmpties);
+			doc.Load(Test_CsvDocument.WithQuotes_WithBreaks_NoEmpties, settings);
 			this.Verify_WithQuotes_WithBreaks_NoEmpties(doc);
 
-			doc.Load(Test_CsvDocument.WithQuotes_WithBreaks_WithEmpties);
+			doc.Load(Test_CsvDocument.WithQuotes_WithBreaks_WithEmpties, settings);
 			this.Verify_WithQuotes_WithBreaks_WithEmpties(doc);
 		}
 

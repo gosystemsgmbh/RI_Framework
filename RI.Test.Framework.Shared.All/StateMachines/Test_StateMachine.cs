@@ -1,4 +1,4 @@
-﻿#if PLATFORM_NETFX
+﻿#if PLATFORM_NETFX || PLATFORM_NETSTD || PLATFORM_NETCORE
 
 using RI.Framework.Threading.Dispatcher;
 #endif
@@ -12,16 +12,11 @@ using RI.Framework.Composition;
 using RI.Framework.StateMachines;
 using RI.Framework.StateMachines.Dispatchers;
 using RI.Framework.StateMachines.Resolvers;
-using RI.Framework.Utilities.ObjectModel;
 using RI.Test.Framework.StateMachines.Dispatchers;
 using RI.Test.Framework.StateMachines.States;
 #if PLATFORM_UNITY
 using RI.Framework.Services.Dispatcher;
 using RI.Framework.Services;
-
-
-
-
 #endif
 
 
@@ -39,6 +34,7 @@ namespace RI.Test.Framework.StateMachines
 
 			StateMachineConfiguration config = new DefaultStateMachineConfiguration();
 			config.Dispatcher = new Mock_Dispatcher();
+			config.Resolver = new DefaultStateResolver();
 
 			StateMachine test = new StateMachine(config);
 
@@ -180,7 +176,7 @@ namespace RI.Test.Framework.StateMachines
 		{
 			Mock_State.TestValue = "";
 
-#if PLATFORM_NETFX
+#if PLATFORM_NETFX || PLATFORM_NETSTD || PLATFORM_NETCORE
 			HeavyThreadDispatcher htd = new HeavyThreadDispatcher();
 			ThreadDispatcherStateDispatcher dispatcher = new ThreadDispatcherStateDispatcher(htd);
 
@@ -200,6 +196,7 @@ namespace RI.Test.Framework.StateMachines
 
 			StateMachineConfiguration config = new DefaultStateMachineConfiguration();
 			config.Dispatcher = dispatcher;
+			config.Resolver = new DefaultStateResolver();
 			config.CachingEnabled = false;
 			StateMachine test = new StateMachine(config);
 
@@ -278,6 +275,7 @@ namespace RI.Test.Framework.StateMachines
 
 			StateMachineConfiguration config = new DefaultStateMachineConfiguration();
 			config.Dispatcher = new Mock_Dispatcher();
+			config.Resolver = new DefaultStateResolver();
 
 			StateMachine test = new StateMachine(config);
 
@@ -333,7 +331,7 @@ namespace RI.Test.Framework.StateMachines
 		{
 			Mock_State.TestValue = "";
 
-#if PLATFORM_NETFX
+#if PLATFORM_NETFX || PLATFORM_NETSTD || PLATFORM_NETCORE
 			HeavyThreadDispatcher htd = new HeavyThreadDispatcher();
 			ThreadDispatcherStateDispatcher dispatcher = new ThreadDispatcherStateDispatcher(htd);
 
@@ -353,6 +351,7 @@ namespace RI.Test.Framework.StateMachines
 
 			StateMachineConfiguration config = new DefaultStateMachineConfiguration();
 			config.Dispatcher = dispatcher;
+			config.Resolver = new DefaultStateResolver();
 
 			StateMachine test = new StateMachine(config);
 
@@ -479,6 +478,7 @@ namespace RI.Test.Framework.StateMachines
 
 			StateMachineConfiguration config = new DefaultStateMachineConfiguration();
 			config.Dispatcher = new Mock_Dispatcher();
+			config.Resolver = new DefaultStateResolver();
 
 			StateMachine test = new StateMachine(config);
 
@@ -576,6 +576,7 @@ namespace RI.Test.Framework.StateMachines
 		{
 			StateMachineConfiguration config = new DefaultStateMachineConfiguration();
 			config.Dispatcher = new Mock_Dispatcher();
+			config.Resolver = new DefaultStateResolver();
 			config.CachingEnabled = true;
 
 			StateMachine test = new StateMachine(config);

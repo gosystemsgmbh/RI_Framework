@@ -10,30 +10,30 @@ using RI.Framework.Services.Resources.Converters;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Logging;
-
-
+using RI.Framework.Utilities.ObjectModel;
 
 
 namespace RI.Framework.Services.Resources.Sources
 {
-	/// <summary>
-	///     Implements a resource source which reads from ZIP files in a specified directory.
-	/// </summary>
-	/// <remarks>
-	///     <para>
-	///         Each ZIP file in the specified directory corresponds to one resource set (<see cref="ZipResourceSet" />).
-	///         Each file in a ZIP file is read and loaded, if the file extension is known.
-	///         Subdirectories in ZIP files (resource sets) are not processed.
-	///     </para>
-	///     <para>
-	///         A special file (<see cref="ZipResourceSet.SettingsFileName" />) is expected in each ZIP file (resource set).
-	///         It contains descriptions and settings of the corresponding resource set.
-	///     </para>
-	///     <para>
-	///         See <see cref="IResourceSource" /> for more details.
-	///     </para>
-	/// </remarks>
-	[Export]
+    /// <summary>
+    ///     Implements a resource source which reads from ZIP files in a specified directory.
+    /// </summary>
+    /// <remarks>
+    ///     <para>
+    ///         Each ZIP file in the specified directory corresponds to one resource set (<see cref="ZipResourceSet" />).
+    ///         Each file in a ZIP file is read and loaded, if the file extension is known.
+    ///         Subdirectories in ZIP files are not processed.
+    ///     </para>
+    ///     <para>
+    ///         A special file (<see cref="ZipResourceSet.SettingsFileName" />) is expected in each ZIP file (resource set).
+    ///         It contains descriptions and settings of the corresponding resource set.
+    ///     </para>
+    ///     <para>
+    ///         See <see cref="IResourceSource" /> for more details.
+    ///     </para>
+    /// </remarks>
+    /// <threadsafety static="true" instance="true" />
+    [Export]
 	public sealed class ZipResourceSource : LogSource, IResourceSource
 	{
 		#region Constants
@@ -58,43 +58,46 @@ namespace RI.Framework.Services.Resources.Sources
 		/// </remarks>
 		public static readonly Encoding DefaultEncoding = Encoding.UTF8;
 
-		#endregion
+	    private bool _isInitialized;
+
+        #endregion
 
 
 
 
-		#region Instance Constructor/Destructor
+        #region Instance Constructor/Destructor
 
-		/// <summary>
-		///     Creates a new instance of <see cref="ZipResourceSource" />.
-		/// </summary>
-		/// <param name="directory"> The directory which contains the resource set ZIP files. </param>
-		/// <exception cref="ArgumentNullException"> <paramref name="directory" /> is null. </exception>
-		/// <exception cref="InvalidOperationException"> <paramref name="directory" /> is not a real usable directory. </exception>
-		/// <remarks>
-		///     <para>
-		///         The default encoding <see cref="DefaultEncoding" /> is used as the text encoding.
-		///     </para>
-		///     <para>
-		///         The default file pattern <see cref="DefaultFilePattern" /> is used and search is performed non-recursive.
-		///     </para>
-		/// </remarks>
-		public ZipResourceSource (DirectoryPath directory)
-			: this(directory, null, null, false)
+        /// <summary>
+        ///     Creates a new instance of <see cref="ZipResourceSource" />.
+        /// </summary>
+        /// <param name="directory"> The directory which contains the resource set ZIP files. </param>
+        /// <exception cref="ArgumentNullException"> <paramref name="directory" /> is null. </exception>
+        /// <exception cref="InvalidOperationException"> <paramref name="directory" /> is not a real usable directory. </exception>
+        /// <remarks>
+        ///     <para>
+        ///         The default encoding <see cref="DefaultEncoding" /> is used as the text encoding.
+        ///     </para>
+        ///     <para>
+        ///         The default file pattern <see cref="DefaultFilePattern" /> is used and search is performed non-recursive.
+        ///     </para>
+        /// </remarks>
+        public ZipResourceSource (DirectoryPath directory)
+			: this(directory, null, null, false, null)
 		{
 		}
 
-		/// <summary>
-		///     Creates a new instance of <see cref="ZipResourceSource" />.
-		/// </summary>
-		/// <param name="directory"> The directory which contains the resource set ZIP files. </param>
-		/// <param name="fileEncoding"> The text encoding used for reading text files (can be null to use <see cref="DefaultEncoding" />). </param>
-		/// <param name="filePattern"> The file pattern which is used to search for ZIP files (can be null to use <see cref="DefaultFilePattern" />). </param>
-		/// <param name="recursive"> Specifies whether ZIP files are searched recursive (including subdirectories) or not. </param>
-		/// <exception cref="ArgumentNullException"> <paramref name="directory" /> is null. </exception>
-		/// <exception cref="InvalidOperationException"> <paramref name="directory" /> is not a real usable directory. </exception>
-		/// <exception cref="InvalidPathArgumentException"> <paramref name="filePattern" /> is an empty string. </exception>
-		public ZipResourceSource (DirectoryPath directory, Encoding fileEncoding, string filePattern, bool recursive)
+        /// <summary>
+        ///     Creates a new instance of <see cref="ZipResourceSource" />.
+        /// </summary>
+        /// <param name="directory"> The directory which contains the resource set ZIP files. </param>
+        /// <param name="fileEncoding"> The text encoding used for reading text files (can be null to use <see cref="DefaultEncoding" />). </param>
+        /// <param name="filePattern"> The file pattern which is used to search for ZIP files (can be null to use <see cref="DefaultFilePattern" />). </param>
+        /// <param name="recursive"> Specifies whether ZIP files are searched recursive (including subdirectories) or not. </param>
+        /// <param name="ignoredExtensions"> A sequence of file extensions which are completely ignored (can be null to not ignore any files). </param>
+        /// <exception cref="ArgumentNullException"> <paramref name="directory" /> is null. </exception>
+        /// <exception cref="InvalidOperationException"> <paramref name="directory" /> is not a real usable directory. </exception>
+        /// <exception cref="InvalidPathArgumentException"> <paramref name="filePattern" /> is an empty string. </exception>
+        public ZipResourceSource (DirectoryPath directory, Encoding fileEncoding, string filePattern, bool recursive, IEnumerable<string> ignoredExtensions)
 		{
 			if (directory == null)
 			{
@@ -112,32 +115,52 @@ namespace RI.Framework.Services.Resources.Sources
 				{
 					throw new EmptyStringArgumentException(nameof(filePattern));
 				}
-			}
+		    }
 
-			this.IsInitialized = false;
+		    this.SyncRoot = new object();
+
+            this.IsInitialized = false;
 
 			this.Directory = directory;
 			this.FileEncoding = fileEncoding ?? ZipResourceSource.DefaultEncoding;
 			this.FilePattern = filePattern ?? ZipResourceSource.DefaultFilePattern;
 			this.Recursive = recursive;
 
-			this.Sets = new Dictionary<FilePath, ZipResourceSet>();
-		}
+		    this.IgnoredExtensionsInternal = new HashSet<string>((ignoredExtensions ?? new string[0]).Select(x => x.TrimStart('.')), StringComparerEx.InvariantCultureIgnoreCase);
 
-		#endregion
+            this.Sets = new Dictionary<FilePath, ZipResourceSet>();
+        }
+
+        /// <summary>
+        ///     Creates a new instance of <see cref="ZipResourceSource" />.
+        /// </summary>
+        /// <param name="directory"> The directory which contains the resource set ZIP files. </param>
+        /// <param name="fileEncoding"> The text encoding used for reading text files (can be null to use <see cref="DefaultEncoding" />). </param>
+        /// <param name="filePattern"> The file pattern which is used to search for ZIP files (can be null to use <see cref="DefaultFilePattern" />). </param>
+        /// <param name="recursive"> Specifies whether ZIP files are searched recursive (including subdirectories) or not. </param>
+        /// <param name="ignoredExtensions"> A sequence of file extensions which are completely ignored (can be null to not ignore any files). </param>
+        /// <exception cref="ArgumentNullException"> <paramref name="directory" /> is null. </exception>
+        /// <exception cref="InvalidOperationException"> <paramref name="directory" /> is not a real usable directory. </exception>
+        /// <exception cref="InvalidPathArgumentException"> <paramref name="filePattern" /> is an empty string. </exception>
+        public ZipResourceSource(DirectoryPath directory, Encoding fileEncoding, string filePattern, bool recursive, params string[] ignoredExtensions)
+            : this(directory, fileEncoding, filePattern, recursive, (IEnumerable<string>)ignoredExtensions)
+        {
+        }
+
+        #endregion
 
 
 
 
-		#region Instance Properties/Indexer
+        #region Instance Properties/Indexer
 
-		/// <summary>
-		///     Gets the directory which contains the resource set ZIP files.
-		/// </summary>
-		/// <value>
-		///     The directory which contains the resource set ZIP files.
-		/// </value>
-		public DirectoryPath Directory { get; }
+        /// <summary>
+        ///     Gets the directory which contains the resource set ZIP files.
+        /// </summary>
+        /// <value>
+        ///     The directory which contains the resource set ZIP files.
+        /// </value>
+        public DirectoryPath Directory { get; }
 
 		/// <summary>
 		///     Gets the text encoding for reading text files.
@@ -163,7 +186,22 @@ namespace RI.Framework.Services.Resources.Sources
 		/// </value>
 		public bool Recursive { get; }
 
-		internal List<IResourceConverter> Converters { get; private set; }
+	    /// <summary>
+	    ///     Gets the set of ignored file extensions.
+	    /// </summary>
+	    /// <value>
+	    ///     The set of ignored file extensions.
+	    /// </value>
+	    /// <remarks>
+	    ///     <note type="note">
+	    ///         The file extensions in the set have their leading dot removed.
+	    ///     </note>
+	    /// </remarks>
+	    public IEnumerable<string> IgnoredExtensions => this.IgnoredExtensionsInternal;
+
+	    internal HashSet<string> IgnoredExtensionsInternal { get; }
+
+        internal List<IResourceConverter> Converters { get; private set; }
 
 		private Dictionary<FilePath, ZipResourceSet> Sets { get; }
 
@@ -209,57 +247,94 @@ namespace RI.Framework.Services.Resources.Sources
 			this.Sets.RemoveWhere(x => !x.Value.IsValid.GetValueOrDefault(false));
 		}
 
-		#endregion
+        #endregion
 
 
 
 
-		#region Interface: IResourceSource
+        #region Interface: IResourceSource
 
-		/// <inheritdoc />
-		public bool IsInitialized { get; private set; }
+	    /// <inheritdoc />
+	    bool ISynchronizable.IsSynchronized => true;
 
-		/// <inheritdoc />
-		public List<IResourceSet> GetAvailableSets () => this.Sets.Values.Cast<IResourceSet>().ToList();
+	    /// <inheritdoc />
+	    public object SyncRoot { get; }
 
-		/// <inheritdoc />
-		void IResourceSource.Initialize (IEnumerable<IResourceConverter> converters)
+	    /// <inheritdoc />
+	    public bool IsInitialized
+	    {
+	        get
+	        {
+	            lock (this.SyncRoot)
+	            {
+	                return this._isInitialized;
+	            }
+	        }
+	        private set
+	        {
+	            lock (this.SyncRoot)
+	            {
+	                this._isInitialized = value;
+	            }
+	        }
+	    }
+
+        /// <inheritdoc />
+        List<IResourceSet> IResourceSource.GetAvailableSets()
+        {
+            lock (this.SyncRoot)
+            {
+                return this.Sets.Values.Cast<IResourceSet>().ToList();
+            }
+        }
+
+        /// <inheritdoc />
+        void IResourceSource.Initialize (IEnumerable<IResourceConverter> converters)
 		{
 			if (converters == null)
 			{
 				throw new ArgumentNullException(nameof(converters));
 			}
 
-			this.Converters = converters.ToList();
+		    lock (this.SyncRoot)
+		    {
+		        this.Converters = converters.ToList();
 
-			this.Log(LogLevel.Debug, "Initializing ZIP resource source: {0}", this.Directory);
+		        this.Log(LogLevel.Debug, "Initializing ZIP resource source: {0}", this.Directory);
 
-			this.UpdateSets(false);
+		        this.UpdateSets(false);
 
-			this.IsInitialized = true;
+		        this.IsInitialized = true;
+		    }
 		}
 
 		/// <inheritdoc />
 		void IResourceSource.Unload ()
 		{
-			this.Log(LogLevel.Debug, "Unloading ZIP resource source: {0}", this.Directory);
+		    lock (this.SyncRoot)
+		    {
+		        this.Log(LogLevel.Debug, "Unloading ZIP resource source: {0}", this.Directory);
 
-			this.UpdateSets(true);
+		        this.UpdateSets(true);
 
-			this.IsInitialized = false;
+		        this.IsInitialized = false;
+		    }
 		}
 
 		/// <inheritdoc />
-		public void UpdateConverters (IEnumerable<IResourceConverter> converters)
+		void IResourceSource.UpdateConverters (IEnumerable<IResourceConverter> converters)
 		{
 			if (converters == null)
 			{
 				throw new ArgumentNullException(nameof(converters));
 			}
 
-			this.Converters = converters.ToList();
+		    lock (this.SyncRoot)
+		    {
+		        this.Converters = converters.ToList();
 
-			this.UpdateSets(!this.IsInitialized);
+		        this.UpdateSets(!this.IsInitialized);
+		    }
 		}
 
 		#endregion

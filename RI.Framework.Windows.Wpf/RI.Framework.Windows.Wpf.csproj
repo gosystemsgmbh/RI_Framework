@@ -42,8 +42,12 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Dynamic" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
@@ -93,8 +97,8 @@
     <Compile Include="Services\Regions\Adapters\WpfRegionAdapterBase.cs" />
     <Compile Include="Services\Resources\Converters\WpfResourceConverter.cs" />
     <Compile Include="Services\Resources\WpfResourceServiceExtensions.cs" />
-    <Compile Include="Services\WpfApplication.cs" />
-    <Compile Include="Services\WpfBootstrapper.cs" />
+    <Compile Include="Bootstrapping\WpfApplication.cs" />
+    <Compile Include="Bootstrapping\WpfBootstrapper.cs" />
     <Compile Include="Windows\Wpf\ApplicationExtensions.cs" />
     <Compile Include="Windows\Wpf\Converters\_NamespaceDoc.cs" />
     <Compile Include="Windows\Wpf\DispatcherExtensions.cs" />
@@ -104,16 +108,17 @@
     <Compile Include="Windows\Wpf\_NamespaceDoc.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\SolutionName.snk">
-      <Link>Properties\SolutionName.snk</Link>
-    </None>
     <None Include="_PostBuild.bat" />
     <None Include="_PreBuild.bat" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RI.Framework.NetFx\RI.Framework.NetFx.csproj">
-      <Project>{a7f5dd2f-63bf-4032-ad1e-14d211e0d3ed}</Project>
-      <Name>RI.Framework.NetFx</Name>
+    <ProjectReference Include="..\RI.Framework.Common\RI.Framework.Common.csproj">
+      <Project>{6897bd68-4f5d-48e5-a4ec-6de0bfb36997}</Project>
+      <Name>RI.Framework.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RI.Framework.Net.Common\RI.Framework.Net.Common.csproj">
+      <Project>{3ee2be5f-10c1-4b2a-a1c6-0c5e1267f74b}</Project>
+      <Name>RI.Framework.Net.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\RI.Framework.Windows.Common\RI.Framework.Windows.Common.csproj">
       <Project>{cd9c2847-a48f-45e1-908f-3f9a86ee0e37}</Project>

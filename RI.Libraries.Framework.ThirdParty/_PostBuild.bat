@@ -1,3 +1,3 @@
 @cd %~dp0
 
-@copy ".\7zip\*.*" "..\_Tools\*.*"
+@copy ".\7zip\*.exe" "..\_Tools\*.*"

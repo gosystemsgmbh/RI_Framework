@@ -3,6 +3,7 @@
 
 
 
+// ReSharper disable once CheckNamespace
 namespace Microsoft.VisualStudio.TestTools.UnitTesting
 {
 	[AttributeUsage(AttributeTargets.Class)]

@@ -529,7 +529,7 @@ namespace RI.Framework.Threading
 							this.Thread.Start();
 						}
 
-#if PLATFORM_NETFX
+#if PLATFORM_NETFX || PLATFORM_NETSTD || PLATFORM_NETCORE
 						bool started = startEvent.WaitOne(timeout);
 						GC.KeepAlive(startEventSet);
 #endif

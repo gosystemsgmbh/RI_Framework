@@ -3,7 +3,7 @@ using System.Data;
 using System.Data.SQLite;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-
+using System.Threading;
 using RI.Framework.IO.Files;
 using RI.Framework.IO.Paths;
 using RI.Framework.Utilities;
@@ -167,14 +167,6 @@ namespace RI.Framework.Data.Database.Backup
 							source.BackupDatabase(target, targetDatabaseName, sourceDatabaseName, -1, null, 10);
 						}
 
-						if (stream != null)
-						{
-							using (FileStream fs = new FileStream(tempFile.File, FileMode.Open, FileAccess.Read, FileShare.Read))
-							{
-								fs.CopyTo(stream);
-							}
-						}
-
 						if (this.PostprocessingStep != null)
 						{
 							using (SQLiteTransaction transaction = this.PostprocessingStep.RequiresTransaction ? source.BeginTransaction(IsolationLevel.Serializable) : null)
@@ -183,9 +175,22 @@ namespace RI.Framework.Data.Database.Backup
 								transaction?.Commit();
 							}
 						}
-					}
+				    }
 
-					this.Log(LogLevel.Information, "Finished SQLite database backup: Source=[{0}]; Target=[{1}]", manager.Configuration.ConnectionString, backupTarget);
+				    if (stream != null)
+				    {
+				        Thread.Sleep(100);
+				        using (TemporaryFile tempFile2 = new TemporaryFile())
+				        {
+				            tempFile.File.Copy(tempFile2.File, true);
+				            using (FileStream fs = new FileStream(tempFile2.File, FileMode.Open, FileAccess.Read, FileShare.Read))
+				            {
+				                fs.CopyTo(stream);
+				            }
+                        }
+				    }
+
+                    this.Log(LogLevel.Information, "Finished SQLite database backup: Source=[{0}]; Target=[{1}]", manager.Configuration.ConnectionString, backupTarget);
 
 					return true;
 				}

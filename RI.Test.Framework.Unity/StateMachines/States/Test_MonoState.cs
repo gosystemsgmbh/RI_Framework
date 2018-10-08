@@ -1,10 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using RI.Framework.ComponentModel;
-using RI.Framework.Services;
 using RI.Framework.Services.Dispatcher;
 using RI.Framework.StateMachines;
-using RI.Framework.Utilities.ObjectModel;
 
 
 

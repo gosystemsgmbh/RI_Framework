@@ -57,20 +57,24 @@
     <Compile Include="Services\Resources\Sources\ZipResourceSource.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\SolutionName.snk">
-      <Link>Properties\SolutionName.snk</Link>
-    </None>
     <None Include="packages.config" />
     <None Include="_PostBuild.bat" />
     <None Include="_PreBuild.bat" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RI.Framework.NetFx\RI.Framework.NetFx.csproj">
+    <ProjectReference Include="..\RI.Framework.Common\RI.Framework.Common.csproj">
+      <Project>{6897bd68-4f5d-48e5-a4ec-6de0bfb36997}</Project>
+      <Name>RI.Framework.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RI.Framework.Net.Common\RI.Framework.Net.Common.csproj">
+      <Project>{3ee2be5f-10c1-4b2a-a1c6-0c5e1267f74b}</Project>
+      <Name>RI.Framework.Net.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RI.Framework.Net.Fx\RI.Framework.Net.Fx.csproj">
       <Project>{a7f5dd2f-63bf-4032-ad1e-14d211e0d3ed}</Project>
-      <Name>RI.Framework.NetFx</Name>
+      <Name>RI.Framework.Net.Fx</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>@call "$(ProjectDir)_PreBuild.bat" $(ConfigurationName)</PreBuildEvent>

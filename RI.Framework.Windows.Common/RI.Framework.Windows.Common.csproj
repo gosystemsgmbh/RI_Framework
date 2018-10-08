@@ -42,11 +42,15 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Dynamic" />
     <Reference Include="System.Management" />
     <Reference Include="System.Security" />
     <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\SolutionInfo.cs">
@@ -64,15 +68,13 @@
     <Compile Include="IO\Serial\SerialPortInstance.cs" />
     <Compile Include="IO\Serial\_NamespaceDoc.cs" />
     <Compile Include="Services\Logging\Writers\EventLogWriter.cs" />
-    <Compile Include="Services\WindowsBootstrapper.cs" />
-    <None Include="..\SolutionName.snk">
-      <Link>Properties\SolutionName.snk</Link>
-    </None>
+    <Compile Include="Bootstrapping\WindowsBootstrapper.cs" />
     <None Include="Windows\Messages\_NamespaceDoc.cs" />
     <Compile Include="Windows\Cryptography\_NamespaceDoc.cs" />
     <Compile Include="Windows\Imaging\BitmapExtensions.cs" />
     <Compile Include="Windows\Imaging\IconExtensions.cs" />
     <Compile Include="Windows\Imaging\_NamespaceDoc.cs" />
+    <Compile Include="Windows\Interop\_NamespaceDoc.cs" />
     <Compile Include="Windows\Network\_NamespaceDoc.cs" />
     <Compile Include="Windows\SystemInformationReport.cs" />
     <Compile Include="Windows\Users\_NamespaceDoc.cs" />
@@ -105,12 +107,15 @@
     <None Include="_PreBuild.bat" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RI.Framework.NetFx\RI.Framework.NetFx.csproj">
-      <Project>{a7f5dd2f-63bf-4032-ad1e-14d211e0d3ed}</Project>
-      <Name>RI.Framework.NetFx</Name>
+    <ProjectReference Include="..\RI.Framework.Common\RI.Framework.Common.csproj">
+      <Project>{6897bd68-4f5d-48e5-a4ec-6de0bfb36997}</Project>
+      <Name>RI.Framework.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RI.Framework.Net.Common\RI.Framework.Net.Common.csproj">
+      <Project>{3ee2be5f-10c1-4b2a-a1c6-0c5e1267f74b}</Project>
+      <Name>RI.Framework.Net.Common</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>@call "$(ProjectDir)_PreBuild.bat" $(ConfigurationName)</PreBuildEvent>

@@ -18,4 +18,7 @@ using System.Reflection;
 [assembly: AssemblyConfiguration("DEBUG")]
 #else
 [assembly: AssemblyConfiguration("RELEASE")]
+#if !RELEASE
+#warning "RELEASE not specified"
+#endif
 #endif

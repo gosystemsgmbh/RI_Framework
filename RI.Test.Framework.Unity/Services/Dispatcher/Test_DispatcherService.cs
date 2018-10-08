@@ -4,9 +4,7 @@ using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using RI.Framework.ComponentModel;
-using RI.Framework.Services;
 using RI.Framework.Services.Dispatcher;
-using RI.Framework.Utilities.ObjectModel;
 
 
 
@@ -69,31 +67,31 @@ namespace RI.Test.Framework.Services.Dispatcher
 			test.Dispatch(DispatcherPriority.Now, () =>
 			{
 				testValue += "#";
-				test.Dispatch<int>(DispatcherPriority.Frame, (a) =>
+				test.Dispatch(DispatcherPriority.Frame, (a) =>
 				{
 					testValue += a.ToString();
-					test.Dispatch<int, int>(DispatcherPriority.Later, (b, c) =>
+					test.Dispatch(DispatcherPriority.Later, (b, c) =>
 					{
 						testValue += b.ToString() + c.ToString();
-						test.Dispatch<int, int, int>(DispatcherPriority.Idle, (d, e, f) =>
+						test.Dispatch(DispatcherPriority.Idle, (d, e, f) =>
 						{
 							testValue += d.ToString() + e.ToString() + f.ToString();
-							test.Dispatch<int, int, int, int>(DispatcherPriority.Background, (g, h, i, j) =>
+							test.Dispatch(DispatcherPriority.Background, (g, h, i, j) =>
 							{
 								testValue += g.ToString() + h.ToString() + i.ToString() + j.ToString();
-								test.DispatchFunc<string>(DispatcherPriority.Background, () =>
+								test.DispatchFunc(DispatcherPriority.Background, () =>
 								{
 									testValue += "@";
-									test.DispatchFunc<int, string>(DispatcherPriority.Idle, (k) =>
+									test.DispatchFunc(DispatcherPriority.Idle, (k) =>
 									{
 										testValue += k.ToString();
-										test.DispatchFunc<int, int, string>(DispatcherPriority.Later, (l, m) =>
+										test.DispatchFunc(DispatcherPriority.Later, (l, m) =>
 										{
 											testValue += l.ToString() + m.ToString();
-											test.DispatchFunc<int, int, int, string>(DispatcherPriority.Frame, (n, o, p) =>
+											test.DispatchFunc(DispatcherPriority.Frame, (n, o, p) =>
 											{
 												testValue += n.ToString() + o.ToString() + p.ToString();
-												test.DispatchFunc<int, int, int, int, string>(DispatcherPriority.Now, (q, r, s, t) =>
+												test.DispatchFunc(DispatcherPriority.Now, (q, r, s, t) =>
 												{
 													testValue += q.ToString() + r.ToString() + s.ToString() + t.ToString();
 													if (testValue != "#12345678910@11121314151617181920")
