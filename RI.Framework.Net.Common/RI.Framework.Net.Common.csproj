@@ -24,30 +24,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Threading\Dispatcher\IThreadDispatcherDelegateExtensions.tt" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Include="..\SolutionInfo.cs" Link="Properties\SolutionInfo.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Threading\Dispatcher\IThreadDispatcherDelegateExtensions.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>IThreadDispatcherDelegateExtensions.tt.cs</LastGenOutput>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\RI.Framework.Common\RI.Framework.Common.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="Threading\Dispatcher\IThreadDispatcherDelegateExtensions.tt.cs">
-      <DependentUpon>IThreadDispatcherDelegateExtensions.tt</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
   </ItemGroup>
 
   <ItemGroup>

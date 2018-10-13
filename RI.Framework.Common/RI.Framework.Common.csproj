@@ -24,7 +24,26 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Threading\Dispatcher\IThreadDispatcherDelegateExtensions.tt" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Include="..\SolutionInfo.cs" Link="Properties\SolutionInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Threading\Dispatcher\IThreadDispatcherDelegateExtensions.tt">
+      <LastGenOutput>IThreadDispatcherDelegateExtensions.tt.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Threading\Dispatcher\IThreadDispatcherDelegateExtensions.tt.cs">
+      <DependentUpon>IThreadDispatcherDelegateExtensions.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
