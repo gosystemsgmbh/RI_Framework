@@ -8,6 +8,7 @@ namespace RI.Framework.Utilities.Logging
 	/// <summary>
 	///     Provides a default implementation for <see cref="ILogSource" />.
 	/// </summary>
+	/// TODO: Rename to LogSourceBase
 	public abstract class LogSource : ILogSource
 	{
 		#region Interface: ILogSource

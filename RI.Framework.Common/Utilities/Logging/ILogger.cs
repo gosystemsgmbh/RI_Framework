@@ -7,7 +7,7 @@ using System.Threading;
 namespace RI.Framework.Utilities.Logging
 {
 	/// <summary>
-	///     Defines the interface for a logger which can be used for writing and/or persisting log messages.
+	///     Defines the interface for a logger which persists log messages.
 	/// </summary>
 	public interface ILogger
 	{
@@ -16,19 +16,19 @@ namespace RI.Framework.Utilities.Logging
 		/// </summary>
 		/// <param name="severity"> The severity of the message. </param>
 		/// <param name="source"> The source of the message. </param>
-		/// <param name="format"> The message. </param>
-		/// <param name="args"> The arguments which will be expanded into the message (comparable to <see cref="string.Format(string, object[])" />). </param>
+		/// <param name="format"> The message format. </param>
+		/// <param name="args"> The arguments which will be expanded into the message. </param>
 		void Log (LogLevel severity, string source, string format, params object[] args);
 
 		/// <summary>
 		///     Logs a message.
 		/// </summary>
 		/// <param name="timestamp"> The timestamp the log message is associated with. </param>
-		/// <param name="threadId"> The threadId the log message is associated with. </param>
+		/// <param name="threadId"> The thread ID the log message is associated with. </param>
 		/// <param name="severity"> The severity of the message. </param>
 		/// <param name="source"> The source of the message. </param>
-		/// <param name="format"> The message. </param>
-		/// <param name="args"> The arguments which will be expanded into the message (comparable to <see cref="string.Format(string, object[])" />). </param>
+		/// <param name="format"> The message format. </param>
+		/// <param name="args"> The arguments which will be expanded into the message. </param>
 		/// <remarks>
 		///     <para>
 		///         The <paramref name="threadId" /> is not necessarily a technical relevant ID and its meaning is undefined.

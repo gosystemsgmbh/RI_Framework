@@ -90,7 +90,7 @@ namespace RI.Framework.Threading.Dispatcher
 		ThreadDispatcherShutdownMode ShutdownMode { get; }
 
 		/// <summary>
-		///     Gets the watchdog timeout.
+		///     Gets or sets the watchdog timeout.
 		/// </summary>
 		/// <value>
 		///     The watchdog timeout or null if no watchdog is used.

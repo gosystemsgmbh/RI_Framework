@@ -342,16 +342,12 @@ namespace RI.Framework.IO.Printer
 			public string pDocName;
 
 			[MarshalAs(UnmanagedType.LPStr)]
-#pragma warning disable 169
+#pragma warning disable 649
 			public string pOutputFile;
-
-#pragma warning restore 169
+#pragma warning restore 649
 
 			[MarshalAs(UnmanagedType.LPStr)]
-#pragma warning disable 414
 			public string pDataType;
-
-#pragma warning restore 414
 		}
 
 		#endregion

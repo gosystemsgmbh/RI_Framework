@@ -6,7 +6,7 @@
 namespace RI.Framework.Utilities.Logging
 {
 	/// <summary>
-	///     Contains logging utilities.
+	///     Contains logging infrastructure.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

@@ -5,65 +5,75 @@
 
 namespace RI.Framework.Utilities.Logging
 {
-	/// <summary>
-	///     Provides extension methods for the <see cref="ILogSource" /> interface to add simple logging to types which implement <see cref="ILogSource" />.
-	/// </summary>
-	public static class ILogSourceExtensions
-	{
-		#region Static Methods
+    /// <summary>
+    ///     Provides extension methods for the <see cref="ILogSource" /> interface to add simple logging to types which implement <see cref="ILogSource" />.
+    /// </summary>
+    public static class ILogSourceExtensions
+    {
+        #region Static Methods
 
-		/// <inheritdoc cref="ILogger.Log(LogLevel,string,string,object[])" />
-		public static void Log (this ILogSource source, LogLevel severity, string format, params object[] args)
-		{
-			if (source == null)
-			{
-				throw new ArgumentNullException(nameof(source));
-			}
+        /// <inheritdoc cref="ILogger.Log(LogLevel,string,string,object[])" />
+        public static void Log (this ILogSource source, LogLevel severity, string format, params object[] args)
+        {
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
 
-			if (!source.LoggingEnabled)
-			{
-				return;
-			}
+            if (format == null)
+            {
+                throw new ArgumentNullException(nameof(format));
+            }
 
-			if (source.Logger == null)
-			{
-				return;
-			}
+            if (!source.LoggingEnabled)
+            {
+                return;
+            }
 
-			if (severity < source.LogFilter)
-			{
-				return;
-			}
+            if (source.Logger == null)
+            {
+                return;
+            }
 
-			source.Logger.Log(severity, source.GetType().Name, format, args);
-		}
+            if (severity < source.LogFilter)
+            {
+                return;
+            }
 
-		/// <inheritdoc cref="ILogger.Log(DateTime,int,LogLevel,string,string,object[])" />
-		public static void Log (this ILogSource source, DateTime timestamp, int threadId, LogLevel severity, string format, params object[] args)
-		{
-			if (source == null)
-			{
-				throw new ArgumentNullException(nameof(source));
-			}
+            source.Logger.Log(severity, source.GetType().Name, format, args);
+        }
 
-			if (!source.LoggingEnabled)
-			{
-				return;
-			}
+        /// <inheritdoc cref="ILogger.Log(DateTime,int,LogLevel,string,string,object[])" />
+        public static void Log (this ILogSource source, DateTime timestamp, int threadId, LogLevel severity, string format, params object[] args)
+        {
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
 
-			if (source.Logger == null)
-			{
-				return;
-			}
+            if (format == null)
+            {
+                throw new ArgumentNullException(nameof(format));
+            }
 
-			if (severity < source.LogFilter)
-			{
-				return;
-			}
+            if (!source.LoggingEnabled)
+            {
+                return;
+            }
 
-			source.Logger.Log(timestamp, threadId, severity, source.GetType().Name, format, args);
-		}
+            if (source.Logger == null)
+            {
+                return;
+            }
 
-		#endregion
-	}
+            if (severity < source.LogFilter)
+            {
+                return;
+            }
+
+            source.Logger.Log(timestamp, threadId, severity, source.GetType().Name, format, args);
+        }
+
+        #endregion
+    }
 }

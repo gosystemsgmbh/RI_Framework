@@ -6,11 +6,11 @@
 namespace RI.Framework.Utilities.Logging
 {
 	/// <summary>
-	///     Defines the interface for types to implement if they are the source of log messages and need to utilize logging.
+	///     Defines the interface for types which create log messages.
 	/// </summary>
 	/// <remarks>
 	///     <para>
-	///         <see cref="ILogSource" /> only defines the type/instance specific data and dependencies which are required for logging.
+	///         <see cref="ILogSource" /> only defines the type specific configuration properties for the logging.
 	///         The actual logging is performed by extension methods implemented in <see cref="ILogSourceExtensions" />.
 	///     </para>
 	/// </remarks>

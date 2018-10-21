@@ -34,31 +34,31 @@ namespace RI.Framework.Services.Resources.Sources
     /// </remarks>
     /// <threadsafety static="true" instance="true" />
     [Export]
-	public sealed class ZipResourceSource : LogSource, IResourceSource
-	{
-		#region Constants
+    public sealed class ZipResourceSource : LogSource, IResourceSource
+    {
+        #region Constants
 
-		/// <summary>
-		///     The default file pattern which is used to search for ZIP files.
-		/// </summary>
-		/// <remarks>
-		///     <para>
-		///         The default file pattern is <c> *.zip </c>.
-		///     </para>
-		/// </remarks>
-		public const string DefaultFilePattern = "*.zip";
+        /// <summary>
+        ///     The default file pattern which is used to search for ZIP files.
+        /// </summary>
+        /// <remarks>
+        ///     <para>
+        ///         The default file pattern is <c> *.zip </c>.
+        ///     </para>
+        /// </remarks>
+        public const string DefaultFilePattern = "*.zip";
 
-		/// <summary>
-		///     The default text encoding which is used for reading text files.
-		/// </summary>
-		/// <remarks>
-		///     <para>
-		///         The default text encoding is UTF-8.
-		///     </para>
-		/// </remarks>
-		public static readonly Encoding DefaultEncoding = Encoding.UTF8;
+        /// <summary>
+        ///     The default text encoding which is used for reading text files.
+        /// </summary>
+        /// <remarks>
+        ///     <para>
+        ///         The default text encoding is UTF-8.
+        ///     </para>
+        /// </remarks>
+        public static readonly Encoding DefaultEncoding = Encoding.UTF8;
 
-	    private bool _isInitialized;
+        private bool _isInitialized;
 
         #endregion
 
@@ -82,9 +82,9 @@ namespace RI.Framework.Services.Resources.Sources
         ///     </para>
         /// </remarks>
         public ZipResourceSource (DirectoryPath directory)
-			: this(directory, null, null, false, null)
-		{
-		}
+            : this(directory, null, null, false, null)
+        {
+        }
 
         /// <summary>
         ///     Creates a new instance of <see cref="ZipResourceSource" />.
@@ -98,35 +98,35 @@ namespace RI.Framework.Services.Resources.Sources
         /// <exception cref="InvalidOperationException"> <paramref name="directory" /> is not a real usable directory. </exception>
         /// <exception cref="InvalidPathArgumentException"> <paramref name="filePattern" /> is an empty string. </exception>
         public ZipResourceSource (DirectoryPath directory, Encoding fileEncoding, string filePattern, bool recursive, IEnumerable<string> ignoredExtensions)
-		{
-			if (directory == null)
-			{
-				throw new ArgumentNullException(nameof(directory));
-			}
+        {
+            if (directory == null)
+            {
+                throw new ArgumentNullException(nameof(directory));
+            }
 
-			if (!directory.IsRealDirectory)
-			{
-				throw new InvalidPathArgumentException(nameof(directory));
-			}
+            if (!directory.IsRealDirectory)
+            {
+                throw new InvalidPathArgumentException(nameof(directory));
+            }
 
-			if (filePattern != null)
-			{
-				if (filePattern.IsEmptyOrWhitespace())
-				{
-					throw new EmptyStringArgumentException(nameof(filePattern));
-				}
-		    }
+            if (filePattern != null)
+            {
+                if (filePattern.IsEmptyOrWhitespace())
+                {
+                    throw new EmptyStringArgumentException(nameof(filePattern));
+                }
+            }
 
-		    this.SyncRoot = new object();
+            this.SyncRoot = new object();
 
             this.IsInitialized = false;
 
-			this.Directory = directory;
-			this.FileEncoding = fileEncoding ?? ZipResourceSource.DefaultEncoding;
-			this.FilePattern = filePattern ?? ZipResourceSource.DefaultFilePattern;
-			this.Recursive = recursive;
+            this.Directory = directory;
+            this.FileEncoding = fileEncoding ?? ZipResourceSource.DefaultEncoding;
+            this.FilePattern = filePattern ?? ZipResourceSource.DefaultFilePattern;
+            this.Recursive = recursive;
 
-		    this.IgnoredExtensionsInternal = new HashSet<string>((ignoredExtensions ?? new string[0]).Select(x => x.TrimStart('.')), StringComparerEx.InvariantCultureIgnoreCase);
+            this.IgnoredExtensionsInternal = new HashSet<string>((ignoredExtensions ?? new string[0]).Select(x => x.TrimStart('.')), StringComparerEx.InvariantCultureIgnoreCase);
 
             this.Sets = new Dictionary<FilePath, ZipResourceSet>();
         }
@@ -162,90 +162,90 @@ namespace RI.Framework.Services.Resources.Sources
         /// </value>
         public DirectoryPath Directory { get; }
 
-		/// <summary>
-		///     Gets the text encoding for reading text files.
-		/// </summary>
-		/// <value>
-		///     The text encoding for reading text files.
-		/// </value>
-		public Encoding FileEncoding { get; }
+        /// <summary>
+        ///     Gets the text encoding for reading text files.
+        /// </summary>
+        /// <value>
+        ///     The text encoding for reading text files.
+        /// </value>
+        public Encoding FileEncoding { get; }
 
-		/// <summary>
-		///     Gets the file pattern which is used to search for ZIP files.
-		/// </summary>
-		/// <value>
-		///     The file pattern which is used to search for ZIP files.
-		/// </value>
-		public string FilePattern { get; }
+        /// <summary>
+        ///     Gets the file pattern which is used to search for ZIP files.
+        /// </summary>
+        /// <value>
+        ///     The file pattern which is used to search for ZIP files.
+        /// </value>
+        public string FilePattern { get; }
 
-		/// <summary>
-		///     Gets whether ZIP files are searched recursive (including subdirectories) or not.
-		/// </summary>
-		/// <value>
-		///     true if subdirectories of <see cref="DirectoryPath" /> are searched for ZIP files, false otherwise.
-		/// </value>
-		public bool Recursive { get; }
+        /// <summary>
+        ///     Gets whether ZIP files are searched recursive (including subdirectories) or not.
+        /// </summary>
+        /// <value>
+        ///     true if subdirectories of <see cref="DirectoryPath" /> are searched for ZIP files, false otherwise.
+        /// </value>
+        public bool Recursive { get; }
 
-	    /// <summary>
-	    ///     Gets the set of ignored file extensions.
-	    /// </summary>
-	    /// <value>
-	    ///     The set of ignored file extensions.
-	    /// </value>
-	    /// <remarks>
-	    ///     <note type="note">
-	    ///         The file extensions in the set have their leading dot removed.
-	    ///     </note>
-	    /// </remarks>
-	    public IEnumerable<string> IgnoredExtensions => this.IgnoredExtensionsInternal;
+        /// <summary>
+        ///     Gets the set of ignored file extensions.
+        /// </summary>
+        /// <value>
+        ///     The set of ignored file extensions.
+        /// </value>
+        /// <remarks>
+        ///     <note type="note">
+        ///         The file extensions in the set have their leading dot removed.
+        ///     </note>
+        /// </remarks>
+        public IEnumerable<string> IgnoredExtensions => this.IgnoredExtensionsInternal;
 
-	    internal HashSet<string> IgnoredExtensionsInternal { get; }
+        internal HashSet<string> IgnoredExtensionsInternal { get; }
 
         internal List<IResourceConverter> Converters { get; private set; }
 
-		private Dictionary<FilePath, ZipResourceSet> Sets { get; }
+        private Dictionary<FilePath, ZipResourceSet> Sets { get; }
 
-		#endregion
-
-
+        #endregion
 
 
-		#region Instance Methods
 
-		private void UpdateSets (bool unload)
-		{
-			HashSet<FilePath> currentFiles = unload ? new HashSet<FilePath>() : new HashSet<FilePath>(this.Directory.GetFiles(false, this.Recursive, this.FilePattern));
-			HashSet<FilePath> lastFiles = new HashSet<FilePath>(this.Sets.Keys);
 
-			HashSet<FilePath> newFiles = currentFiles.Except(lastFiles);
-			HashSet<FilePath> oldFiles = lastFiles.Except(currentFiles);
+        #region Instance Methods
 
-			foreach (FilePath file in newFiles)
-			{
-				this.Log(LogLevel.Debug, "ZIP file added: {0}", file);
-				ZipResourceSet set = new ZipResourceSet(file, this);
-				this.Sets.Add(file, set);
-			}
+        private void UpdateSets (bool unload)
+        {
+            HashSet<FilePath> currentFiles = unload ? new HashSet<FilePath>() : new HashSet<FilePath>(this.Directory.GetFiles(false, this.Recursive, this.FilePattern));
+            HashSet<FilePath> lastFiles = new HashSet<FilePath>(this.Sets.Keys);
 
-			foreach (FilePath file in oldFiles)
-			{
-				this.Log(LogLevel.Debug, "ZIP file removed: {0}", file);
-				this.Sets[file].Unload();
-				this.Sets.Remove(file);
-			}
+            HashSet<FilePath> newFiles = currentFiles.Except(lastFiles);
+            HashSet<FilePath> oldFiles = lastFiles.Except(currentFiles);
 
-			foreach (FilePath file in currentFiles)
-			{
-				ZipResourceSet set = this.Sets[file];
-				set.Prepare();
-				if (!set.IsValid.GetValueOrDefault(false))
-				{
-					this.Log(LogLevel.Error, "Unable to use ZIP file as ZIP resource set: {0}", file);
-				}
-			}
+            foreach (FilePath file in newFiles)
+            {
+                this.Log(LogLevel.Debug, "ZIP file added: {0}", file);
+                ZipResourceSet set = new ZipResourceSet(file, this);
+                this.Sets.Add(file, set);
+            }
 
-			this.Sets.RemoveWhere(x => !x.Value.IsValid.GetValueOrDefault(false));
-		}
+            foreach (FilePath file in oldFiles)
+            {
+                this.Log(LogLevel.Debug, "ZIP file removed: {0}", file);
+                this.Sets[file].Unload();
+                this.Sets.Remove(file);
+            }
+
+            foreach (FilePath file in currentFiles)
+            {
+                ZipResourceSet set = this.Sets[file];
+                set.Prepare();
+                if (!set.IsValid.GetValueOrDefault(false))
+                {
+                    this.Log(LogLevel.Error, "Unable to use ZIP file as ZIP resource set: {0}", file);
+                }
+            }
+
+            this.Sets.RemoveWhere(x => !x.Value.IsValid.GetValueOrDefault(false));
+        }
 
         #endregion
 
@@ -254,30 +254,30 @@ namespace RI.Framework.Services.Resources.Sources
 
         #region Interface: IResourceSource
 
-	    /// <inheritdoc />
-	    bool ISynchronizable.IsSynchronized => true;
+        /// <inheritdoc />
+        bool ISynchronizable.IsSynchronized => true;
 
-	    /// <inheritdoc />
-	    public object SyncRoot { get; }
+        /// <inheritdoc />
+        public object SyncRoot { get; }
 
-	    /// <inheritdoc />
-	    public bool IsInitialized
-	    {
-	        get
-	        {
-	            lock (this.SyncRoot)
-	            {
-	                return this._isInitialized;
-	            }
-	        }
-	        private set
-	        {
-	            lock (this.SyncRoot)
-	            {
-	                this._isInitialized = value;
-	            }
-	        }
-	    }
+        /// <inheritdoc />
+        public bool IsInitialized
+        {
+            get
+            {
+                lock (this.SyncRoot)
+                {
+                    return this._isInitialized;
+                }
+            }
+            private set
+            {
+                lock (this.SyncRoot)
+                {
+                    this._isInitialized = value;
+                }
+            }
+        }
 
         /// <inheritdoc />
         List<IResourceSet> IResourceSource.GetAvailableSets()
@@ -290,53 +290,53 @@ namespace RI.Framework.Services.Resources.Sources
 
         /// <inheritdoc />
         void IResourceSource.Initialize (IEnumerable<IResourceConverter> converters)
-		{
-			if (converters == null)
-			{
-				throw new ArgumentNullException(nameof(converters));
-			}
+        {
+            if (converters == null)
+            {
+                throw new ArgumentNullException(nameof(converters));
+            }
 
-		    lock (this.SyncRoot)
-		    {
-		        this.Converters = converters.ToList();
+            lock (this.SyncRoot)
+            {
+                this.Converters = converters.ToList();
 
-		        this.Log(LogLevel.Debug, "Initializing ZIP resource source: {0}", this.Directory);
+                this.Log(LogLevel.Debug, "Initializing ZIP resource source: {0}", this.Directory);
 
-		        this.UpdateSets(false);
+                this.UpdateSets(false);
 
-		        this.IsInitialized = true;
-		    }
-		}
+                this.IsInitialized = true;
+            }
+        }
 
-		/// <inheritdoc />
-		void IResourceSource.Unload ()
-		{
-		    lock (this.SyncRoot)
-		    {
-		        this.Log(LogLevel.Debug, "Unloading ZIP resource source: {0}", this.Directory);
+        /// <inheritdoc />
+        void IResourceSource.Unload ()
+        {
+            lock (this.SyncRoot)
+            {
+                this.Log(LogLevel.Debug, "Unloading ZIP resource source: {0}", this.Directory);
 
-		        this.UpdateSets(true);
+                this.UpdateSets(true);
 
-		        this.IsInitialized = false;
-		    }
-		}
+                this.IsInitialized = false;
+            }
+        }
 
-		/// <inheritdoc />
-		void IResourceSource.UpdateConverters (IEnumerable<IResourceConverter> converters)
-		{
-			if (converters == null)
-			{
-				throw new ArgumentNullException(nameof(converters));
-			}
+        /// <inheritdoc />
+        void IResourceSource.UpdateConverters (IEnumerable<IResourceConverter> converters)
+        {
+            if (converters == null)
+            {
+                throw new ArgumentNullException(nameof(converters));
+            }
 
-		    lock (this.SyncRoot)
-		    {
-		        this.Converters = converters.ToList();
+            lock (this.SyncRoot)
+            {
+                this.Converters = converters.ToList();
 
-		        this.UpdateSets(!this.IsInitialized);
-		    }
-		}
+                this.UpdateSets(!this.IsInitialized);
+            }
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }
