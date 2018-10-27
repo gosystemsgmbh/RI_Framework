@@ -36,6 +36,9 @@ namespace RI.Framework.Services.Messaging
     ///         The receiving however depends on the used message dispatchers.
     ///     </para>
     ///     <note type="implement">
+    ///         Messages must be distributed to receivers in the order they were posted.
+    ///     </note>
+    ///     <note type="implement">
     ///         Message names are considered case-insensitive, but the actual behaviour depends on the creation of the message object and the message receivers.
     ///     </note>
     /// </remarks>
