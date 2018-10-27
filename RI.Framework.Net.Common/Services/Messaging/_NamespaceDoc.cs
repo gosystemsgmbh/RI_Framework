@@ -6,7 +6,7 @@
 namespace RI.Framework.Services.Messaging
 {
 	/// <summary>
-	///     Contains the in-process messaging service.
+	///     Contains the in-process message service.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

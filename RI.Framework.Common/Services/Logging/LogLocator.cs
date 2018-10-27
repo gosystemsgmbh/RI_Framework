@@ -20,6 +20,7 @@ namespace RI.Framework.Services.Logging
 	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
+	/// TODO: Do not use locator types
 	public static class LogLocator
 	{
 		#region Static Constructor/Destructor

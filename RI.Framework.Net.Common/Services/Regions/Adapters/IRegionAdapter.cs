@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using RI.Framework.Composition.Model;
 using RI.Framework.Utilities.Exceptions;
+using RI.Framework.Utilities.ObjectModel;
 
 
 
@@ -18,7 +19,7 @@ namespace RI.Framework.Services.Regions.Adapters
 	///     </para>
 	/// </remarks>
 	[Export]
-	public interface IRegionAdapter
+	public interface IRegionAdapter : ISynchronizable
 	{
 		/// <summary>
 		///     Activates an element after it was added to the container.

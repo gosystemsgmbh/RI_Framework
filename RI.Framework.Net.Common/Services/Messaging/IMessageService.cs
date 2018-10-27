@@ -22,9 +22,9 @@ namespace RI.Framework.Services.Messaging
     ///         Unlike a full-featured distributed bus or event aggregator, a message service is a lightweight, in-memory, in-process, local-only message distribution mechanism
     ///     </para>
     ///     <para>
-    ///         Messages are instances of <see cref="IMessage" /> which are sent using a messaging service.
+    ///         Messages are instances of <see cref="Message" /> which are sent using a messaging service.
     ///         The message service uses message dispatchers (<see cref="IMessageDispatcher" />) to deliver the messages asynchronously to all known message receivers (<see cref="IMessageReceiver" />).
-    ///         The message dispatcher is responsible for achieving asynchronity.
+    ///         The message dispatcher is responsible for achieving asynchronicity.
     ///     </para>
     ///     <para>
     ///         Asynchronous delivery of messages means that sending a message is quick (<see cref="Post" /> returns immediately) and the messages are delivered, and therefore handled by their receivers, at a later time but in the correct order as they were sent.
@@ -43,7 +43,7 @@ namespace RI.Framework.Services.Messaging
     /// TODO: Make async
     /// TODO: Make thread-safe
     [Export]
-    [Obsolete("The message service is obsolete. Use the message bus instead (RI.Framework.Bus.*).", false)]
+    [Obsolete(MessageService.ObsoleteMessage, false)]
     public interface IMessageService : ISynchronizable
     {
         /// <summary>
@@ -107,7 +107,7 @@ namespace RI.Framework.Services.Messaging
         ///     </para>
         /// </remarks>
         /// <exception cref="ArgumentNullException"> <paramref name="message" /> is null. </exception>
-        void Post (IMessage message);
+        void Post (Message message);
 
         /// <summary>
         ///     Removes a message dispatcher and stops using it for all subsequent messages.
@@ -137,6 +137,9 @@ namespace RI.Framework.Services.Messaging
         ///     Sends a message synchronously.
         /// </summary>
         /// <param name="message"> The message to send. </param>
+        /// <returns>
+        /// The task which completes when all receivers received the message.
+        /// </returns>
         /// <remarks>
         ///     <para>
         ///         The message is delivered after all previously sent or posted messages are delivered.
@@ -144,6 +147,6 @@ namespace RI.Framework.Services.Messaging
         ///     </para>
         /// </remarks>
         /// <exception cref="ArgumentNullException"> <paramref name="message" /> is null. </exception>
-        Task Send (IMessage message);
+        Task Send (Message message);
     }
 }

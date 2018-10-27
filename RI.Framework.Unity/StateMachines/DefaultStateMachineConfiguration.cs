@@ -27,6 +27,7 @@ namespace RI.Framework.StateMachines
 	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
+	/// TODO: Name conflict
 	public sealed class DefaultStateMachineConfiguration : StateMachineConfiguration<DefaultStateMachineConfiguration>
 	{
 		#region Instance Constructor/Destructor

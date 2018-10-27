@@ -13,6 +13,8 @@ using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.ObjectModel;
 
 
+
+
 namespace RI.Framework.Services.Resources.Sources
 {
     /// <summary>
@@ -57,8 +59,6 @@ namespace RI.Framework.Services.Resources.Sources
         ///     </para>
         /// </remarks>
         public static readonly Encoding DefaultEncoding = Encoding.UTF8;
-
-        private bool _isInitialized;
 
         #endregion
 
@@ -142,10 +142,19 @@ namespace RI.Framework.Services.Resources.Sources
         /// <exception cref="ArgumentNullException"> <paramref name="directory" /> is null. </exception>
         /// <exception cref="InvalidOperationException"> <paramref name="directory" /> is not a real usable directory. </exception>
         /// <exception cref="InvalidPathArgumentException"> <paramref name="filePattern" /> is an empty string. </exception>
-        public ZipResourceSource(DirectoryPath directory, Encoding fileEncoding, string filePattern, bool recursive, params string[] ignoredExtensions)
+        public ZipResourceSource (DirectoryPath directory, Encoding fileEncoding, string filePattern, bool recursive, params string[] ignoredExtensions)
             : this(directory, fileEncoding, filePattern, recursive, (IEnumerable<string>)ignoredExtensions)
         {
         }
+
+        #endregion
+
+
+
+
+        #region Instance Fields
+
+        private bool _isInitialized;
 
         #endregion
 
@@ -179,14 +188,6 @@ namespace RI.Framework.Services.Resources.Sources
         public string FilePattern { get; }
 
         /// <summary>
-        ///     Gets whether ZIP files are searched recursive (including subdirectories) or not.
-        /// </summary>
-        /// <value>
-        ///     true if subdirectories of <see cref="DirectoryPath" /> are searched for ZIP files, false otherwise.
-        /// </value>
-        public bool Recursive { get; }
-
-        /// <summary>
         ///     Gets the set of ignored file extensions.
         /// </summary>
         /// <value>
@@ -199,9 +200,17 @@ namespace RI.Framework.Services.Resources.Sources
         /// </remarks>
         public IEnumerable<string> IgnoredExtensions => this.IgnoredExtensionsInternal;
 
-        internal HashSet<string> IgnoredExtensionsInternal { get; }
+        /// <summary>
+        ///     Gets whether ZIP files are searched recursive (including subdirectories) or not.
+        /// </summary>
+        /// <value>
+        ///     true if subdirectories of <see cref="DirectoryPath" /> are searched for ZIP files, false otherwise.
+        /// </value>
+        public bool Recursive { get; }
 
         internal List<IResourceConverter> Converters { get; private set; }
+
+        internal HashSet<string> IgnoredExtensionsInternal { get; }
 
         private Dictionary<FilePath, ZipResourceSet> Sets { get; }
 
@@ -255,12 +264,6 @@ namespace RI.Framework.Services.Resources.Sources
         #region Interface: IResourceSource
 
         /// <inheritdoc />
-        bool ISynchronizable.IsSynchronized => true;
-
-        /// <inheritdoc />
-        public object SyncRoot { get; }
-
-        /// <inheritdoc />
         public bool IsInitialized
         {
             get
@@ -280,7 +283,13 @@ namespace RI.Framework.Services.Resources.Sources
         }
 
         /// <inheritdoc />
-        List<IResourceSet> IResourceSource.GetAvailableSets()
+        bool ISynchronizable.IsSynchronized => true;
+
+        /// <inheritdoc />
+        public object SyncRoot { get; }
+
+        /// <inheritdoc />
+        public List<IResourceSet> GetAvailableSets ()
         {
             lock (this.SyncRoot)
             {
@@ -289,7 +298,7 @@ namespace RI.Framework.Services.Resources.Sources
         }
 
         /// <inheritdoc />
-        void IResourceSource.Initialize (IEnumerable<IResourceConverter> converters)
+        public void Initialize (IEnumerable<IResourceConverter> converters)
         {
             if (converters == null)
             {
@@ -309,7 +318,7 @@ namespace RI.Framework.Services.Resources.Sources
         }
 
         /// <inheritdoc />
-        void IResourceSource.Unload ()
+        public void Unload ()
         {
             lock (this.SyncRoot)
             {
@@ -322,7 +331,7 @@ namespace RI.Framework.Services.Resources.Sources
         }
 
         /// <inheritdoc />
-        void IResourceSource.UpdateConverters (IEnumerable<IResourceConverter> converters)
+        public void UpdateConverters (IEnumerable<IResourceConverter> converters)
         {
             if (converters == null)
             {

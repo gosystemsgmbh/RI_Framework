@@ -63,7 +63,7 @@ namespace RI.Framework.Services.Resources
                     object value = resourceService.GetRawValue(resource);
                     if (value is ResourceDictionary)
                     {
-                        resourceDictionary.MergedDictionaries.Add((ResourceDictionary) value);
+                        resourceDictionary.MergedDictionaries.Add((ResourceDictionary)value);
                     }
                     else
                     {
@@ -80,7 +80,7 @@ namespace RI.Framework.Services.Resources
         /// <param name="resourceDictionary"> The WPF resource dictionary to update with the resources of the loaded sets. </param>
         /// <remarks>
         ///     <para>
-        ///         <see cref="UpdateResourceDictionary" /> performs a reloading of all currently loaded sets using <see cref="SetLoadedSetIds"/>.
+        ///         <see cref="UpdateResourceDictionary" /> performs a reloading of all currently loaded sets using <see cref="SetLoadedSetIds" />.
         ///     </para>
         ///     <para>
         ///         <paramref name="resourceDictionary" /> is always cleared before the resource sets are loaded and populated with all available raw resource values after the resource sets were loaded.

@@ -2,6 +2,7 @@
 
 using RI.Framework.Composition.Model;
 using RI.Framework.Utilities.Exceptions;
+using RI.Framework.Utilities.ObjectModel;
 
 
 
@@ -17,7 +18,7 @@ namespace RI.Framework.Services.Settings.Converters
 	///     </para>
 	/// </remarks>
 	[Export]
-	public interface ISettingConverter
+	public interface ISettingConverter : ISynchronizable
 	{
 		/// <summary>
 		///     Gets the used setting conversion mode

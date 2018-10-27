@@ -22,6 +22,7 @@ namespace RI.Framework.Bus
 	///     Defines the interface for a message bus.
 	/// </summary>
 	/// <remarks>
+	/// TODO: Doc.: Not performance optimized
 	///     <para>
 	///         <b> GENERAL </b>
 	///     </para>

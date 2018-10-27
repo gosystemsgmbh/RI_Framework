@@ -11,6 +11,7 @@ using RI.Framework.Services.Settings.Storages;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Logging;
+using RI.Framework.Utilities.ObjectModel;
 using RI.Framework.Utilities.Reflection;
 
 
@@ -57,6 +58,8 @@ namespace RI.Framework.Services.Settings
         /// </summary>
         public SettingService ()
         {
+            this.SyncRoot = new object();
+
             this.StoragesUpdated = new List<ISettingStorage>();
             this.ConvertersUpdated = new List<ISettingConverter>();
 
@@ -270,6 +273,9 @@ namespace RI.Framework.Services.Settings
         }
 
         /// <inheritdoc />
+        bool ISynchronizable.IsSynchronized => true;
+
+        /// <inheritdoc />
         public IEnumerable<ISettingStorage> Storages
         {
             get
@@ -285,6 +291,9 @@ namespace RI.Framework.Services.Settings
                 }
             }
         }
+
+        /// <inheritdoc />
+        public object SyncRoot { get; }
 
         /// <inheritdoc />
         public void AddConverter (ISettingConverter settingConverter)
@@ -435,6 +444,7 @@ namespace RI.Framework.Services.Settings
                 {
                     finalValues.Add(k, new List<string>());
                 }
+
                 finalValues[k].AddRange(v);
             };
 
@@ -464,13 +474,13 @@ namespace RI.Framework.Services.Settings
         }
 
         /// <inheritdoc />
-        public T GetValue<T>(string name) => this.GetValues<T>(name).FirstOrDefault();
+        public T GetValue <T> (string name) => this.GetValues<T>(name).FirstOrDefault();
 
         /// <inheritdoc />
         public object GetValue (string name, Type type) => this.GetValues(name, type).FirstOrDefault();
 
         /// <inheritdoc />
-        public List<T> GetValues<T>(string name) => this.GetValues(name, typeof(T)).Cast<T>();
+        public List<T> GetValues <T> (string name) => this.GetValues(name, typeof(T)).Cast<T>();
 
         /// <inheritdoc />
         public List<object> GetValues (string name, Type type)
@@ -510,6 +520,7 @@ namespace RI.Framework.Services.Settings
             {
                 finalValues.Add(value.Key, new List<T>(value.Value.Select(x => (T)x)));
             }
+
             return finalValues;
         }
 
@@ -538,6 +549,7 @@ namespace RI.Framework.Services.Settings
             {
                 finalValues.Add(stringValue.Key, new List<object>(stringValue.Value.Select(x => this.ConvertTo(converter, type, x))));
             }
+
             return finalValues;
         }
 
@@ -627,7 +639,7 @@ namespace RI.Framework.Services.Settings
         }
 
         /// <inheritdoc />
-        public bool InitializeValue<T>(string name, T defaultValue) => this.InitializeValue(name, defaultValue, typeof(T));
+        public bool InitializeValue <T> (string name, T defaultValue) => this.InitializeValue(name, defaultValue, typeof(T));
 
         /// <inheritdoc />
         public bool InitializeValue (string name, object defaultValue, Type type) => this.InitializeValues(name, new[] {defaultValue}, type);
@@ -800,13 +812,13 @@ namespace RI.Framework.Services.Settings
         }
 
         /// <inheritdoc />
-        public void SetValue<T>(string name, T value) => this.SetValue(name, value, typeof(T));
+        public void SetValue <T> (string name, T value) => this.SetValue(name, value, typeof(T));
 
         /// <inheritdoc />
         public void SetValue (string name, object value, Type type) => this.SetValues(name, new[] {value}, type);
 
         /// <inheritdoc />
-        public void SetValues<T>(string name, IEnumerable<T> values) => this.SetValues(name, values, typeof(T));
+        public void SetValues <T> (string name, IEnumerable<T> values) => this.SetValues(name, values, typeof(T));
 
         /// <inheritdoc />
         public void SetValues (string name, IEnumerable values, Type type)

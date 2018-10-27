@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using RI.Framework.Composition.Model;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
+using RI.Framework.Utilities.ObjectModel;
 
 
 
@@ -55,6 +56,8 @@ namespace RI.Framework.Services.Settings.Storages
         /// <param name="prefix"> The prefix to be used. </param>
         public EnvironmentVariableSettingStorage (string prefix)
         {
+            this.SyncRoot = new object();
+
             this.Prefix = prefix ?? string.Empty;
             this.Prefix = this.Prefix.IsEmptyOrWhitespace() ? null : this.Prefix.Trim();
         }
@@ -83,6 +86,12 @@ namespace RI.Framework.Services.Settings.Storages
 
         /// <inheritdoc />
         bool ISettingStorage.IsReadOnly => true;
+
+        /// <inheritdoc />
+        bool ISynchronizable.IsSynchronized => true;
+
+        /// <inheritdoc />
+        public object SyncRoot { get; }
 
         /// <inheritdoc />
         bool ISettingStorage.WriteOnlyKnown => false;
@@ -145,9 +154,11 @@ namespace RI.Framework.Services.Settings.Storages
                     {
                         values.Add(name, new List<string>());
                     }
+
                     values[name].Add(value);
                 }
             }
+
             return values;
         }
 

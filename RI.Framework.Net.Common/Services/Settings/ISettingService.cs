@@ -6,6 +6,7 @@ using RI.Framework.Composition.Model;
 using RI.Framework.Services.Settings.Converters;
 using RI.Framework.Services.Settings.Storages;
 using RI.Framework.Utilities.Exceptions;
+using RI.Framework.Utilities.ObjectModel;
 
 
 
@@ -35,8 +36,9 @@ namespace RI.Framework.Services.Settings
     ///     </note>
     /// </remarks>
     /// TODO: Make thread-safe
+    /// TODO: Move to RI.Framework.Common and implement PlayerPrefsStorage
     [Export]
-    public interface ISettingService
+    public interface ISettingService : ISynchronizable
     {
         /// <summary>
         ///     Gets all currently available setting converters.

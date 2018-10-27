@@ -12,7 +12,6 @@ namespace RI.Framework.Services.Dispatcher
 	/// <remarks>
 	///     <para>
 	///         <see cref="Now" />: The operation is executed in the same thread it is dispatched from.
-	///         The created <see cref="IDispatcherOperation" /> will already have its <see cref="IDispatcherOperation.Status" /> set to <see cref="DispatcherStatus.Processed" />.
 	///     </para>
 	///     <para>
 	///         <see cref="Frame" />: The operation is executed in the main/foreground thread.

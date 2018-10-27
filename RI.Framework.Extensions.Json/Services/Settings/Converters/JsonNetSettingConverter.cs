@@ -3,121 +3,131 @@
 using Newtonsoft.Json;
 
 using RI.Framework.Composition.Model;
+using RI.Framework.Utilities.ObjectModel;
 
 
 
 
 namespace RI.Framework.Services.Settings.Converters
 {
-	/// <summary>
-	///     Implements a setting converter which can convert any JSON-serializable object.
-	/// </summary>
-	/// <remarks>
-	///     <para>
-	///         The types supported by this setting converter are:
-	///         Any JSON-serializable object.
-	///     </para>
-	///     <para>
-	///         See <see cref="ISettingConverter" /> for more details.
-	///     </para>
-	/// </remarks>
-	[Export]
-	public sealed class JsonNetSettingConverter : ISettingConverter
-	{
-		#region Instance Constructor/Destructor
+    /// <summary>
+    ///     Implements a setting converter which can convert any JSON-serializable setting.
+    /// </summary>
+    /// <remarks>
+    ///     <para>
+    ///         The types supported by this setting converter are:
+    ///         Any JSON-serializable object.
+    ///     </para>
+    ///     <para>
+    ///         See <see cref="ISettingConverter" /> for more details.
+    ///     </para>
+    /// </remarks>
+    /// <threadsafety static="true" instance="true" />
+    [Export]
+    public sealed class JsonNetSettingConverter : ISettingConverter
+    {
+        #region Instance Constructor/Destructor
 
-		/// <summary>
-		///     Creates a new instance of <see cref="JsonNetSettingConverter" />.
-		/// </summary>
-		/// <remarks>
-		///     <para>
-		///         Default JSON serialization settings are used.
-		///     </para>
-		/// </remarks>
-		public JsonNetSettingConverter ()
-			: this(null)
-		{
-		}
+        /// <summary>
+        ///     Creates a new instance of <see cref="JsonNetSettingConverter" />.
+        /// </summary>
+        /// <remarks>
+        ///     <para>
+        ///         Default JSON serialization settings are used.
+        ///     </para>
+        /// </remarks>
+        public JsonNetSettingConverter ()
+            : this(null)
+        {
+        }
 
-		/// <summary>
-		///     Creates a new instance of <see cref="JsonNetSettingConverter" />.
-		/// </summary>
-		/// <param name="settings"> The used JSON serialization settings or null to use default settings. </param>
-		public JsonNetSettingConverter (JsonSerializerSettings settings)
-		{
-			this.Settings = settings;
-		}
+        /// <summary>
+        ///     Creates a new instance of <see cref="JsonNetSettingConverter" />.
+        /// </summary>
+        /// <param name="settings"> The used JSON serialization settings or null to use default settings. </param>
+        public JsonNetSettingConverter (JsonSerializerSettings settings)
+        {
+            this.SyncRoot = new object();
 
-		#endregion
+            this.Settings = settings;
+        }
 
-
-
-
-		#region Instance Properties/Indexer
-
-		/// <summary>
-		///     Gets the used JSON serialization settings.
-		/// </summary>
-		/// <value>
-		///     The used JSON serialization settings or null if default settings are used.
-		/// </value>
-		public JsonSerializerSettings Settings { get; }
-
-		#endregion
+        #endregion
 
 
 
 
-		#region Interface: ISettingConverter
+        #region Instance Properties/Indexer
 
-		/// <inheritdoc />
-		public SettingConversionMode ConversionMode => SettingConversionMode.SerializationAsString;
+        /// <summary>
+        ///     Gets the used JSON serialization settings.
+        /// </summary>
+        /// <value>
+        ///     The used JSON serialization settings or null if default settings are used.
+        /// </value>
+        public JsonSerializerSettings Settings { get; }
 
-		/// <inheritdoc />
-		public bool CanConvert (Type type)
-		{
-			if (type == null)
-			{
-				throw new ArgumentNullException(nameof(type));
-			}
+        #endregion
 
-			return true;
-		}
 
-		/// <inheritdoc />
-		public string ConvertFrom (Type type, object value)
-		{
-			if (type == null)
-			{
-				throw new ArgumentNullException(nameof(type));
-			}
 
-			if (value == null)
-			{
-				throw new ArgumentNullException(nameof(value));
-			}
 
-			string result = JsonConvert.SerializeObject(value, type, this.Settings);
-			return result;
-		}
+        #region Interface: ISettingConverter
 
-		/// <inheritdoc />
-		public object ConvertTo (Type type, string value)
-		{
-			if (type == null)
-			{
-				throw new ArgumentNullException(nameof(type));
-			}
+        /// <inheritdoc />
+        public SettingConversionMode ConversionMode => SettingConversionMode.SerializationAsString;
 
-			if (value == null)
-			{
-				throw new ArgumentNullException(nameof(value));
-			}
+        /// <inheritdoc />
+        bool ISynchronizable.IsSynchronized => true;
 
-			object result = JsonConvert.DeserializeObject(value, type, this.Settings);
-			return result;
-		}
+        /// <inheritdoc />
+        public object SyncRoot { get; }
 
-		#endregion
-	}
+        /// <inheritdoc />
+        public bool CanConvert (Type type)
+        {
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
+            return true;
+        }
+
+        /// <inheritdoc />
+        public string ConvertFrom (Type type, object value)
+        {
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
+            string result = JsonConvert.SerializeObject(value, type, this.Settings);
+            return result;
+        }
+
+        /// <inheritdoc />
+        public object ConvertTo (Type type, string value)
+        {
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
+            object result = JsonConvert.DeserializeObject(value, type, this.Settings);
+            return result;
+        }
+
+        #endregion
+    }
 }

@@ -62,7 +62,7 @@ namespace RI.Framework.Threading
 	///     <code language="cs">
 	///  <![CDATA[
 	///  [Export]
-	///  public class MyModule : MonoModule
+	///  public class MyModule : MonoModuleBase
 	///  {
 	/// 		protected override void Initialize()
 	/// 		{

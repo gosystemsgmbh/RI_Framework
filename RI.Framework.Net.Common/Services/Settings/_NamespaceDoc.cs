@@ -6,7 +6,7 @@
 namespace RI.Framework.Services.Settings
 {
 	/// <summary>
-	///     Contains the settings service.
+	///     Contains the setting service.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

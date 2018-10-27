@@ -8,34 +8,34 @@ using RI.Framework.Services.Messaging.Dispatchers;
 
 namespace RI.Framework.Services.Messaging
 {
-	/// <summary>
-	///     The interface required for message receivers.
-	/// </summary>
-	/// <remarks>
-	///     <para>
-	///         Each message is delivered once by a <see cref="IMessageService" /> and the used <see cref="IMessageDispatcher" />s to all available message receivers.
-	///     </para>
-	/// </remarks>
-	[Export]
-	[Obsolete("The message service is obsolete. Use the message bus instead (RI.Framework.Bus.*).", false)]
-	public interface IMessageReceiver
-	{
-		/// <summary>
-		///     Called for each received message.
-		/// </summary>
-		/// <param name="message"> The received message. </param>
-		/// <param name="messageService"> The message service used to deliver the message. </param>
-		/// <remarks>
-		///     <note type="implement">
-		///         The actual message delivery is done one receiver at a time.
-		///         The delivery of the same message to the next receiver can only be made after <see cref="ReceiveMessage" /> returned.
-		///         Therefore, long-running tasks should be avoided in <see cref="ReceiveMessage" />.
-		///     </note>
-		///     <note type="note">
-		///         Do not call this method directly, it is intended to be called from an <see cref="IMessageDispatcher" /> implementation.
-		///     </note>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="message" /> or <paramref name="messageService" /> is null. </exception>
-		void ReceiveMessage (IMessage message, IMessageService messageService);
-	}
+    /// <summary>
+    ///     The interface required for message receivers.
+    /// </summary>
+    /// <remarks>
+    ///     <para>
+    ///         Each message is delivered once by a <see cref="IMessageService" /> and the used <see cref="IMessageDispatcher" />s to all available message receivers.
+    ///     </para>
+    /// </remarks>
+    [Export]
+    [Obsolete(MessageService.ObsoleteMessage, false)]
+    public interface IMessageReceiver
+    {
+        /// <summary>
+        ///     Called for each received message.
+        /// </summary>
+        /// <param name="message"> The received message. </param>
+        /// <param name="messageService"> The message service used to deliver the message. </param>
+        /// <remarks>
+        ///     <note type="implement">
+        ///         The actual message delivery is done one receiver at a time.
+        ///         The delivery of the same message to the next receiver can only be made after <see cref="ReceiveMessage" /> returned.
+        ///         Therefore, long-running tasks should be avoided in <see cref="ReceiveMessage" />.
+        ///     </note>
+        ///     <note type="note">
+        ///         Do not call this method directly, it is intended to be called from an <see cref="IMessageDispatcher" /> implementation.
+        ///     </note>
+        /// </remarks>
+        /// <exception cref="ArgumentNullException"> <paramref name="message" /> or <paramref name="messageService" /> is null. </exception>
+        void ReceiveMessage (Message message, IMessageService messageService);
+    }
 }

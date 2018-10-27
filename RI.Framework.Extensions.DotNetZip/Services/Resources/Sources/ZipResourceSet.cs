@@ -17,6 +17,8 @@ using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.ObjectModel;
 
 
+
+
 namespace RI.Framework.Services.Resources.Sources
 {
     /// <summary>
@@ -30,10 +32,6 @@ namespace RI.Framework.Services.Resources.Sources
     /// <threadsafety static="true" instance="true" />
     public sealed class ZipResourceSet : LogSource, IResourceSet
     {
-        private bool _isLazyLoaded;
-
-        private bool _isLoaded;
-
         #region Constants
 
         /// <summary>
@@ -94,6 +92,17 @@ namespace RI.Framework.Services.Resources.Sources
 
 
 
+        #region Instance Fields
+
+        private bool _isLazyLoaded;
+
+        private bool _isLoaded;
+
+        #endregion
+
+
+
+
         #region Instance Properties/Indexer
 
         /// <summary>
@@ -114,11 +123,11 @@ namespace RI.Framework.Services.Resources.Sources
 
         internal bool? IsValid { get; private set; }
 
-        private ZipResourceSource Source { get; }
-
         private List<IResourceConverter> Converters => this.Source.Converters;
 
         private Dictionary<string, Tuple<FilePath, Loader>> Resources { get; }
+
+        private ZipResourceSource Source { get; }
 
         #endregion
 
@@ -316,6 +325,7 @@ namespace RI.Framework.Services.Resources.Sources
                     {
                         candidate = null;
                     }
+
                     if (candidate != null)
                     {
                         this.Log(LogLevel.Debug, "Settings value: {0}={1} @ {2}", uiCultureKey, value, this.File);
@@ -343,6 +353,7 @@ namespace RI.Framework.Services.Resources.Sources
                     {
                         candidate = null;
                     }
+
                     if (candidate != null)
                     {
                         this.Log(LogLevel.Debug, "Settings value: {0}={1} @ {2}", formattingCultureKey, value, this.File);
@@ -484,12 +495,14 @@ namespace RI.Framework.Services.Resources.Sources
                                             EagerLoader loader = new EagerLoader(value.Value);
                                             this.Resources.Add(name, new Tuple<FilePath, Loader>(file, loader));
                                         }
+
                                         this.Log(LogLevel.Debug, "Added INI resource file: {0} @ {1}", file, this.File);
                                     }
                                     catch (Exception exception)
                                     {
                                         this.Log(LogLevel.Error, "Invalid INI resource file: {0} @ {1}{2}{3}", file, this.File, Environment.NewLine, exception.ToDetailedString());
                                     }
+
                                     break;
                                 }
                             }
@@ -513,9 +526,6 @@ namespace RI.Framework.Services.Resources.Sources
         #region Overrides
 
         /// <inheritdoc />
-        public int CompareTo(object obj) => this.CompareTo(obj as IResourceSet);
-
-        /// <inheritdoc />
         public override bool Equals (object obj) => this.Equals(obj as IResourceSet);
 
         /// <inheritdoc />
@@ -529,13 +539,10 @@ namespace RI.Framework.Services.Resources.Sources
         #region Interface: IResourceSet
 
         /// <inheritdoc />
-        bool ISynchronizable.IsSynchronized => true;
-
-        /// <inheritdoc />
-        public object SyncRoot { get; }
-
-        /// <inheritdoc />
         public bool AlwaysLoad { get; private set; }
+
+        /// <inheritdoc />
+        public CultureInfo Culture { get; private set; }
 
         /// <inheritdoc />
         public CultureInfo Formatting { get; private set; }
@@ -585,6 +592,9 @@ namespace RI.Framework.Services.Resources.Sources
         }
 
         /// <inheritdoc />
+        bool ISynchronizable.IsSynchronized => true;
+
+        /// <inheritdoc />
         public string Name { get; private set; }
 
         /// <inheritdoc />
@@ -594,10 +604,13 @@ namespace RI.Framework.Services.Resources.Sources
         public bool Selectable { get; private set; }
 
         /// <inheritdoc />
-        public CultureInfo Culture { get; private set; }
+        public object SyncRoot { get; }
 
         /// <inheritdoc />
-        public int CompareTo(IResourceSet other)
+        public int CompareTo (object obj) => this.CompareTo(obj as IResourceSet);
+
+        /// <inheritdoc />
+        public int CompareTo (IResourceSet other)
         {
             if (other == null)
             {

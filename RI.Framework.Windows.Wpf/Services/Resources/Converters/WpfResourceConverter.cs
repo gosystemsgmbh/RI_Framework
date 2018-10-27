@@ -12,6 +12,8 @@ using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.ObjectModel;
 
 
+
+
 namespace RI.Framework.Services.Resources.Converters
 {
     /// <summary>
@@ -35,7 +37,7 @@ namespace RI.Framework.Services.Resources.Converters
         /// <summary>
         ///     Creates a new instance of <see cref="WpfResourceConverter" />.
         /// </summary>
-        public WpfResourceConverter()
+        public WpfResourceConverter ()
         {
             this.SyncRoot = new object();
         }

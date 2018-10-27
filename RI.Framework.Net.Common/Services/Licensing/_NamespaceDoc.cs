@@ -6,7 +6,7 @@
 namespace RI.Framework.Services.Licensing
 {
 	/// <summary>
-	///     Contains the licensing service.
+	///     Contains the license service.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

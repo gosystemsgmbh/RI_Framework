@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using RI.Framework.Composition.Model;
 using RI.Framework.Utilities.Exceptions;
+using RI.Framework.Utilities.ObjectModel;
 
 
 
@@ -19,7 +20,7 @@ namespace RI.Framework.Services.Settings.Storages
     ///     </para>
     /// </remarks>
     [Export]
-    public interface ISettingStorage
+    public interface ISettingStorage : ISynchronizable
     {
         /// <summary>
         ///     Gets whether this setting storage only supports loading and retriving of values but not setting and saving.

@@ -9,6 +9,7 @@ using RI.Framework.IO.Paths;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Logging;
+using RI.Framework.Utilities.ObjectModel;
 
 
 
@@ -73,10 +74,10 @@ namespace RI.Framework.Services.Settings.Storages
         ///         The default section name <see cref="DefaultSectionName" /> is used as the INI section name.
         ///     </para>
         ///     <para>
-        ///         All values will be written, not only those known (see <see cref="WriteOnlyKnown"/>).
+        ///         All values will be written, not only those known (see <see cref="WriteOnlyKnown" />).
         ///     </para>
         ///     <para>
-        ///         No write prefix affinities will be used (see <see cref="WritePrefixAffinities"/>).
+        ///         No write prefix affinities will be used (see <see cref="WritePrefixAffinities" />).
         ///     </para>
         /// </remarks>
         public IniFileSettingStorage (FilePath filePath)
@@ -115,6 +116,7 @@ namespace RI.Framework.Services.Settings.Storages
                 }
             }
 
+            this.SyncRoot = new object();
             this.FilePath = filePath;
             this.FileEncoding = fileEncoding ?? IniFileSettingStorage.DefaultEncoding;
             this.SectionName = sectionName ?? IniFileSettingStorage.DefaultSectionName;
@@ -183,6 +185,12 @@ namespace RI.Framework.Services.Settings.Storages
         bool ISettingStorage.IsReadOnly => false;
 
         /// <inheritdoc />
+        bool ISynchronizable.IsSynchronized => true;
+
+        /// <inheritdoc />
+        public object SyncRoot { get; }
+
+        /// <inheritdoc />
         public bool WriteOnlyKnown { get; }
 
         /// <inheritdoc />
@@ -239,9 +247,11 @@ namespace RI.Framework.Services.Settings.Storages
                     {
                         values.Add(value.Key, new List<string>());
                     }
+
                     values[value.Key].AddRange(value.Value);
                 }
             }
+
             return values;
         }
 
