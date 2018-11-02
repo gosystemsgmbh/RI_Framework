@@ -37,6 +37,8 @@ namespace RI.Framework.Services.Settings
     /// </remarks>
     /// TODO: Make thread-safe
     /// TODO: Move to RI.Framework.Common and implement PlayerPrefsStorage
+    /// TODO: Implement JsonSettingStorage
+    /// TODO: Implement XmlSettingStorage
     [Export]
     public interface ISettingService : ISynchronizable
     {

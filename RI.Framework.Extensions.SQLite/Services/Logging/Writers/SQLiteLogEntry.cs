@@ -1,28 +1,52 @@
 ﻿using System;
 
+using RI.Framework.Services.Logging.Readers;
 using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.ObjectModel;
 
 
 
 
-namespace RI.Framework.Services.Logging.Readers
+namespace RI.Framework.Services.Logging.Writers
 {
     /// <summary>
-    ///     Represents a single log entry in a log file read by <see cref="LogFileReader" />.
+    ///     Represents a single log entry in a SQLite log database.
     /// </summary>
     /// <threadsafety static="false" instance="false" />
-    public sealed class LogFileEntry : ICloneable<LogFileEntry>, ICloneable
+    public sealed class SQLiteLogEntry : ICloneable<SQLiteLogEntry>, ICloneable
     {
-        #region Instance Properties/Indexer
+        #region Instance Constructor/Destructor
 
         /// <summary>
-        ///     Gets or sets the session this log entry belongs to.
+        ///     Creates a new instance of <see cref="SQLiteLogEntry" />.
         /// </summary>
-        /// <value>
-        ///     The session this log entry belongs to.
-        /// </value>
-        public string File { get; set; }
+        public SQLiteLogEntry ()
+            : this(null)
+        {
+        }
+
+        /// <summary>
+        ///     Creates a new instance of <see cref="SQLiteLogEntry" />.
+        /// </summary>
+        /// <param name="logFileEntry"> The log file entry from which the content is copied (can be null). </param>
+        public SQLiteLogEntry (LogFileEntry logFileEntry)
+        {
+            if (logFileEntry != null)
+            {
+                this.Timestamp = logFileEntry.Timestamp;
+                this.ThreadId = logFileEntry.ThreadId;
+                this.Severity = logFileEntry.Severity;
+                this.Source = logFileEntry.Source;
+                this.Message = logFileEntry.Message;
+            }
+        }
+
+        #endregion
+
+
+
+
+        #region Instance Properties/Indexer
 
         /// <summary>
         ///     Gets or sets the actual log message.
@@ -31,6 +55,14 @@ namespace RI.Framework.Services.Logging.Readers
         ///     The actual log message.
         /// </value>
         public string Message { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the session this log entry belongs to.
+        /// </summary>
+        /// <value>
+        ///     The session this log entry belongs to.
+        /// </value>
+        public string Session { get; set; }
 
         /// <summary>
         ///     Gets or sets the severity.
@@ -69,18 +101,18 @@ namespace RI.Framework.Services.Logging.Readers
 
 
 
-        #region Interface: ICloneable<LogFileEntry>
+        #region Interface: ICloneable<SQLiteLogEntry>
 
         /// <inheritdoc />
-        public LogFileEntry Clone ()
+        public SQLiteLogEntry Clone ()
         {
-            LogFileEntry clone = new LogFileEntry();
+            SQLiteLogEntry clone = new SQLiteLogEntry();
             clone.Timestamp = this.Timestamp;
             clone.ThreadId = this.ThreadId;
             clone.Severity = this.Severity;
             clone.Source = this.Source;
             clone.Message = this.Message;
-            clone.File = this.File;
+            clone.Session = this.Session;
             return clone;
         }
 

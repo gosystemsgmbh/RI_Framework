@@ -23,7 +23,7 @@ namespace RI.Framework.Services.Regions
     ///     </para>
     /// </remarks>
     /// <threadsafety static="true" instance="true" />
-    /// TODO: Do not use locator types
+    /// TODO: Do not use locator types, move things into extension methods
     public static class RegionLocator
     {
         #region Static Properties/Indexer

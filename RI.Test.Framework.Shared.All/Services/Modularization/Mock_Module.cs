@@ -5,7 +5,7 @@
 
 namespace RI.Test.Framework.Services.Modularization
 {
-	public sealed class Mock_Module : Module
+	public sealed class Mock_Module : ModuleBase
 	{
 	}
 }

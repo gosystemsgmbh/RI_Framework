@@ -194,7 +194,7 @@ namespace RI.Framework.Bootstrapping
 		/// </summary>
 		/// <remarks>
 		///     <para>
-		///         If true, <see cref="Services.Modularization.ModuleService" /> is added automatically, providing a default modularization service using <see cref="IModule" /> (<see cref="MonoModuleBase" />, <see cref="Module" />, or a custom implementation of <see cref="IModule" />).
+		///         If true, <see cref="Services.Modularization.ModuleService" /> is added automatically, providing a default modularization service using <see cref="IModule" /> (<see cref="MonoModuleBase" />, <see cref="ModuleBase" />, or a custom implementation of <see cref="IModule" />).
 		///     </para>
 		///     <para>
 		///         The default value is true.

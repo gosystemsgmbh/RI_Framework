@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
 using System.Diagnostics.CodeAnalysis;
@@ -8,7 +7,6 @@ using RI.Framework.Composition.Model;
 using RI.Framework.IO.Files;
 using RI.Framework.IO.Paths;
 using RI.Framework.Services.Logging.Filters;
-using RI.Framework.Services.Logging.Readers;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.Logging;
@@ -20,7 +18,7 @@ using RI.Framework.Utilities.ObjectModel;
 namespace RI.Framework.Services.Logging.Writers
 {
     /// <summary>
-    ///     Implements a log writer which writes log entries to an SQLite database.
+    ///     Implements a log writer which writes log entries to an SQLite log database.
     /// </summary>
     /// <remarks>
     ///     <para>
@@ -47,7 +45,7 @@ namespace RI.Framework.Services.Logging.Writers
         /// <param name="dbFile"> The SQLite database file the log entries are written to. </param>
         /// <remarks>
         ///     <para>
-        ///         The default configuration is used.
+        ///         The default <see cref="SQLiteLogConfiguration" /> is used.
         ///     </para>
         /// </remarks>
         /// <exception cref="ArgumentNullException"> <paramref name="dbFile" /> is null. </exception>
@@ -62,7 +60,7 @@ namespace RI.Framework.Services.Logging.Writers
         /// </summary>
         /// <param name="session"> The current session identification or null if not used. </param>
         /// <param name="dbFile"> The SQLite database file the log entries are written to. </param>
-        /// <param name="configuration"> The used configuration or null to use the default configuration. </param>
+        /// <param name="configuration"> The used configuration or null to use the default <see cref="SQLiteLogConfiguration" />. </param>
         /// <exception cref="ArgumentNullException"> <paramref name="dbFile" /> is null. </exception>
         /// <exception cref="InvalidPathArgumentException"> <paramref name="dbFile" /> contains wildcards. </exception>
         public SQLiteLogWriter (string session, FilePath dbFile, SQLiteLogConfiguration configuration)
@@ -87,7 +85,7 @@ namespace RI.Framework.Services.Logging.Writers
         /// <param name="dbConnection"> The SQLite connection to the database the log entries are written to. </param>
         /// <remarks>
         ///     <para>
-        ///         The default configuration is used.
+        ///         The default <see cref="SQLiteLogConfiguration" /> is used.
         ///     </para>
         /// </remarks>
         /// <exception cref="ArgumentNullException"> <paramref name="dbConnection" /> is null. </exception>
@@ -101,7 +99,7 @@ namespace RI.Framework.Services.Logging.Writers
         /// </summary>
         /// <param name="session"> The current session identification or null if not used. </param>
         /// <param name="dbConnection"> The SQLite connection to the database the log entries are written to. </param>
-        /// <param name="configuration"> The used configuration or null to use the default configuration. </param>
+        /// <param name="configuration"> The used configuration or null to use the default <see cref="SQLiteLogConfiguration" />. </param>
         /// <exception cref="ArgumentNullException"> <paramref name="dbConnection" /> is null. </exception>
         public SQLiteLogWriter (string session, SQLiteConnection dbConnection, SQLiteLogConfiguration configuration)
         {
@@ -138,6 +136,14 @@ namespace RI.Framework.Services.Logging.Writers
         #region Instance Properties/Indexer
 
         /// <summary>
+        ///     Gets the used database connection.
+        /// </summary>
+        /// <value>
+        ///     The used database connection.
+        /// </value>
+        public SQLiteConnection DbConnection { get; private set; }
+
+        /// <summary>
         ///     Gets the used database file.
         /// </summary>
         /// <value>
@@ -149,13 +155,11 @@ namespace RI.Framework.Services.Logging.Writers
         ///     Gets the current session identification.
         /// </summary>
         /// <value>
-        ///     The current session identification.
+        ///     The current session identification or null if not used.
         /// </value>
         public string Session { get; private set; }
 
         private SQLiteLogConfiguration DbConfiguration { get; set; }
-        private SQLiteConnection DbConnection { get; set; }
-        private string InsertEntryCommandString { get; set; }
 
         #endregion
 
@@ -274,19 +278,14 @@ namespace RI.Framework.Services.Logging.Writers
                 this.DbConnection.Open();
             }
 
-            string createTableCommandString = this.DbConfiguration.BuildCreateTableCommand();
-            string createIndicesCommandString = this.DbConfiguration.BuildCreateIndexCommand();
-
-            this.InsertEntryCommandString = this.DbConfiguration.BuildInsertEntryCommand();
-
-            using (SQLiteCommand createTableCommand = new SQLiteCommand(createTableCommandString, this.DbConnection))
+            using (SQLiteCommand createTableCommand = this.DbConfiguration.BuildCreateTableCommand(this.DbConnection, null))
             {
                 createTableCommand.ExecuteNonQuery();
             }
 
-            if (createIndicesCommandString != null)
+            using (SQLiteCommand createIndicesCommand = this.DbConfiguration.BuildCreateIndexCommand(this.DbConnection, null))
             {
-                using (SQLiteCommand createIndicesCommand = new SQLiteCommand(createIndicesCommandString, this.DbConnection))
+                if (createIndicesCommand != null)
                 {
                     createIndicesCommand.ExecuteNonQuery();
                 }
@@ -396,22 +395,16 @@ namespace RI.Framework.Services.Logging.Writers
 
                 try
                 {
-                    using (SQLiteCommand insertCommand = new SQLiteCommand(this.InsertEntryCommandString, this.DbConnection))
+                    SQLiteLogEntry entry = new SQLiteLogEntry();
+                    entry.Timestamp = timestamp;
+                    entry.ThreadId = threadId;
+                    entry.Severity = severity;
+                    entry.Source = source;
+                    entry.Message = message;
+                    entry.Session = this.Session;
+
+                    using (SQLiteCommand insertCommand = this.DbConfiguration.BuildInsertEntryCommand(null, entry, this.DbConnection, null))
                     {
-                        LogFileEntry entry = new LogFileEntry();
-                        entry.Timestamp = timestamp;
-                        entry.ThreadId = threadId;
-                        entry.Severity = severity;
-                        entry.Source = source;
-                        entry.Message = message;
-                        entry.Session = this.Session;
-
-                        Dictionary<string, object> parameters = this.DbConfiguration.BuildInsertEntryParameters(null, entry);
-                        foreach (KeyValuePair<string, object> param in parameters)
-                        {
-                            insertCommand.Parameters.AddWithValue(param.Key, param.Value);
-                        }
-
                         insertCommand.ExecuteNonQuery();
                     }
                 }

@@ -11,7 +11,7 @@ using RI.Framework.Utilities.ObjectModel;
 namespace RI.Framework.Services.Messaging
 {
     /// <summary>
-    ///     Implements the message object which uses a dictionary to transport the message data.
+    ///     Implements the message object.
     /// </summary>
     /// <remarks>
     ///     <para>
@@ -26,6 +26,7 @@ namespace RI.Framework.Services.Messaging
     /// </remarks>
     /// <threadsafety static="true" instance="true" />
     [Obsolete(MessageService.ObsoleteMessage, false)]
+    [Serializable]
     public sealed class Message : ISynchronizable, IEquatable<Message>
     {
         #region Instance Constructor/Destructor

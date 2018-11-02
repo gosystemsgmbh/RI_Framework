@@ -16,6 +16,7 @@ namespace RI.Framework.Services.Dispatcher
     ///     </para>
     /// </remarks>
     /// <threadsafety static="true" instance="true" />
+    /// TODO: Add WaitAsync
     public interface IDispatcherOperation : ISynchronizable
     {
         /// <summary>
@@ -76,7 +77,7 @@ namespace RI.Framework.Services.Dispatcher
         ///     The dispatcher operation itself (for use in fluent API) if the operation could be rescheduled, null if the operation has already finished or could not be rescheduled anymore.
         /// </returns>
         /// <exception cref="ArgumentOutOfRangeException"> <paramref name="millisecondsFromNow" /> is less than zero. </exception>
-        IDispatcherOperation Reschedule (int millisecondsFromNow);
+        IDispatcherOperation Schedule (int millisecondsFromNow);
 
         /// <summary>
         ///     Delays the operation by a given amount of time relative to now.
@@ -86,7 +87,7 @@ namespace RI.Framework.Services.Dispatcher
         ///     The dispatcher operation itself (for use in fluent API) if the operation could be rescheduled, null if the operation has already finished or could not be rescheduled anymore.
         /// </returns>
         /// <exception cref="ArgumentOutOfRangeException"> <paramref name="timeFromNow" /> is negative. </exception>
-        IDispatcherOperation Reschedule (TimeSpan timeFromNow);
+        IDispatcherOperation Schedule (TimeSpan timeFromNow);
 
         /// <summary>
         ///     Delays the operation until a given date and time.
@@ -100,7 +101,7 @@ namespace RI.Framework.Services.Dispatcher
         ///         To avoid troubles with daylight saving time (e.g. issuing a reschedule around the time when the clock jumps or holds for one hour), <paramref name="timestamp" /> is considered to be UTC (compared to <see cref="DateTime" />.<see cref="DateTime.UtcNow" />).
         ///     </note>
         /// </remarks>
-        IDispatcherOperation Reschedule (DateTime timestamp);
+        IDispatcherOperation Schedule (DateTime timestamp);
 
         /// <summary>
         ///     Sets a timeout for the operation relative to now.

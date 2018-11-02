@@ -189,6 +189,7 @@ namespace RI.Framework.Services.Dispatcher
 
             if (operation.Priority == DispatcherPriority.Background)
             {
+                //TODO: Use IDispatcherBackgroundHandler (composition interface)
                 ThreadPool.QueueUserWorkItem(this._backgroundInvoker, operation);
                 return false;
             }
@@ -1099,11 +1100,11 @@ namespace RI.Framework.Services.Dispatcher
 
             IDispatcherOperation IDispatcherOperation.OnFinished (Action<IDispatcherOperation, object[]> callback) => this.Dispatcher.OnFinished(this, callback) ? this : null;
 
-            IDispatcherOperation IDispatcherOperation.Reschedule (int millisecondsFromNow) => this.Dispatcher.Reschedule(this, millisecondsFromNow) ? this : null;
+            IDispatcherOperation IDispatcherOperation.Schedule (int millisecondsFromNow) => this.Dispatcher.Reschedule(this, millisecondsFromNow) ? this : null;
 
-            IDispatcherOperation IDispatcherOperation.Reschedule (TimeSpan timeFromNow) => ((IDispatcherOperation)this).Reschedule((int)timeFromNow.TotalMilliseconds);
+            IDispatcherOperation IDispatcherOperation.Schedule (TimeSpan timeFromNow) => ((IDispatcherOperation)this).Schedule((int)timeFromNow.TotalMilliseconds);
 
-            IDispatcherOperation IDispatcherOperation.Reschedule (DateTime timestamp) => this.Dispatcher.Reschedule(this, timestamp) ? this : null;
+            IDispatcherOperation IDispatcherOperation.Schedule (DateTime timestamp) => this.Dispatcher.Reschedule(this, timestamp) ? this : null;
 
             IDispatcherOperation IDispatcherOperation.Timeout (int millisecondsFromNow) => this.Dispatcher.Timeout(this, millisecondsFromNow) ? this : null;
 

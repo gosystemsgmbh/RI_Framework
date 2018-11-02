@@ -378,7 +378,7 @@ namespace RI.Framework.Services.Backup.Storages
         }
 
         /// <inheritdoc />
-        public bool TryBeginBackup (string name, DateTime timestamp, IEnumerable<IBackupInclusion> inclusions, out IBackupSet backupSet, out Func<Guid, Stream> streamResolver)
+        public bool TryBeginBackup (string name, DateTime timestamp, IEnumerable<BackupInclusion> inclusions, out IBackupSet backupSet, out Func<Guid, Stream> streamResolver)
         {
             backupSet = null;
             streamResolver = null;
@@ -401,13 +401,13 @@ namespace RI.Framework.Services.Backup.Storages
                 IniDocument iniDocument = new IniDocument();
                 iniDocument.AddValue(nameof(IBackupSet.Name), name);
                 iniDocument.AddValue(nameof(IBackupSet.Timestamp), timestamp.ToSortableString('-'));
-                foreach (IBackupInclusion inclusion in inclusions)
+                foreach (BackupInclusion inclusion in inclusions)
                 {
                     iniDocument.AddSectionHeader(ZipBackupSet.InclusionSectionName);
-                    iniDocument.AddValue(nameof(IBackupInclusion.Id), inclusion.Id.ToString("N").ToUpperInvariant());
-                    iniDocument.AddValue(nameof(IBackupInclusion.ResourceKey), inclusion.ResourceKey);
-                    iniDocument.AddValue(nameof(IBackupInclusion.SupportsRestore), inclusion.SupportsRestore.ToString());
-                    inclusion.Streams.ForEach(x => iniDocument.AddValue(nameof(IBackupInclusion.Streams), x.ToString("N").ToUpperInvariant()));
+                    iniDocument.AddValue(nameof(BackupInclusion.Id), inclusion.Id.ToString("N").ToUpperInvariant());
+                    iniDocument.AddValue(nameof(BackupInclusion.ResourceKey), inclusion.ResourceKey);
+                    iniDocument.AddValue(nameof(BackupInclusion.SupportsRestore), inclusion.SupportsRestore.ToString());
+                    inclusion.Streams.ForEach(x => iniDocument.AddValue(nameof(BackupInclusion.Streams), x.ToString("N").ToUpperInvariant()));
                     inclusion.Tags.ForEach(x => iniDocument.AddValue(x.Key, x.Value));
                 }
 
@@ -446,7 +446,7 @@ namespace RI.Framework.Services.Backup.Storages
         }
 
         /// <inheritdoc />
-        public bool TryBeginRestore (IBackupSet backupSet, IEnumerable<IBackupInclusion> inclusions, out Func<Guid, Stream> streamResolver)
+        public bool TryBeginRestore (IBackupSet backupSet, IEnumerable<BackupInclusion> inclusions, out Func<Guid, Stream> streamResolver)
         {
             streamResolver = null;
 

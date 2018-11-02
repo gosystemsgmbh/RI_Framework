@@ -13,7 +13,7 @@ using RI.Framework.Utilities.Reflection;
 namespace RI.Framework.Services.Regions.Adapters
 {
     /// <summary>
-    ///     Implements a base class for region adapters which provides some commonly used base functionality.
+    ///     Implements a base class for region adapters which provides some commonly used functionality.
     /// </summary>
     /// <para>
     ///     See <see cref="IRegionAdapter" /> for more details.

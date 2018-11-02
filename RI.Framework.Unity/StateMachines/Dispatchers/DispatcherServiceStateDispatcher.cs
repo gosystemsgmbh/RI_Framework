@@ -124,7 +124,7 @@ namespace RI.Framework.StateMachines.Dispatchers
 		/// <inheritdoc />
 		public void DispatchUpdate (StateMachineUpdateDelegate updateDelegate, StateUpdateInfo updateInfo)
 		{
-			this.DispatcherService.Dispatch(this.Priority, (x, y) => x(y), updateDelegate, updateInfo).Reschedule(updateInfo.UpdateDelay);
+			this.DispatcherService.Dispatch(this.Priority, (x, y) => x(y), updateDelegate, updateInfo).Schedule(updateInfo.UpdateDelay);
 		}
 
 		#endregion

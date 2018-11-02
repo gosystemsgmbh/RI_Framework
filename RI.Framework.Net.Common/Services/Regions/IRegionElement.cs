@@ -6,7 +6,7 @@
 namespace RI.Framework.Services.Regions
 {
 	/// <summary>
-	///     Supports region awareness of elements.
+	///     Supports region awareness of elements in a region.
 	/// </summary>
 	/// <remarks>
 	///     <see cref="IRegionElement" /> can be implemented by elements which are used with regions to make them aware of certain region operations being performed on them.

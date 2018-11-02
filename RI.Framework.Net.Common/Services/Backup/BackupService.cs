@@ -84,7 +84,7 @@ namespace RI.Framework.Services.Backup
 
 		#region Instance Methods
 
-		private bool CreateBackupInternal (bool testOnly, string name, DateTime timestamp, List<IBackupInclusion> inclusions, out IBackupSet backupSet)
+		private bool CreateBackupInternal (bool testOnly, string name, DateTime timestamp, List<BackupInclusion> inclusions, out IBackupSet backupSet)
 		{
 			List<IBackupAware> awares;
 			lock (this.SyncRoot)
@@ -152,7 +152,7 @@ namespace RI.Framework.Services.Backup
 			return willDo || (canDo && testOnly);
 		}
 
-		private bool RestoreBackupInternal (bool testOnly, IBackupSet backupSet, List<IBackupInclusion> inclusions)
+		private bool RestoreBackupInternal (bool testOnly, IBackupSet backupSet, List<BackupInclusion> inclusions)
 		{
 			List<IBackupAware> awares;
 			lock (this.SyncRoot)
@@ -364,9 +364,9 @@ namespace RI.Framework.Services.Backup
 		}
 
 		/// <inheritdoc />
-		public bool CanDoBackup (IEnumerable<IBackupInclusion> inclusions)
+		public bool CanDoBackup (IEnumerable<BackupInclusion> inclusions)
 		{
-			List<IBackupInclusion> inclusionList = inclusions?.ToList() ?? this.GetAvailableInclusions();
+			List<BackupInclusion> inclusionList = inclusions?.ToList() ?? this.GetAvailableInclusions();
 			if (inclusionList.Count == 0)
 			{
 				throw new ArgumentException("Inclusion sequence is empty.", nameof(inclusions));
@@ -382,7 +382,7 @@ namespace RI.Framework.Services.Backup
 		public bool CanDoFullRestore (IBackupSet backupSet) => this.CanDoRestore(backupSet, null);
 
 		/// <inheritdoc />
-		public bool CanDoRestore (IBackupSet backupSet, IEnumerable<IBackupInclusion> inclusions)
+		public bool CanDoRestore (IBackupSet backupSet, IEnumerable<BackupInclusion> inclusions)
 		{
 			if (backupSet == null)
 			{
@@ -394,13 +394,13 @@ namespace RI.Framework.Services.Backup
 				return false;
 			}
 
-			List<IBackupInclusion> inclusionList = inclusions?.ToList() ?? (from x in backupSet.GetInclusions() where x.SupportsRestore select x).ToList();
+			List<BackupInclusion> inclusionList = inclusions?.ToList() ?? (from x in backupSet.GetInclusions() where x.SupportsRestore select x).ToList();
 			if (inclusionList.Count == 0)
 			{
 				throw new ArgumentException("Inclusion sequence is empty.", nameof(inclusions));
 			}
 
-			foreach (IBackupInclusion inclusion in inclusionList)
+			foreach (BackupInclusion inclusion in inclusionList)
 			{
 				if (!inclusion.SupportsRestore)
 				{
@@ -435,10 +435,10 @@ namespace RI.Framework.Services.Backup
 		}
 
 		/// <inheritdoc />
-		public IBackupSet CreateBackup (string name, IEnumerable<IBackupInclusion> inclusions) => this.CreateBackup(name, DateTime.Now, inclusions);
+		public IBackupSet CreateBackup (string name, IEnumerable<BackupInclusion> inclusions) => this.CreateBackup(name, DateTime.Now, inclusions);
 
 		/// <inheritdoc />
-		public IBackupSet CreateBackup (string name, DateTime timestamp, IEnumerable<IBackupInclusion> inclusions)
+		public IBackupSet CreateBackup (string name, DateTime timestamp, IEnumerable<BackupInclusion> inclusions)
 		{
 			if (name != null)
 			{
@@ -448,7 +448,7 @@ namespace RI.Framework.Services.Backup
 				}
 			}
 
-			List<IBackupInclusion> inclusionList = inclusions?.ToList() ?? this.GetAvailableInclusions();
+			List<BackupInclusion> inclusionList = inclusions?.ToList() ?? this.GetAvailableInclusions();
 			if (inclusionList.Count == 0)
 			{
 				throw new ArgumentException("Inclusion sequence is empty.", nameof(inclusions));
@@ -520,7 +520,7 @@ namespace RI.Framework.Services.Backup
 		}
 
 		/// <inheritdoc />
-		public List<IBackupInclusion> GetAvailableInclusions ()
+		public List<BackupInclusion> GetAvailableInclusions ()
 		{
 			List<IBackupAware> awares;
 			lock (this.SyncRoot)
@@ -528,7 +528,7 @@ namespace RI.Framework.Services.Backup
 				awares = this.AwaresCopy;
 			}
 
-			List<IBackupInclusion> inclusions = new List<IBackupInclusion>();
+			List<BackupInclusion> inclusions = new List<BackupInclusion>();
 			foreach (IBackupAware aware in awares)
 			{
 				aware.QueryBackupInclusions(inclusions, this);
@@ -626,7 +626,7 @@ namespace RI.Framework.Services.Backup
 		}
 
 		/// <inheritdoc />
-		public bool RestoreBackup (IBackupSet backupSet, IEnumerable<IBackupInclusion> inclusions)
+		public bool RestoreBackup (IBackupSet backupSet, IEnumerable<BackupInclusion> inclusions)
 		{
 			if (backupSet == null)
 			{
@@ -638,13 +638,13 @@ namespace RI.Framework.Services.Backup
 				throw new InvalidOperationException("The backup set does not support restore: " + backupSet);
 			}
 
-			List<IBackupInclusion> inclusionList = inclusions?.ToList() ?? (from x in backupSet.GetInclusions() where x.SupportsRestore select x).ToList();
+			List<BackupInclusion> inclusionList = inclusions?.ToList() ?? (from x in backupSet.GetInclusions() where x.SupportsRestore select x).ToList();
 			if (inclusionList.Count == 0)
 			{
 				throw new ArgumentException("Inclusion sequence is empty.", nameof(inclusions));
 			}
 
-			foreach (IBackupInclusion inclusion in inclusionList)
+			foreach (BackupInclusion inclusion in inclusionList)
 			{
 				if (!inclusion.SupportsRestore)
 				{

@@ -5,11 +5,11 @@
 
 namespace RI.Framework.Services
 {
-	/// <summary>
-	///     Contains application-independent infrastructure services.
-	/// </summary>
-	[CompilerGenerated]
-	public sealed class NamespaceDoc
-	{
-	}
+    /// <summary>
+    ///     Contains application-independent infrastructure services.
+    /// </summary>
+    [CompilerGenerated]
+    public sealed class NamespaceDoc
+    {
+    }
 }

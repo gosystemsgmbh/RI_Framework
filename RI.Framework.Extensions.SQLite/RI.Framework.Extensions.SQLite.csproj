@@ -85,6 +85,7 @@
     <Compile Include="Data\SQLite\Functions\_NamespaceDoc.cs" />
     <Compile Include="Data\SQLite\SQLiteConnectionExtensions.cs" />
     <Compile Include="Data\Database\SQLiteDatabaseManagerConfiguration.cs" />
+    <Compile Include="Services\Logging\Writers\SQLiteLogEntry.cs" />
     <Compile Include="Services\Logging\Writers\SQLiteLogConfiguration.cs" />
     <Compile Include="Services\Logging\Writers\SQLiteLogWriter.cs" />
     <Compile Include="Data\Database\SQLiteDatabaseManager.cs" />

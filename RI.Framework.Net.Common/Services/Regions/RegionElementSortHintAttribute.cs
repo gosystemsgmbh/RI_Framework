@@ -35,7 +35,7 @@ namespace RI.Framework.Services.Regions
 		/// <value>
 		///     The sort index of the element.
 		/// </value>
-		public int Index { get; private set; }
+		public int Index { get; }
 
 		#endregion
 	}

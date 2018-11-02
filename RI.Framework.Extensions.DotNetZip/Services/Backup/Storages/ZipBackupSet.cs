@@ -74,7 +74,7 @@ namespace RI.Framework.Services.Backup.Storages
             this.Name = null;
             this.SizeInBytes = null;
             this.Timestamp = DateTime.MinValue;
-            this.Inclusions = new List<IBackupInclusion>();
+            this.Inclusions = new List<BackupInclusion>();
             this.Streams = new Dictionary<Guid, FilePath>();
 
             this.TemporaryFiles = new Dictionary<Guid, Tuple<TemporaryFile, FileStream>>();
@@ -140,7 +140,7 @@ namespace RI.Framework.Services.Backup.Storages
 
         internal Dictionary<Guid, Tuple<TemporaryFile, FileStream>> TemporaryFiles { get; }
 
-        private List<IBackupInclusion> Inclusions { get; }
+        private List<BackupInclusion> Inclusions { get; }
 
         private Dictionary<Guid, FilePath> Streams { get; }
 
@@ -277,10 +277,10 @@ namespace RI.Framework.Services.Backup.Storages
                         this.Log(LogLevel.Warning, "Missing recommended backup description value in backup description file: {0} @ {1}", nameKey, this.File);
                     }
 
-                    string idKey = nameof(IBackupInclusion.Id);
-                    string resourceKeyKey = nameof(IBackupInclusion.ResourceKey);
-                    string supportsRestoreKey = nameof(IBackupInclusion.SupportsRestore);
-                    string streamsKey = nameof(IBackupInclusion.Streams);
+                    string idKey = nameof(BackupInclusion.Id);
+                    string resourceKeyKey = nameof(BackupInclusion.ResourceKey);
+                    string supportsRestoreKey = nameof(BackupInclusion.SupportsRestore);
+                    string streamsKey = nameof(BackupInclusion.Streams);
 
                     List<Dictionary<string, List<string>>> inclusions = iniDocument.GetSectionsAll(ZipBackupSet.InclusionSectionName);
                     foreach (Dictionary<string, List<string>> inclusion in inclusions)
@@ -571,11 +571,11 @@ namespace RI.Framework.Services.Backup.Storages
         }
 
         /// <inheritdoc />
-        public List<IBackupInclusion> GetInclusions ()
+        public List<BackupInclusion> GetInclusions ()
         {
             lock (this.SyncRoot)
             {
-                return new List<IBackupInclusion>(this.Inclusions);
+                return new List<BackupInclusion>(this.Inclusions);
             }
         }
 

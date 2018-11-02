@@ -45,7 +45,6 @@ namespace RI.Framework.Services.Regions
     ///     </para>
     /// </remarks>
     /// TODO: Make thread-safe
-    /// TODO: Make async
     [Export]
     public interface IRegionService
     {
@@ -61,6 +60,15 @@ namespace RI.Framework.Services.Regions
         ///     </note>
         /// </remarks>
         IEnumerable<IRegionAdapter> Adapters { get; }
+
+        /// <summary>
+        ///     Activates all elements in a region.
+        /// </summary>
+        /// <param name="region"> The name of the region. </param>
+        /// <exception cref="ArgumentNullException"> <paramref name="region" /> is null. </exception>
+        /// <exception cref="EmptyStringArgumentException"> <paramref name="region" /> is an empty string. </exception>
+        /// <exception cref="RegionNotFoundException"> The region specified by <paramref name="region" /> does not exist. </exception>
+        void ActivateAllElements (string region);
 
         /// <summary>
         ///     Activates an element in a region.

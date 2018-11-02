@@ -13,29 +13,27 @@ using RI.Framework.Utilities.ObjectModel;
 namespace RI.Framework.Services.Logging.Adapters
 {
     /// <summary>
-    ///     Implements a trace listener which forwards trace messages to a logging service.
+    ///     Implements a trace listener which forwards trace messages to a <see cref="ILogService" />.
     /// </summary>
     /// <remarks>
     ///     <para>
-    ///         <see cref="LogServiceTraceListener" /> is a trace listener which can be used with <see cref="Trace"/> to forward trace messages written to <see cref="Trace"/> to a <see cref="ILogService"/>.
+    ///         <see cref="LogServiceTraceListener" /> is a trace listener which can be used with <see cref="Trace" /> to forward trace messages written to <see cref="Trace" /> to a <see cref="ILogService" />.
     ///     </para>
     /// </remarks>
     /// <threadsafety static="true" instance="true" />
     public sealed class LogServiceTraceListener : TraceListener, ISynchronizable
     {
-        private string _source;
-
         #region Instance Constructor/Destructor
 
         /// <summary>
         ///     Creates a new instance of <see cref="LogServiceTraceListener" />.
         /// </summary>
         /// <remarks>
-        /// <para>
-        /// <see cref="LogLocator"/> is used to forward the trace messages.
-        /// </para>
+        ///     <para>
+        ///         <see cref="LogLocator" /> is used to forward the trace messages.
+        ///     </para>
         /// </remarks>
-        public LogServiceTraceListener()
+        public LogServiceTraceListener ()
             : this(null)
         {
         }
@@ -43,8 +41,8 @@ namespace RI.Framework.Services.Logging.Adapters
         /// <summary>
         ///     Creates a new instance of <see cref="LogServiceTraceListener" />.
         /// </summary>
-        /// <param name="logService">The log service to which the trace messages are forwarded or null if <see cref="LogLocator"/> should be used.</param>
-        public LogServiceTraceListener(ILogService logService)
+        /// <param name="logService"> The log service to which the trace messages are forwarded or null if <see cref="LogLocator" /> should be used. </param>
+        public LogServiceTraceListener (ILogService logService)
         {
             this.SyncRoot = new object();
 
@@ -65,29 +63,38 @@ namespace RI.Framework.Services.Logging.Adapters
 
 
 
+        #region Instance Fields
+
+        private string _source;
+
+        #endregion
+
+
+
+
         #region Instance Properties/Indexer
 
         /// <summary>
-        /// Gets the log service to which the trace messages are forwarded or null if <see cref="LogLocator"/> should be used.
+        ///     Gets the log service to which the trace messages are forwarded or null if <see cref="LogLocator" /> should be used.
         /// </summary>
         /// <value>
-        /// The log service to which the trace messages are forwarded or null if <see cref="LogLocator"/> should be used.
+        ///     The log service to which the trace messages are forwarded or null if <see cref="LogLocator" /> should be used.
         /// </value>
         public ILogService LogService { get; }
 
         /// <summary>
-        /// Gets or sets the source which is used with the logging service.
+        ///     Gets or sets the source which is used with the logging service.
         /// </summary>
         /// <value>
-        /// The source which is used with the logging service.
+        ///     The source which is used with the logging service.
         /// </value>
         /// <remarks>
         ///     <para>
-        ///         The default value is <c>TRACE</c>.
+        ///         The default value is <c> TRACE </c>.
         ///     </para>
         /// </remarks>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is null.</exception>
-        /// <exception cref="EmptyStringArgumentException"><paramref name="value"/> is an empty string.</exception>
+        /// <exception cref="ArgumentNullException"> <paramref name="value" /> is null. </exception>
+        /// <exception cref="EmptyStringArgumentException"> <paramref name="value" /> is an empty string. </exception>
         public string Source
         {
             get
@@ -123,31 +130,9 @@ namespace RI.Framework.Services.Logging.Adapters
 
 
 
-        #region Overrides
-
-        /// <inheritdoc />
-        public override bool IsThreadSafe => true;
-
-        /// <inheritdoc />
-        public override void Write(string message)
-        {
-            this.WriteTrace(message);
-        }
-
-        /// <inheritdoc />
-        public override void WriteLine(string message)
-        {
-            this.WriteTraceLine(message);
-        }
-
-        #endregion
-
-
-
-
         #region Instance Methods
 
-        private void WriteTrace(string message)
+        private void WriteTrace (string message)
         {
             lock (this.SyncRoot)
             {
@@ -197,17 +182,46 @@ namespace RI.Framework.Services.Logging.Adapters
             }
         }
 
-        private void WriteTraceLine(string message)
+        private void WriteTraceLine (string message)
         {
             this.WriteTrace(message + Environment.NewLine);
         }
 
         #endregion
 
+
+
+
+        #region Overrides
+
+        /// <inheritdoc />
+        public override bool IsThreadSafe => true;
+
+        /// <inheritdoc />
+        public override void Write (string message)
+        {
+            this.WriteTrace(message);
+        }
+
+        /// <inheritdoc />
+        public override void WriteLine (string message)
+        {
+            this.WriteTraceLine(message);
+        }
+
+        #endregion
+
+
+
+
+        #region Interface: ISynchronizable
+
         /// <inheritdoc />
         public bool IsSynchronized => true;
 
         /// <inheritdoc />
         public object SyncRoot { get; }
+
+        #endregion
     }
 }

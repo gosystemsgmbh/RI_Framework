@@ -25,7 +25,7 @@ namespace RI.Framework.Services.Backup
     ///         Therefore, a backup set is considered an independent &quot;snapshot&quot; of the applications data at a specified point in time.
     ///     </para>
     ///     <para>
-    ///         Each backup set has one or more inclusions (<see cref="IBackupInclusion" />).
+    ///         Each backup set has one or more inclusions (<see cref="BackupInclusion" />).
     ///         An inclusion is a single content in a backup set which is backed-up and restored independently from the other inclusions.
     ///         An inclusion might be non-restorable, for example log files which are usually not restored but can be part of a backup.
     ///         So a backup set can contain individual parts of an applications data as independent inclusions (e.g. database, log files, settings, etc., each an independent inclusion handled by different, independent parts of the application).
@@ -46,6 +46,7 @@ namespace RI.Framework.Services.Backup
     /// <threadsafety static="true" instance="true" />
     /// TODO: Make async
     /// TODO: Make thread-safe
+    /// TODO: Separate ZIP'ing and storage
     [Export]
     public interface IBackupService : ISynchronizable
     {
@@ -107,7 +108,7 @@ namespace RI.Framework.Services.Backup
         ///     true if a backup can be created, false otherwise.
         /// </returns>
         /// <exception cref="ArgumentException"> <paramref name="inclusions" /> is an empty sequence. </exception>
-        bool CanDoBackup (IEnumerable<IBackupInclusion> inclusions);
+        bool CanDoBackup (IEnumerable<BackupInclusion> inclusions);
 
         /// <summary>
         ///     Determines whether all backup-aware objects are in a state which allows creating a backup using all inclusions.
@@ -138,7 +139,7 @@ namespace RI.Framework.Services.Backup
         /// </returns>
         /// <exception cref="ArgumentNullException"> <paramref name="backupSet" /> is null. </exception>
         /// <exception cref="ArgumentException"> <paramref name="inclusions" /> is an empty sequence. </exception>
-        bool CanDoRestore (IBackupSet backupSet, IEnumerable<IBackupInclusion> inclusions);
+        bool CanDoRestore (IBackupSet backupSet, IEnumerable<BackupInclusion> inclusions);
 
         /// <summary>
         ///     Performs a cleanup of old backups.
@@ -177,7 +178,7 @@ namespace RI.Framework.Services.Backup
         /// </remarks>
         /// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
         /// <exception cref="ArgumentException"> <paramref name="inclusions" /> is an empty sequence. </exception>
-        IBackupSet CreateBackup (string name, IEnumerable<IBackupInclusion> inclusions);
+        IBackupSet CreateBackup (string name, IEnumerable<BackupInclusion> inclusions);
 
         /// <summary>
         ///     Creates a new backup.
@@ -190,7 +191,7 @@ namespace RI.Framework.Services.Backup
         /// </returns>
         /// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
         /// <exception cref="ArgumentException"> <paramref name="inclusions" /> is an empty sequence. </exception>
-        IBackupSet CreateBackup (string name, DateTime timestamp, IEnumerable<IBackupInclusion> inclusions);
+        IBackupSet CreateBackup (string name, DateTime timestamp, IEnumerable<BackupInclusion> inclusions);
 
         /// <summary>
         ///     Creates a full backup which contains all inclusions.
@@ -246,7 +247,7 @@ namespace RI.Framework.Services.Backup
         ///     The list of all available inclusions.
         ///     If no inclusions are available, an empty list is returned.
         /// </returns>
-        List<IBackupInclusion> GetAvailableInclusions ();
+        List<BackupInclusion> GetAvailableInclusions ();
 
         /// <summary>
         ///     Gets all currently available backup sets.
@@ -309,7 +310,7 @@ namespace RI.Framework.Services.Backup
         /// <exception cref="ArgumentNullException"> <paramref name="backupSet" /> is null. </exception>
         /// <exception cref="ArgumentException"> <paramref name="inclusions" /> is an empty sequence. </exception>
         /// <exception cref="InvalidOperationException"> <paramref name="backupSet" /> or one of the inclusions in <paramref name="inclusions" /> does not support restore. </exception>
-        bool RestoreBackup (IBackupSet backupSet, IEnumerable<IBackupInclusion> inclusions);
+        bool RestoreBackup (IBackupSet backupSet, IEnumerable<BackupInclusion> inclusions);
 
         /// <summary>
         ///     Restores an existing backup with all inclusions.

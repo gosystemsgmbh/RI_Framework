@@ -7,6 +7,7 @@ using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Composition;
 using RI.Framework.Composition.Model;
 using RI.Framework.Services.Messaging.Dispatchers;
+using RI.Framework.Threading.Tasks;
 using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.ObjectModel;
 
@@ -16,7 +17,7 @@ using RI.Framework.Utilities.ObjectModel;
 namespace RI.Framework.Services.Messaging
 {
     /// <summary>
-    ///     Implements a default messaging service which is suitable for most scenarios.
+    ///     Implements a default in-process messaging service which is suitable for most scenarios.
     /// </summary>
     /// <remarks>
     ///     <para>
@@ -315,17 +316,19 @@ namespace RI.Framework.Services.Messaging
                 throw new ArgumentNullException(nameof(message));
             }
 
-            TaskCompletionSource<Message> tcs = new TaskCompletionSource<Message>(TaskCreationOptions.RunContinuationsAsynchronously);
+            List<Task> tasks = new List<Task>();
 
             lock (this.SyncRoot)
             {
                 foreach (IMessageDispatcher dispatcher in this.DispatchersUpdated)
                 {
+                    TaskCompletionSource<Message> tcs = new TaskCompletionSource<Message>(TaskCreationOptions.RunContinuationsAsynchronously);
+                    tasks.Add(tcs.Task);
                     dispatcher.Post(this.ReceiverCopy, message, this, x => tcs.SetResult(x));
                 }
             }
 
-            return tcs.Task;
+            return tasks.All();
         }
 
         #endregion

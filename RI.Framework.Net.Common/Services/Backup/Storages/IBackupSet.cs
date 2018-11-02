@@ -14,12 +14,12 @@ namespace RI.Framework.Services.Backup.Storages
 	///     Defines the interface for a single backup set.
 	/// </summary>
 	/// <remarks>
-	///     <para>
-	///         See <see cref="IBackupService" /> for more details.
-	///     </para>
 	///     <note type="implement">
 	///         <see cref="IBackupSet" /> is typically implemented internally by an <see cref="IBackupStorage" /> implementation.
 	///     </note>
+	///     <para>
+	///         See <see cref="IBackupService" /> for more details.
+	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
 	public interface IBackupSet : ISynchronizable, IEquatable<IBackupSet>
@@ -93,6 +93,6 @@ namespace RI.Framework.Services.Backup.Storages
 		///         Do not call this method directly, it is intended to be called from an <see cref="IBackupService" /> implementation.
 		///     </note>
 		/// </remarks>
-		List<IBackupInclusion> GetInclusions ();
+		List<BackupInclusion> GetInclusions ();
 	}
 }

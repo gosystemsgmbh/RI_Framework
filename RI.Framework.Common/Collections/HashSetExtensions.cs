@@ -11,6 +11,7 @@ namespace RI.Framework.Collections
 	/// <summary>
 	///     Provides utility/extension methods for the <see cref="HashSet{T}" /> type.
 	/// </summary>
+	/// TODO: Change to ISet
 	public static class HashSetExtensions
 	{
 		#region Static Methods

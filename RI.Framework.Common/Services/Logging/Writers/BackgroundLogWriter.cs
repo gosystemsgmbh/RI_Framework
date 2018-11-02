@@ -15,7 +15,7 @@ using RI.Framework.Utilities.ObjectModel;
 namespace RI.Framework.Services.Logging.Writers
 {
     /// <summary>
-    ///     Implements a log writer which forwards log messages to another <see cref="ILogWriter"/> in a background thread.
+    ///     Implements a log writer which forwards log messages to another <see cref="ILogWriter" /> in a background thread.
     /// </summary>
     /// <remarks>
     ///     <para>
@@ -40,14 +40,14 @@ namespace RI.Framework.Services.Logging.Writers
         /// <param name="writer"> The log writer which is used in the background thread. </param>
         /// <remarks>
         ///     <para>
-        ///         <paramref name="writer"/> is owned and disposed by this instance.
+        ///         <paramref name="writer" /> is owned and disposed by this instance.
         ///     </para>
         ///     <para>
         ///         <see cref="ThreadPriority.Normal" /> is used as the background thread priority.
         ///     </para>
         /// </remarks>
         /// <exception cref="ArgumentNullException"> <paramref name="writer" /> is null. </exception>
-        public BackgroundLogWriter(ILogWriter writer)
+        public BackgroundLogWriter (ILogWriter writer)
             : this(writer, true, ThreadPriority.Normal)
         {
         }
@@ -59,7 +59,7 @@ namespace RI.Framework.Services.Logging.Writers
         /// <param name="ownWriter"> Specifies whether the used log writer is owned and disposed by this instance. </param>
         /// <param name="priority"> The used priority of the background thread. </param>
         /// <exception cref="ArgumentNullException"> <paramref name="writer" /> is null. </exception>
-        public BackgroundLogWriter(ILogWriter writer, bool ownWriter, ThreadPriority priority)
+        public BackgroundLogWriter (ILogWriter writer, bool ownWriter, ThreadPriority priority)
         {
             if (writer == null)
             {
@@ -90,7 +90,7 @@ namespace RI.Framework.Services.Logging.Writers
         /// <summary>
         ///     Garbage collects this instance of <see cref="BackgroundLogWriter" />.
         /// </summary>
-        ~BackgroundLogWriter()
+        ~BackgroundLogWriter ()
         {
             this.Dispose(false);
         }
@@ -112,12 +112,12 @@ namespace RI.Framework.Services.Logging.Writers
         #region Instance Properties/Indexer
 
         /// <summary>
-        ///     Gets the log writer which is used in the background thread.
+        ///     Gets whether the used log writer is owned and disposed by this instance.
         /// </summary>
         /// <value>
-        ///     The log writer which is used in the background thread.
+        ///     true if the used log writer is owned and disposed by this instance, false otherwise.
         /// </value>
-        public ILogWriter Writer { get; }
+        public bool OwnWriter { get; }
 
         /// <summary>
         ///     Gets the used priority of the background thread.
@@ -128,16 +128,14 @@ namespace RI.Framework.Services.Logging.Writers
         public ThreadPriority Priority { get; }
 
         /// <summary>
-        ///     Gets whether the used log writer is owned and disposed by this instance.
+        ///     Gets the log writer which is used in the background thread.
         /// </summary>
         /// <value>
-        ///     true if the used log writer is owned and disposed by this instance, false otherwise.
+        ///     The log writer which is used in the background thread.
         /// </value>
-        public bool OwnWriter { get; }
+        public ILogWriter Writer { get; }
 
         private HeavyThreadDispatcher Dispatcher { get; set; }
-
-        private object SyncRoot { get; }
 
         #endregion
 
@@ -162,7 +160,7 @@ namespace RI.Framework.Services.Logging.Writers
 
         [SuppressMessage("ReSharper", "UnusedParameter.Local")]
         [SuppressMessage("ReSharper", "EmptyGeneralCatchClause")]
-        private void Dispose(bool disposing)
+        private void Dispose (bool disposing)
         {
             lock (this.SyncRoot)
             {
@@ -200,7 +198,7 @@ namespace RI.Framework.Services.Logging.Writers
         #region Interface: IDisposable
 
         /// <inheritdoc />
-        void IDisposable.Dispose()
+        void IDisposable.Dispose ()
         {
             this.Stop();
         }
@@ -235,10 +233,10 @@ namespace RI.Framework.Services.Logging.Writers
         bool ISynchronizable.IsSynchronized => true;
 
         /// <inheritdoc />
-        object ISynchronizable.SyncRoot => this.SyncRoot;
+        public object SyncRoot { get; }
 
         /// <inheritdoc />
-        public void Cleanup(DateTime retentionDate)
+        public void Cleanup (DateTime retentionDate)
         {
             lock (this.SyncRoot)
             {
@@ -253,7 +251,7 @@ namespace RI.Framework.Services.Logging.Writers
 
         /// <inheritdoc />
         [SuppressMessage("ReSharper", "EmptyGeneralCatchClause")]
-        public void Log(DateTime timestamp, int threadId, LogLevel severity, string source, string message)
+        public void Log (DateTime timestamp, int threadId, LogLevel severity, string source, string message)
         {
             ILogFilter filter = this.Filter;
             if (filter != null)

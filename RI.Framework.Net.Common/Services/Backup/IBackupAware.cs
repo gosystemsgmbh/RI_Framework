@@ -44,7 +44,7 @@ namespace RI.Framework.Services.Backup
 		///     </note>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="streamResolver" /> or <paramref name="inclusions" /> is null. </exception>
-		void Backup (Func<Guid, Stream> streamResolver, IList<IBackupInclusion> inclusions, IBackupService backupService);
+		void Backup (Func<Guid, Stream> streamResolver, IList<BackupInclusion> inclusions, IBackupService backupService);
 
 		/// <summary>
 		///     Informs that a backup is about to be performed.
@@ -60,7 +60,7 @@ namespace RI.Framework.Services.Backup
 		///     </note>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="inclusions" /> is null. </exception>
-		bool BeginBackup (IList<IBackupInclusion> inclusions, IBackupService backupService);
+		bool BeginBackup (IList<BackupInclusion> inclusions, IBackupService backupService);
 
 		/// <summary>
 		///     Informs that a restore is about to be performed.
@@ -76,7 +76,7 @@ namespace RI.Framework.Services.Backup
 		///     </note>
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="inclusions" /> is null. </exception>
-		bool BeginRestore (IList<IBackupInclusion> inclusions, IBackupService backupService);
+		bool BeginRestore (IList<BackupInclusion> inclusions, IBackupService backupService);
 
 		/// <summary>
 		///     Informs that a backup has been finished.
@@ -118,7 +118,7 @@ namespace RI.Framework.Services.Backup
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="inclusions" /> is null. </exception>
 		/// <exception cref="ArgumentNullException"> <paramref name="backupService" /> is null. </exception>
-		void QueryBackupInclusions (IList<IBackupInclusion> inclusions, IBackupService backupService);
+		void QueryBackupInclusions (IList<BackupInclusion> inclusions, IBackupService backupService);
 
 		/// <summary>
 		///     Performs the actual restore.
@@ -127,6 +127,6 @@ namespace RI.Framework.Services.Backup
 		/// <param name="inclusions"> The inclusions to be restored. </param>
 		/// <param name="backupService"> The backup service. </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="streamResolver" /> or <paramref name="inclusions" /> is null. </exception>
-		void Restore (Func<Guid, Stream> streamResolver, IList<IBackupInclusion> inclusions, IBackupService backupService);
+		void Restore (Func<Guid, Stream> streamResolver, IList<BackupInclusion> inclusions, IBackupService backupService);
 	}
 }

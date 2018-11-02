@@ -5,7 +5,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 using RI.Framework.IO.Paths;
-using RI.Framework.Services.Logging.Readers;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.ObjectModel;
@@ -329,7 +328,7 @@ namespace RI.Framework.Services.Logging.Writers
         /// </summary>
         /// <param name="retentionDate"> The date and time where all previous log entries are deleted. </param>
         /// <param name="connection"> The connection to use. </param>
-        /// <param name="transaction"> The transaction to use (can be null. </param>
+        /// <param name="transaction"> The transaction to use (can be null). </param>
         /// <returns>
         ///     The SQLite command used to cleanup old log entries.
         ///     The return value is never null.
@@ -345,6 +344,7 @@ namespace RI.Framework.Services.Logging.Writers
             SQLiteLogConfiguration configuration = this.GetPreprocessedConfiguration();
 
             string commandString = "DELETE FROM [" + configuration.TableName + "] WHERE [" + configuration.ColumnNameTimestamp + "] < @retentionDate;";
+
             SQLiteCommand command = transaction == null ? new SQLiteCommand(commandString, connection) : new SQLiteCommand(commandString, connection, transaction);
             command.Parameters.AddWithValue("@retentionDate", retentionDate);
 
@@ -352,14 +352,22 @@ namespace RI.Framework.Services.Logging.Writers
         }
 
         /// <summary>
-        ///     Builds the SQLite command string which can be used to create the log indices, based on the current configuration.
+        ///     Builds the SQLite command which can be used to create the log indices, based on the current configuration.
         /// </summary>
+        /// <param name="connection"> The connection to use. </param>
+        /// <param name="transaction"> The transaction to use (can be null). </param>
         /// <returns>
-        ///     The SQLite command string used to build the log indices or null if no indices are configured.
-        ///     The return value is never an empty string.
+        ///     The SQLite command used to build the log indices or null if no indices are configured.
+        ///     The return value is null if no indices are used.
         /// </returns>
-        public string BuildCreateIndexCommand ()
+        /// <exception cref="ArgumentNullException"> <paramref name="connection" /> is null. </exception>
+        public SQLiteCommand BuildCreateIndexCommand (SQLiteConnection connection, SQLiteTransaction transaction)
         {
+            if (connection == null)
+            {
+                throw new ArgumentNullException(nameof(connection));
+            }
+
             SQLiteLogConfiguration configuration = this.GetPreprocessedConfiguration();
 
             List<string> indices = new List<string>();
@@ -392,22 +400,32 @@ namespace RI.Framework.Services.Logging.Writers
             }
 
             StringBuilder sb = new StringBuilder();
-
             sb.Append(indices.Join("; "));
+            string commandString = sb.ToString();
 
-            return sb.ToString();
+            SQLiteCommand command = transaction == null ? new SQLiteCommand(commandString, connection) : new SQLiteCommand(commandString, connection, transaction);
+
+            return command;
         }
 
         /// <summary>
-        ///     Builds the SQLite command string which can be used to create the log table, based on the current configuration.
+        ///     Builds the SQLite command which can be used to create the log table, based on the current configuration.
         /// </summary>
+        /// <param name="connection"> The connection to use. </param>
+        /// <param name="transaction"> The transaction to use (can be null). </param>
         /// <returns>
-        ///     The SQLite command string used to build the log table.
-        ///     The return value is never null or an empty string.
+        ///     The SQLite command used to build the log table.
+        ///     The return value is never null.
         /// </returns>
+        /// <exception cref="ArgumentNullException"> <paramref name="connection" /> is null. </exception>
         /// <exception cref="InvalidOperationException"> There are no columns configured. </exception>
-        public string BuildCreateTableCommand ()
+        public SQLiteCommand BuildCreateTableCommand (SQLiteConnection connection, SQLiteTransaction transaction)
         {
+            if (connection == null)
+            {
+                throw new ArgumentNullException(nameof(connection));
+            }
+
             SQLiteLogConfiguration configuration = this.GetPreprocessedConfiguration();
 
             List<string> columns = new List<string>();
@@ -435,25 +453,42 @@ namespace RI.Framework.Services.Logging.Writers
             }
 
             StringBuilder sb = new StringBuilder();
-
             sb.Append("CREATE TABLE IF NOT EXISTS [" + configuration.TableName + "]");
             sb.Append(" (");
             sb.Append(columns.Join(", "));
             sb.Append(");");
+            string commandString = sb.ToString();
 
-            return sb.ToString();
+            SQLiteCommand command = transaction == null ? new SQLiteCommand(commandString, connection) : new SQLiteCommand(commandString, connection, transaction);
+
+            return command;
         }
 
         /// <summary>
-        ///     Builds the SQLite command string which can be used to insert a single log entry.
+        ///     Builds the SQLite command which can be used to insert a single log entry.
         /// </summary>
+        /// <param name="file"> The file the generated entry originates from (can be null). </param>
+        /// <param name="entry"> The log entry. </param>
+        /// <param name="connection"> The connection to use. </param>
+        /// <param name="transaction"> The transaction to use (can be null). </param>
         /// <returns>
-        ///     The SQLite command string used to insert a single log entry.
-        ///     The return value is never null or an empty string.
+        ///     The SQLite command used to insert a single log entry.
+        ///     The return value is never null.
         /// </returns>
+        /// <exception cref="ArgumentNullException"> <paramref name="entry" /> or <paramref name="connection" /> is null. </exception>
         /// <exception cref="InvalidOperationException"> There are no columns configured. </exception>
-        public string BuildInsertEntryCommand ()
+        public SQLiteCommand BuildInsertEntryCommand (FilePath file, SQLiteLogEntry entry, SQLiteConnection connection, SQLiteTransaction transaction)
         {
+            if (entry == null)
+            {
+                throw new ArgumentNullException(nameof(entry));
+            }
+
+            if (connection == null)
+            {
+                throw new ArgumentNullException(nameof(connection));
+            }
+
             SQLiteLogConfiguration configuration = this.GetPreprocessedConfiguration();
 
             List<string> columns = new List<string>();
@@ -490,20 +525,55 @@ namespace RI.Framework.Services.Logging.Writers
             sb.Append(") VALUES (");
             sb.Append(values.Join(", "));
             sb.Append(");");
+            string commandString = sb.ToString();
 
-            return sb.ToString();
+            SQLiteCommand command = transaction == null ? new SQLiteCommand(commandString, connection) : new SQLiteCommand(commandString, connection, transaction);
+
+            Dictionary<string, object> parameters = this.BuildInsertEntryParameters(file, entry);
+            foreach (KeyValuePair<string, object> param in parameters)
+            {
+                command.Parameters.AddWithValue(param.Key, param.Value);
+            }
+
+            return command;
         }
 
         /// <summary>
-        ///     Builds a dictionary for SQLite command parameters based on a log entry.
+        ///     Creates a default SQLite connection for writing log entries to a SQLite database file.
         /// </summary>
+        /// <param name="dbFile"> The SQLite database file. </param>
         /// <returns>
-        ///     The dictionary for SQLite command parameters based on a log entry.
-        ///     The return value is never null or an empty dictionary.
+        ///     The opened SQLite connection to the database file.
         /// </returns>
-        /// <exception cref="ArgumentNullException"> <paramref name="entry" /> is null. </exception>
-        /// <exception cref="InvalidOperationException"> There are no columns configured. </exception>
-        public Dictionary<string, object> BuildInsertEntryParameters (FilePath file, LogFileEntry entry)
+        /// <exception cref="ArgumentNullException"> <paramref name="dbFile" /> is null. </exception>
+        /// <exception cref="InvalidPathArgumentException"> <paramref name="dbFile" /> contains wildcards. </exception>
+        public SQLiteConnection CreateConnection (FilePath dbFile)
+        {
+            if (dbFile == null)
+            {
+                throw new ArgumentNullException(nameof(dbFile));
+            }
+
+            if (dbFile.HasWildcards)
+            {
+                throw new InvalidPathArgumentException(nameof(dbFile), "Wildcards are not allowed.");
+            }
+
+            SQLiteConnectionStringBuilder builder = new SQLiteConnectionStringBuilder();
+            builder.DataSource = dbFile.PathResolved;
+            builder.ForeignKeys = true;
+            builder.FailIfMissing = false;
+            builder.ReadOnly = false;
+            //TODO: Add more configs
+
+            SQLiteConnection connection = new SQLiteConnection(builder.ToString());
+
+            connection.Open();
+
+            return connection;
+        }
+
+        private Dictionary<string, object> BuildInsertEntryParameters (FilePath file, SQLiteLogEntry entry)
         {
             if (entry == null)
             {
@@ -537,40 +607,6 @@ namespace RI.Framework.Services.Logging.Writers
             }
 
             return parameters;
-        }
-
-        /// <summary>
-        ///     Creates a default SQLite connection for writing log entries to a SQLite database file.
-        /// </summary>
-        /// <param name="dbFile"> The SQLite database file. </param>
-        /// <returns>
-        ///     The opened SQLite connection to the database file.
-        /// </returns>
-        /// <exception cref="ArgumentNullException"> <paramref name="dbFile" /> is null. </exception>
-        /// <exception cref="InvalidPathArgumentException"> <paramref name="dbFile" /> contains wildcards. </exception>
-        public SQLiteConnection CreateConnection (FilePath dbFile)
-        {
-            if (dbFile == null)
-            {
-                throw new ArgumentNullException(nameof(dbFile));
-            }
-
-            if (dbFile.HasWildcards)
-            {
-                throw new InvalidPathArgumentException(nameof(dbFile), "Wildcards are not allowed.");
-            }
-
-            SQLiteConnectionStringBuilder builder = new SQLiteConnectionStringBuilder();
-            builder.DataSource = dbFile.PathResolved;
-            builder.ForeignKeys = true;
-            builder.FailIfMissing = false;
-            builder.ReadOnly = false;
-
-            SQLiteConnection connection = new SQLiteConnection(builder.ToString());
-
-            connection.Open();
-
-            return connection;
         }
 
         private SQLiteLogConfiguration GetPreprocessedConfiguration ()

@@ -5,11 +5,11 @@
 
 namespace RI.Framework.Services.Logging.Filters
 {
-	/// <summary>
-	///     Contains specialized log filters.
-	/// </summary>
-	[CompilerGenerated]
-	public sealed class NamespaceDoc
-	{
-	}
+    /// <summary>
+    ///     Contains specialized log filters.
+    /// </summary>
+    [CompilerGenerated]
+    public sealed class NamespaceDoc
+    {
+    }
 }

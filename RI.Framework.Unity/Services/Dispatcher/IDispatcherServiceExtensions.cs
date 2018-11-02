@@ -173,7 +173,7 @@ namespace RI.Framework.Services.Dispatcher
         /// </returns>
         /// <exception cref="ArgumentNullException"> <paramref name="func" /> or <paramref name="dispatcher" /> is null. </exception>
         /// <exception cref="InvalidOperationException"> The service is not fully initialized. </exception>
-        public static IDispatcherOperation Dispatch <TResult> (this IDispatcherService dispatcher, Func<TResult> func)
+        public static IDispatcherOperation DispatchFunc <TResult> (this IDispatcherService dispatcher, Func<TResult> func)
         {
             if (dispatcher == null)
             {
@@ -197,7 +197,7 @@ namespace RI.Framework.Services.Dispatcher
         /// </returns>
         /// <exception cref="ArgumentNullException"> <paramref name="func" /> or <paramref name="dispatcher" /> is null. </exception>
         /// <exception cref="InvalidOperationException"> The service is not fully initialized. </exception>
-        public static IDispatcherOperation Dispatch <T, TResult> (this IDispatcherService dispatcher, Func<T, TResult> func, T arg)
+        public static IDispatcherOperation DispatchFunc <T, TResult> (this IDispatcherService dispatcher, Func<T, TResult> func, T arg)
         {
             if (dispatcher == null)
             {
@@ -223,7 +223,7 @@ namespace RI.Framework.Services.Dispatcher
         /// </returns>
         /// <exception cref="ArgumentNullException"> <paramref name="func" /> or <paramref name="dispatcher" /> is null. </exception>
         /// <exception cref="InvalidOperationException"> The service is not fully initialized. </exception>
-        public static IDispatcherOperation Dispatch <T1, T2, TResult> (this IDispatcherService dispatcher, Func<T1, T2, TResult> func, T1 arg1, T2 arg2)
+        public static IDispatcherOperation DispatchFunc <T1, T2, TResult> (this IDispatcherService dispatcher, Func<T1, T2, TResult> func, T1 arg1, T2 arg2)
         {
             if (dispatcher == null)
             {
@@ -251,7 +251,7 @@ namespace RI.Framework.Services.Dispatcher
         /// </returns>
         /// <exception cref="ArgumentNullException"> <paramref name="func" /> or <paramref name="dispatcher" /> is null. </exception>
         /// <exception cref="InvalidOperationException"> The service is not fully initialized. </exception>
-        public static IDispatcherOperation Dispatch <T1, T2, T3, TResult> (this IDispatcherService dispatcher, Func<T1, T2, T3, TResult> func, T1 arg1, T2 arg2, T3 arg3)
+        public static IDispatcherOperation DispatchFunc <T1, T2, T3, TResult> (this IDispatcherService dispatcher, Func<T1, T2, T3, TResult> func, T1 arg1, T2 arg2, T3 arg3)
         {
             if (dispatcher == null)
             {
@@ -281,7 +281,7 @@ namespace RI.Framework.Services.Dispatcher
         /// </returns>
         /// <exception cref="ArgumentNullException"> <paramref name="func" /> or <paramref name="dispatcher" /> is null. </exception>
         /// <exception cref="InvalidOperationException"> The service is not fully initialized. </exception>
-        public static IDispatcherOperation Dispatch <T1, T2, T3, T4, TResult> (this IDispatcherService dispatcher, Func<T1, T2, T3, T4, TResult> func, T1 arg1, T2 arg2, T3 arg3, T4 arg4)
+        public static IDispatcherOperation DispatchFunc <T1, T2, T3, T4, TResult> (this IDispatcherService dispatcher, Func<T1, T2, T3, T4, TResult> func, T1 arg1, T2 arg2, T3 arg3, T4 arg4)
         {
             if (dispatcher == null)
             {

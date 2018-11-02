@@ -68,7 +68,7 @@ namespace RI.Framework.Services.Resources.Sources
         ///         The default encoding <see cref="DefaultEncoding" /> is used as the text encoding.
         ///     </para>
         ///     <para>
-        ///         No files are ignored.
+        ///         File search is not performed recursive and no files are ignored.
         ///     </para>
         /// </remarks>
         public DirectoryResourceSource (DirectoryPath directory)

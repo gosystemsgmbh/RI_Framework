@@ -154,7 +154,7 @@ namespace RI.Framework.Services.Settings.Storages
         /// <value>
         ///     The text encoding of the used INI file.
         /// </value>
-        public Encoding FileEncoding { get; private set; }
+        public Encoding FileEncoding { get; }
 
         /// <summary>
         ///     Gets the path to the used INI file.
@@ -162,7 +162,7 @@ namespace RI.Framework.Services.Settings.Storages
         /// <value>
         ///     The path to the used INI file.
         /// </value>
-        public FilePath FilePath { get; private set; }
+        public FilePath FilePath { get; }
 
         /// <summary>
         ///     Gets the INI section name where all the values are read/written from/to in the INI file.
@@ -170,7 +170,7 @@ namespace RI.Framework.Services.Settings.Storages
         /// <value>
         ///     The INI section name where all the values are read/written from/to in the INI file.
         /// </value>
-        public string SectionName { get; private set; }
+        public string SectionName { get; }
 
         private IniDocument Document { get; set; }
 

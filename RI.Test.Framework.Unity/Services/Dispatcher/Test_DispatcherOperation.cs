@@ -83,7 +83,7 @@ namespace RI.Test.Framework.Services.Dispatcher
 				}
 
 				op2 = test.Dispatch(DispatcherPriority.Frame, () => { });
-				op2.Reschedule(1000).Timeout(100).OnFinished((x, y) =>
+				op2.Schedule(1000).Timeout(100).OnFinished((x, y) =>
 				{
 					testValue += x.Status;
 					if (testValue != "ProcessedTimeout")
@@ -93,7 +93,7 @@ namespace RI.Test.Framework.Services.Dispatcher
 					this.TestContinuation();
 				});
 			});
-			op1.Reschedule(1100).OnFinished((x, y) => { testValue += x.Status; });
+			op1.Schedule(1100).OnFinished((x, y) => { testValue += x.Status; });
 		}
 
 		[TestMethod]
@@ -120,9 +120,9 @@ namespace RI.Test.Framework.Services.Dispatcher
 
 			string testValue = string.Empty;
 
-			test.Dispatch(DispatcherPriority.Idle, () => { testValue += "A"; }).Reschedule(1000);
-			test.Dispatch(DispatcherPriority.Later, () => { testValue += "B"; }).Reschedule(1000);
-			test.Dispatch(DispatcherPriority.Frame, () => { testValue += "C"; }).Reschedule(1000);
+			test.Dispatch(DispatcherPriority.Idle, () => { testValue += "A"; }).Schedule(1000);
+			test.Dispatch(DispatcherPriority.Later, () => { testValue += "B"; }).Schedule(1000);
+			test.Dispatch(DispatcherPriority.Frame, () => { testValue += "C"; }).Schedule(1000);
 
 			test.Dispatch(DispatcherPriority.Idle, () =>
 			{
@@ -131,7 +131,7 @@ namespace RI.Test.Framework.Services.Dispatcher
 					throw new TestAssertionException();
 				}
 				this.TestContinuation();
-			}).Reschedule(1000);
+			}).Schedule(1000);
 		}
 
 		#endregion

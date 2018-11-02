@@ -45,6 +45,7 @@ namespace RI.Framework.Services.Messaging
     /// <threadsafety static="true" instance="true" />
     /// TODO: Make async
     /// TODO: Make thread-safe
+    /// TODO: Implement BusMessageDispatcher
     [Export]
     [Obsolete(MessageService.ObsoleteMessage, false)]
     public interface IMessageService : ISynchronizable

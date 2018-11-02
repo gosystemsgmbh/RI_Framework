@@ -15,10 +15,10 @@ namespace RI.Framework.Services.Messaging.Dispatchers
     /// </summary>
     /// <remarks>
     ///     <para>
-    ///         See <see cref="IMessageDispatcher" /> for more details.
+    ///         Messages are dispatched using <see cref="IThreadDispatcher.Post(int,ThreadDispatcherOptions,Delegate,object[])" />.
     ///     </para>
     ///     <para>
-    ///         Messages are dispatched using <see cref="IThreadDispatcher.Post(int,ThreadDispatcherOptions,Delegate,object[])" />.
+    ///         See <see cref="IMessageDispatcher" /> for more details.
     ///     </para>
     /// </remarks>
     /// <threadsafety static="true" instance="true" />

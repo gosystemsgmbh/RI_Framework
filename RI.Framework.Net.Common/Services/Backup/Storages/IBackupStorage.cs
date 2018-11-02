@@ -124,7 +124,7 @@ namespace RI.Framework.Services.Backup.Storages
 		/// <exception cref="ArgumentNullException"> <paramref name="inclusions" /> is null. </exception>
 		/// <exception cref="EmptyStringArgumentException"> <paramref name="name" /> is an empty string. </exception>
 		/// <exception cref="ArgumentException"> <paramref name="inclusions" /> is an empty sequence. </exception>
-		bool TryBeginBackup (string name, DateTime timestamp, IEnumerable<IBackupInclusion> inclusions, out IBackupSet backupSet, out Func<Guid, Stream> streamResolver);
+		bool TryBeginBackup (string name, DateTime timestamp, IEnumerable<BackupInclusion> inclusions, out IBackupSet backupSet, out Func<Guid, Stream> streamResolver);
 
 		/// <summary>
 		///     Attempts to begin restore of a backup set.
@@ -143,7 +143,7 @@ namespace RI.Framework.Services.Backup.Storages
 		/// </remarks>
 		/// <exception cref="ArgumentNullException"> <paramref name="backupSet" /> or <paramref name="inclusions" /> is null. </exception>
 		/// <exception cref="ArgumentException"> <paramref name="inclusions" /> is an empty sequence. </exception>
-		bool TryBeginRestore (IBackupSet backupSet, IEnumerable<IBackupInclusion> inclusions, out Func<Guid, Stream> streamResolver);
+		bool TryBeginRestore (IBackupSet backupSet, IEnumerable<BackupInclusion> inclusions, out Func<Guid, Stream> streamResolver);
 
 		/// <summary>
 		///     Attempts to delete a backup from the storage.

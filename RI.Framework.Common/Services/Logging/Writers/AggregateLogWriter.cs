@@ -22,14 +22,14 @@ namespace RI.Framework.Services.Logging.Writers
     /// </remarks>
     /// <threadsafety static="true" instance="true" />
     [Export]
-    public sealed class AggregateLogWriter : ILogWriter, ICollection<ILogWriter>, ICollection
+    public sealed class AggregateLogWriter : ILogWriter, ICollection<ILogWriter>, ICollection, IReadOnlyCollection<ILogWriter>
     {
         #region Instance Constructor/Destructor
 
         /// <summary>
         ///     Creates a new instance of <see cref="AggregateLogWriter" />.
         /// </summary>
-        public AggregateLogWriter()
+        public AggregateLogWriter ()
             : this((IEnumerable<ILogWriter>)null)
         {
         }
@@ -43,7 +43,7 @@ namespace RI.Framework.Services.Logging.Writers
         ///         <paramref name="writers" /> is enumerated exactly once.
         ///     </para>
         /// </remarks>
-        public AggregateLogWriter(IEnumerable<ILogWriter> writers)
+        public AggregateLogWriter (IEnumerable<ILogWriter> writers)
         {
             this.SyncRoot = new object();
 
@@ -64,10 +64,19 @@ namespace RI.Framework.Services.Logging.Writers
         ///     Creates a new instance of <see cref="AggregateLogWriter" />.
         /// </summary>
         /// <param name="writers"> The array of writers which are aggregated. </param>
-        public AggregateLogWriter(params ILogWriter[] writers)
+        public AggregateLogWriter (params ILogWriter[] writers)
             : this((IEnumerable<ILogWriter>)writers)
         {
         }
+
+        #endregion
+
+
+
+
+        #region Instance Fields
+
+        private ILogFilter _filter;
 
         #endregion
 
@@ -85,18 +94,9 @@ namespace RI.Framework.Services.Logging.Writers
 
 
 
-        #region Instance Fields
-
-        private ILogFilter _filter;
-
-        #endregion
-
-
-
-
         #region Instance Methods
 
-        private void UpdateCopy()
+        private void UpdateCopy ()
         {
             this.Copy = new List<ILogWriter>(this.Writers);
         }
@@ -112,7 +112,7 @@ namespace RI.Framework.Services.Logging.Writers
         bool ICollection.IsSynchronized => ((ISynchronizable)this).IsSynchronized;
 
         /// <inheritdoc />
-        void ICollection.CopyTo(Array array, int index)
+        void ICollection.CopyTo (Array array, int index)
         {
             lock (this.SyncRoot)
             {
@@ -130,7 +130,7 @@ namespace RI.Framework.Services.Logging.Writers
 
 
 
-        #region Interface: ICollection<ILogFilter>
+        #region Interface: ICollection<ILogWriter>
 
         /// <inheritdoc />
         public int Count
@@ -148,7 +148,7 @@ namespace RI.Framework.Services.Logging.Writers
         bool ICollection<ILogWriter>.IsReadOnly => false;
 
         /// <inheritdoc />
-        public void Add(ILogWriter item)
+        public void Add (ILogWriter item)
         {
             if (item == null)
             {
@@ -164,7 +164,7 @@ namespace RI.Framework.Services.Logging.Writers
         }
 
         /// <inheritdoc />
-        public void Clear()
+        public void Clear ()
         {
             lock (this.SyncRoot)
             {
@@ -175,7 +175,7 @@ namespace RI.Framework.Services.Logging.Writers
         }
 
         /// <inheritdoc />
-        public bool Contains(ILogWriter item)
+        public bool Contains (ILogWriter item)
         {
             lock (this.SyncRoot)
             {
@@ -184,7 +184,7 @@ namespace RI.Framework.Services.Logging.Writers
         }
 
         /// <inheritdoc />
-        void ICollection<ILogWriter>.CopyTo(ILogWriter[] array, int arrayIndex)
+        void ICollection<ILogWriter>.CopyTo (ILogWriter[] array, int arrayIndex)
         {
             lock (this.SyncRoot)
             {
@@ -193,13 +193,13 @@ namespace RI.Framework.Services.Logging.Writers
         }
 
         /// <inheritdoc />
-        IEnumerator IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator ()
         {
             return this.GetEnumerator();
         }
 
         /// <inheritdoc />
-        public IEnumerator<ILogWriter> GetEnumerator()
+        public IEnumerator<ILogWriter> GetEnumerator ()
         {
             lock (this.SyncRoot)
             {
@@ -208,7 +208,7 @@ namespace RI.Framework.Services.Logging.Writers
         }
 
         /// <inheritdoc />
-        public bool Remove(ILogWriter item)
+        public bool Remove (ILogWriter item)
         {
             if (item == null)
             {
@@ -230,18 +230,7 @@ namespace RI.Framework.Services.Logging.Writers
 
 
 
-        #region Interface: ISynchronizable
-
-        /// <inheritdoc />
-        bool ISynchronizable.IsSynchronized => true;
-
-        /// <inheritdoc />
-        public object SyncRoot { get; }
-
-        #endregion
-
-
-
+        #region Interface: ILogWriter
 
         /// <inheritdoc />
         public ILogFilter Filter
@@ -261,6 +250,12 @@ namespace RI.Framework.Services.Logging.Writers
                 }
             }
         }
+
+        /// <inheritdoc />
+        bool ISynchronizable.IsSynchronized => true;
+
+        /// <inheritdoc />
+        public object SyncRoot { get; }
 
         /// <inheritdoc />
         public void Cleanup (DateTime retentionDate)
@@ -285,5 +280,7 @@ namespace RI.Framework.Services.Logging.Writers
                 }
             }
         }
+
+        #endregion
     }
 }

@@ -14,7 +14,7 @@ using RI.Framework.Utilities.ObjectModel;
 namespace RI.Framework.Services.Logging.Writers
 {
     /// <summary>
-    ///     Implements a log writer which forwards log messages to a callback.
+    ///     Implements a log writer which forwards log messages as a string to a callback.
     /// </summary>
     /// <remarks>
     ///     <para>
@@ -24,7 +24,7 @@ namespace RI.Framework.Services.Logging.Writers
     /// <threadsafety static="true" instance="true" />
     /// TODO: Use specialized delegates for callbacks
     [Export]
-    public sealed class CallbackLogWriter : ILogWriter
+    public sealed class StringCallbackLogWriter : ILogWriter
     {
         #region Constants
 
@@ -50,24 +50,33 @@ namespace RI.Framework.Services.Logging.Writers
         #region Instance Constructor/Destructor
 
         /// <summary>
-        ///     Creates a new instance of <see cref="CallbackLogWriter" />.
+        ///     Creates a new instance of <see cref="StringCallbackLogWriter" />.
         /// </summary>
         /// <param name="logCallback"> The required log callback. </param>
+        /// <remarks>
+        ///     <para>
+        ///         No cleanup callback is used.
+        ///     </para>
+        ///     <para>
+        ///         <see cref="DefaultFormatString" /> is used as the format string.
+        ///         See <see cref="FormatString" /> for more details.
+        ///     </para>
+        /// </remarks>
         /// <exception cref="ArgumentNullException"> <paramref name="logCallback" /> is null. </exception>
-        public CallbackLogWriter (Action<string> logCallback)
+        public StringCallbackLogWriter (Action<string> logCallback)
             : this(logCallback, null, null)
         {
         }
 
         /// <summary>
-        ///     Creates a new instance of <see cref="CallbackLogWriter" />.
+        ///     Creates a new instance of <see cref="StringCallbackLogWriter" />.
         /// </summary>
         /// <param name="logCallback"> The required log callback. </param>
         /// <param name="cleanupCallback"> The optional cleanup callback. Can be null if not used. </param>
         /// <param name="formatString"> The optional format string to format the log message. Can be null to use <see cref="DefaultFormatString" />. See <see cref="FormatString" /> for more details. </param>
         /// <exception cref="ArgumentNullException"> <paramref name="logCallback" /> is null. </exception>
         /// <exception cref="EmptyStringArgumentException"> <paramref name="formatString" /> is an empty string. </exception>
-        public CallbackLogWriter (Action<string> logCallback, Action<DateTime> cleanupCallback, string formatString)
+        public StringCallbackLogWriter (Action<string> logCallback, Action<DateTime> cleanupCallback, string formatString)
         {
             this.SyncRoot = new object();
 
@@ -86,7 +95,7 @@ namespace RI.Framework.Services.Logging.Writers
 
             this.LogCallback = logCallback;
             this.CleanupCallback = cleanupCallback;
-            this.FormatString = formatString ?? CallbackLogWriter.DefaultFormatString;
+            this.FormatString = formatString ?? StringCallbackLogWriter.DefaultFormatString;
         }
 
         #endregion
@@ -172,8 +181,6 @@ namespace RI.Framework.Services.Logging.Writers
         /// </value>
         public Action<string> LogCallback { get; }
 
-        private object SyncRoot { get; }
-
         #endregion
 
 
@@ -204,7 +211,7 @@ namespace RI.Framework.Services.Logging.Writers
         bool ISynchronizable.IsSynchronized => true;
 
         /// <inheritdoc />
-        object ISynchronizable.SyncRoot => this.SyncRoot;
+        public object SyncRoot { get; }
 
         /// <inheritdoc />
         public void Cleanup (DateTime retentionDate)
