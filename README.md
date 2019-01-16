@@ -17,7 +17,7 @@ The Decoupling & Utilities Framework is a collection of various functions for di
 In general, it contains functions to help you...
  * ...reduce the amount of boilerplate code you need to write
  * ...decouple your application components/modules and make your codebase more maintainable and extensible
- * ...add functionality to your application by providing implementations for application infrastructure and services used by most applications
+ * ...add functionality to your application by providing implementations for application infrastructure and services
  * ...save time by providing functionality not part of .NET or third-party libraries
 
 ![Content](README-content.png)
