@@ -4,7 +4,7 @@ Please read the [overview](README.md) to get started and to get additional infor
 
 ## Using the framework
 
-Each [release](README.md) contains a description about its assemblies, namespaces, types, and members.
+Each [release](README.md) contains an API documentation about its assemblies, namespaces, types, and members.
 
 ## History, Motivation & Reinventing the wheel
 
@@ -22,14 +22,19 @@ The motivation to write a particular function and put it into the framework was 
  * Educational purposes ("I need to experience the problems of implementing this myself").
  * Fun (ever tried to write a composition container yourself? What an adventure!).
 
-Therefore, keep in mind that this framework is not a silver bullet and you should take the time to check whether it (or parts of it...) is really what you need.
+Therefore, keep in mind that this framework is not a silver bullet and you should take the time to check whether it (or parts of it) is really what you need.
 
 ## Roadmap
 
-The short-term and medium-term roadmap includes:
+The short-term roadmap includes:
 
- * More unit tests
+ * API cleanup & completeness
+ * Documentation cleanup & completeness
  * Bugfixes
+
+The medium-term roadmap includes:
+
+ * More unit tests and better test coverage
  * Improvement of existing functions
  * Small and medium enhancements
  * More documentation, examples, and tutorials
@@ -37,16 +42,18 @@ The short-term and medium-term roadmap includes:
 The long-term roadmap includes several large enhancements:
 
  * Functionality for additional application types:
-   * Mobile applications
-   * Mobile games
    * Web applications
+   * Mobile applications \*
+   * Mobile games \*
  * Support for additional runtimes/targets:
    * .NET Standard
-   * .NET Core (through .NET Standard)
-   * Xamarin
+   * .NET Core
+   * Xamarin \*
  * Extensions for additional libraries/frameworks:
    * ASP.NET Core
    * Entity Framework Core
+
+*\*= tentative*
 
 ## Tools
 

@@ -34,13 +34,15 @@ The "decoupling" part on the other hand has a more narrower target audience as i
  * Desktop games
  * Server applications
 
+Usually, the "decoupling" functionalities are used as cross-cutting concerns while the "utilities" functionalities are used selective and isolated.
+
 ## Documentation
 
-Each [release](README.md) contains a description about its assemblies, namespaces, types, and members.
-
-The project itself and its structure/organization is described in the [project documentation](DOCUMENTATION.md).
+Each [release](README.md) contains an API documentation about its assemblies, namespaces, types, and members.
 
 The version history is documented in the [changelog](CHANGELOG.md).
+
+The project itself and its structure and organization is described in the [project documentation](DOCUMENTATION.md).
 
 ## Contribution & Issues
 

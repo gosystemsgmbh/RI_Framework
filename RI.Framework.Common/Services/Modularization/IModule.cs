@@ -13,6 +13,7 @@ namespace RI.Framework.Services.Modularization
     ///         A module implements a self-contained functionality or service of an application which is implemented separate of other modules and managed by an <see cref="IModuleService" />.
     ///     </para>
     /// </remarks>
+    /// TODO: Add support for dynamic multi-stage initialization
     [Export]
     public interface IModule
     {
