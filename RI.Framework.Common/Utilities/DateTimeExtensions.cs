@@ -8,7 +8,7 @@ using System.Text;
 namespace RI.Framework.Utilities
 {
 	/// <summary>
-	///     Provides utility/extension methods for the <see cref="DateTime" /> type.
+	///     Provides utility/extension methods for the <see cref="DateTime" /> and <see cref="DateTimeOffset"/> types.
 	/// </summary>
 	public static class DateTimeExtensions
 	{
@@ -22,7 +22,7 @@ namespace RI.Framework.Utilities
 		///     The date and time as an ISO8601 round-trip compatible string.
 		///     Example: <c> 2016-02-01T14:30:50.3330000 </c>
 		/// </returns>
-		public static string ToIso8601 (this DateTime dateTime)
+		public static string ToIso8601String (this DateTime dateTime)
 		{
 			return dateTime.ToString("o", CultureInfo.InvariantCulture);
 		}
@@ -35,7 +35,7 @@ namespace RI.Framework.Utilities
 		///     The date and time with offset as an ISO8601 round-trip compatible string.
 		///     Example: <c> 2016-02-01T14:30:50.3330000+02:00 </c>
 		/// </returns>
-		public static string ToIso8601 (this DateTimeOffset dateTimeOffset)
+		public static string ToIso8601String (this DateTimeOffset dateTimeOffset)
 		{
 			return dateTimeOffset.ToString("o", CultureInfo.InvariantCulture);
 		}
