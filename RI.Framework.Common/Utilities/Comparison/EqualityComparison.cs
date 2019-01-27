@@ -88,7 +88,7 @@ namespace RI.Framework.Utilities.Comparison
 			}
 
 			this.Comparer = comparer;
-			this.Hasher = hasher ?? (x => x.GetHashCode());
+			this.Hasher = hasher ?? (x => x == null ? 0 : x.GetHashCode());
 		}
 
 		#endregion
