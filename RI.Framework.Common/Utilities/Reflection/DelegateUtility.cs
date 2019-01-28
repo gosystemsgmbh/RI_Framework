@@ -21,7 +21,7 @@ namespace RI.Framework.Utilities.Reflection
 		/// <param name="delegateType"> The type of the delegate to create. </param>
 		/// <param name="fullMethodName"> The full method name. </param>
 		/// <returns>
-		///     The created delegate
+		///     The created delegate.
 		/// </returns>
 		/// <remarks>
 		///     <para>
