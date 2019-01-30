@@ -424,6 +424,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RI.Framework.Net.Common", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "11-Common", "11-Common", "{74A1207B-917F-48CF-933C-860E0BA2DDC6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Packages.Framework.NuGet", "RI.Packages.Framework.NuGet\RI.Packages.Framework.NuGet.csproj", "{AA22B2E9-82A5-477A-8C97-D9141DFD0909}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		RI.Test.Framework.Shared.All\RI.Test.Framework.Shared.All.projitems*{cb4bb068-91a4-44cd-94bc-13d1c5542c5b}*SharedItemsImports = 4
@@ -594,6 +596,10 @@ Global
 		{3EE2BE5F-10C1-4B2A-A1C6-0C5E1267F74B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3EE2BE5F-10C1-4B2A-A1C6-0C5E1267F74B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3EE2BE5F-10C1-4B2A-A1C6-0C5E1267F74B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA22B2E9-82A5-477A-8C97-D9141DFD0909}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA22B2E9-82A5-477A-8C97-D9141DFD0909}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA22B2E9-82A5-477A-8C97-D9141DFD0909}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA22B2E9-82A5-477A-8C97-D9141DFD0909}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -649,6 +655,7 @@ Global
 		{9FFD7917-AEFE-4DC3-9862-7620F01C1E4F} = {5A3C0A4E-D0B1-449F-81D2-F81C62F85D3E}
 		{3EE2BE5F-10C1-4B2A-A1C6-0C5E1267F74B} = {5A3C0A4E-D0B1-449F-81D2-F81C62F85D3E}
 		{74A1207B-917F-48CF-933C-860E0BA2DDC6} = {2139B354-0C0B-461E-B0BD-D83F111F63B2}
+		{AA22B2E9-82A5-477A-8C97-D9141DFD0909} = {9394C280-2CF5-48CD-A9F8-A52B14F5D82D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8F1C7CEE-8964-4978-B12D-D8D050AED41A}

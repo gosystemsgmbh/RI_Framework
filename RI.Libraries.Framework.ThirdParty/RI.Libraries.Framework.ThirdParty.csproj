@@ -35,6 +35,7 @@
   <ItemGroup>
     <Content Include="7zip\7za.exe" />
     <Content Include="7zip\license.txt" />
+    <Content Include="NuGet\nuget.exe" />
   </ItemGroup>
   <ItemGroup>
     <None Include="_PostBuild.bat" />

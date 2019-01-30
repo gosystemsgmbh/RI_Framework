@@ -1,0 +1,63 @@
+﻿<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <!-- The identifier that must be unique within the hosting gallery -->
+    <id>RI.Framework.Common</id>
+
+    <!-- The package version number that is used when resolving dependencies -->
+    <version>0.1.0.0</version>
+
+    <!-- Authors contain text that appears directly on the gallery -->
+    <authors>AndiR</authors>
+
+    <!-- 
+            Owners are typically nuget.org identities that allow gallery
+            users to easily find other packages by the same owners.  
+        -->
+    <owners>AndiR</owners>
+
+    <!-- Project URL provides a link for the gallery -->
+    <projectUrl>https://github.com/RotenInformatik/RI_Framework</projectUrl>
+
+    <!-- License information is displayed on the gallery -->
+    <license type="file">Roten Informatik Framework License 1.0.txt</license>
+
+
+    <!-- The icon is used in Visual Studio's package manager UI -->
+    <!--<iconUrl>http://github.com/contoso/UsefulStuff/nuget_icon.png</iconUrl>-->
+
+    <!-- 
+            If true, this value prompts the user to accept the license when
+            installing the package. 
+        -->
+    <!--<requireLicenseAcceptance>false</requireLicenseAcceptance>-->
+
+    <!-- Any details about this particular release -->
+    <!--<releaseNotes>Bug fixes and performance improvements</releaseNotes>-->
+
+    <!-- 
+            The description can be used in package manager UI. Note that the
+            nuget.org gallery uses information you add in the portal. 
+        -->
+    <description>Decoupling &amp; Utilities Framework</description>
+
+    <title>Decoupling &amp; Utilities Framework</title>
+
+    <!-- Copyright information -->
+    <copyright>Copyright (c) 2011-2019 Roten Informatik</copyright>
+
+    <!-- Tags appear in the gallery and can be used for tag searches -->
+    <tags>dotnet mono unity framework decoupling utilities extensions</tags>
+
+    <!-- Dependencies are automatically installed when the package is installed -->
+    <dependencies>
+    </dependencies>
+  </metadata>
+
+
+  <files>
+    <file src="..\_Output\RI.Framework.Common.dll" target="lib/netstandard2.0" />
+    <file src="..\_Output\RI.Framework.Common.xml" target="lib/netstandard2.0" />
+    <file src="..\_Output\Roten Informatik Framework License 1.0.txt" target="" />
+  </files>
+</package>

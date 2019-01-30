@@ -17,12 +17,12 @@ namespace RI.Test.Framework.Utilities
 		[TestMethod]
 		public void ToIso8601_Test ()
 		{
-			if ((new DateTime(2016, 2, 1, 14, 30, 50, 333)).ToIso8601() != "2016-02-01T14:30:50.3330000")
+			if ((new DateTime(2016, 2, 1, 14, 30, 50, 333)).ToIso8601String() != "2016-02-01T14:30:50.3330000")
 			{
 				throw new TestAssertionException();
 			}
 
-			if ((new DateTimeOffset(2016, 2, 1, 14, 30, 50, 333, TimeSpan.FromHours(2))).ToIso8601() != "2016-02-01T14:30:50.3330000+02:00")
+			if ((new DateTimeOffset(2016, 2, 1, 14, 30, 50, 333, TimeSpan.FromHours(2))).ToIso8601String() != "2016-02-01T14:30:50.3330000+02:00")
 			{
 				throw new TestAssertionException();
 			}

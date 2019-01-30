@@ -10,9 +10,9 @@ using System.Reflection;
 [assembly: AssemblyTrademark("Licensed under the Roten Informatik Framework License 1.0")]
 [assembly: AssemblyCulture("")]
 [assembly: CLSCompliant(false)]
-[assembly: AssemblyVersion("2.0.0.0")]
-[assembly: AssemblyFileVersion("2.0.0.0")]
-[assembly: AssemblyInformationalVersion("2.0.0.0")]
+[assembly: AssemblyVersion("0.1.0.0")]
+[assembly: AssemblyFileVersion("0.1.0.0")]
+[assembly: AssemblyInformationalVersion("0.1.0.0")]
 
 #if DEBUG
 [assembly: AssemblyConfiguration("DEBUG")]
