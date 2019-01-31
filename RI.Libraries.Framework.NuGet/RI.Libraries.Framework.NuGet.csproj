@@ -47,11 +47,13 @@
     <None Include="Fluent.Ribbon.4.0.3.394.nupkg" />
     <None Include="Fluent.Ribbon.5.0.2.46.nupkg" />
     <None Include="Fluent.Ribbon.6.0.0.208.nupkg" />
+    <None Include="Microsoft.DependencyValidation.Analyzers.0.9.0.nupkg" />
     <None Include="Mono.Posix-4.5.4.5.0.nupkg" />
     <None Include="Nancy.1.4.3.nupkg" />
     <None Include="Nancy.1.4.4.nupkg" />
     <None Include="Nancy.Authentication.Forms.1.4.1.nupkg" />
     <None Include="Newtonsoft.Json.10.0.3.nupkg" />
+    <None Include="NsDepCop.1.7.1.nupkg" />
     <None Include="Portable.BouncyCastle.1.8.1.3.nupkg" />
     <None Include="System.Data.SQLite.Core.1.0.104.0.nupkg" />
     <None Include="System.Data.SQLite.Core.1.0.105.2.nupkg" />
