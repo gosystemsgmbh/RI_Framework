@@ -24,7 +24,7 @@
     </Reference>
   </ItemGroup>
 
-  <Import Project="..\RI.Test.Framework.Shared.All\RI.Test.Framework.Shared.All.projitems" Label="Shared" />
+  <Import Project="..\RI.Test.Framework.Shared\RI.Test.Framework.Shared.projitems" Label="Shared" />
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
     <Exec Command="@call &quot;$(ProjectDir)_PreBuild.bat&quot; $(ConfigurationName)" />

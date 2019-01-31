@@ -83,7 +83,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Test.Framework.NetFx", "
 		{5C393494-8524-49FF-9978-BA2B8FA228B7} = {5C393494-8524-49FF-9978-BA2B8FA228B7}
 	EndProjectSection
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "RI.Test.Framework.Shared", "RI.Test.Framework.Shared.All\RI.Test.Framework.Shared.shproj", "{D002CC0C-2A9C-4731-A3E6-DFFA517E3BD9}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "RI.Test.Framework.Shared", "RI.Test.Framework.Shared\RI.Test.Framework.Shared.shproj", "{D002CC0C-2A9C-4731-A3E6-DFFA517E3BD9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Framework.Windows.Wpf", "RI.Framework.Windows.Wpf\RI.Framework.Windows.Wpf.csproj", "{D5BF9549-AEB4-4A21-ACA0-591131018428}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -321,7 +321,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Framework.Extensions.Bou
 		{5C393494-8524-49FF-9978-BA2B8FA228B7} = {5C393494-8524-49FF-9978-BA2B8FA228B7}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Packages.Framework.Zips", "RI.Packages.Framework.NetFx\RI.Packages.Framework.Zips.csproj", "{C0ABE1DC-2CC4-4FF8-926B-0F0FA7077F96}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Packages.Framework.Zips", "RI.Packages.Framework.Zips\RI.Packages.Framework.Zips.csproj", "{C0ABE1DC-2CC4-4FF8-926B-0F0FA7077F96}"
 	ProjectSection(ProjectDependencies) = postProject
 		{5210DF0B-3AD1-444A-8C79-38821577788C} = {5210DF0B-3AD1-444A-8C79-38821577788C}
 		{EC0E161F-F9C9-4DE2-8A00-DA16E0957191} = {EC0E161F-F9C9-4DE2-8A00-DA16E0957191}

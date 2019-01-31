@@ -111,7 +111,7 @@
       </ItemGroup>
     </When>
   </Choose>
-  <Import Project="..\RI.Test.Framework.Shared.All\RI.Test.Framework.Shared.All.projitems" Label="Shared" />
+  <Import Project="..\RI.Test.Framework.Shared\RI.Test.Framework.Shared.projitems" Label="Shared" />
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
