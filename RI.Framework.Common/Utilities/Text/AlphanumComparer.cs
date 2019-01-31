@@ -28,6 +28,7 @@ namespace RI.Framework.Utilities.Text
     ///         Because this kind of sorting depends on the used culture, the used culture must be specified.
     ///     </para>
     /// </remarks>
+    /// <threadsafety static="false" instance="false" />
     /// TODO: Implement IEquatable
     public sealed class AlphanumComparer : IComparer<string>, IComparer, IEqualityComparer<string>, IEqualityComparer, ICloneable<AlphanumComparer>, ICloneable
     {

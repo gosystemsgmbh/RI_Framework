@@ -1,9 +1,10 @@
 ﻿namespace RI.Framework.Utilities
 {
-	/// <summary>
-	///     Provides utility/extension methods for the <see cref="float" /> type.
-	/// </summary>
-	public static class SingleExtensions
+    /// <summary>
+    ///     Provides utility/extension methods for the <see cref="float" /> type.
+    /// </summary>
+    /// <threadsafety static="false" instance="false" />
+    public static class SingleExtensions
 	{
 		#region Static Methods
 

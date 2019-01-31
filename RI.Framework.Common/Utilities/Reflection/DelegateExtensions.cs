@@ -6,10 +6,11 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace RI.Framework.Utilities.Reflection
 {
-	/// <summary>
-	///     Provides utility/extension methods for the <see cref="Delegate" /> type.
-	/// </summary>
-	public static class DelegateExtensions
+    /// <summary>
+    ///     Provides utility/extension methods for the <see cref="Delegate" /> type.
+    /// </summary>
+    /// <threadsafety static="false" instance="false" />
+    public static class DelegateExtensions
 	{
 		#region Static Methods
 

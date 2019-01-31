@@ -7,10 +7,11 @@ using System.Xml.Linq;
 
 namespace RI.Framework.Utilities.Xml
 {
-	/// <summary>
-	///     Provides utility/extension methods for the <see cref="XDocument" /> type.
-	/// </summary>
-	public static class XDocumentExtensions
+    /// <summary>
+    ///     Provides utility/extension methods for the <see cref="XDocument" /> type.
+    /// </summary>
+    /// <threadsafety static="false" instance="false" />
+    public static class XDocumentExtensions
 	{
 		#region Static Methods
 

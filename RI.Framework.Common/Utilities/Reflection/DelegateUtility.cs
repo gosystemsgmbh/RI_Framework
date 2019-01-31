@@ -8,10 +8,11 @@ using RI.Framework.Utilities.Exceptions;
 
 namespace RI.Framework.Utilities.Reflection
 {
-	/// <summary>
-	///     Provides a utility for delegate types.
-	/// </summary>
-	public static class DelegateUtility
+    /// <summary>
+    ///     Provides a utility for delegate types.
+    /// </summary>
+    /// <threadsafety static="false" instance="false" />
+    public static class DelegateUtility
 	{
 		#region Static Methods
 

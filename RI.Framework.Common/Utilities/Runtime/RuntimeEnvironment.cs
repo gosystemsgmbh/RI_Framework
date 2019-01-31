@@ -6,10 +6,11 @@ using System.Runtime.InteropServices;
 
 namespace RI.Framework.Utilities.Runtime
 {
-	/// <summary>
-	///     Provides various helper functions for the current runtime environment the process is running in.
-	/// </summary>
-	public static class RuntimeEnvironment
+    /// <summary>
+    ///     Provides various helper functions for the current runtime environment the process is running in.
+    /// </summary>
+    /// <threadsafety static="false" instance="false" />
+    public static class RuntimeEnvironment
 	{
 		#region Static Methods
 

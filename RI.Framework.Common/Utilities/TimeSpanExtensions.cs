@@ -7,10 +7,11 @@ using System.Text;
 
 namespace RI.Framework.Utilities
 {
-	/// <summary>
-	///     Provides utility/extension methods for the <see cref="TimeSpan" /> type.
-	/// </summary>
-	public static class TimeSpanExtensions
+    /// <summary>
+    ///     Provides utility/extension methods for the <see cref="TimeSpan" /> type.
+    /// </summary>
+    /// <threadsafety static="false" instance="false" />
+    public static class TimeSpanExtensions
 	{
 		#region Constants
 

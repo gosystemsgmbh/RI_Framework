@@ -12,26 +12,27 @@ using RI.Framework.Utilities.Exceptions;
 
 namespace RI.Framework.Utilities.Reflection
 {
-	/// <summary>
-	///     Provides a utility which allows dynamic dispatching of method calls based on a parameters type.
-	/// </summary>
-	/// <remarks>
-	///     <para>
-	///         Method call dispatching is the dynamic forwarding of a method call based on the name of methods (including overloads) and the type of the first method parameter.
-	///     </para>
-	///     <para>
-	///         A <see cref="MethodCallDispatcher" /> can be created either for an object or a type.
-	///         If an object is used, the method calls are forwarded to the instance methods of that object.
-	///         If a type is used, the method calls are forwarded to the static methods of the type.
-	///     </para>
-	///     <para>
-	///         First, an instance of <see cref="MethodCallDispatcher" /> is created using <see cref="FromTarget" /> or <see cref="FromType" />.
-	///         Afterwards, calls to the methods or the overloads respectively, as specified by the methods name, can be dispatched.
-	///         This is done by checking which method overload (if any) has a first parameter which matches the dispatched parameters type.
-	///         That method is then called.
-	///     </para>
-	/// </remarks>
-	public sealed class MethodCallDispatcher
+    /// <summary>
+    ///     Provides a utility which allows dynamic dispatching of method calls based on a parameters type.
+    /// </summary>
+    /// <remarks>
+    ///     <para>
+    ///         Method call dispatching is the dynamic forwarding of a method call based on the name of methods (including overloads) and the type of the first method parameter.
+    ///     </para>
+    ///     <para>
+    ///         A <see cref="MethodCallDispatcher" /> can be created either for an object or a type.
+    ///         If an object is used, the method calls are forwarded to the instance methods of that object.
+    ///         If a type is used, the method calls are forwarded to the static methods of the type.
+    ///     </para>
+    ///     <para>
+    ///         First, an instance of <see cref="MethodCallDispatcher" /> is created using <see cref="FromTarget" /> or <see cref="FromType" />.
+    ///         Afterwards, calls to the methods or the overloads respectively, as specified by the methods name, can be dispatched.
+    ///         This is done by checking which method overload (if any) has a first parameter which matches the dispatched parameters type.
+    ///         That method is then called.
+    ///     </para>
+    /// </remarks>
+    /// <threadsafety static="false" instance="false" />
+    public sealed class MethodCallDispatcher
 	{
 		#region Static Properties/Indexer
 

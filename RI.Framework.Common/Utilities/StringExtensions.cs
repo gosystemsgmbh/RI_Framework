@@ -23,6 +23,7 @@ namespace RI.Framework.Utilities
     ///         Note that some of the functionality provided by this class is rather specialized and intended to be used for certain string parsing/processing purposes.
     ///     </para>
     /// </remarks>
+    /// <threadsafety static="false" instance="false" />
     /// TODO: ToDateTimeFromIso8601 (this string str)
     /// TODO: ToDateTimeOffsetFromIso8601 (this string str)
     public static class StringExtensions

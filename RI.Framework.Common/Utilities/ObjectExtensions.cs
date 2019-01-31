@@ -18,6 +18,7 @@ namespace RI.Framework.Utilities
     /// <summary>
     ///     Provides utility/extension methods for the <see cref="object" /> type.
     /// </summary>
+    /// <threadsafety static="false" instance="false" />
     /// TODO: EqualsAll (4x)
     public static class ObjectExtensions
     {

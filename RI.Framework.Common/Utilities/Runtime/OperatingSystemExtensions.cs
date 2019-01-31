@@ -5,10 +5,11 @@ using System;
 
 namespace RI.Framework.Utilities.Runtime
 {
-	/// <summary>
-	///     Provides utility/extension methods for the <see cref="OperatingSystem" /> type.
-	/// </summary>
-	public static class OperatingSystemExtensions
+    /// <summary>
+    ///     Provides utility/extension methods for the <see cref="OperatingSystem" /> type.
+    /// </summary>
+    /// <threadsafety static="false" instance="false" />
+    public static class OperatingSystemExtensions
 	{
 		#region Static Methods
 

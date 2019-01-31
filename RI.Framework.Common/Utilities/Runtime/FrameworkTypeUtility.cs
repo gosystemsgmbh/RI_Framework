@@ -8,10 +8,11 @@ using RI.Framework.IO.Paths;
 
 namespace RI.Framework.Utilities.Runtime
 {
-	/// <summary>
-	///     Provides a utility to determine whether a type or assembly is part of the framework.
-	/// </summary>
-	public static class FrameworkTypeUtility
+    /// <summary>
+    ///     Provides a utility to determine whether a type or assembly is part of the framework.
+    /// </summary>
+    /// <threadsafety static="false" instance="false" />
+    public static class FrameworkTypeUtility
 	{
 		#region Constants
 

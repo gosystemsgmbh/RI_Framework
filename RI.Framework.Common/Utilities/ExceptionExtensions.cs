@@ -14,10 +14,11 @@ using RI.Framework.IO.Text;
 
 namespace RI.Framework.Utilities
 {
-	/// <summary>
-	///     Provides utility/extension methods for the <see cref="Exception" /> type.
-	/// </summary>
-	public static class ExceptionExtensions
+    /// <summary>
+    ///     Provides utility/extension methods for the <see cref="Exception" /> type.
+    /// </summary>
+    /// <threadsafety static="false" instance="false" />
+    public static class ExceptionExtensions
 	{
 		#region Constants
 

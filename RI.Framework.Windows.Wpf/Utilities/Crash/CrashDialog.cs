@@ -11,19 +11,21 @@ using RI.Framework.Windows;
 
 namespace RI.Framework.Utilities.Crash
 {
-	/// <summary>
-	///     Shows a common dialog to notify users about crashes.
-	/// </summary>
-	/// <remarks>
-	///     <para>
-	///         A <see cref="CrashDialog" /> is used to inform the user that a crash occurred and that the application needs to be closed immediately.
-	///         It also provides to functionality to send a corresponding crash report using <see cref="CrashReport" />, after getting the users consent (opt-out).
-	///     </para>
-	///     <para>
-	///         A <see cref="CrashDialog" /> can either be based on an exception or an arbitrary string-based error.
-	///     </para>
-	/// </remarks>
-	public sealed class CrashDialog
+    /// <summary>
+    ///     Shows a common dialog to notify users about crashes.
+    /// </summary>
+    /// <remarks>
+    ///     <para>
+    ///         A <see cref="CrashDialog" /> is used to inform the user that a crash occurred and that the application needs to be closed immediately.
+    ///         It also provides to functionality to send a corresponding crash report using <see cref="CrashReport" />, after getting the users consent (opt-out).
+    ///     </para>
+    ///     <para>
+    ///         A <see cref="CrashDialog" /> can either be based on an exception or an arbitrary string-based error.
+    ///     </para>
+    /// </remarks>
+    /// <threadsafety static="true" instance="true" />
+    /// TODO: Make thread-safe
+    public sealed class CrashDialog
 	{
 		#region Constants
 

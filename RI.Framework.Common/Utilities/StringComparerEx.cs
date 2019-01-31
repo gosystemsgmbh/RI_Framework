@@ -8,17 +8,18 @@ using RI.Framework.Utilities.Comparison;
 
 namespace RI.Framework.Utilities
 {
-	/// <summary>
-	///     Implements several often used string comparison operations and provides a base class for customized string comparison.
-	/// </summary>
-	/// <remarks>
-	///     <para>
-	///         Half of the static properties which provide predefined <see cref="StringComparerEx" /> instances are just there to wrap <see cref="StringComparer" /> while the other ones are equivalents which provide trimmed comparison.
-	///         Trimmed comparison means that the strings are trimmed before they are compared, using <see cref="string.Trim()" />.
-	///         Trimmed comparison might be usefull to compare data coming from the user or a data source.
-	///     </para>
-	/// </remarks>
-	public class StringComparerEx : StringComparer
+    /// <summary>
+    ///     Implements several often used string comparison operations and provides a base class for customized string comparison.
+    /// </summary>
+    /// <remarks>
+    ///     <para>
+    ///         Half of the static properties which provide predefined <see cref="StringComparerEx" /> instances are just there to wrap <see cref="StringComparer" /> while the other ones are equivalents which provide trimmed comparison.
+    ///         Trimmed comparison means that the strings are trimmed before they are compared, using <see cref="string.Trim()" />.
+    ///         Trimmed comparison might be usefull to compare data coming from the user or a data source.
+    ///     </para>
+    /// </remarks>
+    /// <threadsafety static="false" instance="false" />
+    public class StringComparerEx : StringComparer
 	{
 		#region Static Properties/Indexer
 

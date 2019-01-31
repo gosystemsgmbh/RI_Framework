@@ -29,6 +29,7 @@ namespace RI.Framework.Utilities.Time
     ///         Consequently, all <see cref="DateTime" />s passed to <see cref="Schedule" /> are converted to UTC timestamps (using <see cref="DateTime.ToUniversalTime" />).
     ///     </note>
     /// </remarks>
+    /// <threadsafety static="false" instance="false" />
     /// TODO: Add support for skipping (e.g. each n-th event)
     [Serializable]
     public struct Schedule : IEquatable<Schedule>, ICloneable<Schedule>, ICloneable, IFormattable

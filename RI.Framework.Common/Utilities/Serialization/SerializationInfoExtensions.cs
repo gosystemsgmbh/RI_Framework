@@ -9,10 +9,11 @@ using RI.Framework.Utilities.Exceptions;
 
 namespace RI.Framework.Utilities.Serialization
 {
-	/// <summary>
-	///     Provides utility/extension methods for the <see cref="SerializationInfo" /> type.
-	/// </summary>
-	public static class SerializationInfoExtensions
+    /// <summary>
+    ///     Provides utility/extension methods for the <see cref="SerializationInfo" /> type.
+    /// </summary>
+    /// <threadsafety static="false" instance="false" />
+    public static class SerializationInfoExtensions
 	{
 		#region Static Methods
 
