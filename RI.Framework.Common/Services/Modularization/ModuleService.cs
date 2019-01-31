@@ -26,6 +26,7 @@ namespace RI.Framework.Services.Modularization
     ///         See <see cref="IModuleService" /> for more details.
     ///     </para>
     /// </remarks>
+    /// <threadsafety static="true" instance="true" />
     [Export]
     public sealed class ModuleService : LogSource, IModuleService, IImporting
     {

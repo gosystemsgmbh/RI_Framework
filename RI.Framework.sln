@@ -434,8 +434,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Packages.Framework.NuGet
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		RI.Test.Framework.Shared.All\RI.Test.Framework.Shared.All.projitems*{cb4bb068-91a4-44cd-94bc-13d1c5542c5b}*SharedItemsImports = 4
-		RI.Test.Framework.Shared.All\RI.Test.Framework.Shared.All.projitems*{d002cc0c-2a9c-4731-a3e6-dffa517e3bd9}*SharedItemsImports = 13
+		RI.Test.Framework.Shared\RI.Test.Framework.Shared.projitems*{cb4bb068-91a4-44cd-94bc-13d1c5542c5b}*SharedItemsImports = 4
+		RI.Test.Framework.Shared\RI.Test.Framework.Shared.projitems*{d002cc0c-2a9c-4731-a3e6-dffa517e3bd9}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

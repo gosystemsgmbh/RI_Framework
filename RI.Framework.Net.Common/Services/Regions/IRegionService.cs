@@ -44,6 +44,7 @@ namespace RI.Framework.Services.Regions
     ///         For regions and elements where the order of elements matter, the elements can either implement <see cref="IRegionElement" /> or apply <see cref="RegionElementSortHintAttribute" />.
     ///     </para>
     /// </remarks>
+    /// <threadsafety static="true" instance="true" />
     /// TODO: Make thread-safe
     [Export]
     public interface IRegionService

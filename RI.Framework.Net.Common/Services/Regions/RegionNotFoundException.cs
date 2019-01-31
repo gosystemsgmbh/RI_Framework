@@ -8,10 +8,11 @@ using RI.Framework.Utilities.Exceptions;
 
 namespace RI.Framework.Services.Regions
 {
-	/// <summary>
-	///     The <see cref="RegionNotFoundException" /> is thrown when a specified region cannot be found.
-	/// </summary>
-	[Serializable]
+    /// <summary>
+    ///     The <see cref="RegionNotFoundException" /> is thrown when a specified region cannot be found.
+    /// </summary>
+    /// <threadsafety static="false" instance="false" />
+    [Serializable]
 	public class RegionNotFoundException : Exception
 	{
 		#region Constants

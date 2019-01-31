@@ -10,15 +10,16 @@ using RI.Framework.Utilities.ObjectModel;
 
 namespace RI.Framework.Services.Regions.Adapters
 {
-	/// <summary>
-	///     Defines the interface for a region adapter.
-	/// </summary>
-	/// <remarks>
-	///     <para>
-	///         A region adapter is used by a <see cref="IRegionService" /> to map between its containers (representing regions) and its elements.
-	///     </para>
-	/// </remarks>
-	[Export]
+    /// <summary>
+    ///     Defines the interface for a region adapter.
+    /// </summary>
+    /// <remarks>
+    ///     <para>
+    ///         A region adapter is used by a <see cref="IRegionService" /> to map between its containers (representing regions) and its elements.
+    ///     </para>
+    /// </remarks>
+    /// <threadsafety static="true" instance="true" />
+    [Export]
 	public interface IRegionAdapter : ISynchronizable
 	{
 		/// <summary>

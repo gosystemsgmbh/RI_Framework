@@ -18,6 +18,7 @@ namespace RI.Framework.Services.Regions.Adapters
     /// <para>
     ///     See <see cref="IRegionAdapter" /> for more details.
     /// </para>
+    /// <threadsafety static="true" instance="true" />
     public abstract class RegionAdapterBase : IRegionAdapter
     {
         /// <summary>

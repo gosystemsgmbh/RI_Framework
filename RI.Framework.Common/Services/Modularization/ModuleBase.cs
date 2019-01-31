@@ -11,6 +11,7 @@ namespace RI.Framework.Services.Modularization
     /// <para>
     ///     See <see cref="IModule" /> for more details.
     /// </para>
+    /// <threadsafety static="true" instance="true" />
     public abstract class ModuleBase : LogSource, IModule
     {
         #region Virtuals

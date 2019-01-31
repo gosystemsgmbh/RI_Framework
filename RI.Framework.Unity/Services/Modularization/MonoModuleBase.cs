@@ -24,6 +24,7 @@ namespace RI.Framework.Services.Modularization
     ///         See <see cref="IModule" /> for more details.
     ///     </para>
     /// </remarks>
+    /// <threadsafety static="true" instance="true" />
     public abstract class MonoModuleBase : MonoBehaviour, IModule, ILogSource
     {
         #region Static Methods

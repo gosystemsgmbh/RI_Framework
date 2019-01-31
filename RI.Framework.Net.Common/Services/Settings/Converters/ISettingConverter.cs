@@ -9,15 +9,16 @@ using RI.Framework.Utilities.ObjectModel;
 
 namespace RI.Framework.Services.Settings.Converters
 {
-	/// <summary>
-	///     Defines the interface for a setting converter used by a setting service.
-	/// </summary>
-	/// <remarks>
-	///     <para>
-	///         A setting converter is used by a <see cref="ISettingService" /> to convert between setting values and their string representation for use in the underlying storage.
-	///     </para>
-	/// </remarks>
-	[Export]
+    /// <summary>
+    ///     Defines the interface for a setting converter used by a setting service.
+    /// </summary>
+    /// <remarks>
+    ///     <para>
+    ///         A setting converter is used by a <see cref="ISettingService" /> to convert between setting values and their string representation for use in the underlying storage.
+    ///     </para>
+    /// </remarks>
+    /// <threadsafety static="true" instance="true" />
+    [Export]
 	public interface ISettingConverter : ISynchronizable
 	{
 		/// <summary>

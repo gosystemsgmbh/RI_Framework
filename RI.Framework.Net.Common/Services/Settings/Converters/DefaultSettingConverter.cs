@@ -31,6 +31,7 @@ namespace RI.Framework.Services.Settings.Converters
     ///         See <see cref="ISettingConverter" /> for more details.
     ///     </para>
     /// </remarks>
+    /// <threadsafety static="true" instance="true" />
     [Export]
     public sealed class DefaultSettingConverter : ISettingConverter
     {

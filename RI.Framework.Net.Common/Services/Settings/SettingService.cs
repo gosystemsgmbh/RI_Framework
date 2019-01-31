@@ -33,6 +33,7 @@ namespace RI.Framework.Services.Settings
     ///         See <see cref="ISettingService" /> for more details.
     ///     </para>
     /// </remarks>
+    /// <threadsafety static="true" instance="true" />
     [Export]
     public sealed class SettingService : LogSource, ISettingService, IImporting
     {

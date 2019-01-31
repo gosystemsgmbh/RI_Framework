@@ -19,6 +19,7 @@ namespace RI.Framework.Services.Settings.Storages
     ///         Values are stored as name/value pairs.
     ///     </para>
     /// </remarks>
+    /// <threadsafety static="true" instance="true" />
     [Export]
     public interface ISettingStorage : ISynchronizable
     {

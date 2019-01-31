@@ -29,6 +29,7 @@ namespace RI.Framework.Services.Regions
     ///         See <see cref="IRegionService" /> for more details.
     ///     </para>
     /// </remarks>
+    /// <threadsafety static="true" instance="true" />
     [Export]
     public sealed class RegionService : LogSource, IRegionService, IImporting
     {

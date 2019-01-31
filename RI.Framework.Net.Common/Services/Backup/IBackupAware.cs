@@ -7,30 +7,31 @@ using System.IO;
 
 namespace RI.Framework.Services.Backup
 {
-	/// <summary>
-	///     Defines the interface for a backup-aware object.
-	/// </summary>
-	/// <remarks>
-	///     <para>
-	///         See <see cref="IBackupService" /> for more details.
-	///     </para>
-	///     <para>
-	///         The backup procedure implemented by the backup service works as follows:
-	///         <see cref="BeginBackup" /> is called for all backup-aware objects known to the backup service.
-	///         If one or more <see cref="BeginBackup" /> calls return false, the backup is canceled and <see cref="EndBackup" /> is called for all backup-aware objects with the <c> performed </c> parameter set to false.
-	///         If all <see cref="BeginBackup" /> calls return true, the backup is performed by calling <see cref="Backup" /> on all backup-aware objects, followed by calling <see cref="EndBackup" /> with the <c> performed </c> parameter set to true on all backup-aware objects.
-	///     </para>
-	///     <para>
-	///         The restore procedure implemented by the backup service works as follows:
-	///         <see cref="BeginRestore" /> is called for all backup-aware objects known to the backup service.
-	///         If one or more <see cref="BeginRestore" /> calls return false, the restore is canceled and <see cref="EndRestore" /> is called for all backup-aware objects with the <c> performed </c> parameter set to false.
-	///         If all <see cref="BeginRestore" /> calls return true, the restore is performed by calling <see cref="Restore" /> on all backup-aware objects, followed by calling <see cref="EndRestore" /> with the <c> performed </c> parameter set to true on all backup-aware objects.
-	///     </para>
-	///     <note type="important">
-	///         <see cref="BeginBackup" />/<see cref="EndBackup" /> and <see cref="BeginRestore" />/<see cref="EndRestore" /> are also used to check whether backups/restores are possible (<see cref="IBackupService.CanDoBackup" />, <see cref="IBackupService.CanDoFullBackup" />, <see cref="IBackupService.CanDoRestore" />, <see cref="IBackupService.CanDoFullRestore" />).
-	///     </note>
-	/// </remarks>
-	public interface IBackupAware
+    /// <summary>
+    ///     Defines the interface for a backup-aware object.
+    /// </summary>
+    /// <remarks>
+    ///     <para>
+    ///         See <see cref="IBackupService" /> for more details.
+    ///     </para>
+    ///     <para>
+    ///         The backup procedure implemented by the backup service works as follows:
+    ///         <see cref="BeginBackup" /> is called for all backup-aware objects known to the backup service.
+    ///         If one or more <see cref="BeginBackup" /> calls return false, the backup is canceled and <see cref="EndBackup" /> is called for all backup-aware objects with the <c> performed </c> parameter set to false.
+    ///         If all <see cref="BeginBackup" /> calls return true, the backup is performed by calling <see cref="Backup" /> on all backup-aware objects, followed by calling <see cref="EndBackup" /> with the <c> performed </c> parameter set to true on all backup-aware objects.
+    ///     </para>
+    ///     <para>
+    ///         The restore procedure implemented by the backup service works as follows:
+    ///         <see cref="BeginRestore" /> is called for all backup-aware objects known to the backup service.
+    ///         If one or more <see cref="BeginRestore" /> calls return false, the restore is canceled and <see cref="EndRestore" /> is called for all backup-aware objects with the <c> performed </c> parameter set to false.
+    ///         If all <see cref="BeginRestore" /> calls return true, the restore is performed by calling <see cref="Restore" /> on all backup-aware objects, followed by calling <see cref="EndRestore" /> with the <c> performed </c> parameter set to true on all backup-aware objects.
+    ///     </para>
+    ///     <note type="important">
+    ///         <see cref="BeginBackup" />/<see cref="EndBackup" /> and <see cref="BeginRestore" />/<see cref="EndRestore" /> are also used to check whether backups/restores are possible (<see cref="IBackupService.CanDoBackup" />, <see cref="IBackupService.CanDoFullBackup" />, <see cref="IBackupService.CanDoRestore" />, <see cref="IBackupService.CanDoFullRestore" />).
+    ///     </note>
+    /// </remarks>
+    /// <threadsafety static="false" instance="false" />
+    public interface IBackupAware
 	{
 		/// <summary>
 		///     Performs the actual backup.

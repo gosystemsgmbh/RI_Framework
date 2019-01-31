@@ -10,11 +10,12 @@ using RI.Framework.Utilities.Exceptions;
 
 namespace RI.Framework.Services.Settings
 {
-	/// <summary>
-	///     Implements simplified access to a setting value by combining setting name, default values, and accessor functions.
-	/// </summary>
-	/// <typeparam name="T"> The type of the setting. </typeparam>
-	public sealed class SettingItem <T>
+    /// <summary>
+    ///     Implements simplified access to a setting value by combining setting name, default values, and accessor functions.
+    /// </summary>
+    /// <typeparam name="T"> The type of the setting. </typeparam>
+    /// <threadsafety static="false" instance="false" />
+    public sealed class SettingItem <T>
 	{
 		#region Instance Constructor/Destructor
 

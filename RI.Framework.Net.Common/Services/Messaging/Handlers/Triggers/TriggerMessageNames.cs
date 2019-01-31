@@ -8,6 +8,7 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
     /// <summary>
     ///     Contains trigger message name and trigger message data name definitions.
     /// </summary>
+    /// <threadsafety static="false" instance="false" />
     [Obsolete(MessageService.ObsoleteMessage, false)]
     public static class TriggerMessageNames
     {

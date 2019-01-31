@@ -32,6 +32,7 @@ namespace RI.Framework.Services.Settings.Storages
     ///         <see cref="EnvironmentVariableSettingStorage" /> does not support multiple values for the same setting!
     ///     </note>
     /// </remarks>
+    /// <threadsafety static="true" instance="true" />
     [Export]
     public sealed class EnvironmentVariableSettingStorage : ISettingStorage
     {

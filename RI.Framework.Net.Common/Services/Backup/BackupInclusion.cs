@@ -12,6 +12,7 @@ namespace RI.Framework.Services.Backup
     /// <summary>
     ///     Implements the inclusion description object.
     /// </summary>
+    /// <threadsafety static="false" instance="false" />
     public class BackupInclusion : IEquatable<BackupInclusion>
     {
         #region Instance Constructor/Destructor

@@ -35,6 +35,7 @@ namespace RI.Framework.Services.Settings
     ///         Otherwise, the order is undefined for values with the same name.
     ///     </note>
     /// </remarks>
+    /// <threadsafety static="true" instance="true" />
     /// TODO: Make thread-safe
     /// TODO: Move to RI.Framework.Common and implement PlayerPrefsStorage
     /// TODO: Implement JsonSettingStorage

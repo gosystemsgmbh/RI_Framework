@@ -24,6 +24,7 @@ namespace RI.Framework.Services.Regions.Adapters
     ///         See <see cref="IRegionAdapter" /> for more details.
     ///     </para>
     /// </remarks>
+    /// <threadsafety static="true" instance="true" />
     [Export]
     public sealed class FluentRibbonRegionAdapter : WpfRegionAdapterBase
     {

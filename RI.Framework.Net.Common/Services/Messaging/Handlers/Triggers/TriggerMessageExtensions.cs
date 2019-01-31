@@ -13,6 +13,7 @@ namespace RI.Framework.Services.Messaging.Handlers.Triggers
     /// <summary>
     ///     Provides utility/extension methods for working with trigger messages.
     /// </summary>
+    /// <threadsafety static="true" instance="true" />
     [Obsolete(MessageService.ObsoleteMessage, false)]
     public static class TriggerMessageExtensions
     {

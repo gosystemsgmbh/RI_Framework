@@ -28,6 +28,7 @@ namespace RI.Framework.Services.Settings.Storages
     ///         See <see cref="ISettingStorage" /> for more details.
     ///     </para>
     /// </remarks>
+    /// <threadsafety static="true" instance="true" />
     [Export]
     public sealed class IniFileSettingStorage : LogSource, ISettingStorage
     {

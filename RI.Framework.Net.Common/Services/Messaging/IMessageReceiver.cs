@@ -16,6 +16,7 @@ namespace RI.Framework.Services.Messaging
     ///         Each message is delivered once by a <see cref="IMessageService" /> and the used <see cref="IMessageDispatcher" />s to all available message receivers.
     ///     </para>
     /// </remarks>
+    /// <threadsafety static="true" instance="true" />
     [Export]
     [Obsolete(MessageService.ObsoleteMessage, false)]
     public interface IMessageReceiver
