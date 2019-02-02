@@ -10,7 +10,7 @@ A framework for .NET, Mono, and Unity.
 
 ## Overview
 
-The Decoupling & Utilities Framework is a collection of various functions for different .NET flavours.
+The Decoupling & Utilities Framework is a collection of various functions for different .NET flavours (.NET Standard, .NET Core, .NET Framework, Mono, Unity).
 
 ![Overview](README-overview.png)
 
@@ -50,4 +50,4 @@ See [contribution documentation](CONTRIBUTING.md) if you wish to report [issues]
 
 ## License
 
-The Decoupling & Utilities Framework uses its own license, the [Roten Informatik Framework License 1.0](LICENSE.txt), which is mostly based on the [Apache 2.0 License](https://choosealicense.com/licenses/apache-2.0/).
+The Decoupling & Utilities Framework uses the [Apache 2.0 License](https://choosealicense.com/licenses/apache-2.0/).
