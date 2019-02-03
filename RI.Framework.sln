@@ -307,6 +307,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{
 		CHANGELOG.md = CHANGELOG.md
 		CONTRIBUTING.md = CONTRIBUTING.md
 		DOCUMENTATION.md = DOCUMENTATION.md
+		ICON.png = ICON.png
 		LICENSE.txt = LICENSE.txt
 		README-content.png = README-content.png
 		README-overview.png = README-overview.png
