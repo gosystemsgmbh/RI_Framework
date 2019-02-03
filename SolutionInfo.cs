@@ -7,7 +7,7 @@ using System.Reflection;
 [assembly: AssemblyProduct("Decoupling & Utilities Framework")]
 [assembly: AssemblyCompany("Roten Informatik")]
 [assembly: AssemblyCopyright("Copyright (c) 2011-2019 Roten Informatik")]
-[assembly: AssemblyTrademark("Apache License 2.0")]
+[assembly: AssemblyTrademark("Licensed under the Apache License 2.0")]
 [assembly: AssemblyCulture("")]
 [assembly: CLSCompliant(false)]
 [assembly: AssemblyVersion("0.2.0.0")]

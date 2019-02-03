@@ -76,6 +76,7 @@
     <Compile Include="Windows\Imaging\_NamespaceDoc.cs" />
     <Compile Include="Windows\Interop\_NamespaceDoc.cs" />
     <Compile Include="Windows\Network\_NamespaceDoc.cs" />
+    <Compile Include="Windows\Shell\_NamespaceDoc.cs" />
     <Compile Include="Windows\SystemInformationReport.cs" />
     <Compile Include="Windows\Users\_NamespaceDoc.cs" />
     <Compile Include="Windows\WindowsApplication.cs" />
@@ -94,8 +95,8 @@
     <Compile Include="Windows\Interop\SecurityEntity.cs" />
     <Compile Include="Windows\WindowsApi.cs" />
     <Compile Include="Windows\Interop\WindowsError.cs" />
-    <Compile Include="Windows\WindowsSession.cs" />
-    <Compile Include="Windows\WindowsShell.cs" />
+    <Compile Include="Windows\Shell\WindowsSession.cs" />
+    <Compile Include="Windows\Shell\WindowsShell.cs" />
     <Compile Include="Windows\Users\WindowsUser.cs" />
     <Compile Include="Windows\Users\WindowsUserImpersonation.cs" />
     <Compile Include="Windows\Users\WindowsUserProfile.cs" />
@@ -116,6 +117,7 @@
       <Name>RI.Framework.Net.Common</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>@call "$(ProjectDir)_PreBuild.bat" $(ConfigurationName)</PreBuildEvent>

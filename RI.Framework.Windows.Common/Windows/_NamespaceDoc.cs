@@ -6,7 +6,7 @@
 namespace RI.Framework.Windows
 {
 	/// <summary>
-	///     Contains utilities for Windows programs.
+	///     Contains Windows-specific utilities.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

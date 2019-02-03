@@ -7,6 +7,7 @@ using RI.Framework.IO.Paths;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Reflection;
 using RI.Framework.Utilities.Text;
+using RI.Framework.Windows.Shell;
 
 
 

@@ -3,12 +3,11 @@
 
 
 
-namespace RI.Framework.Utilities.ObjectModel
+namespace RI.Framework.Windows.Shell
 {
 	/// <summary>
-	///     Contains types for creating object models.
+	///     Contains Windows-specific shell utilities.
 	/// </summary>
-	/// TODO: Move to outer scope
 	[CompilerGenerated]
 	public sealed class NamespaceDoc
 	{

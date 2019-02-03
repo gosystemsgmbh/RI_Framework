@@ -8,7 +8,7 @@
 
 @copy "..\packages\EntityFramework.6.2.0\lib\net45\*.dll" "..\_Output\*.*"
 
-@copy "..\packages\EPPlus.4.1.0\lib\net40\*.dll" "..\_Output\*.*"
+@copy "..\packages\EPPlus.4.1.1\lib\net40\*.dll" "..\_Output\*.*"
 
 @copy "..\packages\Extended.Wpf.Toolkit.3.2.0\lib\net40\*.dll" "..\_Output\*.*"
 

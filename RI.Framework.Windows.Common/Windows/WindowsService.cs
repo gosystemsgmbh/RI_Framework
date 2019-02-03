@@ -4,6 +4,7 @@ using System.ServiceProcess;
 
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
+using RI.Framework.Windows.Shell;
 
 
 

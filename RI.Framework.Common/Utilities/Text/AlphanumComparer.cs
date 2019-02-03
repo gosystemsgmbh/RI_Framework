@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
 
@@ -365,6 +366,8 @@ namespace RI.Framework.Utilities.Text
         public bool Equals (string x, string y) => this.Compare(x, y) == 0;
 
         /// <inheritdoc />
+        [SuppressMessage("ReSharper", "ConditionIsAlwaysTrueOrFalse")]
+        [SuppressMessage("ReSharper", "HeuristicUnreachableCode")]
         public int GetHashCode (string obj)
         {
             if (obj == null)
@@ -398,12 +401,17 @@ namespace RI.Framework.Utilities.Text
         /// <exception cref="InvalidTypeArgumentException"><paramref name="obj"/> is not null and not of type <see cref="string"/>.</exception>
         int IEqualityComparer.GetHashCode(object obj)
         {
+            if (obj == null)
+            {
+                return 0;
+            }
+
             if ((obj != null) && (!(obj is string)))
             {
                 throw new InvalidTypeArgumentException(nameof(obj));
             }
 
-            return this.GetHashCode((string)obj);
+            return this.GetHashCode(obj as string);
         }
     }
 }

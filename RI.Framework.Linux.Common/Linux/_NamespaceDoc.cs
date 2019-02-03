@@ -6,7 +6,7 @@
 namespace RI.Framework.Linux
 {
 	/// <summary>
-	///     Contains utilities for Linux programs.
+	///     Contains Linux-specific utilities.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

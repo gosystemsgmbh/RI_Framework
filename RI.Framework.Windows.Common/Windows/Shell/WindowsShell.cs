@@ -12,7 +12,7 @@ using RI.Framework.Utilities.Exceptions;
 
 
 
-namespace RI.Framework.Windows
+namespace RI.Framework.Windows.Shell
 {
 	/// <summary>
 	///     Provides utilities for working with the Windows shell environment.

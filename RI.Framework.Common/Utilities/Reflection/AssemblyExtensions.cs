@@ -176,7 +176,7 @@ namespace RI.Framework.Utilities.Reflection
             normalizeFile = normalizeFile.TrimStart('.');
             prefixedFile = prefixedFile.TrimStart('.');
 
-            Stream result = null;
+            Stream result;
 
             try
             {

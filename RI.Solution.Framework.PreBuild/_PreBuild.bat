@@ -1,13 +1,13 @@
 @cd %~dp0
 
 @for %%i in (
-_Temp,
-_Tools,
 _Output,
-_Output\x86,
 _Output\x64,
+_Output\x86,
 _Packages,
-_Test
+_Temp,
+_Test,
+_Tools
 ) do @(
   @if not exist "..\%%i" @(
     @echo Creating directory: "..\%%i"
@@ -18,4 +18,4 @@ _Test
 @rd /S /Q "..\_Temp"
 @md "..\_Temp"
 
-@copy "..\LICENSE.txt" "..\_Output\Roten Informatik Framework License 1.0.txt"
+@copy "..\LICENSE.txt" "..\_Output\LICENSE.txt"

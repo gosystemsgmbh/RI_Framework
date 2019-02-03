@@ -11,7 +11,7 @@ using RI.Framework.Utilities.Exceptions;
 
 
 
-namespace RI.Framework.Linux
+namespace RI.Framework.Linux.Shell
 {
 	/// <summary>
 	///     Provides utilities for working with the Linux shell environment.

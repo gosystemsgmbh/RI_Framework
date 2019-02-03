@@ -1,9 +1,9 @@
 # Build output
-/_Temp
-/_Tools
-/_Output
-/_Packages
-/_Test
+/_[Oo]utput
+/_[Pp]ackages
+/_[Tt]emp
+/_[Tt]est
+/_[Tt]ools
 
 # Documentation output
 /RI.Documentation.Framework.NetFx/Help

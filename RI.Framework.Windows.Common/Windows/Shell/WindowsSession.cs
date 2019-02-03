@@ -6,7 +6,7 @@ using RI.Framework.Windows.Interop;
 
 
 
-namespace RI.Framework.Windows
+namespace RI.Framework.Windows.Shell
 {
 	/// <summary>
 	///     Provides utilities for controlling the current Windows session.

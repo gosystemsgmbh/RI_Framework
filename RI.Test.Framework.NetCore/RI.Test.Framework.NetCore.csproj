@@ -28,4 +28,12 @@
 
   <Import Project="..\RI.Test.Framework.Shared\RI.Test.Framework.Shared.projitems" Label="Shared" />
 
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="@call &quot;$(ProjectDir)_PreBuild.bat&quot; $(ConfigurationName)" />
+  </Target>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="@call &quot;$(ProjectDir)_PostBuild.bat&quot; $(ConfigurationName)" />
+  </Target>
+
 </Project>

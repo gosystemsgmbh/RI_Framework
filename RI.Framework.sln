@@ -308,6 +308,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{
 		CONTRIBUTING.md = CONTRIBUTING.md
 		DOCUMENTATION.md = DOCUMENTATION.md
 		ICON.png = ICON.png
+		ICON.vsdx = ICON.vsdx
 		LICENSE.txt = LICENSE.txt
 		README-content.png = README-content.png
 		README-overview.png = README-overview.png
@@ -393,6 +394,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "11-Common", "11-Common", "{
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Packages.Framework.NuGet", "RI.Packages.Framework.NuGet\RI.Packages.Framework.NuGet.csproj", "{AA22B2E9-82A5-477A-8C97-D9141DFD0909}"
 	ProjectSection(ProjectDependencies) = postProject
+		{9AE61682-B33C-4814-BAE5-771008CA4147} = {9AE61682-B33C-4814-BAE5-771008CA4147}
 		{5C393494-8524-49FF-9978-BA2B8FA228B7} = {5C393494-8524-49FF-9978-BA2B8FA228B7}
 		{C0ABE1DC-2CC4-4FF8-926B-0F0FA7077F96} = {C0ABE1DC-2CC4-4FF8-926B-0F0FA7077F96}
 	EndProjectSection
