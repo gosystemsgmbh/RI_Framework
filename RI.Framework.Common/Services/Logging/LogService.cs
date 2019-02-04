@@ -226,7 +226,7 @@ namespace RI.Framework.Services.Logging
         }
 
         /// <inheritdoc />
-        public void Log (DateTime timestamp, int threadId, LogLevel severity, string source, string format, params object[] args)
+        public void Log (DateTime timestamp, int threadId, string threadName, LogLevel severity, string source, string format, params object[] args)
         {
             ILogFilter filter = this.Filter;
             if (filter != null)

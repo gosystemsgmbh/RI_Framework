@@ -40,6 +40,7 @@ namespace RI.Framework.Utilities.Cryptography
         ///     The decrypted plain text string or null if <paramref name="cipherText" /> is null.
         /// </returns>
         /// <exception cref="CryptographicException"> The decryption failed. </exception>
+        /// <exception cref="ArgumentException"> <paramref name="cipherText"/> is not in BASE64 format. </exception>
         public static string Decrypt (bool userScope, string cipherText, string additionalEntropy)
         {
             if (cipherText == null)

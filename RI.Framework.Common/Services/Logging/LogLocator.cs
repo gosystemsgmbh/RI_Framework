@@ -84,7 +84,7 @@ namespace RI.Framework.Services.Logging
         public static void Log (LogLevel severity, string source, string format, params object[] args) => LogLocator.Service?.Log(severity, source, format, args);
 
         /// <inheritdoc cref="M:ILogger.Log(DateTime,int,LogLevel,string,string,object[])" />
-        public static void Log (DateTime timestamp, int threadId, LogLevel severity, string source, string format, params object[] args) => LogLocator.Service?.Log(timestamp, threadId, severity, source, format, args);
+        public static void Log (DateTime timestamp, int threadId, string threadName, LogLevel severity, string source, string format, params object[] args) => LogLocator.Service?.Log(timestamp, threadId, threadName, severity, source, format, args);
 
         #endregion
 
@@ -102,9 +102,9 @@ namespace RI.Framework.Services.Logging
                 LogLocator.Log(severity, source, format, args);
             }
 
-            void ILogger.Log (DateTime timestamp, int threadId, LogLevel severity, string source, string format, params object[] args)
+            void ILogger.Log (DateTime timestamp, int threadId, string threadName, LogLevel severity, string source, string format, params object[] args)
             {
-                LogLocator.Log(timestamp, threadId, severity, source, format, args);
+                LogLocator.Log(timestamp, threadId, threadName, severity, source, format, args);
             }
 
             #endregion

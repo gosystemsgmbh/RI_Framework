@@ -64,7 +64,7 @@ namespace RI.Framework.Utilities
                 throw new ArgumentNullException(nameof(condition));
             }
 
-            List<GameObject> children = new List<GameObject>();
+            List<GameObject> children = new List<GameObject>(gameObject.transform.childCount);
             foreach (Transform transform in gameObject.transform)
             {
                 GameObject currentChildren = transform.gameObject;

@@ -6,7 +6,7 @@
 namespace RI.Framework.Utilities.Exceptions
 {
 	/// <summary>
-	///     Contains generally used exceptions.
+	///     Contains commonly used exceptions.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

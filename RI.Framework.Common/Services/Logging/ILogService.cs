@@ -22,6 +22,7 @@ namespace RI.Framework.Services.Logging
     /// </remarks>
     /// <threadsafety static="true" instance="true" />
     /// TODO: Implement DictionaryLogFilter
+    /// TODO: Support for thread name
     [Export]
     public interface ILogService : ILogger, ISynchronizable
     {
