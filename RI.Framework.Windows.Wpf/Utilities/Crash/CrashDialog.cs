@@ -25,6 +25,8 @@ namespace RI.Framework.Utilities.Crash
     /// </remarks>
     /// <threadsafety static="true" instance="true" />
     /// TODO: Make thread-safe
+    /// TODO: Remove obsolete attribute
+    [Obsolete("Not fully implemented", true)]
     public sealed class CrashDialog
     {
         #region Constants

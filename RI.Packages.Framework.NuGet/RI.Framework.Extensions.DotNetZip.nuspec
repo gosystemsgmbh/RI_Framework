@@ -1,0 +1,27 @@
+﻿<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+    <metadata>
+        <id>RI.Framework.Extensions.DotNetZip</id>
+        <version>$build_version$</version>
+        <authors>AndiR</authors>
+        <owners>AndiR</owners>
+        <title>Decoupling &amp; Utilities Framework</title>
+        <iconUrl>https://raw.githubusercontent.com/RotenInformatik/RI_Framework/master/ICON.png</iconUrl>
+        <projectUrl>https://github.com/RotenInformatik/RI_Framework</projectUrl>
+        <copyright>Copyright (c) 2011-2019 Roten Informatik</copyright>
+        <license type="expression">Apache-2.0</license>
+        <requireLicenseAcceptance>true</requireLicenseAcceptance>
+        <description>Decoupling &amp; Utilities Framework</description>
+        <tags>dotnet mono unity framework decoupling utilities extensions</tags>
+        <dependencies>
+            <dependency id="RI.Framework.Common" version="[$build_version$]" include="all" />
+            <dependency id="RI.Framework.Net.Common" version="[$build_version$]" include="all" />
+            <dependency id="RI.Framework.Net.Fx" version="[$build_version$]" include="all" />
+            <dependency id="DotNetZip" version="1.10.1" include="all" />
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="..\_Output\RI.Framework.Extensions.DotNetZip.dll" target="lib/net461" />
+        <file src="..\_Output\RI.Framework.Extensions.DotNetZip.xml" target="lib/net461" />
+    </files>
+</package>
