@@ -49,7 +49,7 @@ namespace RI.Framework.Web.Nancy
 		/// <value>
 		///     The used composition container.
 		/// </value>
-		protected CompositionContainer CompositionContainer { get; private set; }
+		protected CompositionContainer CompositionContainer { get; }
 
 		#endregion
 

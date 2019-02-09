@@ -59,7 +59,7 @@ namespace RI.Framework.Web.Nancy
 		///     Creates a stream response delivering an embedded file.
 		/// </summary>
 		/// <param name="module"> The Nancy module. </param>
-		/// <param name="assembly"> The assembly qhich contains the emdedded file. </param>
+		/// <param name="assembly"> The assembly which contains the embedded file. </param>
 		/// <param name="file"> The name of the embedded file. </param>
 		/// <param name="statusCode"> The optional HTTP status code of the response. The default value is OK. </param>
 		/// <returns>
@@ -134,7 +134,7 @@ namespace RI.Framework.Web.Nancy
 		}
 
 		/// <summary>
-		///     reates a stream response delivering a physical file.
+		///     Creates a stream response delivering a physical file.
 		/// </summary>
 		/// <param name="module"> The Nancy module. </param>
 		/// <param name="file"> The path to the physical file. </param>

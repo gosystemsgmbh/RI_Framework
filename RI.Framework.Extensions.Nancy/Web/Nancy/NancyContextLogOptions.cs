@@ -23,7 +23,7 @@ namespace RI.Framework.Web.Nancy
 		StartTimeMeasurement = 0x01,
 
 		/// <summary>
-		///     Measure time since last time emasurement start (<see cref="StartTimeMeasurement" />) and append to log message.
+		///     Measure time since last time measurement start (<see cref="StartTimeMeasurement" />) and append to log message.
 		/// </summary>
 		MeasureTime = 0x02,
 
