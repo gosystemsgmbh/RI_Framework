@@ -93,8 +93,8 @@ namespace RI.Framework.Bus
 	///     <para>
 	///         Each <see cref="SendOperation" /> and <see cref="ReceiverRegistration" /> always has its assigned local bus, the bus which is associated with it upon creation.
 	///         If the associated bus has no connections to remote busses, the meaning of local and global are the same (meaning that the messages are only sent to the local bus and only received from the local bus).
-	///         However, if the local bus has connections to remote busses, global messages are sent through these connections to those connected remote busses (which are inherenly also local busses for <see cref="SendOperation" />s and <see cref="ReceiverRegistration" />s associated with them).
-	///         In other words: each bus is a local bus to itself, other, connected, busses are remote busses.
+	///         However, if the local bus has connections to remote busses, global messages are sent through these connections to those connected remote busses (which are inherently also local busses for <see cref="SendOperation" />s and <see cref="ReceiverRegistration" />s associated with them).
+	///         In other words: each bus is a local bus to itself. Others, connected busses, are remote busses.
 	///     </para>
 	///     <para>
 	///         Although local and global can be configured for a message when configuring its <see cref="SendOperation" />, the final decision whether to send a message and its responses locally/globally is done by the used <see cref="IBusRouter" />.
