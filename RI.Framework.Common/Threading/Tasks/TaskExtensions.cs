@@ -17,6 +17,8 @@ namespace RI.Framework.Threading.Tasks
 	///     Provides utility/extension methods for the <see cref="Task" /> type.
 	/// </summary>
 	/// <threadsafety static="true" instance="true" />
+	/// TODO: Add overloads for Any, All, GetAwaiter(TimeSpan), GetAwaiter(int), GetAwaiter(CancellationToken), GetAwaiter(Process)
+	/// TODO: Add WithCurrentExecutionContext
 	public static class TaskExtensions
 	{
 		#region Static Methods

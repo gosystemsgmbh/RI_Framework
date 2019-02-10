@@ -14,6 +14,24 @@ namespace RI.Framework.Services.Dispatcher
         #region Static Methods
 
         /// <summary>
+        ///     Creates an awaiter for a dispatcher service.
+        /// </summary>
+        /// <param name="dispatcher"> The dispatcher service to use in the awaiter. </param>
+        /// <returns>
+        ///     The created awaiter.
+        /// </returns>
+        /// <exception cref="ArgumentNullException"> <paramref name="dispatcher" /> is null. </exception>
+        public static DispatcherServiceAwaiter GetAwaiter(this IDispatcherService dispatcher)
+        {
+            if (dispatcher == null)
+            {
+                throw new ArgumentNullException(nameof(dispatcher));
+            }
+
+            return new DispatcherServiceAwaiter(dispatcher);
+        }
+
+        /// <summary>
         ///     Broadcasts an object of a specified type to all receivers registered for that type, using the default priority.
         /// </summary>
         /// <typeparam name="T"> The type to broadcast. </typeparam>

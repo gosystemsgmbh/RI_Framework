@@ -20,6 +20,7 @@ namespace RI.Framework.Web.Nancy
     /// <summary>
     ///     Implements an in-memory mapper for user identities.
     /// </summary>
+    /// <threadsafety static="true" instance="true" />
     public sealed class AuthenticatedUserMapper : LogSource, IUserMapper, ISynchronizable
     {
         #region Instance Constructor/Destructor

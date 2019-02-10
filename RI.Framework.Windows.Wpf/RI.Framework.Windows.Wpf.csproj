@@ -74,7 +74,7 @@
     <Compile Include="Windows\Wpf\Converters\NormalObjectBoolConverter.cs" />
     <Compile Include="Windows\Wpf\Converters\InvertedObjectVisibilityConverter.cs" />
     <Compile Include="Windows\Wpf\Converters\NormalObjectVisibilityConverter.cs" />
-    <Compile Include="Threading\Async\DispatcherAwaiter.cs" />
+    <Compile Include="Windows\Wpf\DispatcherAwaiter.cs" />
     <Compile Include="Mvvm\ViewModel\NotificationObject.cs" />
     <Compile Include="Mvvm\ViewModel\DelegateCommand.cs" />
     <Compile Include="Windows\Imaging\BitmapFrameExtensions.cs" />

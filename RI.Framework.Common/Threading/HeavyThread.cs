@@ -26,6 +26,7 @@ namespace RI.Framework.Threading
 	///     </note>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
+	/// TODO: HeavyThreadAwaiter (incl. option for thread configuration callback)
 	public abstract class HeavyThread : IDisposable, ISynchronizable
 	{
 		#region Constants

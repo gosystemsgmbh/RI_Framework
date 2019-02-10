@@ -3,8 +3,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 
-using RI.Framework.Threading.Async;
-
 
 
 

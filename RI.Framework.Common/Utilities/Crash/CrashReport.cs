@@ -28,6 +28,7 @@ namespace RI.Framework.Utilities.Crash
     ///         Make sure that no sensitive data is included in the crash report and that the users privacy and their secrets are protected!
     ///     </note>
     /// </remarks>
+    /// <threadsafety static="false" instance="false" />
     /// TODO: Remove obsolete attribute
     [Obsolete("Not fully implemented", true)]
     public sealed class CrashReport : LogSource

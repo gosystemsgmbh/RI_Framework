@@ -1,9 +1,11 @@
 ﻿using System;
 
+using RI.Framework.Threading.Async;
 
 
 
-namespace RI.Framework.Threading.Async
+
+namespace RI.Framework.Windows.Wpf
 {
 	/// <summary>
 	///     Implements an awaiter which continues on a specified <see cref="System.Windows.Threading.Dispatcher" />.

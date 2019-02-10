@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Threading;
 
+using RI.Framework.Threading.Async;
 
 
 
-namespace RI.Framework.Threading.Async
+
+namespace RI.Framework.Threading
 {
 	/// <summary>
 	///     Implements an awaiter which continues on a specified <see cref="SynchronizationContext" />.

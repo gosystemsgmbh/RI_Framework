@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Threading;
+
+using UnityEngine;
 
 
 
@@ -6,7 +8,7 @@
 namespace RI.Framework.Threading
 {
     /// <summary>
-    ///     Yield instruction to move a coroutine to Unitys main/foreground thread.
+    ///     Yield instruction to move a coroutine to a <see cref="ThreadPool" /> thread.
     /// </summary>
     /// <remarks>
     ///     <para>
@@ -14,7 +16,7 @@ namespace RI.Framework.Threading
     ///     </para>
     /// </remarks>
     /// <threadsafety static="true" instance="true" />
-    public sealed class ToForeground : YieldInstruction
+    public sealed class ToThreadPool : YieldInstruction
     {
     }
 }

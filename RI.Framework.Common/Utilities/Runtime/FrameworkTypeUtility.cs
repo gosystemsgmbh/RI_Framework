@@ -13,72 +13,72 @@ namespace RI.Framework.Utilities.Runtime
     /// </summary>
     /// <threadsafety static="false" instance="false" />
     public static class FrameworkTypeUtility
-	{
-		#region Constants
+    {
+        #region Constants
 
-		private const string FrameworkNamespacePrefix = nameof(RI) + "." + nameof(Framework);
+        private const string FrameworkNamespacePrefix = nameof(RI) + "." + nameof(Framework);
 
-		#endregion
-
-
+        #endregion
 
 
-		#region Static Methods
 
-		/// <summary>
-		///     Determines whether an assembly is part of the framework.
-		/// </summary>
-		/// <param name="assembly"> The assembly. </param>
-		/// <returns>
-		///     true if the assembly is part of the framework, false otherwise.
-		/// </returns>
-		/// <exception cref="ArgumentNullException"> <paramref name="assembly" /> is null. </exception>
-		public static bool IsFrameworkAssembly (Assembly assembly)
-		{
-			if (assembly == null)
-			{
-				throw new ArgumentNullException(nameof(assembly));
-			}
 
-			return assembly.GetName().Name.StartsWith(FrameworkTypeUtility.FrameworkNamespacePrefix, StringComparison.Ordinal);
-		}
+        #region Static Methods
 
-		/// <summary>
-		///     Determines whether a file is part of the framework.
-		/// </summary>
-		/// <param name="file"> The file. </param>
-		/// <returns>
-		///     true if the file is part of the framework, false otherwise.
-		/// </returns>
-		/// <exception cref="ArgumentNullException"> <paramref name="file" /> is null. </exception>
-		public static bool IsFrameworkFile (FilePath file)
-		{
-			if (file == null)
-			{
-				throw new ArgumentNullException(nameof(file));
-			}
+        /// <summary>
+        ///     Determines whether an assembly is part of the framework.
+        /// </summary>
+        /// <param name="assembly"> The assembly. </param>
+        /// <returns>
+        ///     true if the assembly is part of the framework, false otherwise.
+        /// </returns>
+        /// <exception cref="ArgumentNullException"> <paramref name="assembly" /> is null. </exception>
+        public static bool IsFrameworkAssembly (Assembly assembly)
+        {
+            if (assembly == null)
+            {
+                throw new ArgumentNullException(nameof(assembly));
+            }
 
-			return file.FileName.StartsWith(FrameworkTypeUtility.FrameworkNamespacePrefix, StringComparison.Ordinal);
-		}
+            return assembly.GetName().Name.StartsWith(FrameworkTypeUtility.FrameworkNamespacePrefix, StringComparison.Ordinal);
+        }
 
-		/// <summary>
-		///     Determines whether a type is part of the framework.
-		/// </summary>
-		/// <param name="type"> The type. </param>
-		/// <returns>
-		///     true if the type is part of the framework, false otherwise.
-		/// </returns>
-		/// <exception cref="ArgumentNullException"> <paramref name="type" /> is null. </exception>
-		public static bool IsFrameworkType (Type type)
-		{
-			if (type == null)
-			{
-				throw new ArgumentNullException(nameof(type));
-			}
+        /// <summary>
+        ///     Determines whether a file is part of the framework.
+        /// </summary>
+        /// <param name="file"> The file. </param>
+        /// <returns>
+        ///     true if the file is part of the framework, false otherwise.
+        /// </returns>
+        /// <exception cref="ArgumentNullException"> <paramref name="file" /> is null. </exception>
+        public static bool IsFrameworkFile (FilePath file)
+        {
+            if (file == null)
+            {
+                throw new ArgumentNullException(nameof(file));
+            }
 
-			return type.Namespace?.StartsWith(FrameworkTypeUtility.FrameworkNamespacePrefix, StringComparison.Ordinal) ?? false;
-		}
+            return file.FileName.StartsWith(FrameworkTypeUtility.FrameworkNamespacePrefix, StringComparison.Ordinal);
+        }
 
-		#endregion
-	}
+        /// <summary>
+        ///     Determines whether a type is part of the framework.
+        /// </summary>
+        /// <param name="type"> The type. </param>
+        /// <returns>
+        ///     true if the type is part of the framework, false otherwise.
+        /// </returns>
+        /// <exception cref="ArgumentNullException"> <paramref name="type" /> is null. </exception>
+        public static bool IsFrameworkType (Type type)
+        {
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
+            return type.Namespace?.StartsWith(FrameworkTypeUtility.FrameworkNamespacePrefix, StringComparison.Ordinal) ?? false;
+        }
+
+        #endregion
+    }
 }
