@@ -8,9 +8,10 @@ using RI.Framework.Threading.Async;
 namespace RI.Framework.Services.Dispatcher
 {
     /// <summary>
-    ///     Implements an awaiter which continues on a specified <see cref="IDispatcherService" />.
+    ///     Implements an awaiter which moves execution to a specified <see cref="IDispatcherService" />.
     /// </summary>
     /// <threadsafety static="true" instance="true" />
+    /// TODO: Option to specify priority?
     public sealed class DispatcherServiceAwaiter : CustomAwaiter
     {
         #region Instance Constructor/Destructor

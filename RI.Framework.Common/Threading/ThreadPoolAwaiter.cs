@@ -9,7 +9,7 @@ using RI.Framework.Threading.Async;
 namespace RI.Framework.Threading
 {
     /// <summary>
-    ///     Implements an awaiter which continues on the <see cref="ThreadPool" />.
+    ///     Implements an awaiter which moves execution to the <see cref="ThreadPool" />.
     /// </summary>
     /// <threadsafety static="true" instance="true" />
     public sealed class ThreadPoolAwaiter : CustomAwaiter
