@@ -224,7 +224,7 @@ namespace RI.Framework.Threading
                 ThreadPool.QueueUserWorkItem(x => ((HeavyThreadExecutor)x).Stop(), this);
             }
 
-            protected override void OnStarting ()
+            protected override void OnStarting()
             {
                 base.OnStarting();
 

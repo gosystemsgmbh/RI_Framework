@@ -432,9 +432,9 @@ namespace RI.Framework.Threading.Dispatcher
 		}
 
 		/// <inheritdoc />
-		protected override void OnDisposed ()
+		protected override void OnStopped ()
 		{
-			base.OnDisposed();
+			base.OnStopped();
 
 			this.GetRidOfDispatcher();
 		}
@@ -480,7 +480,7 @@ namespace RI.Framework.Threading.Dispatcher
 		}
 
 		/// <inheritdoc />
-		protected override void OnStarting ()
+		protected override void OnStarting()
 		{
 			base.OnStarting();
 
@@ -492,14 +492,14 @@ namespace RI.Framework.Threading.Dispatcher
 		}
 
 		/// <inheritdoc />
-		protected override void OnStop ()
+		protected override void OnStopping ()
 		{
 			if (this.Dispatcher?.IsRunning ?? false)
 			{
 				this.Dispatcher?.BeginShutdown(this.FinishPendingDelegatesOnShutdown);
 			}
 
-			base.OnStop();
+			base.OnStopping();
 		}
 
 		#endregion

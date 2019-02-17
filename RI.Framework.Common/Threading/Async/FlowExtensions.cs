@@ -1,23 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
-using RI.Framework.Threading.Async;
 
 
 
-
-namespace RI.Framework.Threading.Tasks
+namespace RI.Framework.Threading.Async
 {
     /// <summary>
     ///     Provides utility/extension methods to allow various things to flow around <c>await</c>.
     /// </summary>
     /// <threadsafety static="true" instance="true" />
-    /// TODO: Add WithCurrentExecutionContext (enforces its use)
     public static class FlowExtensions
     {
         #region Static Methods
@@ -38,6 +33,18 @@ namespace RI.Framework.Threading.Tasks
             }
 
             return new CultureFlower(task);
+        }
+
+        /// <summary>
+        ///     Creates an awaitable which flows the current <see cref="CultureInfo.CurrentCulture" /> and <see cref="CultureInfo.CurrentUICulture" /> around an <c>await</c>.
+        /// </summary>
+        /// <param name="taskAwaiter"> The <see cref="TaskAwaiter" /> to flow things around when awaited. </param>
+        /// <returns>
+        ///     The awaiter.
+        /// </returns>
+        public static CultureFlower WithCurrentCulture(this TaskAwaiter taskAwaiter)
+        {
+            return new CultureFlower(taskAwaiter);
         }
 
         /// <summary>
@@ -93,6 +100,19 @@ namespace RI.Framework.Threading.Tasks
         ///     Creates an awaitable which flows the current <see cref="CultureInfo.CurrentCulture" /> and <see cref="CultureInfo.CurrentUICulture" /> around an <c>await</c>.
         /// </summary>
         /// <typeparam name="T">The type of the task result.</typeparam>
+        /// <param name="taskAwaiter"> The <see cref="TaskAwaiter{T}" /> to flow things around when awaited. </param>
+        /// <returns>
+        ///     The awaiter.
+        /// </returns>
+        public static CultureFlower<T> WithCurrentCulture<T>(this TaskAwaiter<T> taskAwaiter)
+        {
+            return new CultureFlower<T>(taskAwaiter);
+        }
+
+        /// <summary>
+        ///     Creates an awaitable which flows the current <see cref="CultureInfo.CurrentCulture" /> and <see cref="CultureInfo.CurrentUICulture" /> around an <c>await</c>.
+        /// </summary>
+        /// <typeparam name="T">The type of the task result.</typeparam>
         /// <param name="configuredTaskAwaitable"> The <see cref="ConfiguredTaskAwaitable{T}" /> to flow things around when awaited. </param>
         /// <returns>
         ///     The awaiter.
@@ -142,6 +162,18 @@ namespace RI.Framework.Threading.Tasks
         /// <summary>
         ///     Creates an awaitable which flows the current <see cref="SynchronizationContext" /> around an <c>await</c>.
         /// </summary>
+        /// <param name="taskAwaiter"> The <see cref="TaskAwaiter" /> to flow things around when awaited. </param>
+        /// <returns>
+        ///     The awaiter.
+        /// </returns>
+        public static SynchronizationContextFlower WithSynchronizationContext(this TaskAwaiter taskAwaiter)
+        {
+            return new SynchronizationContextFlower(taskAwaiter);
+        }
+
+        /// <summary>
+        ///     Creates an awaitable which flows the current <see cref="SynchronizationContext" /> around an <c>await</c>.
+        /// </summary>
         /// <param name="configuredTaskAwaitable"> The <see cref="ConfiguredTaskAwaitable" /> to flow things around when awaited. </param>
         /// <returns>
         ///     The awaiter.
@@ -186,6 +218,19 @@ namespace RI.Framework.Threading.Tasks
             }
 
             return new SynchronizationContextFlower<T>(task);
+        }
+
+        /// <summary>
+        ///     Creates an awaitable which flows the current <see cref="SynchronizationContext" /> around an <c>await</c>.
+        /// </summary>
+        /// <typeparam name="T">The type of the task result.</typeparam>
+        /// <param name="taskAwaiter"> The <see cref="TaskAwaiter{T}" /> to flow things around when awaited. </param>
+        /// <returns>
+        ///     The awaiter.
+        /// </returns>
+        public static SynchronizationContextFlower<T> WithSynchronizationContext<T>(this TaskAwaiter<T> taskAwaiter)
+        {
+            return new SynchronizationContextFlower<T>(taskAwaiter);
         }
 
         /// <summary>

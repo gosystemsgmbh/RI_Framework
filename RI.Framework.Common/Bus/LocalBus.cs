@@ -1064,7 +1064,7 @@ namespace RI.Framework.Bus
 				}
 			}
 
-			protected override void OnStarting ()
+			protected override void OnStarting()
 			{
 				base.OnStarting();
 

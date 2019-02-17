@@ -74,13 +74,13 @@ namespace RI.Test.Framework.Threading
 			this.TestValue += withLock ? "Started1" : "Started2";
 		}
 
-		protected override void OnStarting ()
+		protected override void BeforeStart ()
 		{
 			base.OnStarting();
 			this.TestValue += "Starting";
 		}
 
-		protected override void OnStop ()
+		protected override void OnStopping ()
 		{
 			base.OnStop();
 			this.TestValue += "Stop";

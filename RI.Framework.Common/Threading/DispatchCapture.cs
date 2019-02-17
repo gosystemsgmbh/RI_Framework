@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+
+using RI.Framework.Collections.DirectLinq;
 
 
 
@@ -12,7 +15,7 @@ namespace RI.Framework.Threading
     /// </summary>
     /// <remarks>
     ///     <para>
-    ///         Whether the delegate will be executed on the current <see cref="SynchronizationContext" /> or the <see cref="ThreadPool" /> is decided when an instance of <see cref="DispatchCapture" /> is created (or the current context is &quot;captured&quot;).
+    ///         Whether the delegate will be executed on the current <see cref="SynchronizationContext" /> or the <see cref="ThreadPool" /> is decided when an instance of <see cref="DispatchCapture" /> is created (or the current context is &quot;captured&quot; respectively).
     ///     </para>
     ///     <para>
     ///         If at the time of capture <see cref="SynchronizationContext.Current" /> is not null, that <see cref="SynchronizationContext" /> will be used for execution when calling <see cref="Execute" />. If it is null, <see cref="ThreadPool" /> will be used.
@@ -28,7 +31,7 @@ namespace RI.Framework.Threading
         /// </summary>
         /// <param name="action"> The delegate to execute. </param>
         /// <param name="arguments"> The parameters of the delegate. </param>
-        /// <exception cref="ArgumentNullException"> <paramref name="action" /> or <paramref name="arguments" /> is null. </exception>
+        /// <exception cref="ArgumentNullException"> <paramref name="action" /> is null. </exception>
         public DispatchCapture (Delegate action, params object[] arguments)
         {
             if (action == null)
@@ -36,14 +39,20 @@ namespace RI.Framework.Threading
                 throw new ArgumentNullException(nameof(action));
             }
 
-            if (arguments == null)
-            {
-                throw new ArgumentNullException(nameof(arguments));
-            }
-
             this.Action = action;
-            this.Arguments = arguments;
+            this.Arguments = arguments ?? new object[0];
             this.Context = SynchronizationContext.Current;
+        }
+
+        /// <summary>
+        ///     Creates a new instance of <see cref="DispatchCapture" />.
+        /// </summary>
+        /// <param name="action"> The delegate to execute. </param>
+        /// <param name="arguments"> The parameters of the delegate. </param>
+        /// <exception cref="ArgumentNullException"> <paramref name="action" /> is null. </exception>
+        public DispatchCapture(Delegate action, IEnumerable<object> arguments)
+        :this(action, arguments?.ToArray())
+        {
         }
 
         #endregion
@@ -91,6 +100,9 @@ namespace RI.Framework.Threading
         ///     <para>
         ///         The execution is just scheduled and <see cref="Execute"/> returns immediately without waiting for the execution to be completed.
         ///     </para>
+        ///     <para>
+        ///         Unhandled exceptions, thrown by <see cref="Action"/>, will not be forwarded and remain unhandled.
+        ///     </para>
         /// </remarks>
         public void Execute ()
         {
@@ -115,6 +127,7 @@ namespace RI.Framework.Threading
         /// <summary>
         ///     Executes the delegate.
         /// </summary>
+        /// <param name="forwardExceptions">Specifies whether unhandled exceptions, thrown by <see cref="Action"/>, are forwarded to the returned task.</param>
         /// <returns>
         ///     The task which can be used to await the completion of the execution.
         /// </returns>
@@ -122,8 +135,11 @@ namespace RI.Framework.Threading
         ///     <para>
         ///         The execution is just scheduled and <see cref="ExecuteAsync"/> returns immediately without waiting for the execution to be completed.
         ///     </para>
+        ///     <para>
+        ///         If <paramref name="forwardExceptions"/> is false, unhandled exceptions, thrown by <see cref="Action"/>, will not be forwarded and remain unhandled.
+        ///     </para>
         /// </remarks> 
-        public Task<object> ExecuteAsync ()
+        public Task<object> ExecuteAsync (bool forwardExceptions)
         {
             TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
             if (this.Context != null)
@@ -131,7 +147,23 @@ namespace RI.Framework.Threading
                 this.Context.Post(x =>
                 {
                     DispatchCapture capture = ((DispatchCapture)x);
-                    object result = capture.Action.DynamicInvoke(capture.Arguments);
+                    object result;
+                    if (forwardExceptions)
+                    {
+                        try
+                        {
+                            result = capture.Action.DynamicInvoke(capture.Arguments);
+                        }
+                        catch (Exception exception)
+                        {
+                            tcs.TrySetException(exception);
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        result = capture.Action.DynamicInvoke(capture.Arguments);
+                    }
                     tcs.TrySetResult(result);
                 }, this);
             }
@@ -140,7 +172,23 @@ namespace RI.Framework.Threading
                 ThreadPool.QueueUserWorkItem(x =>
                 {
                     DispatchCapture capture = ((DispatchCapture)x);
-                    object result = capture.Action.DynamicInvoke(capture.Arguments);
+                    object result;
+                    if (forwardExceptions)
+                    {
+                        try
+                        {
+                            result = capture.Action.DynamicInvoke(capture.Arguments);
+                        }
+                        catch (Exception exception)
+                        {
+                            tcs.TrySetException(exception);
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        result = capture.Action.DynamicInvoke(capture.Arguments);
+                    }
                     tcs.TrySetResult(result);
                 }, this);
             }
