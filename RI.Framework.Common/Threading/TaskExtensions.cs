@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 
 
-namespace RI.Framework.Threading.Tasks
+namespace RI.Framework.Threading
 {
     /// <summary>
     ///     Provides utility/extension methods for the <see cref="Task" /> type.

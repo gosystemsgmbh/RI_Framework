@@ -17,6 +17,7 @@ namespace RI.Framework.Threading.Async
     ///     </para>
     /// </remarks>
     /// <threadsafety static="true" instance="true" />
+    /// TODO: Awaiter for signals/events
     public abstract class CustomAwaiter : ICriticalNotifyCompletion, ISynchronizable
     {
         #region Instance Constructor/Destructor

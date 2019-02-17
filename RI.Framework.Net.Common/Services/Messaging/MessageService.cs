@@ -7,7 +7,7 @@ using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Composition;
 using RI.Framework.Composition.Model;
 using RI.Framework.Services.Messaging.Dispatchers;
-using RI.Framework.Threading.Tasks;
+using RI.Framework.Threading;
 using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.ObjectModel;
 

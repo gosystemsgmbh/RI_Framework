@@ -110,14 +110,11 @@ namespace RI.Framework.Threading
         ///     Gets whether the thread has gracefully stopped without exception.
         /// </summary>
         /// <value>
-        ///     true if the thread stopped gracefully and had no exception, false if the thread was forcibly terminated and/or had an exception, or null if the thread was not started or is still running.
+        ///     true if the thread stopped gracefully and had no exception, false if the thread was forcibly terminated (due to timeout) and/or had an exception, or null if the thread was not started or is still running.
         /// </value>
         /// <remarks>
         ///     <para>
         ///         The value of <see cref="HasStoppedGracefully" /> is reset to null by <see cref="Start" /> and set by <see cref="Stop" />.
-        ///     </para>
-        ///     <para>
-        ///         A &quot;graceful&quot; stop is when <see cref="OnRun" /> returns upon stop signaling by <see cref="OnStopping" />, instead of the thread being aborted by <see cref="Stop" /> after <see cref="Timeout" />.
         ///     </para>
         /// </remarks>
         public bool? HasStoppedGracefully
@@ -240,7 +237,7 @@ namespace RI.Framework.Threading
         /// </value>
         /// <remarks>
         ///     <para>
-        ///         <see cref="StopEvent" /> is reset by <see cref="Start" /> and set by the default implementation of <see cref="OnStopping" />.
+        ///         <see cref="StopEvent" /> is reset by <see cref="Start" /> and set by <see cref="Stop"/>.
         ///     </para>
         /// </remarks>
         protected ManualResetEvent StopEvent
@@ -269,7 +266,7 @@ namespace RI.Framework.Threading
         /// </value>
         /// <remarks>
         ///     <para>
-        ///         The value of <see cref="StopRequested" /> is reset to false by <see cref="Start" /> and set to true by the default implementation of <see cref="OnStopping" />.
+        ///         The value of <see cref="StopRequested" /> is reset to false by <see cref="Start" /> and set to true by <see cref="Stop"/>.
         ///     </para>
         /// </remarks>
         protected bool StopRequested
@@ -436,26 +433,21 @@ namespace RI.Framework.Threading
 
                             this.Thread = new Thread(() =>
                             {
-                                ManualResetEvent stopEvent = null;
+                                ManualResetEvent stopEvent = this.StopEvent;
+                                bool onRunStarted = false;
+                                bool onEndStarted = false;
                                 try
                                 {
-                                    stopEvent = this.StopEvent;
                                     this.OnBegin();
                                     startEvent.Set();
+                                    onRunStarted = true;
                                     this.OnRun();
                                     stopEvent.WaitOne();
+                                    onEndStarted = true;
                                     this.OnEnd();
                                 }
                                 catch (ThreadAbortException)
                                 {
-                                    try
-                                    {
-                                        this.OnEnd();
-                                    }
-                                    catch
-                                    {
-                                    }
-
                                     throw;
                                 }
                                 catch (Exception exception)
@@ -478,7 +470,10 @@ namespace RI.Framework.Threading
 
                                     try
                                     {
-                                        startEvent.Set();
+                                        if (!onRunStarted)
+                                        {
+                                            startEvent?.Set();
+                                        }
                                     }
                                     catch
                                     {
@@ -486,7 +481,10 @@ namespace RI.Framework.Threading
 
                                     try
                                     {
-                                        stopEvent?.WaitOne();
+                                        if (!onEndStarted)
+                                        {
+                                            stopEvent?.WaitOne();
+                                        }
                                     }
                                     catch
                                     {
@@ -494,7 +492,10 @@ namespace RI.Framework.Threading
 
                                     try
                                     {
-                                        this.OnEnd();
+                                        if (!onEndStarted)
+                                        {
+                                            this.OnEnd();
+                                        }
                                     }
                                     catch
                                     {
@@ -560,7 +561,13 @@ namespace RI.Framework.Threading
         ///         <item>
         ///             <para>
         ///                 <see cref="OnStopping" /> is called.
-        ///                 Its default implementation sets <see cref="StopRequested" /> to true and signals <see cref="StopEvent" />.
+        ///             </para>
+        ///         </item>
+        ///         <item>
+        ///             <para>
+        ///                 <see cref="StopRequested"/> is set to true.
+        ///                 <see cref="StopEvent"/> is signaled.
+        ///                 All stop tasks, added by <see cref="AddStopTask"/>, are completed.
         ///             </para>
         ///         </item>
         ///         <item>
@@ -570,7 +577,7 @@ namespace RI.Framework.Threading
         ///         </item>
         ///         <item>
         ///             <para>
-        ///                 If <see cref="Thread" /> did not gracefully end on its own or a timeout occurred respectively (see step above), the thread is terminated using <see cref="System.Threading.Thread.Abort()" />.
+        ///                 If <see cref="Thread" /> did not end on its own so a timeout occurred (see step above), the thread is terminated using <see cref="System.Threading.Thread.Abort()" />.
         ///             </para>
         ///         </item>
         ///         <item>
@@ -667,6 +674,12 @@ namespace RI.Framework.Threading
                     if (this.IsRunning)
                     {
                         this.OnStopping();
+
+                        this.StopRequested = true;
+                        this.StopEvent.Set();
+
+                        this.StopTasks.ForEach(x => x.TrySetResult(this));
+                        this.StopTasks.Clear();
                     }
 
                     thread = this.Thread;
@@ -839,11 +852,6 @@ namespace RI.Framework.Threading
         /// </remarks>
         protected virtual void OnStopping ()
         {
-            this.StopRequested = true;
-            this.StopEvent.Set();
-
-            this.StopTasks.ForEach(x => x.TrySetResult(this));
-            this.StopTasks.Clear();
         }
 
         /// <summary>
@@ -901,8 +909,8 @@ namespace RI.Framework.Threading
         ///         A task can be added multiple times but will only be completed once.
         ///     </para>
         ///     <para>
-        ///         All added tasks will be completed using <see cref="TaskCompletionSource{T}.TrySetResult" /> by the default implementation of <see cref="OnStopping" />.
-        ///         Therefore, no tasks added after <see cref="OnStopping" /> was called will be completed.
+        ///         All added tasks will be completed using <see cref="TaskCompletionSource{T}.TrySetResult" /> by <see cref="Stop"/>.
+        ///         Therefore, no tasks added after <see cref="Stop" /> was called will be completed.
         ///     </para>
         /// </remarks>
         /// <exception cref="ArgumentNullException"> <paramref name="tcs" /> is null. </exception>
