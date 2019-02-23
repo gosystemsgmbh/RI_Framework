@@ -37,7 +37,7 @@ namespace RI.Framework.Threading.Dispatcher
 		Aborted = 4,
 
 		/// <summary>
-		///     The operation has finished processing but an exception ocurred during processing.
+		///     The operation has finished processing but an exception occurred during processing.
 		/// </summary>
 		Exception = 5,
 	}
