@@ -14,6 +14,8 @@ namespace RI.Framework.Services.Logging.Readers
     ///     Holds conversion results from a single conversion performed by <see cref="LogFileToDbConverter" />.
     /// </summary>
     /// <threadsafety static="false" instance="false" />
+    /// TODO: Make cloneable
+    [Serializable]
     public sealed class LogFileToDbConverterResults
     {
         #region Instance Constructor/Destructor

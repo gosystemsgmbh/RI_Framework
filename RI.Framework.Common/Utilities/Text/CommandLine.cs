@@ -50,6 +50,7 @@ namespace RI.Framework.Utilities.Text
     /// </remarks>
     /// <threadsafety static="false" instance="false" />
     /// TODO: Implement IEquatable
+    /// TODO: Implement IFormattable
     public sealed class CommandLine : ICloneable<CommandLine>, ICloneable
     {
         #region Constants

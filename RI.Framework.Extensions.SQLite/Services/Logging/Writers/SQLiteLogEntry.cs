@@ -13,6 +13,7 @@ namespace RI.Framework.Services.Logging.Writers
     ///     Represents a single log entry in a SQLite log database.
     /// </summary>
     /// <threadsafety static="false" instance="false" />
+    [Serializable]
     public sealed class SQLiteLogEntry : ICloneable<SQLiteLogEntry>, ICloneable
     {
         #region Instance Constructor/Destructor

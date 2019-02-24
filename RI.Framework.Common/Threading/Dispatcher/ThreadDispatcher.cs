@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 using RI.Framework.Collections;
 using RI.Framework.Collections.Generic;
+using RI.Framework.Utilities;
 using RI.Framework.Utilities.ObjectModel;
 
 
@@ -17,7 +18,7 @@ using RI.Framework.Utilities.ObjectModel;
 namespace RI.Framework.Threading.Dispatcher
 {
     /// <summary>
-    ///     Implements a delegate dispatcher which can be run on any thread.
+    ///     A standalone implementation of a thread-bound dispatcher.
     /// </summary>
     /// <remarks>
     ///     <para>
@@ -619,6 +620,11 @@ namespace RI.Framework.Threading.Dispatcher
             }
             set
             {
+                if (value.GetValueOrDefault(TimeSpan.Zero).IsNegative())
+                {
+                    throw new ArgumentOutOfRangeException(nameof(value));
+                }
+
                 lock (this.SyncRoot)
                 {
                     this._watchdogTimeout = value;

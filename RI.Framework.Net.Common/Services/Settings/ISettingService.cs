@@ -37,7 +37,7 @@ namespace RI.Framework.Services.Settings
     /// </remarks>
     /// <threadsafety static="true" instance="true" />
     /// TODO: Make thread-safe
-    /// TODO: Move to RI.Framework.Common and implement PlayerPrefsStorage
+    /// TODO: Move to RI.Framework.Common and implement PlayerPrefsStorage in RI.Framework.Unity
     /// TODO: Implement JsonSettingStorage
     /// TODO: Implement XmlSettingStorage
     [Export]

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading;
 
+using RI.Framework.Utilities.ObjectModel;
+
 
 
 
@@ -10,7 +12,8 @@ namespace RI.Framework.Utilities.Logging
     ///     Defines the interface for a logger which persists log messages.
     /// </summary>
     /// <threadsafety static="true" instance="true" />
-    public interface ILogger
+    /// TODO: Implement Logger (using string callback)
+    public interface ILogger : ISynchronizable
     {
         /// <summary>
         ///     Logs a message.

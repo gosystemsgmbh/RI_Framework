@@ -24,6 +24,7 @@ namespace RI.Framework.Services.Logging.Writers
     /// </remarks>
     /// <threadsafety static="false" instance="false" />
     [SuppressMessage("ReSharper", "InconsistentNaming")]
+    [Serializable]
     public sealed class SQLiteLogConfiguration : ICloneable<SQLiteLogConfiguration>, ICloneable
     {
         #region Instance Properties/Indexer

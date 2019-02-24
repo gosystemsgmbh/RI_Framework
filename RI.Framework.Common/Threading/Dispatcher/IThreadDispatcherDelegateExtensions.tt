@@ -5,6 +5,8 @@
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".tt.cs" #>
 
+#pragma warning disable 1573
+
 using System;
 using System.Threading.Tasks;
 

@@ -31,6 +31,7 @@ namespace RI.Framework.Utilities.Time
     /// </remarks>
     /// <threadsafety static="false" instance="false" />
     /// TODO: Add support for skipping (e.g. each n-th event)
+    /// TODO: Add IComparable
     [Serializable]
     public struct Schedule : IEquatable<Schedule>, ICloneable<Schedule>, ICloneable, IFormattable
     {

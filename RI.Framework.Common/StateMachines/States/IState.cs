@@ -22,6 +22,7 @@ namespace RI.Framework.StateMachines.States
 	///     </note>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
+	/// TODO: Add support for sub state machines
 	[Export]
 	public interface IState : ISynchronizable
 	{

@@ -1,4 +1,6 @@
 ﻿
+#pragma warning disable 1573
+
 using System;
 using System.Threading.Tasks;
 

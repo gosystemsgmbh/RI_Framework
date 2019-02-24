@@ -20,7 +20,8 @@ namespace RI.Framework.Services.Logging
     ///     </para>
     /// </remarks>
     /// <threadsafety static="true" instance="true" />
-    /// TODO: Do not use locator types
+    /// TODO: Do not use locator types (except for logging)
+    /// TODO: Move to Utilities.Logging
     public static class LogLocator
     {
         #region Static Constructor/Destructor
@@ -99,15 +100,27 @@ namespace RI.Framework.Services.Logging
 
             void ILogger.Log (LogLevel severity, string source, string format, params object[] args)
             {
-                LogLocator.Log(severity, source, format, args);
+                lock (this.SyncRoot)
+                {
+                    LogLocator.Log(severity, source, format, args);
+                }
             }
 
             void ILogger.Log (DateTime timestamp, int threadId, string threadName, LogLevel severity, string source, string format, params object[] args)
             {
-                LogLocator.Log(timestamp, threadId, threadName, severity, source, format, args);
+                lock (this.SyncRoot)
+                {
+                    LogLocator.Log(timestamp, threadId, threadName, severity, source, format, args);
+                }
             }
 
             #endregion
+
+
+
+
+            public bool IsSynchronized => true;
+            public object SyncRoot { get; } = new object();
         }
 
         #endregion
