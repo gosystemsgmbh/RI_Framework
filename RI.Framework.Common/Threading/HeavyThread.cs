@@ -505,6 +505,7 @@ namespace RI.Framework.Threading
 
                             Thread currentThread = Thread.CurrentThread;
 
+                            this.Thread.Name = this.GetType().Name;
                             this.Thread.IsBackground = true;
                             this.Thread.Priority = currentThread.Priority;
                             this.Thread.CurrentCulture = currentThread.CurrentCulture;

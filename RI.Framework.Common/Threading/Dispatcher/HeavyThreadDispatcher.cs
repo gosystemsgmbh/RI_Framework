@@ -66,15 +66,15 @@ namespace RI.Framework.Threading.Dispatcher
         private bool _catchExceptions;
         private ThreadDispatcherOptions _defaultOptions;
         private int _defaultPriority;
+        private TimeSpan? _watchdogTimeout;
 
         private bool _finishPendingDelegatesOnShutdown;
         private bool _isBackgroundThread;
-
-        private CultureInfo _threadCulture;
         private string _threadName;
+
         private ThreadPriority _threadPriority;
+        private CultureInfo _threadCulture;
         private CultureInfo _threadUICulture;
-        private TimeSpan? _watchdogTimeout;
 
         #endregion
 
@@ -339,15 +339,14 @@ namespace RI.Framework.Threading.Dispatcher
 
         private Task BeginShutdownInternal (bool finishPendingDelegates)
         {
-            return Task.Factory.StartNew(() => this.Stop(finishPendingDelegates), CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default);
+            StopThread stopThread = new StopThread(this, finishPendingDelegates);
+            stopThread.Start();
+            return stopThread.CompletionTask;
         }
 
         private void DispatcherExceptionHandler (object sender, ThreadDispatcherExceptionEventArgs args)
         {
-            if (args.CanContinue)
-            {
-                this.OnException(args.Exception, args.CanContinue);
-            }
+            this.OnException(args.Exception, args.CanContinue);
         }
 
         private void DispatcherWatchdogHandler (object sender, ThreadDispatcherWatchdogEventArgs args)
@@ -361,8 +360,11 @@ namespace RI.Framework.Threading.Dispatcher
             {
                 if (this.DispatcherStartOperation != null)
                 {
-                    this.DispatcherStartOperation.CancelHard();
-                    this.DispatcherStartOperation = null;
+                    lock (this.DispatcherStartOperation.SyncRoot)
+                    {
+                        this.DispatcherStartOperation.CancelHard();
+                        this.DispatcherStartOperation = null;
+                    }
                 }
 
                 if (this.Dispatcher != null)
@@ -404,18 +406,7 @@ namespace RI.Framework.Threading.Dispatcher
 
             lock (this.SyncRoot)
             {
-                if (this.DispatcherStartOperation != null)
-                {
-                    this.DispatcherStartOperation.CancelHard();
-                    this.DispatcherStartOperation = null;
-                }
-
-                if (this.Dispatcher != null)
-                {
-                    this.Dispatcher.Exception -= this.DispatcherExceptionHandlerDelegate;
-                    this.Dispatcher.Watchdog -= this.DispatcherWatchdogHandlerDelegate;
-                    this.Dispatcher = null;
-                }
+                this.GetRidOfDispatcher();
 
                 bool catchExceptions = this.CatchExceptions;
                 int defaultPriority = this.DefaultPriority;
@@ -953,13 +944,17 @@ namespace RI.Framework.Threading.Dispatcher
         /// <inheritdoc />
         public void Shutdown (bool finishPendingDelegates)
         {
+            Task shutdownTask;
+
             lock (this.SyncRoot)
             {
                 this.VerifyRunningDispatcher();
                 this.VerifyNotFromThread(nameof(this.Shutdown));
+
+                shutdownTask = this.BeginShutdownInternal(finishPendingDelegates);
             }
 
-            this.Stop(finishPendingDelegates);
+            shutdownTask.Wait();
         }
 
         /// <inheritdoc />
@@ -979,5 +974,52 @@ namespace RI.Framework.Threading.Dispatcher
         }
 
         #endregion
+
+
+
+
+        private sealed class StopThread : HeavyThread
+        {
+            public HeavyThreadDispatcher HeavyThreadDispatcher { get; }
+
+            public bool FinishPendingDelegates { get; }
+
+            private TaskCompletionSource<object> CompletionSource { get; }
+
+            public Task CompletionTask { get; }
+
+            public StopThread (HeavyThreadDispatcher heavyThreadDispatcher, bool finishPendingDelegates)
+            {
+                if (heavyThreadDispatcher == null)
+                {
+                    throw new ArgumentNullException(nameof(heavyThreadDispatcher));
+                }
+
+                this.HeavyThreadDispatcher = heavyThreadDispatcher;
+                this.FinishPendingDelegates = finishPendingDelegates;
+
+                this.CompletionSource = new TaskCompletionSource<object>();
+                this.CompletionTask = this.CompletionSource.Task;
+            }
+
+            protected override void OnStarting ()
+            {
+                base.OnStarting();
+
+                this.Thread.Priority = this.HeavyThreadDispatcher.ThreadPriority;
+                this.Thread.IsBackground = this.HeavyThreadDispatcher.IsBackgroundThread;
+                this.Thread.CurrentCulture = this.HeavyThreadDispatcher.ThreadCulture;
+                this.Thread.CurrentUICulture = this.HeavyThreadDispatcher.ThreadUICulture;
+            }
+
+            protected override void OnRun ()
+            {
+                base.OnRun();
+
+                this.HeavyThreadDispatcher.Stop(this.FinishPendingDelegates);
+
+                this.CompletionSource.SetResult(null);
+            }
+        }
     }
 }
