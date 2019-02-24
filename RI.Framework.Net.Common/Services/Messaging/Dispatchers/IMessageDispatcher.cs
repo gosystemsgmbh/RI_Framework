@@ -19,9 +19,9 @@ namespace RI.Framework.Services.Messaging.Dispatchers
     ///         A message dispatcher is used by a <see cref="IMessageService" /> to actually enqueue and deliver the messages to the receivers.
     ///     </para>
     ///     <note type="important">
-    ///         A message dispatcher is not intended to flow <see cref="ExecutionContext" /> or <see cref="CultureInfo" />.
-    ///         The thread to which the message delivery is dispatched defines the used execution context and thread culture.
-    ///         Therefore, the actual behaviour regarding execution context and thread culture depends on an <see cref="IMessageDispatcher" />s implementation.
+    ///         A message dispatcher is not required to capture <see cref="ExecutionContext" />, <see cref="SynchronizationContext"/>, or <see cref="CultureInfo" />.
+    ///         The thread to which the state machine operation is dispatched can define the used execution context, synchronization context, and thread culture.
+    ///         Therefore, the actual behaviour depends on a <see cref="IMessageDispatcher" />s implementation.
     ///     </note>
     ///     <note type="important">
     ///         The priority a message is dispatched with, if applicable, depends on an <see cref="IMessageDispatcher" />s implementation.

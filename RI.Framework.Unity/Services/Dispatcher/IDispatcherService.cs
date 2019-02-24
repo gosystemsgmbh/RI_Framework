@@ -18,9 +18,9 @@ namespace RI.Framework.Services.Dispatcher
     ///         A dispatcher service is used to exchange events and data between modules, for synchronizing processing, and to handle background tasks.
     ///     </para>
     ///     <note type="important">
-    ///         A dispatcher service is not intended to flow <see cref="ExecutionContext" /> or <see cref="CultureInfo" />.
-    ///         The execution context and thread culture of the target thread, where the broadcasts and method dispatches are executed, shall be used.
-    ///         This will be Unitys main/foreground thread or, depending on the used <see cref="DispatcherPriority" />, a thread pool thread.
+    ///         A state dispatcher service is not required to capture <see cref="ExecutionContext" />, <see cref="SynchronizationContext"/>, or <see cref="CultureInfo" />.
+    ///         The execution context, synchronization context, and thread culture of the target thread, where the broadcasts and method dispatches are executed, can be used.
+    ///         Therefore, the actual behaviour depends on a <see cref="IDispatcherService" />s implementation.
     ///     </note>
     ///     <note type="implement">
     ///         All broadcasts and dispatches must be executed in the order they were issued, depending on their priority.

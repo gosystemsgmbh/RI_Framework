@@ -28,16 +28,16 @@ namespace RI.Framework.Threading.Dispatcher
 		{
 			ThreadDispatcherExecutionContext executionContext = new ThreadDispatcherExecutionContext();
 
-			executionContext.FlowExecutionContext = (options & ThreadDispatcherOptions.FlowExecutionContext) == ThreadDispatcherOptions.FlowExecutionContext;
-			executionContext.FlowSynchronizationContext = (options & ThreadDispatcherOptions.FlowSynchronizationContext) == ThreadDispatcherOptions.FlowSynchronizationContext;
-			executionContext.FlowCurrentCulture = (options & ThreadDispatcherOptions.FlowCurrentCulture) == ThreadDispatcherOptions.FlowCurrentCulture;
-			executionContext.FlowCurrentUICulture = (options & ThreadDispatcherOptions.FlowCurrentUICulture) == ThreadDispatcherOptions.FlowCurrentUICulture;
+			executionContext.CaptureExecutionContext = (options & ThreadDispatcherOptions.CaptureExecutionContext) == ThreadDispatcherOptions.CaptureExecutionContext;
+			executionContext.CaptureSynchronizationContext = (options & ThreadDispatcherOptions.CaptureSynchronizationContext) == ThreadDispatcherOptions.CaptureSynchronizationContext;
+			executionContext.CaptureCurrentCulture = (options & ThreadDispatcherOptions.CaptureCurrentCulture) == ThreadDispatcherOptions.CaptureCurrentCulture;
+			executionContext.CaptureCurrentUICulture = (options & ThreadDispatcherOptions.CaptureCurrentUICulture) == ThreadDispatcherOptions.CaptureCurrentUICulture;
 
 
-			executionContext.ExecutionContext = executionContext.FlowExecutionContext ? ExecutionContext.Capture() : null;
-			executionContext.SynchronizationContext = executionContext.FlowSynchronizationContext ? SynchronizationContext.Current : null;
-			executionContext.CurrentCulture = executionContext.FlowCurrentCulture ? CultureInfo.CurrentCulture : null;
-			executionContext.CurrentUICulture = executionContext.FlowCurrentUICulture ? CultureInfo.CurrentUICulture : null;
+			executionContext.ExecutionContext = executionContext.CaptureExecutionContext ? ExecutionContext.Capture() : null;
+			executionContext.SynchronizationContext = executionContext.CaptureSynchronizationContext ? SynchronizationContext.Current : null;
+			executionContext.CurrentCulture = executionContext.CaptureCurrentCulture ? CultureInfo.CurrentCulture : null;
+			executionContext.CurrentUICulture = executionContext.CaptureCurrentUICulture ? CultureInfo.CurrentUICulture : null;
 
 			return executionContext;
 		}
@@ -53,10 +53,10 @@ namespace RI.Framework.Threading.Dispatcher
 		{
 			this.IsDisposed = false;
 
-			this.FlowExecutionContext = false;
-			this.FlowSynchronizationContext = false;
-			this.FlowCurrentCulture = false;
-			this.FlowCurrentUICulture = false;
+			this.CaptureExecutionContext = false;
+			this.CaptureSynchronizationContext = false;
+			this.CaptureCurrentCulture = false;
+			this.CaptureCurrentUICulture = false;
 
 			this.ExecutionContext = null;
 			this.SynchronizationContext = null;
@@ -90,10 +90,10 @@ namespace RI.Framework.Threading.Dispatcher
 		private CultureInfo CurrentCulture { get; set; }
 		private CultureInfo CurrentUICulture { get; set; }
 		private ExecutionContext ExecutionContext { get; set; }
-		private bool FlowCurrentCulture { get; set; }
-		private bool FlowCurrentUICulture { get; set; }
-		private bool FlowExecutionContext { get; set; }
-		private bool FlowSynchronizationContext { get; set; }
+		private bool CaptureCurrentCulture { get; set; }
+		private bool CaptureCurrentUICulture { get; set; }
+		private bool CaptureExecutionContext { get; set; }
+		private bool CaptureSynchronizationContext { get; set; }
 		private ThreadDispatcherOptions Options { get; set; }
 		private object[] Parameters { get; set; }
 		private object Result { get; set; }
@@ -119,27 +119,27 @@ namespace RI.Framework.Threading.Dispatcher
 		[SuppressMessage("ReSharper", "EmptyGeneralCatchClause")]
 		private void RunCore ()
 		{
-			bool flowCurrentCulture = ((this.Options & ThreadDispatcherOptions.FlowCurrentCulture) == ThreadDispatcherOptions.FlowCurrentCulture) && this.FlowCurrentCulture;
-			bool flowCurrentUICulture = ((this.Options & ThreadDispatcherOptions.FlowCurrentUICulture) == ThreadDispatcherOptions.FlowCurrentUICulture) && this.FlowCurrentUICulture;
-			bool flowSynchronizationContext = ((this.Options & ThreadDispatcherOptions.FlowSynchronizationContext) == ThreadDispatcherOptions.FlowSynchronizationContext) && this.FlowSynchronizationContext;
+			bool captureCurrentCulture = ((this.Options & ThreadDispatcherOptions.CaptureCurrentCulture) == ThreadDispatcherOptions.CaptureCurrentCulture) && this.CaptureCurrentCulture;
+			bool captureCurrentUICulture = ((this.Options & ThreadDispatcherOptions.CaptureCurrentUICulture) == ThreadDispatcherOptions.CaptureCurrentUICulture) && this.CaptureCurrentUICulture;
+			bool captureSynchronizationContext = ((this.Options & ThreadDispatcherOptions.CaptureSynchronizationContext) == ThreadDispatcherOptions.CaptureSynchronizationContext) && this.CaptureSynchronizationContext;
 
-			CultureInfo currentCultureBackup = flowCurrentCulture ? CultureInfo.CurrentCulture : null;
-			CultureInfo currentUICultureBackup = flowCurrentUICulture ? CultureInfo.CurrentUICulture : null;
-			SynchronizationContext synchronizationContextBackup = flowSynchronizationContext ? SynchronizationContext.Current : null;
+			CultureInfo currentCultureBackup = captureCurrentCulture ? CultureInfo.CurrentCulture : null;
+			CultureInfo currentUICultureBackup = captureCurrentUICulture ? CultureInfo.CurrentUICulture : null;
+			SynchronizationContext synchronizationContextBackup = captureSynchronizationContext ? SynchronizationContext.Current : null;
 
 			try
 			{
-				if (flowCurrentCulture)
+				if (captureCurrentCulture)
 				{
 					CultureInfo.CurrentCulture = this.CurrentCulture;
 				}
 
-				if (flowCurrentUICulture)
+				if (captureCurrentUICulture)
 				{
 					CultureInfo.CurrentUICulture = this.CurrentUICulture;
 				}
 
-				if (flowSynchronizationContext)
+				if (captureSynchronizationContext)
 				{
 					SynchronizationContext.SetSynchronizationContext(this.SynchronizationContext);
 				}
@@ -150,7 +150,7 @@ namespace RI.Framework.Threading.Dispatcher
 			{
 				try
 				{
-					if (flowSynchronizationContext)
+					if (captureSynchronizationContext)
 					{
 						SynchronizationContext.SetSynchronizationContext(synchronizationContextBackup);
 					}
@@ -161,7 +161,7 @@ namespace RI.Framework.Threading.Dispatcher
 
 				try
 				{
-					if (flowCurrentUICulture)
+					if (captureCurrentUICulture)
 					{
 						CultureInfo.CurrentUICulture = currentUICultureBackup;
 					}
@@ -172,7 +172,7 @@ namespace RI.Framework.Threading.Dispatcher
 
 				try
 				{
-					if (flowCurrentCulture)
+					if (captureCurrentCulture)
 					{
 						CultureInfo.CurrentCulture = currentCultureBackup;
 					}
@@ -190,8 +190,8 @@ namespace RI.Framework.Threading.Dispatcher
 			this.Parameters = parameters;
 			this.Result = null;
 
-			bool flowExecutionContext = ((options & ThreadDispatcherOptions.FlowExecutionContext) == ThreadDispatcherOptions.FlowExecutionContext) && this.FlowExecutionContext;
-			if (flowExecutionContext)
+			bool captureExecutionContext = ((options & ThreadDispatcherOptions.CaptureExecutionContext) == ThreadDispatcherOptions.CaptureExecutionContext) && this.CaptureExecutionContext;
+			if (captureExecutionContext)
 			{
 				ExecutionContext.Run(this.ExecutionContext, state => { ((ThreadDispatcherExecutionContext)state).RunCore(); }, this);
 			}
@@ -225,10 +225,10 @@ namespace RI.Framework.Threading.Dispatcher
 
 			ThreadDispatcherExecutionContext clone = new ThreadDispatcherExecutionContext();
 
-			clone.FlowExecutionContext = this.FlowExecutionContext;
-			clone.FlowSynchronizationContext = this.FlowSynchronizationContext;
-			clone.FlowCurrentCulture = this.FlowCurrentCulture;
-			clone.FlowCurrentUICulture = this.FlowCurrentUICulture;
+			clone.CaptureExecutionContext = this.CaptureExecutionContext;
+			clone.CaptureSynchronizationContext = this.CaptureSynchronizationContext;
+			clone.CaptureCurrentCulture = this.CaptureCurrentCulture;
+			clone.CaptureCurrentUICulture = this.CaptureCurrentUICulture;
 
 			clone.ExecutionContext = this.ExecutionContext?.CreateCopy();
 			clone.SynchronizationContext = this.SynchronizationContext?.CreateCopy() ?? this.SynchronizationContext;
@@ -259,10 +259,10 @@ namespace RI.Framework.Threading.Dispatcher
 			this.ExecutionContext?.Dispose();
 			this.ExecutionContext = null;
 
-			this.FlowExecutionContext = false;
-			this.FlowSynchronizationContext = false;
-			this.FlowCurrentCulture = false;
-			this.FlowCurrentUICulture = false;
+			this.CaptureExecutionContext = false;
+			this.CaptureSynchronizationContext = false;
+			this.CaptureCurrentCulture = false;
+			this.CaptureCurrentUICulture = false;
 
 			this.SynchronizationContext = null;
 			this.CurrentCulture = null;

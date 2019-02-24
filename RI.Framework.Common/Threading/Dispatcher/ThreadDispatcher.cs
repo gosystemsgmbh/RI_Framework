@@ -36,7 +36,7 @@ namespace RI.Framework.Threading.Dispatcher
     ///         The watchdog runs in a separate thread and raises the <see cref="Watchdog" /> event if the execution of a delegate takes longer than the specified timeout.
     ///     </para>
     ///     <note type="important">
-    ///         Whether <see cref="ExecutionContext" /> and/or <see cref="CultureInfo" /> flows, depends on the used <see cref="ThreadDispatcherOptions" />.
+    ///         Whether <see cref="ExecutionContext" />, <see cref="SynchronizationContext"/>, and/or <see cref="CultureInfo" /> is captured and used for executing a delegate, depends on the used <see cref="ThreadDispatcherOptions" />.
     ///     </note>
     /// </remarks>
     /// <threadsafety static="true" instance="true" />
@@ -509,6 +509,11 @@ namespace RI.Framework.Threading.Dispatcher
             }
             set
             {
+                if (value == ThreadDispatcherOptions.Default)
+                {
+                    throw new ArgumentException("Invalid default thread dispatcher option", nameof(value));
+                }
+
                 lock (this.SyncRoot)
                 {
                     this._defaultOptions = value;

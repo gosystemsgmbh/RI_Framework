@@ -47,6 +47,7 @@ namespace RI.Framework.Threading.Dispatcher
         ///         The default value is <see cref="ThreadDispatcherOptions.None" />.
         ///     </note>
         /// </remarks>
+        /// <exception cref="ArgumentException"> <paramref name="value" /> is <see cref="ThreadDispatcherOptions.Default"/>. </exception>
         ThreadDispatcherOptions DefaultOptions { get; set; }
 
         /// <summary>

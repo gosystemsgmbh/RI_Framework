@@ -18,9 +18,9 @@ namespace RI.Framework.StateMachines.Dispatchers
 	///         See <see cref="StateMachine" /> for more details about state machines.
 	///     </para>
 	///     <note type="important">
-	///         A state machine operation dispatcher is not intended to flow <see cref="ExecutionContext" /> or <see cref="CultureInfo" />.
-	///         The thread to which the state machine operation is dispatched defines the used execution context and thread culture.
-	///         Therefore, the actual behaviour regarding execution context and thread culture depends on a <see cref="IStateDispatcher" />s implementation.
+	///         A state machine operation dispatcher is not required to capture <see cref="ExecutionContext" />, <see cref="SynchronizationContext"/>, or <see cref="CultureInfo" />.
+	///         The thread to which the state machine operation is dispatched can define the used execution context, synchronization context, and thread culture.
+	///         Therefore, the actual behaviour depends on a <see cref="IStateDispatcher" />s implementation.
 	///     </note>
 	///     <note type="important">
 	///         The priority a state machine operation is dispatched with, if applicable, depends on a <see cref="IStateDispatcher" />s implementation.
