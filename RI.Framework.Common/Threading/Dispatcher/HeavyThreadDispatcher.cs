@@ -374,8 +374,7 @@ namespace RI.Framework.Threading.Dispatcher
                         this.Dispatcher.Exception -= this.DispatcherExceptionHandlerDelegate;
                         this.Dispatcher.Watchdog -= this.DispatcherWatchdogHandlerDelegate;
 
-                        this.Dispatcher.CancelHard(true);
-
+                        ((IDisposable)this.Dispatcher).Dispose();
                         this.Dispatcher = null;
                     }
                 }

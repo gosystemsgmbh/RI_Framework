@@ -22,10 +22,10 @@ namespace RI.Framework.Threading.Dispatcher
     /// </summary>
     /// <remarks>
     ///     <para>
-    ///         A <see cref="ThreadDispatcher" /> provides a queue for delegates, filled through <see cref="Send(Delegate,object[])" />/<see cref="Send(int,Delegate,object[])" /> and <see cref="Post(Delegate,object[])" />/<see cref="Post(int,System.Delegate,object[])" />, which is processed on the thread where <see cref="Run" /> is called (<see cref="Run" /> blocks while executing the queue until <see cref="Shutdown" /> is called).
+    ///         A <see cref="ThreadDispatcher" /> provides a queue for delegates, filled through <c>Send</c> and <c>Post</c> methods, which is processed on the thread where <see cref="Run" /> is called (<see cref="Run" /> blocks while executing the queue until <see cref="Shutdown" />, <see cref="ShutdownAsync"/>, or <see cref="BeginShutdown"/> is called).
     ///     </para>
     ///     <para>
-    ///         The delegates are executed in the order they are added to the queue through <see cref="Send(Delegate,object[])" />/<see cref="Send(int,Delegate,object[])" /> or <see cref="Post(Delegate,object[])" />/<see cref="Post(int,System.Delegate,object[])" />.
+    ///         The delegates are executed in the order they are added to the queue.
     ///         When all delegates are executed, or the queue is empty respectively, <see cref="ThreadDispatcher" /> waits for new delegates to process.
     ///     </para>
     ///     <para>
@@ -41,6 +41,7 @@ namespace RI.Framework.Threading.Dispatcher
     ///     </note>
     /// </remarks>
     /// <threadsafety static="true" instance="true" />
+    /// TODO: Allow dispatching during shutdown?
     public sealed class ThreadDispatcher : IThreadDispatcher
     {
         #region Constants
@@ -105,6 +106,7 @@ namespace RI.Framework.Threading.Dispatcher
             this.Awaiter = new ThreadDispatcherAwaiter(this);
 
             this.PreRunQueue = new PriorityQueue<ThreadDispatcherOperation>();
+
             this.Finished = new ManualResetEvent(false);
             this.FinishedSignals = new List<TaskCompletionSource<object>>();
         }
@@ -119,6 +121,7 @@ namespace RI.Framework.Threading.Dispatcher
             this.FinishedSignals?.ForEach(x => x.TrySetResult(null));
             this.FinishedSignals?.Clear();
 
+            this.Finished?.Set();
             this.Finished?.Close();
         }
 
@@ -200,16 +203,23 @@ namespace RI.Framework.Threading.Dispatcher
         }
 
         private Stack<ThreadDispatcherOperation> CurrentOperation { get; set; }
+
         private Stack<ThreadDispatcherOptions> CurrentOptions { get; set; }
+
         private Stack<int> CurrentPriority { get; set; }
+
         private ManualResetEvent Finished { get; set; }
+
         private List<TaskCompletionSource<object>> FinishedSignals { get; set; }
+
         private List<TaskCompletionSource<object>> IdleSignals { get; set; }
 
         private HashSet<object> KeepAlives { get; set; }
+
         private ManualResetEvent Posted { get; set; }
 
         private PriorityQueue<ThreadDispatcherOperation> PreRunQueue { get; set; }
+
         private PriorityQueue<ThreadDispatcherOperation> Queue { get; set; }
 
         private Thread Thread { get; set; }
@@ -269,6 +279,7 @@ namespace RI.Framework.Threading.Dispatcher
                 lock (this.SyncRoot)
                 {
                     this.WatchdogLoop?.Stop();
+                    this.WatchdogLoop = null;
 
                     this.CancelHard(false);
 
@@ -296,9 +307,9 @@ namespace RI.Framework.Threading.Dispatcher
                     this.Queue = null;
                     this.Thread = null;
 
-                    this.Finished.Set();
-                    this.FinishedSignals.ForEach(x => x.TrySetResult(null));
-                    this.FinishedSignals.Clear();
+                    this.Finished?.Set();
+                    this.FinishedSignals?.ForEach(x => x.TrySetResult(null));
+                    this.FinishedSignals?.Clear();
                 }
             }
         }
@@ -385,14 +396,16 @@ namespace RI.Framework.Threading.Dispatcher
                         break;
                     }
 
-                    this.WatchdogLoop.StartSurveilance(operation);
+                    //TODO: We should measure the runtime here
+                    //TODO: Also measure active time
+                    this.WatchdogLoop.StartSurveillance(operation);
                     try
                     {
                         operation.Execute();
                     }
                     finally
                     {
-                        this.WatchdogLoop.StopSurveilance(operation);
+                        this.WatchdogLoop.StopSurveillance(operation);
                     }
 
                     bool catchExceptions;
@@ -678,7 +691,7 @@ namespace RI.Framework.Threading.Dispatcher
                 {
                     tcs.TrySetResult(t.Result);
                 }
-            });
+            }, CancellationToken.None, TaskContinuationOptions.DenyChildAttach | TaskContinuationOptions.LazyCancellation | TaskContinuationOptions.RunContinuationsAsynchronously, this.Scheduler);
             return tcs.Task;
         }
 
@@ -708,7 +721,7 @@ namespace RI.Framework.Threading.Dispatcher
                 this.CancelHard(true);
 
                 this.KeepAlives?.Clear();
-
+                this.Queue?.Clear();
                 this.PreRunQueue?.Clear();
             }
         }
@@ -1241,7 +1254,7 @@ namespace RI.Framework.Threading.Dispatcher
 
             #region Instance Methods
 
-            public void StartSurveilance (ThreadDispatcherOperation operation)
+            public void StartSurveillance (ThreadDispatcherOperation operation)
             {
                 if (operation == null)
                 {
@@ -1254,7 +1267,7 @@ namespace RI.Framework.Threading.Dispatcher
                 }
             }
 
-            public void StopSurveilance (ThreadDispatcherOperation operation)
+            public void StopSurveillance (ThreadDispatcherOperation operation)
             {
                 if (operation == null)
                 {
@@ -1265,7 +1278,7 @@ namespace RI.Framework.Threading.Dispatcher
                 {
                     if ((this.Operations.Count == 0) || (!object.ReferenceEquals(operation, this.Operations.Peek().Operation)))
                     {
-                        throw new ThreadDispatcherException("Watchdog operation surveilance stack is out of sync.");
+                        throw new ThreadDispatcherException("Watchdog operation surveillance stack is out of sync.");
                     }
 
                     this.Operations.Pop();
@@ -1282,6 +1295,7 @@ namespace RI.Framework.Threading.Dispatcher
             protected override void Dispose (bool disposing)
             {
                 this.Operations?.Clear();
+
                 base.Dispose(disposing);
             }
 
