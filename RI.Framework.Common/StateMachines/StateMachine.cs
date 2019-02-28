@@ -53,7 +53,7 @@ namespace RI.Framework.StateMachines
     ///     <para>
     ///         A signal is used to inform the current state about an event to which the current state might react (or not, depending on the current state and the signal).
     ///         Basically, a signal is just an object of any type which is passed to the current state.
-    ///         A signal is issued using <see cref="Signal" /> or <see cref="Signal{T}" />.
+    ///         A signal is issued using one of the <c>Signal</c> methods.
     ///         The current state receives the signal using <see cref="IState.Signal" />.
     ///         Depending on the signal, the state might initiate a transition or perform some other state-specific actions.
     ///         Signals are used to decouple the states from event sources so that events can be signalled independently of the current state.
@@ -207,9 +207,6 @@ namespace RI.Framework.StateMachines
     ///  </code>
     /// </example>
     /// TODO: State machine persistency
-    /// TODO: Signal/Update forwarding tu sub state machines
-    /// TODO: Signal parameters
-    /// TODO: Update parameters (???)
     /// TODO: Transition guards
     /// TODO: Signal "guards" (not quite, but similar technical concept)
     /// TODO: Update "guards" (not quite, but similar technical concept)
@@ -219,6 +216,7 @@ namespace RI.Framework.StateMachines
 
         static StateMachine ()
         {
+            StateMachine.GlobalSyncRoot = new object();
             StateMachine.StateVariableInfos = new Dictionary<Type, Dictionary<string, StateVariableInfo>>();
         }
 
@@ -231,6 +229,8 @@ namespace RI.Framework.StateMachines
 
         private static Dictionary<Type, Dictionary<string, StateVariableInfo>> StateVariableInfos { get; }
 
+        private static object GlobalSyncRoot { get; }
+
         #endregion
 
 
@@ -240,33 +240,37 @@ namespace RI.Framework.StateMachines
 
         private static Dictionary<string, StateVariableInfo> GetStateVariableInfos (Type type)
         {
-            if (!StateMachine.StateVariableInfos.ContainsKey(type))
+            lock (StateMachine.GlobalSyncRoot)
             {
-                Dictionary<string, StateVariableInfo> stateVariableInfos = new Dictionary<string, StateVariableInfo>(StringComparerEx.Ordinal);
-
-                PropertyInfo[] properties = type.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-                foreach (PropertyInfo property in properties)
+                if (!StateMachine.StateVariableInfos.ContainsKey(type))
                 {
-                    StateVariableAttribute attribute = property.GetCustomAttributes(typeof(StateVariableAttribute), false).OfType<StateVariableAttribute>().FirstOrDefault();
-                    if (attribute == null)
+                    Dictionary<string, StateVariableInfo> stateVariableInfos = new Dictionary<string, StateVariableInfo>(StringComparerEx.Ordinal);
+
+                    PropertyInfo[] properties = type.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+                    foreach (PropertyInfo property in properties)
                     {
-                        continue;
+                        StateVariableAttribute attribute = property.GetCustomAttributes(typeof(StateVariableAttribute), false).OfType<StateVariableAttribute>().FirstOrDefault();
+                        if (attribute == null)
+                        {
+                            continue;
+                        }
+
+                        StateVariableInfo info = new StateVariableInfo();
+                        info.Property = property;
+                        info.Attribute = attribute;
+                        info.GetMethod = property.GetGetMethod(true);
+                        info.SetMethod = property.GetSetMethod(true);
+                        //TODO: Option to get default value from attribute (or even function?)
+                        info.DefaultValue = property.PropertyType.GetDefaultValue();
+
+                        stateVariableInfos.Add(property.Name, info);
                     }
 
-                    StateVariableInfo info = new StateVariableInfo();
-                    info.Property = property;
-                    info.Attribute = attribute;
-                    info.GetMethod = property.GetGetMethod(true);
-                    info.SetMethod = property.GetSetMethod(true);
-                    info.DefaultValue = property.PropertyType.GetDefaultValue();
-
-                    stateVariableInfos.Add(property.Name, info);
+                    StateMachine.StateVariableInfos.Add(type, stateVariableInfos);
                 }
 
-                StateMachine.StateVariableInfos.Add(type, stateVariableInfos);
+                return StateMachine.StateVariableInfos[type];
             }
-
-            return StateMachine.StateVariableInfos[type];
         }
 
         #endregion
@@ -318,7 +322,6 @@ namespace RI.Framework.StateMachines
             this.UpdateDelegate = this.ExecuteUpdate;
 
             this.State = null;
-
             this.StateEnterTimestampUtc = DateTime.UtcNow;
             this.StateEnterTimestampLocal = this.StateEnterTimestampUtc.ToLocalTime();
         }
@@ -412,7 +415,31 @@ namespace RI.Framework.StateMachines
         {
             lock (this.SyncRoot)
             {
-                this.SignalInternal(signal);
+                this.SignalInternal(signal, new object[0]);
+            }
+        }
+
+        /// <summary>
+        ///     Sends a signal to the current state.
+        /// </summary>
+        /// <typeparam name="TSignal"> The type of the signal. </typeparam>
+        /// <param name="signal"> The signal. </param>
+        /// <param name="parameters"> Specifies optional signal parameters passed to the current state. </param>
+        public void Signal<TSignal> (TSignal signal, params object[] parameters)
+        {
+            this.Signal((object)signal, parameters);
+        }
+
+        /// <summary>
+        ///     Sends a signal to the current state.
+        /// </summary>
+        /// <param name="signal"> The signal. </param>
+        /// <param name="parameters"> Specifies optional signal parameters passed to the current state. </param>
+        public void Signal (object signal, params object[] parameters)
+        {
+            lock (this.SyncRoot)
+            {
+                this.SignalInternal(signal, parameters);
             }
         }
 
@@ -432,7 +459,7 @@ namespace RI.Framework.StateMachines
         /// <param name="state"> The type of state to transition to. </param>
         public void Transient (Type state)
         {
-            IState nextState = this.Resolve(state, true);
+            IState nextState = this.Resolve(state);
 
             lock (this.SyncRoot)
             {
@@ -443,8 +470,8 @@ namespace RI.Framework.StateMachines
         /// <summary>
         ///     Initiates a transition to another state.
         /// </summary>
-        /// <param name="parameters"> Specifies optional transition parameters passed to the next state. </param>
         /// <typeparam name="TState"> The type of state to transition to. </typeparam>
+        /// <param name="parameters"> Specifies optional transition parameters passed to the next state. </param>
         public void Transient <TState> (params object[] parameters)
             where TState : IState
         {
@@ -458,7 +485,7 @@ namespace RI.Framework.StateMachines
         /// <param name="parameters"> Specifies optional transition parameters passed to the next state. </param>
         public void Transient (Type state, params object[] parameters)
         {
-            IState nextState = this.Resolve(state, true);
+            IState nextState = this.Resolve(state);
 
             lock (this.SyncRoot)
             {
@@ -481,12 +508,14 @@ namespace RI.Framework.StateMachines
         ///     Sends a signal to the current state.
         /// </summary>
         /// <param name="signal"> The signal. </param>
-        protected void SignalInternal (object signal)
+        /// <param name="parameters"> Specifies optional signal parameters passed to the current state. </param>
+        protected void SignalInternal (object signal, object[] parameters)
         {
-            StateSignalInfo signalInfo = new StateSignalInfo(this);
-            signalInfo.Signal = signal;
-
-            this.DispatchSignal(signalInfo);
+            lock (this.SyncRoot)
+            {
+                StateSignalInfo signalInfo = new StateSignalInfo(this, signal, parameters ?? new object[0]);
+                this.DispatchSignal(signalInfo);
+            }
         }
 
         /// <summary>
@@ -496,14 +525,12 @@ namespace RI.Framework.StateMachines
         /// <param name="parameters"> Specifies optional transition parameters passed to the next state. </param>
         protected void TransientInternal (IState nextState, object[] parameters)
         {
-            IState previousState = this.State;
-
-            StateTransientInfo transientInfo = new StateTransientInfo(this);
-            transientInfo.NextState = nextState;
-            transientInfo.PreviousState = previousState;
-            transientInfo.Parameters = new List<object>(parameters ?? new object[0]);
-
-            this.DispatchTransient(transientInfo);
+            lock (this.SyncRoot)
+            {
+                IState previousState = this.State;
+                StateTransientInfo transientInfo = new StateTransientInfo(this, previousState, nextState, parameters ?? new object[0]);
+                this.DispatchTransient(transientInfo);
+            }
         }
 
         /// <summary>
@@ -517,13 +544,11 @@ namespace RI.Framework.StateMachines
                 delay = 0;
             }
 
-            StateUpdateInfo updateInfo = new StateUpdateInfo(this);
-            updateInfo.UpdateDelay = delay;
-            updateInfo.UpdateState = this.State;
-            updateInfo.StateEnteredUtc = this.StateEnterTimestampUtc;
-            updateInfo.StateEnteredLocal = this.StateEnterTimestampLocal;
-
-            this.DispatchUpdate(updateInfo);
+            lock (this.SyncRoot)
+            {
+                StateUpdateInfo updateInfo = new StateUpdateInfo(this, this.State, delay, this.StateEnterTimestampUtc, this.StateEnterTimestampLocal);
+                this.DispatchUpdate(updateInfo);
+            }
         }
 
         #endregion
@@ -533,98 +558,64 @@ namespace RI.Framework.StateMachines
 
         #region Virtuals
 
-        /// <summary>
-        ///     Called when a signal is to be dispatched.
-        /// </summary>
-        /// <param name="signalInfo"> The signal to dispatch. </param>
-        /// <remarks>
-        ///     <para>
-        ///         The default implementation calls <see cref="IStateDispatcher.DispatchSignal" />.
-        ///     </para>
-        ///     <note type="important">
-        ///         This method is called inside a lock to <see cref="SyncRoot" />.
-        ///     </note>
-        /// </remarks>
-        protected virtual void DispatchSignal (StateSignalInfo signalInfo)
+        private void DispatchSignal (StateSignalInfo signalInfo)
         {
             this.Log(LogLevel.Debug, "Dispatching signal: {0}", signalInfo.Signal?.ToString() ?? "[null]");
 
             this.Configuration.Dispatcher.DispatchSignal(this.SignalDelegate, signalInfo);
         }
 
-        /// <summary>
-        ///     Called when a transition is to be dispatched.
-        /// </summary>
-        /// <param name="transientInfo"> The transition to dispatch. </param>
-        /// <remarks>
-        ///     <para>
-        ///         The default implementation calls <see cref="IStateDispatcher.DispatchTransition" />.
-        ///     </para>
-        ///     <note type="important">
-        ///         This method is called inside a lock to <see cref="SyncRoot" />.
-        ///     </note>
-        /// </remarks>
-        protected virtual void DispatchTransient (StateTransientInfo transientInfo)
+        private void DispatchTransient (StateTransientInfo transientInfo)
         {
             this.Log(LogLevel.Debug, "Dispatching transient: {0} -> {1}", transientInfo.PreviousState?.GetType().Name ?? "[null]", transientInfo.NextState?.GetType().Name ?? "[null]");
 
             this.Configuration.Dispatcher.DispatchTransition(this.TransientDelegate, transientInfo);
         }
 
-        /// <summary>
-        ///     Called when an update is to be dispatched.
-        /// </summary>
-        /// <param name="updateInfo"> The update to dispatch. </param>
-        /// <remarks>
-        ///     <para>
-        ///         The default implementation calls <see cref="IStateDispatcher.DispatchUpdate" />.
-        ///     </para>
-        ///     <note type="important">
-        ///         This method is called inside a lock to <see cref="SyncRoot" />.
-        ///     </note>
-        /// </remarks>
-        protected virtual void DispatchUpdate (StateUpdateInfo updateInfo)
+        private void DispatchUpdate (StateUpdateInfo updateInfo)
         {
             this.Configuration.Dispatcher.DispatchUpdate(this.UpdateDelegate, updateInfo);
         }
 
-        /// <summary>
-        ///     Called when a signal is eventually executed by the dispatcher.
-        /// </summary>
-        /// <param name="signalInfo"> The signal to execute. </param>
-        protected virtual void ExecuteSignal (StateSignalInfo signalInfo)
+        private void ExecuteSignal (StateSignalInfo signalInfo)
         {
             lock (this.SyncRoot)
             {
                 this.Log(LogLevel.Debug, "Executing signal: {0}", signalInfo.Signal?.ToString() ?? "[null]");
 
+                if (this.State?.StateMachine != null)
+                {
+                    if (!object.ReferenceEquals(this.State.StateMachine, this))
+                    {
+                        throw new SharedStateException(this.State.GetType());
+                    }
+                }
+
                 this.OnBeforeSignal(signalInfo);
                 this.State?.Signal(signalInfo);
                 this.OnAfterSignal(signalInfo);
+
+                List<StateMachine> subMachines = this.State?.GetSubMachines();
+                subMachines?.ForEach(x => x.Signal(signalInfo.Signal, signalInfo.Parameters));
             }
         }
 
-        /// <summary>
-        ///     Called when a transition is eventually executed by the dispatcher.
-        /// </summary>
-        /// <param name="transientInfo"> The transition to execute. </param>
-        protected virtual void ExecuteTransient (StateTransientInfo transientInfo)
+        private void ExecuteTransient (StateTransientInfo transientInfo)
         {
-            IState previousState = transientInfo.PreviousState;
-            IState nextState = transientInfo.NextState;
-
-            bool cacheEnabled;
-            IStateCache cache;
-
-            lock (this.Configuration.SyncRoot)
-            {
-                cacheEnabled = this.Configuration.CachingEnabled;
-                cache = this.Configuration.Cache;
-            }
-
             lock (this.SyncRoot)
             {
+                IState previousState = transientInfo.PreviousState;
+                IState nextState = transientInfo.NextState;
+
                 this.Log(LogLevel.Debug, "Executing transient: {0} -> {1}", transientInfo.PreviousState?.GetType().Name ?? "[null]", transientInfo.NextState?.GetType().Name ?? "[null]");
+
+                if (nextState?.StateMachine != null)
+                {
+                    if (!object.ReferenceEquals(nextState.StateMachine, this))
+                    {
+                        throw new SharedStateException(nextState.GetType());
+                    }
+                }
 
                 if (!object.ReferenceEquals(this.State, previousState))
                 {
@@ -640,21 +631,21 @@ namespace RI.Framework.StateMachines
                     nextState?.Initialize(this);
                 }
 
-                if ((nextState != null) && nextState.UseCaching && cacheEnabled)
-                {
-                    cache.AddState(nextState);
-                }
+                this.Cache(nextState);
 
                 this.OnBeforeLeave(transientInfo);
                 previousState?.Leave(transientInfo);
                 this.OnAfterLeave(transientInfo);
+
+                List<StateMachine> subMachines = previousState?.GetSubMachines();
+                subMachines?.ForEach(x => x.Transient(null));
 
                 this.State = nextState;
                 this.StateEnterTimestampUtc = DateTime.UtcNow;
                 this.StateEnterTimestampLocal = this.StateEnterTimestampUtc.ToLocalTime();
 
                 this.TransferStateVariables(previousState, nextState);
-
+            
                 this.OnBeforeEnter(transientInfo);
                 nextState?.Enter(transientInfo);
                 this.OnAfterEnter(transientInfo);
@@ -667,17 +658,19 @@ namespace RI.Framework.StateMachines
             }
         }
 
-        /// <summary>
-        ///     Called when an update is eventually executed by the dispatcher.
-        /// </summary>
-        /// <param name="updateInfo"> The update to execute. </param>
-        protected virtual void ExecuteUpdate (StateUpdateInfo updateInfo)
+        private void ExecuteUpdate (StateUpdateInfo updateInfo)
         {
-            IState updateState = updateInfo.UpdateState;
-
             lock (this.SyncRoot)
             {
-                if (!object.ReferenceEquals(this.State, updateState))
+                if (this.State?.StateMachine != null)
+                {
+                    if (!object.ReferenceEquals(this.State.StateMachine, this))
+                    {
+                        throw new SharedStateException(this.State.GetType());
+                    }
+                }
+
+                if (!object.ReferenceEquals(this.State, updateInfo.UpdateState))
                 {
                     this.Log(LogLevel.Debug, "Update aborted: {0} ", updateInfo.UpdateState?.GetType().Name ?? "[null]");
 
@@ -687,16 +680,22 @@ namespace RI.Framework.StateMachines
                 }
 
                 this.OnBeforeUpdate(updateInfo);
-
                 this.State?.Update(updateInfo);
-
-                int? interval = this.State?.UpdateInterval;
-                if (interval.HasValue)
-                {
-                    this.UpdateInternal(interval.Value);
-                }
-
                 this.OnAfterUpdate(updateInfo);
+
+                if (updateInfo.UpdateDelay > 0)
+                {
+                    int? interval = this.State?.UpdateInterval;
+                    if (interval.HasValue)
+                    {
+                        this.UpdateInternal(interval.Value);
+                    }
+                }
+                else
+                {
+                    List<StateMachine> subMachines = this.State?.GetSubMachines();
+                    subMachines?.ForEach(x => x.Update());
+                }
             }
         }
 
@@ -818,7 +817,7 @@ namespace RI.Framework.StateMachines
         }
 
         /// <summary>
-        ///     Called when an update was aborted because the intented state does not match the current state at the time the update was eventually executed by the dispatcher.
+        ///     Called when an update was aborted because the intended state does not match the current state at the time the update was eventually executed by the dispatcher.
         /// </summary>
         /// <param name="updateInfo"> The aborted update. </param>
         /// <remarks>
@@ -831,41 +830,34 @@ namespace RI.Framework.StateMachines
         }
 
         /// <summary>
-        ///     Called when the state instance (<see cref="IState" />) of a state type needs to be resolved.
+        ///     Resolves the state instance of a state type using the configured state resolver and/or state cache.
         /// </summary>
         /// <param name="type"> The type of the state to resolve. </param>
-        /// <param name="useCache"> Specifies whether the state can be retrieved from the state cache (if available). </param>
         /// <returns>
         ///     The state instance or null if <paramref name="type" /> is null.
         /// </returns>
-        /// <remarks>
-        ///     <para>
-        ///         If <paramref name="useCache" /> is true and the cache already contains an instance of the state type, the state instance is retrieved from the cache.
-        ///         Otherwise, the resolver as specified in the configuration is used.
-        ///     </para>
-        /// </remarks>
         /// <exception cref="StateNotFoundException"> The state instance specified by <paramref name="type" /> cannot be resolved. </exception>
-        protected virtual IState Resolve (Type type, bool useCache)
+        protected IState Resolve (Type type)
         {
             if (type == null)
             {
                 return null;
             }
 
-            bool useCacheByConfig;
+            bool useCache;
             IStateCache cache;
             IStateResolver resolver;
 
             lock (this.Configuration.SyncRoot)
             {
-                useCacheByConfig = this.Configuration.CachingEnabled;
+                useCache = this.Configuration.CachingEnabled;
                 cache = this.Configuration.Cache;
                 resolver = this.Configuration.Resolver;
             }
 
             IState state = null;
 
-            if (useCache && useCacheByConfig)
+            if (useCache)
             {
                 lock (cache.SyncRoot)
                 {
@@ -893,11 +885,37 @@ namespace RI.Framework.StateMachines
         }
 
         /// <summary>
-        ///     Called during <see cref="ExecuteTransient" /> between leaving the previous state and entering the next state to transfer the state variables.
+        ///     Caches a state instance.
         /// </summary>
-        /// <param name="previousState"> The previous state, already left. </param>
-        /// <param name="nextState"> The next state, not yet enetered. </param>
-        protected virtual void TransferStateVariables (IState previousState, IState nextState)
+        /// <param name="state"> The state instance to cache. </param>
+        /// <remarks>
+        ///     <para>
+        ///         The state instance is only cached if caching is globally enabled in configuration (<see cref="Configuration"/>) and <paramref name="state"/> uses caching (<see cref="IState.UseCaching"/>).
+        ///     </para>
+        /// </remarks>
+        protected void Cache (IState state)
+        {
+            if (state == null)
+            {
+                return;
+            }
+
+            bool cacheEnabled;
+            IStateCache cache;
+
+            lock (this.Configuration.SyncRoot)
+            {
+                cacheEnabled = this.Configuration.CachingEnabled;
+                cache = this.Configuration.Cache;
+            }
+
+            if (state.UseCaching && cacheEnabled)
+            {
+                cache.AddState(state);
+            }
+        }
+
+        private void TransferStateVariables (IState previousState, IState nextState)
         {
             Dictionary<string, object> variables = new Dictionary<string, object>(StringComparerEx.Ordinal);
 

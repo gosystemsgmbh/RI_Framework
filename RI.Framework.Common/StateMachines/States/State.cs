@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using RI.Framework.Collections;
-using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.ObjectModel;
 using RI.Framework.Utilities.Reflection;
@@ -23,10 +21,12 @@ namespace RI.Framework.StateMachines.States
     ///         <see cref="State" /> adds additional convenience through signal registration and dispatching, reducing the amount of boilerplate code required when dealing with signals.
     ///         See <see cref="Signal" /> for more information.
     ///     </para>
+    ///     <para>
+    ///         <see cref="State" /> adds additional convenience for creating sub state machines.
+    ///         See <see cref="CreateSubMachine()" /> and <see cref="CreateSubMachine(Func{StateMachines.StateMachine})"/> for more information.
+    ///     </para>
     /// </remarks>
     /// <threadsafety static="true" instance="true" />
-    /// TODO: Forward updates and signals to sub-statemachines
-    /// TODO: Check and compare other implementations of IState
     public abstract class State : LogSource, IState
     {
         #region Instance Constructor/Destructor
@@ -39,14 +39,16 @@ namespace RI.Framework.StateMachines.States
             this.SyncRoot = new object();
 
             this.IsInitialized = false;
+            this.StateMachine = null;
+
             this.UseCaching = true;
             this.UpdateInterval = null;
+
             this.DisableSignalRegistration = false;
             this.DisableSignalDispatching = false;
 
-            this.SignalHandlers = new Dictionary<Type, Delegate>();
             this.SubMachines = new HashSet<StateMachine>();
-            this.ActiveMachines = new HashSet<StateMachine>();
+            this.SignalHandlers = new Dictionary<Type, Delegate>();
             this.SignalDispatcher = MethodCallDispatcher.FromTarget(this, nameof(this.Signal));
         }
 
@@ -57,15 +59,17 @@ namespace RI.Framework.StateMachines.States
 
         #region Instance Fields
 
-        private bool _disableSignalDispatching;
-
-        private bool _disableSignalRegistration;
-
         private bool _isInitialized;
+
+        private StateMachine _stateMachine;
 
         private int? _updateInterval;
 
         private bool _useCaching;
+
+        private bool _disableSignalDispatching;
+
+        private bool _disableSignalRegistration;
 
         #endregion
 
@@ -135,8 +139,6 @@ namespace RI.Framework.StateMachines.States
             }
         }
 
-        private HashSet<StateMachine> ActiveMachines { get; }
-
         private MethodCallDispatcher SignalDispatcher { get; }
 
         private Dictionary<Type, Delegate> SignalHandlers { get; }
@@ -153,16 +155,40 @@ namespace RI.Framework.StateMachines.States
         /// <summary>
         ///     Creates a new sub state machine which is a hierarchical subordinate to this state.
         /// </summary>
-        /// <param name="creator"> The creator callback which is used to create the sub state machine. </param>
         /// <returns>
         ///     The created sub state machine.
         /// </returns>
         /// <remarks>
-        ///     <note type="note">
-        ///         The created sub state machine is stored by this state instance (see <see cref="GetSubMachines"/>).
-        ///         This state instance will issue a transient to null on the created sub state machine every time this state is left (<see cref="Leave" />).
-        ///     </note>
+        /// <para>
+        /// An instance of <see cref="StateMachine"/> is created using a cloned configuration from the associated <see cref="StateMachine"/>.
+        /// </para>
         /// </remarks>
+        /// <exception cref="InvalidOperationException">No state machine is associated with this state instance (<see cref="StateMachine"/> is null).</exception>
+        protected StateMachine CreateSubMachine ()
+        {
+            lock (this.SyncRoot)
+            {
+                if (this.StateMachine == null)
+                {
+                    throw new InvalidOperationException();
+                }
+
+                return this.CreateSubMachine(() =>
+                {
+                    StateMachineConfiguration configuration = this.StateMachine.Configuration.Clone();
+                    StateMachine machine = new StateMachine(configuration);
+                    return machine;
+                });
+            }
+        }
+
+        /// <summary>
+        ///     Creates a new sub state machine which is a hierarchical subordinate to this state.
+        /// </summary>
+        /// <param name="creator"> The creator callback which is used to create and configure the sub state machine. </param>
+        /// <returns>
+        ///     The created sub state machine.
+        /// </returns>
         /// <exception cref="ArgumentNullException"> <paramref name="creator" /> is null. </exception>
         /// <exception cref="InvalidOperationException"> <paramref name="creator" /> returned null instead of a <see cref="StateMachine" /> or derived instance. </exception>
         protected StateMachine CreateSubMachine (Func<StateMachine> creator)
@@ -183,21 +209,6 @@ namespace RI.Framework.StateMachines.States
                 this.SubMachines.Add(subStateMachine);
 
                 return subStateMachine;
-            }
-        }
-
-        /// <summary>
-        ///     Gets the list of all sub state machines which are hierarchical subordinates to this state.
-        /// </summary>
-        /// <returns>
-        ///     The list of all sub state machines which are hierarchical subordinates to this state.
-        ///     If the state has no sub state machines, an empty list is returned.
-        /// </returns>
-        protected List<StateMachine> GetSubMachines ()
-        {
-            lock (this.SyncRoot)
-            {
-                return new List<StateMachine>(this.SubMachines);
             }
         }
 
@@ -275,10 +286,10 @@ namespace RI.Framework.StateMachines.States
         }
 
         /// <summary>
-        ///     Called by <see cref="Signal" /> for all signals which are neither registered nor dispatched.
+        ///     Called by the default implementation of <see cref="Signal" /> for all signals which are neither registered nor dispatched.
         /// </summary>
         /// <param name="signalInfo"> The signal being executed. </param>
-        protected virtual void OnUnregisteredUndispatchedSignal (StateSignalInfo signalInfo)
+        protected virtual void OnUnhandledSignal (StateSignalInfo signalInfo)
         {
         }
 
@@ -287,15 +298,15 @@ namespace RI.Framework.StateMachines.States
         ///     <para>
         ///         The default implementation uses signal registration and dispatching (when not disabled through <see cref="DisableSignalRegistration" /> or <see cref="DisableSignalDispatching" />).
         ///         Signal registration takes precedence over dispatching.
-        ///         If a signal has been registered, the registered handler is called.
+        ///         If a signal has been registered (<see cref="RegisterSignal{TSignal}"/>), the registered handler is called.
         ///         If the signal is not registered or registration is disabled, it is dispatched using <see cref="MethodCallDispatcher" /> looking for methods with name <c> Signal </c>.
-        ///         If the signal is not dispatched or dispatching is disabled, <see cref="OnUnregisteredUndispatchedSignal" /> is called.
+        ///         If the signal is not dispatched or dispatching is disabled, <see cref="OnUnhandledSignal" /> is called.
         ///     </para>
         ///     <note type="important">
         ///         Signal dispatching impacts performance as reflection is used to determine the target method to be called.
         ///         Signal registration impacts performance as <see cref="Delegate.DynamicInvoke" /> is used to call the corresponding handler.
         ///         Therefore, it is recommended to disable registration (using <see cref="DisableSignalRegistration" />) or dispatching (<see cref="DisableSignalDispatching" />) in performance critical scenarios.
-        ///         Use <see cref="OnUnregisteredUndispatchedSignal" /> instead in such scenarios.
+        ///         Use <see cref="OnUnhandledSignal" /> instead in such scenarios.
         ///     </note>
         /// </remarks>
         protected virtual void Signal (StateSignalInfo signalInfo)
@@ -339,7 +350,7 @@ namespace RI.Framework.StateMachines.States
                 }
             }
 
-            this.OnUnregisteredUndispatchedSignal(signalInfo);
+            this.OnUnhandledSignal(signalInfo);
         }
 
         /// <inheritdoc cref="IState.Update" />
@@ -361,7 +372,7 @@ namespace RI.Framework.StateMachines.States
             {
                 lock (this.SyncRoot)
                 {
-                    return this.ActiveMachines.Count > 0;
+                    return object.ReferenceEquals(this.StateMachine?.State, this);
                 }
             }
         }
@@ -395,18 +406,14 @@ namespace RI.Framework.StateMachines.States
             {
                 lock (this.SyncRoot)
                 {
-                    if (this.ActiveMachines.Count > 1)
-                    {
-                        throw new InvalidOperationException("An instance of the state " + this.GetType().Name + " is used in more than one state machines.");
-                    }
-                    else if (this.ActiveMachines.Count == 1)
-                    {
-                        return this.ActiveMachines.First();
-                    }
-                    else
-                    {
-                        return null;
-                    }
+                    return this._stateMachine;
+                }
+            }
+            private set
+            {
+                lock (this.SyncRoot)
+                {
+                    this._stateMachine = value;
                 }
             }
         }
@@ -428,6 +435,13 @@ namespace RI.Framework.StateMachines.States
             {
                 lock (this.SyncRoot)
                 {
+                    if (value.HasValue)
+                    {
+                        if (value.Value <= 0)
+                        {
+                            throw new ArgumentOutOfRangeException(nameof(value));
+                        }
+                    }
                     this._updateInterval = value;
                 }
             }
@@ -460,21 +474,7 @@ namespace RI.Framework.StateMachines.States
                 throw new ArgumentNullException(nameof(transientInfo));
             }
 
-            lock (this.SyncRoot)
-            {
-                this.ActiveMachines.Add(transientInfo.StateMachine);
-            }
-
             this.Enter(transientInfo);
-        }
-
-        /// <inheritdoc />
-        public List<StateMachine> GetActiveMachines ()
-        {
-            lock (this.SyncRoot)
-            {
-                return new List<StateMachine>(this.ActiveMachines);
-            }
         }
 
         /// <inheritdoc />
@@ -492,6 +492,7 @@ namespace RI.Framework.StateMachines.States
                 {
                     initialize = true;
                     this.IsInitialized = true;
+                    this.StateMachine = stateMachine;
                 }
             }
 
@@ -510,12 +511,6 @@ namespace RI.Framework.StateMachines.States
             }
 
             this.Leave(transientInfo);
-
-            lock (this.SyncRoot)
-            {
-                this.ActiveMachines.Remove(transientInfo.StateMachine);
-                this.SubMachines.ForEach(x => x.Transient(null));
-            }
         }
 
         /// <inheritdoc />
@@ -538,6 +533,15 @@ namespace RI.Framework.StateMachines.States
             }
 
             this.Update(updateInfo);
+        }
+
+        /// <inheritdoc />
+        public List<StateMachine> GetSubMachines()
+        {
+            lock (this.SyncRoot)
+            {
+                return new List<StateMachine>(this.SubMachines);
+            }
         }
 
         #endregion
