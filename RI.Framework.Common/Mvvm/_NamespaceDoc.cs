@@ -6,7 +6,7 @@
 namespace RI.Framework.Mvvm
 {
 	/// <summary>
-	///     Contains general utilities and extensions to support MVVM scenarios.
+	///     Contains types to implement Model-View-ViewModel (MVVM) patterns.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

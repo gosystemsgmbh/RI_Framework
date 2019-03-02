@@ -6,7 +6,7 @@
 namespace RI.Framework.Mvvm.View
 {
 	/// <summary>
-	///     Contains view infrastructure for MVVM scenarios.
+	///     Contains types to implement Views in MVVM patterns.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

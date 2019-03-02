@@ -5,11 +5,11 @@
 
 namespace RI.Framework.Mvvm.ViewModel
 {
-	/// <summary>
-	///     Contains view model infrastructure for MVVM scenarios.
-	/// </summary>
-	[CompilerGenerated]
-	public sealed class NamespaceDoc
-	{
-	}
+    /// <summary>
+    ///     Contains types to implement ViewModels in MVVM patterns.
+    /// </summary>
+    [CompilerGenerated]
+    public sealed class NamespaceDoc
+    {
+    }
 }

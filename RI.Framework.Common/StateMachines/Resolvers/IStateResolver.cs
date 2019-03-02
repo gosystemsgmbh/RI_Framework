@@ -24,7 +24,7 @@ namespace RI.Framework.StateMachines.Resolvers
 		/// <summary>
 		///     Called when a state of the specified type needs to be resolved.
 		/// </summary>
-		/// <param name="type"> The state type to resolve. </param>
+		/// <param name="type"> The states type to resolve. </param>
 		/// <returns>
 		///     The state instance or null if the state instance could not be resolved.
 		/// </returns>
