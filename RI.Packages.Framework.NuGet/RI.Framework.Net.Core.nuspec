@@ -16,6 +16,8 @@
         <dependencies>
             <dependency id="RI.Framework.Common" version="[$build_version$]" include="all" />
             <dependency id="RI.Framework.Net.Common" version="[$build_version$]" include="all" />
+            <dependency id="System.Configuration.ConfigurationManager" version="4.5.0" include="all" />
+            <dependency id="System.Security.Cryptography.ProtectedData" version="4.5.0" include="all" />
         </dependencies>
     </metadata>
     <files>

@@ -18,6 +18,11 @@
             <dependency id="RI.Framework.Net.Common" version="[$build_version$]" include="all" />
             <dependency id="Mono.Posix-4.5" version="4.5.0" include="all" />
         </dependencies>
+        <frameworkAssemblies>
+            <frameworkAssembly assemblyName="System" />
+            <frameworkAssembly assemblyName="System.Core" />
+            <frameworkAssembly assemblyName="System.Security" />
+        </frameworkAssemblies>
     </metadata>
     <files>
         <file src="..\_Output\RI.Framework.Linux.Common.dll" target="lib/net461" />

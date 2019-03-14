@@ -25,6 +25,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Mathematic\MathUtils.tt" />
+    <None Remove="Mathematic\NumberExtensions.tt" />
     <None Remove="Threading\Dispatcher\IThreadDispatcherDelegateExtensions.tt" />
   </ItemGroup>
 
@@ -33,6 +35,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Mathematic\MathUtils.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>MathUtils.tt.cs</LastGenOutput>
+    </Content>
+    <Content Include="Mathematic\NumberExtensions.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>NumberExtensions.tt.cs</LastGenOutput>
+    </Content>
     <Content Include="Threading\Dispatcher\IThreadDispatcherDelegateExtensions.tt">
       <LastGenOutput>IThreadDispatcherDelegateExtensions.tt.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -40,6 +50,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Mathematic\MathUtils.tt.cs">
+      <DependentUpon>MathUtils.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Mathematic\NumberExtensions.tt.cs">
+      <DependentUpon>NumberExtensions.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Update="Threading\Dispatcher\IThreadDispatcherDelegateExtensions.tt.cs">
       <DependentUpon>IThreadDispatcherDelegateExtensions.tt</DependentUpon>
       <DesignTime>True</DesignTime>

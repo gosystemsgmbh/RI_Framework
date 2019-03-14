@@ -17,6 +17,12 @@
             <dependency id="RI.Framework.Common" version="[$build_version$]" include="all" />
             <dependency id="RI.Framework.Net.Common" version="[$build_version$]" include="all" />
         </dependencies>
+        <frameworkAssemblies>
+            <frameworkAssembly assemblyName="System" />
+            <frameworkAssembly assemblyName="System.Configuration" />
+            <frameworkAssembly assemblyName="System.Core" />
+            <frameworkAssembly assemblyName="System.Security" />
+        </frameworkAssemblies>
     </metadata>
     <files>
         <file src="..\_Output\RI.Framework.Net.Fx.dll" target="lib/net461" />

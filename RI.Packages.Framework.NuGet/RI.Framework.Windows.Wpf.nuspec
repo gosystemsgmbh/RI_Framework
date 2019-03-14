@@ -18,6 +18,22 @@
             <dependency id="RI.Framework.Net.Common" version="[$build_version$]" include="all" />
             <dependency id="RI.Framework.Windows.Common" version="[$build_version$]" include="all" />
         </dependencies>
+        <frameworkAssemblies>
+            <frameworkAssembly assemblyName="System" />
+            <frameworkAssembly assemblyName="System.Configuration" />
+            <frameworkAssembly assemblyName="System.Core" />
+            <frameworkAssembly assemblyName="System.Data" />
+            <frameworkAssembly assemblyName="System.Drawing" />
+            <frameworkAssembly assemblyName="System.Dynamic" />
+            <frameworkAssembly assemblyName="System.Security" />
+            <frameworkAssembly assemblyName="System.Windows.Forms" />
+            <frameworkAssembly assemblyName="System.Xaml" />
+            <frameworkAssembly assemblyName="System.Xml" />
+            <frameworkAssembly assemblyName="System.Xml.Linq" />
+            <frameworkAssembly assemblyName="PresentationCore" />
+            <frameworkAssembly assemblyName="PresentationFramework" />
+            <frameworkAssembly assemblyName="WindowsBase" />
+        </frameworkAssemblies>
     </metadata>
     <files>
         <file src="..\_Output\RI.Framework.Windows.Wpf.dll" target="lib/net461" />
