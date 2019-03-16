@@ -19,6 +19,7 @@ namespace RI.Framework.Mathematic.Statistics
     ///         For performance sensitive scenarios, consider using <see cref="RunningValues" />.
     ///     </note>
     /// </remarks>
+    /// <threadsafety static="false" instance="false" />
     /// TODO: Implement IEquatable and override GetHashCode and Equals
     [Serializable]
     public struct StatisticValues : ICloneable<StatisticValues>, ICloneable

@@ -39,6 +39,7 @@ namespace RI.Framework.Mathematic.Controllers
     ///         The following values are updated with each computation: <see cref="SetPoint" /> (if changed), <see cref="ProcessVariable" />, <see cref="Output" />, <see cref="OutputUnclamped" />, <see cref="Error" />, <see cref="Integral" />, <see cref="Differential"/>, <see cref="Loops" />.
     ///     </para>
     /// </remarks>
+    /// <threadsafety static="false" instance="false" />
     /// <example>
     ///     <code language="cs">
     /// <![CDATA[

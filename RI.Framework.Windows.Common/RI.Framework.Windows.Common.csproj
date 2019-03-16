@@ -98,8 +98,8 @@
     <Compile Include="Windows\Users\WindowsUserImpersonation.cs" />
     <Compile Include="Windows\Users\WindowsUserProfile.cs" />
     <Compile Include="Windows\_NamespaceDoc.cs" />
-    <Compile Include="IO\Paths\DirectoryPathExtensions.cs" />
-    <Compile Include="IO\Paths\FilePathExtensions.cs" />
+    <Compile Include="IO\Paths\WindowsDirectoryPathExtensions.cs" />
+    <Compile Include="IO\Paths\WindowsFilePathExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="_PostBuild.bat" />
     <None Include="_PreBuild.bat" />

@@ -34,6 +34,7 @@ namespace RI.Framework.Mathematic.Statistics
     ///         The running values are always calculated using the weighted value, which is the value multiplied with the corresponding timestep.
     ///     </para>
     /// </remarks>
+    /// <threadsafety static="false" instance="false" />
     /// TODO: Constructor with single initial timestep (equal to StatisticValues)
     /// TODO: GeometricMean?
     /// TODO: HarmonicMean?

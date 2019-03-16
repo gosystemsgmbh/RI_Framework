@@ -44,6 +44,7 @@ namespace RI.Framework.Mathematic
     ///         It is advised that the numbers are clamped to a reasonable range which is suitable for you.
     ///     </note>
     /// </remarks>
+    /// <threadsafety static="false" instance="false" />
     /// <example>
     ///     <code language="cs">
     /// <![CDATA[

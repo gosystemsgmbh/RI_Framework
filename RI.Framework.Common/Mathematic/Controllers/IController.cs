@@ -13,6 +13,7 @@ namespace RI.Framework.Mathematic.Controllers
     ///         See the concrete controller implementation for more details.
     ///     </para>
     /// </remarks>
+    /// <threadsafety static="false" instance="false" />
     public interface IController
     {
         /// <summary>
