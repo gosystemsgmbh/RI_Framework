@@ -18,6 +18,7 @@ namespace RI.Framework.IO.Streams
 	///         A <see cref="BinaryStream" /> can either support reading (using a <see cref="BinaryReader" />) or writing (using a <see cref="BinaryWriter" />) but not both at the same time.
 	///     </para>
 	/// </remarks>
+	/// TODO: Create pendant: TextStream (wrapping a StreamReader or StreamWriter using a specified Encoding)
 	public sealed class BinaryStream : Stream
 	{
 		#region Instance Constructor/Destructor

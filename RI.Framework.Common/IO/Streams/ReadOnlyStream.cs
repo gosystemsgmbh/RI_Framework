@@ -11,6 +11,7 @@ namespace RI.Framework.IO.Streams
 	///     Implements a stream which wraps another stream and only allows read operations on that stream.
 	/// </summary>
 	/// <threadsafety static="true" instance="true" />
+	/// TODO: Create pendant: WriteOnlyStream
 	public sealed class ReadOnlyStream : Stream
 	{
 		#region Instance Constructor/Destructor
