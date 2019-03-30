@@ -21,6 +21,7 @@ namespace RI.Framework.IO.Streams
 	///     </note>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
+	/// TODO: Add constructor with doNotOwn parameter
 	public sealed class SynchronizedStream : Stream, ISynchronizable
 	{
 		#region Instance Constructor/Destructor

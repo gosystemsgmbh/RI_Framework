@@ -7,19 +7,20 @@ using System.IO;
 
 namespace RI.Framework.IO.Streams
 {
-	/// <summary>
-	///     Implements a stream which wraps either a <see cref="BinaryReader" /> or a <see cref="BinaryWriter" />.
-	/// </summary>
-	/// <remarks>
-	///     <para>
-	///         <see cref="BinaryStream" /> is used when a <see cref="BinaryReader" /> or <see cref="BinaryWriter" /> needs to be used as a stream.
-	///     </para>
-	///     <para>
-	///         A <see cref="BinaryStream" /> can either support reading (using a <see cref="BinaryReader" />) or writing (using a <see cref="BinaryWriter" />) but not both at the same time.
-	///     </para>
-	/// </remarks>
-	/// TODO: Create pendant: TextStream (wrapping a StreamReader or StreamWriter using a specified Encoding)
-	public sealed class BinaryStream : Stream
+    /// <summary>
+    ///     Implements a stream which wraps either a <see cref="BinaryReader" /> or a <see cref="BinaryWriter" />.
+    /// </summary>
+    /// <remarks>
+    ///     <para>
+    ///         <see cref="BinaryStream" /> is used when a <see cref="BinaryReader" /> or <see cref="BinaryWriter" /> needs to be used as a stream.
+    ///     </para>
+    ///     <para>
+    ///         A <see cref="BinaryStream" /> can either support reading (using a <see cref="BinaryReader" />) or writing (using a <see cref="BinaryWriter" />) but not both at the same time.
+    ///     </para>
+    /// </remarks>
+    /// <threadsafety static="false" instance="false" />
+    /// TODO: Create pendant: TextStream (wrapping a StreamReader or StreamWriter using a specified Encoding)
+    public sealed class BinaryStream : Stream
 	{
 		#region Instance Constructor/Destructor
 
@@ -27,9 +28,9 @@ namespace RI.Framework.IO.Streams
 		///     Creates a new instance of <see cref="BinaryStream" />.
 		/// </summary>
 		/// <param name="reader"> The <see cref="BinaryReader" /> to use. </param>
-		/// <param name="doNotOwnStream"> Specifies whether the wrapped reader should be closed when this stream is closed (false) or kept open (true). </param>
+		/// <param name="doNotOwnReader"> Specifies whether the wrapped reader should be closed when this stream is closed (false) or kept open (true). </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="reader" /> is null. </exception>
-		public BinaryStream (BinaryReader reader, bool doNotOwnStream)
+		public BinaryStream (BinaryReader reader, bool doNotOwnReader)
 		{
 			if (reader == null)
 			{
@@ -38,7 +39,7 @@ namespace RI.Framework.IO.Streams
 
 			this.Reader = reader;
 			this.Writer = null;
-			this.DoNotOwnStream = doNotOwnStream;
+			this.DoNotOwnStream = doNotOwnReader;
 		}
 
 		/// <summary>
@@ -60,9 +61,9 @@ namespace RI.Framework.IO.Streams
 		///     Creates a new instance of <see cref="BinaryStream" />.
 		/// </summary>
 		/// <param name="writer"> The <see cref="BinaryWriter" /> to use. </param>
-		/// <param name="doNotOwnStream"> Specifies whether the wrapped writer should be closed when this stream is closed (false) or kept open (true). </param>
+		/// <param name="doNotOwnWriter"> Specifies whether the wrapped writer should be closed when this stream is closed (false) or kept open (true). </param>
 		/// <exception cref="ArgumentNullException"> <paramref name="writer" /> is null. </exception>
-		public BinaryStream (BinaryWriter writer, bool doNotOwnStream)
+		public BinaryStream (BinaryWriter writer, bool doNotOwnWriter)
 		{
 			if (writer == null)
 			{
@@ -71,7 +72,7 @@ namespace RI.Framework.IO.Streams
 
 			this.Reader = null;
 			this.Writer = writer;
-			this.DoNotOwnStream = doNotOwnStream;
+			this.DoNotOwnStream = doNotOwnWriter;
 		}
 
 		/// <summary>
@@ -87,12 +88,52 @@ namespace RI.Framework.IO.Streams
 		public BinaryStream (BinaryWriter writer)
 			: this(writer, false)
 		{
-		}
+        }
 
-		/// <summary>
-		///     Garbage collects this instance of <see cref="BinaryStream" />.
-		/// </summary>
-		~BinaryStream ()
+        /// <summary>
+        ///     Creates a new instance of <see cref="BinaryStream" />.
+        /// </summary>
+        /// <param name="reader"> The <see cref="BinaryReader" /> to use. </param>
+        /// <param name="writer"> The <see cref="BinaryWriter" /> to use. </param>
+        /// <param name="doNotOwnWrapped"> Specifies whether the wrapped reader and writer should be closed when this stream is closed (false) or kept open (true). </param>
+        /// <exception cref="ArgumentNullException"> <paramref name="reader" /> is null. </exception>
+        public BinaryStream (BinaryReader reader, BinaryWriter writer, bool doNotOwnWrapped)
+        {
+            if (reader == null)
+            {
+                throw new ArgumentNullException(nameof(reader));
+            }
+
+            if (writer == null)
+            {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            this.Reader = reader;
+            this.Writer = writer;
+            this.DoNotOwnStream = doNotOwnWrapped;
+        }
+
+        /// <summary>
+        ///     Creates a new instance of <see cref="BinaryStream" />.
+        /// </summary>
+        /// <param name="reader"> The <see cref="BinaryReader" /> to use. </param>
+        /// <param name="writer"> The <see cref="BinaryWriter" /> to use. </param>
+        /// <remarks>
+        ///     <para>
+        ///         The wrapped reader and writer is closed if this stream is closed.
+        ///     </para>
+        /// </remarks>
+        /// <exception cref="ArgumentNullException"> <paramref name="reader" /> is null. </exception>
+        public BinaryStream (BinaryReader reader, BinaryWriter writer)
+            : this(reader, writer, false)
+        {
+        }
+
+        /// <summary>
+        ///     Garbage collects this instance of <see cref="BinaryStream" />.
+        /// </summary>
+        ~BinaryStream ()
 		{
 			this.Close();
 		}

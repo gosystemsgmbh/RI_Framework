@@ -10,15 +10,17 @@ using RI.Framework.Utilities;
 
 namespace RI.Framework.IO.INI
 {
-	/// <summary>
-	///     Implements a forward-only INI reader which iteratively reads INI data.
-	/// </summary>
-	/// <remarks>
-	///     <para>
-	///         See <see cref="IniDocument" /> for more general and detailed information about working with INI data.
-	///     </para>
-	/// </remarks>
-	public sealed class IniReader : IDisposable
+    /// <summary>
+    ///     Implements a forward-only INI reader which iteratively reads INI data.
+    /// </summary>
+    /// <remarks>
+    ///     <para>
+    ///         See <see cref="IniDocument" /> for more general and detailed information about working with INI data.
+    ///     </para>
+    /// </remarks>
+    /// <threadsafety static="false" instance="false" />
+    /// TODO: Add constructor with doNotOwn parameter
+    public sealed class IniReader : IDisposable
 	{
 		#region Instance Constructor/Destructor
 

@@ -11,15 +11,17 @@ using RI.Framework.Utilities.Exceptions;
 
 namespace RI.Framework.IO.INI
 {
-	/// <summary>
-	///     Implements a forward-only INI writer which iteratively writes INI data.
-	/// </summary>
-	/// <remarks>
-	///     <para>
-	///         See <see cref="IniDocument" /> for more general and detailed information about working with INI data.
-	///     </para>
-	/// </remarks>
-	public sealed class IniWriter : IDisposable
+    /// <summary>
+    ///     Implements a forward-only INI writer which iteratively writes INI data.
+    /// </summary>
+    /// <remarks>
+    ///     <para>
+    ///         See <see cref="IniDocument" /> for more general and detailed information about working with INI data.
+    ///     </para>
+    /// </remarks>
+    /// <threadsafety static="false" instance="false" />
+    /// TODO: Add constructor with doNotOwn parameter
+    public sealed class IniWriter : IDisposable
 	{
 		#region Instance Constructor/Destructor
 

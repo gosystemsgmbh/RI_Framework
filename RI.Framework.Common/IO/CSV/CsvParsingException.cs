@@ -6,10 +6,11 @@ using System.Runtime.Serialization;
 
 namespace RI.Framework.IO.CSV
 {
-	/// <summary>
-	///     The <see cref="CsvParsingException" /> is thrown when invalid CSV data is encountered while parsing CSV data.
-	/// </summary>
-	[Serializable]
+    /// <summary>
+    ///     The <see cref="CsvParsingException" /> is thrown when invalid CSV data is encountered while parsing CSV data.
+    /// </summary>
+    /// <threadsafety static="false" instance="false" />
+    [Serializable]
 	public class CsvParsingException : Exception
 	{
 		#region Constants

@@ -9,10 +9,11 @@ using RI.Framework.Utilities.Exceptions;
 
 namespace RI.Framework.IO.Streams
 {
-	/// <summary>
-	///     Provides utility/extension methods for the <see cref="Stream" /> type.
-	/// </summary>
-	public static class StreamExtensions
+    /// <summary>
+    ///     Provides utility/extension methods for the <see cref="Stream" /> type.
+    /// </summary>
+    /// <threadsafety static="false" instance="false" />
+    public static class StreamExtensions
 	{
 		#region Constants
 
@@ -333,14 +334,17 @@ namespace RI.Framework.IO.Streams
 			}
 		}
 
-		/// <summary>
-		///     Writes a byte array to a stream.
-		/// </summary>
-		/// <param name="target"> The stream. </param>
-		/// <param name="data"> The byte array. </param>
-		/// <exception cref="ArgumentNullException"> <paramref name="target" /> or <paramref name="data" /> is null. </exception>
-		/// <exception cref="NotSupportedException"> <paramref name="target" /> does not support writing. </exception>
-		public static void Write (this Stream target, byte[] data)
+        /// <summary>
+        ///     Writes a byte array to a stream.
+        /// </summary>
+        /// <param name="target"> The stream. </param>
+        /// <param name="data"> The byte array. </param>
+        /// <returns>
+        ///     The number of bytes written.
+        /// </returns>
+        /// <exception cref="ArgumentNullException"> <paramref name="target" /> or <paramref name="data" /> is null. </exception>
+        /// <exception cref="NotSupportedException"> <paramref name="target" /> does not support writing. </exception>
+        public static int Write (this Stream target, byte[] data)
 		{
 			if (target == null)
 			{
@@ -353,7 +357,10 @@ namespace RI.Framework.IO.Streams
 			}
 
 			target.Write(data, 0, data.Length);
-		}
+
+            return data.Length;
+
+        }
 
 		/// <summary>
 		///     Writes from one stream into another.

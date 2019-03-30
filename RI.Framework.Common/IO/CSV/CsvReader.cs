@@ -9,15 +9,17 @@ using System.Text;
 
 namespace RI.Framework.IO.CSV
 {
-	/// <summary>
-	///     Implements a forward-only CSV reader which iteratively reads CSV data.
-	/// </summary>
-	/// <remarks>
-	///     <para>
-	///         See <see cref="CsvDocument" /> for more general and detailed information about working with CSV data.
-	///     </para>
-	/// </remarks>
-	public sealed class CsvReader : IDisposable
+    /// <summary>
+    ///     Implements a forward-only CSV reader which iteratively reads CSV data.
+    /// </summary>
+    /// <remarks>
+    ///     <para>
+    ///         See <see cref="CsvDocument" /> for more general and detailed information about working with CSV data.
+    ///     </para>
+    /// </remarks>
+    /// <threadsafety static="false" instance="false" />
+    /// TODO: Add constructor with doNotOwn parameter
+    public sealed class CsvReader : IDisposable
 	{
 		#region Instance Constructor/Destructor
 

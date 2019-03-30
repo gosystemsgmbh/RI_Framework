@@ -8,15 +8,16 @@ using RI.Framework.Utilities.Exceptions;
 
 namespace RI.Framework.IO.INI.Elements
 {
-	/// <summary>
-	///     Represents a section header in INI data.
-	/// </summary>
-	/// <remarks>
-	///     <para>
-	///         See <see cref="IniDocument" /> for more general and detailed information about working with INI data.
-	///     </para>
-	/// </remarks>
-	public sealed class SectionIniElement : IniElement
+    /// <summary>
+    ///     Represents a section header in INI data.
+    /// </summary>
+    /// <remarks>
+    ///     <para>
+    ///         See <see cref="IniDocument" /> for more general and detailed information about working with INI data.
+    ///     </para>
+    /// </remarks>
+    /// <threadsafety static="false" instance="false" />
+    public sealed class SectionIniElement : IniElement
 	{
 		#region Instance Constructor/Destructor
 

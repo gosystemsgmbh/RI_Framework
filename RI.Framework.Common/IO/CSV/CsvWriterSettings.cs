@@ -1,17 +1,18 @@
 ﻿namespace RI.Framework.IO.CSV
 {
-	/// <summary>
-	///     Provides CSV writer settings.
-	/// </summary>
-	/// <remarks>
-	///     <para>
-	///         CSV writer settings can be used to customize how CSV data is generated and formated.
-	///     </para>
-	///     <para>
-	///         See <see cref="CsvDocument" /> for more general and detailed information about working with CSV data.
-	///     </para>
-	/// </remarks>
-	public sealed class CsvWriterSettings : CsvSettings
+    /// <summary>
+    ///     Provides CSV writer settings.
+    /// </summary>
+    /// <remarks>
+    ///     <para>
+    ///         CSV writer settings can be used to customize how CSV data is generated and formated.
+    ///     </para>
+    ///     <para>
+    ///         See <see cref="CsvDocument" /> for more general and detailed information about working with CSV data.
+    ///     </para>
+    /// </remarks>
+    /// <threadsafety static="false" instance="false" />
+    public sealed class CsvWriterSettings : CsvSettings
 	{
 		#region Constants
 

@@ -6,10 +6,11 @@ using System.Runtime.Serialization;
 
 namespace RI.Framework.IO.INI
 {
-	/// <summary>
-	///     The <see cref="IniParsingException" /> is thrown when invalid INI elements are encountered while parsing INI data.
-	/// </summary>
-	[Serializable]
+    /// <summary>
+    ///     The <see cref="IniParsingException" /> is thrown when invalid INI elements are encountered while parsing INI data.
+    /// </summary>
+    /// <threadsafety static="false" instance="false" />
+    [Serializable]
 	public class IniParsingException : Exception
 	{
 		#region Constants
