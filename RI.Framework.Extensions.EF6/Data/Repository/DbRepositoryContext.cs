@@ -410,7 +410,7 @@ namespace RI.Framework.Data.Repository
 
 		private void PerformEntitySelfChangeTracking ()
 		{
-			this.ChangeTrackingContext = this.ChangeTrackingContext ?? this.OnChangeTrackingContextResolve();
+			this.ChangeTrackingContext = this.OnChangeTrackingContextResolve() ?? this.ChangeTrackingContext;
 
 			DateTime now = DateTime.Now;
 
