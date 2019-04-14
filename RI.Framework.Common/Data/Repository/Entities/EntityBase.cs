@@ -34,6 +34,7 @@ namespace RI.Framework.Data.Repository.Entities
     /// <threadsafety static="true" instance="false" />
     /// TODO: Implement INotifyPropertyChanging
     /// TODO: Implement list of modify change trackings
+    /// TODO: Create generic version with IEquatable and ICloneable
     [Serializable]
     public abstract class EntityBase : INotifyPropertyChanged, IEntityChangeTracking, IEntityErrorTracking, IDataErrorInfo, INotifyDataErrorInfo, ISerializable, ICloneable
     {

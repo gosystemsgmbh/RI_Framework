@@ -30,6 +30,19 @@ namespace RI.Framework.Data.Repository
         Type EntityType { get; }
 
         /// <summary>
+        ///     Gets whether this set is read-only.
+        /// </summary>
+        /// <value>
+        ///     true if this set is read-only, false otherwise.
+        /// </value>
+        /// <remarks>
+        ///     <para>
+        ///         A set being read-only means that it cannot add, attach, create, delete, or modify entities.
+        ///     </para>
+        /// </remarks>
+        bool IsReadOnly { get; }
+
+        /// <summary>
         ///     Adds a new entity to the set.
         /// </summary>
         /// <param name="entity"> The entity to add to the set. </param>
@@ -187,7 +200,7 @@ namespace RI.Framework.Data.Repository
         ///         The first page (of index zero) can always be retrieved, even if <paramref name="entityCount" /> or <paramref name="pageCount" /> is zero (resulting in returning an empty sequence).
         ///     </note>
         /// </remarks>
-        /// <exception cref="ArgumentException"> <paramref name="filter" /> or <paramref name="sort"/> is an invalid filter object. </exception>
+        /// <exception cref="ArgumentException"> <paramref name="filter" /> or <paramref name="sort" /> is an invalid filter object. </exception>
         /// <exception cref="ArgumentOutOfRangeException"> <paramref name="pageIndex" /> or <paramref name="pageSize" /> is less than zero, <paramref name="pageIndex" /> is not zero when <paramref name="pageSize" /> is zero, or <paramref name="pageIndex" /> points to a page which does not exist. </exception>
         IQueryable<object> GetFiltered (object filter, object sort, int pageIndex, int pageSize, out int totalCount, out int entityCount, out int pageCount);
 
@@ -213,7 +226,7 @@ namespace RI.Framework.Data.Repository
         ///         The first page (of index zero) can always be retrieved, even if <paramref name="entityCount" /> or <paramref name="pageCount" /> is zero (resulting in returning an empty sequence).
         ///     </note>
         /// </remarks>
-        /// <exception cref="ArgumentException"> <paramref name="filter" /> or <paramref name="sort"/> is an invalid filter object. </exception>
+        /// <exception cref="ArgumentException"> <paramref name="filter" /> or <paramref name="sort" /> is an invalid filter object. </exception>
         /// <exception cref="ArgumentOutOfRangeException"> <paramref name="pageIndex" /> or <paramref name="pageSize" /> is less than zero, <paramref name="pageIndex" /> is not zero when <paramref name="pageSize" /> is zero, or <paramref name="pageIndex" /> points to a page which does not exist. </exception>
         /// TODO: Provide overload with IQueryable
         IQueryable<object> GetFiltered (IEnumerable entities, object filter, object sort, int pageIndex, int pageSize, out int totalCount, out int entityCount, out int pageCount);
@@ -419,7 +432,7 @@ namespace RI.Framework.Data.Repository
         ///         The first page (of index zero) can always be retrieved, even if <paramref name="filteredCount" /> or <paramref name="pageCount" /> is zero (resulting in returning an empty sequence).
         ///     </note>
         /// </remarks>
-        /// <exception cref="ArgumentException"> <paramref name="filter" /> or <paramref name="sort"/> is an invalid filter object. </exception>
+        /// <exception cref="ArgumentException"> <paramref name="filter" /> or <paramref name="sort" /> is an invalid filter object. </exception>
         /// <exception cref="ArgumentOutOfRangeException"> <paramref name="pageIndex" /> or <paramref name="pageSize" /> is less than zero, <paramref name="pageIndex" /> is not zero when <paramref name="pageSize" /> is zero, or <paramref name="pageIndex" /> points to a page which does not exist. </exception>
         new IQueryable<T> GetFiltered (object filter, object sort, int pageIndex, int pageSize, out int totalCount, out int filteredCount, out int pageCount);
 
@@ -445,7 +458,7 @@ namespace RI.Framework.Data.Repository
         ///         The first page (of index zero) can always be retrieved, even if <paramref name="filteredCount" /> or <paramref name="pageCount" /> is zero (resulting in returning an empty sequence).
         ///     </note>
         /// </remarks>
-        /// <exception cref="ArgumentException"> <paramref name="filter" /> or <paramref name="sort"/> is an invalid filter object. </exception>
+        /// <exception cref="ArgumentException"> <paramref name="filter" /> or <paramref name="sort" /> is an invalid filter object. </exception>
         /// <exception cref="ArgumentOutOfRangeException"> <paramref name="pageIndex" /> or <paramref name="pageSize" /> is less than zero, <paramref name="pageIndex" /> is not zero when <paramref name="pageSize" /> is zero, or <paramref name="pageIndex" /> points to a page which does not exist. </exception>
         /// TODO: Provide overload with IQueryable
         IQueryable<T> GetFiltered (IEnumerable<T> entities, object filter, object sort, int pageIndex, int pageSize, out int totalCount, out int filteredCount, out int pageCount);
