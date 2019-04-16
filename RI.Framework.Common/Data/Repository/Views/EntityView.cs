@@ -861,6 +861,30 @@ namespace RI.Framework.Data.Repository.Views
             this.Update(false);
         }
 
+        /// <summary>
+        ///     Determines whether the underlying <see cref="IRepositorySet{T}" /> supports creating new entities.
+        /// </summary>
+        /// <returns>
+        ///     true if new entities can be created, false otherwise.
+        /// </returns>
+        public bool CanCreate()
+        {
+            return this.EntityCanCreate();
+        }
+
+        /// <summary>
+        ///     Creates a new entity.
+        /// </summary>
+        /// <returns>
+        ///     The new entity.
+        /// </returns>
+        /// TODO: Handle inability to create
+        public TViewObject Create()
+        {
+            TViewObject viewObj = this.PrepareViewObject(null, null);
+            return viewObj;
+        }
+
         private void EntitiesChangedMethod (object sender, NotifyCollectionChangedEventArgs e)
         {
             if (this.IsInitializing)
@@ -1202,12 +1226,12 @@ namespace RI.Framework.Data.Repository.Views
                         {
                             if (viewObj.IsSelected)
                             {
-                                this.SelectedViewObject = null;
+                                this.EntityDeselect(viewObj);
                             }
 
                             if (viewObj.IsEdited)
                             {
-                                this.EditedViewObject = null;
+                                this.EntityEditEnd(viewObj);
                             }
 
                             this.EntityDelete(viewObj);
@@ -1273,30 +1297,6 @@ namespace RI.Framework.Data.Repository.Views
         #region Virtuals
 
         /// <summary>
-        ///     Determines whether the underlying <see cref="IRepositorySet{T}" /> supports creating new entities.
-        /// </summary>
-        /// <returns>
-        ///     true if new entities can be created, false otherwise.
-        /// </returns>
-        public virtual bool CanNew ()
-        {
-            return this.EntityCanNew();
-        }
-
-        /// <summary>
-        ///     Creates and adds a new entity.
-        /// </summary>
-        /// <returns>
-        ///     The new entity.
-        /// </returns>
-        public virtual TViewObject New ()
-        {
-            TViewObject viewObj = this.PrepareViewObject(null, null);
-            this.ViewObjects.Add(viewObj);
-            return viewObj;
-        }
-
-        /// <summary>
         ///     Called when a new entity is to be created.
         /// </summary>
         /// <returns>
@@ -1318,6 +1318,11 @@ namespace RI.Framework.Data.Repository.Views
         /// <returns>
         ///     The newly created view object.
         /// </returns>
+        /// <remarks>
+        ///     <para>
+        ///         The default implementation simply creates a new instance of <typeparamref name="TViewObject"/>.
+        ///     </para>
+        /// </remarks>
         protected virtual TViewObject CreateViewObject ()
         {
             return new TViewObject();
@@ -1429,7 +1434,7 @@ namespace RI.Framework.Data.Repository.Views
         /// <returns>
         ///     true if a new entity or view object can be created, false otherwise.
         /// </returns>
-        protected virtual bool EntityCanNew ()
+        protected virtual bool EntityCanCreate ()
         {
             return this.Set.CanCreate();
         }
@@ -1578,6 +1583,7 @@ namespace RI.Framework.Data.Repository.Views
         {
             this.Set.Modify(viewObject.Entity);
 
+            //TODO: Is this always properly set?
             viewObject.IsModified = true;
 
             viewObject.RaiseEntityChanged();

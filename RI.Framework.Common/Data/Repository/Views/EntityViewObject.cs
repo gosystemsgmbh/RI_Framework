@@ -34,9 +34,11 @@ namespace RI.Framework.Data.Repository.Views
 			this.IsAdded = false;
 			this.IsAttached = false;
 			this.IsDeleted = false;
-			this.IsEdited = false;
-			this.IsModified = false;
+
 			this.IsSelected = false;
+			this.IsEdited = false;
+
+			this.IsModified = false;
 
 			this.Entity = null;
 			this.Errors = null;
