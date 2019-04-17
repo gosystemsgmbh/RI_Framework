@@ -794,7 +794,7 @@ namespace RI.Framework.Services.Resources.Sources
             {
                 if (this.Data == null)
                 {
-                    using (ZipFile zipFile = Ionic.Zip.ZipFile.Read(this.File))
+                    using (ZipFile zipFile = Ionic.Zip.ZipFile.Read(this.ZipFile))
                     {
                         using (MemoryStream ms = new MemoryStream())
                         {
@@ -958,7 +958,7 @@ namespace RI.Framework.Services.Resources.Sources
             {
                 if (this.Data == null)
                 {
-                    using (ZipFile zipFile = Ionic.Zip.ZipFile.Read(this.File))
+                    using (ZipFile zipFile = Ionic.Zip.ZipFile.Read(this.ZipFile))
                     {
                         using (MemoryStream ms = new MemoryStream())
                         {
