@@ -1519,6 +1519,7 @@ namespace RI.Framework.Data.Repository.Views
         ///     Called when an entities view object is to start editing.
         /// </summary>
         /// <param name="viewObject"> The view object to start editing. </param>
+        /// TODO: We really should do mark as modified...?
         protected virtual void EntityEditBegin (TViewObject viewObject)
         {
             if (viewObject.IsEdited)
@@ -1539,6 +1540,7 @@ namespace RI.Framework.Data.Repository.Views
         ///     Called when an entities view object is to cancel editing.
         /// </summary>
         /// <param name="viewObject"> The vie object to cancel editing. </param>
+        /// TODO: We really should do reloading...?
         protected virtual void EntityEditCancel (TViewObject viewObject)
         {
             if (!viewObject.IsEdited)
@@ -1559,6 +1561,7 @@ namespace RI.Framework.Data.Repository.Views
         ///     Called when an entities view object is to finish editing.
         /// </summary>
         /// <param name="viewObject"> The view object to finish editing. </param>
+        /// TODO: We really should do saving or at least mark as modified...?
         protected virtual void EntityEditEnd (TViewObject viewObject)
         {
             if (!viewObject.IsEdited)
@@ -1864,7 +1867,6 @@ namespace RI.Framework.Data.Repository.Views
         /// <exception cref="ArgumentNullException"> <paramref name="entity" /> is null. </exception>
         /// TODO: Handle inability to edit
         /// TODO: Handle case if entity is not of this view
-        /// TODO: We really should do reloading...?
         public void CancelEdit (TEntity entity)
         {
             if (entity == null)

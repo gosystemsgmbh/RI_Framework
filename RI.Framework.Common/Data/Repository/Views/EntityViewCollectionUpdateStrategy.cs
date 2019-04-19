@@ -17,7 +17,7 @@ namespace RI.Framework.Data.Repository.Views
 		Recreate = 0,
 
 		/// <summary>
-		///     The collection instances are kept but are being cleared/updates on each update.
+		///     The collection instances are kept but are being cleared/updated on each update.
 		/// </summary>
 		Update = 1,
 	}
