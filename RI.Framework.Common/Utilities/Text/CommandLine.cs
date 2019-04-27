@@ -73,6 +73,35 @@ namespace RI.Framework.Utilities.Text
         #region Static Methods
 
         /// <summary>
+        ///     Parses the command line of the current process.
+        /// </summary>
+        /// <returns>
+        ///     The <see cref="CommandLine" /> created by parsing the command line of the current process.
+        /// </returns>
+        /// <remarks>
+        ///     <para>
+        ///         <see cref="DefaultParameterNameComparer" /> is used to distinguish parameter names.
+        ///     </para>
+        /// </remarks>
+        public static CommandLine FromCurrentProcess ()
+        {
+            return CommandLine.FromCurrentProcess(null);
+        }
+
+        /// <summary>
+        ///     Parses the command line of the current process.
+        /// </summary>
+        /// <param name="parameterNameComparer"> A string comparer used to distinguish parameter names (can be null to use <see cref="DefaultParameterNameComparer" />). </param>
+        /// <returns>
+        ///     The <see cref="CommandLine" /> created by parsing the command line of the current process.
+        /// </returns>
+        public static CommandLine FromCurrentProcess (IEqualityComparer<string> parameterNameComparer)
+        {
+            bool containsExecutable = !Environment.GetCommandLineArgs()[0].IsNullOrEmptyOrWhitespace();
+            return CommandLine.Parse(Environment.CommandLine, containsExecutable, parameterNameComparer);
+        }
+
+        /// <summary>
         ///     Parses a command line string and returns a <see cref="CommandLine" /> object for it.
         /// </summary>
         /// <param name="commandLine"> The command line string to parse. </param>

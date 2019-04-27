@@ -12,6 +12,8 @@ namespace RI.Framework.Threading
     /// </summary>
     /// <threadsafety static="true" instance="true" />
     /// TODO: Add overloads for Any, All
+    /// TODO: Add WithTimeout
+    /// TODO: Add WithCancellation
     public static class TaskExtensions
     {
         #region Static Methods

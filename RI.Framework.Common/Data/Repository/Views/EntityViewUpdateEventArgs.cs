@@ -5,10 +5,11 @@
 
 namespace RI.Framework.Data.Repository.Views
 {
-	/// <summary>
-	///     Event arguments for the entity views <see cref="EntityView{TEntity,TViewObject}.Updating" /> and <see cref="EntityView{TEntity,TViewObject}.Updated" /> events.
-	/// </summary>
-	[Serializable]
+    /// <summary>
+    ///     Event arguments for the entity views <see cref="EntityView{TEntity,TViewObject}.Updating" /> and <see cref="EntityView{TEntity,TViewObject}.Updated" /> events.
+    /// </summary>
+    /// <threadsafety static="false" instance="false" />
+    [Serializable]
 	public sealed class EntityViewUpdateEventArgs : EventArgs
 	{
 		#region Instance Constructor/Destructor

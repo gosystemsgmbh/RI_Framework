@@ -1013,7 +1013,7 @@ namespace RI.Framework.Bootstrapping
 		/// </remarks>
 		protected virtual CommandLine DetermineProcessCommandLine ()
 		{
-			return this.HostContext?.CommandLine ?? CommandLine.Parse(Environment.CommandLine, true, StringComparerEx.InvariantCultureIgnoreCase);
+			return this.HostContext?.CommandLine ?? CommandLine.FromCurrentProcess(StringComparerEx.InvariantCultureIgnoreCase);
 		}
 
 		/// <summary>

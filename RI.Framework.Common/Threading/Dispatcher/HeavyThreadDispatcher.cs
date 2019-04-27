@@ -129,11 +129,6 @@ namespace RI.Framework.Threading.Dispatcher
             {
                 lock (this.SyncRoot)
                 {
-                    if (this.Thread != null)
-                    {
-                        this._isBackgroundThread = this.Thread.IsBackground;
-                    }
-
                     return this._isBackgroundThread;
                 }
             }
@@ -168,11 +163,6 @@ namespace RI.Framework.Threading.Dispatcher
             {
                 lock (this.SyncRoot)
                 {
-                    if (this.Thread != null)
-                    {
-                        this._threadCulture = this.Thread.CurrentCulture;
-                    }
-
                     return this._threadCulture;
                 }
             }
@@ -207,11 +197,6 @@ namespace RI.Framework.Threading.Dispatcher
             {
                 lock (this.SyncRoot)
                 {
-                    if (this.Thread != null)
-                    {
-                        this._threadName = this.Thread.Name;
-                    }
-
                     return this._threadName;
                 }
             }
@@ -246,11 +231,6 @@ namespace RI.Framework.Threading.Dispatcher
             {
                 lock (this.SyncRoot)
                 {
-                    if (this.Thread != null)
-                    {
-                        this._threadPriority = this.Thread.Priority;
-                    }
-
                     return this._threadPriority;
                 }
             }
@@ -286,11 +266,6 @@ namespace RI.Framework.Threading.Dispatcher
             {
                 lock (this.SyncRoot)
                 {
-                    if (this.Thread != null)
-                    {
-                        this._threadUICulture = this.Thread.CurrentUICulture;
-                    }
-
                     return this._threadUICulture;
                 }
             }
@@ -1005,6 +980,7 @@ namespace RI.Framework.Threading.Dispatcher
             {
                 base.OnStarting();
 
+                this.Thread.Name = "STOP_" + this.HeavyThreadDispatcher.ThreadName;
                 this.Thread.Priority = this.HeavyThreadDispatcher.ThreadPriority;
                 this.Thread.IsBackground = this.HeavyThreadDispatcher.IsBackgroundThread;
                 this.Thread.CurrentCulture = this.HeavyThreadDispatcher.ThreadCulture;

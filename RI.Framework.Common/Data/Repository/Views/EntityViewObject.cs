@@ -17,6 +17,7 @@ namespace RI.Framework.Data.Repository.Views
     ///     See <see cref="EntityView{TEntity,TViewObject}" /> for details.
     /// </remarks>
     /// <typeparam name="TEntity"> The type of entities wrapped by <see cref="EntityView{TEntity,TViewObject}" />. </typeparam>
+    /// <threadsafety static="false" instance="false" />
     /// TODO: Pass IEditableObject to wrapped entity
     /// TODO: Pass IDataErrorInfo and INotifyDataErrorInfo to wrapped object
     public class EntityViewObject <TEntity> : INotifyPropertyChanged, IEditableObject, IDataErrorInfo, INotifyDataErrorInfo, IChangeTracking, IRevertibleChangeTracking

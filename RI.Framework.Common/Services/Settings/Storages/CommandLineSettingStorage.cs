@@ -49,7 +49,7 @@ namespace RI.Framework.Services.Settings.Storages
         {
             this.SyncRoot = new object();
 
-            this.CommandLine = CommandLine.Parse(Environment.CommandLine, true, StringComparerEx.InvariantCultureIgnoreCase);
+            this.CommandLine = CommandLine.FromCurrentProcess(StringComparerEx.InvariantCultureIgnoreCase);
         }
 
         #endregion

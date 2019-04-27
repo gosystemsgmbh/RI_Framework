@@ -5,10 +5,10 @@
 
 namespace RI.Framework.Data.Repository.Views
 {
-	/// <summary>
-	///     Describes the update strategy used for updating entity collections of <see cref="EntityView{TEntity,TViewObject}" />.
-	/// </summary>
-	[Serializable]
+    /// <summary>
+    ///     Describes the update strategy used for updating entity collections of <see cref="EntityView{TEntity,TViewObject}" />.
+    /// </summary>
+    [Serializable]
 	public enum EntityViewCollectionUpdateStrategy
 	{
 		/// <summary>

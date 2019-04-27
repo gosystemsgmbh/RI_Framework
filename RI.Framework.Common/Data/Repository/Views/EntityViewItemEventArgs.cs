@@ -5,11 +5,12 @@
 
 namespace RI.Framework.Data.Repository.Views
 {
-	/// <summary>
-	///     Event arguments for entity view events related to a single entity.
-	/// </summary>
-	/// <typeparam name="T"> The type of the entity. </typeparam>
-	[Serializable]
+    /// <summary>
+    ///     Event arguments for entity view events related to a single entity.
+    /// </summary>
+    /// <typeparam name="T"> The type of the entity. </typeparam>
+    /// <threadsafety static="false" instance="false" />
+    [Serializable]
 	public sealed class EntityViewItemEventArgs <T> : EventArgs
 		where T : class
 	{

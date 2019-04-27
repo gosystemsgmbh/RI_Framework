@@ -6,11 +6,12 @@ using System.Collections.Generic;
 
 namespace RI.Framework.Data.Repository.Views
 {
-	/// <summary>
-	///     Event arguments for entity view events related to multiple entities.
-	/// </summary>
-	/// <typeparam name="T"> The type of the entities. </typeparam>
-	[Serializable]
+    /// <summary>
+    ///     Event arguments for entity view events related to multiple entities.
+    /// </summary>
+    /// <typeparam name="T"> The type of the entities. </typeparam>
+    /// <threadsafety static="false" instance="false" />
+    [Serializable]
 	public sealed class EntityViewItemsEventArgs <T> : EventArgs
 		where T : class
 	{

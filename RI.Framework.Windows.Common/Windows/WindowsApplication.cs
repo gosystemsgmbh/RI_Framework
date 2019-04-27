@@ -45,7 +45,7 @@ namespace RI.Framework.Windows
 		///         See the remarks of <see cref="WindowsApplication" /> for more important information about windows application actions provided by <see cref="WindowsApplication" />.
 		///     </note>
 		/// </remarks>
-		public static void RestartCurrent (bool waitForExitBeforeStart) => WindowsApplication.RestartCurrentInternal(waitForExitBeforeStart, CommandLine.Parse(Environment.CommandLine, true));
+		public static void RestartCurrent (bool waitForExitBeforeStart) => WindowsApplication.RestartCurrentInternal(waitForExitBeforeStart, CommandLine.FromCurrentProcess());
 
 		/// <summary>
 		///     Restarts the current application with the specified command line arguments.

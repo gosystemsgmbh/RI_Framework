@@ -796,7 +796,7 @@ namespace RI.Framework.Services.Settings
                     continue;
                 }
 
-                if ((store.WritePrefixAffinities != null) && (!store.WritePrefixAffinities.Any(x => name.StartsWith(x, StringComparison.InvariantCultureIgnoreCase))))
+                if ((store.WritePrefixAffinities != null) && (store.WritePrefixAffinities.Count > 0) && (!store.WritePrefixAffinities.Any(x => name.StartsWith(x, StringComparison.InvariantCultureIgnoreCase))))
                 {
                     continue;
                 }
