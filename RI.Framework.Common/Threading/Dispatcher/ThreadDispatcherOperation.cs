@@ -379,6 +379,8 @@ namespace RI.Framework.Threading.Dispatcher
                 throw new ArgumentNullException(nameof(cancellationToken));
             }
 
+            //TODO: We should not allow this from the dispatcher thread
+
             if (this.IsDone)
             {
                 return true;
@@ -394,9 +396,9 @@ namespace RI.Framework.Threading.Dispatcher
         /// <returns>
         ///     The task which can be used to await the finish of the processing.
         /// </returns>
-        public async Task WaitAsync ()
+        public Task WaitAsync ()
         {
-            await this.WaitAsync(Timeout.Infinite, CancellationToken.None).ConfigureAwait(false);
+            return this.WaitAsync(Timeout.Infinite, CancellationToken.None);
         }
 
         /// <summary>
@@ -407,9 +409,9 @@ namespace RI.Framework.Threading.Dispatcher
         ///     true if the dispatcher operation finished processing, false if the wait was cancelled.
         /// </returns>
         /// <exception cref="ArgumentNullException"> <paramref name="cancellationToken" /> is null. </exception>
-        public async Task<bool> WaitAsync (CancellationToken cancellationToken)
+        public Task<bool> WaitAsync (CancellationToken cancellationToken)
         {
-            return await this.WaitAsync(Timeout.Infinite, cancellationToken).ConfigureAwait(false);
+            return this.WaitAsync(Timeout.Infinite, cancellationToken);
         }
 
         /// <summary>
@@ -420,9 +422,9 @@ namespace RI.Framework.Threading.Dispatcher
         ///     true if the dispatcher operation finished processing within the specified timeout, false otherwise.
         /// </returns>
         /// <exception cref="ArgumentOutOfRangeException"> <paramref name="timeout" /> is negative. </exception>
-        public async Task<bool> WaitAsync (TimeSpan timeout)
+        public Task<bool> WaitAsync (TimeSpan timeout)
         {
-            return await this.WaitAsync((int)timeout.TotalMilliseconds, CancellationToken.None).ConfigureAwait(false);
+            return this.WaitAsync((int)timeout.TotalMilliseconds, CancellationToken.None);
         }
 
         /// <summary>
@@ -435,9 +437,9 @@ namespace RI.Framework.Threading.Dispatcher
         /// </returns>
         /// <exception cref="ArgumentOutOfRangeException"> <paramref name="timeout" /> is negative. </exception>
         /// <exception cref="ArgumentNullException"> <paramref name="cancellationToken" /> is null. </exception>
-        public async Task<bool> WaitAsync (TimeSpan timeout, CancellationToken cancellationToken)
+        public Task<bool> WaitAsync (TimeSpan timeout, CancellationToken cancellationToken)
         {
-            return await this.WaitAsync((int)timeout.TotalMilliseconds, cancellationToken).ConfigureAwait(false);
+            return this.WaitAsync((int)timeout.TotalMilliseconds, cancellationToken);
         }
 
         /// <summary>
@@ -448,9 +450,9 @@ namespace RI.Framework.Threading.Dispatcher
         ///     true if the dispatcher operation finished processing within the specified timeout, false otherwise.
         /// </returns>
         /// <exception cref="ArgumentOutOfRangeException"> <paramref name="milliseconds" /> is negative. </exception>
-        public async Task<bool> WaitAsync (int milliseconds)
+        public Task<bool> WaitAsync (int milliseconds)
         {
-            return await this.WaitAsync(milliseconds, CancellationToken.None).ConfigureAwait(false);
+            return this.WaitAsync(milliseconds, CancellationToken.None);
         }
 
         /// <summary>
@@ -463,7 +465,7 @@ namespace RI.Framework.Threading.Dispatcher
         /// </returns>
         /// <exception cref="ArgumentOutOfRangeException"> <paramref name="milliseconds" /> is negative. </exception>
         /// <exception cref="ArgumentNullException"> <paramref name="cancellationToken" /> is null. </exception>
-        public async Task<bool> WaitAsync (int milliseconds, CancellationToken cancellationToken)
+        public Task<bool> WaitAsync (int milliseconds, CancellationToken cancellationToken)
         {
             if ((milliseconds < 0) && (milliseconds != Timeout.Infinite))
             {
@@ -477,14 +479,15 @@ namespace RI.Framework.Threading.Dispatcher
 
             if (this.IsDone)
             {
-                return true;
+                return Task.FromResult(true);
             }
 
             Task operationTask = this.OperationDoneTask.Task;
             Task timeoutTask = Task.Delay(milliseconds, cancellationToken);
 
-            Task completed = await Task.WhenAny(operationTask, timeoutTask).ConfigureAwait(false);
-            return object.ReferenceEquals(completed, operationTask);
+            Task<Task> completed = Task.WhenAny(operationTask, timeoutTask);
+            Task<bool> final = completed.ContinueWith(x => object.ReferenceEquals(completed, operationTask), CancellationToken.None, TaskContinuationOptions.DenyChildAttach | TaskContinuationOptions.LazyCancellation | TaskContinuationOptions.RunContinuationsAsynchronously, this.Dispatcher.Scheduler);
+            return final;
         }
 
         internal bool CancelHard ()

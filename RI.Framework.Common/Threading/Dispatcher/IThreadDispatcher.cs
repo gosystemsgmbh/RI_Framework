@@ -99,6 +99,8 @@ namespace RI.Framework.Threading.Dispatcher
         /// <exception cref="ArgumentOutOfRangeException"> The value is negative. </exception>
         TimeSpan? WatchdogTimeout { get; set; }
 
+        //TODO: Add TaskFactory
+
         /// <summary>
         ///     Raised when an exception occurred during execution of a delegate.
         /// </summary>

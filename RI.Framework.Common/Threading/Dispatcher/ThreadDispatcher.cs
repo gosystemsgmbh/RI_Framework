@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using RI.Framework.Collections;
 using RI.Framework.Collections.Generic;
 using RI.Framework.Utilities;
+using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.ObjectModel;
 
 
@@ -675,24 +676,7 @@ namespace RI.Framework.Threading.Dispatcher
         [SuppressMessage("ReSharper", "PossibleNullReferenceException")]
         IAsyncResult ISynchronizeInvoke.BeginInvoke (Delegate method, object[] args)
         {
-            TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
-            Task<object> task = this.SendAsync(method, args);
-            task.ContinueWith(t =>
-            {
-                if (t.IsFaulted)
-                {
-                    tcs.TrySetException(t.Exception.InnerExceptions);
-                }
-                else if (t.IsCanceled)
-                {
-                    tcs.TrySetCanceled();
-                }
-                else
-                {
-                    tcs.TrySetResult(t.Result);
-                }
-            }, CancellationToken.None, TaskContinuationOptions.DenyChildAttach | TaskContinuationOptions.LazyCancellation | TaskContinuationOptions.RunContinuationsAsynchronously, this.Scheduler);
-            return tcs.Task;
+            return this.SendAsync(method, args);
         }
 
         /// <inheritdoc />
@@ -840,7 +824,8 @@ namespace RI.Framework.Threading.Dispatcher
                     operation = this.Post(0, ThreadDispatcherOptions.None, new Action(() => { }));
                 }
 
-                await operation.WaitAsync().ConfigureAwait(false);
+                //TODO: Get rid of await
+                await operation.WaitAsync();
             }
         }
 
@@ -880,7 +865,8 @@ namespace RI.Framework.Threading.Dispatcher
                     operation = this.Post(priority, ThreadDispatcherOptions.None, new Action(() => { }));
                 }
 
-                await operation.WaitAsync().ConfigureAwait(false);
+                //TODO: Get rid of await
+                await operation.WaitAsync();
             }
         }
 
@@ -893,9 +879,16 @@ namespace RI.Framework.Threading.Dispatcher
                 throw new ArgumentNullException(nameof(result));
             }
 
+            Task<object> task = result as Task<object>;
+
+            if (task == null)
+            {
+                throw new InvalidTypeArgumentException(nameof(result), typeof(Task<object>), result.GetType());
+            }
+
             try
             {
-                return ((Task<object>)result).Result;
+                return task.Result;
             }
             catch (AggregateException ex)
             {
@@ -1111,15 +1104,15 @@ namespace RI.Framework.Threading.Dispatcher
         }
 
         /// <inheritdoc />
-        public async Task<object> SendAsync (Delegate action, params object[] parameters)
+        public Task<object> SendAsync (Delegate action, params object[] parameters)
         {
-            return await this.SendAsync(this.DefaultPriority, this.DefaultOptions, action, parameters).ConfigureAwait(false);
+            return this.SendAsync(this.DefaultPriority, this.DefaultOptions, action, parameters);
         }
 
         /// <inheritdoc />
-        public async Task<object> SendAsync (int priority, Delegate action, params object[] parameters)
+        public Task<object> SendAsync (int priority, Delegate action, params object[] parameters)
         {
-            return await this.SendAsync(priority, this.DefaultOptions, action, parameters).ConfigureAwait(false);
+            return this.SendAsync(priority, this.DefaultOptions, action, parameters);
         }
 
         /// <inheritdoc />
@@ -1149,7 +1142,8 @@ namespace RI.Framework.Threading.Dispatcher
 
             try
             {
-                await operation.WaitAsync().ConfigureAwait(false);
+                //TODO: Get rid of await
+                await operation.WaitAsync();
             }
             catch (TaskCanceledException)
             {
@@ -1193,7 +1187,7 @@ namespace RI.Framework.Threading.Dispatcher
         }
 
         /// <inheritdoc />
-        public async Task ShutdownAsync (bool finishPendingDelegates)
+        public Task ShutdownAsync (bool finishPendingDelegates)
         {
             Task finishTask;
 
@@ -1210,7 +1204,7 @@ namespace RI.Framework.Threading.Dispatcher
                 this.BeginShutdown(finishPendingDelegates);
             }
 
-            await finishTask.ConfigureAwait(false);
+            return finishTask;
         }
 
         #endregion

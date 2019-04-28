@@ -484,11 +484,6 @@ namespace RI.Framework.Threading.Dispatcher
             {
                 lock (this.SyncRoot)
                 {
-                    if (this.Dispatcher != null)
-                    {
-                        this._catchExceptions = this.Dispatcher.CatchExceptions;
-                    }
-
                     return this._catchExceptions;
                 }
             }
@@ -514,11 +509,6 @@ namespace RI.Framework.Threading.Dispatcher
             {
                 lock (this.SyncRoot)
                 {
-                    if (this.Dispatcher != null)
-                    {
-                        this._defaultOptions = this.Dispatcher.DefaultOptions;
-                    }
-
                     return this._defaultOptions;
                 }
             }
@@ -548,11 +538,6 @@ namespace RI.Framework.Threading.Dispatcher
             {
                 lock (this.SyncRoot)
                 {
-                    if (this.Dispatcher != null)
-                    {
-                        this._defaultPriority = this.Dispatcher.DefaultPriority;
-                    }
-
                     return this._defaultPriority;
                 }
             }
@@ -608,11 +593,6 @@ namespace RI.Framework.Threading.Dispatcher
             {
                 lock (this.SyncRoot)
                 {
-                    if (this.Dispatcher != null)
-                    {
-                        this._watchdogTimeout = this.Dispatcher.WatchdogTimeout;
-                    }
-
                     return this._watchdogTimeout;
                 }
             }
@@ -702,7 +682,7 @@ namespace RI.Framework.Threading.Dispatcher
         }
 
         /// <inheritdoc />
-        public async Task DoProcessingAsync ()
+        public Task DoProcessingAsync ()
         {
             ThreadDispatcher dispatcher;
             lock (this.SyncRoot)
@@ -711,11 +691,11 @@ namespace RI.Framework.Threading.Dispatcher
                 dispatcher = this.Dispatcher;
             }
 
-            await dispatcher.DoProcessingAsync().ConfigureAwait(false);
+            return dispatcher.DoProcessingAsync();
         }
 
         /// <inheritdoc />
-        public async Task DoProcessingAsync (int priority)
+        public Task DoProcessingAsync (int priority)
         {
             ThreadDispatcher dispatcher;
             lock (this.SyncRoot)
@@ -724,7 +704,7 @@ namespace RI.Framework.Threading.Dispatcher
                 dispatcher = this.Dispatcher;
             }
 
-            await dispatcher.DoProcessingAsync(priority).ConfigureAwait(false);
+            return dispatcher.DoProcessingAsync(priority);
         }
 
         /// <inheritdoc />
@@ -877,7 +857,7 @@ namespace RI.Framework.Threading.Dispatcher
         }
 
         /// <inheritdoc />
-        public async Task<object> SendAsync (Delegate action, params object[] parameters)
+        public Task<object> SendAsync (Delegate action, params object[] parameters)
         {
             ThreadDispatcher dispatcher;
             lock (this.SyncRoot)
@@ -886,11 +866,11 @@ namespace RI.Framework.Threading.Dispatcher
                 dispatcher = this.Dispatcher;
             }
 
-            return await dispatcher.SendAsync(action, parameters).ConfigureAwait(false);
+            return dispatcher.SendAsync(action, parameters);
         }
 
         /// <inheritdoc />
-        public async Task<object> SendAsync (int priority, Delegate action, params object[] parameters)
+        public Task<object> SendAsync (int priority, Delegate action, params object[] parameters)
         {
             ThreadDispatcher dispatcher;
             lock (this.SyncRoot)
@@ -899,11 +879,11 @@ namespace RI.Framework.Threading.Dispatcher
                 dispatcher = this.Dispatcher;
             }
 
-            return await dispatcher.SendAsync(priority, action, parameters).ConfigureAwait(false);
+            return dispatcher.SendAsync(priority, action, parameters);
         }
 
         /// <inheritdoc />
-        public async Task<object> SendAsync (int priority, ThreadDispatcherOptions options, Delegate action, params object[] parameters)
+        public Task<object> SendAsync (int priority, ThreadDispatcherOptions options, Delegate action, params object[] parameters)
         {
             ThreadDispatcher dispatcher;
             lock (this.SyncRoot)
@@ -912,7 +892,7 @@ namespace RI.Framework.Threading.Dispatcher
                 dispatcher = this.Dispatcher;
             }
 
-            return await dispatcher.SendAsync(priority, options, action, parameters).ConfigureAwait(false);
+            return dispatcher.SendAsync(priority, options, action, parameters);
         }
 
         /// <inheritdoc />
@@ -932,19 +912,19 @@ namespace RI.Framework.Threading.Dispatcher
         }
 
         /// <inheritdoc />
-        public async Task ShutdownAsync (bool finishPendingDelegates)
+        public Task ShutdownAsync (bool finishPendingDelegates)
         {
-            ConfiguredTaskAwaitable shutdownTask;
+            Task shutdownTask;
 
             lock (this.SyncRoot)
             {
                 this.VerifyRunningDispatcher();
                 this.VerifyNotFromThread(nameof(this.ShutdownAsync));
 
-                shutdownTask = this.BeginShutdownInternal(finishPendingDelegates).ConfigureAwait(false);
+                shutdownTask = this.BeginShutdownInternal(finishPendingDelegates);
             }
 
-            await shutdownTask;
+            return shutdownTask;
         }
 
         #endregion
