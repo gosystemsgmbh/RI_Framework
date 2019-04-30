@@ -290,7 +290,7 @@ namespace RI.Framework.Bus
 		{
 			lock (this.StartStopSyncRoot)
 			{
-				this.Log(LogLevel.Information, "Stopping message bus");
+				this.Log(LogLevel.Debug, "Stopping message bus");
 
 				WorkThread workerThread;
 				lock (this.SyncRoot)
@@ -310,7 +310,7 @@ namespace RI.Framework.Bus
 					this.DependencyResolver = null;
 				}
 
-				this.Log(LogLevel.Information, "Message bus stopped");
+				this.Log(LogLevel.Debug, "Message bus stopped");
 			}
 		}
 
@@ -747,7 +747,7 @@ namespace RI.Framework.Bus
 					this.VerifyNotStarted();
 				}
 
-				this.Log(LogLevel.Information, "Starting message bus");
+				this.Log(LogLevel.Debug, "Starting message bus");
 
 				bool success = false;
 				try
@@ -765,7 +765,7 @@ namespace RI.Framework.Bus
 
 					this.WorkerThread.Start();
 
-					this.Log(LogLevel.Information, "Message bus started");
+					this.Log(LogLevel.Debug, "Message bus started");
 
 					success = true;
 				}
@@ -950,33 +950,33 @@ namespace RI.Framework.Bus
 				this.ConnectionManager = this.ResolveSingle<IBusConnectionManager>(false);
 				this.Connections = this.ResolveMultiple<IBusConnection>(false);
 
-				this.Log(LogLevel.Information, "Used bus pipeline:           {0}", this.Pipeline);
-				this.Log(LogLevel.Information, "Used bus dispatcher:         {0}", this.Dispatcher);
-				this.Log(LogLevel.Information, "Used bus router:             {0}", this.Router);
-				this.Log(LogLevel.Information, "Used bus connection manager: {0}", this.ConnectionManager?.ToString() ?? "[null]");
-				this.Connections.ForEach(x => this.Log(LogLevel.Information, "Used bus connection:         {0}", x));
+				this.Log(LogLevel.Debug, "Used bus pipeline:           {0}", this.Pipeline);
+				this.Log(LogLevel.Debug, "Used bus dispatcher:         {0}", this.Dispatcher);
+				this.Log(LogLevel.Debug, "Used bus router:             {0}", this.Router);
+				this.Log(LogLevel.Debug, "Used bus connection manager: {0}", this.ConnectionManager?.ToString() ?? "[null]");
+				this.Connections.ForEach(x => this.Log(LogLevel.Debug, "Used bus connection:         {0}", x));
 
 				this.InheritLogger();
 
 				this.Connections.ForEach(x =>
 				{
-					this.Log(LogLevel.Information, "Initialize bus connection: {0}", x);
+					this.Log(LogLevel.Debug, "Initialize bus connection: {0}", x);
 					x.Initialize(this.DependencyResolver);
 				});
 
 				if (this.ConnectionManager != null)
 				{
-					this.Log(LogLevel.Information, "Initialize bus connection manager: {0}", this.ConnectionManager);
+					this.Log(LogLevel.Debug, "Initialize bus connection manager: {0}", this.ConnectionManager);
 					this.ConnectionManager.Initialize(this.DependencyResolver);
 				}
 
-				this.Log(LogLevel.Information, "Initialize bus router: {0}", this.Router);
+				this.Log(LogLevel.Debug, "Initialize bus router: {0}", this.Router);
 				this.Router.Initialize(this.DependencyResolver);
 
-				this.Log(LogLevel.Information, "Initialize bus dispatcher: {0}", this.Dispatcher);
+				this.Log(LogLevel.Debug, "Initialize bus dispatcher: {0}", this.Dispatcher);
 				this.Dispatcher.Initialize(this.DependencyResolver);
 
-				this.Log(LogLevel.Information, "Initialize bus pipeline: {0}", this.Pipeline);
+				this.Log(LogLevel.Debug, "Initialize bus pipeline: {0}", this.Pipeline);
 				this.Pipeline.Initialize(this.DependencyResolver);
 			}
 
@@ -984,31 +984,31 @@ namespace RI.Framework.Bus
 			{
 				if (this.Pipeline != null)
 				{
-					this.Log(LogLevel.Information, "Unload bus pipeline: {0}", this.Pipeline);
+					this.Log(LogLevel.Debug, "Unload bus pipeline: {0}", this.Pipeline);
 					this.Pipeline.Unload();
 				}
 
 				if (this.Dispatcher != null)
 				{
-					this.Log(LogLevel.Information, "Unload bus dispatcher: {0}", this.Dispatcher);
+					this.Log(LogLevel.Debug, "Unload bus dispatcher: {0}", this.Dispatcher);
 					this.Dispatcher.Unload();
 				}
 
 				if (this.Router != null)
 				{
-					this.Log(LogLevel.Information, "Unload bus router: {0}", this.Router);
+					this.Log(LogLevel.Debug, "Unload bus router: {0}", this.Router);
 					this.Router.Unload();
 				}
 
 				if (this.ConnectionManager != null)
 				{
-					this.Log(LogLevel.Information, "Unload bus connection manager: {0}", this.ConnectionManager);
+					this.Log(LogLevel.Debug, "Unload bus connection manager: {0}", this.ConnectionManager);
 					this.ConnectionManager.Unload();
 				}
 
 				this.Connections?.ForEach(x =>
 				{
-					this.Log(LogLevel.Information, "Unload bus connection: {0}", x);
+					this.Log(LogLevel.Debug, "Unload bus connection: {0}", x);
 					x.Unload();
 				});
 
@@ -1043,7 +1043,7 @@ namespace RI.Framework.Bus
 			{
 				base.OnRun();
 
-				this.Log(LogLevel.Information, "Bus pipeline is running");
+				this.Log(LogLevel.Debug, "Bus pipeline is running");
 
 				while (true)
 				{
@@ -1056,7 +1056,7 @@ namespace RI.Framework.Bus
 
 					if (this.StopRequested)
 					{
-						this.Log(LogLevel.Information, "Bus pipeline received stop request");
+						this.Log(LogLevel.Debug, "Bus pipeline received stop request");
 						break;
 					}
 

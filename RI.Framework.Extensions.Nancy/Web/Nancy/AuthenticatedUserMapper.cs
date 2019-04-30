@@ -8,8 +8,6 @@ using Nancy.Authentication.Forms;
 using Nancy.Security;
 
 using RI.Framework.Collections;
-using RI.Framework.Utilities;
-using RI.Framework.Utilities.Logging;
 using RI.Framework.Utilities.ObjectModel;
 
 
@@ -21,7 +19,7 @@ namespace RI.Framework.Web.Nancy
     ///     Implements an in-memory mapper for user identities.
     /// </summary>
     /// <threadsafety static="true" instance="true" />
-    public sealed class AuthenticatedUserMapper : LogSource, IUserMapper, ISynchronizable
+    public sealed class AuthenticatedUserMapper : IUserMapper, ISynchronizable
     {
         #region Instance Constructor/Destructor
 
@@ -88,7 +86,7 @@ namespace RI.Framework.Web.Nancy
             lock (this.SyncRoot)
             {
                 DateTime utcNow = DateTime.UtcNow;
-                this.AuthenticatedUsers.RemoveWhere(x => x.LastActivityTimestampUtc.HasValue ? utcNow.Subtract(x.LastActivityTimestampUtc.Value) >= idleTimeout : (x.LoginTimestampUtc.HasValue ? utcNow.Subtract(x.LoginTimestampUtc.Value) >= idleTimeout : true)).ForEach(x => this.Log(LogLevel.Information, "Automatically logged-out user with ID {0} after {1} seconds of idle time", x.Identifier.ToString("N").ToUpperInvariant(), idleTimeout.TotalSeconds));
+                this.AuthenticatedUsers.RemoveWhere(x => x.LastActivityTimestampUtc.HasValue ? utcNow.Subtract(x.LastActivityTimestampUtc.Value) >= idleTimeout : (x.LoginTimestampUtc.HasValue ? utcNow.Subtract(x.LoginTimestampUtc.Value) >= idleTimeout : true));
             }
         }
 
@@ -130,7 +128,6 @@ namespace RI.Framework.Web.Nancy
                         return user;
                     }
 
-                    this.Log(LogLevel.Warning, "Automatically logged-out user with ID {0} because of host address mismatch (expected={1}, received={2})", user.Identifier.ToString("N").ToUpperInvariant(), user.HostAddress.ToNullIfNullOrEmptyOrWhitespace() ?? "[null]", context.Request.UserHostAddress.ToEmptyIfNullOrEmptyOrWhitespace() ?? "[null]");
                     this.Logout(user);
                 }
 
@@ -175,8 +172,6 @@ namespace RI.Framework.Web.Nancy
                 user.LogoutTimestampUtc = null;
                 this.AuthenticatedUsers.Remove(user.Identifier);
                 this.AuthenticatedUsers.Add(user);
-
-                this.Log(LogLevel.Information, "Logged-in user with ID {0}", user.Identifier.ToString("N").ToUpperInvariant());
             }
         }
 
@@ -196,8 +191,6 @@ namespace RI.Framework.Web.Nancy
             {
                 user.LogoutTimestampUtc = DateTime.UtcNow;
                 this.AuthenticatedUsers.Remove(user.Identifier);
-
-                this.Log(LogLevel.Information, "Logged-out user with ID {0}", user.Identifier.ToString("N").ToUpperInvariant());
             }
         }
 

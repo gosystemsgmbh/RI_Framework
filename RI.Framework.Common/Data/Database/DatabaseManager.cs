@@ -168,7 +168,7 @@ namespace RI.Framework.Data.Database
 		/// <param name="disposing"> true if called from <see cref="IDisposable.Dispose" /> or <see cref="Close" />, false if called from the destructor. </param>
 		protected void Dispose (bool disposing)
 		{
-			this.Log(LogLevel.Information, "Closing database: {0}", this.DebugDetails);
+			this.Log(LogLevel.Debug, "Closing database: {0}", this.DebugDetails);
 
 			this.DisposeImpl(disposing);
 
@@ -219,13 +219,13 @@ namespace RI.Framework.Data.Database
 
 			if (oldState != state)
 			{
-				this.Log(LogLevel.Information, "Database state changed: {0} -> {1}: {2}", oldState, state, this.DebugDetails);
+				this.Log(LogLevel.Debug, "Database state changed: {0} -> {1}: {2}", oldState, state, this.DebugDetails);
 				this.OnStateChanged(oldState, state);
 			}
 
 			if (oldVersion != version)
 			{
-				this.Log(LogLevel.Information, "Database version changed: {0} -> {1}: {2}", oldVersion, version, this.DebugDetails);
+				this.Log(LogLevel.Debug, "Database version changed: {0} -> {1}: {2}", oldVersion, version, this.DebugDetails);
 				this.OnVersionChanged(oldVersion, version);
 			}
 		}
@@ -936,7 +936,7 @@ namespace RI.Framework.Data.Database
 		/// <inheritdoc />
 		public void Initialize ()
 		{
-			this.Log(LogLevel.Information, "Initializing database: {0}", this.DebugDetails);
+			this.Log(LogLevel.Debug, "Initializing database: {0}", this.DebugDetails);
 
 			if (this.State != DatabaseState.Uninitialized)
 			{
