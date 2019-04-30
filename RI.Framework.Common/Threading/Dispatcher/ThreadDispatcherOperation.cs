@@ -486,7 +486,7 @@ namespace RI.Framework.Threading.Dispatcher
             Task timeoutTask = Task.Delay(milliseconds, cancellationToken);
 
             Task<Task> completed = Task.WhenAny(operationTask, timeoutTask);
-            Task<bool> final = completed.ContinueWith(x => object.ReferenceEquals(completed, operationTask), CancellationToken.None, TaskContinuationOptions.DenyChildAttach | TaskContinuationOptions.LazyCancellation | TaskContinuationOptions.RunContinuationsAsynchronously, this.Dispatcher.Scheduler);
+            Task<bool> final = completed.ContinueWith(_ => object.ReferenceEquals(completed, operationTask), CancellationToken.None, TaskContinuationOptions.DenyChildAttach | TaskContinuationOptions.LazyCancellation | TaskContinuationOptions.RunContinuationsAsynchronously, this.Dispatcher.Scheduler);
             return final;
         }
 
@@ -636,7 +636,7 @@ namespace RI.Framework.Threading.Dispatcher
                     {
                         this.Stage = 1;
 
-                        this.Task.ContinueWith((t, s) => { this.Dispatcher.EnqueueOperation(this); }, null, CancellationToken.None, TaskContinuationOptions.DenyChildAttach | TaskContinuationOptions.LazyCancellation | TaskContinuationOptions.RunContinuationsAsynchronously, this.Dispatcher.Scheduler);
+                        this.Task.ContinueWith(_ => { this.Dispatcher.EnqueueOperation(this); }, CancellationToken.None, TaskContinuationOptions.DenyChildAttach | TaskContinuationOptions.LazyCancellation | TaskContinuationOptions.RunContinuationsAsynchronously, this.Dispatcher.Scheduler);
 
                         result = null;
                         exception = null;

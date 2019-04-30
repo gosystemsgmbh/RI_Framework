@@ -45,7 +45,7 @@ namespace RI.Framework.Threading.Async
         /// </returns>
         public static TaskAwaiter GetAwaiter (this CancellationToken ct)
         {
-            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
             Task task = tcs.Task;
 
             if (ct.IsCancellationRequested)
@@ -76,7 +76,7 @@ namespace RI.Framework.Threading.Async
                 throw new ArgumentNullException(nameof(process));
             }
 
-            TaskCompletionSource<int> tcs = new TaskCompletionSource<int>();
+            TaskCompletionSource<int> tcs = new TaskCompletionSource<int>(TaskCreationOptions.RunContinuationsAsynchronously);
 
             process.EnableRaisingEvents = true;
 

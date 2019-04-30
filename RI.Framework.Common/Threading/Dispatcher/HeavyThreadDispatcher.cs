@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -952,7 +951,7 @@ namespace RI.Framework.Threading.Dispatcher
                 this.HeavyThreadDispatcher = heavyThreadDispatcher;
                 this.FinishPendingDelegates = finishPendingDelegates;
 
-                this.CompletionSource = new TaskCompletionSource<object>();
+                this.CompletionSource = new TaskCompletionSource<object>(TaskCreationOptions.RunContinuationsAsynchronously);
                 this.CompletionTask = this.CompletionSource.Task;
             }
 

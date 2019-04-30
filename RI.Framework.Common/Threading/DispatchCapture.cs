@@ -141,7 +141,7 @@ namespace RI.Framework.Threading
         /// </remarks> 
         public Task<object> ExecuteAsync (bool forwardExceptions)
         {
-            TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
+            TaskCompletionSource<object> tcs = new TaskCompletionSource<object>(TaskCreationOptions.RunContinuationsAsynchronously);
             if (this.Context != null)
             {
                 this.Context.Post(x =>

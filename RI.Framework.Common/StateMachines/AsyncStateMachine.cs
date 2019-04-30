@@ -27,6 +27,7 @@ namespace RI.Framework.StateMachines
     ///     </note>
     /// </remarks>
     /// <threadsafety static="true" instance="true" />
+    /// TODO: Use TaskScheduler optionally provided by dispatcher
     public class AsyncStateMachine : StateMachine
     {
         #region Instance Constructor/Destructor
@@ -73,9 +74,9 @@ namespace RI.Framework.StateMachines
         /// <returns>
         ///     The task used to wait for finishing the signal processing.
         /// </returns>
-        public async Task SignalAsync <TSignal> (TSignal signal)
+        public Task SignalAsync <TSignal> (TSignal signal)
         {
-            await this.SignalAsync((object)signal).ConfigureAwait(false);
+            return this.SignalAsync((object)signal);
         }
 
         /// <summary>
@@ -85,7 +86,7 @@ namespace RI.Framework.StateMachines
         /// <returns>
         ///     The task used to wait for finishing the signal processing.
         /// </returns>
-        public async Task SignalAsync (object signal)
+        public Task SignalAsync (object signal)
         {
             Task<bool> waitTask;
             lock (this.SyncRoot)
@@ -94,7 +95,7 @@ namespace RI.Framework.StateMachines
                 this.SignalInternal(signal, new object[0]);
             }
 
-            await waitTask.ConfigureAwait(false);
+            return waitTask;
         }
 
         /// <summary>
@@ -106,9 +107,9 @@ namespace RI.Framework.StateMachines
         /// <returns>
         ///     The task used to wait for finishing the signal processing.
         /// </returns>
-        public async Task SignalAsync<TSignal>(TSignal signal, params object[] parameters)
+        public Task SignalAsync<TSignal>(TSignal signal, params object[] parameters)
         {
-            await this.SignalAsync((object)signal, parameters).ConfigureAwait(false);
+            return this.SignalAsync((object)signal, parameters);
         }
 
         /// <summary>
@@ -119,7 +120,7 @@ namespace RI.Framework.StateMachines
         /// <returns>
         ///     The task used to wait for finishing the signal processing.
         /// </returns>
-        public async Task SignalAsync(object signal, params object[] parameters)
+        public Task SignalAsync(object signal, params object[] parameters)
         {
             Task<bool> waitTask;
             lock (this.SyncRoot)
@@ -128,7 +129,7 @@ namespace RI.Framework.StateMachines
                 this.SignalInternal(signal, parameters);
             }
 
-            await waitTask.ConfigureAwait(false);
+            return waitTask;
         }
 
         /// <summary>
@@ -144,10 +145,10 @@ namespace RI.Framework.StateMachines
         ///     </para>
         /// </remarks>
         /// <exception cref="TaskCanceledException"> The state transition was aborted. </exception>
-        public async Task TransientAsync <TState> ()
+        public Task TransientAsync <TState> ()
             where TState : IState
         {
-            await this.TransientAsync(typeof(TState)).ConfigureAwait(false);
+            return this.TransientAsync(typeof(TState));
         }
 
         /// <summary>
@@ -163,7 +164,7 @@ namespace RI.Framework.StateMachines
         ///     </para>
         /// </remarks>
         /// <exception cref="TaskCanceledException"> The state transition was aborted. </exception>
-        public async Task TransientAsync (Type state)
+        public Task TransientAsync (Type state)
         {
             IState nextState = this.Resolve(state);
 
@@ -174,7 +175,7 @@ namespace RI.Framework.StateMachines
                 this.TransientInternal(nextState, new object[0]);
             }
 
-            await waitTask.ConfigureAwait(false);
+            return waitTask;
         }
 
         /// <summary>
@@ -191,10 +192,10 @@ namespace RI.Framework.StateMachines
         ///     </para>
         /// </remarks>
         /// <exception cref="TaskCanceledException"> The state transition was aborted. </exception>
-        public async Task TransientAsync <TState> (params object[] parameters)
+        public Task TransientAsync <TState> (params object[] parameters)
             where TState : IState
         {
-            await this.TransientAsync(typeof(TState), parameters).ConfigureAwait(false);
+            return this.TransientAsync(typeof(TState), parameters);
         }
 
         /// <summary>
@@ -211,7 +212,7 @@ namespace RI.Framework.StateMachines
         ///     </para>
         /// </remarks>
         /// <exception cref="TaskCanceledException"> The state transition was aborted. </exception>
-        public async Task TransientAsync (Type state, params object[] parameters)
+        public Task TransientAsync (Type state, params object[] parameters)
         {
             IState nextState = this.Resolve(state);
 
@@ -222,7 +223,7 @@ namespace RI.Framework.StateMachines
                 this.TransientInternal(nextState, parameters ?? new object[0]);
             }
 
-            await waitTask.ConfigureAwait(false);
+            return waitTask;
         }
 
         /// <summary>
@@ -231,7 +232,7 @@ namespace RI.Framework.StateMachines
         /// <returns>
         ///     The task used to wait for finishing the update.
         /// </returns>
-        public async Task UpdateAsync ()
+        public Task UpdateAsync ()
         {
             Task<bool> waitTask;
             lock (this.SyncRoot)
@@ -240,7 +241,7 @@ namespace RI.Framework.StateMachines
                 this.UpdateInternal(0);
             }
 
-            await waitTask.ConfigureAwait(false);
+            return waitTask;
         }
 
         /// <summary>
@@ -252,9 +253,9 @@ namespace RI.Framework.StateMachines
         /// <returns>
         ///     true if the signal was executed within the specified timeout, false otherwise.
         /// </returns>
-        public async Task<bool> WaitForSignalAsync <TSignal> (TSignal signal, int timeout)
+        public Task<bool> WaitForSignalAsync <TSignal> (TSignal signal, int timeout)
         {
-            return await this.WaitForSignalAsync(signal, timeout, CancellationToken.None).ConfigureAwait(false);
+            return this.WaitForSignalAsync(signal, timeout, CancellationToken.None);
         }
 
         /// <summary>
@@ -265,9 +266,9 @@ namespace RI.Framework.StateMachines
         /// <returns>
         ///     true if the signal was executed within the specified timeout, false otherwise.
         /// </returns>
-        public async Task<bool> WaitForSignalAsync (object signal, int timeout)
+        public Task<bool> WaitForSignalAsync (object signal, int timeout)
         {
-            return await this.WaitForSignalAsync(signal, timeout, CancellationToken.None).ConfigureAwait(false);
+            return this.WaitForSignalAsync(signal, timeout, CancellationToken.None);
         }
 
         /// <summary>
@@ -280,9 +281,9 @@ namespace RI.Framework.StateMachines
         /// <returns>
         ///     true if the signal was executed within the specified timeout, false otherwise.
         /// </returns>
-        public async Task<bool> WaitForSignalAsync <TSignal> (TSignal signal, int timeout, CancellationToken cancellationToken)
+        public Task<bool> WaitForSignalAsync <TSignal> (TSignal signal, int timeout, CancellationToken cancellationToken)
         {
-            return await this.WaitForSignalAsync((object)signal, timeout, cancellationToken).ConfigureAwait(false);
+            return this.WaitForSignalAsync((object)signal, timeout, cancellationToken);
         }
 
         /// <summary>
@@ -294,7 +295,7 @@ namespace RI.Framework.StateMachines
         /// <returns>
         ///     true if the signal was executed within the specified timeout, false otherwise.
         /// </returns>
-        public async Task<bool> WaitForSignalAsync (object signal, int timeout, CancellationToken cancellationToken)
+        public Task<bool> WaitForSignalAsync (object signal, int timeout, CancellationToken cancellationToken)
         {
             TaskCompletionSource<object> tcs = new TaskCompletionSource<object>(TaskCreationOptions.RunContinuationsAsynchronously);
 
@@ -306,8 +307,8 @@ namespace RI.Framework.StateMachines
             Task signalTask = tcs.Task;
             Task timeoutTask = Task.Delay(timeout, cancellationToken);
 
-            Task completed = await Task.WhenAny(signalTask, timeoutTask).ConfigureAwait(false);
-            return object.ReferenceEquals(completed, signalTask);
+            Task<Task> completed = Task.WhenAny(signalTask, timeoutTask);
+            return completed.ContinueWith(_ => object.ReferenceEquals(completed, signalTask), CancellationToken.None, TaskContinuationOptions.DenyChildAttach | TaskContinuationOptions.LazyCancellation | TaskContinuationOptions.RunContinuationsAsynchronously, TaskScheduler.Current);
         }
 
         /// <summary>
@@ -324,10 +325,10 @@ namespace RI.Framework.StateMachines
         ///     </para>
         /// </remarks>
         /// <exception cref="TaskCanceledException"> The state transition was aborted. </exception>
-        public async Task<bool> WaitForTransientAsync <TState> (int timeout)
+        public Task<bool> WaitForTransientAsync <TState> (int timeout)
             where TState : IState
         {
-            return await this.WaitForTransientAsync<TState>(timeout, CancellationToken.None).ConfigureAwait(false);
+            return this.WaitForTransientAsync<TState>(timeout, CancellationToken.None);
         }
 
         /// <summary>
@@ -344,9 +345,9 @@ namespace RI.Framework.StateMachines
         ///     </para>
         /// </remarks>
         /// <exception cref="TaskCanceledException"> The state transition was aborted. </exception>
-        public async Task<bool> WaitForTransientAsync (Type state, int timeout)
+        public Task<bool> WaitForTransientAsync (Type state, int timeout)
         {
-            return await this.WaitForTransientAsync(state, timeout, CancellationToken.None).ConfigureAwait(false);
+            return this.WaitForTransientAsync(state, timeout, CancellationToken.None);
         }
 
         /// <summary>
@@ -364,10 +365,10 @@ namespace RI.Framework.StateMachines
         ///     </para>
         /// </remarks>
         /// <exception cref="TaskCanceledException"> The state transition was aborted. </exception>
-        public async Task<bool> WaitForTransientAsync <TState> (int timeout, CancellationToken cancellationToken)
+        public Task<bool> WaitForTransientAsync <TState> (int timeout, CancellationToken cancellationToken)
             where TState : IState
         {
-            return await this.WaitForTransientAsync(typeof(TState), timeout, cancellationToken).ConfigureAwait(false);
+            return this.WaitForTransientAsync(typeof(TState), timeout, cancellationToken);
         }
 
         /// <summary>
@@ -385,7 +386,7 @@ namespace RI.Framework.StateMachines
         ///     </para>
         /// </remarks>
         /// <exception cref="TaskCanceledException"> The state transition was aborted. </exception>
-        public async Task<bool> WaitForTransientAsync (Type state, int timeout, CancellationToken cancellationToken)
+        public Task<bool> WaitForTransientAsync (Type state, int timeout, CancellationToken cancellationToken)
         {
             TaskCompletionSource<object> tcs = new TaskCompletionSource<object>(TaskCreationOptions.RunContinuationsAsynchronously);
 
@@ -397,8 +398,8 @@ namespace RI.Framework.StateMachines
             Task transitionTask = tcs.Task;
             Task timeoutTask = Task.Delay(timeout, cancellationToken);
 
-            Task completed = await Task.WhenAny(transitionTask, timeoutTask).ConfigureAwait(false);
-            return object.ReferenceEquals(completed, transitionTask);
+            Task<Task> completed = Task.WhenAny(transitionTask, timeoutTask);
+            return completed.ContinueWith(_ => object.ReferenceEquals(completed, transitionTask), CancellationToken.None, TaskContinuationOptions.DenyChildAttach | TaskContinuationOptions.LazyCancellation | TaskContinuationOptions.RunContinuationsAsynchronously, TaskScheduler.Current);
         }
 
         /// <summary>
@@ -408,9 +409,9 @@ namespace RI.Framework.StateMachines
         /// <returns>
         ///     true if the update was executed within the specified timeout, false otherwise.
         /// </returns>
-        public async Task<bool> WaitForUpdateAsync (int timeout)
+        public Task<bool> WaitForUpdateAsync (int timeout)
         {
-            return await this.WaitForUpdateAsync(timeout, CancellationToken.None).ConfigureAwait(false);
+            return this.WaitForUpdateAsync(timeout, CancellationToken.None);
         }
 
         /// <summary>
@@ -421,7 +422,7 @@ namespace RI.Framework.StateMachines
         /// <returns>
         ///     true if the update was executed within the specified timeout, false otherwise.
         /// </returns>
-        public async Task<bool> WaitForUpdateAsync (int timeout, CancellationToken cancellationToken)
+        public Task<bool> WaitForUpdateAsync (int timeout, CancellationToken cancellationToken)
         {
             TaskCompletionSource<object> tcs = new TaskCompletionSource<object>(TaskCreationOptions.RunContinuationsAsynchronously);
 
@@ -433,8 +434,8 @@ namespace RI.Framework.StateMachines
             Task updateTask = tcs.Task;
             Task timeoutTask = Task.Delay(timeout, cancellationToken);
 
-            Task completed = await Task.WhenAny(updateTask, timeoutTask).ConfigureAwait(false);
-            return object.ReferenceEquals(completed, updateTask);
+            Task<Task> completed = Task.WhenAny(updateTask, timeoutTask);
+            return completed.ContinueWith(_ => object.ReferenceEquals(completed, updateTask), CancellationToken.None, TaskContinuationOptions.DenyChildAttach | TaskContinuationOptions.LazyCancellation | TaskContinuationOptions.RunContinuationsAsynchronously, TaskScheduler.Current);
         }
 
         #endregion

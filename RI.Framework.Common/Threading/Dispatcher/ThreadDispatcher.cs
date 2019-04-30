@@ -103,6 +103,7 @@ namespace RI.Framework.Threading.Dispatcher
             this.WatchdogLoop = null;
 
             this.Scheduler = new ThreadDispatcherTaskScheduler(this);
+            this.Factory = new ThreadDispatcherTaskFactory(this);
             this.Context = new ThreadDispatcherSynchronizationContext(this);
             this.Awaiter = new ThreadDispatcherAwaiter(this);
 
@@ -133,6 +134,7 @@ namespace RI.Framework.Threading.Dispatcher
 
         #region Instance Fields
 
+        private TaskFactory _factory;
         private ThreadDispatcherAwaiter _awaiter;
         private bool _catchExceptions;
         private SynchronizationContext _context;
@@ -199,6 +201,24 @@ namespace RI.Framework.Threading.Dispatcher
                 lock (this.SyncRoot)
                 {
                     this._scheduler = value;
+                }
+            }
+        }
+
+        internal TaskFactory Factory
+        {
+            get
+            {
+                lock (this.SyncRoot)
+                {
+                    return this._factory;
+                }
+            }
+            private set
+            {
+                lock (this.SyncRoot)
+                {
+                    this._factory = value;
                 }
             }
         }
@@ -432,6 +452,13 @@ namespace RI.Framework.Threading.Dispatcher
 
                     if (object.ReferenceEquals(operation, returnTrigger))
                     {
+                        lock (this.SyncRoot)
+                        {
+                            if (this.Queue.Count == 0)
+                            {
+                                this.SignalIdle();
+                            }
+                        }
                         return;
                     }
                 }
@@ -799,79 +826,57 @@ namespace RI.Framework.Threading.Dispatcher
         }
 
         /// <inheritdoc />
-        public async Task DoProcessingAsync ()
+        public Task DoProcessingAsync ()
         {
-            ThreadDispatcherOperation operation = null;
-
-            while (true)
-            {
-                lock (this.SyncRoot)
-                {
-                    if (operation == null)
-                    {
-                        this.VerifyRunning();
-                    }
-                    else if (!this.IsRunning)
-                    {
-                        return;
-                    }
-
-                    if ((this.Queue.Count == 0) && (this.CurrentOperation.Count == 0))
-                    {
-                        return;
-                    }
-
-                    operation = this.Post(0, ThreadDispatcherOptions.None, new Action(() => { }));
-                }
-
-                //TODO: Get rid of await
-                await operation.WaitAsync();
-            }
+            return this.DoProcessingAsync(0);
         }
 
         /// <inheritdoc />
-        public async Task DoProcessingAsync (int priority)
+        public Task DoProcessingAsync (int priority)
         {
             if (priority < 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(priority));
             }
 
-            ThreadDispatcherOperation operation = null;
+            this.VerifyRunning();
 
-            while (true)
+            Task waitTask = this.SendAsync(priority, ThreadDispatcherOptions.None, async () =>
             {
-                lock (this.SyncRoot)
+                while (true)
                 {
-                    if (operation == null)
+                    ThreadDispatcherOperation operation;
+
+                    lock (this.SyncRoot)
                     {
-                        this.VerifyRunning();
-                    }
-                    else if (!this.IsRunning)
-                    {
-                        return;
+                        if (!this.IsRunning)
+                        {
+                            return;
+                        }
+
+                        if ((this.Queue.Count == 0) && (this.CurrentOperation.Count == 0))
+                        {
+                            return;
+                        }
+
+                        if (this.Queue.HighestPriority < priority)
+                        {
+                            return;
+                        }
+
+                        operation = this.Post(priority, ThreadDispatcherOptions.None, new Action(() => { }));
                     }
 
-                    if ((this.Queue.Count == 0) && (this.CurrentOperation.Count == 0))
-                    {
-                        return;
-                    }
-
-                    if (this.Queue.HighestPriority < priority)
-                    {
-                        return;
-                    }
-
-                    operation = this.Post(priority, ThreadDispatcherOptions.None, new Action(() => { }));
+                    await operation.WaitAsync();
                 }
+            });
 
-                //TODO: Get rid of await
-                await operation.WaitAsync();
-            }
+            return waitTask;
         }
 
         /// <inheritdoc />
         [SuppressMessage("ReSharper", "HeuristicUnreachableCode")]
+        [SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
         object ISynchronizeInvoke.EndInvoke (IAsyncResult result)
         {
             if (result == null)
@@ -1116,7 +1121,7 @@ namespace RI.Framework.Threading.Dispatcher
         }
 
         /// <inheritdoc />
-        public async Task<object> SendAsync (int priority, ThreadDispatcherOptions options, Delegate action, params object[] parameters)
+        public Task<object> SendAsync (int priority, ThreadDispatcherOptions options, Delegate action, params object[] parameters)
         {
             if (priority < -1)
             {
@@ -1140,31 +1145,23 @@ namespace RI.Framework.Threading.Dispatcher
                 operation = this.Post(priority, options, action, parameters);
             }
 
-            try
+            Task<bool> waitTask = operation.WaitAsync(Timeout.Infinite, CancellationToken.None);
+            Task<object> resultTask = waitTask.ContinueWith(_ =>
             {
-                //TODO: Get rid of await
-                await operation.WaitAsync();
-            }
-            catch (TaskCanceledException)
-            {
-                throw new OperationCanceledException();
-            }
-            catch (Exception ex)
-            {
-                throw new ThreadDispatcherException(ex);
-            }
+                if (operation.Exception != null)
+                {
+                    throw new ThreadDispatcherException(operation.Exception);
+                }
 
-            if (operation.Exception != null)
-            {
-                throw new ThreadDispatcherException(operation.Exception);
-            }
+                if (operation.State == ThreadDispatcherOperationState.Canceled)
+                {
+                    throw new OperationCanceledException();
+                }
 
-            if (operation.State == ThreadDispatcherOperationState.Canceled)
-            {
-                throw new OperationCanceledException();
-            }
+                return operation.Result;
+            }, CancellationToken.None, TaskContinuationOptions.DenyChildAttach | TaskContinuationOptions.LazyCancellation | TaskContinuationOptions.RunContinuationsAsynchronously, this.Scheduler);
 
-            return operation.Result;
+            return resultTask;
         }
 
         /// <inheritdoc />
