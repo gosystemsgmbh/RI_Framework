@@ -23,7 +23,7 @@ namespace RI.Framework.Threading.Dispatcher
         /// <param name="dispatcher"> The used dispatcher. </param>
         /// <exception cref="ArgumentNullException"> <paramref name="dispatcher" /> is null. </exception>
         public ThreadDispatcherTaskFactory (IThreadDispatcher dispatcher)
-            : base(CancellationToken.None, TaskCreationOptions.DenyChildAttach | TaskCreationOptions.RunContinuationsAsynchronously, TaskContinuationOptions.DenyChildAttach | TaskContinuationOptions.LazyCancellation | TaskContinuationOptions.RunContinuationsAsynchronously, dispatcher.GetTaskScheduler())
+            : base(dispatcher.GetTaskScheduler())
         {
             if (dispatcher == null)
             {
