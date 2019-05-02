@@ -13,6 +13,7 @@ namespace RI.Framework.Bus.Internals
 	/// <summary>
 	///     Stores a single message.
 	/// </summary>
+	/// TODO: Add IMessageObject
 	[Serializable]
 	public sealed class MessageItem : ICloneable<MessageItem>, ICloneable
 	{

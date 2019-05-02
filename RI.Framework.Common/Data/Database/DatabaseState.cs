@@ -27,17 +27,17 @@ namespace RI.Framework.Data.Database
 		ReadyOld = 2,
 
 		/// <summary>
-		///     The database is initialized and ready for use, but upgrading is not supported/available.
+		///     The database is initialized and ready for use, but upgrading is not supported/available and therefore versioning information is not available or unknown respectively.
 		/// </summary>
 		ReadyUnknown = 3,
 
 		/// <summary>
-		///     The database is initialized but is not ready for use because it is not available and requires an upgrade to create the database.
+		///     The database is initialized but is not ready for use because it is not available/created and requires an upgrade to create the database.
 		/// </summary>
 		New = 4,
 
 		/// <summary>
-		///     The database is initialized but is not ready for use because it is not available and upgrading is not supported/available.
+		///     The database is initialized but is not ready for use because it is not available/created and upgrading is not supported/available so the database cannot be created through an upgrade.
 		/// </summary>
 		Unavailable = 5,
 

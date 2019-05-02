@@ -37,6 +37,8 @@ namespace RI.Framework.Data.Repository.Views
     /// TODO: Check whether AllowEdit and AllowSelect is properly observed
     /// TODO: Make Source IQueryable
     /// TODO: Add overloads for Add, ..., Validate with TViewObject parameter
+    /// TODO: Add standard data interfaces from the .NET Standard
+    /// TODO: Add implementation of IItemsProvider and INotifyItemsProvider
     public class EntityView <TEntity, TViewObject> : INotifyPropertyChanged, IEntityViewCaller<TEntity>
         where TEntity : class, new()
         where TViewObject : EntityViewObject<TEntity>, new()
