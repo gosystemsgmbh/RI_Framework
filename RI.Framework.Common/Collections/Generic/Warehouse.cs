@@ -38,6 +38,7 @@ namespace RI.Framework.Collections.Generic
 	/// ]]>
 	/// </code>
 	/// </example>
+	/// TODO: IWarehouseExtensions
 	public sealed class Warehouse <T> : IWarehouse<T>, ISynchronizable
 	{
 		#region Instance Constructor/Destructor

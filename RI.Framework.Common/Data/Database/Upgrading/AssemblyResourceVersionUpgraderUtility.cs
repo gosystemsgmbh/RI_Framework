@@ -39,7 +39,7 @@ namespace RI.Framework.Data.Database.Upgrading
     ///     </para>
     ///     <note type="note">
     ///         Implementations of <see cref="IAssemblyResourceVersionUpgraderStepConfigurator{TProcessingStep,TConnection,TTransaction,TConnectionStringBuilder,TManager,TConfiguration}" /> must have a parameterless constructor in order to be usable.
-    ///         A new instance is created for each call to <see cref="GetUpgradeStepsFromAssembly" />.
+    ///         A new instance is created for each call to <see cref="GetUpgradeStepsFromAssembly(Assembly,string,out List{TProcessingStep},out AssemblyRessourceScriptLocator)" /> or <see cref="GetUpgradeStepsFromAssembly(Assembly,Encoding,string,out List{TProcessingStep},out AssemblyRessourceScriptLocator)" />.
     ///     </note>
     /// </remarks>
     /// <threadsafety static="false" instance="false" />

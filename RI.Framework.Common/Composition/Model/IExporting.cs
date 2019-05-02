@@ -1,9 +1,4 @@
-﻿using System.Collections.Generic;
-
-
-
-
-namespace RI.Framework.Composition.Model
+﻿namespace RI.Framework.Composition.Model
 {
     /// <summary>
     ///     Defines an interface which allows exported types and objects to be informed when they are added to or removed from a <see cref="CompositionContainer" />.
