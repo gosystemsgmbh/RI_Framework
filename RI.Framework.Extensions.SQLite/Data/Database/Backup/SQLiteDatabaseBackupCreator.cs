@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Data;
 using System.Data.SQLite;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading;
 using RI.Framework.IO.Files;
@@ -24,17 +23,17 @@ namespace RI.Framework.Data.Database.Backup
     ///         It also supports additional pre-processing and post-processing steps which are executed on the source database.
     ///     </para>
     ///     <para>
-    ///         <see cref="SQLiteDatabaseBackupCreator" /> supports the following types for backup targets and sources:
-    ///         <see cref="FilePath" /> (backup to/from SQLite database file using this file path),
-    ///         <see cref="string" /> or <see cref="SQLiteConnectionStringBuilder" /> (backup to/from SQLite database using this connection string),
-    ///         <see cref="SQLiteConnection" /> (backup to/from SQLite database using this connection),
-    ///         <see cref="Stream" /> (backup to/from a stream which contains a SQLite database).
+    ///         <see cref="SQLiteDatabaseBackupCreator" /> supports the following types for backup targets:
+    ///         <see cref="FilePath" /> (backup to SQLite database file using this file path),
+    ///         <see cref="string" /> or <see cref="SQLiteConnectionStringBuilder" /> (backup to SQLite database using this connection string),
+    ///         <see cref="SQLiteConnection" /> (backup to SQLite database using this database connection),
+    ///         <see cref="Stream" /> (backup to a stream as a SQLite database).
     ///     </para>
     ///     <para>
     ///         <see cref="SQLiteDatabaseBackupCreator" /> does not support restore.
     ///     </para>
     /// </remarks>
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
+    /// <threadsafety static="false" instance="false" />
     public sealed class SQLiteDatabaseBackupCreator : DatabaseBackupCreator<SQLiteConnection, SQLiteTransaction, SQLiteConnectionStringBuilder, SQLiteDatabaseManager, SQLiteDatabaseManagerConfiguration>
     {
         #region Instance Constructor/Destructor
@@ -48,7 +47,7 @@ namespace RI.Framework.Data.Database.Backup
         ///     </para>
         /// </remarks>
         public SQLiteDatabaseBackupCreator ()
-            : this(null, null)
+            : this((SQLiteDatabaseProcessingStep)null, (SQLiteDatabaseProcessingStep)null)
         {
         }
 
@@ -61,6 +60,53 @@ namespace RI.Framework.Data.Database.Backup
         {
             this.PreprocessingStep = preprocessingStep;
             this.PostprocessingStep = postprocessingStep;
+        }
+
+        /// <summary>
+        ///     Creates a new instance of <see cref="SQLiteDatabaseBackupCreator" />.
+        /// </summary>
+        /// <param name="preprocessingScriptName"> The script name of the pre-processing step executed before the backup is created or null if no pre-processing step is used. </param>
+        /// <param name="postprocessingScriptName"> The script name of the post-processing step executed after the backup was created or null if no post-processing step is used. </param>
+        /// <exception cref="EmptyStringArgumentException"> <paramref name="postprocessingScriptName" /> or <paramref name="postprocessingScriptName"/> is an empty string. </exception>
+        public SQLiteDatabaseBackupCreator(string preprocessingScriptName, string postprocessingScriptName)
+        {
+            if (preprocessingScriptName != null)
+            {
+                if (preprocessingScriptName.IsNullOrEmptyOrWhitespace())
+                {
+                    throw new EmptyStringArgumentException(nameof(preprocessingScriptName));
+                }
+            }
+
+            if (postprocessingScriptName != null)
+            {
+                if (postprocessingScriptName.IsNullOrEmptyOrWhitespace())
+                {
+                    throw new EmptyStringArgumentException(nameof(postprocessingScriptName));
+                }
+            }
+
+            if (preprocessingScriptName != null)
+            {
+                SQLiteDatabaseProcessingStep step = new SQLiteDatabaseProcessingStep();
+                step.AddScript(preprocessingScriptName);
+                this.PreprocessingStep = step;
+            }
+            else
+            {
+                this.PreprocessingStep = null;
+            }
+
+            if (postprocessingScriptName != null)
+            {
+                SQLiteDatabaseProcessingStep step = new SQLiteDatabaseProcessingStep();
+                step.AddScript(postprocessingScriptName);
+                this.PostprocessingStep = step;
+            }
+            else
+            {
+                this.PostprocessingStep = null;
+            }
         }
 
         #endregion
@@ -140,7 +186,7 @@ namespace RI.Framework.Data.Database.Backup
                         targetConnectionString.DataSource = tempFile.File.PathResolved;
                     }
 
-                    this.Log(LogLevel.Information, "Beginning SQLite database backup: Source=[{0}]; Target=[{1}]", manager.Configuration.ConnectionString, backupTarget);
+                    this.Log(LogLevel.Debug, "Beginning SQLite database backup: Source=[{0}]; Target=[{1}]", manager.Configuration.ConnectionString, backupTarget);
 
                     using (SQLiteConnection source = manager.CreateInternalConnection(null, false))
                     {
@@ -179,6 +225,7 @@ namespace RI.Framework.Data.Database.Backup
 
                     if (stream != null)
                     {
+                        //TODO: This looks hacky...!
                         Thread.Sleep(100);
                         using (TemporaryFile tempFile2 = new TemporaryFile())
                         {
@@ -190,7 +237,7 @@ namespace RI.Framework.Data.Database.Backup
                         }
                     }
 
-                    this.Log(LogLevel.Information, "Finished SQLite database backup: Source=[{0}]; Target=[{1}]", manager.Configuration.ConnectionString, backupTarget);
+                    this.Log(LogLevel.Debug, "Finished SQLite database backup: Source=[{0}]; Target=[{1}]", manager.Configuration.ConnectionString, backupTarget);
 
                     return true;
                 }

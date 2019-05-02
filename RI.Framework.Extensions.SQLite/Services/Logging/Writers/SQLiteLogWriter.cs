@@ -33,7 +33,6 @@ namespace RI.Framework.Services.Logging.Writers
     /// </remarks>
     /// <threadsafety static="true" instance="true" />
     [Export]
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public sealed class SQLiteLogWriter : LogSource, ILogWriter, IDisposable
     {
         #region Instance Constructor/Destructor

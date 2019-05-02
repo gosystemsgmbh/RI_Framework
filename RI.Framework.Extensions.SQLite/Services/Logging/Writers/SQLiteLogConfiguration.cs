@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
-using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 using RI.Framework.IO.Paths;
@@ -23,7 +22,6 @@ namespace RI.Framework.Services.Logging.Writers
     ///     </para>
     /// </remarks>
     /// <threadsafety static="false" instance="false" />
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
     [Serializable]
     public sealed class SQLiteLogConfiguration : ICloneable<SQLiteLogConfiguration>, ICloneable
     {
