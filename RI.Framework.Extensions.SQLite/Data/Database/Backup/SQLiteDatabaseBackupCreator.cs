@@ -47,7 +47,7 @@ namespace RI.Framework.Data.Database.Backup
         ///     </para>
         /// </remarks>
         public SQLiteDatabaseBackupCreator ()
-            : this((SQLiteDatabaseProcessingStep)null, (SQLiteDatabaseProcessingStep)null)
+            : this(null, (SQLiteDatabaseProcessingStep)null)
         {
         }
 

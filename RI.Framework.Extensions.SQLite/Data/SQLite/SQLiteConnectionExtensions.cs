@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 
@@ -81,16 +80,18 @@ namespace RI.Framework.Data.SQLite
 
         private static List<SQLiteFunction> FindFrameworkFunctions (Predicate<SQLiteFunctionAttribute> attributePredicate)
         {
-            Func<Type, bool> predicate = type =>
+            bool Predicate (Type type)
             {
                 SQLiteFunctionAttribute attribute = type.GetCustomAttribute<SQLiteFunctionAttribute>();
                 if (attribute == null)
                 {
                     return false;
                 }
+
                 return attributePredicate(attribute);
-            };
-            List<SQLiteFunction> functions = (from x in Assembly.GetExecutingAssembly().GetTypes() where typeof(SQLiteFunction).IsAssignableFrom(x) && (!x.IsAbstract) && predicate(x) select (SQLiteFunction)Activator.CreateInstance(x)).ToList();
+            }
+
+            List<SQLiteFunction> functions = (from x in Assembly.GetExecutingAssembly().GetTypes() where typeof(SQLiteFunction).IsAssignableFrom(x) && (!x.IsAbstract) && Predicate(x) select (SQLiteFunction)Activator.CreateInstance(x)).ToList();
             return functions;
         }
 

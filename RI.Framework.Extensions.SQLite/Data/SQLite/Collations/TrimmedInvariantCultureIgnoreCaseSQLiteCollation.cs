@@ -1,5 +1,4 @@
 ﻿using System.Data.SQLite;
-using System.Diagnostics.CodeAnalysis;
 
 using RI.Framework.Utilities;
 

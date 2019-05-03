@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
-using System.Diagnostics.CodeAnalysis;
 
 using RI.Framework.Data.Database.Scripts;
 using RI.Framework.Utilities;
