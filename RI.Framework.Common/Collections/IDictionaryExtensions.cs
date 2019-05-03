@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using RI.Framework.Collections.DirectLinq;
+
 
 
 
@@ -10,10 +12,119 @@ namespace RI.Framework.Collections
     ///     Provides utility/extension methods for the <see cref="IDictionary{TKey,TValue}" /> type and its implementations.
     /// </summary>
     /// <threadsafety static="false" instance="false" />
-    /// TODO: AddRange
     public static class IDictionaryExtensions
     {
         #region Static Methods
+
+        /// <summary>
+        ///     Adds multiple items to a dictionary.
+        /// </summary>
+        /// <typeparam name="TKey"> The type of the keys in <paramref name="dictionary" />. </typeparam>
+        /// <typeparam name="TValue"> The type of the values in <paramref name="dictionary" />. </typeparam>
+        /// <param name="dictionary"> The dictionary. </param>
+        /// <param name="keys"> The sequence of keys to add to the dictionary. </param>
+        /// <param name="values"> The sequence of values to add to the dictionary. </param>
+        /// <returns>
+        ///     The number of items added to the dictionary.
+        /// </returns>
+        /// <remarks>
+        ///     <para>
+        ///         <paramref name="keys" /> and <paramref name="values"/> are enumerated and the first item in <paramref name="keys"/> is used as the key for the first item in <paramref name="values"/> and so forth.
+        ///     </para>
+        ///     <para>
+        ///         The number of items in <paramref name="keys" /> and <paramref name="values"/> must match, otherwise an <see cref="ArgumentException"/> is thrown.
+        ///     </para>
+        ///     <para>
+        ///         <paramref name="keys" /> and <paramref name="values"/> are enumerated exactly once.
+        ///     </para>
+        /// </remarks>
+        /// <exception cref="ArgumentNullException"> <paramref name="dictionary" />, <paramref name="keys"/>, or <paramref name="values" /> is null. </exception>
+        /// <exception cref="ArgumentException"> <paramref name="keys"/> and <paramref name="values" /> do not contain the same amount of items. </exception>
+        public static int AddRangeExact<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, IEnumerable<TKey> keys, IEnumerable<TValue> values)
+        {
+            if (dictionary == null)
+            {
+                throw new ArgumentNullException(nameof(dictionary));
+            }
+
+            if (keys == null)
+            {
+                throw new ArgumentNullException(nameof(keys));
+            }
+
+            if (values == null)
+            {
+                throw new ArgumentNullException(nameof(values));
+            }
+
+            List<TKey> keyList = keys.ToList();
+            List<TValue> valueList = values.ToList();
+
+            if (keyList.Count != valueList.Count)
+            {
+                throw new ArgumentException("The number of keys and values do not match.", nameof(values));
+            }
+
+            for (int i1 = 0; i1 < keyList.Count; i1++)
+            {
+                dictionary.Add(keyList[i1], valueList[i1]);
+            }
+
+            return keyList.Count;
+        }
+
+        /// <summary>
+        ///     Adds multiple items to a dictionary.
+        /// </summary>
+        /// <typeparam name="TKey"> The type of the keys in <paramref name="dictionary" />. </typeparam>
+        /// <typeparam name="TValue"> The type of the values in <paramref name="dictionary" />. </typeparam>
+        /// <param name="dictionary"> The dictionary. </param>
+        /// <param name="keys"> The sequence of keys to add to the dictionary. </param>
+        /// <param name="values"> The sequence of values to add to the dictionary. </param>
+        /// <returns>
+        ///     The number of items added to the dictionary.
+        /// </returns>
+        /// <remarks>
+        ///     <para>
+        ///         <paramref name="keys" /> and <paramref name="values"/> are enumerated and the first item in <paramref name="keys"/> is used as the key for the first item in <paramref name="values"/> and so forth.
+        ///     </para>
+        ///     <para>
+        ///         The number of items in <paramref name="keys" /> and <paramref name="values"/> can be different.
+        ///         If so, adding of items stops when the first of the two is done enumerating.
+        ///     </para>
+        ///     <para>
+        ///         <paramref name="keys" /> and <paramref name="values"/> are enumerated exactly once.
+        ///     </para>
+        /// </remarks>
+        /// <exception cref="ArgumentNullException"> <paramref name="dictionary" />, <paramref name="keys"/>, or <paramref name="values" /> is null. </exception>
+        public static int AddRange<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, IEnumerable<TKey> keys, IEnumerable<TValue> values)
+        {
+            if (dictionary == null)
+            {
+                throw new ArgumentNullException(nameof(dictionary));
+            }
+
+            if (keys == null)
+            {
+                throw new ArgumentNullException(nameof(keys));
+            }
+
+            if (values == null)
+            {
+                throw new ArgumentNullException(nameof(values));
+            }
+
+            List<TKey> keyList = keys.ToList();
+            List<TValue> valueList = values.ToList();
+            int count = Math.Min(keyList.Count, valueList.Count);
+
+            for (int i1 = 0; i1 < count; i1++)
+            {
+                dictionary.Add(keyList[i1], valueList[i1]);
+            }
+
+            return count;
+        }
 
         /// <summary>
         ///     Adds a new value to or replaces an existing value in a dictionary, based on the specified key.

@@ -12,7 +12,6 @@ namespace RI.Framework.Collections
     ///     Provides utility/extension methods for the <see cref="Stack{T}" /> type.
     /// </summary>
     /// <threadsafety static="false" instance="false" />
-    /// TODO: PopInto
     public static class StackExtensions
     {
         #region Static Methods
@@ -60,6 +59,36 @@ namespace RI.Framework.Collections
                 items.Add(stack.Pop());
             }
             return items;
+        }
+
+        /// <summary>
+        ///     Gets all the items from a stack in the order they are pop'ed and removes them.
+        /// </summary>
+        /// <typeparam name="T"> The type of the items in <paramref name="stack" />. </typeparam>
+        /// <param name="stack"> The stack. </param>
+        /// <param name="collection"> The collection the popped items are put into. </param>
+        /// <returns>
+        ///     The number of popped items.
+        /// </returns>
+        /// <exception cref="ArgumentNullException"> <paramref name="stack" /> or <paramref name="collection" /> is null. </exception>
+        public static int PopInto<T>(this Stack<T> stack, ICollection<T> collection)
+        {
+            if (stack == null)
+            {
+                throw new ArgumentNullException(nameof(stack));
+            }
+
+            if (collection == null)
+            {
+                throw new ArgumentNullException(nameof(collection));
+            }
+
+            int count = stack.Count;
+            while (stack.Count > 0)
+            {
+                collection.Add(stack.Pop());
+            }
+            return count;
         }
 
         /// <summary>

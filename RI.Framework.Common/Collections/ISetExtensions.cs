@@ -12,7 +12,6 @@ namespace RI.Framework.Collections
     ///     Provides utility/extension methods for the <see cref="ISet{T}" /> type and its implementations.
     /// </summary>
     /// <threadsafety static="false" instance="false" />
-    /// TODO: RemoveWhere
     public static class ISetExtensions
     {
         #region Static Methods

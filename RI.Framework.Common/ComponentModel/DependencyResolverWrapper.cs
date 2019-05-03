@@ -154,15 +154,15 @@ namespace RI.Framework.ComponentModel
         #region Interface: IDependencyResolver
 
         /// <inheritdoc />
-        public object GetInstance (Type type) => this.InterceptInternal(type, this.DependencyResolver == null ? this.GetListFromServiceProvider(type) : this.DependencyResolver.GetInstances(type)).GetIndexOrDefault(0);
+        public object GetInstance (Type type) => this.InterceptInternal(type, this.DependencyResolver == null ? this.GetListFromServiceProvider(type) : this.DependencyResolver.GetInstances(type)).AsList().GetIndexOrDefault(0);
 
         /// <inheritdoc />
-        public object GetInstance (string name) => this.InterceptInternal(name, this.DependencyResolver == null ? new List<object>() : this.DependencyResolver.GetInstances(name)).GetIndexOrDefault(0);
+        public object GetInstance (string name) => this.InterceptInternal(name, this.DependencyResolver == null ? new List<object>() : this.DependencyResolver.GetInstances(name)).AsList().GetIndexOrDefault(0);
 
         /// <inheritdoc />
         public T GetInstance <T> ()
             where T : class =>
-            this.InterceptInternal(this.DependencyResolver == null ? this.GetListFromServiceProvider(typeof(T)).OfType<T>() : this.DependencyResolver.GetInstances<T>()).GetIndexOrDefault(0);
+            this.InterceptInternal(this.DependencyResolver == null ? this.GetListFromServiceProvider(typeof(T)).OfType<T>() : this.DependencyResolver.GetInstances<T>()).AsList().GetIndexOrDefault(0);
 
         /// <inheritdoc />
         public List<object> GetInstances (Type type) => this.InterceptInternal(type, this.DependencyResolver == null ? this.GetListFromServiceProvider(type) : this.DependencyResolver.GetInstances(type));
