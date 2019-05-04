@@ -6,7 +6,7 @@
 namespace RI.Framework.Data.EF.Resolvers
 {
 	/// <summary>
-	///     Contains database dependency resolver implementations.
+	///     Contains Entity Framework dependency resolver implementations.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

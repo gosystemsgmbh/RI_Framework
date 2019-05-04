@@ -1,7 +1,7 @@
 ﻿namespace RI.Framework.Collections.Generic
 {
 	/// <summary>
-	///     Defines a delegate which can be used for priority queue removals using <see cref="PriorityQueue{T}" />.<see cref="IPriorityQueueExtensions.Remove{T}(IPriorityQueue{T}, PriorityQueueRemovePredicate{T})" />.
+	///     Defines a delegate which can be used for priority queue removals using <see cref="IPriorityQueueExtensions.RemoveWhere{T}(IPriorityQueue{T}, PriorityQueueRemovePredicate{T})" />.
 	/// </summary>
 	/// <typeparam name="T"> The type of the items in the priority queue. </typeparam>
 	/// <param name="item"> The item. </param>

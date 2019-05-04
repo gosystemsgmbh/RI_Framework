@@ -35,6 +35,8 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="RI.Framework.Extensions.SqlServer.nuspec" />
+    <None Include="RI.Framework.Extensions.SqlServerEF6.nuspec" />
     <None Include="RI.Framework.Extensions.SQLiteEF6.nuspec" />
     <None Include="RI.Framework.Extensions.SQLite.nuspec" />
     <None Include="RI.Framework.Extensions.NancyJson.nuspec" />

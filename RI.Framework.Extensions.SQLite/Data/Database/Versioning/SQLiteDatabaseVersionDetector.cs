@@ -110,7 +110,7 @@ namespace RI.Framework.Data.Database.Versioning
                             {
                                 object value = command.ExecuteScalar();
                                 version = value.ToInt32FromSQLiteResult() ?? -1;
-                                if (version == -1)
+                                if (version <= -1)
                                 {
                                     break;
                                 }
