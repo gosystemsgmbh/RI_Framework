@@ -14,7 +14,7 @@ namespace RI.Framework.Collections.Generic
     /// <remarks>
     ///     <para>
     ///         A priority queue stores items sorted by their assigned priority.
-    ///         The priority is assigned to an item when the item is added to the priority queue using <see cref="Enqueue" />.
+    ///         The priority is assigned to an item when the item is added to the priority queue using <see cref="Enqueue(T,int)" />.
     ///         The higher the priority, the earlier the item is dequeued (highest priority, first out).
     ///         For items of the same priority, the order in which they are added is maintained (first in, first out).
     ///     </para>
@@ -79,6 +79,21 @@ namespace RI.Framework.Collections.Generic
         /// </remarks>
         /// <exception cref="InvalidOperationException"> The priority queue is empty. </exception>
         T Dequeue (out int priority);
+
+        /// <summary>
+        ///     Adds an item to the queue.
+        /// </summary>
+        /// <param name="item"> The item. </param>
+        /// <remarks>
+        ///     <para>
+        ///         The item is added to the queue using the lowest current priority (similar to <see cref="LowestPriority"/>) or with a priority of 0 if the queue is empty.
+        ///         This ensures the item is inserted truly at the end of the queue.
+        ///     </para>
+        ///     <para>
+        ///         This is a O(1) operation.
+        ///     </para>
+        /// </remarks>
+        void Enqueue(T item);
 
         /// <summary>
         ///     Adds an item to the queue.

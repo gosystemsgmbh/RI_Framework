@@ -1,6 +1,6 @@
 @cd %~dp0
 
-@xcopy ".\bin\%1\RI.Tools.Framework.VersionUpdater.exe" "..\_Tools\VersionUpdater.exe"
+@copy ".\bin\%1\RI.Tools.Framework.VersionUpdater.exe" "..\_Tools\VersionUpdater.exe"
 
 @echo set build_version_major=X> "..\_Temp\versioning.bat"
 @echo set build_version_minor=X>> "..\_Temp\versioning.bat"
