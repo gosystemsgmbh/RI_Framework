@@ -9,13 +9,11 @@ using RI.Framework.Utilities.ObjectModel;
 
 namespace RI.Framework.Collections.Concurrent
 {
-    public sealed class RequestResponseItem<TRequest, TResponse> : ISynchronizable, IDisposable
+    public sealed class RequestResponseItem <TRequest, TResponse> : ISynchronizable, IDisposable
     {
-        private TResponse _response;
+        #region Instance Constructor/Destructor
 
-        private bool _stillNeeded;
-
-        internal RequestResponseItem(TaskCreationOptions completionCreationOptions, TRequest request)
+        internal RequestResponseItem (TaskCreationOptions completionCreationOptions, TRequest request)
         {
             this.SyncRoot = new object();
 
@@ -29,19 +27,29 @@ namespace RI.Framework.Collections.Concurrent
             this.CancellationTokenSource = new CancellationTokenSource();
         }
 
-        void IDisposable.Dispose() => this.Respond();
+        #endregion
 
-        bool ISynchronizable.IsSynchronized => true;
+
+
+
+        #region Instance Fields
+
+        private TResponse _response;
+
+        private bool _stillNeeded;
+
+        #endregion
+
+
+
+
+        #region Instance Properties/Indexer
+
+        public CancellationToken CancelationToken => this.CancellationTokenSource.Token;
 
         public TaskCreationOptions CompletionCreationOptions { get; }
 
-        public object SyncRoot { get; }
-
         public TRequest Request { get; }
-
-        private TaskCompletionSource<TResponse> ResponseCompletion { get; }
-
-        internal Task<TResponse> ResponseTask => this.ResponseCompletion.Task;
 
         public TResponse Response
         {
@@ -79,9 +87,43 @@ namespace RI.Framework.Collections.Concurrent
             }
         }
 
+        internal Task<TResponse> ResponseTask => this.ResponseCompletion.Task;
+
         private CancellationTokenSource CancellationTokenSource { get; }
 
-        public CancellationToken CancelationToken => this.CancellationTokenSource.Token;
+        private TaskCompletionSource<TResponse> ResponseCompletion { get; }
+
+        #endregion
+
+
+
+
+        #region Instance Methods
+
+        public void Abort (Exception exception)
+        {
+            if (exception == null)
+            {
+                throw new ArgumentNullException(nameof(exception));
+            }
+
+            lock (this.SyncRoot)
+            {
+                this.StillNeeded = false;
+                this.Response = default(TResponse);
+                this.ResponseCompletion.TrySetException(exception);
+            }
+        }
+
+        public void Cancel ()
+        {
+            lock (this.SyncRoot)
+            {
+                this.StillNeeded = false;
+                this.Response = default(TResponse);
+                this.ResponseCompletion.TrySetCanceled();
+            }
+        }
 
         public void Respond ()
         {
@@ -103,31 +145,6 @@ namespace RI.Framework.Collections.Concurrent
             }
         }
 
-        public void Cancel ()
-        {
-            lock (this.SyncRoot)
-            {
-                this.StillNeeded = false;
-                this.Response = default(TResponse);
-                this.ResponseCompletion.TrySetCanceled();
-            }
-        }
-
-        public void Abort (Exception exception)
-        {
-            if (exception == null)
-            {
-                throw new ArgumentNullException(nameof(exception));
-            }
-
-            lock (this.SyncRoot)
-            {
-                this.StillNeeded = false;
-                this.Response = default(TResponse);
-                this.ResponseCompletion.TrySetException(exception);
-            }
-        }
-
         internal void NoLongerNeeded ()
         {
             lock (this.SyncRoot)
@@ -137,5 +154,27 @@ namespace RI.Framework.Collections.Concurrent
                 this.CancellationTokenSource.Cancel();
             }
         }
+
+        #endregion
+
+
+
+
+        #region Interface: IDisposable
+
+        void IDisposable.Dispose () => this.Respond();
+
+        #endregion
+
+
+
+
+        #region Interface: ISynchronizable
+
+        bool ISynchronizable.IsSynchronized => true;
+
+        public object SyncRoot { get; }
+
+        #endregion
     }
 }
