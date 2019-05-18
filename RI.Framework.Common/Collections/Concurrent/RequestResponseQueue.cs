@@ -21,9 +21,11 @@ namespace RI.Framework.Collections.Concurrent
         public RequestResponseQueue (TaskCreationOptions completionCreationOptions)
         {
             this.SyncRoot = new object();
+
             this.CompletionCreationOptions = completionCreationOptions;
+
             this.Queue = new Queue<RequestResponseItem<TRequest, TResponse>>();
-            this.WakeUps = new Queue<TaskCompletionSource<RequestResponseItem<TRequest, TResponse>>>();
+            this.WakeUps = new List<TaskCompletionSource<RequestResponseItem<TRequest, TResponse>>>();
         }
 
         bool ISynchronizable.IsSynchronized => true;
@@ -34,7 +36,7 @@ namespace RI.Framework.Collections.Concurrent
 
         private Queue<RequestResponseItem<TRequest, TResponse>> Queue { get; }
 
-        private Queue<TaskCompletionSource<RequestResponseItem<TRequest, TResponse>>> WakeUps { get; }
+        private List<TaskCompletionSource<RequestResponseItem<TRequest, TResponse>>> WakeUps { get; }
 
         public int WaitingRequests
         {
@@ -66,16 +68,18 @@ namespace RI.Framework.Collections.Concurrent
 
         public Task<TResponse> EnqueueAsync (TRequest request, TimeSpan timeout, CancellationToken ct)
         {
+            RequestResponseItem<TRequest, TResponse> item;
             Task<TResponse> responseTask;
 
             lock (this.SyncRoot)
             {
-                RequestResponseItem<TRequest, TResponse> item = new RequestResponseItem<TRequest, TResponse>(this.CompletionCreationOptions, request);
+                item = new RequestResponseItem<TRequest, TResponse>(this.CompletionCreationOptions, request);
                 responseTask = item.ResponseTask;
 
                 if (this.WakeUps.Count > 0)
                 {
-                    this.WakeUps.Dequeue().SetResult(item);
+                    this.WakeUps[0].SetResult(item);
+                    this.WakeUps.RemoveAt(0);
                 }
                 else
                 {
@@ -89,15 +93,20 @@ namespace RI.Framework.Collections.Concurrent
             Task<Task> result = Task.WhenAny(responseTask, timeoutTask, cancelTask);
             Task<TResponse> waitTask = result.ContinueWith<TResponse>(task =>
             {
-                if (object.ReferenceEquals(result.Result, timeoutTask))
+                lock (this.SyncRoot)
                 {
-                    throw new TimeoutException();
+                    if (object.ReferenceEquals(result.Result, timeoutTask))
+                    {
+                        item.NoLongerNeeded();
+                        throw new TimeoutException();
+                    }
+                    if (object.ReferenceEquals(result.Result, cancelTask))
+                    {
+                        item.NoLongerNeeded();
+                        throw new OperationCanceledException();
+                    }
+                    return responseTask.Result;
                 }
-                if (object.ReferenceEquals(result.Result, cancelTask))
-                {
-                    throw new OperationCanceledException();
-                }
-                return responseTask.Result;
 
             }, TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.LazyCancellation);
 
@@ -112,19 +121,24 @@ namespace RI.Framework.Collections.Concurrent
 
         public Task<RequestResponseItem<TRequest, TResponse>> DequeueAsync (TimeSpan timeout, CancellationToken ct)
         {
+            TaskCompletionSource<RequestResponseItem<TRequest, TResponse>> tcs;
             Task<RequestResponseItem<TRequest, TResponse>> wakeUpTask;
 
             lock (this.SyncRoot)
             {
-                if (this.Queue.Count > 0)
+                while (this.Queue.Count > 0)
                 {
                     RequestResponseItem<TRequest, TResponse> item = this.Queue.Dequeue();
-                    return Task.FromResult(item);
+                    if (item.StillNeeded)
+                    {
+                        return Task.FromResult(item);
+                    }
                 }
 
-                TaskCompletionSource<RequestResponseItem<TRequest, TResponse>> tcs = new TaskCompletionSource<RequestResponseItem<TRequest, TResponse>>(this.CompletionCreationOptions);
+                tcs = new TaskCompletionSource<RequestResponseItem<TRequest, TResponse>>(this.CompletionCreationOptions);
                 wakeUpTask = tcs.Task;
-                this.WakeUps.Enqueue(tcs);
+
+                this.WakeUps.Add(tcs);
             }
 
             Task timeoutTask = Task.Delay(timeout);
@@ -133,15 +147,19 @@ namespace RI.Framework.Collections.Concurrent
             Task<Task> result = Task.WhenAny(wakeUpTask, timeoutTask, cancelTask);
             Task<RequestResponseItem<TRequest, TResponse>> waitTask = result.ContinueWith<RequestResponseItem<TRequest, TResponse>>(task =>
             {
-                if (object.ReferenceEquals(result.Result, timeoutTask))
+                lock (this.SyncRoot)
                 {
-                    throw new TimeoutException();
+                    this.WakeUps.Remove(tcs);
+                    if (object.ReferenceEquals(result.Result, timeoutTask))
+                    {
+                        throw new TimeoutException();
+                    }
+                    if (object.ReferenceEquals(result.Result, cancelTask))
+                    {
+                        throw new OperationCanceledException();
+                    }
+                    return wakeUpTask.Result;
                 }
-                if (object.ReferenceEquals(result.Result, cancelTask))
-                {
-                    throw new OperationCanceledException();
-                }
-                return wakeUpTask.Result;
 
             }, TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.LazyCancellation);
 
@@ -162,7 +180,7 @@ namespace RI.Framework.Collections.Concurrent
             }
         }
 
-        public bool RespondRequests()
+        public bool RespondRequests ()
         {
             lock (this.SyncRoot)
             {
@@ -176,7 +194,7 @@ namespace RI.Framework.Collections.Concurrent
             }
         }
 
-        public bool CancelRequests()
+        public bool CancelRequests ()
         {
             lock (this.SyncRoot)
             {
@@ -190,7 +208,7 @@ namespace RI.Framework.Collections.Concurrent
             }
         }
 
-        public bool AbortRequests(Exception exception)
+        public bool AbortRequests (Exception exception)
         {
             if (exception == null)
             {
@@ -213,31 +231,9 @@ namespace RI.Framework.Collections.Concurrent
         {
             lock (this.SyncRoot)
             {
-                bool dequeued = false;
-                while (this.WakeUps.Count > 0)
-                {
-                    dequeued = true;
-                    this.WakeUps.Dequeue().TrySetCanceled();
-                }
-                return dequeued;
-            }
-        }
-
-        public bool DismissConsumers (Exception exception)
-        {
-            if (exception == null)
-            {
-                throw new ArgumentNullException(nameof(exception));
-            }
-
-            lock (this.SyncRoot)
-            {
-                bool dequeued = false;
-                while (this.WakeUps.Count > 0)
-                {
-                    dequeued = true;
-                    this.WakeUps.Dequeue().TrySetException(exception);
-                }
+                bool dequeued = this.WakeUps.Count > 0;
+                this.WakeUps.ForEach(x => x.TrySetCanceled());
+                this.WakeUps.Clear();
                 return dequeued;
             }
         }

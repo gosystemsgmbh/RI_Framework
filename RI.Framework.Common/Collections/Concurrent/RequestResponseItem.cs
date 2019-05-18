@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 using RI.Framework.Utilities.ObjectModel;
@@ -12,16 +13,21 @@ namespace RI.Framework.Collections.Concurrent
     {
         private TResponse _response;
 
+        private bool _stillNeeded;
+
         internal RequestResponseItem(TaskCreationOptions completionCreationOptions, TRequest request)
         {
             this.SyncRoot = new object();
+
             this.CompletionCreationOptions = completionCreationOptions;
             this.Request = request;
-            this.Response = default(TResponse);
-            this.ResponseCompletion = new TaskCompletionSource<TResponse>(request, this.CompletionCreationOptions);
-        }
 
-        ~RequestResponseItem () => this.Cancel();
+            this.StillNeeded = true;
+            this.Response = default(TResponse);
+
+            this.ResponseCompletion = new TaskCompletionSource<TResponse>(request, this.CompletionCreationOptions);
+            this.CancellationTokenSource = new CancellationTokenSource();
+        }
 
         void IDisposable.Dispose() => this.Respond();
 
@@ -55,10 +61,33 @@ namespace RI.Framework.Collections.Concurrent
             }
         }
 
+        public bool StillNeeded
+        {
+            get
+            {
+                lock (this.SyncRoot)
+                {
+                    return this._stillNeeded;
+                }
+            }
+            private set
+            {
+                lock (this.SyncRoot)
+                {
+                    this._stillNeeded = value;
+                }
+            }
+        }
+
+        private CancellationTokenSource CancellationTokenSource { get; }
+
+        public CancellationToken CancelationToken => this.CancellationTokenSource.Token;
+
         public void Respond ()
         {
             lock (this.SyncRoot)
             {
+                this.StillNeeded = false;
                 this.Response = default(TResponse);
                 this.ResponseCompletion.TrySetResult(this.Response);
             }
@@ -68,6 +97,7 @@ namespace RI.Framework.Collections.Concurrent
         {
             lock (this.SyncRoot)
             {
+                this.StillNeeded = false;
                 this.Response = response;
                 this.ResponseCompletion.TrySetResult(response);
             }
@@ -77,6 +107,7 @@ namespace RI.Framework.Collections.Concurrent
         {
             lock (this.SyncRoot)
             {
+                this.StillNeeded = false;
                 this.Response = default(TResponse);
                 this.ResponseCompletion.TrySetCanceled();
             }
@@ -91,8 +122,19 @@ namespace RI.Framework.Collections.Concurrent
 
             lock (this.SyncRoot)
             {
+                this.StillNeeded = false;
                 this.Response = default(TResponse);
                 this.ResponseCompletion.TrySetException(exception);
+            }
+        }
+
+        internal void NoLongerNeeded ()
+        {
+            lock (this.SyncRoot)
+            {
+                this.StillNeeded = false;
+                this.Response = default(TResponse);
+                this.CancellationTokenSource.Cancel();
             }
         }
     }
