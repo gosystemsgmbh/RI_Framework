@@ -32,7 +32,7 @@ namespace RI.Framework.Collections.Generic
         ///     </para>
         /// </remarks>
         /// <exception cref="ArgumentNullException"> <paramref name="priorityQueue" /> is null. </exception>
-        public static IPriorityQueue<T> AsCollection<T>(this IPriorityQueue<T> priorityQueue)
+        public static IPriorityQueue<T> AsPriorityQueue<T>(this IPriorityQueue<T> priorityQueue)
         {
             if (priorityQueue == null)
             {
@@ -216,12 +216,6 @@ namespace RI.Framework.Collections.Generic
         {
             #region Instance Constructor/Destructor
 
-            public RemovalTuple ()
-            {
-                this.Item = default(T);
-                this.Priority = 0;
-            }
-
             public RemovalTuple (T item, int priority)
             {
                 this.Item = item;
@@ -235,9 +229,9 @@ namespace RI.Framework.Collections.Generic
 
             #region Instance Properties/Indexer
 
-            public T Item { get; set; }
+            public T Item { get; }
 
-            public int Priority { get; set; }
+            public int Priority { get; }
 
             #endregion
         }

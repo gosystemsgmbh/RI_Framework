@@ -23,6 +23,7 @@ namespace RI.Framework.Collections.Generic
     ///         See <see cref="IPriorityQueue{T}" /> for more details.
     ///     </para>
     /// </remarks>
+    /// <threadsafety static="false" instance="false" />
     /// <example>
     ///     <code language="cs">
     ///  <![CDATA[
@@ -64,11 +65,11 @@ namespace RI.Framework.Collections.Generic
 
         #region Instance Properties/Indexer
 
-        private LinkedList<PriorityItem> Chain { get; set; }
+        private LinkedList<PriorityItem> Chain { get; }
 
-        private object SyncRoot { get; set; }
+        private object SyncRoot { get; }
 
-        private Hashtable Table { get; set; }
+        private Hashtable Table { get; }
 
         #endregion
 
@@ -363,7 +364,7 @@ namespace RI.Framework.Collections.Generic
 
             #region Instance Properties/Indexer
 
-            public int Priority { get; private set; }
+            public int Priority { get; }
 
             #endregion
         }

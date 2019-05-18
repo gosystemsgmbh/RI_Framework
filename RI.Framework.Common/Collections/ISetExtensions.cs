@@ -94,7 +94,7 @@ namespace RI.Framework.Collections
         ///     </para>
         /// </remarks>
         /// <exception cref="ArgumentNullException"> <paramref name="set" /> is null. </exception>
-        public static ISet<T> AsCollection<T>(this ISet<T> set)
+        public static ISet<T> AsSet<T>(this ISet<T> set)
         {
             if (set == null)
             {

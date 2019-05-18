@@ -11,6 +11,11 @@ namespace RI.Framework.Collections
     /// <summary>
     ///     Provides utility/extension methods for the <see cref="IReadOnlyList{T}" /> type and its implementations.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The <c>Ro</c> prefix is added to some extension methods to avoid ambiguity with extension methods from <see cref="IListExtensions"/>.
+    /// </para>
+    /// </remarks>
     /// <threadsafety static="false" instance="false" />
     /// TODO: Add overloads for all random methods with default randomizer
     public static class IReadonlyListExtensions
@@ -52,7 +57,7 @@ namespace RI.Framework.Collections
         /// </returns>
         /// <exception cref="ArgumentNullException"> <paramref name="list" /> is null. </exception>
         /// <exception cref="ArgumentOutOfRangeException"> <paramref name="index" /> is less than zero. </exception>
-        public static T GetIndexOrDefault <T> (this IReadOnlyList<T> list, int index) => list.GetIndexOrDefault(index, default(T));
+        public static T RoGetIndexOrDefault <T> (this IReadOnlyList<T> list, int index) => list.RoGetIndexOrDefault(index, default(T));
 
         /// <summary>
         ///     Gets the item at the specified index or a default value if the index is outside the range of the list.
@@ -66,7 +71,7 @@ namespace RI.Framework.Collections
         /// </returns>
         /// <exception cref="ArgumentNullException"> <paramref name="list" /> is null. </exception>
         /// <exception cref="ArgumentOutOfRangeException"> <paramref name="index" /> is less than zero. </exception>
-        public static T GetIndexOrDefault <T> (this IReadOnlyList<T> list, int index, T defaultValue)
+        public static T RoGetIndexOrDefault <T> (this IReadOnlyList<T> list, int index, T defaultValue)
         {
             if (list == null)
             {
@@ -98,7 +103,7 @@ namespace RI.Framework.Collections
         /// <exception cref="ArgumentNullException"> <paramref name="list" /> is null. </exception>
         /// <exception cref="InvalidOperationException"> <paramref name="list" /> contains no elements. </exception>
         /// <exception cref="ArgumentOutOfRangeException"> <paramref name="index" /> is less than zero or bigger or equal to the size of the list. </exception>
-        public static T Peek <T> (this IReadOnlyList<T> list, int index)
+        public static T RoPeek <T> (this IReadOnlyList<T> list, int index)
         {
             if (list == null)
             {
@@ -135,7 +140,7 @@ namespace RI.Framework.Collections
         /// </remarks>
         /// <exception cref="ArgumentNullException"> <paramref name="list" /> is null. </exception>
         /// <exception cref="InvalidOperationException"> <paramref name="list" /> contains no elements. </exception>
-        public static T PeekClamp <T> (this IReadOnlyList<T> list, int index)
+        public static T RoPeekClamp <T> (this IReadOnlyList<T> list, int index)
         {
             if (list == null)
             {
@@ -163,7 +168,7 @@ namespace RI.Framework.Collections
         /// </returns>
         /// <exception cref="ArgumentNullException"> <paramref name="list" /> is null. </exception>
         /// <exception cref="InvalidOperationException"> <paramref name="list" /> contains no elements. </exception>
-        public static T PeekRandom <T> (this IReadOnlyList<T> list, Random randomizer)
+        public static T RoPeekRandom <T> (this IReadOnlyList<T> list, Random randomizer)
         {
             if (list == null)
             {
@@ -192,7 +197,7 @@ namespace RI.Framework.Collections
         /// </returns>
         /// <exception cref="ArgumentNullException"> <paramref name="list" /> is null. </exception>
         /// <exception cref="ArgumentOutOfRangeException"> <paramref name="index" /> is less than zero. </exception>
-        public static bool TryGetIndex <T> (this IReadOnlyList<T> list, int index, out T item)
+        public static bool RoTryGetIndex <T> (this IReadOnlyList<T> list, int index, out T item)
         {
             if (list == null)
             {

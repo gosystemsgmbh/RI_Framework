@@ -9,6 +9,11 @@ namespace RI.Framework.Collections
     /// <summary>
     ///     Provides utility/extension methods for the <see cref="IReadOnlyDictionary{TKey,TValue}" /> type and its implementations.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The <c>Ro</c> prefix is added to some extension methods to avoid ambiguity with extension methods from <see cref="IDictionaryExtensions"/>.
+    /// </para>
+    /// </remarks>
     /// <threadsafety static="false" instance="false" />
     public static class IReadOnlyDictionaryExtensions
     {
@@ -29,7 +34,7 @@ namespace RI.Framework.Collections
         ///     </para>
         /// </remarks>
         /// <exception cref="ArgumentNullException"> <paramref name="dictionary" /> is null. </exception>
-        public static IReadOnlyDictionary<TKey, TValue> AsDictionary <TKey, TValue> (this IReadOnlyDictionary<TKey, TValue> dictionary)
+        public static IReadOnlyDictionary<TKey, TValue> AsReadOnlyDictionary <TKey, TValue> (this IReadOnlyDictionary<TKey, TValue> dictionary)
         {
             if (dictionary == null)
             {
@@ -52,7 +57,7 @@ namespace RI.Framework.Collections
         ///     true if the dictionary contains the key, false otherwise.
         /// </returns>
         /// <exception cref="ArgumentNullException"> <paramref name="dictionary" /> or <paramref name="comparer" /> is null. </exception>
-        public static bool ContainsKey <TKey, TValue> (this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key, IEqualityComparer<TKey> comparer)
+        public static bool RoContainsKey <TKey, TValue> (this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key, IEqualityComparer<TKey> comparer)
         {
             if (dictionary == null)
             {
@@ -64,7 +69,7 @@ namespace RI.Framework.Collections
                 throw new ArgumentNullException(nameof(comparer));
             }
 
-            return dictionary.ContainsKey(key, comparer.Equals);
+            return dictionary.RoContainsKey(key, comparer.Equals);
         }
 
         /// <summary>
@@ -80,7 +85,7 @@ namespace RI.Framework.Collections
         ///     true if the dictionary contains the key, false otherwise.
         /// </returns>
         /// <exception cref="ArgumentNullException"> <paramref name="dictionary" /> or <paramref name="comparer" /> is null. </exception>
-        public static bool ContainsKey <TKey, TValue> (this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key, Func<TKey, TKey, bool> comparer)
+        public static bool RoContainsKey<TKey, TValue> (this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key, Func<TKey, TKey, bool> comparer)
         {
             if (dictionary == null)
             {
@@ -114,14 +119,14 @@ namespace RI.Framework.Collections
         ///     true if the dictionary contains the value at least once, false otherwise.
         /// </returns>
         /// <exception cref="ArgumentNullException"> <paramref name="dictionary" /> is null. </exception>
-        public static bool ContainsValue <TKey, TValue> (this IReadOnlyDictionary<TKey, TValue> dictionary, TValue value)
+        public static bool RoContainsValue<TKey, TValue> (this IReadOnlyDictionary<TKey, TValue> dictionary, TValue value)
         {
             if (dictionary == null)
             {
                 throw new ArgumentNullException(nameof(dictionary));
             }
 
-            return dictionary.ContainsValue(value, EqualityComparer<TValue>.Default.Equals);
+            return dictionary.RoContainsValue(value, EqualityComparer<TValue>.Default.Equals);
         }
 
         /// <summary>
@@ -137,7 +142,7 @@ namespace RI.Framework.Collections
         ///     true if the dictionary contains the value at least once, false otherwise.
         /// </returns>
         /// <exception cref="ArgumentNullException"> <paramref name="dictionary" /> or <paramref name="comparer" /> is null. </exception>
-        public static bool ContainsValue <TKey, TValue> (this IReadOnlyDictionary<TKey, TValue> dictionary, TValue value, IEqualityComparer<TValue> comparer)
+        public static bool RoContainsValue<TKey, TValue> (this IReadOnlyDictionary<TKey, TValue> dictionary, TValue value, IEqualityComparer<TValue> comparer)
         {
             if (dictionary == null)
             {
@@ -149,7 +154,7 @@ namespace RI.Framework.Collections
                 throw new ArgumentNullException(nameof(comparer));
             }
 
-            return dictionary.ContainsValue(value, comparer.Equals);
+            return dictionary.RoContainsValue(value, comparer.Equals);
         }
 
         /// <summary>
@@ -165,7 +170,7 @@ namespace RI.Framework.Collections
         ///     true if the dictionary contains the value at least once, false otherwise.
         /// </returns>
         /// <exception cref="ArgumentNullException"> <paramref name="dictionary" /> or <paramref name="comparer" /> is null. </exception>
-        public static bool ContainsValue <TKey, TValue> (this IReadOnlyDictionary<TKey, TValue> dictionary, TValue value, Func<TValue, TValue, bool> comparer)
+        public static bool RoContainsValue<TKey, TValue> (this IReadOnlyDictionary<TKey, TValue> dictionary, TValue value, Func<TValue, TValue, bool> comparer)
         {
             if (dictionary == null)
             {
@@ -197,7 +202,7 @@ namespace RI.Framework.Collections
         ///     The list which contains all the keys of the dictionary.
         /// </returns>
         /// <exception cref="ArgumentNullException"> <paramref name="dictionary" /> is null. </exception>
-        public static List<TKey> GetKeys <TKey, TValue> (this IReadOnlyDictionary<TKey, TValue> dictionary)
+        public static List<TKey> RoGetKeys<TKey, TValue> (this IReadOnlyDictionary<TKey, TValue> dictionary)
         {
             if (dictionary == null)
             {
@@ -218,7 +223,7 @@ namespace RI.Framework.Collections
         ///     The list which contains all the keys of the dictionary where the corresponding key-value-pair satisfied the specified condition.
         /// </returns>
         /// <exception cref="ArgumentNullException"> <paramref name="dictionary" /> or <paramref name="condition" /> is null. </exception>
-        public static List<TKey> GetKeys <TKey, TValue> (this IReadOnlyDictionary<TKey, TValue> dictionary, Func<KeyValuePair<TKey, TValue>, bool> condition)
+        public static List<TKey> RoGetKeys<TKey, TValue> (this IReadOnlyDictionary<TKey, TValue> dictionary, Func<KeyValuePair<TKey, TValue>, bool> condition)
         {
             if (dictionary == null)
             {
@@ -252,7 +257,7 @@ namespace RI.Framework.Collections
         ///     The value or default value of <typeparamref name="TValue" />.
         /// </returns>
         /// <exception cref="ArgumentNullException"> <paramref name="dictionary" /> is null. </exception>
-        public static TValue GetValueOrDefault <TKey, TValue> (this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key) => dictionary.GetValueOrDefault(key, default(TValue));
+        public static TValue RoGetValueOrDefault<TKey, TValue> (this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key) => dictionary.RoGetValueOrDefault(key, default(TValue));
 
         /// <summary>
         ///     Gets a value from a dictionary or a default value if the key does not exist in the dictionary.
@@ -266,7 +271,7 @@ namespace RI.Framework.Collections
         ///     The value or <paramref name="defaultValue"/>.
         /// </returns>
         /// <exception cref="ArgumentNullException"> <paramref name="dictionary" /> is null. </exception>
-        public static TValue GetValueOrDefault <TKey, TValue> (this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue)
+        public static TValue RoGetValueOrDefault<TKey, TValue> (this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue)
         {
             if (dictionary == null)
             {
@@ -291,7 +296,7 @@ namespace RI.Framework.Collections
         ///     The list which contains all the values of the dictionary.
         /// </returns>
         /// <exception cref="ArgumentNullException"> <paramref name="dictionary" /> is null. </exception>
-        public static List<TValue> GetValues <TKey, TValue> (this IReadOnlyDictionary<TKey, TValue> dictionary)
+        public static List<TValue> RoGetValues<TKey, TValue> (this IReadOnlyDictionary<TKey, TValue> dictionary)
         {
             if (dictionary == null)
             {
@@ -312,7 +317,7 @@ namespace RI.Framework.Collections
         ///     The list which contains all the values of the dictionary where the corresponding key-value-pair satisfied the specified condition.
         /// </returns>
         /// <exception cref="ArgumentNullException"> <paramref name="dictionary" /> or <paramref name="condition" /> is null. </exception>
-        public static List<TValue> GetValues <TKey, TValue> (this IReadOnlyDictionary<TKey, TValue> dictionary, Func<KeyValuePair<TKey, TValue>, bool> condition)
+        public static List<TValue> RoGetValues<TKey, TValue> (this IReadOnlyDictionary<TKey, TValue> dictionary, Func<KeyValuePair<TKey, TValue>, bool> condition)
         {
             if (dictionary == null)
             {
