@@ -9,22 +9,37 @@ using RI.Framework.Utilities.ObjectModel;
 
 namespace RI.Framework.Collections.Concurrent
 {
-    public sealed class RequestResponseItem <TRequest, TResponse> : ISynchronizable, IDisposable
+    /// <summary>
+    ///     Implements a wrapper around requests which are managed by request/response collections (<see cref="RequestResponseCollection{TRequest,TResponse,TItem}" /> types and derivatives).
+    /// </summary>
+    /// <typeparam name="TRequest"> The type of the request. </typeparam>
+    /// <typeparam name="TResponse"> The type of the response. </typeparam>
+    /// <remarks>
+    ///     <para>
+    ///         Besides wrapping the request to process (<see cref="Request" />), <see cref="RequestResponseItem{TRequest,TResponse}" /> also provides methods to control and release the request processing, such as <see cref="Respond(TResponse)" /> or <see cref="Cancel" />.
+    ///     </para>
+    ///     <para>
+    ///         See <see cref="RequestResponseCollection{TRequest,TResponse,TItem}" /> for more details.
+    ///     </para>
+    /// </remarks>
+    /// <threadsafety static="true" instance="true" />
+    public class RequestResponseItem <TRequest, TResponse> : ISynchronizable, IDisposable
     {
         #region Instance Constructor/Destructor
 
-        internal RequestResponseItem (TaskCreationOptions completionCreationOptions, TRequest request)
+        /// <summary>
+        ///     Creates a new instance of <see cref="RequestResponseItem{TRequest,TResponse}" />.
+        /// </summary>
+        public RequestResponseItem ()
         {
             this.SyncRoot = new object();
 
-            this.CompletionCreationOptions = completionCreationOptions;
-            this.Request = request;
+            this.IsInitialized = false;
 
+            this.CompletionCreationOptions = TaskCreationOptions.None;
             this.StillNeeded = true;
+            this.Request = default(TRequest);
             this.Response = default(TResponse);
-
-            this.ResponseCompletion = new TaskCompletionSource<TResponse>(request, this.CompletionCreationOptions);
-            this.CancellationTokenSource = new CancellationTokenSource();
         }
 
         #endregion
@@ -33,6 +48,12 @@ namespace RI.Framework.Collections.Concurrent
 
 
         #region Instance Fields
+
+        private TaskCreationOptions _completionCreationOptions;
+
+        private bool _isInitialized;
+
+        private TRequest _request;
 
         private TResponse _response;
 
@@ -45,18 +66,116 @@ namespace RI.Framework.Collections.Concurrent
 
         #region Instance Properties/Indexer
 
-        public CancellationToken CancelationToken => this.CancellationTokenSource.Token;
+        /// <summary>
+        ///     Gets the cancellation token which is triggered if a request/response is no longer needed (see <see cref="StillNeeded" />).
+        /// </summary>
+        /// <value>
+        ///     The cancellation token which is triggered if a request/response is no longer needed (see <see cref="StillNeeded" />).
+        /// </value>
+        /// <exception cref="InvalidOperationException"> The item is not initialized. </exception>
+        public CancellationToken CancellationToken
+        {
+            get
+            {
+                lock (this.SyncRoot)
+                {
+                    this.VerifyInitialized();
+                    return this.CancellationTokenSource.Token;
+                }
+            }
+        }
 
-        public TaskCreationOptions CompletionCreationOptions { get; }
+        /// <summary>
+        ///     Gets the options which are used for creating continuations.
+        /// </summary>
+        /// <value>
+        ///     T
+        ///     The options which are used for creating continuations.
+        /// </value>
+        /// <exception cref="InvalidOperationException"> The item is not initialized. </exception>
+        public TaskCreationOptions CompletionCreationOptions
+        {
+            get
+            {
+                lock (this.SyncRoot)
+                {
+                    this.VerifyInitialized();
+                    return this._completionCreationOptions;
+                }
+            }
+            private set
+            {
+                lock (this.SyncRoot)
+                {
+                    this._completionCreationOptions = value;
+                }
+            }
+        }
 
-        public TRequest Request { get; }
+        /// <summary>
+        ///     Gets whether the item is initialized.
+        /// </summary>
+        /// <value>
+        ///     true if the item is initialized, false otherwise.
+        /// </value>
+        public bool IsInitialized
+        {
+            get
+            {
+                lock (this.SyncRoot)
+                {
+                    return this._isInitialized;
+                }
+            }
+            private set
+            {
+                lock (this.SyncRoot)
+                {
+                    this._isInitialized = value;
+                }
+            }
+        }
 
+        /// <summary>
+        ///     Gets the request to be processed.
+        /// </summary>
+        /// <value>
+        ///     The request to be processed.
+        /// </value>
+        /// <exception cref="InvalidOperationException"> The item is not initialized. </exception>
+        public TRequest Request
+        {
+            get
+            {
+                lock (this.SyncRoot)
+                {
+                    this.VerifyInitialized();
+                    return this._request;
+                }
+            }
+            private set
+            {
+                lock (this.SyncRoot)
+                {
+                    this._request = value;
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Gets the issued response.
+        /// </summary>
+        /// <value>
+        ///     The issued response, if any.
+        /// </value>
+        /// <exception cref="InvalidOperationException"> The item is not initialized. </exception>
         public TResponse Response
         {
             get
             {
                 lock (this.SyncRoot)
                 {
+                    this.VerifyInitialized();
                     return this._response;
                 }
             }
@@ -69,12 +188,20 @@ namespace RI.Framework.Collections.Concurrent
             }
         }
 
+        /// <summary>
+        ///     Gets whether the request is still required to be processed and a response is still being awaited.
+        /// </summary>
+        /// <value>
+        ///     true if the request is still required to be processed and a response is still being awaited.
+        /// </value>
+        /// <exception cref="InvalidOperationException"> The item is not initialized. </exception>
         public bool StillNeeded
         {
             get
             {
                 lock (this.SyncRoot)
                 {
+                    this.VerifyInitialized();
                     return this._stillNeeded;
                 }
             }
@@ -87,11 +214,21 @@ namespace RI.Framework.Collections.Concurrent
             }
         }
 
-        internal Task<TResponse> ResponseTask => this.ResponseCompletion.Task;
+        internal Task<TResponse> ResponseTask
+        {
+            get
+            {
+                lock (this.SyncRoot)
+                {
+                    this.VerifyInitialized();
+                    return this.ResponseCompletion.Task;
+                }
+            }
+        }
 
-        private CancellationTokenSource CancellationTokenSource { get; }
+        private CancellationTokenSource CancellationTokenSource { get; set; }
 
-        private TaskCompletionSource<TResponse> ResponseCompletion { get; }
+        private TaskCompletionSource<TResponse> ResponseCompletion { get; set; }
 
         #endregion
 
@@ -100,6 +237,11 @@ namespace RI.Framework.Collections.Concurrent
 
         #region Instance Methods
 
+        /// <summary>
+        ///     Aborts the request with an exception.
+        /// </summary>
+        /// <param name="exception"> The exception. </param>
+        /// <exception cref="ArgumentNullException"> <paramref name="exception" /> is null. </exception>
         public void Abort (Exception exception)
         {
             if (exception == null)
@@ -109,39 +251,82 @@ namespace RI.Framework.Collections.Concurrent
 
             lock (this.SyncRoot)
             {
+                this.OnAbort(exception);
+
                 this.StillNeeded = false;
                 this.Response = default(TResponse);
                 this.ResponseCompletion.TrySetException(exception);
+                this.CancellationTokenSource.Cancel();
             }
         }
 
+        /// <summary>
+        ///     Cancels the request.
+        /// </summary>
         public void Cancel ()
         {
             lock (this.SyncRoot)
             {
+                this.OnCancel();
+
                 this.StillNeeded = false;
                 this.Response = default(TResponse);
                 this.ResponseCompletion.TrySetCanceled();
+                this.CancellationTokenSource.Cancel();
             }
         }
 
+        /// <summary>
+        ///     Finishes the response without a response.
+        /// </summary>
+        /// <remarks>
+        ///     <para>
+        ///         This simply issues a response using the default value of <typeparamref name="TResponse" />.
+        ///     </para>
+        /// </remarks>
         public void Respond ()
         {
             lock (this.SyncRoot)
             {
+                this.OnRespond();
+
                 this.StillNeeded = false;
                 this.Response = default(TResponse);
                 this.ResponseCompletion.TrySetResult(this.Response);
+                this.CancellationTokenSource.Cancel();
             }
         }
 
+        /// <summary>
+        ///     Finishes the response with a response.
+        /// </summary>
+        /// <param name="response"> The response. </param>
         public void Respond (TResponse response)
         {
             lock (this.SyncRoot)
             {
+                this.OnRespond(response);
+
                 this.StillNeeded = false;
                 this.Response = response;
                 this.ResponseCompletion.TrySetResult(response);
+                this.CancellationTokenSource.Cancel();
+            }
+        }
+
+        internal void Initialize (TaskCreationOptions completionCreationOptions, TRequest request)
+        {
+            lock (this.SyncRoot)
+            {
+                this.CompletionCreationOptions = completionCreationOptions;
+                this.Request = request;
+
+                this.ResponseCompletion = new TaskCompletionSource<TResponse>(request, this.CompletionCreationOptions);
+                this.CancellationTokenSource = new CancellationTokenSource();
+
+                this.IsInitialized = true;
+
+                this.OnInitialize(completionCreationOptions, request);
             }
         }
 
@@ -149,10 +334,78 @@ namespace RI.Framework.Collections.Concurrent
         {
             lock (this.SyncRoot)
             {
+                this.OnNoLongerNeeded();
+
                 this.StillNeeded = false;
                 this.Response = default(TResponse);
                 this.CancellationTokenSource.Cancel();
             }
+        }
+
+        /// <summary>
+        ///     Verifies that the item is initialized and throws a <see cref="InvalidOperationException" /> if not.
+        /// </summary>
+        /// <exception cref="InvalidOperationException"> The item is not initialized. </exception>
+        protected void VerifyInitialized ()
+        {
+            if (!this.IsInitialized)
+            {
+                throw new InvalidOperationException(this.GetType().Name + " is not initialized.");
+            }
+        }
+
+        #endregion
+
+
+
+
+        #region Virtuals
+
+        /// <summary>
+        ///     Called when the request is being aborted.
+        /// </summary>
+        /// <param name="exception"> The exception. </param>
+        protected virtual void OnAbort (Exception exception)
+        {
+        }
+
+        /// <summary>
+        ///     Called when the request is being canceled.
+        /// </summary>
+        protected virtual void OnCancel ()
+        {
+        }
+
+
+        /// <summary>
+        ///     Called when the item is initialized.
+        /// </summary>
+        /// <param name="completionCreationOptions"> The completion creation options. </param>
+        /// <param name="request"> The request associated with this item. </param>
+        protected virtual void OnInitialize (TaskCreationOptions completionCreationOptions, TRequest request)
+        {
+        }
+
+        /// <summary>
+        ///     Called when the request/response is no longer needed (see <see cref="StillNeeded" />).
+        /// </summary>
+        protected virtual void OnNoLongerNeeded ()
+        {
+        }
+
+        /// <summary>
+        ///     Called when the request is finished with a response.
+        /// </summary>
+        /// <param name="response"> The response. </param>
+        protected virtual void OnRespond (TResponse response)
+        {
+        }
+
+        /// <summary>
+        ///     Called when the request is finished without a response.
+        /// </summary>
+        protected virtual void OnRespond ()
+        {
         }
 
         #endregion
@@ -162,6 +415,7 @@ namespace RI.Framework.Collections.Concurrent
 
         #region Interface: IDisposable
 
+        /// <inheritdoc />
         void IDisposable.Dispose () => this.Respond();
 
         #endregion
@@ -171,8 +425,10 @@ namespace RI.Framework.Collections.Concurrent
 
         #region Interface: ISynchronizable
 
+        /// <inheritdoc />
         bool ISynchronizable.IsSynchronized => true;
 
+        /// <inheritdoc />
         public object SyncRoot { get; }
 
         #endregion
