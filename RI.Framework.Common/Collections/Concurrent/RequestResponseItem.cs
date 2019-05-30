@@ -38,8 +38,17 @@ namespace RI.Framework.Collections.Concurrent
 
             this.CompletionCreationOptions = TaskCreationOptions.None;
             this.StillNeeded = true;
+            this.IsFinished = false;
             this.Request = default(TRequest);
             this.Response = default(TResponse);
+        }
+
+        /// <summary>
+        ///     Garbage collects this instance of <see cref="RequestResponseItem{TRequest,TResponse}" />.
+        /// </summary>
+        ~RequestResponseItem ()
+        {
+            ((IDisposable)this).Dispose();
         }
 
         #endregion
@@ -58,6 +67,8 @@ namespace RI.Framework.Collections.Concurrent
         private TResponse _response;
 
         private bool _stillNeeded;
+
+        private bool _isFinished;
 
         #endregion
 
@@ -80,7 +91,7 @@ namespace RI.Framework.Collections.Concurrent
                 lock (this.SyncRoot)
                 {
                     this.VerifyInitialized();
-                    return this.CancellationTokenSource.Token;
+                    return this.CancellationTokenSource?.Token ?? new CancellationToken(true);
                 }
             }
         }
@@ -192,7 +203,7 @@ namespace RI.Framework.Collections.Concurrent
         ///     Gets whether the request is still required to be processed and a response is still being awaited.
         /// </summary>
         /// <value>
-        ///     true if the request is still required to be processed and a response is still being awaited.
+        ///     true if the request is still required to be processed and a response is still being awaited, false otherwise.
         /// </value>
         /// <exception cref="InvalidOperationException"> The item is not initialized. </exception>
         public bool StillNeeded
@@ -210,6 +221,32 @@ namespace RI.Framework.Collections.Concurrent
                 lock (this.SyncRoot)
                 {
                     this._stillNeeded = value;
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Gets whether the request is finished.
+        /// </summary>
+        /// <value>
+        ///     true if the request is finished, false otherwise.
+        /// </value>
+        /// <exception cref="InvalidOperationException"> The item is not initialized. </exception>
+        public bool IsFinished
+        {
+            get
+            {
+                lock (this.SyncRoot)
+                {
+                    this.VerifyInitialized();
+                    return this._isFinished;
+                }
+            }
+            private set
+            {
+                lock (this.SyncRoot)
+                {
+                    this._isFinished = value;
                 }
             }
         }
@@ -242,6 +279,7 @@ namespace RI.Framework.Collections.Concurrent
         /// </summary>
         /// <param name="exception"> The exception. </param>
         /// <exception cref="ArgumentNullException"> <paramref name="exception" /> is null. </exception>
+        /// <exception cref="InvalidOperationException">The item is not initialized or was already finished.</exception>
         public void Abort (Exception exception)
         {
             if (exception == null)
@@ -251,8 +289,12 @@ namespace RI.Framework.Collections.Concurrent
 
             lock (this.SyncRoot)
             {
+                this.VerifyInitialized();
+                this.VerifyNotFinished();
+
                 this.OnAbort(exception);
 
+                this.IsFinished = true;
                 this.StillNeeded = false;
                 this.Response = default(TResponse);
                 this.ResponseCompletion.TrySetException(exception);
@@ -263,12 +305,17 @@ namespace RI.Framework.Collections.Concurrent
         /// <summary>
         ///     Cancels the request.
         /// </summary>
+        /// <exception cref="InvalidOperationException">The item is not initialized or was already finished.</exception>
         public void Cancel ()
         {
             lock (this.SyncRoot)
             {
+                this.VerifyInitialized();
+                this.VerifyNotFinished();
+
                 this.OnCancel();
 
+                this.IsFinished = true;
                 this.StillNeeded = false;
                 this.Response = default(TResponse);
                 this.ResponseCompletion.TrySetCanceled();
@@ -284,12 +331,17 @@ namespace RI.Framework.Collections.Concurrent
         ///         This simply issues a response using the default value of <typeparamref name="TResponse" />.
         ///     </para>
         /// </remarks>
+        /// <exception cref="InvalidOperationException">The item is not initialized or was already finished.</exception>
         public void Respond ()
         {
             lock (this.SyncRoot)
             {
+                this.VerifyInitialized();
+                this.VerifyNotFinished();
+
                 this.OnRespond();
 
+                this.IsFinished = true;
                 this.StillNeeded = false;
                 this.Response = default(TResponse);
                 this.ResponseCompletion.TrySetResult(this.Response);
@@ -301,12 +353,17 @@ namespace RI.Framework.Collections.Concurrent
         ///     Finishes the response with a response.
         /// </summary>
         /// <param name="response"> The response. </param>
+        /// <exception cref="InvalidOperationException">The item is not initialized or was already finished.</exception>
         public void Respond (TResponse response)
         {
             lock (this.SyncRoot)
             {
+                this.VerifyInitialized();
+                this.VerifyNotFinished();
+
                 this.OnRespond(response);
 
+                this.IsFinished = true;
                 this.StillNeeded = false;
                 this.Response = response;
                 this.ResponseCompletion.TrySetResult(response);
@@ -318,6 +375,11 @@ namespace RI.Framework.Collections.Concurrent
         {
             lock (this.SyncRoot)
             {
+                if (this.IsInitialized)
+                {
+                    throw new InvalidOperationException(this.GetType().Name + " is already initialized.");
+                }
+
                 this.CompletionCreationOptions = completionCreationOptions;
                 this.Request = request;
 
@@ -334,11 +396,17 @@ namespace RI.Framework.Collections.Concurrent
         {
             lock (this.SyncRoot)
             {
+                if (this.IsFinished)
+                {
+                    return;
+                }
+
                 this.OnNoLongerNeeded();
 
+                this.IsFinished = true;
                 this.StillNeeded = false;
                 this.Response = default(TResponse);
-                this.CancellationTokenSource.Cancel();
+                this.CancellationTokenSource?.Cancel();
             }
         }
 
@@ -351,6 +419,18 @@ namespace RI.Framework.Collections.Concurrent
             if (!this.IsInitialized)
             {
                 throw new InvalidOperationException(this.GetType().Name + " is not initialized.");
+            }
+        }
+
+        /// <summary>
+        ///     Verifies that the item is not finished and throws a <see cref="InvalidOperationException" /> otherwise.
+        /// </summary>
+        /// <exception cref="InvalidOperationException"> The item is finished. </exception>
+        protected void VerifyNotFinished ()
+        {
+            if (this.IsFinished)
+            {
+                throw new InvalidOperationException(this.GetType().Name + " is already finished.");
             }
         }
 
@@ -375,7 +455,6 @@ namespace RI.Framework.Collections.Concurrent
         protected virtual void OnCancel ()
         {
         }
-
 
         /// <summary>
         ///     Called when the item is initialized.
@@ -416,7 +495,16 @@ namespace RI.Framework.Collections.Concurrent
         #region Interface: IDisposable
 
         /// <inheritdoc />
-        void IDisposable.Dispose () => this.Respond();
+        void IDisposable.Dispose ()
+        {
+            if (this.IsInitialized && (!this.IsFinished))
+            {
+                this.Respond();
+            }
+
+            this.CancellationTokenSource?.Dispose();
+            this.CancellationTokenSource = null;
+        }
 
         #endregion
 

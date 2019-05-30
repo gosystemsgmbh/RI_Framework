@@ -18,6 +18,7 @@ namespace RI.Framework.Collections.DirectLinq
     ///     <para>
     ///         <see cref="DirectLinqExtensions" /> provides an AOT-compatible LINQ replacement which uses non-deferred execution and does not depend on reflection.
     ///         Therefore, the LINQ query is executed at the time a <see cref="DirectLinqExtensions" /> method is called, not at the time its result is eventually enumerated.
+    ///         This makes LINQ AOT compatible but at the cost of slightly lower performance (due to the immediate execution) and slightly higher memory pressure (due to more object creations).
     ///     </para>
     ///     <para>
     ///         LINQ query expressions, such as <c> from x in values where x.IsActive select x </c>, can still be used.
@@ -34,7 +35,7 @@ namespace RI.Framework.Collections.DirectLinq
     /// <example>
     ///     <code language="cs">
     /// <![CDATA[
-    /// //using System.Linq;
+    /// //using System.Linq; (no longer used)
     /// using RI.Framework.Collections.DirectLinq;
     /// 
     /// // ...

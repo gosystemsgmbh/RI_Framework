@@ -21,73 +21,73 @@ namespace RI.Framework.IO.Streams
     /// <threadsafety static="false" instance="false" />
     /// TODO: Create pendant: TextStream (wrapping a StreamReader or StreamWriter using a specified Encoding)
     public sealed class BinaryStream : Stream
-	{
-		#region Instance Constructor/Destructor
+    {
+        #region Instance Constructor/Destructor
 
-		/// <summary>
-		///     Creates a new instance of <see cref="BinaryStream" />.
-		/// </summary>
-		/// <param name="reader"> The <see cref="BinaryReader" /> to use. </param>
-		/// <param name="doNotOwnReader"> Specifies whether the wrapped reader should be closed when this stream is closed (false) or kept open (true). </param>
-		/// <exception cref="ArgumentNullException"> <paramref name="reader" /> is null. </exception>
-		public BinaryStream (BinaryReader reader, bool doNotOwnReader)
-		{
-			if (reader == null)
-			{
-				throw new ArgumentNullException(nameof(reader));
-			}
+        /// <summary>
+        ///     Creates a new instance of <see cref="BinaryStream" />.
+        /// </summary>
+        /// <param name="reader"> The <see cref="BinaryReader" /> to use. </param>
+        /// <param name="doNotOwnReader"> Specifies whether the wrapped reader should be closed when this stream is closed (false) or kept open (true). </param>
+        /// <exception cref="ArgumentNullException"> <paramref name="reader" /> is null. </exception>
+        public BinaryStream (BinaryReader reader, bool doNotOwnReader)
+        {
+            if (reader == null)
+            {
+                throw new ArgumentNullException(nameof(reader));
+            }
 
-			this.Reader = reader;
-			this.Writer = null;
-			this.DoNotOwnStream = doNotOwnReader;
-		}
+            this.Reader = reader;
+            this.Writer = null;
+            this.DoNotOwnStream = doNotOwnReader;
+        }
 
-		/// <summary>
-		///     Creates a new instance of <see cref="BinaryStream" />.
-		/// </summary>
-		/// <param name="reader"> The <see cref="BinaryReader" /> to use. </param>
-		/// <remarks>
-		///     <para>
-		///         The wrapped reader is closed if this stream is closed.
-		///     </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="reader" /> is null. </exception>
-		public BinaryStream (BinaryReader reader)
-			: this(reader, false)
-		{
-		}
+        /// <summary>
+        ///     Creates a new instance of <see cref="BinaryStream" />.
+        /// </summary>
+        /// <param name="reader"> The <see cref="BinaryReader" /> to use. </param>
+        /// <remarks>
+        ///     <para>
+        ///         The wrapped reader is closed if this stream is closed.
+        ///     </para>
+        /// </remarks>
+        /// <exception cref="ArgumentNullException"> <paramref name="reader" /> is null. </exception>
+        public BinaryStream (BinaryReader reader)
+            : this(reader, false)
+        {
+        }
 
-		/// <summary>
-		///     Creates a new instance of <see cref="BinaryStream" />.
-		/// </summary>
-		/// <param name="writer"> The <see cref="BinaryWriter" /> to use. </param>
-		/// <param name="doNotOwnWriter"> Specifies whether the wrapped writer should be closed when this stream is closed (false) or kept open (true). </param>
-		/// <exception cref="ArgumentNullException"> <paramref name="writer" /> is null. </exception>
-		public BinaryStream (BinaryWriter writer, bool doNotOwnWriter)
-		{
-			if (writer == null)
-			{
-				throw new ArgumentNullException(nameof(writer));
-			}
+        /// <summary>
+        ///     Creates a new instance of <see cref="BinaryStream" />.
+        /// </summary>
+        /// <param name="writer"> The <see cref="BinaryWriter" /> to use. </param>
+        /// <param name="doNotOwnWriter"> Specifies whether the wrapped writer should be closed when this stream is closed (false) or kept open (true). </param>
+        /// <exception cref="ArgumentNullException"> <paramref name="writer" /> is null. </exception>
+        public BinaryStream (BinaryWriter writer, bool doNotOwnWriter)
+        {
+            if (writer == null)
+            {
+                throw new ArgumentNullException(nameof(writer));
+            }
 
-			this.Reader = null;
-			this.Writer = writer;
-			this.DoNotOwnStream = doNotOwnWriter;
-		}
+            this.Reader = null;
+            this.Writer = writer;
+            this.DoNotOwnStream = doNotOwnWriter;
+        }
 
-		/// <summary>
-		///     Creates a new instance of <see cref="BinaryStream" />.
-		/// </summary>
-		/// <param name="writer"> The <see cref="BinaryWriter" /> to use. </param>
-		/// <remarks>
-		///     <para>
-		///         The wrapped writer is closed if this stream is closed.
-		///     </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="writer" /> is null. </exception>
-		public BinaryStream (BinaryWriter writer)
-			: this(writer, false)
-		{
+        /// <summary>
+        ///     Creates a new instance of <see cref="BinaryStream" />.
+        /// </summary>
+        /// <param name="writer"> The <see cref="BinaryWriter" /> to use. </param>
+        /// <remarks>
+        ///     <para>
+        ///         The wrapped writer is closed if this stream is closed.
+        ///     </para>
+        /// </remarks>
+        /// <exception cref="ArgumentNullException"> <paramref name="writer" /> is null. </exception>
+        public BinaryStream (BinaryWriter writer)
+            : this(writer, false)
+        {
         }
 
         /// <summary>
@@ -134,249 +134,249 @@ namespace RI.Framework.IO.Streams
         ///     Garbage collects this instance of <see cref="BinaryStream" />.
         /// </summary>
         ~BinaryStream ()
-		{
-			this.Close();
-		}
+        {
+            this.Close();
+        }
 
-		#endregion
-
-
-
-
-		#region Instance Properties/Indexer
-
-		/// <summary>
-		///     Gets the used <see cref="BinaryReader" />, if any.
-		/// </summary>
-		/// <value>
-		///     The used <see cref="BinaryReader" /> or null if no <see cref="BinaryReader" /> is used.
-		/// </value>
-		public BinaryReader Reader { get; private set; }
-
-		/// <summary>
-		///     Gets the used <see cref="BinaryWriter" />, if any.
-		/// </summary>
-		/// <value>
-		///     The used <see cref="BinaryWriter" /> or null if no <see cref="BinaryWriter" /> is used.
-		/// </value>
-		public BinaryWriter Writer { get; private set; }
-
-		private bool DoNotOwnStream { get; set; }
-
-		#endregion
+        #endregion
 
 
 
 
-		#region Instance Methods
+        #region Instance Properties/Indexer
 
-		private bool CheckNotClosed ()
-		{
-			return (this.Writer != null) || (this.Reader != null);
-		}
+        /// <summary>
+        ///     Gets the used <see cref="BinaryReader" />, if any.
+        /// </summary>
+        /// <value>
+        ///     The used <see cref="BinaryReader" /> or null if no <see cref="BinaryReader" /> is used.
+        /// </value>
+        public BinaryReader Reader { get; private set; }
 
-		private void CloseInternal ()
-		{
-			if (this.Reader != null)
-			{
-				if (!this.DoNotOwnStream)
-				{
-					this.Reader.Close();
-				}
-				this.Reader = null;
-			}
+        /// <summary>
+        ///     Gets the used <see cref="BinaryWriter" />, if any.
+        /// </summary>
+        /// <value>
+        ///     The used <see cref="BinaryWriter" /> or null if no <see cref="BinaryWriter" /> is used.
+        /// </value>
+        public BinaryWriter Writer { get; private set; }
 
-			if (this.Writer != null)
-			{
-				if (!this.DoNotOwnStream)
-				{
-					this.Writer.Close();
-				}
-				this.Writer = null;
-			}
-		}
+        private bool DoNotOwnStream { get; set; }
 
-		private void VerifyNotClosed ()
-		{
-			if (!this.CheckNotClosed())
-			{
-				throw new ObjectDisposedException(this.GetType().Name);
-			}
-		}
-
-		#endregion
+        #endregion
 
 
 
 
-		#region Overrides
+        #region Instance Methods
 
-		/// <inheritdoc />
-		public override bool CanRead
-		{
-			get
-			{
-				this.VerifyNotClosed();
-				return this.Reader != null;
-			}
-		}
+        private bool CheckNotClosed ()
+        {
+            return (this.Writer != null) || (this.Reader != null);
+        }
 
-		/// <inheritdoc />
-		public override bool CanSeek => false;
+        private void CloseInternal ()
+        {
+            if (this.Reader != null)
+            {
+                if (!this.DoNotOwnStream)
+                {
+                    this.Reader.Close();
+                }
+                this.Reader = null;
+            }
 
-		/// <inheritdoc />
-		public override bool CanTimeout => false;
+            if (this.Writer != null)
+            {
+                if (!this.DoNotOwnStream)
+                {
+                    this.Writer.Close();
+                }
+                this.Writer = null;
+            }
+        }
 
-		/// <inheritdoc />
-		public override bool CanWrite
-		{
-			get
-			{
-				this.VerifyNotClosed();
-				return this.Writer != null;
-			}
-		}
+        private void VerifyNotClosed ()
+        {
+            if (!this.CheckNotClosed())
+            {
+                throw new ObjectDisposedException(this.GetType().Name);
+            }
+        }
 
-		/// <inheritdoc />
-		public override long Length
-		{
-			get
-			{
-				this.VerifyNotClosed();
-				throw new NotSupportedException(nameof(BinaryStream) + " does not support seeking.");
-			}
-		}
+        #endregion
 
-		/// <inheritdoc />
-		[SuppressMessage("ReSharper", "ValueParameterNotUsed")]
-		public override long Position
-		{
-			get
-			{
-				this.VerifyNotClosed();
-				throw new NotSupportedException(nameof(BinaryStream) + " does not support seeking.");
-			}
-			set
-			{
-				this.VerifyNotClosed();
-				throw new NotSupportedException(nameof(BinaryStream) + " does not support seeking.");
-			}
-		}
 
-		/// <inheritdoc />
-		[SuppressMessage("ReSharper", "ValueParameterNotUsed")]
-		public override int ReadTimeout
-		{
-			get
-			{
-				this.VerifyNotClosed();
-				throw new InvalidOperationException(nameof(BinaryStream) + " does not support timeouts.");
-			}
-			set
-			{
-				this.VerifyNotClosed();
-				throw new InvalidOperationException(nameof(BinaryStream) + " does not support timeouts.");
-			}
-		}
 
-		/// <inheritdoc />
-		[SuppressMessage("ReSharper", "ValueParameterNotUsed")]
-		public override int WriteTimeout
-		{
-			get
-			{
-				this.VerifyNotClosed();
-				throw new InvalidOperationException(nameof(BinaryStream) + " does not support timeouts.");
-			}
-			set
-			{
-				this.VerifyNotClosed();
-				throw new InvalidOperationException(nameof(BinaryStream) + " does not support timeouts.");
-			}
-		}
 
-		/// <inheritdoc />
-		public override void Close ()
-		{
-			this.CloseInternal();
-			base.Close();
-		}
+        #region Overrides
 
-		/// <inheritdoc />
-		public override void Flush ()
-		{
-			this.VerifyNotClosed();
-			this.Writer?.Flush();
-		}
+        /// <inheritdoc />
+        public override bool CanRead
+        {
+            get
+            {
+                this.VerifyNotClosed();
+                return this.Reader != null;
+            }
+        }
 
-		/// <inheritdoc />
-		public override int Read (byte[] buffer, int offset, int count)
-		{
-			this.VerifyNotClosed();
+        /// <inheritdoc />
+        public override bool CanSeek => false;
 
-			if (this.Reader == null)
-			{
-				throw new NotSupportedException(nameof(BinaryStream) + " does not support reading.");
-			}
+        /// <inheritdoc />
+        public override bool CanTimeout => false;
 
-			return this.Reader.Read(buffer, offset, count);
-		}
+        /// <inheritdoc />
+        public override bool CanWrite
+        {
+            get
+            {
+                this.VerifyNotClosed();
+                return this.Writer != null;
+            }
+        }
 
-		/// <inheritdoc />
-		public override int ReadByte ()
-		{
-			byte[] buffer = new byte[1];
+        /// <inheritdoc />
+        public override long Length
+        {
+            get
+            {
+                this.VerifyNotClosed();
+                throw new NotSupportedException(nameof(BinaryStream) + " does not support seeking.");
+            }
+        }
 
-			int read = this.Read(buffer, 0, 1);
+        /// <inheritdoc />
+        [SuppressMessage("ReSharper", "ValueParameterNotUsed")]
+        public override long Position
+        {
+            get
+            {
+                this.VerifyNotClosed();
+                throw new NotSupportedException(nameof(BinaryStream) + " does not support seeking.");
+            }
+            set
+            {
+                this.VerifyNotClosed();
+                throw new NotSupportedException(nameof(BinaryStream) + " does not support seeking.");
+            }
+        }
 
-			if (read != 1)
-			{
-				return -1;
-			}
+        /// <inheritdoc />
+        [SuppressMessage("ReSharper", "ValueParameterNotUsed")]
+        public override int ReadTimeout
+        {
+            get
+            {
+                this.VerifyNotClosed();
+                throw new InvalidOperationException(nameof(BinaryStream) + " does not support timeouts.");
+            }
+            set
+            {
+                this.VerifyNotClosed();
+                throw new InvalidOperationException(nameof(BinaryStream) + " does not support timeouts.");
+            }
+        }
 
-			return buffer[0];
-		}
+        /// <inheritdoc />
+        [SuppressMessage("ReSharper", "ValueParameterNotUsed")]
+        public override int WriteTimeout
+        {
+            get
+            {
+                this.VerifyNotClosed();
+                throw new InvalidOperationException(nameof(BinaryStream) + " does not support timeouts.");
+            }
+            set
+            {
+                this.VerifyNotClosed();
+                throw new InvalidOperationException(nameof(BinaryStream) + " does not support timeouts.");
+            }
+        }
 
-		/// <inheritdoc />
-		public override long Seek (long offset, SeekOrigin origin)
-		{
-			this.VerifyNotClosed();
-			throw new NotSupportedException(nameof(BinaryStream) + " does not support seeking.");
-		}
+        /// <inheritdoc />
+        public override void Close ()
+        {
+            this.CloseInternal();
+            base.Close();
+        }
 
-		/// <inheritdoc />
-		public override void SetLength (long value)
-		{
-			this.VerifyNotClosed();
-			throw new NotSupportedException(nameof(BinaryStream) + " does not support seeking.");
-		}
+        /// <inheritdoc />
+        public override void Flush ()
+        {
+            this.VerifyNotClosed();
+            this.Writer?.Flush();
+        }
 
-		/// <inheritdoc />
-		public override void Write (byte[] buffer, int offset, int count)
-		{
-			this.VerifyNotClosed();
+        /// <inheritdoc />
+        public override int Read (byte[] buffer, int offset, int count)
+        {
+            this.VerifyNotClosed();
 
-			if (this.Writer == null)
-			{
-				throw new NotSupportedException(nameof(BinaryStream) + " does not support writing.");
-			}
+            if (this.Reader == null)
+            {
+                throw new NotSupportedException(nameof(BinaryStream) + " does not support reading.");
+            }
 
-			this.Writer.Write(buffer, offset, count);
-		}
+            return this.Reader.Read(buffer, offset, count);
+        }
 
-		/// <inheritdoc />
-		public override void WriteByte (byte value)
-		{
-			this.Write(new[] {value});
-		}
+        /// <inheritdoc />
+        public override int ReadByte ()
+        {
+            byte[] buffer = new byte[1];
 
-		/// <inheritdoc />
-		protected override void Dispose (bool disposing)
-		{
-			this.CloseInternal();
-			base.Dispose(disposing);
-		}
+            int read = this.Read(buffer, 0, 1);
 
-		#endregion
-	}
+            if (read != 1)
+            {
+                return -1;
+            }
+
+            return buffer[0];
+        }
+
+        /// <inheritdoc />
+        public override long Seek (long offset, SeekOrigin origin)
+        {
+            this.VerifyNotClosed();
+            throw new NotSupportedException(nameof(BinaryStream) + " does not support seeking.");
+        }
+
+        /// <inheritdoc />
+        public override void SetLength (long value)
+        {
+            this.VerifyNotClosed();
+            throw new NotSupportedException(nameof(BinaryStream) + " does not support seeking.");
+        }
+
+        /// <inheritdoc />
+        public override void Write (byte[] buffer, int offset, int count)
+        {
+            this.VerifyNotClosed();
+
+            if (this.Writer == null)
+            {
+                throw new NotSupportedException(nameof(BinaryStream) + " does not support writing.");
+            }
+
+            this.Writer.Write(buffer, offset, count);
+        }
+
+        /// <inheritdoc />
+        public override void WriteByte (byte value)
+        {
+            this.Write(new[] {value});
+        }
+
+        /// <inheritdoc />
+        protected override void Dispose (bool disposing)
+        {
+            this.CloseInternal();
+            base.Dispose(disposing);
+        }
+
+        #endregion
+    }
 }

@@ -21,15 +21,15 @@ namespace RI.Framework.Collections.Virtualization
     ///         That means that items are only loaded when they are actually requested through <see cref="VirtualizationCollection{T}" /> (e.g. by using the collections indexer property).
     ///     </para>
     ///     <para>
-    ///         Items are loaded in pages which size can be specified when cosntructing <see cref="VirtualizationCollection{T}" />.
+    ///         Items are loaded in pages which size can be specified when constructing <see cref="VirtualizationCollection{T}" />.
     ///         The loaded pages will then stay in the cache for a specified amount of time.
     ///     </para>
     ///     <note type="note">
     ///         If <see cref="INotifyItemsProvider{T}" /> is used, <see cref="INotifyItemsProvider{T}.ItemsChanged" /> will clear the entire cache.
     ///     </note>
     /// </remarks>
-    /// <threadsafety static="true" instance="true" />
-    public sealed class VirtualizationCollection <T> : IList<T>, ICollection<T>, IEnumerable<T>, IList, ICollection, IEnumerable, IDisposable, ISynchronizable
+    /// <threadsafety static="false" instance="false" />
+    public sealed class VirtualizationCollection <T> : IList<T>, IReadOnlyList<T>, ICollection<T>, IReadOnlyCollection<T>, IEnumerable<T>, IList, ICollection, IEnumerable, IDisposable, ISynchronizable
     {
         #region Instance Constructor/Destructor
 
@@ -37,7 +37,7 @@ namespace RI.Framework.Collections.Virtualization
         ///     Creates a new instance of <see cref="VirtualizationCollection{T}" />
         /// </summary>
         /// <param name="pageSize"> The page size. </param>
-        /// <param name="cacheTime"> The time in milliseconds pages stay in the cache. </param>
+        /// <param name="cacheTime"> The time pages stay in the cache or null if the pages stay in the cache indefinitely. </param>
         /// <param name="itemsProvider"> The provider which is used to load the items as needed. </param>
         /// <exception cref="ArgumentOutOfRangeException"> <paramref name="pageSize" /> is less than 1 or <paramref name="cacheTime" /> is negative. </exception>
         /// <exception cref="ArgumentNullException"> <paramref name="itemsProvider" /> is null. </exception>
@@ -50,20 +50,20 @@ namespace RI.Framework.Collections.Virtualization
         ///     Creates a new instance of <see cref="VirtualizationCollection{T}" />
         /// </summary>
         /// <param name="pageSize"> The page size. </param>
-        /// <param name="cacheTime"> The time in milliseconds pages stay in the cache. </param>
+        /// <param name="cacheTimeMilliseconds"> The time in milliseconds pages stay in the cache or zero if the pages stay in the cache indefinitely. </param>
         /// <param name="itemsProvider"> The provider which is used to load the items as needed. </param>
-        /// <exception cref="ArgumentOutOfRangeException"> <paramref name="pageSize" /> is less than 1 or <paramref name="cacheTime" /> is negative. </exception>
+        /// <exception cref="ArgumentOutOfRangeException"> <paramref name="pageSize" /> is less than 1 or <paramref name="cacheTimeMilliseconds" /> is negative. </exception>
         /// <exception cref="ArgumentNullException"> <paramref name="itemsProvider" /> is null. </exception>
-        public VirtualizationCollection (int pageSize, int cacheTime, IItemsProvider<T> itemsProvider)
+        public VirtualizationCollection (int pageSize, int cacheTimeMilliseconds, IItemsProvider<T> itemsProvider)
         {
             if (pageSize < 1)
             {
                 throw new ArgumentOutOfRangeException(nameof(pageSize));
             }
 
-            if (cacheTime < 0)
+            if (cacheTimeMilliseconds < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(cacheTime));
+                throw new ArgumentOutOfRangeException(nameof(cacheTimeMilliseconds));
             }
 
             if (itemsProvider == null)
@@ -71,11 +71,12 @@ namespace RI.Framework.Collections.Virtualization
                 throw new ArgumentNullException(nameof(itemsProvider));
             }
 
+            this.SyncRoot = new object();
+
             this.PageSize = pageSize;
-            this.CacheTime = cacheTime;
+            this.CacheTime = cacheTimeMilliseconds == 0 ? (TimeSpan?)null : TimeSpan.FromMilliseconds(cacheTimeMilliseconds);
             this.ItemsProvider = itemsProvider;
 
-            this.SyncRoot = new object();
             this.Cache = new PageCollection();
             this.ItemsChangedHandler = this.ItemsChangedMethod;
 
@@ -104,9 +105,9 @@ namespace RI.Framework.Collections.Virtualization
         ///     Gets the time in milliseconds pages stay in the cache.
         /// </summary>
         /// <value>
-        ///     The time in milliseconds pages stay in the cache.
+        ///     The time in milliseconds pages stay in the cache or null if the pages stay in the cache indefinitely.
         /// </value>
-        public int CacheTime { get; private set; }
+        public TimeSpan? CacheTime { get; }
 
         /// <summary>
         ///     Gets the page size.
@@ -114,15 +115,15 @@ namespace RI.Framework.Collections.Virtualization
         /// <value>
         ///     The page size.
         /// </value>
-        public int PageSize { get; private set; }
-
-        private PageCollection Cache { get; set; }
-
-        private EventHandler ItemsChangedHandler { get; set; }
+        public int PageSize { get; }
 
         private IItemsProvider<T> ItemsProvider { get; set; }
 
-        private object SyncRoot { get; set; }
+        private PageCollection Cache { get; }
+
+        private EventHandler ItemsChangedHandler { get; }
+
+        private object SyncRoot { get; }
 
         #endregion
 
@@ -135,8 +136,6 @@ namespace RI.Framework.Collections.Virtualization
         ///     Raised when the used <see cref="IItemsProvider{T}" /> signalled that items have changed.
         /// </summary>
         public event EventHandler ItemsChanged;
-
-        private event EventHandler ProviderItemsChanged;
 
         #endregion
 
@@ -157,7 +156,7 @@ namespace RI.Framework.Collections.Virtualization
         private void CleanupCache ()
         {
             DateTime now = DateTime.UtcNow;
-            this.Cache.RemoveWhere(x => now.Subtract(x.Timestamp).TotalMilliseconds > this.CacheTime);
+            this.Cache.RemoveWhere(x => now.Subtract(x.Timestamp) > this.CacheTime);
         }
 
         private void ItemsChangedMethod (object sender, EventArgs args)
@@ -165,7 +164,6 @@ namespace RI.Framework.Collections.Virtualization
             this.ClearCache();
 
             this.ItemsChanged?.Invoke(this, EventArgs.Empty);
-            this.ProviderItemsChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private Page LoadPage (int pageIndex, bool temporary)
@@ -250,6 +248,8 @@ namespace RI.Framework.Collections.Virtualization
 
             (this.ItemsProvider as IDisposable)?.Dispose();
             this.ItemsProvider = null;
+
+            this.Cache?.Clear();
         }
 
         #endregion
@@ -260,13 +260,7 @@ namespace RI.Framework.Collections.Virtualization
         #region Interface: IList
 
         /// <inheritdoc />
-        bool IList.IsFixedSize
-        {
-            get
-            {
-                return false;
-            }
-        }
+        bool IList.IsFixedSize => false;
 
         /// <inheritdoc />
         bool ICollection.IsSynchronized => ((ISynchronizable)this).IsSynchronized;
@@ -277,14 +271,8 @@ namespace RI.Framework.Collections.Virtualization
         /// <inheritdoc />
         object IList.this [int index]
         {
-            get
-            {
-                return this[index];
-            }
-            set
-            {
-                this[index] = (T)value;
-            }
+            get => this[index];
+            set => this[index] = (T)value;
         }
 
         /// <inheritdoc />
@@ -354,6 +342,7 @@ namespace RI.Framework.Collections.Virtualization
             get
             {
                 this.VerifyNotDisposed();
+
                 this.CleanupCache();
 
                 return this.ItemsProvider.GetCount();
@@ -361,13 +350,7 @@ namespace RI.Framework.Collections.Virtualization
         }
 
         /// <inheritdoc />
-        public bool IsReadOnly
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public bool IsReadOnly => true;
 
         /// <inheritdoc />
         [SuppressMessage("ReSharper", "ValueParameterNotUsed")]
@@ -376,6 +359,7 @@ namespace RI.Framework.Collections.Virtualization
             get
             {
                 this.VerifyNotDisposed();
+
                 this.CleanupCache();
 
                 if (index < 0)
@@ -387,12 +371,14 @@ namespace RI.Framework.Collections.Virtualization
                 int pageOffset = index % this.PageSize;
 
                 this.LoadPage(pageIndex + 1, false);
+
                 if (pageIndex > 0)
                 {
                     this.LoadPage(pageIndex - 1, false);
                 }
 
                 Page page = this.LoadPage(pageIndex, false);
+
                 if (page == null)
                 {
                     throw new IndexOutOfRangeException("The index points to a nonexistent page.");
@@ -427,6 +413,7 @@ namespace RI.Framework.Collections.Virtualization
         public bool Contains (T item)
         {
             this.VerifyNotDisposed();
+
             this.CleanupCache();
 
             return this.ItemsProvider.Search(item) != -1;
@@ -436,6 +423,7 @@ namespace RI.Framework.Collections.Virtualization
         public void CopyTo (T[] array, int arrayIndex)
         {
             this.VerifyNotDisposed();
+
             this.CleanupCache();
 
             foreach (T item in this)
@@ -449,6 +437,7 @@ namespace RI.Framework.Collections.Virtualization
         public IEnumerator<T> GetEnumerator ()
         {
             this.VerifyNotDisposed();
+
             this.CleanupCache();
 
             int pageIndex = 0;
@@ -480,6 +469,7 @@ namespace RI.Framework.Collections.Virtualization
         public int IndexOf (T item)
         {
             this.VerifyNotDisposed();
+
             this.CleanupCache();
 
             return this.ItemsProvider.Search(item);
@@ -548,9 +538,9 @@ namespace RI.Framework.Collections.Virtualization
 
             #region Instance Properties/Indexer
 
-            public List<T> Items { get; private set; }
+            public List<T> Items { get; }
 
-            public int PageIndex { get; private set; }
+            public int PageIndex { get; }
 
             public DateTime Timestamp { get; private set; }
 
