@@ -60,6 +60,8 @@ namespace RI.Framework.Collections.Concurrent
 
         private TaskCreationOptions _completionCreationOptions;
 
+        private bool _isFinished;
+
         private bool _isInitialized;
 
         private TRequest _request;
@@ -67,8 +69,6 @@ namespace RI.Framework.Collections.Concurrent
         private TResponse _response;
 
         private bool _stillNeeded;
-
-        private bool _isFinished;
 
         #endregion
 
@@ -119,6 +119,32 @@ namespace RI.Framework.Collections.Concurrent
                 lock (this.SyncRoot)
                 {
                     this._completionCreationOptions = value;
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Gets whether the request is finished.
+        /// </summary>
+        /// <value>
+        ///     true if the request is finished, false otherwise.
+        /// </value>
+        /// <exception cref="InvalidOperationException"> The item is not initialized. </exception>
+        public bool IsFinished
+        {
+            get
+            {
+                lock (this.SyncRoot)
+                {
+                    this.VerifyInitialized();
+                    return this._isFinished;
+                }
+            }
+            private set
+            {
+                lock (this.SyncRoot)
+                {
+                    this._isFinished = value;
                 }
             }
         }
@@ -225,32 +251,6 @@ namespace RI.Framework.Collections.Concurrent
             }
         }
 
-        /// <summary>
-        ///     Gets whether the request is finished.
-        /// </summary>
-        /// <value>
-        ///     true if the request is finished, false otherwise.
-        /// </value>
-        /// <exception cref="InvalidOperationException"> The item is not initialized. </exception>
-        public bool IsFinished
-        {
-            get
-            {
-                lock (this.SyncRoot)
-                {
-                    this.VerifyInitialized();
-                    return this._isFinished;
-                }
-            }
-            private set
-            {
-                lock (this.SyncRoot)
-                {
-                    this._isFinished = value;
-                }
-            }
-        }
-
         internal Task<TResponse> ResponseTask
         {
             get
@@ -279,7 +279,7 @@ namespace RI.Framework.Collections.Concurrent
         /// </summary>
         /// <param name="exception"> The exception. </param>
         /// <exception cref="ArgumentNullException"> <paramref name="exception" /> is null. </exception>
-        /// <exception cref="InvalidOperationException">The item is not initialized or was already finished.</exception>
+        /// <exception cref="InvalidOperationException"> The item is not initialized or was already finished. </exception>
         public void Abort (Exception exception)
         {
             if (exception == null)
@@ -305,7 +305,7 @@ namespace RI.Framework.Collections.Concurrent
         /// <summary>
         ///     Cancels the request.
         /// </summary>
-        /// <exception cref="InvalidOperationException">The item is not initialized or was already finished.</exception>
+        /// <exception cref="InvalidOperationException"> The item is not initialized or was already finished. </exception>
         public void Cancel ()
         {
             lock (this.SyncRoot)
@@ -331,7 +331,7 @@ namespace RI.Framework.Collections.Concurrent
         ///         This simply issues a response using the default value of <typeparamref name="TResponse" />.
         ///     </para>
         /// </remarks>
-        /// <exception cref="InvalidOperationException">The item is not initialized or was already finished.</exception>
+        /// <exception cref="InvalidOperationException"> The item is not initialized or was already finished. </exception>
         public void Respond ()
         {
             lock (this.SyncRoot)
@@ -353,7 +353,7 @@ namespace RI.Framework.Collections.Concurrent
         ///     Finishes the response with a response.
         /// </summary>
         /// <param name="response"> The response. </param>
-        /// <exception cref="InvalidOperationException">The item is not initialized or was already finished.</exception>
+        /// <exception cref="InvalidOperationException"> The item is not initialized or was already finished. </exception>
         public void Respond (TResponse response)
         {
             lock (this.SyncRoot)
@@ -380,13 +380,13 @@ namespace RI.Framework.Collections.Concurrent
                     throw new InvalidOperationException(this.GetType().Name + " is already initialized.");
                 }
 
+                this.IsInitialized = true;
+
                 this.CompletionCreationOptions = completionCreationOptions;
                 this.Request = request;
 
                 this.ResponseCompletion = new TaskCompletionSource<TResponse>(request, this.CompletionCreationOptions);
                 this.CancellationTokenSource = new CancellationTokenSource();
-
-                this.IsInitialized = true;
 
                 this.OnInitialize(completionCreationOptions, request);
             }

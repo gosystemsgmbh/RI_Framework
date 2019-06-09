@@ -36,7 +36,10 @@ namespace RI.Framework.Collections.Concurrent
         /// </summary>
         /// <remarks>
         ///     <para>
-        ///         <see cref="TaskCreationOptions.RunContinuationsAsynchronously" /> is used for task creation options.
+        ///         <see cref="TaskCreationOptions.RunContinuationsAsynchronously" /> is used as continuation creation options.
+        ///     </para>
+        ///     <para>
+        ///         The current task scheduler is used for executing continuations.
         ///     </para>
         /// </remarks>
         public RequestResponseQueue ()
@@ -46,9 +49,38 @@ namespace RI.Framework.Collections.Concurrent
         /// <summary>
         ///     Creates a new instance of <see cref="RequestResponseQueue{TRequest, TResponse}" />.
         /// </summary>
-        /// <param name="completionCreationOptions"> The completion creation options. </param>
+        /// <param name="completionCreationOptions"> The options which are used for creating continuations. </param>
+        /// <remarks>
+        ///     <para>
+        ///         The current task scheduler is used for executing continuations.
+        ///     </para>
+        /// </remarks>
         public RequestResponseQueue (TaskCreationOptions completionCreationOptions)
             : base(completionCreationOptions)
+        {
+        }
+
+        /// <summary>
+        ///     Creates a new instance of <see cref="RequestResponseQueue{TRequest, TResponse}" />.
+        /// </summary>
+        /// <param name="completionScheduler"> The task scheduler which is used for executing continuations. Can be null to use the current task scheduler. </param>
+        /// <remarks>
+        ///     <para>
+        ///         <see cref="TaskCreationOptions.RunContinuationsAsynchronously" /> is used as continuation creation options.
+        ///     </para>
+        /// </remarks>
+        public RequestResponseQueue (TaskScheduler completionScheduler)
+            : base(completionScheduler)
+        {
+        }
+
+        /// <summary>
+        ///     Creates a new instance of <see cref="RequestResponseQueue{TRequest, TResponse}" />.
+        /// </summary>
+        /// <param name="completionCreationOptions"> The options which are used for creating continuations. </param>
+        /// <param name="completionScheduler"> The task scheduler which is used for executing continuations. Can be null to use the current task scheduler. </param>
+        public RequestResponseQueue (TaskCreationOptions completionCreationOptions, TaskScheduler completionScheduler)
+            : base(completionCreationOptions, completionScheduler)
         {
         }
 

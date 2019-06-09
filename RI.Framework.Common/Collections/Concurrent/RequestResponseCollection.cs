@@ -57,23 +57,56 @@ namespace RI.Framework.Collections.Concurrent
         /// </summary>
         /// <remarks>
         ///     <para>
-        ///         <see cref="TaskCreationOptions.RunContinuationsAsynchronously" /> is used for task creation options.
+        ///         <see cref="TaskCreationOptions.RunContinuationsAsynchronously" /> is used as continuation creation options.
+        ///     </para>
+        ///     <para>
+        ///         The current task scheduler is used for executing continuations.
         ///     </para>
         /// </remarks>
         protected RequestResponseCollection ()
-            : this(TaskCreationOptions.RunContinuationsAsynchronously)
+            : this(TaskCreationOptions.RunContinuationsAsynchronously, null)
         {
         }
 
         /// <summary>
         ///     Creates a new instance of <see cref="RequestResponseCollection{TRequest, TResponse, TItem}" />.
         /// </summary>
-        /// <param name="completionCreationOptions"> The completion creation options. </param>
+        /// <param name="completionCreationOptions"> The options which are used for creating continuations. </param>
+        /// <remarks>
+        ///     <para>
+        ///         The current task scheduler is used for executing continuations.
+        ///     </para>
+        /// </remarks>
         protected RequestResponseCollection (TaskCreationOptions completionCreationOptions)
+            : this(completionCreationOptions, null)
+        {
+        }
+
+        /// <summary>
+        ///     Creates a new instance of <see cref="RequestResponseCollection{TRequest, TResponse, TItem}" />.
+        /// </summary>
+        /// <param name="completionScheduler"> The task scheduler which is used for executing continuations. Can be null to use the current task scheduler. </param>
+        /// <remarks>
+        ///     <para>
+        ///         <see cref="TaskCreationOptions.RunContinuationsAsynchronously" /> is used as continuation creation options.
+        ///     </para>
+        /// </remarks>
+        protected RequestResponseCollection (TaskScheduler completionScheduler)
+            : this(TaskCreationOptions.RunContinuationsAsynchronously, completionScheduler)
+        {
+        }
+
+        /// <summary>
+        ///     Creates a new instance of <see cref="RequestResponseCollection{TRequest, TResponse, TItem}" />.
+        /// </summary>
+        /// <param name="completionCreationOptions"> The options which are used for creating continuations. </param>
+        /// <param name="completionScheduler"> The task scheduler which is used for executing continuations. Can be null to use the current task scheduler. </param>
+        protected RequestResponseCollection (TaskCreationOptions completionCreationOptions, TaskScheduler completionScheduler)
         {
             this.SyncRoot = new object();
 
             this.CompletionCreationOptions = completionCreationOptions;
+            this.CompletionScheduler = completionScheduler;
 
             this.Initialize();
         }
@@ -89,16 +122,22 @@ namespace RI.Framework.Collections.Concurrent
         ///     Gets the options which are used for creating continuations.
         /// </summary>
         /// <value>
-        ///     T
         ///     The options which are used for creating continuations.
         /// </value>
         public TaskCreationOptions CompletionCreationOptions { get; }
 
         /// <summary>
+        ///     Gets the task scheduler which is used for executing continuations.
+        /// </summary>
+        /// <value>
+        ///     The task scheduler which is used for executing continuations.
+        /// </value>
+        public TaskScheduler CompletionScheduler { get; }
+
+        /// <summary>
         ///     Gets the number of currently waiting consumers.
         /// </summary>
         /// <value>
-        ///     T
         ///     The number of currently waiting consumers.
         /// </value>
         public int WaitingConsumers
@@ -116,7 +155,6 @@ namespace RI.Framework.Collections.Concurrent
         ///     Gets the number of currently waiting requests.
         /// </summary>
         /// <value>
-        ///     T
         ///     The number of currently waiting requests.
         /// </value>
         public int WaitingRequests
@@ -313,7 +351,7 @@ namespace RI.Framework.Collections.Concurrent
 
                     return responseTask.Result;
                 }
-            }, TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.LazyCancellation);
+            }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.LazyCancellation, this.CompletionScheduler ?? TaskScheduler.Current);
 
             return waitTask;
         }
@@ -383,7 +421,7 @@ namespace RI.Framework.Collections.Concurrent
 
                     return consumerTask.Result;
                 }
-            }, TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.LazyCancellation);
+            }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.LazyCancellation, this.CompletionScheduler ?? TaskScheduler.Current);
 
             return waitTask;
         }
