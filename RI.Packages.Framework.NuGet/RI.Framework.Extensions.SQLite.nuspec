@@ -17,8 +17,8 @@
             <dependency id="RI.Framework.Common" version="[$build_version$]" include="all" />
             <dependency id="RI.Framework.Net.Common" version="[$build_version$]" include="all" />
             <dependency id="RI.Framework.Net.Fx" version="[$build_version$]" include="all" />
-            <dependency id="System.Data.SQLite.Core" version="1.0.108" include="all" />
-            <dependency id="System.Data.SQLite.Linq" version="1.0.108" include="all" />
+            <dependency id="System.Data.SQLite.Core" version="1.0.111" include="all" />
+            <dependency id="System.Data.SQLite.Linq" version="1.0.111" include="all" />
         </dependencies>
     </metadata>
     <files>

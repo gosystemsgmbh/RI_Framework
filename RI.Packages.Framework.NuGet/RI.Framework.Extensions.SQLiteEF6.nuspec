@@ -19,9 +19,9 @@
             <dependency id="RI.Framework.Net.Fx" version="[$build_version$]" include="all" />
             <dependency id="RI.Framework.Extensions.SQLite" version="[$build_version$]" include="all" />
             <dependency id="RI.Framework.Extensions.EF6" version="[$build_version$]" include="all" />
-            <dependency id="System.Data.SQLite.Core" version="1.0.108" include="all" />
-            <dependency id="System.Data.SQLite.Linq" version="1.0.108" include="all" />
-            <dependency id="System.Data.SQLite.EF6" version="1.0.108" include="all" />
+            <dependency id="System.Data.SQLite.Core" version="1.0.111" include="all" />
+            <dependency id="System.Data.SQLite.Linq" version="1.0.111" include="all" />
+            <dependency id="System.Data.SQLite.EF6" version="1.0.111" include="all" />
             <dependency id="EntityFramework" version="6.2.0" include="all" />
         </dependencies>
     </metadata>

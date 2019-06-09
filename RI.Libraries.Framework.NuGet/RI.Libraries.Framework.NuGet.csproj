@@ -60,16 +60,19 @@
     <None Include="System.Data.SQLite.Core.1.0.106.0.nupkg" />
     <None Include="System.Data.SQLite.Core.1.0.107.0.nupkg" />
     <None Include="System.Data.SQLite.Core.1.0.108.0.nupkg" />
+    <None Include="System.Data.SQLite.Core.1.0.111.0.nupkg" />
     <None Include="System.Data.SQLite.EF6.1.0.104.0.nupkg" />
     <None Include="System.Data.SQLite.EF6.1.0.105.2.nupkg" />
     <None Include="System.Data.SQLite.EF6.1.0.106.0.nupkg" />
     <None Include="System.Data.SQLite.EF6.1.0.107.0.nupkg" />
     <None Include="System.Data.SQLite.EF6.1.0.108.0.nupkg" />
+    <None Include="System.Data.SQLite.EF6.1.0.111.0.nupkg" />
     <None Include="System.Data.SQLite.Linq.1.0.104.0.nupkg" />
     <None Include="System.Data.SQLite.Linq.1.0.105.2.nupkg" />
     <None Include="System.Data.SQLite.Linq.1.0.106.0.nupkg" />
     <None Include="System.Data.SQLite.Linq.1.0.107.0.nupkg" />
     <None Include="System.Data.SQLite.Linq.1.0.108.0.nupkg" />
+    <None Include="System.Data.SQLite.Linq.1.0.111.0.nupkg" />
     <None Include="_PostBuild.bat" />
     <None Include="_PreBuild.bat" />
   </ItemGroup>
