@@ -15,15 +15,11 @@ namespace RI.Framework.Mathematic
 <#
 string[] types = new string[]				{	"sbyte",	"byte",		"short",	"ushort",	"int",	"uint",		"long",		"ulong",	"float",	"double",	"decimal"	};
 string[] zeros = new string[]				{	"0",		"0",		"0",		"0",		"0",	"0",		"0",		"0ul",		"0.0f",		"0.0",		"0.0m"		};
-string[] plusOnes = new string[]			{	"1",		"1",		"1",		"1",		"1",	"1",		"1",		"1ul",		"1.0f",		"1.0",		"1.0m"		};
-string[] minusOnes = new string[]			{	"-1",		"-1",		"-1",		"-1",		"-1",	"-1",		"-1",		"-1ul",		"-1.0f",	"-1.0",		"-1.0m"		};
 bool[] useFloatZeroComparisons = new bool[]	{	false,		false,		false,		false,		false,	false,		false,		false,		true,		true,		false		};
 for (int i1 = 0; i1 < types.Length; i1++)
 {
 string type = types[i1];
 string zero = zeros[i1];
-string plusOne = plusOnes[i1];
-string minusOne = minusOnes[i1];
 string zeroComparison = useFloatZeroComparisons[i1] ? ".AlmostZero()" : (" == " + zero);
 #>
 

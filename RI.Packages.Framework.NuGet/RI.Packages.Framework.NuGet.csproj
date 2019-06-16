@@ -39,8 +39,6 @@
     <None Include="RI.Framework.Extensions.SqlServerEF6.nuspec" />
     <None Include="RI.Framework.Extensions.SQLiteEF6.nuspec" />
     <None Include="RI.Framework.Extensions.SQLite.nuspec" />
-    <None Include="RI.Framework.Extensions.NancyJson.nuspec" />
-    <None Include="RI.Framework.Extensions.Nancy.nuspec" />
     <None Include="RI.Framework.Extensions.Json.nuspec" />
     <None Include="RI.Framework.Extensions.FluentRibbon.nuspec" />
     <None Include="RI.Framework.Extensions.EF6.nuspec" />

@@ -27,15 +27,9 @@ namespace RI.Framework.Mathematic
     {
 <#
 string[] types = new string[]		{	"sbyte",	"byte",		"short",	"ushort",	"int",	"uint",		"long",		"ulong",	"float",	"double",	"decimal"	};
-string[] zeros = new string[]		{	"0",		"0",		"0",		"0",		"0",	"0",		"0",		"0ul",		"0.0f",		"0.0",		"0.0m"		};
-string[] plusOnes = new string[]	{	"1",		"1",		"1",		"1",		"1",	"1",		"1",		"1ul",		"1.0f",		"1.0",		"1.0m"		};
-string[] minusOnes = new string[]	{	"-1",		"-1",		"-1",		"-1",		"-1",	"-1",		"-1",		"-1ul",		"-1.0f",	"-1.0",		"-1.0m"		};
 for (int i1 = 0; i1 < types.Length; i1++)
 {
 string type = types[i1];
-string zero = zeros[i1];
-string plusOne = plusOnes[i1];
-string minusOne = minusOnes[i1];
 #>
 
         /// <summary>
@@ -355,9 +349,9 @@ if((type != "float") && (type != "double") && (type != "decimal"))
 }
 }
 types = new string[]		{	"sbyte",	"short",	"int",	"long",		"float",	"double",	"decimal"	};
-zeros = new string[]		{	"0",		"0",		"0",	"0",		"0.0f",		"0.0",		"0.0m"		};
-plusOnes = new string[]		{	"1",		"1",		"1",	"1",		"1.0f",		"1.0",		"1.0m"		};
-minusOnes = new string[]	{	"-1",		"-1",		"-1",	"-1",		"-1.0f",	"-1.0",		"-1.0m"		};
+string[] zeros = new string[]		{	"0",		"0",		"0",	"0",		"0.0f",		"0.0",		"0.0m"		};
+string[] plusOnes = new string[]		{	"1",		"1",		"1",	"1",		"1.0f",		"1.0",		"1.0m"		};
+string[] minusOnes = new string[]	{	"-1",		"-1",		"-1",	"-1",		"-1.0f",	"-1.0",		"-1.0m"		};
 for (int i1 = 0; i1 < types.Length; i1++)
 {
 string type = types[i1];
@@ -419,11 +413,8 @@ string minusOne = minusOnes[i1];
 <#
 }
 types = new string[]					{	"float",														"double"																};
-zeros = new string[]					{	"0.0f",															"0.0"																	};
 plusOnes = new string[]					{	"1.0f",															"1.0"																	};
-minusOnes = new string[]				{	"-1.0f",														"-1.0"																	};
 string[] plusTwos = new string[]		{	"2.0f",															"2.0"																	};
-string[] minusTwos = new string[]		{	"-2.0f",														"-2.0"																	};
 string[] accuracies = new string[]		{	"MathConstF.DefaultAccuracy",									"MathConstD.DefaultAccuracy"											};
 string[] toDegFactors = new string[]	{	"MathConstF.RadToDeg",											"MathConstF.RadToDeg"													};
 string[] toRadFactors = new string[]	{	"MathConstF.DegToRad",											"MathConstF.DegToRad"													};
@@ -432,11 +423,8 @@ string[] radCircles = new string[]		{	"2.0f*3.1415926535897932384626433832795028
 for (int i1 = 0; i1 < types.Length; i1++)
 {
 string type = types[i1];
-string zero = zeros[i1];
 string plusOne = plusOnes[i1];
-string minusOne = minusOnes[i1];
 string plusTwo = plusTwos[i1];
-string minusTwo = minusTwos[i1];
 string accuracy = accuracies[i1];
 string toDegFactor = toDegFactors[i1];
 string toRadFactor = toRadFactors[i1];

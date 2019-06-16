@@ -16,8 +16,6 @@
 "..\_Tools\nuget.exe" pack "RI.Framework.Extensions.EF6.nuspec" -OutputDirectory "..\_Packages" -Properties build_version=%build_version%
 "..\_Tools\nuget.exe" pack "RI.Framework.Extensions.FluentRibbon.nuspec" -OutputDirectory "..\_Packages" -Properties build_version=%build_version%
 "..\_Tools\nuget.exe" pack "RI.Framework.Extensions.Json.nuspec" -OutputDirectory "..\_Packages" -Properties build_version=%build_version%
-"..\_Tools\nuget.exe" pack "RI.Framework.Extensions.Nancy.nuspec" -OutputDirectory "..\_Packages" -Properties build_version=%build_version%
-"..\_Tools\nuget.exe" pack "RI.Framework.Extensions.NancyJson.nuspec" -OutputDirectory "..\_Packages" -Properties build_version=%build_version%
 "..\_Tools\nuget.exe" pack "RI.Framework.Extensions.SQLite.nuspec" -OutputDirectory "..\_Packages" -Properties build_version=%build_version%
 "..\_Tools\nuget.exe" pack "RI.Framework.Extensions.SQLiteEF6.nuspec" -OutputDirectory "..\_Packages" -Properties build_version=%build_version%
 "..\_Tools\nuget.exe" pack "RI.Framework.Extensions.SqlServer.nuspec" -OutputDirectory "..\_Packages" -Properties build_version=%build_version%
