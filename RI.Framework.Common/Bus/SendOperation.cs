@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 using RI.Framework.Bus.Exceptions;
+using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.ObjectModel;
@@ -17,10 +17,9 @@ using RI.Framework.Utilities.ObjectModel;
 namespace RI.Framework.Bus
 {
     /// <summary>
-    ///     Represents a send operation.
+    ///     Represents a single send operation.
     /// </summary>
     /// <threadsafety static="true" instance="true" />
-    /// TODO: Use TaskScheduler optionally provided by dispatcher
     public sealed class SendOperation : ISynchronizable
     {
         #region Instance Constructor/Destructor
@@ -40,16 +39,19 @@ namespace RI.Framework.Bus
             this.SyncRoot = new object();
             this.Bus = bus;
 
+            this.OperationType = SendOperationType.Undefined;
+
             this.Address = null;
             this.Global = null;
             this.Payload = null;
+            this.Response = null;
             this.ExpectedResults = null;
             this.Timeout = null;
             this.CancellationToken = null;
             this.ExceptionForwarding = null;
+            this.ExceptionHandler = null;
 
-            this.IgnoreBroken = false;
-            this.IsBroadcast = false;
+            this.IgnoreBrokenConnections = false;
             this.IsProcessed = false;
 
             this.Result = null;
@@ -68,6 +70,14 @@ namespace RI.Framework.Bus
         /// <value>
         ///     The address the message is sent to or null if no address is used.
         /// </value>
+        /// <remarks>
+        ///     <para>
+        ///         The default value is null.
+        ///     </para>
+        ///     <para>
+        ///         This value can be set by <see cref="ToAddress" />.
+        ///     </para>
+        /// </remarks>
         public string Address { get; private set; }
 
         /// <summary>
@@ -82,8 +92,16 @@ namespace RI.Framework.Bus
         ///     Gets the cancellation token which can be used to cancel the wait for responses or the collection of responses.
         /// </summary>
         /// <value>
-        ///     tHE cancellation token which can be used to cancel the wait for responses or the collection of responses.
+        ///     The cancellation token which can be used to cancel the wait for responses or the collection of responses or null if no cancellation token is used.
         /// </value>
+        /// <remarks>
+        ///     <para>
+        ///         The default value is null.
+        ///     </para>
+        ///     <para>
+        ///         This value can be set by <see cref="WithCancellation" />.
+        ///     </para>
+        /// </remarks>
         public CancellationToken? CancellationToken { get; private set; }
 
         /// <summary>
@@ -92,7 +110,32 @@ namespace RI.Framework.Bus
         /// <value>
         ///     true if exception forwarding is used, false if not, null if not defined where the default value of the associated bus is used.
         /// </value>
+        /// <remarks>
+        ///     <para>
+        ///         The default value is null.
+        ///     </para>
+        ///     <para>
+        ///         This value can be set by <see cref="WithExceptionForwarding()" />, <see cref="WithExceptionForwarding(bool?)" />.
+        ///     </para>
+        /// </remarks>
         public bool? ExceptionForwarding { get; private set; }
+
+        /// <summary>
+        ///     Gets the used exception handler.
+        /// </summary>
+        /// <value>
+        ///     The used exception handler or null if no specific exception handler is used by this send operation where the default value of the associated bus is used.
+        /// </value>
+        /// <remarks>
+        ///     <para>
+        ///         The default value is null.
+        ///     </para>
+        ///     <para>
+        ///         This value can be set by <see cref="WithExceptionHandler" />.
+        ///     </para>
+        /// </remarks>
+        /// TODO: Use this!
+        public SendExceptionHandler ExceptionHandler { get; private set; }
 
         /// <summary>
         ///     Gets the number of expected responses.
@@ -100,6 +143,11 @@ namespace RI.Framework.Bus
         /// <value>
         ///     The number of expected responses or null if no such number is specified.
         /// </value>
+        /// <remarks>
+        ///     <para>
+        ///         The default value is null.
+        ///     </para>
+        /// </remarks>
         public int? ExpectedResults { get; private set; }
 
         /// <summary>
@@ -108,31 +156,75 @@ namespace RI.Framework.Bus
         /// <value>
         ///     true if the message is sent globally, false if locally, null if not defined where the default value of the associated bus is used.
         /// </value>
+        /// <remarks>
+        ///     <para>
+        ///         The default value is null.
+        ///     </para>
+        ///     <para>
+        ///         This value can be set by <see cref="ToGlobal()" />, <see cref="ToGlobal(bool?)" />, <see cref="ToLocal()" />, <see cref="ToLocal(bool?)" />.
+        ///     </para>
+        /// </remarks>
         public bool? Global { get; private set; }
 
         /// <summary>
         ///     Gets whether broken connections should be ignored.
         /// </summary>
         /// <value>
-        ///     true if broken connections should be ignored (favouring timeouts), false otherwise.
+        ///     true if broken connections should be ignored (favoring timeouts), false otherwise.
         /// </value>
-        public bool IgnoreBroken { get; private set; }
-
-        /// <summary>
-        ///     Gets whether the message is sent as a broadcast.
-        /// </summary>
-        /// <value>
-        ///     true if the message is sent as broadcast, false otherwise.
-        /// </value>
-        public bool IsBroadcast { get; private set; }
-
+        /// <remarks>
+        ///     <para>
+        ///         The default value is false.
+        ///     </para>
+        ///     <para>
+        ///         This value can be set by <see cref="WithIgnoredBrokenConnections()" />, <see cref="WithIgnoredBrokenConnections(bool)" />.
+        ///     </para>
+        /// </remarks>
+        /// TODO: Make nullable and get default value from associated bus
+        public bool IgnoreBrokenConnections { get; private set; }
+        
         /// <summary>
         ///     Gets whether this send operation is being processed.
         /// </summary>
         /// <value>
         ///     true if the send operation is being processed, false otherwise.
         /// </value>
+        /// <remarks>
+        ///     <para>
+        ///         The default value is false.
+        ///     </para>
+        /// </remarks>
         public bool IsProcessed { get; private set; }
+
+        /// <summary>
+        ///     Gets whether the message is sent locally.
+        /// </summary>
+        /// <value>
+        ///     true if the message is sent locally, false if globally, null if not defined where the default value of the associated bus is used.
+        /// </value>
+        /// <remarks>
+        ///     <para>
+        ///         The default value is null.
+        ///     </para>
+        ///     <para>
+        ///         This value can be set by <see cref="ToGlobal()" />, <see cref="ToGlobal(bool?)" />, <see cref="ToLocal()" />, <see cref="ToLocal(bool?)" />.
+        ///     </para>
+        /// </remarks>
+        public bool? Local => this.Global.HasValue ? !this.Global.Value : (bool?)null;
+
+        /// <summary>
+        ///     Gets the send operation type of this send operation.
+        /// </summary>
+        /// <value>
+        ///     The send operation type of this send operation.
+        /// </value>
+        /// <remarks>
+        ///     <para>
+        ///         The default value is <see cref="SendOperationType.Undefined" />.
+        ///     </para>
+        /// </remarks>
+        /// TODO: Use this!
+        public SendOperationType OperationType { get; private set; }
 
         /// <summary>
         ///     Gets the payload of the message.
@@ -140,7 +232,32 @@ namespace RI.Framework.Bus
         /// <value>
         ///     The payload of the message or null if no payload is used.
         /// </value>
+        /// <remarks>
+        ///     <para>
+        ///         The default value is null.
+        ///     </para>
+        ///     <para>
+        ///         This value can be set by <see cref="WithPayload" />.
+        ///     </para>
+        /// </remarks>
         public object Payload { get; private set; }
+
+        /// <summary>
+        ///     Gets the expected response type.
+        /// </summary>
+        /// <value>
+        ///     The expected response type or null if no response is expected.
+        /// </value>
+        /// <remarks>
+        ///     <para>
+        ///         The default value is null.
+        ///     </para>
+        ///     <para>
+        ///         This value can be set by <see cref="WithResponse{TResponse}" />, <see cref="WithResponse(Type)" />.
+        ///     </para>
+        /// </remarks>
+        /// TODO: Use this!
+        public Type Response { get; private set; }
 
         /// <summary>
         ///     Gets the timeout for the message (waiting for or collecting responses).
@@ -148,6 +265,14 @@ namespace RI.Framework.Bus
         /// <value>
         ///     The timeout for the message or null if not defined where the default value of the associated bus is used.
         /// </value>
+        /// <remarks>
+        ///     <para>
+        ///         The default value is null.
+        ///     </para>
+        ///     <para>
+        ///         This value can be set by <see cref="WithTimeout(TimeSpan?)" />, <see cref="WithTimeout(int?)" />.
+        ///     </para>
+        /// </remarks>
         public TimeSpan? Timeout { get; private set; }
 
         private object Result { get; set; }
@@ -160,66 +285,38 @@ namespace RI.Framework.Bus
         #region Instance Methods
 
         /// <summary>
-        ///     Broadcasts the message to multiple receivers without responses and accepts any number of responses (collecting as long as the the timeout).
+        ///     Sends the message to one or more receivers and waits for zero, one, or more responses.
         /// </summary>
+        /// <param name="expectedResults"> The number of expected responses or null if any number is accepted (collecting as long as the the timeout). </param>
         /// <returns>
-        ///     The task used to wait until the timeout for completing round-trips expired.
-        ///     The tasks result is the number of receivers which acknowledged the message.
-        /// </returns>
-        /// <remarks>
-        ///     <note type="important">
-        ///         <see cref="AsBroadcast()" /> does not throw <see cref="BusResponseTimeoutException" /> for not responding receivers.
-        ///     </note>
-        /// </remarks>
-        /// <exception cref="InvalidOperationException"> The message is already being processed or the bus is not started. </exception>
-        /// <exception cref="BusProcessingPipelineException"> The bus processing pipeline encountered an exception. </exception>
-        /// <exception cref="BusConnectionBrokenException"> A used connection to a remote bus is broken. </exception>
-        /// <exception cref="BusMessageProcessingException"> An exception which was thrown by the message receiver was forwarded to this sender. </exception>
-        public Task<int> AsBroadcast () => this.AsBroadcast(null);
-
-        /// <summary>
-        ///     Broadcasts the message to multiple receivers without responses and accepts any number of responses (collecting as long as the the timeout).
-        /// </summary>
-        /// <typeparam name="TResponse"> The type of the expected responses. </typeparam>
-        /// <returns>
-        ///     The task used to wait until the timeout for completing round-trips expired.
-        ///     The tasks result is the list of responses.
-        /// </returns>
-        /// <remarks>
-        ///     <note type="important">
-        ///         <see cref="AsBroadcast{TResponse}()" /> does not throw <see cref="BusResponseTimeoutException" /> for not responding receivers.
-        ///     </note>
-        /// </remarks>
-        /// <exception cref="InvalidOperationException"> The message is already being processed or the bus is not started. </exception>
-        /// <exception cref="BusProcessingPipelineException"> The bus processing pipeline encountered an exception. </exception>
-        /// <exception cref="BusConnectionBrokenException"> A used connection to a remote bus is broken. </exception>
-        /// <exception cref="BusMessageProcessingException"> An exception which was thrown by the message receiver was forwarded to this sender. </exception>
-        /// <exception cref="InvalidCastException"> The responses could not be casted to type <typeparamref name="TResponse" />. </exception>
-        public Task<List<TResponse>> AsBroadcast <TResponse> () => this.AsBroadcast<TResponse>(null);
-
-        /// <summary>
-        ///     Broadcasts the message to multiple receivers without responses.
-        /// </summary>
-        /// <param name="expectedResults"> The number of expected results or null if any number is accepted (collecting as long as the the timeout). </param>
-        /// <returns>
-        ///     The task used to wait until the timeout for completing round-trips expired.
-        ///     The tasks result is the number of receivers which acknowledged the message.
+        ///     The task used to wait until the timeout for completing round-trips expired or the expected number of responses was received.
+        ///     The tasks result is the list of received responses (can be empty).
         /// </returns>
         /// <remarks>
         ///     <note type="important">
         ///         <see cref="AsBroadcast(int?)" /> does not throw <see cref="BusResponseTimeoutException" /> for not responding receivers.
+        ///         Not responding receivers simply do not show up in the list of responses.
         ///     </note>
+        ///     <para>
+        ///         The collection of responses end after the used timeout or the expected number of responses was received (<paramref name="expectedResults" />).
+        ///     </para>
+        ///     <para>
+        ///         The response type is defined by <see cref="Response" />.
+        ///         If <see cref="Response" /> is null, any response is accepted.
+        ///     </para>
         /// </remarks>
-        /// <exception cref="ArgumentOutOfRangeException"> <paramref name="expectedResults" /> is less than one. </exception>
+        /// <exception cref="ArgumentOutOfRangeException"> <paramref name="expectedResults" /> is below zero. </exception>
         /// <exception cref="InvalidOperationException"> The message is already being processed or the bus is not started. </exception>
         /// <exception cref="BusProcessingPipelineException"> The bus processing pipeline encountered an exception. </exception>
         /// <exception cref="BusConnectionBrokenException"> A used connection to a remote bus is broken. </exception>
         /// <exception cref="BusMessageProcessingException"> An exception which was thrown by the message receiver was forwarded to this sender. </exception>
-        public Task<int> AsBroadcast (int? expectedResults)
+        /// <exception cref="InvalidCastException"> One of the responses could not be casted to type <see cref="Response" />. </exception>
+        /// TODO: Use TaskScheduler optionally provided by dispatcher
+        public Task<List<object>> AsBroadcast (int? expectedResults)
         {
             if (expectedResults.HasValue)
             {
-                if (expectedResults.Value < 1)
+                if (expectedResults.Value < 0)
                 {
                     throw new ArgumentOutOfRangeException(nameof(expectedResults));
                 }
@@ -230,48 +327,134 @@ namespace RI.Framework.Bus
             {
                 this.VerifyNotStarted();
                 this.IsProcessed = true;
-                this.IsBroadcast = true;
+                this.OperationType = SendOperationType.Broadcast;
                 this.ExpectedResults = expectedResults;
                 task = this.Bus.Enqueue(this);
             }
 
-            Task<int> resultTask = task.ContinueWith(t =>
+            Task<List<object>> resultTask = task.ContinueWith(t =>
             {
                 this.Result = t.Result;
-                return ((ICollection)this.Result).Count;
+                List<object> list = ((IEnumerable)this.Result).ToList();
+                list.ForEach(this.VerifyResponse);
+                return list;
             }, System.Threading.CancellationToken.None, TaskContinuationOptions.DenyChildAttach | TaskContinuationOptions.LazyCancellation | TaskContinuationOptions.RunContinuationsAsynchronously, TaskScheduler.Current);
 
             return resultTask;
         }
 
+        /// <inheritdoc cref="AsBroadcast(int?)" />
+        public Task<List<object>> AsBroadcast () => this.AsBroadcast((int?)null);
+
         /// <summary>
-        ///     Broadcasts the message to multiple receivers expecting a response from each receiver.
+        ///     Sends the message to one or more receivers and waits for zero, one, or more responses.
         /// </summary>
-        /// <typeparam name="TResponse"> The type of the expected responses. </typeparam>
-        /// <param name="expectedResults"> The number of expected results or null if any number is accepted (collecting as long as the the timeout). </param>
+        /// <param name="expectedResults"> The number of expected responses or null if any number is accepted (collecting as long as the the timeout). </param>
+        /// <param name="responseType"> The type of the expected responses. </param>
         /// <returns>
-        ///     The task used to wait until the timeout for completing round-trips expired.
-        ///     The tasks result is the list of responses.
+        ///     The task used to wait until the timeout for completing round-trips expired or the expected number of responses was received.
+        ///     The tasks result is the list of received responses (can be empty).
         /// </returns>
         /// <remarks>
         ///     <note type="important">
-        ///         <see cref="AsBroadcast{TResponse}(int?)" /> does not throw <see cref="BusResponseTimeoutException" /> for not responding receivers.
+        ///         <see cref="AsBroadcast(int?,Type)" /> does not throw <see cref="BusResponseTimeoutException" /> for not responding receivers.
+        ///         Not responding receivers simply do not show up in the list of responses.
         ///     </note>
+        ///     <para>
+        ///         The collection of responses end after the used timeout or the expected number of responses was received (<paramref name="expectedResults" />).
+        ///     </para>
+        ///     <para>
+        ///         <see cref="Response" /> is ignored or overwritten by <paramref name="responseType" /> respectively.
+        ///         If <paramref name="responseType" /> is null, any response is accepted.
+        ///     </para>
         /// </remarks>
-        /// <exception cref="ArgumentOutOfRangeException"> <paramref name="expectedResults" /> is less than one. </exception>
+        /// <exception cref="ArgumentOutOfRangeException"> <paramref name="expectedResults" /> is below zero. </exception>
         /// <exception cref="InvalidOperationException"> The message is already being processed or the bus is not started. </exception>
         /// <exception cref="BusProcessingPipelineException"> The bus processing pipeline encountered an exception. </exception>
         /// <exception cref="BusConnectionBrokenException"> A used connection to a remote bus is broken. </exception>
         /// <exception cref="BusMessageProcessingException"> An exception which was thrown by the message receiver was forwarded to this sender. </exception>
-        /// <exception cref="InvalidCastException"> The responses could not be casted to type <typeparamref name="TResponse" />. </exception>
-        public Task<List<TResponse>> AsBroadcast <TResponse> (int? expectedResults)
+        /// <exception cref="InvalidCastException"> One of the responses could not be casted to type <paramref name="responseType" />. </exception>
+        /// TODO: Use TaskScheduler optionally provided by dispatcher
+        public Task<List<object>> AsBroadcast (int? expectedResults, Type responseType)
         {
+            if (expectedResults.HasValue)
+            {
+                if (expectedResults.Value < 0)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(expectedResults));
+                }
+            }
+
             Task<object> task;
             lock (this.SyncRoot)
             {
                 this.VerifyNotStarted();
+                this.Response = responseType;
                 this.IsProcessed = true;
-                this.IsBroadcast = true;
+                this.OperationType = SendOperationType.Broadcast;
+                this.ExpectedResults = expectedResults;
+                task = this.Bus.Enqueue(this);
+            }
+
+            Task<List<object>> resultTask = task.ContinueWith(t =>
+            {
+                this.Result = t.Result;
+                List<object> list = ((IEnumerable)this.Result).ToList();
+                list.ForEach(this.VerifyResponse);
+                return list;
+            }, System.Threading.CancellationToken.None, TaskContinuationOptions.DenyChildAttach | TaskContinuationOptions.LazyCancellation | TaskContinuationOptions.RunContinuationsAsynchronously, TaskScheduler.Current);
+
+            return resultTask;
+        }
+
+        /// <inheritdoc cref="AsBroadcast(int?,Type)" />
+        public Task<List<object>> AsBroadcast (Type responseType) => this.AsBroadcast(null, responseType);
+
+        /// <summary>
+        ///     Sends the message to one or more receivers and waits for zero, one, or more responses.
+        /// </summary>
+        /// <typeparam name="TResponse"> The type of the expected responses. </typeparam>
+        /// <param name="expectedResults"> The number of expected responses or null if any number is accepted (collecting as long as the the timeout). </param>
+        /// <returns>
+        ///     The task used to wait until the timeout for completing round-trips expired or the expected number of responses was received.
+        ///     The tasks result is the list of received responses (can be empty).
+        /// </returns>
+        /// <remarks>
+        ///     <note type="important">
+        ///         <see cref="AsBroadcast{TResponse}(int?)" /> does not throw <see cref="BusResponseTimeoutException" /> for not responding receivers.
+        ///         Not responding receivers simply do not show up in the list of responses.
+        ///     </note>
+        ///     <para>
+        ///         The collection of responses end after the used timeout or the expected number of responses was received (<paramref name="expectedResults" />).
+        ///     </para>
+        ///     <para>
+        ///         <see cref="Response" /> is ignored or overwritten by <typeparamref name="TResponse" /> respectively.
+        ///     </para>
+        /// </remarks>
+        /// <exception cref="ArgumentOutOfRangeException"> <paramref name="expectedResults" /> is below zero. </exception>
+        /// <exception cref="InvalidOperationException"> The message is already being processed or the bus is not started. </exception>
+        /// <exception cref="BusProcessingPipelineException"> The bus processing pipeline encountered an exception. </exception>
+        /// <exception cref="BusConnectionBrokenException"> A used connection to a remote bus is broken. </exception>
+        /// <exception cref="BusMessageProcessingException"> An exception which was thrown by the message receiver was forwarded to this sender. </exception>
+        /// <exception cref="InvalidCastException"> One of the responses could not be casted to type <typeparamref name="TResponse" />. </exception>
+        /// TODO: Use TaskScheduler optionally provided by dispatcher
+        public Task<List<TResponse>> AsBroadcast <TResponse> (int? expectedResults)
+        {
+            if (expectedResults.HasValue)
+            {
+                if (expectedResults.Value < 0)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(expectedResults));
+                }
+            }
+
+            Task<object> task;
+            lock (this.SyncRoot)
+            {
+                this.VerifyNotStarted();
+                this.Response = typeof(TResponse);
+                this.IsProcessed = true;
+                this.OperationType = SendOperationType.Broadcast;
                 this.ExpectedResults = expectedResults;
                 task = this.Bus.Enqueue(this);
             }
@@ -279,65 +462,168 @@ namespace RI.Framework.Bus
             Task<List<TResponse>> resultTask = task.ContinueWith(t =>
             {
                 this.Result = t.Result;
-                return ((ICollection)this.Result).Cast<TResponse>().ToList();
+                List<object> list = ((IEnumerable)this.Result).ToList();
+                list.ForEach(this.VerifyResponse);
+                return list.Cast<TResponse>();
             }, System.Threading.CancellationToken.None, TaskContinuationOptions.DenyChildAttach | TaskContinuationOptions.LazyCancellation | TaskContinuationOptions.RunContinuationsAsynchronously, TaskScheduler.Current);
 
             return resultTask;
         }
 
+        /// <inheritdoc cref="AsBroadcast{TResponse}(int?)" />
+        public Task<List<TResponse>> AsBroadcast <TResponse> () => this.AsBroadcast<TResponse>(null);
+
         /// <summary>
-        ///     Sends the message to a single receiver without a response.
+        ///     Sends the message to an undefined amount of receivers and expects no responses.
+        /// </summary>
+        /// <remarks>
+        ///     <para>
+        ///         Sending messages using <see cref="AsFireAndForget" /> is truly fire-and-forget, meaning:
+        ///         No cancellation token is observed as the send operation finishes immediately.
+        ///         No timeout is observed and thus no <see cref="BusResponseTimeoutException" /> is thrown.
+        ///         Exceptions are not forwarded by any receiver (causing the receivers to fail on exceptions).
+        ///         Any broken connections are ignored.
+        ///         No responses are expected.
+        ///         No exception handling is performed after the message has been sent.
+        ///     </para>
+        /// </remarks>
+        /// <exception cref="InvalidOperationException"> The message is already being processed or the bus is not started. </exception>
+        /// <exception cref="BusProcessingPipelineException"> The bus processing pipeline encountered an exception. </exception>
+        public void AsFireAndForget ()
+        {
+            lock (this.SyncRoot)
+            {
+                this.CancellationToken = null;
+                this.Timeout = null;
+                this.ExceptionForwarding = false;
+                this.IgnoreBrokenConnections = true;
+                this.Response = null;
+                this.ExceptionHandler = null;
+
+                this.VerifyNotStarted();
+                this.IsProcessed = true;
+                this.OperationType = SendOperationType.FireAndForget;
+                this.ExpectedResults = 0;
+
+                this.Bus.Enqueue(this);
+            }
+        }
+
+        /// <summary>
+        ///     Sends the message to a single receiver and waits for the first response.
         /// </summary>
         /// <returns>
         ///     The task used to wait until the round-trip completed.
+        ///     The tasks result is the received response (which can be null).
         /// </returns>
+        /// <remarks>
+        ///     <para>
+        ///         The response type is defined by <see cref="Response" />.
+        ///         If <see cref="Response" /> is null, any response is accepted.
+        ///     </para>
+        /// </remarks>
         /// <exception cref="InvalidOperationException"> The message is already being processed or the bus is not started. </exception>
         /// <exception cref="BusProcessingPipelineException"> The bus processing pipeline encountered an exception. </exception>
         /// <exception cref="BusResponseTimeoutException"> The intended receiver did not respond within the used timeout. </exception>
         /// <exception cref="BusConnectionBrokenException"> A used connection to a remote bus is broken. </exception>
         /// <exception cref="BusMessageProcessingException"> An exception which was thrown by the message receiver was forwarded to this sender. </exception>
-        public Task AsSingle ()
+        /// <exception cref="InvalidCastException"> The response could not be casted to type <see cref="Response" />. </exception>
+        /// TODO: Use TaskScheduler optionally provided by dispatcher
+        public Task<object> AsSingle ()
         {
             Task<object> task;
             lock (this.SyncRoot)
             {
                 this.VerifyNotStarted();
                 this.IsProcessed = true;
-                this.IsBroadcast = false;
+                this.OperationType = SendOperationType.Single;
                 this.ExpectedResults = 1;
                 task = this.Bus.Enqueue(this);
             }
 
-            Task resultTask = task.ContinueWith(t =>
+            Task<object> resultTask = task.ContinueWith(t =>
             {
                 this.Result = t.Result;
+                this.VerifyResponse(this.Result);
+                return this.Result;
             }, System.Threading.CancellationToken.None, TaskContinuationOptions.DenyChildAttach | TaskContinuationOptions.LazyCancellation | TaskContinuationOptions.RunContinuationsAsynchronously, TaskScheduler.Current);
 
             return resultTask;
         }
 
         /// <summary>
-        ///     Sends the message to a single receiver expecting a response.
+        ///     Sends the message to a single receiver and waits for the first response.
+        /// </summary>
+        /// <param name="responseType"> The type of the expected response. </param>
+        /// <returns>
+        ///     The task used to wait until the round-trip completed.
+        ///     The tasks result is the received response (which can be null).
+        /// </returns>
+        /// <remarks>
+        ///     <para>
+        ///         <see cref="Response" /> is ignored or overwritten by <paramref name="responseType" /> respectively.
+        ///         If <paramref name="responseType" /> is null, any response is accepted.
+        ///     </para>
+        /// </remarks>
+        /// <exception cref="InvalidOperationException"> The message is already being processed or the bus is not started. </exception>
+        /// <exception cref="BusProcessingPipelineException"> The bus processing pipeline encountered an exception. </exception>
+        /// <exception cref="BusResponseTimeoutException"> The intended receiver did not respond within the used timeout. </exception>
+        /// <exception cref="BusConnectionBrokenException"> A used connection to a remote bus is broken. </exception>
+        /// <exception cref="BusMessageProcessingException"> An exception which was thrown by the message receiver was forwarded to this sender. </exception>
+        /// <exception cref="InvalidCastException"> The response could not be casted to type <paramref name="responseType" />. </exception>
+        /// TODO: Use TaskScheduler optionally provided by dispatcher
+        public Task<object> AsSingle (Type responseType)
+        {
+            Task<object> task;
+            lock (this.SyncRoot)
+            {
+                this.VerifyNotStarted();
+                this.Response = responseType;
+                this.IsProcessed = true;
+                this.OperationType = SendOperationType.Single;
+                this.ExpectedResults = 1;
+                task = this.Bus.Enqueue(this);
+            }
+
+            Task<object> resultTask = task.ContinueWith(t =>
+            {
+                this.Result = t.Result;
+                this.VerifyResponse(this.Result);
+                return this.Result;
+            }, System.Threading.CancellationToken.None, TaskContinuationOptions.DenyChildAttach | TaskContinuationOptions.LazyCancellation | TaskContinuationOptions.RunContinuationsAsynchronously, TaskScheduler.Current);
+
+            return resultTask;
+        }
+
+        /// <summary>
+        ///     Sends the message to a single receiver and waits for the first response.
         /// </summary>
         /// <typeparam name="TResponse"> The type of the expected response. </typeparam>
         /// <returns>
         ///     The task used to wait until the round-trip completed.
-        ///     The tasks result is the received response.
+        ///     The tasks result is the received response (which can be null).
         /// </returns>
+        /// <remarks>
+        ///     <para>
+        ///         <see cref="Response" /> is ignored or overwritten by <typeparamref name="TResponse" /> respectively.
+        ///     </para>
+        /// </remarks>
         /// <exception cref="InvalidOperationException"> The message is already being processed or the bus is not started. </exception>
         /// <exception cref="BusProcessingPipelineException"> The bus processing pipeline encountered an exception. </exception>
         /// <exception cref="BusResponseTimeoutException"> The intended receiver did not respond within the used timeout. </exception>
         /// <exception cref="BusConnectionBrokenException"> A used connection to a remote bus is broken. </exception>
         /// <exception cref="BusMessageProcessingException"> An exception which was thrown by the message receiver was forwarded to this sender. </exception>
         /// <exception cref="InvalidCastException"> The response could not be casted to type <typeparamref name="TResponse" />. </exception>
+        /// TODO: Use TaskScheduler optionally provided by dispatcher
         public Task<TResponse> AsSingle <TResponse> ()
         {
             Task<object> task;
             lock (this.SyncRoot)
             {
                 this.VerifyNotStarted();
+                this.Response = typeof(TResponse);
                 this.IsProcessed = true;
-                this.IsBroadcast = false;
+                this.OperationType = SendOperationType.Single;
                 this.ExpectedResults = 1;
                 task = this.Bus.Enqueue(this);
             }
@@ -345,45 +631,11 @@ namespace RI.Framework.Bus
             Task<TResponse> resultTask = task.ContinueWith(t =>
             {
                 this.Result = t.Result;
+                this.VerifyResponse(this.Result);
                 return (TResponse)this.Result;
             }, System.Threading.CancellationToken.None, TaskContinuationOptions.DenyChildAttach | TaskContinuationOptions.LazyCancellation | TaskContinuationOptions.RunContinuationsAsynchronously, TaskScheduler.Current);
 
             return resultTask;
-        }
-
-        /// <summary>
-        ///     Sets the message to ignore broken connections.
-        /// </summary>
-        /// <returns>
-        ///     The send operation to continue configuration of the message.
-        /// </returns>
-        /// <exception cref="InvalidOperationException"> The message is already being processed. </exception>
-        public SendOperation IgnoreBrokenConnections ()
-        {
-            lock (this.SyncRoot)
-            {
-                this.VerifyNotStarted();
-                this.IgnoreBroken = true;
-                return this;
-            }
-        }
-
-        /// <summary>
-        ///     Sets the message to ignore broken connections or not.
-        /// </summary>
-        /// <param name="ignore"> Specifes whether the message ignores broken connections (true) or not (false). </param>
-        /// <returns>
-        ///     The send operation to continue configuration of the message.
-        /// </returns>
-        /// <exception cref="InvalidOperationException"> The message is already being processed. </exception>
-        public SendOperation IgnoreBrokenConnections (bool ignore)
-        {
-            lock (this.SyncRoot)
-            {
-                this.VerifyNotStarted();
-                this.IgnoreBroken = ignore;
-                return this;
-            }
         }
 
         /// <summary>
@@ -414,23 +666,6 @@ namespace RI.Framework.Bus
         }
 
         /// <summary>
-        ///     Sets to use the default value of the associated bus whether to send the message globally.
-        /// </summary>
-        /// <returns>
-        ///     The send operation to continue configuration of the message.
-        /// </returns>
-        /// <exception cref="InvalidOperationException"> The message is already being processed. </exception>
-        public SendOperation ToDefaultGlobal ()
-        {
-            lock (this.SyncRoot)
-            {
-                this.VerifyNotStarted();
-                this.Global = null;
-                return this;
-            }
-        }
-
-        /// <summary>
         ///     Sets the message to be sent globally.
         /// </summary>
         /// <returns>
@@ -450,12 +685,12 @@ namespace RI.Framework.Bus
         /// <summary>
         ///     Sets the message to be sent locally or globally.
         /// </summary>
-        /// <param name="sendGlobally"> Specifes whether the message should be sent globally (true) or locally (false). </param>
+        /// <param name="sendGlobally"> Specifies whether the message should be sent globally (true), locally (false), or the default value from the associated bus should be used (null). </param>
         /// <returns>
         ///     The send operation to continue configuration of the message.
         /// </returns>
         /// <exception cref="InvalidOperationException"> The message is already being processed. </exception>
-        public SendOperation ToGlobal (bool sendGlobally)
+        public SendOperation ToGlobal (bool? sendGlobally)
         {
             lock (this.SyncRoot)
             {
@@ -483,6 +718,24 @@ namespace RI.Framework.Bus
         }
 
         /// <summary>
+        ///     Sets the message to be sent locally or globally.
+        /// </summary>
+        /// <param name="sendLocally"> Specifies whether the message should be sent globally (false), locally (true), or the default value from the associated bus should be used (null). </param>
+        /// <returns>
+        ///     The send operation to continue configuration of the message.
+        /// </returns>
+        /// <exception cref="InvalidOperationException"> The message is already being processed. </exception>
+        public SendOperation ToLocal (bool? sendLocally)
+        {
+            lock (this.SyncRoot)
+            {
+                this.VerifyNotStarted();
+                this.Global = sendLocally.HasValue ? !sendLocally.Value : (bool?)null;
+                return this;
+            }
+        }
+
+        /// <summary>
         ///     Sets the cancellation token which can be used to cancel the wait for responses or the collection of responses.
         /// </summary>
         /// <param name="cancellationToken"> The cancellation token or null if cancellation is not used. </param>
@@ -496,40 +749,6 @@ namespace RI.Framework.Bus
             {
                 this.VerifyNotStarted();
                 this.CancellationToken = cancellationToken;
-                return this;
-            }
-        }
-
-        /// <summary>
-        ///     Sets to use the default value of the associated bus whether to forward exceptions from the receiver back to the sender.
-        /// </summary>
-        /// <returns>
-        ///     The send operation to continue configuration of the message.
-        /// </returns>
-        /// <exception cref="InvalidOperationException"> The message is already being processed. </exception>
-        public SendOperation WithDefaultExceptionForwarding ()
-        {
-            lock (this.SyncRoot)
-            {
-                this.VerifyNotStarted();
-                this.ExceptionForwarding = null;
-                return this;
-            }
-        }
-
-        /// <summary>
-        ///     Sets to use the default timeoutfor the message (waiting for or collecting responses) of the associated bus.
-        /// </summary>
-        /// <returns>
-        ///     The send operation to continue configuration of the message.
-        /// </returns>
-        /// <exception cref="InvalidOperationException"> The message is already being processed. </exception>
-        public SendOperation WithDefaultTimeout ()
-        {
-            lock (this.SyncRoot)
-            {
-                this.VerifyNotStarted();
-                this.Timeout = null;
                 return this;
             }
         }
@@ -554,17 +773,70 @@ namespace RI.Framework.Bus
         /// <summary>
         ///     Sets the message to use or not use forward exceptions from the receiver back to the sender.
         /// </summary>
-        /// <param name="forwardExceptiond"> Specifes whether the message should forward exceptions from the receiver back to the sender (true) or not (false). </param>
+        /// <param name="forwardExceptions"> Specifies whether the message should forward exceptions from the receiver back to the sender (true), not (false), or the default value from the associated bus should be used (null). </param>
         /// <returns>
         ///     The send operation to continue configuration of the message.
         /// </returns>
         /// <exception cref="InvalidOperationException"> The message is already being processed. </exception>
-        public SendOperation WithExceptionForwarding (bool forwardExceptiond)
+        public SendOperation WithExceptionForwarding (bool? forwardExceptions)
         {
             lock (this.SyncRoot)
             {
                 this.VerifyNotStarted();
-                this.ExceptionForwarding = forwardExceptiond;
+                this.ExceptionForwarding = forwardExceptions;
+                return this;
+            }
+        }
+
+        /// <summary>
+        ///     Sets the used exception handler.
+        /// </summary>
+        /// <param name="handler"> The used exception handler or null if no specific exception handler is used by this send operation where the default value of the associated bus is used. </param>
+        /// <returns>
+        ///     The send operation to continue configuration of the message.
+        /// </returns>
+        /// <exception cref="InvalidOperationException"> The message is already being processed. </exception>
+        public SendOperation WithExceptionHandler (SendExceptionHandler handler)
+        {
+            lock (this.SyncRoot)
+            {
+                this.VerifyNotStarted();
+                this.ExceptionHandler = handler;
+                return this;
+            }
+        }
+
+        /// <summary>
+        ///     Sets the message to ignore broken connections.
+        /// </summary>
+        /// <returns>
+        ///     The send operation to continue configuration of the message.
+        /// </returns>
+        /// <exception cref="InvalidOperationException"> The message is already being processed. </exception>
+        public SendOperation WithIgnoredBrokenConnections ()
+        {
+            lock (this.SyncRoot)
+            {
+                this.VerifyNotStarted();
+                this.IgnoreBrokenConnections = true;
+                return this;
+            }
+        }
+
+        /// <summary>
+        ///     Sets the message to ignore broken connections or not.
+        /// </summary>
+        /// <param name="ignore"> Specifies whether the message ignores broken connections (true) or not (false). </param>
+        /// <returns>
+        ///     The send operation to continue configuration of the message.
+        /// </returns>
+        /// <exception cref="InvalidOperationException"> The message is already being processed. </exception>
+        public SendOperation WithIgnoredBrokenConnections (bool ignore)
+        {
+            lock (this.SyncRoot)
+            {
+                this.VerifyNotStarted();
+                this.IgnoreBrokenConnections = ignore;
                 return this;
             }
         }
@@ -588,19 +860,58 @@ namespace RI.Framework.Bus
         }
 
         /// <summary>
+        ///     Sets the expected response type.
+        /// </summary>
+        /// <param name="responseType"> The expected response type or null if no response is expected. </param>
+        /// <returns>
+        ///     The send operation to continue configuration of the message.
+        /// </returns>
+        /// <exception cref="InvalidOperationException"> The message is already being processed. </exception>
+        public SendOperation WithResponse (Type responseType)
+        {
+            lock (this.SyncRoot)
+            {
+                this.VerifyNotStarted();
+                this.Response = responseType;
+                return this;
+            }
+        }
+
+        /// <summary>
+        ///     Sets the expected response type.
+        /// </summary>
+        /// <typeparam name="TResponse"> The expected response type. </typeparam>
+        /// <returns>
+        ///     The send operation to continue configuration of the message.
+        /// </returns>
+        /// <exception cref="InvalidOperationException"> The message is already being processed. </exception>
+        public SendOperation WithResponse <TResponse> ()
+        {
+            lock (this.SyncRoot)
+            {
+                this.VerifyNotStarted();
+                this.Response = typeof(TResponse);
+                return this;
+            }
+        }
+
+        /// <summary>
         ///     Sets the timeout for the message (waiting for or collecting responses).
         /// </summary>
-        /// <param name="timeout"> The timeout. </param>
+        /// <param name="timeout"> The timeout or null if no timeout is used. </param>
         /// <returns>
         ///     The send operation to continue configuration of the message.
         /// </returns>
         /// <exception cref="ArgumentOutOfRangeException"> <paramref name="timeout" /> is negative. </exception>
         /// <exception cref="InvalidOperationException"> The message is already being processed. </exception>
-        public SendOperation WithTimeout (TimeSpan timeout)
+        public SendOperation WithTimeout (TimeSpan? timeout)
         {
-            if (timeout.IsNegative())
+            if (timeout.HasValue)
             {
-                throw new ArgumentOutOfRangeException(nameof(timeout));
+                if (timeout.Value.IsNegative())
+                {
+                    throw new ArgumentOutOfRangeException(nameof(timeout));
+                }
             }
 
             lock (this.SyncRoot)
@@ -614,19 +925,58 @@ namespace RI.Framework.Bus
         /// <summary>
         ///     Sets the timeout for the message (waiting for or collecting responses).
         /// </summary>
-        /// <param name="milliseconds"> The timeout in milliseconds. </param>
+        /// <param name="milliseconds"> The timeout in milliseconds or null if no timeout is used. </param>
         /// <returns>
         ///     The send operation to continue configuration of the message.
         /// </returns>
         /// <exception cref="ArgumentOutOfRangeException"> <paramref name="milliseconds" /> is negative. </exception>
         /// <exception cref="InvalidOperationException"> The message is already being processed. </exception>
-        public SendOperation WithTimeout (int milliseconds) => this.WithTimeout(TimeSpan.FromMilliseconds(milliseconds));
+        public SendOperation WithTimeout (int? milliseconds)
+        {
+            if (milliseconds.HasValue)
+            {
+                if (milliseconds < 0)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(milliseconds));
+                }
+            }
+
+            lock (this.SyncRoot)
+            {
+                this.VerifyNotStarted();
+                this.Timeout = milliseconds.HasValue ? TimeSpan.FromMilliseconds(milliseconds.Value) : (TimeSpan?)null;
+                return this;
+            }
+        }
 
         private void VerifyNotStarted ()
         {
             if (this.IsProcessed)
             {
                 throw new InvalidOperationException("The message is already being processed.");
+            }
+        }
+
+        private void VerifyResponse (object response)
+        {
+            if (this.Response == null)
+            {
+                return;
+            }
+
+            if (this.Response.IsClass && (response == null))
+            {
+                return;
+            }
+
+            if ((!this.Response.IsClass) && (response == null))
+            {
+                throw new InvalidCastException("Cannot use [null] as response for expected response type " + this.Response.Name);
+            }
+
+            if (!this.Response.IsAssignableFrom(response.GetType()))
+            {
+                throw new InvalidCastException("Cannot use " + response.GetType().Name + " as response for expected response type " + this.Response.Name);
             }
         }
 
@@ -642,22 +992,24 @@ namespace RI.Framework.Bus
         {
             StringBuilder sb = new StringBuilder();
 
-            sb.Append("Address=");
+            sb.Append("OperationType=");
+            sb.Append(this.OperationType);
+            sb.Append("; Address=");
             sb.Append(this.Address ?? "[null]");
             sb.Append("; Payload=");
-            sb.Append(this.Payload?.GetType().FullName ?? "[null]");
+            sb.Append(this.Payload?.GetType().Name ?? "[null]");
+            sb.Append("; Response=");
+            sb.Append(this.Response?.Name ?? "[null]");
             sb.Append("; Global=");
             sb.Append(this.Global?.ToString() ?? "[null]");
-            sb.Append("; IsBroadcast=");
-            sb.Append(this.IsBroadcast);
             sb.Append("; Timeout=");
             sb.Append(this.Timeout.HasValue ? ((int)this.Timeout.Value.TotalMilliseconds).ToString() : "[null]");
             sb.Append("; ExpectedResults=");
             sb.Append(this.ExpectedResults?.ToString() ?? "[null]");
             sb.Append("; ExceptionForwarding=");
             sb.Append(this.ExceptionForwarding?.ToString() ?? "[null]");
-            sb.Append("; IgnoreBroken=");
-            sb.Append(this.IgnoreBroken);
+            sb.Append("; IgnoreBrokenConnections=");
+            sb.Append(this.IgnoreBrokenConnections);
             sb.Append("; IsProcessed=");
             sb.Append(this.IsProcessed);
 

@@ -151,7 +151,8 @@ namespace RI.Framework.Bus.Pipelines
                         }
                         else
                         {
-                            if (x.SendOperation.IsBroadcast)
+                            //TODO: Handle fire-and-forget
+                            if (x.SendOperation.OperationType == SendOperationType.Broadcast)
                             {
                                 if (x.SendOperation.ExpectedResults.HasValue && (x.Results.Count >= x.SendOperation.ExpectedResults.Value))
                                 {
@@ -289,8 +290,12 @@ namespace RI.Framework.Bus.Pipelines
                     x.Request.Address = x.SendOperation.Address;
                     x.Request.Payload = x.SendOperation.Payload;
                     x.Request.ToGlobal = x.SendOperation.Global.GetValueOrDefault(this.Bus.DefaultIsGlobal);
-                    x.Request.Timeout = (int)x.SendOperation.Timeout.GetValueOrDefault(x.SendOperation.IsBroadcast ? this.Bus.CollectionTimeout : this.Bus.ResponseTimeout).TotalMilliseconds;
-                    x.Request.IsBroadcast = x.SendOperation.IsBroadcast;
+                    
+                    //TODO: Handle fire-and-forget
+                    x.Request.Timeout = (int)x.SendOperation.Timeout.GetValueOrDefault(x.SendOperation.OperationType == SendOperationType.Broadcast ? this.Bus.CollectionTimeout : this.Bus.ResponseTimeout).TotalMilliseconds;
+
+                    //TODO: Handle fire-and-forget
+                    x.Request.IsBroadcast = x.SendOperation.OperationType == SendOperationType.Broadcast;
                     x.Request.ExceptionForwarding = x.SendOperation.ExceptionForwarding.GetValueOrDefault(this.Bus.DefaultExceptionForwarding);
                     x.Request.Id = Guid.NewGuid();
                     x.Request.Sent = utcNow;
@@ -338,7 +343,7 @@ namespace RI.Framework.Bus.Pipelines
 
                         if (brokenConnections.Count > 0)
                         {
-                            this.Bus.SendOperations.Where(x => x.Request.ToGlobal && (x.State == SendOperationItemState.Waiting) && (!x.SendOperation.IgnoreBroken)).ForEach(x =>
+                            this.Bus.SendOperations.Where(x => x.Request.ToGlobal && (x.State == SendOperationItemState.Waiting) && (!x.SendOperation.IgnoreBrokenConnections)).ForEach(x =>
                             {
                                 this.Log(LogLevel.Debug, "Send operation failed with broken connection: {0}", x);
                                 x.State = SendOperationItemState.Broken;
