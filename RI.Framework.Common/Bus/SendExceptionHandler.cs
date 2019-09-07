@@ -23,6 +23,5 @@ namespace RI.Framework.Bus
     ///     </para>
     /// </remarks>
     /// <threadsafety static="true" instance="true" />
-    /// TODO: Use this
     public delegate bool SendExceptionHandler (SendOperation sendOperation, Exception exception, ref object response);
 }

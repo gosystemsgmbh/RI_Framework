@@ -33,7 +33,7 @@ namespace RI.Framework.Bus
     /// </remarks>
     /// <threadsafety static="true" instance="true" />
     [Export]
-    public sealed class LocalBus : IBus
+    public sealed class LocalBus : IBus, IBusController
     {
         #region Instance Constructor/Destructor
 
@@ -49,11 +49,12 @@ namespace RI.Framework.Bus
             this.LoggingEnabled = true;
             this.LogFilter = LogLevel.Debug;
 
-            this.ResponseTimeout = TimeSpan.FromSeconds(10);
-            this.CollectionTimeout = TimeSpan.FromSeconds(10);
-            this.PollInterval = TimeSpan.FromMilliseconds(20);
-            this.DefaultIsGlobal = false;
+            this.DefaultSingleResponseTimeout = TimeSpan.FromSeconds(10);
+            this.DefaultBroadcastResponseTimeout = TimeSpan.FromSeconds(10);
+            this.DefaultSendToGlobal = false;
             this.DefaultExceptionForwarding = true;
+
+            this.PollInterval = TimeSpan.FromMilliseconds(20);
 
             this.ThreadTimeout = TimeSpan.FromMilliseconds(HeavyThread.DefaultThreadTimeout);
             this.ThreadPriority = Thread.CurrentThread.Priority;
@@ -83,14 +84,14 @@ namespace RI.Framework.Bus
 
         #region Instance Fields
 
-        private TimeSpan _collectionTimeout;
+        private TimeSpan _defaultBroadcastResponseTimeout;
         private bool _defaultExceptionForwarding;
-        private bool _defaultIsGlobal;
+        private bool _defaultSendToGlobal;
         private LogLevel _logFilter;
         private ILogger _logger;
         private bool _loggingEnabled;
         private TimeSpan _pollInterval;
-        private TimeSpan _responseTimeout;
+        private TimeSpan _defaultSingleResponseTimeout;
         private CultureInfo _threadCulture;
         private ThreadPriority _threadPriority;
         private TimeSpan _threadTimeout;
@@ -261,7 +262,31 @@ namespace RI.Framework.Bus
 
         private List<ReceiverRegistrationItem> ReceiveRegistrations { get; }
 
+        /// <inheritdoc />
+        List<ReceiverRegistrationItem> IBusController.ReceiveRegistrations
+        {
+            get
+            {
+                lock (this.SyncRoot)
+                {
+                    return this.ReceiveRegistrations;
+                }
+            }
+        }
+
         private List<SendOperationItem> SendOperations { get; }
+
+        /// <inheritdoc />
+        List<SendOperationItem> IBusController.SendOperations
+        {
+            get
+            {
+                lock (this.SyncRoot)
+                {
+                    return this.SendOperations;
+                }
+            }
+        }
 
         private object StartStopSyncRoot { get; }
 
@@ -353,13 +378,13 @@ namespace RI.Framework.Bus
         #region Interface: IBus
 
         /// <inheritdoc />
-        public TimeSpan CollectionTimeout
+        public TimeSpan DefaultBroadcastResponseTimeout
         {
             get
             {
                 lock (this.SyncRoot)
                 {
-                    return this._collectionTimeout;
+                    return this._defaultBroadcastResponseTimeout;
                 }
             }
             set
@@ -371,7 +396,7 @@ namespace RI.Framework.Bus
 
                 lock (this.SyncRoot)
                 {
-                    this._collectionTimeout = value;
+                    this._defaultBroadcastResponseTimeout = value;
                 }
             }
         }
@@ -396,20 +421,20 @@ namespace RI.Framework.Bus
         }
 
         /// <inheritdoc />
-        public bool DefaultIsGlobal
+        public bool DefaultSendToGlobal
         {
             get
             {
                 lock (this.SyncRoot)
                 {
-                    return this._defaultIsGlobal;
+                    return this._defaultSendToGlobal;
                 }
             }
             set
             {
                 lock (this.SyncRoot)
                 {
-                    this._defaultIsGlobal = value;
+                    this._defaultSendToGlobal = value;
                 }
             }
         }
@@ -514,25 +539,13 @@ namespace RI.Framework.Bus
         }
 
         /// <inheritdoc />
-        List<ReceiverRegistrationItem> IBus.ReceiveRegistrations
+        public TimeSpan DefaultSingleResponseTimeout
         {
             get
             {
                 lock (this.SyncRoot)
                 {
-                    return this.ReceiveRegistrations;
-                }
-            }
-        }
-
-        /// <inheritdoc />
-        public TimeSpan ResponseTimeout
-        {
-            get
-            {
-                lock (this.SyncRoot)
-                {
-                    return this._responseTimeout;
+                    return this._defaultSingleResponseTimeout;
                 }
             }
             set
@@ -544,19 +557,7 @@ namespace RI.Framework.Bus
 
                 lock (this.SyncRoot)
                 {
-                    this._responseTimeout = value;
-                }
-            }
-        }
-
-        /// <inheritdoc />
-        List<SendOperationItem> IBus.SendOperations
-        {
-            get
-            {
-                lock (this.SyncRoot)
-                {
-                    return this.SendOperations;
+                    this._defaultSingleResponseTimeout = value;
                 }
             }
         }
@@ -618,86 +619,6 @@ namespace RI.Framework.Bus
         }
 
         /// <inheritdoc />
-        void IBus.RaiseConnectionBroken (IBusConnection connection)
-        {
-            if (connection == null)
-            {
-                throw new ArgumentNullException(nameof(connection));
-            }
-
-            BusConnectionEventArgs args = new BusConnectionEventArgs(connection);
-            this.ConnectionBroken?.Invoke(this, args);
-        }
-
-        /// <inheritdoc />
-        object IBus.RaiseProcessingException (MessageItem message, object result, ref Exception exception, ref bool forwardException)
-        {
-            if (message == null)
-            {
-                throw new ArgumentNullException(nameof(message));
-            }
-
-            if (exception == null)
-            {
-                throw new ArgumentNullException(nameof(exception));
-            }
-
-            BusMessageProcessingExceptionEventArgs args = new BusMessageProcessingExceptionEventArgs(message, result, exception, forwardException);
-            this.ProcessingException?.Invoke(this, args);
-            exception = args.Exception;
-            forwardException = args.ForwardException;
-            return args.Result;
-        }
-
-        /// <inheritdoc />
-        void IBus.RaiseReceivingRequest (MessageItem message)
-        {
-            if (message == null)
-            {
-                throw new ArgumentNullException(nameof(message));
-            }
-
-            BusMessageEventArgs args = new BusMessageEventArgs(message);
-            this.ReceivingRequest?.Invoke(this, args);
-        }
-
-        /// <inheritdoc />
-        void IBus.RaiseReceivingResponse (MessageItem message)
-        {
-            if (message == null)
-            {
-                throw new ArgumentNullException(nameof(message));
-            }
-
-            BusMessageEventArgs args = new BusMessageEventArgs(message);
-            this.ReceivingResponse?.Invoke(this, args);
-        }
-
-        /// <inheritdoc />
-        void IBus.RaiseSendingRequest (MessageItem message)
-        {
-            if (message == null)
-            {
-                throw new ArgumentNullException(nameof(message));
-            }
-
-            BusMessageEventArgs args = new BusMessageEventArgs(message);
-            this.SendingRequest?.Invoke(this, args);
-        }
-
-        /// <inheritdoc />
-        void IBus.RaiseSendingResponse (MessageItem message)
-        {
-            if (message == null)
-            {
-                throw new ArgumentNullException(nameof(message));
-            }
-
-            BusMessageEventArgs args = new BusMessageEventArgs(message);
-            this.SendingResponse?.Invoke(this, args);
-        }
-
-        /// <inheritdoc />
         void IBus.Register (ReceiverRegistration receiverRegistration)
         {
             if (receiverRegistration == null)
@@ -714,21 +635,9 @@ namespace RI.Framework.Bus
             {
                 this.Log(LogLevel.Debug, "Registering receiver: {0}", receiverRegistration);
 
-                ReceiverRegistrationItem item = new ReceiverRegistrationItem(receiverRegistration);
-                this.ReceiveRegistrations.Add(item);
+                this.ReceiveRegistrations.Add(new ReceiverRegistrationItem(receiverRegistration));
 
                 this.SignalWorkAvailable();
-            }
-        }
-
-        /// <inheritdoc />
-        void IBus.SignalWorkAvailable ()
-        {
-            lock (this.SyncRoot)
-            {
-                this.VerifyStarted();
-
-                this.WorkAvailable.Set();
             }
         }
 
@@ -809,6 +718,104 @@ namespace RI.Framework.Bus
 
 
 
+        #region Interface: IBusController
+
+        /// <inheritdoc />
+        void IBusController.RaiseConnectionBroken (IBusConnection connection)
+        {
+            if (connection == null)
+            {
+                throw new ArgumentNullException(nameof(connection));
+            }
+
+            BusConnectionEventArgs args = new BusConnectionEventArgs(connection);
+            this.ConnectionBroken?.Invoke(this, args);
+        }
+
+        /// <inheritdoc />
+        object IBusController.RaiseProcessingException (MessageItem message, object result, ref Exception exception, ref bool forwardException)
+        {
+            if (message == null)
+            {
+                throw new ArgumentNullException(nameof(message));
+            }
+
+            if (exception == null)
+            {
+                throw new ArgumentNullException(nameof(exception));
+            }
+
+            BusMessageProcessingExceptionEventArgs args = new BusMessageProcessingExceptionEventArgs(message, result, exception, forwardException);
+            this.ProcessingException?.Invoke(this, args);
+            exception = args.Exception;
+            forwardException = args.ForwardException;
+            return args.Result;
+        }
+
+        /// <inheritdoc />
+        void IBusController.RaiseReceivingRequest (MessageItem message)
+        {
+            if (message == null)
+            {
+                throw new ArgumentNullException(nameof(message));
+            }
+
+            BusMessageEventArgs args = new BusMessageEventArgs(message);
+            this.ReceivingRequest?.Invoke(this, args);
+        }
+
+        /// <inheritdoc />
+        void IBusController.RaiseReceivingResponse (MessageItem message)
+        {
+            if (message == null)
+            {
+                throw new ArgumentNullException(nameof(message));
+            }
+
+            BusMessageEventArgs args = new BusMessageEventArgs(message);
+            this.ReceivingResponse?.Invoke(this, args);
+        }
+
+        /// <inheritdoc />
+        void IBusController.RaiseSendingRequest (MessageItem message)
+        {
+            if (message == null)
+            {
+                throw new ArgumentNullException(nameof(message));
+            }
+
+            BusMessageEventArgs args = new BusMessageEventArgs(message);
+            this.SendingRequest?.Invoke(this, args);
+        }
+
+        /// <inheritdoc />
+        void IBusController.RaiseSendingResponse (MessageItem message)
+        {
+            if (message == null)
+            {
+                throw new ArgumentNullException(nameof(message));
+            }
+
+            BusMessageEventArgs args = new BusMessageEventArgs(message);
+            this.SendingResponse?.Invoke(this, args);
+        }
+
+        /// <inheritdoc />
+        void IBusController.SignalWorkAvailable ()
+        {
+            lock (this.SyncRoot)
+            {
+                this.VerifyStarted();
+
+                this.WorkAvailable.Set();
+            }
+        }
+
+        #endregion
+
+
+
+
         #region Type: WorkThread
 
         private sealed class WorkThread : HeavyThread, ILogSource
@@ -827,10 +834,11 @@ namespace RI.Framework.Bus
 
             #region Instance Fields
 
-            private LogLevel _logFilter1 = LogLevel.Debug;
+            private LogLevel _logFilter = LogLevel.Debug;
 
-            private ILogger _logger;
-            private bool _loggingEnabled;
+            private ILogger _logger = LogLocator.Logger;
+
+            private bool _loggingEnabled = true;
 
             #endregion
 
@@ -843,13 +851,17 @@ namespace RI.Framework.Bus
 
             public new Thread Thread => base.Thread;
 
+            private IDependencyResolver DependencyResolver => this.LocalBus.DependencyResolver;
+
             private IBusConnectionManager ConnectionManager { get; set; }
 
             private List<IBusConnection> Connections { get; set; }
 
-            private IDependencyResolver DependencyResolver => this.LocalBus.DependencyResolver;
-
             private IBusDispatcher Dispatcher { get; set; }
+
+            private IBusPipeline Pipeline { get; set; }
+
+            private IBusRouter Router { get; set; }
 
             [SuppressMessage("ReSharper", "SuspiciousTypeConversion.Global")]
             private IEnumerable<ILogSource> LogSources
@@ -886,10 +898,6 @@ namespace RI.Framework.Bus
                 }
             }
 
-            private IBusPipeline Pipeline { get; set; }
-
-            private IBusRouter Router { get; set; }
-
             #endregion
 
 
@@ -915,6 +923,7 @@ namespace RI.Framework.Bus
                 {
                     throw new Exception("Could not resolve mandatory multiple instances of " + typeof(T).Name + ".");
                 }
+
                 return instances;
             }
 
@@ -926,10 +935,12 @@ namespace RI.Framework.Bus
                 {
                     throw new Exception("Could not resolve a mandatory single instance of " + typeof(T).Name + ".");
                 }
+
                 if (instances.Count > 1)
                 {
                     throw new Exception("Too many resolved instances of " + typeof(T).Name + ".");
                 }
+
                 return instances[0];
             }
 
@@ -1064,7 +1075,7 @@ namespace RI.Framework.Bus
                 }
             }
 
-            protected override void OnStarting()
+            protected override void OnStarting ()
             {
                 base.OnStarting();
 
@@ -1092,14 +1103,14 @@ namespace RI.Framework.Bus
                 {
                     lock (this.LocalBus.SyncRoot)
                     {
-                        return this._logFilter1;
+                        return this._logFilter;
                     }
                 }
                 set
                 {
                     lock (this.LocalBus.SyncRoot)
                     {
-                        this._logFilter1 = value;
+                        this._logFilter = value;
                         this.InheritLogger();
                     }
                 }

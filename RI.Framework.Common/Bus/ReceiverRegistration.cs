@@ -3,6 +3,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
+using RI.Framework.Collections.Concurrent;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.ObjectModel;
@@ -37,10 +38,13 @@ namespace RI.Framework.Bus
             this.SyncRoot = new object();
             this.Bus = bus;
 
+            this.Callback = null;
             this.Address = null;
             this.PayloadType = null;
             this.ResponseType = null;
             this.ExceptionForwarding = null;
+            this.ExceptionHandler = null;
+
             this.IncludeCompatiblePayloadTypes = false;
 
             this.IsProcessed = false;
@@ -59,6 +63,14 @@ namespace RI.Framework.Bus
         /// <value>
         ///     The address this receiver listens to or null if no address is used.
         /// </value>
+        /// <remarks>
+        ///     <para>
+        ///         The default value is null.
+        ///     </para>
+        ///     <para>
+        ///         This value can be set by <see cref="AsAddress" />.
+        ///     </para>
+        /// </remarks>
         public string Address { get; private set; }
 
         /// <summary>
@@ -75,6 +87,11 @@ namespace RI.Framework.Bus
         /// <value>
         ///     The callback which is called upon message reception.
         /// </value>
+        /// <remarks>
+        ///     <para>
+        ///         This value is set by <see cref="By" />.
+        ///     </para>
+        /// </remarks>
         public Func<string, object, Task<object>> Callback { get; private set; }
 
         /// <summary>
@@ -83,6 +100,14 @@ namespace RI.Framework.Bus
         /// <value>
         ///     true if exception forwarding is used, false if not, null if not defined where the default value of the associated bus is used.
         /// </value>
+        /// <remarks>
+        ///     <para>
+        ///         The default value is null.
+        ///     </para>
+        ///     <para>
+        ///         This value can be set by <see cref="WithExceptionForwarding()" />, <see cref="WithExceptionForwarding(bool?)"/>.
+        ///     </para>
+        /// </remarks>
         public bool? ExceptionForwarding { get; private set; }
 
         /// <summary>
@@ -91,6 +116,14 @@ namespace RI.Framework.Bus
         /// <value>
         ///     The exception handler which is called for unhandled exceptions within <see cref="Callback" /> or null if no exception handler is used.
         /// </value>
+        /// <remarks>
+        ///     <para>
+        ///         The default value is null.
+        ///     </para>
+        ///     <para>
+        ///         This value can be set by <see cref="WithExceptionHandler" />.
+        ///     </para>
+        /// </remarks>
         public ReceiverExceptionHandler ExceptionHandler { get; private set; }
 
         /// <summary>
@@ -99,6 +132,14 @@ namespace RI.Framework.Bus
         /// <value>
         ///     true if compatible payload types are accepted, false otherwise.
         /// </value>
+        /// <remarks>
+        ///     <para>
+        ///         The default value is false.
+        ///     </para>
+        ///     <para>
+        ///         This value can be set by <see cref="IncludeCompatiblePayloadTypes" />.
+        ///     </para>
+        /// </remarks>
         public bool IncludeCompatiblePayloadTypes { get; private set; }
 
         /// <summary>
@@ -115,6 +156,14 @@ namespace RI.Framework.Bus
         /// <value>
         ///     The payload type this receiver listens to or null if no payload is used.
         /// </value>
+        /// <remarks>
+        ///     <para>
+        ///         The default value is null.
+        ///     </para>
+        ///     <para>
+        ///         This value can be set by <see cref="WithPayload" />, <see cref="WithPayload{TPayload}"/>.
+        ///     </para>
+        /// </remarks>
         public Type PayloadType { get; private set; }
 
         /// <summary>
@@ -123,6 +172,14 @@ namespace RI.Framework.Bus
         /// <value>
         ///     The response type this receiver produces or null if no response is used.
         /// </value>
+        /// <remarks>
+        ///     <para>
+        ///         The default value is null.
+        ///     </para>
+        ///     <para>
+        ///         This value can be set by <see cref="WithResponse" />, <see cref="WithResponse{TResponse}"/>.
+        ///     </para>
+        /// </remarks>
         public Type ResponseType { get; private set; }
 
         #endregion
@@ -186,28 +243,12 @@ namespace RI.Framework.Bus
         }
 
         /// <summary>
-        ///     Sets that compatible payload types, which are convertible to <see cref="PayloadType" />, are not accepted and only those payloads which are of exactly <see cref="PayloadType" />.
-        /// </summary>
-        /// <returns>
-        ///     The receiver registration to continue configuration of the receiver.
-        /// </returns>
-        public ReceiverRegistration ExcludingCompatiblePayloads ()
-        {
-            lock (this.SyncRoot)
-            {
-                this.VerifyNotStarted();
-                this.IncludeCompatiblePayloadTypes = false;
-                return this;
-            }
-        }
-
-        /// <summary>
         ///     Sets that compatible payload types, which are convertible to <see cref="PayloadType" />, are also accepted and not only those payloads which are of exactly <see cref="PayloadType" />.
         /// </summary>
         /// <returns>
         ///     The receiver registration to continue configuration of the receiver.
         /// </returns>
-        public ReceiverRegistration IncludingCompatiblePayloads ()
+        public ReceiverRegistration WithCompatiblePayloads ()
         {
             lock (this.SyncRoot)
             {
@@ -224,7 +265,7 @@ namespace RI.Framework.Bus
         /// <returns>
         ///     The receiver registration to continue configuration of the receiver.
         /// </returns>
-        public ReceiverRegistration IncludingCompatiblePayloads (bool includeCompatiblePayloads)
+        public ReceiverRegistration WithCompatiblePayloads (bool includeCompatiblePayloads)
         {
             lock (this.SyncRoot)
             {
@@ -252,28 +293,11 @@ namespace RI.Framework.Bus
         /// <returns>
         ///     The receive registration to continue configuration and restart.
         /// </returns>
-        public ReceiverRegistration StopThenReceive ()
+        public ReceiverRegistration StopThenContinue ()
         {
             lock (this.SyncRoot)
             {
                 this.Stop();
-                return this;
-            }
-        }
-
-        /// <summary>
-        ///     Sets to use the default value of the associated bus whether to forward exceptions from the receiver back to the sender.
-        /// </summary>
-        /// <returns>
-        ///     The receiver registration to continue configuration of the receiver.
-        /// </returns>
-        /// <exception cref="InvalidOperationException"> The reception is already being processed. </exception>
-        public ReceiverRegistration WithDefaultExceptionForwarding ()
-        {
-            lock (this.SyncRoot)
-            {
-                this.VerifyNotStarted();
-                this.ExceptionForwarding = null;
                 return this;
             }
         }
@@ -298,17 +322,17 @@ namespace RI.Framework.Bus
         /// <summary>
         ///     Sets the receiver to use or not use forward exceptions from the receiver back to the sender.
         /// </summary>
-        /// <param name="forwardExceptiond"> Specifes whether the message should forward exceptions from the receiver back to the sender (true) or not (false). </param>
+        /// <param name="forwardExceptions"> Specifes whether the message should forward exceptions from the receiver back to the sender (true) or not (false). </param>
         /// <returns>
         ///     The receiver registration to continue configuration of the receiver.
         /// </returns>
         /// <exception cref="InvalidOperationException"> The reception is already being processed. </exception>
-        public ReceiverRegistration WithExceptionForwarding (bool forwardExceptiond)
+        public ReceiverRegistration WithExceptionForwarding (bool? forwardExceptions)
         {
             lock (this.SyncRoot)
             {
                 this.VerifyNotStarted();
-                this.ExceptionForwarding = forwardExceptiond;
+                this.ExceptionForwarding = forwardExceptions;
                 return this;
             }
         }
@@ -425,16 +449,25 @@ namespace RI.Framework.Bus
 
             sb.Append("Address=");
             sb.Append(this.Address ?? "[null]");
+
             sb.Append("; PayloadType=");
-            sb.Append(this.PayloadType?.FullName ?? "[null]");
-            sb.Append("; Compatibles=");
+            sb.Append(this.PayloadType?.Name ?? "[null]");
+
+            sb.Append("; IncludeCompatiblePayloadTypes=");
             sb.Append(this.IncludeCompatiblePayloadTypes);
+
             sb.Append("; ResponseType=");
-            sb.Append(this.ResponseType?.FullName ?? "[null]");
+            sb.Append(this.ResponseType?.Name ?? "[null]");
+
             sb.Append("; Callback=");
             sb.Append(this.Callback?.GetFullName() ?? "[null]");
+
+            sb.Append("; ExceptionForwarding=");
+            sb.Append(this.ExceptionForwarding?.ToString() ?? "[null]");
+
             sb.Append("; ExceptionHandler=");
             sb.Append(this.ExceptionHandler?.GetFullName() ?? "[null]");
+
             sb.Append("; IsProcessed=");
             sb.Append(this.IsProcessed);
 
@@ -459,7 +492,7 @@ namespace RI.Framework.Bus
 
     /// <inheritdoc cref="ReceiverRegistration" />
     /// <typeparam name="TPayload"> The type of the payload. </typeparam>
-    public sealed class ReceiverRegistrationWithPayload <TPayload>
+    public sealed class ReceiverRegistrationWithPayload <TPayload> : ISynchronizable
     {
         #region Static Methods
 
@@ -522,24 +555,37 @@ namespace RI.Framework.Bus
             return this;
         }
 
-        /// <inheritdoc cref="ReceiverRegistration.ExcludingCompatiblePayloads()" />
-        public ReceiverRegistrationWithPayload<TPayload> ExcludingCompatiblePayloads ()
+        /// <summary>
+        ///     Starts reception by a specified queue.
+        /// </summary>
+        /// <param name="queue"> The queue. </param>
+        /// <returns>
+        ///     The receiver registration.
+        /// </returns>
+        /// <exception cref="ArgumentNullException"> <paramref name="queue" /> is null. </exception>
+        /// <exception cref="InvalidOperationException"> The reception is already being processed. </exception>
+        public ReceiverRegistrationWithPayload<TPayload> By (RequestResponseQueue<TPayload, object> queue)
         {
-            this.Origin.ExcludingCompatiblePayloads();
+            if (queue == null)
+            {
+                throw new ArgumentNullException(nameof(queue));
+            }
+
+            this.By((address, payload) => queue.EnqueueAsync(payload));
             return this;
         }
 
-        /// <inheritdoc cref="ReceiverRegistration.IncludingCompatiblePayloads()" />
-        public ReceiverRegistrationWithPayload<TPayload> IncludingCompatiblePayloads ()
+        /// <inheritdoc cref="ReceiverRegistration.WithCompatiblePayloads()" />
+        public ReceiverRegistrationWithPayload<TPayload> WithCompatiblePayloads ()
         {
-            this.Origin.IncludingCompatiblePayloads();
+            this.Origin.WithCompatiblePayloads();
             return this;
         }
 
-        /// <inheritdoc cref="ReceiverRegistration.IncludingCompatiblePayloads(bool)" />
-        public ReceiverRegistrationWithPayload<TPayload> IncludingCompatiblePayloads (bool includeCompatiblePayloads)
+        /// <inheritdoc cref="ReceiverRegistration.WithCompatiblePayloads(bool)" />
+        public ReceiverRegistrationWithPayload<TPayload> WithCompatiblePayloads (bool includeCompatiblePayloads)
         {
-            this.Origin.IncludingCompatiblePayloads(includeCompatiblePayloads);
+            this.Origin.WithCompatiblePayloads(includeCompatiblePayloads);
             return this;
         }
 
@@ -549,17 +595,10 @@ namespace RI.Framework.Bus
             this.Origin.Stop();
         }
 
-        /// <inheritdoc cref="ReceiverRegistration.StopThenReceive" />
-        public ReceiverRegistrationWithPayload<TPayload> StopThenReceive ()
+        /// <inheritdoc cref="ReceiverRegistration.StopThenContinue" />
+        public ReceiverRegistrationWithPayload<TPayload> StopThenContinue ()
         {
-            this.Origin.StopThenReceive();
-            return this;
-        }
-
-        /// <inheritdoc cref="ReceiverRegistration.WithDefaultExceptionForwarding" />
-        public ReceiverRegistrationWithPayload<TPayload> WithDefaultExceptionForwarding ()
-        {
-            this.Origin.WithDefaultExceptionForwarding();
+            this.Origin.StopThenContinue();
             return this;
         }
 
@@ -570,10 +609,10 @@ namespace RI.Framework.Bus
             return this;
         }
 
-        /// <inheritdoc cref="ReceiverRegistration.WithExceptionForwarding(bool)" />
-        public ReceiverRegistrationWithPayload<TPayload> WithExceptionForwarding (bool forwardExceptiond)
+        /// <inheritdoc cref="ReceiverRegistration.WithExceptionForwarding(bool?)" />
+        public ReceiverRegistrationWithPayload<TPayload> WithExceptionForwarding (bool? forwardExceptions)
         {
-            this.Origin.WithExceptionForwarding(forwardExceptiond);
+            this.Origin.WithExceptionForwarding(forwardExceptions);
             return this;
         }
 
@@ -612,11 +651,34 @@ namespace RI.Framework.Bus
         }
 
         #endregion
+
+
+
+
+        #region Overrides
+
+        /// <inheritdoc />
+        public override string ToString () => this.Origin.ToString();
+
+        #endregion
+
+
+
+
+        #region Interface: ISynchronizable
+
+        /// <inheritdoc />
+        bool ISynchronizable.IsSynchronized => ((ISynchronizable)this.Origin).IsSynchronized;
+
+        /// <inheritdoc />
+        public object SyncRoot => this.Origin.SyncRoot;
+
+        #endregion
     }
 
     /// <inheritdoc cref="ReceiverRegistration" />
     /// <typeparam name="TResponse"> The type of the response. </typeparam>
-    public sealed class ReceiverRegistrationWithResponse <TResponse>
+    public sealed class ReceiverRegistrationWithResponse <TResponse> : ISynchronizable
     {
         #region Static Methods
 
@@ -679,24 +741,37 @@ namespace RI.Framework.Bus
             return this;
         }
 
-        /// <inheritdoc cref="ReceiverRegistration.ExcludingCompatiblePayloads()" />
-        public ReceiverRegistrationWithResponse<TResponse> ExcludingCompatiblePayloads ()
+        /// <summary>
+        ///     Starts reception by a specified queue.
+        /// </summary>
+        /// <param name="queue"> The queue. </param>
+        /// <returns>
+        ///     The receiver registration.
+        /// </returns>
+        /// <exception cref="ArgumentNullException"> <paramref name="queue" /> is null. </exception>
+        /// <exception cref="InvalidOperationException"> The reception is already being processed. </exception>
+        public ReceiverRegistrationWithResponse<TResponse> By(RequestResponseQueue<object, TResponse> queue)
         {
-            this.Origin.ExcludingCompatiblePayloads();
+            if (queue == null)
+            {
+                throw new ArgumentNullException(nameof(queue));
+            }
+
+            this.By((address) => queue.EnqueueAsync(null));
             return this;
         }
 
-        /// <inheritdoc cref="ReceiverRegistration.IncludingCompatiblePayloads()" />
-        public ReceiverRegistrationWithResponse<TResponse> IncludingCompatiblePayloads ()
+        /// <inheritdoc cref="ReceiverRegistration.WithCompatiblePayloads()" />
+        public ReceiverRegistrationWithResponse<TResponse> WithCompatiblePayloads ()
         {
-            this.Origin.IncludingCompatiblePayloads();
+            this.Origin.WithCompatiblePayloads();
             return this;
         }
 
-        /// <inheritdoc cref="ReceiverRegistration.IncludingCompatiblePayloads(bool)" />
-        public ReceiverRegistrationWithResponse<TResponse> IncludingCompatiblePayloads (bool includeCompatiblePayloads)
+        /// <inheritdoc cref="ReceiverRegistration.WithCompatiblePayloads(bool)" />
+        public ReceiverRegistrationWithResponse<TResponse> WithCompatiblePayloads (bool includeCompatiblePayloads)
         {
-            this.Origin.IncludingCompatiblePayloads(includeCompatiblePayloads);
+            this.Origin.WithCompatiblePayloads(includeCompatiblePayloads);
             return this;
         }
 
@@ -706,17 +781,10 @@ namespace RI.Framework.Bus
             this.Origin.Stop();
         }
 
-        /// <inheritdoc cref="ReceiverRegistration.StopThenReceive" />
-        public ReceiverRegistrationWithResponse<TResponse> StopThenReceive ()
+        /// <inheritdoc cref="ReceiverRegistration.StopThenContinue" />
+        public ReceiverRegistrationWithResponse<TResponse> StopThenContinue ()
         {
-            this.Origin.StopThenReceive();
-            return this;
-        }
-
-        /// <inheritdoc cref="ReceiverRegistration.WithDefaultExceptionForwarding" />
-        public ReceiverRegistrationWithResponse<TResponse> WithDefaultExceptionForwarding ()
-        {
-            this.Origin.WithDefaultExceptionForwarding();
+            this.Origin.StopThenContinue();
             return this;
         }
 
@@ -727,10 +795,10 @@ namespace RI.Framework.Bus
             return this;
         }
 
-        /// <inheritdoc cref="ReceiverRegistration.WithExceptionForwarding(bool)" />
-        public ReceiverRegistrationWithResponse<TResponse> WithExceptionForwarding (bool forwardExceptiond)
+        /// <inheritdoc cref="ReceiverRegistration.WithExceptionForwarding(bool?)" />
+        public ReceiverRegistrationWithResponse<TResponse> WithExceptionForwarding (bool? forwardExceptions)
         {
-            this.Origin.WithExceptionForwarding(forwardExceptiond);
+            this.Origin.WithExceptionForwarding(forwardExceptions);
             return this;
         }
 
@@ -769,12 +837,35 @@ namespace RI.Framework.Bus
         }
 
         #endregion
+
+
+
+
+        #region Overrides
+
+        /// <inheritdoc />
+        public override string ToString() => this.Origin.ToString();
+
+        #endregion
+
+
+
+
+        #region Interface: ISynchronizable
+
+        /// <inheritdoc />
+        bool ISynchronizable.IsSynchronized => ((ISynchronizable)this.Origin).IsSynchronized;
+
+        /// <inheritdoc />
+        public object SyncRoot => this.Origin.SyncRoot;
+
+        #endregion
     }
 
     /// <inheritdoc cref="ReceiverRegistration" />
     /// <typeparam name="TPayload"> The type of the payload. </typeparam>
     /// <typeparam name="TResponse"> The type of the response. </typeparam>
-    public sealed class ReceiverRegistrationWithPayloadAndResponse <TPayload, TResponse>
+    public sealed class ReceiverRegistrationWithPayloadAndResponse <TPayload, TResponse> : ISynchronizable
     {
         #region Static Methods
 
@@ -837,24 +928,37 @@ namespace RI.Framework.Bus
             return this;
         }
 
-        /// <inheritdoc cref="ReceiverRegistration.ExcludingCompatiblePayloads()" />
-        public ReceiverRegistrationWithPayloadAndResponse<TPayload, TResponse> ExcludingCompatiblePayloads ()
+        /// <summary>
+        ///     Starts reception by a specified queue.
+        /// </summary>
+        /// <param name="queue"> The queue. </param>
+        /// <returns>
+        ///     The receiver registration.
+        /// </returns>
+        /// <exception cref="ArgumentNullException"> <paramref name="queue" /> is null. </exception>
+        /// <exception cref="InvalidOperationException"> The reception is already being processed. </exception>
+        public ReceiverRegistrationWithPayloadAndResponse<TPayload, TResponse> By(RequestResponseQueue<TPayload, TResponse> queue)
         {
-            this.Origin.ExcludingCompatiblePayloads();
+            if (queue == null)
+            {
+                throw new ArgumentNullException(nameof(queue));
+            }
+
+            this.By((address, payload) => queue.EnqueueAsync(payload));
             return this;
         }
 
-        /// <inheritdoc cref="ReceiverRegistration.IncludingCompatiblePayloads()" />
-        public ReceiverRegistrationWithPayloadAndResponse<TPayload, TResponse> IncludingCompatiblePayloads ()
+        /// <inheritdoc cref="ReceiverRegistration.WithCompatiblePayloads()" />
+        public ReceiverRegistrationWithPayloadAndResponse<TPayload, TResponse> WithCompatiblePayloads ()
         {
-            this.Origin.IncludingCompatiblePayloads();
+            this.Origin.WithCompatiblePayloads();
             return this;
         }
 
-        /// <inheritdoc cref="ReceiverRegistration.IncludingCompatiblePayloads(bool)" />
-        public ReceiverRegistrationWithPayloadAndResponse<TPayload, TResponse> IncludingCompatiblePayloads (bool includeCompatiblePayloads)
+        /// <inheritdoc cref="ReceiverRegistration.WithCompatiblePayloads(bool)" />
+        public ReceiverRegistrationWithPayloadAndResponse<TPayload, TResponse> WithCompatiblePayloads (bool includeCompatiblePayloads)
         {
-            this.Origin.IncludingCompatiblePayloads(includeCompatiblePayloads);
+            this.Origin.WithCompatiblePayloads(includeCompatiblePayloads);
             return this;
         }
 
@@ -864,17 +968,10 @@ namespace RI.Framework.Bus
             this.Origin.Stop();
         }
 
-        /// <inheritdoc cref="ReceiverRegistration.StopThenReceive" />
-        public ReceiverRegistrationWithPayloadAndResponse<TPayload, TResponse> StopThenReceive ()
+        /// <inheritdoc cref="ReceiverRegistration.StopThenContinue" />
+        public ReceiverRegistrationWithPayloadAndResponse<TPayload, TResponse> StopThenContinue ()
         {
-            this.Origin.StopThenReceive();
-            return this;
-        }
-
-        /// <inheritdoc cref="ReceiverRegistration.WithDefaultExceptionForwarding" />
-        public ReceiverRegistrationWithPayloadAndResponse<TPayload, TResponse> WithDefaultExceptionForwarding ()
-        {
-            this.Origin.WithDefaultExceptionForwarding();
+            this.Origin.StopThenContinue();
             return this;
         }
 
@@ -885,10 +982,10 @@ namespace RI.Framework.Bus
             return this;
         }
 
-        /// <inheritdoc cref="ReceiverRegistration.WithExceptionForwarding(bool)" />
-        public ReceiverRegistrationWithPayloadAndResponse<TPayload, TResponse> WithExceptionForwarding (bool forwardExceptiond)
+        /// <inheritdoc cref="ReceiverRegistration.WithExceptionForwarding(bool?)" />
+        public ReceiverRegistrationWithPayloadAndResponse<TPayload, TResponse> WithExceptionForwarding (bool? forwardExceptions)
         {
-            this.Origin.WithExceptionForwarding(forwardExceptiond);
+            this.Origin.WithExceptionForwarding(forwardExceptions);
             return this;
         }
 
@@ -926,6 +1023,29 @@ namespace RI.Framework.Bus
             this.Origin.WithResponse(typeof(TNewResponse));
             return new ReceiverRegistrationWithPayloadAndResponse<TPayload, TNewResponse>(this.Origin);
         }
+
+        #endregion
+
+
+
+
+        #region Overrides
+
+        /// <inheritdoc />
+        public override string ToString() => this.Origin.ToString();
+
+        #endregion
+
+
+
+
+        #region Interface: ISynchronizable
+
+        /// <inheritdoc />
+        bool ISynchronizable.IsSynchronized => ((ISynchronizable)this.Origin).IsSynchronized;
+
+        /// <inheritdoc />
+        public object SyncRoot => this.Origin.SyncRoot;
 
         #endregion
     }

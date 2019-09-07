@@ -21,6 +21,7 @@ namespace RI.Framework.Bus
     ///     </para>
     /// </remarks>
     /// <threadsafety static="true" instance="true" />
+    /// TODO: BEFORE RELEASE
     /// TODO: Clarify dependency of return value and forwardException
     /// TODO: Change signature to: bool ReceiverExceptionHandler (ReceiverRegistration receiverRegistration, string address, object payload, ref Exception exception, ref object response)
     public delegate object ReceiverExceptionHandler (string address, object payload, ref Exception exception, ref bool forwardException);

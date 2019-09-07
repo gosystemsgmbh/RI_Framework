@@ -10,6 +10,7 @@ using RI.Framework.Collections.DirectLinq;
 using RI.Framework.Utilities;
 using RI.Framework.Utilities.Exceptions;
 using RI.Framework.Utilities.ObjectModel;
+using RI.Framework.Utilities.Reflection;
 
 
 
@@ -20,6 +21,7 @@ namespace RI.Framework.Bus
     ///     Represents a single send operation.
     /// </summary>
     /// <threadsafety static="true" instance="true" />
+    /// TODO: Use TaskScheduler optionally provided by dispatcher (?????)
     public sealed class SendOperation : ISynchronizable
     {
         #region Instance Constructor/Destructor
@@ -44,14 +46,14 @@ namespace RI.Framework.Bus
             this.Address = null;
             this.Global = null;
             this.Payload = null;
-            this.Response = null;
+            this.ResponseType = null;
             this.ExpectedResults = null;
             this.Timeout = null;
             this.CancellationToken = null;
             this.ExceptionForwarding = null;
             this.ExceptionHandler = null;
+            this.IgnoreBrokenConnections = null;
 
-            this.IgnoreBrokenConnections = false;
             this.IsProcessed = false;
 
             this.Result = null;
@@ -134,6 +136,7 @@ namespace RI.Framework.Bus
         ///         This value can be set by <see cref="WithExceptionHandler" />.
         ///     </para>
         /// </remarks>
+        /// TODO: BEFORE RELEASE
         /// TODO: Use this!
         public SendExceptionHandler ExceptionHandler { get; private set; }
 
@@ -146,6 +149,9 @@ namespace RI.Framework.Bus
         /// <remarks>
         ///     <para>
         ///         The default value is null.
+        ///     </para>
+        ///     <para>
+        ///         This value can be set by <see cref="AsBroadcast(int?)" />, <see cref="AsBroadcast(int?,Type)" />, <see cref="AsBroadcast{T}(int?)" />.
         ///     </para>
         /// </remarks>
         public int? ExpectedResults { get; private set; }
@@ -177,11 +183,12 @@ namespace RI.Framework.Bus
         ///         The default value is false.
         ///     </para>
         ///     <para>
-        ///         This value can be set by <see cref="WithIgnoredBrokenConnections()" />, <see cref="WithIgnoredBrokenConnections(bool)" />.
+        ///         This value can be set by <see cref="WithIgnoredBrokenConnections()" />, <see cref="WithIgnoredBrokenConnections(bool?)" />.
         ///     </para>
         /// </remarks>
-        /// TODO: Make nullable and get default value from associated bus
-        public bool IgnoreBrokenConnections { get; private set; }
+        /// TODO: BEFORE RELEASE
+        /// TODO: Use this!
+        public bool? IgnoreBrokenConnections { get; private set; }
         
         /// <summary>
         ///     Gets whether this send operation is being processed.
@@ -223,6 +230,7 @@ namespace RI.Framework.Bus
         ///         The default value is <see cref="SendOperationType.Undefined" />.
         ///     </para>
         /// </remarks>
+        /// TODO: BEFORE RELEASE
         /// TODO: Use this!
         public SendOperationType OperationType { get; private set; }
 
@@ -256,8 +264,9 @@ namespace RI.Framework.Bus
         ///         This value can be set by <see cref="WithResponse{TResponse}" />, <see cref="WithResponse(Type)" />.
         ///     </para>
         /// </remarks>
+        /// TODO: BEFORE RELEASE
         /// TODO: Use this!
-        public Type Response { get; private set; }
+        public Type ResponseType { get; private set; }
 
         /// <summary>
         ///     Gets the timeout for the message (waiting for or collecting responses).
@@ -301,8 +310,8 @@ namespace RI.Framework.Bus
         ///         The collection of responses end after the used timeout or the expected number of responses was received (<paramref name="expectedResults" />).
         ///     </para>
         ///     <para>
-        ///         The response type is defined by <see cref="Response" />.
-        ///         If <see cref="Response" /> is null, any response is accepted.
+        ///         The response type is defined by <see cref="ResponseType" />.
+        ///         If <see cref="ResponseType" /> is null, any response is accepted.
         ///     </para>
         /// </remarks>
         /// <exception cref="ArgumentOutOfRangeException"> <paramref name="expectedResults" /> is below zero. </exception>
@@ -310,7 +319,7 @@ namespace RI.Framework.Bus
         /// <exception cref="BusProcessingPipelineException"> The bus processing pipeline encountered an exception. </exception>
         /// <exception cref="BusConnectionBrokenException"> A used connection to a remote bus is broken. </exception>
         /// <exception cref="BusMessageProcessingException"> An exception which was thrown by the message receiver was forwarded to this sender. </exception>
-        /// <exception cref="InvalidCastException"> One of the responses could not be casted to type <see cref="Response" />. </exception>
+        /// <exception cref="InvalidCastException"> One of the responses could not be casted to type <see cref="ResponseType" />. </exception>
         /// TODO: Use TaskScheduler optionally provided by dispatcher
         public Task<List<object>> AsBroadcast (int? expectedResults)
         {
@@ -364,7 +373,7 @@ namespace RI.Framework.Bus
         ///         The collection of responses end after the used timeout or the expected number of responses was received (<paramref name="expectedResults" />).
         ///     </para>
         ///     <para>
-        ///         <see cref="Response" /> is ignored or overwritten by <paramref name="responseType" /> respectively.
+        ///         <see cref="ResponseType" /> is ignored or overwritten by <paramref name="responseType" /> respectively.
         ///         If <paramref name="responseType" /> is null, any response is accepted.
         ///     </para>
         /// </remarks>
@@ -389,7 +398,7 @@ namespace RI.Framework.Bus
             lock (this.SyncRoot)
             {
                 this.VerifyNotStarted();
-                this.Response = responseType;
+                this.ResponseType = responseType;
                 this.IsProcessed = true;
                 this.OperationType = SendOperationType.Broadcast;
                 this.ExpectedResults = expectedResults;
@@ -428,7 +437,7 @@ namespace RI.Framework.Bus
         ///         The collection of responses end after the used timeout or the expected number of responses was received (<paramref name="expectedResults" />).
         ///     </para>
         ///     <para>
-        ///         <see cref="Response" /> is ignored or overwritten by <typeparamref name="TResponse" /> respectively.
+        ///         <see cref="ResponseType" /> is ignored or overwritten by <typeparamref name="TResponse" /> respectively.
         ///     </para>
         /// </remarks>
         /// <exception cref="ArgumentOutOfRangeException"> <paramref name="expectedResults" /> is below zero. </exception>
@@ -452,7 +461,7 @@ namespace RI.Framework.Bus
             lock (this.SyncRoot)
             {
                 this.VerifyNotStarted();
-                this.Response = typeof(TResponse);
+                this.ResponseType = typeof(TResponse);
                 this.IsProcessed = true;
                 this.OperationType = SendOperationType.Broadcast;
                 this.ExpectedResults = expectedResults;
@@ -476,36 +485,36 @@ namespace RI.Framework.Bus
         /// <summary>
         ///     Sends the message to an undefined amount of receivers and expects no responses.
         /// </summary>
+        /// <returns>
+        ///     The task used to wait until the message has been sent.
+        /// </returns>
         /// <remarks>
         ///     <para>
         ///         Sending messages using <see cref="AsFireAndForget" /> is truly fire-and-forget, meaning:
         ///         No cancellation token is observed as the send operation finishes immediately.
         ///         No timeout is observed and thus no <see cref="BusResponseTimeoutException" /> is thrown.
         ///         Exceptions are not forwarded by any receiver (causing the receivers to fail on exceptions).
-        ///         Any broken connections are ignored.
         ///         No responses are expected.
-        ///         No exception handling is performed after the message has been sent.
+        ///         No exception handling is performed (after the message has been sent).
         ///     </para>
         /// </remarks>
         /// <exception cref="InvalidOperationException"> The message is already being processed or the bus is not started. </exception>
         /// <exception cref="BusProcessingPipelineException"> The bus processing pipeline encountered an exception. </exception>
-        public void AsFireAndForget ()
+        public Task AsFireAndForget ()
         {
             lock (this.SyncRoot)
             {
                 this.CancellationToken = null;
                 this.Timeout = null;
                 this.ExceptionForwarding = false;
-                this.IgnoreBrokenConnections = true;
-                this.Response = null;
-                this.ExceptionHandler = null;
+                this.ResponseType = null;
 
                 this.VerifyNotStarted();
                 this.IsProcessed = true;
                 this.OperationType = SendOperationType.FireAndForget;
                 this.ExpectedResults = 0;
 
-                this.Bus.Enqueue(this);
+                return this.Bus.Enqueue(this);
             }
         }
 
@@ -518,8 +527,8 @@ namespace RI.Framework.Bus
         /// </returns>
         /// <remarks>
         ///     <para>
-        ///         The response type is defined by <see cref="Response" />.
-        ///         If <see cref="Response" /> is null, any response is accepted.
+        ///         The response type is defined by <see cref="ResponseType" />.
+        ///         If <see cref="ResponseType" /> is null, any response is accepted.
         ///     </para>
         /// </remarks>
         /// <exception cref="InvalidOperationException"> The message is already being processed or the bus is not started. </exception>
@@ -527,7 +536,7 @@ namespace RI.Framework.Bus
         /// <exception cref="BusResponseTimeoutException"> The intended receiver did not respond within the used timeout. </exception>
         /// <exception cref="BusConnectionBrokenException"> A used connection to a remote bus is broken. </exception>
         /// <exception cref="BusMessageProcessingException"> An exception which was thrown by the message receiver was forwarded to this sender. </exception>
-        /// <exception cref="InvalidCastException"> The response could not be casted to type <see cref="Response" />. </exception>
+        /// <exception cref="InvalidCastException"> The response could not be casted to type <see cref="ResponseType" />. </exception>
         /// TODO: Use TaskScheduler optionally provided by dispatcher
         public Task<object> AsSingle ()
         {
@@ -561,7 +570,7 @@ namespace RI.Framework.Bus
         /// </returns>
         /// <remarks>
         ///     <para>
-        ///         <see cref="Response" /> is ignored or overwritten by <paramref name="responseType" /> respectively.
+        ///         <see cref="ResponseType" /> is ignored or overwritten by <paramref name="responseType" /> respectively.
         ///         If <paramref name="responseType" /> is null, any response is accepted.
         ///     </para>
         /// </remarks>
@@ -578,7 +587,7 @@ namespace RI.Framework.Bus
             lock (this.SyncRoot)
             {
                 this.VerifyNotStarted();
-                this.Response = responseType;
+                this.ResponseType = responseType;
                 this.IsProcessed = true;
                 this.OperationType = SendOperationType.Single;
                 this.ExpectedResults = 1;
@@ -605,7 +614,7 @@ namespace RI.Framework.Bus
         /// </returns>
         /// <remarks>
         ///     <para>
-        ///         <see cref="Response" /> is ignored or overwritten by <typeparamref name="TResponse" /> respectively.
+        ///         <see cref="ResponseType" /> is ignored or overwritten by <typeparamref name="TResponse" /> respectively.
         ///     </para>
         /// </remarks>
         /// <exception cref="InvalidOperationException"> The message is already being processed or the bus is not started. </exception>
@@ -621,7 +630,7 @@ namespace RI.Framework.Bus
             lock (this.SyncRoot)
             {
                 this.VerifyNotStarted();
-                this.Response = typeof(TResponse);
+                this.ResponseType = typeof(TResponse);
                 this.IsProcessed = true;
                 this.OperationType = SendOperationType.Single;
                 this.ExpectedResults = 1;
@@ -826,12 +835,12 @@ namespace RI.Framework.Bus
         /// <summary>
         ///     Sets the message to ignore broken connections or not.
         /// </summary>
-        /// <param name="ignore"> Specifies whether the message ignores broken connections (true) or not (false). </param>
+        /// <param name="ignore"> Specifies whether the message ignores broken connections (true), not (false), or the default value from the associated bus should be used (null). </param>
         /// <returns>
         ///     The send operation to continue configuration of the message.
         /// </returns>
         /// <exception cref="InvalidOperationException"> The message is already being processed. </exception>
-        public SendOperation WithIgnoredBrokenConnections (bool ignore)
+        public SendOperation WithIgnoredBrokenConnections (bool? ignore)
         {
             lock (this.SyncRoot)
             {
@@ -872,7 +881,7 @@ namespace RI.Framework.Bus
             lock (this.SyncRoot)
             {
                 this.VerifyNotStarted();
-                this.Response = responseType;
+                this.ResponseType = responseType;
                 return this;
             }
         }
@@ -890,7 +899,7 @@ namespace RI.Framework.Bus
             lock (this.SyncRoot)
             {
                 this.VerifyNotStarted();
-                this.Response = typeof(TResponse);
+                this.ResponseType = typeof(TResponse);
                 return this;
             }
         }
@@ -959,24 +968,24 @@ namespace RI.Framework.Bus
 
         private void VerifyResponse (object response)
         {
-            if (this.Response == null)
+            if (this.ResponseType == null)
             {
                 return;
             }
 
-            if (this.Response.IsClass && (response == null))
+            if (this.ResponseType.IsClass && (response == null))
             {
                 return;
             }
 
-            if ((!this.Response.IsClass) && (response == null))
+            if ((!this.ResponseType.IsClass) && (response == null))
             {
-                throw new InvalidCastException("Cannot use [null] as response for expected response type " + this.Response.Name);
+                throw new InvalidCastException("Cannot use [null] as response for expected response type " + this.ResponseType.Name);
             }
 
-            if (!this.Response.IsAssignableFrom(response.GetType()))
+            if (!this.ResponseType.IsAssignableFrom(response.GetType()))
             {
-                throw new InvalidCastException("Cannot use " + response.GetType().Name + " as response for expected response type " + this.Response.Name);
+                throw new InvalidCastException("Cannot use " + response.GetType().Name + " as response for expected response type " + this.ResponseType.Name);
             }
         }
 
@@ -994,22 +1003,37 @@ namespace RI.Framework.Bus
 
             sb.Append("OperationType=");
             sb.Append(this.OperationType);
+
             sb.Append("; Address=");
             sb.Append(this.Address ?? "[null]");
-            sb.Append("; Payload=");
-            sb.Append(this.Payload?.GetType().Name ?? "[null]");
-            sb.Append("; Response=");
-            sb.Append(this.Response?.Name ?? "[null]");
+
             sb.Append("; Global=");
             sb.Append(this.Global?.ToString() ?? "[null]");
+
+            sb.Append("; Payload=");
+            sb.Append(this.Payload?.GetType().Name ?? "[null]");
+
+            sb.Append("; ResponseType=");
+            sb.Append(this.ResponseType?.Name ?? "[null]");
+
+            sb.Append("; Result=");
+            sb.Append(this.Result?.GetType().Name ?? "[null]");
+
             sb.Append("; Timeout=");
             sb.Append(this.Timeout.HasValue ? ((int)this.Timeout.Value.TotalMilliseconds).ToString() : "[null]");
+
             sb.Append("; ExpectedResults=");
             sb.Append(this.ExpectedResults?.ToString() ?? "[null]");
-            sb.Append("; ExceptionForwarding=");
-            sb.Append(this.ExceptionForwarding?.ToString() ?? "[null]");
+
             sb.Append("; IgnoreBrokenConnections=");
             sb.Append(this.IgnoreBrokenConnections);
+
+            sb.Append("; ExceptionForwarding=");
+            sb.Append(this.ExceptionForwarding?.ToString() ?? "[null]");
+
+            sb.Append("; ExceptionHandler=");
+            sb.Append(this.ExceptionHandler?.GetFullName() ?? "[null]");
+
             sb.Append("; IsProcessed=");
             sb.Append(this.IsProcessed);
 

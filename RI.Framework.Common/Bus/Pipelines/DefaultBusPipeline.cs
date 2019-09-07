@@ -289,10 +289,10 @@ namespace RI.Framework.Bus.Pipelines
                     x.State = SendOperationItemState.Waiting;
                     x.Request.Address = x.SendOperation.Address;
                     x.Request.Payload = x.SendOperation.Payload;
-                    x.Request.ToGlobal = x.SendOperation.Global.GetValueOrDefault(this.Bus.DefaultIsGlobal);
+                    x.Request.ToGlobal = x.SendOperation.Global.GetValueOrDefault(this.Bus.DefaultSendToGlobal);
                     
                     //TODO: Handle fire-and-forget
-                    x.Request.Timeout = (int)x.SendOperation.Timeout.GetValueOrDefault(x.SendOperation.OperationType == SendOperationType.Broadcast ? this.Bus.CollectionTimeout : this.Bus.ResponseTimeout).TotalMilliseconds;
+                    x.Request.Timeout = (int)x.SendOperation.Timeout.GetValueOrDefault(x.SendOperation.OperationType == SendOperationType.Broadcast ? this.Bus.DefaultBroadcastResponseTimeout : this.Bus.DefaultSingleResponseTimeout).TotalMilliseconds;
 
                     //TODO: Handle fire-and-forget
                     x.Request.IsBroadcast = x.SendOperation.OperationType == SendOperationType.Broadcast;
