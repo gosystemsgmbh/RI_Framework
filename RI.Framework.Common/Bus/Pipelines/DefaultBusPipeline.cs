@@ -42,6 +42,7 @@ namespace RI.Framework.Bus.Pipelines
         public DefaultBusPipeline ()
         {
             this.SyncRoot = new object();
+
             this.LocalResponses = new Queue<MessageItem>();
             this.BrokenConnections = new HashSet<IBusConnection>();
         }
@@ -53,12 +54,12 @@ namespace RI.Framework.Bus.Pipelines
 
         #region Instance Properties/Indexer
 
+        private Queue<MessageItem> LocalResponses { get; }
         private HashSet<IBusConnection> BrokenConnections { get; }
 
         private IBus Bus { get; set; }
         private IBusConnectionManager ConnectionManager { get; set; }
         private IBusDispatcher Dispatcher { get; set; }
-        private Queue<MessageItem> LocalResponses { get; }
         private IBusRouter Router { get; set; }
 
         #endregion
@@ -83,25 +84,25 @@ namespace RI.Framework.Bus.Pipelines
 
             if (exception != null)
             {
-                Exception handlerException = exception;
-                Exception eventException = exception;
+                bool forwardException = receiver.ReceiverRegistration.ExceptionForwarding.GetValueOrDefault(this.Bus.DefaultReceiveExceptionForwarding) || message.ExceptionForwarding;
+                object response = isCompleted ? task.Result : null;
+                bool handled = (receiver.ReceiverRegistration.ExceptionHandler ?? this.Bus.DefaultReceiveExceptionHandler)?.Invoke(receiver.ReceiverRegistration, ref exception, ref forwardException, ref response) ?? false;
 
-                bool forwardException = receiver.ReceiverRegistration.ExceptionForwarding.GetValueOrDefault(this.Bus.DefaultExceptionForwarding) || message.ExceptionForwarding;
-                bool handlerForward = forwardException;
-                bool eventForward = forwardException;
-
-                object result = receiver.ReceiverRegistration.ExceptionHandler?.Invoke(message.Address, message.Payload, ref handlerException, ref handlerForward);
-                result = this.Bus.RaiseProcessingException(message, result, ref eventException, ref eventForward);
-
-                exception = eventException ?? handlerException;
-                forwardException = eventForward || handlerForward;
-
-                if ((!forwardException) && (exception != null))
+                if (handled || (exception == null))
                 {
-                    throw new BusMessageProcessingException(exception);
+                    this.ResponseHandler(message, response, null);
                 }
-
-                this.ResponseHandler(message, result, exception);
+                else
+                {
+                    if (forwardException)
+                    {
+                        this.ResponseHandler(message, response, exception);
+                    }
+                    else
+                    {
+                        throw new BusMessageProcessingException(exception);
+                    }
+                }
 
                 return;
             }
@@ -133,25 +134,37 @@ namespace RI.Framework.Bus.Pipelines
                     this.Bus.SendOperations.Where(x => (x.Request.Id == messageItem.ResponseTo.Value) && (x.State == SendOperationItemState.Waiting)).ForEach(x =>
                     {
                         x.Responses.Add(messageItem);
-                        x.Results.Add(messageItem.Payload);
-                        x.Exception = messageItem.Exception;
-                        if (x.Exception != null)
+
+                        object result = messageItem.Payload;
+                        object exception = messageItem.Exception;
+                        bool hasResult = true;
+
+                        if (exception != null)
                         {
-                            this.Log(LogLevel.Debug, "Send operation failed with forwarded exception: {0}{1}{2}", x, Environment.NewLine, MessageItem.CreateExceptionMessage(x.Exception, true));
-                            x.State = SendOperationItemState.ForwardedException;
-                            Exception realException = x.Exception as Exception;
-                            if (realException != null)
+                            bool handled = (x.SendOperation.ExceptionHandler ?? this.Bus.DefaultSendExceptionHandler)?.Invoke(x.SendOperation, ref exception, ref result) ?? false;
+                            if ((!handled) && (exception != null))
                             {
-                                x.Task.TrySetException(new BusMessageProcessingException(x.Request, realException));
-                            }
-                            else
-                            {
-                                x.Task.TrySetException(new BusMessageProcessingException(x.Request, x.Exception));
+                                hasResult = false;
+                                this.Log(LogLevel.Debug, "Send operation failed with forwarded exception: {0}{1}{2}", x, Environment.NewLine, MessageItem.CreateExceptionMessage(exception, true));
+                                x.Results.Add(result);
+                                x.Exception = exception;
+                                x.State = SendOperationItemState.ForwardedException;
+                                Exception realException = exception as Exception;
+                                if (realException != null)
+                                {
+                                    x.Task.TrySetException(new BusMessageProcessingException(x.Request, realException));
+                                }
+                                else
+                                {
+                                    x.Task.TrySetException(new BusMessageProcessingException(x.Request, x.Exception));
+                                }
                             }
                         }
-                        else
+
+                        if (hasResult)
                         {
-                            //TODO: Handle fire-and-forget
+                            x.Results.Add(result);
+                            x.Exception = exception;
                             if (x.SendOperation.OperationType == SendOperationType.Broadcast)
                             {
                                 if (x.SendOperation.ExpectedResults.HasValue && (x.Results.Count >= x.SendOperation.ExpectedResults.Value))
@@ -189,8 +202,8 @@ namespace RI.Framework.Bus.Pipelines
                         this.Dispatcher.Dispatch(new Action<ReceiverRegistrationItem, MessageItem>((r, m) =>
                         {
                             this.Log(LogLevel.Debug, "Executing message processing: Request=[{0}], Receiver=[{1}]", m, r);
-                            Exception exception = null;
                             Task<object> task = null;
+                            Exception exception = null;
                             try
                             {
                                 task = r.ReceiverRegistration.Callback(m.Address, m.Payload);
@@ -221,18 +234,32 @@ namespace RI.Framework.Bus.Pipelines
             response.Payload = result;
             response.ToGlobal = message.FromGlobal;
             response.Timeout = message.Timeout;
-            response.IsBroadcast = false;
+            response.OperationType = message.OperationType;
+            response.ExceptionForwarding = false;
             response.Id = Guid.NewGuid();
             response.Sent = DateTime.UtcNow;
             response.FromGlobal = false;
             response.ResponseTo = message.Id;
-            response.ExceptionForwarding = false;
-            response.Exception = exception;
             response.RoutingInfo = message.RoutingInfo;
+            response.Exception = exception;
 
             this.Log(LogLevel.Debug, "Finished message processing: Request=[{0}], Response=[{1}]", message, response);
 
-            this.Bus.RaiseSendingResponse(response);
+            if (response.OperationType == SendOperationType.FireAndForget)
+            {
+                response.Address = null;
+                response.ResponseTo = null;
+
+                if ((response.Payload == null) || (response.Exception != null))
+                {
+                    lock (this.SyncRoot)
+                    {
+                        this.Bus.SignalWorkAvailable();
+                    }
+
+                    return;
+                }
+            }
 
             lock (this.SyncRoot)
             {
@@ -261,7 +288,7 @@ namespace RI.Framework.Bus.Pipelines
 
             List<Tuple<MessageItem, IBusConnection>> receivedMessages = new List<Tuple<MessageItem, IBusConnection>>();
             List<MessageItem> localResponses = new List<MessageItem>();
-            List<MessageItem> newMessages = new List<MessageItem>();
+            List<MessageItem> localRequests = new List<MessageItem>();
 
             this.ConnectionManager?.DequeueMessages(receivedMessages);
             receivedMessages.ForEach(x => x.Item1.FromGlobal = true);
@@ -287,22 +314,22 @@ namespace RI.Framework.Bus.Pipelines
                 this.Bus.SendOperations.Where(x => x.State == SendOperationItemState.New).ForEach(x =>
                 {
                     x.State = SendOperationItemState.Waiting;
+
                     x.Request.Address = x.SendOperation.Address;
                     x.Request.Payload = x.SendOperation.Payload;
                     x.Request.ToGlobal = x.SendOperation.Global.GetValueOrDefault(this.Bus.DefaultSendToGlobal);
-                    
-                    //TODO: Handle fire-and-forget
                     x.Request.Timeout = (int)x.SendOperation.Timeout.GetValueOrDefault(x.SendOperation.OperationType == SendOperationType.Broadcast ? this.Bus.DefaultBroadcastResponseTimeout : this.Bus.DefaultSingleResponseTimeout).TotalMilliseconds;
-
-                    //TODO: Handle fire-and-forget
-                    x.Request.IsBroadcast = x.SendOperation.OperationType == SendOperationType.Broadcast;
-                    x.Request.ExceptionForwarding = x.SendOperation.ExceptionForwarding.GetValueOrDefault(this.Bus.DefaultExceptionForwarding);
+                    x.Request.OperationType = x.SendOperation.OperationType;
+                    x.Request.ExceptionForwarding = x.SendOperation.ExceptionForwarding.GetValueOrDefault(this.Bus.DefaultSendExceptionForwarding);
                     x.Request.Id = Guid.NewGuid();
                     x.Request.Sent = utcNow;
                     x.Request.FromGlobal = false;
                     x.Request.ResponseTo = null;
                     x.Request.RoutingInfo = null;
-                    newMessages.Add(x.Request);
+                    x.Request.Exception = null;
+
+                    localRequests.Add(x.Request);
+
                     this.Log(LogLevel.Debug, "Send operation created: {0}", x);
                 });
 
@@ -311,18 +338,23 @@ namespace RI.Framework.Bus.Pipelines
                     TimeSpan duration = utcNow.Subtract(x.Request.Sent);
                     if (duration.TotalMilliseconds > x.Request.Timeout)
                     {
-                        if (!x.Request.IsBroadcast)
-                        {
-                            this.Log(LogLevel.Debug, "Send operation timed-out after {0} ms: {1}", x.Request.Timeout, x);
-                            x.State = SendOperationItemState.TimedOut;
-                            x.Task.TrySetException(new BusResponseTimeoutException(x.Request));
-                        }
-                        else
+                        if (x.SendOperation.OperationType == SendOperationType.Broadcast)
                         {
                             this.Log(LogLevel.Debug, "Send operation finished collection after {0} ms: {1}", x.Request.Timeout, x);
                             x.State = SendOperationItemState.Finished;
                             x.Task.TrySetResult(x.Results);
                         }
+                        else
+                        {
+                            this.Log(LogLevel.Debug, "Send operation timed-out after {0} ms: {1}", x.Request.Timeout, x);
+                            x.State = SendOperationItemState.TimedOut;
+                            x.Task.TrySetException(new BusResponseTimeoutException(x.Request));
+                        }
+                    }
+                    else if (x.SendOperation.OperationType == SendOperationType.FireAndForget)
+                    {
+                        x.State = SendOperationItemState.Finished;
+                        x.Task.TrySetResult(null);
                     }
                 });
 
@@ -337,13 +369,13 @@ namespace RI.Framework.Bus.Pipelines
 
                         foreach (IBusConnection newBrokenConnection in newBrokenConnections)
                         {
-                            this.Log(LogLevel.Debug, "Broken connection: {0}", newBrokenConnection);
+                            this.Log(LogLevel.Debug, "Broken connection: {0} ({1})", newBrokenConnection, newBrokenConnection.BrokenMessage);
                             this.Bus.RaiseConnectionBroken(newBrokenConnection);
                         }
 
                         if (brokenConnections.Count > 0)
                         {
-                            this.Bus.SendOperations.Where(x => x.Request.ToGlobal && (x.State == SendOperationItemState.Waiting) && (!x.SendOperation.IgnoreBrokenConnections)).ForEach(x =>
+                            this.Bus.SendOperations.Where(x => x.Request.ToGlobal && (x.State == SendOperationItemState.Waiting) && (!x.SendOperation.IgnoreBrokenConnections.GetValueOrDefault(this.Bus.DefaultSendIgnoredBrokenConnections))).ForEach(x =>
                             {
                                 this.Log(LogLevel.Debug, "Send operation failed with broken connection: {0}", x);
                                 x.State = SendOperationItemState.Broken;
@@ -357,19 +389,21 @@ namespace RI.Framework.Bus.Pipelines
             }
 
 
-            if (((localResponses.Count == 0)) && (newMessages.Count == 0) && (receivedMessages.Count == 0) && (removedMessages == 0))
+            if (((localResponses.Count == 0)) && (localRequests.Count == 0) && (receivedMessages.Count == 0) && (removedMessages == 0))
             {
                 return;
             }
 
-            newMessages.ForEach(x => this.Bus.RaiseSendingRequest(x));
+            localResponses.ForEach(x => this.Bus.RaiseSendingResponse(x));
+            localRequests.ForEach(x => this.Bus.RaiseSendingRequest(x));
 
             receivedMessages.ForEach(x => this.Router.ReceivedFromRemote(x.Item1, x.Item2));
-            newMessages.ForEach(x => this.Router.ReceivedFromLocal(x));
+            localResponses.ForEach(x => this.Router.ReceivedFromLocal(x));
+            localRequests.ForEach(x => this.Router.ReceivedFromLocal(x));
 
             receivedMessages.ForEach(x => this.ProcessMessage(x.Item1));
             localResponses.ForEach(this.ProcessMessage);
-            newMessages.ForEach(this.ProcessMessage);
+            localRequests.ForEach(this.ProcessMessage);
 
             this.Bus.SignalWorkAvailable();
         }

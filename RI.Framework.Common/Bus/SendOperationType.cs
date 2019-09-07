@@ -1,8 +1,14 @@
-﻿namespace RI.Framework.Bus
+﻿using System;
+
+
+
+
+namespace RI.Framework.Bus
 {
     /// <summary>
     /// Specifies the send operation type of a <see cref="SendOperation"/>.
     /// </summary>
+    [Serializable]
     public enum SendOperationType
     {
         /// <summary>

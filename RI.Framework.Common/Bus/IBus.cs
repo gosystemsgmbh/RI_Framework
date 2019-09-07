@@ -217,7 +217,7 @@ namespace RI.Framework.Bus
     ///     </para>
     ///     <para>
     ///         An exception is forwarded, and does therefore not lead to an unhandled exception in the receivers <see cref="IBusDispatcher" /> context, when an exception is thrown by the callback registered with a <see cref="ReceiverRegistration" /> AND if ANY of the following is true:
-    ///         The <see cref="SendOperation" /> enabled exception forwarding, the <see cref="ReceiverRegistration" /> enabled exception forwarding, the handler for <see cref="ProcessingException" />, if any, enabled exception forwarding, OR the <see cref="ReceiverRegistration" /> used a <see cref="ReceiverExceptionHandler" /> which enabled exception forwarding.
+    ///         The <see cref="SendOperation" /> enabled exception forwarding, the <see cref="ReceiverRegistration" /> enabled exception forwarding, OR the <see cref="ReceiverRegistration" /> used a <see cref="ReceiverExceptionHandler" /> which enabled exception forwarding.
     ///     </para>
     ///     <para>
     ///         When an exception from the receiver is forwarded to the sender, it will not be handled and therefore silently ignored on the receiver side, except a <see cref="ReceiverExceptionHandler" /> is registered with the corresponding <see cref="ReceiverRegistration" />.
@@ -240,8 +240,6 @@ namespace RI.Framework.Bus
         ///         The default value should be null.
         ///     </note>
         /// </remarks>
-        /// TODO: BEFORE RELEASE
-        /// TODO: Use this!
         SendExceptionHandler DefaultSendExceptionHandler { get; set; }
 
         /// <summary>
@@ -255,8 +253,6 @@ namespace RI.Framework.Bus
         ///         The default value should be null.
         ///     </note>
         /// </remarks>
-        /// TODO: BEFORE RELEASE
-        /// TODO: Use this!
         ReceiverExceptionHandler DefaultReceiveExceptionHandler { get; set; }
 
         /// <summary>
@@ -284,8 +280,6 @@ namespace RI.Framework.Bus
         ///         The default value should be true.
         ///     </note>
         /// </remarks>
-        /// TODO: BEFORE RELEASE
-        /// TODO: Use this!
         bool DefaultSendExceptionForwarding { get; set; }
 
         /// <summary>
@@ -299,8 +293,6 @@ namespace RI.Framework.Bus
         ///         The default value should be true.
         ///     </note>
         /// </remarks>
-        /// TODO: BEFORE RELEASE
-        /// TODO: Use this!
         bool DefaultReceiveExceptionForwarding { get; set; }
 
         /// <summary>
@@ -314,8 +306,6 @@ namespace RI.Framework.Bus
         ///         The default value should be false.
         ///     </note>
         /// </remarks>
-        /// TODO: BEFORE RELEASE
-        /// TODO: Use this!
         bool DefaultSendIgnoredBrokenConnections { get; set; }
 
         /// <summary>
@@ -379,16 +369,6 @@ namespace RI.Framework.Bus
         ///     </note>
         /// </remarks>
         event EventHandler<BusConnectionEventArgs> ConnectionBroken;
-
-        /// <summary>
-        ///     Raised when an exception occurred while processing a received message using a <see cref="ReceiverRegistration" />.
-        /// </summary>
-        /// <remarks>
-        ///     <note type="important">
-        ///         Be aware of the thread this event is raised on, depending on the used bus components or their implementation respectively.
-        ///     </note>
-        /// </remarks>
-        event EventHandler<BusMessageProcessingExceptionEventArgs> ProcessingException;
 
         /// <summary>
         ///     Raised after a request message was received from local or global but before it is processed.
@@ -471,5 +451,122 @@ namespace RI.Framework.Bus
         /// <param name="receiverRegistration"> The receiver registration. </param>
         /// <exception cref="ArgumentNullException"> <paramref name="receiverRegistration" /> is null. </exception>
         void Unregister (ReceiverRegistration receiverRegistration);
+        
+        /// <summary>
+        ///     Raises the <see cref="IBus.ConnectionBroken" /> event.
+        /// </summary>
+        /// <param name="connection"> The connection. </param>
+        /// <remarks>
+        ///     <note type="note">
+        ///         This method is not intended to be used by the message bus user.
+        ///         It is merely provided to allow <see cref="IBusPipeline" /> implementations to raise the corresponding event.
+        ///     </note>
+        /// </remarks>
+        /// <exception cref="ArgumentNullException"> <paramref name="connection" /> is null. </exception>
+        void RaiseConnectionBroken(IBusConnection connection);
+
+        /// <summary>
+        ///     Raises the <see cref="IBus.ReceivingRequest" /> event.
+        /// </summary>
+        /// <param name="message"> The message. </param>
+        /// <remarks>
+        ///     <note type="note">
+        ///         This method is not intended to be used by the message bus user.
+        ///         It is merely provided to allow <see cref="IBusPipeline" /> implementations to raise the corresponding event.
+        ///     </note>
+        /// </remarks>
+        /// <exception cref="ArgumentNullException"> <paramref name="message" /> is null. </exception>
+        void RaiseReceivingRequest(MessageItem message);
+
+        /// <summary>
+        ///     Raises the <see cref="IBus.ReceivingResponse" /> event.
+        /// </summary>
+        /// <param name="message"> The message. </param>
+        /// <remarks>
+        ///     <note type="note">
+        ///         This method is not intended to be used by the message bus user.
+        ///         It is merely provided to allow <see cref="IBusPipeline" /> implementations to raise the corresponding event.
+        ///     </note>
+        /// </remarks>
+        /// <exception cref="ArgumentNullException"> <paramref name="message" /> is null. </exception>
+        void RaiseReceivingResponse(MessageItem message);
+
+        /// <summary>
+        ///     Raises the <see cref="IBus.SendingRequest" /> event.
+        /// </summary>
+        /// <param name="message"> The message. </param>
+        /// <remarks>
+        ///     <note type="note">
+        ///         This method is not intended to be used by the message bus user.
+        ///         It is merely provided to allow <see cref="IBusPipeline" /> implementations to raise the corresponding event.
+        ///     </note>
+        /// </remarks>
+        /// <exception cref="ArgumentNullException"> <paramref name="message" /> is null. </exception>
+        void RaiseSendingRequest(MessageItem message);
+
+        /// <summary>
+        ///     Raises the <see cref="IBus.SendingResponse" /> event.
+        /// </summary>
+        /// <param name="message"> The message. </param>
+        /// <remarks>
+        ///     <note type="note">
+        ///         This method is not intended to be used by the message bus user.
+        ///         It is merely provided to allow <see cref="IBusPipeline" /> implementations to raise the corresponding event.
+        ///     </note>
+        /// </remarks>
+        /// <exception cref="ArgumentNullException"> <paramref name="message" /> is null. </exception>
+        void RaiseSendingResponse(MessageItem message);
+
+        /// <summary>
+        ///     Signals that new work is pending (e.g. a message has been received through a bus connection) which must be processed by the bus processing pipeline.
+        /// </summary>
+        /// <remarks>
+        ///     <note type="note">
+        ///         This method is not intended to be used by the message bus user.
+        ///         It is merely provided to allow <see cref="IBusPipeline" /> implementations to raise the corresponding event.
+        ///     </note>
+        /// </remarks>
+        /// <exception cref="InvalidOperationException"> The bus is not started. </exception>
+        void SignalWorkAvailable();
+
+        /// <summary>
+        ///     Gets the list of registered receivers managed by the bus.
+        /// </summary>
+        /// <value>
+        ///     The list of registered receivers.
+        /// </value>
+        /// <remarks>
+        ///     <note type="note">
+        ///         Do not use this property directly, it is intended to be used from bus and bus pipeline implementations.
+        ///         Use <see cref="IBus.Register" /> and <see cref="IBus.Unregister" /> for dealing with receiver registrations.
+        ///     </note>
+        ///     <note type="important">
+        ///         The returned list is not a copy and access to it needs to be synchronized using <see cref="ISynchronizable.SyncRoot" />.
+        ///     </note>
+        ///     <note type="implement">
+        ///         This property must never return null.
+        ///     </note>
+        /// </remarks>
+        List<ReceiverRegistrationItem> ReceiveRegistrations { get; }
+
+        /// <summary>
+        ///     Gets the list of enqueued send operations managed by the bus.
+        /// </summary>
+        /// <value>
+        ///     The list of enqueued send operations.
+        /// </value>
+        /// <remarks>
+        ///     <note type="note">
+        ///         Do not use this property directly, it is intended to be used from bus and bus pipeline implementations.
+        ///         Use <see cref="IBus.Enqueue" /> for dealing with send operations.
+        ///     </note>
+        ///     <note type="important">
+        ///         The returned list is not a copy and access to it needs to be synchronized using <see cref="ISynchronizable.SyncRoot" />.
+        ///     </note>
+        ///     <note type="implement">
+        ///         This property must never return null.
+        ///     </note>
+        /// </remarks>
+        List<SendOperationItem> SendOperations { get; }
     }
 }

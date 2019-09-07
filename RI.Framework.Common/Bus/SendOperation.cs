@@ -136,8 +136,6 @@ namespace RI.Framework.Bus
         ///         This value can be set by <see cref="WithExceptionHandler" />.
         ///     </para>
         /// </remarks>
-        /// TODO: BEFORE RELEASE
-        /// TODO: Use this!
         public SendExceptionHandler ExceptionHandler { get; private set; }
 
         /// <summary>
@@ -186,8 +184,6 @@ namespace RI.Framework.Bus
         ///         This value can be set by <see cref="WithIgnoredBrokenConnections()" />, <see cref="WithIgnoredBrokenConnections(bool?)" />.
         ///     </para>
         /// </remarks>
-        /// TODO: BEFORE RELEASE
-        /// TODO: Use this!
         public bool? IgnoreBrokenConnections { get; private set; }
         
         /// <summary>

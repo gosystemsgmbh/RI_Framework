@@ -33,7 +33,7 @@ namespace RI.Framework.Bus
     /// </remarks>
     /// <threadsafety static="true" instance="true" />
     [Export]
-    public sealed class LocalBus : IBus, IBusController
+    public sealed class LocalBus : IBus
     {
         #region Instance Constructor/Destructor
 
@@ -52,7 +52,11 @@ namespace RI.Framework.Bus
             this.DefaultSingleResponseTimeout = TimeSpan.FromSeconds(10);
             this.DefaultBroadcastResponseTimeout = TimeSpan.FromSeconds(10);
             this.DefaultSendToGlobal = false;
-            this.DefaultExceptionForwarding = true;
+            this.DefaultSendIgnoredBrokenConnections = false;
+            this.DefaultSendExceptionForwarding = true;
+            this.DefaultSendExceptionHandler = null;
+            this.DefaultReceiveExceptionForwarding = true;
+            this.DefaultReceiveExceptionHandler = null;
 
             this.PollInterval = TimeSpan.FromMilliseconds(20);
 
@@ -85,7 +89,6 @@ namespace RI.Framework.Bus
         #region Instance Fields
 
         private TimeSpan _defaultBroadcastResponseTimeout;
-        private bool _defaultExceptionForwarding;
         private bool _defaultSendToGlobal;
         private LogLevel _logFilter;
         private ILogger _logger;
@@ -96,6 +99,11 @@ namespace RI.Framework.Bus
         private ThreadPriority _threadPriority;
         private TimeSpan _threadTimeout;
         private CultureInfo _threadUICulture;
+        private SendExceptionHandler _sendExceptionHandler;
+        private ReceiverExceptionHandler _receiveExceptionHandler;
+        private bool _sendExceptionForwarding;
+        private bool _receiveExceptionForwarding;
+        private bool _sendIgnoredBrokenConnections;
 
         #endregion
 
@@ -258,12 +266,8 @@ namespace RI.Framework.Bus
             }
         }
 
-        private IDependencyResolver DependencyResolver { get; set; }
-
-        private List<ReceiverRegistrationItem> ReceiveRegistrations { get; }
-
         /// <inheritdoc />
-        List<ReceiverRegistrationItem> IBusController.ReceiveRegistrations
+        List<ReceiverRegistrationItem> IBus.ReceiveRegistrations
         {
             get
             {
@@ -274,10 +278,8 @@ namespace RI.Framework.Bus
             }
         }
 
-        private List<SendOperationItem> SendOperations { get; }
-
         /// <inheritdoc />
-        List<SendOperationItem> IBusController.SendOperations
+        List<SendOperationItem> IBus.SendOperations
         {
             get
             {
@@ -287,6 +289,12 @@ namespace RI.Framework.Bus
                 }
             }
         }
+
+        private IDependencyResolver DependencyResolver { get; set; }
+
+        private List<ReceiverRegistrationItem> ReceiveRegistrations { get; }
+
+        private List<SendOperationItem> SendOperations { get; }
 
         private object StartStopSyncRoot { get; }
 
@@ -327,6 +335,13 @@ namespace RI.Framework.Bus
 
                 lock (this.SyncRoot)
                 {
+                    foreach (SendOperationItem item in this.SendOperations)
+                    {
+                        item.Task.TrySetCanceled();
+                    }
+
+                    this.SendOperations.Clear();
+
                     this.WorkerThread = null;
 
                     this.WorkAvailable?.Close();
@@ -378,6 +393,101 @@ namespace RI.Framework.Bus
         #region Interface: IBus
 
         /// <inheritdoc />
+        public SendExceptionHandler DefaultSendExceptionHandler
+        {
+            get
+            {
+                lock (this.SyncRoot)
+                {
+                    return this._sendExceptionHandler;
+                }
+            }
+            set
+            {
+                lock (this.SyncRoot)
+                {
+                    this._sendExceptionHandler = value;
+                }
+            }
+        }
+
+        /// <inheritdoc />
+        public ReceiverExceptionHandler DefaultReceiveExceptionHandler
+        {
+            get
+            {
+                lock (this.SyncRoot)
+                {
+                    return this._receiveExceptionHandler;
+                }
+            }
+            set
+            {
+                lock (this.SyncRoot)
+                {
+                    this._receiveExceptionHandler = value;
+                }
+            }
+        }
+
+        /// <inheritdoc />
+        public bool DefaultSendExceptionForwarding
+        {
+            get
+            {
+                lock (this.SyncRoot)
+                {
+                    return this._sendExceptionForwarding;
+                }
+            }
+            set
+            {
+                lock (this.SyncRoot)
+                {
+                    this._sendExceptionForwarding = value;
+                }
+            }
+        }
+
+        /// <inheritdoc />
+        public bool DefaultReceiveExceptionForwarding
+        {
+            get
+            {
+                lock (this.SyncRoot)
+                {
+                    return this._receiveExceptionForwarding;
+                }
+            }
+            set
+            {
+                lock (this.SyncRoot)
+                {
+                    this._receiveExceptionForwarding = value;
+                }
+            }
+        }
+
+        /// <inheritdoc />
+        public bool DefaultSendIgnoredBrokenConnections
+        {
+            get
+            {
+                lock (this.SyncRoot)
+                {
+                    return this._sendIgnoredBrokenConnections;
+                }
+            }
+            set
+            {
+                lock (this.SyncRoot)
+                {
+                    this._sendIgnoredBrokenConnections = value;
+                }
+            }
+        }
+
+        /// <inheritdoc />
         public TimeSpan DefaultBroadcastResponseTimeout
         {
             get
@@ -397,25 +507,6 @@ namespace RI.Framework.Bus
                 lock (this.SyncRoot)
                 {
                     this._defaultBroadcastResponseTimeout = value;
-                }
-            }
-        }
-
-        /// <inheritdoc />
-        public bool DefaultExceptionForwarding
-        {
-            get
-            {
-                lock (this.SyncRoot)
-                {
-                    return this._defaultExceptionForwarding;
-                }
-            }
-            set
-            {
-                lock (this.SyncRoot)
-                {
-                    this._defaultExceptionForwarding = value;
                 }
             }
         }
@@ -569,9 +660,6 @@ namespace RI.Framework.Bus
         public event EventHandler<BusConnectionEventArgs> ConnectionBroken;
 
         /// <inheritdoc />
-        public event EventHandler<BusMessageProcessingExceptionEventArgs> ProcessingException;
-
-        /// <inheritdoc />
         public event EventHandler<BusMessageEventArgs> ReceivingRequest;
 
         /// <inheritdoc />
@@ -721,7 +809,7 @@ namespace RI.Framework.Bus
         #region Interface: IBusController
 
         /// <inheritdoc />
-        void IBusController.RaiseConnectionBroken (IBusConnection connection)
+        void IBus.RaiseConnectionBroken (IBusConnection connection)
         {
             if (connection == null)
             {
@@ -733,27 +821,7 @@ namespace RI.Framework.Bus
         }
 
         /// <inheritdoc />
-        object IBusController.RaiseProcessingException (MessageItem message, object result, ref Exception exception, ref bool forwardException)
-        {
-            if (message == null)
-            {
-                throw new ArgumentNullException(nameof(message));
-            }
-
-            if (exception == null)
-            {
-                throw new ArgumentNullException(nameof(exception));
-            }
-
-            BusMessageProcessingExceptionEventArgs args = new BusMessageProcessingExceptionEventArgs(message, result, exception, forwardException);
-            this.ProcessingException?.Invoke(this, args);
-            exception = args.Exception;
-            forwardException = args.ForwardException;
-            return args.Result;
-        }
-
-        /// <inheritdoc />
-        void IBusController.RaiseReceivingRequest (MessageItem message)
+        void IBus.RaiseReceivingRequest (MessageItem message)
         {
             if (message == null)
             {
@@ -765,7 +833,7 @@ namespace RI.Framework.Bus
         }
 
         /// <inheritdoc />
-        void IBusController.RaiseReceivingResponse (MessageItem message)
+        void IBus.RaiseReceivingResponse (MessageItem message)
         {
             if (message == null)
             {
@@ -777,7 +845,7 @@ namespace RI.Framework.Bus
         }
 
         /// <inheritdoc />
-        void IBusController.RaiseSendingRequest (MessageItem message)
+        void IBus.RaiseSendingRequest (MessageItem message)
         {
             if (message == null)
             {
@@ -789,7 +857,7 @@ namespace RI.Framework.Bus
         }
 
         /// <inheritdoc />
-        void IBusController.RaiseSendingResponse (MessageItem message)
+        void IBus.RaiseSendingResponse (MessageItem message)
         {
             if (message == null)
             {
@@ -801,7 +869,7 @@ namespace RI.Framework.Bus
         }
 
         /// <inheritdoc />
-        void IBusController.SignalWorkAvailable ()
+        void IBus.SignalWorkAvailable ()
         {
             lock (this.SyncRoot)
             {
@@ -968,12 +1036,6 @@ namespace RI.Framework.Bus
                 this.Connections.ForEach(x => this.Log(LogLevel.Debug, "Used bus connection:         {0}", x));
 
                 this.InheritLogger();
-
-                this.Connections.ForEach(x =>
-                {
-                    this.Log(LogLevel.Debug, "Initialize bus connection: {0}", x);
-                    x.Initialize(this.DependencyResolver);
-                });
 
                 if (this.ConnectionManager != null)
                 {
