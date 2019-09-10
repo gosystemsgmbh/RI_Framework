@@ -226,8 +226,6 @@ namespace RI.Framework.Bus
         ///         The default value is <see cref="SendOperationType.Undefined" />.
         ///     </para>
         /// </remarks>
-        /// TODO: BEFORE RELEASE
-        /// TODO: Use this!
         public SendOperationType OperationType { get; private set; }
 
         /// <summary>
@@ -260,8 +258,6 @@ namespace RI.Framework.Bus
         ///         This value can be set by <see cref="WithResponse{TResponse}" />, <see cref="WithResponse(Type)" />.
         ///     </para>
         /// </remarks>
-        /// TODO: BEFORE RELEASE
-        /// TODO: Use this!
         public Type ResponseType { get; private set; }
 
         /// <summary>

@@ -41,6 +41,9 @@ namespace RI.Framework.Bus.Internals
             this.Exception = null;
         }
 
+        /// <inheritdoc />
+        public override string ToString () => this.SendOperation.ToString();
+
         #endregion
 
 

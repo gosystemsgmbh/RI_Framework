@@ -69,6 +69,31 @@ namespace RI.Framework.Bus.Pipelines
 
         #region Instance Methods
 
+        private bool VerifyResponse (Type type, object response)
+        {
+            if (type == null)
+            {
+                return true;
+            }
+
+            if (type.IsClass && (response == null))
+            {
+                return true;
+            }
+
+            if ((!type.IsClass) && (response == null))
+            {
+                return false;
+            }
+
+            if (!type.IsAssignableFrom(response.GetType()))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         private void ProcessingHandler (ReceiverRegistrationItem receiver, MessageItem message, Task<object> task, Exception exception)
         {
             bool isCompleted = false;
@@ -133,8 +158,6 @@ namespace RI.Framework.Bus.Pipelines
                 {
                     this.Bus.SendOperations.Where(x => (x.Request.Id == messageItem.ResponseTo.Value) && (x.State == SendOperationItemState.Waiting)).ForEach(x =>
                     {
-                        x.Responses.Add(messageItem);
-
                         object result = messageItem.Payload;
                         object exception = messageItem.Exception;
                         bool hasResult = true;
@@ -146,7 +169,15 @@ namespace RI.Framework.Bus.Pipelines
                             {
                                 hasResult = false;
                                 this.Log(LogLevel.Debug, "Send operation failed with forwarded exception: {0}{1}{2}", x, Environment.NewLine, MessageItem.CreateExceptionMessage(exception, true));
-                                x.Results.Add(result);
+                                if (this.VerifyResponse(x.SendOperation.ResponseType, result))
+                                {
+                                    x.Results.Add(result);
+                                }
+                                else
+                                {
+                                    this.Log(LogLevel.Debug, "Response type {0} invalid for response: {1}", result?.GetType().Name ?? "[null]", x);
+                                }
+                                x.Responses.Add(messageItem);
                                 x.Exception = exception;
                                 x.State = SendOperationItemState.ForwardedException;
                                 Exception realException = exception as Exception;
@@ -163,22 +194,30 @@ namespace RI.Framework.Bus.Pipelines
 
                         if (hasResult)
                         {
-                            x.Results.Add(result);
-                            x.Exception = exception;
-                            if (x.SendOperation.OperationType == SendOperationType.Broadcast)
+                            if (this.VerifyResponse(x.SendOperation.ResponseType, result))
                             {
-                                if (x.SendOperation.ExpectedResults.HasValue && (x.Results.Count >= x.SendOperation.ExpectedResults.Value))
+                                x.Results.Add(result);
+                                x.Responses.Add(messageItem);
+                                x.Exception = exception;
+                                if (x.SendOperation.OperationType == SendOperationType.Broadcast)
                                 {
-                                    this.Log(LogLevel.Debug, "Send operation finished collection after {0} responses: {1}", x.Results.Count, x);
+                                    if (x.SendOperation.ExpectedResults.HasValue && (x.Results.Count >= x.SendOperation.ExpectedResults.Value))
+                                    {
+                                        this.Log(LogLevel.Debug, "Send operation finished collection after {0} responses: {1}", x.Results.Count, x);
+                                        x.State = SendOperationItemState.Finished;
+                                        x.Task.TrySetResult(x.Results);
+                                    }
+                                }
+                                else
+                                {
+                                    this.Log(LogLevel.Debug, "Send operation finished with response: {0}", x);
                                     x.State = SendOperationItemState.Finished;
-                                    x.Task.TrySetResult(x.Results);
+                                    x.Task.TrySetResult(x.Results[0]);
                                 }
                             }
                             else
                             {
-                                this.Log(LogLevel.Debug, "Send operation finished with response: {0}", x);
-                                x.State = SendOperationItemState.Finished;
-                                x.Task.TrySetResult(x.Results[0]);
+                                this.Log(LogLevel.Debug, "Response type {0} invalid for response: {1}", result?.GetType().Name ?? "[null]", x);
                             }
                         }
                     });

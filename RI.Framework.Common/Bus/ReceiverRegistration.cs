@@ -180,8 +180,6 @@ namespace RI.Framework.Bus
         ///         This value can be set by <see cref="WithResponse" />, <see cref="WithResponse{TResponse}"/>.
         ///     </para>
         /// </remarks>
-        /// TODO: BEFORE RELEASE
-        /// TODO: Use this!
         public Type ResponseType { get; private set; }
 
         #endregion

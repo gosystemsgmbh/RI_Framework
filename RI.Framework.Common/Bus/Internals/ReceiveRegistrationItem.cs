@@ -33,6 +33,9 @@ namespace RI.Framework.Bus.Internals
             this.ReceiverRegistration = receiverRegistration;
         }
 
+        /// <inheritdoc />
+        public override string ToString() => this.ReceiverRegistration.ToString();
+
         #endregion
 
 
