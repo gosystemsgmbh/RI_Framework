@@ -5,12 +5,11 @@
 @set build_version=%build_version_major%.%build_version_minor%.%build_version_fix%.%build_version_revision%
 
 "..\_Tools\nuget.exe" pack "RI.Framework.Common.nuspec" -OutputDirectory "..\_Packages" -Properties build_version=%build_version%
-"..\_Tools\nuget.exe" pack "RI.Framework.Net.Common.nuspec" -OutputDirectory "..\_Packages" -Properties build_version=%build_version%
 "..\_Tools\nuget.exe" pack "RI.Framework.Net.Core.nuspec" -OutputDirectory "..\_Packages" -Properties build_version=%build_version%
 "..\_Tools\nuget.exe" pack "RI.Framework.Net.Fx.nuspec" -OutputDirectory "..\_Packages" -Properties build_version=%build_version%
-"..\_Tools\nuget.exe" pack "RI.Framework.Unity.nuspec" -OutputDirectory "..\_Packages" -Properties build_version=%build_version%
-"..\_Tools\nuget.exe" pack "RI.Framework.Linux.Common.nuspec" -OutputDirectory "..\_Packages" -Properties build_version=%build_version%
-"..\_Tools\nuget.exe" pack "RI.Framework.Windows.Common.nuspec" -OutputDirectory "..\_Packages" -Properties build_version=%build_version%
+"..\_Tools\nuget.exe" pack "RI.Framework.Net.Unity.nuspec" -OutputDirectory "..\_Packages" -Properties build_version=%build_version%
+"..\_Tools\nuget.exe" pack "RI.Framework.Linux.Fx.nuspec" -OutputDirectory "..\_Packages" -Properties build_version=%build_version%
+"..\_Tools\nuget.exe" pack "RI.Framework.Windows.Fx.nuspec" -OutputDirectory "..\_Packages" -Properties build_version=%build_version%
 "..\_Tools\nuget.exe" pack "RI.Framework.Windows.Wpf.nuspec" -OutputDirectory "..\_Packages" -Properties build_version=%build_version%
 "..\_Tools\nuget.exe" pack "RI.Framework.Extensions.DotNetZip.nuspec" -OutputDirectory "..\_Packages" -Properties build_version=%build_version%
 "..\_Tools\nuget.exe" pack "RI.Framework.Extensions.EF6.nuspec" -OutputDirectory "..\_Packages" -Properties build_version=%build_version%

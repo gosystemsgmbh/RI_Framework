@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
     <metadata>
-        <id>RI.Framework.Windows.Common</id>
+        <id>RI.Framework.Windows.Fx</id>
         <version>$build_version$</version>
         <authors>AndiR</authors>
         <owners>AndiR</owners>
@@ -15,7 +15,6 @@
         <tags>dotnet mono unity framework decoupling utilities extensions</tags>
         <dependencies>
             <dependency id="RI.Framework.Common" version="[$build_version$]" include="all" />
-            <dependency id="RI.Framework.Net.Common" version="[$build_version$]" include="all" />
         </dependencies>
         <frameworkAssemblies>
             <frameworkAssembly assemblyName="System" />
@@ -33,7 +32,7 @@
         </frameworkAssemblies>
     </metadata>
     <files>
-        <file src="..\_Output\RI.Framework.Windows.Common.dll" target="lib/net461" />
-        <file src="..\_Output\RI.Framework.Windows.Common.xml" target="lib/net461" />
+        <file src="..\_Output\RI.Framework.Windows.Fx.dll" target="lib/net461" />
+        <file src="..\_Output\RI.Framework.Windows.Fx.xml" target="lib/net461" />
     </files>
 </package>

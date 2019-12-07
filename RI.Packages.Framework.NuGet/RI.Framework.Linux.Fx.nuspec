@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
     <metadata>
-        <id>RI.Framework.Linux.Common</id>
+        <id>RI.Framework.Linux.Fx</id>
         <version>$build_version$</version>
         <authors>AndiR</authors>
         <owners>AndiR</owners>
@@ -15,7 +15,6 @@
         <tags>dotnet mono unity framework decoupling utilities extensions</tags>
         <dependencies>
             <dependency id="RI.Framework.Common" version="[$build_version$]" include="all" />
-            <dependency id="RI.Framework.Net.Common" version="[$build_version$]" include="all" />
             <dependency id="Mono.Posix-4.5" version="4.5.0" include="all" />
         </dependencies>
         <frameworkAssemblies>
@@ -25,7 +24,7 @@
         </frameworkAssemblies>
     </metadata>
     <files>
-        <file src="..\_Output\RI.Framework.Linux.Common.dll" target="lib/net461" />
-        <file src="..\_Output\RI.Framework.Linux.Common.xml" target="lib/net461" />
+        <file src="..\_Output\RI.Framework.Linux.Fx.dll" target="lib/net461" />
+        <file src="..\_Output\RI.Framework.Linux.Fx.xml" target="lib/net461" />
     </files>
 </package>

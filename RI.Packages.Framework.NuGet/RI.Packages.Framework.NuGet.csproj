@@ -43,11 +43,10 @@
     <None Include="RI.Framework.Extensions.FluentRibbon.nuspec" />
     <None Include="RI.Framework.Extensions.EF6.nuspec" />
     <None Include="RI.Framework.Extensions.DotNetZip.nuspec" />
-    <None Include="RI.Framework.Net.Common.nuspec" />
     <None Include="RI.Framework.Windows.Wpf.nuspec" />
-    <None Include="RI.Framework.Windows.Common.nuspec" />
-    <None Include="RI.Framework.Linux.Common.nuspec" />
-    <None Include="RI.Framework.Unity.nuspec" />
+    <None Include="RI.Framework.Windows.Fx.nuspec" />
+    <None Include="RI.Framework.Linux.Fx.nuspec" />
+    <None Include="RI.Framework.Net.Unity.nuspec" />
     <None Include="RI.Framework.Net.Fx.nuspec" />
     <None Include="RI.Framework.Net.Core.nuspec" />
     <None Include="RI.Framework.Common.nuspec" />
