@@ -82,7 +82,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Framework.Windows.Wpf", 
 		{5C393494-8524-49FF-9978-BA2B8FA228B7} = {5C393494-8524-49FF-9978-BA2B8FA228B7}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Framework.Windows.Fx", "RI.Framework.Windows.Common\RI.Framework.Windows.Fx.csproj", "{CD9C2847-A48F-45E1-908F-3F9A86EE0E37}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Framework.Windows.Fx", "RI.Framework.Windows.Fx\RI.Framework.Windows.Fx.csproj", "{CD9C2847-A48F-45E1-908F-3F9A86EE0E37}"
 	ProjectSection(ProjectDependencies) = postProject
 		{5C393494-8524-49FF-9978-BA2B8FA228B7} = {5C393494-8524-49FF-9978-BA2B8FA228B7}
 	EndProjectSection
@@ -125,7 +125,7 @@ Project("{7CF6DF6D-3B04-46F8-A40B-537D21BCA0B4}") = "RI.Documentation.Framework.
 		{BEA7ACCD-752E-4BE7-93F3-491CD5A7E02D} = {BEA7ACCD-752E-4BE7-93F3-491CD5A7E02D}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Framework.Linux.Fx", "RI.Framework.Linux.Common\RI.Framework.Linux.Fx.csproj", "{B8D1A4E0-E7F2-4804-8181-BC4437601FBA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RI.Framework.Linux.Fx", "RI.Framework.Linux.Fx\RI.Framework.Linux.Fx.csproj", "{B8D1A4E0-E7F2-4804-8181-BC4437601FBA}"
 	ProjectSection(ProjectDependencies) = postProject
 		{5C393494-8524-49FF-9978-BA2B8FA228B7} = {5C393494-8524-49FF-9978-BA2B8FA228B7}
 	EndProjectSection
@@ -277,7 +277,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RI.Framework.Common", "RI.F
 		{5C393494-8524-49FF-9978-BA2B8FA228B7} = {5C393494-8524-49FF-9978-BA2B8FA228B7}
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RI.Framework.Net.Unity", "RI.Framework.Unity\RI.Framework.Net.Unity.csproj", "{BC22B5A2-4014-4496-9E36-9F40ACF241A3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RI.Framework.Net.Unity", "RI.Framework.Net.Unity\RI.Framework.Net.Unity.csproj", "{BC22B5A2-4014-4496-9E36-9F40ACF241A3}"
 	ProjectSection(ProjectDependencies) = postProject
 		{5C393494-8524-49FF-9978-BA2B8FA228B7} = {5C393494-8524-49FF-9978-BA2B8FA228B7}
 	EndProjectSection
