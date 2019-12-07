@@ -46,8 +46,7 @@
     <HelpTitle>Decoupling &amp;amp%3b Utilities Framework</HelpTitle>
     <ContentPlacement>AboveNamespaces</ContentPlacement>
     <DocumentationSources>
-      <DocumentationSource sourceFile="..\RI.Framework.Unity.Common\RI.Framework.Unity.Common.csproj" />
-      <DocumentationSource sourceFile="..\RI.Framework.Unity.Modern\RI.Framework.Unity.Modern.csproj" />
+      <DocumentationSource sourceFile="..\RI.Framework.Net.Unity\RI.Framework.Net.Unity.csproj" />
     </DocumentationSources>
     <RootNamespaceTitle>Reference</RootNamespaceTitle>
     <WebsiteSdkLinkType>Msdn</WebsiteSdkLinkType>

@@ -118,17 +118,17 @@ N = .NET Framework <br> M = Mono <br> U = Unity <br> W = Windows (.NET Framework
 | Assembly                              | Runtime / Target / Platform | Remarks                                                                                    |
 | ------------------------------------- | --------------------------- | ------------------------------------------------------------------------------------------ |
 | RI.Framework.NetFx.dll                | N, M                        | Main assembly for the .NET Framework and Mono                                              |
-| RI.Framework.Unity.dll                | U                           | Main assembly for Unity                                                                    |
+| RI.Framework.Net.Unity.dll            | U                           | Main assembly for Unity                                                                    |
 
 ### Platform-dependent assemblies
 
 | Assembly                              | Runtime / Target / Platform | Remarks                                                                                    |
 | ------------------------------------- | --------------------------- | ------------------------------------------------------------------------------------------ |
-| RI.Framework.Windows.Common.dll       | W                           | Additional Windows functions                                                               |
+| RI.Framework.Windows.Fx.dll           | W                           | Additional Windows functions                                                               |
 | RI.Framework.Windows.Wpf.dll          | W                           | Additional Windows Presentation Foundation functions                                       |
 | RI.Framework.Windows.Forms.dll        | W                           | Additional Windows Forms functions                                                         |
 | RI.Framework.Windows.Service.dll      | W                           | Additional Winows Service functions                                                        |
-| RI.Framework.Linux.Common.dll         | L                           | Additional Linux functions                                                                 |
+| RI.Framework.Linux.Fx.dll             | L                           | Additional Linux functions                                                                 |
 | RI.Framework.CrossPlatform.Common.dll | N, M                        | Platform-independent wrapper for RI.Framework.Windows.\*.dll and RI.Framework.Linux.\*.dll |
 
 ### Extension assemblies

@@ -15,7 +15,6 @@
         <tags>dotnet mono unity framework decoupling utilities extensions</tags>
         <dependencies>
             <dependency id="RI.Framework.Common" version="[$build_version$]" include="all" />
-            <dependency id="RI.Framework.Net.Common" version="[$build_version$]" include="all" />
             <dependency id="RI.Framework.Net.Fx" version="[$build_version$]" include="all" />
             <dependency id="Newtonsoft.Json" version="10.0.3" include="all" />
         </dependencies>

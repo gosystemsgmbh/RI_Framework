@@ -1,3 +1,3 @@
 @cd %~dp0
 
-@copy ".\bin\%1\RI.Framework.Windows.Common.*" "..\_Output\*.*"
+@copy ".\bin\%1\RI.Framework.Windows.Fx.*" "..\_Output\*.*"
