@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RI.Framework.Common\RI.Framework.Common.csproj" />
-    <ProjectReference Include="..\RI.Framework.Unity\RI.Framework.Unity.csproj" />
+    <ProjectReference Include="..\RI.Framework.Unity\RI.Framework.Net.Unity.csproj" />
   </ItemGroup>
 
   <ItemGroup>

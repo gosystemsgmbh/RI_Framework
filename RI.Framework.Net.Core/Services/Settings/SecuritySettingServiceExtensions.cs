@@ -17,6 +17,7 @@ namespace RI.Framework.Services.Settings
     /// </summary>
     /// <threadsafety static="true" instance="true" />
     /// TODO: ProtectedSettingItem
+    /// TODO: Merge into RI.Framework.Common together with .Net.Fx stuff
     public static class SecuritySettingServiceExtensions
     {
         #region Static Methods

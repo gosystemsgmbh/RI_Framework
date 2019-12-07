@@ -65,10 +65,6 @@
       <Project>{6897bd68-4f5d-48e5-a4ec-6de0bfb36997}</Project>
       <Name>RI.Framework.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\RI.Framework.Net.Common\RI.Framework.Net.Common.csproj">
-      <Project>{3ee2be5f-10c1-4b2a-a1c6-0c5e1267f74b}</Project>
-      <Name>RI.Framework.Net.Common</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

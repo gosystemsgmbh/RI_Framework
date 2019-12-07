@@ -22,7 +22,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RI.Framework.Common\RI.Framework.Common.csproj" />
-    <ProjectReference Include="..\RI.Framework.Net.Common\RI.Framework.Net.Common.csproj" />
     <ProjectReference Include="..\RI.Framework.Net.Core\RI.Framework.Net.Core.csproj" />
   </ItemGroup>
 
