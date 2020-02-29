@@ -79,7 +79,7 @@
       <Project>{a7f5dd2f-63bf-4032-ad1e-14d211e0d3ed}</Project>
       <Name>RI.Framework.Net.Fx</Name>
     </ProjectReference>
-    <ProjectReference Include="..\RI.Framework.Windows.Common\RI.Framework.Windows.Fx.csproj">
+    <ProjectReference Include="..\RI.Framework.Windows.Fx\RI.Framework.Windows.Fx.csproj">
       <Project>{cd9c2847-a48f-45e1-908f-3f9a86ee0e37}</Project>
       <Name>RI.Framework.Windows.Fx</Name>
     </ProjectReference>
