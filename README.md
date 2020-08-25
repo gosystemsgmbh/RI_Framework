@@ -1,3 +1,11 @@
+:warning: ***This library is in the process of being archived in favour of multiple smaller, better maintained, and more cohesive libraries***
+
+So far, the following has been extracted (more on the way):
+ * [RI.Utilities](https://github.com/RotenInformatik/UtilitiesDotNet)
+ * [RI.Abstractions](https://github.com/RotenInformatik/AbstractionsDotNet)
+
+The next extract is going to be the Database Manager.
+
 # Decoupling & Utilities Framework
 
 A framework for .NET, Mono, and Unity.
