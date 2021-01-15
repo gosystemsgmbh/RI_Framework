@@ -1,14 +1,15 @@
 ﻿namespace RI.Framework.IO.INI
 {
-	/// <summary>
-	///     Provides basic INI data settings for both readers and writers.
-	/// </summary>
-	/// <remarks>
-	///     <para>
-	///         See <see cref="IniDocument" /> for more general and detailed information about working with INI data.
-	///     </para>
-	/// </remarks>
-	public abstract class IniSettings
+    /// <summary>
+    ///     Provides basic INI data settings for both readers and writers.
+    /// </summary>
+    /// <remarks>
+    ///     <para>
+    ///         See <see cref="IniDocument" /> for more general and detailed information about working with INI data.
+    ///     </para>
+    /// </remarks>
+    /// <threadsafety static="false" instance="false" />
+    public abstract class IniSettings
 	{
 		#region Constants
 

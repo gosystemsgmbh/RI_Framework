@@ -14,120 +14,111 @@ using RI.Framework.Utilities.ObjectModel;
 
 namespace RI.Framework.Services.Logging.Writers
 {
-	/// <summary>
-	///     Implements a log writer which writes to <see cref="Debugger" />.
-	/// </summary>
-	/// <remarks>
-	///     <para>
-	///         <see cref="Debugger.Log" /> is used to write the log messages.
-	///     </para>
-	///     <para>
-	///         See <see cref="ILogWriter" /> for more details.
-	///     </para>
-	/// </remarks>
-	/// <threadsafety static="true" instance="true" />
-	[Export]
-	public sealed class DebuggerLogWriter : ILogWriter
-	{
-		#region Instance Constructor/Destructor
+    /// <summary>
+    ///     Implements a log writer which writes to <see cref="Debugger" />.
+    /// </summary>
+    /// <remarks>
+    ///     <para>
+    ///         <see cref="Debugger.Log" /> is used to write the log messages.
+    ///     </para>
+    ///     <para>
+    ///         See <see cref="ILogWriter" /> for more details.
+    ///     </para>
+    /// </remarks>
+    /// <threadsafety static="true" instance="true" />
+    [Export]
+    public sealed class DebuggerLogWriter : ILogWriter
+    {
+        #region Instance Constructor/Destructor
 
-		/// <summary>
-		///     Creates a new instance of <see cref="DebuggerLogWriter" />.
-		/// </summary>
-		public DebuggerLogWriter ()
-		{
-			this.SyncRoot = new object();
-		}
+        /// <summary>
+        ///     Creates a new instance of <see cref="DebuggerLogWriter" />.
+        /// </summary>
+        public DebuggerLogWriter ()
+        {
+            this.SyncRoot = new object();
+        }
 
-		#endregion
-
-
-
-
-		#region Instance Fields
-
-		private ILogFilter _filter;
-
-		#endregion
+        #endregion
 
 
 
 
-		#region Instance Properties/Indexer
+        #region Instance Fields
 
-		private object SyncRoot { get; }
+        private ILogFilter _filter;
 
-		#endregion
-
-
+        #endregion
 
 
-		#region Interface: ILogWriter
 
-		/// <inheritdoc />
-		public ILogFilter Filter
-		{
-			get
-			{
-				lock (this.SyncRoot)
-				{
-					return this._filter;
-				}
-			}
-			set
-			{
-				lock (this.SyncRoot)
-				{
-					this._filter = value;
-				}
-			}
-		}
 
-		/// <inheritdoc />
-		bool ISynchronizable.IsSynchronized => true;
+        #region Interface: ILogWriter
 
-		/// <inheritdoc />
-		object ISynchronizable.SyncRoot => this.SyncRoot;
+        /// <inheritdoc />
+        public ILogFilter Filter
+        {
+            get
+            {
+                lock (this.SyncRoot)
+                {
+                    return this._filter;
+                }
+            }
+            set
+            {
+                lock (this.SyncRoot)
+                {
+                    this._filter = value;
+                }
+            }
+        }
 
-		/// <inheritdoc />
-		void ILogWriter.Cleanup (DateTime retentionDate)
-		{
-		}
+        /// <inheritdoc />
+        bool ISynchronizable.IsSynchronized => true;
 
-		/// <inheritdoc />
-		public void Log (DateTime timestamp, int threadId, LogLevel severity, string source, string message)
-		{
-			ILogFilter filter = this.Filter;
-			if (filter != null)
-			{
-				if (!filter.Filter(timestamp, threadId, severity, source))
-				{
-					return;
-				}
-			}
+        /// <inheritdoc />
+        public object SyncRoot { get; }
 
-			lock (this.SyncRoot)
-			{
-				source = source ?? "null";
-				message = message ?? string.Empty;
+        /// <inheritdoc />
+        void ILogWriter.Cleanup (DateTime retentionDate)
+        {
+        }
 
-				StringBuilder finalMessageBuilder = new StringBuilder();
-				finalMessageBuilder.Append("[");
-				finalMessageBuilder.Append(timestamp.ToSortableString());
-				finalMessageBuilder.Append("] [");
-				finalMessageBuilder.Append(threadId.ToString("D4", CultureInfo.InvariantCulture));
-				finalMessageBuilder.Append("] [");
-				finalMessageBuilder.Append(severity.ToString()[0]);
-				finalMessageBuilder.Append("] [");
-				finalMessageBuilder.Append(source);
-				finalMessageBuilder.Append("] ");
-				finalMessageBuilder.AppendLine(message);
-				string finalMessage = finalMessageBuilder.ToString();
+        /// <inheritdoc />
+        public void Log (DateTime timestamp, int threadId, LogLevel severity, string source, string message)
+        {
+            ILogFilter filter = this.Filter;
+            if (filter != null)
+            {
+                if (!filter.Filter(timestamp, threadId, severity, source))
+                {
+                    return;
+                }
+            }
 
-				Debugger.Log((int)severity, source, finalMessage);
-			}
-		}
+            lock (this.SyncRoot)
+            {
+                source = source ?? "null";
+                message = message ?? string.Empty;
 
-		#endregion
-	}
+                StringBuilder finalMessageBuilder = new StringBuilder();
+                finalMessageBuilder.Append("[");
+                finalMessageBuilder.Append(timestamp.ToSortableString());
+                finalMessageBuilder.Append("] [");
+                finalMessageBuilder.Append(threadId.ToString("D4", CultureInfo.InvariantCulture));
+                finalMessageBuilder.Append("] [");
+                finalMessageBuilder.Append(severity.ToString()[0]);
+                finalMessageBuilder.Append("] [");
+                finalMessageBuilder.Append(source);
+                finalMessageBuilder.Append("] ");
+                finalMessageBuilder.AppendLine(message);
+                string finalMessage = finalMessageBuilder.ToString();
+
+                Debugger.Log((int)severity, source, finalMessage);
+            }
+        }
+
+        #endregion
+    }
 }

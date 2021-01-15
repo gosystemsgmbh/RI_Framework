@@ -5,11 +5,11 @@
 
 namespace RI.Framework.Services.Logging
 {
-	/// <summary>
-	///     Contains the logging service.
-	/// </summary>
-	[CompilerGenerated]
-	public sealed class NamespaceDoc
-	{
-	}
+    /// <summary>
+    ///     Contains the log service.
+    /// </summary>
+    [CompilerGenerated]
+    public sealed class NamespaceDoc
+    {
+    }
 }

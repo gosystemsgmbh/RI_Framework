@@ -1,102 +1,112 @@
 ﻿using System;
 using System.Data.SQLite;
-using System.Diagnostics.CodeAnalysis;
 
 using RI.Framework.IO.Paths;
+using RI.Framework.Utilities;
 
 
 
 
 namespace RI.Framework.Data.Database
 {
-	/// <summary>
-	///     Stores the database configuration for an SQLite database manager.
-	/// </summary>
-	/// <remarks>
-	///     <para>
-	///         See <see cref="IDatabaseManagerConfiguration" /> for more details.
-	///     </para>
-	/// </remarks>
-	[SuppressMessage("ReSharper", "InconsistentNaming")]
-	public sealed class SQLiteDatabaseManagerConfiguration : DatabaseManagerConfiguration<SQLiteConnection, SQLiteTransaction, SQLiteConnectionStringBuilder, SQLiteDatabaseManager, SQLiteDatabaseManagerConfiguration>
-	{
-		#region Instance Constructor/Destructor
+    /// <summary>
+    ///     Stores the database configuration for an SQLite database manager.
+    /// </summary>
+    /// <remarks>
+    ///     <para>
+    ///         See <see cref="IDatabaseManagerConfiguration" /> for more details.
+    ///     </para>
+    /// </remarks>
+    /// <threadsafety static="false" instance="false" />
+    public sealed class SQLiteDatabaseManagerConfiguration : DatabaseManagerConfiguration<SQLiteConnection, SQLiteTransaction, SQLiteConnectionStringBuilder, SQLiteDatabaseManager, SQLiteDatabaseManagerConfiguration>
+    {
+        #region Instance Constructor/Destructor
 
-		/// <summary>
-		///     Creates a new instance of <see cref="SQLiteDatabaseManagerConfiguration" />.
-		/// </summary>
-		public SQLiteDatabaseManagerConfiguration ()
-		{
-			this.ConnectionString = new SQLiteConnectionStringBuilder();
-		}
+        /// <summary>
+        ///     Creates a new instance of <see cref="SQLiteDatabaseManagerConfiguration" />.
+        /// </summary>
+        public SQLiteDatabaseManagerConfiguration ()
+        {
+            this.ConnectionString = new SQLiteConnectionStringBuilder();
+        }
 
-		#endregion
-
-
-
-
-		#region Instance Properties/Indexer
-
-		/// <summary>
-		///     Gets or sets the path to the database file.
-		/// </summary>
-		/// <value>
-		///     The path to the database file.
-		/// </value>
-		public FilePath DatabaseFile
-		{
-			get
-			{
-				return this.ConnectionString?.DataSource;
-			}
-			set
-			{
-				if (this.ConnectionString != null)
-				{
-					this.ConnectionString.DataSource = value;
-				}
-			}
-		}
-
-		/// <summary>
-		///     Gets or sets whether default collation are automatically registered with newly created connections.
-		/// </summary>
-		/// <value>
-		///     true if default collations are automatically registered with newly created connections, false otherwise.
-		/// </value>
-		public bool RegisterDefaultCollations { get; set; } = true;
-
-		/// <summary>
-		///     Gets or sets whether default functions are automatically registered with newly created connections.
-		/// </summary>
-		/// <value>
-		///     true if default functions are automatically registered with newly created connections, false otherwise.
-		/// </value>
-		public bool RegisterDefaultFunctions { get; set; } = true;
-
-		#endregion
+        #endregion
 
 
 
 
-		#region Overrides
+        #region Instance Properties/Indexer
 
-		/// <inheritdoc />
-		protected override void VerifyConfiguration (SQLiteDatabaseManager manager)
-		{
-			base.VerifyConfiguration(manager);
+        /// <summary>
+        ///     Gets or sets the path to the database file.
+        /// </summary>
+        /// <value>
+        ///     The path to the database file or null if no database file is specified.
+        /// </value>
+        public FilePath DatabaseFile
+        {
+            get
+            {
+                return this.ConnectionString?.DataSource?.ToNullIfNullOrEmptyOrWhitespace();
+            }
+            set
+            {
+                if (this.ConnectionString != null)
+                {
+                    this.ConnectionString.DataSource = value;
+                }
+            }
+        }
 
-			try
-			{
-				FilePath filePath = new FilePath(this.ConnectionString.DataSource);
-				filePath.VerifyRealFile();
-			}
-			catch (Exception exception)
-			{
-				throw new InvalidDatabaseConfigurationException("Invalid database file path: " + (this.ConnectionString.DataSource ?? "[null]") + ".", exception);
-			}
-		}
+        /// <summary>
+        ///     Gets or sets whether default collations are automatically registered with newly created connections.
+        /// </summary>
+        /// <value>
+        ///     true if default collations are automatically registered with newly created connections, false otherwise.
+        /// </value>
+        /// <remarks>
+        /// <para>
+        /// The default value is true. 
+        /// </para>
+        /// </remarks>
+        public bool RegisterDefaultCollations { get; set; } = true;
 
-		#endregion
-	}
+        /// <summary>
+        ///     Gets or sets whether default functions are automatically registered with newly created connections.
+        /// </summary>
+        /// <value>
+        ///     true if default functions are automatically registered with newly created connections, false otherwise.
+        /// </value>
+        /// <remarks>
+        /// <para>
+        /// The default value is true. 
+        /// </para>
+        /// </remarks>
+        public bool RegisterDefaultFunctions { get; set; } = true;
+
+        #endregion
+
+
+
+
+        #region Overrides
+
+        /// <inheritdoc />
+        protected override void VerifyConfiguration (SQLiteDatabaseManager manager)
+        {
+            base.VerifyConfiguration(manager);
+
+            try
+            {
+                FilePath filePath = new FilePath(this.ConnectionString.DataSource);
+                filePath.VerifyRealFile();
+            }
+            catch (Exception exception)
+            {
+                throw new InvalidDatabaseConfigurationException("Invalid database file path: " + (this.ConnectionString.DataSource ?? "[null]") + ".", exception);
+            }
+        }
+
+        #endregion
+    }
 }

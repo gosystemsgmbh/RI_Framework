@@ -11,6 +11,7 @@
     <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
     <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -24,13 +25,56 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Mathematic\MathUtils.tt" />
+    <None Remove="Mathematic\NumberExtensions.tt" />
+    <None Remove="Threading\Dispatcher\IThreadDispatcherDelegateExtensions.tt" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Include="..\SolutionInfo.cs" Link="Properties\SolutionInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Mathematic\MathUtils.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>MathUtils.tt.cs</LastGenOutput>
+    </Content>
+    <Content Include="Mathematic\NumberExtensions.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>NumberExtensions.tt.cs</LastGenOutput>
+    </Content>
+    <Content Include="Threading\Dispatcher\IThreadDispatcherDelegateExtensions.tt">
+      <LastGenOutput>IThreadDispatcherDelegateExtensions.tt.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Mathematic\MathUtils.tt.cs">
+      <DependentUpon>MathUtils.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Mathematic\NumberExtensions.tt.cs">
+      <DependentUpon>NumberExtensions.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Threading\Dispatcher\IThreadDispatcherDelegateExtensions.tt.cs">
+      <DependentUpon>IThreadDispatcherDelegateExtensions.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
     <Content Update="D:\Workfolder\RI_Framework\RI.Framework.Shared.Net\Threading\Dispatcher\IThreadDispatcherDelegateExtensions.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">

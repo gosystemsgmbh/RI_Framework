@@ -6,7 +6,7 @@
 namespace RI.Framework.Data.SQLite.Functions
 {
 	/// <summary>
-	///     Implements functions for SQLite databases.
+	///     Contains functions for use in SQLite queries.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

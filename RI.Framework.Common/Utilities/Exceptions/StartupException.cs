@@ -6,60 +6,70 @@ using System.Runtime.Serialization;
 
 namespace RI.Framework.Utilities.Exceptions
 {
-	/// <summary>
-	///     The <see cref="StartupException" /> is thrown when the program cannot complete its startup procedure.
-	/// </summary>
-	[Serializable]
-	public class StartupException : Exception
-	{
-		#region Constants
+    /// <summary>
+    ///     The <see cref="StartupException" /> is thrown when the program cannot complete its startup procedure.
+    /// </summary>
+    /// <threadsafety static="false" instance="false" />
+    [Serializable]
+    public class StartupException : Exception
+    {
+        #region Constants
 
-		private const string ExceptionMessage = "Startup failed.";
+        private const string ExceptionMessage = "Startup failed.";
 
-		#endregion
-
-
+        #endregion
 
 
-		#region Instance Constructor/Destructor
 
-		/// <summary>
-		///     Creates a new instance of <see cref="StartupException" />.
-		/// </summary>
-		public StartupException ()
-			: base(StartupException.ExceptionMessage)
-		{
-		}
 
-		/// <summary>
-		///     Creates a new instance of <see cref="StartupException" />.
-		/// </summary>
-		/// <param name="message"> The message which describes the exception. </param>
-		public StartupException (string message)
-			: base(message)
-		{
-		}
+        #region Instance Constructor/Destructor
 
-		/// <summary>
-		///     Creates a new instance of <see cref="StartupException" />.
-		/// </summary>
-		/// <param name="message"> The message which describes the exception. </param>
-		/// <param name="innerException"> The exception which triggered this exception. </param>
-		public StartupException (string message, Exception innerException)
-			: base(message, innerException)
-		{
-		}
+        /// <summary>
+        ///     Creates a new instance of <see cref="StartupException" />.
+        /// </summary>
+        public StartupException ()
+            : base(StartupException.ExceptionMessage)
+        {
+        }
 
-		/// <summary>
-		///     Creates a new instance of <see cref="StartupException" />.
-		/// </summary>
-		/// <param name="info"> The serialization data. </param>
-		/// <param name="context"> The type of the source of the serialization data. </param>
-		protected StartupException (SerializationInfo info, StreamingContext context)
-			: base(info, context)
-		{
-		}
+        /// <summary>
+        ///     Creates a new instance of <see cref="StartupException" />.
+        /// </summary>
+        /// <param name="message"> The message which describes the exception. </param>
+        public StartupException (string message)
+            : base(message)
+        {
+        }
 
-		#endregion
-	}
+        /// <summary>
+        ///     Creates a new instance of <see cref="StartupException" />.
+        /// </summary>
+        /// <param name="innerException"> The exception which triggered this exception. </param>
+        public StartupException (Exception innerException)
+            : base(StartupException.ExceptionMessage, innerException)
+        {
+        }
+
+        /// <summary>
+        ///     Creates a new instance of <see cref="StartupException" />.
+        /// </summary>
+        /// <param name="message"> The message which describes the exception. </param>
+        /// <param name="innerException"> The exception which triggered this exception. </param>
+        public StartupException (string message, Exception innerException)
+            : base(message, innerException)
+        {
+        }
+
+        /// <summary>
+        ///     Creates a new instance of <see cref="StartupException" />.
+        /// </summary>
+        /// <param name="info"> The serialization data. </param>
+        /// <param name="context"> The type of the source of the serialization data. </param>
+        protected StartupException (SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+        }
+
+        #endregion
+    }
 }

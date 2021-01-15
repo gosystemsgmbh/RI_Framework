@@ -7,7 +7,7 @@ using RI.Framework.Services.Modularization;
 namespace RI.Test.Framework.Services.Modularization
 {
 	[Export]
-	public sealed class Mock_ModuleA : MonoModule
+	public sealed class Mock_ModuleA : MonoModuleBase
 	{
 	}
 }

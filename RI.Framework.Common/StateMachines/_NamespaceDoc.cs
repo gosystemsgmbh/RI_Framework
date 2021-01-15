@@ -6,7 +6,7 @@
 namespace RI.Framework.StateMachines
 {
 	/// <summary>
-	///     Contains infrastructure to implement hierarchical state machines.
+	///     Contains types to implement hierarchical state machines.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

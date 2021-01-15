@@ -16,6 +16,7 @@ namespace RI.Framework.Services.Modularization
     ///         A modularization service manages the current <see cref="IModule" /> instances of an application, including initialization and unloading.
     ///     </para>
     /// </remarks>
+    /// <threadsafety static="true" instance="true" />
     /// TODO: Make thread-safe
     /// TODO: Make async
     [Export]

@@ -15,6 +15,7 @@ namespace RI.Framework.Services.Settings
     /// <summary>
     ///     Provides security specific utility/extension methods for the <see cref="ISettingService" /> type.
     /// </summary>
+    /// <threadsafety static="true" instance="true" />
     /// TODO: ProtectedSettingItem
     public static class SecuritySettingServiceExtensions
     {
@@ -50,16 +51,19 @@ namespace RI.Framework.Services.Settings
                 throw new EmptyStringArgumentException(nameof(safeName));
             }
 
-            string safeValue = settingService.GetValue<string>(safeName);
-            if (safeValue == null)
+            lock (settingService.SyncRoot)
             {
-                return null;
+                string safeValue = settingService.GetValue<string>(safeName);
+                if (safeValue == null)
+                {
+                    return null;
+                }
+
+                string finalAdditionalEntropy = SecuritySettingServiceExtensions.BuildAdditionalEntropy(safeName, userScope, additionalEntropy);
+
+                string unsafeValue = LocalEncryption.Decrypt(userScope, safeValue, finalAdditionalEntropy);
+                return unsafeValue;
             }
-
-            string finalAdditionalEntropy = SecuritySettingServiceExtensions.BuildAdditionalEntropy(safeName, userScope, additionalEntropy);
-
-            string unsafeValue = LocalEncryption.Decrypt(userScope, safeValue, finalAdditionalEntropy);
-            return unsafeValue;
         }
 
         /// <summary>
@@ -92,12 +96,15 @@ namespace RI.Framework.Services.Settings
                 throw new EmptyStringArgumentException(nameof(safeName));
             }
 
-            List<string> safeValues = settingService.GetValues<string>(safeName);
+            lock (settingService.SyncRoot)
+            {
+                List<string> safeValues = settingService.GetValues<string>(safeName);
 
-            string finalAdditionalEntropy = SecuritySettingServiceExtensions.BuildAdditionalEntropy(safeName, userScope, additionalEntropy);
+                string finalAdditionalEntropy = SecuritySettingServiceExtensions.BuildAdditionalEntropy(safeName, userScope, additionalEntropy);
 
-            List<string> unsafeValues = (from x in safeValues select LocalEncryption.Decrypt(userScope, x, finalAdditionalEntropy)).ToList();
-            return unsafeValues;
+                List<string> unsafeValues = (from x in safeValues select LocalEncryption.Decrypt(userScope, x, finalAdditionalEntropy)).ToList();
+                return unsafeValues;
+            }
         }
 
         /// <summary>
@@ -137,18 +144,21 @@ namespace RI.Framework.Services.Settings
                 throw new EmptyStringArgumentException(nameof(unsafeName));
             }
 
-            string finalAdditionalEntropy = SecuritySettingServiceExtensions.BuildAdditionalEntropy(safeName, userScope, additionalEntropy);
+            lock (settingService.SyncRoot)
+            {
+                string finalAdditionalEntropy = SecuritySettingServiceExtensions.BuildAdditionalEntropy(safeName, userScope, additionalEntropy);
 
-            List<string> unsafeValues = settingService.GetValues<string>(unsafeName);
-            List<string> safeValues = settingService.GetValues<string>(safeName);
+                List<string> unsafeValues = settingService.GetValues<string>(unsafeName);
+                List<string> safeValues = settingService.GetValues<string>(safeName);
 
-            safeValues.AddRange(from x in unsafeValues select LocalEncryption.Encrypt(userScope, x, finalAdditionalEntropy));
+                safeValues.AddRange(from x in unsafeValues select LocalEncryption.Encrypt(userScope, x, finalAdditionalEntropy));
 
-            settingService.SetValues(safeName, safeValues);
-            settingService.DeleteValues(unsafeName);
+                settingService.SetValues(safeName, safeValues);
+                settingService.DeleteValues(unsafeName);
 
-            unsafeValues.Clear();
-            safeValues.Clear();
+                unsafeValues.Clear();
+                safeValues.Clear();
+            }
         }
 
         private static string BuildAdditionalEntropy (string safeName, bool userScope, string[] additionalEntropy) => safeName + userScope + (additionalEntropy ?? new string[0]).Join();

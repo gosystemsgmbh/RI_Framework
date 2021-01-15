@@ -17,132 +17,134 @@ using RI.Framework.Utilities.ObjectModel;
 
 namespace RI.Framework.IO.INI
 {
-	/// <summary>
-	///     Contains and manages structured INI data.
-	/// </summary>
-	/// <remarks>
-	///     <para>
-	///         <b> GENERAL </b>
-	///     </para>
-	///     <para>
-	///         INI data in an <see cref="IniDocument" /> is stored in the <see cref="Elements" /> property.
-	///         <see cref="Elements" /> is always kept up to date and all actions performed on an <see cref="IniDocument" /> directly read from or modify <see cref="Elements" />.
-	///     </para>
-	///     <para>
-	///         <see cref="Elements" /> is a list which contains all the INI elements of the INI data in a sequential order (e.g. as they would appear in an INI file).
-	///         The INI elements are all of the abstract base type <see cref="IniElement" />, the concrete type depending on the type of the element (<see cref="SectionIniElement" />, <see cref="ValueIniElement" />, <see cref="CommentIniElement" />, <see cref="TextIniElement" />).
-	///     </para>
-	///     <para>
-	///         <see cref="Elements" /> can be modified arbitrarily by either using methods of <see cref="IniDocument" /> or by modifying the list itself.
-	///         The list can contain or be modified to contain any sequence of the four types of INI elements mentioned above.
-	///         Any sequence of INI elements will be valid as each instance of a derivate of <see cref="IniElement" /> is independent to any other type of INI element.
-	///     </para>
-	///     <note type="important">
-	///         Be aware that although each INI element is independent of each other, the sequence of INI elements has semantical meaning, depending of the data and its context stored in the INI data.
-	///         For example, a <see cref="SectionIniElement" /> is technically independent from its following <see cref="ValueIniElement" />s, but when processed the <see cref="SectionIniElement" /> defines the section to which the following <see cref="ValueIniElement" /> belong.
-	///     </note>
-	///     <note type="important">
-	///         Be careful when performing actions which insert, remove, or reorder INI elements as this might change the semantical meaning of one or several sections!
-	///     </note>
-	///     <para>
-	///         <b> ANATOMY OF INI DATA &amp; ELEMENTS </b>
-	///     </para>
-	///     <para>
-	///         INI data outside an <see cref="IniDocument" /> is organized as text line-by-line (e.g. a string or *.ini file containing the INI data).
-	///         Inside an <see cref="IniDocument" />, the INI data represented by <see cref="IniElement" />s, stored in <see cref="Elements" />, is on a technical abstraction (reflecting the line-by-line organization), not a semantical abstraction.
-	///         This means that basically each line of INI data is represented by a seperate <see cref="IniElement" />, depending on the type of line.
-	///     </para>
-	///     <para>
-	///         There are four types of lines in INI data, each represented with their own derivate of <see cref="IniElement" />:
-	///         Sections (<see cref="SectionIniElement" />), Name-Value-Pairs (<see cref="ValueIniElement" />), Comments (<see cref="CommentIniElement" />), and Text (<see cref="TextIniElement" />).
-	///         Any possible line in a set of INI data will fit into exactly one of those types.
-	///     </para>
-	///     <para>
-	///         <b> Sections: </b>
-	///         A section is started by a section header.
-	///         The section header contains the name of the section.
-	///         All elements following the section header belong to that section until the next section header appears.
-	///         So a section includes its section header and all elements following the section header.
-	///         A section header is a single line, in the form <c> [name of the section] </c>, and is represented using <see cref="SectionIniElement" />.
-	///         When INI data is parsed, leading and trailing whitespace of a line is ignored for section headers and the section name must be enclosed in <c> [ </c> and <c> ] </c>.
-	///         Leading and trailing whitespace of the section name itself is not ignored.
-	///         There can be multiple sections which have the same name.
-	///     </para>
-	///     <para>
-	///         <b> Name-Value-Pairs: </b>
-	///         Name-value-pairs are the actual data intended to be stored and transported by INI data.
-	///         A name-value-pair is a single line, in the form of <c> name=value </c>, and is represented using <see cref="ValueIniElement" />.
-	///         When INI data is parsed, leading and trailing whitespace of both the name and the value is not ignored.
-	///         There can be multiple name-value-pairs inside the same (or another) section which have the same name.
-	///     </para>
-	///     <para>
-	///         <b> Comments: </b>
-	///         A comment is a text which is explicitly marked as a comment and is only intended for annotating the INI data when viewed directly (e.g. opening an *.ini file in a text editor).
-	///         Comments are not processed by <see cref="IniDocument" /> besides loading/saving them to/from <see cref="Elements" />.
-	///         A comment is in the form <c> ;comment </c> and represented using <see cref="CommentIniElement" />.
-	///         Note that consecutive comment lines will be combined into a single <see cref="CommentIniElement" />.
-	///         When INI data is parsed, leading whitespace of a comment is ignored, up to <c> ; </c>, but not ignored in the comment itself.
-	///     </para>
-	///     <para>
-	///         <b> Text: </b>
-	///         A text is everything else which is not a section header, name-value-pair, or comment, and is represented using <see cref="TextIniElement" />
-	///         Therefore, technically speaking, text elements are actually invalid lines and should not be used in any processing.
-	///         Text is not processed by <see cref="IniDocument" /> besides loading/saving them to/from <see cref="Elements" />.
-	///         Note that consecutive text lines will be combined into a single <see cref="TextIniElement" />.
-	///     </para>
-	///     <note type="note">
-	///         Note that elements always belong to a section.
-	///         This is either the section started by the last section header or the default section if no section header appeared before the element.
-	///         When &quot;outside a section&quot; is mentioned in the description of <see cref="IniDocument" />, that default section is meant.
-	///         The default section can be identified using null or <see cref="string.Empty" />.
-	///     </note>
-	///     <para>
-	///         <b> ESCAPING </b>
-	///     </para>
-	///     <para>
-	///         INI data uses characters with special meanings to structure elements: <c> [ </c>, <c> ] </c>, <c> = </c>, <c> ; </c>, and <c> CRLF </c> or <c> LF </c> respectively (depending on the used line-ending-style).
-	///         This means that those special characters cannot appear as-is within section names, names of name-value-pairs, or values of name-value-pairs.
-	///         Therefore, if such special characters are used in such a way, they need to be escaped (similar to escape sequences such as <c> \r\n </c>).
-	///     </para>
-	///     <para>
-	///         Another special character is used to start an escape sequence: <c> | </c>.
-	///         This means that the character after <c> | </c> defines which one of the special characters is to be represented by the escape sequence.
-	///         The following escape sequences are possible: <c> |[ </c>, <c> |] </c>, <c> |= </c>, <c> |; </c>, <c> |r </c>, <c> |n </c>, <c> || </c>.
-	///         <c> |r </c> is carriage-return (CR), <c> |n </c> new-line or line-feed (LF), and <c> || </c> is used to represent <c> | </c> itself.
-	///     </para>
-	///     <para>
-	///         This escaping mechanism makes it possible to have any text, including multi-line text, for names and values.
-	///         When INI data is read or written by <see cref="IniDocument" />, <see cref="IniReader" />, <see cref="IniWriter" />, the encoding and decoding of those escape sequences is performed automatically.
-	///     </para>
-	///     <para>
-	///         The <c> | </c> character was choosen to start escape sequences instead of the <c> \ </c> character so that name-value-pairs, which contain windows file or directory paths as their values, are more human-readable.
-	///         The used escape sequence character can be changed using <see cref="IniSettings.EscapeCharacter" />.
-	///     </para>
-	/// </remarks>
-	/// <example>
-	///     <code language="cs">
-	/// <![CDATA[
-	/// // create an empty INI document
-	/// var doc = new IniDocument();
-	/// 
-	/// // load an INI file
-	/// doc.Load("settings.ini");
-	/// 
-	/// // get the value for the Difficulty key in the [GameSettings] section
-	/// var difficulty = doc.GetValue("GameSettings", "Difficulty");
-	/// 
-	/// // get all name-value-pairs under the [GraphicsSettings] section as a dictionary
-	/// var graphics = doc.GetSection("GraphicsSettings");
-	/// 
-	/// // set the value of the Difficulty key in the [GameSettings] section
-	/// doc.SetValue("GameSettings", "Difficulty", "Princess");
-	/// 
-	/// // save back into the INI file
-	/// doc.Save("settings.ini");
-	/// ]]>
-	/// </code>
-	/// </example>
-	public sealed class IniDocument : ICloneable, ICloneable<IniDocument>
+    /// <summary>
+    ///     Contains and manages structured INI data.
+    /// </summary>
+    /// <remarks>
+    ///     <para>
+    ///         <b> GENERAL </b>
+    ///     </para>
+    ///     <para>
+    ///         INI data in an <see cref="IniDocument" /> is stored in the <see cref="Elements" /> property.
+    ///         <see cref="Elements" /> is always kept up to date and all actions performed on an <see cref="IniDocument" /> directly read from or modify <see cref="Elements" />.
+    ///     </para>
+    ///     <para>
+    ///         <see cref="Elements" /> is a list which contains all the INI elements of the INI data in a sequential order (e.g. as they would appear in an INI file).
+    ///         The INI elements are all of the abstract base type <see cref="IniElement" />, the concrete type depending on the type of the element (<see cref="SectionIniElement" />, <see cref="ValueIniElement" />, <see cref="CommentIniElement" />, <see cref="TextIniElement" />).
+    ///     </para>
+    ///     <para>
+    ///         <see cref="Elements" /> can be modified arbitrarily by either using methods of <see cref="IniDocument" /> or by modifying the list itself.
+    ///         The list can contain or be modified to contain any sequence of the four types of INI elements mentioned above.
+    ///         Any sequence of INI elements will be valid as each instance of a derivate of <see cref="IniElement" /> is independent to any other type of INI element.
+    ///     </para>
+    ///     <note type="important">
+    ///         Be aware that although each INI element is independent of each other, the sequence of INI elements has semantical meaning, depending of the data and its context stored in the INI data.
+    ///         For example, a <see cref="SectionIniElement" /> is technically independent from its following <see cref="ValueIniElement" />s, but when processed the <see cref="SectionIniElement" /> defines the section to which the following <see cref="ValueIniElement" /> belong.
+    ///     </note>
+    ///     <note type="important">
+    ///         Be careful when performing actions which insert, remove, or reorder INI elements as this might change the semantical meaning of one or several sections!
+    ///     </note>
+    ///     <para>
+    ///         <b> ANATOMY OF INI DATA &amp; ELEMENTS </b>
+    ///     </para>
+    ///     <para>
+    ///         INI data outside an <see cref="IniDocument" /> is organized as text line-by-line (e.g. a string or *.ini file containing the INI data).
+    ///         Inside an <see cref="IniDocument" />, the INI data represented by <see cref="IniElement" />s, stored in <see cref="Elements" />, is on a technical abstraction (reflecting the line-by-line organization), not a semantical abstraction.
+    ///         This means that basically each line of INI data is represented by a seperate <see cref="IniElement" />, depending on the type of line.
+    ///     </para>
+    ///     <para>
+    ///         There are four types of lines in INI data, each represented with their own derivate of <see cref="IniElement" />:
+    ///         Sections (<see cref="SectionIniElement" />), Name-Value-Pairs (<see cref="ValueIniElement" />), Comments (<see cref="CommentIniElement" />), and Text (<see cref="TextIniElement" />).
+    ///         Any possible line in a set of INI data will fit into exactly one of those types.
+    ///     </para>
+    ///     <para>
+    ///         <b> Sections: </b>
+    ///         A section is started by a section header.
+    ///         The section header contains the name of the section.
+    ///         All elements following the section header belong to that section until the next section header appears.
+    ///         So a section includes its section header and all elements following the section header.
+    ///         A section header is a single line, in the form <c> [name of the section] </c>, and is represented using <see cref="SectionIniElement" />.
+    ///         When INI data is parsed, leading and trailing whitespace of a line is ignored for section headers and the section name must be enclosed in <c> [ </c> and <c> ] </c>.
+    ///         Leading and trailing whitespace of the section name itself is not ignored.
+    ///         There can be multiple sections which have the same name.
+    ///     </para>
+    ///     <para>
+    ///         <b> Name-Value-Pairs: </b>
+    ///         Name-value-pairs are the actual data intended to be stored and transported by INI data.
+    ///         A name-value-pair is a single line, in the form of <c> name=value </c>, and is represented using <see cref="ValueIniElement" />.
+    ///         When INI data is parsed, leading and trailing whitespace of both the name and the value is not ignored.
+    ///         There can be multiple name-value-pairs inside the same (or another) section which have the same name.
+    ///     </para>
+    ///     <para>
+    ///         <b> Comments: </b>
+    ///         A comment is a text which is explicitly marked as a comment and is only intended for annotating the INI data when viewed directly (e.g. opening an *.ini file in a text editor).
+    ///         Comments are not processed by <see cref="IniDocument" /> besides loading/saving them to/from <see cref="Elements" />.
+    ///         A comment is in the form <c> ;comment </c> and represented using <see cref="CommentIniElement" />.
+    ///         Note that consecutive comment lines will be combined into a single <see cref="CommentIniElement" />.
+    ///         When INI data is parsed, leading whitespace of a comment is ignored, up to <c> ; </c>, but not ignored in the comment itself.
+    ///     </para>
+    ///     <para>
+    ///         <b> Text: </b>
+    ///         A text is everything else which is not a section header, name-value-pair, or comment, and is represented using <see cref="TextIniElement" />
+    ///         Therefore, technically speaking, text elements are actually invalid lines and should not be used in any processing.
+    ///         Text is not processed by <see cref="IniDocument" /> besides loading/saving them to/from <see cref="Elements" />.
+    ///         Note that consecutive text lines will be combined into a single <see cref="TextIniElement" />.
+    ///     </para>
+    ///     <note type="note">
+    ///         Note that elements always belong to a section.
+    ///         This is either the section started by the last section header or the default section if no section header appeared before the element.
+    ///         When &quot;outside a section&quot; is mentioned in the description of <see cref="IniDocument" />, that default section is meant.
+    ///         The default section can be identified using null or <see cref="string.Empty" />.
+    ///     </note>
+    ///     <para>
+    ///         <b> ESCAPING </b>
+    ///     </para>
+    ///     <para>
+    ///         INI data uses characters with special meanings to structure elements: <c> [ </c>, <c> ] </c>, <c> = </c>, <c> ; </c>, and <c> CRLF </c> or <c> LF </c> respectively (depending on the used line-ending-style).
+    ///         This means that those special characters cannot appear as-is within section names, names of name-value-pairs, or values of name-value-pairs.
+    ///         Therefore, if such special characters are used in such a way, they need to be escaped (similar to escape sequences such as <c> \r\n </c>).
+    ///     </para>
+    ///     <para>
+    ///         Another special character is used to start an escape sequence: <c> | </c>.
+    ///         This means that the character after <c> | </c> defines which one of the special characters is to be represented by the escape sequence.
+    ///         The following escape sequences are possible: <c> |[ </c>, <c> |] </c>, <c> |= </c>, <c> |; </c>, <c> |r </c>, <c> |n </c>, <c> || </c>.
+    ///         <c> |r </c> is carriage-return (CR), <c> |n </c> new-line or line-feed (LF), and <c> || </c> is used to represent <c> | </c> itself.
+    ///     </para>
+    ///     <para>
+    ///         This escaping mechanism makes it possible to have any text, including multi-line text, for names and values.
+    ///         When INI data is read or written by <see cref="IniDocument" />, <see cref="IniReader" />, <see cref="IniWriter" />, the encoding and decoding of those escape sequences is performed automatically.
+    ///     </para>
+    ///     <para>
+    ///         The <c> | </c> character was choosen to start escape sequences instead of the <c> \ </c> character so that name-value-pairs, which contain windows file or directory paths as their values, are more human-readable.
+    ///         The used escape sequence character can be changed using <see cref="IniSettings.EscapeCharacter" />.
+    ///     </para>
+    /// </remarks>
+    /// <threadsafety static="false" instance="false" />
+    /// <example>
+    ///     <code language="cs">
+    /// <![CDATA[
+    /// // create an empty INI document
+    /// var doc = new IniDocument();
+    /// 
+    /// // load an INI file
+    /// doc.Load("settings.ini");
+    /// 
+    /// // get the value for the Difficulty key in the [GameSettings] section
+    /// var difficulty = doc.GetValue("GameSettings", "Difficulty");
+    /// 
+    /// // get all name-value-pairs under the [GraphicsSettings] section as a dictionary
+    /// var graphics = doc.GetSection("GraphicsSettings");
+    /// 
+    /// // set the value of the Difficulty key in the [GameSettings] section
+    /// doc.SetValue("GameSettings", "Difficulty", "Princess");
+    /// 
+    /// // save back into the INI file
+    /// doc.Save("settings.ini");
+    /// ]]>
+    /// </code>
+    /// </example>
+    /// TODO: DeleteValues (deletes all values of a given name from all sections)
+    public sealed class IniDocument : ICloneable, ICloneable<IniDocument>
 	{
 		#region Instance Constructor/Destructor
 
@@ -1282,18 +1284,52 @@ namespace RI.Framework.IO.INI
 			}
 		}
 
-		/// <summary>
-		///     Saves all INI elements of this INI document to an INI file.
-		/// </summary>
-		/// <param name="file"> The path of the INI file to save. </param>
-		/// <param name="encoding"> The encoding for writing the INI file. </param>
-		/// <remarks>
-		///     <para>
-		///         The INI file will be overwritten with the INI elements from this INI document.
-		///     </para>
-		/// </remarks>
-		/// <exception cref="ArgumentNullException"> <paramref name="file" /> or <paramref name="encoding" /> is null. </exception>
-		public void Save (string file, Encoding encoding)
+        /// <summary>
+        ///     Saves all INI elements of this INI document to an existing text writer.
+        /// </summary>
+        /// <param name="writer"> The text writer to which the data is saved. </param>
+        /// <exception cref="ArgumentNullException"> <paramref name="writer" /> is null. </exception>
+        public void Save (TextWriter writer)
+        {
+            if (writer == null)
+            {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            this.Save(writer, null);
+        }
+
+        /// <summary>
+        ///     Saves all INI elements of this INI document to an existing text writer.
+        /// </summary>
+        /// <param name="writer"> The text writer to which the data is saved. </param>
+        /// <param name="settings"> The used CSV writer settings or null if default values should be used. </param>
+        /// <exception cref="ArgumentNullException"> <paramref name="writer" /> is null. </exception>
+        public void Save (TextWriter writer, IniWriterSettings settings)
+        {
+            if (writer == null)
+            {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            using (IniWriter iw = new IniWriter(writer, settings))
+            {
+                this.Save(iw);
+            }
+        }
+
+        /// <summary>
+        ///     Saves all INI elements of this INI document to an INI file.
+        /// </summary>
+        /// <param name="file"> The path of the INI file to save. </param>
+        /// <param name="encoding"> The encoding for writing the INI file. </param>
+        /// <remarks>
+        ///     <para>
+        ///         The INI file will be overwritten with the INI elements from this INI document.
+        ///     </para>
+        /// </remarks>
+        /// <exception cref="ArgumentNullException"> <paramref name="file" /> or <paramref name="encoding" /> is null. </exception>
+        public void Save (string file, Encoding encoding)
 		{
 			if (file == null)
 			{

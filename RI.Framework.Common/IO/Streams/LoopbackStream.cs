@@ -4,6 +4,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading;
 
+using RI.Framework.Utilities.ObjectModel;
+
 
 
 
@@ -30,7 +32,7 @@ namespace RI.Framework.IO.Streams
 	///     </para>
 	/// </remarks>
 	/// <threadsafety static="true" instance="true" />
-	public sealed class LoopbackStream : Stream
+	public sealed class LoopbackStream : Stream, ISynchronizable
 	{
 		#region Instance Constructor/Destructor
 
@@ -137,7 +139,11 @@ namespace RI.Framework.IO.Streams
 
 		private object ReadSyncRoot { get; set; }
 
-		private object SyncRoot { get; set; }
+        /// <inheritdoc />
+        public bool IsSynchronized => true;
+
+        /// <inheritdoc />
+		public object SyncRoot { get; }
 
 		private object WriteSyncRoot { get; set; }
 

@@ -410,7 +410,7 @@ namespace RI.Framework.Data.Repository
 
 		private void PerformEntitySelfChangeTracking ()
 		{
-			this.ChangeTrackingContext = this.ChangeTrackingContext ?? this.OnChangeTrackingContextResolve();
+			this.ChangeTrackingContext = this.OnChangeTrackingContextResolve() ?? this.ChangeTrackingContext;
 
 			DateTime now = DateTime.Now;
 
@@ -671,15 +671,15 @@ namespace RI.Framework.Data.Repository
 		}
 
 		/// <inheritdoc />
-		public override async Task<int> SaveChangesAsync (CancellationToken cancellationToken)
+		public override Task<int> SaveChangesAsync (CancellationToken cancellationToken)
 		{
 			this.BeforeSave();
 
-			return await base.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+			return base.SaveChangesAsync(cancellationToken);
 		}
 
 		/// <inheritdoc />
-		public sealed override async Task<int> SaveChangesAsync () => await base.SaveChangesAsync().ConfigureAwait(false);
+		public sealed override Task<int> SaveChangesAsync () => base.SaveChangesAsync();
 
 		/// <inheritdoc />
 		public sealed override DbSet Set (Type entityType)

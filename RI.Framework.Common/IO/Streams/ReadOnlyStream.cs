@@ -7,11 +7,12 @@ using System.IO;
 
 namespace RI.Framework.IO.Streams
 {
-	/// <summary>
-	///     Implements a stream which wraps another stream and only allows read operations on that stream.
-	/// </summary>
-	/// <threadsafety static="true" instance="true" />
-	public sealed class ReadOnlyStream : Stream
+    /// <summary>
+    ///     Implements a stream which wraps another stream and only allows read operations on that stream.
+    /// </summary>
+    /// <threadsafety static="false" instance="false" />
+    /// TODO: Create pendant: WriteOnlyStream
+    public sealed class ReadOnlyStream : Stream
 	{
 		#region Instance Constructor/Destructor
 

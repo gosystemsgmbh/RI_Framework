@@ -26,6 +26,7 @@ A pull request must follow the following rules, otherwise it will be closed imme
    * Structural changes (deleting, creating, renaming, moving, copying of files or directories).
    * Namespace changes.
    * Dependency changes (removing, adding, changing of assembly references or NuGet packages).
+   * Change of the name of a namespace, public type, or public member.
  * The following must always have proper XML comments (also check the generated SHFB documentation for completeness):
    * Namespaces
    * Public types

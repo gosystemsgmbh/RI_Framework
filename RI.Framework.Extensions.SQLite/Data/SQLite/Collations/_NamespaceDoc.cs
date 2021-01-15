@@ -6,7 +6,7 @@
 namespace RI.Framework.Data.SQLite.Collations
 {
 	/// <summary>
-	///     Implements collations for SQLite databases.
+	///     Contains collations for use in SQLite schemas.
 	/// </summary>
 	[CompilerGenerated]
 	public sealed class NamespaceDoc

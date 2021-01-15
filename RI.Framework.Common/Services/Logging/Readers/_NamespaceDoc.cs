@@ -5,11 +5,11 @@
 
 namespace RI.Framework.Services.Logging.Readers
 {
-	/// <summary>
-	///     Contains specialized log readers.
-	/// </summary>
-	[CompilerGenerated]
-	public sealed class NamespaceDoc
-	{
-	}
+    /// <summary>
+    ///     Contains specialized log readers.
+    /// </summary>
+    [CompilerGenerated]
+    public sealed class NamespaceDoc
+    {
+    }
 }

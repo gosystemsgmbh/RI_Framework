@@ -59,7 +59,7 @@ namespace RI.Framework.StateMachines.Caches
 		/// </summary>
 		/// <param name="state"> The state type. </param>
 		/// <returns>
-		///     The state instance or null if the cache does not contain a state instance for <paramref name="state" />.
+		///     The state instance.
 		/// </returns>
 		/// <remarks>
 		///     <note type="implement">

@@ -1,3 +1,11 @@
+:warning: ***This library is in the process of being archived in favour of multiple smaller, better maintained, and more cohesive libraries***
+
+So far, the following has been extracted (more on the way):
+ * [RI.Utilities](https://github.com/RotenInformatik/UtilitiesDotNet)
+ * [RI.Abstractions](https://github.com/RotenInformatik/AbstractionsDotNet)
+
+The next extract is going to be the Database Manager.
+
 # Decoupling & Utilities Framework
 
 A framework for .NET, Mono, and Unity.
@@ -10,14 +18,14 @@ A framework for .NET, Mono, and Unity.
 
 ## Overview
 
-The Decoupling & Utilities Framework is a collection of various functions for different .NET flavours.
+The Decoupling & Utilities Framework is a collection of various functions for different .NET flavours (.NET Standard, .NET Core, .NET Framework, Mono, Unity).
 
 ![Overview](README-overview.png)
 
 In general, it contains functions to help you...
  * ...reduce the amount of boilerplate code you need to write
  * ...decouple your application components/modules and make your codebase more maintainable and extensible
- * ...add functionality to your application by providing implementations for application infrastructure and services used by most applications
+ * ...add functionality to your application by providing implementations for application infrastructure and services
  * ...save time by providing functionality not part of .NET or third-party libraries
 
 ![Content](README-content.png)
@@ -34,13 +42,15 @@ The "decoupling" part on the other hand has a more narrower target audience as i
  * Desktop games
  * Server applications
 
+Usually, the "decoupling" functionalities are used as cross-cutting concerns while the "utilities" functionalities are used selective and isolated.
+
 ## Documentation
 
-Each [release](README.md) contains a description about its assemblies, namespaces, types, and members.
-
-The project itself and its structure/organization is described in the [project documentation](DOCUMENTATION.md).
+Each [release](README.md) contains an API documentation about its assemblies, namespaces, types, and members.
 
 The version history is documented in the [changelog](CHANGELOG.md).
+
+The project itself and its structure and organization is described in the [project documentation](DOCUMENTATION.md).
 
 ## Contribution & Issues
 
@@ -48,4 +58,4 @@ See [contribution documentation](CONTRIBUTING.md) if you wish to report [issues]
 
 ## License
 
-The Decoupling & Utilities Framework uses its own license, the [Roten Informatik Framework License 1.0](LICENSE.txt), which is mostly based on the [Apache 2.0 License](https://choosealicense.com/licenses/apache-2.0/).
+The Decoupling & Utilities Framework uses the [Apache 2.0 License](https://choosealicense.com/licenses/apache-2.0/).

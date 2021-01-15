@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>d002cc0c-2a9c-4731-a3e6-dffa517e3bd9</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>RI.Test.Framework</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Comparison\Test_CollectionComparer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Generic\Test_PriorityQueue.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Generic\Test_Warehouse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\ObjectModel\Test_IPoolExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\ObjectModel\Test_ITreeNodeExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\ObjectModel\Test_Pool.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\ObjectModel\Test_TreeNode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Specialized\Test_ClonePool.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Test_HashSetExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Test_ICollectionExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Test_IDictionaryExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Test_IEnumerableExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Test_IListExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Test_LinkedListExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Test_QueueExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Test_StackExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Virtualization\Mock_IItemsProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Virtualization\Test_VirtualizationCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\Mock_Exports_10.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\Mock_Exports_11.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\Mock_Exports_1.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\Mock_Exports_2.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\Mock_Exports_3A.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\Mock_Exports_3B.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\Mock_Exports_4A.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\Mock_Exports_4B.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\Mock_Exports_5.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\Mock_Exports_5A.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\Mock_Exports_5B.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\Mock_Exports_6.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\Mock_Exports_6A.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\Mock_Exports_6C.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\Mock_Exports_6B.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\Mock_Exports_7.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\Mock_Exports_8.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\Mock_Exports_9.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\Mock_Imports.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Composition\Test_CompositionContainer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\CSV\Test_CsvDocument.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\INI\Test_IniDocument.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\Paths\Test_DirectoryPath.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\Paths\Test_FilePath.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\Paths\Test_PathProperties.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Mathematic\Controllers\Test_PIDController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Mathematic\Test_RomanNumber.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Mathematic\Test_RunningValues.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Mathematic\Test_Statistics.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Mocks\RENP.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Mocks\MockTuple.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Mocks\VENP.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\Test_LogService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\Writers\Mock_Writer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Logging\Writers\Test_DirectoryLogWriter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Modularization\Mock_Module.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\Modularization\Test_ModuleService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Dispatchers\Mock_Dispatcher.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\States\Mock_State.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\States\Mock_State_A.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\States\Mock_State_B.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\States\Mock_State_C.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\States\Mock_State_D.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\States\Mock_State_D1.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\States\Mock_State_D2.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\States\Mock_State_D3.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\States\Mock_State_E.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\States\Mock_State_F.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\States\Mock_State_I.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\States\Mock_State_H1.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\States\Mock_State_H2.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\States\Mock_State_H.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\States\Mock_State_G.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StateMachines\Test_StateMachine.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TestAssertionException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Threading\Mock_HeavyThread.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Threading\Test_HeavyThread.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Comparison\Test_EqualityComparison.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Comparison\Test_OrderComparison.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Reflection\Mock_MethodCallTarget.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Reflection\Test_AssemblyExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Reflection\Test_MethodCallDispatcher.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Reflection\Test_TypeExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Test_DateTimeExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Test_DoubleExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Test_SingleExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Test_StringComparerEx.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Test_StringExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Test_TimeSpanExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Text\Test_CommandLine.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Text\Test_IndentedTextWriter.cs" />
+  </ItemGroup>
+</Project>

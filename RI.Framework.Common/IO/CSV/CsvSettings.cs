@@ -5,15 +5,16 @@
 
 namespace RI.Framework.IO.CSV
 {
-	/// <summary>
-	///     Provides basic CSV data settings for both readers and writers.
-	/// </summary>
-	/// <remarks>
-	///     <para>
-	///         See <see cref="CsvDocument" /> for more general and detailed information about working with CSV data.
-	///     </para>
-	/// </remarks>
-	public abstract class CsvSettings
+    /// <summary>
+    ///     Provides basic CSV data settings for both readers and writers.
+    /// </summary>
+    /// <remarks>
+    ///     <para>
+    ///         See <see cref="CsvDocument" /> for more general and detailed information about working with CSV data.
+    ///     </para>
+    /// </remarks>
+    /// <threadsafety static="false" instance="false" />
+    public abstract class CsvSettings
 	{
 		#region Constants
 

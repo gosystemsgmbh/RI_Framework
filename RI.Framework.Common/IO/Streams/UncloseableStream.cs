@@ -6,15 +6,16 @@ using System.IO;
 
 namespace RI.Framework.IO.Streams
 {
-	/// <summary>
-	///     Implements a stream which wraps another stream and prevents the wrapped stream from being closed.
-	/// </summary>
-	/// <remarks>
-	///     <para>
-	///         <see cref="UncloseableStream" /> can be helpful in situations where you pass a stream to an object or method which, after it has done its job, closes the stream and you need the stream still open afterwards.
-	///     </para>
-	/// </remarks>
-	public sealed class UncloseableStream : Stream
+    /// <summary>
+    ///     Implements a stream which wraps another stream and prevents the wrapped stream from being closed.
+    /// </summary>
+    /// <remarks>
+    ///     <para>
+    ///         <see cref="UncloseableStream" /> can be helpful in situations where you pass a stream to an object or method which, after it has done its job, closes the stream and you need the stream still open afterwards.
+    ///     </para>
+    /// </remarks>
+    /// <threadsafety static="false" instance="false" />
+    public sealed class UncloseableStream : Stream
 	{
 		#region Instance Constructor/Destructor
 

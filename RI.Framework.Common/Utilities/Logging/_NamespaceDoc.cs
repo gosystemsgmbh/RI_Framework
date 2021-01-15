@@ -5,11 +5,12 @@
 
 namespace RI.Framework.Utilities.Logging
 {
-	/// <summary>
-	///     Contains logging utilities.
-	/// </summary>
-	[CompilerGenerated]
-	public sealed class NamespaceDoc
-	{
-	}
+    /// <summary>
+    ///     Contains logging infrastructure.
+    /// </summary>
+    /// TODO: Move to outer scope
+    [CompilerGenerated]
+    public sealed class NamespaceDoc
+    {
+    }
 }

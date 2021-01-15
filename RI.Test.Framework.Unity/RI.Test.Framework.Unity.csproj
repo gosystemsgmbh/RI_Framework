@@ -15,8 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RI.Framework.Common\RI.Framework.Common.csproj" />
-    <ProjectReference Include="..\RI.Framework.Unity.Common\RI.Framework.Unity.Common.csproj" />
-    <ProjectReference Include="..\RI.Framework.Unity.Modern\RI.Framework.Unity.Modern.csproj" />
+    <ProjectReference Include="..\RI.Framework.Net.Unity\RI.Framework.Net.Unity.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,7 +24,7 @@
     </Reference>
   </ItemGroup>
 
-  <Import Project="..\RI.Test.Framework.Shared.All\RI.Test.Framework.Shared.All.projitems" Label="Shared" />
+  <Import Project="..\RI.Test.Framework.Shared\RI.Test.Framework.Shared.projitems" Label="Shared" />
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
     <Exec Command="@call &quot;$(ProjectDir)_PreBuild.bat&quot; $(ConfigurationName)" />

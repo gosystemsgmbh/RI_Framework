@@ -34,8 +34,8 @@
       <DocumentationSource sourceFile="..\RI.Framework.Net.Fx\RI.Framework.Net.Fx.csproj" />
       <DocumentationSource sourceFile="..\RI.Framework.Net.Core\RI.Framework.Net.Core.csproj" />
       <DocumentationSource sourceFile="..\RI.Framework.CrossPlatform.Common\RI.Framework.CrossPlatform.Common.csproj" />
-      <DocumentationSource sourceFile="..\RI.Framework.Linux.Common\RI.Framework.Linux.Common.csproj" />
-      <DocumentationSource sourceFile="..\RI.Framework.Windows.Common\RI.Framework.Windows.Common.csproj" />
+      <DocumentationSource sourceFile="..\RI.Framework.Linux.Fx\RI.Framework.Linux.Fx.csproj" />
+      <DocumentationSource sourceFile="..\RI.Framework.Windows.Fx\RI.Framework.Windows.Fx.csproj" />
       <DocumentationSource sourceFile="..\RI.Framework.Windows.Forms\RI.Framework.Windows.Forms.csproj" />
       <DocumentationSource sourceFile="..\RI.Framework.Windows.Service\RI.Framework.Windows.Service.csproj" />
       <DocumentationSource sourceFile="..\RI.Framework.Windows.Wpf\RI.Framework.Windows.Wpf.csproj" />

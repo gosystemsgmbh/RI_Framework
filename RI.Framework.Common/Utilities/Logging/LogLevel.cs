@@ -27,12 +27,12 @@ namespace RI.Framework.Utilities.Logging
 		Warning = 2,
 
 		/// <summary>
-		///     Error (error or handled exception).
+		///     Error (error or handled exception; recoverable).
 		/// </summary>
 		Error = 3,
 
 		/// <summary>
-		///     Fatal (crash or unhandled exception).
+		///     Fatal (crash or unhandled exception; unrecoverable).
 		/// </summary>
 		Fatal = 4,
 	}

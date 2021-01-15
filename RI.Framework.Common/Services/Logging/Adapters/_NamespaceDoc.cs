@@ -5,11 +5,11 @@
 
 namespace RI.Framework.Services.Logging.Adapters
 {
-	/// <summary>
-	///     Contains specialized log adapters.
-	/// </summary>
-	[CompilerGenerated]
-	public sealed class NamespaceDoc
-	{
-	}
+    /// <summary>
+    ///     Contains specialized log adapters.
+    /// </summary>
+    [CompilerGenerated]
+    public sealed class NamespaceDoc
+    {
+    }
 }

@@ -1,0 +1,128 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{CD9C2847-A48F-45E1-908F-3F9A86EE0E37}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>RI.Framework</RootNamespace>
+    <AssemblyName>RI.Framework.Windows.Fx</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\RI.Framework.Windows.Fx.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\RI.Framework.Windows.Fx.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Dynamic" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\SolutionInfo.cs">
+      <Link>Properties\SolutionInfo.cs</Link>
+    </Compile>
+    <Compile Include="IO\Keyboard\OnScreenKeyboard.cs" />
+    <Compile Include="IO\Keyboard\SystemKeyboard.cs" />
+    <Compile Include="IO\Keyboard\SystemKeyboardKey.cs" />
+    <Compile Include="IO\Printer\PrinterDevice.cs" />
+    <Compile Include="IO\Printer\PrinterTypes.cs" />
+    <Compile Include="IO\Printer\RawPrinterAccess.cs" />
+    <Compile Include="IO\Serial\SerialPortExtensions.cs" />
+    <Compile Include="IO\Serial\SerialPortInstance.cs" />
+    <Compile Include="Services\Logging\Writers\EventLogWriter.cs" />
+    <Compile Include="Bootstrapping\WindowsBootstrapper.cs" />
+    <None Include="Windows\Messages\_NamespaceDoc.cs" />
+    <Compile Include="Windows\Cryptography\_NamespaceDoc.cs" />
+    <Compile Include="Windows\Imaging\BitmapExtensions.cs" />
+    <Compile Include="Windows\Imaging\IconExtensions.cs" />
+    <Compile Include="Windows\Imaging\_NamespaceDoc.cs" />
+    <Compile Include="Windows\Interop\_NamespaceDoc.cs" />
+    <Compile Include="Windows\Network\_NamespaceDoc.cs" />
+    <Compile Include="Windows\Shell\_NamespaceDoc.cs" />
+    <Compile Include="Windows\SystemInformationReport.cs" />
+    <Compile Include="Windows\Users\_NamespaceDoc.cs" />
+    <Compile Include="Windows\WindowsApplication.cs" />
+    <Compile Include="Windows\WindowsService.cs" />
+    <Compile Include="Windows\WindowsWindow.cs" />
+    <Compile Include="Windows\Cryptography\UniqueIdentification.cs" />
+    <None Include="Windows\Messages\WindowsMessage.cs" />
+    <None Include="Windows\Messages\WindowsMessageLoop.cs" />
+    <None Include="Windows\Messages\WindowsMessageLoopOperation.cs" />
+    <None Include="Windows\Messages\WindowsMessageLoopOperationState.cs" />
+    <None Include="Windows\Messages\WindowsMessageLoopShutdownMode.cs" />
+    <Compile Include="Windows\Network\WindowsNetwork.cs" />
+    <Compile Include="Windows\Network\WindowsNetworkConnection.cs" />
+    <Compile Include="Windows\Network\WindowsNetworkError.cs" />
+    <Compile Include="Windows\Interop\Privileges.cs" />
+    <Compile Include="Windows\Interop\SecurityEntity.cs" />
+    <Compile Include="Windows\WindowsApi.cs" />
+    <Compile Include="Windows\Interop\WindowsError.cs" />
+    <Compile Include="Windows\Shell\WindowsSession.cs" />
+    <Compile Include="Windows\Shell\WindowsShell.cs" />
+    <Compile Include="Windows\Users\WindowsUser.cs" />
+    <Compile Include="Windows\Users\WindowsUserImpersonation.cs" />
+    <Compile Include="Windows\Users\WindowsUserProfile.cs" />
+    <Compile Include="Windows\_NamespaceDoc.cs" />
+    <Compile Include="IO\Paths\WindowsDirectoryPathExtensions.cs" />
+    <Compile Include="IO\Paths\WindowsFilePathExtensions.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="_PostBuild.bat" />
+    <None Include="_PreBuild.bat" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RI.Framework.Common\RI.Framework.Common.csproj">
+      <Project>{6897bd68-4f5d-48e5-a4ec-6de0bfb36997}</Project>
+      <Name>RI.Framework.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>@call "$(ProjectDir)_PreBuild.bat" $(ConfigurationName)</PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>@call "$(ProjectDir)_PostBuild.bat" $(ConfigurationName)</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
